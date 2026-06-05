@@ -1,5 +1,5 @@
 import { FEATURE_COMPATIBILITY_OVERRIDES } from "../data/monster-grafts.js";
-import { asArray, getSelectedIdsForSlot, hasSelectedSlot, uniqueArray } from "./selection.js";
+import { asArray, getSelectedIdsForSlot, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
 
 function defaultTitleCase(value) {
   return String(value || "")

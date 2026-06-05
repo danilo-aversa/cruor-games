@@ -4,8 +4,8 @@ import {
   getFeaturePressureWeight,
   getFeatureSection,
   getTopFeatureByWeight,
-} from "./balance.js";
-import { getSectionLabel, normalizeRulesText } from "./export.js";
+} from "./monster-composer.balance.js";
+import { getSectionLabel, normalizeRulesText } from "./monster-composer.export.js";
 
 function titleCase(value) {
   return String(value || "")

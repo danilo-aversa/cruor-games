@@ -36,7 +36,7 @@ import {
   hasSelectedSlot,
   trimSelectedToCaps as trimSelectedToCapsModel,
   uniqueArray,
-} from "./model/selection.js";
+} from "./model/monster-composer.selection.js";
 import {
   buildCompatibilityWarning,
   buildFeatureDecisionProfile as buildFeatureDecisionProfileModel,
@@ -49,7 +49,7 @@ import {
   getFeatureDecisionRank,
   getFeatureSafetyScore as getFeatureSafetyScoreModel,
   getFeatureSpiceScore as getFeatureSpiceScoreModel,
-} from "./model/compatibility.js";
+} from "./model/monster-composer.compatibility.js";
 import {
   buildComplexityProfile,
   buildCounterplayAudit,
@@ -62,7 +62,7 @@ import {
   hasFeatureMechanicOverride,
   getTopFeatureByWeight,
   summarizeMechanicProfiles,
-} from "./model/balance.js";
+} from "./model/monster-composer.balance.js";
 import {
   buildExportJson,
   buildExportReadiness,
@@ -73,14 +73,14 @@ import {
   groupFeaturesBySection,
   normalizeMonsterReferences,
   normalizeRulesText,
-} from "./model/export.js";
-import { buildRunModeSheet } from "./model/run.js";
-import { buildGuidedFlow } from "./model/start-flow.js";
-import { MonsterComposerTopbar } from "./components/shell.jsx";
-import { GuidedFlowPanel, TemplatePickerModal } from "./components/start-flow.jsx";
-import { MonsterSilhouetteMap } from "./components/anatomy.jsx";
-import { ComponentNavigatorDrawer } from "./components/navigator.jsx";
-import { BalanceWorkbench, ExportWorkbench, RunModePanel } from "./components/panels.jsx";
+} from "./model/monster-composer.export.js";
+import { buildRunModeSheet } from "./model/monster-composer.run.js";
+import { buildGuidedFlow } from "./model/monster-composer.start-flow.js";
+import { MonsterComposerTopbar } from "./components/monster-composer.shell.jsx";
+import { GuidedFlowPanel, TemplatePickerModal } from "./components/monster-composer.start-flow.jsx";
+import { MonsterSilhouetteMap } from "./components/monster-composer.anatomy.jsx";
+import { ComponentNavigatorDrawer } from "./components/monster-composer.navigator.jsx";
+import { BalanceWorkbench, ExportWorkbench, RunModePanel } from "./components/monster-composer.panels.jsx";
 
 
 function clamp(value, min, max) {

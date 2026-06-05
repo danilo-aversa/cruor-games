@@ -5,20 +5,20 @@ import { Gauge, Plus, ShieldAlert, ShieldCheck, SlidersHorizontal, X } from "luc
 
 import { ALL_MONSTER_SOURCES as SOURCES } from "../data/monster-content-pack-feed.js";
 import { SLOTS } from "../monster-composer.workflow.js";
-import { getSelectedIdsForSlot } from "../model/selection.js";
+import { getSelectedIdsForSlot } from "../model/monster-composer.selection.js";
 import {
   formatToken,
   getCompatibilityStatus,
   getFeatureCompatibility,
-} from "../model/compatibility.js";
+} from "../model/monster-composer.compatibility.js";
 import {
   getFeatureMechanicProfile,
   getFeatureSection,
-} from "../model/balance.js";
+} from "../model/monster-composer.balance.js";
 import {
   getSectionLabel,
   normalizeMonsterReferences,
-} from "../model/export.js";
+} from "../model/monster-composer.export.js";
 
 function titleCase(value) {
   return String(value || "")
