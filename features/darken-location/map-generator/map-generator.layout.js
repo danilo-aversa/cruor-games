@@ -1563,6 +1563,58 @@ export function placeRegions(config, graph, rng) {
     .filter(Boolean);
 }
 
+export function centerAutoPlacedRegions(regions, config) {
+  if (!Array.isArray(regions) || regions.length === 0) return regions;
+
+  const gridW = Math.floor(config.mapWidth / config.gridSize);
+  const gridH = Math.floor(config.mapHeight / config.gridSize);
+  const margin = 3;
+  const rects = regions
+    .map((region) => region.cellRect)
+    .filter(Boolean);
+
+  if (rects.length === 0) return regions;
+
+  const minX = Math.min(...rects.map((rect) => rect.x));
+  const minY = Math.min(...rects.map((rect) => rect.y));
+  const maxX = Math.max(...rects.map((rect) => rect.x + rect.w));
+  const maxY = Math.max(...rects.map((rect) => rect.y + rect.h));
+  const width = maxX - minX;
+  const height = maxY - minY;
+
+  const desiredMinX = Math.round((gridW - width) / 2);
+  const desiredMinY = Math.round((gridH - height) / 2);
+  const shiftX = clamp(
+    desiredMinX - minX,
+    margin - minX,
+    gridW - margin - maxX,
+  );
+  const shiftY = clamp(
+    desiredMinY - minY,
+    margin - minY,
+    gridH - margin - maxY,
+  );
+
+  if (shiftX === 0 && shiftY === 0) return regions;
+
+  return regions.map((region) => {
+    if (!region.cellRect) return region;
+    const cellRect = {
+      ...region.cellRect,
+      x: region.cellRect.x + shiftX,
+      y: region.cellRect.y + shiftY,
+    };
+    return {
+      ...region,
+      cellRect,
+      labelPoint: {
+        x: (cellRect.x + cellRect.w / 2) * config.gridSize,
+        y: (cellRect.y + cellRect.h / 2) * config.gridSize,
+      },
+    };
+  });
+}
+
 export function applyManualRoomPositions(regions, config) {
   const manualPositions = config.manualRoomPositions || {};
   const gridW = Math.floor(config.mapWidth / config.gridSize);

@@ -9,8 +9,11 @@ import { createPortal } from "react-dom";
 import { registerTooltipProvider } from "../../../shared/tooltips/tooltip.registry.js";
 import {
   DEFAULT_CONFIG,
+  MAP_VISUAL_STYLES,
   createConfigFromNormalizedMapRequest,
+  normalizeMapDimension,
   normalizeRoomCount,
+  normalizeVisualStyle,
 } from "./map-generator.input.js";
 import {
   LEVEL_VIEW_ALL,
@@ -425,6 +428,33 @@ export function MapViewport({
     const frame = window.requestAnimationFrame(fitView);
     return () => window.cancelAnimationFrame(frame);
   }, [fitView, viewResetKey]);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return undefined;
+
+    let frame = 0;
+    const refitAfterResize = () => {
+      if (
+        roomDragRef.current ||
+        corridorDragRef.current ||
+        accessDragRef.current ||
+        connectionDragRef.current
+      )
+        return;
+
+      if (frame) window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(fitView);
+    };
+
+    const observer = new ResizeObserver(refitAfterResize);
+    observer.observe(viewport);
+
+    return () => {
+      observer.disconnect();
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [fitView]);
 
   const zoomAtPoint = useCallback(
     (clientX, clientY, factor) => {
@@ -2968,6 +2998,11 @@ export default function CruorMapGeneratorMvp({
   const [seed, setSeed] = useState(initialConfig.seed);
   const [roomCount, setRoomCount] = useState(initialConfig.roomCount);
   const [context, setContext] = useState(initialConfig.context);
+  const [mapWidth, setMapWidth] = useState(initialConfig.mapWidth);
+  const [mapHeight, setMapHeight] = useState(initialConfig.mapHeight);
+  const [visualStyle, setVisualStyle] = useState(
+    normalizeVisualStyle(initialConfig.visualStyle),
+  );
   const [gridStyle, setGridStyle] = useState(initialConfig.gridStyle);
   const [levelView, setLevelView] = useState(LEVEL_VIEW_ALL);
   const [fadeOtherLevels, setFadeOtherLevels] = useState(true);
@@ -2993,10 +3028,23 @@ export default function CruorMapGeneratorMvp({
       seed,
       context,
       roomCount,
+      mapWidth,
+      mapHeight,
+      visualStyle,
       showGrid,
       gridStyle,
     }),
-    [initialConfig, seed, context, roomCount, showGrid, gridStyle],
+    [
+      initialConfig,
+      seed,
+      context,
+      roomCount,
+      mapWidth,
+      mapHeight,
+      visualStyle,
+      showGrid,
+      gridStyle,
+    ],
   );
   const generatedMap = useMemo(
     () => generateMap(config, manualOverrides),
@@ -3030,6 +3078,7 @@ export default function CruorMapGeneratorMvp({
     showEditor,
     showGrid,
     gridStyle,
+    visualStyle,
     showNames,
     showProps,
     isManualEditActive,
@@ -3183,6 +3232,7 @@ export default function CruorMapGeneratorMvp({
         showNames,
         showProps,
         gridStyle,
+        visualStyle,
         levelView,
         fadeOtherLevels,
       },
@@ -3205,6 +3255,21 @@ export default function CruorMapGeneratorMvp({
         const importedConfig = payload.config || {};
         setSeed(String(importedConfig.seed || DEFAULT_CONFIG.seed));
         setContext(String(importedConfig.context || DEFAULT_CONFIG.context));
+        setMapWidth(
+          normalizeMapDimension(
+            importedConfig.mapWidth,
+            DEFAULT_CONFIG.mapWidth,
+          ),
+        );
+        setMapHeight(
+          normalizeMapDimension(
+            importedConfig.mapHeight,
+            DEFAULT_CONFIG.mapHeight,
+          ),
+        );
+        setVisualStyle(
+          normalizeVisualStyle(importedConfig.visualStyle, DEFAULT_CONFIG.visualStyle),
+        );
         setRoomCount(
           normalizeRoomCount(
             importedConfig.roomCount,
@@ -3221,6 +3286,10 @@ export default function CruorMapGeneratorMvp({
             setShowProps(payload.uiState.showProps);
           if (typeof payload.uiState.gridStyle === "string")
             setGridStyle(normalizeGridStyle(payload.uiState.gridStyle));
+          if (typeof payload.uiState.visualStyle === "string")
+            setVisualStyle(
+              normalizeVisualStyle(payload.uiState.visualStyle, visualStyle),
+            );
           if (typeof payload.uiState.fadeOtherLevels === "boolean")
             setFadeOtherLevels(payload.uiState.fadeOtherLevels);
           if (typeof payload.uiState.levelView !== "undefined")
@@ -4011,7 +4080,7 @@ export default function CruorMapGeneratorMvp({
               onExportPrintSvg={downloadPrintSvg}
               onExportState={exportState}
               onImportState={requestImportState}
-              viewResetKey={`${seed}:${roomCount}:${context}`}
+              viewResetKey={`${seed}:${roomCount}:${context}:${mapWidth}:${mapHeight}`}
             />
           </div>
         </main>
@@ -4063,6 +4132,52 @@ export default function CruorMapGeneratorMvp({
                   }}
                 />
               </div>
+              <div className="control-grid control-grid--two">
+                <div className="control-group">
+                  <label className="control-label" htmlFor="map-width">
+                    Canvas Width
+                  </label>
+                  <input
+                    id="map-width"
+                    className="control-input cruor-input"
+                    type="number"
+                    min="400"
+                    max="3200"
+                    step="20"
+                    value={mapWidth}
+                    onChange={(event) =>
+                      setMapWidth(
+                        normalizeMapDimension(
+                          event.target.value,
+                          mapWidth,
+                        ),
+                      )
+                    }
+                  />
+                </div>
+                <div className="control-group">
+                  <label className="control-label" htmlFor="map-height">
+                    Canvas Height
+                  </label>
+                  <input
+                    id="map-height"
+                    className="control-input cruor-input"
+                    type="number"
+                    min="400"
+                    max="3200"
+                    step="20"
+                    value={mapHeight}
+                    onChange={(event) =>
+                      setMapHeight(
+                        normalizeMapDimension(
+                          event.target.value,
+                          mapHeight,
+                        ),
+                      )
+                    }
+                  />
+                </div>
+              </div>
               <div className="control-group">
                 <label className="control-label" htmlFor="context">
                   Context
@@ -4083,6 +4198,25 @@ export default function CruorMapGeneratorMvp({
                   <option>Mine</option>
                   <option>Noble House</option>
                   <option>Ruins</option>
+                </select>
+              </div>
+              <div className="control-group">
+                <label className="control-label" htmlFor="visual-style">
+                  Drawing Style
+                </label>
+                <select
+                  id="visual-style"
+                  className="control-select cruor-select"
+                  value={visualStyle}
+                  onChange={(event) =>
+                    setVisualStyle(normalizeVisualStyle(event.target.value))
+                  }
+                >
+                  {MAP_VISUAL_STYLES.map((style) => (
+                    <option key={style.value} value={style.value}>
+                      {style.label}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="control-group">

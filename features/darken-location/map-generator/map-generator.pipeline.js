@@ -8,6 +8,7 @@ import {
 } from "./map-generator.graph.js";
 import {
   placeRegions,
+  centerAutoPlacedRegions,
   applyManualRoomPositions,
   applyRoomSizeOverrides,
   applyRoomStyleOverrides,
@@ -76,8 +77,9 @@ export function generateMap(rawConfig, manualOverrides = {}) {
     regions: annotateRegionsWithGraphMetadata(config.regions, generatedGraph),
   };
   const placedRegions = placeRegions(graphConfig, generatedGraph, rng);
+  const centeredRegions = centerAutoPlacedRegions(placedRegions, graphConfig);
   const positionedRegions = applyManualRoomPositions(
-    placedRegions,
+    centeredRegions,
     graphConfig,
   );
   const sizedRegions = applyRoomSizeOverrides(positionedRegions, graphConfig);

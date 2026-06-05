@@ -1289,3 +1289,50 @@
 
 /* Step 4.11 — CSS duplicate cleanup.
    No visual changes: Map cascade kept intact after Step 4.6 and Step 4.9 adoption. */
+
+/* Step 6.1 — Larger map canvas controls and Cruor drawing surface defaults. */
+.cruor-map-mvp .control-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.cruor-map-mvp .control-grid--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cruor-map-mvp .control-grid .control-group {
+  margin-bottom: 14px;
+}
+
+.cruor-map-workspace .map-viewport,
+.cruor-map-mvp .map-viewport {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(122, 26, 40, 0.34), transparent 38%),
+    linear-gradient(135deg, rgba(51, 3, 12, 0.96), rgba(0, 0, 0, 0.98));
+}
+
+/* Step 6.2 — Center live map previews inside Darken a Location panels. */
+.location-map-preview.location-map-preview--live {
+  display: grid;
+  justify-items: center;
+  min-width: 0;
+}
+
+.location-map-preview.location-map-preview--live .cruor-map-mvp.cruor-map-workspace {
+  width: min(100%, var(--cruor-location-map-preview-width, 1240px));
+  min-width: 0;
+  min-height: 0;
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+.location-map-preview.location-map-preview--live .cruor-map-workspace .map-workspace-shell {
+  width: 100%;
+  min-height: 0;
+  margin-inline: auto;
+}
+
+.location-map-preview.location-map-preview--live .cruor-map-workspace .map-canvas-area {
+  min-width: 0;
+}
+

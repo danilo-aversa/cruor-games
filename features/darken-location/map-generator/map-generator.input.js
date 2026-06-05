@@ -10,11 +10,11 @@ export const DEFAULT_CONFIG = {
   sourceAnchors: ["Sedlec Ossuary", "Towers of Silence"],
   roomCount: 7,
   gridSize: 20,
-  mapWidth: 1000,
-  mapHeight: 640,
+  mapWidth: 1600,
+  mapHeight: 1000,
   showGrid: true,
   mode: "editor",
-  visualStyle: "one-page-dungeon",
+  visualStyle: "cruor",
   gridStyle: "solid",
   regions: [
     {
@@ -130,6 +130,32 @@ export const GENERATED_REGION_TEMPLATES = [
   },
 ];
 
+
+export const MAP_VISUAL_STYLES = Object.freeze([
+  Object.freeze({ value: "cruor", label: "Cruor" }),
+  Object.freeze({ value: "cartographic", label: "Cartographic" }),
+  Object.freeze({ value: "blood", label: "Blood Ink" }),
+  Object.freeze({ value: "bone", label: "Bone" }),
+  Object.freeze({ value: "midnight", label: "Midnight" }),
+  Object.freeze({ value: "print", label: "Print" }),
+]);
+
+const SUPPORTED_VISUAL_STYLES = new Set(
+  MAP_VISUAL_STYLES.map((style) => style.value),
+);
+
+export function normalizeVisualStyle(value, fallback = DEFAULT_CONFIG.visualStyle) {
+  const text = String(value || "").trim();
+  if (text === "one-page-dungeon") return "cartographic";
+  return SUPPORTED_VISUAL_STYLES.has(text) ? text : fallback;
+}
+
+export function normalizeMapDimension(value, fallback, { min = 400, max = 3200 } = {}) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return fallback;
+  return clamp(Math.round(parsed), min, max);
+}
+
 const SUPPORTED_CONTEXTS = new Set([
   "Crypt",
   "Chapel",
@@ -202,6 +228,9 @@ export function createConfigFromNormalizedMapRequest(
     context,
     biome: context,
     roomCount,
+    mapWidth: normalizeMapDimension(initialRequest.mapWidth, baseConfig.mapWidth),
+    mapHeight: normalizeMapDimension(initialRequest.mapHeight, baseConfig.mapHeight),
+    visualStyle: normalizeVisualStyle(initialRequest.visualStyle, baseConfig.visualStyle),
     horror: normalizeArray(initialRequest.metadata?.horror).length
       ? normalizeArray(initialRequest.metadata.horror)
       : baseConfig.horror,
@@ -258,8 +287,9 @@ export function normalizeInput(config) {
     seed: config.seed || "cruor-map",
     roomCount,
     gridSize: Number(config.gridSize || 20),
-    mapWidth: Number(config.mapWidth || 1000),
-    mapHeight: Number(config.mapHeight || 640),
+    mapWidth: normalizeMapDimension(config.mapWidth, DEFAULT_CONFIG.mapWidth),
+    mapHeight: normalizeMapDimension(config.mapHeight, DEFAULT_CONFIG.mapHeight),
+    visualStyle: normalizeVisualStyle(config.visualStyle),
     regions,
     connections: Array.isArray(config.connections) ? config.connections : [],
   };
