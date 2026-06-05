@@ -972,10 +972,27 @@ export function findPathInCellSet(cells, start, goal) {
 
 export function areCorridorLinksPreserved(cells, corridors) {
   return corridors.every((corridor) => {
+    if (
+      corridor.isRoomLink ||
+      !Array.isArray(corridor.floorCells) ||
+      corridor.floorCells.length === 0
+    ) {
+      return true;
+    }
+
     const start = corridor.fromAnchor?.outsideCell;
     const goal = corridor.toAnchor?.outsideCell;
     if (!start || !goal) return true;
-    return findPathInCellSet(cells, start, goal).length >= 2;
+
+    const routePoints = [
+      start,
+      ...(corridor.manualWaypoints || []),
+      goal,
+    ].filter(Boolean);
+
+    return (
+      findPathThroughCellSet(cells, routePoints).length >= routePoints.length
+    );
   });
 }
 
@@ -1062,7 +1079,11 @@ export function rebuildCorridorOnNetwork(corridor, normalizedCells, gridSize) {
 export function normalizeCorridorNetwork(corridors, gridSize) {
   const organicCorridors = corridors.filter(isOrganicCorridor);
   const structuredCorridors = corridors.filter(
-    (corridor) => !isOrganicCorridor(corridor),
+    (corridor) =>
+      !isOrganicCorridor(corridor) &&
+      !corridor.isRoomLink &&
+      Array.isArray(corridor.floorCells) &&
+      corridor.floorCells.length > 0,
   );
   if (structuredCorridors.length === 0) return corridors;
 
@@ -1375,6 +1396,7 @@ export function routeCorridors(config, regions, graph) {
   const allRoomCells = getRoomCellSet(regions);
   const dynamicRoomCells = new Set(allRoomCells);
   const existingCorridors = new Set();
+  const usedDoorOutsideCells = new Set();
 
   const routedCorridors = graph.flatMap((edge) => {
     const from = regionById.get(edge.from);
@@ -1437,7 +1459,10 @@ export function routeCorridors(config, regions, graph) {
         },
       ];
     }
-    const forbiddenOutsideCells = new Set(dynamicRoomCells);
+    const forbiddenOutsideCells = new Set([
+      ...dynamicRoomCells,
+      ...usedDoorOutsideCells,
+    ]);
     const rawFromAnchor =
       manualFromAnchor ||
       chooseDoorAnchorForRegion(
@@ -1470,6 +1495,12 @@ export function routeCorridors(config, regions, graph) {
       gridW,
       gridH,
       dynamicRoomCells,
+    );
+    usedDoorOutsideCells.add(
+      cellKey(fromAnchor.outsideCell.x, fromAnchor.outsideCell.y),
+    );
+    usedDoorOutsideCells.add(
+      cellKey(toAnchor.outsideCell.x, toAnchor.outsideCell.y),
     );
     addCircleDoorRoomExtensionCellToSet(fromAnchor, dynamicRoomCells);
     addCircleDoorRoomExtensionCellToSet(toAnchor, dynamicRoomCells);
