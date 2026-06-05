@@ -1,5 +1,5 @@
 import { SLOTS } from "../monster-composer.workflow.js";
-import { hasSelectedSlot } from "./selection.js";
+import { hasSelectedSlot } from "./monster-composer.selection.js";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));

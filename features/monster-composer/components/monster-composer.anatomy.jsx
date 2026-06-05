@@ -7,8 +7,8 @@ import {
   ANATOMY_BOTTOM_SLOT_IDS,
 } from "../monster-composer.workflow.js";
 import { MONSTER_GRAFTS as FEATURES } from "../data/monster-grafts.js";
-import { getSelectedIdsForSlot, hasSelectedSlot } from "../model/selection.js";
-import { normalizeMonsterReferences } from "../model/export.js";
+import { getSelectedIdsForSlot, hasSelectedSlot } from "../model/monster-composer.selection.js";
+import { normalizeMonsterReferences } from "../model/monster-composer.export.js";
 import { getSilhouetteAnchor, getSilhouetteId, getSilhouetteProfile } from "../model/anatomy.js";
 import {
   CREATURE_TYPES,
@@ -21,7 +21,7 @@ import {
   isCreatureTypeUnavailable,
 } from "../monster-composer.taxonomies.js";
 import { Activity, AlertTriangle, Crown, Crosshair, Eye, Flame, Gauge, HeartPulse, RotateCcw, Shield, SlidersHorizontal, Sparkles, Sword, Timer, Zap } from "lucide-react";
-import { MonsterStartScreen } from "./start-flow.jsx";
+import { MonsterStartScreen } from "./monster-composer.start-flow.jsx";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));

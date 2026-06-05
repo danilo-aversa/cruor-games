@@ -1,6 +1,6 @@
 import { AlertTriangle, Shield } from "lucide-react";
 
-import { formatCounterplayIssues } from "../model/balance.js";
+import { formatCounterplayIssues } from "../model/monster-composer.balance.js";
 
 function modText(value) {
   return value >= 0 ? `+${value}` : `−${Math.abs(value)}`;

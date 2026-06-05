@@ -1,6 +1,6 @@
 import { FEATURE_MECHANIC_OVERRIDES } from "../data/monster-grafts.js";
-import { asArray, hasSelectedSlot, uniqueArray } from "./selection.js";
-import { formatToken } from "./compatibility.js";
+import { asArray, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
+import { formatToken } from "./monster-composer.compatibility.js";
 
 const SLOT_SECTION_FALLBACK = {
   body: "trait",

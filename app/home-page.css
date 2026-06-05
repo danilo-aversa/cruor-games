@@ -81,7 +81,6 @@
   margin-top: 30px;
 }
 
-.cruor-home__button,
 .cruor-home__text-link {
   display: inline-flex;
   align-items: center;
@@ -95,10 +94,16 @@
 }
 
 .cruor-home__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
   padding: 0 16px;
   border: 1px solid var(--home-line);
   color: var(--cruor-color-muted, var(--muted));
   background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  text-decoration: none;
   font-size: 12px;
   font-weight: 850;
   letter-spacing: 0.05em;

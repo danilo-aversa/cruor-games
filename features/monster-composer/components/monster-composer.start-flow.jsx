@@ -11,7 +11,7 @@ import {
   Plus,
   X,
 } from "lucide-react";
-import "./start-flow.css";
+import "./monster-composer.start-flow.css";
 
 const FLOW_DOCK_STORAGE_KEY = "cruor.monsterComposer.flowDockOpen";
 

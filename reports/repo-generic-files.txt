@@ -1,0 +1,9 @@
+features/crucible/index.js
+features/darken-location/index.js
+shared/content/inspirations.js
+shared/content/monster-components.js
+shared/content/registry.js
+shared/content/source-anchors.js
+shared/content/static-registry.js
+shared/content/taxonomies.js
+shared/content/workflows.js

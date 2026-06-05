@@ -1,8 +1,8 @@
 import { MONSTER_GRAFTS as FEATURES } from "../data/monster-grafts.js";
 import { MONSTER_FAMILY_PRESETS } from "../data/monster-presets.js";
 import { SLOTS } from "../monster-composer.workflow.js";
-import { asArray, hasSelectedSlot, uniqueArray } from "./selection.js";
-import { getFeatureCompatibility, hasFeatureCompatibilityOverride } from "./compatibility.js";
+import { asArray, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
+import { getFeatureCompatibility, hasFeatureCompatibilityOverride } from "./monster-composer.compatibility.js";
 import {
   COMPLEXITY_LABELS,
   PRESSURE_LABELS,
@@ -16,7 +16,7 @@ import {
   getFeatureSection,
   hasFeatureMechanicOverride,
   getTopFeatureByWeight,
-} from "./balance.js";
+} from "./monster-composer.balance.js";
 
 const FEATURE_SCHEMA_VERSION = "monster-graft-v0.8";
 const EXPORT_SCHEMA_VERSION = "monster-crucible-export-v0.8";
@@ -908,4 +908,3 @@ export function buildExportJson({
     2
   );
 }
-
