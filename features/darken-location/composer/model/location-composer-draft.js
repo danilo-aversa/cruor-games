@@ -35,6 +35,7 @@ function createDraftStatePayload(state) {
     horrors: toArray(state.horrors),
     sourceAnchors: toArray(state.sourceAnchors),
     intrusion: state.intrusion,
+    seed: state.seed || "",
     activeSlot: state.activeSlot,
     activeSlotScope: state.activeSlotScope,
     activeRegionId: state.activeRegionId,

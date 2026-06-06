@@ -1,13 +1,16 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { LocationCompilePreview } from "./LocationCompilePreview.jsx";
 import { LocationRoomRecapCard } from "./LocationRoomRecapCard.jsx";
 import { MapViewport } from "../../map-generator/map-generator.page.jsx";
 import { LEVEL_VIEW_ALL } from "../../map-generator/map-generator.state.js";
-import { LOCATION_SLOT_SCOPE_REGION, toArray } from "../model/location-composer-state.js";
+import {
+  LOCATION_SLOT_SCOPE_MAP,
+  LOCATION_SLOT_SCOPE_REGION,
+  toArray,
+} from "../model/location-composer-state.js";
 import {
   getAssignedComponentsForRegion,
   getDefaultSlotIdForScope,
-  getRegionById,
   isSlotInScope,
 } from "../model/location-composer-selectors.js";
 import {
@@ -87,11 +90,38 @@ export function LocationMapStage({
   const regions = state.locationRegions || [];
   const selectedSources = toArray(state.sourceAnchors);
   const selectedHorrors = toArray(state.horrors);
-  const activeRegion = getRegionById(state, state.activeRegionId);
+  const [hoveredRegionId, setHoveredRegionId] = useState("");
   const activeRegionComponents = getAssignedComponentsForRegion(state, state.activeRegionId);
   const activeGeneratedRoom = getGeneratedRoomForRegion(generatedMapPreview, state.activeRegionId);
+  const hoveredRegionIndex = regions.findIndex((region) => region.id === hoveredRegionId);
+  const hoveredRegion = hoveredRegionIndex >= 0 ? regions[hoveredRegionIndex] : null;
+  const hoveredRegionComponents = hoveredRegion
+    ? getAssignedComponentsForRegion(state, hoveredRegion.id)
+    : [];
+  const hoveredGeneratedRoom = hoveredRegion
+    ? getGeneratedRoomForRegionIndex(generatedMapPreview, hoveredRegion.id, hoveredRegionIndex)
+    : null;
+  const hoveredSurfaceLabel = hoveredGeneratedRoom
+    ? getGeneratedRoomSurfaceLabel(hoveredGeneratedRoom)
+    : "";
   const mapSyncStatus = getMapSyncStatus(mapRequest, generatedMapPreview, regions);
-  const activeSurfaceLabel = activeGeneratedRoom ? getGeneratedRoomSurfaceLabel(activeGeneratedRoom) : "";
+
+  function selectWholeMapTarget(event) {
+    const target = event.target;
+    if (target?.closest?.(
+      ".location-region-node, .location-room-recap-anchor, .location-stage-navigator-overlay, .location-advanced-output, button, a, input, select, textarea",
+    )) {
+      return;
+    }
+
+    setState((current) => ({
+      ...current,
+      activeSlotScope: LOCATION_SLOT_SCOPE_MAP,
+      activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_MAP)
+        ? current.activeSlot
+        : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_MAP),
+    }));
+  }
 
   return (
     <main className="cruor-composer-stage location-composer__stage" aria-label="Location map stage">
@@ -102,6 +132,7 @@ export function LocationMapStage({
           isSimpleMode && "is-simple-surface",
           `is-map-${mapSyncStatus.mode}`,
         )}
+        onClick={selectWholeMapTarget}
       >
         <div className="location-map-stage__backdrop" aria-hidden="true">
           <span className="location-map-stage__ring location-map-stage__ring--outer" />
@@ -118,14 +149,23 @@ export function LocationMapStage({
           viewResetKey={previewResetKey}
         />
 
-        <div className="location-room-recap-anchor">
-          <LocationRoomRecapCard
-            activeRegion={activeRegion}
-            assignedComponents={activeRegionComponents}
-            generatedRoom={activeGeneratedRoom}
-            surfaceLabel={activeSurfaceLabel}
-          />
-        </div>
+        {hoveredRegion ? (
+          <div
+            className="location-room-recap-anchor location-room-recap-anchor--hover"
+            style={getGeneratedRoomPositionStyle(
+              generatedMapPreview,
+              hoveredGeneratedRoom,
+              hoveredRegionIndex,
+            )}
+          >
+            <LocationRoomRecapCard
+              activeRegion={hoveredRegion}
+              assignedComponents={hoveredRegionComponents}
+              generatedRoom={hoveredGeneratedRoom}
+              surfaceLabel={hoveredSurfaceLabel}
+            />
+          </div>
+        ) : null}
 
         {showStageDetails ? (
           <div className="location-map-stage__head location-map-stage__head--compact">
@@ -153,7 +193,20 @@ export function LocationMapStage({
                 type="button"
                 aria-label={`Use ${region.name} as the active region target`}
                 style={getGeneratedRoomPositionStyle(generatedMapPreview, generatedRoom, index)}
-                onClick={() =>
+                onMouseEnter={() => setHoveredRegionId(region.id)}
+                onMouseLeave={() =>
+                  setHoveredRegionId((current) =>
+                    current === region.id ? "" : current,
+                  )
+                }
+                onFocus={() => setHoveredRegionId(region.id)}
+                onBlur={() =>
+                  setHoveredRegionId((current) =>
+                    current === region.id ? "" : current,
+                  )
+                }
+                onClick={(event) => {
+                  event.stopPropagation();
                   setState((current) => ({
                     ...current,
                     activeRegionId: region.id,
@@ -161,8 +214,8 @@ export function LocationMapStage({
                     activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
                       ? current.activeSlot
                       : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
-                  }))
-                }
+                  }));
+                }}
               >
                 <span>{generatedRoom?.number ? String(generatedRoom.number).padStart(2, "0") : String(index + 1).padStart(2, "0")}</span>
                 <strong>{region.name}</strong>

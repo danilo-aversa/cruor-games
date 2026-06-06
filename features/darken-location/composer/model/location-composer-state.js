@@ -25,6 +25,12 @@ const MAP_SCOPED_SLOT_IDS = new Set([
   "reward",
 ]);
 
+export function createLocationMapSeed(prefix = "darken-map") {
+  const timePart = Date.now().toString(36);
+  const randomPart = Math.random().toString(36).slice(2, 8);
+  return `${prefix}-${timePart}-${randomPart}`;
+}
+
 export function normalizeLocationSlotScope(value) {
   return value === LOCATION_SLOT_SCOPE_REGION
     ? LOCATION_SLOT_SCOPE_REGION
@@ -49,6 +55,7 @@ export function createInitialLocationComposerState(regionTemplates = []) {
     sourceAnchors: new Set([DEFAULT_SELECTED_SOURCE]),
     horrors: new Set([DEFAULT_SELECTED_HORROR]),
     intrusion: DEFAULT_INTRUSION,
+    seed: "",
     activeSlot: "horrorPremise",
     activeSlotScope: LOCATION_SLOT_SCOPE_MAP,
     activeRegionId: initialRegions[0]?.id || "",
@@ -211,6 +218,7 @@ export function createLocationComposerSnapshot(state, selectedComponents = []) {
     horrors: toArray(state.horrors),
     sourceAnchors: toArray(state.sourceAnchors),
     intrusion: state.intrusion || DEFAULT_INTRUSION,
+    seed: state.seed || "",
     activeSlot: state.activeSlot || "horrorPremise",
     activeSlotScope: normalizeLocationSlotScope(state.activeSlotScope),
     activeRegionId: state.activeRegionId || "",

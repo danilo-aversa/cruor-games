@@ -4,6 +4,7 @@ import {
   assignComponentToSlot,
   createInitialLocationComposerState,
   createLocationComposerSnapshot,
+  createLocationMapSeed,
   normalizeLocationSlotScope,
   removeComponentFromSlot,
 } from "./model/location-composer-state.js";
@@ -56,6 +57,7 @@ function LocationRecapPanel({
   digest,
   generatedMapPreview,
   mapRequest,
+  onNewMapSeed,
   onOpenMapGenerator,
   setBuilderMode,
   snapshot,
@@ -115,6 +117,13 @@ function LocationRecapPanel({
             Slots
           </button>
         </div>
+        <button
+          className="cruor-composer-control location-primary-action"
+          type="button"
+          onClick={onNewMapSeed}
+        >
+          New Map Seed
+        </button>
         <button
           className="cruor-composer-control location-primary-action"
           type="button"
@@ -245,6 +254,14 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     setSavedDraftFingerprint(createDraftFingerprint(state));
     setTransientDraftStatus("Draft cleared");
   }, [draftSummary, setTransientDraftStatus, state]);
+
+  const refreshMapSeed = useCallback(() => {
+    setState((current) => ({
+      ...current,
+      seed: createLocationMapSeed(),
+    }));
+    setTransientDraftStatus("Map seed refreshed");
+  }, [setTransientDraftStatus]);
 
   const resetComposer = useCallback(() => {
     const confirmed = window.confirm("Reset current composer?");
@@ -431,6 +448,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
             digest={digest}
             generatedMapPreview={generatedMapPreview}
             mapRequest={mapRequest}
+            onNewMapSeed={refreshMapSeed}
             onOpenMapGenerator={onOpenMapGenerator}
             setBuilderMode={setBuilderMode}
             snapshot={snapshot}

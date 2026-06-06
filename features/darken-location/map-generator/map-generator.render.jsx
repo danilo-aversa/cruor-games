@@ -120,10 +120,10 @@ export const MAP_VISUAL_STYLE = `
 .map-style-cruor .map-grid circle{fill:rgba(255,238,242,.14)}
 .map-style-cruor .floor-grid line{stroke:rgba(255,255,255,.09);stroke-width:1;vector-effect:non-scaling-stroke}
 .map-style-cruor .floor-grid circle{fill:rgba(255,255,255,.12)}
-.map-style-cruor .floor-fill{fill:rgba(255,255,255,.30);stroke:none;mix-blend-mode:screen}
-.map-style-cruor .room-floor-accent{fill:rgba(255,255,255,.18);mix-blend-mode:screen}
-.map-style-cruor .corridor-floor-accent{fill:rgba(255,255,255,.12);mix-blend-mode:screen}
-.map-style-cruor .organic-floor-accent{fill:rgba(255,255,255,.18);stroke:rgba(255,255,255,.26)}
+.map-style-cruor .floor-fill{fill:#685D61;stroke:none;mix-blend-mode:normal}
+.map-style-cruor .room-floor-accent{fill:rgba(104,93,97,.92);mix-blend-mode:normal}
+.map-style-cruor .corridor-floor-accent{fill:rgba(104,93,97,.88);mix-blend-mode:normal}
+.map-style-cruor .organic-floor-accent{fill:#685D61;stroke:rgba(255,255,255,.26)}
 .map-style-cruor .floor-speckle circle{fill:rgba(255,255,255,.16)}
 .map-style-cruor .floor-grain path,.map-style-cruor .shape-detail,.map-style-cruor .ritual-floor-ring,.map-style-cruor .corridor-centerline{stroke:rgba(255,255,255,.28)}
 .map-style-cruor .external-hatching-underlay .halo-buffer{stroke:rgba(28,2,8,.94)}
@@ -137,7 +137,7 @@ export const MAP_VISUAL_STYLE = `
 .map-style-cruor .door-symbols .door-panel,.map-style-cruor .corridor-junctions .junction-door-panel{fill:rgba(18,1,6,.92);stroke:#fff}
 .map-style-cruor .door-symbols .locked-door-mark line,.map-style-cruor .door-symbols .stair-mark__main path,.map-style-cruor .map-accesses .map-access-line,.map-style-cruor .map-accesses .map-access-head-line{stroke:#fff}
 .map-style-cruor .door-symbols .stair-mark__sketch path,.map-style-cruor .map-accesses .map-access-stem-sketch,.map-style-cruor .map-accesses .map-access-head-sketch{stroke:rgba(255,255,255,.42)}
-.map-style-cruor .corridor-overpass-patches .overpass-corridor-floor{fill:rgba(255,255,255,.30)}
+.map-style-cruor .corridor-overpass-patches .overpass-corridor-floor{fill:#685D61}
 .map-style-cruor .map-accesses .map-access-label{fill:#fff;stroke:rgba(20,2,8,.92);font-family:Inter,ui-sans-serif,system-ui}
 .map-style-cruor .props rect,.map-style-cruor .props circle,.map-style-cruor .props path,.map-style-cruor .props line,.map-style-cruor .props polygon,.map-style-cruor .props ellipse{stroke:rgba(255,255,255,.82)}
 .map-style-cruor .props .prop-fill,.map-style-cruor .props .prop-altar,.map-style-cruor .props .prop-tomb,.map-style-cruor .props .prop-shelf{fill:rgba(255,255,255,.08)}
