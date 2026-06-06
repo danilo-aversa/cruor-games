@@ -3,10 +3,12 @@ import { LocationCompilePreview } from "./LocationCompilePreview.jsx";
 import { LocationRoomRecapCard } from "./LocationRoomRecapCard.jsx";
 import { MapViewport } from "../../map-generator/map-generator.page.jsx";
 import { LEVEL_VIEW_ALL } from "../../map-generator/map-generator.state.js";
-import { toArray } from "../model/location-composer-state.js";
+import { LOCATION_SLOT_SCOPE_REGION, toArray } from "../model/location-composer-state.js";
 import {
   getAssignedComponentsForRegion,
+  getDefaultSlotIdForScope,
   getRegionById,
+  isSlotInScope,
 } from "../model/location-composer-selectors.js";
 import {
   getGeneratedRoomForRegion,
@@ -151,7 +153,16 @@ export function LocationMapStage({
                 type="button"
                 aria-label={`Use ${region.name} as the active region target`}
                 style={getGeneratedRoomPositionStyle(generatedMapPreview, generatedRoom, index)}
-                onClick={() => setState((current) => ({ ...current, activeRegionId: region.id }))}
+                onClick={() =>
+                  setState((current) => ({
+                    ...current,
+                    activeRegionId: region.id,
+                    activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+                    activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
+                      ? current.activeSlot
+                      : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
+                  }))
+                }
               >
                 <span>{generatedRoom?.number ? String(generatedRoom.number).padStart(2, "0") : String(index + 1).padStart(2, "0")}</span>
                 <strong>{region.name}</strong>

@@ -5,6 +5,9 @@ const DEFAULT_SELECTED_HORROR = "Religious Horror";
 const DEFAULT_CONTEXT = "Crypt";
 const DEFAULT_INTRUSION = "Medium";
 
+export const LOCATION_SLOT_SCOPE_MAP = "map";
+export const LOCATION_SLOT_SCOPE_REGION = "region";
+
 export const DEFAULT_LOCATION_SLOT_IDS = [
   "horrorPremise",
   "sensoryLayer",
@@ -14,6 +17,19 @@ export const DEFAULT_LOCATION_SLOT_IDS = [
   "encounterTwist",
   "reward",
 ];
+
+const MAP_SCOPED_SLOT_IDS = new Set([
+  "horrorPremise",
+  "sensoryLayer",
+  "visibleAnomaly",
+  "reward",
+]);
+
+export function normalizeLocationSlotScope(value) {
+  return value === LOCATION_SLOT_SCOPE_REGION
+    ? LOCATION_SLOT_SCOPE_REGION
+    : LOCATION_SLOT_SCOPE_MAP;
+}
 
 export function createInitialLocationComposerState(regionTemplates = []) {
   const legacyState = createInitialCrucibleState();
@@ -34,6 +50,7 @@ export function createInitialLocationComposerState(regionTemplates = []) {
     horrors: new Set([DEFAULT_SELECTED_HORROR]),
     intrusion: DEFAULT_INTRUSION,
     activeSlot: "horrorPremise",
+    activeSlotScope: LOCATION_SLOT_SCOPE_MAP,
     activeRegionId: initialRegions[0]?.id || "",
     selectedComponentIds: new Set(),
     slotAssignments: {},
@@ -54,12 +71,15 @@ export function normalizeSlotAssignments(assignments = {}) {
       Array.isArray(items)
         ? items
             .filter((item) => item && item.componentId)
-            .map((item) => ({
-              componentId: item.componentId,
-              slotId: item.slotId || slotId,
-              regionId: item.regionId || "",
-              addedAt: item.addedAt || 0,
-            }))
+            .map((item) => {
+              const normalizedSlotId = item.slotId || slotId;
+              return {
+                componentId: item.componentId,
+                slotId: normalizedSlotId,
+                regionId: MAP_SCOPED_SLOT_IDS.has(normalizedSlotId) ? "" : item.regionId || "",
+                addedAt: item.addedAt || 0,
+              };
+            })
         : [],
     ]),
   );
@@ -74,12 +94,31 @@ export function deriveSelectedComponentIds(slotAssignments = {}) {
   );
 }
 
-export function assignComponentToSlot(state, component, slot, regionId) {
+function normalizeAssignmentTarget(state, target = {}) {
+  if (typeof target === "string") {
+    return {
+      scope: target ? LOCATION_SLOT_SCOPE_REGION : LOCATION_SLOT_SCOPE_MAP,
+      regionId: target,
+    };
+  }
+
+  const scope = normalizeLocationSlotScope(target.scope);
+  return {
+    scope,
+    regionId:
+      scope === LOCATION_SLOT_SCOPE_REGION
+        ? target.regionId || state.activeRegionId || ""
+        : "",
+  };
+}
+
+export function assignComponentToSlot(state, component, slot, target = {}) {
   if (!component?.id || !slot?.id) return state;
 
   const slotId = slot.id;
   const max = Number.isFinite(slot.max) ? Math.max(1, slot.max) : 1;
   const normalizedAssignments = normalizeSlotAssignments(state.slotAssignments);
+  const { scope, regionId } = normalizeAssignmentTarget(state, target);
 
   const cleanedAssignments = Object.fromEntries(
     Object.entries(normalizedAssignments).map(([currentSlotId, assignments]) => [
@@ -89,22 +128,32 @@ export function assignComponentToSlot(state, component, slot, regionId) {
   );
 
   const currentSlotAssignments = cleanedAssignments[slotId] || [];
+  const otherScopeAssignments = currentSlotAssignments.filter(
+    (assignment) => assignment.regionId !== regionId,
+  );
+  const sameScopeAssignments = currentSlotAssignments.filter(
+    (assignment) => assignment.regionId === regionId,
+  );
   const nextAssignment = {
     componentId: component.id,
     slotId,
-    regionId: regionId || state.activeRegionId || "",
+    regionId,
     addedAt: Date.now(),
   };
-  const nextSlotAssignments = [...currentSlotAssignments, nextAssignment].slice(-max);
+  const nextScopedAssignments = [...sameScopeAssignments, nextAssignment].slice(-max);
   const nextSlotAssignmentsMap = {
     ...cleanedAssignments,
-    [slotId]: nextSlotAssignments,
+    [slotId]: [...otherScopeAssignments, ...nextScopedAssignments],
   };
 
   return {
     ...state,
     activeSlot: slotId,
-    activeRegionId: nextAssignment.regionId || state.activeRegionId,
+    activeSlotScope: scope,
+    activeRegionId:
+      scope === LOCATION_SLOT_SCOPE_REGION
+        ? regionId || state.activeRegionId
+        : state.activeRegionId,
     slotAssignments: nextSlotAssignmentsMap,
     selectedComponentIds: deriveSelectedComponentIds(nextSlotAssignmentsMap),
   };
@@ -144,6 +193,7 @@ export function moveAssignmentToRegion(state, componentId, regionId) {
 
   return {
     ...state,
+    activeSlotScope: regionId ? LOCATION_SLOT_SCOPE_REGION : LOCATION_SLOT_SCOPE_MAP,
     activeRegionId: regionId || state.activeRegionId,
     slotAssignments: nextSlotAssignmentsMap,
     selectedComponentIds: deriveSelectedComponentIds(nextSlotAssignmentsMap),
@@ -162,6 +212,7 @@ export function createLocationComposerSnapshot(state, selectedComponents = []) {
     sourceAnchors: toArray(state.sourceAnchors),
     intrusion: state.intrusion || DEFAULT_INTRUSION,
     activeSlot: state.activeSlot || "horrorPremise",
+    activeSlotScope: normalizeLocationSlotScope(state.activeSlotScope),
     activeRegionId: state.activeRegionId || "",
     selectedComponentIds: Array.from(deriveSelectedComponentIds(slotAssignments)),
     slotAssignments,

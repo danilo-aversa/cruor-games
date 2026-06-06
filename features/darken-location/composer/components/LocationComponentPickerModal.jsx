@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { LOCATION_SLOT_SCOPE_REGION, normalizeLocationSlotScope } from "../model/location-composer-state.js";
 
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -16,7 +17,6 @@ function getComponentSummary(component) {
   return component?.summary || component?.description || component?.text || component?.effect || "";
 }
 
-
 export function LocationComponentPickerModal({
   activeRegion,
   assignedComponents = [],
@@ -26,14 +26,15 @@ export function LocationComponentPickerModal({
   onAddComponent,
   onClose,
   onRemoveComponent,
-  onSelectRegion,
   open,
-  regions = [],
   slot,
+  slotScope = "map",
 }) {
   const [search, setSearch] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState("all");
+  const normalizedScope = normalizeLocationSlotScope(slotScope);
+  const regionScoped = normalizedScope === LOCATION_SLOT_SCOPE_REGION;
 
   const assignedIds = useMemo(
     () => new Set(assignedComponents.map((component) => component.id).filter(Boolean)),
@@ -75,13 +76,24 @@ export function LocationComponentPickerModal({
 
   if (!open || !slot) return null;
 
-  const drawerTitle = `Choose ${slot.label} Component`;
+  const drawerTitle = regionScoped
+    ? `Choose Room ${slot.label}`
+    : `Choose Map ${slot.label}`;
+  const targetTitle = regionScoped
+    ? activeRegion?.name || "No room selected"
+    : "Whole Map";
+  const targetMeta = regionScoped
+    ? generatedRoom
+      ? `Room ${generatedRoom.number || "—"}`
+      : "Click a room on the map to change target"
+    : "Dungeon-wide slot";
 
   return (
     <div
       className={cx("component-navigator-drawer location-component-drawer", filtersOpen && "is-filters-open")}
       data-filters-open={filtersOpen ? "true" : "false"}
       data-navigator-mode="slot"
+      data-slot-scope={normalizedScope}
     >
       <div
         className="component-navigator-modal component-navigator-modal--drawer location-component-modal"
@@ -172,26 +184,12 @@ export function LocationComponentPickerModal({
                   </section>
 
                   <section className="navigator-filter-section location-component-filter-section">
-                    <strong>Target Region</strong>
+                    <strong>{regionScoped ? "Target Room" : "Target Map"}</strong>
                     <div className="location-component-drawer__target">
                       <div className="location-component-drawer__target-copy">
                         <span>Target</span>
-                        <strong>{activeRegion?.name || "No region selected"}</strong>
-                        {generatedRoom ? <small>Room {generatedRoom.number || "—"}</small> : null}
-                      </div>
-                      <div className="location-component-drawer__region-grid" aria-label="Choose target region">
-                        {regions.slice(0, 8).map((region, index) => (
-                          <button
-                            className={cx("navigator-filter-chip location-region-inline-btn", activeRegion?.id === region.id && "active is-active")}
-                            key={region.id}
-                            type="button"
-                            title={`Set ${region.name} as target`}
-                            aria-pressed={activeRegion?.id === region.id}
-                            onClick={() => onSelectRegion?.(region.id)}
-                          >
-                            {index + 1}
-                          </button>
-                        ))}
+                        <strong>{targetTitle}</strong>
+                        <small>{targetMeta}</small>
                       </div>
                     </div>
                   </section>

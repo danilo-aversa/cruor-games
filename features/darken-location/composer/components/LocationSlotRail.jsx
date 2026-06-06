@@ -1,10 +1,18 @@
 import { useMemo } from "react";
 import { AlertTriangle, Eye, Gem, RotateCcw, Search, Skull, Sparkles } from "lucide-react";
 import {
-  getAssignedComponentsForSlot,
-  getLocationSlots,
-  getSlotStatus,
+  LOCATION_SLOT_SCOPE_DEFINITIONS,
+  getAssignedComponentsForSlotScope,
+  getDefaultSlotIdForScope,
+  getLocationSlotsForScope,
+  getSlotStatusForScope,
+  isSlotInScope,
 } from "../model/location-composer-selectors.js";
+import {
+  LOCATION_SLOT_SCOPE_MAP,
+  LOCATION_SLOT_SCOPE_REGION,
+  normalizeLocationSlotScope,
+} from "../model/location-composer-state.js";
 
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -22,19 +30,56 @@ function getSlotIcon(slotId) {
 }
 
 export function LocationSlotRail({ state, setState, onFocusSlot }) {
-  const slots = useMemo(() => getLocationSlots(), []);
-  const activeSlotId = state.activeSlot || slots[0]?.id;
+  const activeScope = normalizeLocationSlotScope(state.activeSlotScope);
+  const slots = useMemo(() => getLocationSlotsForScope(activeScope), [activeScope]);
+  const activeSlotId = isSlotInScope(state.activeSlot, activeScope)
+    ? state.activeSlot
+    : getDefaultSlotIdForScope(activeScope);
+  const activeRegion = state.locationRegions?.find((region) => region.id === state.activeRegionId);
+  const targetLabel = activeScope === LOCATION_SLOT_SCOPE_REGION
+    ? activeRegion?.name || "Select a room on the map"
+    : "Whole Map";
 
   const selectedBySlot = useMemo(() => {
     return slots.reduce((acc, slot) => {
-      acc[slot.id] = getAssignedComponentsForSlot(state, slot.id);
+      acc[slot.id] = getAssignedComponentsForSlotScope(
+        state,
+        slot.id,
+        activeScope,
+        state.activeRegionId,
+      );
       return acc;
     }, {});
-  }, [slots, state]);
+  }, [activeScope, slots, state]);
+
+  function focusScope(scope) {
+    const nextScope = normalizeLocationSlotScope(scope);
+    const nextSlotId = isSlotInScope(state.activeSlot, nextScope)
+      ? state.activeSlot
+      : getDefaultSlotIdForScope(nextScope);
+
+    setState((current) => ({
+      ...current,
+      activeSlotScope: nextScope,
+      activeSlot: nextSlotId,
+      activeRegionId:
+        nextScope === LOCATION_SLOT_SCOPE_REGION
+          ? current.activeRegionId || current.locationRegions?.[0]?.id || ""
+          : current.activeRegionId,
+    }));
+  }
 
   function focusSlot(slotId) {
-    setState((current) => ({ ...current, activeSlot: slotId }));
-    onFocusSlot?.(slotId);
+    setState((current) => ({
+      ...current,
+      activeSlot: slotId,
+      activeSlotScope: activeScope,
+      activeRegionId:
+        activeScope === LOCATION_SLOT_SCOPE_REGION
+          ? current.activeRegionId || current.locationRegions?.[0]?.id || ""
+          : current.activeRegionId,
+    }));
+    onFocusSlot?.(slotId, activeScope);
   }
 
   return (
@@ -42,9 +87,34 @@ export function LocationSlotRail({ state, setState, onFocusSlot }) {
       className="cruor-composer-rail location-composer__rail location-composer__rail--left location-composer__rail--picker location-map-slot-rail"
       aria-label="Location slots"
     >
-      <div className="location-slot-stack" aria-label="Location content slots">
+      <div className="location-map-mode-switch location-slot-scope-switch" role="tablist" aria-label="Slot target scope">
+        {[LOCATION_SLOT_SCOPE_MAP, LOCATION_SLOT_SCOPE_REGION].map((scope) => {
+          const definition = LOCATION_SLOT_SCOPE_DEFINITIONS[scope];
+          const active = activeScope === scope;
+          return (
+            <button
+              className={cx("location-map-mode-button", active && "is-active")}
+              key={scope}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              aria-pressed={active}
+              onClick={() => focusScope(scope)}
+            >
+              {definition.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="location-slot-scope-target" aria-label="Current slot target">
+        <span>{activeScope === LOCATION_SLOT_SCOPE_REGION ? "Selected" : "Target"}</span>
+        <strong>{targetLabel}</strong>
+      </div>
+
+      <div className="location-slot-stack" aria-label={`${LOCATION_SLOT_SCOPE_DEFINITIONS[activeScope].label} content slots`}>
         {slots.map((slot, index) => {
-          const status = getSlotStatus(state, slot);
+          const status = getSlotStatusForScope(state, slot, activeScope, state.activeRegionId);
           const assigned = selectedBySlot[slot.id] || [];
           const active = activeSlotId === slot.id;
           const Icon = getSlotIcon(slot.id);
@@ -59,7 +129,7 @@ export function LocationSlotRail({ state, setState, onFocusSlot }) {
               )}
               key={slot.id}
               type="button"
-              aria-label={`Focus ${slot.label}`}
+              aria-label={`Focus ${LOCATION_SLOT_SCOPE_DEFINITIONS[activeScope].label} ${slot.label}`}
               aria-pressed={active}
               onClick={() => focusSlot(slot.id)}
             >

@@ -4,9 +4,29 @@ import { SOURCE_DETAILS } from "../../../crucible/crucible.sources-data.js";
 import { WORKFLOWS, SLOT_DESCRIPTIONS } from "../../../crucible/crucible.workflows.js";
 import {
   DEFAULT_LOCATION_SLOT_IDS,
+  LOCATION_SLOT_SCOPE_MAP,
+  LOCATION_SLOT_SCOPE_REGION,
+  normalizeLocationSlotScope,
   normalizeSlotAssignments,
   toArray,
 } from "./location-composer-state.js";
+
+export const LOCATION_SLOT_SCOPE_DEFINITIONS = {
+  [LOCATION_SLOT_SCOPE_MAP]: {
+    id: LOCATION_SLOT_SCOPE_MAP,
+    label: "Map",
+    description: "Dungeon-wide premise, atmosphere, anomaly, and outcome.",
+    slotIds: ["horrorPremise", "sensoryLayer", "visibleAnomaly", "reward"],
+    defaultSlotId: "horrorPremise",
+  },
+  [LOCATION_SLOT_SCOPE_REGION]: {
+    id: LOCATION_SLOT_SCOPE_REGION,
+    label: "Selected Location",
+    description: "Hazards, clues, and twists assigned to the room selected on the map.",
+    slotIds: ["hazard", "clue", "encounterTwist"],
+    defaultSlotId: "hazard",
+  },
+};
 
 export function getLocationWorkflow() {
   return WORKFLOWS.location || Object.values(WORKFLOWS).find((workflow) =>
@@ -31,6 +51,34 @@ export function getLocationSlots() {
   }));
 }
 
+export function getLocationSlotScopeDefinition(scope) {
+  return LOCATION_SLOT_SCOPE_DEFINITIONS[normalizeLocationSlotScope(scope)];
+}
+
+export function getLocationSlotsForScope(scope) {
+  const definition = getLocationSlotScopeDefinition(scope);
+  const slotIds = new Set(definition.slotIds);
+  return getLocationSlots().filter((slot) => slotIds.has(slot.id));
+}
+
+export function getDefaultSlotIdForScope(scope) {
+  const definition = getLocationSlotScopeDefinition(scope);
+  return definition.defaultSlotId || getLocationSlotsForScope(scope)[0]?.id || getLocationSlots()[0]?.id || "";
+}
+
+export function isSlotInScope(slotId, scope) {
+  const definition = getLocationSlotScopeDefinition(scope);
+  return definition.slotIds.includes(slotId);
+}
+
+export function getSlotScope(slotId) {
+  if (LOCATION_SLOT_SCOPE_DEFINITIONS[LOCATION_SLOT_SCOPE_REGION].slotIds.includes(slotId)) {
+    return LOCATION_SLOT_SCOPE_REGION;
+  }
+
+  return LOCATION_SLOT_SCOPE_MAP;
+}
+
 export function getSlotById(slotId) {
   return getLocationSlots().find((slot) => slot.id === slotId) || getLocationSlots()[0];
 }
@@ -49,6 +97,16 @@ export function getSlotAssignments(state, slotId = "") {
   return assignments;
 }
 
+function getScopedSlotAssignments(state, slotId, scope, regionId = "") {
+  const normalizedScope = normalizeLocationSlotScope(scope);
+  const targetRegionId = normalizedScope === LOCATION_SLOT_SCOPE_REGION ? regionId || state?.activeRegionId || "" : "";
+  return getSlotAssignments(state, slotId).filter((assignment) =>
+    normalizedScope === LOCATION_SLOT_SCOPE_REGION
+      ? assignment.regionId === targetRegionId
+      : !assignment.regionId,
+  );
+}
+
 export function getSelectedComponents(state) {
   const assignments = normalizeSlotAssignments(state?.slotAssignments);
   const selectedIds = Object.values(assignments)
@@ -63,6 +121,15 @@ export function getSelectedComponents(state) {
 
 export function getAssignedComponentsForSlot(state, slotId) {
   return getSlotAssignments(state, slotId)
+    .map((assignment) => {
+      const component = getComponentById(assignment.componentId);
+      return component ? { ...component, assignment } : null;
+    })
+    .filter(Boolean);
+}
+
+export function getAssignedComponentsForSlotScope(state, slotId, scope, regionId = "") {
+  return getScopedSlotAssignments(state, slotId, scope, regionId)
     .map((assignment) => {
       const component = getComponentById(assignment.componentId);
       return component ? { ...component, assignment } : null;
@@ -98,6 +165,10 @@ export function getSlotFilledCount(state, slotId) {
   return getSlotAssignments(state, slotId).length;
 }
 
+export function getSlotFilledCountForScope(state, slotId, scope, regionId = "") {
+  return getScopedSlotAssignments(state, slotId, scope, regionId).length;
+}
+
 export function getSlotCapacityLabel(state, slot) {
   const filledCount = getSlotFilledCount(state, slot.id);
   return `${filledCount}/${slot.max || 1}`;
@@ -105,6 +176,13 @@ export function getSlotCapacityLabel(state, slot) {
 
 export function getSlotStatus(state, slot) {
   const filledCount = getSlotFilledCount(state, slot.id);
+  if (filledCount <= 0) return "empty";
+  if (filledCount >= (slot.max || 1)) return "full";
+  return "partial";
+}
+
+export function getSlotStatusForScope(state, slot, scope, regionId = "") {
+  const filledCount = getSlotFilledCountForScope(state, slot.id, scope, regionId);
   if (filledCount <= 0) return "empty";
   if (filledCount >= (slot.max || 1)) return "full";
   return "partial";
@@ -143,7 +221,11 @@ export function describeSourceAnchor(anchor) {
 }
 
 export function getPrimaryPremise(state) {
-  return getAssignedComponentsForSlot(state, "horrorPremise")[0] || null;
+  return (
+    getAssignedComponentsForSlotScope(state, "horrorPremise", LOCATION_SLOT_SCOPE_MAP)[0] ||
+    getAssignedComponentsForSlot(state, "horrorPremise")[0] ||
+    null
+  );
 }
 
 export function getComposerDigest(state) {

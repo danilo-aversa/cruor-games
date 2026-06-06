@@ -36,6 +36,7 @@ function createDraftStatePayload(state) {
     sourceAnchors: toArray(state.sourceAnchors),
     intrusion: state.intrusion,
     activeSlot: state.activeSlot,
+    activeSlotScope: state.activeSlotScope,
     activeRegionId: state.activeRegionId,
     selectedComponentIds: Array.from(state.selectedComponentIds || []),
     slotAssignments: state.slotAssignments || {},

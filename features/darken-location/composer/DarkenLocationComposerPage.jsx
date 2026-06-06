@@ -4,15 +4,18 @@ import {
   assignComponentToSlot,
   createInitialLocationComposerState,
   createLocationComposerSnapshot,
+  normalizeLocationSlotScope,
   removeComponentFromSlot,
 } from "./model/location-composer-state.js";
 import {
-  getAssignedComponentsForSlot,
+  getAssignedComponentsForSlotScope,
   getComponentsForSlot,
   getComposerDigest,
-  getLocationSlots,
+  getDefaultSlotIdForScope,
+  getLocationSlotsForScope,
   getSelectedComponents,
-  getSlotFilledCount,
+  getSlotFilledCountForScope,
+  isSlotInScope,
 } from "./model/location-composer-selectors.js";
 import { LOCATION_REGION_TEMPLATES } from "../../crucible/crucible.location-regions.js";
 import {
@@ -58,7 +61,8 @@ function LocationRecapPanel({
   snapshot,
   state,
 }) {
-  const assignedBySlot = digest.assignedBySlot || [];
+  const activeScope = normalizeLocationSlotScope(state.activeSlotScope);
+  const scopedSlots = getLocationSlotsForScope(activeScope);
   const activeRegion = digest.activeRegion;
   const activeRoom = generatedMapPreview?.regions?.find(
     (room) =>
@@ -66,8 +70,20 @@ function LocationRecapPanel({
       room.requestMetadata?.sourceRegionId === state.activeRegionId ||
       room.id === state.activeRegionId,
   );
-  const activeSlot = assignedBySlot.find(({ slot }) => slot.id === state.activeSlot)?.slot || assignedBySlot[0]?.slot;
-  const activeSlotComponents = assignedBySlot.find(({ slot }) => slot.id === activeSlot?.id)?.components || [];
+  const activeSlotId = isSlotInScope(state.activeSlot, activeScope)
+    ? state.activeSlot
+    : getDefaultSlotIdForScope(activeScope);
+  const activeSlot = scopedSlots.find((slot) => slot.id === activeSlotId) || scopedSlots[0];
+  const activeSlotComponents = activeSlot
+    ? getAssignedComponentsForSlotScope(state, activeSlot.id, activeScope, state.activeRegionId)
+    : [];
+  const scopedAssignedBySlot = scopedSlots.map((slot) => ({
+    slot,
+    components: getAssignedComponentsForSlotScope(state, slot.id, activeScope, state.activeRegionId),
+  }));
+  const targetLabel = activeScope === "region"
+    ? activeRegion?.name || "No region selected"
+    : "Whole Map";
 
   return (
     <aside
@@ -113,8 +129,8 @@ function LocationRecapPanel({
           <LocationFrameInfoRow label="Frame" value={state.context || "Context"} />
           <LocationFrameInfoRow label="Horror" value={state.horror || "Horror"} />
           <LocationFrameInfoRow label="Intrusion" value={state.intrusion || "Intrusion"} />
-          <LocationFrameInfoRow label="Target" value={activeRegion?.name || "No region selected"} />
-          <LocationFrameInfoRow label="Progress" value={`${digest.filledSlots}/${digest.totalSlots} slots`} />
+          <LocationFrameInfoRow label="Target" value={targetLabel} />
+          <LocationFrameInfoRow label="Scope" value={activeScope === "region" ? "Selected Location" : "Map"} />
           <LocationFrameInfoRow label="Map" value={activeRoom ? `Room ${activeRoom.number || "—"}` : `${mapRequest.requiredRegions.length || 0} regions`} />
         </div>
       </section>
@@ -130,9 +146,9 @@ function LocationRecapPanel({
 
       <section className="location-frame-info-card">
         <div className="location-recap-slot-list" aria-label="Slot progress">
-          {assignedBySlot.map(({ slot, components }) => (
+          {scopedAssignedBySlot.map(({ slot, components }) => (
             <button
-              className={cx("location-frame-info-row location-recap-slot", components.length > 0 && "is-filled", state.activeSlot === slot.id && "is-active")}
+              className={cx("location-frame-info-row location-recap-slot", components.length > 0 && "is-filled", activeSlotId === slot.id && "is-active")}
               key={slot.id}
               type="button"
               onClick={() => setBuilderMode("slots")}
@@ -274,8 +290,14 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   }, [onSnapshotProviderReady, snapshot]);
 
 
-  const locationSlots = useMemo(() => getLocationSlots(), []);
-  const activeSlotId = state.activeSlot || locationSlots[0]?.id;
+  const activeSlotScope = normalizeLocationSlotScope(state.activeSlotScope);
+  const locationSlots = useMemo(
+    () => getLocationSlotsForScope(activeSlotScope),
+    [activeSlotScope],
+  );
+  const activeSlotId = isSlotInScope(state.activeSlot, activeSlotScope)
+    ? state.activeSlot
+    : getDefaultSlotIdForScope(activeSlotScope);
   const activeSlot = useMemo(
     () => locationSlots.find((slot) => slot.id === activeSlotId) || locationSlots[0],
     [activeSlotId, locationSlots],
@@ -285,8 +307,16 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     [activeSlot, state],
   );
   const assignedComponentsForActiveSlot = useMemo(
-    () => (activeSlot ? getAssignedComponentsForSlot(state, activeSlot.id) : []),
-    [activeSlot, state],
+    () =>
+      activeSlot
+        ? getAssignedComponentsForSlotScope(
+            state,
+            activeSlot.id,
+            activeSlotScope,
+            state.activeRegionId,
+          )
+        : [],
+    [activeSlot, activeSlotScope, state],
   );
   const activeRegionForPicker = useMemo(
     () => state.locationRegions?.find((region) => region.id === state.activeRegionId),
@@ -296,19 +326,28 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     () => getGeneratedRoomForRegion(generatedMapPreview, state.activeRegionId),
     [generatedMapPreview, state.activeRegionId],
   );
-  const activeSlotFilled = activeSlot ? getSlotFilledCount(state, activeSlot.id) : 0;
+  const activeSlotFilled = activeSlot ? getSlotFilledCountForScope(state, activeSlot.id, activeSlotScope, state.activeRegionId) : 0;
   const activeSlotIsFull = activeSlotFilled >= (activeSlot?.max || 1);
 
-  const focusSlot = useCallback((slotId) => {
-    setState((current) => ({ ...current, activeSlot: slotId }));
+  const focusSlot = useCallback((slotId, slotScope = activeSlotScope) => {
+    setState((current) => ({
+      ...current,
+      activeSlot: slotId,
+      activeSlotScope: normalizeLocationSlotScope(slotScope),
+    }));
     setDrawerOpen(true);
-  }, []);
+  }, [activeSlotScope]);
 
   const addComponentToActiveSlot = useCallback((component) => {
     if (!activeSlot) return;
-    setState((current) => assignComponentToSlot(current, component, activeSlot, current.activeRegionId));
+    setState((current) =>
+      assignComponentToSlot(current, component, activeSlot, {
+        scope: activeSlotScope,
+        regionId: current.activeRegionId,
+      }),
+    );
     setDrawerOpen(true);
-  }, [activeSlot]);
+  }, [activeSlot, activeSlotScope]);
 
   const removeComponentFromActiveSlot = useCallback((componentId) => {
     if (!activeSlot) return;
@@ -367,6 +406,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
                 open={drawerOpen}
                 regions={state.locationRegions || []}
                 slot={activeSlot}
+                slotScope={activeSlotScope}
                 onAddComponent={addComponentToActiveSlot}
                 onClose={() => setDrawerOpen(false)}
                 onRemoveComponent={removeComponentFromActiveSlot}
