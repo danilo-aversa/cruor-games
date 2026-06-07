@@ -76,6 +76,8 @@ import {
 } from "./model/monster-composer.export.js";
 import { buildRunModeSheet } from "./model/monster-composer.run.js";
 import { buildGuidedFlow } from "./model/monster-composer.start-flow.js";
+import { buildBestiaryBaselineAudit } from "./model/monster-bestiary-baselines.js";
+import { validateMonsterGraftRules } from "./model/monster-graft-rules.schema.js";
 import { MonsterComposerTopbar } from "./components/monster-composer.shell.jsx";
 import { GuidedFlowPanel, TemplatePickerModal } from "./components/monster-composer.start-flow.jsx";
 import { MonsterSilhouetteMap } from "./components/monster-composer.anatomy.jsx";
@@ -1345,6 +1347,13 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
         ((effectiveProfile.effectiveAc + effectiveProfile.effectiveAttackBonus - 2) / 13)
     );
     const profileDeltas = buildProfileDeltas(printedStats, effectiveProfile, baseline);
+    const bestiaryBaselineAudit = buildBestiaryBaselineAudit({
+      targetCr,
+      monsterTier,
+      printedStats,
+      effectiveProfile,
+      mechanicsSummary,
+    });
     const estimatedCr = clamp(
       Math.round(
         targetCr +
@@ -1412,6 +1421,9 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
       warnings.push(
         "Effective combat power is much higher than baseline. Consider raising Tier or lowering HP/DPR/control grafts."
       );
+    bestiaryBaselineAudit.issues.forEach((issue) => {
+      warnings.push(`Bestiary Baseline: ${issue.message} ${issue.detail}`);
+    });
     if (
       tempoProfile.id === "legendary" &&
       !["boss", "legendary", "setpiece"].includes(monsterTier.id)
@@ -1444,6 +1456,13 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
         getCompatibilityStatus(feature, selectedFeatures, typeId, category)
       );
       if (compatibilityWarning) warnings.push(compatibilityWarning);
+
+      const rulesValidation = validateMonsterGraftRules(feature);
+      rulesValidation.issues
+        .filter((issue) => issue.severity === "error")
+        .forEach((issue) => {
+          warnings.push(`Rules Schema: ${feature.title}. ${issue.message}`);
+        });
     });
 
     const balanceRecommendations = buildBalanceRecommendations({
@@ -1480,6 +1499,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
       printedStats,
       effectiveProfile,
       profileDeltas,
+      bestiaryBaselineAudit,
       pressureProfile,
       complexityProfile,
       counterplayAudit,

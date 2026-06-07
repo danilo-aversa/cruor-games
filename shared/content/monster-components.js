@@ -62,7 +62,9 @@ export function monsterGraftToSharedComponent(graft) {
       cost: Number(graft.cost || 0),
       complexity: Number(graft.complexity || 0),
       stats: graft.stats || {},
+      rules: graft.rules || null,
     },
+    rules: graft.rules || null,
     tags: buildMonsterComponentTags(graft),
   };
 }

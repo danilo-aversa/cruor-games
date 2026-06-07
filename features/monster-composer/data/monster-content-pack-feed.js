@@ -73,6 +73,7 @@ export function sharedComponentToMonsterGraft(component, contentPack = {}) {
     cost: Number(monster.cost || 0),
     complexity: Number(monster.complexity || 0),
     stats: { ...(monster.stats || {}) },
+    rules: monster.rules || component.rules || null,
     summary: component.summary || "",
     mechanics: component.mechanics || component.tableText || "",
     counterplay: component.counterplay || "",

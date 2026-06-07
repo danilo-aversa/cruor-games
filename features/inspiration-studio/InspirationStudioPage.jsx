@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { loadContentPackSummaries, loadInspirationModules } from "../../shared/content/content.index.js";
+import { renderStructuredRulesTemplate } from "../monster-composer/model/monster-graft-rules.render.js";
 
 const EMPTY_DRAFT = {
   id: "new-inspiration",
@@ -106,6 +107,117 @@ const STATUS_TOOLTIP_ITEMS = STATUS_OPTIONS
   .map((option) => `**${option.label}**. ${option.description}`)
   .join("\n");
 
+const MONSTER_RULE_SECTION_OPTIONS = [
+  ["trait", "Trait"],
+  ["action", "Action"],
+  ["bonusAction", "Bonus Action"],
+  ["reaction", "Reaction"],
+  ["legendaryAction", "Legendary Action"],
+  ["lairAction", "Lair Action"],
+  ["death", "Death Effect"],
+];
+
+const MONSTER_ACTION_ECONOMY_OPTIONS = [
+  ["passive", "Passive"],
+  ["action", "Action"],
+  ["bonusAction", "Bonus Action"],
+  ["reaction", "Reaction"],
+  ["legendaryAction", "Legendary Action"],
+  ["lairAction", "Lair Action"],
+  ["deathTrigger", "Death Trigger"],
+  ["freeTrigger", "Free Trigger"],
+];
+
+const MONSTER_USAGE_OPTIONS = [
+  ["passive", "Passive"],
+  ["atWill", "At Will"],
+  ["recharge", "Recharge"],
+  ["limited", "Limited"],
+  ["triggered", "Triggered"],
+  ["lair", "Lair"],
+  ["legendary", "Legendary"],
+  ["death", "Death"],
+];
+
+const MONSTER_RESOLUTION_OPTIONS = [
+  ["none", "None"],
+  ["attackRoll", "Attack Roll"],
+  ["attackRollSavingThrow", "Attack Roll + Saving Throw"],
+  ["savingThrow", "Saving Throw"],
+  ["automatic", "Automatic"],
+  ["check", "Check"],
+];
+
+const MONSTER_SAVE_OPTIONS = [
+  ["strength", "Strength"],
+  ["dexterity", "Dexterity"],
+  ["constitution", "Constitution"],
+  ["intelligence", "Intelligence"],
+  ["wisdom", "Wisdom"],
+  ["charisma", "Charisma"],
+];
+
+const MONSTER_ATTACK_OPTIONS = [
+  ["melee", "Melee"],
+  ["ranged", "Ranged"],
+  ["meleeOrRanged", "Melee or Ranged"],
+];
+
+const MONSTER_ATTACK_BASIS_OPTIONS = [
+  ["strength", "Strength"],
+  ["dexterity", "Dexterity"],
+  ["constitution", "Constitution"],
+  ["intelligence", "Intelligence"],
+  ["wisdom", "Wisdom"],
+  ["charisma", "Charisma"],
+  ["spellcasting", "Spellcasting"],
+  ["monster", "Monster Baseline"],
+  ["custom", "Custom"],
+];
+
+const MONSTER_DAMAGE_BUDGET_ROLE_OPTIONS = [
+  ["none", "None"],
+  ["mainAttack", "Main Attack"],
+  ["secondaryAttack", "Secondary Attack"],
+  ["minorAttack", "Minor Attack"],
+  ["bonusAction", "Bonus Action"],
+  ["reactionPunish", "Reaction Punish"],
+  ["rechargeBurst", "Recharge Burst"],
+  ["rechargeControl", "Recharge Control"],
+  ["deathBurst", "Death Burst"],
+  ["lairPulse", "Lair Pulse"],
+  ["legendaryStrike", "Legendary Strike"],
+  ["ongoing", "Ongoing"],
+];
+
+const MONSTER_DAMAGE_MODE_OPTIONS = [
+  ["none", "None"],
+  ["budget", "Budget"],
+  ["computed", "Computed"],
+  ["fixed", "Fixed"],
+  ["custom", "Custom"],
+];
+
+const MONSTER_DAMAGE_SCALE_OPTIONS = [
+  ["minor", "Minor"],
+  ["medium", "Medium"],
+  ["standard", "Standard"],
+  ["high", "High"],
+  ["heavy", "Heavy"],
+];
+
+const MONSTER_CONDITION_SEVERITY_OPTIONS = [
+  ["minor", "Minor"],
+  ["moderate", "Moderate"],
+  ["major", "Major"],
+  ["severe", "Severe"],
+];
+
+const MONSTER_TEXT_MODE_OPTIONS = [
+  ["generated", "Generated"],
+  ["manual", "Manual Override"],
+];
+
 const FIELD_HELP = {
   currentInspiration: "Select the Inspiration Module loaded into the editor. Switching modules resets the local draft preview to that module data.",
   inspirationName: "Public name shown in the archive and used as the human-readable source label across creators tools.",
@@ -136,6 +248,33 @@ const FIELD_HELP = {
   monsterCost: "Relative budget cost. Higher values should represent stronger or more disruptive grafts.",
   monsterComplexity: "Relative handling complexity. Use higher values for grafts that add decisions, tracking, or multi-step effects.",
   counterplay: "How players can recognize, avoid, resist, exploit, or disable this monster graft.",
+  rulesSection: "The stat block section where this graft is printed. This is separate from the Monster Composer slot.",
+  actionEconomy: "How the ability consumes or modifies action economy: passive, action, bonus action, reaction, lair action, death trigger, and so on.",
+  usageType: "How often the ability can be used: passive, at will, recharge, limited, triggered, lair, legendary, or death.",
+  usageValue: "Optional usage detail, such as 5-6 for Recharge, 1/Day for limited use, or 3 uses for legendary actions.",
+  trigger: "Required for reactions, death triggers, free triggers, and conditional traits. Write the game event that allows the graft to happen.",
+  resolutionType: "How the ability resolves mechanically: attack roll, saving throw, automatic effect, check, or no roll.",
+  attackType: "For Attack Roll abilities, choose whether the attack is melee, ranged, or can be either.",
+  attackBasis: "Editorial basis for the attack. Melee usually uses Strength, ranged usually uses Dexterity, but the printed attack bonus still comes from the monster baseline unless set otherwise.",
+  attackReach: "Reach printed for melee or melee/ranged attacks, such as 5 ft., 10 ft., or 15 ft.",
+  attackRange: "Range printed for ranged or melee/ranged attacks, such as 30/120 ft.",
+  saveAbility: "For Saving Throw abilities, choose the ability used by the target.",
+  damageMode: "How damage is produced. Budget means the renderer scales damage from the monster CR/DPR profile.",
+  damageBudgetRole: "The combat budget bucket for this damage: main attack, bonus action, recharge burst, reaction punish, death burst, and so on.",
+  damageBudgetShare: "Decimal share of the monster printed DPR used by this ability before converting to dice. Example: 0.85 for 85% of DPR.",
+  damageExpectedTargets: "Expected number of targets for effective DPR calculations, especially for area abilities.",
+  damageRoundWeight: "Comma-separated three-round usage weights, such as 1, 0.35, 0.35 for a recharge ability.",
+  damageScale: "Legacy relative share of the monster damage budget. Used as fallback when no budget share is set.",
+  damageTypes: "Comma-separated damage types, such as acid, poison, bludgeoning, necrotic, or psychic.",
+  conditionNames: "Comma-separated conditions or special condition-like effects caused by this graft.",
+  conditionSeverity: "How disruptive the condition is for balance and counterplay warnings.",
+  conditionDuration: "How long the condition lasts, including repeat saves or cleanup/removal conditions.",
+  failureText: "Text generated after Failure: for a structured saving throw or secondary save.",
+  successText: "Text generated after Success: for a structured saving throw or secondary save.",
+  effectText: "Structured effect text for traits, triggers, reactions, or additional generated rules text. Supports tokens such as {attack-bonus}, {save-dc}, {damage}, {average-damage}, and {damage-scale:standard}.",
+  textMode: "Choose whether this graft uses generated stat block text from the structured fields or a manual override template.",
+  manualText: "Manual stat block template. It may still use tokens such as {attack-bonus}, {save-dc}, {damage}, {average-damage}, and {damage-scale:standard}.",
+  statBlockPreview: "Read-only preview of the stat block text this graft will contribute. Token placeholders are resolved during monster export.",
   regionRole: "Map role for this region, such as core, side, threshold, connector, secret, or climax.",
   regionSize: "Expected map footprint. Use practical labels such as Small, Medium, Large, or Huge.",
   regionShape: "Preferred room geometry or layout cue for the map generator.",
@@ -312,6 +451,17 @@ function buildComponentTemplate(type, draft) {
       cost: 1,
       complexity: 1,
       stats: {},
+      rules: {
+        section: "trait",
+        actionEconomy: "passive",
+        usage: { type: "passive" },
+        resolution: { type: "none" },
+        targeting: { type: "self", targets: "the creature" },
+        damage: { mode: "none", types: [] },
+        condition: null,
+        counterplay: {},
+        text: {},
+      },
     };
     component.counterplay = "";
   }
@@ -374,6 +524,16 @@ function TextArea({ value, onChange, ...props }) {
   return <textarea {...props} value={value || ""} onChange={(event) => onChange(event.target.value)} />;
 }
 
+function SelectInput({ options, value, onChange }) {
+  return (
+    <select value={value || ""} onChange={(event) => onChange(event.target.value)}>
+      {options.map(([optionValue, label]) => (
+        <option key={optionValue} value={optionValue}>{label}</option>
+      ))}
+    </select>
+  );
+}
+
 function StudioTabButton({ icon, isActive, label, count, hint, onClick }) {
   return (
     <button
@@ -429,6 +589,21 @@ function DividerLabel({ icon, title, help }) {
       </span>
       <HelpTooltip title={title} text={help} />
     </div>
+  );
+}
+
+function RulesGroup({ icon, title, help, children }) {
+  return (
+    <section className="studio-rules-group">
+      <header className="studio-rules-group__heading">
+        <span className="studio-rules-group__title">
+          {icon ? <Icon name={icon} /> : null}
+          {title}
+        </span>
+        <HelpTooltip title={title} text={help} />
+      </header>
+      <div className="studio-rules-group__body">{children}</div>
+    </section>
   );
 }
 
@@ -940,6 +1115,112 @@ function ComponentEditor({ component, onChange, onRemove }) {
     setField(path, splitList(value));
   }
 
+  function setRulesField(path, value) {
+    setField(["monster", "rules", ...path], value);
+  }
+
+  function setRulesArray(path, value) {
+    setRulesField(path, splitList(value));
+  }
+
+  function setMonsterSlot(value) {
+    onChange((nextComponent) => {
+      nextComponent.monster = nextComponent.monster || {};
+      nextComponent.monster.slot = value;
+      nextComponent.slots = value ? [value] : [];
+    });
+  }
+
+  function updateRules(mutator) {
+    onChange((nextComponent) => {
+      nextComponent.monster = nextComponent.monster || {};
+      nextComponent.monster.rules = nextComponent.monster.rules || {};
+      mutator(nextComponent.monster.rules, nextComponent);
+    });
+  }
+
+  function setResolutionChoice(value) {
+    updateRules((rules) => {
+      rules.resolution = rules.resolution || {};
+      if (value === "attackRollSavingThrow") {
+        rules.resolution.type = "attackRoll";
+        rules.resolution.attackType = rules.resolution.attackType || "melee";
+        rules.resolution.abilityBasis = rules.resolution.abilityBasis || "strength";
+        rules.resolution.bonus = rules.resolution.bonus || "monster";
+        rules.resolution.reach = rules.resolution.reach || "5 ft.";
+        rules.secondaryResolution = rules.secondaryResolution || {};
+        rules.secondaryResolution.type = "savingThrow";
+        rules.secondaryResolution.ability = rules.secondaryResolution.ability || "strength";
+        rules.secondaryResolution.dc = rules.secondaryResolution.dc || "monster";
+        return;
+      }
+
+      rules.resolution.type = value;
+      if (value === "attackRoll") {
+        rules.resolution.attackType = rules.resolution.attackType || "melee";
+        rules.resolution.abilityBasis = rules.resolution.abilityBasis || "strength";
+        rules.resolution.bonus = rules.resolution.bonus || "monster";
+        rules.resolution.reach = rules.resolution.reach || "5 ft.";
+      }
+      if (value === "savingThrow") {
+        rules.resolution.ability = rules.resolution.ability || "dexterity";
+        rules.resolution.dc = rules.resolution.dc || "monster";
+      }
+      if (value !== "attackRollSavingThrow") {
+        delete rules.secondaryResolution;
+      }
+    });
+  }
+
+  const monsterRules = component.monster?.rules || component.rules || {};
+  const ruleSection = component.monster?.section || monsterRules.section || "trait";
+  const actionEconomy = monsterRules.actionEconomy || "passive";
+  const usageType = monsterRules.usage?.type || "passive";
+  const resolutionType = monsterRules.resolution?.type || "none";
+  const damageMode = monsterRules.damage?.mode || "none";
+  const conditionNames = joinList(monsterRules.condition?.names);
+  const hasAttackResolution = resolutionType === "attackRoll";
+  const hasPrimarySave = resolutionType === "savingThrow";
+  const hasSecondarySave = monsterRules.secondaryResolution?.type === "savingThrow";
+  const hasSaveOutcomeText = Boolean(monsterRules.text?.failure || monsterRules.text?.success);
+  const resolutionChoice = hasAttackResolution && hasSecondarySave ? "attackRollSavingThrow" : resolutionType;
+  const textMode = monsterRules.text?.mode || (monsterRules.text?.manual ? "manual" : "generated");
+  const isManualText = textMode === "manual";
+  const showUsageValue = ["recharge", "limited", "legendary"].includes(usageType) || Boolean(monsterRules.usage?.value);
+  const showTrigger = ["reaction", "deathTrigger", "freeTrigger"].includes(actionEconomy) || ["triggered", "death"].includes(usageType) || Boolean(monsterRules.trigger);
+  const showSaveOutcome = hasPrimarySave || hasSecondarySave || hasSaveOutcomeText;
+  const saveFieldRoot = hasPrimarySave ? "resolution" : "secondaryResolution";
+  const saveAbilityValue = hasPrimarySave ? monsterRules.resolution?.ability : monsterRules.secondaryResolution?.ability;
+  const showDamageDetails = damageMode !== "none" || Boolean(monsterRules.damage?.budgetRole && monsterRules.damage.budgetRole !== "none") || Boolean(monsterRules.damage?.budgetShare) || Boolean(monsterRules.damage?.expectedTargets) || Boolean(asArray(monsterRules.damage?.types).length);
+  const showConditionDetails = Boolean(conditionNames || monsterRules.condition?.duration || monsterRules.condition?.severity);
+  const outputTextLabel = hasAttackResolution
+    ? "Hit Text Template"
+    : actionEconomy === "reaction"
+      ? "Response Text Template"
+      : ruleSection === "death"
+        ? "Death Effect Template"
+        : ruleSection === "trait"
+          ? "Trait Text Template"
+          : "Effect Text Template";
+  const outputTextIcon = hasAttackResolution ? "fa-crosshairs" : actionEconomy === "reaction" ? "fa-reply" : "fa-wand-magic-sparkles";
+  const outputTextHelp = hasAttackResolution
+    ? "Text generated after Hit:. Use tokens such as {damage}, {average-damage}, {damage-scale:standard}, {save-dc}, and {pb}."
+    : actionEconomy === "reaction"
+      ? "Text generated as the reaction response after the trigger. Token placeholders are resolved during export."
+      : FIELD_HELP.effectText;
+  const outputTextPath = hasAttackResolution ? ["text", "hit"] : actionEconomy === "reaction" ? ["text", "response"] : ["text", "effect"];
+  const outputTextValue = hasAttackResolution ? monsterRules.text?.hit : actionEconomy === "reaction" ? monsterRules.text?.response : monsterRules.text?.effect;
+  const previewFeature = {
+    ...component,
+    slot: component.monster?.slot || component.slot,
+    section: ruleSection,
+    rules: monsterRules,
+    mechanics: component.mechanics,
+  };
+  const statBlockPreview = isMonsterGraft
+    ? renderStructuredRulesTemplate(previewFeature) || component.mechanics || "No stat block text generated yet."
+    : "";
+
   return (
     <div className="studio-component-editor" aria-label="Selected component editor">
       <div className="studio-component-editor__topline">
@@ -964,9 +1245,11 @@ function ComponentEditor({ component, onChange, onRemove }) {
             <option value="location-region">Location Region</option>
           </select>
         </FormRow>
-        <FormRow label="Slots" icon="fa-table-cells-large" hint={FIELD_HELP.slots}>
-          <TextInput value={joinList(component.slots)} onChange={(value) => setArray(["slots"], value)} />
-        </FormRow>
+        {!isMonsterGraft ? (
+          <FormRow label="Slots" icon="fa-table-cells-large" hint={FIELD_HELP.slots}>
+            <TextInput value={joinList(component.slots)} onChange={(value) => setArray(["slots"], value)} />
+          </FormRow>
+        ) : null}
         <FormRow label="Workflows" icon="fa-route" hint={FIELD_HELP.workflows}>
           <TextInput value={joinList(component.workflows)} onChange={(value) => setArray(["workflows"], value)} />
         </FormRow>
@@ -982,33 +1265,191 @@ function ComponentEditor({ component, onChange, onRemove }) {
       <FormRow label="Summary" icon="fa-align-left" hint={FIELD_HELP.componentSummary}>
         <TextArea rows={4} value={component.summary} onChange={(value) => setField(["summary"], value)} />
       </FormRow>
-      <FormRow label="Table Text" icon="fa-dice-d20" hint={FIELD_HELP.tableText}>
-        <TextArea rows={4} value={component.tableText} onChange={(value) => setField(["tableText"], value)} />
-      </FormRow>
-      <FormRow label="Mechanics" icon="fa-gears" hint={FIELD_HELP.mechanics}>
-        <TextArea rows={5} value={component.mechanics} onChange={(value) => setField(["mechanics"], value)} />
-      </FormRow>
+      {!isMonsterGraft ? (
+        <>
+          <FormRow label="Table Text" icon="fa-dice-d20" hint={FIELD_HELP.tableText}>
+            <TextArea rows={4} value={component.tableText} onChange={(value) => setField(["tableText"], value)} />
+          </FormRow>
+          <FormRow label="Mechanics" icon="fa-gears" hint={FIELD_HELP.mechanics}>
+            <TextArea rows={5} value={component.mechanics} onChange={(value) => setField(["mechanics"], value)} />
+          </FormRow>
+        </>
+      ) : null}
 
       {isMonsterGraft ? (
-        <div className="studio-component-editor__subpanel">
+        <div className="studio-component-editor__subpanel studio-component-editor__subpanel--monster">
           <h4><Icon name="fa-skull" /> Monster Graft Data</h4>
-          <div className="studio-form-grid studio-form-grid--compact">
-            <FormRow label="Monster Slot" icon="fa-table-cells-large" hint={FIELD_HELP.monsterSlot}>
-              <TextInput value={component.monster?.slot} onChange={(value) => setField(["monster", "slot"], value)} />
-            </FormRow>
-            <FormRow label="Section" icon="fa-file-lines" hint={FIELD_HELP.monsterSection}>
-              <TextInput value={component.monster?.section} onChange={(value) => setField(["monster", "section"], value)} />
-            </FormRow>
-            <FormRow label="Cost" icon="fa-gauge-high" hint={FIELD_HELP.monsterCost}>
-              <input type="number" value={component.monster?.cost ?? 0} onChange={(event) => setField(["monster", "cost"], Number(event.target.value))} />
-            </FormRow>
-            <FormRow label="Complexity" icon="fa-layer-group" hint={FIELD_HELP.monsterComplexity}>
-              <input type="number" value={component.monster?.complexity ?? 0} onChange={(event) => setField(["monster", "complexity"], Number(event.target.value))} />
-            </FormRow>
+
+          <RulesGroup icon="fa-id-card" title="Frame" help="Frame fields define where the graft belongs in the Monster Composer, where it prints in the stat block, and how much budget it consumes.">
+            <div className="studio-form-grid studio-form-grid--compact">
+              <FormRow label="Monster Slot" icon="fa-table-cells-large" hint={FIELD_HELP.monsterSlot}>
+                <TextInput value={component.monster?.slot} onChange={setMonsterSlot} />
+              </FormRow>
+              <FormRow label="Rules Section" icon="fa-file-lines" hint={FIELD_HELP.rulesSection}>
+                <SelectInput options={MONSTER_RULE_SECTION_OPTIONS} value={ruleSection} onChange={(value) => {
+                  setField(["monster", "section"], value);
+                  setRulesField(["section"], value);
+                }} />
+              </FormRow>
+              <FormRow label="Cost" icon="fa-gauge-high" hint={FIELD_HELP.monsterCost}>
+                <input type="number" value={component.monster?.cost ?? 0} onChange={(event) => setField(["monster", "cost"], Number(event.target.value))} />
+              </FormRow>
+              <FormRow label="Complexity" icon="fa-layer-group" hint={FIELD_HELP.monsterComplexity}>
+                <input type="number" value={component.monster?.complexity ?? 0} onChange={(event) => setField(["monster", "complexity"], Number(event.target.value))} />
+              </FormRow>
+            </div>
+          </RulesGroup>
+
+          <DividerLabel icon="fa-scale-balanced" title="Rules" help="Structured rules tell the exporter whether this graft is an attack, saving throw, reaction, recharge power, trait, or other ability." />
+
+          <div className="studio-rules-layout">
+            <RulesGroup icon="fa-bolt" title="Use" help="Use fields define when the ability exists and how often it can be used.">
+              <div className="studio-form-grid studio-form-grid--compact">
+                <FormRow label="Action Economy" icon="fa-bolt" hint={FIELD_HELP.actionEconomy}>
+                  <SelectInput options={MONSTER_ACTION_ECONOMY_OPTIONS} value={actionEconomy} onChange={(value) => setRulesField(["actionEconomy"], value)} />
+                </FormRow>
+                <FormRow label="Usage" icon="fa-repeat" hint={FIELD_HELP.usageType}>
+                  <SelectInput options={MONSTER_USAGE_OPTIONS} value={usageType} onChange={(value) => setRulesField(["usage", "type"], value)} />
+                </FormRow>
+                {showUsageValue ? (
+                  <FormRow label="Usage Value" icon="fa-dice-six" hint={FIELD_HELP.usageValue}>
+                    <TextInput value={monsterRules.usage?.value} onChange={(value) => setRulesField(["usage", "value"], value)} placeholder="5-6, 1/Day, 3 uses..." />
+                  </FormRow>
+                ) : null}
+                <FormRow label="Resolution" icon="fa-dice-d20" hint={FIELD_HELP.resolutionType}>
+                  <SelectInput options={MONSTER_RESOLUTION_OPTIONS} value={resolutionChoice} onChange={setResolutionChoice} />
+                </FormRow>
+              </div>
+            </RulesGroup>
+
+            {showTrigger ? (
+              <RulesGroup icon="fa-code-branch" title="Trigger" help="Trigger fields are only needed for reactions, death triggers, free triggers, or conditional abilities.">
+                <FormRow label="Trigger" icon="fa-code-branch" hint={FIELD_HELP.trigger}>
+                  <TextArea rows={2} value={monsterRules.trigger} onChange={(value) => setRulesField(["trigger"], value)} />
+                </FormRow>
+              </RulesGroup>
+            ) : null}
+
+            {hasAttackResolution ? (
+              <RulesGroup icon="fa-hand-fist" title="Attack Roll" help="Attack fields appear only when Resolution is Attack Roll or Attack Roll + Saving Throw.">
+                <div className="studio-form-grid studio-form-grid--compact">
+                  <FormRow label="Attack Type" icon="fa-hand-fist" hint={FIELD_HELP.attackType}>
+                    <SelectInput options={MONSTER_ATTACK_OPTIONS} value={monsterRules.resolution?.attackType || "melee"} onChange={(value) => setRulesField(["resolution", "attackType"], value)} />
+                  </FormRow>
+                  <FormRow label="Attack Basis" icon="fa-dumbbell" hint={FIELD_HELP.attackBasis}>
+                    <SelectInput options={MONSTER_ATTACK_BASIS_OPTIONS} value={monsterRules.resolution?.abilityBasis || "monster"} onChange={(value) => setRulesField(["resolution", "abilityBasis"], value)} />
+                  </FormRow>
+                  <FormRow label="Reach" icon="fa-ruler-horizontal" hint={FIELD_HELP.attackReach}>
+                    <TextInput value={monsterRules.resolution?.reach} onChange={(value) => setRulesField(["resolution", "reach"], value)} placeholder="5 ft." />
+                  </FormRow>
+                  <FormRow label="Range" icon="fa-bullseye" hint={FIELD_HELP.attackRange}>
+                    <TextInput value={monsterRules.resolution?.range} onChange={(value) => setRulesField(["resolution", "range"], value)} placeholder="30/120 ft." />
+                  </FormRow>
+                </div>
+              </RulesGroup>
+            ) : null}
+
+            {showSaveOutcome ? (
+              <RulesGroup icon="fa-shield" title="Save & Outcome" help="Save fields appear only when the ability has a primary saving throw, a secondary save rider, or saved Failure/Success text.">
+                <div className="studio-form-grid studio-form-grid--compact">
+                  <FormRow label={hasPrimarySave ? "Save Ability" : "Rider Save Ability"} icon="fa-shield" hint={FIELD_HELP.saveAbility}>
+                    <SelectInput options={MONSTER_SAVE_OPTIONS} value={saveAbilityValue || "dexterity"} onChange={(value) => {
+                      setRulesField([saveFieldRoot, "type"], "savingThrow");
+                      setRulesField([saveFieldRoot, "ability"], value);
+                      setRulesField([saveFieldRoot, "dc"], hasPrimarySave ? monsterRules.resolution?.dc || "monster" : monsterRules.secondaryResolution?.dc || "monster");
+                    }} />
+                  </FormRow>
+                </div>
+                {!isManualText ? (
+                  <div className="studio-form-grid">
+                    <FormRow label="Failure Text" icon="fa-circle-xmark" hint={FIELD_HELP.failureText}>
+                      <TextArea rows={3} value={monsterRules.text?.failure} onChange={(value) => setRulesField(["text", "failure"], value)} />
+                    </FormRow>
+                    <FormRow label="Success Text" icon="fa-circle-check" hint={FIELD_HELP.successText}>
+                      <TextArea rows={3} value={monsterRules.text?.success} onChange={(value) => setRulesField(["text", "success"], value)} />
+                    </FormRow>
+                  </div>
+                ) : null}
+              </RulesGroup>
+            ) : null}
+
+            <RulesGroup icon="fa-burst" title="Damage" help="Damage fields define whether the ability deals damage and how that damage consumes the monster DPR budget.">
+              <div className="studio-form-grid studio-form-grid--compact">
+                <FormRow label="Damage Mode" icon="fa-burst" hint={FIELD_HELP.damageMode}>
+                  <SelectInput options={MONSTER_DAMAGE_MODE_OPTIONS} value={damageMode} onChange={(value) => setRulesField(["damage", "mode"], value)} />
+                </FormRow>
+                {showDamageDetails ? (
+                  <>
+                    <FormRow label="Budget Role" icon="fa-chart-pie" hint={FIELD_HELP.damageBudgetRole}>
+                      <SelectInput options={MONSTER_DAMAGE_BUDGET_ROLE_OPTIONS} value={monsterRules.damage?.budgetRole || "none"} onChange={(value) => setRulesField(["damage", "budgetRole"], value)} />
+                    </FormRow>
+                    <FormRow label="Budget Share" icon="fa-percent" hint={FIELD_HELP.damageBudgetShare}>
+                      <input type="number" step="0.05" min="0" value={monsterRules.damage?.budgetShare ?? ""} onChange={(event) => setRulesField(["damage", "budgetShare"], event.target.value === "" ? undefined : Number(event.target.value))} placeholder="0.85" />
+                    </FormRow>
+                    <FormRow label="Damage Scale" icon="fa-chart-simple" hint={FIELD_HELP.damageScale}>
+                      <SelectInput options={MONSTER_DAMAGE_SCALE_OPTIONS} value={monsterRules.damage?.scale || "standard"} onChange={(value) => setRulesField(["damage", "scale"], value)} />
+                    </FormRow>
+                    <FormRow label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.damageTypes}>
+                      <TextInput value={joinList(monsterRules.damage?.types)} onChange={(value) => setRulesArray(["damage", "types"], value)} />
+                    </FormRow>
+                    <FormRow label="Expected Targets" icon="fa-users" hint={FIELD_HELP.damageExpectedTargets}>
+                      <input type="number" step="0.25" min="0" value={monsterRules.damage?.expectedTargets ?? ""} onChange={(event) => setRulesField(["damage", "expectedTargets"], event.target.value === "" ? undefined : Number(event.target.value))} placeholder="1" />
+                    </FormRow>
+                    <FormRow label="Round Weight" icon="fa-timeline" hint={FIELD_HELP.damageRoundWeight}>
+                      <TextInput value={joinList(monsterRules.damage?.roundWeight)} onChange={(value) => setRulesArray(["damage", "roundWeight"], value)} placeholder="1, 0.35, 0.35" />
+                    </FormRow>
+                  </>
+                ) : null}
+              </div>
+            </RulesGroup>
+
+            <RulesGroup icon="fa-person-rays" title="Conditions" help="Condition fields define ongoing, disabling, or special condition-like effects caused by the ability.">
+              <div className="studio-form-grid studio-form-grid--compact">
+                <FormRow label="Condition Names" icon="fa-person-rays" hint={FIELD_HELP.conditionNames}>
+                  <TextInput value={conditionNames} onChange={(value) => setRulesArray(["condition", "names"], value)} />
+                </FormRow>
+                {showConditionDetails ? (
+                  <>
+                    <FormRow label="Condition Severity" icon="fa-triangle-exclamation" hint={FIELD_HELP.conditionSeverity}>
+                      <SelectInput options={MONSTER_CONDITION_SEVERITY_OPTIONS} value={monsterRules.condition?.severity || "moderate"} onChange={(value) => setRulesField(["condition", "severity"], value)} />
+                    </FormRow>
+                    <FormRow label="Condition Duration" icon="fa-hourglass-half" hint={FIELD_HELP.conditionDuration}>
+                      <TextInput value={monsterRules.condition?.duration} onChange={(value) => setRulesField(["condition", "duration"], value)} />
+                    </FormRow>
+                  </>
+                ) : null}
+              </div>
+            </RulesGroup>
+
+            {!isManualText && (!showSaveOutcome || hasAttackResolution || outputTextValue) ? (
+              <RulesGroup icon={outputTextIcon} title="Generated Text Fragment" help="This optional generated fragment is composed into the final stat block preview. Use manual override only for unusual cases.">
+                <FormRow label={outputTextLabel} icon={outputTextIcon} hint={outputTextHelp}>
+                  <TextArea rows={3} value={outputTextValue} onChange={(value) => setRulesField(outputTextPath, value)} />
+                </FormRow>
+              </RulesGroup>
+            ) : null}
           </div>
+
+          <DividerLabel icon="fa-shield-halved" title="Counterplay" help="Counterplay explains what players can notice, prevent, avoid, exploit, or clean up." />
           <FormRow label="Counterplay" icon="fa-shield-halved" hint={FIELD_HELP.counterplay}>
             <TextArea rows={3} value={component.counterplay} onChange={(value) => setField(["counterplay"], value)} />
           </FormRow>
+
+          <RulesGroup icon="fa-file-lines" title="Stat Block Text" help="This final section shows what the graft contributes to the monster sheet. Generated mode builds it from the fields above; manual mode overrides the final template.">
+            <div className="studio-form-grid studio-form-grid--compact">
+              <FormRow label="Text Source" icon="fa-toggle-on" hint={FIELD_HELP.textMode}>
+                <SelectInput options={MONSTER_TEXT_MODE_OPTIONS} value={textMode} onChange={(value) => setRulesField(["text", "mode"], value)} />
+              </FormRow>
+            </div>
+            {isManualText ? (
+              <FormRow label="Manual Override" icon="fa-pen-to-square" hint={FIELD_HELP.manualText}>
+                <TextArea rows={5} value={monsterRules.text?.manual} onChange={(value) => setRulesField(["text", "manual"], value)} placeholder="{title}. Melee Attack Roll: {attack-bonus}, reach 5 ft. Hit: {average-damage} ({damage-scale:standard}) Bludgeoning damage." />
+              </FormRow>
+            ) : null}
+            <FormRow label="Generated Stat Block Preview" icon="fa-eye" hint={FIELD_HELP.statBlockPreview}>
+              <textarea className="studio-statblock-preview" readOnly rows={6} value={statBlockPreview} />
+            </FormRow>
+          </RulesGroup>
         </div>
       ) : null}
 
@@ -1034,3 +1475,4 @@ function ComponentEditor({ component, onChange, onRemove }) {
     </div>
   );
 }
+

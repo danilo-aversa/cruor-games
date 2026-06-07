@@ -175,6 +175,38 @@ const RAW_MONSTER_GRAFTS = [
     cost: 4,
     complexity: 1,
     stats: { dpr: 7 },
+    rules: {
+      section: "action",
+      actionEconomy: "action",
+      usage: { type: "atWill" },
+      resolution: {
+        type: "attackRoll",
+        attackType: "melee",
+        abilityBasis: "strength",
+        bonus: "monster",
+        reach: "5 ft.",
+      },
+      secondaryResolution: {
+        type: "savingThrow",
+        ability: "strength",
+        dc: "monster",
+      },
+      targeting: { type: "single", targets: "one target" },
+      damage: {
+        mode: "budget",
+        budgetRole: "mainAttack",
+        budgetShare: 0.85,
+        scale: "standard",
+        types: ["bludgeoning"],
+      },
+      condition: { names: ["forced-movement"], severity: "moderate", duration: "instant" },
+      counterplay: { telegraph: true, positioningAnswer: true },
+      text: {
+        hit: "the target takes {damage} Bludgeoning damage and must make a Strength Saving Throw.",
+        failure: "The target is pushed 5 feet. If it collides with a creature or object, both take {pb} Bludgeoning damage.",
+        success: "The target is not pushed.",
+      },
+    },
     summary: "The corpse hits with enough mass to stagger a front line.",
     mechanics:
       "Melee Attack Roll. On hit, the target takes bludgeoning damage and must succeed on a Strength save or be pushed 5 feet. If the target collides with a creature or object, both take bludgeoning damage equal to the proficiency bonus.",
@@ -191,6 +223,44 @@ const RAW_MONSTER_GRAFTS = [
     cost: 6,
     complexity: 3,
     stats: { dpr: 7, control: 2 },
+    rules: {
+      section: "action",
+      actionEconomy: "action",
+      usage: { type: "recharge", value: "5-6" },
+      resolution: {
+        type: "savingThrow",
+        ability: "dexterity",
+        dc: "monster",
+      },
+      targeting: {
+        type: "area",
+        shape: "cone",
+        size: 30,
+        unit: "ft",
+        targets: "each creature",
+      },
+      damage: {
+        mode: "budget",
+        budgetRole: "rechargeControl",
+        budgetShare: 0.85,
+        expectedTargets: 1.5,
+        roundWeight: [1, 0.35, 0.35],
+        scale: "standard",
+        types: ["acid"],
+      },
+      condition: {
+        names: [],
+        special: ["healing-denial"],
+        severity: "major",
+        duration: "until cleaned",
+      },
+      counterplay: { telegraph: true, breakCondition: true, positioningAnswer: true },
+      text: {
+        failure:
+          "The target takes {damage} Acid damage and is covered in purge fluid. While covered, it can't regain Hit Points and takes {pb} Acid damage at the start of each of its turns. A creature can take an action to clean the fluid with a suitable approach.",
+        success: "Half damage only.",
+      },
+    },
     summary: "It emits purge fluid in a pressurized cone that keeps burning after impact.",
     mechanics:
       "Recharge 5-6. Creatures in a 30-foot cone make a Dexterity save. On a failure, a target takes acid damage and is covered in purge fluid. While covered, the target cannot regain hit points and takes acid damage at the start of each of its turns. A creature can use an action to clean the fluid with a suitable approach.",
@@ -207,6 +277,32 @@ const RAW_MONSTER_GRAFTS = [
     cost: 4,
     complexity: 2,
     stats: { control: 2, dpr: 1 },
+    rules: {
+      section: "action",
+      actionEconomy: "action",
+      usage: { type: "atWill" },
+      resolution: {
+        type: "savingThrow",
+        ability: "dexterity",
+        dc: "monster",
+      },
+      targeting: {
+        type: "single",
+        targets: "one Large or smaller creature within reach",
+      },
+      damage: { mode: "none", budgetRole: "none", types: [] },
+      condition: {
+        names: ["grappled", "restrained"],
+        severity: "major",
+        duration: "until the grapple ends",
+      },
+      counterplay: { breakCondition: true, positioningAnswer: true },
+      text: {
+        failure:
+          "The target has the Grappled condition and has the Restrained condition while the grapple lasts. The target can escape with an Athletics or Acrobatics check against DC {dc}.",
+        success: "The target is not grappled.",
+      },
+    },
     summary: "The corpse pins a victim against its swollen body.",
     mechanics:
       "One Large or smaller creature within reach makes a Dexterity save. On a failure, the target has the Grappled condition and is Restrained while the grapple lasts. The target can escape with an Athletics or Acrobatics check against the monster DC.",
@@ -256,6 +352,48 @@ const RAW_MONSTER_GRAFTS = [
     cost: 8,
     complexity: 3,
     stats: { dpr: 8, control: 3 },
+    rules: {
+      section: "reaction",
+      actionEconomy: "reaction",
+      usage: { type: "triggered" },
+      trigger: "The creature takes Piercing or Slashing damage.",
+      resolution: {
+        type: "savingThrow",
+        ability: "dexterity",
+        dc: "monster",
+      },
+      targeting: {
+        type: "area",
+        shape: "sphere",
+        size: 40,
+        unit: "ft",
+        targets: "each creature",
+      },
+      damage: {
+        mode: "budget",
+        budgetRole: "deathBurst",
+        budgetShare: 1.35,
+        expectedTargets: 1.75,
+        roundWeight: [0, 0, 0.35],
+        scale: "heavy",
+        types: ["poison"],
+      },
+      condition: {
+        names: ["prone", "deafened"],
+        severity: "major",
+        duration: "Prone is instant; Deafened lasts 1 minute",
+      },
+      counterplay: {
+        telegraph: true,
+        breakCondition: false,
+        positioningAnswer: true,
+        nonDamageAnswer: true,
+      },
+      text: {
+        response:
+          "Roll a d6. On a 2 or higher, the creature detonates and destroys itself. {save} Failure: The target takes {damage} Poison damage and has the Prone condition. Success: Half damage only. Creatures out to 80 feet take {pb} Thunder damage and may have the Deafened condition for 1 minute.",
+      },
+    },
     summary: "The creature is an encounter-scale bomb waiting for a puncture.",
     mechanics:
       "Trigger: the creature takes piercing or slashing damage. Response: roll a d6. On a 2 or higher, it detonates and destroys itself. Creatures in a 40-foot sphere make a Dexterity save, taking heavy poison damage and falling Prone on a failure, or taking half damage on a success. Creatures out to 80 feet take minor thunder damage and may be Deafened for 1 minute.",
@@ -273,6 +411,25 @@ const RAW_MONSTER_GRAFTS = [
     cost: 3,
     complexity: 2,
     stats: { hp: 10 },
+    rules: {
+      section: "trait",
+      actionEconomy: "freeTrigger",
+      usage: { type: "triggered" },
+      trigger: "Damage reduces the creature to 0 Hit Points.",
+      resolution: {
+        type: "savingThrow",
+        ability: "constitution",
+        dc: "special",
+      },
+      targeting: { type: "self", targets: "the creature" },
+      damage: { mode: "none", budgetRole: "none", types: [] },
+      condition: null,
+      counterplay: { breakCondition: true, nonDamageAnswer: true },
+      text: {
+        effect:
+          "If damage reduces the creature to 0 Hit Points, it makes a Constitution Saving Throw with a DC equal to 5 plus the damage taken, unless the damage is Radiant, from a Critical Hit, or caused it to explode. Success: The creature drops to 1 Hit Point instead.",
+      },
+    },
     summary: "The corpse refuses to stop unless destroyed correctly.",
     mechanics:
       "If damage reduces the creature to 0 hit points, it makes a Constitution save with a DC equal to 5 plus the damage taken, unless the damage is radiant, from a critical hit, or caused it to explode. On a success, it drops to 1 hit point instead.",

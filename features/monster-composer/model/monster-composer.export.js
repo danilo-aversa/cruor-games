@@ -1,5 +1,7 @@
 import { MONSTER_GRAFTS as FEATURES } from "../data/monster-grafts.js";
 import { MONSTER_FAMILY_PRESETS } from "../data/monster-presets.js";
+import { renderStructuredRulesText } from "./monster-graft-rules.render.js";
+import { normalizeMonsterGraftRules, validateMonsterGraftRules } from "./monster-graft-rules.schema.js";
 import { SLOTS } from "../monster-composer.workflow.js";
 import { asArray, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
 import { getFeatureCompatibility, hasFeatureCompatibilityOverride } from "./monster-composer.compatibility.js";
@@ -18,9 +20,9 @@ import {
   getTopFeatureByWeight,
 } from "./monster-composer.balance.js";
 
-const FEATURE_SCHEMA_VERSION = "monster-graft-v0.8";
-const EXPORT_SCHEMA_VERSION = "monster-crucible-export-v0.8";
-const DATA_MODEL_MIGRATION_STAGE = "structured-layer-with-override-fallbacks";
+const FEATURE_SCHEMA_VERSION = "monster-graft-v1.0";
+const EXPORT_SCHEMA_VERSION = "monster-crucible-export-v1.0";
+const DATA_MODEL_MIGRATION_STAGE = "rules-v1.0-action-budget-with-legacy-fallbacks";
 
 const STAT_BLOCK_SECTION_LABELS = {
   trait: "Traits",
@@ -136,9 +138,13 @@ function getStatBlockBasics(creatureType, category, role, computed, abilityProfi
   };
 }
 
+function getExportItemText(item, computed) {
+  return renderStructuredRulesText(item, computed) || normalizeRulesText(item.mechanics, computed);
+}
+
 function exportItems(items, fallback, computed) {
   return (items.length ? items : fallback)
-    .map((item) => `${item.title}. ${normalizeRulesText(item.mechanics, computed)}`)
+    .map((item) => `${item.title}. ${getExportItemText(item, computed)}`)
     .join(String.fromCharCode(10));
 }
 
@@ -454,31 +460,31 @@ function buildNormalizedSections({
   return {
     traits: traits.map((item) => ({
       title: item.title,
-      text: normalizeRulesText(item.mechanics, computed),
+      text: getExportItemText(item, computed),
     })),
     actions: actions.map((item) => ({
       title: item.title,
-      text: normalizeRulesText(item.mechanics, computed),
+      text: getExportItemText(item, computed),
     })),
     bonusActions: bonusActions.map((item) => ({
       title: item.title,
-      text: normalizeRulesText(item.mechanics, computed),
+      text: getExportItemText(item, computed),
     })),
     reactions: reactions.map((item) => ({
       title: item.title,
-      text: normalizeRulesText(item.mechanics, computed),
+      text: getExportItemText(item, computed),
     })),
     legendaryActions: legendaryActions.map((item) => ({
       title: item.title,
-      text: normalizeRulesText(item.mechanics, computed),
+      text: getExportItemText(item, computed),
     })),
     lairActions: lairActions.map((item) => ({
       title: item.title,
-      text: normalizeRulesText(item.mechanics, computed),
+      text: getExportItemText(item, computed),
     })),
     deathEffects: deathEffects.map((item) => ({
       title: item.title,
-      text: normalizeRulesText(item.mechanics, computed),
+      text: getExportItemText(item, computed),
     })),
   };
 }
@@ -494,6 +500,8 @@ function buildStructuredFeature(feature, computed = null) {
     source: feature.source,
     slot: feature.slot,
     section: getFeatureSection(feature),
+    rules: normalizeMonsterGraftRules(feature),
+    rulesValidation: validateMonsterGraftRules(feature),
     typeBias: asArray(feature.typeBias),
     roleBias: asArray(feature.roleBias),
     cost: feature.cost,
@@ -502,7 +510,7 @@ function buildStructuredFeature(feature, computed = null) {
     summary: feature.summary,
     rulesText: {
       mechanics: feature.mechanics,
-      normalizedMechanics: normalizeRulesText(feature.mechanics, computed),
+      normalizedMechanics: getExportItemText(feature, computed),
       counterplay: feature.counterplay,
       normalizedCounterplay: normalizeRulesText(feature.counterplay, computed),
     },
@@ -656,7 +664,7 @@ function buildStatBlockItems(items, computed) {
   return items.map((item) => ({
     id: item.id || item.title,
     title: item.title,
-    text: normalizeRulesText(item.mechanics, computed),
+    text: getExportItemText(item, computed),
   }));
 }
 
@@ -861,6 +869,7 @@ export function buildExportJson({
       printedStats: computed.printedStats,
       effectiveProfile: computed.effectiveProfile,
       profileDeltas: computed.profileDeltas,
+      bestiaryBaselineAudit: computed.bestiaryBaselineAudit,
       pressureProfile: computed.pressureProfile,
       complexityProfile: computed.complexityProfile,
       counterplayAudit: computed.counterplayAudit,
@@ -889,6 +898,7 @@ export function buildExportJson({
         printedStats: computed.printedStats,
         effectiveProfile: computed.effectiveProfile,
         profileDeltas: computed.profileDeltas,
+        bestiaryBaselineAudit: computed.bestiaryBaselineAudit,
         pressureProfile: computed.pressureProfile,
         complexityProfile: computed.complexityProfile,
         counterplayAudit: computed.counterplayAudit,

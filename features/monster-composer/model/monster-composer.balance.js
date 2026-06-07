@@ -1,18 +1,14 @@
 import { FEATURE_MECHANIC_OVERRIDES } from "../data/monster-grafts.js";
+import {
+  getDamageBudgetDefaults,
+  getDamageBudgetShare,
+  getDamageExpectedTargets,
+  getDamageRoundWeight,
+  getRulesFallbackSection,
+  normalizeMonsterGraftRules,
+} from "./monster-graft-rules.schema.js";
 import { asArray, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
 import { formatToken } from "./monster-composer.compatibility.js";
-
-const SLOT_SECTION_FALLBACK = {
-  body: "trait",
-  mind: "trait",
-  movement: "trait",
-  attack: "action",
-  horror: "trait",
-  twist: "trait",
-  weakness: "trait",
-  death: "death",
-  lair: "lairAction",
-};
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -25,8 +21,17 @@ function titleCase(value) {
     .join(" ");
 }
 
+function getBudgetDamageBase(feature, rules) {
+  if (!rules.damage || rules.damage.mode === "none") return Math.max(0, feature.stats?.dpr || 0);
+  if (rules.damage.mode === "fixed" && rules.damage.average) return Number(rules.damage.average) || 0;
+  if (rules.damage.mode !== "budget") return Math.max(0, feature.stats?.dpr || 0);
+  const budgetShare = getDamageBudgetShare(rules.damage, rules);
+  const baselineDpr = Math.max(1, feature.stats?.dpr || 1);
+  return Math.round(baselineDpr * Math.max(0.25, budgetShare));
+}
+
 export function getFeatureSection(feature) {
-  return feature.section || SLOT_SECTION_FALLBACK[feature.slot] || "trait";
+  return normalizeMonsterGraftRules(feature).section || getRulesFallbackSection(feature);
 }
 
 export function hasFeatureMechanicOverride(featureOrId) {
@@ -36,39 +41,91 @@ export function hasFeatureMechanicOverride(featureOrId) {
 
 export function getFeatureMechanicProfile(feature) {
   const override = FEATURE_MECHANIC_OVERRIDES[feature.id] || {};
-  const section = getFeatureSection(feature);
+  const rules = normalizeMonsterGraftRules(feature);
+  const section = rules.section || getFeatureSection(feature);
   const fallbackUsage =
-    section === "reaction"
-      ? { frequency: "reaction" }
-      : section === "lairAction"
-        ? { frequency: "lair_action" }
-        : section === "death"
-          ? { frequency: "death" }
-          : { frequency: "at_will" };
+    rules.usage?.type === "recharge"
+      ? { frequency: "recharge", recharge: rules.usage.value }
+      : rules.actionEconomy === "reaction"
+        ? { frequency: "reaction" }
+        : rules.actionEconomy === "lairAction"
+          ? { frequency: "lair_action" }
+          : rules.actionEconomy === "deathTrigger"
+            ? { frequency: "death" }
+            : { frequency: "at_will" };
+
+  const inferredMechanicTags = [
+    rules.resolution?.type === "attackRoll" ? "attack_roll" : null,
+    rules.resolution?.type === "savingThrow" ? "saving_throw" : null,
+    rules.secondaryResolution?.type === "savingThrow" ? "secondary_save" : null,
+    rules.usage?.type === "recharge" ? "recharge" : null,
+    rules.actionEconomy === "reaction" ? "reaction" : null,
+    rules.condition?.names?.length ? "condition" : null,
+    rules.resolution?.abilityBasis ? `ability_${rules.resolution.abilityBasis}` : null,
+    rules.damage?.budgetRole && rules.damage.budgetRole !== "none" ? `budget_${rules.damage.budgetRole}` : null,
+    ...(rules.condition?.names || []),
+    ...(rules.condition?.special || []),
+  ].filter(Boolean);
+  const inferredPressureTags = [
+    rules.targeting?.type === "area" ? "area" : null,
+    ["rechargeBurst", "deathBurst"].includes(rules.damage?.budgetRole) ||
+    rules.damage?.scale === "high" ||
+    rules.damage?.scale === "heavy"
+      ? "burst"
+      : null,
+    rules.damage?.budgetRole === "rechargeControl" ? "control_burst" : null,
+    rules.damage?.budgetRole === "reactionPunish" || (rules.actionEconomy === "reaction" && rules.damage) ? "reaction_burst" : null,
+    rules.damage?.budgetRole === "bonusAction" ? "action_economy" : null,
+    ["major", "severe"].includes(rules.condition?.severity) ? "hard_control" : null,
+  ].filter(Boolean);
+  const inferredComplexityTags = [
+    rules.usage?.type === "recharge" ? "recharge" : null,
+    rules.damage?.budgetRole && rules.damage.budgetRole !== "none" ? "damage_budget" : null,
+    rules.actionEconomy === "reaction" ? "reaction_trigger" : null,
+    rules.actionEconomy === "deathTrigger" ? "death_trigger" : null,
+    rules.condition?.names?.length ? "condition_tracking" : null,
+    rules.counterplay?.breakCondition ? "break_condition" : null,
+    rules.condition?.special?.includes("healing-denial") ? "ongoing_tracking" : null,
+  ].filter(Boolean);
 
   return {
-    abilityType: override.abilityType || section,
+    abilityType: override.abilityType || rules.actionEconomy || section,
     mechanicTags: uniqueArray([
       ...asArray(feature.mechanicTags),
       ...asArray(override.mechanicTags),
+      ...inferredMechanicTags,
     ]),
     pressureTags: uniqueArray([
       ...asArray(feature.pressureTags),
       ...asArray(override.pressureTags),
+      ...inferredPressureTags,
     ]),
     complexityTags: uniqueArray([
       ...asArray(feature.complexityTags),
       ...asArray(override.complexityTags),
+      ...inferredComplexityTags,
     ]),
     damageProfile: override.damageProfile ||
       feature.damageProfile || {
-        baseDamage: Math.max(0, feature.stats?.dpr || 0),
-        damageType: "Variable",
-        expectedTargets: feature.stats?.control ? 1.25 : 1,
-        roundWeight: [1, 1, 1],
+        baseDamage: getBudgetDamageBase(feature, rules),
+        damageType: rules.damage?.types?.[0] ? titleCase(rules.damage.types[0]) : "Variable",
+        budgetRole: rules.damage?.budgetRole || "none",
+        budgetShare: getDamageBudgetShare(rules.damage, rules),
+        budgetDefaults: getDamageBudgetDefaults(rules.damage?.budgetRole || "none"),
+        abilityBasis: rules.resolution?.abilityBasis || rules.damage?.abilityBasis || null,
+        expectedTargets: getDamageExpectedTargets(rules.damage, rules) || (rules.targeting?.type === "area" ? 1.75 : feature.stats?.control ? 1.25 : 1),
+        roundWeight: getDamageRoundWeight(rules.damage, rules),
       },
     usageProfile: override.usageProfile || feature.usageProfile || fallbackUsage,
-    conditionProfile: override.conditionProfile || feature.conditionProfile || null,
+    conditionProfile: override.conditionProfile ||
+      feature.conditionProfile ||
+      (rules.condition
+        ? {
+            severity: titleCase(rules.condition.severity),
+            conditions: rules.condition.names || [],
+            special: rules.condition.special || [],
+          }
+        : null),
   };
 }
 
