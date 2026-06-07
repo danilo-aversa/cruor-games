@@ -74,6 +74,7 @@ export function sharedComponentToMonsterGraft(component, contentPack = {}) {
     complexity: Number(monster.complexity || 0),
     stats: { ...(monster.stats || {}) },
     rules: monster.rules || component.rules || null,
+    constraints: monster.constraints || component.anatomyConstraints || component.constraints || null,
     summary: component.summary || "",
     mechanics: component.mechanics || component.tableText || "",
     counterplay: component.counterplay || "",
@@ -179,13 +180,13 @@ export const CONTENT_PACK_MONSTER_GRAFTS = CONTENT_PACK_MONSTER_COMPONENTS.map((
 ).filter((graft) => graft.id && graft.slot && graft.source);
 
 export const ALL_MONSTER_SOURCES = mergeMonsterSources(
-  CORE_MONSTER_SOURCES,
   CONTENT_PACK_MONSTER_SOURCES,
+  CORE_MONSTER_SOURCES,
 );
 
 export const ALL_MONSTER_GRAFTS = mergeMonsterGrafts(
-  CORE_MONSTER_GRAFTS,
   CONTENT_PACK_MONSTER_GRAFTS,
+  CORE_MONSTER_GRAFTS,
 );
 
 export const MONSTER_CONTENT_PACK_FEED_SUMMARY = Object.freeze({

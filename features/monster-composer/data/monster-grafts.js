@@ -1807,6 +1807,210 @@ export const FEATURE_COMPATIBILITY_OVERRIDES = {
   "face-curse": { requires: ["wax_mask"] },
 };
 
+
+export const FEATURE_ANATOMY_CONSTRAINT_OVERRIDES = {
+  "acid-vomit": {
+    allowedBodyPlans: ["humanoid", "amorphous"],
+    requiredAnatomy: ["mouth", "flesh"],
+    forbiddenBodyPlans: ["incorporeal", "arachnid"],
+    note: "A vomit attack needs a wet organic body with a mouth or rupturing mass.",
+  },
+  "corpse-grab": {
+    allowedBodyPlans: ["humanoid", "amorphous"],
+    requiresAnyAnatomy: ["hands", "grasping_limbs", "tendrils"],
+    forbiddenBodyPlans: ["arachnid", "incorporeal"],
+  },
+  "rupture-charge": {
+    allowedBodyPlans: ["humanoid", "amorphous"],
+    requiredTags: ["physical"],
+    forbiddenBodyPlans: ["incorporeal"],
+  },
+  "collapsed-crawler": {
+    allowedBodyPlans: ["humanoid", "amorphous"],
+    requiredTags: ["corpse"],
+    forbiddenBodyPlans: ["incorporeal", "arachnid"],
+  },
+  "skin-slippage": {
+    requiredAnatomy: ["flesh"],
+    forbiddenTags: ["no_flesh"],
+  },
+  "fresh-bloat-hide": {
+    requiredAnatomy: ["flesh", "corpse"],
+    forbiddenTags: ["no_flesh"],
+  },
+  "swollen-corpse": {
+    requiredTags: ["corpse", "physical"],
+    forbiddenBodyPlans: ["incorporeal"],
+  },
+  "volatile-immobile-mass": {
+    allowedBodyPlans: ["humanoid", "amorphous"],
+    requiredTags: ["corpse", "physical"],
+    forbiddenBodyPlans: ["incorporeal", "arachnid"],
+  },
+
+  "incorporeal-movement": {
+    allowedBodyPlans: ["incorporeal"],
+    requiredAnatomy: ["spectral_body"],
+  },
+  "vanish-spirit": {
+    allowedBodyPlans: ["incorporeal"],
+    requiredAnatomy: ["spectral_body"],
+  },
+  "ethereal-sight": {
+    allowedBodyPlans: ["incorporeal"],
+    requiredTags: ["spirit"],
+  },
+  "grave-bite": {
+    requiresAnyAnatomy: ["jaw", "mouth", "fangs"],
+    forbiddenAnatomy: ["beak"],
+  },
+  "infected-bite": {
+    requiresAnyAnatomy: ["jaw", "mouth", "fangs"],
+    forbiddenAnatomy: ["beak"],
+  },
+  "purulent-bite": {
+    requiresAnyAnatomy: ["jaw", "mouth", "fangs"],
+  },
+  "corpse-tendrils": {
+    allowedBodyPlans: ["amorphous", "humanoid"],
+    requiresAnyAnatomy: ["tendrils", "flesh", "corpse"],
+    forbiddenBodyPlans: ["arachnid", "incorporeal"],
+  },
+
+  "bone-collective": {
+    exclusiveToFamilies: ["skeleton"],
+    requiredAnatomy: ["bones"],
+    forbiddenTags: ["no_bones"],
+  },
+  "bone-reassembly": {
+    exclusiveToFamilies: ["skeleton"],
+    requiredAnatomy: ["bones"],
+  },
+  "ossuary-counts-you": {
+    exclusiveToFamilies: ["skeleton"],
+    requiredAnatomy: ["bones"],
+  },
+
+  "maternal-swarm-instinct": {
+    allowedFamilies: ["spider"],
+    allowedBodyPlans: ["arachnid"],
+  },
+  "egg-carrier": {
+    allowedFamilies: ["spider"],
+    allowedBodyPlans: ["arachnid"],
+    requiredAnatomy: ["abdomen"],
+  },
+  "spider-climb": {
+    allowedBodyPlans: ["arachnid"],
+    requiredAnatomy: ["climbing_limbs"],
+  },
+  "web-walker": {
+    allowedBodyPlans: ["arachnid"],
+    requiredTags: ["web_bearing"],
+  },
+  "barbed-chitin": {
+    allowedBodyPlans: ["arachnid"],
+    requiredAnatomy: ["carapace"],
+  },
+  "malformed-broodling": {
+    allowedFamilies: ["spider"],
+    allowedBodyPlans: ["arachnid"],
+  },
+  "hundred-eyed": {
+    requiresAnyAnatomy: ["multiple_eyes", "eyes", "central_eye"],
+  },
+  "wall-crawler": {
+    requiresAnyAnatomy: ["climbing_limbs", "legs"],
+    forbiddenBodyPlans: ["incorporeal"],
+  },
+  "web-dancer": {
+    allowedBodyPlans: ["arachnid"],
+    requiredAnatomy: ["web_glands", "spinnerets"],
+  },
+  "predatory-jump": {
+    requiresAnyAnatomy: ["legs", "many_legs", "climbing_limbs"],
+    forbiddenBodyPlans: ["incorporeal"],
+  },
+  "venomous-bite": {
+    requiredAnatomy: ["fangs", "venom_glands"],
+    allowedBodyPlans: ["arachnid"],
+  },
+  "perforate": {
+    requiresAnyAnatomy: ["fangs", "stinger", "mandibles"],
+    forbiddenBodyPlans: ["humanoid", "incorporeal"],
+  },
+  "web-recharge": {
+    requiredAnatomy: ["web_glands", "spinnerets"],
+    allowedBodyPlans: ["arachnid"],
+  },
+  "shadow-web": {
+    requiredAnatomy: ["web_glands", "spinnerets"],
+    allowedBodyPlans: ["arachnid"],
+  },
+  "venomous-spit": {
+    requiredAnatomy: ["venom_glands", "mouth"],
+    allowedBodyPlans: ["arachnid"],
+  },
+  "brood-injection": {
+    allowedBodyPlans: ["arachnid"],
+    requiresAnyAnatomy: ["fangs", "stinger", "venom_glands"],
+  },
+  "enrage-broodmother": {
+    allowedFamilies: ["spider"],
+    requiredAnatomy: ["abdomen"],
+  },
+  "web-architect": {
+    requiredAnatomy: ["web_glands", "spinnerets"],
+    allowedBodyPlans: ["arachnid"],
+  },
+  "corrosive-web": {
+    requiredAnatomy: ["web_glands", "spinnerets"],
+    allowedBodyPlans: ["arachnid"],
+  },
+  "hunter-spider": {
+    allowedBodyPlans: ["arachnid"],
+    requiredAnatomy: ["legs", "fangs"],
+  },
+  "thin-legs": {
+    allowedBodyPlans: ["arachnid", "quadruped", "avian"],
+    requiredAnatomy: ["legs"],
+  },
+  "underbelly-weak-spot": {
+    allowedBodyPlans: ["arachnid", "quadruped", "amorphous"],
+    forbiddenBodyPlans: ["incorporeal"],
+  },
+  "eyes-weak-spot": {
+    requiresAnyAnatomy: ["eyes", "multiple_eyes", "central_eye"],
+  },
+  "brood-tell": {
+    allowedFamilies: ["spider"],
+  },
+  "egg-hatch-death": {
+    allowedFamilies: ["spider"],
+    requiredAnatomy: ["abdomen"],
+  },
+  "broodmother-web-lair": {
+    requiredAnatomy: ["web_glands", "spinnerets"],
+    allowedFamilies: ["spider"],
+  },
+
+  "waxen-mask-body": {
+    allowedBodyPlans: ["humanoid"],
+    requiredAnatomy: ["face"],
+  },
+  "borrowed-face": {
+    allowedBodyPlans: ["humanoid", "incorporeal"],
+    requiredAnatomy: ["face"],
+  },
+  "mask-phase": {
+    allowedBodyPlans: ["humanoid", "incorporeal"],
+    requiredAnatomy: ["face"],
+  },
+  "fire-softens-it": {
+    requiredAnatomy: ["face"],
+  },
+};
+
 export const FEATURE_MECHANIC_OVERRIDES = {
   "acid-vomit": {
     mechanicTags: [

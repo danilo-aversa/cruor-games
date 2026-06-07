@@ -1,54 +1,77 @@
 import { CONTENT_PACK_STATUS, createContentPack } from "../content-pack-schema.js";
-import { DECOMPOSITION_SOURCE_ANCHOR_ID } from "../inspiration-modules/decomposition.js";
-import { SEDLEC_OSSUARY_SOURCE_ANCHOR_ID } from "../inspiration-modules/sedlec-ossuary.js";
-import { SHARED_INSPIRATIONS } from "../inspirations.js";
-import { SHARED_SOURCE_ANCHORS } from "../source-anchors.js";
-import { SHARED_WORKFLOWS } from "../workflows.js";
+import { modulesToRegistryCollections, uniqueById } from "../inspiration-module-schema.js";
+import {
+  CORE_INSPIRATION_MODULE_PACK_ID,
+} from "../inspiration-modules/core-inspiration-modules.js";
+import { CONVERTED_CORE_INSPIRATION_MODULES } from "../inspiration-modules.js";
+import { normalizeSourceAnchorIds, SHARED_SOURCE_ANCHORS } from "../source-anchors.js";
+import { SHARED_DARKEN_LOCATION_SLOTS, SHARED_MONSTER_SLOTS, SHARED_WORKFLOWS } from "../workflows.js";
 
-export const EXISTING_INSPIRATIONS_CONTENT_PACK_ID = "existing-inspirations";
+export const EXISTING_INSPIRATIONS_CONTENT_PACK_ID = CORE_INSPIRATION_MODULE_PACK_ID;
 
-const EXPLICIT_MODULE_SOURCE_ANCHOR_IDS = new Set([
-  DECOMPOSITION_SOURCE_ANCHOR_ID,
-  SEDLEC_OSSUARY_SOURCE_ANCHOR_ID,
-]);
+export const EXISTING_INSPIRATION_MODULES = CONVERTED_CORE_INSPIRATION_MODULES;
 
-const EXISTING_ARCHIVE_INSPIRATIONS = SHARED_INSPIRATIONS.filter(
-  (inspiration) => !(inspiration.sourceAnchors || []).some((sourceAnchorId) =>
-    EXPLICIT_MODULE_SOURCE_ANCHOR_IDS.has(sourceAnchorId),
-  ),
-);
+function uniqueArray(values = []) {
+  return [...new Set(values.filter(Boolean))];
+}
 
-function getReferencedSourceAnchors(inspirations = EXISTING_ARCHIVE_INSPIRATIONS) {
+function getReferencedWorkflowIds(modules = EXISTING_INSPIRATION_MODULES) {
+  return uniqueArray(
+    modules.flatMap((module) => [
+      ...(module.sourceAnchor?.workflows || []),
+      ...(module.inspiration?.workflows || []),
+      ...module.components.flatMap((component) => component.workflows || []),
+    ]),
+  );
+}
+
+function getReferencedSlotIds(modules = EXISTING_INSPIRATION_MODULES) {
+  return uniqueArray(modules.flatMap((module) => module.components.flatMap((component) => component.slots || [])));
+}
+
+function getReferencedSourceAnchors(modules = EXISTING_INSPIRATION_MODULES) {
+  const sourceAnchorById = new Map(SHARED_SOURCE_ANCHORS.map((sourceAnchor) => [sourceAnchor.id, sourceAnchor]));
   const sourceAnchorIds = new Set(
-    inspirations.flatMap((inspiration) => inspiration.sourceAnchors || []).filter(Boolean)
+    modules.flatMap((module) => [
+      module.sourceAnchor?.id,
+      ...(module.inspiration?.sourceAnchors || []),
+      ...module.components.flatMap((component) => normalizeSourceAnchorIds(component.sourceAnchors)),
+    ]).filter(Boolean),
   );
 
-  return SHARED_SOURCE_ANCHORS.filter((sourceAnchor) => sourceAnchorIds.has(sourceAnchor.id));
+  return uniqueById([...sourceAnchorIds].map((sourceAnchorId) => sourceAnchorById.get(sourceAnchorId)).filter(Boolean));
 }
+
+const MODULE_COLLECTIONS = modulesToRegistryCollections(EXISTING_INSPIRATION_MODULES);
+const REFERENCED_WORKFLOW_IDS = new Set(getReferencedWorkflowIds());
+const REFERENCED_SLOT_IDS = new Set(getReferencedSlotIds());
 
 export const EXISTING_INSPIRATIONS_CONTENT_PACK = createContentPack({
   id: EXISTING_INSPIRATIONS_CONTENT_PACK_ID,
-  title: "Existing Inspirations Archive",
+  title: "Existing Inspiration Modules",
   summary:
-    "Pilot content pack containing the current Inspiration Archive cards and their linked Source Anchors.",
-  version: "0.1.0",
+    "Converted Inspiration Modules for the existing Cruor source archive. Each module owns its Source Anchor, public Inspiration card, and linked reusable components.",
+  version: "0.2.0",
   status: CONTENT_PACK_STATUS.PUBLISHED,
   locale: "en",
   author: "Cruor Games",
   license: "internal-prototype",
-  tags: ["pilot", "inspirations", "archive", "source-anchors"],
-  updatedAt: "2026-05-29",
+  tags: ["inspiration-module", "converted", "archive", "source-anchors"],
+  updatedAt: "2026-06-07",
   metadata: {
     bundled: true,
-    registryRole: "content-pack-pilot",
-    source: "legacy-inspirations-archive",
+    registryRole: "converted-inspiration-modules",
+    source: "shared/content/inspiration-modules/core-inspiration-modules.js",
+    migratedFrom: "legacy-inspirations-archive",
   },
   collections: {
-    workflows: SHARED_WORKFLOWS.filter((workflow) => workflow.id === "inspiration-archive"),
-    slots: [],
-    components: [],
+    workflows: SHARED_WORKFLOWS.filter((workflow) => REFERENCED_WORKFLOW_IDS.has(workflow.id)),
+    slots: [...SHARED_DARKEN_LOCATION_SLOTS, ...SHARED_MONSTER_SLOTS].filter((slot) =>
+      REFERENCED_SLOT_IDS.has(slot.id),
+    ),
+    components: MODULE_COLLECTIONS.components,
     sourceAnchors: getReferencedSourceAnchors(),
-    inspirations: EXISTING_ARCHIVE_INSPIRATIONS,
+    inspirations: MODULE_COLLECTIONS.inspirations,
     taxonomies: [],
   },
 });

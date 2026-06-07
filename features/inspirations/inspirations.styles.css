@@ -717,6 +717,11 @@
   padding-bottom: 12px;
 }
 
+.inspirations-page__dossier-head > div {
+  display: grid;
+  gap: 7px;
+}
+
 /* Components */
 
 .inspirations-page__dossier-head h2 {
@@ -766,6 +771,31 @@
   font-weight: 950;
   letter-spacing: 0.09em;
   text-transform: uppercase;
+}
+
+
+.inspirations-page__composer-cta {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(190, 64, 82, 0.5);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.2), transparent 72%), rgba(0, 0, 0, 0.32);
+  color: #fff0f2;
+  padding: 0 11px;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.inspirations-page__composer-cta:hover {
+  border-color: rgba(255, 238, 242, 0.2);
+  background: linear-gradient(180deg, rgba(190, 64, 82, 0.24), transparent 72%), rgba(51, 3, 12, 0.54);
+  box-shadow: 0 0 24px rgba(122, 26, 40, 0.24);
 }
 
 .inspirations-page__use-actions {
@@ -1052,7 +1082,32 @@
     grid-template-columns: 1fr;
   }
 
-  .inspirations-page__use-actions {
+  
+.inspirations-page__composer-cta {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(190, 64, 82, 0.5);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.2), transparent 72%), rgba(0, 0, 0, 0.32);
+  color: #fff0f2;
+  padding: 0 11px;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.inspirations-page__composer-cta:hover {
+  border-color: rgba(255, 238, 242, 0.2);
+  background: linear-gradient(180deg, rgba(190, 64, 82, 0.24), transparent 72%), rgba(51, 3, 12, 0.54);
+  box-shadow: 0 0 24px rgba(122, 26, 40, 0.24);
+}
+
+.inspirations-page__use-actions {
     grid-template-columns: 1fr;
   }
 

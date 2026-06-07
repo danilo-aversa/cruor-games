@@ -1,15 +1,32 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   SPELLS_5E24,
+  CONTENT_PACK_SCHEMA_VERSION,
+  SHARED_DARKEN_LOCATION_SLOTS,
+  SHARED_MONSTER_SLOTS,
+  SHARED_WORKFLOWS,
   SPELLS_5E24_LEVEL_OPTIONS,
   SPELLS_5E24_SCHOOL_OPTIONS,
+  createContentPack,
   getSpell5e24Name,
-  normalizeSpell5e24Ref,
   loadContentPackSummaries,
   loadInspirationModules,
+  normalizeSpell5e24Ref,
+  validateContentPack,
 } from "../../shared/content/content.index.js";
 import { renderStructuredRulesTemplate } from "../monster-composer/model/monster-graft-rules.render.js";
 import { normalizeMonsterGraftRules } from "../monster-composer/model/monster-graft-rules.schema.js";
+import {
+  KNOWN_MONSTER_ANATOMY_TAGS,
+  KNOWN_MONSTER_BODY_PLAN_IDS,
+  KNOWN_MONSTER_CREATURE_TAGS,
+  KNOWN_MONSTER_FAMILY_IDS,
+  MONSTER_ANATOMY_CONSTRAINT_FIELDS,
+  MONSTER_BODY_PLAN_OPTIONS,
+  MONSTER_FAMILY_PROFILE_OPTIONS,
+  normalizeMonsterAnatomyConstraints,
+  summarizeMonsterAnatomyConstraints,
+} from "../monster-composer/model/anatomy.js";
 
 const EMPTY_DRAFT = {
   id: "new-inspiration",
@@ -90,6 +107,27 @@ const STUDIO_SECTIONS = [
     hint: "Copy the current local draft as module JSON.",
   },
 ];
+
+const EXPORT_MODE_OPTIONS = [
+  {
+    id: "contentPack",
+    label: "Content Pack",
+    icon: "fa-box-open",
+    description: "Registry-ready pack with source anchor, public inspiration, linked components, workflows, and slots.",
+  },
+  {
+    id: "module",
+    label: "Module Draft",
+    icon: "fa-file-code",
+    description: "Raw Inspiration Module draft used by the Studio editor.",
+  },
+];
+
+const VALIDATION_SEVERITY_META = {
+  error: { label: "Errors", icon: "fa-circle-xmark" },
+  warning: { label: "Warnings", icon: "fa-triangle-exclamation" },
+  info: { label: "Info", icon: "fa-circle-info" },
+};
 
 const STATUS_OPTIONS = [
   {
@@ -584,6 +622,131 @@ function joinList(value) {
   return asArray(value).join(", ");
 }
 
+function getEntryId(entry) {
+  return String(entry?.id || entry?.slug || "").trim();
+}
+
+function uniqueById(items = []) {
+  const seen = new Set();
+  return asArray(items).filter((item) => {
+    const id = getEntryId(item);
+    if (!id || seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+}
+
+function countById(items = []) {
+  return asArray(items).reduce((counts, item) => {
+    const id = getEntryId(item);
+    if (!id) return counts;
+    counts.set(id, (counts.get(id) || 0) + 1);
+    return counts;
+  }, new Map());
+}
+
+function getDuplicateIds(items = []) {
+  return [...countById(items)].filter(([, count]) => count > 1).map(([id]) => id);
+}
+
+function normalizeStatus(value) {
+  return STATUS_OPTIONS.some((option) => option.id === value) ? value : "draft";
+}
+
+function makeIssue(severity, path, message, id = "") {
+  return { severity, path, message, id };
+}
+
+function getIssueSummary(issues = []) {
+  return asArray(issues).reduce((summary, issue) => {
+    const severity = issue?.severity || "warning";
+    summary.total += 1;
+    summary[severity] = (summary[severity] || 0) + 1;
+    return summary;
+  }, { total: 0, error: 0, warning: 0, info: 0 });
+}
+
+function hasText(value) {
+  return String(value || "").trim().length > 0;
+}
+
+const CANONICAL_WORKFLOW_MAP = new Map(SHARED_WORKFLOWS.map((workflow) => [workflow.id, workflow]));
+const CANONICAL_MONSTER_SLOT_MAP = new Map(SHARED_MONSTER_SLOTS.map((slot) => [slot.id, slot]));
+const CANONICAL_DARKEN_SLOT_MAP = new Map(SHARED_DARKEN_LOCATION_SLOTS.map((slot) => [slot.id, slot]));
+const CANONICAL_SLOT_MAP = new Map([
+  ...SHARED_MONSTER_SLOTS.map((slot) => [slot.id, slot]),
+  ...SHARED_DARKEN_LOCATION_SLOTS.map((slot) => [slot.id, slot]),
+]);
+
+const ANATOMY_CONSTRAINT_FIELD_LABELS = Object.freeze({
+  allowedCreatureTypes: "Allowed Creature Types",
+  forbiddenCreatureTypes: "Forbidden Creature Types",
+  exclusiveToFamilies: "Exclusive Families",
+  allowedFamilies: "Allowed Families",
+  forbiddenFamilies: "Forbidden Families",
+  allowedBodyPlans: "Allowed Body Plans",
+  forbiddenBodyPlans: "Forbidden Body Plans",
+  requiredAnatomy: "Required Anatomy",
+  requiresAnyAnatomy: "Requires Any Anatomy",
+  forbiddenAnatomy: "Forbidden Anatomy",
+  requiredTags: "Required Creature Tags",
+  requiresAnyTags: "Requires Any Creature Tag",
+  forbiddenTags: "Forbidden Creature Tags",
+  requiredTokens: "Required Build Tokens",
+  requiresAnyTokens: "Requires Any Build Token",
+  forbiddenTokens: "Forbidden Build Tokens",
+});
+
+const ANATOMY_CONSTRAINT_FIELD_HINTS = Object.freeze({
+  allowedFamilies: "Hard allowlist. Use this for creature-family exclusive grafts, such as spider-only or skeleton-only features.",
+  forbiddenFamilies: "Hard denylist for specific creature families.",
+  allowedBodyPlans: "Hard allowlist for body shape, such as humanoid, arachnid, quadruped, incorporeal, or amorphous.",
+  forbiddenBodyPlans: "Hard denylist for body shapes that make this graft incoherent.",
+  requiredAnatomy: "All listed anatomy tags must exist on the monster, such as hands, fangs, web_glands, bones, or spectral_body.",
+  requiresAnyAnatomy: "At least one listed anatomy tag must exist on the monster.",
+  forbiddenAnatomy: "The graft is blocked if the monster has any listed anatomy tag.",
+  requiredTags: "All listed creature tags must exist on the monster profile, such as corpse, physical, organic, web_bearing, no_flesh.",
+  requiresAnyTags: "At least one listed creature tag must exist on the monster profile.",
+  forbiddenTags: "The graft is blocked if the monster has any listed creature tag.",
+  requiredTokens: "Requires compatibility tokens granted by the current build, useful for mutation chains and prerequisite body grafts.",
+  requiresAnyTokens: "Requires at least one compatibility token granted by the current build.",
+  forbiddenTokens: "Blocks the graft if the current build has one of these compatibility tokens.",
+});
+
+function getMonsterConstraintSource(component = {}) {
+  return component.monster?.constraints || component.anatomyConstraints || component.constraints || null;
+}
+
+function getMonsterConstraintSummary(component = {}) {
+  return summarizeMonsterAnatomyConstraints(getMonsterConstraintSource(component));
+}
+
+function validateConstraintTerms(values = [], knownValues = [], path, issues, id, label) {
+  const known = new Set(knownValues);
+  asArray(values).forEach((value) => {
+    if (!known.has(String(value))) {
+      issues.push(makeIssue("warning", path, `Unknown ${label}: ${value}. Add it to the anatomy model if this is intentional.`, id));
+    }
+  });
+}
+
+function validateMonsterAnatomyConstraintsForStudio(component = {}, index, issues) {
+  const id = component.id || component.monster?.graftId || `component-${index}`;
+  const constraints = normalizeMonsterAnatomyConstraints(getMonsterConstraintSource(component));
+  if (!constraints) return;
+
+  validateConstraintTerms(constraints.allowedBodyPlans, KNOWN_MONSTER_BODY_PLAN_IDS, `components[${index}].monster.constraints.allowedBodyPlans`, issues, id, "body plan");
+  validateConstraintTerms(constraints.forbiddenBodyPlans, KNOWN_MONSTER_BODY_PLAN_IDS, `components[${index}].monster.constraints.forbiddenBodyPlans`, issues, id, "body plan");
+  validateConstraintTerms([...constraints.exclusiveToFamilies, ...constraints.allowedFamilies], KNOWN_MONSTER_FAMILY_IDS, `components[${index}].monster.constraints.allowedFamilies`, issues, id, "monster family");
+  validateConstraintTerms(constraints.forbiddenFamilies, KNOWN_MONSTER_FAMILY_IDS, `components[${index}].monster.constraints.forbiddenFamilies`, issues, id, "monster family");
+  validateConstraintTerms([...constraints.requiredAnatomy, ...constraints.requiresAnyAnatomy, ...constraints.forbiddenAnatomy], KNOWN_MONSTER_ANATOMY_TAGS, `components[${index}].monster.constraints.anatomy`, issues, id, "anatomy tag");
+  validateConstraintTerms([...constraints.requiredTags, ...constraints.requiresAnyTags, ...constraints.forbiddenTags], KNOWN_MONSTER_CREATURE_TAGS, `components[${index}].monster.constraints.tags`, issues, id, "creature tag");
+
+  if (!MONSTER_ANATOMY_CONSTRAINT_FIELDS.some((field) => asArray(constraints[field]).length)) {
+    issues.push(makeIssue("info", `components[${index}].monster.constraints`, "Anatomy constraints contain only a note and do not restrict compatibility.", id));
+  }
+}
+
 function isPlainObject(value) {
   return Boolean(value && typeof value === "object" && !Array.isArray(value));
 }
@@ -612,6 +775,7 @@ function buildMonsterRulesFeature(component = {}, explicitRules = null) {
     summary: component.summary || "",
     mechanics: component.mechanics || component.tableText || "",
     counterplay: component.counterplay || "",
+    constraints: getMonsterConstraintSource(component),
   };
   if (explicitRules) feature.rules = explicitRules;
   return feature;
@@ -752,6 +916,277 @@ function buildModuleExport(draft, imagePreviewUrl) {
       ...normalized.metadata,
       exportedFrom: "inspiration-studio-mvp",
     },
+  };
+}
+
+function normalizeExportComponent(component = {}, sourceAnchor = {}) {
+  const sourceAnchorId = sourceAnchor.id || asArray(component.sourceAnchors)[0] || "source-anchor";
+  const workflows = asArray(component.workflows);
+  const slots = asArray(component.slots);
+
+  const normalizedComponent = {
+    ...component,
+    id: component.id || slugify(component.title || component.label || "component"),
+    title: component.title || component.label || component.id || "Untitled Component",
+    label: component.label || component.title || component.id || "Untitled Component",
+    status: normalizeStatus(component.status),
+    sourceAnchors: asArray(component.sourceAnchors).length ? asArray(component.sourceAnchors) : [sourceAnchorId],
+    sourceTypes: asArray(component.sourceTypes).length ? asArray(component.sourceTypes) : asArray(sourceAnchor.sourceTypes),
+    themes: asArray(component.themes).length ? asArray(component.themes) : asArray(sourceAnchor.themes),
+    motifs: asArray(component.motifs).length ? asArray(component.motifs) : asArray(sourceAnchor.motifs),
+    horror: asArray(component.horror).length ? asArray(component.horror) : asArray(sourceAnchor.horror),
+    workflows: workflows.length
+      ? workflows
+      : component.contentType === "monster-graft"
+        ? ["monster-composer"]
+        : ["darken-location"],
+    slots: slots.length
+      ? slots
+      : component.contentType === "monster-graft"
+        ? [component.monster?.slot || "body"]
+        : component.contentType === "location-region"
+          ? ["locationRegion"]
+          : ["visibleAnomaly"],
+  };
+
+  if (normalizedComponent.contentType === "monster-graft") {
+    const constraints = normalizeMonsterAnatomyConstraints(getMonsterConstraintSource(component));
+    normalizedComponent.monster = {
+      ...(normalizedComponent.monster || {}),
+      constraints: constraints || undefined,
+    };
+    if (!constraints && normalizedComponent.monster?.constraints === undefined) {
+      delete normalizedComponent.monster.constraints;
+    }
+  }
+
+  return normalizedComponent;
+}
+
+function getReferencedWorkflowIds(moduleExport, components) {
+  return [
+    ...asArray(moduleExport.sourceAnchor?.workflows),
+    ...asArray(moduleExport.inspiration?.workflows),
+    ...components.flatMap((component) => asArray(component.workflows)),
+  ].filter(Boolean);
+}
+
+function getReferencedSlotIds(components) {
+  return components.flatMap((component) => asArray(component.slots)).filter(Boolean);
+}
+
+function buildContentPackExport(draft, imagePreviewUrl) {
+  const moduleExport = buildModuleExport(draft, imagePreviewUrl);
+  const sourceAnchorId = moduleExport.sourceAnchor?.id || moduleExport.id;
+  const sourceAnchor = {
+    ...moduleExport.sourceAnchor,
+    id: sourceAnchorId,
+    label: moduleExport.sourceAnchor?.label || moduleExport.title,
+    status: normalizeStatus(moduleExport.sourceAnchor?.status || moduleExport.status),
+  };
+  const inspiration = {
+    ...moduleExport.inspiration,
+    id: moduleExport.inspiration?.id || `inspiration-${sourceAnchorId}`,
+    title: moduleExport.inspiration?.title || moduleExport.title,
+    label: moduleExport.inspiration?.label || moduleExport.inspiration?.title || moduleExport.title,
+    status: normalizeStatus(moduleExport.inspiration?.status || moduleExport.status),
+    contentType: moduleExport.inspiration?.contentType || "source-inspiration-card",
+    sourceAnchors: asArray(moduleExport.inspiration?.sourceAnchors).length
+      ? asArray(moduleExport.inspiration.sourceAnchors)
+      : [sourceAnchorId],
+    workflows: asArray(moduleExport.inspiration?.workflows).length
+      ? asArray(moduleExport.inspiration.workflows)
+      : ["inspiration-archive"],
+  };
+  const components = moduleExport.components.map((component) => normalizeExportComponent(component, sourceAnchor));
+  const workflowIds = new Set(getReferencedWorkflowIds({ sourceAnchor, inspiration }, components));
+  const slotIds = new Set(getReferencedSlotIds(components));
+  const workflows = SHARED_WORKFLOWS.filter((workflow) => workflowIds.has(workflow.id));
+  const slots = [
+    ...SHARED_MONSTER_SLOTS.filter((slot) => slotIds.has(slot.id)),
+    ...SHARED_DARKEN_LOCATION_SLOTS.filter((slot) => slotIds.has(slot.id)),
+  ];
+
+  return createContentPack({
+    schemaVersion: CONTENT_PACK_SCHEMA_VERSION,
+    id: moduleExport.packId || `${sourceAnchorId}-content-pack`,
+    title: `${moduleExport.title} Content Pack`,
+    summary: `Registry-ready content pack generated from the ${moduleExport.title} Inspiration Module.`,
+    version: moduleExport.metadata?.version || "0.1.0",
+    status: normalizeStatus(moduleExport.status),
+    locale: moduleExport.metadata?.locale || "en",
+    author: moduleExport.metadata?.author || "Cruor Games",
+    license: moduleExport.metadata?.license || "internal-prototype",
+    tags: uniqueById(asArray(moduleExport.metadata?.tags).map((tag) => ({ id: tag }))).map((tag) => tag.id),
+    metadata: {
+      ...moduleExport.metadata,
+      exportedFrom: "inspiration-studio-content-pack-export",
+      sourceModuleId: moduleExport.id,
+      sourceAnchorId,
+    },
+    collections: {
+      workflows,
+      slots,
+      sourceAnchors: [sourceAnchor],
+      inspirations: [inspiration],
+      components,
+      taxonomies: [],
+    },
+  });
+}
+
+function validateStudioDraft(draft, contentPackExport) {
+  const normalized = normalizeModuleForDraft(draft);
+  const issues = [];
+  const sourceAnchorId = normalized.sourceAnchor?.id || normalized.id;
+  const inspiration = normalized.inspiration || {};
+  const components = asArray(normalized.components);
+
+  if (!hasText(normalized.id)) issues.push(makeIssue("error", "module.id", "Module is missing a stable id."));
+  if (!hasText(normalized.title)) issues.push(makeIssue("error", "module.title", "Module is missing a public title."));
+  if (!hasText(normalized.packId)) issues.push(makeIssue("error", "module.packId", "Module is missing a target content pack id."));
+  if (!STATUS_OPTIONS.some((option) => option.id === normalized.status)) {
+    issues.push(makeIssue("error", "module.status", `Unsupported module status: ${normalized.status || "empty"}.`));
+  }
+
+  if (!hasText(normalized.sourceAnchor?.id)) issues.push(makeIssue("error", "sourceAnchor.id", "Source Anchor is missing an id."));
+  if (!hasText(normalized.sourceAnchor?.label)) issues.push(makeIssue("error", "sourceAnchor.label", "Source Anchor is missing a label."));
+  if (!asArray(normalized.sourceAnchor?.sourceTypes).length) {
+    issues.push(makeIssue("warning", "sourceAnchor.sourceTypes", "Source Anchor has no source type tags."));
+  }
+  if (!asArray(normalized.sourceAnchor?.themes).length && !asArray(normalized.sourceAnchor?.horror).length) {
+    issues.push(makeIssue("warning", "sourceAnchor.taxonomy", "Source Anchor has no theme or horror tags."));
+  }
+
+  if (!hasText(inspiration.id)) issues.push(makeIssue("error", "inspiration.id", "Public Inspiration card is missing an id."));
+  if (!hasText(inspiration.title)) issues.push(makeIssue("error", "inspiration.title", "Public Inspiration card is missing a title."));
+  if (inspiration.contentType !== "source-inspiration-card") {
+    issues.push(makeIssue("warning", "inspiration.contentType", "Public Inspiration card should use contentType source-inspiration-card."));
+  }
+  if (!asArray(inspiration.sourceAnchors).includes(sourceAnchorId)) {
+    issues.push(makeIssue("error", "inspiration.sourceAnchors", `Public Inspiration card does not reference Source Anchor ${sourceAnchorId}.`, inspiration.id));
+  }
+  if (!asArray(inspiration.workflows).includes("inspiration-archive")) {
+    issues.push(makeIssue("warning", "inspiration.workflows", "Public Inspiration card is not linked to inspiration-archive.", inspiration.id));
+  }
+  if (!hasText(inspiration.summary) && !hasText(inspiration.narrative)) {
+    issues.push(makeIssue("warning", "inspiration.copy", "Public Inspiration card has no summary or narrative copy.", inspiration.id));
+  }
+  if (!hasText(inspiration.media?.imageKey) && !hasText(inspiration.media?.imageUrl)) {
+    issues.push(makeIssue("warning", "inspiration.media", "Public Inspiration card has no imageKey or imageUrl.", inspiration.id));
+  }
+
+  getDuplicateIds(components).forEach((id) => {
+    issues.push(makeIssue("error", "components", `Duplicate component id: ${id}.`, id));
+  });
+
+  components.forEach((component, index) => {
+    const id = component.id || `component-${index + 1}`;
+    const type = component.contentType;
+    const workflows = asArray(component.workflows);
+    const slots = asArray(component.slots);
+
+    if (!hasText(component.id)) issues.push(makeIssue("error", `components[${index}].id`, "Component is missing an id.", id));
+    if (!hasText(component.title || component.label)) issues.push(makeIssue("error", `components[${index}].title`, "Component is missing a title or label.", id));
+    if (!COMPONENT_TYPE_LABELS[type]) issues.push(makeIssue("error", `components[${index}].contentType`, `Unknown component contentType: ${type || "empty"}.`, id));
+    if (!asArray(component.sourceAnchors).length) {
+      issues.push(makeIssue("warning", `components[${index}].sourceAnchors`, "Component has no Source Anchor; export will attach the current one.", id));
+    } else if (!asArray(component.sourceAnchors).includes(sourceAnchorId)) {
+      issues.push(makeIssue("warning", `components[${index}].sourceAnchors`, `Component is not linked to current Source Anchor ${sourceAnchorId}.`, id));
+    }
+    if (!workflows.length) issues.push(makeIssue("error", `components[${index}].workflows`, "Component has no workflow.", id));
+    workflows.forEach((workflowId) => {
+      if (!CANONICAL_WORKFLOW_MAP.has(workflowId)) {
+        issues.push(makeIssue("error", `components[${index}].workflows`, `Unknown workflow: ${workflowId}.`, id));
+      }
+    });
+    if (!slots.length) issues.push(makeIssue("error", `components[${index}].slots`, "Component has no slot.", id));
+    slots.forEach((slotId) => {
+      if (!CANONICAL_SLOT_MAP.has(slotId)) {
+        issues.push(makeIssue("error", `components[${index}].slots`, `Unknown slot: ${slotId}.`, id));
+      }
+    });
+
+    if (type === "monster-graft") {
+      const monsterRules = getExplicitMonsterRules(component);
+      const monsterSlot = component.monster?.slot || slots[0];
+      if (!workflows.includes("monster-composer")) {
+        issues.push(makeIssue("error", `components[${index}].workflows`, "Monster graft must include monster-composer workflow.", id));
+      }
+      if (!monsterSlot || !CANONICAL_MONSTER_SLOT_MAP.has(monsterSlot)) {
+        issues.push(makeIssue("error", `components[${index}].monster.slot`, `Monster graft uses an unknown Monster Composer slot: ${monsterSlot || "empty"}.`, id));
+      }
+      slots.forEach((slotId) => {
+        if (!CANONICAL_MONSTER_SLOT_MAP.has(slotId)) {
+          issues.push(makeIssue("error", `components[${index}].slots`, `Monster graft references non-monster slot: ${slotId}.`, id));
+        }
+      });
+      if (monsterSlot && slots.length && !slots.includes(monsterSlot)) {
+        issues.push(makeIssue("warning", `components[${index}].monster.slot`, `monster.slot (${monsterSlot}) is not present in component slots.`, id));
+      }
+      if (!monsterRules) {
+        issues.push(makeIssue("error", `components[${index}].monster.rules`, "Monster graft has no structured monster.rules object.", id));
+      } else {
+        if (!hasText(monsterRules.section)) issues.push(makeIssue("warning", `components[${index}].monster.rules.section`, "Structured rules have no stat block section.", id));
+        if (!hasText(monsterRules.actionEconomy)) issues.push(makeIssue("warning", `components[${index}].monster.rules.actionEconomy`, "Structured rules have no action economy.", id));
+        if (!isPlainObject(monsterRules.usage)) issues.push(makeIssue("warning", `components[${index}].monster.rules.usage`, "Structured rules have no usage object.", id));
+        if (!isPlainObject(monsterRules.resolution)) issues.push(makeIssue("warning", `components[${index}].monster.rules.resolution`, "Structured rules have no resolution object.", id));
+        if (!isPlainObject(monsterRules.targeting)) issues.push(makeIssue("warning", `components[${index}].monster.rules.targeting`, "Structured rules have no targeting object.", id));
+        if (!isPlainObject(monsterRules.damage)) issues.push(makeIssue("warning", `components[${index}].monster.rules.damage`, "Structured rules have no damage object.", id));
+        if (monsterRules.resolution?.type === "savingThrow" && !hasText(monsterRules.resolution?.ability)) {
+          issues.push(makeIssue("warning", `components[${index}].monster.rules.resolution.ability`, "Saving throw resolution has no ability.", id));
+        }
+        if (monsterRules.usage?.type === "recharge" && !hasText(monsterRules.usage?.recharge)) {
+          issues.push(makeIssue("warning", `components[${index}].monster.rules.usage.recharge`, "Recharge usage has no recharge value.", id));
+        }
+      }
+      if (!hasText(component.counterplay) && !hasText(component.monster?.rules?.counterplay?.text)) {
+        issues.push(makeIssue("warning", `components[${index}].counterplay`, "Monster graft has no explicit counterplay text.", id));
+      }
+      validateMonsterAnatomyConstraintsForStudio(component, index, issues);
+    }
+
+    if (type === "location-component") {
+      if (!workflows.includes("darken-location")) {
+        issues.push(makeIssue("error", `components[${index}].workflows`, "Location component must include darken-location workflow.", id));
+      }
+      slots.forEach((slotId) => {
+        if (!CANONICAL_DARKEN_SLOT_MAP.has(slotId) || slotId === "locationRegion") {
+          issues.push(makeIssue("error", `components[${index}].slots`, `Location component uses an invalid Darken slot: ${slotId}.`, id));
+        }
+      });
+      if (!hasText(component.summary) && !hasText(component.tableText) && !hasText(component.mechanics)) {
+        issues.push(makeIssue("warning", `components[${index}].playableText`, "Location component has no summary, table text, or mechanics.", id));
+      }
+    }
+
+    if (type === "location-region") {
+      if (!slots.includes("locationRegion")) {
+        issues.push(makeIssue("error", `components[${index}].slots`, "Location region must use the locationRegion slot.", id));
+      }
+      if (!isPlainObject(component.locationRegion)) {
+        issues.push(makeIssue("warning", `components[${index}].locationRegion`, "Location region has no locationRegion metadata object.", id));
+      } else {
+        ["role", "size", "shape"].forEach((field) => {
+          if (!hasText(component.locationRegion?.[field])) {
+            issues.push(makeIssue("warning", `components[${index}].locationRegion.${field}`, `Location region has no ${field}.`, id));
+          }
+        });
+      }
+    }
+  });
+
+  validateContentPack(contentPackExport).forEach((issue) => {
+    issues.push({
+      ...issue,
+      path: `contentPack.${issue.path || "pack"}`,
+      severity: issue.severity || "warning",
+    });
+  });
+
+  return {
+    issues,
+    summary: getIssueSummary(issues),
   };
 }
 
@@ -984,6 +1419,7 @@ export default function InspirationStudioPage() {
   const [selectedComponentId, setSelectedComponentId] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
   const [copyState, setCopyState] = useState("idle");
+  const [exportMode, setExportMode] = useState("contentPack");
 
   useEffect(() => {
     let cancelled = false;
@@ -1033,8 +1469,12 @@ export default function InspirationStudioPage() {
   const activeComponentPool = componentMode === "monsters" ? monsterComponents : locationComponents;
   const visibleComponents = activeComponentPool.filter((component) => matchesComponentSearch(component, componentSearch));
   const selectedComponent = draft.components.find((component) => component.id === selectedComponentId) || visibleComponents[0] || null;
-  const exportObject = useMemo(() => buildModuleExport(draft, imagePreviewUrl), [draft, imagePreviewUrl]);
-  const exportJson = useMemo(() => JSON.stringify(exportObject, null, 2), [exportObject]);
+  const moduleExportObject = useMemo(() => buildModuleExport(draft, imagePreviewUrl), [draft, imagePreviewUrl]);
+  const contentPackExportObject = useMemo(() => buildContentPackExport(draft, imagePreviewUrl), [draft, imagePreviewUrl]);
+  const validationReport = useMemo(() => validateStudioDraft(draft, contentPackExportObject), [draft, contentPackExportObject]);
+  const moduleExportJson = useMemo(() => JSON.stringify(moduleExportObject, null, 2), [moduleExportObject]);
+  const contentPackExportJson = useMemo(() => JSON.stringify(contentPackExportObject, null, 2), [contentPackExportObject]);
+  const exportJson = exportMode === "module" ? moduleExportJson : contentPackExportJson;
 
   function updateDraft(updater) {
     setDraft((currentDraft) => {
@@ -1239,7 +1679,16 @@ export default function InspirationStudioPage() {
           ) : null}
 
           {activeSection === "export" ? (
-            <ExportWorkspace copyState={copyState} exportJson={exportJson} onCopy={copyExportJson} />
+            <ExportWorkspace
+              contentPackExportJson={contentPackExportJson}
+              copyState={copyState}
+              exportJson={exportJson}
+              exportMode={exportMode}
+              moduleExportJson={moduleExportJson}
+              onCopy={copyExportJson}
+              onExportModeChange={setExportMode}
+              validationReport={validationReport}
+            />
           ) : null}
         </main>
       </div>
@@ -1446,18 +1895,117 @@ function ComponentsWorkspace({
   );
 }
 
-function ExportWorkspace({ copyState, exportJson, onCopy }) {
+function ExportWorkspace({
+  contentPackExportJson,
+  copyState,
+  exportJson,
+  exportMode,
+  moduleExportJson,
+  onCopy,
+  onExportModeChange,
+  validationReport,
+}) {
+  const selectedOption = EXPORT_MODE_OPTIONS.find((option) => option.id === exportMode) || EXPORT_MODE_OPTIONS[0];
+
   return (
-    <section className="studio-panel studio-panel--export" aria-label="Export module draft">
-      <PanelTitle eyebrow="Export" icon="fa-code" title="Module Draft JSON" help={SECTION_HELP.export}>
-        <button type="button" onClick={onCopy}>
-          <Icon name={copyState === "copied" ? "fa-check" : copyState === "failed" ? "fa-triangle-exclamation" : "fa-copy"} />
-          {copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy Failed" : "Copy JSON"}
-        </button>
-      </PanelTitle>
-      <p className="studio-export-note">This is a local editor preview. Copy this JSON only after the module organization feels right.</p>
-      <textarea className="studio-export-textarea" readOnly value={exportJson} aria-label="Exported Inspiration Module JSON" />
-    </section>
+    <div className="inspiration-studio__workspace inspiration-studio__workspace--export">
+      <section className="studio-panel studio-panel--validation" aria-label="Validation report">
+        <PanelTitle eyebrow="Validation" icon="fa-shield-halved" title="Module Readiness" help="Checks whether the current Inspiration Module can safely become a registry-ready content pack." />
+        <ValidationPanel report={validationReport} />
+      </section>
+
+      <section className="studio-panel studio-panel--export" aria-label="Export content pack">
+        <PanelTitle eyebrow="Export" icon="fa-code" title={selectedOption.label} help={SECTION_HELP.export}>
+          <button type="button" onClick={onCopy}>
+            <Icon name={copyState === "copied" ? "fa-check" : copyState === "failed" ? "fa-triangle-exclamation" : "fa-copy"} />
+            {copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy Failed" : "Copy JSON"}
+          </button>
+        </PanelTitle>
+
+        <div className="studio-export-mode" role="tablist" aria-label="Export format">
+          {EXPORT_MODE_OPTIONS.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              aria-pressed={exportMode === option.id}
+              onClick={() => onExportModeChange(option.id)}
+            >
+              <span><Icon name={option.icon} /> {option.label}</span>
+              <em>{option.description}</em>
+            </button>
+          ))}
+        </div>
+
+        <p className="studio-export-note">
+          {exportMode === "contentPack"
+            ? "Copy this JSON into a content pack file when validation is clean enough for the registry."
+            : "Use the raw module draft only for Studio/import debugging; the registry should consume the Content Pack export."}
+        </p>
+        <textarea
+          className="studio-export-textarea"
+          readOnly
+          value={exportJson}
+          aria-label={exportMode === "contentPack" ? "Exported Content Pack JSON" : "Exported Inspiration Module JSON"}
+        />
+
+        <details className="studio-export-compare">
+          <summary><Icon name="fa-code-compare" /> Inspect both export payloads</summary>
+          <div className="studio-export-compare__grid">
+            <label>
+              <span>Content Pack</span>
+              <textarea readOnly value={contentPackExportJson} aria-label="Content Pack export preview" />
+            </label>
+            <label>
+              <span>Module Draft</span>
+              <textarea readOnly value={moduleExportJson} aria-label="Module Draft export preview" />
+            </label>
+          </div>
+        </details>
+      </section>
+    </div>
+  );
+}
+
+function ValidationPanel({ report }) {
+  const issues = asArray(report?.issues);
+  const summary = report?.summary || getIssueSummary(issues);
+  const isClean = !summary.error && !summary.warning;
+
+  return (
+    <div className="studio-validation-panel" data-validation-state={summary.error ? "error" : summary.warning ? "warning" : "clean"}>
+      <div className="studio-validation-panel__summary" aria-label="Validation summary">
+        <StatPill icon="fa-circle-xmark" label="Errors" value={summary.error || 0} />
+        <StatPill icon="fa-triangle-exclamation" label="Warnings" value={summary.warning || 0} />
+        <StatPill icon="fa-circle-info" label="Info" value={summary.info || 0} />
+      </div>
+
+      {isClean ? (
+        <div className="studio-validation-clean">
+          <Icon name="fa-circle-check" />
+          <strong>Ready for Content Pack export.</strong>
+          <span>No validation issues detected for the current module.</span>
+        </div>
+      ) : (
+        <div className="studio-validation-list" role="list">
+          {issues.map((issue, index) => {
+            const severity = issue.severity || "warning";
+            const meta = VALIDATION_SEVERITY_META[severity] || VALIDATION_SEVERITY_META.warning;
+            return (
+              <article className={`studio-validation-issue studio-validation-issue--${severity}`} key={`${issue.path}-${issue.id}-${index}`} role="listitem">
+                <span className="studio-validation-issue__badge">
+                  <Icon name={meta.icon} />
+                  {severity}
+                </span>
+                <div>
+                  <strong>{issue.message}</strong>
+                  <span>{issue.path}{issue.id ? ` • ${issue.id}` : ""}</span>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -1519,6 +2067,36 @@ function ComponentEditor({ component, onChange, onRemove }) {
   function setMonsterSlot(value) {
     setField(["monster", "slot"], value);
     setField(["slots"], splitList(value));
+  }
+
+  function setMonsterConstraintArray(field, value) {
+    onChange((nextComponent) => {
+      const monster = nextComponent.monster = nextComponent.monster || {};
+      monster.constraints = monster.constraints || {};
+      monster.constraints[field] = splitList(value);
+      if (!Object.values(monster.constraints).some((entry) => Array.isArray(entry) ? entry.length : Boolean(entry))) {
+        delete monster.constraints;
+      }
+    });
+  }
+
+  function setMonsterConstraintNote(value) {
+    onChange((nextComponent) => {
+      const monster = nextComponent.monster = nextComponent.monster || {};
+      monster.constraints = monster.constraints || {};
+      monster.constraints.note = value;
+      if (!Object.values(monster.constraints).some((entry) => Array.isArray(entry) ? entry.length : Boolean(entry))) {
+        delete monster.constraints;
+      }
+    });
+  }
+
+  function clearMonsterConstraints() {
+    onChange((nextComponent) => {
+      if (nextComponent.monster?.constraints) delete nextComponent.monster.constraints;
+      if (nextComponent.anatomyConstraints) delete nextComponent.anatomyConstraints;
+      if (nextComponent.constraints) delete nextComponent.constraints;
+    });
   }
 
   function setResolutionChoice(value) {
@@ -1851,6 +2429,8 @@ function ComponentEditor({ component, onChange, onRemove }) {
   const explicitMonsterRules = isMonsterGraft ? getExplicitMonsterRules(component) : null;
   const monsterRulesFeature = isMonsterGraft ? buildMonsterRulesFeature(component, explicitMonsterRules) : null;
   const monsterRules = isMonsterGraft ? normalizeMonsterGraftRules(monsterRulesFeature) : {};
+  const monsterConstraints = isMonsterGraft ? (normalizeMonsterAnatomyConstraints(getMonsterConstraintSource(component)) || {}) : {};
+  const monsterConstraintSummary = isMonsterGraft ? getMonsterConstraintSummary(component) : [];
   const usesInferredRules = Boolean(isMonsterGraft && !explicitMonsterRules && (component.mechanics || component.tableText));
   const ruleSection = component.monster?.section || monsterRules.section || "trait";
   const actionEconomy = monsterRules.actionEconomy || "passive";
@@ -1868,6 +2448,18 @@ function ComponentEditor({ component, onChange, onRemove }) {
   const visibleMultiattackAttacks = multiattackEnabled ? (multiattackAttacks.length ? multiattackAttacks : [{ ref: "primary", label: "Primary", count: monsterRules.multiattack?.count || 2 }]) : [];
   const multiattackReplacements = asArray(monsterRules.multiattack?.replacements);
   const spellcastingEnabled = Boolean(monsterRules.spellcasting?.enabled);
+  const abilityReferences = asArray(monsterRules.references);
+  const hasReferenceDetails = abilityReferences.some((reference) => Boolean(
+    reference?.type ||
+    reference?.relationship ||
+    reference?.ref ||
+    reference?.label ||
+    reference?.count ||
+    reference?.text
+  ));
+  const visibleAbilityReferences = abilityReferences.length
+    ? abilityReferences
+    : [{ type: "action", relationship: "uses", ref: "ability-1", label: "Ability 1" }];
   const spellcastingLists = getSpellcastingListsForEdit();
   const filteredSpellOptions = useMemo(() => {
     const query = spellPickerQuery.trim().toLowerCase();
@@ -2051,6 +2643,76 @@ function ComponentEditor({ component, onChange, onRemove }) {
                 <input type="number" value={component.monster?.complexity ?? 0} onChange={(event) => setField(["monster", "complexity"], Number(event.target.value))} />
               </FormRow>
             </div>
+          </RulesGroup>
+
+          <RulesGroup
+            icon="fa-dna"
+            title="Anatomy Constraints"
+            help="Optional hard compatibility gates. Leave empty for generic grafts; fill only when the feature needs a specific family, body plan, organ, limb, or build prerequisite."
+            actions={monsterConstraintSummary.length ? <RemoveRulesBlockButton label="Anatomy Constraints" onClick={clearMonsterConstraints} /> : null}
+          >
+            <div className="studio-constraint-reference">
+              <div>
+                <strong>Known body plans</strong>
+                <span>{MONSTER_BODY_PLAN_OPTIONS.map((option) => option.id).join(", ")}</span>
+              </div>
+              <div>
+                <strong>Known families</strong>
+                <span>{MONSTER_FAMILY_PROFILE_OPTIONS.map((option) => option.id).join(", ")}</span>
+              </div>
+            </div>
+            <div className="studio-form-grid studio-form-grid--compact">
+              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.allowedFamilies} icon="fa-skull" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.allowedFamilies}>
+                <TextInput value={joinList(asArray(monsterConstraints.allowedFamilies).length ? monsterConstraints.allowedFamilies : monsterConstraints.exclusiveToFamilies)} onChange={(value) => setMonsterConstraintArray("allowedFamilies", value)} placeholder="spider, skeleton" />
+              </FormRow>
+              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenFamilies} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenFamilies}>
+                <TextInput value={joinList(monsterConstraints.forbiddenFamilies)} onChange={(value) => setMonsterConstraintArray("forbiddenFamilies", value)} placeholder="spider, spirit" />
+              </FormRow>
+              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.allowedBodyPlans} icon="fa-person" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.allowedBodyPlans}>
+                <TextInput value={joinList(monsterConstraints.allowedBodyPlans)} onChange={(value) => setMonsterConstraintArray("allowedBodyPlans", value)} placeholder="humanoid, arachnid" />
+              </FormRow>
+              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenBodyPlans} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenBodyPlans}>
+                <TextInput value={joinList(monsterConstraints.forbiddenBodyPlans)} onChange={(value) => setMonsterConstraintArray("forbiddenBodyPlans", value)} placeholder="incorporeal" />
+              </FormRow>
+              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiredAnatomy} icon="fa-hand" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiredAnatomy}>
+                <TextInput value={joinList(monsterConstraints.requiredAnatomy)} onChange={(value) => setMonsterConstraintArray("requiredAnatomy", value)} placeholder="hands, fangs, web_glands" />
+              </FormRow>
+              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiresAnyAnatomy} icon="fa-code-branch" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiresAnyAnatomy}>
+                <TextInput value={joinList(monsterConstraints.requiresAnyAnatomy)} onChange={(value) => setMonsterConstraintArray("requiresAnyAnatomy", value)} placeholder="hands, tendrils" />
+              </FormRow>
+              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenAnatomy} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenAnatomy}>
+                <TextInput value={joinList(monsterConstraints.forbiddenAnatomy)} onChange={(value) => setMonsterConstraintArray("forbiddenAnatomy", value)} placeholder="beak, no_stable_limbs" />
+              </FormRow>
+              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiredTags} icon="fa-tags" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiredTags}>
+                <TextInput value={joinList(monsterConstraints.requiredTags)} onChange={(value) => setMonsterConstraintArray("requiredTags", value)} placeholder="corpse, physical" />
+              </FormRow>
+              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenTags} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenTags}>
+                <TextInput value={joinList(monsterConstraints.forbiddenTags)} onChange={(value) => setMonsterConstraintArray("forbiddenTags", value)} placeholder="no_flesh, no_hands" />
+              </FormRow>
+              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiredTokens} icon="fa-link" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiredTokens}>
+                <TextInput value={joinList(monsterConstraints.requiredTokens)} onChange={(value) => setMonsterConstraintArray("requiredTokens", value)} placeholder="web_maker, bone_body" />
+              </FormRow>
+              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiresAnyTokens} icon="fa-link" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiresAnyTokens}>
+                <TextInput value={joinList(monsterConstraints.requiresAnyTokens)} onChange={(value) => setMonsterConstraintArray("requiresAnyTokens", value)} placeholder="spider_body, web_maker" />
+              </FormRow>
+              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenTokens} icon="fa-link-slash" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenTokens}>
+                <TextInput value={joinList(monsterConstraints.forbiddenTokens)} onChange={(value) => setMonsterConstraintArray("forbiddenTokens", value)} placeholder="spirit_body, no_body" />
+              </FormRow>
+            </div>
+            <FormRow label="Constraint Note" icon="fa-note-sticky" hint="Optional internal note explaining why the constraint exists. This is useful for review and future content authors.">
+              <TextArea rows={2} value={monsterConstraints.note || ""} onChange={setMonsterConstraintNote} placeholder="Example: requires spinnerets because the graft creates web terrain directly." />
+            </FormRow>
+            {monsterConstraintSummary.length ? (
+              <div className="studio-constraint-summary" aria-label="Current anatomy constraints">
+                {monsterConstraintSummary.map((row) => (
+                  <span key={`${row.label}-${row.values.join("-")}`}>
+                    <strong>{row.label}</strong>: {row.values.join(", ")}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <div className="studio-empty-state studio-empty-state--inline">No anatomy constraints. This graft remains generic and can be used by any compatible monster frame.</div>
+            )}
           </RulesGroup>
 
           <DividerLabel icon="fa-scale-balanced" title="Rules" help="Structured rules tell the exporter whether this graft is an attack, saving throw, reaction, recharge power, trait, or other ability." />

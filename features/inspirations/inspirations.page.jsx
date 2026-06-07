@@ -367,7 +367,7 @@ function InspirationFilterSelect({ id, label, value, options, onChange, openSele
   );
 }
 
-export default function InspirationsPage() {
+export default function InspirationsPage({ onOpenMonsterComposer } = {}) {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("Any Type");
   const [packFilter, setPackFilter] = useState(ANY_PACK);
@@ -451,6 +451,22 @@ export default function InspirationsPage() {
     packFilter !== ANY_PACK,
     typeFilter !== "Any Type",
   ].filter(Boolean).length;
+  const canOpenMonsterComposer = Boolean(
+    activeInspiration && activeSourceAnchor && typeof onOpenMonsterComposer === "function",
+  );
+
+  function openActiveMonsterComposer() {
+    if (!canOpenMonsterComposer) return;
+
+    const sourceAnchorId = getPrimarySourceAnchorId(activeInspiration);
+    onOpenMonsterComposer({
+      sourceAnchorId,
+      sourceAnchorIds: uniqueArray([sourceAnchorId, ...(activeInspiration.sourceAnchors || [])]),
+      sourceAnchorLabel: activeSourceAnchor?.label || getInspirationTitle(activeInspiration),
+      inspirationId: activeInspiration.id,
+      inspirationTitle: getInspirationTitle(activeInspiration),
+    });
+  }
 
   function clearFilters() {
     setSearch("");
@@ -577,12 +593,24 @@ export default function InspirationsPage() {
               </div>
 
               <div className="inspirations-page__dossier-head">
-                <h2>{getInspirationTitle(activeInspiration)}</h2>
-                {activeContentPack && (
-                  <span className="inspirations-page__pack-badge">
-                    Content Pack · {activeContentPack.title}
-                  </span>
-                )}
+                <div>
+                  <h2>{getInspirationTitle(activeInspiration)}</h2>
+                  {activeContentPack && (
+                    <span className="inspirations-page__pack-badge">
+                      Content Pack · {activeContentPack.title}
+                    </span>
+                  )}
+                </div>
+                {canOpenMonsterComposer ? (
+                  <button
+                    className="inspirations-page__composer-cta"
+                    type="button"
+                    onClick={openActiveMonsterComposer}
+                  >
+                    <i className="fa-solid fa-skull" aria-hidden="true" />
+                    <span>Use in Monster Composer</span>
+                  </button>
+                ) : null}
               </div>
 
               <div className="inspirations-page__detail-main">

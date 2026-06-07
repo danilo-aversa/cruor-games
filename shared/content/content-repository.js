@@ -1,4 +1,4 @@
-import { buildInspirationModulesFromRegistry } from "./inspiration-modules.js";
+import { CRUOR_INSPIRATION_MODULES, buildInspirationModulesFromRegistry } from "./inspiration-modules.js";
 import {
   STATIC_CONTENT_PACK_PROVENANCE,
   STATIC_CONTENT_PACKS,
@@ -33,7 +33,9 @@ export function getStaticContentPackSummaries() {
   }));
 }
 
-export function getStaticInspirationModules() {
+export function getStaticInspirationModules({ includeRegistryFallback = true } = {}) {
+  if (!includeRegistryFallback) return CRUOR_INSPIRATION_MODULES;
+
   return buildInspirationModulesFromRegistry(getStaticContentRegistry(), {
     packId: "static-cruor-registry",
   });

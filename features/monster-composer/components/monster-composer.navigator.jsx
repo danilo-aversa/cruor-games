@@ -9,6 +9,7 @@ import { getSelectedIdsForSlot } from "../model/monster-composer.selection.js";
 import {
   formatToken,
   getCompatibilityStatus,
+  getFeatureAnatomyConstraintSummary,
   getFeatureCompatibility,
 } from "../model/monster-composer.compatibility.js";
 import {
@@ -584,6 +585,7 @@ function FeatureCard({
   const packTitle = getContentPackTitle(feature);
   const sourcePackTitle = getSourcePackTitle(source);
   const rules = getFeatureCompatibility(feature);
+  const anatomyConstraintSummary = getFeatureAnatomyConstraintSummary(feature);
   const mechanicProfile = getFeatureMechanicProfile(feature);
   const hasCompatibilityBadge = compatibility?.kind && compatibility.kind !== "compatible";
   const profile = decisionProfile || { tier: "safe" };
@@ -733,6 +735,18 @@ function FeatureCard({
                 {rules.incompatibleWith.map((token) => (
                   <span key={`blocks-${token}`} className="meta-value danger-chip">
                     Blocks {formatToken(token)}
+                  </span>
+                ))}
+              </span>
+            </div>
+          )}
+          {anatomyConstraintSummary.length > 0 && (
+            <div className="meta-row">
+              <span className="meta-label">Anatomy</span>
+              <span className="meta-values">
+                {anatomyConstraintSummary.slice(0, 8).map((row) => (
+                  <span key={`${row.label}-${row.values.join("-")}`} className="meta-value strong-chip">
+                    {row.label}: {row.values.join(", ")}
                   </span>
                 ))}
               </span>

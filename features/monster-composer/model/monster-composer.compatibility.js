@@ -1,4 +1,13 @@
-import { FEATURE_COMPATIBILITY_OVERRIDES } from "../data/monster-grafts.js";
+import {
+  FEATURE_ANATOMY_CONSTRAINT_OVERRIDES,
+  FEATURE_COMPATIBILITY_OVERRIDES,
+} from "../data/monster-grafts.js";
+import {
+  evaluateMonsterAnatomyConstraints,
+  formatAnatomyTerm,
+  getFeatureAnatomyConstraints,
+  summarizeMonsterAnatomyConstraints,
+} from "./anatomy.js";
 import { asArray, getSelectedIdsForSlot, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
 
 function defaultTitleCase(value) {
@@ -15,6 +24,7 @@ export function hasFeatureCompatibilityOverride(featureOrId) {
 
 export function getFeatureCompatibility(feature) {
   const override = FEATURE_COMPATIBILITY_OVERRIDES[feature.id] || {};
+  const anatomyOverride = FEATURE_ANATOMY_CONSTRAINT_OVERRIDES[feature.id] || {};
   return {
     grants: uniqueArray([...asArray(feature.grants), ...asArray(override.grants)]),
     requires: uniqueArray([...asArray(feature.requires), ...asArray(override.requires)]),
@@ -27,6 +37,14 @@ export function getFeatureCompatibility(feature) {
       ...asArray(override.incompatibleWith),
     ]),
     avoidWith: uniqueArray([...asArray(feature.avoidWith), ...asArray(override.avoidWith)]),
+    constraints: getFeatureAnatomyConstraints({
+      ...feature,
+      constraints:
+        feature.constraints ||
+        feature.anatomyConstraints ||
+        anatomyOverride.constraints ||
+        anatomyOverride,
+    }),
   };
 }
 
@@ -34,11 +52,21 @@ export function formatToken(token) {
   return String(token || "")
     .replace(/^type:/, "")
     .replace(/^category:/, "")
+    .replace(/^anatomy:/, "")
+    .replace(/^tag:/, "")
     .replace(/[_.-]+/g, " ")
     .split(" ")
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+export function formatAnatomyConstraintValue(value) {
+  return formatAnatomyTerm(value);
+}
+
+export function getFeatureAnatomyConstraintSummary(feature) {
+  return summarizeMonsterAnatomyConstraints(getFeatureCompatibility(feature).constraints);
 }
 
 export function getBaseTokens(typeId, category) {
@@ -93,6 +121,15 @@ export function getCompatibilityStatus(
   );
   const avoidTokens = tokenOverlap(compatibility.avoidWith, grantedTokens);
 
+  const anatomyStatus = evaluateMonsterAnatomyConstraints(
+    { ...feature, constraints: compatibility.constraints },
+    {
+      typeId,
+      category,
+      grantedTokens,
+    },
+  );
+
   if (blockingTokens.length || blockedBySelected.length) {
     const tokens = uniqueArray([...blockingTokens, ...blockedBySelected]);
     return {
@@ -100,6 +137,17 @@ export function getCompatibilityStatus(
       label: "Incompatible",
       tokens,
       message: `Incompatible with ${tokens.map(formatToken).join(", ")}.`,
+      anatomyStatus,
+    };
+  }
+
+  if (anatomyStatus.kind === "incompatible") {
+    return {
+      kind: "incompatible",
+      label: anatomyStatus.label || "Anatomy Mismatch",
+      tokens: anatomyStatus.tokens || [],
+      message: anatomyStatus.message,
+      anatomyStatus,
     };
   }
 
@@ -109,6 +157,17 @@ export function getCompatibilityStatus(
       label: "Missing Requirement",
       tokens: missingRequires,
       message: `Requires ${missingRequires.map(formatToken).join(", ")}.`,
+      anatomyStatus,
+    };
+  }
+
+  if (anatomyStatus.kind === "missing") {
+    return {
+      kind: "missing",
+      label: anatomyStatus.label || "Missing Anatomy",
+      tokens: anatomyStatus.tokens || [],
+      message: anatomyStatus.message,
+      anatomyStatus,
     };
   }
 
@@ -118,6 +177,7 @@ export function getCompatibilityStatus(
       label: "Soft Warning",
       tokens: missingSoftRequires,
       message: `Works best with ${missingSoftRequires.map(formatToken).join(", ")}.`,
+      anatomyStatus,
     };
   }
 
@@ -127,14 +187,16 @@ export function getCompatibilityStatus(
       label: "Needs Justification",
       tokens: avoidTokens,
       message: `Avoid with ${avoidTokens.map(formatToken).join(", ")} unless this is intentional.`,
+      anatomyStatus,
     };
   }
 
   return {
     kind: "compatible",
-    label: "Compatible",
+    label: anatomyStatus.constraints ? "Anatomy Match" : "Compatible",
     tokens: [],
-    message: "All requirements satisfied.",
+    message: anatomyStatus.constraints ? anatomyStatus.message : "All requirements satisfied.",
+    anatomyStatus,
   };
 }
 

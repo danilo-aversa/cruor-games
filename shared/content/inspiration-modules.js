@@ -6,6 +6,9 @@ import {
   modulesToRegistryCollections,
   uniqueById,
 } from "./inspiration-module-schema.js";
+import {
+  CORE_INSPIRATION_MODULES,
+} from "./inspiration-modules/core-inspiration-modules.js";
 import { DECOMPOSITION_INSPIRATION_MODULE, DECOMPOSITION_SOURCE_ANCHOR_ID } from "./inspiration-modules/decomposition.js";
 import {
   SEDLEC_OSSUARY_INSPIRATION_MODULE,
@@ -32,12 +35,43 @@ function getPrimaryInspirationForSourceAnchor(sourceAnchorId, inspirations = SHA
 export const EXPLICIT_INSPIRATION_MODULES = Object.freeze([
   DECOMPOSITION_INSPIRATION_MODULE,
   SEDLEC_OSSUARY_INSPIRATION_MODULE,
-]);
+].filter(Boolean));
 
-const EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS = new Set([
+export const EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS = Object.freeze([
   DECOMPOSITION_SOURCE_ANCHOR_ID,
   SEDLEC_OSSUARY_SOURCE_ANCHOR_ID,
 ]);
+
+export const EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET = new Set(
+  EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS,
+);
+
+export const CONVERTED_CORE_INSPIRATION_MODULES = Object.freeze(
+  CORE_INSPIRATION_MODULES.filter((module) => !EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET.has(module.id)),
+);
+
+/**
+ * Canonical static Inspiration Module collection.
+ *
+ * This is the source consumed by Inspiration Studio. It keeps the explicit/standalone
+ * modules first, then appends the converted archive modules. Registry-based module
+ * generation remains available below only as a compatibility fallback for source
+ * anchors that do not yet have an authored module.
+ */
+export const CRUOR_INSPIRATION_MODULES = Object.freeze(
+  uniqueById([
+    ...EXPLICIT_INSPIRATION_MODULES,
+    ...CONVERTED_CORE_INSPIRATION_MODULES,
+  ]),
+);
+
+export const CRUOR_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS = Object.freeze(
+  CRUOR_INSPIRATION_MODULES.map((module) => module.id).filter(Boolean),
+);
+
+export const CRUOR_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET = new Set(
+  CRUOR_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS,
+);
 
 export function buildInspirationModules({
   sourceAnchors = SHARED_SOURCE_ANCHORS,
@@ -48,7 +82,7 @@ export function buildInspirationModules({
     ...SHARED_LOCATION_REGION_COMPONENTS,
   ],
   packId = "core-cruor",
-  excludedSourceAnchorIds = EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS,
+  excludedSourceAnchorIds = CRUOR_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET,
 } = {}) {
   const excludedIds = new Set(asArray(excludedSourceAnchorIds));
 
@@ -64,23 +98,27 @@ export function buildInspirationModules({
         inspiration: getPrimaryInspirationForSourceAnchor(sourceAnchor.id, inspirations),
         components: asArray(components).filter((component) => entryReferencesSourceAnchor(component, sourceAnchor.id)),
         metadata: {
-          generatedFrom: "static-content-registry",
+          generatedFrom: "static-content-registry-fallback",
         },
       }),
     );
 }
 
 export function buildInspirationModulesFromRegistry(registry, { packId = "static-registry" } = {}) {
-  if (!registry) return [];
-  return [
-    ...EXPLICIT_INSPIRATION_MODULES,
-    ...buildInspirationModules({
-      sourceAnchors: registry.sourceAnchors || [],
-      inspirations: registry.inspirations || [],
-      components: registry.components || [],
-      packId,
-    }),
-  ];
+  if (!registry) return CRUOR_INSPIRATION_MODULES;
+
+  const generatedFallbackModules = buildInspirationModules({
+    sourceAnchors: registry.sourceAnchors || [],
+    inspirations: registry.inspirations || [],
+    components: registry.components || [],
+    packId,
+    excludedSourceAnchorIds: CRUOR_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET,
+  });
+
+  return uniqueById([
+    ...CRUOR_INSPIRATION_MODULES,
+    ...generatedFallbackModules,
+  ]);
 }
 
 export {
@@ -89,6 +127,25 @@ export {
   modulesToRegistryCollections,
   uniqueById,
 };
+
+export {
+  CORE_INSPIRATION_CARD_DEFINITIONS,
+  CORE_INSPIRATION_MODULES,
+  CORE_INSPIRATION_MODULE_COMPONENTS,
+  CORE_INSPIRATION_MODULE_INSPIRATIONS,
+  CORE_INSPIRATION_MODULE_PACK_ID,
+  CORE_INSPIRATION_MODULE_REFERENCED_SOURCE_ANCHORS,
+  CORE_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET,
+  CORE_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS,
+  CORE_INSPIRATION_MODULE_SOURCE_ANCHORS,
+  INSPIRATION_ASSET_BASE_PATH,
+  INSPIRATION_ASSET_PROVIDER,
+  buildCoreInspirationFromCard,
+  buildInspirationAssetUrl,
+  getCoreInspirationModule,
+  getCoreInspirationModuleReferencedSourceAnchors,
+  resolveInspirationCardAsset,
+} from "./inspiration-modules/core-inspiration-modules.js";
 
 export {
   DECOMPOSITION_INSPIRATION,
@@ -113,8 +170,3 @@ export {
   SEDLEC_OSSUARY_SOURCE_ANCHOR,
   SEDLEC_OSSUARY_SOURCE_ANCHOR_ID,
 } from "./inspiration-modules/sedlec-ossuary.js";
-
-export const CRUOR_INSPIRATION_MODULES = Object.freeze([
-  ...EXPLICIT_INSPIRATION_MODULES,
-  ...buildInspirationModules(),
-]);

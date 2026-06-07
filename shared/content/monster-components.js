@@ -63,8 +63,10 @@ export function monsterGraftToSharedComponent(graft) {
       complexity: Number(graft.complexity || 0),
       stats: graft.stats || {},
       rules: graft.rules || null,
+      constraints: graft.constraints || graft.anatomyConstraints || null,
     },
     rules: graft.rules || null,
+    anatomyConstraints: graft.constraints || graft.anatomyConstraints || null,
     tags: buildMonsterComponentTags(graft),
   };
 }
