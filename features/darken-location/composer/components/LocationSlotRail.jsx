@@ -29,7 +29,7 @@ function getSlotIcon(slotId) {
   return Sparkles;
 }
 
-export function LocationSlotRail({ state, setState, onFocusSlot }) {
+export function LocationSlotRail({ state, setState, modeControls, onFocusSlot }) {
   const activeScope = normalizeLocationSlotScope(state.activeSlotScope);
   const slots = useMemo(() => getLocationSlotsForScope(activeScope), [activeScope]);
   const activeSlotId = isSlotInScope(state.activeSlot, activeScope)
@@ -87,6 +87,8 @@ export function LocationSlotRail({ state, setState, onFocusSlot }) {
       className="cruor-composer-rail location-composer__rail location-composer__rail--left location-composer__rail--picker location-map-slot-rail"
       aria-label="Location slots"
     >
+      {modeControls ? modeControls : null}
+
       <div className="location-map-mode-switch location-slot-scope-switch" role="tablist" aria-label="Slot target scope">
         {[LOCATION_SLOT_SCOPE_MAP, LOCATION_SLOT_SCOPE_REGION].map((scope) => {
           const definition = LOCATION_SLOT_SCOPE_DEFINITIONS[scope];

@@ -87,6 +87,89 @@ export function getMapSyncStatus(mapRequest, generatedMapPreview, regions = []) 
   };
 }
 
+export const REGION_PREVIEW_MARKER_DEFINITIONS = Object.freeze([
+  Object.freeze({ slotId: "hazard", label: "HAZ", fullLabel: "Hazard", icon: "fa-triangle-exclamation" }),
+  Object.freeze({ slotId: "clue", label: "CLUE", fullLabel: "Clue", icon: "fa-magnifying-glass" }),
+  Object.freeze({ slotId: "encounterTwist", label: "TWIST", fullLabel: "Encounter Twist", icon: "fa-shuffle" }),
+]);
+
+export function getRegionPreviewMarkers(state, regionId) {
+  if (!regionId) return [];
+  const assigned = getAssignedComponentsForRegion(state, regionId);
+
+  return REGION_PREVIEW_MARKER_DEFINITIONS.map((definition) => {
+    const components = assigned.filter(
+      (component) => component.assignment?.slotId === definition.slotId,
+    );
+    if (!components.length) return null;
+
+    return {
+      ...definition,
+      count: components.length,
+      components,
+      title: components[0]?.title || components[0]?.name || definition.fullLabel,
+    };
+  }).filter(Boolean);
+}
+
+export function getMapPreviewQuality(state, mapRequest, generatedMapPreview, regions = []) {
+  const syncStatus = getMapSyncStatus(mapRequest, generatedMapPreview, regions);
+  const safeRegions = Array.isArray(regions) ? regions : [];
+  const markerDefinitions = REGION_PREVIEW_MARKER_DEFINITIONS;
+  const markerCounts = Object.fromEntries(
+    markerDefinitions.map((definition) => [definition.slotId, 0]),
+  );
+  let filledRegions = 0;
+  let secretRegions = 0;
+
+  const regionRows = safeRegions.map((region, index) => {
+    const markers = getRegionPreviewMarkers(state, region.id);
+    const markerSlotIds = new Set(markers.map((marker) => marker.slotId));
+    markerDefinitions.forEach((definition) => {
+      if (markerSlotIds.has(definition.slotId)) markerCounts[definition.slotId] += 1;
+    });
+    if (markers.length) filledRegions += 1;
+    if (region.secret) secretRegions += 1;
+
+    return {
+      id: region.id,
+      index,
+      name: region.name || `Region ${index + 1}`,
+      markers,
+      filled: markers.length > 0,
+    };
+  });
+
+  const emptyRegions = Math.max(0, safeRegions.length - filledRegions);
+  const syncValue = `${syncStatus.synced}/${syncStatus.requested || safeRegions.length || syncStatus.generated || 0}`;
+  const statusLabel = !generatedMapPreview
+    ? "Preview unavailable"
+    : syncStatus.mode === "synced"
+      ? "Ready"
+      : "Partial";
+
+  return {
+    statusLabel,
+    syncStatus,
+    regionRows,
+    markerCounts,
+    filledRegions,
+    emptyRegions,
+    secretRegions,
+    rows: [
+      { key: "sync", label: "Synced", value: syncValue },
+      { key: "corridors", label: "Corridors", value: String(syncStatus.corridors || 0) },
+      { key: "hazards", label: "Hazards", value: String(markerCounts.hazard || 0) },
+      { key: "clues", label: "Clues", value: String(markerCounts.clue || 0) },
+      { key: "twists", label: "Twists", value: String(markerCounts.encounterTwist || 0) },
+      { key: "empty", label: "Empty", value: String(emptyRegions) },
+    ],
+    note: emptyRegions > 0
+      ? `${emptyRegions} room${emptyRegions === 1 ? "" : "s"} still need regional content.`
+      : "Every room has at least one regional hook.",
+  };
+}
+
 function getMapNotes(mapRequest, generatedMapPreview, regions = []) {
   const syncStatus = getMapSyncStatus(mapRequest, generatedMapPreview, regions);
   return [

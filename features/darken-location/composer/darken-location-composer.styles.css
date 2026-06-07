@@ -425,19 +425,19 @@
 
 .location-composer__intro > p,
 .location-composer__intro .location-kicker {
-  display: none !important;
+  display: none;
 }
 
 .location-draft-strip__main,
 .location-draft-strip__scope,
 .location-draft-strip__status {
-  display: none !important;
+  display: none;
 }
 
 .location-workflow-guide,
 .location-audit-strip,
 .location-system-legend {
-  display: none !important;
+  display: none;
 }
 
 .location-composer__frame {
@@ -459,7 +459,7 @@
 .location-composer[data-cruor-ui-mode="simple"] .location-map-sync-status small,
 .location-composer[data-cruor-ui-mode="simple"] .location-map-sync-status dl,
 .location-composer[data-cruor-ui-mode="simple"] .location-map-sync-status > span {
-  display: none !important;
+  display: none;
 }
 
 .location-composer[data-cruor-ui-mode="simple"] .location-chip-grid,
@@ -490,13 +490,13 @@
 
 .location-composer[data-cruor-ui-mode="simple"] .location-compile-preview:not([open]):not(.is-open),
 .location-composer[data-cruor-ui-mode="simple"] .location-map-sync-status:not([open]) {
-  display: none !important;
+  display: none;
 }
 
 .location-composer[data-cruor-ui-mode="simple"] .location-map-stage__head p,
 .location-composer[data-cruor-ui-mode="simple"] .location-stage-footer span,
 .location-composer[data-cruor-ui-mode="simple"] .location-region-node small {
-  display: none !important;
+  display: none;
 }
 
 .location-composer[data-cruor-ui-mode="simple"] .location-stage-footer {
@@ -581,7 +581,7 @@
 
 .location-composer[data-cruor-ui-mode="simple"] .location-draft-btn--ghost,
 .location-composer[data-cruor-ui-mode="simple"] .location-draft-btn--danger {
-  display: none !important;
+  display: none;
 }
 
 @media (max-width: 980px) {
@@ -699,7 +699,7 @@
 }
 
 .location-composer[data-cruor-ui-mode="simple"] .location-advanced-output {
-  display: none !important;
+  display: none;
 }
 
 .location-slot-list--compact,
@@ -744,7 +744,7 @@
 }
 
 .location-region-panel--summary .location-generated-room-card small {
-  display: block !important;
+  display: block;
 }
 
 @media (max-width: 720px) {
@@ -795,7 +795,7 @@
 .location-region-panel--summary,
 .location-component-list--compact,
 .location-slot-target-note--compact {
-  display: none !important;
+  display: none;
 }
 
 .location-picker-modal {
@@ -1636,7 +1636,7 @@
   position: relative;
   top: auto;
   z-index: 12;
-  align-self: stretch;
+  align-self: auto;
   overflow: auto;
   padding-right: 2px;
   scrollbar-width: thin;
@@ -1715,7 +1715,7 @@
 .location-component-option__meta em {
   margin: 0;
   color: #8f7278;
-  font-size: 8px;
+  font-size: 9px;
   font-weight: 950;
   letter-spacing: .12em;
   line-height: 1;
@@ -1753,7 +1753,7 @@
 .location-brief-panel__fields,
 .location-frame-selector-stack {
   display: grid;
-  gap: 7px;
+  gap: 12px;
 }
 
 .location-field,
@@ -1763,11 +1763,6 @@
   display: grid;
   gap: 6px;
   min-width: 0;
-  border: 1px solid rgba(255, 238, 242, .06);
-  background:
-    linear-gradient(180deg, rgba(255, 238, 242, .026), transparent 72%),
-    rgba(0, 0, 0, .18);
-  padding: 9px;
 }
 
 .location-choice-trigger,
@@ -1892,31 +1887,31 @@
 
 /* Step 33 — Match the fullscreen tabpanel sizing used by the widest composer view. */
 #darkenComposerPanel > .cruor-composer-shell.location-composer {
-  min-height: 100% !important;
+  min-height: 100%;
   background: transparent;
   background-image: none;
 }
 
 #darkenComposerPanel .cruor-composer-workspace.location-composer__workspace {
   box-sizing: border-box;
-  min-height: 100% !important;
-  padding-inline: 0 !important;
+  min-height: 100%;
+  padding-inline: 0;
 }
 
 #darkenComposerPanel .location-map-workbench.location-composer__frame {
-  height: 100% !important;
-  min-height: calc(100dvh - var(--app-shell-bar-height) - clamp(10px, 1vw, 16px)) !important;
-  margin-inline: 0 !important;
+  height: 100%;
+  min-height: calc(100dvh - var(--app-shell-bar-height) - clamp(10px, 1vw, 16px));
+  margin-inline: 0;
 }
 
 @supports selector(:has(*)) {
           .app-shell:has(#darkenComposerPanel:not([hidden])) #darkenComposerPanel {
-    height: calc(100dvh - var(--app-shell-bar-height) - clamp(10px, 1vw, 16px)) !important;
-    min-height: 0 !important;
-    overflow: hidden !important;
-    width: 100% !important;
-    max-width: none !important;
-    margin-inline: 0 !important;
+    height: calc(100dvh - var(--app-shell-bar-height) - clamp(10px, 1vw, 16px));
+    min-height: 0;
+    overflow: hidden;
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
   }
 
   }
@@ -1956,10 +1951,10 @@
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-columns: var(--location-side-column-width) var(--location-center-width) var(--location-side-column-width) !important;
+  grid-template-columns: var(--location-side-column-width) var(--location-center-width) var(--location-side-column-width);
   grid-template-rows: minmax(0, 1fr);
   grid-template-areas: "left center right";
-  gap: var(--location-card-gap) clamp(14px, 2vw, 24px) !important;
+  gap: var(--location-card-gap) clamp(14px, 2vw, 24px);
   width: min(var(--location-workspace-max, 100%), 100%);
   min-height: var(--location-stage-min-height);
   margin: 0 auto;
@@ -1987,12 +1982,12 @@
 .location-map-slot-rail,
 .location-map-recap-rail,
 .location-map-frame-rail {
-  position: relative !important;
-  top: auto !important;
+  position: relative;
+  top: auto;
   align-self: stretch;
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
   min-height: var(--location-stage-grid-min-height);
   overflow: visible;
 }
@@ -2000,129 +1995,129 @@
 .location-map-slot-rail {
   display: grid;
   align-content: stretch;
-  border: 0 !important;
-  background: transparent !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .location-map-slot-card {
-  position: relative !important;
+  position: relative;
   z-index: 4;
-  display: grid !important;
-  grid-template-rows: auto minmax(0, 1fr) !important;
-  gap: 6px !important;
-  width: 100% !important;
-  min-height: var(--location-slot-card-height) !important;
-  height: var(--location-slot-card-height) !important;
-  overflow: hidden !important;
-  border: 1px solid rgba(255, 238, 242, 0.09) !important;
-  background: rgba(5, 5, 6, 0.72) !important;
-  color: rgba(238, 238, 238, 0.62) !important;
-  padding: 9px 10px !important;
-  text-align: left !important;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.34) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  transform: none !important;
-  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, width 0.14s ease !important;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 6px;
+  width: 100%;
+  min-height: var(--location-slot-card-height);
+  height: var(--location-slot-card-height);
+  overflow: hidden;
+  border: 1px solid rgba(255, 238, 242, 0.09);
+  background: rgba(5, 5, 6, 0.72);
+  color: rgba(238, 238, 238, 0.62);
+  padding: 9px 10px;
+  text-align: left;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transform: none;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, width 0.14s ease;
 }
 
 .location-map-slot-card:hover,
 .location-map-slot-card.is-active,
 .location-map-slot-card.is-guided {
-  border-color: rgba(190, 64, 82, 0.62) !important;
-  background: rgba(95, 7, 22, 0.46) !important;
-  color: #fff0f2 !important;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 24px rgba(122, 26, 40, 0.3) !important;
+  border-color: rgba(190, 64, 82, 0.62);
+  background: rgba(95, 7, 22, 0.46);
+  color: #fff0f2;
+  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 24px rgba(122, 26, 40, 0.3);
 }
 
 .location-map-slot-card.is-filled {
-  border-color: rgba(143, 150, 148, 0.34) !important;
-  color: #bec8c5 !important;
+  border-color: rgba(143, 150, 148, 0.34);
+  color: #bec8c5;
 }
 
 .location-map-slot-card.is-filled.is-active {
-  border-color: rgba(240, 185, 194, 0.68) !important;
-  color: #fff0f2 !important;
+  border-color: rgba(240, 185, 194, 0.68);
+  color: #fff0f2;
 }
 
 .location-map-slot-card__head {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 8px !important;
-  min-width: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
 }
 
 .location-map-slot-card__head > span {
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 7px !important;
-  min-width: 0 !important;
-  overflow: hidden !important;
-  color: inherit !important;
-  font-size: 9px !important;
-  font-weight: 950 !important;
-  letter-spacing: 0.09em !important;
-  text-transform: uppercase !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  overflow: hidden;
+  color: inherit;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
 }
 
 .location-map-slot-card__head svg,
 .location-map-slot-card__head i {
-  width: 13px !important;
-  min-width: 13px !important;
-  height: 13px !important;
-  flex: 0 0 auto !important;
-  color: currentColor !important;
-  stroke-width: 2 !important;
-  filter: none !important;
+  width: 13px;
+  min-width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  color: currentColor;
+  stroke-width: 2;
+  filter: none;
 }
 
 .location-map-slot-card__head strong {
-  display: inline-grid !important;
-  place-items: center !important;
-  min-width: 20px !important;
-  min-height: 20px !important;
-  border: 1px solid rgba(255, 238, 242, 0.08) !important;
-  background: rgba(0, 0, 0, 0.18) !important;
-  color: #8f7278 !important;
-  font-size: 9px !important;
-  font-weight: 950 !important;
-  line-height: 1 !important;
-  padding: 0 4px !important;
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  min-height: 20px;
+  border: 1px solid rgba(255, 238, 242, 0.08);
+  background: rgba(0, 0, 0, 0.18);
+  color: #8f7278;
+  font-size: 9px;
+  font-weight: 950;
+  line-height: 1;
+  padding: 0 4px;
 }
 
 .location-map-slot-card__body {
-  display: grid !important;
-  gap: 3px !important;
-  min-width: 0 !important;
+  display: grid;
+  gap: 3px;
+  min-width: 0;
 }
 
 .location-map-slot-card__body strong {
-  display: -webkit-box !important;
-  overflow: hidden !important;
-  color: #f0d7dc !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  line-height: 1.16 !important;
-  text-overflow: ellipsis !important;
-  white-space: normal !important;
-  -webkit-box-orient: vertical !important;
-  -webkit-line-clamp: 1 !important;
+  display: -webkit-box;
+  overflow: hidden;
+  color: #f0d7dc;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.16;
+  text-overflow: ellipsis;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 }
 
 .location-map-slot-card__body em {
-  display: -webkit-box !important;
-  overflow: hidden !important;
-  color: rgba(238, 238, 238, 0.5) !important;
-  font-size: 11px !important;
-  font-style: normal !important;
-  line-height: 1.32 !important;
-  -webkit-box-orient: vertical !important;
-  -webkit-line-clamp: 2 !important;
+  display: -webkit-box;
+  overflow: hidden;
+  color: rgba(238, 238, 238, 0.5);
+  font-size: 11px;
+  font-style: normal;
+  line-height: 1.32;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .location-composer__stage {
@@ -2134,13 +2129,13 @@
 .location-map-stage {
   position: relative;
   display: grid;
-  min-height: var(--location-stage-grid-min-height) !important;
+  min-height: var(--location-stage-grid-min-height);
   overflow: hidden;
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .location-map-stage::before {
@@ -2166,10 +2161,10 @@
 }
 
 .location-map-preview {
-  position: absolute !important;
-  inset: 0 !important;
+  position: absolute;
+  inset: 0;
   display: grid;
-  padding: clamp(10px, 1.4vw, 18px) !important;
+  padding: clamp(10px, 1.4vw, 18px);
 }
 
 .location-map-preview--live {
@@ -2181,29 +2176,29 @@
 .location-map-preview--live .map-pan-layer,
 .location-map-preview--live canvas,
 .location-map-preview--live svg {
-  width: 100% !important;
-  height: 100% !important;
-  max-width: none !important;
-  max-height: none !important;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
 }
 
 .location-region-node {
   pointer-events: auto;
-  width: min(164px, 23%) !important;
-  min-height: 72px !important;
-  background: rgba(5, 5, 6, 0.58) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
+  width: min(164px, 23%);
+  min-height: 72px;
+  background: rgba(5, 5, 6, 0.58);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .location-room-recap-anchor {
   display: block;
-  position: absolute !important;
-  left: 14px !important;
-  right: auto !important;
-  bottom: 14px !important;
-  top: auto !important;
-  width: min(360px, calc(100% - 28px)) !important;
+  position: absolute;
+  left: 14px;
+  right: auto;
+  bottom: 14px;
+  top: auto;
+  width: min(360px, calc(100% - 28px));
   pointer-events: none;
 }
 
@@ -2225,16 +2220,16 @@
   --component-stage-list-width: clamp(320px, 29vw, 430px);
   --component-stage-rail-width: clamp(260px, 24vw, 340px);
   --component-stage-drawer-gap: 10px;
-  position: relative !important;
-  inset: auto !important;
-  top: auto !important;
-  left: auto !important;
+  position: relative;
+  inset: auto;
+  top: auto;
+  left: auto;
   pointer-events: auto;
   display: block;
-  width: min(var(--component-stage-list-width), 100%) !important;
-  height: 100% !important;
+  width: min(var(--component-stage-list-width), 100%);
+  height: 100%;
   max-width: 100%;
-  max-height: none !important;
+  max-height: none;
   min-width: 0;
   filter: drop-shadow(0 28px 70px rgba(0, 0, 0, 0.68));
 }
@@ -2242,45 +2237,45 @@
 .location-stage-navigator-overlay .location-component-modal,
 .location-stage-navigator-overlay .component-navigator-modal,
 .location-stage-navigator-overlay .component-navigator-modal--drawer {
-  position: relative !important;
-  inset: auto !important;
-  z-index: auto !important;
-  display: block !important;
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  display: block;
   width: 100%;
   height: 100%;
   min-width: 0;
-  padding: 0 !important;
+  padding: 0;
   isolation: auto;
   pointer-events: auto;
 }
 
 .location-stage-navigator-overlay .location-component-drawer__panel,
 .location-stage-navigator-overlay .component-navigator-modal__panel {
-  position: relative !important;
-  z-index: 1 !important;
-  display: grid !important;
+  position: relative;
+  z-index: 1;
+  display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr);
   grid-template-areas:
     "head"
     "list";
   gap: 10px;
-  width: 100% !important;
-  height: 100% !important;
-  max-height: none !important;
+  width: 100%;
+  height: 100%;
+  max-height: none;
   min-height: 0;
-  margin: 0 !important;
-  overflow: hidden !important;
-  border: 1px solid rgba(240, 185, 194, 0.16) !important;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(240, 185, 194, 0.16);
   background:
     linear-gradient(180deg, rgba(255, 238, 242, 0.045), transparent 12rem),
     radial-gradient(circle at 0% 0%, rgba(122, 26, 40, 0.18), transparent 18rem),
-    rgba(6, 5, 6, 0.92) !important;
-  padding: 10px !important;
+    rgba(6, 5, 6, 0.92);
+  padding: 10px;
   box-shadow:
     0 28px 74px rgba(0, 0, 0, 0.72),
     0 0 0 1px rgba(255, 238, 242, 0.045),
-    inset 0 1px 0 rgba(255, 238, 242, 0.06) !important;
+    inset 0 1px 0 rgba(255, 238, 242, 0.06);
   backdrop-filter: blur(18px) saturate(125%);
   -webkit-backdrop-filter: blur(18px) saturate(125%);
 }
@@ -2293,8 +2288,8 @@
   justify-content: space-between;
   gap: 10px;
   min-width: 0;
-  border-bottom: 1px solid rgba(255, 238, 242, 0.065) !important;
-  padding: 0 0 9px !important;
+  border-bottom: 1px solid rgba(255, 238, 242, 0.065);
+  padding: 0 0 9px;
 }
 
 .location-stage-navigator-overlay .component-navigator-modal__head-copy,
@@ -2310,7 +2305,7 @@
   margin: 0;
   color: #fff0f2;
   font-family: var(--cruor-font-body, Inter, ui-sans-serif, system-ui, sans-serif);
-  font-size: 13px !important;
+  font-size: 13px;
   font-weight: 950;
   letter-spacing: 0.045em;
   line-height: 1.05;
@@ -2331,7 +2326,7 @@
 .location-stage-navigator-overlay .icon-btn,
 .location-stage-navigator-overlay .navigator-filter-btn,
 .location-stage-navigator-overlay .location-component-drawer__close {
-  position: relative !important;
+  position: relative;
   display: grid;
   place-items: center;
   width: 34px;
@@ -2529,38 +2524,38 @@
 .location-stage-navigator-overlay .component-navigator-modal__list,
 .location-stage-navigator-overlay .location-component-list {
   grid-area: list;
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) !important;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   align-content: start;
-  gap: 6px !important;
+  gap: 6px;
   min-width: 0;
   min-height: 0;
   height: 100%;
-  overflow-y: auto !important;
+  overflow-y: auto;
   overflow-x: hidden;
   border: 1px solid rgba(255, 238, 242, 0.075);
   background:
     linear-gradient(180deg, rgba(255, 238, 242, 0.026), transparent 14rem),
     rgba(0, 0, 0, 0.12);
-  padding: 7px !important;
+  padding: 7px;
 }
 
 .location-stage-navigator-overlay .component-card,
 .location-stage-navigator-overlay .location-component-option {
   position: relative;
-  display: grid !important;
+  display: grid;
   align-content: start;
-  gap: 5px !important;
-  min-height: 0 !important;
-  overflow: visible !important;
-  border: 1px solid rgba(255, 238, 242, 0.075) !important;
-  background-color: rgba(9, 6, 8, 0.56) !important;
-  background-image: linear-gradient(180deg, rgba(122, 26, 40, 0.045), transparent 48%), linear-gradient(90deg, rgba(51, 3, 12, 0.24), transparent 52%) !important;
+  gap: 5px;
+  min-height: 0;
+  overflow: visible;
+  border: 1px solid rgba(255, 238, 242, 0.075);
+  background-color: rgba(9, 6, 8, 0.56);
+  background-image: linear-gradient(180deg, rgba(122, 26, 40, 0.045), transparent 48%), linear-gradient(90deg, rgba(51, 3, 12, 0.24), transparent 52%);
   background-blend-mode: overlay, normal;
   color: rgba(238, 238, 238, 0.68);
-  padding: 8px 8px 7px !important;
+  padding: 8px 8px 7px;
   cursor: grab;
-  transform: none !important;
+  transform: none;
   transition: border-color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
 }
 
@@ -2569,8 +2564,8 @@
 .location-stage-navigator-overlay .location-component-option:hover,
 .location-stage-navigator-overlay .location-component-option.in-build,
 .location-stage-navigator-overlay .location-component-option.is-active {
-  border-color: rgba(190, 64, 82, 0.42) !important;
-  background-color: rgba(95, 7, 22, 0.13) !important;
+  border-color: rgba(190, 64, 82, 0.42);
+  background-color: rgba(95, 7, 22, 0.13);
   box-shadow: inset 0 0 0 1px rgba(190, 64, 82, 0.08);
 }
 
@@ -2583,59 +2578,59 @@
 .location-stage-navigator-overlay .card-top,
 .location-stage-navigator-overlay .location-component-card-top {
   display: flex;
-  align-items: start !important;
+  align-items: start;
   justify-content: space-between;
-  gap: 8px !important;
-  min-height: 0 !important;
-  padding-right: 46px !important;
+  gap: 8px;
+  min-height: 0;
+  padding-right: 46px;
 }
 
 .location-stage-navigator-overlay .component-title-stack,
 .location-stage-navigator-overlay .location-component-title-stack {
   display: grid;
-  gap: 2px !important;
+  gap: 2px;
   min-width: 0;
-  padding-right: 0 !important;
+  padding-right: 0;
 }
 
 .location-stage-navigator-overlay .component-card h3,
 .location-stage-navigator-overlay .location-component-option h3 {
   margin: 0;
   color: #fff0f2;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  line-height: 1.12 !important;
-  letter-spacing: -0.01em !important;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
 }
 
 .location-stage-navigator-overlay .summary,
 .location-stage-navigator-overlay .location-component-summary {
-  display: -webkit-box !important;
-  overflow: hidden !important;
-  margin: 0 !important;
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
   color: rgba(238, 238, 238, 0.62);
-  font-size: 10.5px !important;
-  line-height: 1.24 !important;
+  font-size: 10.5px;
+  line-height: 1.24;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
 
 .location-stage-navigator-overlay .component-toggle-btn,
 .location-stage-navigator-overlay .location-component-toggle-btn {
-  position: absolute !important;
-  top: 8px !important;
-  right: 8px !important;
+  position: absolute;
+  top: 8px;
+  right: 8px;
   z-index: 3;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
-  min-height: 24px !important;
-  border: 1px solid rgba(190, 64, 82, 0.42) !important;
-  background: rgba(95, 7, 22, 0.22) !important;
+  min-height: 24px;
+  border: 1px solid rgba(190, 64, 82, 0.42);
+  background: rgba(95, 7, 22, 0.22);
   color: #c8a2a8;
-  padding: 0 7px !important;
-  font-size: 8px !important;
+  padding: 0 7px;
+  font-size: 8px;
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -2652,18 +2647,18 @@
 
 .location-stage-navigator-overlay .component-toggle-btn:hover:not(:disabled),
 .location-stage-navigator-overlay .location-component-toggle-btn:hover:not(:disabled) {
-  border-color: rgba(240, 185, 194, 0.66) !important;
-  background: rgba(122, 26, 40, 0.34) !important;
+  border-color: rgba(240, 185, 194, 0.66);
+  background: rgba(122, 26, 40, 0.34);
   color: #fff0f2;
 }
 
 .location-frame-info,
 .location-graft-info,
 .location-map-recap-rail {
-  display: grid !important;
-  align-content: start !important;
-  grid-template-rows: none !important;
-  gap: 10px !important;
+  display: grid;
+  align-content: start;
+  grid-template-rows: none;
+  gap: 10px;
   overflow: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(122, 26, 40, 0.52) rgba(0, 0, 0, 0.18);
@@ -2725,15 +2720,15 @@
 
 .location-frame-info-row,
 .location-recap-slot.location-frame-info-row {
-  display: flex !important;
-  justify-content: space-between !important;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 10px;
   min-width: 0;
   min-height: 0;
-  border: 1px solid rgba(255, 238, 242, 0.055) !important;
-  background: rgba(0, 0, 0, 0.14) !important;
-  padding: 7px 8px !important;
+  border: 1px solid rgba(255, 238, 242, 0.055);
+  background: rgba(0, 0, 0, 0.14);
+  padding: 7px 8px;
   text-align: left;
 }
 
@@ -2754,8 +2749,8 @@
 
 .location-recap-slot.is-active,
 .location-recap-slot:hover {
-  border-color: rgba(190, 64, 82, 0.48) !important;
-  background: rgba(95, 7, 22, 0.18) !important;
+  border-color: rgba(190, 64, 82, 0.48);
+  background: rgba(95, 7, 22, 0.18);
 }
 
 .location-graft-focus {
@@ -2815,23 +2810,23 @@
 }
 
 .location-map-frame-rail .location-brief-panel {
-  width: 100% !important;
+  width: 100%;
   min-width: 0;
   height: 100%;
 }
 
 #darkenComposerPanel {
-  width: 100% !important;
-  max-width: none !important;
-  min-height: calc(100dvh - var(--app-shell-bar-height, 52px) - clamp(10px, 1vw, 16px)) !important;
-  margin-inline: 0 !important;
+  width: 100%;
+  max-width: none;
+  min-height: calc(100dvh - var(--app-shell-bar-height, 52px) - clamp(10px, 1vw, 16px));
+  margin-inline: 0;
 }
 
 #darkenComposerPanel > .cruor-composer-shell.location-composer,
 #darkenComposerPanel .cruor-composer-workspace.location-composer__workspace,
 #darkenComposerPanel .location-map-workbench.location-composer__frame {
-  width: 100% !important;
-  max-width: none !important;
+  width: 100%;
+  max-width: none;
 }
 
 @supports selector(:has(*)) {
@@ -2853,25 +2848,25 @@
   }
 
   .app-shell:has(#darkenComposerPanel:not([hidden])) .darken-workspace {
-    --darken-workspace-topbar-height: 0px !important;
+    --darken-workspace-topbar-height: 0px;
     height: 100%;
     min-height: 0;
     overflow: hidden;
-    padding-top: clamp(10px, 1vw, 16px) !important;
+    padding-top: clamp(10px, 1vw, 16px);
   }
 
   .app-shell:has(#darkenComposerPanel:not([hidden])) #darkenComposerPanel {
-    height: calc(100dvh - var(--app-shell-bar-height, 52px) - clamp(10px, 1vw, 16px)) !important;
-    min-height: 0 !important;
-    overflow: hidden !important;
+    height: calc(100dvh - var(--app-shell-bar-height, 52px) - clamp(10px, 1vw, 16px));
+    min-height: 0;
+    overflow: hidden;
   }
 
   .app-shell:has(#darkenComposerPanel:not([hidden])) #darkenComposerPanel > .cruor-composer-shell.location-composer,
   .app-shell:has(#darkenComposerPanel:not([hidden])) #darkenComposerPanel .cruor-composer-workspace.location-composer__workspace,
   .app-shell:has(#darkenComposerPanel:not([hidden])) #darkenComposerPanel .location-map-workbench.location-composer__frame {
-    height: 100% !important;
-    min-height: 0 !important;
-    overflow: hidden !important;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
   }
 }
 
@@ -2885,7 +2880,7 @@
 
   .location-stage-navigator-overlay .location-component-drawer,
   .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] {
-    width: min(760px, 100%) !important;
+    width: min(760px, 100%);
   }
 }
 
@@ -2893,7 +2888,7 @@
   .location-map-workbench.location-composer__frame,
   .location-composer[data-location-builder-mode="frame"] .location-map-workbench.location-composer__frame,
   .location-composer[data-location-builder-mode="slots"] .location-map-workbench.location-composer__frame {
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "left"
       "center"
@@ -2905,11 +2900,11 @@
   .location-map-recap-rail,
   .location-map-frame-rail,
   .location-map-stage {
-    min-height: auto !important;
+    min-height: auto;
   }
 
   .location-map-stage {
-    min-height: 620px !important;
+    min-height: 620px;
   }
 
   .location-stage-navigator-overlay {
@@ -2921,7 +2916,7 @@
   .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] {
     --component-stage-list-width: 100%;
     --component-stage-rail-width: 100%;
-    width: 100% !important;
+    width: 100%;
   }
 
   }
@@ -2943,68 +2938,68 @@
 }
 
 .location-composer__workspace {
-  padding: 0 !important;
+  padding: 0;
 }
 
 .location-map-workbench.location-composer__frame,
 .location-composer[data-location-builder-mode="frame"] .location-map-workbench.location-composer__frame,
 .location-composer[data-location-builder-mode="slots"] .location-map-workbench.location-composer__frame {
-  grid-template-columns: var(--location-side-column-width) minmax(0, 1fr) var(--location-side-column-width) !important;
-  grid-template-areas: "left center right" !important;
-  padding: var(--stage-pad) !important;
+  grid-template-columns: var(--location-side-column-width) minmax(0, 1fr) var(--location-side-column-width);
+  grid-template-areas: "left center right";
+  padding: var(--stage-pad);
 }
 
 .location-map-slot-rail,
 .location-map-recap-rail {
-  width: var(--location-side-column-width) !important;
-  min-width: 0 !important;
-  max-width: var(--location-side-column-width) !important;
+  width: var(--location-side-column-width);
+  min-width: 0;
+  max-width: var(--location-side-column-width);
 }
 
 /* Center stage: one map surface, no nested track compression. */
 .location-map-workbench .location-composer__stage {
-  grid-area: center !important;
-  display: block !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  min-height: var(--location-stage-grid-min-height) !important;
-  overflow: hidden !important;
+  grid-area: center;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--location-stage-grid-min-height);
+  overflow: hidden;
 }
 
 .location-map-workbench .location-map-stage {
-  position: relative !important;
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  min-width: 0 !important;
-  min-height: var(--location-stage-grid-min-height) !important;
-  overflow: hidden !important;
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: var(--location-stage-grid-min-height);
+  overflow: hidden;
 }
 
 /* Drawer overlay: absolute like Monster; it does not affect grid track sizing. */
 .location-stage-navigator-overlay {
-  grid-area: 1 / 2 / 2 / 4 !important;
-  position: absolute !important;
-  inset-block: 0 !important;
-  left: 0 !important;
-  right: auto !important;
-  z-index: 28 !important;
-  display: flex !important;
-  align-items: stretch !important;
-  width: auto !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  pointer-events: none !important;
+  grid-area: 1 / 2 / 2 / 4;
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  right: auto;
+  z-index: 28;
+  display: flex;
+  align-items: stretch;
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+  pointer-events: none;
 }
 
 .location-stage-navigator-overlay .location-component-drawer {
   --component-stage-list-width: var(--location-component-drawer-closed-width);
   --component-stage-rail-width: var(--location-component-filter-column-width);
   --component-stage-drawer-gap: var(--location-component-drawer-gap);
-  width: var(--location-component-drawer-closed-width) !important;
-  max-width: min(100%, var(--location-component-drawer-closed-width)) !important;
-  height: 100% !important;
-  pointer-events: auto !important;
+  width: var(--location-component-drawer-closed-width);
+  max-width: min(100%, var(--location-component-drawer-closed-width));
+  height: 100%;
+  pointer-events: auto;
 }
 
 .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] {
@@ -3015,92 +3010,92 @@
       var(--location-component-filter-column-width) +
       var(--location-component-drawer-gap)
     )
-  ) !important;
-  max-width: 100% !important;
+  );
+  max-width: 100%;
 }
 
 /* Closed drawer: one column. No static width on list element. */
 .location-stage-navigator-overlay .location-component-drawer__panel,
 .location-stage-navigator-overlay .component-navigator-modal__panel {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) !important;
-  grid-template-rows: auto minmax(0, 1fr) !important;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
   grid-template-areas:
     "head"
-    "list" !important;
-  column-gap: var(--location-component-drawer-gap) !important;
-  row-gap: 10px !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  overflow: hidden !important;
+    "list";
+  column-gap: var(--location-component-drawer-gap);
+  row-gap: 10px;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 /* Open filters: list remains the left grid column; filters are a right column.
    The list and rail elements do NOT get their own static width. */
 .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .location-component-drawer__panel,
 .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .component-navigator-modal__panel {
-  grid-template-columns: minmax(0, 1fr) minmax(0, var(--location-component-filter-column-width)) !important;
-  grid-template-rows: auto minmax(0, 1fr) !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, var(--location-component-filter-column-width));
+  grid-template-rows: auto minmax(0, 1fr);
   grid-template-areas:
     "head rail"
-    "list rail" !important;
+    "list rail";
 }
 
 .location-stage-navigator-overlay .component-navigator-modal__head,
 .location-stage-navigator-overlay .location-component-drawer__head {
-  grid-area: head !important;
-  min-width: 0 !important;
+  grid-area: head;
+  min-width: 0;
 }
 
 /* Column placement only. No width/max-width here: the panel grid owns sizing. */
 .location-stage-navigator-overlay .navigator-tools,
 .location-stage-navigator-overlay .location-navigator-tools,
 .location-stage-navigator-overlay .component-navigator-modal__rail {
-  grid-area: rail !important;
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) !important;
-  grid-auto-flow: row !important;
-  align-content: start !important;
-  align-self: stretch !important;
-  min-width: 0 !important;
-  width: auto !important;
-  max-width: none !important;
-  height: 100% !important;
-  min-height: 0 !important;
-  overflow: auto !important;
+  grid-area: rail;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-flow: row;
+  align-content: start;
+  align-self: stretch;
+  min-width: 0;
+  width: auto;
+  max-width: none;
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
 }
 
 /* Column placement only. No width/max-width here: prevents overlap with rail. */
 .location-stage-navigator-overlay .component-navigator-modal__list,
 .location-stage-navigator-overlay .location-component-list {
-  grid-area: list !important;
-  min-width: 0 !important;
-  width: auto !important;
-  max-width: none !important;
-  height: 100% !important;
-  min-height: 0 !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
+  grid-area: list;
+  min-width: 0;
+  width: auto;
+  max-width: none;
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Match Monster component-card skin instead of custom Location card skin. */
 .location-stage-navigator-overlay .component-card.location-component-option,
 .location-stage-navigator-overlay .location-component-option.component-card {
-  position: relative !important;
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) !important;
-  grid-template-rows: auto auto !important;
-  grid-auto-flow: row !important;
-  align-content: start !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  gap: 9px !important;
-  border: 1px solid rgba(255, 238, 242, 0.075) !important;
-  background: rgba(255, 255, 255, 0.022) !important;
-  color: rgba(238, 238, 238, 0.68) !important;
-  padding: 12px 78px 12px 12px !important;
-  box-shadow: none !important;
-  overflow: hidden !important;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  grid-auto-flow: row;
+  align-content: start;
+  width: 100%;
+  min-width: 0;
+  gap: 9px;
+  border: 1px solid rgba(255, 238, 242, 0.075);
+  background: rgba(255, 255, 255, 0.022);
+  color: rgba(238, 238, 238, 0.68);
+  padding: 12px 78px 12px 12px;
+  box-shadow: none;
+  overflow: hidden;
 }
 
 .location-stage-navigator-overlay .component-card.location-component-option:hover,
@@ -3108,45 +3103,45 @@
 .location-stage-navigator-overlay .location-component-option.component-card:hover,
 .location-stage-navigator-overlay .location-component-option.component-card.in-build,
 .location-stage-navigator-overlay .location-component-option.component-card.is-active {
-  transform: none !important;
-  border-color: rgba(190, 64, 82, 0.42) !important;
-  background: rgba(95, 7, 22, 0.13) !important;
-  box-shadow: inset 0 0 0 1px rgba(190, 64, 82, 0.08) !important;
+  transform: none;
+  border-color: rgba(190, 64, 82, 0.42);
+  background: rgba(95, 7, 22, 0.13);
+  box-shadow: inset 0 0 0 1px rgba(190, 64, 82, 0.08);
 }
 
 .location-stage-navigator-overlay .component-card.location-component-option .card-top,
 .location-stage-navigator-overlay .location-component-option.component-card .location-component-card-top,
 .location-stage-navigator-overlay .component-card.location-component-option .component-title-stack,
 .location-stage-navigator-overlay .location-component-option.component-card .location-component-title-stack {
-  display: block !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  padding: 0 !important;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0;
 }
 
 .location-stage-navigator-overlay .component-card.location-component-option h3,
 .location-stage-navigator-overlay .location-component-option.component-card h3 {
-  display: block !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  font-family: var(--font, var(--cruor-font-body, Inter, ui-sans-serif, system-ui, sans-serif)) !important;
-  color: #fff0f2 !important;
-  white-space: normal !important;
-  overflow-wrap: normal !important;
-  word-break: normal !important;
-  hyphens: none !important;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  font-family: var(--font, var(--cruor-font-body, Inter, ui-sans-serif, system-ui, sans-serif));
+  color: #fff0f2;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
 }
 
 .location-stage-navigator-overlay .component-card.location-component-option .summary,
 .location-stage-navigator-overlay .location-component-option.component-card .location-component-summary {
-  width: 100% !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  color: var(--muted, rgba(238, 238, 238, 0.62)) !important;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  color: var(--muted, rgba(238, 238, 238, 0.62));
 }
 
 /* Match Monster icon button treatment. */
@@ -3154,18 +3149,18 @@
 .location-stage-navigator-overlay .navigator-filter-btn,
 .location-stage-navigator-overlay .location-navigator-filter-btn,
 .location-stage-navigator-overlay .location-component-drawer__close {
-  position: relative !important;
-  display: grid !important;
-  place-items: center !important;
-  width: 34px !important;
-  min-width: 34px !important;
-  height: 34px !important;
-  min-height: 34px !important;
-  border: 1px solid rgba(255, 238, 242, 0.09) !important;
-  background: rgba(5, 5, 6, 0.58) !important;
-  color: #c8a2a8 !important;
-  padding: 0 !important;
-  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035), 0 10px 24px rgba(0, 0, 0, 0.24) !important;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  min-height: 34px;
+  border: 1px solid rgba(255, 238, 242, 0.09);
+  background: rgba(5, 5, 6, 0.58);
+  color: #c8a2a8;
+  padding: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035), 0 10px 24px rgba(0, 0, 0, 0.24);
 }
 
 .location-stage-navigator-overlay .icon-btn:hover,
@@ -3177,126 +3172,126 @@
 .location-stage-navigator-overlay .location-navigator-filter-btn.active,
 .location-stage-navigator-overlay .location-navigator-filter-btn.is-active,
 .location-stage-navigator-overlay .location-component-drawer__close:hover {
-  border-color: rgba(190, 64, 82, 0.66) !important;
-  background: rgba(95, 7, 22, 0.36) !important;
-  color: #fff0f2 !important;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 24px rgba(122, 26, 40, 0.26), inset 0 1px 0 rgba(255, 238, 242, 0.05) !important;
-  outline: none !important;
+  border-color: rgba(190, 64, 82, 0.66);
+  background: rgba(95, 7, 22, 0.36);
+  color: #fff0f2;
+  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 24px rgba(122, 26, 40, 0.26), inset 0 1px 0 rgba(255, 238, 242, 0.05);
+  outline: none;
 }
 
 .location-stage-navigator-overlay .component-card.location-component-option .component-toggle-btn,
 .location-stage-navigator-overlay .location-component-option.component-card .location-component-toggle-btn {
-  position: absolute !important;
-  top: 12px !important;
-  right: 12px !important;
+  position: absolute;
+  top: 12px;
+  right: 12px;
 }
 
 /* Slot card spacing and height match the requested Monster parity. */
 .location-slot-stack {
-  display: grid !important;
-  gap: var(--location-slot-card-gap) !important;
-  width: 100% !important;
-  height: 100% !important;
-  min-height: 0 !important;
-  grid-auto-rows: var(--location-slot-card-height) !important;
+  display: grid;
+  gap: var(--location-slot-card-gap);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  grid-auto-rows: var(--location-slot-card-height);
 }
 
 .location-map-slot-card {
-  box-sizing: border-box !important;
-  height: var(--location-slot-card-height) !important;
-  min-height: var(--location-slot-card-height) !important;
-  max-height: var(--location-slot-card-height) !important;
-  padding: 9px 10px !important;
-  grid-template-rows: auto minmax(0, 1fr) !important;
-  align-content: start !important;
+  box-sizing: border-box;
+  height: var(--location-slot-card-height);
+  min-height: var(--location-slot-card-height);
+  max-height: var(--location-slot-card-height);
+  padding: 9px 10px;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: start;
 }
 
 .location-map-slot-card__head {
-  min-height: 20px !important;
+  min-height: 20px;
 }
 
 .location-map-slot-card__body {
-  min-height: 0 !important;
-  overflow: hidden !important;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* Region labels remain synced to generated rooms. */
 .location-region-board {
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 4 !important;
-  pointer-events: none !important;
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
 }
 
 .location-region-node,
 .location-region-node.is-synced-to-room {
-  position: absolute !important;
-  left: var(--region-x, 50%) !important;
-  top: var(--region-y, 50%) !important;
-  transform: translate(-50%, -50%) !important;
-  pointer-events: auto !important;
+  position: absolute;
+  left: var(--region-x, 50%);
+  top: var(--region-y, 50%);
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
 }
 
 .location-map-preview {
-  z-index: 1 !important;
+  z-index: 1;
 }
 
 .location-room-recap-anchor {
-  z-index: 6 !important;
+  z-index: 6;
 }
 
 @media (max-width: 980px) {
   .location-map-workbench.location-composer__frame,
   .location-composer[data-location-builder-mode="frame"] .location-map-workbench.location-composer__frame,
   .location-composer[data-location-builder-mode="slots"] .location-map-workbench.location-composer__frame {
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "left"
       "center"
-      "right" !important;
+      "right";
   }
 
   .location-map-slot-rail,
   .location-map-recap-rail {
-    width: 100% !important;
-    max-width: none !important;
+    width: 100%;
+    max-width: none;
   }
 
   .location-stage-navigator-overlay {
-    grid-area: center !important;
-    grid-column: 1 / 2 !important;
-    inset: 0 !important;
-    width: 100% !important;
+    grid-area: center;
+    grid-column: 1 / 2;
+    inset: 0;
+    width: 100%;
   }
 
   .location-stage-navigator-overlay .location-component-drawer,
   .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] {
-    width: 100% !important;
-    max-width: 100% !important;
+    width: 100%;
+    max-width: 100%;
   }
 
   .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .location-component-drawer__panel,
   .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .component-navigator-modal__panel {
-    grid-template-columns: minmax(0, 1fr) !important;
-    grid-template-rows: auto auto minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
     grid-template-areas:
       "head"
       "rail"
-      "list" !important;
+      "list";
   }
 }
 
 /* Step 34 — Scope-aware Location slot rail.
    Adds Map / Selected Location tabs without changing the existing slot-card skin. */
 .location-map-slot-rail {
-  grid-template-rows: auto auto minmax(0, 1fr) !important;
-  align-content: stretch !important;
-  gap: var(--location-slot-card-gap, 8px) !important;
-  overflow: hidden !important;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  align-content: stretch;
+  gap: var(--location-slot-card-gap, 8px);
+  overflow: hidden;
 }
 
 .location-slot-scope-switch.location-map-mode-switch {
-  margin: 0 !important;
+  margin: 0;
   flex: 0 0 auto;
 }
 
@@ -3332,31 +3327,31 @@
 }
 
 .location-map-slot-rail .location-slot-stack {
-  height: auto !important;
-  min-height: 0 !important;
-  overflow: auto !important;
-  align-content: start !important;
+  height: auto;
+  min-height: 0;
+  overflow: auto;
+  align-content: start;
   scrollbar-width: thin;
   scrollbar-color: rgba(122, 26, 40, 0.52) rgba(0, 0, 0, 0.18);
 }
 
 .location-component-drawer[data-slot-scope="map"] .location-component-drawer__target,
 .location-component-drawer[data-slot-scope="region"] .location-component-drawer__target {
-  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 
 /* Step 34 — Location target polish.
    Room recap now appears only while hovering/focusing a room node. */
 .location-room-recap-anchor.location-room-recap-anchor--hover {
-  left: var(--region-x, 50%) !important;
-  top: var(--region-y, 50%) !important;
-  right: auto !important;
-  bottom: auto !important;
-  width: min(360px, calc(100% - 28px)) !important;
-  max-width: 360px !important;
-  transform: translate(-50%, calc(-100% - 18px)) !important;
-  pointer-events: none !important;
+  left: var(--region-x, 50%);
+  top: var(--region-y, 50%);
+  right: auto;
+  bottom: auto;
+  width: min(360px, calc(100% - 28px));
+  max-width: 360px;
+  transform: translate(-50%, calc(-100% - 18px));
+  pointer-events: none;
 }
 
 .location-room-recap-anchor.location-room-recap-anchor--hover .location-room-recap-card {
@@ -3365,12 +3360,594 @@
 
 @media (max-width: 720px) {
   .location-room-recap-anchor.location-room-recap-anchor--hover {
-    left: 10px !important;
-    right: 10px !important;
-    top: 10px !important;
-    bottom: auto !important;
-    width: auto !important;
-    max-width: none !important;
-    transform: none !important;
+    left: 10px;
+    right: 10px;
+    top: 10px;
+    bottom: auto;
+    width: auto;
+    max-width: none;
+    transform: none;
   }
+}
+
+
+/* Step 35 — Composer Preview Intelligence.
+   Scope: embedded Composer preview only. No workspace/editor interaction changes. */
+.location-region-node .location-region-marker-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  margin-top: 1px;
+  pointer-events: none;
+}
+
+.location-region-node .location-region-slot-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-height: 16px;
+  min-width: 0;
+  border: 1px solid rgba(255, 238, 242, 0.13);
+  background: rgba(0, 0, 0, 0.32);
+  color: rgba(255, 238, 242, 0.76);
+  padding: 2px 4px;
+  font-size: 7px;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.location-region-node .location-region-slot-marker i {
+  font-size: 7px;
+  line-height: 1;
+}
+
+.location-region-node .location-region-slot-marker--hazard {
+  border-color: rgba(214, 184, 98, 0.4);
+  color: rgba(255, 232, 158, 0.94);
+}
+
+.location-region-node .location-region-slot-marker--clue {
+  border-color: rgba(170, 190, 220, 0.34);
+  color: rgba(214, 228, 255, 0.9);
+}
+
+.location-region-node .location-region-slot-marker--encounterTwist {
+  border-color: rgba(190, 64, 82, 0.46);
+  color: rgba(255, 196, 207, 0.92);
+}
+
+.location-region-node:hover .location-region-slot-marker,
+.location-region-node.is-active .location-region-slot-marker {
+  background: rgba(0, 0, 0, 0.42);
+  color: #fff0f2;
+}
+
+/* Step 36 — Preview right rail declutter.
+   Keep only immediately useful actions visible. Diagnostic map data is no longer
+   part of the default Composer preview surface. */
+.location-map-recap-rail.location-map-recap-rail--minimal {
+  align-content: start;
+  grid-template-rows: auto auto;
+  gap: 8px;
+  overflow: visible;
+}
+
+.location-map-recap-rail--minimal .location-frame-info-card {
+  gap: 8px;
+}
+
+.location-map-recap-rail--minimal .location-frame-info-card--minimal-hero {
+  padding: 10px 11px;
+  background:
+    linear-gradient(180deg, rgba(255, 238, 242, 0.026), transparent 70%),
+    rgba(5, 5, 6, 0.46);
+}
+
+.location-map-recap-rail--minimal .location-frame-info-card--minimal-hero strong {
+  color: #fff0f2;
+  font-family: var(--cruor-font-body, Inter, ui-sans-serif, system-ui, sans-serif);
+  font-size: 15px;
+  font-weight: 950;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+
+.location-map-recap-rail--minimal .location-frame-info-card--minimal-hero em {
+  overflow: hidden;
+  color: rgba(208, 162, 170, 0.78);
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-location-action-card--minimal {
+  gap: 8px;
+}
+
+.location-location-action-card--minimal .location-primary-action {
+  width: 100%;
+}
+
+.location-secondary-actions {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.location-secondary-actions > summary {
+  cursor: pointer;
+  min-height: 28px;
+  display: grid;
+  align-items: center;
+  border: 1px solid rgba(255, 238, 242, 0.055);
+  background: rgba(0, 0, 0, 0.12);
+  color: rgba(208, 162, 170, 0.72);
+  padding: 0 8px;
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  list-style: none;
+  text-transform: uppercase;
+}
+
+.location-secondary-actions > summary::-webkit-details-marker {
+  display: none;
+}
+
+.location-secondary-actions[open] > summary {
+  border-color: rgba(190, 64, 82, 0.38);
+  color: #f0d7dc;
+}
+
+.location-secondary-actions .location-primary-action {
+  min-height: 30px;
+  opacity: 0.86;
+}
+
+/* Defensive cleanup for previous diagnostic UI. */
+.location-map-recap-rail--minimal .location-frame-info-grid,
+.location-map-recap-rail--minimal .location-graft-focus,
+.location-map-recap-rail--minimal .location-recap-slot-list {
+  display: none;
+}
+
+/* Step 37 — Location frame info parity.
+   Right rail mirrors the Monster frame column: compact current frame, four facts,
+   secondary commands hidden under More. */
+.location-map-recap-rail.monster-frame-info {
+  display: grid;
+  align-content: start;
+  grid-template-rows: none;
+  gap: 10px;
+  overflow: visible;
+}
+
+.location-map-recap-rail.monster-frame-info .monster-frame-info-card {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(255, 238, 242, 0.07);
+  background:
+    linear-gradient(180deg, rgba(255, 238, 242, 0.03), transparent 70%),
+    rgba(5, 5, 6, 0.54);
+  padding: 11px;
+  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035);
+}
+
+.location-map-recap-rail.monster-frame-info .monster-frame-info-card--hero {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(190, 64, 82, 0.18), transparent 14rem),
+    rgba(0, 0, 0, 0.26);
+}
+
+.location-map-recap-rail.monster-frame-info .monster-frame-info-card > span,
+.location-map-recap-rail.monster-frame-info .monster-frame-info-row small,
+.location-map-recap-rail.monster-frame-info .location-next-action-card > span {
+  color: #8f7278;
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.location-frame-name-editor.monster-frame-name-editor {
+  display: block;
+  min-width: 0;
+}
+
+.location-frame-name-editor.monster-frame-name-editor input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: #fff0f2;
+  font-family: var(--cruor-font-display, "Lovato-Black", Georgia, serif);
+  font-size: clamp(26px, 2.8vw, 42px);
+  font-weight: 950;
+  letter-spacing: -0.055em;
+  line-height: 0.92;
+  padding: 0;
+  outline: none;
+}
+
+.location-frame-name-editor.monster-frame-name-editor input:focus {
+  color: #ffffff;
+  text-shadow: 0 0 22px rgba(122, 26, 40, 0.34);
+}
+
+.location-map-recap-rail.monster-frame-info .monster-frame-info-card--hero em {
+  overflow: hidden;
+  color: #d0a2aa;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-map-recap-rail.monster-frame-info .monster-frame-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.location-map-recap-rail.monster-frame-info .monster-frame-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid rgba(255, 238, 242, 0.055);
+  background: rgba(0, 0, 0, 0.14);
+  padding: 7px 8px;
+}
+
+.location-map-recap-rail.monster-frame-info .monster-frame-info-row strong {
+  overflow: hidden;
+  color: #fff0f2;
+  font-size: 10px;
+  font-weight: 950;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-next-action-card > strong {
+  color: #fff0f2;
+  font-size: 16px;
+  font-weight: 950;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+.location-next-action-card p {
+  margin: 0;
+  color: rgba(238, 238, 238, 0.56);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.location-next-action-card .location-primary-action,
+.location-location-action-card--secondary .location-primary-action {
+  width: 100%;
+}
+
+.location-location-action-card--secondary {
+  gap: 8px;
+}
+
+.location-location-action-card--secondary .location-map-mode-switch {
+  margin: 0;
+}
+
+.location-location-action-card--secondary .location-secondary-actions[open] {
+  gap: 6px;
+}
+
+.location-location-action-card--secondary .location-secondary-actions[open] .location-primary-action + .location-primary-action {
+  margin-top: 6px;
+}
+
+/* Override the prior declutter defensive cleanup for the new Monster-style rail. */
+.location-map-recap-rail.monster-frame-info .location-frame-info-grid {
+  display: grid;
+}
+
+@media (max-width: 980px) {
+  .location-map-recap-rail.monster-frame-info {
+    overflow: visible;
+  }
+}
+
+/* Step 38 — Monster sidebar parity hotfix.
+   Scope: right Composer sidebar only. Removes wizard-style guidance and matches
+   the Monster frame column width, typography, and control placement more closely. */
+.location-composer {
+  --location-side-column-width: 340px;
+}
+
+.location-map-slot-rail,
+.location-map-recap-rail {
+  width: var(--location-side-column-width);
+  max-width: var(--location-side-column-width);
+}
+
+.location-map-recap-rail.anatomy-stage__column--right.monster-frame-info {
+  gap: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(122, 26, 40, 0.52) rgba(0, 0, 0, 0.18);
+}
+
+.location-map-recap-rail.monster-frame-info .monster-frame-info-card--hero {
+  gap: 7px;
+}
+
+.location-frame-name-editor.monster-frame-name-editor input {
+  width: 100%;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  color: #fff0f2;
+  padding: 0;
+  font-family: var(--font, var(--cruor-font-body, Inter, ui-sans-serif, system-ui, sans-serif));
+  font-size: clamp(22px, 2vw, 30px);
+  font-weight: 950;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  text-shadow: 0 0 18px rgba(122, 26, 40, 0.34);
+}
+
+.location-frame-name-editor.monster-frame-name-editor input:hover,
+.location-frame-name-editor.monster-frame-name-editor input:focus {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #fff;
+  outline: none;
+}
+
+.location-frame-name-editor.monster-frame-name-editor input:focus {
+  text-decoration: underline;
+  text-decoration-color: rgba(190, 64, 82, 0.55);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+.location-map-mode-card {
+  padding: 6px;
+}
+
+.location-map-mode-card .location-map-mode-switch {
+  margin: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.location-map-mode-card .location-map-mode-button {
+  min-height: 28px;
+  border: 1px solid rgba(95, 7, 22, 0.48);
+  background: rgba(51, 3, 12, 0.18);
+  color: #c8a2a8;
+  padding: 0 9px;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.065em;
+  text-transform: uppercase;
+}
+
+.location-map-mode-card .location-map-mode-button:hover,
+.location-map-mode-card .location-map-mode-button.is-active {
+  border-color: rgba(190, 64, 82, 0.72);
+  background: rgba(95, 7, 22, 0.38);
+  color: #fff0f2;
+  box-shadow: 0 0 18px rgba(122, 26, 40, 0.18);
+}
+
+
+.location-next-action-card {
+  display: none;
+}
+
+.location-location-action-card--secondary {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Step 39 — Mode switch belongs to the left interaction rail.
+   Frame / Slots controls the left-side workflow, so it lives above the Frame/Slot tools
+   instead of inside the Current Location summary rail. */
+.location-map-frame-rail > .location-map-mode-card,
+.location-map-slot-rail > .location-map-mode-card {
+  width: 100%;
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+.location-map-frame-rail > .location-map-mode-card {
+  margin-bottom: var(--location-slot-card-gap, 8px);
+}
+
+.location-map-slot-rail {
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+}
+
+.location-map-slot-rail > .location-map-mode-card + .location-slot-scope-switch {
+  margin-top: 0;
+}
+
+.location-map-frame-rail > .location-map-mode-card .location-map-mode-switch,
+.location-map-slot-rail > .location-map-mode-card .location-map-mode-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+
+/* Step 40 — Left mode switch compact fix.
+   The Frame / Slots switch is an interaction control, not a frame info card. */
+.location-map-frame-rail > .location-map-mode-card,
+.location-map-slot-rail > .location-map-mode-card {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  margin: 0 0 var(--location-slot-card-gap, 8px);
+  border: 1px solid rgba(255, 238, 242, 0.065);
+  background: rgba(0, 0, 0, 0.14);
+  padding: 6px;
+  box-shadow: none;
+  align-self: start;
+  flex: 0 0 auto;
+}
+
+.location-map-slot-rail > .location-map-mode-card {
+  margin-bottom: 0;
+}
+
+.location-map-frame-rail > .location-map-mode-card .location-map-mode-switch,
+.location-map-slot-rail > .location-map-mode-card .location-map-mode-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.location-map-frame-rail > .location-map-mode-card .location-map-mode-button,
+.location-map-slot-rail > .location-map-mode-card .location-map-mode-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: 28px;
+  min-height: 28px;
+  max-height: 28px;
+  padding: 0 9px;
+  font-size: 9px;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: 0.065em;
+  text-transform: uppercase;
+}
+
+/* Step 41 — Frame rail dropdown portal and frame rail alignment cleanup.
+   Location choice menus render in document.body so they are not clipped by the
+   brief panel height or by rail/card overflow. */
+.location-map-frame-rail {
+  align-self: auto;
+  overflow: visible;
+}
+
+.location-map-frame-rail .location-brief-panel,
+.location-map-frame-rail .location-brief-panel__fields,
+.location-map-frame-rail .location-choice-field {
+  overflow: visible;
+}
+
+.location-choice-menu--portal {
+  position: fixed;
+  z-index: 13000;
+  max-height: min(320px, calc(100dvh - 72px));
+  overflow: auto;
+}
+
+
+/* Step 42 — Shared custom scrollbars for Location dropdowns and overlay lists.
+   Portal dropdowns live outside the panel tree, so they need the same scrollbar
+   skin explicitly instead of relying on rail/list inheritance. */
+.location-choice-menu,
+.location-choice-menu--portal,
+.location-picker-modal__list,
+.location-component-list,
+.location-stage-navigator-overlay .component-navigator-modal__rail,
+.location-stage-navigator-overlay .location-navigator-tools,
+.location-stage-navigator-overlay .component-navigator-modal__list,
+.location-stage-navigator-overlay .location-component-list {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(122, 26, 40, 0.62) rgba(0, 0, 0, 0.22);
+}
+
+.location-choice-menu::-webkit-scrollbar,
+.location-choice-menu--portal::-webkit-scrollbar,
+.location-picker-modal__list::-webkit-scrollbar,
+.location-component-list::-webkit-scrollbar,
+.location-stage-navigator-overlay .component-navigator-modal__rail::-webkit-scrollbar,
+.location-stage-navigator-overlay .location-navigator-tools::-webkit-scrollbar,
+.location-stage-navigator-overlay .component-navigator-modal__list::-webkit-scrollbar,
+.location-stage-navigator-overlay .location-component-list::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.location-choice-menu::-webkit-scrollbar-track,
+.location-choice-menu--portal::-webkit-scrollbar-track,
+.location-picker-modal__list::-webkit-scrollbar-track,
+.location-component-list::-webkit-scrollbar-track,
+.location-stage-navigator-overlay .component-navigator-modal__rail::-webkit-scrollbar-track,
+.location-stage-navigator-overlay .location-navigator-tools::-webkit-scrollbar-track,
+.location-stage-navigator-overlay .component-navigator-modal__list::-webkit-scrollbar-track,
+.location-stage-navigator-overlay .location-component-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.22);
+  box-shadow: inset 1px 0 0 rgba(255, 238, 242, 0.04);
+}
+
+.location-choice-menu::-webkit-scrollbar-thumb,
+.location-choice-menu--portal::-webkit-scrollbar-thumb,
+.location-picker-modal__list::-webkit-scrollbar-thumb,
+.location-component-list::-webkit-scrollbar-thumb,
+.location-stage-navigator-overlay .component-navigator-modal__rail::-webkit-scrollbar-thumb,
+.location-stage-navigator-overlay .location-navigator-tools::-webkit-scrollbar-thumb,
+.location-stage-navigator-overlay .component-navigator-modal__list::-webkit-scrollbar-thumb,
+.location-stage-navigator-overlay .location-component-list::-webkit-scrollbar-thumb {
+  border: 2px solid rgba(5, 5, 6, 0.96);
+  background:
+    linear-gradient(180deg, rgba(190, 64, 82, 0.72), rgba(95, 7, 22, 0.72));
+}
+
+.location-choice-menu::-webkit-scrollbar-thumb:hover,
+.location-choice-menu--portal::-webkit-scrollbar-thumb:hover,
+.location-picker-modal__list::-webkit-scrollbar-thumb:hover,
+.location-component-list::-webkit-scrollbar-thumb:hover,
+.location-stage-navigator-overlay .component-navigator-modal__rail::-webkit-scrollbar-thumb:hover,
+.location-stage-navigator-overlay .location-navigator-tools::-webkit-scrollbar-thumb:hover,
+.location-stage-navigator-overlay .component-navigator-modal__list::-webkit-scrollbar-thumb:hover,
+.location-stage-navigator-overlay .location-component-list::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(180deg, rgba(224, 82, 101, 0.86), rgba(122, 26, 40, 0.82));
+}
+
+.location-choice-menu::-webkit-scrollbar-corner,
+.location-choice-menu--portal::-webkit-scrollbar-corner,
+.location-picker-modal__list::-webkit-scrollbar-corner,
+.location-component-list::-webkit-scrollbar-corner,
+.location-stage-navigator-overlay .component-navigator-modal__rail::-webkit-scrollbar-corner,
+.location-stage-navigator-overlay .location-navigator-tools::-webkit-scrollbar-corner,
+.location-stage-navigator-overlay .component-navigator-modal__list::-webkit-scrollbar-corner,
+.location-stage-navigator-overlay .location-component-list::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0.22);
 }

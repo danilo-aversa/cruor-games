@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { SOURCE_ANCHORS } from "../../../crucible/crucible.sources-data.js";
 
 const CONTEXT_OPTIONS = ["Crypt", "Chapel", "Cave", "Mine", "Ruins", "Noble House", "Village", "Forest"];
 const HORROR_OPTIONS = ["Religious Horror", "Body Horror", "Gothic", "Folk Horror", "Psychological Horror", "Cosmic Horror", "Disease Horror"];
-const INTRUSION_OPTIONS = ["Low", "Medium", "High"];
-
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -26,40 +25,73 @@ function getOptionLabel(option) {
 
 function LocationChoiceField({ icon = "fa-circle-dot", label, meta, onChange, options, placeholder = "Choose option", value }) {
   const [open, setOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState(null);
   const fieldRef = useRef(null);
+  const triggerRef = useRef(null);
+  const menuRef = useRef(null);
   const selectedOption = useMemo(
     () => options.find((option) => String(getOptionValue(option)) === String(value)),
     [options, value],
   );
   const selectedLabel = selectedOption ? getOptionLabel(selectedOption) : placeholder;
 
+  function updateMenuPosition() {
+    const rect = triggerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    setMenuPosition({
+      left: rect.left,
+      top: rect.bottom + 6,
+      width: rect.width,
+    });
+  }
+
+  useLayoutEffect(() => {
+    if (!open) return undefined;
+    updateMenuPosition();
+
+    window.addEventListener("resize", updateMenuPosition);
+    window.addEventListener("scroll", updateMenuPosition, true);
+    return () => {
+      window.removeEventListener("resize", updateMenuPosition);
+      window.removeEventListener("scroll", updateMenuPosition, true);
+    };
+  }, [open]);
+
   useEffect(() => {
     if (!open) return undefined;
 
     function handlePointerDown(event) {
-      if (!fieldRef.current?.contains(event.target)) setOpen(false);
+      if (fieldRef.current?.contains(event.target)) return;
+      if (menuRef.current?.contains(event.target)) return;
+      setOpen(false);
+    }
+
+    function handleKeyDown(event) {
+      if (event.key === "Escape") setOpen(false);
     }
 
     document.addEventListener("pointerdown", handlePointerDown);
-    return () => document.removeEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, [open]);
 
-  return (
-    <div className="location-field location-choice-field" ref={fieldRef}>
-      <span>{label}</span>
-      <button
-        className="cruor-composer-control location-choice-trigger"
-        type="button"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        onClick={() => setOpen((current) => !current)}
-      >
-        <i className={`fa-solid ${icon}`} aria-hidden="true" />
-        <strong>{selectedLabel}</strong>
-        {meta ? <small>{meta}</small> : null}
-      </button>
-      {open ? (
-        <div className="location-choice-menu" role="listbox" aria-label={label}>
+  const menu = open && menuPosition
+    ? createPortal(
+        <div
+          className="location-choice-menu location-choice-menu--portal"
+          ref={menuRef}
+          role="listbox"
+          aria-label={label}
+          style={{
+            left: `${menuPosition.left}px`,
+            top: `${menuPosition.top}px`,
+            width: `${menuPosition.width}px`,
+          }}
+        >
           {options.map((option) => {
             const optionValue = getOptionValue(option);
             const optionLabel = getOptionLabel(option);
@@ -84,19 +116,39 @@ function LocationChoiceField({ icon = "fa-circle-dot", label, meta, onChange, op
               </button>
             );
           })}
-        </div>
-      ) : null}
+        </div>,
+        document.body,
+      )
+    : null;
+
+  return (
+    <div className="location-field location-choice-field" ref={fieldRef}>
+      <span>{label}</span>
+      <button
+        className="cruor-composer-control location-choice-trigger"
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        ref={triggerRef}
+        onClick={() => setOpen((current) => !current)}
+      >
+        <i className={`fa-solid ${icon}`} aria-hidden="true" />
+        <strong>{selectedLabel}</strong>
+        {meta ? <small>{meta}</small> : null}
+      </button>
+      {menu}
     </div>
   );
 }
 
-export function LocationBriefPanel({ state, setState, mapRequest, draftControls }) {
+export function LocationBriefPanel({ state, setState, mapRequest, draftControls, modeControls }) {
   const sourceOptions = SOURCE_ANCHORS.filter((source) => source !== "Any Source").slice(0, 12);
   const selectedSource = toChoiceArray(state.sourceAnchors)[0] || "";
   const selectedHorror = toChoiceArray(state.horrors)[0] || state.horror || "";
 
   return (
     <aside className="cruor-composer-rail location-composer__rail location-composer__rail--left location-map-frame-rail" aria-label="Location frame">
+      {modeControls ? modeControls : null}
       <section className="cruor-composer-panel location-panel location-brief-panel">
         <div className="location-panel-head location-panel-head--compact location-brief-panel__head">
           <div>
@@ -149,22 +201,6 @@ export function LocationBriefPanel({ state, setState, mapRequest, draftControls 
               }))
             }
           />
-        </div>
-
-        <div className="location-field">
-          <span>Intrusion</span>
-          <div className="location-segment-row" role="list" aria-label="Intrusion level">
-            {INTRUSION_OPTIONS.map((intrusion) => (
-              <button
-                className={`cruor-composer-control location-segment${state.intrusion === intrusion ? " is-active" : ""}`}
-                key={intrusion}
-                type="button"
-                onClick={() => setState((current) => ({ ...current, intrusion }))}
-              >
-                {intrusion}
-              </button>
-            ))}
-          </div>
         </div>
 
         <div className="location-map-request-card location-map-request-card--compact">

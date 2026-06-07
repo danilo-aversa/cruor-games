@@ -1,5 +1,8 @@
 import { describe, expect, test } from "vitest";
 import { DEFAULT_CONFIG } from "./map-generator.input.js";
+import { createMapRequestFromDarkenLocationState } from "../darken-location.map-request.js";
+import { getLocationPreviewResetKey } from "../composer/model/location-composer-preview.js";
+import { MAP_VISUAL_STYLE, SVG_STYLE } from "./map-generator.render.jsx";
 import { generateMap } from "./map-generator.pipeline.js";
 import {
   createMapSignature,
@@ -49,4 +52,66 @@ describe("map generator pipeline", () => {
     expect(generatedMap.config.roomCount).toBe(5);
     expect(generatedMap.regions).toHaveLength(5);
   });
+
+  test("carries regional slot metadata into map requests", () => {
+    const snapshot = {
+      workflow: "location",
+      title: "Preview Quality Check",
+      context: "Crypt",
+      sourceAnchors: ["Sedlec Ossuary"],
+      horrors: ["Religious Horror"],
+      slotAssignments: {
+        hazard: [{ componentId: "hazard-a", slotId: "hazard", regionId: "region-a" }],
+        clue: [{ componentId: "clue-a", slotId: "clue", regionId: "region-a" }],
+      },
+      selectedComponents: [
+        { id: "hazard-a", title: "Dropping Ossuary Slab" },
+        { id: "clue-a", title: "Wax Mask Witness" },
+      ],
+      locationRegions: [
+        { id: "region-a", name: "Bone Witness Room", role: "Clue Room" },
+      ],
+    };
+
+    const request = createMapRequestFromDarkenLocationState(snapshot);
+
+    expect(request.requiredRegions[0].metadata.assignedSlotIds).toEqual([
+      "hazard",
+      "clue",
+    ]);
+    expect(request.requiredRegions[0].metadata.assignedComponents).toHaveLength(2);
+  });
+
+  test("changes preview reset key when target or assignments change", () => {
+    const mapRequest = {
+      seed: "preview-reset",
+      context: "Crypt",
+      mapType: "Crypt",
+      requiredRegions: [
+        { id: "map-region-1", sourceRegionId: "region-a", label: "A", metadata: { assignedSlotIds: [] } },
+      ],
+      metadata: {},
+    };
+    const digest = { filledSlots: 1, totalSlots: 7 };
+    const first = getLocationPreviewResetKey(mapRequest, digest, {
+      activeSlotScope: "map",
+      activeRegionId: "region-a",
+      slotAssignments: {},
+    });
+    const second = getLocationPreviewResetKey(mapRequest, digest, {
+      activeSlotScope: "region",
+      activeRegionId: "region-a",
+      slotAssignments: {
+        hazard: [{ componentId: "hazard-a", slotId: "hazard", regionId: "region-a" }],
+      },
+    });
+
+    expect(second).not.toBe(first);
+  });
+
+  test("uses an opaque Cruor floor fill in generated SVG styles", () => {
+    expect(SVG_STYLE).toContain(".floor-fill{fill:#685D61;stroke:none}");
+    expect(MAP_VISUAL_STYLE).toContain(".map-style-cruor .floor-fill{fill:#685D61");
+  });
+
 });

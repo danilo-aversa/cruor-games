@@ -19,7 +19,10 @@ import {
   getGeneratedRoomPositionStyle,
   getGeneratedRoomSurfaceLabel,
 } from "../model/location-composer-map-preview.js";
-import { getMapSyncStatus } from "../model/location-composer-output.js";
+import {
+  getMapSyncStatus,
+  getRegionPreviewMarkers,
+} from "../model/location-composer-output.js";
 
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -179,6 +182,7 @@ export function LocationMapStage({
           {regions.map((region, index) => {
             const active = state.activeRegionId === region.id;
             const regionComponents = getAssignedComponentsForRegion(state, region.id);
+            const regionMarkers = getRegionPreviewMarkers(state, region.id);
             const generatedRoom = getGeneratedRoomForRegionIndex(generatedMapPreview, region.id, index);
             return (
               <button
@@ -219,6 +223,21 @@ export function LocationMapStage({
               >
                 <span>{generatedRoom?.number ? String(generatedRoom.number).padStart(2, "0") : String(index + 1).padStart(2, "0")}</span>
                 <strong>{region.name}</strong>
+                {regionMarkers.length ? (
+                  <span className="location-region-marker-strip" aria-label="Assigned regional slots">
+                    {regionMarkers.map((marker) => (
+                      <span
+                        className={`location-region-slot-marker location-region-slot-marker--${marker.slotId}`}
+                        key={marker.slotId}
+                        title={`${marker.fullLabel}: ${marker.title}`}
+                        aria-label={`${marker.fullLabel}: ${marker.title}`}
+                      >
+                        <i className={`fa-solid ${marker.icon}`} aria-hidden="true" />
+                        {marker.label}
+                      </span>
+                    ))}
+                  </span>
+                ) : null}
                 {showStageDetails || active ? (
                   <em className="location-region-node__target">{active ? "Target" : generatedRoom ? "Synced" : "Region"}</em>
                 ) : null}

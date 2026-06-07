@@ -7,6 +7,7 @@ import {
   createLocationMapSeed,
   normalizeLocationSlotScope,
   removeComponentFromSlot,
+  toArray,
 } from "./model/location-composer-state.js";
 import {
   getAssignedComponentsForSlotScope,
@@ -52,121 +53,99 @@ function LocationFrameInfoRow({ label, value }) {
   );
 }
 
+function getSourceLabel(state) {
+  return toArray(state.sourceAnchors).filter((source) => source !== "Any Source")[0] || "Any Source";
+}
+
+function getHorrorLabel(state) {
+  return toArray(state.horrors)[0] || state.horror || "Horror";
+}
+
+function LocationBuilderModeSwitch({ builderMode, setBuilderMode }) {
+  return (
+    <section className="location-map-mode-card" aria-label="Composer mode">
+      <div className="location-map-mode-switch" role="group" aria-label="Composer mode">
+        <button
+          className={cx("location-map-mode-button", builderMode === "frame" && "is-active")}
+          type="button"
+          aria-pressed={builderMode === "frame"}
+          onClick={() => setBuilderMode("frame")}
+        >
+          Frame
+        </button>
+        <button
+          className={cx("location-map-mode-button", builderMode === "slots" && "is-active")}
+          type="button"
+          aria-pressed={builderMode === "slots"}
+          onClick={() => setBuilderMode("slots")}
+        >
+          Slots
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function LocationRecapPanel({
-  builderMode,
-  digest,
-  generatedMapPreview,
-  mapRequest,
   onNewMapSeed,
   onOpenMapGenerator,
-  setBuilderMode,
+  onRenameLocation,
   snapshot,
   state,
 }) {
-  const activeScope = normalizeLocationSlotScope(state.activeSlotScope);
-  const scopedSlots = getLocationSlotsForScope(activeScope);
-  const activeRegion = digest.activeRegion;
-  const activeRoom = generatedMapPreview?.regions?.find(
-    (room) =>
-      room.sourceRegionId === state.activeRegionId ||
-      room.requestMetadata?.sourceRegionId === state.activeRegionId ||
-      room.id === state.activeRegionId,
-  );
-  const activeSlotId = isSlotInScope(state.activeSlot, activeScope)
-    ? state.activeSlot
-    : getDefaultSlotIdForScope(activeScope);
-  const activeSlot = scopedSlots.find((slot) => slot.id === activeSlotId) || scopedSlots[0];
-  const activeSlotComponents = activeSlot
-    ? getAssignedComponentsForSlotScope(state, activeSlot.id, activeScope, state.activeRegionId)
-    : [];
-  const scopedAssignedBySlot = scopedSlots.map((slot) => ({
-    slot,
-    components: getAssignedComponentsForSlotScope(state, slot.id, activeScope, state.activeRegionId),
-  }));
-  const targetLabel = activeScope === "region"
-    ? activeRegion?.name || "No region selected"
-    : "Whole Map";
+  const rooms = Array.isArray(state.locationRegions) ? state.locationRegions.length : 0;
+  const roomWord = rooms === 1 ? "Room" : "Rooms";
+  const sourceLabel = getSourceLabel(state);
+  const horrorLabel = getHorrorLabel(state);
 
   return (
     <aside
-      className="cruor-composer-rail location-composer__rail location-composer__rail--right location-map-recap-rail location-frame-info location-graft-info"
-      aria-label="Location build recap"
+      className="anatomy-stage__column anatomy-stage__column--right cruor-composer-rail location-composer__rail location-composer__rail--right location-map-recap-rail location-frame-info monster-frame-info"
+      aria-label="Current Location Frame"
     >
-      <section className="location-frame-info-card location-frame-info-card--hero">
-        <span>Info</span>
-        <strong>{state.title || state.context || "Cursed Location"}</strong>
-        <em>{state.context || "Context"} · {state.horror || "Horror"} · {state.intrusion || "Intrusion"}</em>
+      <section className="location-frame-info-card location-frame-info-card--hero monster-frame-info-card monster-frame-info-card--hero">
+        <span>Current Location</span>
+        <label className="location-frame-name-editor monster-frame-name-editor">
+          <span className="sr-only">Location name</span>
+          <input
+            type="text"
+            aria-label="Location name"
+            value={state.title || ""}
+            onChange={(event) => onRenameLocation(event.target.value)}
+          />
+        </label>
+        <em>{state.context || "Context"} · {horrorLabel} · {rooms || 0} {roomWord}</em>
       </section>
 
-      <section className="location-frame-info-card location-location-action-card" aria-label="Location view actions">
-        <div className="location-map-mode-switch" role="group" aria-label="Composer mode">
+
+      <section className="location-frame-info-card monster-frame-info-card">
+        <div className="location-frame-info-grid monster-frame-info-grid">
+          <LocationFrameInfoRow label="Context" value={state.context || "Context"} />
+          <LocationFrameInfoRow label="Horror" value={horrorLabel} />
+          <LocationFrameInfoRow label="Source" value={sourceLabel} />
+          <LocationFrameInfoRow label="Rooms" value={String(rooms || 0)} />
+        </div>
+      </section>
+
+
+      <section className="location-frame-info-card monster-frame-info-card location-location-action-card location-location-action-card--secondary" aria-label="Secondary location actions">
+        <details className="location-secondary-actions">
+          <summary>More</summary>
           <button
-            className={cx("location-map-mode-button", builderMode === "frame" && "is-active")}
+            className="cruor-composer-control location-primary-action"
             type="button"
-            aria-pressed={builderMode === "frame"}
-            onClick={() => setBuilderMode("frame")}
+            onClick={onNewMapSeed}
           >
-            Frame
+            New Map Seed
           </button>
           <button
-            className={cx("location-map-mode-button", builderMode === "slots" && "is-active")}
+            className="cruor-composer-control location-primary-action"
             type="button"
-            aria-pressed={builderMode === "slots"}
-            onClick={() => setBuilderMode("slots")}
+            onClick={() => onOpenMapGenerator?.(snapshot)}
           >
-            Slots
+            Open Map Workspace
           </button>
-        </div>
-        <button
-          className="cruor-composer-control location-primary-action"
-          type="button"
-          onClick={onNewMapSeed}
-        >
-          New Map Seed
-        </button>
-        <button
-          className="cruor-composer-control location-primary-action"
-          type="button"
-          onClick={() => onOpenMapGenerator?.(snapshot)}
-        >
-          Open Map Workspace
-        </button>
-      </section>
-
-      <section className="location-frame-info-card">
-        <div className="location-frame-info-grid">
-          <LocationFrameInfoRow label="Frame" value={state.context || "Context"} />
-          <LocationFrameInfoRow label="Horror" value={state.horror || "Horror"} />
-          <LocationFrameInfoRow label="Intrusion" value={state.intrusion || "Intrusion"} />
-          <LocationFrameInfoRow label="Target" value={targetLabel} />
-          <LocationFrameInfoRow label="Scope" value={activeScope === "region" ? "Selected Location" : "Map"} />
-          <LocationFrameInfoRow label="Map" value={activeRoom ? `Room ${activeRoom.number || "—"}` : `${mapRequest.requiredRegions.length || 0} regions`} />
-        </div>
-      </section>
-
-      <section className="location-frame-info-card">
-        <div className="location-graft-focus">
-          <span>Focused Slot</span>
-          <strong>{activeSlot?.label || "Slot"}</strong>
-          <p>{activeSlotComponents[0]?.title || activeSlotComponents[0]?.name || activeSlot?.description || "Choose a component for this slot."}</p>
-          <em>{activeSlotComponents.length ? `${activeSlotComponents.length} installed` : "No component installed"}</em>
-        </div>
-      </section>
-
-      <section className="location-frame-info-card">
-        <div className="location-recap-slot-list" aria-label="Slot progress">
-          {scopedAssignedBySlot.map(({ slot, components }) => (
-            <button
-              className={cx("location-frame-info-row location-recap-slot", components.length > 0 && "is-filled", activeSlotId === slot.id && "is-active")}
-              key={slot.id}
-              type="button"
-              onClick={() => setBuilderMode("slots")}
-            >
-              <small>{slot.label}</small>
-              <strong>{components[0]?.title || components[0]?.name || "Empty"}</strong>
-            </button>
-          ))}
-        </div>
+        </details>
       </section>
     </aside>
   );
@@ -190,7 +169,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   const digest = useMemo(() => getComposerDigest(state), [state]);
   const draftFingerprint = useMemo(() => createDraftFingerprint(state), [state]);
   const hasUnsavedChanges = Boolean(savedDraftFingerprint) && draftFingerprint !== savedDraftFingerprint;
-  const previewResetKey = useMemo(() => getLocationPreviewResetKey(mapRequest, digest), [digest, mapRequest]);
+  const previewResetKey = useMemo(() => getLocationPreviewResetKey(mapRequest, digest, state), [digest, mapRequest, state]);
 
   const setTransientDraftStatus = useCallback((message) => {
     setDraftStatus(message);
@@ -262,6 +241,14 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     }));
     setTransientDraftStatus("Map seed refreshed");
   }, [setTransientDraftStatus]);
+
+  const renameLocation = useCallback((title) => {
+    setState((current) => ({
+      ...current,
+      title,
+    }));
+  }, []);
+
 
   const resetComposer = useCallback(() => {
     const confirmed = window.confirm("Reset current composer?");
@@ -346,6 +333,13 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   const activeSlotFilled = activeSlot ? getSlotFilledCountForScope(state, activeSlot.id, activeSlotScope, state.activeRegionId) : 0;
   const activeSlotIsFull = activeSlotFilled >= (activeSlot?.max || 1);
 
+  const builderModeControls = (
+    <LocationBuilderModeSwitch
+      builderMode={builderMode}
+      setBuilderMode={setBuilderMode}
+    />
+  );
+
   const focusSlot = useCallback((slotId, slotScope = activeSlotScope) => {
     setState((current) => ({
       ...current,
@@ -385,6 +379,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
               state={state}
               setState={setState}
               mapRequest={mapRequest}
+              modeControls={builderModeControls}
               draftControls={
                 <LocationDraftControls
                   canLoadDraft={Boolean(draftSummary)}
@@ -408,6 +403,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
               onOpenMapGenerator={onOpenMapGenerator}
               snapshot={snapshot}
               generatedMapPreview={generatedMapPreview}
+              modeControls={builderModeControls}
               onFocusSlot={focusSlot}
             />
           )}
@@ -444,13 +440,9 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
           />
 
           <LocationRecapPanel
-            builderMode={builderMode}
-            digest={digest}
-            generatedMapPreview={generatedMapPreview}
-            mapRequest={mapRequest}
             onNewMapSeed={refreshMapSeed}
             onOpenMapGenerator={onOpenMapGenerator}
-            setBuilderMode={setBuilderMode}
+            onRenameLocation={renameLocation}
             snapshot={snapshot}
             state={state}
           />

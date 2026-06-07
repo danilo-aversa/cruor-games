@@ -28,6 +28,50 @@ export function createLocationPreviewModel(snapshot) {
   }
 }
 
-export function getLocationPreviewResetKey(mapRequest, digest) {
-  return `${mapRequest.seed}:${mapRequest.requiredRegions.length}:${digest.filledSlots}`;
+function createAssignmentSignature(assignments = {}) {
+  if (!assignments || typeof assignments !== "object") return "none";
+
+  return Object.entries(assignments)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .flatMap(([slotId, items]) =>
+      (Array.isArray(items) ? items : [])
+        .map((item) => [
+          slotId,
+          item?.componentId || "",
+          item?.slotId || slotId,
+          item?.regionId || "map",
+        ].join("@")),
+    )
+    .sort()
+    .join("|") || "none";
+}
+
+function createRegionSignature(regions = []) {
+  if (!Array.isArray(regions) || !regions.length) return "no-regions";
+
+  return regions.map((region) => [
+    region.sourceRegionId || region.id || region.label || "region",
+    region.label || "",
+    region.role || "",
+    region.size || "",
+    region.shape || "",
+    (region.links || []).join(","),
+    (region.metadata?.assignedSlotIds || []).join(","),
+  ].join("@"))
+    .join("|");
+}
+
+export function getLocationPreviewResetKey(mapRequest, digest, state = {}) {
+  const slotAssignments = state.slotAssignments || mapRequest.metadata?.slotAssignments || {};
+
+  return [
+    mapRequest.seed || "no-seed",
+    mapRequest.context || "no-context",
+    mapRequest.mapType || "no-map-type",
+    createRegionSignature(mapRequest.requiredRegions),
+    state.activeSlotScope || mapRequest.metadata?.activeSlotScope || "map",
+    state.activeRegionId || mapRequest.metadata?.activeRegionId || "no-active-region",
+    `${digest.filledSlots || 0}/${digest.totalSlots || 0}`,
+    createAssignmentSignature(slotAssignments),
+  ].join("::");
 }
