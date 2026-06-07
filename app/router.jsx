@@ -4,6 +4,7 @@ import HomePage from "./HomePage.jsx";
 import CrucibleTopbar from "../features/crucible/components/CrucibleTopbar.jsx";
 import DarkenLocationComposerPage from "../features/darken-location/composer/darken-location-composer.index.js";
 import InspirationsPage from "../features/inspirations/inspirations.index.js";
+import InspirationStudioPage from "../features/inspiration-studio/inspiration-studio.index.js";
 import MonsterComposerPage from "../features/monster-composer/monster-composer.index.js";
 import { createMapRequestFromDarkenLocationState } from "../features/darken-location/darken-location.map-request.js";
 
@@ -235,6 +236,7 @@ export default function AppRouter() {
       homeContent={homeContent}
       crucibleContent={crucibleContent}
       inspirationsContent={<InspirationsPage onOpenMonsterComposer={openMonsterFromInspiration} />}
+      inspirationStudioContent={<InspirationStudioPage />}
     />
   );
 }

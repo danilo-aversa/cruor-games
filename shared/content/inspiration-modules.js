@@ -7,6 +7,10 @@ import {
   uniqueById,
 } from "./inspiration-module-schema.js";
 import { DECOMPOSITION_INSPIRATION_MODULE, DECOMPOSITION_SOURCE_ANCHOR_ID } from "./inspiration-modules/decomposition.js";
+import {
+  SEDLEC_OSSUARY_INSPIRATION_MODULE,
+  SEDLEC_OSSUARY_SOURCE_ANCHOR_ID,
+} from "./inspiration-modules/sedlec-ossuary.js";
 import { SHARED_INSPIRATIONS } from "./inspirations.js";
 import { SHARED_MONSTER_COMPONENTS } from "./monster-components.js";
 import { normalizeSourceAnchorIds, SHARED_SOURCE_ANCHORS } from "./source-anchors.js";
@@ -27,10 +31,12 @@ function getPrimaryInspirationForSourceAnchor(sourceAnchorId, inspirations = SHA
 
 export const EXPLICIT_INSPIRATION_MODULES = Object.freeze([
   DECOMPOSITION_INSPIRATION_MODULE,
+  SEDLEC_OSSUARY_INSPIRATION_MODULE,
 ]);
 
 const EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS = new Set([
   DECOMPOSITION_SOURCE_ANCHOR_ID,
+  SEDLEC_OSSUARY_SOURCE_ANCHOR_ID,
 ]);
 
 export function buildInspirationModules({
@@ -95,6 +101,18 @@ export {
   DECOMPOSITION_SOURCE_ANCHOR,
   DECOMPOSITION_SOURCE_ANCHOR_ID,
 } from "./inspiration-modules/decomposition.js";
+
+export {
+  SEDLEC_OSSUARY_INSPIRATION,
+  SEDLEC_OSSUARY_INSPIRATION_MODULE,
+  SEDLEC_OSSUARY_INSPIRATION_MODULE_PACK_ID,
+  SEDLEC_OSSUARY_LOCATION_COMPONENTS,
+  SEDLEC_OSSUARY_LOCATION_REGION_COMPONENTS,
+  SEDLEC_OSSUARY_MONSTER_GRAFT_COMPONENTS,
+  SEDLEC_OSSUARY_REFERENCED_SOURCE_ANCHORS,
+  SEDLEC_OSSUARY_SOURCE_ANCHOR,
+  SEDLEC_OSSUARY_SOURCE_ANCHOR_ID,
+} from "./inspiration-modules/sedlec-ossuary.js";
 
 export const CRUOR_INSPIRATION_MODULES = Object.freeze([
   ...EXPLICIT_INSPIRATION_MODULES,

@@ -13,6 +13,7 @@ export default function AppShell({
   homeContent,
   crucibleContent,
   inspirationsContent,
+  inspirationStudioContent,
 }) {
   useEffect(() => {
     return startTooltipRuntime();
@@ -38,6 +39,10 @@ export default function AppShell({
 
         {activeSection === "inspirations" ? (
           <section aria-label="Inspirations">{inspirationsContent}</section>
+        ) : null}
+
+        {activeSection === "inspiration-studio" ? (
+          <section aria-label="Inspiration Studio">{inspirationStudioContent}</section>
         ) : null}
       </main>
     </div>

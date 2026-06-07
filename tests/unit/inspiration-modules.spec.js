@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   DECOMPOSITION_INSPIRATION_MODULE,
   DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK,
+  SEDLEC_OSSUARY_INSPIRATION_MODULE,
+  SEDLEC_OSSUARY_INSPIRATION_MODULE_CONTENT_PACK,
   getStaticInspirationModules,
   STATIC_CONTENT_PACK_ISSUES,
   STATIC_CONTENT_REGISTRY,
@@ -17,6 +19,14 @@ describe("Inspiration Modules", () => {
     expect(DECOMPOSITION_INSPIRATION_MODULE.locationRegions.length).toBeGreaterThan(0);
   });
 
+  it("owns Sedlec Ossuary as an explicit location and map module", () => {
+    expect(SEDLEC_OSSUARY_INSPIRATION_MODULE.id).toBe("sedlec-ossuary");
+    expect(SEDLEC_OSSUARY_INSPIRATION_MODULE.sourceAnchor?.id).toBe("sedlec-ossuary");
+    expect(SEDLEC_OSSUARY_INSPIRATION_MODULE.inspiration?.id).toBe("inspiration-sedlec-ossuary");
+    expect(SEDLEC_OSSUARY_INSPIRATION_MODULE.locationComponents.length).toBeGreaterThan(0);
+    expect(SEDLEC_OSSUARY_INSPIRATION_MODULE.locationRegions.length).toBeGreaterThan(0);
+  });
+
   it("publishes Decomposition through the static registry without duplicate module rows", () => {
     const modules = getStaticInspirationModules().filter((module) => module.id === "decomposition");
     const registryComponents = STATIC_CONTENT_REGISTRY.getComponents({ sourceAnchor: "decomposition" });
@@ -27,6 +37,19 @@ describe("Inspiration Modules", () => {
     expect(registryComponents.length).toBe(DECOMPOSITION_INSPIRATION_MODULE.components.length);
     expect(DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK.collections.components.length).toBe(
       DECOMPOSITION_INSPIRATION_MODULE.components.length,
+    );
+  });
+
+  it("publishes Sedlec Ossuary through the static registry without duplicate module rows", () => {
+    const modules = getStaticInspirationModules().filter((module) => module.id === "sedlec-ossuary");
+    const registryComponents = STATIC_CONTENT_REGISTRY.getComponents({ sourceAnchor: "sedlec-ossuary" });
+    const registryInspirations = STATIC_CONTENT_REGISTRY.getInspirations({ sourceAnchor: "sedlec-ossuary" });
+
+    expect(modules).toHaveLength(1);
+    expect(registryInspirations).toHaveLength(1);
+    expect(registryComponents.length).toBe(SEDLEC_OSSUARY_INSPIRATION_MODULE.components.length);
+    expect(SEDLEC_OSSUARY_INSPIRATION_MODULE_CONTENT_PACK.collections.components.length).toBe(
+      SEDLEC_OSSUARY_INSPIRATION_MODULE.components.length,
     );
   });
 

@@ -1,20 +1,28 @@
 import { CONTENT_PACK_STATUS, createContentPack } from "../content-pack-schema.js";
 import { SHARED_MONSTER_COMPONENTS } from "../monster-components.js";
 import { DECOMPOSITION_SOURCE_ANCHOR_ID } from "../inspiration-modules/decomposition.js";
+import { SEDLEC_OSSUARY_SOURCE_ANCHOR_ID } from "../inspiration-modules/sedlec-ossuary.js";
 import { SHARED_SOURCE_ANCHORS } from "../source-anchors.js";
 import { SHARED_TAXONOMIES } from "../taxonomies.js";
 import { SHARED_DARKEN_LOCATION_SLOTS, SHARED_MONSTER_SLOTS, SHARED_WORKFLOWS } from "../workflows.js";
 
 export const CORE_CRUOR_CONTENT_PACK_ID = "core-cruor";
 
-function doesNotReferenceDecomposition(entry) {
-  return !(entry?.sourceAnchors || []).includes(DECOMPOSITION_SOURCE_ANCHOR_ID);
+const EXPLICIT_MODULE_SOURCE_ANCHOR_IDS = new Set([
+  DECOMPOSITION_SOURCE_ANCHOR_ID,
+  SEDLEC_OSSUARY_SOURCE_ANCHOR_ID,
+]);
+
+function doesNotReferenceExplicitModule(entry) {
+  return !(entry?.sourceAnchors || []).some((sourceAnchorId) =>
+    EXPLICIT_MODULE_SOURCE_ANCHOR_IDS.has(sourceAnchorId),
+  );
 }
 
 const CORE_SOURCE_ANCHORS = SHARED_SOURCE_ANCHORS.filter(
-  (sourceAnchor) => sourceAnchor.id !== DECOMPOSITION_SOURCE_ANCHOR_ID,
+  (sourceAnchor) => !EXPLICIT_MODULE_SOURCE_ANCHOR_IDS.has(sourceAnchor.id),
 );
-const CORE_MONSTER_COMPONENTS = SHARED_MONSTER_COMPONENTS.filter(doesNotReferenceDecomposition);
+const CORE_MONSTER_COMPONENTS = SHARED_MONSTER_COMPONENTS.filter(doesNotReferenceExplicitModule);
 
 export const CORE_CRUOR_CONTENT_PACK = createContentPack({
   id: CORE_CRUOR_CONTENT_PACK_ID,
@@ -32,7 +40,7 @@ export const CORE_CRUOR_CONTENT_PACK = createContentPack({
     bundled: true,
     registryRole: "core",
     source: "static-registry",
-    note: "Inspirations are provided by content packs. Decomposition is owned by its pilot Inspiration Module.",
+    note: "Inspirations are provided by content packs. Explicit Inspiration Modules own their Source Anchors and generator components.",
   },
   collections: {
     workflows: SHARED_WORKFLOWS,
