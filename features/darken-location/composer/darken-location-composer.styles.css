@@ -6,10 +6,6 @@
   font-family: var(--cruor-font-body, Inter, ui-sans-serif, system-ui, sans-serif);
 }
 
-.location-composer__workspace {
-  padding: 0 clamp(18px, 3vw, 30px) 42px;
-}
-
 .location-composer__intro {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 520px);
@@ -259,12 +255,6 @@
   line-height: 1.4;
 }
 
-.location-region-board {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-}
-
 .location-region-node {
   position: absolute;
   left: var(--region-x);
@@ -413,14 +403,6 @@
 
 /* Step 28a — Darken Minimal Visibility Pass.
    Scope: Darken default surface only. Keep routing, map bridge, saves, and component logic intact. */
-.location-composer {
-  --location-stage-min-height: clamp(660px, 72vh, 900px);
-}
-
-.location-composer__workspace {
-  padding-top: 8px;
-}
-
 .location-composer__intro {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -540,13 +522,7 @@
     align-items: start;
   }
 
-  .location-composer__intro .location-draft-strip,
-  .location-draft-strip,
-  .location-draft-strip__actions {
-    justify-content: start;
-  }
-
-  .location-composer[data-cruor-ui-mode="simple"] .location-stage-footer {
+    .location-composer[data-cruor-ui-mode="simple"] .location-stage-footer {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -556,12 +532,7 @@
     width: 100%;
   }
 
-  .location-draft-btn {
-    flex: 1 1 0;
-    min-width: 0;
-  }
-
-  .location-composer[data-cruor-ui-mode="simple"] .location-stage-footer {
+    .location-composer[data-cruor-ui-mode="simple"] .location-stage-footer {
     grid-template-columns: 1fr;
   }
 }
@@ -698,10 +669,6 @@
 .location-stage-footer--compact > div {
   justify-items: center;
   gap: 0;
-}
-
-.location-region-node {
-  min-height: 76px;
 }
 
 .location-region-node__target {
@@ -1020,15 +987,6 @@
   text-transform: uppercase;
 }
 
-.location-room-recap-anchor {
-  position: absolute;
-  left: 14px;
-  top: 14px;
-  z-index: 6;
-  width: min(340px, calc(100% - 28px));
-  pointer-events: none;
-}
-
 .location-room-recap-card.cruor-tooltip-region-card.region-card {
   width: 100%;
   max-width: 100%;
@@ -1093,19 +1051,8 @@
 
 
 /* Step 31 — Dedicated Darken map workbench. */
-.location-composer {
-  --location-workspace-max: calc(100vw - clamp(24px, 4vw, 60px));
-  --location-stage-min-height: clamp(720px, 76vh, 940px);
-}
-
 .location-composer__workspace {
   padding-top: 14px;
-}
-
-.location-map-workbench.location-composer__frame {
-  grid-template-columns: minmax(286px, 338px) minmax(720px, 1fr) minmax(280px, 340px);
-  gap: 14px;
-  width: min(var(--location-workspace-max), 100%);
 }
 
 .location-composer__rail--left,
@@ -1137,10 +1084,6 @@
   background-size: 34px 34px, 34px 34px, auto, auto, auto, auto;
 }
 
-.location-map-preview {
-  padding: clamp(18px, 2.5vw, 34px);
-}
-
 .location-map-preview--live {
   align-items: stretch;
   justify-items: stretch;
@@ -1166,29 +1109,8 @@
   opacity: .34;
 }
 
-.location-region-board {
-  pointer-events: none;
-}
-
-.location-region-node {
-  pointer-events: auto;
-  width: min(164px, 23%);
-  min-height: 72px;
-  background: rgba(5, 5, 6, .58);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
 .location-region-node strong {
   font-size: 12px;
-}
-
-.location-room-recap-anchor {
-  display: block;
-  left: 14px;
-  bottom: 14px;
-  top: auto;
-  width: min(360px, calc(100% - 28px));
 }
 
 .location-choice-field {
@@ -1332,60 +1254,8 @@
   color: #bec8c5;
 }
 
-.location-map-slot-card__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.location-map-slot-card__head > span {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-width: 0;
-  color: inherit;
-  font-size: 9px;
-  font-weight: 950;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
 .location-map-slot-card__head i {
   color: #b33b4e;
-}
-
-.location-map-slot-card__head strong {
-  color: #d0a2aa;
-  font-size: 10px;
-  font-weight: 950;
-}
-
-.location-map-slot-card__body {
-  display: grid;
-  gap: 4px;
-  min-width: 0;
-}
-
-.location-map-slot-card__body strong {
-  overflow: hidden;
-  color: #fff0f2;
-  font-size: 12px;
-  font-weight: 950;
-  line-height: 1.12;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.location-map-slot-card__body em {
-  display: -webkit-box;
-  overflow: hidden;
-  color: rgba(238, 238, 238, .5);
-  font-size: 10px;
-  font-style: normal;
-  line-height: 1.35;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
 }
 
 .location-component-drawer {
@@ -1604,12 +1474,6 @@
   gap: 10px;
 }
 
-.location-map-mode-switch {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-}
-
 .location-map-mode-button {
   min-height: 32px;
   padding: 0 10px;
@@ -1733,13 +1597,6 @@
   min-height: 100dvh;
 }
 
-.location-composer__workspace {
-  position: relative;
-  z-index: 1;
-  min-height: calc(100dvh - var(--location-shell-bar-height));
-  padding: 0 clamp(18px, 3vw, 30px) 34px;
-}
-
 .location-map-workbench.location-composer__frame {
   position: relative;
   display: grid;
@@ -1769,23 +1626,9 @@
   grid-template-columns: var(--location-side-column-width) var(--location-center-width) var(--location-side-column-width);
 }
 
-.location-map-workbench .location-composer__rail--left {
-  grid-area: left;
-}
-
 .location-map-workbench .location-composer__stage,
 .location-map-workbench .location-map-stage {
   grid-area: center;
-}
-
-.location-map-workbench .location-composer__rail--right {
-  grid-area: right;
-}
-
-.location-map-workbench .location-composer__rail,
-.location-map-workbench .location-composer__stage,
-.location-map-workbench .location-map-stage {
-  min-height: 0;
 }
 
 .location-map-workbench .location-composer__rail--left,
@@ -1811,28 +1654,6 @@
   min-height: var(--location-stage-grid-min-height);
 }
 
-.location-map-stage {
-  position: relative;
-  min-height: var(--location-stage-grid-min-height);
-  overflow: hidden;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.location-map-stage::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 50% 26%, rgba(190, 64, 82, .13), transparent 20rem),
-    radial-gradient(circle at 50% 86%, rgba(95, 7, 22, .18), transparent 22rem);
-}
-
 .location-map-preview,
 .location-region-board,
 .location-map-stage__backdrop,
@@ -1841,25 +1662,6 @@
 .location-room-recap-anchor,
 .location-stage-footer {
   z-index: 2;
-}
-
-.location-map-preview {
-  padding: clamp(10px, 1.4vw, 18px);
-}
-
-.location-map-preview--live {
-  opacity: .86;
-}
-
-.location-map-preview--live .cruor-map-viewport,
-.location-map-preview--live .map-viewport,
-.location-map-preview--live .map-pan-layer,
-.location-map-preview--live canvas,
-.location-map-preview--live svg {
-  width: 100% !important;
-  height: 100% !important;
-  max-width: none;
-  max-height: none;
 }
 
 .location-panel,
@@ -2016,16 +1818,6 @@
   min-height: 0;
 }
 
-.location-map-slot-card {
-  min-height: 76px;
-  height: 76px;
-  padding: 9px;
-}
-
-.location-map-slot-card__body em {
-  -webkit-line-clamp: 1;
-}
-
 .location-component-drawer {
   top: 0;
   left: calc(100% + 10px);
@@ -2071,15 +1863,6 @@
   padding: 6px;
 }
 
-.location-room-recap-anchor {
-  display: block;
-  left: 14px;
-  right: auto;
-  bottom: 14px;
-  top: auto;
-  width: min(360px, calc(100% - 28px));
-}
-
 @media (max-width: 1380px) {
   .location-map-workbench.location-composer__frame,
   .location-composer[data-location-builder-mode="slots"] .location-map-workbench.location-composer__frame,
@@ -2108,20 +1891,6 @@
 
 
 /* Step 33 — Match the fullscreen tabpanel sizing used by the widest composer view. */
-#darkenComposerPanel {
-  width: 100% !important;
-  max-width: none !important;
-  min-height: calc(100dvh - var(--app-shell-bar-height) - clamp(10px, 1vw, 16px)) !important;
-  margin-inline: 0 !important;
-}
-
-#darkenComposerPanel > .cruor-composer-shell.location-composer,
-#darkenComposerPanel .cruor-composer-workspace.location-composer__workspace,
-#darkenComposerPanel .location-map-workbench.location-composer__frame {
-  width: 100% !important;
-  max-width: none !important;
-}
-
 #darkenComposerPanel > .cruor-composer-shell.location-composer {
   min-height: 100% !important;
   background: transparent;
@@ -2141,32 +1910,7 @@
 }
 
 @supports selector(:has(*)) {
-  body:has(#darkenComposerPanel:not([hidden])) {
-    height: 100dvh;
-    overflow: hidden;
-  }
-
-  .app-shell:has(#darkenComposerPanel:not([hidden])) {
-    height: 100dvh;
-    min-height: 100dvh;
-    overflow: hidden;
-  }
-
-  .app-shell:has(#darkenComposerPanel:not([hidden])) .app-shell__workspace {
-    height: calc(100dvh - var(--app-shell-bar-height));
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  .app-shell:has(#darkenComposerPanel:not([hidden])) .darken-workspace {
-    --darken-workspace-topbar-height: 0px !important;
-    height: 100%;
-    min-height: 0;
-    overflow: hidden;
-    padding-top: clamp(10px, 1vw, 16px) !important;
-  }
-
-  .app-shell:has(#darkenComposerPanel:not([hidden])) #darkenComposerPanel {
+          .app-shell:has(#darkenComposerPanel:not([hidden])) #darkenComposerPanel {
     height: calc(100dvh - var(--app-shell-bar-height) - clamp(10px, 1vw, 16px)) !important;
     min-height: 0 !important;
     overflow: hidden !important;
@@ -2175,14 +1919,7 @@
     margin-inline: 0 !important;
   }
 
-  .app-shell:has(#darkenComposerPanel:not([hidden])) #darkenComposerPanel > .cruor-composer-shell.location-composer,
-  .app-shell:has(#darkenComposerPanel:not([hidden])) #darkenComposerPanel .cruor-composer-workspace.location-composer__workspace,
-  .app-shell:has(#darkenComposerPanel:not([hidden])) #darkenComposerPanel .location-map-workbench.location-composer__frame {
-    height: 100% !important;
-    min-height: 0 !important;
-    overflow: hidden !important;
   }
-}
 
 
 /* Location Composer parity layer — v12.
@@ -2238,7 +1975,6 @@
 }
 
 .location-map-workbench .location-composer__rail--left { grid-area: left; }
-.location-map-workbench .location-composer__stage { grid-area: center; }
 .location-map-workbench .location-composer__rail--right { grid-area: right; }
 
 .location-map-workbench .location-composer__rail,
@@ -2451,10 +2187,6 @@
   max-height: none !important;
 }
 
-.location-region-board {
-  pointer-events: none;
-}
-
 .location-region-node {
   pointer-events: auto;
   width: min(164px, 23%) !important;
@@ -2507,10 +2239,6 @@
   filter: drop-shadow(0 28px 70px rgba(0, 0, 0, 0.68));
 }
 
-.location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] {
-  width: min(calc(var(--component-stage-list-width) + var(--component-stage-rail-width) + var(--component-stage-drawer-gap)), 100%) !important;
-}
-
 .location-stage-navigator-overlay .location-component-modal,
 .location-stage-navigator-overlay .component-navigator-modal,
 .location-stage-navigator-overlay .component-navigator-modal--drawer {
@@ -2555,15 +2283,6 @@
     inset 0 1px 0 rgba(255, 238, 242, 0.06) !important;
   backdrop-filter: blur(18px) saturate(125%);
   -webkit-backdrop-filter: blur(18px) saturate(125%);
-}
-
-.location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .location-component-drawer__panel,
-.location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .component-navigator-modal__panel {
-  grid-template-columns: minmax(0, var(--component-stage-list-width)) minmax(0, var(--component-stage-rail-width));
-  grid-template-rows: auto minmax(0, 1fr);
-  grid-template-areas:
-    "head rail"
-    "list rail";
 }
 
 .location-stage-navigator-overlay .component-navigator-modal__head,
@@ -3205,16 +2924,7 @@
     width: 100% !important;
   }
 
-  .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .location-component-drawer__panel,
-  .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .component-navigator-modal__panel {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto minmax(0, 1fr);
-    grid-template-areas:
-      "head"
-      "rail"
-      "list";
   }
-}
 
 
 /* Darken Location Composer 6.9.2a hotfix.

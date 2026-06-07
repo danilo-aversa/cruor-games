@@ -369,44 +369,11 @@
 }
 
 /* Flow dock polish — keep the active timeline step fixed, compact status icons, and truncate warnings. */
-.monster-shell .guided-flow-drawer__timeline {
-  align-items: center !important;
-}
-
-.monster-shell .guided-flow-drawer__timeline .monster-flow-nav-btn {
-  align-self: center !important;
-}
-
-.monster-shell .guided-flow-drawer__timeline .monster-flow-progress,
-.monster-shell .guided-flow-drawer__timeline .brief-wizard__progress {
-  display: grid !important;
-  align-items: center !important;
-  min-height: 32px !important;
-  height: 32px !important;
-}
-
-.monster-shell .guided-flow-drawer__timeline .brief-step-btn {
-  align-self: center !important;
-  display: grid !important;
-  place-items: center !important;
-  min-height: 32px !important;
-  height: 32px !important;
-  transform: none !important;
-}
-
 .monster-shell .guided-flow-drawer__timeline .brief-step-number,
 .monster-shell .guided-flow-drawer__timeline .brief-step-btn.active .brief-step-number,
 .monster-shell .guided-flow-drawer__timeline .brief-step-btn:hover:not(:disabled) .brief-step-number,
 .monster-shell .guided-flow-drawer__timeline .brief-step-btn:focus-visible:not(:disabled) .brief-step-number {
   transform: none !important;
-}
-
-.monster-shell .guided-flow-drawer__timeline .brief-step-label,
-.monster-shell .guided-flow-drawer__timeline .brief-step-btn.active .brief-step-label,
-.monster-shell .guided-flow-drawer__timeline .brief-step-btn:hover:not(:disabled) .brief-step-label,
-.monster-shell .guided-flow-drawer__timeline .brief-step-btn:focus-visible:not(:disabled) .brief-step-label {
-  top: calc(100% + 5px) !important;
-  transform: translateX(-50%) !important;
 }
 
 .monster-shell .guided-flow-drawer__readiness {

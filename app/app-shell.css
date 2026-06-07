@@ -574,13 +574,6 @@
   padding-inline: 0;
 }
 
-#monsterComposerPanel {
-  min-height: calc(
-    100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height)) -
-      var(--cruor-command-bar-height, var(--darken-workspace-topbar-height))
-  );
-}
-
 .crucible-workspace #monsterComposerPanel .monster-shell {
   min-height: auto;
   background: transparent;
@@ -1583,14 +1576,6 @@
 
 /* Step 5.20 — Global Crucible topbar removal trial with breathing room.
    Hides the shared Darken/Crucible topbar while preserving a small gap under the site menu. */
-.app-shell {
-  --darken-workspace-topbar-height: 0px;
-}
-
-.darken-workspace {
-  padding-top: clamp(12px, 1.35vw, 20px) !important;
-}
-
 .darken-workspace__topbar,
 .crucible-workspace__topbar,
 .crucible-topbar-shell,
@@ -1609,11 +1594,6 @@
 }
 
 /* Step 5.22 — Hide shared Darken/Crucible topbar while preserving breathing room under the site menu. */
-.darken-workspace {
-  --darken-workspace-topbar-height: 0px !important;
-  padding-top: clamp(12px, 1.35vw, 20px) !important;
-}
-
 .darken-workspace__topbar,
 .crucible-workspace__topbar,
 .crucible-topbar-shell,

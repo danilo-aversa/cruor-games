@@ -423,12 +423,6 @@
   transition: opacity .12s ease, transform .12s ease;
 }
 
-.monster-shell .tooltip-btn[data-tooltip]:hover::before,
-.monster-shell .tooltip-btn[data-tooltip]:focus-visible::before {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 .monster-shell .tooltip-btn.is-disabled,
 .monster-shell .crucible-action-btn[aria-disabled="true"] {
   cursor: not-allowed;
@@ -712,11 +706,6 @@
     0 0 0 1px rgba(190, 64, 82, .16),
     0 0 28px rgba(122, 26, 40, .28),
     inset 3px 0 0 rgba(190, 64, 82, .78);
-}
-
-.monster-shell .game-type-card:hover,
-.monster-shell .game-role-card:hover {
-  transform: translateX(2px);
 }
 
 .monster-shell .game-type-card__icon {
@@ -1157,12 +1146,6 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 14px;
-}
-
-.monster-shell .monster-build-head {
-  margin-bottom: 16px;
-  border-bottom: 1px solid rgba(95, 7, 22, .34);
-  padding-bottom: 14px;
 }
 
 .monster-shell .crucible-head-controls {
@@ -1811,16 +1794,6 @@
   transition: border-color .12s ease, background .12s ease, box-shadow .12s ease, transform .12s ease;
 }
 
-.monster-shell .component-card:hover,
-.monster-shell .component-card.in-build {
-  border-color: rgba(122, 26, 40, .95);
-  background:
-    linear-gradient(180deg, rgba(51, 3, 12, .36), transparent 160px),
-    radial-gradient(circle at 28px 22px, rgba(190, 64, 82, .2), transparent 150px),
-    rgba(51, 3, 12, .17);
-  box-shadow: 0 0 0 1px rgba(122, 26, 40, .4), 0 0 46px rgba(51, 3, 12, .6), inset 0 0 44px rgba(122, 26, 40, .17), inset 0 1px 0 rgba(122, 26, 40, .08);
-}
-
 .monster-shell .component-card:hover {
   transform: scale(1.006);
 }
@@ -2161,13 +2134,6 @@
 .monster-shell .navigator-filter-chip {
   min-height: 26px;
   text-align: left;
-}
-
-.monster-shell .navigator-filter-chip:hover,
-.monster-shell .navigator-filter-chip.active {
-  border-color: rgba(122, 26, 40, .82);
-  background: rgba(51, 3, 12, .46);
-  color: #f0d7dc;
 }
 
 .monster-shell .monster-slot-tabs {
@@ -3519,11 +3485,6 @@
   box-shadow: 0 18px 52px rgba(0, 0, 0, .34), inset 0 1px 0 rgba(255, 255, 255, .035);
 }
 
-.monster-shell .navigator,
-.monster-shell .build-canvas {
-  padding: 18px;
-}
-
 .monster-shell .monster-build-head {
   align-items: center;
   margin-bottom: 20px;
@@ -4395,30 +4356,9 @@
   gap: 10px;
 }
 
-.monster-shell .build-slot {
-  min-height: 102px;
-  border-color: rgba(255, 238, 242, .075);
-  background: rgba(255, 255, 255, .022);
-  padding: 12px;
-}
-
-.monster-shell .build-slot:hover,
-.monster-shell .build-slot.active {
-  transform: none;
-  border-color: rgba(190, 64, 82, .48);
-  background: rgba(95, 7, 22, .13);
-  box-shadow: inset 0 0 0 1px rgba(190, 64, 82, .08);
-}
-
 .monster-shell .build-slot.needs-attention:not(.active)::before,
 .monster-shell .build-slot.needs-attention:not(.active)::after {
   display: none;
-}
-
-.monster-shell .slot-name {
-  color: rgba(238, 238, 238, .7);
-  font-size: 10px;
-  letter-spacing: .09em;
 }
 
 .monster-shell .slot-icon {
@@ -4426,19 +4366,6 @@
   min-width: 15px;
   height: 15px;
   color: #8f7278;
-}
-
-.monster-shell .count {
-  border-color: rgba(255, 238, 242, .06);
-  background: transparent;
-  color: #8f7278;
-  font-size: 10px;
-}
-
-.monster-shell .slot-empty {
-  margin-top: 12px;
-  color: rgba(238, 238, 238, .38);
-  font-size: 12px;
 }
 
 .monster-shell .slot-item-text {
@@ -4505,14 +4432,6 @@
   white-space: nowrap;
 }
 
-.monster-shell .component-card {
-  border-width: 1px;
-  border-color: rgba(255, 238, 242, .075);
-  background: rgba(255, 255, 255, .022);
-  padding: 12px;
-  box-shadow: none;
-}
-
 .monster-shell .component-card:hover,
 .monster-shell .component-card.in-build {
   transform: none;
@@ -4538,28 +4457,12 @@
   opacity: .45;
 }
 
-.monster-shell .component-card h3 {
-  font-size: 13px;
-  font-weight: 850;
-}
-
-.monster-shell .component-card .summary {
-  color: rgba(238, 238, 238, .56);
-  font-size: 11.5px;
-  line-height: 1.38;
-}
-
 .monster-shell .component-impact-line {
   margin: -2px 0 0;
   color: #8f7278;
   font-size: 10px;
   font-weight: 850;
   line-height: 1.3;
-}
-
-.monster-shell .component-toggle-btn {
-  border-color: rgba(255, 238, 242, .09);
-  background: rgba(0, 0, 0, .18);
 }
 
 .monster-shell .component-details {
@@ -4593,30 +4496,14 @@
   box-shadow: none;
 }
 
-.monster-shell .graft-inspector__head {
-  align-items: center;
-}
-
 .monster-shell .graft-inspector__head h3 {
   margin-top: 3px;
   font-size: 15px;
 }
 
-.monster-shell .graft-inspector__status strong {
-  border-color: rgba(255, 238, 242, .075);
-  background: rgba(255, 255, 255, .025);
-}
-
 .monster-shell .graft-inspector__content,
 .monster-shell .graft-inspector__empty {
   margin-top: 12px;
-}
-
-.monster-shell .graft-inspector__item,
-.monster-shell .graft-inspector__rules article,
-.monster-shell .graft-inspector__empty {
-  border-color: rgba(255, 238, 242, .075);
-  background: rgba(0, 0, 0, .12);
 }
 
 .monster-shell .monster-component-list {
@@ -5300,10 +5187,6 @@
   padding: 2px 4px 2px 0;
 }
 
-.monster-shell .component-navigator-modal__list .component-card {
-  min-height: 132px;
-}
-
 .monster-shell .component-navigator-modal__list .empty {
   grid-column: 1 / -1;
 }
@@ -5649,33 +5532,6 @@
 
 
 /* Step 30B: keep graft card Details visibly expanded inside the Choose Graft modal. */
-.monster-shell .component-navigator-modal__list .component-card {
-  align-content: start;
-  overflow: visible;
-}
-
-.monster-shell .component-navigator-modal__list .component-details {
-  display: block;
-  overflow: visible;
-  min-width: 0;
-}
-
-.monster-shell .component-navigator-modal__list .component-details[open] .meta-list {
-  display: grid;
-  visibility: visible;
-  opacity: 1;
-  max-height: none;
-  overflow: visible;
-  transform: none;
-}
-
-.monster-shell .component-navigator-modal__list .component-details[open] .meta-row,
-.monster-shell .component-navigator-modal__list .component-details[open] .meta-values,
-.monster-shell .component-navigator-modal__list .component-details[open] .meta-value {
-  visibility: visible;
-  opacity: 1;
-}
-
 
 /* Step 39B: keep the extracted Component Navigator scrollable and allow opened details to expand. */
 .monster-shell .component-navigator-modal__panel {
@@ -5714,11 +5570,6 @@
 .monster-shell .component-navigator-modal__list .component-card .compatibility-note,
 .monster-shell .component-navigator-modal__list .component-card .component-details {
   min-width: 0;
-}
-
-.monster-shell .component-navigator-modal__list .component-details {
-  display: block;
-  overflow: visible;
 }
 
 .monster-shell .component-navigator-modal__list .component-details[open] {
@@ -6005,26 +5856,6 @@
 
 /* Step 4.8 — Monster slots/cards alignment pass 2.
    Tighten slot, card, flow, and inspector patterns after the panel/sidebar pass. */
-.monster-shell {
-  --monster-card-border-soft: rgba(255, 238, 242, 0.09);
-  --monster-card-border-active: rgba(190, 64, 82, 0.52);
-  --monster-card-bg-soft:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.032), transparent 68%),
-    radial-gradient(circle at 18% 0%, rgba(190, 64, 82, 0.12), transparent 13rem),
-    rgba(5, 5, 6, 0.62);
-  --monster-card-bg-active:
-    linear-gradient(180deg, rgba(95, 7, 22, 0.2), transparent 150px),
-    radial-gradient(circle at 28px 22px, rgba(190, 64, 82, 0.16), transparent 140px),
-    rgba(12, 6, 8, 0.74);
-  --monster-card-shadow-soft:
-    0 16px 42px rgba(0, 0, 0, 0.34),
-    inset 0 1px 0 rgba(255, 238, 242, 0.04);
-  --monster-card-shadow-active:
-    0 0 0 1px rgba(190, 64, 82, 0.1),
-    0 0 30px rgba(122, 26, 40, 0.22),
-    inset 0 1px 0 rgba(255, 238, 242, 0.055);
-}
-
 /* Build slots */
 .monster-shell .build-slots.monster-slots {
   gap: 12px;
@@ -6590,14 +6421,6 @@
   overflow: hidden;
 }
 
-.monster-shell .anatomy-stage__grid--frame,
-.monster-shell .anatomy-stage__grid--grafts {
-  grid-template-columns: minmax(280px, 355px) minmax(360px, 1fr) minmax(280px, 340px);
-  grid-template-rows: minmax(0, 1fr);
-  grid-template-areas: "left center right";
-  min-height: calc(clamp(720px, 74vh, 900px) - clamp(28px, 4vw, 44px));
-}
-
 .monster-shell .anatomy-stage__grid--frame .anatomy-stage__column,
 .monster-shell .anatomy-stage__grid--grafts .anatomy-stage__column {
   min-height: 0;
@@ -7066,49 +6889,8 @@
   display: none !important;
 }
 
-.monster-shell .monster-topbar__control-row > .monster-canvas-mode-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
 .monster-shell .monster-topbar__control-row > .monster-canvas-mode-row > strong {
   display: none;
-}
-
-.monster-shell .monster-topbar__control-row > .monster-canvas-mode-row .monster-canvas-mode-btn {
-  display: inline-grid;
-  place-items: center;
-  width: 40px;
-  min-width: 40px;
-  min-height: 40px;
-  border: 1px solid var(--cruor-button-border, rgba(95, 7, 22, .58));
-  background: linear-gradient(180deg, rgba(255, 238, 242, .025), transparent), rgba(0, 0, 0, .22);
-  color: var(--cruor-button-text-muted, var(--muted));
-  padding: 0;
-  font-size: 0;
-  box-shadow: inset 0 1px 0 rgba(255, 238, 242, .035);
-}
-
-.monster-shell .monster-topbar__control-row > .monster-canvas-mode-row .monster-canvas-mode-btn svg {
-  width: 16px;
-  height: 16px;
-}
-
-.monster-shell .monster-topbar__control-row > .monster-canvas-mode-row .monster-canvas-mode-btn:hover,
-.monster-shell .monster-topbar__control-row > .monster-canvas-mode-row .monster-canvas-mode-btn.is-active {
-  border-color: var(--cruor-button-border-hover, rgba(190, 64, 82, .78));
-  background:
-    radial-gradient(circle at 50% 24%, rgba(190, 64, 82, .18), transparent 68%),
-    linear-gradient(180deg, rgba(30, 7, 11, .94), rgba(10, 5, 7, .88)),
-    rgba(8, 5, 6, .86);
-  color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, .12), 0 0 20px rgba(122, 26, 40, .22), inset 0 1px 0 rgba(255, 238, 242, .06);
 }
 
 .monster-shell .monster-frame-info-card--hero {
@@ -7171,12 +6953,6 @@
   transition: border-color .12s ease, background .12s ease, color .12s ease, box-shadow .12s ease;
 }
 
-.monster-shell .monster-graft-action-btn svg {
-  width: 15px;
-  height: 15px;
-  color: #b33b4e;
-}
-
 .monster-shell .monster-graft-action-btn span {
   overflow: hidden;
   font-size: 10px;
@@ -7194,21 +6970,6 @@
   background: rgba(95, 7, 22, .28);
   color: #fff0f2;
   box-shadow: 0 0 20px rgba(122, 26, 40, .2), inset 0 1px 0 rgba(255, 238, 242, .045);
-}
-
-.monster-shell .monster-graft-action-btn[aria-disabled="true"],
-.monster-shell .monster-graft-action-btn.is-disabled {
-  cursor: not-allowed;
-  opacity: .52;
-  filter: saturate(.72);
-}
-
-.monster-shell .monster-graft-action-btn[aria-disabled="true"]:hover,
-.monster-shell .monster-graft-action-btn.is-disabled:hover {
-  border-color: rgba(95, 7, 22, .58);
-  background: rgba(0, 0, 0, .22);
-  color: #c8a2a8;
-  box-shadow: none;
 }
 
 @media (max-width: 860px) {
@@ -7229,237 +6990,15 @@
 
 /* Component Navigator filter-only rail refinement.
    Best Picks no longer occupies its own column; it is exposed as a filter group. */
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__panel,
-.monster-shell.component-navigator-modal-portal .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
-.monster-shell.component-navigator-modal-portal .component-navigator-modal[data-navigator-mode="global"] .component-navigator-modal__panel,
-.monster-shell .component-navigator-modal__panel,
-.monster-shell .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
-.monster-shell .component-navigator-modal[data-navigator-mode="global"] .component-navigator-modal__panel {
-  grid-template-rows: auto auto minmax(0, 1fr);
-  grid-template-areas:
-    "head head"
-    "rail list"
-    "tabs list";
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal .smart-slot-picks,
-.monster-shell .component-navigator-modal .smart-slot-picks {
-  display: none !important;
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__rail .navigator-filter-section,
-.monster-shell .component-navigator-modal__rail .navigator-filter-section {
-  min-width: 0;
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__list .component-toggle-btn,
-.monster-shell .component-navigator-modal__list .component-toggle-btn {
-  top: 6px;
-  right: 6px;
-  z-index: 8;
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__list .component-title-stack,
-.monster-shell .component-navigator-modal__list .component-title-stack {
-  padding-right: 82px;
-}
-
-.monster-shell .component-impact-metric,
-.monster-shell .component-impact-metric--counterplay,
-.monster-shell .component-impact-metric--counterplay.is-positive,
-.monster-shell .component-impact-metric--counterplay.is-negative {
-  min-width: 0;
-  min-height: 0;
-  width: auto;
-  height: auto;
-  border: 0;
-  background: transparent;
-  padding: 0 2px;
-  box-shadow: none;
-}
-
-.monster-shell .component-impact-dock.is-compact .component-impact-metric {
-  min-width: 0;
-  min-height: 0;
-  padding-inline: 2px;
-}
-
-.monster-shell .component-impact-metric svg {
-  width: 14px;
-  height: 14px;
-}
-
-.monster-shell .component-impact-metric strong {
-  line-height: 1;
-}
-
 @media (max-width: 1040px) {
-  .monster-shell.component-navigator-modal-portal .component-navigator-modal__panel,
-  .monster-shell.component-navigator-modal-portal .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
-  .monster-shell.component-navigator-modal-portal .component-navigator-modal[data-navigator-mode="global"] .component-navigator-modal__panel,
-  .monster-shell .component-navigator-modal__panel,
-  .monster-shell .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
-  .monster-shell .component-navigator-modal[data-navigator-mode="global"] .component-navigator-modal__panel {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto minmax(0, 1fr);
-    grid-template-areas:
-      "head"
-      "rail"
-      "tabs"
-      "list";
   }
-}
 
 @media (max-width: 720px) {
-  .monster-shell.component-navigator-modal-portal .component-navigator-modal__list .component-toggle-btn,
-  .monster-shell .component-navigator-modal__list .component-toggle-btn {
-    top: 5px;
-    right: 5px;
   }
-}
 
 /* Component Navigator filter drawer and multi-inspiration refinement. */
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__head-actions,
-.monster-shell .component-navigator-modal__head-actions {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  flex: 0 0 auto;
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__head-actions > .icon-btn,
-.monster-shell .component-navigator-modal__head-actions > .icon-btn {
-  position: relative;
-  flex: 0 0 auto;
-  width: 42px;
-  min-width: 42px;
-  min-height: 42px;
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__head-actions .navigator-filter-btn[data-active-count="1"]::after,
-.monster-shell .component-navigator-modal__head-actions .navigator-filter-btn[data-active-count="1"]::after {
-  content: "";
-  position: absolute;
-  right: 7px;
-  top: 7px;
-  width: 6px;
-  height: 6px;
-  background: #d0a2aa;
-  box-shadow: 0 0 10px rgba(208, 162, 170, 0.82);
-  pointer-events: none;
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal[data-filters-open="false"] .component-navigator-modal__panel,
-.monster-shell.component-navigator-modal-portal .component-navigator-modal[data-filters-open="false"][data-navigator-mode="slot"] .component-navigator-modal__panel,
-.monster-shell.component-navigator-modal-portal .component-navigator-modal[data-filters-open="false"][data-navigator-mode="global"] .component-navigator-modal__panel,
-.monster-shell .component-navigator-modal[data-filters-open="false"] .component-navigator-modal__panel,
-.monster-shell .component-navigator-modal[data-filters-open="false"][data-navigator-mode="slot"] .component-navigator-modal__panel,
-.monster-shell .component-navigator-modal[data-filters-open="false"][data-navigator-mode="global"] .component-navigator-modal__panel {
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto auto minmax(0, 1fr);
-  grid-template-areas:
-    "head"
-    "tabs"
-    "list";
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal[data-filters-open="true"] .component-navigator-modal__panel,
-.monster-shell.component-navigator-modal-portal .component-navigator-modal[data-filters-open="true"][data-navigator-mode="slot"] .component-navigator-modal__panel,
-.monster-shell.component-navigator-modal-portal .component-navigator-modal[data-filters-open="true"][data-navigator-mode="global"] .component-navigator-modal__panel,
-.monster-shell .component-navigator-modal[data-filters-open="true"] .component-navigator-modal__panel,
-.monster-shell .component-navigator-modal[data-filters-open="true"][data-navigator-mode="slot"] .component-navigator-modal__panel,
-.monster-shell .component-navigator-modal[data-filters-open="true"][data-navigator-mode="global"] .component-navigator-modal__panel {
-  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
-  grid-template-rows: auto auto minmax(0, 1fr);
-  grid-template-areas:
-    "head head"
-    "rail list"
-    "tabs list";
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal[data-filters-open="false"] .component-navigator-modal__rail,
-.monster-shell .component-navigator-modal[data-filters-open="false"] .component-navigator-modal__rail {
-  display: none;
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__rail .navigator-search-row,
-.monster-shell .component-navigator-modal__rail .navigator-search-row {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__rail .navigator-filter-btn,
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__rail .navigator-count,
-.monster-shell .component-navigator-modal__rail .navigator-filter-btn,
-.monster-shell .component-navigator-modal__rail .navigator-count,
-.monster-shell .navigator-count {
-  display: none !important;
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__rail .navigator-filter-chip.active,
-.monster-shell .component-navigator-modal__rail .navigator-filter-chip.active {
-  border-color: rgba(190, 64, 82, 0.82);
-  background: rgba(95, 7, 22, 0.36);
-  color: #fff0f2;
-  box-shadow: 0 0 18px rgba(122, 26, 40, 0.18), inset 0 1px 0 rgba(255, 238, 242, 0.05);
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__list .component-toggle-btn,
-.monster-shell .component-navigator-modal__list .component-toggle-btn {
-  top: 4px;
-  right: 4px;
-  z-index: 8;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-4px);
-  transition:
-    opacity 0.12s ease,
-    transform 0.12s ease,
-    border-color 0.12s ease,
-    background 0.12s ease,
-    color 0.12s ease,
-    box-shadow 0.12s ease;
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__list .component-card:hover .component-toggle-btn,
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__list .component-card:focus-within .component-toggle-btn,
-.monster-shell .component-navigator-modal__list .component-card:hover .component-toggle-btn,
-.monster-shell .component-navigator-modal__list .component-card:focus-within .component-toggle-btn {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
 @media (max-width: 1040px) {
-  .monster-shell.component-navigator-modal-portal .component-navigator-modal[data-filters-open="true"] .component-navigator-modal__panel,
-  .monster-shell.component-navigator-modal-portal .component-navigator-modal[data-filters-open="true"][data-navigator-mode="slot"] .component-navigator-modal__panel,
-  .monster-shell.component-navigator-modal-portal .component-navigator-modal[data-filters-open="true"][data-navigator-mode="global"] .component-navigator-modal__panel,
-  .monster-shell .component-navigator-modal[data-filters-open="true"] .component-navigator-modal__panel,
-  .monster-shell .component-navigator-modal[data-filters-open="true"][data-navigator-mode="slot"] .component-navigator-modal__panel,
-  .monster-shell .component-navigator-modal[data-filters-open="true"][data-navigator-mode="global"] .component-navigator-modal__panel {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto auto minmax(0, 1fr);
-    grid-template-areas:
-      "head"
-      "rail"
-      "tabs"
-      "list";
-  }
-
-  .monster-shell.component-navigator-modal-portal .component-navigator-modal[data-filters-open="false"] .component-navigator-modal__panel,
-  .monster-shell.component-navigator-modal-portal .component-navigator-modal[data-filters-open="false"][data-navigator-mode="slot"] .component-navigator-modal__panel,
-  .monster-shell.component-navigator-modal-portal .component-navigator-modal[data-filters-open="false"][data-navigator-mode="global"] .component-navigator-modal__panel,
-  .monster-shell .component-navigator-modal[data-filters-open="false"] .component-navigator-modal__panel,
-  .monster-shell .component-navigator-modal[data-filters-open="false"][data-navigator-mode="slot"] .component-navigator-modal__panel,
-  .monster-shell .component-navigator-modal[data-filters-open="false"][data-navigator-mode="global"] .component-navigator-modal__panel {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto minmax(0, 1fr);
-    grid-template-areas:
-      "head"
-      "tabs"
-      "list";
-  }
-}
+    }
 
 /* Step 6.3 — Canvas mode visibility + Navigator modal repair.
    Restores the working Component Navigator behavior after the Frame/Grafts canvas refactor. */
@@ -7553,11 +7092,6 @@
 /* Component Navigator Details hover overlay.
    The metadata panel opens on hover/focus and stays out of the grid flow, so
    neighboring cards do not inherit the opened panel height. */
-.monster-shell .component-navigator-modal__list {
-  align-items: start;
-  grid-auto-rows: min-content;
-}
-
 .monster-shell .component-navigator-modal__list .component-card,
 .monster-shell .component-navigator-modal__list .component-card.details-open {
   overflow: visible;
@@ -7623,13 +7157,6 @@
   text-transform: uppercase;
   cursor: help;
   transform: none;
-}
-
-.monster-shell .component-navigator-modal__list .component-details:hover .component-details__trigger,
-.monster-shell .component-navigator-modal__list .component-details:focus-within .component-details__trigger,
-.monster-shell .component-navigator-modal__list .component-card.details-open .component-details__trigger {
-  border-bottom-color: rgba(240, 185, 194, 0.92);
-  color: #d0a2aa;
 }
 
 .monster-shell .component-navigator-modal__list .component-details > .meta-list,
@@ -7707,13 +7234,6 @@
 .monster-shell.component-navigator-modal-portal .component-navigator-modal__rail .navigator-filter-section,
 .monster-shell .component-navigator-modal__rail .navigator-filter-section {
   min-width: 0;
-}
-
-.monster-shell.component-navigator-modal-portal .component-navigator-modal__list .component-toggle-btn,
-.monster-shell .component-navigator-modal__list .component-toggle-btn {
-  top: 6px;
-  right: 6px;
-  z-index: 8;
 }
 
 .monster-shell.component-navigator-modal-portal .component-navigator-modal__list .component-title-stack,
@@ -8479,12 +7999,6 @@
   text-align: center;
 }
 
-.monster-shell .monster-graft-action-card {
-  display: flex !important;
-  justify-content: center;
-  gap: 8px;
-}
-
 .monster-shell .monster-graft-action-btn {
   display: inline-grid !important;
   place-items: center;
@@ -8493,15 +8007,6 @@
   min-height: 40px;
   padding: 0 !important;
   text-align: center;
-}
-
-.monster-shell .monster-graft-action-btn svg {
-  width: 16px;
-  height: 16px;
-}
-
-.monster-shell .monster-graft-action-btn span {
-  display: none !important;
 }
 
 
@@ -8517,10 +8022,6 @@
 
 .monster-shell .monster-frame-help em {
   display: none !important;
-}
-
-.monster-shell .monster-frame-icon-toggle-row {
-  justify-content: flex-start !important;
 }
 
 .monster-shell .monster-frame-icon-toggle[data-key][data-tooltip],
@@ -8604,12 +8105,6 @@
 .monster-shell .monster-silhouette-stage[data-stage-mode="frame"] {
   display: grid;
   align-items: stretch;
-}
-
-.monster-shell .anatomy-stage__grid--frame,
-.monster-shell .anatomy-stage__grid--grafts {
-  min-height: 0 !important;
-  height: 100% !important;
 }
 
 .monster-shell .anatomy-stage__grid--frame {
@@ -9583,10 +9078,6 @@
   padding: 11px;
 }
 
-.monster-shell .component-navigator-drawer .component-navigator-modal__list .component-title-stack {
-  padding-right: 64px;
-}
-
 .monster-shell .component-navigator-drawer .component-navigator-modal__list .component-card h3 {
   color: #fff0f2;
   font-size: 13px;
@@ -9599,19 +9090,6 @@
 .monster-shell .component-navigator-drawer .component-navigator-modal__list .compatibility-note {
   font-size: 11px;
   line-height: 1.34;
-}
-
-.monster-shell .component-navigator-drawer .component-navigator-modal__list .component-toggle-btn {
-  top: 8px;
-  right: 8px;
-  min-height: 24px;
-  height: 24px;
-}
-
-.monster-shell .component-navigator-drawer .component-navigator-modal__list .component-details {
-  display: block;
-  margin-top: 6px;
-  overflow: visible;
 }
 
 .monster-shell .component-navigator-drawer .component-navigator-modal__list .component-details[open] .meta-list {
