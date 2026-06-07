@@ -38,7 +38,6 @@ function LocationMapPreview({ generatedMap, error, viewResetKey }) {
     }),
     [],
   );
-
   if (!generatedMap) {
     return (
       <div className="location-map-preview location-map-preview--fallback" aria-label="Map preview fallback">
@@ -51,7 +50,7 @@ function LocationMapPreview({ generatedMap, error, viewResetKey }) {
 
   return (
     <div
-      className="location-map-preview location-map-preview--live cruor-map-mvp cruor-map-workspace"
+      className="location-map-preview location-map-preview--live"
       aria-label="Generated map preview"
       onContextMenuCapture={(event) => {
         event.preventDefault();
@@ -137,15 +136,6 @@ export function LocationMapStage({
         )}
         onClick={selectWholeMapTarget}
       >
-        <div className="location-map-stage__backdrop" aria-hidden="true">
-          <span className="location-map-stage__ring location-map-stage__ring--outer" />
-          <span className="location-map-stage__ring location-map-stage__ring--middle" />
-          <span className="location-map-stage__ring location-map-stage__ring--inner" />
-          <span className="location-map-stage__vein location-map-stage__vein--one" />
-          <span className="location-map-stage__vein location-map-stage__vein--two" />
-          <span className="location-map-stage__vein location-map-stage__vein--three" />
-        </div>
-
         <LocationMapPreview
           generatedMap={generatedMapPreview}
           error={previewError}

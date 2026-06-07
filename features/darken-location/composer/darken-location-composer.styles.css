@@ -3889,3 +3889,76 @@
 .location-stage-navigator-overlay .location-component-list::-webkit-scrollbar-corner {
   background: rgba(0, 0, 0, 0.22);
 }
+
+/* Preview map surface cleanup: remove Composer chrome and map viewport background. */
+.location-composer .location-map-stage,
+.location-map-workbench .location-map-stage {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.location-composer .location-map-stage::before,
+.location-map-workbench .location-map-stage::before,
+.location-composer .location-map-stage__backdrop,
+.location-map-workbench .location-map-stage__backdrop {
+  content: none;
+  display: none;
+}
+
+.location-composer .location-map-preview {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.location-composer .location-map-preview--live {
+  min-height: 0;
+  padding: 0;
+  opacity: 1;
+  background: transparent;
+}
+
+.location-composer .location-map-preview--live .map-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  touch-action: none;
+  overscroll-behavior: contain;
+  outline: none;
+}
+
+.location-composer .location-map-preview--live .map-pan-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0;
+}
+
+.location-composer .location-map-preview--live .cruor-map-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.location-composer .location-map-preview--live .paper {
+  fill: transparent;
+}
+
+.location-composer .location-map-preview--live .paper-texture,
+.location-composer .location-map-preview--live .map-grid,
+.location-composer .location-map-preview--live .floor-grid,
+.location-composer .location-map-preview--live .external-hatching,
+.location-composer .location-map-preview--live .external-hatching-underlay {
+  display: none;
+}

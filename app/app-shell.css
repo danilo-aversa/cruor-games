@@ -1555,11 +1555,6 @@
   --darken-workspace-topbar-height: 0px !important;
 }
 
-.darken-workspace {
-  --darken-workspace-topbar-height: 0px !important;
-  padding-top: clamp(12px, 1.35vw, 20px) !important;
-}
-
 #monsterComposerPanel {
   width: 100% !important;
   max-width: none !important;
