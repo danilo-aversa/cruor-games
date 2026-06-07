@@ -22,7 +22,7 @@ import {
 
 const FEATURE_SCHEMA_VERSION = "monster-graft-v1.0";
 const EXPORT_SCHEMA_VERSION = "monster-crucible-export-v1.0";
-const DATA_MODEL_MIGRATION_STAGE = "rules-v1.0-action-budget-with-legacy-fallbacks";
+const DATA_MODEL_MIGRATION_STAGE = "rules-v1.12-ability-links";
 
 const STAT_BLOCK_SECTION_LABELS = {
   trait: "Traits",

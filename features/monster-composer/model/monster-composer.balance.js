@@ -3,7 +3,9 @@ import {
   getDamageBudgetDefaults,
   getDamageBudgetShare,
   getDamageExpectedTargets,
+  getDamageParts,
   getDamageRoundWeight,
+  getDamageTotalBudgetShare,
   getRulesFallbackSection,
   normalizeMonsterGraftRules,
 } from "./monster-graft-rules.schema.js";
@@ -24,10 +26,23 @@ function titleCase(value) {
 function getBudgetDamageBase(feature, rules) {
   if (!rules.damage || rules.damage.mode === "none") return Math.max(0, feature.stats?.dpr || 0);
   if (rules.damage.mode === "fixed" && rules.damage.average) return Number(rules.damage.average) || 0;
+  const baselineDpr = Math.max(1, feature.stats?.dpr || 1);
+  const parts = getDamageParts(rules.damage);
+  if (parts.length) {
+    return parts.reduce((sum, part) => sum + Math.round(baselineDpr * Math.max(0.25, getDamageBudgetShare(part, rules))), 0);
+  }
   if (rules.damage.mode !== "budget") return Math.max(0, feature.stats?.dpr || 0);
   const budgetShare = getDamageBudgetShare(rules.damage, rules);
-  const baselineDpr = Math.max(1, feature.stats?.dpr || 1);
   return Math.round(baselineDpr * Math.max(0.25, budgetShare));
+}
+
+function getOngoingDamageBase(feature, rules) {
+  const ongoingDamage = rules.ongoing?.enabled ? rules.ongoing.damage : null;
+  if (!ongoingDamage || ongoingDamage.mode === "none") return 0;
+  if (ongoingDamage.mode === "fixed" && ongoingDamage.average) return Number(ongoingDamage.average) || 0;
+  if (ongoingDamage.mode !== "budget") return 0;
+  const baselineDpr = Math.max(1, feature.stats?.dpr || 1);
+  return Math.round(baselineDpr * Math.max(0.15, getDamageBudgetShare(ongoingDamage, rules)));
 }
 
 export function getFeatureSection(feature) {
@@ -54,38 +69,104 @@ export function getFeatureMechanicProfile(feature) {
             ? { frequency: "death" }
             : { frequency: "at_will" };
 
+  const damageParts = getDamageParts(rules.damage);
+  const primaryDamageEntry = damageParts[0] || rules.damage || {};
+  const damageBudgetRoles = damageParts.length
+    ? damageParts.map((part) => part.budgetRole).filter((role) => role && role !== "none")
+    : rules.damage?.budgetRole && rules.damage.budgetRole !== "none"
+      ? [rules.damage.budgetRole]
+      : [];
+  const ongoingDamageRole = rules.ongoing?.enabled && rules.ongoing.damage?.budgetRole && rules.ongoing.damage.budgetRole !== "none"
+    ? rules.ongoing.damage.budgetRole
+    : null;
+  const allDamageBudgetRoles = ongoingDamageRole ? [...damageBudgetRoles, ongoingDamageRole] : damageBudgetRoles;
+  const resolutionType = rules.resolution?.type;
+
   const inferredMechanicTags = [
-    rules.resolution?.type === "attackRoll" ? "attack_roll" : null,
-    rules.resolution?.type === "savingThrow" ? "saving_throw" : null,
+    resolutionType === "attackRoll" || resolutionType === "attackRollSavingThrow" ? "attack_roll" : null,
+    resolutionType === "savingThrow" || resolutionType === "attackRollSavingThrow" ? "saving_throw" : null,
     rules.secondaryResolution?.type === "savingThrow" ? "secondary_save" : null,
     rules.usage?.type === "recharge" ? "recharge" : null,
+    rules.multiattack?.enabled ? "multiattack" : null,
+    rules.multiattack?.mode ? `multiattack_${rules.multiattack.mode}` : null,
+    rules.multiattack?.replacements?.length ? "multiattack_replacement" : null,
+    rules.spellcasting?.enabled ? "spellcasting" : null,
+    rules.spellcasting?.ability ? `spellcasting_${rules.spellcasting.ability}` : null,
+    rules.defense?.enabled ? "defense_feature" : null,
+    rules.defense?.type ? `defense_${rules.defense.type}` : null,
+    rules.summon?.enabled ? "summon" : null,
+    rules.summon?.type ? `summon_${rules.summon.type}` : null,
+    rules.procedure?.enabled ? "procedure" : null,
+    rules.procedure?.type ? `procedure_${rules.procedure.type}` : null,
+    rules.procedure?.ongoingDamage?.enabled ? "procedure_ongoing_damage" : null,
     rules.actionEconomy === "reaction" ? "reaction" : null,
     rules.condition?.names?.length ? "condition" : null,
+    rules.condition?.escape?.enabled ? "escape_dc" : null,
+    rules.condition?.repeatSave?.enabled ? "repeat_save" : null,
+    rules.ongoing?.enabled ? "ongoing_effect" : null,
+    rules.areaEffect?.enabled ? "area_effect" : null,
+    rules.areaEffect?.type ? `area_${rules.areaEffect.type}` : null,
+    rules.areaEffect?.shape ? `area_shape_${rules.areaEffect.shape}` : null,
     rules.resolution?.abilityBasis ? `ability_${rules.resolution.abilityBasis}` : null,
-    rules.damage?.budgetRole && rules.damage.budgetRole !== "none" ? `budget_${rules.damage.budgetRole}` : null,
+    ...allDamageBudgetRoles.map((role) => `budget_${role}`),
     ...(rules.condition?.names || []),
     ...(rules.condition?.special || []),
   ].filter(Boolean);
   const inferredPressureTags = [
-    rules.targeting?.type === "area" ? "area" : null,
-    ["rechargeBurst", "deathBurst"].includes(rules.damage?.budgetRole) ||
-    rules.damage?.scale === "high" ||
-    rules.damage?.scale === "heavy"
+    rules.targeting?.type === "area" || rules.areaEffect?.enabled ? "area" : null,
+    rules.areaEffect?.enabled ? "area_timing" : null,
+    ["startsTurnInArea", "endsTurnInArea", "entersArea", "whileInArea"].includes(rules.areaEffect?.timing) ? "area_zone_pressure" : null,
+    damageBudgetRoles.some((role) => ["rechargeBurst", "deathBurst"].includes(role)) ||
+    primaryDamageEntry.scale === "high" ||
+    primaryDamageEntry.scale === "heavy"
       ? "burst"
       : null,
-    rules.damage?.budgetRole === "rechargeControl" ? "control_burst" : null,
-    rules.damage?.budgetRole === "reactionPunish" || (rules.actionEconomy === "reaction" && rules.damage) ? "reaction_burst" : null,
-    rules.damage?.budgetRole === "bonusAction" ? "action_economy" : null,
+    damageBudgetRoles.includes("rechargeControl") ? "control_burst" : null,
+    damageBudgetRoles.includes("reactionPunish") || (rules.actionEconomy === "reaction" && rules.damage) ? "reaction_burst" : null,
+    damageBudgetRoles.includes("bonusAction") || rules.multiattack?.enabled ? "action_economy" : null,
+    rules.spellcasting?.enabled ? "spellcasting_flexibility" : null,
+    (rules.spellcasting?.lists || []).some((list) => /fear|hold|dominate|banish|wall|summon|polymorph/i.test([...(list.spellRefs || []), ...(list.spells || [])].join(" "))) ? "spellcasting_control" : null,
+    rules.defense?.enabled ? "defense_stack" : null,
+    ["legendaryResistance", "magicResistance", "evasion", "avoidance"].includes(rules.defense?.type) ? "save_defense" : null,
+    rules.defense?.type === "magicResistance" ? "anti_spell_defense" : null,
+    rules.defense?.type === "regeneration" ? "regeneration" : null,
+    rules.defense?.type === "parry" || rules.defense?.type === "defensiveReaction" ? "defensive_reaction" : null,
+    rules.summon?.enabled ? "action_economy_expansion" : null,
+    rules.summon?.enabled ? "extra_creatures" : null,
+    rules.procedure?.enabled ? "special_procedure" : null,
+    ["swallow", "engulf", "possession"].includes(rules.procedure?.type) ? "containment_pressure" : null,
+    rules.procedure?.ongoingDamage?.enabled ? "procedure_ongoing_pressure" : null,
     ["major", "severe"].includes(rules.condition?.severity) ? "hard_control" : null,
+    rules.ongoing?.enabled && rules.ongoing.damage ? "ongoing_pressure" : null,
+    rules.areaEffect?.enabled && (rules.damage || rules.condition || rules.ongoing?.enabled) ? "area_effect_pressure" : null,
   ].filter(Boolean);
   const inferredComplexityTags = [
     rules.usage?.type === "recharge" ? "recharge" : null,
-    rules.damage?.budgetRole && rules.damage.budgetRole !== "none" ? "damage_budget" : null,
+    damageBudgetRoles.length ? "damage_budget" : null,
+    damageParts.length ? "damage_parts" : null,
+    rules.multiattack?.enabled ? "multiattack" : null,
+    rules.multiattack?.replacements?.length ? "replacement_choice" : null,
+    rules.spellcasting?.enabled ? "spellcasting" : null,
+    (rules.spellcasting?.lists || []).length > 1 ? "spell_list_choice" : null,
+    rules.defense?.enabled ? "defense_feature" : null,
+    rules.defense?.type === "defensiveReaction" || rules.defense?.type === "parry" ? "defensive_reaction" : null,
+    rules.defense?.type === "regeneration" ? "regeneration_tracking" : null,
+    rules.summon?.enabled ? "summon" : null,
+    rules.summon?.enabled ? "board_complexity" : null,
+    rules.summon?.duration ? "summon_duration" : null,
+    rules.procedure?.enabled ? "procedure" : null,
+    rules.procedure?.type ? `procedure_${rules.procedure.type}` : null,
+    rules.procedure?.ongoingDamage?.enabled ? "procedure_ongoing_tracking" : null,
+    rules.procedure?.escapeCondition ? "procedure_escape" : null,
+    rules.procedure?.releaseCondition ? "procedure_release" : null,
     rules.actionEconomy === "reaction" ? "reaction_trigger" : null,
     rules.actionEconomy === "deathTrigger" ? "death_trigger" : null,
     rules.condition?.names?.length ? "condition_tracking" : null,
+    rules.condition?.escape?.enabled ? "escape_tracking" : null,
+    rules.condition?.repeatSave?.enabled ? "repeat_save" : null,
     rules.counterplay?.breakCondition ? "break_condition" : null,
-    rules.condition?.special?.includes("healing-denial") ? "ongoing_tracking" : null,
+    rules.condition?.special?.includes("healing-denial") || rules.ongoing?.enabled ? "ongoing_tracking" : null,
+    rules.areaEffect?.enabled ? "area_timing" : null,
   ].filter(Boolean);
 
   return {
@@ -108,15 +189,26 @@ export function getFeatureMechanicProfile(feature) {
     damageProfile: override.damageProfile ||
       feature.damageProfile || {
         baseDamage: getBudgetDamageBase(feature, rules),
-        damageType: rules.damage?.types?.[0] ? titleCase(rules.damage.types[0]) : "Variable",
-        budgetRole: rules.damage?.budgetRole || "none",
-        budgetShare: getDamageBudgetShare(rules.damage, rules),
-        budgetDefaults: getDamageBudgetDefaults(rules.damage?.budgetRole || "none"),
-        abilityBasis: rules.resolution?.abilityBasis || rules.damage?.abilityBasis || null,
-        expectedTargets: getDamageExpectedTargets(rules.damage, rules) || (rules.targeting?.type === "area" ? 1.75 : feature.stats?.control ? 1.25 : 1),
-        roundWeight: getDamageRoundWeight(rules.damage, rules),
+        damageType: primaryDamageEntry?.types?.[0] ? titleCase(primaryDamageEntry.types[0]) : "Variable",
+        budgetRole: damageBudgetRoles[0] || "none",
+        budgetShare: getDamageTotalBudgetShare(rules.damage, rules),
+        budgetDefaults: getDamageBudgetDefaults(damageBudgetRoles[0] || "none"),
+        abilityBasis: rules.resolution?.abilityBasis || primaryDamageEntry?.abilityBasis || null,
+        expectedTargets: getDamageExpectedTargets(primaryDamageEntry, rules) || (rules.targeting?.type === "area" ? 1.75 : feature.stats?.control ? 1.25 : 1),
+        roundWeight: getDamageRoundWeight(primaryDamageEntry, rules),
+        parts: damageParts,
+        ongoingDamage: getOngoingDamageBase(feature, rules),
+        ongoingTiming: rules.ongoing?.enabled ? rules.ongoing.timing : null,
       },
-    usageProfile: override.usageProfile || feature.usageProfile || fallbackUsage,
+    usageProfile: override.usageProfile || feature.usageProfile || (rules.multiattack?.enabled
+      ? { frequency: "at_will", pattern: "multiattack", count: rules.multiattack.count, mode: rules.multiattack.mode }
+      : rules.spellcasting?.enabled
+        ? { frequency: rules.usage?.type || "at_will", pattern: "spellcasting", lists: rules.spellcasting.lists?.length || 0 }
+        : rules.summon?.enabled
+          ? { frequency: rules.usage?.type || "at_will", pattern: "summon", summonType: rules.summon.type, count: rules.summon.count }
+          : rules.procedure?.enabled
+            ? { frequency: rules.usage?.type || "at_will", pattern: "procedure", procedureType: rules.procedure.type }
+            : fallbackUsage),
     conditionProfile: override.conditionProfile ||
       feature.conditionProfile ||
       (rules.condition
@@ -124,6 +216,10 @@ export function getFeatureMechanicProfile(feature) {
             severity: titleCase(rules.condition.severity),
             conditions: rules.condition.names || [],
             special: rules.condition.special || [],
+            duration: rules.condition.duration || null,
+            sizeLimit: rules.condition.sizeLimit || null,
+            escape: rules.condition.escape || null,
+            repeatSave: rules.condition.repeatSave || null,
           }
         : null),
   };
@@ -149,7 +245,8 @@ export function summarizeMechanicProfiles(profiles) {
       weights.reduce((total, value) => total + value, 0) / Math.max(1, weights.length);
     return (
       sum +
-      Math.max(0, damage.baseDamage || 0) * Math.max(1, damage.expectedTargets || 1) * averageWeight
+      Math.max(0, damage.baseDamage || 0) * Math.max(1, damage.expectedTargets || 1) * averageWeight +
+      Math.max(0, damage.ongoingDamage || 0)
     );
   }, 0);
 
@@ -256,9 +353,16 @@ export function buildPressureProfile({
       tagCount(pressureTags, "tempo") * 1 +
       tagCount(pressureTags, "action_economy") * 1.1 +
       tagCount(pressureTags, "retaliation") * 0.8,
-    defense: Math.max(0, statMods.hp || 0) / 28 + Math.max(0, statMods.ac || 0) * 0.85,
+    defense:
+      Math.max(0, statMods.hp || 0) / 28 +
+      Math.max(0, statMods.ac || 0) * 0.85 +
+      tagCount(pressureTags, "defense_stack") * 0.8 +
+      tagCount(pressureTags, "save_defense") * 1.1 +
+      tagCount(pressureTags, "anti_spell_defense") * 0.7 +
+      tagCount(pressureTags, "defensive_reaction") * 0.8,
     sustain:
       tagCount(pressureTags, "sustain") * 0.8 +
+      tagCount(pressureTags, "regeneration") * 1.2 +
       tagCount(pressureTags, "escalation") * 1 +
       tagCount(pressureTags, "campaign_pressure") * 0.5,
     other: Math.max(0, statMods.mobility || 0) * 0.35 - fairnessRelief * 1.35,
@@ -286,6 +390,8 @@ export function buildComplexityProfile({ complexity, mechanicsSummary, featureMe
     timing:
       tagCount(complexityTags, "recharge") * 0.45 +
       tagCount(complexityTags, "reaction_trigger") * 0.65 +
+      tagCount(complexityTags, "defensive_reaction") * 0.55 +
+      tagCount(complexityTags, "regeneration_tracking") * 0.55 +
       tagCount(complexityTags, "random_trigger") * 0.55 +
       tagCount(complexityTags, "death_trigger") * 0.35 +
       tagCount(complexityTags, "round_tracking") * 0.75 +

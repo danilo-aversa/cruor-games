@@ -1140,6 +1140,25 @@
   }
 }
 
+/* Inspiration Studio — Inferred legacy rules */
+.studio-inferred-rules-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(232, 167, 69, 0.22);
+  border-left: 2px solid rgba(232, 167, 69, 0.58);
+  background: linear-gradient(90deg, rgba(232, 167, 69, 0.1), transparent 72%), rgba(0, 0, 0, 0.18);
+  color: rgba(255, 238, 202, 0.82);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.studio-inferred-rules-note i {
+  color: rgba(232, 167, 69, 0.84);
+}
+
 /* Inspiration Studio — Monster rules grouping */
 .studio-component-editor__subpanel--monster {
   display: grid;
@@ -1200,19 +1219,249 @@
   margin-bottom: 0;
 }
 
-/* Inspiration Studio — generated monster stat block preview */
-.studio-statblock-preview {
+/* Inspiration Studio — Monster ability events and damage parts */
+.studio-damage-parts {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.studio-damage-part {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid rgba(240, 185, 194, 0.09);
+  background: rgba(0, 0, 0, 0.18);
+  padding: 10px;
+}
+
+.studio-damage-part__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.studio-damage-part__head strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--studio-accent-muted);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.studio-damage-part__head button,
+.studio-inline-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 10px;
+  color: var(--studio-accent-muted);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.studio-damage-part__head button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.studio-text-source-toggle {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  width: min(100%, 420px);
+}
+
+.studio-text-source-toggle--compact {
+  width: fit-content;
+  min-width: 164px;
+}
+
+.studio-text-source-toggle--compact button {
+  min-width: 82px;
+}
+
+.studio-text-source-toggle button {
+  min-height: 34px;
+  color: var(--studio-muted);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.studio-text-source-toggle button[aria-pressed="true"] {
+  border-color: var(--studio-line-strong);
+  color: #fff0f2;
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.28), rgba(5, 5, 6, 0.72));
+}
+
+.studio-generated-preview {
   min-height: 132px;
   resize: vertical;
-  color: #f6e8eb;
-  background: linear-gradient(180deg, rgba(255, 238, 242, 0.03), transparent 70%), rgba(0, 0, 0, 0.28);
+  color: rgba(255, 240, 242, 0.86);
+  background: linear-gradient(180deg, rgba(255, 238, 242, 0.025), transparent 70%), rgba(0, 0, 0, 0.28);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 12px;
   line-height: 1.5;
   white-space: pre-wrap;
 }
 
-.studio-statblock-preview:focus {
-  border-color: rgba(240, 185, 194, 0.16);
-  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.32);
+.studio-generated-preview:focus {
+  border-color: rgba(240, 185, 194, 0.24);
+  box-shadow: 0 0 0 1px rgba(240, 185, 194, 0.08);
+  outline: none;
+}
+
+/* Inspiration Studio — Spellcasting picker */
+.studio-spell-picker {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid rgba(240, 185, 194, 0.08);
+  background: rgba(0, 0, 0, 0.13);
+  padding: 10px;
+}
+
+.studio-spell-picker__results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+  max-height: 260px;
+  overflow: auto;
+}
+
+.studio-spell-picker__results button {
+  display: grid;
+  gap: 4px;
+  min-height: 54px;
+  padding: 9px 10px;
+  border: 1px solid rgba(240, 185, 194, 0.1);
+  background: rgba(0, 0, 0, 0.18);
+  text-align: left;
+}
+
+.studio-spell-picker__results button strong {
+  color: #fff0f2;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.02em;
+}
+
+.studio-spell-picker__results button span,
+.studio-spellcasting-list .studio-damage-part__head span {
+  color: var(--studio-muted);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Inspiration Studio — Monster Rules Block Editor v1.7 */
+.studio-rules-group__tools {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+}
+
+.studio-rules-block-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-color: rgba(240, 185, 194, 0.13);
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--studio-muted);
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.studio-rules-block-remove:hover,
+.studio-rules-block-remove:focus-visible {
+  border-color: rgba(240, 185, 194, 0.28);
+  color: #fff0f2;
+}
+
+.studio-icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  min-height: 30px;
+  padding: 0;
+  line-height: 1;
+}
+
+.studio-icon-button i {
+  margin: 0;
+  font-size: 11px;
+}
+
+.studio-damage-part__head .studio-icon-button,
+.studio-rules-group__tools .studio-icon-button {
+  padding: 0;
+  gap: 0;
+}
+
+
+.studio-rules-add-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.studio-rules-add-menu button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 11px;
+  border: 1px solid rgba(240, 185, 194, 0.12);
+  background: rgba(0, 0, 0, 0.16);
+  color: var(--studio-accent-muted);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.studio-rules-add-menu button:hover,
+.studio-rules-add-menu button:focus-visible {
+  border-color: var(--studio-line-strong);
+  color: #fff0f2;
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.24), rgba(5, 5, 6, 0.64));
+}
+
+.studio-rules-add-menu__empty {
+  margin: 0;
+  color: var(--studio-muted);
+  font-size: 11px;
+}
+
+.studio-generated-field-note {
+  margin: 6px 0 0;
+  color: var(--studio-muted);
+  font-size: 11px;
+  line-height: 1.4;
 }

@@ -110,6 +110,18 @@ export {
 } from "./adapters/location-regions.js";
 export { SHARED_TAXONOMIES } from "./taxonomies.js";
 export { SHARED_DARKEN_LOCATION_SLOTS, SHARED_MONSTER_SLOTS, SHARED_WORKFLOWS } from "./workflows.js";
+
+export {
+  SPELLS_5E24,
+  SPELLS_5E24_BY_ID,
+  SPELLS_5E24_BY_NAME,
+  SPELLS_5E24_DATASET_ID,
+  SPELLS_5E24_LEVEL_OPTIONS,
+  SPELLS_5E24_SCHOOL_OPTIONS,
+  findSpell5e24,
+  getSpell5e24Name,
+  normalizeSpell5e24Ref,
+} from "./spells.5e24.js";
 export {
   STATIC_CONTENT_PACK,
   STATIC_CONTENT_PACKS,
