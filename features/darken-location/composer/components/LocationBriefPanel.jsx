@@ -1,9 +1,14 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { SOURCE_ANCHORS } from "../../../crucible/crucible.sources-data.js";
+import { getStaticContentRegistry } from "../../../../shared/content/content.index.js";
 
 const CONTEXT_OPTIONS = ["Crypt", "Chapel", "Cave", "Mine", "Ruins", "Noble House", "Village", "Forest"];
 const HORROR_OPTIONS = ["Religious Horror", "Body Horror", "Gothic", "Folk Horror", "Psychological Horror", "Cosmic Horror", "Disease Horror"];
+const CONTENT_REGISTRY = getStaticContentRegistry();
+const SOURCE_OPTIONS = CONTENT_REGISTRY.getSourceAnchors({ workflow: "darken-location" })
+  .map((sourceAnchor) => sourceAnchor.label || sourceAnchor.id)
+  .sort((a, b) => a.localeCompare(b));
+
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -142,7 +147,7 @@ function LocationChoiceField({ icon = "fa-circle-dot", label, meta, onChange, op
 }
 
 export function LocationBriefPanel({ state, setState, mapRequest, draftControls, modeControls }) {
-  const sourceOptions = SOURCE_ANCHORS.filter((source) => source !== "Any Source").slice(0, 12);
+  const sourceOptions = SOURCE_OPTIONS.slice(0, 16);
   const selectedSource = toChoiceArray(state.sourceAnchors)[0] || "";
   const selectedHorror = toChoiceArray(state.horrors)[0] || state.horror || "";
 

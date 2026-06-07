@@ -190,7 +190,7 @@ function normalizeRequiredRegion(region, index, assignedComponents = []) {
 }
 
 export function createMapRequestFromDarkenLocationState(crucibleSnapshot = {}) {
-  const workflow = normalizeText(crucibleSnapshot.workflow, "location");
+  const workflow = normalizeText(crucibleSnapshot.workflow, "darken-location");
   const context = normalizeText(crucibleSnapshot.context, "Crypt");
   const mapType = mapDarkenLocationContextToMapType(context);
   const slotAssignments = normalizeSlotAssignments(crucibleSnapshot.slotAssignments);

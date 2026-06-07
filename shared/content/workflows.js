@@ -20,6 +20,73 @@ export const SHARED_WORKFLOWS = [
     status: "published",
     summary: "Explain real inspirations and connect them to reusable Cruor content.",
   },
+  {
+    id: "map-generator",
+    label: "Map Generator",
+    type: "Workflow",
+    status: "published",
+    summary: "Render content-aware Darken a Location regions as deterministic editable maps.",
+  },
+];
+
+
+export const SHARED_DARKEN_LOCATION_SLOTS = [
+  {
+    id: "horrorPremise",
+    label: "Location Premise",
+    type: "Location Slot",
+    workflows: ["darken-location"],
+    summary: "The main horror transformation of the place.",
+  },
+  {
+    id: "sensoryLayer",
+    label: "Sensory Layer",
+    type: "Location Slot",
+    workflows: ["darken-location"],
+    summary: "Sounds, smells, textures, temperature, light behavior, and other sensory pressure.",
+  },
+  {
+    id: "visibleAnomaly",
+    label: "Visible Anomaly",
+    type: "Location Slot",
+    workflows: ["darken-location"],
+    summary: "An immediate disturbing image or sign the DM can describe.",
+  },
+  {
+    id: "hazard",
+    label: "Environmental Hazard",
+    type: "Location Slot",
+    workflows: ["darken-location"],
+    summary: "A mechanical danger tied to the place.",
+  },
+  {
+    id: "clue",
+    label: "Disturbing Clue",
+    type: "Location Slot",
+    workflows: ["darken-location"],
+    summary: "An object, corpse, inscription, omen, or revelation that can support the DM’s existing plot.",
+  },
+  {
+    id: "encounterTwist",
+    label: "Encounter Twist",
+    type: "Location Slot",
+    workflows: ["darken-location"],
+    summary: "A way to modify an encounter already planned for the location.",
+  },
+  {
+    id: "reward",
+    label: "Reward / Consequence",
+    type: "Location Slot",
+    workflows: ["darken-location"],
+    summary: "Something the players may gain, carry, suffer, or trigger.",
+  },
+  {
+    id: "locationRegion",
+    label: "Location Region",
+    type: "Map Slot",
+    workflows: ["darken-location", "map-generator"],
+    summary: "A named map region or room template that can be placed by the Map Generator.",
+  },
 ];
 
 export const SHARED_MONSTER_SLOTS = [

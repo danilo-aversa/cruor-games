@@ -2,7 +2,7 @@ import { CONTENT_PACK_STATUS, createContentPack } from "../content-pack-schema.j
 import { SHARED_MONSTER_COMPONENTS } from "../monster-components.js";
 import { SHARED_SOURCE_ANCHORS } from "../source-anchors.js";
 import { SHARED_TAXONOMIES } from "../taxonomies.js";
-import { SHARED_MONSTER_SLOTS, SHARED_WORKFLOWS } from "../workflows.js";
+import { SHARED_DARKEN_LOCATION_SLOTS, SHARED_MONSTER_SLOTS, SHARED_WORKFLOWS } from "../workflows.js";
 
 export const CORE_CRUOR_CONTENT_PACK_ID = "core-cruor";
 
@@ -26,7 +26,7 @@ export const CORE_CRUOR_CONTENT_PACK = createContentPack({
   },
   collections: {
     workflows: SHARED_WORKFLOWS,
-    slots: SHARED_MONSTER_SLOTS,
+    slots: [...SHARED_DARKEN_LOCATION_SLOTS, ...SHARED_MONSTER_SLOTS],
     components: SHARED_MONSTER_COMPONENTS,
     sourceAnchors: SHARED_SOURCE_ANCHORS,
     inspirations: [],

@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import {
-  STATIC_CONTENT_PACK_PROVENANCE,
-  STATIC_CONTENT_REGISTRY,
   getSourceAnchorId,
+  getStaticContentPackProvenance,
+  getStaticContentRegistry,
 } from "../../shared/content/content.index.js";
 import "./inspirations.styles.css";
 
@@ -10,6 +10,9 @@ const ANY_PACK = "Any Pack";
 const MONSTER_COMPONENT_DISPLAY_LIMIT = 18;
 const INSPIRATION_WORKFLOW_ID = "inspiration-archive";
 const MONSTER_WORKFLOW_ID = "monster-composer";
+const STATIC_CONTENT_REGISTRY = getStaticContentRegistry();
+const STATIC_CONTENT_PACK_PROVENANCE = getStaticContentPackProvenance();
+
 
 const SORT_OPTIONS = [
   { value: "az", label: "A-Z" },

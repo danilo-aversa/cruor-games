@@ -1,9 +1,14 @@
-import { JACK_THE_RIPPER_CONTENT_PACK_ID, JACK_THE_RIPPER_MONSTER_COMPONENTS, JACK_THE_RIPPER_SOURCE_ANCHORS } from "../../../shared/content/content-packs/jack-the-ripper-pack.js";
+import {
+  getStaticContentPackProvenance,
+  getStaticContentRegistry,
+} from "../../../shared/content/content.index.js";
 import { MONSTER_GRAFTS } from "./monster-grafts.js";
 import { MONSTER_SOURCES } from "./monster-sources.js";
 
 const DEFAULT_PACK_TITLE = "Content Pack";
 const DEFAULT_GRAFT_SECTION = "trait";
+const MONSTER_WORKFLOW_ID = "monster-composer";
+const MONSTER_GRAFT_CONTENT_TYPE = "monster-graft";
 
 export const CORE_MONSTER_FEED_META = {
   id: "core-cruor",
@@ -40,6 +45,11 @@ function getContentPackMeta(contentPack = {}) {
   };
 }
 
+function getRegistryPackMeta(collectionName, entry) {
+  const provenance = getStaticContentPackProvenance();
+  return getContentPackMeta(provenance.getPrimaryPackForEntry(collectionName, entry) || {});
+}
+
 export function sharedComponentToMonsterGraft(component, contentPack = {}) {
   const pack = getContentPackMeta(contentPack);
   const monster = component?.monster || {};
@@ -69,7 +79,7 @@ export function sharedComponentToMonsterGraft(component, contentPack = {}) {
     contentPack: pack,
     registry: {
       componentId: component.id,
-      contentType: component.contentType || "monster-graft",
+      contentType: component.contentType || MONSTER_GRAFT_CONTENT_TYPE,
     },
   };
 }
@@ -97,7 +107,7 @@ export function sourceAnchorToMonsterSource(sourceAnchor, contentPack = {}) {
 
 export function buildMonsterGraftsFromSharedComponents(components = [], contentPack = {}) {
   return asArray(components)
-    .filter((component) => component?.contentType === "monster-graft")
+    .filter((component) => component?.contentType === MONSTER_GRAFT_CONTENT_TYPE)
     .map((component) => sharedComponentToMonsterGraft(component, contentPack))
     .filter((graft) => graft.id && graft.slot && graft.source);
 }
@@ -132,28 +142,40 @@ export function mergeMonsterGrafts(baseGrafts = [], contentPackGrafts = []) {
   });
 }
 
-export const JACK_THE_RIPPER_MONSTER_FEED_META = {
-  id: JACK_THE_RIPPER_CONTENT_PACK_ID,
-  title: "Jack the Ripper Horror Pack",
-};
+function getRegistryMonsterComponents() {
+  return getStaticContentRegistry().getComponents({
+    workflow: MONSTER_WORKFLOW_ID,
+    contentType: MONSTER_GRAFT_CONTENT_TYPE,
+  });
+}
+
+function getRegistryMonsterSourceAnchors(monsterComponents = getRegistryMonsterComponents()) {
+  const sourceAnchorIds = new Set(
+    monsterComponents.flatMap((component) => normalizeStringArray(component.sourceAnchors)),
+  );
+
+  return getStaticContentRegistry()
+    .getSourceAnchors({ workflow: MONSTER_WORKFLOW_ID })
+    .filter((sourceAnchor) => sourceAnchorIds.has(sourceAnchor.id));
+}
 
 export const CORE_MONSTER_SOURCES = MONSTER_SOURCES.map((source) =>
-  withContentPackMeta(source, CORE_MONSTER_FEED_META)
+  withContentPackMeta(source, CORE_MONSTER_FEED_META),
 );
 
 export const CORE_MONSTER_GRAFTS = MONSTER_GRAFTS.map((graft) =>
-  withContentPackMeta(graft, CORE_MONSTER_FEED_META)
+  withContentPackMeta(graft, CORE_MONSTER_FEED_META),
 );
 
-export const CONTENT_PACK_MONSTER_SOURCES = buildMonsterSourcesFromSourceAnchors(
-  JACK_THE_RIPPER_SOURCE_ANCHORS,
-  JACK_THE_RIPPER_MONSTER_FEED_META,
-);
+export const CONTENT_PACK_MONSTER_COMPONENTS = getRegistryMonsterComponents();
 
-export const CONTENT_PACK_MONSTER_GRAFTS = buildMonsterGraftsFromSharedComponents(
-  JACK_THE_RIPPER_MONSTER_COMPONENTS,
-  JACK_THE_RIPPER_MONSTER_FEED_META,
-);
+export const CONTENT_PACK_MONSTER_SOURCES = getRegistryMonsterSourceAnchors(
+  CONTENT_PACK_MONSTER_COMPONENTS,
+).map((sourceAnchor) => sourceAnchorToMonsterSource(sourceAnchor, getRegistryPackMeta("sourceAnchors", sourceAnchor)));
+
+export const CONTENT_PACK_MONSTER_GRAFTS = CONTENT_PACK_MONSTER_COMPONENTS.map((component) =>
+  sharedComponentToMonsterGraft(component, getRegistryPackMeta("components", component)),
+).filter((graft) => graft.id && graft.slot && graft.source);
 
 export const ALL_MONSTER_SOURCES = mergeMonsterSources(
   CORE_MONSTER_SOURCES,

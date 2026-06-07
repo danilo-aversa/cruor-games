@@ -48,7 +48,7 @@ export function createInitialLocationComposerState(regionTemplates = []) {
 
   return {
     ...legacyState,
-    workflow: "location",
+    workflow: "darken-location",
     title: "Cursed Location Build",
     context: DEFAULT_CONTEXT,
     horror: DEFAULT_SELECTED_HORROR,
@@ -211,7 +211,7 @@ export function createLocationComposerSnapshot(state, selectedComponents = []) {
   const slotAssignments = normalizeSlotAssignments(state.slotAssignments);
 
   return {
-    workflow: state.workflow || "location",
+    workflow: state.workflow || "darken-location",
     title: state.title || "Cursed Location Build",
     context: state.context || DEFAULT_CONTEXT,
     horror: state.horror || DEFAULT_SELECTED_HORROR,

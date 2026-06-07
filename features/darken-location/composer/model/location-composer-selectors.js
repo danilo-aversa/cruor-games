@@ -1,7 +1,8 @@
-import { COMPONENTS } from "../../../crucible/crucible.components-data.js";
-import { LOCATION_REGION_TEMPLATES } from "../../../crucible/crucible.location-regions.js";
-import { SOURCE_DETAILS } from "../../../crucible/crucible.sources-data.js";
-import { WORKFLOWS, SLOT_DESCRIPTIONS } from "../../../crucible/crucible.workflows.js";
+import {
+  getSourceAnchorId,
+  getStaticContentRegistry,
+  sharedLocationRegionToLegacyTemplate,
+} from "../../../../shared/content/content.index.js";
 import {
   DEFAULT_LOCATION_SLOT_IDS,
   LOCATION_SLOT_SCOPE_MAP,
@@ -10,6 +11,19 @@ import {
   normalizeSlotAssignments,
   toArray,
 } from "./location-composer-state.js";
+
+const CONTENT_REGISTRY = getStaticContentRegistry();
+const DARKEN_LOCATION_WORKFLOW_ID = "darken-location";
+const LOCATION_COMPONENT_CONTENT_TYPE = "location-component";
+const LOCATION_REGION_CONTENT_TYPE = "location-region";
+const ANY_SOURCE_LABEL = "Any Source";
+
+function normalizeSourceSelection(values = []) {
+  return toArray(values)
+    .filter((source) => source !== ANY_SOURCE_LABEL)
+    .map(getSourceAnchorId)
+    .filter(Boolean);
+}
 
 export const LOCATION_SLOT_SCOPE_DEFINITIONS = {
   [LOCATION_SLOT_SCOPE_MAP]: {
@@ -29,25 +43,30 @@ export const LOCATION_SLOT_SCOPE_DEFINITIONS = {
 };
 
 export function getLocationWorkflow() {
-  return WORKFLOWS.location || Object.values(WORKFLOWS).find((workflow) =>
-    workflow?.slots?.some((slot) => DEFAULT_LOCATION_SLOT_IDS.includes(slot.id)),
-  );
+  return CONTENT_REGISTRY.getWorkflow(DARKEN_LOCATION_WORKFLOW_ID) || {
+    id: DARKEN_LOCATION_WORKFLOW_ID,
+    label: "Darken a Location",
+  };
 }
 
 export function getLocationSlots() {
-  const workflow = getLocationWorkflow();
-  const slots = Array.isArray(workflow?.slots) && workflow.slots.length
-    ? workflow.slots
-    : DEFAULT_LOCATION_SLOT_IDS.map((id) => ({
-        id,
-        label: id.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase()),
-        max: 1,
-      }));
+  const registrySlots = CONTENT_REGISTRY.slots.filter((slot) =>
+    (slot.workflows || []).includes(DARKEN_LOCATION_WORKFLOW_ID),
+  );
+  const slotById = new Map(registrySlots.map((slot) => [slot.id, slot]));
+  const slots = DEFAULT_LOCATION_SLOT_IDS.map((id) =>
+    slotById.get(id) || {
+      id,
+      label: id.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase()),
+      max: 1,
+      summary: "",
+    },
+  );
 
   return slots.map((slot) => ({
     ...slot,
     max: Number.isFinite(slot.max) ? Math.max(1, slot.max) : 1,
-    description: SLOT_DESCRIPTIONS[slot.id] || "",
+    description: slot.description || slot.summary || "",
   }));
 }
 
@@ -84,11 +103,14 @@ export function getSlotById(slotId) {
 }
 
 export function getLocationComponents() {
-  return COMPONENTS.filter((component) => component?.workflows?.includes("location"));
+  return CONTENT_REGISTRY.getComponents({
+    workflow: DARKEN_LOCATION_WORKFLOW_ID,
+    contentType: LOCATION_COMPONENT_CONTENT_TYPE,
+  });
 }
 
 export function getComponentById(componentId) {
-  return getLocationComponents().find((component) => component.id === componentId);
+  return CONTENT_REGISTRY.getComponent(componentId);
 }
 
 export function getSlotAssignments(state, slotId = "") {
@@ -189,13 +211,16 @@ export function getSlotStatusForScope(state, slot, scope, regionId = "") {
 }
 
 export function getComponentsForSlot(slotId, state) {
-  const sourceAnchors = toArray(state?.sourceAnchors).filter((source) => source !== "Any Source");
+  const sourceAnchors = normalizeSourceSelection(state?.sourceAnchors);
   const horrors = toArray(state?.horrors);
   const context = state?.context;
   const intrusion = state?.intrusion;
 
-  return getLocationComponents()
-    .filter((component) => component?.slots?.includes(slotId))
+  return CONTENT_REGISTRY.getComponents({
+    workflow: DARKEN_LOCATION_WORKFLOW_ID,
+    contentType: LOCATION_COMPONENT_CONTENT_TYPE,
+    slot: slotId,
+  })
     .filter((component) => !context || context === "Any" || component.contexts?.includes("Any") || component.contexts?.includes(context))
     .filter((component) => !intrusion || intrusion === "Any" || component.intrusion === intrusion || component.intrusion === "Any")
     .filter((component) => !sourceAnchors.length || sourceAnchors.some((anchor) => component.sourceAnchors?.includes(anchor)))
@@ -204,20 +229,29 @@ export function getComponentsForSlot(slotId, state) {
 }
 
 export function getRegionTemplatesForState(state) {
-  const sourceAnchors = toArray(state?.sourceAnchors).filter((source) => source !== "Any Source");
+  const sourceAnchors = normalizeSourceSelection(state?.sourceAnchors);
   const context = state?.context;
   const horrors = toArray(state?.horrors);
 
-  return LOCATION_REGION_TEMPLATES.filter((region) => {
-    const matchesContext = !context || context === "Any" || region.contexts?.includes("Any") || region.contexts?.includes(context);
-    const matchesSource = !sourceAnchors.length || sourceAnchors.some((anchor) => region.sourceAnchors?.includes(anchor));
-    const matchesHorror = !horrors.length || horrors.some((horror) => region.horror?.includes(horror));
-    return matchesContext && matchesSource && matchesHorror;
-  }).slice(0, 8);
+  return CONTENT_REGISTRY.getComponents({
+    workflow: DARKEN_LOCATION_WORKFLOW_ID,
+    contentType: LOCATION_REGION_CONTENT_TYPE,
+  })
+    .filter((region) => {
+      const matchesContext = !context || context === "Any" || region.contexts?.includes("Any") || region.contexts?.includes(context);
+      const matchesSource = !sourceAnchors.length || sourceAnchors.some((anchor) => region.sourceAnchors?.includes(anchor));
+      const matchesHorror = !horrors.length || horrors.some((horror) => region.horror?.includes(horror));
+      return matchesContext && matchesSource && matchesHorror;
+    })
+    .map(sharedLocationRegionToLegacyTemplate)
+    .slice(0, 8);
 }
 
 export function describeSourceAnchor(anchor) {
-  return SOURCE_DETAILS[anchor]?.logic || "";
+  const sourceAnchorId = getSourceAnchorId(anchor);
+  const sourceAnchor = CONTENT_REGISTRY.getSourceAnchor(sourceAnchorId);
+  const inspiration = CONTENT_REGISTRY.getLinkedInspirations(sourceAnchorId)[0];
+  return inspiration?.inspiration?.logic || inspiration?.narrative || sourceAnchor?.summary || "";
 }
 
 export function getPrimaryPremise(state) {

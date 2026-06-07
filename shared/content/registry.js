@@ -93,6 +93,7 @@ function matchesContentFilter(entry, filter = {}) {
     matchesString(entry.status, filter.status) &&
     matchesString(entry.locale, filter.locale) &&
     matchesString(entry.type, filter.type) &&
+    matchesString(entry.contentType, filter.contentType || filter.contentTypes) &&
     matchesAny(entry.workflows, filter.workflow || filter.workflows) &&
     matchesAny(entry.slots, filter.slot || filter.slots) &&
     matchesAny(entry.sourceAnchors, filter.sourceAnchor || filter.sourceAnchors) &&

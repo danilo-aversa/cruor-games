@@ -15,11 +15,11 @@ import {
   getComposerDigest,
   getDefaultSlotIdForScope,
   getLocationSlotsForScope,
+  getRegionTemplatesForState,
   getSelectedComponents,
   getSlotFilledCountForScope,
   isSlotInScope,
 } from "./model/location-composer-selectors.js";
-import { LOCATION_REGION_TEMPLATES } from "../../crucible/crucible.location-regions.js";
 import {
   createDraftFingerprint,
   deleteStoredLocationDraftWithStatus,
@@ -151,8 +151,16 @@ function LocationRecapPanel({
   );
 }
 
+function getInitialLocationRegionTemplates() {
+  return getRegionTemplatesForState({
+    context: "Crypt",
+    sourceAnchors: ["Sedlec Ossuary"],
+    horrors: ["Religious Horror"],
+  });
+}
+
 export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnapshotProviderReady, uiMode = "simple" } = {}) {
-  const [state, setState] = useState(() => createInitialLocationComposerState(LOCATION_REGION_TEMPLATES));
+  const [state, setState] = useState(() => createInitialLocationComposerState(getInitialLocationRegionTemplates()));
   const [draftStatus, setDraftStatus] = useState("");
   const [draftSummary, setDraftSummary] = useState(() => getStoredDraftSummary());
   const [draftStorageStatus, setDraftStorageStatus] = useState(() => getLocalDraftStorageStatus());
@@ -204,7 +212,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       if (!confirmed) return;
     }
 
-    const fallbackState = createInitialLocationComposerState(LOCATION_REGION_TEMPLATES);
+    const fallbackState = createInitialLocationComposerState(getInitialLocationRegionTemplates());
     const restoredState = restoreLocationDraftState(storedDraft, fallbackState);
     setState(restoredState);
     setSavedDraftFingerprint(createDraftFingerprint(restoredState));
@@ -254,7 +262,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     const confirmed = window.confirm("Reset current composer?");
     if (!confirmed) return;
 
-    const resetState = createInitialLocationComposerState(LOCATION_REGION_TEMPLATES);
+    const resetState = createInitialLocationComposerState(getInitialLocationRegionTemplates());
     setState(resetState);
     setSavedDraftFingerprint(createDraftFingerprint(resetState));
     setBuilderMode("frame");

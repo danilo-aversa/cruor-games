@@ -10591,3 +10591,79 @@
     width: min(760px, 100%);
   }
 }
+
+/* E2E/stability fix: keep the graft drawer above anatomy columns and make Add buttons the top hit target. */
+.monster-shell .anatomy-stage__navigator-overlay {
+  z-index: 240;
+}
+
+.monster-shell .component-navigator-drawer {
+  position: relative;
+  z-index: 245;
+}
+
+.monster-shell .component-navigator-drawer .component-navigator-modal__panel,
+.monster-shell .component-navigator-drawer .component-navigator-modal__list,
+.monster-shell .component-navigator-drawer .component-navigator-modal__list .component-card {
+  position: relative;
+  z-index: 1;
+}
+
+.monster-shell .component-navigator-drawer .component-navigator-modal__list .card-top {
+  pointer-events: none;
+}
+
+.monster-shell .component-navigator-drawer .component-navigator-modal__list .component-toggle-btn {
+  z-index: 260;
+  pointer-events: auto;
+}
+
+/* E2E/layout fix v2: the in-stage graft drawer must be the top hit-test layer.
+   The previous drawer layout could visually show Add buttons while card/header or
+   anatomy-column layers intercepted pointer events at the button coordinates. */
+.monster-shell .anatomy-stage__grid--grafts {
+  position: relative;
+}
+
+.monster-shell .anatomy-stage__grid--grafts .anatomy-stage__navigator-overlay {
+  grid-column: 1 / 4 !important;
+  grid-row: 1 / 3 !important;
+  inset: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 1000 !important;
+  pointer-events: none !important;
+}
+
+.monster-shell .anatomy-stage__grid--grafts .component-navigator-drawer,
+.monster-shell .anatomy-stage__grid--grafts .component-navigator-modal,
+.monster-shell .anatomy-stage__grid--grafts .component-navigator-modal--drawer,
+.monster-shell .anatomy-stage__grid--grafts .component-navigator-modal__panel,
+.monster-shell .anatomy-stage__grid--grafts .component-navigator-modal__list,
+.monster-shell .anatomy-stage__grid--grafts .component-navigator-modal__list .component-card {
+  position: relative;
+  z-index: 1001 !important;
+  pointer-events: auto !important;
+}
+
+.monster-shell .anatomy-stage__grid--grafts .component-navigator-modal__list .component-card {
+  isolation: isolate;
+}
+
+.monster-shell .anatomy-stage__grid--grafts .component-navigator-modal__list .card-top,
+.monster-shell .anatomy-stage__grid--grafts .component-navigator-modal__list .component-title-stack,
+.monster-shell .anatomy-stage__grid--grafts .component-navigator-modal__list .summary,
+.monster-shell .anatomy-stage__grid--grafts .component-navigator-modal__list .component-impact-dock,
+.monster-shell .anatomy-stage__grid--grafts .component-navigator-modal__list .component-impact-metric {
+  pointer-events: none !important;
+}
+
+.monster-shell .anatomy-stage__grid--grafts .component-navigator-modal__list .component-toggle-btn {
+  position: relative !important;
+  inset: auto !important;
+  grid-area: action !important;
+  z-index: 1002 !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: none !important;
+}
