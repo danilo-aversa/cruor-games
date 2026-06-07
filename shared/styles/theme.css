@@ -1,6 +1,12 @@
-/* Cruor app foundations extracted from the Crucible MVP. */
+/*
+ * Cruor Games — Theme Tokens
+ * Refactored CSS. Existing selectors and class hooks are preserved.
+ */
+
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
+
 @import url(https://db.onlinewebfonts.com/c/84511926c1e0e99e983d71e22d6a5838?family=Lovato-Black);
+
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
 
 :root {
@@ -30,10 +36,6 @@
   --shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
   --navigator-width: 390px;
   --workbench-handle-width: 14px;
-
-  /* Cruor UI Kit tokens.
-     These aliases let new shared components migrate away from feature-local values
-     without breaking existing MVP selectors. */
   --cruor-color-bg: var(--bg);
   --cruor-color-surface: var(--surface);
   --cruor-color-surface-2: var(--surface-2);
@@ -47,7 +49,6 @@
   --cruor-color-accent-2: var(--accent-2);
   --cruor-color-accent-3: var(--accent-3);
   --cruor-color-good: var(--good);
-
   --cruor-space-2xs: 4px;
   --cruor-space-xs: 6px;
   --cruor-space-sm: 8px;
@@ -55,38 +56,26 @@
   --cruor-space-lg: 16px;
   --cruor-space-xl: 24px;
   --cruor-space-2xl: 32px;
-
   --cruor-control-height-xs: 32px;
   --cruor-control-height-sm: 36px;
   --cruor-control-height-md: 40px;
   --cruor-control-height-lg: 44px;
-
-  /* Step 1.10 token normalization.
-     Preserve legacy feature control heights while migrating to Cruor tokens. */
   --cruor-control-height-darken: 38px;
   --cruor-control-height-map: 38px;
   --cruor-control-height-inspirations: 42px;
   --cruor-control-padding-x-sm: 10px;
   --cruor-control-padding-x-md: 13px;
   --cruor-control-padding-x-lg: 16px;
-
   --cruor-radius-none: 0;
   --cruor-border-thin: 1px solid var(--line);
   --cruor-border-strong: 1px solid rgba(95, 7, 22, 0.74);
   --cruor-border-panel: 2px solid color-mix(in srgb, var(--glass-line) 78%, white 22%);
-
   --cruor-panel-bg: var(--glass-satin);
   --cruor-panel-bg-strong: var(--glass-satin-strong);
   --cruor-panel-border: var(--cruor-border-panel);
   --cruor-panel-highlight: var(--panel-white-line);
   --cruor-panel-glow: var(--panel-white-glow);
-  --cruor-panel-shadow:
-    0 28px 90px rgba(0, 0, 0, 0.62),
-    0 0 0 1px rgba(255, 238, 242, 0.045),
-    0 0 48px rgba(255, 238, 242, 0.034),
-    inset 0 1px 0 var(--panel-white-line),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.42);
-
+  --cruor-panel-shadow: 0 28px 90px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(255, 238, 242, 0.045), 0 0 48px rgba(255, 238, 242, 0.034), inset 0 1px 0 var(--panel-white-line), inset 0 -1px 0 rgba(0, 0, 0, 0.42);
   --cruor-button-bg: var(--surface-3);
   --cruor-button-bg-hover: #1d050a;
   --cruor-button-bg-active: rgba(51, 3, 12, 0.54);
@@ -94,32 +83,18 @@
   --cruor-button-border-hover: rgba(190, 64, 82, 0.78);
   --cruor-button-text: var(--text);
   --cruor-button-text-muted: var(--muted);
-
-  --cruor-input-bg:
-    linear-gradient(180deg, rgba(122, 26, 40, 0.04), transparent 64%),
-    rgba(5, 5, 6, 0.46);
-  --cruor-input-bg-hover:
-    linear-gradient(180deg, rgba(122, 26, 40, 0.06), transparent 64%),
-    rgba(5, 5, 6, 0.6);
-  --cruor-input-bg-focus:
-    linear-gradient(180deg, rgba(122, 26, 40, 0.08), transparent 64%),
-    rgba(5, 5, 6, 0.72);
+  --cruor-input-bg: linear-gradient(180deg, rgba(122, 26, 40, 0.04), transparent 64%), rgba(5, 5, 6, 0.46);
+  --cruor-input-bg-hover: linear-gradient(180deg, rgba(122, 26, 40, 0.06), transparent 64%), rgba(5, 5, 6, 0.6);
+  --cruor-input-bg-focus: linear-gradient(180deg, rgba(122, 26, 40, 0.08), transparent 64%), rgba(5, 5, 6, 0.72);
   --cruor-input-border: var(--line);
   --cruor-input-border-hover: rgba(95, 7, 22, 0.64);
   --cruor-input-border-focus: rgba(122, 26, 40, 0.86);
-  --cruor-input-focus-shadow:
-    0 0 0 1px rgba(122, 26, 40, 0.18),
-    0 0 20px rgba(51, 3, 12, 0.32);
-
+  --cruor-input-focus-shadow: 0 0 0 1px rgba(122, 26, 40, 0.18), 0 0 20px rgba(51, 3, 12, 0.32);
   --cruor-workspace-max: 1540px;
   --cruor-shell-bar-height: 62px;
   --cruor-command-bar-height: 190px;
   --cruor-drawer-width: 390px;
   --cruor-modal-width: 1080px;
-
-  /* Layering scale.
-     Shell > command topbar. Dropdowns/popovers > shell. Tooltips > UI overlays.
-     Context menus stay highest because they are pointer-driven command surfaces. */
   --cruor-z-base: 0;
   --cruor-z-content: 1;
   --cruor-z-topbar: 70;
@@ -132,16 +107,14 @@
   --cruor-z-context-menu: 10000;
   --cruor-z-fullscreen-scrim: 2390;
   --cruor-z-fullscreen-modal: 2400;
-
-  --font:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
+  --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --display: "Lovato-Black", Georgia, "Times New Roman", serif;
 }
 
 * {
   box-sizing: border-box;
 }
+
 html,
 body {
   min-height: 100%;
@@ -162,21 +135,13 @@ body::-webkit-scrollbar-track {
 html::-webkit-scrollbar-thumb,
 body::-webkit-scrollbar-thumb {
   border: 3px solid rgba(5, 5, 6, 0.96);
-  background: linear-gradient(
-    180deg,
-    rgba(122, 26, 40, 0.9),
-    rgba(51, 3, 12, 0.95)
-  );
+  background: linear-gradient( 180deg, rgba(122, 26, 40, 0.9), rgba(51, 3, 12, 0.95) );
   box-shadow: inset 0 0 0 1px rgba(220, 175, 184, 0.08);
 }
 
 html::-webkit-scrollbar-thumb:hover,
 body::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(190, 64, 82, 0.95),
-    rgba(95, 7, 22, 0.98)
-  );
+  background: linear-gradient( 180deg, rgba(190, 64, 82, 0.95), rgba(95, 7, 22, 0.98) );
 }
 
 html::-webkit-scrollbar-button,
@@ -269,11 +234,7 @@ textarea::-webkit-scrollbar-track {
 textarea::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(170, 48, 66, 0.76),
-    rgba(70, 8, 20, 0.78)
-  );
+  background: linear-gradient( 180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78) );
   box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
 }
 
@@ -289,11 +250,7 @@ textarea::-webkit-scrollbar-thumb {
 .brief-wizard__body::-webkit-scrollbar-thumb:hover,
 .inspiration-detail-body::-webkit-scrollbar-thumb:hover,
 textarea::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(198, 68, 84, 0.86),
-    rgba(95, 7, 22, 0.9)
-  );
+  background: linear-gradient( 180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9) );
 }
 
 .panel.build-canvas::-webkit-scrollbar-corner,
@@ -317,28 +274,10 @@ body {
   background-color: #000;
   background-image:
     var(--paper-texture),
-    radial-gradient(
-      circle at 18% 0%,
-      rgba(122, 26, 40, 0.38),
-      transparent 30rem
-    ),
-    radial-gradient(
-      circle at 82% 18%,
-      rgba(95, 7, 22, 0.22),
-      transparent 28rem
-    ),
-    radial-gradient(
-      circle at 54% 92%,
-      rgba(51, 3, 12, 0.34),
-      transparent 34rem
-    ),
-    linear-gradient(
-      135deg,
-      rgba(51, 3, 12, 0.96) 0%,
-      rgba(18, 1, 5, 0.92) 34%,
-      rgba(0, 0, 0, 0.98) 74%,
-      #000 100%
-    );
+    radial-gradient( circle at 18% 0%, rgba(122, 26, 40, 0.38), transparent 30rem ),
+    radial-gradient( circle at 82% 18%, rgba(95, 7, 22, 0.22), transparent 28rem ),
+    radial-gradient( circle at 54% 92%, rgba(51, 3, 12, 0.34), transparent 34rem ),
+    linear-gradient( 135deg, rgba(51, 3, 12, 0.96) 0%, rgba(18, 1, 5, 0.92) 34%, rgba(0, 0, 0, 0.98) 74%, #000 100% );
   background-blend-mode: multiply, screen, screen, screen, normal;
   background-attachment: fixed, fixed, fixed, fixed, fixed;
   color: var(--text);
@@ -364,10 +303,12 @@ input,
 textarea {
   font: inherit;
 }
+
 button {
   border: 0;
   cursor: pointer;
 }
+
 h1,
 h2,
 h3,
@@ -412,13 +353,9 @@ textarea:focus {
   background:
     linear-gradient(180deg, rgba(122, 26, 40, 0.08), transparent 64%),
     rgba(5, 5, 6, 0.72);
-  box-shadow:
-    0 0 0 1px rgba(122, 26, 40, 0.18),
-    0 0 20px rgba(51, 3, 12, 0.32);
+  box-shadow: 0 0 0 1px rgba(122, 26, 40, 0.18), 0 0 20px rgba(51, 3, 12, 0.32);
 }
 
-/* Step 4.6 — Shared internal scrollbar expansion.
-   Keep internal scroll containers thin, squared, and transparent-track across Map workspaces. */
 .cruor-scroll-surface,
 .map-inspector-panel__scroll,
 .map-inspector-section,
@@ -469,11 +406,7 @@ textarea:focus {
 .room-key::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(170, 48, 66, 0.76),
-    rgba(70, 8, 20, 0.78)
-  );
+  background: linear-gradient( 180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78) );
   box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
 }
 
@@ -483,11 +416,7 @@ textarea:focus {
 .map-tests-modal__dialog::-webkit-scrollbar-thumb:hover,
 .test-report__list::-webkit-scrollbar-thumb:hover,
 .room-key::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(198, 68, 84, 0.86),
-    rgba(95, 7, 22, 0.9)
-  );
+  background: linear-gradient( 180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9) );
 }
 
 .cruor-scroll-surface::-webkit-scrollbar-corner,

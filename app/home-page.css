@@ -1,3 +1,8 @@
+/*
+ * Cruor Games — Home Page
+ * Refactored CSS. Existing selectors and class hooks are preserved.
+ */
+
 .cruor-home {
   --home-max: var(--cruor-workspace-max, 1420px);
   --home-line: rgba(95, 7, 22, 0.34);
@@ -6,7 +11,6 @@
   --home-accent-pale: #d0a2aa;
   --home-panel: rgba(14, 11, 13, 0.68);
   --home-panel-strong: rgba(21, 16, 18, 0.84);
-
   width: min(var(--home-max), calc(100% - clamp(28px, 6vw, 72px)));
   margin: 0 auto;
   padding: clamp(42px, 8vw, 96px) 0 40px;
@@ -48,9 +52,7 @@
 
 .cruor-home h1 span {
   color: var(--home-accent-pale);
-  text-shadow:
-    0 0 18px rgba(122, 26, 40, 0.5),
-    0 0 2px rgba(255, 255, 255, 0.16);
+  text-shadow: 0 0 18px rgba(122, 26, 40, 0.5), 0 0 2px rgba(255, 255, 255, 0.16);
 }
 
 .cruor-home h2 {
@@ -169,9 +171,7 @@
   background:
     linear-gradient(180deg, rgba(255, 238, 242, 0.034), transparent 60%),
     rgba(0, 0, 0, 0.28);
-  box-shadow:
-    0 20px 52px rgba(0, 0, 0, 0.34),
-    inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  box-shadow: 0 20px 52px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 238, 242, 0.06);
 }
 
 .cruor-home__image-frame::after {
@@ -190,10 +190,7 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  filter:
-    saturate(0.88)
-    contrast(1.08)
-    brightness(0.82);
+  filter: saturate(0.88) contrast(1.08) brightness(0.82);
 }
 
 .cruor-home__image-frame--main {
@@ -207,10 +204,7 @@
 .cruor-home__image-frame--map,
 .cruor-home__image-frame--inspiration {
   position: absolute;
-  transition:
-    transform 0.22s ease,
-    border-color 0.22s ease,
-    box-shadow 0.22s ease;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
 }
 
 .cruor-home__image-frame--map {
@@ -232,17 +226,13 @@
 .cruor-home__hero-visual:hover .cruor-home__image-frame--map {
   transform: rotate(5deg) translateY(-4px);
   border-color: rgba(208, 162, 170, 0.5);
-  box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.38),
-    inset 0 1px 0 rgba(255, 238, 242, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 238, 242, 0.08);
 }
 
 .cruor-home__hero-visual:hover .cruor-home__image-frame--inspiration {
   transform: rotate(-6deg) translateY(-4px);
   border-color: rgba(208, 162, 170, 0.5);
-  box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.38),
-    inset 0 1px 0 rgba(255, 238, 242, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 238, 242, 0.08);
 }
 
 .cruor-home__placeholder {
@@ -258,12 +248,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    transparent 0 46%,
-    rgba(208, 162, 170, 0.08) 46% 54%,
-    transparent 54% 100%
-  );
+  background: linear-gradient( 135deg, transparent 0 46%, rgba(208, 162, 170, 0.08) 46% 54%, transparent 54% 100% );
   opacity: 0.4;
   pointer-events: none;
 }
@@ -296,12 +281,6 @@
   max-width: 36ch;
   font-size: 12px;
 }
-
-
-
-
-
-
 
 .cruor-home__statement {
   position: relative;
@@ -369,12 +348,7 @@
   position: absolute;
   inset: 0 0 auto;
   height: 8px;
-  background: linear-gradient(
-    90deg,
-    rgba(122, 26, 40, 0.08),
-    rgba(122, 26, 40, 0.34),
-    rgba(122, 26, 40, 0.08)
-  );
+  background: linear-gradient( 90deg, rgba(122, 26, 40, 0.08), rgba(122, 26, 40, 0.34), rgba(122, 26, 40, 0.08) );
   opacity: 0.85;
 }
 
@@ -413,12 +387,7 @@
 }
 
 .cruor-home__section--tools::before {
-  background: linear-gradient(
-    90deg,
-    rgba(122, 26, 40, 0.12),
-    rgba(208, 162, 170, 0.34),
-    rgba(122, 26, 40, 0.12)
-  );
+  background: linear-gradient( 90deg, rgba(122, 26, 40, 0.12), rgba(208, 162, 170, 0.34), rgba(122, 26, 40, 0.12) );
 }
 
 .cruor-home__tool-grid {
@@ -438,10 +407,7 @@
   background:
     linear-gradient(180deg, rgba(255, 238, 242, 0.03), rgba(0, 0, 0, 0.12) 58%),
     rgba(0, 0, 0, 0.18);
-  transition:
-    transform 0.18s ease,
-    border-color 0.18s ease,
-    box-shadow 0.18s ease;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .cruor-home__tool-card:hover {
@@ -473,12 +439,7 @@
 }
 
 .cruor-home__section--sources::before {
-  background: linear-gradient(
-    90deg,
-    rgba(208, 162, 170, 0.08),
-    rgba(208, 162, 170, 0.24),
-    rgba(208, 162, 170, 0.08)
-  );
+  background: linear-gradient( 90deg, rgba(208, 162, 170, 0.08), rgba(208, 162, 170, 0.24), rgba(208, 162, 170, 0.08) );
 }
 
 .cruor-home__sources-copy,
@@ -501,9 +462,7 @@
     linear-gradient(180deg, rgba(255, 238, 242, 0.034), transparent 60%),
     linear-gradient(135deg, rgba(122, 26, 40, 0.1), rgba(0, 0, 0, 0.08) 48%, rgba(0, 0, 0, 0.2)),
     var(--home-panel);
-  box-shadow:
-    0 22px 60px rgba(0, 0, 0, 0.42),
-    inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 238, 242, 0.06);
   transition: transform 0.22s ease, border-color 0.22s ease;
 }
 
@@ -569,12 +528,7 @@
 }
 
 .cruor-home__section--support::before {
-  background: linear-gradient(
-    90deg,
-    rgba(122, 26, 40, 0.18),
-    rgba(208, 162, 170, 0.38),
-    rgba(122, 26, 40, 0.18)
-  );
+  background: linear-gradient( 90deg, rgba(122, 26, 40, 0.18), rgba(208, 162, 170, 0.38), rgba(122, 26, 40, 0.18) );
 }
 
 .cruor-home__support-band {

@@ -1,10 +1,14 @@
+/*
+ * Cruor Games — App Shell
+ * Refactored CSS. Existing selectors and class hooks are preserved.
+ */
+
 .app-shell {
   --app-shell-bar-height: 62px;
   --darken-workspace-topbar-height: 150px;
   --darken-workspace-panel-gap: 1rem;
   --darken-workspace-max: var(--cruor-workspace-max, 1540px);
   --darken-control-height: var(--cruor-control-height-darken, 38px);
-
   min-height: 100dvh;
   background:
     radial-gradient(circle at 12% -8%, rgba(122, 26, 40, 0.2), transparent 34%),
@@ -26,9 +30,7 @@
   background:
     linear-gradient(180deg, rgba(14, 5, 8, 0.96), rgba(5, 4, 5, 0.9)),
     var(--paper-texture);
-  box-shadow:
-    0 14px 34px rgba(0, 0, 0, 0.42),
-    inset 0 -1px 0 rgba(255, 238, 242, 0.04);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42), inset 0 -1px 0 rgba(255, 238, 242, 0.04);
   backdrop-filter: blur(16px) saturate(128%);
   -webkit-backdrop-filter: blur(16px) saturate(128%);
 }
@@ -83,9 +85,7 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter:
-    drop-shadow(0 0 10px rgba(122, 26, 40, 0.42))
-    drop-shadow(0 1px 0 rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 0 10px rgba(122, 26, 40, 0.42)) drop-shadow(0 1px 0 rgba(0, 0, 0, 0.35));
 }
 
 .app-shell__eyebrow,
@@ -140,8 +140,7 @@
 .app-shell__nav-item:hover,
 .app-shell__nav-item:focus-visible,
 .app-shell__nav-item.is-active {
-  background:
-    radial-gradient(circle at 50% 50%, rgba(190, 64, 82, 0.23), rgba(122, 26, 40, 0.12) 36%, transparent 74%);
+  background: radial-gradient(circle at 50% 50%, rgba(190, 64, 82, 0.23), rgba(122, 26, 40, 0.12) 36%, transparent 74%);
   color: #fff0f2;
   text-shadow: 0 0 14px rgba(240, 185, 194, 0.24);
   outline: none;
@@ -219,9 +218,7 @@
   font-weight: 950;
   line-height: 0.9;
   letter-spacing: -0.06em;
-  text-shadow:
-    0 0 26px rgba(122, 26, 40, 0.28),
-    0 2px 0 rgba(0, 0, 0, 0.34);
+  text-shadow: 0 0 26px rgba(122, 26, 40, 0.28), 0 2px 0 rgba(0, 0, 0, 0.34);
 }
 
 .app-shell__home-actions {
@@ -245,9 +242,7 @@
   color: var(--cruor-color-muted, var(--muted));
   padding: clamp(18px, 2.6vw, 26px);
   text-align: left;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 238, 242, 0.045),
-    0 18px 42px rgba(0, 0, 0, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.045), 0 18px 42px rgba(0, 0, 0, 0.24);
   transition:
     transform 0.12s ease,
     border-color 0.12s ease,
@@ -301,13 +296,10 @@
 
 .darken-workspace {
   --darken-workspace-max: var(--cruor-workspace-max, 1540px);
-
   display: grid;
   gap: 0;
   min-height: calc(100dvh - var(--app-shell-bar-height));
-  padding-top: calc(
-    var(--darken-workspace-topbar-height) + var(--darken-workspace-panel-gap)
-  );
+  padding-top: calc( var(--darken-workspace-topbar-height) + var(--darken-workspace-panel-gap) );
 }
 
 .darken-workspace__topbar {
@@ -321,12 +313,7 @@
   height: var(--darken-workspace-topbar-height);
   margin: 0;
   padding: 1rem clamp(18px, 3vw, 30px);
-  background: linear-gradient(
-    180deg,
-    rgba(10, 5, 7, 0.92),
-    rgba(10, 5, 7, 0.74) 72%,
-    rgba(10, 5, 7, 0)
-  );
+  background: linear-gradient( 180deg, rgba(10, 5, 7, 0.92), rgba(10, 5, 7, 0.74) 72%, rgba(10, 5, 7, 0) );
   pointer-events: none;
 }
 
@@ -392,9 +379,7 @@
   font-size: clamp(31px, 3.2vw, 50px);
   font-weight: 950;
   letter-spacing: -0.055em;
-  text-shadow:
-    0 0 22px rgba(122, 26, 40, 0.34),
-    0 2px 0 rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 22px rgba(122, 26, 40, 0.34), 0 2px 0 rgba(0, 0, 0, 0.3);
 }
 
 .darken-topbar__control-row {
@@ -444,9 +429,7 @@
     linear-gradient(180deg, rgba(22, 6, 9, 0.92), rgba(8, 5, 6, 0.86)),
     rgba(8, 5, 6, 0.84);
   color: rgba(240, 215, 220, 0.72);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 238, 242, 0.045),
-    0 8px 18px rgba(0, 0, 0, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.045), 0 8px 18px rgba(0, 0, 0, 0.18);
   backdrop-filter: blur(10px) saturate(125%);
   -webkit-backdrop-filter: blur(10px) saturate(125%);
   transition:
@@ -530,10 +513,7 @@
 #monsterComposerPanel,
 #darkenMapGeneratorPanel {
   box-sizing: border-box;
-  width: min(
-    var(--darken-workspace-max, 1540px),
-    calc(100% - clamp(36px, 6vw, 60px))
-  );
+  width: min( var(--darken-workspace-max, 1540px), calc(100% - clamp(36px, 6vw, 60px)) );
   margin-inline: auto;
 }
 
@@ -545,9 +525,7 @@
     radial-gradient(circle at 10% 0%, rgba(122, 26, 40, 0.08), transparent 34%),
     rgba(5, 5, 6, 0.24);
   padding: 0;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 238, 242, 0.026),
-    0 18px 44px rgba(0, 0, 0, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.026), 0 18px 44px rgba(0, 0, 0, 0.18);
 }
 
 #darkenComposerPanel > .cruor-composer-shell,
@@ -581,9 +559,7 @@
 }
 
 .map-generator-view {
-  min-height: calc(
-    100dvh - var(--app-shell-bar-height) - var(--darken-workspace-topbar-height)
-  );
+  min-height: calc( 100dvh - var(--app-shell-bar-height) - var(--darken-workspace-topbar-height) );
   padding-top: 0;
 }
 
@@ -626,7 +602,6 @@
   min-height: 126px;
   margin-top: 4px;
 }
-
 
 .crucible-topbar {
   position: relative;
@@ -680,9 +655,7 @@
   opacity: 1;
   pointer-events: none;
   transform: translateY(-50%) rotate(-6deg);
-  filter:
-    drop-shadow(0 0 24px rgba(122, 26, 40, 0.22))
-    drop-shadow(0 2px 0 rgba(0, 0, 0, 0.22));
+  filter: drop-shadow(0 0 24px rgba(122, 26, 40, 0.22)) drop-shadow(0 2px 0 rgba(0, 0, 0, 0.22));
 }
 
 .crucible-topbar__tool-icon i {
@@ -704,9 +677,7 @@
   font-weight: 900;
   line-height: 0.9;
   letter-spacing: -0.06em;
-  text-shadow:
-    0 0 22px rgba(122, 26, 40, 0.28),
-    0 2px 0 rgba(0, 0, 0, 0.34);
+  text-shadow: 0 0 22px rgba(122, 26, 40, 0.28), 0 2px 0 rgba(0, 0, 0, 0.34);
 }
 
 .crucible-topbar__tool-label-prefix {
@@ -719,9 +690,7 @@
   align-items: baseline;
   min-width: 0;
   color: #fff0f2;
-  text-shadow:
-    0 0 24px rgba(190, 64, 82, 0.34),
-    0 2px 0 rgba(0, 0, 0, 0.34);
+  text-shadow: 0 0 24px rgba(190, 64, 82, 0.34), 0 2px 0 rgba(0, 0, 0, 0.34);
 }
 
 .crucible-topbar__tool-copy,
@@ -819,9 +788,7 @@
 
 .site-topbar__brand:hover .app-shell__logo-image,
 .site-topbar__brand:focus-visible .app-shell__logo-image {
-  filter:
-    drop-shadow(0 0 14px rgba(240, 185, 194, 0.26))
-    drop-shadow(0 0 20px rgba(122, 26, 40, 0.42));
+  filter: drop-shadow(0 0 14px rgba(240, 185, 194, 0.26)) drop-shadow(0 0 20px rgba(122, 26, 40, 0.42));
 }
 
 .site-topbar__brand:focus-visible {
@@ -867,9 +834,7 @@
 .site-topbar__chevron {
   font-size: 9px !important;
   opacity: 0.68;
-  transition:
-    transform 0.14s ease,
-    opacity 0.14s ease;
+  transition: transform 0.14s ease, opacity 0.14s ease;
 }
 
 .site-topbar__nav-button.is-open .site-topbar__chevron,
@@ -901,10 +866,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   box-shadow: none;
-  transition:
-    background 0.14s ease,
-    color 0.14s ease,
-    text-shadow 0.14s ease;
+  transition: background 0.14s ease, color 0.14s ease, text-shadow 0.14s ease;
 }
 
 .site-topbar__utility-button,
@@ -938,8 +900,7 @@
 .site-topbar__utility-button:focus-visible,
 .site-topbar__mobile-toggle:hover,
 .site-topbar__mobile-toggle:focus-visible {
-  background:
-    radial-gradient(circle at 50% 50%, rgba(190, 64, 82, 0.2), rgba(122, 26, 40, 0.1) 36%, transparent 74%);
+  background: radial-gradient(circle at 50% 50%, rgba(190, 64, 82, 0.2), rgba(122, 26, 40, 0.1) 36%, transparent 74%);
   color: #fff0f2;
   text-shadow: 0 0 14px rgba(240, 185, 194, 0.24);
   outline: none;
@@ -963,9 +924,7 @@
     linear-gradient(180deg, rgba(18, 5, 8, 0.985), rgba(8, 5, 6, 0.96)),
     var(--paper-texture);
   padding: 10px;
-  box-shadow:
-    0 24px 70px rgba(0, 0, 0, 0.62),
-    inset 0 1px 0 rgba(255, 238, 242, 0.045);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.62), inset 0 1px 0 rgba(255, 238, 242, 0.045);
   backdrop-filter: blur(18px) saturate(124%);
   -webkit-backdrop-filter: blur(18px) saturate(124%);
 }
@@ -1216,9 +1175,7 @@
   background: rgba(5, 5, 6, 0.42);
   color: rgba(240, 215, 220, 0.86);
   font-size: 27px;
-  box-shadow:
-    0 0 36px rgba(122, 26, 40, 0.34),
-    inset 0 0 26px rgba(122, 26, 40, 0.18);
+  box-shadow: 0 0 36px rgba(122, 26, 40, 0.34), inset 0 0 26px rgba(122, 26, 40, 0.18);
 }
 
 .site-mega-menu__preview-grid,
@@ -1292,9 +1249,7 @@
     linear-gradient(180deg, rgba(18, 5, 8, 0.985), rgba(8, 5, 6, 0.96)),
     var(--paper-texture);
   padding: 10px;
-  box-shadow:
-    0 24px 70px rgba(0, 0, 0, 0.62),
-    inset 0 1px 0 rgba(255, 238, 242, 0.045);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.62), inset 0 1px 0 rgba(255, 238, 242, 0.045);
 }
 
 .site-topbar__mobile-group,
@@ -1333,9 +1288,7 @@
 .site-topbar__mobile-link.is-active i {
   border-color: rgba(240, 185, 194, 0.46);
   color: #fff0f2;
-  box-shadow:
-    0 0 0 1px rgba(190, 64, 82, 0.1),
-    0 0 18px rgba(122, 26, 40, 0.22);
+  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.1), 0 0 18px rgba(122, 26, 40, 0.22);
 }
 
 .site-topbar__mobile-link span {
@@ -1574,8 +1527,6 @@
   }
 }
 
-/* Step 5.20 — Global Crucible topbar removal trial with breathing room.
-   Hides the shared Darken/Crucible topbar while preserving a small gap under the site menu. */
 .darken-workspace__topbar,
 .crucible-workspace__topbar,
 .crucible-topbar-shell,
@@ -1593,7 +1544,6 @@
   min-height: calc(100dvh - var(--app-shell-bar-height)) !important;
 }
 
-/* Step 5.22 — Hide shared Darken/Crucible topbar while preserving breathing room under the site menu. */
 .darken-workspace__topbar,
 .crucible-workspace__topbar,
 .crucible-topbar-shell,
@@ -1601,8 +1551,6 @@
   display: none !important;
 }
 
-/* Step 5.23 — Fullscreen Monster Composer stage support.
-   Preserve breathing room below the site menu while removing hidden topbar subtraction. */
 .app-shell {
   --darken-workspace-topbar-height: 0px !important;
 }
@@ -1619,9 +1567,6 @@
   margin-inline: 0 !important;
 }
 
-
-/* Step 5.24 — Monster Composer viewport lock.
-   Keeps the page fixed below the site menu while the anatomy side panels handle their own scroll. */
 @supports selector(:has(*)) {
   body:has(#monsterComposerPanel) {
     height: 100dvh;

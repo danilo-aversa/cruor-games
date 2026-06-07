@@ -1,6 +1,7 @@
-/* Inspirations Workbench · Visual Source Atlas redesign.
-   Keeps the shared registry data model intact while making Inspirations behave like a Cruor workbench.
-   Cards use a 4:5 source-card ratio and the detail panel can seed the Monster Composer. */
+/*
+ * Cruor Games — Inspirations
+ * Refactored CSS. Existing selectors and class hooks are preserved.
+ */
 
 .inspirations-page {
   --inspirations-bg: var(--cruor-color-bg, #000);
@@ -60,9 +61,7 @@
   background:
     linear-gradient(180deg, rgba(255, 238, 242, 0.028), transparent 160px),
     var(--inspirations-surface-soft);
-  box-shadow:
-    0 18px 52px rgba(0, 0, 0, 0.34),
-    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
 
 .inspirations-page .eyebrow {
@@ -198,7 +197,6 @@
   box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 20px rgba(122, 26, 40, 0.22);
 }
 
-
 .inspirations-page__filter-select {
   position: relative;
   min-width: 0;
@@ -221,7 +219,12 @@
     linear-gradient(180deg, rgba(122, 26, 40, 0.07), transparent 68%),
     rgba(0, 0, 0, 0.32);
   color: #c8a2a8;
-  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease,
+    color 0.12s ease,
+    box-shadow 0.12s ease,
+    transform 0.12s ease;
 }
 
 .inspirations-page__select-trigger {
@@ -260,7 +263,10 @@
     radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%),
     linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
   color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  box-shadow:
+    0 0 0 1px rgba(190, 64, 82, 0.13),
+    0 0 20px rgba(122, 26, 40, 0.22),
+    inset 0 1px 0 rgba(255, 238, 242, 0.06);
 }
 
 .inspirations-page__select-trigger:hover i,
@@ -287,7 +293,10 @@
     linear-gradient(180deg, rgba(255, 238, 242, 0.045), transparent 70%),
     rgba(5, 5, 6, 0.97);
   padding: 6px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72), 0 0 28px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.055);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.72),
+    0 0 28px rgba(122, 26, 40, 0.22),
+    inset 0 1px 0 rgba(255, 238, 242, 0.055);
 }
 
 .inspirations-page__select-option {
@@ -337,7 +346,11 @@
   font-weight: 950;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease,
+    color 0.12s ease,
+    box-shadow 0.12s ease;
 }
 
 .inspirations-page__clear-btn:hover:not(:disabled),
@@ -410,7 +423,11 @@
     radial-gradient(circle at 16% 0%, rgba(190, 64, 82, 0.12), transparent 11rem),
     rgba(5, 5, 6, 0.64);
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 238, 242, 0.04);
-  transition: border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease, transform 0.14s ease;
+  transition:
+    border-color 0.14s ease,
+    background 0.14s ease,
+    box-shadow 0.14s ease,
+    transform 0.14s ease;
 }
 
 .inspirations-page__card:hover,
@@ -498,7 +515,6 @@
   z-index: 0;
   font-size: 66px;
 }
-
 
 .inspirations-page__detail-visual::after {
   background:

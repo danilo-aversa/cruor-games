@@ -1,56 +1,36 @@
-/* Step 5.7b — Corrected shared Cruor UI tokens.
-   Border shorthand tokens remain valid for `border`.
-   Matching `*-color` tokens must be used by `border-color` / `border-top-color`. */
+/*
+ * Cruor Games — Shared Components
+ * Refactored CSS. Existing selectors and class hooks are preserved.
+ */
+
 :root {
   --cruor-ui-panel-border-color: rgba(255, 238, 242, 0.08);
   --cruor-ui-panel-border-top-color: rgba(255, 238, 242, 0.12);
   --cruor-ui-panel-border: 1px solid var(--cruor-ui-panel-border-color);
   --cruor-ui-panel-border-top: 1px solid var(--cruor-ui-panel-border-top-color);
-  --cruor-ui-panel-bg:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.035), transparent 160px),
-    rgba(12, 10, 12, 0.74);
-  --cruor-ui-panel-image:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.035), transparent 160px);
-  --cruor-ui-panel-shadow:
-    0 18px 52px rgba(0, 0, 0, 0.34),
-    inset 0 1px 0 rgba(255, 255, 255, 0.035);
-
+  --cruor-ui-panel-bg: linear-gradient(180deg, rgba(255, 238, 242, 0.035), transparent 160px), rgba(12, 10, 12, 0.74);
+  --cruor-ui-panel-image: linear-gradient(180deg, rgba(255, 238, 242, 0.035), transparent 160px);
+  --cruor-ui-panel-shadow: 0 18px 52px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.035);
   --cruor-ui-card-border-color: rgba(255, 238, 242, 0.075);
   --cruor-ui-card-border-color-active: rgba(190, 64, 82, 0.42);
   --cruor-ui-card-border: 1px solid var(--cruor-ui-card-border-color);
   --cruor-ui-card-border-active: 1px solid var(--cruor-ui-card-border-color-active);
-  --cruor-ui-card-bg:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.032), transparent 68%),
-    rgba(5, 5, 6, 0.54);
-  --cruor-ui-card-bg-active:
-    radial-gradient(circle at 0% 0%, rgba(190, 64, 82, 0.16), transparent 12rem),
-    rgba(95, 7, 22, 0.22);
-  --cruor-ui-card-shadow:
-    inset 0 1px 0 rgba(255, 238, 242, 0.035);
-  --cruor-ui-card-shadow-active:
-    0 0 0 1px rgba(190, 64, 82, 0.1),
-    0 0 24px rgba(122, 26, 40, 0.2),
-    inset 0 1px 0 rgba(255, 238, 242, 0.045);
-
+  --cruor-ui-card-bg: linear-gradient(180deg, rgba(255, 238, 242, 0.032), transparent 68%), rgba(5, 5, 6, 0.54);
+  --cruor-ui-card-bg-active: radial-gradient(circle at 0% 0%, rgba(190, 64, 82, 0.16), transparent 12rem), rgba(95, 7, 22, 0.22);
+  --cruor-ui-card-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035);
+  --cruor-ui-card-shadow-active: 0 0 0 1px rgba(190, 64, 82, 0.1), 0 0 24px rgba(122, 26, 40, 0.2), inset 0 1px 0 rgba(255, 238, 242, 0.045);
   --cruor-ui-control-border-color: rgba(255, 238, 242, 0.09);
   --cruor-ui-control-border-color-active: rgba(190, 64, 82, 0.55);
   --cruor-ui-control-border: 1px solid var(--cruor-ui-control-border-color);
   --cruor-ui-control-border-active: 1px solid var(--cruor-ui-control-border-color-active);
-  --cruor-ui-control-bg:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.025), transparent),
-    rgba(0, 0, 0, 0.22);
-  --cruor-ui-control-bg-active:
-    radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.18), transparent 68%),
-    rgba(95, 7, 22, 0.2);
+  --cruor-ui-control-bg: linear-gradient(180deg, rgba(255, 238, 242, 0.025), transparent), rgba(0, 0, 0, 0.22);
+  --cruor-ui-control-bg-active: radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.18), transparent 68%), rgba(95, 7, 22, 0.2);
   --cruor-ui-control-text: rgba(238, 238, 238, 0.58);
   --cruor-ui-control-text-active: #fff0f2;
-
   --cruor-ui-chip-border-color: rgba(255, 238, 242, 0.075);
   --cruor-ui-chip-border: 1px solid var(--cruor-ui-chip-border-color);
   --cruor-ui-chip-bg: rgba(255, 255, 255, 0.025);
   --cruor-ui-chip-text: rgba(238, 238, 238, 0.56);
-
-  /* Mirror the global layering scale for shared primitives. */
   --cruor-z-base: 0;
   --cruor-z-content: 1;
   --cruor-z-topbar: 70;
@@ -65,7 +45,6 @@
   --cruor-z-fullscreen-modal: 2400;
 }
 
-/* Step 5.7b — Shared utility class baseline. */
 .cruor-ui-panel-surface {
   border: var(--cruor-ui-panel-border);
   border-top: var(--cruor-ui-panel-border-top);
@@ -129,9 +108,6 @@
   box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
 }
 
-/* Shared UI primitives extracted from the Crucible MVP.
-   Feature-local duplicates remain during this first DOM migration pass to preserve cascade order. */
-
 .icon-btn {
   display: inline-flex;
   align-items: center;
@@ -161,16 +137,10 @@
 .icon-btn.active {
   border-color: rgba(122, 26, 40, 0.95);
   background:
-    radial-gradient(
-      circle at 50% 45%,
-      rgba(122, 26, 40, 0.34),
-      transparent 68%
-    ),
+    radial-gradient( circle at 50% 45%, rgba(122, 26, 40, 0.34), transparent 68% ),
     rgba(51, 3, 12, 0.48);
   color: #d0a2aa;
-  box-shadow:
-    0 0 0 1px rgba(122, 26, 40, 0.24),
-    0 0 24px rgba(51, 3, 12, 0.48);
+  box-shadow: 0 0 0 1px rgba(122, 26, 40, 0.24), 0 0 24px rgba(51, 3, 12, 0.48);
 }
 
 .icon-btn.empty-cta {
@@ -190,12 +160,7 @@
   background-image:
     linear-gradient(180deg, var(--panel-milk), transparent 56%),
     linear-gradient(135deg, rgba(255, 238, 242, 0.034), transparent 34%),
-    linear-gradient(
-      135deg,
-      rgba(51, 3, 12, 0.26),
-      rgba(0, 0, 0, 0.04) 48%,
-      rgba(0, 0, 0, 0.14)
-    );
+    linear-gradient( 135deg, rgba(51, 3, 12, 0.26), rgba(0, 0, 0, 0.04) 48%, rgba(0, 0, 0, 0.14) );
   background-blend-mode: overlay, overlay, normal;
   backdrop-filter: blur(18px) saturate(125%);
   -webkit-backdrop-filter: blur(18px) saturate(125%);
@@ -231,9 +196,7 @@
 .section-note {
   max-width: 380px;
   border: 1px solid rgba(95, 7, 22, 0.42);
-  background:
-    linear-gradient(180deg, rgba(122, 26, 40, 0.04), transparent),
-    rgba(51, 3, 12, 0.18);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.04), transparent), rgba(51, 3, 12, 0.18);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   color: var(--muted);
@@ -254,10 +217,7 @@
   color: var(--text);
   font-size: 13px;
   font-weight: 800;
-  transition:
-    transform 0.12s ease,
-    background 0.12s ease,
-    border-color 0.12s ease;
+  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 }
 
 .sr-only {
@@ -365,16 +325,10 @@
   min-width: 184px;
   border: 1px solid rgba(95, 7, 22, 0.9);
   background-color: rgba(7, 5, 6, 0.88);
-  background-image: linear-gradient(
-    180deg,
-    rgba(122, 26, 40, 0.045),
-    transparent
-  );
+  background-image: linear-gradient( 180deg, rgba(122, 26, 40, 0.045), transparent );
   background-blend-mode: screen;
   backdrop-filter: blur(16px) saturate(125%);
   -webkit-backdrop-filter: blur(16px) saturate(125%);
-  box-shadow:
-    0 18px 48px rgba(0, 0, 0, 0.62),
-    inset 0 1px 0 rgba(122, 26, 40, 0.055);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.62), inset 0 1px 0 rgba(122, 26, 40, 0.055);
   padding: 5px;
 }

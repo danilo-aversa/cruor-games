@@ -1,3 +1,8 @@
+/*
+ * Cruor Games — Darken Location Composer
+ * Refactored CSS. Existing selectors and class hooks are preserved.
+ */
+
 .location-composer {
   --location-stage-min-height: clamp(680px, 72vh, 900px);
   position: relative;
@@ -86,18 +91,6 @@
 .location-map-request-card {
   display: grid;
   gap: 8px;
-}
-
-.location-field > span,
-.location-map-request-card > span,
-.location-active-region > span,
-.location-component-card span {
-  color: #8f7278;
-  font-size: 9px;
-  font-weight: 950;
-  letter-spacing: 0.1em;
-  line-height: 1;
-  text-transform: uppercase;
 }
 
 .location-chip-grid,
@@ -225,9 +218,17 @@
   transform-origin: left center;
 }
 
-.location-map-stage__vein--one { transform: rotate(22deg); }
-.location-map-stage__vein--two { transform: rotate(141deg); }
-.location-map-stage__vein--three { transform: rotate(278deg); }
+.location-map-stage__vein--one {
+  transform: rotate(22deg);
+}
+
+.location-map-stage__vein--two {
+  transform: rotate(141deg);
+}
+
+.location-map-stage__vein--three {
+  transform: rotate(278deg);
+}
 
 .location-map-stage__head {
   position: relative;
@@ -272,7 +273,11 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   transform: translate(-50%, -50%);
-  transition: border-color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease, color 0.12s ease;
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease,
+    box-shadow 0.12s ease,
+    color 0.12s ease;
 }
 
 .location-region-node:hover,
@@ -401,8 +406,6 @@
   }
 }
 
-/* Step 28a — Darken Minimal Visibility Pass.
-   Scope: Darken default surface only. Keep routing, map bridge, saves, and component logic intact. */
 .location-composer__intro {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -522,7 +525,7 @@
     align-items: start;
   }
 
-    .location-composer[data-cruor-ui-mode="simple"] .location-stage-footer {
+  .location-composer[data-cruor-ui-mode="simple"] .location-stage-footer {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -532,13 +535,11 @@
     width: 100%;
   }
 
-    .location-composer[data-cruor-ui-mode="simple"] .location-stage-footer {
+  .location-composer[data-cruor-ui-mode="simple"] .location-stage-footer {
     grid-template-columns: 1fr;
   }
 }
 
-/* Step 28b — Darken Draft Controls Cleanup.
-   Draft controls are now natively compact; no technical browser/backend copy is rendered. */
 .location-composer__intro .location-draft-strip,
 .location-draft-strip {
   display: flex;
@@ -604,8 +605,6 @@
   }
 }
 
-/* Step 28c — Darken Simple Mode Structure Pass.
-   JSX now renders fewer default elements; these rules only normalize density and layout. */
 .location-brief-panel,
 .location-slot-panel,
 .location-active-slot-panel,
@@ -760,7 +759,6 @@
   }
 }
 
-/* Step 29 — Slot Picker Modal + Persistent Room Recap. */
 .location-composer__rail--picker {
   align-content: start;
 }
@@ -1049,8 +1047,6 @@
   }
 }
 
-
-/* Step 31 — Dedicated Darken map workbench. */
 .location-composer__workspace {
   padding-top: 14px;
 }
@@ -1075,19 +1071,19 @@
 .location-map-stage {
   min-height: var(--location-stage-min-height);
   background:
-    linear-gradient(90deg, rgba(255, 238, 242, .042) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 238, 242, .034) 1px, transparent 1px),
-    radial-gradient(circle at 50% 18%, rgba(190, 64, 82, .18), transparent 28rem),
-    radial-gradient(circle at 50% 86%, rgba(95, 7, 22, .22), transparent 24rem),
-    linear-gradient(180deg, rgba(255, 255, 255, .024), transparent 160px),
-    rgba(5, 5, 6, .84);
+    linear-gradient(90deg, rgba(255, 238, 242, 0.042) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 238, 242, 0.034) 1px, transparent 1px),
+    radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 28rem),
+    radial-gradient(circle at 50% 86%, rgba(95, 7, 22, 0.22), transparent 24rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.024), transparent 160px),
+    rgba(5, 5, 6, 0.84);
   background-size: 34px 34px, 34px 34px, auto, auto, auto, auto;
 }
 
 .location-map-preview--live {
   align-items: stretch;
   justify-items: stretch;
-  opacity: .84;
+  opacity: 0.84;
 }
 
 .location-map-preview--live .map-viewport {
@@ -1106,7 +1102,7 @@
 }
 
 .location-map-stage.has-live-preview .location-map-stage__backdrop {
-  opacity: .34;
+  opacity: 0.34;
 }
 
 .location-region-node strong {
@@ -1124,12 +1120,17 @@
 .location-primary-action,
 .location-component-option__action,
 .location-component-drawer__assigned-pill {
-  border: 1px solid rgba(95, 7, 22, .56);
+  border: 1px solid rgba(95, 7, 22, 0.56);
   background:
-    linear-gradient(180deg, rgba(122, 26, 40, .07), transparent 68%),
-    rgba(0, 0, 0, .32);
+    linear-gradient(180deg, rgba(122, 26, 40, 0.07), transparent 68%),
+    rgba(0, 0, 0, 0.32);
   color: #c8a2a8;
-  transition: border-color .12s ease, background .12s ease, color .12s ease, box-shadow .12s ease, transform .12s ease;
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease,
+    color 0.12s ease,
+    box-shadow 0.12s ease,
+    transform 0.12s ease;
 }
 
 .location-choice-trigger {
@@ -1163,7 +1164,7 @@
 .location-choice-trigger small,
 .location-choice-option small {
   overflow: hidden;
-  color: rgba(238, 238, 238, .5);
+  color: rgba(238, 238, 238, 0.5);
   font-size: 10px;
   line-height: 1.25;
   text-overflow: ellipsis;
@@ -1180,12 +1181,15 @@
 .location-primary-action:hover,
 .location-component-option__action:hover,
 .location-component-drawer__assigned-pill:hover {
-  border-color: rgba(190, 64, 82, .78);
+  border-color: rgba(190, 64, 82, 0.78);
   background:
-    radial-gradient(circle at 50% 18%, rgba(190, 64, 82, .18), transparent 72%),
-    linear-gradient(180deg, rgba(30, 7, 11, .92), rgba(9, 5, 7, .9));
+    radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%),
+    linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
   color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, .13), 0 0 20px rgba(122, 26, 40, .22), inset 0 1px 0 rgba(255, 238, 242, .06);
+  box-shadow:
+    0 0 0 1px rgba(190, 64, 82, 0.13),
+    0 0 20px rgba(122, 26, 40, 0.22),
+    inset 0 1px 0 rgba(255, 238, 242, 0.06);
 }
 
 .location-choice-menu {
@@ -1198,12 +1202,15 @@
   gap: 5px;
   max-height: min(320px, 58vh);
   overflow: auto;
-  border: 1px solid rgba(190, 64, 82, .5);
+  border: 1px solid rgba(190, 64, 82, 0.5);
   background:
-    linear-gradient(180deg, rgba(255, 238, 242, .045), transparent 70%),
-    rgba(5, 5, 6, .97);
+    linear-gradient(180deg, rgba(255, 238, 242, 0.045), transparent 70%),
+    rgba(5, 5, 6, 0.97);
   padding: 6px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, .72), 0 0 28px rgba(122, 26, 40, .22), inset 0 1px 0 rgba(255, 238, 242, .055);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.72),
+    0 0 28px rgba(122, 26, 40, 0.22),
+    inset 0 1px 0 rgba(255, 238, 242, 0.055);
 }
 
 .location-choice-option {
@@ -1224,33 +1231,41 @@
   display: grid;
   gap: 8px;
   min-height: 86px;
-  border: 1px solid rgba(255, 238, 242, .075);
-  background-color: rgba(8, 6, 7, .46);
+  border: 1px solid rgba(255, 238, 242, 0.075);
+  background-color: rgba(8, 6, 7, 0.46);
   background-image:
-    linear-gradient(180deg, rgba(122, 26, 40, .05), transparent 62%),
-    radial-gradient(circle at 24px 22px, rgba(122, 26, 40, .08), transparent 130px),
-    linear-gradient(135deg, rgba(51, 3, 12, .24), transparent 70%);
-  color: rgba(238, 238, 238, .58);
+    linear-gradient(180deg, rgba(122, 26, 40, 0.05), transparent 62%),
+    radial-gradient(circle at 24px 22px, rgba(122, 26, 40, 0.08), transparent 130px),
+    linear-gradient(135deg, rgba(51, 3, 12, 0.24), transparent 70%);
+  color: rgba(238, 238, 238, 0.58);
   padding: 10px;
   text-align: left;
   overflow: hidden;
-  transition: border-color .12s ease, background .12s ease, box-shadow .12s ease, transform .12s ease, color .12s ease;
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease,
+    box-shadow 0.12s ease,
+    transform 0.12s ease,
+    color 0.12s ease;
 }
 
 .location-map-slot-card:hover,
 .location-map-slot-card.is-active {
-  border-color: rgba(190, 64, 82, .62);
+  border-color: rgba(190, 64, 82, 0.62);
   background:
-    linear-gradient(180deg, rgba(51, 3, 12, .24), transparent 150px),
-    radial-gradient(circle at 26px 22px, rgba(122, 26, 40, .16), transparent 140px),
-    rgba(51, 3, 12, .09);
+    linear-gradient(180deg, rgba(51, 3, 12, 0.24), transparent 150px),
+    radial-gradient(circle at 26px 22px, rgba(122, 26, 40, 0.16), transparent 140px),
+    rgba(51, 3, 12, 0.09);
   color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, .1), 0 0 22px rgba(122, 26, 40, .24), inset 0 1px 0 rgba(255, 238, 242, .045);
+  box-shadow:
+    0 0 0 1px rgba(190, 64, 82, 0.1),
+    0 0 22px rgba(122, 26, 40, 0.24),
+    inset 0 1px 0 rgba(255, 238, 242, 0.045);
   transform: scale(1.003);
 }
 
 .location-map-slot-card.is-filled:not(.is-active) {
-  border-color: rgba(143, 150, 148, .28);
+  border-color: rgba(143, 150, 148, 0.28);
   color: #bec8c5;
 }
 
@@ -1274,11 +1289,14 @@
   gap: 12px;
   max-height: var(--location-stage-min-height);
   overflow: hidden;
-  border: 1px solid rgba(240, 185, 194, .24);
+  border: 1px solid rgba(240, 185, 194, 0.24);
   background:
-    radial-gradient(circle at 14% 0%, rgba(190, 64, 82, .14), transparent 42%),
-    linear-gradient(180deg, rgba(2, 2, 3, .985), rgba(10, 4, 6, .96));
-  box-shadow: 0 32px 100px rgba(0, 0, 0, .72), 0 0 34px rgba(122, 26, 40, .2), inset 0 1px 0 rgba(255, 238, 242, .06);
+    radial-gradient(circle at 14% 0%, rgba(190, 64, 82, 0.14), transparent 42%),
+    linear-gradient(180deg, rgba(2, 2, 3, 0.985), rgba(10, 4, 6, 0.96));
+  box-shadow:
+    0 32px 100px rgba(0, 0, 0, 0.72),
+    0 0 34px rgba(122, 26, 40, 0.2),
+    inset 0 1px 0 rgba(255, 238, 242, 0.06);
   padding: 14px;
 }
 
@@ -1294,7 +1312,7 @@
 }
 
 .location-component-drawer__head {
-  border-bottom: 1px solid rgba(255, 238, 242, .07);
+  border-bottom: 1px solid rgba(255, 238, 242, 0.07);
   padding-bottom: 12px;
 }
 
@@ -1304,13 +1322,13 @@
   font-size: 18px;
   font-weight: 950;
   line-height: 1.05;
-  letter-spacing: -.035em;
+  letter-spacing: -0.035em;
 }
 
 .location-component-drawer__target {
   align-items: center;
-  border: 1px solid rgba(255, 238, 242, .075);
-  background: rgba(0, 0, 0, .18);
+  border: 1px solid rgba(255, 238, 242, 0.075);
+  background: rgba(0, 0, 0, 0.18);
   padding: 10px;
 }
 
@@ -1318,18 +1336,6 @@
   display: grid;
   gap: 4px;
   min-width: 0;
-}
-
-.location-component-drawer__target span,
-.location-component-drawer__assigned > span,
-.location-component-option__meta span,
-.location-component-option__meta em {
-  color: #8f7278;
-  font-size: 8px;
-  font-weight: 950;
-  letter-spacing: .1em;
-  line-height: 1;
-  text-transform: uppercase;
 }
 
 .location-component-drawer__target strong {
@@ -1342,7 +1348,7 @@
 }
 
 .location-component-drawer__target small {
-  color: rgba(240, 215, 220, .56);
+  color: rgba(240, 215, 220, 0.56);
   font-size: 10px;
   font-weight: 800;
 }
@@ -1365,9 +1371,9 @@
 .location-component-search input {
   width: 100%;
   min-height: 36px;
-  border: 1px solid rgba(255, 238, 242, .08);
-  background: rgba(0, 0, 0, .22);
-  color: rgba(238, 238, 238, .88);
+  border: 1px solid rgba(255, 238, 242, 0.08);
+  background: rgba(0, 0, 0, 0.22);
+  color: rgba(238, 238, 238, 0.88);
   padding: 0 10px;
   outline: none;
   font-size: 12px;
@@ -1378,8 +1384,8 @@
   place-items: center;
   min-width: 42px;
   min-height: 36px;
-  border: 1px solid rgba(255, 238, 242, .08);
-  background: rgba(0, 0, 0, .18);
+  border: 1px solid rgba(255, 238, 242, 0.08);
+  background: rgba(0, 0, 0, 0.18);
   color: #d0a2aa;
   font-size: 11px;
   font-weight: 950;
@@ -1402,7 +1408,7 @@
   min-height: 28px;
   max-width: 100%;
   padding-inline: 9px;
-  color: rgba(240, 215, 220, .78);
+  color: rgba(240, 215, 220, 0.78);
   font-size: 10px;
   font-weight: 850;
 }
@@ -1420,16 +1426,16 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  border: 1px solid rgba(255, 238, 242, .075);
-  background: rgba(255, 255, 255, .022);
+  border: 1px solid rgba(255, 238, 242, 0.075);
+  background: rgba(255, 255, 255, 0.022);
   padding: 11px;
 }
 
 .location-component-option:hover,
 .location-component-option.is-active {
-  border-color: rgba(190, 64, 82, .42);
-  background: rgba(95, 7, 22, .14);
-  box-shadow: inset 0 0 0 1px rgba(190, 64, 82, .08);
+  border-color: rgba(190, 64, 82, 0.42);
+  background: rgba(95, 7, 22, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(190, 64, 82, 0.08);
 }
 
 .location-component-option__meta {
@@ -1452,7 +1458,7 @@
   display: -webkit-box;
   overflow: hidden;
   margin: 6px 0 0;
-  color: rgba(240, 215, 220, .58);
+  color: rgba(240, 215, 220, 0.58);
   font-size: 11px;
   line-height: 1.35;
   -webkit-box-orient: vertical;
@@ -1466,7 +1472,7 @@
   color: #f0d7dc;
   font-size: 9px;
   font-weight: 950;
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -1479,7 +1485,7 @@
   padding: 0 10px;
   font-size: 9px;
   font-weight: 950;
-  letter-spacing: .1em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
@@ -1495,8 +1501,8 @@
   display: grid;
   gap: 4px;
   min-width: 0;
-  border: 1px solid rgba(255, 238, 242, .065);
-  background: rgba(0, 0, 0, .16);
+  border: 1px solid rgba(255, 238, 242, 0.065);
+  background: rgba(0, 0, 0, 0.16);
   padding: 9px;
 }
 
@@ -1504,22 +1510,11 @@
   text-align: left;
 }
 
-.location-recap-frame span,
-.location-recap-region span,
-.location-recap-slot span {
-  color: #8f7278;
-  font-size: 8px;
-  font-weight: 950;
-  letter-spacing: .1em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
 .location-recap-frame strong,
 .location-recap-region strong,
 .location-recap-slot strong {
   overflow: hidden;
-  color: rgba(238, 238, 238, .62);
+  color: rgba(238, 238, 238, 0.62);
   font-size: 11px;
   font-weight: 900;
   line-height: 1.16;
@@ -1530,7 +1525,7 @@
 .location-recap-frame small,
 .location-recap-region small {
   overflow: hidden;
-  color: rgba(238, 238, 238, .42);
+  color: rgba(238, 238, 238, 0.42);
   font-size: 10px;
   line-height: 1.3;
   text-overflow: ellipsis;
@@ -1538,8 +1533,8 @@
 }
 
 .location-recap-slot.is-filled {
-  border-color: rgba(143, 150, 148, .24);
-  background: rgba(143, 150, 148, .045);
+  border-color: rgba(143, 150, 148, 0.24);
+  background: rgba(143, 150, 148, 0.045);
 }
 
 @media (max-width: 1380px) {
@@ -1582,8 +1577,6 @@
   }
 }
 
-/* Step 32 — Exact Location stage sizing and matched composer styling.
-   This section recreates the visual measurements using Location-only selectors. */
 .location-composer {
   --location-workspace-max: 100%;
   --location-shell-bar-height: var(--cruor-shell-bar-height, 62px);
@@ -1608,12 +1601,12 @@
   min-height: var(--location-stage-min-height);
   margin: 0 auto;
   overflow: hidden;
-  border: 1px solid rgba(255, 238, 242, .06);
+  border: 1px solid rgba(255, 238, 242, 0.06);
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, .028) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 255, 255, .022) 1px, transparent 1px),
-    radial-gradient(circle at 50% 36%, rgba(95, 7, 22, .28), transparent 16rem),
-    rgba(0, 0, 0, .18);
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    radial-gradient(circle at 50% 36%, rgba(95, 7, 22, 0.28), transparent 16rem),
+    rgba(0, 0, 0, 0.18);
   background-size: 34px 34px, 34px 34px, auto, auto;
   padding: var(--location-stage-padding);
 }
@@ -1640,7 +1633,7 @@
   overflow: auto;
   padding-right: 2px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(122, 26, 40, .52) rgba(0, 0, 0, .18);
+  scrollbar-color: rgba(122, 26, 40, 0.52) rgba(0, 0, 0, 0.18);
 }
 
 .location-map-workbench .location-composer__rail--picker {
@@ -1672,12 +1665,12 @@
   display: grid;
   align-content: start;
   gap: 10px;
-  border: 1px solid rgba(255, 238, 242, .07);
+  border: 1px solid rgba(255, 238, 242, 0.07);
   background:
-    linear-gradient(180deg, rgba(255, 238, 242, .03), transparent 70%),
-    rgba(5, 5, 6, .54);
+    linear-gradient(180deg, rgba(255, 238, 242, 0.03), transparent 70%),
+    rgba(5, 5, 6, 0.54);
   padding: 11px;
-  box-shadow: inset 0 1px 0 rgba(255, 238, 242, .035);
+  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
@@ -1691,7 +1684,7 @@
   justify-content: space-between;
   gap: 10px;
   min-width: 0;
-  border-bottom: 1px solid rgba(255, 238, 242, .055);
+  border-bottom: 1px solid rgba(255, 238, 242, 0.055);
   padding-bottom: 8px;
 }
 
@@ -1706,6 +1699,8 @@
 .location-component-drawer__head .location-kicker,
 .location-field > span,
 .location-map-request-card > span,
+.location-active-region > span,
+.location-component-card span,
 .location-recap-frame span,
 .location-recap-region span,
 .location-recap-slot span,
@@ -1717,7 +1712,7 @@
   color: #8f7278;
   font-size: 9px;
   font-weight: 950;
-  letter-spacing: .12em;
+  letter-spacing: 0.12em;
   line-height: 1;
   text-transform: uppercase;
 }
@@ -1731,7 +1726,7 @@
   font-family: var(--cruor-font-body, Inter, ui-sans-serif, system-ui, sans-serif);
   font-size: 10px;
   font-weight: 950;
-  letter-spacing: .07em;
+  letter-spacing: 0.07em;
   line-height: 1.1;
   text-overflow: ellipsis;
   text-transform: uppercase;
@@ -1741,12 +1736,12 @@
 .location-brief-panel__meta,
 .location-component-count,
 .location-output-drawer > summary strong {
-  border: 1px solid rgba(190, 64, 82, .34);
-  background: rgba(0, 0, 0, .2);
+  border: 1px solid rgba(190, 64, 82, 0.34);
+  background: rgba(0, 0, 0, 0.2);
   color: #d0a2aa;
   font-size: 9px;
   font-weight: 950;
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -1774,12 +1769,17 @@
 .location-component-drawer__assigned-pill,
 .location-segment,
 .location-region-inline-btn {
-  border: 1px solid rgba(95, 7, 22, .56);
+  border: 1px solid rgba(95, 7, 22, 0.56);
   background:
-    linear-gradient(180deg, rgba(122, 26, 40, .07), transparent 68%),
-    rgba(0, 0, 0, .32);
+    linear-gradient(180deg, rgba(122, 26, 40, 0.07), transparent 68%),
+    rgba(0, 0, 0, 0.32);
   color: #c8a2a8;
-  transition: border-color .12s ease, background .12s ease, color .12s ease, box-shadow .12s ease, transform .12s ease;
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease,
+    color 0.12s ease,
+    box-shadow 0.12s ease,
+    transform 0.12s ease;
 }
 
 .location-choice-trigger {
@@ -1800,12 +1800,15 @@
 .location-segment.is-active,
 .location-region-inline-btn:hover,
 .location-region-inline-btn.is-active {
-  border-color: rgba(190, 64, 82, .78);
+  border-color: rgba(190, 64, 82, 0.78);
   background:
-    radial-gradient(circle at 50% 18%, rgba(190, 64, 82, .18), transparent 72%),
-    linear-gradient(180deg, rgba(30, 7, 11, .92), rgba(9, 5, 7, .9));
+    radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%),
+    linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
   color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, .13), 0 0 20px rgba(122, 26, 40, .22), inset 0 1px 0 rgba(255, 238, 242, .06);
+  box-shadow:
+    0 0 0 1px rgba(190, 64, 82, 0.13),
+    0 0 20px rgba(122, 26, 40, 0.22),
+    inset 0 1px 0 rgba(255, 238, 242, 0.06);
 }
 
 .location-slot-panel--picker {
@@ -1819,7 +1822,7 @@
   width: min(clamp(320px, 29vw, 430px), calc(100vw - 48px));
   height: 100%;
   max-height: var(--location-stage-grid-min-height);
-  filter: drop-shadow(0 28px 70px rgba(0, 0, 0, .68));
+  filter: drop-shadow(0 28px 70px rgba(0, 0, 0, 0.68));
 }
 
 .location-component-drawer__panel {
@@ -1830,15 +1833,15 @@
   max-height: none;
   min-height: 0;
   overflow: hidden;
-  border-color: rgba(240, 185, 194, .16);
+  border-color: rgba(240, 185, 194, 0.16);
   background:
-    radial-gradient(circle at 14% 0%, rgba(190, 64, 82, .14), transparent 42%),
-    linear-gradient(180deg, rgba(2, 2, 3, .985), rgba(10, 4, 6, .96));
+    radial-gradient(circle at 14% 0%, rgba(190, 64, 82, 0.14), transparent 42%),
+    linear-gradient(180deg, rgba(2, 2, 3, 0.985), rgba(10, 4, 6, 0.96));
   box-shadow:
-    0 30px 90px rgba(0, 0, 0, .74),
-    0 0 0 1px rgba(255, 238, 242, .04),
-    0 0 42px rgba(122, 26, 40, .2),
-    inset 0 1px 0 rgba(255, 238, 242, .055);
+    0 30px 90px rgba(0, 0, 0, 0.74),
+    0 0 0 1px rgba(255, 238, 242, 0.04),
+    0 0 42px rgba(122, 26, 40, 0.2),
+    inset 0 1px 0 rgba(255, 238, 242, 0.055);
   padding: 14px;
 }
 
@@ -1848,13 +1851,13 @@
 .location-recap-frame,
 .location-recap-region,
 .location-recap-slot {
-  border: 1px solid rgba(255, 238, 242, .065);
-  background: rgba(255, 255, 255, .02);
+  border: 1px solid rgba(255, 238, 242, 0.065);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .location-map-mode-switch {
-  border: 1px solid rgba(255, 238, 242, .06);
-  background: rgba(0, 0, 0, .18);
+  border: 1px solid rgba(255, 238, 242, 0.06);
+  background: rgba(0, 0, 0, 0.18);
   padding: 6px;
 }
 
@@ -1863,10 +1866,7 @@
   .location-composer[data-location-builder-mode="slots"] .location-map-workbench.location-composer__frame,
   .location-composer[data-location-builder-mode="frame"] .location-map-workbench.location-composer__frame {
     grid-template-columns: 1fr;
-    grid-template-areas:
-      "left"
-      "center"
-      "right";
+    grid-template-areas: "left" "center" "right";
   }
 
   .location-component-drawer {
@@ -1884,8 +1884,6 @@
   }
 }
 
-
-/* Step 33 — Match the fullscreen tabpanel sizing used by the widest composer view. */
 #darkenComposerPanel > .cruor-composer-shell.location-composer {
   min-height: 100%;
   background: transparent;
@@ -1905,7 +1903,7 @@
 }
 
 @supports selector(:has(*)) {
-          .app-shell:has(#darkenComposerPanel:not([hidden])) #darkenComposerPanel {
+  .app-shell:has(#darkenComposerPanel:not([hidden])) #darkenComposerPanel {
     height: calc(100dvh - var(--app-shell-bar-height) - clamp(10px, 1vw, 16px));
     min-height: 0;
     overflow: hidden;
@@ -1913,15 +1911,7 @@
     max-width: none;
     margin-inline: 0;
   }
-
-  }
-
-
-/* Location Composer parity layer — v12.
-   This file intentionally replaces the previous accumulated alignment patch.
-   It keeps the existing base stylesheet, then normalizes only the map workbench,
-   slot rail, in-stage component drawer, and right recap column to the Monster
-   anatomy composer measurements. */
+}
 
 .location-composer {
   --location-stage-min-height: clamp(720px, 74vh, 900px);
@@ -1969,8 +1959,13 @@
   padding: var(--location-stage-padding);
 }
 
-.location-map-workbench .location-composer__rail--left { grid-area: left; }
-.location-map-workbench .location-composer__rail--right { grid-area: right; }
+.location-map-workbench .location-composer__rail--left {
+  grid-area: left;
+}
+
+.location-map-workbench .location-composer__rail--right {
+  grid-area: right;
+}
 
 .location-map-workbench .location-composer__rail,
 .location-map-workbench .location-composer__stage,
@@ -2022,7 +2017,12 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   transform: none;
-  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, width 0.14s ease;
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease,
+    color 0.12s ease,
+    box-shadow 0.12s ease,
+    width 0.14s ease;
 }
 
 .location-map-slot-card:hover,
@@ -2256,9 +2256,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr);
-  grid-template-areas:
-    "head"
-    "list";
+  grid-template-areas: "head" "list";
   gap: 10px;
   width: 100%;
   height: 100%;
@@ -2347,7 +2345,10 @@
   border-color: rgba(190, 64, 82, 0.66);
   background: rgba(95, 7, 22, 0.36);
   color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 24px rgba(122, 26, 40, 0.26), inset 0 1px 0 rgba(255, 238, 242, 0.05);
+  box-shadow:
+    0 0 0 1px rgba(190, 64, 82, 0.12),
+    0 0 24px rgba(122, 26, 40, 0.26),
+    inset 0 1px 0 rgba(255, 238, 242, 0.05);
 }
 
 .location-stage-navigator-overlay .component-navigator-modal__rail,
@@ -2550,7 +2551,9 @@
   overflow: visible;
   border: 1px solid rgba(255, 238, 242, 0.075);
   background-color: rgba(9, 6, 8, 0.56);
-  background-image: linear-gradient(180deg, rgba(122, 26, 40, 0.045), transparent 48%), linear-gradient(90deg, rgba(51, 3, 12, 0.24), transparent 52%);
+  background-image:
+    linear-gradient(180deg, rgba(122, 26, 40, 0.045), transparent 48%),
+    linear-gradient(90deg, rgba(51, 3, 12, 0.24), transparent 52%);
   background-blend-mode: overlay, normal;
   color: rgba(238, 238, 238, 0.68);
   padding: 8px 8px 7px;
@@ -2806,7 +2809,10 @@
     radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%),
     linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
   color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  box-shadow:
+    0 0 0 1px rgba(190, 64, 82, 0.13),
+    0 0 20px rgba(122, 26, 40, 0.22),
+    inset 0 1px 0 rgba(255, 238, 242, 0.06);
 }
 
 .location-map-frame-rail .location-brief-panel {
@@ -2889,10 +2895,7 @@
   .location-composer[data-location-builder-mode="frame"] .location-map-workbench.location-composer__frame,
   .location-composer[data-location-builder-mode="slots"] .location-map-workbench.location-composer__frame {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      "left"
-      "center"
-      "right";
+    grid-template-areas: "left" "center" "right";
     overflow: auto;
   }
 
@@ -2918,13 +2921,7 @@
     --component-stage-rail-width: 100%;
     width: 100%;
   }
-
-  }
-
-
-/* Darken Location Composer 6.9.2a hotfix.
-   Merged after the alignment layer.
-   Scope: repair Location/Monster parity regressions without touching JSX. */
+}
 
 .location-composer {
   --stage-pad: clamp(10px, 1.15vw, 18px);
@@ -2956,7 +2953,6 @@
   max-width: var(--location-side-column-width);
 }
 
-/* Center stage: one map surface, no nested track compression. */
 .location-map-workbench .location-composer__stage {
   grid-area: center;
   display: block;
@@ -2976,7 +2972,6 @@
   overflow: hidden;
 }
 
-/* Drawer overlay: absolute like Monster; it does not affect grid track sizing. */
 .location-stage-navigator-overlay {
   grid-area: 1 / 2 / 2 / 4;
   position: absolute;
@@ -3003,26 +2998,16 @@
 }
 
 .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] {
-  width: min(
-    calc(100vw - 64px),
-    calc(
-      var(--location-component-drawer-closed-width) +
-      var(--location-component-filter-column-width) +
-      var(--location-component-drawer-gap)
-    )
-  );
+  width: min( calc(100vw - 64px), calc( var(--location-component-drawer-closed-width) + var(--location-component-filter-column-width) + var(--location-component-drawer-gap) ) );
   max-width: 100%;
 }
 
-/* Closed drawer: one column. No static width on list element. */
 .location-stage-navigator-overlay .location-component-drawer__panel,
 .location-stage-navigator-overlay .component-navigator-modal__panel {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr);
-  grid-template-areas:
-    "head"
-    "list";
+  grid-template-areas: "head" "list";
   column-gap: var(--location-component-drawer-gap);
   row-gap: 10px;
   width: 100%;
@@ -3030,15 +3015,11 @@
   overflow: hidden;
 }
 
-/* Open filters: list remains the left grid column; filters are a right column.
-   The list and rail elements do NOT get their own static width. */
 .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .location-component-drawer__panel,
 .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .component-navigator-modal__panel {
   grid-template-columns: minmax(0, 1fr) minmax(0, var(--location-component-filter-column-width));
   grid-template-rows: auto minmax(0, 1fr);
-  grid-template-areas:
-    "head rail"
-    "list rail";
+  grid-template-areas: "head rail" "list rail";
 }
 
 .location-stage-navigator-overlay .component-navigator-modal__head,
@@ -3047,7 +3028,6 @@
   min-width: 0;
 }
 
-/* Column placement only. No width/max-width here: the panel grid owns sizing. */
 .location-stage-navigator-overlay .navigator-tools,
 .location-stage-navigator-overlay .location-navigator-tools,
 .location-stage-navigator-overlay .component-navigator-modal__rail {
@@ -3065,7 +3045,6 @@
   overflow: auto;
 }
 
-/* Column placement only. No width/max-width here: prevents overlap with rail. */
 .location-stage-navigator-overlay .component-navigator-modal__list,
 .location-stage-navigator-overlay .location-component-list {
   grid-area: list;
@@ -3078,7 +3057,6 @@
   overflow-x: hidden;
 }
 
-/* Match Monster component-card skin instead of custom Location card skin. */
 .location-stage-navigator-overlay .component-card.location-component-option,
 .location-stage-navigator-overlay .location-component-option.component-card {
   position: relative;
@@ -3144,7 +3122,6 @@
   color: var(--muted, rgba(238, 238, 238, 0.62));
 }
 
-/* Match Monster icon button treatment. */
 .location-stage-navigator-overlay .icon-btn,
 .location-stage-navigator-overlay .navigator-filter-btn,
 .location-stage-navigator-overlay .location-navigator-filter-btn,
@@ -3175,7 +3152,10 @@
   border-color: rgba(190, 64, 82, 0.66);
   background: rgba(95, 7, 22, 0.36);
   color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 24px rgba(122, 26, 40, 0.26), inset 0 1px 0 rgba(255, 238, 242, 0.05);
+  box-shadow:
+    0 0 0 1px rgba(190, 64, 82, 0.12),
+    0 0 24px rgba(122, 26, 40, 0.26),
+    inset 0 1px 0 rgba(255, 238, 242, 0.05);
   outline: none;
 }
 
@@ -3186,7 +3166,6 @@
   right: 12px;
 }
 
-/* Slot card spacing and height match the requested Monster parity. */
 .location-slot-stack {
   display: grid;
   gap: var(--location-slot-card-gap);
@@ -3215,7 +3194,6 @@
   overflow: hidden;
 }
 
-/* Region labels remain synced to generated rooms. */
 .location-region-board {
   position: absolute;
   inset: 0;
@@ -3245,10 +3223,7 @@
   .location-composer[data-location-builder-mode="frame"] .location-map-workbench.location-composer__frame,
   .location-composer[data-location-builder-mode="slots"] .location-map-workbench.location-composer__frame {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      "left"
-      "center"
-      "right";
+    grid-template-areas: "left" "center" "right";
   }
 
   .location-map-slot-rail,
@@ -3274,15 +3249,10 @@
   .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .component-navigator-modal__panel {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto auto minmax(0, 1fr);
-    grid-template-areas:
-      "head"
-      "rail"
-      "list";
+    grid-template-areas: "head" "rail" "list";
   }
 }
 
-/* Step 34 — Scope-aware Location slot rail.
-   Adds Map / Selected Location tabs without changing the existing slot-card skin. */
 .location-map-slot-rail {
   grid-template-rows: auto auto minmax(0, 1fr);
   align-content: stretch;
@@ -3330,6 +3300,7 @@
   height: auto;
   min-height: 0;
   overflow: auto;
+  overflow-x: hidden;
   align-content: start;
   scrollbar-width: thin;
   scrollbar-color: rgba(122, 26, 40, 0.52) rgba(0, 0, 0, 0.18);
@@ -3340,9 +3311,6 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
-
-/* Step 34 — Location target polish.
-   Room recap now appears only while hovering/focusing a room node. */
 .location-room-recap-anchor.location-room-recap-anchor--hover {
   left: var(--region-x, 50%);
   top: var(--region-y, 50%);
@@ -3370,9 +3338,6 @@
   }
 }
 
-
-/* Step 35 — Composer Preview Intelligence.
-   Scope: embedded Composer preview only. No workspace/editor interaction changes. */
 .location-region-node .location-region-marker-strip {
   display: flex;
   flex-wrap: wrap;
@@ -3425,9 +3390,6 @@
   color: #fff0f2;
 }
 
-/* Step 36 — Preview right rail declutter.
-   Keep only immediately useful actions visible. Diagnostic map data is no longer
-   part of the default Composer preview surface. */
 .location-map-recap-rail.location-map-recap-rail--minimal {
   align-content: start;
   grid-template-rows: auto auto;
@@ -3512,16 +3474,12 @@
   opacity: 0.86;
 }
 
-/* Defensive cleanup for previous diagnostic UI. */
 .location-map-recap-rail--minimal .location-frame-info-grid,
 .location-map-recap-rail--minimal .location-graft-focus,
 .location-map-recap-rail--minimal .location-recap-slot-list {
   display: none;
 }
 
-/* Step 37 — Location frame info parity.
-   Right rail mirrors the Monster frame column: compact current frame, four facts,
-   secondary commands hidden under More. */
 .location-map-recap-rail.monster-frame-info {
   display: grid;
   align-content: start;
@@ -3661,7 +3619,6 @@
   margin-top: 6px;
 }
 
-/* Override the prior declutter defensive cleanup for the new Monster-style rail. */
 .location-map-recap-rail.monster-frame-info .location-frame-info-grid {
   display: grid;
 }
@@ -3672,9 +3629,6 @@
   }
 }
 
-/* Step 38 — Monster sidebar parity hotfix.
-   Scope: right Composer sidebar only. Removes wizard-style guidance and matches
-   the Monster frame column width, typography, and control placement more closely. */
 .location-composer {
   --location-side-column-width: 340px;
 }
@@ -3760,7 +3714,6 @@
   box-shadow: 0 0 18px rgba(122, 26, 40, 0.18);
 }
 
-
 .location-next-action-card {
   display: none;
 }
@@ -3772,9 +3725,6 @@
   box-shadow: none;
 }
 
-/* Step 39 — Mode switch belongs to the left interaction rail.
-   Frame / Slots controls the left-side workflow, so it lives above the Frame/Slot tools
-   instead of inside the Current Location summary rail. */
 .location-map-frame-rail > .location-map-mode-card,
 .location-map-slot-rail > .location-map-mode-card {
   width: 100%;
@@ -3801,9 +3751,6 @@
   gap: 6px;
 }
 
-
-/* Step 40 — Left mode switch compact fix.
-   The Frame / Slots switch is an interaction control, not a frame info card. */
 .location-map-frame-rail > .location-map-mode-card,
 .location-map-slot-rail > .location-map-mode-card {
   display: block;
@@ -3855,9 +3802,6 @@
   text-transform: uppercase;
 }
 
-/* Step 41 — Frame rail dropdown portal and frame rail alignment cleanup.
-   Location choice menus render in document.body so they are not clipped by the
-   brief panel height or by rail/card overflow. */
 .location-map-frame-rail {
   align-self: auto;
   overflow: visible;
@@ -3876,10 +3820,6 @@
   overflow: auto;
 }
 
-
-/* Step 42 — Shared custom scrollbars for Location dropdowns and overlay lists.
-   Portal dropdowns live outside the panel tree, so they need the same scrollbar
-   skin explicitly instead of relying on rail/list inheritance. */
 .location-choice-menu,
 .location-choice-menu--portal,
 .location-picker-modal__list,
@@ -3925,8 +3865,7 @@
 .location-stage-navigator-overlay .component-navigator-modal__list::-webkit-scrollbar-thumb,
 .location-stage-navigator-overlay .location-component-list::-webkit-scrollbar-thumb {
   border: 2px solid rgba(5, 5, 6, 0.96);
-  background:
-    linear-gradient(180deg, rgba(190, 64, 82, 0.72), rgba(95, 7, 22, 0.72));
+  background: linear-gradient(180deg, rgba(190, 64, 82, 0.72), rgba(95, 7, 22, 0.72));
 }
 
 .location-choice-menu::-webkit-scrollbar-thumb:hover,
@@ -3937,8 +3876,7 @@
 .location-stage-navigator-overlay .location-navigator-tools::-webkit-scrollbar-thumb:hover,
 .location-stage-navigator-overlay .component-navigator-modal__list::-webkit-scrollbar-thumb:hover,
 .location-stage-navigator-overlay .location-component-list::-webkit-scrollbar-thumb:hover {
-  background:
-    linear-gradient(180deg, rgba(224, 82, 101, 0.86), rgba(122, 26, 40, 0.82));
+  background: linear-gradient(180deg, rgba(224, 82, 101, 0.86), rgba(122, 26, 40, 0.82));
 }
 
 .location-choice-menu::-webkit-scrollbar-corner,

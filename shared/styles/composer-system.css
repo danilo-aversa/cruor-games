@@ -1,13 +1,13 @@
-/* Cruor Games — Composer System Base
-   Step 1: shared composer primitives.
-   Keep this layer generic: tokens, composer primitives, and no tool-owned selectors. */
+/*
+ * Cruor Games — Composer System
+ * Refactored CSS. Existing selectors and class hooks are preserved.
+ */
 
 :root {
   --cruor-composer-workspace-max: var(--cruor-workspace-max, 1540px);
   --cruor-composer-rail-width: var(--cruor-side-panel-width, 390px);
   --cruor-composer-stage-min: 0;
   --cruor-composer-gap: var(--cruor-space-lg, 14px);
-
   --cruor-composer-panel-border-color: var(--cruor-ui-panel-border-color, rgba(255, 238, 242, 0.08));
   --cruor-composer-panel-border-top-color: var(--cruor-ui-panel-border-top-color, rgba(255, 238, 242, 0.12));
   --cruor-composer-panel-border: var(--cruor-ui-panel-border, 1px solid var(--cruor-composer-panel-border-color));
@@ -15,7 +15,6 @@
   --cruor-composer-panel-bg: var(--cruor-ui-panel-bg, rgba(12, 10, 12, 0.74));
   --cruor-composer-panel-image: var(--cruor-ui-panel-image, linear-gradient(180deg, rgba(255, 238, 242, 0.035), transparent 160px));
   --cruor-composer-panel-shadow: var(--cruor-ui-panel-shadow, 0 18px 52px rgba(0, 0, 0, 0.34));
-
   --cruor-composer-card-border-color: var(--cruor-ui-card-border-color, rgba(255, 238, 242, 0.075));
   --cruor-composer-card-border-color-active: var(--cruor-ui-card-border-color-active, rgba(190, 64, 82, 0.42));
   --cruor-composer-card-border: var(--cruor-ui-card-border, 1px solid var(--cruor-composer-card-border-color));
@@ -24,14 +23,12 @@
   --cruor-composer-card-bg-active: var(--cruor-ui-card-bg-active, rgba(95, 7, 22, 0.22));
   --cruor-composer-card-shadow: var(--cruor-ui-card-shadow, inset 0 1px 0 rgba(255, 238, 242, 0.035));
   --cruor-composer-card-shadow-active: var(--cruor-ui-card-shadow-active, 0 0 24px rgba(122, 26, 40, 0.2));
-
   --cruor-composer-slot-border-color: var(--cruor-ui-card-border-color, rgba(255, 238, 242, 0.075));
   --cruor-composer-slot-border-color-active: var(--cruor-ui-card-border-color-active, rgba(190, 64, 82, 0.42));
   --cruor-composer-slot-border: 1px solid var(--cruor-composer-slot-border-color);
   --cruor-composer-slot-border-active: 1px solid var(--cruor-composer-slot-border-color-active);
   --cruor-composer-slot-bg: var(--cruor-ui-card-bg, rgba(5, 5, 6, 0.54));
   --cruor-composer-slot-bg-active: var(--cruor-ui-card-bg-active, rgba(95, 7, 22, 0.22));
-
   --cruor-composer-control-border-color: var(--cruor-ui-control-border-color, rgba(255, 238, 242, 0.09));
   --cruor-composer-control-border-color-active: var(--cruor-ui-control-border-color-active, rgba(190, 64, 82, 0.55));
   --cruor-composer-control-border: var(--cruor-ui-control-border, 1px solid var(--cruor-composer-control-border-color));
@@ -40,7 +37,6 @@
   --cruor-composer-control-bg-active: var(--cruor-ui-control-bg-active, rgba(95, 7, 22, 0.2));
   --cruor-composer-control-text: var(--cruor-ui-control-text, rgba(238, 238, 238, 0.58));
   --cruor-composer-control-text-active: var(--cruor-ui-control-text-active, #fff0f2);
-
   --cruor-composer-chip-border-color: var(--cruor-ui-chip-border-color, rgba(255, 238, 242, 0.075));
   --cruor-composer-chip-border: var(--cruor-ui-chip-border, 1px solid var(--cruor-composer-chip-border-color));
   --cruor-composer-chip-bg: var(--cruor-ui-chip-bg, rgba(255, 255, 255, 0.025));

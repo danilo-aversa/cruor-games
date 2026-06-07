@@ -1,13 +1,10 @@
-/* Step 1.7 — Map Generator compatibility layer for Cruor UI Kit.
-   Keep legacy selectors during migration; shared .cruor-* primitives can replace
-   these feature-local rules progressively in JSX later.
-   Step 1.10: preserves legacy 38px map controls and 10000 context-menu stacking.
-   Step 2.4: initial Map Generator mode gates. Step 2.10: gates narrowed to explicit markers only. */
+/*
+ * Cruor Games — Map Generator
+ * Refactored CSS. Existing selectors and class hooks are preserved.
+ */
+
 .map-generator-view {
-  min-height: calc(
-    100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) -
-      var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px))
-  );
+  min-height: calc( 100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) - var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) );
   background:
     radial-gradient(circle at 16% 0%, rgba(122, 26, 40, 0.12), transparent 34%),
     radial-gradient(circle at 92% 4%, rgba(95, 7, 22, 0.08), transparent 32%),
@@ -30,10 +27,7 @@
 }
 
 .cruor-map-mvp {
-  min-height: calc(
-    100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) -
-      var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px))
-  );
+  min-height: calc( 100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) - var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) );
   color: var(--cruor-color-text, var(--text));
   padding: 0 0 40px;
   font-family: var(--font);
@@ -55,12 +49,7 @@
   background-image:
     radial-gradient(circle at 14% 0%, rgba(122, 26, 40, 0.16), transparent 34%),
     linear-gradient(180deg, rgba(255, 238, 242, 0.038), transparent 54%),
-    linear-gradient(
-      135deg,
-      rgba(51, 3, 12, 0.28),
-      rgba(0, 0, 0, 0.08) 48%,
-      rgba(0, 0, 0, 0.18)
-    ),
+    linear-gradient( 135deg, rgba(51, 3, 12, 0.28), rgba(0, 0, 0, 0.08) 48%, rgba(0, 0, 0, 0.18) ),
     var(--paper-texture);
   background-blend-mode: normal, overlay, normal, normal;
   backdrop-filter: blur(18px) saturate(124%);
@@ -92,9 +81,7 @@
   font-weight: 950;
   line-height: 0.94;
   letter-spacing: -0.045em;
-  text-shadow:
-    0 0 22px rgba(122, 26, 40, 0.24),
-    0 2px 0 rgba(0, 0, 0, 0.28);
+  text-shadow: 0 0 22px rgba(122, 26, 40, 0.24), 0 2px 0 rgba(0, 0, 0, 0.28);
 }
 
 .cruor-map-mvp .mvp-subtitle {
@@ -115,9 +102,7 @@
     linear-gradient(180deg, rgba(22, 6, 9, 0.92), rgba(8, 5, 6, 0.86)),
     rgba(8, 5, 6, 0.84);
   color: var(--cruor-color-text, var(--text));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 238, 242, 0.045),
-    0 10px 26px rgba(0, 0, 0, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.045), 0 10px 26px rgba(0, 0, 0, 0.22);
   backdrop-filter: blur(10px) saturate(125%);
   -webkit-backdrop-filter: blur(10px) saturate(125%);
 }
@@ -165,26 +150,17 @@
   color: var(--cruor-color-text, var(--text));
   padding: 0 11px;
   outline: none;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 238, 242, 0.045),
-    0 8px 18px rgba(0, 0, 0, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.045), 0 8px 18px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(10px) saturate(125%);
   -webkit-backdrop-filter: blur(10px) saturate(125%);
-  transition:
-    border-color 0.14s ease,
-    background 0.14s ease,
-    box-shadow 0.14s ease;
+  transition: border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
 }
 
 .cruor-map-mvp .control-input:focus,
 .cruor-map-mvp .control-select:focus {
   border-color: var(--cruor-input-border-focus, rgba(190, 64, 82, 0.82));
   background:
-    radial-gradient(
-      circle at 50% 24%,
-      rgba(190, 64, 82, 0.16),
-      transparent 68%
-    ),
+    radial-gradient( circle at 50% 24%, rgba(190, 64, 82, 0.16), transparent 68% ),
     linear-gradient(180deg, rgba(30, 7, 11, 0.94), rgba(10, 5, 7, 0.88)),
     rgba(8, 5, 6, 0.86);
   box-shadow:
@@ -201,26 +177,24 @@
 }
 
 .cruor-map-mvp .mvp-button {
-  box-sizing: border-box ;
-  display: inline-flex ;
-  align-items: center ;
-  justify-content: center ;
-  gap: 7px ;
-  min-height: var(--cruor-control-height-map, 38px) ;
-  height: auto ;
-  border: 1px solid var(--cruor-button-border, rgba(95, 7, 22, 0.74)) ;
-  border-radius: 0 ;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: var(--cruor-control-height-map, 38px);
+  height: auto;
+  border: 1px solid var(--cruor-button-border, rgba(95, 7, 22, 0.74));
+  border-radius: 0;
   background:
     linear-gradient(180deg, rgba(22, 6, 9, 0.92), rgba(8, 5, 6, 0.86)),
-    rgba(8, 5, 6, 0.84) ;
-  color: var(--cruor-button-text-muted, rgba(240, 215, 220, 0.72)) ;
-  padding: 0 11px ;
-  font-size: 12px ;
-  font-weight: 900 ;
-  letter-spacing: 0.01em ;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 238, 242, 0.045),
-    0 8px 18px rgba(0, 0, 0, 0.16) ;
+    rgba(8, 5, 6, 0.84);
+  color: var(--cruor-button-text-muted, rgba(240, 215, 220, 0.72));
+  padding: 0 11px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.045), 0 8px 18px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(10px) saturate(125%);
   -webkit-backdrop-filter: blur(10px) saturate(125%);
   transition:
@@ -232,31 +206,27 @@
 
 .cruor-map-mvp .mvp-button:hover,
 .cruor-map-mvp .mvp-button:focus-visible {
-  border-color: rgba(190, 64, 82, 0.78) ;
+  border-color: rgba(190, 64, 82, 0.78);
   background:
-    radial-gradient(
-      circle at 50% 24%,
-      rgba(190, 64, 82, 0.18),
-      transparent 68%
-    ),
+    radial-gradient( circle at 50% 24%, rgba(190, 64, 82, 0.18), transparent 68% ),
     linear-gradient(180deg, rgba(30, 7, 11, 0.94), rgba(10, 5, 7, 0.88)),
-    rgba(8, 5, 6, 0.86) ;
-  color: #fff0f2 ;
+    rgba(8, 5, 6, 0.86);
+  color: #fff0f2;
   box-shadow:
     0 0 0 1px rgba(190, 64, 82, 0.12),
     0 0 20px rgba(122, 26, 40, 0.22),
-    inset 0 1px 0 rgba(255, 238, 242, 0.06) ;
+    inset 0 1px 0 rgba(255, 238, 242, 0.06);
   outline: none;
 }
 
 .cruor-map-mvp .mvp-button:disabled {
   opacity: 0.42;
-  cursor: not-allowed ;
-  box-shadow: none ;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .cruor-map-mvp .control-group .mvp-button {
-  width: 100% ;
+  width: 100%;
 }
 
 .cruor-map-mvp .stats {
@@ -421,11 +391,8 @@
   padding: 12px;
   border: 2px solid rgba(95, 7, 22, 0.55);
   border-radius: 0;
-  background:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.025), transparent), #0d0b0c;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 238, 242, 0.035),
-    0 20px 80px rgba(0, 0, 0, 0.46);
+  background: linear-gradient(180deg, rgba(255, 238, 242, 0.025), transparent), #0d0b0c;
+  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.035), 0 20px 80px rgba(0, 0, 0, 0.46);
 }
 
 .cruor-map-mvp .zoom-toolbar {
@@ -437,8 +404,8 @@
 }
 
 .cruor-map-mvp .zoom-button {
-  width: auto ;
-  padding: 0 11px ;
+  width: auto;
+  padding: 0 11px;
 }
 
 .cruor-map-mvp .zoom-scale {
@@ -479,9 +446,7 @@
 }
 
 .cruor-map-mvp .map-viewport:focus {
-  box-shadow:
-    inset 0 0 0 2px rgba(122, 26, 40, 0.68),
-    inset 0 0 0 1px rgba(29, 25, 21, 0.25);
+  box-shadow: inset 0 0 0 2px rgba(122, 26, 40, 0.68), inset 0 0 0 1px rgba(29, 25, 21, 0.25);
 }
 
 .cruor-map-mvp .map-pan-layer {
@@ -555,9 +520,7 @@
     linear-gradient(180deg, rgba(255, 238, 242, 0.045), transparent 56%),
     linear-gradient(135deg, rgba(51, 3, 12, 0.32), rgba(0, 0, 0, 0.08));
   color: var(--cruor-color-text, var(--text));
-  box-shadow:
-    0 18px 58px rgba(0, 0, 0, 0.72),
-    inset 0 1px 0 rgba(255, 238, 242, 0.045);
+  box-shadow: 0 18px 58px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 238, 242, 0.045);
   backdrop-filter: blur(14px) saturate(125%);
   -webkit-backdrop-filter: blur(14px) saturate(125%);
   font-size: 12px;
@@ -622,11 +585,7 @@
 .room-context-menu button:focus-visible {
   border-color: rgba(190, 64, 82, 0.78);
   background:
-    radial-gradient(
-      circle at 50% 24%,
-      rgba(190, 64, 82, 0.18),
-      transparent 68%
-    ),
+    radial-gradient( circle at 50% 24%, rgba(190, 64, 82, 0.18), transparent 68% ),
     rgba(20, 3, 7, 0.84);
   color: var(--cruor-color-text, var(--text));
   outline: none;
@@ -642,16 +601,10 @@
 .context-menu-toolbar button.is-active {
   border-color: rgba(190, 64, 82, 0.82);
   background:
-    radial-gradient(
-      circle at 50% 45%,
-      rgba(122, 26, 40, 0.34),
-      transparent 68%
-    ),
+    radial-gradient( circle at 50% 45%, rgba(122, 26, 40, 0.34), transparent 68% ),
     rgba(51, 3, 12, 0.5);
   color: #d0a2aa;
-  box-shadow:
-    0 0 0 1px rgba(122, 26, 40, 0.24),
-    0 0 20px rgba(51, 3, 12, 0.42);
+  box-shadow: 0 0 0 1px rgba(122, 26, 40, 0.24), 0 0 20px rgba(51, 3, 12, 0.42);
 }
 
 .room-context-menu button.is-armed {
@@ -690,7 +643,7 @@
 
 .room-context-menu__trigger {
   width: 100%;
-  display: flex ;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: left;
@@ -708,11 +661,7 @@
   border: 2px solid rgba(95, 7, 22, 0.82);
   border-radius: 0;
   background-color: rgba(7, 5, 6, 0.96);
-  background-image: linear-gradient(
-    180deg,
-    rgba(255, 238, 242, 0.045),
-    transparent 56%
-  );
+  background-image: linear-gradient( 180deg, rgba(255, 238, 242, 0.045), transparent 56% );
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.58);
   padding: 8px;
   display: none;
@@ -767,8 +716,8 @@
   height: 30px;
   display: grid;
   place-items: center;
-  padding: 0 ;
-  text-align: center ;
+  padding: 0;
+  text-align: center;
 }
 
 .context-menu-toolbar__divider {
@@ -795,10 +744,7 @@
 }
 
 .cruor-map-workspace {
-  min-height: calc(
-    100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) -
-      var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px))
-  );
+  min-height: calc( 100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) - var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) );
   padding: 0 0 24px;
 }
 
@@ -808,10 +754,7 @@
   grid-template-columns: 52px minmax(0, 1fr) minmax(280px, 340px);
   gap: 10px;
   width: 100%;
-  min-height: calc(
-    100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) -
-      var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) - 24px
-  );
+  min-height: calc( 100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) - var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) - 24px );
   padding: 0 clamp(18px, 3vw, 30px) 34px;
   margin: 0 auto;
 }
@@ -831,18 +774,13 @@
     radial-gradient(circle at 18% 0%, rgba(122, 26, 40, 0.18), transparent 36%),
     linear-gradient(180deg, rgba(12, 6, 8, 0.9), rgba(5, 4, 5, 0.82)),
     rgba(8, 5, 6, 0.86);
-  box-shadow:
-    0 18px 60px rgba(0, 0, 0, 0.34),
-    inset 0 1px 0 rgba(255, 238, 242, 0.045);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 238, 242, 0.045);
   backdrop-filter: blur(10px);
 }
 
 .cruor-map-workspace .map-tool-rail {
   position: sticky;
-  top: calc(
-    var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) +
-      var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) + 10px
-  );
+  top: calc( var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) + var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) + 10px );
   z-index: 4;
   align-self: start;
   display: grid;
@@ -884,18 +822,12 @@
 .cruor-map-workspace .map-tool-button.is-active {
   border-color: rgba(190, 64, 82, 0.82);
   background:
-    radial-gradient(
-      circle at 50% 20%,
-      rgba(190, 64, 82, 0.22),
-      transparent 62%
-    ),
+    radial-gradient( circle at 50% 20%, rgba(190, 64, 82, 0.22), transparent 62% ),
     linear-gradient(180deg, rgba(122, 26, 40, 0.46), rgba(20, 5, 8, 0.9)),
     rgba(8, 5, 6, 0.86);
   color: #fff0f2;
   outline: none;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 238, 242, 0.06),
-    0 0 0 1px rgba(190, 64, 82, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.06), 0 0 0 1px rgba(190, 64, 82, 0.2);
 }
 
 .cruor-map-workspace .map-tool-button:disabled {
@@ -954,18 +886,13 @@
 .cruor-map-workspace .map-viewport-frame {
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
-  min-height: calc(
-    100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) -
-      var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) - 96px
-  );
+  min-height: calc( 100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) - var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) - 96px );
   padding: 10px;
   border: 2px solid rgba(95, 7, 22, 0.64);
   background:
     radial-gradient(circle at top, rgba(122, 26, 40, 0.1), transparent 44%),
     rgba(0, 0, 0, 0.42);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 238, 242, 0.035),
-    0 24px 80px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.035), 0 24px 80px rgba(0, 0, 0, 0.35);
 }
 
 .cruor-map-workspace .map-viewport {
@@ -992,8 +919,8 @@
 }
 
 .cruor-map-workspace .zoom-button {
-  width: 36px ;
-  padding: 0 ;
+  width: 36px;
+  padding: 0;
 }
 
 .cruor-map-workspace .zoom-scale {
@@ -1028,10 +955,7 @@
 .cruor-map-workspace .map-inspector-panel__scroll {
   display: grid;
   gap: 12px;
-  max-height: calc(
-    100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) -
-      var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) - 24px
-  );
+  max-height: calc( 100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) - var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) - 24px );
   overflow: auto;
   padding: 12px;
 }
@@ -1105,10 +1029,6 @@
   letter-spacing: -0.035em;
 }
 
-
-
-/* Step 2.10 — Safe Map Generator mode gates.
-   Only explicit mode markers are hidden. Existing structural classes remain untouched. */
 [data-ui-mode="simple"] .map-generator-advanced-only,
 [data-ui-mode="simple"] [data-map-advanced-only],
 [data-ui-mode="simple"] [data-ui-mode-advanced-only],
@@ -1118,7 +1038,7 @@
 [data-ui-mode="advanced"] .map-generator-debug-only,
 [data-ui-mode="advanced"] [data-map-debug-only],
 [data-ui-mode="advanced"] [data-ui-mode-debug-only] {
-  display: none ;
+  display: none;
 }
 
 [data-ui-mode="debug"] .map-generator-advanced-only,
@@ -1182,8 +1102,6 @@
   }
 }
 
-/* Step 4.6 — Map inspector scrollbar normalization.
-   These containers intentionally inherit the shared internal scrollbar language from theme.css. */
 .cruor-map-workspace .map-inspector-panel__scroll,
 .cruor-map-workspace .map-inspector-section,
 .cruor-map-workspace .map-tests-modal__dialog,
@@ -1195,8 +1113,6 @@
   scrollbar-color: auto;
 }
 
-/* Step 4.9 — Shared UI Kit consolidation adoption.
-   Map Generator surfaces now consume shared UI Kit tokens while preserving existing layout. */
 .cruor-map-mvp .panel,
 .cruor-map-mvp .control-panel,
 .cruor-map-mvp .map-panel,
@@ -1252,9 +1168,9 @@
 .cruor-map-workspace .map-icon-button,
 .cruor-map-workspace .map-inspector-button,
 .cruor-map-workspace .map-canvas-button {
-  border-color: var(--cruor-ui-control-border) ;
-  background: var(--cruor-ui-control-bg) ;
-  color: var(--cruor-ui-control-text) ;
+  border-color: var(--cruor-ui-control-border);
+  background: var(--cruor-ui-control-bg);
+  color: var(--cruor-ui-control-text);
 }
 
 .cruor-map-mvp .mvp-button:hover,
@@ -1271,9 +1187,9 @@
 .cruor-map-workspace .map-icon-button.is-active,
 .cruor-map-workspace .map-inspector-button:hover,
 .cruor-map-workspace .map-canvas-button:hover {
-  border-color: var(--cruor-ui-control-border-active) ;
-  background: var(--cruor-ui-control-bg-active) ;
-  color: var(--cruor-ui-control-text-active) ;
+  border-color: var(--cruor-ui-control-border-active);
+  background: var(--cruor-ui-control-bg-active);
+  color: var(--cruor-ui-control-text-active);
 }
 
 .cruor-map-mvp .room-key__number,
@@ -1287,10 +1203,6 @@
   color: var(--cruor-ui-chip-text);
 }
 
-/* Step 4.11 — CSS duplicate cleanup.
-   No visual changes: Map cascade kept intact after Step 4.6 and Step 4.9 adoption. */
-
-/* Step 6.1 — Larger map canvas controls and Cruor drawing surface defaults. */
 .cruor-map-mvp .control-grid {
   display: grid;
   gap: 10px;
@@ -1311,7 +1223,6 @@
     linear-gradient(135deg, rgba(51, 3, 12, 0.96), rgba(0, 0, 0, 0.98));
 }
 
-/* Step 6.2 — Center live map previews inside Darken a Location panels. */
 .location-map-preview.location-map-preview--live {
   display: grid;
   justify-items: center;
@@ -1335,4 +1246,3 @@
 .location-map-preview.location-map-preview--live .cruor-map-workspace .map-canvas-area {
   min-width: 0;
 }
-
