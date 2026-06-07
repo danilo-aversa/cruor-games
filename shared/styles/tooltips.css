@@ -1,7 +1,10 @@
 /*
- * Cruor Games — Tooltips
- * Refactored CSS. Existing selectors and class hooks are preserved.
+ * Cruor Games — Aggressive CSS Refactor
+ * File: shared/styles/tooltips.css
+ * Canonicalized selectors, variables, and cascade order.
  */
+
+/* Layout */
 
 .cruor-tooltip-portal {
   position: fixed;
@@ -16,83 +19,13 @@
   display: none;
 }
 
-.cruor-tooltip {
-  box-sizing: border-box;
-  width: max-content;
-  max-width: min(420px, calc(100vw - 20px));
-  padding: 12px;
-  border: 2px solid rgba(95, 7, 22, 0.82);
-  border-radius: 0;
-  background:
-    radial-gradient(circle at 14% 0%, rgba(122, 26, 40, 0.2), transparent 34%),
-    linear-gradient(180deg, rgba(12, 6, 8, 0.94), rgba(5, 4, 5, 0.9)),
-    rgba(8, 5, 6, 0.92);
-  color: var(--text);
-  font-family: var(--font);
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 238, 242, 0.045);
-  backdrop-filter: blur(10px) saturate(125%);
-  -webkit-backdrop-filter: blur(10px) saturate(125%);
-}
+/* Components */
 
 .cruor-tooltip :where(h1, h2, h3, p, div, span, dt, dd, dl, kbd) {
   font-family: var(--font);
 }
 
-.cruor-tooltip__generic-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.cruor-tooltip__title {
-  margin: 0;
-  color: #fff0f2;
-  font-family: var(--font);
-  font-size: 17px;
-  font-weight: 950;
-  line-height: 1;
-  letter-spacing: -0.025em;
-}
-
-.cruor-tooltip__kbd {
-  min-width: 22px;
-  padding: 3px 7px;
-  border: 1px solid rgba(151, 34, 51, 0.68);
-  background: rgba(10, 6, 7, 0.7);
-  color: rgba(252, 230, 233, 0.88);
-  font-family: var(--font);
-  font-size: 10px;
-  font-weight: 950;
-  line-height: 1;
-  text-align: center;
-  text-transform: uppercase;
-}
-
-.cruor-tooltip__meta {
-  margin: 7px 0 0;
-  color: rgba(208, 162, 170, 0.88);
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 0.09em;
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-.cruor-tooltip__body,
-.cruor-tooltip__readaloud {
-  margin: 10px 0 0;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-.cruor-tooltip__readaloud {
-  padding-left: 10px;
-  border-left: 2px solid rgba(95, 7, 22, 0.72);
-  color: rgba(240, 215, 220, 0.82);
-  font-style: italic;
-}
+/* Layout */
 
 .cruor-tooltip__facts {
   display: grid;
@@ -108,14 +41,12 @@
   border-top: 1px solid rgba(95, 7, 22, 0.42);
 }
 
-.cruor-tooltip__fact dt,
-.cruor-tooltip__fact dd {
+/* Components */
+
+.cruor-tooltip__fact dt {
   margin: 0;
   font-size: 11px;
   line-height: 1.35;
-}
-
-.cruor-tooltip__fact dt {
   color: rgba(208, 162, 170, 0.82);
   font-weight: 950;
   letter-spacing: 0.08em;
@@ -123,15 +54,13 @@
 }
 
 .cruor-tooltip__fact dd {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.35;
   color: var(--muted);
 }
 
-.cruor-tooltip-region-card.region-card {
-  display: grid;
-  gap: 10px;
-  width: min(420px, calc(100vw - 20px));
-  padding: 12px;
-}
+/* Layout */
 
 .cruor-tooltip-region-card .region-card__top {
   display: flex;
@@ -140,100 +69,17 @@
   gap: 10px;
 }
 
-.cruor-tooltip-region-card .region-card__title {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  min-width: 0;
-}
-
-.cruor-tooltip-region-card .region-card__title > i {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  flex: 0 0 28px;
-  border: 1px solid rgba(151, 34, 51, 0.62);
-  background: rgba(18, 8, 10, 0.74);
-  color: rgba(255, 232, 236, 0.9);
-  font-size: 13px;
-}
-
-.cruor-tooltip-region-card h3 {
-  margin: 0;
-  color: #fff0f2;
-  font-family: var(--font);
-  font-size: 16px;
-  font-weight: 950;
-  line-height: 1.05;
-}
-
-.cruor-tooltip-region-card .region-card__meta {
-  margin-top: 5px;
-  color: rgba(208, 162, 170, 0.88);
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-.cruor-tooltip-region-card .region-card__read {
-  margin: 0;
-  padding-left: 10px;
-  border-left: 2px solid rgba(95, 7, 22, 0.72);
-  color: rgba(240, 215, 220, 0.82);
-  font-size: 12px;
-  font-style: italic;
-  line-height: 1.45;
-}
-
-.cruor-tooltip-region-card .region-fact-list {
-  display: grid;
-  gap: 7px;
-  margin: 0;
-}
-
-.cruor-tooltip-region-card .region-fact-list__item {
-  display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
-  gap: 9px;
-  padding-top: 7px;
-  border-top: 1px solid rgba(95, 7, 22, 0.42);
-}
-
-.cruor-tooltip-region-card .region-fact-list dt,
-.cruor-tooltip-region-card .region-fact-list dd {
-  margin: 0;
-  font-size: 11px;
-  line-height: 1.35;
-}
-
-.cruor-tooltip-region-card .region-fact-list dt {
-  color: rgba(208, 162, 170, 0.82);
-  font-weight: 950;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.cruor-tooltip-region-card .region-fact-list dd {
-  color: var(--muted);
-}
-
 .cruor-tooltip {
+  box-sizing: border-box;
+  width: max-content;
   max-width: min(320px, calc(100vw - 24px));
   padding: 10px 11px;
   border: 1px solid rgba(240, 185, 194, 0.34);
-  background:
-    radial-gradient(circle at 12% 0%, rgba(190, 64, 82, 0.18), transparent 42%),
-    linear-gradient(180deg, rgba(2, 2, 3, 0.985), rgba(10, 4, 6, 0.96)),
-    rgba(0, 0, 0, 0.96);
+  border-radius: 0;
+  background: radial-gradient(circle at 12% 0%, rgba(190, 64, 82, 0.18), transparent 42%), linear-gradient(180deg, rgba(2, 2, 3, 0.985), rgba(10, 4, 6, 0.96)), rgba(0, 0, 0, 0.96);
   color: var(--text);
-  box-shadow:
-    0 22px 74px rgba(0, 0, 0, 0.74),
-    0 0 0 1px rgba(0, 0, 0, 0.72),
-    0 0 38px rgba(122, 26, 40, 0.28),
-    inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  font-family: var(--font);
+  box-shadow: 0 22px 74px rgba(0, 0, 0, 0.74), 0 0 0 1px rgba(0, 0, 0, 0.72), 0 0 38px rgba(122, 26, 40, 0.28), inset 0 1px 0 rgba(255, 238, 242, 0.06);
   backdrop-filter: blur(14px) saturate(132%);
   -webkit-backdrop-filter: blur(14px) saturate(132%);
 }
@@ -247,103 +93,179 @@
 }
 
 .cruor-tooltip__generic-head {
-  gap: 10px;
+  display: flex;
   align-items: start;
+  justify-content: space-between;
+  gap: 10px;
 }
 
+/* Components */
+
 .cruor-tooltip__title {
+  margin: 0;
   color: #fff0f2;
+  font-family: var(--font);
   font-size: 12px;
   font-weight: 950;
-  letter-spacing: 0.035em;
   line-height: 1.16;
+  letter-spacing: 0.035em;
   text-transform: uppercase;
 }
 
 .cruor-tooltip__kbd {
   min-width: 20px;
   padding: 3px 6px;
-  border-color: rgba(240, 185, 194, 0.28);
+  border: 1px solid rgba(151, 34, 51, 0.68);
   background: rgba(255, 238, 242, 0.045);
   color: rgba(255, 238, 242, 0.78);
+  font-family: var(--font);
   font-size: 9px;
+  font-weight: 950;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  border-color: rgba(240, 185, 194, 0.28);
 }
 
-.cruor-tooltip__body,
 .cruor-tooltip__readaloud {
-  margin-top: 7px;
+  margin: 10px 0 0;
   color: rgba(240, 215, 220, 0.72);
   font-size: 11px;
-  font-weight: 650;
   line-height: 1.38;
+  padding-left: 10px;
+  border-left: 2px solid rgba(95, 7, 22, 0.72);
+  font-style: italic;
+  margin-top: 7px;
+  font-weight: 650;
 }
 
+/* Layout */
+
 .cruor-tooltip__body {
+  margin: 10px 0 0;
+  color: rgba(240, 215, 220, 0.72);
+  font-size: 11px;
+  line-height: 1.38;
+  margin-top: 7px;
+  font-weight: 650;
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
 }
 
+/* Components */
+
 .cruor-tooltip__meta {
-  margin-top: 6px;
+  margin: 7px 0 0;
   color: rgba(208, 162, 170, 0.78);
   font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  margin-top: 6px;
 }
 
+/* Layout */
+
 .cruor-tooltip-region-card.region-card {
-  width: min(340px, calc(100vw - 24px));
+  display: grid;
   gap: 8px;
+  width: min(340px, calc(100vw - 24px));
   padding: 10px 11px;
 }
 
 .cruor-tooltip-region-card .region-card__title {
+  display: flex;
+  align-items: flex-start;
   gap: 8px;
+  min-width: 0;
 }
 
 .cruor-tooltip-region-card .region-card__title > i {
+  display: grid;
+  place-items: center;
   width: 24px;
   height: 24px;
+  flex: 0 0 28px;
+  border: 1px solid rgba(151, 34, 51, 0.62);
+  background: rgba(255, 238, 242, 0.035);
+  color: rgba(255, 232, 236, 0.9);
+  font-size: 11px;
   flex-basis: 24px;
   border-color: rgba(240, 185, 194, 0.24);
-  background: rgba(255, 238, 242, 0.035);
-  font-size: 11px;
 }
 
+/* Components */
+
 .cruor-tooltip-region-card h3 {
+  margin: 0;
+  color: #fff0f2;
+  font-family: var(--font);
   font-size: 13px;
+  font-weight: 950;
   line-height: 1.12;
 }
 
 .cruor-tooltip-region-card .region-card__meta {
   margin-top: 4px;
+  color: rgba(208, 162, 170, 0.88);
   font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+  text-transform: uppercase;
 }
 
 .cruor-tooltip-region-card .region-card__read {
+  margin: 0;
   padding-left: 8px;
-  border-left-color: rgba(240, 185, 194, 0.28);
+  border-left: 2px solid rgba(95, 7, 22, 0.72);
   color: rgba(240, 215, 220, 0.72);
   font-size: 11px;
+  font-style: italic;
   line-height: 1.38;
+  border-left-color: rgba(240, 185, 194, 0.28);
 }
 
+/* Layout */
+
 .cruor-tooltip-region-card .region-fact-list {
+  display: grid;
   gap: 5px;
+  margin: 0;
 }
 
 .cruor-tooltip-region-card .region-fact-list__item {
+  display: grid;
   grid-template-columns: 62px minmax(0, 1fr);
   gap: 7px;
   padding-top: 5px;
+  border-top: 1px solid rgba(95, 7, 22, 0.42);
   border-top-color: rgba(240, 185, 194, 0.12);
 }
 
-.cruor-tooltip-region-card .region-fact-list dt,
+/* Components */
+
 .cruor-tooltip-region-card .region-fact-list dd {
+  margin: 0;
   font-size: 10px;
   line-height: 1.3;
+  color: var(--muted);
 }
+
+.cruor-tooltip-region-card .region-fact-list dt {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.3;
+  color: rgba(208, 162, 170, 0.82);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Layout */
 
 .cruor-tooltip--has-lines .cruor-tooltip__body {
   display: grid;
@@ -365,6 +287,8 @@
   -webkit-box-orient: initial;
   -webkit-line-clamp: unset;
 }
+
+/* Components */
 
 .cruor-tooltip--generic .cruor-tooltip__paragraph {
   margin: 0;

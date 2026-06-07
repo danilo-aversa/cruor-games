@@ -1,7 +1,24 @@
 /*
- * Cruor Games — Inspirations
- * Refactored CSS. Existing selectors and class hooks are preserved.
+ * Cruor Games — Aggressive CSS Refactor
+ * File: features/inspirations/inspirations.styles.css
+ * Canonicalized selectors, variables, and cascade order.
  */
+
+/* At-Rules */
+
+@keyframes inspirations-dossier-fade {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tokens */
 
 .inspirations-page {
   --inspirations-bg: var(--cruor-color-bg, #000);
@@ -25,44 +42,48 @@
   min-height: calc(100dvh - 52px);
   padding: var(--inspirations-page-pad-y) clamp(16px, 3vw, 30px) 42px;
   background-color: var(--inspirations-bg);
-  background-image:
-    var(--paper-texture, url("https://www.transparenttextures.com/patterns/black-paper.png")),
-    radial-gradient(circle at 18% 0%, rgba(122, 26, 40, 0.34), transparent 30rem),
-    radial-gradient(circle at 82% 18%, rgba(95, 7, 22, 0.22), transparent 28rem),
-    linear-gradient(135deg, rgba(51, 3, 12, 0.92) 0%, rgba(18, 1, 5, 0.9) 34%, rgba(0, 0, 0, 0.98) 74%, #000 100%);
+  background-image: var(--paper-texture, url("https://www.transparenttextures.com/patterns/black-paper.png")), radial-gradient(circle at 18% 0%, rgba(122, 26, 40, 0.34), transparent 30rem), radial-gradient(circle at 82% 18%, rgba(95, 7, 22, 0.22), transparent 28rem), linear-gradient(135deg, rgba(51, 3, 12, 0.92) 0%, rgba(18, 1, 5, 0.9) 34%, rgba(0, 0, 0, 0.98) 74%, #000 100%);
   background-blend-mode: multiply, screen, screen, normal;
   color: var(--inspirations-text);
   font-family: var(--inspirations-font);
 }
 
-.inspirations-page,
+/* Components */
+
 .inspirations-page * {
   box-sizing: border-box;
 }
 
-.inspirations-page button,
-.inspirations-page input,
+.inspirations-page input {
+  font: inherit;
+}
+
 .inspirations-page select {
   font: inherit;
 }
 
 .inspirations-page button {
+  font: inherit;
   border-radius: 0;
   cursor: pointer;
 }
+
+/* States */
 
 .inspirations-page button:disabled {
   cursor: not-allowed;
   opacity: 0.46;
 }
 
+/* Layout */
+
 .inspirations-panel {
   border: 1px solid var(--inspirations-line);
-  background:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.028), transparent 160px),
-    var(--inspirations-surface-soft);
+  background: linear-gradient(180deg, rgba(255, 238, 242, 0.028), transparent 160px), var(--inspirations-surface-soft);
   box-shadow: 0 18px 52px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
+
+/* Components */
 
 .inspirations-page .eyebrow {
   margin: 0;
@@ -74,6 +95,8 @@
   text-transform: uppercase;
 }
 
+/* Layout */
+
 .inspirations-page__hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -83,10 +106,7 @@
   margin: 0 0 18px;
   padding: clamp(18px, 3vw, 30px);
   overflow: hidden;
-  background:
-    radial-gradient(circle at 14% 0%, rgba(190, 64, 82, 0.16), transparent 24rem),
-    linear-gradient(180deg, rgba(255, 238, 242, 0.03), transparent 72%),
-    rgba(12, 10, 12, 0.78);
+  background: radial-gradient(circle at 14% 0%, rgba(190, 64, 82, 0.16), transparent 24rem), linear-gradient(180deg, rgba(255, 238, 242, 0.03), transparent 72%), rgba(12, 10, 12, 0.78);
 }
 
 .inspirations-page__hero-copy {
@@ -94,6 +114,8 @@
   gap: 9px;
   min-width: 0;
 }
+
+/* Components */
 
 .inspirations-page__hero h1 {
   max-width: 900px;
@@ -114,6 +136,8 @@
   line-height: 1.5;
 }
 
+/* Layout */
+
 .inspirations-page__stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(86px, 1fr));
@@ -132,6 +156,8 @@
   text-align: center;
 }
 
+/* Components */
+
 .inspirations-page__stats strong {
   color: #fff0f2;
   font-size: 24px;
@@ -146,6 +172,8 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
+
+/* Layout */
 
 .inspirations-page__tools {
   display: grid;
@@ -163,6 +191,8 @@
   min-width: 0;
 }
 
+/* Components */
+
 .inspirations-page__tools label > span {
   color: var(--inspirations-faint);
   font-size: 9px;
@@ -171,31 +201,35 @@
   text-transform: uppercase;
 }
 
+/* Layout */
+
 .inspirations-page__tools input {
   width: 100%;
   min-height: var(--cruor-control-height-inspirations, 40px);
   border: 1px solid rgba(255, 238, 242, 0.08);
   border-radius: 0;
-  background:
-    linear-gradient(180deg, rgba(122, 26, 40, 0.04), transparent 64%),
-    rgba(0, 0, 0, 0.22);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.04), transparent 64%), rgba(0, 0, 0, 0.22);
   color: var(--inspirations-text);
   padding: 0 11px;
   outline: none;
   transition: border-color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
 }
 
+/* Components */
+
 .inspirations-page__tools input::placeholder {
   color: rgba(238, 238, 238, 0.34);
 }
 
+/* States */
+
 .inspirations-page__tools input:focus {
   border-color: rgba(190, 64, 82, 0.62);
-  background:
-    linear-gradient(180deg, rgba(122, 26, 40, 0.08), transparent 64%),
-    rgba(5, 5, 6, 0.82);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.08), transparent 64%), rgba(5, 5, 6, 0.82);
   box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 20px rgba(122, 26, 40, 0.22);
 }
+
+/* Layout */
 
 .inspirations-page__filter-select {
   position: relative;
@@ -208,26 +242,19 @@
   min-width: 0;
 }
 
+/* States */
+
 .inspirations-page__select[data-open="true"] {
   z-index: 40;
 }
 
-.inspirations-page__select-trigger,
-.inspirations-page__select-option {
-  border: 1px solid rgba(95, 7, 22, 0.56);
-  background:
-    linear-gradient(180deg, rgba(122, 26, 40, 0.07), transparent 68%),
-    rgba(0, 0, 0, 0.32);
-  color: #c8a2a8;
-  transition:
-    border-color 0.12s ease,
-    background 0.12s ease,
-    color 0.12s ease,
-    box-shadow 0.12s ease,
-    transform 0.12s ease;
-}
+/* Layout */
 
 .inspirations-page__select-trigger {
+  border: 1px solid rgba(95, 7, 22, 0.56);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.07), transparent 68%), rgba(0, 0, 0, 0.32);
+  color: #c8a2a8;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
@@ -248,35 +275,54 @@
   white-space: nowrap;
 }
 
+/* Components */
+
 .inspirations-page__select-trigger i {
   color: #b33b4e;
   font-size: 12px;
   transition: color 0.12s ease, transform 0.12s ease;
 }
 
-.inspirations-page__select-trigger:hover,
-.inspirations-page__select-trigger[aria-expanded="true"],
-.inspirations-page__select-option:hover,
+/* States */
+
 .inspirations-page__select-option.is-active {
   border-color: rgba(190, 64, 82, 0.78);
-  background:
-    radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%),
-    linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
+  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
   color: #fff0f2;
-  box-shadow:
-    0 0 0 1px rgba(190, 64, 82, 0.13),
-    0 0 20px rgba(122, 26, 40, 0.22),
-    inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
 }
 
-.inspirations-page__select-trigger:hover i,
-.inspirations-page__select-trigger[aria-expanded="true"] i {
+.inspirations-page__select-option:hover {
+  border-color: rgba(190, 64, 82, 0.78);
+  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
+  color: #fff0f2;
+  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+}
+
+.inspirations-page__select-trigger:hover {
+  border-color: rgba(190, 64, 82, 0.78);
+  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
+  color: #fff0f2;
+  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+}
+
+.inspirations-page__select-trigger[aria-expanded="true"] {
+  border-color: rgba(190, 64, 82, 0.78);
+  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
+  color: #fff0f2;
+  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+}
+
+.inspirations-page__select-trigger:hover i {
   color: #f0b9c2;
 }
 
 .inspirations-page__select-trigger[aria-expanded="true"] i {
+  color: #f0b9c2;
   transform: rotate(180deg);
 }
+
+/* Layout */
 
 .inspirations-page__select-menu {
   position: absolute;
@@ -289,17 +335,16 @@
   max-height: min(320px, 58vh);
   overflow: auto;
   border: 1px solid rgba(190, 64, 82, 0.5);
-  background:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.045), transparent 70%),
-    rgba(5, 5, 6, 0.97);
+  background: linear-gradient(180deg, rgba(255, 238, 242, 0.045), transparent 70%), rgba(5, 5, 6, 0.97);
   padding: 6px;
-  box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.72),
-    0 0 28px rgba(122, 26, 40, 0.22),
-    inset 0 1px 0 rgba(255, 238, 242, 0.055);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72), 0 0 28px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.055);
 }
 
 .inspirations-page__select-option {
+  border: 1px solid rgba(95, 7, 22, 0.56);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.07), transparent 68%), rgba(0, 0, 0, 0.32);
+  color: #c8a2a8;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: center;
@@ -335,8 +380,7 @@
   white-space: nowrap;
 }
 
-.inspirations-page__clear-btn,
-.inspirations-page__primary-action {
+.inspirations-page__clear-btn {
   min-height: 40px;
   border: 1px solid rgba(255, 238, 242, 0.09);
   background: rgba(255, 255, 255, 0.022);
@@ -346,20 +390,26 @@
   font-weight: 950;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  transition:
-    border-color 0.12s ease,
-    background 0.12s ease,
-    color 0.12s ease,
-    box-shadow 0.12s ease;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
 }
 
-.inspirations-page__clear-btn:hover:not(:disabled),
+/* States */
+
+.inspirations-page__clear-btn:hover:not(:disabled) {
+  border-color: rgba(190, 64, 82, 0.62);
+  background: rgba(95, 7, 22, 0.28);
+  color: #fff0f2;
+  box-shadow: inset 0 0 0 1px rgba(190, 64, 82, 0.08), 0 0 20px rgba(122, 26, 40, 0.16);
+}
+
 .inspirations-page__primary-action:hover:not(:disabled) {
   border-color: rgba(190, 64, 82, 0.62);
   background: rgba(95, 7, 22, 0.28);
   color: #fff0f2;
   box-shadow: inset 0 0 0 1px rgba(190, 64, 82, 0.08), 0 0 20px rgba(122, 26, 40, 0.16);
 }
+
+/* Layout */
 
 .inspirations-page__workspace {
   display: grid;
@@ -370,9 +420,13 @@
   margin: 0 auto;
 }
 
+/* Components */
+
 .inspirations-page__library {
   min-width: 0;
 }
+
+/* Layout */
 
 .inspirations-page__library-head {
   display: flex;
@@ -382,6 +436,8 @@
   margin: 0 0 12px;
 }
 
+/* Components */
+
 .inspirations-page__library-head h2 {
   margin: 5px 0 0;
   color: #fff0f2;
@@ -390,6 +446,8 @@
   line-height: 1;
   letter-spacing: -0.045em;
 }
+
+/* Layout */
 
 .inspirations-page__library-head > span {
   display: inline-flex;
@@ -418,31 +476,28 @@
   min-width: 0;
   overflow: hidden;
   border: 1px solid rgba(255, 238, 242, 0.09);
-  background:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.032), transparent 68%),
-    radial-gradient(circle at 16% 0%, rgba(190, 64, 82, 0.12), transparent 11rem),
-    rgba(5, 5, 6, 0.64);
+  background: linear-gradient(180deg, rgba(255, 238, 242, 0.032), transparent 68%), radial-gradient(circle at 16% 0%, rgba(190, 64, 82, 0.12), transparent 11rem), rgba(5, 5, 6, 0.64);
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 238, 242, 0.04);
-  transition:
-    border-color 0.14s ease,
-    background 0.14s ease,
-    box-shadow 0.14s ease,
-    transform 0.14s ease;
+  transition: border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease, transform 0.14s ease;
 }
 
-.inspirations-page__card:hover,
+/* States */
+
 .inspirations-page__card.is-active {
   transform: translateY(-2px);
   border-color: rgba(190, 64, 82, 0.68);
-  background:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.052), transparent 68%),
-    radial-gradient(circle at 16% 0%, rgba(190, 64, 82, 0.22), transparent 13rem),
-    rgba(12, 7, 9, 0.86);
-  box-shadow:
-    0 26px 70px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(190, 64, 82, 0.12),
-    0 0 42px rgba(122, 26, 40, 0.22);
+  background: linear-gradient(180deg, rgba(255, 238, 242, 0.052), transparent 68%), radial-gradient(circle at 16% 0%, rgba(190, 64, 82, 0.22), transparent 13rem), rgba(12, 7, 9, 0.86);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 42px rgba(122, 26, 40, 0.22);
 }
+
+.inspirations-page__card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(190, 64, 82, 0.68);
+  background: linear-gradient(180deg, rgba(255, 238, 242, 0.052), transparent 68%), radial-gradient(circle at 16% 0%, rgba(190, 64, 82, 0.22), transparent 13rem), rgba(12, 7, 9, 0.86);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 42px rgba(122, 26, 40, 0.22);
+}
+
+/* Layout */
 
 .inspirations-page__card-image {
   position: relative;
@@ -484,21 +539,16 @@
   color: rgba(190, 64, 82, 0.42);
 }
 
-.inspirations-page__visual::after,
-.inspirations-page__detail-visual::after {
+.inspirations-page__visual::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 1;
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.58)),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.58)), linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px), linear-gradient(180deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
   background-size: auto, 34px 34px, 34px 34px;
   pointer-events: none;
 }
 
-.inspirations-page__visual img,
 .inspirations-page__detail-visual img {
   position: absolute;
   inset: 0;
@@ -509,19 +559,36 @@
   pointer-events: none;
 }
 
-.inspirations-page__visual i,
+.inspirations-page__visual img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
 .inspirations-page__detail-visual i {
   position: relative;
   z-index: 0;
   font-size: 66px;
 }
 
+.inspirations-page__visual i {
+  position: relative;
+  z-index: 0;
+  font-size: 66px;
+}
+
 .inspirations-page__detail-visual::after {
-  background:
-    linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.34)),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.34)), linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px), linear-gradient(180deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
   background-size: auto, 34px 34px, 34px 34px;
+  pointer-events: none;
 }
 
 .inspirations-page__card-type {
@@ -555,6 +622,8 @@
   padding: 12px;
 }
 
+/* Components */
+
 .inspirations-page__body strong {
   color: #fff0f2;
   font-size: 16px;
@@ -562,6 +631,8 @@
   line-height: 1.08;
   letter-spacing: -0.025em;
 }
+
+/* Layout */
 
 .inspirations-page__body > span {
   display: -webkit-box;
@@ -573,8 +644,7 @@
   -webkit-line-clamp: 3;
 }
 
-.inspirations-page__body em,
-.inspirations-page__body small {
+.inspirations-page__body em {
   display: block;
   overflow: hidden;
   color: #8f7278;
@@ -589,15 +659,31 @@
 }
 
 .inspirations-page__body small {
+  display: block;
+  overflow: hidden;
   color: #d0a2aa;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .inspirations-page__primary-action {
-  border-color: rgba(190, 64, 82, 0.5);
-  background:
-    radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.16), transparent 68%),
-    linear-gradient(180deg, rgba(30, 7, 11, 0.88), rgba(10, 5, 7, 0.82));
+  min-height: 40px;
+  border: 1px solid rgba(255, 238, 242, 0.09);
+  background: radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.16), transparent 68%), linear-gradient(180deg, rgba(30, 7, 11, 0.88), rgba(10, 5, 7, 0.82));
   color: #fff0f2;
+  padding: 0 11px;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+  border-color: rgba(190, 64, 82, 0.5);
 }
 
 .inspirations-page__dossier {
@@ -624,18 +710,6 @@
   z-index: 2;
 }
 
-@keyframes inspirations-dossier-fade {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .inspirations-page__dossier-head {
   display: grid;
   gap: 7px;
@@ -643,7 +717,17 @@
   padding-bottom: 12px;
 }
 
-.inspirations-page__dossier-head h2,
+/* Components */
+
+.inspirations-page__dossier-head h2 {
+  margin: 0;
+  color: #fff0f2;
+  font-size: clamp(26px, 3vw, 38px);
+  font-weight: 950;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
 .inspirations-page__empty-dossier h2 {
   margin: 0;
   color: #fff0f2;
@@ -653,13 +737,21 @@
   letter-spacing: -0.05em;
 }
 
-.inspirations-page__dossier-head p:not(.eyebrow),
+.inspirations-page__dossier-head p:not(.eyebrow) {
+  margin: 0;
+  color: rgba(238, 238, 238, 0.54);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
 .inspirations-page__empty-dossier p:not(.eyebrow) {
   margin: 0;
   color: rgba(238, 238, 238, 0.54);
   font-size: 13px;
   line-height: 1.4;
 }
+
+/* Layout */
 
 .inspirations-page__pack-badge {
   display: inline-flex;
@@ -712,6 +804,8 @@
   padding: 11px;
 }
 
+/* Components */
+
 .inspirations-page__detail-main h3 {
   margin: 0;
   color: #b33b4e;
@@ -728,12 +822,16 @@
   line-height: 1.5;
 }
 
+/* Layout */
+
 .inspirations-page__section-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
+
+/* Components */
 
 .inspirations-page__section-head h3 {
   margin: 0;
@@ -747,15 +845,23 @@
   text-transform: uppercase;
 }
 
-.inspirations-page__chips,
+/* Layout */
+
+.inspirations-page__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
 .inspirations-page__linked {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.inspirations-page__chips span,
-.inspirations-page__linked > span {
+/* Components */
+
+.inspirations-page__chips span {
   border: 1px solid rgba(255, 238, 242, 0.075);
   background: rgba(255, 255, 255, 0.024);
   color: #c8a2a8;
@@ -763,6 +869,8 @@
   font-size: 10px;
   font-weight: 850;
 }
+
+/* Layout */
 
 .inspirations-page__component-groups {
   display: grid;
@@ -790,16 +898,28 @@
   text-transform: uppercase;
 }
 
+/* Components */
+
 .inspirations-page__component-group h4 em {
   color: #d0a2aa;
   font-style: normal;
 }
 
+/* Layout */
+
 .inspirations-page__linked > span {
+  border: 1px solid rgba(255, 238, 242, 0.075);
+  background: rgba(255, 255, 255, 0.024);
+  color: #c8a2a8;
+  padding: 5px 8px;
+  font-size: 10px;
+  font-weight: 850;
   display: grid;
   gap: 3px;
   max-width: 100%;
 }
+
+/* Components */
 
 .inspirations-page__linked > span strong {
   color: rgba(238, 238, 238, 0.9);
@@ -815,18 +935,20 @@
   text-transform: uppercase;
 }
 
+/* Layout */
+
 .inspirations-page__empty-dossier {
   display: grid;
   align-content: center;
   gap: 10px;
   min-height: 440px;
   border: 1px dashed rgba(255, 238, 242, 0.09);
-  background:
-    radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.12), transparent 16rem),
-    rgba(0, 0, 0, 0.16);
+  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.12), transparent 16rem), rgba(0, 0, 0, 0.16);
   padding: 18px;
   text-align: center;
 }
+
+/* Components */
 
 .inspirations-page .empty {
   margin-top: 12px;
@@ -838,10 +960,14 @@
   line-height: 1.45;
 }
 
+/* Layout */
+
 .inspirations-page ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
+
+/* Components */
 
 .inspirations-page ::-webkit-scrollbar-track {
   background: transparent;
@@ -864,7 +990,10 @@
 }
 
 @media (max-width: 1080px) {
-  .inspirations-page__hero,
+  .inspirations-page__hero {
+    grid-template-columns: 1fr;
+  }
+
   .inspirations-page__workspace {
     grid-template-columns: 1fr;
   }
@@ -902,15 +1031,27 @@
     padding: var(--inspirations-page-pad-y);
   }
 
-  .inspirations-page__hero,
-  .inspirations-page__tools,
   .inspirations-page__dossier {
     padding: 12px;
   }
 
-  .inspirations-page__stats,
-  .inspirations-page__tools,
-  .inspirations-page__dossier-content,
+  .inspirations-page__hero {
+    padding: 12px;
+  }
+
+  .inspirations-page__dossier-content {
+    grid-template-columns: 1fr;
+  }
+
+  .inspirations-page__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .inspirations-page__tools {
+    padding: 12px;
+    grid-template-columns: 1fr;
+  }
+
   .inspirations-page__use-actions {
     grid-template-columns: 1fr;
   }

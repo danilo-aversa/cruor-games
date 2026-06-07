@@ -1,13 +1,20 @@
 /*
- * Cruor Games — Composer System
- * Refactored CSS. Existing selectors and class hooks are preserved.
+ * Cruor Games — Aggressive CSS Refactor
+ * File: shared/styles/composer-system.css
+ * Canonicalized selectors, variables, and cascade order.
  */
+
+/* Tokens */
 
 :root {
   --cruor-composer-workspace-max: var(--cruor-workspace-max, 1540px);
   --cruor-composer-rail-width: var(--cruor-side-panel-width, 390px);
   --cruor-composer-stage-min: 0;
   --cruor-composer-gap: var(--cruor-space-lg, 14px);
+  --cruor-composer-frame-side-column-width: 340px;
+  --cruor-composer-frame-center-column-width: minmax(0, 1fr);
+  --cruor-composer-frame-column-gap: clamp(14px, 2vw, 24px);
+  --cruor-composer-frame-pad: clamp(10px, 1.15vw, 18px);
   --cruor-composer-panel-border-color: var(--cruor-ui-panel-border-color, rgba(255, 238, 242, 0.08));
   --cruor-composer-panel-border-top-color: var(--cruor-ui-panel-border-top-color, rgba(255, 238, 242, 0.12));
   --cruor-composer-panel-border: var(--cruor-ui-panel-border, 1px solid var(--cruor-composer-panel-border-color));
@@ -43,7 +50,12 @@
   --cruor-composer-chip-text: var(--cruor-ui-chip-text, rgba(238, 238, 238, 0.56));
 }
 
-.cruor-composer-shell,
+/* Layout */
+
+.cruor-composer-shell {
+  box-sizing: border-box;
+}
+
 .cruor-composer-shell * {
   box-sizing: border-box;
 }
@@ -61,15 +73,20 @@
   gap: var(--cruor-composer-gap);
 }
 
-.cruor-composer-stage,
-.cruor-composer-rail,
-.cruor-composer-panel,
-.cruor-composer-card,
-.cruor-composer-slot {
+/* Components */
+
+.cruor-composer-rail {
+  min-width: 0;
+}
+
+/* Layout */
+
+.cruor-composer-stage {
   min-width: 0;
 }
 
 .cruor-composer-panel {
+  min-width: 0;
   border: var(--cruor-composer-panel-border);
   border-top: var(--cruor-composer-panel-border-top);
   background-color: rgba(12, 10, 12, 0.74);
@@ -78,11 +95,16 @@
   box-shadow: var(--cruor-composer-panel-shadow);
 }
 
+/* Components */
+
 .cruor-composer-card {
+  min-width: 0;
   border: var(--cruor-composer-card-border);
   background: var(--cruor-composer-card-bg);
   box-shadow: var(--cruor-composer-card-shadow);
 }
+
+/* States */
 
 .cruor-composer-card:is(:hover, .is-active, .active) {
   border: var(--cruor-composer-card-border-active);
@@ -90,15 +112,22 @@
   box-shadow: var(--cruor-composer-card-shadow-active);
 }
 
+/* Components */
+
 .cruor-composer-slot {
+  min-width: 0;
   border: var(--cruor-composer-slot-border);
   background: var(--cruor-composer-slot-bg);
 }
+
+/* States */
 
 .cruor-composer-slot:is(:hover, .is-active, .active) {
   border: var(--cruor-composer-slot-border-active);
   background: var(--cruor-composer-slot-bg-active);
 }
+
+/* Components */
 
 .cruor-composer-control {
   border: var(--cruor-composer-control-border);
@@ -106,41 +135,30 @@
   color: var(--cruor-composer-control-text);
 }
 
+/* States */
+
 .cruor-composer-control:is(:hover, .is-active, .active) {
   border: var(--cruor-composer-control-border-active);
   background: var(--cruor-composer-control-bg-active);
   color: var(--cruor-composer-control-text-active);
 }
 
-.cruor-composer-chip {
-  border: var(--cruor-composer-chip-border);
-  background: var(--cruor-composer-chip-bg);
-  color: var(--cruor-composer-chip-text);
-}
+/* Components */
 
-.cruor-composer-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(170, 48, 66, 0.76) transparent;
-}
 
-.cruor-composer-scroll::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
 
-.cruor-composer-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
 
-.cruor-composer-scroll::-webkit-scrollbar-thumb {
-  border: 0;
-  border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
-}
 
-.cruor-composer-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: var(--cruor-z-modal, 420);
-}
+/* Layout */
+
+
+
+/* Components */
+
+
+
+
+
+/* Layout */
+
+

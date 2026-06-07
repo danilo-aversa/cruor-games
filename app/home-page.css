@@ -1,7 +1,10 @@
 /*
- * Cruor Games — Home Page
- * Refactored CSS. Existing selectors and class hooks are preserved.
+ * Cruor Games — Aggressive CSS Refactor
+ * File: app/home-page.css
+ * Canonicalized selectors, variables, and cascade order.
  */
+
+/* Tokens */
 
 .cruor-home {
   --home-max: var(--cruor-workspace-max, 1420px);
@@ -16,10 +19,17 @@
   padding: clamp(42px, 8vw, 96px) 0 40px;
 }
 
-.cruor-home button,
+/* Components */
+
 .cruor-home a {
   font: inherit;
 }
+
+.cruor-home button {
+  font: inherit;
+}
+
+/* Layout */
 
 .cruor-home__hero {
   display: grid;
@@ -30,22 +40,19 @@
   padding: 0 0 110px;
 }
 
+/* Components */
+
 .cruor-home__hero-copy {
   max-width: 720px;
 }
 
-.cruor-home h1,
-.cruor-home h2,
-.cruor-home h3 {
+.cruor-home h1 {
   margin: 0;
   color: var(--cruor-color-text, var(--text));
   font-family: var(--display);
   font-weight: 950;
   line-height: 0.95;
   letter-spacing: -0.045em;
-}
-
-.cruor-home h1 {
   max-width: 760px;
   font-size: clamp(50px, 7.6vw, 118px);
 }
@@ -56,10 +63,22 @@
 }
 
 .cruor-home h2 {
+  margin: 0;
+  color: var(--cruor-color-text, var(--text));
+  font-family: var(--display);
+  font-weight: 950;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
   font-size: clamp(28px, 3vw, 46px);
 }
 
 .cruor-home h3 {
+  margin: 0;
+  color: var(--cruor-color-text, var(--text));
+  font-family: var(--display);
+  font-weight: 950;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
   font-size: clamp(25px, 2.6vw, 38px);
 }
 
@@ -75,24 +94,14 @@
   font-size: clamp(16px, 1.2vw, 18px);
 }
 
+/* Layout */
+
 .cruor-home__hero-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px 18px;
   align-items: center;
   margin-top: 30px;
-}
-
-.cruor-home__text-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-  text-decoration: none;
 }
 
 .cruor-home__button {
@@ -110,15 +119,11 @@
   font-weight: 850;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  transition:
-    transform 0.16s ease,
-    background 0.16s ease,
-    border-color 0.16s ease,
-    color 0.16s ease,
-    box-shadow 0.16s ease;
+  transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
 }
 
-.cruor-home__button:hover,
+/* States */
+
 .cruor-home__button:focus-visible {
   transform: translateY(-1px);
   border-color: var(--home-line-strong);
@@ -127,29 +132,55 @@
   outline: none;
 }
 
+.cruor-home__button:hover {
+  transform: translateY(-1px);
+  border-color: var(--home-line-strong);
+  color: var(--cruor-color-text, var(--text));
+  background: rgba(51, 3, 12, 0.34);
+  outline: none;
+}
+
+/* Components */
+
 .cruor-home__button--primary {
   color: var(--home-accent-pale);
   border-color: var(--home-line-strong);
-  background:
-    radial-gradient(circle at 50% 45%, rgba(122, 26, 40, 0.34), transparent 68%),
-    rgba(51, 3, 12, 0.42);
+  background: radial-gradient(circle at 50% 45%, rgba(122, 26, 40, 0.34), transparent 68%), rgba(51, 3, 12, 0.42);
   box-shadow: 0 0 24px rgba(51, 3, 12, 0.42);
 }
 
+/* Layout */
+
 .cruor-home__text-link {
-  gap: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
   color: var(--home-accent-pale);
+  cursor: pointer;
+  text-decoration: none;
+  gap: 8px;
   font-size: 12px;
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.cruor-home__text-link:hover,
+/* States */
+
 .cruor-home__text-link:focus-visible {
   color: var(--cruor-color-text, var(--text));
   outline: none;
 }
+
+.cruor-home__text-link:hover {
+  color: var(--cruor-color-text, var(--text));
+  outline: none;
+}
+
+/* Layout */
 
 .cruor-home__hero-visual {
   position: relative;
@@ -168,9 +199,7 @@
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(208, 162, 170, 0.18);
-  background:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.034), transparent 60%),
-    rgba(0, 0, 0, 0.28);
+  background: linear-gradient(180deg, rgba(255, 238, 242, 0.034), transparent 60%), rgba(0, 0, 0, 0.28);
   box-shadow: 0 20px 52px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 238, 242, 0.06);
 }
 
@@ -178,9 +207,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(180deg, transparent 42%, rgba(0, 0, 0, 0.28)),
-    radial-gradient(circle at 50% 0%, rgba(122, 26, 40, 0.12), transparent 60%);
+  background: linear-gradient(180deg, transparent 42%, rgba(0, 0, 0, 0.28)), radial-gradient(circle at 50% 0%, rgba(122, 26, 40, 0.12), transparent 60%);
   pointer-events: none;
 }
 
@@ -201,13 +228,9 @@
   aspect-ratio: 8 / 5;
 }
 
-.cruor-home__image-frame--map,
-.cruor-home__image-frame--inspiration {
+.cruor-home__image-frame--map {
   position: absolute;
   transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
-}
-
-.cruor-home__image-frame--map {
   top: 24px;
   right: -8px;
   width: min(300px, 54%);
@@ -216,12 +239,16 @@
 }
 
 .cruor-home__image-frame--inspiration {
+  position: absolute;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
   bottom: 0;
   left: 0;
   width: min(320px, 58%);
   aspect-ratio: 10 / 7;
   transform: rotate(-4deg);
 }
+
+/* States */
 
 .cruor-home__hero-visual:hover .cruor-home__image-frame--map {
   transform: rotate(5deg) translateY(-4px);
@@ -235,20 +262,20 @@
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 238, 242, 0.08);
 }
 
+/* Layout */
+
 .cruor-home__placeholder {
   position: relative;
   overflow: hidden;
   border: 1px dashed rgba(208, 162, 170, 0.32);
-  background:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.03), transparent 62%),
-    rgba(0, 0, 0, 0.28);
+  background: linear-gradient(180deg, rgba(255, 238, 242, 0.03), transparent 62%), rgba(0, 0, 0, 0.28);
 }
 
 .cruor-home__placeholder::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient( 135deg, transparent 0 46%, rgba(208, 162, 170, 0.08) 46% 54%, transparent 54% 100% );
+  background: linear-gradient(135deg, transparent 0 46%, rgba(208, 162, 170, 0.08) 46% 54%, transparent 54% 100%);
   opacity: 0.4;
   pointer-events: none;
 }
@@ -260,6 +287,8 @@
   gap: 8px;
   padding: 16px;
 }
+
+/* Components */
 
 .cruor-home__placeholder span {
   color: var(--home-accent-pale);
@@ -282,6 +311,8 @@
   font-size: 12px;
 }
 
+/* Layout */
+
 .cruor-home__statement {
   position: relative;
   padding: 18px 0 110px;
@@ -293,17 +324,21 @@
   margin: 0 auto;
   padding: 42px 36px;
   border: 1px solid rgba(208, 162, 170, 0.22);
-  background:
-    linear-gradient(180deg, rgba(122, 26, 40, 0.16), rgba(0, 0, 0, 0.18) 58%),
-    var(--home-panel-strong);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.16), rgba(0, 0, 0, 0.18) 58%), var(--home-panel-strong);
   text-align: center;
-  box-shadow:
-    0 22px 56px rgba(0, 0, 0, 0.42),
-    0 0 0 1px rgba(122, 26, 40, 0.18),
-    inset 0 1px 0 rgba(255, 238, 242, 0.08);
+  box-shadow: 0 22px 56px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(122, 26, 40, 0.18), inset 0 1px 0 rgba(255, 238, 242, 0.08);
 }
 
-.cruor-home__statement > div::before,
+.cruor-home__statement > div::before {
+  content: "";
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(208, 162, 170, 0.28), transparent);
+  top: 16px;
+}
+
 .cruor-home__statement > div::after {
   content: "";
   position: absolute;
@@ -311,15 +346,10 @@
   right: 28px;
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(208, 162, 170, 0.28), transparent);
-}
-
-.cruor-home__statement > div::before {
-  top: 16px;
-}
-
-.cruor-home__statement > div::after {
   bottom: 16px;
 }
+
+/* Components */
 
 .cruor-home__statement p {
   max-width: 52ch;
@@ -328,19 +358,16 @@
   line-height: 1.68;
 }
 
+/* Layout */
+
 .cruor-home__section {
   position: relative;
   margin-top: 28px;
   padding: 42px 30px 92px;
   overflow: hidden;
   border: 1px solid rgba(208, 162, 170, 0.12);
-  background:
-    linear-gradient(180deg, rgba(122, 26, 40, 0.09), rgba(0, 0, 0, 0.18) 62%),
-    rgba(0, 0, 0, 0.18);
-  box-shadow:
-    0 24px 64px rgba(0, 0, 0, 0.28),
-    0 0 0 1px rgba(122, 26, 40, 0.12),
-    inset 0 1px 0 rgba(255, 238, 242, 0.05);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.09), rgba(0, 0, 0, 0.18) 62%), rgba(0, 0, 0, 0.18);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(122, 26, 40, 0.12), inset 0 1px 0 rgba(255, 238, 242, 0.05);
 }
 
 .cruor-home__section::before {
@@ -348,7 +375,7 @@
   position: absolute;
   inset: 0 0 auto;
   height: 8px;
-  background: linear-gradient( 90deg, rgba(122, 26, 40, 0.08), rgba(122, 26, 40, 0.34), rgba(122, 26, 40, 0.08) );
+  background: linear-gradient(90deg, rgba(122, 26, 40, 0.08), rgba(122, 26, 40, 0.34), rgba(122, 26, 40, 0.08));
   opacity: 0.85;
 }
 
@@ -373,6 +400,8 @@
   border-bottom: 1px solid rgba(208, 162, 170, 0.1);
 }
 
+/* Components */
+
 .cruor-home__section-head p {
   max-width: 720px;
   font-size: 14px;
@@ -381,14 +410,14 @@
 .cruor-home__section--tools {
   margin-bottom: 22px;
   border-color: rgba(208, 162, 170, 0.14);
-  background:
-    linear-gradient(180deg, rgba(74, 15, 26, 0.24), rgba(0, 0, 0, 0.2) 62%),
-    rgba(9, 7, 8, 0.42);
+  background: linear-gradient(180deg, rgba(74, 15, 26, 0.24), rgba(0, 0, 0, 0.2) 62%), rgba(9, 7, 8, 0.42);
 }
 
 .cruor-home__section--tools::before {
-  background: linear-gradient( 90deg, rgba(122, 26, 40, 0.12), rgba(208, 162, 170, 0.34), rgba(122, 26, 40, 0.12) );
+  background: linear-gradient(90deg, rgba(122, 26, 40, 0.12), rgba(208, 162, 170, 0.34), rgba(122, 26, 40, 0.12));
 }
+
+/* Layout */
 
 .cruor-home__tool-grid {
   position: relative;
@@ -404,11 +433,11 @@
   min-height: 480px;
   padding: 20px;
   border: 1px solid rgba(208, 162, 170, 0.1);
-  background:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.03), rgba(0, 0, 0, 0.12) 58%),
-    rgba(0, 0, 0, 0.18);
+  background: linear-gradient(180deg, rgba(255, 238, 242, 0.03), rgba(0, 0, 0, 0.12) 58%), rgba(0, 0, 0, 0.18);
   transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
+
+/* States */
 
 .cruor-home__tool-card:hover {
   transform: translateY(-4px);
@@ -416,15 +445,21 @@
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
 }
 
+/* Layout */
+
 .cruor-home__tool-image {
   min-height: 270px;
 }
+
+/* Components */
 
 .cruor-home__tool-copy p {
   max-width: 40ch;
   margin-top: 10px;
   font-size: 14px;
 }
+
+/* Layout */
 
 .cruor-home__section--sources {
   display: grid;
@@ -433,22 +468,25 @@
   align-items: center;
   margin-bottom: 22px;
   border-color: rgba(208, 162, 170, 0.1);
-  background:
-    linear-gradient(180deg, rgba(32, 18, 21, 0.56), rgba(0, 0, 0, 0.18) 62%),
-    rgba(11, 10, 12, 0.42);
+  background: linear-gradient(180deg, rgba(32, 18, 21, 0.56), rgba(0, 0, 0, 0.18) 62%), rgba(11, 10, 12, 0.42);
 }
+
+/* Components */
 
 .cruor-home__section--sources::before {
-  background: linear-gradient( 90deg, rgba(208, 162, 170, 0.08), rgba(208, 162, 170, 0.24), rgba(208, 162, 170, 0.08) );
+  background: linear-gradient(90deg, rgba(208, 162, 170, 0.08), rgba(208, 162, 170, 0.24), rgba(208, 162, 170, 0.08));
 }
 
-.cruor-home__sources-copy,
-.cruor-home__inspiration-stack {
+/* Layout */
+
+.cruor-home__sources-copy {
   position: relative;
   z-index: 1;
 }
 
 .cruor-home__inspiration-stack {
+  position: relative;
+  z-index: 1;
   min-height: 360px;
 }
 
@@ -458,13 +496,12 @@
   min-height: 220px;
   padding: 14px;
   border: 1px solid var(--home-line);
-  background:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.034), transparent 60%),
-    linear-gradient(135deg, rgba(122, 26, 40, 0.1), rgba(0, 0, 0, 0.08) 48%, rgba(0, 0, 0, 0.2)),
-    var(--home-panel);
+  background: linear-gradient(180deg, rgba(255, 238, 242, 0.034), transparent 60%), linear-gradient(135deg, rgba(122, 26, 40, 0.1), rgba(0, 0, 0, 0.08) 48%, rgba(0, 0, 0, 0.2)), var(--home-panel);
   box-shadow: 0 22px 60px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 238, 242, 0.06);
   transition: transform 0.22s ease, border-color 0.22s ease;
 }
+
+/* Components */
 
 .cruor-home__stack-card--low {
   top: 58px;
@@ -487,6 +524,8 @@
   transform: translateX(-50%) rotate(-1deg);
 }
 
+/* States */
+
 .cruor-home__inspiration-stack:hover .cruor-home__stack-card--top {
   transform: translateX(-50%) rotate(1deg) translateY(-5px);
   border-color: rgba(208, 162, 170, 0.52);
@@ -495,6 +534,8 @@
 .cruor-home__inspiration-stack:hover .cruor-home__stack-card--mid {
   transform: rotate(6deg) translateY(-2px);
 }
+
+/* Layout */
 
 .cruor-home__stack-meta {
   display: flex;
@@ -509,6 +550,8 @@
   text-transform: uppercase;
 }
 
+/* Components */
+
 .cruor-home__stack-card h3 {
   margin-bottom: 10px;
   font-size: 28px;
@@ -522,14 +565,14 @@
 
 .cruor-home__section--support {
   border-color: rgba(208, 162, 170, 0.16);
-  background:
-    linear-gradient(180deg, rgba(122, 26, 40, 0.22), rgba(0, 0, 0, 0.16) 62%),
-    rgba(16, 12, 14, 0.5);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.22), rgba(0, 0, 0, 0.16) 62%), rgba(16, 12, 14, 0.5);
 }
 
 .cruor-home__section--support::before {
-  background: linear-gradient( 90deg, rgba(122, 26, 40, 0.18), rgba(208, 162, 170, 0.38), rgba(122, 26, 40, 0.18) );
+  background: linear-gradient(90deg, rgba(122, 26, 40, 0.18), rgba(208, 162, 170, 0.38), rgba(122, 26, 40, 0.18));
 }
+
+/* Layout */
 
 .cruor-home__support-band {
   position: relative;
@@ -540,11 +583,11 @@
   align-items: center;
   padding: 26px;
   border: 1px solid rgba(208, 162, 170, 0.12);
-  background:
-    linear-gradient(180deg, rgba(122, 26, 40, 0.14), rgba(0, 0, 0, 0.16) 58%),
-    rgba(0, 0, 0, 0.16);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.14), rgba(0, 0, 0, 0.16) 58%), rgba(0, 0, 0, 0.16);
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
 }
+
+/* Components */
 
 .cruor-home__support-band p {
   max-width: 44ch;
@@ -556,13 +599,21 @@
   margin-top: 26px;
 }
 
+/* Layout */
+
 .cruor-home__support-visual {
   min-height: 200px;
 }
 
 @media (max-width: 1080px) {
-  .cruor-home__hero,
-  .cruor-home__section--sources,
+  .cruor-home__hero {
+    grid-template-columns: 1fr;
+  }
+
+  .cruor-home__section--sources {
+    grid-template-columns: 1fr;
+  }
+
   .cruor-home__support-band {
     grid-template-columns: 1fr;
   }
