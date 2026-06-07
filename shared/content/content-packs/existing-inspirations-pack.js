@@ -1,11 +1,16 @@
 import { CONTENT_PACK_STATUS, createContentPack } from "../content-pack-schema.js";
+import { DECOMPOSITION_SOURCE_ANCHOR_ID } from "../inspiration-modules/decomposition.js";
 import { SHARED_INSPIRATIONS } from "../inspirations.js";
 import { SHARED_SOURCE_ANCHORS } from "../source-anchors.js";
 import { SHARED_WORKFLOWS } from "../workflows.js";
 
 export const EXISTING_INSPIRATIONS_CONTENT_PACK_ID = "existing-inspirations";
 
-function getReferencedSourceAnchors(inspirations = SHARED_INSPIRATIONS) {
+const EXISTING_ARCHIVE_INSPIRATIONS = SHARED_INSPIRATIONS.filter(
+  (inspiration) => !(inspiration.sourceAnchors || []).includes(DECOMPOSITION_SOURCE_ANCHOR_ID),
+);
+
+function getReferencedSourceAnchors(inspirations = EXISTING_ARCHIVE_INSPIRATIONS) {
   const sourceAnchorIds = new Set(
     inspirations.flatMap((inspiration) => inspiration.sourceAnchors || []).filter(Boolean)
   );
@@ -35,7 +40,7 @@ export const EXISTING_INSPIRATIONS_CONTENT_PACK = createContentPack({
     slots: [],
     components: [],
     sourceAnchors: getReferencedSourceAnchors(),
-    inspirations: SHARED_INSPIRATIONS,
+    inspirations: EXISTING_ARCHIVE_INSPIRATIONS,
     taxonomies: [],
   },
 });

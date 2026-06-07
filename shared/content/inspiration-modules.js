@@ -1,22 +1,20 @@
-import { SHARED_INSPIRATIONS } from "./inspirations.js";
-import { SHARED_MONSTER_COMPONENTS } from "./monster-components.js";
-import { SHARED_SOURCE_ANCHORS, normalizeSourceAnchorIds } from "./source-anchors.js";
 import { SHARED_DARKEN_LOCATION_COMPONENTS } from "./adapters/darken-components.js";
 import { SHARED_LOCATION_REGION_COMPONENTS } from "./adapters/location-regions.js";
+import {
+  defineInspirationModule,
+  flattenInspirationModuleCollection,
+  modulesToRegistryCollections,
+  uniqueById,
+} from "./inspiration-module-schema.js";
+import { DECOMPOSITION_INSPIRATION_MODULE, DECOMPOSITION_SOURCE_ANCHOR_ID } from "./inspiration-modules/decomposition.js";
+import { SHARED_INSPIRATIONS } from "./inspirations.js";
+import { SHARED_MONSTER_COMPONENTS } from "./monster-components.js";
+import { normalizeSourceAnchorIds, SHARED_SOURCE_ANCHORS } from "./source-anchors.js";
 
 function asArray(value) {
   if (!value) return [];
+  if (value instanceof Set) return [...value].filter(Boolean);
   return Array.isArray(value) ? value.filter(Boolean) : [value].filter(Boolean);
-}
-
-function uniqueById(items = []) {
-  const seen = new Set();
-  return asArray(items).filter((item) => {
-    const id = item?.id || item?.slug || item?.legacyId;
-    if (!id || seen.has(id)) return false;
-    seen.add(id);
-    return true;
-  });
 }
 
 function entryReferencesSourceAnchor(entry, sourceAnchorId) {
@@ -27,26 +25,13 @@ function getPrimaryInspirationForSourceAnchor(sourceAnchorId, inspirations = SHA
   return asArray(inspirations).find((inspiration) => entryReferencesSourceAnchor(inspiration, sourceAnchorId)) || null;
 }
 
-export function defineInspirationModule(module = {}) {
-  const sourceAnchor = module.sourceAnchor || null;
-  const sourceAnchorId = sourceAnchor?.id || module.id || module.sourceAnchorId || "";
-  const inspiration = module.inspiration || null;
-  const components = uniqueById(module.components || []);
+export const EXPLICIT_INSPIRATION_MODULES = Object.freeze([
+  DECOMPOSITION_INSPIRATION_MODULE,
+]);
 
-  return Object.freeze({
-    id: module.id || sourceAnchorId || inspiration?.id || "inspiration-module",
-    title: module.title || sourceAnchor?.label || inspiration?.title || sourceAnchorId,
-    status: module.status || sourceAnchor?.status || inspiration?.status || "draft",
-    packId: module.packId || module.contentPackId || "core-cruor",
-    sourceAnchor,
-    inspiration,
-    components,
-    monsterGrafts: components.filter((component) => component.contentType === "monster-graft"),
-    locationComponents: components.filter((component) => component.contentType === "location-component"),
-    locationRegions: components.filter((component) => component.contentType === "location-region"),
-    metadata: Object.freeze({ ...(module.metadata || {}) }),
-  });
-}
+const EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS = new Set([
+  DECOMPOSITION_SOURCE_ANCHOR_ID,
+]);
 
 export function buildInspirationModules({
   sourceAnchors = SHARED_SOURCE_ANCHORS,
@@ -57,56 +42,61 @@ export function buildInspirationModules({
     ...SHARED_LOCATION_REGION_COMPONENTS,
   ],
   packId = "core-cruor",
+  excludedSourceAnchorIds = EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS,
 } = {}) {
-  return asArray(sourceAnchors).map((sourceAnchor) =>
-    defineInspirationModule({
-      id: sourceAnchor.id,
-      title: sourceAnchor.label,
-      status: sourceAnchor.status,
-      packId,
-      sourceAnchor,
-      inspiration: getPrimaryInspirationForSourceAnchor(sourceAnchor.id, inspirations),
-      components: asArray(components).filter((component) => entryReferencesSourceAnchor(component, sourceAnchor.id)),
-      metadata: {
-        generatedFrom: "static-content-registry",
-      },
-    }),
-  );
+  const excludedIds = new Set(asArray(excludedSourceAnchorIds));
+
+  return asArray(sourceAnchors)
+    .filter((sourceAnchor) => sourceAnchor?.id && !excludedIds.has(sourceAnchor.id))
+    .map((sourceAnchor) =>
+      defineInspirationModule({
+        id: sourceAnchor.id,
+        title: sourceAnchor.label,
+        status: sourceAnchor.status,
+        packId,
+        sourceAnchor,
+        inspiration: getPrimaryInspirationForSourceAnchor(sourceAnchor.id, inspirations),
+        components: asArray(components).filter((component) => entryReferencesSourceAnchor(component, sourceAnchor.id)),
+        metadata: {
+          generatedFrom: "static-content-registry",
+        },
+      }),
+    );
 }
 
 export function buildInspirationModulesFromRegistry(registry, { packId = "static-registry" } = {}) {
   if (!registry) return [];
-  return buildInspirationModules({
-    sourceAnchors: registry.sourceAnchors || [],
-    inspirations: registry.inspirations || [],
-    components: registry.components || [],
-    packId,
-  });
+  return [
+    ...EXPLICIT_INSPIRATION_MODULES,
+    ...buildInspirationModules({
+      sourceAnchors: registry.sourceAnchors || [],
+      inspirations: registry.inspirations || [],
+      components: registry.components || [],
+      packId,
+    }),
+  ];
 }
 
-export function flattenInspirationModuleCollection(modules = [], collectionName) {
-  const values = asArray(modules).flatMap((module) => {
-    switch (collectionName) {
-      case "sourceAnchors":
-        return module.sourceAnchor ? [module.sourceAnchor] : [];
-      case "inspirations":
-        return module.inspiration ? [module.inspiration] : [];
-      case "components":
-        return module.components || [];
-      default:
-        return [];
-    }
-  });
+export {
+  defineInspirationModule,
+  flattenInspirationModuleCollection,
+  modulesToRegistryCollections,
+  uniqueById,
+};
 
-  return uniqueById(values);
-}
+export {
+  DECOMPOSITION_INSPIRATION,
+  DECOMPOSITION_INSPIRATION_MODULE,
+  DECOMPOSITION_INSPIRATION_MODULE_PACK_ID,
+  DECOMPOSITION_LOCATION_COMPONENTS,
+  DECOMPOSITION_LOCATION_REGION_COMPONENTS,
+  DECOMPOSITION_MONSTER_GRAFT_COMPONENTS,
+  DECOMPOSITION_REFERENCED_SOURCE_ANCHORS,
+  DECOMPOSITION_SOURCE_ANCHOR,
+  DECOMPOSITION_SOURCE_ANCHOR_ID,
+} from "./inspiration-modules/decomposition.js";
 
-export function modulesToRegistryCollections(modules = []) {
-  return {
-    sourceAnchors: flattenInspirationModuleCollection(modules, "sourceAnchors"),
-    inspirations: flattenInspirationModuleCollection(modules, "inspirations"),
-    components: flattenInspirationModuleCollection(modules, "components"),
-  };
-}
-
-export const CRUOR_INSPIRATION_MODULES = buildInspirationModules();
+export const CRUOR_INSPIRATION_MODULES = Object.freeze([
+  ...EXPLICIT_INSPIRATION_MODULES,
+  ...buildInspirationModules(),
+]);

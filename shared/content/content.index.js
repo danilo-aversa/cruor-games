@@ -37,6 +37,9 @@ export {
   getContentEntryId,
 } from "./content-pack-provenance.js";
 export {
+  DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK,
+} from "./content-packs/decomposition-inspiration-module-pack.js";
+export {
   CORE_CRUOR_CONTENT_PACK,
   CORE_CRUOR_CONTENT_PACK_ID,
 } from "./content-packs/core-cruor-pack.js";
@@ -56,13 +59,25 @@ export {
   LEGACY_DARKEN_LOCATION_CONTENT_PACK_ID,
 } from "./content-packs/legacy-darken-location-pack.js";
 export {
+  DECOMPOSITION_INSPIRATION,
+  DECOMPOSITION_INSPIRATION_MODULE,
+  DECOMPOSITION_INSPIRATION_MODULE_PACK_ID,
+  DECOMPOSITION_LOCATION_COMPONENTS,
+  DECOMPOSITION_LOCATION_REGION_COMPONENTS,
+  DECOMPOSITION_MONSTER_GRAFT_COMPONENTS,
+  DECOMPOSITION_REFERENCED_SOURCE_ANCHORS,
+  DECOMPOSITION_SOURCE_ANCHOR,
+  DECOMPOSITION_SOURCE_ANCHOR_ID,
+  EXPLICIT_INSPIRATION_MODULES,
   CRUOR_INSPIRATION_MODULES,
   buildInspirationModules,
   buildInspirationModulesFromRegistry,
   defineInspirationModule,
   flattenInspirationModuleCollection,
   modulesToRegistryCollections,
+  uniqueById,
 } from "./inspiration-modules.js";
+export { defineInspirationModule as defineInspirationModuleSchema } from "./inspiration-module-schema.js";
 export {
   DARKEN_LOCATION_SLOT_IDS,
   LEGACY_LOCATION_WORKFLOW_ID,
