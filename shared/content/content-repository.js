@@ -1,66 +1,41 @@
-import { CRUOR_INSPIRATION_MODULES, buildInspirationModulesFromRegistry } from "./inspiration-modules.js";
-import {
-  STATIC_CONTENT_PACK_PROVENANCE,
-  STATIC_CONTENT_PACKS,
-  STATIC_CONTENT_PACK_ISSUES,
-  STATIC_CONTENT_PACK_SUMMARY,
-  STATIC_CONTENT_REGISTRY,
-} from "./static-registry.js";
+import { STATIC_CONTENT_REPOSITORY } from "./content-repository.adapter.js";
 
 export function getStaticContentRegistry() {
-  return STATIC_CONTENT_REGISTRY;
+  return STATIC_CONTENT_REPOSITORY.getRegistry();
 }
 
 export function getStaticContentPackProvenance() {
-  return STATIC_CONTENT_PACK_PROVENANCE;
+  return STATIC_CONTENT_REPOSITORY.getPackProvenance();
 }
 
 export function getStaticContentPackSummaries() {
-  return STATIC_CONTENT_PACKS.map((pack) => ({
-    id: pack.id,
-    title: pack.title,
-    summary: pack.summary,
-    status: pack.status,
-    version: pack.version,
-    locale: pack.locale,
-    tags: pack.tags || [],
-    collections: Object.fromEntries(
-      Object.entries(pack.collections || {}).map(([collectionName, entries]) => [
-        collectionName,
-        Array.isArray(entries) ? entries.length : 0,
-      ]),
-    ),
-  }));
+  return STATIC_CONTENT_REPOSITORY.getPackSummaries();
 }
 
-export function getStaticInspirationModules({ includeRegistryFallback = true } = {}) {
-  if (!includeRegistryFallback) return CRUOR_INSPIRATION_MODULES;
-
-  return buildInspirationModulesFromRegistry(getStaticContentRegistry(), {
-    packId: "static-cruor-registry",
-  });
+export function getStaticInspirationModules(options = {}) {
+  return STATIC_CONTENT_REPOSITORY.getInspirationModules(options);
 }
 
 export function getStaticContentPackIssues() {
-  return STATIC_CONTENT_PACK_ISSUES;
+  return STATIC_CONTENT_REPOSITORY.getPackIssues();
 }
 
 export function getStaticContentPackSummary() {
-  return STATIC_CONTENT_PACK_SUMMARY;
+  return STATIC_CONTENT_REPOSITORY.getPackSummary();
 }
 
 export async function loadContentRegistry() {
-  return getStaticContentRegistry();
+  return STATIC_CONTENT_REPOSITORY.loadRegistry();
 }
 
 export async function loadContentPackProvenance() {
-  return getStaticContentPackProvenance();
+  return STATIC_CONTENT_REPOSITORY.loadPackProvenance();
 }
 
 export async function loadContentPackSummaries() {
-  return getStaticContentPackSummaries();
+  return STATIC_CONTENT_REPOSITORY.loadPackSummaries();
 }
 
 export async function loadInspirationModules() {
-  return getStaticInspirationModules();
+  return STATIC_CONTENT_REPOSITORY.loadInspirationModules();
 }
