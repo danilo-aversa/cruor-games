@@ -6,6 +6,8 @@ export const LOCATION_REGION_SLOT_ID = "locationRegion";
 export const MAP_GENERATOR_WORKFLOW_ID = "map-generator";
 export const DARKEN_LOCATION_WORKFLOW_ID = "darken-location";
 
+const ARCHIVED_PROTOTYPE_SOURCE_ANCHOR_IDS = new Set(["gashadokuro", "jack-the-ripper"]);
+
 const SOURCE_ANCHOR_BY_ID = new Map(
   SHARED_SOURCE_ANCHORS.map((sourceAnchor) => [sourceAnchor.id, sourceAnchor]),
 );
@@ -31,6 +33,12 @@ function slugify(value) {
 
 function uniqueArray(values) {
   return [...new Set(normalizeStringArray(values))];
+}
+
+function referencesArchivedPrototypeSource(sourceAnchors = []) {
+  return normalizeSourceAnchorIds(sourceAnchors).some((sourceAnchorId) =>
+    ARCHIVED_PROTOTYPE_SOURCE_ANCHOR_IDS.has(sourceAnchorId),
+  );
 }
 
 function getSourceAnchorMetadata(sourceAnchorIds = []) {
@@ -164,7 +172,10 @@ export function sharedLocationRegionToLegacyTemplate(component) {
 }
 
 export function buildSharedLocationRegionComponents(regions = LEGACY_LOCATION_REGION_TEMPLATES) {
-  return regions.map(legacyLocationRegionToSharedComponent).filter(Boolean);
+  return regions
+    .filter((region) => !referencesArchivedPrototypeSource(region.sourceAnchors))
+    .map(legacyLocationRegionToSharedComponent)
+    .filter(Boolean);
 }
 
 export function buildLegacyLocationRegionTemplatesFromComponents(components = []) {
