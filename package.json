@@ -18,6 +18,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:all": "npm run build && npm run test:run && npm run test:e2e",
+    "content:validate": "node scripts/validate-content-registry.mjs",
+    "content:export": "node scripts/export-content-registry.mjs",
     "vscode:clutter": "node .vscode/dev/toggle-vscode-clutter.mjs",
     "git:auto-update": "node .vscode/dev/git-auto-update.mjs",
     "git:main": "node .vscode/dev/git-auto-update.mjs main",
