@@ -96,30 +96,55 @@ export function getEffectiveBuildAnatomyProfile(
   return getEffectiveMonsterAnatomyProfile(typeId, category, activePreset, selectedFeatures);
 }
 
-export function getBaseTokens(typeId, category) {
+function buildProfileDerivedTokens(profile = {}) {
+  const tokens = [];
+  const family = String(profile.family || profile.id || "").trim();
+  if (family) tokens.push(`family:${family}`, `${family}_body`);
+
+  asArray(profile.bodyPlans).forEach((bodyPlan) => {
+    tokens.push(`body_plan:${bodyPlan}`, `${bodyPlan}_body`);
+  });
+
+  asArray(profile.anatomy).forEach((anatomy) => {
+    tokens.push(`anatomy:${anatomy}`);
+  });
+
+  asArray(profile.tags).forEach((tag) => {
+    tokens.push(tag, `tag:${tag}`);
+  });
+
+  if (asArray(profile.anatomy).includes("web_glands") && asArray(profile.anatomy).includes("spinnerets")) {
+    tokens.push("web_maker");
+  }
+
+  if (asArray(profile.tags).includes("web_bearing")) tokens.push("web_terrain");
+  if (asArray(profile.tags).includes("corpse")) tokens.push("corpse_body", "corpse_presence");
+  if (asArray(profile.tags).includes("spirit")) tokens.push("spirit_body");
+  if (asArray(profile.tags).includes("bone_body")) tokens.push("bone_body");
+
+  return tokens;
+}
+
+export function getBaseTokens(typeId, category, activePreset = null, profile = null) {
   const normalizedCategory = String(category || "")
     .toLowerCase()
     .trim()
     .split(" ")
     .filter(Boolean)
     .join("_");
-  const tokens = [`type:${typeId}`, `${typeId}_body`];
+  const effectiveProfile = profile || getEffectiveBuildAnatomyProfile([], typeId, category, activePreset);
 
-  if (typeId === "undead") tokens.push("undead_body", "corpse_body", "corpse_presence");
-  if (typeId === "beast") tokens.push("beast_body");
-  if (typeId === "aberration") tokens.push("aberration_body");
-  if (normalizedCategory) tokens.push(`category:${normalizedCategory}`);
-  if (normalizedCategory.includes("spider"))
-    tokens.push("spider_body", "climber", "web_maker", "web_terrain");
-  if (normalizedCategory.includes("wraith")) tokens.push("spirit_body");
-  if (normalizedCategory.includes("flesh_mass")) tokens.push("corpse_body", "bloated_body");
-
-  return uniqueArray(tokens);
+  return uniqueArray([
+    `type:${typeId}`,
+    `${typeId}_body`,
+    normalizedCategory ? `category:${normalizedCategory}` : null,
+    ...buildProfileDerivedTokens(effectiveProfile),
+  ]);
 }
 
-export function getGrantedTokens(features, typeId, category) {
+export function getGrantedTokens(features, typeId, category, activePreset = null, profile = null) {
   return uniqueArray([
-    ...getBaseTokens(typeId, category),
+    ...getBaseTokens(typeId, category, activePreset, profile),
     ...features.flatMap((feature) => getFeatureCompatibility(feature).grants),
   ]);
 }
@@ -140,7 +165,7 @@ export function getCompatibilityStatus(
   const activePreset = options?.activePreset || null;
   const effectiveProfile = getEffectiveBuildAnatomyProfile(selectedFeatures, typeId, category, activePreset);
   const grantedTokens = uniqueArray([
-    ...getGrantedTokens(selectedFeatures, typeId, category),
+    ...getGrantedTokens(selectedFeatures, typeId, category, activePreset, effectiveProfile),
     ...(effectiveProfile.tokens || []),
   ]);
   const selectedBlocks = uniqueArray(
@@ -278,7 +303,7 @@ export function buildFeatureDecisionProfile(feature, context = {}) {
   const activePreset = context.activePreset || null;
   const effectiveProfile = getEffectiveBuildAnatomyProfile(selectedFeatures, typeId, category, activePreset);
   const grantedTokens = uniqueArray([
-    ...getGrantedTokens(selectedFeatures, typeId, category),
+    ...getGrantedTokens(selectedFeatures, typeId, category, activePreset, effectiveProfile),
     ...(effectiveProfile.tokens || []),
   ]);
   const synergyTokens = uniqueArray(
@@ -463,6 +488,7 @@ export function buildSmartSlotPicks({
   roleId,
   tacticalRoleId,
   monsterTierId,
+  activePreset = null,
   getFeatureDecisionProfile: buildDecisionProfile = buildFeatureDecisionProfile,
   getFeatureSafetyScore: buildSafetyScore = getFeatureSafetyScore,
   getFeatureSpiceScore: buildSpiceScore = getFeatureSpiceScore,
@@ -475,7 +501,7 @@ export function buildSmartSlotPicks({
         !getSelectedIdsForSlot(selected, feature.slot).includes(feature.id)
     )
     .map((feature) => {
-      const status = getCompatibilityStatus(feature, selectedFeatures, typeId, category);
+      const status = getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset });
       const profile = buildDecisionProfile(feature, {
         status,
         selected,
@@ -485,6 +511,7 @@ export function buildSmartSlotPicks({
         roleId,
         tacticalRoleId,
         monsterTierId,
+        activePreset,
         currentSlot: slotId,
       });
       return { feature, status, profile };
@@ -549,6 +576,7 @@ export function buildFeatureImpactPreview({
   selectedFeatures,
   typeId,
   category,
+  activePreset = null,
   computed,
   getFeatureMechanicProfile,
   summarizeMechanicProfiles,
@@ -602,7 +630,7 @@ export function buildFeatureImpactPreview({
     featureMechanics,
     limit: computed.complexityCap,
   });
-  const compatibility = getCompatibilityStatus(feature, selectedFeatures, typeId, category);
+  const compatibility = getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset });
   const counterplayProfile = getFeatureCounterplayProfile(feature);
   const currentHasWeakness = hasSelectedSlot(selected, "weakness");
   const clearsWeaknessWarning = feature.slot === "weakness" && !currentHasWeakness ? 1 : 0;

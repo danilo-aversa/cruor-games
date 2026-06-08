@@ -405,6 +405,7 @@ function getOneClickFixCandidates({
   selectedFeatures,
   typeId,
   category,
+  activePreset,
   roleId,
   sourceId,
   composerMode,
@@ -413,7 +414,7 @@ function getOneClickFixCandidates({
 }) {
   return FEATURES.map((feature) => ({
     feature,
-    status: getCompatibilityStatus(feature, selectedFeatures, typeId, category),
+    status: getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset }),
   }))
     .filter(({ feature, status }) => {
       if (feature.id === excludeFeatureId) return false;
@@ -431,6 +432,7 @@ function getOneClickFixCandidates({
         selectedFeatures,
         typeId,
         category,
+        activePreset,
         roleId,
         currentSlot: slotId,
       });
@@ -477,6 +479,7 @@ function findReplacementFix({
   selectedFeatures,
   typeId,
   category,
+  activePreset,
   roleId,
   sourceId,
   composerMode,
@@ -492,7 +495,7 @@ function findReplacementFix({
       : getFeaturePressureWeight(feature);
   const candidates = FEATURES.map((candidate) => ({
     candidate,
-    status: getCompatibilityStatus(candidate, reducedFeatures, typeId, category),
+    status: getCompatibilityStatus(candidate, reducedFeatures, typeId, category, { activePreset }),
   }))
     .filter(({ candidate, status }) => {
       if (candidate.id === feature.id) return false;
@@ -526,6 +529,7 @@ function findReplacementFix({
         selectedFeatures: reducedFeatures,
         typeId,
         category,
+        activePreset,
         roleId,
         currentSlot: feature.slot,
       }),
@@ -545,6 +549,7 @@ function buildOneClickFixes({
   selectedFeatures,
   typeId,
   category,
+  activePreset,
   roleId,
   sourceId,
   composerMode,
@@ -613,6 +618,7 @@ function buildOneClickFixes({
       selectedFeatures,
       typeId,
       category,
+      activePreset,
       roleId,
       sourceId,
       composerMode,
@@ -640,6 +646,7 @@ function buildOneClickFixes({
       selectedFeatures,
       typeId,
       category,
+      activePreset,
       roleId,
       sourceId,
       composerMode,
@@ -675,6 +682,7 @@ function buildBalanceRecommendations({
   selectedFeatures,
   typeId,
   category,
+  activePreset,
   roleId,
   sourceId,
   composerMode,
@@ -725,6 +733,7 @@ function buildBalanceRecommendations({
           selectedFeatures,
           typeId,
           category,
+          activePreset,
           roleId,
           sourceId,
           composerMode,
@@ -752,6 +761,7 @@ function buildBalanceRecommendations({
           selectedFeatures,
           typeId,
           category,
+          activePreset,
           roleId,
           sourceId,
           composerMode,
@@ -786,6 +796,7 @@ function buildBalanceRecommendations({
           selectedFeatures,
           typeId,
           category,
+          activePreset,
           roleId,
           sourceId,
           composerMode,
@@ -821,6 +832,7 @@ function buildBalanceRecommendations({
           selectedFeatures,
           typeId,
           category,
+          activePreset,
           roleId,
           sourceId,
           composerMode,
@@ -849,6 +861,7 @@ function buildBalanceRecommendations({
           selectedFeatures,
           typeId,
           category,
+          activePreset,
           roleId,
           sourceId,
           composerMode,
@@ -877,6 +890,7 @@ function buildBalanceRecommendations({
           selectedFeatures,
           typeId,
           category,
+          activePreset,
           roleId,
           sourceId,
           composerMode,
@@ -909,6 +923,7 @@ function buildBalanceRecommendations({
           selectedFeatures,
           typeId,
           category,
+          activePreset,
           roleId,
           sourceId,
           composerMode,
@@ -935,6 +950,7 @@ function buildBalanceRecommendations({
           selectedFeatures,
           typeId,
           category,
+          activePreset,
           roleId,
           sourceId,
           composerMode,
@@ -967,6 +983,7 @@ function buildBalanceRecommendations({
           selectedFeatures,
           typeId,
           category,
+          activePreset,
           roleId,
           sourceId,
           composerMode,
@@ -1170,7 +1187,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
         : [sourceId].filter(Boolean);
     return FEATURES.map((feature) => ({
       feature,
-      status: getCompatibilityStatus(feature, selectedFeatures, typeId, category),
+      status: getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset }),
     }))
       .filter(({ feature, status }) => {
         const packMatch =
@@ -1187,6 +1204,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
           selectedFeatures,
           typeId,
           category,
+          activePreset,
           roleId,
           tacticalRoleId,
           monsterTierId,
@@ -1198,6 +1216,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
           selectedFeatures,
           typeId,
           category,
+          activePreset,
           roleId,
           tacticalRoleId,
           monsterTierId,
@@ -1224,6 +1243,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
     selectedFeatures,
     selected,
     category,
+    activePreset,
     composerMode,
     customMode,
     tacticalRoleId,
@@ -1233,14 +1253,14 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
   const compatibleCount = useMemo(() => {
     return FEATURES.map((feature) => ({
       feature,
-      status: getCompatibilityStatus(feature, selectedFeatures, typeId, category),
+      status: getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset }),
     })).filter(({ feature, status }) => {
       const frameMatch = customMode
         ? feature.source === sourceId
         : featureMatchesFrame(feature, sourceId, typeId, roleId);
       return frameMatch && canShowFeatureForMode(status, composerMode);
     }).length;
-  }, [sourceId, typeId, roleId, selectedFeatures, category, composerMode, customMode]);
+  }, [sourceId, typeId, roleId, selectedFeatures, category, activePreset, composerMode, customMode]);
 
   const computed = useMemo(() => {
     const partyTier = getTier(partyLevel);
@@ -1453,7 +1473,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
     selectedFeatures.forEach((feature) => {
       const compatibilityWarning = buildCompatibilityWarning(
         feature,
-        getCompatibilityStatus(feature, selectedFeatures, typeId, category)
+        getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset })
       );
       if (compatibilityWarning) warnings.push(compatibilityWarning);
 
@@ -1470,6 +1490,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
       selectedFeatures,
       typeId,
       category,
+      activePreset,
       roleId,
       sourceId,
       composerMode,
@@ -1629,7 +1650,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
   }
 
   function addFeature(feature) {
-    const status = getCompatibilityStatus(feature, selectedFeatures, typeId, category);
+    const status = getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset });
     if (!canShowFeatureForMode(status, composerMode)) return;
 
     setActivePresetId("");
@@ -1686,7 +1707,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
         const partialFeatures = getFeaturesFromSelection(next);
         const candidates = FEATURES.map((feature) => ({
           feature,
-          status: getCompatibilityStatus(feature, partialFeatures, typeId, category),
+          status: getCompatibilityStatus(feature, partialFeatures, typeId, category, { activePreset }),
         }))
           .filter(({ feature, status }) => {
             const alreadyPicked =
@@ -1782,7 +1803,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
   const activeSlotAvailableFeatures = useMemo(() => {
     return FEATURES.map((feature) => ({
       feature,
-      status: getCompatibilityStatus(feature, selectedFeatures, typeId, category),
+      status: getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset }),
     }))
       .filter(({ feature, status }) => {
         const frameMatch = customMode
@@ -1791,7 +1812,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
         return frameMatch && canShowFeatureForMode(status, composerMode);
       })
       .map(({ feature }) => feature);
-  }, [sourceId, typeId, roleId, activeSlot, selectedFeatures, category, composerMode, customMode]);
+  }, [sourceId, typeId, roleId, activeSlot, selectedFeatures, category, activePreset, composerMode, customMode]);
   const activeAlternatives = activeSlotAvailableFeatures.filter(
     (feature) => !activeSlotFeatureIds.includes(feature.id)
   ).length;
@@ -1969,6 +1990,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
       selectedFeatures={selectedFeatures}
       typeId={typeId}
       category={category}
+      activePreset={activePreset}
       roleId={roleId}
       computed={computed}
       sourceId={sourceId}

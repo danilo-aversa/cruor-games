@@ -6,6 +6,7 @@ import {
   SHARED_MONSTER_SLOTS,
   SHARED_WORKFLOWS,
   SHARED_TAXONOMIES,
+  SHARED_SOURCE_ANCHORS,
   SPELLS_5E24_LEVEL_OPTIONS,
   SPELLS_5E24_SCHOOL_OPTIONS,
   createContentPack,
@@ -922,6 +923,35 @@ const CANONICAL_SLOT_MAP = new Map([
   ...SHARED_DARKEN_LOCATION_SLOTS.map((slot) => [slot.id, slot]),
 ]);
 
+const SHARED_SOURCE_ANCHOR_BY_ID = new Map(SHARED_SOURCE_ANCHORS.map((sourceAnchor) => [sourceAnchor.id, sourceAnchor]));
+
+function getReferencedSourceAnchorIds(sourceAnchor, inspiration, components = []) {
+  return [
+    sourceAnchor?.id,
+    ...asArray(inspiration?.sourceAnchors),
+    ...asArray(components).flatMap((component) => asArray(component.sourceAnchors)),
+  ].filter(Boolean);
+}
+
+function buildExportSourceAnchors(sourceAnchor, inspiration, components = []) {
+  return uniqueById(getReferencedSourceAnchorIds(sourceAnchor, inspiration, components).map((sourceAnchorId) => {
+    if (sourceAnchorId === sourceAnchor?.id) return sourceAnchor;
+    return SHARED_SOURCE_ANCHOR_BY_ID.get(sourceAnchorId) || {
+      id: sourceAnchorId,
+      label: formatPlainLabel(sourceAnchorId),
+      type: "Referenced Source Anchor",
+      status: "draft",
+      workflows: [],
+      sourceTypes: [],
+      themes: [],
+      motifs: [],
+      horror: [],
+      summary: "Auto-included because a component in this exported pack references this source anchor.",
+      metadata: { generatedFrom: "inspiration-studio-export-reference" },
+    };
+  }));
+}
+
 const ANATOMY_CONSTRAINT_FIELD_LABELS = Object.freeze({
   allowedCreatureTypes: "Allowed Creature Types",
   forbiddenCreatureTypes: "Forbidden Creature Types",
@@ -1266,6 +1296,17 @@ function normalizeExportComponent(component = {}, sourceAnchor = {}) {
     }
   }
 
+  if (normalizedComponent.contentType === "location-region" && !normalizedComponent.locationRegion && normalizedComponent.map) {
+    normalizedComponent.locationRegion = {
+      role: normalizedComponent.map.role || "side",
+      size: normalizedComponent.map.size || "Medium",
+      shape: normalizedComponent.map.shape || normalizedComponent.map.preferredShape || "standard",
+      connectors: normalizedComponent.map.connectors ?? 1,
+      density: normalizedComponent.map.density || "interactive",
+      readAloud: normalizedComponent.map.readAloud || { compact: normalizedComponent.tableText || "", extended: normalizedComponent.tableText || "" },
+    };
+  }
+
   return normalizedComponent;
 }
 
@@ -1305,6 +1346,7 @@ function buildContentPackExport(draft, imagePreviewUrl) {
       : ["inspiration-archive"],
   };
   const components = moduleExport.components.map((component) => normalizeExportComponent(component, sourceAnchor));
+  const sourceAnchors = buildExportSourceAnchors(sourceAnchor, inspiration, components);
   const workflowIds = new Set(getReferencedWorkflowIds({ sourceAnchor, inspiration }, components));
   const slotIds = new Set(getReferencedSlotIds(components));
   const workflows = SHARED_WORKFLOWS.filter((workflow) => workflowIds.has(workflow.id));
@@ -1333,7 +1375,7 @@ function buildContentPackExport(draft, imagePreviewUrl) {
     collections: {
       workflows,
       slots,
-      sourceAnchors: [sourceAnchor],
+      sourceAnchors,
       inspirations: [inspiration],
       components,
       taxonomies: [],
@@ -1442,7 +1484,7 @@ function validateStudioDraft(draft, contentPackExport) {
         if (monsterRules.resolution?.type === "savingThrow" && !hasText(monsterRules.resolution?.ability)) {
           issues.push(makeIssue("warning", `components[${index}].monster.rules.resolution.ability`, "Saving throw resolution has no ability.", id));
         }
-        if (monsterRules.usage?.type === "recharge" && !hasText(monsterRules.usage?.recharge)) {
+        if (monsterRules.usage?.type === "recharge" && !hasText(monsterRules.usage?.value || monsterRules.usage?.recharge)) {
           issues.push(makeIssue("warning", `components[${index}].monster.rules.usage.recharge`, "Recharge usage has no recharge value.", id));
         }
       }
@@ -1471,11 +1513,12 @@ function validateStudioDraft(draft, contentPackExport) {
       if (!slots.includes("locationRegion")) {
         issues.push(makeIssue("error", `components[${index}].slots`, "Location region must use the locationRegion slot.", id));
       }
-      if (!isPlainObject(component.locationRegion)) {
+      const regionMetadata = isPlainObject(component.locationRegion) ? component.locationRegion : component.map;
+      if (!isPlainObject(regionMetadata)) {
         issues.push(makeIssue("warning", `components[${index}].locationRegion`, "Location region has no locationRegion metadata object.", id));
       } else {
         ["role", "size", "shape"].forEach((field) => {
-          if (!hasText(component.locationRegion?.[field])) {
+          if (!hasText(regionMetadata?.[field])) {
             issues.push(makeIssue("warning", `components[${index}].locationRegion.${field}`, `Location region has no ${field}.`, id));
           }
         });

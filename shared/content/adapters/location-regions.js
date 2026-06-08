@@ -96,6 +96,14 @@ export function legacyLocationRegionToSharedComponent(region) {
     tableText: readAloud.compact,
     mechanics: region.danger || "",
     narrative: region.interaction || region.interact || region.secret || "",
+    locationRegion: {
+      role: region.role || "Location Region",
+      size: region.size || "Medium",
+      shape: region.shape || "room",
+      connectors: Number(region.connectors || 1),
+      density: region.density || "interactive",
+      readAloud,
+    },
     map: {
       templateId: id,
       role: region.role || "Location Region",

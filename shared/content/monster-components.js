@@ -1,4 +1,5 @@
 import { MONSTER_GRAFTS } from "../../features/monster-composer/data/monster-grafts.js";
+import { normalizeMonsterGraftRules } from "../../features/monster-composer/model/monster-graft-rules.schema.js";
 import { normalizeSourceAnchorIds } from "./source-anchors.js";
 
 const MONSTER_COMPONENT_WORKFLOW_ID = "monster-composer";
@@ -20,6 +21,22 @@ function normalizeMonsterGraftSourceAnchors(graft) {
   return normalizeSourceAnchorIds(graft.sourceAnchors?.length ? graft.sourceAnchors : graft.source);
 }
 
+
+function getStructuredMonsterRules(graft) {
+  const rules = graft.rules || normalizeMonsterGraftRules(graft);
+  if (!rules) return null;
+
+  return {
+    ...rules,
+    migration: {
+      ...(rules.migration || {}),
+      source: graft.rules ? rules.migration?.source || "explicit-rules" : "legacy-mechanics-persisted",
+      isStructured: true,
+      generatedFrom: graft.rules ? rules.migration?.generatedFrom : "mechanics-counterplay-inference",
+    },
+  };
+}
+
 function buildMonsterComponentTags(graft) {
   return [
     ...normalizeStringArray(graft.tags),
@@ -32,6 +49,7 @@ function buildMonsterComponentTags(graft) {
 
 export function monsterGraftToSharedComponent(graft) {
   const sourceAnchors = normalizeMonsterGraftSourceAnchors(graft);
+  const rules = getStructuredMonsterRules(graft);
 
   return {
     id: graft.id,
@@ -62,11 +80,11 @@ export function monsterGraftToSharedComponent(graft) {
       cost: Number(graft.cost || 0),
       complexity: Number(graft.complexity || 0),
       stats: graft.stats || {},
-      rules: graft.rules || null,
+      rules,
       constraints: graft.constraints || graft.anatomyConstraints || null,
       anatomyGrants: graft.anatomyGrants || null,
     },
-    rules: graft.rules || null,
+    rules,
     anatomyConstraints: graft.constraints || graft.anatomyConstraints || null,
     anatomyGrants: graft.anatomyGrants || null,
     tags: buildMonsterComponentTags(graft),

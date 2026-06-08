@@ -61,7 +61,7 @@ export const EXISTING_INSPIRATIONS_CONTENT_PACK = createContentPack({
   metadata: {
     bundled: true,
     registryRole: "converted-inspiration-modules",
-    source: "shared/content/inspiration-modules/core-inspiration-modules.js",
+    source: "shared/content/inspiration-modules/*.js",
     migratedFrom: "legacy-inspirations-archive",
   },
   collections: {

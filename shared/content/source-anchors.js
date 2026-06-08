@@ -30,20 +30,7 @@ export const SHARED_SOURCE_ANCHORS = [
     summary:
       "A corpse-eating spirit used as a source for hunger, shame, funeral transgression, and post-mortem punishment.",
   },
-  {
-    id: "gashadokuro",
-    label: "Gashadokuro",
-    type: "Folklore",
-    status: SOURCE_ANCHOR_STATUS.PUBLISHED,
-    workflows: ["monster-composer", "inspiration-archive"],
-    sourceTypes: ["Folklore"],
-    themes: ["collective resentment", "starvation", "mass death", "bone memory"],
-    motifs: ["giant skeleton", "rattling teeth", "bone dust", "grave noise"],
-    horror: ["Folk Horror", "Body Horror"],
-    summary:
-      "A giant skeleton born from the resentment of the starved dead, useful for scale, hunger, and collective remains.",
-  },
-  {
+    {
     id: "wolf-spiders",
     label: "Wolf Spiders",
     type: "Biological Creature",
@@ -206,7 +193,6 @@ export const SOURCE_ANCHOR_ALIASES = {
   decay: "decomposition",
   rot: "decomposition",
   jikininki: "jikininki",
-  gashadokuro: "gashadokuro",
   "wolf-spider": "wolf-spiders",
   "wolf-spiders": "wolf-spiders",
   "wolf spiders": "wolf-spiders",

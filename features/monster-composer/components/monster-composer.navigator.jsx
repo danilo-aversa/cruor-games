@@ -168,6 +168,7 @@ function ComponentNavigatorPanel({
   selectedFeatures,
   typeId,
   category,
+  activePreset = null,
   roleId,
   computed,
   sourceId,
@@ -203,6 +204,7 @@ function ComponentNavigatorPanel({
     selectedFeatures,
     typeId,
     category,
+    activePreset,
     roleId,
     tacticalRoleId: computed.tacticalRole.id,
     monsterTierId: computed.monsterTier.id,
@@ -491,7 +493,8 @@ function ComponentNavigatorPanel({
                 feature,
                 selectedFeatures,
                 typeId,
-                category
+                category,
+                { activePreset }
               );
               const decisionProfile = buildFeatureDecisionProfile(feature, {
                 status: compatibility,
@@ -499,6 +502,7 @@ function ComponentNavigatorPanel({
                 selectedFeatures,
                 typeId,
                 category,
+                activePreset,
                 roleId,
                 tacticalRoleId: computed.tacticalRole.id,
                 monsterTierId: computed.monsterTier.id,
@@ -517,6 +521,7 @@ function ComponentNavigatorPanel({
                   selectedFeatures={selectedFeatures}
                   typeId={typeId}
                   category={category}
+                  activePreset={activePreset}
                   computed={computed}
                   onAdd={() => addFeature(feature)}
                   onDragStart={() => setDraggedFeatureId(feature.id)}
@@ -576,6 +581,7 @@ function FeatureCard({
   selectedFeatures,
   typeId,
   category,
+  activePreset = null,
   computed,
   onAdd,
   onDragStart,
@@ -598,6 +604,7 @@ function FeatureCard({
     selectedFeatures: selectedFeatures || [],
     typeId,
     category,
+    activePreset,
     computed,
   });
   const [detailsOpen, setDetailsOpen] = useState(false);
