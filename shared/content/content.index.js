@@ -37,6 +37,17 @@ export {
   getContentEntryId,
 } from "./content-pack-provenance.js";
 export {
+  createContentRepositoryAdapter,
+  createStaticContentRepository,
+  STATIC_CONTENT_REPOSITORY,
+} from "./content-repository.adapter.js";
+export {
+  validateContentComponentStrict,
+  validateContentPackStrict,
+  validateContentRegistryStrict,
+  validateStaticContentRepository,
+} from "./content-validation.js";
+export {
   DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK,
 } from "./content-packs/decomposition-inspiration-module-pack.js";
 export {
