@@ -64,9 +64,11 @@ export function monsterGraftToSharedComponent(graft) {
       stats: graft.stats || {},
       rules: graft.rules || null,
       constraints: graft.constraints || graft.anatomyConstraints || null,
+      anatomyGrants: graft.anatomyGrants || null,
     },
     rules: graft.rules || null,
     anatomyConstraints: graft.constraints || graft.anatomyConstraints || null,
+    anatomyGrants: graft.anatomyGrants || null,
     tags: buildMonsterComponentTags(graft),
   };
 }

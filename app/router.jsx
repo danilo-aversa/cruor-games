@@ -54,8 +54,14 @@ const MONSTER_VIEWS = [
   },
 ];
 
+function getInitialSection() {
+  if (typeof window === "undefined") return "home";
+  const params = new URLSearchParams(window.location.search);
+  return params.get("studio") === "1" || params.get("admin") === "studio" ? "inspiration-studio" : "home";
+}
+
 export default function AppRouter() {
-  const [activeSection, setActiveSection] = useState("home");
+  const [activeSection, setActiveSection] = useState(getInitialSection);
   const [activeUiMode, setActiveUiMode] = useState("simple");
   const [activeCrucibleGenerator, setActiveCrucibleGenerator] = useState("darken");
   const [activeDarkenTab, setActiveDarkenTab] = useState("composer");

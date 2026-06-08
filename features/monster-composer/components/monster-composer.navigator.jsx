@@ -10,6 +10,7 @@ import {
   formatToken,
   getCompatibilityStatus,
   getFeatureAnatomyConstraintSummary,
+  getFeatureAnatomyGrantSummary,
   getFeatureCompatibility,
 } from "../model/monster-composer.compatibility.js";
 import {
@@ -586,6 +587,7 @@ function FeatureCard({
   const sourcePackTitle = getSourcePackTitle(source);
   const rules = getFeatureCompatibility(feature);
   const anatomyConstraintSummary = getFeatureAnatomyConstraintSummary(feature);
+  const anatomyGrantSummary = getFeatureAnatomyGrantSummary(feature);
   const mechanicProfile = getFeatureMechanicProfile(feature);
   const hasCompatibilityBadge = compatibility?.kind && compatibility.kind !== "compatible";
   const profile = decisionProfile || { tier: "safe" };
@@ -740,9 +742,21 @@ function FeatureCard({
               </span>
             </div>
           )}
+          {anatomyGrantSummary.length > 0 && (
+            <div className="meta-row">
+              <span className="meta-label">Grants Anatomy</span>
+              <span className="meta-values">
+                {anatomyGrantSummary.slice(0, 8).map((row) => (
+                  <span key={`${row.label}-${row.values.join("-")}`} className="meta-value strong-chip">
+                    {row.label}: {row.values.join(", ")}
+                  </span>
+                ))}
+              </span>
+            </div>
+          )}
           {anatomyConstraintSummary.length > 0 && (
             <div className="meta-row">
-              <span className="meta-label">Anatomy</span>
+              <span className="meta-label">Requires Anatomy</span>
               <span className="meta-values">
                 {anatomyConstraintSummary.slice(0, 8).map((row) => (
                   <span key={`${row.label}-${row.values.join("-")}`} className="meta-value strong-chip">

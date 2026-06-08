@@ -20,7 +20,7 @@ export default function AppShell({
   }, []);
 
   return (
-    <div className="app-shell" data-ui-mode={activeUiMode}>
+    <div className="app-shell" data-ui-mode={activeUiMode} data-active-section={activeSection}>
       <SiteTopbar
         activeSection={activeSection}
         activeUiMode={activeUiMode}

@@ -2011,6 +2011,53 @@ export const FEATURE_ANATOMY_CONSTRAINT_OVERRIDES = {
   },
 };
 
+export const FEATURE_ANATOMY_GRANT_OVERRIDES = {
+  "spider-climb": {
+    grantsAnatomy: ["climbing_limbs"],
+    grantsTags: ["climber"],
+    grantsTokens: ["climber", "spider_body"],
+    note: "Confirms the build has surface-gripping limbs suitable for spider movement chains.",
+  },
+  "web-walker": {
+    grantsTags: ["web_walker"],
+    grantsTokens: ["web_walker", "web_terrain"],
+  },
+  "egg-carrier": {
+    grantsAnatomy: ["abdomen"],
+    grantsTags: ["brood", "egg_carrier"],
+    grantsTokens: ["egg_carrier", "brood"],
+  },
+  "barbed-chitin": {
+    grantsAnatomy: ["carapace"],
+    grantsTags: ["physical_chitin"],
+    grantsTokens: ["barbed_chitin", "physical_chitin"],
+  },
+  "wall-crawler": {
+    grantsAnatomy: ["climbing_limbs"],
+    grantsTags: ["climber"],
+    grantsTokens: ["climber", "spider_body"],
+  },
+  "web-recharge": {
+    grantsTokens: ["web_maker", "web_terrain"],
+  },
+  "shadow-web": {
+    grantsTokens: ["web_maker", "web_terrain"],
+  },
+  "dense-web-region": {
+    grantsTokens: ["web_terrain"],
+  },
+  "bone-collective": {
+    grantsAnatomy: ["bones"],
+    grantsTags: ["bone_body"],
+    grantsTokens: ["bone_body"],
+  },
+  "waxen-mask-body": {
+    grantsAnatomy: ["face"],
+    grantsTags: ["wax_body", "wax_mask"],
+    grantsTokens: ["wax_body", "wax_mask"],
+  },
+};
+
 export const FEATURE_MECHANIC_OVERRIDES = {
   "acid-vomit": {
     mechanicTags: [

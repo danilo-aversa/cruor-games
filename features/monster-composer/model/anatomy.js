@@ -225,11 +225,44 @@ const FAMILY_PROFILE_BY_CATEGORY = new Map(
 
 export const KNOWN_MONSTER_BODY_PLAN_IDS = Object.freeze([...BODY_PLAN_IDS]);
 export const KNOWN_MONSTER_FAMILY_IDS = Object.freeze(MONSTER_FAMILY_PROFILE_OPTIONS.map((item) => item.id));
+const EXTRA_KNOWN_MONSTER_ANATOMY_TAGS = Object.freeze([
+  "spinnerets",
+  "web_glands",
+  "venom_glands",
+  "climbing_limbs",
+  "tendrils",
+  "spectral_body",
+  "wax_face",
+]);
+
+const EXTRA_KNOWN_MONSTER_CREATURE_TAGS = Object.freeze([
+  "web_bearing",
+  "spider_infested",
+  "web_walker",
+  "egg_carrier",
+  "brood",
+  "wax_body",
+  "wax_mask",
+  "physical_chitin",
+  "bone_body",
+  "climber",
+]);
+
 export const KNOWN_MONSTER_ANATOMY_TAGS = Object.freeze(
-  [...new Set(MONSTER_FAMILY_PROFILE_OPTIONS.flatMap((item) => uniqueArray(item.anatomy)))].sort(),
+  [
+    ...new Set([
+      ...MONSTER_FAMILY_PROFILE_OPTIONS.flatMap((item) => uniqueArray(item.anatomy)),
+      ...EXTRA_KNOWN_MONSTER_ANATOMY_TAGS,
+    ]),
+  ].sort(),
 );
 export const KNOWN_MONSTER_CREATURE_TAGS = Object.freeze(
-  [...new Set(MONSTER_FAMILY_PROFILE_OPTIONS.flatMap((item) => uniqueArray(item.tags)))].sort(),
+  [
+    ...new Set([
+      ...MONSTER_FAMILY_PROFILE_OPTIONS.flatMap((item) => uniqueArray(item.tags)),
+      ...EXTRA_KNOWN_MONSTER_CREATURE_TAGS,
+    ]),
+  ].sort(),
 );
 
 export const MONSTER_ANATOMY_CONSTRAINT_FIELDS = Object.freeze([
@@ -249,6 +282,13 @@ export const MONSTER_ANATOMY_CONSTRAINT_FIELDS = Object.freeze([
   "requiredTokens",
   "requiresAnyTokens",
   "forbiddenTokens",
+]);
+
+export const MONSTER_ANATOMY_GRANT_FIELDS = Object.freeze([
+  "grantsBodyPlans",
+  "grantsAnatomy",
+  "grantsTags",
+  "grantsTokens",
 ]);
 
 export function getSilhouetteId(typeId, category, activePreset = null) {
@@ -351,6 +391,67 @@ export function getFeatureAnatomyConstraints(feature = {}) {
   );
 }
 
+export function normalizeMonsterAnatomyGrants(value = {}) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+
+  const normalized = {
+    grantsBodyPlans: normalizeConstraintList(value.grantsBodyPlans || value.bodyPlans, "kebab"),
+    grantsAnatomy: normalizeConstraintList(value.grantsAnatomy || value.anatomy),
+    grantsTags: normalizeConstraintList(value.grantsTags || value.tags),
+    grantsTokens: normalizeConstraintList(value.grantsTokens || value.tokens),
+    note: String(value.note || value.rationale || "").trim(),
+  };
+
+  const hasAnyList = MONSTER_ANATOMY_GRANT_FIELDS.some((field) => normalized[field]?.length);
+  return hasAnyList || normalized.note ? normalized : null;
+}
+
+export function getFeatureAnatomyGrants(feature = {}) {
+  const monster = feature.monster || {};
+  return normalizeMonsterAnatomyGrants(
+    feature.anatomyGrants ||
+      feature.grantsAnatomy ||
+      monster.anatomyGrants ||
+      monster.grants ||
+      {
+        grantsBodyPlans: feature.grantsBodyPlans || monster.grantsBodyPlans,
+        grantsAnatomy: feature.grantsAnatomy || monster.grantsAnatomy,
+        grantsTags: feature.grantsTags || monster.grantsTags,
+        grantsTokens: feature.grantsTokens || monster.grantsTokens,
+      },
+  );
+}
+
+export function getSelectedMonsterAnatomyGrants(features = []) {
+  return asArray(features)
+    .map((feature) => getFeatureAnatomyGrants(feature))
+    .filter(Boolean);
+}
+
+export function getEffectiveMonsterAnatomyProfile(
+  typeId = "undead",
+  category = "Zombie",
+  activePreset = null,
+  selectedFeatures = [],
+) {
+  const baseProfile = getMonsterAnatomyProfile(typeId, category, activePreset);
+  const grants = getSelectedMonsterAnatomyGrants(selectedFeatures);
+  const grantedBodyPlans = grants.flatMap((grant) => grant.grantsBodyPlans || []);
+  const grantedAnatomy = grants.flatMap((grant) => grant.grantsAnatomy || []);
+  const grantedTags = grants.flatMap((grant) => grant.grantsTags || []);
+  const grantedTokens = grants.flatMap((grant) => grant.grantsTokens || []);
+
+  return Object.freeze({
+    ...baseProfile,
+    bodyPlans: uniqueKebab([...baseProfile.bodyPlans, ...grantedBodyPlans]),
+    anatomy: uniqueArray([...baseProfile.anatomy, ...grantedAnatomy]),
+    tags: uniqueArray([...baseProfile.tags, ...grantedTags]),
+    tokens: uniqueArray(grantedTokens),
+    baseProfile,
+    grants,
+  });
+}
+
 function includesAny(source = [], wanted = []) {
   const sourceSet = new Set(source);
   return wanted.some((token) => sourceSet.has(token));
@@ -372,9 +473,13 @@ export function evaluateMonsterAnatomyConstraints(
     category = "Zombie",
     activePreset = null,
     grantedTokens = [],
+    selectedFeatures = [],
+    profile: providedProfile = null,
   } = {},
 ) {
   const constraints = getFeatureAnatomyConstraints(feature);
+  const profile =
+    providedProfile || getEffectiveMonsterAnatomyProfile(typeId, category, activePreset, selectedFeatures);
   if (!constraints) {
     return {
       kind: "compatible",
@@ -382,15 +487,14 @@ export function evaluateMonsterAnatomyConstraints(
       tokens: [],
       message: "No anatomy constraints.",
       constraints: null,
-      profile: getMonsterAnatomyProfile(typeId, category, activePreset),
+      profile,
       issues: [],
     };
   }
 
-  const profile = getMonsterAnatomyProfile(typeId, category, activePreset);
   const issues = [];
   const normalizedTypeId = normalizeKebab(typeId);
-  const grantedTokenSet = uniqueArray(grantedTokens);
+  const grantedTokenSet = uniqueArray([...grantedTokens, ...(profile.tokens || [])]);
 
   if (
     constraints.allowedCreatureTypes.length &&
@@ -472,9 +576,9 @@ export function evaluateMonsterAnatomyConstraints(
   if (missingAnatomy.length) {
     pushIssue(
       issues,
-      "missing",
-      "Missing Anatomy",
-      `Requires ${missingAnatomy.map(formatAnatomyTerm).join(", ")}.`,
+      "incompatible",
+      "Missing Effective Anatomy",
+      `Requires effective anatomy: ${missingAnatomy.map(formatAnatomyTerm).join(", ")}. Add a body/mutation graft that grants it first.`,
       missingAnatomy,
     );
   }
@@ -485,9 +589,9 @@ export function evaluateMonsterAnatomyConstraints(
   ) {
     pushIssue(
       issues,
-      "missing",
-      "Missing Anatomy",
-      `Requires one of ${constraints.requiresAnyAnatomy.map(formatAnatomyTerm).join(", ")}.`,
+      "incompatible",
+      "Missing Effective Anatomy",
+      `Requires one effective anatomy tag from: ${constraints.requiresAnyAnatomy.map(formatAnatomyTerm).join(", ")}. Add a body/mutation graft that grants it first.`,
       constraints.requiresAnyAnatomy,
     );
   }
@@ -507,9 +611,9 @@ export function evaluateMonsterAnatomyConstraints(
   if (missingTags.length) {
     pushIssue(
       issues,
-      "missing",
-      "Missing Creature Tag",
-      `Requires ${missingTags.map(formatAnatomyTerm).join(", ")}.`,
+      "incompatible",
+      "Missing Effective Tag",
+      `Requires effective creature tag: ${missingTags.map(formatAnatomyTerm).join(", ")}. Add a body/mutation graft that grants it first.`,
       missingTags,
     );
   }
@@ -517,9 +621,9 @@ export function evaluateMonsterAnatomyConstraints(
   if (constraints.requiresAnyTags.length && !includesAny(profile.tags, constraints.requiresAnyTags)) {
     pushIssue(
       issues,
-      "missing",
-      "Missing Creature Tag",
-      `Requires one of ${constraints.requiresAnyTags.map(formatAnatomyTerm).join(", ")}.`,
+      "incompatible",
+      "Missing Effective Tag",
+      `Requires one effective creature tag from: ${constraints.requiresAnyTags.map(formatAnatomyTerm).join(", ")}. Add a body/mutation graft that grants it first.`,
       constraints.requiresAnyTags,
     );
   }
@@ -626,5 +730,23 @@ export function summarizeMonsterAnatomyConstraints(constraints = null) {
   push("Forbids Tokens", normalized.forbiddenTokens);
 
   if (normalized.note) rows.push({ label: "Note", values: [normalized.note] });
+  return rows;
+}
+
+export function summarizeMonsterAnatomyGrants(grants = null) {
+  const normalized = normalizeMonsterAnatomyGrants(grants);
+  if (!normalized) return [];
+
+  const rows = [];
+  const push = (label, values) => {
+    if (!values?.length) return;
+    rows.push({ label, values: values.map(formatAnatomyTerm) });
+  };
+
+  push("Grants Body Plan", normalized.grantsBodyPlans);
+  push("Grants Anatomy", normalized.grantsAnatomy);
+  push("Grants Tags", normalized.grantsTags);
+  push("Grants Tokens", normalized.grantsTokens);
+  if (normalized.note) rows.push({ label: "Grant Note", values: [normalized.note] });
   return rows;
 }

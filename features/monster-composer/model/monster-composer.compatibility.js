@@ -1,12 +1,16 @@
 import {
   FEATURE_ANATOMY_CONSTRAINT_OVERRIDES,
+  FEATURE_ANATOMY_GRANT_OVERRIDES,
   FEATURE_COMPATIBILITY_OVERRIDES,
 } from "../data/monster-grafts.js";
 import {
   evaluateMonsterAnatomyConstraints,
   formatAnatomyTerm,
+  getEffectiveMonsterAnatomyProfile,
   getFeatureAnatomyConstraints,
+  getFeatureAnatomyGrants,
   summarizeMonsterAnatomyConstraints,
+  summarizeMonsterAnatomyGrants,
 } from "./anatomy.js";
 import { asArray, getSelectedIdsForSlot, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
 
@@ -25,8 +29,17 @@ export function hasFeatureCompatibilityOverride(featureOrId) {
 export function getFeatureCompatibility(feature) {
   const override = FEATURE_COMPATIBILITY_OVERRIDES[feature.id] || {};
   const anatomyOverride = FEATURE_ANATOMY_CONSTRAINT_OVERRIDES[feature.id] || {};
+  const anatomyGrantOverride = FEATURE_ANATOMY_GRANT_OVERRIDES[feature.id] || null;
+  const anatomyGrants = getFeatureAnatomyGrants({
+    ...feature,
+    anatomyGrants: feature.anatomyGrants || anatomyGrantOverride,
+  });
   return {
-    grants: uniqueArray([...asArray(feature.grants), ...asArray(override.grants)]),
+    grants: uniqueArray([
+      ...asArray(feature.grants),
+      ...asArray(override.grants),
+      ...asArray(anatomyGrants?.grantsTokens),
+    ]),
     requires: uniqueArray([...asArray(feature.requires), ...asArray(override.requires)]),
     softRequires: uniqueArray([
       ...asArray(feature.softRequires),
@@ -45,6 +58,7 @@ export function getFeatureCompatibility(feature) {
         anatomyOverride.constraints ||
         anatomyOverride,
     }),
+    anatomyGrants,
   };
 }
 
@@ -67,6 +81,19 @@ export function formatAnatomyConstraintValue(value) {
 
 export function getFeatureAnatomyConstraintSummary(feature) {
   return summarizeMonsterAnatomyConstraints(getFeatureCompatibility(feature).constraints);
+}
+
+export function getFeatureAnatomyGrantSummary(feature) {
+  return summarizeMonsterAnatomyGrants(getFeatureCompatibility(feature).anatomyGrants);
+}
+
+export function getEffectiveBuildAnatomyProfile(
+  selectedFeatures = [],
+  typeId = "undead",
+  category = "Zombie",
+  activePreset = null,
+) {
+  return getEffectiveMonsterAnatomyProfile(typeId, category, activePreset, selectedFeatures);
 }
 
 export function getBaseTokens(typeId, category) {
@@ -106,10 +133,16 @@ export function getCompatibilityStatus(
   feature,
   selectedFeatures = [],
   typeId = "undead",
-  category = "Zombie"
+  category = "Zombie",
+  options = {},
 ) {
   const compatibility = getFeatureCompatibility(feature);
-  const grantedTokens = getGrantedTokens(selectedFeatures, typeId, category);
+  const activePreset = options?.activePreset || null;
+  const effectiveProfile = getEffectiveBuildAnatomyProfile(selectedFeatures, typeId, category, activePreset);
+  const grantedTokens = uniqueArray([
+    ...getGrantedTokens(selectedFeatures, typeId, category),
+    ...(effectiveProfile.tokens || []),
+  ]);
   const selectedBlocks = uniqueArray(
     selectedFeatures.flatMap((item) => getFeatureCompatibility(item).incompatibleWith)
   );
@@ -126,7 +159,10 @@ export function getCompatibilityStatus(
     {
       typeId,
       category,
+      activePreset,
+      selectedFeatures,
       grantedTokens,
+      profile: effectiveProfile,
     },
   );
 
@@ -239,7 +275,12 @@ export function buildFeatureDecisionProfile(feature, context = {}) {
   const mechanicProfile = getFeatureMechanicProfile(feature);
   const counterplayProfile = getFeatureCounterplayProfile(feature);
   const compatibility = getFeatureCompatibility(feature);
-  const grantedTokens = getGrantedTokens(selectedFeatures, typeId, category);
+  const activePreset = context.activePreset || null;
+  const effectiveProfile = getEffectiveBuildAnatomyProfile(selectedFeatures, typeId, category, activePreset);
+  const grantedTokens = uniqueArray([
+    ...getGrantedTokens(selectedFeatures, typeId, category),
+    ...(effectiveProfile.tokens || []),
+  ]);
   const synergyTokens = uniqueArray(
     [...compatibility.requires, ...compatibility.softRequires].filter((token) =>
       grantedTokens.includes(token)

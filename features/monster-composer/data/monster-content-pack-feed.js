@@ -30,6 +30,10 @@ function uniqueArray(values) {
   return [...new Set(normalizeStringArray(values))];
 }
 
+function isPlainObject(value) {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value));
+}
+
 function getPrimarySlot(component) {
   return component?.monster?.slot || component?.slots?.[0] || "";
 }
@@ -70,11 +74,17 @@ export function sharedComponentToMonsterGraft(component, contentPack = {}) {
     horror: normalizeStringArray(component.horror),
     typeBias: normalizeStringArray(monster.typeBias),
     roleBias: normalizeStringArray(monster.roleBias),
+    grants: normalizeStringArray(monster.compatibility?.grants),
     cost: Number(monster.cost || 0),
     complexity: Number(monster.complexity || 0),
     stats: { ...(monster.stats || {}) },
     rules: monster.rules || component.rules || null,
     constraints: monster.constraints || component.anatomyConstraints || component.constraints || null,
+    anatomyGrants:
+      monster.anatomyGrants ||
+      (isPlainObject(monster.grants) ? monster.grants : null) ||
+      component.anatomyGrants ||
+      null,
     summary: component.summary || "",
     mechanics: component.mechanics || component.tableText || "",
     counterplay: component.counterplay || "",

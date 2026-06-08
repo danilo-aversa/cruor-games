@@ -63,13 +63,6 @@ export const SITE_NAV_ITEMS = [
     type: "section",
     sectionId: "inspirations",
   },
-  {
-    id: "inspiration-studio",
-    label: "Studio",
-    icon: "fa-solid fa-pen-nib",
-    type: "section",
-    sectionId: "inspiration-studio",
-  },
 ];
 
 export function getCrucibleMenuItemId(generatorId) {

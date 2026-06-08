@@ -22,10 +22,16 @@ import {
   KNOWN_MONSTER_CREATURE_TAGS,
   KNOWN_MONSTER_FAMILY_IDS,
   MONSTER_ANATOMY_CONSTRAINT_FIELDS,
+  MONSTER_ANATOMY_GRANT_FIELDS,
   MONSTER_BODY_PLAN_OPTIONS,
   MONSTER_FAMILY_PROFILE_OPTIONS,
+  evaluateMonsterAnatomyConstraints,
+  formatAnatomyTerm,
+  getEffectiveMonsterAnatomyProfile,
   normalizeMonsterAnatomyConstraints,
+  normalizeMonsterAnatomyGrants,
   summarizeMonsterAnatomyConstraints,
+  summarizeMonsterAnatomyGrants,
 } from "../monster-composer/model/anatomy.js";
 
 const EMPTY_DRAFT = {
@@ -89,10 +95,22 @@ const COMPONENT_TYPE_ICONS = {
 
 const STUDIO_SECTIONS = [
   {
-    id: "identity",
-    label: "Identity",
+    id: "source",
+    label: "Source",
     icon: "fa-id-card-clip",
-    hint: "Name, collection, public card, source tags, and image.",
+    hint: "Name, pack, status, and source anchor identity.",
+  },
+  {
+    id: "card",
+    label: "Card",
+    icon: "fa-image",
+    hint: "Public summary, disturbing hook, and archive image.",
+  },
+  {
+    id: "taxonomy",
+    label: "Taxonomy",
+    icon: "fa-tags",
+    hint: "Source types, themes, motifs, and horror tags.",
   },
   {
     id: "components",
@@ -101,10 +119,10 @@ const STUDIO_SECTIONS = [
     hint: "Monster grafts, location content, and map regions linked to this source.",
   },
   {
-    id: "export",
-    label: "Export",
-    icon: "fa-code",
-    hint: "Copy the current local draft as module JSON.",
+    id: "review",
+    label: "Review",
+    icon: "fa-shield-halved",
+    hint: "Validation, publishing readiness, and JSON export.",
   },
 ];
 
@@ -666,6 +684,62 @@ function getIssueSummary(issues = []) {
   }, { total: 0, error: 0, warning: 0, info: 0 });
 }
 
+function getIssueSeverityRank(severity = "warning") {
+  if (severity === "error") return 0;
+  if (severity === "warning") return 1;
+  return 2;
+}
+
+function getGroupedValidationIssues(issues = [], { includeInfo = true } = {}) {
+  const groups = new Map();
+
+  asArray(issues).forEach((issue) => {
+    const severity = issue?.severity || "warning";
+    if (!includeInfo && severity === "info") return;
+
+    const message = issue?.message || "Validation issue.";
+    const key = `${severity}::${message}`;
+    const current = groups.get(key) || {
+      key,
+      severity,
+      message,
+      count: 0,
+      ids: [],
+      paths: [],
+    };
+
+    current.count += 1;
+    if (issue?.id && !current.ids.includes(issue.id)) current.ids.push(issue.id);
+    if (issue?.path && !current.paths.includes(issue.path)) current.paths.push(issue.path);
+    groups.set(key, current);
+  });
+
+  return [...groups.values()].sort((a, b) => {
+    const severityDelta = getIssueSeverityRank(a.severity) - getIssueSeverityRank(b.severity);
+    if (severityDelta) return severityDelta;
+    return b.count - a.count;
+  });
+}
+
+function getIssueGroupMeta(group) {
+  const ids = asArray(group?.ids);
+  const paths = asArray(group?.paths);
+  const visibleIds = ids.slice(0, 2).join(", ");
+  const hiddenIdCount = Math.max(0, ids.length - 2);
+  if (visibleIds) return hiddenIdCount ? `${visibleIds} +${hiddenIdCount}` : visibleIds;
+  if (paths.length === 1) return paths[0];
+  if (paths.length > 1) return `${paths.length} affected fields`;
+  return "Current draft";
+}
+
+function formatPlainLabel(value) {
+  return String(value || "")
+    .replace(/[-_]+/g, " ")
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .trim()
+    .replace(/\b\w/g, (match) => match.toUpperCase());
+}
+
 function hasText(value) {
   return String(value || "").trim().length > 0;
 }
@@ -697,6 +771,20 @@ const ANATOMY_CONSTRAINT_FIELD_LABELS = Object.freeze({
   forbiddenTokens: "Forbidden Build Tokens",
 });
 
+const ANATOMY_GRANT_FIELD_LABELS = Object.freeze({
+  grantsBodyPlans: "Grants Body Plans",
+  grantsAnatomy: "Grants Anatomy",
+  grantsTags: "Grants Creature Tags",
+  grantsTokens: "Grants Build Tokens",
+});
+
+const ANATOMY_GRANT_FIELD_HINTS = Object.freeze({
+  grantsBodyPlans: "Optional. Adds a body plan to the current build after this graft is installed; use rarely for major transformations.",
+  grantsAnatomy: "Optional. Adds anatomy tags such as web_glands, spinnerets, tendrils, wings, or spectral_body to the build.",
+  grantsTags: "Optional. Adds effective creature tags such as web_bearing, spider_infested, wax_mask, or bone_body.",
+  grantsTokens: "Optional. Adds build tokens used by other grafts as prerequisites, such as web_maker or egg_carrier.",
+});
+
 const ANATOMY_CONSTRAINT_FIELD_HINTS = Object.freeze({
   allowedFamilies: "Hard allowlist. Use this for creature-family exclusive grafts, such as spider-only or skeleton-only features.",
   forbiddenFamilies: "Hard denylist for specific creature families.",
@@ -719,6 +807,34 @@ function getMonsterConstraintSource(component = {}) {
 
 function getMonsterConstraintSummary(component = {}) {
   return summarizeMonsterAnatomyConstraints(getMonsterConstraintSource(component));
+}
+
+function getMonsterGrantSource(component = {}) {
+  return component.monster?.anatomyGrants || component.monster?.grants || component.anatomyGrants || null;
+}
+
+function getMonsterGrantSummary(component = {}) {
+  return summarizeMonsterAnatomyGrants(getMonsterGrantSource(component));
+}
+
+function buildStudioCompatibilityMatrix(component = {}) {
+  if (component.contentType !== "monster-graft") return [];
+  const feature = buildMonsterRulesFeature(component, getExplicitMonsterRules(component));
+  return MONSTER_FAMILY_PROFILE_OPTIONS.map((profileOption) => {
+    const category = asArray(profileOption.categories)[0] || profileOption.label;
+    const profile = getEffectiveMonsterAnatomyProfile(profileOption.typeId, category, null, []);
+    const status = evaluateMonsterAnatomyConstraints(feature, {
+      typeId: profileOption.typeId,
+      category,
+      profile,
+    });
+    return {
+      id: profileOption.id,
+      label: profileOption.label,
+      typeId: profileOption.typeId,
+      status,
+    };
+  });
 }
 
 function validateConstraintTerms(values = [], knownValues = [], path, issues, id, label) {
@@ -744,6 +860,20 @@ function validateMonsterAnatomyConstraintsForStudio(component = {}, index, issue
 
   if (!MONSTER_ANATOMY_CONSTRAINT_FIELDS.some((field) => asArray(constraints[field]).length)) {
     issues.push(makeIssue("info", `components[${index}].monster.constraints`, "Anatomy constraints contain only a note and do not restrict compatibility.", id));
+  }
+}
+
+function validateMonsterAnatomyGrantsForStudio(component = {}, index, issues) {
+  const id = component.id || component.monster?.graftId || `component-${index}`;
+  const grants = normalizeMonsterAnatomyGrants(getMonsterGrantSource(component));
+  if (!grants) return;
+
+  validateConstraintTerms(grants.grantsBodyPlans, KNOWN_MONSTER_BODY_PLAN_IDS, `components[${index}].monster.anatomyGrants.grantsBodyPlans`, issues, id, "body plan");
+  validateConstraintTerms(grants.grantsAnatomy, KNOWN_MONSTER_ANATOMY_TAGS, `components[${index}].monster.anatomyGrants.grantsAnatomy`, issues, id, "anatomy tag");
+  validateConstraintTerms(grants.grantsTags, KNOWN_MONSTER_CREATURE_TAGS, `components[${index}].monster.anatomyGrants.grantsTags`, issues, id, "creature tag");
+
+  if (!MONSTER_ANATOMY_GRANT_FIELDS.some((field) => asArray(grants[field]).length)) {
+    issues.push(makeIssue("info", `components[${index}].monster.anatomyGrants`, "Anatomy grants contain only a note and do not change the effective build.", id));
   }
 }
 
@@ -776,6 +906,7 @@ function buildMonsterRulesFeature(component = {}, explicitRules = null) {
     mechanics: component.mechanics || component.tableText || "",
     counterplay: component.counterplay || "",
     constraints: getMonsterConstraintSource(component),
+    anatomyGrants: getMonsterGrantSource(component),
   };
   if (explicitRules) feature.rules = explicitRules;
   return feature;
@@ -951,12 +1082,17 @@ function normalizeExportComponent(component = {}, sourceAnchor = {}) {
 
   if (normalizedComponent.contentType === "monster-graft") {
     const constraints = normalizeMonsterAnatomyConstraints(getMonsterConstraintSource(component));
+    const anatomyGrants = normalizeMonsterAnatomyGrants(getMonsterGrantSource(component));
     normalizedComponent.monster = {
       ...(normalizedComponent.monster || {}),
       constraints: constraints || undefined,
+      anatomyGrants: anatomyGrants || undefined,
     };
     if (!constraints && normalizedComponent.monster?.constraints === undefined) {
       delete normalizedComponent.monster.constraints;
+    }
+    if (!anatomyGrants && normalizedComponent.monster?.anatomyGrants === undefined) {
+      delete normalizedComponent.monster.anatomyGrants;
     }
   }
 
@@ -1144,6 +1280,7 @@ function validateStudioDraft(draft, contentPackExport) {
         issues.push(makeIssue("warning", `components[${index}].counterplay`, "Monster graft has no explicit counterplay text.", id));
       }
       validateMonsterAnatomyConstraintsForStudio(component, index, issues);
+      validateMonsterAnatomyGrantsForStudio(component, index, issues);
     }
 
     if (type === "location-component") {
@@ -1313,11 +1450,15 @@ function SelectInput({ options, value, onChange }) {
 }
 
 function StudioTabButton({ icon, isActive, label, count, hint, onClick }) {
+  const tooltip = hint ? `${label}: ${hint}` : label;
+
   return (
     <button
       className={`studio-tab-button ${isActive ? "is-active" : ""}`.trim()}
       type="button"
+      aria-label={tooltip}
       aria-pressed={isActive}
+      title={tooltip}
       onClick={onClick}
     >
       <span className="studio-tab-button__label">
@@ -1325,7 +1466,6 @@ function StudioTabButton({ icon, isActive, label, count, hint, onClick }) {
         <span>{label}</span>
         {typeof count === "number" ? <strong>{count}</strong> : null}
       </span>
-      {hint ? <em>{hint}</em> : null}
     </button>
   );
 }
@@ -1337,6 +1477,86 @@ function StatPill({ icon, label, value }) {
       <strong>{value}</strong>
       <em>{label}</em>
     </span>
+  );
+}
+
+function getSectionCount(sectionId, draft, componentGroups, validationReport) {
+  if (sectionId === "components") return asArray(draft.components).length;
+  if (sectionId === "review") {
+    const summary = validationReport?.summary || getIssueSummary(validationReport?.issues);
+    return (summary.error || 0) + (summary.warning || 0);
+  }
+  return undefined;
+}
+
+function StudioRightRail({ componentGroups, draft, imageSource, packTitle, validationReport }) {
+  const issues = asArray(validationReport?.issues);
+  const summary = validationReport?.summary || getIssueSummary(issues);
+  const groupedIssues = getGroupedValidationIssues(issues, { includeInfo: false }).slice(0, 4);
+  const readinessState = summary.error ? "error" : summary.warning ? "warning" : "clean";
+  const readinessLabel = summary.error ? "Needs Fixes" : summary.warning ? "Needs Review" : "Ready";
+  const graftCount = componentGroups["monster-graft"].length;
+  const locationCount = componentGroups["location-component"].length;
+  const regionCount = componentGroups["location-region"].length;
+  const linkedTotal = graftCount + locationCount + regionCount;
+  const sourceType = draft.sourceAnchor.sourceTypes?.[0] || "Source Anchor";
+
+  return (
+    <aside className="studio-right-rail" aria-label="Inspiration preview and readiness">
+      <section className="studio-rail-card studio-rail-card--preview">
+        <span className="studio-rail-card__eyebrow"><Icon name="fa-book-skull" /> Public Preview</span>
+        <div className="studio-card-preview studio-card-preview--rail" aria-label="Public 4:5 inspiration card preview">
+          {imageSource ? (
+            <img src={imageSource} alt={`${draft.title} preview`} />
+          ) : (
+            <div className="studio-card-preview__empty">
+              <Icon name="fa-image" />
+              <span>No Image Preview</span>
+            </div>
+          )}
+          <div className="studio-card-preview__caption">
+            <span>4:5 Public Crop</span>
+            <strong>{draft.title}</strong>
+            <em>{sourceType}</em>
+          </div>
+        </div>
+        <p>{draft.inspiration.summary || draft.sourceAnchor.summary || "No public summary yet."}</p>
+      </section>
+
+      <section className="studio-rail-card studio-rail-card--status" data-readiness-state={readinessState}>
+        <span className="studio-rail-card__eyebrow"><Icon name="fa-shield-halved" /> Publish Readiness</span>
+        <div className="studio-rail-readiness-line">
+          <Icon name={summary.error ? "fa-circle-xmark" : summary.warning ? "fa-triangle-exclamation" : "fa-circle-check"} />
+          <strong>{readinessLabel}</strong>
+          <span>{summary.error || 0} errors · {summary.warning || 0} warnings</span>
+        </div>
+        {groupedIssues.length ? (
+          <div className="studio-rail-issues studio-rail-issues--grouped">
+            {groupedIssues.map((group) => {
+              const meta = VALIDATION_SEVERITY_META[group.severity] || VALIDATION_SEVERITY_META.warning;
+              return (
+                <span className={`studio-rail-issue-group studio-rail-issue-group--${group.severity}`} key={group.key}>
+                  <em><Icon name={meta.icon} /> {group.count > 1 ? `${group.count}×` : meta.label}</em>
+                  <strong>{group.message}</strong>
+                  <small>{getIssueGroupMeta(group)}</small>
+                </span>
+              );
+            })}
+          </div>
+        ) : (
+          <p>No blocking issues detected.</p>
+        )}
+      </section>
+
+      <section className="studio-rail-card studio-rail-card--counts">
+        <span className="studio-rail-card__eyebrow"><Icon name="fa-diagram-project" /> Linked Content</span>
+        <div className="studio-rail-content-line">
+          <strong>{linkedTotal}</strong>
+          <span>{graftCount} grafts · {locationCount} locations · {regionCount} regions</span>
+        </div>
+        <small>{packTitle}</small>
+      </section>
+    </aside>
   );
 }
 
@@ -1412,7 +1632,7 @@ export default function InspirationStudioPage() {
   const [packSummaries, setPackSummaries] = useState([]);
   const [selectedModuleId, setSelectedModuleId] = useState(null);
   const [draft, setDraft] = useState(() => normalizeModuleForDraft(EMPTY_DRAFT));
-  const [activeSection, setActiveSection] = useState("identity");
+  const [activeSection, setActiveSection] = useState("source");
   const [componentMode, setComponentMode] = useState("monsters");
   const [locationFilter, setLocationFilter] = useState("all");
   const [componentSearch, setComponentSearch] = useState("");
@@ -1420,6 +1640,7 @@ export default function InspirationStudioPage() {
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
   const [copyState, setCopyState] = useState("idle");
   const [exportMode, setExportMode] = useState("contentPack");
+  const [libraryCollapsed, setLibraryCollapsed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -1595,140 +1816,295 @@ export default function InspirationStudioPage() {
 
   return (
     <section className="inspiration-studio" aria-label="Inspiration Studio" data-studio-ready="true">
-      <header className="inspiration-studio__header">
+      <header className="inspiration-studio__header inspiration-studio__header--compact inspiration-studio__header--editing">
         <div className="inspiration-studio__headline">
           <span className="inspiration-studio__eyebrow">
-            <Icon name="fa-screwdriver-wrench" /> Creator Tool
+            <Icon name="fa-screwdriver-wrench" /> Admin Content Studio
           </span>
-          <h1>Inspiration Studio</h1>
-          <p>Inspect and reshape the Inspiration Module model before converting the full archive.</p>
+          <h1>Editing: {draft.title}</h1>
         </div>
-
-        <div className="inspiration-studio__module-picker" aria-label="Current inspiration module">
-          <FormRow label="Current Inspiration" icon="fa-book-open" hint={FIELD_HELP.currentInspiration}>
-            <select value={selectedModuleId || ""} onChange={(event) => selectModule(event.target.value)}>
-              {modules.map((module) => (
-                <option key={module.id} value={module.id}>{module.title}</option>
-              ))}
-            </select>
-          </FormRow>
-          <div className="inspiration-studio__quick-meta">
-            <span>{packTitle}</span>
-            <span>{draft.status}</span>
-            <span>{draft.id}</span>
-          </div>
+        <div className="inspiration-studio__quick-meta inspiration-studio__quick-meta--header" aria-label="Current module status">
+          <span><Icon name="fa-box-open" /> {packTitle}</span>
+          <span><Icon name="fa-circle-check" /> {draft.status || "draft"}</span>
+          <span><Icon name="fa-diagram-project" /> {asArray(draft.components).length} components</span>
         </div>
       </header>
 
-      <div className="inspiration-studio__summary-bar" aria-label="Module summary">
-        <StatPill icon="fa-puzzle-piece" label="Components" value={draft.components.length} />
-        <StatPill icon="fa-skull" label="Grafts" value={monsterComponents.length} />
-        <StatPill icon="fa-map-location-dot" label="Locations" value={componentGroups["location-component"].length} />
-        <StatPill icon="fa-dungeon" label="Regions" value={componentGroups["location-region"].length} />
-      </div>
+      <div className={`inspiration-studio__layout ${libraryCollapsed ? "is-library-collapsed" : ""}`.trim()}>
+        <aside className={`studio-library-panel ${libraryCollapsed ? "is-collapsed" : ""}`.trim()} aria-label="Inspiration library" aria-expanded={!libraryCollapsed}>
+          <div className="studio-library-panel__topline">
+            <span className="studio-library-panel__title">
+              <Icon name="fa-book-open" />
+              <span>Inspiration Library</span>
+            </span>
+            <button
+              className="studio-library-panel__collapse"
+              type="button"
+              aria-label={libraryCollapsed ? "Expand inspiration library" : "Collapse inspiration library"}
+              title={libraryCollapsed ? "Expand inspiration library" : "Collapse inspiration library"}
+              aria-pressed={libraryCollapsed}
+              onClick={() => setLibraryCollapsed((value) => !value)}
+            >
+              <Icon name={libraryCollapsed ? "fa-chevron-right" : "fa-chevron-left"} />
+            </button>
+          </div>
 
-      <div className="inspiration-studio__sheet">
-        <nav className="inspiration-studio__section-tabs" aria-label="Studio editor sections">
-          {STUDIO_SECTIONS.map((section) => (
-            <StudioTabButton
-              key={section.id}
-              icon={section.icon}
-              isActive={activeSection === section.id}
-              label={section.label}
-              hint={section.hint}
-              onClick={() => setActiveSection(section.id)}
-            />
-          ))}
-        </nav>
+          {!libraryCollapsed ? (
+            <>
+              <FormRow label="Current Inspiration" icon="fa-book-open" hint={FIELD_HELP.currentInspiration}>
+                <select value={selectedModuleId || ""} onChange={(event) => selectModule(event.target.value)}>
+                  {modules.map((module) => (
+                    <option key={module.id} value={module.id}>{module.title}</option>
+                  ))}
+                </select>
+              </FormRow>
 
-        <main className="inspiration-studio__main" aria-label="Inspiration module editor">
-          {activeSection === "identity" ? (
-            <IdentityWorkspace
-              draft={draft}
-              imageSource={imageSource}
-              onTitleChange={handleTitleChange}
-              onImageUpload={handleImageUpload}
-              updateArrayField={updateArrayField}
-              updateDraft={updateDraft}
-              updateDraftField={updateDraftField}
-            />
-          ) : null}
+              <div className="studio-library-list" role="list" aria-label="Available inspirations">
+                {modules.map((module) => (
+                  <button
+                    key={module.id}
+                    className={module.id === selectedModuleId ? "is-active" : ""}
+                    type="button"
+                    onClick={() => selectModule(module.id)}
+                  >
+                    <strong>{module.title}</strong>
+                    <span>{module.packId || "core-cruor"} · {module.status || "draft"}</span>
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="studio-library-panel__collapsed" aria-hidden="true">
+              <Icon name="fa-book-skull" />
+              <span>{modules.length}</span>
+            </div>
+          )}
+        </aside>
 
-          {activeSection === "components" ? (
-            <ComponentsWorkspace
-              componentMode={componentMode}
-              componentSearch={componentSearch}
-              locationComponentsCount={componentGroups["location-component"].length}
-              locationFilter={locationFilter}
-              locationRegionsCount={componentGroups["location-region"].length}
-              monsterComponentsCount={monsterComponents.length}
-              selectedComponent={selectedComponent}
-              selectedComponentId={selectedComponentId}
-              visibleComponents={visibleComponents}
-              onAddComponent={addComponent}
-              onComponentModeChange={selectComponentWorkspace}
-              onComponentSearchChange={setComponentSearch}
-              onLocationFilterChange={(filter) => {
-                setLocationFilter(filter);
-                setSelectedComponentId(null);
-              }}
-              onRemoveComponent={() => selectedComponent ? removeComponent(selectedComponent.id) : null}
-              onSelectComponent={setSelectedComponentId}
-              onUpdateComponent={updateComponent}
-            />
-          ) : null}
+        <div className="inspiration-studio__sheet">
+          <nav className="inspiration-studio__section-tabs" aria-label="Studio editor steps">
+            {STUDIO_SECTIONS.map((section, index) => (
+              <StudioTabButton
+                key={section.id}
+                icon={section.icon}
+                isActive={activeSection === section.id}
+                label={`${index + 1}. ${section.label}`}
+                count={getSectionCount(section.id, draft, componentGroups, validationReport)}
+                hint={section.hint}
+                onClick={() => setActiveSection(section.id)}
+              />
+            ))}
+          </nav>
 
-          {activeSection === "export" ? (
-            <ExportWorkspace
-              contentPackExportJson={contentPackExportJson}
-              copyState={copyState}
-              exportJson={exportJson}
-              exportMode={exportMode}
-              moduleExportJson={moduleExportJson}
-              onCopy={copyExportJson}
-              onExportModeChange={setExportMode}
-              validationReport={validationReport}
-            />
-          ) : null}
-        </main>
+          <main className="inspiration-studio__main" aria-label="Inspiration module editor">
+            {activeSection === "source" ? (
+              <IdentityWorkspace
+                mode="source"
+                draft={draft}
+                imageSource={imageSource}
+                onTitleChange={handleTitleChange}
+                onImageUpload={handleImageUpload}
+                updateArrayField={updateArrayField}
+                updateDraft={updateDraft}
+                updateDraftField={updateDraftField}
+              />
+            ) : null}
+
+            {activeSection === "card" ? (
+              <IdentityWorkspace
+                mode="card"
+                draft={draft}
+                imageSource={imageSource}
+                onTitleChange={handleTitleChange}
+                onImageUpload={handleImageUpload}
+                updateArrayField={updateArrayField}
+                updateDraft={updateDraft}
+                updateDraftField={updateDraftField}
+              />
+            ) : null}
+
+            {activeSection === "taxonomy" ? (
+              <IdentityWorkspace
+                mode="taxonomy"
+                draft={draft}
+                imageSource={imageSource}
+                onTitleChange={handleTitleChange}
+                onImageUpload={handleImageUpload}
+                updateArrayField={updateArrayField}
+                updateDraft={updateDraft}
+                updateDraftField={updateDraftField}
+              />
+            ) : null}
+
+            {activeSection === "components" ? (
+              <ComponentsWorkspace
+                componentMode={componentMode}
+                componentSearch={componentSearch}
+                locationComponentsCount={componentGroups["location-component"].length}
+                locationFilter={locationFilter}
+                locationRegionsCount={componentGroups["location-region"].length}
+                monsterComponentsCount={monsterComponents.length}
+                selectedComponent={selectedComponent}
+                selectedComponentId={selectedComponentId}
+                visibleComponents={visibleComponents}
+                onAddComponent={addComponent}
+                onComponentModeChange={selectComponentWorkspace}
+                onComponentSearchChange={setComponentSearch}
+                onLocationFilterChange={(filter) => {
+                  setLocationFilter(filter);
+                  setSelectedComponentId(null);
+                }}
+                onRemoveComponent={() => selectedComponent ? removeComponent(selectedComponent.id) : null}
+                onSelectComponent={setSelectedComponentId}
+                onUpdateComponent={updateComponent}
+              />
+            ) : null}
+
+            {activeSection === "review" ? (
+              <ExportWorkspace
+                contentPackExportJson={contentPackExportJson}
+                copyState={copyState}
+                exportJson={exportJson}
+                exportMode={exportMode}
+                moduleExportJson={moduleExportJson}
+                onCopy={copyExportJson}
+                onExportModeChange={setExportMode}
+                validationReport={validationReport}
+              />
+            ) : null}
+          </main>
+        </div>
+
+        <StudioRightRail
+          componentGroups={componentGroups}
+          draft={draft}
+          imageSource={imageSource}
+          packTitle={packTitle}
+          validationReport={validationReport}
+        />
       </div>
     </section>
   );
 }
 
-function IdentityWorkspace({ draft, imageSource, onImageUpload, onTitleChange, updateArrayField, updateDraft, updateDraftField }) {
+function IdentityWorkspace({ draft, imageSource, mode = "source", onImageUpload, onTitleChange, updateArrayField, updateDraft, updateDraftField }) {
+  if (mode === "source") {
+    return (
+      <div className="inspiration-studio__workspace inspiration-studio__workspace--source">
+        <section className="studio-panel studio-panel--identity" aria-label="Source setup">
+          <PanelTitle eyebrow="Step 1" icon="fa-id-card-clip" title="Source Setup" help="Set the editorial identity first: name, pack, and publication status. Technical IDs stay under Advanced unless you need them." />
+
+          <div className="studio-form-grid studio-form-grid--primary">
+            <FormRow label="Inspiration Name" icon="fa-signature" hint={FIELD_HELP.inspirationName}>
+              <TextInput value={draft.title} onChange={onTitleChange} />
+            </FormRow>
+            <FormRow label="Collection / Pack" icon="fa-layer-group" hint={FIELD_HELP.packId}>
+              <TextInput list="studio-pack-options" value={draft.packId} onChange={(value) => updateDraftField(["packId"], value)} />
+            </FormRow>
+            <FormRow label="Status" icon="fa-circle-check" hint={FIELD_HELP.status} helpItems={STATUS_TOOLTIP_ITEMS}>
+              <select value={draft.status} onChange={(event) => {
+                const value = event.target.value;
+                updateDraft((nextDraft) => {
+                  nextDraft.status = value;
+                  nextDraft.sourceAnchor.status = value;
+                  nextDraft.inspiration.status = value;
+                });
+              }}>
+                {STATUS_OPTIONS.map((option) => (
+                  <option key={option.id} value={option.id}>{option.label}</option>
+                ))}
+              </select>
+            </FormRow>
+          </div>
+
+          <datalist id="studio-pack-options">
+            <option value="core-cruor" />
+            <option value="existing-inspirations" />
+            <option value="decomposition-inspiration-module" />
+            <option value="sedlec-ossuary-inspiration-module" />
+          </datalist>
+
+          <details className="studio-advanced-details">
+            <summary><Icon name="fa-gear" /> Advanced identity fields</summary>
+            <div className="studio-form-grid studio-form-grid--compact">
+              <FormRow label="Source Anchor ID" icon="fa-fingerprint" hint={FIELD_HELP.sourceAnchorId}>
+                <TextInput value={draft.sourceAnchor.id} onChange={(value) => updateDraftField(["sourceAnchor", "id"], value)} />
+              </FormRow>
+              <FormRow label="Inspiration Card ID" icon="fa-fingerprint" hint="Stable ID for the public inspiration card object.">
+                <TextInput value={draft.inspiration.id} onChange={(value) => updateDraftField(["inspiration", "id"], value)} />
+              </FormRow>
+            </div>
+          </details>
+        </section>
+      </div>
+    );
+  }
+
+  if (mode === "card") {
+    return (
+      <div className="inspiration-studio__workspace inspiration-studio__workspace--card">
+        <section className="studio-panel studio-panel--identity" aria-label="Public inspiration card copy">
+          <PanelTitle eyebrow="Step 2" icon="fa-align-left" title="Public Card" help={SECTION_HELP.publicCopy} />
+
+          <FormRow label="Public Summary" icon="fa-quote-left" hint={FIELD_HELP.publicSummary}>
+            <TextArea rows={4} value={draft.inspiration.summary || draft.sourceAnchor.summary} onChange={(value) => {
+              updateDraft((nextDraft) => {
+                nextDraft.inspiration.summary = value;
+                nextDraft.sourceAnchor.summary = value;
+              });
+            }} />
+          </FormRow>
+
+          <FormRow label="Why It Disturbs / Narrative" icon="fa-book-skull" hint={FIELD_HELP.narrative}>
+            <TextArea rows={6} value={draft.inspiration.narrative} onChange={(value) => updateDraftField(["inspiration", "narrative"], value)} />
+          </FormRow>
+        </section>
+
+        <section className="studio-panel studio-panel--media" aria-label="Card image">
+          <PanelTitle eyebrow="Archive Image" icon="fa-image" title="Preview & Asset" help={SECTION_HELP.media} />
+
+          <div className="studio-card-preview">
+            {imageSource ? (
+              <img src={imageSource} alt={`${draft.title} preview`} />
+            ) : (
+              <div className="studio-card-preview__empty">
+                <Icon name="fa-image" />
+                <span>No Image Preview</span>
+              </div>
+            )}
+            <div>
+              <strong>{draft.title}</strong>
+              <span>{draft.sourceAnchor.sourceTypes?.[0] || "Source Anchor"}</span>
+            </div>
+          </div>
+
+          <FormRow label="Upload Preview Image" icon="fa-upload" hint={FIELD_HELP.uploadPreview}>
+            <input type="file" accept="image/*" onChange={onImageUpload} />
+          </FormRow>
+
+          <details className="studio-advanced-details">
+            <summary><Icon name="fa-gear" /> Advanced asset fields</summary>
+            <FormRow label="Image Key / Filename" icon="fa-file-image" hint={FIELD_HELP.imageKey}>
+              <TextInput value={draft.inspiration.media?.imageKey} onChange={(value) => updateDraftField(["inspiration", "media", "imageKey"], value)} />
+            </FormRow>
+            <FormRow label="Image URL" icon="fa-link" hint={FIELD_HELP.imageUrl}>
+              <TextInput value={draft.inspiration.media?.imageUrl} onChange={(value) => updateDraftField(["inspiration", "media", "imageUrl"], value)} />
+            </FormRow>
+            <FormRow label="Image Note" icon="fa-note-sticky" hint={FIELD_HELP.imageNote}>
+              <TextArea rows={3} value={draft.inspiration.media?.imageNote} onChange={(value) => updateDraftField(["inspiration", "media", "imageNote"], value)} />
+            </FormRow>
+          </details>
+        </section>
+      </div>
+    );
+  }
+
   return (
-    <div className="inspiration-studio__workspace inspiration-studio__workspace--identity">
-      <section className="studio-panel studio-panel--identity" aria-label="Identity and public card">
-        <PanelTitle eyebrow="Identity" icon="fa-id-card-clip" title="Source & Public Card" help={SECTION_HELP.identity} />
+    <div className="inspiration-studio__workspace inspiration-studio__workspace--taxonomy">
+      <section className="studio-panel studio-panel--identity" aria-label="Taxonomy">
+        <PanelTitle eyebrow="Step 3" icon="fa-tags" title="Taxonomy" help={SECTION_HELP.taxonomy} />
+        <p className="studio-panel-note">Use comma-separated chips. These drive filtering, inspiration discovery, and default component inheritance.</p>
 
-        <div className="studio-form-grid studio-form-grid--primary">
-          <FormRow label="Inspiration Name" icon="fa-signature" hint={FIELD_HELP.inspirationName}>
-            <TextInput value={draft.title} onChange={onTitleChange} />
-          </FormRow>
-          <FormRow label="Collection / Pack" icon="fa-layer-group" hint={FIELD_HELP.packId}>
-            <TextInput list="studio-pack-options" value={draft.packId} onChange={(value) => updateDraftField(["packId"], value)} />
-          </FormRow>
-          <FormRow className="studio-form-row--wide" label="Status" icon="fa-circle-check" hint={FIELD_HELP.status} helpItems={STATUS_TOOLTIP_ITEMS}>
-            <select value={draft.status} onChange={(event) => updateDraftField(["status"], event.target.value)}>
-              {STATUS_OPTIONS.map((option) => (
-                <option key={option.id} value={option.id}>{option.label}</option>
-              ))}
-            </select>
-          </FormRow>
-          <FormRow label="Source Anchor ID" icon="fa-fingerprint" hint={FIELD_HELP.sourceAnchorId}>
-            <TextInput value={draft.sourceAnchor.id} onChange={(value) => updateDraftField(["sourceAnchor", "id"], value)} />
-          </FormRow>
-        </div>
-
-        <datalist id="studio-pack-options">
-          <option value="core-cruor" />
-          <option value="existing-inspirations" />
-          <option value="decomposition-inspiration-module" />
-          <option value="sedlec-ossuary-inspiration-module" />
-        </datalist>
-
-        <DividerLabel icon="fa-tags" title="Taxonomy" help={SECTION_HELP.taxonomy} />
         <div className="studio-form-grid">
           <FormRow label="Source Types" icon="fa-folder-tree" hint={FIELD_HELP.sourceTypes}>
             <TextInput value={joinList(draft.sourceAnchor.sourceTypes)} onChange={(value) => updateArrayField(["sourceAnchor", "sourceTypes"], value)} />
@@ -1743,55 +2119,55 @@ function IdentityWorkspace({ draft, imageSource, onImageUpload, onTitleChange, u
             <TextInput value={joinList(draft.sourceAnchor.horror)} onChange={(value) => updateArrayField(["sourceAnchor", "horror"], value)} />
           </FormRow>
         </div>
-
-        <DividerLabel icon="fa-align-left" title="Public Copy" help={SECTION_HELP.publicCopy} />
-        <FormRow label="Public Summary" icon="fa-quote-left" hint={FIELD_HELP.publicSummary}>
-          <TextArea rows={4} value={draft.inspiration.summary || draft.sourceAnchor.summary} onChange={(value) => {
-            updateDraft((nextDraft) => {
-              nextDraft.inspiration.summary = value;
-              nextDraft.sourceAnchor.summary = value;
-            });
-          }} />
-        </FormRow>
-
-        <FormRow label="Why It Disturbs / Narrative" icon="fa-book-skull" hint={FIELD_HELP.narrative}>
-          <TextArea rows={5} value={draft.inspiration.narrative} onChange={(value) => updateDraftField(["inspiration", "narrative"], value)} />
-        </FormRow>
-      </section>
-
-      <section className="studio-panel studio-panel--media" aria-label="Card image">
-        <PanelTitle eyebrow="Card Image" icon="fa-image" title="Preview & Asset" help={SECTION_HELP.media} />
-
-        <div className="studio-card-preview">
-          {imageSource ? (
-            <img src={imageSource} alt={`${draft.title} preview`} />
-          ) : (
-            <div className="studio-card-preview__empty">
-              <Icon name="fa-image" />
-              <span>No Image Preview</span>
-            </div>
-          )}
-          <div>
-            <strong>{draft.title}</strong>
-            <span>{draft.sourceAnchor.sourceTypes?.[0] || "Source Anchor"}</span>
-          </div>
-        </div>
-
-        <FormRow label="Upload Preview Image" icon="fa-upload" hint={FIELD_HELP.uploadPreview}>
-          <input type="file" accept="image/*" onChange={onImageUpload} />
-        </FormRow>
-        <FormRow label="Image Key / Filename" icon="fa-file-image" hint={FIELD_HELP.imageKey}>
-          <TextInput value={draft.inspiration.media?.imageKey} onChange={(value) => updateDraftField(["inspiration", "media", "imageKey"], value)} />
-        </FormRow>
-        <FormRow label="Image URL" icon="fa-link" hint={FIELD_HELP.imageUrl}>
-          <TextInput value={draft.inspiration.media?.imageUrl} onChange={(value) => updateDraftField(["inspiration", "media", "imageUrl"], value)} />
-        </FormRow>
-        <FormRow label="Image Note" icon="fa-note-sticky" hint={FIELD_HELP.imageNote}>
-          <TextArea rows={3} value={draft.inspiration.media?.imageNote} onChange={(value) => updateDraftField(["inspiration", "media", "imageNote"], value)} />
-        </FormRow>
       </section>
     </div>
   );
+}
+
+function getComponentGroupMeta(component = {}) {
+  const type = component.contentType;
+  const slots = asArray(component.slots);
+  const primarySlot = type === "monster-graft" ? (component.monster?.slot || slots[0] || "unslotted") : (slots[0] || "unslotted");
+  const canonicalSlot = CANONICAL_SLOT_MAP.get(primarySlot) || CANONICAL_MONSTER_SLOT_MAP.get(primarySlot) || CANONICAL_DARKEN_SLOT_MAP.get(primarySlot);
+  const slotLabel = canonicalSlot?.label || canonicalSlot?.title || formatPlainLabel(primarySlot || "Unslotted");
+
+  if (type === "monster-graft") {
+    return {
+      key: `monster:${primarySlot}`,
+      label: slotLabel,
+      eyebrow: "Monster Slot",
+      icon: "fa-skull",
+    };
+  }
+
+  if (type === "location-region") {
+    return {
+      key: "location:region",
+      label: "Location Regions",
+      eyebrow: "Map Regions",
+      icon: "fa-dungeon",
+    };
+  }
+
+  return {
+    key: `location:${primarySlot}`,
+    label: slotLabel,
+    eyebrow: "Location Slot",
+    icon: "fa-map-location-dot",
+  };
+}
+
+function groupComponentsForList(components = []) {
+  const groups = new Map();
+
+  asArray(components).forEach((component) => {
+    const meta = getComponentGroupMeta(component);
+    const current = groups.get(meta.key) || { ...meta, items: [] };
+    current.items.push(component);
+    groups.set(meta.key, current);
+  });
+
+  return [...groups.values()];
 }
 
 function ComponentsWorkspace({
@@ -1812,6 +2188,8 @@ function ComponentsWorkspace({
   selectedComponentId,
   visibleComponents,
 }) {
+  const groupedComponents = groupComponentsForList(visibleComponents);
+
   return (
     <section className="studio-panel studio-panel--components" aria-label="Linked components">
       <PanelTitle eyebrow="Linked Components" icon="fa-diagram-project" title="Generator Content" help={SECTION_HELP.components}>
@@ -1858,26 +2236,37 @@ function ComponentsWorkspace({
       </div>
 
       <div className="studio-component-workspace">
-        <div className="studio-component-list" aria-label="Component list">
-          {visibleComponents.map((component) => {
-            const typeLabel = COMPONENT_TYPE_LABELS[component.contentType] || component.contentType;
-            const slotLabel = joinList(component.slots);
+        <div className="studio-component-list studio-component-list--grouped" aria-label="Component list">
+          {groupedComponents.map((group) => (
+            <details className="studio-component-group" key={group.key} open>
+              <summary>
+                <span><Icon name={group.icon} /> {group.eyebrow}</span>
+                <strong>{group.label}</strong>
+                <em>{group.items.length}</em>
+              </summary>
+              <div className="studio-component-group__items">
+                {group.items.map((component) => {
+                  const typeLabel = COMPONENT_TYPE_LABELS[component.contentType] || component.contentType;
+                  const slotLabel = joinList(component.slots);
 
-            return (
-              <button
-                className={component.id === selectedComponentId || component.id === selectedComponent?.id ? "is-active" : ""}
-                key={component.id}
-                type="button"
-                onClick={() => onSelectComponent(component.id)}
-              >
-                <span className="studio-component-list__meta">
-                  <Icon name={COMPONENT_TYPE_ICONS[component.contentType] || "fa-puzzle-piece"} />
-                  {typeLabel}{slotLabel ? ` • ${slotLabel}` : ""}
-                </span>
-                <strong>{component.title || component.label}</strong>
-              </button>
-            );
-          })}
+                  return (
+                    <button
+                      className={component.id === selectedComponentId || component.id === selectedComponent?.id ? "is-active" : ""}
+                      key={component.id}
+                      type="button"
+                      onClick={() => onSelectComponent(component.id)}
+                    >
+                      <span className="studio-component-list__meta">
+                        <Icon name={COMPONENT_TYPE_ICONS[component.contentType] || "fa-puzzle-piece"} />
+                        {typeLabel}{slotLabel ? ` • ${slotLabel}` : ""}
+                      </span>
+                      <strong>{component.title || component.label}</strong>
+                    </button>
+                  );
+                })}
+              </div>
+            </details>
+          ))}
           {!visibleComponents.length ? <div className="studio-empty-state">No matching components.</div> : null}
         </div>
 
@@ -1986,19 +2375,19 @@ function ValidationPanel({ report }) {
           <span>No validation issues detected for the current module.</span>
         </div>
       ) : (
-        <div className="studio-validation-list" role="list">
-          {issues.map((issue, index) => {
-            const severity = issue.severity || "warning";
+        <div className="studio-validation-list studio-validation-list--grouped" role="list">
+          {getGroupedValidationIssues(issues).map((group) => {
+            const severity = group.severity || "warning";
             const meta = VALIDATION_SEVERITY_META[severity] || VALIDATION_SEVERITY_META.warning;
             return (
-              <article className={`studio-validation-issue studio-validation-issue--${severity}`} key={`${issue.path}-${issue.id}-${index}`} role="listitem">
+              <article className={`studio-validation-issue studio-validation-issue--${severity}`} key={group.key} role="listitem">
                 <span className="studio-validation-issue__badge">
                   <Icon name={meta.icon} />
-                  {severity}
+                  {group.count > 1 ? `${group.count}×` : severity}
                 </span>
                 <div>
-                  <strong>{issue.message}</strong>
-                  <span>{issue.path}{issue.id ? ` • ${issue.id}` : ""}</span>
+                  <strong>{group.message}</strong>
+                  <span>{getIssueGroupMeta(group)}</span>
                 </div>
               </article>
             );
@@ -2010,6 +2399,99 @@ function ValidationPanel({ report }) {
 }
 
 function ComponentEditor({ component, onChange, onRemove }) {
+  const isMonsterGraft = component.contentType === "monster-graft";
+  const isLocationRegion = component.contentType === "location-region";
+
+  function setField(path, value) {
+    onChange((nextComponent) => {
+      let target = nextComponent;
+      for (const key of path.slice(0, -1)) {
+        target[key] = target[key] || {};
+        target = target[key];
+      }
+      target[path[path.length - 1]] = value;
+    });
+  }
+
+  function setArray(path, value) {
+    setField(path, splitList(value));
+  }
+
+  function setComponentTitle(value) {
+    onChange((nextComponent) => {
+      nextComponent.title = value;
+      nextComponent.label = value;
+    });
+  }
+
+  function setMonsterSlot(value) {
+    setField(["monster", "slot"], value);
+    setArray(["slots"], value);
+  }
+
+  const typeLabel = COMPONENT_TYPE_LABELS[component.contentType] || component.contentType || "Component";
+  const slotValue = isMonsterGraft ? (component.monster?.slot || asArray(component.slots)[0] || "body") : joinList(component.slots);
+
+  return (
+    <div className="studio-component-editor studio-component-editor--guided">
+      <div className="studio-component-editor__topline">
+        <div>
+          <span>{typeLabel}</span>
+          <strong>{component.title || component.label || "Untitled Component"}</strong>
+        </div>
+        <button type="button" onClick={onRemove}><Icon name="fa-trash" /> Remove</button>
+      </div>
+
+      <section className="studio-component-quickedit" aria-label="Primary component fields">
+        <div className="studio-form-grid studio-form-grid--primary">
+          <FormRow label="Component Title" icon="fa-signature" hint="Visible name shown in editor lists and generated output.">
+            <TextInput value={component.title || component.label} onChange={setComponentTitle} />
+          </FormRow>
+          <FormRow label="Status" icon="fa-circle-check" hint="Publication state for this component.">
+            <select value={component.status || "draft"} onChange={(event) => setField(["status"], event.target.value)}>
+              {STATUS_OPTIONS.map((option) => (
+                <option key={option.id} value={option.id}>{option.label}</option>
+              ))}
+            </select>
+          </FormRow>
+        </div>
+
+        {isMonsterGraft ? (
+          <div className="studio-form-grid">
+            <FormRow label="Monster Slot" icon="fa-skull" hint="Composer slot where this graft appears.">
+              <TextInput value={slotValue} onChange={setMonsterSlot} />
+            </FormRow>
+            <FormRow label="Graft Type" icon="fa-dice-d20" hint="Primary rules surface for this graft.">
+              <SelectInput options={MONSTER_RULE_SECTION_OPTIONS} value={component.monster?.section || "trait"} onChange={(value) => setField(["monster", "section"], value)} />
+            </FormRow>
+            <FormRow className="studio-form-row--wide" label="Table Text / Mechanics" icon="fa-scroll" hint="Human-readable text before structured rule tuning.">
+              <TextArea rows={5} value={component.tableText || component.mechanics || component.description} onChange={(value) => setField(["tableText"], value)} />
+            </FormRow>
+          </div>
+        ) : (
+          <div className="studio-form-grid">
+            <FormRow label={isLocationRegion ? "Region Slot" : "Composer Slots"} icon="fa-location-dot" hint="Darken/Map slots that can consume this content.">
+              <TextInput value={slotValue} onChange={(value) => setArray(["slots"], value)} />
+            </FormRow>
+            <FormRow label="Workflow" icon="fa-route" hint="Usually darken-location for location content.">
+              <TextInput value={joinList(component.workflows)} onChange={(value) => setArray(["workflows"], value)} />
+            </FormRow>
+            <FormRow className="studio-form-row--wide" label="Generator Text" icon="fa-scroll" hint="Primary prose the generator can surface or transform.">
+              <TextArea rows={5} value={component.description || component.summary || component.text} onChange={(value) => setField(["description"], value)} />
+            </FormRow>
+          </div>
+        )}
+      </section>
+
+      <details className="studio-advanced-details studio-advanced-details--component">
+        <summary><Icon name="fa-gear" /> Advanced structured fields</summary>
+        <ComponentAdvancedEditor component={component} onChange={onChange} onRemove={onRemove} />
+      </details>
+    </div>
+  );
+}
+
+function ComponentAdvancedEditor({ component, onChange, onRemove }) {
   const isMonsterGraft = component.contentType === "monster-graft";
   const isLocationRegion = component.contentType === "location-region";
   const [spellPickerQuery, setSpellPickerQuery] = useState("");
@@ -2096,6 +2578,36 @@ function ComponentEditor({ component, onChange, onRemove }) {
       if (nextComponent.monster?.constraints) delete nextComponent.monster.constraints;
       if (nextComponent.anatomyConstraints) delete nextComponent.anatomyConstraints;
       if (nextComponent.constraints) delete nextComponent.constraints;
+    });
+  }
+
+  function setMonsterGrantArray(field, value) {
+    onChange((nextComponent) => {
+      const monster = nextComponent.monster = nextComponent.monster || {};
+      monster.anatomyGrants = monster.anatomyGrants || {};
+      monster.anatomyGrants[field] = splitList(value);
+      if (!Object.values(monster.anatomyGrants).some((entry) => Array.isArray(entry) ? entry.length : Boolean(entry))) {
+        delete monster.anatomyGrants;
+      }
+    });
+  }
+
+  function setMonsterGrantNote(value) {
+    onChange((nextComponent) => {
+      const monster = nextComponent.monster = nextComponent.monster || {};
+      monster.anatomyGrants = monster.anatomyGrants || {};
+      monster.anatomyGrants.note = value;
+      if (!Object.values(monster.anatomyGrants).some((entry) => Array.isArray(entry) ? entry.length : Boolean(entry))) {
+        delete monster.anatomyGrants;
+      }
+    });
+  }
+
+  function clearMonsterGrants() {
+    onChange((nextComponent) => {
+      if (nextComponent.monster?.anatomyGrants) delete nextComponent.monster.anatomyGrants;
+      if (nextComponent.monster?.grants && isPlainObject(nextComponent.monster.grants)) delete nextComponent.monster.grants;
+      if (nextComponent.anatomyGrants) delete nextComponent.anatomyGrants;
     });
   }
 
@@ -2431,6 +2943,9 @@ function ComponentEditor({ component, onChange, onRemove }) {
   const monsterRules = isMonsterGraft ? normalizeMonsterGraftRules(monsterRulesFeature) : {};
   const monsterConstraints = isMonsterGraft ? (normalizeMonsterAnatomyConstraints(getMonsterConstraintSource(component)) || {}) : {};
   const monsterConstraintSummary = isMonsterGraft ? getMonsterConstraintSummary(component) : [];
+  const monsterAnatomyGrants = isMonsterGraft ? (normalizeMonsterAnatomyGrants(getMonsterGrantSource(component)) || {}) : {};
+  const monsterGrantSummary = isMonsterGraft ? getMonsterGrantSummary(component) : [];
+  const compatibilityMatrix = isMonsterGraft ? buildStudioCompatibilityMatrix(component) : [];
   const usesInferredRules = Boolean(isMonsterGraft && !explicitMonsterRules && (component.mechanics || component.tableText));
   const ruleSection = component.monster?.section || monsterRules.section || "trait";
   const actionEconomy = monsterRules.actionEconomy || "passive";
@@ -2646,6 +3161,42 @@ function ComponentEditor({ component, onChange, onRemove }) {
           </RulesGroup>
 
           <RulesGroup
+            icon="fa-seedling"
+            title="Effective Anatomy Grants"
+            help="Optional build changes this graft adds after installation. Use this for mutation/body grafts that unlock later abilities, such as web organs, tendrils, wax mask, brood carrier, or spectral body."
+            actions={monsterGrantSummary.length ? <RemoveRulesBlockButton label="Effective Anatomy Grants" onClick={clearMonsterGrants} /> : null}
+          >
+            <div className="studio-form-grid studio-form-grid--compact">
+              <FormRow label={ANATOMY_GRANT_FIELD_LABELS.grantsBodyPlans} icon="fa-person-rays" hint={ANATOMY_GRANT_FIELD_HINTS.grantsBodyPlans}>
+                <TextInput value={joinList(monsterAnatomyGrants.grantsBodyPlans)} onChange={(value) => setMonsterGrantArray("grantsBodyPlans", value)} placeholder="arachnid, incorporeal" />
+              </FormRow>
+              <FormRow label={ANATOMY_GRANT_FIELD_LABELS.grantsAnatomy} icon="fa-dna" hint={ANATOMY_GRANT_FIELD_HINTS.grantsAnatomy}>
+                <TextInput value={joinList(monsterAnatomyGrants.grantsAnatomy)} onChange={(value) => setMonsterGrantArray("grantsAnatomy", value)} placeholder="web_glands, spinnerets, tendrils" />
+              </FormRow>
+              <FormRow label={ANATOMY_GRANT_FIELD_LABELS.grantsTags} icon="fa-tags" hint={ANATOMY_GRANT_FIELD_HINTS.grantsTags}>
+                <TextInput value={joinList(monsterAnatomyGrants.grantsTags)} onChange={(value) => setMonsterGrantArray("grantsTags", value)} placeholder="web_bearing, spider_infested" />
+              </FormRow>
+              <FormRow label={ANATOMY_GRANT_FIELD_LABELS.grantsTokens} icon="fa-link" hint={ANATOMY_GRANT_FIELD_HINTS.grantsTokens}>
+                <TextInput value={joinList(monsterAnatomyGrants.grantsTokens)} onChange={(value) => setMonsterGrantArray("grantsTokens", value)} placeholder="web_maker, egg_carrier" />
+              </FormRow>
+            </div>
+            <FormRow label="Grant Note" icon="fa-note-sticky" hint="Optional internal note explaining what anatomy or build state this graft unlocks.">
+              <TextArea rows={2} value={monsterAnatomyGrants.note || ""} onChange={setMonsterGrantNote} placeholder="Example: this body graft grows spinnerets, so later web attacks become legal." />
+            </FormRow>
+            {monsterGrantSummary.length ? (
+              <div className="studio-constraint-summary" aria-label="Current anatomy grants">
+                {monsterGrantSummary.map((row) => (
+                  <span key={`${row.label}-${row.values.join("-")}`}>
+                    <strong>{row.label}</strong>: {row.values.join(", ")}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <div className="studio-empty-state studio-empty-state--inline">No anatomy grants. This graft does not change the effective body/anatomy of the build.</div>
+            )}
+          </RulesGroup>
+
+          <RulesGroup
             icon="fa-dna"
             title="Anatomy Constraints"
             help="Optional hard compatibility gates. Leave empty for generic grafts; fill only when the feature needs a specific family, body plan, organ, limb, or build prerequisite."
@@ -2713,6 +3264,27 @@ function ComponentEditor({ component, onChange, onRemove }) {
             ) : (
               <div className="studio-empty-state studio-empty-state--inline">No anatomy constraints. This graft remains generic and can be used by any compatible monster frame.</div>
             )}
+          </RulesGroup>
+
+          <RulesGroup
+            icon="fa-table-cells"
+            title="Compatibility Matrix"
+            help="Preview how this graft behaves on each base creature family before other build grants are installed. Body/mutation grants selected in the Composer can turn blocked follow-up grafts into valid ones."
+          >
+            <div className="studio-compatibility-matrix" role="table" aria-label="Monster family compatibility matrix">
+              {compatibilityMatrix.map((entry) => (
+                <div
+                  className={`studio-compatibility-matrix__row studio-compatibility-matrix__row--${entry.status.kind}`}
+                  key={entry.id}
+                  role="row"
+                >
+                  <strong role="cell">{entry.label}</strong>
+                  <span role="cell">{formatAnatomyTerm(entry.typeId)}</span>
+                  <em role="cell">{entry.status.label}</em>
+                  <small role="cell">{entry.status.message}</small>
+                </div>
+              ))}
+            </div>
           </RulesGroup>
 
           <DividerLabel icon="fa-scale-balanced" title="Rules" help="Structured rules tell the exporter whether this graft is an attack, saving throw, reaction, recharge power, trait, or other ability." />
