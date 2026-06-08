@@ -301,7 +301,6 @@ function buildName(type, category, selectedFeatures) {
   if (!source) return `Cruor ${category}`;
   if (source === "Wolf Spiders") return `Brood-Bearing ${category}`;
   if (source === "Wax Death Masks") return `Wax-Faced ${category}`;
-  if (source === "Gashadokuro") return `Many-Boned ${category}`;
   if (source === "Jikininki") return `Grave-Hungry ${category}`;
   if (source === "Decomposition") return `Rot-Swollen ${category}`;
   return `${source} ${titleCase(type)}`;

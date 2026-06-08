@@ -18,6 +18,7 @@ import {
 } from "../../shared/content/content.index.js";
 import { renderStructuredRulesTemplate } from "../monster-composer/model/monster-graft-rules.render.js";
 import { normalizeMonsterGraftRules } from "../monster-composer/model/monster-graft-rules.schema.js";
+import { groupQaIssues, runMonsterQaSuite } from "../monster-composer/qa/monster-qa-suite.js";
 import {
   KNOWN_MONSTER_ANATOMY_TAGS,
   KNOWN_MONSTER_BODY_PLAN_IDS,
@@ -2043,6 +2044,7 @@ export default function InspirationStudioPage() {
   const moduleExportObject = useMemo(() => buildModuleExport(draft, imagePreviewUrl), [draft, imagePreviewUrl]);
   const contentPackExportObject = useMemo(() => buildContentPackExport(draft, imagePreviewUrl), [draft, imagePreviewUrl]);
   const validationReport = useMemo(() => validateStudioDraft(draft, contentPackExportObject), [draft, contentPackExportObject]);
+  const monsterQaReport = useMemo(() => runMonsterQaSuite({ mode: "admin-studio" }), []);
   const moduleExportJson = useMemo(() => JSON.stringify(moduleExportObject, null, 2), [moduleExportObject]);
   const contentPackExportJson = useMemo(() => JSON.stringify(contentPackExportObject, null, 2), [contentPackExportObject]);
   const exportJson = exportMode === "module" ? moduleExportJson : contentPackExportJson;
@@ -2395,6 +2397,7 @@ export default function InspirationStudioPage() {
                 onDownloadReadinessReport={downloadReadinessReport}
                 onExportModeChange={setExportMode}
                 validationReport={validationReport}
+                monsterQaReport={monsterQaReport}
               />
             ) : null}
           </main>
@@ -2848,6 +2851,7 @@ function ExportWorkspace({
   onDownloadReadinessReport,
   onExportModeChange,
   validationReport,
+  monsterQaReport,
 }) {
   const selectedOption = EXPORT_MODE_OPTIONS.find((option) => option.id === exportMode) || EXPORT_MODE_OPTIONS[0];
 
@@ -2860,6 +2864,13 @@ function ExportWorkspace({
           </button>
         </PanelTitle>
         <ValidationPanel report={validationReport} />
+      </section>
+
+      <section className="studio-panel studio-panel--validation" aria-label="Monster QA report">
+        <PanelTitle eyebrow="Monster QA" icon="fa-vial-circle-check" title="Generator Readiness" help="Runs the shared Monster Composer QA suite used by npm run monster:qa. This checks content, templates, forge generation, run mode, and export output.">
+          <span>{monsterQaReport?.summary?.error || 0} errors · {monsterQaReport?.summary?.warning || 0} warnings</span>
+        </PanelTitle>
+        <MonsterQaPanel report={monsterQaReport} />
       </section>
 
       <section className="studio-panel studio-panel--export" aria-label="Export content pack">
@@ -2910,6 +2921,51 @@ function ExportWorkspace({
           </div>
         </details>
       </section>
+    </div>
+  );
+}
+
+
+function MonsterQaPanel({ report }) {
+  const summary = report?.summary || getIssueSummary(report?.issues);
+  const groupedIssues = groupQaIssues(report?.issues || []).slice(0, 8);
+  const isClean = !summary.error && !summary.warning;
+
+  return (
+    <div className="studio-validation-panel" data-validation-state={summary.error ? "error" : summary.warning ? "warning" : "clean"}>
+      <div className="studio-validation-panel__summary" aria-label="Monster QA summary">
+        <StatPill icon="fa-circle-xmark" label="Errors" value={summary.error || 0} />
+        <StatPill icon="fa-triangle-exclamation" label="Warnings" value={summary.warning || 0} />
+        <StatPill icon="fa-circle-info" label="Info" value={summary.info || 0} />
+      </div>
+
+      {isClean ? (
+        <div className="studio-validation-clean">
+          <Icon name="fa-circle-check" />
+          <strong>Monster QA is clean.</strong>
+          <span>Templates, core forge frames, run mode, and export output passed the shared QA suite.</span>
+        </div>
+      ) : (
+        <div className="studio-validation-list studio-validation-list--grouped" role="list">
+          {groupedIssues.map((group) => {
+            const severity = group.severity || "warning";
+            const meta = VALIDATION_SEVERITY_META[severity] || VALIDATION_SEVERITY_META.warning;
+            return (
+              <article className={`studio-validation-issue studio-validation-issue--${severity}`} key={group.key} role="listitem">
+                <span className="studio-validation-issue__badge">
+                  <Icon name={meta.icon} />
+                  {group.count > 1 ? `${group.count}×` : severity}
+                </span>
+                <div>
+                  <strong>{group.area} / {group.check}</strong>
+                  <p>{group.message}</p>
+                  {group.ids.length ? <em>{group.ids.join(", ")}</em> : null}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

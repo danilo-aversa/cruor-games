@@ -2669,6 +2669,7 @@
   background: linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px), linear-gradient(180deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px), radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 22rem), radial-gradient(circle at 50% 84%, rgba(95, 7, 22, 0.22), transparent 20rem), rgba(0, 0, 0, 0.18);
   background-size: 34px 34px, 34px 34px, auto, auto, auto;
   padding: clamp(18px, 4vw, 42px);
+  height: 100%;
 }
 
 .monster-shell .monster-start-screen__intro {
@@ -2872,6 +2873,10 @@
   filter: drop-shadow(0 22px 38px rgba(0, 0, 0, 0.66));
   cursor: pointer;
   transition: filter 0.16s ease, opacity 0.16s ease, transform 0.16s ease;
+}
+
+.monster-shell .monster-silhouette-svg:focus {
+  outline: none;
 }
 
 

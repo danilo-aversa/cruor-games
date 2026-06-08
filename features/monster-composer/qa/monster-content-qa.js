@@ -1,0 +1,189 @@
+import { MONSTER_GRAFTS } from "../data/monster-grafts.js";
+import { MONSTER_SOURCES } from "../data/monster-sources.js";
+import { SLOTS } from "../monster-composer.workflow.js";
+import { validateMonsterGraftRules } from "../model/monster-graft-rules.schema.js";
+import {
+  KNOWN_MONSTER_ANATOMY_TAGS,
+  KNOWN_MONSTER_BODY_PLAN_IDS,
+  KNOWN_MONSTER_CREATURE_TAGS,
+  KNOWN_MONSTER_FAMILY_IDS,
+  MONSTER_ANATOMY_CONSTRAINT_FIELDS,
+  MONSTER_ANATOMY_GRANT_FIELDS,
+  normalizeMonsterAnatomyConstraints,
+  normalizeMonsterAnatomyGrants,
+} from "../model/anatomy.js";
+import { asArray, makeQaIssue, summarizeQaIssues } from "./monster-qa-report.js";
+
+const ARCHIVED_PROTOTYPE_SOURCE_IDS = new Set(["gashadokuro", "jack-the-ripper"]);
+const KNOWN_RULE_SECTIONS = new Set(["trait", "action", "bonusAction", "reaction", "legendaryAction", "lairAction", "death"]);
+const KNOWN_ACTION_ECONOMY = new Set(["passive", "action", "bonusAction", "reaction", "legendaryAction", "lairAction", "deathTrigger", "freeTrigger"]);
+const KNOWN_RESOLUTION_TYPES = new Set(["none", "attackRoll", "savingThrow", "automatic", "special"]);
+
+function hasText(value) {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+function getDuplicates(values = []) {
+  const seen = new Set();
+  const duplicates = new Set();
+  values.forEach((value) => {
+    if (seen.has(value)) duplicates.add(value);
+    seen.add(value);
+  });
+  return [...duplicates];
+}
+
+function hasAnyText(...values) {
+  return values.some(hasText);
+}
+
+function getKnownAnatomyTerms() {
+  return new Set([
+    ...KNOWN_MONSTER_ANATOMY_TAGS,
+    ...KNOWN_MONSTER_CREATURE_TAGS,
+    ...KNOWN_MONSTER_BODY_PLAN_IDS,
+    ...KNOWN_MONSTER_FAMILY_IDS,
+  ]);
+}
+
+function validateAnatomyTerms({ graft, issues }) {
+  const knownTerms = getKnownAnatomyTerms();
+  const constraints = normalizeMonsterAnatomyConstraints(graft.constraints || graft.anatomyConstraints);
+  const grants = normalizeMonsterAnatomyGrants(graft.anatomyGrants);
+
+  MONSTER_ANATOMY_CONSTRAINT_FIELDS.forEach((field) => {
+    asArray(constraints?.[field]).forEach((term) => {
+      if (term.startsWith("type:") || term.startsWith("family:") || term.startsWith("body:")) return;
+      if (!knownTerms.has(term)) {
+        issues.push(makeQaIssue({
+          severity: "warning",
+          area: "anatomy",
+          check: "known-constraint-term",
+          id: graft.id,
+          title: graft.title,
+          path: `constraints.${field}`,
+          message: `Unknown anatomy constraint term: ${term}`,
+          recommendation: "Add the term to the anatomy vocabulary or correct the graft constraint.",
+        }));
+      }
+    });
+  });
+
+  MONSTER_ANATOMY_GRANT_FIELDS.forEach((field) => {
+    asArray(grants?.[field]).forEach((term) => {
+      if (field === "grantsTokens") return;
+      if (!knownTerms.has(term)) {
+        issues.push(makeQaIssue({
+          severity: "warning",
+          area: "anatomy",
+          check: "known-grant-term",
+          id: graft.id,
+          title: graft.title,
+          path: `anatomyGrants.${field}`,
+          message: `Unknown anatomy grant term: ${term}`,
+          recommendation: "Add the term to the anatomy vocabulary or correct the graft grant.",
+        }));
+      }
+    });
+  });
+}
+
+function validateRulesSemantics(graft, issues) {
+  const report = validateMonsterGraftRules(graft);
+  report.issues.forEach((issue) => {
+    issues.push(makeQaIssue({
+      severity: issue.severity,
+      area: "rules",
+      check: issue.code || "schema",
+      id: graft.id,
+      title: graft.title,
+      path: issue.path || "rules",
+      message: issue.message,
+      recommendation: "Fix the structured monster.rules object before publishing or exporting this graft.",
+      details: issue,
+    }));
+  });
+
+  const rules = graft.rules;
+  if (!rules) return;
+
+  if (!KNOWN_RULE_SECTIONS.has(rules.section)) {
+    issues.push(makeQaIssue({ severity: "error", area: "rules", check: "section", id: graft.id, title: graft.title, path: "rules.section", message: `Unknown rules section: ${rules.section}` }));
+  }
+  if (!KNOWN_ACTION_ECONOMY.has(rules.actionEconomy)) {
+    issues.push(makeQaIssue({ severity: "error", area: "rules", check: "action-economy", id: graft.id, title: graft.title, path: "rules.actionEconomy", message: `Unknown action economy: ${rules.actionEconomy}` }));
+  }
+  if (rules.resolution?.type && !KNOWN_RESOLUTION_TYPES.has(rules.resolution.type)) {
+    issues.push(makeQaIssue({ severity: "error", area: "rules", check: "resolution", id: graft.id, title: graft.title, path: "rules.resolution.type", message: `Unknown resolution type: ${rules.resolution.type}` }));
+  }
+  if (rules.actionEconomy === "reaction" && !hasAnyText(rules.trigger, rules.reaction?.trigger, rules.counterplay?.telegraph)) {
+    issues.push(makeQaIssue({ severity: "warning", area: "rules", check: "reaction-trigger", id: graft.id, title: graft.title, path: "rules.trigger", message: "Reaction graft has no clear trigger text.", recommendation: "Add a trigger, reaction.trigger, or explicit telegraph/counterplay text." }));
+  }
+  if (rules.usage?.type === "recharge" && !hasText(rules.usage?.value)) {
+    issues.push(makeQaIssue({ severity: "error", area: "rules", check: "recharge-value", id: graft.id, title: graft.title, path: "rules.usage.value", message: "Recharge graft has no recharge value." }));
+  }
+  if (rules.resolution?.type === "savingThrow" && !hasText(rules.resolution?.ability)) {
+    issues.push(makeQaIssue({ severity: "error", area: "rules", check: "save-ability", id: graft.id, title: graft.title, path: "rules.resolution.ability", message: "Saving Throw rule has no save ability." }));
+  }
+  if (rules.damage?.mode && rules.damage.mode !== "none" && !hasAnyText(rules.damage.type, rules.damage.damageType) && !asArray(rules.damage.types).length) {
+    issues.push(makeQaIssue({ severity: "warning", area: "rules", check: "damage-type", id: graft.id, title: graft.title, path: "rules.damage.type", message: "Damaging rule has no explicit damage type." }));
+  }
+  if (["major", "severe"].includes(rules.condition?.severity) && !rules.condition?.duration && !rules.condition?.escape?.enabled && !rules.condition?.repeatSave?.enabled) {
+    issues.push(makeQaIssue({ severity: "warning", area: "counterplay", check: "hard-condition-exit", id: graft.id, title: graft.title, path: "rules.condition", message: "Major/severe condition has no duration, escape, or repeat save.", recommendation: "Add a duration, escape check, repeat save, or clear break condition." }));
+  }
+}
+
+export function runMonsterContentQa({ grafts = MONSTER_GRAFTS, sources = MONSTER_SOURCES, slots = SLOTS } = {}) {
+  const issues = [];
+  const sourceIds = new Set(sources.map((source) => source.id));
+  const slotIds = new Set(slots.map((slot) => slot.id));
+
+  getDuplicates(grafts.map((graft) => graft.id)).forEach((id) => {
+    issues.push(makeQaIssue({ severity: "error", area: "content", check: "duplicate-graft-id", id, message: `Duplicate monster graft id: ${id}` }));
+  });
+
+  getDuplicates(sources.map((source) => source.id)).forEach((id) => {
+    issues.push(makeQaIssue({ severity: "error", area: "content", check: "duplicate-source-id", id, message: `Duplicate monster source id: ${id}` }));
+  });
+
+  sources.forEach((source) => {
+    if (ARCHIVED_PROTOTYPE_SOURCE_IDS.has(source.id)) {
+      issues.push(makeQaIssue({ severity: "error", area: "content", check: "archived-source", id: source.id, title: source.label, message: `Archived prototype source is still active: ${source.id}` }));
+    }
+  });
+
+  grafts.forEach((graft) => {
+    if (!hasText(graft.id)) issues.push(makeQaIssue({ severity: "error", area: "content", check: "id", title: graft.title, message: "Monster graft has no id." }));
+    if (!hasText(graft.title)) issues.push(makeQaIssue({ severity: "error", area: "content", check: "title", id: graft.id, message: "Monster graft has no title." }));
+    if (!slotIds.has(graft.slot)) {
+      issues.push(makeQaIssue({ severity: "error", area: "content", check: "slot", id: graft.id, title: graft.title, path: "slot", message: `Unknown graft slot: ${graft.slot}` }));
+    }
+    if (!sourceIds.has(graft.source)) {
+      issues.push(makeQaIssue({ severity: "error", area: "content", check: "source", id: graft.id, title: graft.title, path: "source", message: `Unknown graft source: ${graft.source}` }));
+    }
+    if (ARCHIVED_PROTOTYPE_SOURCE_IDS.has(graft.source)) {
+      issues.push(makeQaIssue({ severity: "error", area: "content", check: "archived-graft-source", id: graft.id, title: graft.title, path: "source", message: `Graft uses archived prototype source: ${graft.source}` }));
+    }
+    if (!hasAnyText(graft.summary, graft.mechanics, graft.counterplay)) {
+      issues.push(makeQaIssue({ severity: "warning", area: "content", check: "playable-text", id: graft.id, title: graft.title, message: "Monster graft has no summary, mechanics, or counterplay text." }));
+    }
+    if (!graft.rules || graft.rules?.migration?.isStructured !== true) {
+      issues.push(makeQaIssue({ severity: "error", area: "rules", check: "structured-rules", id: graft.id, title: graft.title, path: "rules", message: "Monster graft is not authored as explicit structured rules." }));
+    }
+
+    validateRulesSemantics(graft, issues);
+    validateAnatomyTerms({ graft, issues });
+  });
+
+  return {
+    id: "monster-content",
+    label: "Monster Content QA",
+    summary: summarizeQaIssues(issues),
+    issues,
+    metrics: {
+      sources: sources.length,
+      grafts: grafts.length,
+      slots: slots.length,
+    },
+  };
+}

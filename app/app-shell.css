@@ -633,6 +633,7 @@
   width: 100%;
   min-height: auto;
   padding-inline: 0;
+  padding: 10px;
 }
 
 .crucible-workspace #monsterComposerPanel .monster-shell {

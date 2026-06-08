@@ -154,9 +154,16 @@ function buildRunTrackingItems({
       label: "Conditions",
       value: conditionItems.length
         ? conditionItems
-            .map(
-              ({ feature, profile }) => `${feature.title}: ${profile.conditionProfile.condition}`
-            )
+            .map(({ feature, profile }) => {
+              const conditionProfile = profile.conditionProfile || {};
+              const conditionText = [
+                ...(conditionProfile.conditions || []),
+                ...(conditionProfile.special || []),
+              ]
+                .filter(Boolean)
+                .join(", ");
+              return `${feature.title}: ${conditionText || conditionProfile.severity || "condition"}`;
+            })
             .join("; ")
         : "None.",
     },

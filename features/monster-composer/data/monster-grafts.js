@@ -771,7 +771,7 @@ const RAW_MONSTER_GRAFTS = [
     summary: "The corpse hits with enough mass to stagger a front line.",
     mechanics:
       "Melee Attack Roll. On hit, the target takes bludgeoning damage and must succeed on a Strength save or be pushed 5 feet. If the target collides with a creature or object, both take bludgeoning damage equal to the proficiency bonus.",
-    counterplay: "The attack is strongest near walls, allies, and cluttered terrain.",
+    counterplay: "The corpse visibly winds up before the slam; it is strongest near walls, allies, and cluttered terrain.",
   },
   {
     id: "acid-vomit",
@@ -1436,7 +1436,7 @@ const RAW_MONSTER_GRAFTS = [
     summary: "Massive hits tear off parts without always detonating the whole corpse.",
     mechanics:
       "When the creature takes more than half its maximum hit points in one hit, the attacker chooses head, arms, or leg. Head: the creature is Blinded but dies in 2 rounds without triggering Gas Buildup. Arms: it has disadvantage on attacks requiring arms. Leg: it falls prone and its speed becomes 5 feet.",
-    counterplay: "Big single hits can solve the encounter in a controlled way.",
+    counterplay: "Large wounds are visible stress points before rupture; big single hits can solve the encounter in a controlled way.",
   },
   {
     id: "radiant-preservation-failure",
@@ -1659,7 +1659,7 @@ const RAW_MONSTER_GRAFTS = [
     summary: "The corpse finally ruptures when destroyed.",
     mechanics:
       "On death, each creature within 10 feet makes a Dexterity save. On a failure, the target takes poison damage and has the Poisoned condition until the end of its next turn. On a success, the target takes half damage only.",
-    counterplay: "The safest play is to finish it from range or with radiant damage.",
+    counterplay: "The corpse visibly distends before death; the safest play is to finish it from range or with radiant damage.",
   },
   {
     id: "purge-fluid-flood",
@@ -1749,7 +1749,7 @@ const RAW_MONSTER_GRAFTS = [
     summary: "Dark fluid spills from the body and turns the floor into a disgusting hazard.",
     mechanics:
       "On death, a 15-foot area becomes slick and foul until cleaned or burned away. It is difficult terrain. A creature that enters it for the first time on a turn or starts there makes a Dexterity save or falls Prone.",
-    counterplay: "Fire, sand, holy water, or clever cleaning can neutralize the area.",
+    counterplay: "The leaking fluid is visible before it spreads; fire, sand, holy water, or clever cleaning can neutralize the area.",
   },
   {
     id: "choking-air",
@@ -1913,7 +1913,7 @@ const RAW_MONSTER_GRAFTS = [
     summary: "Nearby corpses swell and begin acting as secondary pressure hazards.",
     mechanics:
       "At initiative count 20, one corpse or body part in the lair swells. Until the next count 20, the first creature that moves within 5 feet of it triggers a small toxic burst requiring a Constitution save.",
-    counterplay: "Players can identify swelling corpses and avoid, move, or destroy them safely.",
+    counterplay: "The swelling corpses are visible warnings before they burst; players can identify them and avoid, move, or destroy them safely.",
   },
 
   // Jikininki / Ravenous Spirit
@@ -2187,7 +2187,7 @@ const RAW_MONSTER_GRAFTS = [
     mechanics:
       "The creature can see 60 feet into the Ethereal Plane while it is on the Material Plane, and it has advantage on checks made to locate invisible or ethereal undead.",
     counterplay:
-      "It is still limited by walls, line of sight, and mundane concealment on its current plane.",
+      "Its gaze is visible before it fixes on a target; it is still limited by walls, line of sight, cover, and mundane concealment on its current plane.",
   },
   {
     id: "incorporeal-movement",
@@ -3562,7 +3562,7 @@ const RAW_MONSTER_GRAFTS = [
     source: "jikininki",
     typeBias: ["undead"],
     roleBias: ["boss"],
-    cost: 5,
+    cost: 4,
     complexity: 3,
     stats: { control: 3 },
     rules: {
@@ -4605,7 +4605,7 @@ const RAW_MONSTER_GRAFTS = [
     summary: "The bite injects venom that becomes terrifying when it drops a victim.",
     mechanics:
       "Melee Attack Roll. On hit, the target takes piercing damage and makes a Constitution save. Failure: poison damage. If this damage reduces the target to 0 hit points, the target has the Paralyzed and Poisoned conditions for 1 hour. Success: half poison damage only.",
-    counterplay: "Poison resistance, distance, and antitoxin reduce the bite's threat.",
+    counterplay: "The fangs visibly drip before the bite; poison resistance, distance, and antitoxin reduce the bite's threat.",
   },
   {
     id: "perforate",
@@ -5056,7 +5056,7 @@ const RAW_MONSTER_GRAFTS = [
     summary: "Destroying an egg risks making the mother faster and more lethal.",
     mechanics:
       "Trigger: a creature destroys an egg the monster is carrying. Response: roll a d6. On a 4 or higher, the monster enrages until the combat ends, gaining a bonus to attack rolls, damage rolls, speed, and jump distance.",
-    counterplay: "Attacking eggs is effective but not free.",
+    counterplay: "The mother visibly coils before the enrage response; attacking eggs is effective but not free.",
   },
   {
     id: "web-architect",
@@ -5119,7 +5119,7 @@ const RAW_MONSTER_GRAFTS = [
     summary: "Its webs are engineered defenses rather than simple strands.",
     mechanics:
       "All webs created by the creature have a bonus to AC and hit points, and they lose vulnerability to fire while the creature is not bloodied.",
-    counterplay: "Bloodying the spider weakens the web network.",
+    counterplay: "The reinforced web anchors are visible before they matter; bloodying the spider or burning exposed anchor strands weakens the web network.",
   },
   {
     id: "corrosive-web",
@@ -5412,7 +5412,7 @@ const RAW_MONSTER_GRAFTS = [
     summary: "Large flame turns predatory confidence into animal panic.",
     mechanics:
       "While within 30 feet of a fire with a radius greater than 10 feet, wildfire, or a similar blaze, the creature has the Frightened condition.",
-    counterplay: "Torches are not enough; players need meaningful fire.",
+    counterplay: "Its posture makes the fear visibly readable before it flees; torches are not enough, and players need meaningful fire.",
   },
   {
     id: "underbelly-weak-spot",
@@ -5839,7 +5839,7 @@ const RAW_MONSTER_GRAFTS = [
     source: "wolf-spiders",
     typeBias: ["beast", "aberration"],
     roleBias: ["boss"],
-    cost: 5,
+    cost: 4,
     complexity: 3,
     stats: { control: 3 },
     rules: {
@@ -5986,8 +5986,6 @@ const RAW_MONSTER_GRAFTS = [
     counterplay: "Fire, blades, and careful routes create safe lanes.",
   },
 
-  // Gashadokuro support kept for source coverage
-            
   // Wax Death Masks support kept for source coverage
   {
     id: "waxen-mask-body",
@@ -6256,7 +6254,7 @@ const RAW_MONSTER_GRAFTS = [
     summary: "At bloodied, the mask changes identity and the fight changes tone.",
     mechanics:
       "When bloodied, choose one: Mourner Mask imposes disadvantage on opportunity attacks against it; Accuser Mask gives it +2 damage against frightened creatures; Saint Mask lets it end one condition on itself.",
-    counterplay: "Breaking the mask before bloodied prevents the phase change.",
+    counterplay: "The mask visibly cracks before bloodied; destroying or burning the mask before that point prevents the phase change.",
   },
   {
     id: "fire-softens-it",
@@ -6322,6 +6320,77 @@ const RAW_MONSTER_GRAFTS = [
     mechanics:
       "After the monster takes fire damage, the next attack against it before the start of its next turn has advantage.",
     counterplay: "Useful even when fire is not the best damage type.",
+  },
+  {
+    id: "cold-funeral-touch",
+    title: "Cold Funeral Touch",
+    slot: "attack",
+    section: "action",
+    source: "wax-death-masks",
+    typeBias: ["undead", "aberration"],
+    roleBias: ["standard", "boss"],
+    cost: 3,
+    complexity: 1,
+    stats: { dpr: 4, control: 1 },
+    rules: {
+        "schemaVersion": "monster-graft-rules-v1.12",
+        "section": "action",
+        "actionEconomy": "action",
+        "usage": {
+            "type": "atWill"
+        },
+        "trigger": null,
+        "resolution": {
+            "type": "attackRoll",
+            "attackType": "melee",
+            "bonus": "monster",
+            "abilityBasis": "charisma",
+            "reach": "5 ft.",
+            "range": null
+        },
+        "secondaryResolution": null,
+        "targeting": {
+            "type": "single",
+            "targets": "one target"
+        },
+        "areaEffect": null,
+        "damage": {
+            "mode": "budget",
+            "scale": "standard",
+            "budgetRole": "mainAttack",
+            "types": [
+                "necrotic",
+                "cold"
+            ],
+            "budgetShare": null,
+            "expectedTargets": null,
+            "parts": []
+        },
+        "condition": null,
+        "counterplay": {
+            "telegraph": true,
+            "breakCondition": true,
+            "positioningAnswer": false,
+            "nonDamageAnswer": false
+        },
+        "text": {},
+        "multiattack": null,
+        "spellcasting": null,
+        "defense": null,
+        "summon": null,
+        "procedure": null,
+        "references": [],
+        "ongoing": null,
+        "migration": {
+            "source": "content-conversion-v1.2-template-readiness",
+            "isStructured": true,
+            "convertedFrom": "template-readiness-gap"
+        }
+    },
+    summary: "The creature presses a wax-cold hand or mask against the target and steals warmth from the living face beneath.",
+    mechanics:
+      "Melee Attack Roll. On hit, the target takes cold damage plus necrotic damage. If the monster is wearing or presenting a recognizable face, it can move 10 feet after the hit without provoking opportunity attacks from that target.",
+    counterplay: "Fire damage softens the wax and makes this attack easier to punish before the monster's next turn.",
   },
   {
     id: "face-curse",
