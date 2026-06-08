@@ -8,17 +8,36 @@ import { SHARED_DARKEN_LOCATION_SLOTS, SHARED_MONSTER_SLOTS, SHARED_WORKFLOWS } 
 export const CORE_CRUOR_CONTENT_PACK_ID = "core-cruor";
 
 const INSPIRATION_MODULE_SOURCE_ANCHOR_IDS = new Set(CORE_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS);
+const KNOWN_SOURCE_ANCHOR_IDS = new Set(SHARED_SOURCE_ANCHORS.map((sourceAnchor) => sourceAnchor.id));
+const ARCHIVED_PROTOTYPE_SOURCE_ANCHOR_IDS = new Set(["gashadokuro", "jack-the-ripper"]);
+
+function getEntrySourceAnchorIds(entry) {
+  return Array.isArray(entry?.sourceAnchors) ? entry.sourceAnchors.filter(Boolean) : [];
+}
 
 function doesNotReferenceInspirationModule(entry) {
-  return !(entry?.sourceAnchors || []).some((sourceAnchorId) =>
+  return !getEntrySourceAnchorIds(entry).some((sourceAnchorId) =>
     INSPIRATION_MODULE_SOURCE_ANCHOR_IDS.has(sourceAnchorId),
+  );
+}
+
+function referencesKnownActiveSourceAnchor(entry) {
+  const sourceAnchorIds = getEntrySourceAnchorIds(entry);
+  if (!sourceAnchorIds.length) return true;
+
+  return sourceAnchorIds.every(
+    (sourceAnchorId) =>
+      KNOWN_SOURCE_ANCHOR_IDS.has(sourceAnchorId) &&
+      !ARCHIVED_PROTOTYPE_SOURCE_ANCHOR_IDS.has(sourceAnchorId),
   );
 }
 
 const CORE_SOURCE_ANCHORS = SHARED_SOURCE_ANCHORS.filter(
   (sourceAnchor) => !INSPIRATION_MODULE_SOURCE_ANCHOR_IDS.has(sourceAnchor.id),
 );
-const CORE_MONSTER_COMPONENTS = SHARED_MONSTER_COMPONENTS.filter(doesNotReferenceInspirationModule);
+const CORE_MONSTER_COMPONENTS = SHARED_MONSTER_COMPONENTS.filter(referencesKnownActiveSourceAnchor).filter(
+  doesNotReferenceInspirationModule,
+);
 
 export const CORE_CRUOR_CONTENT_PACK = createContentPack({
   id: CORE_CRUOR_CONTENT_PACK_ID,
