@@ -5,6 +5,7 @@ import { normalizeSourceAnchorIds } from "./source-anchors.js";
 const MONSTER_COMPONENT_WORKFLOW_ID = "monster-composer";
 const MONSTER_COMPONENT_TYPE = "Monster Component";
 const MONSTER_GRAFT_CONTENT_TYPE = "monster-graft";
+const ARCHIVED_PROTOTYPE_SOURCE_ANCHOR_IDS = new Set(["gashadokuro", "jack-the-ripper"]);
 
 function asArray(value) {
   if (!value) return [];
@@ -21,6 +22,11 @@ function normalizeMonsterGraftSourceAnchors(graft) {
   return normalizeSourceAnchorIds(graft.sourceAnchors?.length ? graft.sourceAnchors : graft.source);
 }
 
+function referencesArchivedPrototypeSource(graft) {
+  return normalizeMonsterGraftSourceAnchors(graft).some((sourceAnchorId) =>
+    ARCHIVED_PROTOTYPE_SOURCE_ANCHOR_IDS.has(sourceAnchorId),
+  );
+}
 
 function getStructuredMonsterRules(graft) {
   const rules = graft.rules || normalizeMonsterGraftRules(graft);
@@ -92,7 +98,7 @@ export function monsterGraftToSharedComponent(graft) {
 }
 
 export function buildSharedMonsterComponents(grafts = MONSTER_GRAFTS) {
-  return grafts.map(monsterGraftToSharedComponent);
+  return grafts.filter((graft) => !referencesArchivedPrototypeSource(graft)).map(monsterGraftToSharedComponent);
 }
 
 export const SHARED_MONSTER_COMPONENTS = buildSharedMonsterComponents();
