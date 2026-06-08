@@ -20,6 +20,8 @@ const DARKEN_SLOT_ID_SET = new Set(DARKEN_LOCATION_SLOT_IDS);
 const SOURCE_ANCHOR_BY_ID = new Map(
   SHARED_SOURCE_ANCHORS.map((sourceAnchor) => [sourceAnchor.id, sourceAnchor]),
 );
+const KNOWN_SOURCE_ANCHOR_IDS = new Set(SHARED_SOURCE_ANCHORS.map((sourceAnchor) => sourceAnchor.id));
+const ARCHIVED_PROTOTYPE_SOURCE_ANCHOR_IDS = new Set(["gashadokuro", "jack-the-ripper"]);
 
 function asArray(value) {
   if (!value) return [];
@@ -42,6 +44,17 @@ function slugify(value) {
 
 function uniqueArray(values) {
   return [...new Set(normalizeStringArray(values))];
+}
+
+function referencesKnownActiveSourceAnchor(sourceAnchors = []) {
+  const sourceAnchorIds = normalizeSourceAnchorIds(sourceAnchors);
+  if (!sourceAnchorIds.length) return true;
+
+  return sourceAnchorIds.every(
+    (sourceAnchorId) =>
+      KNOWN_SOURCE_ANCHOR_IDS.has(sourceAnchorId) &&
+      !ARCHIVED_PROTOTYPE_SOURCE_ANCHOR_IDS.has(sourceAnchorId),
+  );
 }
 
 function getSourceAnchorMetadata(sourceAnchorIds = []) {
@@ -140,7 +153,10 @@ export function legacyDarkenComponentToSharedComponent(component) {
 }
 
 export function buildSharedDarkenLocationComponents(components = LEGACY_DARKEN_COMPONENTS) {
-  return components.map(legacyDarkenComponentToSharedComponent).filter(Boolean);
+  return components
+    .filter((component) => referencesKnownActiveSourceAnchor(component.sourceAnchors))
+    .map(legacyDarkenComponentToSharedComponent)
+    .filter(Boolean);
 }
 
 export const SHARED_DARKEN_LOCATION_COMPONENTS = buildSharedDarkenLocationComponents();
