@@ -77,6 +77,7 @@ import {
 import { buildRunModeSheet } from "./model/monster-composer.run.js";
 import { buildGuidedFlow } from "./model/monster-composer.start-flow.js";
 import { buildBestiaryBaselineAudit } from "./model/monster-bestiary-baselines.js";
+import { evaluateMonsterFrameFit, isMonsterFrameFitAllowed } from "./model/monster-frame-fit.js";
 import { validateMonsterGraftRules } from "./model/monster-graft-rules.schema.js";
 import { MonsterComposerTopbar } from "./components/monster-composer.shell.jsx";
 import { GuidedFlowPanel, TemplatePickerModal } from "./components/monster-composer.start-flow.jsx";
@@ -311,12 +312,13 @@ function featureMatchesSource(feature, sourceIdOrIds) {
   return sourceIds.filter(Boolean).includes(feature.source);
 }
 
-function featureMatchesFrame(feature, sourceId, typeId, roleId, slotId = null) {
+function featureMatchesFrame(feature, sourceId, typeId, roleId, slotId = null, frameContext = null) {
   const sourceMatch = featureMatchesSource(feature, sourceId);
   const typeMatch = !feature.typeBias?.length || feature.typeBias.includes(typeId);
   const roleMatch = !feature.roleBias?.length || feature.roleBias.includes(roleId);
   const slotMatch = !slotId || feature.slot === slotId;
-  return sourceMatch && typeMatch && roleMatch && slotMatch;
+  const frameFitMatch = !frameContext || isMonsterFrameFitAllowed(feature, frameContext, { includeInferred: false });
+  return sourceMatch && typeMatch && roleMatch && slotMatch && frameFitMatch;
 }
 
 function featureMatchesSourceAndSlot(feature, sourceId, slotId = null) {
@@ -409,6 +411,11 @@ function getOneClickFixCandidates({
   sourceId,
   composerMode,
   customMode,
+  tacticalRoleId,
+  monsterTierId,
+  tempoProfileId,
+  dangerId,
+  targetCr,
   excludeFeatureId = "",
 }) {
   return FEATURES.map((feature) => ({
@@ -421,7 +428,14 @@ function getOneClickFixCandidates({
       if (getSelectedIdsForSlot(selected, feature.slot).includes(feature.id)) return false;
       const frameMatch = customMode
         ? featureMatchesSourceAndSlot(feature, sourceId, slotId)
-        : featureMatchesFrame(feature, sourceId, typeId, roleId, slotId);
+        : featureMatchesFrame(feature, sourceId, typeId, roleId, slotId, {
+            roleId,
+            tacticalRoleId,
+            monsterTierId,
+            tempoProfileId,
+            dangerId,
+            targetCr,
+          });
       return frameMatch && canShowFeatureForMode(status, composerMode);
     })
     .map(({ feature, status }) => {
@@ -433,6 +447,11 @@ function getOneClickFixCandidates({
         category,
         activePreset,
         roleId,
+        tacticalRoleId,
+        monsterTierId,
+        tempoProfileId,
+        dangerId,
+        targetCr,
         currentSlot: slotId,
       });
       return { feature, status, profile, safety: getFeatureSafetyScore(feature, profile) };
@@ -483,6 +502,11 @@ function findReplacementFix({
   sourceId,
   composerMode,
   customMode,
+  tacticalRoleId,
+  monsterTierId,
+  tempoProfileId,
+  dangerId,
+  targetCr,
   reason = "pressure",
 }) {
   if (!feature) return null;
@@ -503,7 +527,14 @@ function findReplacementFix({
         return false;
       const frameMatch = customMode
         ? featureMatchesSourceAndSlot(candidate, sourceId, feature.slot)
-        : featureMatchesFrame(candidate, sourceId, typeId, roleId, feature.slot);
+        : featureMatchesFrame(candidate, sourceId, typeId, roleId, feature.slot, {
+          roleId,
+          tacticalRoleId,
+          monsterTierId,
+          tempoProfileId,
+          dangerId,
+          targetCr,
+        });
       if (!frameMatch || !canShowFeatureForMode(status, composerMode)) return false;
       const candidateWeight =
         reason === "complexity"
@@ -530,6 +561,11 @@ function findReplacementFix({
         category,
         activePreset,
         roleId,
+        tacticalRoleId,
+        monsterTierId,
+        tempoProfileId,
+        dangerId,
+        targetCr,
         currentSlot: feature.slot,
       }),
     }))
@@ -553,6 +589,11 @@ function buildOneClickFixes({
   sourceId,
   composerMode,
   customMode,
+  tacticalRoleId,
+  monsterTierId,
+  tempoProfileId,
+  dangerId,
+  targetCr,
   topPressureFeature,
   topComplexityFeature,
 }) {
@@ -572,6 +613,8 @@ function buildOneClickFixes({
     fixes.push(fix);
   };
 
+  const frameArgs = { tacticalRoleId, monsterTierId, tempoProfileId, dangerId, targetCr };
+
   const weaknessFix = getBestAddFeatureFix({
     slotId: "weakness",
     selected,
@@ -582,6 +625,7 @@ function buildOneClickFixes({
     sourceId,
     composerMode,
     customMode,
+    ...frameArgs,
   });
   const twistFix = getBestAddFeatureFix({
     slotId: "twist",
@@ -593,6 +637,7 @@ function buildOneClickFixes({
     sourceId,
     composerMode,
     customMode,
+    ...frameArgs,
   });
   const lairFix = getBestAddFeatureFix({
     slotId: "lair",
@@ -604,6 +649,7 @@ function buildOneClickFixes({
     sourceId,
     composerMode,
     customMode,
+    ...frameArgs,
   });
 
   if (["missing-weakness", "counterplay", "conditions"].includes(issue) && weaknessFix) {
@@ -622,6 +668,7 @@ function buildOneClickFixes({
       sourceId,
       composerMode,
       customMode,
+      ...frameArgs,
       reason: "pressure",
     });
     if (replacement)
@@ -650,6 +697,7 @@ function buildOneClickFixes({
       sourceId,
       composerMode,
       customMode,
+      ...frameArgs,
       reason: "complexity",
     });
     if (replacement)
@@ -686,6 +734,11 @@ function buildBalanceRecommendations({
   sourceId,
   composerMode,
   customMode,
+  tacticalRoleId,
+  monsterTierId,
+  tempoProfileId,
+  dangerId,
+  targetCr,
   monsterTier,
   tempoProfile,
   pressure,
@@ -707,6 +760,7 @@ function buildBalanceRecommendations({
 
   const topPressureFeature = getTopFeatureByWeight(selectedFeatures, getFeaturePressureWeight);
   const topComplexityFeature = getTopFeatureByWeight(selectedFeatures, getFeatureComplexityWeight);
+  const frameArgs = { tacticalRoleId, monsterTierId, tempoProfileId, dangerId, targetCr };
   const hasWeakness = hasSelectedSlot(selected, "weakness");
   const hasTwist = hasSelectedSlot(selected, "twist");
   const hasLair = hasSelectedSlot(selected, "lair");
@@ -737,6 +791,7 @@ function buildBalanceRecommendations({
           sourceId,
           composerMode,
           customMode,
+          ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
         }),
@@ -765,6 +820,7 @@ function buildBalanceRecommendations({
           sourceId,
           composerMode,
           customMode,
+          ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
         }),
@@ -800,6 +856,7 @@ function buildBalanceRecommendations({
           sourceId,
           composerMode,
           customMode,
+          ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
         }),
@@ -836,6 +893,7 @@ function buildBalanceRecommendations({
           sourceId,
           composerMode,
           customMode,
+          ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
         }),
@@ -865,6 +923,7 @@ function buildBalanceRecommendations({
           sourceId,
           composerMode,
           customMode,
+          ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
         }),
@@ -894,6 +953,7 @@ function buildBalanceRecommendations({
           sourceId,
           composerMode,
           customMode,
+          ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
         }),
@@ -927,6 +987,7 @@ function buildBalanceRecommendations({
           sourceId,
           composerMode,
           customMode,
+          ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
         }),
@@ -954,6 +1015,7 @@ function buildBalanceRecommendations({
           sourceId,
           composerMode,
           customMode,
+          ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
         }),
@@ -987,6 +1049,7 @@ function buildBalanceRecommendations({
           sourceId,
           composerMode,
           customMode,
+          ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
         }),
@@ -1037,7 +1100,7 @@ function getSlotCap(slotCaps, slotId) {
 
 
 
-function pickForgeCandidate(candidates, slotId, remainingBudget, roleId) {
+function pickForgeCandidate(candidates, slotId, remainingBudget, roleId, frame = {}) {
   if (!candidates.length) return null;
 
   const coreSlots = new Set(["body", "attack", "weakness"]);
@@ -1046,12 +1109,19 @@ function pickForgeCandidate(candidates, slotId, remainingBudget, roleId) {
     const weaknessBiasB = b.slot === "weakness" ? -8 : 0;
     const lairBiasA = roleId === "boss" && a.slot === "lair" ? -2 : 0;
     const lairBiasB = roleId === "boss" && b.slot === "lair" ? -2 : 0;
+    const aFrameFit = evaluateMonsterFrameFit(a, frame);
+    const bFrameFit = evaluateMonsterFrameFit(b, frame);
     return (
       Math.max(0, a.cost) +
       a.complexity * 0.45 +
+      aFrameFit.rankModifier +
       weaknessBiasA +
       lairBiasA -
-      (Math.max(0, b.cost) + b.complexity * 0.45 + weaknessBiasB + lairBiasB)
+      (Math.max(0, b.cost) +
+        b.complexity * 0.45 +
+        bFrameFit.rankModifier +
+        weaknessBiasB +
+        lairBiasB)
     );
   });
 
@@ -1163,6 +1233,14 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
   const effectiveComplexityCap = advancedMode ? customComplexityCap : defaultComplexityCap;
   const composerMode = getComposerMode(advancedMode, customMode);
   const activePreset = getPresetById(activePresetId);
+  const currentFrameContext = {
+    roleId,
+    tacticalRoleId,
+    monsterTierId,
+    tempoProfileId,
+    dangerId,
+    targetCr,
+  };
   const currentNavigatorSlot =
     componentNavigatorMode === "global" ? navigatorSlotFilter : activeSlot;
 
@@ -1193,7 +1271,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
           navigatorPackFilter === "all" || getContentPackId(feature) === navigatorPackFilter;
         const frameMatch = customMode
           ? featureMatchesSourceAndSlot(feature, activeNavigatorSourceFilters, slotFilter)
-          : featureMatchesFrame(feature, activeNavigatorSourceFilters, typeId, roleId, slotFilter);
+          : featureMatchesFrame(feature, activeNavigatorSourceFilters, typeId, roleId, slotFilter, currentFrameContext);
         return packMatch && frameMatch && canShowFeatureForMode(status, composerMode);
       })
       .sort((a, b) => {
@@ -1207,6 +1285,9 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
           roleId,
           tacticalRoleId,
           monsterTierId,
+          tempoProfileId,
+          dangerId,
+          targetCr,
           currentSlot: currentNavigatorSlot,
         });
         const bDecision = getFeatureDecisionProfile(b.feature, {
@@ -1219,6 +1300,9 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
           roleId,
           tacticalRoleId,
           monsterTierId,
+          tempoProfileId,
+          dangerId,
+          targetCr,
           currentSlot: currentNavigatorSlot,
         });
         const slotSort =
@@ -1247,6 +1331,9 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
     customMode,
     tacticalRoleId,
     monsterTierId,
+    tempoProfileId,
+    dangerId,
+    targetCr,
   ]);
 
   const compatibleCount = useMemo(() => {
@@ -1256,10 +1343,10 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
     })).filter(({ feature, status }) => {
       const frameMatch = customMode
         ? feature.source === sourceId
-        : featureMatchesFrame(feature, sourceId, typeId, roleId);
+        : featureMatchesFrame(feature, sourceId, typeId, roleId, null, currentFrameContext);
       return frameMatch && canShowFeatureForMode(status, composerMode);
     }).length;
-  }, [sourceId, typeId, roleId, selectedFeatures, category, activePreset, composerMode, customMode]);
+  }, [sourceId, typeId, roleId, selectedFeatures, category, activePreset, composerMode, customMode, tacticalRoleId, monsterTierId, tempoProfileId, dangerId, targetCr]);
 
   const computed = useMemo(() => {
     const partyTier = getTier(partyLevel);
@@ -1494,6 +1581,11 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
       sourceId,
       composerMode,
       customMode,
+      tacticalRoleId,
+      monsterTierId,
+      tempoProfileId,
+      dangerId,
+      targetCr,
       monsterTier,
       tempoProfile,
       pressure,
@@ -1714,17 +1806,49 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
               getSelectedIdsForSlot(next, slotId).includes(feature.id);
             const frameMatch = customMode
               ? featureMatchesSourceAndSlot(feature, sourceId, slotId)
-              : featureMatchesFrame(feature, sourceId, typeId, roleId, slotId);
+              : featureMatchesFrame(feature, sourceId, typeId, roleId, slotId, currentFrameContext);
             return !alreadyPicked && frameMatch && canShowFeatureForMode(status, composerMode);
           })
-          .sort(
-            (a, b) =>
+          .sort((a, b) => {
+            const aDecision = getFeatureDecisionProfile(a.feature, {
+              status: a.status,
+              selected: next,
+              selectedFeatures: partialFeatures,
+              typeId,
+              category,
+              activePreset,
+              roleId,
+              tacticalRoleId,
+              monsterTierId,
+              tempoProfileId,
+              dangerId,
+              targetCr,
+              currentSlot: slotId,
+            });
+            const bDecision = getFeatureDecisionProfile(b.feature, {
+              status: b.status,
+              selected: next,
+              selectedFeatures: partialFeatures,
+              typeId,
+              category,
+              activePreset,
+              roleId,
+              tacticalRoleId,
+              monsterTierId,
+              tempoProfileId,
+              dangerId,
+              targetCr,
+              currentSlot: slotId,
+            });
+            return (
+              getFeatureDecisionRank(aDecision) - getFeatureDecisionRank(bDecision) ||
               getCompatibilityRank(a.status) - getCompatibilityRank(b.status) ||
               a.feature.cost - b.feature.cost
-          )
+            );
+          })
           .map(({ feature }) => feature);
         const remainingBudget = Math.max(0, budget - runningCost + (roleId === "boss" ? 3 : 0));
-        const picked = pickForgeCandidate(candidates, slotId, remainingBudget, roleId);
+        const picked = pickForgeCandidate(candidates, slotId, remainingBudget, roleId, currentFrameContext);
         if (!picked) break;
         picks.push(picked.id);
         runningCost += Math.max(0, picked.cost);
@@ -1807,11 +1931,11 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
       .filter(({ feature, status }) => {
         const frameMatch = customMode
           ? featureMatchesSourceAndSlot(feature, sourceId, activeSlot)
-          : featureMatchesFrame(feature, sourceId, typeId, roleId, activeSlot);
+          : featureMatchesFrame(feature, sourceId, typeId, roleId, activeSlot, currentFrameContext);
         return frameMatch && canShowFeatureForMode(status, composerMode);
       })
       .map(({ feature }) => feature);
-  }, [sourceId, typeId, roleId, activeSlot, selectedFeatures, category, activePreset, composerMode, customMode]);
+  }, [sourceId, typeId, roleId, activeSlot, selectedFeatures, category, activePreset, composerMode, customMode, tacticalRoleId, monsterTierId, tempoProfileId, dangerId, targetCr]);
   const activeAlternatives = activeSlotAvailableFeatures.filter(
     (feature) => !activeSlotFeatureIds.includes(feature.id)
   ).length;
@@ -1991,6 +2115,9 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
       category={category}
       activePreset={activePreset}
       roleId={roleId}
+      tempoProfileId={tempoProfileId}
+      dangerId={dangerId}
+      targetCr={targetCr}
       computed={computed}
       sourceId={sourceId}
       setSourceId={setSourceId}

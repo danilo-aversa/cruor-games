@@ -36,6 +36,12 @@ import {
   summarizeMonsterAnatomyConstraints,
   summarizeMonsterAnatomyGrants,
 } from "../monster-composer/model/anatomy.js";
+import {
+  MONSTER_FRAME_FIT_VALUES,
+  normalizeMonsterFrameFit,
+  summarizeMonsterFrameFit,
+  validateMonsterFrameFit,
+} from "../monster-composer/model/monster-frame-fit.js";
 
 const EMPTY_DRAFT = {
   id: "new-inspiration",
@@ -209,6 +215,49 @@ const MONSTER_RULE_SECTION_OPTIONS = [
   ["lairAction", "Lair Action"],
   ["death", "Death Effect"],
 ];
+
+const MONSTER_FRAME_FIT_OPTION_LABELS = Object.freeze({
+  encounterRoles: {
+    minion: "Minion",
+    standard: "Standard",
+    boss: "Boss",
+  },
+  tacticalRoles: {
+    brute: "Brute",
+    skirmisher: "Skirmisher",
+    controller: "Controller",
+    lurker: "Lurker",
+    artillery: "Artillery",
+    support: "Support",
+  },
+  tiers: {
+    normal: "Normal",
+    elite: "Elite",
+    boss: "Boss",
+    legendary: "Legendary",
+    setpiece: "Setpiece",
+  },
+  tempo: {
+    slow: "Slow",
+    standard: "Standard",
+    fast: "Fast",
+    ambusher: "Ambusher",
+    legendary: "Legendary",
+  },
+  danger: {
+    standard: "Standard",
+    hard: "Hard",
+    horror: "Horror Setpiece",
+  },
+});
+
+const MONSTER_FRAME_FIT_FIELD_HELP = Object.freeze({
+  allowed: "Hard allow list. In Guided Mode, the graft is hidden if the current frame is outside this list.",
+  recommended: "Soft recommendation. This improves Navigator and Forge ranking when the current frame matches.",
+  forbidden: "Hard deny list. In Guided Mode, the graft is hidden when the current frame matches this value.",
+  cr: "Hard min/max gates block invalid CRs. Recommended min/max are soft ranking and QA hints.",
+});
+
 
 const MONSTER_ACTION_ECONOMY_OPTIONS = [
   ["passive", "Passive"],
@@ -647,6 +696,36 @@ const SECTION_HELP = {
   playableText: "Playable text is the material that can appear in DM-facing output, not just editorial notes.",
 };
 
+const COMPONENT_EDITOR_TABS = Object.freeze([
+  { id: "overview", label: "Overview", icon: "fa-id-card", hint: "Identity, status, source anchors, tags, and short playable copy." },
+  { id: "fit", label: "Generator Fit", icon: "fa-sliders", hint: "Slot, stat-block section, budget, complexity, and frame fit." },
+  { id: "anatomy", label: "Anatomy", icon: "fa-dna", hint: "Anatomy grants and hard body/creature compatibility constraints." },
+  { id: "rules", label: "Rules", icon: "fa-scale-balanced", hint: "Structured rule blocks used by the stat-block renderer." },
+  { id: "output", label: "Output", icon: "fa-scroll", hint: "Counterplay and final generated or manual stat-block text." },
+  { id: "qa", label: "QA / Debug", icon: "fa-shield-halved", hint: "Compatibility matrix and raw JSON inspection." },
+]);
+
+const BASIC_COMPONENT_EDITOR_TABS = Object.freeze([
+  { id: "overview", label: "Overview", icon: "fa-id-card", hint: "Identity, status, source anchors, tags, and generator copy." },
+  { id: "output", label: "Output", icon: "fa-scroll", hint: "Playable mechanics and region output fields." },
+  { id: "qa", label: "QA / Debug", icon: "fa-shield-halved", hint: "Raw JSON inspection." },
+]);
+
+function getComponentEditorTabs(component = {}) {
+  if (component.contentType === "monster-graft") return COMPONENT_EDITOR_TABS;
+  return BASIC_COMPONENT_EDITOR_TABS;
+}
+
+function getComponentEditorTabSummary(component = {}, tabId = "overview") {
+  if (tabId === "overview") return "Edit only the high-level identity and readable summary for this component.";
+  if (tabId === "fit") return "Control where this graft appears, how costly it is, and which monster frames should prefer or reject it.";
+  if (tabId === "anatomy") return "Use hard anatomy gates only when the graft would be incoherent on the wrong body.";
+  if (tabId === "rules") return "Expose only the structured rule blocks that this graft actually needs.";
+  if (tabId === "output") return "Review the player-facing counterplay and final stat-block text before export.";
+  if (tabId === "qa") return "Debug compatibility, validation context, and raw component data without cluttering normal editing.";
+  return "";
+}
+
 function clone(value) {
   if (typeof structuredClone === "function") return structuredClone(value);
   return JSON.parse(JSON.stringify(value));
@@ -1018,6 +1097,19 @@ function getMonsterGrantSummary(component = {}) {
   return summarizeMonsterAnatomyGrants(getMonsterGrantSource(component));
 }
 
+function getMonsterFrameFitSource(component = {}) {
+  return component.monster?.fit || component.fit || component.frameFit || null;
+}
+
+function getMonsterFrameFitSummary(component = {}) {
+  return summarizeMonsterFrameFit(getMonsterFrameFitSource(component));
+}
+
+function getFrameFitOptionLabels(dimension) {
+  const labels = MONSTER_FRAME_FIT_OPTION_LABELS[dimension] || {};
+  return (MONSTER_FRAME_FIT_VALUES[dimension] || []).map((id) => labels[id] || id).join(", ");
+}
+
 function buildStudioCompatibilityMatrix(component = {}) {
   if (component.contentType !== "monster-graft") return [];
   const feature = buildMonsterRulesFeature(component, getExplicitMonsterRules(component));
@@ -1078,6 +1170,23 @@ function validateMonsterAnatomyGrantsForStudio(component = {}, index, issues) {
   }
 }
 
+function validateMonsterFrameFitForStudio(component = {}, index, issues) {
+  const id = component.id || component.monster?.graftId || `component-${index}`;
+  const report = validateMonsterFrameFit(getMonsterFrameFitSource(component), {
+    id,
+    title: component.title || component.label,
+  });
+
+  report.issues.forEach((issue) => {
+    issues.push(makeIssue(
+      issue.severity || "error",
+      `components[${index}].${issue.path || "monster.fit"}`,
+      issue.message,
+      id,
+    ));
+  });
+}
+
 function isPlainObject(value) {
   return Boolean(value && typeof value === "object" && !Array.isArray(value));
 }
@@ -1108,6 +1217,7 @@ function buildMonsterRulesFeature(component = {}, explicitRules = null) {
     counterplay: component.counterplay || "",
     constraints: getMonsterConstraintSource(component),
     anatomyGrants: getMonsterGrantSource(component),
+    fit: getMonsterFrameFitSource(component),
   };
   if (explicitRules) feature.rules = explicitRules;
   return feature;
@@ -1494,6 +1604,7 @@ function validateStudioDraft(draft, contentPackExport) {
       }
       validateMonsterAnatomyConstraintsForStudio(component, index, issues);
       validateMonsterAnatomyGrantsForStudio(component, index, issues);
+      validateMonsterFrameFitForStudio(component, index, issues);
     }
 
     if (type === "location-component") {
@@ -1712,6 +1823,20 @@ function TagPillInput({ allowCustom = true, fieldId, icon = "fa-tag", onChange, 
   );
 }
 
+function KeywordPillInput({ allowCustom = true, fieldId, icon = "fa-circle-check", onChange, placeholder, suggestions = [], value = [] }) {
+  return (
+    <TagPillInput
+      allowCustom={allowCustom}
+      fieldId={fieldId}
+      icon={icon}
+      onChange={onChange}
+      placeholder={placeholder}
+      suggestions={suggestions}
+      value={asArray(value)}
+    />
+  );
+}
+
 function MarkdownToolbar({ onApply }) {
   const tools = [
     ["fa-bold", "Bold", "**text**"],
@@ -1827,6 +1952,7 @@ function StudioRightRail({ collapsed = false, componentGroups, draft, imageSourc
           <Icon name={readinessIcon} />
           <span>{(summary.error || 0) + (summary.warning || 0)}</span>
         </button>
+        <span className="studio-collapsed-rail-label" aria-hidden="true">Inspiration Preview</span>
       </aside>
     );
   }
@@ -1925,9 +2051,9 @@ function PanelTitle({ eyebrow, title, icon, help, children }) {
   );
 }
 
-function DividerLabel({ icon, title, help }) {
+function DividerLabel({ icon, title, help, zone = null }) {
   return (
-    <div className="studio-divider-label">
+    <div className="studio-divider-label" data-editor-zone={zone || undefined}>
       <span className="studio-divider-label__title">
         {icon ? <Icon name={icon} /> : null}
         {title}
@@ -1937,10 +2063,14 @@ function DividerLabel({ icon, title, help }) {
   );
 }
 
-function RulesGroup({ actions = null, icon, title, help, children }) {
+function RulesGroup({ actions = null, icon, title, help, children, zone = null, defaultOpen = false }) {
   return (
-    <section className="studio-rules-group">
-      <header className="studio-rules-group__heading">
+    <details
+      className="studio-rules-group studio-rules-group--collapsible"
+      data-editor-zone={zone || undefined}
+      {...(defaultOpen ? { open: true } : {})}
+    >
+      <summary className="studio-rules-group__heading">
         <span className="studio-rules-group__title">
           {icon ? <Icon name={icon} /> : null}
           {title}
@@ -1948,10 +2078,11 @@ function RulesGroup({ actions = null, icon, title, help, children }) {
         <span className="studio-rules-group__tools">
           <HelpTooltip title={title} text={help} />
           {actions}
+          <Icon name="fa-chevron-down" />
         </span>
-      </header>
+      </summary>
       <div className="studio-rules-group__body">{children}</div>
-    </section>
+    </details>
   );
 }
 
@@ -1987,8 +2118,8 @@ export default function InspirationStudioPage() {
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
   const [copyState, setCopyState] = useState("idle");
   const [exportMode, setExportMode] = useState("contentPack");
-  const [libraryCollapsed, setLibraryCollapsed] = useState(false);
-  const [rightRailCollapsed, setRightRailCollapsed] = useState(false);
+  const [libraryCollapsed, setLibraryCollapsed] = useState(true);
+  const [rightRailCollapsed, setRightRailCollapsed] = useState(true);
   const [identityIdsUnlocked, setIdentityIdsUnlocked] = useState(false);
   const [librarySearch, setLibrarySearch] = useState("");
   const [libraryStatusFilter, setLibraryStatusFilter] = useState("all");
@@ -2292,6 +2423,9 @@ export default function InspirationStudioPage() {
               <span>{modules.length}</span>
             </div>
           )}
+          {libraryCollapsed ? (
+            <span className="studio-collapsed-rail-label" aria-hidden="true">Inspiration Library</span>
+          ) : null}
         </aside>
 
         <div className="inspiration-studio__sheet">
@@ -2822,6 +2956,7 @@ function ComponentsWorkspace({
             <button className="studio-component-list__collapsed-button" type="button" onClick={() => setComponentListCollapsed(false)} aria-label="Expand component list">
               <Icon name="fa-diagram-project" />
               <span>{visibleComponents.length}</span>
+              <em>Component Index</em>
             </button>
           )}
           {!componentListCollapsed && !visibleComponents.length ? <div className="studio-empty-state">No matching components.</div> : null}
@@ -3048,62 +3183,11 @@ function ComponentEditor({ component, onChange, onRemove }) {
   const slotValue = isMonsterGraft ? (component.monster?.slot || asArray(component.slots)[0] || "body") : joinList(component.slots);
 
   return (
-    <div className="studio-component-editor studio-component-editor--guided">
-      <div className="studio-component-editor__topline">
-        <div>
-          <span>{typeLabel}</span>
-          <strong>{component.title || component.label || "Untitled Component"}</strong>
-        </div>
-        <button type="button" onClick={onRemove}><Icon name="fa-trash" /> Remove</button>
-      </div>
-
-      <section className="studio-component-quickedit" aria-label="Primary component fields">
-        <div className="studio-form-grid studio-form-grid--primary">
-          <FormRow label="Component Title" icon="fa-signature" hint="Visible name shown in editor lists and generated output.">
-            <TextInput value={component.title || component.label} onChange={setComponentTitle} />
-          </FormRow>
-          <FormRow label="Status" icon="fa-circle-check" hint="Publication state for this component.">
-            <select value={component.status || "draft"} onChange={(event) => setField(["status"], event.target.value)}>
-              {STATUS_OPTIONS.map((option) => (
-                <option key={option.id} value={option.id}>{option.label}</option>
-              ))}
-            </select>
-          </FormRow>
-        </div>
-
-        {isMonsterGraft ? (
-          <div className="studio-form-grid">
-            <FormRow label="Monster Slot" icon="fa-skull" hint="Composer slot where this graft appears.">
-              <TextInput value={slotValue} onChange={setMonsterSlot} />
-            </FormRow>
-            <FormRow label="Graft Type" icon="fa-dice-d20" hint="Primary rules surface for this graft.">
-              <SelectInput options={MONSTER_RULE_SECTION_OPTIONS} value={component.monster?.section || "trait"} onChange={(value) => setField(["monster", "section"], value)} />
-            </FormRow>
-            <FormRow className="studio-form-row--wide" label="Table Text / Mechanics" icon="fa-scroll" hint="Human-readable text before structured rule tuning.">
-              <TextArea rows={5} value={component.tableText || component.mechanics || component.description} onChange={(value) => setField(["tableText"], value)} />
-            </FormRow>
-          </div>
-        ) : (
-          <div className="studio-form-grid">
-            <FormRow label={isLocationRegion ? "Region Slot" : "Composer Slots"} icon="fa-location-dot" hint="Darken/Map slots that can consume this content.">
-              <TextInput value={slotValue} onChange={(value) => setArray(["slots"], value)} />
-            </FormRow>
-            <FormRow label="Workflow" icon="fa-route" hint="Usually darken-location for location content.">
-              <TextInput value={joinList(component.workflows)} onChange={(value) => setArray(["workflows"], value)} />
-            </FormRow>
-            <FormRow className="studio-form-row--wide" label="Generator Text" icon="fa-scroll" hint="Primary prose the generator can surface or transform.">
-              <TextArea rows={5} value={component.description || component.summary || component.text} onChange={(value) => setField(["description"], value)} />
-            </FormRow>
-          </div>
-        )}
-      </section>
-
-      <details className="studio-advanced-details studio-advanced-details--component">
-        <summary><Icon name="fa-gear" /> Advanced structured fields</summary>
-        <ComponentAdvancedEditor component={component} onChange={onChange} onRemove={onRemove} />
-      </details>
+    <div className="studio-component-editor-shell" aria-label="Selected component workspace">
+      <ComponentAdvancedEditor component={component} onChange={onChange} onRemove={onRemove} />
     </div>
   );
+
 }
 
 function ComponentAdvancedEditor({ component, onChange, onRemove }) {
@@ -3114,9 +3198,11 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
   const [spellPickerSchool, setSpellPickerSchool] = useState("all");
   const [spellPickerListId, setSpellPickerListId] = useState("atWill");
   const [activeRulesBlocks, setActiveRulesBlocks] = useState({});
+  const [activeEditorTab, setActiveEditorTab] = useState("overview");
 
   useEffect(() => {
     setActiveRulesBlocks({});
+    setActiveEditorTab("overview");
   }, [component.id]);
 
   function setField(path, value) {
@@ -3223,6 +3309,46 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
       if (nextComponent.monster?.anatomyGrants) delete nextComponent.monster.anatomyGrants;
       if (nextComponent.monster?.grants && isPlainObject(nextComponent.monster.grants)) delete nextComponent.monster.grants;
       if (nextComponent.anatomyGrants) delete nextComponent.anatomyGrants;
+    });
+  }
+
+  function setMonsterFrameFitArray(dimension, field, value) {
+    onChange((nextComponent) => {
+      const monster = nextComponent.monster = nextComponent.monster || {};
+      monster.fit = monster.fit || {};
+      monster.fit.schemaVersion = monster.fit.schemaVersion || "monster-frame-fit-v1.0";
+      monster.fit[dimension] = monster.fit[dimension] || {};
+      monster.fit[dimension][field] = splitList(value);
+      if (!asArray(monster.fit[dimension][field]).length) delete monster.fit[dimension][field];
+      if (!Object.keys(monster.fit[dimension]).length) delete monster.fit[dimension];
+      if (!Object.keys(monster.fit).some((key) => key !== "schemaVersion")) delete monster.fit;
+    });
+  }
+
+  function setMonsterFrameFitField(path, value) {
+    onChange((nextComponent) => {
+      const monster = nextComponent.monster = nextComponent.monster || {};
+      monster.fit = monster.fit || {};
+      monster.fit.schemaVersion = monster.fit.schemaVersion || "monster-frame-fit-v1.0";
+      let target = monster.fit;
+      for (const key of path.slice(0, -1)) {
+        target[key] = target[key] || {};
+        target = target[key];
+      }
+      const finalKey = path[path.length - 1];
+      if (value === "" || value === null || value === undefined) delete target[finalKey];
+      else target[finalKey] = value;
+      const normalized = normalizeMonsterFrameFit(monster.fit);
+      if (normalized) monster.fit = normalized;
+      else delete monster.fit;
+    });
+  }
+
+  function clearMonsterFrameFit() {
+    onChange((nextComponent) => {
+      if (nextComponent.monster?.fit) delete nextComponent.monster.fit;
+      if (nextComponent.fit) delete nextComponent.fit;
+      if (nextComponent.frameFit) delete nextComponent.frameFit;
     });
   }
 
@@ -3560,6 +3686,8 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
   const monsterConstraintSummary = isMonsterGraft ? getMonsterConstraintSummary(component) : [];
   const monsterAnatomyGrants = isMonsterGraft ? (normalizeMonsterAnatomyGrants(getMonsterGrantSource(component)) || {}) : {};
   const monsterGrantSummary = isMonsterGraft ? getMonsterGrantSummary(component) : [];
+  const monsterFrameFit = isMonsterGraft ? (normalizeMonsterFrameFit(getMonsterFrameFitSource(component)) || {}) : {};
+  const monsterFrameFitSummary = isMonsterGraft ? getMonsterFrameFitSummary(component) : [];
   const compatibilityMatrix = isMonsterGraft ? buildStudioCompatibilityMatrix(component) : [];
   const usesInferredRules = Boolean(isMonsterGraft && !explicitMonsterRules && (component.mechanics || component.tableText));
   const ruleSection = component.monster?.section || monsterRules.section || "trait";
@@ -3695,10 +3823,13 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
     { id: "counterplay", label: "Counterplay", icon: "fa-shield-halved", active: hasCounterplayBlock },
   ];
   const visibleAddableRulesBlocks = addableRulesBlocks.filter((block) => !block.active);
+  const componentEditorTabs = getComponentEditorTabs(component);
+  const activeComponentEditorTab = componentEditorTabs.some((tab) => tab.id === activeEditorTab) ? activeEditorTab : "overview";
+  const activeComponentEditorTabMeta = componentEditorTabs.find((tab) => tab.id === activeComponentEditorTab) || componentEditorTabs[0];
 
   return (
-    <div className="studio-component-editor" aria-label="Selected component editor">
-      <div className="studio-component-editor__topline">
+    <div className="studio-component-editor studio-component-editor--tabbed" data-active-zone={activeComponentEditorTab} aria-label="Selected component editor">
+      <div className="studio-component-editor__topline studio-component-editor__topline--sticky">
         <div>
           <span><Icon name={COMPONENT_TYPE_ICONS[component.contentType] || "fa-puzzle-piece"} /> {COMPONENT_TYPE_LABELS[component.contentType] || component.contentType}</span>
           <strong>{component.title}</strong>
@@ -3706,7 +3837,28 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
         <button type="button" onClick={onRemove}><Icon name="fa-trash" /> Remove</button>
       </div>
 
-      <div className="studio-form-grid studio-form-grid--compact">
+      <nav className="studio-component-editor-tabs" aria-label="Component editor sections">
+        {componentEditorTabs.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            className={tab.id === activeComponentEditorTab ? "is-active" : ""}
+            aria-pressed={tab.id === activeComponentEditorTab}
+            onClick={() => setActiveEditorTab(tab.id)}
+          >
+            <Icon name={tab.icon} />
+            <span>{tab.label}</span>
+          </button>
+        ))}
+      </nav>
+
+      <div className="studio-component-tab-context">
+        <strong><Icon name={activeComponentEditorTabMeta?.icon || "fa-circle-info"} /> {activeComponentEditorTabMeta?.label}</strong>
+        <span>{getComponentEditorTabSummary(component, activeComponentEditorTab)}</span>
+      </div>
+
+      <div className="studio-component-zone" data-editor-zone="overview">
+        <div className="studio-form-grid studio-form-grid--compact">
         <FormRow label="Component Title" icon="fa-heading" hint={FIELD_HELP.componentTitle}>
           <TextInput value={component.title} onChange={(value) => {
             setField(["title"], value);
@@ -3722,17 +3874,17 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
         </FormRow>
         {!isMonsterGraft ? (
           <FormRow label="Slots" icon="fa-table-cells-large" hint={FIELD_HELP.slots}>
-            <TextInput value={joinList(component.slots)} onChange={(value) => setArray(["slots"], value)} />
+            <KeywordPillInput fieldId={`${component.id}-slots`} icon="fa-table-cells-large" value={component.slots} onChange={(value) => setField(["slots"], value)} placeholder="body, attack, region" />
           </FormRow>
         ) : null}
         <FormRow label="Workflows" icon="fa-route" hint={FIELD_HELP.workflows}>
-          <TextInput value={joinList(component.workflows)} onChange={(value) => setArray(["workflows"], value)} />
+          <KeywordPillInput fieldId={`${component.id}-workflows`} icon="fa-route" value={component.workflows} onChange={(value) => setField(["workflows"], value)} placeholder="monster-composer" />
         </FormRow>
         <FormRow label="Source Anchors" icon="fa-anchor" hint={FIELD_HELP.sourceAnchors}>
-          <TextInput value={joinList(component.sourceAnchors)} onChange={(value) => setArray(["sourceAnchors"], value)} />
+          <KeywordPillInput fieldId={`${component.id}-source-anchors`} icon="fa-anchor" value={component.sourceAnchors} onChange={(value) => setField(["sourceAnchors"], value)} placeholder="decomposition" />
         </FormRow>
         <FormRow label="Tags" icon="fa-tags" hint={FIELD_HELP.tags}>
-          <TextInput value={joinList(component.tags)} onChange={(value) => setArray(["tags"], value)} />
+          <KeywordPillInput fieldId={`${component.id}-tags`} icon="fa-tag" value={component.tags} onChange={(value) => setField(["tags"], value)} placeholder="slot:body, role:boss" />
         </FormRow>
       </div>
 
@@ -3750,12 +3902,13 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
           </FormRow>
         </>
       ) : null}
+      </div>
 
       {isMonsterGraft ? (
         <div className="studio-component-editor__subpanel studio-component-editor__subpanel--monster">
-          <h4><Icon name="fa-skull" /> Monster Graft Data</h4>
+          <h4 data-editor-zone="fit"><Icon name="fa-skull" /> Monster Graft Data</h4>
 
-          <RulesGroup icon="fa-id-card" title="Frame" help="Frame fields define where the graft belongs in the Monster Composer, where it prints in the stat block, and how much budget it consumes.">
+          <RulesGroup zone="fit" defaultOpen icon="fa-id-card" title="Frame" help="Frame fields define where the graft belongs in the Monster Composer, where it prints in the stat block, and how much budget it consumes.">
             <div className="studio-form-grid studio-form-grid--compact">
               <FormRow label="Monster Slot" icon="fa-table-cells-large" hint={FIELD_HELP.monsterSlot}>
                 <TextInput value={component.monster?.slot || joinList(component.slots)} onChange={setMonsterSlot} />
@@ -3776,6 +3929,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
           </RulesGroup>
 
           <RulesGroup
+            zone="anatomy"
             icon="fa-seedling"
             title="Effective Anatomy Grants"
             help="Optional build changes this graft adds after installation. Use this for mutation/body grafts that unlock later abilities, such as web organs, tendrils, wax mask, brood carrier, or spectral body."
@@ -3783,16 +3937,16 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
           >
             <div className="studio-form-grid studio-form-grid--compact">
               <FormRow label={ANATOMY_GRANT_FIELD_LABELS.grantsBodyPlans} icon="fa-person-rays" hint={ANATOMY_GRANT_FIELD_HINTS.grantsBodyPlans}>
-                <TextInput value={joinList(monsterAnatomyGrants.grantsBodyPlans)} onChange={(value) => setMonsterGrantArray("grantsBodyPlans", value)} placeholder="arachnid, incorporeal" />
+                <KeywordPillInput fieldId={`${component.id}-grants-body-plans`} icon="fa-person-rays" value={monsterAnatomyGrants.grantsBodyPlans} onChange={(value) => setMonsterGrantArray("grantsBodyPlans", value)} placeholder="arachnid, incorporeal" />
               </FormRow>
               <FormRow label={ANATOMY_GRANT_FIELD_LABELS.grantsAnatomy} icon="fa-dna" hint={ANATOMY_GRANT_FIELD_HINTS.grantsAnatomy}>
-                <TextInput value={joinList(monsterAnatomyGrants.grantsAnatomy)} onChange={(value) => setMonsterGrantArray("grantsAnatomy", value)} placeholder="web_glands, spinnerets, tendrils" />
+                <KeywordPillInput fieldId={`${component.id}-grants-anatomy`} icon="fa-dna" value={monsterAnatomyGrants.grantsAnatomy} onChange={(value) => setMonsterGrantArray("grantsAnatomy", value)} placeholder="web_glands, spinnerets, tendrils" />
               </FormRow>
               <FormRow label={ANATOMY_GRANT_FIELD_LABELS.grantsTags} icon="fa-tags" hint={ANATOMY_GRANT_FIELD_HINTS.grantsTags}>
-                <TextInput value={joinList(monsterAnatomyGrants.grantsTags)} onChange={(value) => setMonsterGrantArray("grantsTags", value)} placeholder="web_bearing, spider_infested" />
+                <KeywordPillInput fieldId={`${component.id}-grants-tags`} icon="fa-tags" value={monsterAnatomyGrants.grantsTags} onChange={(value) => setMonsterGrantArray("grantsTags", value)} placeholder="web_bearing, spider_infested" />
               </FormRow>
               <FormRow label={ANATOMY_GRANT_FIELD_LABELS.grantsTokens} icon="fa-link" hint={ANATOMY_GRANT_FIELD_HINTS.grantsTokens}>
-                <TextInput value={joinList(monsterAnatomyGrants.grantsTokens)} onChange={(value) => setMonsterGrantArray("grantsTokens", value)} placeholder="web_maker, egg_carrier" />
+                <KeywordPillInput fieldId={`${component.id}-grants-tokens`} icon="fa-link" value={monsterAnatomyGrants.grantsTokens} onChange={(value) => setMonsterGrantArray("grantsTokens", value)} placeholder="web_maker, egg_carrier" />
               </FormRow>
             </div>
             <FormRow label="Grant Note" icon="fa-note-sticky" hint="Optional internal note explaining what anatomy or build state this graft unlocks.">
@@ -3802,7 +3956,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
               <div className="studio-constraint-summary" aria-label="Current anatomy grants">
                 {monsterGrantSummary.map((row) => (
                   <span key={`${row.label}-${row.values.join("-")}`}>
-                    <strong>{row.label}</strong>: {row.values.join(", ")}
+                    <strong>{row.label}:</strong> {row.values.join(", ")}
                   </span>
                 ))}
               </div>
@@ -3812,6 +3966,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
           </RulesGroup>
 
           <RulesGroup
+            zone="anatomy"
             icon="fa-dna"
             title="Anatomy Constraints"
             help="Optional hard compatibility gates. Leave empty for generic grafts; fill only when the feature needs a specific family, body plan, organ, limb, or build prerequisite."
@@ -3829,40 +3984,40 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
             </div>
             <div className="studio-form-grid studio-form-grid--compact">
               <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.allowedFamilies} icon="fa-skull" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.allowedFamilies}>
-                <TextInput value={joinList(asArray(monsterConstraints.allowedFamilies).length ? monsterConstraints.allowedFamilies : monsterConstraints.exclusiveToFamilies)} onChange={(value) => setMonsterConstraintArray("allowedFamilies", value)} placeholder="spider, skeleton" />
+                <KeywordPillInput fieldId={`${component.id}-allowed-families`} icon="fa-skull" value={asArray(monsterConstraints.allowedFamilies).length ? monsterConstraints.allowedFamilies : monsterConstraints.exclusiveToFamilies} onChange={(value) => setMonsterConstraintArray("allowedFamilies", value)} placeholder="spider, skeleton" />
               </FormRow>
               <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenFamilies} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenFamilies}>
-                <TextInput value={joinList(monsterConstraints.forbiddenFamilies)} onChange={(value) => setMonsterConstraintArray("forbiddenFamilies", value)} placeholder="spider, spirit" />
+                <KeywordPillInput fieldId={`${component.id}-forbidden-families`} icon="fa-ban" value={monsterConstraints.forbiddenFamilies} onChange={(value) => setMonsterConstraintArray("forbiddenFamilies", value)} placeholder="spider, spirit" />
               </FormRow>
               <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.allowedBodyPlans} icon="fa-person" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.allowedBodyPlans}>
-                <TextInput value={joinList(monsterConstraints.allowedBodyPlans)} onChange={(value) => setMonsterConstraintArray("allowedBodyPlans", value)} placeholder="humanoid, arachnid" />
+                <KeywordPillInput fieldId={`${component.id}-allowed-body-plans`} icon="fa-person" value={monsterConstraints.allowedBodyPlans} onChange={(value) => setMonsterConstraintArray("allowedBodyPlans", value)} placeholder="humanoid, arachnid" />
               </FormRow>
               <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenBodyPlans} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenBodyPlans}>
-                <TextInput value={joinList(monsterConstraints.forbiddenBodyPlans)} onChange={(value) => setMonsterConstraintArray("forbiddenBodyPlans", value)} placeholder="incorporeal" />
+                <KeywordPillInput fieldId={`${component.id}-forbidden-body-plans`} icon="fa-ban" value={monsterConstraints.forbiddenBodyPlans} onChange={(value) => setMonsterConstraintArray("forbiddenBodyPlans", value)} placeholder="incorporeal" />
               </FormRow>
               <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiredAnatomy} icon="fa-hand" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiredAnatomy}>
-                <TextInput value={joinList(monsterConstraints.requiredAnatomy)} onChange={(value) => setMonsterConstraintArray("requiredAnatomy", value)} placeholder="hands, fangs, web_glands" />
+                <KeywordPillInput fieldId={`${component.id}-required-anatomy`} icon="fa-hand" value={monsterConstraints.requiredAnatomy} onChange={(value) => setMonsterConstraintArray("requiredAnatomy", value)} placeholder="hands, fangs, web_glands" />
               </FormRow>
               <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiresAnyAnatomy} icon="fa-code-branch" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiresAnyAnatomy}>
-                <TextInput value={joinList(monsterConstraints.requiresAnyAnatomy)} onChange={(value) => setMonsterConstraintArray("requiresAnyAnatomy", value)} placeholder="hands, tendrils" />
+                <KeywordPillInput fieldId={`${component.id}-requires-any-anatomy`} icon="fa-code-branch" value={monsterConstraints.requiresAnyAnatomy} onChange={(value) => setMonsterConstraintArray("requiresAnyAnatomy", value)} placeholder="hands, tendrils" />
               </FormRow>
               <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenAnatomy} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenAnatomy}>
-                <TextInput value={joinList(monsterConstraints.forbiddenAnatomy)} onChange={(value) => setMonsterConstraintArray("forbiddenAnatomy", value)} placeholder="beak, no_stable_limbs" />
+                <KeywordPillInput fieldId={`${component.id}-forbidden-anatomy`} icon="fa-ban" value={monsterConstraints.forbiddenAnatomy} onChange={(value) => setMonsterConstraintArray("forbiddenAnatomy", value)} placeholder="beak, no_stable_limbs" />
               </FormRow>
               <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiredTags} icon="fa-tags" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiredTags}>
-                <TextInput value={joinList(monsterConstraints.requiredTags)} onChange={(value) => setMonsterConstraintArray("requiredTags", value)} placeholder="corpse, physical" />
+                <KeywordPillInput fieldId={`${component.id}-required-tags`} icon="fa-tags" value={monsterConstraints.requiredTags} onChange={(value) => setMonsterConstraintArray("requiredTags", value)} placeholder="corpse, physical" />
               </FormRow>
               <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenTags} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenTags}>
-                <TextInput value={joinList(monsterConstraints.forbiddenTags)} onChange={(value) => setMonsterConstraintArray("forbiddenTags", value)} placeholder="no_flesh, no_hands" />
+                <KeywordPillInput fieldId={`${component.id}-forbidden-tags`} icon="fa-ban" value={monsterConstraints.forbiddenTags} onChange={(value) => setMonsterConstraintArray("forbiddenTags", value)} placeholder="no_flesh, no_hands" />
               </FormRow>
               <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiredTokens} icon="fa-link" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiredTokens}>
-                <TextInput value={joinList(monsterConstraints.requiredTokens)} onChange={(value) => setMonsterConstraintArray("requiredTokens", value)} placeholder="web_maker, bone_body" />
+                <KeywordPillInput fieldId={`${component.id}-required-tokens`} icon="fa-link" value={monsterConstraints.requiredTokens} onChange={(value) => setMonsterConstraintArray("requiredTokens", value)} placeholder="web_maker, bone_body" />
               </FormRow>
               <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiresAnyTokens} icon="fa-link" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiresAnyTokens}>
-                <TextInput value={joinList(monsterConstraints.requiresAnyTokens)} onChange={(value) => setMonsterConstraintArray("requiresAnyTokens", value)} placeholder="spider_body, web_maker" />
+                <KeywordPillInput fieldId={`${component.id}-requires-any-tokens`} icon="fa-link" value={monsterConstraints.requiresAnyTokens} onChange={(value) => setMonsterConstraintArray("requiresAnyTokens", value)} placeholder="spider_body, web_maker" />
               </FormRow>
               <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenTokens} icon="fa-link-slash" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenTokens}>
-                <TextInput value={joinList(monsterConstraints.forbiddenTokens)} onChange={(value) => setMonsterConstraintArray("forbiddenTokens", value)} placeholder="spirit_body, no_body" />
+                <KeywordPillInput fieldId={`${component.id}-forbidden-tokens`} icon="fa-link-slash" value={monsterConstraints.forbiddenTokens} onChange={(value) => setMonsterConstraintArray("forbiddenTokens", value)} placeholder="spirit_body, no_body" />
               </FormRow>
             </div>
             <FormRow label="Constraint Note" icon="fa-note-sticky" hint="Optional internal note explaining why the constraint exists. This is useful for review and future content authors.">
@@ -3872,7 +4027,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
               <div className="studio-constraint-summary" aria-label="Current anatomy constraints">
                 {monsterConstraintSummary.map((row) => (
                   <span key={`${row.label}-${row.values.join("-")}`}>
-                    <strong>{row.label}</strong>: {row.values.join(", ")}
+                    <strong>{row.label}:</strong> {row.values.join(", ")}
                   </span>
                 ))}
               </div>
@@ -3882,6 +4037,117 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
           </RulesGroup>
 
           <RulesGroup
+            zone="fit"
+            defaultOpen
+            icon="fa-sliders"
+            title="Frame Fit"
+            help="Optional frame-level gates and recommendations. Use this to make a graft boss-only, controller-friendly, CR-gated, slow-tempo, horror-only, or otherwise tied to the monster frame selectors."
+            actions={monsterFrameFitSummary.length ? <RemoveRulesBlockButton label="Frame Fit" onClick={clearMonsterFrameFit} /> : null}
+          >
+            <div className="studio-constraint-reference">
+              <div>
+                <strong>Encounter</strong>
+                <span>{getFrameFitOptionLabels("encounterRoles")}</span>
+              </div>
+              <div>
+                <strong>Tactical</strong>
+                <span>{getFrameFitOptionLabels("tacticalRoles")}</span>
+              </div>
+              <div>
+                <strong>Tier</strong>
+                <span>{getFrameFitOptionLabels("tiers")}</span>
+              </div>
+              <div>
+                <strong>Tempo</strong>
+                <span>{getFrameFitOptionLabels("tempo")}</span>
+              </div>
+              <div>
+                <strong>Danger</strong>
+                <span>{getFrameFitOptionLabels("danger")}</span>
+              </div>
+            </div>
+
+            <div className="studio-form-grid studio-form-grid--compact">
+              <FormRow label="Encounter Allowed" icon="fa-user-group" hint={MONSTER_FRAME_FIT_FIELD_HELP.allowed}>
+                <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-encounter-allowed`} icon="fa-user-group" value={monsterFrameFit.encounterRoles?.allowed} onChange={(value) => setMonsterFrameFitArray("encounterRoles", "allowed", value)} placeholder="standard, boss" suggestions={MONSTER_FRAME_FIT_VALUES.encounterRoles} />
+              </FormRow>
+              <FormRow label="Encounter Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
+                <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-encounter-recommended`} icon="fa-star" value={monsterFrameFit.encounterRoles?.recommended} onChange={(value) => setMonsterFrameFitArray("encounterRoles", "recommended", value)} placeholder="boss" suggestions={MONSTER_FRAME_FIT_VALUES.encounterRoles} />
+              </FormRow>
+              <FormRow label="Encounter Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
+                <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-encounter-forbidden`} icon="fa-ban" value={monsterFrameFit.encounterRoles?.forbidden} onChange={(value) => setMonsterFrameFitArray("encounterRoles", "forbidden", value)} placeholder="minion" suggestions={MONSTER_FRAME_FIT_VALUES.encounterRoles} />
+              </FormRow>
+
+              <FormRow label="Tactical Allowed" icon="fa-chess-knight" hint={MONSTER_FRAME_FIT_FIELD_HELP.allowed}>
+                <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tactical-allowed`} icon="fa-chess-knight" value={monsterFrameFit.tacticalRoles?.allowed} onChange={(value) => setMonsterFrameFitArray("tacticalRoles", "allowed", value)} placeholder="controller, support" suggestions={MONSTER_FRAME_FIT_VALUES.tacticalRoles} />
+              </FormRow>
+              <FormRow label="Tactical Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
+                <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tactical-recommended`} icon="fa-star" value={monsterFrameFit.tacticalRoles?.recommended} onChange={(value) => setMonsterFrameFitArray("tacticalRoles", "recommended", value)} placeholder="controller" suggestions={MONSTER_FRAME_FIT_VALUES.tacticalRoles} />
+              </FormRow>
+              <FormRow label="Tactical Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
+                <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tactical-forbidden`} icon="fa-ban" value={monsterFrameFit.tacticalRoles?.forbidden} onChange={(value) => setMonsterFrameFitArray("tacticalRoles", "forbidden", value)} placeholder="brute" suggestions={MONSTER_FRAME_FIT_VALUES.tacticalRoles} />
+              </FormRow>
+
+              <FormRow label="Tier Min" icon="fa-layer-group" hint="Hard minimum tier. Leave empty for no hard gate.">
+                <SelectInput options={[["", "No minimum"], ...MONSTER_FRAME_FIT_VALUES.tiers.map((id) => [id, MONSTER_FRAME_FIT_OPTION_LABELS.tiers[id] || id])]} value={monsterFrameFit.tiers?.min || ""} onChange={(value) => setMonsterFrameFitField(["tiers", "min"], value)} />
+              </FormRow>
+              <FormRow label="Tier Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
+                <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tier-recommended`} icon="fa-star" value={monsterFrameFit.tiers?.recommended} onChange={(value) => setMonsterFrameFitArray("tiers", "recommended", value)} placeholder="elite, boss, setpiece" suggestions={MONSTER_FRAME_FIT_VALUES.tiers} />
+              </FormRow>
+              <FormRow label="Tier Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
+                <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tier-forbidden`} icon="fa-ban" value={monsterFrameFit.tiers?.forbidden} onChange={(value) => setMonsterFrameFitArray("tiers", "forbidden", value)} placeholder="normal" suggestions={MONSTER_FRAME_FIT_VALUES.tiers} />
+              </FormRow>
+
+              <FormRow label="CR Min" icon="fa-signal" hint={MONSTER_FRAME_FIT_FIELD_HELP.cr}>
+                <input type="number" min="0" max="30" value={monsterFrameFit.cr?.min ?? ""} onChange={(event) => setMonsterFrameFitField(["cr", "min"], event.target.value === "" ? "" : Number(event.target.value))} placeholder="5" />
+              </FormRow>
+              <FormRow label="CR Max" icon="fa-signal" hint={MONSTER_FRAME_FIT_FIELD_HELP.cr}>
+                <input type="number" min="0" max="30" value={monsterFrameFit.cr?.max ?? ""} onChange={(event) => setMonsterFrameFitField(["cr", "max"], event.target.value === "" ? "" : Number(event.target.value))} placeholder="20" />
+              </FormRow>
+              <FormRow label="Recommended CR Min" icon="fa-star" hint="Soft minimum CR used for QA and ranking, but not as a hard block.">
+                <input type="number" min="0" max="30" value={monsterFrameFit.cr?.recommendedMin ?? ""} onChange={(event) => setMonsterFrameFitField(["cr", "recommendedMin"], event.target.value === "" ? "" : Number(event.target.value))} placeholder="8" />
+              </FormRow>
+
+              <FormRow label="Tempo Allowed" icon="fa-forward-fast" hint={MONSTER_FRAME_FIT_FIELD_HELP.allowed}>
+                <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tempo-allowed`} icon="fa-forward-fast" value={monsterFrameFit.tempo?.allowed} onChange={(value) => setMonsterFrameFitArray("tempo", "allowed", value)} placeholder="slow, standard" suggestions={MONSTER_FRAME_FIT_VALUES.tempo} />
+              </FormRow>
+              <FormRow label="Tempo Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
+                <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tempo-recommended`} icon="fa-star" value={monsterFrameFit.tempo?.recommended} onChange={(value) => setMonsterFrameFitArray("tempo", "recommended", value)} placeholder="fast, ambusher" suggestions={MONSTER_FRAME_FIT_VALUES.tempo} />
+              </FormRow>
+              <FormRow label="Tempo Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
+                <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tempo-forbidden`} icon="fa-ban" value={monsterFrameFit.tempo?.forbidden} onChange={(value) => setMonsterFrameFitArray("tempo", "forbidden", value)} placeholder="ambusher" suggestions={MONSTER_FRAME_FIT_VALUES.tempo} />
+              </FormRow>
+
+              <FormRow label="Danger Min" icon="fa-skull-crossbones" hint="Hard minimum danger profile. Leave empty for no hard gate.">
+                <SelectInput options={[["", "No minimum"], ...MONSTER_FRAME_FIT_VALUES.danger.map((id) => [id, MONSTER_FRAME_FIT_OPTION_LABELS.danger[id] || id])]} value={monsterFrameFit.danger?.min || ""} onChange={(value) => setMonsterFrameFitField(["danger", "min"], value)} />
+              </FormRow>
+              <FormRow label="Danger Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
+                <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-danger-recommended`} icon="fa-star" value={monsterFrameFit.danger?.recommended} onChange={(value) => setMonsterFrameFitArray("danger", "recommended", value)} placeholder="hard, horror" suggestions={MONSTER_FRAME_FIT_VALUES.danger} />
+              </FormRow>
+              <FormRow label="Danger Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
+                <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-danger-forbidden`} icon="fa-ban" value={monsterFrameFit.danger?.forbidden} onChange={(value) => setMonsterFrameFitArray("danger", "forbidden", value)} placeholder="standard" suggestions={MONSTER_FRAME_FIT_VALUES.danger} />
+              </FormRow>
+            </div>
+
+            <FormRow label="Fit Note" icon="fa-note-sticky" hint="Optional internal note explaining why this graft fits or does not fit certain monster frames.">
+              <TextArea rows={2} value={monsterFrameFit.note || ""} onChange={(value) => setMonsterFrameFitField(["note"], value)} placeholder="Example: intended for elite controller spiders; too much tracking for minions." />
+            </FormRow>
+
+            {monsterFrameFitSummary.length ? (
+              <div className="studio-constraint-summary" aria-label="Current frame fit">
+                {monsterFrameFitSummary.map((row) => (
+                  <span key={`${row.label}-${row.values.join("-")}`}>
+                    <strong>{row.label}:</strong> {row.values.join(", ")}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <div className="studio-empty-state studio-empty-state--inline">No explicit Frame Fit. The Composer will infer soft recommendations from stats, rules, pressure, and anatomy, but this graft has no hard frame gates.</div>
+            )}
+          </RulesGroup>
+
+          <RulesGroup
+            zone="qa"
             icon="fa-table-cells"
             title="Compatibility Matrix"
             help="Preview how this graft behaves on each base creature family before other build grants are installed. Body/mutation grants selected in the Composer can turn blocked follow-up grafts into valid ones."
@@ -3902,16 +4168,22 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
             </div>
           </RulesGroup>
 
-          <DividerLabel icon="fa-scale-balanced" title="Rules" help="Structured rules tell the exporter whether this graft is an attack, saving throw, reaction, recharge power, trait, or other ability." />
+          <RulesGroup zone="qa" icon="fa-code" title="Raw Component JSON" help="Read-only component payload for debugging saved data and future Supabase migration checks.">
+            <FormRow label="Raw JSON" icon="fa-code" hint="Read-only JSON for the selected component. Use this only for debugging.">
+              <TextArea className="studio-generated-preview studio-raw-json-preview" rows={16} readOnly value={JSON.stringify(component, null, 2)} />
+            </FormRow>
+          </RulesGroup>
+
+          <DividerLabel zone="rules" icon="fa-scale-balanced" title="Rules" help="Structured rules tell the exporter whether this graft is an attack, saving throw, reaction, recharge power, trait, or other ability." />
           {usesInferredRules ? (
-            <div className="studio-inferred-rules-note">
+            <div className="studio-inferred-rules-note" data-editor-zone="rules">
               <Icon name="fa-wand-magic-sparkles" />
               <span>Inferred from legacy Mechanics. Editing any rule field will convert this graft to explicit structured rules.</span>
             </div>
           ) : null}
 
-          <div className="studio-rules-layout">
-            <RulesGroup icon="fa-bolt" title="Use" help="Use fields define when the ability exists and how often it can be used.">
+          <div className="studio-rules-layout" data-editor-zone="rules">
+            <RulesGroup defaultOpen icon="fa-bolt" title="Use" help="Use fields define when the ability exists and how often it can be used.">
               <div className="studio-form-grid studio-form-grid--compact">
                 <FormRow label="Action Economy" icon="fa-bolt" hint={FIELD_HELP.actionEconomy}>
                   <SelectInput options={MONSTER_ACTION_ECONOMY_OPTIONS} value={actionEconomy} onChange={(value) => setRulesField(["actionEconomy"], value)} />
@@ -3931,7 +4203,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
             </RulesGroup>
 
 
-            <RulesGroup icon="fa-plus" title="Add Rule Block" help="Add only the optional rule blocks this graft actually needs. Blocks already containing data stay visible until removed.">
+            <RulesGroup defaultOpen icon="fa-plus" title="Add Rule Block" help="Add only the optional rule blocks this graft actually needs. Blocks already containing data stay visible until removed.">
               {visibleAddableRulesBlocks.length ? (
                 <div className="studio-rules-add-menu" aria-label="Add optional monster rule block">
                   {visibleAddableRulesBlocks.map((block) => (
@@ -4187,7 +4459,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                         <TextInput value={areaEffect.targets} onChange={(value) => setRulesField(["areaEffect", "targets"], value)} placeholder="creatures" />
                       </FormRow>
                       <FormRow label="Excludes" icon="fa-user-slash" hint={FIELD_HELP.areaEffectExcludes}>
-                        <TextInput value={joinList(areaEffect.excludes)} onChange={(value) => setRulesArray(["areaEffect", "excludes"], value)} placeholder="self, allies" />
+                        <KeywordPillInput fieldId={`${component.id}-area-excludes`} icon="fa-ban" value={areaEffect.excludes} onChange={(value) => setRulesArray(["areaEffect", "excludes"], value)} placeholder="self, allies" />
                       </FormRow>
                     </div>
                     <FormRow label="Area Effect Text" icon="fa-quote-left" hint={FIELD_HELP.areaEffectText}>
@@ -4265,7 +4537,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                           <TextInput value={part.id} onChange={(value) => setDamagePartField(index, ["id"], value)} placeholder={`part-${index + 1}`} />
                         </FormRow>
                         <FormRow label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.damageTypes}>
-                          <TextInput value={joinList(part.types)} onChange={(value) => setDamagePartField(index, ["types"], splitList(value))} placeholder="bludgeoning, lightning" />
+                          <KeywordPillInput fieldId={`${component.id}-damage-part-${index}-types`} icon="fa-burst" value={part.types} onChange={(value) => setDamagePartField(index, ["types"], value)} placeholder="bludgeoning, lightning" />
                         </FormRow>
                         <FormRow label="Budget Role" icon="fa-chart-pie" hint={FIELD_HELP.damageBudgetRole}>
                           <SelectInput options={MONSTER_DAMAGE_BUDGET_ROLE_OPTIONS} value={part.budgetRole || "secondaryAttack"} onChange={(value) => setDamagePartField(index, ["budgetRole"], value)} />
@@ -4298,7 +4570,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                     <SelectInput options={MONSTER_DAMAGE_SCALE_OPTIONS} value={monsterRules.damage?.scale || "standard"} onChange={(value) => setRulesField(["damage", "scale"], value)} />
                   </FormRow>
                   <FormRow label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.damageTypes}>
-                    <TextInput value={joinList(monsterRules.damage?.types)} onChange={(value) => setRulesArray(["damage", "types"], value)} />
+                    <KeywordPillInput fieldId={`${component.id}-damage-types`} icon="fa-burst" value={monsterRules.damage?.types} onChange={(value) => setRulesArray(["damage", "types"], value)} placeholder="bludgeoning, poison" />
                   </FormRow>
                   <FormRow label="Expected Targets" icon="fa-users" hint={FIELD_HELP.damageExpectedTargets}>
                     <input type="number" step="0.25" min="0" value={monsterRules.damage?.expectedTargets ?? ""} onChange={(event) => setRulesField(["damage", "expectedTargets"], event.target.value === "" ? undefined : Number(event.target.value))} placeholder="1" />
@@ -4419,7 +4691,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                         <SelectInput options={MONSTER_DAMAGE_SCALE_OPTIONS} value={monsterRules.ongoing?.damage?.scale || "minor"} onChange={(value) => setRulesField(["ongoing", "damage", "scale"], value)} />
                       </FormRow>
                       <FormRow label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.damageTypes}>
-                        <TextInput value={joinList(monsterRules.ongoing?.damage?.types)} onChange={(value) => setRulesArray(["ongoing", "damage", "types"], value)} placeholder="acid" />
+                        <KeywordPillInput fieldId={`${component.id}-ongoing-damage-types`} icon="fa-burst" value={monsterRules.ongoing?.damage?.types} onChange={(value) => setRulesArray(["ongoing", "damage", "types"], value)} placeholder="acid" />
                       </FormRow>
                     </div>
                   ) : null}
@@ -4540,7 +4812,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                                 <input type="number" step="0.05" min="0" value={monsterRules.procedure?.ongoingDamage?.damage?.budgetShare ?? ""} onChange={(event) => setRulesField(["procedure", "ongoingDamage", "damage", "budgetShare"], event.target.value === "" ? undefined : Number(event.target.value))} placeholder="0.25" />
                               </FormRow>
                               <FormRow label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.damageTypes}>
-                                <TextInput value={joinList(monsterRules.procedure?.ongoingDamage?.damage?.types)} onChange={(value) => setRulesArray(["procedure", "ongoingDamage", "damage", "types"], value)} placeholder="acid" />
+                                <KeywordPillInput fieldId={`${component.id}-procedure-ongoing-damage-types`} icon="fa-burst" value={monsterRules.procedure?.ongoingDamage?.damage?.types} onChange={(value) => setRulesArray(["procedure", "ongoingDamage", "damage", "types"], value)} placeholder="acid" />
                               </FormRow>
                             </>
                           ) : null}
@@ -4597,7 +4869,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                       ) : null}
                       {showDefenseDamageTypes ? (
                         <FormRow label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.defenseDamageTypes}>
-                          <TextInput value={joinList(monsterRules.defense?.damageTypes)} onChange={(value) => setRulesArray(["defense", "damageTypes"], value)} placeholder="fire, necrotic" />
+                          <KeywordPillInput fieldId={`${component.id}-defense-damage-types`} icon="fa-shield-halved" value={monsterRules.defense?.damageTypes} onChange={(value) => setRulesArray(["defense", "damageTypes"], value)} placeholder="fire, necrotic" />
                         </FormRow>
                       ) : null}
                       {showDefenseBreakCondition ? (
@@ -4677,15 +4949,15 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
           </div>
 
           {hasCounterplayBlock ? (
-            <RulesGroup icon="fa-shield-halved" title="Counterplay" help="Counterplay explains what players can notice, prevent, avoid, exploit, or clean up." actions={<RemoveRulesBlockButton label="Counterplay" onClick={() => removeRulesBlock("counterplay")} />}>
+            <RulesGroup zone="output" icon="fa-shield-halved" title="Counterplay" help="Counterplay explains what players can notice, prevent, avoid, exploit, or clean up." actions={<RemoveRulesBlockButton label="Counterplay" onClick={() => removeRulesBlock("counterplay")} />}>
               <FormRow label="Counterplay" icon="fa-shield-halved" hint={FIELD_HELP.counterplay}>
                 <TextArea rows={3} value={component.counterplay} onChange={(value) => setField(["counterplay"], value)} />
               </FormRow>
             </RulesGroup>
           ) : null}
 
-          <DividerLabel icon="fa-scroll" title="Stat Block Text" help="This final text is what the Monster Composer exports for this graft. Generated mode is built from the fields above; Manual Override can still use formula tokens." />
-          <RulesGroup icon="fa-scroll" title="Text Source" help="Choose whether this graft exports generated text or a manual override.">
+          <DividerLabel zone="output" icon="fa-scroll" title="Stat Block Text" help="This final text is what the Monster Composer exports for this graft. Generated mode is built from the fields above; Manual Override can still use formula tokens." />
+          <RulesGroup zone="output" defaultOpen icon="fa-scroll" title="Text Source" help="Choose whether this graft exports generated text or a manual override.">
             <div className="studio-text-source-toggle" role="group" aria-label="Stat block text source">
               <button type="button" aria-pressed={textSource !== "manual"} onClick={() => setRulesField(["text", "source"], "generated")}>Generated</button>
               <button type="button" aria-pressed={textSource === "manual"} onClick={() => setRulesField(["text", "source"], "manual")}>Manual Override</button>
@@ -4704,7 +4976,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
 
 
       {isLocationRegion ? (
-        <div className="studio-component-editor__subpanel">
+        <div className="studio-component-editor__subpanel" data-editor-zone="output">
           <h4><Icon name="fa-dungeon" /> Location Region Data</h4>
           <div className="studio-form-grid studio-form-grid--compact">
             <FormRow label="Role" icon="fa-compass" hint={FIELD_HELP.regionRole}>
@@ -4721,6 +4993,14 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
             </FormRow>
           </div>
         </div>
+      ) : null}
+
+      {!isMonsterGraft ? (
+        <RulesGroup zone="qa" icon="fa-code" title="Raw Component JSON" help="Read-only component payload for debugging saved data and future Supabase migration checks.">
+          <FormRow label="Raw JSON" icon="fa-code" hint="Read-only JSON for the selected component. Use this only for debugging.">
+            <TextArea className="studio-generated-preview studio-raw-json-preview" rows={16} readOnly value={JSON.stringify(component, null, 2)} />
+          </FormRow>
+        </RulesGroup>
       ) : null}
     </div>
   );

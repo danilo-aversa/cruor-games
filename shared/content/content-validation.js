@@ -1,6 +1,13 @@
 const COMPONENT_RULE_REQUIRED_FIELDS = Object.freeze(["schemaVersion", "section", "actionEconomy", "usage", "resolution"]);
 const MONSTER_GRAFT_CONTENT_TYPE = "monster-graft";
 const LOCATION_REGION_CONTENT_TYPE = "location-region";
+const MONSTER_FRAME_FIT_VALUES = Object.freeze({
+  encounterRoles: ["minion", "standard", "boss"],
+  tacticalRoles: ["brute", "skirmisher", "controller", "lurker", "artillery", "support"],
+  tiers: ["normal", "elite", "boss", "legendary", "setpiece"],
+  tempo: ["slow", "standard", "fast", "ambusher", "legendary"],
+  danger: ["standard", "hard", "horror"],
+});
 
 function asArray(value) {
   if (!value) return [];
@@ -118,6 +125,64 @@ function validateMonsterAnatomyObject(value, issues, { id, path, label }) {
   });
 }
 
+
+function validateMonsterFrameFit(component, issues, pathPrefix = "component") {
+  const id = normalizeId(component?.id || component?.monster?.graftId);
+  const fit = component?.monster?.fit || component?.fit || component?.frameFit;
+  if (!fit) return;
+
+  if (!isPlainObject(fit)) {
+    pushIssue(issues, {
+      severity: "error",
+      scope: "monster-frame-fit",
+      path: `${pathPrefix}.monster.fit`,
+      id,
+      message: "Monster Frame Fit must be an object when present.",
+    });
+    return;
+  }
+
+  Object.entries(MONSTER_FRAME_FIT_VALUES).forEach(([dimension, knownValues]) => {
+    const dimensionValue = fit[dimension];
+    if (!dimensionValue) return;
+    if (!isPlainObject(dimensionValue)) {
+      pushIssue(issues, {
+        severity: "error",
+        scope: "monster-frame-fit",
+        path: `${pathPrefix}.monster.fit.${dimension}`,
+        id,
+        message: `Monster Frame Fit ${dimension} must be an object.`,
+      });
+      return;
+    }
+
+    ["allowed", "recommended", "forbidden"].forEach((field) => {
+      asArray(dimensionValue[field]).forEach((entry) => {
+        if (!knownValues.includes(entry)) {
+          pushIssue(issues, {
+            severity: "error",
+            scope: "monster-frame-fit",
+            path: `${pathPrefix}.monster.fit.${dimension}.${field}`,
+            id,
+            message: `Unknown Monster Frame Fit value: ${entry}.`,
+          });
+        }
+      });
+    });
+  });
+
+  const cr = fit.cr;
+  if (cr && isPlainObject(cr) && cr.min !== undefined && cr.max !== undefined && Number(cr.min) > Number(cr.max)) {
+    pushIssue(issues, {
+      severity: "error",
+      scope: "monster-frame-fit",
+      path: `${pathPrefix}.monster.fit.cr`,
+      id,
+      message: "Monster Frame Fit CR min is higher than max.",
+    });
+  }
+}
+
 function validateLocationRegion(component, issues, pathPrefix = "component") {
   if (component.contentType !== LOCATION_REGION_CONTENT_TYPE) return;
   if (!isPlainObject(component.locationRegion)) {
@@ -166,6 +231,7 @@ export function validateContentComponentStrict(component = {}, { pathPrefix = "c
       path: `${pathPrefix}.monster.anatomyGrants`,
       label: "Monster anatomy grants",
     });
+    validateMonsterFrameFit(component, issues, pathPrefix);
   }
 
   validateLocationRegion(component, issues, pathPrefix);

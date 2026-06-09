@@ -13,6 +13,7 @@ import {
   summarizeMonsterAnatomyGrants,
 } from "./anatomy.js";
 import { asArray, getSelectedIdsForSlot, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
+import { evaluateMonsterFrameFit } from "./monster-frame-fit.js";
 
 function defaultTitleCase(value) {
   return String(value || "")
@@ -290,6 +291,10 @@ export function buildFeatureDecisionProfile(feature, context = {}) {
   const category = context.category || "Zombie";
   const roleId = context.roleId || "standard";
   const tacticalRoleId = context.tacticalRoleId || "brute";
+  const monsterTierId = context.monsterTierId || "normal";
+  const tempoProfileId = context.tempoProfileId || "standard";
+  const dangerId = context.dangerId || "hard";
+  const targetCr = context.targetCr || 1;
   const currentSlot = context.currentSlot || "all";
   const getFeatureSection = context.getFeatureSection || ((item) => item.section || "trait");
   const getFeatureMechanicProfile =
@@ -299,6 +304,14 @@ export function buildFeatureDecisionProfile(feature, context = {}) {
   const section = getFeatureSection(feature);
   const mechanicProfile = getFeatureMechanicProfile(feature);
   const counterplayProfile = getFeatureCounterplayProfile(feature);
+  const frameFit = evaluateMonsterFrameFit(feature, {
+    roleId,
+    tacticalRoleId,
+    monsterTierId,
+    tempoProfileId,
+    dangerId,
+    targetCr,
+  });
   const compatibility = getFeatureCompatibility(feature);
   const activePreset = context.activePreset || null;
   const effectiveProfile = getEffectiveBuildAnatomyProfile(selectedFeatures, typeId, category, activePreset);
@@ -342,8 +355,9 @@ export function buildFeatureDecisionProfile(feature, context = {}) {
   const risky =
     ["soft", "avoid", "missing", "incompatible"].includes(status.kind) ||
     needsTell ||
-    (highPressure && feature.complexity >= 3);
-  const blocked = ["missing", "incompatible"].includes(status.kind);
+    (highPressure && feature.complexity >= 3) ||
+    frameFit.kind === "discouraged";
+  const blocked = ["missing", "incompatible"].includes(status.kind) || frameFit.hardBlock;
   const recommended =
     !blocked &&
     !risky &&
@@ -370,6 +384,8 @@ export function buildFeatureDecisionProfile(feature, context = {}) {
     needsTell ? "Needs Tell" : null,
     bossOnly ? "Boss Only" : null,
     synergyTokens.length ? "Synergy" : null,
+    frameFit.kind === "recommended" ? "Frame Fit" : null,
+    frameFit.kind === "discouraged" ? "Frame Warning" : null,
     risky && !blocked ? "Risky" : null,
     blocked ? "Blocked" : null,
   ]);
@@ -377,6 +393,7 @@ export function buildFeatureDecisionProfile(feature, context = {}) {
   let riskLabel = "Low";
   if (blocked) riskLabel = status.label;
   else if (needsTell) riskLabel = "Needs Tell";
+  else if (frameFit.kind === "discouraged") riskLabel = frameFit.label;
   else if (["soft", "avoid"].includes(status.kind)) riskLabel = status.label;
   else if (counterplayProfile.hardControl) riskLabel = "Hard Control";
   else if (highPressure) riskLabel = "High Pressure";
@@ -394,6 +411,7 @@ export function buildFeatureDecisionProfile(feature, context = {}) {
   const rank =
     (recommended ? 0 : simple ? 10 : risky ? 35 : 20) +
     getCompatibilityRank(status) * 10 +
+    frameFit.rankModifier +
     Math.max(0, feature.cost) +
     feature.complexity * 1.5 -
     synergyTokens.length * 4 -
@@ -409,6 +427,7 @@ export function buildFeatureDecisionProfile(feature, context = {}) {
     bossOnly,
     risky,
     blocked,
+    frameFit,
     badges,
     bestFor: uniqueArray(bestForParts).slice(0, 2).join(" / "),
     riskLabel,
@@ -488,6 +507,9 @@ export function buildSmartSlotPicks({
   roleId,
   tacticalRoleId,
   monsterTierId,
+  tempoProfileId,
+  dangerId,
+  targetCr,
   activePreset = null,
   getFeatureDecisionProfile: buildDecisionProfile = buildFeatureDecisionProfile,
   getFeatureSafetyScore: buildSafetyScore = getFeatureSafetyScore,
@@ -511,6 +533,9 @@ export function buildSmartSlotPicks({
         roleId,
         tacticalRoleId,
         monsterTierId,
+        tempoProfileId,
+        dangerId,
+        targetCr,
         activePreset,
         currentSlot: slotId,
       });

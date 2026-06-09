@@ -170,6 +170,9 @@ function ComponentNavigatorPanel({
   category,
   activePreset = null,
   roleId,
+  tempoProfileId,
+  dangerId,
+  targetCr,
   computed,
   sourceId,
   setSourceId,
@@ -208,6 +211,9 @@ function ComponentNavigatorPanel({
     roleId,
     tacticalRoleId: computed.tacticalRole.id,
     monsterTierId: computed.monsterTier.id,
+    tempoProfileId: tempoProfileId || computed.tempoProfile.id,
+    dangerId,
+    targetCr: targetCr || computed.targetCr,
   });
   const activeBestPickIds = new Set(
     navigatorBestPickFilter === "best"
@@ -506,6 +512,9 @@ function ComponentNavigatorPanel({
                 roleId,
                 tacticalRoleId: computed.tacticalRole.id,
                 monsterTierId: computed.monsterTier.id,
+                tempoProfileId: tempoProfileId || computed.tempoProfile.id,
+                dangerId,
+                targetCr: targetCr || computed.targetCr,
                 currentSlot: mode === "global" ? navigatorSlotFilter : activeSlot,
                 selectedInSlot,
               });
@@ -653,6 +662,9 @@ function FeatureCard({
       <ImpactMetricDock impact={impact} />
 
       {hasCompatibilityBadge && <p className="compatibility-note">{compatibility.message}</p>}
+      {profile.frameFit?.kind === "discouraged" && (
+        <p className="compatibility-note">{profile.frameFit.message}</p>
+      )}
       {slotFull && (
         <p className="compatibility-note">
           This slot is full. Raise its cap or remove a graft first.
@@ -694,6 +706,16 @@ function FeatureCard({
             </span>
           </div>
           <ImpactMetaRows impact={impact} />
+          {profile.frameFit && profile.frameFit.kind !== "neutral" && (
+            <div className="meta-row">
+              <span className="meta-label">Frame Fit</span>
+              <span className="meta-values">
+                <span className={`meta-value ${profile.frameFit.kind === "recommended" ? "strong-chip" : "danger-chip"}`}>
+                  {profile.frameFit.label}: {profile.frameFit.message}
+                </span>
+              </span>
+            </div>
+          )}
           <div className="meta-row">
             <span className="meta-label">Slot</span>
             <span className="meta-values">

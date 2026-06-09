@@ -2,6 +2,7 @@ import { MONSTER_FAMILY_PRESETS } from "../data/monster-presets.js";
 import { MONSTER_GRAFTS } from "../data/monster-grafts.js";
 import { MONSTER_SOURCES } from "../data/monster-sources.js";
 import { getCompatibilityStatus } from "../model/monster-composer.compatibility.js";
+import { evaluateMonsterFrameFit } from "../model/monster-frame-fit.js";
 import { validateMonsterGraftRules } from "../model/monster-graft-rules.schema.js";
 import { hasSelectedSlot } from "../model/monster-composer.selection.js";
 import { asArray, makeQaIssue, summarizeQaIssues } from "./monster-qa-report.js";
@@ -14,6 +15,31 @@ function getPresetSelectionEntries(preset) {
   return Object.entries(preset.selection || {}).flatMap(([slotId, value]) =>
     asArray(value).map((graftId) => ({ slotId, graftId })),
   );
+}
+
+
+function validatePresetFrameFit({ preset, context, issues }) {
+  context.selectedFeatures.forEach((feature) => {
+    const frameFit = evaluateMonsterFrameFit(feature, {
+      roleId: context.roleId,
+      tacticalRoleId: context.tacticalRoleId,
+      monsterTierId: context.monsterTierId,
+      tempoProfileId: context.tempoProfileId,
+      dangerId: context.dangerId,
+      targetCr: context.targetCr,
+    });
+    if (!frameFit.hardBlock) return;
+    issues.push(makeQaIssue({
+      severity: "error",
+      area: "frame-fit",
+      check: "preset-frame-fit",
+      id: preset.id,
+      title: preset.label,
+      path: `selection.${feature.slot}`,
+      message: `${feature.title} does not fit this preset frame: ${frameFit.message}`,
+      recommendation: "Change the preset frame, replace the graft, or relax the graft's explicit Frame Fit block.",
+    }));
+  });
 }
 
 function addExportPatternIssues({ preset, text, issues, path }) {
@@ -118,6 +144,30 @@ export function runMonsterPresetQa({ presets = MONSTER_FAMILY_PRESETS, grafts = 
       if (graft.source !== preset.source) {
         issues.push(makeQaIssue({ severity: "warning", area: "preset", check: "cross-source-graft", id: preset.id, title: preset.label, path: `selection.${slotId}`, message: `Preset uses ${graftId} from source ${graft.source}, not ${preset.source}.` }));
       }
+      if (graft.typeBias?.length && !graft.typeBias.includes(preset.typeId)) {
+        issues.push(makeQaIssue({
+          severity: "error",
+          area: "preset",
+          check: "type-bias",
+          id: preset.id,
+          title: preset.label,
+          path: `selection.${slotId}`,
+          message: `Preset uses ${graftId}, but its typeBias does not include ${preset.typeId}.`,
+          recommendation: "Replace the graft, update the preset type, or correct the graft typeBias.",
+        }));
+      }
+      if (graft.roleBias?.length && !graft.roleBias.includes(preset.roleId)) {
+        issues.push(makeQaIssue({
+          severity: "error",
+          area: "preset",
+          check: "role-bias",
+          id: preset.id,
+          title: preset.label,
+          path: `selection.${slotId}`,
+          message: `Preset uses ${graftId}, but its roleBias does not include ${preset.roleId}.`,
+          recommendation: "Replace the graft, update the preset footprint, or correct the graft roleBias.",
+        }));
+      }
       validateMonsterGraftRules(graft).issues
         .filter((issue) => issue.severity === "error")
         .forEach((issue) => {
@@ -132,6 +182,7 @@ export function runMonsterPresetQa({ presets = MONSTER_FAMILY_PRESETS, grafts = 
         issues.push(makeQaIssue({ severity: "error", area: "compatibility", check: status.kind, id: preset.id, title: preset.label, path: `selection.${feature.slot}`, message: `${feature.title}: ${status.message}`, details: status }));
       }
     });
+    validatePresetFrameFit({ preset, context, issues });
 
     if (!hasSelectedSlot(context.selected, "attack") || !context.actions.length) {
       issues.push(makeQaIssue({ severity: "error", area: "preset", check: "export-action", id: preset.id, title: preset.label, message: "Preset has no exported action even though Attack is required." }));

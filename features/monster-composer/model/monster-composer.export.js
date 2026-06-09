@@ -5,6 +5,7 @@ import { normalizeMonsterGraftRules, validateMonsterGraftRules } from "./monster
 import { SLOTS } from "../monster-composer.workflow.js";
 import { asArray, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
 import { getFeatureCompatibility, hasFeatureCompatibilityOverride } from "./monster-composer.compatibility.js";
+import { getFeatureFrameFit } from "./monster-frame-fit.js";
 import {
   COMPLEXITY_LABELS,
   PRESSURE_LABELS,
@@ -504,6 +505,7 @@ function buildStructuredFeature(feature, computed = null) {
     rulesValidation: validateMonsterGraftRules(feature),
     typeBias: asArray(feature.typeBias),
     roleBias: asArray(feature.roleBias),
+    fit: getFeatureFrameFit(feature, { includeInferred: true }),
     cost: feature.cost,
     complexity: feature.complexity,
     stats: feature.stats || {},

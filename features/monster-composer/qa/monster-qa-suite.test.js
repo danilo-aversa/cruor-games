@@ -10,6 +10,8 @@ describe("Monster Composer QA suite", () => {
     expect(report.suites.map((suite) => suite.id)).toEqual([
       "monster-content",
       "monster-presets",
+      "monster-frame-scaling",
+      "monster-frame-fit-diversity",
       "monster-generation",
     ]);
   });

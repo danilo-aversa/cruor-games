@@ -6191,7 +6191,7 @@ const RAW_MONSTER_GRAFTS = [
     section: "trait",
     source: "wax-death-masks",
     typeBias: ["undead", "aberration"],
-    roleBias: ["boss"],
+    roleBias: ["standard", "boss"],
     cost: 6,
     complexity: 4,
     stats: { dpr: 2, control: 2 },
@@ -6472,6 +6472,3822 @@ const RAW_MONSTER_GRAFTS = [
   },
 ];
 
+export const FEATURE_FRAME_FIT_OVERRIDES = {
+  "swollen-corpse": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "brute",
+        "support",
+        "controller"
+      ]
+    }
+  },
+  "fresh-bloat-hide": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard",
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "brute",
+        "support",
+        "skirmisher",
+        "lurker"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "volatile-immobile-mass": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss",
+        "standard"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "brute",
+        "support",
+        "controller"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "skin-slippage": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "brute",
+        "support",
+        "controller"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "mindless-command": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "support",
+        "controller"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece",
+        "normal"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "pressure-agony": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    }
+  },
+  "stumbling-mass": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support",
+        "brute"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "rupture-charge": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard",
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "brute"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "collapsed-crawler": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard"
+      ],
+      "recommended": [
+        "standard",
+        "minion"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard",
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support",
+        "brute"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "slam-decomposition": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "brute",
+        "lurker"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "empowered-slam": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard",
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support",
+        "brute"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "acid-vomit": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss",
+        "standard"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ],
+      "min": "hard"
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support",
+        "artillery",
+        "brute"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece",
+        "legendary"
+      ],
+      "min": "elite"
+    },
+    "cr": {
+      "recommendedMin": 7
+    }
+  },
+  "corpse-grab": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "gas-buildup": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    }
+  },
+  "unstable-rupture": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard",
+        "fast",
+        "ambusher",
+        "legendary"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support",
+        "artillery"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "dangerously-unstable": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss"
+      ],
+      "recommended": [
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard",
+        "fast",
+        "ambusher",
+        "legendary"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ],
+      "min": "horror"
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ],
+      "min": "boss"
+    },
+    "cr": {
+      "recommendedMin": 7
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support",
+        "artillery"
+      ]
+    }
+  },
+  "undead-fortitude": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "brute",
+        "support",
+        "controller"
+      ]
+    }
+  },
+  "siege-corpse": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece",
+        "normal"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "brute",
+        "lurker"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "head-weak-spot": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "mechanical-stress": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 30
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    }
+  },
+  "radiant-preservation-failure": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    }
+  },
+  "corpse-bloom-death": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    }
+  },
+  "toxic-detonation": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support",
+        "artillery"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "purge-fluid-flood": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "choking-air": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss"
+      ],
+      "recommended": [
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ],
+      "min": "horror"
+    },
+    "tiers": {
+      "min": "boss",
+      "recommended": [
+        "boss",
+        "legendary",
+        "setpiece",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    }
+  },
+  "corpse-pressure-room": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss"
+      ],
+      "recommended": [
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ],
+      "min": "horror"
+    },
+    "tiers": {
+      "min": "boss",
+      "recommended": [
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 7
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    }
+  },
+  "shame-hunger": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "brute",
+        "lurker",
+        "support",
+        "controller"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    }
+  },
+  "corpse-craving": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "nocturnal-haunting": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "ethereal-sight": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "brute",
+        "support",
+        "skirmisher",
+        "lurker",
+        "controller"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "incorporeal-movement": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support",
+        "brute"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "grave-bite": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher",
+        "slow",
+        "standard"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "brute",
+        "lurker",
+        "controller"
+      ]
+    }
+  },
+  "infected-bite": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "brute",
+        "lurker"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "purulent-bite": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ],
+      "min": "hard"
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support",
+        "brute",
+        "lurker"
+      ]
+    },
+    "tiers": {
+      "min": "elite",
+      "recommended": [
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 7
+    }
+  },
+  "horrific-apparition": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support",
+        "artillery"
+      ]
+    }
+  },
+  "corpse-tendrils": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss",
+        "standard"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "flesh-harvest": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "brute",
+        "support",
+        "lurker"
+      ]
+    }
+  },
+  "deceitful-apparition": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "mortal-afterlife": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "vanish-spirit": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "cunning-action-spirit": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker"
+      ]
+    }
+  },
+  "horrific-assault": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "brute"
+      ]
+    }
+  },
+  "no-witnesses-rage": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss",
+        "standard"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher",
+        "legendary"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "brute",
+        "lurker"
+      ]
+    }
+  },
+  "daytime-weakness": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "shameful-feeding": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 30
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    }
+  },
+  "dangerous-hunger": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    }
+  },
+  "salt-and-names": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    }
+  },
+  "spectral-dust-death": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "last-meal-memory": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support"
+      ]
+    }
+  },
+  "funeral-silence-lair": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss"
+      ],
+      "recommended": [
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ],
+      "min": "horror"
+    },
+    "tiers": {
+      "min": "boss",
+      "recommended": [
+        "boss",
+        "legendary",
+        "setpiece",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    }
+  },
+  "graveyard-offerings-lair": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss",
+        "standard"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ],
+      "min": "hard"
+    },
+    "tiers": {
+      "recommended": [
+        "boss",
+        "legendary",
+        "setpiece",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "controller",
+        "support",
+        "brute"
+      ]
+    }
+  },
+  "maternal-swarm-instinct": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "support",
+        "controller"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "egg-carrier": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss",
+        "standard"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "brute",
+        "support",
+        "controller"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ],
+      "min": "horror"
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece",
+        "legendary"
+      ],
+      "min": "boss"
+    },
+    "cr": {
+      "recommendedMin": 7
+    }
+  },
+  "spider-climb": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "brute",
+        "support",
+        "controller"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "web-walker": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "brute",
+        "support",
+        "controller"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "barbed-chitin": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "brute",
+        "support",
+        "controller",
+        "artillery"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    }
+  },
+  "umbral-skin": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "brute",
+        "support",
+        "controller"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "malformed-broodling": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion"
+      ],
+      "recommended": [
+        "minion"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "brute",
+        "support",
+        "controller"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece",
+        "normal"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 4
+    }
+  },
+  "hundred-eyed": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    }
+  },
+  "wall-crawler": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "web-dancer": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support",
+        "brute"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "shadow-jump": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "predatory-jump": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    }
+  },
+  "venomous-bite": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support",
+        "brute"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "perforate": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard"
+      ],
+      "recommended": [
+        "standard",
+        "minion"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support",
+        "brute"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "web-recharge": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support",
+        "brute"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "shadow-web": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support",
+        "artillery",
+        "brute"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "venomous-spit": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard"
+      ],
+      "recommended": [
+        "minion",
+        "standard"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support",
+        "artillery"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "brood-injection": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support",
+        "brute"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "enrage-broodmother": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss",
+        "standard"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher",
+        "legendary"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "brute",
+        "support",
+        "controller"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "web-architect": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    }
+  },
+  "corrosive-web": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support",
+        "artillery"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    }
+  },
+  "hunter-spider": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "thin-legs": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "standard",
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "fear-of-fire": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "standard",
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "underbelly-weak-spot": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "standard",
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "eyes-weak-spot": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "standard",
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 30
+    }
+  },
+  "brood-tell": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "minion",
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "support",
+        "controller"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "standard",
+        "hard",
+        "horror"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "egg-hatch-death": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "silk-cocoon-remains": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "minion",
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror",
+        "standard"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "sticky-surroundings": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss",
+        "standard"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "boss",
+        "legendary",
+        "setpiece",
+        "elite"
+      ]
+    },
+    "danger": {
+      "min": "hard",
+      "recommended": [
+        "horror",
+        "hard"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "broodmother-web-lair": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss"
+      ],
+      "recommended": [
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "tiers": {
+      "min": "boss",
+      "recommended": [
+        "boss",
+        "legendary",
+        "setpiece",
+        "elite"
+      ]
+    },
+    "danger": {
+      "min": "horror",
+      "recommended": [
+        "horror",
+        "hard"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "dense-web-region": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss",
+        "standard"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "fast",
+        "ambusher"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "skirmisher",
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "danger": {
+      "min": "hard",
+      "recommended": [
+        "horror",
+        "hard"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "waxen-mask-body": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "standard",
+        "fast"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "lurker",
+        "controller",
+        "brute",
+        "support"
+      ]
+    }
+  },
+  "borrowed-face": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "standard",
+        "fast"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "lurker",
+        "controller",
+        "support"
+      ]
+    }
+  },
+  "shadow-stillness": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "boss",
+        "standard"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "standard",
+        "fast",
+        "ambusher"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "lurker",
+        "controller",
+        "skirmisher"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  },
+  "mask-phase": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "standard",
+        "fast"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "lurker",
+        "controller",
+        "support",
+        "brute"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 6
+    }
+  },
+  "fire-softens-it": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "standard",
+        "fast"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "standard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "lurker",
+        "controller"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "legendary",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMax": 10
+    }
+  },
+  "cold-funeral-touch": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "standard",
+        "fast"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "lurker",
+        "controller",
+        "brute"
+      ]
+    }
+  },
+  "face-curse": {
+    "schemaVersion": "monster-frame-fit-v1.0",
+    "encounterRoles": {
+      "allowed": [
+        "standard",
+        "boss"
+      ],
+      "recommended": [
+        "standard",
+        "boss"
+      ]
+    },
+    "tempo": {
+      "recommended": [
+        "standard",
+        "fast"
+      ]
+    },
+    "danger": {
+      "recommended": [
+        "hard",
+        "horror"
+      ]
+    },
+    "tacticalRoles": {
+      "recommended": [
+        "lurker",
+        "controller",
+        "support"
+      ]
+    },
+    "tiers": {
+      "recommended": [
+        "normal",
+        "elite",
+        "boss",
+        "setpiece"
+      ]
+    },
+    "cr": {
+      "recommendedMin": 5
+    }
+  }
+};
+
 function normalizeArrayField(value) {
   return Array.isArray(value) ? value : [];
 }
@@ -6482,8 +10298,10 @@ function normalizeSourceAnchors(graft) {
 }
 
 function normalizeMonsterGraft(graft) {
+  const fit = graft.fit || FEATURE_FRAME_FIT_OVERRIDES[graft.id] || null;
   return {
     ...graft,
+    fit,
     sourceAnchors: normalizeSourceAnchors(graft),
     sourceTypes: normalizeArrayField(graft.sourceTypes),
     themes: normalizeArrayField(graft.themes),

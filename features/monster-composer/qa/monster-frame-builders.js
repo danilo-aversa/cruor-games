@@ -28,6 +28,7 @@ import {
 } from "../model/monster-composer.export.js";
 import { buildRunModeSheet } from "../model/monster-composer.run.js";
 import { getCompatibilityStatus } from "../model/monster-composer.compatibility.js";
+import { evaluateMonsterFrameFit, isMonsterFrameFitAllowed } from "../model/monster-frame-fit.js";
 import { hasSelectedSlot } from "../model/monster-composer.selection.js";
 import { asArray, uniqueArray } from "./monster-qa-report.js";
 
@@ -443,7 +444,7 @@ export function buildCoreScratchFrames() {
   ];
 }
 
-export function pickForgeCandidate(candidates, slotId, remainingBudget, roleId) {
+export function pickForgeCandidate(candidates, slotId, remainingBudget, roleId, frame = {}) {
   if (!candidates.length) return null;
   const coreSlots = new Set(REQUIRED_PLAYABLE_SLOTS);
   const sorted = [...candidates].sort((a, b) => {
@@ -451,7 +452,12 @@ export function pickForgeCandidate(candidates, slotId, remainingBudget, roleId) 
     const weaknessBiasB = b.slot === "weakness" ? -8 : 0;
     const lairBiasA = roleId === "boss" && a.slot === "lair" ? -2 : 0;
     const lairBiasB = roleId === "boss" && b.slot === "lair" ? -2 : 0;
-    return Math.max(0, a.cost) + a.complexity * 0.45 + weaknessBiasA + lairBiasA - (Math.max(0, b.cost) + b.complexity * 0.45 + weaknessBiasB + lairBiasB);
+    const aFrameFit = evaluateMonsterFrameFit(a, frame);
+    const bFrameFit = evaluateMonsterFrameFit(b, frame);
+    return (
+      Math.max(0, a.cost) + a.complexity * 0.45 + aFrameFit.rankModifier + weaknessBiasA + lairBiasA -
+      (Math.max(0, b.cost) + b.complexity * 0.45 + bFrameFit.rankModifier + weaknessBiasB + lairBiasB)
+    );
   });
   if (slotId === "weakness") return sorted[0];
   const affordable = sorted.find((feature) => Math.max(0, feature.cost) <= remainingBudget);
@@ -465,12 +471,13 @@ function featureMatchesSource(feature, sourceIdOrIds) {
   return sourceIds.filter(Boolean).includes(feature.source);
 }
 
-function featureMatchesFrame(feature, sourceId, typeId, roleId, slotId = null) {
+function featureMatchesFrame(feature, sourceId, typeId, roleId, slotId = null, frame = null) {
   const sourceMatch = featureMatchesSource(feature, sourceId);
   const typeMatch = !feature.typeBias?.length || feature.typeBias.includes(typeId);
   const roleMatch = !feature.roleBias?.length || feature.roleBias.includes(roleId);
   const slotMatch = !slotId || feature.slot === slotId;
-  return sourceMatch && typeMatch && roleMatch && slotMatch;
+  const frameFitMatch = !frame || isMonsterFrameFitAllowed(feature, frame, { includeInferred: false });
+  return sourceMatch && typeMatch && roleMatch && slotMatch && frameFitMatch;
 }
 
 export function forgeMonsterSelection(frame, { slots = REQUIRED_PLAYABLE_SLOTS } = {}) {
@@ -480,11 +487,11 @@ export function forgeMonsterSelection(frame, { slots = REQUIRED_PLAYABLE_SLOTS }
 
   slots.forEach((slotId) => {
     const candidates = FEATURES.filter((feature) => {
-      if (!featureMatchesFrame(feature, frame.sourceId, frame.typeId, frame.roleId, slotId)) return false;
+      if (!featureMatchesFrame(feature, frame.sourceId, frame.typeId, frame.roleId, slotId, frame)) return false;
       const status = getCompatibilityStatus(feature, selectedFeatures, frame.typeId, frame.category, { activePreset: null });
       return ["compatible", "soft"].includes(status.kind);
     });
-    const picked = pickForgeCandidate(candidates, slotId, remainingBudget, frame.roleId);
+    const picked = pickForgeCandidate(candidates, slotId, remainingBudget, frame.roleId, frame);
     if (!picked) return;
     selected[slotId] = picked.id;
     selectedFeatures = getFeaturesFromSelection(selected);

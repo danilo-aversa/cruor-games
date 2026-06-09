@@ -1,4 +1,5 @@
 import { getCompatibilityStatus } from "../model/monster-composer.compatibility.js";
+import { evaluateMonsterFrameFit } from "../model/monster-frame-fit.js";
 import { hasSelectedSlot } from "../model/monster-composer.selection.js";
 import { asArray, makeQaIssue, summarizeQaIssues } from "./monster-qa-report.js";
 import {
@@ -28,6 +29,176 @@ function addBadOutputIssues(frame, text, issues, path) {
   });
 }
 
+
+function addScalingIssue(issues, { id, leftLabel, rightLabel, metric, left, right, relation = ">" }) {
+  const passed = relation === ">=" ? left >= right : left > right;
+  if (passed) return;
+  issues.push(makeQaIssue({
+    severity: "error",
+    area: "frame-scaling",
+    check: metric,
+    id,
+    title: id,
+    path: `computed.${metric}`,
+    message: `${leftLabel} ${metric} should be ${relation} ${rightLabel} ${metric}, but got ${left} vs ${right}.`,
+    recommendation: "Check Monster Frame multipliers, baseline scaling, or selector wiring.",
+    details: { leftLabel, rightLabel, metric, left, right, relation },
+  }));
+}
+
+function buildScalingContext(overrides = {}) {
+  return buildMonsterFrameContext({
+    typeId: "undead",
+    category: "Zombie",
+    sourceId: "decomposition",
+    roleId: "standard",
+    targetCr: 5,
+    tacticalRoleId: "brute",
+    monsterTierId: "normal",
+    tempoProfileId: "standard",
+    dangerId: "standard",
+    selection: {},
+    ...overrides,
+  });
+}
+
+
+function getSelectedAttackId(selection = {}) {
+  const value = selection.attack;
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export function runMonsterFrameFitDiversityQa() {
+  const issues = [];
+  const groups = [
+    {
+      id: "decomposition-tactical-diversity",
+      frames: [
+        { typeId: "undead", category: "Zombie", roleId: "standard", sourceId: "decomposition", targetCr: 5, tacticalRoleId: "brute", monsterTierId: "normal", tempoProfileId: "slow", dangerId: "hard" },
+        { typeId: "undead", category: "Zombie", roleId: "standard", sourceId: "decomposition", targetCr: 5, tacticalRoleId: "controller", monsterTierId: "elite", tempoProfileId: "standard", dangerId: "horror" },
+      ],
+    },
+    {
+      id: "wolf-spiders-footprint-diversity",
+      frames: [
+        { typeId: "beast", category: "Spider", roleId: "standard", sourceId: "wolf-spiders", targetCr: 5, tacticalRoleId: "lurker", monsterTierId: "normal", tempoProfileId: "ambusher", dangerId: "hard" },
+        { typeId: "beast", category: "Spider", roleId: "boss", sourceId: "wolf-spiders", targetCr: 7, tacticalRoleId: "controller", monsterTierId: "boss", tempoProfileId: "fast", dangerId: "horror" },
+      ],
+    },
+    {
+      id: "jikininki-tactical-diversity",
+      frames: [
+        { typeId: "undead", category: "Spirit", roleId: "standard", sourceId: "jikininki", targetCr: 6, tacticalRoleId: "lurker", monsterTierId: "normal", tempoProfileId: "ambusher", dangerId: "hard" },
+        { typeId: "undead", category: "Spirit", roleId: "boss", sourceId: "jikininki", targetCr: 9, tacticalRoleId: "controller", monsterTierId: "boss", tempoProfileId: "fast", dangerId: "horror" },
+      ],
+    },
+  ];
+
+  const results = groups.map((group) => {
+    const frames = group.frames.map((frame, index) => {
+      const selection = forgeMonsterSelection(frame);
+      return {
+        id: `${group.id}-${index + 1}`,
+        frame,
+        selection,
+        attackId: getSelectedAttackId(selection),
+      };
+    });
+    const uniqueAttacks = new Set(frames.map((frame) => frame.attackId).filter(Boolean));
+    if (uniqueAttacks.size < 2) {
+      issues.push(makeQaIssue({
+        severity: "error",
+        area: "frame-fit-diversity",
+        check: "attack-selection-diversity",
+        id: group.id,
+        title: group.id,
+        path: "selection.attack",
+        message: "Frame Fit did not produce different Attack grafts across distinct tactical frames.",
+        recommendation: "Adjust graft Frame Fit recommendations or Forge ranking so selector changes produce meaningful graft differences.",
+        details: { frames },
+      }));
+    }
+    return { groupId: group.id, frames, uniqueAttackCount: uniqueAttacks.size };
+  });
+
+  return {
+    id: "monster-frame-fit-diversity",
+    label: "Monster Frame Fit Diversity QA",
+    summary: summarizeQaIssues(issues),
+    issues,
+    metrics: {
+      groups: groups.length,
+      results,
+    },
+  };
+}
+
+export function runMonsterFrameScalingQa() {
+  const issues = [];
+  const roleMinion = buildScalingContext({ roleId: "minion" });
+  const roleStandard = buildScalingContext({ roleId: "standard" });
+  const roleBoss = buildScalingContext({ roleId: "boss" });
+
+  addScalingIssue(issues, { id: "encounter-footprint-scaling", leftLabel: "Standard", rightLabel: "Minion", metric: "hp", left: roleStandard.computed.hp, right: roleMinion.computed.hp });
+  addScalingIssue(issues, { id: "encounter-footprint-scaling", leftLabel: "Boss", rightLabel: "Standard", metric: "hp", left: roleBoss.computed.hp, right: roleStandard.computed.hp });
+  addScalingIssue(issues, { id: "encounter-footprint-scaling", leftLabel: "Standard", rightLabel: "Minion", metric: "dpr", left: roleStandard.computed.dpr, right: roleMinion.computed.dpr });
+  addScalingIssue(issues, { id: "encounter-footprint-scaling", leftLabel: "Boss", rightLabel: "Standard", metric: "dpr", left: roleBoss.computed.dpr, right: roleStandard.computed.dpr });
+  addScalingIssue(issues, { id: "encounter-footprint-scaling", leftLabel: "Boss", rightLabel: "Standard", metric: "budget", left: roleBoss.computed.budget, right: roleStandard.computed.budget });
+
+  const cr3 = buildScalingContext({ targetCr: 3 });
+  const cr8 = buildScalingContext({ targetCr: 8 });
+  addScalingIssue(issues, { id: "target-cr-scaling", leftLabel: "CR 8", rightLabel: "CR 3", metric: "hp", left: cr8.computed.hp, right: cr3.computed.hp });
+  addScalingIssue(issues, { id: "target-cr-scaling", leftLabel: "CR 8", rightLabel: "CR 3", metric: "dpr", left: cr8.computed.dpr, right: cr3.computed.dpr });
+  addScalingIssue(issues, { id: "target-cr-scaling", leftLabel: "CR 8", rightLabel: "CR 3", metric: "attack", left: cr8.computed.attack, right: cr3.computed.attack });
+  addScalingIssue(issues, { id: "target-cr-scaling", leftLabel: "CR 8", rightLabel: "CR 3", metric: "dc", left: cr8.computed.dc, right: cr3.computed.dc });
+
+  const brute = buildScalingContext({ tacticalRoleId: "brute" });
+  const controller = buildScalingContext({ tacticalRoleId: "controller" });
+  const support = buildScalingContext({ tacticalRoleId: "support" });
+  const artillery = buildScalingContext({ tacticalRoleId: "artillery" });
+  const lurker = buildScalingContext({ tacticalRoleId: "lurker" });
+  addScalingIssue(issues, { id: "tactical-role-scaling", leftLabel: "Brute", rightLabel: "Lurker", metric: "hp", left: brute.computed.hp, right: lurker.computed.hp });
+  addScalingIssue(issues, { id: "tactical-role-scaling", leftLabel: "Controller", rightLabel: "Brute", metric: "dc", left: controller.computed.dc, right: brute.computed.dc });
+  addScalingIssue(issues, { id: "tactical-role-scaling", leftLabel: "Artillery", rightLabel: "Support", metric: "dpr", left: artillery.computed.dpr, right: support.computed.dpr });
+
+  const normalTier = buildScalingContext({ monsterTierId: "normal" });
+  const bossTier = buildScalingContext({ monsterTierId: "boss" });
+  addScalingIssue(issues, { id: "monster-tier-scaling", leftLabel: "Boss Tier", rightLabel: "Normal Tier", metric: "hp", left: bossTier.computed.hp, right: normalTier.computed.hp });
+  addScalingIssue(issues, { id: "monster-tier-scaling", leftLabel: "Boss Tier", rightLabel: "Normal Tier", metric: "budget", left: bossTier.computed.budget, right: normalTier.computed.budget });
+  addScalingIssue(issues, { id: "monster-tier-scaling", leftLabel: "Boss Tier", rightLabel: "Normal Tier", metric: "complexityCap", left: bossTier.computed.complexityCap, right: normalTier.computed.complexityCap });
+
+  const slow = buildScalingContext({ tempoProfileId: "slow" });
+  const ambusher = buildScalingContext({ tempoProfileId: "ambusher" });
+  addScalingIssue(issues, { id: "tempo-scaling", leftLabel: "Ambusher", rightLabel: "Slow", metric: "dpr", left: ambusher.computed.dpr, right: slow.computed.dpr });
+  addScalingIssue(issues, { id: "tempo-scaling", leftLabel: "Ambusher", rightLabel: "Slow", metric: "attack", left: ambusher.computed.attack, right: slow.computed.attack });
+  addScalingIssue(issues, { id: "tempo-scaling", leftLabel: "Ambusher", rightLabel: "Slow", metric: "budget", left: ambusher.computed.budget, right: slow.computed.budget });
+  addScalingIssue(issues, { id: "tempo-scaling", leftLabel: "Ambusher", rightLabel: "Slow", metric: "initiativeMod", left: ambusher.computed.printedStats.initiativeMod, right: slow.computed.printedStats.initiativeMod });
+
+  const standardDanger = buildScalingContext({ dangerId: "standard" });
+  const horrorDanger = buildScalingContext({ dangerId: "horror" });
+  addScalingIssue(issues, { id: "danger-scaling", leftLabel: "Horror", rightLabel: "Standard Danger", metric: "dpr", left: horrorDanger.computed.dpr, right: standardDanger.computed.dpr });
+  addScalingIssue(issues, { id: "danger-scaling", leftLabel: "Horror", rightLabel: "Standard Danger", metric: "budget", left: horrorDanger.computed.budget, right: standardDanger.computed.budget });
+
+  return {
+    id: "monster-frame-scaling",
+    label: "Monster Frame Scaling QA",
+    summary: summarizeQaIssues(issues),
+    issues,
+    metrics: {
+      checks: 22,
+      sampleFrames: {
+        minion: roleMinion.computed.printedStats,
+        standard: roleStandard.computed.printedStats,
+        boss: roleBoss.computed.printedStats,
+        cr3: cr3.computed.printedStats,
+        cr8: cr8.computed.printedStats,
+        slow: slow.computed.printedStats,
+        ambusher: ambusher.computed.printedStats,
+      },
+    },
+  };
+}
+
 export function runMonsterGenerationQa({ frames = buildCoreScratchFrames() } = {}) {
   const issues = [];
   const frameResults = [];
@@ -47,6 +218,26 @@ export function runMonsterGenerationQa({ frames = buildCoreScratchFrames() } = {
       const status = getCompatibilityStatus(feature, context.selectedFeatures, context.typeId, context.category, { activePreset: null });
       if (["missing", "incompatible"].includes(status.kind)) {
         issues.push(makeQaIssue({ severity: "error", area: "forge-compatibility", check: status.kind, id: frame.id, title: frame.id, path: `selection.${feature.slot}`, message: `${feature.title}: ${status.message}`, details: status }));
+      }
+
+      const frameFit = evaluateMonsterFrameFit(feature, {
+        roleId: context.roleId,
+        tacticalRoleId: context.tacticalRoleId,
+        monsterTierId: context.monsterTierId,
+        tempoProfileId: context.tempoProfileId,
+        dangerId: context.dangerId,
+        targetCr: context.targetCr,
+      });
+      if (frameFit.hardBlock) {
+        issues.push(makeQaIssue({
+          severity: "error",
+          area: "forge-frame-fit",
+          check: "frame-fit",
+          id: frame.id,
+          title: frame.id,
+          path: `selection.${feature.slot}`,
+          message: `${feature.title} does not fit forged frame: ${frameFit.message}`,
+        }));
       }
     });
 

@@ -12,6 +12,11 @@ import {
   normalizeMonsterAnatomyConstraints,
   normalizeMonsterAnatomyGrants,
 } from "../model/anatomy.js";
+import {
+  MONSTER_FRAME_FIT_VALUES,
+  normalizeMonsterFrameFit,
+  validateMonsterFrameFit,
+} from "../model/monster-frame-fit.js";
 import { asArray, makeQaIssue, summarizeQaIssues } from "./monster-qa-report.js";
 
 const ARCHIVED_PROTOTYPE_SOURCE_IDS = new Set(["gashadokuro", "jack-the-ripper"]);
@@ -133,6 +138,50 @@ function validateRulesSemantics(graft, issues) {
   }
 }
 
+
+function validateFrameFit(graft, issues) {
+  const report = validateMonsterFrameFit(graft.fit || graft.monster?.fit || null, {
+    id: graft.id,
+    title: graft.title,
+  });
+  report.issues.forEach((issue) => {
+    issues.push(makeQaIssue({
+      severity: issue.severity || "error",
+      area: issue.area || "frame-fit",
+      check: issue.check || "frame-fit",
+      id: graft.id,
+      title: graft.title,
+      path: issue.path || "fit",
+      message: issue.message,
+      recommendation: issue.recommendation || "Fix the graft Frame Fit block before publishing.",
+    }));
+  });
+
+  const fit = normalizeMonsterFrameFit(graft.fit || graft.monster?.fit || null);
+  if (!fit) return;
+
+  Object.entries(MONSTER_FRAME_FIT_VALUES).forEach(([dimension, knownValues]) => {
+    const value = fit[dimension];
+    if (!value) return;
+    ["allowed", "recommended", "forbidden"].forEach((field) => {
+      asArray(value[field]).forEach((entry) => {
+        if (!knownValues.includes(entry)) {
+          issues.push(makeQaIssue({
+            severity: "error",
+            area: "frame-fit",
+            check: "unknown-frame-value",
+            id: graft.id,
+            title: graft.title,
+            path: `fit.${dimension}.${field}`,
+            message: `Unknown Frame Fit value: ${entry}`,
+            recommendation: "Use a known Monster Composer selector value.",
+          }));
+        }
+      });
+    });
+  });
+}
+
 export function runMonsterContentQa({ grafts = MONSTER_GRAFTS, sources = MONSTER_SOURCES, slots = SLOTS } = {}) {
   const issues = [];
   const sourceIds = new Set(sources.map((source) => source.id));
@@ -170,8 +219,21 @@ export function runMonsterContentQa({ grafts = MONSTER_GRAFTS, sources = MONSTER
     if (!graft.rules || graft.rules?.migration?.isStructured !== true) {
       issues.push(makeQaIssue({ severity: "error", area: "rules", check: "structured-rules", id: graft.id, title: graft.title, path: "rules", message: "Monster graft is not authored as explicit structured rules." }));
     }
+    if (!normalizeMonsterFrameFit(graft.fit || graft.monster?.fit || null)) {
+      issues.push(makeQaIssue({
+        severity: "error",
+        area: "frame-fit",
+        check: "explicit-frame-fit",
+        id: graft.id,
+        title: graft.title,
+        path: "fit",
+        message: "Monster graft has no explicit Frame Fit block.",
+        recommendation: "Author encounter footprint, tactical role, CR, tier, tempo, and danger guidance for this graft.",
+      }));
+    }
 
     validateRulesSemantics(graft, issues);
+    validateFrameFit(graft, issues);
     validateAnatomyTerms({ graft, issues });
   });
 

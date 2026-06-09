@@ -78,6 +78,7 @@ export function sharedComponentToMonsterGraft(component, contentPack = {}) {
     cost: Number(monster.cost || 0),
     complexity: Number(monster.complexity || 0),
     stats: { ...(monster.stats || {}) },
+    fit: monster.fit || component.fit || component.frameFit || null,
     rules: monster.rules || component.rules || null,
     constraints: monster.constraints || component.anatomyConstraints || component.constraints || null,
     anatomyGrants:
