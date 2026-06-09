@@ -1790,8 +1790,10 @@ function TagPillInput({ allowCustom = true, fieldId, icon = "fa-tag", onChange, 
     }
   }
 
+  const isEmpty = values.length === 0;
+
   return (
-    <div className="studio-tag-input" data-restricted={!allowCustom || undefined}>
+    <div className="studio-tag-input" data-empty={isEmpty ? "true" : "false"} data-restricted={!allowCustom || undefined}>
       <div className="studio-tag-input__pills" aria-label={`${fieldId} tags`}>
         {values.map((tag) => (
           <span className="studio-tag-pill" key={tag}>
@@ -3852,6 +3854,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
       </nav>
 
 
+      {activeComponentEditorTab === "overview" ? (
       <div className="studio-component-zone" data-editor-zone="overview">
         <div className="studio-form-grid studio-form-grid--compact">
         <FormRow label="Component Title" icon="fa-heading" hint={FIELD_HELP.componentTitle}>
@@ -3898,9 +3901,10 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
         </>
       ) : null}
       </div>
+      ) : null}
 
       {isMonsterGraft ? (
-        <div className="studio-component-editor__subpanel studio-component-editor__subpanel--monster">
+        <div className="studio-component-editor__subpanel studio-component-editor__subpanel--monster" hidden={activeComponentEditorTab === "overview"}>
           <RulesGroup zone="fit" defaultOpen icon="fa-id-card" title="Frame" help="Frame fields define where the graft belongs in the Monster Composer, where it prints in the stat block, and how much budget it consumes.">
             <div className="studio-form-grid studio-form-grid--compact">
               <FormRow label="Monster Slot" icon="fa-table-cells-large" hint={FIELD_HELP.monsterSlot}>
