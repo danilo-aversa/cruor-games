@@ -2070,7 +2070,6 @@ function RulesGroup({ actions = null, icon, title, help, children, zone = null, 
     <details
       className="studio-rules-group studio-rules-group--collapsible"
       data-editor-zone={zone || undefined}
-      {...(defaultOpen ? { open: true } : {})}
     >
       <summary className="studio-rules-group__heading">
         <span className="studio-rules-group__title">
@@ -2849,7 +2848,7 @@ function ComponentsWorkspace({
   validationReport,
   visibleComponents,
 }) {
-  const [componentListCollapsed, setComponentListCollapsed] = useState(false);
+  const [componentListCollapsed, setComponentListCollapsed] = useState(true);
   const groupedComponents = groupComponentsForList(visibleComponents);
   const validationIssues = asArray(validationReport?.issues);
 
@@ -2881,36 +2880,55 @@ function ComponentsWorkspace({
           />
         </div>
 
-        <div className="studio-component-toolbar">
-          <label className="studio-search-field">
-            <Icon name="fa-magnifying-glass" />
-            <input value={componentSearch} onChange={(event) => onComponentSearchChange(event.target.value)} placeholder="Search components…" />
-            <HelpTooltip title="Search Components" text={FIELD_HELP.componentSearch} />
-          </label>
-
-          {componentMode === "locations" ? (
-            <div className="studio-filter-tabs" role="tablist" aria-label="Location component filters">
-              <button type="button" aria-selected={locationFilter === "all"} onClick={() => onLocationFilterChange("all")}>All <span>{locationComponentsCount + locationRegionsCount}</span></button>
-              <button type="button" aria-selected={locationFilter === "location-component"} onClick={() => onLocationFilterChange("location-component")}>Components <span>{locationComponentsCount}</span></button>
-              <button type="button" aria-selected={locationFilter === "location-region"} onClick={() => onLocationFilterChange("location-region")}>Regions <span>{locationRegionsCount}</span></button>
-            </div>
-          ) : null}
-        </div>
       </div>
 
       <div className={`studio-component-workspace ${componentListCollapsed ? "is-component-list-collapsed" : ""}`.trim()}>
         <div className="studio-component-list studio-component-list--grouped" aria-label="Component list">
           <div className="studio-component-list__topline">
-            <span><Icon name="fa-list" /> Component Index</span>
-            <button
-              type="button"
-              aria-label={componentListCollapsed ? "Expand component list" : "Collapse component list"}
-              title={componentListCollapsed ? "Expand component list" : "Collapse component list"}
-              aria-pressed={componentListCollapsed}
-              onClick={() => setComponentListCollapsed((value) => !value)}
-            >
-              <Icon name={componentListCollapsed ? "fa-chevron-right" : "fa-chevron-left"} />
-            </button>
+            {componentListCollapsed ? (
+              <button
+                className="studio-component-list__collapsed-button"
+                type="button"
+                onClick={() => setComponentListCollapsed(false)}
+                aria-label="Expand component list"
+                title="Expand component list"
+              >
+                <Icon name="fa-diagram-project" />
+                <span>{visibleComponents.length}</span>
+                <em>Component Index</em>
+              </button>
+            ) : (
+              <>
+                <div className="studio-component-list__topline-main">
+                  <span><Icon name="fa-list" /> Component Index</span>
+                  <button
+                    type="button"
+                    aria-label="Collapse component list"
+                    title="Collapse component list"
+                    aria-pressed={componentListCollapsed}
+                    onClick={() => setComponentListCollapsed(true)}
+                  >
+                    <Icon name="fa-chevron-left" />
+                  </button>
+                </div>
+
+                <div className="studio-component-toolbar">
+                  <label className="studio-search-field">
+                    <Icon name="fa-magnifying-glass" />
+                    <input value={componentSearch} onChange={(event) => onComponentSearchChange(event.target.value)} placeholder="Search components…" />
+                    <HelpTooltip title="Search Components" text={FIELD_HELP.componentSearch} />
+                  </label>
+
+                  {componentMode === "locations" ? (
+                    <div className="studio-filter-tabs" role="tablist" aria-label="Location component filters">
+                      <button type="button" aria-selected={locationFilter === "all"} onClick={() => onLocationFilterChange("all")}>All <span>{locationComponentsCount + locationRegionsCount}</span></button>
+                      <button type="button" aria-selected={locationFilter === "location-component"} onClick={() => onLocationFilterChange("location-component")}>Components <span>{locationComponentsCount}</span></button>
+                      <button type="button" aria-selected={locationFilter === "location-region"} onClick={() => onLocationFilterChange("location-region")}>Regions <span>{locationRegionsCount}</span></button>
+                    </div>
+                  ) : null}
+                </div>
+              </>
+            )}
           </div>
           {!componentListCollapsed ? groupedComponents.map((group) => (
             <details className="studio-component-group" key={group.key} open>
@@ -2954,13 +2972,7 @@ function ComponentsWorkspace({
                 })}
               </div>
             </details>
-          )) : (
-            <button className="studio-component-list__collapsed-button" type="button" onClick={() => setComponentListCollapsed(false)} aria-label="Expand component list">
-              <Icon name="fa-diagram-project" />
-              <span>{visibleComponents.length}</span>
-              <em>Component Index</em>
-            </button>
-          )}
+          )) : null}
           {!componentListCollapsed && !visibleComponents.length ? <div className="studio-empty-state">No matching components.</div> : null}
         </div>
 
@@ -3835,7 +3847,6 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
           <span><Icon name={COMPONENT_TYPE_ICONS[component.contentType] || "fa-puzzle-piece"} /> {COMPONENT_TYPE_LABELS[component.contentType] || component.contentType}</span>
           <strong>{component.title}</strong>
         </div>
-        <button type="button" onClick={onRemove}><Icon name="fa-trash" /> Remove</button>
       </div>
 
       <nav className="studio-component-editor-tabs" aria-label="Component editor sections">
@@ -3855,52 +3866,55 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
 
 
       {activeComponentEditorTab === "overview" ? (
-      <div className="studio-component-zone" data-editor-zone="overview">
-        <div className="studio-form-grid studio-form-grid--compact">
-        <FormRow label="Component Title" icon="fa-heading" hint={FIELD_HELP.componentTitle}>
-          <TextInput value={component.title} onChange={(value) => {
-            setField(["title"], value);
-            setField(["label"], value);
-          }} />
-        </FormRow>
-        <FormRow label="Content Type" icon="fa-shapes" hint={FIELD_HELP.contentType}>
-          <select value={component.contentType} onChange={(event) => setField(["contentType"], event.target.value)}>
-            <option value="monster-graft">Monster Graft</option>
-            <option value="location-component">Location Component</option>
-            <option value="location-region">Location Region</option>
-          </select>
-        </FormRow>
-        {!isMonsterGraft ? (
-          <FormRow label="Slots" icon="fa-table-cells-large" hint={FIELD_HELP.slots}>
-            <KeywordPillInput fieldId={`${component.id}-slots`} icon="fa-table-cells-large" value={component.slots} onChange={(value) => setField(["slots"], value)} placeholder="body, attack, region" />
-          </FormRow>
-        ) : null}
-        <FormRow label="Workflows" icon="fa-route" hint={FIELD_HELP.workflows}>
-          <KeywordPillInput fieldId={`${component.id}-workflows`} icon="fa-route" value={component.workflows} onChange={(value) => setField(["workflows"], value)} placeholder="monster-composer" />
-        </FormRow>
-        <FormRow label="Source Anchors" icon="fa-anchor" hint={FIELD_HELP.sourceAnchors}>
-          <KeywordPillInput fieldId={`${component.id}-source-anchors`} icon="fa-anchor" value={component.sourceAnchors} onChange={(value) => setField(["sourceAnchors"], value)} placeholder="decomposition" />
-        </FormRow>
-        <FormRow label="Tags" icon="fa-tags" hint={FIELD_HELP.tags}>
-          <KeywordPillInput fieldId={`${component.id}-tags`} icon="fa-tag" value={component.tags} onChange={(value) => setField(["tags"], value)} placeholder="slot:body, role:boss" />
-        </FormRow>
-      </div>
+        <div className="studio-component-zone" data-editor-zone="overview">
+          <RulesGroup icon="fa-id-card" title="Identity" help="Core component identity, source links, workflows, and implementation tags.">
+            <div className="studio-form-grid studio-form-grid--compact">
+              <FormRow label="Component Title" icon="fa-heading" hint={FIELD_HELP.componentTitle}>
+                <TextInput value={component.title} onChange={(value) => {
+                  setField(["title"], value);
+                  setField(["label"], value);
+                }} />
+              </FormRow>
+              <FormRow label="Content Type" icon="fa-shapes" hint={FIELD_HELP.contentType}>
+                <select value={component.contentType} onChange={(event) => setField(["contentType"], event.target.value)}>
+                  <option value="monster-graft">Monster Graft</option>
+                  <option value="location-component">Location Component</option>
+                  <option value="location-region">Location Region</option>
+                </select>
+              </FormRow>
+              {!isMonsterGraft ? (
+                <FormRow label="Slots" icon="fa-table-cells-large" hint={FIELD_HELP.slots}>
+                  <KeywordPillInput fieldId={`${component.id}-slots`} icon="fa-table-cells-large" value={component.slots} onChange={(value) => setField(["slots"], value)} placeholder="body, attack, region" />
+                </FormRow>
+              ) : null}
+              <FormRow label="Workflows" icon="fa-route" hint={FIELD_HELP.workflows}>
+                <KeywordPillInput fieldId={`${component.id}-workflows`} icon="fa-route" value={component.workflows} onChange={(value) => setField(["workflows"], value)} placeholder="monster-composer" />
+              </FormRow>
+              <FormRow label="Source Anchors" icon="fa-anchor" hint={FIELD_HELP.sourceAnchors}>
+                <KeywordPillInput fieldId={`${component.id}-source-anchors`} icon="fa-anchor" value={component.sourceAnchors} onChange={(value) => setField(["sourceAnchors"], value)} placeholder="decomposition" />
+              </FormRow>
+              <FormRow label="Tags" icon="fa-tags" hint={FIELD_HELP.tags}>
+                <KeywordPillInput fieldId={`${component.id}-tags`} icon="fa-tag" value={component.tags} onChange={(value) => setField(["tags"], value)} placeholder="slot:body, role:boss" />
+              </FormRow>
+            </div>
+          </RulesGroup>
 
-      <DividerLabel icon="fa-pen-nib" title="Playable Text" help={SECTION_HELP.playableText} />
-      <FormRow label="Summary" icon="fa-align-left" hint={FIELD_HELP.componentSummary}>
-        <TextArea rows={4} value={component.summary} onChange={(value) => setField(["summary"], value)} />
-      </FormRow>
-      {!isMonsterGraft ? (
-        <>
-          <FormRow label="Table Text" icon="fa-dice-d20" hint={FIELD_HELP.tableText}>
-            <TextArea rows={4} value={component.tableText} onChange={(value) => setField(["tableText"], value)} />
-          </FormRow>
-          <FormRow label="Mechanics" icon="fa-gears" hint={FIELD_HELP.mechanics}>
-            <TextArea rows={5} value={component.mechanics} onChange={(value) => setField(["mechanics"], value)} />
-          </FormRow>
-        </>
-      ) : null}
-      </div>
+          <RulesGroup icon="fa-pen-nib" title="Playable Text" help={SECTION_HELP.playableText}>
+            <FormRow label="Summary" icon="fa-align-left" hint={FIELD_HELP.componentSummary}>
+              <TextArea rows={4} value={component.summary} onChange={(value) => setField(["summary"], value)} />
+            </FormRow>
+            {!isMonsterGraft ? (
+              <>
+                <FormRow label="Table Text" icon="fa-dice-d20" hint={FIELD_HELP.tableText}>
+                  <TextArea rows={4} value={component.tableText} onChange={(value) => setField(["tableText"], value)} />
+                </FormRow>
+                <FormRow label="Mechanics" icon="fa-gears" hint={FIELD_HELP.mechanics}>
+                  <TextArea rows={5} value={component.mechanics} onChange={(value) => setField(["mechanics"], value)} />
+                </FormRow>
+              </>
+            ) : null}
+          </RulesGroup>
+        </div>
       ) : null}
 
       {isMonsterGraft ? (
@@ -4998,6 +5012,12 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
           </FormRow>
         </RulesGroup>
       ) : null}
+
+      <RulesGroup zone="qa" icon="fa-trash" title="Danger Zone" help="Remove this component from the current Inspiration Module.">
+        <button className="studio-inline-action studio-inline-action--danger" type="button" onClick={onRemove}>
+          <Icon name="fa-trash" /> Remove Component
+        </button>
+      </RulesGroup>
     </div>
   );
 }
