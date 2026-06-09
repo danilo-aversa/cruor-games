@@ -1874,7 +1874,11 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
   const lairActions = sectionGroups.lairAction || [];
   const deathEffects = sectionGroups.death || [];
   const hasLegendaryActions = roleId === "boss";
-  const xp = xpForCr(computed.targetCr).toLocaleString("en-US");
+  const xpValue = xpForCr(computed.targetCr);
+  const xp = String(xpValue);
+  const lairXp = hasSelectedSlot(selected, "lair") || lairActions.length
+    ? String(xpForCr(Math.min(computed.targetCr + 1, 30)))
+    : "";
   const selectedSlotCount = SLOTS.filter((slot) => hasSelectedSlot(selected, slot.id)).length;
   const selectedGraftCount = selectedFeatures.length;
   const slotCompletionPercent = clamp(Math.round((selectedSlotCount / SLOTS.length) * 100), 0, 100);
@@ -1947,6 +1951,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       deathEffects,
       hasLegendaryActions,
       xp,
+      lairXp,
     });
     const exportJson = buildExportJson({
       name: computed.name,
@@ -1967,6 +1972,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       selectedFeatures,
       activePreset,
       xp,
+      lairXp,
     });
     const statBlock = buildRenderableStatBlock({
       name: computed.name,
@@ -1986,6 +1992,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       selectedFeatures,
       hasLegendaryActions,
       xp,
+      lairXp,
     });
     const exportReadiness = buildExportReadiness({
       computed,

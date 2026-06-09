@@ -1969,9 +1969,8 @@
 }
 
 .monster-shell .cruor-stat-block__abilities {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  display: block;
+  width: 100%;
   padding: 11px 0;
   border-bottom: 1px solid rgba(95, 7, 22, 0.44);
 }
@@ -9599,10 +9598,6 @@
     grid-template-columns: 1fr;
   }
 
-  .monster-shell .cruor-stat-block__abilities {
-    grid-template-columns: 1fr;
-  }
-
 
   .monster-shell .graft-inspector__rules {
     grid-template-columns: 1fr;
@@ -11470,4 +11465,392 @@
       "smart"
       "list";
   }
+}
+
+/* Export Stat Block Refresh */
+
+.monster-shell .rendered-stat-block .cruor-stat-block__core {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-auto-rows: min-content;
+  column-gap: clamp(34px, 9vw, 84px);
+  row-gap: 1px;
+  justify-content: start;
+  align-items: start;
+  width: 100%;
+  padding: 7px 0 9px;
+  border-bottom: 1px solid rgba(95, 7, 22, 0.44);
+}
+
+.monster-shell .cruor-stat-core-card {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  justify-content: start;
+  gap: 5px;
+  min-width: 0;
+  min-height: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  padding: 0 8px 0 0;
+  color: rgba(238, 238, 238, 0.9);
+  font-size: 13.5px;
+  line-height: 1.52;
+}
+
+.monster-shell .cruor-stat-core-card--ac {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.monster-shell .cruor-stat-core-card--initiative {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.monster-shell .cruor-stat-core-card--hp {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.monster-shell .cruor-stat-core-card--speed {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.monster-shell .cruor-stat-core-card__icon {
+  position: absolute;
+  left: calc(100% - 0.58em);
+  top: 50%;
+  z-index: 0;
+  font-size: 25px;
+  line-height: 1;
+  color: rgba(190, 64, 82, 0.13);
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.monster-shell .cruor-stat-core-card span,
+.monster-shell .cruor-stat-core-card strong {
+  position: relative;
+  z-index: 1;
+  color: rgba(238, 238, 238, 0.9);
+  font-size: 13.5px;
+  line-height: 1.52;
+}
+
+.monster-shell .cruor-stat-core-card span {
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.monster-shell .cruor-stat-core-card strong {
+  min-width: 0;
+  overflow: visible;
+  font-weight: 500;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.monster-shell .cruor-stat-core-card--ac .cruor-stat-core-card__icon {
+  color: rgba(190, 64, 82, 0.16);
+}
+
+.monster-shell .cruor-stat-core-card--hp .cruor-stat-core-card__icon {
+  color: rgba(240, 185, 194, 0.14);
+}
+
+.monster-shell .cruor-stat-core-card--speed .cruor-stat-core-card__icon {
+  color: rgba(143, 150, 148, 0.15);
+}
+
+.monster-shell .cruor-stat-core-card--initiative .cruor-stat-core-card__icon {
+  color: rgba(208, 162, 170, 0.14);
+}
+
+.monster-shell .rendered-stat-block .cruor-stat-block__abilities,
+.monster-shell .cruor-stat-block__abilities {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 11px 0 12px;
+  border-bottom: 1px solid rgba(95, 7, 22, 0.44);
+}
+
+.monster-shell .cruor-ability-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+}
+
+.monster-shell .cruor-ability-header-row,
+.monster-shell .cruor-ability-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+}
+
+.monster-shell .cruor-ability-header-group,
+.monster-shell .cruor-ability-group {
+  display: grid;
+  grid-template-columns: minmax(34px, 0.78fr) minmax(34px, 0.62fr) minmax(40px, 0.72fr) minmax(40px, 0.72fr);
+  min-width: 0;
+}
+
+.monster-shell .cruor-ability-header-group span {
+  display: grid;
+  place-items: center;
+  min-height: 18px;
+  color: rgba(238, 238, 238, 0.42);
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.monster-shell .cruor-ability-group {
+  overflow: hidden;
+  border: 1px solid rgba(95, 7, 22, 0.38);
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.monster-shell .cruor-ability-cell {
+  display: grid;
+  place-items: center;
+  min-height: 34px;
+  border-left: 1px solid rgba(5, 5, 6, 0.38);
+  padding: 5px 4px;
+  color: #fff0f2;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.monster-shell .cruor-ability-cell:first-child {
+  border-left: 0;
+}
+
+.monster-shell .cruor-ability-cell--label {
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.monster-shell .cruor-ability-cell--score,
+.monster-shell .cruor-ability-cell--mod,
+.monster-shell .cruor-ability-cell--save {
+  font-weight: 500;
+}
+
+.monster-shell .cruor-ability-group--physical .cruor-ability-cell--label,
+.monster-shell .cruor-ability-group--physical .cruor-ability-cell--score {
+  background: rgba(95, 7, 22, 0.34);
+}
+
+.monster-shell .cruor-ability-group--physical .cruor-ability-cell--mod,
+.monster-shell .cruor-ability-group--physical .cruor-ability-cell--save {
+  background: rgba(51, 3, 12, 0.46);
+}
+
+.monster-shell .cruor-ability-group--mental .cruor-ability-cell--label,
+.monster-shell .cruor-ability-group--mental .cruor-ability-cell--score {
+  background: rgba(70, 44, 52, 0.32);
+}
+
+.monster-shell .cruor-ability-group--mental .cruor-ability-cell--mod,
+.monster-shell .cruor-ability-group--mental .cruor-ability-cell--save {
+  background: rgba(24, 17, 20, 0.58);
+}
+
+.monster-shell .cruor-stat-block__challenge {
+  margin: 0;
+  color: rgba(238, 238, 238, 0.9);
+  font-size: 13.5px;
+  line-height: 1.52;
+}
+
+@media (max-width: 980px) {
+  .monster-shell .rendered-stat-block .cruor-stat-block__core {
+    grid-template-columns: max-content max-content;
+    column-gap: clamp(28px, 10vw, 72px);
+  }
+
+  .monster-shell .cruor-ability-header-row,
+  .monster-shell .cruor-ability-row {
+    grid-template-columns: 1fr;
+  }
+
+  .monster-shell .cruor-ability-header-row {
+    display: none;
+  }
+
+  .monster-shell .cruor-ability-cell--mod::before {
+    content: "MOD";
+  }
+
+  .monster-shell .cruor-ability-cell--save::before {
+    content: "SAVE";
+  }
+
+  .monster-shell .cruor-ability-cell--mod,
+  .monster-shell .cruor-ability-cell--save {
+    gap: 4px;
+  }
+
+  .monster-shell .cruor-ability-cell--mod::before,
+  .monster-shell .cruor-ability-cell--save::before {
+    color: rgba(238, 238, 238, 0.42);
+    font-size: 8px;
+    font-weight: 950;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+}
+
+@media (max-width: 520px) {
+  .monster-shell .rendered-stat-block .cruor-stat-block__core {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+  }
+
+  .monster-shell .cruor-stat-core-card--ac,
+  .monster-shell .cruor-stat-core-card--initiative,
+  .monster-shell .cruor-stat-core-card--hp,
+  .monster-shell .cruor-stat-core-card--speed {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .monster-shell .cruor-ability-header-group,
+  .monster-shell .cruor-ability-group {
+    grid-template-columns: minmax(34px, 0.78fr) minmax(34px, 0.62fr) minmax(40px, 0.72fr) minmax(40px, 0.72fr);
+  }
+}
+
+/* Export Stat Block Final Polish */
+.monster-shell .rendered-stat-block .cruor-stat-block__core {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-auto-rows: min-content;
+  column-gap: clamp(34px, 9vw, 84px);
+  row-gap: 1px;
+  justify-content: start;
+  align-items: start;
+  width: 100%;
+  padding: 8px 0 10px;
+  border: 0;
+}
+
+.monster-shell .rendered-stat-block .cruor-stat-block__facts,
+.monster-shell .rendered-stat-block .cruor-stat-block__abilities {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 9px 0;
+  border: 0;
+  grid-template-columns: unset;
+}
+
+.monster-shell .rendered-stat-block .cruor-stat-block__facts {
+  display: grid;
+  gap: 4px;
+}
+
+.monster-shell .cruor-stat-core-card {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  justify-content: start;
+  gap: 5px;
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+  padding: 0 8px 0 0;
+  color: rgba(238, 238, 238, 0.9);
+  font-size: 13.5px;
+  line-height: 1.52;
+  text-transform: none;
+}
+
+.monster-shell .cruor-stat-core-card__icon {
+  display: none;
+}
+
+.monster-shell .cruor-stat-core-card span,
+.monster-shell .cruor-stat-core-card strong {
+  color: rgba(238, 238, 238, 0.9);
+  font-size: 13.5px;
+  line-height: 1.52;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.monster-shell .cruor-stat-core-card span {
+  color: #fff0f2;
+  font-weight: 900;
+}
+
+.monster-shell .cruor-stat-core-card strong {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.monster-shell .cruor-ability-grid {
+  width: 100%;
+  min-width: 0;
+}
+
+.monster-shell .cruor-ability-cell,
+.monster-shell .cruor-ability-header-group span {
+  font-size: 12px;
+}
+
+.monster-shell .cruor-ability-cell--score,
+.monster-shell .cruor-ability-cell--mod,
+.monster-shell .cruor-ability-cell--save {
+  font-weight: 500;
+}
+
+.monster-shell .cruor-stat-block__section {
+  gap: 8px;
+  padding-top: 13px;
+  border: 0;
+}
+
+.monster-shell .cruor-stat-block__section h2 {
+  margin: 0 0 9px;
+  border-bottom: 1px solid rgba(95, 7, 22, 0.54);
+  padding-bottom: 6px;
+}
+
+/* Export Stat Block Urgent Typography Fix */
+.monster-shell .rendered-stat-block .cruor-stat-block__core .cruor-stat-core-card,
+.monster-shell .rendered-stat-block .cruor-stat-block__core .cruor-stat-core-card span,
+.monster-shell .rendered-stat-block .cruor-stat-block__core .cruor-stat-core-card strong {
+  color: rgba(238, 238, 238, 0.9);
+  font-size: 13.5px;
+  line-height: 1.52;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.monster-shell .rendered-stat-block .cruor-stat-block__core .cruor-stat-core-card span {
+  color: #fff0f2;
+  font-weight: 900;
+}
+
+.monster-shell .rendered-stat-block .cruor-stat-block__core .cruor-stat-core-card strong {
+  color: rgba(238, 238, 238, 0.9);
+  font-weight: 500;
+  white-space: nowrap;
 }

@@ -603,6 +603,7 @@ export function buildExportText({
   deathEffects,
   hasLegendaryActions,
   xp,
+  lairXp,
 }) {
   const basics = getStatBlockBasics(creatureType, category, role, computed, abilityProfile, xp);
   const fallbackTraits = [
@@ -633,7 +634,7 @@ export function buildExportText({
     `Immunities ${basics.immunities}`,
     `Senses ${creatureType.defaults.senses}`,
     `Languages ${basics.languages}`,
-    `CR ${computed.targetCr} (Estimated ${computed.estimatedCr}; XP ${basics.xp}; PB ${modText(computed.prof)})`,
+    `CR ${computed.targetCr} (XP ${basics.xp}${lairXp ? `, or ${lairXp} in lair` : ""}; PB ${modText(computed.prof)})`,
     "",
     "Traits",
     exportItems(traits, fallbackTraits, computed),
@@ -688,6 +689,7 @@ export function buildRenderableStatBlock({
   selectedFeatures,
   hasLegendaryActions,
   xp,
+  lairXp,
 }) {
   const basics = getStatBlockBasics(creatureType, category, role, computed, abilityProfile, xp);
   const fallbackTraits = [
@@ -729,16 +731,25 @@ export function buildRenderableStatBlock({
     name,
     creatureLine: basics.creatureLine,
     coreStats: [
-      { label: "AC", value: computed.ac },
+      { id: "ac", label: "AC", value: computed.ac },
       {
+        id: "hp",
         label: "HP",
         value: `${computed.hp} (${hpFormula(computed.hp, role.id === "boss" ? 10 : 8)})`,
       },
-      { label: "Speed", value: creatureType.defaults.speed },
-      { label: "Initiative", value: `${modText(basics.initiative)} (${basics.initiativeTotal})` },
-      { label: "CR", value: `${computed.targetCr} (${basics.xp} XP)` },
-      { label: "PB", value: modText(computed.prof) },
+      { id: "speed", label: "Speed", value: creatureType.defaults.speed },
+      {
+        id: "initiative",
+        label: "Initiative",
+        value: `${modText(basics.initiative)} (${basics.initiativeTotal})`,
+      },
     ],
+    challenge: {
+      cr: computed.targetCr,
+      xp: basics.xp,
+      lairXp,
+      pb: modText(computed.prof),
+    },
     abilities: [...abilityProfile.physical, ...abilityProfile.mental],
     defenses: [
       { label: "Skills", value: basics.skills },
@@ -812,6 +823,7 @@ export function buildExportJson({
   selectedFeatures,
   activePreset,
   xp,
+  lairXp,
 }) {
   const basics = getStatBlockBasics(creatureType, category, role, computed, abilityProfile, xp);
   const normalizedSections = buildNormalizedSections({
@@ -866,6 +878,7 @@ export function buildExportJson({
         targetCr: computed.targetCr,
         estimatedCr: computed.estimatedCr,
         xp,
+        lairXp,
         proficiencyBonus: modText(computed.prof),
       },
       printedStats: computed.printedStats,

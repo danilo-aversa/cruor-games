@@ -29,6 +29,89 @@ function CompiledMeta({ label, value }) {
   );
 }
 
+const ABILITY_ROWS = [
+  { id: "physical", keys: ["str", "dex", "con"] },
+  { id: "mental", keys: ["int", "wis", "cha"] },
+];
+
+function formatCoreStatValue(value) {
+  return String(value ?? "")
+    .replace(/(\d+)\s*D\s*(\d+)/gi, "$1d$2")
+    .replace(/\bft\./gi, "ft.");
+}
+
+function StatBlockCoreCard({ item }) {
+  return (
+    <article className={`cruor-stat-core-card cruor-stat-core-card--${item.id || "default"}`}>
+      <span>{item.label}</span>
+      <strong>{formatCoreStatValue(item.value)}</strong>
+    </article>
+  );
+}
+
+function AbilityGrid({ abilities }) {
+  const byKey = Object.fromEntries(abilities.map((ability) => [ability.key, ability]));
+
+  return (
+    <div className="cruor-ability-grid" role="table" aria-label="Ability scores, modifiers, and saves">
+      <div className="cruor-ability-header-row" role="row" aria-hidden="true">
+        {ABILITY_ROWS[0].keys.map((key) => (
+          <div key={`ability-header-${key}`} className="cruor-ability-header-group">
+            <span />
+            <span />
+            <span>MOD</span>
+            <span>SAVE</span>
+          </div>
+        ))}
+      </div>
+      {ABILITY_ROWS.map((row) => (
+        <div
+          key={row.id}
+          className={`cruor-ability-row cruor-ability-row--${row.id}`}
+          role="row"
+        >
+          {row.keys.map((key) => {
+            const ability = byKey[key];
+            if (!ability) return null;
+            return (
+              <div
+                key={ability.key}
+                className={`cruor-ability-group cruor-ability-group--${row.id}`}
+                role="group"
+                aria-label={`${ability.label} ${ability.score}, modifier ${modText(ability.mod)}, save ${modText(ability.save)}`}
+              >
+                <div className="cruor-ability-cell cruor-ability-cell--label" role="cell">
+                  {ability.label}
+                </div>
+                <div className="cruor-ability-cell cruor-ability-cell--score" role="cell">
+                  {ability.score}
+                </div>
+                <div className="cruor-ability-cell cruor-ability-cell--mod" role="cell">
+                  {modText(ability.mod)}
+                </div>
+                <div className="cruor-ability-cell cruor-ability-cell--save" role="cell">
+                  {modText(ability.save)}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function StatBlockChallengeLine({ challenge }) {
+  if (!challenge) return null;
+  const lairText = challenge.lairXp ? `, or ${challenge.lairXp} in lair` : "";
+
+  return (
+    <p className="cruor-stat-block__challenge">
+      <strong>CR</strong> {challenge.cr} (XP {challenge.xp}{lairText}; PB {challenge.pb})
+    </p>
+  );
+}
+
 function WarningList({ warnings }) {
   if (!warnings.length) {
     return (
@@ -406,41 +489,12 @@ function RenderedStatBlock({ statBlock }) {
 
       <section className="cruor-stat-block__core" aria-label="Core combat statistics">
         {statBlock.coreStats.map((item) => (
-          <p key={item.label}>
-            <strong>{item.label}</strong> {item.value}
-          </p>
+          <StatBlockCoreCard key={item.id || item.label} item={item} />
         ))}
       </section>
 
       <section className="cruor-stat-block__abilities" aria-label="Ability scores">
-        <div className="table-overflow-wrapper">
-          <table className="cruor-ability-table">
-            <thead>
-              <tr>
-                {statBlock.abilities.map((ability) => (
-                  <th key={ability.key}>{ability.label}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                {statBlock.abilities.map((ability) => (
-                  <td key={`${ability.key}-score`}>{ability.score}</td>
-                ))}
-              </tr>
-              <tr>
-                {statBlock.abilities.map((ability) => (
-                  <td key={`${ability.key}-mod`}>{modText(ability.mod)}</td>
-                ))}
-              </tr>
-              <tr>
-                {statBlock.abilities.map((ability) => (
-                  <td key={`${ability.key}-save`}>Save {modText(ability.save)}</td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <AbilityGrid abilities={statBlock.abilities} />
       </section>
 
       <section className="cruor-stat-block__facts" aria-label="Defenses and senses">
@@ -449,6 +503,7 @@ function RenderedStatBlock({ statBlock }) {
             <strong>{item.label}</strong> {item.value}
           </p>
         ))}
+        <StatBlockChallengeLine challenge={statBlock.challenge} />
       </section>
 
       {visibleSections.map((section) => (
