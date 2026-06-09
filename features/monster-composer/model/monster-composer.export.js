@@ -1,4 +1,4 @@
-import { MONSTER_GRAFTS as FEATURES } from "../data/monster-grafts.js";
+import { ALL_MONSTER_GRAFTS as FEATURES } from "../data/monster-content-pack-feed.js";
 import { MONSTER_FAMILY_PRESETS } from "../data/monster-presets.js";
 import { renderStructuredRulesText } from "./monster-graft-rules.render.js";
 import { normalizeMonsterGraftRules, validateMonsterGraftRules } from "./monster-graft-rules.schema.js";

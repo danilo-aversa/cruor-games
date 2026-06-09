@@ -1,6 +1,8 @@
 import { MONSTER_FAMILY_PRESETS } from "../data/monster-presets.js";
-import { MONSTER_GRAFTS } from "../data/monster-grafts.js";
-import { MONSTER_SOURCES } from "../data/monster-sources.js";
+import {
+  ALL_MONSTER_GRAFTS,
+  ALL_MONSTER_SOURCES,
+} from "../data/monster-content-pack-feed.js";
 import { getCompatibilityStatus } from "../model/monster-composer.compatibility.js";
 import { evaluateMonsterFrameFit } from "../model/monster-frame-fit.js";
 import { validateMonsterGraftRules } from "../model/monster-graft-rules.schema.js";
@@ -113,7 +115,7 @@ function validatePresetExport(preset, context, issues) {
   addExportPatternIssues({ preset, text: JSON.stringify(artifacts.runModeSheet), issues, path: "runModeSheet" });
 }
 
-export function runMonsterPresetQa({ presets = MONSTER_FAMILY_PRESETS, grafts = MONSTER_GRAFTS, sources = MONSTER_SOURCES } = {}) {
+export function runMonsterPresetQa({ presets = MONSTER_FAMILY_PRESETS, grafts = ALL_MONSTER_GRAFTS, sources = ALL_MONSTER_SOURCES } = {}) {
   const issues = [];
   const activeSourceIds = new Set(sources.map((source) => source.id));
   const graftById = new Map(grafts.map((graft) => [graft.id, graft]));

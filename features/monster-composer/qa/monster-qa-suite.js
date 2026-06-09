@@ -1,3 +1,4 @@
+import { MONSTER_CONTENT_PACK_FEED_SUMMARY } from "../data/monster-content-pack-feed.js";
 import { runMonsterContentQa } from "./monster-content-qa.js";
 import { runMonsterFrameFitDiversityQa, runMonsterFrameScalingQa, runMonsterGenerationQa } from "./monster-generation-qa.js";
 import { runMonsterPresetQa } from "./monster-preset-qa.js";
@@ -22,6 +23,7 @@ export function runMonsterQaSuite(options = {}) {
     metadata: {
       mode: options.mode || "static-local",
       failOnWarnings: Boolean(options.failOnWarnings),
+      monsterContentFeed: MONSTER_CONTENT_PACK_FEED_SUMMARY,
     },
   });
 }

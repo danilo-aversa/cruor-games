@@ -76,7 +76,11 @@ import {
 } from "./model/monster-composer.export.js";
 import { buildRunModeSheet } from "./model/monster-composer.run.js";
 import { buildGuidedFlow } from "./model/monster-composer.start-flow.js";
-import { buildBestiaryBaselineAudit } from "./model/monster-bestiary-baselines.js";
+import {
+  buildBestiaryBaselineAudit,
+  buildMonsterComposerProfileDeltas,
+  getMonsterComposerBaselineProfile,
+} from "./model/monster-bestiary-baselines.js";
 import { evaluateMonsterFrameFit, isMonsterFrameFitAllowed } from "./model/monster-frame-fit.js";
 import { validateMonsterGraftRules } from "./model/monster-graft-rules.schema.js";
 import { MonsterComposerTopbar } from "./components/monster-composer.shell.jsx";
@@ -177,58 +181,6 @@ function getProfForCr(cr) {
   return 9;
 }
 
-function getExpectedAttackBonus(cr) {
-  return Math.round(3.5 + cr / 2);
-}
-
-function getExpectedSaveDc(cr) {
-  return Math.round(11.5 + cr / 2);
-}
-
-function getExpectedAc(cr) {
-  return Math.round(13 + cr / 3);
-}
-
-function getExpectedHp(cr, tierId = "normal") {
-  const base = cr < 20 ? 16 + 16 * cr : 368 + 48 * (cr - 20);
-  const tier = MONSTER_TIERS.find((item) => item.id === tierId) || MONSTER_TIERS[0];
-  return Math.max(1, Math.round(base * tier.hpMult));
-}
-
-function getExpectedDpr(cr, tierId = "normal") {
-  const legendaryLike = tierId === "legendary" || tierId === "boss" || tierId === "setpiece";
-  const base =
-    cr < 20
-      ? legendaryLike
-        ? 7.5 + 7.5 * cr
-        : 6 + 6 * cr
-      : legendaryLike
-        ? 165 + 15 * (cr - 20)
-        : 132 + 12 * (cr - 20);
-  const tier = MONSTER_TIERS.find((item) => item.id === tierId) || MONSTER_TIERS[0];
-  return Math.max(1, Math.round(base * (legendaryLike ? 1 : tier.dprMult)));
-}
-
-function getBaselineProfile(cr, tierId) {
-  return {
-    ac: getExpectedAc(cr),
-    hp: getExpectedHp(cr, tierId),
-    dpr: getExpectedDpr(cr, tierId),
-    attackBonus: getExpectedAttackBonus(cr),
-    saveDc: getExpectedSaveDc(cr),
-  };
-}
-
-function buildProfileDeltas(printedStats, effectiveProfile, baseline) {
-  return {
-    acDelta: printedStats.ac - baseline.ac,
-    hpDelta: printedStats.hp - baseline.hp,
-    dprDelta: printedStats.dpr - baseline.dpr,
-    effectiveDprDelta: effectiveProfile.effectiveDpr3Round - baseline.dpr,
-    attackDelta: printedStats.attackBonus - baseline.attackBonus,
-    dcDelta: printedStats.saveDc - baseline.saveDc,
-  };
-}
 
 function buildAbilityProfile(typeId, category, roleId, selectedFeatures, prof) {
   const bases = {
@@ -1351,7 +1303,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
   const computed = useMemo(() => {
     const partyTier = getTier(partyLevel);
     const prof = getProfForCr(targetCr);
-    const baseline = getBaselineProfile(targetCr, monsterTier.id);
+    const baseline = getMonsterComposerBaselineProfile(targetCr, monsterTier.id, MONSTER_TIERS);
     const baseHp = Math.round(baseline.hp * role.hpMult * tacticalRole.hpMult);
     const baseDpr = Math.round(
       baseline.dpr * role.dprMult * danger.dprMod * tacticalRole.dprMult * tempoProfile.dprMult
@@ -1452,7 +1404,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
         effectiveProfile.effectiveDpr3Round *
         ((effectiveProfile.effectiveAc + effectiveProfile.effectiveAttackBonus - 2) / 13)
     );
-    const profileDeltas = buildProfileDeltas(printedStats, effectiveProfile, baseline);
+    const profileDeltas = buildMonsterComposerProfileDeltas(printedStats, effectiveProfile, baseline);
     const bestiaryBaselineAudit = buildBestiaryBaselineAudit({
       targetCr,
       monsterTier,
@@ -2172,6 +2124,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
                 activePreset={activePreset}
                 selected={selected}
                 activeSlot={activeSlot}
+                features={FEATURES}
                 guidedSlotId={guidedFlow.recommendedSlotId}
                 computed={computed}
                 started={composerStarted}

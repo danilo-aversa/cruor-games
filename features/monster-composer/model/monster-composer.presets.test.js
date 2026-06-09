@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { MONSTER_GRAFTS } from "../data/monster-grafts.js";
 import { MONSTER_FAMILY_PRESETS } from "../data/monster-presets.js";
-import { MONSTER_SOURCES } from "../data/monster-sources.js";
+import {
+  ALL_MONSTER_GRAFTS as MONSTER_GRAFTS,
+  ALL_MONSTER_SOURCES as MONSTER_SOURCES,
+} from "../data/monster-content-pack-feed.js";
 
 const ARCHIVED_PROTOTYPE_SOURCE_IDS = new Set(["gashadokuro", "jack-the-ripper"]);
 const REQUIRED_TEMPLATE_SLOTS = ["body", "attack", "weakness"];

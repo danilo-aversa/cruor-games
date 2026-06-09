@@ -1,5 +1,7 @@
-import { MONSTER_GRAFTS } from "../data/monster-grafts.js";
-import { MONSTER_SOURCES } from "../data/monster-sources.js";
+import {
+  ALL_MONSTER_GRAFTS,
+  ALL_MONSTER_SOURCES,
+} from "../data/monster-content-pack-feed.js";
 import { SLOTS } from "../monster-composer.workflow.js";
 import { validateMonsterGraftRules } from "../model/monster-graft-rules.schema.js";
 import {
@@ -182,7 +184,7 @@ function validateFrameFit(graft, issues) {
   });
 }
 
-export function runMonsterContentQa({ grafts = MONSTER_GRAFTS, sources = MONSTER_SOURCES, slots = SLOTS } = {}) {
+export function runMonsterContentQa({ grafts = ALL_MONSTER_GRAFTS, sources = ALL_MONSTER_SOURCES, slots = SLOTS } = {}) {
   const issues = [];
   const sourceIds = new Set(sources.map((source) => source.id));
   const slotIds = new Set(slots.map((slot) => slot.id));

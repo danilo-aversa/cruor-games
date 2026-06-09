@@ -3825,7 +3825,6 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
   const visibleAddableRulesBlocks = addableRulesBlocks.filter((block) => !block.active);
   const componentEditorTabs = getComponentEditorTabs(component);
   const activeComponentEditorTab = componentEditorTabs.some((tab) => tab.id === activeEditorTab) ? activeEditorTab : "overview";
-  const activeComponentEditorTabMeta = componentEditorTabs.find((tab) => tab.id === activeComponentEditorTab) || componentEditorTabs[0];
 
   return (
     <div className="studio-component-editor studio-component-editor--tabbed" data-active-zone={activeComponentEditorTab} aria-label="Selected component editor">
@@ -3852,10 +3851,6 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
         ))}
       </nav>
 
-      <div className="studio-component-tab-context">
-        <strong><Icon name={activeComponentEditorTabMeta?.icon || "fa-circle-info"} /> {activeComponentEditorTabMeta?.label}</strong>
-        <span>{getComponentEditorTabSummary(component, activeComponentEditorTab)}</span>
-      </div>
 
       <div className="studio-component-zone" data-editor-zone="overview">
         <div className="studio-form-grid studio-form-grid--compact">
@@ -3906,8 +3901,6 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
 
       {isMonsterGraft ? (
         <div className="studio-component-editor__subpanel studio-component-editor__subpanel--monster">
-          <h4 data-editor-zone="fit"><Icon name="fa-skull" /> Monster Graft Data</h4>
-
           <RulesGroup zone="fit" defaultOpen icon="fa-id-card" title="Frame" help="Frame fields define where the graft belongs in the Monster Composer, where it prints in the stat block, and how much budget it consumes.">
             <div className="studio-form-grid studio-form-grid--compact">
               <FormRow label="Monster Slot" icon="fa-table-cells-large" hint={FIELD_HELP.monsterSlot}>
@@ -4174,7 +4167,6 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
             </FormRow>
           </RulesGroup>
 
-          <DividerLabel zone="rules" icon="fa-scale-balanced" title="Rules" help="Structured rules tell the exporter whether this graft is an attack, saving throw, reaction, recharge power, trait, or other ability." />
           {usesInferredRules ? (
             <div className="studio-inferred-rules-note" data-editor-zone="rules">
               <Icon name="fa-wand-magic-sparkles" />

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MONSTER_GRAFTS } from "../data/monster-grafts.js";
+import { ALL_MONSTER_GRAFTS as MONSTER_GRAFTS } from "../data/monster-content-pack-feed.js";
 import { getCompatibilityStatus, getGrantedTokens } from "./monster-composer.compatibility.js";
 
 function graft(id) {

@@ -6,7 +6,6 @@ import {
   ANATOMY_RIGHT_SLOT_IDS,
   ANATOMY_BOTTOM_SLOT_IDS,
 } from "../monster-composer.workflow.js";
-import { MONSTER_GRAFTS as FEATURES } from "../data/monster-grafts.js";
 import { getSelectedIdsForSlot, hasSelectedSlot } from "../model/monster-composer.selection.js";
 import { normalizeMonsterReferences } from "../model/monster-composer.export.js";
 import { getSilhouetteAnchor, getSilhouetteId, getSilhouetteProfile } from "../model/anatomy.js";
@@ -765,12 +764,14 @@ function GraftInfoPanel({
   danger,
   selected,
   activeSlot,
+  features = [],
 }) {
   const slot = SLOTS.find((item) => item.id === activeSlot) || SLOTS[0];
+  const availableFeatures = Array.isArray(features) ? features : [];
   const slotFeatures = getSelectedIdsForSlot(selected, slot.id)
-    .map((id) => FEATURES.find((feature) => feature.id === id))
+    .map((id) => availableFeatures.find((feature) => feature.id === id))
     .filter(Boolean);
-  const candidates = FEATURES.filter((feature) => feature.slot === slot.id).length;
+  const candidates = availableFeatures.filter((feature) => feature.slot === slot.id).length;
 
   return (
     <aside className="anatomy-stage__column anatomy-stage__column--right monster-frame-info monster-graft-info" aria-label="Current monster information">
@@ -860,6 +861,7 @@ export function MonsterSilhouetteMap({
   setDangerId,
   componentNavigatorPanel,
   guidedFlowPanel,
+  features = [],
 }) {
   const silhouetteId = getSilhouetteId(typeId, category, activePreset);
   const profile = getSilhouetteProfile(typeId, category, activePreset);
@@ -871,6 +873,7 @@ export function MonsterSilhouetteMap({
   const safeTempoProfile = tempoProfile || TEMPO_PROFILES.find((item) => item.id === tempoProfileId) || TEMPO_PROFILES[1];
   const safeDanger = danger || DANGERS.find((item) => item.id === dangerId) || DANGERS[0];
   const isFrameMode = stageMode === "frame";
+  const availableFeatures = Array.isArray(features) ? features : [];
 
   const frameNodeValues = {
     family: safeCreatureType.label,
@@ -886,7 +889,7 @@ export function MonsterSilhouetteMap({
     const Icon = slot.icon;
     const card = SILHOUETTE_SLOT_CARDS[slot.id] || { side: "center" };
     const slotFeatures = getSelectedIdsForSlot(selected, slot.id)
-      .map((id) => FEATURES.find((feature) => feature.id === id))
+      .map((id) => availableFeatures.find((feature) => feature.id === id))
       .filter(Boolean);
     const feature = slotFeatures[0] || null;
     const filled = slotFeatures.length > 0;
@@ -1047,6 +1050,7 @@ export function MonsterSilhouetteMap({
                   danger={safeDanger}
                   selected={selected}
                   activeSlot={activeSlot}
+                  features={availableFeatures}
                 />
               </div>
             )}

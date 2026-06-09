@@ -1,6 +1,8 @@
-import { MONSTER_GRAFTS as FEATURES } from "../data/monster-grafts.js";
 import { MONSTER_FAMILY_PRESETS } from "../data/monster-presets.js";
-import { MONSTER_SOURCES } from "../data/monster-sources.js";
+import {
+  ALL_MONSTER_GRAFTS as FEATURES,
+  ALL_MONSTER_SOURCES as MONSTER_SOURCES,
+} from "../data/monster-content-pack-feed.js";
 import { SLOTS } from "../monster-composer.workflow.js";
 import {
   CREATURE_TYPES,
@@ -30,6 +32,10 @@ import { buildRunModeSheet } from "../model/monster-composer.run.js";
 import { getCompatibilityStatus } from "../model/monster-composer.compatibility.js";
 import { evaluateMonsterFrameFit, isMonsterFrameFitAllowed } from "../model/monster-frame-fit.js";
 import { hasSelectedSlot } from "../model/monster-composer.selection.js";
+import {
+  buildMonsterComposerProfileDeltas,
+  getMonsterComposerBaselineProfile,
+} from "../model/monster-bestiary-baselines.js";
 import { asArray, uniqueArray } from "./monster-qa-report.js";
 
 export const REQUIRED_PLAYABLE_SLOTS = Object.freeze(["body", "attack", "weakness"]);
@@ -76,38 +82,6 @@ function getProfForCr(cr) {
   return 9;
 }
 
-function getExpectedAttackBonus(cr) {
-  return Math.round(3.5 + cr / 2);
-}
-
-function getExpectedSaveDc(cr) {
-  return Math.round(11.5 + cr / 2);
-}
-
-function getExpectedAc(cr) {
-  return Math.round(13 + cr / 3);
-}
-
-function getExpectedHp(cr, tierId = "normal") {
-  const base = cr < 20 ? 16 + 16 * cr : 368 + 48 * (cr - 20);
-  const tier = MONSTER_TIERS.find((item) => item.id === tierId) || MONSTER_TIERS[0];
-  return Math.max(1, Math.round(base * tier.hpMult));
-}
-
-function getExpectedDpr(cr, tierId = "normal") {
-  const legendaryLike = tierId === "legendary" || tierId === "boss" || tierId === "setpiece";
-  const base =
-    cr < 20
-      ? legendaryLike
-        ? 7.5 + 7.5 * cr
-        : 6 + 6 * cr
-      : legendaryLike
-        ? 165 + 15 * (cr - 20)
-        : 132 + 12 * (cr - 20);
-  const tier = MONSTER_TIERS.find((item) => item.id === tierId) || MONSTER_TIERS[0];
-  return Math.max(1, Math.round(base * (legendaryLike ? 1 : tier.dprMult)));
-}
-
 function xpForCr(cr) {
   const table = {
     0: 10,
@@ -143,27 +117,6 @@ function xpForCr(cr) {
     30: 155000,
   };
   return table[clamp(cr, 0, 30)] || 0;
-}
-
-function getBaselineProfile(cr, tierId) {
-  return {
-    ac: getExpectedAc(cr),
-    hp: getExpectedHp(cr, tierId),
-    dpr: getExpectedDpr(cr, tierId),
-    attackBonus: getExpectedAttackBonus(cr),
-    saveDc: getExpectedSaveDc(cr),
-  };
-}
-
-function buildProfileDeltas(printedStats, effectiveProfile, baseline) {
-  return {
-    acDelta: printedStats.ac - baseline.ac,
-    hpDelta: printedStats.hp - baseline.hp,
-    dprDelta: printedStats.dpr - baseline.dpr,
-    effectiveDprDelta: effectiveProfile.effectiveDpr3Round - baseline.dpr,
-    attackDelta: printedStats.attackBonus - baseline.attackBonus,
-    dcDelta: printedStats.saveDc - baseline.saveDc,
-  };
 }
 
 function buildAbilityProfile(typeId, category, roleId, selectedFeatures, prof) {
@@ -292,7 +245,7 @@ export function buildMonsterFrameContext({
   const monsterTier = getFrameValue(MONSTER_TIERS, monsterTierId);
   const tempoProfile = getFrameValue(TEMPO_PROFILES, tempoProfileId, 1);
   const prof = getProfForCr(targetCr);
-  const baseline = getBaselineProfile(targetCr, monsterTier.id);
+  const baseline = getMonsterComposerBaselineProfile(targetCr, monsterTier.id, MONSTER_TIERS);
   const baseHp = Math.round(baseline.hp * role.hpMult * tacticalRole.hpMult);
   const baseDpr = Math.round(baseline.dpr * role.dprMult * danger.dprMod * tacticalRole.dprMult * tempoProfile.dprMult);
   const baseAc = baseline.ac + monsterTier.acMod + tacticalRole.acMod;
@@ -344,7 +297,7 @@ export function buildMonsterFrameContext({
     defenseFactor: 1 + Math.max(0, statMods.hp || 0) / Math.max(1, hp) + Math.max(0, statMods.ac || 0) * 0.04,
   };
   effectiveProfile.combatPowerEstimate = Math.round(effectiveProfile.effectiveHp * effectiveProfile.effectiveDpr3Round * ((effectiveProfile.effectiveAc + effectiveProfile.effectiveAttackBonus - 2) / 13));
-  const profileDeltas = buildProfileDeltas(printedStats, effectiveProfile, baseline);
+  const profileDeltas = buildMonsterComposerProfileDeltas(printedStats, effectiveProfile, baseline);
   const estimatedCr = clamp(
     Math.round(targetCr + (pressure - budget) / 6 + ((effectiveProfile.effectiveDpr3Round - baseline.dpr) / Math.max(8, baseline.dpr)) * 2),
     0,

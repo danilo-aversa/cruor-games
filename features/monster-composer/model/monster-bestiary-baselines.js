@@ -49,6 +49,40 @@ export function getBestiaryBaselineProfile(cr, { legendaryLike = false } = {}) {
   };
 }
 
+export function isLegendaryLikeTier(tierId) {
+  return ["boss", "legendary", "setpiece"].includes(tierId);
+}
+
+export function getMonsterComposerBaselineProfile(cr, tierId = "normal", monsterTiers = []) {
+  const tier = monsterTiers.find((item) => item.id === tierId) || monsterTiers[0] || {
+    hpMult: 1,
+    dprMult: 1,
+  };
+  const legendaryLike = isLegendaryLikeTier(tierId);
+  const bestiaryBaseline = getBestiaryBaselineProfile(cr, { legendaryLike });
+
+  return {
+    ...bestiaryBaseline,
+    tierId,
+    ac: bestiaryBaseline.ac,
+    hp: Math.max(1, Math.round(bestiaryBaseline.hp * (tier.hpMult || 1))),
+    dpr: Math.max(1, Math.round(bestiaryBaseline.dpr * (legendaryLike ? 1 : tier.dprMult || 1))),
+    attackBonus: bestiaryBaseline.attackBonus,
+    saveDc: bestiaryBaseline.saveDc,
+  };
+}
+
+export function buildMonsterComposerProfileDeltas(printedStats, effectiveProfile, baseline) {
+  return {
+    acDelta: printedStats.ac - baseline.ac,
+    hpDelta: printedStats.hp - baseline.hp,
+    dprDelta: printedStats.dpr - baseline.dpr,
+    effectiveDprDelta: effectiveProfile.effectiveDpr3Round - baseline.dpr,
+    attackDelta: printedStats.attackBonus - baseline.attackBonus,
+    dcDelta: printedStats.saveDc - baseline.saveDc,
+  };
+}
+
 function ratioDelta(actual, expected) {
   if (!expected) return 0;
   return (Number(actual || 0) - Number(expected || 0)) / expected;
