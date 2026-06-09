@@ -19,7 +19,25 @@ import {
   isCreatureCategoryUnavailable,
   isCreatureTypeUnavailable,
 } from "../monster-composer.taxonomies.js";
-import { Activity, AlertTriangle, Crown, Crosshair, Eye, Flame, Gauge, HeartPulse, RotateCcw, Shield, SlidersHorizontal, Sparkles, Sword, Timer, Zap } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  ChevronRight,
+  Crown,
+  Crosshair,
+  Eye,
+  FileText,
+  Flame,
+  Gauge,
+  HeartPulse,
+  RotateCcw,
+  Shield,
+  SlidersHorizontal,
+  Sparkles,
+  Sword,
+  Timer,
+  Zap,
+} from "lucide-react";
 import { MonsterStartScreen } from "./monster-composer.start-flow.jsx";
 
 function clamp(value, min, max) {
@@ -78,6 +96,350 @@ const DANGER_ICON_MAP = {
   horror: AlertTriangle,
 };
 
+const DEFAULT_SLOT_NODE_ANCHORS = {
+  body: { x: 0.5, y: 0.27 },
+  mind: { x: 0.5, y: 0.07 },
+  attack: { x: 0.29, y: 0.52 },
+  twist: { x: 0.7, y: 0.64 },
+  horror: { x: 0.31, y: 0.24 },
+  weakness: { x: 0.7, y: 0.52 },
+  movement: { x: 0.4, y: 0.76 },
+  death: { x: 0.7, y: 0.69 },
+  lair: { x: 0.7, y: 0.74 },
+};
+
+const SLOT_NODE_ANCHORS_BY_CHASSIS = {
+  zombie: {
+    body: { x: 0.5, y: 0.27 },
+    mind: { x: 0.5, y: 0.07 },
+    attack: { x: 0.29, y: 0.52 },
+    twist: { x: 0.7, y: 0.64 },
+    horror: { x: 0.31, y: 0.24 },
+    weakness: { x: 0.7, y: 0.52 },
+    movement: { x: 0.4, y: 0.76 },
+    death: { x: 0.7, y: 0.69 },
+    lair: { x: 0.7, y: 0.74 },
+  },
+  skeleton: {
+    body: { x: 0.5, y: 0.27 },
+    mind: { x: 0.5, y: 0.07 },
+    attack: { x: 0.29, y: 0.52 },
+    twist: { x: 0.7, y: 0.64 },
+    horror: { x: 0.31, y: 0.24 },
+    weakness: { x: 0.7, y: 0.52 },
+    movement: { x: 0.4, y: 0.76 },
+    death: { x: 0.7, y: 0.69 },
+    lair: { x: 0.7, y: 0.74 },
+  },
+  spirit: {
+    body: { x: 0.5, y: 0.27 },
+    mind: { x: 0.5, y: 0.07 },
+    attack: { x: 0.29, y: 0.52 },
+    twist: { x: 0.7, y: 0.64 },
+    horror: { x: 0.31, y: 0.24 },
+    weakness: { x: 0.7, y: 0.52 },
+    movement: { x: 0.4, y: 0.76 },
+    death: { x: 0.7, y: 0.69 },
+    lair: { x: 0.7, y: 0.74 },
+  },
+  spider: {
+    mind: { x: 0.5, y: 0.38 },
+    body: { x: 0.5, y: 0.53 },
+    movement: { x: 0.34, y: 0.66 },
+    attack: { x: 0.66, y: 0.39 },
+    horror: { x: 0.43, y: 0.49 },
+    twist: { x: 0.66, y: 0.61 },
+    weakness: { x: 0.5, y: 0.67 },
+    death: { x: 0.5, y: 0.78 },
+    lair: { x: 0.5, y: 0.91 },
+  },
+  wolf: {
+    mind: { x: 0.42, y: 0.36 },
+    body: { x: 0.52, y: 0.5 },
+    movement: { x: 0.68, y: 0.69 },
+    attack: { x: 0.29, y: 0.43 },
+    horror: { x: 0.46, y: 0.57 },
+    twist: { x: 0.61, y: 0.47 },
+    weakness: { x: 0.54, y: 0.66 },
+    death: { x: 0.74, y: 0.77 },
+    lair: { x: 0.5, y: 0.91 },
+  },
+};
+
+const FRAME_NODE_ANCHOR_OVERRIDES_BY_CHASSIS = {
+  spider: {
+    family: { x: 0.5, y: 0.27 },
+    variant: { x: 0.64, y: 0.38 },
+    role: { x: 0.35, y: 0.5 },
+    tactic: { x: 0.66, y: 0.58 },
+    challenge: { x: 0.42, y: 0.69 },
+    danger: { x: 0.58, y: 0.8 },
+  },
+  wolf: {
+    family: { x: 0.36, y: 0.34 },
+    variant: { x: 0.48, y: 0.43 },
+    role: { x: 0.29, y: 0.5 },
+    tactic: { x: 0.6, y: 0.55 },
+    challenge: { x: 0.66, y: 0.69 },
+    danger: { x: 0.78, y: 0.78 },
+  },
+};
+
+function normalizeChassisKey(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function getChassisCoordinateKeys({ silhouetteId, typeId, category }) {
+  return [silhouetteId, category, typeId, "default"]
+    .map(normalizeChassisKey)
+    .filter(Boolean);
+}
+
+function getSlotNodeAnchors({ silhouetteId, typeId, category, profile }) {
+  const anchors = { ...DEFAULT_SLOT_NODE_ANCHORS };
+  for (const key of getChassisCoordinateKeys({ silhouetteId, typeId, category })) {
+    Object.assign(anchors, SLOT_NODE_ANCHORS_BY_CHASSIS[key] || {});
+  }
+
+  for (const slot of SLOTS) {
+    anchors[slot.id] = anchors[slot.id] || getSilhouetteAnchor(profile, slot.id);
+  }
+
+  return anchors;
+}
+
+function getFrameNodeAnchors({ silhouetteId, typeId, category }) {
+  const overrides = {};
+  for (const key of getChassisCoordinateKeys({ silhouetteId, typeId, category })) {
+    Object.assign(overrides, FRAME_NODE_ANCHOR_OVERRIDES_BY_CHASSIS[key] || {});
+  }
+
+  return FRAME_NODE_ANCHORS.map((node) => ({ ...node, ...(overrides[node.id] || {}) }));
+}
+
+function setRefMap(mapRef, key, element) {
+  if (!mapRef?.current) return;
+  if (element) {
+    mapRef.current.set(key, element);
+  } else {
+    mapRef.current.delete(key);
+  }
+}
+
+function getElementCenter(element, rootRect) {
+  const rect = element.getBoundingClientRect();
+  return {
+    x: rect.left - rootRect.left + rect.width / 2,
+    y: rect.top - rootRect.top + rect.height / 2,
+    rect,
+  };
+}
+
+function buildConnectorPath(start, end, rootHeight = 1) {
+  const direction = end.x >= start.x ? 1 : -1;
+  const distance = Math.abs(end.x - start.x);
+  const baseStep = clamp(distance * 0.36, 34, 128);
+  const topRatio = rootHeight > 0 ? clamp(start.y / rootHeight, 0, 1) : 0.5;
+  const bendOffset = (topRatio - 0.5) * 112;
+  const maxStep = Math.max(34, distance - 26);
+  const step = clamp(baseStep + bendOffset, 24, maxStep);
+  const midX = start.x + step * direction;
+
+  return [
+    `M ${start.x.toFixed(2)} ${start.y.toFixed(2)}`,
+    `L ${midX.toFixed(2)} ${start.y.toFixed(2)}`,
+    `L ${midX.toFixed(2)} ${end.y.toFixed(2)}`,
+    `L ${end.x.toFixed(2)} ${end.y.toFixed(2)}`,
+  ].join(" ");
+}
+
+function AnatomyConnectionLayer({
+  enabled,
+  gridRef,
+  nodeRefs,
+  slotCardRefs,
+  slotStates,
+  dependencyKey,
+  hoverSlotId,
+  onHoverSlot,
+}) {
+  const [layout, setLayout] = useState({ width: 0, height: 0, paths: [] });
+
+  useEffect(() => {
+    if (!enabled || !gridRef?.current) {
+      setLayout({ width: 0, height: 0, paths: [] });
+      return undefined;
+    }
+
+    let frameId = 0;
+    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(scheduleUpdate) : null;
+
+    function readLayout() {
+      const root = gridRef.current;
+      if (!root) return;
+
+      const rootRect = root.getBoundingClientRect();
+      const nextPaths = slotStates
+        .map((state) => {
+          const nodeElement = nodeRefs.current.get(state.id);
+          const cardElement = slotCardRefs.current.get(state.id);
+          if (!nodeElement || !cardElement) return null;
+
+          const node = getElementCenter(nodeElement, rootRect);
+          const card = getElementCenter(cardElement, rootRect);
+          const cardEdgeX = node.x >= card.x
+            ? card.rect.right - rootRect.left
+            : card.rect.left - rootRect.left;
+          const end = { x: cardEdgeX, y: card.y };
+
+          return {
+            ...state,
+            d: buildConnectorPath(node, end, rootRect.height),
+          };
+        })
+        .filter(Boolean);
+
+      setLayout({
+        width: Math.max(1, rootRect.width),
+        height: Math.max(1, rootRect.height),
+        paths: nextPaths,
+      });
+    }
+
+    function scheduleUpdate() {
+      cancelAnimationFrame(frameId);
+      frameId = requestAnimationFrame(readLayout);
+    }
+
+    const observedElements = [
+      gridRef.current,
+      ...Array.from(nodeRefs.current.values()),
+      ...Array.from(slotCardRefs.current.values()),
+    ].filter(Boolean);
+
+    observedElements.forEach((element) => observer?.observe(element));
+    window.addEventListener("resize", scheduleUpdate);
+    scheduleUpdate();
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      observer?.disconnect();
+      window.removeEventListener("resize", scheduleUpdate);
+    };
+  }, [enabled, gridRef, nodeRefs, slotCardRefs, dependencyKey]);
+
+  if (!enabled || layout.paths.length === 0) return null;
+
+  return (
+    <svg
+      className="anatomy-stage__connection-layer"
+      viewBox={`0 0 ${layout.width} ${layout.height}`}
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      {layout.paths.map((path) => (
+        <path
+          key={path.id}
+          className={`monster-dynamic-connector ${path.filled ? "is-filled" : ""} ${path.active ? "is-active" : ""} ${path.guided ? "is-guided" : ""} ${hoverSlotId === path.id ? "is-linked-hover" : ""}`}
+          d={path.d}
+          onPointerEnter={() => onHoverSlot?.(path.id)}
+          onPointerLeave={() => onHoverSlot?.(null)}
+        />
+      ))}
+    </svg>
+  );
+}
+
+function SilhouetteChassisMenu({
+  open,
+  typeId,
+  category,
+  stageMode,
+  onChooseChassis,
+  onSetStageMode,
+}) {
+  if (!open) return null;
+
+  return (
+    <div className="monster-chassis-menu" role="menu" aria-label="Silhouette chassis menu">
+      <div className="monster-chassis-menu__head">
+        <span>Chassis</span>
+        <strong>{category}</strong>
+      </div>
+      <div className="monster-chassis-menu__families">
+        {CREATURE_TYPES.map((type) => {
+          const TypeIcon = type.icon || Activity;
+          const familyDisabled = isCreatureTypeUnavailable(type.id);
+          return (
+            <section key={type.id} className="monster-chassis-family" aria-label={type.label}>
+              <button
+                className={`monster-chassis-family__trigger ${type.id === typeId ? "is-active" : ""}`}
+                type="button"
+                role="menuitem"
+                disabled={familyDisabled}
+                aria-disabled={familyDisabled}
+                onClick={() => {
+                  if (!familyDisabled) onChooseChassis?.(type.id, type.categories[0]);
+                }}
+              >
+                <TypeIcon aria-hidden="true" />
+                <span>{type.label}</span>
+                <ChevronRight aria-hidden="true" />
+              </button>
+              <div className="monster-chassis-family__variants" role="group" aria-label={`${type.label} variants`}>
+                {type.categories.map((variant) => {
+                  const disabled = familyDisabled || isCreatureCategoryUnavailable(type.id, variant);
+                  const active = type.id === typeId && variant === category;
+                  return (
+                    <button
+                      key={`${type.id}:${variant}`}
+                      className={`monster-chassis-variant ${active ? "is-active" : ""}`}
+                      type="button"
+                      role="menuitemradio"
+                      aria-checked={active}
+                      disabled={disabled}
+                      aria-disabled={disabled}
+                      onClick={() => {
+                        if (!disabled) onChooseChassis?.(type.id, variant);
+                      }}
+                    >
+                      {variant}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+      <div className="monster-chassis-menu__views" role="group" aria-label="Silhouette view">
+        <button
+          className={stageMode === "frame" ? "is-active" : ""}
+          type="button"
+          role="menuitemradio"
+          aria-checked={stageMode === "frame"}
+          onClick={() => onSetStageMode?.("frame")}
+        >
+          Chassis View
+        </button>
+        <button
+          className={stageMode === "grafts" ? "is-active" : ""}
+          type="button"
+          role="menuitemradio"
+          aria-checked={stageMode === "grafts"}
+          onClick={() => onSetStageMode?.("grafts")}
+        >
+          Grafts View
+        </button>
+      </div>
+    </div>
+  );
+}
+
 
 function AnatomyMeter({ label, value, max, percent }) {
   const over = value > max;
@@ -124,7 +486,7 @@ function MonsterNameEditor({ value, onChange }) {
   );
 }
 
-function GraftActionPanel({ composerStarted, onForgeMonster, onStartOver }) {
+function GraftActionPanel({ composerStarted, onForgeMonster, onOpenExport, onStartOver }) {
   return (
     <section className="monster-frame-info-card monster-graft-action-card" aria-label="Build actions">
       <button
@@ -135,6 +497,20 @@ function GraftActionPanel({ composerStarted, onForgeMonster, onStartOver }) {
         onClick={onForgeMonster}
       >
         <Flame aria-hidden="true" />
+      </button>
+      <button
+        className={`monster-graft-action-btn tooltip-btn ${composerStarted ? "" : "is-disabled"}`}
+        type="button"
+        aria-label="Export Monster"
+        aria-disabled={!composerStarted}
+        data-tooltip={
+          composerStarted
+            ? "Open the complete monster export sheet."
+            : "Start or forge a monster before opening Export."
+        }
+        onClick={composerStarted ? onOpenExport : undefined}
+      >
+        <FileText aria-hidden="true" />
       </button>
       <button
         className={`monster-graft-action-btn tooltip-btn ${composerStarted ? "" : "is-disabled"}`}
@@ -281,76 +657,126 @@ function FrameCrControl({ value, setTargetCr, setActivePresetId }) {
 function MonsterSilhouetteCore({
   profile,
   silhouetteId,
+  typeId,
+  category,
   selected,
   activeSlot,
   guidedSlotId,
   stageMode,
   frameNodeValues,
+  nodeRefs,
+  hoverSlotId,
+  onHoverSlot,
   onOpenFrame,
   onFocusSlot,
+  onSetStageMode,
+  selectType,
+  setCategory,
+  setActivePresetId,
 }) {
-  function openFrameFromSilhouette(event) {
+  const [chassisMenuOpen, setChassisMenuOpen] = useState(false);
+  const silhouetteLayerRef = useRef(null);
+  const isFrameMode = stageMode === "frame";
+  const frameNodes = getFrameNodeAnchors({ silhouetteId, typeId, category });
+  const slotNodeAnchors = getSlotNodeAnchors({ silhouetteId, typeId, category, profile });
+  const ariaLabel = `${profile.label}. Open chassis menu.`;
+
+  useEffect(() => {
+    if (!chassisMenuOpen) return undefined;
+
+    function handlePointerDown(event) {
+      if (!silhouetteLayerRef.current?.contains(event.target)) {
+        setChassisMenuOpen(false);
+      }
+    }
+
+    function handleKeyDown(event) {
+      if (event.key === "Escape") {
+        setChassisMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [chassisMenuOpen]);
+
+  useEffect(() => {
+    setChassisMenuOpen(false);
+  }, [typeId, category, stageMode]);
+
+  function openChassisMenu(event) {
+    event.preventDefault();
     event.stopPropagation();
-    onOpenFrame?.();
+    setChassisMenuOpen(true);
   }
 
   function handleSilhouetteKeyDown(event) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      onOpenFrame?.();
+      setChassisMenuOpen(true);
     }
   }
 
-  const isFrameMode = stageMode === "frame";
-  const ariaLabel = isFrameMode
-    ? `${profile.label}. Frame setup active.`
-    : `${profile.label}. Open Monster Frame`;
+  function chooseChassis(nextTypeId, nextCategory) {
+    if (isCreatureTypeUnavailable(nextTypeId)) return;
+    if (isCreatureCategoryUnavailable(nextTypeId, nextCategory)) return;
+
+    if (nextTypeId !== typeId) {
+      selectType?.(nextTypeId);
+    }
+
+    setCategory?.(nextCategory);
+    setActivePresetId?.("");
+    setChassisMenuOpen(false);
+  }
+
+  function switchStageMode(nextStageMode) {
+    if (nextStageMode === "frame") {
+      onOpenFrame?.();
+    } else {
+      onSetStageMode?.(nextStageMode);
+    }
+    setChassisMenuOpen(false);
+  }
 
   return (
     <div className="anatomy-stage__center" aria-label="Interactive monster silhouette">
-      <div className="anatomy-stage__silhouette-layer">
-        <svg
-          className="monster-silhouette-connectors"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          {isFrameMode
-            ? FRAME_NODE_ANCHORS.map((node) => (
-                <line
-                  key={node.id}
-                  className="monster-silhouette-connector is-frame"
-                  x1={node.x * 100}
-                  y1={node.y * 100}
-                  x2="50"
-                  y2="50"
-                />
-              ))
-            : SLOTS.map((slot) => {
-                const anchor = getSilhouetteAnchor(profile, slot.id);
-                const card = SILHOUETTE_SLOT_CARDS[slot.id] || { x: anchor.x, y: anchor.y };
-                const filled = hasSelectedSlot(selected, slot.id);
-                const active = activeSlot === slot.id;
-                const guided = guidedSlotId === slot.id;
-                return (
-                  <line
-                    key={slot.id}
-                    className={`monster-silhouette-connector ${filled ? "is-filled" : ""} ${active ? "is-active" : ""} ${guided ? "is-guided" : ""}`}
-                    x1={card.x * 100}
-                    y1={card.y * 100}
-                    x2={anchor.x * 100}
-                    y2={anchor.y * 100}
-                  />
-                );
-              })}
-        </svg>
+      <div
+        className={`anatomy-stage__silhouette-layer ${chassisMenuOpen ? "has-chassis-menu-open" : ""}`}
+        ref={silhouetteLayerRef}
+      >
+        {isFrameMode ? (
+          <svg
+            className="monster-silhouette-connectors"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            {frameNodes.map((node) => (
+              <line
+                key={node.id}
+                className="monster-silhouette-connector is-frame"
+                x1={node.x * 100}
+                y1={node.y * 100}
+                x2="50"
+                y2="50"
+              />
+            ))}
+          </svg>
+        ) : null}
 
         {profile.assetUrl ? (
           <button
             className={`monster-silhouette-svg monster-silhouette-asset monster-silhouette-svg--${silhouetteId}`}
             type="button"
             aria-label={ariaLabel}
-            onClick={openFrameFromSilhouette}
+            aria-haspopup="menu"
+            aria-expanded={chassisMenuOpen}
+            onContextMenu={openChassisMenu}
             onKeyDown={handleSilhouetteKeyDown}
           >
             <img
@@ -368,7 +794,9 @@ function MonsterSilhouetteCore({
             role="button"
             tabIndex={0}
             aria-label={ariaLabel}
-            onClick={openFrameFromSilhouette}
+            aria-haspopup="menu"
+            aria-expanded={chassisMenuOpen}
+            onContextMenu={openChassisMenu}
             onKeyDown={handleSilhouetteKeyDown}
           >
             <g className="monster-silhouette-aura">
@@ -392,8 +820,17 @@ function MonsterSilhouetteCore({
           </svg>
         )}
 
+        <SilhouetteChassisMenu
+          open={chassisMenuOpen}
+          typeId={typeId}
+          category={category}
+          stageMode={stageMode}
+          onChooseChassis={chooseChassis}
+          onSetStageMode={switchStageMode}
+        />
+
         {isFrameMode
-          ? FRAME_NODE_ANCHORS.map((node) => {
+          ? frameNodes.map((node) => {
               const Icon = node.icon;
               return (
                 <span
@@ -409,15 +846,16 @@ function MonsterSilhouetteCore({
             })
           : SLOTS.map((slot) => {
               const Icon = slot.icon;
-              const anchor = getSilhouetteAnchor(profile, slot.id);
+              const anchor = slotNodeAnchors[slot.id] || getSilhouetteAnchor(profile, slot.id);
               const filled = hasSelectedSlot(selected, slot.id);
               const active = activeSlot === slot.id;
               const guided = guidedSlotId === slot.id;
               return (
                 <button
                   key={slot.id}
+                  ref={(element) => setRefMap(nodeRefs, slot.id, element)}
                   type="button"
-                  className={`monster-silhouette-node ${filled ? "is-filled" : ""} ${active ? "is-active" : ""} ${guided ? "is-guided" : ""}`}
+                  className={`monster-silhouette-node ${filled ? "is-filled" : ""} ${active ? "is-active" : ""} ${guided ? "is-guided" : ""} ${hoverSlotId === slot.id ? "is-linked-hover" : ""}`}
                   style={{ left: `${anchor.x * 100}%`, top: `${anchor.y * 100}%` }}
                   aria-label={`Focus ${slot.label}`}
                   aria-pressed={active}
@@ -425,6 +863,8 @@ function MonsterSilhouetteCore({
                     event.stopPropagation();
                     onFocusSlot(slot.id);
                   }}
+                  onPointerEnter={() => onHoverSlot?.(slot.id)}
+                  onPointerLeave={() => onHoverSlot?.(null)}
                 >
                   <Icon aria-hidden="true" />
                 </button>
@@ -753,6 +1193,7 @@ function GraftInfoPanel({
   composerStarted,
   onForgeMonster,
   onOpenComponents,
+  onOpenExport,
   onStartOver,
   creatureType,
   category,
@@ -785,6 +1226,7 @@ function GraftInfoPanel({
         composerStarted={composerStarted}
         onForgeMonster={onForgeMonster}
         onOpenComponents={onOpenComponents}
+        onOpenExport={onOpenExport}
         onStartOver={onStartOver}
       />
 
@@ -828,10 +1270,12 @@ export function MonsterSilhouetteMap({
   startMode,
   presetsCount,
   stageMode = "grafts",
+  onSetStageMode,
   monsterName,
   onMonsterNameChange,
   onForgeMonster,
   onOpenComponents,
+  onOpenExport,
   onStartOver,
   composerStarted,
   creatureType,
@@ -874,6 +1318,25 @@ export function MonsterSilhouetteMap({
   const safeDanger = danger || DANGERS.find((item) => item.id === dangerId) || DANGERS[0];
   const isFrameMode = stageMode === "frame";
   const availableFeatures = Array.isArray(features) ? features : [];
+  const hasComponentNavigator = Boolean(componentNavigatorPanel);
+  const graftGridRef = useRef(null);
+  const slotCardRefs = useRef(new Map());
+  const nodeRefs = useRef(new Map());
+  const [hoverSlotId, setHoverSlotId] = useState(null);
+  const slotConnectionStates = SLOTS.map((slot) => ({
+    id: slot.id,
+    filled: hasSelectedSlot(selected, slot.id),
+    active: activeSlot === slot.id,
+    guided: guidedSlotId === slot.id,
+  }));
+  const slotConnectionKey = [
+    silhouetteId,
+    stageMode,
+    activeSlot,
+    guidedSlotId || "",
+    hasComponentNavigator ? "navigator" : "no-navigator",
+    ...slotConnectionStates.map((state) => `${state.id}:${state.filled ? 1 : 0}:${state.active ? 1 : 0}:${state.guided ? 1 : 0}`),
+  ].join("|");
 
   const frameNodeValues = {
     family: safeCreatureType.label,
@@ -895,25 +1358,29 @@ export function MonsterSilhouetteMap({
     const filled = slotFeatures.length > 0;
     const active = activeSlot === slot.id;
     const guided = guidedSlotId === slot.id;
+    const linkedHover = hoverSlotId === slot.id;
 
-    return { slot, Icon, card, slotFeatures, feature, filled, active, guided };
+    return { slot, Icon, card, slotFeatures, feature, filled, active, guided, linkedHover };
   }
 
   function renderSlotCard(slotId) {
-    const { slot, Icon, card, slotFeatures, feature, filled, active, guided } =
+    const { slot, Icon, card, slotFeatures, feature, filled, active, guided, linkedHover } =
       getSlotCardData(slotId);
 
     return (
       <button
         key={slot.id}
+        ref={(element) => setRefMap(slotCardRefs, slot.id, element)}
         type="button"
-        className={`monster-silhouette-slot-card is-${card.side} ${filled ? "is-filled" : "is-empty"} ${active ? "is-active" : ""} ${guided ? "is-guided" : ""}`}
+        className={`monster-silhouette-slot-card is-${card.side} ${filled ? "is-filled" : "is-empty"} ${active ? "is-active" : ""} ${guided ? "is-guided" : ""} ${linkedHover ? "is-linked-hover" : ""}`}
         aria-label={`Focus ${slot.label}`}
         aria-pressed={active}
         onClick={(event) => {
           event.stopPropagation();
           onFocusSlot(slot.id);
         }}
+        onPointerEnter={() => setHoverSlotId(slot.id)}
+        onPointerLeave={() => setHoverSlotId(null)}
       >
         <span className="monster-silhouette-slot-card__head">
           <span>
@@ -943,13 +1410,22 @@ export function MonsterSilhouetteMap({
       <MonsterSilhouetteCore
         profile={profile}
         silhouetteId={silhouetteId}
+        typeId={typeId}
+        category={category}
         selected={selected}
         activeSlot={activeSlot}
         guidedSlotId={guidedSlotId}
         stageMode={stageMode}
         frameNodeValues={frameNodeValues}
+        nodeRefs={nodeRefs}
+        hoverSlotId={hoverSlotId}
+        onHoverSlot={setHoverSlotId}
         onOpenFrame={onOpenFrame}
         onFocusSlot={onFocusSlot}
+        onSetStageMode={onSetStageMode}
+        selectType={selectType}
+        setCategory={setCategory}
+        setActivePresetId={setActivePresetId}
       />
     );
   }
@@ -1011,7 +1487,29 @@ export function MonsterSilhouetteMap({
                 />
               </div>
             ) : (
-              <div className="anatomy-stage__grid anatomy-stage__grid--grafts">
+              <div
+                ref={graftGridRef}
+                className={`anatomy-stage__grid anatomy-stage__grid--grafts ${hasComponentNavigator ? "has-navigator" : ""}`}
+                data-navigator-open={hasComponentNavigator ? "true" : "false"}
+              >
+                <AnatomyConnectionLayer
+                  enabled={!isFrameMode}
+                  gridRef={graftGridRef}
+                  nodeRefs={nodeRefs}
+                  slotCardRefs={slotCardRefs}
+                  slotStates={slotConnectionStates}
+                  dependencyKey={slotConnectionKey}
+                  hoverSlotId={hoverSlotId}
+                  onHoverSlot={setHoverSlotId}
+                />
+
+                {hasComponentNavigator ? (
+                  <div
+                    className="anatomy-stage__navigator-focus-overlay"
+                    aria-hidden="true"
+                  />
+                ) : null}
+
                 <aside
                   className="anatomy-stage__column anatomy-stage__column--left"
                   aria-label="Anatomy graft slots"
@@ -1021,9 +1519,9 @@ export function MonsterSilhouetteMap({
                   </div>
                 </aside>
 
-                {componentNavigatorPanel ? (
+                {hasComponentNavigator ? (
                   <div
-                    className="anatomy-stage__navigator-overlay"
+                    className="anatomy-stage__navigator-column"
                     aria-label="Graft navigator drawer"
                   >
                     {componentNavigatorPanel}
@@ -1039,6 +1537,7 @@ export function MonsterSilhouetteMap({
                   composerStarted={composerStarted}
                   onForgeMonster={onForgeMonster}
                   onOpenComponents={onOpenComponents}
+                  onOpenExport={onOpenExport}
                   onStartOver={onStartOver}
                   creatureType={safeCreatureType}
                   category={category}
@@ -1056,9 +1555,12 @@ export function MonsterSilhouetteMap({
             )}
             {guidedFlowPanel ? (
               <div
-                className={`monster-stage-progress-dock ${isFrameMode ? "monster-stage-progress-dock--frame" : "monster-stage-progress-dock--grafts"}`}
+                className={`monster-stage-progress-dock ${isFrameMode ? "monster-stage-progress-dock--frame" : "monster-stage-progress-dock--grafts"} ${hasComponentNavigator ? "is-under-navigator-focus" : ""}`}
               >
                 {guidedFlowPanel}
+                {hasComponentNavigator ? (
+                  <div className="monster-stage-progress-focus-overlay" aria-hidden="true" />
+                ) : null}
               </div>
             ) : null}
           </div>

@@ -661,10 +661,6 @@ function FeatureCard({
       <p className="summary">{normalizeMonsterReferences(feature.summary, computed)}</p>
       <ImpactMetricDock impact={impact} />
 
-      {hasCompatibilityBadge && <p className="compatibility-note">{compatibility.message}</p>}
-      {profile.frameFit?.kind === "discouraged" && (
-        <p className="compatibility-note">{profile.frameFit.message}</p>
-      )}
       {slotFull && (
         <p className="compatibility-note">
           This slot is full. Raise its cap or remove a graft first.
@@ -706,7 +702,24 @@ function FeatureCard({
             </span>
           </div>
           <ImpactMetaRows impact={impact} />
-          {profile.frameFit && profile.frameFit.kind !== "neutral" && (
+          {(hasCompatibilityBadge || profile.frameFit?.kind === "discouraged") && (
+            <div className="meta-row">
+              <span className="meta-label">Compatibility</span>
+              <span className="meta-values">
+                {hasCompatibilityBadge && (
+                  <span className={`meta-value ${compatibility.kind === "compatible" ? "strong-chip" : "danger-chip"}`}>
+                    {compatibility.label}: {compatibility.message}
+                  </span>
+                )}
+                {profile.frameFit?.kind === "discouraged" && (
+                  <span className="meta-value danger-chip">
+                    {profile.frameFit.label}: {profile.frameFit.message}
+                  </span>
+                )}
+              </span>
+            </div>
+          )}
+          {profile.frameFit && profile.frameFit.kind !== "neutral" && profile.frameFit.kind !== "discouraged" && (
             <div className="meta-row">
               <span className="meta-label">Frame Fit</span>
               <span className="meta-values">

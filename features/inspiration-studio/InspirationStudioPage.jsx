@@ -877,6 +877,14 @@ function getStatusIconName(status = "draft") {
   return "fa-pen-ruler";
 }
 
+function getLibraryStatusFilterIcon(filterId = "all") {
+  if (filterId === "published") return "fa-circle-check";
+  if (filterId === "draft") return "fa-pen-ruler";
+  if (filterId === "archived") return "fa-box-archive";
+  if (filterId === "needs-review") return "fa-triangle-exclamation";
+  return "fa-layer-group";
+}
+
 function buildPublishReadinessReport(draft, validationReport, contentPackExport, moduleExport) {
   const normalized = normalizeModuleForDraft(draft);
   const issues = asArray(validationReport?.issues);
@@ -1987,7 +1995,6 @@ function StudioRightRail({ collapsed = false, componentGroups, draft, imageSourc
             </div>
           )}
           <div className="studio-card-preview__caption">
-            <span>4:5 Public Crop</span>
             <strong>{draft.title}</strong>
             <em>{sourceType}</em>
           </div>
@@ -2379,8 +2386,15 @@ export default function InspirationStudioPage() {
                 </label>
                 <div className="studio-library-filter-row" role="tablist" aria-label="Library status filters">
                   {LIBRARY_STATUS_FILTERS.map(([filterId, label]) => (
-                    <button key={filterId} type="button" aria-selected={libraryStatusFilter === filterId} onClick={() => setLibraryStatusFilter(filterId)}>
-                      {label}
+                    <button
+                      key={filterId}
+                      type="button"
+                      aria-label={label}
+                      aria-selected={libraryStatusFilter === filterId}
+                      title={label}
+                      onClick={() => setLibraryStatusFilter(filterId)}
+                    >
+                      <Icon name={getLibraryStatusFilterIcon(filterId)} />
                     </button>
                   ))}
                 </div>
@@ -2931,7 +2945,7 @@ function ComponentsWorkspace({
             )}
           </div>
           {!componentListCollapsed ? groupedComponents.map((group) => (
-            <details className="studio-component-group" key={group.key} open>
+            <details className="studio-component-group" key={group.key}>
               <summary>
                 <span><Icon name={group.icon} /> {group.eyebrow}</span>
                 <strong>{group.label}</strong>
@@ -4185,6 +4199,12 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
             </FormRow>
           </RulesGroup>
 
+          <RulesGroup zone="qa" icon="fa-trash" title="Danger Zone" help="Remove this component from the current Inspiration Module.">
+            <button className="studio-inline-action studio-inline-action--danger" type="button" onClick={onRemove}>
+              <Icon name="fa-trash" /> Remove Component
+            </button>
+          </RulesGroup>
+
           {usesInferredRules ? (
             <div className="studio-inferred-rules-note" data-editor-zone="rules">
               <Icon name="fa-wand-magic-sparkles" />
@@ -5006,18 +5026,19 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
       ) : null}
 
       {!isMonsterGraft ? (
-        <RulesGroup zone="qa" icon="fa-code" title="Raw Component JSON" help="Read-only component payload for debugging saved data and future Supabase migration checks.">
-          <FormRow label="Raw JSON" icon="fa-code" hint="Read-only JSON for the selected component. Use this only for debugging.">
-            <TextArea className="studio-generated-preview studio-raw-json-preview" rows={16} readOnly value={JSON.stringify(component, null, 2)} />
-          </FormRow>
-        </RulesGroup>
+        <>
+          <RulesGroup zone="qa" icon="fa-code" title="Raw Component JSON" help="Read-only component payload for debugging saved data and future Supabase migration checks.">
+            <FormRow label="Raw JSON" icon="fa-code" hint="Read-only JSON for the selected component. Use this only for debugging.">
+              <TextArea className="studio-generated-preview studio-raw-json-preview" rows={16} readOnly value={JSON.stringify(component, null, 2)} />
+            </FormRow>
+          </RulesGroup>
+          <RulesGroup zone="qa" icon="fa-trash" title="Danger Zone" help="Remove this component from the current Inspiration Module.">
+            <button className="studio-inline-action studio-inline-action--danger" type="button" onClick={onRemove}>
+              <Icon name="fa-trash" /> Remove Component
+            </button>
+          </RulesGroup>
+        </>
       ) : null}
-
-      <RulesGroup zone="qa" icon="fa-trash" title="Danger Zone" help="Remove this component from the current Inspiration Module.">
-        <button className="studio-inline-action studio-inline-action--danger" type="button" onClick={onRemove}>
-          <Icon name="fa-trash" /> Remove Component
-        </button>
-      </RulesGroup>
     </div>
   );
 }

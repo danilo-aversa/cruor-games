@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import "./monster-composer.styles.css";
 import {
   X,
@@ -1107,7 +1108,7 @@ function copyTextFallback(text) {
 
 
 
-export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {}) {
+export default function CruorMonsterComposerMvp({ uiMode = "simple", inspirationSeed = null } = {}) {
   const [typeId, setTypeId] = useState("undead");
   const [category, setCategory] = useState("Zombie");
   const [roleId, setRoleId] = useState("standard");
@@ -1142,6 +1143,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
   const [componentNavigatorMode, setComponentNavigatorMode] = useState("slot");
   const [navigatorSlotFilter, setNavigatorSlotFilter] = useState("all");
   const [exportCopyStatus, setExportCopyStatus] = useState("");
+  const [liveExportPopoutOpen, setLiveExportPopoutOpen] = useState(false);
 
   const creatureType = CREATURE_TYPES.find((type) => type.id === typeId) || CREATURE_TYPES[0];
   const role = ROLES.find((item) => item.id === roleId) || ROLES[1];
@@ -1168,6 +1170,12 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
     setComponentNavigatorMode("global");
     setComponentNavigatorOpen(true);
   }, [inspirationSeed?.revision, inspirationSeed?.sourceAnchorId]);
+
+  useEffect(() => {
+    if (uiMode !== "debug") {
+      setLiveExportPopoutOpen(false);
+    }
+  }, [uiMode]);
 
   const defaultPressureBudget =
     role.budget +
@@ -1921,6 +1929,137 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
     activePreset,
   });
 
+  const exportPayload = useMemo(() => {
+    const exportText = buildExportText({
+      name: computed.name,
+      creatureType,
+      category,
+      role,
+      danger,
+      computed,
+      abilityProfile,
+      traits,
+      actions,
+      bonusActions,
+      reactions,
+      legendaryActions,
+      lairActions,
+      deathEffects,
+      hasLegendaryActions,
+      xp,
+    });
+    const exportJson = buildExportJson({
+      name: computed.name,
+      creatureType,
+      category,
+      role,
+      danger,
+      source,
+      computed,
+      abilityProfile,
+      traits,
+      actions,
+      bonusActions,
+      reactions,
+      legendaryActions,
+      lairActions,
+      deathEffects,
+      selectedFeatures,
+      activePreset,
+      xp,
+    });
+    const statBlock = buildRenderableStatBlock({
+      name: computed.name,
+      creatureType,
+      category,
+      role,
+      danger,
+      computed,
+      abilityProfile,
+      traits,
+      actions,
+      bonusActions,
+      reactions,
+      legendaryActions,
+      lairActions,
+      deathEffects,
+      selectedFeatures,
+      hasLegendaryActions,
+      xp,
+    });
+    const exportReadiness = buildExportReadiness({
+      computed,
+      selected,
+      selectedFeatures,
+      traits,
+      actions,
+      weaknessFeatures: selectedFeatures.filter((feature) => feature.slot === "weakness"),
+      deathEffects,
+      lairActions,
+    });
+    const exportRunSheet = buildExportRunSheet({
+      computed,
+      selectedFeatures,
+      traits,
+      actions,
+      bonusActions,
+      reactions,
+      deathEffects,
+      lairActions,
+    });
+
+    return {
+      exportText,
+      exportJson,
+      statBlock,
+      exportReadiness,
+      exportRunSheet,
+    };
+  }, [
+    computed,
+    creatureType,
+    category,
+    role,
+    danger,
+    source,
+    abilityProfile,
+    traits,
+    actions,
+    bonusActions,
+    reactions,
+    legendaryActions,
+    lairActions,
+    deathEffects,
+    selectedFeatures,
+    activePreset,
+    xp,
+    selected,
+    hasLegendaryActions,
+  ]);
+
+  const renderExportWorkbench = () => (
+    <ExportWorkbench
+      exportText={exportPayload.exportText}
+      exportJson={exportPayload.exportJson}
+      statBlock={exportPayload.statBlock}
+      exportReadiness={exportPayload.exportReadiness}
+      exportRunSheet={exportPayload.exportRunSheet}
+      exportCopyStatus={exportCopyStatus}
+      onCopyExportPayload={copyExportPayload}
+      onOpenBalance={() => setViewMode("balance")}
+    />
+  );
+
+  const persistentViewToolbar = viewMode !== "composer" ? (
+    <MonsterPersistentViewToolbar
+      activeView={viewMode}
+      uiMode={uiMode}
+      liveExportPopoutOpen={liveExportPopoutOpen}
+      onSetView={setViewMode}
+      onToggleLiveExportPopout={() => setLiveExportPopoutOpen((open) => !open)}
+    />
+  ) : null;
+
   function openSlotNavigator(slotId) {
     if (!composerStarted) return;
     setComposerStageMode("grafts");
@@ -1943,6 +2082,29 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
     setNavigatorFiltersOpen(false);
     setComponentNavigatorOpen(true);
   }
+
+  function closeComponentNavigator() {
+    setComponentNavigatorOpen(false);
+    setActiveSlot("");
+  }
+
+  useEffect(() => {
+    if (!componentNavigatorOpen) return;
+
+    function handleComponentNavigatorOutsidePointerDown(event) {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest(".component-navigator-modal__panel, .component-navigator-modal__rail, .anatomy-stage__navigator-column")) {
+        return;
+      }
+      closeComponentNavigator();
+    }
+
+    document.addEventListener("pointerdown", handleComponentNavigatorOutsidePointerDown, true);
+    return () => {
+      document.removeEventListener("pointerdown", handleComponentNavigatorOutsidePointerDown, true);
+    };
+  }, [componentNavigatorOpen]);
 
   function handleBalanceRecommendationAction(action) {
     if (!action) return;
@@ -2042,7 +2204,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
       componentNavigatorMode === "slot" &&
       !(advancedMode && getSlotCap(slotCaps, feature.slot) > 1)
     ) {
-      setComponentNavigatorOpen(false);
+      closeComponentNavigator();
     }
   }
 
@@ -2059,7 +2221,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
       setNavigatorSourceFilters={setNavigatorSourceFilters}
       contentPackOptions={contentPackOptions}
       setActiveSlot={setActiveSlot}
-      onClose={() => setComponentNavigatorOpen(false)}
+      onClose={closeComponentNavigator}
       visibleFeatures={visibleFeatures}
       selected={selected}
       selectedFeatures={selectedFeatures}
@@ -2092,14 +2254,28 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
   );
 
 
+  const isScrollableMonsterView = viewMode !== "composer";
+  const monsterShellStyle = isScrollableMonsterView
+    ? { height: "100%", minHeight: 0, overflowY: "auto", overflowX: "hidden" }
+    : undefined;
+  const monsterWorkspaceStyle = isScrollableMonsterView
+    ? { minHeight: "100%", overflow: "visible", paddingBottom: "48px" }
+    : undefined;
+
   return (
     <div
       className="cruor-composer-shell monster-composer monster-shell"
       data-composer-started={composerStarted ? "true" : "false"}
       data-start-mode={startMode || "unstarted"}
       data-template-picker-open={templatePickerOpen ? "true" : "false"}
+      data-view-mode={viewMode}
+      data-scrollable-view={isScrollableMonsterView ? "true" : "false"}
+      style={monsterShellStyle}
     >
-      <main className="monster-workspace">
+      <main
+        className={`monster-workspace ${isScrollableMonsterView ? "monster-workspace--scrollable-view" : ""}`}
+        style={monsterWorkspaceStyle}
+      >
         <MonsterComposerTopbar
           activePreset={activePreset}
           targetCr={targetCr}
@@ -2110,6 +2286,9 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
           onSetViewMode={setViewMode}
           composerStageMode={composerStageMode}
           onSetComposerStageMode={setComposerStageMode}
+          uiMode={uiMode}
+          liveExportPopoutOpen={liveExportPopoutOpen}
+          onToggleLiveExportPopout={() => setLiveExportPopoutOpen((open) => !open)}
         />
 
         {viewMode === "composer" && (
@@ -2151,6 +2330,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
                   setComposerStageMode("grafts");
                   openGlobalNavigator();
                 }}
+                onOpenExport={() => setViewMode("export")}
                 onStartOver={composerStarted ? startOver : undefined}
                 composerStarted={composerStarted}
                 onPickTemplate={openTemplatePicker}
@@ -2169,7 +2349,7 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
                 setMonsterTierId={setMonsterTierId}
                 setTempoProfileId={setTempoProfileId}
                 setDangerId={setDangerId}
-                componentNavigatorPanel={componentNavigatorDrawer}
+                componentNavigatorPanel={componentNavigatorOpen && viewMode === "composer" && composerStarted && composerStageMode === "grafts" ? componentNavigatorDrawer : null}
                 guidedFlowPanel={(
                   <GuidedFlowPanel
                     guidedFlow={guidedFlow}
@@ -2198,6 +2378,8 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
             </section>
           </section>
         )}
+
+        {persistentViewToolbar}
 
         {viewMode === "balance" && (
           <BalanceWorkbench
@@ -2237,98 +2419,27 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
             );
           })()}
 
-        {viewMode === "export" &&
-          (() => {
-            const exportText = buildExportText({
-              name: computed.name,
-              creatureType,
-              category,
-              role,
-              danger,
-              computed,
-              abilityProfile,
-              traits,
-              actions,
-              bonusActions,
-              reactions,
-              legendaryActions,
-              lairActions,
-              deathEffects,
-              hasLegendaryActions,
-              xp,
-            });
-            const exportJson = buildExportJson({
-              name: computed.name,
-              creatureType,
-              category,
-              role,
-              danger,
-              source,
-              computed,
-              abilityProfile,
-              traits,
-              actions,
-              bonusActions,
-              reactions,
-              legendaryActions,
-              lairActions,
-              deathEffects,
-              selectedFeatures,
-              activePreset,
-              xp,
-            });
-            const statBlock = buildRenderableStatBlock({
-              name: computed.name,
-              creatureType,
-              category,
-              role,
-              danger,
-              computed,
-              abilityProfile,
-              traits,
-              actions,
-              bonusActions,
-              reactions,
-              legendaryActions,
-              lairActions,
-              deathEffects,
-              selectedFeatures,
-              hasLegendaryActions,
-              xp,
-            });
-            const exportReadiness = buildExportReadiness({
-              computed,
-              selected,
-              selectedFeatures,
-              traits,
-              actions,
-              weaknessFeatures: selectedFeatures.filter((feature) => feature.slot === "weakness"),
-              deathEffects,
-              lairActions,
-            });
-            const exportRunSheet = buildExportRunSheet({
-              computed,
-              selectedFeatures,
-              traits,
-              actions,
-              bonusActions,
-              reactions,
-              deathEffects,
-              lairActions,
-            });
-            return (
-              <ExportWorkbench
-                exportText={exportText}
-                exportJson={exportJson}
-                statBlock={statBlock}
-                exportReadiness={exportReadiness}
-                exportRunSheet={exportRunSheet}
-                exportCopyStatus={exportCopyStatus}
-                onCopyExportPayload={copyExportPayload}
-                onOpenBalance={() => setViewMode("balance")}
-              />
-            );
-          })()}
+        {viewMode === "export" && renderExportWorkbench()}
+
+        {uiMode === "debug" && liveExportPopoutOpen && (
+          <LiveExportPopout
+            title={`Cruor Live Export · ${computed.name}`}
+            onClose={() => setLiveExportPopoutOpen(false)}
+          >
+            <div className="monster-export-popout-shell">
+              <header className="monster-export-popout-header">
+                <div>
+                  <span>Debug Live Export</span>
+                  <strong>{computed.name}</strong>
+                </div>
+                <button type="button" onClick={() => setLiveExportPopoutOpen(false)}>
+                  Close Popout
+                </button>
+              </header>
+              {renderExportWorkbench()}
+            </div>
+          </LiveExportPopout>
+        )}
 
         <TemplatePickerModal
           open={templatePickerOpen}
@@ -2340,6 +2451,153 @@ export default function CruorMonsterComposerMvp({ inspirationSeed = null } = {})
       </main>
     </div>
   );
+}
+
+
+
+function MonsterPersistentViewToolbar({
+  activeView,
+  uiMode,
+  liveExportPopoutOpen,
+  onSetView,
+  onToggleLiveExportPopout,
+}) {
+  const views = [
+    ["composer", "Composer"],
+    ["balance", "Balance"],
+    ["run", "Run"],
+    ["export", "Stat Block"],
+  ];
+
+  return (
+    <nav className="monster-persistent-view-toolbar" aria-label="Monster view navigation">
+      <div className="monster-persistent-view-toolbar__left">
+        <button
+          className="monster-persistent-view-toolbar__back"
+          type="button"
+          onClick={() => onSetView?.("composer")}
+        >
+          Back to Composer
+        </button>
+        <div className="monster-persistent-view-toolbar__tabs" role="tablist" aria-label="Monster views">
+          {views.map(([id, label]) => (
+            <button
+              key={id}
+              className={`monster-persistent-view-toolbar__tab ${activeView === id ? "is-active" : ""}`}
+              type="button"
+              role="tab"
+              aria-selected={activeView === id}
+              onClick={() => onSetView?.(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {uiMode === "debug" && (
+        <button
+          className={`monster-persistent-view-toolbar__debug ${liveExportPopoutOpen ? "is-active" : ""}`}
+          type="button"
+          aria-pressed={liveExportPopoutOpen}
+          onClick={onToggleLiveExportPopout}
+        >
+          {liveExportPopoutOpen ? "Close Live Export" : "Open Live Export Popout"}
+        </button>
+      )}
+    </nav>
+  );
+}
+
+
+function copyDocumentStylesToPopout(sourceDocument, targetDocument) {
+  Array.from(sourceDocument.querySelectorAll('link[rel="stylesheet"], style')).forEach((node) => {
+    targetDocument.head.appendChild(node.cloneNode(true));
+  });
+}
+
+function LiveExportPopout({ title, children, onClose }) {
+  const popoutRef = useRef(null);
+  const [container, setContainer] = useState(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") return undefined;
+
+    const width = Math.min(1120, Math.max(820, Math.floor((window.screen?.availWidth || 1280) * 0.46)));
+    const height = Math.min(1180, Math.max(720, Math.floor((window.screen?.availHeight || 900) * 0.9)));
+    const left = Math.max(0, (window.screen?.availWidth || width) - width - 24);
+    const top = 24;
+    const popout = window.open(
+      "",
+      "cruor-monster-live-export",
+      `popup=yes,width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
+    );
+
+    if (!popout) {
+      onClose?.();
+      return undefined;
+    }
+
+    popoutRef.current = popout;
+    popout.document.open();
+    popout.document.write("<!doctype html><html><head></head><body></body></html>");
+    popout.document.close();
+    popout.document.title = title;
+    popout.document.body.className =
+      "cruor-composer-shell monster-composer monster-shell monster-export-popout-body";
+
+    copyDocumentStylesToPopout(document, popout.document);
+
+    const localStyle = popout.document.createElement("style");
+    localStyle.textContent = `
+      html, body {
+        min-height: 100%;
+        margin: 0;
+        background: #050506;
+      }
+      body.monster-export-popout-body {
+        overflow: auto;
+        padding: 16px;
+      }
+      .monster-export-popout-root {
+        min-width: 0;
+      }
+    `;
+    popout.document.head.appendChild(localStyle);
+
+    const mountNode = popout.document.createElement("div");
+    mountNode.className = "monster-export-popout-root";
+    popout.document.body.appendChild(mountNode);
+    setContainer(mountNode);
+    popout.focus();
+
+    const handleBeforeUnload = () => onClose?.();
+    popout.addEventListener("beforeunload", handleBeforeUnload);
+
+    const closeWatcher = window.setInterval(() => {
+      if (popout.closed) {
+        window.clearInterval(closeWatcher);
+        onClose?.();
+      }
+    }, 500);
+
+    return () => {
+      window.clearInterval(closeWatcher);
+      popout.removeEventListener("beforeunload", handleBeforeUnload);
+      if (!popout.closed) popout.close();
+      popoutRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const popout = popoutRef.current;
+    if (!popout || popout.closed) return;
+    popout.document.title = title;
+  }, [title]);
+
+  if (!container) return null;
+
+  return createPortal(children, container);
 }
 
 

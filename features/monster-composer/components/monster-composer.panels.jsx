@@ -306,9 +306,11 @@ function BalanceRecommendationList({ recommendations, onAction }) {
                   <button
                     key={`${recommendation.id}-${action.label}`}
                     type="button"
+                    aria-label={action.label}
+                    title={action.label}
                     onClick={() => onAction?.(action)}
                   >
-                    {action.label}
+                    {action.kind === "slot" ? "Go" : action.label}
                   </button>
                 ))}
               </div>

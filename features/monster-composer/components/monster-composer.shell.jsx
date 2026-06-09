@@ -10,6 +10,9 @@ export function MonsterComposerTopbar({
   onSetViewMode,
   composerStageMode = "frame",
   onSetComposerStageMode,
+  uiMode = "simple",
+  liveExportPopoutOpen = false,
+  onToggleLiveExportPopout,
 }) {
   return (
     <div className="darken-workspace__topbar monster-topbar-wrap">
@@ -126,6 +129,19 @@ export function MonsterComposerTopbar({
                   Export
                 </button>
               </div>
+              {uiMode === "debug" && (
+                <div className="monster-debug-tools" aria-label="Monster debug tools">
+                  <button
+                    className={`darken-workspace__tab monster-debug-popout-tab ${liveExportPopoutOpen ? "is-active" : ""}`}
+                    type="button"
+                    aria-pressed={liveExportPopoutOpen}
+                    title="Open the live stat block export in a separate debug window"
+                    onClick={onToggleLiveExportPopout}
+                  >
+                    {liveExportPopoutOpen ? "Close Popout" : "Live Export Popout"}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
