@@ -232,27 +232,138 @@ function setRefMap(mapRef, key, element) {
 
 function getElementCenter(element, rootRect) {
   const rect = element.getBoundingClientRect();
+  const localRect = {
+    left: rect.left - rootRect.left,
+    right: rect.right - rootRect.left,
+    top: rect.top - rootRect.top,
+    bottom: rect.bottom - rootRect.top,
+    width: rect.width,
+    height: rect.height,
+  };
+
   return {
-    x: rect.left - rootRect.left + rect.width / 2,
-    y: rect.top - rootRect.top + rect.height / 2,
+    x: localRect.left + rect.width / 2,
+    y: localRect.top + rect.height / 2,
     rect,
+    localRect,
   };
 }
 
-function buildConnectorPath(start, end, rootHeight = 1) {
-  const direction = end.x >= start.x ? 1 : -1;
-  const distance = Math.abs(end.x - start.x);
-  const baseStep = clamp(distance * 0.36, 34, 128);
-  const topRatio = rootHeight > 0 ? clamp(start.y / rootHeight, 0, 1) : 0.5;
-  const bendOffset = (topRatio - 0.5) * 168;
-  const maxStep = Math.max(34, distance - 26);
-  const step = clamp(baseStep + bendOffset, 24, maxStep);
-  const midX = start.x + step * direction;
+const NODE_PORT_CLUSTER_THRESHOLD = 10;
+const NODE_PORT_EXIT_DISTANCE = 14;
+const NODE_PORT_GROUP_SEQUENCE = ["left", "right", "top", "bottom"];
+const NODE_PORT_SIDE_BY_SLOT = {
+  body: "left",
+  mind: "right",
+  attack: "left",
+  horror: "right",
+  movement: "bottom",
+  weakness: "right",
+  twist: "left",
+  death: "right",
+  lair: "bottom",
+};
+
+function getNaturalNodePort(node, end) {
+  const horizontalDistance = Math.abs(end.x - node.x);
+  const verticalDistance = Math.abs(end.y - node.y);
+
+  if (verticalDistance > horizontalDistance * 1.35) {
+    return end.y < node.y ? "top" : "bottom";
+  }
+
+  return end.x < node.x ? "left" : "right";
+}
+
+function assignNodePorts(items) {
+  const groups = [];
+
+  for (const item of items) {
+    const group = groups.find((candidate) => Math.abs(candidate.x - item.node.x) <= NODE_PORT_CLUSTER_THRESHOLD);
+    if (group) {
+      group.items.push(item);
+      group.x = group.items.reduce((total, next) => total + next.node.x, 0) / group.items.length;
+    } else {
+      groups.push({ x: item.node.x, items: [item] });
+    }
+  }
+
+  for (const group of groups) {
+    const sorted = [...group.items].sort((a, b) => a.node.y - b.node.y);
+    const usedPorts = new Map();
+
+    for (let index = 0; index < sorted.length; index += 1) {
+      const item = sorted[index];
+      const preferredPort = group.items.length > 1
+        ? NODE_PORT_SIDE_BY_SLOT[item.id] || NODE_PORT_GROUP_SEQUENCE[index % NODE_PORT_GROUP_SEQUENCE.length]
+        : getNaturalNodePort(item.node, item.end);
+      const portUseCount = usedPorts.get(preferredPort) || 0;
+
+      item.port = preferredPort;
+      item.exitDistance = NODE_PORT_EXIT_DISTANCE + portUseCount * 8;
+      item.crossOffset = preferredPort === "top" || preferredPort === "bottom"
+        ? portUseCount === 0
+          ? 0
+          : (portUseCount % 2 === 1 ? 1 : -1) * (12 + Math.floor(portUseCount / 2) * 8)
+        : 0;
+      usedPorts.set(preferredPort, portUseCount + 1);
+    }
+  }
+
+  return items;
+}
+
+function getNodePortPoint(node, port) {
+  const rect = node.localRect;
+
+  switch (port) {
+    case "left":
+      return { x: rect.left, y: node.y };
+    case "right":
+      return { x: rect.right, y: node.y };
+    case "top":
+      return { x: node.x, y: rect.top };
+    case "bottom":
+      return { x: node.x, y: rect.bottom };
+    default:
+      return { x: node.x, y: node.y };
+  }
+}
+
+function getNodeExitPoint(start, port, exitDistance) {
+  switch (port) {
+    case "left":
+      return { x: start.x - exitDistance, y: start.y };
+    case "right":
+      return { x: start.x + exitDistance, y: start.y };
+    case "top":
+      return { x: start.x, y: start.y - exitDistance };
+    case "bottom":
+      return { x: start.x, y: start.y + exitDistance };
+    default:
+      return start;
+  }
+}
+
+function buildConnectorPath({ node, end, port, exitDistance, crossOffset = 0 }) {
+  const start = getNodePortPoint(node, port);
+  const exit = getNodeExitPoint(start, port, exitDistance);
+
+  if ((port === "top" || port === "bottom") && crossOffset !== 0) {
+    const lane = { x: exit.x + crossOffset, y: exit.y };
+    return [
+      `M ${start.x.toFixed(2)} ${start.y.toFixed(2)}`,
+      `L ${exit.x.toFixed(2)} ${exit.y.toFixed(2)}`,
+      `L ${lane.x.toFixed(2)} ${lane.y.toFixed(2)}`,
+      `L ${lane.x.toFixed(2)} ${end.y.toFixed(2)}`,
+      `L ${end.x.toFixed(2)} ${end.y.toFixed(2)}`,
+    ].join(" ");
+  }
 
   return [
     `M ${start.x.toFixed(2)} ${start.y.toFixed(2)}`,
-    `L ${midX.toFixed(2)} ${start.y.toFixed(2)}`,
-    `L ${midX.toFixed(2)} ${end.y.toFixed(2)}`,
+    `L ${exit.x.toFixed(2)} ${exit.y.toFixed(2)}`,
+    `L ${exit.x.toFixed(2)} ${end.y.toFixed(2)}`,
     `L ${end.x.toFixed(2)} ${end.y.toFixed(2)}`,
   ].join(" ");
 }
@@ -283,7 +394,7 @@ function AnatomyConnectionLayer({
       if (!root) return;
 
       const rootRect = root.getBoundingClientRect();
-      const nextPaths = slotStates
+      const routeItems = slotStates
         .map((state) => {
           const nodeElement = nodeRefs.current.get(state.id);
           const cardElement = slotCardRefs.current.get(state.id);
@@ -292,16 +403,25 @@ function AnatomyConnectionLayer({
           const node = getElementCenter(nodeElement, rootRect);
           const card = getElementCenter(cardElement, rootRect);
           const cardEdgeX = node.x >= card.x
-            ? card.rect.right - rootRect.left
-            : card.rect.left - rootRect.left;
+            ? card.localRect.right
+            : card.localRect.left;
           const end = { x: cardEdgeX, y: card.y };
 
           return {
             ...state,
-            d: buildConnectorPath(node, end, rootRect.height),
+            node,
+            end,
           };
         })
         .filter(Boolean);
+
+      const nextPaths = assignNodePorts(routeItems).map((item) => {
+        const { node, end, port, exitDistance, crossOffset, ...state } = item;
+        return {
+          ...state,
+          d: buildConnectorPath({ node, end, port, exitDistance, crossOffset }),
+        };
+      });
 
       setLayout({
         width: Math.max(1, rootRect.width),
@@ -552,6 +672,68 @@ function GraftActionPanel({ composerStarted, onForgeMonster, onOpenExport, onSta
       >
         <RotateCcw aria-hidden="true" />
         <span>Start Over</span>
+      </button>
+    </section>
+  );
+}
+
+function ChassisFlowActionPanel({ onPickTemplate, onSetStageMode }) {
+  return (
+    <section className="monster-frame-info-card monster-graft-action-card" aria-label="Chassis flow actions">
+      <button
+        className="monster-graft-action-btn tooltip-btn"
+        type="button"
+        aria-label="Open Templates"
+        data-key="tooltip-generic"
+        data-tooltip="Open monster templates"
+        data-tooltip-description="Return to the template picker and choose a ready-made monster frame."
+        onClick={onPickTemplate}
+      >
+        <Sparkles aria-hidden="true" />
+        <span>Templates</span>
+      </button>
+      <button
+        className="monster-graft-action-btn is-primary tooltip-btn"
+        type="button"
+        aria-label="Grafts"
+        data-key="tooltip-generic"
+        data-tooltip="Grafts"
+        data-tooltip-description="Keep this chassis and move to the graft slots."
+        onClick={() => onSetStageMode?.("grafts")}
+      >
+        <ChevronRight aria-hidden="true" />
+        <span>Grafts</span>
+      </button>
+    </section>
+  );
+}
+
+function GraftFlowActionPanel({ onSetStageMode, onOpenExport }) {
+  return (
+    <section className="monster-frame-info-card monster-graft-action-card" aria-label="Graft flow actions">
+      <button
+        className="monster-graft-action-btn tooltip-btn"
+        type="button"
+        aria-label="Chassis"
+        data-key="tooltip-generic"
+        data-tooltip="Chassis"
+        data-tooltip-description="Return to the chassis controls without clearing the current grafts."
+        onClick={() => onSetStageMode?.("frame")}
+      >
+        <SlidersHorizontal aria-hidden="true" />
+        <span>Chassis</span>
+      </button>
+      <button
+        className="monster-graft-action-btn is-primary tooltip-btn"
+        type="button"
+        aria-label="Export"
+        data-key="tooltip-generic"
+        data-tooltip="Export"
+        data-tooltip-description="Open the export-ready stat block."
+        onClick={onOpenExport}
+      >
+        <FileText aria-hidden="true" />
+        <span>Export</span>
       </button>
     </section>
   );
@@ -1059,8 +1241,6 @@ function FrameControls({
   setTempoProfileId,
   setDangerId,
   setActivePresetId,
-  onPickTemplate,
-  onSetStageMode,
 }) {
   const setFrameValue = (setter, value) => {
     setter(value);
@@ -1172,32 +1352,6 @@ function FrameControls({
         </div>
       </section>
 
-      <section className="monster-frame-info-card monster-graft-action-card" aria-label="Chassis flow actions">
-        <button
-          className="monster-graft-action-btn tooltip-btn"
-          type="button"
-          aria-label="Open Templates"
-          data-key="tooltip-generic"
-          data-tooltip="Open monster templates"
-          data-tooltip-description="Return to the template picker and choose a ready-made monster frame."
-          onClick={onPickTemplate}
-        >
-          <Sparkles aria-hidden="true" />
-          <span>Templates</span>
-        </button>
-        <button
-          className="monster-graft-action-btn is-primary tooltip-btn"
-          type="button"
-          aria-label="Complete Chassis"
-          data-key="tooltip-generic"
-          data-tooltip="Complete chassis"
-          data-tooltip-description="Keep this chassis and move to the graft slots."
-          onClick={() => onSetStageMode?.("grafts")}
-        >
-          <ChevronRight aria-hidden="true" />
-          <span>Complete Chassis</span>
-        </button>
-      </section>
     </aside>
   );
 }
@@ -1248,7 +1402,6 @@ function GraftInfoPanel({
   onMonsterNameChange,
   composerStarted,
   onForgeMonster,
-  onOpenComponents,
   onOpenExport,
   onStartOver,
   creatureType,
@@ -1278,14 +1431,6 @@ function GraftInfoPanel({
         <em>{creatureType.label} · {category} · CR {targetCr}</em>
       </section>
 
-      <GraftActionPanel
-        composerStarted={composerStarted}
-        onForgeMonster={onForgeMonster}
-        onOpenComponents={onOpenComponents}
-        onOpenExport={onOpenExport}
-        onStartOver={onStartOver}
-      />
-
       <section className="monster-frame-info-card">
         <div className="monster-frame-info-grid">
           <FrameSummaryRow label="Role" value={role.label} />
@@ -1310,6 +1455,12 @@ function GraftInfoPanel({
         <FrameMeter label="Pressure" value={computed.pressure} max={computed.budget} />
         <FrameMeter label="Complexity" value={computed.complexity} max={computed.complexityCap} />
       </section>
+      <GraftActionPanel
+        composerStarted={composerStarted}
+        onForgeMonster={onForgeMonster}
+        onOpenExport={onOpenExport}
+        onStartOver={onStartOver}
+      />
     </aside>
   );
 }
@@ -1526,8 +1677,6 @@ export function MonsterSilhouetteMap({
                   setTempoProfileId={setTempoProfileId}
                   setDangerId={setDangerId}
                   setActivePresetId={setActivePresetId}
-                  onPickTemplate={onPickTemplate}
-                  onSetStageMode={onSetStageMode}
                 />
                 {renderStageCenter()}
                 <FrameInfoPanel
@@ -1542,6 +1691,8 @@ export function MonsterSilhouetteMap({
                   monsterTier={safeMonsterTier}
                   tempoProfile={safeTempoProfile}
                   danger={safeDanger}
+                  onPickTemplate={onPickTemplate}
+                  onSetStageMode={onSetStageMode}
                 />
               </div>
             ) : (
@@ -1575,32 +1726,6 @@ export function MonsterSilhouetteMap({
                   <div className="anatomy-stage__slot-stack">
                     {["body", "attack", "mind", "twist", "movement", "horror", "weakness", "death", ...ANATOMY_BOTTOM_SLOT_IDS].map(renderSlotCard)}
                   </div>
-                  <section className="monster-frame-info-card monster-graft-action-card" aria-label="Graft flow actions">
-                    <button
-                      className="monster-graft-action-btn tooltip-btn"
-                      type="button"
-                      aria-label="Back to Chassis"
-                      data-key="tooltip-generic"
-                      data-tooltip="Back to chassis"
-                      data-tooltip-description="Return to the chassis controls without clearing the current grafts."
-                      onClick={() => onSetStageMode?.("frame")}
-                    >
-                      <SlidersHorizontal aria-hidden="true" />
-                      <span>Back to Chassis</span>
-                    </button>
-                    <button
-                      className="monster-graft-action-btn is-primary tooltip-btn"
-                      type="button"
-                      aria-label="Continue to Export"
-                      data-key="tooltip-generic"
-                      data-tooltip="Continue to export"
-                      data-tooltip-description="Open the export-ready stat block."
-                      onClick={onOpenExport}
-                    >
-                      <FileText aria-hidden="true" />
-                      <span>Continue to Export</span>
-                    </button>
-                  </section>
                 </aside>
 
                 {hasComponentNavigator ? (
@@ -1620,9 +1745,9 @@ export function MonsterSilhouetteMap({
                   onMonsterNameChange={onMonsterNameChange}
                   composerStarted={composerStarted}
                   onForgeMonster={onForgeMonster}
-                  onOpenComponents={onOpenComponents}
                   onOpenExport={onOpenExport}
                   onStartOver={onStartOver}
+                  onSetStageMode={onSetStageMode}
                   creatureType={safeCreatureType}
                   category={category}
                   role={safeRole}

@@ -2864,12 +2864,6 @@
   filter: drop-shadow(0 0 5px rgba(190, 64, 82, 0.55));
 }
 
-.monster-shell .monster-silhouette-connector.is-guided:not(.is-active) {
-  stroke: rgba(190, 64, 82, 0.58);
-  stroke-dasharray: 4 4;
-  stroke-width: 0.22;
-}
-
 .monster-shell .monster-silhouette-svg {
   position: absolute;
   inset: 22px 50%;
@@ -3022,14 +3016,6 @@
 .monster-shell .monster-silhouette-node svg {
   width: 14px;
   height: 14px;
-}
-
-.monster-shell .monster-silhouette-node.is-guided:not(.is-active) {
-  animation: guidedSlotPulse 1.8s ease-in-out infinite;
-}
-
-.monster-shell .monster-silhouette-slot-card.is-guided:not(.is-active) {
-  animation: guidedSlotPulse 1.8s ease-in-out infinite;
 }
 
 .monster-shell .monster-silhouette-node.is-filled {
@@ -4051,12 +4037,6 @@
   align-items: stretch;
 }
 
-.monster-shell .build-slot.is-guided:not(.active) {
-  animation: guidedSlotPulse 1.8s ease-in-out infinite;
-  border-color: rgba(190, 64, 82, 0.46);
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.08), 0 0 24px rgba(122, 26, 40, 0.2), inset 0 1px 0 rgba(255, 238, 242, 0.04);
-}
-
 .monster-shell .build-slot.has-items {
   min-height: 124px;
 }
@@ -4368,13 +4348,6 @@
 }
 
 .monster-shell .monster-silhouette-node.is-active {
-  border-color: rgba(190, 64, 82, 0.56);
-  background: rgba(95, 7, 22, 0.34);
-  color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 24px rgba(122, 26, 40, 0.3);
-}
-
-.monster-shell .monster-silhouette-node.is-guided {
   border-color: rgba(190, 64, 82, 0.56);
   background: rgba(95, 7, 22, 0.34);
   color: #fff0f2;
@@ -4992,13 +4965,6 @@
 
 
 .monster-shell .monster-silhouette-slot-card.is-active {
-  border-color: var(--cruor-ui-card-border-color-active);
-  background: var(--cruor-ui-card-bg-active);
-  color: #fff0f2;
-  box-shadow: var(--cruor-ui-card-shadow-active);
-}
-
-.monster-shell .monster-silhouette-slot-card.is-guided {
   border-color: var(--cruor-ui-card-border-color-active);
   background: var(--cruor-ui-card-bg-active);
   color: #fff0f2;

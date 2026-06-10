@@ -2390,10 +2390,15 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
                 guidedFlowPanel={(
                   <GuidedFlowPanel
                     guidedFlow={guidedFlow}
+                    stageMode={composerStageMode}
                     onOpenStart={openTemplatePicker}
                     onFocusSlot={focusSlotWithoutNavigator}
                     onOpenBalance={() => setViewMode(uiMode === "debug" ? "balance" : "export")}
                     onOpenExport={() => setViewMode("export")}
+                    onOpenTemplates={openTemplatePicker}
+                    onOpenChassis={() => setComposerStageMode("frame")}
+                    onOpenGrafts={() => setComposerStageMode("grafts")}
+                    onOpenStageExport={() => setViewMode("export")}
                   />
                 )}
               />

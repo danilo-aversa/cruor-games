@@ -64,10 +64,15 @@ function getWarningSeverity(warning) {
 
 export function GuidedFlowPanel({
   guidedFlow,
+  stageMode: stageModeProp = "",
   onOpenStart,
   onFocusSlot,
   onOpenBalance,
   onOpenExport,
+  onOpenTemplates,
+  onOpenChassis,
+  onOpenGrafts,
+  onOpenStageExport,
 }) {
   const [dockOpen, setDockOpen] = useState(readStoredDockState);
   const dockRef = useRef(null);
@@ -78,7 +83,8 @@ export function GuidedFlowPanel({
   const warnings = guidedFlow.prioritizedWarnings || [];
   const readiness = guidedFlow.readiness || [];
   const nextAction = guidedFlow.nextAction || null;
-  const screenLabel = getActiveScreenLabel(activeStep, stageMode);
+  const effectiveStageMode = stageModeProp || stageMode;
+  const screenLabel = getActiveScreenLabel(activeStep, effectiveStageMode);
   const drawerPanelId = "monsterFlowDrawerPanel";
 
   const activeStepIndex = Math.max(
@@ -106,10 +112,15 @@ export function GuidedFlowPanel({
   }, [dockOpen]);
 
   useEffect(() => {
+    if (stageModeProp) {
+      setStageMode(stageModeProp);
+      return;
+    }
+
     const stage = dockRef.current?.closest?.(".monster-silhouette-stage");
     const nextStageMode = stage?.getAttribute?.("data-stage-mode") || "";
     setStageMode(nextStageMode);
-  });
+  }, [stageModeProp]);
 
   function handleStepClick(step) {
     if (step.disabled) return;
@@ -139,6 +150,34 @@ export function GuidedFlowPanel({
     if (action.kind === "review") onOpenBalance?.();
     if (action.kind === "export") onOpenExport?.();
   }
+
+  const hasStageNavigation = effectiveStageMode === "frame" || effectiveStageMode === "grafts";
+  const previousStageAction = effectiveStageMode === "grafts"
+    ? {
+        label: "Chassis",
+        tooltip: "Previous step: Chassis",
+        description: "Return to the chassis controls without clearing the current grafts.",
+        onClick: onOpenChassis,
+      }
+    : {
+        label: "Templates",
+        tooltip: "Previous step: Templates",
+        description: "Return to the template picker and choose a ready-made monster frame.",
+        onClick: onOpenTemplates || onOpenStart,
+      };
+  const nextStageAction = effectiveStageMode === "grafts"
+    ? {
+        label: "Export",
+        tooltip: "Next step: Export",
+        description: "Open the export-ready stat block.",
+        onClick: onOpenStageExport || onOpenExport,
+      }
+    : {
+        label: "Grafts",
+        tooltip: "Next step: Grafts",
+        description: "Keep this chassis and move to the graft slots.",
+        onClick: onOpenGrafts,
+      };
 
   return (
     <section
@@ -260,23 +299,55 @@ export function GuidedFlowPanel({
         </div>
       </div>
 
-      <button
-        className="guided-flow-drawer__toggle"
-        type="button"
-        aria-expanded={dockOpen}
-        aria-controls={drawerPanelId}
-        onClick={() => setDockOpen((current) => !current)}
-      >
-        <span className="guided-flow-drawer__toggle-main">
-          <strong>{screenLabel}</strong>
-          <em>{nextAction?.label || nextAction?.title || "Next Action"}</em>
-        </span>
-        <span className="guided-flow-drawer__toggle-meta">
-          <span>{progressPercent}%</span>
-          <span>{warnings.length} warnings</span>
-        </span>
-        {dockOpen ? <ChevronDown aria-hidden="true" /> : <ChevronUp aria-hidden="true" />}
-      </button>
+      <div className="guided-flow-drawer__toggle-row" data-stage-navigation={hasStageNavigation ? "true" : "false"}>
+        {hasStageNavigation && (
+          <button
+            className="guided-flow-drawer__stage-btn guided-flow-drawer__stage-btn--previous tooltip-btn"
+            type="button"
+            aria-label={previousStageAction.label}
+            data-key="tooltip-generic"
+            data-tooltip={previousStageAction.tooltip}
+            data-tooltip-description={previousStageAction.description}
+            onClick={previousStageAction.onClick}
+          >
+            <ChevronLeft aria-hidden="true" />
+            <span>{previousStageAction.label}</span>
+          </button>
+        )}
+
+        <button
+          className="guided-flow-drawer__toggle"
+          type="button"
+          aria-expanded={dockOpen}
+          aria-controls={drawerPanelId}
+          onClick={() => setDockOpen((current) => !current)}
+        >
+          <span className="guided-flow-drawer__toggle-main">
+            <strong>{screenLabel}</strong>
+            <em>{nextAction?.label || nextAction?.title || "Next Action"}</em>
+          </span>
+          <span className="guided-flow-drawer__toggle-meta">
+            <span>{progressPercent}%</span>
+            <span>{warnings.length} warnings</span>
+          </span>
+          {dockOpen ? <ChevronDown aria-hidden="true" /> : <ChevronUp aria-hidden="true" />}
+        </button>
+
+        {hasStageNavigation && (
+          <button
+            className="guided-flow-drawer__stage-btn guided-flow-drawer__stage-btn--next tooltip-btn"
+            type="button"
+            aria-label={nextStageAction.label}
+            data-key="tooltip-generic"
+            data-tooltip={nextStageAction.tooltip}
+            data-tooltip-description={nextStageAction.description}
+            onClick={nextStageAction.onClick}
+          >
+            <span>{nextStageAction.label}</span>
+            <ChevronRight aria-hidden="true" />
+          </button>
+        )}
+      </div>
     </section>
   );
 }

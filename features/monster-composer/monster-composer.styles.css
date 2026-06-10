@@ -2733,11 +2733,12 @@
   filter: drop-shadow(0 0 5px rgba(190, 64, 82, 0.55));
 }
 
-.monster-shell .monster-silhouette-connector.is-guided:not(.is-active) {
+/*.monster-shell .monster-silhouette-connector.is-guided:not(.is-active) {
   stroke: rgba(190, 64, 82, 0.58);
   stroke-dasharray: 4 4;
   stroke-width: 0.22;
 }
+*/
 
 .monster-shell .monster-silhouette-svg {
   position: absolute;
@@ -2893,6 +2894,7 @@
   height: 14px;
 }
 
+/*
 .monster-shell .monster-silhouette-node.is-guided:not(.is-active) {
   animation: guidedSlotPulse 1.8s ease-in-out infinite;
 }
@@ -2900,6 +2902,7 @@
 .monster-shell .monster-silhouette-slot-card.is-guided:not(.is-active) {
   animation: guidedSlotPulse 1.8s ease-in-out infinite;
 }
+*/
 
 .monster-shell .monster-silhouette-node.is-filled {
   border-color: rgba(143, 150, 148, 0.34);
@@ -3800,11 +3803,13 @@
   align-items: stretch;
 }
 
+/*
 .monster-shell .build-slot.is-guided:not(.active) {
   animation: guidedSlotPulse 1.8s ease-in-out infinite;
   border-color: rgba(190, 64, 82, 0.46);
   box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.08), 0 0 24px rgba(122, 26, 40, 0.2), inset 0 1px 0 rgba(255, 238, 242, 0.04);
 }
+*/
 
 .monster-shell .build-slot.has-items {
   min-height: 124px;
@@ -4112,12 +4117,14 @@
   box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 24px rgba(122, 26, 40, 0.3);
 }
 
+/*
 .monster-shell .monster-silhouette-node.is-guided {
   border-color: rgba(190, 64, 82, 0.56);
   background: rgba(95, 7, 22, 0.34);
   color: #fff0f2;
   box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 24px rgba(122, 26, 40, 0.3);
 }
+*/
 
 .monster-shell .monster-silhouette-node:hover {
   border-color: rgba(190, 64, 82, 0.56);
@@ -4732,12 +4739,14 @@
   box-shadow: var(--cruor-ui-card-shadow-active);
 }
 
+/*
 .monster-shell .monster-silhouette-slot-card.is-guided {
   border-color: var(--cruor-ui-card-border-active);
   background: var(--cruor-ui-card-bg-active);
   color: #fff0f2;
   box-shadow: var(--cruor-ui-card-shadow-active);
 }
+*/
 
 .monster-shell .monster-silhouette-slot-card:hover {
   border-color: var(--cruor-ui-card-border-active);
@@ -7394,108 +7403,140 @@
   box-shadow: 0 0 18px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.04);
 }
 
+/* Monster Graft Actions — consolidated single source of truth */
+/* Build actions are icon-only; chassis/graft flow actions remain icon + text. */
 .monster-shell .monster-graft-action-card {
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: repeat(3, 40px);
-  grid-auto-rows: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  align-content: flex-start;
+  align-items: stretch;
   align-self: start;
-  align-items: center;
-  align-content: center;
-  justify-content: start;
-  min-height: 62px;
+  justify-content: stretch;
+  width: 100%;
   height: auto;
-  max-height: 68px;
+  min-height: 0;
+  max-height: none;
   gap: 8px;
+  margin-top: 0;
+  padding: 10px;
+}
+
+.monster-shell .monster-frame-controls .monster-graft-action-card,
+.monster-shell .anatomy-stage__column--left > .monster-graft-action-card {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.monster-shell .monster-graft-action-card[aria-label="Build actions"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.monster-shell .anatomy-stage__grid--grafts .monster-graft-action-card[aria-label="Graft flow actions"] {
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: 0;
+}
+
+.monster-shell .anatomy-stage__grid--grafts .monster-graft-info > .monster-graft-action-card {
+  align-content: flex-start;
+  align-self: start;
+  height: auto;
+  max-height: none;
+  min-height: 0;
+  margin-top: 0;
   padding-block: 10px;
 }
 
-.monster-shell .monster-graft-action-btn {
-  display: inline-grid;
-  grid-template-columns: 1fr;
-  place-items: center;
-  align-items: center;
-  justify-items: center;
-  width: 40px;
-  min-width: 40px;
-  height: 40px;
-  min-height: 40px;
-  gap: 8px;
-  border: 1px solid var(--cruor-button-border, rgba(95, 7, 22, 0.58));
-  background: linear-gradient(180deg, rgba(255, 238, 242, 0.025), transparent), rgba(0, 0, 0, 0.22);
-  color: rgba(240, 215, 220, 0.72);
-  padding: 0;
-  text-align: center;
-  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035);
-  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+.monster-shell .anatomy-stage__grid--grafts .monster-graft-action-card {
+  background: linear-gradient(180deg, rgba(255, 238, 242, 0.035), transparent 70%), #050506;
 }
 
-.monster-shell .monster-graft-action-btn svg {
+.monster-shell .monster-graft-action-card .monster-graft-action-btn {
+  appearance: none;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  height: auto;
+  border: 1px solid rgba(95, 7, 22, 0.56);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.07), transparent 68%), rgba(0, 0, 0, 0.32);
+  color: #c8a2a8;
+  padding: 0 12px;
+  text-align: center;
+  box-shadow: none;
+  transform: none;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+}
+
+.monster-shell .monster-graft-action-card[aria-label="Build actions"] .monster-graft-action-btn {
+  min-height: 40px;
+  padding: 0;
+}
+
+.monster-shell .monster-graft-action-card[aria-label="Graft flow actions"] .monster-graft-action-btn,
+.monster-shell .monster-graft-action-card[aria-label="Chassis flow actions"] .monster-graft-action-btn {
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 12px;
+}
+
+.monster-shell .monster-graft-action-card .monster-graft-action-btn svg {
+  flex: 0 0 auto;
   width: 16px;
   height: 16px;
-  color: currentColor;
+  color: #b33b4e;
 }
 
-.monster-shell .monster-graft-action-btn span {
+.monster-shell .monster-graft-action-card .monster-graft-action-btn span {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
   overflow: hidden;
-  font-size: 10px;
-  font-weight: 950;
-  letter-spacing: 0.085em;
-  line-height: 1;
   text-overflow: ellipsis;
-  text-transform: uppercase;
   white-space: nowrap;
+}
+
+.monster-shell .monster-graft-action-card[aria-label="Build actions"] .monster-graft-action-btn span {
   display: none;
 }
 
-.monster-shell .monster-graft-action-btn.is-primary {
-  border-color: var(--cruor-button-border-hover, rgba(190, 64, 82, 0.78));
-  background: radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.18), transparent 68%), linear-gradient(180deg, rgba(30, 7, 11, 0.94), rgba(10, 5, 7, 0.88)), rgba(8, 5, 6, 0.86);
+.monster-shell .monster-graft-action-card .monster-graft-action-btn:hover,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn:focus-visible,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary {
+  border-color: rgba(190, 64, 82, 0.78);
+  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
   color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
   outline: none;
+  transform: translateY(-1px);
 }
 
-.monster-shell .monster-graft-action-btn:focus-visible {
-  border-color: var(--cruor-button-border-hover, rgba(190, 64, 82, 0.78));
-  background: radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.18), transparent 68%), linear-gradient(180deg, rgba(30, 7, 11, 0.94), rgba(10, 5, 7, 0.88)), rgba(8, 5, 6, 0.86);
-  color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
-  outline: none;
+.monster-shell .monster-graft-action-card .monster-graft-action-btn:hover svg,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn:focus-visible svg,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary svg {
+  color: #f0b9c2;
 }
 
-.monster-shell .monster-graft-action-btn:hover {
-  border-color: var(--cruor-button-border-hover, rgba(190, 64, 82, 0.78));
-  background: radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.18), transparent 68%), linear-gradient(180deg, rgba(30, 7, 11, 0.94), rgba(10, 5, 7, 0.88)), rgba(8, 5, 6, 0.86);
-  color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
-  outline: none;
-}
-
-.monster-shell .monster-graft-action-btn.is-disabled {
+.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-disabled,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn[aria-disabled="true"] {
   cursor: not-allowed;
-  opacity: 0.54;
-  filter: saturate(0.72);
+  filter: grayscale(0.85);
+  opacity: 0.42;
 }
 
-.monster-shell .monster-graft-action-btn[aria-disabled="true"] {
-  cursor: not-allowed;
-  opacity: 0.54;
-  filter: saturate(0.72);
-}
-
-.monster-shell .monster-graft-action-btn.is-disabled:hover {
-  border-color: rgba(255, 238, 242, 0.09);
-  background: rgba(255, 255, 255, 0.022);
-  color: rgba(238, 238, 238, 0.58);
-  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035);
-}
-
-.monster-shell .monster-graft-action-btn[aria-disabled="true"]:hover {
-  border-color: rgba(255, 238, 242, 0.09);
-  background: rgba(255, 255, 255, 0.022);
-  color: rgba(238, 238, 238, 0.58);
-  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035);
+.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-disabled:hover,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn[aria-disabled="true"]:hover {
+  border-color: rgba(95, 7, 22, 0.56);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.07), transparent 68%), rgba(0, 0, 0, 0.32);
+  color: #c8a2a8;
+  box-shadow: none;
+  transform: none;
 }
 
 .monster-shell:has(.monster-silhouette-stage.anatomy-stage) {
@@ -10249,16 +10290,6 @@
   .monster-shell .monster-topbar__control-row > .monster-canvas-mode-row {
     order: 2;
   }
-
-  .monster-shell .monster-graft-action-card {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .monster-shell .monster-graft-action-btn {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    text-align: center;
-  }
 }
 
 @media (min-width: 1600px) {
@@ -10339,56 +10370,25 @@
   }
 }
 
-/* --------------------------------------------------------------------------
- * Monster Composer — Canonical stability layer
- * --------------------------------------------------------------------------
- * Keep this section last. It contains only context-specific final layout rules:
- * graft navigator placement, live export popout, persistent non-composer view
- * navigation, and scroll behavior for Balance / Run / Stat Block.
+/*
+ * Monster Composer — Consolidated final stability layer
+ * Replaces accumulated follow-up/fix blocks with one cascade-equivalent layer.
  */
-
-/* Grafts navigator: desktop drawer floats beside the left column, so the
-   center silhouette remains aligned with the true anatomy stage centerline. */
-.monster-shell .anatomy-stage__grid--grafts.has-navigator {
-  --stage-navigator-width: clamp(320px, 28vw, 430px);
-  --stage-center-width: calc(
-    100vw - var(--stage-left-width) - var(--stage-right-width) -
-    var(--stage-pad) - var(--stage-pad) - var(--stage-gap) - var(--stage-gap)
-  );
-  grid-template-columns:
-    var(--stage-left-width)
-    var(--stage-center-column-width, minmax(0, 1fr))
-    var(--stage-right-width);
-  grid-template-areas: "left center right";
-  align-items: stretch;
-}
 
 .monster-shell .anatomy-stage__navigator-column {
   display: grid;
-  min-width: 0;
   min-height: 0;
+  min-width: 0;
   pointer-events: auto;
-}
-
-.monster-shell .anatomy-stage__grid--grafts.has-navigator .anatomy-stage__navigator-column {
-  grid-area: auto;
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: calc(var(--stage-left-width) + var(--stage-gap));
-  z-index: 90;
-  width: var(--stage-navigator-width);
-  max-width: min(var(--stage-navigator-width), calc(100% - var(--stage-left-width) - var(--stage-gap)));
-  height: 100%;
-  max-height: 100%;
 }
 
 .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer,
 .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] {
-  width: 100%;
+  filter: none;
+  height: 100%;
   max-width: 100%;
   min-width: 0;
-  height: 100%;
-  filter: none;
+  width: 100%;
 }
 
 .monster-shell .anatomy-stage__navigator-column .component-navigator-modal,
@@ -10396,21 +10396,6 @@
 .monster-shell .anatomy-stage__navigator-column .component-navigator-modal__panel {
   height: 100%;
   max-height: none;
-}
-
-.monster-shell .anatomy-stage__grid--grafts.has-navigator .anatomy-stage__center {
-  grid-area: center;
-  z-index: 1;
-  justify-self: stretch;
-}
-
-.monster-shell .anatomy-stage__grid--grafts.has-navigator .anatomy-stage__silhouette-layer {
-  margin-inline: auto;
-  transform: none;
-}
-
-.monster-shell .anatomy-stage__grid--grafts .anatomy-stage__center {
-  pointer-events: none;
 }
 
 .monster-shell .anatomy-stage__grid--grafts .anatomy-stage__center .monster-silhouette-svg,
@@ -10422,12 +10407,12 @@
 }
 
 .monster-shell .anatomy-stage__grid--grafts .monster-graft-info {
-  grid-template-rows: none;
-  grid-auto-rows: auto;
   align-content: start;
   gap: 10px;
-  overflow-y: auto;
+  grid-auto-rows: auto;
+  grid-template-rows: none;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .monster-shell .anatomy-stage__grid--grafts .monster-graft-info > .monster-frame-info-card {
@@ -10439,16 +10424,6 @@
   min-height: 92px;
 }
 
-.monster-shell .anatomy-stage__grid--grafts .monster-graft-info > .monster-graft-action-card {
-  min-height: 0;
-  max-height: none;
-  height: auto;
-  align-content: start;
-  align-self: start;
-  padding-block: 10px;
-}
-
-/* Component details: keep metadata popovers readable above nearby cards. */
 .monster-shell .component-navigator-modal__list .component-card.details-open,
 .monster-shell .component-navigator-modal__list .component-card:has(.component-details:hover),
 .monster-shell .component-navigator-modal__list .component-card:has(.component-details:focus-within),
@@ -10460,37 +10435,36 @@
 
 .monster-shell .component-navigator-modal__list .component-details__panel,
 .monster-shell .component-navigator-modal__list .component-details > .meta-list {
-  z-index: 1210;
   box-sizing: border-box;
+  z-index: 1210;
 }
 
 .monster-shell .component-navigator-modal__list .component-card.details-open .component-details__panel,
 .monster-shell .component-navigator-modal__list .component-details:hover .component-details__panel,
 .monster-shell .component-navigator-modal__list .component-details:focus-within .component-details__panel {
   opacity: 1;
-  visibility: visible;
   pointer-events: auto;
+  visibility: visible;
 }
 
-/* Debug-only live export popout. */
 .monster-shell .monster-debug-tools {
-  display: inline-flex;
   align-items: center;
-  gap: 7px;
+  display: inline-flex;
   flex: 0 0 auto;
+  gap: 7px;
 }
 
 .monster-shell .monster-debug-popout-tab {
-  min-width: 148px;
+  background: radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.16), transparent 68%), rgba(95, 7, 22, 0.28);
   border-color: rgba(190, 64, 82, 0.5);
   color: #fff0f2;
-  background: radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.16), transparent 68%), rgba(95, 7, 22, 0.28);
+  min-width: 148px;
 }
 
 .monster-shell .monster-debug-popout-tab.is-active {
-  border-color: rgba(190, 64, 82, 0.78);
   background: radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.22), transparent 68%),
     linear-gradient(180deg, rgba(30, 7, 11, 0.94), rgba(10, 5, 7, 0.9));
+  border-color: rgba(190, 64, 82, 0.78);
 }
 
 .monster-shell .monster-export-popout-shell {
@@ -10500,19 +10474,19 @@
 }
 
 .monster-shell .monster-export-popout-header {
+  -webkit-backdrop-filter: blur(18px) saturate(126%);
+  align-items: center;
+  backdrop-filter: blur(18px) saturate(126%);
+  background: radial-gradient(circle at 0% 0%, rgba(190, 64, 82, 0.12), transparent 18rem), rgba(7, 5, 6, 0.94);
+  border: 1px solid rgba(240, 185, 194, 0.16);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 238, 242, 0.045);
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding: 10px 12px;
   position: sticky;
   top: 0;
   z-index: 20;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border: 1px solid rgba(240, 185, 194, 0.16);
-  background: radial-gradient(circle at 0% 0%, rgba(190, 64, 82, 0.12), transparent 18rem), rgba(7, 5, 6, 0.94);
-  padding: 10px 12px;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 238, 242, 0.045);
-  backdrop-filter: blur(18px) saturate(126%);
-  -webkit-backdrop-filter: blur(18px) saturate(126%);
 }
 
 .monster-shell .monster-export-popout-header span {
@@ -10524,70 +10498,50 @@
 }
 
 .monster-shell .monster-export-popout-header strong {
-  overflow: hidden;
   color: var(--text);
   font-family: var(--display);
   font-size: clamp(18px, 2.5vw, 28px);
   font-weight: 900;
   line-height: 0.95;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .monster-shell .monster-export-popout-header button {
-  min-height: 34px;
-  border: 1px solid var(--cruor-ui-control-border);
   background: var(--cruor-ui-control-bg);
+  border: 1px solid var(--cruor-ui-control-border);
   color: var(--cruor-ui-control-text);
-  padding: 0 12px;
   font-size: 10px;
   font-weight: 950;
   letter-spacing: 0.08em;
+  min-height: 34px;
+  padding: 0 12px;
   text-transform: uppercase;
 }
 
 .monster-shell .monster-export-popout-header button:hover {
-  border-color: var(--cruor-ui-control-border-active);
   background: var(--cruor-ui-control-bg-active);
+  border-color: var(--cruor-ui-control-border-active);
   color: var(--cruor-ui-control-text-active);
 }
 
 .monster-shell .monster-export-popout-shell .export-workbench {
-  width: 100%;
   margin: 0;
-}
-
-/* Persistent navigation for Balance, Run, and Stat Block views. */
-.monster-shell .monster-persistent-view-toolbar {
-  position: sticky;
-  top: calc(var(--cruor-shell-bar-height, 52px) + 8px);
-  z-index: calc(var(--cruor-z-topbar, 70) + 5);
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: min(var(--monster-workspace-max), 100%);
-  margin: 0 auto 12px;
-  border: 1px solid rgba(240, 185, 194, 0.16);
-  background: radial-gradient(circle at 0% 0%, rgba(190, 64, 82, 0.12), transparent 18rem), rgba(7, 5, 6, 0.94);
-  padding: 9px;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 238, 242, 0.045);
-  backdrop-filter: blur(18px) saturate(126%);
-  -webkit-backdrop-filter: blur(18px) saturate(126%);
+  width: 100%;
 }
 
 .monster-shell .monster-persistent-view-toolbar__left {
-  display: flex;
   align-items: center;
+  display: flex;
   gap: 9px;
   min-width: 0;
 }
 
 .monster-shell .monster-persistent-view-toolbar__tabs {
+  align-items: center;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   gap: 6px;
   min-width: 0;
 }
@@ -10595,17 +10549,17 @@
 .monster-shell .monster-persistent-view-toolbar__back,
 .monster-shell .monster-persistent-view-toolbar__tab,
 .monster-shell .monster-persistent-view-toolbar__debug {
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-height: 34px;
-  border: 1px solid rgba(95, 7, 22, 0.58);
   background: rgba(51, 3, 12, 0.22);
+  border: 1px solid rgba(95, 7, 22, 0.58);
   color: #c8a2a8;
-  padding: 0 11px;
+  display: inline-flex;
   font-size: 10px;
   font-weight: 950;
+  justify-content: center;
   letter-spacing: 0.075em;
+  min-height: 34px;
+  padding: 0 11px;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -10616,9 +10570,9 @@
 }
 
 .monster-shell .monster-persistent-view-toolbar__debug {
+  background: radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.18), transparent 68%), rgba(95, 7, 22, 0.34);
   border-color: rgba(190, 64, 82, 0.5);
   color: #fff0f2;
-  background: radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.18), transparent 68%), rgba(95, 7, 22, 0.34);
 }
 
 .monster-shell .monster-persistent-view-toolbar__back:hover,
@@ -10626,17 +10580,16 @@
 .monster-shell .monster-persistent-view-toolbar__tab.is-active,
 .monster-shell .monster-persistent-view-toolbar__debug:hover,
 .monster-shell .monster-persistent-view-toolbar__debug.is-active {
-  border-color: rgba(190, 64, 82, 0.78);
   background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), rgba(95, 7, 22, 0.42);
-  color: #fff0f2;
+  border-color: rgba(190, 64, 82, 0.78);
   box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 18px rgba(122, 26, 40, 0.2), inset 0 1px 0 rgba(255, 238, 242, 0.05);
+  color: #fff0f2;
 }
 
-/* Scrollable non-composer views. */
 .monster-shell[data-scrollable-view="true"] {
   overscroll-behavior: contain;
-  scrollbar-width: thin;
   scrollbar-color: rgba(122, 26, 40, 0.62) rgba(0, 0, 0, 0.22);
+  scrollbar-width: thin;
 }
 
 .monster-shell[data-scrollable-view="true"] .monster-workspace--scrollable-view {
@@ -10660,8 +10613,8 @@
 }
 
 .monster-shell[data-scrollable-view="true"]::-webkit-scrollbar {
-  width: 10px;
   height: 10px;
+  width: 10px;
 }
 
 .monster-shell[data-scrollable-view="true"]::-webkit-scrollbar-track {
@@ -10669,28 +10622,28 @@
 }
 
 .monster-shell[data-scrollable-view="true"]::-webkit-scrollbar-thumb {
-  border: 2px solid rgba(5, 5, 6, 0.96);
   background: linear-gradient(180deg, rgba(190, 64, 82, 0.72), rgba(95, 7, 22, 0.72));
+  border: 2px solid rgba(5, 5, 6, 0.96);
 }
 
 @media (max-width: 1180px) {
   .monster-shell .anatomy-stage__grid--grafts.has-navigator {
     --stage-center-width: calc(100vw - var(--stage-pad) - var(--stage-pad));
+    grid-template-areas: "left" "center" "right";
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: minmax(150px, auto) minmax(320px, 48vh) minmax(150px, auto);
-    grid-template-areas: "left" "center" "right";
     overflow: hidden;
   }
 
   .monster-shell .anatomy-stage__grid--grafts.has-navigator .anatomy-stage__navigator-column {
     grid-area: left;
-    position: relative;
     inset: auto;
-    width: 100%;
+    margin-bottom: 12px;
+    max-height: 52vh;
     max-width: 100%;
     min-height: 320px;
-    max-height: 52vh;
-    margin-bottom: 12px;
+    position: relative;
+    width: 100%;
   }
 }
 
@@ -10700,7 +10653,7 @@
   }
 
   .monster-shell .monster-persistent-view-toolbar,
-  .monster-shell .monster-persistent-view-toolbar__left {
+    .monster-shell .monster-persistent-view-toolbar__left {
     align-items: stretch;
     flex-direction: column;
   }
@@ -10711,35 +10664,31 @@
   }
 
   .monster-shell .monster-persistent-view-toolbar__back,
-  .monster-shell .monster-persistent-view-toolbar__tab,
-  .monster-shell .monster-persistent-view-toolbar__debug {
+    .monster-shell .monster-persistent-view-toolbar__tab,
+    .monster-shell .monster-persistent-view-toolbar__debug {
     width: 100%;
   }
 }
 
-/* --------------------------------------------------------------------------
- * Monster Composer — Dynamic anatomy node connections and chassis menu
- * -------------------------------------------------------------------------- */
-
 .monster-shell .anatomy-stage__connection-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
   height: 100%;
+  inset: 0;
   overflow: visible;
   pointer-events: none;
+  position: absolute;
+  width: 100%;
+  z-index: 0;
 }
 
 .monster-shell .monster-dynamic-connector {
+  cursor: pointer;
   fill: none;
+  pointer-events: stroke;
   stroke: rgba(255, 238, 242, 0.13);
-  stroke-width: 1.05;
   stroke-linecap: round;
   stroke-linejoin: miter;
+  stroke-width: 1.05;
   vector-effect: non-scaling-stroke;
-  pointer-events: stroke;
-  cursor: pointer;
 }
 
 .monster-shell .monster-dynamic-connector.is-filled {
@@ -10749,20 +10698,18 @@
 
 .monster-shell .monster-dynamic-connector.is-active,
 .monster-shell .monster-dynamic-connector.is-linked-hover {
+  filter: drop-shadow(0 0 5px rgba(190, 64, 82, 0.46));
   stroke: rgba(240, 185, 194, 0.82);
   stroke-width: 1.65;
-  filter: drop-shadow(0 0 5px rgba(190, 64, 82, 0.46));
 }
 
+/*
 .monster-shell .monster-dynamic-connector.is-guided:not(.is-active) {
   stroke: rgba(190, 64, 82, 0.58);
   stroke-dasharray: 6 6;
   stroke-width: 1.35;
 }
-
-.monster-shell .anatomy-stage__grid--grafts {
-  isolation: isolate;
-}
+*/
 
 .monster-shell .anatomy-stage__grid--grafts .anatomy-stage__column--left,
 .monster-shell .anatomy-stage__grid--grafts .anatomy-stage__center,
@@ -10771,67 +10718,49 @@
   position: relative;
 }
 
-.monster-shell .anatomy-stage__grid--grafts .anatomy-stage__center {
-  z-index: 2;
-}
-
-.monster-shell .anatomy-stage__grid--grafts .anatomy-stage__column--left,
-.monster-shell .anatomy-stage__grid--grafts .anatomy-stage__column--right {
-  z-index: 3;
-}
-
-.monster-shell .anatomy-stage__grid--grafts .anatomy-stage__navigator-column {
-  z-index: 4;
-}
-
-.monster-shell .anatomy-stage__grid--grafts .monster-silhouette-node,
-.monster-shell .anatomy-stage__grid--frame .monster-frame-node {
-  z-index: 30;
-}
-
 .monster-shell .anatomy-stage__silhouette-layer.has-chassis-menu-open .monster-silhouette-svg,
 .monster-shell .monster-silhouette-svg[aria-expanded="true"] {
-  opacity: 1;
   filter: drop-shadow(0 24px 42px rgba(0, 0, 0, 0.72)) drop-shadow(0 0 18px rgba(190, 64, 82, 0.34));
+  opacity: 1;
 }
 
 .monster-shell .anatomy-stage__center:has(.monster-chassis-menu) {
-  z-index: 3000;
   overflow: visible;
+  z-index: 3000;
 }
 
 .monster-shell .anatomy-stage__silhouette-layer.has-chassis-menu-open {
-  z-index: 3001;
   isolation: isolate;
+  z-index: 3001;
 }
 
 .monster-shell .monster-chassis-menu {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 5000;
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(18px) saturate(125%);
+  background: radial-gradient(circle at 12% 0%, rgba(190, 64, 82, 0.18), transparent 16rem), linear-gradient(180deg, rgba(10, 5, 7, 0.98), rgba(5, 4, 5, 0.96));
+  border: 1px solid rgba(240, 185, 194, 0.22);
+  box-shadow: 0 32px 88px rgba(0, 0, 0, 0.82), 0 0 0 1px rgba(255, 238, 242, 0.045), 0 0 42px rgba(122, 26, 40, 0.24), inset 0 1px 0 rgba(255, 238, 242, 0.055);
   display: grid;
   gap: 10px;
-  width: min(360px, calc(100% - 24px));
+  left: 50%;
   max-height: min(520px, calc(100% - 24px));
   overflow: auto;
-  transform: translate(-50%, -50%);
-  border: 1px solid rgba(240, 185, 194, 0.22);
-  background: radial-gradient(circle at 12% 0%, rgba(190, 64, 82, 0.18), transparent 16rem), linear-gradient(180deg, rgba(10, 5, 7, 0.98), rgba(5, 4, 5, 0.96));
   padding: 12px;
-  box-shadow: 0 32px 88px rgba(0, 0, 0, 0.82), 0 0 0 1px rgba(255, 238, 242, 0.045), 0 0 42px rgba(122, 26, 40, 0.24), inset 0 1px 0 rgba(255, 238, 242, 0.055);
-  backdrop-filter: blur(18px) saturate(125%);
-  -webkit-backdrop-filter: blur(18px) saturate(125%);
-  scrollbar-width: thin;
+  position: absolute;
   scrollbar-color: rgba(122, 26, 40, 0.62) rgba(0, 0, 0, 0.22);
+  scrollbar-width: thin;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(360px, calc(100% - 24px));
+  z-index: 5000;
 }
 
 .monster-shell .monster-chassis-menu__head {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
   border-bottom: 1px solid rgba(255, 238, 242, 0.075);
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
   padding-bottom: 9px;
 }
 
@@ -10845,10 +10774,10 @@
 }
 
 .monster-shell .monster-chassis-menu__head strong {
-  overflow: hidden;
   color: #fff0f2;
   font-size: 13px;
   font-weight: 950;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -10859,31 +10788,31 @@
 }
 
 .monster-shell .monster-chassis-family {
+  background: rgba(255, 255, 255, 0.018);
+  border: 1px solid rgba(255, 238, 242, 0.065);
   display: grid;
   gap: 6px;
-  border: 1px solid rgba(255, 238, 242, 0.065);
-  background: rgba(255, 255, 255, 0.018);
   padding: 8px;
 }
 
 .monster-shell .monster-chassis-family__trigger {
-  display: grid;
-  grid-template-columns: 18px minmax(0, 1fr) 14px;
   align-items: center;
-  gap: 8px;
-  width: 100%;
-  min-height: 30px;
-  border: 0;
   background: transparent;
+  border: 0;
   color: #c8a2a8;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 18px minmax(0, 1fr) 14px;
+  min-height: 30px;
   padding: 0;
   text-align: left;
+  width: 100%;
 }
 
 .monster-shell .monster-chassis-family__trigger svg {
-  width: 15px;
-  height: 15px;
   color: #b33b4e;
+  height: 15px;
+  width: 15px;
 }
 
 .monster-shell .monster-chassis-family__trigger.is-active span {
@@ -10904,34 +10833,34 @@
 
 .monster-shell .monster-chassis-variant,
 .monster-shell .monster-chassis-menu__views button {
-  min-height: 28px;
-  border: 1px solid rgba(95, 7, 22, 0.56);
   background: rgba(51, 3, 12, 0.22);
+  border: 1px solid rgba(95, 7, 22, 0.56);
   color: #c8a2a8;
-  padding: 0 9px;
   font-size: 10px;
   font-weight: 850;
+  min-height: 28px;
+  padding: 0 9px;
 }
 
 .monster-shell .monster-chassis-variant:hover:not(:disabled),
 .monster-shell .monster-chassis-variant.is-active,
 .monster-shell .monster-chassis-menu__views button:hover,
 .monster-shell .monster-chassis-menu__views button.is-active {
-  border-color: rgba(190, 64, 82, 0.72);
   background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), rgba(95, 7, 22, 0.42);
+  border-color: rgba(190, 64, 82, 0.72);
   color: #fff0f2;
 }
 
 .monster-shell .monster-chassis-menu__views {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
   border-top: 1px solid rgba(255, 238, 242, 0.075);
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   padding-top: 10px;
 }
 
 @media (max-width: 1180px) {
- .monster-shell .anatomy-stage__connection-layer {
+  .monster-shell .anatomy-stage__connection-layer {
     display: none;
   }
 
@@ -10940,11 +10869,6 @@
   }
 }
 
-
-/* --------------------------------------------------------------------------
- * Monster Composer — Anatomy UX refinements
- * -------------------------------------------------------------------------- */
-
 .monster-shell .monster-silhouette-svg,
 .monster-shell .monster-silhouette-asset {
   cursor: context-menu;
@@ -10952,25 +10876,25 @@
 
 .monster-shell .monster-silhouette-node,
 .monster-shell .monster-frame-node {
-  z-index: 8;
   background: rgba(5, 5, 6, 0.96);
+  z-index: 8;
 }
 
 .monster-shell .monster-silhouette-node.is-active,
-.monster-shell .monster-silhouette-node.is-guided,
+/* .monster-shell .monster-silhouette-node.is-guided, */
 .monster-shell .monster-silhouette-node:hover,
 .monster-shell .monster-silhouette-node.is-linked-hover {
-  border-color: rgba(240, 185, 194, 0.72);
   background: linear-gradient(180deg, rgba(95, 7, 22, 0.92), rgba(8, 5, 6, 0.98));
-  color: #fff0f2;
+  border-color: rgba(240, 185, 194, 0.72);
   box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.16), 0 0 28px rgba(122, 26, 40, 0.36), inset 0 1px 0 rgba(255, 238, 242, 0.08);
+  color: #fff0f2;
 }
 
 .monster-shell .monster-silhouette-slot-card.is-linked-hover {
-  border-color: rgba(240, 185, 194, 0.72);
   background: var(--cruor-ui-card-bg-active);
-  color: #fff0f2;
+  border-color: rgba(240, 185, 194, 0.72);
   box-shadow: var(--cruor-ui-card-shadow-active), 0 0 28px rgba(122, 26, 40, 0.2);
+  color: #fff0f2;
 }
 
 .monster-shell .monster-silhouette-slot-card.is-linked-hover .monster-silhouette-slot-card__body strong {
@@ -10980,10 +10904,10 @@
 .monster-shell .guided-flow-drawer__badge.is-ready,
 .monster-shell .guided-flow-drawer__badge[data-status="ready"],
 .monster-shell .guided-flow-drawer__badge[aria-label*="ready" i] {
-  border-color: rgba(143, 150, 148, 0.64);
   background: linear-gradient(180deg, rgba(143, 150, 148, 0.18), rgba(12, 16, 15, 0.92));
-  color: #bec8c5;
+  border-color: rgba(143, 150, 148, 0.64);
   box-shadow: 0 0 0 1px rgba(143, 150, 148, 0.12), 0 0 18px rgba(143, 150, 148, 0.18);
+  color: #bec8c5;
 }
 
 .monster-shell .guided-flow-drawer__status-row {
@@ -10991,38 +10915,33 @@
 }
 
 .monster-shell .guided-flow-drawer__readiness {
-  width: max-content;
   max-width: 100%;
+  width: max-content;
 }
 
 .monster-shell .brief-step-btn.reached:not(.active) .brief-step-number,
 .monster-shell .monster-stage-progress-dock .brief-step-btn.reached:not(.active) .brief-step-number,
 .monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline .brief-step-btn.reached:not(.active) .brief-step-number {
-  position: relative;
-  border-color: rgba(143, 150, 148, 0.72);
   background: linear-gradient(180deg, rgba(143, 150, 148, 0.18), rgba(8, 12, 11, 0.96));
-  color: transparent;
+  border-color: rgba(143, 150, 148, 0.72);
   box-shadow: 0 0 0 1px rgba(143, 150, 148, 0.16), 0 0 18px rgba(143, 150, 148, 0.2), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  color: transparent;
+  position: relative;
 }
 
 .monster-shell .brief-step-btn.reached:not(.active) .brief-step-number::before,
 .monster-shell .monster-stage-progress-dock .brief-step-btn.reached:not(.active) .brief-step-number::before,
 .monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline .brief-step-btn.reached:not(.active) .brief-step-number::before {
-  content: "✓";
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
   color: #bec8c5;
+  content: "✓";
+  display: grid;
   font-size: 15px;
   font-weight: 950;
+  inset: 0;
   line-height: 1;
+  place-items: center;
+  position: absolute;
 }
-
-
-/* --------------------------------------------------------------------------
- * Monster Composer — Connector underlay and node interaction layer
- * -------------------------------------------------------------------------- */
 
 .monster-shell .anatomy-stage__grid--grafts {
   isolation: isolate;
@@ -11043,14 +10962,8 @@
 
 .monster-shell .anatomy-stage__grid--grafts .anatomy-stage__center,
 .monster-shell .anatomy-stage__grid--grafts.has-navigator .anatomy-stage__center {
+  pointer-events: none;
   z-index: 12;
-  pointer-events: none;
-}
-
-.monster-shell .anatomy-stage__grid--grafts .anatomy-stage__silhouette-layer {
-  position: relative;
-  z-index: 1;
-  pointer-events: none;
 }
 
 .monster-shell .anatomy-stage__grid--grafts .monster-silhouette-svg,
@@ -11063,8 +10976,8 @@
 
 .monster-shell .anatomy-stage__grid--grafts .monster-silhouette-node,
 .monster-shell .anatomy-stage__grid--frame .monster-frame-node {
-  z-index: 30;
   background: linear-gradient(180deg, rgba(7, 5, 6, 1), rgba(3, 3, 4, 1));
+  z-index: 30;
 }
 
 .monster-shell .anatomy-stage__grid--grafts .anatomy-stage__silhouette-layer.has-chassis-menu-open,
@@ -11072,48 +10985,40 @@
   z-index: 40;
 }
 
-.monster-shell .anatomy-stage__grid--grafts .monster-chassis-menu {
-  z-index: 50;
-}
-
 .monster-shell .anatomy-stage__grid--grafts .monster-silhouette-slot-card {
   background: linear-gradient(180deg, rgba(122, 26, 40, 0.08), transparent 68%), #050506;
 }
 
-.monster-shell .anatomy-stage__grid--grafts .monster-frame-info-card,
-.monster-shell .anatomy-stage__grid--grafts .monster-graft-action-card {
+.monster-shell .anatomy-stage__grid--grafts .monster-frame-info-card {
   background: linear-gradient(180deg, rgba(255, 238, 242, 0.035), transparent 70%), #050506;
 }
 
-/* --------------------------------------------------------------------------
- * Monster Composer — Navigator-open layering and graft action polish
- * -------------------------------------------------------------------------- */
-
-.monster-shell .anatomy-stage__grid--grafts.has-navigator .anatomy-stage__navigator-column {
-  z-index: 80;
-  pointer-events: auto;
-}
-
 .monster-shell .anatomy-stage__grid--grafts .anatomy-stage__center {
-  z-index: 20;
   pointer-events: none;
+  z-index: 20;
 }
 
 .monster-shell .anatomy-stage__grid--grafts.has-navigator .anatomy-stage__center {
+  grid-area: center;
+  justify-self: stretch;
   z-index: 10;
 }
 
 .monster-shell .anatomy-stage__grid--grafts .anatomy-stage__silhouette-layer {
+  pointer-events: none;
+  position: relative;
   z-index: 21;
 }
 
 .monster-shell .anatomy-stage__grid--grafts.has-navigator .anatomy-stage__silhouette-layer {
+  margin-inline: auto;
+  transform: none;
   z-index: 11;
 }
 
 .monster-shell .anatomy-stage__grid--grafts .monster-silhouette-node {
-  z-index: 40;
   pointer-events: auto;
+  z-index: 40;
 }
 
 .monster-shell .anatomy-stage__grid--grafts.has-navigator .monster-silhouette-node {
@@ -11136,91 +11041,31 @@
   z-index: 120;
 }
 
-.monster-shell .monster-graft-action-card {
-  display: grid;
-  grid-template-columns: repeat(3, 40px);
-  grid-auto-rows: 40px;
-  align-items: center;
-  align-content: start;
-  justify-content: start;
-  gap: 8px;
-  min-height: 0;
-  height: auto;
-  max-height: none;
-  padding: 10px;
-}
-
-.monster-shell .monster-graft-action-card .monster-graft-action-btn {
-  appearance: none;
-  position: relative;
-  display: inline-grid;
-  place-items: center;
-  width: 40px;
-  min-width: 40px;
-  height: 40px;
-  min-height: 40px;
-  border: 1px solid var(--cruor-ui-control-border, rgba(95, 7, 22, 0.58));
-  background: var(--cruor-ui-control-bg, linear-gradient(180deg, rgba(255, 238, 242, 0.025), transparent), rgba(0, 0, 0, 0.22));
-  color: var(--cruor-ui-control-text, rgba(240, 215, 220, 0.72));
-  padding: 0;
-  text-align: center;
-  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035);
-  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
-}
-
-.monster-shell .monster-graft-action-card .monster-graft-action-btn svg {
-  width: 16px;
-  height: 16px;
-  color: currentColor;
-}
-
-.monster-shell .monster-graft-action-card .monster-graft-action-btn:hover,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn:focus-visible,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary {
-  border-color: var(--cruor-ui-control-border-active, rgba(190, 64, 82, 0.78));
-  background: var(--cruor-ui-control-bg-active, radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.18), transparent 68%), linear-gradient(180deg, rgba(30, 7, 11, 0.94), rgba(10, 5, 7, 0.88)), rgba(8, 5, 6, 0.86));
-  color: var(--cruor-ui-control-text-active, #fff0f2);
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
-  outline: none;
-}
-
-.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-disabled,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn[aria-disabled="true"] {
-  cursor: not-allowed;
-  opacity: 0.48;
-  filter: saturate(0.72);
-}
-
-.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-disabled:hover,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn[aria-disabled="true"]:hover {
-  border-color: var(--cruor-ui-control-border, rgba(95, 7, 22, 0.58));
-  background: var(--cruor-ui-control-bg, rgba(0, 0, 0, 0.22));
-  color: var(--cruor-ui-control-text, rgba(240, 215, 220, 0.72));
-  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035);
-}
-
-/* --------------------------------------------------------------------------
- * Monster Composer — Navigator focus overlay
- * --------------------------------------------------------------------------
- * When the graft navigator is open, dim the anatomy stage while preserving
- * interaction with the active slot, the open navigator drawer, and shell menus.
- */
-
 .monster-shell .anatomy-stage__grid--grafts.has-navigator {
+  --stage-center-width: calc(
+    100vw - var(--stage-left-width) - var(--stage-right-width) -
+    var(--stage-pad) - var(--stage-pad) - var(--stage-gap) - var(--stage-gap)
+  );
+  --stage-navigator-width: clamp(320px, 28vw, 430px);
+  align-items: stretch;
+  grid-template-areas: "left center right";
+  grid-template-columns: var(--stage-left-width)
+    var(--stage-center-column-width, minmax(0, 1fr))
+    var(--stage-right-width);
   isolation: isolate;
 }
 
 .monster-shell .anatomy-stage__navigator-focus-overlay {
-  grid-area: 1 / 1 / -1 / -1;
-  position: absolute;
-  inset: 0;
-  z-index: 60;
-  display: block;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
   background: rgba(0, 0, 0, 0.68);
   box-shadow: inset 0 0 180px rgba(0, 0, 0, 0.56);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  display: block;
+  grid-area: 1 / 1 / -1 / -1;
+  inset: 0;
   pointer-events: auto;
+  position: absolute;
+  z-index: 60;
 }
 
 .monster-shell .anatomy-stage__grid--grafts.has-navigator .anatomy-stage__connection-layer,
@@ -11235,45 +11080,32 @@
 }
 
 .monster-shell .anatomy-stage__grid--grafts.has-navigator .anatomy-stage__column--left::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 6;
   background: rgba(0, 0, 0, 0.68);
   box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.52);
+  content: "";
+  inset: 0;
   pointer-events: auto;
-}
-
-.monster-shell .anatomy-stage__grid--grafts.has-navigator .anatomy-stage__navigator-column {
-  z-index: 90;
-  pointer-events: auto;
+  position: absolute;
+  z-index: 6;
 }
 
 .monster-shell .anatomy-stage__grid--grafts.has-navigator .monster-silhouette-slot-card {
+  filter: saturate(0.62) brightness(0.72);
+  opacity: 0.34;
+  pointer-events: none;
   position: relative;
   z-index: 1;
-  pointer-events: none;
-  opacity: 0.34;
-  filter: saturate(0.62) brightness(0.72);
 }
 
 .monster-shell .anatomy-stage__grid--grafts.has-navigator .monster-silhouette-slot-card.is-active {
-  z-index: 12;
-  pointer-events: auto;
-  opacity: 1;
-  filter: none;
-  border-color: rgba(240, 185, 194, 0.86);
   background: radial-gradient(circle at 18% 0%, rgba(190, 64, 82, 0.22), transparent 12rem), var(--cruor-ui-card-bg-active);
+  border-color: rgba(240, 185, 194, 0.86);
   box-shadow: 0 0 0 1px rgba(240, 185, 194, 0.14), 0 0 34px rgba(190, 64, 82, 0.34), var(--cruor-ui-card-shadow-active);
+  filter: none;
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 12;
 }
-
-.monster-shell .anatomy-stage__grid--grafts.has-navigator .monster-stage-progress-dock {
-  z-index: 95;
-}
-
-/* --------------------------------------------------------------------------
- * Monster Composer — Navigator focus, close reset, and filter flyout
- * -------------------------------------------------------------------------- */
 
 .monster-shell .monster-stage-progress-dock {
   isolation: isolate;
@@ -11286,15 +11118,15 @@
 }
 
 .monster-shell .monster-stage-progress-dock.is-under-navigator-focus .monster-stage-progress-focus-overlay {
-  position: absolute;
-  inset: -8px;
-  z-index: 6;
-  display: block;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
   background: rgba(0, 0, 0, 0.72);
   box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.58);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  display: block;
+  inset: -8px;
   pointer-events: auto;
+  position: absolute;
+  z-index: 6;
 }
 
 .monster-shell .anatomy-stage__grid--grafts.has-navigator .monster-stage-progress-dock {
@@ -11309,57 +11141,57 @@
 }
 
 .monster-shell .component-navigator-drawer[data-filters-open="true"] {
-  width: min(var(--component-stage-list-width), 100%);
   max-width: 100%;
+  width: min(var(--component-stage-list-width), 100%);
 }
 
 .monster-shell .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="global"] .component-navigator-modal__panel,
 .monster-shell .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
 .monster-shell .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__panel {
-  position: relative;
-  grid-template-columns: minmax(0, 1fr);
   grid-template-areas: "head" "tabs" "smart" "list";
+  grid-template-columns: minmax(0, 1fr);
   overflow: visible;
+  position: relative;
 }
 
 .monster-shell .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__rail {
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(18px) saturate(125%);
+  background: radial-gradient(circle at 12% 0%, rgba(190, 64, 82, 0.14), transparent 15rem), linear-gradient(180deg, rgba(6, 5, 6, 0.98), rgba(4, 3, 4, 0.96));
+  border: 1px solid rgba(240, 185, 194, 0.16);
+  bottom: 0;
+  box-shadow: 0 28px 74px rgba(0, 0, 0, 0.72), 0 0 0 1px rgba(255, 238, 242, 0.045), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  display: grid;
+  height: 100%;
+  left: calc(100% + var(--component-stage-drawer-gap, 10px));
+  max-height: 100%;
+  max-width: min(var(--component-stage-rail-width, 340px), calc(100vw - 32px));
+  overflow: auto;
   position: absolute;
   top: 0;
-  bottom: 0;
-  left: calc(100% + var(--component-stage-drawer-gap, 10px));
-  z-index: 42;
-  display: grid;
   width: var(--component-stage-rail-width, clamp(260px, 24vw, 340px));
-  max-width: min(var(--component-stage-rail-width, 340px), calc(100vw - 32px));
-  height: 100%;
-  max-height: 100%;
-  overflow: auto;
-  border: 1px solid rgba(240, 185, 194, 0.16);
-  background: radial-gradient(circle at 12% 0%, rgba(190, 64, 82, 0.14), transparent 15rem), linear-gradient(180deg, rgba(6, 5, 6, 0.98), rgba(4, 3, 4, 0.96));
-  box-shadow: 0 28px 74px rgba(0, 0, 0, 0.72), 0 0 0 1px rgba(255, 238, 242, 0.045), inset 0 1px 0 rgba(255, 238, 242, 0.06);
-  backdrop-filter: blur(18px) saturate(125%);
-  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  z-index: 42;
 }
 
 .monster-shell .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__list {
-  width: 100%;
   min-width: 0;
+  width: 100%;
 }
 
 @media (max-width: 980px) {
   .monster-shell .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__rail {
-    position: relative;
-    inset: auto;
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    max-height: min(280px, 40vh);
     grid-area: rail;
+    height: auto;
+    inset: auto;
+    max-height: min(280px, 40vh);
+    max-width: 100%;
+    position: relative;
+    width: 100%;
   }
 
   .monster-shell .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="global"] .component-navigator-modal__panel,
-  .monster-shell .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
-  .monster-shell .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__panel {
+    .monster-shell .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
+    .monster-shell .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__panel {
     grid-template-areas: "head" "rail" "tabs" "smart" "list";
   }
 }
@@ -11369,21 +11201,14 @@
   overflow: visible;
 }
 
-/* --------------------------------------------------------------------------
- * Monster Composer — Navigator clipping and external filters fix
- * --------------------------------------------------------------------------
- * Keep the graft navigator above the progress focus overlay and keep filters as
- * a side flyout, never as an internal second column of the navigator panel.
- */
-
 .monster-shell .monster-silhouette-stage.is-grafts-mode:has(.anatomy-stage__navigator-column) {
   overflow: visible;
 }
 
 .monster-shell .monster-silhouette-stage.is-grafts-mode:has(.anatomy-stage__navigator-column) .anatomy-stage__grid--grafts.has-navigator {
+  overflow: visible;
   position: relative;
   z-index: 120;
-  overflow: visible;
 }
 
 .monster-shell .monster-silhouette-stage.is-grafts-mode:has(.anatomy-stage__navigator-column) .monster-stage-progress-dock {
@@ -11395,8 +11220,17 @@
 }
 
 .monster-shell .anatomy-stage__grid--grafts.has-navigator .anatomy-stage__navigator-column {
-  z-index: 160;
+  grid-area: auto;
+  height: 100%;
+  inset-block: 0;
+  inset-inline-start: calc(var(--stage-left-width) + var(--stage-gap));
+  max-height: 100%;
+  max-width: min(var(--stage-navigator-width), calc(100% - var(--stage-left-width) - var(--stage-gap)));
+  position: absolute;
+  width: var(--stage-navigator-width);
+  pointer-events: auto;
   overflow: visible;
+  z-index: 160;
 }
 
 .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer,
@@ -11408,108 +11242,73 @@
 }
 
 .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] {
-  width: 100%;
   max-width: 100%;
+  width: 100%;
 }
 
 .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="global"] .component-navigator-modal__panel,
 .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
 .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__panel {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto auto auto minmax(0, 1fr);
-  grid-template-areas:
-    "head"
+  grid-template-areas: "head"
     "tabs"
     "smart"
     "list";
-  width: 100%;
-  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
   max-width: 100%;
+  min-width: 0;
   overflow: visible;
+  width: 100%;
 }
 
 .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__rail {
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  backdrop-filter: blur(18px) saturate(125%);
+  background: radial-gradient(circle at 12% 0%, rgba(190, 64, 82, 0.14), transparent 15rem), linear-gradient(180deg, rgba(6, 5, 6, 0.98), rgba(4, 3, 4, 0.96));
+  border: 1px solid rgba(240, 185, 194, 0.16);
+  bottom: 0;
+  box-shadow: 0 28px 74px rgba(0, 0, 0, 0.72), 0 0 0 1px rgba(255, 238, 242, 0.045), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  height: 100%;
+  left: calc(100% + var(--component-stage-drawer-gap, 10px));
+  max-height: 100%;
+  max-width: min(var(--component-stage-rail-width, 340px), calc(100vw - 32px));
+  min-width: 0;
+  overflow: auto;
   position: absolute;
   top: 0;
-  bottom: 0;
-  left: calc(100% + var(--component-stage-drawer-gap, 10px));
-  z-index: 170;
   width: var(--component-stage-rail-width, clamp(260px, 24vw, 340px));
-  min-width: 0;
-  max-width: min(var(--component-stage-rail-width, 340px), calc(100vw - 32px));
-  height: 100%;
-  max-height: 100%;
-  overflow: auto;
-  border: 1px solid rgba(240, 185, 194, 0.16);
-  background: radial-gradient(circle at 12% 0%, rgba(190, 64, 82, 0.14), transparent 15rem), linear-gradient(180deg, rgba(6, 5, 6, 0.98), rgba(4, 3, 4, 0.96));
-  box-shadow: 0 28px 74px rgba(0, 0, 0, 0.72), 0 0 0 1px rgba(255, 238, 242, 0.045), inset 0 1px 0 rgba(255, 238, 242, 0.06);
-  backdrop-filter: blur(18px) saturate(125%);
-  -webkit-backdrop-filter: blur(18px) saturate(125%);
+  z-index: 170;
 }
 
 .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__list {
   grid-area: list;
-  width: 100%;
-  min-width: 0;
   max-width: 100%;
+  min-width: 0;
+  width: 100%;
 }
 
 @media (max-width: 980px) {
   .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__rail {
-    position: relative;
-    inset: auto;
     grid-area: rail;
-    width: 100%;
-    max-width: 100%;
     height: auto;
+    inset: auto;
     max-height: min(280px, 40vh);
+    max-width: 100%;
+    position: relative;
+    width: 100%;
   }
 
   .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="global"] .component-navigator-modal__panel,
-  .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
-  .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__panel {
+    .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
+    .monster-shell .anatomy-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__panel {
+    grid-template-areas: "head"
+        "rail"
+        "tabs"
+        "smart"
+        "list";
     grid-template-rows: auto auto auto auto minmax(0, 1fr);
-    grid-template-areas:
-      "head"
-      "rail"
-      "tabs"
-      "smart"
-      "list";
   }
-}
-
-/* Export Stat Block Refresh */
-
-.monster-shell .rendered-stat-block .cruor-stat-block__core {
-  display: grid;
-  grid-template-columns: max-content max-content;
-  grid-auto-rows: min-content;
-  column-gap: clamp(34px, 9vw, 84px);
-  row-gap: 1px;
-  justify-content: start;
-  align-items: start;
-  width: 100%;
-  padding: 7px 0 9px;
-  border-bottom: 1px solid rgba(95, 7, 22, 0.44);
-}
-
-.monster-shell .cruor-stat-core-card {
-  position: relative;
-  display: inline-grid;
-  grid-template-columns: auto auto;
-  align-items: baseline;
-  justify-content: start;
-  gap: 5px;
-  min-width: 0;
-  min-height: 0;
-  overflow: visible;
-  border: 0;
-  background: transparent;
-  padding: 0 8px 0 0;
-  color: rgba(238, 238, 238, 0.9);
-  font-size: 13.5px;
-  line-height: 1.52;
 }
 
 .monster-shell .cruor-stat-core-card--ac {
@@ -11532,42 +11331,6 @@
   grid-row: 3;
 }
 
-.monster-shell .cruor-stat-core-card__icon {
-  position: absolute;
-  left: calc(100% - 0.58em);
-  top: 50%;
-  z-index: 0;
-  font-size: 25px;
-  line-height: 1;
-  color: rgba(190, 64, 82, 0.13);
-  opacity: 1;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-
-.monster-shell .cruor-stat-core-card span,
-.monster-shell .cruor-stat-core-card strong {
-  position: relative;
-  z-index: 1;
-  color: rgba(238, 238, 238, 0.9);
-  font-size: 13.5px;
-  line-height: 1.52;
-}
-
-.monster-shell .cruor-stat-core-card span {
-  font-weight: 900;
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-.monster-shell .cruor-stat-core-card strong {
-  min-width: 0;
-  overflow: visible;
-  font-weight: 500;
-  text-overflow: clip;
-  white-space: nowrap;
-}
-
 .monster-shell .cruor-stat-core-card--ac .cruor-stat-core-card__icon {
   color: rgba(190, 64, 82, 0.16);
 }
@@ -11586,28 +11349,20 @@
 
 .monster-shell .rendered-stat-block .cruor-stat-block__abilities,
 .monster-shell .cruor-stat-block__abilities {
+  border-bottom: 1px solid rgba(95, 7, 22, 0.44);
   display: block;
-  width: 100%;
   min-width: 0;
   padding: 11px 0 12px;
-  border-bottom: 1px solid rgba(95, 7, 22, 0.44);
-}
-
-.monster-shell .cruor-ability-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 4px;
   width: 100%;
-  min-width: 0;
 }
 
 .monster-shell .cruor-ability-header-row,
 .monster-shell .cruor-ability-row {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 7px;
-  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   min-width: 0;
+  width: 100%;
 }
 
 .monster-shell .cruor-ability-header-group,
@@ -11617,33 +11372,21 @@
   min-width: 0;
 }
 
-.monster-shell .cruor-ability-header-group span {
-  display: grid;
-  place-items: center;
-  min-height: 18px;
-  color: rgba(238, 238, 238, 0.42);
-  font-size: 8px;
-  font-weight: 950;
-  letter-spacing: 0.12em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
 .monster-shell .cruor-ability-group {
-  overflow: hidden;
-  border: 1px solid rgba(95, 7, 22, 0.38);
   background: rgba(0, 0, 0, 0.16);
+  border: 1px solid rgba(95, 7, 22, 0.38);
+  overflow: hidden;
 }
 
 .monster-shell .cruor-ability-cell {
-  display: grid;
-  place-items: center;
-  min-height: 34px;
   border-left: 1px solid rgba(5, 5, 6, 0.38);
-  padding: 5px 4px;
   color: #fff0f2;
+  display: grid;
   font-size: 12px;
   line-height: 1;
+  min-height: 34px;
+  padding: 5px 4px;
+  place-items: center;
 }
 
 .monster-shell .cruor-ability-cell:first-child {
@@ -11654,12 +11397,6 @@
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-.monster-shell .cruor-ability-cell--score,
-.monster-shell .cruor-ability-cell--mod,
-.monster-shell .cruor-ability-cell--save {
-  font-weight: 500;
 }
 
 .monster-shell .cruor-ability-group--physical .cruor-ability-cell--label,
@@ -11683,20 +11420,20 @@
 }
 
 .monster-shell .cruor-stat-block__challenge {
-  margin: 0;
   color: rgba(238, 238, 238, 0.9);
   font-size: 13.5px;
   line-height: 1.52;
+  margin: 0;
 }
 
 @media (max-width: 980px) {
   .monster-shell .rendered-stat-block .cruor-stat-block__core {
-    grid-template-columns: max-content max-content;
     column-gap: clamp(28px, 10vw, 72px);
+    grid-template-columns: max-content max-content;
   }
 
   .monster-shell .cruor-ability-header-row,
-  .monster-shell .cruor-ability-row {
+    .monster-shell .cruor-ability-row {
     grid-template-columns: 1fr;
   }
 
@@ -11713,12 +11450,12 @@
   }
 
   .monster-shell .cruor-ability-cell--mod,
-  .monster-shell .cruor-ability-cell--save {
+    .monster-shell .cruor-ability-cell--save {
     gap: 4px;
   }
 
   .monster-shell .cruor-ability-cell--mod::before,
-  .monster-shell .cruor-ability-cell--save::before {
+    .monster-shell .cruor-ability-cell--save::before {
     color: rgba(238, 238, 238, 0.42);
     font-size: 8px;
     font-weight: 950;
@@ -11734,41 +11471,41 @@
   }
 
   .monster-shell .cruor-stat-core-card--ac,
-  .monster-shell .cruor-stat-core-card--initiative,
-  .monster-shell .cruor-stat-core-card--hp,
-  .monster-shell .cruor-stat-core-card--speed {
+    .monster-shell .cruor-stat-core-card--initiative,
+    .monster-shell .cruor-stat-core-card--hp,
+    .monster-shell .cruor-stat-core-card--speed {
     grid-column: 1;
     grid-row: auto;
   }
 
   .monster-shell .cruor-ability-header-group,
-  .monster-shell .cruor-ability-group {
+    .monster-shell .cruor-ability-group {
     grid-template-columns: minmax(34px, 0.78fr) minmax(34px, 0.62fr) minmax(40px, 0.72fr) minmax(40px, 0.72fr);
   }
 }
 
-/* Export Stat Block Final Polish */
 .monster-shell .rendered-stat-block .cruor-stat-block__core {
-  display: grid;
-  grid-template-columns: max-content max-content;
-  grid-auto-rows: min-content;
-  column-gap: clamp(34px, 9vw, 84px);
-  row-gap: 1px;
-  justify-content: start;
+  border-bottom: 1px solid rgba(95, 7, 22, 0.44);
   align-items: start;
-  width: 100%;
-  padding: 8px 0 10px;
   border: 0;
+  column-gap: clamp(34px, 9vw, 84px);
+  display: grid;
+  grid-auto-rows: min-content;
+  grid-template-columns: max-content max-content;
+  justify-content: start;
+  padding: 8px 0 10px;
+  row-gap: 1px;
+  width: 100%;
 }
 
 .monster-shell .rendered-stat-block .cruor-stat-block__facts,
 .monster-shell .rendered-stat-block .cruor-stat-block__abilities {
+  border: 0;
   display: block;
-  width: 100%;
+  grid-template-columns: unset;
   min-width: 0;
   padding: 9px 0;
-  border: 0;
-  grid-template-columns: unset;
+  width: 100%;
 }
 
 .monster-shell .rendered-stat-block .cruor-stat-block__facts {
@@ -11777,49 +11514,70 @@
 }
 
 .monster-shell .cruor-stat-core-card {
-  position: relative;
-  display: inline-grid;
-  grid-template-columns: auto auto;
+  overflow: visible;
   align-items: baseline;
-  justify-content: start;
-  gap: 5px;
-  min-width: 0;
-  min-height: 0;
-  border: 0;
   background: transparent;
-  padding: 0 8px 0 0;
+  border: 0;
   color: rgba(238, 238, 238, 0.9);
+  display: inline-grid;
   font-size: 13.5px;
+  gap: 5px;
+  grid-template-columns: auto auto;
+  justify-content: start;
   line-height: 1.52;
+  min-height: 0;
+  min-width: 0;
+  padding: 0 8px 0 0;
+  position: relative;
   text-transform: none;
 }
 
 .monster-shell .cruor-stat-core-card__icon {
+  color: rgba(190, 64, 82, 0.13);
+  font-size: 25px;
+  left: calc(100% - 0.58em);
+  line-height: 1;
+  opacity: 1;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
   display: none;
 }
 
 .monster-shell .cruor-stat-core-card span,
 .monster-shell .cruor-stat-core-card strong {
+  position: relative;
+  z-index: 1;
   color: rgba(238, 238, 238, 0.9);
   font-size: 13.5px;
-  line-height: 1.52;
   letter-spacing: 0;
+  line-height: 1.52;
   text-transform: none;
 }
 
 .monster-shell .cruor-stat-core-card span {
+  letter-spacing: 0;
+  text-transform: none;
   color: #fff0f2;
   font-weight: 900;
 }
 
 .monster-shell .cruor-stat-core-card strong {
+  min-width: 0;
+  overflow: visible;
+  text-overflow: clip;
   font-weight: 500;
   white-space: nowrap;
 }
 
 .monster-shell .cruor-ability-grid {
-  width: 100%;
+  display: grid;
+  gap: 4px;
+  grid-template-columns: minmax(0, 1fr);
   min-width: 0;
+  width: 100%;
 }
 
 .monster-shell .cruor-ability-cell,
@@ -11834,25 +11592,18 @@
 }
 
 .monster-shell .cruor-stat-block__section {
+  border: 0;
   gap: 8px;
   padding-top: 13px;
-  border: 0;
 }
 
-.monster-shell .cruor-stat-block__section h2 {
-  margin: 0 0 9px;
-  border-bottom: 1px solid rgba(95, 7, 22, 0.54);
-  padding-bottom: 6px;
-}
-
-/* Export Stat Block Urgent Typography Fix */
 .monster-shell .rendered-stat-block .cruor-stat-block__core .cruor-stat-core-card,
 .monster-shell .rendered-stat-block .cruor-stat-block__core .cruor-stat-core-card span,
 .monster-shell .rendered-stat-block .cruor-stat-block__core .cruor-stat-core-card strong {
   color: rgba(238, 238, 238, 0.9);
   font-size: 13.5px;
-  line-height: 1.52;
   letter-spacing: 0;
+  line-height: 1.52;
   text-transform: none;
 }
 
@@ -11867,46 +11618,6 @@
   white-space: nowrap;
 }
 
-/* Export polish requested fixes */
-.monster-shell .monster-graft-action-btn.tooltip-btn,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn {
-  display: inline-grid;
-  place-items: center;
-  width: 38px;
-  min-width: 38px;
-  height: 38px;
-  min-height: 38px;
-  border: 1px solid rgba(95, 7, 22, 0.56);
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.07), transparent 68%), rgba(0, 0, 0, 0.32);
-  color: #c8a2a8;
-  padding: 0;
-  box-shadow: none;
-  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
-}
-
-.monster-shell .monster-graft-action-btn.tooltip-btn:hover,
-.monster-shell .monster-graft-action-btn.tooltip-btn:focus-visible,
-.monster-shell .monster-graft-action-btn.tooltip-btn.is-primary,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn:hover,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn:focus-visible,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary {
-  border-color: rgba(190, 64, 82, 0.78);
-  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
-  color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
-  transform: translateY(-1px);
-  outline: none;
-}
-
-.monster-shell .monster-graft-action-btn.tooltip-btn.is-disabled,
-.monster-shell .monster-graft-action-btn.tooltip-btn[aria-disabled="true"],
-.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-disabled,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn[aria-disabled="true"] {
-  cursor: not-allowed;
-  opacity: 0.42;
-  filter: grayscale(0.85);
-}
-
 .monster-shell .monster-frame-info-row {
   align-items: baseline;
 }
@@ -11919,25 +11630,38 @@
 .monster-shell .brief-step-btn.reached .brief-step-number,
 .monster-shell .monster-stage-progress-dock .brief-step-btn.reached .brief-step-number,
 .monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline .brief-step-btn.reached .brief-step-number {
-  position: relative;
   color: transparent;
+  position: relative;
 }
 
 .monster-shell .brief-step-btn.reached .brief-step-number::before,
 .monster-shell .monster-stage-progress-dock .brief-step-btn.reached .brief-step-number::before,
 .monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline .brief-step-btn.reached .brief-step-number::before {
-  content: "✓";
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
   color: #bec8c5;
+  content: "✓";
+  display: grid;
   font-size: 15px;
   font-weight: 950;
+  inset: 0;
   line-height: 1;
+  place-items: center;
+  position: absolute;
 }
 
 .monster-shell .monster-persistent-view-toolbar {
+  -webkit-backdrop-filter: blur(18px) saturate(126%);
+  align-items: center;
+  backdrop-filter: blur(18px) saturate(126%);
+  background: radial-gradient(circle at 0% 0%, rgba(190, 64, 82, 0.12), transparent 18rem), rgba(7, 5, 6, 0.94);
+  border: 1px solid rgba(240, 185, 194, 0.16);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 238, 242, 0.045);
+  box-sizing: border-box;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin: 0 auto 12px;
+  padding: 9px;
+  width: min(var(--monster-workspace-max), 100%);
   position: relative;
   top: auto;
   z-index: auto;
@@ -11948,8 +11672,8 @@
 }
 
 .monster-shell .cruor-stat-block__section.is-weakness {
-  border: 0;
   background: transparent;
+  border: 0;
   padding: 13px 0 0;
 }
 
@@ -11958,30 +11682,40 @@
 }
 
 .monster-shell .cruor-stat-block__section h2 {
+  border-bottom: 1px solid rgba(95, 7, 22, 0.54);
+  margin: 0 0 9px;
+  padding-bottom: 6px;
   line-height: 1;
 }
 
 .monster-shell .cruor-ability-header-group span {
-  font-weight: 450;
+  color: rgba(238, 238, 238, 0.42);
+  display: grid;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  min-height: 18px;
+  place-items: center;
+  text-transform: uppercase;
   font-size: 9px !important;
+  font-weight: 450;
 }
 
 .monster-shell .cruor-stat-block__designer-notes {
+  background: radial-gradient(circle at 10% 0%, rgba(190, 64, 82, 0.11), transparent 9rem), rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(240, 185, 194, 0.13);
+  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035);
   display: grid;
   gap: 10px;
   margin: 0;
-  border: 1px solid rgba(240, 185, 194, 0.13);
-  background: radial-gradient(circle at 10% 0%, rgba(190, 64, 82, 0.11), transparent 9rem), rgba(0, 0, 0, 0.2);
   padding: 12px;
-  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035);
 }
 
 .monster-shell .cruor-stat-block__designer-notes > summary {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
   color: #d0a2aa;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
 }
 
 .monster-shell .cruor-stat-block__designer-notes div {
@@ -11995,12 +11729,6 @@
   line-height: 1.45;
 }
 
-.monster-shell .monster-graft-action-card {
-  grid-template-columns: repeat(3, 38px);
-  grid-auto-rows: 38px;
-}
-
-/* Stat Block Emphasis Cascade Fix */
 .monster-shell .cruor-stat-block__section p > em {
   color: inherit;
   font-weight: inherit;
@@ -12019,24 +11747,23 @@
 .monster-shell button.brief-step-btn.reached .brief-step-number,
 .monster-shell .monster-stage-progress-dock button.brief-step-btn.reached .brief-step-number,
 .monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline button.brief-step-btn.reached .brief-step-number {
+  -webkit-text-fill-color: transparent;
+  color: transparent;
   font-size: 0;
   line-height: 0;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
   text-shadow: none;
 }
 
 .monster-shell button.brief-step-btn.reached .brief-step-number::before,
 .monster-shell .monster-stage-progress-dock button.brief-step-btn.reached .brief-step-number::before,
 .monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline button.brief-step-btn.reached .brief-step-number::before {
-  color: #bec8c5;
   -webkit-text-fill-color: #bec8c5;
+  color: #bec8c5;
   font-size: 15px;
   line-height: 1;
   text-shadow: none;
 }
 
-/* Brief Wizard Reached Step — render check on the button, not over the number */
 .monster-shell button.brief-step-btn.reached:not(.active) {
   position: relative;
 }
@@ -12044,13 +11771,13 @@
 .monster-shell button.brief-step-btn.reached:not(.active) .brief-step-number,
 .monster-shell .monster-stage-progress-dock button.brief-step-btn.reached:not(.active) .brief-step-number,
 .monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline button.brief-step-btn.reached:not(.active) .brief-step-number {
-  color: transparent !important;
   -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
   font-size: 0 !important;
   line-height: 0 !important;
+  overflow: hidden;
   text-indent: -9999px;
   text-shadow: none !important;
-  overflow: hidden;
 }
 
 .monster-shell button.brief-step-btn.reached:not(.active) .brief-step-number::before,
@@ -12061,230 +11788,69 @@
 }
 
 .monster-shell button.brief-step-btn.reached:not(.active)::before {
-  content: "✓";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  z-index: 4;
-  display: grid;
-  width: 36px;
-  height: 36px;
-  place-items: center;
-  transform: translateX(-50%);
   color: #bec8c5;
+  content: "✓";
+  display: grid;
   font-size: 15px;
   font-weight: 950;
+  height: 36px;
+  left: 50%;
   line-height: 1;
+  place-items: center;
   pointer-events: none;
+  position: absolute;
   text-indent: 0;
   text-shadow: none;
+  top: 0;
+  transform: translateX(-50%);
+  width: 36px;
+  z-index: 4;
 }
 
 .monster-shell .monster-stage-progress-dock button.brief-step-btn.reached:not(.active)::before {
-  width: 30px;
   height: 30px;
+  width: 30px;
 }
 
 .monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline button.brief-step-btn.reached:not(.active)::before {
-  width: var(--flow-step-size);
   height: var(--flow-step-size);
-}
-
-
-/* Monster flow UX polish */
-.monster-shell .monster-graft-action-card {
-  grid-template-columns: repeat(auto-fit, 38px);
-  grid-auto-rows: 38px;
-  align-items: center;
-  justify-content: start;
-  gap: 8px;
-}
-
-.monster-shell .monster-graft-action-btn.tooltip-btn,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary {
-  appearance: none;
-  display: inline-grid;
-  grid-template-columns: 1fr;
-  place-items: center;
-  width: 38px;
-  min-width: 38px;
-  height: 38px;
-  min-height: 38px;
-  padding: 0;
-  border: 1px solid rgba(95, 7, 22, 0.56);
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.07), transparent 68%), rgba(0, 0, 0, 0.32);
-  color: #c8a2a8;
-  box-shadow: none;
-  text-align: center;
-  transform: none;
-}
-
-.monster-shell .monster-graft-action-btn.tooltip-btn svg,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn svg {
-  grid-column: 1;
-  grid-row: 1;
-  width: 16px;
-  height: 16px;
-  color: #b33b4e;
-}
-
-.monster-shell .monster-graft-action-btn.tooltip-btn:hover,
-.monster-shell .monster-graft-action-btn.tooltip-btn:focus-visible,
-.monster-shell .monster-graft-action-btn.tooltip-btn.is-primary,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn:hover,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn:focus-visible,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary {
-  border-color: rgba(190, 64, 82, 0.78);
-  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
-  color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
-  outline: none;
-  transform: translateY(-1px);
-}
-
-.monster-shell .monster-graft-action-btn.tooltip-btn:hover svg,
-.monster-shell .monster-graft-action-btn.tooltip-btn:focus-visible svg,
-.monster-shell .monster-graft-action-btn.tooltip-btn.is-primary svg,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn:hover svg,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn:focus-visible svg,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary svg {
-  color: #f0b9c2;
-}
-
-.monster-shell .monster-frame-controls .monster-graft-action-card,
-.monster-shell .anatomy-stage__column--left > .monster-graft-action-card {
-  margin-top: 10px;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-  padding: 0;
-}
-
-.monster-shell .monster-meter__head {
-  grid-template-columns: auto auto 1fr;
-  align-items: center;
-}
-
-.monster-shell .monster-meter__head .tooltip-btn {
-  display: inline-grid;
-  place-items: center;
-  width: 16px;
-  min-width: 16px;
-  height: 16px;
-  min-height: 16px;
-  margin-left: 4px;
-  border: 1px solid rgba(190, 64, 82, 0.38);
-  background: rgba(0, 0, 0, 0.28);
-  color: rgba(238, 238, 238, 0.78);
-  font-size: 10px;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.monster-shell .monster-meter__head strong {
-  justify-self: end;
+  width: var(--flow-step-size);
 }
 
 .monster-shell .monster-silhouette-node,
 .monster-shell .anatomy-stage__grid--grafts .monster-silhouette-node {
-  width: 36px;
-  min-width: 36px;
   height: 36px;
   min-height: 36px;
+  min-width: 36px;
+  width: 36px;
 }
 
 .monster-shell .monster-silhouette-node svg,
 .monster-shell .anatomy-stage__grid--grafts .monster-silhouette-node svg {
-  width: 20px;
   height: 20px;
+  width: 20px;
 }
 
 .monster-shell .navigator-filter-section > .tag-filter-row__head {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
+  display: flex;
   gap: 8px;
+  justify-content: space-between;
 }
 
 .monster-shell .navigator-filter-section > .tag-filter-row__head > span {
-  display: inline-flex;
   align-items: center;
+  display: inline-flex;
   gap: 6px;
 }
 
-/* Monster Composer export/sidebar follow-up polish */
-.monster-shell .monster-meter__head {
-  display: grid;
-  grid-template-columns: max-content max-content minmax(0, 1fr);
-  align-items: center;
-  justify-content: start;
-  column-gap: 4px;
-}
-
-.monster-shell .monster-meter__head > span {
-  justify-self: start;
-  min-width: 0;
-}
-
-.monster-shell .monster-meter__head .tooltip-btn {
-  justify-self: start;
-  margin-left: 0;
-}
-
-.monster-shell .monster-meter__head strong {
-  justify-self: end;
-}
-
-.monster-shell .monster-graft-action-card {
-  grid-template-columns: minmax(0, 1fr);
-  grid-auto-rows: auto;
-}
-
-.monster-shell .monster-graft-action-btn.tooltip-btn,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  min-width: 0;
-  min-height: 38px;
-  height: auto;
-  padding: 0 12px;
-  gap: 9px;
-  text-align: left;
-}
-
-.monster-shell .monster-graft-action-btn.tooltip-btn svg,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn svg {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-.monster-shell .monster-graft-action-btn.tooltip-btn span,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn span {
-  grid-column: 2;
-  grid-row: 1;
-  min-width: 0;
-  overflow: hidden;
-  color: inherit;
-  font-size: 10px;
-  font-weight: 850;
-  letter-spacing: 0.065em;
-  line-height: 1.1;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
 .monster-shell .export-console > .monster-persistent-view-toolbar {
-  position: relative;
-  top: auto;
-  z-index: auto;
-  width: 100%;
   margin: 0 0 14px;
   padding: 8px;
+  position: relative;
+  top: auto;
+  width: 100%;
+  z-index: auto;
 }
 
 .monster-shell .export-console .monster-persistent-view-toolbar,
@@ -12311,16 +11877,8 @@
   max-width: 800px;
 }
 
-
-/* Monster Composer meter/action follow-up fixes */
-.monster-shell .monster-meter__head {
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr) max-content;
-  align-items: center;
-  column-gap: 6px;
-}
-
 .monster-shell .monster-meter__head > span {
+  min-width: 0;
   justify-self: start;
 }
 
@@ -12329,61 +11887,31 @@
 }
 
 .monster-shell .monster-meter__head .tooltip-btn {
-  display: inline-flex;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(190, 64, 82, 0.38);
+  color: rgba(238, 238, 238, 0.78);
+  font-size: 10px;
+  font-weight: 800;
+  height: 16px;
+  line-height: 1;
+  min-height: 16px;
+  min-width: 16px;
+  place-items: center;
+  width: 16px;
   align-items: center;
+  display: inline-flex;
   justify-content: center;
   justify-self: end;
   margin-left: 0;
 }
 
-.monster-shell .monster-graft-action-btn.tooltip-btn,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  min-width: 0;
-  min-height: 38px;
-  height: auto;
-  padding: 0 12px;
-  gap: 9px;
-  text-align: left;
-}
-
-.monster-shell .monster-graft-action-btn.tooltip-btn svg,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn svg {
-  flex: 0 0 auto;
-}
-
-.monster-shell .monster-graft-action-btn.tooltip-btn span,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn span {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.monster-shell .monster-frame-info-card.monster-graft-action-card,
-.monster-shell .monster-frame-controls .monster-graft-action-card,
-.monster-shell .anatomy-stage__column--left > .monster-graft-action-card {
-  margin-top: 28px;
-}
-
-/* Monster Composer — meter grouping and live export follow-up */
-.monster-shell .monster-graft-action-btn.tooltip-btn,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn,
-.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary {
-  display: flex;
-  grid-template-columns: none;
-  place-items: initial;
-  align-items: center;
-  justify-content: normal;
-}
-
 .monster-shell .monster-meter__head {
-  display: flex;
+  column-gap: 6px;
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
   align-items: center;
-  justify-content: space-between;
+  display: flex;
   gap: 8px;
+  justify-content: space-between;
 }
 
 .monster-shell .monster-meter__head > span:first-child {
@@ -12392,11 +11920,11 @@
 }
 
 .monster-shell .monster-meter__value {
+  align-items: center;
   display: inline-flex;
   flex: 0 0 auto;
-  align-items: center;
-  justify-content: flex-end;
   gap: 6px;
+  justify-content: flex-end;
   margin-left: auto;
 }
 
@@ -12406,10 +11934,10 @@
 
 .monster-shell .monster-meter__value .tooltip-btn,
 .monster-shell .monster-meter__head .tooltip-btn {
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  display: inline-flex;
   flex: 0 0 auto;
+  justify-content: center;
 }
 
 .monster-shell .cruor-stat-block.rendered-stat-block {
@@ -12417,18 +11945,18 @@
 }
 
 .monster-shell .cruor-stat-block__popout-btn {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 3;
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 34px;
-  min-width: 34px;
+  display: inline-flex;
   height: 34px;
+  justify-content: center;
   min-height: 34px;
+  min-width: 34px;
   padding: 0;
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  width: 34px;
+  z-index: 3;
 }
 
 .monster-shell .cruor-stat-block__popout-btn i {
