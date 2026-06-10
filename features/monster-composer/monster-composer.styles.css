@@ -1337,7 +1337,6 @@
 
 .monster-shell .monster-warning {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
   gap: 8px;
   border: 1px solid rgba(190, 64, 82, 0.62);
   background: rgba(51, 3, 12, 0.2);
@@ -1366,7 +1365,6 @@
 
 .monster-shell .balance-recommendation {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
   gap: 10px;
   border: 1px solid rgba(190, 64, 82, 0.44);
   background: rgba(51, 3, 12, 0.18);
@@ -1770,7 +1768,6 @@
 
 .monster-shell .export-check {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
   gap: 7px;
   align-items: start;
   border: 1px solid rgba(255, 238, 242, 0.06);
@@ -1959,13 +1956,29 @@
 }
 
 .monster-shell .cruor-stat-block strong {
-  color: #fff0f2;
+  color: #9d626a;
   font-weight: 900;
 }
 
 .monster-shell .cruor-stat-block em {
-  color: #f0d7dc;
+  color: inherit;
   font-style: italic;
+  font-weight: inherit;
+}
+
+.monster-shell .cruor-stat-block__section p > em {
+  color: inherit;
+  font-weight: inherit;
+}
+
+.monster-shell .cruor-stat-block__section p > strong:first-child {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.monster-shell .cruor-stat-block__section p > strong:first-child > em {
+  color: inherit;
+  font-weight: inherit;
 }
 
 .monster-shell .cruor-stat-block__abilities {
@@ -4039,7 +4052,6 @@
 
 .monster-shell .graft-inspector__rules article {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
   gap: 8px;
   border: 1px solid rgba(95, 7, 22, 0.38);
   background: rgba(0, 0, 0, 0.16);
@@ -11853,4 +11865,573 @@
   color: rgba(238, 238, 238, 0.9);
   font-weight: 500;
   white-space: nowrap;
+}
+
+/* Export polish requested fixes */
+.monster-shell .monster-graft-action-btn.tooltip-btn,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  min-height: 38px;
+  border: 1px solid rgba(95, 7, 22, 0.56);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.07), transparent 68%), rgba(0, 0, 0, 0.32);
+  color: #c8a2a8;
+  padding: 0;
+  box-shadow: none;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+}
+
+.monster-shell .monster-graft-action-btn.tooltip-btn:hover,
+.monster-shell .monster-graft-action-btn.tooltip-btn:focus-visible,
+.monster-shell .monster-graft-action-btn.tooltip-btn.is-primary,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn:hover,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn:focus-visible,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary {
+  border-color: rgba(190, 64, 82, 0.78);
+  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
+  color: #fff0f2;
+  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.monster-shell .monster-graft-action-btn.tooltip-btn.is-disabled,
+.monster-shell .monster-graft-action-btn.tooltip-btn[aria-disabled="true"],
+.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-disabled,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.42;
+  filter: grayscale(0.85);
+}
+
+.monster-shell .monster-frame-info-row {
+  align-items: baseline;
+}
+
+.monster-shell .guided-flow-drawer__toggle-meta span {
+  align-items: center;
+  display: flex;
+}
+
+.monster-shell .brief-step-btn.reached .brief-step-number,
+.monster-shell .monster-stage-progress-dock .brief-step-btn.reached .brief-step-number,
+.monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline .brief-step-btn.reached .brief-step-number {
+  position: relative;
+  color: transparent;
+}
+
+.monster-shell .brief-step-btn.reached .brief-step-number::before,
+.monster-shell .monster-stage-progress-dock .brief-step-btn.reached .brief-step-number::before,
+.monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline .brief-step-btn.reached .brief-step-number::before {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #bec8c5;
+  font-size: 15px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.monster-shell .monster-persistent-view-toolbar {
+  position: relative;
+  top: auto;
+  z-index: auto;
+}
+
+.monster-shell .cruor-stat-block {
+  max-width: 800px;
+}
+
+.monster-shell .cruor-stat-block__section.is-weakness {
+  border: 0;
+  background: transparent;
+  padding: 13px 0 0;
+}
+
+.monster-shell .cruor-stat-block__section.is-weakness h2 {
+  color: inherit;
+}
+
+.monster-shell .cruor-stat-block__section h2 {
+  line-height: 1;
+}
+
+.monster-shell .cruor-ability-header-group span {
+  font-weight: 450;
+  font-size: 9px !important;
+}
+
+.monster-shell .cruor-stat-block__designer-notes {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  border: 1px solid rgba(240, 185, 194, 0.13);
+  background: radial-gradient(circle at 10% 0%, rgba(190, 64, 82, 0.11), transparent 9rem), rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035);
+}
+
+.monster-shell .cruor-stat-block__designer-notes > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #d0a2aa;
+}
+
+.monster-shell .cruor-stat-block__designer-notes div {
+  display: grid;
+  gap: 8px;
+}
+
+.monster-shell .cruor-stat-block__designer-notes p {
+  color: rgba(238, 238, 238, 0.76);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.monster-shell .monster-graft-action-card {
+  grid-template-columns: repeat(3, 38px);
+  grid-auto-rows: 38px;
+}
+
+/* Stat Block Emphasis Cascade Fix */
+.monster-shell .cruor-stat-block__section p > em {
+  color: inherit;
+  font-weight: inherit;
+}
+
+.monster-shell .cruor-stat-block__section p > strong:first-child {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.monster-shell .cruor-stat-block__section p > strong:first-child > em {
+  color: inherit;
+  font-weight: inherit;
+}
+
+.monster-shell button.brief-step-btn.reached .brief-step-number,
+.monster-shell .monster-stage-progress-dock button.brief-step-btn.reached .brief-step-number,
+.monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline button.brief-step-btn.reached .brief-step-number {
+  font-size: 0;
+  line-height: 0;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+}
+
+.monster-shell button.brief-step-btn.reached .brief-step-number::before,
+.monster-shell .monster-stage-progress-dock button.brief-step-btn.reached .brief-step-number::before,
+.monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline button.brief-step-btn.reached .brief-step-number::before {
+  color: #bec8c5;
+  -webkit-text-fill-color: #bec8c5;
+  font-size: 15px;
+  line-height: 1;
+  text-shadow: none;
+}
+
+/* Brief Wizard Reached Step — render check on the button, not over the number */
+.monster-shell button.brief-step-btn.reached:not(.active) {
+  position: relative;
+}
+
+.monster-shell button.brief-step-btn.reached:not(.active) .brief-step-number,
+.monster-shell .monster-stage-progress-dock button.brief-step-btn.reached:not(.active) .brief-step-number,
+.monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline button.brief-step-btn.reached:not(.active) .brief-step-number {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  text-indent: -9999px;
+  text-shadow: none !important;
+  overflow: hidden;
+}
+
+.monster-shell button.brief-step-btn.reached:not(.active) .brief-step-number::before,
+.monster-shell .monster-stage-progress-dock button.brief-step-btn.reached:not(.active) .brief-step-number::before,
+.monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline button.brief-step-btn.reached:not(.active) .brief-step-number::before {
+  content: "";
+  display: none;
+}
+
+.monster-shell button.brief-step-btn.reached:not(.active)::before {
+  content: "✓";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 4;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  transform: translateX(-50%);
+  color: #bec8c5;
+  font-size: 15px;
+  font-weight: 950;
+  line-height: 1;
+  pointer-events: none;
+  text-indent: 0;
+  text-shadow: none;
+}
+
+.monster-shell .monster-stage-progress-dock button.brief-step-btn.reached:not(.active)::before {
+  width: 30px;
+  height: 30px;
+}
+
+.monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline button.brief-step-btn.reached:not(.active)::before {
+  width: var(--flow-step-size);
+  height: var(--flow-step-size);
+}
+
+
+/* Monster flow UX polish */
+.monster-shell .monster-graft-action-card {
+  grid-template-columns: repeat(auto-fit, 38px);
+  grid-auto-rows: 38px;
+  align-items: center;
+  justify-content: start;
+  gap: 8px;
+}
+
+.monster-shell .monster-graft-action-btn.tooltip-btn,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary {
+  appearance: none;
+  display: inline-grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  min-height: 38px;
+  padding: 0;
+  border: 1px solid rgba(95, 7, 22, 0.56);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.07), transparent 68%), rgba(0, 0, 0, 0.32);
+  color: #c8a2a8;
+  box-shadow: none;
+  text-align: center;
+  transform: none;
+}
+
+.monster-shell .monster-graft-action-btn.tooltip-btn svg,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn svg {
+  grid-column: 1;
+  grid-row: 1;
+  width: 16px;
+  height: 16px;
+  color: #b33b4e;
+}
+
+.monster-shell .monster-graft-action-btn.tooltip-btn:hover,
+.monster-shell .monster-graft-action-btn.tooltip-btn:focus-visible,
+.monster-shell .monster-graft-action-btn.tooltip-btn.is-primary,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn:hover,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn:focus-visible,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary {
+  border-color: rgba(190, 64, 82, 0.78);
+  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
+  color: #fff0f2;
+  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.monster-shell .monster-graft-action-btn.tooltip-btn:hover svg,
+.monster-shell .monster-graft-action-btn.tooltip-btn:focus-visible svg,
+.monster-shell .monster-graft-action-btn.tooltip-btn.is-primary svg,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn:hover svg,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn:focus-visible svg,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary svg {
+  color: #f0b9c2;
+}
+
+.monster-shell .monster-frame-controls .monster-graft-action-card,
+.monster-shell .anatomy-stage__column--left > .monster-graft-action-card {
+  margin-top: 10px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.monster-shell .monster-meter__head {
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
+}
+
+.monster-shell .monster-meter__head .tooltip-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  min-width: 16px;
+  height: 16px;
+  min-height: 16px;
+  margin-left: 4px;
+  border: 1px solid rgba(190, 64, 82, 0.38);
+  background: rgba(0, 0, 0, 0.28);
+  color: rgba(238, 238, 238, 0.78);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.monster-shell .monster-meter__head strong {
+  justify-self: end;
+}
+
+.monster-shell .monster-silhouette-node,
+.monster-shell .anatomy-stage__grid--grafts .monster-silhouette-node {
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  min-height: 36px;
+}
+
+.monster-shell .monster-silhouette-node svg,
+.monster-shell .anatomy-stage__grid--grafts .monster-silhouette-node svg {
+  width: 20px;
+  height: 20px;
+}
+
+.monster-shell .navigator-filter-section > .tag-filter-row__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.monster-shell .navigator-filter-section > .tag-filter-row__head > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Monster Composer export/sidebar follow-up polish */
+.monster-shell .monster-meter__head {
+  display: grid;
+  grid-template-columns: max-content max-content minmax(0, 1fr);
+  align-items: center;
+  justify-content: start;
+  column-gap: 4px;
+}
+
+.monster-shell .monster-meter__head > span {
+  justify-self: start;
+  min-width: 0;
+}
+
+.monster-shell .monster-meter__head .tooltip-btn {
+  justify-self: start;
+  margin-left: 0;
+}
+
+.monster-shell .monster-meter__head strong {
+  justify-self: end;
+}
+
+.monster-shell .monster-graft-action-card {
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: auto;
+}
+
+.monster-shell .monster-graft-action-btn.tooltip-btn,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  height: auto;
+  padding: 0 12px;
+  gap: 9px;
+  text-align: left;
+}
+
+.monster-shell .monster-graft-action-btn.tooltip-btn svg,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn svg {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.monster-shell .monster-graft-action-btn.tooltip-btn span,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn span {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: inherit;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.065em;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.monster-shell .export-console > .monster-persistent-view-toolbar {
+  position: relative;
+  top: auto;
+  z-index: auto;
+  width: 100%;
+  margin: 0 0 14px;
+  padding: 8px;
+}
+
+.monster-shell .export-console .monster-persistent-view-toolbar,
+.monster-shell .export-console .monster-persistent-view-toolbar__left,
+.monster-shell .export-console .monster-persistent-view-toolbar__tabs {
+  min-width: 0;
+}
+
+.monster-shell .export-console .monster-persistent-view-toolbar__left,
+.monster-shell .export-console .monster-persistent-view-toolbar__tabs {
+  width: 100%;
+}
+
+.monster-shell .export-console .monster-persistent-view-toolbar__tab,
+.monster-shell .export-console .monster-persistent-view-toolbar__debug {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-inline: 8px;
+}
+
+.monster-shell .export-stat-preview .cruor-stat-block,
+.monster-shell .rendered-stat-block.cruor-stat-block,
+.monster-shell .cruor-stat-block.rendered-stat-block {
+  max-width: 800px;
+}
+
+
+/* Monster Composer meter/action follow-up fixes */
+.monster-shell .monster-meter__head {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
+  align-items: center;
+  column-gap: 6px;
+}
+
+.monster-shell .monster-meter__head > span {
+  justify-self: start;
+}
+
+.monster-shell .monster-meter__head strong {
+  justify-self: end;
+}
+
+.monster-shell .monster-meter__head .tooltip-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: end;
+  margin-left: 0;
+}
+
+.monster-shell .monster-graft-action-btn.tooltip-btn,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  height: auto;
+  padding: 0 12px;
+  gap: 9px;
+  text-align: left;
+}
+
+.monster-shell .monster-graft-action-btn.tooltip-btn svg,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn svg {
+  flex: 0 0 auto;
+}
+
+.monster-shell .monster-graft-action-btn.tooltip-btn span,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn span {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.monster-shell .monster-frame-info-card.monster-graft-action-card,
+.monster-shell .monster-frame-controls .monster-graft-action-card,
+.monster-shell .anatomy-stage__column--left > .monster-graft-action-card {
+  margin-top: 28px;
+}
+
+/* Monster Composer — meter grouping and live export follow-up */
+.monster-shell .monster-graft-action-btn.tooltip-btn,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn,
+.monster-shell .monster-graft-action-card .monster-graft-action-btn.is-primary {
+  display: flex;
+  grid-template-columns: none;
+  place-items: initial;
+  align-items: center;
+  justify-content: normal;
+}
+
+.monster-shell .monster-meter__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.monster-shell .monster-meter__head > span:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.monster-shell .monster-meter__value {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.monster-shell .monster-meter__value strong {
+  justify-self: auto;
+}
+
+.monster-shell .monster-meter__value .tooltip-btn,
+.monster-shell .monster-meter__head .tooltip-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.monster-shell .cruor-stat-block.rendered-stat-block {
+  position: relative;
+}
+
+.monster-shell .cruor-stat-block__popout-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0;
+}
+
+.monster-shell .cruor-stat-block__popout-btn i {
+  font-size: 13px;
+  line-height: 1;
 }

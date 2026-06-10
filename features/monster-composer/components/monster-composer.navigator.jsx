@@ -234,10 +234,7 @@ function ComponentNavigatorPanel({
     navigatorPackFilter === "all"
       ? SOURCES
       : SOURCES.filter((source) => getContentPackId(source) === navigatorPackFilter);
-  const activeSourceFilters =
-    Array.isArray(navigatorSourceFilters) && navigatorSourceFilters.length > 0
-      ? navigatorSourceFilters
-      : [sourceId].filter(Boolean);
+  const activeSourceFilters = Array.isArray(navigatorSourceFilters) ? navigatorSourceFilters : [];
   const sourceFilterActive =
     activeSourceFilters.length !== 1 || activeSourceFilters[0] !== sourceId;
   const hasActiveNavigatorFilters = Boolean(
@@ -275,14 +272,25 @@ function ComponentNavigatorPanel({
     if (!nextSourceId) return;
 
     setNavigatorSourceFilters?.((current) => {
-      const currentIds =
-        Array.isArray(current) && current.length > 0 ? current : [sourceId].filter(Boolean);
+      const currentIds = Array.isArray(current) ? current : [];
       const nextIds = currentIds.includes(nextSourceId)
         ? currentIds.filter((id) => id !== nextSourceId)
         : [...currentIds, nextSourceId];
-      return nextIds.length ? nextIds : [nextSourceId];
+      return nextIds;
     });
     setSourceId(nextSourceId);
+    setActivePresetId("");
+  }
+
+  function selectAllSourceFilters() {
+    const nextIds = sourceFilterOptions.map((item) => item.id).filter(Boolean);
+    setNavigatorSourceFilters?.(nextIds);
+    if (nextIds[0]) setSourceId(nextIds[0]);
+    setActivePresetId("");
+  }
+
+  function clearSourceFilters() {
+    setNavigatorSourceFilters?.([]);
     setActivePresetId("");
   }
 
@@ -385,7 +393,17 @@ function ComponentNavigatorPanel({
                 </div>
                 <div className="navigator-filter-panel">
                   <section className="navigator-filter-section">
-                    <strong>Inspiration</strong>
+                    <div className="tag-filter-row__head">
+                      <strong>Inspiration</strong>
+                      <span>
+                        <button className="tag-clear-btn" type="button" onClick={selectAllSourceFilters}>
+                          All
+                        </button>
+                        <button className="tag-clear-btn" type="button" onClick={clearSourceFilters}>
+                          None
+                        </button>
+                      </span>
+                    </div>
                     <div className="filter-chip-grid source-filter">
                       {sourceFilterOptions.map((item) => {
                         const isActive = activeSourceFilters.includes(item.id);

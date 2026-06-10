@@ -40,6 +40,23 @@ function formatCoreStatValue(value) {
     .replace(/\bft\./gi, "ft.");
 }
 
+const RULE_INLINE_LABEL_PATTERN =
+  /(Melee or Ranged Attack Roll:|Melee Attack Roll:|Ranged Attack Roll:|Melee Spell Roll:|Ranged Spell Roll:|Hit or Miss:|Hit:|Miss:|Trigger:|Response:|Strength Saving Throw:|Dexterity Saving Throw:|Constitution Saving Throw:|Intelligence Saving Throw:|Wisdom Saving Throw:|Charisma Saving Throw:|Success:|Failure:)/g;
+
+function renderRulesText(text) {
+  return String(text || "")
+    .split(RULE_INLINE_LABEL_PATTERN)
+    .filter(Boolean)
+    .map((part, index) => {
+      const isRulesLabel = /^(?:Melee or Ranged Attack Roll:|Melee Attack Roll:|Ranged Attack Roll:|Melee Spell Roll:|Ranged Spell Roll:|Hit or Miss:|Hit:|Miss:|Trigger:|Response:|Strength Saving Throw:|Dexterity Saving Throw:|Constitution Saving Throw:|Intelligence Saving Throw:|Wisdom Saving Throw:|Charisma Saving Throw:|Success:|Failure:)$/.test(part);
+      return isRulesLabel ? (
+        <em key={`rules-label-${index}`}>{part}</em>
+      ) : (
+        <span key={`rules-text-${index}`}>{part}</span>
+      );
+    });
+}
+
 function StatBlockCoreCard({ item }) {
   return (
     <article className={`cruor-stat-core-card cruor-stat-core-card--${item.id || "default"}`}>
@@ -405,6 +422,21 @@ function BalanceRecommendationList({ recommendations, onAction }) {
   );
 }
 
+function DesignerNotesPanel({ notes }) {
+  if (!notes?.length) return null;
+
+  return (
+    <details className="cruor-stat-block__designer-notes" open>
+      <summary>Designer Notes</summary>
+      <div>
+        {notes.map((note) => (
+          <p key={note}>{note}</p>
+        ))}
+      </div>
+    </details>
+  );
+}
+
 export function ExportWorkbench({
   exportText,
   exportJson,
@@ -414,19 +446,24 @@ export function ExportWorkbench({
   exportCopyStatus,
   onCopyExportPayload,
   onOpenBalance,
+  viewToolbar,
+  liveExportButton,
 }) {
   return (
     <section className="export-workbench" aria-label="Monster export">
       <div className="export-layout">
         <section className="panel table-view export-stat-preview">
-          <RenderedStatBlock statBlock={statBlock} />
+          <RenderedStatBlock statBlock={statBlock} liveExportButton={liveExportButton} />
         </section>
         <aside className="panel export-console" aria-label="Export console">
+          {viewToolbar}
           <div className="export-console__head">
             <h2>Table Handoff</h2>
           </div>
 
           <ExportReadinessPanel readiness={exportReadiness} onOpenBalance={onOpenBalance} />
+
+          <DesignerNotesPanel notes={statBlock.designerNotes} />
 
           <div className="export-action-grid" aria-label="Export actions">
             <button
@@ -474,7 +511,7 @@ export function ExportWorkbench({
   );
 }
 
-function RenderedStatBlock({ statBlock }) {
+function RenderedStatBlock({ statBlock, liveExportButton }) {
   const visibleSections = statBlock.sections.filter((section) => section.items.length > 0);
 
   return (
@@ -482,6 +519,7 @@ function RenderedStatBlock({ statBlock }) {
       className="cruor-stat-block rendered-stat-block"
       aria-label={`${statBlock.name} rendered stat block`}
     >
+      {liveExportButton}
       <header className="cruor-stat-block__head">
         <h3>{statBlock.name}</h3>
         <p>{statBlock.creatureLine}</p>
@@ -515,14 +553,6 @@ function RenderedStatBlock({ statBlock }) {
         />
       ))}
 
-      <details className="cruor-stat-block__designer-notes">
-        <summary>Designer Notes</summary>
-        <div>
-          {statBlock.designerNotes.map((note) => (
-            <p key={note}>{note}</p>
-          ))}
-        </div>
-      </details>
     </article>
   );
 }
@@ -535,7 +565,10 @@ function RenderedStatBlockSection({ title, items, highlight }) {
       <h2>{title}</h2>
       {items.map((item) => (
         <p key={item.id}>
-          <strong>{item.title}.</strong> {item.text}
+          <strong>
+            <em>{item.title}.</em>
+          </strong>{" "}
+          {renderRulesText(item.text)}
         </p>
       ))}
     </section>
@@ -572,7 +605,7 @@ function ExportReadinessPanel({ readiness, onOpenBalance }) {
           </article>
         ))}
       </div>
-      {!readiness.ready && (
+      {!readiness.ready && onOpenBalance && (
         <button className="export-review-btn" type="button" onClick={onOpenBalance}>
           Review Balance Recommendations
         </button>

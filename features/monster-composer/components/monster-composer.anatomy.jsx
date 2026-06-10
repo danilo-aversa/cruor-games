@@ -244,7 +244,7 @@ function buildConnectorPath(start, end, rootHeight = 1) {
   const distance = Math.abs(end.x - start.x);
   const baseStep = clamp(distance * 0.36, 34, 128);
   const topRatio = rootHeight > 0 ? clamp(start.y / rootHeight, 0, 1) : 0.5;
-  const bendOffset = (topRatio - 0.5) * 112;
+  const bendOffset = (topRatio - 0.5) * 168;
   const maxStep = Math.max(34, distance - 26);
   const step = clamp(baseStep + bendOffset, 24, maxStep);
   const midX = start.x + step * direction;
@@ -443,13 +443,31 @@ function SilhouetteChassisMenu({
 
 function AnatomyMeter({ label, value, max, percent }) {
   const over = value > max;
+  const tooltip =
+    label === "Pressure"
+      ? "Pressure measures how hard the monster pushes the party through damage, control, action load, and encounter danger."
+      : label === "Complexity"
+        ? "Complexity measures how much the DM must track at the table: reactions, recharge effects, delayed triggers, and conditional rules."
+        : "This meter summarizes the current monster build.";
   return (
     <div className="monster-meter">
       <div className="monster-meter__head">
         <span>{label}</span>
-        <strong className={over ? "is-over" : ""}>
-          {value} / {max}
-        </strong>
+        <span className="monster-meter__value">
+          <strong className={over ? "is-over" : ""}>
+            {value} / {max}
+          </strong>
+          <button
+            className="tooltip-btn"
+            type="button"
+            aria-label={`${label} explanation`}
+            data-key="tooltip-generic"
+            data-tooltip={label}
+            data-tooltip-description={tooltip}
+          >
+            ?
+          </button>
+        </span>
       </div>
       <div className="monster-meter__track">
         <div className={over ? "is-over" : ""} style={{ width: `${Math.min(percent, 100)}%` }} />
@@ -493,38 +511,47 @@ function GraftActionPanel({ composerStarted, onForgeMonster, onOpenExport, onSta
         className="monster-graft-action-btn is-primary tooltip-btn"
         type="button"
         aria-label="Forge Monster"
+        data-key="tooltip-generic"
         data-tooltip="Auto-build a playable first draft from the current Monster Frame. You can customize every anatomy slot afterward."
+        data-tooltip-description="Fills the anatomy slots with compatible grafts based on the current chassis, role, danger, and CR."
         onClick={onForgeMonster}
       >
         <Flame aria-hidden="true" />
+        <span>Forge Monster</span>
       </button>
       <button
         className={`monster-graft-action-btn tooltip-btn ${composerStarted ? "" : "is-disabled"}`}
         type="button"
         aria-label="Export Monster"
         aria-disabled={!composerStarted}
+        data-key="tooltip-generic"
         data-tooltip={
           composerStarted
             ? "Open the complete monster export sheet."
             : "Start or forge a monster before opening Export."
         }
+        data-tooltip-description="Moves to the export-ready stat block and table handoff view."
         onClick={composerStarted ? onOpenExport : undefined}
       >
         <FileText aria-hidden="true" />
+        <span>Export Monster</span>
       </button>
       <button
         className={`monster-graft-action-btn tooltip-btn ${composerStarted ? "" : "is-disabled"}`}
         type="button"
         aria-label="Start Over"
         aria-disabled={!composerStarted}
+        data-key="tooltip-generic"
         data-tooltip={
           composerStarted
             ? "Return to the initial Template / Scratch choice and clear the current build."
             : "Start a build before using Start Over."
         }
+        data-tooltip-description="Clears the current build and returns to the first start screen."
         onClick={composerStarted ? onStartOver : undefined}
       >
         <RotateCcw aria-hidden="true" />
+        <span>Start Over</span>
       </button>
     </section>
   );
@@ -1032,6 +1059,8 @@ function FrameControls({
   setTempoProfileId,
   setDangerId,
   setActivePresetId,
+  onPickTemplate,
+  onSetStageMode,
 }) {
   const setFrameValue = (setter, value) => {
     setter(value);
@@ -1141,6 +1170,33 @@ function FrameControls({
             onChange={(nextDangerId) => setFrameValue(setDangerId, nextDangerId)}
           />
         </div>
+      </section>
+
+      <section className="monster-frame-info-card monster-graft-action-card" aria-label="Chassis flow actions">
+        <button
+          className="monster-graft-action-btn tooltip-btn"
+          type="button"
+          aria-label="Open Templates"
+          data-key="tooltip-generic"
+          data-tooltip="Open monster templates"
+          data-tooltip-description="Return to the template picker and choose a ready-made monster frame."
+          onClick={onPickTemplate}
+        >
+          <Sparkles aria-hidden="true" />
+          <span>Templates</span>
+        </button>
+        <button
+          className="monster-graft-action-btn is-primary tooltip-btn"
+          type="button"
+          aria-label="Complete Chassis"
+          data-key="tooltip-generic"
+          data-tooltip="Complete chassis"
+          data-tooltip-description="Keep this chassis and move to the graft slots."
+          onClick={() => onSetStageMode?.("grafts")}
+        >
+          <ChevronRight aria-hidden="true" />
+          <span>Complete Chassis</span>
+        </button>
       </section>
     </aside>
   );
@@ -1470,6 +1526,8 @@ export function MonsterSilhouetteMap({
                   setTempoProfileId={setTempoProfileId}
                   setDangerId={setDangerId}
                   setActivePresetId={setActivePresetId}
+                  onPickTemplate={onPickTemplate}
+                  onSetStageMode={onSetStageMode}
                 />
                 {renderStageCenter()}
                 <FrameInfoPanel
@@ -1515,8 +1573,34 @@ export function MonsterSilhouetteMap({
                   aria-label="Anatomy graft slots"
                 >
                   <div className="anatomy-stage__slot-stack">
-                    {[...ANATOMY_RIGHT_SLOT_IDS, ...ANATOMY_LEFT_SLOT_IDS, ...ANATOMY_BOTTOM_SLOT_IDS].map(renderSlotCard)}
+                    {["body", "attack", "mind", "twist", "movement", "horror", "weakness", "death", ...ANATOMY_BOTTOM_SLOT_IDS].map(renderSlotCard)}
                   </div>
+                  <section className="monster-frame-info-card monster-graft-action-card" aria-label="Graft flow actions">
+                    <button
+                      className="monster-graft-action-btn tooltip-btn"
+                      type="button"
+                      aria-label="Back to Chassis"
+                      data-key="tooltip-generic"
+                      data-tooltip="Back to chassis"
+                      data-tooltip-description="Return to the chassis controls without clearing the current grafts."
+                      onClick={() => onSetStageMode?.("frame")}
+                    >
+                      <SlidersHorizontal aria-hidden="true" />
+                      <span>Back to Chassis</span>
+                    </button>
+                    <button
+                      className="monster-graft-action-btn is-primary tooltip-btn"
+                      type="button"
+                      aria-label="Continue to Export"
+                      data-key="tooltip-generic"
+                      data-tooltip="Continue to export"
+                      data-tooltip-description="Open the export-ready stat block."
+                      onClick={onOpenExport}
+                    >
+                      <FileText aria-hidden="true" />
+                      <span>Continue to Export</span>
+                    </button>
+                  </section>
                 </aside>
 
                 {hasComponentNavigator ? (

@@ -1177,6 +1177,13 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     }
   }, [uiMode]);
 
+  useEffect(() => {
+    if (uiMode === "debug") return;
+    if (viewMode === "balance" || viewMode === "run") {
+      setViewMode("export");
+    }
+  }, [uiMode, viewMode]);
+
   const defaultPressureBudget =
     role.budget +
     danger.budgetOffset +
@@ -1218,10 +1225,9 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
 
   const availableFeatures = useMemo(() => {
     const slotFilter = currentNavigatorSlot === "all" ? null : currentNavigatorSlot;
-    const activeNavigatorSourceFilters =
-      Array.isArray(navigatorSourceFilters) && navigatorSourceFilters.length > 0
-        ? navigatorSourceFilters
-        : [sourceId].filter(Boolean);
+    const activeNavigatorSourceFilters = Array.isArray(navigatorSourceFilters)
+      ? navigatorSourceFilters
+      : [];
     return FEATURES.map((feature) => ({
       feature,
       status: getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset }),
@@ -2044,7 +2050,31 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     hasLegendaryActions,
   ]);
 
-  const renderExportWorkbench = () => (
+  const liveExportButton = uiMode === "debug" ? (
+    <button
+      className={`monster-persistent-view-toolbar__debug cruor-stat-block__popout-btn ${liveExportPopoutOpen ? "is-active" : ""}`}
+      type="button"
+      aria-label={liveExportPopoutOpen ? "Close live export popout" : "Open live export popout"}
+      title={liveExportPopoutOpen ? "Close live export popout" : "Open live export popout"}
+      aria-pressed={liveExportPopoutOpen}
+      onClick={() => setLiveExportPopoutOpen((open) => !open)}
+    >
+      <i className="fa-solid fa-up-right-from-square" aria-hidden="true" />
+      <span className="sr-only">{liveExportPopoutOpen ? "Close live export" : "Open live export"}</span>
+    </button>
+  ) : null;
+
+  const monsterViewToolbar = viewMode !== "composer" ? (
+    <MonsterPersistentViewToolbar
+      activeView={viewMode}
+      uiMode={uiMode}
+      onSetView={setViewMode}
+    />
+  ) : null;
+
+  const persistentViewToolbar = viewMode !== "composer" && viewMode !== "export" ? monsterViewToolbar : null;
+
+  const renderExportWorkbench = ({ includeViewToolbar = viewMode === "export" } = {}) => (
     <ExportWorkbench
       exportText={exportPayload.exportText}
       exportJson={exportPayload.exportJson}
@@ -2053,19 +2083,11 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       exportRunSheet={exportPayload.exportRunSheet}
       exportCopyStatus={exportCopyStatus}
       onCopyExportPayload={copyExportPayload}
-      onOpenBalance={() => setViewMode("balance")}
+      onOpenBalance={uiMode === "debug" ? () => setViewMode("balance") : null}
+      viewToolbar={includeViewToolbar ? monsterViewToolbar : null}
+      liveExportButton={includeViewToolbar ? liveExportButton : null}
     />
   );
-
-  const persistentViewToolbar = viewMode !== "composer" ? (
-    <MonsterPersistentViewToolbar
-      activeView={viewMode}
-      uiMode={uiMode}
-      liveExportPopoutOpen={liveExportPopoutOpen}
-      onSetView={setViewMode}
-      onToggleLiveExportPopout={() => setLiveExportPopoutOpen((open) => !open)}
-    />
-  ) : null;
 
   function openSlotNavigator(slotId) {
     if (!composerStarted) return;
@@ -2088,6 +2110,14 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     setNavigatorSourceFilters([sourceId]);
     setNavigatorFiltersOpen(false);
     setComponentNavigatorOpen(true);
+  }
+
+  function focusSlotWithoutNavigator(slotId) {
+    if (!slotId) return;
+    setComposerStageMode("grafts");
+    setActiveSlot(slotId);
+    setNavigatorSlotFilter(slotId);
+    setComponentNavigatorOpen(false);
   }
 
   function closeComponentNavigator() {
@@ -2361,11 +2391,8 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
                   <GuidedFlowPanel
                     guidedFlow={guidedFlow}
                     onOpenStart={openTemplatePicker}
-                    onFocusSlot={(slotId) => {
-                      setComposerStageMode("grafts");
-                      openSlotNavigator(slotId);
-                    }}
-                    onOpenBalance={() => setViewMode("balance")}
+                    onFocusSlot={focusSlotWithoutNavigator}
+                    onOpenBalance={() => setViewMode(uiMode === "debug" ? "balance" : "export")}
                     onOpenExport={() => setViewMode("export")}
                   />
                 )}
@@ -2388,7 +2415,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
 
         {persistentViewToolbar}
 
-        {viewMode === "balance" && (
+        {uiMode === "debug" && viewMode === "balance" && (
           <BalanceWorkbench
             computed={computed}
             pressurePercent={pressurePercent}
@@ -2397,7 +2424,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
           />
         )}
 
-        {viewMode === "run" &&
+        {uiMode === "debug" && viewMode === "run" &&
           (() => {
             const runSheet = buildRunModeSheet({
               name: computed.name,
@@ -2443,7 +2470,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
                   Close Popout
                 </button>
               </header>
-              {renderExportWorkbench()}
+              {renderExportWorkbench({ includeViewToolbar: false })}
             </div>
           </LiveExportPopout>
         )}
@@ -2465,27 +2492,17 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
 function MonsterPersistentViewToolbar({
   activeView,
   uiMode,
-  liveExportPopoutOpen,
   onSetView,
-  onToggleLiveExportPopout,
 }) {
   const views = [
     ["composer", "Composer"],
-    ["balance", "Balance"],
-    ["run", "Run"],
+    ...(uiMode === "debug" ? [["balance", "Balance"], ["run", "Run"]] : []),
     ["export", "Stat Block"],
   ];
 
   return (
     <nav className="monster-persistent-view-toolbar" aria-label="Monster view navigation">
       <div className="monster-persistent-view-toolbar__left">
-        <button
-          className="monster-persistent-view-toolbar__back"
-          type="button"
-          onClick={() => onSetView?.("composer")}
-        >
-          Back to Composer
-        </button>
         <div className="monster-persistent-view-toolbar__tabs" role="tablist" aria-label="Monster views">
           {views.map(([id, label]) => (
             <button
@@ -2501,17 +2518,6 @@ function MonsterPersistentViewToolbar({
           ))}
         </div>
       </div>
-
-      {uiMode === "debug" && (
-        <button
-          className={`monster-persistent-view-toolbar__debug ${liveExportPopoutOpen ? "is-active" : ""}`}
-          type="button"
-          aria-pressed={liveExportPopoutOpen}
-          onClick={onToggleLiveExportPopout}
-        >
-          {liveExportPopoutOpen ? "Close Live Export" : "Open Live Export Popout"}
-        </button>
-      )}
     </nav>
   );
 }

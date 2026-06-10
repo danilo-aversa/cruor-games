@@ -101,24 +101,28 @@ export function MonsterComposerTopbar({
                 >
                   Composer
                 </button>
-                <button
-                  className={`darken-workspace__tab ${viewMode === "balance" ? "is-active" : ""}`}
-                  type="button"
-                  role="tab"
-                  aria-selected={viewMode === "balance"}
-                  onClick={() => onSetViewMode("balance")}
-                >
-                  Balance
-                </button>
-                <button
-                  className={`darken-workspace__tab ${viewMode === "run" ? "is-active" : ""}`}
-                  type="button"
-                  role="tab"
-                  aria-selected={viewMode === "run"}
-                  onClick={() => onSetViewMode("run")}
-                >
-                  Run
-                </button>
+                {uiMode === "debug" && (
+                  <button
+                    className={`darken-workspace__tab ${viewMode === "balance" ? "is-active" : ""}`}
+                    type="button"
+                    role="tab"
+                    aria-selected={viewMode === "balance"}
+                    onClick={() => onSetViewMode("balance")}
+                  >
+                    Balance
+                  </button>
+                )}
+                {uiMode === "debug" && (
+                  <button
+                    className={`darken-workspace__tab ${viewMode === "run" ? "is-active" : ""}`}
+                    type="button"
+                    role="tab"
+                    aria-selected={viewMode === "run"}
+                    onClick={() => onSetViewMode("run")}
+                  >
+                    Run
+                  </button>
+                )}
                 <button
                   className={`darken-workspace__tab ${viewMode === "export" ? "is-active" : ""}`}
                   type="button"
