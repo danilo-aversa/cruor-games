@@ -90,6 +90,9 @@ import { MonsterSilhouetteMap } from "./components/monster-composer.anatomy.jsx"
 import { ComponentNavigatorDrawer } from "./components/monster-composer.navigator.jsx";
 import { BalanceWorkbench, ExportWorkbench, RunModePanel } from "./components/monster-composer.panels.jsx";
 
+const MONSTER_STAGE_TRANSITION_EXIT_MS = 260;
+const MONSTER_STAGE_TRANSITION_ENTER_MS = 760;
+
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -1128,6 +1131,8 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
   const [, setDraggedFeatureId] = useState(null);
   const [activeSlot, setActiveSlot] = useState("");
   const [composerStageMode, setComposerStageMode] = useState("frame");
+  const [stageTransition, setStageTransition] = useState("");
+  const stageTransitionTimersRef = useRef([]);
   const [customMonsterName, setCustomMonsterName] = useState("");
   const [viewMode, setViewMode] = useState("composer");
   const [advancedMode, setAdvancedMode] = useState(false);
@@ -1183,6 +1188,8 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       setViewMode("export");
     }
   }, [uiMode, viewMode]);
+
+  useEffect(() => () => clearStageTransitionTimers(), []);
 
   const defaultPressureBudget =
     role.budget +
@@ -2090,16 +2097,71 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     />
   );
 
-  function setComposerStageModeFromNavigation(nextStageMode) {
+  function clearStageTransitionTimers() {
+    stageTransitionTimersRef.current.forEach((timerId) => window.clearTimeout(timerId));
+    stageTransitionTimersRef.current = [];
+  }
+
+  function shouldReduceMonsterMotion() {
+    return typeof window !== "undefined"
+      && typeof window.matchMedia === "function"
+      && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function setComposerStageModeImmediately(nextStageMode, { clearSlot = nextStageMode === "grafts" } = {}) {
+    clearStageTransitionTimers();
+    setStageTransition("");
     setComposerStageMode(nextStageMode);
-    if (nextStageMode === "grafts") {
+    if (clearSlot) {
       setActiveSlot("");
     }
   }
 
+  function setComposerStageModeFromNavigation(nextStageMode) {
+    if (!nextStageMode || nextStageMode === composerStageMode) {
+      if (nextStageMode === "grafts") {
+        setActiveSlot("");
+      }
+      return;
+    }
+
+    const transitionName = `${composerStageMode}-to-${nextStageMode}`;
+    const canAnimateStageTransition = composerStarted
+      && viewMode === "composer"
+      && !componentNavigatorOpen
+      && !stageTransition
+      && !shouldReduceMonsterMotion()
+      && (transitionName === "frame-to-grafts" || transitionName === "grafts-to-frame");
+
+    if (!canAnimateStageTransition) {
+      setComposerStageModeImmediately(nextStageMode);
+      return;
+    }
+
+    clearStageTransitionTimers();
+    setStageTransition(`${transitionName}-exit`);
+
+    const exitTimer = window.setTimeout(() => {
+      setComposerStageMode(nextStageMode);
+      if (nextStageMode === "grafts") {
+        setActiveSlot("");
+      }
+      setStageTransition(`${transitionName}-enter`);
+
+      const enterTimer = window.setTimeout(() => {
+        setStageTransition("");
+        stageTransitionTimersRef.current = [];
+      }, MONSTER_STAGE_TRANSITION_ENTER_MS);
+
+      stageTransitionTimersRef.current = [enterTimer];
+    }, MONSTER_STAGE_TRANSITION_EXIT_MS);
+
+    stageTransitionTimersRef.current = [exitTimer];
+  }
+
   function openSlotNavigator(slotId) {
     if (!composerStarted) return;
-    setComposerStageMode("grafts");
+    setComposerStageModeImmediately("grafts", { clearSlot: false });
     setActiveSlot(slotId);
     setNavigatorSlotFilter(slotId);
     setNavigatorSearch("");
@@ -2111,8 +2173,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
 
   function openGlobalNavigator() {
     if (!composerStarted) return;
-    setComposerStageMode("grafts");
-    setActiveSlot("");
+    setComposerStageModeImmediately("grafts");
     setComponentNavigatorMode("global");
     setNavigatorSlotFilter("all");
     setNavigatorSearch("");
@@ -2123,7 +2184,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
 
   function focusSlotWithoutNavigator(slotId) {
     if (!slotId) return;
-    setComposerStageMode("grafts");
+    setComposerStageModeImmediately("grafts", { clearSlot: false });
     setActiveSlot(slotId);
     setNavigatorSlotFilter(slotId);
     setComponentNavigatorOpen(false);
@@ -2356,6 +2417,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
                 startMode={startMode}
                 presetsCount={MONSTER_FAMILY_PRESETS.length}
                 stageMode={composerStageMode}
+                stageTransition={stageTransition}
                 onSetStageMode={setComposerStageModeFromNavigation}
                 creatureType={creatureType}
                 role={role}
@@ -2372,20 +2434,14 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
                 monsterName={computed.name}
                 onMonsterNameChange={setCustomMonsterName}
                 onForgeMonster={forgeMonster}
-                onOpenComponents={() => {
-                  setComposerStageMode("grafts");
-                  openGlobalNavigator();
-                }}
+                onOpenComponents={openGlobalNavigator}
                 onOpenExport={() => setViewMode("export")}
                 onStartOver={composerStarted ? startOver : undefined}
                 composerStarted={composerStarted}
                 onPickTemplate={openTemplatePicker}
                 onBuildFromScratch={startFromScratch}
-                onOpenFrame={() => setComposerStageMode("frame")}
-                onFocusSlot={(slotId) => {
-                  setComposerStageMode("grafts");
-                  openSlotNavigator(slotId);
-                }}
+                onOpenFrame={() => setComposerStageModeFromNavigation("frame")}
+                onFocusSlot={openSlotNavigator}
                 selectType={selectType}
                 setCategory={setCategory}
                 setActivePresetId={setActivePresetId}
@@ -2405,7 +2461,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
                     onOpenBalance={() => setViewMode(uiMode === "debug" ? "balance" : "export")}
                     onOpenExport={() => setViewMode("export")}
                     onOpenTemplates={openTemplatePicker}
-                    onOpenChassis={() => setComposerStageMode("frame")}
+                    onOpenChassis={() => setComposerStageModeFromNavigation("frame")}
                     onOpenGrafts={() => setComposerStageModeFromNavigation("grafts")}
                     onOpenStageExport={() => setViewMode("export")}
                   />

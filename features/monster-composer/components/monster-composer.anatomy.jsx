@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   SLOTS,
   SILHOUETTE_SLOT_CARDS,
@@ -42,6 +42,20 @@ import { MonsterStartScreen } from "./monster-composer.start-flow.jsx";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
+}
+
+function parseSvgViewBox(value) {
+  const parts = String(value || "0 0 100 100")
+    .trim()
+    .split(/[\s,]+/)
+    .map(Number);
+
+  if (parts.length !== 4 || parts.some((part) => !Number.isFinite(part))) {
+    return { x: 0, y: 0, width: 100, height: 100 };
+  }
+
+  const [x, y, width, height] = parts;
+  return { x, y, width: width || 100, height: height || 100 };
 }
 
 const FRAME_NODE_ANCHORS = [
@@ -466,6 +480,7 @@ function AnatomyConnectionLayer({
           key={path.id}
           className={`monster-dynamic-connector ${path.filled ? "is-filled" : ""} ${path.active ? "is-active" : ""} ${path.guided ? "is-guided" : ""} ${hoverSlotId === path.id ? "is-linked-hover" : ""}`}
           d={path.d}
+          pathLength="1"
           onPointerEnter={() => onHoverSlot?.(path.id)}
           onPointerLeave={() => onHoverSlot?.(null)}
         />
@@ -889,6 +904,14 @@ function MonsterSilhouetteCore({
   const frameNodes = getFrameNodeAnchors({ silhouetteId, typeId, category });
   const slotNodeAnchors = getSlotNodeAnchors({ silhouetteId, typeId, category, profile });
   const ariaLabel = `${profile.label}. Open chassis menu.`;
+  const scanId = useId().replace(/[^a-zA-Z0-9_-]/g, "");
+  const scanClipId = `monster-silhouette-scan-clip-${scanId}`;
+  const scanGradientId = `monster-silhouette-scan-gradient-${scanId}`;
+  const bodyLayers = (profile.layers || []).filter((layer) => layer.id !== "aura");
+  const scanViewBox = parseSvgViewBox(profile.viewBox);
+  const scanBandHeight = Math.max(scanViewBox.height * 0.006, 0.8);
+  const scanStartY = scanViewBox.y - scanBandHeight * 1.4;
+  const scanEndY = scanViewBox.y + scanViewBox.height + scanBandHeight * 1.4;
 
   useEffect(() => {
     if (!chassisMenuOpen) return undefined;
@@ -995,6 +1018,13 @@ function MonsterSilhouetteCore({
               aria-hidden="true"
               draggable="false"
             />
+            <img
+              className="monster-silhouette-asset__scan"
+              src={profile.assetUrl}
+              alt=""
+              aria-hidden="true"
+              draggable="false"
+            />
           </button>
         ) : (
           <svg
@@ -1008,6 +1038,20 @@ function MonsterSilhouetteCore({
             onContextMenu={openChassisMenu}
             onKeyDown={handleSilhouetteKeyDown}
           >
+            <defs>
+              <clipPath id={scanClipId}>
+                {bodyLayers.map((layer) => (
+                  <path key={`scan-clip-${layer.id}`} d={layer.d} />
+                ))}
+              </clipPath>
+              <linearGradient id={scanGradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="rgba(240, 185, 194, 0)" />
+                <stop offset="40%" stopColor="rgba(240, 185, 194, 0.18)" />
+                <stop offset="50%" stopColor="rgba(255, 238, 242, 0.82)" />
+                <stop offset="60%" stopColor="rgba(190, 64, 82, 0.26)" />
+                <stop offset="100%" stopColor="rgba(240, 185, 194, 0)" />
+              </linearGradient>
+            </defs>
             <g className="monster-silhouette-aura">
               {profile.layers
                 .filter((layer) => layer.id === "aura")
@@ -1016,15 +1060,30 @@ function MonsterSilhouetteCore({
                 ))}
             </g>
             <g className="monster-silhouette-body">
-              {profile.layers
-                .filter((layer) => layer.id !== "aura")
-                .map((layer) => (
-                  <path
-                    key={layer.id}
-                    className={`silhouette-layer silhouette-layer--${layer.id}`}
-                    d={layer.d}
-                  />
-                ))}
+              {bodyLayers.map((layer) => (
+                <path
+                  key={layer.id}
+                  className={`silhouette-layer silhouette-layer--${layer.id}`}
+                  d={layer.d}
+                />
+              ))}
+            </g>
+            <g className="monster-silhouette-scan" clipPath={`url(#${scanClipId})`} aria-hidden="true">
+              <rect
+                className="monster-silhouette-scan__band"
+                x={scanViewBox.x - scanViewBox.width * 0.15}
+                y={scanStartY}
+                width={scanViewBox.width * 1.3}
+                height={scanBandHeight}
+                fill={`url(#${scanGradientId})`}
+              >
+                <animate
+                  attributeName="y"
+                  values={`${scanStartY};${scanEndY}`}
+                  dur="2.8s"
+                  repeatCount="indefinite"
+                />
+              </rect>
             </g>
           </svg>
         )}
@@ -1481,6 +1540,7 @@ export function MonsterSilhouetteMap({
   startMode,
   presetsCount,
   stageMode = "grafts",
+  stageTransition = "",
   onSetStageMode,
   monsterName,
   onMonsterNameChange,
@@ -1656,6 +1716,7 @@ export function MonsterSilhouetteMap({
             data-active-slot={activeSlot}
             data-start-mode={startMode || "manual"}
             data-stage-mode={stageMode}
+            data-stage-transition={stageTransition || "idle"}
           >
             {isFrameMode ? (
               <div className="anatomy-stage__grid anatomy-stage__grid--frame">
