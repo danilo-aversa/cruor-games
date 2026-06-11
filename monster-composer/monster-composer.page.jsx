@@ -1126,7 +1126,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
   const [startMode, setStartMode] = useState("");
   const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
   const [, setDraggedFeatureId] = useState(null);
-  const [activeSlot, setActiveSlot] = useState("");
+  const [activeSlot, setActiveSlot] = useState("body");
   const [composerStageMode, setComposerStageMode] = useState("frame");
   const [customMonsterName, setCustomMonsterName] = useState("");
   const [viewMode, setViewMode] = useState("composer");
@@ -1653,7 +1653,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     setMonsterTierId(preset.monsterTierId);
     setTempoProfileId(preset.tempoProfileId);
     setSelected(nextSelection);
-    setActiveSlot("");
+    setActiveSlot(Object.keys(nextSelection)[0] || "body");
     setActivePresetId(preset.id);
   }
 
@@ -1684,7 +1684,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     setNavigatorSourceFilters(["decomposition"]);
     setNavigatorFiltersOpen(false);
     setNavigatorPackFilter("all");
-    setActiveSlot("");
+    setActiveSlot("body");
     setViewMode("composer");
   }
 
@@ -1702,7 +1702,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     setNavigatorSourceFilters(["decomposition"]);
     setNavigatorFiltersOpen(false);
     setNavigatorPackFilter("all");
-    setActiveSlot("");
+    setActiveSlot("body");
     setViewMode("composer");
   }
 
@@ -1888,13 +1888,12 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
   const selectedSlotCount = SLOTS.filter((slot) => hasSelectedSlot(selected, slot.id)).length;
   const selectedGraftCount = selectedFeatures.length;
   const slotCompletionPercent = clamp(Math.round((selectedSlotCount / SLOTS.length) * 100), 0, 100);
-  const activeSlotData = SLOTS.find((slot) => slot.id === activeSlot) || null;
-  const activeSlotFeatureIds = activeSlot ? getSelectedIdsForSlot(selected, activeSlot) : [];
+  const activeSlotData = SLOTS.find((slot) => slot.id === activeSlot) || SLOTS[0];
+  const activeSlotFeatureIds = getSelectedIdsForSlot(selected, activeSlot);
   const activeSlotFeatures = activeSlotFeatureIds
     .map((id) => FEATURES.find((feature) => feature.id === id))
     .filter(Boolean);
   const activeSlotAvailableFeatures = useMemo(() => {
-    if (!activeSlot) return [];
     return FEATURES.map((feature) => ({
       feature,
       status: getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset }),
@@ -2090,13 +2089,6 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     />
   );
 
-  function setComposerStageModeFromNavigation(nextStageMode) {
-    setComposerStageMode(nextStageMode);
-    if (nextStageMode === "grafts") {
-      setActiveSlot("");
-    }
-  }
-
   function openSlotNavigator(slotId) {
     if (!composerStarted) return;
     setComposerStageMode("grafts");
@@ -2112,7 +2104,6 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
   function openGlobalNavigator() {
     if (!composerStarted) return;
     setComposerStageMode("grafts");
-    setActiveSlot("");
     setComponentNavigatorMode("global");
     setNavigatorSlotFilter("all");
     setNavigatorSearch("");
@@ -2331,7 +2322,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
           viewMode={viewMode}
           onSetViewMode={setViewMode}
           composerStageMode={composerStageMode}
-          onSetComposerStageMode={setComposerStageModeFromNavigation}
+          onSetComposerStageMode={setComposerStageMode}
           uiMode={uiMode}
           liveExportPopoutOpen={liveExportPopoutOpen}
           onToggleLiveExportPopout={() => setLiveExportPopoutOpen((open) => !open)}
@@ -2350,13 +2341,13 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
                 selected={selected}
                 activeSlot={activeSlot}
                 features={FEATURES}
-                guidedSlotId={activeSlot ? guidedFlow.recommendedSlotId : ""}
+                guidedSlotId={guidedFlow.recommendedSlotId}
                 computed={computed}
                 started={composerStarted}
                 startMode={startMode}
                 presetsCount={MONSTER_FAMILY_PRESETS.length}
                 stageMode={composerStageMode}
-                onSetStageMode={setComposerStageModeFromNavigation}
+                onSetStageMode={setComposerStageMode}
                 creatureType={creatureType}
                 role={role}
                 roleId={roleId}
@@ -2406,13 +2397,13 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
                     onOpenExport={() => setViewMode("export")}
                     onOpenTemplates={openTemplatePicker}
                     onOpenChassis={() => setComposerStageMode("frame")}
-                    onOpenGrafts={() => setComposerStageModeFromNavigation("grafts")}
+                    onOpenGrafts={() => setComposerStageMode("grafts")}
                     onOpenStageExport={() => setViewMode("export")}
                   />
                 )}
               />
 
-              {composerStarted && composerStageMode === "grafts" && activeSlotData && (
+              {composerStarted && composerStageMode === "grafts" && (
                 <GraftInspector
                   slot={activeSlotData}
                   features={activeSlotFeatures}

@@ -172,7 +172,9 @@ export default function AppRouter() {
       className={
         activeCrucibleGenerator === "darken" && activeDarkenTab === "map-generator"
           ? "darken-workspace crucible-workspace is-map-tab"
-          : "darken-workspace crucible-workspace"
+          : activeCrucibleGenerator === "darken"
+            ? "darken-workspace crucible-workspace"
+            : "monster-crucible-workspace crucible-workspace"
       }
       aria-label="Crucible workspace"
       data-active-generator={activeCrucibleGenerator}

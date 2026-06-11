@@ -1416,16 +1416,12 @@ function GraftInfoPanel({
   activeSlot,
   features = [],
 }) {
-  const slot = SLOTS.find((item) => item.id === activeSlot) || null;
+  const slot = SLOTS.find((item) => item.id === activeSlot) || SLOTS[0];
   const availableFeatures = Array.isArray(features) ? features : [];
-  const slotFeatures = slot
-    ? getSelectedIdsForSlot(selected, slot.id)
-        .map((id) => availableFeatures.find((feature) => feature.id === id))
-        .filter(Boolean)
-    : [];
-  const candidates = slot
-    ? availableFeatures.filter((feature) => feature.slot === slot.id).length
-    : SLOTS.reduce((total, item) => total + availableFeatures.filter((feature) => feature.slot === item.id).length, 0);
+  const slotFeatures = getSelectedIdsForSlot(selected, slot.id)
+    .map((id) => availableFeatures.find((feature) => feature.id === id))
+    .filter(Boolean);
+  const candidates = availableFeatures.filter((feature) => feature.slot === slot.id).length;
 
   return (
     <aside className="anatomy-stage__column anatomy-stage__column--right monster-frame-info monster-graft-info" aria-label="Current monster information">
@@ -1449,9 +1445,9 @@ function GraftInfoPanel({
       <section className="monster-frame-info-card">
         <div className="monster-graft-focus">
           <span>Focused Slot</span>
-          <strong>{slot ? slot.label : "No Slot Selected"}</strong>
-          <p>{slot ? slotFeatures[0]?.title || slot.hint : "Choose a graft slot to inspect its installed feature and compatible alternatives."}</p>
-          <em>{slot ? slotFeatures.length ? `${slotFeatures.length} installed` : `${candidates} compatible grafts` : `${candidates} compatible grafts available`}</em>
+          <strong>{slot.label}</strong>
+          <p>{slotFeatures[0]?.title || slot.hint}</p>
+          <em>{slotFeatures.length ? `${slotFeatures.length} installed` : `${candidates} compatible grafts`}</em>
         </div>
       </section>
 

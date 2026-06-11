@@ -2540,8 +2540,6 @@
 .monster-shell .monster-anatomy-composer {
   display: grid;
   gap: 12px;
-  min-height: 0;
-  height: var(--monster-stage-viewport-height);
   margin-bottom: 14px;
 }
 
@@ -2550,7 +2548,7 @@
   display: grid;
   align-content: center;
   gap: 26px;
-  min-height: 0;
+  min-height: clamp(520px, 64vh, 760px);
   overflow: hidden;
   border: 1px solid rgba(255, 238, 242, 0.06);
   background: linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px), linear-gradient(180deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px), radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 22rem), radial-gradient(circle at 50% 84%, rgba(95, 7, 22, 0.22), transparent 20rem), rgba(0, 0, 0, 0.18);
@@ -4163,7 +4161,6 @@
   --display: var(--cruor-font-display, "Lovato-Black", Georgia, "Times New Roman", serif);
   --monster-workspace-max: var(--cruor-workspace-max, 1540px);
   --monster-shell-bar-height: var(--cruor-shell-bar-height, 62px);
-  --monster-stage-viewport-height: calc(100dvh - var(--monster-shell-bar-height, var(--app-shell-bar-height, 62px)) - clamp(12px, 1.35vw, 20px));
   --monster-command-bar-height: var(--cruor-command-bar-height, 190px);
   --monster-drawer-width: var(--cruor-drawer-width, 390px);
   --monster-modal-width: var(--cruor-modal-width, 1080px);
@@ -7272,12 +7269,12 @@
   gap: 22px;
   grid-template-columns: minmax(0, 1fr);
   max-width: none;
-  min-height: var(--monster-stage-viewport-height);
+  min-height: calc(100dvh - var(--monster-shell-bar-height, var(--app-shell-bar-height, 62px)) - clamp(12px, 1.35vw, 20px));
 }
 
 .monster-shell .build-canvas.monster-canvas {
   width: 100%;
-  min-height: var(--monster-stage-viewport-height);
+  min-height: calc(100dvh - var(--monster-shell-bar-height, var(--app-shell-bar-height, 62px)) - clamp(12px, 1.35vw, 20px));
   border: 0;
   background: transparent;
   background-image: none;
@@ -7542,36 +7539,31 @@
   transform: none;
 }
 
-.monster-shell:has(.monster-silhouette-stage.anatomy-stage),
-.monster-shell[data-composer-started="false"] {
+.monster-shell:has(.monster-silhouette-stage.anatomy-stage) {
   height: 100%;
   min-height: 0;
   overflow: hidden;
 }
 
-.monster-shell:has(.monster-silhouette-stage.anatomy-stage) .build-canvas.monster-canvas,
-.monster-shell[data-composer-started="false"] .build-canvas.monster-canvas {
+.monster-shell:has(.monster-silhouette-stage.anatomy-stage) .build-canvas.monster-canvas {
   height: 100%;
   min-height: 0;
   overflow: hidden;
 }
 
-.monster-shell:has(.monster-silhouette-stage.anatomy-stage) .monster-anatomy-composer,
-.monster-shell[data-composer-started="false"] .monster-anatomy-composer {
+.monster-shell:has(.monster-silhouette-stage.anatomy-stage) .monster-anatomy-composer {
   height: 100%;
   min-height: 0;
   overflow: hidden;
 }
 
-.monster-shell:has(.monster-silhouette-stage.anatomy-stage) .monster-layout,
-.monster-shell[data-composer-started="false"] .monster-layout {
+.monster-shell:has(.monster-silhouette-stage.anatomy-stage) .monster-layout {
   height: 100%;
   min-height: 0;
   overflow: hidden;
 }
 
-.monster-shell:has(.monster-silhouette-stage.anatomy-stage) .monster-workspace,
-.monster-shell[data-composer-started="false"] .monster-workspace {
+.monster-shell:has(.monster-silhouette-stage.anatomy-stage) .monster-workspace {
   height: 100%;
   min-height: 0;
   overflow: hidden;
@@ -7580,7 +7572,7 @@
 /* Tokens */
 
 .monster-shell .monster-silhouette-stage.anatomy-stage {
-  --stage-viewport-height: var(--monster-stage-viewport-height);
+  --stage-viewport-height: calc(100dvh - var(--monster-shell-bar-height, var(--app-shell-bar-height, 62px)) - clamp(12px, 1.35vw, 20px));
   --stage-pad: var(--cruor-composer-frame-pad, clamp(10px, 1.15vw, 18px));
   --stage-gap: var(--cruor-composer-frame-column-gap, clamp(14px, 2vw, 24px));
   --stage-left-width: var(--cruor-composer-frame-side-column-width, 340px);
@@ -9753,7 +9745,7 @@
   }
 
   .monster-shell .monster-start-screen {
-    min-height: 0;
+    min-height: 430px;
     padding: 18px;
   }
 

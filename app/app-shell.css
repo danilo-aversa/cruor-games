@@ -176,6 +176,10 @@
   display: none;
 }
 
+.monster-crucible-workspace > [role="tabpanel"][hidden] {
+  display: none;
+}
+
 .app-shell__placeholder {
   padding: clamp(18px, 4vw, 44px);
 }
@@ -312,6 +316,15 @@
   gap: 0;
   min-height: calc(100dvh - var(--app-shell-bar-height));
   padding-top: calc(var(--darken-workspace-topbar-height) + var(--darken-workspace-panel-gap));
+}
+
+
+.monster-crucible-workspace {
+  --monster-crucible-workspace-max: var(--cruor-workspace-max, 1540px);
+  display: grid;
+  gap: 0;
+  min-height: calc(100dvh - var(--app-shell-bar-height));
+  padding-top: clamp(10px, 1vw, 16px);
 }
 
 /* Layout */
@@ -1917,8 +1930,7 @@
     overflow: hidden;
   }
 
-  .app-shell:has(#monsterComposerPanel) .darken-workspace {
-    --darken-workspace-topbar-height: 0px;
+  .app-shell:has(#monsterComposerPanel) .monster-crucible-workspace {
     height: 100%;
     min-height: 0;
     overflow: hidden;
