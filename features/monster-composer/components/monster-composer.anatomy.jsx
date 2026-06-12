@@ -8,7 +8,7 @@ import {
 } from "../monster-composer.workflow.js";
 import { getSelectedIdsForSlot, hasSelectedSlot } from "../model/monster-composer.selection.js";
 import { normalizeMonsterReferences } from "../model/monster-composer.export.js";
-import { getSilhouetteAnchor, getSilhouetteId, getSilhouetteProfile } from "../model/anatomy.js";
+import { getSilhouetteAnchor, getSilhouetteDecorations, getSilhouetteId, getSilhouetteProfile } from "../model/anatomy.js";
 import {
   CREATURE_TYPES,
   DANGERS,
@@ -858,8 +858,25 @@ function FrameTooltip({ title = "Info", text, items = "" }) {
 }
 
 function FrameCrControl({ value, setTargetCr, setActivePresetId }) {
+  const [draftValue, setDraftValue] = useState(value);
+  const isDraggingRef = useRef(false);
+
+  useEffect(() => {
+    setDraftValue(value);
+  }, [value]);
+
+  function normalize(nextValue) {
+    return clamp(Number(nextValue || 0), 0, 30);
+  }
+
+  function preview(nextValue) {
+    setDraftValue(normalize(nextValue));
+  }
+
   function commit(nextValue) {
-    setTargetCr(clamp(Number(nextValue || 0), 0, 30));
+    const normalizedValue = normalize(nextValue);
+    setDraftValue(normalizedValue);
+    setTargetCr(normalizedValue);
     setActivePresetId("");
   }
 
@@ -880,16 +897,31 @@ function FrameCrControl({ value, setTargetCr, setActivePresetId }) {
           min="0"
           max="30"
           step="1"
-          value={value}
+          value={draftValue}
           aria-label="Target CR slider"
-          onChange={(event) => commit(event.target.value)}
+          onPointerDown={() => {
+            isDraggingRef.current = true;
+          }}
+          onInput={(event) => preview(event.currentTarget.value)}
+          onChange={(event) => {
+            if (!isDraggingRef.current) commit(event.currentTarget.value);
+          }}
+          onPointerUp={(event) => {
+            isDraggingRef.current = false;
+            commit(event.currentTarget.value);
+          }}
+          onPointerCancel={(event) => {
+            isDraggingRef.current = false;
+            commit(event.currentTarget.value);
+          }}
+          onBlur={(event) => commit(event.currentTarget.value)}
         />
         <input
           className="monster-frame-cr-number"
           type="number"
           min="0"
           max="30"
-          value={value}
+          value={draftValue}
           aria-label="Target CR number"
           onChange={(event) => commit(event.target.value)}
         />
@@ -917,12 +949,18 @@ function MonsterSilhouetteCore({
   selectType,
   setCategory,
   setActivePresetId,
+  stageTransition = "",
 }) {
   const [chassisMenuOpen, setChassisMenuOpen] = useState(false);
   const silhouetteLayerRef = useRef(null);
   const isFrameMode = stageMode === "frame";
   const frameNodes = getFrameNodeAnchors({ silhouetteId, typeId, category });
   const slotNodeAnchors = getSlotNodeAnchors({ silhouetteId, typeId, category, profile });
+  const stageTransitionToken = String(stageTransition || "").toLowerCase();
+  const keepDecorationsVisibleDuringTransition =
+    stageTransitionToken && stageTransitionToken !== "idle" && stageTransitionToken.includes("frame");
+  const showAnatomyDecorations = isFrameMode || keepDecorationsVisibleDuringTransition;
+  const anatomyDecorations = getSilhouetteDecorations(typeId, category);
   const ariaLabel = `${profile.label}. Open chassis menu.`;
   const [inlineAssetProfile, setInlineAssetProfile] = useState(null);
   const silhouetteRenderProfile = inlineAssetProfile || profile;
@@ -933,9 +971,10 @@ function MonsterSilhouetteCore({
   const scanGridMaskId = `monster-silhouette-scan-grid-mask-${scanId}`;
   const bodyLayers = (silhouetteRenderProfile.layers || []).filter((layer) => layer.id !== "aura");
   const scanViewBox = parseSvgViewBox(silhouetteRenderProfile.viewBox);
-  const scanTravelDurationSeconds = 1.267;
-  const scanIdleDurationSeconds = 2;
-  const scanCycleDurationSeconds = scanTravelDurationSeconds + scanIdleDurationSeconds;
+  const scanTravelDurationSeconds = 0.72;
+  const scanFadeDurationSeconds = 0.18;
+  const scanCycleDurationSeconds = scanTravelDurationSeconds + scanFadeDurationSeconds;
+  const scanPulseDurationMs = Math.ceil(scanCycleDurationSeconds * 1000);
   const scanActiveRatio = scanTravelDurationSeconds / scanCycleDurationSeconds;
   const scanBandHeight = Math.max(scanViewBox.height * 0.021, 2.1);
   const scanGridBandHeight = Math.max(scanViewBox.height * 0.1755, 24);
@@ -946,6 +985,38 @@ function MonsterSilhouetteCore({
   const scanGridEndY = scanEndY - scanGridOffset;
   const scanCycleDuration = `${scanCycleDurationSeconds}s`;
   const scanActiveRatioLabel = String(scanActiveRatio);
+  const isTransitionScanRequested = Boolean(stageTransition && stageTransition !== "idle");
+  const [scanPulseActive, setScanPulseActive] = useState(false);
+  const [scanPulseId, setScanPulseId] = useState(0);
+  const scanPulseTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    if (!isTransitionScanRequested) return undefined;
+
+    if (scanPulseTimeoutRef.current) {
+      window.clearTimeout(scanPulseTimeoutRef.current);
+    }
+
+    setScanPulseActive(true);
+    setScanPulseId((current) => current + 1);
+
+    scanPulseTimeoutRef.current = window.setTimeout(() => {
+      setScanPulseActive(false);
+      scanPulseTimeoutRef.current = null;
+    }, scanPulseDurationMs);
+
+    return undefined;
+  }, [isTransitionScanRequested, scanPulseDurationMs, stageTransition]);
+
+  useEffect(() => {
+    return () => {
+      if (scanPulseTimeoutRef.current) {
+        window.clearTimeout(scanPulseTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const isScanActive = scanPulseActive;
 
   useEffect(() => {
     if (!chassisMenuOpen) return undefined;
@@ -1054,9 +1125,30 @@ function MonsterSilhouetteCore({
   return (
     <div className="anatomy-stage__center" aria-label="Interactive monster silhouette">
       <div
-        className={`anatomy-stage__silhouette-layer ${chassisMenuOpen ? "has-chassis-menu-open" : ""}`}
+        className={`anatomy-stage__silhouette-layer ${chassisMenuOpen ? "has-chassis-menu-open" : ""} ${showAnatomyDecorations ? "is-anatomy-decorations-visible" : "is-anatomy-decorations-hidden"}`}
         ref={silhouetteLayerRef}
       >
+        {anatomyDecorations.map((decoration) => (
+          <div
+            key={decoration.id}
+            className={`monster-anatomy-decoration monster-anatomy-decoration--${decoration.id}`}
+            aria-hidden="true"
+          >
+            <svg className="monster-anatomy-decoration__plate" viewBox={decoration.viewBox} focusable="false">
+              <g className="monster-anatomy-decoration__body">
+                {(decoration.layers || []).map((layer) => (
+                  <path key={layer.id} d={layer.d} />
+                ))}
+              </g>
+            </svg>
+            {decoration.note ? (
+              <p className="monster-anatomy-decoration__caption">
+                <span>{decoration.note}</span>
+              </p>
+            ) : null}
+          </div>
+        ))}
+
         {isFrameMode ? (
           <svg
             className="monster-silhouette-connectors"
@@ -1094,11 +1186,13 @@ function MonsterSilhouetteCore({
               aria-hidden="true"
               draggable="false"
             />
-            <span
-              className="monster-silhouette-asset__scan"
-              aria-hidden="true"
-              style={{ "--monster-silhouette-mask": `url(${profile.assetUrl})` }}
-            />
+            {isScanActive ? (
+              <span
+                className="monster-silhouette-asset__scan"
+                aria-hidden="true"
+                style={{ "--monster-silhouette-mask": `url(${profile.assetUrl})` }}
+              />
+            ) : null}
           </button>
         ) : (
           <svg
@@ -1112,13 +1206,14 @@ function MonsterSilhouetteCore({
             onContextMenu={openChassisMenu}
             onKeyDown={handleSilhouetteKeyDown}
           >
-            <defs>
-              <clipPath id={scanClipId}>
-                {bodyLayers.map((layer) => (
-                  <path key={`scan-clip-${layer.id}`} d={layer.d} />
-                ))}
-              </clipPath>
-              <linearGradient id={scanGradientId} x1="0%" y1="0%" x2="0%" y2="100%">
+            {isScanActive ? (
+              <defs>
+                <clipPath id={scanClipId}>
+                  {bodyLayers.map((layer) => (
+                    <path key={`scan-clip-${layer.id}`} d={layer.d} />
+                  ))}
+                </clipPath>
+                <linearGradient id={scanGradientId} x1="0%" y1="0%" x2="0%" y2="100%">
                 <stop offset="0%" stopColor="rgba(240, 185, 194, 0)" />
                 <stop offset="28%" stopColor="rgba(190, 64, 82, 0.1)" />
                 <stop offset="44%" stopColor="rgba(240, 185, 194, 0.32)" />
@@ -1169,18 +1264,21 @@ function MonsterSilhouetteCore({
                     values={`${scanGridStartY};${scanGridEndY};${scanGridEndY}`}
                     keyTimes={`0;${scanActiveRatioLabel};1`}
                     dur={scanCycleDuration}
-                    repeatCount="indefinite"
+                    repeatCount="1"
+                  fill="freeze"
                   />
                   <animate
                     attributeName="opacity"
-                    values={`0;0.68;1;0.78;0;0`}
-                    keyTimes={`0;0.05;${scanActiveRatioLabel * 0.46};${scanActiveRatioLabel * 0.9};${scanActiveRatioLabel};1`}
+                    values={`0;0.68;1;1;0`}
+                    keyTimes={`0;0.05;${scanActiveRatioLabel * 0.46};${scanActiveRatioLabel};1`}
                     dur={scanCycleDuration}
-                    repeatCount="indefinite"
+                    repeatCount="1"
+                  fill="freeze"
                   />
                 </rect>
-              </mask>
-            </defs>
+                </mask>
+              </defs>
+            ) : null}
             <g className="monster-silhouette-aura">
               {(silhouetteRenderProfile.layers || [])
                 .filter((layer) => layer.id === "aura")
@@ -1197,7 +1295,8 @@ function MonsterSilhouetteCore({
                 />
               ))}
             </g>
-            <g className="monster-silhouette-scan" clipPath={`url(#${scanClipId})`} aria-hidden="true">
+            {isScanActive ? (
+              <g key={scanPulseId} className="monster-silhouette-scan" clipPath={`url(#${scanClipId})`} aria-hidden="true">
               <rect
                 className="monster-silhouette-scan__band"
                 x={scanViewBox.x - scanViewBox.width * 0.15}
@@ -1213,14 +1312,16 @@ function MonsterSilhouetteCore({
                   values={`${scanGridStartY};${scanGridEndY};${scanGridEndY}`}
                   keyTimes={`0;${scanActiveRatioLabel};1`}
                   dur={scanCycleDuration}
-                  repeatCount="indefinite"
+                  repeatCount="1"
+                  fill="freeze"
                 />
                 <animate
                   attributeName="opacity"
-                  values={`0;0.68;1;0.78;0;0`}
-                  keyTimes={`0;0.05;${scanActiveRatioLabel * 0.46};${scanActiveRatioLabel * 0.9};${scanActiveRatioLabel};1`}
+                  values={`0;0.68;1;1;0`}
+                  keyTimes={`0;0.05;${scanActiveRatioLabel * 0.46};${scanActiveRatioLabel};1`}
                   dur={scanCycleDuration}
-                  repeatCount="indefinite"
+                  repeatCount="1"
+                  fill="freeze"
                 />
               </rect>
               <rect
@@ -1236,17 +1337,20 @@ function MonsterSilhouetteCore({
                   values={`${scanStartY};${scanEndY};${scanEndY}`}
                   keyTimes={`0;${scanActiveRatioLabel};1`}
                   dur={scanCycleDuration}
-                  repeatCount="indefinite"
+                  repeatCount="1"
+                  fill="freeze"
                 />
                 <animate
                   attributeName="opacity"
-                  values={`0;0.68;1;0.78;0;0`}
-                  keyTimes={`0;0.05;${scanActiveRatioLabel * 0.46};${scanActiveRatioLabel * 0.9};${scanActiveRatioLabel};1`}
+                  values={`0;0.68;1;1;0`}
+                  keyTimes={`0;0.05;${scanActiveRatioLabel * 0.46};${scanActiveRatioLabel};1`}
                   dur={scanCycleDuration}
-                  repeatCount="indefinite"
+                  repeatCount="1"
+                  fill="freeze"
                 />
               </rect>
-            </g>
+              </g>
+            ) : null}
           </svg>
         )}
 
@@ -1859,6 +1963,7 @@ export function MonsterSilhouetteMap({
         selectType={selectType}
         setCategory={setCategory}
         setActivePresetId={setActivePresetId}
+        stageTransition={stageTransition}
       />
     );
   }

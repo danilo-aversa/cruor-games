@@ -1,4 +1,4 @@
-import { BASE_SILHOUETTE_ANCHORS, MONSTER_SILHOUETTES } from "../data/monster-silhouettes.js";
+import { BASE_SILHOUETTE_ANCHORS, MONSTER_ANATOMY_DECORATIONS, MONSTER_SILHOUETTES } from "../data/monster-silhouettes.js";
 
 function asArray(value) {
   if (!value) return [];
@@ -294,6 +294,13 @@ export const MONSTER_ANATOMY_GRANT_FIELDS = Object.freeze([
 export function getSilhouetteId(typeId, category, activePreset = null) {
   if (activePreset?.silhouetteId) return activePreset.silhouetteId;
 
+  const categoryId = normalizeKebab(category);
+
+  if (categoryId === "zombie") return "zombie";
+  if (categoryId === "skeleton") return "skeleton";
+  if (categoryId === "spirit" || categoryId === "ghost" || categoryId === "wraith") return "spirit";
+  if (categoryId === "spider") return "spider";
+
   const familyHints = [
     category,
     activePreset?.family,
@@ -313,6 +320,14 @@ export function getSilhouetteId(typeId, category, activePreset = null) {
   ) {
     return "spirit";
   }
+  if (
+    familyHints.includes("zombie") ||
+    familyHints.includes("corpse") ||
+    familyHints.includes("bloated") ||
+    familyHints.includes("decomposition")
+  ) {
+    return "zombie";
+  }
 
   return typeId;
 }
@@ -320,6 +335,11 @@ export function getSilhouetteId(typeId, category, activePreset = null) {
 export function getSilhouetteProfile(typeId, category, activePreset = null) {
   const silhouetteId = getSilhouetteId(typeId, category, activePreset);
   return MONSTER_SILHOUETTES[silhouetteId] || MONSTER_SILHOUETTES[typeId] || MONSTER_SILHOUETTES.undead;
+}
+
+export function getSilhouetteDecorations(typeId, category, activePreset = null) {
+  const silhouetteId = getSilhouetteId(typeId, category, activePreset);
+  return MONSTER_ANATOMY_DECORATIONS[silhouetteId] || MONSTER_ANATOMY_DECORATIONS[typeId] || [];
 }
 
 export function getSilhouetteAnchor(profile, slotId) {
