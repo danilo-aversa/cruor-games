@@ -58,6 +58,26 @@ function parseSvgViewBox(value) {
   return { x, y, width: width || 100, height: height || 100 };
 }
 
+function parseInlineSilhouetteAsset(svgText) {
+  const source = String(svgText || "");
+  const viewBoxMatch = source.match(/\bviewBox\s*=\s*["']([^"']+)["']/i);
+  const layers = [...source.matchAll(/<path\b[^>]*\sd\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*>/gi)]
+    .map((match, index) => ({
+      id: index === 0 ? "body" : `body-${index + 1}`,
+      d: String(match[1] || match[2] || "").trim(),
+    }))
+    .filter((layer) => layer.d);
+
+  if (!viewBoxMatch?.[1] || layers.length === 0) {
+    return null;
+  }
+
+  return {
+    viewBox: viewBoxMatch[1],
+    layers,
+  };
+}
+
 const FRAME_NODE_ANCHORS = [
   { id: "family", label: "Family", x: 0.5, y: 0.17, icon: Activity },
   { id: "variant", label: "Variant", x: 0.55, y: 0.31, icon: Sparkles },
@@ -904,14 +924,28 @@ function MonsterSilhouetteCore({
   const frameNodes = getFrameNodeAnchors({ silhouetteId, typeId, category });
   const slotNodeAnchors = getSlotNodeAnchors({ silhouetteId, typeId, category, profile });
   const ariaLabel = `${profile.label}. Open chassis menu.`;
+  const [inlineAssetProfile, setInlineAssetProfile] = useState(null);
+  const silhouetteRenderProfile = inlineAssetProfile || profile;
   const scanId = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const scanClipId = `monster-silhouette-scan-clip-${scanId}`;
   const scanGradientId = `monster-silhouette-scan-gradient-${scanId}`;
-  const bodyLayers = (profile.layers || []).filter((layer) => layer.id !== "aura");
-  const scanViewBox = parseSvgViewBox(profile.viewBox);
-  const scanBandHeight = Math.max(scanViewBox.height * 0.006, 0.8);
-  const scanStartY = scanViewBox.y - scanBandHeight * 1.4;
-  const scanEndY = scanViewBox.y + scanViewBox.height + scanBandHeight * 1.4;
+  const scanGridPatternId = `monster-silhouette-scan-grid-${scanId}`;
+  const scanGridMaskId = `monster-silhouette-scan-grid-mask-${scanId}`;
+  const bodyLayers = (silhouetteRenderProfile.layers || []).filter((layer) => layer.id !== "aura");
+  const scanViewBox = parseSvgViewBox(silhouetteRenderProfile.viewBox);
+  const scanTravelDurationSeconds = 1.267;
+  const scanIdleDurationSeconds = 2;
+  const scanCycleDurationSeconds = scanTravelDurationSeconds + scanIdleDurationSeconds;
+  const scanActiveRatio = scanTravelDurationSeconds / scanCycleDurationSeconds;
+  const scanBandHeight = Math.max(scanViewBox.height * 0.021, 2.1);
+  const scanGridBandHeight = Math.max(scanViewBox.height * 0.1755, 24);
+  const scanGridOffset = (scanGridBandHeight - scanBandHeight) / 2;
+  const scanStartY = scanViewBox.y - scanGridBandHeight;
+  const scanEndY = scanViewBox.y + scanViewBox.height + scanGridBandHeight;
+  const scanGridStartY = scanStartY - scanGridOffset;
+  const scanGridEndY = scanEndY - scanGridOffset;
+  const scanCycleDuration = `${scanCycleDurationSeconds}s`;
+  const scanActiveRatioLabel = String(scanActiveRatio);
 
   useEffect(() => {
     if (!chassisMenuOpen) return undefined;
@@ -939,6 +973,48 @@ function MonsterSilhouetteCore({
   useEffect(() => {
     setChassisMenuOpen(false);
   }, [typeId, category, stageMode]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!profile.assetUrl) {
+      setInlineAssetProfile(null);
+      return undefined;
+    }
+
+    setInlineAssetProfile(null);
+
+    fetch(profile.assetUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Unable to load silhouette asset: ${response.status}`);
+        }
+        return response.text();
+      })
+      .then((svgText) => {
+        if (cancelled) return;
+        const parsed = parseInlineSilhouetteAsset(svgText);
+        setInlineAssetProfile(
+          parsed
+            ? {
+                ...profile,
+                assetUrl: "",
+                viewBox: parsed.viewBox,
+                layers: parsed.layers,
+              }
+            : null,
+        );
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setInlineAssetProfile(null);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [profile.assetUrl, profile.label, profile.viewBox]);
 
   function openChassisMenu(event) {
     event.preventDefault();
@@ -1001,7 +1077,7 @@ function MonsterSilhouetteCore({
           </svg>
         ) : null}
 
-        {profile.assetUrl ? (
+        {profile.assetUrl && !inlineAssetProfile ? (
           <button
             className={`monster-silhouette-svg monster-silhouette-asset monster-silhouette-svg--${silhouetteId}`}
             type="button"
@@ -1018,18 +1094,16 @@ function MonsterSilhouetteCore({
               aria-hidden="true"
               draggable="false"
             />
-            <img
+            <span
               className="monster-silhouette-asset__scan"
-              src={profile.assetUrl}
-              alt=""
               aria-hidden="true"
-              draggable="false"
+              style={{ "--monster-silhouette-mask": `url(${profile.assetUrl})` }}
             />
           </button>
         ) : (
           <svg
             className={`monster-silhouette-svg monster-silhouette-svg--${silhouetteId}`}
-            viewBox={profile.viewBox}
+            viewBox={silhouetteRenderProfile.viewBox}
             role="button"
             tabIndex={0}
             aria-label={ariaLabel}
@@ -1044,16 +1118,71 @@ function MonsterSilhouetteCore({
                   <path key={`scan-clip-${layer.id}`} d={layer.d} />
                 ))}
               </clipPath>
-              <linearGradient id={scanGradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+              <linearGradient id={scanGradientId} x1="0%" y1="0%" x2="0%" y2="100%">
                 <stop offset="0%" stopColor="rgba(240, 185, 194, 0)" />
-                <stop offset="40%" stopColor="rgba(240, 185, 194, 0.18)" />
-                <stop offset="50%" stopColor="rgba(255, 238, 242, 0.82)" />
-                <stop offset="60%" stopColor="rgba(190, 64, 82, 0.26)" />
+                <stop offset="28%" stopColor="rgba(190, 64, 82, 0.1)" />
+                <stop offset="44%" stopColor="rgba(240, 185, 194, 0.32)" />
+                <stop offset="49.2%" stopColor="rgba(255, 238, 242, 0.96)" />
+                <stop offset="50%" stopColor="rgba(255, 255, 255, 1)" />
+                <stop offset="50.8%" stopColor="rgba(255, 238, 242, 0.96)" />
+                <stop offset="56%" stopColor="rgba(240, 185, 194, 0.32)" />
+                <stop offset="72%" stopColor="rgba(190, 64, 82, 0.1)" />
                 <stop offset="100%" stopColor="rgba(240, 185, 194, 0)" />
               </linearGradient>
+              <pattern
+                id={scanGridPatternId}
+                x={scanViewBox.x}
+                y={scanViewBox.y}
+                width={Math.max(scanViewBox.width / 18, 8)}
+                height={Math.max(scanViewBox.height / 26, 8)}
+                patternUnits="userSpaceOnUse"
+              >
+                <path
+                  d={`M ${Math.max(scanViewBox.width / 18, 8)} 0 L 0 0 0 ${Math.max(scanViewBox.height / 26, 8)}`}
+                  fill="none"
+                  stroke="rgba(255, 244, 246, 0.9)"
+                  strokeWidth="1.05"
+                  vectorEffect="non-scaling-stroke"
+                />
+              </pattern>
+              <mask id={scanGridMaskId} maskUnits="userSpaceOnUse">
+                <linearGradient id={`${scanGridMaskId}-gradient`} x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="rgba(255,255,255,0)" />
+                  <stop offset="10%" stopColor="rgba(255,255,255,0.08)" />
+                  <stop offset="24%" stopColor="rgba(255,255,255,0.26)" />
+                  <stop offset="38%" stopColor="rgba(255,255,255,0.58)" />
+                  <stop offset="50%" stopColor="rgba(255,255,255,1)" />
+                  <stop offset="62%" stopColor="rgba(255,255,255,0.58)" />
+                  <stop offset="76%" stopColor="rgba(255,255,255,0.26)" />
+                  <stop offset="90%" stopColor="rgba(255,255,255,0.08)" />
+                  <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+                </linearGradient>
+                <rect
+                  x={scanViewBox.x - scanViewBox.width * 0.15}
+                  y={scanGridStartY}
+                  width={scanViewBox.width * 1.3}
+                  height={scanGridBandHeight}
+                  fill={`url(#${scanGridMaskId}-gradient)`}
+                >
+                  <animate
+                    attributeName="y"
+                    values={`${scanGridStartY};${scanGridEndY};${scanGridEndY}`}
+                    keyTimes={`0;${scanActiveRatioLabel};1`}
+                    dur={scanCycleDuration}
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values={`0;0.68;1;0.78;0;0`}
+                    keyTimes={`0;0.05;${scanActiveRatioLabel * 0.46};${scanActiveRatioLabel * 0.9};${scanActiveRatioLabel};1`}
+                    dur={scanCycleDuration}
+                    repeatCount="indefinite"
+                  />
+                </rect>
+              </mask>
             </defs>
             <g className="monster-silhouette-aura">
-              {profile.layers
+              {(silhouetteRenderProfile.layers || [])
                 .filter((layer) => layer.id === "aura")
                 .map((layer) => (
                   <path key={layer.id} d={layer.d} />
@@ -1072,6 +1201,31 @@ function MonsterSilhouetteCore({
               <rect
                 className="monster-silhouette-scan__band"
                 x={scanViewBox.x - scanViewBox.width * 0.15}
+                y={scanGridStartY}
+                width={scanViewBox.width * 1.3}
+                height={scanGridBandHeight}
+                fill={`url(#${scanGridPatternId})`}
+                mask={`url(#${scanGridMaskId})`}
+                opacity="0.98"
+              >
+                <animate
+                  attributeName="y"
+                  values={`${scanGridStartY};${scanGridEndY};${scanGridEndY}`}
+                  keyTimes={`0;${scanActiveRatioLabel};1`}
+                  dur={scanCycleDuration}
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values={`0;0.68;1;0.78;0;0`}
+                  keyTimes={`0;0.05;${scanActiveRatioLabel * 0.46};${scanActiveRatioLabel * 0.9};${scanActiveRatioLabel};1`}
+                  dur={scanCycleDuration}
+                  repeatCount="indefinite"
+                />
+              </rect>
+              <rect
+                className="monster-silhouette-scan__band"
+                x={scanViewBox.x - scanViewBox.width * 0.15}
                 y={scanStartY}
                 width={scanViewBox.width * 1.3}
                 height={scanBandHeight}
@@ -1079,8 +1233,16 @@ function MonsterSilhouetteCore({
               >
                 <animate
                   attributeName="y"
-                  values={`${scanStartY};${scanEndY}`}
-                  dur="2.8s"
+                  values={`${scanStartY};${scanEndY};${scanEndY}`}
+                  keyTimes={`0;${scanActiveRatioLabel};1`}
+                  dur={scanCycleDuration}
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values={`0;0.68;1;0.78;0;0`}
+                  keyTimes={`0;0.05;${scanActiveRatioLabel * 0.46};${scanActiveRatioLabel * 0.9};${scanActiveRatioLabel};1`}
+                  dur={scanCycleDuration}
                   repeatCount="indefinite"
                 />
               </rect>

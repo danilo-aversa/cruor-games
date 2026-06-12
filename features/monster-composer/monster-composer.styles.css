@@ -2804,13 +2804,13 @@
 }
 
 .monster-shell .monster-silhouette-scan {
-  opacity: 0.64;
+  opacity: 0.72;
   mix-blend-mode: screen;
   pointer-events: none;
 }
 
 .monster-shell .monster-silhouette-scan__band {
-  filter: drop-shadow(0 0 2px rgba(240, 185, 194, 0.44));
+  filter: drop-shadow(0 0 1px rgba(255, 238, 242, 0.58)) drop-shadow(0 0 4px rgba(190, 64, 82, 0.28));
 }
 
 .monster-shell .monster-silhouette-svg:focus-visible .monster-silhouette-body path {
@@ -2827,23 +2827,8 @@
   filter: drop-shadow(0 0 8px rgba(190, 64, 82, 0.34));
 }
 
-.monster-shell .monster-silhouette-svg--undead .monster-silhouette-body path {
-  fill: rgba(238, 238, 238, 0.18);
-  stroke: rgba(240, 215, 220, 0.16);
-  stroke-width: 1;
-}
 
-.monster-shell .monster-silhouette-svg--undead:focus-visible .monster-silhouette-body path {
-  fill: rgba(238, 238, 238, 0.24);
-  stroke: rgba(240, 185, 194, 0.5);
-  stroke-width: 1.45;
-}
 
-.monster-shell .monster-silhouette-svg--undead:hover .monster-silhouette-body path {
-  fill: rgba(238, 238, 238, 0.24);
-  stroke: rgba(240, 185, 194, 0.5);
-  stroke-width: 1.45;
-}
 
 .monster-shell .monster-silhouette-svg--beast .monster-silhouette-body path {
   fill: rgba(190, 64, 82, 0.08);
@@ -2886,14 +2871,58 @@
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  object-position: center;
+  overflow: hidden;
   user-select: none;
   pointer-events: none;
-  opacity: 0;
-  filter: brightness(2.35) contrast(1.18) drop-shadow(0 0 5px rgba(240, 185, 194, 0.32));
+  opacity: 1;
+  background: transparent;
+  filter: none;
   mix-blend-mode: screen;
-  animation: monsterSilhouetteAssetScan 2.8s linear infinite;
+  mask-image: var(--monster-silhouette-mask);
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-image: var(--monster-silhouette-mask);
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+}
+
+.monster-shell .monster-silhouette-asset__scan::before,
+.monster-shell .monster-silhouette-asset__scan::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  animation: monsterSilhouetteAssetScan 3.267s linear infinite;
+}
+
+.monster-shell .monster-silhouette-asset__scan::before {
+  height: 14.625%;
+  margin-top: -6.975%;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(255, 238, 242, 0.5) 0 1px, rgba(190, 64, 82, 0.12) 1px 2px, transparent 2px 18px),
+    repeating-linear-gradient(180deg, rgba(255, 238, 242, 0.42) 0 1px, rgba(190, 64, 82, 0.1) 1px 2px, transparent 2px 18px),
+    linear-gradient(180deg,
+      rgba(190, 64, 82, 0) 0%,
+      rgba(190, 64, 82, 0.05) 10%,
+      rgba(240, 185, 194, 0.16) 24%,
+      rgba(255, 238, 242, 0.42) 38%,
+      rgba(255, 248, 250, 0.78) 50%,
+      rgba(255, 238, 242, 0.42) 62%,
+      rgba(240, 185, 194, 0.16) 76%,
+      rgba(190, 64, 82, 0.05) 90%,
+      rgba(190, 64, 82, 0) 100%);
+  filter: drop-shadow(0 0 4px rgba(255, 238, 242, 0.5)) drop-shadow(0 0 10px rgba(190, 64, 82, 0.32));
+  opacity: 0.98;
+}
+
+.monster-shell .monster-silhouette-asset__scan::after {
+  height: 0.675%;
+  background-image: linear-gradient(180deg, rgba(240, 185, 194, 0), rgba(255, 238, 242, 0.98) 42%, #ffffff 50%, rgba(255, 238, 242, 0.98) 58%, rgba(240, 185, 194, 0));
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 5px rgba(240, 185, 194, 0.52));
+  opacity: 1;
 }
 
 .monster-shell .monster-silhouette-asset:focus-visible .monster-silhouette-asset__image {
@@ -4678,7 +4707,6 @@
   text-align: left;
   box-shadow: var(--cruor-ui-card-shadow);
   transition: border-color 0.14s ease, background 0.14s ease, color 0.14s ease, box-shadow 0.14s ease, transform 0.14s ease;
-  border-color: var(--cruor-ui-card-border);
 }
 
 .monster-shell .brief-choice-card.selected {
@@ -12048,21 +12076,24 @@
 @keyframes monsterSilhouetteAssetScan {
   0% {
     opacity: 0;
-    clip-path: inset(0 0 99.55% 0);
+    top: -14%;
   }
-  8% {
-    opacity: 0.5;
+  2% {
+    opacity: 0.68;
   }
-  48% {
-    opacity: 0.58;
-    clip-path: inset(49.775% 0 49.775% 0);
+  18% {
+    opacity: 1;
   }
-  92% {
-    opacity: 0.42;
+  34% {
+    opacity: 0.78;
+  }
+  38.8% {
+    opacity: 0;
+    top: 114%;
   }
   100% {
     opacity: 0;
-    clip-path: inset(99.55% 0 0 0);
+    top: 114%;
   }
 }
 
@@ -12294,3 +12325,101 @@
     display: none !important;
   }
 }
+
+.monster-shell .template-choice-card__button::after {
+  content: "";
+  position: absolute;
+  inset: auto 16px 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(190, 64, 82, 0.72), transparent);
+  opacity: 0;
+  transition: opacity 0.14s ease;
+}
+
+.monster-shell .template-choice-card.active .template-choice-card__button::after {
+  opacity: 1;
+}
+
+.monster-shell .template-choice-card__button:hover::after {
+  opacity: 1;
+}
+
+.monster-shell .template-choice-card__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.monster-shell .template-choice-card__topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.monster-shell .template-choice-card__topline span {
+  color: #8f7278;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.monster-shell .template-choice-card.active .template-choice-card__title-row em {
+  color: #d0a2aa;
+}
+
+.monster-shell .template-choice-card__topline strong {
+  color: #d0a2aa;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.monster-shell .template-choice-card__title-row strong {
+  color: #fff0f2;
+  font-size: 21px;
+  font-weight: 950;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.monster-shell .template-choice-card__title-row em {
+  color: #8f7278;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 238, 242, 0.075);
+  background: rgba(0, 0, 0, 0.2);
+  padding: 5px 7px;
+  font-style: normal;
+}
+
+.monster-shell .template-choice-card__summary {
+  color: rgba(238, 238, 238, 0.58);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.monster-shell .template-choice-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.monster-shell .template-choice-card__meta span {
+  border: 1px solid rgba(255, 238, 242, 0.075);
+  background: rgba(255, 255, 255, 0.025);
+  color: #c8a2a8;
+  padding: 3px 6px;
+  font-size: 9px;
+  font-weight: 850;
+}
+

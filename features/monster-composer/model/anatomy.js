@@ -294,9 +294,25 @@ export const MONSTER_ANATOMY_GRANT_FIELDS = Object.freeze([
 export function getSilhouetteId(typeId, category, activePreset = null) {
   if (activePreset?.silhouetteId) return activePreset.silhouetteId;
 
-  const normalizedCategory = String(category || "").toLowerCase();
-  if (normalizedCategory.includes("spider")) return "spider";
-  if (normalizedCategory.includes("skeleton") || normalizedCategory.includes("bone")) return "skeleton";
+  const familyHints = [
+    category,
+    activePreset?.family,
+    activePreset?.category,
+    activePreset?.label,
+    typeId,
+  ]
+    .map((value) => String(value || "").toLowerCase())
+    .join(" ");
+
+  if (familyHints.includes("spider")) return "spider";
+  if (familyHints.includes("skeleton") || familyHints.includes("bone")) return "skeleton";
+  if (
+    familyHints.includes("spirit") ||
+    familyHints.includes("ghost") ||
+    familyHints.includes("wraith")
+  ) {
+    return "spirit";
+  }
 
   return typeId;
 }
