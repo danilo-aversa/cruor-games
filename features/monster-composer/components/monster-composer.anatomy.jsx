@@ -44,6 +44,10 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
+function classNames(...values) {
+  return values.filter(Boolean).join(" ");
+}
+
 function parseSvgViewBox(value) {
   const parts = String(value || "0 0 100 100")
     .trim()
@@ -495,10 +499,17 @@ function AnatomyConnectionLayer({
       preserveAspectRatio="none"
       aria-hidden="true"
     >
-      {layout.paths.map((path) => (
+      {layout.paths.map((path, index) => (
         <path
-          key={path.id}
-          className={`monster-dynamic-connector ${path.filled ? "is-filled" : ""} ${path.active ? "is-active" : ""} ${path.guided ? "is-guided" : ""} ${hoverSlotId === path.id ? "is-linked-hover" : ""}`}
+          key={`${dependencyKey}:${path.id}:${path.d}`}
+          className={classNames(
+            "monster-dynamic-connector",
+            path.filled ? "is-filled" : "is-empty",
+            path.active && "is-active",
+            path.guided && "is-guided",
+            hoverSlotId === path.id && "is-linked-hover",
+          )}
+          style={{ "--monster-connector-delay": `${180 + index * 55}ms` }}
           d={path.d}
           pathLength="1"
           onPointerEnter={() => onHoverSlot?.(path.id)}
@@ -956,11 +967,22 @@ function MonsterSilhouetteCore({
   const isFrameMode = stageMode === "frame";
   const frameNodes = getFrameNodeAnchors({ silhouetteId, typeId, category });
   const slotNodeAnchors = getSlotNodeAnchors({ silhouetteId, typeId, category, profile });
-  const stageTransitionToken = String(stageTransition || "").toLowerCase();
-  const keepDecorationsVisibleDuringTransition =
-    stageTransitionToken && stageTransitionToken !== "idle" && stageTransitionToken.includes("frame");
-  const showAnatomyDecorations = isFrameMode || keepDecorationsVisibleDuringTransition;
+  const [showAnatomyDecorations, setShowAnatomyDecorations] = useState(() => {
+    if (isFrameMode) {
+      return stageTransition !== "grafts-to-frame-enter";
+    }
+
+    return stageTransition === "frame-to-grafts-enter" || stageTransition === "frame-to-grafts-exit";
+  });
   const anatomyDecorations = getSilhouetteDecorations(typeId, category);
+
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(() => {
+      setShowAnatomyDecorations(isFrameMode);
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [isFrameMode, stageTransition]);
   const ariaLabel = `${profile.label}. Open chassis menu.`;
   const [inlineAssetProfile, setInlineAssetProfile] = useState(null);
   const silhouetteRenderProfile = inlineAssetProfile || profile;
@@ -1125,7 +1147,11 @@ function MonsterSilhouetteCore({
   return (
     <div className="anatomy-stage__center" aria-label="Interactive monster silhouette">
       <div
-        className={`anatomy-stage__silhouette-layer ${chassisMenuOpen ? "has-chassis-menu-open" : ""} ${showAnatomyDecorations ? "is-anatomy-decorations-visible" : "is-anatomy-decorations-hidden"}`}
+        className={classNames(
+          "anatomy-stage__silhouette-layer",
+          chassisMenuOpen && "has-chassis-menu-open",
+          showAnatomyDecorations ? "is-anatomy-decorations-visible" : "is-anatomy-decorations-hidden",
+        )}
         ref={silhouetteLayerRef}
       >
         {anatomyDecorations.map((decoration) => (
@@ -1389,7 +1415,13 @@ function MonsterSilhouetteCore({
                   key={slot.id}
                   ref={(element) => setRefMap(nodeRefs, slot.id, element)}
                   type="button"
-                  className={`monster-silhouette-node ${filled ? "is-filled" : ""} ${active ? "is-active" : ""} ${guided ? "is-guided" : ""} ${hoverSlotId === slot.id ? "is-linked-hover" : ""}`}
+                  className={classNames(
+                    "monster-silhouette-node",
+                    filled ? "is-filled" : "is-empty",
+                    active && "is-active",
+                    guided && "is-guided",
+                    hoverSlotId === slot.id && "is-linked-hover",
+                  )}
                   style={{ left: `${anchor.x * 100}%`, top: `${anchor.y * 100}%` }}
                   aria-label={`Focus ${slot.label}`}
                   aria-pressed={active}
@@ -1909,7 +1941,14 @@ export function MonsterSilhouetteMap({
         key={slot.id}
         ref={(element) => setRefMap(slotCardRefs, slot.id, element)}
         type="button"
-        className={`monster-silhouette-slot-card is-${card.side} ${filled ? "is-filled" : "is-empty"} ${active ? "is-active" : ""} ${guided ? "is-guided" : ""} ${linkedHover ? "is-linked-hover" : ""}`}
+        className={classNames(
+          "monster-silhouette-slot-card",
+          card.side === "bottom" && "is-bottom",
+          filled ? "is-filled" : "is-empty",
+          active && "is-active",
+          guided && "is-guided",
+          linkedHover && "is-linked-hover",
+        )}
         aria-label={`Focus ${slot.label}`}
         aria-pressed={active}
         onClick={(event) => {

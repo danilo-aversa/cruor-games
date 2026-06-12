@@ -2748,16 +2748,19 @@
   transform: var(--monster-anatomy-decoration-transform) translateY(8px) scale(0.98);
   transform-origin: center top;
   transition:
-    opacity 260ms ease,
-    transform 260ms ease,
-    visibility 0s linear 260ms;
+    opacity 220ms ease 0s,
+    transform 220ms ease 0s,
+    visibility 0s linear 220ms;
 }
 
 .monster-shell .anatomy-stage__silhouette-layer.is-anatomy-decorations-visible .monster-anatomy-decoration {
   opacity: 1;
   visibility: visible;
   transform: var(--monster-anatomy-decoration-transform);
-  transition-delay: 0s;
+  transition:
+    opacity 260ms ease 0s,
+    transform 260ms ease 0s,
+    visibility 0s linear 0s;
 }
 
 
@@ -3071,14 +3074,6 @@
 .monster-shell .monster-silhouette-slot-card.is-filled.is-active {
   border-color: rgba(240, 185, 194, 0.68);
   color: #fff0f2;
-}
-
-.monster-shell .monster-silhouette-slot-card.is-left {
-  width: 100%;
-}
-
-.monster-shell .monster-silhouette-slot-card.is-right {
-  width: 100%;
 }
 
 .monster-shell .monster-silhouette-slot-card.is-bottom {
@@ -10859,16 +10854,19 @@
   cursor: pointer;
   fill: none;
   pointer-events: stroke;
-  stroke: rgba(255, 238, 242, 0.13);
+  stroke: var(--monster-anatomy-empty-border, rgba(255, 238, 242, 0.12));
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
   stroke-linecap: round;
   stroke-linejoin: miter;
   stroke-width: 1.05;
   vector-effect: non-scaling-stroke;
+  animation: monsterConnectorTrace 960ms cubic-bezier(0.16, 1, 0.3, 1) var(--monster-connector-delay, 180ms) both;
 }
 
 .monster-shell .monster-dynamic-connector.is-filled {
-  stroke: rgba(143, 150, 148, 0.42);
-  stroke-width: 1.25;
+  stroke: var(--monster-anatomy-filled-border, rgba(240, 185, 194, 0.62));
+  stroke-width: 1.28;
 }
 
 .monster-shell .monster-dynamic-connector.is-active,
@@ -11162,6 +11160,64 @@
 
 .monster-shell .anatomy-stage__grid--grafts .monster-silhouette-slot-card {
   background: linear-gradient(180deg, rgba(122, 26, 40, 0.08), transparent 68%), #050506;
+}
+
+.monster-shell {
+  --monster-anatomy-empty-border: rgba(255, 238, 242, 0.115);
+  --monster-anatomy-empty-bg: linear-gradient(180deg, rgba(255, 238, 242, 0.026), transparent 70%), #050506;
+  --monster-anatomy-empty-color: rgba(238, 238, 238, 0.48);
+  --monster-anatomy-empty-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  --monster-anatomy-filled-border: rgba(240, 185, 194, 0.62);
+  --monster-anatomy-filled-bg: radial-gradient(circle at 18% 0%, rgba(190, 64, 82, 0.2), transparent 9rem), linear-gradient(180deg, rgba(95, 7, 22, 0.52), rgba(5, 5, 6, 1)), #050506;
+  --monster-anatomy-filled-color: rgba(255, 240, 242, 0.9);
+  --monster-anatomy-filled-shadow: 0 0 0 1px rgba(190, 64, 82, 0.11), 0 0 24px rgba(122, 26, 40, 0.22), 0 12px 28px rgba(0, 0, 0, 0.34);
+}
+
+.monster-shell .monster-silhouette-slot-card.is-empty:not(.is-active):not(.is-linked-hover):not(:hover),
+.monster-shell .monster-silhouette-node.is-empty:not(.is-active):not(.is-linked-hover):not(:hover) {
+  background: var(--monster-anatomy-empty-bg);
+  border-color: var(--monster-anatomy-empty-border);
+  box-shadow: var(--monster-anatomy-empty-shadow);
+  color: var(--monster-anatomy-empty-color);
+}
+
+.monster-shell .monster-silhouette-slot-card.is-filled:not(.is-active):not(.is-linked-hover):not(:hover),
+.monster-shell .monster-silhouette-node.is-filled:not(.is-active):not(.is-linked-hover):not(:hover) {
+  background: var(--monster-anatomy-filled-bg);
+  border-color: var(--monster-anatomy-filled-border);
+  box-shadow: var(--monster-anatomy-filled-shadow);
+  color: var(--monster-anatomy-filled-color);
+}
+
+.monster-shell .monster-dynamic-connector.is-empty:not(.is-active):not(.is-linked-hover) {
+  stroke: var(--monster-anatomy-empty-border);
+  stroke-width: 1.05;
+}
+
+.monster-shell .monster-dynamic-connector.is-filled:not(.is-active):not(.is-linked-hover) {
+  filter: drop-shadow(0 0 4px rgba(190, 64, 82, 0.22));
+  stroke: var(--monster-anatomy-filled-border);
+  stroke-width: 1.32;
+}
+
+.monster-shell .monster-silhouette-slot-card.is-empty {
+  background: var(--monster-anatomy-empty-bg);
+  background-color: #050506;
+}
+
+.monster-shell .monster-silhouette-slot-card.is-filled {
+  background: var(--monster-anatomy-filled-bg);
+  background-color: #050506;
+}
+
+.monster-shell .monster-silhouette-slot-card.is-empty:is(.is-active, .is-linked-hover, :hover) {
+  background: linear-gradient(180deg, rgba(255, 238, 242, 0.04), transparent 70%), #050506;
+  background-color: #050506;
+}
+
+.monster-shell .monster-silhouette-slot-card.is-filled:is(.is-active, .is-linked-hover, :hover) {
+  background: radial-gradient(circle at 18% 0%, rgba(190, 64, 82, 0.26), transparent 9rem), linear-gradient(180deg, rgba(122, 26, 40, 0.58), rgba(5, 5, 6, 1)), #050506;
+  background-color: #050506;
 }
 
 .monster-shell .anatomy-stage__grid--grafts .monster-frame-info-card {
@@ -12236,12 +12292,14 @@
 }
 
 @keyframes monsterConnectorTrace {
-  0% {
+  0%,
+  22% {
     opacity: 0;
     stroke-dashoffset: 1;
   }
-  14% {
+  28% {
     opacity: 1;
+    stroke-dashoffset: 1;
   }
   100% {
     opacity: 1;
@@ -12352,17 +12410,6 @@
   animation-delay: 280ms;
 }
 
-.monster-shell .monster-silhouette-stage[data-stage-transition="frame-to-grafts-enter"] .monster-dynamic-connector {
-  animation: monsterConnectorTrace 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-}
-
-.monster-shell .monster-silhouette-stage[data-stage-transition="grafts-to-frame-exit"] .monster-dynamic-connector {
-  animation: monsterConnectorShutdown 240ms cubic-bezier(0.7, 0, 0.3, 1) both;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-}
 
 .monster-shell .monster-silhouette-stage[data-stage-transition="frame-to-grafts-enter"] .monster-silhouette-node {
   animation: monsterNodeBoot 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -12385,6 +12432,11 @@
   .monster-shell .monster-silhouette-stage[data-stage-transition$="-enter"] * {
     animation: none !important;
     transition: none !important;
+  }
+
+  .monster-shell .monster-dynamic-connector {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
   }
 
   .monster-shell .monster-silhouette-asset__scan,
