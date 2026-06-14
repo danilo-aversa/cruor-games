@@ -17,6 +17,7 @@ import {
   validateContentPack,
 } from "../../shared/content/content.index.js";
 import { renderStructuredRulesTemplate } from "../monster-composer/model/monster-graft-rules.render.js";
+import { ALL_MONSTER_GRAFTS } from "../monster-composer/data/monster-content-pack-feed.js";
 import { normalizeMonsterGraftRules } from "../monster-composer/model/monster-graft-rules.schema.js";
 import { groupQaIssues, runMonsterQaSuite } from "../monster-composer/qa/monster-qa-suite.js";
 import {
@@ -1012,6 +1013,672 @@ const CANONICAL_SLOT_MAP = new Map([
 ]);
 
 const SHARED_SOURCE_ANCHOR_BY_ID = new Map(SHARED_SOURCE_ANCHORS.map((sourceAnchor) => [sourceAnchor.id, sourceAnchor]));
+
+
+const GRAFT_LEDGER_ACTION_ORDER = [
+  "passive",
+  "freeTrigger",
+  "action",
+  "bonusAction",
+  "reaction",
+  "legendaryAction",
+  "lairAction",
+  "deathEffect",
+];
+
+const GRAFT_LEDGER_RESOLUTION_ORDER = [
+  "attackRoll",
+  "savingThrow",
+  "automatic",
+  "contest",
+  "choice",
+  "none",
+];
+
+const GRAFT_LEDGER_MAX_BUCKET_ROWS = 10;
+
+function normalizeLedgerString(value) {
+  return String(value || "").trim();
+}
+
+function normalizeLedgerArray(value) {
+  return asArray(value)
+    .flatMap((item) => Array.isArray(item) ? item : [item])
+    .map((item) => normalizeLedgerString(item))
+    .filter(Boolean);
+}
+
+function uniqueLedgerArray(value) {
+  return [...new Set(normalizeLedgerArray(value))];
+}
+
+function getLedgerNumber(value, fallback = 0) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
+}
+
+function getLedgerMonsterBlock(graft = {}) {
+  return graft.monster && typeof graft.monster === "object" ? graft.monster : {};
+}
+
+function getLedgerRules(graft = {}) {
+  const monster = getLedgerMonsterBlock(graft);
+  return monster.rules || graft.rules || {};
+}
+
+function getLedgerConstraints(graft = {}) {
+  const monster = getLedgerMonsterBlock(graft);
+  return monster.constraints || graft.constraints || graft.anatomyConstraints || {};
+}
+
+function getLedgerAnatomyGrants(graft = {}) {
+  const monster = getLedgerMonsterBlock(graft);
+  return monster.anatomyGrants || graft.anatomyGrants || {};
+}
+
+function getLedgerStats(graft = {}) {
+  const monster = getLedgerMonsterBlock(graft);
+  return monster.stats || graft.stats || {};
+}
+
+function getLedgerFit(graft = {}) {
+  const monster = getLedgerMonsterBlock(graft);
+  return monster.fit || graft.fit || graft.frameFit || {};
+}
+
+function getLedgerGraftId(graft = {}) {
+  const monster = getLedgerMonsterBlock(graft);
+  return normalizeLedgerString(monster.graftId || graft.id || graft.slug || graft.title);
+}
+
+function getLedgerSlot(graft = {}) {
+  const monster = getLedgerMonsterBlock(graft);
+  return normalizeLedgerString(monster.slot || graft.slot || asArray(graft.slots)[0] || "unassigned");
+}
+
+function getLedgerSection(graft = {}, rules = getLedgerRules(graft)) {
+  const monster = getLedgerMonsterBlock(graft);
+  return normalizeLedgerString(monster.section || graft.section || rules.section || "trait");
+}
+
+function getLedgerActionEconomy(graft = {}, rules = getLedgerRules(graft), section = getLedgerSection(graft, rules)) {
+  const actionEconomy = normalizeLedgerString(rules.actionEconomy || rules.action || rules.type);
+  if (actionEconomy) return actionEconomy;
+  if (section === "bonusAction") return "bonusAction";
+  if (section === "reaction") return "reaction";
+  if (section === "legendaryAction") return "legendaryAction";
+  if (section === "lairAction") return "lairAction";
+  if (section === "deathEffect") return "deathEffect";
+  if (section === "action") return "action";
+  return section === "trait" ? "passive" : section || "passive";
+}
+
+function getLedgerResolution(graft = {}, rules = getLedgerRules(graft)) {
+  return rules.resolution && typeof rules.resolution === "object" ? rules.resolution : {};
+}
+
+function getLedgerTargeting(graft = {}, rules = getLedgerRules(graft)) {
+  return rules.targeting && typeof rules.targeting === "object" ? rules.targeting : {};
+}
+
+function getLedgerDamageTypes(graft = {}, rules = getLedgerRules(graft)) {
+  const damage = rules.damage && typeof rules.damage === "object" ? rules.damage : {};
+  return uniqueLedgerArray([
+    ...normalizeLedgerArray(damage.types),
+    ...asArray(damage.parts).flatMap((part) => normalizeLedgerArray(part?.types || part?.type)),
+    ...normalizeLedgerArray(graft.damageTypes),
+  ]);
+}
+
+function getLedgerConditions(graft = {}, rules = getLedgerRules(graft)) {
+  const condition = rules.condition && typeof rules.condition === "object" ? rules.condition : {};
+  return uniqueLedgerArray([
+    ...normalizeLedgerArray(condition.names),
+    ...normalizeLedgerArray(condition.special),
+    ...normalizeLedgerArray(rules.conditions),
+    ...normalizeLedgerArray(graft.conditions),
+  ]);
+}
+
+function getLedgerCounterplayFlags(graft = {}, rules = getLedgerRules(graft)) {
+  const counterplay = rules.counterplay && typeof rules.counterplay === "object" ? rules.counterplay : {};
+  return Object.entries(counterplay)
+    .filter(([, value]) => Boolean(value))
+    .map(([key]) => key);
+}
+
+function getLedgerSourceAnchors(graft = {}) {
+  return uniqueLedgerArray([
+    ...normalizeLedgerArray(graft.sourceAnchors),
+    graft.source,
+    ...normalizeLedgerArray(graft.sources),
+  ]);
+}
+
+function getLedgerPack(graft = {}, origin = "Library") {
+  if (graft.contentPack?.title || graft.contentPack?.id) {
+    return {
+      id: graft.contentPack.id || graft.contentPack.title,
+      title: graft.contentPack.title || formatPlainLabel(graft.contentPack.id),
+    };
+  }
+
+  if (origin === "Current Draft") return { id: "current-draft", title: "Current Draft" };
+  return { id: "core-cruor", title: "Core Monster Composer" };
+}
+
+function getLedgerTypeBias(graft = {}) {
+  const monster = getLedgerMonsterBlock(graft);
+  const fit = getLedgerFit(graft);
+  return uniqueLedgerArray([
+    ...normalizeLedgerArray(monster.typeBias),
+    ...normalizeLedgerArray(graft.typeBias),
+    ...normalizeLedgerArray(fit.creatureTypes?.recommended),
+    ...normalizeLedgerArray(fit.creatureTypes?.allowed),
+  ]);
+}
+
+function getLedgerRoleBias(graft = {}) {
+  const monster = getLedgerMonsterBlock(graft);
+  const fit = getLedgerFit(graft);
+  return uniqueLedgerArray([
+    ...normalizeLedgerArray(monster.roleBias),
+    ...normalizeLedgerArray(graft.roleBias),
+    ...normalizeLedgerArray(fit.encounterRoles?.recommended),
+    ...normalizeLedgerArray(fit.encounterRoles?.allowed),
+  ]);
+}
+
+function getLedgerFamilies(graft = {}) {
+  const constraints = getLedgerConstraints(graft);
+  return uniqueLedgerArray([
+    ...normalizeLedgerArray(constraints.allowedFamilies),
+    ...normalizeLedgerArray(constraints.recommendedFamilies),
+    ...normalizeLedgerArray(constraints.requiredFamilies),
+    ...normalizeLedgerArray(constraints.familyBias),
+  ]);
+}
+
+function getLedgerBodyPlans(graft = {}) {
+  const constraints = getLedgerConstraints(graft);
+  return uniqueLedgerArray([
+    ...normalizeLedgerArray(constraints.allowedBodyPlans),
+    ...normalizeLedgerArray(constraints.recommendedBodyPlans),
+    ...normalizeLedgerArray(constraints.requiredBodyPlans),
+  ]);
+}
+
+function getLedgerAnatomyTerms(graft = {}) {
+  const constraints = getLedgerConstraints(graft);
+  const grants = getLedgerAnatomyGrants(graft);
+  return uniqueLedgerArray([
+    ...normalizeLedgerArray(constraints.requiredAnatomy),
+    ...normalizeLedgerArray(constraints.forbiddenAnatomy),
+    ...normalizeLedgerArray(grants.requiredAnatomy),
+    ...normalizeLedgerArray(grants.optionalAnatomy),
+    ...normalizeLedgerArray(grants.tags),
+  ]);
+}
+
+function formatLedgerTargeting(targeting = {}) {
+  const type = normalizeLedgerString(targeting.type);
+  const shape = normalizeLedgerString(targeting.shape);
+  const size = normalizeLedgerString(targeting.size);
+  const unit = normalizeLedgerString(targeting.unit);
+  const targets = normalizeLedgerString(targeting.targets);
+  const area = [shape, size && unit ? `${size} ${unit}` : size || unit].filter(Boolean).join(" ");
+  return [type, area, targets].filter(Boolean).join(" · ") || "—";
+}
+
+function formatLedgerArray(value, fallback = "—") {
+  const values = normalizeLedgerArray(value);
+  return values.length ? values.map(formatPlainLabel).join(", ") : fallback;
+}
+
+function formatLedgerValue(value, fallback = "—") {
+  const cleanValue = normalizeLedgerString(value);
+  return cleanValue ? formatPlainLabel(cleanValue) : fallback;
+}
+
+function buildGraftLedgerItem(graft = {}, origin = "Library") {
+  const rules = getLedgerRules(graft);
+  const resolution = getLedgerResolution(graft, rules);
+  const targeting = getLedgerTargeting(graft, rules);
+  const stats = getLedgerStats(graft);
+  const slot = getLedgerSlot(graft);
+  const section = getLedgerSection(graft, rules);
+  const actionEconomy = getLedgerActionEconomy(graft, rules, section);
+  const sourceAnchors = getLedgerSourceAnchors(graft);
+  const contentPack = getLedgerPack(graft, origin);
+  const damageTypes = getLedgerDamageTypes(graft, rules);
+  const conditions = getLedgerConditions(graft, rules);
+  const counterplayFlags = getLedgerCounterplayFlags(graft, rules);
+  const constraints = getLedgerConstraints(graft);
+  const anatomyTerms = getLedgerAnatomyTerms(graft);
+  const id = getLedgerGraftId(graft);
+
+  return {
+    id,
+    title: graft.title || graft.label || formatPlainLabel(id),
+    slot,
+    slotLabel: CANONICAL_MONSTER_SLOT_MAP.get(slot)?.label || formatPlainLabel(slot),
+    section,
+    actionEconomy,
+    usage: normalizeLedgerString(rules.usage?.type || rules.usage || ""),
+    resolutionType: normalizeLedgerString(resolution.type || "none"),
+    attackType: normalizeLedgerString(resolution.attackType || resolution.range || ""),
+    saveAbility: normalizeLedgerString(resolution.ability || ""),
+    targetingLabel: formatLedgerTargeting(targeting),
+    damageTypes,
+    conditions,
+    sourceAnchors,
+    sourceLabel: sourceAnchors.map((sourceAnchorId) => SHARED_SOURCE_ANCHOR_BY_ID.get(sourceAnchorId)?.label || formatPlainLabel(sourceAnchorId)).join(", ") || "—",
+    contentPack,
+    typeBias: getLedgerTypeBias(graft),
+    roleBias: getLedgerRoleBias(graft),
+    families: getLedgerFamilies(graft),
+    bodyPlans: getLedgerBodyPlans(graft),
+    anatomyTerms,
+    cost: getLedgerNumber(getLedgerMonsterBlock(graft).cost ?? graft.cost),
+    complexity: getLedgerNumber(getLedgerMonsterBlock(graft).complexity ?? graft.complexity),
+    dpr: getLedgerNumber(stats.dpr),
+    hp: getLedgerNumber(stats.hp),
+    ac: getLedgerNumber(stats.ac),
+    counterplayFlags,
+    hasRules: Boolean(rules && Object.keys(rules).length),
+    hasStructuredRules: Boolean(rules?.schemaVersion || rules?.migration?.isStructured || resolution.type || actionEconomy),
+    hasCounterplayText: hasText(graft.counterplay || rules.text?.counterplay || rules.counterplayText),
+    hasMechanicsText: hasText(graft.mechanics || graft.tableText || rules.text?.failure || rules.text?.success),
+    hasSummary: hasText(graft.summary),
+    hasAnatomyConstraint: Boolean(Object.keys(constraints || {}).length || anatomyTerms.length),
+    status: normalizeStatus(graft.status || getLedgerMonsterBlock(graft).status || "published"),
+    origin,
+    raw: graft,
+  };
+}
+
+function mergeGraftLedgerItems(libraryGrafts = [], draftGrafts = []) {
+  const byId = new Map();
+
+  asArray(libraryGrafts).forEach((graft) => {
+    const item = buildGraftLedgerItem(graft, "Library");
+    if (item.id) byId.set(item.id, item);
+  });
+
+  asArray(draftGrafts).forEach((graft) => {
+    const item = buildGraftLedgerItem(graft, "Current Draft");
+    if (item.id) byId.set(item.id, item);
+  });
+
+  return [...byId.values()].sort((a, b) => a.title.localeCompare(b.title));
+}
+
+function countLedgerBuckets(items = [], getter, knownOrder = []) {
+  const counts = new Map();
+
+  knownOrder.forEach((id) => {
+    if (id) counts.set(id, { id, label: formatPlainLabel(id), count: 0, items: [] });
+  });
+
+  asArray(items).forEach((item) => {
+    const values = normalizeLedgerArray(typeof getter === "function" ? getter(item) : item?.[getter]);
+    const bucketValues = values.length ? values : ["unassigned"];
+    bucketValues.forEach((id) => {
+      const key = normalizeLedgerString(id) || "unassigned";
+      const current = counts.get(key) || { id: key, label: formatPlainLabel(key), count: 0, items: [] };
+      current.count += 1;
+      current.items.push(item);
+      counts.set(key, current);
+    });
+  });
+
+  return [...counts.values()].sort((a, b) => {
+    const aIndex = knownOrder.indexOf(a.id);
+    const bIndex = knownOrder.indexOf(b.id);
+    if (aIndex !== -1 || bIndex !== -1) return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex);
+    if (b.count !== a.count) return b.count - a.count;
+    return a.label.localeCompare(b.label);
+  });
+}
+
+function getLedgerTopBuckets(rows = [], limit = GRAFT_LEDGER_MAX_BUCKET_ROWS) {
+  return [...rows]
+    .filter((row) => row.count > 0)
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
+    .slice(0, limit);
+}
+
+function getLedgerIssueList(item) {
+  const issues = [];
+  if (!item.slot || item.slot === "unassigned") issues.push("Missing monster slot");
+  if (!item.sourceAnchors.length) issues.push("Missing source anchor");
+  if (!item.hasStructuredRules) issues.push("Missing structured rules");
+  if (!item.hasSummary) issues.push("Missing summary");
+  if (!item.hasMechanicsText) issues.push("Missing mechanics text");
+  if (!item.hasCounterplayText && item.actionEconomy !== "passive") issues.push("Missing counterplay text");
+  if (item.resolutionType === "savingThrow" && !item.saveAbility) issues.push("Missing save ability");
+  if (item.resolutionType === "attackRoll" && !item.attackType) issues.push("Missing attack type");
+  if (item.dpr > 0 && !item.damageTypes.length) issues.push("DPR without damage type");
+  if (item.conditions.length && !item.counterplayFlags.length) issues.push("Condition without structured counterplay flag");
+  return issues;
+}
+
+function getLedgerIssueSeverity(item) {
+  const issues = getLedgerIssueList(item);
+  if (issues.some((issue) => issue.startsWith("Missing monster slot") || issue.startsWith("Missing source anchor") || issue.startsWith("Missing structured rules"))) return "error";
+  if (issues.length) return "warning";
+  return "clean";
+}
+
+function buildLedgerMatrix(items = [], rowBuckets = [], columnBuckets = []) {
+  return rowBuckets.map((row) => ({
+    ...row,
+    columns: columnBuckets.map((column) => ({
+      ...column,
+      count: items.filter((item) => item.slot === row.id && item.actionEconomy === column.id).length,
+    })),
+  }));
+}
+
+function buildGraftLedgerGaps({ items, bySlot, byAction, byResolution, byType, byDamageType, byCondition, bySource }) {
+  const gaps = [];
+  const total = items.length || 1;
+  const sparseSlots = bySlot.filter((row) => row.id !== "unassigned" && row.count < 4);
+  const missingActions = byAction.filter((row) => row.count === 0);
+  const overloadedDamage = byDamageType.filter((row) => row.count >= Math.ceil(total * 0.22));
+  const weakTypeCoverage = byType.filter((row) => row.id !== "unassigned" && row.count < 6);
+  const draftItems = items.filter((item) => item.origin === "Current Draft").length;
+  const issueItems = items.filter((item) => getLedgerIssueSeverity(item) !== "clean");
+
+  sparseSlots.slice(0, 4).forEach((row) => gaps.push({
+    id: `slot-${row.id}`,
+    severity: row.count === 0 ? "error" : "warning",
+    title: `${row.label} is underfilled`,
+    detail: `${row.count} graft${row.count === 1 ? "" : "s"} in this slot. Add at least four to keep Composer picks varied.`,
+  }));
+
+  missingActions.slice(0, 3).forEach((row) => gaps.push({
+    id: `action-${row.id}`,
+    severity: "warning",
+    title: `${row.label} coverage is missing`,
+    detail: "No graft currently uses this action economy. Consider adding one if this economy should be available to generated monsters.",
+  }));
+
+  weakTypeCoverage.slice(0, 3).forEach((row) => gaps.push({
+    id: `type-${row.id}`,
+    severity: "info",
+    title: `${row.label} has low type bias coverage`,
+    detail: `${row.count} graft${row.count === 1 ? "" : "s"} explicitly bias toward this creature type.`,
+  }));
+
+  overloadedDamage.slice(0, 2).forEach((row) => gaps.push({
+    id: `damage-${row.id}`,
+    severity: "info",
+    title: `${row.label} damage is dominant`,
+    detail: `${row.count} grafts use this damage type. Review whether future packs should diversify damage expressions.`,
+  }));
+
+  if (!byResolution.some((row) => row.id === "savingThrow" && row.count > 0)) {
+    gaps.push({ id: "no-saves", severity: "warning", title: "No saving throw grafts", detail: "The ledger has no save-based effects, reducing tactical variety." });
+  }
+
+  if (!byCondition.some((row) => row.count > 0)) {
+    gaps.push({ id: "no-conditions", severity: "warning", title: "No condition pressure", detail: "No graft applies a condition, so monsters may feel too damage-only." });
+  }
+
+  if (issueItems.length) {
+    gaps.push({
+      id: "ledger-issues",
+      severity: issueItems.some((item) => getLedgerIssueSeverity(item) === "error") ? "error" : "warning",
+      title: `${issueItems.length} graft${issueItems.length === 1 ? "" : "s"} need editorial review`,
+      detail: "Use the Issues filter in the ledger to locate entries with missing slot, source, rules, mechanics, or counterplay metadata.",
+    });
+  }
+
+  if (draftItems) {
+    gaps.push({
+      id: "draft-overrides",
+      severity: "info",
+      title: `${draftItems} current draft graft${draftItems === 1 ? "" : "s"} included`,
+      detail: "Draft entries override matching library ids inside this audit, so the ledger reflects what you are editing now.",
+    });
+  }
+
+  const narrowSources = bySource.filter((row) => row.id !== "unassigned" && row.count === 1).length;
+  if (narrowSources) {
+    gaps.push({
+      id: "single-source-grafts",
+      severity: "info",
+      title: `${narrowSources} source anchor${narrowSources === 1 ? "" : "s"} have one graft`,
+      detail: "Single-graft sources work as seeds, but they offer little internal variation for Composer pulls.",
+    });
+  }
+
+  return gaps.slice(0, 10);
+}
+
+function buildGraftLedgerReport(libraryGrafts = [], draftGrafts = []) {
+  const items = mergeGraftLedgerItems(libraryGrafts, draftGrafts);
+  const slotOrder = SHARED_MONSTER_SLOTS.map((slot) => slot.id);
+  const bySlot = countLedgerBuckets(items, "slot", slotOrder);
+  const byAction = countLedgerBuckets(items, "actionEconomy", GRAFT_LEDGER_ACTION_ORDER);
+  const byResolution = countLedgerBuckets(items, "resolutionType", GRAFT_LEDGER_RESOLUTION_ORDER);
+  const byDamageType = countLedgerBuckets(items, "damageTypes");
+  const byCondition = countLedgerBuckets(items, "conditions");
+  const bySource = countLedgerBuckets(items, "sourceAnchors").map((row) => ({
+    ...row,
+    label: SHARED_SOURCE_ANCHOR_BY_ID.get(row.id)?.label || row.label,
+  }));
+  const byPack = countLedgerBuckets(items, (item) => item.contentPack?.id || "unassigned").map((row) => ({
+    ...row,
+    label: items.find((item) => item.contentPack?.id === row.id)?.contentPack?.title || row.label,
+  }));
+  const byType = countLedgerBuckets(items, "typeBias");
+  const byRole = countLedgerBuckets(items, "roleBias");
+  const byFamily = countLedgerBuckets(items, "families");
+  const byComplexity = countLedgerBuckets(items, (item) => {
+    if (item.complexity <= 1) return "low";
+    if (item.complexity <= 3) return "medium";
+    return "high";
+  }, ["low", "medium", "high"]);
+  const cleanItems = items.filter((item) => getLedgerIssueSeverity(item) === "clean");
+  const warningItems = items.filter((item) => getLedgerIssueSeverity(item) === "warning");
+  const errorItems = items.filter((item) => getLedgerIssueSeverity(item) === "error");
+  const matrixColumns = GRAFT_LEDGER_ACTION_ORDER.map((id) => ({ id, label: formatPlainLabel(id) }));
+  const matrix = buildLedgerMatrix(items, bySlot.filter((row) => row.id !== "unassigned"), matrixColumns);
+
+  return {
+    items,
+    summary: {
+      total: items.length,
+      library: items.filter((item) => item.origin === "Library").length,
+      draft: items.filter((item) => item.origin === "Current Draft").length,
+      clean: cleanItems.length,
+      warning: warningItems.length,
+      error: errorItems.length,
+      averageCost: items.length ? items.reduce((sum, item) => sum + item.cost, 0) / items.length : 0,
+      averageComplexity: items.length ? items.reduce((sum, item) => sum + item.complexity, 0) / items.length : 0,
+      structuredRules: items.filter((item) => item.hasStructuredRules).length,
+      counterplayCoverage: items.filter((item) => item.hasCounterplayText || item.counterplayFlags.length).length,
+      anatomyCoverage: items.filter((item) => item.hasAnatomyConstraint).length,
+    },
+    buckets: {
+      bySlot,
+      byAction,
+      byResolution,
+      byDamageType,
+      byCondition,
+      bySource,
+      byPack,
+      byType,
+      byRole,
+      byFamily,
+      byComplexity,
+    },
+    matrix,
+    gaps: buildGraftLedgerGaps({ items, bySlot, byAction, byResolution, byType, byDamageType, byCondition, bySource }),
+  };
+}
+
+
+function serializeLedgerBucketRow(row = {}) {
+  return {
+    id: row.id || "unassigned",
+    label: row.label || formatPlainLabel(row.id || "unassigned"),
+    count: getLedgerNumber(row.count),
+    itemIds: asArray(row.items).map((item) => item?.id).filter(Boolean),
+  };
+}
+
+function serializeLedgerBuckets(buckets = {}) {
+  return Object.fromEntries(
+    Object.entries(buckets).map(([key, rows]) => [key, asArray(rows).map(serializeLedgerBucketRow)]),
+  );
+}
+
+function serializeLedgerMatrix(rows = []) {
+  return asArray(rows).map((row) => ({
+    id: row.id,
+    label: row.label,
+    count: getLedgerNumber(row.count),
+    columns: asArray(row.columns).map((column) => ({
+      id: column.id,
+      label: column.label,
+      count: getLedgerNumber(column.count),
+    })),
+  }));
+}
+
+function serializeGraftLedgerItem(item = {}, { includeRaw = true } = {}) {
+  const issues = getLedgerIssueList(item);
+  const serialized = {
+    id: item.id,
+    title: item.title,
+    origin: item.origin,
+    status: item.status,
+    slot: item.slot,
+    slotLabel: item.slotLabel,
+    section: item.section,
+    actionEconomy: item.actionEconomy,
+    usage: item.usage,
+    resolutionType: item.resolutionType,
+    attackType: item.attackType,
+    saveAbility: item.saveAbility,
+    targeting: item.targetingLabel,
+    damageTypes: item.damageTypes,
+    conditions: item.conditions,
+    sourceAnchors: item.sourceAnchors,
+    sourceLabel: item.sourceLabel,
+    contentPack: item.contentPack,
+    typeBias: item.typeBias,
+    roleBias: item.roleBias,
+    families: item.families,
+    bodyPlans: item.bodyPlans,
+    anatomyTerms: item.anatomyTerms,
+    cost: item.cost,
+    complexity: item.complexity,
+    dpr: item.dpr,
+    hp: item.hp,
+    ac: item.ac,
+    counterplayFlags: item.counterplayFlags,
+    coverage: {
+      hasRules: item.hasRules,
+      hasStructuredRules: item.hasStructuredRules,
+      hasCounterplayText: item.hasCounterplayText,
+      hasMechanicsText: item.hasMechanicsText,
+      hasSummary: item.hasSummary,
+      hasAnatomyConstraint: item.hasAnatomyConstraint,
+    },
+    editorialState: {
+      severity: getLedgerIssueSeverity(item),
+      issues,
+    },
+  };
+
+  if (includeRaw) serialized.rawGraft = item.raw || null;
+  return serialized;
+}
+
+function buildGraftLedgerDownloadReport(report = {}, filters = {}) {
+  const items = asArray(report.items);
+  const visibleItemIds = normalizeLedgerArray(filters.visibleItemIds);
+
+  return {
+    reportType: "cruor-monster-graft-ledger-report",
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    intendedUse: "Upload this JSON back into ChatGPT to audit Monster Composer graft coverage, metadata quality, content gaps, and next-pack priorities.",
+    scope: {
+      totalGrafts: getLedgerNumber(report.summary?.total),
+      libraryGrafts: getLedgerNumber(report.summary?.library),
+      currentDraftGrafts: getLedgerNumber(report.summary?.draft),
+      visibleGrafts: getLedgerNumber(filters.visibleCount, visibleItemIds.length),
+    },
+    activeFilters: {
+      search: filters.search || "",
+      slot: filters.slot || "all",
+      actionEconomy: filters.action || "all",
+      source: filters.source || "all",
+      issueState: filters.issueState || "all",
+      viewMode: filters.viewMode || "list",
+      visibleItemIds,
+    },
+    summary: report.summary || {},
+    analytics: serializeLedgerBuckets(report.buckets || {}),
+    matrix: serializeLedgerMatrix(report.matrix),
+    gaps: asArray(report.gaps).map((gap) => ({
+      id: gap.id,
+      severity: gap.severity,
+      title: gap.title,
+      detail: gap.detail,
+    })),
+    issueIndex: items.map((item) => ({
+      id: item.id,
+      title: item.title,
+      severity: getLedgerIssueSeverity(item),
+      issues: getLedgerIssueList(item),
+    })),
+    inventory: items.map((item) => serializeGraftLedgerItem(item, { includeRaw: true })),
+  };
+}
+
+function matchesGraftLedgerSearch(item, query) {
+  const needle = normalizeLedgerString(query).toLowerCase();
+  if (!needle) return true;
+  const haystack = [
+    item.id,
+    item.title,
+    item.slotLabel,
+    item.section,
+    item.actionEconomy,
+    item.resolutionType,
+    item.attackType,
+    item.saveAbility,
+    item.targetingLabel,
+    item.sourceLabel,
+    item.contentPack?.title,
+    ...item.damageTypes,
+    ...item.conditions,
+    ...item.typeBias,
+    ...item.roleBias,
+    ...item.families,
+    ...item.bodyPlans,
+    ...item.anatomyTerms,
+    ...getLedgerIssueList(item),
+  ].join(" ").toLowerCase();
+  return haystack.includes(needle);
+}
+
+function getGraftLedgerFilteredItems(items = [], filters = {}) {
+  return asArray(items).filter((item) => {
+    if (!matchesGraftLedgerSearch(item, filters.search)) return false;
+    if (filters.slot && filters.slot !== "all" && item.slot !== filters.slot) return false;
+    if (filters.action && filters.action !== "all" && item.actionEconomy !== filters.action) return false;
+    if (filters.source && filters.source !== "all" && !item.sourceAnchors.includes(filters.source)) return false;
+    if (filters.issueState && filters.issueState !== "all" && getLedgerIssueSeverity(item) !== filters.issueState) return false;
+    return true;
+  });
+}
 
 function getReferencedSourceAnchorIds(sourceAnchor, inspiration, components = []) {
   return [
@@ -2128,6 +2795,7 @@ export default function InspirationStudioPage() {
   const [exportMode, setExportMode] = useState("contentPack");
   const [libraryCollapsed, setLibraryCollapsed] = useState(true);
   const [rightRailCollapsed, setRightRailCollapsed] = useState(true);
+  const [isGraftLedgerOpen, setGraftLedgerOpen] = useState(false);
   const [identityIdsUnlocked, setIdentityIdsUnlocked] = useState(false);
   const [librarySearch, setLibrarySearch] = useState("");
   const [libraryStatusFilter, setLibraryStatusFilter] = useState("all");
@@ -2165,6 +2833,17 @@ export default function InspirationStudioPage() {
       if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
     };
   }, [imagePreviewUrl]);
+
+  useEffect(() => {
+    if (!isGraftLedgerOpen) return undefined;
+
+    function handleLedgerKeyDown(event) {
+      if (event.key === "Escape") setGraftLedgerOpen(false);
+    }
+
+    window.addEventListener("keydown", handleLedgerKeyDown);
+    return () => window.removeEventListener("keydown", handleLedgerKeyDown);
+  }, [isGraftLedgerOpen]);
 
   const componentGroups = useMemo(() => getModuleComponentGroups(draft), [draft]);
   const monsterComponents = componentGroups["monster-graft"] || [];
@@ -2347,10 +3026,22 @@ export default function InspirationStudioPage() {
           </span>
           <h1>Editing: {draft.title}</h1>
         </div>
-        <div className="inspiration-studio__quick-meta inspiration-studio__quick-meta--header" aria-label="Current module status">
+        <div className="inspiration-studio__quick-meta inspiration-studio__quick-meta--header" aria-label="Current module status and studio tools">
           <span><Icon name="fa-box-open" /> {packTitle}</span>
           <span><Icon name="fa-circle-check" /> {draft.status || "draft"}</span>
           <span><Icon name="fa-diagram-project" /> {asArray(draft.components).length} components</span>
+          <button
+            className="studio-library-panel__collapse"
+            type="button"
+            aria-label={`Open global Monster Graft Ledger (${ALL_MONSTER_GRAFTS.length + monsterComponents.length} grafts)`}
+            aria-haspopup="dialog"
+            aria-expanded={isGraftLedgerOpen}
+            aria-controls="studio-graft-ledger-modal"
+            title="Open global Monster Graft Ledger"
+            onClick={() => setGraftLedgerOpen(true)}
+          >
+            <Icon name="fa-table-list" />
+          </button>
         </div>
       </header>
 
@@ -2563,6 +3254,41 @@ export default function InspirationStudioPage() {
           validationReport={validationReport}
         />
       </div>
+
+      {isGraftLedgerOpen ? (
+        <div className="studio-global-modal-backdrop studio-global-modal-backdrop--graft-ledger" role="presentation">
+          <section
+            id="studio-graft-ledger-modal"
+            className="studio-global-modal studio-global-modal--graft-ledger"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="studio-graft-ledger-title"
+          >
+            <header className="studio-global-modal__header">
+              <div>
+                <span><Icon name="fa-table-list" /> Studio Tool</span>
+                <h2 id="studio-graft-ledger-title">Monster Graft Ledger</h2>
+                <p>Global inventory, analytics, gaps, and downloadable report across the whole Studio.</p>
+              </div>
+              <button
+                className="studio-global-modal__close"
+                type="button"
+                aria-label="Close Monster Graft Ledger"
+                title="Close Monster Graft Ledger"
+                onClick={() => setGraftLedgerOpen(false)}
+              >
+                <Icon name="fa-xmark" />
+              </button>
+            </header>
+            <div className="studio-global-modal__body">
+              <GraftLedgerWorkspace
+                draftGrafts={monsterComponents}
+                libraryGrafts={ALL_MONSTER_GRAFTS}
+              />
+            </div>
+          </section>
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -3001,6 +3727,304 @@ function ComponentsWorkspace({
         )}
       </div>
     </section>
+  );
+}
+
+
+function GraftLedgerWorkspace({ libraryGrafts = [], draftGrafts = [] }) {
+  const [ledgerSearch, setLedgerSearch] = useState("");
+  const [slotFilter, setSlotFilter] = useState("all");
+  const [actionFilter, setActionFilter] = useState("all");
+  const [sourceFilter, setSourceFilter] = useState("all");
+  const [issueFilter, setIssueFilter] = useState("all");
+  const [viewMode, setViewMode] = useState("list");
+  const report = useMemo(() => buildGraftLedgerReport(libraryGrafts, draftGrafts), [libraryGrafts, draftGrafts]);
+  const filteredItems = useMemo(() => getGraftLedgerFilteredItems(report.items, {
+    search: ledgerSearch,
+    slot: slotFilter,
+    action: actionFilter,
+    source: sourceFilter,
+    issueState: issueFilter,
+  }), [actionFilter, issueFilter, ledgerSearch, report.items, slotFilter, sourceFilter]);
+  const slotOptions = report.buckets.bySlot.filter((row) => row.count > 0 || row.id !== "unassigned");
+  const actionOptions = report.buckets.byAction.filter((row) => row.count > 0 || GRAFT_LEDGER_ACTION_ORDER.includes(row.id));
+  const sourceOptions = getLedgerTopBuckets(report.buckets.bySource, 40);
+
+  function downloadLedgerReport() {
+    downloadJsonFile(`cruor-monster-graft-ledger-${new Date().toISOString().slice(0, 10)}.json`, buildGraftLedgerDownloadReport(report, {
+      search: ledgerSearch,
+      slot: slotFilter,
+      action: actionFilter,
+      source: sourceFilter,
+      issueState: issueFilter,
+      viewMode,
+      visibleCount: filteredItems.length,
+      visibleItemIds: filteredItems.map((item) => item.id),
+    }));
+  }
+
+  return (
+    <div className="inspiration-studio__workspace inspiration-studio__workspace--graft-ledger">
+      <section className="studio-panel studio-panel--graft-ledger-overview" aria-label="Monster graft ledger overview">
+        <PanelTitle eyebrow="Monster Grafts" icon="fa-table-list" title="Graft Ledger" help="Global editorial inventory for Monster Composer grafts. Use it to inspect coverage, detect gaps, and decide which packs or creature families need more content.">
+          <div className="studio-ledger-actions">
+            <button className="studio-ledger-download-report" type="button" onClick={downloadLedgerReport}>
+              <Icon name="fa-file-arrow-down" /> Download Report
+            </button>
+            <div className="studio-ledger-view-toggle" role="tablist" aria-label="Graft ledger view mode">
+              <button type="button" aria-pressed={viewMode === "list"} onClick={() => setViewMode("list")}><Icon name="fa-list" /> List</button>
+              <button type="button" aria-pressed={viewMode === "grid"} onClick={() => setViewMode("grid")}><Icon name="fa-border-all" /> Grid</button>
+            </div>
+          </div>
+        </PanelTitle>
+
+        <div className="studio-ledger-summary" aria-label="Graft ledger summary">
+          <StatPill icon="fa-skull" label="Total Grafts" value={report.summary.total} />
+          <StatPill icon="fa-code-branch" label="Structured" value={`${report.summary.structuredRules}/${report.summary.total}`} />
+          <StatPill icon="fa-shield-halved" label="Counterplay" value={`${report.summary.counterplayCoverage}/${report.summary.total}`} />
+          <StatPill icon="fa-dna" label="Anatomy Fit" value={`${report.summary.anatomyCoverage}/${report.summary.total}`} />
+          <StatPill icon="fa-scale-balanced" label="Avg Cost" value={report.summary.averageCost.toFixed(1)} />
+          <StatPill icon="fa-gauge-high" label="Avg Complexity" value={report.summary.averageComplexity.toFixed(1)} />
+        </div>
+
+        <div className="studio-ledger-filters" aria-label="Graft ledger filters">
+          <label className="studio-search-field studio-search-field--ledger">
+            <Icon name="fa-magnifying-glass" />
+            <input value={ledgerSearch} onChange={(event) => setLedgerSearch(event.target.value)} placeholder="Search grafts, sources, rules, tags…" />
+          </label>
+          <label>
+            <span>Slot</span>
+            <select value={slotFilter} onChange={(event) => setSlotFilter(event.target.value)}>
+              <option value="all">All Slots</option>
+              {slotOptions.map((row) => <option key={row.id} value={row.id}>{row.label} ({row.count})</option>)}
+            </select>
+          </label>
+          <label>
+            <span>Economy</span>
+            <select value={actionFilter} onChange={(event) => setActionFilter(event.target.value)}>
+              <option value="all">All Economies</option>
+              {actionOptions.map((row) => <option key={row.id} value={row.id}>{row.label} ({row.count})</option>)}
+            </select>
+          </label>
+          <label>
+            <span>Source</span>
+            <select value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value)}>
+              <option value="all">All Sources</option>
+              {sourceOptions.map((row) => <option key={row.id} value={row.id}>{row.label} ({row.count})</option>)}
+            </select>
+          </label>
+          <label>
+            <span>Issues</span>
+            <select value={issueFilter} onChange={(event) => setIssueFilter(event.target.value)}>
+              <option value="all">All States</option>
+              <option value="clean">Clean ({report.summary.clean})</option>
+              <option value="warning">Warnings ({report.summary.warning})</option>
+              <option value="error">Errors ({report.summary.error})</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section className="studio-panel studio-panel--graft-ledger-analytics" aria-label="Monster graft analytics">
+        <PanelTitle eyebrow="Analytics" icon="fa-chart-simple" title="Coverage Snapshot" help="Counts are generated from the same normalized graft feed consumed by Monster Composer, plus the current draft module when it contains grafts." />
+        <div className="studio-ledger-analytics-grid">
+          <GraftLedgerBucket title="By Slot" icon="fa-puzzle-piece" rows={report.buckets.bySlot} />
+          <GraftLedgerBucket title="By Economy" icon="fa-bolt" rows={report.buckets.byAction} />
+          <GraftLedgerBucket title="By Resolution" icon="fa-dice-d20" rows={report.buckets.byResolution} />
+          <GraftLedgerBucket title="By Damage" icon="fa-burst" rows={report.buckets.byDamageType} emptyLabel="No damage types" />
+          <GraftLedgerBucket title="By Condition" icon="fa-eye-slash" rows={report.buckets.byCondition} emptyLabel="No conditions" />
+          <GraftLedgerBucket title="By Source" icon="fa-book-skull" rows={report.buckets.bySource} />
+          <GraftLedgerBucket title="By Creature Type" icon="fa-skull-crossbones" rows={report.buckets.byType} emptyLabel="No explicit type bias" />
+          <GraftLedgerBucket title="By Role" icon="fa-chess-rook" rows={report.buckets.byRole} emptyLabel="No role bias" />
+          <GraftLedgerBucket title="By Family" icon="fa-dna" rows={report.buckets.byFamily} emptyLabel="No family constraints" />
+          <GraftLedgerBucket title="By Complexity" icon="fa-gauge-high" rows={report.buckets.byComplexity} />
+        </div>
+      </section>
+
+      <section className="studio-panel studio-panel--graft-ledger-matrix" aria-label="Slot and action economy coverage matrix">
+        <PanelTitle eyebrow="Coverage Matrix" icon="fa-table-cells" title="Slot × Action Economy" help="Highlights which slot/economy combinations have content and which combinations are still empty." />
+        <GraftLedgerMatrix rows={report.matrix} />
+      </section>
+
+      <section className="studio-panel studio-panel--graft-ledger-gaps" aria-label="Graft ledger editorial gaps">
+        <PanelTitle eyebrow="Editorial Gaps" icon="fa-triangle-exclamation" title="Suggested Content Targets" help="Automatic gap detection for underfilled slots, missing economies, narrow source anchors, dominant damage types, and incomplete metadata." />
+        <div className="studio-ledger-gap-list" role="list">
+          {report.gaps.map((gap) => (
+            <article className={`studio-ledger-gap studio-ledger-gap--${gap.severity}`} key={gap.id} role="listitem">
+              <span><Icon name={gap.severity === "error" ? "fa-circle-xmark" : gap.severity === "warning" ? "fa-triangle-exclamation" : "fa-circle-info"} /></span>
+              <div>
+                <strong>{gap.title}</strong>
+                <p>{gap.detail}</p>
+              </div>
+            </article>
+          ))}
+          {!report.gaps.length ? (
+            <div className="studio-validation-clean">
+              <Icon name="fa-circle-check" />
+              <strong>No editorial gaps detected.</strong>
+              <span>The current graft library has enough baseline coverage for this audit pass.</span>
+            </div>
+          ) : null}
+        </div>
+      </section>
+
+      <section className="studio-panel studio-panel--graft-ledger-list" aria-label="Filtered monster graft inventory">
+        <PanelTitle eyebrow="Inventory" icon={viewMode === "grid" ? "fa-border-all" : "fa-list"} title={`${filteredItems.length} Visible Grafts`} help="Filtered inventory of every graft, including slot, rules, source, pack, creature bias, cost, complexity, and editorial issue state." />
+        {viewMode === "grid" ? <GraftLedgerGrid items={filteredItems} /> : <GraftLedgerTable items={filteredItems} />}
+      </section>
+    </div>
+  );
+}
+
+function GraftLedgerBucket({ title, icon, rows = [], emptyLabel = "No entries" }) {
+  const positiveRows = getLedgerTopBuckets(rows);
+  const maxCount = Math.max(1, ...positiveRows.map((row) => row.count));
+
+  return (
+    <article className="studio-ledger-bucket">
+      <header><Icon name={icon} /> <strong>{title}</strong></header>
+      <div className="studio-ledger-bucket__rows">
+        {positiveRows.map((row) => (
+          <div className="studio-ledger-bucket__row" key={row.id}>
+            <span>{row.label}</span>
+            <div><em style={{ width: `${Math.max(6, (row.count / maxCount) * 100)}%` }} /></div>
+            <strong>{row.count}</strong>
+          </div>
+        ))}
+        {!positiveRows.length ? <p>{emptyLabel}</p> : null}
+      </div>
+    </article>
+  );
+}
+
+function GraftLedgerMatrix({ rows = [] }) {
+  const columns = GRAFT_LEDGER_ACTION_ORDER.map((id) => ({ id, label: formatPlainLabel(id) }));
+
+  return (
+    <div className="studio-ledger-matrix-scroll">
+      <table className="studio-ledger-matrix-table">
+        <thead>
+          <tr>
+            <th>Slot</th>
+            {columns.map((column) => <th key={column.id}>{column.label}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.id}>
+              <th>{row.label}</th>
+              {columns.map((column) => {
+                const cell = row.columns.find((entry) => entry.id === column.id);
+                return <td key={column.id} data-has-content={cell?.count ? "true" : "false"}>{cell?.count || "—"}</td>;
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function GraftLedgerIssueBadge({ item }) {
+  const severity = getLedgerIssueSeverity(item);
+  const issues = getLedgerIssueList(item);
+  const icon = severity === "error" ? "fa-circle-xmark" : severity === "warning" ? "fa-triangle-exclamation" : "fa-circle-check";
+
+  return (
+    <span className={`studio-ledger-issue-badge studio-ledger-issue-badge--${severity}`} title={issues.length ? issues.join(" · ") : "No editorial issues detected"}>
+      <Icon name={icon} /> {severity === "clean" ? "Clean" : `${issues.length} ${severity === "error" ? "Error" : "Warning"}${issues.length === 1 ? "" : "s"}`}
+    </span>
+  );
+}
+
+function GraftLedgerMetaChips({ values = [], fallback = "—", limit = 4 }) {
+  const cleanValues = normalizeLedgerArray(values);
+  if (!cleanValues.length) return <span className="studio-ledger-muted">{fallback}</span>;
+  return (
+    <span className="studio-ledger-chip-row">
+      {cleanValues.slice(0, limit).map((value) => <em key={value}>{formatPlainLabel(value)}</em>)}
+      {cleanValues.length > limit ? <em>+{cleanValues.length - limit}</em> : null}
+    </span>
+  );
+}
+
+function GraftLedgerTable({ items = [] }) {
+  return (
+    <div className="studio-ledger-table-scroll">
+      <table className="studio-ledger-table">
+        <thead>
+          <tr>
+            <th>Graft</th>
+            <th>Slot</th>
+            <th>Economy</th>
+            <th>Resolution</th>
+            <th>Damage / Conditions</th>
+            <th>Source / Pack</th>
+            <th>Bias</th>
+            <th>Cost</th>
+            <th>QA</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item) => (
+            <tr key={item.id}>
+              <td>
+                <strong>{item.title}</strong>
+                <span>{item.id}</span>
+              </td>
+              <td>{item.slotLabel}<span>{formatLedgerValue(item.section)}</span></td>
+              <td>{formatLedgerValue(item.actionEconomy)}<span>{formatLedgerValue(item.usage)}</span></td>
+              <td>{formatLedgerValue(item.resolutionType)}<span>{item.saveAbility ? `${formatLedgerValue(item.saveAbility)} save` : item.attackType ? formatLedgerValue(item.attackType) : item.targetingLabel}</span></td>
+              <td>
+                <GraftLedgerMetaChips values={item.damageTypes} fallback="No damage" />
+                <GraftLedgerMetaChips values={item.conditions} fallback="No conditions" />
+              </td>
+              <td>
+                <strong>{item.sourceLabel}</strong>
+                <span>{item.contentPack?.title || "—"}</span>
+              </td>
+              <td>
+                <GraftLedgerMetaChips values={[...item.typeBias, ...item.roleBias, ...item.families]} fallback="No explicit bias" />
+              </td>
+              <td>
+                <strong>{item.cost}</strong>
+                <span>Complexity {item.complexity}</span>
+              </td>
+              <td><GraftLedgerIssueBadge item={item} /></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {!items.length ? <div className="studio-empty-state">No matching grafts.</div> : null}
+    </div>
+  );
+}
+
+function GraftLedgerGrid({ items = [] }) {
+  return (
+    <div className="studio-ledger-card-grid" role="list">
+      {items.map((item) => (
+        <article className="studio-ledger-card" key={item.id} role="listitem">
+          <header>
+            <span>{item.slotLabel} · {formatLedgerValue(item.actionEconomy)}</span>
+            <GraftLedgerIssueBadge item={item} />
+            <h4>{item.title}</h4>
+            <em>{item.id}</em>
+          </header>
+          <dl>
+            <div><dt>Resolution</dt><dd>{formatLedgerValue(item.resolutionType)}{item.saveAbility ? ` · ${formatLedgerValue(item.saveAbility)} save` : item.attackType ? ` · ${formatLedgerValue(item.attackType)}` : ""}</dd></div>
+            <div><dt>Targeting</dt><dd>{item.targetingLabel}</dd></div>
+            <div><dt>Damage</dt><dd><GraftLedgerMetaChips values={item.damageTypes} fallback="No damage" /></dd></div>
+            <div><dt>Conditions</dt><dd><GraftLedgerMetaChips values={item.conditions} fallback="No conditions" /></dd></div>
+            <div><dt>Source</dt><dd>{item.sourceLabel}</dd></div>
+            <div><dt>Pack</dt><dd>{item.contentPack?.title || "—"}</dd></div>
+            <div><dt>Bias</dt><dd><GraftLedgerMetaChips values={[...item.typeBias, ...item.roleBias, ...item.families]} fallback="No explicit bias" /></dd></div>
+            <div><dt>Budget</dt><dd>Cost {item.cost} · Complexity {item.complexity}</dd></div>
+          </dl>
+        </article>
+      ))}
+      {!items.length ? <div className="studio-empty-state">No matching grafts.</div> : null}
+    </div>
   );
 }
 

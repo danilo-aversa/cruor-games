@@ -6,6 +6,7 @@ import {
   STATIC_CONTENT_PACK_SUMMARY,
   STATIC_CONTENT_REGISTRY,
 } from "./static-registry.js";
+import { normalizeLocale } from "../i18n/index.js";
 
 function summarizePacks(packs = []) {
   return packs.map((pack) => ({
@@ -25,6 +26,12 @@ function summarizePacks(packs = []) {
   }));
 }
 
+function resolveRegistryLocale(registry, options = {}) {
+  const locale = options?.locale ? normalizeLocale(options.locale) : null;
+  if (!locale || typeof registry?.localize !== "function") return registry;
+  return registry.localize(locale);
+}
+
 export function createContentRepositoryAdapter({
   getRegistry,
   getPackProvenance,
@@ -34,17 +41,17 @@ export function createContentRepositoryAdapter({
   getInspirationModules,
 }) {
   return Object.freeze({
-    getRegistry,
+    getRegistry: (options = {}) => resolveRegistryLocale(getRegistry(), options),
     getPackProvenance,
     getPacks,
     getPackIssues,
     getPackSummary,
     getPackSummaries: () => summarizePacks(getPacks()),
     getInspirationModules,
-    loadRegistry: async () => getRegistry(),
+    loadRegistry: async (options = {}) => resolveRegistryLocale(getRegistry(), options),
     loadPackProvenance: async () => getPackProvenance(),
     loadPackSummaries: async () => summarizePacks(getPacks()),
-    loadInspirationModules: async () => getInspirationModules(),
+    loadInspirationModules: async (options = {}) => getInspirationModules(options),
   });
 }
 
@@ -55,9 +62,10 @@ export function createStaticContentRepository() {
     getPacks: () => STATIC_CONTENT_PACKS,
     getPackIssues: () => STATIC_CONTENT_PACK_ISSUES,
     getPackSummary: () => STATIC_CONTENT_PACK_SUMMARY,
-    getInspirationModules: ({ includeRegistryFallback = true } = {}) => {
+    getInspirationModules: ({ includeRegistryFallback = true, locale } = {}) => {
       if (!includeRegistryFallback) return CRUOR_INSPIRATION_MODULES;
-      return buildInspirationModulesFromRegistry(STATIC_CONTENT_REGISTRY, {
+      const registry = resolveRegistryLocale(STATIC_CONTENT_REGISTRY, { locale });
+      return buildInspirationModulesFromRegistry(registry, {
         packId: "static-cruor-registry",
       });
     },

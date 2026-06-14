@@ -1,3 +1,12 @@
+import {
+  DEFAULT_LOCALE,
+  getLocalizedField,
+  hasLocalizedContent,
+  normalizeLocale,
+  resolveLocalizedContentEntry,
+  resolveLocalizedContentList,
+} from "../i18n/index.js";
+
 const REGISTRY_COLLECTIONS = [
   "workflows",
   "slots",
@@ -29,7 +38,8 @@ function normalizeEntry(entry, defaults = {}) {
     ...entry,
     id,
     status: entry?.status || defaults.status || DEFAULT_STATUS,
-    locale: entry?.locale || defaults.locale || "en",
+    locale: normalizeLocale(entry?.locale || defaults.locale || DEFAULT_LOCALE),
+    i18n: entry?.i18n || entry?.translations || defaults.i18n || defaults.translations || {},
     workflows: normalizeStringArray(entry?.workflows || defaults.workflows),
     slots: normalizeStringArray(entry?.slots || defaults.slots),
     sourceAnchors: normalizeStringArray(entry?.sourceAnchors || defaults.sourceAnchors),
@@ -67,6 +77,34 @@ function matchesString(value, accepted) {
   return acceptedValues.includes(String(value || ""));
 }
 
+function matchesLocale(entry, accepted) {
+  const acceptedValues = normalizeStringArray(accepted).map(normalizeLocale);
+  if (!acceptedValues.length) return true;
+
+  const entryLocale = normalizeLocale(entry.locale || DEFAULT_LOCALE);
+  if (acceptedValues.includes(entryLocale)) return true;
+
+  return acceptedValues.some(
+    (locale) => hasLocalizedContent(entry, locale) || (entryLocale === DEFAULT_LOCALE && locale !== DEFAULT_LOCALE),
+  );
+}
+
+function getTranslationSearchText(entry) {
+  return Object.values(entry.i18n || {})
+    .flatMap((translation) => [
+      translation?.title,
+      translation?.uiTitle,
+      translation?.label,
+      translation?.summary,
+      translation?.caption,
+      translation?.description,
+      translation?.tableText,
+      translation?.mechanics,
+      translation?.narrative,
+    ])
+    .filter(Boolean);
+}
+
 function matchesText(entry, query) {
   const text = String(query || "").trim().toLowerCase();
   if (!text) return true;
@@ -79,6 +117,7 @@ function matchesText(entry, query) {
     entry.tableText,
     entry.mechanics,
     entry.narrative,
+    ...getTranslationSearchText(entry),
     ...normalizeStringArray(entry.sourceAnchors),
     ...normalizeStringArray(entry.themes),
     ...normalizeStringArray(entry.motifs),
@@ -91,7 +130,7 @@ function matchesText(entry, query) {
 function matchesContentFilter(entry, filter = {}) {
   return (
     matchesString(entry.status, filter.status) &&
-    matchesString(entry.locale, filter.locale) &&
+    matchesLocale(entry, filter.locale) &&
     matchesString(entry.type, filter.type) &&
     matchesString(entry.contentType, filter.contentType || filter.contentTypes) &&
     matchesAny(entry.workflows, filter.workflow || filter.workflows) &&
@@ -121,7 +160,7 @@ function validateSourceLinks(registry, collectionName) {
   const knownSourceAnchors = registry.sourceAnchorIds;
   return registry[collectionName]
     .flatMap((entry) =>
-      normalizeStringArray(entry.sourceAnchors).map((sourceAnchorId) => ({ entry, sourceAnchorId }))
+      normalizeStringArray(entry.sourceAnchors).map((sourceAnchorId) => ({ entry, sourceAnchorId })),
     )
     .filter(({ sourceAnchorId }) => !knownSourceAnchors.has(sourceAnchorId))
     .map(({ entry, sourceAnchorId }) => ({
@@ -130,6 +169,20 @@ function validateSourceLinks(registry, collectionName) {
       id: entry.id,
       message: `Unknown Source Anchor: ${sourceAnchorId}`,
     }));
+}
+
+function localizeEntry(entry, locale) {
+  if (!entry || !locale) return entry || null;
+  return resolveLocalizedContentEntry(entry, locale);
+}
+
+function localizeEntries(entries, locale) {
+  if (!locale) return entries;
+  return resolveLocalizedContentList(entries, locale);
+}
+
+function getFilterLocale(filter = {}) {
+  return filter.locale ? normalizeLocale(filter.locale) : null;
 }
 
 export function createContentRegistry(data = {}) {
@@ -164,27 +217,45 @@ export function createContentRegistry(data = {}) {
 
   return Object.freeze({
     ...registry,
-    getWorkflow: (id) => registry.workflowById.get(id) || null,
-    getSlot: (id) => registry.slotById.get(id) || null,
-    getComponent: (id) => registry.componentById.get(id) || null,
-    getSourceAnchor: (id) => registry.sourceAnchorById.get(id) || null,
-    getInspiration: (id) => registry.inspirationById.get(id) || null,
-    getTaxonomy: (id) => registry.taxonomyById.get(id) || null,
-    getComponents: (filter = {}) => registry.components.filter((entry) => matchesContentFilter(entry, filter)),
-    getInspirations: (filter = {}) => registry.inspirations.filter((entry) => matchesContentFilter(entry, filter)),
+    getWorkflow: (id, locale) => localizeEntry(registry.workflowById.get(id), locale),
+    getSlot: (id, locale) => localizeEntry(registry.slotById.get(id), locale),
+    getComponent: (id, locale) => localizeEntry(registry.componentById.get(id), locale),
+    getSourceAnchor: (id, locale) => localizeEntry(registry.sourceAnchorById.get(id), locale),
+    getInspiration: (id, locale) => localizeEntry(registry.inspirationById.get(id), locale),
+    getTaxonomy: (id, locale) => localizeEntry(registry.taxonomyById.get(id), locale),
+    getLocalizedField: (entry, field, locale, options) => getLocalizedField(entry, field, locale, options),
+    getComponents: (filter = {}) =>
+      localizeEntries(registry.components.filter((entry) => matchesContentFilter(entry, filter)), getFilterLocale(filter)),
+    getInspirations: (filter = {}) =>
+      localizeEntries(registry.inspirations.filter((entry) => matchesContentFilter(entry, filter)), getFilterLocale(filter)),
     getSourceAnchors: (filter = {}) =>
-      registry.sourceAnchors.filter((entry) => matchesContentFilter(entry, filter)),
+      localizeEntries(registry.sourceAnchors.filter((entry) => matchesContentFilter(entry, filter)), getFilterLocale(filter)),
     getLinkedComponents: (sourceAnchorId, filter = {}) =>
-      registry.components.filter(
-        (entry) =>
-          normalizeStringArray(entry.sourceAnchors).includes(sourceAnchorId) &&
-          matchesContentFilter(entry, filter)
+      localizeEntries(
+        registry.components.filter(
+          (entry) =>
+            normalizeStringArray(entry.sourceAnchors).includes(sourceAnchorId) &&
+            matchesContentFilter(entry, filter),
+        ),
+        getFilterLocale(filter),
       ),
     getLinkedInspirations: (sourceAnchorId, filter = {}) =>
-      registry.inspirations.filter(
-        (entry) =>
-          normalizeStringArray(entry.sourceAnchors).includes(sourceAnchorId) &&
-          matchesContentFilter(entry, filter)
+      localizeEntries(
+        registry.inspirations.filter(
+          (entry) =>
+            normalizeStringArray(entry.sourceAnchors).includes(sourceAnchorId) &&
+            matchesContentFilter(entry, filter),
+        ),
+        getFilterLocale(filter),
+      ),
+    localize: (locale) =>
+      createContentRegistry(
+        Object.fromEntries(
+          REGISTRY_COLLECTIONS.map((collectionName) => [
+            collectionName,
+            localizeEntries(registry[collectionName] || [], locale),
+          ]),
+        ),
       ),
     summarize: () => summarizeContentRegistry(registry),
     validate: () => validateContentRegistry(registry),
@@ -193,7 +264,7 @@ export function createContentRegistry(data = {}) {
 
 export function summarizeContentRegistry(registry) {
   return Object.fromEntries(
-    REGISTRY_COLLECTIONS.map((collectionName) => [collectionName, registry[collectionName]?.length || 0])
+    REGISTRY_COLLECTIONS.map((collectionName) => [collectionName, registry[collectionName]?.length || 0]),
   );
 }
 
@@ -220,7 +291,7 @@ export function validateContentRegistry(registry) {
 export function defineContentRegistryData(data = {}) {
   return Object.freeze(
     Object.fromEntries(
-      REGISTRY_COLLECTIONS.map((collectionName) => [collectionName, asArray(data[collectionName])])
-    )
+      REGISTRY_COLLECTIONS.map((collectionName) => [collectionName, asArray(data[collectionName])]),
+    ),
   );
 }

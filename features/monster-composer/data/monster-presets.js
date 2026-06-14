@@ -13,6 +13,13 @@ export const MONSTER_FAMILY_PRESETS = [
     tempoProfileId: "slow",
     dangerId: "hard",
     summary: "A readable decomposition brute with pressure, rupture risk, and radiant counterplay.",
+    i18n: {
+      it: {
+        label: "Cadavere Gonfio",
+        family: "Gonfio",
+        summary: "Un bruto della decomposizione leggibile, con pressione interna, rischio di rottura e counterplay radiante.",
+      },
+    },
     selection: {
       body: "fresh-bloat-hide",
       mind: "pressure-agony",

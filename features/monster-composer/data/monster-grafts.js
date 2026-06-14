@@ -145,6 +145,14 @@ const RAW_MONSTER_GRAFTS = [
     mechanics:
       "The creature gains a +2 bonus to AC while it has more than half its hit points. When bloodied, reduce its AC by 2 and increase its walking speed by 10 feet.",
     counterplay: "The tight outer layer tears away as the corpse takes damage.",
+    i18n: {
+      it: {
+        title: "Pelle da Gonfiore Fresco",
+        summary: "Il cadavere è entrato da poco nella fase di gonfiore e si muove ancora con pesante resilienza.",
+        mechanics: "La creatura ottiene un bonus di +2 alla CA mentre ha più della metà dei suoi punti ferita. Quando è sanguinante, riduci la sua CA di 2 e aumenta la sua velocità di camminata di 10 piedi.",
+        counterplay: "Lo strato esterno teso si lacera man mano che il cadavere subisce danni.",
+      },
+    },
   },
   {
     id: "volatile-immobile-mass",
@@ -411,6 +419,14 @@ const RAW_MONSTER_GRAFTS = [
     mechanics:
       "When the creature starts its turn bloodied, it can move up to 10 feet toward the nearest enemy without provoking opportunity attacks, then it must attack that enemy if able.",
     counterplay: "It becomes easier to predict once damaged.",
+    i18n: {
+      it: {
+        title: "Agonia da Pressione",
+        summary: "Il cadavere è spinto in avanti dal dolore del gonfiore, non dalla fame o dal pensiero.",
+        mechanics: "Quando la creatura inizia il suo turno mentre è sanguinante, può muoversi fino a 10 piedi verso il nemico più vicino senza provocare attacchi di opportunità, poi deve attaccare quel nemico se può farlo.",
+        counterplay: "Diventa più facile da prevedere dopo essere stata ferita.",
+      },
+    },
   },
   {
     id: "stumbling-mass",
@@ -476,6 +492,14 @@ const RAW_MONSTER_GRAFTS = [
     mechanics:
       "The creature ignores nonmagical difficult terrain created by rubble, corpses, or mud, but it has disadvantage on Dexterity saving throws.",
     counterplay: "Its path is obvious and can be shaped with hazards.",
+    i18n: {
+      it: {
+        title: "Massa Barcollante",
+        summary: "Il cadavere si muove in modo diretto e maldestro, ignorando ostacoli e pericolo.",
+        mechanics: "La creatura ignora il terreno difficile non magico creato da macerie, cadaveri o fango, ma ha svantaggio ai Tiri Salvezza su Destrezza.",
+        counterplay: "La sua traiettoria è evidente e può essere manipolata con pericoli ambientali.",
+      },
+    },
   },
   {
     id: "rupture-charge",
@@ -772,6 +796,14 @@ const RAW_MONSTER_GRAFTS = [
     mechanics:
       "Melee Attack Roll. On hit, the target takes bludgeoning damage and must succeed on a Strength save or be pushed 5 feet. If the target collides with a creature or object, both take bludgeoning damage equal to the proficiency bonus.",
     counterplay: "The corpse visibly winds up before the slam; it is strongest near walls, allies, and cluttered terrain.",
+    i18n: {
+      it: {
+        title: "Schianto Potenziato",
+        summary: "Il cadavere colpisce con massa sufficiente a spezzare una linea frontale.",
+        mechanics: "Melee Attack Roll. A segno, il bersaglio subisce danni contundenti e deve superare un Tiro Salvezza su Forza o essere spinto di 5 piedi. Se il bersaglio collide con una creatura o un oggetto, entrambi subiscono danni contundenti pari al bonus di competenza.",
+        counterplay: "Il cadavere carica visibilmente il colpo; è più pericoloso vicino a muri, alleati e terreno affollato.",
+      },
+    },
   },
   {
     id: "acid-vomit",
@@ -1004,6 +1036,14 @@ const RAW_MONSTER_GRAFTS = [
       "When the creature drops to 0 hit points, roll a d6. On a 4 or higher, trigger one selected Unstable reaction before the creature dies.",
     counterplay:
       "Radiant damage, careful positioning, or distance can reduce the danger of the final hit.",
+    i18n: {
+      it: {
+        title: "Accumulo di Gas",
+        summary: "Abbattere il cadavere può innescare proprio ciò che tutti temevano.",
+        mechanics: "Quando la creatura scende a 0 punti ferita, tira un d6. Con 4 o più, innesca una reazione Instabile selezionata prima che la creatura muoia.",
+        counterplay: "Danni radianti, posizionamento attento o distanza possono ridurre il pericolo del colpo finale.",
+      },
+    },
   },
   {
     id: "unstable-rupture",
@@ -1502,6 +1542,14 @@ const RAW_MONSTER_GRAFTS = [
     mechanics:
       "When the creature takes radiant damage, it cannot use Unstable reactions until the start of its next turn.",
     counterplay: "Radiant damage becomes a safety tool, not just a damage type.",
+    i18n: {
+      it: {
+        title: "Cedimento da Preservazione Radiante",
+        summary: "La luce sacra fa collassare la necromanzia prima che i gas possano trasformare il cadavere in un’arma.",
+        mechanics: "Quando la creatura subisce danni radianti, non può usare reazioni Instabili fino all’inizio del suo prossimo turno.",
+        counterplay: "Il danno radiante diventa uno strumento di sicurezza, non solo un tipo di danno.",
+      },
+    },
   },
   {
     id: "corpse-bloom-death",
@@ -1660,6 +1708,14 @@ const RAW_MONSTER_GRAFTS = [
     mechanics:
       "On death, each creature within 10 feet makes a Dexterity save. On a failure, the target takes poison damage and has the Poisoned condition until the end of its next turn. On a success, the target takes half damage only.",
     counterplay: "The corpse visibly distends before death; the safest play is to finish it from range or with radiant damage.",
+    i18n: {
+      it: {
+        title: "Detonazione Tossica",
+        summary: "Il cadavere si rompe definitivamente quando viene distrutto.",
+        mechanics: "Alla morte, ogni creatura entro 10 piedi effettua un Tiro Salvezza su Destrezza. Fallimento: il bersaglio subisce danni da veleno e ha la condizione Poisoned fino alla fine del suo prossimo turno. Successo: il bersaglio subisce solo metà danni.",
+        counterplay: "Il cadavere si distende visibilmente prima della morte; la scelta più sicura è finirlo a distanza o con danni radianti.",
+      },
+    },
   },
   {
     id: "purge-fluid-flood",

@@ -1,75 +1,82 @@
-export const APP_MODE_OPTIONS = [
-  {
-    id: "simple",
-    label: "Simple",
-    description: "Quiet interface for default table use.",
-  },
-  {
-    id: "advanced",
-    label: "Advanced",
-    description: "Expose deeper composition controls.",
-  },
-  {
-    id: "debug",
-    label: "Debug",
-    description: "Show diagnostic and development-only surfaces.",
-  },
-];
+import { t } from "../../shared/i18n/index.js";
 
-export const SITE_NAV_ITEMS = [
-  {
-    id: "home",
-    label: "Home",
-    icon: "fa-solid fa-house-chimney",
-    type: "section",
-    sectionId: "home",
-  },
-  {
-    id: "crucible",
-    label: "Crucible",
-    icon: "fa-solid fa-flask-vial",
-    type: "mega",
-    items: [
-      {
-        id: "locations",
-        label: "Locations",
-        description: "Regions, hazards, clues, atmosphere, and map flow.",
-        mobileDescription: "Darken places with regions, hazards, clues, and maps.",
-        icon: "fa-solid fa-location-dot",
-        action: { type: "crucible-tool", toolId: "darken", viewId: "composer" },
-        previewTitle: "Darken a Location",
-        previewText:
-          "Turn an existing dungeon, chapel, cave, ruin, or village into playable horror with regions, hazards, clues, atmosphere, and a generated map.",
-        previewVariant: "locations",
-      },
-      {
-        id: "monsters",
-        label: "Monsters",
-        description: "Body, pressure, weakness, grafts, and 5E-ready output.",
-        mobileDescription: "Forge horror threats with grafts and table-ready mechanics.",
-        icon: "fa-solid fa-skull",
-        action: { type: "crucible-tool", toolId: "monster", viewId: "composer" },
-        previewTitle: "Build a Monster",
-        previewText:
-          "Forge a dark fantasy threat through anatomy, pressure, complexity, weaknesses, lair effects, and table-ready mechanics.",
-        previewVariant: "monsters",
-      },
-    ],
-  },
-  {
-    id: "inspirations",
-    label: "Inspirations",
-    icon: "fa-solid fa-book-skull",
-    type: "section",
-    sectionId: "inspirations",
-  },
-];
+export function getAppModeOptions(locale) {
+  return [
+    {
+      id: "simple",
+      label: t("modes.simple.label", {}, locale),
+      description: t("modes.simple.description", {}, locale),
+    },
+    {
+      id: "advanced",
+      label: t("modes.advanced.label", {}, locale),
+      description: t("modes.advanced.description", {}, locale),
+    },
+    {
+      id: "debug",
+      label: t("modes.debug.label", {}, locale),
+      description: t("modes.debug.description", {}, locale),
+    },
+  ];
+}
+
+export function getSiteNavItems(locale) {
+  return [
+    {
+      id: "home",
+      label: t("navigation.home", {}, locale),
+      icon: "fa-solid fa-house-chimney",
+      type: "section",
+      sectionId: "home",
+    },
+    {
+      id: "crucible",
+      label: t("navigation.crucible", {}, locale),
+      icon: "fa-solid fa-flask-vial",
+      type: "mega",
+      items: [
+        {
+          id: "locations",
+          label: t("navigation.locations.label", {}, locale),
+          description: t("navigation.locations.description", {}, locale),
+          mobileDescription: t("navigation.locations.mobileDescription", {}, locale),
+          icon: "fa-solid fa-location-dot",
+          action: { type: "crucible-tool", toolId: "darken", viewId: "composer" },
+          previewTitle: t("navigation.locations.previewTitle", {}, locale),
+          previewText: t("navigation.locations.previewText", {}, locale),
+          previewVariant: "locations",
+        },
+        {
+          id: "monsters",
+          label: t("navigation.monsters.label", {}, locale),
+          description: t("navigation.monsters.description", {}, locale),
+          mobileDescription: t("navigation.monsters.mobileDescription", {}, locale),
+          icon: "fa-solid fa-skull",
+          action: { type: "crucible-tool", toolId: "monster", viewId: "composer" },
+          previewTitle: t("navigation.monsters.previewTitle", {}, locale),
+          previewText: t("navigation.monsters.previewText", {}, locale),
+          previewVariant: "monsters",
+        },
+      ],
+    },
+    {
+      id: "inspirations",
+      label: t("navigation.inspirations", {}, locale),
+      icon: "fa-solid fa-book-skull",
+      type: "section",
+      sectionId: "inspirations",
+    },
+  ];
+}
+
+export const APP_MODE_OPTIONS = getAppModeOptions();
+export const SITE_NAV_ITEMS = getSiteNavItems();
 
 export function getCrucibleMenuItemId(generatorId) {
   if (generatorId === "monster") return "monsters";
   return "locations";
 }
 
-export function getModeLabel(modeId) {
-  return APP_MODE_OPTIONS.find((mode) => mode.id === modeId)?.label || "Simple";
+export function getModeLabel(modeId, locale) {
+  return getAppModeOptions(locale).find((mode) => mode.id === modeId)?.label || t("modes.simple.label", {}, locale);
 }

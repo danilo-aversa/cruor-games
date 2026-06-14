@@ -4438,7 +4438,6 @@
   box-shadow: var(--cruor-ui-panel-shadow);
   border-width: 1px;
   border-color: rgba(255, 238, 242, 0.08);
-  border-top-color: var(--cruor-ui-panel-border-top);
   -webkit-backdrop-filter: blur(20px) saturate(128%);
 }
 
@@ -4470,7 +4469,6 @@
   background-color: var(--cruor-ui-panel-bg);
   background-image: var(--cruor-ui-panel-image);
   box-shadow: var(--cruor-ui-panel-shadow);
-  border-top-color: var(--cruor-ui-panel-border-top);
   background-blend-mode: overlay, overlay, normal;
   backdrop-filter: blur(20px) saturate(128%);
   -webkit-backdrop-filter: blur(20px) saturate(128%);
@@ -4725,7 +4723,6 @@
   text-align: left;
   box-shadow: var(--cruor-ui-card-shadow);
   transition: border-color 0.14s ease, background 0.14s ease, color 0.14s ease, box-shadow 0.14s ease, transform 0.14s ease;
-  border-color: var(--cruor-ui-card-border);
 }
 
 .monster-shell .run-list article {

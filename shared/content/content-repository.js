@@ -1,7 +1,7 @@
 import { STATIC_CONTENT_REPOSITORY } from "./content-repository.adapter.js";
 
-export function getStaticContentRegistry() {
-  return STATIC_CONTENT_REPOSITORY.getRegistry();
+export function getStaticContentRegistry(options = {}) {
+  return STATIC_CONTENT_REPOSITORY.getRegistry(options);
 }
 
 export function getStaticContentPackProvenance() {
@@ -24,8 +24,8 @@ export function getStaticContentPackSummary() {
   return STATIC_CONTENT_REPOSITORY.getPackSummary();
 }
 
-export async function loadContentRegistry() {
-  return STATIC_CONTENT_REPOSITORY.loadRegistry();
+export async function loadContentRegistry(options = {}) {
+  return STATIC_CONTENT_REPOSITORY.loadRegistry(options);
 }
 
 export async function loadContentPackProvenance() {
@@ -36,6 +36,6 @@ export async function loadContentPackSummaries() {
   return STATIC_CONTENT_REPOSITORY.loadPackSummaries();
 }
 
-export async function loadInspirationModules() {
-  return STATIC_CONTENT_REPOSITORY.loadInspirationModules();
+export async function loadInspirationModules(options = {}) {
+  return STATIC_CONTENT_REPOSITORY.loadInspirationModules(options);
 }

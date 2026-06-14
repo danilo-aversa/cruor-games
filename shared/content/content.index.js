@@ -5,6 +5,24 @@ export {
   validateContentRegistry,
 } from "./registry.js";
 export {
+  DEFAULT_LOCALE,
+  FALLBACK_LOCALE,
+  LOCALIZED_CONTENT_FIELDS,
+  LOCALE_DICTIONARIES,
+  SUPPORTED_LOCALES,
+  getCurrentLocale,
+  getLocaleDictionary,
+  getLocalizedField,
+  getLocalizedRecord,
+  hasLocalizedContent,
+  normalizeLocale,
+  resolveLocalizedContentEntry,
+  resolveLocalizedContentList,
+  setCurrentLocale,
+  t,
+  translate,
+} from "../i18n/index.js";
+export {
   SOURCE_ANCHOR_ALIASES,
   SHARED_SOURCE_ANCHORS,
   getSourceAnchorId,

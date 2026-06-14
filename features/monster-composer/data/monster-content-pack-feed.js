@@ -89,6 +89,7 @@ export function sharedComponentToMonsterGraft(component, contentPack = {}) {
     summary: component.summary || "",
     mechanics: component.mechanics || component.tableText || "",
     counterplay: component.counterplay || "",
+    i18n: component.i18n || component.translations || {},
     contentPack: pack,
     registry: {
       componentId: component.id,
@@ -110,6 +111,7 @@ export function sourceAnchorToMonsterSource(sourceAnchor, contentPack = {}) {
     label: sourceAnchor.label || sourceAnchor.title || sourceAnchor.id,
     tags,
     summary: sourceAnchor.summary || "",
+    i18n: sourceAnchor.i18n || sourceAnchor.translations || {},
     contentPack: pack,
     registry: {
       sourceAnchorId: sourceAnchor.id,
@@ -138,21 +140,58 @@ function withContentPackMeta(entry, contentPack = CORE_MONSTER_FEED_META) {
 }
 
 export function mergeMonsterSources(baseSources = [], contentPackSources = []) {
-  const seen = new Set();
-  return [...baseSources, ...contentPackSources].filter((source) => {
-    if (!source?.id || seen.has(source.id)) return false;
-    seen.add(source.id);
-    return true;
+  const sourcesById = new Map();
+
+  [...baseSources, ...contentPackSources].forEach((source) => {
+    if (!source?.id) return;
+    const existing = sourcesById.get(source.id);
+
+    if (!existing) {
+      sourcesById.set(source.id, source);
+      return;
+    }
+
+    sourcesById.set(source.id, {
+      ...existing,
+      ...source,
+      tags: uniqueArray([...(existing.tags || []), ...(source.tags || [])]),
+      i18n: {
+        ...(existing.i18n || {}),
+        ...(source.i18n || {}),
+      },
+      contentPack: existing.contentPack || source.contentPack,
+      registry: existing.registry || source.registry,
+    });
   });
+
+  return [...sourcesById.values()];
 }
 
 export function mergeMonsterGrafts(baseGrafts = [], contentPackGrafts = []) {
-  const seen = new Set();
-  return [...baseGrafts, ...contentPackGrafts].filter((graft) => {
-    if (!graft?.id || seen.has(graft.id)) return false;
-    seen.add(graft.id);
-    return true;
+  const graftsById = new Map();
+
+  [...baseGrafts, ...contentPackGrafts].forEach((graft) => {
+    if (!graft?.id) return;
+    const existing = graftsById.get(graft.id);
+
+    if (!existing) {
+      graftsById.set(graft.id, graft);
+      return;
+    }
+
+    graftsById.set(graft.id, {
+      ...existing,
+      ...graft,
+      i18n: {
+        ...(existing.i18n || {}),
+        ...(graft.i18n || {}),
+      },
+      contentPack: existing.contentPack || graft.contentPack,
+      registry: existing.registry || graft.registry,
+    });
   });
+
+  return [...graftsById.values()];
 }
 
 function getRegistryMonsterComponents() {

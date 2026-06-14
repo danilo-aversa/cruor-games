@@ -24,11 +24,12 @@ import {
 } from "./monster-composer.workflow.js";
 
 import {
-  ALL_MONSTER_SOURCES as SOURCES,
-  ALL_MONSTER_GRAFTS as FEATURES,
+  ALL_MONSTER_SOURCES as BASE_SOURCES,
+  ALL_MONSTER_GRAFTS as BASE_FEATURES,
 } from "./data/monster-content-pack-feed.js";
 
-import { MONSTER_FAMILY_PRESETS } from "./data/monster-presets.js";
+import { MONSTER_FAMILY_PRESETS as BASE_MONSTER_FAMILY_PRESETS } from "./data/monster-presets.js";
+import { resolveLocalizedContentList } from "../../shared/i18n/index.js";
 import {
   asArray,
   collapseSelectedToSingle,
@@ -92,6 +93,10 @@ import { BalanceWorkbench, ExportWorkbench, RunModePanel } from "./components/mo
 
 const MONSTER_STAGE_TRANSITION_EXIT_MS = 260;
 const MONSTER_STAGE_TRANSITION_ENTER_MS = 760;
+
+let LOCALIZED_MONSTER_SOURCES = BASE_SOURCES;
+let LOCALIZED_MONSTER_FEATURES = BASE_FEATURES;
+let LOCALIZED_MONSTER_PRESETS = BASE_MONSTER_FAMILY_PRESETS;
 
 
 function clamp(value, min, max) {
@@ -253,13 +258,14 @@ function buildName(type, category, selectedFeatures) {
     selectedFeatures.find((f) => f.slot === "horror") ||
     selectedFeatures.find((f) => f.slot === "body") ||
     selectedFeatures[0];
-  const source = sourceFeature ? SOURCES.find((s) => s.id === sourceFeature.source)?.label : null;
+  const sourceId = sourceFeature?.source || "";
+  const source = sourceFeature ? LOCALIZED_MONSTER_SOURCES.find((s) => s.id === sourceId)?.label : null;
 
   if (!source) return `Cruor ${category}`;
-  if (source === "Wolf Spiders") return `Brood-Bearing ${category}`;
-  if (source === "Wax Death Masks") return `Wax-Faced ${category}`;
-  if (source === "Jikininki") return `Grave-Hungry ${category}`;
-  if (source === "Decomposition") return `Rot-Swollen ${category}`;
+  if (sourceId === "wolf-spiders") return `Brood-Bearing ${category}`;
+  if (sourceId === "wax-death-masks") return `Wax-Faced ${category}`;
+  if (sourceId === "jikininki") return `Grave-Hungry ${category}`;
+  if (sourceId === "decomposition") return `Rot-Swollen ${category}`;
   return `${source} ${titleCase(type)}`;
 }
 
@@ -292,7 +298,7 @@ function getContentPackTitle(entry) {
 }
 
 function getPresetById(presetId) {
-  return MONSTER_FAMILY_PRESETS.find((preset) => preset.id === presetId) || null;
+  return LOCALIZED_MONSTER_PRESETS.find((preset) => preset.id === presetId) || null;
 }
 
 function normalizePresetSelection(preset) {
@@ -301,7 +307,7 @@ function normalizePresetSelection(preset) {
     Object.entries(preset.selection)
       .map(([slotId, value]) => {
         const ids = asArray(value).filter((id) =>
-          FEATURES.some((feature) => feature.id === id && feature.slot === slotId)
+          LOCALIZED_MONSTER_FEATURES.some((feature) => feature.id === id && feature.slot === slotId)
         );
         return [slotId, ids.length > 1 ? ids : ids[0]];
       })
@@ -374,7 +380,7 @@ function getOneClickFixCandidates({
   targetCr,
   excludeFeatureId = "",
 }) {
-  return FEATURES.map((feature) => ({
+  return LOCALIZED_MONSTER_FEATURES.map((feature) => ({
     feature,
     status: getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset }),
   }))
@@ -472,7 +478,7 @@ function findReplacementFix({
     reason === "complexity"
       ? getFeatureComplexityWeight(feature)
       : getFeaturePressureWeight(feature);
-  const candidates = FEATURES.map((candidate) => ({
+  const candidates = LOCALIZED_MONSTER_FEATURES.map((candidate) => ({
     candidate,
     status: getCompatibilityStatus(candidate, reducedFeatures, typeId, category, { activePreset }),
   }))
@@ -1043,7 +1049,7 @@ function getForgePriority(roleId) {
 }
 
 function getFeaturesFromSelection(selected) {
-  return getFeaturesFromSelectionModel(selected, FEATURES);
+  return getFeaturesFromSelectionModel(selected, LOCALIZED_MONSTER_FEATURES);
 }
 
 function trimSelectedToCaps(current, slotCaps) {
@@ -1111,7 +1117,17 @@ function copyTextFallback(text) {
 
 
 
-export default function CruorMonsterComposerMvp({ uiMode = "simple", inspirationSeed = null } = {}) {
+export default function CruorMonsterComposerMvp({ uiMode = "simple", inspirationSeed = null, locale = "en" } = {}) {
+  const SOURCES = useMemo(() => resolveLocalizedContentList(BASE_SOURCES, locale), [locale]);
+  const FEATURES = useMemo(() => resolveLocalizedContentList(BASE_FEATURES, locale), [locale]);
+  const MONSTER_FAMILY_PRESETS = useMemo(
+    () => resolveLocalizedContentList(BASE_MONSTER_FAMILY_PRESETS, locale),
+    [locale],
+  );
+
+  LOCALIZED_MONSTER_SOURCES = SOURCES;
+  LOCALIZED_MONSTER_FEATURES = FEATURES;
+  LOCALIZED_MONSTER_PRESETS = MONSTER_FAMILY_PRESETS;
   const [typeId, setTypeId] = useState("undead");
   const [category, setCategory] = useState("Zombie");
   const [roleId, setRoleId] = useState("standard");
@@ -1226,16 +1242,16 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       packsById.set(id, { id, title: getContentPackTitle(feature) });
     });
     return [...packsById.values()].sort((a, b) => a.title.localeCompare(b.title));
-  }, []);
+  }, [FEATURES]);
 
-  const selectedFeatures = useMemo(() => getFeaturesFromSelection(selected), [selected]);
+  const selectedFeatures = useMemo(() => getFeaturesFromSelection(selected), [selected, FEATURES]);
 
   const availableFeatures = useMemo(() => {
     const slotFilter = currentNavigatorSlot === "all" ? null : currentNavigatorSlot;
     const activeNavigatorSourceFilters = Array.isArray(navigatorSourceFilters)
       ? navigatorSourceFilters
       : [];
-    return FEATURES.map((feature) => ({
+    return LOCALIZED_MONSTER_FEATURES.map((feature) => ({
       feature,
       status: getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset }),
     }))
@@ -1290,6 +1306,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       })
       .map(({ feature }) => feature);
   }, [
+    FEATURES,
     sourceId,
     navigatorSourceFilters,
     typeId,
@@ -1310,7 +1327,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
   ]);
 
   const compatibleCount = useMemo(() => {
-    return FEATURES.map((feature) => ({
+    return LOCALIZED_MONSTER_FEATURES.map((feature) => ({
       feature,
       status: getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset }),
     })).filter(({ feature, status }) => {
@@ -1319,7 +1336,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
         : featureMatchesFrame(feature, sourceId, typeId, roleId, null, currentFrameContext);
       return frameMatch && canShowFeatureForMode(status, composerMode);
     }).length;
-  }, [sourceId, typeId, roleId, selectedFeatures, category, activePreset, composerMode, customMode, tacticalRoleId, monsterTierId, tempoProfileId, dangerId, targetCr]);
+  }, [FEATURES, sourceId, typeId, roleId, selectedFeatures, category, activePreset, composerMode, customMode, tacticalRoleId, monsterTierId, tempoProfileId, dangerId, targetCr]);
 
   const computed = useMemo(() => {
     const partyTier = getTier(partyLevel);
@@ -1902,7 +1919,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     .filter(Boolean);
   const activeSlotAvailableFeatures = useMemo(() => {
     if (!activeSlot) return [];
-    return FEATURES.map((feature) => ({
+    return LOCALIZED_MONSTER_FEATURES.map((feature) => ({
       feature,
       status: getCompatibilityStatus(feature, selectedFeatures, typeId, category, { activePreset }),
     }))
@@ -1913,7 +1930,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
         return frameMatch && canShowFeatureForMode(status, composerMode);
       })
       .map(({ feature }) => feature);
-  }, [sourceId, typeId, roleId, activeSlot, selectedFeatures, category, activePreset, composerMode, customMode, tacticalRoleId, monsterTierId, tempoProfileId, dangerId, targetCr]);
+  }, [FEATURES, sourceId, typeId, roleId, activeSlot, selectedFeatures, category, activePreset, composerMode, customMode, tacticalRoleId, monsterTierId, tempoProfileId, dangerId, targetCr]);
   const activeAlternatives = activeSlotAvailableFeatures.filter(
     (feature) => !activeSlotFeatureIds.includes(feature.id)
   ).length;
@@ -1938,7 +1955,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
         .toLowerCase();
       return haystack.includes(query);
     });
-  }, [availableFeatures, navigatorSearch]);
+  }, [SOURCES, availableFeatures, navigatorSearch]);
   const guidedFlow = buildGuidedFlow({
     composerStarted,
     startMode,

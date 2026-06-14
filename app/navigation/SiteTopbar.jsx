@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
-  APP_MODE_OPTIONS,
-  SITE_NAV_ITEMS,
+  getAppModeOptions,
+  getSiteNavItems,
   getCrucibleMenuItemId,
-  getModeLabel,
 } from "./site-navigation.data.js";
 import SiteMegaMenu from "./SiteMegaMenu.jsx";
+import { SUPPORTED_LOCALES, getLocaleDictionary, t } from "../../shared/i18n/index.js";
 
 function cx(...parts) {
   return parts.filter(Boolean).join(" ");
@@ -19,6 +19,8 @@ export default function SiteTopbar({
   onSectionChange,
   onUiModeChange,
   onOpenCrucibleTool,
+  activeLocale = "en",
+  onLocaleChange,
 }) {
   const topbarRef = useRef(null);
   const megaMenuRef = useRef(null);
@@ -27,14 +29,25 @@ export default function SiteTopbar({
   const [openMenuId, setOpenMenuId] = useState(null);
   const [megaMenuPosition, setMegaMenuPosition] = useState({ left: 0, top: 0 });
   const [activePreviewId, setActivePreviewId] = useState(() =>
-    getCrucibleMenuItemId(activeCrucibleGenerator)
+    getCrucibleMenuItemId(activeCrucibleGenerator),
   );
   const [isUtilityOpen, setIsUtilityOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+  const appModeOptions = useMemo(() => getAppModeOptions(activeLocale), [activeLocale]);
+  const siteNavItems = useMemo(() => getSiteNavItems(activeLocale), [activeLocale]);
+  const localeOptions = useMemo(
+    () =>
+      SUPPORTED_LOCALES.map((locale) => ({
+        id: locale,
+        label: getLocaleDictionary(locale)?.meta?.languageName || locale.toUpperCase(),
+      })),
+    [],
+  );
+
   const crucibleMenu = useMemo(
-    () => SITE_NAV_ITEMS.find((item) => item.id === "crucible"),
-    []
+    () => siteNavItems.find((item) => item.id === "crucible"),
+    [siteNavItems],
   );
 
   const activeCrucibleMenuItemId = getCrucibleMenuItemId(activeCrucibleGenerator);
@@ -202,7 +215,7 @@ export default function SiteTopbar({
             className={cx(
               "app-shell__nav-item site-topbar__nav-button",
               isActive && "is-active",
-              isOpen && "is-open"
+              isOpen && "is-open",
             )}
             type="button"
             aria-haspopup="menu"
@@ -236,7 +249,7 @@ export default function SiteTopbar({
   }
 
   const openMegaMenuItem =
-    openMenuId && SITE_NAV_ITEMS.find((item) => item.id === openMenuId && item.type === "mega");
+    openMenuId && siteNavItems.find((item) => item.id === openMenuId && item.type === "mega");
 
   return (
     <header className="app-shell__bar site-topbar" ref={topbarRef}>
@@ -244,7 +257,7 @@ export default function SiteTopbar({
         <button
           className="app-shell__brand site-topbar__brand"
           type="button"
-          aria-label="Go to Cruor Games home"
+          aria-label={t("app.aria.goHome", {}, activeLocale)}
           onClick={() => handleAction({ type: "section", sectionId: "home" })}
         >
           <span className="app-shell__logo-mark" aria-hidden="true">
@@ -257,15 +270,15 @@ export default function SiteTopbar({
         </button>
 
         <div className="app-shell__bar-actions site-topbar__bar-actions">
-          <nav className="app-shell__nav site-topbar__nav" aria-label="Primary sections">
-            {SITE_NAV_ITEMS.map(renderDesktopNavItem)}
+          <nav className="app-shell__nav site-topbar__nav" aria-label={t("app.aria.primarySections", {}, activeLocale)}>
+            {siteNavItems.map(renderDesktopNavItem)}
           </nav>
 
           <div className="site-topbar__right-rail">
             <button
               className="site-topbar__utility-button"
               type="button"
-              aria-label="Open interface options"
+              aria-label={t("settings.aria.openSettings", {}, activeLocale)}
               aria-haspopup="menu"
               aria-expanded={isUtilityOpen}
               aria-controls="siteUtilityMenu"
@@ -275,8 +288,8 @@ export default function SiteTopbar({
                 setIsMobileOpen(false);
               }}
             >
-              <i className="fa-solid fa-ellipsis" aria-hidden="true" />
-              <span>{getModeLabel(activeUiMode)}</span>
+              <i className="fa-solid fa-gear" aria-hidden="true" />
+              <span>{t("settings.label", {}, activeLocale)}</span>
             </button>
 
             {isUtilityOpen ? (
@@ -284,31 +297,63 @@ export default function SiteTopbar({
                 className="site-topbar__utility-menu"
                 id="siteUtilityMenu"
                 role="menu"
-                aria-label="Interface options"
+                aria-label={t("settings.aria.panel", {}, activeLocale)}
               >
-                <span className="site-topbar__utility-label">Interface Mode</span>
+                <div className="site-topbar__settings-section">
+                  <span className="site-topbar__utility-label">{t("settings.sections.mode", {}, activeLocale)}</span>
+                  <div className="site-topbar__mode-list" role="group" aria-label={t("app.aria.interfaceMode", {}, activeLocale)}>
+                    {appModeOptions.map((mode) => (
+                      <button
+                        key={mode.id}
+                        className={cx(
+                          "site-topbar__mode-option",
+                          activeUiMode === mode.id && "is-active",
+                        )}
+                        type="button"
+                        role="menuitemradio"
+                        aria-checked={activeUiMode === mode.id}
+                        title={mode.description}
+                        onClick={() => {
+                          onUiModeChange?.(mode.id);
+                        }}
+                      >
+                        <span>{mode.label}</span>
+                        <small>{mode.description}</small>
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-                <div className="site-topbar__mode-list" role="group" aria-label="Interface mode">
-                  {APP_MODE_OPTIONS.map((mode) => (
-                    <button
-                      key={mode.id}
-                      className={cx(
-                        "site-topbar__mode-option",
-                        activeUiMode === mode.id && "is-active"
-                      )}
-                      type="button"
-                      role="menuitemradio"
-                      aria-checked={activeUiMode === mode.id}
-                      title={mode.description}
-                      onClick={() => {
-                        onUiModeChange?.(mode.id);
-                        setIsUtilityOpen(false);
-                      }}
-                    >
-                      <span>{mode.label}</span>
-                      <small>{mode.description}</small>
-                    </button>
-                  ))}
+                <div className="site-topbar__settings-section">
+                  <span className="site-topbar__utility-label">{t("settings.sections.language", {}, activeLocale)}</span>
+                  <div className="site-topbar__language-list" role="group" aria-label={t("settings.sections.language", {}, activeLocale)}>
+                    {localeOptions.map((locale) => (
+                      <button
+                        key={locale.id}
+                        className={cx(
+                          "site-topbar__language-option",
+                          "is-disabled",
+                          activeLocale === locale.id && "is-active",
+                        )}
+                        type="button"
+                        role="menuitemradio"
+                        aria-checked={activeLocale === locale.id}
+                        aria-disabled="true"
+                        disabled
+                        title={t("settings.languageLocked", {}, activeLocale)}
+                      >
+                        <span>{locale.label}</span>
+                        <small>{locale.id.toUpperCase()}</small>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="site-topbar__settings-section">
+                  <span className="site-topbar__utility-label">{t("settings.sections.accessibility", {}, activeLocale)}</span>
+                  <p className="site-topbar__settings-note">
+                    {t("settings.accessibilityPlaceholder", {}, activeLocale)}
+                  </p>
                 </div>
               </div>
             ) : null}
@@ -317,17 +362,17 @@ export default function SiteTopbar({
               className="site-topbar__login-placeholder"
               type="button"
               disabled
-              aria-label="Login placeholder"
-              title="Login placeholder"
+              aria-label={t("app.labels.loginPlaceholder", {}, activeLocale)}
+              title={t("app.labels.loginPlaceholder", {}, activeLocale)}
             >
               <i className="fa-solid fa-user-lock" aria-hidden="true" />
-              <span>Login</span>
+              <span>{t("app.labels.login", {}, activeLocale)}</span>
             </button>
 
             <button
               className="site-topbar__mobile-toggle"
               type="button"
-              aria-label={isMobileOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-label={isMobileOpen ? t("app.aria.closeNavigationMenu", {}, activeLocale) : t("app.aria.openNavigationMenu", {}, activeLocale)}
               aria-expanded={isMobileOpen}
               aria-controls="siteMobileMenu"
               onClick={() => {
@@ -343,24 +388,24 @@ export default function SiteTopbar({
       </div>
 
       {isMobileOpen ? (
-        <nav className="site-topbar__mobile-menu" id="siteMobileMenu" aria-label="Mobile navigation">
+        <nav className="site-topbar__mobile-menu" id="siteMobileMenu" aria-label={t("app.aria.mobileNavigation", {}, activeLocale)}>
           <button
             className={cx("site-topbar__mobile-link", activeSection === "home" && "is-active")}
             type="button"
             onClick={() => handleAction({ type: "section", sectionId: "home" })}
           >
             <i className="fa-solid fa-house-chimney" aria-hidden="true" />
-            <span>Home</span>
+            <span>{t("navigation.home", {}, activeLocale)}</span>
           </button>
 
           <div className="site-topbar__mobile-group">
-            <span className="site-topbar__mobile-group-label">Crucible</span>
+            <span className="site-topbar__mobile-group-label">{t("navigation.crucible", {}, activeLocale)}</span>
             {crucibleMenu?.items?.map((item) => (
               <button
                 key={item.id}
                 className={cx(
                   "site-topbar__mobile-link site-topbar__mobile-link--nested",
-                  activeSection === "crucible" && activeCrucibleMenuItemId === item.id && "is-active"
+                  activeSection === "crucible" && activeCrucibleMenuItemId === item.id && "is-active",
                 )}
                 type="button"
                 onClick={() => handleAction(item.action)}
@@ -377,19 +422,19 @@ export default function SiteTopbar({
           <button
             className={cx(
               "site-topbar__mobile-link",
-              activeSection === "inspirations" && "is-active"
+              activeSection === "inspirations" && "is-active",
             )}
             type="button"
             onClick={() => handleAction({ type: "section", sectionId: "inspirations" })}
           >
             <i className="fa-solid fa-book-skull" aria-hidden="true" />
-            <span>Inspirations</span>
+            <span>{t("navigation.inspirations", {}, activeLocale)}</span>
           </button>
 
           <div className="site-topbar__mobile-mode">
-            <span className="site-topbar__mobile-group-label">Interface Mode</span>
+            <span className="site-topbar__mobile-group-label">{t("settings.sections.mode", {}, activeLocale)}</span>
             <div className="site-topbar__mode-list">
-              {APP_MODE_OPTIONS.map((mode) => (
+              {appModeOptions.map((mode) => (
                 <button
                   key={mode.id}
                   className={cx("site-topbar__mode-option", activeUiMode === mode.id && "is-active")}
@@ -397,7 +442,6 @@ export default function SiteTopbar({
                   aria-pressed={activeUiMode === mode.id}
                   onClick={() => {
                     onUiModeChange?.(mode.id);
-                    setIsMobileOpen(false);
                   }}
                 >
                   <span>{mode.label}</span>
@@ -405,6 +449,35 @@ export default function SiteTopbar({
                 </button>
               ))}
             </div>
+          </div>
+
+          <div className="site-topbar__mobile-mode">
+            <span className="site-topbar__mobile-group-label">{t("settings.sections.language", {}, activeLocale)}</span>
+            <div className="site-topbar__language-list">
+              {localeOptions.map((locale) => (
+                <button
+                  key={locale.id}
+                  className={cx(
+                    "site-topbar__language-option",
+                    "is-disabled",
+                    activeLocale === locale.id && "is-active",
+                  )}
+                  type="button"
+                  aria-pressed={activeLocale === locale.id}
+                  aria-disabled="true"
+                  disabled
+                  title={t("settings.languageLocked", {}, activeLocale)}
+                >
+                  <span>{locale.label}</span>
+                  <small>{locale.id.toUpperCase()}</small>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="site-topbar__mobile-mode">
+            <span className="site-topbar__mobile-group-label">{t("settings.sections.accessibility", {}, activeLocale)}</span>
+            <p className="site-topbar__settings-note">{t("settings.accessibilityPlaceholder", {}, activeLocale)}</p>
           </div>
         </nav>
       ) : null}
@@ -426,7 +499,7 @@ export default function SiteTopbar({
               onAction={handleAction}
               onRequestClose={closeTransientNavigation}
             />,
-            document.body
+            document.body,
           )
         : null}
     </header>

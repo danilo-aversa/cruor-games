@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AppShell from "./AppShell.jsx";
 import HomePage from "./HomePage.jsx";
 import CrucibleTopbar from "../features/crucible/components/CrucibleTopbar.jsx";
@@ -7,52 +7,60 @@ import InspirationsPage from "../features/inspirations/inspirations.index.js";
 import InspirationStudioPage from "../features/inspiration-studio/inspiration-studio.index.js";
 import MonsterComposerPage from "../features/monster-composer/monster-composer.index.js";
 import { createMapRequestFromDarkenLocationState } from "../features/darken-location/darken-location.map-request.js";
+import { getCurrentLocale, setCurrentLocale, t } from "../shared/i18n/index.js";
 
 const CruorMapGeneratorMvp = lazy(
-  () => import("../features/darken-location/map-generator/map-generator.index.js")
+  () => import("../features/darken-location/map-generator/map-generator.index.js"),
 );
 
-const CRUCIBLE_GENERATORS = [
-  {
-    id: "darken",
-    label: "Darken a Location",
-    icon: "fa-solid fa-location-dot",
-    tooltip: "Darken a Location",
-  },
-  {
-    id: "monster",
-    label: "Build a Monster",
-    icon: "fa-solid fa-skull",
-    tooltip: "Build a Monster",
-  },
-];
+function buildCrucibleGenerators(locale) {
+  return [
+    {
+      id: "darken",
+      label: t("crucible.generators.darken", {}, locale),
+      icon: "fa-solid fa-location-dot",
+      tooltip: t("crucible.generators.darken", {}, locale),
+    },
+    {
+      id: "monster",
+      label: t("crucible.generators.monster", {}, locale),
+      icon: "fa-solid fa-skull",
+      tooltip: t("crucible.generators.monster", {}, locale),
+    },
+  ];
+}
 
-const DARKEN_VIEWS = [
-  {
-    id: "composer",
-    label: "Composer",
-    icon: "fa-solid fa-wand-magic-sparkles",
-    tooltip: "Composer",
-    panelId: "darkenComposerPanel",
-  },
-  {
-    id: "map-generator",
-    label: "Map",
-    icon: "fa-solid fa-map",
-    tooltip: "Map",
-    panelId: "darkenMapGeneratorPanel",
-  },
-];
+function buildDarkenViews(locale) {
+  return [
+    {
+      id: "composer",
+      label: t("crucible.views.composer", {}, locale),
+      icon: "fa-solid fa-wand-magic-sparkles",
+      tooltip: t("crucible.views.composer", {}, locale),
+      panelId: "darkenComposerPanel",
+    },
+    {
+      id: "map-generator",
+      label: t("crucible.views.map", {}, locale),
+      icon: "fa-solid fa-map",
+      tooltip: t("crucible.views.map", {}, locale),
+      panelId: "darkenMapGeneratorPanel",
+    },
+  ];
+}
 
-const MONSTER_VIEWS = [
-  {
-    id: "composer",
-    label: "Composer",
-    icon: "fa-solid fa-dna",
-    tooltip: "Composer",
-    panelId: "monsterComposerPanel",
-  },
-];
+function buildMonsterViews(locale) {
+  return [
+    {
+      id: "composer",
+      label: t("crucible.views.monsterComposer", {}, locale),
+      icon: "fa-solid fa-dna",
+      tooltip: t("crucible.views.monsterComposer", {}, locale),
+      panelId: "monsterComposerPanel",
+    },
+  ];
+}
+
 
 function getInitialSection() {
   if (typeof window === "undefined") return "home";
@@ -63,6 +71,7 @@ function getInitialSection() {
 export default function AppRouter() {
   const [activeSection, setActiveSection] = useState(getInitialSection);
   const [activeUiMode, setActiveUiMode] = useState("simple");
+  const [activeLocale, setActiveLocaleState] = useState(getCurrentLocale);
   const [activeCrucibleGenerator, setActiveCrucibleGenerator] = useState("darken");
   const [activeDarkenTab, setActiveDarkenTab] = useState("composer");
   const [hasOpenedMapGenerator, setHasOpenedMapGenerator] = useState(false);
@@ -71,23 +80,34 @@ export default function AppRouter() {
   const [monsterInspirationSeed, setMonsterInspirationSeed] = useState(null);
   const darkenSnapshotProviderRef = useRef(null);
 
+  const crucibleGenerators = useMemo(() => buildCrucibleGenerators(activeLocale), [activeLocale]);
+  const darkenViews = useMemo(() => buildDarkenViews(activeLocale), [activeLocale]);
+  const monsterViews = useMemo(() => buildMonsterViews(activeLocale), [activeLocale]);
+
+  const handleLocaleChange = useCallback((locale) => {
+    const normalizedLocale = setCurrentLocale(locale);
+    setActiveLocaleState(normalizedLocale);
+  }, []);
+
+  useEffect(() => {
+    setCurrentLocale(activeLocale);
+  }, [activeLocale]);
+
   const createMapRequestFromSnapshot = useCallback(
     (snapshot) => createMapRequestFromDarkenLocationState(snapshot),
-    []
+    [],
   );
 
   const initializeMapRequest = useCallback(
     (snapshot) => {
       setMapRequest((currentRequest) => currentRequest || createMapRequestFromSnapshot(snapshot));
     },
-    [createMapRequestFromSnapshot]
+    [createMapRequestFromSnapshot],
   );
 
   const refreshMapFromComposer = useCallback(() => {
     if (hasOpenedMapGenerator) {
-      const confirmed = window.confirm(
-        "Refresh the map from the current Composer regions? This will replace the current generated map."
-      );
+      const confirmed = window.confirm(t("crucible.messages.refreshMapConfirm", {}, activeLocale));
       if (!confirmed) return;
     }
 
@@ -98,7 +118,7 @@ export default function AppRouter() {
     setActiveCrucibleGenerator("darken");
     setActiveDarkenTab("map-generator");
     setActiveSection("crucible");
-  }, [createMapRequestFromSnapshot, hasOpenedMapGenerator]);
+  }, [activeLocale, createMapRequestFromSnapshot, hasOpenedMapGenerator]);
 
   const openMapGenerator = useCallback(
     (snapshot) => {
@@ -108,7 +128,7 @@ export default function AppRouter() {
       setActiveDarkenTab("map-generator");
       setActiveSection("crucible");
     },
-    [initializeMapRequest]
+    [initializeMapRequest],
   );
 
   const setDarkenSnapshotProvider = useCallback((provider) => {
@@ -127,7 +147,7 @@ export default function AppRouter() {
       setActiveCrucibleGenerator("darken");
       setActiveDarkenTab(tabId);
     },
-    [hasOpenedMapGenerator, initializeMapRequest]
+    [hasOpenedMapGenerator, initializeMapRequest],
   );
 
   const activateCrucibleGenerator = useCallback((generatorId) => {
@@ -148,7 +168,7 @@ export default function AppRouter() {
 
       activateCrucibleGenerator(generatorId);
     },
-    [activateCrucibleGenerator, activateDarkenTab]
+    [activateCrucibleGenerator, activateDarkenTab],
   );
 
   const openMonsterFromInspiration = useCallback((seed = {}) => {
@@ -176,16 +196,16 @@ export default function AppRouter() {
             ? "darken-workspace crucible-workspace"
             : "monster-crucible-workspace crucible-workspace"
       }
-      aria-label="Crucible workspace"
+      aria-label={t("app.aria.crucibleWorkspace", {}, activeLocale)}
       data-active-generator={activeCrucibleGenerator}
     >
       <CrucibleTopbar
         activeGeneratorId={activeCrucibleGenerator}
         activeViewId={activeCrucibleGenerator === "darken" ? activeDarkenTab : "composer"}
-        generators={CRUCIBLE_GENERATORS}
+        generators={crucibleGenerators}
         onGeneratorChange={activateCrucibleGenerator}
         onViewChange={activeCrucibleGenerator === "darken" ? activateDarkenTab : undefined}
-        views={activeCrucibleGenerator === "darken" ? DARKEN_VIEWS : MONSTER_VIEWS}
+        views={activeCrucibleGenerator === "darken" ? darkenViews : monsterViews}
       />
 
       {activeCrucibleGenerator === "darken" ? (
@@ -211,7 +231,7 @@ export default function AppRouter() {
               aria-labelledby="crucibleViewTab-darken-map-generator"
               hidden={activeDarkenTab !== "map-generator"}
             >
-              <Suspense fallback={<div className="status">Loading map generator...</div>}>
+              <Suspense fallback={<div className="status">{t("app.labels.loadingMapGenerator", {}, activeLocale)}</div>}>
                 <CruorMapGeneratorMvp
                   key={mapRequestRevision}
                   initialRequest={mapRequest}
@@ -227,7 +247,7 @@ export default function AppRouter() {
           role="tabpanel"
           aria-labelledby="crucibleViewTab-monster-composer"
         >
-          <MonsterComposerPage uiMode={activeUiMode} inspirationSeed={monsterInspirationSeed} />
+          <MonsterComposerPage uiMode={activeUiMode} inspirationSeed={monsterInspirationSeed} locale={activeLocale} />
         </section>
       )}
     </section>
@@ -238,6 +258,8 @@ export default function AppRouter() {
       activeSection={activeSection}
       activeUiMode={activeUiMode}
       activeCrucibleGenerator={activeCrucibleGenerator}
+      activeLocale={activeLocale}
+      onLocaleChange={handleLocaleChange}
       onSectionChange={setActiveSection}
       onUiModeChange={setActiveUiMode}
       onOpenCrucibleTool={openCrucibleTool}
