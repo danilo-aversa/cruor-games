@@ -7,6 +7,7 @@ import {
 } from "./site-navigation.data.js";
 import SiteMegaMenu from "./SiteMegaMenu.jsx";
 import { SUPPORTED_LOCALES, getLocaleDictionary, t } from "../../shared/i18n/index.js";
+import { ACCESSIBILITY_SETTING_GROUPS } from "../../shared/accessibility/accessibility.settings.js";
 
 function cx(...parts) {
   return parts.filter(Boolean).join(" ");
@@ -21,6 +22,9 @@ export default function SiteTopbar({
   onOpenCrucibleTool,
   activeLocale = "en",
   onLocaleChange,
+  accessibilitySettings = {},
+  onAccessibilitySettingChange,
+  onAccessibilitySettingsReset,
 }) {
   const topbarRef = useRef(null);
   const megaMenuRef = useRef(null);
@@ -196,6 +200,62 @@ export default function SiteTopbar({
     setActivePreviewId(activeCrucibleMenuItemId);
   }
 
+  function renderAccessibilityControls(layout = "desktop") {
+    return (
+      <div className="site-topbar__accessibility-list" role="group" aria-label={t("settings.sections.accessibility", {}, activeLocale)}>
+        {ACCESSIBILITY_SETTING_GROUPS.map((group) => {
+          const groupLabelId = `siteTopbarA11y-${layout}-${group.id}`;
+          const activeValue = accessibilitySettings[group.id];
+
+          return (
+            <div className="site-topbar__accessibility-group" key={group.id}>
+              <span className="site-topbar__accessibility-label" id={groupLabelId}>
+                {t(group.labelKey, {}, activeLocale)}
+              </span>
+              <div
+                className="site-topbar__accessibility-options"
+                role="group"
+                aria-labelledby={groupLabelId}
+                title={t(group.descriptionKey, {}, activeLocale)}
+              >
+                {group.options.map((option) => {
+                  const isActive = activeValue === option.id;
+                  const optionLabel = t(option.labelKey, {}, activeLocale);
+                  const optionDescription = t(option.descriptionKey, {}, activeLocale);
+
+                  return (
+                    <button
+                      className={cx("site-topbar__accessibility-option", isActive && "is-active")}
+                      key={option.id}
+                      type="button"
+                      aria-pressed={isActive}
+                      aria-label={`${t(group.labelKey, {}, activeLocale)}: ${optionLabel}. ${optionDescription}`}
+                      title={optionDescription}
+                      onClick={() => onAccessibilitySettingChange?.(group.id, option.id)}
+                    >
+                      <span>{optionLabel}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+
+        <button
+          className="site-topbar__accessibility-reset"
+          type="button"
+          aria-label={t("settings.accessibility.reset", {}, activeLocale)}
+          title={t("settings.accessibility.reset", {}, activeLocale)}
+          onClick={() => onAccessibilitySettingsReset?.()}
+        >
+          <i className="fa-solid fa-rotate-left" aria-hidden="true" />
+          <span>{t("settings.accessibility.reset", {}, activeLocale)}</span>
+        </button>
+      </div>
+    );
+  }
+
   function renderDesktopNavItem(item) {
     const isActive = item.type === "mega" ? activeSection === "crucible" : activeSection === item.id;
     const isOpen = openMenuId === item.id;
@@ -318,7 +378,6 @@ export default function SiteTopbar({
                         }}
                       >
                         <span>{mode.label}</span>
-                        <small>{mode.description}</small>
                       </button>
                     ))}
                   </div>
@@ -343,17 +402,14 @@ export default function SiteTopbar({
                         title={t("settings.languageLocked", {}, activeLocale)}
                       >
                         <span>{locale.label}</span>
-                        <small>{locale.id.toUpperCase()}</small>
                       </button>
                     ))}
                   </div>
                 </div>
 
-                <div className="site-topbar__settings-section">
+                <div className="site-topbar__settings-section site-topbar__settings-section--accessibility">
                   <span className="site-topbar__utility-label">{t("settings.sections.accessibility", {}, activeLocale)}</span>
-                  <p className="site-topbar__settings-note">
-                    {t("settings.accessibilityPlaceholder", {}, activeLocale)}
-                  </p>
+                  {renderAccessibilityControls("desktop")}
                 </div>
               </div>
             ) : null}
@@ -445,7 +501,6 @@ export default function SiteTopbar({
                   }}
                 >
                   <span>{mode.label}</span>
-                  <small>{mode.description}</small>
                 </button>
               ))}
             </div>
@@ -469,15 +524,14 @@ export default function SiteTopbar({
                   title={t("settings.languageLocked", {}, activeLocale)}
                 >
                   <span>{locale.label}</span>
-                  <small>{locale.id.toUpperCase()}</small>
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="site-topbar__mobile-mode">
+          <div className="site-topbar__mobile-mode site-topbar__mobile-mode--accessibility">
             <span className="site-topbar__mobile-group-label">{t("settings.sections.accessibility", {}, activeLocale)}</span>
-            <p className="site-topbar__settings-note">{t("settings.accessibilityPlaceholder", {}, activeLocale)}</p>
+            {renderAccessibilityControls("mobile")}
           </div>
         </nav>
       ) : null}

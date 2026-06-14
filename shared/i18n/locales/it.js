@@ -16,6 +16,113 @@ export default {
     },
     languageLocked: "Il cambio lingua è bloccato per ora.",
     accessibilityPlaceholder: "Qui aggiungeremo le impostazioni di accessibilità.",
+    accessibility: {
+      reset: "Ripristina impostazioni accessibilità",
+      theme: {
+        label: "Tema",
+        description: "Scegli il tema cromatico del sito.",
+        options: {
+          dark: {
+            label: "Scuro",
+            description: "Interfaccia Cruor scura di default.",
+          },
+          parchment: {
+            label: "Pergamena",
+            description: "Superficie chiara per lettura prolungata.",
+          },
+          system: {
+            label: "Sistema",
+            description: "Segue le preferenze di browser o sistema operativo.",
+          },
+        },
+      },
+      contrast: {
+        label: "Contrasto",
+        description: "Aumenta la separazione tra testi, bordi e controlli.",
+        options: {
+          default: {
+            label: "Default",
+            description: "Contrasto del brand.",
+          },
+          high: {
+            label: "Alto",
+            description: "Testi e bordi interfaccia più chiari.",
+          },
+          maximum: {
+            label: "Massimo",
+            description: "Contrasto più forte per la leggibilità.",
+          },
+        },
+      },
+      motion: {
+        label: "Movimento",
+        description: "Controlla animazioni, hover e pulsazioni.",
+        options: {
+          system: {
+            label: "Sistema",
+            description: "Segue la preferenza di movimento ridotto del sistema.",
+          },
+          reduced: {
+            label: "Ridotto",
+            description: "Disattiva quasi tutti i movimenti non essenziali.",
+          },
+          full: {
+            label: "Completo",
+            description: "Mantiene tutte le animazioni dell’interfaccia.",
+          },
+        },
+      },
+      text: {
+        label: "Testo",
+        description: "Aumenta la dimensione dei testi dell’interfaccia.",
+        options: {
+          default: {
+            label: "Default",
+            description: "Testo compatto standard.",
+          },
+          large: {
+            label: "Grande",
+            description: "Label e testi più grandi.",
+          },
+          extraLarge: {
+            label: "Molto grande",
+            description: "Scala massima per la lettura.",
+          },
+        },
+      },
+      focus: {
+        label: "Focus",
+        description: "Controlla la visibilità del focus da tastiera.",
+        options: {
+          default: {
+            label: "Default",
+            description: "Stile focus Cruor standard.",
+          },
+          strong: {
+            label: "Forte",
+            description: "Anello focus ad alta visibilità.",
+          },
+        },
+      },
+      tooltips: {
+        label: "Tooltip",
+        description: "Controlla quando appaiono i tooltip di aiuto.",
+        options: {
+          default: {
+            label: "Default",
+            description: "Mostra su hover e focus da tastiera.",
+          },
+          focus: {
+            label: "Solo focus",
+            description: "Mostra solo durante il focus da tastiera.",
+          },
+          off: {
+            label: "Off",
+            description: "Disattiva i tooltip di aiuto.",
+          },
+        },
+      },
+    },
   },
   app: {
     sections: {

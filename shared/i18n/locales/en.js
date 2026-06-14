@@ -16,6 +16,113 @@ export default {
     },
     languageLocked: "Language switching is locked for now.",
     accessibilityPlaceholder: "Accessibility settings will live here later.",
+    accessibility: {
+      reset: "Reset accessibility settings",
+      theme: {
+        label: "Theme",
+        description: "Choose the site color theme.",
+        options: {
+          dark: {
+            label: "Dark",
+            description: "Default Cruor dark interface.",
+          },
+          parchment: {
+            label: "Parchment",
+            description: "Light reading surface for long sessions.",
+          },
+          system: {
+            label: "System",
+            description: "Follow your browser or OS preference.",
+          },
+        },
+      },
+      contrast: {
+        label: "Contrast",
+        description: "Increase separation between text, borders, and controls.",
+        options: {
+          default: {
+            label: "Default",
+            description: "Brand contrast.",
+          },
+          high: {
+            label: "High",
+            description: "Clearer text and interface borders.",
+          },
+          maximum: {
+            label: "Maximum",
+            description: "Strongest contrast for readability.",
+          },
+        },
+      },
+      motion: {
+        label: "Motion",
+        description: "Control animation, hover motion, and pulsing effects.",
+        options: {
+          system: {
+            label: "System",
+            description: "Follow reduced-motion system preference.",
+          },
+          reduced: {
+            label: "Reduced",
+            description: "Disable most nonessential motion.",
+          },
+          full: {
+            label: "Full",
+            description: "Keep full interface motion.",
+          },
+        },
+      },
+      text: {
+        label: "Text Size",
+        description: "Increase interface text size.",
+        options: {
+          default: {
+            label: "Default",
+            description: "Standard compact UI text.",
+          },
+          large: {
+            label: "Large",
+            description: "Larger labels and body text.",
+          },
+          extraLarge: {
+            label: "Extra Large",
+            description: "Maximum text scale for reading.",
+          },
+        },
+      },
+      focus: {
+        label: "Focus",
+        description: "Control keyboard focus visibility.",
+        options: {
+          default: {
+            label: "Default",
+            description: "Standard Cruor focus style.",
+          },
+          strong: {
+            label: "Strong",
+            description: "High-visibility keyboard focus ring.",
+          },
+        },
+      },
+      tooltips: {
+        label: "Tooltips",
+        description: "Control when helper tooltips appear.",
+        options: {
+          default: {
+            label: "Default",
+            description: "Show on hover and keyboard focus.",
+          },
+          focus: {
+            label: "Focus Only",
+            description: "Show only during keyboard focus.",
+          },
+          off: {
+            label: "Off",
+            description: "Disable helper tooltips.",
+          },
+        },
+      },
+    },
   },
   app: {
     sections: {

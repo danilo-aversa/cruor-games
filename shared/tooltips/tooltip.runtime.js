@@ -23,6 +23,18 @@ function findTrigger(target) {
   return target.closest(TOOLTIP_SELECTOR);
 }
 
+function getTooltipMode() {
+  if (typeof document === "undefined") return "default";
+  return document.documentElement?.dataset?.a11yTooltips || "default";
+}
+
+function canOpenTooltip(source = "pointer") {
+  const mode = getTooltipMode();
+  if (mode === "off") return false;
+  if (mode === "focus" && source !== "focus") return false;
+  return true;
+}
+
 function clampPosition(x, y, tooltip) {
   const rect = tooltip.getBoundingClientRect();
   const margin = 10;
@@ -147,6 +159,12 @@ function closeTooltip(state) {
 }
 
 function openTooltip(state, trigger, options = {}) {
+  const source = options.source || "pointer";
+  if (!canOpenTooltip(source)) {
+    closeTooltip(state);
+    return;
+  }
+
   const key = trigger.getAttribute("data-key");
   const tooltipId = trigger.getAttribute("data-tooltip");
   if (!key || !tooltipId) return;
@@ -159,7 +177,7 @@ function openTooltip(state, trigger, options = {}) {
   }
 
   state.trigger = trigger;
-  state.source = options.source || "pointer";
+  state.source = source;
   state.pointer = {
     x: options.clientX ?? state.pointer.x,
     y: options.clientY ?? state.pointer.y,
@@ -184,6 +202,7 @@ export function startTooltipRuntime() {
   state.portal.hidden = true;
 
   function handlePointerOver(event) {
+    if (!canOpenTooltip("pointer")) return;
     const trigger = findTrigger(event.target);
     if (!trigger || trigger === state.trigger) return;
     openTooltip(state, trigger, {
@@ -207,6 +226,7 @@ export function startTooltipRuntime() {
   }
 
   function handleFocusIn(event) {
+    if (!canOpenTooltip("focus")) return;
     const trigger = findTrigger(event.target);
     if (!trigger) return;
     openTooltip(state, trigger, { source: "focus" });
@@ -225,12 +245,19 @@ export function startTooltipRuntime() {
     closeTooltip(state);
   }
 
+  function handleAccessibilityChange() {
+    if (!canOpenTooltip(state.source)) {
+      closeTooltip(state);
+    }
+  }
+
   document.addEventListener("pointerover", handlePointerOver, true);
   document.addEventListener("pointermove", handlePointerMove, true);
   document.addEventListener("pointerout", handlePointerOut, true);
   document.addEventListener("focusin", handleFocusIn, true);
   document.addEventListener("focusout", handleFocusOut, true);
   document.addEventListener("keydown", handleKeyDown, true);
+  document.addEventListener("cruor:accessibility-change", handleAccessibilityChange, true);
 
   runtime = {
     cleanup() {
@@ -240,6 +267,7 @@ export function startTooltipRuntime() {
       document.removeEventListener("focusin", handleFocusIn, true);
       document.removeEventListener("focusout", handleFocusOut, true);
       document.removeEventListener("keydown", handleKeyDown, true);
+      document.removeEventListener("cruor:accessibility-change", handleAccessibilityChange, true);
       closeTooltip(state);
       runtime = null;
     },

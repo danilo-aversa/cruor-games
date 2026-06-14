@@ -1,8 +1,15 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import SiteTopbar from "./navigation/SiteTopbar.jsx";
 import { startTooltipRuntime } from "../shared/tooltips/tooltip.runtime.js";
 import { t } from "../shared/i18n/index.js";
 import "../shared/styles/tooltips.css";
+import {
+  DEFAULT_ACCESSIBILITY_SETTINGS,
+  applyAccessibilitySettingsToDocument,
+  readAccessibilitySettings,
+  saveAccessibilitySettings,
+  updateAccessibilitySetting,
+} from "../shared/accessibility/accessibility.settings.js";
 
 export default function AppShell({
   activeSection = "home",
@@ -18,12 +25,42 @@ export default function AppShell({
   inspirationsContent,
   inspirationStudioContent,
 }) {
+  const [accessibilitySettings, setAccessibilitySettings] = useState(readAccessibilitySettings);
+
   useEffect(() => {
     return startTooltipRuntime();
   }, []);
 
+  useEffect(() => {
+    applyAccessibilitySettingsToDocument(accessibilitySettings);
+  }, [accessibilitySettings]);
+
+  const handleAccessibilitySettingChange = useCallback((key, value) => {
+    setAccessibilitySettings((currentSettings) => {
+      const nextSettings = updateAccessibilitySetting(currentSettings, key, value);
+      saveAccessibilitySettings(nextSettings);
+      return nextSettings;
+    });
+  }, []);
+
+  const handleAccessibilitySettingsReset = useCallback(() => {
+    const nextSettings = saveAccessibilitySettings(DEFAULT_ACCESSIBILITY_SETTINGS);
+    setAccessibilitySettings(nextSettings);
+  }, []);
+
   return (
-    <div className="app-shell" data-ui-mode={activeUiMode} data-active-section={activeSection} data-locale={activeLocale}>
+    <div
+      className="app-shell"
+      data-ui-mode={activeUiMode}
+      data-active-section={activeSection}
+      data-locale={activeLocale}
+      data-a11y-theme={accessibilitySettings.theme}
+      data-a11y-contrast={accessibilitySettings.contrast}
+      data-a11y-motion={accessibilitySettings.motion}
+      data-a11y-text={accessibilitySettings.text}
+      data-a11y-focus={accessibilitySettings.focus}
+      data-a11y-tooltips={accessibilitySettings.tooltips}
+    >
       <SiteTopbar
         activeSection={activeSection}
         activeUiMode={activeUiMode}
@@ -33,6 +70,9 @@ export default function AppShell({
         onSectionChange={onSectionChange}
         onUiModeChange={onUiModeChange}
         onOpenCrucibleTool={onOpenCrucibleTool}
+        accessibilitySettings={accessibilitySettings}
+        onAccessibilitySettingChange={handleAccessibilitySettingChange}
+        onAccessibilitySettingsReset={handleAccessibilitySettingsReset}
       />
 
       <main className="app-shell__workspace">

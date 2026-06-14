@@ -7,8 +7,11 @@ import "../shared/styles/composer-system.css";
 import "../shared/styles/tooltips.css";
 import "../features/crucible/crucible.styles.css";
 import "./app-shell.css";
+import "../shared/styles/accessibility.css";
 import { startTooltipRuntime } from "../shared/tooltips/tooltip.runtime.js";
+import { applyAccessibilitySettingsToDocument, readAccessibilitySettings } from "../shared/accessibility/accessibility.settings.js";
 
+applyAccessibilitySettingsToDocument(readAccessibilitySettings());
 startTooltipRuntime();
 
 const rootElement = document.getElementById("root");
