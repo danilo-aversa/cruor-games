@@ -2941,7 +2941,6 @@
 .studio-component-editor-tabs button:hover {
   z-index: 2;
   border-color: var(--studio-neutral-line);
-  border-bottom-color: var(--cruor-color-transparent);
   background: var(--cruor-gradient-linear-013-deebd0e2), var(--cruor-gradient-radial-027-87ef1a92), var(--studio-panel);
   color: var(--cruor-text-primary);
 }
@@ -2949,7 +2948,6 @@
 .studio-component-editor-tabs button[aria-pressed="true"] {
   z-index: 2;
   border-color: var(--studio-neutral-line);
-  border-bottom-color: var(--cruor-color-transparent);
   background: var(--cruor-gradient-linear-013-deebd0e2), var(--cruor-gradient-radial-027-87ef1a92), var(--studio-panel);
   color: var(--cruor-text-primary);
 }
@@ -4088,6 +4086,7 @@
   flex-wrap: wrap;
   gap: 6px;
   min-width: 0;
+  margin-top: 10px;
 }
 
 @media (max-width: 980px) {
@@ -5549,6 +5548,142 @@ body.is-resizing-studio-rail {
   width: 100%;
   background: var(--cruor-surface-card);
 }
+
+/* Component workspace vertical family tabs ------------------------------- */
+.studio-panel--components .studio-component-workspace {
+  --studio-component-tabs-rail: 72px;
+  grid-template-columns: var(--studio-component-list-column, minmax(260px, 360px)) minmax(0, 1fr) var(--studio-component-tabs-rail);
+  border-top: 1px solid var(--cruor-color-rose-a160);
+}
+
+.studio-panel--components .studio-component-workspace.is-component-list-collapsed {
+  grid-template-columns: var(--studio-rail-width) minmax(0, 1fr) var(--studio-component-tabs-rail);
+}
+
+.studio-component-tabs--vertical {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: minmax(132px, auto);
+  align-self: stretch;
+  align-content: start;
+  gap: 0;
+  min-width: 0;
+  width: var(--studio-component-tabs-rail);
+  margin: 0;
+  position: sticky;
+  top: 12px;
+  z-index: 4;
+  background: var(--cruor-gradient-linear-092-5039d6d3), var(--studio-neutral-panel);
+}
+
+.studio-component-tabs--vertical .studio-tab-button {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 132px;
+  padding: 12px 7px;
+  border: 1px solid var(--cruor-color-r240-g215-b220-a130);
+  background: var(--cruor-gradient-linear-038-459fda6b), var(--cruor-color-surface-soft-a480);
+  text-align: center;
+}
+
+.studio-component-tabs--vertical .studio-tab-button + .studio-tab-button {
+  margin-top: -1px;
+}
+
+.studio-component-tabs--vertical .studio-tab-button:hover,
+.studio-component-tabs--vertical .studio-tab-button:focus-visible {
+  z-index: 5;
+  border-color: var(--cruor-color-rose-a260);
+  background: var(--cruor-gradient-linear-013-deebd0e2), var(--cruor-color-surface-soft-a620);
+}
+
+.studio-component-tabs--vertical .studio-tab-button.is-active,
+.studio-component-tabs--vertical .studio-tab-button[aria-pressed="true"] {
+  z-index: 6;
+  margin-bottom: 0;
+  border-color: var(--cruor-color-rose-a260);
+  border-bottom: 1px solid var(--cruor-color-rose-a260);
+  background: var(--cruor-gradient-linear-013-deebd0e2), var(--cruor-gradient-radial-041-b86de5c8), var(--studio-panel);
+}
+
+.studio-component-tabs--vertical .studio-tab-button__label {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  place-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: 108px;
+  text-align: center;
+}
+
+.studio-component-tabs--vertical .studio-tab-button__label > i {
+  font-size: var(--text-size-xl);
+}
+
+.studio-component-tabs--vertical .studio-tab-button__label > span {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: none;
+}
+
+.studio-component-tabs--vertical .studio-tab-button__label > strong {
+  min-width: 28px;
+  min-height: 24px;
+}
+
+@media (max-width: 1180px) {
+  .studio-panel--components .studio-component-workspace,
+  .studio-panel--components .studio-component-workspace.is-component-list-collapsed {
+    --studio-component-tabs-rail: 100%;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .studio-component-tabs--vertical {
+    order: -1;
+    position: static;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: auto;
+    border-left: 0;
+    border-bottom: 1px solid var(--cruor-color-rose-a120);
+  }
+
+  .studio-component-tabs--vertical .studio-tab-button {
+    min-height: 58px;
+    padding: 10px;
+  }
+
+  .studio-component-tabs--vertical .studio-tab-button + .studio-tab-button {
+    margin-top: 0;
+    margin-left: -1px;
+  }
+
+  .studio-component-tabs--vertical .studio-tab-button__label {
+    grid-template-columns: auto minmax(0, auto) auto;
+    grid-template-rows: auto;
+    min-height: 0;
+    justify-content: center;
+  }
+
+  .studio-component-tabs--vertical .studio-tab-button__label > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    writing-mode: horizontal-tb;
+    transform: none;
+  }
+}
+
 
 
 /* Parchment anti-dark Studio pass */

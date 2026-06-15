@@ -2231,28 +2231,6 @@ function ComponentsWorkspace({
     <section className="studio-panel studio-panel--components" aria-label="Linked components">
       <PanelTitle eyebrow="Linked Components" icon="fa-diagram-project" title="Generator Content" help={SECTION_HELP.components} />
 
-      <div className="studio-component-sheet">
-        <div className="studio-component-tabs" role="tablist" aria-label="Component families">
-          <StudioTabButton
-            icon="fa-skull"
-            isActive={componentMode === "monsters"}
-            label="Monsters"
-            count={monsterComponentsCount}
-            hint="Grafts consumed by Monster Composer."
-            onClick={() => onComponentModeChange("monsters")}
-          />
-          <StudioTabButton
-            icon="fa-map-location-dot"
-            isActive={componentMode === "locations"}
-            label="Locations"
-            count={locationComponentsCount + locationRegionsCount}
-            hint="Components and regions consumed by Darken/Map."
-            onClick={() => onComponentModeChange("locations")}
-          />
-        </div>
-
-      </div>
-
       <div className={`studio-component-workspace ${componentListCollapsed ? "is-component-list-collapsed" : ""}`.trim()}>
         <div className="studio-component-list studio-component-list--grouped" aria-label="Component list">
           <div className="studio-component-list__topline">
@@ -2374,6 +2352,25 @@ function ComponentsWorkspace({
         ) : (
           <div className="studio-empty-state">No component selected.</div>
         )}
+
+        <div className="studio-component-tabs studio-component-tabs--vertical" role="tablist" aria-label="Component families">
+          <StudioTabButton
+            icon="fa-skull"
+            isActive={componentMode === "monsters"}
+            label="Monsters"
+            count={monsterComponentsCount}
+            hint="Grafts consumed by Monster Composer."
+            onClick={() => onComponentModeChange("monsters")}
+          />
+          <StudioTabButton
+            icon="fa-map-location-dot"
+            isActive={componentMode === "locations"}
+            label="Locations"
+            count={locationComponentsCount + locationRegionsCount}
+            hint="Components and regions consumed by Darken/Map."
+            onClick={() => onComponentModeChange("locations")}
+          />
+        </div>
       </div>
     </section>
   );
