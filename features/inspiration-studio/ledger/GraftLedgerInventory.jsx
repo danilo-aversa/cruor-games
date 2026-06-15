@@ -55,8 +55,10 @@ export function GraftLedgerTable({ items = [] }) {
           </tr>
         </thead>
         <tbody>
-          {items.map((item) => (
-            <tr key={item.id}>
+          {items.map((item) => {
+            const severity = getLedgerIssueSeverity(item);
+            return (
+            <tr className={`studio-ledger-row studio-ledger-row--${severity}`} key={item.id}>
               <td>
                 <strong>{item.title}</strong>
                 <span>{item.id}</span>
@@ -81,7 +83,8 @@ export function GraftLedgerTable({ items = [] }) {
               </td>
               <td><GraftLedgerIssueBadge item={item} /></td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
       {!items.length ? <div className="studio-empty-state">No matching grafts.</div> : null}
@@ -93,7 +96,7 @@ export function GraftLedgerGrid({ items = [] }) {
   return (
     <div className="studio-ledger-card-grid" role="list">
       {items.map((item) => (
-        <article className="studio-ledger-card" key={item.id} role="listitem">
+        <article className={`studio-ledger-card studio-ledger-card--${getLedgerIssueSeverity(item)}`} key={item.id} role="listitem">
           <header>
             <span>{item.slotLabel} · {formatLedgerValue(item.actionEconomy)}</span>
             <GraftLedgerIssueBadge item={item} />

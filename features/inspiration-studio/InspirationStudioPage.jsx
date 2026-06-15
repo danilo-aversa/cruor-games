@@ -164,6 +164,28 @@ const CANONICAL_SLOT_MAP = new Map([
   ...SHARED_DARKEN_LOCATION_SLOTS.map((slot) => [slot.id, slot]),
 ]);
 
+const STUDIO_LIBRARY_RAIL_SIZE_KEY = "cruor-studio-library-rail-size";
+const STUDIO_RIGHT_RAIL_SIZE_KEY = "cruor-studio-right-rail-size";
+const STUDIO_RAIL_MIN_SIZE = 240;
+const STUDIO_RAIL_MAX_SIZE = 520;
+
+function clampStudioRailSize(value) {
+  const numericValue = Number(value);
+  if (!Number.isFinite(numericValue)) return STUDIO_RAIL_MIN_SIZE;
+  return Math.max(STUDIO_RAIL_MIN_SIZE, Math.min(STUDIO_RAIL_MAX_SIZE, Math.round(numericValue)));
+}
+
+function readStoredStudioRailSize(key, fallback) {
+  if (typeof window === "undefined") return fallback;
+  const storedValue = window.localStorage?.getItem(key);
+  return storedValue ? clampStudioRailSize(storedValue) : fallback;
+}
+
+function writeStoredStudioRailSize(key, value) {
+  if (typeof window === "undefined") return;
+  window.localStorage?.setItem(key, String(clampStudioRailSize(value)));
+}
+
 const TAXONOMY_PILL_ICONS = Object.freeze({
   sourceTypes: "fa-folder-tree",
   themes: "fa-moon",
@@ -1022,6 +1044,41 @@ function SelectInput({ options, value, onChange }) {
   );
 }
 
+function EditableTextBox({ value, placeholder = "No text set.", rows = 4, onChange, onApplyToken = null }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const displayValue = value || "";
+  const isMultiline = rows > 1;
+
+  if (!isEditing) {
+    return (
+      <div className="studio-editable-textbox">
+        <div className={`studio-editable-textbox__preview ${displayValue ? "" : "is-placeholder"}`.trim()}>
+          {displayValue || placeholder}
+        </div>
+        <button type="button" className="studio-inline-action studio-inline-action--compact" onClick={() => setIsEditing(true)}>
+          <Icon name="fa-pen" /> Edit
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="studio-editable-textbox is-editing">
+      {onApplyToken ? <MarkdownToolbar onApply={onApplyToken} /> : null}
+      {isMultiline ? (
+        <TextArea rows={rows} value={displayValue} onChange={onChange} />
+      ) : (
+        <TextInput value={displayValue} onChange={onChange} />
+      )}
+      <div className="studio-editable-textbox__actions">
+        <button type="button" className="studio-inline-action studio-inline-action--compact" onClick={() => setIsEditing(false)}>
+          <Icon name="fa-check" /> Done
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function StudioTabButton({ icon, isActive, label, count, hint, onClick }) {
   const tooltip = hint ? `${label}: ${hint}` : label;
 
@@ -1047,8 +1104,8 @@ function StatPill({ icon, label, value }) {
   return (
     <span className="studio-stat-pill">
       <Icon name={icon} />
-      <strong>{value}</strong>
       <em>{label}</em>
+      <strong>{value}</strong>
     </span>
   );
 }
@@ -1062,7 +1119,7 @@ function getSectionCount(sectionId, draft, componentGroups, validationReport) {
   return undefined;
 }
 
-function StudioRightRail({ collapsed = false, componentGroups, draft, imageSource, onDownloadReadinessReport, onToggleCollapsed, packTitle, validationReport }) {
+function StudioRightRail({ collapsed = false, componentGroups, draft, imageSource, onDownloadReadinessReport, onResizeStart, onToggleCollapsed, packTitle, validationReport }) {
   const issues = asArray(validationReport?.issues);
   const summary = validationReport?.summary || getIssueSummary(issues);
   const groupedIssues = getGroupedValidationIssues(issues, { includeInfo: false }).slice(0, 4);
@@ -1077,27 +1134,27 @@ function StudioRightRail({ collapsed = false, componentGroups, draft, imageSourc
 
   if (collapsed) {
     return (
-      <aside className="studio-right-rail is-collapsed" aria-label="Collapsed inspiration preview and readiness">
-        <button
-          className="studio-right-rail__collapse"
-          type="button"
-          aria-label="Expand preview and publish readiness"
-          title="Expand preview and publish readiness"
-          aria-pressed="true"
-          onClick={onToggleCollapsed}
-        >
-          <Icon name="fa-chevron-left" />
-        </button>
-        <button
+      <aside
+        className="studio-right-rail is-collapsed"
+        aria-label={`Collapsed inspiration preview and readiness. Publish Readiness: ${readinessLabel}`}
+        role="button"
+        tabIndex={0}
+        onClick={onToggleCollapsed}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            onToggleCollapsed();
+          }
+        }}
+      >
+        <div
           className={`studio-rail-collapsed-recap studio-rail-collapsed-recap--${readinessState}`}
-          type="button"
-          aria-label={`Publish Readiness: ${readinessLabel}`}
+          aria-hidden="true"
           title={`Publish Readiness: ${readinessLabel}`}
-          onClick={onToggleCollapsed}
         >
           <Icon name={readinessIcon} />
           <span>{(summary.error || 0) + (summary.warning || 0)}</span>
-        </button>
+        </div>
         <span className="studio-collapsed-rail-label" aria-hidden="true">Inspiration Preview</span>
       </aside>
     );
@@ -1174,6 +1231,13 @@ function StudioRightRail({ collapsed = false, componentGroups, draft, imageSourc
         </div>
         <small>{packTitle}</small>
       </section>
+      <button
+        type="button"
+        className="studio-sidebar-resize-handle studio-sidebar-resize-handle--right"
+        aria-label="Resize preview rail"
+        title="Resize preview rail"
+        onMouseDown={onResizeStart}
+      />
     </aside>
   );
 }
@@ -1213,8 +1277,9 @@ function RulesGroup({ actions = null, icon, title, help, children, zone = null, 
     <details
       className="studio-rules-group studio-rules-group--collapsible"
       data-editor-zone={zone || undefined}
+      defaultOpen={defaultOpen}
     >
-      <summary className="studio-rules-group__heading">
+      <summary className="studio-collapsible-group__heading">
         <span className="studio-rules-group__title">
           {icon ? <Icon name={icon} /> : null}
           {title}
@@ -1227,6 +1292,35 @@ function RulesGroup({ actions = null, icon, title, help, children, zone = null, 
       </summary>
       <div className="studio-rules-group__body">{children}</div>
     </details>
+  );
+}
+
+function ArmedDeleteButton({ onConfirm }) {
+  const [armedAt, setArmedAt] = useState(0);
+  const isArmed = Boolean(armedAt);
+
+  function handleClick() {
+    const now = Date.now();
+    if (!isArmed) {
+      setArmedAt(now);
+      window.setTimeout(() => setArmedAt((current) => current === now ? 0 : current), 5000);
+      return;
+    }
+    if (now - armedAt < 800) return;
+    setArmedAt(0);
+    onConfirm?.();
+  }
+
+  return (
+    <button
+      className={`studio-inline-action studio-inline-action--danger ${isArmed ? "is-armed" : ""}`.trim()}
+      type="button"
+      onClick={handleClick}
+      aria-live="polite"
+    >
+      <Icon name={isArmed ? "fa-triangle-exclamation" : "fa-trash"} />
+      {isArmed ? "Confirm Delete?" : "Remove Component"}
+    </button>
   );
 }
 
@@ -1264,6 +1358,8 @@ export default function InspirationStudioPage() {
   const [exportMode, setExportMode] = useState("contentPack");
   const [libraryCollapsed, setLibraryCollapsed] = useState(true);
   const [rightRailCollapsed, setRightRailCollapsed] = useState(true);
+  const [libraryColumnSize, setLibraryColumnSize] = useState(() => readStoredStudioRailSize(STUDIO_LIBRARY_RAIL_SIZE_KEY, 280));
+  const [rightColumnSize, setRightColumnSize] = useState(() => readStoredStudioRailSize(STUDIO_RIGHT_RAIL_SIZE_KEY, 320));
   const [isGraftLedgerOpen, setGraftLedgerOpen] = useState(false);
   const [isContentHealthOpen, setContentHealthOpen] = useState(false);
   const [isCoverageMatrixOpen, setCoverageMatrixOpen] = useState(false);
@@ -1485,6 +1581,40 @@ export default function InspirationStudioPage() {
     });
   }
 
+  function beginRailResize(side, event) {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    const startX = event.clientX;
+    const startSize = side === "library" ? libraryColumnSize : rightColumnSize;
+
+    function handlePointerMove(moveEvent) {
+      const delta = moveEvent.clientX - startX;
+      const nextSize = side === "library"
+        ? clampStudioRailSize(startSize + delta)
+        : clampStudioRailSize(startSize - delta);
+
+      if (side === "library") {
+        setLibraryColumnSize(nextSize);
+        writeStoredStudioRailSize(STUDIO_LIBRARY_RAIL_SIZE_KEY, nextSize);
+      } else {
+        setRightColumnSize(nextSize);
+        writeStoredStudioRailSize(STUDIO_RIGHT_RAIL_SIZE_KEY, nextSize);
+      }
+    }
+
+    function handlePointerUp() {
+      document.removeEventListener("mousemove", handlePointerMove);
+      document.removeEventListener("mouseup", handlePointerUp);
+      document.body.classList.remove("is-resizing-studio-rail");
+    }
+
+    document.body.classList.add("is-resizing-studio-rail");
+    document.addEventListener("mousemove", handlePointerMove);
+    document.addEventListener("mouseup", handlePointerUp);
+  }
+
   const packTitle = packSummaries.find((pack) => pack.id === draft.packId)?.title || draft.packId;
   const imageSource = imagePreviewUrl || draft.inspiration?.media?.imageUrl || "";
 
@@ -1514,27 +1644,48 @@ export default function InspirationStudioPage() {
         </div>
       </header>
 
-      <div className={[
-        "inspiration-studio__layout",
-        libraryCollapsed ? "is-library-collapsed" : "",
-        rightRailCollapsed ? "is-right-rail-collapsed" : "",
-      ].filter(Boolean).join(" ")}>
-        <aside className={`studio-library-panel ${libraryCollapsed ? "is-collapsed" : ""}`.trim()} aria-label="Inspiration library" aria-expanded={!libraryCollapsed}>
+      <div
+        className={[
+          "inspiration-studio__layout",
+          libraryCollapsed ? "is-library-collapsed" : "",
+          rightRailCollapsed ? "is-right-rail-collapsed" : "",
+        ].filter(Boolean).join(" ")}
+        style={{
+          "--studio-expanded-library-column": `${libraryColumnSize}px`,
+          "--studio-expanded-right-column": `${rightColumnSize}px`,
+        }}
+      >
+        <aside
+          className={`studio-library-panel ${libraryCollapsed ? "is-collapsed" : ""}`.trim()}
+          aria-label="Inspiration library"
+          aria-expanded={!libraryCollapsed}
+          role={libraryCollapsed ? "button" : undefined}
+          tabIndex={libraryCollapsed ? 0 : undefined}
+          onClick={libraryCollapsed ? () => setLibraryCollapsed(false) : undefined}
+          onKeyDown={libraryCollapsed ? (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              setLibraryCollapsed(false);
+            }
+          } : undefined}
+        >
           <div className="studio-library-panel__topline">
             <span className="studio-library-panel__title">
               <Icon name="fa-book-open" />
               <span>Inspiration Library</span>
             </span>
-            <button
-              className="studio-library-panel__collapse"
-              type="button"
-              aria-label={libraryCollapsed ? "Expand inspiration library" : "Collapse inspiration library"}
-              title={libraryCollapsed ? "Expand inspiration library" : "Collapse inspiration library"}
-              aria-pressed={libraryCollapsed}
-              onClick={() => setLibraryCollapsed((value) => !value)}
-            >
-              <Icon name={libraryCollapsed ? "fa-chevron-right" : "fa-chevron-left"} />
-            </button>
+            {!libraryCollapsed ? (
+              <button
+                className="studio-library-panel__collapse"
+                type="button"
+                aria-label="Collapse inspiration library"
+                title="Collapse inspiration library"
+                aria-pressed="false"
+                onClick={() => setLibraryCollapsed(true)}
+              >
+                <Icon name="fa-chevron-left" />
+              </button>
+            ) : null}
           </div>
 
           {!libraryCollapsed ? (
@@ -1600,6 +1751,15 @@ export default function InspirationStudioPage() {
           )}
           {libraryCollapsed ? (
             <span className="studio-collapsed-rail-label" aria-hidden="true">Inspiration Library</span>
+          ) : null}
+          {!libraryCollapsed ? (
+            <button
+              type="button"
+              className="studio-sidebar-resize-handle studio-sidebar-resize-handle--library"
+              aria-label="Resize inspiration library"
+              title="Resize inspiration library"
+              onMouseDown={(event) => beginRailResize("library", event)}
+            />
           ) : null}
         </aside>
 
@@ -1722,6 +1882,7 @@ export default function InspirationStudioPage() {
           imageSource={imageSource}
           onDownloadReadinessReport={downloadReadinessReport}
           onToggleCollapsed={() => setRightRailCollapsed((value) => !value)}
+          onResizeStart={(event) => beginRailResize("right", event)}
           packTitle={packTitle}
           validationReport={validationReport}
         />
@@ -1802,7 +1963,7 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
 
           <div className="studio-form-grid studio-form-grid--primary">
             <FormRow label="Inspiration Name" icon="fa-signature" hint={FIELD_HELP.inspirationName}>
-              <TextInput value={draft.title} onChange={onTitleChange} />
+              <EditableTextBox value={draft.title} placeholder="Untitled inspiration" onChange={onTitleChange} />
             </FormRow>
             <FormRow label="Collection / Pack" icon="fa-layer-group" hint={FIELD_HELP.packId}>
               <TextInput list="studio-pack-options" value={draft.packId} onChange={(value) => updateDraftField(["packId"], value)} />
@@ -1862,18 +2023,28 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
           <PanelTitle eyebrow="Step 2" icon="fa-align-left" title="Public Card" help={SECTION_HELP.publicCopy} />
 
           <FormRow label="Public Summary" icon="fa-quote-left" hint={FIELD_HELP.publicSummary}>
-            <MarkdownToolbar onApply={appendPublicSummaryMarkdown} />
-            <TextArea rows={5} value={draft.inspiration.summary || draft.sourceAnchor.summary} onChange={(value) => {
-              updateDraft((nextDraft) => {
-                nextDraft.inspiration.summary = value;
-                nextDraft.sourceAnchor.summary = value;
-              });
-            }} />
+            <EditableTextBox
+              rows={5}
+              value={draft.inspiration.summary || draft.sourceAnchor.summary}
+              placeholder="No public summary set."
+              onApplyToken={appendPublicSummaryMarkdown}
+              onChange={(value) => {
+                updateDraft((nextDraft) => {
+                  nextDraft.inspiration.summary = value;
+                  nextDraft.sourceAnchor.summary = value;
+                });
+              }}
+            />
           </FormRow>
 
           <FormRow label="Why It Disturbs / Narrative" icon="fa-book-skull" hint={FIELD_HELP.narrative}>
-            <MarkdownToolbar onApply={(token) => appendMarkdown(["inspiration", "narrative"], token)} />
-            <TextArea rows={7} value={draft.inspiration.narrative} onChange={(value) => updateDraftField(["inspiration", "narrative"], value)} />
+            <EditableTextBox
+              rows={7}
+              value={draft.inspiration.narrative}
+              placeholder="No narrative text set."
+              onApplyToken={(token) => appendMarkdown(["inspiration", "narrative"], token)}
+              onChange={(value) => updateDraftField(["inspiration", "narrative"], value)}
+            />
           </FormRow>
         </section>
 
@@ -2047,26 +2218,18 @@ function ComponentsWorkspace({
   const groupedComponents = groupComponentsForList(visibleComponents);
   const validationIssues = asArray(validationReport?.issues);
   const templateGroups = getStudioComponentTemplateGroups();
+  const activeTemplateGroup = templateGroups.find((group) => group.id === (componentMode === "monsters" ? "monster" : "location"));
+
+  function confirmAddComponent(template) {
+    const shouldCreate = typeof window === "undefined"
+      ? true
+      : window.confirm(`Create ${template.label}?`);
+    if (shouldCreate) onAddComponent(template.id);
+  }
 
   return (
     <section className="studio-panel studio-panel--components" aria-label="Linked components">
       <PanelTitle eyebrow="Linked Components" icon="fa-diagram-project" title="Generator Content" help={SECTION_HELP.components} />
-
-      <div className="studio-component-template-palette" aria-label="Create component from template">
-        {templateGroups.map((group) => (
-          <details className="studio-component-template-group" key={group.id}>
-            <summary><Icon name={group.icon} /> {group.label}</summary>
-            <div className="studio-component-template-group__items">
-              {group.templates.map((template) => (
-                <button key={template.id} type="button" onClick={() => onAddComponent(template.id)} title={`Create ${template.label}`}>
-                  <Icon name={template.icon} />
-                  <span>{template.shortLabel || template.label}</span>
-                </button>
-              ))}
-            </div>
-          </details>
-        ))}
-      </div>
 
       <div className="studio-component-sheet">
         <div className="studio-component-tabs" role="tablist" aria-label="Component families">
@@ -2135,6 +2298,20 @@ function ComponentsWorkspace({
                     </div>
                   ) : null}
                 </div>
+
+                {activeTemplateGroup ? (
+                  <details className="studio-component-template-group" key={activeTemplateGroup.id}>
+                    <summary><Icon name={activeTemplateGroup.icon} /> Create {activeTemplateGroup.label}</summary>
+                    <div className="studio-component-template-group__items">
+                      {activeTemplateGroup.templates.map((template) => (
+                        <button key={template.id} type="button" onClick={() => confirmAddComponent(template)} title={`Create ${template.label}`}>
+                          <Icon name={template.icon} />
+                          <span>{template.shortLabel || template.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </details>
+                ) : null}
               </>
             )}
           </div>
@@ -2192,7 +2369,7 @@ function ComponentsWorkspace({
             component={selectedComponent}
             warnings={getStudioWarningsForEntry(studioWarnings, selectedComponent.id)}
             onChange={(updater) => onUpdateComponent(selectedComponent.id, updater)}
-            onRemove={onRemoveComponent}
+            onRemove={() => onRemoveComponent(selectedComponent.id)}
           />
         ) : (
           <div className="studio-empty-state">No component selected.</div>
@@ -3389,9 +3566,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
           </RulesGroup>
 
           <RulesGroup zone="qa" icon="fa-trash" title="Danger Zone" help="Remove this component from the current Inspiration Module.">
-            <button className="studio-inline-action studio-inline-action--danger" type="button" onClick={onRemove}>
-              <Icon name="fa-trash" /> Remove Component
-            </button>
+            <ArmedDeleteButton onConfirm={onRemove} />
           </RulesGroup>
 
           {usesInferredRules ? (
@@ -4222,9 +4397,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
             </FormRow>
           </RulesGroup>
           <RulesGroup zone="qa" icon="fa-trash" title="Danger Zone" help="Remove this component from the current Inspiration Module.">
-            <button className="studio-inline-action studio-inline-action--danger" type="button" onClick={onRemove}>
-              <Icon name="fa-trash" /> Remove Component
-            </button>
+            <ArmedDeleteButton onConfirm={onRemove} />
           </RulesGroup>
         </>
       ) : null}
