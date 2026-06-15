@@ -252,7 +252,7 @@
   display: grid;
   gap: 4px;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a320);
+  background: var(--cruor-surface-card);
   padding: 9px;
   backdrop-filter: var(--cruor-filter-blur-10);
   -webkit-backdrop-filter: var(--cruor-filter-blur-10);
@@ -305,7 +305,7 @@
 
 .location-empty {
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   padding: 10px;
   border-style: dashed;
 }
@@ -685,7 +685,7 @@
   display: none;
   gap: 4px;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   padding: 9px;
 }
 
@@ -922,7 +922,7 @@
   width: 100%;
   min-height: 36px;
   border: 1px solid var(--cruor-color-milk-a080);
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-text-a880);
   padding: 0 10px;
   outline: none;
@@ -1246,7 +1246,7 @@
   min-width: 28px;
   min-height: 28px;
   border: 1px solid var(--cruor-color-blood-glow-a340);
-  background: var(--cruor-color-black-a200);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   font-size: 9px;
   font-weight: 950;
@@ -1260,7 +1260,7 @@
   min-width: 42px;
   min-height: 36px;
   border: 1px solid var(--cruor-color-blood-glow-a340);
-  background: var(--cruor-color-black-a200);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   font-size: 9px;
   font-weight: 950;
@@ -1300,14 +1300,14 @@
   display: grid;
   gap: 6px;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   padding: 10px;
   min-width: 0;
 }
 
 .location-choice-option {
   border: 1px solid var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   display: grid;
@@ -1321,7 +1321,7 @@
 
 .location-component-drawer__assigned-pill {
   border: 1px solid var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   display: inline-flex;
@@ -1336,7 +1336,7 @@
 
 .location-component-option__action {
   border: 1px solid var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   min-width: 84px;
@@ -1360,7 +1360,7 @@
 
 .location-choice-trigger {
   border: 1px solid var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   display: grid;
@@ -1509,7 +1509,7 @@
   overflow: auto;
   padding-right: 2px;
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-color-black-a180);
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
   grid-area: left;
 }
 
@@ -1521,7 +1521,7 @@
   overflow: auto;
   padding-right: 2px;
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-color-black-a180);
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
   grid-area: right;
 }
 
@@ -1606,7 +1606,7 @@
   min-width: 20px;
   min-height: 20px;
   border: 1px solid var(--cruor-color-milk-a080);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-8f7278);
   font-size: 9px;
   font-weight: 950;
@@ -1672,7 +1672,7 @@
   width: min(var(--cruor-composer-workspace-max), 100%);
   margin: 10px auto 0;
   border: 1px solid var(--cruor-color-milk-a080);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   position: relative;
   z-index: 2;
 }
@@ -1854,7 +1854,7 @@
   width: 100%;
   min-height: 36px;
   border: 1px solid var(--cruor-color-milk-a080);
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-text-a880);
   padding: 0 10px;
   outline: none;
@@ -1865,7 +1865,7 @@
   width: 100%;
   min-height: 36px;
   border: 1px solid var(--cruor-color-milk-a080);
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-text-a880);
   padding: 0 10px;
   outline: none;
@@ -1878,7 +1878,7 @@
   min-width: 42px;
   min-height: 36px;
   border: 1px solid var(--cruor-color-milk-a080);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   font-size: 11px;
   font-weight: 950;
@@ -1890,7 +1890,7 @@
   min-width: 42px;
   min-height: 36px;
   border: 1px solid var(--cruor-color-milk-a080);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   font-size: 11px;
   font-weight: 950;
@@ -2359,7 +2359,7 @@
   gap: 10px;
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-color-black-a180);
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
 }
 
 
@@ -2376,7 +2376,7 @@
 /* Components */
 
 .location-frame-info-card--hero {
-  background: var(--cruor-gradient-radial-044-30b4806e), var(--cruor-color-black-a260);
+  background: var(--cruor-gradient-radial-044-30b4806e), var(--cruor-surface-card);
 }
 
 .location-frame-info-card > span {
@@ -2451,7 +2451,7 @@
   min-width: 0;
   min-height: 0;
   border: 1px solid var(--cruor-color-milk-a055);
-  background: var(--cruor-color-black-a140);
+  background: var(--cruor-surface-card);
   padding: 7px 8px;
   text-align: left;
 }
@@ -2510,7 +2510,7 @@
 
 .location-map-mode-switch {
   border: 1px solid var(--cruor-color-milk-a060);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   padding: 6px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2519,7 +2519,7 @@
 
 .location-map-mode-button {
   border: 1px solid var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   min-height: 32px;
@@ -2532,7 +2532,7 @@
 
 .location-primary-action {
   border: 1px solid var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   min-height: 32px;
@@ -2620,7 +2620,7 @@
   margin: 0 auto;
   overflow: hidden;
   border: 1px solid var(--cruor-color-milk-a060);
-  background: var(--cruor-gradient-linear-023-5d537681), var(--cruor-gradient-linear-022-79a987a1), var(--cruor-gradient-radial-035-d7408e11), var(--cruor-color-black-a180);
+  background: var(--cruor-gradient-linear-023-5d537681), var(--cruor-gradient-linear-022-79a987a1), var(--cruor-gradient-radial-035-d7408e11), var(--cruor-surface-card);
   background-size: 34px 34px, 34px 34px, auto, auto;
   padding: var(--stage-pad);
 }
@@ -2638,7 +2638,7 @@
   margin: 0 auto;
   overflow: hidden;
   border: 1px solid var(--cruor-color-milk-a060);
-  background: var(--cruor-gradient-linear-023-5d537681), var(--cruor-gradient-linear-022-79a987a1), var(--cruor-gradient-radial-035-d7408e11), var(--cruor-color-black-a180);
+  background: var(--cruor-gradient-linear-023-5d537681), var(--cruor-gradient-linear-022-79a987a1), var(--cruor-gradient-radial-035-d7408e11), var(--cruor-surface-card);
   background-size: 34px 34px, 34px 34px, auto, auto;
   padding: var(--stage-pad);
 }
@@ -2655,7 +2655,7 @@
   margin: 0 auto;
   overflow: hidden;
   border: 1px solid var(--cruor-color-milk-a060);
-  background: var(--cruor-gradient-linear-023-5d537681), var(--cruor-gradient-linear-022-79a987a1), var(--cruor-gradient-radial-035-d7408e11), var(--cruor-color-black-a180);
+  background: var(--cruor-gradient-linear-023-5d537681), var(--cruor-gradient-linear-022-79a987a1), var(--cruor-gradient-radial-035-d7408e11), var(--cruor-surface-card);
   background-size: 34px 34px, 34px 34px, auto, auto;
   padding: var(--stage-pad);
   isolation: isolate;
@@ -3230,7 +3230,7 @@
   min-width: 0;
   min-height: 34px;
   border: 1px solid var(--cruor-color-milk-a065);
-  background: var(--cruor-color-black-a140);
+  background: var(--cruor-surface-card);
   padding: 7px 8px;
 }
 
@@ -3264,7 +3264,7 @@
   overflow-x: hidden;
   align-content: start;
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-color-black-a180);
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
 }
 
 .location-component-drawer[data-slot-scope="map"] .location-component-drawer__target {
@@ -3310,7 +3310,7 @@
   min-height: 16px;
   min-width: 0;
   border: 1px solid var(--cruor-color-milk-a130);
-  background: var(--cruor-color-black-a320);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-milk-a760);
   padding: 2px 4px;
   font-size: 7px;
@@ -3345,12 +3345,12 @@
 /* States */
 
 .location-region-node.is-active .location-region-slot-marker {
-  background: var(--cruor-color-black-a420);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-fff0f2);
 }
 
 .location-region-node:hover .location-region-slot-marker {
-  background: var(--cruor-color-black-a420);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-fff0f2);
 }
 
@@ -3422,7 +3422,7 @@
   display: grid;
   align-items: center;
   border: 1px solid var(--cruor-color-milk-a055);
-  background: var(--cruor-color-black-a120);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-r208-g162-b170-a720);
   padding: 0 8px;
   font-size: 8px;
@@ -3533,7 +3533,7 @@
   min-width: 0;
   min-height: 0;
   border: 1px solid var(--cruor-color-milk-a055);
-  background: var(--cruor-color-black-a140);
+  background: var(--cruor-surface-card);
   padding: 7px 8px;
 }
 
@@ -3625,7 +3625,7 @@
   grid-template-rows: none;
   gap: 10px;
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-color-black-a180);
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
 }
 
 .location-map-recap-rail.anatomy-stage__column--right.monster-frame-info {
@@ -3634,13 +3634,13 @@
   overflow-x: hidden;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-color-black-a180);
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
 }
 
 /* Components */
 
 .location-map-recap-rail.monster-frame-info .monster-frame-info-card--hero {
-  background: var(--cruor-gradient-radial-044-30b4806e), var(--cruor-color-black-a260);
+  background: var(--cruor-gradient-radial-044-30b4806e), var(--cruor-surface-card);
   gap: 7px;
 }
 
@@ -3785,7 +3785,7 @@
   min-height: 0;
   max-height: none;
   border: 1px solid var(--cruor-color-milk-a065);
-  background: var(--cruor-color-black-a140);
+  background: var(--cruor-surface-card);
   padding: 6px;
   box-shadow: none;
   align-self: start;
@@ -3800,7 +3800,7 @@
   min-height: 0;
   max-height: none;
   border: 1px solid var(--cruor-color-milk-a065);
-  background: var(--cruor-color-black-a140);
+  background: var(--cruor-surface-card);
   padding: 6px;
   box-shadow: none;
   align-self: start;
@@ -3906,7 +3906,7 @@
   padding: 6px;
   box-shadow: var(--cruor-shadow-box-025);
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-color-black-a220);
+  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
 }
 
 .location-choice-menu--portal {
@@ -3915,7 +3915,7 @@
   max-height: min(320px, calc(100dvh - 72px));
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-color-black-a220);
+  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
 }
 
 .location-component-list {
@@ -3926,7 +3926,7 @@
   min-height: 0;
   padding-right: 3px;
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-color-black-a220);
+  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
 }
 
 
@@ -3943,12 +3943,12 @@
   overflow-y: auto;
   overflow-x: hidden;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-gradient-linear-060-e275339f), var(--cruor-color-black-a120);
+  background: var(--cruor-gradient-linear-060-e275339f), var(--cruor-surface-card);
   padding: 7px;
   width: auto;
   max-width: none;
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-color-black-a220);
+  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
 }
 
 .location-stage-navigator-overlay .component-navigator-modal__rail {
@@ -3959,7 +3959,7 @@
   min-height: 0;
   overflow: auto;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-gradient-linear-082-dd90e61f), var(--cruor-color-black-a160);
+  background: var(--cruor-gradient-linear-082-dd90e61f), var(--cruor-surface-card);
   padding: 10px;
   grid-template-columns: minmax(0, 1fr);
   grid-auto-flow: row;
@@ -3969,7 +3969,7 @@
   max-width: none;
   height: 100%;
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-color-black-a220);
+  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
 }
 
 .location-stage-navigator-overlay .location-component-list {
@@ -3984,12 +3984,12 @@
   overflow-y: auto;
   overflow-x: hidden;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-gradient-linear-060-e275339f), var(--cruor-color-black-a120);
+  background: var(--cruor-gradient-linear-060-e275339f), var(--cruor-surface-card);
   padding: 7px;
   width: auto;
   max-width: none;
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-color-black-a220);
+  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
 }
 
 .location-stage-navigator-overlay .location-navigator-tools {
@@ -4000,7 +4000,7 @@
   min-height: 0;
   overflow: auto;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-gradient-linear-082-dd90e61f), var(--cruor-color-black-a160);
+  background: var(--cruor-gradient-linear-082-dd90e61f), var(--cruor-surface-card);
   padding: 10px;
   grid-template-columns: minmax(0, 1fr);
   grid-auto-flow: row;
@@ -4010,7 +4010,7 @@
   max-width: none;
   height: 100%;
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-color-black-a220);
+  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
 }
 
 .location-choice-menu--portal::-webkit-scrollbar {
@@ -4053,17 +4053,17 @@
 /* Components */
 
 .location-choice-menu--portal::-webkit-scrollbar-track {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-013);
 }
 
 .location-choice-menu::-webkit-scrollbar-track {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-013);
 }
 
 .location-component-list::-webkit-scrollbar-track {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-013);
 }
 
@@ -4072,22 +4072,22 @@
 /* Layout */
 
 .location-stage-navigator-overlay .component-navigator-modal__list::-webkit-scrollbar-track {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-013);
 }
 
 .location-stage-navigator-overlay .component-navigator-modal__rail::-webkit-scrollbar-track {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-013);
 }
 
 .location-stage-navigator-overlay .location-component-list::-webkit-scrollbar-track {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-013);
 }
 
 .location-stage-navigator-overlay .location-navigator-tools::-webkit-scrollbar-track {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-013);
 }
 
@@ -4169,15 +4169,15 @@
 /* Components */
 
 .location-choice-menu--portal::-webkit-scrollbar-corner {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
 }
 
 .location-choice-menu::-webkit-scrollbar-corner {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
 }
 
 .location-component-list::-webkit-scrollbar-corner {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
 }
 
 
@@ -4185,19 +4185,19 @@
 /* Layout */
 
 .location-stage-navigator-overlay .component-navigator-modal__list::-webkit-scrollbar-corner {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
 }
 
 .location-stage-navigator-overlay .component-navigator-modal__rail::-webkit-scrollbar-corner {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
 }
 
 .location-stage-navigator-overlay .location-component-list::-webkit-scrollbar-corner {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
 }
 
 .location-stage-navigator-overlay .location-navigator-tools::-webkit-scrollbar-corner {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
 }
 
 .location-composer .location-map-stage {

@@ -78,7 +78,7 @@
   padding: 10px 11px;
   border: 1px solid var(--cruor-color-rose-a340);
   border-radius: 0;
-  background: var(--cruor-gradient-radial-229-d7e3eae6), var(--cruor-gradient-linear-089-5122796f), var(--cruor-color-black-a960);
+  background: var(--cruor-gradient-radial-229-d7e3eae6), var(--cruor-gradient-linear-089-5122796f), var(--cruor-surface-card);
   color: var(--text);
   font-family: var(--font);
   box-shadow: var(--cruor-shadow-box-114);

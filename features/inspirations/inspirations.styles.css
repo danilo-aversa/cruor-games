@@ -153,7 +153,7 @@
   min-height: 74px;
   align-content: center;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   padding: 10px;
   text-align: center;
 }
@@ -210,7 +210,7 @@
   min-height: var(--cruor-control-height-inspirations, 40px);
   border: 1px solid var(--cruor-color-milk-a080);
   border-radius: 0;
-  background: var(--cruor-gradient-linear-017-c1cb33c1), var(--cruor-color-black-a220);
+  background: var(--cruor-gradient-linear-017-c1cb33c1), var(--cruor-surface-card);
   color: var(--inspirations-text);
   padding: 0 11px;
   outline: none;
@@ -254,7 +254,7 @@
 
 .inspirations-page__select-trigger {
   border: 1px solid var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   display: grid;
@@ -344,7 +344,7 @@
 
 .inspirations-page__select-option {
   border: 1px solid var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   display: grid;
@@ -456,7 +456,7 @@
   align-items: center;
   min-height: 30px;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 0 9px;
   font-size: 9px;
@@ -605,7 +605,7 @@
   min-height: 25px;
   align-items: center;
   border: 1px solid var(--cruor-color-milk-a080);
-  background: var(--cruor-color-black-a540);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-f0d7dc);
   padding: 0 8px;
   font-size: 9px;
@@ -766,7 +766,7 @@
   min-height: 26px;
   align-items: center;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 0 8px;
   font-size: 9px;
@@ -784,7 +784,7 @@
   justify-content: center;
   gap: 8px;
   border: 1px solid var(--cruor-color-blood-glow-a500);
-  background: var(--cruor-gradient-linear-079-18ee8d35), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-079-18ee8d35), var(--cruor-surface-card);
   color: var(--cruor-color-hex-fff0f2);
   padding: 0 11px;
   font-size: 9px;
@@ -813,7 +813,7 @@
   justify-content: center;
   min-height: 40px;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 0 9px;
   font-size: 9px;
@@ -913,7 +913,7 @@
   display: grid;
   gap: 8px;
   border: 1px solid var(--cruor-color-milk-a065);
-  background: var(--cruor-color-black-a160);
+  background: var(--cruor-surface-card);
   padding: 9px;
 }
 
@@ -975,7 +975,7 @@
   gap: 10px;
   min-height: 440px;
   border: 1px dashed var(--cruor-color-milk-a090);
-  background: var(--cruor-gradient-radial-246-4c8845b1), var(--cruor-color-black-a160);
+  background: var(--cruor-gradient-radial-246-4c8845b1), var(--cruor-surface-card);
   padding: 18px;
   text-align: center;
 }
@@ -1093,7 +1093,7 @@
   justify-content: center;
   gap: 8px;
   border: 1px solid var(--cruor-color-blood-glow-a500);
-  background: var(--cruor-gradient-linear-079-18ee8d35), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-079-18ee8d35), var(--cruor-surface-card);
   color: var(--cruor-color-hex-fff0f2);
   padding: 0 11px;
   font-size: 9px;

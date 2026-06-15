@@ -159,7 +159,7 @@
   min-width: 40px;
   min-height: 40px;
   border: 1px solid var(--line);
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   color: var(--muted);
   padding: 0;
   transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;

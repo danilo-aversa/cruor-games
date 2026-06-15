@@ -194,7 +194,7 @@
   min-height: 56px;
   padding: 12px 14px;
   border-bottom: 2px solid var(--cruor-color-blood-strong-a520);
-  background: var(--cruor-gradient-linear-031-12bc71a1), var(--cruor-gradient-linear-153-f6e2064e), var(--cruor-color-black-a240);
+  background: var(--cruor-gradient-linear-031-12bc71a1), var(--cruor-gradient-linear-153-f6e2064e), var(--cruor-surface-card);
 }
 
 /* Components */
@@ -217,7 +217,7 @@
 
 .cruor-map-mvp .map-stage {
   padding: 18px;
-  background: var(--cruor-gradient-radial-266-9d3fe8c7), var(--cruor-color-black-a420);
+  background: var(--cruor-gradient-radial-266-9d3fe8c7), var(--cruor-surface-card);
 }
 
 .cruor-map-mvp .zoom-toolbar {
@@ -324,7 +324,7 @@
 .room-context-menu button:disabled {
   opacity: 0.48;
   cursor: not-allowed;
-  background: var(--cruor-color-black-a140);
+  background: var(--cruor-surface-card);
 }
 
 .room-context-menu button.is-armed {
@@ -591,7 +591,7 @@
   min-height: calc(100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) - var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) - 96px);
   padding: 10px;
   border: 2px solid var(--cruor-color-blood-strong-a640);
-  background: var(--cruor-gradient-radial-267-e22961ef), var(--cruor-color-black-a420);
+  background: var(--cruor-gradient-radial-267-e22961ef), var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-124);
 }
 
@@ -662,7 +662,7 @@
   display: grid;
   place-items: center;
   padding: clamp(18px, 4vw, 44px);
-  background: var(--cruor-color-black-a680);
+  background: var(--cruor-surface-card);
   backdrop-filter: var(--cruor-filter-blur-6);
 }
 

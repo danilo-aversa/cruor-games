@@ -355,7 +355,7 @@
   gap: 7px;
   min-height: 26px;
   border: 1px solid var(--cruor-color-blood-glow-a380);
-  background: var(--cruor-color-black-a280);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 0 9px;
   font-size: 10px;
@@ -394,7 +394,7 @@
   min-width: 0;
   min-height: 30px;
   border: 1px solid var(--cruor-color-blood-strong-a540);
-  background: var(--cruor-color-black-a240);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-r240-g215-b220-a800);
   padding: 0 8px;
   font-size: 11px;
@@ -514,13 +514,13 @@
 
 .monster-shell .game-category-panel {
   border: 1px solid var(--cruor-color-blood-strong-a420);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   padding: 9px;
 }
 
 .monster-shell .game-threat-panel {
   border: 1px solid var(--cruor-color-blood-strong-a420);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   padding: 9px;
 }
 
@@ -668,7 +668,7 @@
 
 .monster-shell .game-role-card__stats span {
   border: 1px solid var(--cruor-color-blood-strong-a420);
-  background: var(--cruor-color-black-a200);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   padding: 2px 6px;
   font-size: 10px;
@@ -723,7 +723,7 @@
   height: 7px;
   overflow: hidden;
   border: 1px solid var(--cruor-color-blood-strong-a520);
-  background: var(--cruor-color-black-a360);
+  background: var(--cruor-surface-card);
   font-style: normal;
 }
 
@@ -912,7 +912,7 @@
   min-width: 26px;
   min-height: 26px;
   border: 1px solid var(--cruor-color-blood-strong-a520);
-  background: var(--cruor-color-black-a200);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-8f7278);
 }
 
@@ -968,7 +968,7 @@
 .monster-shell .graft-inspector__footer button {
   min-height: 30px;
   border: 1px solid var(--cruor-color-blood-strong-a580);
-  background: var(--cruor-color-black-a240);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   padding: 0 10px;
   font-size: 10px;
@@ -1249,7 +1249,7 @@
   height: 8px;
   overflow: hidden;
   border: 1px solid var(--cruor-color-blood-strong-a500);
-  background: var(--cruor-color-black-a360);
+  background: var(--cruor-surface-card);
 }
 
 .monster-shell .monster-meter__track > div {
@@ -1265,19 +1265,19 @@
 
 .monster-shell .compiled-component {
   border: 1px solid var(--cruor-color-blood-bright-a080);
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   padding: 10px;
 }
 
 .monster-shell .compiled-mechanic {
   border: 1px solid var(--cruor-color-blood-bright-a080);
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   padding: 10px;
 }
 
 .monster-shell .compiled-note {
   border: 1px solid var(--cruor-color-blood-bright-a080);
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   padding: 10px;
 }
 
@@ -1481,7 +1481,7 @@
 
 .monster-shell .run-stat-strip article {
   border: 1px solid var(--cruor-color-blood-strong-a460);
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   padding: 11px;
 }
 
@@ -1741,7 +1741,7 @@
   min-width: 42px;
   min-height: 30px;
   border: 1px solid var(--cruor-color-milk-a080);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   font-size: 11px;
   font-style: normal;
@@ -1752,7 +1752,7 @@
   height: 6px;
   overflow: hidden;
   border: 1px solid var(--cruor-color-milk-a070);
-  background: var(--cruor-color-black-a240);
+  background: var(--cruor-surface-card);
 }
 
 .monster-shell .export-readiness-meter span {
@@ -1773,7 +1773,7 @@
   gap: 7px;
   align-items: start;
   border: 1px solid var(--cruor-color-milk-a060);
-  background: var(--cruor-color-black-a140);
+  background: var(--cruor-surface-card);
   padding: 8px;
 }
 
@@ -1836,7 +1836,7 @@
   gap: 4px;
   min-width: 0;
   border: 1px solid var(--cruor-color-milk-a060);
-  background: var(--cruor-color-black-a140);
+  background: var(--cruor-surface-card);
   padding: 8px;
 }
 
@@ -1994,7 +1994,7 @@
   width: 100%;
   border-collapse: collapse;
   border: 1px solid var(--cruor-color-blood-strong-a420);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
 }
 
 .monster-shell .cruor-ability-table td {
@@ -2079,7 +2079,7 @@
 
 .monster-shell .cruor-stat-block__section.is-weakness {
   border: 1px solid var(--cruor-color-good-a340);
-  background: var(--cruor-gradient-linear-109-dfb67e17), var(--cruor-color-black-a130);
+  background: var(--cruor-gradient-linear-109-dfb67e17), var(--cruor-surface-card);
   padding: 12px;
 }
 
@@ -2183,7 +2183,7 @@
   gap: 8px;
   min-height: 38px;
   border: 1px solid var(--cruor-color-blood-strong-a580);
-  background: var(--cruor-color-black-a240);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 0 12px;
   font-size: 11px;
@@ -2391,7 +2391,7 @@
   align-items: center;
   min-height: 28px;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a160);
+  background: var(--cruor-surface-card);
   padding: 0 8px;
   font-size: 9px;
   font-weight: 950;
@@ -2405,7 +2405,7 @@
   align-items: center;
   min-height: 28px;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a160);
+  background: var(--cruor-surface-card);
   padding: 0 8px;
   font-size: 9px;
   font-weight: 950;
@@ -2507,7 +2507,7 @@
 .monster-shell .brief-step-btn.reached .brief-step-number {
   border-color: var(--cruor-color-good-a360);
   color: var(--cruor-color-hex-bec8c5);
-  background: var(--cruor-color-black-a340);
+  background: var(--cruor-surface-card);
 }
 
 .monster-shell .brief-step-btn.reached .brief-step-label {
@@ -2555,7 +2555,7 @@
   min-height: 0;
   overflow: hidden;
   border: 1px solid var(--cruor-color-milk-a060);
-  background: var(--cruor-gradient-linear-023-5d537681), var(--cruor-gradient-linear-022-79a987a1), var(--cruor-gradient-radial-133-da8e421f), var(--cruor-gradient-radial-136-7dccbf2a), var(--cruor-color-black-a180);
+  background: var(--cruor-gradient-linear-023-5d537681), var(--cruor-gradient-linear-022-79a987a1), var(--cruor-gradient-radial-133-da8e421f), var(--cruor-gradient-radial-136-7dccbf2a), var(--cruor-surface-card);
   background-size: 34px 34px, 34px 34px, auto, auto, auto;
   padding: clamp(18px, 4vw, 42px);
   height: 100%;
@@ -2657,7 +2657,7 @@
   justify-self: start;
   min-height: 28px;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a200);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 0 9px;
   font-size: 9px;
@@ -2678,7 +2678,7 @@
   min-height: 360px;
   overflow: hidden;
   border: 1px solid var(--cruor-color-milk-a060);
-  background: var(--cruor-gradient-linear-023-5d537681), var(--cruor-gradient-linear-022-79a987a1), var(--cruor-gradient-radial-035-d7408e11), var(--cruor-color-black-a180);
+  background: var(--cruor-gradient-linear-023-5d537681), var(--cruor-gradient-linear-022-79a987a1), var(--cruor-gradient-radial-035-d7408e11), var(--cruor-surface-card);
   background-size: 34px 34px, 34px 34px, auto, auto;
 }
 
@@ -3106,7 +3106,7 @@
   min-width: 20px;
   min-height: 20px;
   border: 1px solid var(--cruor-color-milk-a080);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-8f7278);
   font-size: 9px;
   font-weight: 950;
@@ -3310,7 +3310,7 @@
 
 .monster-shell .compiled-meta-item {
   border: 1px solid var(--cruor-color-blood-bright-a080);
-  background: var(--cruor-color-black-a140);
+  background: var(--cruor-surface-card);
   padding: 10px;
   border-color: var(--cruor-color-milk-a060);
 }
@@ -3367,7 +3367,7 @@
 .monster-shell .search-wrap input {
   min-height: 36px;
   border-color: var(--cruor-color-milk-a080);
-  background: var(--cruor-color-black-a200);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-text-a880);
   font-size: 12px;
 }
@@ -3393,7 +3393,7 @@
   margin-top: 0;
   padding: 9px;
   border-color: var(--cruor-color-milk-a080);
-  background: var(--cruor-color-black-a160);
+  background: var(--cruor-surface-card);
 }
 
 .monster-shell .navigator-filter-panel {
@@ -3439,7 +3439,7 @@
   inset: 0;
   z-index: 0;
   border: 0;
-  background: var(--cruor-gradient-radial-132-4c5c78f5), var(--cruor-color-black-a740);
+  background: var(--cruor-gradient-radial-132-4c5c78f5), var(--cruor-surface-card);
   backdrop-filter: var(--cruor-filter-glass-12-112);
 }
 
@@ -3551,7 +3551,7 @@
   text-transform: uppercase;
   flex: 0 0 auto;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a200);
+  background: var(--cruor-surface-card);
   padding: 5px 7px;
   font-style: normal;
 }
@@ -3785,7 +3785,7 @@
   overflow: hidden;
   padding: 16px 16px 14px;
   border-bottom: 1px solid var(--cruor-color-blood-glow-a320);
-  background: var(--cruor-gradient-linear-086-4c860aaa), var(--cruor-gradient-radial-137-0a5a4dcd), var(--cruor-color-black-a180);
+  background: var(--cruor-gradient-linear-086-4c860aaa), var(--cruor-gradient-radial-137-0a5a4dcd), var(--cruor-surface-card);
   border-bottom-color: var(--cruor-color-blood-strong-a420);
 }
 
@@ -3893,7 +3893,7 @@
   min-height: 420px;
   resize: vertical;
   border: 1px solid var(--cruor-color-blood-strong-a580);
-  background: var(--cruor-gradient-linear-024-0332568e), var(--cruor-color-black-a280);
+  background: var(--cruor-gradient-linear-024-0332568e), var(--cruor-surface-card);
   color: var(--cruor-color-text-a900);
   padding: 11px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
@@ -4008,7 +4008,7 @@
   min-width: 24px;
   min-height: 22px;
   border-color: var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   font-size: 10px;
   font-weight: 950;
@@ -4186,7 +4186,7 @@
   display: grid;
   gap: 8px;
   border: 1px dashed var(--cruor-color-blood-strong-a460);
-  background: var(--cruor-color-black-a160);
+  background: var(--cruor-surface-card);
   padding: 11px;
   margin-top: 12px;
   border-color: var(--cruor-color-milk-a075);
@@ -4196,7 +4196,7 @@
   display: grid;
   gap: 8px;
   border: 1px solid var(--cruor-color-blood-strong-a380);
-  background: var(--cruor-color-black-a160);
+  background: var(--cruor-surface-card);
   padding: 10px;
   border-color: var(--cruor-color-milk-a075);
 }
@@ -4440,7 +4440,7 @@
   justify-content: space-between;
   gap: 16px;
   border: var(--cruor-ui-panel-border);
-  background: var(--cruor-gradient-radial-119-e7dbfec5), var(--cruor-gradient-linear-105-9a47a1b4), var(--cruor-color-black-a240);
+  background: var(--cruor-gradient-radial-119-e7dbfec5), var(--cruor-gradient-linear-105-9a47a1b4), var(--cruor-surface-card);
   padding: 16px;
   border-top-color: var(--cruor-ui-panel-border-top);
   background-color: var(--cruor-ui-panel-bg);
@@ -4455,7 +4455,7 @@
   width: min(var(--monster-workspace-max), 100%);
   margin: 0 auto;
   border: var(--cruor-ui-panel-border);
-  background: var(--cruor-gradient-linear-106-9419e658), var(--cruor-color-black-a240);
+  background: var(--cruor-gradient-linear-106-9419e658), var(--cruor-surface-card);
   padding: 18px;
   border-width: 1px;
   border-color: var(--cruor-color-milk-a080);
@@ -5222,7 +5222,7 @@
   inset: 0;
   z-index: 0;
   border: 0;
-  background: var(--cruor-gradient-radial-245-c554cd44), var(--cruor-gradient-radial-241-3f8c84dc), var(--cruor-color-black-a780);
+  background: var(--cruor-gradient-radial-245-c554cd44), var(--cruor-gradient-radial-241-3f8c84dc), var(--cruor-surface-card);
   backdrop-filter: var(--cruor-filter-glass-14-112);
   -webkit-backdrop-filter: var(--cruor-filter-glass-14-112);
 }
@@ -5273,7 +5273,7 @@
   min-width: 42px;
   min-height: 42px;
   border-color: var(--cruor-color-milk-a110);
-  background: var(--cruor-color-black-a240);
+  background: var(--cruor-surface-card);
 }
 
 .monster-shell .component-navigator-modal__rail {
@@ -5285,7 +5285,7 @@
   min-height: 0;
   margin: 0;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-gradient-linear-182-e901e5e1), var(--cruor-color-black-a180);
+  background: var(--cruor-gradient-linear-182-e901e5e1), var(--cruor-surface-card);
   padding: 12px;
   overflow: auto;
 }
@@ -5299,7 +5299,7 @@
   gap: 12px;
   margin: 0;
   border-color: var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   padding: 10px;
 }
 
@@ -5382,7 +5382,7 @@
   z-index: var(--cruor-z-fullscreen-scrim, 2390);
   display: none;
   border: 0;
-  background: var(--cruor-gradient-radial-247-17bdc499), var(--cruor-gradient-radial-236-38a87dd1), var(--cruor-color-black-a760);
+  background: var(--cruor-gradient-radial-247-17bdc499), var(--cruor-gradient-radial-236-38a87dd1), var(--cruor-surface-card);
   padding: 0;
   backdrop-filter: var(--cruor-filter-glass-14-112);
   -webkit-backdrop-filter: var(--cruor-filter-glass-14-112);
@@ -5420,7 +5420,7 @@
   min-height: 0;
   overflow: auto;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-gradient-linear-190-9068d247), var(--cruor-gradient-radial-243-bc28c973), var(--cruor-color-black-a180);
+  background: var(--cruor-gradient-linear-190-9068d247), var(--cruor-gradient-radial-243-bc28c973), var(--cruor-surface-card);
   padding: clamp(14px, 1.5vw, 20px);
 }
 
@@ -5450,7 +5450,7 @@
   min-height: 36px;
   gap: 9px;
   border-color: var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a200);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-text-a720);
   padding: 0 10px;
   font-size: 12px;
@@ -5477,7 +5477,7 @@
   overflow-x: hidden;
   overscroll-behavior: contain;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-gradient-linear-176-f71f8049), var(--cruor-color-black-a120);
+  background: var(--cruor-gradient-linear-176-f71f8049), var(--cruor-surface-card);
   padding: clamp(12px, 1.25vw, 18px);
 }
 
@@ -5488,7 +5488,7 @@
   min-width: 0;
   min-height: 0;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-gradient-linear-183-7ea12ee4), var(--cruor-color-black-a150);
+  background: var(--cruor-gradient-linear-183-7ea12ee4), var(--cruor-surface-card);
   padding: 13px;
   box-shadow: var(--cruor-shadow-box-002);
 }
@@ -5596,7 +5596,7 @@
   right: 10px;
   max-width: 58px;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 4px 6px;
   font-size: 8px;
@@ -5638,7 +5638,7 @@
 .monster-shell .game-frame-drawer--fullscreen .game-role-card__stats span {
   min-height: 24px;
   border-color: var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   padding: 4px 7px;
   font-size: 9px;
   line-height: 1;
@@ -5646,13 +5646,13 @@
 
 .monster-shell .game-frame-drawer--fullscreen .game-category-panel {
   border-color: var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a160);
+  background: var(--cruor-surface-card);
   padding: 11px;
 }
 
 .monster-shell .game-frame-drawer--fullscreen .game-threat-panel {
   border-color: var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a160);
+  background: var(--cruor-surface-card);
   padding: 11px;
 }
 
@@ -5790,7 +5790,7 @@
 
 .monster-shell .game-frame-drawer--fullscreen .game-frame__meter {
   border: 1px solid var(--cruor-color-milk-a065);
-  background: var(--cruor-color-black-a140);
+  background: var(--cruor-surface-card);
   padding: 10px;
 }
 
@@ -5817,7 +5817,7 @@
 .monster-shell .monster-canvas-mode-btn {
   min-height: 30px;
   border: 1px solid var(--cruor-color-blood-strong-a580);
-  background: var(--cruor-color-black-a240);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-8f7278);
   padding: 0 10px;
   font-size: 9px;
@@ -5846,7 +5846,7 @@
   display: inline-flex;
   align-items: center;
   border: 1px solid var(--cruor-color-milk-a065);
-  background: var(--cruor-color-black-a160);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-r240-g215-b220-a720);
   padding: 0 10px;
   font-size: 10px;
@@ -5920,7 +5920,7 @@
   gap: 8px;
   min-height: 58px;
   border: 1px solid var(--cruor-color-milk-a065);
-  background: var(--cruor-gradient-linear-113-6f59454c), var(--cruor-color-black-a180);
+  background: var(--cruor-gradient-linear-113-6f59454c), var(--cruor-surface-card);
   color: var(--cruor-color-text-a620);
   padding: 8px;
   text-align: left;
@@ -6036,7 +6036,7 @@
 
 .monster-shell .monster-frame-cr-control button {
   border: 1px solid var(--cruor-color-blood-strong-a520);
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   min-height: 42px;
   font-size: 18px;
@@ -6111,7 +6111,7 @@
 
 .monster-shell .monster-frame-info {
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-color-black-a180);
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
   display: grid;
   align-content: start;
   grid-template-rows: none;
@@ -6157,7 +6157,7 @@
   gap: 10px;
   min-width: 0;
   border: 1px solid var(--cruor-color-milk-a055);
-  background: var(--cruor-color-black-a140);
+  background: var(--cruor-surface-card);
   padding: 7px 8px;
 }
 
@@ -6210,7 +6210,7 @@
   align-content: center;
   overflow: hidden;
   padding-block: 12px;
-  background: var(--cruor-gradient-radial-044-30b4806e), var(--cruor-color-black-a260);
+  background: var(--cruor-gradient-radial-044-30b4806e), var(--cruor-surface-card);
   gap: 7px;
 }
 
@@ -6547,7 +6547,7 @@
   padding: 0 9px;
   text-align: center;
   border-color: var(--cruor-color-milk-a080);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   min-width: 38px;
   min-height: 36px;
   color: var(--cruor-color-hex-d0a2aa);
@@ -6624,7 +6624,7 @@
   position: relative;
   z-index: calc(var(--cruor-z-topbar, 70) + 2);
   border: 1px solid var(--cruor-color-blood-strong-a580);
-  background: var(--cruor-color-black-a280);
+  background: var(--cruor-surface-card);
   padding: 0;
   box-shadow: var(--cruor-shadow-box-077);
   margin: 0;
@@ -6640,7 +6640,7 @@
   min-height: 40px;
   max-height: 40px;
   border: 1px solid var(--cruor-color-blood-strong-a680);
-  background: var(--cruor-gradient-linear-098-7469c6ff), var(--cruor-color-black-a340);
+  background: var(--cruor-gradient-linear-098-7469c6ff), var(--cruor-surface-card);
   color: var(--cruor-color-r240-g215-b220-a780);
   padding: 0;
   opacity: 1;
@@ -6875,7 +6875,7 @@
 .monster-shell .monster-frame-select-field select {
   min-height: 36px;
   border-color: var(--cruor-color-blood-strong-a580);
-  background: var(--cruor-gradient-linear-078-e313bc1b), var(--cruor-color-black-a340);
+  background: var(--cruor-gradient-linear-078-e313bc1b), var(--cruor-surface-card);
   color: var(--cruor-color-hex-fff0f2);
   font-size: 12px;
   font-weight: 900;
@@ -6966,7 +6966,7 @@
 
 .monster-shell .monster-frame-select-trigger {
   border: 1px solid var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   display: grid;
@@ -7091,7 +7091,7 @@
 
 .monster-shell .monster-frame-select-option {
   border: 1px solid var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   display: grid;
@@ -7155,7 +7155,7 @@
 
 .monster-shell .monster-frame-icon-toggle {
   border: 1px solid var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   display: inline-grid;
@@ -7208,7 +7208,7 @@
   height: 4px;
   border: 1px solid var(--cruor-color-blood-strong-a520);
   border-radius: 0;
-  background: var(--cruor-color-black-a360);
+  background: var(--cruor-surface-card);
 }
 
 .monster-shell .monster-frame-cr-slider::-webkit-slider-thumb {
@@ -7232,7 +7232,7 @@
   height: 4px;
   border: 1px solid var(--cruor-color-blood-strong-a520);
   border-radius: 0;
-  background: var(--cruor-color-black-a360);
+  background: var(--cruor-surface-card);
 }
 
 .monster-shell .monster-frame-cr-slider::-moz-range-thumb {
@@ -7253,7 +7253,7 @@
   min-height: 38px;
   padding: 0 7px;
   border-color: var(--cruor-color-blood-strong-a580);
-  background: var(--cruor-color-black-a340);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-fff0f2);
   font-size: 13px;
   font-weight: 950;
@@ -7450,7 +7450,7 @@
 
 .monster-shell .monster-frame-controls {
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-color-black-a180);
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
   overflow: auto;
   display: flex;
   flex-direction: column;
@@ -7503,7 +7503,7 @@
   min-width: 28px;
   min-height: 24px;
   border: 1px solid var(--cruor-color-milk-a090);
-  background: var(--cruor-color-black-a340);
+  background: var(--cruor-surface-card);
   color: var(--cruor-color-r240-g215-b220-a660);
   padding: 0 6px;
   box-shadow: var(--cruor-shadow-box-002);
@@ -7620,7 +7620,7 @@
   min-height: 38px;
   height: auto;
   border: 1px solid var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   padding: 0 12px;
   text-align: center;
@@ -7688,7 +7688,7 @@
 .monster-shell .monster-graft-action-card .monster-graft-action-btn.is-disabled:hover,
 .monster-shell .monster-graft-action-card .monster-graft-action-btn[aria-disabled="true"]:hover {
   border-color: var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   box-shadow: none;
   transform: none;
@@ -8459,7 +8459,7 @@
   margin: 0;
   overflow: auto;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-gradient-linear-094-26e867cb), var(--cruor-color-black-a220);
+  background: var(--cruor-gradient-linear-094-26e867cb), var(--cruor-surface-card);
   padding: 10px;
 }
 
@@ -8496,7 +8496,7 @@
   margin: 0;
   overflow: visible;
   border-color: var(--cruor-color-milk-a070);
-  background: var(--cruor-color-black-a180);
+  background: var(--cruor-surface-card);
   padding: 9px;
 }
 
@@ -8590,7 +8590,7 @@
   overflow-x: hidden;
   overscroll-behavior: contain;
   border: 1px solid var(--cruor-color-milk-a070);
-  background: var(--cruor-color-black-a120);
+  background: var(--cruor-surface-card);
   padding: 7px;
 }
 
@@ -8917,7 +8917,7 @@
   min-width: 0;
   height: 100%;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-gradient-linear-060-e275339f), var(--cruor-color-black-a120);
+  background: var(--cruor-gradient-linear-060-e275339f), var(--cruor-surface-card);
   scrollbar-width: auto;
   scrollbar-color: auto;
   grid-auto-rows: min-content;
@@ -10748,7 +10748,7 @@
 
 .monster-shell[data-scrollable-view="true"] {
   overscroll-behavior: contain;
-  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-color-black-a220);
+  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
   scrollbar-width: thin;
 }
 
@@ -10778,7 +10778,7 @@
 }
 
 .monster-shell[data-scrollable-view="true"]::-webkit-scrollbar-track {
-  background: var(--cruor-color-black-a220);
+  background: var(--cruor-surface-card);
 }
 
 .monster-shell[data-scrollable-view="true"]::-webkit-scrollbar-thumb {
@@ -10910,7 +10910,7 @@
   overflow: auto;
   padding: 12px;
   position: absolute;
-  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-color-black-a220);
+  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
   scrollbar-width: thin;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -11279,7 +11279,7 @@
 .monster-shell .anatomy-stage__navigator-focus-overlay {
   -webkit-backdrop-filter: var(--cruor-filter-blur-2);
   backdrop-filter: var(--cruor-filter-blur-2);
-  background: var(--cruor-color-black-a680);
+  background: var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-128);
   display: block;
   grid-area: 1 / 1 / -1 / -1;
@@ -11301,7 +11301,7 @@
 }
 
 .monster-shell .anatomy-stage__grid--grafts.has-navigator .anatomy-stage__column--left::before {
-  background: var(--cruor-color-black-a680);
+  background: var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-129);
   content: "";
   inset: 0;
@@ -11346,7 +11346,7 @@
 .monster-shell .monster-stage-progress-dock.is-under-navigator-focus .monster-stage-progress-focus-overlay {
   -webkit-backdrop-filter: var(--cruor-filter-blur-2);
   backdrop-filter: var(--cruor-filter-blur-2);
-  background: var(--cruor-color-black-a720);
+  background: var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-127);
   display: block;
   inset: -8px;
@@ -11599,7 +11599,7 @@
 }
 
 .monster-shell .cruor-ability-group {
-  background: var(--cruor-color-black-a160);
+  background: var(--cruor-surface-card);
   border: 1px solid var(--cruor-color-blood-strong-a380);
   overflow: hidden;
 }
@@ -11927,7 +11927,7 @@
 }
 
 .monster-shell .cruor-stat-block__designer-notes {
-  background: var(--cruor-gradient-radial-220-0937fc0f), var(--cruor-color-black-a200);
+  background: var(--cruor-gradient-radial-220-0937fc0f), var(--cruor-surface-card);
   border: 1px solid var(--cruor-color-rose-a130);
   box-shadow: var(--cruor-shadow-box-002);
   display: grid;
@@ -12113,7 +12113,7 @@
 }
 
 .monster-shell .monster-meter__head .tooltip-btn {
-  background: var(--cruor-color-black-a280);
+  background: var(--cruor-surface-card);
   border: 1px solid var(--cruor-color-blood-glow-a380);
   color: var(--cruor-color-text-a780);
   font-size: 10px;
@@ -12503,7 +12503,7 @@
   text-transform: uppercase;
   flex: 0 0 auto;
   border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a200);
+  background: var(--cruor-surface-card);
   padding: 5px 7px;
   font-style: normal;
 }
