@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   SLOTS,
   SILHOUETTE_SLOT_CARDS,
@@ -21,22 +22,12 @@ import {
 } from "../monster-composer.taxonomies.js";
 import {
   Activity,
-  AlertTriangle,
   ChevronRight,
-  Crown,
-  Crosshair,
-  Eye,
   FileText,
   Flame,
-  Gauge,
-  HeartPulse,
   RotateCcw,
-  Shield,
   SlidersHorizontal,
   Sparkles,
-  Sword,
-  Timer,
-  Zap,
 } from "lucide-react";
 import { MonsterStartScreen } from "./monster-composer.start-flow.jsx";
 
@@ -47,6 +38,27 @@ function clamp(value, min, max) {
 function classNames(...values) {
   return values.filter(Boolean).join(" ");
 }
+
+function createFaIcon(iconName) {
+  function FaIcon({ className = "", ...props } = {}) {
+    return (
+      <i
+        {...props}
+        className={classNames("fa-solid", `fa-${iconName}`, className)}
+      />
+    );
+  }
+
+  return FaIcon;
+}
+
+const FRAME_TYPE_ICON_MAP = {
+  undead: createFaIcon("skull"),
+  beast: createFaIcon("paw"),
+  aberration: createFaIcon("bacterium"),
+};
+
+const VARIANT_ICON = createFaIcon("dna");
 
 function parseSvgViewBox(value) {
   const parts = String(value || "0 0 100 100")
@@ -83,12 +95,12 @@ function parseInlineSilhouetteAsset(svgText) {
 }
 
 const FRAME_NODE_ANCHORS = [
-  { id: "family", label: "Family", x: 0.5, y: 0.17, icon: Activity },
-  { id: "variant", label: "Variant", x: 0.55, y: 0.31, icon: Sparkles },
-  { id: "role", label: "Footprint", x: 0.37, y: 0.43, icon: Sword },
-  { id: "tactic", label: "Job", x: 0.63, y: 0.52, icon: Activity },
-  { id: "challenge", label: "CR", x: 0.43, y: 0.68, icon: Gauge },
-  { id: "danger", label: "Threat", x: 0.57, y: 0.79, icon: AlertTriangle },
+  { id: "family", label: "Family", x: 0.5, y: 0.17, icon: createFaIcon("dna") },
+  { id: "variant", label: "Variant", x: 0.55, y: 0.31, icon: createFaIcon("vials") },
+  { id: "role", label: "Footprint", x: 0.37, y: 0.43, icon: createFaIcon("people-group") },
+  { id: "tactic", label: "Job", x: 0.63, y: 0.52, icon: createFaIcon("crosshairs") },
+  { id: "challenge", label: "CR", x: 0.43, y: 0.68, icon: createFaIcon("diamond") },
+  { id: "danger", label: "Threat", x: 0.57, y: 0.79, icon: createFaIcon("triangle-exclamation") },
 ];
 
 const FRAME_TYPE_COPY = {
@@ -98,40 +110,40 @@ const FRAME_TYPE_COPY = {
 };
 
 const ROLE_ICON_MAP = {
-  minion: Sword,
-  standard: Shield,
-  boss: Crown,
+  minion: createFaIcon("people-group"),
+  standard: createFaIcon("circle"),
+  boss: createFaIcon("crown"),
 };
 
 const TACTICAL_ROLE_ICON_MAP = {
-  brute: Sword,
-  skirmisher: Zap,
-  controller: SlidersHorizontal,
-  lurker: Eye,
-  artillery: Crosshair,
-  support: HeartPulse,
+  brute: createFaIcon("hand-fist"),
+  skirmisher: createFaIcon("person-running"),
+  controller: createFaIcon("wand-magic-sparkles"),
+  lurker: createFaIcon("eye-slash"),
+  artillery: createFaIcon("bullseye"),
+  support: createFaIcon("hand-holding-heart"),
 };
 
 const MONSTER_TIER_ICON_MAP = {
-  normal: Shield,
-  elite: Sword,
-  boss: Crown,
-  legendary: Sparkles,
-  setpiece: AlertTriangle,
+  normal: createFaIcon("circle-dot"),
+  elite: createFaIcon("medal"),
+  boss: createFaIcon("chess-king"),
+  legendary: createFaIcon("dragon"),
+  setpiece: createFaIcon("landmark"),
 };
 
 const TEMPO_ICON_MAP = {
-  slow: Timer,
-  standard: Activity,
-  fast: Zap,
-  ambusher: Eye,
-  legendary: Sparkles,
+  slow: createFaIcon("hourglass-half"),
+  standard: createFaIcon("clock"),
+  fast: createFaIcon("bolt"),
+  ambusher: createFaIcon("masks-theater"),
+  legendary: createFaIcon("stopwatch"),
 };
 
 const DANGER_ICON_MAP = {
-  standard: Shield,
-  hard: Flame,
-  horror: AlertTriangle,
+  standard: createFaIcon("shield-halved"),
+  hard: createFaIcon("fire-flame-curved"),
+  horror: createFaIcon("skull-crossbones"),
 };
 
 const DEFAULT_SLOT_NODE_ANCHORS = {
@@ -527,18 +539,19 @@ function SilhouetteChassisMenu({
   stageMode,
   onChooseChassis,
   onSetStageMode,
+  menuRef,
 }) {
   if (!open) return null;
 
   return (
-    <div className="monster-chassis-menu" role="menu" aria-label="Silhouette chassis menu">
+    <div ref={menuRef} className="monster-chassis-menu" role="menu" aria-label="Silhouette chassis menu">
       <div className="monster-chassis-menu__head">
         <span>Chassis</span>
         <strong>{category}</strong>
       </div>
       <div className="monster-chassis-menu__families">
         {CREATURE_TYPES.map((type) => {
-          const TypeIcon = type.icon || Activity;
+          const TypeIcon = FRAME_TYPE_ICON_MAP[type.id] || type.icon || Activity;
           const familyDisabled = isCreatureTypeUnavailable(type.id);
           return (
             <section key={type.id} className="monster-chassis-family" aria-label={type.label}>
@@ -963,7 +976,10 @@ function MonsterSilhouetteCore({
   stageTransition = "",
 }) {
   const [chassisMenuOpen, setChassisMenuOpen] = useState(false);
+  const [silhouetteHovered, setSilhouetteHovered] = useState(false);
+  const [hoveredDecorationId, setHoveredDecorationId] = useState(null);
   const silhouetteLayerRef = useRef(null);
+  const chassisMenuRef = useRef(null);
   const isFrameMode = stageMode === "frame";
   const frameNodes = getFrameNodeAnchors({ silhouetteId, typeId, category });
   const slotNodeAnchors = getSlotNodeAnchors({ silhouetteId, typeId, category, profile });
@@ -1044,9 +1060,8 @@ function MonsterSilhouetteCore({
     if (!chassisMenuOpen) return undefined;
 
     function handlePointerDown(event) {
-      if (!silhouetteLayerRef.current?.contains(event.target)) {
-        setChassisMenuOpen(false);
-      }
+      if (chassisMenuRef.current?.contains(event.target)) return;
+      setChassisMenuOpen(false);
     }
 
     function handleKeyDown(event) {
@@ -1065,6 +1080,7 @@ function MonsterSilhouetteCore({
 
   useEffect(() => {
     setChassisMenuOpen(false);
+    setSilhouetteHovered(false);
   }, [typeId, category, stageMode]);
 
   useEffect(() => {
@@ -1150,6 +1166,7 @@ function MonsterSilhouetteCore({
         className={classNames(
           "anatomy-stage__silhouette-layer",
           chassisMenuOpen && "has-chassis-menu-open",
+          silhouetteHovered && "is-silhouette-hovered",
           showAnatomyDecorations ? "is-anatomy-decorations-visible" : "is-anatomy-decorations-hidden",
         )}
         ref={silhouetteLayerRef}
@@ -1157,13 +1174,22 @@ function MonsterSilhouetteCore({
         {anatomyDecorations.map((decoration) => (
           <div
             key={decoration.id}
-            className={`monster-anatomy-decoration monster-anatomy-decoration--${decoration.id}`}
+            className={classNames(
+              "monster-anatomy-decoration",
+              `monster-anatomy-decoration--${decoration.id}`,
+              hoveredDecorationId === decoration.id && "is-decoration-hovered",
+            )}
             aria-hidden="true"
           >
             <svg className="monster-anatomy-decoration__plate" viewBox={decoration.viewBox} focusable="false">
               <g className="monster-anatomy-decoration__body">
                 {(decoration.layers || []).map((layer) => (
-                  <path key={layer.id} d={layer.d} />
+                  <path
+                    key={layer.id}
+                    d={layer.d}
+                    onPointerEnter={() => setHoveredDecorationId(decoration.id)}
+                    onPointerLeave={() => setHoveredDecorationId(null)}
+                  />
                 ))}
               </g>
             </svg>
@@ -1204,6 +1230,10 @@ function MonsterSilhouetteCore({
             aria-expanded={chassisMenuOpen}
             onContextMenu={openChassisMenu}
             onKeyDown={handleSilhouetteKeyDown}
+            onPointerEnter={() => setSilhouetteHovered(true)}
+            onPointerLeave={() => setSilhouetteHovered(false)}
+            onFocus={() => setSilhouetteHovered(true)}
+            onBlur={() => setSilhouetteHovered(false)}
           >
             <img
               className="monster-silhouette-asset__image"
@@ -1229,8 +1259,9 @@ function MonsterSilhouetteCore({
             aria-label={ariaLabel}
             aria-haspopup="menu"
             aria-expanded={chassisMenuOpen}
-            onContextMenu={openChassisMenu}
             onKeyDown={handleSilhouetteKeyDown}
+            onFocus={() => setSilhouetteHovered(true)}
+            onBlur={() => setSilhouetteHovered(false)}
           >
             {isScanActive ? (
               <defs>
@@ -1312,7 +1343,12 @@ function MonsterSilhouetteCore({
                   <path key={layer.id} d={layer.d} />
                 ))}
             </g>
-            <g className="monster-silhouette-body">
+            <g
+              className="monster-silhouette-body"
+              onContextMenu={openChassisMenu}
+              onPointerEnter={() => setSilhouetteHovered(true)}
+              onPointerLeave={() => setSilhouetteHovered(false)}
+            >
               {bodyLayers.map((layer) => (
                 <path
                   key={layer.id}
@@ -1387,6 +1423,7 @@ function MonsterSilhouetteCore({
           stageMode={stageMode}
           onChooseChassis={chooseChassis}
           onSetStageMode={switchStageMode}
+          menuRef={chassisMenuRef}
         />
 
         {isFrameMode
@@ -1444,7 +1481,10 @@ function MonsterSilhouetteCore({
 
 function FrameSelectField({ label, value, options, onChange, getValue, getLabel, getMeta, getDescription, getIcon, isDisabled }) {
   const [open, setOpen] = useState(false);
+  const [menuStyle, setMenuStyle] = useState(null);
   const fieldRef = useRef(null);
+  const triggerRef = useRef(null);
+  const menuRef = useRef(null);
   const selectedOption =
     options.find((option) => String(getValue(option)) === String(value)) || options[0];
   const selectedLabel = selectedOption ? getLabel(selectedOption) : "—";
@@ -1462,12 +1502,88 @@ function FrameSelectField({ label, value, options, onChange, getValue, getLabel,
 
   useEffect(() => {
     if (!open) return undefined;
+
     function handlePointerDown(event) {
-      if (!fieldRef.current?.contains(event.target)) setOpen(false);
+      const target = event.target;
+      if (fieldRef.current?.contains(target)) return;
+      if (menuRef.current?.contains(target)) return;
+      setOpen(false);
     }
+
     document.addEventListener("pointerdown", handlePointerDown);
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      setMenuStyle(null);
+      return undefined;
+    }
+
+    let frameId = 0;
+
+    function updateMenuPosition() {
+      const trigger = triggerRef.current;
+      const field = fieldRef.current;
+      if (!trigger || !field) return;
+
+      const rect = trigger.getBoundingClientRect();
+      const fieldRect = field.getBoundingClientRect();
+      const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+      const gap = 8;
+      const maxHeight = Math.min(320, Math.max(220, viewportHeight * 0.58));
+      const preferredWidth = Math.min(260, Math.max(220, viewportWidth * 0.32));
+      const hasRightSpace = viewportWidth - rect.right - gap >= preferredWidth;
+
+      if (hasRightSpace) {
+        const top = clamp(fieldRect.top, gap, Math.max(gap, viewportHeight - maxHeight - gap));
+        setMenuStyle({
+          top: `${Math.round(top)}px`,
+          left: `${Math.round(rect.right + gap)}px`,
+          width: `${Math.round(preferredWidth)}px`,
+          maxHeight: `${Math.round(maxHeight)}px`,
+        });
+        return;
+      }
+
+      const fallbackWidth = Math.min(
+        Math.max(rect.width, 220),
+        Math.max(220, viewportWidth - gap * 2),
+      );
+      const left = clamp(rect.left, gap, Math.max(gap, viewportWidth - fallbackWidth - gap));
+      const belowTop = rect.bottom + 6;
+      const top = belowTop + maxHeight <= viewportHeight - gap
+        ? belowTop
+        : Math.max(gap, rect.top - maxHeight - 6);
+
+      setMenuStyle({
+        top: `${Math.round(top)}px`,
+        left: `${Math.round(left)}px`,
+        width: `${Math.round(fallbackWidth)}px`,
+        maxHeight: `${Math.round(maxHeight)}px`,
+      });
+    }
+
+    function scheduleUpdate() {
+      if (frameId) cancelAnimationFrame(frameId);
+      frameId = requestAnimationFrame(updateMenuPosition);
+    }
+
+    scheduleUpdate();
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("scroll", scheduleUpdate, true);
+
+    return () => {
+      if (frameId) cancelAnimationFrame(frameId);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("scroll", scheduleUpdate, true);
+    };
+  }, [open, value, options]);
+
+  const menuPortalTarget = typeof document !== "undefined"
+    ? document.querySelector(".monster-shell") || document.body
+    : null;
 
   return (
     <div className="monster-frame-select-field" ref={fieldRef}>
@@ -1480,43 +1596,53 @@ function FrameSelectField({ label, value, options, onChange, getValue, getLabel,
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
+        ref={triggerRef}
         onClick={() => setOpen((current) => !current)}
       >
         {SelectedIcon ? <SelectedIcon aria-hidden="true" /> : null}
         <strong>{selectedLabel}</strong>
         {meta ? <small>{meta}</small> : null}
       </button>
-      {open ? (
-        <div className="monster-frame-select-menu" role="listbox" aria-label={label}>
-          {options.map((option) => {
-            const optionValue = getValue(option);
-            const disabled = Boolean(isDisabled?.(option));
-            const active = String(optionValue) === String(value);
-            const OptionIcon = getIcon?.(option);
-            return (
-              <button
-                key={optionValue}
-                type="button"
-                role="option"
-                aria-selected={active}
-                disabled={disabled}
-                className={`monster-frame-select-option ${active ? "is-active" : ""} ${disabled ? "is-disabled" : ""}`.trim()}
-                onClick={() => {
-                  if (disabled) return;
-                  onChange(optionValue);
-                  setOpen(false);
-                }}
-              >
-                {OptionIcon ? <OptionIcon aria-hidden="true" /> : null}
-                <span>
-                  <strong>{getLabel(option)}</strong>
-                  {getDescription?.(option) ? <small>{getDescription(option)}</small> : null}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      ) : null}
+      {open && menuPortalTarget
+        ? createPortal(
+            <div
+              className="monster-frame-select-menu"
+              role="listbox"
+              aria-label={label}
+              ref={menuRef}
+              style={menuStyle || undefined}
+            >
+              {options.map((option) => {
+                const optionValue = getValue(option);
+                const disabled = Boolean(isDisabled?.(option));
+                const active = String(optionValue) === String(value);
+                const OptionIcon = getIcon?.(option);
+                return (
+                  <button
+                    key={optionValue}
+                    type="button"
+                    role="option"
+                    aria-selected={active}
+                    disabled={disabled}
+                    className={`monster-frame-select-option ${active ? "is-active" : ""} ${disabled ? "is-disabled" : ""}`.trim()}
+                    onClick={() => {
+                      if (disabled) return;
+                      onChange(optionValue);
+                      setOpen(false);
+                    }}
+                  >
+                    {OptionIcon ? <OptionIcon aria-hidden="true" /> : null}
+                    <span>
+                      <strong>{getLabel(option)}</strong>
+                      {getDescription?.(option) ? <small>{getDescription(option)}</small> : null}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>,
+            menuPortalTarget,
+          )
+        : null}
     </div>
   );
 }
@@ -1617,7 +1743,7 @@ function FrameControls({
             options={CREATURE_TYPES}
             getValue={(item) => item.id}
             getLabel={(item) => item.label}
-            getIcon={(item) => item.icon}
+            getIcon={(item) => FRAME_TYPE_ICON_MAP[item.id] || item.icon}
             getDescription={(item) => FRAME_TYPE_COPY[item.id]}
             getMeta={(item) => `${item.categories.length} variants`}
             isDisabled={(item) => isCreatureTypeUnavailable(item.id)}
@@ -1629,7 +1755,7 @@ function FrameControls({
             options={creatureType.categories}
             getValue={(item) => item}
             getLabel={(item) => item}
-            getIcon={() => Sparkles}
+            getIcon={() => VARIANT_ICON}
             getDescription={() => "Creature body variant."}
             isDisabled={(item) => isCreatureCategoryUnavailable(typeId, item)}
             onChange={(nextCategory) => setFrameValue(setCategory, nextCategory)}
@@ -1648,7 +1774,7 @@ function FrameControls({
             options={ROLES}
             getValue={(item) => item.id}
             getLabel={(item) => item.label}
-            getIcon={(item) => ROLE_ICON_MAP[item.id] || Sword}
+            getIcon={(item) => ROLE_ICON_MAP[item.id] || createFaIcon("chess-knight")}
             getDescription={(item) => item.summary}
             getMeta={(item) => `HP ${Math.round(item.hpMult * 100)} · DPR ${Math.round(item.dprMult * 100)}`}
             onChange={(nextRoleId) => setFrameValue(setRoleId, nextRoleId)}
@@ -1659,7 +1785,7 @@ function FrameControls({
             options={TACTICAL_ROLES}
             getValue={(item) => item.id}
             getLabel={(item) => item.label}
-            getIcon={(item) => TACTICAL_ROLE_ICON_MAP[item.id] || Activity}
+            getIcon={(item) => TACTICAL_ROLE_ICON_MAP[item.id] || createFaIcon("diagram-project")}
             getDescription={(item) => item.summary || "Primary tactical behavior."}
             onChange={(nextTacticalRoleId) => setFrameValue(setTacticalRoleId, nextTacticalRoleId)}
           />
@@ -1682,7 +1808,7 @@ function FrameControls({
             options={MONSTER_TIERS}
             getValue={(item) => item.id}
             getLabel={(item) => item.label}
-            getIcon={(item) => MONSTER_TIER_ICON_MAP[item.id] || Shield}
+            getIcon={(item) => MONSTER_TIER_ICON_MAP[item.id] || createFaIcon("gem")}
             getDescription={(item) => item.summary || "Encounter weight and durability."}
             onChange={(nextMonsterTierId) => setFrameValue(setMonsterTierId, nextMonsterTierId)}
           />
@@ -1692,7 +1818,7 @@ function FrameControls({
             options={TEMPO_PROFILES}
             getValue={(item) => item.id}
             getLabel={(item) => item.label}
-            getIcon={(item) => TEMPO_ICON_MAP[item.id] || Activity}
+            getIcon={(item) => TEMPO_ICON_MAP[item.id] || createFaIcon("gauge-high")}
             getDescription={(item) => item.summary || "How quickly the monster applies pressure."}
             onChange={(nextTempoProfileId) => setFrameValue(setTempoProfileId, nextTempoProfileId)}
           />
@@ -1702,7 +1828,7 @@ function FrameControls({
             options={DANGERS}
             getValue={(item) => item.id}
             getLabel={(item) => item.label}
-            getIcon={(item) => DANGER_ICON_MAP[item.id] || AlertTriangle}
+            getIcon={(item) => DANGER_ICON_MAP[item.id] || createFaIcon("triangle-exclamation")}
             getDescription={(item) => item.summary || "How punishing the final build should feel."}
             onChange={(nextDangerId) => setFrameValue(setDangerId, nextDangerId)}
           />
@@ -2010,11 +2136,16 @@ export function MonsterSilhouetteMap({
   return (
     <section className="monster-anatomy-composer" aria-label="Monster anatomy composer">
       {!started ? (
-        <MonsterStartScreen
-          onPickTemplate={onPickTemplate}
-          onBuildFromScratch={onBuildFromScratch}
-          presetsCount={presetsCount}
-        />
+        <div
+          className="monster-start-screen-transition"
+          data-stage-transition={stageTransition || "idle"}
+        >
+          <MonsterStartScreen
+            onPickTemplate={onPickTemplate}
+            onBuildFromScratch={onBuildFromScratch}
+            presetsCount={presetsCount}
+          />
+        </div>
       ) : (
         <>
           <div

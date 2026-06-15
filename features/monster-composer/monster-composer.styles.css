@@ -2751,6 +2751,7 @@
   transform-origin: center top;
   transition:
     opacity 220ms ease 0s,
+    filter 180ms ease 0s,
     transform 220ms ease 0s,
     visibility 0s linear 220ms;
 }
@@ -2761,6 +2762,7 @@
   transform: var(--monster-anatomy-decoration-transform);
   transition:
     opacity 260ms ease 0s,
+    filter 180ms ease 0s,
     transform 260ms ease 0s,
     visibility 0s linear 0s;
 }
@@ -2812,6 +2814,14 @@
   stroke: var(--cruor-color-r240-g215-b220-a080);
   stroke-width: 2;
   vector-effect: non-scaling-stroke;
+  pointer-events: visiblePainted;
+  transition: fill 180ms ease, stroke 180ms ease, filter 180ms ease;
+}
+
+.monster-shell .monster-anatomy-decoration.is-decoration-hovered .monster-anatomy-decoration__body path {
+  fill: var(--cruor-color-text-a060);
+  stroke: var(--cruor-color-rose-a180);
+  filter: var(--cruor-filter-drop-shadow-023);
 }
 
 .monster-shell .monster-anatomy-decoration__caption {
@@ -2850,6 +2860,8 @@
   opacity: 0.96;
   filter: var(--cruor-filter-drop-shadow-019);
   cursor: context-menu;
+  pointer-events: none;
+  transition: opacity 180ms ease, filter 180ms ease;
 }
 
 .monster-shell .monster-silhouette-svg:focus {
@@ -2873,11 +2885,6 @@
   outline: none;
 }
 
-.monster-shell .monster-silhouette-svg:hover {
-  opacity: 1;
-  filter: var(--cruor-filter-drop-shadow-007);
-  outline: none;
-}
 
 .monster-shell .monster-silhouette-svg .silhouette-layer {
   transform-box: fill-box;
@@ -2889,6 +2896,8 @@
   stroke: var(--cruor-color-blood-glow-a200);
   stroke-width: 2;
   vector-effect: non-scaling-stroke;
+  cursor: context-menu;
+  pointer-events: visiblePainted;
 }
 
 .monster-shell .monster-silhouette-body path {
@@ -2896,6 +2905,9 @@
   stroke: var(--cruor-color-r240-g215-b220-a340);
   stroke-width: 2;
   vector-effect: non-scaling-stroke;
+  cursor: context-menu;
+  pointer-events: visiblePainted;
+  transition: fill 180ms ease, stroke 180ms ease, stroke-width 180ms ease, filter 180ms ease;
 }
 
 .monster-shell .monster-silhouette-scan {
@@ -2915,7 +2927,8 @@
   filter: var(--cruor-filter-drop-shadow-006);
 }
 
-.monster-shell .monster-silhouette-svg:hover .monster-silhouette-body path {
+.monster-shell .anatomy-stage__silhouette-layer.is-silhouette-hovered .monster-silhouette-body path,
+.monster-shell .anatomy-stage__silhouette-layer.has-chassis-menu-open .monster-silhouette-body path {
   fill: var(--cruor-color-text-a120);
   stroke: var(--cruor-color-rose-a620);
   stroke-width: 2.35;
@@ -2945,6 +2958,7 @@
   margin: 0;
   background: var(--cruor-color-transparent);
   isolation: isolate;
+  pointer-events: auto;
 }
 
 .monster-shell .monster-silhouette-asset__image {
@@ -2956,6 +2970,7 @@
   user-select: none;
   pointer-events: none;
   opacity: 0.96;
+  transition: opacity 180ms ease, filter 180ms ease;
 }
 
 .monster-shell .monster-silhouette-asset__scan {
@@ -6075,11 +6090,16 @@
   backdrop-filter: var(--cruor-filter-blur-12);
 }
 
-.monster-shell .monster-frame-node svg {
+.monster-shell .monster-frame-node svg,
+.monster-shell .monster-frame-node i {
   grid-area: icon;
   width: 16px;
   height: 16px;
   color: var(--cruor-color-hex-b33b4e);
+  display: inline-grid;
+  place-items: center;
+  font-size: 14px;
+  line-height: 1;
 }
 
 .monster-shell .monster-frame-node small {
@@ -6978,22 +6998,35 @@
   text-align: left;
 }
 
-.monster-shell .monster-frame-icon-toggle svg {
+.monster-shell .monster-frame-icon-toggle svg,
+.monster-shell .monster-frame-icon-toggle i {
   width: 16px;
   height: 16px;
   color: var(--cruor-color-hex-b33b4e);
 }
 
-.monster-shell .monster-frame-select-option svg {
+.monster-shell .monster-frame-select-option svg,
+.monster-shell .monster-frame-select-option i {
   width: 16px;
   height: 16px;
   color: var(--cruor-color-hex-b33b4e);
 }
 
-.monster-shell .monster-frame-select-trigger svg {
+.monster-shell .monster-frame-select-trigger svg,
+.monster-shell .monster-frame-select-trigger i {
   width: 16px;
   height: 16px;
   color: var(--cruor-color-hex-b33b4e);
+}
+
+.monster-shell .monster-frame-icon-toggle i,
+.monster-shell .monster-frame-select-option i,
+.monster-shell .monster-frame-select-trigger i,
+.monster-shell .monster-chassis-family__trigger i {
+  display: inline-grid;
+  place-items: center;
+  font-size: 14px;
+  line-height: 1;
 }
 
 .monster-shell .monster-frame-select-trigger strong {
@@ -7049,40 +7082,43 @@
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.monster-shell .monster-frame-icon-toggle.is-active svg {
+.monster-shell .monster-frame-icon-toggle.is-active svg,
+.monster-shell .monster-frame-icon-toggle.is-active i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.monster-shell .monster-frame-icon-toggle:hover svg {
+.monster-shell .monster-frame-icon-toggle:hover svg,
+.monster-shell .monster-frame-icon-toggle:hover i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.monster-shell .monster-frame-select-option.is-active svg {
+.monster-shell .monster-frame-select-option.is-active svg,
+.monster-shell .monster-frame-select-option.is-active i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.monster-shell .monster-frame-select-option:hover svg {
+.monster-shell .monster-frame-select-option:hover svg,
+.monster-shell .monster-frame-select-option:hover i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.monster-shell .monster-frame-select-trigger:hover svg {
+.monster-shell .monster-frame-select-trigger:hover svg,
+.monster-shell .monster-frame-select-trigger:hover i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.monster-shell .monster-frame-select-trigger[aria-expanded="true"] svg {
+.monster-shell .monster-frame-select-trigger[aria-expanded="true"] svg,
+.monster-shell .monster-frame-select-trigger[aria-expanded="true"] i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
 .monster-shell .monster-frame-select-menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: 0;
-  z-index: 80;
+  position: fixed;
+  z-index: 9000;
   display: grid;
   gap: 5px;
-  max-height: min(320px, 58vh);
   overflow: auto;
+  overscroll-behavior: contain;
   border: 1px solid var(--cruor-color-blood-glow-a500);
   background: var(--cruor-gradient-linear-012-c39edb21), var(--cruor-color-surface-soft-a970);
   padding: 6px;
@@ -7212,13 +7248,14 @@
 }
 
 .monster-shell .monster-frame-cr-slider::-webkit-slider-thumb {
-  width: 22px;
-  height: 22px;
-  margin-top: -9px;
-  border: 0;
+  width: 13px;
+  height: 13px;
+  margin-top: -5.5px;
+  border: 1px solid var(--cruor-color-blood-glow-a780);
   border-radius: 0;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%23fff0f2' d='M368 192c0-79.5-64.5-144-144-144S80 112.5 80 192c0 41.8 17.8 79.4 46.3 105.7c7.1 6.6 11.7 15.6 11.7 25.3v21c0 13.3 10.7 24 24 24h12v40c0 8.8 7.2 16 16 16s16-7.2 16-16v-40h36v40c0 8.8 7.2 16 16 16s16-7.2 16-16v-40h12c13.3 0 24-10.7 24-24v-21c0-9.7 4.6-18.7 11.7-25.3C350.2 271.4 368 233.8 368 192zM168 232a40 40 0 1 1 0-80a40 40 0 0 1 0 80zm112 0a40 40 0 1 1 0-80a40 40 0 0 1 0 80zM210.7 297.4l20-40c5.9-11.8 22.8-11.8 28.6 0l20 40c5.3 10.6-2.4 23.1-14.3 23.1h-40c-11.9 0-19.6-12.5-14.3-23.1z'/%3E%3C/svg%3E") center / 19px 19px no-repeat;
-  box-shadow: none;
+  background: var(--cruor-color-blood-strong-a920, #33030c);
+  box-shadow: var(--cruor-shadow-box-003);
+  transform: rotate(45deg);
   cursor: grab;
   appearance: none;
   -webkit-appearance: none;
@@ -7236,12 +7273,13 @@
 }
 
 .monster-shell .monster-frame-cr-slider::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
-  border: 0;
+  width: 13px;
+  height: 13px;
+  border: 1px solid var(--cruor-color-blood-glow-a780);
   border-radius: 0;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%23fff0f2' d='M368 192c0-79.5-64.5-144-144-144S80 112.5 80 192c0 41.8 17.8 79.4 46.3 105.7c7.1 6.6 11.7 15.6 11.7 25.3v21c0 13.3 10.7 24 24 24h12v40c0 8.8 7.2 16 16 16s16-7.2 16-16v-40h36v40c0 8.8 7.2 16 16 16s16-7.2 16-16v-40h12c13.3 0 24-10.7 24-24v-21c0-9.7 4.6-18.7 11.7-25.3C350.2 271.4 368 233.8 368 192zM168 232a40 40 0 1 1 0-80a40 40 0 0 1 0 80zm112 0a40 40 0 1 1 0-80a40 40 0 0 1 0 80zM210.7 297.4l20-40c5.9-11.8 22.8-11.8 28.6 0l20 40c5.3 10.6-2.4 23.1-14.3 23.1h-40c-11.9 0-19.6-12.5-14.3-23.1z'/%3E%3C/svg%3E") center / 19px 19px no-repeat;
-  box-shadow: none;
+  background: var(--cruor-color-blood-strong-a920, #33030c);
+  box-shadow: var(--cruor-shadow-box-003);
+  transform: rotate(45deg);
   cursor: grab;
 }
 
@@ -10972,7 +11010,8 @@
   width: 100%;
 }
 
-.monster-shell .monster-chassis-family__trigger svg {
+.monster-shell .monster-chassis-family__trigger svg,
+.monster-shell .monster-chassis-family__trigger i {
   color: var(--cruor-color-hex-b33b4e);
   height: 15px;
   width: 15px;
@@ -12321,6 +12360,50 @@
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
+}
+
+
+@keyframes monsterStartScreenExit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.985);
+    filter: blur(1px);
+  }
+}
+
+@keyframes monsterStageCenterEnter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+    filter: blur(1px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: none;
+  }
+}
+
+.monster-shell .monster-start-screen-transition[data-stage-transition="start-to-frame-exit"] {
+  animation: monsterStartScreenExit var(--monster-stage-transition-exit, 260ms) cubic-bezier(0.7, 0, 0.3, 1) both;
+  pointer-events: none;
+}
+
+.monster-shell .monster-silhouette-stage[data-stage-transition="start-to-frame-enter"] .monster-frame-controls {
+  animation: monsterStagePanelEnterLeft var(--monster-stage-transition-enter, 760ms) cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.monster-shell .monster-silhouette-stage[data-stage-transition="start-to-frame-enter"] .monster-frame-info {
+  animation: monsterStagePanelEnterRight var(--monster-stage-transition-enter, 760ms) cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.monster-shell .monster-silhouette-stage[data-stage-transition="start-to-frame-enter"] .anatomy-stage__center {
+  animation: monsterStageCenterEnter var(--monster-stage-transition-enter, 760ms) cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .monster-shell .monster-silhouette-stage[data-stage-transition$="-exit"],

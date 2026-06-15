@@ -1695,29 +1695,59 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
   }
 
   function startFromScratch() {
-    setSelected({});
-    setActivePresetId("");
-    setCustomMonsterName("");
-    setStartMode("scratch");
-    setComposerStarted(true);
-    setTemplatePickerOpen(false);
-    setComponentNavigatorOpen(false);
-    setComponentNavigatorMode("slot");
-    setNavigatorSlotFilter("body");
-    setNavigatorSearch("");
-    setNavigatorSourceFilters(["decomposition"]);
-    setNavigatorFiltersOpen(false);
-    setNavigatorPackFilter("all");
-    setActiveSlot("");
-    setViewMode("composer");
+    function enterScratchComposer() {
+      setSelected({});
+      setActivePresetId("");
+      setCustomMonsterName("");
+      setStartMode("scratch");
+      setComposerStageMode("frame");
+      setComposerStarted(true);
+      setTemplatePickerOpen(false);
+      setComponentNavigatorOpen(false);
+      setComponentNavigatorMode("slot");
+      setNavigatorSlotFilter("body");
+      setNavigatorSearch("");
+      setNavigatorSourceFilters(["decomposition"]);
+      setNavigatorFiltersOpen(false);
+      setNavigatorPackFilter("all");
+      setActiveSlot("");
+      setViewMode("composer");
+    }
+
+    clearStageTransitionTimers();
+
+    if (shouldReduceMonsterMotion() || typeof window === "undefined") {
+      setStageTransition("");
+      enterScratchComposer();
+      return;
+    }
+
+    setStageTransition("start-to-frame-exit");
+
+    const exitTimer = window.setTimeout(() => {
+      enterScratchComposer();
+      setStageTransition("start-to-frame-enter");
+
+      const enterTimer = window.setTimeout(() => {
+        setStageTransition("");
+        stageTransitionTimersRef.current = [];
+      }, MONSTER_STAGE_TRANSITION_ENTER_MS);
+
+      stageTransitionTimersRef.current = [enterTimer];
+    }, MONSTER_STAGE_TRANSITION_EXIT_MS);
+
+    stageTransitionTimersRef.current = [exitTimer];
   }
 
   function startOver() {
+    clearStageTransitionTimers();
     setSelected({});
     setActivePresetId("");
     setCustomMonsterName("");
     setStartMode("");
     setComposerStarted(false);
+    setComposerStageMode("frame");
+    setStageTransition("");
     setTemplatePickerOpen(false);
     setComponentNavigatorOpen(false);
     setComponentNavigatorMode("slot");
