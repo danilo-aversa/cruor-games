@@ -1,4 +1,5 @@
 import { findSpell5e24, getSpell5e24Name } from "../../../shared/content/spells.5e24.js";
+import { getMonsterRuleset } from "../rulesets/index.js";
 import {
   getDamageBudgetShare,
   getDamagePartById,
@@ -16,45 +17,16 @@ const DAMAGE_SCALE_MULTIPLIERS = Object.freeze({
   heavy: 1.45,
 });
 
-const DAMAGE_DICE_TABLE = Object.freeze([
-  [4, "1d4 + 2"],
-  [6, "1d6 + 3"],
-  [8, "1d8 + 4"],
-  [12, "2d8 + 3"],
-  [16, "3d8 + 3"],
-  [22, "4d8 + 4"],
-  [28, "5d8 + 6"],
-  [36, "6d10 + 3"],
-  [48, "8d10 + 4"],
-  [64, "10d10 + 9"],
-  [82, "12d12 + 4"],
-  [102, "16d12"],
-]);
-
-function parseDiceFormula(formula) {
-  const match = String(formula || "").match(/^(\d+)d(\d+)(?:\s*([+−-])\s*(\d+))?$/);
-  if (!match) return null;
-  const count = Number(match[1]);
-  const die = Number(match[2]);
-  const sign = match[3] === "−" || match[3] === "-" ? -1 : 1;
-  const flat = match[4] ? Number(match[4]) * sign : 0;
-  return { count, die, flat, average: Math.round(count * ((die + 1) / 2) + flat) };
-}
-
-function formatDiceFormula(count, die, flat = 0) {
-  if (!flat) return `${count}d${die}`;
-  return `${count}d${die} ${flat > 0 ? "+" : "−"} ${Math.abs(flat)}`;
-}
-
-function buildDamageRoll(targetAverage) {
-  const average = Math.max(1, Math.round(Number(targetAverage || 1)));
-  const diceFormula = DAMAGE_DICE_TABLE.find(([limit]) => average <= limit)?.[1] || "18d12";
-  const parsed = parseDiceFormula(diceFormula);
-  if (!parsed) return { average, dice: diceFormula, text: `${average} (${diceFormula})` };
-
-  const delta = average - parsed.average;
-  const dice = delta ? formatDiceFormula(parsed.count, parsed.die, parsed.flat + delta) : diceFormula;
-  return { average, dice, text: `${average} (${dice})` };
+function buildDamageRoll(targetAverage, { damage = {}, rules = {}, computed = null } = {}) {
+  const scopedComputed = computed
+    ? { ...computed, dpr: Number(targetAverage || computed.dpr || 1) }
+    : { dpr: Number(targetAverage || 1) };
+  const ruleset = getMonsterRuleset(scopedComputed.rulesetId);
+  return ruleset.getLegalDamageRollForRules({
+    damage: { ...damage, mode: damage.mode || "budget" },
+    rules,
+    computed: scopedComputed,
+  });
 }
 
 function cleanString(value) {
@@ -107,16 +79,16 @@ function getComputedDamageAverage(computed) {
   return Math.max(1, Number(computed?.dpr || computed?.baseline?.dpr || 6));
 }
 
-function damageRollText(value) {
-  return buildDamageRoll(value).text;
+function damageRollText(value, damage = {}, computed = null, rules = {}) {
+  return buildDamageRoll(value, { damage, computed, rules }).text;
 }
 
-function damageDiceText(value) {
-  return buildDamageRoll(value).dice;
+function damageDiceText(value, damage = {}, computed = null, rules = {}) {
+  return buildDamageRoll(value, { damage, computed, rules }).formula;
 }
 
-function damageAverageText(value) {
-  return String(buildDamageRoll(value).average);
+function damageAverageText(value, damage = {}, computed = null, rules = {}) {
+  return String(buildDamageRoll(value, { damage, computed, rules }).average);
 }
 
 function token(name) {
@@ -143,11 +115,10 @@ function formatSingleDamage(damage, computed, rules = {}, options = {}) {
   if (!damage || damage.mode === "none") return "";
   if (options.template) return formatScaleToken(damage.scale || "standard");
   if (damage.mode === "fixed" && damage.average && damage.dice) return `${damage.average} (${damage.dice})`;
-  if (damage.mode === "fixed" && damage.average) return String(damage.average);
   if (damage.mode === "fixed" && damage.dice) return String(damage.dice);
   if (damage.mode === "custom" && damage.text) return String(damage.text);
   if (damage.mode === "computed" && computed?.damageText) return computed.damageText;
-  return damageRollText(getDamageBudgetAverage(damage, rules, computed));
+  return damageRollText(getDamageBudgetAverage(damage, rules, computed), damage, computed, rules);
 }
 
 function formatDamageParts(damage, computed, rules = {}, options = {}) {
@@ -175,7 +146,7 @@ function formatDamageDice(damage, computed, rules = {}, options = {}) {
   if (damage.mode === "fixed" && damage.dice) return String(damage.dice);
   if (damage.mode === "custom" && damage.text) return String(damage.text);
   if (damage.mode === "computed" && computed?.damageText) return computed.damageText;
-  return damageDiceText(getDamageBudgetAverage(damage, rules, computed));
+  return damageDiceText(getDamageBudgetAverage(damage, rules, computed), damage, computed, rules);
 }
 
 function formatDamageAverage(damage, computed, rules = {}, options = {}) {
@@ -183,7 +154,7 @@ function formatDamageAverage(damage, computed, rules = {}, options = {}) {
   if (options.template) return token("average-damage");
   if (damage.mode === "fixed" && damage.average) return String(damage.average);
   if (damage.mode === "computed" && computed?.dpr) return String(Math.round(computed.dpr));
-  return damageAverageText(getDamageBudgetAverage(damage, rules, computed));
+  return damageAverageText(getDamageBudgetAverage(damage, rules, computed), damage, computed, rules);
 }
 
 function formatDamageType(damage) {

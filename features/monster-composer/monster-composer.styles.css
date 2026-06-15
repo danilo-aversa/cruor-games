@@ -3842,6 +3842,75 @@
   text-shadow: var(--cruor-shadow-text-002);
 }
 
+
+.monster-shell .export-stat-mode-control {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin: 12px 0 14px;
+}
+
+.monster-shell .export-stat-mode-control > span {
+  color: var(--cruor-color-text-a780);
+  font-size: var(--text-size-xs);
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.monster-shell .export-stat-mode-switch {
+  align-items: center;
+  background: var(--cruor-surface-card);
+  border: 1px solid var(--cruor-color-blood-glow-a420);
+  color: var(--cruor-color-text-a620);
+  cursor: pointer;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 34px;
+  min-width: 176px;
+  overflow: hidden;
+  padding: 3px;
+  position: relative;
+}
+
+.monster-shell .export-stat-mode-switch > span {
+  align-items: center;
+  display: inline-flex;
+  font-size: var(--text-size-xs);
+  font-weight: 850;
+  justify-content: center;
+  letter-spacing: 0.04em;
+  min-height: 26px;
+  padding: 0 10px;
+  position: relative;
+  text-transform: uppercase;
+  transition: color 0.16s ease;
+  z-index: 2;
+}
+
+.monster-shell .export-stat-mode-switch > span.is-active {
+  color: var(--cruor-color-hex-fff0f2);
+}
+
+.monster-shell .export-stat-mode-switch > i {
+  background: var(--cruor-color-blood-strong-a720);
+  border: 1px solid var(--cruor-color-blood-glow-a520);
+  bottom: 3px;
+  box-shadow: 0 0 18px var(--cruor-color-blood-glow-a260);
+  left: 3px;
+  position: absolute;
+  top: 3px;
+  transform: translateX(0);
+  transition: transform 0.18s ease;
+  width: calc(50% - 3px);
+  z-index: 1;
+}
+
+.monster-shell .export-stat-mode-switch.is-custom > i {
+  transform: translateX(100%);
+}
+
 .monster-shell .navigator-head h2 {
   margin: 5px 0 0;
   color: var(--cruor-color-hex-fff0f2);

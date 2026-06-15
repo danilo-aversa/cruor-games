@@ -2,6 +2,7 @@ import { ALL_MONSTER_GRAFTS as FEATURES } from "../data/monster-content-pack-fee
 import { MONSTER_FAMILY_PRESETS } from "../data/monster-presets.js";
 import { renderStructuredRulesText } from "./monster-graft-rules.render.js";
 import { normalizeMonsterGraftRules, validateMonsterGraftRules } from "./monster-graft-rules.schema.js";
+import { buildMonsterAbilityFromGraft } from "./monster-ability-model.js";
 import { SLOTS } from "../monster-composer.workflow.js";
 import { asArray, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
 import { getFeatureCompatibility, hasFeatureCompatibilityOverride } from "./monster-composer.compatibility.js";
@@ -23,7 +24,7 @@ import {
 
 const FEATURE_SCHEMA_VERSION = "monster-graft-v1.0";
 const EXPORT_SCHEMA_VERSION = "monster-crucible-export-v1.0";
-const DATA_MODEL_MIGRATION_STAGE = "rules-v1.12-ability-links";
+const DATA_MODEL_MIGRATION_STAGE = "rules-v1.13-ability-model";
 
 const STAT_BLOCK_SECTION_LABELS = {
   trait: "Traits",
@@ -34,6 +35,28 @@ const STAT_BLOCK_SECTION_LABELS = {
   lairAction: "Lair Actions",
   death: "Death Effects",
 };
+
+const STAT_BLOCK_MODE_STANDARD = "standard";
+const STAT_BLOCK_MODE_CUSTOM = "custom";
+
+function normalizeStatBlockMode(mode) {
+  return mode === STAT_BLOCK_MODE_CUSTOM ? STAT_BLOCK_MODE_CUSTOM : STAT_BLOCK_MODE_STANDARD;
+}
+
+function getWeaknessItems(selectedFeatures = []) {
+  return selectedFeatures.filter((item) => item.slot === "weakness");
+}
+
+function getTraitItemsForStatBlockMode({
+  traits = [],
+  weaknessItems = [],
+  deathEffects = [],
+  statBlockMode = STAT_BLOCK_MODE_STANDARD,
+}) {
+  const cleanTraits = traits.filter((item) => item.slot !== "weakness");
+  if (normalizeStatBlockMode(statBlockMode) === STAT_BLOCK_MODE_CUSTOM) return cleanTraits;
+  return [...cleanTraits, ...weaknessItems, ...deathEffects];
+}
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -99,7 +122,7 @@ function getStatBlockBasics(creatureType, category, role, computed, abilityProfi
     (abilityProfile.physical.find((row) => row.key === "dex")?.mod || 0) +
     (computed.tempoProfile?.initiativeMod || 0);
   const initiativeTotal = 10 + initiative;
-  const size = role.id === "boss" ? "Large" : role.id === "minion" ? "Small" : "Medium";
+  const size = computed.rulesProfile?.size || (role.id === "boss" ? "Large" : role.id === "minion" ? "Small" : "Medium");
   const creatureLine = `${size} ${creatureType.label} (${category}), Unaligned`;
   const resistances =
     creatureType.id === "undead"
@@ -113,12 +136,15 @@ function getStatBlockBasics(creatureType, category, role, computed, abilityProfi
       : creatureType.id === "beast"
         ? "None"
         : "Charmed and Frightened conditions";
+  const abilityModFor = (key) =>
+    [...abilityProfile.physical, ...abilityProfile.mental].find((row) => row.key === key)?.mod || 0;
+  const skillBonus = (abilityKey, multiplier = 1) => modText(abilityModFor(abilityKey) + computed.prof * multiplier);
   const skills =
     creatureType.id === "beast"
-      ? `Perception ${modText(computed.prof + 2)}, Stealth ${modText(computed.prof + 2)}`
+      ? `Perception ${skillBonus("wis")}, Stealth ${skillBonus("dex")}`
       : creatureType.id === "aberration"
-        ? `Insight ${modText(computed.prof + 2)}, Perception ${modText(computed.prof + 2)}`
-        : `Perception ${modText(computed.prof)}`;
+        ? `Insight ${skillBonus("wis")}, Perception ${skillBonus("wis")}`
+        : `Perception ${skillBonus("wis")}`;
   const languages =
     creatureType.id === "beast"
       ? "None"
@@ -288,8 +314,10 @@ export function normalizeRulesText(text, computed = null) {
 function buildDesignerNotes({ danger, role, computed }) {
   return [
     `Encounter Use. ${danger.label} ${role.label}. ${role.actionNote}`,
-    `Target Profile. CR ${computed.targetCr}; ${computed.tacticalRole.label}; ${computed.monsterTier.label}; ${computed.tempoProfile.label}.`,
-    `Baseline Check. AC ${computed.ac}/${computed.baseline.ac}; HP ${computed.hp}/${computed.baseline.hp}; Printed DPR ${computed.dpr}/${computed.baseline.dpr}; Effective DPR ${computed.effectiveProfile.effectiveDpr3Round}/${computed.baseline.dpr}; Attack ${modText(computed.attack)}/${modText(computed.baseline.attackBonus)}; DC ${computed.dc}/${computed.baseline.saveDc}.`,
+    `Target Profile. ${computed.ruleset?.label || "D&D 5E 2024"}; CR ${computed.targetCr}; ${computed.tacticalRole.label}; ${computed.monsterTier.label}; ${computed.tempoProfile.label}.`,
+    `Baseline Check. AC ${computed.ac}/${computed.baseline.ac}; HP ${computed.hp}/${computed.baseline.hp}; Printed DPR ${computed.dpr}/${computed.baseline.dpr}; 3-Round DPR ${computed.effectiveProfile.effectiveDpr3Round}/${computed.baseline.dpr}; Attack ${modText(computed.attack)}/${modText(computed.baseline.attackBonus)}; DC ${computed.dc}/${computed.baseline.saveDc}.`,
+    computed.dprProfile ? `3-Round Damage. R1 ${computed.dprProfile.rounds.round1}; R2 ${computed.dprProfile.rounds.round2}; R3 ${computed.dprProfile.rounds.round3}; Burst ${computed.dprProfile.burstDpr}.` : "",
+    computed.crValidation ? `CR Validation. Defensive CR ${computed.crValidation.defensive.cr}; Offensive CR ${computed.crValidation.offensive.cr}; Estimated CR ${computed.crValidation.estimatedCr}; ${computed.crValidation.status}.` : "",
     `Pressure Breakdown. ${computed.pressureProfile.label}: ${formatBreakdownCompact(computed.pressureProfile, PRESSURE_LABELS)}.`,
     `Complexity Breakdown. ${computed.complexityProfile.label}: ${formatBreakdownCompact(computed.complexityProfile, COMPLEXITY_LABELS)}.`,
     `Counterplay Audit. ${computed.counterplayAudit.rating} ${computed.counterplayAudit.score}/100. ${formatCounterplayIssues(computed.counterplayAudit.issues)}`,
@@ -448,6 +476,13 @@ export function buildExportRunSheet({
   ];
 }
 
+function normalizeSectionItems(items, computed) {
+  return items.map((item) => ({
+    title: item.title,
+    text: getExportItemText(item, computed),
+  }));
+}
+
 function buildNormalizedSections({
   traits,
   actions,
@@ -456,37 +491,34 @@ function buildNormalizedSections({
   legendaryActions,
   lairActions,
   deathEffects,
+  selectedFeatures = [],
+  statBlockMode = STAT_BLOCK_MODE_STANDARD,
   computed,
 }) {
+  const normalizedStatBlockMode = normalizeStatBlockMode(statBlockMode);
+  const weaknessItems = getWeaknessItems(selectedFeatures);
+  const traitItems = getTraitItemsForStatBlockMode({
+    traits,
+    weaknessItems,
+    deathEffects,
+    statBlockMode: normalizedStatBlockMode,
+  });
+
   return {
-    traits: traits.map((item) => ({
-      title: item.title,
-      text: getExportItemText(item, computed),
-    })),
-    actions: actions.map((item) => ({
-      title: item.title,
-      text: getExportItemText(item, computed),
-    })),
-    bonusActions: bonusActions.map((item) => ({
-      title: item.title,
-      text: getExportItemText(item, computed),
-    })),
-    reactions: reactions.map((item) => ({
-      title: item.title,
-      text: getExportItemText(item, computed),
-    })),
-    legendaryActions: legendaryActions.map((item) => ({
-      title: item.title,
-      text: getExportItemText(item, computed),
-    })),
-    lairActions: lairActions.map((item) => ({
-      title: item.title,
-      text: getExportItemText(item, computed),
-    })),
-    deathEffects: deathEffects.map((item) => ({
-      title: item.title,
-      text: getExportItemText(item, computed),
-    })),
+    traits: normalizeSectionItems(traitItems, computed),
+    weaknesses:
+      normalizedStatBlockMode === STAT_BLOCK_MODE_CUSTOM
+        ? normalizeSectionItems(weaknessItems, computed)
+        : [],
+    actions: normalizeSectionItems(actions, computed),
+    bonusActions: normalizeSectionItems(bonusActions, computed),
+    reactions: normalizeSectionItems(reactions, computed),
+    legendaryActions: normalizeSectionItems(legendaryActions, computed),
+    lairActions: normalizeSectionItems(lairActions, computed),
+    deathEffects:
+      normalizedStatBlockMode === STAT_BLOCK_MODE_CUSTOM
+        ? normalizeSectionItems(deathEffects, computed)
+        : [],
   };
 }
 
@@ -503,6 +535,7 @@ function buildStructuredFeature(feature, computed = null) {
     section: getFeatureSection(feature),
     rules: normalizeMonsterGraftRules(feature),
     rulesValidation: validateMonsterGraftRules(feature),
+    ability: buildMonsterAbilityFromGraft(feature),
     typeBias: asArray(feature.typeBias),
     roleBias: asArray(feature.roleBias),
     fit: getFeatureFrameFit(feature, { includeInferred: true }),
@@ -601,6 +634,8 @@ export function buildExportText({
   legendaryActions,
   lairActions,
   deathEffects,
+  selectedFeatures = [],
+  statBlockMode = STAT_BLOCK_MODE_STANDARD,
   hasLegendaryActions,
   xp,
   lairXp,
@@ -619,12 +654,21 @@ export function buildExportText({
       mechanics: `Melee Attack Roll: ${modText(computed.attack)}, reach 5 ft. Hit: ${computed.damageText} damage.`,
     },
   ];
+  const normalizedStatBlockMode = normalizeStatBlockMode(statBlockMode);
+  const isCustomStatBlock = normalizedStatBlockMode === STAT_BLOCK_MODE_CUSTOM;
+  const weaknessItems = getWeaknessItems(selectedFeatures);
+  const traitItems = getTraitItemsForStatBlockMode({
+    traits,
+    weaknessItems,
+    deathEffects,
+    statBlockMode: normalizedStatBlockMode,
+  });
   const sections = [
     name,
     basics.creatureLine,
     "",
     `AC ${computed.ac}  Initiative ${modText(basics.initiative)} (${basics.initiativeTotal})`,
-    `HP ${computed.hp} (${hpFormula(computed.hp, role.id === "boss" ? 10 : 8)})`,
+    `HP ${computed.hp} (${computed.hpFormula || computed.rulesProfile?.hp?.formula || hpFormula(computed.hp, computed.rulesProfile?.hitDie || (role.id === "boss" ? 10 : 8))})`,
     `Speed ${creatureType.defaults.speed}`,
     "",
     abilityExportLines(abilityProfile),
@@ -637,16 +681,22 @@ export function buildExportText({
     `CR ${computed.targetCr} (XP ${basics.xp}${lairXp ? `, or ${lairXp} in lair` : ""}; PB ${modText(computed.prof)})`,
     "",
     "Traits",
-    exportItems(traits, fallbackTraits, computed),
+    exportItems(traitItems, fallbackTraits, computed),
+  ];
+
+  if (isCustomStatBlock && weaknessItems.length)
+    sections.push("", "Weakness", exportItems(weaknessItems, [], computed));
+
+  sections.push(
     "",
     "Actions",
-    exportItems(actions, fallbackActions, computed),
-  ];
+    exportItems(actions, fallbackActions, computed)
+  );
 
   if (bonusActions.length)
     sections.push("", "Bonus Actions", exportItems(bonusActions, [], computed));
   if (reactions.length) sections.push("", "Reactions", exportItems(reactions, [], computed));
-  if (deathEffects.length)
+  if (isCustomStatBlock && deathEffects.length)
     sections.push("", "Death Effects", exportItems(deathEffects, [], computed));
   if (lairActions.length) sections.push("", "Lair Actions", exportItems(lairActions, [], computed));
   if (legendaryActions.length)
@@ -687,6 +737,7 @@ export function buildRenderableStatBlock({
   lairActions,
   deathEffects,
   selectedFeatures,
+  statBlockMode = STAT_BLOCK_MODE_STANDARD,
   hasLegendaryActions,
   xp,
   lairXp,
@@ -707,8 +758,15 @@ export function buildRenderableStatBlock({
       mechanics: `Melee Attack Roll: ${modText(computed.attack)}, reach 5 ft. Hit: ${computed.damageText} damage.`,
     },
   ];
-  const traitItems = traits.filter((item) => item.slot !== "weakness");
-  const weaknessItems = selectedFeatures.filter((item) => item.slot === "weakness");
+  const weaknessItems = getWeaknessItems(selectedFeatures);
+  const normalizedStatBlockMode = normalizeStatBlockMode(statBlockMode);
+  const isCustomStatBlock = normalizedStatBlockMode === STAT_BLOCK_MODE_CUSTOM;
+  const traitItems = getTraitItemsForStatBlockMode({
+    traits,
+    weaknessItems,
+    deathEffects,
+    statBlockMode: normalizedStatBlockMode,
+  });
   const legendaryFallback =
     hasLegendaryActions && !legendaryActions.length
       ? [
@@ -735,7 +793,7 @@ export function buildRenderableStatBlock({
       {
         id: "hp",
         label: "HP",
-        value: `${computed.hp} (${hpFormula(computed.hp, role.id === "boss" ? 10 : 8)})`,
+        value: `${computed.hp} (${computed.hpFormula || computed.rulesProfile?.hp?.formula || hpFormula(computed.hp, computed.rulesProfile?.hitDie || (role.id === "boss" ? 10 : 8))})`,
       },
       { id: "speed", label: "Speed", value: creatureType.defaults.speed },
       {
@@ -764,12 +822,16 @@ export function buildRenderableStatBlock({
         title: "Traits",
         items: buildStatBlockItems(traitItems.length ? traitItems : fallbackTraits, computed),
       },
-      {
-        id: "weaknesses",
-        title: "Weakness / Tell",
-        items: buildStatBlockItems(weaknessItems, computed),
-        highlight: true,
-      },
+      ...(isCustomStatBlock
+        ? [
+            {
+              id: "weaknesses",
+              title: "Weakness",
+              items: buildStatBlockItems(weaknessItems, computed),
+              highlight: true,
+            },
+          ]
+        : []),
       {
         id: "actions",
         title: "Actions",
@@ -781,11 +843,15 @@ export function buildRenderableStatBlock({
         items: buildStatBlockItems(bonusActions, computed),
       },
       { id: "reactions", title: "Reactions", items: buildStatBlockItems(reactions, computed) },
-      {
-        id: "death-effects",
-        title: "Death Effects",
-        items: buildStatBlockItems(deathEffects, computed),
-      },
+      ...(isCustomStatBlock
+        ? [
+            {
+              id: "death-effects",
+              title: "Death Effects",
+              items: buildStatBlockItems(deathEffects, computed),
+            },
+          ]
+        : []),
       {
         id: "lair-actions",
         title: "Lair Actions",
@@ -821,6 +887,7 @@ export function buildExportJson({
   lairActions,
   deathEffects,
   selectedFeatures,
+  statBlockMode = STAT_BLOCK_MODE_STANDARD,
   activePreset,
   xp,
   lairXp,
@@ -834,6 +901,8 @@ export function buildExportJson({
     legendaryActions,
     lairActions,
     deathEffects,
+    selectedFeatures,
+    statBlockMode,
     computed,
   });
   return JSON.stringify(
@@ -842,7 +911,9 @@ export function buildExportJson({
         schemaVersion: EXPORT_SCHEMA_VERSION,
         featureSchemaVersion: FEATURE_SCHEMA_VERSION,
         migrationStage: DATA_MODEL_MIGRATION_STAGE,
-        statBlockStyle: "D&D 2024-inspired",
+        statBlockStyle: computed.ruleset?.label || "D&D 5E 2024",
+        ruleset: computed.ruleset || null,
+        statBlockMode: normalizeStatBlockMode(statBlockMode),
         normalization: "rules-text-normalized-v1",
         activePreset: activePreset
           ? {
@@ -864,25 +935,38 @@ export function buildExportJson({
         tempoProfile: computed.tempoProfile.label,
         danger: danger.label,
         source: source.label,
+        rulesetId: computed.rulesetId || computed.ruleset?.id || "dnd-5e-2024",
+        ruleset: computed.ruleset?.label || "D&D 5E 2024",
         size: basics.size,
         alignment: "Unaligned",
       },
       combat: {
         ac: computed.ac,
         hp: computed.hp,
-        dpr: computed.dpr,
+        dpr: computed.effectiveProfile?.effectiveDpr3Round ?? computed.dpr,
+        targetDpr: computed.dpr,
+        roundDamage: computed.dprProfile?.rounds,
+        burstDpr: computed.effectiveProfile?.burstDpr,
+        sustainedDpr: computed.effectiveProfile?.sustainedDpr,
         attackBonus: modText(computed.attack),
         dc: computed.dc,
         initiative: modText(basics.initiative),
         speed: creatureType.defaults.speed,
         targetCr: computed.targetCr,
         estimatedCr: computed.estimatedCr,
+        defensiveCr: computed.crValidation?.defensive?.cr,
+        offensiveCr: computed.crValidation?.offensive?.cr,
         xp,
         lairXp,
         proficiencyBonus: modText(computed.prof),
       },
       printedStats: computed.printedStats,
+      rulesProfile: computed.rulesProfile,
+      rulesValidation: computed.rulesValidation,
+      abilityModel: computed.abilityModel,
       effectiveProfile: computed.effectiveProfile,
+      dprProfile: computed.dprProfile,
+      crValidation: computed.crValidation,
       profileDeltas: computed.profileDeltas,
       bestiaryBaselineAudit: computed.bestiaryBaselineAudit,
       pressureProfile: computed.pressureProfile,
@@ -911,7 +995,12 @@ export function buildExportJson({
         warnings: computed.warnings,
         baseline: computed.baseline,
         printedStats: computed.printedStats,
+        rulesProfile: computed.rulesProfile,
+        rulesValidation: computed.rulesValidation,
+        abilityModel: computed.abilityModel,
         effectiveProfile: computed.effectiveProfile,
+        dprProfile: computed.dprProfile,
+        crValidation: computed.crValidation,
         profileDeltas: computed.profileDeltas,
         bestiaryBaselineAudit: computed.bestiaryBaselineAudit,
         pressureProfile: computed.pressureProfile,

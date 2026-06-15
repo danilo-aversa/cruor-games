@@ -85,11 +85,22 @@ import {
 } from "./model/monster-bestiary-baselines.js";
 import { evaluateMonsterFrameFit, isMonsterFrameFitAllowed } from "./model/monster-frame-fit.js";
 import { validateMonsterGraftRules } from "./model/monster-graft-rules.schema.js";
+import { buildMonsterAbilitiesFromFeatures } from "./model/monster-ability-model.js";
+import {
+  DEFAULT_MONSTER_RULESET_ID,
+  getMonsterRuleset,
+  getMonsterRulesetOption,
+} from "./rulesets/index.js";
 import { MonsterComposerTopbar } from "./components/monster-composer.shell.jsx";
 import { GuidedFlowPanel, TemplatePickerModal } from "./components/monster-composer.start-flow.jsx";
 import { MonsterSilhouetteMap } from "./components/monster-composer.anatomy.jsx";
 import { ComponentNavigatorDrawer } from "./components/monster-composer.navigator.jsx";
-import { BalanceWorkbench, ExportWorkbench, RunModePanel } from "./components/monster-composer.panels.jsx";
+import {
+  BalanceWorkbench,
+  ExportWorkbench,
+  RenderedStatBlock,
+  RunModePanel,
+} from "./components/monster-composer.panels.jsx";
 
 const MONSTER_STAGE_TRANSITION_EXIT_MS = 260;
 const MONSTER_STAGE_TRANSITION_ENTER_MS = 760;
@@ -115,23 +126,6 @@ function getTier(level) {
   if (level <= 10) return 2;
   if (level <= 16) return 3;
   return 4;
-}
-
-function getProf(level) {
-  if (level <= 4) return 2;
-  if (level <= 8) return 3;
-  if (level <= 12) return 4;
-  if (level <= 16) return 5;
-  return 6;
-}
-
-function averageDamageText(value) {
-  if (value <= 5) return "1d6 + 1";
-  if (value <= 8) return "1d8 + 3";
-  if (value <= 12) return "2d8 + 3";
-  if (value <= 18) return "3d8 + 4";
-  if (value <= 26) return "4d10 + 4";
-  return "6d10 + 5";
 }
 
 function abilityMod(score) {
@@ -191,7 +185,10 @@ function getProfForCr(cr) {
 }
 
 
-function buildAbilityProfile(typeId, category, roleId, selectedFeatures, prof) {
+function buildAbilityProfile(typeId, category, roleId, selectedFeatures, prof, rulesProfile = null) {
+  if (rulesProfile?.abilityProfile?.physical && rulesProfile?.abilityProfile?.mental) {
+    return rulesProfile.abilityProfile;
+  }
   const bases = {
     undead: { str: 14, dex: 8, con: 16, int: 5, wis: 10, cha: 8 },
     beast: { str: 12, dex: 16, con: 12, int: 3, wis: 14, cha: 6 },
@@ -1140,6 +1137,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
   const [tacticalRoleId, setTacticalRoleId] = useState("brute");
   const [monsterTierId, setMonsterTierId] = useState("normal");
   const [tempoProfileId, setTempoProfileId] = useState("standard");
+  const [rulesetId] = useState(DEFAULT_MONSTER_RULESET_ID);
   const [selected, setSelected] = useState({});
   const [composerStarted, setComposerStarted] = useState(false);
   const [startMode, setStartMode] = useState("");
@@ -1164,6 +1162,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
   const [componentNavigatorMode, setComponentNavigatorMode] = useState("slot");
   const [navigatorSlotFilter, setNavigatorSlotFilter] = useState("all");
   const [exportCopyStatus, setExportCopyStatus] = useState("");
+  const [statBlockMode, setStatBlockMode] = useState("standard");
   const [liveExportPopoutOpen, setLiveExportPopoutOpen] = useState(false);
 
   const creatureType = CREATURE_TYPES.find((type) => type.id === typeId) || CREATURE_TYPES[0];
@@ -1175,6 +1174,8 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
   const monsterTier = MONSTER_TIERS.find((item) => item.id === monsterTierId) || MONSTER_TIERS[0];
   const tempoProfile =
     TEMPO_PROFILES.find((item) => item.id === tempoProfileId) || TEMPO_PROFILES[1];
+  const activeRuleset = getMonsterRuleset(rulesetId);
+  const activeRulesetOption = getMonsterRulesetOption(rulesetId);
 
   useEffect(() => {
     if (!inspirationSeed?.sourceAnchorId) return;
@@ -1366,6 +1367,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       ...getFeatureMechanicProfile(feature),
     }));
     const mechanicsSummary = summarizeMechanicProfiles(featureMechanics);
+    const abilityModel = buildMonsterAbilitiesFromFeatures(selectedFeatures);
     const counterplayProfiles = selectedFeatures.map((feature) =>
       getFeatureCounterplayProfile(feature)
     );
@@ -1397,42 +1399,61 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     });
     const pressure = pressureProfile.score;
     const complexity = complexityProfile.score;
-    const hp = Math.max(1, Math.round(baseHp + (statMods.hp || 0)));
-    const ac = clamp(baseAc + (statMods.ac || 0), 10, 28);
-    const dpr = Math.max(1, Math.round(baseDpr + (statMods.dpr || 0)));
-    const dc = clamp(baseDc + Math.floor((statMods.control || 0) / 3), 10, 30);
-    const attack = clamp(baseAttack, 2, 18);
+    const targetHpValue = Math.max(1, Math.round(baseHp + (statMods.hp || 0)));
+    const targetAcValue = clamp(baseAc + (statMods.ac || 0), 10, 28);
+    const targetDprValue = Math.max(1, Math.round(baseDpr + (statMods.dpr || 0)));
+    const targetDcValue = clamp(baseDc + Math.floor((statMods.control || 0) / 3), 10, 30);
+    const targetAttackValue = clamp(baseAttack, 2, 18);
+    const dndRules = activeRuleset.buildRulesProfile({
+      targetCr,
+      typeId,
+      category,
+      roleId,
+      selectedFeatures,
+      baseline,
+      targetHp: targetHpValue,
+      targetAc: targetAcValue,
+      targetDpr: targetDprValue,
+      targetAttackBonus: targetAttackValue,
+      targetSaveDc: targetDcValue,
+      tempoProfile,
+    });
+    const hp = dndRules.printedStats.hp;
+    const ac = dndRules.printedStats.ac;
+    const dpr = dndRules.printedStats.dpr;
+    const dc = dndRules.printedStats.saveDc;
+    const attack = dndRules.printedStats.attackBonus;
     const printedStats = {
-      ac,
-      hp,
-      dpr,
-      attackBonus: attack,
-      saveDc: dc,
+      ...dndRules.printedStats,
       initiativeMod: tempoProfile.initiativeMod,
       speed: creatureType.defaults.speed,
     };
+    const dprProfile = activeRuleset.simulateDpr({
+      selectedFeatures,
+      abilities: abilityModel.abilities,
+      targetDpr: dpr,
+      computed: {
+        dpr,
+        attack,
+        dc,
+        targetCr,
+        rulesProfile: dndRules.rulesProfile,
+        tempoProfile,
+        monsterTier,
+      },
+    });
     const effectiveProfile = {
       effectiveAc: ac + Math.floor((statMods.mobility || 0) / 4),
       effectiveHp: Math.round(hp * (1 + Math.max(0, statMods.fairness || 0) * 0.015)),
       effectiveAttackBonus: attack + (tempoProfile.id === "ambusher" ? 1 : 0),
       effectiveSaveDc: dc,
       printedDpr: dpr,
-      effectiveDpr3Round: Math.max(
-        Math.round(
-          dpr *
-            (1 +
-              Math.max(0, statMods.control || 0) * 0.035 +
-              Math.max(0, statMods.mobility || 0) * 0.02 +
-              (tempoProfile.id === "ambusher" ? 0.08 : 0))
-        ),
-        Math.round(dpr + mechanicsSummary.structuredDamage * 0.2)
-      ),
-      burstDpr: Math.round(
-        dpr *
-          (1 +
-            (tempoProfile.id === "ambusher" ? 0.35 : 0.12) +
-            Math.max(0, statMods.dpr || 0) * 0.01)
-      ),
+      effectiveDpr3Round: dprProfile.effectiveDpr3Round,
+      burstDpr: dprProfile.burstDpr,
+      sustainedDpr: dprProfile.sustainedDpr,
+      round1Dpr: dprProfile.rounds.round1,
+      round2Dpr: dprProfile.rounds.round2,
+      round3Dpr: dprProfile.rounds.round3,
       tempoFactor: 1 + tempoProfile.pressureMod * 0.05,
       defenseFactor:
         1 + Math.max(0, statMods.hp || 0) / Math.max(1, hp) + Math.max(0, statMods.ac || 0) * 0.04,
@@ -1442,6 +1463,13 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
         effectiveProfile.effectiveDpr3Round *
         ((effectiveProfile.effectiveAc + effectiveProfile.effectiveAttackBonus - 2) / 13)
     );
+    const crValidation = activeRuleset.validateChallenge({
+      targetCr,
+      printedStats,
+      effectiveProfile,
+      monsterTier,
+      mechanicsSummary,
+    });
     const profileDeltas = buildMonsterComposerProfileDeltas(printedStats, effectiveProfile, baseline);
     const bestiaryBaselineAudit = buildBestiaryBaselineAudit({
       targetCr,
@@ -1450,15 +1478,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       effectiveProfile,
       mechanicsSummary,
     });
-    const estimatedCr = clamp(
-      Math.round(
-        targetCr +
-          (pressure - budget) / 6 +
-          ((effectiveProfile.effectiveDpr3Round - baseline.dpr) / Math.max(8, baseline.dpr)) * 2
-      ),
-      0,
-      30
-    );
+    const estimatedCr = crValidation.estimatedCr;
     const generatedName = buildName(typeId, category, selectedFeatures);
     const name = customMonsterName.trim() || generatedName;
     const rulesContext = {
@@ -1519,6 +1539,18 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       );
     bestiaryBaselineAudit.issues.forEach((issue) => {
       warnings.push(`Bestiary Baseline: ${issue.message} ${issue.detail}`);
+    });
+    dprProfile.assumptions.forEach((assumption) => {
+      if (dprProfile.fallbackUsed && assumption.includes("fallback")) warnings.push(`DPR Simulator: ${assumption}`);
+    });
+    crValidation.issues.forEach((issue) => {
+      warnings.push(`CR Validator: ${issue.message}${issue.detail ? ` ${issue.detail}` : ""}`);
+    });
+    dndRules.validation.issues.forEach((issue) => {
+      warnings.push(`D&D Rules: ${issue.message}${issue.detail ? ` ${issue.detail}` : ""}`);
+    });
+    abilityModel.validation.errors.forEach((issue) => {
+      warnings.push(`Ability Model: ${issue.title}. ${issue.message}`);
     });
     if (
       tempoProfile.id === "legendary" &&
@@ -1596,21 +1628,30 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       tacticalRole,
       monsterTier,
       tempoProfile,
+      rulesetId: activeRuleset.id,
+      ruleset: activeRulesetOption,
       rulesContext,
       baseline,
       printedStats,
       effectiveProfile,
       profileDeltas,
       bestiaryBaselineAudit,
+      dprProfile,
+      crValidation,
       pressureProfile,
       complexityProfile,
       counterplayAudit,
       counterplayProfiles,
       featureMechanics,
       mechanicsSummary,
+      abilityModel,
       baselinePower,
       effectivePower,
       prof,
+      rulesProfile: dndRules.rulesProfile,
+      rulesValidation: dndRules.validation,
+      abilityProfile: dndRules.abilityProfile,
+      hpFormula: dndRules.rulesProfile.hp.formula,
       hp,
       ac,
       dpr,
@@ -1625,7 +1666,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       name,
       warnings: uniqueArray(warnings),
       balanceRecommendations,
-      damageText: averageDamageText(dpr),
+      damageText: dndRules.damage.defaultAttack.text,
       statMods,
     };
   }, [
@@ -1648,6 +1689,9 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     tacticalRole,
     monsterTier,
     tempoProfile,
+    rulesetId,
+    activeRuleset,
+    activeRulesetOption,
   ]);
 
   function selectType(nextTypeId) {
@@ -1918,12 +1962,13 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
 
   const pressurePercent = clamp((computed.pressure / computed.budget) * 100, 0, 160);
   const complexityPercent = clamp((computed.complexity / computed.complexityCap) * 100, 0, 160);
-  const abilityProfile = buildAbilityProfile(
+  const abilityProfile = computed.abilityProfile || buildAbilityProfile(
     typeId,
     category,
     roleId,
     selectedFeatures,
-    computed.prof
+    computed.prof,
+    computed.rulesProfile
   );
   const sectionGroups = useMemo(() => groupFeaturesBySection(selectedFeatures), [selectedFeatures]);
   const traits = sectionGroups.trait || [];
@@ -2010,6 +2055,8 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       legendaryActions,
       lairActions,
       deathEffects,
+      selectedFeatures,
+      statBlockMode,
       hasLegendaryActions,
       xp,
       lairXp,
@@ -2031,6 +2078,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       lairActions,
       deathEffects,
       selectedFeatures,
+      statBlockMode,
       activePreset,
       xp,
       lairXp,
@@ -2051,6 +2099,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       lairActions,
       deathEffects,
       selectedFeatures,
+      statBlockMode,
       hasLegendaryActions,
       xp,
       lairXp,
@@ -2099,6 +2148,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     lairActions,
     deathEffects,
     selectedFeatures,
+    statBlockMode,
     activePreset,
     xp,
     selected,
@@ -2137,6 +2187,8 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       exportReadiness={exportPayload.exportReadiness}
       exportRunSheet={exportPayload.exportRunSheet}
       exportCopyStatus={exportCopyStatus}
+      statBlockMode={statBlockMode}
+      onSetStatBlockMode={setStatBlockMode}
       onCopyExportPayload={copyExportPayload}
       onOpenBalance={uiMode === "debug" ? () => setViewMode("balance") : null}
       viewToolbar={includeViewToolbar ? monsterViewToolbar : null}
@@ -2574,20 +2626,11 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
 
         {uiMode === "debug" && liveExportPopoutOpen && (
           <LiveExportPopout
-            title={`Cruor Live Export · ${computed.name}`}
+            title={`Cruor Stat Block · ${computed.name} · ${statBlockMode === "custom" ? "Custom" : "Standard"}`}
             onClose={() => setLiveExportPopoutOpen(false)}
           >
-            <div className="monster-export-popout-shell">
-              <header className="monster-export-popout-header">
-                <div>
-                  <span>Debug Live Export</span>
-                  <strong>{computed.name}</strong>
-                </div>
-                <button type="button" onClick={() => setLiveExportPopoutOpen(false)}>
-                  Close Popout
-                </button>
-              </header>
-              {renderExportWorkbench({ includeViewToolbar: false })}
+            <div className="monster-export-popout-stat-block">
+              <RenderedStatBlock statBlock={exportPayload.statBlock} />
             </div>
           </LiveExportPopout>
         )}
@@ -2690,7 +2733,13 @@ function LiveExportPopout({ title, children, onClose }) {
         padding: 16px;
       }
       .monster-export-popout-root {
+        display: grid;
         min-width: 0;
+        place-items: start center;
+      }
+      .monster-export-popout-stat-block {
+        max-width: 820px;
+        width: 100%;
       }
     `;
     popout.document.head.appendChild(localStyle);

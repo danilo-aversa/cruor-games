@@ -242,6 +242,8 @@ export function BalanceWorkbench({
                 <strong>CR {computed.targetCr}</strong>
               </div>
               <div className="compiled-meta-grid balance-meta-grid">
+                <CompiledMeta label="Ruleset" value={computed.ruleset?.label || computed.rulesetId || "D&D 5E 2024"} />
+                <CompiledMeta label="Abilities" value={`${computed.abilityModel?.total ?? 0} / ${computed.abilityModel?.damaging ?? 0} dmg`} />
                 <CompiledMeta label="AC" value={`${computed.ac} / ${computed.baseline.ac}`} />
                 <CompiledMeta label="HP" value={`${computed.hp} / ${computed.baseline.hp}`} />
                 <CompiledMeta
@@ -254,6 +256,11 @@ export function BalanceWorkbench({
                 />
                 <CompiledMeta label="DC" value={`${computed.dc} / ${computed.baseline.saveDc}`} />
                 <CompiledMeta label="Burst" value={computed.effectiveProfile.burstDpr} />
+                <CompiledMeta
+                  label="CR Split"
+                  value={`${computed.crValidation?.defensive?.cr ?? "—"} / ${computed.crValidation?.offensive?.cr ?? "—"}`}
+                />
+                <CompiledMeta label="Est. CR" value={computed.crValidation?.estimatedCr ?? computed.estimatedCr} />
               </div>
             </article>
           </div>
@@ -437,6 +444,27 @@ function DesignerNotesPanel({ notes }) {
   );
 }
 
+function StatBlockModeSwitch({ mode = "standard", onSetMode }) {
+  const isCustom = mode === "custom";
+
+  return (
+    <div className="export-stat-mode-control" aria-label="Stat block mode">
+      <span>Stat Block</span>
+      <button
+        className={`export-stat-mode-switch ${isCustom ? "is-custom" : "is-standard"}`}
+        type="button"
+        role="switch"
+        aria-checked={isCustom}
+        onClick={() => onSetMode?.(isCustom ? "standard" : "custom")}
+      >
+        <span className={!isCustom ? "is-active" : ""}>Standard</span>
+        <span className={isCustom ? "is-active" : ""}>Custom</span>
+        <i aria-hidden="true" />
+      </button>
+    </div>
+  );
+}
+
 export function ExportWorkbench({
   exportText,
   exportJson,
@@ -444,6 +472,8 @@ export function ExportWorkbench({
   exportReadiness,
   exportRunSheet,
   exportCopyStatus,
+  statBlockMode = "standard",
+  onSetStatBlockMode,
   onCopyExportPayload,
   onOpenBalance,
   viewToolbar,
@@ -460,6 +490,8 @@ export function ExportWorkbench({
           <div className="export-console__head">
             <h2>Table Handoff</h2>
           </div>
+
+          <StatBlockModeSwitch mode={statBlockMode} onSetMode={onSetStatBlockMode} />
 
           <ExportReadinessPanel readiness={exportReadiness} onOpenBalance={onOpenBalance} />
 
@@ -511,7 +543,7 @@ export function ExportWorkbench({
   );
 }
 
-function RenderedStatBlock({ statBlock, liveExportButton }) {
+export function RenderedStatBlock({ statBlock, liveExportButton }) {
   const visibleSections = statBlock.sections.filter((section) => section.items.length > 0);
 
   return (

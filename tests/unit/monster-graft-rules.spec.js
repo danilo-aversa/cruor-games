@@ -14,6 +14,11 @@ import {
 } from "../../features/monster-composer/model/monster-rules-coverage.js";
 import { buildBestiaryBaselineAudit } from "../../features/monster-composer/model/monster-bestiary-baselines.js";
 import { monsterGraftToSharedComponent } from "../../shared/content/monster-components.js";
+import {
+  buildMonsterAbilityFromGraft,
+  buildMonsterAbilitiesFromFeatures,
+  MONSTER_ABILITY_MODEL_VERSION,
+} from "../../features/monster-composer/model/monster-ability-model.js";
 
 const PILOT_GRAFT_IDS = [
   "empowered-slam",
@@ -55,8 +60,24 @@ describe("Monster Graft Rules Schema", () => {
     });
   });
 
-  it("keeps legacy grafts readable through rules inference", () => {
-    const graft = getGraft("slam-decomposition");
+  it("keeps all current grafts on explicit structured rules", () => {
+    const summary = summarizeMonsterGraftRules(MONSTER_GRAFTS);
+
+    expect(summary.total).toBeGreaterThan(PILOT_GRAFT_IDS.length);
+    expect(summary.structured).toBe(summary.total);
+    expect(summary.inferred).toBe(0);
+    expect(summary.errors).toEqual([]);
+  });
+
+  it("still supports legacy rules inference for synthetic migration inputs", () => {
+    const graft = {
+      id: "legacy-slam",
+      title: "Legacy Slam",
+      slot: "attack",
+      section: "action",
+      stats: { dpr: 4 },
+      mechanics: "Legacy Slam. Melee Attack Roll: +6, reach 5 ft. Hit: 9 (2d4 + 4) Bludgeoning damage.",
+    };
     const rules = normalizeMonsterGraftRules(graft);
 
     expect(graft.rules).toBeFalsy();
@@ -65,15 +86,13 @@ describe("Monster Graft Rules Schema", () => {
     expect(rules.resolution.type).toBe("attackRoll");
   });
 
-  it("hydrates legacy save traits into editable rule fields", () => {
+  it("hydrates structured save traits into editable ability fields", () => {
     const graft = getGraft("swollen-corpse");
     const rules = normalizeMonsterGraftRules(graft);
-    const preview = renderStructuredRulesText({
-      ...graft,
-      rules: { ...rules, migration: { ...rules.migration, isStructured: true } },
-    }, COMPUTED);
+    const preview = renderStructuredRulesText(graft, COMPUTED);
 
-    expect(graft.rules).toBeFalsy();
+    expect(graft.rules).toBeTruthy();
+    expect(rules.migration.isStructured).toBe(true);
     expect(rules.resolution.type).toBe("savingThrow");
     expect(rules.resolution.ability).toBe("constitution");
     expect(rules.targeting.shape).toBe("radius");
@@ -84,6 +103,19 @@ describe("Monster Graft Rules Schema", () => {
     expect(preview).toContain("Constitution Saving Throw: DC 15");
     expect(preview).toContain("5-foot Radius");
     expect(preview).not.toContain("Variable damage");
+  });
+
+  it("builds system-neutral ability records from structured graft rules", () => {
+    const ability = buildMonsterAbilityFromGraft(getGraft("empowered-slam"));
+    const model = buildMonsterAbilitiesFromFeatures(MONSTER_GRAFTS);
+
+    expect(ability.version).toBe(MONSTER_ABILITY_MODEL_VERSION);
+    expect(ability.resolution.attack.attackType).toBe("melee");
+    expect(ability.damage.hasDamage).toBe(true);
+    expect(ability.tags).toContain("attack_roll");
+    expect(model.total).toBe(MONSTER_GRAFTS.length);
+    expect(model.structured).toBe(model.total);
+    expect(model.validation.status).toBe("pass");
   });
 
   it("renders structured 2024-style save and attack text", () => {
@@ -441,12 +473,12 @@ describe("Monster Graft Rules Schema", () => {
     expect(sharedComponent.monster.rules.damage.budgetRole).toBe("rechargeControl");
   });
 
-  it("summarizes structured vs inferred migration state", () => {
+  it("summarizes structured migration state", () => {
     const summary = summarizeMonsterGraftRules(MONSTER_GRAFTS);
 
     expect(summary.total).toBeGreaterThan(PILOT_GRAFT_IDS.length);
-    expect(summary.structured).toBeGreaterThanOrEqual(PILOT_GRAFT_IDS.length);
-    expect(summary.inferred).toBeGreaterThan(0);
+    expect(summary.structured).toBe(summary.total);
+    expect(summary.inferred).toBe(0);
   });
 
   it("builds a 2024-derived bestiary baseline audit", () => {
