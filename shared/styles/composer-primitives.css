@@ -91,7 +91,7 @@
   background: var(--cruor-ui-control-bg-active);
   color: var(--cruor-ui-control-text-active);
   padding: 0 12px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.09em;
   line-height: 1;

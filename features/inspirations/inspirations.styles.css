@@ -90,7 +90,7 @@
 .inspirations-page .eyebrow {
   margin: 0;
   color: var(--inspirations-chip);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.16em;
   line-height: 1;
@@ -124,7 +124,7 @@
   margin: 0;
   color: var(--cruor-color-hex-fff0f2);
   font-family: var(--inspirations-display);
-  font-size: clamp(38px, 4.8vw, 70px);
+  font-size: var(--display-size-fluid-17);
   line-height: 0.88;
   letter-spacing: -0.055em;
   text-shadow: var(--cruor-shadow-text-016);
@@ -134,7 +134,7 @@
   max-width: 780px;
   margin: 0;
   color: var(--cruor-color-text-a560);
-  font-size: 14px;
+  font-size: var(--text-size-2xl);
   line-height: 1.5;
 }
 
@@ -162,14 +162,14 @@
 
 .inspirations-page__stats strong {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 24px;
+  font-size: var(--display-size-m);
   font-weight: 950;
   line-height: 1;
 }
 
 .inspirations-page__stats small {
   color: var(--inspirations-faint);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -197,7 +197,7 @@
 
 .inspirations-page__tools label > span {
   color: var(--inspirations-faint);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -270,7 +270,7 @@
 .inspirations-page__select-trigger strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   font-weight: 900;
   line-height: 1.1;
   text-overflow: ellipsis;
@@ -281,7 +281,7 @@
 
 .inspirations-page__select-trigger i {
   color: var(--cruor-color-hex-b33b4e);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   transition: color 0.12s ease, transform 0.12s ease;
 }
 
@@ -365,7 +365,7 @@
 .inspirations-page__select-option strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   font-weight: 900;
   line-height: 1.1;
   text-overflow: ellipsis;
@@ -376,7 +376,7 @@
   display: block;
   overflow: hidden;
   color: var(--cruor-color-text-a500);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   line-height: 1.25;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -388,7 +388,7 @@
   background: var(--cruor-color-white-a022);
   color: var(--cruor-color-hex-c8a2a8);
   padding: 0 11px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -443,7 +443,7 @@
 .inspirations-page__library-head h2 {
   margin: 5px 0 0;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: clamp(24px, 3vw, 36px);
+  font-size: var(--text-size-fluid-12);
   font-weight: 950;
   line-height: 1;
   letter-spacing: -0.045em;
@@ -459,7 +459,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 0 9px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -574,13 +574,13 @@
 .inspirations-page__detail-visual i {
   position: relative;
   z-index: 0;
-  font-size: 66px;
+  font-size: var(--display-size-giant);
 }
 
 .inspirations-page__visual i {
   position: relative;
   z-index: 0;
-  font-size: 66px;
+  font-size: var(--display-size-giant);
 }
 
 .inspirations-page__detail-visual::after {
@@ -608,7 +608,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-f0d7dc);
   padding: 0 8px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   overflow: hidden;
@@ -628,7 +628,7 @@
 
 .inspirations-page__body strong {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 16px;
+  font-size: var(--text-size-4xl);
   font-weight: 950;
   line-height: 1.08;
   letter-spacing: -0.025em;
@@ -640,7 +640,7 @@
   display: -webkit-box;
   overflow: hidden;
   color: var(--cruor-color-text-a580);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.38;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
@@ -650,7 +650,7 @@
   display: block;
   overflow: hidden;
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-style: normal;
   font-weight: 950;
   letter-spacing: 0.08em;
@@ -664,7 +664,7 @@
   display: block;
   overflow: hidden;
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-style: normal;
   font-weight: 950;
   letter-spacing: 0.08em;
@@ -680,7 +680,7 @@
   background: var(--cruor-gradient-radial-134-20afbf1f), var(--cruor-gradient-linear-193-f2121c9d);
   color: var(--cruor-color-hex-fff0f2);
   padding: 0 11px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -729,7 +729,7 @@
 .inspirations-page__dossier-head h2 {
   margin: 0;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: clamp(26px, 3vw, 38px);
+  font-size: var(--text-size-fluid-16);
   font-weight: 950;
   line-height: 0.95;
   letter-spacing: -0.05em;
@@ -738,7 +738,7 @@
 .inspirations-page__empty-dossier h2 {
   margin: 0;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: clamp(26px, 3vw, 38px);
+  font-size: var(--text-size-fluid-16);
   font-weight: 950;
   line-height: 0.95;
   letter-spacing: -0.05em;
@@ -747,14 +747,14 @@
 .inspirations-page__dossier-head p:not(.eyebrow) {
   margin: 0;
   color: var(--cruor-color-text-a540);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   line-height: 1.4;
 }
 
 .inspirations-page__empty-dossier p:not(.eyebrow) {
   margin: 0;
   color: var(--cruor-color-text-a540);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   line-height: 1.4;
 }
 
@@ -769,7 +769,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 0 8px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -787,7 +787,7 @@
   background: var(--cruor-gradient-linear-079-18ee8d35), var(--cruor-surface-card);
   color: var(--cruor-color-hex-fff0f2);
   padding: 0 11px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -816,7 +816,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 0 9px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -841,7 +841,7 @@
 .inspirations-page__detail-main h3 {
   margin: 0;
   color: var(--cruor-color-hex-b33b4e);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -850,7 +850,7 @@
 .inspirations-page__detail-main p {
   margin: 0;
   color: var(--cruor-color-text-a580);
-  font-size: 12.5px;
+  font-size: var(--text-size-l-plus);
   line-height: 1.5;
 }
 
@@ -871,7 +871,7 @@
 
 .inspirations-page__section-head strong {
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -898,7 +898,7 @@
   background: var(--cruor-color-white-a024);
   color: var(--cruor-color-hex-c8a2a8);
   padding: 5px 8px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 850;
 }
 
@@ -924,7 +924,7 @@
   gap: 12px;
   margin: 0;
   color: var(--cruor-color-text-a820);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -944,7 +944,7 @@
   background: var(--cruor-color-white-a024);
   color: var(--cruor-color-hex-c8a2a8);
   padding: 5px 8px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 850;
   display: grid;
   gap: 3px;
@@ -955,13 +955,13 @@
 
 .inspirations-page__linked > span strong {
   color: var(--cruor-color-text-a900);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   line-height: 1.25;
 }
 
 .inspirations-page__linked > span small {
   color: var(--cruor-color-r208-g162-b170-a840);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 850;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -988,7 +988,7 @@
   background: var(--cruor-color-white-a022);
   color: var(--cruor-color-text-a500);
   padding: 18px;
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   line-height: 1.45;
 }
 
@@ -1096,7 +1096,7 @@
   background: var(--cruor-gradient-linear-079-18ee8d35), var(--cruor-surface-card);
   color: var(--cruor-color-hex-fff0f2);
   padding: 0 11px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.09em;
   text-transform: uppercase;

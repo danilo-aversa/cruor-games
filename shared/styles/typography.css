@@ -1,0 +1,120 @@
+/*
+ * Cruor Games — Typography Scale Tokens
+ *
+ * All interface text sizes should reference these tokens instead of hardcoded px/rem values.
+ * Text accessibility changes only --cruor-text-scale, so standard UI copy scales sitewide.
+ * Display tokens stay unscaled for brand titles, large headings, logo marks, and decorative type.
+ */
+
+:root {
+  --cruor-text-scale: 1;
+
+  --text-size-none: 0;
+
+  --text-size-3xs-base: 7px;
+  --text-size-xxs-base: 8px;
+  --text-size-xxs-plus-base: 8.5px;
+  --text-size-xs-base: 9px;
+  --text-size-xs-plus-base: 9.5px;
+  --text-size-s-base: 10px;
+  --text-size-s-plus-base: 10.5px;
+  --text-size-m-base: 11px;
+  --text-size-m-plus-base: 11.5px;
+  --text-size-l-base: 12px;
+  --text-size-l-plus-base: 12.5px;
+  --text-size-xl-base: 13px;
+  --text-size-xl-plus-base: 13.5px;
+  --text-size-2xl-base: 14px;
+  --text-size-3xl-base: 15px;
+  --text-size-4xl-base: 16px;
+  --text-size-4xl-plus-base: 17px;
+  --text-size-5xl-base: 18px;
+
+  --text-size-3xs: calc(var(--text-size-3xs-base) * var(--cruor-text-scale));
+  --text-size-xxs: calc(var(--text-size-xxs-base) * var(--cruor-text-scale));
+  --text-size-xxs-plus: calc(var(--text-size-xxs-plus-base) * var(--cruor-text-scale));
+  --text-size-xs: calc(var(--text-size-xs-base) * var(--cruor-text-scale));
+  --text-size-xs-plus: calc(var(--text-size-xs-plus-base) * var(--cruor-text-scale));
+  --text-size-s: calc(var(--text-size-s-base) * var(--cruor-text-scale));
+  --text-size-s-plus: calc(var(--text-size-s-plus-base) * var(--cruor-text-scale));
+  --text-size-m: calc(var(--text-size-m-base) * var(--cruor-text-scale));
+  --text-size-m-plus: calc(var(--text-size-m-plus-base) * var(--cruor-text-scale));
+  --text-size-l: calc(var(--text-size-l-base) * var(--cruor-text-scale));
+  --text-size-l-plus: calc(var(--text-size-l-plus-base) * var(--cruor-text-scale));
+  --text-size-xl: calc(var(--text-size-xl-base) * var(--cruor-text-scale));
+  --text-size-xl-plus: calc(var(--text-size-xl-plus-base) * var(--cruor-text-scale));
+  --text-size-2xl: calc(var(--text-size-2xl-base) * var(--cruor-text-scale));
+  --text-size-3xl: calc(var(--text-size-3xl-base) * var(--cruor-text-scale));
+  --text-size-4xl: calc(var(--text-size-4xl-base) * var(--cruor-text-scale));
+  --text-size-4xl-plus: calc(var(--text-size-4xl-plus-base) * var(--cruor-text-scale));
+  --text-size-5xl: calc(var(--text-size-5xl-base) * var(--cruor-text-scale));
+
+  --display-size-xs: 21px;
+  --display-size-s: 22px;
+  --display-size-s-plus: 23px;
+  --display-size-m: 24px;
+  --display-size-m-plus: 25px;
+  --display-size-l-minus: 27px;
+  --display-size-l: 28px;
+  --display-size-giant: 66px;
+  --display-size-giant-plus: 70px;
+
+  /* Scaled responsive copy/interface sizes */
+  --text-size-fluid-01: clamp(calc(16px * var(--cruor-text-scale)), calc(1.2vw * var(--cruor-text-scale)), calc(18px * var(--cruor-text-scale)));
+  --text-size-fluid-02: clamp(calc(17px * var(--cruor-text-scale)), calc(1.35vw * var(--cruor-text-scale)), calc(22px * var(--cruor-text-scale)));
+  --text-size-fluid-03: clamp(calc(18px * var(--cruor-text-scale)), calc(2.5vw * var(--cruor-text-scale)), calc(28px * var(--cruor-text-scale)));
+  --text-size-fluid-04: clamp(calc(19px * var(--cruor-text-scale)), calc(1.7vw * var(--cruor-text-scale)), calc(24px * var(--cruor-text-scale)));
+  --text-size-fluid-05: clamp(calc(20px * var(--cruor-text-scale)), calc(2vw * var(--cruor-text-scale)), calc(30px * var(--cruor-text-scale)));
+  --text-size-fluid-06: clamp(calc(21px * var(--cruor-text-scale)), calc(2.1vw * var(--cruor-text-scale)), calc(32px * var(--cruor-text-scale)));
+  --text-size-fluid-07: clamp(calc(22px * var(--cruor-text-scale)), calc(2vw * var(--cruor-text-scale)), calc(30px * var(--cruor-text-scale)));
+  --text-size-fluid-08: clamp(calc(22px * var(--cruor-text-scale)), calc(2.1vw * var(--cruor-text-scale)), calc(32px * var(--cruor-text-scale)));
+  --text-size-fluid-09: clamp(calc(22px * var(--cruor-text-scale)), calc(2.15vw * var(--cruor-text-scale)), calc(30px * var(--cruor-text-scale)));
+  --text-size-fluid-10: clamp(calc(22px * var(--cruor-text-scale)), calc(2.2vw * var(--cruor-text-scale)), calc(34px * var(--cruor-text-scale)));
+  --text-size-fluid-11: clamp(calc(23px * var(--cruor-text-scale)), calc(2vw * var(--cruor-text-scale)), calc(32px * var(--cruor-text-scale)));
+  --text-size-fluid-12: clamp(calc(24px * var(--cruor-text-scale)), calc(3vw * var(--cruor-text-scale)), calc(36px * var(--cruor-text-scale)));
+  --text-size-fluid-13: clamp(calc(25px * var(--cruor-text-scale)), calc(2.5vw * var(--cruor-text-scale)), calc(40px * var(--cruor-text-scale)));
+  --text-size-fluid-14: clamp(calc(25px * var(--cruor-text-scale)), calc(2.6vw * var(--cruor-text-scale)), calc(38px * var(--cruor-text-scale)));
+  --text-size-fluid-15: clamp(calc(26px * var(--cruor-text-scale)), calc(2.8vw * var(--cruor-text-scale)), calc(42px * var(--cruor-text-scale)));
+  --text-size-fluid-16: clamp(calc(26px * var(--cruor-text-scale)), calc(3vw * var(--cruor-text-scale)), calc(38px * var(--cruor-text-scale)));
+  --text-size-fluid-17: clamp(calc(28px * var(--cruor-text-scale)), calc(2.7vw * var(--cruor-text-scale)), calc(40px * var(--cruor-text-scale)));
+  --text-size-fluid-18: clamp(calc(28px * var(--cruor-text-scale)), calc(3vw * var(--cruor-text-scale)), calc(46px * var(--cruor-text-scale)));
+  --text-size-fluid-19: clamp(calc(28px * var(--cruor-text-scale)), calc(4.5vw * var(--cruor-text-scale)), calc(42px * var(--cruor-text-scale)));
+  --text-size-fluid-20: clamp(calc(28px * var(--cruor-text-scale)), calc(10vw * var(--cruor-text-scale)), calc(44px * var(--cruor-text-scale)));
+
+  /* Unscaled display/title sizes */
+  --display-size-fluid-01: clamp(28px, 3.5vw, 54px);
+  --display-size-fluid-02: clamp(30px, 4vw, 42px);
+  --display-size-fluid-03: clamp(30px, 4vw, 46px);
+  --display-size-fluid-04: clamp(30px, 10vw, 44px);
+  --display-size-fluid-05: clamp(31px, 3.2vw, 50px);
+  --display-size-fluid-06: clamp(32px, 4vw, 48px);
+  --display-size-fluid-07: clamp(34px, 4vw, 48px);
+  --display-size-fluid-08: clamp(34px, 4vw, 54px);
+  --display-size-fluid-09: clamp(34px, 4vw, 56px);
+  --display-size-fluid-10: clamp(34px, 4vw, 58px);
+  --display-size-fluid-11: clamp(34px, 4vw, 68px);
+  --display-size-fluid-12: clamp(34px, 4.1vw, 64px);
+  --display-size-fluid-13: clamp(34px, 5vw, 64px);
+  --display-size-fluid-14: clamp(36px, 4vw, 56px);
+  --display-size-fluid-15: clamp(36px, 4.6vw, 64px);
+  --display-size-fluid-16: clamp(36px, 5vw, 70px);
+  --display-size-fluid-17: clamp(38px, 4.8vw, 70px);
+  --display-size-fluid-18: clamp(38px, 5vw, 78px);
+  --display-size-fluid-19: clamp(40px, 4.2vw, 64px);
+  --display-size-fluid-20: clamp(42px, 5.8vw, 82px);
+  --display-size-fluid-21: clamp(46px, 7vw, 92px);
+  --display-size-fluid-22: clamp(50px, 7.6vw, 118px);
+  --display-size-fluid-23: clamp(72px, 7.2vw, 108px);
+}
+
+html[data-a11y-text="default"] {
+  --cruor-text-scale: 1;
+}
+
+html[data-a11y-text="large"] {
+  --cruor-text-scale: 1.1;
+}
+
+html[data-a11y-text="extra-large"] {
+  --cruor-text-scale: 1.18;
+}

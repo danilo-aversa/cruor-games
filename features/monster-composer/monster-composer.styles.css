@@ -123,7 +123,7 @@
 .monster-shell .eyebrow {
   margin: 0;
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 900;
   letter-spacing: 0.16em;
   line-height: 1;
@@ -213,7 +213,7 @@
 .monster-shell .brief-summary-line {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 750;
   line-height: 1.35;
 }
@@ -240,7 +240,7 @@
 
 .monster-shell .monster-field > span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 900;
   letter-spacing: 0.085em;
   line-height: 1.35;
@@ -296,7 +296,7 @@
   left: 50%;
   transform: translateX(-50%);
   color: var(--cruor-color-hex-8f7278);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -358,7 +358,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 0 9px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -375,7 +375,7 @@
   margin: 7px 0 12px;
   color: var(--cruor-color-hex-fff0f2);
   font-family: var(--display);
-  font-size: clamp(30px, 4vw, 42px);
+  font-size: var(--display-size-fluid-02);
   line-height: 0.92;
   letter-spacing: -0.055em;
   text-shadow: var(--cruor-shadow-text-010);
@@ -397,7 +397,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-r240-g215-b220-a800);
   padding: 0 8px;
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 850;
   white-space: nowrap;
   overflow: hidden;
@@ -424,7 +424,7 @@
   gap: 12px;
   margin-bottom: 8px;
   color: var(--faint);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -432,7 +432,7 @@
 
 .monster-shell .game-frame__minihead strong {
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 11px;
+  font-size: var(--text-size-m);
 }
 
 .monster-shell .game-role-grid {
@@ -468,21 +468,21 @@
 
 .monster-shell .game-role-card__top strong {
   color: var(--cruor-color-text);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 900;
   line-height: 1.1;
 }
 
 .monster-shell .game-type-card__text strong {
   color: var(--cruor-color-text);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 900;
   line-height: 1.1;
 }
 
 .monster-shell .game-role-card__top small {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -490,7 +490,7 @@
 
 .monster-shell .game-type-card__mark {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -498,7 +498,7 @@
 
 .monster-shell .game-type-card__text small {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -654,7 +654,7 @@
 
 .monster-shell .game-role-card__summary {
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.35;
 }
 
@@ -671,7 +671,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   padding: 2px 6px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 850;
 }
 
@@ -683,13 +683,13 @@
 
 .monster-shell .game-threat-chip span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.12em;
 }
 
 .monster-shell .game-threat-chip strong {
-  font-size: 11px;
+  font-size: var(--text-size-m);
   line-height: 1.1;
 }
 
@@ -706,7 +706,7 @@
 
 .monster-shell .game-frame__meter small {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -714,7 +714,7 @@
 
 .monster-shell .game-frame__meter strong {
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 950;
 }
 
@@ -744,7 +744,7 @@
   border-right: 1px solid var(--cruor-color-blood-strong-a320);
   background: var(--cruor-color-transparent);
   color: var(--muted);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 850;
   padding: 0 8px;
 }
@@ -791,7 +791,7 @@
 
 .monster-shell .monster-panel-group__head h3 {
   margin: 0;
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 950;
   letter-spacing: 0.11em;
   text-transform: uppercase;
@@ -815,7 +815,7 @@
   margin-bottom: 7px;
   color: var(--cruor-color-text);
   font-family: var(--font);
-  font-size: 14px;
+  font-size: var(--text-size-2xl);
   font-weight: 850;
   line-height: 1.18;
   letter-spacing: -0.01em;
@@ -830,7 +830,7 @@
   position: relative;
   z-index: 2;
   display: block;
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.42;
 }
 
@@ -871,7 +871,7 @@
 
 .monster-shell .graft-inspector__empty span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -879,7 +879,7 @@
 
 .monster-shell .graft-inspector__footer span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -887,7 +887,7 @@
 
 .monster-shell .graft-inspector__status span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -950,7 +950,7 @@
   display: block;
   margin-bottom: 4px;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -971,7 +971,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   padding: 0 10px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1048,7 +1048,7 @@
 
 .monster-shell .component-card__slot-line {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.1em;
   line-height: 1;
@@ -1071,7 +1071,7 @@
 .monster-shell .summary {
   margin: 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--text-size-l);
 }
 
 .monster-shell .meta-list {
@@ -1095,7 +1095,7 @@
 
 .monster-shell .meta-label {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 900;
   letter-spacing: 0.085em;
   line-height: 1.35;
@@ -1156,7 +1156,7 @@
   border-left: 2px solid var(--cruor-color-blood-glow-a640);
   color: var(--cruor-color-hex-d0a2aa);
   padding-left: 8px;
-  font-size: 11px;
+  font-size: var(--text-size-m);
   line-height: 1.35;
 }
 
@@ -1196,7 +1196,7 @@
   padding: 4px 5px 7px;
   border-bottom: 1px solid var(--cruor-color-blood-strong-a340);
   color: var(--faint);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 900;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1228,7 +1228,7 @@
   justify-content: space-between;
   gap: 10px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 850;
 }
 
@@ -1285,7 +1285,7 @@
   display: block;
   margin-bottom: 4px;
   color: var(--faint);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 900;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1293,19 +1293,19 @@
 
 .monster-shell .compiled-component strong {
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 800;
 }
 
 .monster-shell .compiled-mechanic strong {
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 800;
 }
 
 .monster-shell .compiled-value {
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 800;
 }
 
@@ -1313,21 +1313,21 @@
 .monster-shell .compiled-component p {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   line-height: 1.45;
 }
 
 .monster-shell .compiled-mechanic p {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   line-height: 1.45;
 }
 
 .monster-shell .compiled-note p {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   line-height: 1.45;
 }
 
@@ -1344,7 +1344,7 @@
   background: var(--cruor-color-blood-a200);
   color: var(--cruor-color-hex-e3b1ba);
   padding: 9px;
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.4;
 }
 
@@ -1401,7 +1401,7 @@
 
 .monster-shell .balance-recommendation__body strong {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 950;
   line-height: 1.15;
 }
@@ -1409,7 +1409,7 @@
 .monster-shell .balance-recommendation__body p {
   margin: 0;
   color: var(--cruor-color-text-a560);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.42;
 }
 
@@ -1426,7 +1426,7 @@
   background: var(--cruor-color-blood-strong-a220);
   color: var(--cruor-color-hex-f0d7dc);
   padding: 0 9px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1462,7 +1462,7 @@
 .monster-shell .run-mode-hero p {
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   line-height: 1.4;
 }
 
@@ -1489,7 +1489,7 @@
   display: block;
   margin-bottom: 4px;
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1497,7 +1497,7 @@
 
 .monster-shell .run-stat-strip strong {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 18px;
+  font-size: var(--text-size-5xl);
   font-weight: 950;
   line-height: 1;
 }
@@ -1516,7 +1516,7 @@
 .monster-shell .run-panel__head h3 {
   margin: 0;
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 950;
   letter-spacing: 0.11em;
   text-transform: uppercase;
@@ -1524,7 +1524,7 @@
 
 .monster-shell .run-panel__head strong {
   color: var(--cruor-color-good);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1542,14 +1542,14 @@
 
 .monster-shell .run-list strong {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 950;
   line-height: 1.2;
 }
 
 .monster-shell .run-trigger-list strong {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 950;
   line-height: 1.2;
 }
@@ -1557,21 +1557,21 @@
 .monster-shell .run-empty {
   margin: 0;
   color: var(--cruor-color-text-a580);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.42;
 }
 
 .monster-shell .run-list p {
   margin: 0;
   color: var(--cruor-color-text-a580);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.42;
 }
 
 .monster-shell .run-trigger-list p {
   margin: 0;
   color: var(--cruor-color-text-a580);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.42;
 }
 
@@ -1584,7 +1584,7 @@
 
 .monster-shell .run-trigger-list span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 900;
   line-height: 1.25;
   text-align: right;
@@ -1605,7 +1605,7 @@
 .monster-shell .export-console__head p:not(.eyebrow) {
   margin: 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.45;
 }
 
@@ -1617,7 +1617,7 @@
 
 .monster-shell .export-textarea-shell > span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 900;
   letter-spacing: 0.085em;
   line-height: 1.35;
@@ -1629,7 +1629,7 @@
   border: 1px solid var(--cruor-color-blood-glow-a720);
   background: var(--cruor-gradient-radial-007-f9fedda9), var(--cruor-gradient-linear-006-1c0ba33e);
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 950;
   letter-spacing: 0.11em;
   text-transform: uppercase;
@@ -1687,7 +1687,7 @@
 
 .monster-shell .export-check span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.1em;
   line-height: 1;
@@ -1696,7 +1696,7 @@
 
 .monster-shell .export-readiness-card__head span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.1em;
   line-height: 1;
@@ -1705,7 +1705,7 @@
 
 .monster-shell .export-run-sheet__grid span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.1em;
   line-height: 1;
@@ -1714,7 +1714,7 @@
 
 .monster-shell .export-run-sheet__head span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.1em;
   line-height: 1;
@@ -1723,14 +1723,14 @@
 
 .monster-shell .export-readiness-card__head strong {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 950;
   line-height: 1.1;
 }
 
 .monster-shell .export-run-sheet__head strong {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 950;
   line-height: 1.1;
 }
@@ -1743,7 +1743,7 @@
   border: 1px solid var(--cruor-color-milk-a080);
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-style: normal;
   font-weight: 950;
 }
@@ -1796,7 +1796,7 @@
 .monster-shell .export-check strong {
   overflow: hidden;
   color: var(--cruor-color-text-a740);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 900;
   line-height: 1.2;
   text-overflow: ellipsis;
@@ -1806,7 +1806,7 @@
 .monster-shell .export-run-sheet__grid strong {
   overflow: hidden;
   color: var(--cruor-color-text-a740);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 900;
   line-height: 1.2;
   text-overflow: ellipsis;
@@ -1853,7 +1853,7 @@
 .monster-shell .compiled-kicker {
   margin: 0 0 7px;
   color: var(--accent-3);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1862,7 +1862,7 @@
 .monster-shell .compiled-title {
   margin: 0;
   font-family: var(--display);
-  font-size: clamp(34px, 4vw, 48px);
+  font-size: var(--display-size-fluid-07);
   line-height: 0.96;
   letter-spacing: -0.04em;
 }
@@ -1884,7 +1884,7 @@
   margin: 0 0 9px;
   color: var(--cruor-color-hex-b33b4e);
   font-family: var(--font);
-  font-size: 15px;
+  font-size: var(--text-size-3xl);
   font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1909,7 +1909,7 @@
   margin: 0 0 4px;
   color: var(--cruor-color-hex-fff0f2);
   font-family: var(--display);
-  font-size: clamp(34px, 4vw, 54px);
+  font-size: var(--display-size-fluid-08);
   line-height: 0.92;
   letter-spacing: -0.045em;
   text-shadow: var(--cruor-shadow-text-009);
@@ -1918,28 +1918,28 @@
 .monster-shell .cruor-stat-block__core p {
   margin: 0;
   color: var(--cruor-color-text-a900);
-  font-size: 13.5px;
+  font-size: var(--text-size-xl-plus);
   line-height: 1.52;
 }
 
 .monster-shell .cruor-stat-block__facts p {
   margin: 0;
   color: var(--cruor-color-text-a900);
-  font-size: 13.5px;
+  font-size: var(--text-size-xl-plus);
   line-height: 1.52;
 }
 
 .monster-shell .cruor-stat-block__head p {
   margin: 0;
   color: var(--cruor-color-text-a900);
-  font-size: 13.5px;
+  font-size: var(--text-size-xl-plus);
   line-height: 1.52;
 }
 
 .monster-shell .cruor-stat-block__section p {
   margin: 0;
   color: var(--cruor-color-text-a900);
-  font-size: 13.5px;
+  font-size: var(--text-size-xl-plus);
   line-height: 1.52;
 }
 
@@ -2001,7 +2001,7 @@
   border-bottom: 1px solid var(--cruor-color-blood-strong-a260);
   padding: 6px 8px;
   color: var(--cruor-color-text-a880);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.2;
   text-align: center;
 }
@@ -2010,14 +2010,14 @@
   border-bottom: 1px solid var(--cruor-color-blood-strong-a260);
   padding: 6px 8px;
   color: var(--cruor-color-text-a880);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.2;
   text-align: center;
 }
 
 .monster-shell .cruor-ability-table thead th {
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -2042,7 +2042,7 @@
 
 .monster-shell .cruor-stat-block__section .legendary-actions {
   color: var(--muted);
-  font-size: 12.5px;
+  font-size: var(--text-size-l-plus);
 }
 
 .monster-shell .cruor-stat-block__dm-notes {
@@ -2068,7 +2068,7 @@
 
 .monster-shell .rendered-stat-block .cruor-stat-block__core strong {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
@@ -2096,7 +2096,7 @@
 .monster-shell .cruor-stat-block__designer-notes > summary {
   cursor: pointer;
   color: var(--cruor-color-hex-8f7278);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.1em;
   list-style: none;
@@ -2120,7 +2120,7 @@
 .monster-shell .cruor-stat-block__designer-notes p {
   margin: 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.45;
 }
 
@@ -2133,7 +2133,7 @@
 .monster-shell .export-raw-panel > summary {
   cursor: pointer;
   color: var(--cruor-color-hex-8f7278);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.1em;
   list-style: none;
@@ -2163,7 +2163,7 @@
   display: block;
   margin-bottom: 5px;
   color: var(--cruor-color-hex-c8a2a8);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 900;
   line-height: 1.35;
 }
@@ -2171,7 +2171,7 @@
 .monster-shell .compiled-mode-note {
   margin: 8px 0 0;
   color: var(--faint);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -2186,7 +2186,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 0 12px;
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 950;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -2216,7 +2216,7 @@
 
 .monster-shell .balance-card__head span {
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -2224,7 +2224,7 @@
 
 .monster-shell .balance-card__head strong {
   color: var(--cruor-color-hex-f0d7dc);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -2234,7 +2234,7 @@
 .monster-shell .balance-note {
   margin: 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.45;
 }
 
@@ -2267,7 +2267,7 @@
   position: relative;
   z-index: 1;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 18px;
+  font-size: var(--text-size-5xl);
   font-weight: 950;
 }
 
@@ -2276,7 +2276,7 @@
   padding: var(--cruor-space-lg, 18px);
   color: var(--cruor-color-faint, var(--faint));
   background: var(--cruor-color-white-a025);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   line-height: 1.45;
 }
 
@@ -2336,7 +2336,7 @@
 .monster-shell .monster-topbar__eyebrow {
   margin: 0;
   color: var(--cruor-color-r208-g162-b170-a860);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.18em;
   line-height: 1;
@@ -2346,7 +2346,7 @@
 
 .monster-shell .monster-topbar__title-prefix {
   color: var(--cruor-color-r240-g215-b220-a720);
-  font-size: clamp(22px, 2.2vw, 34px);
+  font-size: var(--text-size-fluid-10);
   font-weight: 850;
   letter-spacing: -0.035em;
   display: none;
@@ -2357,7 +2357,7 @@
   color: var(--cruor-color-hex-fff0f2);
   text-shadow: var(--cruor-shadow-text-007);
   font-family: var(--font);
-  font-size: clamp(22px, 2.1vw, 32px);
+  font-size: var(--text-size-fluid-08);
   font-weight: 950;
   letter-spacing: -0.035em;
 }
@@ -2367,7 +2367,7 @@
   align-items: center;
   border: 1px solid var(--cruor-color-blood-strong-a580);
   padding: 0 12px;
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 900;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -2393,7 +2393,7 @@
   border: 1px solid var(--cruor-color-milk-a075);
   background: var(--cruor-surface-card);
   padding: 0 8px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -2407,7 +2407,7 @@
   border: 1px solid var(--cruor-color-milk-a075);
   background: var(--cruor-surface-card);
   padding: 0 8px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -2488,7 +2488,7 @@
   border: 1px solid var(--cruor-color-milk-a110);
   background: var(--cruor-color-surface-soft-a860);
   color: var(--cruor-color-hex-8f7278);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 950;
   box-shadow: var(--cruor-shadow-box-060);
   transition: border-color 0.14s ease, background 0.14s ease, color 0.14s ease, box-shadow 0.14s ease, transform 0.14s ease;
@@ -2496,7 +2496,7 @@
 
 .monster-shell .brief-step-label {
   color: inherit;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.08em;
   line-height: 1.15;
@@ -2574,7 +2574,7 @@
   margin: 0;
   color: var(--cruor-color-hex-fff0f2);
   font-family: var(--display);
-  font-size: clamp(36px, 5vw, 70px);
+  font-size: var(--display-size-fluid-16);
   line-height: 0.9;
   letter-spacing: -0.055em;
   text-shadow: var(--cruor-shadow-text-005);
@@ -2584,7 +2584,7 @@
   max-width: 520px;
   margin: 0;
   color: var(--cruor-color-text-a560);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   line-height: 1.45;
 }
 
@@ -2636,7 +2636,7 @@
 
 .monster-shell .monster-start-card__body strong {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 18px;
+  font-size: var(--text-size-5xl);
   font-weight: 950;
   line-height: 1.05;
   letter-spacing: -0.025em;
@@ -2644,7 +2644,7 @@
 
 .monster-shell .monster-start-card__body em {
   color: var(--cruor-color-text-a560);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   font-style: normal;
   line-height: 1.42;
 }
@@ -2660,7 +2660,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 0 9px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -2819,7 +2819,7 @@
   max-width: 270px;
   color: var(--cruor-color-r240-g215-b220-a260);
   font-family: "Caveat", "Patrick Hand", "Segoe Print", "Bradley Hand", cursive;
-  font-size: 14px;
+  font-size: var(--text-size-2xl);
   font-style: italic;
   font-weight: 400;
   letter-spacing: 0.025em;
@@ -3088,7 +3088,7 @@
   min-width: 0;
   overflow: hidden;
   color: inherit;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -3108,7 +3108,7 @@
   border: 1px solid var(--cruor-color-milk-a080);
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
 }
 
@@ -3122,7 +3122,7 @@
   display: -webkit-box;
   overflow: hidden;
   color: var(--cruor-color-hex-f0d7dc);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   font-weight: 900;
   line-height: 1.16;
   -webkit-box-orient: vertical;
@@ -3133,7 +3133,7 @@
   display: -webkit-box;
   overflow: hidden;
   color: var(--cruor-color-text-a500);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-style: normal;
   line-height: 1.32;
   -webkit-box-orient: vertical;
@@ -3238,7 +3238,7 @@
   align-items: center;
   min-height: 22px;
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -3256,7 +3256,7 @@
   max-width: 620px;
   margin: 0;
   color: var(--cruor-color-text-a440);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
 }
 
 
@@ -3286,7 +3286,7 @@
   cursor: pointer;
   list-style: none;
   color: var(--cruor-color-hex-8f7278);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -3369,7 +3369,7 @@
   border-color: var(--cruor-color-milk-a080);
   background: var(--cruor-surface-card);
   color: var(--cruor-color-text-a880);
-  font-size: 12px;
+  font-size: var(--text-size-l);
 }
 
 .monster-shell .search-wrap input::placeholder {
@@ -3408,7 +3408,7 @@
 
 .monster-shell .navigator-filter-section strong {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -3456,7 +3456,7 @@
   margin: 5px 0 6px;
   color: var(--cruor-color-hex-fff0f2);
   font-family: var(--display);
-  font-size: clamp(36px, 4.6vw, 64px);
+  font-size: var(--display-size-fluid-15);
   line-height: 0.92;
   letter-spacing: -0.055em;
   text-shadow: var(--cruor-shadow-text-005);
@@ -3466,7 +3466,7 @@
   max-width: 560px;
   margin: 0;
   color: var(--cruor-color-text-a500);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   line-height: 1.45;
 }
 
@@ -3517,7 +3517,7 @@
 
 .monster-shell .template-choice-card__topline span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -3529,7 +3529,7 @@
 
 .monster-shell .template-choice-card__topline strong {
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -3537,7 +3537,7 @@
 
 .monster-shell .template-choice-card__title-row strong {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 21px;
+  font-size: var(--display-size-xs);
   font-weight: 950;
   line-height: 1.05;
   letter-spacing: -0.035em;
@@ -3545,7 +3545,7 @@
 
 .monster-shell .template-choice-card__title-row em {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -3558,7 +3558,7 @@
 
 .monster-shell .template-choice-card__summary {
   color: var(--cruor-color-text-a580);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.45;
 }
 
@@ -3576,7 +3576,7 @@
   background: var(--cruor-color-white-a025);
   color: var(--cruor-color-hex-c8a2a8);
   padding: 3px 6px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 850;
 }
 
@@ -3595,7 +3595,7 @@
 }
 
 .monster-shell .component-navigator-modal__hierarchy span {
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -3603,7 +3603,7 @@
 }
 
 .monster-shell .component-navigator-modal__hierarchy strong {
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -3731,7 +3731,7 @@
 .monster-shell .navigator-filter-chip__meta {
   overflow: hidden;
   color: var(--cruor-color-r208-g162-b170-a620);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-overflow: ellipsis;
@@ -3810,7 +3810,7 @@
   margin: 6px 0 5px;
   color: var(--cruor-color-hex-fff0f2);
   font-family: var(--display);
-  font-size: clamp(36px, 4vw, 56px);
+  font-size: var(--display-size-fluid-14);
   line-height: 0.9;
   letter-spacing: -0.055em;
   text-shadow: var(--cruor-shadow-text-002);
@@ -3820,7 +3820,7 @@
   margin: 5px 0 5px;
   color: var(--cruor-color-hex-fff0f2);
   font-family: var(--font);
-  font-size: 22px;
+  font-size: var(--display-size-s);
   font-weight: 850;
   line-height: 1.05;
   letter-spacing: -0.035em;
@@ -3831,7 +3831,7 @@
   margin: 5px 0 0;
   color: var(--cruor-color-hex-fff0f2);
   font-family: var(--font);
-  font-size: 22px;
+  font-size: var(--display-size-s);
   font-weight: 850;
   line-height: 1.05;
   letter-spacing: -0.035em;
@@ -3842,7 +3842,7 @@
   margin: 0 0 6px;
   color: var(--cruor-color-hex-fff0f2);
   font-family: var(--display);
-  font-size: clamp(34px, 4vw, 56px);
+  font-size: var(--display-size-fluid-09);
   line-height: 0.9;
   letter-spacing: -0.055em;
   text-shadow: var(--cruor-shadow-text-002);
@@ -3897,7 +3897,7 @@
   color: var(--cruor-color-text-a900);
   padding: 11px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  font-size: 11px;
+  font-size: var(--text-size-m);
   line-height: 1.5;
   outline: none;
   scrollbar-width: auto;
@@ -3967,7 +3967,7 @@
   line-height: 1.15;
   text-transform: uppercase;
   color: var(--cruor-color-text-a760);
-  font-size: 10.5px;
+  font-size: var(--text-size-s-plus);
   letter-spacing: 0.095em;
 }
 
@@ -4010,7 +4010,7 @@
   border-color: var(--cruor-color-milk-a075);
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
 }
 
@@ -4022,7 +4022,7 @@
   align-self: start;
   margin-top: 0;
   color: var(--cruor-color-text-a440);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.38;
 }
 
@@ -4054,7 +4054,7 @@
   padding-left: 0;
   text-indent: 0;
   color: var(--cruor-color-text-a580);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.38;
 }
 
@@ -4063,7 +4063,7 @@
   text-shadow: var(--cruor-shadow-text-004);
   display: block;
   margin-bottom: 2px;
-  font-size: 12px;
+  font-size: var(--text-size-l);
   font-weight: 950;
   line-height: 1.18;
 }
@@ -4108,7 +4108,7 @@
   font-family: var(--font);
   letter-spacing: 0.01em;
   color: var(--cruor-color-text-a900);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 900;
   line-height: 1.18;
 }
@@ -4124,7 +4124,7 @@
 
 .monster-shell .component-card .summary {
   color: var(--cruor-color-text-a580);
-  font-size: 11.5px;
+  font-size: var(--text-size-m-plus);
   line-height: 1.38;
 }
 
@@ -4153,7 +4153,7 @@
   margin-top: 3px;
   margin: 0;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 15px;
+  font-size: var(--text-size-3xl);
   line-height: 1.12;
 }
 
@@ -4168,7 +4168,7 @@
   border: 1px solid var(--cruor-color-blood-glow-a420);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 3px 7px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -4205,28 +4205,28 @@
   margin: 0 0 5px;
   font-weight: 900;
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 14px;
+  font-size: var(--text-size-2xl);
   line-height: 1.14;
 }
 
 .monster-shell .graft-inspector__empty p {
   margin: 0;
   color: var(--cruor-color-text-a580);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.4;
 }
 
 .monster-shell .graft-inspector__main p {
   margin: 0;
   color: var(--cruor-color-text-a580);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.4;
 }
 
 .monster-shell .graft-inspector__rules p {
   margin: 0;
   color: var(--cruor-color-text-a580);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.4;
 }
 
@@ -4921,7 +4921,7 @@
   border: 1px solid var(--cruor-color-blood-bright-a520);
   color: var(--cruor-ui-control-text);
   padding: 0 8px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -4942,7 +4942,7 @@
   box-shadow: var(--cruor-shadow-box-002);
   transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   padding: 0 16px;
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -4957,7 +4957,7 @@
   background: var(--cruor-ui-control-bg);
   color: var(--cruor-ui-control-text);
   padding: 0 10px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -5012,7 +5012,7 @@
   background: var(--cruor-ui-control-bg);
   color: var(--cruor-ui-control-text);
   padding: 0 12px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -5025,7 +5025,7 @@
   background: var(--cruor-ui-control-bg);
   color: var(--cruor-ui-control-text);
   padding: 0 8px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -5124,7 +5124,7 @@
   border: 1px solid var(--cruor-color-blood-strong-a560);
   background: var(--cruor-ui-chip-bg);
   padding: 3px 6px;
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -5140,7 +5140,7 @@
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
   min-height: 30px;
   padding: 0 10px;
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 850;
   border-color: var(--cruor-ui-chip-border);
 }
@@ -5162,7 +5162,7 @@
 .monster-shell .graft-inspector__chips span {
   border: 1px solid var(--cruor-color-blood-strong-a540);
   padding: 3px 6px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 850;
   border-color: var(--cruor-ui-chip-border);
   background: var(--cruor-ui-chip-bg);
@@ -5175,7 +5175,7 @@
   background: var(--cruor-ui-chip-bg);
   color: var(--cruor-ui-chip-text);
   padding: 3px 6px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 800;
   border-color: var(--cruor-ui-chip-border);
 }
@@ -5185,7 +5185,7 @@
   background: var(--cruor-ui-chip-bg);
   color: var(--cruor-ui-chip-text);
   padding: 3px 6px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 800;
   border-color: var(--cruor-ui-chip-border);
 }
@@ -5195,7 +5195,7 @@
   background: var(--cruor-ui-chip-bg);
   color: var(--cruor-ui-chip-text);
   padding: 0 9px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 900;
   text-align: left;
   border-color: var(--cruor-ui-chip-border);
@@ -5208,7 +5208,7 @@
   background: var(--cruor-ui-chip-bg);
   color: var(--cruor-ui-chip-text);
   padding: 0 9px;
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 850;
   display: inline-flex;
   align-items: center;
@@ -5250,7 +5250,7 @@
   margin: 0;
   color: var(--cruor-color-hex-fff0f2);
   font-family: var(--display);
-  font-size: clamp(34px, 4vw, 68px);
+  font-size: var(--display-size-fluid-11);
   font-weight: 950;
   letter-spacing: -0.06em;
   line-height: 0.9;
@@ -5261,7 +5261,7 @@
   max-width: 760px;
   margin: 0;
   color: var(--cruor-color-text-a540);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 650;
   line-height: 1.42;
 }
@@ -5432,7 +5432,7 @@
 
 .monster-shell .game-frame-drawer--fullscreen .game-frame__hero h2 {
   margin: 0;
-  font-size: clamp(42px, 5.8vw, 82px);
+  font-size: var(--display-size-fluid-20);
   line-height: 0.86;
   letter-spacing: -0.065em;
 }
@@ -5453,7 +5453,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-text-a720);
   padding: 0 10px;
-  font-size: 12px;
+  font-size: var(--text-size-l);
   white-space: normal;
   overflow: visible;
   text-overflow: clip;
@@ -5558,7 +5558,7 @@
   display: block;
   min-width: 0;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 14px;
+  font-size: var(--text-size-2xl);
   font-weight: 950;
   line-height: 1.12;
   overflow-wrap: anywhere;
@@ -5568,7 +5568,7 @@
   display: block;
   min-width: 0;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 14px;
+  font-size: var(--text-size-2xl);
   font-weight: 950;
   line-height: 1.12;
   overflow-wrap: anywhere;
@@ -5577,7 +5577,7 @@
 .monster-shell .game-frame-drawer--fullscreen .game-role-card__top small {
   display: block;
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   line-height: 1.15;
   white-space: normal;
 }
@@ -5585,7 +5585,7 @@
 .monster-shell .game-frame-drawer--fullscreen .game-type-card__text small {
   display: block;
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   line-height: 1.15;
   white-space: normal;
 }
@@ -5599,7 +5599,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-d0a2aa);
   padding: 4px 6px;
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   line-height: 1;
   text-align: center;
 }
@@ -5624,7 +5624,7 @@
 
 .monster-shell .game-frame-drawer--fullscreen .game-role-card__summary {
   color: var(--cruor-color-text-a580);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.4;
   overflow-wrap: anywhere;
 }
@@ -5640,7 +5640,7 @@
   border-color: var(--cruor-color-milk-a075);
   background: var(--cruor-surface-card);
   padding: 4px 7px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   line-height: 1;
 }
 
@@ -5666,7 +5666,7 @@
   background: var(--cruor-color-white-a024);
   padding: 0 10px;
   color: var(--cruor-color-text-a620);
-  font-size: 10.5px;
+  font-size: var(--text-size-s-plus);
   line-height: 1.1;
 }
 
@@ -5772,13 +5772,13 @@
 }
 
 .monster-shell .game-frame-drawer--fullscreen .game-threat-chip span {
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   line-height: 1;
 }
 
 .monster-shell .game-frame-drawer--fullscreen .game-threat-chip strong {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   line-height: 1.15;
   overflow-wrap: anywhere;
 }
@@ -5820,7 +5820,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-8f7278);
   padding: 0 10px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -5849,7 +5849,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-r240-g215-b220-a720);
   padding: 0 10px;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 900;
   letter-spacing: 0.055em;
   text-transform: uppercase;
@@ -5884,7 +5884,7 @@
 
 .monster-shell .monster-frame-info-card > span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.12em;
   line-height: 1;
@@ -5894,7 +5894,7 @@
 .monster-shell .monster-frame-info-row small {
   overflow: hidden;
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.12em;
   line-height: 1;
@@ -5905,7 +5905,7 @@
 
 .monster-shell .monster-graft-focus span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.12em;
   line-height: 1;
@@ -5942,7 +5942,7 @@
 .monster-shell .monster-frame-option strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   font-weight: 950;
   line-height: 1.08;
   text-overflow: ellipsis;
@@ -5953,7 +5953,7 @@
   display: block;
   overflow: hidden;
   color: var(--cruor-color-text-a480);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-style: normal;
   line-height: 1.25;
   text-overflow: ellipsis;
@@ -5962,7 +5962,7 @@
 
 .monster-shell .monster-frame-option small {
   color: var(--cruor-color-r208-g162-b170-a680);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -6002,7 +6002,7 @@
   background: var(--cruor-color-blood-a180);
   color: var(--cruor-color-hex-c8a2a8);
   padding: 0 9px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.065em;
   text-transform: uppercase;
@@ -6039,7 +6039,7 @@
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   min-height: 42px;
-  font-size: 18px;
+  font-size: var(--text-size-5xl);
   font-weight: 950;
 }
 
@@ -6085,7 +6085,7 @@
 .monster-shell .monster-frame-node small {
   grid-area: label;
   color: var(--cruor-color-hex-8f7278);
-  font-size: 7px;
+  font-size: var(--text-size-3xs);
   font-weight: 950;
   letter-spacing: 0.12em;
   line-height: 1;
@@ -6096,7 +6096,7 @@
   grid-area: value;
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   line-height: 1.1;
   text-overflow: ellipsis;
@@ -6121,7 +6121,7 @@
 .monster-shell .monster-frame-info-card--hero strong {
   color: var(--cruor-color-hex-fff0f2);
   font-family: var(--display);
-  font-size: clamp(26px, 2.8vw, 42px);
+  font-size: var(--text-size-fluid-15);
   font-weight: 950;
   letter-spacing: -0.055em;
   line-height: 0.92;
@@ -6129,7 +6129,7 @@
 
 .monster-shell .monster-frame-info-card--hero em {
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-style: normal;
   font-weight: 950;
   letter-spacing: 0.08em;
@@ -6138,7 +6138,7 @@
 
 .monster-shell .monster-graft-focus em {
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-style: normal;
   font-weight: 950;
   letter-spacing: 0.08em;
@@ -6164,7 +6164,7 @@
 .monster-shell .monster-frame-info-row strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   text-align: right;
   text-overflow: ellipsis;
@@ -6178,7 +6178,7 @@
 
 .monster-shell .monster-graft-focus strong {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 18px;
+  font-size: var(--text-size-5xl);
   font-weight: 950;
   letter-spacing: -0.03em;
   line-height: 1;
@@ -6187,7 +6187,7 @@
 .monster-shell .monster-graft-focus p {
   margin: 0;
   color: var(--cruor-color-text-a560);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.35;
 }
 
@@ -6230,7 +6230,7 @@
   color: var(--cruor-color-hex-fff0f2);
   padding: 0;
   font-family: var(--font);
-  font-size: clamp(22px, 2vw, 30px);
+  font-size: var(--text-size-fluid-07);
   font-weight: 950;
   letter-spacing: -0.045em;
   line-height: 1.05;
@@ -6551,7 +6551,7 @@
   min-width: 38px;
   min-height: 36px;
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 950;
 }
 
@@ -6645,7 +6645,7 @@
   padding: 0;
   opacity: 1;
   visibility: visible;
-  font-size: 0;
+  font-size: var(--text-size-none);
   line-height: 0;
   position: relative;
   z-index: 1;
@@ -6856,7 +6856,7 @@
 
 .monster-shell .monster-frame-cr-control small {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.12em;
   line-height: 1;
@@ -6865,7 +6865,7 @@
 
 .monster-shell .monster-frame-select-field > span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.12em;
   line-height: 1;
@@ -6877,7 +6877,7 @@
   border-color: var(--cruor-color-blood-strong-a580);
   background: var(--cruor-gradient-linear-078-e313bc1b), var(--cruor-surface-card);
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   font-weight: 900;
   letter-spacing: 0.015em;
 }
@@ -6896,7 +6896,7 @@
   display: -webkit-box;
   overflow: hidden;
   color: var(--cruor-color-text-a480);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   line-height: 1.35;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -6999,7 +6999,7 @@
 .monster-shell .monster-frame-select-trigger strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   font-weight: 900;
   line-height: 1.1;
   text-overflow: ellipsis;
@@ -7008,7 +7008,7 @@
 
 .monster-shell .monster-frame-select-trigger small {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -7112,7 +7112,7 @@
 .monster-shell .monster-frame-select-option strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   font-weight: 900;
   line-height: 1.1;
   text-overflow: ellipsis;
@@ -7123,7 +7123,7 @@
   display: block;
   overflow: hidden;
   color: var(--cruor-color-text-a500);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   line-height: 1.25;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -7255,7 +7255,7 @@
   border-color: var(--cruor-color-blood-strong-a580);
   background: var(--cruor-surface-card);
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 950;
   text-align: center;
 }
@@ -7273,7 +7273,7 @@
 .monster-shell .monster-frame-control-block__head strong {
   overflow: hidden;
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.07em;
   line-height: 1.1;
@@ -7293,7 +7293,7 @@
   background: var(--cruor-gradient-linear-012-c39edb21), var(--cruor-color-surface-soft-a970);
   color: var(--cruor-color-text-a820);
   padding: 9px 10px;
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-style: normal;
   font-weight: 750;
   letter-spacing: 0.01em;
@@ -7319,7 +7319,7 @@
 
 .monster-shell .monster-frame-control-block__head span {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.12em;
   line-height: 1;
@@ -7333,7 +7333,7 @@
   min-height: 18px;
   padding-right: 0;
   color: var(--cruor-color-hex-8f7278);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.12em;
   line-height: 1;
@@ -7344,7 +7344,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   line-height: 1;
 }
@@ -7353,7 +7353,7 @@
   margin-left: auto;
   overflow: hidden;
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-align: right;
@@ -7375,7 +7375,7 @@
   border: 0;
   background: var(--cruor-color-transparent);
   color: var(--cruor-color-muted-a520);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   line-height: 1;
   outline: none;
@@ -7515,7 +7515,7 @@
 }
 
 .monster-shell.component-navigator-modal-portal .component-navigator-modal__list .component-impact-metric strong {
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   line-height: 1;
 }
@@ -8162,7 +8162,7 @@
   width: max-content;
   max-width: 108px;
   color: var(--cruor-color-r240-g215-b220-a480);
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.1em;
   line-height: 1;
@@ -8383,7 +8383,7 @@
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
   font-family: var(--font);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 950;
   letter-spacing: 0.045em;
   line-height: 1.05;
@@ -8396,7 +8396,7 @@
   overflow: hidden;
   max-width: none;
   color: var(--cruor-color-text-a460);
-  font-size: 10.5px;
+  font-size: var(--text-size-s-plus);
   font-weight: 650;
   line-height: 1.25;
   text-overflow: ellipsis;
@@ -8485,7 +8485,7 @@
   min-height: 34px;
   height: 34px;
   color: var(--cruor-color-text-a580);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 900;
 }
 
@@ -8667,7 +8667,7 @@
 
 .monster-shell .component-navigator-drawer .component-navigator-modal__list .component-card h3 {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   font-weight: 900;
   line-height: 1.12;
   letter-spacing: -0.01em;
@@ -8676,11 +8676,11 @@
 .monster-shell .component-navigator-drawer .component-navigator-modal__list .compatibility-badge {
   min-height: 18px;
   padding: 1px 5px;
-  font-size: 7px;
+  font-size: var(--text-size-3xs);
 }
 
 .monster-shell .component-navigator-drawer .component-navigator-modal__list .summary {
-  font-size: 10.5px;
+  font-size: var(--text-size-s-plus);
   line-height: 1.24;
   display: -webkit-box;
   overflow: hidden;
@@ -8690,7 +8690,7 @@
 }
 
 .monster-shell .component-navigator-drawer .component-navigator-modal__list .compatibility-note {
-  font-size: 10.5px;
+  font-size: var(--text-size-s-plus);
   line-height: 1.24;
   display: -webkit-box;
   overflow: hidden;
@@ -8711,7 +8711,7 @@
   height: 21px;
   gap: 3px;
   padding: 0 5px;
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   letter-spacing: 0.07em;
   z-index: 60;
   pointer-events: auto;
@@ -8733,7 +8733,7 @@
 .monster-shell .component-navigator-drawer .component-navigator-modal__list .component-details__trigger {
   min-height: 10px;
   padding-bottom: 1px;
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
 }
 
 .monster-shell .component-navigator-drawer .component-navigator-modal__list .component-card.slot-full .component-details > .meta-list {
@@ -8870,7 +8870,7 @@
 }
 
 .monster-shell .component-navigator-drawer .component-navigator-modal__list .component-impact-metric strong {
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   line-height: 1;
 }
@@ -9024,7 +9024,7 @@
 
 .monster-shell .component-navigator-modal__list .component-card h3 {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 11.5px;
+  font-size: var(--text-size-m-plus);
   font-weight: 900;
   line-height: 1.08;
   display: -webkit-box;
@@ -9045,7 +9045,7 @@
   max-height: 2.42em;
   margin: 0;
   color: var(--cruor-color-text-a550);
-  font-size: 10.5px;
+  font-size: var(--text-size-s-plus);
   line-height: 1.21;
 }
 
@@ -9058,7 +9058,7 @@
   margin: 0;
   border-left-width: 1px;
   padding-left: 5px;
-  font-size: 9.5px;
+  font-size: var(--text-size-xs-plus);
   line-height: 1.2;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
@@ -9087,7 +9087,7 @@
   gap: 3px;
   margin: 0;
   padding: 0 5px;
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   letter-spacing: 0.07em;
 }
 
@@ -9132,7 +9132,7 @@
   background: var(--cruor-color-transparent);
   color: var(--cruor-color-hex-8f7278);
   padding: 0 0 1px;
-  font-size: 8px;
+  font-size: var(--text-size-xxs);
   font-weight: 950;
   letter-spacing: 0.1em;
   line-height: 1;
@@ -9248,7 +9248,7 @@
 }
 
 .monster-shell .component-navigator-modal__list .component-impact-metric strong {
-  font-size: 8.5px;
+  font-size: var(--text-size-xxs-plus);
   font-weight: 950;
   line-height: 1;
 }
@@ -9965,7 +9965,7 @@
 
 
   .monster-shell .brief-step-label {
-    font-size: 8px;
+    font-size: var(--text-size-xxs);
   }
 
 
@@ -10038,14 +10038,14 @@
   .monster-shell .component-navigator-modal__head h2 {
     padding-right: 48px;
     font-family: var(--font);
-    font-size: 24px;
+    font-size: var(--display-size-m);
     line-height: 1;
     letter-spacing: -0.045em;
   }
 
   .monster-shell .component-navigator-modal__subtitle {
     padding-right: 48px;
-    font-size: 12px;
+    font-size: var(--text-size-l);
   }
 
   .monster-shell .component-navigator-modal__head > .icon-btn {
@@ -10075,7 +10075,7 @@
 
   .monster-shell .game-frame-drawer--fullscreen .game-frame__hero h2 {
     font-family: var(--font);
-    font-size: clamp(28px, 10vw, 44px);
+    font-size: var(--text-size-fluid-20);
     line-height: 0.95;
     letter-spacing: -0.045em;
   }
@@ -10651,7 +10651,7 @@
 
 .monster-shell .monster-export-popout-header span {
   color: var(--cruor-color-r208-g162-b170-a820);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.11em;
   text-transform: uppercase;
@@ -10660,7 +10660,7 @@
 .monster-shell .monster-export-popout-header strong {
   color: var(--text);
   font-family: var(--display);
-  font-size: clamp(18px, 2.5vw, 28px);
+  font-size: var(--text-size-fluid-03);
   font-weight: 900;
   line-height: 0.95;
   overflow: hidden;
@@ -10672,7 +10672,7 @@
   background: var(--cruor-ui-control-bg);
   border: 1px solid var(--cruor-ui-control-border);
   color: var(--cruor-ui-control-text);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   letter-spacing: 0.08em;
   min-height: 34px;
@@ -10714,7 +10714,7 @@
   border: 1px solid var(--cruor-color-blood-strong-a580);
   color: var(--cruor-color-hex-c8a2a8);
   display: inline-flex;
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 950;
   justify-content: center;
   letter-spacing: 0.075em;
@@ -10930,7 +10930,7 @@
 .monster-shell .monster-chassis-menu__head span,
 .monster-shell .monster-chassis-family__trigger span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.11em;
   text-transform: uppercase;
@@ -10938,7 +10938,7 @@
 
 .monster-shell .monster-chassis-menu__head strong {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 950;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -10999,7 +10999,7 @@
   background: var(--cruor-color-blood-a220);
   border: 1px solid var(--cruor-color-blood-strong-a560);
   color: var(--cruor-color-hex-c8a2a8);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 850;
   min-height: 28px;
   padding: 0 9px;
@@ -11098,7 +11098,7 @@
   color: var(--cruor-color-hex-bec8c5);
   content: "✓";
   display: grid;
-  font-size: 15px;
+  font-size: var(--text-size-3xl);
   font-weight: 950;
   inset: 0;
   line-height: 1;
@@ -11608,7 +11608,7 @@
   border-left: 1px solid var(--cruor-color-surface-soft-a380);
   color: var(--cruor-color-hex-fff0f2);
   display: grid;
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1;
   min-height: 34px;
   padding: 5px 4px;
@@ -11647,7 +11647,7 @@
 
 .monster-shell .cruor-stat-block__challenge {
   color: var(--cruor-color-text-a900);
-  font-size: 13.5px;
+  font-size: var(--text-size-xl-plus);
   line-height: 1.52;
   margin: 0;
 }
@@ -11683,7 +11683,7 @@
   .monster-shell .cruor-ability-cell--mod::before,
     .monster-shell .cruor-ability-cell--save::before {
     color: var(--cruor-color-text-a420);
-    font-size: 8px;
+    font-size: var(--text-size-xxs);
     font-weight: 950;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -11746,7 +11746,7 @@
   border: 0;
   color: var(--cruor-color-text-a900);
   display: inline-grid;
-  font-size: 13.5px;
+  font-size: var(--text-size-xl-plus);
   gap: 5px;
   grid-template-columns: auto auto;
   justify-content: start;
@@ -11760,7 +11760,7 @@
 
 .monster-shell .cruor-stat-core-card__icon {
   color: var(--cruor-color-blood-glow-a130);
-  font-size: 25px;
+  font-size: var(--display-size-m-plus);
   left: calc(100% - 0.58em);
   line-height: 1;
   opacity: 1;
@@ -11777,7 +11777,7 @@
   position: relative;
   z-index: 1;
   color: var(--cruor-color-text-a900);
-  font-size: 13.5px;
+  font-size: var(--text-size-xl-plus);
   letter-spacing: 0;
   line-height: 1.52;
   text-transform: none;
@@ -11808,7 +11808,7 @@
 
 .monster-shell .cruor-ability-cell,
 .monster-shell .cruor-ability-header-group span {
-  font-size: 12px;
+  font-size: var(--text-size-l);
 }
 
 .monster-shell .cruor-ability-cell--score,
@@ -11827,7 +11827,7 @@
 .monster-shell .rendered-stat-block .cruor-stat-block__core .cruor-stat-core-card span,
 .monster-shell .rendered-stat-block .cruor-stat-block__core .cruor-stat-core-card strong {
   color: var(--cruor-color-text-a900);
-  font-size: 13.5px;
+  font-size: var(--text-size-xl-plus);
   letter-spacing: 0;
   line-height: 1.52;
   text-transform: none;
@@ -11866,7 +11866,7 @@
   color: var(--cruor-color-hex-bec8c5);
   content: "✓";
   display: grid;
-  font-size: 15px;
+  font-size: var(--text-size-3xl);
   font-weight: 950;
   inset: 0;
   line-height: 1;
@@ -11922,7 +11922,7 @@
   min-height: 18px;
   place-items: center;
   text-transform: uppercase;
-  font-size: 9px !important;
+  font-size: var(--text-size-xs) !important;
   font-weight: 450;
 }
 
@@ -11951,7 +11951,7 @@
 
 .monster-shell .cruor-stat-block__designer-notes p {
   color: var(--cruor-color-text-a760);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.45;
 }
 
@@ -11975,7 +11975,7 @@
 .monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline button.brief-step-btn.reached .brief-step-number {
   -webkit-text-fill-color: var(--cruor-color-transparent);
   color: var(--cruor-color-transparent);
-  font-size: 0;
+  font-size: var(--text-size-none);
   line-height: 0;
   text-shadow: none;
 }
@@ -11985,7 +11985,7 @@
 .monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline button.brief-step-btn.reached .brief-step-number::before {
   -webkit-text-fill-color: var(--cruor-color-hex-bec8c5);
   color: var(--cruor-color-hex-bec8c5);
-  font-size: 15px;
+  font-size: var(--text-size-3xl);
   line-height: 1;
   text-shadow: none;
 }
@@ -11999,7 +11999,7 @@
 .monster-shell .monster-stage-progress-dock .guided-flow-drawer__timeline button.brief-step-btn.reached:not(.active) .brief-step-number {
   -webkit-text-fill-color: var(--cruor-color-transparent) !important;
   color: var(--cruor-color-transparent) !important;
-  font-size: 0 !important;
+  font-size: var(--text-size-none) !important;
   line-height: 0 !important;
   overflow: hidden;
   text-indent: -9999px;
@@ -12017,7 +12017,7 @@
   color: var(--cruor-color-hex-bec8c5);
   content: "✓";
   display: grid;
-  font-size: 15px;
+  font-size: var(--text-size-3xl);
   font-weight: 950;
   height: 36px;
   left: 50%;
@@ -12116,7 +12116,7 @@
   background: var(--cruor-surface-card);
   border: 1px solid var(--cruor-color-blood-glow-a380);
   color: var(--cruor-color-text-a780);
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 800;
   height: 16px;
   line-height: 1;
@@ -12186,7 +12186,7 @@
 }
 
 .monster-shell .cruor-stat-block__popout-btn i {
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   line-height: 1;
 }
 
@@ -12469,7 +12469,7 @@
 
 .monster-shell .template-choice-card__topline span {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -12481,7 +12481,7 @@
 
 .monster-shell .template-choice-card__topline strong {
   color: var(--cruor-color-hex-d0a2aa);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -12489,7 +12489,7 @@
 
 .monster-shell .template-choice-card__title-row strong {
   color: var(--cruor-color-hex-fff0f2);
-  font-size: 21px;
+  font-size: var(--display-size-xs);
   font-weight: 950;
   line-height: 1.05;
   letter-spacing: -0.035em;
@@ -12497,7 +12497,7 @@
 
 .monster-shell .template-choice-card__title-row em {
   color: var(--cruor-color-hex-8f7278);
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -12510,7 +12510,7 @@
 
 .monster-shell .template-choice-card__summary {
   color: var(--cruor-color-text-a580);
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.45;
 }
 
@@ -12528,7 +12528,7 @@
   background: var(--cruor-color-white-a025);
   color: var(--cruor-color-hex-c8a2a8);
   padding: 3px 6px;
-  font-size: 9px;
+  font-size: var(--text-size-xs);
   font-weight: 850;
 }
 

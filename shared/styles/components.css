@@ -235,7 +235,7 @@
   padding: 0 13px;
   background: var(--surface-3);
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
   font-weight: 800;
   transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
 }
@@ -259,7 +259,7 @@
   padding: 18px;
   color: var(--faint);
   background: var(--cruor-color-white-a025);
-  font-size: 13px;
+  font-size: var(--text-size-xl);
 }
 
 /* Layout */
@@ -328,7 +328,7 @@
   color: var(--muted);
   padding: 0 9px;
   text-align: left;
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 800;
 }
 

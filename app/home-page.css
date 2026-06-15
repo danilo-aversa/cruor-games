@@ -56,7 +56,7 @@
   line-height: 0.95;
   letter-spacing: -0.045em;
   max-width: 760px;
-  font-size: clamp(50px, 7.6vw, 118px);
+  font-size: var(--display-size-fluid-22);
 }
 
 .cruor-home h1 span {
@@ -71,7 +71,7 @@
   font-weight: 950;
   line-height: 0.95;
   letter-spacing: -0.045em;
-  font-size: clamp(28px, 3vw, 46px);
+  font-size: var(--text-size-fluid-18);
 }
 
 .cruor-home h3 {
@@ -81,7 +81,7 @@
   font-weight: 950;
   line-height: 0.95;
   letter-spacing: -0.045em;
-  font-size: clamp(25px, 2.6vw, 38px);
+  font-size: var(--text-size-fluid-14);
 }
 
 .cruor-home p {
@@ -93,7 +93,7 @@
 .cruor-home__hero-copy > p {
   max-width: 640px;
   margin-top: 22px;
-  font-size: clamp(16px, 1.2vw, 18px);
+  font-size: var(--text-size-fluid-01);
 }
 
 /* Layout */
@@ -117,7 +117,7 @@
   background: var(--cruor-surface-card);
   cursor: pointer;
   text-decoration: none;
-  font-size: 12px;
+  font-size: var(--text-size-l);
   font-weight: 850;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -164,7 +164,7 @@
   cursor: pointer;
   text-decoration: none;
   gap: 8px;
-  font-size: 12px;
+  font-size: var(--text-size-l);
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -294,7 +294,7 @@
 
 .cruor-home__placeholder span {
   color: var(--home-accent-pale);
-  font-size: 11px;
+  font-size: var(--text-size-m);
   font-weight: 900;
   letter-spacing: 0.11em;
   text-transform: uppercase;
@@ -303,14 +303,14 @@
 .cruor-home__placeholder strong {
   color: var(--cruor-color-text, var(--text));
   font-family: var(--display);
-  font-size: 24px;
+  font-size: var(--display-size-m);
   font-weight: 950;
   line-height: 1;
 }
 
 .cruor-home__placeholder p {
   max-width: 36ch;
-  font-size: 12px;
+  font-size: var(--text-size-l);
 }
 
 /* Layout */
@@ -356,7 +356,7 @@
 .cruor-home__statement p {
   max-width: 52ch;
   margin: 12px auto 0;
-  font-size: 15px;
+  font-size: var(--text-size-3xl);
   line-height: 1.68;
 }
 
@@ -406,7 +406,7 @@
 
 .cruor-home__section-head p {
   max-width: 720px;
-  font-size: 14px;
+  font-size: var(--text-size-2xl);
 }
 
 .cruor-home__section--tools {
@@ -458,7 +458,7 @@
 .cruor-home__tool-copy p {
   max-width: 40ch;
   margin-top: 10px;
-  font-size: 14px;
+  font-size: var(--text-size-2xl);
 }
 
 /* Layout */
@@ -546,7 +546,7 @@
   gap: 12px;
   margin-bottom: 14px;
   color: var(--cruor-color-muted, var(--muted));
-  font-size: 10px;
+  font-size: var(--text-size-s);
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -556,12 +556,12 @@
 
 .cruor-home__stack-card h3 {
   margin-bottom: 10px;
-  font-size: 28px;
+  font-size: var(--display-size-l);
 }
 
 .cruor-home__stack-card p {
   max-width: 28ch;
-  font-size: 12px;
+  font-size: var(--text-size-l);
   line-height: 1.56;
 }
 
@@ -594,7 +594,7 @@
 .cruor-home__support-band p {
   max-width: 44ch;
   margin: 12px 0 0;
-  font-size: 14px;
+  font-size: var(--text-size-2xl);
 }
 
 .cruor-home__support-band .cruor-home__button {
