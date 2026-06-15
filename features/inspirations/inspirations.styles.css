@@ -6,6 +6,8 @@
 
 /* At-Rules */
 
+@import "../../shared/styles/colors.css";
+
 @keyframes inspirations-dossier-fade {
   from {
     opacity: 0;
@@ -21,17 +23,17 @@
 /* Tokens */
 
 .inspirations-page {
-  --inspirations-bg: var(--cruor-color-bg, #000);
-  --inspirations-surface: var(--cruor-color-surface, #050506);
-  --inspirations-surface-soft: rgba(12, 10, 12, 0.74);
-  --inspirations-line: rgba(255, 238, 242, 0.08);
-  --inspirations-line-strong: rgba(190, 64, 82, 0.42);
-  --inspirations-accent: var(--cruor-color-accent-3, #7a1a28);
-  --inspirations-accent-hot: #be4052;
-  --inspirations-text: var(--cruor-color-text, #eeeeee);
-  --inspirations-muted: var(--cruor-color-muted, #a7a7ad);
-  --inspirations-faint: var(--cruor-color-faint, #666871);
-  --inspirations-chip: #d0a2aa;
+  --inspirations-bg: var(--cruor-color-bg, var(--cruor-color-black));
+  --inspirations-surface: var(--cruor-color-surface, var(--cruor-color-surface-soft));
+  --inspirations-surface-soft: var(--cruor-color-r12-g10-b12-a740);
+  --inspirations-line: var(--cruor-color-milk-a080);
+  --inspirations-line-strong: var(--cruor-color-blood-glow-a420);
+  --inspirations-accent: var(--cruor-color-accent-3, var(--cruor-color-blood-bright));
+  --inspirations-accent-hot: var(--cruor-color-hex-be4052);
+  --inspirations-text: var(--cruor-color-text, var(--cruor-color-text));
+  --inspirations-muted: var(--cruor-color-muted, var(--cruor-color-muted));
+  --inspirations-faint: var(--cruor-color-faint, var(--cruor-color-faint));
+  --inspirations-chip: var(--cruor-color-hex-d0a2aa);
   --inspirations-font: var(--cruor-font-body, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   --inspirations-display: var(--cruor-font-display, "Lovato-Black", Georgia, "Times New Roman", serif);
   --inspirations-workspace-max: var(--cruor-workspace-max, 1540px);
@@ -42,7 +44,7 @@
   min-height: calc(100dvh - 52px);
   padding: var(--inspirations-page-pad-y) clamp(16px, 3vw, 30px) 42px;
   background-color: var(--inspirations-bg);
-  background-image: var(--paper-texture, url("https://www.transparenttextures.com/patterns/black-paper.png")), radial-gradient(circle at 18% 0%, rgba(122, 26, 40, 0.34), transparent 30rem), radial-gradient(circle at 82% 18%, rgba(95, 7, 22, 0.22), transparent 28rem), linear-gradient(135deg, rgba(51, 3, 12, 0.92) 0%, rgba(18, 1, 5, 0.9) 34%, rgba(0, 0, 0, 0.98) 74%, #000 100%);
+  background-image: var(--paper-texture, url("https://www.transparenttextures.com/patterns/black-paper.png")), var(--cruor-gradient-radial-237-09710719), var(--cruor-gradient-radial-050-1c37bf3c), var(--cruor-gradient-linear-144-fc78ef02);
   background-blend-mode: multiply, screen, screen, normal;
   color: var(--inspirations-text);
   font-family: var(--inspirations-font);
@@ -79,8 +81,8 @@
 
 .inspirations-panel {
   border: 1px solid var(--inspirations-line);
-  background: linear-gradient(180deg, rgba(255, 238, 242, 0.028), transparent 160px), var(--inspirations-surface-soft);
-  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  background: var(--cruor-gradient-linear-177-61b81df2), var(--inspirations-surface-soft);
+  box-shadow: var(--cruor-shadow-box-108);
 }
 
 /* Components */
@@ -106,7 +108,7 @@
   margin: 0 0 18px;
   padding: clamp(18px, 3vw, 30px);
   overflow: hidden;
-  background: radial-gradient(circle at 14% 0%, rgba(190, 64, 82, 0.16), transparent 24rem), linear-gradient(180deg, rgba(255, 238, 242, 0.03), transparent 72%), rgba(12, 10, 12, 0.78);
+  background: var(--cruor-gradient-radial-233-5992dede), var(--cruor-gradient-linear-180-6c9dd1c2), var(--cruor-color-r12-g10-b12-a780);
 }
 
 .inspirations-page__hero-copy {
@@ -120,18 +122,18 @@
 .inspirations-page__hero h1 {
   max-width: 900px;
   margin: 0;
-  color: #fff0f2;
+  color: var(--cruor-color-hex-fff0f2);
   font-family: var(--inspirations-display);
   font-size: clamp(38px, 4.8vw, 70px);
   line-height: 0.88;
   letter-spacing: -0.055em;
-  text-shadow: 0 0 28px rgba(122, 26, 40, 0.42);
+  text-shadow: var(--cruor-shadow-text-016);
 }
 
 .inspirations-page__hero p:not(.eyebrow) {
   max-width: 780px;
   margin: 0;
-  color: rgba(238, 238, 238, 0.56);
+  color: var(--cruor-color-text-a560);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -150,8 +152,8 @@
   gap: 5px;
   min-height: 74px;
   align-content: center;
-  border: 1px solid rgba(255, 238, 242, 0.075);
-  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-black-a180);
   padding: 10px;
   text-align: center;
 }
@@ -159,7 +161,7 @@
 /* Components */
 
 .inspirations-page__stats strong {
-  color: #fff0f2;
+  color: var(--cruor-color-hex-fff0f2);
   font-size: 24px;
   font-weight: 950;
   line-height: 1;
@@ -206,9 +208,9 @@
 .inspirations-page__tools input {
   width: 100%;
   min-height: var(--cruor-control-height-inspirations, 40px);
-  border: 1px solid rgba(255, 238, 242, 0.08);
+  border: 1px solid var(--cruor-color-milk-a080);
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.04), transparent 64%), rgba(0, 0, 0, 0.22);
+  background: var(--cruor-gradient-linear-017-c1cb33c1), var(--cruor-color-black-a220);
   color: var(--inspirations-text);
   padding: 0 11px;
   outline: none;
@@ -218,15 +220,15 @@
 /* Components */
 
 .inspirations-page__tools input::placeholder {
-  color: rgba(238, 238, 238, 0.34);
+  color: var(--cruor-color-text-a340);
 }
 
 /* States */
 
 .inspirations-page__tools input:focus {
-  border-color: rgba(190, 64, 82, 0.62);
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.08), transparent 64%), rgba(5, 5, 6, 0.82);
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 20px rgba(122, 26, 40, 0.22);
+  border-color: var(--cruor-color-blood-glow-a620);
+  background: var(--cruor-gradient-linear-011-25d82b21), var(--cruor-color-surface-soft-a820);
+  box-shadow: var(--cruor-shadow-box-088);
 }
 
 /* Layout */
@@ -251,9 +253,9 @@
 /* Layout */
 
 .inspirations-page__select-trigger {
-  border: 1px solid rgba(95, 7, 22, 0.56);
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.07), transparent 68%), rgba(0, 0, 0, 0.32);
-  color: #c8a2a8;
+  border: 1px solid var(--cruor-color-blood-strong-a560);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  color: var(--cruor-color-hex-c8a2a8);
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -267,7 +269,7 @@
 
 .inspirations-page__select-trigger strong {
   overflow: hidden;
-  color: #fff0f2;
+  color: var(--cruor-color-hex-fff0f2);
   font-size: 12px;
   font-weight: 900;
   line-height: 1.1;
@@ -278,7 +280,7 @@
 /* Components */
 
 .inspirations-page__select-trigger i {
-  color: #b33b4e;
+  color: var(--cruor-color-hex-b33b4e);
   font-size: 12px;
   transition: color 0.12s ease, transform 0.12s ease;
 }
@@ -286,39 +288,39 @@
 /* States */
 
 .inspirations-page__select-option.is-active {
-  border-color: rgba(190, 64, 82, 0.78);
-  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
-  color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
 }
 
 .inspirations-page__select-option:hover {
-  border-color: rgba(190, 64, 82, 0.78);
-  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
-  color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
 }
 
 .inspirations-page__select-trigger:hover {
-  border-color: rgba(190, 64, 82, 0.78);
-  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
-  color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
 }
 
 .inspirations-page__select-trigger[aria-expanded="true"] {
-  border-color: rgba(190, 64, 82, 0.78);
-  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.18), transparent 72%), linear-gradient(180deg, rgba(30, 7, 11, 0.92), rgba(9, 5, 7, 0.9));
-  color: #fff0f2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.13), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
 }
 
 .inspirations-page__select-trigger:hover i {
-  color: #f0b9c2;
+  color: var(--cruor-color-hex-f0b9c2);
 }
 
 .inspirations-page__select-trigger[aria-expanded="true"] i {
-  color: #f0b9c2;
+  color: var(--cruor-color-hex-f0b9c2);
   transform: rotate(180deg);
 }
 
@@ -334,16 +336,16 @@
   gap: 5px;
   max-height: min(320px, 58vh);
   overflow: auto;
-  border: 1px solid rgba(190, 64, 82, 0.5);
-  background: linear-gradient(180deg, rgba(255, 238, 242, 0.045), transparent 70%), rgba(5, 5, 6, 0.97);
+  border: 1px solid var(--cruor-color-blood-glow-a500);
+  background: var(--cruor-gradient-linear-012-c39edb21), var(--cruor-color-surface-soft-a970);
   padding: 6px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72), 0 0 28px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.055);
+  box-shadow: var(--cruor-shadow-box-025);
 }
 
 .inspirations-page__select-option {
-  border: 1px solid rgba(95, 7, 22, 0.56);
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.07), transparent 68%), rgba(0, 0, 0, 0.32);
-  color: #c8a2a8;
+  border: 1px solid var(--cruor-color-blood-strong-a560);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-black-a320);
+  color: var(--cruor-color-hex-c8a2a8);
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -362,7 +364,7 @@
 
 .inspirations-page__select-option strong {
   overflow: hidden;
-  color: #fff0f2;
+  color: var(--cruor-color-hex-fff0f2);
   font-size: 12px;
   font-weight: 900;
   line-height: 1.1;
@@ -373,7 +375,7 @@
 .inspirations-page__select-option small {
   display: block;
   overflow: hidden;
-  color: rgba(238, 238, 238, 0.5);
+  color: var(--cruor-color-text-a500);
   font-size: 10px;
   line-height: 1.25;
   text-overflow: ellipsis;
@@ -382,9 +384,9 @@
 
 .inspirations-page__clear-btn {
   min-height: 40px;
-  border: 1px solid rgba(255, 238, 242, 0.09);
-  background: rgba(255, 255, 255, 0.022);
-  color: #c8a2a8;
+  border: 1px solid var(--cruor-color-milk-a090);
+  background: var(--cruor-color-white-a022);
+  color: var(--cruor-color-hex-c8a2a8);
   padding: 0 11px;
   font-size: 10px;
   font-weight: 950;
@@ -396,17 +398,17 @@
 /* States */
 
 .inspirations-page__clear-btn:hover:not(:disabled) {
-  border-color: rgba(190, 64, 82, 0.62);
-  background: rgba(95, 7, 22, 0.28);
-  color: #fff0f2;
-  box-shadow: inset 0 0 0 1px rgba(190, 64, 82, 0.08), 0 0 20px rgba(122, 26, 40, 0.16);
+  border-color: var(--cruor-color-blood-glow-a620);
+  background: var(--cruor-color-blood-strong-a280);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-071);
 }
 
 .inspirations-page__primary-action:hover:not(:disabled) {
-  border-color: rgba(190, 64, 82, 0.62);
-  background: rgba(95, 7, 22, 0.28);
-  color: #fff0f2;
-  box-shadow: inset 0 0 0 1px rgba(190, 64, 82, 0.08), 0 0 20px rgba(122, 26, 40, 0.16);
+  border-color: var(--cruor-color-blood-glow-a620);
+  background: var(--cruor-color-blood-strong-a280);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-071);
 }
 
 /* Layout */
@@ -440,7 +442,7 @@
 
 .inspirations-page__library-head h2 {
   margin: 5px 0 0;
-  color: #fff0f2;
+  color: var(--cruor-color-hex-fff0f2);
   font-size: clamp(24px, 3vw, 36px);
   font-weight: 950;
   line-height: 1;
@@ -453,9 +455,9 @@
   display: inline-flex;
   align-items: center;
   min-height: 30px;
-  border: 1px solid rgba(255, 238, 242, 0.075);
-  background: rgba(0, 0, 0, 0.18);
-  color: #d0a2aa;
+  border: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-black-a180);
+  color: var(--cruor-color-hex-d0a2aa);
   padding: 0 9px;
   font-size: 9px;
   font-weight: 950;
@@ -475,9 +477,9 @@
   grid-template-rows: auto minmax(0, 1fr);
   min-width: 0;
   overflow: hidden;
-  border: 1px solid rgba(255, 238, 242, 0.09);
-  background: linear-gradient(180deg, rgba(255, 238, 242, 0.032), transparent 68%), radial-gradient(circle at 16% 0%, rgba(190, 64, 82, 0.12), transparent 11rem), rgba(5, 5, 6, 0.64);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 238, 242, 0.04);
+  border: 1px solid var(--cruor-color-milk-a090);
+  background: var(--cruor-gradient-linear-019-fbb0759c), var(--cruor-gradient-radial-235-073737b4), var(--cruor-color-surface-soft-a640);
+  box-shadow: var(--cruor-shadow-box-105);
   transition: border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease, transform 0.14s ease;
 }
 
@@ -485,16 +487,16 @@
 
 .inspirations-page__card.is-active {
   transform: translateY(-2px);
-  border-color: rgba(190, 64, 82, 0.68);
-  background: linear-gradient(180deg, rgba(255, 238, 242, 0.052), transparent 68%), radial-gradient(circle at 16% 0%, rgba(190, 64, 82, 0.22), transparent 13rem), rgba(12, 7, 9, 0.86);
-  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 42px rgba(122, 26, 40, 0.22);
+  border-color: var(--cruor-color-blood-glow-a680);
+  background: var(--cruor-gradient-linear-101-60a8a5a5), var(--cruor-gradient-radial-128-a105fb60), var(--cruor-color-r12-g7-b9-a860);
+  box-shadow: var(--cruor-shadow-box-070);
 }
 
 .inspirations-page__card:hover {
   transform: translateY(-2px);
-  border-color: rgba(190, 64, 82, 0.68);
-  background: linear-gradient(180deg, rgba(255, 238, 242, 0.052), transparent 68%), radial-gradient(circle at 16% 0%, rgba(190, 64, 82, 0.22), transparent 13rem), rgba(12, 7, 9, 0.86);
-  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 42px rgba(122, 26, 40, 0.22);
+  border-color: var(--cruor-color-blood-glow-a680);
+  background: var(--cruor-gradient-linear-101-60a8a5a5), var(--cruor-gradient-radial-128-a105fb60), var(--cruor-color-r12-g7-b9-a860);
+  box-shadow: var(--cruor-shadow-box-070);
 }
 
 /* Layout */
@@ -506,9 +508,9 @@
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border: 0;
-  border-bottom: 1px solid rgba(255, 238, 242, 0.07);
-  background: transparent;
-  color: rgba(190, 64, 82, 0.44);
+  border-bottom: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-color-transparent);
+  color: var(--cruor-color-blood-glow-a440);
   padding: 0;
   text-align: left;
 }
@@ -519,8 +521,8 @@
   isolation: isolate;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at 50% 26%, rgba(122, 26, 40, 0.22), rgba(0, 0, 0, 0.96));
-  color: rgba(190, 64, 82, 0.42);
+  background: var(--cruor-gradient-radial-047-4ac41150);
+  color: var(--cruor-color-blood-glow-a420);
 }
 
 .inspirations-page__detail-visual {
@@ -534,9 +536,9 @@
   isolation: isolate;
   contain: paint;
   place-items: center;
-  border: 1px solid rgba(255, 238, 242, 0.09);
-  background: radial-gradient(circle at 50% 26%, rgba(122, 26, 40, 0.22), rgba(0, 0, 0, 0.96));
-  color: rgba(190, 64, 82, 0.42);
+  border: 1px solid var(--cruor-color-milk-a090);
+  background: var(--cruor-gradient-radial-047-4ac41150);
+  color: var(--cruor-color-blood-glow-a420);
 }
 
 .inspirations-page__visual::after {
@@ -544,7 +546,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.58)), linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px), linear-gradient(180deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+  background: var(--cruor-gradient-linear-147-e08f093b), var(--cruor-gradient-linear-216-41f72fb3), var(--cruor-gradient-linear-192-394792e7);
   background-size: auto, 34px 34px, 34px 34px;
   pointer-events: none;
 }
@@ -586,7 +588,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.34)), linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px), linear-gradient(180deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+  background: var(--cruor-gradient-linear-052-97c6692c), var(--cruor-gradient-linear-065-00d91395), var(--cruor-gradient-linear-063-940bd872);
   background-size: auto, 34px 34px, 34px 34px;
   pointer-events: none;
 }
@@ -602,9 +604,9 @@
   max-width: calc(100% - 20px);
   min-height: 25px;
   align-items: center;
-  border: 1px solid rgba(255, 238, 242, 0.08);
-  background: rgba(0, 0, 0, 0.54);
-  color: #f0d7dc;
+  border: 1px solid var(--cruor-color-milk-a080);
+  background: var(--cruor-color-black-a540);
+  color: var(--cruor-color-hex-f0d7dc);
   padding: 0 8px;
   font-size: 9px;
   font-weight: 950;
@@ -613,7 +615,7 @@
   text-overflow: ellipsis;
   text-transform: uppercase;
   white-space: nowrap;
-  backdrop-filter: blur(8px);
+  backdrop-filter: var(--cruor-filter-blur-8);
 }
 
 .inspirations-page__body {
@@ -625,7 +627,7 @@
 /* Components */
 
 .inspirations-page__body strong {
-  color: #fff0f2;
+  color: var(--cruor-color-hex-fff0f2);
   font-size: 16px;
   font-weight: 950;
   line-height: 1.08;
@@ -637,7 +639,7 @@
 .inspirations-page__body > span {
   display: -webkit-box;
   overflow: hidden;
-  color: rgba(238, 238, 238, 0.58);
+  color: var(--cruor-color-text-a580);
   font-size: 12px;
   line-height: 1.38;
   -webkit-box-orient: vertical;
@@ -647,7 +649,7 @@
 .inspirations-page__body em {
   display: block;
   overflow: hidden;
-  color: #8f7278;
+  color: var(--cruor-color-hex-8f7278);
   font-size: 9px;
   font-style: normal;
   font-weight: 950;
@@ -661,7 +663,7 @@
 .inspirations-page__body small {
   display: block;
   overflow: hidden;
-  color: #d0a2aa;
+  color: var(--cruor-color-hex-d0a2aa);
   font-size: 9px;
   font-style: normal;
   font-weight: 950;
@@ -674,16 +676,16 @@
 
 .inspirations-page__primary-action {
   min-height: 40px;
-  border: 1px solid rgba(255, 238, 242, 0.09);
-  background: radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.16), transparent 68%), linear-gradient(180deg, rgba(30, 7, 11, 0.88), rgba(10, 5, 7, 0.82));
-  color: #fff0f2;
+  border: 1px solid var(--cruor-color-milk-a090);
+  background: var(--cruor-gradient-radial-134-20afbf1f), var(--cruor-gradient-linear-193-f2121c9d);
+  color: var(--cruor-color-hex-fff0f2);
   padding: 0 11px;
   font-size: 10px;
   font-weight: 950;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
-  border-color: rgba(190, 64, 82, 0.5);
+  border-color: var(--cruor-color-blood-glow-a500);
 }
 
 .inspirations-page__dossier {
@@ -713,7 +715,7 @@
 .inspirations-page__dossier-head {
   display: grid;
   gap: 7px;
-  border-bottom: 1px solid rgba(255, 238, 242, 0.07);
+  border-bottom: 1px solid var(--cruor-color-milk-a070);
   padding-bottom: 12px;
 }
 
@@ -726,7 +728,7 @@
 
 .inspirations-page__dossier-head h2 {
   margin: 0;
-  color: #fff0f2;
+  color: var(--cruor-color-hex-fff0f2);
   font-size: clamp(26px, 3vw, 38px);
   font-weight: 950;
   line-height: 0.95;
@@ -735,7 +737,7 @@
 
 .inspirations-page__empty-dossier h2 {
   margin: 0;
-  color: #fff0f2;
+  color: var(--cruor-color-hex-fff0f2);
   font-size: clamp(26px, 3vw, 38px);
   font-weight: 950;
   line-height: 0.95;
@@ -744,14 +746,14 @@
 
 .inspirations-page__dossier-head p:not(.eyebrow) {
   margin: 0;
-  color: rgba(238, 238, 238, 0.54);
+  color: var(--cruor-color-text-a540);
   font-size: 13px;
   line-height: 1.4;
 }
 
 .inspirations-page__empty-dossier p:not(.eyebrow) {
   margin: 0;
-  color: rgba(238, 238, 238, 0.54);
+  color: var(--cruor-color-text-a540);
   font-size: 13px;
   line-height: 1.4;
 }
@@ -763,9 +765,9 @@
   width: fit-content;
   min-height: 26px;
   align-items: center;
-  border: 1px solid rgba(255, 238, 242, 0.075);
-  background: rgba(0, 0, 0, 0.18);
-  color: #d0a2aa;
+  border: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-black-a180);
+  color: var(--cruor-color-hex-d0a2aa);
   padding: 0 8px;
   font-size: 9px;
   font-weight: 950;
@@ -781,9 +783,9 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid rgba(190, 64, 82, 0.5);
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.2), transparent 72%), rgba(0, 0, 0, 0.32);
-  color: #fff0f2;
+  border: 1px solid var(--cruor-color-blood-glow-a500);
+  background: var(--cruor-gradient-linear-079-18ee8d35), var(--cruor-color-black-a320);
+  color: var(--cruor-color-hex-fff0f2);
   padding: 0 11px;
   font-size: 9px;
   font-weight: 950;
@@ -793,9 +795,9 @@
 }
 
 .inspirations-page__composer-cta:hover {
-  border-color: rgba(255, 238, 242, 0.2);
-  background: linear-gradient(180deg, rgba(190, 64, 82, 0.24), transparent 72%), rgba(51, 3, 12, 0.54);
-  box-shadow: 0 0 24px rgba(122, 26, 40, 0.24);
+  border-color: var(--cruor-color-milk-a200);
+  background: var(--cruor-gradient-linear-087-77ac247e), var(--cruor-color-blood-a540);
+  box-shadow: var(--cruor-shadow-box-054);
 }
 
 .inspirations-page__use-actions {
@@ -810,9 +812,9 @@
   align-items: center;
   justify-content: center;
   min-height: 40px;
-  border: 1px solid rgba(255, 238, 242, 0.075);
-  background: rgba(0, 0, 0, 0.18);
-  color: #d0a2aa;
+  border: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-black-a180);
+  color: var(--cruor-color-hex-d0a2aa);
   padding: 0 9px;
   font-size: 9px;
   font-weight: 950;
@@ -829,8 +831,8 @@
 .inspirations-page__detail-main section {
   display: grid;
   gap: 8px;
-  border: 1px solid rgba(255, 238, 242, 0.065);
-  background: rgba(255, 255, 255, 0.018);
+  border: 1px solid var(--cruor-color-milk-a065);
+  background: var(--cruor-color-white-a018);
   padding: 11px;
 }
 
@@ -838,7 +840,7 @@
 
 .inspirations-page__detail-main h3 {
   margin: 0;
-  color: #b33b4e;
+  color: var(--cruor-color-hex-b33b4e);
   font-size: 10px;
   font-weight: 950;
   letter-spacing: 0.1em;
@@ -847,7 +849,7 @@
 
 .inspirations-page__detail-main p {
   margin: 0;
-  color: rgba(238, 238, 238, 0.58);
+  color: var(--cruor-color-text-a580);
   font-size: 12.5px;
   line-height: 1.5;
 }
@@ -868,7 +870,7 @@
 }
 
 .inspirations-page__section-head strong {
-  color: #d0a2aa;
+  color: var(--cruor-color-hex-d0a2aa);
   font-size: 10px;
   font-weight: 950;
   letter-spacing: 0.08em;
@@ -892,9 +894,9 @@
 /* Components */
 
 .inspirations-page__chips span {
-  border: 1px solid rgba(255, 238, 242, 0.075);
-  background: rgba(255, 255, 255, 0.024);
-  color: #c8a2a8;
+  border: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-white-a024);
+  color: var(--cruor-color-hex-c8a2a8);
   padding: 5px 8px;
   font-size: 10px;
   font-weight: 850;
@@ -910,8 +912,8 @@
 .inspirations-page__component-group {
   display: grid;
   gap: 8px;
-  border: 1px solid rgba(255, 238, 242, 0.065);
-  background: rgba(0, 0, 0, 0.16);
+  border: 1px solid var(--cruor-color-milk-a065);
+  background: var(--cruor-color-black-a160);
   padding: 9px;
 }
 
@@ -921,7 +923,7 @@
   justify-content: space-between;
   gap: 12px;
   margin: 0;
-  color: rgba(238, 238, 238, 0.82);
+  color: var(--cruor-color-text-a820);
   font-size: 10px;
   font-weight: 950;
   letter-spacing: 0.08em;
@@ -931,16 +933,16 @@
 /* Components */
 
 .inspirations-page__component-group h4 em {
-  color: #d0a2aa;
+  color: var(--cruor-color-hex-d0a2aa);
   font-style: normal;
 }
 
 /* Layout */
 
 .inspirations-page__linked > span {
-  border: 1px solid rgba(255, 238, 242, 0.075);
-  background: rgba(255, 255, 255, 0.024);
-  color: #c8a2a8;
+  border: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-white-a024);
+  color: var(--cruor-color-hex-c8a2a8);
   padding: 5px 8px;
   font-size: 10px;
   font-weight: 850;
@@ -952,13 +954,13 @@
 /* Components */
 
 .inspirations-page__linked > span strong {
-  color: rgba(238, 238, 238, 0.9);
+  color: var(--cruor-color-text-a900);
   font-size: 11px;
   line-height: 1.25;
 }
 
 .inspirations-page__linked > span small {
-  color: rgba(208, 162, 170, 0.84);
+  color: var(--cruor-color-r208-g162-b170-a840);
   font-size: 8px;
   font-weight: 850;
   letter-spacing: 0.04em;
@@ -972,8 +974,8 @@
   align-content: center;
   gap: 10px;
   min-height: 440px;
-  border: 1px dashed rgba(255, 238, 242, 0.09);
-  background: radial-gradient(circle at 50% 18%, rgba(190, 64, 82, 0.12), transparent 16rem), rgba(0, 0, 0, 0.16);
+  border: 1px dashed var(--cruor-color-milk-a090);
+  background: var(--cruor-gradient-radial-246-4c8845b1), var(--cruor-color-black-a160);
   padding: 18px;
   text-align: center;
 }
@@ -982,9 +984,9 @@
 
 .inspirations-page .empty {
   margin-top: 12px;
-  border: 1px dashed rgba(255, 238, 242, 0.09);
-  background: rgba(255, 255, 255, 0.022);
-  color: rgba(238, 238, 238, 0.5);
+  border: 1px dashed var(--cruor-color-milk-a090);
+  background: var(--cruor-color-white-a022);
+  color: var(--cruor-color-text-a500);
   padding: 18px;
   font-size: 13px;
   line-height: 1.45;
@@ -1000,13 +1002,13 @@
 /* Components */
 
 .inspirations-page ::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 .inspirations-page ::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
+  background: var(--cruor-gradient-linear-005-2d835da9);
 }
 
 @media (max-width: 1320px) {
@@ -1090,9 +1092,9 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid rgba(190, 64, 82, 0.5);
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.2), transparent 72%), rgba(0, 0, 0, 0.32);
-  color: #fff0f2;
+  border: 1px solid var(--cruor-color-blood-glow-a500);
+  background: var(--cruor-gradient-linear-079-18ee8d35), var(--cruor-color-black-a320);
+  color: var(--cruor-color-hex-fff0f2);
   padding: 0 11px;
   font-size: 9px;
   font-weight: 950;
@@ -1102,9 +1104,9 @@
 }
 
 .inspirations-page__composer-cta:hover {
-  border-color: rgba(255, 238, 242, 0.2);
-  background: linear-gradient(180deg, rgba(190, 64, 82, 0.24), transparent 72%), rgba(51, 3, 12, 0.54);
-  box-shadow: 0 0 24px rgba(122, 26, 40, 0.24);
+  border-color: var(--cruor-color-milk-a200);
+  background: var(--cruor-gradient-linear-087-77ac247e), var(--cruor-color-blood-a540);
+  box-shadow: var(--cruor-shadow-box-054);
 }
 
 .inspirations-page__use-actions {

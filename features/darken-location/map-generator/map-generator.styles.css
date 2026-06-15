@@ -6,9 +6,11 @@
 
 /* Layout */
 
+@import "../../../shared/styles/colors.css";
+
 .map-generator-view {
   min-height: calc(100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) - var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)));
-  background: radial-gradient(circle at 16% 0%, rgba(122, 26, 40, 0.12), transparent 34%), radial-gradient(circle at 92% 4%, rgba(95, 7, 22, 0.08), transparent 32%), linear-gradient(180deg, rgba(255, 238, 242, 0.012), transparent 13rem), var(--cruor-color-bg, var(--bg));
+  background: var(--cruor-gradient-radial-234-37bbf480), var(--cruor-gradient-radial-264-01b17bc5), var(--cruor-gradient-linear-171-3149f474), var(--cruor-color-bg, var(--bg));
 }
 
 .map-generator-view__bar {
@@ -49,7 +51,7 @@
 
 
 .cruor-map-mvp .imported-map-request strong {
-  color: rgba(208, 162, 170, 0.9);
+  color: var(--cruor-color-r208-g162-b170-a900);
   font-size: 10px;
   font-weight: 950;
   letter-spacing: 0.16em;
@@ -74,7 +76,7 @@
 /* Components */
 
 .cruor-map-mvp .control-label {
-  color: rgba(208, 162, 170, 0.82);
+  color: var(--cruor-color-r208-g162-b170-a820);
   font-size: 10px;
   font-weight: 950;
   letter-spacing: 0.16em;
@@ -110,7 +112,7 @@
 /* Components */
 
 .cruor-map-mvp .stat__value {
-  color: #d0a2aa;
+  color: var(--cruor-color-hex-d0a2aa);
   font-size: 21px;
   font-weight: 950;
   line-height: 1;
@@ -125,11 +127,11 @@
 /* States */
 
 .cruor-map-mvp .test-report.is-passing {
-  border-color: rgba(143, 150, 148, 0.36);
+  border-color: var(--cruor-color-good-a360);
 }
 
 .cruor-map-mvp .test-report.is-failing {
-  border-color: rgba(190, 64, 82, 0.64);
+  border-color: var(--cruor-color-blood-glow-a640);
 }
 
 /* Components */
@@ -160,26 +162,26 @@
 /* States */
 
 .cruor-map-mvp .test-report__check.is-passing strong {
-  color: #aeb6b3;
+  color: var(--cruor-color-hex-aeb6b3);
 }
 
 .cruor-map-mvp .test-report__check.is-failing {
-  border-color: rgba(190, 64, 82, 0.58);
+  border-color: var(--cruor-color-blood-glow-a580);
 }
 
 .cruor-map-mvp .test-report__check.is-failing strong {
-  color: #d58a94;
+  color: var(--cruor-color-hex-d58a94);
 }
 
 /* Components */
 
 .cruor-map-mvp .test-report__error {
-  color: #d58a94;
+  color: var(--cruor-color-hex-d58a94);
 }
 
 .cruor-map-mvp .test-report__warning {
   margin-top: 6px;
-  color: #d0a2aa;
+  color: var(--cruor-color-hex-d0a2aa);
 }
 
 /* Layout */
@@ -191,14 +193,14 @@
   gap: 12px;
   min-height: 56px;
   padding: 12px 14px;
-  border-bottom: 2px solid rgba(95, 7, 22, 0.52);
-  background: linear-gradient(180deg, rgba(255, 238, 242, 0.035), transparent), linear-gradient(180deg, rgba(122, 26, 40, 0.055), transparent), rgba(0, 0, 0, 0.24);
+  border-bottom: 2px solid var(--cruor-color-blood-strong-a520);
+  background: var(--cruor-gradient-linear-031-12bc71a1), var(--cruor-gradient-linear-153-f6e2064e), var(--cruor-color-black-a240);
 }
 
 /* Components */
 
 .cruor-map-mvp .map-toolbar__title {
-  color: rgba(208, 162, 170, 0.9);
+  color: var(--cruor-color-r208-g162-b170-a900);
   font-size: 12px;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -215,7 +217,7 @@
 
 .cruor-map-mvp .map-stage {
   padding: 18px;
-  background: radial-gradient(circle at top, rgba(122, 26, 40, 0.1), transparent 42%), rgba(0, 0, 0, 0.42);
+  background: var(--cruor-gradient-radial-266-9d3fe8c7), var(--cruor-color-black-a420);
 }
 
 .cruor-map-mvp .zoom-toolbar {
@@ -238,7 +240,7 @@
 }
 
 .cruor-map-mvp .map-viewport:focus {
-  box-shadow: inset 0 0 0 2px rgba(122, 26, 40, 0.68), inset 0 0 0 1px rgba(29, 25, 21, 0.25);
+  box-shadow: var(--cruor-shadow-box-126);
 }
 
 /* Layout */
@@ -276,7 +278,7 @@
   display: grid;
   gap: 2px;
   padding: 4px 4px 8px;
-  border-bottom: 1px solid rgba(95, 7, 22, 0.48);
+  border-bottom: 1px solid var(--cruor-color-blood-strong-a480);
   margin-bottom: 8px;
 }
 
@@ -322,13 +324,13 @@
 .room-context-menu button:disabled {
   opacity: 0.48;
   cursor: not-allowed;
-  background: rgba(0, 0, 0, 0.14);
+  background: var(--cruor-color-black-a140);
 }
 
 .room-context-menu button.is-armed {
-  border-color: rgba(190, 64, 82, 0.95);
-  background: rgba(122, 26, 40, 0.58);
-  color: #ffeef2;
+  border-color: var(--cruor-color-blood-glow-a950);
+  background: var(--cruor-color-blood-bright-a580);
+  color: var(--cruor-color-hex-ffeef2);
 }
 
 /* Layout */
@@ -337,7 +339,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6px;
-  border-top: 1px solid rgba(95, 7, 22, 0.48);
+  border-top: 1px solid var(--cruor-color-blood-strong-a480);
   padding-top: 8px;
 }
 
@@ -433,7 +435,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  border-bottom: 1px solid rgba(95, 7, 22, 0.48);
+  border-bottom: 1px solid var(--cruor-color-blood-strong-a480);
   padding: 0 0 8px;
   margin-bottom: 8px;
 }
@@ -441,7 +443,7 @@
 .context-menu-toolbar__divider {
   width: 1px;
   height: 22px;
-  background: rgba(95, 7, 22, 0.52);
+  background: var(--cruor-color-blood-strong-a520);
   margin: 0 2px;
 }
 
@@ -489,7 +491,7 @@
   width: 26px;
   height: 1px;
   margin: 3px 0;
-  background: rgba(95, 7, 22, 0.72);
+  background: var(--cruor-color-blood-strong-a720);
 }
 
 .cruor-map-workspace .map-tool-button {
@@ -499,10 +501,10 @@
   width: var(--cruor-control-height-sm, 36px);
   height: var(--cruor-control-height-sm, 36px);
   min-width: var(--cruor-control-height-sm, 36px);
-  border: 1px solid var(--cruor-button-border, rgba(95, 7, 22, 0.74));
+  border: 1px solid var(--cruor-button-border, var(--cruor-color-blood-strong-a740));
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(18, 7, 9, 0.88), rgba(7, 4, 5, 0.82)), rgba(8, 5, 6, 0.72);
-  color: rgba(244, 228, 232, 0.9);
+  background: var(--cruor-gradient-linear-168-68f86c33), var(--cruor-color-r8-g5-b6-a720);
+  color: var(--cruor-color-r244-g228-b232-a900);
   cursor: pointer;
   transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
 }
@@ -510,27 +512,27 @@
 /* States */
 
 .cruor-map-workspace .map-tool-button.is-active {
-  border-color: rgba(190, 64, 82, 0.82);
-  background: radial-gradient(circle at 50% 20%, rgba(190, 64, 82, 0.22), transparent 62%), linear-gradient(180deg, rgba(122, 26, 40, 0.46), rgba(20, 5, 8, 0.9)), rgba(8, 5, 6, 0.86);
-  color: #fff0f2;
+  border-color: var(--cruor-color-blood-glow-a820);
+  background: var(--cruor-gradient-radial-067-6a0a6f16), var(--cruor-gradient-linear-055-e92225c8), var(--cruor-color-r8-g5-b6-a860);
+  color: var(--cruor-color-hex-fff0f2);
   outline: none;
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.06), 0 0 0 1px rgba(190, 64, 82, 0.2);
+  box-shadow: var(--cruor-shadow-box-032);
 }
 
 .cruor-map-workspace .map-tool-button:focus-visible {
-  border-color: rgba(190, 64, 82, 0.82);
-  background: radial-gradient(circle at 50% 20%, rgba(190, 64, 82, 0.22), transparent 62%), linear-gradient(180deg, rgba(122, 26, 40, 0.46), rgba(20, 5, 8, 0.9)), rgba(8, 5, 6, 0.86);
-  color: #fff0f2;
+  border-color: var(--cruor-color-blood-glow-a820);
+  background: var(--cruor-gradient-radial-067-6a0a6f16), var(--cruor-gradient-linear-055-e92225c8), var(--cruor-color-r8-g5-b6-a860);
+  color: var(--cruor-color-hex-fff0f2);
   outline: none;
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.06), 0 0 0 1px rgba(190, 64, 82, 0.2);
+  box-shadow: var(--cruor-shadow-box-032);
 }
 
 .cruor-map-workspace .map-tool-button:hover {
-  border-color: rgba(190, 64, 82, 0.82);
-  background: radial-gradient(circle at 50% 20%, rgba(190, 64, 82, 0.22), transparent 62%), linear-gradient(180deg, rgba(122, 26, 40, 0.46), rgba(20, 5, 8, 0.9)), rgba(8, 5, 6, 0.86);
-  color: #fff0f2;
+  border-color: var(--cruor-color-blood-glow-a820);
+  background: var(--cruor-gradient-radial-067-6a0a6f16), var(--cruor-gradient-linear-055-e92225c8), var(--cruor-color-r8-g5-b6-a860);
+  color: var(--cruor-color-hex-fff0f2);
   outline: none;
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.06), 0 0 0 1px rgba(190, 64, 82, 0.2);
+  box-shadow: var(--cruor-shadow-box-032);
 }
 
 .cruor-map-workspace .map-tool-button:disabled {
@@ -550,7 +552,7 @@
 
 .cruor-map-workspace .map-panel-eyebrow {
   margin: 0 0 4px;
-  color: rgba(208, 162, 170, 0.82);
+  color: var(--cruor-color-r208-g162-b170-a820);
   font-size: 10px;
   font-weight: 950;
   letter-spacing: 0.16em;
@@ -561,7 +563,7 @@
 /* Components */
 
 .cruor-map-workspace .map-toolbar__title {
-  color: #fff0f2;
+  color: var(--cruor-color-hex-fff0f2);
   font-size: 12px;
   font-weight: 950;
   letter-spacing: 0.08em;
@@ -588,9 +590,9 @@
   grid-template-rows: minmax(0, 1fr) auto;
   min-height: calc(100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) - var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) - 96px);
   padding: 10px;
-  border: 2px solid rgba(95, 7, 22, 0.64);
-  background: radial-gradient(circle at top, rgba(122, 26, 40, 0.1), transparent 44%), rgba(0, 0, 0, 0.42);
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.035), 0 24px 80px rgba(0, 0, 0, 0.35);
+  border: 2px solid var(--cruor-color-blood-strong-a640);
+  background: var(--cruor-gradient-radial-267-e22961ef), var(--cruor-color-black-a420);
+  box-shadow: var(--cruor-shadow-box-124);
 }
 
 .cruor-map-workspace .zoom-toolbar {
@@ -609,9 +611,9 @@
   min-height: 32px;
   margin-left: 2px;
   border-radius: 0;
-  border-color: rgba(95, 7, 22, 0.72);
-  background: rgba(5, 4, 5, 0.72);
-  color: #fff0f2;
+  border-color: var(--cruor-color-blood-strong-a720);
+  background: var(--cruor-color-r5-g4-b5-a720);
+  color: var(--cruor-color-hex-fff0f2);
 }
 
 /* Components */
@@ -647,7 +649,7 @@
   margin: 0;
   padding: 0;
   border: 0;
-  background: transparent;
+  background: var(--cruor-color-transparent);
   box-shadow: none;
 }
 
@@ -660,8 +662,8 @@
   display: grid;
   place-items: center;
   padding: clamp(18px, 4vw, 44px);
-  background: rgba(0, 0, 0, 0.68);
-  backdrop-filter: blur(6px);
+  background: var(--cruor-color-black-a680);
+  backdrop-filter: var(--cruor-filter-blur-6);
 }
 
 .cruor-map-workspace .map-tests-modal__header {
@@ -671,7 +673,7 @@
   gap: 14px;
   padding-bottom: 12px;
   margin-bottom: 12px;
-  border-bottom: 1px solid rgba(95, 7, 22, 0.58);
+  border-bottom: 1px solid var(--cruor-color-blood-strong-a580);
 }
 
 /* Components */
@@ -801,8 +803,8 @@
   background-color: var(--cruor-ui-panel-bg);
   background-image: var(--cruor-ui-panel-image);
   background-blend-mode: overlay, overlay, normal;
-  backdrop-filter: blur(18px) saturate(124%);
-  -webkit-backdrop-filter: blur(18px) saturate(124%);
+  backdrop-filter: var(--cruor-filter-glass-18-124);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-18-124);
   box-shadow: var(--cruor-ui-panel-shadow);
   border-top-color: var(--cruor-ui-panel-border-top);
 }
@@ -810,9 +812,9 @@
 .cruor-map-workspace .map-canvas-bottombar {
   border: var(--cruor-ui-panel-border);
   border-radius: 0;
-  background: radial-gradient(circle at 18% 0%, rgba(122, 26, 40, 0.18), transparent 36%), linear-gradient(180deg, rgba(12, 6, 8, 0.9), rgba(5, 4, 5, 0.82)), rgba(8, 5, 6, 0.86);
+  background: var(--cruor-gradient-radial-034-45004f0b), var(--cruor-gradient-linear-028-9f35eafb), var(--cruor-color-r8-g5-b6-a860);
   box-shadow: var(--cruor-ui-panel-shadow);
-  backdrop-filter: blur(10px);
+  backdrop-filter: var(--cruor-filter-blur-10);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -829,9 +831,9 @@
 .cruor-map-workspace .map-canvas-topbar {
   border: var(--cruor-ui-panel-border);
   border-radius: 0;
-  background: radial-gradient(circle at 18% 0%, rgba(122, 26, 40, 0.18), transparent 36%), linear-gradient(180deg, rgba(12, 6, 8, 0.9), rgba(5, 4, 5, 0.82)), rgba(8, 5, 6, 0.86);
+  background: var(--cruor-gradient-radial-034-45004f0b), var(--cruor-gradient-linear-028-9f35eafb), var(--cruor-color-r8-g5-b6-a860);
   box-shadow: var(--cruor-ui-panel-shadow);
-  backdrop-filter: blur(10px);
+  backdrop-filter: var(--cruor-filter-blur-10);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -847,9 +849,9 @@
 .cruor-map-workspace .map-inspector-panel {
   border: var(--cruor-ui-panel-border);
   border-radius: 0;
-  background: radial-gradient(circle at 18% 0%, rgba(122, 26, 40, 0.18), transparent 36%), linear-gradient(180deg, rgba(12, 6, 8, 0.9), rgba(5, 4, 5, 0.82)), rgba(8, 5, 6, 0.86);
+  background: var(--cruor-gradient-radial-034-45004f0b), var(--cruor-gradient-linear-028-9f35eafb), var(--cruor-color-r8-g5-b6-a860);
   box-shadow: var(--cruor-ui-panel-shadow);
-  backdrop-filter: blur(10px);
+  backdrop-filter: var(--cruor-filter-blur-10);
   min-width: 0;
   overflow: hidden;
   border-top-color: var(--cruor-ui-panel-border-top);
@@ -861,9 +863,9 @@
 .cruor-map-workspace .map-tests-modal__dialog {
   border: var(--cruor-ui-panel-border);
   border-radius: 0;
-  background: radial-gradient(circle at 18% 0%, rgba(122, 26, 40, 0.18), transparent 36%), linear-gradient(180deg, rgba(12, 6, 8, 0.9), rgba(5, 4, 5, 0.82)), rgba(8, 5, 6, 0.86);
+  background: var(--cruor-gradient-radial-034-45004f0b), var(--cruor-gradient-linear-028-9f35eafb), var(--cruor-color-r8-g5-b6-a860);
   box-shadow: var(--cruor-ui-panel-shadow);
-  backdrop-filter: blur(10px);
+  backdrop-filter: var(--cruor-filter-blur-10);
   width: min(var(--cruor-modal-width, 760px), calc(100vw - 32px));
   max-height: calc(100dvh - 64px);
   overflow: auto;
@@ -879,9 +881,9 @@
 .cruor-map-workspace .map-tool-rail {
   border: var(--cruor-ui-panel-border);
   border-radius: 0;
-  background: radial-gradient(circle at 18% 0%, rgba(122, 26, 40, 0.18), transparent 36%), linear-gradient(180deg, rgba(12, 6, 8, 0.9), rgba(5, 4, 5, 0.82)), rgba(8, 5, 6, 0.86);
+  background: var(--cruor-gradient-radial-034-45004f0b), var(--cruor-gradient-linear-028-9f35eafb), var(--cruor-color-r8-g5-b6-a860);
   box-shadow: var(--cruor-ui-panel-shadow);
-  backdrop-filter: blur(10px);
+  backdrop-filter: var(--cruor-filter-blur-10);
   position: sticky;
   top: calc(var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) + var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) + 10px);
   z-index: 4;
@@ -907,8 +909,8 @@
   background-image: var(--cruor-ui-panel-image);
   color: var(--cruor-color-text, var(--text));
   box-shadow: var(--cruor-ui-panel-shadow);
-  backdrop-filter: blur(14px) saturate(125%);
-  -webkit-backdrop-filter: blur(14px) saturate(125%);
+  backdrop-filter: var(--cruor-filter-glass-14-125);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-14-125);
   font-size: 12px;
   border-top-color: var(--cruor-ui-panel-border-top);
   background-blend-mode: overlay, overlay, normal;
@@ -936,20 +938,20 @@
   gap: 5px;
   margin: 0 0 16px;
   padding: 11px 12px;
-  border: 2px solid rgba(95, 7, 22, 0.52);
+  border: 2px solid var(--cruor-color-blood-strong-a520);
   border-radius: 0;
   background: var(--cruor-ui-card-bg);
   color: var(--cruor-color-text, var(--text));
   box-shadow: var(--cruor-ui-card-shadow);
-  backdrop-filter: blur(10px) saturate(125%);
-  -webkit-backdrop-filter: blur(10px) saturate(125%);
+  backdrop-filter: var(--cruor-filter-glass-10-125);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-10-125);
   border-color: var(--cruor-ui-card-border);
 }
 
 .cruor-map-mvp .map-frame {
   position: relative;
   padding: 12px;
-  border: 2px solid rgba(95, 7, 22, 0.55);
+  border: 2px solid var(--cruor-color-blood-strong-a550);
   border-radius: 0;
   background: var(--cruor-ui-card-bg);
   box-shadow: var(--cruor-ui-card-shadow);
@@ -962,7 +964,7 @@
   gap: 8px;
   align-items: start;
   padding: 8px;
-  border: 1px solid rgba(95, 7, 22, 0.4);
+  border: 1px solid var(--cruor-color-blood-strong-a400);
   border-radius: 0;
   background: var(--cruor-ui-card-bg);
   border-color: var(--cruor-ui-card-border);
@@ -972,23 +974,23 @@
 /* Components */
 
 .cruor-map-mvp .stat {
-  border: 1px solid rgba(95, 7, 22, 0.52);
+  border: 1px solid var(--cruor-color-blood-strong-a520);
   border-radius: 0;
   background: var(--cruor-ui-card-bg);
   box-shadow: var(--cruor-ui-card-shadow);
-  backdrop-filter: blur(10px) saturate(118%);
-  -webkit-backdrop-filter: blur(10px) saturate(118%);
+  backdrop-filter: var(--cruor-filter-glass-10-118);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-10-118);
   padding: 10px;
   border-color: var(--cruor-ui-card-border);
 }
 
 .cruor-map-mvp .state-status {
-  border: 1px solid rgba(95, 7, 22, 0.52);
+  border: 1px solid var(--cruor-color-blood-strong-a520);
   border-radius: 0;
   background: var(--cruor-ui-card-bg);
   box-shadow: var(--cruor-ui-card-shadow);
-  backdrop-filter: blur(10px) saturate(118%);
-  -webkit-backdrop-filter: blur(10px) saturate(118%);
+  backdrop-filter: var(--cruor-filter-glass-10-118);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-10-118);
   margin: 10px 0 0;
   padding: 8px 10px;
   color: var(--cruor-color-muted, var(--muted));
@@ -997,12 +999,12 @@
 }
 
 .cruor-map-mvp .test-report {
-  border: 1px solid rgba(95, 7, 22, 0.52);
+  border: 1px solid var(--cruor-color-blood-strong-a520);
   border-radius: 0;
   background: var(--cruor-ui-card-bg);
   box-shadow: var(--cruor-ui-card-shadow);
-  backdrop-filter: blur(10px) saturate(118%);
-  -webkit-backdrop-filter: blur(10px) saturate(118%);
+  backdrop-filter: var(--cruor-filter-glass-10-118);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-10-118);
   padding: 10px;
   margin: 0 0 14px;
   color: var(--cruor-color-muted, var(--muted));
@@ -1017,7 +1019,7 @@
   grid-template-columns: 1fr auto;
   gap: 4px 8px;
   padding: 6px;
-  border: 1px solid rgba(95, 7, 22, 0.36);
+  border: 1px solid var(--cruor-color-blood-strong-a360);
   border-radius: 0;
   background: var(--cruor-ui-card-bg);
   border-color: var(--cruor-ui-card-border);
@@ -1036,7 +1038,7 @@
   display: grid;
   gap: 10px;
   padding: 12px;
-  border: 1px solid rgba(95, 7, 22, 0.46);
+  border: 1px solid var(--cruor-color-blood-strong-a460);
   background: var(--cruor-ui-card-bg);
   scrollbar-width: auto;
   scrollbar-color: auto;
@@ -1088,15 +1090,15 @@
   box-sizing: border-box;
   width: 100%;
   height: var(--cruor-control-height-map, 38px);
-  border: 1px solid var(--cruor-input-border, rgba(95, 7, 22, 0.74));
+  border: 1px solid var(--cruor-input-border, var(--cruor-color-blood-strong-a740));
   border-radius: 0;
   background: var(--cruor-ui-control-bg);
   color: var(--cruor-ui-control-text);
   padding: 0 11px;
   outline: none;
-  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.045), 0 8px 18px rgba(0, 0, 0, 0.16);
-  backdrop-filter: blur(10px) saturate(125%);
-  -webkit-backdrop-filter: blur(10px) saturate(125%);
+  box-shadow: var(--cruor-shadow-box-034);
+  backdrop-filter: var(--cruor-filter-glass-10-125);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-10-125);
   transition: border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
   border-color: var(--cruor-ui-control-border);
 }
@@ -1105,15 +1107,15 @@
   box-sizing: border-box;
   width: 100%;
   height: var(--cruor-control-height-map, 38px);
-  border: 1px solid var(--cruor-input-border, rgba(95, 7, 22, 0.74));
+  border: 1px solid var(--cruor-input-border, var(--cruor-color-blood-strong-a740));
   border-radius: 0;
   background: var(--cruor-ui-control-bg);
   color: var(--cruor-ui-control-text);
   padding: 0 11px;
   outline: none;
-  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.045), 0 8px 18px rgba(0, 0, 0, 0.16);
-  backdrop-filter: blur(10px) saturate(125%);
-  -webkit-backdrop-filter: blur(10px) saturate(125%);
+  box-shadow: var(--cruor-shadow-box-034);
+  backdrop-filter: var(--cruor-filter-glass-10-125);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-10-125);
   transition: border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
   border-color: var(--cruor-ui-control-border);
 }
@@ -1126,7 +1128,7 @@
   gap: 7px;
   min-height: var(--cruor-control-height-map, 38px);
   height: auto;
-  border: 1px solid var(--cruor-button-border, rgba(95, 7, 22, 0.74));
+  border: 1px solid var(--cruor-button-border, var(--cruor-color-blood-strong-a740));
   border-radius: 0;
   background: var(--cruor-ui-control-bg);
   color: var(--cruor-ui-control-text);
@@ -1134,9 +1136,9 @@
   font-size: 12px;
   font-weight: 900;
   letter-spacing: 0.01em;
-  box-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.045), 0 8px 18px rgba(0, 0, 0, 0.16);
-  backdrop-filter: blur(10px) saturate(125%);
-  -webkit-backdrop-filter: blur(10px) saturate(125%);
+  box-shadow: var(--cruor-shadow-box-034);
+  backdrop-filter: var(--cruor-filter-glass-10-125);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-10-125);
   transition: background 0.14s ease, border-color 0.14s ease, color 0.14s ease, box-shadow 0.14s ease;
   border-color: var(--cruor-ui-control-border);
 }
@@ -1147,14 +1149,14 @@
   display: inline-grid;
   place-items: center;
   padding: 0 9px;
-  border: 1px solid rgba(122, 26, 40, 0.72);
+  border: 1px solid var(--cruor-color-blood-bright-a720);
   border-radius: 0;
   background: var(--cruor-ui-control-bg);
   color: var(--cruor-ui-control-text);
   font-size: 12px;
   font-weight: 950;
-  backdrop-filter: blur(10px) saturate(125%);
-  -webkit-backdrop-filter: blur(10px) saturate(125%);
+  backdrop-filter: var(--cruor-filter-glass-10-125);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-10-125);
   border-color: var(--cruor-ui-control-border);
 }
 
@@ -1169,7 +1171,7 @@
 
 
 .room-context-menu button {
-  border: 1px solid rgba(95, 7, 22, 0.68);
+  border: 1px solid var(--cruor-color-blood-strong-a680);
   border-radius: 0;
   background: var(--cruor-ui-control-bg);
   color: var(--cruor-ui-control-text);
@@ -1178,8 +1180,8 @@
   padding: 7px 8px;
   text-align: left;
   cursor: pointer;
-  backdrop-filter: blur(10px) saturate(125%);
-  -webkit-backdrop-filter: blur(10px) saturate(125%);
+  backdrop-filter: var(--cruor-filter-glass-10-125);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-10-125);
   border-color: var(--cruor-ui-control-border);
 }
 
@@ -1189,20 +1191,20 @@
   border-color: var(--cruor-ui-control-border-active);
   background: var(--cruor-ui-control-bg-active);
   color: var(--cruor-ui-control-text-active);
-  box-shadow: 0 0 0 1px rgba(122, 26, 40, 0.24), 0 0 20px rgba(51, 3, 12, 0.42);
+  box-shadow: var(--cruor-shadow-box-037);
 }
 
 .cruor-map-mvp .control-input:focus {
   border-color: var(--cruor-ui-control-border-active);
   background: var(--cruor-ui-control-bg-active);
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.14), 0 0 20px rgba(122, 26, 40, 0.24), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  box-shadow: var(--cruor-shadow-box-040);
   color: var(--cruor-ui-control-text-active);
 }
 
 .cruor-map-mvp .control-select:focus {
   border-color: var(--cruor-ui-control-border-active);
   background: var(--cruor-ui-control-bg-active);
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.14), 0 0 20px rgba(122, 26, 40, 0.24), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  box-shadow: var(--cruor-shadow-box-040);
   color: var(--cruor-ui-control-text-active);
 }
 
@@ -1210,7 +1212,7 @@
   border-color: var(--cruor-ui-control-border-active);
   background: var(--cruor-ui-control-bg-active);
   color: var(--cruor-ui-control-text-active);
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  box-shadow: var(--cruor-shadow-box-001);
   outline: none;
 }
 
@@ -1218,7 +1220,7 @@
   border-color: var(--cruor-ui-control-border-active);
   background: var(--cruor-ui-control-bg-active);
   color: var(--cruor-ui-control-text-active);
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.12), 0 0 20px rgba(122, 26, 40, 0.22), inset 0 1px 0 rgba(255, 238, 242, 0.06);
+  box-shadow: var(--cruor-shadow-box-001);
   outline: none;
 }
 
@@ -1238,7 +1240,7 @@
   border-color: var(--cruor-ui-control-border-active);
   background: var(--cruor-ui-control-bg-active);
   color: var(--cruor-ui-control-text-active);
-  box-shadow: 0 0 0 1px rgba(122, 26, 40, 0.24), 0 0 20px rgba(51, 3, 12, 0.42);
+  box-shadow: var(--cruor-shadow-box-037);
 }
 
 .room-context-menu button:focus-visible {
@@ -1262,7 +1264,7 @@
   place-items: center;
   width: 22px;
   height: 22px;
-  border: 1px solid rgba(122, 26, 40, 0.72);
+  border: 1px solid var(--cruor-color-blood-bright-a720);
   border-radius: 0;
   background: var(--cruor-ui-chip-bg);
   color: var(--cruor-ui-chip-text);
@@ -1303,10 +1305,10 @@
   height: min(68vh, 720px);
   min-height: 420px;
   overflow: hidden;
-  border: 2px solid rgba(95, 7, 22, 0.55);
+  border: 2px solid var(--cruor-color-blood-strong-a550);
   border-radius: 0;
-  background: radial-gradient(circle at 18% 0%, rgba(122, 26, 40, 0.34), transparent 38%), linear-gradient(135deg, rgba(51, 3, 12, 0.96), rgba(0, 0, 0, 0.98));
-  box-shadow: inset 0 0 0 1px rgba(29, 25, 21, 0.25);
+  background: var(--cruor-gradient-radial-129-27e9a44d), var(--cruor-gradient-linear-075-39a51d50);
+  box-shadow: var(--cruor-shadow-box-125);
   touch-action: none;
   overscroll-behavior: contain;
   outline: none;
@@ -1316,8 +1318,8 @@
 .cruor-map-workspace .map-viewport {
   height: auto;
   min-height: 560px;
-  border-color: rgba(95, 7, 22, 0.64);
-  background: radial-gradient(circle at 18% 0%, rgba(122, 26, 40, 0.34), transparent 38%), linear-gradient(135deg, rgba(51, 3, 12, 0.96), rgba(0, 0, 0, 0.98));
+  border-color: var(--cruor-color-blood-strong-a640);
+  background: var(--cruor-gradient-radial-129-27e9a44d), var(--cruor-gradient-linear-075-39a51d50);
 }
 
 .location-map-preview.location-map-preview--live {

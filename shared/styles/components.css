@@ -6,34 +6,36 @@
 
 /* Tokens */
 
+@import "./colors.css";
+
 :root {
-  --cruor-ui-panel-border-color: rgba(255, 238, 242, 0.08);
-  --cruor-ui-panel-border-top-color: rgba(255, 238, 242, 0.12);
+  --cruor-ui-panel-border-color: var(--cruor-color-milk-a080);
+  --cruor-ui-panel-border-top-color: var(--cruor-color-milk-a120);
   --cruor-ui-panel-border: 1px solid var(--cruor-ui-panel-border-color);
   --cruor-ui-panel-border-top: 1px solid var(--cruor-ui-panel-border-top-color);
-  --cruor-ui-panel-bg: linear-gradient(180deg, rgba(255, 238, 242, 0.035), transparent 160px), rgba(12, 10, 12, 0.74);
-  --cruor-ui-panel-image: linear-gradient(180deg, rgba(255, 238, 242, 0.035), transparent 160px);
-  --cruor-ui-panel-shadow: 0 18px 52px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.035);
-  --cruor-ui-card-border-color: rgba(255, 238, 242, 0.075);
-  --cruor-ui-card-border-color-active: rgba(190, 64, 82, 0.42);
+  --cruor-ui-panel-bg: var(--cruor-gradient-linear-029-a37c5252), var(--cruor-color-r12-g10-b12-a740);
+  --cruor-ui-panel-image: var(--cruor-gradient-linear-029-a37c5252);
+  --cruor-ui-panel-shadow: 0 18px 52px var(--cruor-color-black-a340), inset 0 1px 0 var(--cruor-color-white-a035);
+  --cruor-ui-card-border-color: var(--cruor-color-milk-a075);
+  --cruor-ui-card-border-color-active: var(--cruor-color-blood-glow-a420);
   --cruor-ui-card-border: 1px solid var(--cruor-ui-card-border-color);
   --cruor-ui-card-border-active: 1px solid var(--cruor-ui-card-border-color-active);
-  --cruor-ui-card-bg: linear-gradient(180deg, rgba(255, 238, 242, 0.032), transparent 68%), rgba(5, 5, 6, 0.54);
-  --cruor-ui-card-bg-active: radial-gradient(circle at 0% 0%, rgba(190, 64, 82, 0.16), transparent 12rem), rgba(95, 7, 22, 0.22);
-  --cruor-ui-card-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035);
-  --cruor-ui-card-shadow-active: 0 0 0 1px rgba(190, 64, 82, 0.1), 0 0 24px rgba(122, 26, 40, 0.2), inset 0 1px 0 rgba(255, 238, 242, 0.045);
-  --cruor-ui-control-border-color: rgba(255, 238, 242, 0.09);
-  --cruor-ui-control-border-color-active: rgba(190, 64, 82, 0.55);
+  --cruor-ui-card-bg: var(--cruor-gradient-linear-019-fbb0759c), var(--cruor-color-surface-soft-a540);
+  --cruor-ui-card-bg-active: var(--cruor-gradient-radial-010-2b54c7d1), var(--cruor-color-blood-strong-a220);
+  --cruor-ui-card-shadow: inset 0 1px 0 var(--cruor-color-milk-a035);
+  --cruor-ui-card-shadow-active: 0 0 0 1px var(--cruor-color-blood-glow-a100), 0 0 24px var(--cruor-color-blood-bright-a200), inset 0 1px 0 var(--cruor-color-milk-a045);
+  --cruor-ui-control-border-color: var(--cruor-color-milk-a090);
+  --cruor-ui-control-border-color-active: var(--cruor-color-blood-glow-a550);
   --cruor-ui-control-border: 1px solid var(--cruor-ui-control-border-color);
   --cruor-ui-control-border-active: 1px solid var(--cruor-ui-control-border-color-active);
-  --cruor-ui-control-bg: linear-gradient(180deg, rgba(255, 238, 242, 0.025), transparent), rgba(0, 0, 0, 0.22);
-  --cruor-ui-control-bg-active: radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.18), transparent 68%), rgba(95, 7, 22, 0.2);
-  --cruor-ui-control-text: rgba(238, 238, 238, 0.58);
-  --cruor-ui-control-text-active: #fff0f2;
-  --cruor-ui-chip-border-color: rgba(255, 238, 242, 0.075);
+  --cruor-ui-control-bg: var(--cruor-gradient-linear-026-1ad4f65f), var(--cruor-color-black-a220);
+  --cruor-ui-control-bg-active: var(--cruor-gradient-radial-007-f9fedda9), var(--cruor-color-blood-strong-a200);
+  --cruor-ui-control-text: var(--cruor-color-text-a580);
+  --cruor-ui-control-text-active: var(--cruor-color-hex-fff0f2);
+  --cruor-ui-chip-border-color: var(--cruor-color-milk-a075);
   --cruor-ui-chip-border: 1px solid var(--cruor-ui-chip-border-color);
-  --cruor-ui-chip-bg: rgba(255, 255, 255, 0.025);
-  --cruor-ui-chip-text: rgba(238, 238, 238, 0.56);
+  --cruor-ui-chip-bg: var(--cruor-color-white-a025);
+  --cruor-ui-chip-text: var(--cruor-color-text-a560);
   --cruor-z-base: 0;
   --cruor-z-content: 1;
   --cruor-z-topbar: 70;
@@ -53,7 +55,7 @@
 .cruor-ui-panel-surface {
   border: var(--cruor-ui-panel-border);
   border-top: var(--cruor-ui-panel-border-top);
-  background-color: rgba(12, 10, 12, 0.74);
+  background-color: var(--cruor-color-r12-g10-b12-a740);
   background-image: var(--cruor-ui-panel-image);
   box-shadow: var(--cruor-ui-panel-shadow);
 }
@@ -124,7 +126,7 @@
 
 .cruor-scroll-surface {
   scrollbar-width: thin;
-  scrollbar-color: rgba(170, 48, 66, 0.76) transparent;
+  scrollbar-color: var(--cruor-color-r170-g48-b66-a760) var(--cruor-color-transparent);
 }
 
 /* Layout */
@@ -137,14 +139,14 @@
 /* Components */
 
 .cruor-scroll-surface::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 .cruor-scroll-surface::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 /* Layout */
@@ -157,7 +159,7 @@
   min-width: 40px;
   min-height: 40px;
   border: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.22);
+  background: var(--cruor-color-black-a220);
   color: var(--muted);
   padding: 0;
   transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
@@ -167,38 +169,38 @@
 
 .icon-btn:hover {
   transform: scale(1.035);
-  border-color: rgba(95, 7, 22, 0.82);
-  background: rgba(51, 3, 12, 0.36);
+  border-color: var(--cruor-color-blood-strong-a820);
+  background: var(--cruor-color-blood-a360);
   color: var(--text);
 }
 
 .icon-btn.active {
-  border-color: rgba(122, 26, 40, 0.95);
-  background: radial-gradient(circle at 50% 45%, rgba(122, 26, 40, 0.34), transparent 68%), rgba(51, 3, 12, 0.48);
-  color: #d0a2aa;
-  box-shadow: 0 0 0 1px rgba(122, 26, 40, 0.24), 0 0 24px rgba(51, 3, 12, 0.48);
+  border-color: var(--cruor-color-blood-bright-a950);
+  background: var(--cruor-gradient-radial-135-65f9021f), var(--cruor-color-blood-a480);
+  color: var(--cruor-color-hex-d0a2aa);
+  box-shadow: var(--cruor-shadow-box-079);
 }
 
 /* Components */
 
 .icon-btn.empty-cta {
-  border-color: rgba(190, 64, 82, 0.95);
-  color: #f0b9c2;
-  box-shadow: 0 0 0 1px rgba(190, 64, 82, 0.26), 0 0 30px rgba(122, 26, 40, 0.62), inset 0 0 28px rgba(122, 26, 40, 0.18);
+  border-color: var(--cruor-color-blood-glow-a950);
+  color: var(--cruor-color-hex-f0b9c2);
+  box-shadow: var(--cruor-shadow-box-031);
   animation: cruciblePulse 1.85s ease-in-out infinite;
 }
 
 /* Layout */
 
 .panel {
-  border: 2px solid color-mix(in srgb, var(--glass-line) 78%, white 22%);
-  border-top-color: color-mix(in srgb, var(--glass-line) 78%, white 22%);
+  border: 2px solid color-mix(in srgb, var(--glass-line) 78%, var(--cruor-color-white) 22%);
+  border-top-color: color-mix(in srgb, var(--glass-line) 78%, var(--cruor-color-white) 22%);
   background-color: var(--glass-satin);
-  background-image: linear-gradient(180deg, var(--panel-milk), transparent 56%), linear-gradient(135deg, rgba(255, 238, 242, 0.034), transparent 34%), linear-gradient(135deg, rgba(51, 3, 12, 0.26), rgba(0, 0, 0, 0.04) 48%, rgba(0, 0, 0, 0.14));
+  background-image: var(--cruor-gradient-linear-204-5851f085), var(--cruor-gradient-linear-140-6d487b8b), var(--cruor-gradient-linear-143-846d5af5);
   background-blend-mode: overlay, overlay, normal;
-  backdrop-filter: blur(18px) saturate(125%);
-  -webkit-backdrop-filter: blur(18px) saturate(125%);
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(255, 238, 242, 0.045), 0 0 48px rgba(255, 238, 242, 0.034), inset 0 1px 0 var(--panel-white-line), inset 0 -1px 0 rgba(0, 0, 0, 0.42);
+  backdrop-filter: var(--cruor-filter-glass-18-125);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-18-125);
+  box-shadow: var(--cruor-shadow-box-119);
 }
 
 /* Components */
@@ -228,7 +230,7 @@
   align-items: center;
   justify-content: center;
   min-height: 40px;
-  border: 1px solid transparent;
+  border: 1px solid var(--cruor-color-transparent);
   border-radius: 0;
   padding: 0 13px;
   background: var(--surface-3);
@@ -256,7 +258,7 @@
   border: 1px dashed var(--line);
   padding: 18px;
   color: var(--faint);
-  background: rgba(255, 255, 255, 0.025);
+  background: var(--cruor-color-white-a025);
   font-size: 13px;
 }
 
@@ -285,9 +287,9 @@
 /* States */
 
 .filter-combobox__btn.active {
-  border-color: rgba(95, 7, 22, 0.86);
-  background: rgba(51, 3, 12, 0.24);
-  box-shadow: 0 0 0 3px rgba(51, 3, 12, 0.22);
+  border-color: var(--cruor-color-blood-strong-a860);
+  background: var(--cruor-color-blood-a240);
+  box-shadow: var(--cruor-shadow-box-093);
 }
 
 /* Layout */
@@ -301,10 +303,10 @@
   display: grid;
   gap: 6px;
   max-height: 300px;
-  border: 1px solid rgba(95, 7, 22, 0.82);
-  background: rgba(5, 5, 6, 0.99);
+  border: 1px solid var(--cruor-color-blood-strong-a820);
+  background: var(--cruor-color-surface-soft-a990);
   padding: 6px;
-  box-shadow: 0 20px 52px rgba(0, 0, 0, 0.64);
+  box-shadow: var(--cruor-shadow-box-111);
 }
 
 .filter-combobox__list {
@@ -322,7 +324,7 @@
   width: 100%;
   min-height: 32px;
   border: 0;
-  background: transparent;
+  background: var(--cruor-color-transparent);
   color: var(--muted);
   padding: 0 9px;
   text-align: left;
@@ -333,7 +335,7 @@
 /* States */
 
 .filter-combobox__option.active {
-  background: rgba(51, 3, 12, 0.52);
+  background: var(--cruor-color-blood-a520);
   color: var(--text);
 }
 
@@ -343,22 +345,22 @@
   content: "";
   width: 7px;
   height: 7px;
-  border: 1px solid rgba(122, 26, 40, 0.9);
-  background: rgba(122, 26, 40, 0.88);
+  border: 1px solid var(--cruor-color-blood-bright-a900);
+  background: var(--cruor-color-blood-bright-a880);
   transform: rotate(45deg);
-  box-shadow: 0 0 12px rgba(122, 26, 40, 0.35);
+  box-shadow: var(--cruor-shadow-box-095);
 }
 
 .context-menu {
   position: fixed;
   z-index: var(--cruor-z-context-menu, 10000);
   min-width: 184px;
-  border: 1px solid rgba(95, 7, 22, 0.9);
-  background-color: rgba(7, 5, 6, 0.88);
-  background-image: linear-gradient(180deg, rgba(122, 26, 40, 0.045), transparent);
+  border: 1px solid var(--cruor-color-blood-strong-a900);
+  background-color: var(--cruor-color-r7-g5-b6-a880);
+  background-image: var(--cruor-gradient-linear-151-18366710);
   background-blend-mode: screen;
-  backdrop-filter: blur(16px) saturate(125%);
-  -webkit-backdrop-filter: blur(16px) saturate(125%);
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.62), inset 0 1px 0 rgba(122, 26, 40, 0.055);
+  backdrop-filter: var(--cruor-filter-glass-16-125);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-16-125);
+  box-shadow: var(--cruor-shadow-box-107);
   padding: 5px;
 }

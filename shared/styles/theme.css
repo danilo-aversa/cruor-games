@@ -4,6 +4,8 @@
  * Canonicalized selectors, variables, and cascade order.
  */
 
+@import "./colors.css";
+
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
 
 @import url(https://db.onlinewebfonts.com/c/84511926c1e0e99e983d71e22d6a5838?family=Lovato-Black);
@@ -13,30 +15,30 @@
 /* Tokens */
 
 :root {
-  --bg: #000;
-  --surface: #040405;
-  --surface-2: #080708;
-  --surface-3: #100306;
-  --surface-glass: rgba(26, 21, 23, 0.76);
-  --glass-satin: rgba(31, 25, 27, 0.68);
-  --glass-satin-strong: rgba(29, 23, 25, 0.84);
-  --glass-line: rgba(120, 27, 42, 0.38);
-  --glass-highlight: rgba(122, 26, 40, 0.045);
-  --panel-white-line: rgba(255, 238, 242, 0.105);
-  --panel-white-glow: rgba(255, 238, 242, 0.055);
-  --panel-milk: rgba(255, 238, 242, 0.045);
-  --panel-milk-strong: rgba(255, 238, 242, 0.07);
+  --bg: var(--cruor-color-black);
+  --surface: var(--cruor-color-surface);
+  --surface-2: var(--cruor-color-surface-raised);
+  --surface-3: var(--cruor-color-surface-blood);
+  --surface-glass: var(--cruor-color-glass-a760);
+  --glass-satin: var(--cruor-color-glass-satin-a680);
+  --glass-satin-strong: var(--cruor-color-glass-satin-strong-a840);
+  --glass-line: var(--cruor-color-glass-line-a380);
+  --glass-highlight: var(--cruor-color-blood-bright-a045);
+  --panel-white-line: var(--cruor-color-milk-a105);
+  --panel-white-glow: var(--cruor-color-milk-a055);
+  --panel-milk: var(--cruor-color-milk-a045);
+  --panel-milk-strong: var(--cruor-color-milk-a070);
   --paper-texture: url("https://www.transparenttextures.com/patterns/black-paper.png");
-  --text: #eeeeee;
-  --muted: #a7a7ad;
-  --faint: #666871;
-  --line: #231018;
-  --line-strong: #3c0712;
-  --accent: #33030c;
-  --accent-2: #5f0716;
-  --accent-3: #7a1a28;
-  --good: #8f9694;
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+  --text: var(--cruor-color-text);
+  --muted: var(--cruor-color-muted);
+  --faint: var(--cruor-color-faint);
+  --line: var(--cruor-color-line);
+  --line-strong: var(--cruor-color-line-strong);
+  --accent: var(--cruor-color-blood);
+  --accent-2: var(--cruor-color-blood-strong);
+  --accent-3: var(--cruor-color-blood-bright);
+  --good: var(--cruor-color-good);
+  --shadow: 0 24px 80px var(--cruor-color-black-a550);
   --navigator-width: 390px;
   --workbench-handle-width: 14px;
   --cruor-color-bg: var(--bg);
@@ -71,28 +73,28 @@
   --cruor-control-padding-x-lg: 16px;
   --cruor-radius-none: 0;
   --cruor-border-thin: 1px solid var(--line);
-  --cruor-border-strong: 1px solid rgba(95, 7, 22, 0.74);
-  --cruor-border-panel: 2px solid color-mix(in srgb, var(--glass-line) 78%, white 22%);
+  --cruor-border-strong: 1px solid var(--cruor-color-blood-strong-a740);
+  --cruor-border-panel: 2px solid color-mix(in srgb, var(--glass-line) 78%, var(--cruor-color-white) 22%);
   --cruor-panel-bg: var(--glass-satin);
   --cruor-panel-bg-strong: var(--glass-satin-strong);
   --cruor-panel-border: var(--cruor-border-panel);
   --cruor-panel-highlight: var(--panel-white-line);
   --cruor-panel-glow: var(--panel-white-glow);
-  --cruor-panel-shadow: 0 28px 90px rgba(0, 0, 0, 0.62), 0 0 0 1px rgba(255, 238, 242, 0.045), 0 0 48px rgba(255, 238, 242, 0.034), inset 0 1px 0 var(--panel-white-line), inset 0 -1px 0 rgba(0, 0, 0, 0.42);
+  --cruor-panel-shadow: 0 28px 90px var(--cruor-color-black-a620), 0 0 0 1px var(--cruor-color-milk-a045), 0 0 48px var(--cruor-color-milk-a034), inset 0 1px 0 var(--panel-white-line), inset 0 -1px 0 var(--cruor-color-black-a420);
   --cruor-button-bg: var(--surface-3);
-  --cruor-button-bg-hover: #1d050a;
-  --cruor-button-bg-active: rgba(51, 3, 12, 0.54);
-  --cruor-button-border: rgba(95, 7, 22, 0.58);
-  --cruor-button-border-hover: rgba(190, 64, 82, 0.78);
+  --cruor-button-bg-hover: var(--cruor-color-hex-1d050a);
+  --cruor-button-bg-active: var(--cruor-color-blood-a540);
+  --cruor-button-border: var(--cruor-color-blood-strong-a580);
+  --cruor-button-border-hover: var(--cruor-color-blood-glow-a780);
   --cruor-button-text: var(--text);
   --cruor-button-text-muted: var(--muted);
-  --cruor-input-bg: linear-gradient(180deg, rgba(122, 26, 40, 0.04), transparent 64%), rgba(5, 5, 6, 0.46);
-  --cruor-input-bg-hover: linear-gradient(180deg, rgba(122, 26, 40, 0.06), transparent 64%), rgba(5, 5, 6, 0.6);
-  --cruor-input-bg-focus: linear-gradient(180deg, rgba(122, 26, 40, 0.08), transparent 64%), rgba(5, 5, 6, 0.72);
+  --cruor-input-bg: var(--cruor-gradient-linear-017-c1cb33c1), var(--cruor-color-surface-soft-a460);
+  --cruor-input-bg-hover: var(--cruor-gradient-linear-054-2211c986), var(--cruor-color-surface-soft-a600);
+  --cruor-input-bg-focus: var(--cruor-gradient-linear-011-25d82b21), var(--cruor-color-surface-soft-a720);
   --cruor-input-border: var(--line);
-  --cruor-input-border-hover: rgba(95, 7, 22, 0.64);
-  --cruor-input-border-focus: rgba(122, 26, 40, 0.86);
-  --cruor-input-focus-shadow: 0 0 0 1px rgba(122, 26, 40, 0.18), 0 0 20px rgba(51, 3, 12, 0.32);
+  --cruor-input-border-hover: var(--cruor-color-blood-strong-a640);
+  --cruor-input-border-focus: var(--cruor-color-blood-bright-a860);
+  --cruor-input-focus-shadow: 0 0 0 1px var(--cruor-color-blood-bright-a180), 0 0 20px var(--cruor-color-blood-a320);
   --cruor-workspace-max: 1540px;
   --cruor-shell-bar-height: 62px;
   --cruor-command-bar-height: 190px;
@@ -139,35 +141,35 @@ html::-webkit-scrollbar {
 /* Components */
 
 body::-webkit-scrollbar-track {
-  background: rgba(5, 5, 6, 0.96);
-  border-left: 1px solid rgba(95, 7, 22, 0.18);
+  background: var(--cruor-color-surface-soft-a960);
+  border-left: 1px solid var(--cruor-color-blood-strong-a180);
 }
 
 html::-webkit-scrollbar-track {
-  background: rgba(5, 5, 6, 0.96);
-  border-left: 1px solid rgba(95, 7, 22, 0.18);
+  background: var(--cruor-color-surface-soft-a960);
+  border-left: 1px solid var(--cruor-color-blood-strong-a180);
 }
 
 body::-webkit-scrollbar-thumb {
-  border: 3px solid rgba(5, 5, 6, 0.96);
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.9), rgba(51, 3, 12, 0.95));
-  box-shadow: inset 0 0 0 1px rgba(220, 175, 184, 0.08);
+  border: 3px solid var(--cruor-color-surface-soft-a960);
+  background: var(--cruor-gradient-linear-081-54b771f0);
+  box-shadow: var(--cruor-shadow-box-072);
 }
 
 html::-webkit-scrollbar-thumb {
-  border: 3px solid rgba(5, 5, 6, 0.96);
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.9), rgba(51, 3, 12, 0.95));
-  box-shadow: inset 0 0 0 1px rgba(220, 175, 184, 0.08);
+  border: 3px solid var(--cruor-color-surface-soft-a960);
+  background: var(--cruor-gradient-linear-081-54b771f0);
+  box-shadow: var(--cruor-shadow-box-072);
 }
 
 /* States */
 
 body::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(190, 64, 82, 0.95), rgba(95, 7, 22, 0.98));
+  background: var(--cruor-gradient-linear-088-bf911062);
 }
 
 html::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(190, 64, 82, 0.95), rgba(95, 7, 22, 0.98));
+  background: var(--cruor-gradient-linear-088-bf911062);
 }
 
 /* Layout */
@@ -187,11 +189,11 @@ html::-webkit-scrollbar-button {
 /* Components */
 
 body::-webkit-scrollbar-corner {
-  background: rgba(5, 5, 6, 0.96);
+  background: var(--cruor-color-surface-soft-a960);
 }
 
 html::-webkit-scrollbar-corner {
-  background: rgba(5, 5, 6, 0.96);
+  background: var(--cruor-color-surface-soft-a960);
 }
 
 .brief-wizard__body {
@@ -374,19 +376,19 @@ textarea::-webkit-scrollbar-button {
 /* Components */
 
 .brief-wizard__body::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
 
 .build-canvas::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
 
 .filter-combobox__list::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
@@ -394,7 +396,7 @@ textarea::-webkit-scrollbar-button {
 
 
 .navigator::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
@@ -402,13 +404,13 @@ textarea::-webkit-scrollbar-button {
 /* Layout */
 
 .panel.build-canvas::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
 
 .panel.navigator::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
@@ -416,13 +418,13 @@ textarea::-webkit-scrollbar-button {
 /* Components */
 
 .saved-builds-body::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
 
 .source-modal::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
@@ -430,7 +432,7 @@ textarea::-webkit-scrollbar-button {
 /* Layout */
 
 .source-picker-grid::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
@@ -438,13 +440,13 @@ textarea::-webkit-scrollbar-button {
 /* Components */
 
 .tag-filter-row::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
 
 textarea::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
@@ -452,22 +454,22 @@ textarea::-webkit-scrollbar-track {
 .brief-wizard__body::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 .build-canvas::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 .filter-combobox__list::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 
@@ -475,8 +477,8 @@ textarea::-webkit-scrollbar-track {
 .navigator::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 /* Layout */
@@ -484,15 +486,15 @@ textarea::-webkit-scrollbar-track {
 .panel.build-canvas::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 .panel.navigator::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 /* Components */
@@ -500,15 +502,15 @@ textarea::-webkit-scrollbar-track {
 .saved-builds-body::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 .source-modal::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 /* Layout */
@@ -516,8 +518,8 @@ textarea::-webkit-scrollbar-track {
 .source-picker-grid::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 /* Components */
@@ -525,127 +527,127 @@ textarea::-webkit-scrollbar-track {
 .tag-filter-row::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 textarea::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 /* States */
 
 .brief-wizard__body::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 .build-canvas::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 .filter-combobox__list::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 
 
 .navigator::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 /* Layout */
 
 .panel.build-canvas::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 .panel.navigator::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 /* States */
 
 .saved-builds-body::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 .source-modal::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 /* Layout */
 
 .source-picker-grid::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 /* States */
 
 .tag-filter-row::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 textarea::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 /* Components */
 
 .brief-wizard__body::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 .build-canvas::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 .filter-combobox__list::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 
 
 .navigator::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 /* Layout */
 
 .panel.build-canvas::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 .panel.navigator::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 /* Components */
 
 .saved-builds-body::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 .source-modal::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 /* Layout */
 
 .source-picker-grid::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 /* Components */
 
 .tag-filter-row::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 textarea::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 /* Tokens */
@@ -654,8 +656,8 @@ body {
   min-height: 100%;
   position: relative;
   margin: 0;
-  background-color: #000;
-  background-image: var(--paper-texture), radial-gradient(circle at 18% 0%, rgba(122, 26, 40, 0.38), transparent 30rem), radial-gradient(circle at 82% 18%, rgba(95, 7, 22, 0.22), transparent 28rem), radial-gradient(circle at 54% 92%, rgba(51, 3, 12, 0.34), transparent 34rem), linear-gradient(135deg, rgba(51, 3, 12, 0.96) 0%, rgba(18, 1, 5, 0.92) 34%, rgba(0, 0, 0, 0.98) 74%, #000 100%);
+  background-color: var(--cruor-color-black);
+  background-image: var(--paper-texture), var(--cruor-gradient-radial-066-8391d276), var(--cruor-gradient-radial-050-1c37bf3c), var(--cruor-gradient-radial-069-ecbcc56b), var(--cruor-gradient-linear-051-81c43428);
   background-blend-mode: multiply, screen, screen, screen, normal;
   background-attachment: fixed, fixed, fixed, fixed, fixed;
   color: var(--text);
@@ -712,7 +714,7 @@ input {
   width: 100%;
   border: 1px solid var(--line);
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.04), transparent 64%), rgba(5, 5, 6, 0.46);
+  background: var(--cruor-gradient-linear-017-c1cb33c1), var(--cruor-color-surface-soft-a460);
   color: var(--text);
   padding: 0 11px;
   outline: none;
@@ -726,7 +728,7 @@ textarea {
   width: 100%;
   border: 1px solid var(--line);
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.04), transparent 64%), rgba(5, 5, 6, 0.46);
+  background: var(--cruor-gradient-linear-017-c1cb33c1), var(--cruor-color-surface-soft-a460);
   color: var(--text);
   padding: 0 11px;
   outline: none;
@@ -736,35 +738,35 @@ textarea {
 /* Components */
 
 input::placeholder {
-  color: rgba(167, 167, 173, 0.48);
+  color: var(--cruor-color-muted-a480);
 }
 
 textarea::placeholder {
-  color: rgba(167, 167, 173, 0.48);
+  color: var(--cruor-color-muted-a480);
 }
 
 /* States */
 
 input:hover {
-  border-color: rgba(95, 7, 22, 0.64);
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.06), transparent 64%), rgba(5, 5, 6, 0.6);
+  border-color: var(--cruor-color-blood-strong-a640);
+  background: var(--cruor-gradient-linear-054-2211c986), var(--cruor-color-surface-soft-a600);
 }
 
 textarea:hover {
-  border-color: rgba(95, 7, 22, 0.64);
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.06), transparent 64%), rgba(5, 5, 6, 0.6);
+  border-color: var(--cruor-color-blood-strong-a640);
+  background: var(--cruor-gradient-linear-054-2211c986), var(--cruor-color-surface-soft-a600);
 }
 
 input:focus {
-  border-color: rgba(122, 26, 40, 0.86);
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.08), transparent 64%), rgba(5, 5, 6, 0.72);
-  box-shadow: 0 0 0 1px rgba(122, 26, 40, 0.18), 0 0 20px rgba(51, 3, 12, 0.32);
+  border-color: var(--cruor-color-blood-bright-a860);
+  background: var(--cruor-gradient-linear-011-25d82b21), var(--cruor-color-surface-soft-a720);
+  box-shadow: var(--cruor-shadow-box-036);
 }
 
 textarea:focus {
-  border-color: rgba(122, 26, 40, 0.86);
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.08), transparent 64%), rgba(5, 5, 6, 0.72);
-  box-shadow: 0 0 0 1px rgba(122, 26, 40, 0.18), 0 0 20px rgba(51, 3, 12, 0.32);
+  border-color: var(--cruor-color-blood-bright-a860);
+  background: var(--cruor-gradient-linear-011-25d82b21), var(--cruor-color-surface-soft-a720);
+  box-shadow: var(--cruor-shadow-box-036);
 }
 
 /* Components */
@@ -874,7 +876,7 @@ textarea:focus {
 /* Components */
 
 .cruor-scroll-surface::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
@@ -882,7 +884,7 @@ textarea:focus {
 /* Layout */
 
 .map-inspector-panel__scroll::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
@@ -890,25 +892,25 @@ textarea:focus {
 /* Components */
 
 .map-inspector-section::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
 
 .map-tests-modal__dialog::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
 
 .room-key::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
 
 .test-report__list::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--cruor-color-transparent);
   border: 0;
   box-shadow: none;
 }
@@ -916,8 +918,8 @@ textarea:focus {
 .cruor-scroll-surface::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 /* Layout */
@@ -925,8 +927,8 @@ textarea:focus {
 .map-inspector-panel__scroll::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 /* Components */
@@ -934,87 +936,87 @@ textarea:focus {
 .map-inspector-section::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 .map-tests-modal__dialog::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 .room-key::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 .test-report__list::-webkit-scrollbar-thumb {
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, rgba(170, 48, 66, 0.76), rgba(70, 8, 20, 0.78));
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.055);
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
 }
 
 /* States */
 
 .cruor-scroll-surface::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 /* Layout */
 
 .map-inspector-panel__scroll::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 /* States */
 
 .map-inspector-section::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 .map-tests-modal__dialog::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 .room-key::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 .test-report__list::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(198, 68, 84, 0.86), rgba(95, 7, 22, 0.9));
+  background: var(--cruor-gradient-linear-008-6f99f992);
 }
 
 /* Components */
 
 .cruor-scroll-surface::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 /* Layout */
 
 .map-inspector-panel__scroll::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 /* Components */
 
 .map-inspector-section::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 .map-tests-modal__dialog::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 .room-key::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }
 
 .test-report__list::-webkit-scrollbar-corner {
-  background: transparent;
+  background: var(--cruor-color-transparent);
 }

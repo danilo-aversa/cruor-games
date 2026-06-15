@@ -6,37 +6,39 @@
 
 /* Tokens */
 
+@import "./colors.css";
+
 :root {
   --cruor-composer-workspace-max: var(--cruor-workspace-max, 1540px);
   --cruor-composer-side-panel-width: var(--cruor-side-panel-width, 390px);
   --cruor-composer-grid-gap: var(--cruor-space-lg, 14px);
-  --cruor-ui-panel-border-color: rgba(255, 238, 242, 0.08);
-  --cruor-ui-panel-border-top-color: rgba(255, 238, 242, 0.12);
+  --cruor-ui-panel-border-color: var(--cruor-color-milk-a080);
+  --cruor-ui-panel-border-top-color: var(--cruor-color-milk-a120);
   --cruor-ui-panel-border: 1px solid var(--cruor-ui-panel-border-color);
   --cruor-ui-panel-border-top: 1px solid var(--cruor-ui-panel-border-top-color);
-  --cruor-ui-panel-image: linear-gradient(180deg, rgba(255, 238, 242, 0.035), transparent 160px), radial-gradient(circle at 18% 0%, rgba(190, 64, 82, 0.08), transparent 24rem);
-  --cruor-ui-panel-bg: linear-gradient(180deg, rgba(255, 238, 242, 0.035), transparent 160px), radial-gradient(circle at 18% 0%, rgba(190, 64, 82, 0.08), transparent 24rem), rgba(12, 10, 12, 0.76);
-  --cruor-ui-panel-shadow: 0 18px 52px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.035);
-  --cruor-ui-card-border-color: rgba(255, 238, 242, 0.075);
-  --cruor-ui-card-border-color-active: rgba(190, 64, 82, 0.42);
+  --cruor-ui-panel-image: var(--cruor-gradient-linear-029-a37c5252), var(--cruor-gradient-radial-130-c05fc538);
+  --cruor-ui-panel-bg: var(--cruor-gradient-linear-029-a37c5252), var(--cruor-gradient-radial-130-c05fc538), var(--cruor-color-r12-g10-b12-a760);
+  --cruor-ui-panel-shadow: 0 18px 52px var(--cruor-color-black-a340), inset 0 1px 0 var(--cruor-color-white-a035);
+  --cruor-ui-card-border-color: var(--cruor-color-milk-a075);
+  --cruor-ui-card-border-color-active: var(--cruor-color-blood-glow-a420);
   --cruor-ui-card-border: 1px solid var(--cruor-ui-card-border-color);
   --cruor-ui-card-border-active: 1px solid var(--cruor-ui-card-border-color-active);
-  --cruor-ui-card-bg: linear-gradient(180deg, rgba(255, 238, 242, 0.032), transparent 68%), rgba(5, 5, 6, 0.54);
-  --cruor-ui-card-bg-active: radial-gradient(circle at 0% 0%, rgba(190, 64, 82, 0.16), transparent 12rem), rgba(95, 7, 22, 0.22);
-  --cruor-ui-card-shadow: inset 0 1px 0 rgba(255, 238, 242, 0.035);
-  --cruor-ui-card-shadow-active: 0 0 0 1px rgba(190, 64, 82, 0.1), 0 0 24px rgba(122, 26, 40, 0.2), inset 0 1px 0 rgba(255, 238, 242, 0.045);
-  --cruor-ui-control-border-color: rgba(255, 238, 242, 0.09);
-  --cruor-ui-control-border-color-active: rgba(190, 64, 82, 0.55);
+  --cruor-ui-card-bg: var(--cruor-gradient-linear-019-fbb0759c), var(--cruor-color-surface-soft-a540);
+  --cruor-ui-card-bg-active: var(--cruor-gradient-radial-010-2b54c7d1), var(--cruor-color-blood-strong-a220);
+  --cruor-ui-card-shadow: inset 0 1px 0 var(--cruor-color-milk-a035);
+  --cruor-ui-card-shadow-active: 0 0 0 1px var(--cruor-color-blood-glow-a100), 0 0 24px var(--cruor-color-blood-bright-a200), inset 0 1px 0 var(--cruor-color-milk-a045);
+  --cruor-ui-control-border-color: var(--cruor-color-milk-a090);
+  --cruor-ui-control-border-color-active: var(--cruor-color-blood-glow-a550);
   --cruor-ui-control-border: 1px solid var(--cruor-ui-control-border-color);
   --cruor-ui-control-border-active: 1px solid var(--cruor-ui-control-border-color-active);
-  --cruor-ui-control-bg: linear-gradient(180deg, rgba(255, 238, 242, 0.025), transparent), rgba(0, 0, 0, 0.22);
-  --cruor-ui-control-bg-active: radial-gradient(circle at 50% 24%, rgba(190, 64, 82, 0.18), transparent 68%), rgba(95, 7, 22, 0.2);
-  --cruor-ui-control-text: rgba(238, 238, 238, 0.62);
-  --cruor-ui-control-text-active: #fff0f2;
-  --cruor-ui-chip-border-color: rgba(255, 238, 242, 0.075);
+  --cruor-ui-control-bg: var(--cruor-gradient-linear-026-1ad4f65f), var(--cruor-color-black-a220);
+  --cruor-ui-control-bg-active: var(--cruor-gradient-radial-007-f9fedda9), var(--cruor-color-blood-strong-a200);
+  --cruor-ui-control-text: var(--cruor-color-text-a620);
+  --cruor-ui-control-text-active: var(--cruor-color-hex-fff0f2);
+  --cruor-ui-chip-border-color: var(--cruor-color-milk-a075);
   --cruor-ui-chip-border: 1px solid var(--cruor-ui-chip-border-color);
-  --cruor-ui-chip-bg: rgba(255, 255, 255, 0.025);
-  --cruor-ui-chip-text: rgba(238, 238, 238, 0.56);
+  --cruor-ui-chip-bg: var(--cruor-color-white-a025);
+  --cruor-ui-chip-text: var(--cruor-color-text-a560);
   --cruor-z-topbar: 70;
   --cruor-z-dropdown: 320;
   --cruor-z-drawer: 400;
