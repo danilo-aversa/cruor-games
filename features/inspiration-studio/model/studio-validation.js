@@ -1,0 +1,326 @@
+import { validateContentPack } from "../../../shared/content/content-pack-schema.js";
+import {
+  SHARED_DARKEN_LOCATION_SLOTS,
+  SHARED_MONSTER_SLOTS,
+  SHARED_WORKFLOWS,
+} from "../../../shared/content/workflows.js";
+import {
+  KNOWN_MONSTER_ANATOMY_TAGS,
+  KNOWN_MONSTER_BODY_PLAN_IDS,
+  KNOWN_MONSTER_CREATURE_TAGS,
+  KNOWN_MONSTER_FAMILY_IDS,
+  MONSTER_ANATOMY_CONSTRAINT_FIELDS,
+  MONSTER_ANATOMY_GRANT_FIELDS,
+  normalizeMonsterAnatomyConstraints,
+  normalizeMonsterAnatomyGrants,
+} from "../../monster-composer/model/anatomy.js";
+import { validateMonsterFrameFit } from "../../monster-composer/model/monster-frame-fit.js";
+import {
+  COMPONENT_TYPE_LABELS,
+  STATUS_OPTIONS,
+  asArray,
+  getDuplicateIds,
+  getExplicitMonsterRules,
+  getMonsterConstraintSource,
+  getMonsterFrameFitSource,
+  getMonsterGrantSource,
+  hasText,
+  isPlainObject,
+} from "./studio-component-normalizers.js";
+import { normalizeModuleForDraft } from "./studio-draft.js";
+
+const CANONICAL_WORKFLOW_MAP = new Map(SHARED_WORKFLOWS.map((workflow) => [workflow.id, workflow]));
+const CANONICAL_MONSTER_SLOT_MAP = new Map(SHARED_MONSTER_SLOTS.map((slot) => [slot.id, slot]));
+const CANONICAL_DARKEN_SLOT_MAP = new Map(SHARED_DARKEN_LOCATION_SLOTS.map((slot) => [slot.id, slot]));
+const CANONICAL_SLOT_MAP = new Map([
+  ...SHARED_MONSTER_SLOTS.map((slot) => [slot.id, slot]),
+  ...SHARED_DARKEN_LOCATION_SLOTS.map((slot) => [slot.id, slot]),
+]);
+
+export function makeIssue(severity, path, message, id = "") {
+  return { severity, path, message, id };
+}
+
+export function getIssueSummary(issues = []) {
+  return asArray(issues).reduce((summary, issue) => {
+    const severity = issue?.severity || "warning";
+    summary.total += 1;
+    summary[severity] = (summary[severity] || 0) + 1;
+    return summary;
+  }, { total: 0, error: 0, warning: 0, info: 0 });
+}
+
+export function getIssueSeverityRank(severity = "warning") {
+  if (severity === "error") return 0;
+  if (severity === "warning") return 1;
+  return 2;
+}
+
+export function getGroupedValidationIssues(issues = [], { includeInfo = true } = {}) {
+  const groups = new Map();
+
+  asArray(issues).forEach((issue) => {
+    const severity = issue?.severity || "warning";
+    if (!includeInfo && severity === "info") return;
+
+    const message = issue?.message || "Validation issue.";
+    const key = `${severity}::${message}`;
+    const current = groups.get(key) || {
+      key,
+      severity,
+      message,
+      count: 0,
+      ids: [],
+      paths: [],
+    };
+
+    current.count += 1;
+    if (issue?.id && !current.ids.includes(issue.id)) current.ids.push(issue.id);
+    if (issue?.path && !current.paths.includes(issue.path)) current.paths.push(issue.path);
+    groups.set(key, current);
+  });
+
+  return [...groups.values()].sort((a, b) => {
+    const severityDelta = getIssueSeverityRank(a.severity) - getIssueSeverityRank(b.severity);
+    if (severityDelta) return severityDelta;
+    return b.count - a.count;
+  });
+}
+
+export function getIssueGroupMeta(group) {
+  const ids = asArray(group?.ids);
+  const paths = asArray(group?.paths);
+  const visibleIds = ids.slice(0, 2).join(", ");
+  const hiddenIdCount = Math.max(0, ids.length - 2);
+  if (visibleIds) return hiddenIdCount ? `${visibleIds} +${hiddenIdCount}` : visibleIds;
+  if (paths.length === 1) return paths[0];
+  if (paths.length > 1) return `${paths.length} affected fields`;
+  return "Current draft";
+}
+
+export function getIssuesForEntry(issues = [], entryId = "") {
+  if (!entryId) return [];
+  return asArray(issues).filter((issue) => issue?.id === entryId || String(issue?.path || "").includes(entryId));
+}
+
+export function getEntryIssueState(issues = []) {
+  const summary = getIssueSummary(issues);
+  if (summary.error) return "error";
+  if (summary.warning) return "warning";
+  return "clean";
+}
+
+function validateConstraintTerms(values = [], knownValues = [], path, issues, id, label) {
+  const known = new Set(knownValues);
+  asArray(values).forEach((value) => {
+    if (!known.has(String(value))) {
+      issues.push(makeIssue("warning", path, `Unknown ${label}: ${value}. Add it to the anatomy model if this is intentional.`, id));
+    }
+  });
+}
+
+function validateMonsterAnatomyConstraintsForStudio(component = {}, index, issues) {
+  const id = component.id || component.monster?.graftId || `component-${index}`;
+  const constraints = normalizeMonsterAnatomyConstraints(getMonsterConstraintSource(component));
+  if (!constraints) return;
+
+  validateConstraintTerms(constraints.allowedBodyPlans, KNOWN_MONSTER_BODY_PLAN_IDS, `components[${index}].monster.constraints.allowedBodyPlans`, issues, id, "body plan");
+  validateConstraintTerms(constraints.forbiddenBodyPlans, KNOWN_MONSTER_BODY_PLAN_IDS, `components[${index}].monster.constraints.forbiddenBodyPlans`, issues, id, "body plan");
+  validateConstraintTerms([...constraints.exclusiveToFamilies, ...constraints.allowedFamilies], KNOWN_MONSTER_FAMILY_IDS, `components[${index}].monster.constraints.allowedFamilies`, issues, id, "monster family");
+  validateConstraintTerms(constraints.forbiddenFamilies, KNOWN_MONSTER_FAMILY_IDS, `components[${index}].monster.constraints.forbiddenFamilies`, issues, id, "monster family");
+  validateConstraintTerms([...constraints.requiredAnatomy, ...constraints.requiresAnyAnatomy, ...constraints.forbiddenAnatomy], KNOWN_MONSTER_ANATOMY_TAGS, `components[${index}].monster.constraints.anatomy`, issues, id, "anatomy tag");
+  validateConstraintTerms([...constraints.requiredTags, ...constraints.requiresAnyTags, ...constraints.forbiddenTags], KNOWN_MONSTER_CREATURE_TAGS, `components[${index}].monster.constraints.tags`, issues, id, "creature tag");
+
+  if (!MONSTER_ANATOMY_CONSTRAINT_FIELDS.some((field) => asArray(constraints[field]).length)) {
+    issues.push(makeIssue("info", `components[${index}].monster.constraints`, "Anatomy constraints contain only a note and do not restrict compatibility.", id));
+  }
+}
+
+function validateMonsterAnatomyGrantsForStudio(component = {}, index, issues) {
+  const id = component.id || component.monster?.graftId || `component-${index}`;
+  const grants = normalizeMonsterAnatomyGrants(getMonsterGrantSource(component));
+  if (!grants) return;
+
+  validateConstraintTerms(grants.grantsBodyPlans, KNOWN_MONSTER_BODY_PLAN_IDS, `components[${index}].monster.anatomyGrants.grantsBodyPlans`, issues, id, "body plan");
+  validateConstraintTerms(grants.grantsAnatomy, KNOWN_MONSTER_ANATOMY_TAGS, `components[${index}].monster.anatomyGrants.grantsAnatomy`, issues, id, "anatomy tag");
+  validateConstraintTerms(grants.grantsTags, KNOWN_MONSTER_CREATURE_TAGS, `components[${index}].monster.anatomyGrants.grantsTags`, issues, id, "creature tag");
+
+  if (!MONSTER_ANATOMY_GRANT_FIELDS.some((field) => asArray(grants[field]).length)) {
+    issues.push(makeIssue("info", `components[${index}].monster.anatomyGrants`, "Anatomy grants contain only a note and do not change the effective build.", id));
+  }
+}
+
+function validateMonsterFrameFitForStudio(component = {}, index, issues) {
+  const id = component.id || component.monster?.graftId || `component-${index}`;
+  const report = validateMonsterFrameFit(getMonsterFrameFitSource(component), {
+    id,
+    title: component.title || component.label,
+  });
+
+  report.issues.forEach((issue) => {
+    issues.push(makeIssue(
+      issue.severity || "error",
+      `components[${index}].${issue.path || "monster.fit"}`,
+      issue.message,
+      id,
+    ));
+  });
+}
+
+export function validateStudioDraft(draft, contentPackExport) {
+  const normalized = normalizeModuleForDraft(draft);
+  const issues = [];
+  const sourceAnchorId = normalized.sourceAnchor?.id || normalized.id;
+  const inspiration = normalized.inspiration || {};
+  const components = asArray(normalized.components);
+
+  if (!hasText(normalized.id)) issues.push(makeIssue("error", "module.id", "Module is missing a stable id."));
+  if (!hasText(normalized.title)) issues.push(makeIssue("error", "module.title", "Module is missing a public title."));
+  if (!hasText(normalized.packId)) issues.push(makeIssue("error", "module.packId", "Module is missing a target content pack id."));
+  if (!STATUS_OPTIONS.some((option) => option.id === normalized.status)) {
+    issues.push(makeIssue("error", "module.status", `Unsupported module status: ${normalized.status || "empty"}.`));
+  }
+
+  if (!hasText(normalized.sourceAnchor?.id)) issues.push(makeIssue("error", "sourceAnchor.id", "Source Anchor is missing an id."));
+  if (!hasText(normalized.sourceAnchor?.label)) issues.push(makeIssue("error", "sourceAnchor.label", "Source Anchor is missing a label."));
+  if (!asArray(normalized.sourceAnchor?.sourceTypes).length) {
+    issues.push(makeIssue("warning", "sourceAnchor.sourceTypes", "Source Anchor has no source type tags."));
+  }
+  if (!asArray(normalized.sourceAnchor?.themes).length && !asArray(normalized.sourceAnchor?.horror).length) {
+    issues.push(makeIssue("warning", "sourceAnchor.taxonomy", "Source Anchor has no theme or horror tags."));
+  }
+
+  if (!hasText(inspiration.id)) issues.push(makeIssue("error", "inspiration.id", "Public Inspiration card is missing an id."));
+  if (!hasText(inspiration.title)) issues.push(makeIssue("error", "inspiration.title", "Public Inspiration card is missing a title."));
+  if (inspiration.contentType !== "source-inspiration-card") {
+    issues.push(makeIssue("warning", "inspiration.contentType", "Public Inspiration card should use contentType source-inspiration-card."));
+  }
+  if (!asArray(inspiration.sourceAnchors).includes(sourceAnchorId)) {
+    issues.push(makeIssue("error", "inspiration.sourceAnchors", `Public Inspiration card does not reference Source Anchor ${sourceAnchorId}.`, inspiration.id));
+  }
+  if (!asArray(inspiration.workflows).includes("inspiration-archive")) {
+    issues.push(makeIssue("warning", "inspiration.workflows", "Public Inspiration card is not linked to inspiration-archive.", inspiration.id));
+  }
+  if (!hasText(inspiration.summary) && !hasText(inspiration.narrative)) {
+    issues.push(makeIssue("warning", "inspiration.copy", "Public Inspiration card has no summary or narrative copy.", inspiration.id));
+  }
+  if (!hasText(inspiration.media?.imageKey) && !hasText(inspiration.media?.imageUrl)) {
+    issues.push(makeIssue("warning", "inspiration.media", "Public Inspiration card has no imageKey or imageUrl.", inspiration.id));
+  }
+
+  getDuplicateIds(components).forEach((id) => {
+    issues.push(makeIssue("error", "components", `Duplicate component id: ${id}.`, id));
+  });
+
+  components.forEach((component, index) => {
+    const id = component.id || `component-${index + 1}`;
+    const type = component.contentType;
+    const workflows = asArray(component.workflows);
+    const slots = asArray(component.slots);
+
+    if (!hasText(component.id)) issues.push(makeIssue("error", `components[${index}].id`, "Component is missing an id.", id));
+    if (!hasText(component.title || component.label)) issues.push(makeIssue("error", `components[${index}].title`, "Component is missing a title or label.", id));
+    if (!COMPONENT_TYPE_LABELS[type]) issues.push(makeIssue("error", `components[${index}].contentType`, `Unknown component contentType: ${type || "empty"}.`, id));
+    if (!asArray(component.sourceAnchors).length) {
+      issues.push(makeIssue("warning", `components[${index}].sourceAnchors`, "Component has no Source Anchor; export will attach the current one.", id));
+    } else if (!asArray(component.sourceAnchors).includes(sourceAnchorId)) {
+      issues.push(makeIssue("warning", `components[${index}].sourceAnchors`, `Component is not linked to current Source Anchor ${sourceAnchorId}.`, id));
+    }
+    if (!workflows.length) issues.push(makeIssue("error", `components[${index}].workflows`, "Component has no workflow.", id));
+    workflows.forEach((workflowId) => {
+      if (!CANONICAL_WORKFLOW_MAP.has(workflowId)) {
+        issues.push(makeIssue("error", `components[${index}].workflows`, `Unknown workflow: ${workflowId}.`, id));
+      }
+    });
+    if (!slots.length) issues.push(makeIssue("error", `components[${index}].slots`, "Component has no slot.", id));
+    slots.forEach((slotId) => {
+      if (!CANONICAL_SLOT_MAP.has(slotId)) {
+        issues.push(makeIssue("error", `components[${index}].slots`, `Unknown slot: ${slotId}.`, id));
+      }
+    });
+
+    if (type === "monster-graft") {
+      const monsterRules = getExplicitMonsterRules(component);
+      const monsterSlot = component.monster?.slot || slots[0];
+      if (!workflows.includes("monster-composer")) {
+        issues.push(makeIssue("error", `components[${index}].workflows`, "Monster graft must include monster-composer workflow.", id));
+      }
+      if (!monsterSlot || !CANONICAL_MONSTER_SLOT_MAP.has(monsterSlot)) {
+        issues.push(makeIssue("error", `components[${index}].monster.slot`, `Monster graft uses an unknown Monster Composer slot: ${monsterSlot || "empty"}.`, id));
+      }
+      slots.forEach((slotId) => {
+        if (!CANONICAL_MONSTER_SLOT_MAP.has(slotId)) {
+          issues.push(makeIssue("error", `components[${index}].slots`, `Monster graft references non-monster slot: ${slotId}.`, id));
+        }
+      });
+      if (monsterSlot && slots.length && !slots.includes(monsterSlot)) {
+        issues.push(makeIssue("warning", `components[${index}].monster.slot`, `monster.slot (${monsterSlot}) is not present in component slots.`, id));
+      }
+      if (!monsterRules) {
+        issues.push(makeIssue("error", `components[${index}].monster.rules`, "Monster graft has no structured monster.rules object.", id));
+      } else {
+        if (!hasText(monsterRules.section)) issues.push(makeIssue("warning", `components[${index}].monster.rules.section`, "Structured rules have no stat block section.", id));
+        if (!hasText(monsterRules.actionEconomy)) issues.push(makeIssue("warning", `components[${index}].monster.rules.actionEconomy`, "Structured rules have no action economy.", id));
+        if (!isPlainObject(monsterRules.usage)) issues.push(makeIssue("warning", `components[${index}].monster.rules.usage`, "Structured rules have no usage object.", id));
+        if (!isPlainObject(monsterRules.resolution)) issues.push(makeIssue("warning", `components[${index}].monster.rules.resolution`, "Structured rules have no resolution object.", id));
+        if (!isPlainObject(monsterRules.targeting)) issues.push(makeIssue("warning", `components[${index}].monster.rules.targeting`, "Structured rules have no targeting object.", id));
+        if (!isPlainObject(monsterRules.damage)) issues.push(makeIssue("warning", `components[${index}].monster.rules.damage`, "Structured rules have no damage object.", id));
+        if (monsterRules.resolution?.type === "savingThrow" && !hasText(monsterRules.resolution?.ability)) {
+          issues.push(makeIssue("warning", `components[${index}].monster.rules.resolution.ability`, "Saving throw resolution has no ability.", id));
+        }
+        if (monsterRules.usage?.type === "recharge" && !hasText(monsterRules.usage?.value || monsterRules.usage?.recharge)) {
+          issues.push(makeIssue("warning", `components[${index}].monster.rules.usage.recharge`, "Recharge usage has no recharge value.", id));
+        }
+      }
+      if (!hasText(component.counterplay) && !hasText(component.monster?.rules?.counterplay?.text)) {
+        issues.push(makeIssue("warning", `components[${index}].counterplay`, "Monster graft has no explicit counterplay text.", id));
+      }
+      validateMonsterAnatomyConstraintsForStudio(component, index, issues);
+      validateMonsterAnatomyGrantsForStudio(component, index, issues);
+      validateMonsterFrameFitForStudio(component, index, issues);
+    }
+
+    if (type === "location-component") {
+      if (!workflows.includes("darken-location")) {
+        issues.push(makeIssue("error", `components[${index}].workflows`, "Location component must include darken-location workflow.", id));
+      }
+      slots.forEach((slotId) => {
+        if (!CANONICAL_DARKEN_SLOT_MAP.has(slotId) || slotId === "locationRegion") {
+          issues.push(makeIssue("error", `components[${index}].slots`, `Location component uses an invalid Darken slot: ${slotId}.`, id));
+        }
+      });
+      if (!hasText(component.summary) && !hasText(component.tableText) && !hasText(component.mechanics)) {
+        issues.push(makeIssue("warning", `components[${index}].playableText`, "Location component has no summary, table text, or mechanics.", id));
+      }
+    }
+
+    if (type === "location-region") {
+      if (!slots.includes("locationRegion")) {
+        issues.push(makeIssue("error", `components[${index}].slots`, "Location region must use the locationRegion slot.", id));
+      }
+      const regionMetadata = isPlainObject(component.locationRegion) ? component.locationRegion : component.map;
+      if (!isPlainObject(regionMetadata)) {
+        issues.push(makeIssue("warning", `components[${index}].locationRegion`, "Location region has no locationRegion metadata object.", id));
+      } else {
+        ["role", "size", "shape"].forEach((field) => {
+          if (!hasText(regionMetadata?.[field])) {
+            issues.push(makeIssue("warning", `components[${index}].locationRegion.${field}`, `Location region has no ${field}.`, id));
+          }
+        });
+      }
+    }
+  });
+
+  validateContentPack(contentPackExport).forEach((issue) => {
+    issues.push({
+      ...issue,
+      path: `contentPack.${issue.path || "pack"}`,
+      severity: issue.severity || "warning",
+    });
+  });
+
+  return {
+    issues,
+    summary: getIssueSummary(issues),
+  };
+}

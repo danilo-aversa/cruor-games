@@ -1,107 +1,92 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   SPELLS_5E24,
-  CONTENT_PACK_SCHEMA_VERSION,
+  SHARED_TAXONOMIES,
   SHARED_DARKEN_LOCATION_SLOTS,
   SHARED_MONSTER_SLOTS,
-  SHARED_WORKFLOWS,
-  SHARED_TAXONOMIES,
-  SHARED_SOURCE_ANCHORS,
   SPELLS_5E24_LEVEL_OPTIONS,
   SPELLS_5E24_SCHOOL_OPTIONS,
-  createContentPack,
   getSpell5e24Name,
   loadContentPackSummaries,
   loadInspirationModules,
   normalizeSpell5e24Ref,
-  validateContentPack,
 } from "../../shared/content/content.index.js";
+
+import {
+  COMPONENT_TYPE_ICONS,
+  COMPONENT_TYPE_LABELS,
+  STATUS_OPTIONS,
+  asArray,
+  buildMonsterRulesFeature,
+  buildStudioCompatibilityMatrix,
+  clone,
+  getExplicitMonsterRules,
+  getMonsterConstraintSource,
+  getMonsterConstraintSummary,
+  getMonsterFrameFitSource,
+  getMonsterFrameFitSummary,
+  getMonsterGrantSource,
+  getMonsterGrantSummary,
+  isPlainObject,
+  joinList,
+  normalizeStatus,
+  slugify,
+  splitList,
+} from "./model/studio-component-normalizers.js";
+import {
+  EMPTY_DRAFT,
+  buildComponentTemplate,
+  getModuleComponentGroups,
+  normalizeModuleForDraft,
+  syncDraftIdentityIds,
+} from "./model/studio-draft.js";
+import {
+  buildContentPackExport,
+  buildModuleExport,
+  downloadJsonFile,
+} from "./model/studio-export.js";
+import {
+  getEntryIssueState,
+  getGroupedValidationIssues,
+  getIssueGroupMeta,
+  getIssueSummary,
+  getIssuesForEntry,
+  validateStudioDraft,
+} from "./model/studio-validation.js";
+import {
+  buildPublishReadinessReport,
+  getReadinessIconFromSummary,
+  getReadinessLabelFromSummary,
+  getReadinessStateFromSummary,
+} from "./model/studio-readiness.js";
+import { getStudioComponentTemplateGroups } from "./model/studio-component-templates.js";
+import {
+  buildStudioWarningsFromValidation,
+  getStudioWarningsForEntry,
+} from "./model/studio-warning-model.js";
+import { StudioWarningBadge } from "./components/StudioWarningBadge.jsx";
+import { StudioWarningList } from "./components/StudioWarningList.jsx";
 import { renderStructuredRulesTemplate } from "../monster-composer/model/monster-graft-rules.render.js";
 import { ALL_MONSTER_GRAFTS } from "../monster-composer/data/monster-content-pack-feed.js";
+import { StudioToolsMenu } from "./components/StudioToolsMenu.jsx";
+import { GraftLedgerModal } from "./ledger/GraftLedgerModal.jsx";
+import { ContentHealthModal } from "./health/ContentHealthModal.jsx";
+import { CoverageMatrixModal } from "./coverage/CoverageMatrixModal.jsx";
+import { downloadStudioAuditBundle } from "./reports/studio-audit-bundle.report.js";
 import { normalizeMonsterGraftRules } from "../monster-composer/model/monster-graft-rules.schema.js";
 import { groupQaIssues, runMonsterQaSuite } from "../monster-composer/qa/monster-qa-suite.js";
 import {
-  KNOWN_MONSTER_ANATOMY_TAGS,
-  KNOWN_MONSTER_BODY_PLAN_IDS,
-  KNOWN_MONSTER_CREATURE_TAGS,
-  KNOWN_MONSTER_FAMILY_IDS,
-  MONSTER_ANATOMY_CONSTRAINT_FIELDS,
-  MONSTER_ANATOMY_GRANT_FIELDS,
   MONSTER_BODY_PLAN_OPTIONS,
   MONSTER_FAMILY_PROFILE_OPTIONS,
-  evaluateMonsterAnatomyConstraints,
   formatAnatomyTerm,
-  getEffectiveMonsterAnatomyProfile,
   normalizeMonsterAnatomyConstraints,
   normalizeMonsterAnatomyGrants,
-  summarizeMonsterAnatomyConstraints,
-  summarizeMonsterAnatomyGrants,
 } from "../monster-composer/model/anatomy.js";
 import {
   MONSTER_FRAME_FIT_VALUES,
   normalizeMonsterFrameFit,
-  summarizeMonsterFrameFit,
-  validateMonsterFrameFit,
 } from "../monster-composer/model/monster-frame-fit.js";
 
-const EMPTY_DRAFT = {
-  id: "new-inspiration",
-  title: "New Inspiration",
-  status: "draft",
-  packId: "new-content-pack",
-  sourceAnchor: {
-    id: "new-inspiration",
-    label: "New Inspiration",
-    type: "Source Anchor",
-    status: "draft",
-    workflows: [],
-    sourceTypes: [],
-    themes: [],
-    motifs: [],
-    horror: [],
-    summary: "",
-  },
-  inspiration: {
-    id: "inspiration-new-inspiration",
-    title: "New Inspiration",
-    label: "New Inspiration",
-    contentType: "source-inspiration-card",
-    status: "draft",
-    workflows: ["inspiration-archive"],
-    sourceAnchors: ["new-inspiration"],
-    sourceTypes: [],
-    themes: [],
-    motifs: [],
-    horror: [],
-    summary: "",
-    narrative: "",
-    caption: "",
-    media: {
-      imageKey: "",
-      imageUrl: "",
-      imageNote: "",
-    },
-  },
-  components: [],
-  monsterGrafts: [],
-  locationComponents: [],
-  locationRegions: [],
-  metadata: {
-    moduleRole: "studio-draft",
-  },
-};
-
-const COMPONENT_TYPE_LABELS = {
-  "monster-graft": "Monster Graft",
-  "location-component": "Location Component",
-  "location-region": "Location Region",
-};
-
-const COMPONENT_TYPE_ICONS = {
-  "monster-graft": "fa-skull",
-  "location-component": "fa-map-location-dot",
-  "location-region": "fa-dungeon",
-};
 
 const STUDIO_SECTIONS = [
   {
@@ -157,26 +142,6 @@ const VALIDATION_SEVERITY_META = {
   info: { label: "Info", icon: "fa-circle-info" },
 };
 
-const STATUS_OPTIONS = [
-  {
-    id: "draft",
-    label: "Draft",
-    icon: "fa-pen-ruler",
-    description: "Use while the module is being structured, reviewed, or playtested.",
-  },
-  {
-    id: "published",
-    label: "Published",
-    icon: "fa-circle-check",
-    description: "Use when the module is approved for the public archive and live generators.",
-  },
-  {
-    id: "archived",
-    label: "Archived",
-    icon: "fa-box-archive",
-    description: "Use when the module should remain available for reference but no longer be treated as active content.",
-  },
-];
 
 const STATUS_TOOLTIP_ITEMS = STATUS_OPTIONS
   .map((option) => `**${option.label}**. ${option.description}`)
@@ -191,6 +156,13 @@ const TAXONOMY_VALUES_BY_ID = Object.freeze(
 
 const SOURCE_TYPE_OPTIONS = TAXONOMY_VALUES_BY_ID["source-types"] || [];
 const HORROR_TAG_OPTIONS = TAXONOMY_VALUES_BY_ID["horror-modes"] || [];
+
+const CANONICAL_MONSTER_SLOT_MAP = new Map(SHARED_MONSTER_SLOTS.map((slot) => [slot.id, slot]));
+const CANONICAL_DARKEN_SLOT_MAP = new Map(SHARED_DARKEN_LOCATION_SLOTS.map((slot) => [slot.id, slot]));
+const CANONICAL_SLOT_MAP = new Map([
+  ...SHARED_MONSTER_SLOTS.map((slot) => [slot.id, slot]),
+  ...SHARED_DARKEN_LOCATION_SLOTS.map((slot) => [slot.id, slot]),
+]);
 
 const TAXONOMY_PILL_ICONS = Object.freeze({
   sourceTypes: "fa-folder-tree",
@@ -727,147 +699,6 @@ function getComponentEditorTabSummary(component = {}, tabId = "overview") {
   return "";
 }
 
-function clone(value) {
-  if (typeof structuredClone === "function") return structuredClone(value);
-  return JSON.parse(JSON.stringify(value));
-}
-
-function asArray(value) {
-  if (!value) return [];
-  return Array.isArray(value) ? value.filter(Boolean) : [value].filter(Boolean);
-}
-
-function splitList(value) {
-  return String(value || "")
-    .split(/[\n,]/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
-function joinList(value) {
-  return asArray(value).join(", ");
-}
-
-function getEntryId(entry) {
-  return String(entry?.id || entry?.slug || "").trim();
-}
-
-function uniqueById(items = []) {
-  const seen = new Set();
-  return asArray(items).filter((item) => {
-    const id = getEntryId(item);
-    if (!id || seen.has(id)) return false;
-    seen.add(id);
-    return true;
-  });
-}
-
-function countById(items = []) {
-  return asArray(items).reduce((counts, item) => {
-    const id = getEntryId(item);
-    if (!id) return counts;
-    counts.set(id, (counts.get(id) || 0) + 1);
-    return counts;
-  }, new Map());
-}
-
-function getDuplicateIds(items = []) {
-  return [...countById(items)].filter(([, count]) => count > 1).map(([id]) => id);
-}
-
-function normalizeStatus(value) {
-  return STATUS_OPTIONS.some((option) => option.id === value) ? value : "draft";
-}
-
-function makeIssue(severity, path, message, id = "") {
-  return { severity, path, message, id };
-}
-
-function getIssueSummary(issues = []) {
-  return asArray(issues).reduce((summary, issue) => {
-    const severity = issue?.severity || "warning";
-    summary.total += 1;
-    summary[severity] = (summary[severity] || 0) + 1;
-    return summary;
-  }, { total: 0, error: 0, warning: 0, info: 0 });
-}
-
-function getIssueSeverityRank(severity = "warning") {
-  if (severity === "error") return 0;
-  if (severity === "warning") return 1;
-  return 2;
-}
-
-function getGroupedValidationIssues(issues = [], { includeInfo = true } = {}) {
-  const groups = new Map();
-
-  asArray(issues).forEach((issue) => {
-    const severity = issue?.severity || "warning";
-    if (!includeInfo && severity === "info") return;
-
-    const message = issue?.message || "Validation issue.";
-    const key = `${severity}::${message}`;
-    const current = groups.get(key) || {
-      key,
-      severity,
-      message,
-      count: 0,
-      ids: [],
-      paths: [],
-    };
-
-    current.count += 1;
-    if (issue?.id && !current.ids.includes(issue.id)) current.ids.push(issue.id);
-    if (issue?.path && !current.paths.includes(issue.path)) current.paths.push(issue.path);
-    groups.set(key, current);
-  });
-
-  return [...groups.values()].sort((a, b) => {
-    const severityDelta = getIssueSeverityRank(a.severity) - getIssueSeverityRank(b.severity);
-    if (severityDelta) return severityDelta;
-    return b.count - a.count;
-  });
-}
-
-function getIssueGroupMeta(group) {
-  const ids = asArray(group?.ids);
-  const paths = asArray(group?.paths);
-  const visibleIds = ids.slice(0, 2).join(", ");
-  const hiddenIdCount = Math.max(0, ids.length - 2);
-  if (visibleIds) return hiddenIdCount ? `${visibleIds} +${hiddenIdCount}` : visibleIds;
-  if (paths.length === 1) return paths[0];
-  if (paths.length > 1) return `${paths.length} affected fields`;
-  return "Current draft";
-}
-
-function getReadinessStateFromSummary(summary = {}) {
-  if (summary.error) return "error";
-  if (summary.warning) return "warning";
-  return "clean";
-}
-
-function getReadinessLabelFromSummary(summary = {}) {
-  if (summary.error) return "Needs Fixes";
-  if (summary.warning) return "Needs Review";
-  return "Ready";
-}
-
-function getReadinessIconFromSummary(summary = {}) {
-  if (summary.error) return "fa-circle-xmark";
-  if (summary.warning) return "fa-triangle-exclamation";
-  return "fa-circle-check";
-}
-
-function getIssuesForEntry(issues = [], entryId = "") {
-  if (!entryId) return [];
-  return asArray(issues).filter((issue) => issue?.id === entryId || String(issue?.path || "").includes(entryId));
-}
-
-function getEntryIssueState(issues = []) {
-  const summary = getIssueSummary(issues);
-  return getReadinessStateFromSummary(summary);
-}
-
 function getStatusClassName(status = "draft") {
   return `is-status-${normalizeStatus(status)}`;
 }
@@ -886,86 +717,6 @@ function getLibraryStatusFilterIcon(filterId = "all") {
   return "fa-layer-group";
 }
 
-function buildPublishReadinessReport(draft, validationReport, contentPackExport, moduleExport) {
-  const normalized = normalizeModuleForDraft(draft);
-  const issues = asArray(validationReport?.issues);
-  const groupedIssues = getGroupedValidationIssues(issues, { includeInfo: true });
-  const summary = validationReport?.summary || getIssueSummary(issues);
-
-  return {
-    reportType: "cruor-inspiration-studio-publish-readiness",
-    generatedAt: new Date().toISOString(),
-    module: {
-      id: normalized.id,
-      title: normalized.title,
-      status: normalized.status,
-      packId: normalized.packId,
-      sourceAnchorId: normalized.sourceAnchor?.id,
-      componentCount: asArray(normalized.components).length,
-    },
-    readiness: {
-      state: getReadinessStateFromSummary(summary),
-      label: getReadinessLabelFromSummary(summary),
-      summary,
-    },
-    groupedIssues: groupedIssues.map((group) => ({
-      severity: group.severity,
-      message: group.message,
-      count: group.count,
-      ids: group.ids,
-      paths: group.paths,
-    })),
-    issues: issues.map((issue) => ({
-      severity: issue.severity || "warning",
-      path: issue.path || "",
-      id: issue.id || "",
-      message: issue.message || "Validation issue.",
-    })),
-    exports: {
-      contentPackId: contentPackExport?.id,
-      moduleId: moduleExport?.id,
-    },
-  };
-}
-
-function downloadJsonFile(filename, payload) {
-  if (typeof window === "undefined") return;
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = filename;
-  document.body.appendChild(anchor);
-  anchor.click();
-  anchor.remove();
-  URL.revokeObjectURL(url);
-}
-
-function getAutogeneratedIdentityIds(title) {
-  const sourceAnchorId = slugify(title);
-  return {
-    moduleId: sourceAnchorId,
-    sourceAnchorId,
-    inspirationId: `inspiration-${sourceAnchorId}`,
-  };
-}
-
-function syncDraftIdentityIds(nextDraft, title = nextDraft.title) {
-  const ids = getAutogeneratedIdentityIds(title);
-  const previousSourceAnchorId = nextDraft.sourceAnchor?.id;
-  nextDraft.id = ids.moduleId;
-  nextDraft.sourceAnchor = nextDraft.sourceAnchor || {};
-  nextDraft.sourceAnchor.id = ids.sourceAnchorId;
-  nextDraft.inspiration = nextDraft.inspiration || {};
-  nextDraft.inspiration.id = ids.inspirationId;
-  nextDraft.inspiration.sourceAnchors = [ids.sourceAnchorId];
-  nextDraft.components = asArray(nextDraft.components).map((component) => ({
-    ...component,
-    sourceAnchors: asArray(component.sourceAnchors).length && previousSourceAnchorId
-      ? asArray(component.sourceAnchors).map((sourceAnchorId) => sourceAnchorId === previousSourceAnchorId ? ids.sourceAnchorId : sourceAnchorId)
-      : [ids.sourceAnchorId],
-  }));
-}
 
 function normalizeSuggestionValue(value, suggestions = []) {
   const cleanValue = String(value || "").trim();
@@ -992,720 +743,6 @@ function buildTaxonomyOptions(modules = []) {
   };
 }
 
-function formatPlainLabel(value) {
-  return String(value || "")
-    .replace(/[-_]+/g, " ")
-    .replace(/([a-z])([A-Z])/g, "$1 $2")
-    .trim()
-    .replace(/\b\w/g, (match) => match.toUpperCase());
-}
-
-function hasText(value) {
-  return String(value || "").trim().length > 0;
-}
-
-const CANONICAL_WORKFLOW_MAP = new Map(SHARED_WORKFLOWS.map((workflow) => [workflow.id, workflow]));
-const CANONICAL_MONSTER_SLOT_MAP = new Map(SHARED_MONSTER_SLOTS.map((slot) => [slot.id, slot]));
-const CANONICAL_DARKEN_SLOT_MAP = new Map(SHARED_DARKEN_LOCATION_SLOTS.map((slot) => [slot.id, slot]));
-const CANONICAL_SLOT_MAP = new Map([
-  ...SHARED_MONSTER_SLOTS.map((slot) => [slot.id, slot]),
-  ...SHARED_DARKEN_LOCATION_SLOTS.map((slot) => [slot.id, slot]),
-]);
-
-const SHARED_SOURCE_ANCHOR_BY_ID = new Map(SHARED_SOURCE_ANCHORS.map((sourceAnchor) => [sourceAnchor.id, sourceAnchor]));
-
-
-const GRAFT_LEDGER_ACTION_ORDER = [
-  "passive",
-  "freeTrigger",
-  "action",
-  "bonusAction",
-  "reaction",
-  "legendaryAction",
-  "lairAction",
-  "deathEffect",
-];
-
-const GRAFT_LEDGER_RESOLUTION_ORDER = [
-  "attackRoll",
-  "savingThrow",
-  "automatic",
-  "contest",
-  "choice",
-  "none",
-];
-
-const GRAFT_LEDGER_MAX_BUCKET_ROWS = 10;
-
-function normalizeLedgerString(value) {
-  return String(value || "").trim();
-}
-
-function normalizeLedgerArray(value) {
-  return asArray(value)
-    .flatMap((item) => Array.isArray(item) ? item : [item])
-    .map((item) => normalizeLedgerString(item))
-    .filter(Boolean);
-}
-
-function uniqueLedgerArray(value) {
-  return [...new Set(normalizeLedgerArray(value))];
-}
-
-function getLedgerNumber(value, fallback = 0) {
-  const number = Number(value);
-  return Number.isFinite(number) ? number : fallback;
-}
-
-function getLedgerMonsterBlock(graft = {}) {
-  return graft.monster && typeof graft.monster === "object" ? graft.monster : {};
-}
-
-function getLedgerRules(graft = {}) {
-  const monster = getLedgerMonsterBlock(graft);
-  return monster.rules || graft.rules || {};
-}
-
-function getLedgerConstraints(graft = {}) {
-  const monster = getLedgerMonsterBlock(graft);
-  return monster.constraints || graft.constraints || graft.anatomyConstraints || {};
-}
-
-function getLedgerAnatomyGrants(graft = {}) {
-  const monster = getLedgerMonsterBlock(graft);
-  return monster.anatomyGrants || graft.anatomyGrants || {};
-}
-
-function getLedgerStats(graft = {}) {
-  const monster = getLedgerMonsterBlock(graft);
-  return monster.stats || graft.stats || {};
-}
-
-function getLedgerFit(graft = {}) {
-  const monster = getLedgerMonsterBlock(graft);
-  return monster.fit || graft.fit || graft.frameFit || {};
-}
-
-function getLedgerGraftId(graft = {}) {
-  const monster = getLedgerMonsterBlock(graft);
-  return normalizeLedgerString(monster.graftId || graft.id || graft.slug || graft.title);
-}
-
-function getLedgerSlot(graft = {}) {
-  const monster = getLedgerMonsterBlock(graft);
-  return normalizeLedgerString(monster.slot || graft.slot || asArray(graft.slots)[0] || "unassigned");
-}
-
-function getLedgerSection(graft = {}, rules = getLedgerRules(graft)) {
-  const monster = getLedgerMonsterBlock(graft);
-  return normalizeLedgerString(monster.section || graft.section || rules.section || "trait");
-}
-
-function getLedgerActionEconomy(graft = {}, rules = getLedgerRules(graft), section = getLedgerSection(graft, rules)) {
-  const actionEconomy = normalizeLedgerString(rules.actionEconomy || rules.action || rules.type);
-  if (actionEconomy) return actionEconomy;
-  if (section === "bonusAction") return "bonusAction";
-  if (section === "reaction") return "reaction";
-  if (section === "legendaryAction") return "legendaryAction";
-  if (section === "lairAction") return "lairAction";
-  if (section === "deathEffect") return "deathEffect";
-  if (section === "action") return "action";
-  return section === "trait" ? "passive" : section || "passive";
-}
-
-function getLedgerResolution(graft = {}, rules = getLedgerRules(graft)) {
-  return rules.resolution && typeof rules.resolution === "object" ? rules.resolution : {};
-}
-
-function getLedgerTargeting(graft = {}, rules = getLedgerRules(graft)) {
-  return rules.targeting && typeof rules.targeting === "object" ? rules.targeting : {};
-}
-
-function getLedgerDamageTypes(graft = {}, rules = getLedgerRules(graft)) {
-  const damage = rules.damage && typeof rules.damage === "object" ? rules.damage : {};
-  return uniqueLedgerArray([
-    ...normalizeLedgerArray(damage.types),
-    ...asArray(damage.parts).flatMap((part) => normalizeLedgerArray(part?.types || part?.type)),
-    ...normalizeLedgerArray(graft.damageTypes),
-  ]);
-}
-
-function getLedgerConditions(graft = {}, rules = getLedgerRules(graft)) {
-  const condition = rules.condition && typeof rules.condition === "object" ? rules.condition : {};
-  return uniqueLedgerArray([
-    ...normalizeLedgerArray(condition.names),
-    ...normalizeLedgerArray(condition.special),
-    ...normalizeLedgerArray(rules.conditions),
-    ...normalizeLedgerArray(graft.conditions),
-  ]);
-}
-
-function getLedgerCounterplayFlags(graft = {}, rules = getLedgerRules(graft)) {
-  const counterplay = rules.counterplay && typeof rules.counterplay === "object" ? rules.counterplay : {};
-  return Object.entries(counterplay)
-    .filter(([, value]) => Boolean(value))
-    .map(([key]) => key);
-}
-
-function getLedgerSourceAnchors(graft = {}) {
-  return uniqueLedgerArray([
-    ...normalizeLedgerArray(graft.sourceAnchors),
-    graft.source,
-    ...normalizeLedgerArray(graft.sources),
-  ]);
-}
-
-function getLedgerPack(graft = {}, origin = "Library") {
-  if (graft.contentPack?.title || graft.contentPack?.id) {
-    return {
-      id: graft.contentPack.id || graft.contentPack.title,
-      title: graft.contentPack.title || formatPlainLabel(graft.contentPack.id),
-    };
-  }
-
-  if (origin === "Current Draft") return { id: "current-draft", title: "Current Draft" };
-  return { id: "core-cruor", title: "Core Monster Composer" };
-}
-
-function getLedgerTypeBias(graft = {}) {
-  const monster = getLedgerMonsterBlock(graft);
-  const fit = getLedgerFit(graft);
-  return uniqueLedgerArray([
-    ...normalizeLedgerArray(monster.typeBias),
-    ...normalizeLedgerArray(graft.typeBias),
-    ...normalizeLedgerArray(fit.creatureTypes?.recommended),
-    ...normalizeLedgerArray(fit.creatureTypes?.allowed),
-  ]);
-}
-
-function getLedgerRoleBias(graft = {}) {
-  const monster = getLedgerMonsterBlock(graft);
-  const fit = getLedgerFit(graft);
-  return uniqueLedgerArray([
-    ...normalizeLedgerArray(monster.roleBias),
-    ...normalizeLedgerArray(graft.roleBias),
-    ...normalizeLedgerArray(fit.encounterRoles?.recommended),
-    ...normalizeLedgerArray(fit.encounterRoles?.allowed),
-  ]);
-}
-
-function getLedgerFamilies(graft = {}) {
-  const constraints = getLedgerConstraints(graft);
-  return uniqueLedgerArray([
-    ...normalizeLedgerArray(constraints.allowedFamilies),
-    ...normalizeLedgerArray(constraints.recommendedFamilies),
-    ...normalizeLedgerArray(constraints.requiredFamilies),
-    ...normalizeLedgerArray(constraints.familyBias),
-  ]);
-}
-
-function getLedgerBodyPlans(graft = {}) {
-  const constraints = getLedgerConstraints(graft);
-  return uniqueLedgerArray([
-    ...normalizeLedgerArray(constraints.allowedBodyPlans),
-    ...normalizeLedgerArray(constraints.recommendedBodyPlans),
-    ...normalizeLedgerArray(constraints.requiredBodyPlans),
-  ]);
-}
-
-function getLedgerAnatomyTerms(graft = {}) {
-  const constraints = getLedgerConstraints(graft);
-  const grants = getLedgerAnatomyGrants(graft);
-  return uniqueLedgerArray([
-    ...normalizeLedgerArray(constraints.requiredAnatomy),
-    ...normalizeLedgerArray(constraints.forbiddenAnatomy),
-    ...normalizeLedgerArray(grants.requiredAnatomy),
-    ...normalizeLedgerArray(grants.optionalAnatomy),
-    ...normalizeLedgerArray(grants.tags),
-  ]);
-}
-
-function formatLedgerTargeting(targeting = {}) {
-  const type = normalizeLedgerString(targeting.type);
-  const shape = normalizeLedgerString(targeting.shape);
-  const size = normalizeLedgerString(targeting.size);
-  const unit = normalizeLedgerString(targeting.unit);
-  const targets = normalizeLedgerString(targeting.targets);
-  const area = [shape, size && unit ? `${size} ${unit}` : size || unit].filter(Boolean).join(" ");
-  return [type, area, targets].filter(Boolean).join(" · ") || "—";
-}
-
-function formatLedgerArray(value, fallback = "—") {
-  const values = normalizeLedgerArray(value);
-  return values.length ? values.map(formatPlainLabel).join(", ") : fallback;
-}
-
-function formatLedgerValue(value, fallback = "—") {
-  const cleanValue = normalizeLedgerString(value);
-  return cleanValue ? formatPlainLabel(cleanValue) : fallback;
-}
-
-function buildGraftLedgerItem(graft = {}, origin = "Library") {
-  const rules = getLedgerRules(graft);
-  const resolution = getLedgerResolution(graft, rules);
-  const targeting = getLedgerTargeting(graft, rules);
-  const stats = getLedgerStats(graft);
-  const slot = getLedgerSlot(graft);
-  const section = getLedgerSection(graft, rules);
-  const actionEconomy = getLedgerActionEconomy(graft, rules, section);
-  const sourceAnchors = getLedgerSourceAnchors(graft);
-  const contentPack = getLedgerPack(graft, origin);
-  const damageTypes = getLedgerDamageTypes(graft, rules);
-  const conditions = getLedgerConditions(graft, rules);
-  const counterplayFlags = getLedgerCounterplayFlags(graft, rules);
-  const constraints = getLedgerConstraints(graft);
-  const anatomyTerms = getLedgerAnatomyTerms(graft);
-  const id = getLedgerGraftId(graft);
-
-  return {
-    id,
-    title: graft.title || graft.label || formatPlainLabel(id),
-    slot,
-    slotLabel: CANONICAL_MONSTER_SLOT_MAP.get(slot)?.label || formatPlainLabel(slot),
-    section,
-    actionEconomy,
-    usage: normalizeLedgerString(rules.usage?.type || rules.usage || ""),
-    resolutionType: normalizeLedgerString(resolution.type || "none"),
-    attackType: normalizeLedgerString(resolution.attackType || resolution.range || ""),
-    saveAbility: normalizeLedgerString(resolution.ability || ""),
-    targetingLabel: formatLedgerTargeting(targeting),
-    damageTypes,
-    conditions,
-    sourceAnchors,
-    sourceLabel: sourceAnchors.map((sourceAnchorId) => SHARED_SOURCE_ANCHOR_BY_ID.get(sourceAnchorId)?.label || formatPlainLabel(sourceAnchorId)).join(", ") || "—",
-    contentPack,
-    typeBias: getLedgerTypeBias(graft),
-    roleBias: getLedgerRoleBias(graft),
-    families: getLedgerFamilies(graft),
-    bodyPlans: getLedgerBodyPlans(graft),
-    anatomyTerms,
-    cost: getLedgerNumber(getLedgerMonsterBlock(graft).cost ?? graft.cost),
-    complexity: getLedgerNumber(getLedgerMonsterBlock(graft).complexity ?? graft.complexity),
-    dpr: getLedgerNumber(stats.dpr),
-    hp: getLedgerNumber(stats.hp),
-    ac: getLedgerNumber(stats.ac),
-    counterplayFlags,
-    hasRules: Boolean(rules && Object.keys(rules).length),
-    hasStructuredRules: Boolean(rules?.schemaVersion || rules?.migration?.isStructured || resolution.type || actionEconomy),
-    hasCounterplayText: hasText(graft.counterplay || rules.text?.counterplay || rules.counterplayText),
-    hasMechanicsText: hasText(graft.mechanics || graft.tableText || rules.text?.failure || rules.text?.success),
-    hasSummary: hasText(graft.summary),
-    hasAnatomyConstraint: Boolean(Object.keys(constraints || {}).length || anatomyTerms.length),
-    status: normalizeStatus(graft.status || getLedgerMonsterBlock(graft).status || "published"),
-    origin,
-    raw: graft,
-  };
-}
-
-function mergeGraftLedgerItems(libraryGrafts = [], draftGrafts = []) {
-  const byId = new Map();
-
-  asArray(libraryGrafts).forEach((graft) => {
-    const item = buildGraftLedgerItem(graft, "Library");
-    if (item.id) byId.set(item.id, item);
-  });
-
-  asArray(draftGrafts).forEach((graft) => {
-    const item = buildGraftLedgerItem(graft, "Current Draft");
-    if (item.id) byId.set(item.id, item);
-  });
-
-  return [...byId.values()].sort((a, b) => a.title.localeCompare(b.title));
-}
-
-function countLedgerBuckets(items = [], getter, knownOrder = []) {
-  const counts = new Map();
-
-  knownOrder.forEach((id) => {
-    if (id) counts.set(id, { id, label: formatPlainLabel(id), count: 0, items: [] });
-  });
-
-  asArray(items).forEach((item) => {
-    const values = normalizeLedgerArray(typeof getter === "function" ? getter(item) : item?.[getter]);
-    const bucketValues = values.length ? values : ["unassigned"];
-    bucketValues.forEach((id) => {
-      const key = normalizeLedgerString(id) || "unassigned";
-      const current = counts.get(key) || { id: key, label: formatPlainLabel(key), count: 0, items: [] };
-      current.count += 1;
-      current.items.push(item);
-      counts.set(key, current);
-    });
-  });
-
-  return [...counts.values()].sort((a, b) => {
-    const aIndex = knownOrder.indexOf(a.id);
-    const bIndex = knownOrder.indexOf(b.id);
-    if (aIndex !== -1 || bIndex !== -1) return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex);
-    if (b.count !== a.count) return b.count - a.count;
-    return a.label.localeCompare(b.label);
-  });
-}
-
-function getLedgerTopBuckets(rows = [], limit = GRAFT_LEDGER_MAX_BUCKET_ROWS) {
-  return [...rows]
-    .filter((row) => row.count > 0)
-    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
-    .slice(0, limit);
-}
-
-function getLedgerIssueList(item) {
-  const issues = [];
-  if (!item.slot || item.slot === "unassigned") issues.push("Missing monster slot");
-  if (!item.sourceAnchors.length) issues.push("Missing source anchor");
-  if (!item.hasStructuredRules) issues.push("Missing structured rules");
-  if (!item.hasSummary) issues.push("Missing summary");
-  if (!item.hasMechanicsText) issues.push("Missing mechanics text");
-  if (!item.hasCounterplayText && item.actionEconomy !== "passive") issues.push("Missing counterplay text");
-  if (item.resolutionType === "savingThrow" && !item.saveAbility) issues.push("Missing save ability");
-  if (item.resolutionType === "attackRoll" && !item.attackType) issues.push("Missing attack type");
-  if (item.dpr > 0 && !item.damageTypes.length) issues.push("DPR without damage type");
-  if (item.conditions.length && !item.counterplayFlags.length) issues.push("Condition without structured counterplay flag");
-  return issues;
-}
-
-function getLedgerIssueSeverity(item) {
-  const issues = getLedgerIssueList(item);
-  if (issues.some((issue) => issue.startsWith("Missing monster slot") || issue.startsWith("Missing source anchor") || issue.startsWith("Missing structured rules"))) return "error";
-  if (issues.length) return "warning";
-  return "clean";
-}
-
-function buildLedgerMatrix(items = [], rowBuckets = [], columnBuckets = []) {
-  return rowBuckets.map((row) => ({
-    ...row,
-    columns: columnBuckets.map((column) => ({
-      ...column,
-      count: items.filter((item) => item.slot === row.id && item.actionEconomy === column.id).length,
-    })),
-  }));
-}
-
-function buildGraftLedgerGaps({ items, bySlot, byAction, byResolution, byType, byDamageType, byCondition, bySource }) {
-  const gaps = [];
-  const total = items.length || 1;
-  const sparseSlots = bySlot.filter((row) => row.id !== "unassigned" && row.count < 4);
-  const missingActions = byAction.filter((row) => row.count === 0);
-  const overloadedDamage = byDamageType.filter((row) => row.count >= Math.ceil(total * 0.22));
-  const weakTypeCoverage = byType.filter((row) => row.id !== "unassigned" && row.count < 6);
-  const draftItems = items.filter((item) => item.origin === "Current Draft").length;
-  const issueItems = items.filter((item) => getLedgerIssueSeverity(item) !== "clean");
-
-  sparseSlots.slice(0, 4).forEach((row) => gaps.push({
-    id: `slot-${row.id}`,
-    severity: row.count === 0 ? "error" : "warning",
-    title: `${row.label} is underfilled`,
-    detail: `${row.count} graft${row.count === 1 ? "" : "s"} in this slot. Add at least four to keep Composer picks varied.`,
-  }));
-
-  missingActions.slice(0, 3).forEach((row) => gaps.push({
-    id: `action-${row.id}`,
-    severity: "warning",
-    title: `${row.label} coverage is missing`,
-    detail: "No graft currently uses this action economy. Consider adding one if this economy should be available to generated monsters.",
-  }));
-
-  weakTypeCoverage.slice(0, 3).forEach((row) => gaps.push({
-    id: `type-${row.id}`,
-    severity: "info",
-    title: `${row.label} has low type bias coverage`,
-    detail: `${row.count} graft${row.count === 1 ? "" : "s"} explicitly bias toward this creature type.`,
-  }));
-
-  overloadedDamage.slice(0, 2).forEach((row) => gaps.push({
-    id: `damage-${row.id}`,
-    severity: "info",
-    title: `${row.label} damage is dominant`,
-    detail: `${row.count} grafts use this damage type. Review whether future packs should diversify damage expressions.`,
-  }));
-
-  if (!byResolution.some((row) => row.id === "savingThrow" && row.count > 0)) {
-    gaps.push({ id: "no-saves", severity: "warning", title: "No saving throw grafts", detail: "The ledger has no save-based effects, reducing tactical variety." });
-  }
-
-  if (!byCondition.some((row) => row.count > 0)) {
-    gaps.push({ id: "no-conditions", severity: "warning", title: "No condition pressure", detail: "No graft applies a condition, so monsters may feel too damage-only." });
-  }
-
-  if (issueItems.length) {
-    gaps.push({
-      id: "ledger-issues",
-      severity: issueItems.some((item) => getLedgerIssueSeverity(item) === "error") ? "error" : "warning",
-      title: `${issueItems.length} graft${issueItems.length === 1 ? "" : "s"} need editorial review`,
-      detail: "Use the Issues filter in the ledger to locate entries with missing slot, source, rules, mechanics, or counterplay metadata.",
-    });
-  }
-
-  if (draftItems) {
-    gaps.push({
-      id: "draft-overrides",
-      severity: "info",
-      title: `${draftItems} current draft graft${draftItems === 1 ? "" : "s"} included`,
-      detail: "Draft entries override matching library ids inside this audit, so the ledger reflects what you are editing now.",
-    });
-  }
-
-  const narrowSources = bySource.filter((row) => row.id !== "unassigned" && row.count === 1).length;
-  if (narrowSources) {
-    gaps.push({
-      id: "single-source-grafts",
-      severity: "info",
-      title: `${narrowSources} source anchor${narrowSources === 1 ? "" : "s"} have one graft`,
-      detail: "Single-graft sources work as seeds, but they offer little internal variation for Composer pulls.",
-    });
-  }
-
-  return gaps.slice(0, 10);
-}
-
-function buildGraftLedgerReport(libraryGrafts = [], draftGrafts = []) {
-  const items = mergeGraftLedgerItems(libraryGrafts, draftGrafts);
-  const slotOrder = SHARED_MONSTER_SLOTS.map((slot) => slot.id);
-  const bySlot = countLedgerBuckets(items, "slot", slotOrder);
-  const byAction = countLedgerBuckets(items, "actionEconomy", GRAFT_LEDGER_ACTION_ORDER);
-  const byResolution = countLedgerBuckets(items, "resolutionType", GRAFT_LEDGER_RESOLUTION_ORDER);
-  const byDamageType = countLedgerBuckets(items, "damageTypes");
-  const byCondition = countLedgerBuckets(items, "conditions");
-  const bySource = countLedgerBuckets(items, "sourceAnchors").map((row) => ({
-    ...row,
-    label: SHARED_SOURCE_ANCHOR_BY_ID.get(row.id)?.label || row.label,
-  }));
-  const byPack = countLedgerBuckets(items, (item) => item.contentPack?.id || "unassigned").map((row) => ({
-    ...row,
-    label: items.find((item) => item.contentPack?.id === row.id)?.contentPack?.title || row.label,
-  }));
-  const byType = countLedgerBuckets(items, "typeBias");
-  const byRole = countLedgerBuckets(items, "roleBias");
-  const byFamily = countLedgerBuckets(items, "families");
-  const byComplexity = countLedgerBuckets(items, (item) => {
-    if (item.complexity <= 1) return "low";
-    if (item.complexity <= 3) return "medium";
-    return "high";
-  }, ["low", "medium", "high"]);
-  const cleanItems = items.filter((item) => getLedgerIssueSeverity(item) === "clean");
-  const warningItems = items.filter((item) => getLedgerIssueSeverity(item) === "warning");
-  const errorItems = items.filter((item) => getLedgerIssueSeverity(item) === "error");
-  const matrixColumns = GRAFT_LEDGER_ACTION_ORDER.map((id) => ({ id, label: formatPlainLabel(id) }));
-  const matrix = buildLedgerMatrix(items, bySlot.filter((row) => row.id !== "unassigned"), matrixColumns);
-
-  return {
-    items,
-    summary: {
-      total: items.length,
-      library: items.filter((item) => item.origin === "Library").length,
-      draft: items.filter((item) => item.origin === "Current Draft").length,
-      clean: cleanItems.length,
-      warning: warningItems.length,
-      error: errorItems.length,
-      averageCost: items.length ? items.reduce((sum, item) => sum + item.cost, 0) / items.length : 0,
-      averageComplexity: items.length ? items.reduce((sum, item) => sum + item.complexity, 0) / items.length : 0,
-      structuredRules: items.filter((item) => item.hasStructuredRules).length,
-      counterplayCoverage: items.filter((item) => item.hasCounterplayText || item.counterplayFlags.length).length,
-      anatomyCoverage: items.filter((item) => item.hasAnatomyConstraint).length,
-    },
-    buckets: {
-      bySlot,
-      byAction,
-      byResolution,
-      byDamageType,
-      byCondition,
-      bySource,
-      byPack,
-      byType,
-      byRole,
-      byFamily,
-      byComplexity,
-    },
-    matrix,
-    gaps: buildGraftLedgerGaps({ items, bySlot, byAction, byResolution, byType, byDamageType, byCondition, bySource }),
-  };
-}
-
-
-function serializeLedgerBucketRow(row = {}) {
-  return {
-    id: row.id || "unassigned",
-    label: row.label || formatPlainLabel(row.id || "unassigned"),
-    count: getLedgerNumber(row.count),
-    itemIds: asArray(row.items).map((item) => item?.id).filter(Boolean),
-  };
-}
-
-function serializeLedgerBuckets(buckets = {}) {
-  return Object.fromEntries(
-    Object.entries(buckets).map(([key, rows]) => [key, asArray(rows).map(serializeLedgerBucketRow)]),
-  );
-}
-
-function serializeLedgerMatrix(rows = []) {
-  return asArray(rows).map((row) => ({
-    id: row.id,
-    label: row.label,
-    count: getLedgerNumber(row.count),
-    columns: asArray(row.columns).map((column) => ({
-      id: column.id,
-      label: column.label,
-      count: getLedgerNumber(column.count),
-    })),
-  }));
-}
-
-function serializeGraftLedgerItem(item = {}, { includeRaw = true } = {}) {
-  const issues = getLedgerIssueList(item);
-  const serialized = {
-    id: item.id,
-    title: item.title,
-    origin: item.origin,
-    status: item.status,
-    slot: item.slot,
-    slotLabel: item.slotLabel,
-    section: item.section,
-    actionEconomy: item.actionEconomy,
-    usage: item.usage,
-    resolutionType: item.resolutionType,
-    attackType: item.attackType,
-    saveAbility: item.saveAbility,
-    targeting: item.targetingLabel,
-    damageTypes: item.damageTypes,
-    conditions: item.conditions,
-    sourceAnchors: item.sourceAnchors,
-    sourceLabel: item.sourceLabel,
-    contentPack: item.contentPack,
-    typeBias: item.typeBias,
-    roleBias: item.roleBias,
-    families: item.families,
-    bodyPlans: item.bodyPlans,
-    anatomyTerms: item.anatomyTerms,
-    cost: item.cost,
-    complexity: item.complexity,
-    dpr: item.dpr,
-    hp: item.hp,
-    ac: item.ac,
-    counterplayFlags: item.counterplayFlags,
-    coverage: {
-      hasRules: item.hasRules,
-      hasStructuredRules: item.hasStructuredRules,
-      hasCounterplayText: item.hasCounterplayText,
-      hasMechanicsText: item.hasMechanicsText,
-      hasSummary: item.hasSummary,
-      hasAnatomyConstraint: item.hasAnatomyConstraint,
-    },
-    editorialState: {
-      severity: getLedgerIssueSeverity(item),
-      issues,
-    },
-  };
-
-  if (includeRaw) serialized.rawGraft = item.raw || null;
-  return serialized;
-}
-
-function buildGraftLedgerDownloadReport(report = {}, filters = {}) {
-  const items = asArray(report.items);
-  const visibleItemIds = normalizeLedgerArray(filters.visibleItemIds);
-
-  return {
-    reportType: "cruor-monster-graft-ledger-report",
-    schemaVersion: 1,
-    generatedAt: new Date().toISOString(),
-    intendedUse: "Upload this JSON back into ChatGPT to audit Monster Composer graft coverage, metadata quality, content gaps, and next-pack priorities.",
-    scope: {
-      totalGrafts: getLedgerNumber(report.summary?.total),
-      libraryGrafts: getLedgerNumber(report.summary?.library),
-      currentDraftGrafts: getLedgerNumber(report.summary?.draft),
-      visibleGrafts: getLedgerNumber(filters.visibleCount, visibleItemIds.length),
-    },
-    activeFilters: {
-      search: filters.search || "",
-      slot: filters.slot || "all",
-      actionEconomy: filters.action || "all",
-      source: filters.source || "all",
-      issueState: filters.issueState || "all",
-      viewMode: filters.viewMode || "list",
-      visibleItemIds,
-    },
-    summary: report.summary || {},
-    analytics: serializeLedgerBuckets(report.buckets || {}),
-    matrix: serializeLedgerMatrix(report.matrix),
-    gaps: asArray(report.gaps).map((gap) => ({
-      id: gap.id,
-      severity: gap.severity,
-      title: gap.title,
-      detail: gap.detail,
-    })),
-    issueIndex: items.map((item) => ({
-      id: item.id,
-      title: item.title,
-      severity: getLedgerIssueSeverity(item),
-      issues: getLedgerIssueList(item),
-    })),
-    inventory: items.map((item) => serializeGraftLedgerItem(item, { includeRaw: true })),
-  };
-}
-
-function matchesGraftLedgerSearch(item, query) {
-  const needle = normalizeLedgerString(query).toLowerCase();
-  if (!needle) return true;
-  const haystack = [
-    item.id,
-    item.title,
-    item.slotLabel,
-    item.section,
-    item.actionEconomy,
-    item.resolutionType,
-    item.attackType,
-    item.saveAbility,
-    item.targetingLabel,
-    item.sourceLabel,
-    item.contentPack?.title,
-    ...item.damageTypes,
-    ...item.conditions,
-    ...item.typeBias,
-    ...item.roleBias,
-    ...item.families,
-    ...item.bodyPlans,
-    ...item.anatomyTerms,
-    ...getLedgerIssueList(item),
-  ].join(" ").toLowerCase();
-  return haystack.includes(needle);
-}
-
-function getGraftLedgerFilteredItems(items = [], filters = {}) {
-  return asArray(items).filter((item) => {
-    if (!matchesGraftLedgerSearch(item, filters.search)) return false;
-    if (filters.slot && filters.slot !== "all" && item.slot !== filters.slot) return false;
-    if (filters.action && filters.action !== "all" && item.actionEconomy !== filters.action) return false;
-    if (filters.source && filters.source !== "all" && !item.sourceAnchors.includes(filters.source)) return false;
-    if (filters.issueState && filters.issueState !== "all" && getLedgerIssueSeverity(item) !== filters.issueState) return false;
-    return true;
-  });
-}
-
-function getReferencedSourceAnchorIds(sourceAnchor, inspiration, components = []) {
-  return [
-    sourceAnchor?.id,
-    ...asArray(inspiration?.sourceAnchors),
-    ...asArray(components).flatMap((component) => asArray(component.sourceAnchors)),
-  ].filter(Boolean);
-}
-
-function buildExportSourceAnchors(sourceAnchor, inspiration, components = []) {
-  return uniqueById(getReferencedSourceAnchorIds(sourceAnchor, inspiration, components).map((sourceAnchorId) => {
-    if (sourceAnchorId === sourceAnchor?.id) return sourceAnchor;
-    return SHARED_SOURCE_ANCHOR_BY_ID.get(sourceAnchorId) || {
-      id: sourceAnchorId,
-      label: formatPlainLabel(sourceAnchorId),
-      type: "Referenced Source Anchor",
-      status: "draft",
-      workflows: [],
-      sourceTypes: [],
-      themes: [],
-      motifs: [],
-      horror: [],
-      summary: "Auto-included because a component in this exported pack references this source anchor.",
-      metadata: { generatedFrom: "inspiration-studio-export-reference" },
-    };
-  }));
-}
 
 const ANATOMY_CONSTRAINT_FIELD_LABELS = Object.freeze({
   allowedCreatureTypes: "Allowed Creature Types",
@@ -1756,147 +793,13 @@ const ANATOMY_CONSTRAINT_FIELD_HINTS = Object.freeze({
   forbiddenTokens: "Blocks the graft if the current build has one of these compatibility tokens.",
 });
 
-function getMonsterConstraintSource(component = {}) {
-  return component.monster?.constraints || component.anatomyConstraints || component.constraints || null;
-}
-
-function getMonsterConstraintSummary(component = {}) {
-  return summarizeMonsterAnatomyConstraints(getMonsterConstraintSource(component));
-}
-
-function getMonsterGrantSource(component = {}) {
-  return component.monster?.anatomyGrants || component.monster?.grants || component.anatomyGrants || null;
-}
-
-function getMonsterGrantSummary(component = {}) {
-  return summarizeMonsterAnatomyGrants(getMonsterGrantSource(component));
-}
-
-function getMonsterFrameFitSource(component = {}) {
-  return component.monster?.fit || component.fit || component.frameFit || null;
-}
-
-function getMonsterFrameFitSummary(component = {}) {
-  return summarizeMonsterFrameFit(getMonsterFrameFitSource(component));
-}
 
 function getFrameFitOptionLabels(dimension) {
   const labels = MONSTER_FRAME_FIT_OPTION_LABELS[dimension] || {};
   return (MONSTER_FRAME_FIT_VALUES[dimension] || []).map((id) => labels[id] || id).join(", ");
 }
 
-function buildStudioCompatibilityMatrix(component = {}) {
-  if (component.contentType !== "monster-graft") return [];
-  const feature = buildMonsterRulesFeature(component, getExplicitMonsterRules(component));
-  return MONSTER_FAMILY_PROFILE_OPTIONS.map((profileOption) => {
-    const category = asArray(profileOption.categories)[0] || profileOption.label;
-    const profile = getEffectiveMonsterAnatomyProfile(profileOption.typeId, category, null, []);
-    const status = evaluateMonsterAnatomyConstraints(feature, {
-      typeId: profileOption.typeId,
-      category,
-      profile,
-    });
-    return {
-      id: profileOption.id,
-      label: profileOption.label,
-      typeId: profileOption.typeId,
-      status,
-    };
-  });
-}
 
-function validateConstraintTerms(values = [], knownValues = [], path, issues, id, label) {
-  const known = new Set(knownValues);
-  asArray(values).forEach((value) => {
-    if (!known.has(String(value))) {
-      issues.push(makeIssue("warning", path, `Unknown ${label}: ${value}. Add it to the anatomy model if this is intentional.`, id));
-    }
-  });
-}
-
-function validateMonsterAnatomyConstraintsForStudio(component = {}, index, issues) {
-  const id = component.id || component.monster?.graftId || `component-${index}`;
-  const constraints = normalizeMonsterAnatomyConstraints(getMonsterConstraintSource(component));
-  if (!constraints) return;
-
-  validateConstraintTerms(constraints.allowedBodyPlans, KNOWN_MONSTER_BODY_PLAN_IDS, `components[${index}].monster.constraints.allowedBodyPlans`, issues, id, "body plan");
-  validateConstraintTerms(constraints.forbiddenBodyPlans, KNOWN_MONSTER_BODY_PLAN_IDS, `components[${index}].monster.constraints.forbiddenBodyPlans`, issues, id, "body plan");
-  validateConstraintTerms([...constraints.exclusiveToFamilies, ...constraints.allowedFamilies], KNOWN_MONSTER_FAMILY_IDS, `components[${index}].monster.constraints.allowedFamilies`, issues, id, "monster family");
-  validateConstraintTerms(constraints.forbiddenFamilies, KNOWN_MONSTER_FAMILY_IDS, `components[${index}].monster.constraints.forbiddenFamilies`, issues, id, "monster family");
-  validateConstraintTerms([...constraints.requiredAnatomy, ...constraints.requiresAnyAnatomy, ...constraints.forbiddenAnatomy], KNOWN_MONSTER_ANATOMY_TAGS, `components[${index}].monster.constraints.anatomy`, issues, id, "anatomy tag");
-  validateConstraintTerms([...constraints.requiredTags, ...constraints.requiresAnyTags, ...constraints.forbiddenTags], KNOWN_MONSTER_CREATURE_TAGS, `components[${index}].monster.constraints.tags`, issues, id, "creature tag");
-
-  if (!MONSTER_ANATOMY_CONSTRAINT_FIELDS.some((field) => asArray(constraints[field]).length)) {
-    issues.push(makeIssue("info", `components[${index}].monster.constraints`, "Anatomy constraints contain only a note and do not restrict compatibility.", id));
-  }
-}
-
-function validateMonsterAnatomyGrantsForStudio(component = {}, index, issues) {
-  const id = component.id || component.monster?.graftId || `component-${index}`;
-  const grants = normalizeMonsterAnatomyGrants(getMonsterGrantSource(component));
-  if (!grants) return;
-
-  validateConstraintTerms(grants.grantsBodyPlans, KNOWN_MONSTER_BODY_PLAN_IDS, `components[${index}].monster.anatomyGrants.grantsBodyPlans`, issues, id, "body plan");
-  validateConstraintTerms(grants.grantsAnatomy, KNOWN_MONSTER_ANATOMY_TAGS, `components[${index}].monster.anatomyGrants.grantsAnatomy`, issues, id, "anatomy tag");
-  validateConstraintTerms(grants.grantsTags, KNOWN_MONSTER_CREATURE_TAGS, `components[${index}].monster.anatomyGrants.grantsTags`, issues, id, "creature tag");
-
-  if (!MONSTER_ANATOMY_GRANT_FIELDS.some((field) => asArray(grants[field]).length)) {
-    issues.push(makeIssue("info", `components[${index}].monster.anatomyGrants`, "Anatomy grants contain only a note and do not change the effective build.", id));
-  }
-}
-
-function validateMonsterFrameFitForStudio(component = {}, index, issues) {
-  const id = component.id || component.monster?.graftId || `component-${index}`;
-  const report = validateMonsterFrameFit(getMonsterFrameFitSource(component), {
-    id,
-    title: component.title || component.label,
-  });
-
-  report.issues.forEach((issue) => {
-    issues.push(makeIssue(
-      issue.severity || "error",
-      `components[${index}].${issue.path || "monster.fit"}`,
-      issue.message,
-      id,
-    ));
-  });
-}
-
-function isPlainObject(value) {
-  return Boolean(value && typeof value === "object" && !Array.isArray(value));
-}
-
-function getExplicitMonsterRules(component = {}) {
-  const monsterRules = component.monster?.rules;
-  if (isPlainObject(monsterRules) && Object.keys(monsterRules).length) return monsterRules;
-  if (isPlainObject(component.rules) && Object.keys(component.rules).length) return component.rules;
-  return null;
-}
-
-function buildMonsterRulesFeature(component = {}, explicitRules = null) {
-  const monster = component.monster || {};
-  const feature = {
-    id: monster.graftId || component.id,
-    title: component.title || component.label || monster.graftId || component.id,
-    slot: monster.slot || asArray(component.slots)[0],
-    section: monster.section || explicitRules?.section || "trait",
-    source: asArray(component.sourceAnchors)[0],
-    sourceAnchors: asArray(component.sourceAnchors),
-    typeBias: asArray(monster.typeBias),
-    roleBias: asArray(monster.roleBias),
-    cost: Number(monster.cost || 0),
-    complexity: Number(monster.complexity || 0),
-    stats: monster.stats || {},
-    summary: component.summary || "",
-    mechanics: component.mechanics || component.tableText || "",
-    counterplay: component.counterplay || "",
-    constraints: getMonsterConstraintSource(component),
-    anatomyGrants: getMonsterGrantSource(component),
-    fit: getMonsterFrameFitSource(component),
-  };
-  if (explicitRules) feature.rules = explicitRules;
-  return feature;
-}
 
 function splitSpellListInput(value) {
   return String(value || "")
@@ -1959,440 +862,6 @@ function HelpTooltip({ title = "Info", text, items = "" }) {
       <span aria-hidden="true">?</span>
     </span>
   );
-}
-
-function slugify(value) {
-  return String(value || "")
-    .trim()
-    .toLowerCase()
-    .replace(/['’]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "") || "new-inspiration";
-}
-
-function getModuleComponentGroups(draft) {
-  const components = asArray(draft.components);
-  return {
-    all: components,
-    "monster-graft": components.filter((component) => component.contentType === "monster-graft"),
-    "location-component": components.filter((component) => component.contentType === "location-component"),
-    "location-region": components.filter((component) => component.contentType === "location-region"),
-  };
-}
-
-function normalizeModuleForDraft(module) {
-  const draft = clone(module || EMPTY_DRAFT);
-  const sourceAnchorId = draft.sourceAnchor?.id || draft.id || slugify(draft.title);
-
-  draft.id = draft.id || sourceAnchorId;
-  draft.title = draft.title || draft.sourceAnchor?.label || draft.inspiration?.title || sourceAnchorId;
-  draft.status = draft.status || draft.sourceAnchor?.status || draft.inspiration?.status || "draft";
-  draft.packId = draft.packId || "core-cruor";
-  draft.sourceAnchor = {
-    ...EMPTY_DRAFT.sourceAnchor,
-    ...(draft.sourceAnchor || {}),
-    id: sourceAnchorId,
-  };
-  draft.inspiration = {
-    ...EMPTY_DRAFT.inspiration,
-    ...(draft.inspiration || {}),
-    sourceAnchors: asArray(draft.inspiration?.sourceAnchors).length
-      ? asArray(draft.inspiration?.sourceAnchors)
-      : [sourceAnchorId],
-    media: {
-      ...EMPTY_DRAFT.inspiration.media,
-      ...(draft.inspiration?.media || {}),
-    },
-  };
-  draft.components = asArray(draft.components);
-  draft.monsterGrafts = draft.components.filter((component) => component.contentType === "monster-graft");
-  draft.locationComponents = draft.components.filter((component) => component.contentType === "location-component");
-  draft.locationRegions = draft.components.filter((component) => component.contentType === "location-region");
-  draft.metadata = { ...(draft.metadata || {}) };
-
-  return draft;
-}
-
-function buildModuleExport(draft, imagePreviewUrl) {
-  const normalized = normalizeModuleForDraft(draft);
-  return {
-    id: normalized.id,
-    title: normalized.title,
-    status: normalized.status,
-    packId: normalized.packId,
-    sourceAnchor: normalized.sourceAnchor,
-    inspiration: {
-      ...normalized.inspiration,
-      media: {
-        ...(normalized.inspiration.media || {}),
-        previewOnlyImageDataUrl: imagePreviewUrl || undefined,
-      },
-    },
-    components: normalized.components,
-    metadata: {
-      ...normalized.metadata,
-      exportedFrom: "inspiration-studio-mvp",
-    },
-  };
-}
-
-function normalizeExportComponent(component = {}, sourceAnchor = {}) {
-  const sourceAnchorId = sourceAnchor.id || asArray(component.sourceAnchors)[0] || "source-anchor";
-  const workflows = asArray(component.workflows);
-  const slots = asArray(component.slots);
-
-  const normalizedComponent = {
-    ...component,
-    id: component.id || slugify(component.title || component.label || "component"),
-    title: component.title || component.label || component.id || "Untitled Component",
-    label: component.label || component.title || component.id || "Untitled Component",
-    status: normalizeStatus(component.status),
-    sourceAnchors: asArray(component.sourceAnchors).length ? asArray(component.sourceAnchors) : [sourceAnchorId],
-    sourceTypes: asArray(component.sourceTypes).length ? asArray(component.sourceTypes) : asArray(sourceAnchor.sourceTypes),
-    themes: asArray(component.themes).length ? asArray(component.themes) : asArray(sourceAnchor.themes),
-    motifs: asArray(component.motifs).length ? asArray(component.motifs) : asArray(sourceAnchor.motifs),
-    horror: asArray(component.horror).length ? asArray(component.horror) : asArray(sourceAnchor.horror),
-    workflows: workflows.length
-      ? workflows
-      : component.contentType === "monster-graft"
-        ? ["monster-composer"]
-        : ["darken-location"],
-    slots: slots.length
-      ? slots
-      : component.contentType === "monster-graft"
-        ? [component.monster?.slot || "body"]
-        : component.contentType === "location-region"
-          ? ["locationRegion"]
-          : ["visibleAnomaly"],
-  };
-
-  if (normalizedComponent.contentType === "monster-graft") {
-    const constraints = normalizeMonsterAnatomyConstraints(getMonsterConstraintSource(component));
-    const anatomyGrants = normalizeMonsterAnatomyGrants(getMonsterGrantSource(component));
-    normalizedComponent.monster = {
-      ...(normalizedComponent.monster || {}),
-      constraints: constraints || undefined,
-      anatomyGrants: anatomyGrants || undefined,
-    };
-    if (!constraints && normalizedComponent.monster?.constraints === undefined) {
-      delete normalizedComponent.monster.constraints;
-    }
-    if (!anatomyGrants && normalizedComponent.monster?.anatomyGrants === undefined) {
-      delete normalizedComponent.monster.anatomyGrants;
-    }
-  }
-
-  if (normalizedComponent.contentType === "location-region" && !normalizedComponent.locationRegion && normalizedComponent.map) {
-    normalizedComponent.locationRegion = {
-      role: normalizedComponent.map.role || "side",
-      size: normalizedComponent.map.size || "Medium",
-      shape: normalizedComponent.map.shape || normalizedComponent.map.preferredShape || "standard",
-      connectors: normalizedComponent.map.connectors ?? 1,
-      density: normalizedComponent.map.density || "interactive",
-      readAloud: normalizedComponent.map.readAloud || { compact: normalizedComponent.tableText || "", extended: normalizedComponent.tableText || "" },
-    };
-  }
-
-  return normalizedComponent;
-}
-
-function getReferencedWorkflowIds(moduleExport, components) {
-  return [
-    ...asArray(moduleExport.sourceAnchor?.workflows),
-    ...asArray(moduleExport.inspiration?.workflows),
-    ...components.flatMap((component) => asArray(component.workflows)),
-  ].filter(Boolean);
-}
-
-function getReferencedSlotIds(components) {
-  return components.flatMap((component) => asArray(component.slots)).filter(Boolean);
-}
-
-function buildContentPackExport(draft, imagePreviewUrl) {
-  const moduleExport = buildModuleExport(draft, imagePreviewUrl);
-  const sourceAnchorId = moduleExport.sourceAnchor?.id || moduleExport.id;
-  const sourceAnchor = {
-    ...moduleExport.sourceAnchor,
-    id: sourceAnchorId,
-    label: moduleExport.sourceAnchor?.label || moduleExport.title,
-    status: normalizeStatus(moduleExport.sourceAnchor?.status || moduleExport.status),
-  };
-  const inspiration = {
-    ...moduleExport.inspiration,
-    id: moduleExport.inspiration?.id || `inspiration-${sourceAnchorId}`,
-    title: moduleExport.inspiration?.title || moduleExport.title,
-    label: moduleExport.inspiration?.label || moduleExport.inspiration?.title || moduleExport.title,
-    status: normalizeStatus(moduleExport.inspiration?.status || moduleExport.status),
-    contentType: moduleExport.inspiration?.contentType || "source-inspiration-card",
-    sourceAnchors: asArray(moduleExport.inspiration?.sourceAnchors).length
-      ? asArray(moduleExport.inspiration.sourceAnchors)
-      : [sourceAnchorId],
-    workflows: asArray(moduleExport.inspiration?.workflows).length
-      ? asArray(moduleExport.inspiration.workflows)
-      : ["inspiration-archive"],
-  };
-  const components = moduleExport.components.map((component) => normalizeExportComponent(component, sourceAnchor));
-  const sourceAnchors = buildExportSourceAnchors(sourceAnchor, inspiration, components);
-  const workflowIds = new Set(getReferencedWorkflowIds({ sourceAnchor, inspiration }, components));
-  const slotIds = new Set(getReferencedSlotIds(components));
-  const workflows = SHARED_WORKFLOWS.filter((workflow) => workflowIds.has(workflow.id));
-  const slots = [
-    ...SHARED_MONSTER_SLOTS.filter((slot) => slotIds.has(slot.id)),
-    ...SHARED_DARKEN_LOCATION_SLOTS.filter((slot) => slotIds.has(slot.id)),
-  ];
-
-  return createContentPack({
-    schemaVersion: CONTENT_PACK_SCHEMA_VERSION,
-    id: moduleExport.packId || `${sourceAnchorId}-content-pack`,
-    title: `${moduleExport.title} Content Pack`,
-    summary: `Registry-ready content pack generated from the ${moduleExport.title} Inspiration Module.`,
-    version: moduleExport.metadata?.version || "0.1.0",
-    status: normalizeStatus(moduleExport.status),
-    locale: moduleExport.metadata?.locale || "en",
-    author: moduleExport.metadata?.author || "Cruor Games",
-    license: moduleExport.metadata?.license || "internal-prototype",
-    tags: uniqueById(asArray(moduleExport.metadata?.tags).map((tag) => ({ id: tag }))).map((tag) => tag.id),
-    metadata: {
-      ...moduleExport.metadata,
-      exportedFrom: "inspiration-studio-content-pack-export",
-      sourceModuleId: moduleExport.id,
-      sourceAnchorId,
-    },
-    collections: {
-      workflows,
-      slots,
-      sourceAnchors,
-      inspirations: [inspiration],
-      components,
-      taxonomies: [],
-    },
-  });
-}
-
-function validateStudioDraft(draft, contentPackExport) {
-  const normalized = normalizeModuleForDraft(draft);
-  const issues = [];
-  const sourceAnchorId = normalized.sourceAnchor?.id || normalized.id;
-  const inspiration = normalized.inspiration || {};
-  const components = asArray(normalized.components);
-
-  if (!hasText(normalized.id)) issues.push(makeIssue("error", "module.id", "Module is missing a stable id."));
-  if (!hasText(normalized.title)) issues.push(makeIssue("error", "module.title", "Module is missing a public title."));
-  if (!hasText(normalized.packId)) issues.push(makeIssue("error", "module.packId", "Module is missing a target content pack id."));
-  if (!STATUS_OPTIONS.some((option) => option.id === normalized.status)) {
-    issues.push(makeIssue("error", "module.status", `Unsupported module status: ${normalized.status || "empty"}.`));
-  }
-
-  if (!hasText(normalized.sourceAnchor?.id)) issues.push(makeIssue("error", "sourceAnchor.id", "Source Anchor is missing an id."));
-  if (!hasText(normalized.sourceAnchor?.label)) issues.push(makeIssue("error", "sourceAnchor.label", "Source Anchor is missing a label."));
-  if (!asArray(normalized.sourceAnchor?.sourceTypes).length) {
-    issues.push(makeIssue("warning", "sourceAnchor.sourceTypes", "Source Anchor has no source type tags."));
-  }
-  if (!asArray(normalized.sourceAnchor?.themes).length && !asArray(normalized.sourceAnchor?.horror).length) {
-    issues.push(makeIssue("warning", "sourceAnchor.taxonomy", "Source Anchor has no theme or horror tags."));
-  }
-
-  if (!hasText(inspiration.id)) issues.push(makeIssue("error", "inspiration.id", "Public Inspiration card is missing an id."));
-  if (!hasText(inspiration.title)) issues.push(makeIssue("error", "inspiration.title", "Public Inspiration card is missing a title."));
-  if (inspiration.contentType !== "source-inspiration-card") {
-    issues.push(makeIssue("warning", "inspiration.contentType", "Public Inspiration card should use contentType source-inspiration-card."));
-  }
-  if (!asArray(inspiration.sourceAnchors).includes(sourceAnchorId)) {
-    issues.push(makeIssue("error", "inspiration.sourceAnchors", `Public Inspiration card does not reference Source Anchor ${sourceAnchorId}.`, inspiration.id));
-  }
-  if (!asArray(inspiration.workflows).includes("inspiration-archive")) {
-    issues.push(makeIssue("warning", "inspiration.workflows", "Public Inspiration card is not linked to inspiration-archive.", inspiration.id));
-  }
-  if (!hasText(inspiration.summary) && !hasText(inspiration.narrative)) {
-    issues.push(makeIssue("warning", "inspiration.copy", "Public Inspiration card has no summary or narrative copy.", inspiration.id));
-  }
-  if (!hasText(inspiration.media?.imageKey) && !hasText(inspiration.media?.imageUrl)) {
-    issues.push(makeIssue("warning", "inspiration.media", "Public Inspiration card has no imageKey or imageUrl.", inspiration.id));
-  }
-
-  getDuplicateIds(components).forEach((id) => {
-    issues.push(makeIssue("error", "components", `Duplicate component id: ${id}.`, id));
-  });
-
-  components.forEach((component, index) => {
-    const id = component.id || `component-${index + 1}`;
-    const type = component.contentType;
-    const workflows = asArray(component.workflows);
-    const slots = asArray(component.slots);
-
-    if (!hasText(component.id)) issues.push(makeIssue("error", `components[${index}].id`, "Component is missing an id.", id));
-    if (!hasText(component.title || component.label)) issues.push(makeIssue("error", `components[${index}].title`, "Component is missing a title or label.", id));
-    if (!COMPONENT_TYPE_LABELS[type]) issues.push(makeIssue("error", `components[${index}].contentType`, `Unknown component contentType: ${type || "empty"}.`, id));
-    if (!asArray(component.sourceAnchors).length) {
-      issues.push(makeIssue("warning", `components[${index}].sourceAnchors`, "Component has no Source Anchor; export will attach the current one.", id));
-    } else if (!asArray(component.sourceAnchors).includes(sourceAnchorId)) {
-      issues.push(makeIssue("warning", `components[${index}].sourceAnchors`, `Component is not linked to current Source Anchor ${sourceAnchorId}.`, id));
-    }
-    if (!workflows.length) issues.push(makeIssue("error", `components[${index}].workflows`, "Component has no workflow.", id));
-    workflows.forEach((workflowId) => {
-      if (!CANONICAL_WORKFLOW_MAP.has(workflowId)) {
-        issues.push(makeIssue("error", `components[${index}].workflows`, `Unknown workflow: ${workflowId}.`, id));
-      }
-    });
-    if (!slots.length) issues.push(makeIssue("error", `components[${index}].slots`, "Component has no slot.", id));
-    slots.forEach((slotId) => {
-      if (!CANONICAL_SLOT_MAP.has(slotId)) {
-        issues.push(makeIssue("error", `components[${index}].slots`, `Unknown slot: ${slotId}.`, id));
-      }
-    });
-
-    if (type === "monster-graft") {
-      const monsterRules = getExplicitMonsterRules(component);
-      const monsterSlot = component.monster?.slot || slots[0];
-      if (!workflows.includes("monster-composer")) {
-        issues.push(makeIssue("error", `components[${index}].workflows`, "Monster graft must include monster-composer workflow.", id));
-      }
-      if (!monsterSlot || !CANONICAL_MONSTER_SLOT_MAP.has(monsterSlot)) {
-        issues.push(makeIssue("error", `components[${index}].monster.slot`, `Monster graft uses an unknown Monster Composer slot: ${monsterSlot || "empty"}.`, id));
-      }
-      slots.forEach((slotId) => {
-        if (!CANONICAL_MONSTER_SLOT_MAP.has(slotId)) {
-          issues.push(makeIssue("error", `components[${index}].slots`, `Monster graft references non-monster slot: ${slotId}.`, id));
-        }
-      });
-      if (monsterSlot && slots.length && !slots.includes(monsterSlot)) {
-        issues.push(makeIssue("warning", `components[${index}].monster.slot`, `monster.slot (${monsterSlot}) is not present in component slots.`, id));
-      }
-      if (!monsterRules) {
-        issues.push(makeIssue("error", `components[${index}].monster.rules`, "Monster graft has no structured monster.rules object.", id));
-      } else {
-        if (!hasText(monsterRules.section)) issues.push(makeIssue("warning", `components[${index}].monster.rules.section`, "Structured rules have no stat block section.", id));
-        if (!hasText(monsterRules.actionEconomy)) issues.push(makeIssue("warning", `components[${index}].monster.rules.actionEconomy`, "Structured rules have no action economy.", id));
-        if (!isPlainObject(monsterRules.usage)) issues.push(makeIssue("warning", `components[${index}].monster.rules.usage`, "Structured rules have no usage object.", id));
-        if (!isPlainObject(monsterRules.resolution)) issues.push(makeIssue("warning", `components[${index}].monster.rules.resolution`, "Structured rules have no resolution object.", id));
-        if (!isPlainObject(monsterRules.targeting)) issues.push(makeIssue("warning", `components[${index}].monster.rules.targeting`, "Structured rules have no targeting object.", id));
-        if (!isPlainObject(monsterRules.damage)) issues.push(makeIssue("warning", `components[${index}].monster.rules.damage`, "Structured rules have no damage object.", id));
-        if (monsterRules.resolution?.type === "savingThrow" && !hasText(monsterRules.resolution?.ability)) {
-          issues.push(makeIssue("warning", `components[${index}].monster.rules.resolution.ability`, "Saving throw resolution has no ability.", id));
-        }
-        if (monsterRules.usage?.type === "recharge" && !hasText(monsterRules.usage?.value || monsterRules.usage?.recharge)) {
-          issues.push(makeIssue("warning", `components[${index}].monster.rules.usage.recharge`, "Recharge usage has no recharge value.", id));
-        }
-      }
-      if (!hasText(component.counterplay) && !hasText(component.monster?.rules?.counterplay?.text)) {
-        issues.push(makeIssue("warning", `components[${index}].counterplay`, "Monster graft has no explicit counterplay text.", id));
-      }
-      validateMonsterAnatomyConstraintsForStudio(component, index, issues);
-      validateMonsterAnatomyGrantsForStudio(component, index, issues);
-      validateMonsterFrameFitForStudio(component, index, issues);
-    }
-
-    if (type === "location-component") {
-      if (!workflows.includes("darken-location")) {
-        issues.push(makeIssue("error", `components[${index}].workflows`, "Location component must include darken-location workflow.", id));
-      }
-      slots.forEach((slotId) => {
-        if (!CANONICAL_DARKEN_SLOT_MAP.has(slotId) || slotId === "locationRegion") {
-          issues.push(makeIssue("error", `components[${index}].slots`, `Location component uses an invalid Darken slot: ${slotId}.`, id));
-        }
-      });
-      if (!hasText(component.summary) && !hasText(component.tableText) && !hasText(component.mechanics)) {
-        issues.push(makeIssue("warning", `components[${index}].playableText`, "Location component has no summary, table text, or mechanics.", id));
-      }
-    }
-
-    if (type === "location-region") {
-      if (!slots.includes("locationRegion")) {
-        issues.push(makeIssue("error", `components[${index}].slots`, "Location region must use the locationRegion slot.", id));
-      }
-      const regionMetadata = isPlainObject(component.locationRegion) ? component.locationRegion : component.map;
-      if (!isPlainObject(regionMetadata)) {
-        issues.push(makeIssue("warning", `components[${index}].locationRegion`, "Location region has no locationRegion metadata object.", id));
-      } else {
-        ["role", "size", "shape"].forEach((field) => {
-          if (!hasText(regionMetadata?.[field])) {
-            issues.push(makeIssue("warning", `components[${index}].locationRegion.${field}`, `Location region has no ${field}.`, id));
-          }
-        });
-      }
-    }
-  });
-
-  validateContentPack(contentPackExport).forEach((issue) => {
-    issues.push({
-      ...issue,
-      path: `contentPack.${issue.path || "pack"}`,
-      severity: issue.severity || "warning",
-    });
-  });
-
-  return {
-    issues,
-    summary: getIssueSummary(issues),
-  };
-}
-
-function buildComponentTemplate(type, draft) {
-  const sourceAnchorId = draft.sourceAnchor?.id || draft.id || "new-inspiration";
-  const baseId = `${sourceAnchorId}-${type}-${draft.components.length + 1}`;
-  const title =
-    type === "monster-graft"
-      ? "New Monster Graft"
-      : type === "location-region"
-        ? "New Location Region"
-        : "New Location Component";
-
-  const component = {
-    id: baseId,
-    title,
-    label: title,
-    type: COMPONENT_TYPE_LABELS[type] || "Component",
-    contentType: type,
-    status: "draft",
-    workflows: type === "monster-graft" ? ["monster-composer"] : ["darken-location"],
-    slots: type === "monster-graft" ? ["body"] : type === "location-region" ? ["locationRegion"] : ["visibleAnomaly"],
-    sourceAnchors: [sourceAnchorId],
-    sourceTypes: asArray(draft.sourceAnchor?.sourceTypes),
-    themes: asArray(draft.sourceAnchor?.themes),
-    motifs: asArray(draft.sourceAnchor?.motifs),
-    horror: asArray(draft.sourceAnchor?.horror),
-    summary: "",
-    tableText: "",
-    mechanics: "",
-    tags: [],
-  };
-
-  if (type === "monster-graft") {
-    component.monster = {
-      slot: "body",
-      section: "trait",
-      typeBias: [],
-      roleBias: [],
-      cost: 1,
-      complexity: 1,
-      stats: {},
-      rules: {
-        section: "trait",
-        actionEconomy: "passive",
-        usage: { type: "passive" },
-        resolution: { type: "none" },
-        targeting: { type: "self", targets: "the creature" },
-        damage: { mode: "none", types: [] },
-        condition: null,
-        counterplay: {},
-        text: {},
-      },
-    };
-    component.counterplay = "";
-  }
-
-  if (type === "location-region") {
-    component.locationRegion = {
-      role: "side",
-      size: "Medium",
-      shape: "standard",
-      connectors: 2,
-      density: "medium",
-      readAloud: { compact: "", extended: "" },
-    };
-  }
-
-  return component;
 }
 
 function matchesComponentSearch(component, query) {
@@ -2796,6 +1265,8 @@ export default function InspirationStudioPage() {
   const [libraryCollapsed, setLibraryCollapsed] = useState(true);
   const [rightRailCollapsed, setRightRailCollapsed] = useState(true);
   const [isGraftLedgerOpen, setGraftLedgerOpen] = useState(false);
+  const [isContentHealthOpen, setContentHealthOpen] = useState(false);
+  const [isCoverageMatrixOpen, setCoverageMatrixOpen] = useState(false);
   const [identityIdsUnlocked, setIdentityIdsUnlocked] = useState(false);
   const [librarySearch, setLibrarySearch] = useState("");
   const [libraryStatusFilter, setLibraryStatusFilter] = useState("all");
@@ -2834,17 +1305,6 @@ export default function InspirationStudioPage() {
     };
   }, [imagePreviewUrl]);
 
-  useEffect(() => {
-    if (!isGraftLedgerOpen) return undefined;
-
-    function handleLedgerKeyDown(event) {
-      if (event.key === "Escape") setGraftLedgerOpen(false);
-    }
-
-    window.addEventListener("keydown", handleLedgerKeyDown);
-    return () => window.removeEventListener("keydown", handleLedgerKeyDown);
-  }, [isGraftLedgerOpen]);
-
   const componentGroups = useMemo(() => getModuleComponentGroups(draft), [draft]);
   const monsterComponents = componentGroups["monster-graft"] || [];
   const locationComponents = useMemo(() => {
@@ -2862,6 +1322,7 @@ export default function InspirationStudioPage() {
   const moduleExportObject = useMemo(() => buildModuleExport(draft, imagePreviewUrl), [draft, imagePreviewUrl]);
   const contentPackExportObject = useMemo(() => buildContentPackExport(draft, imagePreviewUrl), [draft, imagePreviewUrl]);
   const validationReport = useMemo(() => validateStudioDraft(draft, contentPackExportObject), [draft, contentPackExportObject]);
+  const studioWarnings = useMemo(() => buildStudioWarningsFromValidation(validationReport, draft), [validationReport, draft]);
   const monsterQaReport = useMemo(() => runMonsterQaSuite({ mode: "admin-studio" }), []);
   const moduleExportJson = useMemo(() => JSON.stringify(moduleExportObject, null, 2), [moduleExportObject]);
   const contentPackExportJson = useMemo(() => JSON.stringify(contentPackExportObject, null, 2), [contentPackExportObject]);
@@ -2969,11 +1430,12 @@ export default function InspirationStudioPage() {
     });
   }
 
-  function addComponent(type) {
-    const component = buildComponentTemplate(type, draft);
+  function addComponent(templateId) {
+    const component = buildComponentTemplate(templateId, draft);
+    const contentType = component.contentType;
     setActiveSection("components");
-    setComponentMode(type === "monster-graft" ? "monsters" : "locations");
-    setLocationFilter(type === "location-region" ? "location-region" : type === "location-component" ? "location-component" : "all");
+    setComponentMode(contentType === "monster-graft" ? "monsters" : "locations");
+    setLocationFilter(contentType === "location-region" ? "location-region" : contentType === "location-component" ? "location-component" : "all");
     setComponentSearch("");
     setSelectedComponentId(component.id);
     updateDraft((nextDraft) => {
@@ -3014,6 +1476,15 @@ export default function InspirationStudioPage() {
     downloadJsonFile(`${slugify(draft.title)}-publish-readiness-report.json`, readinessReportObject);
   }
 
+  function downloadAuditBundle() {
+    downloadStudioAuditBundle({
+      draft,
+      imagePreviewUrl,
+      modules,
+      libraryGrafts: ALL_MONSTER_GRAFTS,
+    });
+  }
+
   const packTitle = packSummaries.find((pack) => pack.id === draft.packId)?.title || draft.packId;
   const imageSource = imagePreviewUrl || draft.inspiration?.media?.imageUrl || "";
 
@@ -3030,18 +1501,16 @@ export default function InspirationStudioPage() {
           <span><Icon name="fa-box-open" /> {packTitle}</span>
           <span><Icon name="fa-circle-check" /> {draft.status || "draft"}</span>
           <span><Icon name="fa-diagram-project" /> {asArray(draft.components).length} components</span>
-          <button
-            className="studio-library-panel__collapse"
-            type="button"
-            aria-label={`Open global Monster Graft Ledger (${ALL_MONSTER_GRAFTS.length + monsterComponents.length} grafts)`}
-            aria-haspopup="dialog"
-            aria-expanded={isGraftLedgerOpen}
-            aria-controls="studio-graft-ledger-modal"
-            title="Open global Monster Graft Ledger"
-            onClick={() => setGraftLedgerOpen(true)}
-          >
-            <Icon name="fa-table-list" />
-          </button>
+          <StudioToolsMenu
+            coverageOpen={isCoverageMatrixOpen}
+            graftCount={ALL_MONSTER_GRAFTS.length + monsterComponents.length}
+            healthOpen={isContentHealthOpen}
+            isGraftLedgerOpen={isGraftLedgerOpen}
+            onDownloadAuditBundle={downloadAuditBundle}
+            onOpenContentHealth={() => setContentHealthOpen(true)}
+            onOpenCoverageMatrix={() => setCoverageMatrixOpen(true)}
+            onOpenGraftLedger={() => setGraftLedgerOpen(true)}
+          />
         </div>
       </header>
 
@@ -3211,6 +1680,7 @@ export default function InspirationStudioPage() {
                 monsterComponentsCount={monsterComponents.length}
                 selectedComponent={selectedComponent}
                 selectedComponentId={selectedComponentId}
+                studioWarnings={studioWarnings}
                 validationReport={validationReport}
                 visibleComponents={visibleComponents}
                 onAddComponent={addComponent}
@@ -3236,6 +1706,8 @@ export default function InspirationStudioPage() {
                 onCopy={copyExportJson}
                 onDownloadReadinessReport={downloadReadinessReport}
                 onExportModeChange={setExportMode}
+                draft={draft}
+                studioWarnings={studioWarnings}
                 validationReport={validationReport}
                 monsterQaReport={monsterQaReport}
               />
@@ -3255,40 +1727,22 @@ export default function InspirationStudioPage() {
         />
       </div>
 
-      {isGraftLedgerOpen ? (
-        <div className="studio-global-modal-backdrop studio-global-modal-backdrop--graft-ledger" role="presentation">
-          <section
-            id="studio-graft-ledger-modal"
-            className="studio-global-modal studio-global-modal--graft-ledger"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="studio-graft-ledger-title"
-          >
-            <header className="studio-global-modal__header">
-              <div>
-                <span><Icon name="fa-table-list" /> Studio Tool</span>
-                <h2 id="studio-graft-ledger-title">Monster Graft Ledger</h2>
-                <p>Global inventory, analytics, gaps, and downloadable report across the whole Studio.</p>
-              </div>
-              <button
-                className="studio-global-modal__close"
-                type="button"
-                aria-label="Close Monster Graft Ledger"
-                title="Close Monster Graft Ledger"
-                onClick={() => setGraftLedgerOpen(false)}
-              >
-                <Icon name="fa-xmark" />
-              </button>
-            </header>
-            <div className="studio-global-modal__body">
-              <GraftLedgerWorkspace
-                draftGrafts={monsterComponents}
-                libraryGrafts={ALL_MONSTER_GRAFTS}
-              />
-            </div>
-          </section>
-        </div>
-      ) : null}
+      <GraftLedgerModal
+        isOpen={isGraftLedgerOpen}
+        onClose={() => setGraftLedgerOpen(false)}
+        draftGrafts={monsterComponents}
+        libraryGrafts={ALL_MONSTER_GRAFTS}
+      />
+      <ContentHealthModal
+        isOpen={isContentHealthOpen}
+        onClose={() => setContentHealthOpen(false)}
+        modules={modules}
+      />
+      <CoverageMatrixModal
+        isOpen={isCoverageMatrixOpen}
+        onClose={() => setCoverageMatrixOpen(false)}
+        modules={modules}
+      />
     </section>
   );
 }
@@ -3585,20 +2039,34 @@ function ComponentsWorkspace({
   onUpdateComponent,
   selectedComponent,
   selectedComponentId,
+  studioWarnings,
   validationReport,
   visibleComponents,
 }) {
   const [componentListCollapsed, setComponentListCollapsed] = useState(true);
   const groupedComponents = groupComponentsForList(visibleComponents);
   const validationIssues = asArray(validationReport?.issues);
+  const templateGroups = getStudioComponentTemplateGroups();
 
   return (
     <section className="studio-panel studio-panel--components" aria-label="Linked components">
-      <PanelTitle eyebrow="Linked Components" icon="fa-diagram-project" title="Generator Content" help={SECTION_HELP.components}>
-        <button type="button" onClick={() => onAddComponent("monster-graft")}><Icon name="fa-plus" /> Graft</button>
-        <button type="button" onClick={() => onAddComponent("location-component")}><Icon name="fa-plus" /> Location</button>
-        <button type="button" onClick={() => onAddComponent("location-region")}><Icon name="fa-plus" /> Region</button>
-      </PanelTitle>
+      <PanelTitle eyebrow="Linked Components" icon="fa-diagram-project" title="Generator Content" help={SECTION_HELP.components} />
+
+      <div className="studio-component-template-palette" aria-label="Create component from template">
+        {templateGroups.map((group) => (
+          <details className="studio-component-template-group" key={group.id}>
+            <summary><Icon name={group.icon} /> {group.label}</summary>
+            <div className="studio-component-template-group__items">
+              {group.templates.map((template) => (
+                <button key={template.id} type="button" onClick={() => onAddComponent(template.id)} title={`Create ${template.label}`}>
+                  <Icon name={template.icon} />
+                  <span>{template.shortLabel || template.label}</span>
+                </button>
+              ))}
+            </div>
+          </details>
+        ))}
+      </div>
 
       <div className="studio-component-sheet">
         <div className="studio-component-tabs" role="tablist" aria-label="Component families">
@@ -3703,9 +2171,12 @@ function ComponentsWorkspace({
                       </span>
                       <span className="studio-list-button__topline">
                         <strong>{component.title || component.label}</strong>
-                        <em aria-label={hasReviewIssue ? `${getReadinessLabelFromSummary(getIssueSummary(componentIssues))} review issue` : `${status} status`}>
-                          <Icon name={hasReviewIssue ? getReadinessIconFromSummary(getIssueSummary(componentIssues)) : getStatusIconName(status)} />
-                        </em>
+                        <span className="studio-list-button__review-tools">
+                          <StudioWarningBadge compact warnings={getStudioWarningsForEntry(studioWarnings, component.id)} />
+                          <em aria-label={hasReviewIssue ? `${getReadinessLabelFromSummary(getIssueSummary(componentIssues))} review issue` : `${status} status`}>
+                            <Icon name={hasReviewIssue ? getReadinessIconFromSummary(getIssueSummary(componentIssues)) : getStatusIconName(status)} />
+                          </em>
+                        </span>
                       </span>
                     </button>
                   );
@@ -3719,6 +2190,7 @@ function ComponentsWorkspace({
         {selectedComponent ? (
           <ComponentEditor
             component={selectedComponent}
+            warnings={getStudioWarningsForEntry(studioWarnings, selectedComponent.id)}
             onChange={(updater) => onUpdateComponent(selectedComponent.id, updater)}
             onRemove={onRemoveComponent}
           />
@@ -3731,303 +2203,6 @@ function ComponentsWorkspace({
 }
 
 
-function GraftLedgerWorkspace({ libraryGrafts = [], draftGrafts = [] }) {
-  const [ledgerSearch, setLedgerSearch] = useState("");
-  const [slotFilter, setSlotFilter] = useState("all");
-  const [actionFilter, setActionFilter] = useState("all");
-  const [sourceFilter, setSourceFilter] = useState("all");
-  const [issueFilter, setIssueFilter] = useState("all");
-  const [viewMode, setViewMode] = useState("list");
-  const report = useMemo(() => buildGraftLedgerReport(libraryGrafts, draftGrafts), [libraryGrafts, draftGrafts]);
-  const filteredItems = useMemo(() => getGraftLedgerFilteredItems(report.items, {
-    search: ledgerSearch,
-    slot: slotFilter,
-    action: actionFilter,
-    source: sourceFilter,
-    issueState: issueFilter,
-  }), [actionFilter, issueFilter, ledgerSearch, report.items, slotFilter, sourceFilter]);
-  const slotOptions = report.buckets.bySlot.filter((row) => row.count > 0 || row.id !== "unassigned");
-  const actionOptions = report.buckets.byAction.filter((row) => row.count > 0 || GRAFT_LEDGER_ACTION_ORDER.includes(row.id));
-  const sourceOptions = getLedgerTopBuckets(report.buckets.bySource, 40);
-
-  function downloadLedgerReport() {
-    downloadJsonFile(`cruor-monster-graft-ledger-${new Date().toISOString().slice(0, 10)}.json`, buildGraftLedgerDownloadReport(report, {
-      search: ledgerSearch,
-      slot: slotFilter,
-      action: actionFilter,
-      source: sourceFilter,
-      issueState: issueFilter,
-      viewMode,
-      visibleCount: filteredItems.length,
-      visibleItemIds: filteredItems.map((item) => item.id),
-    }));
-  }
-
-  return (
-    <div className="inspiration-studio__workspace inspiration-studio__workspace--graft-ledger">
-      <section className="studio-panel studio-panel--graft-ledger-overview" aria-label="Monster graft ledger overview">
-        <PanelTitle eyebrow="Monster Grafts" icon="fa-table-list" title="Graft Ledger" help="Global editorial inventory for Monster Composer grafts. Use it to inspect coverage, detect gaps, and decide which packs or creature families need more content.">
-          <div className="studio-ledger-actions">
-            <button className="studio-ledger-download-report" type="button" onClick={downloadLedgerReport}>
-              <Icon name="fa-file-arrow-down" /> Download Report
-            </button>
-            <div className="studio-ledger-view-toggle" role="tablist" aria-label="Graft ledger view mode">
-              <button type="button" aria-pressed={viewMode === "list"} onClick={() => setViewMode("list")}><Icon name="fa-list" /> List</button>
-              <button type="button" aria-pressed={viewMode === "grid"} onClick={() => setViewMode("grid")}><Icon name="fa-border-all" /> Grid</button>
-            </div>
-          </div>
-        </PanelTitle>
-
-        <div className="studio-ledger-summary" aria-label="Graft ledger summary">
-          <StatPill icon="fa-skull" label="Total Grafts" value={report.summary.total} />
-          <StatPill icon="fa-code-branch" label="Structured" value={`${report.summary.structuredRules}/${report.summary.total}`} />
-          <StatPill icon="fa-shield-halved" label="Counterplay" value={`${report.summary.counterplayCoverage}/${report.summary.total}`} />
-          <StatPill icon="fa-dna" label="Anatomy Fit" value={`${report.summary.anatomyCoverage}/${report.summary.total}`} />
-          <StatPill icon="fa-scale-balanced" label="Avg Cost" value={report.summary.averageCost.toFixed(1)} />
-          <StatPill icon="fa-gauge-high" label="Avg Complexity" value={report.summary.averageComplexity.toFixed(1)} />
-        </div>
-
-        <div className="studio-ledger-filters" aria-label="Graft ledger filters">
-          <label className="studio-search-field studio-search-field--ledger">
-            <Icon name="fa-magnifying-glass" />
-            <input value={ledgerSearch} onChange={(event) => setLedgerSearch(event.target.value)} placeholder="Search grafts, sources, rules, tags…" />
-          </label>
-          <label>
-            <span>Slot</span>
-            <select value={slotFilter} onChange={(event) => setSlotFilter(event.target.value)}>
-              <option value="all">All Slots</option>
-              {slotOptions.map((row) => <option key={row.id} value={row.id}>{row.label} ({row.count})</option>)}
-            </select>
-          </label>
-          <label>
-            <span>Economy</span>
-            <select value={actionFilter} onChange={(event) => setActionFilter(event.target.value)}>
-              <option value="all">All Economies</option>
-              {actionOptions.map((row) => <option key={row.id} value={row.id}>{row.label} ({row.count})</option>)}
-            </select>
-          </label>
-          <label>
-            <span>Source</span>
-            <select value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value)}>
-              <option value="all">All Sources</option>
-              {sourceOptions.map((row) => <option key={row.id} value={row.id}>{row.label} ({row.count})</option>)}
-            </select>
-          </label>
-          <label>
-            <span>Issues</span>
-            <select value={issueFilter} onChange={(event) => setIssueFilter(event.target.value)}>
-              <option value="all">All States</option>
-              <option value="clean">Clean ({report.summary.clean})</option>
-              <option value="warning">Warnings ({report.summary.warning})</option>
-              <option value="error">Errors ({report.summary.error})</option>
-            </select>
-          </label>
-        </div>
-      </section>
-
-      <section className="studio-panel studio-panel--graft-ledger-analytics" aria-label="Monster graft analytics">
-        <PanelTitle eyebrow="Analytics" icon="fa-chart-simple" title="Coverage Snapshot" help="Counts are generated from the same normalized graft feed consumed by Monster Composer, plus the current draft module when it contains grafts." />
-        <div className="studio-ledger-analytics-grid">
-          <GraftLedgerBucket title="By Slot" icon="fa-puzzle-piece" rows={report.buckets.bySlot} />
-          <GraftLedgerBucket title="By Economy" icon="fa-bolt" rows={report.buckets.byAction} />
-          <GraftLedgerBucket title="By Resolution" icon="fa-dice-d20" rows={report.buckets.byResolution} />
-          <GraftLedgerBucket title="By Damage" icon="fa-burst" rows={report.buckets.byDamageType} emptyLabel="No damage types" />
-          <GraftLedgerBucket title="By Condition" icon="fa-eye-slash" rows={report.buckets.byCondition} emptyLabel="No conditions" />
-          <GraftLedgerBucket title="By Source" icon="fa-book-skull" rows={report.buckets.bySource} />
-          <GraftLedgerBucket title="By Creature Type" icon="fa-skull-crossbones" rows={report.buckets.byType} emptyLabel="No explicit type bias" />
-          <GraftLedgerBucket title="By Role" icon="fa-chess-rook" rows={report.buckets.byRole} emptyLabel="No role bias" />
-          <GraftLedgerBucket title="By Family" icon="fa-dna" rows={report.buckets.byFamily} emptyLabel="No family constraints" />
-          <GraftLedgerBucket title="By Complexity" icon="fa-gauge-high" rows={report.buckets.byComplexity} />
-        </div>
-      </section>
-
-      <section className="studio-panel studio-panel--graft-ledger-matrix" aria-label="Slot and action economy coverage matrix">
-        <PanelTitle eyebrow="Coverage Matrix" icon="fa-table-cells" title="Slot × Action Economy" help="Highlights which slot/economy combinations have content and which combinations are still empty." />
-        <GraftLedgerMatrix rows={report.matrix} />
-      </section>
-
-      <section className="studio-panel studio-panel--graft-ledger-gaps" aria-label="Graft ledger editorial gaps">
-        <PanelTitle eyebrow="Editorial Gaps" icon="fa-triangle-exclamation" title="Suggested Content Targets" help="Automatic gap detection for underfilled slots, missing economies, narrow source anchors, dominant damage types, and incomplete metadata." />
-        <div className="studio-ledger-gap-list" role="list">
-          {report.gaps.map((gap) => (
-            <article className={`studio-ledger-gap studio-ledger-gap--${gap.severity}`} key={gap.id} role="listitem">
-              <span><Icon name={gap.severity === "error" ? "fa-circle-xmark" : gap.severity === "warning" ? "fa-triangle-exclamation" : "fa-circle-info"} /></span>
-              <div>
-                <strong>{gap.title}</strong>
-                <p>{gap.detail}</p>
-              </div>
-            </article>
-          ))}
-          {!report.gaps.length ? (
-            <div className="studio-validation-clean">
-              <Icon name="fa-circle-check" />
-              <strong>No editorial gaps detected.</strong>
-              <span>The current graft library has enough baseline coverage for this audit pass.</span>
-            </div>
-          ) : null}
-        </div>
-      </section>
-
-      <section className="studio-panel studio-panel--graft-ledger-list" aria-label="Filtered monster graft inventory">
-        <PanelTitle eyebrow="Inventory" icon={viewMode === "grid" ? "fa-border-all" : "fa-list"} title={`${filteredItems.length} Visible Grafts`} help="Filtered inventory of every graft, including slot, rules, source, pack, creature bias, cost, complexity, and editorial issue state." />
-        {viewMode === "grid" ? <GraftLedgerGrid items={filteredItems} /> : <GraftLedgerTable items={filteredItems} />}
-      </section>
-    </div>
-  );
-}
-
-function GraftLedgerBucket({ title, icon, rows = [], emptyLabel = "No entries" }) {
-  const positiveRows = getLedgerTopBuckets(rows);
-  const maxCount = Math.max(1, ...positiveRows.map((row) => row.count));
-
-  return (
-    <article className="studio-ledger-bucket">
-      <header><Icon name={icon} /> <strong>{title}</strong></header>
-      <div className="studio-ledger-bucket__rows">
-        {positiveRows.map((row) => (
-          <div className="studio-ledger-bucket__row" key={row.id}>
-            <span>{row.label}</span>
-            <div><em style={{ width: `${Math.max(6, (row.count / maxCount) * 100)}%` }} /></div>
-            <strong>{row.count}</strong>
-          </div>
-        ))}
-        {!positiveRows.length ? <p>{emptyLabel}</p> : null}
-      </div>
-    </article>
-  );
-}
-
-function GraftLedgerMatrix({ rows = [] }) {
-  const columns = GRAFT_LEDGER_ACTION_ORDER.map((id) => ({ id, label: formatPlainLabel(id) }));
-
-  return (
-    <div className="studio-ledger-matrix-scroll">
-      <table className="studio-ledger-matrix-table">
-        <thead>
-          <tr>
-            <th>Slot</th>
-            {columns.map((column) => <th key={column.id}>{column.label}</th>)}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.id}>
-              <th>{row.label}</th>
-              {columns.map((column) => {
-                const cell = row.columns.find((entry) => entry.id === column.id);
-                return <td key={column.id} data-has-content={cell?.count ? "true" : "false"}>{cell?.count || "—"}</td>;
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function GraftLedgerIssueBadge({ item }) {
-  const severity = getLedgerIssueSeverity(item);
-  const issues = getLedgerIssueList(item);
-  const icon = severity === "error" ? "fa-circle-xmark" : severity === "warning" ? "fa-triangle-exclamation" : "fa-circle-check";
-
-  return (
-    <span className={`studio-ledger-issue-badge studio-ledger-issue-badge--${severity}`} title={issues.length ? issues.join(" · ") : "No editorial issues detected"}>
-      <Icon name={icon} /> {severity === "clean" ? "Clean" : `${issues.length} ${severity === "error" ? "Error" : "Warning"}${issues.length === 1 ? "" : "s"}`}
-    </span>
-  );
-}
-
-function GraftLedgerMetaChips({ values = [], fallback = "—", limit = 4 }) {
-  const cleanValues = normalizeLedgerArray(values);
-  if (!cleanValues.length) return <span className="studio-ledger-muted">{fallback}</span>;
-  return (
-    <span className="studio-ledger-chip-row">
-      {cleanValues.slice(0, limit).map((value) => <em key={value}>{formatPlainLabel(value)}</em>)}
-      {cleanValues.length > limit ? <em>+{cleanValues.length - limit}</em> : null}
-    </span>
-  );
-}
-
-function GraftLedgerTable({ items = [] }) {
-  return (
-    <div className="studio-ledger-table-scroll">
-      <table className="studio-ledger-table">
-        <thead>
-          <tr>
-            <th>Graft</th>
-            <th>Slot</th>
-            <th>Economy</th>
-            <th>Resolution</th>
-            <th>Damage / Conditions</th>
-            <th>Source / Pack</th>
-            <th>Bias</th>
-            <th>Cost</th>
-            <th>QA</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item) => (
-            <tr key={item.id}>
-              <td>
-                <strong>{item.title}</strong>
-                <span>{item.id}</span>
-              </td>
-              <td>{item.slotLabel}<span>{formatLedgerValue(item.section)}</span></td>
-              <td>{formatLedgerValue(item.actionEconomy)}<span>{formatLedgerValue(item.usage)}</span></td>
-              <td>{formatLedgerValue(item.resolutionType)}<span>{item.saveAbility ? `${formatLedgerValue(item.saveAbility)} save` : item.attackType ? formatLedgerValue(item.attackType) : item.targetingLabel}</span></td>
-              <td>
-                <GraftLedgerMetaChips values={item.damageTypes} fallback="No damage" />
-                <GraftLedgerMetaChips values={item.conditions} fallback="No conditions" />
-              </td>
-              <td>
-                <strong>{item.sourceLabel}</strong>
-                <span>{item.contentPack?.title || "—"}</span>
-              </td>
-              <td>
-                <GraftLedgerMetaChips values={[...item.typeBias, ...item.roleBias, ...item.families]} fallback="No explicit bias" />
-              </td>
-              <td>
-                <strong>{item.cost}</strong>
-                <span>Complexity {item.complexity}</span>
-              </td>
-              <td><GraftLedgerIssueBadge item={item} /></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {!items.length ? <div className="studio-empty-state">No matching grafts.</div> : null}
-    </div>
-  );
-}
-
-function GraftLedgerGrid({ items = [] }) {
-  return (
-    <div className="studio-ledger-card-grid" role="list">
-      {items.map((item) => (
-        <article className="studio-ledger-card" key={item.id} role="listitem">
-          <header>
-            <span>{item.slotLabel} · {formatLedgerValue(item.actionEconomy)}</span>
-            <GraftLedgerIssueBadge item={item} />
-            <h4>{item.title}</h4>
-            <em>{item.id}</em>
-          </header>
-          <dl>
-            <div><dt>Resolution</dt><dd>{formatLedgerValue(item.resolutionType)}{item.saveAbility ? ` · ${formatLedgerValue(item.saveAbility)} save` : item.attackType ? ` · ${formatLedgerValue(item.attackType)}` : ""}</dd></div>
-            <div><dt>Targeting</dt><dd>{item.targetingLabel}</dd></div>
-            <div><dt>Damage</dt><dd><GraftLedgerMetaChips values={item.damageTypes} fallback="No damage" /></dd></div>
-            <div><dt>Conditions</dt><dd><GraftLedgerMetaChips values={item.conditions} fallback="No conditions" /></dd></div>
-            <div><dt>Source</dt><dd>{item.sourceLabel}</dd></div>
-            <div><dt>Pack</dt><dd>{item.contentPack?.title || "—"}</dd></div>
-            <div><dt>Bias</dt><dd><GraftLedgerMetaChips values={[...item.typeBias, ...item.roleBias, ...item.families]} fallback="No explicit bias" /></dd></div>
-            <div><dt>Budget</dt><dd>Cost {item.cost} · Complexity {item.complexity}</dd></div>
-          </dl>
-        </article>
-      ))}
-      {!items.length ? <div className="studio-empty-state">No matching grafts.</div> : null}
-    </div>
-  );
-}
-
 function ExportWorkspace({
   contentPackExportJson,
   copyState,
@@ -4037,6 +2212,8 @@ function ExportWorkspace({
   onCopy,
   onDownloadReadinessReport,
   onExportModeChange,
+  draft,
+  studioWarnings,
   validationReport,
   monsterQaReport,
 }) {
@@ -4050,7 +2227,7 @@ function ExportWorkspace({
             <Icon name="fa-file-arrow-down" /> Report JSON
           </button>
         </PanelTitle>
-        <ValidationPanel report={validationReport} />
+        <ValidationPanel draft={draft} report={validationReport} studioWarnings={studioWarnings} />
       </section>
 
       <section className="studio-panel studio-panel--validation" aria-label="Monster QA report">
@@ -4157,7 +2334,7 @@ function MonsterQaPanel({ report }) {
   );
 }
 
-function ValidationPanel({ report }) {
+function ValidationPanel({ draft = {}, report, studioWarnings = [] }) {
   const issues = asArray(report?.issues);
   const summary = report?.summary || getIssueSummary(issues);
   const isClean = !summary.error && !summary.warning;
@@ -4177,30 +2354,13 @@ function ValidationPanel({ report }) {
           <span>No validation issues detected for the current module.</span>
         </div>
       ) : (
-        <div className="studio-validation-list studio-validation-list--grouped" role="list">
-          {getGroupedValidationIssues(issues).map((group) => {
-            const severity = group.severity || "warning";
-            const meta = VALIDATION_SEVERITY_META[severity] || VALIDATION_SEVERITY_META.warning;
-            return (
-              <article className={`studio-validation-issue studio-validation-issue--${severity}`} key={group.key} role="listitem">
-                <span className="studio-validation-issue__badge">
-                  <Icon name={meta.icon} />
-                  {group.count > 1 ? `${group.count}×` : severity}
-                </span>
-                <div>
-                  <strong>{group.message}</strong>
-                  <span>{getIssueGroupMeta(group)}</span>
-                </div>
-              </article>
-            );
-          })}
-        </div>
+        <StudioWarningList draft={draft} warnings={studioWarnings} />
       )}
     </div>
   );
 }
 
-function ComponentEditor({ component, onChange, onRemove }) {
+function ComponentEditor({ component, onChange, onRemove, warnings = [] }) {
   const isMonsterGraft = component.contentType === "monster-graft";
   const isLocationRegion = component.contentType === "location-region";
 
@@ -4236,6 +2396,11 @@ function ComponentEditor({ component, onChange, onRemove }) {
 
   return (
     <div className="studio-component-editor-shell" aria-label="Selected component workspace">
+      {warnings.length ? (
+        <div className="studio-component-editor-warning-panel">
+          <StudioWarningList grouped={false} warnings={warnings} />
+        </div>
+      ) : null}
       <ComponentAdvancedEditor component={component} onChange={onChange} onRemove={onRemove} />
     </div>
   );
