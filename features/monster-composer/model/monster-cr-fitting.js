@@ -1,4 +1,4 @@
-export const MONSTER_CR_FITTING_VERSION = "control-aware-cr-fitting-v1.28";
+export const MONSTER_CR_FITTING_VERSION = "fallback-renderer-and-spike-fitting-v1.30";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -119,6 +119,35 @@ function isLowCrHardControlProfile(result = {}, targetCr = 0) {
       Number(profile.controlPressure || 0) >= 2.5
   );
 }
+
+function getDprSpikeRatio(result = {}, baseline = {}) {
+  const baselineDpr = Math.max(1, Number(baseline?.dpr || 0));
+  const effectiveDpr = Number(result?.effectiveProfile?.effectiveDpr3Round || result?.dprProfile?.effectiveDpr3Round || result?.printedStats?.dpr || 0);
+  if (!Number.isFinite(effectiveDpr) || effectiveDpr <= 0) return 0;
+  return effectiveDpr / baselineDpr;
+}
+
+function isLowCrDprSpikeProfile(result = {}, targetCr = 0, baseline = {}) {
+  const cr = Number(targetCr || 0);
+  if (cr > 2) return false;
+  return getDprSpikeRatio(result, baseline) >= (cr <= 1 ? 1.45 : 1.6);
+}
+
+function getDprSpikeResponsibleSources(result = {}, baseline = {}) {
+  const baselineDpr = Math.max(1, Number(baseline?.dpr || 0));
+  return asArray(result?.dprProfile?.sources)
+    .map((source) => ({
+      featureId: source.featureId,
+      title: source.title,
+      actionEconomy: source.actionEconomy,
+      averageDpr: source.averageDpr,
+      totalThreeRound: source.totalThreeRound,
+      ratio: baselineDpr ? Number((Number(source.averageDpr || 0) / baselineDpr).toFixed(2)) : 0,
+    }))
+    .filter((source) => Number(source.averageDpr || 0) > baselineDpr * 0.6)
+    .sort((a, b) => Number(b.averageDpr || 0) - Number(a.averageDpr || 0));
+}
+
 
 function getHardControlResponsibleSources(result = {}) {
   return asArray(getConditionProfile(result).sources)
@@ -267,6 +296,7 @@ export function buildClosedLoopCrFit({
   let dprTarget = initialDprTarget;
   let saveDcTarget = initialSaveDcTarget;
   let bestResult = null;
+  let bestState = null;
   let bestScore = Infinity;
   let currentResult = null;
 
@@ -301,14 +331,18 @@ export function buildClosedLoopCrFit({
     const offensiveDelta = getOffensiveDelta(currentResult.crValidation, targetCr);
     const defensiveDelta = getDefensiveDelta(currentResult.crValidation, targetCr);
     const splitPenalty = Math.abs(offensiveDelta - defensiveDelta) * 0.18;
-    const score = Math.abs(crDelta) + splitPenalty;
+    const dprSpikeRatio = Number(targetCr || 0) <= 2 ? getDprSpikeRatio(currentResult, baseline) : 0;
+    const spikePenalty = Number(targetCr || 0) <= 2 ? Math.max(0, dprSpikeRatio - 1.35) * 1.35 : 0;
+    const score = Math.abs(crDelta) + splitPenalty + spikePenalty;
 
     if (score < bestScore) {
       bestScore = score;
       bestResult = currentResult;
+      bestState = { index: passIndex, hpTarget, dprTarget, saveDcTarget, result: currentResult, score, dprSpikeRatio };
     }
 
-    if (Math.abs(crDelta) <= tolerance) break;
+    const lowCrDprSpikePass = isLowCrDprSpikeProfile(currentResult, targetCr, baseline);
+    if (Math.abs(crDelta) <= tolerance && !lowCrDprSpikePass) break;
 
     const lowerBoundPass = lowerBoundAuthority && crDelta <= -2;
     let hpScale = buildScaleForDelta(defensiveDelta, lowerBoundPass ? {
@@ -351,6 +385,33 @@ export function buildClosedLoopCrFit({
           nextSaveDcTarget,
           conditionProfile,
           responsibleSources: getHardControlResponsibleSources(currentResult),
+        },
+      ));
+    }
+
+    if (lowCrDprSpikePass) {
+      const ratio = getDprSpikeRatio(currentResult, baseline);
+      const spikeScale = ratio >= 2.1 ? 0.34 : ratio >= 1.75 ? 0.44 : 0.56;
+      dprScale = Math.min(dprScale, spikeScale);
+      if (offensiveDelta >= 1 || ratio >= 1.75) {
+        const dcStep = ratio >= 2.1 ? 2 : 1;
+        nextSaveDcTarget = clamp(saveDcTarget - dcStep, minSaveDcTarget, maxSaveDcTarget);
+      }
+      diagnostics.push(buildDiagnostic(
+        "info",
+        `pass-${passIndex + 1}-low-cr-dpr-spike-clamp`,
+        "Low-CR DPR spike clamp reduced swing damage even though estimated CR may be within tolerance.",
+        `Effective DPR is ${ratio.toFixed(2)}× the CR ${targetCr} baseline.`,
+        {
+          passIndex,
+          crDelta,
+          offensiveDelta,
+          defensiveDelta,
+          ratio,
+          dprScale,
+          saveDcTarget,
+          nextSaveDcTarget,
+          responsibleSources: getDprSpikeResponsibleSources(currentResult, baseline),
         },
       ));
     }
@@ -409,12 +470,13 @@ export function buildClosedLoopCrFit({
   }
 
   const initial = passes[0] || null;
+  const selectedState = bestState || { index: passes.length, hpTarget, dprTarget, saveDcTarget, result: bestResult || currentResult };
   const final = summarizePass({
-    index: passes.length,
-    hpTarget,
-    dprTarget,
-    saveDcTarget,
-    result: bestResult || currentResult,
+    index: selectedState.index ?? passes.length,
+    hpTarget: selectedState.hpTarget,
+    dprTarget: selectedState.dprTarget,
+    saveDcTarget: selectedState.saveDcTarget,
+    result: selectedState.result,
   });
   const finalDelta = Number(final?.deltaFromTarget ?? 0);
   const initialDelta = Number(initial?.deltaFromTarget ?? finalDelta);
@@ -432,6 +494,16 @@ export function buildClosedLoopCrFit({
       "Closed-loop CR fitting was applied.",
       `Estimated CR ${initial.estimatedCr} → ${final.estimatedCr}; target CR ${targetCr}.`,
       { initial, final },
+    ));
+  }
+
+  if (bestState?.dprSpikeRatio > 0 && Number(targetCr || 0) <= 2) {
+    diagnostics.push(buildDiagnostic(
+      "info",
+      "low-cr-spike-aware-best-pass-selected",
+      "Closed-loop CR fitting selected the best pass using low-CR DPR spike pressure as part of the score.",
+      `Selected pass ${final.pass}; DPR spike ratio ${bestState.dprSpikeRatio.toFixed(2)}×.`,
+      { final, bestState: { index: bestState.index, score: bestState.score, dprSpikeRatio: bestState.dprSpikeRatio } },
     ));
   }
 
@@ -463,7 +535,7 @@ export function buildClosedLoopCrFit({
     ));
   }
 
-  const result = bestResult || currentResult || buildSingleCrProfile({
+  const result = selectedState.result || bestResult || currentResult || buildSingleCrProfile({
     activeRuleset,
     targetCr,
     typeId,
@@ -488,12 +560,12 @@ export function buildClosedLoopCrFit({
     ...result,
     fitProfile: {
       version: MONSTER_CR_FITTING_VERSION,
-      policy: "closed-loop-hp-dpr-target-fitting",
+      policy: "closed-loop-hp-dpr-save-dc-and-spike-fitting",
       maxPasses: safeMaxPasses,
       tolerance,
       applied,
       initial,
-      final: summarizePass({ index: passes.length, hpTarget: final.hpTarget, dprTarget: final.dprTarget, saveDcTarget: final.saveDcTarget, result }),
+      final: summarizePass({ index: final.pass, hpTarget: final.hpTarget, dprTarget: final.dprTarget, saveDcTarget: final.saveDcTarget, result }),
       passes,
       diagnostics,
       targetBounds: {

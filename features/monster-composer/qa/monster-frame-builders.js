@@ -250,7 +250,16 @@ export function buildMonsterFrameContext({
   qaFrameMode = "realistic",
 } = {}) {
   const selected = normalizeSelection(selection || preset?.selection || {});
-  const selectedFeatures = getFeaturesFromSelection(selected);
+  let selectedFeatures = getFeaturesFromSelection(selected);
+  const qaMode = preset?.qaMode || preset?.qaFrameMode || qaFrameMode || "realistic";
+  const scalableMainActionGate = ensureScalableMainActionForHighCr({
+    selectedFeatures,
+    targetCr,
+    qaMode,
+    category,
+    sourceId,
+  });
+  selectedFeatures = scalableMainActionGate.selectedFeatures;
   const creatureType = getFrameValue(CREATURE_TYPES, typeId);
   const role = getFrameValue(ROLES, roleId, 1);
   const source = getFrameValue(MONSTER_SOURCES, sourceId);
@@ -307,7 +316,7 @@ export function buildMonsterFrameContext({
   const lowCrHardControlProfile = buildLowCrHardControlGateProfile({
     targetCr,
     selectedFeatures,
-    qaMode: preset?.qaMode || preset?.qaFrameMode || qaFrameMode || "realistic",
+    qaMode,
   });
   const crFit = buildClosedLoopCrFit({
     activeRuleset,
@@ -370,6 +379,9 @@ export function buildMonsterFrameContext({
   if (lowCrHardControlProfile.overLimit) {
     warnings.push(`Low-CR Hard Control: ${lowCrHardControlProfile.hardControlCount} reliable hard-control features selected at CR ${targetCr}.`);
   }
+  if (scalableMainActionGate.profile?.needsFallback || scalableMainActionGate.fallbackFeature) {
+    warnings.push("Scalable Main Action Gate: generated fallback Strike because this high-CR frame lacked a scalable damaging main action.");
+  }
   if (pressure > budget) warnings.push("Threat budget is above target.");
   if (complexity > complexityCap) warnings.push("Table complexity is high.");
   if (!hasSelectedSlot(selected, "weakness")) warnings.push("No Weakness / Tell selected.");
@@ -414,6 +426,7 @@ export function buildMonsterFrameContext({
     bestiaryBaselineAudit: { issues: [] },
     framePowerProfile,
     lowCrHardControlProfile,
+    scalableMainActionGateProfile: scalableMainActionGate.profile,
     crFitProfile,
     dprProfile,
     crValidation,
@@ -555,6 +568,137 @@ export function buildLowCrHardControlGateProfile({ targetCr = 0, selectedFeature
     hardControlFeatures,
     overLimit,
     status: overLimit ? "review" : "pass",
+  };
+}
+
+function getDamageEntriesFromRules(rules = {}) {
+  const damage = rules.damage || null;
+  if (!damage || damage.mode === "none") return [];
+  if (Array.isArray(damage.parts) && damage.parts.length) return damage.parts.filter((part) => part && part.mode !== "none");
+  return [damage];
+}
+
+function isScalableDamageEntry(damage = {}) {
+  const mode = normalizeLower(damage.mode || "");
+  const scale = normalizeLower(damage.scale || "standard");
+  const budgetShare = Number(damage.budgetShare || 0);
+  const budgetRole = normalizeLower(damage.budgetRole || "");
+  if (!["mainattack", "attack", "primary"].includes(budgetRole)) return false;
+  if (["computed", "budget"].includes(mode)) {
+    if (budgetShare >= 0.65) return true;
+    return !["minor", "light"].includes(scale);
+  }
+  return false;
+}
+
+export function isScalableMainActionFeature(feature = {}) {
+  const rules = feature.rules || {};
+  if (normalizeLower(rules.actionEconomy || feature.section || "") !== "action") return false;
+  if (rules.multiattack?.enabled) return true;
+  return getDamageEntriesFromRules(rules).some(isScalableDamageEntry);
+}
+
+export function buildScalableMainActionGateProfile({ targetCr = 0, selectedFeatures = [], qaMode = "realistic" } = {}) {
+  const highCr = Number(targetCr || 0) >= 5;
+  const actionFeatures = asArray(selectedFeatures)
+    .filter((feature) => normalizeLower(feature.rules?.actionEconomy || feature.section || "") === "action")
+    .map((feature) => ({
+      id: feature.id,
+      title: feature.title,
+      slot: feature.slot,
+      source: feature.source,
+      scalable: isScalableMainActionFeature(feature),
+      damageModes: getDamageEntriesFromRules(feature.rules || {}).map((damage) => damage.mode || "unknown"),
+      damageScales: getDamageEntriesFromRules(feature.rules || {}).map((damage) => damage.scale || "standard"),
+      budgetRoles: getDamageEntriesFromRules(feature.rules || {}).map((damage) => damage.budgetRole || "none"),
+    }));
+  const scalableFeatures = actionFeatures.filter((feature) => feature.scalable);
+  const needsFallback = highCr && qaMode !== "stress" && scalableFeatures.length === 0;
+  return {
+    version: "scalable-main-action-gate-v1.30",
+    targetCr: Number(targetCr || 0),
+    qaMode,
+    highCr,
+    actionCount: actionFeatures.length,
+    scalableActionCount: scalableFeatures.length,
+    actionFeatures,
+    needsFallback,
+    status: needsFallback ? "fallback-required" : "pass",
+  };
+}
+
+function buildFallbackMainActionFeature({ category = "Monster", sourceId = "frame", targetCr = 0 } = {}) {
+  const noun = String(category || "Monster").trim() || "Monster";
+  return {
+    id: `frame-fallback-strike-cr-${targetCr}`,
+    title: `${noun} Strike`,
+    slot: "attack",
+    section: "action",
+    source: sourceId || "frame",
+    typeBias: [],
+    roleBias: [],
+    cost: 0,
+    complexity: 0,
+    stats: { dpr: 0 },
+    synthetic: true,
+    generatedBy: "scalable-main-action-gate-v1.30",
+    rules: {
+      schemaVersion: "monster-graft-rules-v1.12",
+      section: "action",
+      actionEconomy: "action",
+      usage: { type: "atWill" },
+      resolution: {
+        type: "attackRoll",
+        attackType: "melee",
+        abilityBasis: "str",
+        bonus: "monster",
+        reach: "5 ft.",
+      },
+      targeting: { type: "single", targets: "one target" },
+      damage: {
+        mode: "computed",
+        budgetRole: "mainAttack",
+        modifierPolicy: "sameAsAttack",
+        types: ["bludgeoning"],
+        scale: "standard",
+        budgetShare: null,
+        expectedTargets: 1,
+        parts: [],
+      },
+      condition: null,
+      counterplay: {
+        telegraph: false,
+        breakCondition: false,
+        positioningAnswer: true,
+        nonDamageAnswer: false,
+      },
+      text: {
+        hit: "{damage} {damage-type}.",
+      },
+      migration: {
+        source: "frame-generated-fallback",
+        isStructured: true,
+        convertedFrom: "scalable-main-action-gate",
+      },
+    },
+    summary: "Generated fallback main attack used when a high-CR frame lacks a scalable damaging action.",
+    mechanics: "Melee Attack Roll. Hit: {damage} {damage-type}.",
+    counterplay: "Standard melee positioning and armor class counterplay apply.",
+  };
+}
+
+function ensureScalableMainActionForHighCr({ selectedFeatures = [], targetCr = 0, qaMode = "realistic", category, sourceId } = {}) {
+  const profile = buildScalableMainActionGateProfile({ targetCr, selectedFeatures, qaMode });
+  if (!profile.needsFallback) return { selectedFeatures, profile, fallbackFeature: null };
+  const fallbackFeature = buildFallbackMainActionFeature({ category, sourceId, targetCr });
+  return {
+    selectedFeatures: [...selectedFeatures, fallbackFeature],
+    profile: {
+      ...profile,
+      status: "fallback-added",
+      fallbackFeature: { id: fallbackFeature.id, title: fallbackFeature.title },
+    },
+    fallbackFeature,
   };
 }
 

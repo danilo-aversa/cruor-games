@@ -271,6 +271,89 @@ function buildName(type, category, selectedFeatures) {
   return `${source} ${titleCase(type)}`;
 }
 
+function getDamageEntriesFromRules(rules = {}) {
+  const damage = rules.damage || null;
+  if (!damage || damage.mode === "none") return [];
+  if (Array.isArray(damage.parts) && damage.parts.length) return damage.parts.filter((part) => part && part.mode !== "none");
+  return [damage];
+}
+
+function isScalableMainActionFeature(feature = {}) {
+  const rules = feature.rules || {};
+  if (String(rules.actionEconomy || feature.section || "").toLowerCase() !== "action") return false;
+  if (rules.multiattack?.enabled) return true;
+  return getDamageEntriesFromRules(rules).some((damage) => {
+    const mode = String(damage.mode || "").toLowerCase();
+    const scale = String(damage.scale || "standard").toLowerCase();
+    const budgetRole = String(damage.budgetRole || "").toLowerCase();
+    const budgetShare = Number(damage.budgetShare || 0);
+    if (!["mainattack", "attack", "primary"].includes(budgetRole)) return false;
+    if (!["computed", "budget"].includes(mode)) return false;
+    if (budgetShare >= 0.65) return true;
+    return !["minor", "light"].includes(scale);
+  });
+}
+
+function buildFallbackMainActionFeature({ category = "Monster", sourceId = "frame", targetCr = 0 } = {}) {
+  const noun = String(category || "Monster").trim() || "Monster";
+  return {
+    id: `frame-fallback-strike-cr-${targetCr}`,
+    title: `${noun} Strike`,
+    slot: "attack",
+    section: "action",
+    source: sourceId || "frame",
+    cost: 0,
+    complexity: 0,
+    stats: { dpr: 0 },
+    synthetic: true,
+    generatedBy: "scalable-main-action-gate-v1.30",
+    rules: {
+      schemaVersion: "monster-graft-rules-v1.12",
+      section: "action",
+      actionEconomy: "action",
+      usage: { type: "atWill" },
+      resolution: {
+        type: "attackRoll",
+        attackType: "melee",
+        abilityBasis: "str",
+        bonus: "monster",
+        reach: "5 ft.",
+      },
+      targeting: { type: "single", targets: "one target" },
+      damage: {
+        mode: "computed",
+        budgetRole: "mainAttack",
+        modifierPolicy: "sameAsAttack",
+        types: ["bludgeoning"],
+        scale: "standard",
+        expectedTargets: 1,
+        parts: [],
+      },
+      condition: null,
+      counterplay: {
+        positioningAnswer: true,
+      },
+      text: { hit: "{damage} {damage-type}." },
+      migration: {
+        source: "frame-generated-fallback",
+        isStructured: true,
+        convertedFrom: "scalable-main-action-gate",
+      },
+    },
+    summary: "Generated fallback main attack used when a high-CR frame lacks a scalable damaging action.",
+    mechanics: "Melee Attack Roll. Hit: {damage} {damage-type}.",
+    counterplay: "Standard melee positioning and armor class counterplay apply.",
+  };
+}
+
+function maybeAddScalableFallbackAction(features = [], { targetCr = 0, category, sourceId } = {}) {
+  if (Number(targetCr || 0) < 5) return features;
+  if (features.some(isScalableMainActionFeature)) return features;
+  const hasAction = features.some((feature) => String(feature.rules?.actionEconomy || feature.section || "").toLowerCase() === "action");
+  if (!hasAction) return features;
+  return [...features, buildFallbackMainActionFeature({ category, sourceId, targetCr })];
+}
+
 function featureMatchesSource(feature, sourceIdOrIds) {
   const sourceIds = Array.isArray(sourceIdOrIds) ? sourceIdOrIds : [sourceIdOrIds];
   return sourceIds.filter(Boolean).includes(feature.source);
@@ -1348,7 +1431,10 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     return [...packsById.values()].sort((a, b) => a.title.localeCompare(b.title));
   }, [FEATURES]);
 
-  const selectedFeatures = useMemo(() => getFeaturesFromSelection(selected), [selected, FEATURES]);
+  const selectedFeatures = useMemo(() => {
+    const baseFeatures = getFeaturesFromSelection(selected);
+    return maybeAddScalableFallbackAction(baseFeatures, { targetCr, category, sourceId });
+  }, [selected, FEATURES, targetCr, category, sourceId]);
 
   const availableFeatures = useMemo(() => {
     const slotFilter = currentNavigatorSlot === "all" ? null : currentNavigatorSlot;
@@ -1734,6 +1820,16 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       profileDeltas,
       bestiaryBaselineAudit,
       framePowerProfile,
+      scalableMainActionGateProfile: {
+        version: "scalable-main-action-gate-v1.30",
+        targetCr,
+        highCr: Number(targetCr || 0) >= 5,
+        scalableActionCount: selectedFeatures.filter(isScalableMainActionFeature).length,
+        status: selectedFeatures.some((feature) => feature.generatedBy === "scalable-main-action-gate-v1.30") ? "fallback-added" : "pass",
+        fallbackFeature: selectedFeatures.find((feature) => feature.generatedBy === "scalable-main-action-gate-v1.30")
+          ? { id: selectedFeatures.find((feature) => feature.generatedBy === "scalable-main-action-gate-v1.30").id, title: selectedFeatures.find((feature) => feature.generatedBy === "scalable-main-action-gate-v1.30").title }
+          : null,
+      },
       crFitProfile,
       dprProfile,
       crValidation,

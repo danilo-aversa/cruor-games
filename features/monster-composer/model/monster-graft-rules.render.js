@@ -586,13 +586,34 @@ function renderOutcomeText(label, value, context, options) {
   return value ? `${label}: ${applyTokens(value, context, options)}` : "";
 }
 
-function renderAttackRules(feature, rules, computed, options = {}) {
+function hasDamageAmountText(value) {
+  const text = cleanString(value);
+  return /\b\d+\s*\([^)]*d\d+[^)]*\)/i.test(text) || /\b\d+d\d+\b/i.test(text);
+}
+
+function renderAttackHitText(feature, rules, computed, options = {}) {
   const context = { feature, rules, computed };
-  const hitText = rules.text?.hit
-    ? applyTokens(rules.text.hit, context, options)
-    : rules.damage
+  if (!rules.text?.hit) {
+    return rules.damage
       ? formatDamageClause(rules.damage, computed, rules, options)
       : applyTokens(feature.mechanics || "", context, options);
+  }
+
+  const hitText = applyTokens(rules.text.hit, context, options);
+  if (options.template || !rules.damage || hasDamageAmountText(hitText)) return hitText;
+
+  const referencesDamage = /\bdamage\b/i.test(hitText) || /\{damage/i.test(rules.text.hit);
+  if (!referencesDamage) return hitText;
+
+  const damageText = formatDamageClause(rules.damage, computed, rules, options);
+  if (!damageText) return hitText;
+
+  return damageText;
+}
+
+function renderAttackRules(feature, rules, computed, options = {}) {
+  const context = { feature, rules, computed };
+  const hitText = renderAttackHitText(feature, rules, computed, options);
   const secondary = rules.secondaryResolution?.type === "savingThrow" || rules.resolution?.type === "attackRollSavingThrow"
     ? joinSentences([
         formatSavePrefix(rules.secondaryResolution || rules.resolution, null, computed, options),

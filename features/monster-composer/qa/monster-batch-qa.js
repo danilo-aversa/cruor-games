@@ -21,7 +21,7 @@ import {
   forgeMonsterSelectionDetailed,
 } from "./monster-frame-builders.js";
 
-export const MONSTER_BATCH_QA_VERSION = "monster-batch-qa-v1.0-control-aware-fitting";
+export const MONSTER_BATCH_QA_VERSION = "monster-batch-qa-v1.1-scalable-action-fitting";
 
 const DEFAULT_BATCH_COUNT = 100;
 const DEFAULT_SEED = "cruor-batch-qa";
@@ -332,6 +332,33 @@ function addBalanceIssues({ frame, context, issues }) {
     }));
   }
 
+  const scalableMainActionGateProfile = computed.scalableMainActionGateProfile || {};
+  if (scalableMainActionGateProfile.status === "fallback-added") {
+    issues.push(makeQaIssue({
+      severity: "info",
+      area: "action-gate",
+      check: "scalable-main-action-fallback-added",
+      id: frame.id,
+      title: computed.name || frame.id,
+      path: "computed.scalableMainActionGateProfile",
+      message: "High-CR frame lacked a scalable damaging main action, so Forge generated a fallback Strike.",
+      recommendation: "Informational: this keeps math and rendered stat block aligned. Replace with a thematic scalable attack graft when available.",
+      details: { scalableMainActionGateProfile },
+    }));
+  } else if (scalableMainActionGateProfile.needsFallback) {
+    issues.push(makeQaIssue({
+      severity: crDelta <= -2 ? "error" : "warning",
+      area: "action-gate",
+      check: "missing-scalable-main-action",
+      id: frame.id,
+      title: computed.name || frame.id,
+      path: "computed.scalableMainActionGateProfile",
+      message: "High-CR frame has no scalable damaging main action.",
+      recommendation: "Add a scalable attack graft, multiattack-equivalent action, or generated fallback Strike.",
+      details: { scalableMainActionGateProfile, crValidation, crDelta },
+    }));
+  }
+
   if (crDelta >= 4) {
     issues.push(makeQaIssue({
       severity: "error",
@@ -359,16 +386,20 @@ function addBalanceIssues({ frame, context, issues }) {
   }
 
   if (dprRatio >= 1.6) {
+    const lowCrSpike = targetCr <= 2;
+    const spikeSeverity = dprRatio >= 2.4 || (!lowCrSpike && dprRatio >= 2) ? "error" : "warning";
     issues.push(makeQaIssue({
-      severity: dprRatio >= 2 ? "error" : "warning",
+      severity: spikeSeverity,
       area: "balance",
-      check: "effective-dpr-high",
+      check: lowCrSpike ? "low-cr-dpr-spike" : "effective-dpr-high",
       id: frame.id,
       title: computed.name || frame.id,
       path: "computed.effectiveProfile.effectiveDpr3Round",
       message: `Effective DPR is ${dprRatio.toFixed(2)}× the CR baseline.`,
-      recommendation: "Reduce attack/recharge/burst pressure, or force Elite/Boss tier for this combination.",
-      details: { dprRatio, baselineDpr: baseline.dpr, effectiveDpr: effectiveProfile.effectiveDpr3Round },
+      recommendation: lowCrSpike
+        ? "Low-CR DPR spike clamp should reduce swing damage; inspect fixed sources if the ratio remains high."
+        : "Reduce attack/recharge/burst pressure, or force Elite/Boss tier for this combination.",
+      details: { dprRatio, baselineDpr: baseline.dpr, effectiveDpr: effectiveProfile.effectiveDpr3Round, targetCr, crDelta },
     }));
   }
 
@@ -535,7 +566,7 @@ function addExportIssues({ frame, context, issues }) {
     }));
   }
 
-  asArray(artifacts.exportReadiness?.blockers).filter((blocker) => blocker.id !== "rendered-stat-block").forEach((blocker) => {
+  asArray(artifacts.exportReadiness?.blockers).filter((blocker) => !["rendered-stat-block", "publish-gate"].includes(blocker.id)).forEach((blocker) => {
     issues.push(makeQaIssue({
       severity: "error",
       area: "forge-readiness",
@@ -631,6 +662,9 @@ function summarizeGeneratedMonster({ frame, context, artifacts, issueCount, info
     lowCrHardControlStatus: computed.lowCrHardControlProfile?.status || "not-run",
     lowCrHardControlCount: computed.lowCrHardControlProfile?.hardControlCount || 0,
     lowCrHardControlFeatures: asArray(computed.lowCrHardControlProfile?.hardControlFeatures).map((feature) => feature.title || feature.id),
+    scalableMainActionStatus: computed.scalableMainActionGateProfile?.status || "not-run",
+    scalableMainActionCount: computed.scalableMainActionGateProfile?.scalableActionCount || 0,
+    scalableMainActionFallback: computed.scalableMainActionGateProfile?.fallbackFeature?.title || null,
     warningCount: asArray(computed.warnings).length,
     issueCount,
     infoCount,
@@ -715,6 +749,9 @@ function buildBatchAnalytics(generated = [], issues = []) {
   const statBlockParserReview = generated.filter((item) => item.statBlockParserStatus === "warning").length;
   const statBlockParserFailed = generated.filter((item) => item.statBlockParserStatus === "error").length;
   const statBlockParserNotRun = generated.filter((item) => !item.statBlockParserStatus || item.statBlockParserStatus === "not-run").length;
+  const scalableMainActionFallbackAdded = generated.filter((item) => item.scalableMainActionStatus === "fallback-added").length;
+  const missingScalableMainAction = generated.filter((item) => item.scalableMainActionStatus === "fallback-required").length;
+  const lowCrDprSpikeWarnings = issues.filter((issue) => issue.area === "balance" && issue.check === "low-cr-dpr-spike").length;
   const crFitApplied = balanceAnalyzed.filter((item) => item.crFitApplied).length;
   const averageCrFitInitialDelta = balanceAnalyzed.length
     ? balanceAnalyzed.reduce((sum, item) => sum + (Number(item.crFitInitialEstimatedCr ?? item.estimatedCr ?? 0) - Number(item.targetCr || 0)), 0) / balanceAnalyzed.length
@@ -752,6 +789,9 @@ function buildBatchAnalytics(generated = [], issues = []) {
     statBlockParserReview,
     statBlockParserFailed,
     statBlockParserNotRun,
+    scalableMainActionFallbackAdded,
+    missingScalableMainAction,
+    lowCrDprSpikeWarnings,
     crFitApplied,
     averageCrFitInitialDelta: Number(averageCrFitInitialDelta.toFixed(2)),
     averageCrFitDeltaReduction: Number(averageCrFitDeltaReduction.toFixed(2)),
@@ -897,6 +937,9 @@ export function buildMonsterBatchQaMarkdown(report = {}) {
   lines.push(`- Stat Block Parser Passed: ${analytics.statBlockParserPassed ?? 0}`);
   lines.push(`- Stat Block Parser Review: ${analytics.statBlockParserReview ?? 0}`);
   lines.push(`- Stat Block Parser Failed: ${analytics.statBlockParserFailed ?? 0}`);
+  lines.push(`- Scalable Main Action Fallback Added: ${analytics.scalableMainActionFallbackAdded ?? 0}`);
+  lines.push(`- Missing Scalable Main Action: ${analytics.missingScalableMainAction ?? 0}`);
+  lines.push(`- Low-CR DPR Spike Warnings: ${analytics.lowCrDprSpikeWarnings ?? 0}`);
   lines.push(`- Low Pressure Mismatch: ${analytics.lowPressureMismatch ?? 0}`);
   lines.push("");
   lines.push("## Most Common Issues");

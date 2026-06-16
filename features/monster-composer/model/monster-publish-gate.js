@@ -1,4 +1,4 @@
-export const MONSTER_PUBLISH_GATE_VERSION = "publish-gate-v1.28-control-aware";
+export const MONSTER_PUBLISH_GATE_VERSION = "publish-gate-v1.29-scalable-action";
 
 function asArray(value) {
   if (!value) return [];
@@ -44,10 +44,23 @@ const ROUTINE_DPR_DIAGNOSTICS = new Set([
 const ROUTINE_CR_FIT_DIAGNOSTICS = new Set([
   "lower-bound-authority-enabled",
   "best-pass-selected",
+  "closed-loop-applied",
   "pass-1-adjusted",
   "pass-2-adjusted",
   "pass-3-adjusted",
   "pass-4-adjusted",
+  "pass-1-control-aware-hardening",
+  "pass-2-control-aware-hardening",
+  "pass-3-control-aware-hardening",
+  "pass-4-control-aware-hardening",
+  "pass-1-low-cr-dpr-spike-clamp",
+  "pass-2-low-cr-dpr-spike-clamp",
+  "pass-3-low-cr-dpr-spike-clamp",
+  "pass-4-low-cr-dpr-spike-clamp",
+  "pass-1-reduced-dpr",
+  "pass-2-reduced-dpr",
+  "pass-3-reduced-dpr",
+  "pass-4-reduced-dpr",
 ]);
 
 const ROUTINE_CR_FIT_WHEN_STABLE = new Set([
@@ -206,16 +219,18 @@ export function buildMonsterPublishGate({
     });
   }
 
-  asArray(exportReadiness?.blockers).forEach((blocker) => {
-    pushUniqueIssue(blockers, {
-      severity: "error",
-      area: "export-readiness",
-      check: blocker.id,
-      path: "exportReadiness",
-      message: `${blocker.label}: ${blocker.detail}`,
-      recommendation: "Fix this export blocker before publishing.",
+  asArray(exportReadiness?.blockers)
+    .filter((blocker) => !["publish-gate", "rendered-stat-block"].includes(blocker.id))
+    .forEach((blocker) => {
+      pushUniqueIssue(blockers, {
+        severity: "error",
+        area: "export-readiness",
+        check: blocker.id,
+        path: "exportReadiness",
+        message: `${blocker.label}: ${blocker.detail}`,
+        recommendation: "Fix this export blocker before publishing.",
+      });
     });
-  });
 
   return {
     version: MONSTER_PUBLISH_GATE_VERSION,
