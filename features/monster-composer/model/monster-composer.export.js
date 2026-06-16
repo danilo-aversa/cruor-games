@@ -1,6 +1,7 @@
 import { ALL_MONSTER_GRAFTS as FEATURES } from "../data/monster-content-pack-feed.js";
 import { MONSTER_FAMILY_PRESETS } from "../data/monster-presets.js";
 import { renderStructuredRulesText } from "./monster-graft-rules.render.js";
+import { normalizeBestiaryFeatureWording, normalizeBestiaryRulesText } from "./monster-bestiary-wording.js";
 import { normalizeMonsterGraftRules, validateMonsterGraftRules } from "./monster-graft-rules.schema.js";
 import { buildMonsterAbilityFromGraft } from "./monster-ability-model.js";
 import { SLOTS } from "../monster-composer.workflow.js";
@@ -167,13 +168,27 @@ function getStatBlockBasics(creatureType, category, role, computed, abilityProfi
   };
 }
 
-function getExportItemText(item, computed) {
+function getRawExportItemText(item, computed) {
   return renderStructuredRulesText(item, computed) || normalizeRulesText(item.mechanics, computed);
+}
+
+function getExportItemText(item, computed) {
+  return normalizeBestiaryRulesText(getRawExportItemText(item, computed));
+}
+
+function getExportItem(item, computed) {
+  return normalizeBestiaryFeatureWording({
+    title: item.title,
+    text: getRawExportItemText(item, computed),
+  });
 }
 
 function exportItems(items, fallback, computed) {
   return (items.length ? items : fallback)
-    .map((item) => `${item.title}. ${getExportItemText(item, computed)}`)
+    .map((item) => {
+      const normalized = getExportItem(item, computed);
+      return `${normalized.title}. ${normalized.text}`.trim();
+    })
     .join(String.fromCharCode(10));
 }
 
@@ -517,10 +532,7 @@ export function buildExportRunSheet({
 }
 
 function normalizeSectionItems(items, computed) {
-  return items.map((item) => ({
-    title: item.title,
-    text: getExportItemText(item, computed),
-  }));
+  return items.map((item) => getExportItem(item, computed));
 }
 
 function buildNormalizedSections({
@@ -756,8 +768,7 @@ export function buildExportText({
 function buildStatBlockItems(items, computed) {
   return items.map((item) => ({
     id: item.id || item.title,
-    title: item.title,
-    text: getExportItemText(item, computed),
+    ...getExportItem(item, computed),
   }));
 }
 
@@ -954,7 +965,7 @@ export function buildExportJson({
         statBlockStyle: computed.ruleset?.label || "D&D 5E 2024",
         ruleset: computed.ruleset || null,
         statBlockMode: normalizeStatBlockMode(statBlockMode),
-        normalization: "rules-text-normalized-v1",
+        normalization: "rules-text-normalized-v1.32-bestiary-wording",
         activePreset: activePreset
           ? {
               id: activePreset.id,

@@ -1,4 +1,6 @@
-export const MONSTER_STAT_BLOCK_PARSER_VERSION = "rendered-statblock-parser-v1.31";
+import { getBestiaryWordingIssues } from "./monster-bestiary-wording.js";
+
+export const MONSTER_STAT_BLOCK_PARSER_VERSION = "rendered-statblock-parser-v1.32";
 
 const DND_CONDITIONS = Object.freeze([
   "Blinded",
@@ -403,6 +405,18 @@ function checkConditionText({ item, ability, issues }) {
   });
 }
 
+function checkBestiaryWording({ item, issues }) {
+  getBestiaryWordingIssues({ title: item.title, text: item.text }).forEach((issue) => {
+    pushIssue(issues, {
+      severity: "warning",
+      check: issue.check,
+      path: `sections.${item.sectionId}.${item.id}`,
+      message: `${item.title}: ${issue.message}`,
+      recommendation: issue.recommendation,
+    });
+  });
+}
+
 function checkUsageText({ item, ability, issues }) {
   const usageType = cleanString(ability?.usage?.type).toLowerCase();
   const text = `${item.title}. ${item.text}`;
@@ -471,6 +485,8 @@ export function parseMonsterRenderedStatBlock({
         recommendation: "Resolve all rules-text tokens before publishing.",
       });
     }
+
+    checkBestiaryWording({ item, issues });
 
     const feature = findFeatureForItem(item, featureMap);
     const ability = findAbilityForItem(item, feature, abilityMap);

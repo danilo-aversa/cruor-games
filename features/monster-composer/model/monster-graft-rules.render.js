@@ -480,15 +480,66 @@ function formatAreaSize(areaLike = {}) {
   return `${size}-${unit}`;
 }
 
+function singularTargetNoun(value) {
+  const normalized = cleanString(value).toLowerCase();
+  if (normalized === "creatures") return "creature";
+  if (normalized === "enemies") return "enemy";
+  if (normalized === "allies") return "ally";
+  return normalized.replace(/s$/, "") || "creature";
+}
+
+function formatTargetingTargets(targeting) {
+  const targets = cleanString(targeting?.targets) || "creatures";
+  if (/^(?:each|any|one|all)\b/i.test(targets)) return targets;
+  if (/^(?:creatures|enemies|allies)$/i.test(targets)) return `each ${singularTargetNoun(targets)}`;
+  return targets;
+}
+
+function formatTargetingOriginPhrase(targeting, normalizedShape) {
+  const customOrigin = cleanString(targeting?.originText);
+  if (customOrigin) return customOrigin;
+
+  const origin = cleanString(targeting?.origin);
+  const key = origin || "self";
+  const shape = cleanString(normalizedShape).toLowerCase();
+  const isDirectional = shape === "cone" || shape === "line" || shape === "emanation";
+
+  if (key === "custom") return "originating from the creature";
+
+  if (isDirectional) {
+    if (key === "target") return "originating from the target";
+    if (key === "point") return "originating from a point the monster can see";
+    if (key === "corpse") return "originating from the corpse";
+    if (key === "location") return "originating in the location";
+    return "originating from the creature";
+  }
+
+  if (key === "target") return "centered on the target";
+  if (key === "point") return "centered on a point the monster can see";
+  if (key === "corpse") return "centered on the corpse";
+  if (key === "location") return "centered in the location";
+  return "centered on the creature";
+}
+
+function normalizeTargetingShape(targeting) {
+  const rawShape = cleanString(targeting?.shape).toLowerCase();
+  const origin = cleanString(targeting?.origin);
+  if (rawShape === "radius") {
+    return origin === "self" || !origin ? "Emanation" : "Sphere";
+  }
+  return rawShape && rawShape !== "custom" ? titleCase(rawShape) : "area";
+}
+
 function formatTargeting(targeting) {
   if (!targeting) return "";
   if (targeting.text) return targeting.text;
   if (targeting.type === "area") {
     const size = formatAreaSize(targeting);
-    const shape = targeting.shape && targeting.shape !== "custom" ? titleCase(targeting.shape) : "area";
-    const targets = targeting.targets || "creatures";
-    if (size) return `${targets} in a ${size} ${shape}`.replace(/\s+/g, " ").trim();
-    return `${targets} in the affected ${shape}`.replace(/\s+/g, " ").trim();
+    const shape = normalizeTargetingShape(targeting);
+    const targets = formatTargetingTargets(targeting);
+    const origin = formatTargetingOriginPhrase(targeting, shape);
+    if (size) return `${targets} in a ${size} ${shape} ${origin}`.replace(/\s+/g, " ").trim();
+    return `${targets} in the affected ${shape} ${origin}`.replace(/\s+/g, " ").trim();
   }
   return targeting.targets || "";
 }
@@ -501,6 +552,8 @@ function areaEffectToTargeting(areaEffect) {
     size: areaEffect.size,
     unit: areaEffect.unit || "ft",
     targets: areaEffect.targets || "creatures",
+    origin: areaEffect.origin || "self",
+    originText: areaEffect.originText,
     text: cleanString(areaEffect.targetingText),
   };
 }

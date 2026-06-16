@@ -304,6 +304,16 @@ const MONSTER_TARGETING_SHAPE_OPTIONS = [
   ["emanation", "Emanation"],
 ];
 
+const MONSTER_TARGETING_ORIGIN_OPTIONS = [
+  ["", "Default Fallback"],
+  ["self", "Self / Creature"],
+  ["target", "Target"],
+  ["point", "Point the Monster Can See"],
+  ["corpse", "Corpse / Body"],
+  ["location", "Location"],
+  ["custom", "Custom Text"],
+];
+
 const MONSTER_MULTIATTACK_MODE_OPTIONS = [
   ["fixed", "Fixed Attacks"],
   ["choice", "Attack Choice"],
@@ -592,7 +602,9 @@ const FIELD_HELP = {
   targetingType: "Who or what the ability affects: the monster itself, a single target, an area, or custom targeting text.",
   targetingShape: "Area geometry used in 2024-style rules text, such as Radius, Cone, Sphere, Cube, Line, Cylinder, or Emanation.",
   targetingSize: "Numeric size of the target area or reach expression, usually in feet.",
-  targetingTargets: "Target phrase printed after the save or effect, such as creatures in the area or each creature in the radius.",
+  targetingTargets: "Target noun or phrase printed after the save or effect. Use simple nouns like creatures, enemies, allies, or an already quantified phrase like each creature.",
+  targetingOrigin: "Optional area origin metadata. Use this when an area needs a clear source, such as an Emanation originating from the creature, a Sphere centered on a corpse, or a Cube at a point.",
+  targetingOriginText: "Optional exact origin phrase. Use only when the origin selector is not precise enough, such as centered on the corpse or originating from the ruptured body.",
   targetingText: "Custom targeting phrase used instead of generated targeting text.",
   areaEffect: "Structured area timing for auras, emanations, zones, hazards, lair effects, and regional effects.",
   areaEffectType: "What kind of area effect this is: aura, emanation, hazard, zone, regional effect, or custom.",
@@ -2934,6 +2946,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
       setRulesField(["targeting", "shape"], monsterRules.targeting?.shape || "radius");
       setRulesField(["targeting", "unit"], monsterRules.targeting?.unit || "ft");
       setRulesField(["targeting", "targets"], monsterRules.targeting?.targets || "creatures");
+      setRulesField(["targeting", "origin"], monsterRules.targeting?.origin || "");
       return;
     }
     if (blockId === "areaEffect") {
@@ -3102,7 +3115,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
   const areaEffect = monsterRules.areaEffect || {};
   const areaEffectEnabled = Boolean(areaEffect?.enabled);
   const hasAreaEffectDetails = Boolean(areaEffectEnabled || areaEffect?.type || areaEffect?.shape || areaEffect?.size || areaEffect?.timing || areaEffect?.targets || areaEffect?.text);
-  const hasTargetingDetails = Boolean(targeting?.text || targeting?.shape || targeting?.size || targeting?.targets || (targeting?.type && targeting.type !== "self"));
+  const hasTargetingDetails = Boolean(targeting?.text || targeting?.shape || targeting?.size || targeting?.targets || targeting?.origin || targeting?.originText || (targeting?.type && targeting.type !== "self"));
   const multiattackEnabled = Boolean(monsterRules.multiattack?.enabled);
   const multiattackAttacks = asArray(monsterRules.multiattack?.attacks);
   const visibleMultiattackAttacks = multiattackEnabled ? (multiattackAttacks.length ? multiattackAttacks : [{ ref: "primary", label: "Primary", count: monsterRules.multiattack?.count || 2 }]) : [];
@@ -3809,6 +3822,12 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                       </FormRow>
                       <FormRow label="Unit" icon="fa-ruler" hint="Usually ft for 5E stat block targeting.">
                         <TextInput value={targeting.unit || "ft"} onChange={(value) => setRulesField(["targeting", "unit"], value)} placeholder="ft" />
+                      </FormRow>
+                      <FormRow label="Origin" icon="fa-location-crosshairs" hint={FIELD_HELP.targetingOrigin}>
+                        <SelectInput options={MONSTER_TARGETING_ORIGIN_OPTIONS} value={targeting.origin || ""} onChange={(value) => setRulesField(["targeting", "origin"], value || undefined)} />
+                      </FormRow>
+                      <FormRow label="Origin Text" icon="fa-quote-left" hint={FIELD_HELP.targetingOriginText}>
+                        <TextInput value={targeting.originText} onChange={(value) => setRulesField(["targeting", "originText"], value)} placeholder="centered on the corpse" />
                       </FormRow>
                     </>
                   ) : null}
