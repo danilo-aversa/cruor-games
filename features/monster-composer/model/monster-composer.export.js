@@ -24,7 +24,7 @@ import {
 
 const FEATURE_SCHEMA_VERSION = "monster-graft-v1.0";
 const EXPORT_SCHEMA_VERSION = "monster-crucible-export-v1.0";
-const DATA_MODEL_MIGRATION_STAGE = "rules-v1.13-ability-model";
+const DATA_MODEL_MIGRATION_STAGE = "rules-v1.14-effective-hp-conditions";
 
 const STAT_BLOCK_SECTION_LABELS = {
   trait: "Traits",

@@ -246,6 +246,7 @@ export function BalanceWorkbench({
                 <CompiledMeta label="Abilities" value={`${computed.abilityModel?.total ?? 0} / ${computed.abilityModel?.damaging ?? 0} dmg`} />
                 <CompiledMeta label="AC" value={`${computed.ac} / ${computed.baseline.ac}`} />
                 <CompiledMeta label="HP" value={`${computed.hp} / ${computed.baseline.hp}`} />
+                <CompiledMeta label="Eff. HP" value={computed.effectiveProfile?.effectiveHp ?? computed.hp} />
                 <CompiledMeta
                   label="DPR"
                   value={`${computed.effectiveProfile.effectiveDpr3Round} / ${computed.baseline.dpr}`}
@@ -256,6 +257,7 @@ export function BalanceWorkbench({
                 />
                 <CompiledMeta label="DC" value={`${computed.dc} / ${computed.baseline.saveDc}`} />
                 <CompiledMeta label="Burst" value={computed.effectiveProfile.burstDpr} />
+                <CompiledMeta label="Control" value={`+${computed.effectiveProfile?.conditionProfile?.crAdjustment ?? 0} CR`} />
                 <CompiledMeta
                   label="CR Split"
                   value={`${computed.crValidation?.defensive?.cr ?? "—"} / ${computed.crValidation?.offensive?.cr ?? "—"}`}

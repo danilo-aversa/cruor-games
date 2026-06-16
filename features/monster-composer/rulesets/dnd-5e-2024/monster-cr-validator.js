@@ -1,6 +1,6 @@
 import { getBestiaryBaselineProfile } from "../../model/monster-bestiary-baselines.js";
 
-export const MONSTER_CR_VALIDATOR_VERSION = "offensive-defensive-cr-v0.1";
+export const MONSTER_CR_VALIDATOR_VERSION = "offensive-defensive-cr-v0.2-effective-hp-conditions";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -67,7 +67,8 @@ export function buildMonsterCrValidation({
   const attackAdjustment = adjustmentByTwoPointDelta(attackBonus, offensiveBaseline.attackBonus);
   const dcAdjustment = adjustmentByTwoPointDelta(saveDc, offensiveBaseline.saveDc);
   const accuracyAdjustment = Math.max(attackAdjustment, dcAdjustment);
-  const offensiveCr = clamp(offensiveBase.cr + accuracyAdjustment, 0, 30);
+  const conditionAdjustment = clamp(round(effectiveProfile.conditionProfile?.crAdjustment || 0), 0, 4);
+  const offensiveCr = clamp(offensiveBase.cr + accuracyAdjustment + conditionAdjustment, 0, 30);
 
   const estimatedCr = clamp(round((defensiveCr + offensiveCr) / 2), 0, 30);
   const targetDelta = estimatedCr - Number(targetCr || 0);
@@ -117,6 +118,10 @@ export function buildMonsterCrValidation({
     );
   }
 
+  const effectiveConditionPressure = Number(effectiveProfile.conditionProfile?.controlPressure || 0);
+  const effectiveDefenseIssues = effectiveProfile.defensiveProfile?.issues || [];
+  const effectiveConditionIssues = effectiveProfile.conditionProfile?.issues || [];
+
   if (mechanicsSummary?.majorConditionCount >= 2 && dpr > getBestiaryBaselineProfile(targetCr, { legendaryLike }).dpr) {
     issues.push(
       buildIssue(
@@ -127,6 +132,39 @@ export function buildMonsterCrValidation({
       ),
     );
   }
+
+  if (conditionAdjustment >= 2) {
+    issues.push(
+      buildIssue(
+        "high",
+        "condition-cr-adjustment",
+        "Hard control increases Offensive CR beyond raw DPR.",
+        `Condition pressure ${effectiveConditionPressure.toFixed(1)}; Offensive CR adjustment +${conditionAdjustment}.`,
+      ),
+    );
+  }
+
+  effectiveDefenseIssues.forEach((issue) => {
+    issues.push(
+      buildIssue(
+        issue.severity || "warning",
+        `defense-${issue.code || "effective-defense"}`,
+        issue.message || "Effective defensive features change Defensive CR.",
+        issue.detail || "",
+      ),
+    );
+  });
+
+  effectiveConditionIssues.forEach((issue) => {
+    issues.push(
+      buildIssue(
+        issue.severity || "warning",
+        `condition-${issue.code || "effective-condition"}`,
+        issue.message || "Effective conditions change encounter pressure.",
+        issue.detail || "",
+      ),
+    );
+  });
 
   return {
     version: MONSTER_CR_VALIDATOR_VERSION,
@@ -155,6 +193,8 @@ export function buildMonsterCrValidation({
       expectedSaveDcAtBaseCr: offensiveBaseline.saveDc,
       dcAdjustment,
       accuracyAdjustment,
+      conditionAdjustment,
+      conditionPressure: Number(effectiveConditionPressure.toFixed(2)),
       cr: offensiveCr,
       ratioToTargetBaseline: ratio(dpr, getBestiaryBaselineProfile(targetCr, { legendaryLike }).dpr),
     },

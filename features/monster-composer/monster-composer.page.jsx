@@ -1442,27 +1442,17 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
         monsterTier,
       },
     });
-    const effectiveProfile = {
-      effectiveAc: ac + Math.floor((statMods.mobility || 0) / 4),
-      effectiveHp: Math.round(hp * (1 + Math.max(0, statMods.fairness || 0) * 0.015)),
-      effectiveAttackBonus: attack + (tempoProfile.id === "ambusher" ? 1 : 0),
-      effectiveSaveDc: dc,
-      printedDpr: dpr,
-      effectiveDpr3Round: dprProfile.effectiveDpr3Round,
-      burstDpr: dprProfile.burstDpr,
-      sustainedDpr: dprProfile.sustainedDpr,
-      round1Dpr: dprProfile.rounds.round1,
-      round2Dpr: dprProfile.rounds.round2,
-      round3Dpr: dprProfile.rounds.round3,
-      tempoFactor: 1 + tempoProfile.pressureMod * 0.05,
-      defenseFactor:
-        1 + Math.max(0, statMods.hp || 0) / Math.max(1, hp) + Math.max(0, statMods.ac || 0) * 0.04,
-    };
-    effectiveProfile.combatPowerEstimate = Math.round(
-      effectiveProfile.effectiveHp *
-        effectiveProfile.effectiveDpr3Round *
-        ((effectiveProfile.effectiveAc + effectiveProfile.effectiveAttackBonus - 2) / 13)
-    );
+    const effectiveProfile = activeRuleset.buildEffectiveProfile({
+      printedStats,
+      dprProfile,
+      abilityModel,
+      statMods,
+      tempoProfile,
+      monsterTier,
+      mechanicsSummary,
+      typeId,
+      selectedFeatures,
+    });
     const crValidation = activeRuleset.validateChallenge({
       targetCr,
       printedStats,
