@@ -78,7 +78,7 @@ function IssueGroupList({ groups = [] }) {
 
 function OutlierTable({ generated = [] }) {
   const outliers = asArray(generated)
-    .filter((item) => item.balanceStatus === "analyzed" && (Number(item.crDelta || 0) >= 2 || Number(item.issueCount || 0) > 0))
+    .filter((item) => item.balanceStatus === "analyzed" && (Number(item.crDelta || 0) >= 2 || Number(item.issueCount || 0) > 0 || item.publishStatus === "blocked" || item.publishStatus === "review" || item.statBlockParserStatus === "error" || item.statBlockParserStatus === "warning"))
     .slice(0, 24);
 
   if (!outliers.length) {
@@ -115,8 +115,8 @@ function OutlierTable({ generated = [] }) {
               <td>{item.targetCr} → {item.estimatedCr} <span>Δ {item.crDelta}</span></td>
               <td>{item.dpr || "—"} / {item.baselineDpr || "—"}<span>Burst {item.burstDpr || 0}</span></td>
               <td>{item.pressureLabel || "—"}<span>{item.pressure ?? "—"}</span></td>
-              <td>{item.forgeStatus || "—"}<span>{item.balanceStatus || "—"}</span></td>
-              <td>{item.issueCount || 0}</td>
+              <td>{item.publishStatus || item.forgeStatus || "—"}<span>{item.balanceStatus || "—"}</span></td>
+              <td>{item.issueCount || 0}<span>{item.infoCount || 0} info</span></td>
             </tr>
           ))}
         </tbody>
@@ -352,11 +352,17 @@ export function MonsterBatchQaModal({ isOpen, onClose }) {
             <SummaryTile icon="fa-list-check" label="Issues" value={formatNumber(summary.total)} tone={summary.total ? "warning" : "clean"} />
             <SummaryTile icon="fa-circle-xmark" label="Errors" value={formatNumber(summary.error)} tone={summary.error ? "error" : "clean"} />
             <SummaryTile icon="fa-triangle-exclamation" label="Warnings" value={formatNumber(summary.warning)} tone={summary.warning ? "warning" : "clean"} />
+            <SummaryTile icon="fa-circle-info" label="Info" value={formatNumber(summary.info)} tone="default" />
+            <SummaryTile icon="fa-shield-heart" label="Publish Ready" value={formatNumber(analytics.publishReady)} tone={analytics.publishBlocked ? "warning" : "clean"} />
+            <SummaryTile icon="fa-lock" label="Publish Blocked" value={formatNumber(analytics.publishBlocked)} tone={analytics.publishBlocked ? "error" : "clean"} />
+            <SummaryTile icon="fa-scroll" label="Parser Passed" value={formatNumber(analytics.statBlockParserPassed)} tone={analytics.statBlockParserFailed ? "warning" : "clean"} />
+            <SummaryTile icon="fa-triangle-exclamation" label="Parser Review" value={formatNumber(analytics.statBlockParserReview)} tone={analytics.statBlockParserReview ? "warning" : "clean"} />
             <SummaryTile icon="fa-shield-check" label="Complete Forge" value={formatNumber(analytics.completeGenerated)} tone={analytics.forgeIncomplete ? "warning" : "clean"} />
             <SummaryTile icon="fa-hammer" label="Forge Gaps" value={formatNumber(analytics.forgeIncomplete)} tone={analytics.forgeIncomplete ? "error" : "clean"} />
             <SummaryTile icon="fa-scale-balanced" label="Balance Runs" value={formatNumber(analytics.balanceAnalyzed)} tone="default" />
             <SummaryTile icon="fa-arrow-trend-up" label="Avg CR Δ" value={analytics.averageCrDelta ?? "—"} tone={Number(analytics.averageCrDelta || 0) > 1 ? "warning" : "default"} />
             <SummaryTile icon="fa-fire-flame-curved" label="CR +2" value={formatNumber(analytics.aboveTargetBy2)} tone={analytics.aboveTargetBy2 ? "warning" : "clean"} />
+            <SummaryTile icon="fa-arrow-trend-down" label="CR -2" value={formatNumber(analytics.belowTargetBy2)} tone={analytics.belowTargetBy2 ? "warning" : "clean"} />
             <SummaryTile icon="fa-gauge-high" label="Pressure Mismatch" value={formatNumber(analytics.lowPressureMismatch)} tone={analytics.lowPressureMismatch ? "error" : "clean"} />
           </div>
           <IssueGroupList groups={report?.groupedIssues || []} />

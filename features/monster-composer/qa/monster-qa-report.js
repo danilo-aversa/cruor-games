@@ -1,4 +1,4 @@
-export const MONSTER_QA_REPORT_VERSION = "monster-qa-v0.1";
+export const MONSTER_QA_REPORT_VERSION = "monster-qa-v0.2-publish-gate";
 
 export const QA_SEVERITIES = Object.freeze(["error", "warning", "info"]);
 

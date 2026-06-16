@@ -27,9 +27,11 @@ import {
   buildExportReadiness,
   buildExportRunSheet,
   buildExportText,
+  buildRenderableStatBlock,
   groupFeaturesBySection,
 } from "../model/monster-composer.export.js";
 import { buildRunModeSheet } from "../model/monster-composer.run.js";
+import { parseMonsterRenderedStatBlock } from "../model/monster-statblock-parser.js";
 import { getCompatibilityStatus } from "../model/monster-composer.compatibility.js";
 import { evaluateMonsterFrameFit, isMonsterFrameFitAllowed } from "../model/monster-frame-fit.js";
 import { hasSelectedSlot } from "../model/monster-composer.selection.js";
@@ -39,6 +41,8 @@ import {
 } from "../model/monster-bestiary-baselines.js";
 import { validateMonsterGraftRules } from "../model/monster-graft-rules.schema.js";
 import { buildMonsterAbilitiesFromFeatures } from "../model/monster-ability-model.js";
+import { buildMonsterFramePowerProfile } from "../model/monster-frame-power.js";
+import { buildClosedLoopCrFit } from "../model/monster-cr-fitting.js";
 import {
   DEFAULT_MONSTER_RULESET_ID,
   getMonsterRuleset,
@@ -254,12 +258,20 @@ export function buildMonsterFrameContext({
   const monsterTier = getFrameValue(MONSTER_TIERS, monsterTierId);
   const tempoProfile = getFrameValue(TEMPO_PROFILES, tempoProfileId, 1);
   const prof = getProfForCr(targetCr);
-  const baseline = getMonsterComposerBaselineProfile(targetCr, monsterTier.id, MONSTER_TIERS);
-  const baseHp = Math.round(baseline.hp * role.hpMult * tacticalRole.hpMult);
-  const baseDpr = Math.round(baseline.dpr * role.dprMult * danger.dprMod * tacticalRole.dprMult * tempoProfile.dprMult);
-  const baseAc = baseline.ac + monsterTier.acMod + tacticalRole.acMod;
-  const baseAttack = baseline.attackBonus + tacticalRole.attackMod + tempoProfile.attackMod;
-  const baseDc = baseline.saveDc + tacticalRole.dcMod;
+  const framePowerProfile = buildMonsterFramePowerProfile({
+    role,
+    tacticalRole,
+    monsterTier,
+    tempoProfile,
+    danger,
+    targetCr,
+  });
+  const baseline = getMonsterComposerBaselineProfile(targetCr, framePowerProfile.baselineTierId, MONSTER_TIERS);
+  const baseHp = Math.round(baseline.hp * framePowerProfile.hpMult);
+  const baseDpr = Math.round(baseline.dpr * framePowerProfile.dprMult);
+  const baseAc = baseline.ac + framePowerProfile.acMod;
+  const baseAttack = baseline.attackBonus + framePowerProfile.attackMod;
+  const baseDc = baseline.saveDc + framePowerProfile.dcMod;
   const statMods = selectedFeatures.reduce(
     (acc, feature) => {
       Object.entries(feature.stats || {}).forEach(([key, value]) => {
@@ -278,8 +290,8 @@ export function buildMonsterFrameContext({
   const counterplayProfiles = selectedFeatures.map((feature) => getFeatureCounterplayProfile(feature));
   const cost = selectedFeatures.reduce((sum, feature) => sum + feature.cost, 0);
   const rawComplexity = selectedFeatures.reduce((sum, feature) => sum + feature.complexity, 0);
-  const budget = Math.max(1, role.budget + danger.budgetOffset + tacticalRole.budgetMod + monsterTier.budgetOffset + tempoProfile.budgetMod);
-  const complexityCap = Math.max(1, role.complexityCap + tacticalRole.complexityMod + monsterTier.complexityCapOffset + tempoProfile.complexityMod);
+  const budget = Math.max(1, framePowerProfile.budget);
+  const complexityCap = Math.max(1, framePowerProfile.complexityCap);
   let pressureProfile = buildPressureProfile({ cost, monsterTier, tempoProfile, statMods, mechanicsSummary, budget });
   const complexityProfile = buildComplexityProfile({ complexity: rawComplexity, mechanicsSummary, featureMechanics, limit: complexityCap });
   const complexity = complexityProfile.score;
@@ -291,62 +303,39 @@ export function buildMonsterFrameContext({
   const activeRuleset = getMonsterRuleset(rulesetId);
   const activeRulesetOption = getMonsterRulesetOption(rulesetId);
   const abilityModel = buildMonsterAbilitiesFromFeatures(selectedFeatures);
-  const dndRules = activeRuleset.buildRulesProfile({
+  const crFit = buildClosedLoopCrFit({
+    activeRuleset,
     targetCr,
     typeId,
     category,
     roleId,
     selectedFeatures,
     baseline,
-    targetHp: targetHpValue,
-    targetAc: targetAcValue,
-    targetDpr: targetDprValue,
-    targetAttackBonus: targetAttackValue,
-    targetSaveDc: targetDcValue,
-    tempoProfile,
-  });
-  const hp = dndRules.printedStats.hp;
-  const ac = dndRules.printedStats.ac;
-  const dpr = dndRules.printedStats.dpr;
-  const dc = dndRules.printedStats.saveDc;
-  const attack = dndRules.printedStats.attackBonus;
-  const printedStats = {
-    ...dndRules.printedStats,
-    initiativeMod: tempoProfile.initiativeMod,
-    speed: creatureType.defaults.speed,
-  };
-  const dprProfile = activeRuleset.simulateDpr({
-    selectedFeatures,
-    abilities: abilityModel.abilities,
-    targetDpr: dpr,
-    computed: {
-      dpr,
-      attack,
-      dc,
-      targetCr,
-      rulesProfile: dndRules.rulesProfile,
-      tempoProfile,
-      monsterTier,
-    },
-  });
-  const effectiveProfile = activeRuleset.buildEffectiveProfile({
-    printedStats,
-    dprProfile,
     abilityModel,
     statMods,
     tempoProfile,
     monsterTier,
     mechanicsSummary,
-    typeId,
-    selectedFeatures,
+    speed: creatureType.defaults.speed,
+    targetHp: targetHpValue,
+    targetAc: targetAcValue,
+    targetDpr: targetDprValue,
+    targetAttackBonus: targetAttackValue,
+    targetSaveDc: targetDcValue,
+    maxPasses: 4,
+    tolerance: 1,
   });
-  const crValidation = activeRuleset.validateChallenge({
-    targetCr,
-    printedStats,
-    effectiveProfile,
-    monsterTier,
-    mechanicsSummary,
-  });
+  const dndRules = crFit.dndRules;
+  const printedStats = crFit.printedStats;
+  const hp = printedStats.hp;
+  const ac = printedStats.ac;
+  const dpr = printedStats.dpr;
+  const dc = printedStats.saveDc;
+  const attack = printedStats.attackBonus;
+  const dprProfile = crFit.dprProfile;
+  const effectiveProfile = crFit.effectiveProfile;
+  const crValidation = crFit.crValidation;
+  const crFitProfile = crFit.fitProfile;
   pressureProfile = applyPressureValidationFloor({
     pressureProfile,
     budget,
@@ -364,6 +353,14 @@ export function buildMonsterFrameContext({
   const rulesContext = { typeId, creatureType: creatureType.label, category, categoryNoun: String(category || "monster").toLowerCase() };
   const baselinePower = Math.round(baseline.hp * baseline.dpr * ((baseline.ac + baseline.attackBonus - 2) / 13));
   const warnings = [];
+  framePowerProfile.diagnostics.forEach((diagnostic) => {
+    warnings.push(`Frame Power: ${diagnostic.message}${diagnostic.detail ? ` ${diagnostic.detail}` : ""}`);
+  });
+  crFitProfile.diagnostics
+    .filter((diagnostic) => diagnostic.severity !== "info")
+    .forEach((diagnostic) => {
+      warnings.push(`CR Fitting: ${diagnostic.message}${diagnostic.detail ? ` ${diagnostic.detail}` : ""}`);
+    });
   if (pressure > budget) warnings.push("Threat budget is above target.");
   if (complexity > complexityCap) warnings.push("Table complexity is high.");
   if (!hasSelectedSlot(selected, "weakness")) warnings.push("No Weakness / Tell selected.");
@@ -406,6 +403,8 @@ export function buildMonsterFrameContext({
     effectiveProfile,
     profileDeltas,
     bestiaryBaselineAudit: { issues: [] },
+    framePowerProfile,
+    crFitProfile,
     dprProfile,
     crValidation,
     pressureProfile,
@@ -642,9 +641,20 @@ export function buildExportArtifacts(context) {
     activePreset: context.preset,
     xp: context.xp,
   };
+  const exportText = buildExportText(args);
+  const exportJson = buildExportJson(args);
+  const statBlock = buildRenderableStatBlock(args);
+  const statBlockParse = parseMonsterRenderedStatBlock({
+    exportText,
+    statBlock,
+    selectedFeatures: context.selectedFeatures,
+    computed: context.computed,
+  });
   return {
-    exportText: buildExportText(args),
-    exportJson: buildExportJson(args),
+    exportText,
+    exportJson,
+    statBlock,
+    statBlockParse,
     exportReadiness: buildExportReadiness({
       computed: context.computed,
       selected: context.selected,
@@ -654,6 +664,7 @@ export function buildExportArtifacts(context) {
       weaknessFeatures: context.weaknessFeatures,
       deathEffects: context.deathEffects,
       lairActions: context.lairActions,
+      statBlockParse,
     }),
     exportRunSheet: buildExportRunSheet({
       computed: context.computed,

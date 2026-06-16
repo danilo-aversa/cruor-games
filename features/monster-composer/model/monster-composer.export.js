@@ -7,6 +7,8 @@ import { SLOTS } from "../monster-composer.workflow.js";
 import { asArray, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
 import { getFeatureCompatibility, hasFeatureCompatibilityOverride } from "./monster-composer.compatibility.js";
 import { getFeatureFrameFit } from "./monster-frame-fit.js";
+import { buildMonsterPublishGate } from "./monster-publish-gate.js";
+import { parseMonsterRenderedStatBlock } from "./monster-statblock-parser.js";
 import {
   COMPLEXITY_LABELS,
   PRESSURE_LABELS,
@@ -334,7 +336,18 @@ export function buildExportReadiness({
   weaknessFeatures,
   deathEffects,
   lairActions,
+  statBlockParse = null,
 }) {
+  const publishGate = computed?.publishGate || buildMonsterPublishGate({
+    computed,
+    selected,
+    selectedFeatures,
+    actions,
+    weaknessFeatures,
+    statBlockParse,
+  });
+  const publishReviewCount = Number(publishGate?.counts?.reviews || 0);
+  const publishBlockerCount = Number(publishGate?.counts?.blockers || 0);
   const checks = [
     {
       id: "core-anatomy",
@@ -377,13 +390,39 @@ export function buildExportReadiness({
       severity: "review",
     },
     {
-      id: "warnings",
-      label: "Warnings",
-      detail: computed.warnings.length
-        ? `${computed.warnings.length} issue${computed.warnings.length === 1 ? "" : "s"}`
-        : "No active warnings",
-      ready: computed.warnings.length === 0,
+      id: "publish-gate",
+      label: "Publish Gate",
+      detail: publishBlockerCount
+        ? `${publishBlockerCount} blocker${publishBlockerCount === 1 ? "" : "s"}`
+        : publishReviewCount
+          ? `${publishReviewCount} review item${publishReviewCount === 1 ? "" : "s"}`
+          : "No publish blockers",
+      ready: publishBlockerCount === 0,
+      severity: "required",
+    },
+    {
+      id: "reviews",
+      label: "Review Notes",
+      detail: publishReviewCount
+        ? `${publishReviewCount} review item${publishReviewCount === 1 ? "" : "s"}`
+        : computed.warnings.length
+          ? `${computed.warnings.length} advisory note${computed.warnings.length === 1 ? "" : "s"}`
+          : "No active review notes",
+      ready: publishReviewCount === 0,
       severity: "review",
+    },
+    {
+      id: "rendered-stat-block",
+      label: "Rendered Stat Block",
+      detail: statBlockParse
+        ? statBlockParse.summary.error
+          ? `${statBlockParse.summary.error} parser blocker${statBlockParse.summary.error === 1 ? "" : "s"}`
+          : statBlockParse.summary.warning
+            ? `${statBlockParse.summary.warning} parser review${statBlockParse.summary.warning === 1 ? "" : "s"}`
+            : "Parser clean"
+        : "Parser not run",
+      ready: !statBlockParse || statBlockParse.summary.error === 0,
+      severity: "required",
     },
     {
       id: "handoff-depth",
@@ -405,13 +444,14 @@ export function buildExportReadiness({
   ];
   const blockers = checks.filter((check) => check.severity === "required" && !check.ready);
   const reviews = checks.filter((check) => check.severity === "review" && !check.ready);
-  const ready = blockers.length === 0 && reviews.length === 0;
+  const ready = blockers.length === 0;
   return {
     checks,
     blockers,
     reviews,
     ready,
-    label: blockers.length ? "Blocked" : reviews.length ? "Review Recommended" : "Ready",
+    publishGate,
+    label: blockers.length ? "Blocked" : reviews.length ? "Ready With Review" : "Ready",
     percent: clamp(
       Math.round((checks.filter((check) => check.ready).length / Math.max(1, checks.length)) * 100),
       0,

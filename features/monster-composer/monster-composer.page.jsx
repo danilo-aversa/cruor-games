@@ -77,6 +77,7 @@ import {
   normalizeMonsterReferences,
   normalizeRulesText,
 } from "./model/monster-composer.export.js";
+import { parseMonsterRenderedStatBlock } from "./model/monster-statblock-parser.js";
 import { buildRunModeSheet } from "./model/monster-composer.run.js";
 import { buildGuidedFlow } from "./model/monster-composer.start-flow.js";
 import {
@@ -87,6 +88,9 @@ import {
 import { evaluateMonsterFrameFit, isMonsterFrameFitAllowed } from "./model/monster-frame-fit.js";
 import { validateMonsterGraftRules } from "./model/monster-graft-rules.schema.js";
 import { buildMonsterAbilitiesFromFeatures } from "./model/monster-ability-model.js";
+import { buildMonsterFramePowerProfile } from "./model/monster-frame-power.js";
+import { buildClosedLoopCrFit } from "./model/monster-cr-fitting.js";
+import { shouldSurfaceDiagnosticAsWarning } from "./model/monster-publish-gate.js";
 import {
   DEFAULT_MONSTER_RULESET_ID,
   getMonsterRuleset,
@@ -1308,18 +1312,17 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
 
   useEffect(() => () => clearStageTransitionTimers(), []);
 
-  const defaultPressureBudget =
-    role.budget +
-    danger.budgetOffset +
-    monsterTier.budgetOffset +
-    tacticalRole.budgetMod +
-    tempoProfile.budgetMod +
-    Math.max(0, partySize - 4);
-  const defaultComplexityCap =
-    role.complexityCap +
-    monsterTier.complexityCapOffset +
-    tacticalRole.complexityMod +
-    tempoProfile.complexityMod;
+  const framePowerProfile = useMemo(() => buildMonsterFramePowerProfile({
+    role,
+    tacticalRole,
+    monsterTier,
+    tempoProfile,
+    danger,
+    targetCr,
+  }), [role, tacticalRole, monsterTier, tempoProfile, danger, targetCr]);
+
+  const defaultPressureBudget = framePowerProfile.budget + Math.max(0, partySize - 4);
+  const defaultComplexityCap = framePowerProfile.complexityCap;
   const effectivePressureBudget = advancedMode ? customPressureBudget : defaultPressureBudget;
   const effectiveComplexityCap = advancedMode ? customComplexityCap : defaultComplexityCap;
   const composerMode = getComposerMode(advancedMode, customMode);
@@ -1442,14 +1445,12 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
   const computed = useMemo(() => {
     const partyTier = getTier(partyLevel);
     const prof = getProfForCr(targetCr);
-    const baseline = getMonsterComposerBaselineProfile(targetCr, monsterTier.id, MONSTER_TIERS);
-    const baseHp = Math.round(baseline.hp * role.hpMult * tacticalRole.hpMult);
-    const baseDpr = Math.round(
-      baseline.dpr * role.dprMult * danger.dprMod * tacticalRole.dprMult * tempoProfile.dprMult
-    );
-    const baseAc = baseline.ac + monsterTier.acMod + tacticalRole.acMod;
-    const baseAttack = baseline.attackBonus + tacticalRole.attackMod + tempoProfile.attackMod;
-    const baseDc = baseline.saveDc + tacticalRole.dcMod;
+    const baseline = getMonsterComposerBaselineProfile(targetCr, framePowerProfile.baselineTierId, MONSTER_TIERS);
+    const baseHp = Math.round(baseline.hp * framePowerProfile.hpMult);
+    const baseDpr = Math.round(baseline.dpr * framePowerProfile.dprMult);
+    const baseAc = baseline.ac + framePowerProfile.acMod;
+    const baseAttack = baseline.attackBonus + framePowerProfile.attackMod;
+    const baseDc = baseline.saveDc + framePowerProfile.dcMod;
 
     const statMods = selectedFeatures.reduce(
       (acc, feature) => {
@@ -1494,62 +1495,39 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     const targetDprValue = Math.max(1, Math.round(baseDpr + (statMods.dpr || 0)));
     const targetDcValue = clamp(baseDc + Math.floor((statMods.control || 0) / 3), 10, 30);
     const targetAttackValue = clamp(baseAttack, 2, 18);
-    const dndRules = activeRuleset.buildRulesProfile({
+    const crFit = buildClosedLoopCrFit({
+      activeRuleset,
       targetCr,
       typeId,
       category,
       roleId,
       selectedFeatures,
       baseline,
-      targetHp: targetHpValue,
-      targetAc: targetAcValue,
-      targetDpr: targetDprValue,
-      targetAttackBonus: targetAttackValue,
-      targetSaveDc: targetDcValue,
-      tempoProfile,
-    });
-    const hp = dndRules.printedStats.hp;
-    const ac = dndRules.printedStats.ac;
-    const dpr = dndRules.printedStats.dpr;
-    const dc = dndRules.printedStats.saveDc;
-    const attack = dndRules.printedStats.attackBonus;
-    const printedStats = {
-      ...dndRules.printedStats,
-      initiativeMod: tempoProfile.initiativeMod,
-      speed: creatureType.defaults.speed,
-    };
-    const dprProfile = activeRuleset.simulateDpr({
-      selectedFeatures,
-      abilities: abilityModel.abilities,
-      targetDpr: dpr,
-      computed: {
-        dpr,
-        attack,
-        dc,
-        targetCr,
-        rulesProfile: dndRules.rulesProfile,
-        tempoProfile,
-        monsterTier,
-      },
-    });
-    const effectiveProfile = activeRuleset.buildEffectiveProfile({
-      printedStats,
-      dprProfile,
       abilityModel,
       statMods,
       tempoProfile,
       monsterTier,
       mechanicsSummary,
-      typeId,
-      selectedFeatures,
+      speed: creatureType.defaults.speed,
+      targetHp: targetHpValue,
+      targetAc: targetAcValue,
+      targetDpr: targetDprValue,
+      targetAttackBonus: targetAttackValue,
+      targetSaveDc: targetDcValue,
+      maxPasses: 4,
+      tolerance: 1,
     });
-    const crValidation = activeRuleset.validateChallenge({
-      targetCr,
-      printedStats,
-      effectiveProfile,
-      monsterTier,
-      mechanicsSummary,
-    });
+    const dndRules = crFit.dndRules;
+    const printedStats = crFit.printedStats;
+    const hp = printedStats.hp;
+    const ac = printedStats.ac;
+    const dpr = printedStats.dpr;
+    const dc = printedStats.saveDc;
+    const attack = printedStats.attackBonus;
+    const dprProfile = crFit.dprProfile;
+    const effectiveProfile = crFit.effectiveProfile;
+    const crValidation = crFit.crValidation;
+    const crFitProfile = crFit.fitProfile;
     pressureProfile = applyPressureValidationFloor({
       pressureProfile,
       budget,
@@ -1592,6 +1570,22 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     );
 
     const warnings = [];
+    framePowerProfile.diagnostics
+      .filter((diagnostic) => shouldSurfaceDiagnosticAsWarning(
+        { ...diagnostic, area: "frame-power-stack", check: diagnostic.code || "frame-power-diagnostic" },
+        { targetCr, estimatedCr },
+      ))
+      .forEach((diagnostic) => {
+        warnings.push(`Frame Power: ${diagnostic.message}${diagnostic.detail ? ` ${diagnostic.detail}` : ""}`);
+      });
+    crFitProfile.diagnostics
+      .filter((diagnostic) => shouldSurfaceDiagnosticAsWarning(
+        { ...diagnostic, area: "cr-fitting", check: diagnostic.code || "cr-fitting-diagnostic" },
+        { targetCr, estimatedCr },
+      ))
+      .forEach((diagnostic) => {
+        warnings.push(`CR Fitting: ${diagnostic.message}${diagnostic.detail ? ` ${diagnostic.detail}` : ""}`);
+      });
     if (pressure > budget)
       warnings.push(
         "Threat budget is above target. Reduce one high-cost twist or treat this as a boss/setpiece."
@@ -1642,14 +1636,8 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     dprProfile.assumptions.forEach((assumption) => {
       if (dprProfile.fallbackUsed && assumption.includes("fallback")) warnings.push(`DPR Simulator: ${assumption}`);
     });
-    if (
-      Number(dprProfile.actionEconomy?.mainActionOptionCount || 0) > 1 &&
-      Number(dprProfile.actionEconomy?.suppressedMainActionDamage || 0) > 0
-    ) {
-      warnings.push(
-        "DPR Simulator: Multiple main actions are available; DPR uses one best main action per round instead of summing alternatives."
-      );
-    }
+    // Multiple main-action alternatives are expected on many D&D monsters. The DPR simulator
+    // records this as informational diagnostics instead of surfacing it as a publish warning.
     crValidation.issues.forEach((issue) => {
       warnings.push(`CR Validator: ${issue.message}${issue.detail ? ` ${issue.detail}` : ""}`);
     });
@@ -1745,6 +1733,8 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       effectiveProfile,
       profileDeltas,
       bestiaryBaselineAudit,
+      framePowerProfile,
+      crFitProfile,
       dprProfile,
       crValidation,
       pressureProfile,
@@ -1792,6 +1782,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     sourceId,
     composerMode,
     customMode,
+    framePowerProfile,
     effectivePressureBudget,
     effectiveComplexityCap,
     targetCr,
@@ -2213,6 +2204,12 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       xp,
       lairXp,
     });
+    const statBlockParse = parseMonsterRenderedStatBlock({
+      exportText,
+      statBlock,
+      selectedFeatures,
+      computed,
+    });
     const exportReadiness = buildExportReadiness({
       computed,
       selected,
@@ -2222,6 +2219,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       weaknessFeatures: selectedFeatures.filter((feature) => feature.slot === "weakness"),
       deathEffects,
       lairActions,
+      statBlockParse,
     });
     const exportRunSheet = buildExportRunSheet({
       computed,
@@ -2238,6 +2236,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       exportText,
       exportJson,
       statBlock,
+      statBlockParse,
       exportReadiness,
       exportRunSheet,
     };

@@ -2,6 +2,7 @@ import { getCompatibilityStatus } from "../model/monster-composer.compatibility.
 import { evaluateMonsterFrameFit } from "../model/monster-frame-fit.js";
 import { hasSelectedSlot } from "../model/monster-composer.selection.js";
 import { validateMonsterGraftRules } from "../model/monster-graft-rules.schema.js";
+import { buildMonsterPublishGate, normalizeMonsterDiagnosticSeverity } from "../model/monster-publish-gate.js";
 import {
   asArray,
   buildQaReport,
@@ -20,7 +21,7 @@ import {
   forgeMonsterSelectionDetailed,
 } from "./monster-frame-builders.js";
 
-export const MONSTER_BATCH_QA_VERSION = "monster-batch-qa-v0.4-action-economy";
+export const MONSTER_BATCH_QA_VERSION = "monster-batch-qa-v0.9-rendered-statblock-parser";
 
 const DEFAULT_BATCH_COUNT = 100;
 const DEFAULT_SEED = "cruor-batch-qa";
@@ -127,12 +128,33 @@ export function getMonsterBatchQaCostWarning(count = DEFAULT_BATCH_COUNT) {
   return null;
 }
 
+
+function getRealisticTierPool({ targetCr, roleId }) {
+  const cr = Number(targetCr || 0);
+  if (roleId === "boss") {
+    if (cr <= 4) return ["elite", "boss"];
+    if (cr <= 7) return ["elite", "boss", "boss"];
+    if (cr <= 10) return ["boss", "boss", "elite", "setpiece"];
+    return ["boss", "legendary", "setpiece", "elite"];
+  }
+  if (cr <= 4) return ["normal", "normal", "elite"];
+  if (cr <= 10) return ["normal", "normal", "elite", "boss"];
+  return MONSTER_TIER_IDS;
+}
+
+function getStressTierPool({ roleId }) {
+  return roleId === "boss" ? ["boss", "legendary", "setpiece", "elite"] : MONSTER_TIER_IDS;
+}
+
 function buildRandomFrame({ index, normalized, rng, presets, sources }) {
   const preset = pick(presets, rng, {}) || {};
   const source = pick(sources, rng, null);
   const targetCr = normalized.crMin + Math.floor(rng() * (normalized.crMax - normalized.crMin + 1));
   const roleId = pick(ROLE_IDS, rng, preset.roleId || "standard");
-  const monsterTierId = roleId === "boss" ? pick(["boss", "legendary", "setpiece", "elite"], rng, "boss") : pick(MONSTER_TIER_IDS, rng, preset.monsterTierId || "normal");
+  const tierPool = normalized.qaMode === "stress"
+    ? getStressTierPool({ roleId })
+    : getRealisticTierPool({ targetCr, roleId });
+  const monsterTierId = pick(tierPool, rng, preset.monsterTierId || "normal");
 
   return {
     id: `batch-${String(index + 1).padStart(4, "0")}`,
@@ -241,7 +263,7 @@ function addBalanceIssues({ frame, context, issues }) {
 
   if (Number(actionEconomy.mainActionOptionCount || 0) > 1 && Number(actionEconomy.suppressedMainActionDamage || 0) > 0) {
     issues.push(makeQaIssue({
-      severity: "warning",
+      severity: "info",
       area: "dpr-simulator",
       check: "multiple-main-actions-alternative",
       id: frame.id,
@@ -252,6 +274,46 @@ function addBalanceIssues({ frame, context, issues }) {
       details: { actionEconomy },
     }));
   }
+
+  asArray(computed.framePowerProfile?.diagnostics).forEach((diagnostic) => {
+    const severity = normalizeMonsterDiagnosticSeverity(
+      { ...diagnostic, area: "frame-power-stack", check: diagnostic.code || "frame-power-diagnostic" },
+      { computed, targetCr, estimatedCr },
+    );
+    issues.push(makeQaIssue({
+      severity,
+      area: "frame-power-stack",
+      check: diagnostic.code || "frame-power-diagnostic",
+      id: frame.id,
+      title: computed.name || frame.id,
+      path: "computed.framePowerProfile",
+      message: diagnostic.message,
+      recommendation: severity === "info"
+        ? "Informational: frame power normalization handled this overlap/cap within final CR tolerance."
+        : "Review role/tier/tempo/danger stacking. Realistic QA dampens overlapping power axes instead of multiplying them freely.",
+      details: { diagnostic, framePowerProfile: computed.framePowerProfile, normalizedSeverity: severity },
+    }));
+  });
+
+  asArray(computed.crFitProfile?.diagnostics).forEach((diagnostic) => {
+    const severity = normalizeMonsterDiagnosticSeverity(
+      { ...diagnostic, area: "cr-fitting", check: diagnostic.code || "cr-fitting-diagnostic" },
+      { computed, targetCr, estimatedCr },
+    );
+    issues.push(makeQaIssue({
+      severity,
+      area: "cr-fitting",
+      check: diagnostic.code || "cr-fitting-diagnostic",
+      id: frame.id,
+      title: computed.name || frame.id,
+      path: "computed.crFitProfile",
+      message: diagnostic.message,
+      recommendation: severity === "info"
+        ? "Informational: closed-loop fitting reached publish tolerance."
+        : "Inspect fixed-damage grafts, effective defense, or hard control that closed-loop HP/DPR fitting could not fully normalize.",
+      details: { diagnostic, crFitProfile: computed.crFitProfile, normalizedSeverity: severity },
+    }));
+  });
 
   if (crDelta >= 4) {
     issues.push(makeQaIssue({
@@ -456,7 +518,7 @@ function addExportIssues({ frame, context, issues }) {
     }));
   }
 
-  asArray(artifacts.exportReadiness?.blockers).forEach((blocker) => {
+  asArray(artifacts.exportReadiness?.blockers).filter((blocker) => blocker.id !== "rendered-stat-block").forEach((blocker) => {
     issues.push(makeQaIssue({
       severity: "error",
       area: "forge-readiness",
@@ -469,10 +531,24 @@ function addExportIssues({ frame, context, issues }) {
     }));
   });
 
+  asArray(artifacts.statBlockParse?.issues).forEach((issue) => {
+    issues.push(makeQaIssue({
+      severity: issue.severity || "warning",
+      area: issue.area || "stat-block-parser",
+      check: issue.check || "rendered-stat-block",
+      id: frame.id,
+      title: context.computed?.name || frame.id,
+      path: issue.path || "statBlock",
+      message: issue.message || "Rendered stat block parser issue.",
+      recommendation: issue.recommendation || "Inspect rendered stat block output.",
+      details: issue.details,
+    }));
+  });
+
   return artifacts;
 }
 
-function summarizeGeneratedMonster({ frame, context, artifacts, issueCount, forgeStatus, balanceStatus = "analyzed", exportStatus = "analyzed" }) {
+function summarizeGeneratedMonster({ frame, context, artifacts, issueCount, infoCount = 0, publishGate, forgeStatus, balanceStatus = "analyzed", exportStatus = "analyzed" }) {
   const computed = context.computed || {};
   return {
     id: frame.id,
@@ -520,8 +596,31 @@ function summarizeGeneratedMonster({ frame, context, artifacts, issueCount, forg
     ac: computed.printedStats?.ac,
     attackBonus: computed.printedStats?.attackBonus,
     saveDc: computed.printedStats?.saveDc,
+    framePowerHpMult: computed.framePowerProfile?.hpMult,
+    framePowerDprMult: computed.framePowerProfile?.dprMult,
+    framePowerBudget: computed.framePowerProfile?.budget,
+    framePowerDiagnostics: asArray(computed.framePowerProfile?.diagnostics).map((diagnostic) => diagnostic.code),
+    crFitApplied: Boolean(computed.crFitProfile?.applied),
+    crFitPasses: asArray(computed.crFitProfile?.passes).length,
+    crFitInitialEstimatedCr: computed.crFitProfile?.initial?.estimatedCr,
+    crFitFinalEstimatedCr: computed.crFitProfile?.final?.estimatedCr,
+    crFitInitialHpTarget: computed.crFitProfile?.initial?.hpTarget,
+    crFitFinalHpTarget: computed.crFitProfile?.final?.hpTarget,
+    crFitInitialDprTarget: computed.crFitProfile?.initial?.dprTarget,
+    crFitFinalDprTarget: computed.crFitProfile?.final?.dprTarget,
+    crFitDiagnostics: asArray(computed.crFitProfile?.diagnostics).map((diagnostic) => diagnostic.code),
     warningCount: asArray(computed.warnings).length,
     issueCount,
+    infoCount,
+    publishStatus: publishGate?.status || "unknown",
+    publishReady: Boolean(publishGate?.ready),
+    publishBlockerCount: publishGate?.counts?.blockers || 0,
+    publishReviewCount: publishGate?.counts?.reviews || 0,
+    publishInfoCount: publishGate?.counts?.info || 0,
+    statBlockParserStatus: artifacts?.statBlockParse?.status || "not-run",
+    statBlockParserErrors: artifacts?.statBlockParse?.summary?.error || 0,
+    statBlockParserWarnings: artifacts?.statBlockParse?.summary?.warning || 0,
+    statBlockParserInfo: artifacts?.statBlockParse?.summary?.info || 0,
     exportSize: artifacts?.exportJson?.length || 0,
   };
 }
@@ -530,20 +629,24 @@ function shouldIncludeDebugPayload(summary = {}) {
   if (!summary) return false;
   return (
     Number(summary.issueCount || 0) > 0 ||
+    Number(summary.publishBlockerCount || 0) > 0 ||
+    Number(summary.publishReviewCount || 0) > 0 ||
     Number(summary.crDelta || 0) >= 2 ||
     summary.forgeStatus !== "complete" ||
     summary.balanceStatus !== "analyzed" ||
-    summary.exportStatus !== "analyzed"
+    summary.exportStatus !== "analyzed" ||
+    summary.publishReady === false
   );
 }
 
-function buildGeneratedDebugPayload({ summary, frame, context, artifacts, forgeStatus, balanceStatus, exportStatus }) {
+function buildGeneratedDebugPayload({ summary, frame, context, artifacts, forgeStatus, balanceStatus, exportStatus, publishGate }) {
   return {
     ...summary,
     frameInput: frame,
     forgeStatusDetail: forgeStatus,
     balanceStatus,
     exportStatus,
+    publishGate,
     context,
     artifacts,
   };
@@ -580,7 +683,27 @@ function buildBatchAnalytics(generated = [], issues = []) {
   const averageCrDelta = crDeltas.length ? crDeltas.reduce((sum, value) => sum + value, 0) / crDeltas.length : 0;
   const aboveTargetBy2 = balanceAnalyzed.filter((item) => Number(item.crDelta || 0) >= 2).length;
   const aboveTargetBy4 = balanceAnalyzed.filter((item) => Number(item.crDelta || 0) >= 4).length;
+  const belowTargetBy2 = balanceAnalyzed.filter((item) => Number(item.crDelta || 0) <= -2).length;
+  const publishReady = generated.filter((item) => item.publishReady === true).length;
+  const publishBlocked = generated.filter((item) => item.publishStatus === "blocked").length;
+  const publishReview = generated.filter((item) => item.publishStatus === "review").length;
+  const publishUnknown = generated.filter((item) => !item.publishStatus || item.publishStatus === "unknown").length;
   const lowPressureMismatch = balanceAnalyzed.filter((item) => Number(item.crDelta || 0) >= 2 && item.pressureLabel === "Low").length;
+  const statBlockParserPassed = generated.filter((item) => item.statBlockParserStatus === "pass").length;
+  const statBlockParserReview = generated.filter((item) => item.statBlockParserStatus === "warning").length;
+  const statBlockParserFailed = generated.filter((item) => item.statBlockParserStatus === "error").length;
+  const statBlockParserNotRun = generated.filter((item) => !item.statBlockParserStatus || item.statBlockParserStatus === "not-run").length;
+  const crFitApplied = balanceAnalyzed.filter((item) => item.crFitApplied).length;
+  const averageCrFitInitialDelta = balanceAnalyzed.length
+    ? balanceAnalyzed.reduce((sum, item) => sum + (Number(item.crFitInitialEstimatedCr ?? item.estimatedCr ?? 0) - Number(item.targetCr || 0)), 0) / balanceAnalyzed.length
+    : 0;
+  const averageCrFitDeltaReduction = balanceAnalyzed.length
+    ? balanceAnalyzed.reduce((sum, item) => {
+        const initialDelta = Number(item.crFitInitialEstimatedCr ?? item.estimatedCr ?? 0) - Number(item.targetCr || 0);
+        const finalDelta = Number(item.estimatedCr || 0) - Number(item.targetCr || 0);
+        return sum + (initialDelta - finalDelta);
+      }, 0) / balanceAnalyzed.length
+    : 0;
   const forgeIncomplete = generated.filter((item) => item.forgeStatus === "incomplete").length;
   const forgeInvalid = generated.filter((item) => item.forgeStatus === "invalid").length;
   const balanceSkipped = generated.filter((item) => item.balanceStatus === "skipped_due_to_incomplete_forge").length;
@@ -597,7 +720,19 @@ function buildBatchAnalytics(generated = [], issues = []) {
     averageCrDelta: Number(averageCrDelta.toFixed(2)),
     aboveTargetBy2,
     aboveTargetBy4,
+    belowTargetBy2,
+    publishReady,
+    publishBlocked,
+    publishReview,
+    publishUnknown,
     lowPressureMismatch,
+    statBlockParserPassed,
+    statBlockParserReview,
+    statBlockParserFailed,
+    statBlockParserNotRun,
+    crFitApplied,
+    averageCrFitInitialDelta: Number(averageCrFitInitialDelta.toFixed(2)),
+    averageCrFitDeltaReduction: Number(averageCrFitDeltaReduction.toFixed(2)),
     topChecks: [...byCheck.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([key, count]) => ({ key, count })),
     topProblematicGrafts: [...byGraft.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12).map(([id, count]) => ({ id, count })),
     bySource: [...bySource.entries()].sort((a, b) => b[1] - a[1]).map(([id, count]) => ({ id, count })),
@@ -653,10 +788,22 @@ export function runMonsterBatchQa(options = {}) {
       exportStatus = "skipped_due_to_incomplete_forge";
     }
 
-    const issueCount = issues.length - frameIssueStart;
-    const summary = summarizeGeneratedMonster({ frame, context, artifacts, issueCount, forgeStatus, balanceStatus, exportStatus });
+    const frameIssues = issues.slice(frameIssueStart);
+    const publishGate = buildMonsterPublishGate({
+      computed: context.computed,
+      selected: context.selected,
+      selectedFeatures: context.selectedFeatures,
+      actions: context.actions,
+      weaknessFeatures: context.weaknessFeatures,
+      issues: frameIssues,
+      exportReadiness: artifacts?.exportReadiness,
+      statBlockParse: artifacts?.statBlockParse,
+    });
+    const issueCount = frameIssues.filter((issue) => issue.severity !== "info").length;
+    const infoCount = frameIssues.filter((issue) => issue.severity === "info").length;
+    const summary = summarizeGeneratedMonster({ frame, context, artifacts, issueCount, infoCount, publishGate, forgeStatus, balanceStatus, exportStatus });
     const debugPayload = shouldIncludeDebugPayload(summary)
-      ? buildGeneratedDebugPayload({ summary, frame, context, artifacts, forgeStatus, balanceStatus, exportStatus })
+      ? buildGeneratedDebugPayload({ summary, frame, context, artifacts, forgeStatus, balanceStatus, exportStatus, publishGate })
       : null;
     generated.push(normalized.includeFullPayloads
       ? { ...summary, context, artifacts, debugPayload }
@@ -716,8 +863,18 @@ export function buildMonsterBatchQaMarkdown(report = {}) {
   lines.push(`- Balance Analyzed: ${analytics.balanceAnalyzed ?? 0}`);
   lines.push(`- Balance Skipped: ${analytics.balanceSkipped ?? 0}`);
   lines.push(`- Average CR Delta: ${analytics.averageCrDelta ?? 0}`);
+  lines.push(`- Average Initial CR Delta: ${analytics.averageCrFitInitialDelta ?? analytics.averageCrDelta ?? 0}`);
+  lines.push(`- Average CR Delta Reduction: ${analytics.averageCrFitDeltaReduction ?? 0}`);
+  lines.push(`- CR Fit Applied: ${analytics.crFitApplied ?? 0}`);
   lines.push(`- CR +2 or more: ${analytics.aboveTargetBy2 ?? 0}`);
   lines.push(`- CR +4 or more: ${analytics.aboveTargetBy4 ?? 0}`);
+  lines.push(`- CR -2 or lower: ${analytics.belowTargetBy2 ?? 0}`);
+  lines.push(`- Publish Ready: ${analytics.publishReady ?? 0}`);
+  lines.push(`- Publish Review: ${analytics.publishReview ?? 0}`);
+  lines.push(`- Publish Blocked: ${analytics.publishBlocked ?? 0}`);
+  lines.push(`- Stat Block Parser Passed: ${analytics.statBlockParserPassed ?? 0}`);
+  lines.push(`- Stat Block Parser Review: ${analytics.statBlockParserReview ?? 0}`);
+  lines.push(`- Stat Block Parser Failed: ${analytics.statBlockParserFailed ?? 0}`);
   lines.push(`- Low Pressure Mismatch: ${analytics.lowPressureMismatch ?? 0}`);
   lines.push("");
   lines.push("## Most Common Issues");
@@ -732,10 +889,15 @@ export function buildMonsterBatchQaMarkdown(report = {}) {
   lines.push("");
   lines.push("## Generated Monster Outliers");
   generated
-    .filter((item) => item.balanceStatus === "analyzed" && (Number(item.crDelta || 0) >= 2 || Number(item.issueCount || 0) > 0))
+    .filter((item) => item.balanceStatus === "analyzed" && (Number(item.crDelta || 0) >= 2 || Number(item.issueCount || 0) > 0 || item.publishStatus === "blocked" || item.publishStatus === "review"))
     .slice(0, 40)
     .forEach((item) => {
-      lines.push(`- ${item.id} · ${item.name || "Unnamed"} · Target CR ${item.targetCr}, Est. CR ${item.estimatedCr}, Δ ${item.crDelta}, Issues ${item.issueCount}`);
+      lines.push(`- ${item.id} · ${item.name || "Unnamed"} · Target CR ${item.targetCr}, Est. CR ${item.estimatedCr}, Δ ${item.crDelta}, Issues ${item.issueCount}, Publish ${item.publishStatus || "unknown"}`);
+      lines.push(`  - Frame: ${item.frame?.roleId || "?"} / ${item.frame?.monsterTierId || "?"} / ${item.frame?.tempoProfileId || "?"} / ${item.frame?.dangerId || "?"}`);
+      lines.push(`  - Frame Power: HP ×${item.framePowerHpMult ?? "?"}, DPR ×${item.framePowerDprMult ?? "?"}, Budget ${item.framePowerBudget ?? "?"}`);
+      if (item.crFitApplied) {
+        lines.push(`  - CR Fit: Est. CR ${item.crFitInitialEstimatedCr ?? "?"} → ${item.crFitFinalEstimatedCr ?? item.estimatedCr}; HP target ${item.crFitInitialHpTarget ?? "?"} → ${item.crFitFinalHpTarget ?? "?"}; DPR target ${item.crFitInitialDprTarget ?? "?"} → ${item.crFitFinalDprTarget ?? "?"}`);
+      }
       lines.push(`  - Grafts: ${asArray(item.selectedFeatureTitles).join(", ") || asArray(item.selectedFeatureIds).join(", ")}`);
     });
   lines.push("");
@@ -893,7 +1055,10 @@ function getGeneratedMonsters(report = {}) {
 function scoreDebugExportCandidate(monster = {}) {
   return (
     Number(monster.issueCount || 0) * 100 +
+    Number(monster.publishBlockerCount || 0) * 125 +
+    Number(monster.publishReviewCount || 0) * 45 +
     Math.max(0, Number(monster.crDelta || 0)) * 25 +
+    (monster.publishStatus === "blocked" ? 90 : 0) +
     (monster.forgeStatus !== "complete" ? 75 : 0) +
     (monster.balanceStatus !== "analyzed" ? 40 : 0) +
     (monster.exportStatus !== "analyzed" ? 40 : 0) +
@@ -904,7 +1069,7 @@ function scoreDebugExportCandidate(monster = {}) {
 function getDebugExportCandidates(report = {}, limit = DEFAULT_DEBUG_EXPORT_LIMIT) {
   const normalizedLimit = normalizeInteger(limit, DEFAULT_DEBUG_EXPORT_LIMIT, 1, 200);
   return getGeneratedMonsters(report)
-    .filter((monster) => monster?.debugPayload || Number(monster?.issueCount || 0) > 0 || Number(monster?.crDelta || 0) >= 2 || monster?.forgeStatus !== "complete")
+    .filter((monster) => monster?.debugPayload || Number(monster?.issueCount || 0) > 0 || Number(monster?.publishBlockerCount || 0) > 0 || Number(monster?.publishReviewCount || 0) > 0 || Number(monster?.crDelta || 0) >= 2 || monster?.publishReady === false || monster?.forgeStatus !== "complete")
     .sort((a, b) => scoreDebugExportCandidate(b) - scoreDebugExportCandidate(a))
     .slice(0, normalizedLimit);
 }
@@ -929,6 +1094,11 @@ function buildMonsterBatchQaDebugIndex(report = {}, candidates = []) {
       id: monster.id,
       name: monster.name,
       issueCount: monster.issueCount,
+      infoCount: monster.infoCount,
+      publishStatus: monster.publishStatus,
+      publishReady: monster.publishReady,
+      publishBlockerCount: monster.publishBlockerCount,
+      publishReviewCount: monster.publishReviewCount,
       forgeStatus: monster.forgeStatus,
       balanceStatus: monster.balanceStatus,
       exportStatus: monster.exportStatus,
