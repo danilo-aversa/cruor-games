@@ -547,8 +547,9 @@ function renderAreaEffectRules(feature, rules, computed, options = {}) {
   const area = formatAreaEffectArea(areaEffect);
   const timing = sentenceCase(formatAreaEffectTiming(areaEffect));
   const targets = formatAreaEffectTargets(areaEffect);
+  const damageAmount = formatDamageAmountWithType(rules.damage, computed, rules, options);
   const effectParts = [
-    rules.damage ? `The target takes ${formatDamageAmountWithType(rules.damage, computed, rules, options)}.` : "",
+    damageAmount ? `The target takes ${damageAmount}.` : "",
     rules.condition?.names?.length ? formatConditionClause(rules, computed, options) : "",
     rules.ongoing?.enabled ? formatOngoingEffect(rules, computed, options) : "",
     rules.text?.effect ? applyTokens(rules.text.effect, context, options) : "",

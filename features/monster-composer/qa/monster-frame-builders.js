@@ -247,6 +247,7 @@ export function buildMonsterFrameContext({
   dangerId = preset?.dangerId || "hard",
   partyLevel = 5,
   rulesetId = DEFAULT_MONSTER_RULESET_ID,
+  qaFrameMode = "realistic",
 } = {}) {
   const selected = normalizeSelection(selection || preset?.selection || {});
   const selectedFeatures = getFeaturesFromSelection(selected);
@@ -303,6 +304,11 @@ export function buildMonsterFrameContext({
   const activeRuleset = getMonsterRuleset(rulesetId);
   const activeRulesetOption = getMonsterRulesetOption(rulesetId);
   const abilityModel = buildMonsterAbilitiesFromFeatures(selectedFeatures);
+  const lowCrHardControlProfile = buildLowCrHardControlGateProfile({
+    targetCr,
+    selectedFeatures,
+    qaMode: preset?.qaMode || preset?.qaFrameMode || qaFrameMode || "realistic",
+  });
   const crFit = buildClosedLoopCrFit({
     activeRuleset,
     targetCr,
@@ -361,6 +367,9 @@ export function buildMonsterFrameContext({
     .forEach((diagnostic) => {
       warnings.push(`CR Fitting: ${diagnostic.message}${diagnostic.detail ? ` ${diagnostic.detail}` : ""}`);
     });
+  if (lowCrHardControlProfile.overLimit) {
+    warnings.push(`Low-CR Hard Control: ${lowCrHardControlProfile.hardControlCount} reliable hard-control features selected at CR ${targetCr}.`);
+  }
   if (pressure > budget) warnings.push("Threat budget is above target.");
   if (complexity > complexityCap) warnings.push("Table complexity is high.");
   if (!hasSelectedSlot(selected, "weakness")) warnings.push("No Weakness / Tell selected.");
@@ -404,6 +413,7 @@ export function buildMonsterFrameContext({
     profileDeltas,
     bestiaryBaselineAudit: { issues: [] },
     framePowerProfile,
+    lowCrHardControlProfile,
     crFitProfile,
     dprProfile,
     crValidation,
@@ -485,6 +495,69 @@ export function buildCoreScratchFrames() {
   ];
 }
 
+
+function normalizeLower(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function getFeatureConditionSeverity(feature = {}) {
+  return normalizeLower(feature.rules?.condition?.severity || feature.condition?.severity || "");
+}
+
+function isReliableHardControlFeature(feature = {}) {
+  const severity = getFeatureConditionSeverity(feature);
+  if (!["major", "severe"].includes(severity)) return false;
+  const actionEconomy = normalizeLower(feature.rules?.actionEconomy || feature.section || "passive");
+  const usageType = normalizeLower(feature.rules?.usage?.type || "passive");
+  const control = Number(feature.stats?.control || 0);
+  const repeatedUse = ["action", "bonusaction", "reaction"].includes(actionEconomy) && !["limited", "deathtrigger"].includes(usageType);
+  return Boolean(repeatedUse || control >= 3);
+}
+
+function shouldApplyLowCrHardControlGate(frame = {}) {
+  const cr = Number(frame.targetCr || 0);
+  if (cr > 3) return false;
+  if (frame.qaFrameMode === "stress") return false;
+  return true;
+}
+
+function applyLowCrHardControlGate(candidates = [], selectedFeatures = [], frame = {}) {
+  if (!shouldApplyLowCrHardControlGate(frame)) return candidates;
+  const selectedHardControls = selectedFeatures.filter((feature) => isReliableHardControlFeature(feature));
+  if (!selectedHardControls.length) return candidates;
+  const filtered = candidates.filter((feature) => !isReliableHardControlFeature(feature));
+  return filtered.length ? filtered : candidates;
+}
+
+export function buildLowCrHardControlGateProfile({ targetCr = 0, selectedFeatures = [], qaMode = "realistic" } = {}) {
+  const hardControlFeatures = asArray(selectedFeatures)
+    .filter((feature) => isReliableHardControlFeature(feature))
+    .map((feature) => ({
+      id: feature.id,
+      title: feature.title,
+      slot: feature.slot,
+      source: feature.source,
+      condition: asArray(feature.rules?.condition?.names).join(", "),
+      severity: getFeatureConditionSeverity(feature),
+      actionEconomy: feature.rules?.actionEconomy || feature.section || "passive",
+      control: Number(feature.stats?.control || 0),
+    }));
+  const lowCr = Number(targetCr || 0) <= 3;
+  const stackLimit = lowCr ? 1 : 2;
+  const overLimit = lowCr && qaMode !== "stress" && hardControlFeatures.length > stackLimit;
+  return {
+    version: "low-cr-hard-control-gate-v1.28",
+    targetCr: Number(targetCr || 0),
+    qaMode,
+    lowCr,
+    stackLimit,
+    hardControlCount: hardControlFeatures.length,
+    hardControlFeatures,
+    overLimit,
+    status: overLimit ? "review" : "pass",
+  };
+}
+
 export function pickForgeCandidate(candidates, slotId, remainingBudget, roleId, frame = {}) {
   if (!candidates.length) return null;
   const coreSlots = new Set(REQUIRED_PLAYABLE_SLOTS);
@@ -522,12 +595,13 @@ function featureMatchesFrame(feature, sourceId, typeId, roleId, slotId = null, f
 }
 
 export function getForgeCandidatesForFrame(frame = {}, { slotId = null, selectedFeatures = [], includeCompatibility = true } = {}) {
-  return FEATURES.filter((feature) => {
+  const candidates = FEATURES.filter((feature) => {
     if (!featureMatchesFrame(feature, frame.sourceId, frame.typeId, frame.roleId, slotId, frame)) return false;
     if (!includeCompatibility) return true;
     const status = getCompatibilityStatus(feature, selectedFeatures, frame.typeId, frame.category, { activePreset: null });
     return ["compatible", "soft"].includes(status.kind);
   });
+  return applyLowCrHardControlGate(candidates, selectedFeatures, frame);
 }
 
 function orderForgeSlots(slots = REQUIRED_PLAYABLE_SLOTS) {
@@ -539,11 +613,12 @@ function orderForgeSlots(slots = REQUIRED_PLAYABLE_SLOTS) {
 }
 
 function getCompatibleForgeCandidates(frame, slotId, selectedFeatures = []) {
-  return FEATURES.filter((feature) => {
+  const candidates = FEATURES.filter((feature) => {
     if (!featureMatchesFrame(feature, frame.sourceId, frame.typeId, frame.roleId, slotId, frame)) return false;
     const status = getCompatibilityStatus(feature, selectedFeatures, frame.typeId, frame.category, { activePreset: null });
     return ["compatible", "soft"].includes(status.kind);
   });
+  return applyLowCrHardControlGate(candidates, selectedFeatures, frame);
 }
 
 export function forgeMonsterSelectionDetailed(frame, { slots = REQUIRED_PLAYABLE_SLOTS, allowRelaxedCoreFallback = true } = {}) {

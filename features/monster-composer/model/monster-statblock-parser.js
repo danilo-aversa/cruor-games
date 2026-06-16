@@ -1,4 +1,4 @@
-export const MONSTER_STAT_BLOCK_PARSER_VERSION = "rendered-statblock-parser-v1.26";
+export const MONSTER_STAT_BLOCK_PARSER_VERSION = "rendered-statblock-parser-v1.27";
 
 const DND_CONDITIONS = Object.freeze([
   "Blinded",
@@ -16,6 +16,22 @@ const DND_CONDITIONS = Object.freeze([
   "Stunned",
   "Unconscious",
 ]);
+
+
+const CONDITION_CANONICAL = Object.freeze(
+  Object.fromEntries(DND_CONDITIONS.map((condition) => [condition.toLowerCase(), condition]))
+);
+
+const DND_CONDITION_KEYS = new Set(DND_CONDITIONS.map((condition) => condition.toLowerCase()));
+
+function normalizeConditionKey(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function canonicalConditionName(value) {
+  const key = normalizeConditionKey(value);
+  return CONDITION_CANONICAL[key] || String(value || "").trim();
+}
 
 const DAMAGE_TYPES = Object.freeze([
   "Acid",
@@ -112,7 +128,11 @@ function textMentionsDamage(text = "") {
 }
 
 function textHasDamageAmount(text = "") {
-  return getTextDamagePattern().test(text);
+  return (
+    getTextDamagePattern().test(text) ||
+    /\bdamage\s+equal\s+to\s+(?:its|the\s+monster[’']s|the\s+creature[’']s)?\s*(?:Proficiency\s+Bonus|PB)\b/i.test(text) ||
+    /\b(?:Proficiency\s+Bonus|PB)\s+(?:[A-Z][a-z]+\s+)?damage\b/i.test(text)
+  );
 }
 
 function textMentionsCondition(text = "") {
@@ -124,12 +144,38 @@ function extractConditionNames(text = "") {
 }
 
 function has2024ConditionPhrase(text = "", condition = "") {
-  return new RegExp(`has\\s+the\\s+[^.]*\\b${escapeRegExp(condition)}\\b[^.]*condition`, "i").test(text);
+  const canonical = canonicalConditionName(condition);
+  const escaped = escapeRegExp(canonical);
+  return new RegExp(`\\b(?:the\\s+target|target|the\\s+creature|creature|it|they|one\\s+creature)?\\s*(?:has|have|gains?|gain|is\\s+given|are\\s+given)\\s+the\\s+[^.]*\\b${escaped}\\b[^.]*condition`, "i").test(text);
 }
 
 function hasLegacyConditionPhrase(text = "", condition = "") {
-  const escaped = escapeRegExp(condition);
+  const escaped = escapeRegExp(canonicalConditionName(condition));
   return new RegExp(`\\b(?:is|are|becomes|become|falls|falling|knocked)\\s+(?:also\\s+)?${escaped}\\b`, "i").test(text);
+}
+
+function isConditionReferenceOnly(text = "", condition = "") {
+  if (has2024ConditionPhrase(text, condition) || hasLegacyConditionPhrase(text, condition)) return false;
+  const escaped = escapeRegExp(canonicalConditionName(condition));
+  const referencePatterns = [
+    `\\bimmune\\s+to\\s+the\\s+${escaped}\\s+condition`,
+    `\\bimmunity\\s+to\\s+the\\s+${escaped}\\s+condition`,
+    `\\blocates?\\s+[^.]*\\b${escaped}\\b`,
+    `\\bsee\\s+[^.]*\\b${escaped}\\b`,
+    `\\bagainst\\s+[^.]*\\b${escaped}\\b`,
+    `\\bwhile\\s+[^.]*\\b${escaped}\\b`,
+    `\\bstarts?\\s+[^.]*\\b${escaped}\\b`,
+    `\\bends?\\s+[^.]*\\b${escaped}\\b`,
+    `\\bif\\s+[^.]*\\b${escaped}\\b`,
+    `\\bwould\\s+[^.]*\\b${escaped}\\b`,
+    `\\bcan\\s+[^.]*\\b${escaped}\\b`,
+    `\\bends?\\s+one\\s+condition\\b`,
+  ];
+  return referencePatterns.some((pattern) => new RegExp(pattern, "i").test(text));
+}
+
+function isKnownDndCondition(condition = "") {
+  return DND_CONDITION_KEYS.has(normalizeConditionKey(condition));
 }
 
 function pushIssue(issues, issue) {
@@ -238,14 +284,20 @@ function checkSaveText({ item, ability, computed, issues }) {
   const hasSave = ability?.resolution?.save || ability?.resolution?.secondarySave;
   if (!hasSave) return;
   const text = item.text || "";
+  const specialDc = [ability?.resolution?.save?.dcSource, ability?.resolution?.secondarySave?.dcSource, ability?.rules?.resolution?.dc, ability?.rules?.secondaryResolution?.dc]
+    .map((value) => cleanString(value).toLowerCase())
+    .includes("special");
   const saveMatches = [...text.matchAll(/Saving\s+Throw:\s*DC\s*(\d+)/gi)];
   if (!saveMatches.length) {
+    if (specialDc && /Saving\s+Throw\s+with\s+a\s+DC\s+equal\s+to/i.test(text)) {
+      return;
+    }
     pushIssue(issues, {
       severity: "error",
       check: "missing-save-dc",
       path: `sections.${item.sectionId}.${item.id}`,
       message: `${item.title} is modeled as a saving throw but the rendered text has no Saving Throw DC.`,
-      recommendation: "Render saving throws with 'Saving Throw: DC X' wording.",
+      recommendation: "Render saving throws with 'Saving Throw: DC X' wording, or explicit special DC wording when the rules model uses dc: special.",
     });
     return;
   }
@@ -276,6 +328,12 @@ function checkSaveText({ item, ability, computed, issues }) {
   }
 }
 
+function isNonOffensiveDamageReference(text = "", ability = {}) {
+  const slot = cleanString(ability?.slot).toLowerCase();
+  if (slot === "weakness") return true;
+  return /\b(?:extra\s+damage\s+against\s+it|hit\s+against\s+it|attacker\s+chooses|vulnerability\s+to|takes?\s+extra\s+damage)\b/i.test(text);
+}
+
 function checkDamageText({ item, ability, issues }) {
   const text = item.text || "";
   const modeledDamage = Boolean(ability?.damage?.hasDamage);
@@ -292,7 +350,7 @@ function checkDamageText({ item, ability, issues }) {
     });
   }
 
-  if (!modeledDamage && mentionsDamage && hasAmount) {
+  if (!modeledDamage && mentionsDamage && hasAmount && !isNonOffensiveDamageReference(text, ability)) {
     pushIssue(issues, {
       severity: "warning",
       check: "damage-text-without-model",
@@ -305,17 +363,20 @@ function checkDamageText({ item, ability, issues }) {
 
 function checkConditionText({ item, ability, issues }) {
   const text = item.text || "";
-  const modeledConditions = asArray(ability?.conditions).map((condition) => cleanString(condition.name)).filter(Boolean);
-  const renderedConditions = extractConditionNames(text);
+  const modeledConditions = asArray(ability?.conditions)
+    .map((condition) => normalizeConditionKey(condition.name))
+    .filter((condition) => condition && isKnownDndCondition(condition));
+  const modeledSet = new Set(modeledConditions);
+  const renderedConditions = extractConditionNames(text).map(normalizeConditionKey);
 
   modeledConditions.forEach((condition) => {
-    if (!has2024ConditionPhrase(text, condition)) {
+    if (!has2024ConditionPhrase(text, condition) && !isConditionReferenceOnly(text, condition)) {
       pushIssue(issues, {
         severity: "warning",
         check: "condition-wording-missing",
         path: `sections.${item.sectionId}.${item.id}`,
-        message: `${item.title} models the ${condition} condition but the rendered text does not use explicit 2024 condition wording.`,
-        recommendation: `Use wording such as 'the target has the ${condition} condition'.`,
+        message: `${item.title} models the ${canonicalConditionName(condition)} condition but the rendered text does not use explicit 2024 condition wording.`,
+        recommendation: `Use wording such as 'the target has the ${canonicalConditionName(condition)} condition'.`,
       });
     }
   });
@@ -326,16 +387,16 @@ function checkConditionText({ item, ability, issues }) {
         severity: "warning",
         check: "legacy-condition-wording",
         path: `sections.${item.sectionId}.${item.id}`,
-        message: `${item.title} appears to use legacy condition wording for ${condition}.`,
-        recommendation: `Use 'has the ${condition} condition' instead.`,
+        message: `${item.title} appears to use legacy condition wording for ${canonicalConditionName(condition)}.`,
+        recommendation: `Use 'has the ${canonicalConditionName(condition)} condition' instead.`,
       });
     }
-    if (!modeledConditions.includes(condition) && /condition/i.test(text)) {
+    if (!modeledSet.has(condition) && cleanString(ability?.slot).toLowerCase() !== "weakness" && !isConditionReferenceOnly(text, condition) && /condition/i.test(text)) {
       pushIssue(issues, {
         severity: "warning",
         check: "condition-text-without-model",
         path: `sections.${item.sectionId}.${item.id}`,
-        message: `${item.title} renders the ${condition} condition but the ability model does not declare it.`,
+        message: `${item.title} renders the ${canonicalConditionName(condition)} condition but the ability model does not declare it.`,
         recommendation: "Add structured condition metadata or remove the condition from rendered text.",
       });
     }

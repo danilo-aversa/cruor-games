@@ -1,4 +1,4 @@
-export const MONSTER_CR_FITTING_VERSION = "closed-loop-cr-fitting-v1.24";
+export const MONSTER_CR_FITTING_VERSION = "control-aware-cr-fitting-v1.28";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -73,14 +73,16 @@ function hasMeaningfulTargetChange(current, next) {
   return Math.abs(Number(current || 0) - Number(next || 0)) >= 1;
 }
 
-function summarizePass({ index, hpTarget, dprTarget, result }) {
+function summarizePass({ index, hpTarget, dprTarget, saveDcTarget = null, result }) {
   const validation = result?.crValidation || {};
   return {
     pass: index,
     hpTarget: round(hpTarget),
     dprTarget: round(dprTarget),
+    saveDcTarget: saveDcTarget == null ? undefined : round(saveDcTarget),
     printedHp: result?.printedStats?.hp,
     printedDpr: result?.printedStats?.dpr,
+    printedSaveDc: result?.printedStats?.saveDc,
     effectiveHp: result?.effectiveProfile?.effectiveHp,
     effectiveDpr3Round: result?.effectiveProfile?.effectiveDpr3Round,
     defensiveCr: validation.defensive?.cr,
@@ -91,14 +93,43 @@ function summarizePass({ index, hpTarget, dprTarget, result }) {
   };
 }
 
-function classifyAdjustment({ hpScale, dprScale }) {
-  if (hpScale < 1 && dprScale < 1) return "reduced-hp-and-dpr";
-  if (hpScale < 1) return "reduced-hp";
-  if (dprScale < 1) return "reduced-dpr";
-  if (hpScale > 1 && dprScale > 1) return "raised-hp-and-dpr";
-  if (hpScale > 1) return "raised-hp";
-  if (dprScale > 1) return "raised-dpr";
-  return "none";
+function classifyAdjustment({ hpScale, dprScale, saveDcDelta = 0 }) {
+  const parts = [];
+  if (hpScale < 1) parts.push("reduced-hp");
+  if (hpScale > 1) parts.push("raised-hp");
+  if (dprScale < 1) parts.push("reduced-dpr");
+  if (dprScale > 1) parts.push("raised-dpr");
+  if (saveDcDelta < 0) parts.push("reduced-save-dc");
+  if (saveDcDelta > 0) parts.push("raised-save-dc");
+  return parts.length ? parts.join("-") : "none";
+}
+
+function getConditionProfile(result = {}) {
+  return result?.effectiveProfile?.conditionProfile || {};
+}
+
+function isLowCrHardControlProfile(result = {}, targetCr = 0) {
+  const profile = getConditionProfile(result);
+  const cr = Number(targetCr || 0);
+  if (cr > 3) return false;
+  return Boolean(
+    Number(profile.repeatedHardControlCount || 0) >= 1 ||
+      Number(profile.majorCount || 0) >= 2 ||
+      Number(profile.crAdjustment || 0) >= 1 ||
+      Number(profile.controlPressure || 0) >= 2.5
+  );
+}
+
+function getHardControlResponsibleSources(result = {}) {
+  return asArray(getConditionProfile(result).sources)
+    .filter((source) => ["major", "severe"].includes(String(source.severity || "").toLowerCase()))
+    .map((source) => ({
+      title: source.title,
+      condition: source.condition,
+      pressure: source.pressure,
+      frequencyMultiplier: source.frequencyMultiplier,
+      expectedTargets: source.expectedTargets,
+    }));
 }
 
 function buildSingleCrProfile({
@@ -213,10 +244,14 @@ export function buildClosedLoopCrFit({
   const passes = [];
   const initialHpTarget = Math.max(1, round(targetHp || 1));
   const initialDprTarget = Math.max(1, round(targetDpr || 1));
+  const initialSaveDcTarget = clamp(round(targetSaveDc || baseline?.saveDc || 10), 10, 30);
   const lowerBoundAuthority = getLowerBoundAuthority({ roleId, targetCr, baseline, initialHpTarget, initialDprTarget });
   const minHpTarget = Math.max(1, round(initialHpTarget * 0.3));
   const { maxHpTarget, maxDprTarget } = buildTargetCeilings({ baseline, initialHpTarget, initialDprTarget, lowerBoundAuthority });
   const minDprTarget = Math.max(1, round(initialDprTarget * 0.25));
+  const baselineSaveDc = clamp(round(baseline?.saveDc || initialSaveDcTarget), 10, 30);
+  const minSaveDcTarget = clamp(Math.min(initialSaveDcTarget, baselineSaveDc - (Number(targetCr || 0) <= 3 ? 1 : 0)), 10, 30);
+  const maxSaveDcTarget = initialSaveDcTarget;
 
   if (lowerBoundAuthority) {
     diagnostics.push(buildDiagnostic(
@@ -230,6 +265,7 @@ export function buildClosedLoopCrFit({
 
   let hpTarget = initialHpTarget;
   let dprTarget = initialDprTarget;
+  let saveDcTarget = initialSaveDcTarget;
   let bestResult = null;
   let bestScore = Infinity;
   let currentResult = null;
@@ -255,10 +291,10 @@ export function buildClosedLoopCrFit({
       targetAc,
       targetDpr: dprTarget,
       targetAttackBonus,
-      targetSaveDc,
+      targetSaveDc: saveDcTarget,
     });
 
-    const currentPass = summarizePass({ index: passIndex, hpTarget, dprTarget, result: currentResult });
+    const currentPass = summarizePass({ index: passIndex, hpTarget, dprTarget, saveDcTarget, result: currentResult });
     passes.push(currentPass);
 
     const crDelta = getCrDelta(currentResult.crValidation, targetCr);
@@ -292,6 +328,33 @@ export function buildClosedLoopCrFit({
       downFloor: 0.62,
     } : undefined);
 
+    const controlAwarePass = crDelta >= 2 && offensiveDelta >= 2 && isLowCrHardControlProfile(currentResult, targetCr);
+    let nextSaveDcTarget = saveDcTarget;
+
+    if (controlAwarePass) {
+      const conditionProfile = getConditionProfile(currentResult);
+      const dcStep = Number(conditionProfile.repeatedHardControlCount || 0) >= 2 ? 2 : 1;
+      nextSaveDcTarget = clamp(saveDcTarget - dcStep, minSaveDcTarget, maxSaveDcTarget);
+      dprScale = Math.min(dprScale, 0.72);
+      if (defensiveDelta >= 1) hpScale = Math.min(hpScale, 0.88);
+      diagnostics.push(buildDiagnostic(
+        "info",
+        `pass-${passIndex + 1}-control-aware-hardening`,
+        "Control-aware CR fitting reduced low-CR hard-control reliability.",
+        `Save DC ${saveDcTarget} → ${nextSaveDcTarget}; condition adjustment +${conditionProfile.crAdjustment || 0}.`,
+        {
+          passIndex,
+          crDelta,
+          offensiveDelta,
+          defensiveDelta,
+          saveDcTarget,
+          nextSaveDcTarget,
+          conditionProfile,
+          responsibleSources: getHardControlResponsibleSources(currentResult),
+        },
+      ));
+    }
+
     if (crDelta >= 2 && defensiveDelta < 2 && offensiveDelta < 2) {
       hpScale = Math.min(hpScale, 0.92);
       dprScale = Math.min(dprScale, 0.92);
@@ -314,15 +377,20 @@ export function buildClosedLoopCrFit({
 
     const nextHpTarget = clamp(round(hpTarget * hpScale), minHpTarget, maxHpTarget);
     const nextDprTarget = clamp(round(dprTarget * dprScale), minDprTarget, maxDprTarget);
-    const adjustment = classifyAdjustment({ hpScale, dprScale });
+    const saveDcDelta = nextSaveDcTarget - saveDcTarget;
+    const adjustment = classifyAdjustment({ hpScale, dprScale, saveDcDelta });
 
-    if (!hasMeaningfulTargetChange(hpTarget, nextHpTarget) && !hasMeaningfulTargetChange(dprTarget, nextDprTarget)) {
+    if (
+      !hasMeaningfulTargetChange(hpTarget, nextHpTarget) &&
+      !hasMeaningfulTargetChange(dprTarget, nextDprTarget) &&
+      !hasMeaningfulTargetChange(saveDcTarget, nextSaveDcTarget)
+    ) {
       diagnostics.push(buildDiagnostic(
         lowerBoundAuthority && crDelta <= -2 ? "error" : "warning",
         "no-meaningful-adjustment-available",
         "CR fitting could not find a meaningful HP/DPR adjustment.",
         `Pass ${passIndex}; estimated CR ${currentResult.crValidation?.estimatedCr}; target CR ${targetCr}.`,
-        { passIndex, crDelta, offensiveDelta, defensiveDelta, hpTarget, dprTarget },
+        { passIndex, crDelta, offensiveDelta, defensiveDelta, hpTarget, dprTarget, saveDcTarget },
       ));
       break;
     }
@@ -331,12 +399,13 @@ export function buildClosedLoopCrFit({
       "info",
       `pass-${passIndex + 1}-${adjustment}`,
       "Closed-loop CR fitting adjusted the monster math target.",
-      `HP ${hpTarget} → ${nextHpTarget}; DPR ${dprTarget} → ${nextDprTarget}.`,
-      { passIndex, crDelta, offensiveDelta, defensiveDelta, hpScale, dprScale },
+      `HP ${hpTarget} → ${nextHpTarget}; DPR ${dprTarget} → ${nextDprTarget}; Save DC ${saveDcTarget} → ${nextSaveDcTarget}.`,
+      { passIndex, crDelta, offensiveDelta, defensiveDelta, hpScale, dprScale, saveDcTarget, nextSaveDcTarget },
     ));
 
     hpTarget = nextHpTarget;
     dprTarget = nextDprTarget;
+    saveDcTarget = nextSaveDcTarget;
   }
 
   const initial = passes[0] || null;
@@ -344,6 +413,7 @@ export function buildClosedLoopCrFit({
     index: passes.length,
     hpTarget,
     dprTarget,
+    saveDcTarget,
     result: bestResult || currentResult,
   });
   const finalDelta = Number(final?.deltaFromTarget ?? 0);
@@ -351,7 +421,8 @@ export function buildClosedLoopCrFit({
   const applied = Boolean(
     initial &&
       (hasMeaningfulTargetChange(initial.hpTarget, final.hpTarget) ||
-        hasMeaningfulTargetChange(initial.dprTarget, final.dprTarget))
+        hasMeaningfulTargetChange(initial.dprTarget, final.dprTarget) ||
+        hasMeaningfulTargetChange(initial.saveDcTarget, final.saveDcTarget))
   );
 
   if (applied) {
@@ -410,7 +481,7 @@ export function buildClosedLoopCrFit({
     targetAc,
     targetDpr: dprTarget,
     targetAttackBonus,
-    targetSaveDc,
+    targetSaveDc: saveDcTarget,
   });
 
   return {
@@ -422,7 +493,7 @@ export function buildClosedLoopCrFit({
       tolerance,
       applied,
       initial,
-      final: summarizePass({ index: passes.length, hpTarget: final.hpTarget, dprTarget: final.dprTarget, result }),
+      final: summarizePass({ index: passes.length, hpTarget: final.hpTarget, dprTarget: final.dprTarget, saveDcTarget: final.saveDcTarget, result }),
       passes,
       diagnostics,
       targetBounds: {
@@ -432,6 +503,9 @@ export function buildClosedLoopCrFit({
         maxHpTarget,
         minDprTarget,
         maxDprTarget,
+        initialSaveDcTarget,
+        minSaveDcTarget,
+        maxSaveDcTarget,
         lowerBoundAuthority,
       },
       selectedFeaturesWithFixedDamage: asArray(selectedFeatures)

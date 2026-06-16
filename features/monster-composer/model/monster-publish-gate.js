@@ -1,4 +1,4 @@
-export const MONSTER_PUBLISH_GATE_VERSION = "publish-gate-v1.26-rendered-parser";
+export const MONSTER_PUBLISH_GATE_VERSION = "publish-gate-v1.28-control-aware";
 
 function asArray(value) {
   if (!value) return [];

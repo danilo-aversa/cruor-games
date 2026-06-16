@@ -532,7 +532,7 @@ const RAW_MONSTER_GRAFTS = [
         "damage": {
             "mode": "budget",
             "scale": "minor",
-            "budgetRole": "mainAttack",
+            "budgetRole": "bonusAction",
             "types": [
                 "bludgeoning"
             ],
@@ -547,7 +547,9 @@ const RAW_MONSTER_GRAFTS = [
             "positioningAnswer": true,
             "nonDamageAnswer": false
         },
-        "text": {},
+        "text": {
+            "effect": "The creature moves up to half its speed in a straight line toward a creature it can see. Its next Slam before the end of the turn deals {damage} Bludgeoning damage. After moving this way, roll a d6; on a 6, trigger one selected Unstable reaction without spending the reaction."
+        },
         "multiattack": null,
         "spellcasting": null,
         "defense": null,
@@ -603,17 +605,7 @@ const RAW_MONSTER_GRAFTS = [
             "expectedTargets": null,
             "parts": []
         },
-        "condition": {
-            "names": [
-                "prone"
-            ],
-            "severity": "moderate",
-            "duration": "until the end of combat instead",
-            "special": [],
-            "sizeLimit": "",
-            "escape": null,
-            "repeatSave": null
-        },
+        "condition": null,
         "counterplay": {
             "telegraph": false,
             "breakCondition": true,
@@ -757,17 +749,7 @@ const RAW_MONSTER_GRAFTS = [
             "expectedTargets": null,
             "parts": []
         },
-        "condition": {
-            "names": [
-                "forced-movement"
-            ],
-            "severity": "moderate",
-            "duration": "instant",
-            "sizeLimit": "",
-            "special": [],
-            "escape": null,
-            "repeatSave": null
-        },
+        "condition": null,
         "counterplay": {
             "telegraph": true,
             "breakCondition": true,
@@ -1475,7 +1457,7 @@ const RAW_MONSTER_GRAFTS = [
     },
     summary: "Massive hits tear off parts without always detonating the whole corpse.",
     mechanics:
-      "When the creature takes more than half its maximum hit points in one hit, the attacker chooses head, arms, or leg. Head: the creature is Blinded but dies in 2 rounds without triggering Gas Buildup. Arms: it has disadvantage on attacks requiring arms. Leg: it falls prone and its speed becomes 5 feet.",
+      "When the creature takes more than half its maximum hit points in one hit, the attacker chooses head, arms, or leg. Head: the creature has the Blinded condition but dies in 2 rounds without triggering Gas Buildup. Arms: it has disadvantage on attacks requiring arms. Leg: it has the Prone condition and its speed becomes 5 feet.",
     counterplay: "Large wounds are visible stress points before rupture; big single hits can solve the encounter in a controlled way.",
   },
   {
@@ -2208,17 +2190,7 @@ const RAW_MONSTER_GRAFTS = [
             "expectedTargets": null,
             "parts": []
         },
-        "condition": {
-            "names": [
-                "invisible"
-            ],
-            "severity": "moderate",
-            "duration": "unspecified",
-            "special": [],
-            "sizeLimit": "",
-            "escape": null,
-            "repeatSave": null
-        },
+        "condition": null,
         "counterplay": {
             "telegraph": false,
             "breakCondition": false,
@@ -5228,17 +5200,7 @@ const RAW_MONSTER_GRAFTS = [
             "expectedTargets": null,
             "parts": []
         },
-        "condition": {
-            "names": [
-                "restrained"
-            ],
-            "severity": "major",
-            "duration": "while restrained by the web",
-            "special": [],
-            "sizeLimit": "",
-            "escape": null,
-            "repeatSave": null
-        },
+        "condition": null,
         "counterplay": {
             "telegraph": false,
             "breakCondition": true,
@@ -5499,27 +5461,15 @@ const RAW_MONSTER_GRAFTS = [
         },
         "areaEffect": null,
         "damage": {
-            "mode": "custom",
-            "scale": "minor",
+            "mode": "none",
             "budgetRole": "none",
-            "types": [
-                "variable"
-            ],
+            "types": [],
+            "scale": "standard",
             "budgetShare": null,
             "expectedTargets": null,
             "parts": []
         },
-        "condition": {
-            "names": [
-                "prone"
-            ],
-            "severity": "moderate",
-            "duration": "unspecified",
-            "special": [],
-            "sizeLimit": "",
-            "escape": null,
-            "repeatSave": null
-        },
+        "condition": null,
         "counterplay": {
             "telegraph": true,
             "breakCondition": false,
@@ -6505,7 +6455,7 @@ const RAW_MONSTER_GRAFTS = [
             "nonDamageAnswer": false
         },
         "text": {
-            "failure": "it is Frightened until the end of its next turn. If the mask was broken before death, this does not trigger.",
+            "failure": "The target has the Frightened condition until the end of its next turn. If the mask was broken before death, this does not trigger.",
             "success": "No effect."
         },
         "multiattack": null,
@@ -9377,6 +9327,40 @@ export const FEATURE_FRAME_FIT_OVERRIDES = {
       },
     },
   },
+  "ethereal-sight": {
+    rules: {
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "collapsed-crawler": {
+    rules: {
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "underbelly-weak-spot": {
+    rules: {
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "empowered-slam": {
+    rules: {
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "corrosive-web": {
+    rules: {
+      areaEffect: { enabled: false },
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "face-curse": {
+    rules: {
+      text: {
+        failure: "The target has the Frightened condition until the end of its next turn. If the mask was broken before death, this does not trigger.",
+        success: "No effect.",
+      },
+    },
+  },
   "venomous-spit": {
     "schemaVersion": "monster-frame-fit-v1.0",
     "encounterRoles": {
@@ -10442,6 +10426,40 @@ const DAMAGE_RULES_CONTENT_CLEANUP_OVERRIDES = {
       },
     },
   },
+  "ethereal-sight": {
+    rules: {
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "collapsed-crawler": {
+    rules: {
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "underbelly-weak-spot": {
+    rules: {
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "empowered-slam": {
+    rules: {
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "corrosive-web": {
+    rules: {
+      areaEffect: { enabled: false },
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "face-curse": {
+    rules: {
+      text: {
+        failure: "The target has the Frightened condition until the end of its next turn. If the mask was broken before death, this does not trigger.",
+        success: "No effect.",
+      },
+    },
+  },
   "venomous-spit": {
     rules: {
       text: {
@@ -10469,7 +10487,7 @@ const DAMAGE_RULES_CONTENT_CLEANUP_OVERRIDES = {
         parts: [],
       },
       text: {
-        effect: "The creature moves up to half its speed in a straight line toward a creature it can see. Its next Slam before the end of the turn deals extra Bludgeoning damage equal to its Proficiency Bonus. After moving this way, roll a d6; on a 6, trigger one selected Unstable reaction without spending the reaction.",
+        effect: "The creature moves up to half its speed in a straight line toward a creature it can see. Its next Slam before the end of the turn deals {damage} Bludgeoning damage. After moving this way, roll a d6; on a 6, trigger one selected Unstable reaction without spending the reaction.",
       },
     },
   },
@@ -10608,6 +10626,8 @@ const DAMAGE_RULES_CONTENT_CLEANUP_OVERRIDES = {
   },
   "corrosive-web": {
     rules: {
+      areaEffect: { enabled: false },
+      condition: { names: [], severity: "minor", duration: "", special: [] },
       damage: {
         mode: "budget",
         scale: "minor",
@@ -10987,6 +11007,40 @@ export const FEATURE_ANATOMY_CONSTRAINT_OVERRIDES = {
       text: {
         response:
           "Roll a d6. On a 4 or higher, the monster enrages until the combat ends, gaining a bonus to attack rolls, damage rolls, speed, and jump distance.",
+      },
+    },
+  },
+  "ethereal-sight": {
+    rules: {
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "collapsed-crawler": {
+    rules: {
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "underbelly-weak-spot": {
+    rules: {
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "empowered-slam": {
+    rules: {
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "corrosive-web": {
+    rules: {
+      areaEffect: { enabled: false },
+      condition: { names: [], severity: "minor", duration: "", special: [] },
+    },
+  },
+  "face-curse": {
+    rules: {
+      text: {
+        failure: "The target has the Frightened condition until the end of its next turn. If the mask was broken before death, this does not trigger.",
+        success: "No effect.",
       },
     },
   },

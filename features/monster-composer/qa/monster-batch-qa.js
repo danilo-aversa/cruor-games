@@ -21,7 +21,7 @@ import {
   forgeMonsterSelectionDetailed,
 } from "./monster-frame-builders.js";
 
-export const MONSTER_BATCH_QA_VERSION = "monster-batch-qa-v0.9-rendered-statblock-parser";
+export const MONSTER_BATCH_QA_VERSION = "monster-batch-qa-v1.0-control-aware-fitting";
 
 const DEFAULT_BATCH_COUNT = 100;
 const DEFAULT_SEED = "cruor-batch-qa";
@@ -314,6 +314,23 @@ function addBalanceIssues({ frame, context, issues }) {
       details: { diagnostic, crFitProfile: computed.crFitProfile, normalizedSeverity: severity },
     }));
   });
+
+  const lowCrHardControlProfile = computed.lowCrHardControlProfile || {};
+  if (lowCrHardControlProfile.overLimit) {
+    issues.push(makeQaIssue({
+      severity: crDelta >= 2 ? "warning" : "info",
+      area: "control-gate",
+      check: "low-cr-hard-control-stack",
+      id: frame.id,
+      title: computed.name || frame.id,
+      path: "computed.lowCrHardControlProfile",
+      message: `${lowCrHardControlProfile.hardControlCount} reliable hard-control features are selected at target CR ${targetCr}.`,
+      recommendation: crDelta >= 2
+        ? "Use Stress QA for this combination, raise target CR, or remove one hard-control graft below CR 4."
+        : "Informational: control-aware fitting kept this low-CR control stack inside publish tolerance.",
+      details: { lowCrHardControlProfile, crValidation, crDelta },
+    }));
+  }
 
   if (crDelta >= 4) {
     issues.push(makeQaIssue({
@@ -609,6 +626,11 @@ function summarizeGeneratedMonster({ frame, context, artifacts, issueCount, info
     crFitInitialDprTarget: computed.crFitProfile?.initial?.dprTarget,
     crFitFinalDprTarget: computed.crFitProfile?.final?.dprTarget,
     crFitDiagnostics: asArray(computed.crFitProfile?.diagnostics).map((diagnostic) => diagnostic.code),
+    crFitFinalSaveDcTarget: computed.crFitProfile?.final?.saveDcTarget,
+    crFitFinalPrintedSaveDc: computed.crFitProfile?.final?.printedSaveDc,
+    lowCrHardControlStatus: computed.lowCrHardControlProfile?.status || "not-run",
+    lowCrHardControlCount: computed.lowCrHardControlProfile?.hardControlCount || 0,
+    lowCrHardControlFeatures: asArray(computed.lowCrHardControlProfile?.hardControlFeatures).map((feature) => feature.title || feature.id),
     warningCount: asArray(computed.warnings).length,
     issueCount,
     infoCount,
