@@ -473,14 +473,22 @@ function formatSavePrefix(resolution, targeting, computed, options = {}) {
   return `${ability} Saving Throw: DC ${dc}${target ? `, ${target}` : ""}.`;
 }
 
+function formatAreaSize(areaLike = {}) {
+  const size = Number(areaLike?.size || 0);
+  if (!Number.isFinite(size) || size <= 0) return "";
+  const unit = areaLike.unit === "ft" || !areaLike.unit ? "foot" : areaLike.unit;
+  return `${size}-${unit}`;
+}
+
 function formatTargeting(targeting) {
   if (!targeting) return "";
   if (targeting.text) return targeting.text;
   if (targeting.type === "area") {
-    const size = targeting.size ? `${targeting.size}-${targeting.unit === "ft" ? "foot" : targeting.unit || "ft"}` : "";
-    const shape = targeting.shape ? titleCase(targeting.shape) : "area";
-    const targets = targeting.targets || "creatures in the area";
-    return `${targets} in a ${size} ${shape}`.replace(/\s+/g, " ").trim();
+    const size = formatAreaSize(targeting);
+    const shape = targeting.shape && targeting.shape !== "custom" ? titleCase(targeting.shape) : "area";
+    const targets = targeting.targets || "creatures";
+    if (size) return `${targets} in a ${size} ${shape}`.replace(/\s+/g, " ").trim();
+    return `${targets} in the affected ${shape}`.replace(/\s+/g, " ").trim();
   }
   return targeting.targets || "";
 }
@@ -493,25 +501,26 @@ function areaEffectToTargeting(areaEffect) {
     size: areaEffect.size,
     unit: areaEffect.unit || "ft",
     targets: areaEffect.targets || "creatures",
-    text: areaEffect.targetingText,
+    text: cleanString(areaEffect.targetingText),
   };
 }
 
 function formatAreaOrigin(areaEffect) {
   const origin = areaEffect?.origin || "self";
-  if (origin === "self") return "from the monster";
-  if (origin === "target") return "from the target";
-  if (origin === "point") return "from a point the monster can see";
+  if (origin === "self") return "centered on the monster";
+  if (origin === "target") return "centered on the target";
+  if (origin === "point") return "at a point the monster can see";
   if (origin === "location") return "in the location";
-  return cleanString(areaEffect?.origin) || "from the monster";
+  return cleanString(areaEffect?.origin) || "centered on the monster";
 }
 
 function formatAreaEffectArea(areaEffect) {
   if (!areaEffect?.enabled) return "";
-  const size = areaEffect.size ? `${areaEffect.size}-${areaEffect.unit === "ft" ? "foot" : areaEffect.unit || "ft"}` : "";
+  const size = formatAreaSize(areaEffect);
   const shape = titleCase(areaEffect.shape || "emanation");
   const origin = formatAreaOrigin(areaEffect);
-  return `${size ? `${size} ` : ""}${shape} ${origin}`.replace(/\s+/g, " ").trim();
+  if (!size) return `an affected ${shape.toLowerCase()} area ${origin}`.replace(/\s+/g, " ").trim();
+  return `a ${size} ${shape} ${origin}`.replace(/\s+/g, " ").trim();
 }
 
 function formatAreaEffectTiming(areaEffect) {
@@ -554,7 +563,7 @@ function renderAreaEffectRules(feature, rules, computed, options = {}) {
     rules.ongoing?.enabled ? formatOngoingEffect(rules, computed, options) : "",
     rules.text?.effect ? applyTokens(rules.text.effect, context, options) : "",
   ].filter(Boolean);
-  const base = `${timing}, ${targets} in the ${area} are affected.`;
+  const base = `${timing}, ${targets} within ${area} are affected.`;
   const effect = effectParts.length ? effectParts.join(" ") : "";
   return joinSentences([base, effect]).replace(/\.\s*\./g, ".").replace(/\s+/g, " ").trim();
 }

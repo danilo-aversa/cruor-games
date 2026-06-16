@@ -373,17 +373,7 @@ const RAW_MONSTER_GRAFTS = [
             "targets": "the creature"
         },
         "areaEffect": {
-            "enabled": true,
-            "type": "aura",
-            "shape": "radius",
-            "size": null,
-            "unit": "ft",
-            "origin": "point",
-            "timing": "startsTurnInArea",
-            "targets": "enemies",
-            "excludes": [],
-            "repeatTiming": "startsTurnInArea",
-            "text": ""
+            "enabled": false
         },
         "damage": {
             "mode": "none",
@@ -401,7 +391,9 @@ const RAW_MONSTER_GRAFTS = [
             "positioningAnswer": false,
             "nonDamageAnswer": false
         },
-        "text": {},
+        "text": {
+            "effect": "When the creature starts its turn bloodied, it can move up to 10 feet toward the nearest enemy without provoking Opportunity Attacks, then it must attack that enemy if able."
+        },
         "multiattack": null,
         "spellcasting": null,
         "defense": null,
@@ -1564,14 +1556,14 @@ const RAW_MONSTER_GRAFTS = [
             "enabled": true,
             "type": "aura",
             "shape": "radius",
-            "size": null,
+            "size": 10,
             "unit": "ft",
-            "origin": "point",
+            "origin": "self",
             "timing": "passive",
             "targets": "creatures",
             "excludes": [],
             "repeatTiming": "passive",
-            "text": ""
+            "text": "When the creature dies or drops to 0 Hit Points, its corpse creates a 10-foot Radius patch of slick rot. The area is difficult terrain. A creature that examines the patch can find one clue tied to the Source Anchor."
         },
         "damage": {
             "mode": "none",
@@ -1725,16 +1717,20 @@ const RAW_MONSTER_GRAFTS = [
         },
         "secondaryResolution": null,
         "targeting": {
-            "type": "custom",
-            "targets": "the death trigger area or named target"
+            "type": "area",
+            "shape": "radius",
+            "size": 15,
+            "unit": "ft",
+            "targets": "creatures"
         },
         "areaEffect": {
             "enabled": true,
             "type": "aura",
             "shape": "radius",
-            "size": null,
+            "size": 15,
             "unit": "ft",
-            "origin": "point",
+            "origin": "self",
+            "targetingText": "each creature in a 15-foot Radius centered on the corpse",
             "timing": "passive",
             "targets": "creatures",
             "excludes": [],
@@ -1816,16 +1812,19 @@ const RAW_MONSTER_GRAFTS = [
         "secondaryResolution": null,
         "targeting": {
             "type": "area",
-            "shape": "custom",
-            "targets": "creatures in the affected area"
+            "shape": "radius",
+            "size": 10,
+            "unit": "ft",
+            "targets": "creatures"
         },
         "areaEffect": {
             "enabled": true,
             "type": "aura",
             "shape": "radius",
-            "size": null,
+            "size": 10,
             "unit": "ft",
             "origin": "point",
+            "targetingText": "each creature in a 10-foot Radius at a point the monster can see",
             "timing": "initiativeCount20",
             "targets": "creatures",
             "excludes": [],
@@ -1906,9 +1905,10 @@ const RAW_MONSTER_GRAFTS = [
             "enabled": true,
             "type": "aura",
             "shape": "radius",
-            "size": null,
+            "size": 5,
             "unit": "ft",
-            "origin": "self",
+            "origin": "point",
+            "targetingText": "each creature within 5 feet of the swelling corpse or body part",
             "timing": "initiativeCount20",
             "targets": "creatures",
             "excludes": [],
@@ -3607,21 +3607,23 @@ const RAW_MONSTER_GRAFTS = [
         "secondaryResolution": null,
         "targeting": {
             "type": "area",
-            "shape": "custom",
-            "targets": "creatures in the affected area"
+            "shape": "radius",
+            "size": 20,
+            "unit": "ft",
+            "targets": "creatures"
         },
         "areaEffect": {
             "enabled": true,
             "type": "aura",
             "shape": "radius",
-            "size": null,
+            "size": 20,
             "unit": "ft",
             "origin": "point",
             "timing": "initiativeCount20",
             "targets": "creatures",
             "excludes": [],
             "repeatTiming": "initiativeCount20",
-            "text": ""
+            "text": "At initiative count 20, choose a 20-foot Radius at a point the monster can see. Until the next count 20, sound in that area is muffled. Creatures inside have disadvantage on checks relying on hearing, and verbal spell components require a successful spellcasting ability check against the monster DC."
         },
         "damage": {
             "mode": "none",
@@ -3686,7 +3688,7 @@ const RAW_MONSTER_GRAFTS = [
         "targeting": {
             "type": "area",
             "shape": "radius",
-            "size": 60,
+            "size": 10,
             "unit": "ft",
             "targets": "creatures"
         },
@@ -3694,9 +3696,10 @@ const RAW_MONSTER_GRAFTS = [
             "enabled": true,
             "type": "aura",
             "shape": "radius",
-            "size": null,
+            "size": 10,
             "unit": "ft",
-            "origin": "self",
+            "origin": "point",
+            "targetingText": "each creature within 10 feet of one funerary object or corpse within 60 feet of the monster",
             "timing": "initiativeCount20",
             "targets": "creatures",
             "excludes": [],
@@ -3721,7 +3724,8 @@ const RAW_MONSTER_GRAFTS = [
         },
         "text": {
             "failure": "The target must spend 10 feet of movement moving toward the luring funerary object or corpse.",
-            "success": "No effect."
+            "success": "No effect.",
+            "effect": "The luring funerary object or corpse must be within 60 feet of the monster."
         },
         "multiattack": null,
         "spellcasting": null,
@@ -5788,17 +5792,7 @@ const RAW_MONSTER_GRAFTS = [
             "targets": "creatures in the affected area"
         },
         "areaEffect": {
-            "enabled": true,
-            "type": "aura",
-            "shape": "radius",
-            "size": null,
-            "unit": "ft",
-            "origin": "point",
-            "timing": "initiativeCount20",
-            "targets": "creatures",
-            "excludes": [],
-            "repeatTiming": "initiativeCount20",
-            "text": ""
+            "enabled": false
         },
         "damage": {
             "mode": "none",
@@ -5817,7 +5811,7 @@ const RAW_MONSTER_GRAFTS = [
             "nonDamageAnswer": true
         },
         "text": {
-            "effect": "At initiative count 20, creatures without Web Walker have disadvantage on Dexterity Saving Throws and Dexterity (Acrobatics) checks until initiative count 20 on the next round."
+            "effect": "At initiative count 20, creatures in the lair without Web Walker have disadvantage on Dexterity Saving Throws and Dexterity (Acrobatics) checks until initiative count 20 on the next round."
         },
         "multiattack": null,
         "spellcasting": null,
@@ -5862,23 +5856,23 @@ const RAW_MONSTER_GRAFTS = [
         "secondaryResolution": null,
         "targeting": {
             "type": "area",
-            "shape": "radius",
-            "size": 60,
+            "shape": "cube",
+            "size": 20,
             "unit": "ft",
             "targets": "creatures"
         },
         "areaEffect": {
             "enabled": true,
             "type": "aura",
-            "shape": "radius",
-            "size": null,
+            "shape": "cube",
+            "size": 20,
             "unit": "ft",
-            "origin": "self",
+            "origin": "point",
             "timing": "initiativeCount20",
             "targets": "creatures",
             "excludes": [],
             "repeatTiming": "initiativeCount20",
-            "text": ""
+            "text": "At initiative count 20, the monster creates magical webbing in a 20-foot Cube at a point it can see within 60 feet. While maintaining this effect, it cannot take other lair actions. A target that succeeds on the saving throw or escapes becomes immune to this lair action for 24 hours."
         },
         "damage": {
             "mode": "none",
@@ -5944,17 +5938,7 @@ const RAW_MONSTER_GRAFTS = [
             "targets": "creatures in the affected area"
         },
         "areaEffect": {
-            "enabled": true,
-            "type": "aura",
-            "shape": "radius",
-            "size": null,
-            "unit": "ft",
-            "origin": "point",
-            "timing": "initiativeCount20",
-            "targets": "creatures",
-            "excludes": [],
-            "repeatTiming": "initiativeCount20",
-            "text": ""
+            "enabled": false
         },
         "damage": {
             "mode": "none",
@@ -5972,7 +5956,9 @@ const RAW_MONSTER_GRAFTS = [
             "positioningAnswer": true,
             "nonDamageAnswer": false
         },
-        "text": {},
+        "text": {
+            "effect": "At initiative count 20, choose one visible surface in the lair. Until cleared or burned, it becomes difficult terrain for creatures without Web Walker. Spiders attacking surprised targets on that surface have advantage."
+        },
         "multiattack": null,
         "spellcasting": null,
         "defense": null,

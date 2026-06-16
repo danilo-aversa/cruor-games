@@ -1,4 +1,4 @@
-export const MONSTER_STAT_BLOCK_PARSER_VERSION = "rendered-statblock-parser-v1.27";
+export const MONSTER_STAT_BLOCK_PARSER_VERSION = "rendered-statblock-parser-v1.31";
 
 const DND_CONDITIONS = Object.freeze([
   "Blinded",
