@@ -1,4 +1,5 @@
 import {
+  BLOCKING_DAMAGE_ISSUE_CODES,
   getDamageExpectedTargets,
   getDamageParts,
   getDamageRoundWeight,
@@ -6,7 +7,7 @@ import {
 import { buildMonsterAbilitiesFromFeatures } from "../../model/monster-ability-model.js";
 import { getLegalDamageRollForRules } from "./monster-rules-engine.js";
 
-export const MONSTER_DPR_SIMULATOR_VERSION = "three-round-dpr-v0.2-ability-model";
+export const MONSTER_DPR_SIMULATOR_VERSION = "three-round-dpr-v0.3-rules-complete";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -85,6 +86,12 @@ function getRoundWeights(damage, rules) {
   return [1, 1, 1];
 }
 
+
+function hasBlockingDamageIssue(ability = {}) {
+  const blockingCodes = new Set(BLOCKING_DAMAGE_ISSUE_CODES);
+  return (ability.rulesValidation?.issues || []).some((issue) => issue.severity === "error" && blockingCodes.has(issue.code));
+}
+
 function isDamageRelevant(damage = {}) {
   if (!damage || damage.mode === "none") return false;
   if (damage.mode === "parts") return getDamageParts(damage).length > 0;
@@ -93,6 +100,7 @@ function isDamageRelevant(damage = {}) {
 }
 
 function collectAbilityDamageEntries(ability = {}) {
+  if (hasBlockingDamageIssue(ability)) return [];
   if (Array.isArray(ability.damage?.entries) && ability.damage.entries.length) {
     return ability.damage.entries.map((entry) => ({
       kind: entry.source || "damage",

@@ -56,6 +56,7 @@ import {
   buildComplexityProfile,
   buildCounterplayAudit,
   buildPressureProfile,
+  applyPressureValidationFloor,
   getFeatureComplexityWeight,
   getFeatureCounterplayProfile,
   getFeatureMechanicProfile,
@@ -537,6 +538,37 @@ function findReplacementFix({
   return candidates[0]?.feature || null;
 }
 
+function getTopDamageSpikeFeature({ dprProfile, selectedFeatures, baseline, includeDeathBurst = false }) {
+  const byId = new Map(selectedFeatures.map((feature) => [feature.id, feature]));
+  const baselineDpr = Math.max(1, Number(baseline?.dpr || 1));
+  const sources = Array.isArray(dprProfile?.sources) ? dprProfile.sources : [];
+  const rankedSources = sources
+    .filter((source) => {
+      const feature = byId.get(source.featureId);
+      if (!feature) return false;
+      const isDeathBurst = source.actionEconomy === "deathTrigger" || source.budgetRole === "deathBurst";
+      if (isDeathBurst && !includeDeathBurst) return false;
+      return Number(source.averageDpr || source.totalThreeRound || 0) > 0;
+    })
+    .sort((a, b) =>
+      Number(b.averageDpr || 0) - Number(a.averageDpr || 0) ||
+      Number(b.totalThreeRound || 0) - Number(a.totalThreeRound || 0) ||
+      String(a.title || "").localeCompare(String(b.title || ""))
+    );
+
+  const source = rankedSources[0];
+  if (!source) return null;
+  const isLargeEnough =
+    Number(source.averageDpr || 0) >= baselineDpr * 0.35 ||
+    Number(source.totalThreeRound || 0) >= baselineDpr * 0.9;
+  return isLargeEnough ? byId.get(source.featureId) : null;
+}
+
+function shouldTargetDeathBurstForDamageFix({ effectiveProfile, baseline }) {
+  const baselineDpr = Math.max(1, Number(baseline?.dpr || 1));
+  return Number(effectiveProfile?.burstDpr || 0) >= baselineDpr * 2.5;
+}
+
 function buildOneClickFixes({
   issue,
   selected,
@@ -555,6 +587,7 @@ function buildOneClickFixes({
   targetCr,
   topPressureFeature,
   topComplexityFeature,
+  topDamageFeature,
 }) {
   const fixes = [];
   const pushFix = (fix) => {
@@ -615,7 +648,7 @@ function buildOneClickFixes({
     pushFix({ label: `Add ${weaknessFix.title}`, kind: "addFeature", featureId: weaknessFix.id });
   }
 
-  if (["pressure", "damage", "hp"].includes(issue) && topPressureFeature) {
+  if (["pressure", "hp"].includes(issue) && topPressureFeature) {
     const replacement = findReplacementFix({
       feature: topPressureFeature,
       selected,
@@ -641,6 +674,35 @@ function buildOneClickFixes({
       label: `Remove ${topPressureFeature.title}`,
       kind: "removeFeature",
       featureId: topPressureFeature.id,
+    });
+  }
+
+  if (issue === "damage" && topDamageFeature) {
+    const replacement = findReplacementFix({
+      feature: topDamageFeature,
+      selected,
+      selectedFeatures,
+      typeId,
+      category,
+      activePreset,
+      roleId,
+      sourceId,
+      composerMode,
+      customMode,
+      ...frameArgs,
+      reason: "pressure",
+    });
+    if (replacement)
+      pushFix({
+        label: `Replace with ${replacement.title}`,
+        kind: "replaceFeature",
+        removeFeatureId: topDamageFeature.id,
+        addFeatureId: replacement.id,
+      });
+    pushFix({
+      label: `Remove ${topDamageFeature.title}`,
+      kind: "removeFeature",
+      featureId: topDamageFeature.id,
     });
   }
 
@@ -710,6 +772,8 @@ function buildBalanceRecommendations({
   hp,
   dpr,
   effectiveProfile,
+  dprProfile,
+  crValidation,
 }) {
   const recommendations = [];
   const addRecommendation = (item) => {
@@ -719,6 +783,15 @@ function buildBalanceRecommendations({
 
   const topPressureFeature = getTopFeatureByWeight(selectedFeatures, getFeaturePressureWeight);
   const topComplexityFeature = getTopFeatureByWeight(selectedFeatures, getFeatureComplexityWeight);
+  const deathBurstIsPrimarySpike = shouldTargetDeathBurstForDamageFix({ effectiveProfile, baseline });
+  const topDamageFeature = getTopDamageSpikeFeature({
+    dprProfile,
+    selectedFeatures,
+    baseline,
+    includeDeathBurst: deathBurstIsPrimarySpike,
+  });
+  const crDelta = Number(crValidation?.deltaFromTarget || 0);
+  const offensiveDelta = Number(crValidation?.offensive?.cr || targetCr || 0) - Number(targetCr || 0);
   const frameArgs = { tacticalRoleId, monsterTierId, tempoProfileId, dangerId, targetCr };
   const hasWeakness = hasSelectedSlot(selected, "weakness");
   const hasTwist = hasSelectedSlot(selected, "twist");
@@ -753,6 +826,7 @@ function buildBalanceRecommendations({
           ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
+          topDamageFeature,
         }),
         { label: "Open Weakness Slot", kind: "slot", slotId: "weakness" },
       ],
@@ -782,6 +856,7 @@ function buildBalanceRecommendations({
           ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
+          topDamageFeature,
         }),
         topPressureFeature
           ? {
@@ -818,6 +893,7 @@ function buildBalanceRecommendations({
           ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
+          topDamageFeature,
         }),
         topComplexityFeature
           ? {
@@ -855,6 +931,7 @@ function buildBalanceRecommendations({
           ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
+          topDamageFeature,
         }),
         { label: "Open Weakness Slot", kind: "slot", slotId: "weakness" },
       ],
@@ -885,6 +962,7 @@ function buildBalanceRecommendations({
           ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
+          topDamageFeature,
         }),
         { label: "Open Weakness Slot", kind: "slot", slotId: "weakness" },
       ],
@@ -915,6 +993,7 @@ function buildBalanceRecommendations({
           ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
+          topDamageFeature,
         }),
         topComplexityFeature
           ? {
@@ -949,6 +1028,7 @@ function buildBalanceRecommendations({
           ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
+          topDamageFeature,
         }),
         { label: "Open Twist Slot", kind: "slot", slotId: "twist" },
         { label: "Open Lair Slot", kind: "slot", slotId: "lair" },
@@ -977,6 +1057,7 @@ function buildBalanceRecommendations({
           ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
+          topDamageFeature,
         }),
         topPressureFeature
           ? {
@@ -991,11 +1072,14 @@ function buildBalanceRecommendations({
   }
 
   if (dpr > baseline.dpr * 1.4 || effectiveProfile.burstDpr > baseline.dpr * 1.75) {
+    const isSystemicOvertarget = crDelta >= 2 && offensiveDelta <= 3 && !topDamageFeature;
     addRecommendation({
       id: "damage-spike",
-      severity: "major",
-      title: "Limit the Damage Spike",
-      detail: "Damage or burst is above the expected profile.",
+      severity: crDelta >= 3 || offensiveDelta >= 4 ? "major" : "minor",
+      title: isSystemicOvertarget ? "Tune Overall Damage" : "Limit the Damage Spike",
+      detail: topDamageFeature
+        ? `${topDamageFeature.title} is the first damaging graft to review.`
+        : "Damage is above the expected profile, but no single damaging graft is clearly responsible.",
       actions: [
         ...buildOneClickFixes({
           issue: "damage",
@@ -1011,9 +1095,25 @@ function buildBalanceRecommendations({
           ...frameArgs,
           topPressureFeature,
           topComplexityFeature,
+          topDamageFeature,
         }),
         { label: "Open Attack Slot", kind: "slot", slotId: "attack" },
         { label: "Open Weakness Slot", kind: "slot", slotId: "weakness" },
+        crDelta >= 2 ? { label: `Set ${titleCase(nextTier)} Tier`, kind: "tier", tierId: nextTier } : null,
+      ].filter(Boolean),
+    });
+  }
+
+  if (crDelta >= 2 && dpr <= baseline.dpr * 1.45 && effectiveProfile.burstDpr <= baseline.dpr * 2) {
+    addRecommendation({
+      id: "cr-above-target-tune-frame",
+      severity: crDelta >= 3 ? "major" : "minor",
+      title: "Treat as Higher CR or Trim One Graft",
+      detail: `Validation estimates CR ${crValidation?.estimatedCr}; target CR ${targetCr}. This looks like a general frame mismatch, not a single broken graft.`,
+      actions: [
+        { label: `Set ${titleCase(nextTier)} Tier`, kind: "tier", tierId: nextTier },
+        { label: "Open Monster Frame", kind: "frame" },
+        { label: "Open Attack Slot", kind: "slot", slotId: "attack" },
       ],
     });
   }
@@ -1374,7 +1474,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     const cost = selectedFeatures.reduce((sum, feature) => sum + feature.cost, 0);
     const rawComplexity = selectedFeatures.reduce((sum, feature) => sum + feature.complexity, 0);
     const budget = effectivePressureBudget;
-    const pressureProfile = buildPressureProfile({
+    let pressureProfile = buildPressureProfile({
       cost,
       monsterTier,
       tempoProfile,
@@ -1388,16 +1488,6 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       featureMechanics,
       limit: effectiveComplexityCap,
     });
-    const counterplayAudit = buildCounterplayAudit({
-      selected,
-      roleId,
-      monsterTier,
-      pressureProfile,
-      complexityProfile,
-      mechanicsSummary,
-      counterplayProfiles,
-    });
-    const pressure = pressureProfile.score;
     const complexity = complexityProfile.score;
     const targetHpValue = Math.max(1, Math.round(baseHp + (statMods.hp || 0)));
     const targetAcValue = clamp(baseAc + (statMods.ac || 0), 10, 28);
@@ -1459,6 +1549,25 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       effectiveProfile,
       monsterTier,
       mechanicsSummary,
+    });
+    pressureProfile = applyPressureValidationFloor({
+      pressureProfile,
+      budget,
+      targetCr,
+      baseline,
+      printedStats,
+      effectiveProfile,
+      crValidation,
+    });
+    const pressure = pressureProfile.score;
+    const counterplayAudit = buildCounterplayAudit({
+      selected,
+      roleId,
+      monsterTier,
+      pressureProfile,
+      complexityProfile,
+      mechanicsSummary,
+      counterplayProfiles,
     });
     const profileDeltas = buildMonsterComposerProfileDeltas(printedStats, effectiveProfile, baseline);
     const bestiaryBaselineAudit = buildBestiaryBaselineAudit({
@@ -1610,6 +1719,8 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       hp,
       dpr,
       effectiveProfile,
+      dprProfile,
+      crValidation,
     });
 
     return {

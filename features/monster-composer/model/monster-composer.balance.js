@@ -310,6 +310,7 @@ export const PRESSURE_LABELS = {
   tempo: "Tempo",
   defense: "Defense",
   sustain: "Sustain",
+  validation: "Validation",
   other: "Other",
 };
 
@@ -333,39 +334,48 @@ export function buildPressureProfile({
   const pressureTags = mechanicsSummary.pressureTags || {};
   const positiveCost = Math.max(0, cost);
   const fairnessRelief = Math.max(0, statMods.fairness || 0);
+  const offensePressure =
+    Math.max(0, statMods.dpr || 0) * 0.2 +
+    tagCount(pressureTags, "single_target") * 0.5 +
+    tagCount(pressureTags, "reaction_burst") * 1.1 +
+    tagCount(pressureTags, "burst") * 1.4;
+  const areaPressure = tagCount(pressureTags, "area") * 1 + tagCount(pressureTags, "death_burst") * 0.6;
+  const controlPressure =
+    Math.max(0, statMods.control || 0) * 0.45 +
+    tagCount(pressureTags, "control") * 0.9 +
+    tagCount(pressureTags, "ranged_lockdown") * 1 +
+    tagCount(pressureTags, "single_target_lockdown") * 1 +
+    tagCount(pressureTags, "control_synergy") * 0.4;
+  const tempoPressure =
+    monsterTier.pressureMod * 0.55 +
+    tempoProfile.pressureMod * 0.7 +
+    tagCount(pressureTags, "tempo") * 1 +
+    tagCount(pressureTags, "action_economy") * 1.1 +
+    tagCount(pressureTags, "retaliation") * 0.8;
+  const defensePressure =
+    Math.max(0, statMods.hp || 0) / 28 +
+    Math.max(0, statMods.ac || 0) * 0.85 +
+    tagCount(pressureTags, "defense_stack") * 0.8 +
+    tagCount(pressureTags, "save_defense") * 1.1 +
+    tagCount(pressureTags, "anti_spell_defense") * 0.7 +
+    tagCount(pressureTags, "defensive_reaction") * 0.8;
+  const sustainPressure =
+    tagCount(pressureTags, "sustain") * 0.8 +
+    tagCount(pressureTags, "regeneration") * 1.2 +
+    tagCount(pressureTags, "escalation") * 1 +
+    tagCount(pressureTags, "campaign_pressure") * 0.5;
+  const positiveSubtotal =
+    positiveCost * 0.35 + offensePressure + areaPressure + controlPressure + tempoPressure + defensePressure + sustainPressure;
+  const fairnessCredit = Math.min(fairnessRelief * 0.85, 3, positiveSubtotal * 0.35);
   const breakdown = roundBreakdown({
     base: positiveCost * 0.35,
-    offense:
-      Math.max(0, statMods.dpr || 0) * 0.2 +
-      tagCount(pressureTags, "single_target") * 0.5 +
-      tagCount(pressureTags, "reaction_burst") * 1.1 +
-      tagCount(pressureTags, "burst") * 1.4,
-    area: tagCount(pressureTags, "area") * 1 + tagCount(pressureTags, "death_burst") * 0.6,
-    control:
-      Math.max(0, statMods.control || 0) * 0.45 +
-      tagCount(pressureTags, "control") * 0.9 +
-      tagCount(pressureTags, "ranged_lockdown") * 1 +
-      tagCount(pressureTags, "single_target_lockdown") * 1 +
-      tagCount(pressureTags, "control_synergy") * 0.4,
-    tempo:
-      monsterTier.pressureMod * 0.55 +
-      tempoProfile.pressureMod * 0.7 +
-      tagCount(pressureTags, "tempo") * 1 +
-      tagCount(pressureTags, "action_economy") * 1.1 +
-      tagCount(pressureTags, "retaliation") * 0.8,
-    defense:
-      Math.max(0, statMods.hp || 0) / 28 +
-      Math.max(0, statMods.ac || 0) * 0.85 +
-      tagCount(pressureTags, "defense_stack") * 0.8 +
-      tagCount(pressureTags, "save_defense") * 1.1 +
-      tagCount(pressureTags, "anti_spell_defense") * 0.7 +
-      tagCount(pressureTags, "defensive_reaction") * 0.8,
-    sustain:
-      tagCount(pressureTags, "sustain") * 0.8 +
-      tagCount(pressureTags, "regeneration") * 1.2 +
-      tagCount(pressureTags, "escalation") * 1 +
-      tagCount(pressureTags, "campaign_pressure") * 0.5,
-    other: Math.max(0, statMods.mobility || 0) * 0.35 - fairnessRelief * 1.35,
+    offense: offensePressure,
+    area: areaPressure,
+    control: controlPressure,
+    tempo: tempoPressure,
+    defense: defensePressure,
+    sustain: sustainPressure,
+    other: Math.max(0, statMods.mobility || 0) * 0.35 - fairnessCredit,
   });
   const score = Math.max(0, Math.round(sumBreakdown(breakdown)));
   return {
@@ -373,6 +383,92 @@ export function buildPressureProfile({
     label: profileBand(score, budget),
     breakdown,
     sources: buildProfileSources(breakdown, PRESSURE_LABELS),
+  };
+}
+
+function pressureFloorScore({
+  pressureProfile,
+  budget,
+  targetCr,
+  baseline,
+  printedStats,
+  effectiveProfile,
+  crValidation,
+}) {
+  const limit = Math.max(1, Number(budget || 1));
+  const target = Math.max(0, Number(targetCr || 0));
+  const estimatedCr = Number(crValidation?.estimatedCr ?? target);
+  const offensiveCr = Number(crValidation?.offensive?.cr ?? target);
+  const defensiveCr = Number(crValidation?.defensive?.cr ?? target);
+  const crDelta = estimatedCr - target;
+  const offensiveDelta = offensiveCr - target;
+  const defensiveDelta = defensiveCr - target;
+  const baselineDpr = Math.max(1, Number(baseline?.dpr || 1));
+  const baselineHp = Math.max(1, Number(baseline?.hp || 1));
+  const printedDprRatio = Number(printedStats?.dpr || 0) / baselineDpr;
+  const effectiveDprRatio = Number(effectiveProfile?.effectiveDpr3Round || 0) / baselineDpr;
+  const burstRatio = Number(effectiveProfile?.burstDpr || 0) / baselineDpr;
+  const effectiveHpRatio = Number(effectiveProfile?.effectiveHp || 0) / baselineHp;
+  const conditionAdjustment = Number(effectiveProfile?.conditionProfile?.crAdjustment || 0);
+  let floor = 0;
+
+  if (crDelta >= 2) floor = Math.max(floor, Math.ceil(limit * 0.62));
+  if (crDelta >= 3 || offensiveDelta >= 4 || defensiveDelta >= 4) floor = Math.max(floor, Math.ceil(limit * 0.86));
+  if (crDelta >= 5 || offensiveDelta >= 6 || burstRatio >= 3) floor = Math.max(floor, limit + 1);
+  if (printedDprRatio >= 1.35 || effectiveDprRatio >= 1.35) floor = Math.max(floor, Math.ceil(limit * 0.62));
+  if (burstRatio >= 1.75) floor = Math.max(floor, Math.ceil(limit * 0.62));
+  if (effectiveHpRatio >= 1.35) floor = Math.max(floor, Math.ceil(limit * 0.62));
+  if (conditionAdjustment >= 1) floor = Math.max(floor, Math.ceil(limit * 0.62));
+
+  return Math.max(Number(pressureProfile?.score || 0), floor);
+}
+
+export function applyPressureValidationFloor({
+  pressureProfile,
+  budget,
+  targetCr,
+  baseline,
+  printedStats,
+  effectiveProfile,
+  crValidation,
+}) {
+  if (!pressureProfile) return pressureProfile;
+  const currentScore = Math.max(0, Number(pressureProfile.score || 0));
+  const flooredScore = pressureFloorScore({
+    pressureProfile,
+    budget,
+    targetCr,
+    baseline,
+    printedStats,
+    effectiveProfile,
+    crValidation,
+  });
+  if (flooredScore <= currentScore) {
+    return {
+      ...pressureProfile,
+      label: profileBand(currentScore, budget),
+      sources: buildProfileSources(pressureProfile.breakdown || {}, PRESSURE_LABELS),
+    };
+  }
+
+  const validationDelta = Math.round(flooredScore - currentScore);
+  const breakdown = roundBreakdown({
+    ...(pressureProfile.breakdown || {}),
+    validation: Number(pressureProfile.breakdown?.validation || 0) + validationDelta,
+  });
+  const score = Math.max(0, Math.round(sumBreakdown(breakdown)));
+  return {
+    ...pressureProfile,
+    score,
+    label: profileBand(score, budget),
+    breakdown,
+    sources: buildProfileSources(breakdown, PRESSURE_LABELS),
+    floor: {
+      applied: true,
+      from: currentScore,
+      to: score,
+      reason: "CR/DPR/Burst validation floor",
+    },
   };
 }
 

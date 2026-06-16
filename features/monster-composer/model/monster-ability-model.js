@@ -1,4 +1,5 @@
 import {
+  BLOCKING_DAMAGE_ISSUE_CODES,
   getDamageBudgetShare,
   getDamageExpectedTargets,
   getDamageParts,
@@ -7,7 +8,7 @@ import {
   validateMonsterGraftRules,
 } from "./monster-graft-rules.schema.js";
 
-export const MONSTER_ABILITY_MODEL_VERSION = "monster-ability-model-v0.1";
+export const MONSTER_ABILITY_MODEL_VERSION = "monster-ability-model-v0.2";
 
 function asArray(value) {
   if (!value) return [];
@@ -137,6 +138,12 @@ function buildResolutionProfile(rules = {}) {
   };
 }
 
+
+function hasBlockingDamageIssue(rulesValidation = {}) {
+  const blockingCodes = new Set(BLOCKING_DAMAGE_ISSUE_CODES);
+  return (rulesValidation.issues || []).some((issue) => issue.severity === "error" && blockingCodes.has(issue.code));
+}
+
 function buildConditionEntries(condition = null) {
   if (!condition?.names?.length) return [];
   return condition.names.map((name) => ({
@@ -180,7 +187,7 @@ function buildAbilityTags({ rules, damageEntries, conditions, resolution }) {
 export function buildMonsterAbilityFromGraft(feature = {}, { index = 0 } = {}) {
   const rules = normalizeMonsterGraftRules(feature);
   const rulesValidation = validateMonsterGraftRules(feature);
-  const damageEntries = collectDamageEntries(rules);
+  const damageEntries = hasBlockingDamageIssue(rulesValidation) ? [] : collectDamageEntries(rules);
   const conditions = buildConditionEntries(rules.condition);
   const resolution = buildResolutionProfile(rules);
   const tags = buildAbilityTags({ rules, damageEntries, conditions, resolution });

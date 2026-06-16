@@ -1,4 +1,4 @@
-export const MONSTER_GRAFT_RULES_SCHEMA_VERSION = "monster-graft-rules-v1.12";
+export const MONSTER_GRAFT_RULES_SCHEMA_VERSION = "monster-graft-rules-v1.13";
 
 export const RULES_SECTIONS = Object.freeze([
   "trait",
@@ -1198,6 +1198,49 @@ export function normalizeMonsterGraftRules(feature = {}) {
   return feature.rules ? mergeExplicitRules(feature) : inferRulesFromLegacy(feature);
 }
 
+
+
+export const BLOCKING_DAMAGE_ISSUE_CODES = Object.freeze([
+  "damage-missing-explicit-amount",
+  "damage-half-success-without-failure-amount",
+  "damage-budget-role-mismatch",
+  "damage-missing-budget-role",
+]);
+
+function normalizeTextForValidation(value) {
+  return cleanString(value).toLowerCase();
+}
+
+function textMentionsOutgoingDamage(value = "") {
+  const text = normalizeTextForValidation(value);
+  if (!text) return false;
+  if (/\b(resistance|immunity|vulnerability|resistant|immune|vulnerable)\b[^.]*\bdamage\b/.test(text)) return false;
+  if (/\b(takes?|deals?|taking|dealing|suffers?|extra|bonus|half)\b[^.]*\bdamage\b/.test(text)) return true;
+  if (/\bhalf damage\b/.test(text)) return true;
+  return false;
+}
+
+function textHasExplicitDamageAmount(value = "") {
+  const text = cleanString(value);
+  if (!text) return false;
+  return /\{damage(?:[-A-Za-z0-9_:]*)?\}|\{damage-part:[^}]+\}|\{pb\}|proficiency bonus|\b\d+\s*\([^)]*\d+d\d+[^)]*\)|\b\d+d\d+\b/i.test(text);
+}
+
+function getRulesDamageTextFragments(rules = {}) {
+  const text = rules.text || {};
+  return [text.hit, text.failure, text.success, text.response, text.effect, text.hitOrMiss, text.failureOrSuccess].filter(Boolean);
+}
+
+function getExpectedDamageBudgetRoles(rules = {}) {
+  if (rules.actionEconomy === "deathTrigger") return ["deathBurst"];
+  if (rules.actionEconomy === "reaction") return ["reactionPunish", "deathBurst"];
+  if (rules.actionEconomy === "bonusAction") return ["bonusAction"];
+  if (rules.actionEconomy === "legendaryAction") return ["legendaryStrike"];
+  if (rules.actionEconomy === "lairAction") return ["lairPulse"];
+  if (rules.usage?.type === "recharge") return ["rechargeBurst", "rechargeControl", "ongoing"];
+  return [];
+}
+
 function pushIssue(issues, severity, code, message, path = "rules") {
   issues.push({ severity, code, message, path });
 }
@@ -1260,19 +1303,40 @@ export function validateMonsterGraftRules(feature = {}) {
 
   const damageParts = getDamageParts(rules.damage);
   const budgetDamageEntries = damageParts.length ? damageParts : rules.damage?.mode === "budget" ? [rules.damage] : [];
+  const expectedBudgetRoles = getExpectedDamageBudgetRoles(rules);
+  const explicitDamageTexts = getRulesDamageTextFragments(rules);
+  const textMentionsDamage = explicitDamageTexts.some(textMentionsOutgoingDamage);
+  const textHasAmount = explicitDamageTexts.some(textHasExplicitDamageAmount);
+  const successMentionsHalfDamage = textMentionsOutgoingDamage(rules.text?.success || "") && /half/i.test(cleanString(rules.text?.success || ""));
+
   budgetDamageEntries.forEach((damageEntry, index) => {
     const label = damageParts.length ? `Damage part ${damageEntry.id || index + 1}` : "Budget damage";
+    const path = damageParts.length ? `rules.damage.parts.${index}` : "rules.damage";
     if (!damageEntry.budgetRole || damageEntry.budgetRole === "none") {
-      pushIssue(issues, "warning", "damage-missing-budget-role", `${label} should define a role such as mainAttack, rechargeBurst, reactionPunish, or deathBurst.`, damageParts.length ? `rules.damage.parts.${index}` : "rules.damage");
+      pushIssue(issues, "error", "damage-missing-budget-role", `${label} must define a role such as mainAttack, rechargeBurst, reactionPunish, or deathBurst.`, path);
+    }
+    if (expectedBudgetRoles.length && !expectedBudgetRoles.includes(damageEntry.budgetRole)) {
+      pushIssue(issues, "error", "damage-budget-role-mismatch", `${label} uses ${damageEntry.budgetRole || "none"}, but ${rules.actionEconomy || rules.usage?.type} abilities should use ${expectedBudgetRoles.join(" or ")}.`, path);
+    }
+    if (damageEntry.budgetShare == null) {
+      pushIssue(issues, "warning", "damage-missing-explicit-budget-share", `${label} should define an explicit budgetShare instead of relying on defaults.`, path);
     }
     const budgetShare = getDamageBudgetShare(damageEntry, rules);
     if (budgetShare <= 0) {
-      pushIssue(issues, "warning", "damage-missing-budget-share", `${label} should resolve to a positive budget share.`, damageParts.length ? `rules.damage.parts.${index}` : "rules.damage");
+      pushIssue(issues, "warning", "damage-missing-budget-share", `${label} should resolve to a positive budget share.`, path);
     }
     if (budgetShare > 1.5 && rules.usage?.type !== "recharge" && rules.actionEconomy !== "deathTrigger") {
-      pushIssue(issues, "warning", "damage-share-high", `${label} shares above 150% should normally be reserved for recharge or death burst abilities.`, damageParts.length ? `rules.damage.parts.${index}` : "rules.damage");
+      pushIssue(issues, "warning", "damage-share-high", `${label} shares above 150% should normally be reserved for recharge or death burst abilities.`, path);
     }
   });
+
+  if (budgetDamageEntries.length && textMentionsDamage && !textHasAmount) {
+    pushIssue(issues, "error", "damage-missing-explicit-amount", "Damage text must include {damage}, {damage-part:id}, {pb}, a Proficiency Bonus amount, or explicit dice/average damage.", "rules.text");
+  }
+
+  if (budgetDamageEntries.length && successMentionsHalfDamage && !textHasAmount) {
+    pushIssue(issues, "error", "damage-half-success-without-failure-amount", "Success text says half damage, but the failure/hit/response text has no explicit damage amount.", "rules.text.success");
+  }
 
   if (rules.multiattack?.enabled) {
     if (rules.section !== "action" && rules.actionEconomy !== "action") {

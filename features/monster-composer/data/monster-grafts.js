@@ -9359,6 +9359,24 @@ export const FEATURE_FRAME_FIT_OVERRIDES = {
       "recommendedMin": 5
     }
   },
+  "flesh-harvest": {
+    rules: {
+      resolution: { type: "none" },
+      text: {
+        effect:
+          "The creature can consume a Medium or smaller corpse using an action. For each corpse consumed this way, it gains a +1 bonus to attack rolls, damage rolls, and AC until dawn, to a maximum bonus equal to its Proficiency Bonus.",
+      },
+    },
+  },
+  "enrage-broodmother": {
+    rules: {
+      resolution: { type: "none" },
+      text: {
+        response:
+          "Roll a d6. On a 4 or higher, the monster enrages until the combat ends, gaining a bonus to attack rolls, damage rolls, speed, and jump distance.",
+      },
+    },
+  },
   "venomous-spit": {
     "schemaVersion": "monster-frame-fit-v1.0",
     "encounterRoles": {
@@ -10344,6 +10362,391 @@ export const FEATURE_FRAME_FIT_OVERRIDES = {
   }
 };
 
+
+
+const DAMAGE_NONE_RULE = Object.freeze({
+  mode: "none",
+  budgetRole: "none",
+  types: [],
+  scale: "standard",
+  budgetShare: null,
+  expectedTargets: null,
+  parts: [],
+});
+
+const DAMAGE_RULES_CONTENT_CLEANUP_OVERRIDES = {
+  "slam-decomposition": {
+    rules: {
+      text: {
+        hit: "the target takes {damage} Bludgeoning damage. If the creature moved at least 10 feet straight toward the target this turn, add one extra damage die.",
+      },
+    },
+  },
+  "grave-bite": {
+    rules: {
+      text: {
+        hit: "the target takes {damage} Piercing and Necrotic damage. If the target is below half Hit Points, the monster gains Temporary Hit Points equal to the Necrotic damage dealt.",
+      },
+    },
+  },
+  "infected-bite": {
+    rules: {
+      text: {
+        hit: "the target takes {damage} Necrotic damage. If the target is not Undead, it makes a Constitution Saving Throw.",
+        failure: "At the end of its next Long Rest, the target gains 1 Exhaustion level, to a maximum of 3 levels from this feature.",
+        success: "No disease effect.",
+      },
+    },
+  },
+  "horrific-apparition": {
+    rules: {
+      text: {
+        failure: "The target takes {damage} Psychic damage and has the Frightened condition until the start of the spirit's next turn. If the target fails by 5 or more, it also suffers a supernatural aging or wasting mark that can be reversed by powerful restoration magic within 24 hours.",
+        success: "Half damage only.",
+      },
+    },
+  },
+  "venomous-bite": {
+    rules: {
+      text: {
+        hit: "the target takes {damage} Piercing and Poison damage and must make a Constitution Saving Throw.",
+        failure: "If this damage reduces the target to 0 Hit Points, it has the Paralyzed and Poisoned conditions for 1 hour.",
+        success: "No additional effect.",
+      },
+    },
+  },
+  "perforate": {
+    rules: {
+      text: {
+        hit: "the target takes {damage} Piercing damage and must make a Constitution Saving Throw.",
+        failure: "The wound keeps bleeding. The target takes Piercing damage equal to the monster's Proficiency Bonus at the start of each of its turns until it receives healing or a creature succeeds on a Medicine check to close the wound.",
+        success: "No ongoing wound.",
+      },
+    },
+  },
+  "flesh-harvest": {
+    rules: {
+      resolution: { type: "none" },
+      text: {
+        effect:
+          "The creature can consume a Medium or smaller corpse using an action. For each corpse consumed this way, it gains a +1 bonus to attack rolls, damage rolls, and AC until dawn, to a maximum bonus equal to its Proficiency Bonus.",
+      },
+    },
+  },
+  "enrage-broodmother": {
+    rules: {
+      resolution: { type: "none" },
+      text: {
+        response:
+          "Roll a d6. On a 4 or higher, the monster enrages until the combat ends, gaining a bonus to attack rolls, damage rolls, speed, and jump distance.",
+      },
+    },
+  },
+  "venomous-spit": {
+    rules: {
+      text: {
+        hit: "the target takes {damage} Poison damage.",
+      },
+    },
+  },
+  "cold-funeral-touch": {
+    rules: {
+      text: {
+        hit: "the target takes {damage} Cold and Necrotic damage. If the monster is wearing or presenting a recognizable face, it can move 10 feet after the hit without provoking opportunity attacks from that target.",
+      },
+    },
+  },
+  "rupture-charge": {
+    rules: {
+      damage: {
+        mode: "budget",
+        scale: "minor",
+        budgetRole: "bonusAction",
+        budgetShare: 0.15,
+        expectedTargets: 1,
+        roundWeight: [1, 1, 1],
+        types: ["bludgeoning"],
+        parts: [],
+      },
+      text: {
+        effect: "The creature moves up to half its speed in a straight line toward a creature it can see. Its next Slam before the end of the turn deals extra Bludgeoning damage equal to its Proficiency Bonus. After moving this way, roll a d6; on a 6, trigger one selected Unstable reaction without spending the reaction.",
+      },
+    },
+  },
+  "unstable-rupture": {
+    rules: {
+      damage: {
+        mode: "budget",
+        scale: "minor",
+        budgetRole: "reactionPunish",
+        budgetShare: 0.25,
+        expectedTargets: 1.25,
+        roundWeight: [0.1, 0.1, 0.1],
+        types: ["poison", "slashing"],
+        parts: [],
+      },
+      text: {
+        failure: "The target takes {damage} Poison and Slashing damage.",
+        success: "Half damage only.",
+      },
+    },
+    mechanics:
+      "Trigger: the creature takes piercing or slashing damage. Response: roll a d6. On a 6, the creature releases a toxic rupture. Dexterity Saving Throw: creatures within 10 feet. Failure: the target takes poison and slashing damage. Success: half damage only.",
+  },
+  "dangerously-unstable": {
+    rules: {
+      damage: {
+        mode: "budget",
+        budgetRole: "deathBurst",
+        budgetShare: 1.35,
+        expectedTargets: 1.75,
+        roundWeight: [0, 0, 0.25],
+        scale: "heavy",
+        types: ["poison"],
+        parts: [],
+      },
+      text: {
+        failure: "The target takes {damage} Poison damage and has the Prone condition. Creatures out to 80 feet take Thunder damage equal to the monster's Proficiency Bonus and may have the Deafened condition for 1 minute.",
+        success: "Half damage only.",
+        response:
+          "Roll a d6. On a 2 or higher, the creature detonates and destroys itself. {save} Failure: The target takes {damage} Poison damage and has the Prone condition. Success: Half damage only. Creatures out to 80 feet take Thunder damage equal to the monster's Proficiency Bonus and may have the Deafened condition for 1 minute.",
+      },
+    },
+  },
+  "toxic-detonation": {
+    stats: { dpr: 1, control: 1 },
+    rules: {
+      damage: {
+        mode: "budget",
+        scale: "minor",
+        budgetRole: "deathBurst",
+        budgetShare: 0.45,
+        expectedTargets: 1.25,
+        roundWeight: [0, 0, 0.25],
+        types: ["poison"],
+        parts: [],
+      },
+      text: {
+        failure: "The target takes {damage} Poison damage and has the Poisoned condition until the end of its next turn.",
+        success: "Half damage only.",
+      },
+    },
+    mechanics:
+      "When the creature dies or drops to 0 Hit Points, it releases a toxic burst. Dexterity Saving Throw: each creature in a 10-foot Radius. Failure: the target takes poison damage and has the Poisoned condition until the end of its next turn. Success: half damage only.",
+    i18n: {
+      it: {
+        mechanics:
+          "Quando la creatura muore o scende a 0 Punti Ferita, rilascia una detonazione tossica. Tiro Salvezza su Destrezza: ogni creatura in un Raggio di 10 piedi. Fallimento: il bersaglio subisce danni da veleno e ha la condizione Poisoned fino alla fine del suo prossimo turno. Successo: solo metà danni.",
+      },
+    },
+  },
+  "web-recharge": {
+    rules: {
+      damage: { ...DAMAGE_NONE_RULE },
+      text: {
+        failure:
+          "The target has the Restrained condition until the web is destroyed. The web has low AC and Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage.",
+        success: "No effect.",
+      },
+    },
+  },
+  "shadow-web": {
+    rules: {
+      damage: {
+        mode: "budget",
+        scale: "minor",
+        budgetRole: "ongoing",
+        budgetShare: 0.2,
+        expectedTargets: 1,
+        roundWeight: [0, 0.65, 0.65],
+        types: ["slashing"],
+        parts: [],
+      },
+      text: {
+        failure:
+          "The target has the Restrained condition until the web is destroyed. While restrained by the web, the target takes {damage} Slashing damage at the start of each of its turns. Shadow webs have higher AC and Hit Points than ordinary webs.",
+        success: "No effect.",
+      },
+    },
+  },
+  "barbed-chitin": {
+    rules: {
+      damage: {
+        mode: "budget",
+        scale: "minor",
+        budgetRole: "reactionPunish",
+        budgetShare: 0.25,
+        expectedTargets: 1,
+        roundWeight: [0.35, 0.35, 0.35],
+        types: ["piercing"],
+        parts: [],
+      },
+      text: {
+        effect:
+          "At the start of each of its turns, the creature deals {damage} Piercing damage to one creature grappling it or grappled by it.",
+      },
+    },
+  },
+  "brood-injection": {
+    rules: {
+      damage: {
+        mode: "budget",
+        scale: "minor",
+        budgetRole: "ongoing",
+        budgetShare: 0.2,
+        expectedTargets: 1,
+        roundWeight: [0, 0.65, 0],
+        types: ["piercing"],
+        parts: [],
+      },
+      text: {
+        failure:
+          "The target's speed is reduced by 10 feet, and it takes {damage} Piercing damage at the start of its next turn. An action and a successful Medicine check ends the effect.",
+        success: "No effect.",
+      },
+    },
+  },
+  "corrosive-web": {
+    rules: {
+      damage: {
+        mode: "budget",
+        scale: "minor",
+        budgetRole: "ongoing",
+        budgetShare: 0.2,
+        expectedTargets: 1,
+        roundWeight: [0, 0.65, 0.65],
+        types: ["acid"],
+        parts: [],
+      },
+      text: {
+        effect:
+          "Whenever a creature is hit by one of the monster's web abilities or starts its turn restrained by its web, it takes Acid damage equal to the monster's Proficiency Bonus.",
+      },
+    },
+  },
+};
+
+const NON_DAMAGE_RULE_CLEANUP_IDS = new Set([
+  "siege-corpse",
+  "radiant-preservation-failure",
+  "shame-hunger",
+  "incorporeal-movement",
+  "flesh-harvest",
+  "no-witnesses-rage",
+  "dangerous-hunger",
+  "maternal-swarm-instinct",
+  "umbral-skin",
+  "underbelly-weak-spot",
+  "eyes-weak-spot",
+  "waxen-mask-body",
+  "mask-phase",
+  "fire-softens-it",
+  "enrage-broodmother",
+]);
+
+function isPlainObject(value) {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value));
+}
+
+function mergeCleanup(base, override) {
+  if (!isPlainObject(base) || !isPlainObject(override)) return override === undefined ? base : override;
+  const output = { ...base };
+  Object.entries(override).forEach(([key, value]) => {
+    output[key] = isPlainObject(value) && isPlainObject(output[key]) ? mergeCleanup(output[key], value) : value;
+  });
+  return output;
+}
+
+function getCleanupDamageDefaults(graft, damage = {}, rules = {}) {
+  if (!damage || damage.mode !== "budget") return damage;
+  const actionEconomy = rules.actionEconomy || graft.section || "passive";
+  const usage = rules.usage?.type || "passive";
+  let budgetRole = damage.budgetRole;
+  let budgetShare = damage.budgetShare;
+  let expectedTargets = damage.expectedTargets;
+  let roundWeight = damage.roundWeight;
+
+  if (!budgetRole || budgetRole === "none" || (actionEconomy === "deathTrigger" && budgetRole !== "deathBurst") || (actionEconomy === "reaction" && budgetRole === "mainAttack") || (usage === "recharge" && budgetRole === "mainAttack")) {
+    if (actionEconomy === "deathTrigger") budgetRole = "deathBurst";
+    else if (actionEconomy === "reaction") budgetRole = "reactionPunish";
+    else if (actionEconomy === "bonusAction") budgetRole = "bonusAction";
+    else if (usage === "recharge") budgetRole = rules.condition?.severity && ["major", "severe"].includes(rules.condition.severity) ? "rechargeControl" : "rechargeBurst";
+    else budgetRole = "mainAttack";
+  }
+
+  if (budgetShare == null) {
+    if (budgetRole === "mainAttack") budgetShare = 0.85;
+    else if (budgetRole === "secondaryAttack") budgetShare = 0.5;
+    else if (budgetRole === "minorAttack") budgetShare = 0.35;
+    else if (budgetRole === "bonusAction") budgetShare = 0.3;
+    else if (budgetRole === "reactionPunish") budgetShare = 0.45;
+    else if (budgetRole === "rechargeBurst") budgetShare = 1.25;
+    else if (budgetRole === "rechargeControl") budgetShare = 0.85;
+    else if (budgetRole === "deathBurst") budgetShare = 0.45;
+    else if (budgetRole === "ongoing") budgetShare = 0.2;
+  }
+
+  if (expectedTargets == null) {
+    if (rules.targeting?.type === "area") {
+      if (budgetRole === "deathBurst") expectedTargets = 1.25;
+      else if (budgetRole === "rechargeBurst" || budgetRole === "rechargeControl") expectedTargets = 1.5;
+      else expectedTargets = 1.25;
+    } else {
+      expectedTargets = 1;
+    }
+  }
+
+  if (!Array.isArray(roundWeight)) {
+    if (budgetRole === "deathBurst") roundWeight = [0, 0, 0.25];
+    else if (budgetRole === "reactionPunish") roundWeight = [0.65, 0.65, 0.65];
+    else if (budgetRole === "rechargeBurst" || budgetRole === "rechargeControl") roundWeight = [1, 0.35, 0.35];
+    else if (budgetRole === "ongoing") roundWeight = [0, 0.65, 0.65];
+  }
+
+  return { ...damage, budgetRole, budgetShare, expectedTargets, roundWeight };
+}
+
+function cleanupRulesDamage(graft) {
+  if (NON_DAMAGE_RULE_CLEANUP_IDS.has(graft.id)) {
+    return {
+      ...graft,
+      rules: {
+        ...(graft.rules || {}),
+        damage: { ...DAMAGE_NONE_RULE },
+      },
+    };
+  }
+
+  const rules = graft.rules || null;
+  const damage = rules?.damage || null;
+  if (!rules || !damage || damage.mode !== "budget") return graft;
+  if (Array.isArray(damage.parts) && damage.parts.length) {
+    return {
+      ...graft,
+      rules: {
+        ...rules,
+        damage: {
+          ...damage,
+          parts: damage.parts.map((part) => getCleanupDamageDefaults(graft, part, rules)),
+        },
+      },
+    };
+  }
+  return {
+    ...graft,
+    rules: {
+      ...rules,
+      damage: getCleanupDamageDefaults(graft, damage, rules),
+    },
+  };
+}
+
+function applyRulesContentCleanup(graft) {
+  const override = DAMAGE_RULES_CONTENT_CLEANUP_OVERRIDES[graft.id] || null;
+  const merged = override ? mergeCleanup(graft, override) : graft;
+  return cleanupRulesDamage(merged);
+}
+
 function normalizeArrayField(value) {
   return Array.isArray(value) ? value : [];
 }
@@ -10354,14 +10757,15 @@ function normalizeSourceAnchors(graft) {
 }
 
 function normalizeMonsterGraft(graft) {
-  const fit = graft.fit || FEATURE_FRAME_FIT_OVERRIDES[graft.id] || null;
+  const cleaned = applyRulesContentCleanup(graft);
+  const fit = cleaned.fit || FEATURE_FRAME_FIT_OVERRIDES[cleaned.id] || null;
   return {
-    ...graft,
+    ...cleaned,
     fit,
-    sourceAnchors: normalizeSourceAnchors(graft),
-    sourceTypes: normalizeArrayField(graft.sourceTypes),
-    themes: normalizeArrayField(graft.themes),
-    motifs: normalizeArrayField(graft.motifs),
+    sourceAnchors: normalizeSourceAnchors(cleaned),
+    sourceTypes: normalizeArrayField(cleaned.sourceTypes),
+    themes: normalizeArrayField(cleaned.themes),
+    motifs: normalizeArrayField(cleaned.motifs),
   };
 }
 
@@ -10567,6 +10971,24 @@ export const FEATURE_ANATOMY_CONSTRAINT_OVERRIDES = {
   "shadow-web": {
     requiredAnatomy: ["web_glands", "spinnerets"],
     allowedBodyPlans: ["arachnid"],
+  },
+  "flesh-harvest": {
+    rules: {
+      resolution: { type: "none" },
+      text: {
+        effect:
+          "The creature can consume a Medium or smaller corpse using an action. For each corpse consumed this way, it gains a +1 bonus to attack rolls, damage rolls, and AC until dawn, to a maximum bonus equal to its Proficiency Bonus.",
+      },
+    },
+  },
+  "enrage-broodmother": {
+    rules: {
+      resolution: { type: "none" },
+      text: {
+        response:
+          "Roll a d6. On a 4 or higher, the monster enrages until the combat ends, gaining a bonus to attack rolls, damage rolls, speed, and jump distance.",
+      },
+    },
   },
   "venomous-spit": {
     requiredAnatomy: ["venom_glands", "mouth"],
