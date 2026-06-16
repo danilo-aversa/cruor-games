@@ -13,6 +13,7 @@ import {
   TEMPO_PROFILES,
 } from "../monster-composer.taxonomies.js";
 import {
+  applyPressureValidationFloor,
   buildComplexityProfile,
   buildCounterplayAudit,
   buildPressureProfile,
@@ -36,6 +37,13 @@ import {
   buildMonsterComposerProfileDeltas,
   getMonsterComposerBaselineProfile,
 } from "../model/monster-bestiary-baselines.js";
+import { validateMonsterGraftRules } from "../model/monster-graft-rules.schema.js";
+import { buildMonsterAbilitiesFromFeatures } from "../model/monster-ability-model.js";
+import {
+  DEFAULT_MONSTER_RULESET_ID,
+  getMonsterRuleset,
+  getMonsterRulesetOption,
+} from "../rulesets/index.js";
 import { asArray, uniqueArray } from "./monster-qa-report.js";
 
 export const REQUIRED_PLAYABLE_SLOTS = Object.freeze(["body", "attack", "weakness"]);
@@ -234,6 +242,7 @@ export function buildMonsterFrameContext({
   tempoProfileId = preset?.tempoProfileId || "standard",
   dangerId = preset?.dangerId || "hard",
   partyLevel = 5,
+  rulesetId = DEFAULT_MONSTER_RULESET_ID,
 } = {}) {
   const selected = normalizeSelection(selection || preset?.selection || {});
   const selectedFeatures = getFeaturesFromSelection(selected);
@@ -271,38 +280,86 @@ export function buildMonsterFrameContext({
   const rawComplexity = selectedFeatures.reduce((sum, feature) => sum + feature.complexity, 0);
   const budget = Math.max(1, role.budget + danger.budgetOffset + tacticalRole.budgetMod + monsterTier.budgetOffset + tempoProfile.budgetMod);
   const complexityCap = Math.max(1, role.complexityCap + tacticalRole.complexityMod + monsterTier.complexityCapOffset + tempoProfile.complexityMod);
-  const pressureProfile = buildPressureProfile({ cost, monsterTier, tempoProfile, statMods, mechanicsSummary, budget });
+  let pressureProfile = buildPressureProfile({ cost, monsterTier, tempoProfile, statMods, mechanicsSummary, budget });
   const complexityProfile = buildComplexityProfile({ complexity: rawComplexity, mechanicsSummary, featureMechanics, limit: complexityCap });
-  const counterplayAudit = buildCounterplayAudit({ selected, roleId, monsterTier, pressureProfile, complexityProfile, mechanicsSummary, counterplayProfiles });
-  const pressure = pressureProfile.score;
   const complexity = complexityProfile.score;
-  const hp = Math.max(1, Math.round(baseHp + (statMods.hp || 0)));
-  const ac = clamp(baseAc + (statMods.ac || 0), 10, 28);
-  const dpr = Math.max(1, Math.round(baseDpr + (statMods.dpr || 0)));
-  const dc = clamp(baseDc + Math.floor((statMods.control || 0) / 3), 10, 30);
-  const attack = clamp(baseAttack, 2, 18);
-  const printedStats = { ac, hp, dpr, attackBonus: attack, saveDc: dc, initiativeMod: tempoProfile.initiativeMod, speed: creatureType.defaults.speed };
-  const effectiveProfile = {
-    effectiveAc: ac + Math.floor((statMods.mobility || 0) / 4),
-    effectiveHp: Math.round(hp * (1 + Math.max(0, statMods.fairness || 0) * 0.015)),
-    effectiveAttackBonus: attack + (tempoProfile.id === "ambusher" ? 1 : 0),
-    effectiveSaveDc: dc,
-    printedDpr: dpr,
-    effectiveDpr3Round: Math.max(
-      Math.round(dpr * (1 + Math.max(0, statMods.control || 0) * 0.035 + Math.max(0, statMods.mobility || 0) * 0.02 + (tempoProfile.id === "ambusher" ? 0.08 : 0))),
-      Math.round(dpr + mechanicsSummary.structuredDamage * 0.2),
-    ),
-    burstDpr: Math.round(dpr * (1 + (tempoProfile.id === "ambusher" ? 0.35 : 0.12) + Math.max(0, statMods.dpr || 0) * 0.01)),
-    tempoFactor: 1 + tempoProfile.pressureMod * 0.05,
-    defenseFactor: 1 + Math.max(0, statMods.hp || 0) / Math.max(1, hp) + Math.max(0, statMods.ac || 0) * 0.04,
+  const targetHpValue = Math.max(1, Math.round(baseHp + (statMods.hp || 0)));
+  const targetAcValue = clamp(baseAc + (statMods.ac || 0), 10, 28);
+  const targetDprValue = Math.max(1, Math.round(baseDpr + (statMods.dpr || 0)));
+  const targetDcValue = clamp(baseDc + Math.floor((statMods.control || 0) / 3), 10, 30);
+  const targetAttackValue = clamp(baseAttack, 2, 18);
+  const activeRuleset = getMonsterRuleset(rulesetId);
+  const activeRulesetOption = getMonsterRulesetOption(rulesetId);
+  const abilityModel = buildMonsterAbilitiesFromFeatures(selectedFeatures);
+  const dndRules = activeRuleset.buildRulesProfile({
+    targetCr,
+    typeId,
+    category,
+    roleId,
+    selectedFeatures,
+    baseline,
+    targetHp: targetHpValue,
+    targetAc: targetAcValue,
+    targetDpr: targetDprValue,
+    targetAttackBonus: targetAttackValue,
+    targetSaveDc: targetDcValue,
+    tempoProfile,
+  });
+  const hp = dndRules.printedStats.hp;
+  const ac = dndRules.printedStats.ac;
+  const dpr = dndRules.printedStats.dpr;
+  const dc = dndRules.printedStats.saveDc;
+  const attack = dndRules.printedStats.attackBonus;
+  const printedStats = {
+    ...dndRules.printedStats,
+    initiativeMod: tempoProfile.initiativeMod,
+    speed: creatureType.defaults.speed,
   };
-  effectiveProfile.combatPowerEstimate = Math.round(effectiveProfile.effectiveHp * effectiveProfile.effectiveDpr3Round * ((effectiveProfile.effectiveAc + effectiveProfile.effectiveAttackBonus - 2) / 13));
+  const dprProfile = activeRuleset.simulateDpr({
+    selectedFeatures,
+    abilities: abilityModel.abilities,
+    targetDpr: dpr,
+    computed: {
+      dpr,
+      attack,
+      dc,
+      targetCr,
+      rulesProfile: dndRules.rulesProfile,
+      tempoProfile,
+      monsterTier,
+    },
+  });
+  const effectiveProfile = activeRuleset.buildEffectiveProfile({
+    printedStats,
+    dprProfile,
+    abilityModel,
+    statMods,
+    tempoProfile,
+    monsterTier,
+    mechanicsSummary,
+    typeId,
+    selectedFeatures,
+  });
+  const crValidation = activeRuleset.validateChallenge({
+    targetCr,
+    printedStats,
+    effectiveProfile,
+    monsterTier,
+    mechanicsSummary,
+  });
+  pressureProfile = applyPressureValidationFloor({
+    pressureProfile,
+    budget,
+    targetCr,
+    baseline,
+    printedStats,
+    effectiveProfile,
+    crValidation,
+  });
+  const pressure = pressureProfile.score;
+  const counterplayAudit = buildCounterplayAudit({ selected, roleId, monsterTier, pressureProfile, complexityProfile, mechanicsSummary, counterplayProfiles });
   const profileDeltas = buildMonsterComposerProfileDeltas(printedStats, effectiveProfile, baseline);
-  const estimatedCr = clamp(
-    Math.round(targetCr + (pressure - budget) / 6 + ((effectiveProfile.effectiveDpr3Round - baseline.dpr) / Math.max(8, baseline.dpr)) * 2),
-    0,
-    30,
-  );
+  const estimatedCr = crValidation.estimatedCr;
   const name = preset?.label || buildName(typeId, category, selectedFeatures);
   const rulesContext = { typeId, creatureType: creatureType.label, category, categoryNoun: String(category || "monster").toLowerCase() };
   const baselinePower = Math.round(baseline.hp * baseline.dpr * ((baseline.ac + baseline.attackBonus - 2) / 13));
@@ -312,27 +369,59 @@ export function buildMonsterFrameContext({
   if (!hasSelectedSlot(selected, "weakness")) warnings.push("No Weakness / Tell selected.");
   counterplayAudit.issues.forEach((issue) => warnings.push(`Counterplay Audit: ${issue.label}. ${issue.detail}`));
 
+  if (effectiveProfile.effectiveDpr3Round > baseline.dpr * 1.35 && monsterTier.id === "normal") {
+    warnings.push("Effective DPR is above the normal CR baseline once control, mobility, and tempo are considered. Consider Elite/Boss tier or lower offensive pressure.");
+  }
+  if (effectiveProfile.burstDpr > baseline.dpr * 1.75) {
+    warnings.push("Burst DPR spike is high. Add a recharge, telegraph, setup requirement, or reduce opening damage.");
+  }
+  crValidation.issues.forEach((issue) => {
+    warnings.push(`CR Validator: ${issue.message}${issue.detail ? ` ${issue.detail}` : ""}`);
+  });
+  dndRules.validation.issues.forEach((issue) => {
+    warnings.push(`D&D Rules: ${issue.message}${issue.detail ? ` ${issue.detail}` : ""}`);
+  });
+  abilityModel.validation.errors.forEach((issue) => {
+    warnings.push(`Ability Model: ${issue.title}. ${issue.message}`);
+  });
+  selectedFeatures.forEach((feature) => {
+    validateMonsterGraftRules(feature).issues
+      .filter((issue) => issue.severity === "error")
+      .forEach((issue) => {
+        warnings.push(`Rules Schema: ${feature.title}. ${issue.message}`);
+      });
+  });
+
   const computed = {
     tier: getTier(partyLevel),
     targetCr,
     tacticalRole,
     monsterTier,
     tempoProfile,
+    rulesetId: activeRuleset.id,
+    ruleset: activeRulesetOption,
     rulesContext,
     baseline,
     printedStats,
     effectiveProfile,
     profileDeltas,
     bestiaryBaselineAudit: { issues: [] },
+    dprProfile,
+    crValidation,
     pressureProfile,
     complexityProfile,
     counterplayAudit,
     counterplayProfiles,
     featureMechanics,
     mechanicsSummary,
+    abilityModel,
     baselinePower,
     effectivePower: effectiveProfile.combatPowerEstimate,
     prof,
+    rulesProfile: dndRules.rulesProfile,
+    rulesValidation: dndRules.validation,
+    abilityProfile: dndRules.abilityProfile,
+    hpFormula: dndRules.rulesProfile.hp.formula,
     hp,
     ac,
     dpr,
@@ -347,10 +436,10 @@ export function buildMonsterFrameContext({
     name,
     warnings: uniqueArray(warnings),
     balanceRecommendations: [],
-    damageText: averageDamageText(dpr),
+    damageText: dndRules.damage.defaultAttack.text,
     statMods,
   };
-  const abilityProfile = buildAbilityProfile(typeId, category, roleId, selectedFeatures, computed.prof);
+  const abilityProfile = dndRules.abilityProfile;
   const groups = groupMonsterFeaturesForExport(selectedFeatures);
   const hasLegendaryActions = roleId === "boss";
   const xp = xpForCr(computed.targetCr).toLocaleString("en-US");
@@ -433,25 +522,102 @@ function featureMatchesFrame(feature, sourceId, typeId, roleId, slotId = null, f
   return sourceMatch && typeMatch && roleMatch && slotMatch && frameFitMatch;
 }
 
-export function forgeMonsterSelection(frame, { slots = REQUIRED_PLAYABLE_SLOTS } = {}) {
+export function getForgeCandidatesForFrame(frame = {}, { slotId = null, selectedFeatures = [], includeCompatibility = true } = {}) {
+  return FEATURES.filter((feature) => {
+    if (!featureMatchesFrame(feature, frame.sourceId, frame.typeId, frame.roleId, slotId, frame)) return false;
+    if (!includeCompatibility) return true;
+    const status = getCompatibilityStatus(feature, selectedFeatures, frame.typeId, frame.category, { activePreset: null });
+    return ["compatible", "soft"].includes(status.kind);
+  });
+}
+
+function orderForgeSlots(slots = REQUIRED_PLAYABLE_SLOTS) {
+  const requested = asArray(slots);
+  return uniqueArray([
+    ...REQUIRED_PLAYABLE_SLOTS.filter((slotId) => requested.includes(slotId)),
+    ...requested.filter((slotId) => !REQUIRED_PLAYABLE_SLOTS.includes(slotId)),
+  ]);
+}
+
+function getCompatibleForgeCandidates(frame, slotId, selectedFeatures = []) {
+  return FEATURES.filter((feature) => {
+    if (!featureMatchesFrame(feature, frame.sourceId, frame.typeId, frame.roleId, slotId, frame)) return false;
+    const status = getCompatibilityStatus(feature, selectedFeatures, frame.typeId, frame.category, { activePreset: null });
+    return ["compatible", "soft"].includes(status.kind);
+  });
+}
+
+export function forgeMonsterSelectionDetailed(frame, { slots = REQUIRED_PLAYABLE_SLOTS, allowRelaxedCoreFallback = true } = {}) {
   const selected = {};
+  const relaxedSlots = [];
+  const skippedSlots = [];
   let selectedFeatures = [];
   let remainingBudget = (getFrameValue(ROLES, frame.roleId, 1)?.budget || 12) + (getFrameValue(DANGERS, frame.dangerId, 1)?.budgetOffset || 0);
 
-  slots.forEach((slotId) => {
-    const candidates = FEATURES.filter((feature) => {
-      if (!featureMatchesFrame(feature, frame.sourceId, frame.typeId, frame.roleId, slotId, frame)) return false;
-      const status = getCompatibilityStatus(feature, selectedFeatures, frame.typeId, frame.category, { activePreset: null });
-      return ["compatible", "soft"].includes(status.kind);
-    });
+  orderForgeSlots(slots).forEach((slotId) => {
+    const strictCandidates = getCompatibleForgeCandidates(frame, slotId, selectedFeatures);
+    let candidates = strictCandidates;
+    let relaxed = false;
+
+    if (!candidates.length && allowRelaxedCoreFallback && REQUIRED_PLAYABLE_SLOTS.includes(slotId)) {
+      candidates = getForgeCandidatesForFrame(frame, { slotId, selectedFeatures, includeCompatibility: false });
+      relaxed = candidates.length > 0;
+    }
+
     const picked = pickForgeCandidate(candidates, slotId, remainingBudget, frame.roleId, frame);
-    if (!picked) return;
+    if (!picked) {
+      skippedSlots.push(slotId);
+      return;
+    }
+
     selected[slotId] = picked.id;
+    if (relaxed) relaxedSlots.push(slotId);
     selectedFeatures = getFeaturesFromSelection(selected);
     remainingBudget -= Math.max(0, picked.cost || 0);
   });
 
-  return selected;
+  return {
+    selected,
+    meta: {
+      relaxedSlots,
+      skippedSlots,
+      missingRequiredSlots: REQUIRED_PLAYABLE_SLOTS.filter((slotId) => !hasSelectedSlot(selected, slotId)),
+    },
+  };
+}
+
+export function buildForgeCoverage(frame = {}, { slots = REQUIRED_PLAYABLE_SLOTS } = {}) {
+  const countsBySlot = {};
+  const eligibleCountsBySlot = {};
+  const candidateIdsBySlot = {};
+  const eligibleCandidateIdsBySlot = {};
+  asArray(slots).forEach((slotId) => {
+    const rawCandidates = getForgeCandidatesForFrame(frame, { slotId, includeCompatibility: false });
+    const eligibleCandidates = getCompatibleForgeCandidates(frame, slotId, []);
+    countsBySlot[slotId] = rawCandidates.length;
+    eligibleCountsBySlot[slotId] = eligibleCandidates.length;
+    candidateIdsBySlot[slotId] = rawCandidates.slice(0, 12).map((feature) => feature.id);
+    eligibleCandidateIdsBySlot[slotId] = eligibleCandidates.slice(0, 12).map((feature) => feature.id);
+  });
+
+  const strictForge = forgeMonsterSelectionDetailed(frame, { slots, allowRelaxedCoreFallback: false });
+  const missingRequiredSlots = strictForge.meta.missingRequiredSlots;
+  return {
+    slots: asArray(slots),
+    countsBySlot,
+    eligibleCountsBySlot,
+    candidateIdsBySlot,
+    eligibleCandidateIdsBySlot,
+    simulatedSelected: strictForge.selected,
+    missingRequiredSlots,
+    requiredSlotsMet: missingRequiredSlots.length === 0,
+    totalCandidates: Object.values(countsBySlot).reduce((sum, value) => sum + Number(value || 0), 0),
+    totalEligibleCandidates: Object.values(eligibleCountsBySlot).reduce((sum, value) => sum + Number(value || 0), 0),
+  };
+}
+
+export function forgeMonsterSelection(frame, { slots = REQUIRED_PLAYABLE_SLOTS, allowRelaxedCoreFallback = true } = {}) {
+  return forgeMonsterSelectionDetailed(frame, { slots, allowRelaxedCoreFallback }).selected;
 }
 
 export function buildExportArtifacts(context) {

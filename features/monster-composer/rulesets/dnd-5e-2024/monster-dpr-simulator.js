@@ -7,7 +7,7 @@ import {
 import { buildMonsterAbilitiesFromFeatures } from "../../model/monster-ability-model.js";
 import { getLegalDamageRollForRules } from "./monster-rules-engine.js";
 
-export const MONSTER_DPR_SIMULATOR_VERSION = "three-round-dpr-v0.3-rules-complete";
+export const MONSTER_DPR_SIMULATOR_VERSION = "three-round-dpr-v0.4-action-economy";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -214,6 +214,163 @@ function collectAbilitySources({ abilities = [], computed }) {
   });
 }
 
+function isMainActionSource(source = {}) {
+  return source.actionEconomy === "action";
+}
+
+function getMainActionOptionKey(source = {}) {
+  return cleanString(source.abilityId || source.featureId || source.title || "action-option");
+}
+
+function getSourceContributionKey(source = {}, index = 0) {
+  return `${source.featureId || "feature"}:${source.abilityId || "ability"}:${source.kind || "damage"}:${source.budgetRole || "none"}:${index}`;
+}
+
+function cloneSourceWithRounds(source, rounds) {
+  const normalizedRounds = normalizeRoundWeights(rounds).map(round);
+  const totalThreeRound = round(sumRoundArray(normalizedRounds));
+  const originalRounds = normalizeRoundWeights(source.rounds).map(round);
+  return {
+    ...source,
+    originalRounds,
+    rounds: normalizedRounds,
+    totalThreeRound,
+    averageDpr: round(totalThreeRound / 3),
+    includedInDpr: totalThreeRound > 0,
+  };
+}
+
+function buildMainActionOptions(mainSources = []) {
+  const optionMap = new Map();
+  mainSources.forEach((source) => {
+    const key = getMainActionOptionKey(source);
+    if (!optionMap.has(key)) {
+      optionMap.set(key, {
+        id: key,
+        title: source.title || key,
+        featureId: source.featureId,
+        abilityId: source.abilityId,
+        actionEconomy: "action",
+        sources: [],
+        rounds: [0, 0, 0],
+      });
+    }
+    const option = optionMap.get(key);
+    option.sources.push(source);
+    addRounds(option.rounds, source.rounds);
+  });
+
+  return [...optionMap.values()].map((option) => {
+    const roundedRounds = option.rounds.map(round);
+    const totalThreeRound = round(sumRoundArray(roundedRounds));
+    return {
+      ...option,
+      rounds: roundedRounds,
+      totalThreeRound,
+      averageDpr: round(totalThreeRound / 3),
+    };
+  });
+}
+
+function pickBestMainActionForRound(options = [], roundIndex = 0) {
+  return [...options]
+    .filter((option) => Number(option.rounds?.[roundIndex] || 0) > 0)
+    .sort((a, b) => {
+      const roundDelta = Number(b.rounds?.[roundIndex] || 0) - Number(a.rounds?.[roundIndex] || 0);
+      if (roundDelta) return roundDelta;
+      const totalDelta = Number(b.totalThreeRound || 0) - Number(a.totalThreeRound || 0);
+      if (totalDelta) return totalDelta;
+      return cleanString(a.title).localeCompare(cleanString(b.title));
+    })[0] || null;
+}
+
+function summarizeMainActionOption(option = {}) {
+  return {
+    id: option.id,
+    title: option.title,
+    featureId: option.featureId,
+    abilityId: option.abilityId,
+    rounds: option.rounds,
+    totalThreeRound: option.totalThreeRound,
+    averageDpr: option.averageDpr,
+    sourceCount: option.sources?.length || 0,
+  };
+}
+
+function resolveActionEconomySources(sources = []) {
+  const indexedSources = sources.map((source, index) => ({
+    ...source,
+    sourceKey: getSourceContributionKey(source, index),
+  }));
+  const mainSources = indexedSources.filter(isMainActionSource);
+  const supplementalSources = indexedSources.filter((source) => !isMainActionSource(source));
+  const mainActionOptions = buildMainActionOptions(mainSources);
+  const countedRoundsBySource = new Map(indexedSources.map((source) => [source.sourceKey, [0, 0, 0]]));
+  const roundedRounds = [0, 0, 0];
+  const selectedMainActions = [];
+
+  supplementalSources.forEach((source) => {
+    const countedRounds = countedRoundsBySource.get(source.sourceKey) || [0, 0, 0];
+    normalizeRoundWeights(source.rounds).forEach((value, index) => {
+      countedRounds[index] += Number(value || 0);
+      roundedRounds[index] += Number(value || 0);
+    });
+    countedRoundsBySource.set(source.sourceKey, countedRounds);
+  });
+
+  [0, 1, 2].forEach((roundIndex) => {
+    const selectedOption = pickBestMainActionForRound(mainActionOptions, roundIndex);
+    if (!selectedOption) {
+      selectedMainActions.push(null);
+      return;
+    }
+
+    selectedMainActions.push(summarizeMainActionOption(selectedOption));
+    const selectedRoundValue = Number(selectedOption.rounds?.[roundIndex] || 0);
+    roundedRounds[roundIndex] += selectedRoundValue;
+    selectedOption.sources.forEach((source) => {
+      const countedRounds = countedRoundsBySource.get(source.sourceKey) || [0, 0, 0];
+      countedRounds[roundIndex] += Number(source.rounds?.[roundIndex] || 0);
+      countedRoundsBySource.set(source.sourceKey, countedRounds);
+    });
+  });
+
+  const countedSources = indexedSources
+    .map((source) => cloneSourceWithRounds(source, countedRoundsBySource.get(source.sourceKey) || [0, 0, 0]))
+    .filter((source) => source.includedInDpr);
+  const alternativeSources = indexedSources
+    .map((source) => ({
+      ...cloneSourceWithRounds(source, [0, 0, 0]),
+      suppressedByActionEconomy: isMainActionSource(source),
+    }))
+    .filter((source) => !countedSources.some((counted) => counted.sourceKey === source.sourceKey));
+
+  const rawMainActionTotal = round(sumRoundArray(mainSources.flatMap((source) => normalizeRoundWeights(source.rounds))));
+  const selectedMainActionTotal = round(sumRoundArray(selectedMainActions.map((option, index) => Number(option?.rounds?.[index] || 0))));
+  const suppressedMainActionDamage = Math.max(0, rawMainActionTotal - selectedMainActionTotal);
+
+  return {
+    rounds: roundedRounds.map(round),
+    sources: countedSources,
+    alternativeSources,
+    allSources: indexedSources,
+    actionEconomy: {
+      mainActionPolicy: "best-action-per-round",
+      mainActionOptionCount: mainActionOptions.length,
+      mainActionOptions: mainActionOptions.map(summarizeMainActionOption),
+      selectedMainActions: {
+        round1: selectedMainActions[0],
+        round2: selectedMainActions[1],
+        round3: selectedMainActions[2],
+      },
+      rawMainActionTotal,
+      selectedMainActionTotal,
+      suppressedMainActionDamage,
+      supplementalSourceCount: supplementalSources.length,
+    },
+  };
+}
+
 function getRoundDetail(sources, roundIndex) {
   return sources
     .map((source) => ({
@@ -225,15 +382,19 @@ function getRoundDetail(sources, roundIndex) {
     .sort((a, b) => b.value - a.value || a.title.localeCompare(b.title));
 }
 
-function getAssumptions({ fallbackUsed, sources }) {
+function getAssumptions({ fallbackUsed, sources, actionEconomy }) {
   const assumptions = [
     "Damage is averaged over rounds 1–3.",
+    "Main action damage uses one best action option per round; alternative melee, ranged, spell, and save actions are not summed together.",
     "Attack damage assumes hits; attack bonus is applied later by the CR validator.",
     "Saving throw damage assumes failed saves; save DC is applied later by the CR validator.",
     "Area damage defaults to 2 expected targets unless the graft specifies expectedTargets.",
     "Recharge damage is weighted as round 1 plus expected later use.",
   ];
   if (fallbackUsed) assumptions.push("No structured damaging graft was found, so the legal fallback Strike is used.");
+  if (Number(actionEconomy?.mainActionOptionCount || 0) > 1) {
+    assumptions.push("Multiple main actions were available; DPR selected the best option for each round instead of adding all alternatives.");
+  }
   if (sources.some((source) => source.actionEconomy === "reaction")) {
     assumptions.push("Reaction damage uses an expected trigger rate rather than guaranteed use.");
   }
@@ -261,9 +422,8 @@ export function buildThreeRoundDprProfile({
   const fallbackUsed = includeFallback && sources.length === 0;
   if (fallbackUsed) sources = [buildFallbackSource({ computed: scopedComputed })];
 
-  const rounds = [0, 0, 0];
-  sources.forEach((source) => addRounds(rounds, source.rounds));
-  const roundedRounds = rounds.map(round);
+  const economyProfile = resolveActionEconomySources(sources);
+  const roundedRounds = economyProfile.rounds.map(round);
   const total = sumRoundArray(roundedRounds);
   const averageDpr = round(total / 3);
   const burstDpr = Math.max(...roundedRounds, averageDpr);
@@ -278,9 +438,9 @@ export function buildThreeRoundDprProfile({
       round3: roundedRounds[2],
     },
     roundDetails: {
-      round1: getRoundDetail(sources, 0),
-      round2: getRoundDetail(sources, 1),
-      round3: getRoundDetail(sources, 2),
+      round1: getRoundDetail(economyProfile.sources, 0),
+      round2: getRoundDetail(economyProfile.sources, 1),
+      round3: getRoundDetail(economyProfile.sources, 2),
     },
     totalThreeRoundDamage: round(total),
     averageDpr,
@@ -288,10 +448,14 @@ export function buildThreeRoundDprProfile({
     burstDpr,
     sustainedDpr,
     openingBurstDelta,
-    sourceCount: sources.length,
+    sourceCount: economyProfile.sources.length,
+    rawSourceCount: sources.length,
     abilityCount: abilityList.length,
     fallbackUsed,
-    sources,
-    assumptions: getAssumptions({ fallbackUsed, sources }),
+    sources: economyProfile.sources,
+    allSources: economyProfile.allSources,
+    alternativeSources: economyProfile.alternativeSources,
+    actionEconomy: economyProfile.actionEconomy,
+    assumptions: getAssumptions({ fallbackUsed, sources: economyProfile.sources, actionEconomy: economyProfile.actionEconomy }),
   };
 }

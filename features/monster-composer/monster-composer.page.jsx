@@ -1642,6 +1642,14 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     dprProfile.assumptions.forEach((assumption) => {
       if (dprProfile.fallbackUsed && assumption.includes("fallback")) warnings.push(`DPR Simulator: ${assumption}`);
     });
+    if (
+      Number(dprProfile.actionEconomy?.mainActionOptionCount || 0) > 1 &&
+      Number(dprProfile.actionEconomy?.suppressedMainActionDamage || 0) > 0
+    ) {
+      warnings.push(
+        "DPR Simulator: Multiple main actions are available; DPR uses one best main action per round instead of summing alternatives."
+      );
+    }
     crValidation.issues.forEach((issue) => {
       warnings.push(`CR Validator: ${issue.message}${issue.detail ? ` ${issue.detail}` : ""}`);
     });

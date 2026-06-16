@@ -69,9 +69,11 @@ import { StudioWarningList } from "./components/StudioWarningList.jsx";
 import { renderStructuredRulesTemplate } from "../monster-composer/model/monster-graft-rules.render.js";
 import { ALL_MONSTER_GRAFTS } from "../monster-composer/data/monster-content-pack-feed.js";
 import { StudioToolsMenu } from "./components/StudioToolsMenu.jsx";
+import { StudioTestsMenu } from "./components/StudioTestsMenu.jsx";
 import { GraftLedgerModal } from "./ledger/GraftLedgerModal.jsx";
 import { ContentHealthModal } from "./health/ContentHealthModal.jsx";
 import { CoverageMatrixModal } from "./coverage/CoverageMatrixModal.jsx";
+import { MonsterBatchQaModal } from "./qa/MonsterBatchQaModal.jsx";
 import { downloadStudioAuditBundle } from "./reports/studio-audit-bundle.report.js";
 import { normalizeMonsterGraftRules } from "../monster-composer/model/monster-graft-rules.schema.js";
 import { groupQaIssues, runMonsterQaSuite } from "../monster-composer/qa/monster-qa-suite.js";
@@ -1363,6 +1365,7 @@ export default function InspirationStudioPage() {
   const [isGraftLedgerOpen, setGraftLedgerOpen] = useState(false);
   const [isContentHealthOpen, setContentHealthOpen] = useState(false);
   const [isCoverageMatrixOpen, setCoverageMatrixOpen] = useState(false);
+  const [isMonsterBatchQaOpen, setMonsterBatchQaOpen] = useState(false);
   const [identityIdsUnlocked, setIdentityIdsUnlocked] = useState(false);
   const [librarySearch, setLibrarySearch] = useState("");
   const [libraryStatusFilter, setLibraryStatusFilter] = useState("all");
@@ -1641,6 +1644,10 @@ export default function InspirationStudioPage() {
             onOpenCoverageMatrix={() => setCoverageMatrixOpen(true)}
             onOpenGraftLedger={() => setGraftLedgerOpen(true)}
           />
+          <StudioTestsMenu
+            batchQaOpen={isMonsterBatchQaOpen}
+            onOpenMonsterBatchQa={() => setMonsterBatchQaOpen(true)}
+          />
         </div>
       </header>
 
@@ -1903,6 +1910,10 @@ export default function InspirationStudioPage() {
         isOpen={isCoverageMatrixOpen}
         onClose={() => setCoverageMatrixOpen(false)}
         modules={modules}
+      />
+      <MonsterBatchQaModal
+        isOpen={isMonsterBatchQaOpen}
+        onClose={() => setMonsterBatchQaOpen(false)}
       />
     </section>
   );
