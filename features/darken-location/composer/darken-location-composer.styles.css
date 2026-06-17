@@ -2620,6 +2620,10 @@
   grid-template-columns: 60px minmax(0, 1fr) var(--location-side-column-width);
 }
 
+.location-composer[data-location-map-editing="true"] .location-map-stage:has(.cruor-map-workspace[data-map-inspector-collapsed="true"]) {
+  grid-template-columns: 60px minmax(0, 1fr) 44px;
+}
+
 .location-composer[data-location-map-editing="true"] .location-map-stage > .cruor-map-workspace[data-map-embedded="true"] {
   display: contents;
   animation: location-map-mode-in 180ms ease-out both;
@@ -2637,11 +2641,13 @@
   grid-area: left;
   position: relative;
   top: auto;
-  align-self: stretch;
+  align-self: start;
   box-sizing: border-box;
   min-width: 0;
   width: 100%;
   max-width: 100%;
+  height: auto;
+  max-height: 100%;
   display: grid;
   align-content: start;
   justify-items: center;
@@ -2693,6 +2699,10 @@
   pointer-events: auto;
 }
 
+.location-composer[data-location-map-editing="true"] .location-map-stage:has(.cruor-map-workspace[data-map-inspector-collapsed="true"]) .map-canvas-topbar {
+  right: calc(44px + var(--location-column-gap));
+}
+
 .location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-viewport-frame {
   position: absolute;
   inset: 0;
@@ -2707,16 +2717,18 @@
 
 .location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-inspector-panel {
   grid-area: right;
-  align-self: stretch;
+  align-self: start;
   box-sizing: border-box;
   min-width: 0;
   width: 100%;
   max-width: 100%;
+  height: auto;
+  max-height: 100%;
 }
 
 .location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-inspector-panel__scroll {
-  height: 100%;
-  max-height: none;
+  height: auto;
+  max-height: 100%;
   gap: 10px;
   padding: 11px;
   overflow-x: hidden;
@@ -4323,7 +4335,7 @@
   box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  transition: grid-template-columns 180ms ease, gap 180ms ease, background-size 180ms ease;
+  transition: grid-template-columns 180ms ease, gap 180ms ease;
 }
 
 .location-composer .location-map-stage[data-map-grid-visible="false"] {
@@ -4332,18 +4344,6 @@
   --location-map-stage-grid-positions: 0 0;
 }
 
-.location-composer .location-map-stage[data-map-grid-style="dotted"] {
-  --location-map-stage-grid-images: radial-gradient(circle, var(--location-map-stage-grid-dot) 1px, var(--cruor-color-transparent) 1.35px);
-  --location-map-stage-grid-sizes: var(--location-map-stage-grid-size, 34px) var(--location-map-stage-grid-size, 34px);
-  --location-map-stage-grid-positions: var(--location-map-stage-grid-x, 0) var(--location-map-stage-grid-y, 0);
-}
-
-.location-composer .location-map-stage[data-map-grid-style="dashed"] {
-  --location-map-stage-grid-line: var(--cruor-color-white-a045);
-  --location-map-stage-grid-images: radial-gradient(ellipse 1px 4px at 0 0, var(--location-map-stage-grid-line) 98%, var(--cruor-color-transparent) 100%), radial-gradient(ellipse 4px 1px at 0 0, var(--location-map-stage-grid-line) 98%, var(--cruor-color-transparent) 100%);
-  --location-map-stage-grid-sizes: var(--location-map-stage-grid-size, 34px) 12px, 12px var(--location-map-stage-grid-size, 34px);
-  --location-map-stage-grid-positions: var(--location-map-stage-grid-x, 0) var(--location-map-stage-grid-y, 0), var(--location-map-stage-grid-x, 0) var(--location-map-stage-grid-y, 0);
-}
 
 .location-composer .location-map-stage[data-map-grid-visible="false"] {
   background-image: var(--cruor-gradient-radial-035-d7408e11);

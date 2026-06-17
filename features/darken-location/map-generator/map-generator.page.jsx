@@ -273,8 +273,14 @@ export function MapViewport({
   generatedMap,
   showGrid,
   gridStyle,
+  gridOpacity = 0.72,
+  crosshatchStyle = "classic",
+  crosshatchOpacity = 0.72,
+  selectedRegionId = "",
+  onSelectedRegionChange = null,
   showEditor,
   showNames,
+  showRoomBadges = true,
   showProps,
   levelView = LEVEL_VIEW_ALL,
   fadeOtherLevels = true,
@@ -1427,6 +1433,7 @@ export function MapViewport({
     setHoverWallHandle(null);
     setHoverCorridorHandle(null);
     setHoveredCorridorId(null);
+    if (showEditor) onSelectedRegionChange?.("");
     event.currentTarget.focus();
     panRef.current = {
       pointerId: event.pointerId,
@@ -1551,8 +1558,12 @@ export function MapViewport({
             generatedMap={generatedMap}
             showGrid={showGrid}
             gridStyle={gridStyle}
+            gridOpacity={gridOpacity}
+            crosshatchStyle={crosshatchStyle}
+            crosshatchOpacity={crosshatchOpacity}
             showEditor={showEditor}
             showNames={showNames}
+            showRoomBadges={showRoomBadges}
             showProps={showProps}
             levelView={levelView}
             fadeOtherLevels={fadeOtherLevels}
@@ -1567,6 +1578,8 @@ export function MapViewport({
               hoverCorridorHandle,
               hoveredCorridorId,
               connectionDraft,
+              selectedRegionId,
+              onRoomSelect: (region) => onSelectedRegionChange?.(region?.id || ""),
               onRoomPointerDown: handleRoomPointerDown,
               onRoomPointerEnter: handleRoomPointerEnter,
               onRoomPointerLeave: handleRoomPointerLeave,
@@ -3090,6 +3103,66 @@ function MapControlSelect({
 }
 
 
+function MapControlSlider({ id, label, value, min = 0, max = 1, step = 0.05, onChange }) {
+  const normalizedValue = Number.isFinite(Number(value)) ? Number(value) : min;
+  return (
+    <div className="control-group map-control-slider-field">
+      <label className="control-label" htmlFor={id}>
+        {label}
+        <span>{Math.round(normalizedValue * 100)}%</span>
+      </label>
+      <input
+        id={id}
+        className="control-range cruor-range"
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={normalizedValue}
+        onChange={(event) => onChange?.(Number(event.target.value))}
+      />
+    </div>
+  );
+}
+
+function MapInspectorSection({ icon, title, eyebrow = "", children, defaultOpen = true, className = "" }) {
+  return (
+    <details className={`map-inspector-section cruor-ui-card-surface ${className}`.trim()} defaultOpen={defaultOpen}>
+      <summary className="map-inspector-section__summary">
+        <i className={`fa-solid fa-${icon}`} aria-hidden="true" />
+        <span>
+          {eyebrow ? <small>{eyebrow}</small> : null}
+          <strong>{title}</strong>
+        </span>
+        <i className="fa-solid fa-chevron-down" aria-hidden="true" />
+      </summary>
+      <div className="map-inspector-section__body">
+        {children}
+      </div>
+    </details>
+  );
+}
+
+function getSelectedAreaMetrics(region, generatedMap) {
+  if (!region) return null;
+  const gridSize = Math.max(1, generatedMap.config.gridSize || 20);
+  const floorSquares = Array.isArray(region.floorCells)
+    ? region.floorCells.length
+    : Math.max(1, (region.cellRect?.w || 0) * (region.cellRect?.h || 0));
+  const rect = region.cellRect || { w: 0, h: 0 };
+  return {
+    label: region.name || `Region ${region.number || "—"}`,
+    number: region.number || "—",
+    squares: floorSquares,
+    width: rect.w || Math.round((region.bounds?.width || 0) / gridSize),
+    height: rect.h || Math.round((region.bounds?.height || 0) / gridSize),
+    shape: region.shape || region.surfaceKind || "standard",
+    role: region.role || region.type || "region",
+    level: Number.isFinite(region.level) ? formatMapLevel(region.level) : "0",
+  };
+}
+
+
 function TestReport({ testSuite }) {
   return (
     <div
@@ -3196,12 +3269,17 @@ export default function CruorMapGeneratorMvp({
   const [visualStyle, setVisualStyle] = useState(
     normalizeVisualStyle(initialConfig.visualStyle),
   );
-  const [gridStyle, setGridStyle] = useState(initialConfig.gridStyle);
+  const [gridStyle, setGridStyle] = useState(normalizeGridStyle(initialConfig.gridStyle || "solid"));
+  const [gridOpacity, setGridOpacity] = useState(0.72);
+  const [crosshatchStyle, setCrosshatchStyle] = useState("classic");
+  const [crosshatchOpacity, setCrosshatchOpacity] = useState(0.72);
+  const [selectedRegionId, setSelectedRegionId] = useState("");
   const [levelView, setLevelView] = useState(LEVEL_VIEW_ALL);
   const [fadeOtherLevels, setFadeOtherLevels] = useState(true);
   const [showGrid, setShowGrid] = useState(true);
   const [showEditor, setShowEditor] = useState(true);
   const [showNames, setShowNames] = useState(false);
+  const [showRoomBadges, setShowRoomBadges] = useState(true);
   const [showProps, setShowProps] = useState(false);
   const [manualOverrides, setManualOverrides] = useState(
     createEmptyManualOverrides(),
@@ -3244,6 +3322,9 @@ export default function CruorMapGeneratorMvp({
     [config, manualOverrides],
   );
   const pureCaveMap = isPureCaveMap(generatedMap);
+  const selectedRegion = useMemo(() => {
+    return generatedMap.regions.find((region) => region.id === selectedRegionId) || null;
+  }, [generatedMap.regions, selectedRegionId]);
   const availableLevels = useMemo(
     () => getAvailableMapLevels(generatedMap),
     [generatedMap],
@@ -3273,6 +3354,7 @@ export default function CruorMapGeneratorMvp({
     gridStyle,
     visualStyle,
     showNames,
+    showRoomBadges,
     showProps,
     isManualEditActive,
   ]);
@@ -3423,6 +3505,7 @@ export default function CruorMapGeneratorMvp({
       {
         showEditor,
         showNames,
+        showRoomBadges,
         showProps,
         gridStyle,
         visualStyle,
@@ -3475,6 +3558,8 @@ export default function CruorMapGeneratorMvp({
             setShowEditor(payload.uiState.showEditor);
           if (typeof payload.uiState.showNames === "boolean")
             setShowNames(payload.uiState.showNames);
+          if (typeof payload.uiState.showRoomBadges === "boolean")
+            setShowRoomBadges(payload.uiState.showRoomBadges);
           if (typeof payload.uiState.showProps === "boolean")
             setShowProps(payload.uiState.showProps);
           if (typeof payload.uiState.gridStyle === "string")
@@ -4064,8 +4149,14 @@ export default function CruorMapGeneratorMvp({
       generatedMap={generatedMap}
       showGrid={showGrid}
       gridStyle={gridStyle}
+      gridOpacity={gridOpacity}
+      crosshatchStyle={crosshatchStyle}
+      crosshatchOpacity={crosshatchOpacity}
+      selectedRegionId={selectedRegionId}
+      onSelectedRegionChange={setSelectedRegionId}
       showEditor={showEditor}
       showNames={showNames}
+      showRoomBadges={showRoomBadges}
       showProps={showProps}
       levelView={levelView}
       fadeOtherLevels={fadeOtherLevels}
@@ -4125,6 +4216,7 @@ export default function CruorMapGeneratorMvp({
     <div
       className="cruor-map-mvp cruor-map-workspace"
       data-map-embedded={embeddedInComposer ? "true" : undefined}
+      data-map-inspector-collapsed={inspectorCollapsed ? "true" : undefined}
       onContextMenu={(event) => event.preventDefault()}
     >
       <div
@@ -4160,38 +4252,6 @@ export default function CruorMapGeneratorMvp({
             description="Generate a new seed and rebuild the current map."
             onClick={randomizeSeed}
           />
-          <MapToolButton
-            icon="vector-square"
-            label="Export SVG"
-            onClick={downloadSvg}
-          />
-          <MapToolButton
-            icon="user-secret"
-            label="Export GM SVG"
-            onClick={downloadGmSvg}
-          />
-          <MapToolButton
-            icon="users"
-            label="Export Player SVG"
-            onClick={downloadPlayerSvg}
-          />
-          <MapToolButton
-            icon="print"
-            label="Export Print SVG"
-            onClick={downloadPrintSvg}
-          />
-          <MapToolButton
-            icon="file-export"
-            label="Export State"
-            visibility="advanced"
-            onClick={exportState}
-          />
-          <MapToolButton
-            icon="file-import"
-            label="Import State"
-            visibility="advanced"
-            onClick={requestImportState}
-          />
           <span className="map-tool-rail__divider" aria-hidden="true" />
           <MapToolButton
             icon="rotate-left"
@@ -4210,6 +4270,12 @@ export default function CruorMapGeneratorMvp({
             label="Toggle Grid"
             active={showGrid}
             onClick={toggleGridVisibility}
+          />
+          <MapToolButton
+            icon="square-pen"
+            label="Toggle Room Badges"
+            active={showRoomBadges}
+            onClick={() => setShowRoomBadges((value) => !value)}
           />
           <MapToolButton
             icon="pen-ruler"
@@ -4242,7 +4308,6 @@ export default function CruorMapGeneratorMvp({
               )
             }
           />
-          <span className="map-tool-rail__divider" aria-hidden="true" />
           <MapToolButton
             icon="clipboard-check"
             label="Structural Tests"
@@ -4317,12 +4382,109 @@ export default function CruorMapGeneratorMvp({
           aria-hidden={inspectorCollapsed}
         >
           <div className="map-inspector-panel__scroll cruor-scroll-surface">
-            <section
-              className="map-inspector-section cruor-ui-card-surface"
-              data-ui-mode-advanced-only=""
-              data-map-advanced-only=""
+            <MapInspectorSection icon="vector-square" title="Selected Area" eyebrow="Selection">
+              {(() => {
+                const metrics = getSelectedAreaMetrics(selectedRegion, generatedMap);
+                if (!metrics) {
+                  return <p className="map-inspector-empty">Select a room or region on the map.</p>;
+                }
+                return (
+                  <div className="map-selected-area-card">
+                    <strong>{metrics.label}</strong>
+                    <div className="location-frame-info-grid">
+                      <div className="location-frame-info-row"><small>Room</small><strong>{metrics.number}</strong></div>
+                      <div className="location-frame-info-row"><small>Squares</small><strong>{metrics.squares}</strong></div>
+                      <div className="location-frame-info-row"><small>Size</small><strong>{metrics.width} × {metrics.height}</strong></div>
+                      <div className="location-frame-info-row"><small>Type</small><strong>{metrics.shape}</strong></div>
+                      <div className="location-frame-info-row"><small>Role</small><strong>{metrics.role}</strong></div>
+                      <div className="location-frame-info-row"><small>Level</small><strong>{metrics.level}</strong></div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </MapInspectorSection>
+
+            <MapInspectorSection icon="sliders" title="Styles" eyebrow="Map Look">
+              <MapControlSelect
+                id="visual-style"
+                label="Drawing Style"
+                value={visualStyle}
+                options={MAP_VISUAL_STYLES.map((style) => ({
+                  value: style.value,
+                  label: style.label,
+                }))}
+                onChange={(value) =>
+                  setVisualStyle(normalizeVisualStyle(value))
+                }
+              />
+              <MapControlSelect
+                id="grid-style"
+                label="Grid Style"
+                value={gridStyle}
+                options={[
+                  { value: "solid", label: "Solid" },
+                  { value: "dotted", label: "Dotted" },
+                  { value: "dashed", label: "Dashed" },
+                  { value: "none", label: "None" },
+                ]}
+                onChange={setGridRenderingStyle}
+              />
+              <MapControlSlider
+                id="grid-opacity"
+                label="Grid Opacity"
+                value={gridOpacity}
+                onChange={setGridOpacity}
+              />
+              <MapControlSelect
+                id="crosshatch-style"
+                label="Crosshatch Style"
+                value={crosshatchStyle}
+                options={[
+                  { value: "classic", label: "Classic" },
+                  { value: "none", label: "None" },
+                ]}
+                onChange={(value) => setCrosshatchStyle(value === "none" ? "none" : "classic")}
+              />
+              <MapControlSlider
+                id="crosshatch-opacity"
+                label="Crosshatch Opacity"
+                value={crosshatchOpacity}
+                onChange={setCrosshatchOpacity}
+              />
+              <MapControlSelect
+                id="level-view"
+                label="Level View"
+                value={String(normalizeLevelView(levelView, availableLevels))}
+                options={[
+                  { value: LEVEL_VIEW_ALL, label: "All Levels" },
+                  ...availableLevels.map((level) => ({
+                    value: String(level),
+                    label: `Level ${formatMapLevel(level)}`,
+                  })),
+                ]}
+                onChange={(value) =>
+                  setLevelView(
+                    normalizeLevelView(value, availableLevels),
+                  )
+                }
+              />
+              <div className="control-group">
+                <button
+                  type="button"
+                  className="mvp-button cruor-ui-control-surface cruor-button"
+                  onClick={() => setFadeOtherLevels((value) => !value)}
+                >
+                  {fadeOtherLevels ? "Fade Other Levels" : "Solo Active Level"}
+                </button>
+              </div>
+            </MapInspectorSection>
+
+            <MapInspectorSection
+              icon="gear"
+              title="Map Setup"
+              eyebrow="Advanced"
+              className="is-advanced-section"
             >
-              <p className="map-panel-eyebrow">Map Setup</p>
               <div className="control-group">
                 <label className="control-label" htmlFor="seed">
                   Seed
@@ -4415,57 +4577,7 @@ export default function CruorMapGeneratorMvp({
                   clearManualHistory();
                 }}
               />
-              <MapControlSelect
-                id="visual-style"
-                label="Drawing Style"
-                value={visualStyle}
-                options={MAP_VISUAL_STYLES.map((style) => ({
-                  value: style.value,
-                  label: style.label,
-                }))}
-                onChange={(value) =>
-                  setVisualStyle(normalizeVisualStyle(value))
-                }
-              />
-              <MapControlSelect
-                id="grid-style"
-                label="Grid Style"
-                value={gridStyle}
-                options={[
-                  { value: "solid", label: "Solid" },
-                  { value: "dotted", label: "Dotted" },
-                  { value: "dashed", label: "Dashed" },
-                  { value: "none", label: "None" },
-                ]}
-                onChange={setGridRenderingStyle}
-              />
-              <MapControlSelect
-                id="level-view"
-                label="Level View"
-                value={String(normalizeLevelView(levelView, availableLevels))}
-                options={[
-                  { value: LEVEL_VIEW_ALL, label: "All Levels" },
-                  ...availableLevels.map((level) => ({
-                    value: String(level),
-                    label: `Level ${formatMapLevel(level)}`,
-                  })),
-                ]}
-                onChange={(value) =>
-                  setLevelView(
-                    normalizeLevelView(value, availableLevels),
-                  )
-                }
-              />
-              <div className="control-group">
-                <button
-                  type="button"
-                  className="mvp-button cruor-ui-control-surface cruor-button"
-                  onClick={() => setFadeOtherLevels((value) => !value)}
-                >
-                  {fadeOtherLevels ? "Fade Other Levels" : "Solo Active Level"}
-                </button>
-              </div>
-            </section>
+            </MapInspectorSection>
 
             {initialRequest?.source === "darken-location" && (
               <section
@@ -4490,8 +4602,7 @@ export default function CruorMapGeneratorMvp({
               </section>
             )}
 
-            <section className="map-inspector-section cruor-ui-card-surface">
-              <p className="map-panel-eyebrow">Stats</p>
+            <MapInspectorSection icon="chart-simple" title="Stats" eyebrow="Diagnostics" defaultOpen={false}>
               <div className="stats">
                 <div className="stat cruor-ui-chip-surface cruor-stat">
                   <div className="stat__value">
@@ -4528,14 +4639,13 @@ export default function CruorMapGeneratorMvp({
                   <div className="stat__label">Levels</div>
                 </div>
               </div>
-            </section>
+            </MapInspectorSection>
 
             {stateStatus && <div className="state-status cruor-ui-card-surface">{stateStatus}</div>}
 
-            <section className="map-inspector-section cruor-ui-card-surface">
-              <p className="map-panel-eyebrow">Room Key</p>
+            <MapInspectorSection icon="list-ol" title="Room Key" eyebrow="Reference" defaultOpen={false}>
               <RoomKey generatedMap={generatedMap} />
-            </section>
+            </MapInspectorSection>
           </div>
         </aside>
       </div>
