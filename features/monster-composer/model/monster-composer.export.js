@@ -10,6 +10,7 @@ import { getFeatureCompatibility, hasFeatureCompatibilityOverride } from "./mons
 import { getFeatureFrameFit } from "./monster-frame-fit.js";
 import { buildMonsterPublishGate } from "./monster-publish-gate.js";
 import { parseMonsterRenderedStatBlock } from "./monster-statblock-parser.js";
+import { buildLegacyStatsMigrationAudit, getFeatureBalanceStats, getMonsterGraftBalanceProfile } from "./monster-graft-balance-profile.js";
 import {
   COMPLEXITY_LABELS,
   PRESSURE_LABELS,
@@ -27,7 +28,10 @@ import {
 
 const FEATURE_SCHEMA_VERSION = "monster-graft-v1.0";
 const EXPORT_SCHEMA_VERSION = "monster-crucible-export-v1.0";
-const DATA_MODEL_MIGRATION_STAGE = "rules-v1.14-effective-hp-conditions";
+const DATA_MODEL_MIGRATION_STAGE = "rules-v1.15-legacy-stats-adapter";
+const OUTPUT_PAYLOAD_SEPARATION_STAGE = "rules-v1.16-public-debug-payload-separation";
+const PUBLIC_EXPORT_PAYLOAD_VERSION = "monster-public-payload-v1.36";
+const DEBUG_EXPORT_PAYLOAD_VERSION = "monster-debug-payload-v1.36";
 
 const STAT_BLOCK_SECTION_LABELS = {
   trait: "Traits",
@@ -172,7 +176,7 @@ function getRawExportItemText(item, computed) {
   return renderStructuredRulesText(item, computed) || normalizeRulesText(item.mechanics, computed);
 }
 
-function getExportItemText(item, computed) {
+export function getExportItemText(item, computed) {
   return normalizeBestiaryRulesText(getRawExportItemText(item, computed));
 }
 
@@ -593,7 +597,8 @@ function buildStructuredFeature(feature, computed = null) {
     fit: getFeatureFrameFit(feature, { includeInferred: true }),
     cost: feature.cost,
     complexity: feature.complexity,
-    stats: feature.stats || {},
+    stats: getFeatureBalanceStats(feature),
+    balanceProfile: getMonsterGraftBalanceProfile(feature),
     summary: feature.summary,
     rulesText: {
       mechanics: feature.mechanics,
@@ -630,6 +635,12 @@ function buildStructuredFeature(feature, computed = null) {
       ),
       usesCompatibilityOverride: hasFeatureCompatibilityOverride(feature),
       usesMechanicOverride: hasFeatureMechanicOverride(feature),
+      legacyStatsSource: getMonsterGraftBalanceProfile(feature).source,
+      legacyTextFields: {
+        mechanics: Boolean(feature.mechanics),
+        tableText: Boolean(feature.tableText),
+        counterplay: Boolean(feature.counterplay),
+      },
     },
   };
 }
@@ -654,6 +665,7 @@ function getFeatureCatalogStats(features = FEATURES) {
     inlineCompatibility: structured.filter((feature) => feature.migration.hasInlineCompatibility)
       .length,
     inlineMechanics: structured.filter((feature) => feature.migration.hasInlineMechanics).length,
+    legacyStatsMigration: buildLegacyStatsMigrationAudit(features),
   };
 }
 
@@ -691,6 +703,7 @@ export function buildExportText({
   hasLegendaryActions,
   xp,
   lairXp,
+  includeDesignerNotes = false,
 }) {
   const basics = getStatBlockBasics(creatureType, category, role, computed, abilityProfile, xp);
   const fallbackTraits = [
@@ -760,7 +773,7 @@ export function buildExportText({
       "Legendary Action Uses: 3. Immediately after another creature’s turn, the monster can expend a use to move, attack, or trigger one selected horror graft. It regains all expended uses at the start of each of its turns.",
       "Press the Horror. The monster uses one non-lair graft that has not already been used this round."
     );
-  sections.push("", "Designer Notes", ...buildDesignerNotes({ danger, role, computed }));
+  if (includeDesignerNotes) sections.push("", "Designer Notes", ...buildDesignerNotes({ danger, role, computed }));
 
   return sections.join("\n");
 }
@@ -917,11 +930,66 @@ export function buildRenderableStatBlock({
         ),
       },
     ],
-    designerNotes: buildDesignerNotes({ danger, role, computed }),
+    debug: {
+      designerNotes: buildDesignerNotes({ danger, role, computed }),
+    },
   };
 }
 
-export function buildExportJson({
+
+function buildPublicGraftSummary(feature, computed = null) {
+  const normalized = getExportItem(feature, computed);
+  const counterplay = normalizeRulesText(feature.counterplay, computed);
+  return {
+    id: feature.id,
+    title: feature.title,
+    source: feature.source,
+    slot: feature.slot,
+    section: getFeatureSection(feature),
+    summary: feature.summary || "",
+    text: normalized,
+    counterplay: counterplay || undefined,
+    tags: uniqueArray(asArray(feature.tags)),
+  };
+}
+
+function buildCommonExportFrame({ creatureType, category, role, danger, source, computed, basics }) {
+  return {
+    creatureType: creatureType.label,
+    category,
+    targetCr: computed.targetCr,
+    encounterRole: role.label,
+    tacticalRole: computed.tacticalRole.label,
+    tier: computed.monsterTier.label,
+    tempoProfile: computed.tempoProfile.label,
+    danger: danger.label,
+    source: source.label,
+    rulesetId: computed.rulesetId || computed.ruleset?.id || "dnd-5e-2024",
+    ruleset: computed.ruleset?.label || "D&D 5E 2024",
+    size: basics.size,
+    alignment: "Unaligned",
+  };
+}
+
+function buildCommonExportCombat({ computed, basics, creatureType, xp, lairXp }) {
+  return {
+    ac: computed.ac,
+    hp: computed.hp,
+    dpr: computed.effectiveProfile?.effectiveDpr3Round ?? computed.dpr,
+    targetDpr: computed.dpr,
+    attackBonus: modText(computed.attack),
+    dc: computed.dc,
+    initiative: modText(basics.initiative),
+    speed: creatureType.defaults.speed,
+    targetCr: computed.targetCr,
+    estimatedCr: computed.estimatedCr,
+    xp,
+    lairXp,
+    proficiencyBonus: modText(computed.prof),
+  };
+}
+
+function buildPublicExportPayload({
   name,
   creatureType,
   category,
@@ -956,61 +1024,160 @@ export function buildExportJson({
     statBlockMode,
     computed,
   });
-  return JSON.stringify(
-    {
-      exportMeta: {
-        schemaVersion: EXPORT_SCHEMA_VERSION,
-        featureSchemaVersion: FEATURE_SCHEMA_VERSION,
-        migrationStage: DATA_MODEL_MIGRATION_STAGE,
-        statBlockStyle: computed.ruleset?.label || "D&D 5E 2024",
-        ruleset: computed.ruleset || null,
-        statBlockMode: normalizeStatBlockMode(statBlockMode),
-        normalization: "rules-text-normalized-v1.32-bestiary-wording",
-        activePreset: activePreset
-          ? {
-              id: activePreset.id,
-              label: activePreset.label,
-              family: activePreset.family,
-              source: activePreset.source,
-            }
-          : null,
-      },
-      name,
-      frame: {
-        creatureType: creatureType.label,
-        category,
-        targetCr: computed.targetCr,
-        encounterRole: role.label,
-        tacticalRole: computed.tacticalRole.label,
-        tier: computed.monsterTier.label,
-        tempoProfile: computed.tempoProfile.label,
-        danger: danger.label,
-        source: source.label,
-        rulesetId: computed.rulesetId || computed.ruleset?.id || "dnd-5e-2024",
-        ruleset: computed.ruleset?.label || "D&D 5E 2024",
-        size: basics.size,
-        alignment: "Unaligned",
-      },
-      combat: {
-        ac: computed.ac,
-        hp: computed.hp,
-        dpr: computed.effectiveProfile?.effectiveDpr3Round ?? computed.dpr,
-        targetDpr: computed.dpr,
-        roundDamage: computed.dprProfile?.rounds,
-        burstDpr: computed.effectiveProfile?.burstDpr,
-        sustainedDpr: computed.effectiveProfile?.sustainedDpr,
-        attackBonus: modText(computed.attack),
-        dc: computed.dc,
-        initiative: modText(basics.initiative),
-        speed: creatureType.defaults.speed,
-        targetCr: computed.targetCr,
-        estimatedCr: computed.estimatedCr,
-        defensiveCr: computed.crValidation?.defensive?.cr,
-        offensiveCr: computed.crValidation?.offensive?.cr,
-        xp,
-        lairXp,
-        proficiencyBonus: modText(computed.prof),
-      },
+  return {
+    exportMeta: {
+      schemaVersion: EXPORT_SCHEMA_VERSION,
+      featureSchemaVersion: FEATURE_SCHEMA_VERSION,
+      payloadType: "public",
+      visibility: "table-facing",
+      payloadVersion: PUBLIC_EXPORT_PAYLOAD_VERSION,
+      migrationStage: OUTPUT_PAYLOAD_SEPARATION_STAGE,
+      dataModelMigrationStage: DATA_MODEL_MIGRATION_STAGE,
+      statBlockStyle: computed.ruleset?.label || "D&D 5E 2024",
+      ruleset: computed.ruleset || null,
+      statBlockMode: normalizeStatBlockMode(statBlockMode),
+      normalization: "rules-text-normalized-v1.32-bestiary-wording",
+      debugPayloadAvailable: true,
+      activePreset: activePreset
+        ? {
+            id: activePreset.id,
+            label: activePreset.label,
+            family: activePreset.family,
+            source: activePreset.source,
+          }
+        : null,
+    },
+    name,
+    frame: buildCommonExportFrame({ creatureType, category, role, danger, source, computed, basics }),
+    combat: buildCommonExportCombat({ computed, basics, creatureType, xp, lairXp }),
+    abilities: {
+      physical: abilityProfile.physical,
+      mental: abilityProfile.mental,
+    },
+    defenses: {
+      skills: basics.skills,
+      resistances: basics.resistances,
+      immunities: basics.immunities,
+      senses: creatureType.defaults.senses,
+      languages: basics.languages,
+    },
+    sections: normalizedSections,
+    runSheet: buildExportRunSheet({
+      computed,
+      selectedFeatures,
+      traits,
+      actions,
+      bonusActions,
+      reactions,
+      deathEffects,
+      lairActions,
+    }),
+    grafts: selectedFeatures.map((feature) => buildPublicGraftSummary(feature, computed)),
+  };
+}
+
+function buildDebugExportPayload({
+  name,
+  creatureType,
+  category,
+  role,
+  danger,
+  source,
+  computed,
+  abilityProfile,
+  traits,
+  actions,
+  bonusActions,
+  reactions,
+  legendaryActions,
+  lairActions,
+  deathEffects,
+  selectedFeatures,
+  statBlockMode = STAT_BLOCK_MODE_STANDARD,
+  activePreset,
+  xp,
+  lairXp,
+}) {
+  const basics = getStatBlockBasics(creatureType, category, role, computed, abilityProfile, xp);
+  const normalizedSections = buildNormalizedSections({
+    traits,
+    actions,
+    bonusActions,
+    reactions,
+    legendaryActions,
+    lairActions,
+    deathEffects,
+    selectedFeatures,
+    statBlockMode,
+    computed,
+  });
+  return {
+    exportMeta: {
+      schemaVersion: EXPORT_SCHEMA_VERSION,
+      featureSchemaVersion: FEATURE_SCHEMA_VERSION,
+      payloadType: "debug",
+      visibility: "debug-editorial-internal",
+      payloadVersion: DEBUG_EXPORT_PAYLOAD_VERSION,
+      publicPayloadVersion: PUBLIC_EXPORT_PAYLOAD_VERSION,
+      migrationStage: OUTPUT_PAYLOAD_SEPARATION_STAGE,
+      dataModelMigrationStage: DATA_MODEL_MIGRATION_STAGE,
+      statBlockStyle: computed.ruleset?.label || "D&D 5E 2024",
+      ruleset: computed.ruleset || null,
+      statBlockMode: normalizeStatBlockMode(statBlockMode),
+      normalization: "rules-text-normalized-v1.32-bestiary-wording",
+      activePreset: activePreset
+        ? {
+            id: activePreset.id,
+            label: activePreset.label,
+            family: activePreset.family,
+            source: activePreset.source,
+          }
+        : null,
+    },
+    name,
+    frame: buildCommonExportFrame({ creatureType, category, role, danger, source, computed, basics }),
+    combat: {
+      ...buildCommonExportCombat({ computed, basics, creatureType, xp, lairXp }),
+      roundDamage: computed.dprProfile?.rounds,
+      burstDpr: computed.effectiveProfile?.burstDpr,
+      sustainedDpr: computed.effectiveProfile?.sustainedDpr,
+      defensiveCr: computed.crValidation?.defensive?.cr,
+      offensiveCr: computed.crValidation?.offensive?.cr,
+    },
+    printedStats: computed.printedStats,
+    rulesProfile: computed.rulesProfile,
+    rulesValidation: computed.rulesValidation,
+    abilityModel: computed.abilityModel,
+    effectiveProfile: computed.effectiveProfile,
+    dprProfile: computed.dprProfile,
+    crValidation: computed.crValidation,
+    profileDeltas: computed.profileDeltas,
+    bestiaryBaselineAudit: computed.bestiaryBaselineAudit,
+    pressureProfile: computed.pressureProfile,
+    complexityProfile: computed.complexityProfile,
+    counterplayAudit: computed.counterplayAudit,
+    counterplayProfiles: computed.counterplayProfiles,
+    featureMechanics: computed.featureMechanics,
+    mechanicsSummary: computed.mechanicsSummary,
+    abilities: {
+      physical: abilityProfile.physical,
+      mental: abilityProfile.mental,
+    },
+    defenses: {
+      skills: basics.skills,
+      resistances: basics.resistances,
+      immunities: basics.immunities,
+      senses: creatureType.defaults.senses,
+      languages: basics.languages,
+    },
+    sections: normalizedSections,
+    balance: {
+      pressure: computed.pressure,
+      budget: computed.budget,
+      complexity: computed.complexity,
+      complexityCap: computed.complexityCap,
+      warnings: computed.warnings,
+      baseline: computed.baseline,
       printedStats: computed.printedStats,
       rulesProfile: computed.rulesProfile,
       rulesValidation: computed.rulesValidation,
@@ -1026,50 +1193,30 @@ export function buildExportJson({
       counterplayProfiles: computed.counterplayProfiles,
       featureMechanics: computed.featureMechanics,
       mechanicsSummary: computed.mechanicsSummary,
-      abilities: {
-        physical: abilityProfile.physical,
-        mental: abilityProfile.mental,
-      },
-      defenses: {
-        skills: basics.skills,
-        resistances: basics.resistances,
-        immunities: basics.immunities,
-        senses: creatureType.defaults.senses,
-        languages: basics.languages,
-      },
-      sections: normalizedSections,
-      balance: {
-        pressure: computed.pressure,
-        budget: computed.budget,
-        complexity: computed.complexity,
-        complexityCap: computed.complexityCap,
-        warnings: computed.warnings,
-        baseline: computed.baseline,
-        printedStats: computed.printedStats,
-        rulesProfile: computed.rulesProfile,
-        rulesValidation: computed.rulesValidation,
-        abilityModel: computed.abilityModel,
-        effectiveProfile: computed.effectiveProfile,
-        dprProfile: computed.dprProfile,
-        crValidation: computed.crValidation,
-        profileDeltas: computed.profileDeltas,
-        bestiaryBaselineAudit: computed.bestiaryBaselineAudit,
-        pressureProfile: computed.pressureProfile,
-        complexityProfile: computed.complexityProfile,
-        counterplayAudit: computed.counterplayAudit,
-        counterplayProfiles: computed.counterplayProfiles,
-        featureMechanics: computed.featureMechanics,
-        mechanicsSummary: computed.mechanicsSummary,
-        baselinePower: computed.baselinePower,
-        effectivePower: computed.effectivePower,
-      },
-      catalog: {
-        features: getFeatureCatalogStats(FEATURES),
-        presets: getPresetCatalogStats(MONSTER_FAMILY_PRESETS),
-      },
-      grafts: selectedFeatures.map((feature) => buildStructuredFeature(feature, computed)),
+      baselinePower: computed.baselinePower,
+      effectivePower: computed.effectivePower,
     },
-    null,
-    2
-  );
+    catalog: {
+      features: getFeatureCatalogStats(FEATURES),
+      presets: getPresetCatalogStats(MONSTER_FAMILY_PRESETS),
+    },
+    grafts: selectedFeatures.map((feature) => buildStructuredFeature(feature, computed)),
+  };
+}
+
+export function buildExportJson(args = {}) {
+  return JSON.stringify(buildPublicExportPayload(args), null, 2);
+}
+
+export function buildDebugExportJson(args = {}) {
+  return JSON.stringify(buildDebugExportPayload(args), null, 2);
+}
+
+export function buildExportPayloads(args = {}) {
+  return {
+    public: buildPublicExportPayload(args),
+    debug: buildDebugExportPayload(args),
+    exportJson: JSON.stringify(buildPublicExportPayload(args), null, 2),
+    debugExportJson: JSON.stringify(buildDebugExportPayload(args), null, 2),
+  };
 }

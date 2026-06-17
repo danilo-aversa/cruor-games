@@ -37,7 +37,7 @@ export function LocationSlotRail({ state, setState, modeControls, onFocusSlot })
     : getDefaultSlotIdForScope(activeScope);
   const activeRegion = state.locationRegions?.find((region) => region.id === state.activeRegionId);
   const targetLabel = activeScope === LOCATION_SLOT_SCOPE_REGION
-    ? activeRegion?.name || "Select a room on the map"
+    ? activeRegion?.name || "Select a region on the map"
     : "Whole Map";
 
   const selectedBySlot = useMemo(() => {
@@ -85,11 +85,11 @@ export function LocationSlotRail({ state, setState, modeControls, onFocusSlot })
   return (
     <aside
       className="cruor-composer-rail location-composer__rail location-composer__rail--left location-composer__rail--picker location-map-slot-rail"
-      aria-label="Location slots"
+      aria-label="Location regions"
     >
       {modeControls ? modeControls : null}
 
-      <div className="location-map-mode-switch location-slot-scope-switch" role="tablist" aria-label="Slot target scope">
+      <div className="location-map-mode-switch location-slot-scope-switch" role="tablist" aria-label="Region target scope">
         {[LOCATION_SLOT_SCOPE_MAP, LOCATION_SLOT_SCOPE_REGION].map((scope) => {
           const definition = LOCATION_SLOT_SCOPE_DEFINITIONS[scope];
           const active = activeScope === scope;
@@ -109,7 +109,7 @@ export function LocationSlotRail({ state, setState, modeControls, onFocusSlot })
         })}
       </div>
 
-      <div className="location-slot-scope-target" aria-label="Current slot target">
+      <div className="location-slot-scope-target" aria-label="Current region target">
         <span>{activeScope === LOCATION_SLOT_SCOPE_REGION ? "Selected" : "Target"}</span>
         <strong>{targetLabel}</strong>
       </div>
@@ -150,8 +150,8 @@ export function LocationSlotRail({ state, setState, modeControls, onFocusSlot })
                   </>
                 ) : (
                   <>
-                    <strong>Empty Slot</strong>
-                    <em>{slot.description || "Pick a component for this part of the location."}</em>
+                    <strong>Empty Region Slot</strong>
+                    <em>{slot.description || "Pick a component for this region of the location."}</em>
                   </>
                 )}
               </span>

@@ -1,3 +1,4 @@
+import { getFeatureBalanceStat } from "../../model/monster-graft-balance-profile.js";
 export const MONSTER_RULES_ENGINE_VERSION = "dnd-legal-rules-v0.1";
 
 const ABILITY_KEYS = Object.freeze(["str", "dex", "con", "int", "wis", "cha"]);
@@ -186,9 +187,9 @@ function applyRoleAbilityAdjustments(scores, roleId) {
 
 function applyFeatureAbilityAdjustments(scores, selectedFeatures = []) {
   selectedFeatures.forEach((feature) => {
-    if ((feature.stats?.hp || 0) >= 12) scores.con += 1;
-    if ((feature.stats?.mobility || 0) >= 1) scores.dex += 1;
-    if ((feature.stats?.control || 0) >= 2) scores.wis += 1;
+    if ((getFeatureBalanceStat(feature, "hp")) >= 12) scores.con += 1;
+    if ((getFeatureBalanceStat(feature, "mobility")) >= 1) scores.dex += 1;
+    if ((getFeatureBalanceStat(feature, "control")) >= 2) scores.wis += 1;
   });
 }
 

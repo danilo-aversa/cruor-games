@@ -1,3 +1,4 @@
+import { getFeatureBalanceStat, getFeatureBalanceStats } from "./monster-graft-balance-profile.js";
 const FIT_LIST_DIMENSIONS = Object.freeze([
   "encounterRoles",
   "tacticalRoles",
@@ -216,14 +217,14 @@ function getFeaturePressure(feature = {}) {
   return Math.max(
     0,
     Number(feature.cost || feature.monster?.cost || 0),
-    Number(feature.stats?.dpr || 0),
-    Number(feature.stats?.control || 0) + Number(feature.stats?.mobility || 0),
+    Number(getFeatureBalanceStat(feature, "dpr")),
+    Number(getFeatureBalanceStat(feature, "control")) + Number(getFeatureBalanceStat(feature, "mobility")),
   );
 }
 
 export function inferMonsterFrameFit(feature = {}) {
   const inferred = {};
-  const stats = feature.stats || {};
+  const stats = getFeatureBalanceStats(feature);
   const section = getSection(feature);
   const cost = Number(feature.cost || feature.monster?.cost || 0);
   const complexity = Number(feature.complexity || feature.monster?.complexity || 0);

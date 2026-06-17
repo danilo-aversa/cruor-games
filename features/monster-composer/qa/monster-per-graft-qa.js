@@ -633,8 +633,23 @@ function runForcedGraftCase(graft, options) {
           check: "json-parse",
           id: graft.id,
           title: graft.title,
-          message: `Export JSON is invalid: ${error.message}`,
+          message: `Public export JSON is invalid: ${error.message}`,
         }));
+      }
+
+      if (artifacts.debugExportJson) {
+        try {
+          JSON.parse(artifacts.debugExportJson);
+        } catch (error) {
+          caseIssues.push(makeQaIssue({
+            severity: "error",
+            area: "per-graft-export",
+            check: "debug-json-parse",
+            id: graft.id,
+            title: graft.title,
+            message: `Debug export JSON is invalid: ${error.message}`,
+          }));
+        }
       }
 
       asArray(artifacts.statBlockParse?.issues).forEach((issue) => {

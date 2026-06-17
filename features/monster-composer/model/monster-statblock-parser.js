@@ -1,6 +1,6 @@
 import { getBestiaryWordingIssues } from "./monster-bestiary-wording.js";
 
-export const MONSTER_STAT_BLOCK_PARSER_VERSION = "rendered-statblock-parser-v1.32";
+export const MONSTER_STAT_BLOCK_PARSER_VERSION = "rendered-statblock-parser-v1.36-r2";
 
 const DND_CONDITIONS = Object.freeze([
   "Blinded",
@@ -230,7 +230,16 @@ function checkGlobalText({ exportText = "", computed = {}, issues }) {
   }
 }
 
+function isMultiattackOnlyRoutine(ability = {}, item = {}) {
+  return Boolean(
+    ability?.multiattack?.enabled &&
+      cleanString(item?.title).toLowerCase() === "multiattack" &&
+      /\bthe\s+monster\s+makes\b/i.test(item?.text || "")
+  );
+}
+
 function checkAttackText({ item, ability, computed, issues }) {
+  if (isMultiattackOnlyRoutine(ability, item)) return;
   const attack = ability?.resolution?.attack;
   if (!attack) return;
   const text = item.text || "";
@@ -283,6 +292,7 @@ function checkAttackText({ item, ability, computed, issues }) {
 }
 
 function checkSaveText({ item, ability, computed, issues }) {
+  if (isMultiattackOnlyRoutine(ability, item)) return;
   const hasSave = ability?.resolution?.save || ability?.resolution?.secondarySave;
   if (!hasSave) return;
   const text = item.text || "";
@@ -337,6 +347,7 @@ function isNonOffensiveDamageReference(text = "", ability = {}) {
 }
 
 function checkDamageText({ item, ability, issues }) {
+  if (isMultiattackOnlyRoutine(ability, item)) return;
   const text = item.text || "";
   const modeledDamage = Boolean(ability?.damage?.hasDamage);
   const mentionsDamage = textMentionsDamage(text);

@@ -21,7 +21,7 @@ import {
   forgeMonsterSelectionDetailed,
 } from "./monster-frame-builders.js";
 
-export const MONSTER_BATCH_QA_VERSION = "monster-batch-qa-v1.1-scalable-action-fitting";
+export const MONSTER_BATCH_QA_VERSION = "monster-batch-qa-v1.2-payload-audit-high-cr-routine";
 
 const DEFAULT_BATCH_COUNT = 100;
 const DEFAULT_SEED = "cruor-batch-qa";
@@ -39,12 +39,106 @@ const BATCH_QA_EXPORT_MODES = Object.freeze(["compact", "debug", "full"]);
 const DEFAULT_DEBUG_EXPORT_LIMIT = 30;
 const REALISTIC_FRAME_ATTEMPTS = 80;
 
+const PUBLIC_PAYLOAD_FORBIDDEN_KEYS = Object.freeze([
+  "abilityModel",
+  "bestiaryBaselineAudit",
+  "computed",
+  "crValidation",
+  "debugExportJson",
+  "designerNotes",
+  "dprProfile",
+  "effectiveProfile",
+  "featureMechanics",
+  "mechanics",
+  "mechanicsSummary",
+  "profileDeltas",
+  "rulesProfile",
+  "rulesText",
+]);
+const DEBUG_PAYLOAD_REQUIRED_KEYS = Object.freeze([
+  "abilityModel",
+  "crValidation",
+  "dprProfile",
+  "effectiveProfile",
+  "featureMechanics",
+  "rulesProfile",
+]);
+const PUBLIC_LEGACY_TEXT_PATTERNS = Object.freeze([
+  { code: "hit-target-takes", pattern: /Hit:\s+the target takes/i },
+  { code: "failure-target-takes", pattern: /Failure:\s+the target takes/i },
+  { code: "legacy-recharge-hyphen", pattern: /Recharge\s+\d\s*-\s*\d/i },
+  { code: "legacy-radius-shape", pattern: /\b\d+[- ]foot Radius\b|\b\d+[- ]foot-radius Radius\b/i },
+]);
+
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
 function cleanString(value) {
   return String(value || "").trim();
+}
+
+function findObjectKeyPaths(value, forbiddenKeys = [], path = "") {
+  if (value == null || typeof value !== "object") return [];
+  if (Array.isArray(value)) {
+    return value.flatMap((entry, index) => findObjectKeyPaths(entry, forbiddenKeys, `${path}[${index}]`));
+  }
+  return Object.entries(value).flatMap(([key, entry]) => {
+    const currentPath = path ? `${path}.${key}` : key;
+    const direct = forbiddenKeys.includes(key) ? [currentPath] : [];
+    return [...direct, ...findObjectKeyPaths(entry, forbiddenKeys, currentPath)];
+  });
+}
+
+function findLegacyTextHits(value) {
+  const text = typeof value === "string" ? value : JSON.stringify(value || "");
+  return PUBLIC_LEGACY_TEXT_PATTERNS
+    .filter((entry) => entry.pattern.test(text))
+    .map((entry) => entry.code);
+}
+
+function safeParseJson(value) {
+  if (!value) return { ok: false, value: null, error: "missing" };
+  try {
+    return { ok: true, value: JSON.parse(value), error: null };
+  } catch (error) {
+    return { ok: false, value: null, error: error.message };
+  }
+}
+
+function buildExportPayloadAudit(artifacts = {}) {
+  const publicParsed = safeParseJson(artifacts?.exportJson);
+  const debugParsed = safeParseJson(artifacts?.debugExportJson);
+  const debugPayloadPresent = Boolean(artifacts?.debugExportJson);
+  const publicForbiddenKeyPaths = publicParsed.ok
+    ? findObjectKeyPaths(publicParsed.value, PUBLIC_PAYLOAD_FORBIDDEN_KEYS)
+    : [];
+  const publicLegacyTextHits = publicParsed.ok ? findLegacyTextHits(publicParsed.value) : [];
+  const debugMissingInternalKeys = debugParsed.ok
+    ? DEBUG_PAYLOAD_REQUIRED_KEYS.filter((key) => !Object.prototype.hasOwnProperty.call(debugParsed.value || {}, key))
+    : DEBUG_PAYLOAD_REQUIRED_KEYS;
+  const publicPayloadType = publicParsed.value?.exportMeta?.payloadType || null;
+  const debugPayloadType = debugParsed.value?.exportMeta?.payloadType || null;
+  const debugPayloadVisibility = debugParsed.value?.exportMeta?.visibility || null;
+  return {
+    version: "monster-output-payload-audit-v1.36-r2",
+    publicPayloadPresent: Boolean(artifacts?.exportJson),
+    debugPayloadPresent,
+    publicPayloadValid: publicParsed.ok,
+    debugPayloadValid: debugParsed.ok,
+    publicPayloadType,
+    debugPayloadType,
+    publicPayloadVisibility: publicParsed.value?.exportMeta?.visibility || null,
+    debugPayloadVisibility,
+    publicPayloadForbiddenKeyCount: publicForbiddenKeyPaths.length,
+    publicPayloadForbiddenKeyPaths: publicForbiddenKeyPaths.slice(0, 20),
+    publicPayloadLegacyTextCount: publicLegacyTextHits.length,
+    publicLegacyTextHits,
+    debugMissingInternalKeyCount: debugMissingInternalKeys.length,
+    debugMissingInternalKeys,
+    publicPayloadError: publicParsed.error,
+    debugPayloadError: debugParsed.error,
+  };
 }
 
 function normalizeInteger(value, fallback, min, max) {
@@ -553,16 +647,92 @@ function addExportIssues({ frame, context, issues }) {
     return null;
   }
 
-  try {
-    JSON.parse(artifacts.exportJson);
-  } catch (error) {
+  const payloadAudit = buildExportPayloadAudit(artifacts);
+  artifacts.payloadAudit = payloadAudit;
+
+  if (!payloadAudit.publicPayloadValid) {
     issues.push(makeQaIssue({
       severity: "error",
       area: "forge-export",
       check: "json-parse",
       id: frame.id,
       title: context.computed?.name || frame.id,
-      message: `Forged monster export JSON is invalid: ${error.message}`,
+      message: `Forged monster public export JSON is invalid: ${payloadAudit.publicPayloadError}`,
+      details: { payloadAudit },
+    }));
+  }
+
+  if (!payloadAudit.debugPayloadValid) {
+    issues.push(makeQaIssue({
+      severity: "error",
+      area: "forge-export",
+      check: "debug-json-parse",
+      id: frame.id,
+      title: context.computed?.name || frame.id,
+      message: `Forged monster debug export JSON is invalid: ${payloadAudit.debugPayloadError}`,
+      details: { payloadAudit },
+    }));
+  }
+
+  if (payloadAudit.publicPayloadType !== "public" || payloadAudit.publicPayloadVisibility !== "table-facing") {
+    issues.push(makeQaIssue({
+      severity: "error",
+      area: "forge-export",
+      check: "public-payload-meta",
+      id: frame.id,
+      title: context.computed?.name || frame.id,
+      message: "Public export payload metadata does not identify it as table-facing public JSON.",
+      details: { payloadAudit },
+    }));
+  }
+
+  if (payloadAudit.debugPayloadType !== "debug" || payloadAudit.debugPayloadVisibility !== "debug-editorial-internal") {
+    issues.push(makeQaIssue({
+      severity: "warning",
+      area: "forge-export",
+      check: "debug-payload-meta",
+      id: frame.id,
+      title: context.computed?.name || frame.id,
+      message: "Debug export payload metadata does not identify it as internal debug JSON.",
+      details: { payloadAudit },
+    }));
+  }
+
+  if (payloadAudit.publicPayloadForbiddenKeyCount > 0) {
+    issues.push(makeQaIssue({
+      severity: "error",
+      area: "forge-export",
+      check: "public-payload-debug-fields",
+      id: frame.id,
+      title: context.computed?.name || frame.id,
+      message: `Public export payload contains ${payloadAudit.publicPayloadForbiddenKeyCount} debug/editorial field(s).`,
+      recommendation: "Move internals to debugExportJson and keep exportJson table-facing only.",
+      details: { payloadAudit },
+    }));
+  }
+
+  if (payloadAudit.publicPayloadLegacyTextCount > 0) {
+    issues.push(makeQaIssue({
+      severity: "error",
+      area: "forge-export",
+      check: "public-payload-legacy-text",
+      id: frame.id,
+      title: context.computed?.name || frame.id,
+      message: `Public export payload contains legacy wording pattern(s): ${payloadAudit.publicPayloadLegacyTextHits.join(", ")}.`,
+      recommendation: "Normalize table-facing text before it enters the public export payload.",
+      details: { payloadAudit },
+    }));
+  }
+
+  if (payloadAudit.debugMissingInternalKeyCount > 0) {
+    issues.push(makeQaIssue({
+      severity: "warning",
+      area: "forge-export",
+      check: "debug-payload-missing-internals",
+      id: frame.id,
+      title: context.computed?.name || frame.id,
+      message: `Debug export payload is missing expected internal field(s): ${payloadAudit.debugMissingInternalKeys.join(", ")}.`,
+      details: { payloadAudit },
     }));
   }
 
@@ -678,6 +848,13 @@ function summarizeGeneratedMonster({ frame, context, artifacts, issueCount, info
     statBlockParserWarnings: artifacts?.statBlockParse?.summary?.warning || 0,
     statBlockParserInfo: artifacts?.statBlockParse?.summary?.info || 0,
     exportSize: artifacts?.exportJson?.length || 0,
+    debugExportSize: artifacts?.debugExportJson?.length || 0,
+    payloadAudit: artifacts?.payloadAudit || null,
+    publicPayloadValid: Boolean(artifacts?.payloadAudit?.publicPayloadValid),
+    debugPayloadValid: Boolean(artifacts?.payloadAudit?.debugPayloadValid),
+    publicPayloadForbiddenKeyCount: artifacts?.payloadAudit?.publicPayloadForbiddenKeyCount || 0,
+    publicPayloadLegacyTextCount: artifacts?.payloadAudit?.publicPayloadLegacyTextCount || 0,
+    debugMissingInternalKeyCount: artifacts?.payloadAudit?.debugMissingInternalKeyCount || 0,
   };
 }
 
@@ -767,6 +944,11 @@ function buildBatchAnalytics(generated = [], issues = []) {
   const forgeInvalid = generated.filter((item) => item.forgeStatus === "invalid").length;
   const balanceSkipped = generated.filter((item) => item.balanceStatus === "skipped_due_to_incomplete_forge").length;
   const exportSkipped = generated.filter((item) => item.exportStatus === "skipped_due_to_incomplete_forge").length;
+  const publicPayloads = generated.filter((item) => item.publicPayloadValid === true).length;
+  const debugPayloads = generated.filter((item) => item.debugPayloadValid === true).length;
+  const publicPayloadsWithDebugFields = generated.filter((item) => Number(item.publicPayloadForbiddenKeyCount || 0) > 0).length;
+  const publicPayloadsWithLegacyText = generated.filter((item) => Number(item.publicPayloadLegacyTextCount || 0) > 0).length;
+  const debugPayloadsMissingInternals = generated.filter((item) => Number(item.debugMissingInternalKeyCount || 0) > 0).length;
 
   return {
     generated: generated.length,
@@ -776,6 +958,11 @@ function buildBatchAnalytics(generated = [], issues = []) {
     balanceAnalyzed: balanceAnalyzed.length,
     balanceSkipped,
     exportSkipped,
+    publicPayloads,
+    debugPayloads,
+    publicPayloadsWithDebugFields,
+    publicPayloadsWithLegacyText,
+    debugPayloadsMissingInternals,
     averageCrDelta: Number(averageCrDelta.toFixed(2)),
     aboveTargetBy2,
     aboveTargetBy4,
@@ -941,6 +1128,11 @@ export function buildMonsterBatchQaMarkdown(report = {}) {
   lines.push(`- Missing Scalable Main Action: ${analytics.missingScalableMainAction ?? 0}`);
   lines.push(`- Low-CR DPR Spike Warnings: ${analytics.lowCrDprSpikeWarnings ?? 0}`);
   lines.push(`- Low Pressure Mismatch: ${analytics.lowPressureMismatch ?? 0}`);
+  lines.push(`- Public Payloads Valid: ${analytics.publicPayloads ?? 0}`);
+  lines.push(`- Debug Payloads Valid: ${analytics.debugPayloads ?? 0}`);
+  lines.push(`- Public Payloads With Debug Fields: ${analytics.publicPayloadsWithDebugFields ?? 0}`);
+  lines.push(`- Public Payloads With Legacy Text: ${analytics.publicPayloadsWithLegacyText ?? 0}`);
+  lines.push(`- Debug Payloads Missing Internals: ${analytics.debugPayloadsMissingInternals ?? 0}`);
   lines.push("");
   lines.push("## Most Common Issues");
   if (!grouped.length) {

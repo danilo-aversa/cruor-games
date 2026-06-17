@@ -470,11 +470,13 @@ function StatBlockModeSwitch({ mode = "standard", onSetMode }) {
 export function ExportWorkbench({
   exportText,
   exportJson,
+  debugExportJson,
   statBlock,
   exportReadiness,
   exportRunSheet,
   exportCopyStatus,
   statBlockMode = "standard",
+  uiMode = "simple",
   onSetStatBlockMode,
   onCopyExportPayload,
   onOpenBalance,
@@ -497,7 +499,7 @@ export function ExportWorkbench({
 
           <ExportReadinessPanel readiness={exportReadiness} onOpenBalance={onOpenBalance} />
 
-          <DesignerNotesPanel notes={statBlock.designerNotes} />
+          {uiMode === "debug" && <DesignerNotesPanel notes={statBlock.debug?.designerNotes} />}
 
           <div className="export-action-grid" aria-label="Export actions">
             <button
@@ -534,9 +536,15 @@ export function ExportWorkbench({
                 <textarea value={exportText} readOnly aria-label="Exported stat block text" />
               </div>
               <div className="export-textarea-shell">
-                <span>Structured JSON</span>
-                <textarea value={exportJson} readOnly aria-label="Exported monster JSON" />
+                <span>Public JSON</span>
+                <textarea value={exportJson} readOnly aria-label="Exported public monster JSON" />
               </div>
+              {uiMode === "debug" && (
+                <div className="export-textarea-shell">
+                  <span>Debug JSON</span>
+                  <textarea value={debugExportJson || ""} readOnly aria-label="Exported debug monster JSON" />
+                </div>
+              )}
             </div>
           </details>
         </aside>

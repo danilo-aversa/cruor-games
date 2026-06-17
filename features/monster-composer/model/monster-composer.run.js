@@ -5,7 +5,7 @@ import {
   getFeatureSection,
   getTopFeatureByWeight,
 } from "./monster-composer.balance.js";
-import { getSectionLabel, normalizeRulesText } from "./monster-composer.export.js";
+import { getExportItemText, getSectionLabel, normalizeRulesText } from "./monster-composer.export.js";
 
 function titleCase(value) {
   return String(value || "")
@@ -24,9 +24,14 @@ function compactRunText(text, computed = null, maxLength = 180) {
   return `${normalized.slice(0, maxLength).trim()}…`;
 }
 
+function getRunRulesText(feature, computed = null) {
+  if (!feature) return "";
+  return getExportItemText(feature, computed) || normalizeRulesText(feature.mechanics || feature.summary || "", computed);
+}
+
 function getRunFeatureTrigger(feature, computed = null) {
   const section = getFeatureSection(feature);
-  const mechanics = normalizeRulesText(feature.mechanics || "", computed);
+  const mechanics = getRunRulesText(feature, computed);
   const triggerMatch = mechanics.match(/Trigger:\s*([^.]+)\./i);
   const rechargeMatch = mechanics.match(/Recharge\s*([0-9–-]+)/i);
 
@@ -43,7 +48,7 @@ function getRunFeatureTrigger(feature, computed = null) {
 }
 
 function getRunFeatureResponse(feature, computed = null) {
-  const mechanics = normalizeRulesText(feature.mechanics || feature.summary || "", computed);
+  const mechanics = getRunRulesText(feature, computed) || normalizeRulesText(feature.summary || "", computed);
   const responseMatch = mechanics.match(/Response:\s*(.+)$/i);
   if (responseMatch?.[1]) return compactRunText(responseMatch[1], computed, 170);
   return compactRunText(mechanics, computed, 170);
@@ -54,7 +59,7 @@ function isRunTriggerFeature(feature) {
   return (
     ["reaction", "bonusAction", "lairAction", "death"].includes(section) ||
     /recharge|bloodied|drops to 0 hit points|on death|initiative count 20|trigger:/i.test(
-      feature.mechanics || ""
+      getRunRulesText(feature, null) || feature.mechanics || ""
     )
   );
 }
@@ -242,23 +247,23 @@ export function buildRunModeSheet({
       {
         label: "Open",
         value: opener
-          ? `${opener.title}. ${compactRunText(opener.summary || opener.mechanics, computed, 150)}`
+          ? `${opener.title}. ${compactRunText(opener.summary || getRunRulesText(opener, computed), computed, 150)}`
           : "Reveal the threat and establish its strongest visible tell.",
       },
       {
         label: "Default Turn",
-        value: `${defaultAction.title}. ${compactRunText(defaultAction.mechanics || defaultAction.summary, computed, 160)}`,
+        value: `${defaultAction.title}. ${compactRunText(getRunRulesText(defaultAction, computed) || defaultAction.summary, computed, 160)}`,
       },
       {
         label: "Move",
         value: movement
-          ? `${movement.title}. ${compactRunText(movement.summary || movement.mechanics, computed, 150)}`
+          ? `${movement.title}. ${compactRunText(movement.summary || getRunRulesText(movement, computed), computed, 150)}`
           : "Advance directly, hold a threatening lane, or force the party to reposition.",
       },
       {
         label: "When Pressed",
         value: twist
-          ? `${twist.title}. ${compactRunText(twist.summary || twist.mechanics, computed, 150)}`
+          ? `${twist.title}. ${compactRunText(twist.summary || getRunRulesText(twist, computed), computed, 150)}`
           : topPressureFeature
             ? `Protect the table from ${topPressureFeature.title}: telegraph before it resolves.`
             : "Use the clearest installed graft, not every rule at once.",
@@ -266,7 +271,7 @@ export function buildRunModeSheet({
       {
         label: "End Beat",
         value: death
-          ? `${death.title}. ${compactRunText(death.summary || death.mechanics, computed, 150)}`
+          ? `${death.title}. ${compactRunText(death.summary || getRunRulesText(death, computed), computed, 150)}`
           : "Let the death reveal a clue, consequence, or safe ending.",
       },
     ],
@@ -291,7 +296,7 @@ export function buildRunModeSheet({
           id: feature.id,
           title: feature.title,
           value: compactRunText(
-            feature.counterplay || feature.mechanics || feature.summary,
+            feature.counterplay || getRunRulesText(feature, computed) || feature.summary,
             computed,
             170
           ),
@@ -305,7 +310,7 @@ export function buildRunModeSheet({
       topPressureFeature
         ? {
             label: "Pressure",
-            value: `${topPressureFeature.title}: ${compactRunText(topPressureFeature.summary || topPressureFeature.mechanics, computed, 150)}`,
+            value: `${topPressureFeature.title}: ${compactRunText(topPressureFeature.summary || getRunRulesText(topPressureFeature, computed), computed, 150)}`,
           }
         : null,
       topComplexityFeature

@@ -1,3 +1,4 @@
+import { getFeatureBalanceStat } from "./monster-graft-balance-profile.js";
 export const MONSTER_GRAFT_RULES_SCHEMA_VERSION = "monster-graft-rules-v1.14";
 
 export const RULES_SECTIONS = Object.freeze([
@@ -631,9 +632,9 @@ function inferDamage(text, feature = {}) {
   const damageTypes = DAMAGE_TYPES.filter((type) => lower.includes(`${type} damage`));
   if (!damageTypes.length && !lower.includes("damage")) return null;
   return {
-    mode: feature.stats?.dpr ? "budget" : "custom",
-    scale: feature.stats?.dpr >= 8 ? "high" : feature.stats?.dpr >= 4 ? "standard" : "minor",
-    budgetRole: feature.stats?.dpr ? "mainAttack" : "none",
+    mode: getFeatureBalanceStat(feature, "dpr") ? "budget" : "custom",
+    scale: getFeatureBalanceStat(feature, "dpr") >= 8 ? "high" : getFeatureBalanceStat(feature, "dpr") >= 4 ? "standard" : "minor",
+    budgetRole: getFeatureBalanceStat(feature, "dpr") ? "mainAttack" : "none",
     types: damageTypes.length ? damageTypes : ["variable"],
   };
 }

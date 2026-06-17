@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import "./monster-composer.styles.css";
+import { getFeatureBalanceEntries, getFeatureBalanceStat, sumFeatureBalanceStats } from "./model/monster-graft-balance-profile.js";
 import {
   X,
   BookOpen,
@@ -68,6 +69,7 @@ import {
 } from "./model/monster-composer.balance.js";
 import {
   buildExportJson,
+  buildDebugExportJson,
   buildExportReadiness,
   buildExportRunSheet,
   buildExportText,
@@ -229,9 +231,9 @@ function buildAbilityProfile(typeId, category, roleId, selectedFeatures, prof, r
   }
 
   selectedFeatures.forEach((feature) => {
-    if ((feature.stats?.hp || 0) >= 12) scores.con += 1;
-    if ((feature.stats?.mobility || 0) >= 1) scores.dex += 1;
-    if ((feature.stats?.control || 0) >= 2) scores.wis += 1;
+    if ((getFeatureBalanceStat(feature, "hp")) >= 12) scores.con += 1;
+    if ((getFeatureBalanceStat(feature, "mobility")) >= 1) scores.dex += 1;
+    if ((getFeatureBalanceStat(feature, "control")) >= 2) scores.wis += 1;
   });
 
   const proficientSaves = new Set(["con", "wis"]);
@@ -511,7 +513,7 @@ function getBestAddFeatureFix(args) {
   const sorted = [...candidates].sort((a, b) => {
     if (args.slotId === "weakness") {
       return (
-        (b.feature.stats?.fairness || 0) - (a.feature.stats?.fairness || 0) ||
+        (getFeatureBalanceStat(b.feature, "fairness")) - (getFeatureBalanceStat(a.feature, "fairness")) ||
         b.safety - a.safety ||
         getFeatureDecisionRank(a.profile) - getFeatureDecisionRank(b.profile) ||
         a.feature.title.localeCompare(b.feature.title)
@@ -1538,15 +1540,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     const baseAttack = baseline.attackBonus + framePowerProfile.attackMod;
     const baseDc = baseline.saveDc + framePowerProfile.dcMod;
 
-    const statMods = selectedFeatures.reduce(
-      (acc, feature) => {
-        Object.entries(feature.stats || {}).forEach(([key, value]) => {
-          acc[key] = (acc[key] || 0) + value;
-        });
-        return acc;
-      },
-      { hp: 0, dpr: 0, ac: 0, control: 0, mobility: 0, fairness: 0 }
-    );
+    const statMods = sumFeatureBalanceStats(selectedFeatures);
 
     const featureMechanics = selectedFeatures.map((feature) => ({
       id: feature.id,
@@ -2257,7 +2251,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       xp,
       lairXp,
     });
-    const exportJson = buildExportJson({
+    const exportJsonArgs = {
       name: computed.name,
       creatureType,
       category,
@@ -2278,7 +2272,9 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       activePreset,
       xp,
       lairXp,
-    });
+    };
+    const exportJson = buildExportJson(exportJsonArgs);
+    const debugExportJson = buildDebugExportJson(exportJsonArgs);
     const statBlock = buildRenderableStatBlock({
       name: computed.name,
       creatureType,
@@ -2331,6 +2327,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     return {
       exportText,
       exportJson,
+      debugExportJson,
       statBlock,
       statBlockParse,
       exportReadiness,
@@ -2387,11 +2384,13 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     <ExportWorkbench
       exportText={exportPayload.exportText}
       exportJson={exportPayload.exportJson}
+      debugExportJson={exportPayload.debugExportJson}
       statBlock={exportPayload.statBlock}
       exportReadiness={exportPayload.exportReadiness}
       exportRunSheet={exportPayload.exportRunSheet}
       exportCopyStatus={exportCopyStatus}
       statBlockMode={statBlockMode}
+      uiMode={uiMode}
       onSetStatBlockMode={setStatBlockMode}
       onCopyExportPayload={copyExportPayload}
       onOpenBalance={uiMode === "debug" ? () => setViewMode("balance") : null}
@@ -3018,7 +3017,7 @@ function GraftInspector({
         <div className="graft-inspector__content">
           <div className="graft-inspector__stack">
             {features.map((feature) => {
-              const statEntries = Object.entries(feature.stats || {});
+              const statEntries = getFeatureBalanceEntries(feature);
               const mechanicProfile = getFeatureMechanicProfile(feature);
               return (
                 <article key={feature.id} className="graft-inspector__item">

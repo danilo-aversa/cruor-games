@@ -2986,7 +2986,9 @@ function MapTestsModal({ open, testSuite, onClose }) {
 
 export default function CruorMapGeneratorMvp({
   initialRequest = null,
+  onExitWorkspace = null,
   onRefreshFromComposer = null,
+  embeddedInComposer = false,
 } = {}) {
   const initialConfig = useMemo(
     () => createConfigFromNormalizedMapRequest(initialRequest, DEFAULT_CONFIG),
@@ -3853,6 +3855,7 @@ export default function CruorMapGeneratorMvp({
   return (
     <div
       className="cruor-map-mvp cruor-map-workspace"
+      data-map-embedded={embeddedInComposer ? "true" : undefined}
       onContextMenu={(event) => event.preventDefault()}
     >
       <div
@@ -3866,6 +3869,15 @@ export default function CruorMapGeneratorMvp({
           className="map-tool-rail map-tool-rail--left cruor-ui-panel-surface cruor-side-panel"
           aria-label="Map actions"
         >
+          {onExitWorkspace ? (
+            <MapToolButton
+              icon="check"
+              label="Done Editing"
+              description="Return to the Location Composer."
+              onClick={onExitWorkspace}
+            />
+          ) : null}
+          {onExitWorkspace ? <span className="map-tool-rail__divider" aria-hidden="true" /> : null}
           <MapToolButton
             icon="arrows-rotate"
             label="Refresh from Composer"

@@ -3,6 +3,7 @@ import {
   ALL_MONSTER_GRAFTS as FEATURES,
   ALL_MONSTER_SOURCES as MONSTER_SOURCES,
 } from "../data/monster-content-pack-feed.js";
+import { getFeatureBalanceStat, sumFeatureBalanceStats } from "../model/monster-graft-balance-profile.js";
 import { SLOTS } from "../monster-composer.workflow.js";
 import {
   CREATURE_TYPES,
@@ -24,6 +25,7 @@ import {
 } from "../model/monster-composer.balance.js";
 import {
   buildExportJson,
+  buildDebugExportJson,
   buildExportReadiness,
   buildExportRunSheet,
   buildExportText,
@@ -160,9 +162,9 @@ function buildAbilityProfile(typeId, category, roleId, selectedFeatures, prof) {
   }
   if (roleId === "minion") scores.con -= 2;
   selectedFeatures.forEach((feature) => {
-    if ((feature.stats?.hp || 0) >= 12) scores.con += 1;
-    if ((feature.stats?.mobility || 0) >= 1) scores.dex += 1;
-    if ((feature.stats?.control || 0) >= 2) scores.wis += 1;
+    if ((getFeatureBalanceStat(feature, "hp")) >= 12) scores.con += 1;
+    if ((getFeatureBalanceStat(feature, "mobility")) >= 1) scores.dex += 1;
+    if ((getFeatureBalanceStat(feature, "control")) >= 2) scores.wis += 1;
   });
   const proficientSaves = new Set(["con", "wis"]);
   if (typeId === "beast") proficientSaves.add("dex");
@@ -260,6 +262,14 @@ export function buildMonsterFrameContext({
     sourceId,
   });
   selectedFeatures = scalableMainActionGate.selectedFeatures;
+  const highCrActionRoutine = ensureHighCrActionRoutine({
+    selectedFeatures,
+    targetCr,
+    qaMode,
+    category,
+    sourceId,
+  });
+  selectedFeatures = highCrActionRoutine.selectedFeatures;
   const creatureType = getFrameValue(CREATURE_TYPES, typeId);
   const role = getFrameValue(ROLES, roleId, 1);
   const source = getFrameValue(MONSTER_SOURCES, sourceId);
@@ -282,15 +292,7 @@ export function buildMonsterFrameContext({
   const baseAc = baseline.ac + framePowerProfile.acMod;
   const baseAttack = baseline.attackBonus + framePowerProfile.attackMod;
   const baseDc = baseline.saveDc + framePowerProfile.dcMod;
-  const statMods = selectedFeatures.reduce(
-    (acc, feature) => {
-      Object.entries(feature.stats || {}).forEach(([key, value]) => {
-        acc[key] = (acc[key] || 0) + value;
-      });
-      return acc;
-    },
-    { hp: 0, dpr: 0, ac: 0, control: 0, mobility: 0, fairness: 0 },
-  );
+  const statMods = sumFeatureBalanceStats(selectedFeatures);
   const featureMechanics = selectedFeatures.map((feature) => ({
     id: feature.id,
     title: feature.title,
@@ -382,6 +384,9 @@ export function buildMonsterFrameContext({
   if (scalableMainActionGate.profile?.needsFallback || scalableMainActionGate.fallbackFeature) {
     warnings.push("Scalable Main Action Gate: generated fallback Strike because this high-CR frame lacked a scalable damaging main action.");
   }
+  if (highCrActionRoutine.profile?.routineAdded) {
+    warnings.push("High-CR Action Routine: generated Multiattack because this high-CR frame relied on a single scalable attack.");
+  }
   if (pressure > budget) warnings.push("Threat budget is above target.");
   if (complexity > complexityCap) warnings.push("Table complexity is high.");
   if (!hasSelectedSlot(selected, "weakness")) warnings.push("No Weakness / Tell selected.");
@@ -427,6 +432,7 @@ export function buildMonsterFrameContext({
     framePowerProfile,
     lowCrHardControlProfile,
     scalableMainActionGateProfile: scalableMainActionGate.profile,
+    highCrActionRoutineProfile: highCrActionRoutine.profile,
     crFitProfile,
     dprProfile,
     crValidation,
@@ -522,7 +528,7 @@ function isReliableHardControlFeature(feature = {}) {
   if (!["major", "severe"].includes(severity)) return false;
   const actionEconomy = normalizeLower(feature.rules?.actionEconomy || feature.section || "passive");
   const usageType = normalizeLower(feature.rules?.usage?.type || "passive");
-  const control = Number(feature.stats?.control || 0);
+  const control = Number(getFeatureBalanceStat(feature, "control"));
   const repeatedUse = ["action", "bonusaction", "reaction"].includes(actionEconomy) && !["limited", "deathtrigger"].includes(usageType);
   return Boolean(repeatedUse || control >= 3);
 }
@@ -553,7 +559,7 @@ export function buildLowCrHardControlGateProfile({ targetCr = 0, selectedFeature
       condition: asArray(feature.rules?.condition?.names).join(", "),
       severity: getFeatureConditionSeverity(feature),
       actionEconomy: feature.rules?.actionEconomy || feature.section || "passive",
-      control: Number(feature.stats?.control || 0),
+      control: Number(getFeatureBalanceStat(feature, "control")),
     }));
   const lowCr = Number(targetCr || 0) <= 3;
   const stackLimit = lowCr ? 1 : 2;
@@ -699,6 +705,131 @@ function ensureScalableMainActionForHighCr({ selectedFeatures = [], targetCr = 0
       fallbackFeature: { id: fallbackFeature.id, title: fallbackFeature.title },
     },
     fallbackFeature,
+  };
+}
+
+function clonePrimaryDamageForRoutine(feature = {}) {
+  const rules = feature.rules || {};
+  const damage = rules.damage || {};
+  const primary = Array.isArray(damage.parts) && damage.parts.length ? damage.parts[0] : damage;
+  const types = asArray(primary.types || primary.type || damage.types || damage.type);
+  return {
+    mode: "budget",
+    budgetRole: "mainAttack",
+    modifierPolicy: primary.modifierPolicy || damage.modifierPolicy || "sameAsAttack",
+    abilityBasis: primary.abilityBasis || damage.abilityBasis || rules.resolution?.abilityBasis,
+    types: types.length ? types : ["bludgeoning"],
+    scale: primary.scale || damage.scale || "standard",
+    budgetShare: primary.budgetShare ?? damage.budgetShare ?? 1,
+    expectedTargets: primary.expectedTargets || damage.expectedTargets || 1,
+    parts: [],
+  };
+}
+
+function getHighCrRoutineAttackCount(targetCr = 0) {
+  const cr = Number(targetCr || 0);
+  if (cr >= 21) return 3;
+  return 2;
+}
+
+function buildHighCrMultiattackRoutineFeature({ baseFeature = null, category = "Monster", sourceId = "frame", targetCr = 0 } = {}) {
+  const noun = String(category || "Monster").trim() || "Monster";
+  const baseTitle = String(baseFeature?.title || `${noun} Strike`).trim();
+  const baseRules = baseFeature?.rules || {};
+  const count = getHighCrRoutineAttackCount(targetCr);
+  return {
+    id: `frame-high-cr-routine-cr-${targetCr}-${String(baseFeature?.id || "strike").replace(/[^a-z0-9-]+/gi, "-").toLowerCase()}`,
+    title: "Multiattack",
+    slot: "attack",
+    section: "action",
+    source: sourceId || "frame",
+    typeBias: [],
+    roleBias: [],
+    cost: 0,
+    complexity: 0,
+    stats: { dpr: 0 },
+    synthetic: true,
+    generatedBy: "high-cr-action-routine-guard-v1.36-r2",
+    rules: {
+      schemaVersion: "monster-graft-rules-v1.16",
+      section: "action",
+      actionEconomy: "action",
+      usage: { type: "atWill" },
+      resolution: baseRules.resolution || {
+        type: "attackRoll",
+        attackType: "melee",
+        abilityBasis: "str",
+        bonus: "monster",
+        reach: "5 ft.",
+      },
+      targeting: baseRules.targeting || { type: "single", targets: "one target" },
+      multiattack: {
+        enabled: true,
+        mode: "fixed",
+        count,
+        attacks: [{ ref: baseFeature?.id || baseTitle, label: baseTitle, count }],
+      },
+      damage: clonePrimaryDamageForRoutine(baseFeature || {}),
+      condition: null,
+      counterplay: {
+        telegraph: false,
+        breakCondition: false,
+        positioningAnswer: true,
+        nonDamageAnswer: false,
+      },
+      text: {
+        effect: `The monster makes ${count === 2 ? "two" : "three"} ${baseTitle} attacks.`,
+      },
+      migration: {
+        source: "frame-generated-high-cr-routine",
+        isStructured: true,
+        convertedFrom: "high-cr-action-routine-guard",
+      },
+    },
+    summary: "Generated high-CR action routine used when a high-CR frame relies on a single scalable attack that cannot preserve the target CR by itself.",
+    mechanics: `The monster makes ${count === 2 ? "two" : "three"} ${baseTitle} attacks.`,
+    counterplay: "Standard positioning, armor class, and action denial counterplay apply.",
+  };
+}
+
+function shouldAddHighCrActionRoutine({ selectedFeatures = [], targetCr = 0, qaMode = "realistic" } = {}) {
+  const cr = Number(targetCr || 0);
+  if (qaMode === "stress" || cr < 16) return false;
+  if (selectedFeatures.some((feature) => feature.rules?.multiattack?.enabled)) return false;
+  const actionFeatures = selectedFeatures.filter((feature) => normalizeLower(feature.rules?.actionEconomy || feature.section || "") === "action");
+  const scalableActions = actionFeatures.filter((feature) => isScalableMainActionFeature(feature));
+  return scalableActions.length === 1;
+}
+
+function ensureHighCrActionRoutine({ selectedFeatures = [], targetCr = 0, qaMode = "realistic", category, sourceId } = {}) {
+  if (!shouldAddHighCrActionRoutine({ selectedFeatures, targetCr, qaMode })) {
+    return {
+      selectedFeatures,
+      profile: {
+        version: "high-cr-action-routine-guard-v1.36-r2",
+        targetCr: Number(targetCr || 0),
+        qaMode,
+        status: "not-needed",
+        routineAdded: false,
+      },
+      routineFeature: null,
+    };
+  }
+  const baseFeature = selectedFeatures.find((feature) => normalizeLower(feature.rules?.actionEconomy || feature.section || "") === "action" && isScalableMainActionFeature(feature));
+  const routineFeature = buildHighCrMultiattackRoutineFeature({ baseFeature, category, sourceId, targetCr });
+  return {
+    selectedFeatures: [routineFeature, ...selectedFeatures],
+    profile: {
+      version: "high-cr-action-routine-guard-v1.36-r2",
+      targetCr: Number(targetCr || 0),
+      qaMode,
+      status: "routine-added",
+      routineAdded: true,
+      routineFeature: { id: routineFeature.id, title: routineFeature.title },
+      baseFeature: baseFeature ? { id: baseFeature.id, title: baseFeature.title } : null,
+      attackCount: getHighCrRoutineAttackCount(targetCr),
+    },
+    routineFeature,
   };
 }
 
@@ -862,6 +993,7 @@ export function buildExportArtifacts(context) {
   };
   const exportText = buildExportText(args);
   const exportJson = buildExportJson(args);
+  const debugExportJson = buildDebugExportJson(args);
   const statBlock = buildRenderableStatBlock(args);
   const statBlockParse = parseMonsterRenderedStatBlock({
     exportText,
@@ -872,6 +1004,7 @@ export function buildExportArtifacts(context) {
   return {
     exportText,
     exportJson,
+    debugExportJson,
     statBlock,
     statBlockParse,
     exportReadiness: buildExportReadiness({

@@ -207,11 +207,6 @@ export function LocationBriefPanel({ state, setState, mapRequest, draftControls,
             }
           />
         </div>
-
-        <div className="location-map-request-card location-map-request-card--compact">
-          <span>Map</span>
-          <strong>{mapRequest.mapType}</strong>
-        </div>
       </section>
     </aside>
   );

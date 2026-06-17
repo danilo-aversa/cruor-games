@@ -11,6 +11,7 @@ import {
 } from "./monster-graft-rules.schema.js";
 import { asArray, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
 import { formatToken } from "./monster-composer.compatibility.js";
+import { getFeatureBalanceStat } from "./monster-graft-balance-profile.js";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -24,14 +25,14 @@ function titleCase(value) {
 }
 
 function getBudgetDamageBase(feature, rules) {
-  if (!rules.damage || rules.damage.mode === "none") return Math.max(0, feature.stats?.dpr || 0);
+  if (!rules.damage || rules.damage.mode === "none") return Math.max(0, getFeatureBalanceStat(feature, "dpr"));
   if (rules.damage.mode === "fixed" && rules.damage.average) return Number(rules.damage.average) || 0;
-  const baselineDpr = Math.max(1, feature.stats?.dpr || 1);
+  const baselineDpr = Math.max(1, getFeatureBalanceStat(feature, "dpr", 1));
   const parts = getDamageParts(rules.damage);
   if (parts.length) {
     return parts.reduce((sum, part) => sum + Math.round(baselineDpr * Math.max(0.25, getDamageBudgetShare(part, rules))), 0);
   }
-  if (rules.damage.mode !== "budget") return Math.max(0, feature.stats?.dpr || 0);
+  if (rules.damage.mode !== "budget") return Math.max(0, getFeatureBalanceStat(feature, "dpr"));
   const budgetShare = getDamageBudgetShare(rules.damage, rules);
   return Math.round(baselineDpr * Math.max(0.25, budgetShare));
 }
@@ -41,7 +42,7 @@ function getOngoingDamageBase(feature, rules) {
   if (!ongoingDamage || ongoingDamage.mode === "none") return 0;
   if (ongoingDamage.mode === "fixed" && ongoingDamage.average) return Number(ongoingDamage.average) || 0;
   if (ongoingDamage.mode !== "budget") return 0;
-  const baselineDpr = Math.max(1, feature.stats?.dpr || 1);
+  const baselineDpr = Math.max(1, getFeatureBalanceStat(feature, "dpr", 1));
   return Math.round(baselineDpr * Math.max(0.15, getDamageBudgetShare(ongoingDamage, rules)));
 }
 
@@ -194,7 +195,7 @@ export function getFeatureMechanicProfile(feature) {
         budgetShare: getDamageTotalBudgetShare(rules.damage, rules),
         budgetDefaults: getDamageBudgetDefaults(damageBudgetRoles[0] || "none"),
         abilityBasis: rules.resolution?.abilityBasis || primaryDamageEntry?.abilityBasis || null,
-        expectedTargets: getDamageExpectedTargets(primaryDamageEntry, rules) || (rules.targeting?.type === "area" ? 1.75 : feature.stats?.control ? 1.25 : 1),
+        expectedTargets: getDamageExpectedTargets(primaryDamageEntry, rules) || (rules.targeting?.type === "area" ? 1.75 : getFeatureBalanceStat(feature, "control") ? 1.25 : 1),
         roundWeight: getDamageRoundWeight(primaryDamageEntry, rules),
         parts: damageParts,
         ongoingDamage: getOngoingDamageBase(feature, rules),
@@ -631,8 +632,8 @@ export function getFeatureCounterplayProfile(feature) {
   const text =
     `${feature.summary || ""} ${feature.mechanics || ""} ${feature.counterplay || ""}`.toLowerCase();
   const counterplayText = String(feature.counterplay || "").trim();
-  const control = Math.max(0, feature.stats?.control || 0);
-  const dpr = Math.max(0, feature.stats?.dpr || 0);
+  const control = Math.max(0, getFeatureBalanceStat(feature, "control"));
+  const dpr = Math.max(0, getFeatureBalanceStat(feature, "dpr"));
   const majorCondition = ["Major", "Severe"].includes(mechanicProfile.conditionProfile?.severity);
   const hardControl =
     control >= 2 ||
@@ -652,7 +653,7 @@ export function getFeatureCounterplayProfile(feature) {
     textHasAny(text, COUNTERPLAY_TERMS.positioning) ? "positioning_answer" : null,
     textHasAny(text, COUNTERPLAY_TERMS.prep) ? "prep_answer" : null,
     feature.slot === "weakness" ? "explicit_weakness" : null,
-    feature.stats?.fairness ? "fairness_graft" : null,
+    getFeatureBalanceStat(feature, "fairness") ? "fairness_graft" : null,
   ]);
 
   return {
@@ -818,8 +819,8 @@ export function getFeaturePressureWeight(feature) {
   return (
     Math.max(0, feature.cost) * 2 +
     feature.complexity +
-    Math.max(0, feature.stats?.dpr || 0) +
-    Math.max(0, feature.stats?.control || 0) * 1.5 +
+    Math.max(0, getFeatureBalanceStat(feature, "dpr")) +
+    Math.max(0, getFeatureBalanceStat(feature, "control")) * 1.5 +
     (counterplayProfile.burst ? 3 : 0) +
     (counterplayProfile.hardControl ? 3 : 0)
   );

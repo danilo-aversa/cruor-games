@@ -12,9 +12,9 @@ function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function LocationCompilePreview({ state, digest, mapRequest, generatedMapPreview }) {
+export function LocationCompilePreview({ state, digest, mapRequest, generatedMapPreview, defaultOpen = false, uiMode = "simple" }) {
   const [copyState, setCopyState] = useState("");
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(() => Boolean(defaultOpen));
   const compilePreview = useMemo(
     () => getCompilePreview(state, digest, mapRequest, generatedMapPreview),
     [state, digest, mapRequest, generatedMapPreview],
@@ -45,9 +45,11 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
     handleCopy.timeoutId = window.setTimeout(() => setCopyState(""), 2200);
   }, []);
 
+  const showJson = uiMode === "debug";
+
   return (
     <section
-      className={cx("cruor-composer-panel location-panel location-compile-preview", !isPreviewOpen && "is-collapsed")}
+      className={cx("cruor-composer-panel location-panel location-compile-preview", isPreviewOpen && "is-open", !isPreviewOpen && "is-collapsed")}
       aria-label="Compiled location preview"
     >
       <div className="location-compile-preview__header">
@@ -58,18 +60,17 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
           aria-expanded={isPreviewOpen}
         >
           <span>
-            <p className="location-kicker">Compile Preview</p>
+            <p className="location-kicker">Location Export</p>
             <h2>{compilePreview.title}</h2>
-            <small>{compilePreview.contextLine} · {compilePreview.mapSyncStatus.description}</small>
+            <small>{compilePreview.contextLine}</small>
           </span>
           <strong>{isPreviewOpen ? "Collapse" : "Expand"}</strong>
         </button>
         <div className="location-compile-preview__actions" aria-label="Compile actions">
           <div className="location-compile-preview__metrics" aria-label="Compile metrics">
-            <span>Session Insert</span>
-            <span>Export</span>
-            <span>{compilePreview.filledSlots}/{compilePreview.totalSlots} slots</span>
+            <span>Table View</span>
             <span>{compilePreview.regionCount} regions</span>
+            <span>{compilePreview.componentSections.length} components</span>
           </div>
 
           <div className="location-compile-preview__buttons">
@@ -97,14 +98,16 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
             >
               Copy Regions
             </button>
-            <button
-              className="cruor-composer-control location-copy-btn"
-              type="button"
-              onClick={() => handleCopy("JSON Snapshot", jsonSnapshotText)}
-              title="Copy JSON snapshot"
-            >
-              Copy JSON
-            </button>
+            {showJson ? (
+              <button
+                className="cruor-composer-control location-copy-btn"
+                type="button"
+                onClick={() => handleCopy("JSON Snapshot", jsonSnapshotText)}
+                title="Copy JSON snapshot"
+              >
+                Copy JSON
+              </button>
+            ) : null}
           </div>
 
           <span className={copyState ? "location-copy-status is-visible" : "location-copy-status"} aria-live="polite">
@@ -126,7 +129,14 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
             </article>
 
             <article className="location-compile-preview__card">
-              <span>Rooms</span>
+              <span>Read-Aloud</span>
+              <div className="location-session-insert">
+                <pre>{compilePreview.readAloudText}</pre>
+              </div>
+            </article>
+
+            <article className="location-compile-preview__card">
+              <span>Regions</span>
               <div className="location-compile-preview__stack">
                 {compilePreview.roomSections.map((section) => (
                   <div className="location-compile-region" key={section.region.id}>
@@ -149,6 +159,63 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
             </article>
 
             <article className="location-compile-preview__card">
+              <span>Hazards</span>
+              <div className="location-compile-preview__stack">
+                {compilePreview.hazardSections.length ? (
+                  compilePreview.hazardSections.map((component) => (
+                    <div className="location-compile-slot" key={`${component.slotId}-${component.id}`}>
+                      <strong>{component.reference}</strong>
+                      <p>{component.text}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="location-empty location-empty--action">No hazards assigned.</p>
+                )}
+              </div>
+            </article>
+
+            <article className="location-compile-preview__card">
+              <span>Clues</span>
+              <div className="location-compile-preview__stack">
+                {compilePreview.clueSections.length ? (
+                  compilePreview.clueSections.map((component) => (
+                    <div className="location-compile-slot" key={`${component.slotId}-${component.id}`}>
+                      <strong>{component.reference}</strong>
+                      <p>{component.text}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="location-empty location-empty--action">No clues assigned.</p>
+                )}
+              </div>
+            </article>
+
+            <article className="location-compile-preview__card">
+              <span>Twists</span>
+              <div className="location-compile-preview__stack">
+                {compilePreview.twistSections.length ? (
+                  compilePreview.twistSections.map((component) => (
+                    <div className="location-compile-slot" key={`${component.slotId}-${component.id}`}>
+                      <strong>{component.reference}</strong>
+                      <p>{component.text}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="location-empty location-empty--action">No twists assigned.</p>
+                )}
+              </div>
+            </article>
+
+            <article className="location-compile-preview__card">
+              <span>At the Table</span>
+              <div className="location-map-notes-output">
+                {compilePreview.atTheTableRows.map((row) => (
+                  <p key={row.label}><b>{row.label}.</b> {row.value}</p>
+                ))}
+              </div>
+            </article>
+
+            <article className="location-compile-preview__card">
               <span>Components</span>
               <div className="location-compile-preview__stack">
                 {compilePreview.componentSections.length ? (
@@ -159,7 +226,7 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
                     </div>
                   ))
                 ) : (
-                  <p className="location-empty location-empty--action">No components assigned yet. Add components to slots and regions to build the session insert.</p>
+                  <p className="location-empty location-empty--action">No components assigned.</p>
                 )}
               </div>
             </article>
@@ -177,10 +244,12 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
         <pre>{compilePreview.tableReadyText}</pre>
       </div>
 
-          <div className="location-compile-preview__table location-compile-preview__table--json" aria-label="JSON snapshot preview">
-            <span>JSON Snapshot</span>
-            <pre>{jsonSnapshotText}</pre>
-          </div>
+          {showJson ? (
+            <div className="location-compile-preview__table location-compile-preview__table--json" aria-label="JSON snapshot preview">
+              <span>JSON Snapshot</span>
+              <pre>{jsonSnapshotText}</pre>
+            </div>
+          ) : null}
         </div>
       ) : null}
     </section>

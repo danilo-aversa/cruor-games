@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { LocationCompilePreview } from "./LocationCompilePreview.jsx";
 import { LocationRoomRecapCard } from "./LocationRoomRecapCard.jsx";
 import { MapViewport } from "../../map-generator/map-generator.page.jsx";
 import { LEVEL_VIEW_ALL } from "../../map-generator/map-generator.state.js";
@@ -28,7 +27,7 @@ function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-function LocationMapPreview({ generatedMap, error, viewResetKey }) {
+function LocationMapPreview({ generatedMap, error, viewResetKey, isMapEditing = false }) {
   const previewManualOverrides = useMemo(
     () => ({
       rooms: {},
@@ -53,6 +52,7 @@ function LocationMapPreview({ generatedMap, error, viewResetKey }) {
       className="location-map-preview location-map-preview--live"
       aria-label="Generated map preview"
       onContextMenuCapture={(event) => {
+        if (isMapEditing) return;
         event.preventDefault();
         event.stopPropagation();
       }}
@@ -61,9 +61,9 @@ function LocationMapPreview({ generatedMap, error, viewResetKey }) {
         generatedMap={generatedMap}
         showGrid={false}
         gridStyle="none"
-        showEditor={false}
-        showNames={false}
-        showProps={false}
+        showEditor={isMapEditing}
+        showNames={isMapEditing}
+        showProps={isMapEditing}
         levelView={LEVEL_VIEW_ALL}
         fadeOtherLevels={true}
         availableLevels={[]}
@@ -71,7 +71,7 @@ function LocationMapPreview({ generatedMap, error, viewResetKey }) {
         viewResetKey={viewResetKey}
         embeddedPreview={true}
         showViewportChrome={false}
-        enableViewportInteractions={false}
+        enableViewportInteractions={isMapEditing}
       />
     </div>
   );
@@ -86,9 +86,12 @@ export function LocationMapStage({
   previewError,
   previewResetKey,
   uiMode = "simple",
+  isMapEditing = false,
+  modeControls = null,
 }) {
   const isSimpleMode = uiMode === "simple";
   const showStageDetails = !isSimpleMode;
+  const showInteractiveOverlay = !isMapEditing;
   const regions = state.locationRegions || [];
   const selectedSources = toArray(state.sourceAnchors);
   const selectedHorrors = toArray(state.horrors);
@@ -109,6 +112,7 @@ export function LocationMapStage({
   const mapSyncStatus = getMapSyncStatus(mapRequest, generatedMapPreview, regions);
 
   function selectWholeMapTarget(event) {
+    if (isMapEditing) return;
     const target = event.target;
     if (target?.closest?.(
       ".location-region-node, .location-room-recap-anchor, .location-stage-navigator-overlay, .location-advanced-output, button, a, input, select, textarea",
@@ -136,13 +140,16 @@ export function LocationMapStage({
         )}
         onClick={selectWholeMapTarget}
       >
+        {modeControls}
+
         <LocationMapPreview
           generatedMap={generatedMapPreview}
           error={previewError}
           viewResetKey={previewResetKey}
+          isMapEditing={isMapEditing}
         />
 
-        {hoveredRegion ? (
+        {showInteractiveOverlay && hoveredRegion ? (
           <div
             className="location-room-recap-anchor location-room-recap-anchor--hover"
             style={getGeneratedRoomPositionStyle(
@@ -168,6 +175,7 @@ export function LocationMapStage({
           </div>
         ) : null}
 
+        {showInteractiveOverlay ? (
         <div className="location-region-board" aria-label="Generated location regions">
           {regions.map((region, index) => {
             const active = state.activeRegionId === region.id;
@@ -185,7 +193,9 @@ export function LocationMapStage({
                 )}
                 key={region.id}
                 type="button"
-                aria-label={`Use ${region.name} as the active region target`}
+                aria-label={`Select ${region.name} as the active region target`}
+                aria-pressed={active}
+                title={region.name}
                 style={getGeneratedRoomPositionStyle(generatedMapPreview, generatedRoom, index)}
                 onMouseEnter={() => setHoveredRegionId(region.id)}
                 onMouseLeave={() =>
@@ -228,15 +238,16 @@ export function LocationMapStage({
                     ))}
                   </span>
                 ) : null}
-                {showStageDetails || active ? (
-                  <em className="location-region-node__target">{active ? "Target" : generatedRoom ? "Synced" : "Region"}</em>
+                {showStageDetails ? (
+                  <em className="location-region-node__target">{active ? "Target" : generatedRoom ? "Room" : "Region"}</em>
                 ) : null}
               </button>
             );
           })}
         </div>
+        ) : null}
 
-        {showStageDetails && activeRegionComponents.length ? (
+        {showInteractiveOverlay && showStageDetails && activeRegionComponents.length ? (
           <div className="location-region-attachment-strip" aria-label="Active region attachments">
             {activeRegionComponents.slice(0, 3).map((component) => (
               <span key={`${component.assignment.slotId}-${component.id}`}>
@@ -255,18 +266,6 @@ export function LocationMapStage({
           </div>
         ) : null}
       </section>
-
-      {showStageDetails ? (
-        <details className="location-advanced-output">
-          <summary>Output</summary>
-          <LocationCompilePreview
-            state={state}
-            digest={digest}
-            mapRequest={mapRequest}
-            generatedMapPreview={generatedMapPreview}
-          />
-        </details>
-      ) : null}
     </main>
   );
 }

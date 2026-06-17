@@ -5,6 +5,7 @@ import {
   createInitialLocationComposerState,
   createLocationComposerSnapshot,
   createLocationMapSeed,
+  LOCATION_SLOT_SCOPE_REGION,
   normalizeLocationSlotScope,
   removeComponentFromSlot,
   toArray,
@@ -37,8 +38,10 @@ import { getGeneratedRoomForRegion } from "./model/location-composer-map-preview
 import { LocationBriefPanel } from "./components/LocationBriefPanel.jsx";
 import { LocationDraftControls } from "./components/LocationDraftControls.jsx";
 import { LocationComponentPickerModal } from "./components/LocationComponentPickerModal.jsx";
+import { LocationCompilePreview } from "./components/LocationCompilePreview.jsx";
 import { LocationMapStage } from "./components/LocationMapStage.jsx";
 import { LocationSlotRail } from "./components/LocationSlotRail.jsx";
+import { CruorMapGeneratorMvp } from "../map-generator/map-generator.page.jsx";
 
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -61,15 +64,20 @@ function getHorrorLabel(state) {
   return toArray(state.horrors)[0] || state.horror || "Horror";
 }
 
-function LocationBuilderModeSwitch({ builderMode, setBuilderMode }) {
+function LocationBuilderModeSwitch({ builderMode, onSelectMode }) {
   return (
     <section className="location-map-mode-card" aria-label="Composer mode">
-      <div className="location-map-mode-switch" role="group" aria-label="Composer mode">
+      <div
+        className="location-map-mode-switch"
+        role="group"
+        aria-label="Composer mode"
+        style={{ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}
+      >
         <button
           className={cx("location-map-mode-button", builderMode === "frame" && "is-active")}
           type="button"
           aria-pressed={builderMode === "frame"}
-          onClick={() => setBuilderMode("frame")}
+          onClick={() => onSelectMode("frame")}
         >
           Frame
         </button>
@@ -77,9 +85,17 @@ function LocationBuilderModeSwitch({ builderMode, setBuilderMode }) {
           className={cx("location-map-mode-button", builderMode === "slots" && "is-active")}
           type="button"
           aria-pressed={builderMode === "slots"}
-          onClick={() => setBuilderMode("slots")}
+          onClick={() => onSelectMode("slots")}
         >
-          Slots
+          Regions
+        </button>
+        <button
+          className={cx("location-map-mode-button", builderMode === "export" && "is-active")}
+          type="button"
+          aria-pressed={builderMode === "export"}
+          onClick={() => onSelectMode("export")}
+        >
+          Export
         </button>
       </div>
     </section>
@@ -87,25 +103,33 @@ function LocationBuilderModeSwitch({ builderMode, setBuilderMode }) {
 }
 
 function LocationRecapPanel({
+  activeRegion,
+  activeSlot,
+  activeSlotScope,
   onNewMapSeed,
-  onOpenMapGenerator,
+  onOpenComponents,
   onRenameLocation,
-  snapshot,
+  onStartMapEditing,
+  onViewExport,
   state,
 }) {
-  const rooms = Array.isArray(state.locationRegions) ? state.locationRegions.length : 0;
-  const roomWord = rooms === 1 ? "Room" : "Rooms";
+  const regions = Array.isArray(state.locationRegions) ? state.locationRegions.length : 0;
+  const regionWord = regions === 1 ? "Region" : "Regions";
   const sourceLabel = getSourceLabel(state);
   const horrorLabel = getHorrorLabel(state);
+  const targetLabel = activeSlotScope === LOCATION_SLOT_SCOPE_REGION
+    ? activeRegion?.name || "Select a region"
+    : "Whole Map";
+  const slotLabel = activeSlot?.label || "Component";
 
   return (
     <aside
-      className="anatomy-stage__column anatomy-stage__column--right cruor-composer-rail location-composer__rail location-composer__rail--right location-map-recap-rail location-frame-info monster-frame-info"
+      className="cruor-composer-rail location-composer__rail location-composer__rail--right location-map-recap-rail location-frame-info"
       aria-label="Current Location Frame"
     >
-      <section className="location-frame-info-card location-frame-info-card--hero monster-frame-info-card monster-frame-info-card--hero">
+      <section className="location-frame-info-card location-frame-info-card--hero">
         <span>Current Location</span>
-        <label className="location-frame-name-editor monster-frame-name-editor">
+        <label className="location-frame-name-editor">
           <span className="sr-only">Location name</span>
           <input
             type="text"
@@ -114,21 +138,50 @@ function LocationRecapPanel({
             onChange={(event) => onRenameLocation(event.target.value)}
           />
         </label>
-        <em>{state.context || "Context"} · {horrorLabel} · {rooms || 0} {roomWord}</em>
+        <em>{state.context || "Context"} · {horrorLabel} · {regions || 0} {regionWord}</em>
       </section>
 
 
-      <section className="location-frame-info-card monster-frame-info-card">
-        <div className="location-frame-info-grid monster-frame-info-grid">
+      <section className="location-frame-info-card">
+        <div className="location-frame-info-grid">
           <LocationFrameInfoRow label="Context" value={state.context || "Context"} />
           <LocationFrameInfoRow label="Horror" value={horrorLabel} />
           <LocationFrameInfoRow label="Source" value={sourceLabel} />
-          <LocationFrameInfoRow label="Rooms" value={String(rooms || 0)} />
+          <LocationFrameInfoRow label="Regions" value={String(regions || 0)} />
         </div>
       </section>
 
 
-      <section className="location-frame-info-card monster-frame-info-card location-location-action-card location-location-action-card--secondary" aria-label="Secondary location actions">
+      <section className="location-frame-info-card">
+        <div className="location-frame-info-grid">
+          <LocationFrameInfoRow label="Target" value={targetLabel} />
+          <LocationFrameInfoRow label="Slot" value={slotLabel} />
+        </div>
+      </section>
+
+
+      <section className="location-frame-info-card location-location-action-card location-location-action-card--secondary" aria-label="Secondary location actions">
+        <button
+          className="cruor-composer-control location-primary-action"
+          type="button"
+          onClick={onOpenComponents}
+        >
+          Browse Components
+        </button>
+        <button
+          className="cruor-composer-control location-primary-action"
+          type="button"
+          onClick={onViewExport}
+        >
+          Export Location
+        </button>
+        <button
+          className="cruor-composer-control location-primary-action"
+          type="button"
+          onClick={onStartMapEditing}
+        >
+          Edit Map
+        </button>
         <details className="location-secondary-actions">
           <summary>More</summary>
           <button
@@ -138,15 +191,50 @@ function LocationRecapPanel({
           >
             New Map Seed
           </button>
-          <button
-            className="cruor-composer-control location-primary-action"
-            type="button"
-            onClick={() => onOpenMapGenerator?.(snapshot)}
-          >
-            Open Map Workspace
-          </button>
         </details>
       </section>
+    </aside>
+  );
+
+}
+
+function LocationExportToolsPanel({ onSelectFrame, onSelectRegions }) {
+  return (
+    <aside
+      className="cruor-composer-rail location-composer__rail location-composer__rail--left location-map-frame-rail location-frame-info"
+      aria-label="Location export tools"
+    >
+      <section className="location-frame-info-card location-frame-info-card--hero">
+        <span>Export</span>
+        <strong>Location Insert</strong>
+        <em>Table-ready output for the current map.</em>
+      </section>
+      <section className="location-frame-info-card location-location-action-card location-location-action-card--secondary" aria-label="Export actions">
+        <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectRegions}>
+          Edit Regions
+        </button>
+        <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectFrame}>
+          Edit Frame
+        </button>
+      </section>
+    </aside>
+  );
+}
+
+function LocationExportPanel({ digest, generatedMapPreview, mapRequest, state, uiMode }) {
+  return (
+    <aside
+      className="cruor-composer-rail location-composer__rail location-composer__rail--right location-map-recap-rail location-frame-info"
+      aria-label="Location export"
+    >
+      <LocationCompilePreview
+        state={state}
+        digest={digest}
+        mapRequest={mapRequest}
+        generatedMapPreview={generatedMapPreview}
+        defaultOpen={true}
+        uiMode={uiMode}
+      />
     </aside>
   );
 }
@@ -166,7 +254,9 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   const [draftStorageStatus, setDraftStorageStatus] = useState(() => getLocalDraftStorageStatus());
   const [savedDraftFingerprint, setSavedDraftFingerprint] = useState("");
   const [builderMode, setBuilderMode] = useState("slots");
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isMapEditing, setIsMapEditing] = useState(false);
+  const [mapWorkspaceRevision, setMapWorkspaceRevision] = useState(0);
   const draftStatusTimeoutRef = useRef(null);
 
   const selectedComponents = useMemo(() => getSelectedComponents(state), [state]);
@@ -266,7 +356,8 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     setState(resetState);
     setSavedDraftFingerprint(createDraftFingerprint(resetState));
     setBuilderMode("frame");
-    setDrawerOpen(true);
+    setDrawerOpen(false);
+    setIsMapEditing(false);
     setTransientDraftStatus("Composer reset");
   }, [setTransientDraftStatus]);
 
@@ -341,10 +432,26 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   const activeSlotFilled = activeSlot ? getSlotFilledCountForScope(state, activeSlot.id, activeSlotScope, state.activeRegionId) : 0;
   const activeSlotIsFull = activeSlotFilled >= (activeSlot?.max || 1);
 
+  const activateBuilderMode = useCallback((mode) => {
+    setBuilderMode(mode);
+    setIsMapEditing(false);
+    setDrawerOpen(false);
+  }, []);
+
+  const startMapEditing = useCallback(() => {
+    setIsMapEditing(true);
+    setDrawerOpen(false);
+  }, []);
+
+  const refreshEmbeddedMapWorkspace = useCallback(() => {
+    setMapWorkspaceRevision((revision) => revision + 1);
+    setTransientDraftStatus("Map workspace refreshed");
+  }, [setTransientDraftStatus]);
+
   const builderModeControls = (
     <LocationBuilderModeSwitch
       builderMode={builderMode}
-      setBuilderMode={setBuilderMode}
+      onSelectMode={activateBuilderMode}
     />
   );
 
@@ -378,82 +485,121 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       className="cruor-composer-shell location-composer"
       data-cruor-ui-mode={uiMode}
       data-location-builder-mode={builderMode}
+      data-location-map-editing={isMapEditing ? "true" : "false"}
       data-location-composer-ready="true"
     >
       <div className="cruor-composer-workspace location-composer__workspace">
         <div className="cruor-composer-frame location-composer__frame location-map-workbench">
-          {builderMode === "frame" ? (
-            <LocationBriefPanel
-              state={state}
-              setState={setState}
-              mapRequest={mapRequest}
-              modeControls={builderModeControls}
-              draftControls={
-                <LocationDraftControls
-                  canLoadDraft={Boolean(draftSummary)}
-                  draftStorageStatus={draftStorageStatus}
-                  draftSummary={draftSummary}
-                  draftStatus={draftStatus}
-                  hasUnsavedChanges={hasUnsavedChanges}
-                  uiMode={uiMode}
-                  onClearDraft={clearSavedDraft}
-                  onLoadDraft={loadDraft}
-                  onResetComposer={resetComposer}
-                  onSaveDraft={saveDraft}
-                />
-              }
+          {isMapEditing ? (
+            <CruorMapGeneratorMvp
+              key={`location-map-workspace-${previewResetKey}-${mapWorkspaceRevision}`}
+              initialRequest={mapRequest}
+              embeddedInComposer={true}
+              onExitWorkspace={() => setIsMapEditing(false)}
+              onRefreshFromComposer={refreshEmbeddedMapWorkspace}
             />
           ) : (
-            <LocationSlotRail
-              state={state}
-              setState={setState}
-              selectedComponents={selectedComponents}
-              onOpenMapGenerator={onOpenMapGenerator}
-              snapshot={snapshot}
-              generatedMapPreview={generatedMapPreview}
-              modeControls={builderModeControls}
-              onFocusSlot={focusSlot}
-            />
-          )}
+            <>
+              {builderMode === "frame" ? (
+                <LocationBriefPanel
+                  state={state}
+                  setState={setState}
+                  mapRequest={mapRequest}
+                  modeControls={null}
+                  draftControls={
+                    uiMode === "simple" ? null : (
+                    <LocationDraftControls
+                      canLoadDraft={Boolean(draftSummary)}
+                      draftStorageStatus={draftStorageStatus}
+                      draftSummary={draftSummary}
+                      draftStatus={draftStatus}
+                      hasUnsavedChanges={hasUnsavedChanges}
+                      uiMode={uiMode}
+                      onClearDraft={clearSavedDraft}
+                      onLoadDraft={loadDraft}
+                      onResetComposer={resetComposer}
+                      onSaveDraft={saveDraft}
+                    />
+                    )
+                  }
+                />
+              ) : builderMode === "export" ? (
+                <LocationExportToolsPanel
+                  onSelectFrame={() => activateBuilderMode("frame")}
+                  onSelectRegions={() => activateBuilderMode("slots")}
+                />
+              ) : (
+                <LocationSlotRail
+                  state={state}
+                  setState={setState}
+                  selectedComponents={selectedComponents}
+                  onOpenMapGenerator={onOpenMapGenerator}
+                  snapshot={snapshot}
+                  generatedMapPreview={generatedMapPreview}
+                  modeControls={null}
+                  onFocusSlot={focusSlot}
+                />
+              )}
 
-          {builderMode === "slots" && drawerOpen && activeSlot ? (
-            <div className="location-stage-navigator-overlay" aria-label="Location component navigator drawer">
-              <LocationComponentPickerModal
-                activeRegion={activeRegionForPicker}
-                assignedComponents={assignedComponentsForActiveSlot}
-                components={compatibleComponents}
-                generatedRoom={activeGeneratedRoomForPicker}
-                isSlotFull={activeSlotIsFull}
-                open={drawerOpen}
-                regions={state.locationRegions || []}
-                slot={activeSlot}
-                slotScope={activeSlotScope}
-                onAddComponent={addComponentToActiveSlot}
-                onClose={() => setDrawerOpen(false)}
-                onRemoveComponent={removeComponentFromActiveSlot}
-                onSelectRegion={(regionId) => setState((current) => ({ ...current, activeRegionId: regionId }))}
+              {builderMode === "slots" && drawerOpen && activeSlot ? (
+                <div className="location-stage-navigator-overlay" aria-label="Location component navigator drawer">
+                  <LocationComponentPickerModal
+                    activeRegion={activeRegionForPicker}
+                    assignedComponents={assignedComponentsForActiveSlot}
+                    components={compatibleComponents}
+                    generatedRoom={activeGeneratedRoomForPicker}
+                    isSlotFull={activeSlotIsFull}
+                    open={drawerOpen}
+                    regions={state.locationRegions || []}
+                    slot={activeSlot}
+                    slotScope={activeSlotScope}
+                    onAddComponent={addComponentToActiveSlot}
+                    onClose={() => setDrawerOpen(false)}
+                    onRemoveComponent={removeComponentFromActiveSlot}
+                    onSelectRegion={(regionId) => setState((current) => ({ ...current, activeRegionId: regionId }))}
+                  />
+                </div>
+              ) : null}
+
+              <LocationMapStage
+                state={state}
+                setState={setState}
+                mapRequest={mapRequest}
+                digest={digest}
+                generatedMapPreview={generatedMapPreview}
+                previewError={previewResult.error}
+                previewResetKey={previewResetKey}
+                uiMode={uiMode}
+                isMapEditing={false}
+                modeControls={builderModeControls}
               />
-            </div>
-          ) : null}
 
-          <LocationMapStage
-            state={state}
-            setState={setState}
-            mapRequest={mapRequest}
-            digest={digest}
-            generatedMapPreview={generatedMapPreview}
-            previewError={previewResult.error}
-            previewResetKey={previewResetKey}
-            uiMode={uiMode}
-          />
-
-          <LocationRecapPanel
-            onNewMapSeed={refreshMapSeed}
-            onOpenMapGenerator={onOpenMapGenerator}
-            onRenameLocation={renameLocation}
-            snapshot={snapshot}
-            state={state}
-          />
+              {builderMode === "export" ? (
+                <LocationExportPanel
+                  digest={digest}
+                  generatedMapPreview={generatedMapPreview}
+                  mapRequest={mapRequest}
+                  state={state}
+                  uiMode={uiMode}
+                />
+              ) : (
+                <LocationRecapPanel
+                  activeRegion={activeRegionForPicker}
+                  activeSlot={activeSlot}
+                  activeSlotScope={activeSlotScope}
+                  onNewMapSeed={refreshMapSeed}
+                  onOpenComponents={() => {
+                    setBuilderMode("slots");
+                    setDrawerOpen(true);
+                  }}
+                  onRenameLocation={renameLocation}
+                  onStartMapEditing={startMapEditing}
+                  onViewExport={() => activateBuilderMode("export")}
+                  state={state}
+                />
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

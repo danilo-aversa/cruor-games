@@ -17,6 +17,19 @@ function getComponentSummary(component) {
   return component?.summary || component?.description || component?.text || component?.effect || "";
 }
 
+function getComponentMatchLabels(component, slot, regionScoped) {
+  const labels = [];
+
+  if (slot?.label) labels.push(slot.label);
+  if (regionScoped) labels.push("Region");
+  if (!regionScoped) labels.push("Map");
+  if (Array.isArray(component?.contexts) && component.contexts.length) labels.push("Context");
+  if (Array.isArray(component?.horror) && component.horror.length) labels.push("Horror");
+  if (Array.isArray(component?.sourceAnchors) && component.sourceAnchors.length) labels.push("Source");
+
+  return labels.slice(0, 3);
+}
+
 export function LocationComponentPickerModal({
   activeRegion,
   assignedComponents = [],
@@ -41,7 +54,8 @@ export function LocationComponentPickerModal({
     [assignedComponents],
   );
 
-  const hasActiveFilters = Boolean(search.trim()) || statusFilter !== "all";
+  const hasSearch = Boolean(search.trim());
+  const hasActiveFilters = hasSearch || statusFilter !== "all";
 
   const visibleComponents = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -69,6 +83,23 @@ export function LocationComponentPickerModal({
     });
   }, [assignedIds, components, search, statusFilter]);
 
+  const recommendedComponents = useMemo(() => {
+    if (hasSearch || statusFilter === "assigned") return [];
+    return visibleComponents
+      .filter((component) => !assignedIds.has(component.id))
+      .slice(0, 3);
+  }, [assignedIds, hasSearch, statusFilter, visibleComponents]);
+
+  const recommendedIds = useMemo(
+    () => new Set(recommendedComponents.map((component) => component.id).filter(Boolean)),
+    [recommendedComponents],
+  );
+
+  const allMatchingComponents = useMemo(
+    () => visibleComponents.filter((component) => !recommendedIds.has(component.id)),
+    [recommendedIds, visibleComponents],
+  );
+
   function clearFilters() {
     setSearch("");
     setStatusFilter("all");
@@ -87,6 +118,54 @@ export function LocationComponentPickerModal({
       ? `Room ${generatedRoom.number || "—"}`
       : "Click a room on the map to change target"
     : "Dungeon-wide slot";
+
+  function renderComponentCard(component, tier = "matching") {
+    const componentKey = getComponentKey(component);
+    const selected = assignedIds.has(component.id);
+    const replaceAction = isSlotFull && !selected;
+    const actionLabel = selected ? "Remove" : replaceAction ? "Replace" : "Add";
+    const matchLabels = getComponentMatchLabels(component, slot, regionScoped);
+
+    return (
+      <article
+        className={cx(
+          "component-card cruor-composer-card location-component-option",
+          selected && "in-build is-active",
+        )}
+        data-decision-tier={selected ? "assigned" : tier}
+        draggable={!selected}
+        key={componentKey}
+      >
+        <button
+          className="component-toggle-btn location-component-toggle-btn"
+          type="button"
+          aria-label={selected ? `Remove ${getComponentTitle(component)}` : `${actionLabel} ${getComponentTitle(component)}`}
+          onClick={() => (selected ? onRemoveComponent?.(component.id) : onAddComponent?.(component))}
+        >
+          <i className={cx("fa-solid", selected ? "fa-xmark" : replaceAction ? "fa-repeat" : "fa-plus")} aria-hidden="true" />
+          <span>{actionLabel}</span>
+        </button>
+
+        <div className="card-top location-component-card-top">
+          <div className="component-title-stack location-component-title-stack">
+            <h3>{getComponentTitle(component)}</h3>
+          </div>
+        </div>
+
+        {matchLabels.length ? (
+          <div className="location-component-option__meta">
+            {matchLabels.map((label) => (
+              <span key={label}>{label}</span>
+            ))}
+          </div>
+        ) : null}
+
+        {getComponentSummary(component) ? (
+          <p className="summary location-component-summary">{getComponentSummary(component)}</p>
+        ) : null}
+      </article>
+    );
+  }
 
   return (
     <div
@@ -129,6 +208,14 @@ export function LocationComponentPickerModal({
               >
                 <i className="fa-solid fa-xmark" aria-hidden="true" />
               </button>
+            </div>
+          </div>
+
+          <div className="location-component-drawer__target">
+            <div className="location-component-drawer__target-copy">
+              <span>{regionScoped ? "Target Region" : "Target Map"}</span>
+              <strong>{targetTitle}</strong>
+              <small>{targetMeta}</small>
             </div>
           </div>
 
@@ -182,62 +269,33 @@ export function LocationComponentPickerModal({
                       ))}
                     </div>
                   </section>
-
-                  <section className="navigator-filter-section location-component-filter-section">
-                    <strong>{regionScoped ? "Target Room" : "Target Map"}</strong>
-                    <div className="location-component-drawer__target">
-                      <div className="location-component-drawer__target-copy">
-                        <span>Target</span>
-                        <strong>{targetTitle}</strong>
-                        <small>{targetMeta}</small>
-                      </div>
-                    </div>
-                  </section>
                 </div>
               </div>
             </div>
           ) : null}
 
           <div className="component-list location-component-list component-navigator-modal__list cruor-scroll-surface">
-            {visibleComponents.length ? visibleComponents.map((component) => {
-              const componentKey = getComponentKey(component);
-              const selected = assignedIds.has(component.id);
-              const slotFull = isSlotFull && !selected;
-              const actionLabel = selected ? "Added" : slotFull ? "Full" : "Add";
-              return (
-                <article
-                  className={cx(
-                    "component-card cruor-composer-card location-component-option",
-                    selected && "in-build is-active",
-                    slotFull && "slot-full",
-                  )}
-                  data-decision-tier={selected ? "recommended" : slotFull ? "blocked" : "recommended"}
-                  draggable={!selected && !slotFull}
-                  key={componentKey}
-                >
-                  <button
-                    className="component-toggle-btn location-component-toggle-btn"
-                    type="button"
-                    aria-label={selected ? `Remove ${getComponentTitle(component)}` : `${actionLabel} ${getComponentTitle(component)}`}
-                    disabled={slotFull}
-                    onClick={() => (selected ? onRemoveComponent?.(component.id) : onAddComponent?.(component))}
-                  >
-                    <i className={cx("fa-solid", selected ? "fa-check" : "fa-plus")} aria-hidden="true" />
-                    <span>{actionLabel}</span>
-                  </button>
-
-                  <div className="card-top location-component-card-top">
-                    <div className="component-title-stack location-component-title-stack">
-                      <h3>{getComponentTitle(component)}</h3>
+            {visibleComponents.length ? (
+              <>
+                {recommendedComponents.length ? (
+                  <>
+                    <div className="tag-filter-row__head location-component-filter-row__head">
+                      <span>Recommended</span>
                     </div>
-                  </div>
+                    {recommendedComponents.map((component) => renderComponentCard(component, "recommended"))}
+                  </>
+                ) : null}
 
-                  {getComponentSummary(component) ? (
-                    <p className="summary location-component-summary">{getComponentSummary(component)}</p>
-                  ) : null}
-                </article>
-              );
-            }) : (
+                {allMatchingComponents.length ? (
+                  <>
+                    <div className="tag-filter-row__head location-component-filter-row__head">
+                      <span>{recommendedComponents.length ? "All Matching" : "Matching Components"}</span>
+                    </div>
+                    {allMatchingComponents.map((component) => renderComponentCard(component, "matching"))}
+                  </>
+                ) : null}
+              </>
+            ) : (
               <p className="location-empty location-empty--quiet">No compatible options.</p>
             )}
           </div>

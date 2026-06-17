@@ -3,6 +3,7 @@ import {
   FEATURE_ANATOMY_GRANT_OVERRIDES,
   FEATURE_COMPATIBILITY_OVERRIDES,
 } from "../data/monster-grafts.js";
+import { getFeatureBalanceStat, sumFeatureBalanceStats } from "./monster-graft-balance-profile.js";
 import {
   evaluateMonsterAnatomyConstraints,
   formatAnatomyTerm,
@@ -341,8 +342,8 @@ export function buildFeatureDecisionProfile(feature, context = {}) {
     );
   const highPressure =
     feature.cost >= 5 ||
-    (feature.stats?.dpr || 0) >= 6 ||
-    (feature.stats?.control || 0) >= 3 ||
+    (getFeatureBalanceStat(feature, "dpr")) >= 6 ||
+    (getFeatureBalanceStat(feature, "control")) >= 3 ||
     counterplayProfile.burst ||
     counterplayProfile.hardControl;
   const needsTell =
@@ -369,10 +370,10 @@ export function buildFeatureDecisionProfile(feature, context = {}) {
   if (feature.slot === "body") bestForParts.push("Foundation");
   if (feature.slot === "weakness") bestForParts.push("Counterplay");
   if (["death", "lair", "twist"].includes(feature.slot)) bestForParts.push("Setpiece");
-  if ((feature.stats?.control || 0) >= 2) bestForParts.push("Controller");
-  if ((feature.stats?.mobility || 0) >= 2)
+  if ((getFeatureBalanceStat(feature, "control")) >= 2) bestForParts.push("Controller");
+  if ((getFeatureBalanceStat(feature, "mobility")) >= 2)
     bestForParts.push(tacticalRoleId === "lurker" ? "Lurker" : "Skirmisher");
-  if ((feature.stats?.dpr || 0) >= 5)
+  if ((getFeatureBalanceStat(feature, "dpr")) >= 5)
     bestForParts.push(tacticalRoleId === "artillery" ? "Artillery" : "Damage");
   if (asArray(feature.roleBias).includes("boss")) bestForParts.push("Boss");
   if (!bestForParts.length) bestForParts.push(titleCase(feature.slot));
@@ -457,8 +458,8 @@ export function getFeatureSpiceScore(feature, profile, helpers = {}) {
   return (
     Math.max(0, feature.cost) * 2 +
     feature.complexity * 2 +
-    Math.max(0, feature.stats?.dpr || 0) +
-    Math.max(0, feature.stats?.control || 0) * 2 +
+    Math.max(0, getFeatureBalanceStat(feature, "dpr")) +
+    Math.max(0, getFeatureBalanceStat(feature, "control")) * 2 +
     setpieceWeight +
     (profile?.highPressure ? 5 : 0) +
     (counterplayProfile.burst ? 4 : 0) +
@@ -491,7 +492,7 @@ export function getFeatureSafetyScore(feature, profile, helpers = {}) {
     (counterplayProfile.hardControl ? 10 : 0) -
     (counterplayProfile.burst ? 8 : 0) -
     (profile?.risky ? 8 : 0) +
-    Math.max(0, feature.stats?.fairness || 0) * 7 +
+    Math.max(0, getFeatureBalanceStat(feature, "fairness")) * 7 +
     (feature.slot === "weakness" ? 12 : 0) +
     (profile?.simple ? 8 : 0)
   );
@@ -624,15 +625,7 @@ export function buildFeatureImpactPreview({
   }
 
   const nextFeatures = [...selectedFeatures, feature];
-  const statMods = nextFeatures.reduce(
-    (acc, item) => {
-      Object.entries(item.stats || {}).forEach(([key, value]) => {
-        acc[key] = (acc[key] || 0) + value;
-      });
-      return acc;
-    },
-    { hp: 0, dpr: 0, ac: 0, control: 0, mobility: 0, fairness: 0 }
-  );
+  const statMods = sumFeatureBalanceStats(nextFeatures);
   const featureMechanics = nextFeatures.map((item) => ({
     id: item.id,
     title: item.title,
@@ -687,9 +680,9 @@ export function buildFeatureImpactPreview({
   return {
     pressureDelta: nextPressureProfile.score - computed.pressure,
     complexityDelta: nextComplexityProfile.score - computed.complexity,
-    hpDelta: feature.stats?.hp || 0,
-    acDelta: feature.stats?.ac || 0,
-    dprDelta: feature.stats?.dpr || 0,
+    hpDelta: getFeatureBalanceStat(feature, "hp"),
+    acDelta: getFeatureBalanceStat(feature, "ac"),
+    dprDelta: getFeatureBalanceStat(feature, "dpr"),
     counterplay,
     warningsAdded:
       pressureCrossesLimit + complexityCrossesLimit + compatibilityWarning + highPressureNeedsTell,

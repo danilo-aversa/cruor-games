@@ -254,6 +254,30 @@ function createComponentSections(slotSections) {
     })),
   );
 }
+function getComponentsForTableView(componentSections, slotId) {
+  return componentSections.filter((component) => component.slotId === slotId);
+}
+
+function getReadAloudText(regionSections) {
+  const lines = regionSections
+    .filter((section) => section.readAloud)
+    .map((section) => `${section.heading}\n${section.readAloud}`);
+
+  return lines.length ? lines.join("\n\n") : "No read-aloud text assigned yet.";
+}
+
+function createAtTheTableRows({ context, horrorLine, sourceLine, regionSections, hazardSections, clueSections, twistSections }) {
+  return [
+    { label: "Context", value: context },
+    { label: "Horror", value: horrorLine },
+    { label: "Source", value: sourceLine },
+    { label: "Regions", value: String(regionSections.length || 0) },
+    { label: "Hazards", value: String(hazardSections.length || 0) },
+    { label: "Clues", value: String(clueSections.length || 0) },
+    { label: "Twists", value: String(twistSections.length || 0) },
+  ];
+}
+
 
 export function getCompilePreview(state, digest, mapRequest, generatedMapPreview) {
   const slots = getLocationSlots();
@@ -290,6 +314,19 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
     createRoomSection(region, index, generatedMapPreview, state),
   );
   const componentSections = createComponentSections(slotSections);
+  const hazardSections = getComponentsForTableView(componentSections, "hazard");
+  const clueSections = getComponentsForTableView(componentSections, "clue");
+  const twistSections = getComponentsForTableView(componentSections, "encounterTwist");
+  const readAloudText = getReadAloudText(regionSections);
+  const atTheTableRows = createAtTheTableRows({
+    context,
+    horrorLine,
+    sourceLine,
+    regionSections,
+    hazardSections,
+    clueSections,
+    twistSections,
+  });
   const mapSyncStatus = getMapSyncStatus(mapRequest, generatedMapPreview, state.locationRegions || []);
   const mapNotes = getMapNotes(mapRequest, generatedMapPreview, state.locationRegions || []);
 
@@ -303,8 +340,8 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
     "SESSION INSERT",
     premiseSection.text,
     "",
-    "ROOMS",
-    roomText || "No rooms generated yet.",
+    "REGIONS",
+    roomText || "No regions generated yet.",
     "",
     "COMPONENTS",
     componentText,
@@ -317,7 +354,7 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
     "PREMISE",
     premiseSection.text,
     "",
-    "ROOM TABLE",
+    "REGION TABLE",
     ...regionSections.map((section) => section.tableLine),
     "",
     "COMPONENT TABLE",
@@ -338,6 +375,11 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
     regionSections,
     roomSections: regionSections,
     componentSections,
+    hazardSections,
+    clueSections,
+    twistSections,
+    readAloudText,
+    atTheTableRows,
     mapSyncStatus,
     mapNotes,
     mapNotesText,
@@ -373,6 +415,13 @@ export function createJsonExportPayload(state, digest, mapRequest, generatedMapP
     tableReadyText: compilePreview.tableReadyText,
     slotAssignments: state.slotAssignments,
     components: compilePreview.componentSections,
+    tableView: {
+      readAloudText: compilePreview.readAloudText,
+      hazards: compilePreview.hazardSections,
+      clues: compilePreview.clueSections,
+      twists: compilePreview.twistSections,
+      atTheTable: compilePreview.atTheTableRows,
+    },
     regions: compilePreview.regionSections.map((section) => ({
       id: section.region.id,
       name: section.region.name,
