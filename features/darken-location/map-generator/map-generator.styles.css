@@ -564,8 +564,28 @@
   min-height: 0;
 }
 
+.cruor-map-workspace[data-map-embedded="true"] .map-viewport-frame {
+  min-height: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--cruor-color-transparent);
+  box-shadow: none;
+}
+
 .cruor-map-workspace[data-map-embedded="true"] .map-viewport {
   min-height: 0;
+  border: 0;
+  background: var(--cruor-color-transparent);
+  box-shadow: none;
+}
+
+.cruor-map-workspace[data-map-embedded="true"] .paper {
+  fill: var(--cruor-color-transparent);
+}
+
+.cruor-map-workspace[data-map-embedded="true"] .paper-texture {
+  display: none;
 }
 
 .cruor-map-workspace .map-panel-eyebrow {
@@ -779,10 +799,10 @@
 
 .cruor-map-workspace .map-inspector-panel__scroll {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   max-height: calc(100dvh - var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) - var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) - 24px);
   overflow: auto;
-  padding: 12px;
+  padding: 11px;
   scrollbar-width: auto;
   scrollbar-color: auto;
 }
@@ -865,17 +885,15 @@
 }
 
 .cruor-map-workspace .map-inspector-panel {
-  border: var(--cruor-ui-panel-border);
-  border-radius: 0;
-  background: var(--cruor-gradient-radial-034-45004f0b), var(--cruor-gradient-linear-028-9f35eafb), var(--cruor-color-r8-g5-b6-a860);
-  box-shadow: var(--cruor-ui-panel-shadow);
-  backdrop-filter: var(--cruor-filter-blur-10);
+  box-sizing: border-box;
   min-width: 0;
   overflow: hidden;
-  border-top-color: var(--cruor-ui-panel-border-top);
-  background-color: var(--cruor-ui-panel-bg);
-  background-image: var(--cruor-ui-panel-image);
-  background-blend-mode: overlay, overlay, normal;
+  border: 1px solid var(--cruor-color-milk-a070);
+  border-radius: 0;
+  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
+  box-shadow: var(--cruor-shadow-box-002);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .cruor-map-workspace .map-tests-modal__dialog {
@@ -897,23 +915,23 @@
 }
 
 .cruor-map-workspace .map-tool-rail {
-  border: var(--cruor-ui-panel-border);
+  box-sizing: border-box;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-milk-a070);
   border-radius: 0;
-  background: var(--cruor-gradient-radial-034-45004f0b), var(--cruor-gradient-linear-028-9f35eafb), var(--cruor-color-r8-g5-b6-a860);
-  box-shadow: var(--cruor-ui-panel-shadow);
-  backdrop-filter: var(--cruor-filter-blur-10);
+  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
+  box-shadow: var(--cruor-shadow-box-002);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   position: sticky;
   top: calc(var(--cruor-shell-bar-height, var(--app-shell-bar-height, 62px)) + var(--cruor-command-bar-height, var(--darken-workspace-topbar-height, 190px)) + 10px);
   z-index: 4;
   align-self: start;
   display: grid;
-  gap: 6px;
-  justify-items: center;
-  padding: 7px;
-  border-top-color: var(--cruor-ui-panel-border-top);
-  background-color: var(--cruor-ui-panel-bg);
-  background-image: var(--cruor-ui-panel-image);
-  background-blend-mode: overlay, overlay, normal;
+  gap: 10px;
+  justify-items: start;
+  padding: 11px;
+  overflow: auto;
 }
 
 .room-context-menu {
@@ -1055,13 +1073,12 @@
 .cruor-map-workspace .map-inspector-section {
   display: grid;
   gap: 10px;
-  padding: 12px;
-  border: 1px solid var(--cruor-color-blood-strong-a460);
-  background: var(--cruor-ui-card-bg);
+  padding: 11px;
+  border: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
+  box-shadow: var(--cruor-shadow-box-075);
   scrollbar-width: auto;
   scrollbar-color: auto;
-  border-color: var(--cruor-ui-card-border);
-  box-shadow: var(--cruor-ui-card-shadow);
 }
 
 /* Components */
