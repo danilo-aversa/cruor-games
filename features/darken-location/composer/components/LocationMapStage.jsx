@@ -59,8 +59,8 @@ function LocationMapPreview({ generatedMap, error, viewResetKey, isMapEditing = 
     >
       <MapViewport
         generatedMap={generatedMap}
-        showGrid={false}
-        gridStyle="none"
+        showGrid={true}
+        gridStyle="solid"
         showEditor={isMapEditing}
         showNames={isMapEditing}
         showProps={isMapEditing}

@@ -386,11 +386,15 @@ export function MapViewport({
       frame = 0;
       const viewportRect = viewport.getBoundingClientRect();
       const stageRect = stage.getBoundingClientRect();
+      const normalizedGridStyle = normalizeGridStyle(gridStyle);
+      const gridVisible = showGrid && normalizedGridStyle !== "none";
       const gridSize = Math.max(1, generatedMap.config.gridSize || 20);
       const scaledGridSize = Math.max(1, gridSize * view.scale);
       const gridOriginX = viewportRect.left - stageRect.left + view.x;
       const gridOriginY = viewportRect.top - stageRect.top + view.y;
 
+      stage.dataset.mapGridVisible = gridVisible ? "true" : "false";
+      stage.dataset.mapGridStyle = normalizedGridStyle;
       stage.style.setProperty("--location-map-stage-grid-size", `${scaledGridSize}px`);
       stage.style.setProperty("--location-map-stage-grid-x", `${gridOriginX}px`);
       stage.style.setProperty("--location-map-stage-grid-y", `${gridOriginY}px`);
@@ -409,8 +413,13 @@ export function MapViewport({
     return () => {
       observer.disconnect();
       if (frame) window.cancelAnimationFrame(frame);
+      delete stage.dataset.mapGridVisible;
+      delete stage.dataset.mapGridStyle;
+      stage.style.removeProperty("--location-map-stage-grid-size");
+      stage.style.removeProperty("--location-map-stage-grid-x");
+      stage.style.removeProperty("--location-map-stage-grid-y");
     };
-  }, [generatedMap.config.gridSize, view.x, view.y, view.scale, viewportSize.width, viewportSize.height]);
+  }, [generatedMap.config.gridSize, gridStyle, showGrid, view.x, view.y, view.scale, viewportSize.width, viewportSize.height]);
 
   const constrainView = useCallback(
     (candidate) => {
@@ -2936,6 +2945,151 @@ function MapToolButton({
   );
 }
 
+function MapControlSelect({
+  id,
+  label,
+  value,
+  options,
+  onChange,
+}) {
+  const [open, setOpen] = useState(false);
+  const [menuStyle, setMenuStyle] = useState(null);
+  const fieldRef = useRef(null);
+  const triggerRef = useRef(null);
+  const menuRef = useRef(null);
+  const normalizedOptions = options.map((option) =>
+    typeof option === "string"
+      ? { value: option, label: option }
+      : { value: option.value, label: option.label ?? option.value, description: option.description ?? "" },
+  );
+  const selectedOption =
+    normalizedOptions.find((option) => String(option.value) === String(value)) || normalizedOptions[0];
+  const selectedLabel = selectedOption?.label || "—";
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    function handlePointerDown(event) {
+      const target = event.target;
+      if (fieldRef.current?.contains(target)) return;
+      if (menuRef.current?.contains(target)) return;
+      setOpen(false);
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      setMenuStyle(null);
+      return undefined;
+    }
+
+    let frameId = 0;
+
+    function updateMenuPosition() {
+      const trigger = triggerRef.current;
+      if (!trigger) return;
+
+      const rect = trigger.getBoundingClientRect();
+      const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+      const gap = 8;
+      const width = Math.min(300, Math.max(rect.width, 220), Math.max(220, viewportWidth - gap * 2));
+      const maxHeight = Math.min(320, Math.max(180, viewportHeight - gap * 2));
+      const left = clamp(rect.left, gap, Math.max(gap, viewportWidth - width - gap));
+      const belowTop = rect.bottom + 6;
+      const top = belowTop + maxHeight <= viewportHeight - gap
+        ? belowTop
+        : Math.max(gap, rect.top - maxHeight - 6);
+
+      setMenuStyle({
+        top: `${Math.round(top)}px`,
+        left: `${Math.round(left)}px`,
+        width: `${Math.round(width)}px`,
+        maxHeight: `${Math.round(maxHeight)}px`,
+      });
+    }
+
+    function scheduleUpdate() {
+      if (frameId) window.cancelAnimationFrame(frameId);
+      frameId = window.requestAnimationFrame(updateMenuPosition);
+    }
+
+    scheduleUpdate();
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("scroll", scheduleUpdate, true);
+
+    return () => {
+      if (frameId) window.cancelAnimationFrame(frameId);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("scroll", scheduleUpdate, true);
+    };
+  }, [open, value, options]);
+
+  const menuPortalTarget = typeof document !== "undefined"
+    ? document.querySelector(".location-map-stage") || document.body
+    : null;
+
+  return (
+    <div className="control-group map-control-select-field" ref={fieldRef}>
+      <label className="control-label" id={`${id}-label`}>
+        {label}
+      </label>
+      <button
+        id={id}
+        className="control-select cruor-select map-control-select-trigger"
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-labelledby={`${id}-label ${id}`}
+        ref={triggerRef}
+        onClick={() => setOpen((current) => !current)}
+      >
+        <strong>{selectedLabel}</strong>
+        <i className="fa-solid fa-chevron-down" aria-hidden="true" />
+      </button>
+      {open && menuPortalTarget
+        ? createPortal(
+            <div
+              className="map-control-select-menu"
+              role="listbox"
+              aria-labelledby={`${id}-label`}
+              ref={menuRef}
+              style={menuStyle || undefined}
+            >
+              {normalizedOptions.map((option) => {
+                const active = String(option.value) === String(value);
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="option"
+                    aria-selected={active}
+                    className={active ? "map-control-select-option is-active" : "map-control-select-option"}
+                    onClick={() => {
+                      onChange(option.value);
+                      setOpen(false);
+                    }}
+                  >
+                    <span>
+                      <strong>{option.label}</strong>
+                      {option.description ? <small>{option.description}</small> : null}
+                    </span>
+                    <i className={active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"} aria-hidden="true" />
+                  </button>
+                );
+              })}
+            </div>,
+            menuPortalTarget,
+          )
+        : null}
+    </div>
+  );
+}
+
+
 function TestReport({ testSuite }) {
   return (
     <div
@@ -3889,6 +4043,22 @@ export default function CruorMapGeneratorMvp({
     });
   }
 
+  function setGridRenderingStyle(value) {
+    const nextGridStyle = normalizeGridStyle(value || "solid");
+    setGridStyle(nextGridStyle);
+    setShowGrid(nextGridStyle !== "none");
+  }
+
+  function toggleGridVisibility() {
+    setShowGrid((current) => {
+      const next = !current;
+      if (next && normalizeGridStyle(gridStyle) === "none") {
+        setGridStyle("solid");
+      }
+      return next;
+    });
+  }
+
   const mapViewport = (
     <MapViewport
       generatedMap={generatedMap}
@@ -3921,10 +4091,8 @@ export default function CruorMapGeneratorMvp({
       onUndo={undoManualEdit}
       onRedo={redoManualEdit}
       onNewSeed={randomizeSeed}
-      onToggleGrid={() => setShowGrid((value) => !value)}
-      onGridStyleChange={(value) =>
-        setGridStyle(normalizeGridStyle(value))
-      }
+      onToggleGrid={toggleGridVisibility}
+      onGridStyleChange={setGridRenderingStyle}
       onToggleEditor={() => setShowEditor((value) => !value)}
       onToggleNames={() => setShowNames((value) => !value)}
       onToggleProps={() => setShowProps((value) => !value)}
@@ -4041,7 +4209,7 @@ export default function CruorMapGeneratorMvp({
             icon="border-all"
             label="Toggle Grid"
             active={showGrid}
-            onClick={() => setShowGrid((value) => !value)}
+            onClick={toggleGridVisibility}
           />
           <MapToolButton
             icon="pen-ruler"
@@ -4236,86 +4404,59 @@ export default function CruorMapGeneratorMvp({
                   />
                 </div>
               </div>
+              <MapControlSelect
+                id="context"
+                label="Context"
+                value={context}
+                options={["Crypt", "Chapel", "Cave", "Mine", "Noble House", "Ruins"]}
+                onChange={(value) => {
+                  setContext(value);
+                  setManualOverrides(resetManualOverrides());
+                  clearManualHistory();
+                }}
+              />
+              <MapControlSelect
+                id="visual-style"
+                label="Drawing Style"
+                value={visualStyle}
+                options={MAP_VISUAL_STYLES.map((style) => ({
+                  value: style.value,
+                  label: style.label,
+                }))}
+                onChange={(value) =>
+                  setVisualStyle(normalizeVisualStyle(value))
+                }
+              />
+              <MapControlSelect
+                id="grid-style"
+                label="Grid Style"
+                value={gridStyle}
+                options={[
+                  { value: "solid", label: "Solid" },
+                  { value: "dotted", label: "Dotted" },
+                  { value: "dashed", label: "Dashed" },
+                  { value: "none", label: "None" },
+                ]}
+                onChange={setGridRenderingStyle}
+              />
+              <MapControlSelect
+                id="level-view"
+                label="Level View"
+                value={String(normalizeLevelView(levelView, availableLevels))}
+                options={[
+                  { value: LEVEL_VIEW_ALL, label: "All Levels" },
+                  ...availableLevels.map((level) => ({
+                    value: String(level),
+                    label: `Level ${formatMapLevel(level)}`,
+                  })),
+                ]}
+                onChange={(value) =>
+                  setLevelView(
+                    normalizeLevelView(value, availableLevels),
+                  )
+                }
+              />
               <div className="control-group">
-                <label className="control-label" htmlFor="context">
-                  Context
-                </label>
-                <select
-                  id="context"
-                  className="control-select cruor-select"
-                  value={context}
-                  onChange={(event) => {
-                    setContext(event.target.value);
-                    setManualOverrides(resetManualOverrides());
-                    clearManualHistory();
-                  }}
-                >
-                  <option>Crypt</option>
-                  <option>Chapel</option>
-                  <option>Cave</option>
-                  <option>Mine</option>
-                  <option>Noble House</option>
-                  <option>Ruins</option>
-                </select>
-              </div>
-              <div className="control-group">
-                <label className="control-label" htmlFor="visual-style">
-                  Drawing Style
-                </label>
-                <select
-                  id="visual-style"
-                  className="control-select cruor-select"
-                  value={visualStyle}
-                  onChange={(event) =>
-                    setVisualStyle(normalizeVisualStyle(event.target.value))
-                  }
-                >
-                  {MAP_VISUAL_STYLES.map((style) => (
-                    <option key={style.value} value={style.value}>
-                      {style.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="control-group">
-                <label className="control-label" htmlFor="grid-style">
-                  Grid Style
-                </label>
-                <select
-                  id="grid-style"
-                  className="control-select cruor-select"
-                  value={gridStyle}
-                  onChange={(event) =>
-                    setGridStyle(normalizeGridStyle(event.target.value))
-                  }
-                >
-                  <option value="solid">Solid</option>
-                  <option value="dotted">Dotted</option>
-                  <option value="dashed">Dashed</option>
-                  <option value="none">None</option>
-                </select>
-              </div>
-              <div className="control-group">
-                <label className="control-label" htmlFor="level-view">
-                  Level View
-                </label>
-                <select
-                  id="level-view"
-                  className="control-select cruor-select"
-                  value={String(normalizeLevelView(levelView, availableLevels))}
-                  onChange={(event) =>
-                    setLevelView(
-                      normalizeLevelView(event.target.value, availableLevels),
-                    )
-                  }
-                >
-                  <option value={LEVEL_VIEW_ALL}>All Levels</option>
-                  {availableLevels.map((level) => (
-                    <option key={`level-view-${level}`} value={String(level)}>
-                      Level {formatMapLevel(level)}
-                    </option>
-                  ))}
-                </select>
                 <button
                   type="button"
                   className="mvp-button cruor-ui-control-surface cruor-button"

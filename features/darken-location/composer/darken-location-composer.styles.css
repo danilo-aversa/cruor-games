@@ -1011,7 +1011,7 @@
   border: 1px solid var(--cruor-color-milk-a070);
   background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
   padding: 11px;
-  box-shadow: var(--cruor-shadow-box-002);
+  box-shadow: var(--cruor-shadow-box-075);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
@@ -1029,7 +1029,7 @@
   -webkit-backdrop-filter: none;
   border: 1px solid var(--cruor-color-milk-a070);
   background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
-  box-shadow: var(--cruor-shadow-box-002);
+  box-shadow: var(--cruor-shadow-box-075);
 }
 
 
@@ -2644,13 +2644,14 @@
   max-width: 100%;
   display: grid;
   align-content: start;
-  justify-items: start;
-  gap: 10px;
-  padding: 11px;
-  overflow: auto;
+  justify-items: center;
+  gap: 8px;
+  padding: 11px 0;
+  overflow-x: hidden;
+  overflow-y: auto;
   border: 1px solid var(--cruor-color-milk-a070);
   background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
-  box-shadow: var(--cruor-shadow-box-002);
+  box-shadow: var(--cruor-shadow-box-075);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   z-index: 4;
@@ -2677,7 +2678,7 @@
 .location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-inspector-panel {
   border: 1px solid var(--cruor-color-milk-a070);
   background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
-  box-shadow: var(--cruor-shadow-box-002);
+  box-shadow: var(--cruor-shadow-box-075);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   z-index: 4;
@@ -2718,6 +2719,10 @@
   max-height: none;
   gap: 10px;
   padding: 11px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
 }
 
 .location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-viewport {
@@ -3764,14 +3769,16 @@
 
 .location-map-stage__center > .location-map-mode-card {
   position: absolute;
-  top: 12px;
   left: 50%;
+  right: auto;
+  bottom: var(--stage-pad);
   z-index: 16;
   width: min(360px, calc(100% - 24px));
   transform: translateX(-50%);
-  border: 1px solid var(--cruor-color-milk-a065);
-  background: var(--cruor-surface-card);
-  box-shadow: var(--cruor-shadow-box-004);
+  border: 0;
+  background: var(--cruor-color-transparent);
+  box-shadow: none;
+  pointer-events: auto;
 }
 
 .location-map-recap-rail .location-compile-preview__grid {
@@ -3784,17 +3791,18 @@
 
 .location-map-mode-card .location-map-mode-switch {
   margin: 0;
-  border: 0;
-  background: var(--cruor-color-transparent);
-  padding: 0;
+  border: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
+  padding: 6px;
+  box-shadow: var(--cruor-shadow-box-075);
 }
 
 /* Layout */
 
 .location-map-mode-card .location-map-mode-button {
-  min-height: 28px;
-  border: 1px solid var(--cruor-color-blood-strong-a480);
-  background: var(--cruor-color-blood-a180);
+  min-height: 30px;
+  border: 1px solid var(--cruor-color-blood-strong-a560);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
   padding: 0 9px;
   font-size: var(--text-size-xs);
@@ -4301,15 +4309,46 @@
   min-height: var(--location-stage-min-height);
   margin: 0 auto;
   overflow: hidden;
+  --location-map-stage-grid-line: var(--cruor-color-white-a028);
+  --location-map-stage-grid-dot: var(--cruor-color-white-a080);
+  --location-map-stage-grid-images: linear-gradient(90deg, var(--location-map-stage-grid-line) 1px, var(--cruor-color-transparent) 1px), linear-gradient(180deg, var(--location-map-stage-grid-line) 1px, var(--cruor-color-transparent) 1px);
+  --location-map-stage-grid-sizes: var(--location-map-stage-grid-size, 34px) var(--location-map-stage-grid-size, 34px), var(--location-map-stage-grid-size, 34px) var(--location-map-stage-grid-size, 34px);
+  --location-map-stage-grid-positions: var(--location-map-stage-grid-x, 0) var(--location-map-stage-grid-y, 0), var(--location-map-stage-grid-x, 0) var(--location-map-stage-grid-y, 0);
   border: 1px solid var(--cruor-color-milk-a060);
-  background: var(--cruor-gradient-linear-023-5d537681), var(--cruor-gradient-linear-022-79a987a1), var(--cruor-gradient-radial-035-d7408e11), var(--cruor-surface-card);
-  background-position: var(--location-map-stage-grid-x, 0) var(--location-map-stage-grid-y, 0), var(--location-map-stage-grid-x, 0) var(--location-map-stage-grid-y, 0), center, 0 0;
-  background-size: var(--location-map-stage-grid-size, 34px) var(--location-map-stage-grid-size, 34px), var(--location-map-stage-grid-size, 34px) var(--location-map-stage-grid-size, 34px), auto, auto;
+  background-image: var(--location-map-stage-grid-images), var(--cruor-gradient-radial-035-d7408e11);
+  background-color: var(--cruor-surface-card);
+  background-position: var(--location-map-stage-grid-positions), center;
+  background-size: var(--location-map-stage-grid-sizes), auto;
   padding: var(--stage-pad);
   box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   transition: grid-template-columns 180ms ease, gap 180ms ease, background-size 180ms ease;
+}
+
+.location-composer .location-map-stage[data-map-grid-visible="false"] {
+  --location-map-stage-grid-images: linear-gradient(var(--cruor-color-transparent), var(--cruor-color-transparent));
+  --location-map-stage-grid-sizes: auto;
+  --location-map-stage-grid-positions: 0 0;
+}
+
+.location-composer .location-map-stage[data-map-grid-style="dotted"] {
+  --location-map-stage-grid-images: radial-gradient(circle, var(--location-map-stage-grid-dot) 1px, var(--cruor-color-transparent) 1.35px);
+  --location-map-stage-grid-sizes: var(--location-map-stage-grid-size, 34px) var(--location-map-stage-grid-size, 34px);
+  --location-map-stage-grid-positions: var(--location-map-stage-grid-x, 0) var(--location-map-stage-grid-y, 0);
+}
+
+.location-composer .location-map-stage[data-map-grid-style="dashed"] {
+  --location-map-stage-grid-line: var(--cruor-color-white-a045);
+  --location-map-stage-grid-images: radial-gradient(ellipse 1px 4px at 0 0, var(--location-map-stage-grid-line) 98%, var(--cruor-color-transparent) 100%), radial-gradient(ellipse 4px 1px at 0 0, var(--location-map-stage-grid-line) 98%, var(--cruor-color-transparent) 100%);
+  --location-map-stage-grid-sizes: var(--location-map-stage-grid-size, 34px) 12px, 12px var(--location-map-stage-grid-size, 34px);
+  --location-map-stage-grid-positions: var(--location-map-stage-grid-x, 0) var(--location-map-stage-grid-y, 0), var(--location-map-stage-grid-x, 0) var(--location-map-stage-grid-y, 0);
+}
+
+.location-composer .location-map-stage[data-map-grid-visible="false"] {
+  background-image: var(--cruor-gradient-radial-035-d7408e11);
+  background-position: center;
+  background-size: auto;
 }
 
 .location-composer .location-map-stage::before {
@@ -4419,9 +4458,12 @@
   display: none;
 }
 
-.location-composer .location-map-preview--live .map-grid,
-.location-composer .location-map-preview--live .floor-grid {
+.location-composer .location-map-preview--live .map-grid {
   display: none;
+}
+
+.location-composer .location-map-preview--live .floor-grid {
+  display: block;
 }
 
 .location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .paper {
@@ -4429,9 +4471,12 @@
 }
 
 .location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .paper-texture,
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-grid,
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .floor-grid {
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-grid {
   display: none;
+}
+
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .floor-grid {
+  display: block;
 }
 
 @media (max-width: 1320px) {
