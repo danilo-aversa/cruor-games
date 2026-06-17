@@ -375,6 +375,43 @@ export function MapViewport({
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return undefined;
+    const stage = viewport.closest?.(".location-map-stage");
+    if (!stage) return undefined;
+
+    let frame = 0;
+    const syncStageGrid = () => {
+      frame = 0;
+      const viewportRect = viewport.getBoundingClientRect();
+      const stageRect = stage.getBoundingClientRect();
+      const gridSize = Math.max(1, generatedMap.config.gridSize || 20);
+      const scaledGridSize = Math.max(1, gridSize * view.scale);
+      const gridOriginX = viewportRect.left - stageRect.left + view.x;
+      const gridOriginY = viewportRect.top - stageRect.top + view.y;
+
+      stage.style.setProperty("--location-map-stage-grid-size", `${scaledGridSize}px`);
+      stage.style.setProperty("--location-map-stage-grid-x", `${gridOriginX}px`);
+      stage.style.setProperty("--location-map-stage-grid-y", `${gridOriginY}px`);
+    };
+
+    const requestSync = () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(syncStageGrid);
+    };
+
+    requestSync();
+    const observer = new ResizeObserver(requestSync);
+    observer.observe(viewport);
+    observer.observe(stage);
+
+    return () => {
+      observer.disconnect();
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [generatedMap.config.gridSize, view.x, view.y, view.scale, viewportSize.width, viewportSize.height]);
+
   const constrainView = useCallback(
     (candidate) => {
       const viewport = viewportRef.current;
@@ -3852,6 +3889,70 @@ export default function CruorMapGeneratorMvp({
     });
   }
 
+  const mapViewport = (
+    <MapViewport
+      generatedMap={generatedMap}
+      showGrid={showGrid}
+      gridStyle={gridStyle}
+      showEditor={showEditor}
+      showNames={showNames}
+      showProps={showProps}
+      levelView={levelView}
+      fadeOtherLevels={fadeOtherLevels}
+      availableLevels={availableLevels}
+      onRoomMove={moveRoom}
+      onDoorMove={moveDoor}
+      onDoorTypeChange={updateDoorType}
+      onDoorStairChange={updateDoorStair}
+      onMapAccessMove={setMapAccess}
+      onMapAccessSet={setMapAccessWithHistory}
+      onMapAccessRemove={removeMapAccess}
+      onJunctionTypeChange={updateJunctionType}
+      onWaypointMove={moveWaypoint}
+      onWaypointInsert={insertWaypoint}
+      onWaypointDelete={deleteWaypoint}
+      onConnectionDelete={deleteConnection}
+      onCreateConnection={createConnectionFromWallDrag}
+      manualOverrides={manualOverrides}
+      onRoomStyleChange={updateRoomStyle}
+      onRoomStyleReset={resetRoomStyle}
+      onEditStart={beginManualEdit}
+      onEditCommit={commitManualEdit}
+      onUndo={undoManualEdit}
+      onRedo={redoManualEdit}
+      onNewSeed={randomizeSeed}
+      onToggleGrid={() => setShowGrid((value) => !value)}
+      onGridStyleChange={(value) =>
+        setGridStyle(normalizeGridStyle(value))
+      }
+      onToggleEditor={() => setShowEditor((value) => !value)}
+      onToggleNames={() => setShowNames((value) => !value)}
+      onToggleProps={() => setShowProps((value) => !value)}
+      onLevelViewChange={(value) =>
+        setLevelView(normalizeLevelView(value, availableLevels))
+      }
+      onToggleFadeOtherLevels={() =>
+        setFadeOtherLevels((value) => !value)
+      }
+      onResetEdits={() =>
+        updateManualOverridesWithHistory(
+          resetManualOverrides(),
+          "Edits reset.",
+        )
+      }
+      onExportSvg={downloadSvg}
+      onExportGmSvg={downloadGmSvg}
+      onExportPlayerSvg={downloadPlayerSvg}
+      onExportPrintSvg={downloadPrintSvg}
+      onExportState={exportState}
+      onImportState={requestImportState}
+      viewResetKey={`${seed}:${roomCount}:${context}:${mapWidth}:${mapHeight}`}
+      embeddedPreview={false}
+      showViewportChrome={!embeddedInComposer}
+      enableViewportInteractions={true}
+    />
+  );
+
   return (
     <div
       className="cruor-map-mvp cruor-map-workspace"
@@ -4035,66 +4136,11 @@ export default function CruorMapGeneratorMvp({
             </div>
           </div>
 
-          <div className="map-viewport-frame">
-            <MapViewport
-              generatedMap={generatedMap}
-              showGrid={showGrid}
-              gridStyle={gridStyle}
-              showEditor={showEditor}
-              showNames={showNames}
-              showProps={showProps}
-              levelView={levelView}
-              fadeOtherLevels={fadeOtherLevels}
-              availableLevels={availableLevels}
-              onRoomMove={moveRoom}
-              onDoorMove={moveDoor}
-              onDoorTypeChange={updateDoorType}
-              onDoorStairChange={updateDoorStair}
-              onMapAccessMove={setMapAccess}
-              onMapAccessSet={setMapAccessWithHistory}
-              onMapAccessRemove={removeMapAccess}
-              onJunctionTypeChange={updateJunctionType}
-              onWaypointMove={moveWaypoint}
-              onWaypointInsert={insertWaypoint}
-              onWaypointDelete={deleteWaypoint}
-              onConnectionDelete={deleteConnection}
-              onCreateConnection={createConnectionFromWallDrag}
-              manualOverrides={manualOverrides}
-              onRoomStyleChange={updateRoomStyle}
-              onRoomStyleReset={resetRoomStyle}
-              onEditStart={beginManualEdit}
-              onEditCommit={commitManualEdit}
-              onUndo={undoManualEdit}
-              onRedo={redoManualEdit}
-              onNewSeed={randomizeSeed}
-              onToggleGrid={() => setShowGrid((value) => !value)}
-              onGridStyleChange={(value) =>
-                setGridStyle(normalizeGridStyle(value))
-              }
-              onToggleEditor={() => setShowEditor((value) => !value)}
-              onToggleNames={() => setShowNames((value) => !value)}
-              onToggleProps={() => setShowProps((value) => !value)}
-              onLevelViewChange={(value) =>
-                setLevelView(normalizeLevelView(value, availableLevels))
-              }
-              onToggleFadeOtherLevels={() =>
-                setFadeOtherLevels((value) => !value)
-              }
-              onResetEdits={() =>
-                updateManualOverridesWithHistory(
-                  resetManualOverrides(),
-                  "Edits reset.",
-                )
-              }
-              onExportSvg={downloadSvg}
-              onExportGmSvg={downloadGmSvg}
-              onExportPlayerSvg={downloadPlayerSvg}
-              onExportPrintSvg={downloadPrintSvg}
-              onExportState={exportState}
-              onImportState={requestImportState}
-              viewResetKey={`${seed}:${roomCount}:${context}:${mapWidth}:${mapHeight}`}
-            />
-          </div>
+          {embeddedInComposer ? mapViewport : (
+            <div className="map-viewport-frame">
+              {mapViewport}
+            </div>
+          )}
         </main>
 
         <aside

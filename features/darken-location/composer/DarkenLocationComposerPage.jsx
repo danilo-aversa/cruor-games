@@ -480,6 +480,100 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     setState((current) => removeComponentFromSlot(current, componentId, activeSlot.id));
   }, [activeSlot]);
 
+  const leftPanel = builderMode === "frame" ? (
+    <LocationBriefPanel
+      state={state}
+      setState={setState}
+      mapRequest={mapRequest}
+      modeControls={null}
+      draftControls={
+        uiMode === "simple" ? null : (
+          <LocationDraftControls
+            canLoadDraft={Boolean(draftSummary)}
+            draftStorageStatus={draftStorageStatus}
+            draftSummary={draftSummary}
+            draftStatus={draftStatus}
+            hasUnsavedChanges={hasUnsavedChanges}
+            uiMode={uiMode}
+            onClearDraft={clearSavedDraft}
+            onLoadDraft={loadDraft}
+            onResetComposer={resetComposer}
+            onSaveDraft={saveDraft}
+          />
+        )
+      }
+    />
+  ) : builderMode === "export" ? (
+    <LocationExportToolsPanel
+      onSelectFrame={() => activateBuilderMode("frame")}
+      onSelectRegions={() => activateBuilderMode("slots")}
+    />
+  ) : (
+    <LocationSlotRail
+      state={state}
+      setState={setState}
+      selectedComponents={selectedComponents}
+      onOpenMapGenerator={onOpenMapGenerator}
+      snapshot={snapshot}
+      generatedMapPreview={generatedMapPreview}
+      modeControls={null}
+      onFocusSlot={focusSlot}
+    />
+  );
+
+  const navigatorPanel = builderMode === "slots" && drawerOpen && activeSlot ? (
+    <LocationComponentPickerModal
+      activeRegion={activeRegionForPicker}
+      assignedComponents={assignedComponentsForActiveSlot}
+      components={compatibleComponents}
+      generatedRoom={activeGeneratedRoomForPicker}
+      isSlotFull={activeSlotIsFull}
+      open={drawerOpen}
+      regions={state.locationRegions || []}
+      slot={activeSlot}
+      slotScope={activeSlotScope}
+      onAddComponent={addComponentToActiveSlot}
+      onClose={() => setDrawerOpen(false)}
+      onRemoveComponent={removeComponentFromActiveSlot}
+      onSelectRegion={(regionId) => setState((current) => ({ ...current, activeRegionId: regionId }))}
+    />
+  ) : null;
+
+  const rightPanel = builderMode === "export" ? (
+    <LocationExportPanel
+      digest={digest}
+      generatedMapPreview={generatedMapPreview}
+      mapRequest={mapRequest}
+      state={state}
+      uiMode={uiMode}
+    />
+  ) : (
+    <LocationRecapPanel
+      activeRegion={activeRegionForPicker}
+      activeSlot={activeSlot}
+      activeSlotScope={activeSlotScope}
+      onNewMapSeed={refreshMapSeed}
+      onOpenComponents={() => {
+        setBuilderMode("slots");
+        setDrawerOpen(true);
+      }}
+      onRenameLocation={renameLocation}
+      onStartMapEditing={startMapEditing}
+      onViewExport={() => activateBuilderMode("export")}
+      state={state}
+    />
+  );
+
+  const mapWorkspacePanel = isMapEditing ? (
+    <CruorMapGeneratorMvp
+      key={`location-map-workspace-${previewResetKey}-${mapWorkspaceRevision}`}
+      initialRequest={mapRequest}
+      embeddedInComposer={true}
+      onExitWorkspace={() => setIsMapEditing(false)}
+      onRefreshFromComposer={refreshEmbeddedMapWorkspace}
+    />
+  ) : null;
+
   return (
     <div
       className="cruor-composer-shell location-composer"
@@ -489,118 +583,22 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       data-location-composer-ready="true"
     >
       <div className="cruor-composer-workspace location-composer__workspace">
-        <div className="cruor-composer-frame location-composer__frame location-map-workbench">
-          {isMapEditing ? (
-            <CruorMapGeneratorMvp
-              key={`location-map-workspace-${previewResetKey}-${mapWorkspaceRevision}`}
-              initialRequest={mapRequest}
-              embeddedInComposer={true}
-              onExitWorkspace={() => setIsMapEditing(false)}
-              onRefreshFromComposer={refreshEmbeddedMapWorkspace}
-            />
-          ) : (
-            <>
-              {builderMode === "frame" ? (
-                <LocationBriefPanel
-                  state={state}
-                  setState={setState}
-                  mapRequest={mapRequest}
-                  modeControls={null}
-                  draftControls={
-                    uiMode === "simple" ? null : (
-                    <LocationDraftControls
-                      canLoadDraft={Boolean(draftSummary)}
-                      draftStorageStatus={draftStorageStatus}
-                      draftSummary={draftSummary}
-                      draftStatus={draftStatus}
-                      hasUnsavedChanges={hasUnsavedChanges}
-                      uiMode={uiMode}
-                      onClearDraft={clearSavedDraft}
-                      onLoadDraft={loadDraft}
-                      onResetComposer={resetComposer}
-                      onSaveDraft={saveDraft}
-                    />
-                    )
-                  }
-                />
-              ) : builderMode === "export" ? (
-                <LocationExportToolsPanel
-                  onSelectFrame={() => activateBuilderMode("frame")}
-                  onSelectRegions={() => activateBuilderMode("slots")}
-                />
-              ) : (
-                <LocationSlotRail
-                  state={state}
-                  setState={setState}
-                  selectedComponents={selectedComponents}
-                  onOpenMapGenerator={onOpenMapGenerator}
-                  snapshot={snapshot}
-                  generatedMapPreview={generatedMapPreview}
-                  modeControls={null}
-                  onFocusSlot={focusSlot}
-                />
-              )}
-
-              {builderMode === "slots" && drawerOpen && activeSlot ? (
-                <div className="location-stage-navigator-overlay" aria-label="Location component navigator drawer">
-                  <LocationComponentPickerModal
-                    activeRegion={activeRegionForPicker}
-                    assignedComponents={assignedComponentsForActiveSlot}
-                    components={compatibleComponents}
-                    generatedRoom={activeGeneratedRoomForPicker}
-                    isSlotFull={activeSlotIsFull}
-                    open={drawerOpen}
-                    regions={state.locationRegions || []}
-                    slot={activeSlot}
-                    slotScope={activeSlotScope}
-                    onAddComponent={addComponentToActiveSlot}
-                    onClose={() => setDrawerOpen(false)}
-                    onRemoveComponent={removeComponentFromActiveSlot}
-                    onSelectRegion={(regionId) => setState((current) => ({ ...current, activeRegionId: regionId }))}
-                  />
-                </div>
-              ) : null}
-
-              <LocationMapStage
-                state={state}
-                setState={setState}
-                mapRequest={mapRequest}
-                digest={digest}
-                generatedMapPreview={generatedMapPreview}
-                previewError={previewResult.error}
-                previewResetKey={previewResetKey}
-                uiMode={uiMode}
-                isMapEditing={false}
-                modeControls={builderModeControls}
-              />
-
-              {builderMode === "export" ? (
-                <LocationExportPanel
-                  digest={digest}
-                  generatedMapPreview={generatedMapPreview}
-                  mapRequest={mapRequest}
-                  state={state}
-                  uiMode={uiMode}
-                />
-              ) : (
-                <LocationRecapPanel
-                  activeRegion={activeRegionForPicker}
-                  activeSlot={activeSlot}
-                  activeSlotScope={activeSlotScope}
-                  onNewMapSeed={refreshMapSeed}
-                  onOpenComponents={() => {
-                    setBuilderMode("slots");
-                    setDrawerOpen(true);
-                  }}
-                  onRenameLocation={renameLocation}
-                  onStartMapEditing={startMapEditing}
-                  onViewExport={() => activateBuilderMode("export")}
-                  state={state}
-                />
-              )}
-            </>
-          )}
-        </div>
+        <LocationMapStage
+          state={state}
+          setState={setState}
+          mapRequest={mapRequest}
+          digest={digest}
+          generatedMapPreview={generatedMapPreview}
+          previewError={previewResult.error}
+          previewResetKey={previewResetKey}
+          uiMode={uiMode}
+          isMapEditing={isMapEditing}
+          modeControls={isMapEditing ? null : builderModeControls}
+          leftPanel={isMapEditing ? null : leftPanel}
+          rightPanel={isMapEditing ? null : rightPanel}
+          navigatorPanel={isMapEditing ? null : navigatorPanel}
+          workspacePanel={mapWorkspacePanel}
+        />
       </div>
     </div>
   );

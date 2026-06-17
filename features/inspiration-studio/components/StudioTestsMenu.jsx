@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { MONSTER_BATCH_QA_VERSION } from "../../monster-composer/qa/monster-batch-qa.js";
+import { MONSTER_PER_GRAFT_QA_VERSION } from "../../monster-composer/qa/monster-per-graft-qa.js";
 import { StudioIcon } from "./StudioIcon.jsx";
+
+function formatQaVersionLabel(version = "") {
+  const match = String(version).match(/v\d+(?:\.\d+)?/i);
+  return match ? match[0] : "v?";
+}
 
 export function StudioTestsMenu({ batchQaOpen = false, perGraftQaOpen = false, onOpenMonsterBatchQa, onOpenMonsterPerGraftQa }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,6 +65,9 @@ export function StudioTestsMenu({ batchQaOpen = false, perGraftQaOpen = false, o
               <strong>Monster Batch QA</strong>
               <small>Generate and validate many monsters</small>
             </span>
+            <em className="studio-tests-menu__version" aria-label={`Monster Batch QA ${formatQaVersionLabel(MONSTER_BATCH_QA_VERSION)}`}>
+              {formatQaVersionLabel(MONSTER_BATCH_QA_VERSION)}
+            </em>
           </button>
           <button
             type="button"
@@ -72,6 +82,9 @@ export function StudioTestsMenu({ batchQaOpen = false, perGraftQaOpen = false, o
               <strong>Monster Per-Graft QA</strong>
               <small>Force every graft through export/parser</small>
             </span>
+            <em className="studio-tests-menu__version" aria-label={`Monster Per-Graft QA ${formatQaVersionLabel(MONSTER_PER_GRAFT_QA_VERSION)}`}>
+              {formatQaVersionLabel(MONSTER_PER_GRAFT_QA_VERSION)}
+            </em>
           </button>
         </div>
       ) : null}

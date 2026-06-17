@@ -2701,12 +2701,8 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
         />
 
         {viewMode === "composer" && (
-          <section className="monster-layout">
-            <section
-              className="panel build-canvas monster-canvas"
-              aria-label="The Crucible build canvas"
-            >
-              <MonsterSilhouetteMap
+          <>
+            <MonsterSilhouetteMap
                 typeId={typeId}
                 category={category}
                 activePreset={activePreset}
@@ -2781,8 +2777,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
                   onRemoveFeature={(featureId) => removeFeature(activeSlot, featureId)}
                 />
               )}
-            </section>
-          </section>
+          </>
         )}
 
         {persistentViewToolbar}

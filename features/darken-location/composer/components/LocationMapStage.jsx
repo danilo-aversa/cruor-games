@@ -88,6 +88,10 @@ export function LocationMapStage({
   uiMode = "simple",
   isMapEditing = false,
   modeControls = null,
+  leftPanel = null,
+  rightPanel = null,
+  navigatorPanel = null,
+  workspacePanel = null,
 }) {
   const isSimpleMode = uiMode === "simple";
   const showStageDetails = !isSimpleMode;
@@ -138,133 +142,150 @@ export function LocationMapStage({
           isSimpleMode && "is-simple-surface",
           `is-map-${mapSyncStatus.mode}`,
         )}
-        onClick={selectWholeMapTarget}
       >
-        {modeControls}
+        {workspacePanel ? (
+          workspacePanel
+        ) : (
+          <>
+            {leftPanel}
 
-        <LocationMapPreview
-          generatedMap={generatedMapPreview}
-          error={previewError}
-          viewResetKey={previewResetKey}
-          isMapEditing={isMapEditing}
-        />
+            {navigatorPanel ? (
+              <div className="location-stage-navigator-overlay" aria-label="Location component navigator drawer">
+                {navigatorPanel}
+              </div>
+            ) : null}
 
-        {showInteractiveOverlay && hoveredRegion ? (
-          <div
-            className="location-room-recap-anchor location-room-recap-anchor--hover"
-            style={getGeneratedRoomPositionStyle(
-              generatedMapPreview,
-              hoveredGeneratedRoom,
-              hoveredRegionIndex,
-            )}
-          >
-            <LocationRoomRecapCard
-              activeRegion={hoveredRegion}
-              assignedComponents={hoveredRegionComponents}
-              generatedRoom={hoveredGeneratedRoom}
-              surfaceLabel={hoveredSurfaceLabel}
-            />
-          </div>
-        ) : null}
+            <div className="location-map-stage__center" onClick={selectWholeMapTarget}>
+              {modeControls}
 
-        {showStageDetails ? (
-          <div className="location-map-stage__head location-map-stage__head--compact">
-            <p className="location-kicker">Map</p>
-            <h2>{state.title || "Cursed Location"}</h2>
-            <p>{state.context} · {selectedHorrors[0] || "Horror"} · {selectedSources[0] || "Source"}</p>
-          </div>
-        ) : null}
+          <LocationMapPreview
+            generatedMap={generatedMapPreview}
+            error={previewError}
+            viewResetKey={previewResetKey}
+            isMapEditing={isMapEditing}
+          />
 
-        {showInteractiveOverlay ? (
-        <div className="location-region-board" aria-label="Generated location regions">
-          {regions.map((region, index) => {
-            const active = state.activeRegionId === region.id;
-            const regionComponents = getAssignedComponentsForRegion(state, region.id);
-            const regionMarkers = getRegionPreviewMarkers(state, region.id);
-            const generatedRoom = getGeneratedRoomForRegionIndex(generatedMapPreview, region.id, index);
-            return (
-              <button
-                className={cx(
-                  "location-region-node",
-                  active && "is-active",
-                  active && "is-target-region",
-                  regionComponents.length > 0 && "has-components",
-                  generatedRoom && "is-synced-to-room",
-                )}
-                key={region.id}
-                type="button"
-                aria-label={`Select ${region.name} as the active region target`}
-                aria-pressed={active}
-                title={region.name}
-                style={getGeneratedRoomPositionStyle(generatedMapPreview, generatedRoom, index)}
-                onMouseEnter={() => setHoveredRegionId(region.id)}
-                onMouseLeave={() =>
-                  setHoveredRegionId((current) =>
-                    current === region.id ? "" : current,
-                  )
-                }
-                onFocus={() => setHoveredRegionId(region.id)}
-                onBlur={() =>
-                  setHoveredRegionId((current) =>
-                    current === region.id ? "" : current,
-                  )
-                }
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setState((current) => ({
-                    ...current,
-                    activeRegionId: region.id,
-                    activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
-                    activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
-                      ? current.activeSlot
-                      : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
-                  }));
-                }}
-              >
-                <span>{generatedRoom?.number ? String(generatedRoom.number).padStart(2, "0") : String(index + 1).padStart(2, "0")}</span>
-                <strong>{region.name}</strong>
-                {regionMarkers.length ? (
-                  <span className="location-region-marker-strip" aria-label="Assigned regional slots">
-                    {regionMarkers.map((marker) => (
-                      <span
-                        className={`location-region-slot-marker location-region-slot-marker--${marker.slotId}`}
-                        key={marker.slotId}
-                        title={`${marker.fullLabel}: ${marker.title}`}
-                        aria-label={`${marker.fullLabel}: ${marker.title}`}
-                      >
-                        <i className={`fa-solid ${marker.icon}`} aria-hidden="true" />
-                        {marker.label}
+          {showInteractiveOverlay && hoveredRegion ? (
+            <div
+              className="location-room-recap-anchor location-room-recap-anchor--hover"
+              style={getGeneratedRoomPositionStyle(
+                generatedMapPreview,
+                hoveredGeneratedRoom,
+                hoveredRegionIndex,
+              )}
+            >
+              <LocationRoomRecapCard
+                activeRegion={hoveredRegion}
+                assignedComponents={hoveredRegionComponents}
+                generatedRoom={hoveredGeneratedRoom}
+                surfaceLabel={hoveredSurfaceLabel}
+              />
+            </div>
+          ) : null}
+
+          {showStageDetails ? (
+            <div className="location-map-stage__head location-map-stage__head--compact">
+              <p className="location-kicker">Map</p>
+              <h2>{state.title || "Cursed Location"}</h2>
+              <p>{state.context} · {selectedHorrors[0] || "Horror"} · {selectedSources[0] || "Source"}</p>
+            </div>
+          ) : null}
+
+          {showInteractiveOverlay ? (
+            <div className="location-region-board" aria-label="Generated location regions">
+              {regions.map((region, index) => {
+                const active = state.activeRegionId === region.id;
+                const regionComponents = getAssignedComponentsForRegion(state, region.id);
+                const regionMarkers = getRegionPreviewMarkers(state, region.id);
+                const generatedRoom = getGeneratedRoomForRegionIndex(generatedMapPreview, region.id, index);
+                return (
+                  <button
+                    className={cx(
+                      "location-region-node",
+                      active && "is-active",
+                      active && "is-target-region",
+                      regionComponents.length > 0 && "has-components",
+                      generatedRoom && "is-synced-to-room",
+                    )}
+                    key={region.id}
+                    type="button"
+                    aria-label={`Select ${region.name} as the active region target`}
+                    aria-pressed={active}
+                    title={region.name}
+                    style={getGeneratedRoomPositionStyle(generatedMapPreview, generatedRoom, index)}
+                    onMouseEnter={() => setHoveredRegionId(region.id)}
+                    onMouseLeave={() =>
+                      setHoveredRegionId((current) =>
+                        current === region.id ? "" : current,
+                      )
+                    }
+                    onFocus={() => setHoveredRegionId(region.id)}
+                    onBlur={() =>
+                      setHoveredRegionId((current) =>
+                        current === region.id ? "" : current,
+                      )
+                    }
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setState((current) => ({
+                        ...current,
+                        activeRegionId: region.id,
+                        activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+                        activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
+                          ? current.activeSlot
+                          : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
+                      }));
+                    }}
+                  >
+                    <span>{generatedRoom?.number ? String(generatedRoom.number).padStart(2, "0") : String(index + 1).padStart(2, "0")}</span>
+                    <strong>{region.name}</strong>
+                    {regionMarkers.length ? (
+                      <span className="location-region-marker-strip" aria-label="Assigned regional slots">
+                        {regionMarkers.map((marker) => (
+                          <span
+                            className={`location-region-slot-marker location-region-slot-marker--${marker.slotId}`}
+                            key={marker.slotId}
+                            title={`${marker.fullLabel}: ${marker.title}`}
+                            aria-label={`${marker.fullLabel}: ${marker.title}`}
+                          >
+                            <i className={`fa-solid ${marker.icon}`} aria-hidden="true" />
+                            {marker.label}
+                          </span>
+                        ))}
                       </span>
-                    ))}
-                  </span>
-                ) : null}
-                {showStageDetails ? (
-                  <em className="location-region-node__target">{active ? "Target" : generatedRoom ? "Room" : "Region"}</em>
-                ) : null}
-              </button>
-            );
-          })}
-        </div>
-        ) : null}
+                    ) : null}
+                    {showStageDetails ? (
+                      <em className="location-region-node__target">{active ? "Target" : generatedRoom ? "Room" : "Region"}</em>
+                    ) : null}
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
 
-        {showInteractiveOverlay && showStageDetails && activeRegionComponents.length ? (
-          <div className="location-region-attachment-strip" aria-label="Active region attachments">
-            {activeRegionComponents.slice(0, 3).map((component) => (
-              <span key={`${component.assignment.slotId}-${component.id}`}>
-                <i className="fa-solid fa-diamond" aria-hidden="true" />
-                {component.title}
-              </span>
-            ))}
-          </div>
-        ) : null}
+          {showInteractiveOverlay && showStageDetails && activeRegionComponents.length ? (
+            <div className="location-region-attachment-strip" aria-label="Active region attachments">
+              {activeRegionComponents.slice(0, 3).map((component) => (
+                <span key={`${component.assignment.slotId}-${component.id}`}>
+                  <i className="fa-solid fa-diamond" aria-hidden="true" />
+                  {component.title}
+                </span>
+              ))}
+            </div>
+          ) : null}
 
-        {showStageDetails ? (
-          <div className="location-stage-footer location-stage-footer--compact">
-            <div><strong>{digest.filledSlots}/{digest.totalSlots}</strong></div>
-            <div><strong>{mapSyncStatus.mode === "synced" ? "Synced" : mapSyncStatus.label}</strong></div>
-            <div><strong>{activeGeneratedRoom ? `Room ${activeGeneratedRoom.number || "—"}` : "Region"}</strong></div>
-          </div>
-        ) : null}
+          {showStageDetails ? (
+            <div className="location-stage-footer location-stage-footer--compact">
+              <div><strong>{digest.filledSlots}/{digest.totalSlots}</strong></div>
+              <div><strong>{mapSyncStatus.mode === "synced" ? "Synced" : mapSyncStatus.label}</strong></div>
+              <div><strong>{activeGeneratedRoom ? `Room ${activeGeneratedRoom.number || "—"}` : "Region"}</strong></div>
+            </div>
+          ) : null}
+            </div>
+
+            {rightPanel}
+          </>
+        )}
       </section>
     </main>
   );

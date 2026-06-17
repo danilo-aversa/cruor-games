@@ -5881,11 +5881,13 @@ html[data-a11y-theme="parchment"] .inspiration-studio :where(input::placeholder,
 
 .studio-tests-menu__popover button {
   width: 100%;
+  position: relative;
   display: grid;
   grid-template-columns: 1.75rem 1fr;
   align-items: center;
   gap: 0.65rem;
   padding: 0.65rem 0.7rem;
+  padding-right: 3.1rem;
   border: 1px solid var(--cruor-color-transparent);
   background: var(--cruor-color-transparent);
   color: var(--studio-text);
@@ -5916,6 +5918,20 @@ html[data-a11y-theme="parchment"] .inspiration-studio :where(input::placeholder,
 .studio-tests-menu__popover button small {
   color: var(--studio-muted);
   font-size: var(--text-size-m-plus);
+}
+
+.studio-tests-menu__version {
+  position: absolute;
+  right: 0.55rem;
+  bottom: 0.45rem;
+  padding: 0.08rem 0.32rem;
+  border: 1px solid var(--studio-line);
+  color: var(--studio-muted);
+  font-size: var(--text-size-s-plus);
+  font-style: normal;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  text-transform: uppercase;
 }
 
 .studio-qa-workspace {

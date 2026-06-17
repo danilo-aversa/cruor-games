@@ -550,6 +550,24 @@
   gap: 10px;
 }
 
+.cruor-map-workspace[data-map-embedded="true"] {
+  min-height: 0;
+  padding: 0;
+}
+
+.cruor-map-workspace[data-map-embedded="true"] .map-workspace-shell {
+  min-height: 0;
+  padding: 0;
+}
+
+.cruor-map-workspace[data-map-embedded="true"] .map-canvas-area {
+  min-height: 0;
+}
+
+.cruor-map-workspace[data-map-embedded="true"] .map-viewport {
+  min-height: 0;
+}
+
 .cruor-map-workspace .map-panel-eyebrow {
   margin: 0 0 4px;
   color: var(--cruor-color-r208-g162-b170-a820);
