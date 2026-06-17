@@ -194,12 +194,21 @@ function formatConditionList(rules) {
   return `${formatPlainList(names)} ${noun}`;
 }
 
+function formatConditionSubject(condition = {}) {
+  const direction = cleanString(condition.direction) || "enemy";
+  if (direction === "referenceOnly") return "";
+  if (direction === "self" || direction === "playerApplied" || direction === "weakness") return "The monster";
+
+  const sizeLimit = cleanString(condition.sizeLimit);
+  return sizeLimit ? `A target that is ${sizeLimit}` : "The target";
+}
+
 function formatConditionClause(rules, computed, options = {}) {
   const condition = rules.condition;
   if (!condition?.names?.length) return "";
+  const subject = formatConditionSubject(condition);
+  if (!subject) return "";
   const list = options.template ? token("condition-list") : formatConditionList(rules);
-  const sizeLimit = cleanString(condition.sizeLimit);
-  const subject = sizeLimit ? `A target that is ${sizeLimit}` : "The target";
   const escape = condition.escape?.enabled ? ` (${options.template ? token("escape-dc") : `escape DC ${formatEscapeDc(rules, computed, options)}`})` : "";
   const duration = condition.duration ? ` The condition lasts ${applyTokens(condition.duration, { feature: null, rules, computed }, options)}.` : "";
   return `${subject} has the ${list}${escape}.${duration}`.replace(/\.\s*\./g, ".").trim();
@@ -355,6 +364,8 @@ function resolveTokenValue(rawToken, { feature, rules, computed }) {
     }
     case "condition-list":
       return formatConditionList(rules);
+    case "condition-clause":
+      return formatConditionClause(rules, computed, false);
     case "condition-duration":
       return rules.condition?.duration || "the listed duration";
     case "repeat-save":
@@ -734,6 +745,18 @@ function renderSaveRules(feature, rules, computed, options = {}) {
     `Success: ${success}`,
     renderOutcomeText("Failure or Success", rules.text?.failureOrSuccess, context, options),
     rules.text?.effect ? applyTokens(rules.text.effect, context, options) : "",
+  ]);
+}
+
+function renderPassiveConditionRules(feature, rules, computed, options = {}) {
+  if (!rules.condition?.names?.length || rules.condition.direction === "referenceOnly") return "";
+  const context = { feature, rules, computed };
+  const effect = rules.text?.effect ? applyTokens(rules.text.effect, context, options) : "";
+  return joinSentences([
+    formatUsagePrefix(rules),
+    rules.trigger ? applyTokens(rules.trigger, context, options) : "",
+    effect || formatConditionClause(rules, computed, options),
+    effect ? "" : formatRepeatSave(rules, computed, options),
   ]);
 }
 
@@ -1130,6 +1153,10 @@ function renderStructuredRules(feature, computed = null, options = {}) {
   if (rules.actionEconomy === "reaction") return renderReactionRules(feature, rules, computed, options);
   if (rules.text?.effect && ["trait", "death"].includes(rules.section)) {
     return applyTokens(rules.text.effect, { feature, rules, computed }, options);
+  }
+  if (!hasAttackResolution(rules) && !hasSaveResolution(rules) && rules.condition?.names?.length) {
+    const passiveCondition = renderPassiveConditionRules(feature, rules, computed, options);
+    if (passiveCondition) return passiveCondition;
   }
   if (hasAttackResolution(rules)) return renderAttackRules(feature, rules, computed, options);
   if (hasSaveResolution(rules)) return renderSaveRules(feature, rules, computed, options);

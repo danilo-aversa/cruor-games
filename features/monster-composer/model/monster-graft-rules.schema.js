@@ -1,4 +1,4 @@
-export const MONSTER_GRAFT_RULES_SCHEMA_VERSION = "monster-graft-rules-v1.13";
+export const MONSTER_GRAFT_RULES_SCHEMA_VERSION = "monster-graft-rules-v1.14";
 
 export const RULES_SECTIONS = Object.freeze([
   "trait",
@@ -86,6 +86,14 @@ export const DAMAGE_BUDGET_ROLE_DEFAULTS = Object.freeze({
 });
 
 export const CONDITION_SEVERITY = Object.freeze(["minor", "moderate", "major", "severe"]);
+
+export const CONDITION_DIRECTIONS = Object.freeze([
+  "enemy",
+  "self",
+  "playerApplied",
+  "weakness",
+  "referenceOnly",
+]);
 
 export const CONDITION_ESCAPE_DC_SOURCES = Object.freeze(["monster", "fixed", "custom"]);
 
@@ -959,6 +967,7 @@ function normalizeCondition(condition) {
     ...condition,
     names: uniqueArray(condition.names || condition.name),
     severity: normalizeEnum(condition.severity, CONDITION_SEVERITY, "moderate"),
+    direction: normalizeEnum(condition.direction, CONDITION_DIRECTIONS, "enemy"),
     duration: cleanString(condition.duration),
     sizeLimit: cleanString(condition.sizeLimit),
     special: uniqueArray(condition.special),

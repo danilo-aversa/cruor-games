@@ -387,8 +387,8 @@ export function MonsterBatchQaModal({ isOpen, onClose }) {
             <span />
           </div>
           <span className="studio-qa-running-eyebrow">Monster Batch QA</span>
-          <strong>Test in corso</strong>
-          <p>Non chiudere o ricaricare questa pagina. I risultati del test andranno persi se interrompi il processo.</p>
+          <strong>Test running</strong>
+          <p>Do not close or reload this page. Test results will be lost if the process is interrupted.</p>
           <small>{formatNumber(clampCount(count))} monsters · {QA_MODES.find((mode) => mode.id === qaMode)?.label || "QA"} · seed {seed || "—"}</small>
         </div>
       </div>

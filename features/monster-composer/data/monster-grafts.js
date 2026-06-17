@@ -1421,6 +1421,7 @@ const RAW_MONSTER_GRAFTS = [
                 "prone"
             ],
             "severity": "moderate",
+            "direction": "referenceOnly",
             "duration": "unspecified",
             "special": [],
             "sizeLimit": "",
@@ -1433,7 +1434,9 @@ const RAW_MONSTER_GRAFTS = [
             "positioningAnswer": false,
             "nonDamageAnswer": false
         },
-        "text": {},
+        "text": {
+            "effect": "When the monster takes more than half its maximum Hit Points in one hit, the attacker chooses head, arms, or leg. Head: the monster has the Blinded condition but dies in 2 rounds without triggering Gas Buildup. Arms: the monster has Disadvantage on attacks requiring arms. Leg: the monster has the Prone condition, and its Speed becomes 5 feet."
+        },
         "multiattack": null,
         "spellcasting": null,
         "defense": null,
@@ -2932,6 +2935,7 @@ const RAW_MONSTER_GRAFTS = [
                 "invisible"
             ],
             "severity": "moderate",
+            "direction": "self",
             "duration": "until its concentration ends",
             "special": [],
             "sizeLimit": "",
@@ -2945,7 +2949,7 @@ const RAW_MONSTER_GRAFTS = [
             "nonDamageAnswer": false
         },
         "text": {
-            "effect": "The creature has the Invisible condition until its concentration ends. The effect ends early immediately after the creature makes an attack roll."
+            "effect": "The monster has the Invisible condition until its concentration ends. The effect ends early immediately after the monster makes an attack roll."
         },
         "multiattack": null,
         "spellcasting": null,
@@ -3244,14 +3248,12 @@ const RAW_MONSTER_GRAFTS = [
         },
         "trigger": null,
         "resolution": {
-            "type": "savingThrow",
-            "ability": "wisdom",
-            "dc": "monster"
+            "type": "none"
         },
         "secondaryResolution": null,
         "targeting": {
-            "type": "single",
-            "targets": "one target"
+            "type": "self",
+            "targets": "the creature"
         },
         "areaEffect": null,
         "damage": {
@@ -3268,6 +3270,7 @@ const RAW_MONSTER_GRAFTS = [
                 "frightened"
             ],
             "severity": "major",
+            "direction": "weakness",
             "duration": "until it succeeds on a Wisdom save at the start of one of its turns",
             "special": [],
             "sizeLimit": "",
@@ -3281,8 +3284,7 @@ const RAW_MONSTER_GRAFTS = [
             "nonDamageAnswer": false
         },
         "text": {
-            "failure": "The target has the {condition-list}. The condition lasts until it succeeds on a Wisdom save at the start of one of its turns.",
-            "success": "No effect."
+            "effect": "If caught eating a corpse or other repugnant meal, the monster has the Frightened condition until it succeeds on a Wisdom Saving Throw at the start of one of its turns. This overrides immunity to the Frightened condition."
         },
         "multiattack": null,
         "spellcasting": null,
@@ -4129,6 +4131,7 @@ const RAW_MONSTER_GRAFTS = [
                 "invisible"
             ],
             "severity": "moderate",
+            "direction": "self",
             "duration": "unspecified",
             "special": [],
             "sizeLimit": "",
@@ -4141,7 +4144,9 @@ const RAW_MONSTER_GRAFTS = [
             "positioningAnswer": false,
             "nonDamageAnswer": true
         },
-        "text": {},
+        "text": {
+            "effect": "While in darkness, the monster has the Invisible condition. The condition ends immediately when the monster enters Bright Light or takes Fire or Radiant damage."
+        },
         "multiattack": null,
         "spellcasting": null,
         "defense": null,
@@ -5403,6 +5408,7 @@ const RAW_MONSTER_GRAFTS = [
                 "frightened"
             ],
             "severity": "major",
+            "direction": "weakness",
             "duration": "while within 30 feet of the blaze",
             "special": [],
             "sizeLimit": "",
@@ -5416,7 +5422,7 @@ const RAW_MONSTER_GRAFTS = [
             "nonDamageAnswer": true
         },
         "text": {
-            "effect": "While within 30 feet of a fire with a radius greater than 10 feet, wildfire, or a similar blaze, the creature has the Frightened condition."
+            "effect": "While within 30 feet of a fire with a radius greater than 10 feet, wildfire, or a similar blaze, the monster has the Frightened condition."
         },
         "multiattack": null,
         "spellcasting": null,
@@ -5528,12 +5534,10 @@ const RAW_MONSTER_GRAFTS = [
         },
         "areaEffect": null,
         "damage": {
-            "mode": "custom",
-            "scale": "minor",
+            "mode": "none",
             "budgetRole": "none",
-            "types": [
-                "variable"
-            ],
+            "types": [],
+            "scale": "standard",
             "budgetShare": null,
             "expectedTargets": null,
             "parts": []
@@ -5543,6 +5547,7 @@ const RAW_MONSTER_GRAFTS = [
                 "blinded"
             ],
             "severity": "moderate",
+            "direction": "playerApplied",
             "duration": "until the end of its next turn",
             "special": [],
             "sizeLimit": "",
@@ -5555,7 +5560,9 @@ const RAW_MONSTER_GRAFTS = [
             "positioningAnswer": false,
             "nonDamageAnswer": false
         },
-        "text": {},
+        "text": {
+            "effect": "A character can target the monster's eyes with a called shot at a -5 penalty. On a hit, the monster has the Blinded condition until the end of its next turn. If the attack deals at least 30 damage, the blindness lasts until the monster is magically healed or finishes a Short Rest."
+        },
         "multiattack": null,
         "spellcasting": null,
         "defense": null,
@@ -10826,7 +10833,7 @@ export const FEATURE_COMPATIBILITY_OVERRIDES = {
     incompatibleWith: ["spirit_body", "no_body"],
   },
   "umbral-skin": { grants: ["shadow_body"] },
-  "malformed-broodling": { requires: ["brood"] },
+  "malformed-broodling": { softRequires: ["brood"] },
   "hunter-spider": { grants: ["stealth_predator"] },
   "wall-crawler": { grants: ["climber", "spider_body"] },
   "web-dancer": { requires: ["web_maker"], grants: ["high_mobility", "web_dancer"] },
@@ -11031,7 +11038,8 @@ export const FEATURE_ANATOMY_CONSTRAINT_OVERRIDES = {
     },
   },
   "venomous-spit": {
-    requiredAnatomy: ["venom_glands", "mouth"],
+    requiredAnatomy: ["venom_glands"],
+    requiresAnyAnatomy: ["mouth", "jaw", "fangs"],
     allowedBodyPlans: ["arachnid"],
   },
   "brood-injection": {

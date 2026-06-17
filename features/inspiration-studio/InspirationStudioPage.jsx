@@ -74,6 +74,7 @@ import { GraftLedgerModal } from "./ledger/GraftLedgerModal.jsx";
 import { ContentHealthModal } from "./health/ContentHealthModal.jsx";
 import { CoverageMatrixModal } from "./coverage/CoverageMatrixModal.jsx";
 import { MonsterBatchQaModal } from "./qa/MonsterBatchQaModal.jsx";
+import { MonsterPerGraftQaModal } from "./qa/MonsterPerGraftQaModal.jsx";
 import { downloadStudioAuditBundle } from "./reports/studio-audit-bundle.report.js";
 import { normalizeMonsterGraftRules } from "../monster-composer/model/monster-graft-rules.schema.js";
 import { groupQaIssues, runMonsterQaSuite } from "../monster-composer/qa/monster-qa-suite.js";
@@ -396,6 +397,14 @@ const MONSTER_CONDITION_SEVERITY_OPTIONS = [
   ["severe", "Severe"],
 ];
 
+const MONSTER_CONDITION_DIRECTION_OPTIONS = [
+  ["enemy", "Enemy / Target"],
+  ["self", "Self / Monster"],
+  ["playerApplied", "Player-Applied"],
+  ["weakness", "Weakness / Tell"],
+  ["referenceOnly", "Reference Only"],
+];
+
 const MONSTER_CONDITION_REPEAT_TIMING_OPTIONS = [
   ["startOfTurn", "Start of Target Turn"],
   ["endOfTurn", "End of Target Turn"],
@@ -624,6 +633,7 @@ const FIELD_HELP = {
   damageTypes: "Comma-separated damage types, such as acid, poison, bludgeoning, necrotic, or psychic.",
   conditionNames: "Comma-separated conditions or special condition-like effects caused by this graft.",
   conditionSeverity: "How disruptive the condition is for balance and counterplay warnings.",
+  conditionDirection: "Who receives or applies the condition in generated text: enemy target, the monster itself, a player-applied weakness, a weakness/tell, or reference-only metadata.",
   conditionDuration: "How long the condition lasts, including repeat saves or cleanup/removal conditions.",
   conditionSizeLimit: "Optional target size limit for the condition, such as Large or smaller.",
   conditionEscape: "Adds an escape DC clause, usually for Grappled or Restrained effects.",
@@ -1378,6 +1388,7 @@ export default function InspirationStudioPage() {
   const [isContentHealthOpen, setContentHealthOpen] = useState(false);
   const [isCoverageMatrixOpen, setCoverageMatrixOpen] = useState(false);
   const [isMonsterBatchQaOpen, setMonsterBatchQaOpen] = useState(false);
+  const [isMonsterPerGraftQaOpen, setMonsterPerGraftQaOpen] = useState(false);
   const [identityIdsUnlocked, setIdentityIdsUnlocked] = useState(false);
   const [librarySearch, setLibrarySearch] = useState("");
   const [libraryStatusFilter, setLibraryStatusFilter] = useState("all");
@@ -1658,7 +1669,9 @@ export default function InspirationStudioPage() {
           />
           <StudioTestsMenu
             batchQaOpen={isMonsterBatchQaOpen}
+            perGraftQaOpen={isMonsterPerGraftQaOpen}
             onOpenMonsterBatchQa={() => setMonsterBatchQaOpen(true)}
+            onOpenMonsterPerGraftQa={() => setMonsterPerGraftQaOpen(true)}
           />
         </div>
       </header>
@@ -1926,6 +1939,10 @@ export default function InspirationStudioPage() {
       <MonsterBatchQaModal
         isOpen={isMonsterBatchQaOpen}
         onClose={() => setMonsterBatchQaOpen(false)}
+      />
+      <MonsterPerGraftQaModal
+        isOpen={isMonsterPerGraftQaOpen}
+        onClose={() => setMonsterPerGraftQaOpen(false)}
       />
     </section>
   );
@@ -4014,6 +4031,9 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                   <>
                     <FormRow label="Condition Severity" icon="fa-triangle-exclamation" hint={FIELD_HELP.conditionSeverity}>
                       <SelectInput options={MONSTER_CONDITION_SEVERITY_OPTIONS} value={monsterRules.condition?.severity || "moderate"} onChange={(value) => setRulesField(["condition", "severity"], value)} />
+                    </FormRow>
+                    <FormRow label="Condition Direction" icon="fa-arrows-turn-to-dots" hint={FIELD_HELP.conditionDirection}>
+                      <SelectInput options={MONSTER_CONDITION_DIRECTION_OPTIONS} value={monsterRules.condition?.direction || "enemy"} onChange={(value) => setRulesField(["condition", "direction"], value)} />
                     </FormRow>
                     <FormRow label="Condition Duration" icon="fa-hourglass-half" hint={FIELD_HELP.conditionDuration}>
                       <TextInput value={monsterRules.condition?.duration} onChange={(value) => setRulesField(["condition", "duration"], value)} placeholder="until the grapple ends" />

@@ -4,6 +4,7 @@ import { runMonsterFrameFitDiversityQa, runMonsterFrameScalingQa, runMonsterGene
 import { runMonsterPresetQa } from "./monster-preset-qa.js";
 import { buildQaReport } from "./monster-qa-report.js";
 export { buildMonsterBatchQaMarkdown, downloadMonsterBatchQaReport, getMonsterBatchQaCostWarning, normalizeMonsterBatchQaOptions, runMonsterBatchQa } from "./monster-batch-qa.js";
+export { buildMonsterPerGraftQaCompactReport, buildMonsterPerGraftQaMarkdown, downloadMonsterPerGraftQaReport, normalizeMonsterPerGraftQaOptions, runMonsterPerGraftCoverageQa } from "./monster-per-graft-qa.js";
 
 export { groupQaIssues, summarizeQaIssues } from "./monster-qa-report.js";
 export { runMonsterContentQa } from "./monster-content-qa.js";

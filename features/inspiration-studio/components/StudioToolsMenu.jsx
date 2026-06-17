@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StudioIcon } from "./StudioIcon.jsx";
 
 export function StudioToolsMenu({
@@ -12,6 +12,27 @@ export function StudioToolsMenu({
   onOpenGraftLedger,
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    function handleDocumentPointerDown(event) {
+      if (menuRef.current?.contains(event.target)) return;
+      setIsOpen(false);
+    }
+
+    function handleDocumentKeyDown(event) {
+      if (event.key === "Escape") setIsOpen(false);
+    }
+
+    document.addEventListener("pointerdown", handleDocumentPointerDown);
+    document.addEventListener("keydown", handleDocumentKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handleDocumentPointerDown);
+      document.removeEventListener("keydown", handleDocumentKeyDown);
+    };
+  }, [isOpen]);
 
   function runAction(action) {
     setIsOpen(false);
@@ -19,7 +40,7 @@ export function StudioToolsMenu({
   }
 
   return (
-    <div className="studio-tools-menu" aria-label="Global Studio tools">
+    <div className="studio-tools-menu" aria-label="Global Studio tools" ref={menuRef}>
       <button
         className="studio-library-panel__collapse studio-tools-menu__button"
         type="button"

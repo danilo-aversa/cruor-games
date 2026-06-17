@@ -1,8 +1,29 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StudioIcon } from "./StudioIcon.jsx";
 
-export function StudioTestsMenu({ batchQaOpen = false, onOpenMonsterBatchQa }) {
+export function StudioTestsMenu({ batchQaOpen = false, perGraftQaOpen = false, onOpenMonsterBatchQa, onOpenMonsterPerGraftQa }) {
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    function handleDocumentPointerDown(event) {
+      if (menuRef.current?.contains(event.target)) return;
+      setIsOpen(false);
+    }
+
+    function handleDocumentKeyDown(event) {
+      if (event.key === "Escape") setIsOpen(false);
+    }
+
+    document.addEventListener("pointerdown", handleDocumentPointerDown);
+    document.addEventListener("keydown", handleDocumentKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handleDocumentPointerDown);
+      document.removeEventListener("keydown", handleDocumentKeyDown);
+    };
+  }, [isOpen]);
 
   function runAction(action) {
     setIsOpen(false);
@@ -10,7 +31,7 @@ export function StudioTestsMenu({ batchQaOpen = false, onOpenMonsterBatchQa }) {
   }
 
   return (
-    <div className="studio-tests-menu" aria-label="Global Studio QA tests">
+    <div className="studio-tests-menu" aria-label="Global Studio QA tests" ref={menuRef}>
       <button
         className="studio-library-panel__collapse studio-tests-menu__button"
         type="button"
@@ -36,6 +57,20 @@ export function StudioTestsMenu({ batchQaOpen = false, onOpenMonsterBatchQa }) {
             <span>
               <strong>Monster Batch QA</strong>
               <small>Generate and validate many monsters</small>
+            </span>
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            aria-haspopup="dialog"
+            aria-expanded={perGraftQaOpen}
+            aria-controls="studio-monster-per-graft-qa-modal"
+            onClick={() => runAction(onOpenMonsterPerGraftQa)}
+          >
+            <StudioIcon name="fa-vials" />
+            <span>
+              <strong>Monster Per-Graft QA</strong>
+              <small>Force every graft through export/parser</small>
             </span>
           </button>
         </div>
