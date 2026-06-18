@@ -862,6 +862,28 @@ export function linePathBetweenCells(start, goal) {
   return path;
 }
 
+export function areSameCell(a, b) {
+  return Boolean(a && b && a.x === b.x && a.y === b.y);
+}
+
+export function isUsableCorridorPath(path, start, goal) {
+  if (Array.isArray(path) && path.length >= 2) return true;
+  return Array.isArray(path) && path.length === 1 && areSameCell(start, goal);
+}
+
+export function appendPathSegment(fullPath, segment) {
+  const cells = Array.isArray(segment) ? segment : [];
+  if (cells.length === 0) return fullPath;
+  if (fullPath.length === 0) {
+    fullPath.push(...cells);
+    return fullPath;
+  }
+  const last = fullPath[fullPath.length - 1];
+  const nextCells = areSameCell(last, cells[0]) ? cells.slice(1) : cells;
+  fullPath.push(...nextCells);
+  return fullPath;
+}
+
 export function findPath(start, goal, options) {
   const {
     gridW,
@@ -1099,9 +1121,11 @@ export function findPathThroughCellSet(cells, points) {
   if (points.length < 2) return [];
   const fullPath = [];
   for (let index = 0; index < points.length - 1; index += 1) {
-    const segment = findPathInCellSet(cells, points[index], points[index + 1]);
-    if (segment.length < 2) return [];
-    fullPath.push(...(index === 0 ? segment : segment.slice(1)));
+    const start = points[index];
+    const goal = points[index + 1];
+    const segment = findPathInCellSet(cells, start, goal);
+    if (!isUsableCorridorPath(segment, start, goal)) return [];
+    appendPathSegment(fullPath, segment);
   }
   return fullPath;
 }
@@ -1176,13 +1200,11 @@ export function routePathThroughCells(points, options) {
   if (validPoints.length < 2) return [];
   const fullPath = [];
   for (let index = 0; index < validPoints.length - 1; index += 1) {
-    const segment = findPath(
-      validPoints[index],
-      validPoints[index + 1],
-      options,
-    );
-    if (segment.length < 2) return [];
-    fullPath.push(...(index === 0 ? segment : segment.slice(1)));
+    const start = validPoints[index];
+    const goal = validPoints[index + 1];
+    const segment = findPath(start, goal, options);
+    if (!isUsableCorridorPath(segment, start, goal)) return [];
+    appendPathSegment(fullPath, segment);
   }
   return fullPath;
 }
@@ -1573,26 +1595,51 @@ export function routeCorridors(config, regions, graph) {
       [fromAnchor.outsideCell, toAnchor.outsideCell],
       routingOptions,
     );
-    if (path.length < 2)
+    if (
+      !isUsableCorridorPath(
+        path,
+        fromAnchor.outsideCell,
+        toAnchor.outsideCell,
+      )
+    )
       path = routeDirectFallback(
         fromAnchor.outsideCell,
         toAnchor.outsideCell,
         routingOptions,
       );
-    if (path.length < 2) {
+    if (
+      !isUsableCorridorPath(
+        path,
+        fromAnchor.outsideCell,
+        toAnchor.outsideCell,
+      )
+    ) {
       routingOptions = buildRoutingOptions(true);
       path = routePathThroughCells(
         [fromAnchor.outsideCell, toAnchor.outsideCell],
         routingOptions,
       );
     }
-    if (path.length < 2)
+    if (
+      !isUsableCorridorPath(
+        path,
+        fromAnchor.outsideCell,
+        toAnchor.outsideCell,
+      )
+    )
       path = routeDirectFallback(
         fromAnchor.outsideCell,
         toAnchor.outsideCell,
         routingOptions,
       );
-    if (path.length < 2) return null;
+    if (
+      !isUsableCorridorPath(
+        path,
+        fromAnchor.outsideCell,
+        toAnchor.outsideCell,
+      )
+    )
+      return null;
 
     usedDoorOutsideCells.add(
       cellKey(fromAnchor.outsideCell.x, fromAnchor.outsideCell.y),
@@ -1785,20 +1832,39 @@ export function routeCorridors(config, regions, graph) {
       toAnchor.outsideCell,
     ];
     let path = routePathThroughCells(routePoints, routingOptions);
-    if (path.length < 2 && manualWaypoints.length > 0) {
+    if (
+      !isUsableCorridorPath(
+        path,
+        fromAnchor.outsideCell,
+        toAnchor.outsideCell,
+      ) && manualWaypoints.length > 0
+    ) {
       path = routePathThroughCells(
         [fromAnchor.outsideCell, toAnchor.outsideCell],
         routingOptions,
       );
     }
-    if (path.length < 2) {
+    if (
+      !isUsableCorridorPath(
+        path,
+        fromAnchor.outsideCell,
+        toAnchor.outsideCell,
+      )
+    ) {
       path = routeDirectFallback(
         fromAnchor.outsideCell,
         toAnchor.outsideCell,
         routingOptions,
       );
     }
-    if (path.length < 2) return [];
+    if (
+      !isUsableCorridorPath(
+        path,
+        fromAnchor.outsideCell,
+        toAnchor.outsideCell,
+      )
+    )
+      return [];
     const organicTunnel = shouldUseOrganicTunnel(config, from, to);
     const pathCells = path.map((cell) => ({ x: cell.x, y: cell.y }));
     const floorCells = organicTunnel
