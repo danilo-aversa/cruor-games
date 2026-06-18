@@ -281,6 +281,25 @@ function rotateArray(values = [], shift = 0) {
   return [...list.slice(normalizedShift), ...list.slice(0, normalizedShift)];
 }
 
+function normalizeThemeScale(scale, roomCount) {
+  if (normalizeString(scale).toLowerCase() === "custom") return "custom";
+  return normalizeThemeControl(scale, ["small", "medium", "large"], roomCount ? inferScaleFromRoomCount(roomCount) : "medium");
+}
+
+function getThemeLayoutScale(scale, roomCount) {
+  return normalizeThemeScale(scale, roomCount) === "custom"
+    ? inferScaleFromRoomCount(roomCount || 8)
+    : normalizeThemeControl(scale, ["small", "medium", "large"], "medium");
+}
+
+function getRequestedThemeRoomCount(snapshot = {}) {
+  const scale = normalizeString(snapshot.dungeonScale).toLowerCase();
+  const rawCount = snapshot.roomCount ?? snapshot.dungeonCustomRoomCount;
+  const parsed = Number.parseInt(rawCount, 10);
+  if (scale !== "custom" || !Number.isFinite(parsed)) return undefined;
+  return clampInteger(parsed, 1, 16);
+}
+
 function getThemeRoomCount({ scale = "medium", complexity = "standard", theme, variant = null } = {}) {
   const normalizedScale = normalizeThemeControl(scale, ["small", "medium", "large"], "medium");
   const normalizedComplexity = normalizeThemeControl(complexity, ["simple", "standard", "complex"], "standard");
@@ -317,6 +336,149 @@ function getThemeConnectors(role, index, roomCount, complexity, variant = null) 
   return complexity === "complex" && index % 3 === 0 ? 3 : 2;
 }
 
+function roomRoleIncludes(room, terms = []) {
+  const role = normalizeString(room?.role).toLowerCase();
+  const tags = asArray(room?.tags).map((tag) => normalizeString(tag).toLowerCase());
+  return asArray(terms).some((term) => {
+    const text = normalizeString(term).toLowerCase();
+    return role.includes(text) || tags.some((tag) => tag.includes(text));
+  });
+}
+
+function countRoomsByRole(roomBriefs = [], terms = []) {
+  return asArray(roomBriefs).filter((room) => roomRoleIncludes(room, terms)).length;
+}
+
+function createThemeProgramReview({ roomBriefs = [], metrics = {}, scale = "medium", complexity = "standard", theme = null, variant = null } = {}) {
+  const rooms = asArray(roomBriefs);
+  const roomCount = rooms.length;
+  const branchRooms = Number(metrics.branches || 0);
+  const secretRooms = Number(metrics.secrets || 0);
+  const hazardRooms = Number(metrics.hazards || 0);
+  const clueRooms = rooms.filter((room) => normalizeString(room.clue)).length + countRoomsByRole(rooms, ["clue", "discovery"]);
+  const rewardRooms = rooms.filter((room) => normalizeString(room.reward)).length + countRoomsByRole(rooms, ["reward"]);
+  const loopRooms = countRoomsByRole(rooms, ["loop"]);
+  const largeRooms = rooms.filter((room) => room.size === "Large").length;
+  const verticalRooms = rooms.filter((room) => Number(room.level || 0) !== 0).length;
+  const connectorValues = rooms.map((room) => Number(room.connectors || 0)).filter(Number.isFinite);
+  const maxConnectors = connectorValues.length ? Math.max(...connectorValues) : 0;
+  const totalConnectors = connectorValues.reduce((total, value) => total + value, 0);
+  const averageConnectors = roomCount ? totalConnectors / roomCount : 0;
+  const warnings = [];
+  const strengths = [];
+  const notes = [];
+  const flowTags = [];
+  let score = 100;
+
+  if (roomCount >= 12 && complexity === "complex") {
+    score -= 12;
+    warnings.push("Large complex program: expect longer routes or detours; review in Scratch before export.");
+  } else if (roomCount >= 12) {
+    score -= 5;
+    warnings.push("Large program: check route readability after map generation.");
+  }
+
+  if (branchRooms >= Math.max(3, Math.ceil(roomCount * 0.34))) {
+    score -= 10;
+    warnings.push("High branch pressure: side paths may stretch the map layout.");
+  }
+
+  if (maxConnectors >= 4) {
+    score -= 6;
+    warnings.push("One room asks for many exits; verify that the generated hub remains readable.");
+  }
+
+  if (roomCount <= 5 && branchRooms >= 2) {
+    score -= 7;
+    warnings.push("Small map with multiple branches: consider Scratch review before using it.");
+  }
+
+  if (largeRooms >= Math.max(3, Math.ceil(roomCount * 0.3))) {
+    score -= 5;
+    warnings.push("Many large rooms: generated footprints may feel wide or sparse.");
+  }
+
+  if (variant?.id === "hidden-branch" && secretRooms < 1) {
+    score -= 8;
+    warnings.push("Hidden Branch has no secret room; regenerate if you need a stronger reveal.");
+  }
+
+  if (complexity !== "simple" && hazardRooms < 1) {
+    score -= 5;
+    warnings.push("Low danger density for this complexity level.");
+  }
+
+  if (secretRooms > 0) {
+    strengths.push("Has a dedicated secret pressure point.");
+    flowTags.push("Secret");
+  }
+
+  if (hazardRooms > 0) {
+    strengths.push("Includes explicit danger beats.");
+    flowTags.push("Hazard");
+  }
+
+  if (branchRooms > 0) {
+    strengths.push("Supports at least one branch or tactical choice.");
+    flowTags.push(branchRooms > 2 ? "Branching" : "Side Path");
+  }
+
+  if (loopRooms > 0) {
+    strengths.push("Contains a loop beat for return pressure.");
+    flowTags.push("Loop");
+  }
+
+  if (rewardRooms > 0 || clueRooms > 0) {
+    strengths.push("Has clue or reward pacing after pressure.");
+    flowTags.push("Payoff");
+  }
+
+  if (verticalRooms > 0) {
+    notes.push("Uses vertical or lower-level rooms.");
+    flowTags.push("Vertical");
+  }
+
+  if (!strengths.length) {
+    strengths.push("Clear linear baseline for fast prep.");
+    flowTags.push("Linear");
+  }
+
+  const normalizedScore = clampInteger(score, 40, 100);
+  const status = normalizedScore >= 84 ? "ready" : normalizedScore >= 70 ? "review" : "caution";
+  const statusLabel = status === "ready" ? "Ready" : status === "review" ? "Review" : "Caution";
+  const recommendedAction = status === "ready"
+    ? "Use this program or open it in Scratch for final room wording."
+    : "Open this program in Scratch before committing to the map.";
+
+  return {
+    score: normalizedScore,
+    status,
+    statusLabel,
+    recommendedAction,
+    warnings: warnings.slice(0, 3),
+    strengths: strengths.slice(0, 3),
+    notes: notes.slice(0, 2),
+    flowTags: [...new Set(flowTags)].slice(0, 4),
+    layoutRisk: status,
+    metrics: {
+      averageConnectors: Number(averageConnectors.toFixed(1)),
+      maxConnectors,
+      branchRooms,
+      secretRooms,
+      hazardRooms,
+      clueRooms,
+      rewardRooms,
+      loopRooms,
+      largeRooms,
+      verticalRooms,
+      roomCount,
+      scale: normalizeThemeScale(scale, roomCount),
+      complexity: normalizeThemeControl(complexity, ["simple", "standard", "complex"], "standard"),
+      themeId: normalizeString(theme?.id),
+    },
+  };
+}
+
 function getThemeSignatureRoomTypes(theme) {
   return asArray(THEME_SIGNATURE_ROOM_TYPES[theme?.id]).length
     ? asArray(THEME_SIGNATURE_ROOM_TYPES[theme.id])
@@ -339,11 +501,12 @@ function createThemeRoomName(theme, roomType, index, variant = null) {
   return `${prefix} ${name}`;
 }
 
-function createThemeProgramId({ theme, scale, complexity, context, seed, variant }) {
+function createThemeProgramId({ theme, scale, complexity, context, seed, variant, roomCount }) {
   return [
     "theme-program",
     normalizeString(theme?.id, "generic"),
-    normalizeThemeControl(scale, ["small", "medium", "large"], "medium"),
+    normalizeThemeScale(scale, roomCount),
+    roomCount ? `rooms-${clampInteger(roomCount, 1, 16)}` : "auto",
     normalizeThemeControl(complexity, ["simple", "standard", "complex"], "standard"),
     getSourceAnchorId(context || "context"),
     getSourceAnchorId(seed || "draft"),
@@ -420,17 +583,21 @@ export function createThemeRoomProgramCandidates({
   complexity = "standard",
   context = "",
   seed = "",
+  roomCount,
   count = 3,
 } = {}) {
   const safeTheme = theme || resolveDungeonThemeForSourceAnchors([]);
   const candidateCount = clampInteger(count, 1, THEME_PROGRAM_VARIANTS.length);
+  const requestedRoomCount = Number.isFinite(Number(roomCount)) ? clampInteger(roomCount, 1, 16) : undefined;
+  const layoutScale = getThemeLayoutScale(scale, requestedRoomCount);
   return THEME_PROGRAM_VARIANTS.slice(0, candidateCount).map((variant, index) => {
     const roomBriefs = createThemeRoomBriefs({
       theme: safeTheme,
-      scale,
+      scale: layoutScale,
       complexity,
       context,
       seed,
+      roomCount: requestedRoomCount,
       variant,
       variantIndex: index,
     });
@@ -439,23 +606,33 @@ export function createThemeRoomProgramCandidates({
       .slice(0, 4)
       .map((room) => room.name);
 
+    const metrics = {
+      branches: roomBriefs.filter((room) => Number(room.connectors) >= 3).length,
+      secrets: roomBriefs.filter((room) => room.secret).length,
+      hazards: roomBriefs.filter((room) => room.hazard).length,
+    };
+
     return {
-      id: createThemeProgramId({ theme: safeTheme, scale, complexity, context, seed, variant }),
+      id: createThemeProgramId({ theme: safeTheme, scale, complexity, context, seed, variant, roomCount: requestedRoomCount }),
       label: variant.label,
       summary: variant.summary,
       themeId: safeTheme.id,
       themeName: safeTheme.name,
-      scale: normalizeThemeControl(scale, ["small", "medium", "large"], "medium"),
+      scale: normalizeThemeScale(scale, requestedRoomCount),
       complexity: normalizeThemeControl(complexity, ["simple", "standard", "complex"], "standard"),
       context: context || safeTheme.mapTypeBias?.[0] || "Crypt",
       roomCount: roomBriefs.length,
       signatureRooms,
       roomBriefs,
-      metrics: {
-        branches: roomBriefs.filter((room) => Number(room.connectors) >= 3).length,
-        secrets: roomBriefs.filter((room) => room.secret).length,
-        hazards: roomBriefs.filter((room) => room.hazard).length,
-      },
+      metrics,
+      review: createThemeProgramReview({
+        roomBriefs,
+        metrics,
+        scale,
+        complexity,
+        theme: safeTheme,
+        variant,
+      }),
     };
   });
 }
@@ -466,11 +643,12 @@ export function createThemeDungeonBriefCandidatesFromDarkenLocationSnapshot(snap
     ? resolveDungeonThemeForSourceAnchors([snapshot.dungeonThemeId])
     : resolveDungeonThemeForSourceAnchors(sourceAnchors);
   const theme = requestedTheme || resolveDungeonThemeForSourceAnchors(sourceAnchors);
-  const scale = normalizeThemeControl(snapshot.dungeonScale, ["small", "medium", "large"], "medium");
+  const roomCount = getRequestedThemeRoomCount(snapshot);
+  const scale = normalizeThemeScale(snapshot.dungeonScale, roomCount);
   const complexity = normalizeThemeControl(snapshot.dungeonComplexity, ["simple", "standard", "complex"], "standard");
   const context = normalizeString(snapshot.context, theme.mapTypeBias[0] || "Crypt");
 
-  return createThemeRoomProgramCandidates({ theme, scale, complexity, context, seed: snapshot.seed, count })
+  return createThemeRoomProgramCandidates({ theme, scale, complexity, context, seed: snapshot.seed, roomCount, count })
     .map((candidate) => {
       const dungeonBrief = createDungeonBrief({
         id: `${normalizeString(snapshot.dungeonBriefId, "dungeon-brief")}-${candidate.id}`,
@@ -503,8 +681,6 @@ export function createThemeDungeonBriefCandidatesFromDarkenLocationSnapshot(snap
           scale,
           complexity,
           candidateId: candidate.id,
-          candidateLabel: candidate.label,
-          candidateSummary: candidate.summary,
           activeSlot: normalizeString(snapshot.activeSlot),
           activeSlotScope: normalizeString(snapshot.activeSlotScope),
           activeRegionId: normalizeString(snapshot.activeRegionId),
@@ -524,14 +700,17 @@ export function createThemeDungeonBriefFromDarkenLocationSnapshot(snapshot = {})
     ? resolveDungeonThemeForSourceAnchors([snapshot.dungeonThemeId])
     : resolveDungeonThemeForSourceAnchors(sourceAnchors);
   const theme = requestedTheme || resolveDungeonThemeForSourceAnchors(sourceAnchors);
-  const scale = normalizeThemeControl(snapshot.dungeonScale, ["small", "medium", "large"], "medium");
+  const roomCount = getRequestedThemeRoomCount(snapshot);
+  const scale = normalizeThemeScale(snapshot.dungeonScale, roomCount);
+  const layoutScale = getThemeLayoutScale(scale, roomCount);
   const complexity = normalizeThemeControl(snapshot.dungeonComplexity, ["simple", "standard", "complex"], "standard");
   const context = normalizeString(snapshot.context, theme.mapTypeBias[0] || "Crypt");
   const roomBriefs = createThemeRoomBriefs({
     theme,
-    scale,
+    scale: layoutScale,
     complexity,
     context,
+    roomCount,
   });
 
   return createDungeonBrief({
@@ -660,7 +839,7 @@ export function createDungeonBriefFromDarkenLocationSnapshot(snapshot = {}) {
     roomBriefs,
     metadata: {
       createdFrom: "darken-location-composer",
-      scale: normalizeThemeControl(snapshot.dungeonScale, ["small", "medium", "large"], inferScaleFromRoomCount(roomBriefs.length || 0)),
+      scale: normalizeThemeScale(snapshot.dungeonScale, roomBriefs.length || 0),
       complexity: normalizeThemeControl(snapshot.dungeonComplexity, ["simple", "standard", "complex"], "standard"),
       intrusion: normalizeString(snapshot.intrusion),
       activeSlot: normalizeString(snapshot.activeSlot),

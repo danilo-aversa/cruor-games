@@ -1,18 +1,22 @@
 import { createMapRequestFromDarkenLocationState } from "../../darken-location.map-request.js";
 import { DEFAULT_CONFIG, createConfigFromNormalizedMapRequest } from "../../map-generator/map-generator.input.js";
 import { generateMap } from "../../map-generator/map-generator.pipeline.js";
-import { createEmptyManualOverrides } from "../../map-generator/map-generator.state.js";
+import {
+  createEmptyManualOverrides,
+  normalizeManualOverrides,
+} from "../../map-generator/map-generator.state.js";
 
-export function createLocationPreviewModel(snapshot) {
+export function createLocationPreviewModel(snapshot, manualOverrides = createEmptyManualOverrides()) {
   const mapRequest = createMapRequestFromDarkenLocationState(snapshot);
   const previewConfig = createConfigFromNormalizedMapRequest(mapRequest, DEFAULT_CONFIG);
+  const previewManualOverrides = normalizeManualOverrides(manualOverrides);
 
   try {
     return {
       mapRequest,
       previewConfig,
       previewResult: {
-        generatedMap: generateMap(previewConfig, createEmptyManualOverrides()),
+        generatedMap: generateMap(previewConfig, previewManualOverrides),
         error: "",
       },
     };

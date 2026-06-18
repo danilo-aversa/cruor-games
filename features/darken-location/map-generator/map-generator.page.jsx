@@ -3250,7 +3250,9 @@ function MapTestsModal({ open, testSuite, onClose }) {
 
 export default function CruorMapGeneratorMvp({
   initialRequest = null,
+  initialManualOverrides = null,
   onExitWorkspace = null,
+  onCommitWorkspace = null,
   onRefreshFromComposer = null,
   embeddedInComposer = false,
 } = {}) {
@@ -3281,8 +3283,8 @@ export default function CruorMapGeneratorMvp({
   const [showNames, setShowNames] = useState(false);
   const [showRoomBadges, setShowRoomBadges] = useState(true);
   const [showProps, setShowProps] = useState(false);
-  const [manualOverrides, setManualOverrides] = useState(
-    createEmptyManualOverrides(),
+  const [manualOverrides, setManualOverrides] = useState(() =>
+    normalizeManualOverrides(initialManualOverrides || createEmptyManualOverrides()),
   );
   const [manualHistory, setManualHistory] = useState({ past: [], future: [] });
   const [isManualEditActive, setIsManualEditActive] = useState(false);
@@ -3453,6 +3455,31 @@ export default function CruorMapGeneratorMvp({
     if (!snapshot || areManualOverridesEqual(snapshot, manualOverrides)) return;
     pushManualHistorySnapshot(snapshot);
     setStateStatus("");
+  }
+
+  function createWorkspaceStatePayload() {
+    return {
+      config,
+      generatedMap,
+      manualOverrides: cloneManualOverrides(manualOverrides),
+      uiState: {
+        showEditor,
+        showNames,
+        showRoomBadges,
+        showProps,
+        gridStyle,
+        visualStyle,
+        levelView,
+        fadeOtherLevels,
+      },
+    };
+  }
+
+  function finishWorkspaceEditing() {
+    if (isManualEditActive) commitManualEdit();
+    const payload = createWorkspaceStatePayload();
+    if (onCommitWorkspace) onCommitWorkspace(payload);
+    if (onExitWorkspace) onExitWorkspace(payload);
   }
 
   function undoManualEdit() {
@@ -4235,7 +4262,7 @@ export default function CruorMapGeneratorMvp({
               icon="check"
               label="Done Editing"
               description="Return to the Location Composer."
-              onClick={onExitWorkspace}
+              onClick={finishWorkspaceEditing}
             />
           ) : null}
           {onExitWorkspace ? <span className="map-tool-rail__divider" aria-hidden="true" /> : null}

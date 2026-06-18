@@ -644,6 +644,191 @@ export function createSharedRoomLinkCorridor(
   };
 }
 
+
+export function buildSharedRoomTraversalGraph(regions, gridSize) {
+  const adjacency = new Map(regions.map((region) => [region.id, []]));
+  for (let a = 0; a < regions.length; a += 1) {
+    for (let b = a + 1; b < regions.length; b += 1) {
+      const from = regions[a];
+      const to = regions[b];
+      if (getSharedBoundaryConnections(from, to, gridSize).length === 0)
+        continue;
+      adjacency.get(from.id).push(to.id);
+      adjacency.get(to.id).push(from.id);
+    }
+  }
+  return adjacency;
+}
+
+export function findSharedRoomTraversalPath(fromId, toId, adjacency) {
+  if (!fromId || !toId || !adjacency?.has(fromId) || !adjacency?.has(toId))
+    return [];
+  if (fromId === toId) return [fromId];
+  const queue = [fromId];
+  const visited = new Set([fromId]);
+  const cameFrom = new Map();
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (current === toId) break;
+    (adjacency.get(current) || []).forEach((next) => {
+      if (visited.has(next)) return;
+      visited.add(next);
+      cameFrom.set(next, current);
+      queue.push(next);
+    });
+  }
+
+  if (!visited.has(toId)) return [];
+  const path = [];
+  let current = toId;
+  while (current) {
+    path.push(current);
+    current = cameFrom.get(current);
+  }
+  return path.reverse();
+}
+
+export function getCorridorEndpointRegionIds(corridor) {
+  return new Set(
+    [
+      corridor?.from,
+      corridor?.to,
+      corridor?.fromAnchor?.regionId,
+      corridor?.toAnchor?.regionId,
+    ].filter(Boolean),
+  );
+}
+
+export function getRoomCellOwnershipMap(regions) {
+  const ownership = new Map();
+  regions.forEach((region) => {
+    region.floorCells.forEach((cell) => {
+      const key = cellKey(cell.x, cell.y);
+      if (!ownership.has(key)) ownership.set(key, []);
+      ownership.get(key).push(region.id);
+    });
+  });
+  return ownership;
+}
+
+export function isRoomCellOwnedOnlyByEndpointRegions(
+  key,
+  endpointRegionIds,
+  roomOwnership,
+) {
+  const owners = roomOwnership.get(key) || [];
+  return (
+    owners.length === 0 ||
+    owners.every((regionId) => endpointRegionIds.has(regionId))
+  );
+}
+
+export function getNonEndpointRoomTunnelHits(corridor, roomOwnership) {
+  if (
+    corridor?.isRoomLink ||
+    !Array.isArray(corridor?.floorCells) ||
+    corridor.floorCells.length === 0
+  ) {
+    return [];
+  }
+  const endpointRegionIds = getCorridorEndpointRegionIds(corridor);
+  const hits = [];
+  corridor.floorCells.forEach((cell, index) => {
+    const key = cellKey(cell.x, cell.y);
+    const regionIds = (roomOwnership.get(key) || []).filter(
+      (regionId) => !endpointRegionIds.has(regionId),
+    );
+    if (regionIds.length > 0)
+      hits.push({ index, cell: { x: cell.x, y: cell.y }, regionIds });
+  });
+  return hits;
+}
+
+export function createSharedRoomTraversalCorridor(
+  corridor,
+  config,
+  gridSize,
+  rng,
+  profile,
+  regionById,
+  sharedRoomTraversalGraph,
+) {
+  const from = regionById.get(corridor.from || corridor.fromAnchor?.regionId);
+  const to = regionById.get(corridor.to || corridor.toAnchor?.regionId);
+  if (!from || !to) return null;
+
+  const traversalRegionIds = findSharedRoomTraversalPath(
+    from.id,
+    to.id,
+    sharedRoomTraversalGraph,
+  );
+  if (traversalRegionIds.length < 2) return null;
+
+  const pureCaveContext = getContextKey(config.context || config.biome) === "cave";
+  const corridorSurfaceKind =
+    corridor.surfaceKind || getCorridorSurfaceProfile(config, from, to, corridor);
+  const naturalCaveConnection =
+    pureCaveContext && shouldUseOrganicTunnel(config, from, to);
+  const doors = [];
+  const traversalPoints = [];
+
+  for (let index = 0; index < traversalRegionIds.length - 1; index += 1) {
+    const roomA = regionById.get(traversalRegionIds[index]);
+    const roomB = regionById.get(traversalRegionIds[index + 1]);
+    if (!roomA || !roomB) return null;
+    const connection = getSharedRoomConnection(
+      roomA,
+      roomB,
+      gridSize,
+      rng,
+      null,
+      null,
+      profile,
+    );
+    if (!connection) return null;
+    traversalPoints.push(connection.point);
+    if (!naturalCaveConnection) {
+      const sharedBreachRegion = roomA.surfaceKind === "structure" ? roomB : roomA;
+      doors.push(
+        markMineBreachOpening(
+          decorateDoorSegment(
+            connection.door,
+            config,
+            corridor,
+            `traversal-${index}`,
+          ),
+          config,
+          corridorSurfaceKind,
+          sharedBreachRegion,
+        ),
+      );
+    }
+  }
+
+  return {
+    ...corridor,
+    isRoomLink: true,
+    roomTraversal: true,
+    recoveredRoomTraversal: Boolean(corridor.recoveredGraphEdge),
+    surfaceKind: corridorSurfaceKind,
+    corridorStyle: naturalCaveConnection
+      ? "natural-tunnel"
+      : corridor.corridorStyle || "structured-corridor",
+    fromAnchor: null,
+    toAnchor: null,
+    floorCells: [],
+    pathCells: [],
+    centerline: [],
+    manualWaypoints: [],
+    waypoints: [],
+    traversalRegionIds,
+    throughRegionIds: traversalRegionIds.slice(1, -1),
+    traversalPoints,
+    doors: dedupeDoorSegments(doors),
+  };
+}
+
 export function corridorEndpointKey(corridorId, endpoint) {
   return `${corridorId}:${endpoint}`;
 }
@@ -1211,15 +1396,21 @@ export function routePathThroughCells(points, options) {
 
 export function routeDirectFallback(start, goal, options) {
   const path = findPath(start, goal, options);
-  if (path.length >= 2) return path;
-  return linePathBetweenCells(start, goal).filter(
-    (cell) =>
-      cell.x > 0 &&
-      cell.y > 0 &&
-      cell.x < options.gridW - 1 &&
-      cell.y < options.gridH - 1 &&
-      !options.blocked.has(cellKey(cell.x, cell.y)),
-  );
+  if (isUsableCorridorPath(path, start, goal)) return path;
+  const directPath = linePathBetweenCells(start, goal);
+  const invalidCell = directPath.some((cell) => {
+    const key = cellKey(cell.x, cell.y);
+    return (
+      cell.x <= 0 ||
+      cell.y <= 0 ||
+      cell.x >= options.gridW - 1 ||
+      cell.y >= options.gridH - 1 ||
+      (options.blocked.has(key) &&
+        !areSameCell(cell, start) &&
+        !areSameCell(cell, goal))
+    );
+  });
+  return invalidCell ? [] : directPath;
 }
 
 export function isCaveLikeRegion(region, config = null) {
@@ -1467,9 +1658,27 @@ export function routeCorridors(config, regions, graph) {
   const gridH = Math.floor(config.mapHeight / config.gridSize);
   const regionById = new Map(regions.map((region) => [region.id, region]));
   const allRoomCells = getRoomCellSet(regions);
+  const roomOwnership = getRoomCellOwnershipMap(regions);
   const dynamicRoomCells = new Set(allRoomCells);
   const existingCorridors = new Set();
   const usedDoorOutsideCells = new Set();
+  const canUnblockForEndpointRegions = (cell, endpointRegionIds) =>
+    isRoomCellOwnedOnlyByEndpointRegions(
+      cellKey(cell.x, cell.y),
+      endpointRegionIds,
+      roomOwnership,
+    );
+  const unblockApproachCells = (blocked, cells, endpointRegionIds) => {
+    cells.forEach((cell) => {
+      if (canUnblockForEndpointRegions(cell, endpointRegionIds))
+        blocked.delete(cellKey(cell.x, cell.y));
+    });
+  };
+  const unblockExistingCorridorCells = (blocked) => {
+    existingCorridors.forEach((key) => {
+      if (!roomOwnership.has(key)) blocked.delete(key);
+    });
+  };
 
   const routeRecoveredGraphEdge = (edge) => {
     const from = regionById.get(edge.from);
@@ -1563,10 +1772,12 @@ export function routeCorridors(config, regions, graph) {
     ];
     const buildRoutingOptions = (extraRelaxed = false) => {
       const blocked = new Set(roomBlockedCells);
-      allowedApproachCells.forEach((cell) =>
-        blocked.delete(cellKey(cell.x, cell.y)),
+      unblockApproachCells(
+        blocked,
+        allowedApproachCells,
+        new Set([from.id, to.id]),
       );
-      existingCorridors.forEach((key) => blocked.delete(key));
+      unblockExistingCorridorCells(blocked);
       if (extraRelaxed) {
         blocked.delete(
           cellKey(fromAnchor.outsideCell.x, fromAnchor.outsideCell.y),
@@ -1797,10 +2008,12 @@ export function routeCorridors(config, regions, graph) {
       ...getAnchorApproachCells(fromAnchor),
       ...getAnchorApproachCells(toAnchor),
     ];
-    allowedApproachCells.forEach((cell) =>
-      blocked.delete(cellKey(cell.x, cell.y)),
+    unblockApproachCells(
+      blocked,
+      allowedApproachCells,
+      new Set([from.id, to.id]),
     );
-    existingCorridors.forEach((key) => blocked.delete(key));
+    unblockExistingCorridorCells(blocked);
     const softBlocked = new Set();
 
     const adjacentToExistingCorridors = getAdjacentCells(existingCorridors);
@@ -1933,10 +2146,49 @@ export function routeCorridors(config, regions, graph) {
     .map(routeRecoveredGraphEdge)
     .filter(Boolean);
 
-  return normalizeCorridorNetwork(
-    [...routedCorridors, ...recoveredGraphEdges],
+  const sharedRoomTraversalGraph = buildSharedRoomTraversalGraph(
+    regions,
     config.gridSize,
   );
+  const routedAndRecovered = [...routedCorridors, ...recoveredGraphEdges];
+  const routedAndRecoveredIds = new Set(
+    routedAndRecovered.map((corridor) => corridor.id),
+  );
+  const roomTraversalRecoveries = graph
+    .filter((edge) => !routedAndRecoveredIds.has(edge.id))
+    .map((edge) =>
+      createSharedRoomTraversalCorridor(
+        edge,
+        config,
+        config.gridSize,
+        createSeededRng(hashStringToSeed(config.seed, edge.id, "room-traversal-recovery")),
+        routingProfile,
+        regionById,
+        sharedRoomTraversalGraph,
+      ),
+    )
+    .filter(Boolean);
+
+  const sanitizedCorridors = normalizeCorridorNetwork(
+    [...routedAndRecovered, ...roomTraversalRecoveries],
+    config.gridSize,
+  ).map((corridor) => {
+    const tunnelHits = getNonEndpointRoomTunnelHits(corridor, roomOwnership);
+    if (tunnelHits.length === 0) return corridor;
+    return (
+      createSharedRoomTraversalCorridor(
+        corridor,
+        config,
+        config.gridSize,
+        createSeededRng(hashStringToSeed(config.seed, corridor.id, "room-traversal")),
+        routingProfile,
+        regionById,
+        sharedRoomTraversalGraph,
+      ) || corridor
+    );
+  });
+
+  return sanitizedCorridors;
 }
 
 export function extractWaypoints(centerline) {

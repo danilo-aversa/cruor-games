@@ -1,4 +1,4 @@
-export const MAP_QA_REPORT_VERSION = "map-qa-v0.1-structural-batch";
+export const MAP_QA_REPORT_VERSION = "map-qa-report-v0.2-batch-version-aware";
 
 export const MAP_QA_SEVERITIES = Object.freeze(["error", "warning", "info"]);
 
@@ -105,7 +105,7 @@ export function buildMapQaReport({ suites = [], metadata = {} } = {}) {
 
   return {
     reportType: "cruor-map-qa-report",
-    version: MAP_QA_REPORT_VERSION,
+    version: metadata.qaVersion || MAP_QA_REPORT_VERSION,
     generatedAt: new Date().toISOString(),
     metadata,
     summary: summarizeMapQaIssues(issues),

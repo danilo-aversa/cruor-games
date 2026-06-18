@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StudioToolModalShell } from "../components/StudioToolModalShell.jsx";
 import { StudioIcon } from "../components/StudioIcon.jsx";
+import { STUDIO_TEST_IDS } from "./studio-test-presets.js";
 import {
+  MONSTER_PER_GRAFT_QA_VERSION,
   buildMonsterPerGraftQaMarkdown,
   downloadMonsterPerGraftQaReport,
   runMonsterPerGraftCoverageQa,
@@ -9,6 +11,7 @@ import {
 
 const DEFAULT_CR_MIN = 1;
 const DEFAULT_CR_MAX = 30;
+const TEST_ID = STUDIO_TEST_IDS.monsterPerGraft;
 
 function asArray(value) {
   if (!value) return [];
@@ -152,7 +155,23 @@ function PerGraftTable({ cases = [], statusTone = "idle" }) {
   );
 }
 
-export function MonsterPerGraftQaModal({ isOpen, onClose }) {
+function normalizePresetParams(params = {}) {
+  const crMin = clampCr(params.crMin, DEFAULT_CR_MIN);
+  const crMax = clampCr(params.crMax, DEFAULT_CR_MAX);
+  return {
+    crMin: Math.min(crMin, crMax),
+    crMax: Math.max(crMin, crMax),
+    seed: String(params.seed || "cruor-per-graft-qa"),
+    includeFullPayloads: Boolean(params.includeFullPayloads),
+    includeReviewPayloads: params.includeReviewPayloads !== false,
+  };
+}
+
+function getDefaultPresetName(params = {}) {
+  return `Monster Per-Graft QA · CR ${params.crMin ?? DEFAULT_CR_MIN}–${params.crMax ?? DEFAULT_CR_MAX}`;
+}
+
+export function MonsterPerGraftQaModal({ isOpen, onClose, presetRun = null, onPresetRunConsumed, onSavePreset }) {
   const [crMin, setCrMin] = useState(DEFAULT_CR_MIN);
   const [crMax, setCrMax] = useState(DEFAULT_CR_MAX);
   const [seed, setSeed] = useState("cruor-per-graft-qa");
@@ -176,31 +195,83 @@ export function MonsterPerGraftQaModal({ isOpen, onClose }) {
     onClose?.();
   }
 
-  function runQa() {
+  function getCurrentPresetParams() {
+    return normalizePresetParams({
+      crMin,
+      crMax,
+      seed,
+      includeFullPayloads,
+      includeReviewPayloads,
+    });
+  }
+
+  function applyPresetParams(params = {}) {
+    const normalized = normalizePresetParams(params);
+    setCrMin(normalized.crMin);
+    setCrMax(normalized.crMax);
+    setSeed(normalized.seed);
+    setIncludeFullPayloads(normalized.includeFullPayloads);
+    setIncludeReviewPayloads(normalized.includeReviewPayloads);
+    return normalized;
+  }
+
+  function savePreset() {
+    const params = getCurrentPresetParams();
+    const name = window.prompt("Preset name", getDefaultPresetName(params));
+    if (!name?.trim()) return;
+
+    onSavePreset?.({
+      testId: TEST_ID,
+      name: name.trim(),
+      version: MONSTER_PER_GRAFT_QA_VERSION,
+      params,
+    });
+  }
+
+  function runQa(paramsOverride = null, { autoDownload = false } = {}) {
+    const params = normalizePresetParams(paramsOverride || getCurrentPresetParams());
     setRunState("running");
     setError("");
     setCopyState("idle");
-    setExportState("idle");
+    setExportState(autoDownload ? "exporting" : "idle");
 
     window.requestAnimationFrame(() => {
       window.setTimeout(() => {
         try {
           const result = runMonsterPerGraftCoverageQa({
-            crMin,
-            crMax,
-            seed,
-            includeFullPayloads,
-            includeReviewPayloads,
+            crMin: params.crMin,
+            crMax: params.crMax,
+            seed: params.seed,
+            includeFullPayloads: params.includeFullPayloads,
+            includeReviewPayloads: params.includeReviewPayloads,
           });
           setReport(result);
           setRunState("complete");
+
+          if (autoDownload) {
+            try {
+              downloadMonsterPerGraftQaReport(result, { format: "json" });
+              setExportState("complete");
+            } catch (exportError) {
+              setExportState("failed");
+              setError(exportError?.message || String(exportError));
+            }
+          }
         } catch (runError) {
           setError(runError?.message || String(runError));
           setRunState("error");
+          setExportState("idle");
         }
       }, 40);
     });
   }
+
+  useEffect(() => {
+    if (!isOpen || !presetRun || presetRun.testId !== TEST_ID) return;
+    const params = applyPresetParams(presetRun.params);
+    runQa(params, { autoDownload: true });
+    onPresetRunConsumed?.(presetRun.runToken || presetRun.id);
+  }, [isOpen, presetRun?.runToken]);
 
   async function copyMarkdown() {
     if (!report) return;
@@ -293,13 +364,17 @@ export function MonsterPerGraftQaModal({ isOpen, onClose }) {
               </div>
             ) : null}
             <div className="studio-qa-run-row">
-              <button className="studio-button studio-button--primary studio-qa-run-button" type="button" disabled={isRunning} onClick={runQa}>
+              <button className="studio-button studio-button--primary studio-qa-run-button" type="button" disabled={isRunning} onClick={() => runQa()}>
                 <StudioIcon name={runState === "running" ? "fa-spinner" : "fa-play"} />
                 {runState === "running" ? "Running…" : "Run Per-Graft QA"}
               </button>
               <button className="studio-button studio-qa-run-button" type="button" disabled={isRunning || !report} onClick={copyMarkdown}>
                 <StudioIcon name="fa-copy" />
                 {copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy Failed" : "Copy Markdown"}
+              </button>
+              <button className="studio-button studio-qa-run-button" type="button" disabled={isRunning} onClick={savePreset}>
+                <StudioIcon name="fa-bookmark" />
+                Save Preset
               </button>
             </div>
           </section>

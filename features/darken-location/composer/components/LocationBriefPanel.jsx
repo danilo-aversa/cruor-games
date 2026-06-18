@@ -3,7 +3,6 @@ import { createPortal } from "react-dom";
 import { getDungeonThemes } from "../../dungeon/dungeon.index.js";
 import {
   SCRATCH_ROOM_ROLE_OPTIONS,
-  SCRATCH_ROOM_SIZE_OPTIONS,
   SCRATCH_ROOM_TYPE_OPTIONS,
   normalizeScratchRoomCount,
 } from "../model/location-composer-state.js";
@@ -18,15 +17,80 @@ const DUNGEON_THEME_OPTIONS = getDungeonThemes()
     theme,
   }));
 const DUNGEON_SCALE_OPTIONS = [
-  { value: "small", label: "Small", description: "4–6 rooms" },
-  { value: "medium", label: "Medium", description: "7–10 rooms" },
-  { value: "large", label: "Large", description: "11–16 rooms" },
+  { value: "small", label: "Small", icon: "fa-compress", description: "A compact site with 4–6 rooms." },
+  { value: "medium", label: "Medium", icon: "fa-vector-square", description: "A balanced site with 7–10 rooms." },
+  { value: "large", label: "Large", icon: "fa-expand", description: "A broad site with 11–16 rooms." },
+  { value: "custom", label: "Custom", icon: "fa-sliders", description: "Choose the exact number of rooms." },
 ];
 const DUNGEON_COMPLEXITY_OPTIONS = [
-  { value: "simple", label: "Simple", description: "Fewer branches" },
-  { value: "standard", label: "Standard", description: "Balanced structure" },
-  { value: "complex", label: "Complex", description: "More rooms and branches" },
+  { value: "simple", label: "Simple", icon: "fa-minus", description: "Fewer branches and a cleaner route." },
+  { value: "standard", label: "Standard", icon: "fa-grip", description: "A balanced dungeon structure." },
+  { value: "complex", label: "Complex", icon: "fa-code-branch", description: "More branches, loops, and routing pressure." },
 ];
+const SCRATCH_ROOM_SIZE_ICON_OPTIONS = [
+  { value: "Small", label: "Small", icon: "fa-compress", description: "A compact room or connector." },
+  { value: "Medium", label: "Medium", icon: "fa-vector-square", description: "A standard room footprint." },
+  { value: "Large", label: "Large", icon: "fa-expand", description: "A larger room or setpiece chamber." },
+];
+const SCRATCH_ROOM_LEVEL_ICON_OPTIONS = [
+  { value: "-1", label: "Below", icon: "fa-arrow-down", description: "Below the main level." },
+  { value: "0", label: "Ground", icon: "fa-minus", description: "Main dungeon level." },
+  { value: "1", label: "Above", icon: "fa-arrow-up", description: "Above the main level." },
+];
+const LOCATION_FIELD_HELP = {
+  theme: {
+    title: "Theme",
+    description: "Sets the internal room vocabulary, layout bias, and dark-fantasy texture used to generate the map.",
+  },
+  themeAssist: {
+    title: "Theme Assist",
+    description: "Keeps Scratch Mode guided by a theme while still letting you edit rooms manually.",
+  },
+  context: {
+    title: "Context",
+    description: "Defines what kind of place the generator should build, such as a crypt, chapel, cave, ruins, or noble house.",
+  },
+  horror: {
+    title: "Horror",
+    description: "Sets the main horror lens used when choosing atmosphere, threats, and room pressure.",
+  },
+  scale: {
+    title: "Scale",
+    description: "Small: 4–6 rooms. Medium: 7–10 rooms. Large: 11–16 rooms. Custom: choose the exact room count.",
+  },
+  complexity: {
+    title: "Complexity",
+    description: "Simple keeps the route cleaner. Standard balances branches. Complex creates more branching and loops.",
+  },
+  roomCount: {
+    title: "Room Count",
+    description: "Sets the exact number of rooms when Scale is Custom.",
+  },
+  scratchRooms: {
+    title: "Rooms",
+    description: "Sets how many hand-authored rooms Scratch Mode should send to the map generator.",
+  },
+  scratchRole: {
+    title: "Role",
+    description: "Defines the room's function in the location flow.",
+  },
+  scratchType: {
+    title: "Room Type",
+    description: "Defines the room vocabulary the map and export should use.",
+  },
+  scratchSize: {
+    title: "Size",
+    description: "Controls the requested footprint for this room.",
+  },
+  scratchLevel: {
+    title: "Level",
+    description: "Places the room below, on, or above the main level.",
+  },
+  scratchDetail: {
+    title: "Detail",
+    description: "Optional content note preserved for the room export.",
+  },
+};
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -46,7 +110,51 @@ function getOptionLabel(option) {
   return typeof option === "string" ? option : option.label || option.value;
 }
 
-function LocationChoiceField({ icon = "fa-circle-dot", label, meta, onChange, options, placeholder = "Choose option", value }) {
+function getOptionIcon(option, fallback = "fa-circle-dot") {
+  return typeof option === "string" ? fallback : option.icon || fallback;
+}
+
+function getHelpPayload(help) {
+  if (!help) return null;
+  if (typeof help === "string") return { title: help, description: "" };
+  return {
+    title: help.title || "Help",
+    description: help.description || "",
+  };
+}
+
+function LocationFieldLabel({ help, label, value = "" }) {
+  const payload = getHelpPayload(help);
+  const valueLabel = typeof value === "string" && value.trim() ? value.trim() : "";
+
+  return (
+    <div className="monster-frame-field-head location-frame-field-head">
+      <span>{label}</span>
+      {valueLabel ? <strong>{valueLabel}</strong> : null}
+      {payload ? (
+        <span
+          className="monster-frame-help location-field-help"
+          tabIndex={0}
+          role="button"
+          aria-label={`${payload.title}: ${payload.description}`}
+          data-key="tooltip-generic"
+          data-tooltip={payload.title}
+          data-tooltip-description={payload.description}
+        >
+          <span aria-hidden="true">?</span>
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
+function normalizeCustomRoomCount(value, fallback = 8) {
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.max(1, Math.min(16, parsed));
+}
+
+function LocationChoiceField({ help, icon = "fa-circle-dot", label, meta, onChange, options, placeholder = "Choose option", value }) {
   const [open, setOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState(null);
   const fieldRef = useRef(null);
@@ -105,7 +213,7 @@ function LocationChoiceField({ icon = "fa-circle-dot", label, meta, onChange, op
   const menu = open && menuPosition
     ? createPortal(
         <div
-          className="location-choice-menu location-choice-menu--portal"
+          className="location-choice-menu location-choice-menu--portal monster-frame-select-menu"
           ref={menuRef}
           role="listbox"
           aria-label={label}
@@ -121,7 +229,7 @@ function LocationChoiceField({ icon = "fa-circle-dot", label, meta, onChange, op
             const active = String(optionValue) === String(value);
             return (
               <button
-                className={cx("location-choice-option", active && "is-active")}
+                className={cx("location-choice-option monster-frame-select-option", active && "is-active")}
                 key={optionValue}
                 type="button"
                 role="option"
@@ -131,10 +239,9 @@ function LocationChoiceField({ icon = "fa-circle-dot", label, meta, onChange, op
                   setOpen(false);
                 }}
               >
-                <i className={`fa-solid ${icon}`} aria-hidden="true" />
+                <i className={`fa-solid ${getOptionIcon(option, icon)}`} aria-hidden="true" />
                 <span>
                   <strong>{optionLabel}</strong>
-                  {typeof option !== "string" && option.description ? <small>{option.description}</small> : null}
                 </span>
               </button>
             );
@@ -145,10 +252,10 @@ function LocationChoiceField({ icon = "fa-circle-dot", label, meta, onChange, op
     : null;
 
   return (
-    <div className="location-field location-choice-field" ref={fieldRef}>
-      <span>{label}</span>
+    <div className="location-field location-choice-field monster-frame-select-field" ref={fieldRef}>
+      <LocationFieldLabel label={label} help={help} />
       <button
-        className="cruor-composer-control location-choice-trigger"
+        className="cruor-composer-control location-choice-trigger monster-frame-select-trigger"
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
@@ -164,14 +271,80 @@ function LocationChoiceField({ icon = "fa-circle-dot", label, meta, onChange, op
   );
 }
 
+function LocationIconToggleField({ help, label, onChange, options, value }) {
+  const selectedOption = options.find((option) => String(option.value) === String(value));
+  const selectedLabel = selectedOption ? getOptionLabel(selectedOption) : "";
+
+  return (
+    <div className="location-field location-icon-toggle-field monster-frame-select-field monster-frame-icon-field">
+      <LocationFieldLabel label={label} help={help} value={selectedLabel} />
+      <div className="location-icon-toggle-grid monster-frame-icon-toggle-row" role="radiogroup" aria-label={label}>
+        {options.map((option) => {
+          const active = String(option.value) === String(value);
+          const optionLabel = getOptionLabel(option);
+          return (
+            <button
+              className={cx("location-icon-toggle-button monster-frame-icon-toggle", active && "is-active")}
+              key={option.value}
+              type="button"
+              role="radio"
+              aria-label={optionLabel}
+              aria-checked={active}
+              aria-disabled="false"
+              data-key="tooltip-generic"
+              data-tooltip={optionLabel}
+              data-tooltip-description={option.description || optionLabel}
+              onClick={() => onChange(option.value)}
+            >
+              <i className={`fa-solid ${getOptionIcon(option)}`} aria-hidden="true" />
+              <span className="sr-only">{optionLabel}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function LocationRoomCountSlider({ count, help = LOCATION_FIELD_HELP.roomCount, label = "Rooms", onChange }) {
+  const value = normalizeCustomRoomCount(count, 8);
+
+  return (
+    <div className="location-field location-custom-room-count-field monster-frame-cr-control">
+      <LocationFieldLabel label={label} help={help} />
+      <div className="location-room-count-slider monster-frame-cr-slider-row">
+        <input
+          className="monster-frame-cr-slider location-room-count-range"
+          type="range"
+          min="1"
+          max="16"
+          step="1"
+          value={value}
+          aria-label="Custom room count slider"
+          onChange={(event) => onChange(normalizeCustomRoomCount(event.target.value, value))}
+        />
+        <input
+          className="monster-frame-cr-number location-room-count-number"
+          type="number"
+          min="1"
+          max="16"
+          value={value}
+          aria-label="Custom room count number"
+          onChange={(event) => onChange(normalizeCustomRoomCount(event.target.value, value))}
+        />
+      </div>
+    </div>
+  );
+}
+
 function LocationBuildModeField({ mode, onChange }) {
   return (
     <div className="location-field location-theme-mode-field">
-      <span>Build Mode</span>
+      <span>Mode</span>
       <div className="location-map-mode-switch location-theme-mode-switch" role="group" aria-label="Dungeon build mode">
         {[
-          { value: "theme", label: "Theme" },
-          { value: "scratch", label: "Scratch" },
+          { value: "theme", label: "Theme Mode" },
+          { value: "scratch", label: "Scratch Mode" },
         ].map((option) => {
           const active = mode === option.value;
           return (
@@ -216,58 +389,16 @@ function LocationThemeRoomProgram({ regions = [] }) {
   );
 }
 
-function LocationThemeProgramCandidates({ activeCandidateId = "", candidates = [], onSelectCandidate, onUseCandidate }) {
-  const visibleCandidates = Array.isArray(candidates) ? candidates : [];
-  if (!visibleCandidates.length) return null;
+function LocationThemeLoadedProgram({ regions = [] }) {
+  const roomCount = Array.isArray(regions) ? regions.length : 0;
 
   return (
-    <section className="location-theme-candidates" aria-label="Theme program candidates">
-      <div className="location-theme-candidates__head">
-        <span>Program Candidates</span>
-        <strong>{visibleCandidates.length}</strong>
-      </div>
-      <div className="location-theme-candidates__list">
-        {visibleCandidates.map((candidate, index) => {
-          const active = candidate.id === activeCandidateId || (!activeCandidateId && index === 0);
-          const rooms = Array.isArray(candidate.roomBriefs) ? candidate.roomBriefs.slice(0, 5) : [];
-          return (
-            <article className={cx("location-theme-candidate-card", active && "is-active")} key={candidate.id || index}>
-              <button
-                className="location-theme-candidate-card__main"
-                type="button"
-                aria-pressed={active}
-                onClick={() => onSelectCandidate(candidate.id)}
-              >
-                <span className="location-theme-candidate-card__title">
-                  <strong>{candidate.label || `Candidate ${index + 1}`}</strong>
-                  <small>{candidate.roomCount || rooms.length || 0} rooms · {candidate.complexity || "standard"}</small>
-                </span>
-                <em>{candidate.summary || "Theme room program"}</em>
-                <span className="location-theme-candidate-card__metrics">
-                  <small>{candidate.metrics?.hazards || 0} hazards</small>
-                  <small>{candidate.metrics?.secrets || 0} secrets</small>
-                  <small>{candidate.metrics?.branches || 0} branches</small>
-                </span>
-              </button>
-              <div className="location-theme-candidate-card__rooms">
-                {rooms.map((room, roomIndex) => (
-                  <span key={room.id || roomIndex}>
-                    <strong>{String(roomIndex + 1).padStart(2, "0")}</strong>
-                    <em>{room.name || `Room ${roomIndex + 1}`}</em>
-                  </span>
-                ))}
-              </div>
-              <button
-                className="cruor-composer-control location-primary-action location-theme-use-candidate-button"
-                type="button"
-                onClick={() => onUseCandidate(candidate.id)}
-              >
-                Use This Program
-              </button>
-            </article>
-          );
-        })}
-      </div>
+    <section className="location-theme-ready-state" aria-label="Theme generation status">
+      <i className="fa-solid fa-wand-magic-sparkles" aria-hidden="true" />
+      <span>
+        <strong>{roomCount ? "Program Loaded" : "Ready"}</strong>
+        <small>{roomCount ? `${roomCount} rooms ready for the map.` : "Generate a map from the selected theme."}</small>
+      </span>
     </section>
   );
 }
@@ -287,15 +418,37 @@ function createChoiceOptions(values = []) {
 
 function LocationScratchRoomCountField({ count, onChange }) {
   return (
-    <label className="location-field location-scratch-room-count-field">
-      <span>Room Count</span>
+    <LocationRoomCountSlider
+      count={count || 1}
+      help={LOCATION_FIELD_HELP.scratchRooms}
+      label="Rooms"
+      onChange={(roomCount) => onChange(normalizeScratchRoomCount(roomCount, count || 1))}
+    />
+  );
+}
+
+function LocationScratchGenerateAction({ disabled = false, onGenerateMap }) {
+  return (
+    <button
+      className="cruor-composer-control location-primary-action location-scratch-generate-button"
+      type="button"
+      disabled={disabled}
+      onClick={onGenerateMap}
+    >
+      Generate Map
+    </button>
+  );
+}
+
+function LocationScratchTextField({ help = LOCATION_FIELD_HELP.scratchDetail, label, onChange, value }) {
+  return (
+    <label className="location-field location-scratch-text-field">
+      <LocationFieldLabel label={label} help={help} />
       <input
         className="location-scratch-input"
-        type="number"
-        min="1"
-        max="16"
-        value={count || 1}
-        onChange={(event) => onChange(normalizeScratchRoomCount(event.target.value, count || 1))}
+        type="text"
+        value={value || ""}
+        onChange={(event) => onChange(event.target.value)}
       />
     </label>
   );
@@ -314,6 +467,9 @@ function LocationScratchRoomList({ activeRegionId, onAddRoom, onRegenerateRoom, 
           onClick={onAddRoom}
           disabled={visibleRegions.length >= 16}
           aria-label="Add room"
+          data-key="tooltip-generic"
+          data-tooltip="Add Room"
+          data-tooltip-description="Adds one editable room to the Scratch program."
         >
           <i className="fa-solid fa-plus" aria-hidden="true"></i>
         </button>
@@ -341,6 +497,9 @@ function LocationScratchRoomList({ activeRegionId, onAddRoom, onRegenerateRoom, 
                   type="button"
                   onClick={() => onRegenerateRoom(region.id)}
                   aria-label={`Regenerate ${region.name || `room ${index + 1}`}`}
+                  data-key="tooltip-generic"
+                  data-tooltip="Regenerate Room"
+                  data-tooltip-description="Rebuilds this room while keeping its position in the Scratch program."
                 >
                   <i className="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
                 </button>
@@ -350,6 +509,9 @@ function LocationScratchRoomList({ activeRegionId, onAddRoom, onRegenerateRoom, 
                   onClick={() => onRemoveRoom(region.id)}
                   disabled={visibleRegions.length <= 1}
                   aria-label={`Remove ${region.name || `room ${index + 1}`}`}
+                  data-key="tooltip-generic"
+                  data-tooltip="Remove Room"
+                  data-tooltip-description="Removes this room from the Scratch program."
                 >
                   <i className="fa-solid fa-trash-can" aria-hidden="true"></i>
                 </button>
@@ -372,9 +534,7 @@ function LocationScratchRoomEditor({ onUpdateRoom, region }) {
   }
 
   const roleOptions = createChoiceOptions(SCRATCH_ROOM_ROLE_OPTIONS);
-  const sizeOptions = createChoiceOptions(SCRATCH_ROOM_SIZE_OPTIONS);
   const typeOptions = createChoiceOptions(SCRATCH_ROOM_TYPE_OPTIONS);
-  const levelOptions = createChoiceOptions(["-1", "0", "1"]);
 
   return (
     <section className="location-scratch-room-editor" aria-label="Selected room editor">
@@ -382,16 +542,13 @@ function LocationScratchRoomEditor({ onUpdateRoom, region }) {
         <span>Selected Room</span>
         <strong>{region.name || "Room"}</strong>
       </div>
-      <label className="location-field location-scratch-text-field">
-        <span>Name</span>
-        <input
-          className="location-scratch-input"
-          type="text"
-          value={region.name || ""}
-          onChange={(event) => onUpdateRoom(region.id, { name: event.target.value })}
-        />
-      </label>
+      <LocationScratchTextField
+        label="Name"
+        value={region.name || ""}
+        onChange={(name) => onUpdateRoom(region.id, { name })}
+      />
       <LocationChoiceField
+        help={LOCATION_FIELD_HELP.scratchRole}
         icon="fa-signs-post"
         label="Role"
         value={normalizeRoomFieldValue(region.role, "transition")}
@@ -399,6 +556,7 @@ function LocationScratchRoomEditor({ onUpdateRoom, region }) {
         onChange={(role) => onUpdateRoom(region.id, { role, tags: [role, region.roomType || region.shape].filter(Boolean) })}
       />
       <LocationChoiceField
+        help={LOCATION_FIELD_HELP.scratchType}
         icon="fa-vector-square"
         label="Room Type"
         value={normalizeRoomFieldValue(region.roomType || region.shape, "corridor")}
@@ -406,48 +564,36 @@ function LocationScratchRoomEditor({ onUpdateRoom, region }) {
         onChange={(roomType) => onUpdateRoom(region.id, { roomType, shape: roomType, preferredShape: roomType, tags: [region.role, roomType].filter(Boolean) })}
       />
       <div className="location-scratch-room-editor__grid">
-        <LocationChoiceField
-          icon="fa-expand"
+        <LocationIconToggleField
+          help={LOCATION_FIELD_HELP.scratchSize}
           label="Size"
           value={normalizeRoomFieldValue(region.size, "Medium")}
-          options={sizeOptions}
+          options={SCRATCH_ROOM_SIZE_ICON_OPTIONS}
           onChange={(size) => onUpdateRoom(region.id, { size })}
         />
-        <LocationChoiceField
-          icon="fa-layer-group"
+        <LocationIconToggleField
+          help={LOCATION_FIELD_HELP.scratchLevel}
           label="Level"
           value={String(region.level ?? 0)}
-          options={levelOptions}
+          options={SCRATCH_ROOM_LEVEL_ICON_OPTIONS}
           onChange={(level) => onUpdateRoom(region.id, { level: Number(level) })}
         />
       </div>
-      <label className="location-field location-scratch-text-field">
-        <span>Sensory Detail</span>
-        <input
-          className="location-scratch-input"
-          type="text"
-          value={region.sensoryLayer || ""}
-          onChange={(event) => onUpdateRoom(region.id, { sensoryLayer: event.target.value })}
-        />
-      </label>
-      <label className="location-field location-scratch-text-field">
-        <span>Hazard / Danger</span>
-        <input
-          className="location-scratch-input"
-          type="text"
-          value={region.danger || ""}
-          onChange={(event) => onUpdateRoom(region.id, { danger: event.target.value })}
-        />
-      </label>
-      <label className="location-field location-scratch-text-field">
-        <span>Reward / Clue</span>
-        <input
-          className="location-scratch-input"
-          type="text"
-          value={region.reward || region.secret || ""}
-          onChange={(event) => onUpdateRoom(region.id, { reward: event.target.value })}
-        />
-      </label>
+      <LocationScratchTextField
+        label="Sensory Detail"
+        value={region.sensoryLayer || ""}
+        onChange={(sensoryLayer) => onUpdateRoom(region.id, { sensoryLayer })}
+      />
+      <LocationScratchTextField
+        label="Hazard"
+        value={region.danger || ""}
+        onChange={(danger) => onUpdateRoom(region.id, { danger })}
+      />
+      <LocationScratchTextField
+        label="Clue / Reward"
+        value={region.reward || region.secret || ""}
+        onChange={(reward) => onUpdateRoom(region.id, { reward })}
+      />
     </section>
   );
 }
@@ -458,22 +604,24 @@ export function LocationBriefPanel({
   mapRequest,
   draftControls,
   modeControls,
+  forcedDungeonMode = "",
+  uiMode = "simple",
   onAddScratchRoom,
+  onGenerateScratchMap,
   onGenerateThemeRooms,
   onRegenerateScratchRoom,
   onRemoveScratchRoom,
   onSelectScratchRoom,
-  onSelectThemeProgram,
   onSetScratchRoomCount,
   onUpdateScratchRoom,
-  onUseThemeProgram,
 }) {
   const selectedHorror = toChoiceArray(state.horrors)[0] || state.horror || "";
-  const dungeonMode = state.dungeonMode === "scratch" ? "scratch" : "theme";
+  const forcedMode = forcedDungeonMode === "scratch" || forcedDungeonMode === "theme" ? forcedDungeonMode : "";
+  const dungeonMode = forcedMode || (state.dungeonMode === "scratch" ? "scratch" : "theme");
   const selectedThemeId = state.dungeonThemeId || "generic-dark-location";
+  const panelKicker = dungeonMode === "scratch" ? "Scratch Mode" : "Theme Mode";
+  const panelTitle = dungeonMode === "scratch" ? "Rooms" : "Program";
   const regions = Array.isArray(state.locationRegions) ? state.locationRegions : [];
-  const themeProgramCandidates = Array.isArray(state.themeProgramCandidates) ? state.themeProgramCandidates : [];
-  const activeThemeProgramCandidateId = state.activeThemeProgramCandidateId || themeProgramCandidates[0]?.id || "";
   const activeScratchRegion = regions.find((region) => region.id === state.activeRegionId) || regions[0] || null;
 
   return (
@@ -482,10 +630,9 @@ export function LocationBriefPanel({
       <section className="cruor-composer-panel location-panel location-brief-panel">
         <div className="location-panel-head location-panel-head--compact location-brief-panel__head">
           <div>
-            <p className="location-kicker">Frame</p>
-            <h2>Location</h2>
+            <p className="location-kicker">{panelKicker}</p>
+            <h2>{panelTitle}</h2>
           </div>
-          <strong className="location-brief-panel__meta">{mapRequest.requiredRegions.length || 0} regions</strong>
         </div>
 
         {draftControls ? (
@@ -495,18 +642,21 @@ export function LocationBriefPanel({
         ) : null}
 
         <div className="location-brief-panel__fields">
-          <LocationBuildModeField
-            mode={dungeonMode}
-            onChange={(dungeonMode) =>
-              setState((current) => ({
-                ...current,
-                dungeonMode,
-              }))
-            }
-          />
+          {!forcedMode ? (
+            <LocationBuildModeField
+              mode={dungeonMode}
+              onChange={(dungeonMode) =>
+                setState((current) => ({
+                  ...current,
+                  dungeonMode,
+                }))
+              }
+            />
+          ) : null}
 
           {dungeonMode === "theme" ? (
             <LocationChoiceField
+              help={LOCATION_FIELD_HELP.theme}
               icon="fa-book-dead"
               label="Theme"
               value={selectedThemeId}
@@ -526,6 +676,7 @@ export function LocationBriefPanel({
             />
           ) : (
             <LocationChoiceField
+              help={LOCATION_FIELD_HELP.themeAssist}
               icon="fa-book-dead"
               label="Theme Assist"
               value={selectedThemeId}
@@ -546,6 +697,7 @@ export function LocationBriefPanel({
           )}
 
           <LocationChoiceField
+            help={LOCATION_FIELD_HELP.context}
             icon="fa-dungeon"
             label="Context"
             value={state.context || ""}
@@ -559,6 +711,7 @@ export function LocationBriefPanel({
           />
 
           <LocationChoiceField
+            help={LOCATION_FIELD_HELP.horror}
             icon="fa-skull"
             label="Horror"
             value={selectedHorror}
@@ -577,21 +730,37 @@ export function LocationBriefPanel({
 
           {dungeonMode === "theme" ? (
             <>
-              <LocationChoiceField
-                icon="fa-ruler-combined"
+              <LocationIconToggleField
+                help={LOCATION_FIELD_HELP.scale}
                 label="Scale"
                 value={state.dungeonScale || "medium"}
                 options={DUNGEON_SCALE_OPTIONS}
                 onChange={(dungeonScale) => setState((current) => ({
                   ...current,
                   dungeonScale,
+                  dungeonCustomRoomCount: dungeonScale === "custom"
+                    ? normalizeCustomRoomCount(current.dungeonCustomRoomCount, Array.isArray(current.locationRegions) && current.locationRegions.length ? current.locationRegions.length : 8)
+                    : current.dungeonCustomRoomCount,
                   themeProgramCandidates: [],
                   activeThemeProgramCandidateId: "",
                 }))}
               />
 
-              <LocationChoiceField
-                icon="fa-code-branch"
+              {(state.dungeonScale || "medium") === "custom" ? (
+                <LocationRoomCountSlider
+                  count={state.dungeonCustomRoomCount || 8}
+                  onChange={(dungeonCustomRoomCount) => setState((current) => ({
+                    ...current,
+                    dungeonScale: "custom",
+                    dungeonCustomRoomCount,
+                    themeProgramCandidates: [],
+                    activeThemeProgramCandidateId: "",
+                  }))}
+                />
+              ) : null}
+
+              <LocationIconToggleField
+                help={LOCATION_FIELD_HELP.complexity}
                 label="Complexity"
                 value={state.dungeonComplexity || "standard"}
                 options={DUNGEON_COMPLEXITY_OPTIONS}
@@ -608,19 +777,10 @@ export function LocationBriefPanel({
                 type="button"
                 onClick={onGenerateThemeRooms}
               >
-                Generate Program Options
+                Generate Map
               </button>
 
-              {themeProgramCandidates.length ? (
-                <LocationThemeProgramCandidates
-                  activeCandidateId={activeThemeProgramCandidateId}
-                  candidates={themeProgramCandidates}
-                  onSelectCandidate={onSelectThemeProgram}
-                  onUseCandidate={onUseThemeProgram}
-                />
-              ) : (
-                <LocationThemeRoomProgram regions={state.locationRegions || []} />
-              )}
+              {uiMode === "debug" ? <LocationThemeLoadedProgram regions={state.locationRegions || []} /> : null}
             </>
           ) : (
             <>
@@ -639,6 +799,10 @@ export function LocationBriefPanel({
               <LocationScratchRoomEditor
                 region={activeScratchRegion}
                 onUpdateRoom={onUpdateScratchRoom}
+              />
+              <LocationScratchGenerateAction
+                disabled={!regions.length}
+                onGenerateMap={onGenerateScratchMap}
               />
             </>
           )}

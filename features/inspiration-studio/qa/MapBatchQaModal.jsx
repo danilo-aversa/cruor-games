@@ -1,8 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { StudioToolModalShell } from "../components/StudioToolModalShell.jsx";
 import { StudioIcon } from "../components/StudioIcon.jsx";
+import { STUDIO_TEST_IDS } from "./studio-test-presets.js";
 import { getDungeonThemes } from "../../darken-location/dungeon/dungeon.index.js";
 import {
+  MAP_BATCH_QA_VERSION,
+  MAP_BATCH_EXPORT_MODES,
   buildMapBatchQaMarkdown,
   downloadMapBatchQaReport,
   getMapBatchQaCostWarning,
@@ -16,6 +19,12 @@ const QA_MODES = Object.freeze([
   { id: "realistic", label: "Realistic QA", help: "Keep each theme close to its preferred context/map type bias." },
   { id: "stress", label: "Stress QA", help: "Allow unlikely theme/context combinations to expose generator edge cases." },
 ]);
+const EXPORT_MODES = Object.freeze([
+  { id: "compact", label: "Compact ZIP", help: "Small aggregate report. Debug SVG files are omitted." },
+  { id: "debug", label: "Debug ZIP", help: "Compact report plus separate debug JSON/SVG files for maps with issues. Does not include full.json. Best default for analysis." },
+  { id: "full", label: "Full ZIP", help: "Largest export. Includes compact report, debug files, and the giant full browser report object." },
+]);
+
 const CONTEXT_OPTIONS = Object.freeze([
   { id: "mixed", label: "Mixed Contexts" },
   { id: "Crypt", label: "Crypt" },
@@ -25,6 +34,8 @@ const CONTEXT_OPTIONS = Object.freeze([
   { id: "Noble House", label: "Noble House" },
   { id: "Ruins", label: "Ruins" },
 ]);
+
+const TEST_ID = STUDIO_TEST_IDS.mapBatch;
 
 function asArray(value) {
   if (!value) return [];
@@ -160,9 +171,9 @@ function MapOutlierTable({ generated = [], statusTone = "idle" }) {
               <td>{item.themeName || item.themeId}<span>{item.scale} · {item.complexity}</span></td>
               <td>{item.context}<span>{item.visualStyle}</span></td>
               <td>{item.metrics?.regions ?? item.roomCount}<span>target {item.roomCount}</span></td>
-              <td>{item.metrics?.corridors ?? 0} corridors<span>{item.metrics?.doors ?? 0} doors</span></td>
+              <td>{item.metrics?.corridors ?? 0} corridors<span>{item.metrics?.corridorTunnelCount || 0} tunnel · {item.metrics?.maxStraightRun || 0} straight</span></td>
               <td>{item.status}<span>{item.elapsedMs || 0}ms</span></td>
-              <td>{item.issueCount || 0}<span>{item.errorCount || 0} errors</span></td>
+              <td>{item.issueCount || 0}<span>{item.errorCount || 0} errors · aspect {item.metrics?.layoutQuality?.aspectRatio ?? "—"}</span></td>
             </tr>
           ))}
         </tbody>
@@ -171,7 +182,33 @@ function MapOutlierTable({ generated = [], statusTone = "idle" }) {
   );
 }
 
-export function MapBatchQaModal({ isOpen, onClose }) {
+function normalizePresetParams(params = {}, themeOptions = []) {
+  const minRooms = clampInteger(params.roomCountMin, DEFAULT_ROOM_MIN, 1, 16);
+  const maxRooms = clampInteger(params.roomCountMax, DEFAULT_ROOM_MAX, 1, 16);
+  const qaMode = QA_MODES.some((mode) => mode.id === params.qaMode) ? params.qaMode : "realistic";
+  const themeId = themeOptions.some((theme) => theme.id === params.themeId) ? params.themeId : "mixed";
+  const context = CONTEXT_OPTIONS.some((option) => option.id === params.context) ? params.context : "mixed";
+  const exportMode = MAP_BATCH_EXPORT_MODES.includes(params.exportMode) ? params.exportMode : "debug";
+
+  return {
+    count: clampInteger(params.count, DEFAULT_COUNT, 1, 500),
+    roomCountMin: Math.min(minRooms, maxRooms),
+    roomCountMax: Math.max(minRooms, maxRooms),
+    seed: String(params.seed || "cruor-map-studio-qa"),
+    qaMode,
+    themeId,
+    context,
+    includeFullPayloads: Boolean(params.includeFullPayloads),
+    includeFailingSvg: Boolean(params.includeFailingSvg),
+    exportMode,
+  };
+}
+
+function getDefaultPresetName(params = {}) {
+  return `Map Batch QA · ${params.count || DEFAULT_COUNT} maps · ${params.roomCountMin ?? DEFAULT_ROOM_MIN}–${params.roomCountMax ?? DEFAULT_ROOM_MAX} rooms`;
+}
+
+export function MapBatchQaModal({ isOpen, onClose, presetRun = null, onPresetRunConsumed, onSavePreset }) {
   const themeOptions = useMemo(() => [{ id: "mixed", name: "Mixed Themes" }, ...getDungeonThemes()], []);
   const [count, setCount] = useState(DEFAULT_COUNT);
   const [roomCountMin, setRoomCountMin] = useState(DEFAULT_ROOM_MIN);
@@ -181,6 +218,8 @@ export function MapBatchQaModal({ isOpen, onClose }) {
   const [themeId, setThemeId] = useState("mixed");
   const [context, setContext] = useState("mixed");
   const [includeFullPayloads, setIncludeFullPayloads] = useState(false);
+  const [includeFailingSvg, setIncludeFailingSvg] = useState(false);
+  const [exportMode, setExportMode] = useState("debug");
   const [runState, setRunState] = useState("idle");
   const [copyState, setCopyState] = useState("idle");
   const [exportState, setExportState] = useState("idle");
@@ -200,36 +239,97 @@ export function MapBatchQaModal({ isOpen, onClose }) {
     onClose?.();
   }
 
-  function runQa() {
+  function getCurrentPresetParams() {
+    return normalizePresetParams({
+      count,
+      roomCountMin,
+      roomCountMax,
+      seed,
+      qaMode,
+      themeId,
+      context,
+      includeFullPayloads,
+      includeFailingSvg,
+      exportMode,
+    }, themeOptions);
+  }
+
+  function applyPresetParams(params = {}) {
+    const normalized = normalizePresetParams(params, themeOptions);
+    setCount(normalized.count);
+    setRoomCountMin(normalized.roomCountMin);
+    setRoomCountMax(normalized.roomCountMax);
+    setSeed(normalized.seed);
+    setQaMode(normalized.qaMode);
+    setThemeId(normalized.themeId);
+    setContext(normalized.context);
+    setIncludeFullPayloads(normalized.includeFullPayloads);
+    setIncludeFailingSvg(normalized.includeFailingSvg);
+    setExportMode(normalized.exportMode);
+    return normalized;
+  }
+
+  function savePreset() {
+    const params = getCurrentPresetParams();
+    const name = window.prompt("Preset name", getDefaultPresetName(params));
+    if (!name?.trim()) return;
+
+    onSavePreset?.({
+      testId: TEST_ID,
+      name: name.trim(),
+      version: MAP_BATCH_QA_VERSION,
+      params,
+    });
+  }
+
+  function runQa(paramsOverride = null, { autoDownload = false } = {}) {
+    const params = normalizePresetParams(paramsOverride || getCurrentPresetParams(), themeOptions);
     setRunState("running");
     setError("");
     setCopyState("idle");
-    setExportState("idle");
+    setExportState(autoDownload ? "exporting" : "idle");
 
     window.requestAnimationFrame(() => {
-      window.setTimeout(() => {
+      window.setTimeout(async () => {
         try {
-          const minRooms = clampInteger(roomCountMin, DEFAULT_ROOM_MIN, 1, 16);
-          const maxRooms = clampInteger(roomCountMax, DEFAULT_ROOM_MAX, 1, 16);
           const result = runMapBatchQa({
-            count: clampInteger(count, DEFAULT_COUNT, 1, 500),
-            roomCountMin: Math.min(minRooms, maxRooms),
-            roomCountMax: Math.max(minRooms, maxRooms),
-            seed,
-            qaMode,
-            themeId,
-            context,
-            includeFullPayloads,
+            count: params.count,
+            roomCountMin: params.roomCountMin,
+            roomCountMax: params.roomCountMax,
+            seed: params.seed,
+            qaMode: params.qaMode,
+            themeId: params.themeId,
+            context: params.context,
+            includeFullPayloads: params.includeFullPayloads,
+            includeFailingSvg: params.includeFailingSvg,
           });
           setReport(result);
           setRunState("complete");
+
+          if (autoDownload) {
+            try {
+              await downloadMapBatchQaReport(result, { format: "zip", exportMode: params.exportMode });
+              setExportState("complete");
+            } catch (exportError) {
+              setExportState("failed");
+              setError(exportError?.message || String(exportError));
+            }
+          }
         } catch (runError) {
           setError(runError?.message || String(runError));
           setRunState("error");
+          setExportState("idle");
         }
       }, 40);
     });
   }
+
+  useEffect(() => {
+    if (!isOpen || !presetRun || presetRun.testId !== TEST_ID) return;
+    const params = applyPresetParams(presetRun.params);
+    runQa(params, { autoDownload: true });
+    onPresetRunConsumed?.(presetRun.runToken || presetRun.id);
+  }, [isOpen, presetRun?.runToken]);
 
   async function copyMarkdown() {
     if (!report) return;
@@ -241,14 +341,14 @@ export function MapBatchQaModal({ isOpen, onClose }) {
     }
   }
 
-  function exportJson() {
+  function exportZip() {
     if (!report || exportState === "exporting" || exportState === "complete") return;
     setExportState("exporting");
 
     window.requestAnimationFrame(() => {
-      window.setTimeout(() => {
+      window.setTimeout(async () => {
         try {
-          downloadMapBatchQaReport(report, { format: "json" });
+          await downloadMapBatchQaReport(report, { format: "zip", exportMode });
           setExportState("complete");
         } catch (exportError) {
           setExportState("failed");
@@ -263,9 +363,9 @@ export function MapBatchQaModal({ isOpen, onClose }) {
       className={getExportButtonClass(exportState)}
       type="button"
       disabled={isRunning || !report || exportState === "exporting" || exportState === "complete"}
-      onClick={exportJson}
+      onClick={exportZip}
     >
-      <StudioIcon name={getExportButtonIcon(exportState, "fa-file-arrow-down")} /> {getExportButtonLabel(exportState, "Export JSON")}
+      <StudioIcon name={getExportButtonIcon(exportState, exportMode === "full" ? "fa-box-archive" : exportMode === "debug" ? "fa-bug" : "fa-file-zipper")} /> {getExportButtonLabel(exportState, `Export ${EXPORT_MODES.find((mode) => mode.id === exportMode)?.label || "ZIP"}`)}
     </button>
   );
 
@@ -329,6 +429,14 @@ export function MapBatchQaModal({ isOpen, onClose }) {
                 </select>
               </label>
               <label>
+                <span>Export Mode</span>
+                <select value={exportMode} onChange={(event) => setExportMode(event.target.value)}>
+                  {EXPORT_MODES.map((mode) => (
+                    <option value={mode.id} key={mode.id}>{mode.label}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
                 <span>Theme</span>
                 <select value={themeId} onChange={(event) => setThemeId(event.target.value)}>
                   {themeOptions.map((theme) => (
@@ -357,12 +465,25 @@ export function MapBatchQaModal({ isOpen, onClose }) {
                   onChange={(event) => setIncludeFullPayloads(event.target.checked)}
                 />
                 <span className="studio-qa-checkbox" aria-hidden="true" />
-                <span className="studio-qa-option-copy">Keep full debug payloads for every generated map. Use only for smaller runs.</span>
+                <span className="studio-qa-option-copy">Keep full debug payloads for every generated map. Use only when you plan to export Full ZIP.</span>
+              </label>
+              <label className="studio-qa-check-option">
+                <input
+                  type="checkbox"
+                  checked={includeFailingSvg}
+                  onChange={(event) => setIncludeFailingSvg(event.target.checked)}
+                />
+                <span className="studio-qa-checkbox" aria-hidden="true" />
+                <span className="studio-qa-option-copy">Include structural SVG for maps with errors or warnings. ZIP export stores SVG as separate files.</span>
               </label>
             </div>
             <p className="studio-qa-mode-note">
               <StudioIcon name={qaMode === "stress" ? "fa-bolt" : "fa-filter-circle-check"} />
               {QA_MODES.find((mode) => mode.id === qaMode)?.help}
+            </p>
+            <p className="studio-qa-mode-note">
+              <StudioIcon name={exportMode === "full" ? "fa-box-archive" : exportMode === "debug" ? "fa-bug" : "fa-file-zipper"} />
+              {EXPORT_MODES.find((mode) => mode.id === exportMode)?.help}
             </p>
             {costWarning ? (
               <div className={`studio-qa-cost-warning studio-qa-cost-warning--${costWarning.severity}`.trim()}>
@@ -377,13 +498,17 @@ export function MapBatchQaModal({ isOpen, onClose }) {
               </div>
             ) : null}
             <div className="studio-qa-run-row">
-              <button className="studio-button studio-button--primary studio-qa-run-button" type="button" disabled={isRunning} onClick={runQa}>
+              <button className="studio-button studio-button--primary studio-qa-run-button" type="button" disabled={isRunning} onClick={() => runQa()}>
                 <StudioIcon name={runState === "running" ? "fa-spinner" : "fa-play"} />
                 {runState === "running" ? "Running…" : "Run Map Batch QA"}
               </button>
               <button className="studio-button studio-qa-run-button" type="button" disabled={isRunning || !report} onClick={copyMarkdown}>
                 <StudioIcon name="fa-copy" />
                 {copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy Failed" : "Copy Markdown"}
+              </button>
+              <button className="studio-button studio-qa-run-button" type="button" disabled={isRunning} onClick={savePreset}>
+                <StudioIcon name="fa-bookmark" />
+                Save Preset
               </button>
             </div>
           </section>
@@ -404,6 +529,10 @@ export function MapBatchQaModal({ isOpen, onClose }) {
               <SummaryTile icon="fa-bug" label="Failed" value={formatNumber(analytics.failed)} tone={analytics.failed ? "error" : "clean"} />
               <SummaryTile icon="fa-route" label="Unreachable" value={formatNumber(analytics.unreachableFailures)} tone={analytics.unreachableFailures ? "error" : "clean"} />
               <SummaryTile icon="fa-layer-group" label="Overlaps" value={formatNumber(analytics.overlapFailures)} tone={analytics.overlapFailures ? "error" : "clean"} />
+              <SummaryTile icon="fa-road-barrier" label="Tunneling" value={formatNumber(analytics.corridorTunnelFailures)} tone={analytics.corridorTunnelFailures ? "error" : "clean"} />
+              <SummaryTile icon="fa-ruler-horizontal" label="Long Corridors" value={formatNumber(analytics.longCorridorWarnings)} tone={analytics.longCorridorWarnings ? "warning" : "clean"} />
+              <SummaryTile icon="fa-compass-drafting" label="Layout Outliers" value={formatNumber(analytics.layoutOutliers)} tone={analytics.layoutOutliers ? "warning" : "clean"} />
+              <SummaryTile icon="fa-code" label="SVG Payloads" value={formatNumber(analytics.svgDebugPayloads)} tone={analytics.svgDebugPayloads ? "warning" : "default"} />
               <SummaryTile icon="fa-fingerprint" label="Determinism" value={formatNumber(analytics.determinismFailures)} tone={analytics.determinismFailures ? "error" : "clean"} />
               <SummaryTile icon="fa-shuffle" label="Seed Warnings" value={formatNumber(analytics.seedVariationWarnings)} tone={analytics.seedVariationWarnings ? "warning" : "clean"} />
               <SummaryTile icon="fa-door-open" label="Avg Doors" value={analytics.averageDoors ?? "—"} tone="default" />

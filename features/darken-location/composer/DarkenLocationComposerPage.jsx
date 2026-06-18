@@ -40,6 +40,7 @@ import {
   getLocationPreviewResetKey,
 } from "./model/location-composer-preview.js";
 import { getGeneratedRoomForRegion } from "./model/location-composer-map-preview.js";
+import { normalizeManualOverrides } from "../map-generator/map-generator.state.js";
 import { LocationBriefPanel } from "./components/LocationBriefPanel.jsx";
 import { LocationDraftControls } from "./components/LocationDraftControls.jsx";
 import { LocationComponentPickerModal } from "./components/LocationComponentPickerModal.jsx";
@@ -74,39 +75,63 @@ function getHorrorLabel(state) {
   return toArray(state.horrors)[0] || state.horror || "Horror";
 }
 
-function LocationBuilderModeSwitch({ builderMode, onSelectMode }) {
+function createLocationMapSourceKey(mapRequest) {
+  const requiredRegions = Array.isArray(mapRequest?.requiredRegions)
+    ? mapRequest.requiredRegions
+    : [];
+
+  return [
+    mapRequest?.seed || "no-seed",
+    mapRequest?.context || "no-context",
+    mapRequest?.mapType || "no-map-type",
+    mapRequest?.visualStyle || "no-style",
+    mapRequest?.mapWidth || "no-width",
+    mapRequest?.mapHeight || "no-height",
+    requiredRegions
+      .map((region) =>
+        [
+          region?.sourceRegionId || region?.id || "region",
+          region?.label || region?.name || "",
+          region?.role || "",
+          region?.size || "",
+          region?.shape || "",
+          Array.isArray(region?.links) ? region.links.join(",") : "",
+        ].join("@"),
+      )
+      .join("|"),
+  ].join("::");
+}
+
+const LOCATION_WORKFLOW_MODES = [
+  { id: "theme", label: "Theme" },
+  { id: "scratch", label: "Scratch" },
+  { id: "map", label: "Map" },
+  { id: "export", label: "Export" },
+];
+
+function LocationWorkflowSwitch({ builderMode, onSelectMode }) {
   return (
-    <section className="location-map-mode-card" aria-label="Composer mode">
+    <section className="location-map-mode-card location-workflow-mode-card" aria-label="Dungeon workflow">
       <div
-        className="location-map-mode-switch"
+        className="location-map-mode-switch location-workflow-mode-switch"
         role="group"
-        aria-label="Composer mode"
-        style={{ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}
+        aria-label="Dungeon workflow"
+        style={{ gridTemplateColumns: "repeat(4, minmax(0, 1fr))" }}
       >
-        <button
-          className={cx("location-map-mode-button", builderMode === "frame" && "is-active")}
-          type="button"
-          aria-pressed={builderMode === "frame"}
-          onClick={() => onSelectMode("frame")}
-        >
-          Frame
-        </button>
-        <button
-          className={cx("location-map-mode-button", builderMode === "slots" && "is-active")}
-          type="button"
-          aria-pressed={builderMode === "slots"}
-          onClick={() => onSelectMode("slots")}
-        >
-          Regions
-        </button>
-        <button
-          className={cx("location-map-mode-button", builderMode === "export" && "is-active")}
-          type="button"
-          aria-pressed={builderMode === "export"}
-          onClick={() => onSelectMode("export")}
-        >
-          Export
-        </button>
+        {LOCATION_WORKFLOW_MODES.map((mode) => {
+          const active = builderMode === mode.id;
+          return (
+            <button
+              className={cx("location-map-mode-button", active && "is-active")}
+              key={mode.id}
+              type="button"
+              aria-pressed={active}
+              onClick={() => onSelectMode(mode.id)}
+            >
+              {mode.label}
+            </button>
+          );
+        })}
       </div>
     </section>
   );
@@ -176,7 +201,7 @@ function LocationRecapPanel({
           type="button"
           onClick={onOpenComponents}
         >
-          Browse Components
+          Map Components
         </button>
         <button
           className="cruor-composer-control location-primary-action"
@@ -208,7 +233,7 @@ function LocationRecapPanel({
 
 }
 
-function LocationExportToolsPanel({ onSelectFrame, onSelectRegions }) {
+function LocationExportToolsPanel({ onSelectMap, onSelectScratch, onSelectTheme }) {
   return (
     <aside
       className="cruor-composer-rail location-composer__rail location-composer__rail--left location-map-frame-rail location-frame-info"
@@ -220,11 +245,14 @@ function LocationExportToolsPanel({ onSelectFrame, onSelectRegions }) {
         <em>Table-ready output for the current map.</em>
       </section>
       <section className="location-frame-info-card location-location-action-card location-location-action-card--secondary" aria-label="Export actions">
-        <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectRegions}>
-          Edit Regions
+        <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectMap}>
+          Map Preview
         </button>
-        <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectFrame}>
-          Edit Frame
+        <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectTheme}>
+          Theme Mode
+        </button>
+        <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectScratch}>
+          Scratch Mode
         </button>
       </section>
     </aside>
@@ -249,6 +277,28 @@ function LocationExportPanel({ digest, generatedMapPreview, mapRequest, state, u
   );
 }
 
+function getThemeProgramCandidateScore(candidate = {}, index = 0) {
+  const rawScore = Number(candidate?.review?.score);
+  const score = Number.isFinite(rawScore) ? rawScore : 0;
+  const metrics = candidate?.metrics && typeof candidate.metrics === "object" ? candidate.metrics : {};
+  const hazardScore = Number(metrics.hazards || 0) * 0.3;
+  const secretScore = Number(metrics.secrets || 0) * 0.2;
+  const branchScore = Number(metrics.branches || 0) * 0.15;
+
+  return score + hazardScore + secretScore + branchScore - index * 0.01;
+}
+
+function selectBestThemeProgramCandidate(candidates = []) {
+  const list = Array.isArray(candidates) ? candidates.filter(Boolean) : [];
+  if (!list.length) return null;
+
+  return list.reduce((best, candidate, index) => {
+    const bestScore = getThemeProgramCandidateScore(best.candidate, best.index);
+    const candidateScore = getThemeProgramCandidateScore(candidate, index);
+    return candidateScore > bestScore ? { candidate, index } : best;
+  }, { candidate: list[0], index: 0 }).candidate;
+}
+
 function getInitialLocationRegionTemplates() {
   return getRegionTemplatesForState({
     context: "Crypt",
@@ -263,7 +313,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   const [draftSummary, setDraftSummary] = useState(() => getStoredDraftSummary());
   const [draftStorageStatus, setDraftStorageStatus] = useState(() => getLocalDraftStorageStatus());
   const [savedDraftFingerprint, setSavedDraftFingerprint] = useState("");
-  const [builderMode, setBuilderMode] = useState("slots");
+  const [builderMode, setBuilderMode] = useState("theme");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isMapEditing, setIsMapEditing] = useState(false);
   const [mapWorkspaceRevision, setMapWorkspaceRevision] = useState(0);
@@ -271,13 +321,22 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
 
   const selectedComponents = useMemo(() => getSelectedComponents(state), [state]);
   const snapshot = useMemo(() => createLocationComposerSnapshot(state, selectedComponents), [state, selectedComponents]);
-  const previewModel = useMemo(() => createLocationPreviewModel(snapshot), [snapshot]);
+  const mapManualOverrides = useMemo(
+    () => normalizeManualOverrides(state.mapManualOverrides || {}),
+    [state.mapManualOverrides],
+  );
+  const previewModel = useMemo(
+    () => createLocationPreviewModel(snapshot, mapManualOverrides),
+    [snapshot, mapManualOverrides],
+  );
   const { mapRequest, previewResult } = previewModel;
   const generatedMapPreview = previewResult.generatedMap;
   const digest = useMemo(() => getComposerDigest(state), [state]);
   const draftFingerprint = useMemo(() => createDraftFingerprint(state), [state]);
   const hasUnsavedChanges = Boolean(savedDraftFingerprint) && draftFingerprint !== savedDraftFingerprint;
   const previewResetKey = useMemo(() => getLocationPreviewResetKey(mapRequest, digest, state), [digest, mapRequest, state]);
+  const mapSourceKey = useMemo(() => createLocationMapSourceKey(mapRequest), [mapRequest]);
+  const previousMapSourceKeyRef = useRef(mapSourceKey);
 
   const setTransientDraftStatus = useCallback((message) => {
     setDraftStatus(message);
@@ -361,41 +420,18 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     setState((current) => {
       const currentSelectedComponents = getSelectedComponents(current);
       const currentSnapshot = createLocationComposerSnapshot(current, currentSelectedComponents);
-      const candidates = createThemeDungeonBriefCandidatesFromDarkenLocationSnapshot(currentSnapshot, { count: 3 });
-      const primaryCandidate = candidates[0] || null;
-      const primaryBrief = primaryCandidate?.dungeonBrief || createThemeDungeonBriefFromDarkenLocationSnapshot(currentSnapshot);
-
-      return {
-        ...current,
-        dungeonMode: "theme",
-        dungeonBriefId: primaryBrief.id,
-        dungeonThemeId: primaryBrief.themeId,
-        context: primaryBrief.context || current.context,
-        sourceAnchors: primaryBrief.theme?.sourceAnchorIds?.length && primaryBrief.themeName ? [primaryBrief.themeName] : current.sourceAnchors,
-        themeProgramCandidates: candidates,
-        activeThemeProgramCandidateId: primaryCandidate?.id || "",
+      const requestedRoomCount = current.dungeonScale === "custom"
+        ? Math.max(1, Math.min(16, Number.parseInt(current.dungeonCustomRoomCount || 8, 10) || 8))
+        : undefined;
+      const themeSnapshot = {
+        ...currentSnapshot,
+        dungeonScale: current.dungeonScale || currentSnapshot.dungeonScale,
+        dungeonCustomRoomCount: requestedRoomCount,
+        roomCount: requestedRoomCount,
       };
-    });
-    setBuilderMode("frame");
-    setDrawerOpen(false);
-    setIsMapEditing(false);
-    setTransientDraftStatus("Theme programs generated");
-  }, [setTransientDraftStatus]);
-
-  const selectThemeProgram = useCallback((candidateId) => {
-    setState((current) => ({
-      ...current,
-      activeThemeProgramCandidateId: candidateId || current.activeThemeProgramCandidateId || "",
-    }));
-  }, []);
-
-  const useThemeProgram = useCallback((candidateId) => {
-    setState((current) => {
-      const candidates = Array.isArray(current.themeProgramCandidates) ? current.themeProgramCandidates : [];
-      const selectedCandidate = candidates.find((candidate) => candidate.id === candidateId) || candidates[0];
-      const currentSelectedComponents = getSelectedComponents(current);
-      const currentSnapshot = createLocationComposerSnapshot(current, currentSelectedComponents);
-      const dungeonBrief = selectedCandidate?.dungeonBrief || createThemeDungeonBriefFromDarkenLocationSnapshot(currentSnapshot);
+      const candidates = createThemeDungeonBriefCandidatesFromDarkenLocationSnapshot(themeSnapshot, { count: 3 });
+      const selectedCandidate = selectBestThemeProgramCandidate(candidates);
+      const dungeonBrief = selectedCandidate?.dungeonBrief || createThemeDungeonBriefFromDarkenLocationSnapshot(themeSnapshot);
       const locationRegions = createLocationRegionsFromDungeonBrief(dungeonBrief);
 
       return {
@@ -408,40 +444,62 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
         locationRegions,
         activeRegionId: locationRegions[0]?.id || "",
         activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
-        activeThemeProgramCandidateId: selectedCandidate?.id || current.activeThemeProgramCandidateId || "",
+        themeProgramCandidates: [],
+        activeThemeProgramCandidateId: selectedCandidate?.id || "",
+        mapManualOverrides: null,
       };
     });
-    setBuilderMode("slots");
+    setBuilderMode("map");
     setDrawerOpen(false);
     setIsMapEditing(false);
-    setTransientDraftStatus("Theme program applied");
+    setTransientDraftStatus("Map generated");
   }, [setTransientDraftStatus]);
 
   const setScratchRoomCount = useCallback((roomCount) => {
-    setState((current) => setScratchLocationRoomCount(current, roomCount));
+    setState((current) => ({
+      ...setScratchLocationRoomCount(current, roomCount),
+      themeProgramCandidates: [],
+      activeThemeProgramCandidateId: "",
+      mapManualOverrides: null,
+    }));
     setDrawerOpen(false);
     setIsMapEditing(false);
   }, []);
 
   const addScratchRoom = useCallback(() => {
-    setState((current) => addScratchLocationRoom(current));
-    setBuilderMode("frame");
+    setState((current) => ({
+      ...addScratchLocationRoom(current),
+      themeProgramCandidates: [],
+      activeThemeProgramCandidateId: "",
+      mapManualOverrides: null,
+    }));
+    setBuilderMode("scratch");
     setDrawerOpen(false);
     setIsMapEditing(false);
     setTransientDraftStatus("Room added");
   }, [setTransientDraftStatus]);
 
   const removeScratchRoom = useCallback((regionId) => {
-    setState((current) => removeScratchLocationRoom(current, regionId));
-    setBuilderMode("frame");
+    setState((current) => ({
+      ...removeScratchLocationRoom(current, regionId),
+      themeProgramCandidates: [],
+      activeThemeProgramCandidateId: "",
+      mapManualOverrides: null,
+    }));
+    setBuilderMode("scratch");
     setDrawerOpen(false);
     setIsMapEditing(false);
     setTransientDraftStatus("Room removed");
   }, [setTransientDraftStatus]);
 
   const regenerateScratchRoom = useCallback((regionId) => {
-    setState((current) => regenerateScratchLocationRoom(current, regionId));
-    setBuilderMode("frame");
+    setState((current) => ({
+      ...regenerateScratchLocationRoom(current, regionId),
+      themeProgramCandidates: [],
+      activeThemeProgramCandidateId: "",
+      mapManualOverrides: null,
+    }));
+    setBuilderMode("scratch");
     setDrawerOpen(false);
     setIsMapEditing(false);
     setTransientDraftStatus("Room regenerated");
@@ -459,8 +517,35 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   }, []);
 
   const updateScratchRoom = useCallback((regionId, updates) => {
-    setState((current) => updateScratchLocationRoom(current, regionId, updates));
+    setState((current) => ({
+      ...updateScratchLocationRoom(current, regionId, updates),
+      themeProgramCandidates: [],
+      activeThemeProgramCandidateId: "",
+      mapManualOverrides: null,
+    }));
   }, []);
+
+  const generateScratchMap = useCallback(() => {
+    setState((current) => {
+      const hasRooms = Array.isArray(current.locationRegions) && current.locationRegions.length > 0;
+      const baseState = hasRooms ? current : setScratchLocationRoomCount(current, 4);
+      const locationRegions = Array.isArray(baseState.locationRegions) ? baseState.locationRegions : [];
+
+      return {
+        ...baseState,
+        dungeonMode: "scratch",
+        activeRegionId: baseState.activeRegionId || locationRegions[0]?.id || "",
+        activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+        themeProgramCandidates: [],
+        activeThemeProgramCandidateId: "",
+        mapManualOverrides: null,
+      };
+    });
+    setBuilderMode("map");
+    setDrawerOpen(false);
+    setIsMapEditing(false);
+    setTransientDraftStatus("Map generated");
+  }, [setTransientDraftStatus]);
 
 
   const resetComposer = useCallback(() => {
@@ -470,7 +555,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     const resetState = createInitialLocationComposerState(getInitialLocationRegionTemplates());
     setState(resetState);
     setSavedDraftFingerprint(createDraftFingerprint(resetState));
-    setBuilderMode("frame");
+    setBuilderMode("theme");
     setDrawerOpen(false);
     setIsMapEditing(false);
     setTransientDraftStatus("Composer reset");
@@ -500,6 +585,19 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   useEffect(() => {
     setDraftStorageStatus(getLocalDraftStorageStatus());
   }, []);
+
+  useEffect(() => {
+    if (previousMapSourceKeyRef.current === mapSourceKey) return;
+    previousMapSourceKeyRef.current = mapSourceKey;
+    setState((current) =>
+      current.mapManualOverrides
+        ? {
+            ...current,
+            mapManualOverrides: null,
+          }
+        : current,
+    );
+  }, [mapSourceKey]);
 
   useEffect(() => {
     if (!onSnapshotProviderReady) return undefined;
@@ -548,23 +646,52 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   const activeSlotIsFull = activeSlotFilled >= (activeSlot?.max || 1);
 
   const activateBuilderMode = useCallback((mode) => {
-    setBuilderMode(mode);
+    const nextMode = LOCATION_WORKFLOW_MODES.some((workflowMode) => workflowMode.id === mode)
+      ? mode
+      : "map";
+
+    setBuilderMode(nextMode);
     setIsMapEditing(false);
     setDrawerOpen(false);
+
+    if (nextMode === "theme" || nextMode === "scratch") {
+      setState((current) => ({
+        ...current,
+        dungeonMode: nextMode,
+      }));
+    }
   }, []);
 
   const startMapEditing = useCallback(() => {
+    setBuilderMode("map");
     setIsMapEditing(true);
     setDrawerOpen(false);
   }, []);
 
   const refreshEmbeddedMapWorkspace = useCallback(() => {
+    setState((current) =>
+      current.mapManualOverrides
+        ? {
+            ...current,
+            mapManualOverrides: null,
+          }
+        : current,
+    );
     setMapWorkspaceRevision((revision) => revision + 1);
     setTransientDraftStatus("Map workspace refreshed");
   }, [setTransientDraftStatus]);
 
+  const commitEmbeddedMapWorkspace = useCallback((workspaceState) => {
+    const nextManualOverrides = normalizeManualOverrides(workspaceState?.manualOverrides || {});
+    setState((current) => ({
+      ...current,
+      mapManualOverrides: nextManualOverrides,
+    }));
+    setTransientDraftStatus("Map edits saved");
+  }, [setTransientDraftStatus]);
+
   const builderModeControls = (
-    <LocationBuilderModeSwitch
+    <LocationWorkflowSwitch
       builderMode={builderMode}
       onSelectMode={activateBuilderMode}
     />
@@ -595,17 +722,18 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     setState((current) => removeComponentFromSlot(current, componentId, activeSlot.id));
   }, [activeSlot]);
 
-  const leftPanel = builderMode === "frame" ? (
+  const leftPanel = builderMode === "theme" || builderMode === "scratch" ? (
     <LocationBriefPanel
       state={state}
       setState={setState}
       mapRequest={mapRequest}
       modeControls={null}
+      forcedDungeonMode={builderMode}
+      uiMode={uiMode}
       onAddScratchRoom={addScratchRoom}
+      onGenerateScratchMap={generateScratchMap}
       onGenerateThemeRooms={generateThemeRooms}
       onRegenerateScratchRoom={regenerateScratchRoom}
-      onSelectThemeProgram={selectThemeProgram}
-      onUseThemeProgram={useThemeProgram}
       onRemoveScratchRoom={removeScratchRoom}
       onSelectScratchRoom={selectScratchRoom}
       onSetScratchRoomCount={setScratchRoomCount}
@@ -629,8 +757,9 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     />
   ) : builderMode === "export" ? (
     <LocationExportToolsPanel
-      onSelectFrame={() => activateBuilderMode("frame")}
-      onSelectRegions={() => activateBuilderMode("slots")}
+      onSelectMap={() => activateBuilderMode("map")}
+      onSelectScratch={() => activateBuilderMode("scratch")}
+      onSelectTheme={() => activateBuilderMode("theme")}
     />
   ) : (
     <LocationSlotRail
@@ -645,7 +774,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     />
   );
 
-  const navigatorPanel = builderMode === "slots" && drawerOpen && activeSlot ? (
+  const navigatorPanel = builderMode === "map" && drawerOpen && activeSlot ? (
     <LocationComponentPickerModal
       activeRegion={activeRegionForPicker}
       assignedComponents={assignedComponentsForActiveSlot}
@@ -678,7 +807,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       activeSlotScope={activeSlotScope}
       onNewMapSeed={refreshMapSeed}
       onOpenComponents={() => {
-        setBuilderMode("slots");
+        setBuilderMode("map");
         setDrawerOpen(true);
       }}
       onRenameLocation={renameLocation}
@@ -692,7 +821,9 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     <CruorMapGeneratorMvp
       key={`location-map-workspace-${previewResetKey}-${mapWorkspaceRevision}`}
       initialRequest={mapRequest}
+      initialManualOverrides={mapManualOverrides}
       embeddedInComposer={true}
+      onCommitWorkspace={commitEmbeddedMapWorkspace}
       onExitWorkspace={() => setIsMapEditing(false)}
       onRefreshFromComposer={refreshEmbeddedMapWorkspace}
     />

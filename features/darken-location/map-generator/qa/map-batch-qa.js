@@ -15,13 +15,14 @@ import {
   summarizeMapQaIssues,
 } from "./map-qa-report.js";
 
-export const MAP_BATCH_QA_VERSION = "map-batch-qa-v0.1-dungeon-brief-structural";
+export const MAP_BATCH_QA_VERSION = "map-batch-qa-v0.6-label-version-cleanup";
 
 export const DEFAULT_MAP_BATCH_COUNT = 50;
 export const MAX_SAFE_BROWSER_MAP_BATCH_COUNT = 160;
 export const MAX_HARD_BROWSER_MAP_BATCH_COUNT = 500;
 export const MAP_BATCH_QA_MODES = Object.freeze(["realistic", "stress"]);
 export const MAP_BATCH_EXPORT_MODES = Object.freeze(["compact", "debug", "full"]);
+export const DEFAULT_MAP_DEBUG_EXPORT_LIMIT = 80;
 
 const DEFAULT_SEED = "cruor-map-studio-qa";
 const CONTEXT_POOL = Object.freeze(["Crypt", "Chapel", "Cave", "Mine", "Noble House", "Ruins"]);
@@ -81,6 +82,300 @@ function doorKey(door) {
   return [door.x, door.y, door.side, door.fromRegionId, door.toRegionId, door.corridorId].filter(Boolean).join(":");
 }
 
+
+function getCellBounds(cells = []) {
+  const list = asArray(cells).filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y));
+  if (!list.length) return null;
+  const xs = list.map((cell) => cell.x);
+  const ys = list.map((cell) => cell.y);
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+  return {
+    minX,
+    maxX,
+    minY,
+    maxY,
+    width: maxX - minX + 1,
+    height: maxY - minY + 1,
+  };
+}
+
+function getRegionCentroid(region) {
+  const cells = asArray(region?.floorCells).filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y));
+  if (!cells.length && region?.cellRect) {
+    return {
+      x: Number(region.cellRect.x || 0) + Number(region.cellRect.w || 0) / 2,
+      y: Number(region.cellRect.y || 0) + Number(region.cellRect.h || 0) / 2,
+    };
+  }
+  if (!cells.length) return { x: 0, y: 0 };
+  return {
+    x: cells.reduce((sum, cell) => sum + cell.x, 0) / cells.length,
+    y: cells.reduce((sum, cell) => sum + cell.y, 0) / cells.length,
+  };
+}
+
+function getManhattanDistance(a, b) {
+  if (!a || !b) return 0;
+  return Math.abs(Number(a.x || 0) - Number(b.x || 0)) + Math.abs(Number(a.y || 0) - Number(b.y || 0));
+}
+
+function buildRoomCellOwners(regions = []) {
+  const owners = new Map();
+  asArray(regions).forEach((region) => {
+    asArray(region.floorCells).forEach((cell) => {
+      const key = cellKey(cell);
+      const existing = owners.get(key) || [];
+      existing.push(region.id);
+      owners.set(key, existing);
+    });
+  });
+  return owners;
+}
+
+function getMaxStraightRun(cells = []) {
+  const list = asArray(cells).filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y));
+  if (list.length < 2) return list.length;
+  let maxRun = 1;
+  let currentRun = 1;
+  let previousDirection = null;
+
+  for (let index = 1; index < list.length; index += 1) {
+    const previous = list[index - 1];
+    const current = list[index];
+    const dx = Math.sign(current.x - previous.x);
+    const dy = Math.sign(current.y - previous.y);
+    const direction = Math.abs(dx) + Math.abs(dy) === 1 ? `${dx},${dy}` : "break";
+    if (direction !== "break" && direction === previousDirection) {
+      currentRun += 1;
+    } else {
+      currentRun = direction === "break" ? 1 : 2;
+    }
+    previousDirection = direction;
+    maxRun = Math.max(maxRun, currentRun);
+  }
+
+  return maxRun;
+}
+
+function getCorridorRouteMetrics(corridor, regionsById) {
+  const cells = asArray(corridor?.floorCells);
+  const bounds = getCellBounds(cells);
+  const fromCentroid = getRegionCentroid(regionsById.get(corridor?.from));
+  const toCentroid = getRegionCentroid(regionsById.get(corridor?.to));
+  const directDistance = Math.max(1, getManhattanDistance(fromCentroid, toCentroid));
+  const length = cells.length;
+  return {
+    id: corridor?.id,
+    from: corridor?.from,
+    to: corridor?.to,
+    length,
+    bounds,
+    spanX: bounds?.width || 0,
+    spanY: bounds?.height || 0,
+    maxSpan: Math.max(bounds?.width || 0, bounds?.height || 0),
+    maxStraightRun: getMaxStraightRun(cells),
+    directDistance: Number(directDistance.toFixed(2)),
+    detourRatio: Number((length / directDistance).toFixed(2)),
+  };
+}
+
+function getCorridorRoomTunnels(corridors, roomCellOwners) {
+  return asArray(corridors).flatMap((corridor) => {
+    if (!corridor || corridor.isRoomLink) return [];
+    const endpointIds = new Set([corridor.from, corridor.to].filter(Boolean));
+    const hits = [];
+    asArray(corridor.floorCells).forEach((cell, index) => {
+      const owners = asArray(roomCellOwners.get(cellKey(cell))).filter((regionId) => !endpointIds.has(regionId));
+      if (!owners.length) return;
+      hits.push({
+        corridorId: corridor.id,
+        from: corridor.from,
+        to: corridor.to,
+        index,
+        cell: { x: cell.x, y: cell.y },
+        regionIds: owners,
+      });
+    });
+    return hits;
+  });
+}
+
+function getRoomDistributionMetrics(regions = []) {
+  const centroids = asArray(regions).map((region) => ({
+    id: region.id,
+    ...getRegionCentroid(region),
+  }));
+  if (centroids.length < 2) {
+    return {
+      centroidCount: centroids.length,
+      averageNearestDistance: 0,
+      maxNearestDistance: 0,
+      maxCentroidDistance: 0,
+    };
+  }
+  const nearestDistances = centroids.map((centroid) => {
+    const distances = centroids
+      .filter((other) => other.id !== centroid.id)
+      .map((other) => getManhattanDistance(centroid, other));
+    return Math.min(...distances);
+  });
+  let maxCentroidDistance = 0;
+  for (let a = 0; a < centroids.length; a += 1) {
+    for (let b = a + 1; b < centroids.length; b += 1) {
+      maxCentroidDistance = Math.max(maxCentroidDistance, getManhattanDistance(centroids[a], centroids[b]));
+    }
+  }
+  return {
+    centroidCount: centroids.length,
+    averageNearestDistance: Number((nearestDistances.reduce((sum, value) => sum + value, 0) / nearestDistances.length).toFixed(2)),
+    maxNearestDistance: Number(Math.max(...nearestDistances).toFixed(2)),
+    maxCentroidDistance: Number(maxCentroidDistance.toFixed(2)),
+  };
+}
+
+function getLayoutQualityMetrics(generatedMap, qaCase) {
+  const floorBounds = getCellBounds(generatedMap?.dungeonMask?.floorCells);
+  const roomBounds = getCellBounds(asArray(generatedMap?.regions).flatMap((region) => asArray(region.floorCells)));
+  const gridSize = Number(generatedMap?.config?.gridSize || qaCase?.config?.gridSize || DEFAULT_CONFIG.gridSize || 20);
+  const mapWidth = Number(generatedMap?.config?.mapWidth || qaCase?.config?.mapWidth || DEFAULT_CONFIG.mapWidth || 1600);
+  const mapHeight = Number(generatedMap?.config?.mapHeight || qaCase?.config?.mapHeight || DEFAULT_CONFIG.mapHeight || 1000);
+  const canvasColumns = Math.max(1, Math.round(mapWidth / gridSize));
+  const canvasRows = Math.max(1, Math.round(mapHeight / gridSize));
+  const contentArea = (floorBounds?.width || 0) * (floorBounds?.height || 0);
+  const canvasArea = canvasColumns * canvasRows;
+  const aspectRatio = floorBounds?.height ? floorBounds.width / floorBounds.height : 0;
+  const roomDistribution = getRoomDistributionMetrics(generatedMap?.regions);
+  return {
+    floorBounds,
+    roomBounds,
+    gridSize,
+    canvasColumns,
+    canvasRows,
+    aspectRatio: Number(aspectRatio.toFixed(2)),
+    canvasUsage: Number((contentArea / Math.max(1, canvasArea)).toFixed(3)),
+    floorWidthRatio: Number(((floorBounds?.width || 0) / canvasColumns).toFixed(3)),
+    floorHeightRatio: Number(((floorBounds?.height || 0) / canvasRows).toFixed(3)),
+    roomDistribution,
+  };
+}
+
+
+function clampScore(value) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return 0;
+  return clamp(Math.round(numeric), 0, 100);
+}
+
+function calculateMapQualityScores({ issueSummary = {}, metrics = {}, status = "passed" } = {}) {
+  const layoutQuality = metrics.layoutQuality || {};
+  const layoutWarnings = [
+    layoutQuality.aspectRatio > 2.85 || (layoutQuality.aspectRatio > 0 && layoutQuality.aspectRatio < 0.35),
+    Number(layoutQuality.roomDistribution?.averageNearestDistance || 0) > 0 && Number(layoutQuality.roomDistribution?.averageNearestDistance || 0) > 18,
+    Number(layoutQuality.canvasUsage || 0) > 0 && Number(layoutQuality.canvasUsage || 0) < 0.08,
+  ].filter(Boolean).length;
+  const layoutPenalty =
+    layoutWarnings * 16 +
+    Math.max(0, Number(layoutQuality.aspectRatio || 1) - 2.85) * 12 +
+    Math.max(0, 0.35 - Number(layoutQuality.aspectRatio || 0)) * 18;
+
+  const routingPenalty =
+    Number(metrics.corridorTunnelCount || 0) * 38 +
+    Number(metrics.excessiveSpanCorridors || 0) * 14 +
+    Number(metrics.longStraightCorridors || 0) * 12 +
+    Number(metrics.highDetourCorridors || 0) * 10 +
+    Math.max(0, Number(metrics.maxDetourRatio || 0) - 3.25) * 8;
+
+  const structuralPenalty =
+    Number(issueSummary.error || 0) * 28 +
+    Number(metrics.overlapCount || 0) * 40 +
+    Number(metrics.unreachableCount || 0) * 40 +
+    (metrics.deterministic === false ? 45 : 0);
+
+  const readabilityPenalty =
+    Number(issueSummary.warning || 0) * 6 +
+    (Number(metrics.maxStraightRun || 0) > 36 ? 12 : 0) +
+    (Number(metrics.maxCorridorSpan || 0) > 42 ? 10 : 0);
+
+  const layoutScore = clampScore(100 - layoutPenalty);
+  const routingScore = clampScore(100 - routingPenalty);
+  const structureScore = clampScore(100 - structuralPenalty);
+  const readabilityScore = clampScore(100 - readabilityPenalty);
+  const overallQaScore = clampScore(
+    structureScore * 0.36 + routingScore * 0.30 + layoutScore * 0.22 + readabilityScore * 0.12 - (status === "failed" ? 8 : 0),
+  );
+
+  return {
+    overallQaScore,
+    structureScore,
+    routingScore,
+    layoutScore,
+    readabilityScore,
+  };
+}
+
+function getMapQualityBand(score) {
+  const numeric = Number(score || 0);
+  if (numeric >= 88) return "score-excellent";
+  if (numeric >= 72) return "score-good";
+  if (numeric >= 56) return "score-review";
+  if (numeric >= 40) return "score-poor";
+  return "score-broken";
+}
+
+function escapeXml(value = "") {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function buildQaDebugSvg(generatedMap, qaCase, validation = {}) {
+  const gridSize = Number(generatedMap?.config?.gridSize || qaCase?.config?.gridSize || DEFAULT_CONFIG.gridSize || 20);
+  const floorBounds = validation.metrics?.layoutQuality?.floorBounds || getCellBounds(generatedMap?.dungeonMask?.floorCells);
+  const width = Number(generatedMap?.bounds?.width || generatedMap?.config?.mapWidth || qaCase?.config?.mapWidth || DEFAULT_CONFIG.mapWidth || 1600);
+  const height = Number(generatedMap?.bounds?.height || generatedMap?.config?.mapHeight || qaCase?.config?.mapHeight || DEFAULT_CONFIG.mapHeight || 1000);
+  const padding = gridSize * 2;
+  const minX = Math.max(0, (floorBounds?.minX || 0) * gridSize - padding);
+  const minY = Math.max(0, (floorBounds?.minY || 0) * gridSize - padding);
+  const viewWidth = Math.min(width, ((floorBounds?.width || Math.round(width / gridSize)) * gridSize) + padding * 2);
+  const viewHeight = Math.min(height, ((floorBounds?.height || Math.round(height / gridSize)) * gridSize) + padding * 2);
+  const roomRects = asArray(generatedMap?.regions).flatMap((region) =>
+    asArray(region.floorCells).map((cell) =>
+      `<rect class="room-cell" data-region="${escapeXml(region.id)}" x="${cell.x * gridSize}" y="${cell.y * gridSize}" width="${gridSize}" height="${gridSize}" fill="rgba(214,184,98,.30)" stroke="rgba(29,25,21,.28)"/>`,
+    )
+  );
+  const corridorRects = asArray(generatedMap?.corridors).flatMap((corridor) =>
+    asArray(corridor.floorCells).map((cell) =>
+      `<rect class="corridor-cell" data-corridor="${escapeXml(corridor.id)}" x="${cell.x * gridSize}" y="${cell.y * gridSize}" width="${gridSize}" height="${gridSize}" fill="rgba(122,67,36,.42)" stroke="rgba(29,25,21,.22)"/>`,
+    )
+  );
+  const labels = asArray(generatedMap?.regions).map((region, index) => {
+    const centroid = getRegionCentroid(region);
+    return `<text x="${(centroid.x + 0.5) * gridSize}" y="${(centroid.y + 0.55) * gridSize}" text-anchor="middle" font-size="12" font-family="Inter, Arial, sans-serif" font-weight="800" fill="#1d1915">${index + 1}</text>`;
+  });
+  const corridorLabels = asArray(generatedMap?.corridors).map((corridor) => {
+    const cells = asArray(corridor.floorCells);
+    const mid = cells[Math.floor(cells.length / 2)];
+    if (!mid) return "";
+    return `<text x="${(mid.x + 0.5) * gridSize}" y="${(mid.y + 0.48) * gridSize}" text-anchor="middle" font-size="8" font-family="Inter, Arial, sans-serif" fill="#33030c">${escapeXml(corridor.id || "corridor")}</text>`;
+  });
+  const issueNotes = asArray(validation.issues).map((issue, index) =>
+    `<text x="${minX + 10}" y="${minY + 18 + index * 14}" font-size="11" font-family="Inter, Arial, sans-serif" fill="#33030c">${escapeXml(`${issue.severity.toUpperCase()} ${issue.area}/${issue.check}`)}</text>`,
+  );
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY} ${viewWidth} ${viewHeight}" role="img" aria-label="Map QA debug SVG for ${escapeXml(qaCase?.id || "map")}">
+  <rect x="${minX}" y="${minY}" width="${viewWidth}" height="${viewHeight}" fill="#efe4ca"/>
+  <g class="corridors">${corridorRects.join("\n")}</g>
+  <g class="rooms">${roomRects.join("\n")}</g>
+  <g class="room-labels">${labels.join("\n")}</g>
+  <g class="corridor-labels">${corridorLabels.join("\n")}</g>
+  <g class="qa-issues">${issueNotes.join("\n")}</g>
+</svg>`;
+}
+
 function createMapSignature(generatedMap) {
   const regions = asArray(generatedMap.regions)
     .map((region) => `${region.id}:${region.cellRect?.x},${region.cellRect?.y},${region.cellRect?.w},${region.cellRect?.h}:${region.shape || "rect"}`)
@@ -118,6 +413,7 @@ export function normalizeMapBatchQaOptions(options = {}) {
     roomCountMin: Math.min(minRooms, maxRooms),
     roomCountMax: Math.max(minRooms, maxRooms),
     includeFullPayloads: Boolean(options.includeFullPayloads),
+    includeFailingSvg: Boolean(options.includeFailingSvg),
   };
 }
 
@@ -369,6 +665,17 @@ function collectGeneratedMapIssues({ qaCase, generatedMap, deterministicMap, alt
   const signature = createMapSignature(generatedMap);
   const deterministicSignature = createMapSignature(deterministicMap);
   const alternateSignature = createMapSignature(alternateSeedMap);
+  const roomCellOwners = buildRoomCellOwners(regions);
+  const layoutQuality = getLayoutQualityMetrics(generatedMap, qaCase);
+  const corridorRouteMetrics = corridors.map((corridor) => getCorridorRouteMetrics(corridor, regionsById));
+  const corridorTunnelHits = getCorridorRoomTunnels(corridors, roomCellOwners);
+  const maxCorridorSpan = Math.max(0, ...corridorRouteMetrics.map((metric) => metric.maxSpan || 0));
+  const maxStraightRun = Math.max(0, ...corridorRouteMetrics.map((metric) => metric.maxStraightRun || 0));
+  const maxDetourRatio = Math.max(0, ...corridorRouteMetrics.map((metric) => metric.detourRatio || 0));
+  const longSpanThreshold = Math.max(24, Math.round(qaCase.roomCount * 3.4));
+  const straightRunThreshold = Math.max(18, Math.round(qaCase.roomCount * 2.4));
+  const detourRatioThreshold = 3.25;
+  const averageNearestThreshold = Math.max(13, Math.round(qaCase.roomCount * 1.55));
 
   if (regions.length !== qaCase.roomCount || generatedMap.config?.roomCount !== qaCase.roomCount) {
     issues.push(makeMapQaIssue({
@@ -530,6 +837,127 @@ function collectGeneratedMapIssues({ qaCase, generatedMap, deterministicMap, alt
     }));
   }
 
+
+  if (corridorTunnelHits.length) {
+    issues.push(makeMapQaIssue({
+      severity: "error",
+      area: "routing",
+      check: "corridor-room-tunneling",
+      id,
+      title,
+      path: "generatedMap.corridors.floorCells",
+      message: `${corridorTunnelHits.length} corridor cell(s) pass through non-endpoint room floor.` ,
+      recommendation: "Re-route corridors so they touch endpoint rooms only at valid anchors/doors and never tunnel below unrelated room floors.",
+      details: {
+        hitCount: corridorTunnelHits.length,
+        examples: corridorTunnelHits.slice(0, 24),
+      },
+    }));
+  }
+
+  const excessiveSpanCorridors = corridorRouteMetrics.filter((metric) => metric.maxSpan > longSpanThreshold && metric.length > longSpanThreshold);
+  if (excessiveSpanCorridors.length) {
+    issues.push(makeMapQaIssue({
+      severity: "warning",
+      area: "routing",
+      check: "corridor-excessive-span",
+      id,
+      title,
+      path: "generatedMap.corridors.floorCells",
+      message: `${excessiveSpanCorridors.length} corridor(s) span an unusually large portion of the map.` ,
+      recommendation: "Prefer more compact placement, intermediate junctions, or graph/layout scoring that penalizes map-wide connector corridors.",
+      details: {
+        thresholdCells: longSpanThreshold,
+        maxCorridorSpan,
+        corridors: excessiveSpanCorridors.slice(0, 12),
+      },
+    }));
+  }
+
+  const longStraightCorridors = corridorRouteMetrics.filter((metric) => metric.maxStraightRun > straightRunThreshold);
+  if (longStraightCorridors.length) {
+    issues.push(makeMapQaIssue({
+      severity: "warning",
+      area: "routing",
+      check: "corridor-long-straight-run",
+      id,
+      title,
+      path: "generatedMap.corridors.floorCells",
+      message: `${longStraightCorridors.length} corridor(s) contain an unusually long straight run.` ,
+      recommendation: "Penalize very long rectilinear runs or insert junction/turn constraints so generated maps do not become strip-like.",
+      details: {
+        thresholdCells: straightRunThreshold,
+        maxStraightRun,
+        corridors: longStraightCorridors.slice(0, 12),
+      },
+    }));
+  }
+
+  const highDetourCorridors = corridorRouteMetrics.filter((metric) => metric.length > 12 && metric.detourRatio > detourRatioThreshold);
+  if (highDetourCorridors.length) {
+    issues.push(makeMapQaIssue({
+      severity: "warning",
+      area: "routing",
+      check: "route-detour-ratio",
+      id,
+      title,
+      path: "generatedMap.corridors.floorCells",
+      message: `${highDetourCorridors.length} corridor route(s) are much longer than their endpoint distance.` ,
+      recommendation: "Use route scoring to avoid pathfinding detours that imply hidden tunneling, doubled-back corridors, or excessive canvas-wide routing.",
+      details: {
+        threshold: detourRatioThreshold,
+        maxDetourRatio,
+        corridors: highDetourCorridors.slice(0, 12),
+      },
+    }));
+  }
+
+  if (layoutQuality.aspectRatio > 2.85 || (layoutQuality.aspectRatio > 0 && layoutQuality.aspectRatio < 0.35)) {
+    issues.push(makeMapQaIssue({
+      severity: "warning",
+      area: "layout",
+      check: "layout-aspect-ratio-outlier",
+      id,
+      title,
+      path: "generatedMap.dungeonMask.floorCells",
+      message: `Map content is unusually oblong (aspect ratio ${layoutQuality.aspectRatio}).`,
+      recommendation: "Improve placement scoring so rooms occupy a compact composition instead of a long strip.",
+      details: layoutQuality,
+    }));
+  }
+
+  if (layoutQuality.roomDistribution.averageNearestDistance > averageNearestThreshold) {
+    issues.push(makeMapQaIssue({
+      severity: "warning",
+      area: "layout",
+      check: "layout-room-distribution-outlier",
+      id,
+      title,
+      path: "generatedMap.regions.floorCells",
+      message: `Rooms are unusually sparse; average nearest-room distance is ${layoutQuality.roomDistribution.averageNearestDistance} cells.`,
+      recommendation: "Compact the placement graph or penalize isolated clusters when generating layout candidates.",
+      details: {
+        thresholdCells: averageNearestThreshold,
+        ...layoutQuality.roomDistribution,
+        floorBounds: layoutQuality.floorBounds,
+      },
+    }));
+  }
+
+  if (layoutQuality.canvasUsage > 0 && layoutQuality.canvasUsage < 0.08 && (layoutQuality.floorWidthRatio < 0.32 || layoutQuality.floorHeightRatio < 0.32)) {
+    issues.push(makeMapQaIssue({
+      severity: "warning",
+      area: "layout",
+      check: "layout-unused-canvas-waste",
+      id,
+      title,
+      path: "generatedMap.dungeonMask.floorCells",
+      message: `Map uses only ${(layoutQuality.canvasUsage * 100).toFixed(1)}% of the available canvas envelope.` ,
+      recommendation: "Center and scale layout candidates or reject candidates that waste most of the available canvas.",
+      details: layoutQuality,
+    }));
+  }
+
   if (signature !== deterministicSignature) {
     issues.push(makeMapQaIssue({
       severity: "error",
@@ -613,6 +1041,14 @@ function collectGeneratedMapIssues({ qaCase, generatedMap, deterministicMap, alt
       expectedDoorCount,
       deterministic: signature === deterministicSignature,
       seedVaries: signature !== alternateSignature,
+      corridorTunnelCount: corridorTunnelHits.length,
+      excessiveSpanCorridors: excessiveSpanCorridors.length,
+      longStraightCorridors: longStraightCorridors.length,
+      highDetourCorridors: highDetourCorridors.length,
+      maxCorridorSpan,
+      maxStraightRun,
+      maxDetourRatio,
+      layoutQuality,
     },
   };
 }
@@ -633,10 +1069,15 @@ function runSingleMapCase(qaCase, normalized) {
     const elapsedMs = Math.round((typeof performance !== "undefined" ? performance.now() : Date.now()) - startedAt);
     const validation = collectGeneratedMapIssues({ qaCase: { ...qaCase, qaMode: normalized.qaMode }, generatedMap, deterministicMap, alternateSeedMap });
     const issueSummary = summarizeMapQaIssues(validation.issues);
+    const status = issueSummary.error ? "failed" : issueSummary.warning ? "review" : "passed";
+    const quality = calculateMapQualityScores({ issueSummary, metrics: validation.metrics, status });
+    const debugSvg = normalized.includeFailingSvg && issueSummary.total
+      ? buildQaDebugSvg(generatedMap, qaCase, validation)
+      : "";
 
     return {
       id: qaCase.id,
-      status: issueSummary.error ? "failed" : issueSummary.warning ? "review" : "passed",
+      status,
       themeId: qaCase.theme.id,
       themeName: qaCase.theme.name,
       context: qaCase.context,
@@ -650,7 +1091,13 @@ function runSingleMapCase(qaCase, normalized) {
       errorCount: issueSummary.error,
       warningCount: issueSummary.warning,
       infoCount: issueSummary.info,
-      metrics: validation.metrics,
+      quality,
+      qualityBand: getMapQualityBand(quality.overallQaScore),
+      metrics: {
+        ...validation.metrics,
+        quality,
+        qualityBand: getMapQualityBand(quality.overallQaScore),
+      },
       signature: createMapSignature(generatedMap),
       issues: validation.issues,
       debugPayload: normalized.includeFullPayloads || issueSummary.total
@@ -670,6 +1117,8 @@ function runSingleMapCase(qaCase, normalized) {
             dungeonBrief: qaCase.dungeonBrief,
             metrics: validation.metrics,
             issues: validation.issues,
+            debugSvg: debugSvg || undefined,
+            debugSvgNote: debugSvg ? "QA structural SVG: room/corridor cell reconstruction for failed or review maps." : undefined,
             generatedMapSummary: {
               regions: asArray(generatedMap.regions).map((region) => ({
                 id: region.id,
@@ -721,11 +1170,105 @@ function runSingleMapCase(qaCase, normalized) {
       errorCount: 1,
       warningCount: 0,
       infoCount: 0,
-      metrics: {},
+      quality: { overallQaScore: 0, structureScore: 0, routingScore: 0, layoutScore: 0, readabilityScore: 0 },
+      qualityBand: "broken",
+      metrics: { quality: { overallQaScore: 0, structureScore: 0, routingScore: 0, layoutScore: 0, readabilityScore: 0 }, qualityBand: "broken" },
       issues: [issue],
       debugPayload: { qaCase, issue },
     };
   }
+}
+
+
+function createEmptyBreakdownEntry(key, label = key) {
+  return {
+    key,
+    label,
+    generated: 0,
+    passed: 0,
+    review: 0,
+    failed: 0,
+    errors: 0,
+    warnings: 0,
+    scoreTotal: 0,
+    averageScore: 0,
+  };
+}
+
+function addMapToBreakdown(map, entry) {
+  entry.generated += 1;
+  entry.passed += map.status === "passed" ? 1 : 0;
+  entry.review += map.status === "review" ? 1 : 0;
+  entry.failed += map.status === "failed" ? 1 : 0;
+  entry.errors += Number(map.errorCount || 0);
+  entry.warnings += Number(map.warningCount || 0);
+  entry.scoreTotal += Number(map.quality?.overallQaScore ?? map.metrics?.quality?.overallQaScore ?? 0);
+  entry.averageScore = entry.generated ? Number((entry.scoreTotal / entry.generated).toFixed(1)) : 0;
+  return entry;
+}
+
+function buildMapBreakdown(maps = [], keyGetter, labelGetter = keyGetter) {
+  const entries = new Map();
+  asArray(maps).forEach((map) => {
+    const key = cleanString(keyGetter(map), "unknown");
+    const label = cleanString(labelGetter(map), key);
+    const entry = entries.get(key) || createEmptyBreakdownEntry(key, label);
+    addMapToBreakdown(map, entry);
+    entries.set(key, entry);
+  });
+  return [...entries.values()]
+    .map(({ scoreTotal, ...entry }) => entry)
+    .sort((a, b) => b.failed - a.failed || b.warnings - a.warnings || a.averageScore - b.averageScore || a.label.localeCompare(b.label));
+}
+
+function getRoomCountBucket(map = {}) {
+  const count = Number(map.roomCount || map.metrics?.regions || 0);
+  if (count <= 4) return "1–4";
+  if (count <= 8) return "5–8";
+  if (count <= 12) return "9–12";
+  return "13–16";
+}
+
+function buildWorstCaseIndex(report = {}, limit = 30) {
+  const candidates = getMapDebugExportCandidates(report, limit);
+  return candidates
+    .map((item, index) => ({
+      rank: index + 1,
+      id: item.id,
+      status: item.status,
+      qualityBand: item.qualityBand || item.metrics?.qualityBand,
+      quality: item.quality || item.metrics?.quality,
+      themeId: item.themeId,
+      themeName: item.themeName,
+      context: item.context,
+      roomCount: item.roomCount,
+      scale: item.scale,
+      complexity: item.complexity,
+      visualStyle: item.visualStyle,
+      seed: item.seed,
+      issueCount: item.issueCount,
+      errorCount: item.errorCount,
+      warningCount: item.warningCount,
+      issueSummary: asArray(item.issues).slice(0, 8).map((issue) => ({
+        severity: issue.severity,
+        area: issue.area,
+        check: issue.check,
+        message: issue.message,
+      })),
+      routing: {
+        corridorTunnelCount: item.metrics?.corridorTunnelCount || 0,
+        maxCorridorSpan: item.metrics?.maxCorridorSpan || 0,
+        maxStraightRun: item.metrics?.maxStraightRun || 0,
+        maxDetourRatio: item.metrics?.maxDetourRatio || 0,
+      },
+      layout: {
+        aspectRatio: item.metrics?.layoutQuality?.aspectRatio,
+        canvasUsage: item.metrics?.layoutQuality?.canvasUsage,
+        averageNearestDistance: item.metrics?.layoutQuality?.roomDistribution?.averageNearestDistance,
+      },
+      debugJsonFilename: `debug/maps/${getMapDebugBaseName(item)}.json`,
+      debugSvgFilename: item.debugPayload?.debugSvg ? `debug/svg/${getMapDebugBaseName(item)}.svg` : null,
+    }));
 }
 
 function summarizeGeneratedMaps(generated = []) {
@@ -746,6 +1289,20 @@ function summarizeGeneratedMaps(generated = []) {
       summary.seedVariationWarnings += item.metrics?.seedVaries === false ? 1 : 0;
       summary.overlapFailures += Number(item.metrics?.overlapCount || 0) > 0 ? 1 : 0;
       summary.unreachableFailures += Number(item.metrics?.unreachableCount || 0) > 0 ? 1 : 0;
+      summary.corridorTunnelFailures += Number(item.metrics?.corridorTunnelCount || 0) > 0 ? 1 : 0;
+      summary.longCorridorWarnings += (Number(item.metrics?.excessiveSpanCorridors || 0) > 0 || Number(item.metrics?.longStraightCorridors || 0) > 0) ? 1 : 0;
+      summary.routingDetourWarnings += Number(item.metrics?.highDetourCorridors || 0) > 0 ? 1 : 0;
+      summary.layoutOutliers += asArray(item.issues).some((issue) => issue.area === "layout") ? 1 : 0;
+      summary.svgDebugPayloads += item.debugPayload?.debugSvg ? 1 : 0;
+      summary.debugCandidatesAvailable += isRequiredMapDebugCandidate(item) || isOptionalMapDebugCandidate(item) ? 1 : 0;
+      const score = Number(item.quality?.overallQaScore ?? item.metrics?.quality?.overallQaScore ?? 0);
+      summary.totalOverallQaScore += score;
+      summary.totalLayoutScore += Number(item.quality?.layoutScore ?? item.metrics?.quality?.layoutScore ?? 0);
+      summary.totalRoutingScore += Number(item.quality?.routingScore ?? item.metrics?.quality?.routingScore ?? 0);
+      summary.totalStructureScore += Number(item.quality?.structureScore ?? item.metrics?.quality?.structureScore ?? 0);
+      summary.totalReadabilityScore += Number(item.quality?.readabilityScore ?? item.metrics?.quality?.readabilityScore ?? 0);
+      const band = item.qualityBand || item.metrics?.qualityBand || getMapQualityBand(score);
+      summary.qualityBands[band] = (summary.qualityBands[band] || 0) + 1;
       return summary;
     },
     {
@@ -763,6 +1320,18 @@ function summarizeGeneratedMaps(generated = []) {
       seedVariationWarnings: 0,
       overlapFailures: 0,
       unreachableFailures: 0,
+      corridorTunnelFailures: 0,
+      longCorridorWarnings: 0,
+      routingDetourWarnings: 0,
+      layoutOutliers: 0,
+      debugCandidatesAvailable: 0,
+      svgDebugPayloads: 0,
+      totalOverallQaScore: 0,
+      totalLayoutScore: 0,
+      totalRoutingScore: 0,
+      totalStructureScore: 0,
+      totalReadabilityScore: 0,
+      qualityBands: {},
     },
   );
   const count = Math.max(1, maps.length);
@@ -774,6 +1343,17 @@ function summarizeGeneratedMaps(generated = []) {
     averageCorridors: Number((totals.totalCorridors / count).toFixed(1)),
     averageDoors: Number((totals.totalDoors / count).toFixed(1)),
     averageFloorCells: Math.round(totals.totalFloorCells / count),
+    averageOverallQaScore: Number((totals.totalOverallQaScore / count).toFixed(1)),
+    averageLayoutScore: Number((totals.totalLayoutScore / count).toFixed(1)),
+    averageRoutingScore: Number((totals.totalRoutingScore / count).toFixed(1)),
+    averageStructureScore: Number((totals.totalStructureScore / count).toFixed(1)),
+    averageReadabilityScore: Number((totals.totalReadabilityScore / count).toFixed(1)),
+    breakdowns: {
+      byContext: buildMapBreakdown(maps, (item) => item.context),
+      byTheme: buildMapBreakdown(maps, (item) => item.themeId, (item) => item.themeName || item.themeId),
+      byRoomCount: buildMapBreakdown(maps, (item) => String(item.roomCount), (item) => `${item.roomCount} rooms`),
+      byRoomCountBucket: buildMapBreakdown(maps, getRoomCountBucket, (item) => `${getRoomCountBucket(item)} rooms`),
+    },
   };
 }
 
@@ -821,7 +1401,7 @@ function getGeneratedMaps(report = {}) {
   return asArray(getBatchSuite(report).metrics?.generated);
 }
 
-export function buildMapBatchQaMarkdown(report = {}) {
+export function buildMapBatchQaMarkdown(report = {}, { debugExportStats = null } = {}) {
   const suite = getBatchSuite(report);
   const analytics = suite.metrics?.analytics || {};
   const generated = getGeneratedMaps(report);
@@ -852,11 +1432,42 @@ export function buildMapBatchQaMarkdown(report = {}) {
   lines.push(`- Seed Variation Warnings: ${analytics.seedVariationWarnings ?? 0}`);
   lines.push(`- Room Overlap Failures: ${analytics.overlapFailures ?? 0}`);
   lines.push(`- Unreachable Room Failures: ${analytics.unreachableFailures ?? 0}`);
+  lines.push(`- Corridor Tunneling Failures: ${analytics.corridorTunnelFailures ?? 0}`);
+  lines.push(`- Long Corridor Warnings: ${analytics.longCorridorWarnings ?? 0}`);
+  lines.push(`- Routing Detour Warnings: ${analytics.routingDetourWarnings ?? 0}`);
+  lines.push(`- Layout Outliers: ${analytics.layoutOutliers ?? 0}`);
+  lines.push(`- Debug Candidates Available: ${analytics.debugCandidatesAvailable ?? analytics.svgDebugPayloads ?? 0}`);
+  if (debugExportStats) {
+    lines.push(`- Debug Files Written: ${debugExportStats.debugMapCount ?? 0} maps / ${debugExportStats.debugSvgCount ?? 0} SVG`);
+    lines.push(`- Failed Maps Missing Debug Payload: ${debugExportStats.failedMissingDebugPayload ?? 0}`);
+  }
+  lines.push(`- Avg QA Score: ${analytics.averageOverallQaScore ?? 0}/100`);
+  lines.push(`- Avg Structure Score: ${analytics.averageStructureScore ?? 0}/100`);
+  lines.push(`- Avg Routing Score: ${analytics.averageRoutingScore ?? 0}/100`);
+  lines.push(`- Avg Layout Score: ${analytics.averageLayoutScore ?? 0}/100`);
+  lines.push(`- Avg Readability Score: ${analytics.averageReadabilityScore ?? 0}/100`);
+  lines.push(`- Score Bands: ${Object.entries(analytics.qualityBands || {}).map(([key, value]) => `${key} ${value}`).join(", ") || "none"}`);
   lines.push(`- Avg Rooms: ${analytics.averageRooms ?? 0}`);
   lines.push(`- Avg Corridors: ${analytics.averageCorridors ?? 0}`);
   lines.push(`- Avg Doors: ${analytics.averageDoors ?? 0}`);
   lines.push(`- Avg Runtime: ${analytics.averageElapsedMs ?? 0}ms`);
   lines.push("");
+  lines.push("## Breakdown");
+  const breakdowns = analytics.breakdowns || {};
+  const renderBreakdown = (label, entries = []) => {
+    lines.push(`### ${label}`);
+    if (!entries.length) {
+      lines.push("No entries.");
+      return;
+    }
+    entries.slice(0, 18).forEach((entry) => {
+      lines.push(`- ${entry.label}: ${entry.generated} maps · ${entry.failed} failed · ${entry.review} review · ${entry.passed} passed · avg score ${entry.averageScore}/100`);
+    });
+    lines.push("");
+  };
+  renderBreakdown("By Context", breakdowns.byContext || []);
+  renderBreakdown("By Room Count Bucket", breakdowns.byRoomCountBucket || []);
+  renderBreakdown("By Theme", breakdowns.byTheme || []);
   lines.push("## Most Common Issues");
   if (!grouped.length) {
     lines.push("No grouped issues.");
@@ -864,6 +1475,18 @@ export function buildMapBatchQaMarkdown(report = {}) {
     grouped.slice(0, 24).forEach((group) => {
       lines.push(`- ${group.severity.toUpperCase()} · ${group.area}/${group.check} · ${group.count}× — ${group.message}`);
       if (group.ids?.length) lines.push(`  - Examples: ${group.ids.join(", ")}`);
+    });
+  }
+  lines.push("");
+  lines.push("## Worst Cases");
+  const worstCases = buildWorstCaseIndex(report, debugExportStats?.worstCaseLimit || 20);
+  if (!worstCases.length) {
+    lines.push("No worst-case candidates.");
+  } else {
+    worstCases.forEach((item) => {
+      lines.push(`- #${item.rank} ${item.id} · ${item.status} · score ${item.quality?.overallQaScore ?? "?"}/100 · ${item.themeName} · ${item.context} · ${item.roomCount} rooms`);
+      lines.push(`  - Issues: ${item.errorCount} error(s), ${item.warningCount} warning(s); routing tunnel ${item.routing.corridorTunnelCount}, max straight ${item.routing.maxStraightRun}, aspect ${item.layout.aspectRatio ?? "?"}`);
+      lines.push(`  - Files: ${item.debugJsonFilename}${item.debugSvgFilename ? ` · ${item.debugSvgFilename}` : ""}`);
     });
   }
   lines.push("");
@@ -876,7 +1499,10 @@ export function buildMapBatchQaMarkdown(report = {}) {
   } else {
     reviewMaps.forEach((item) => {
       lines.push(`- ${item.id} · ${item.themeName} · ${item.context} · ${item.roomCount} rooms · ${item.status} · ${item.issueCount} issue(s)`);
+      lines.push(`  - Score: ${item.quality?.overallQaScore ?? item.metrics?.quality?.overallQaScore ?? "?"}/100 (${item.qualityBand || item.metrics?.qualityBand || "unknown"})`);
       lines.push(`  - Metrics: ${item.metrics?.regions ?? "?"} regions, ${item.metrics?.corridors ?? "?"} corridors, ${item.metrics?.doors ?? "?"} doors, ${item.metrics?.floorCells ?? "?"} floor cells`);
+      lines.push(`  - Routing: ${item.metrics?.corridorTunnelCount ?? 0} tunnel cells, max span ${item.metrics?.maxCorridorSpan ?? 0}, max straight ${item.metrics?.maxStraightRun ?? 0}, max detour ${item.metrics?.maxDetourRatio ?? 0}`);
+      lines.push(`  - Layout: aspect ${item.metrics?.layoutQuality?.aspectRatio ?? "?"}, avg nearest room ${item.metrics?.layoutQuality?.roomDistribution?.averageNearestDistance ?? "?"}`);
       lines.push(`  - Seed: ${item.seed}`);
     });
   }
@@ -885,39 +1511,444 @@ export function buildMapBatchQaMarkdown(report = {}) {
   return lines.join("\n");
 }
 
-function buildMapBatchQaCompactReport(report = {}) {
+function sanitizeQaFilenamePart(value, fallback = "map") {
+  const text = cleanString(value, fallback).toLowerCase();
+  return text.replace(/[^a-z0-9._-]+/g, "-").replace(/^-+|-+$/g, "") || fallback;
+}
+
+function getMapDebugBaseName(item = {}) {
+  return sanitizeQaFilenamePart(item.id || item.seed || "map");
+}
+
+function buildMapBatchQaCompactReport(report = {}, { inlineDebugSvg = false, debugCandidateIds = null, debugExportStats = null } = {}) {
+  const includeDebugReference = (item) => debugCandidateIds == null || debugCandidateIds.has(item.id);
   const compactReport = {
     ...report,
+    exportProfile: {
+      kind: "compact-browser-map-qa-report",
+      note: inlineDebugSvg
+        ? "Debug SVG is embedded inline because this report was exported as standalone JSON. Prefer ZIP export for large runs."
+        : "Heavy debug SVG payloads are omitted from compact JSON. ZIP debug/full exports store SVG in separate files.",
+      debugExportStats: debugExportStats || undefined,
+    },
     suites: asArray(report.suites).map((suite) => ({
       ...suite,
       metrics: {
         ...suite.metrics,
-        generated: asArray(suite.metrics?.generated).map((item) => ({
-          id: item.id,
-          status: item.status,
-          themeId: item.themeId,
-          themeName: item.themeName,
-          context: item.context,
-          roomCount: item.roomCount,
-          scale: item.scale,
-          complexity: item.complexity,
-          visualStyle: item.visualStyle,
-          seed: item.seed,
-          elapsedMs: item.elapsedMs,
-          issueCount: item.issueCount,
-          errorCount: item.errorCount,
-          warningCount: item.warningCount,
-          metrics: item.metrics,
-        })),
+        generated: asArray(suite.metrics?.generated).map((item) => {
+          const hasDebugSvg = Boolean(item.debugPayload?.debugSvg);
+          const shouldReferenceDebug = hasDebugSvg && includeDebugReference(item);
+          return {
+            id: item.id,
+            status: item.status,
+            themeId: item.themeId,
+            themeName: item.themeName,
+            context: item.context,
+            roomCount: item.roomCount,
+            scale: item.scale,
+            complexity: item.complexity,
+            visualStyle: item.visualStyle,
+            seed: item.seed,
+            elapsedMs: item.elapsedMs,
+            issueCount: item.issueCount,
+            errorCount: item.errorCount,
+            warningCount: item.warningCount,
+            quality: item.quality || item.metrics?.quality,
+            qualityBand: item.qualityBand || item.metrics?.qualityBand,
+            metrics: item.metrics,
+            debugPayload: hasDebugSvg && inlineDebugSvg
+              ? {
+                  debugSvg: item.debugPayload.debugSvg,
+                  debugSvgNote: item.debugPayload.debugSvgNote,
+                }
+              : shouldReferenceDebug
+                ? {
+                    debugSvgFilename: `debug/svg/${getMapDebugBaseName(item)}.svg`,
+                    debugJsonFilename: `debug/maps/${getMapDebugBaseName(item)}.json`,
+                    debugSvgNote: item.debugPayload.debugSvgNote,
+                  }
+                : undefined,
+          };
+        }),
       },
     })),
   };
   return compactReport;
 }
 
-function downloadTextFile({ content, filename, mimeType }) {
+function createCrc32Table() {
+  const table = new Uint32Array(256);
+  for (let index = 0; index < table.length; index += 1) {
+    let value = index;
+    for (let bit = 0; bit < 8; bit += 1) {
+      value = value & 1 ? 0xedb88320 ^ (value >>> 1) : value >>> 1;
+    }
+    table[index] = value >>> 0;
+  }
+  return table;
+}
+
+const CRC32_TABLE = createCrc32Table();
+const ZIP_REVOKE_DELAY_MS = 60_000;
+const LONG_MAP_EXPORT_STRING_LIMIT = 8_000;
+const MAX_MAP_EXPORT_DEPTH = 8;
+const MAP_HEAVY_EXPORT_KEYS = new Set(["debugSvg", "svg", "html", "markup", "renderedHtml"]);
+
+function calculateCrc32(bytes) {
+  let crc = 0xffffffff;
+  for (let index = 0; index < bytes.length; index += 1) {
+    crc = CRC32_TABLE[(crc ^ bytes[index]) & 0xff] ^ (crc >>> 8);
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function getDosDateTime(date = new Date()) {
+  const year = Math.max(1980, date.getFullYear());
+  return {
+    time: (date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2),
+    date: ((year - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate(),
+  };
+}
+
+function pushUint16(bytes, value) {
+  bytes.push(value & 0xff, (value >>> 8) & 0xff);
+}
+
+function pushUint32(bytes, value) {
+  bytes.push(value & 0xff, (value >>> 8) & 0xff, (value >>> 16) & 0xff, (value >>> 24) & 0xff);
+}
+
+function concatUint8Arrays(parts) {
+  const totalLength = parts.reduce((sum, part) => sum + part.length, 0);
+  const output = new Uint8Array(totalLength);
+  let offset = 0;
+  parts.forEach((part) => {
+    output.set(part, offset);
+    offset += part.length;
+  });
+  return output;
+}
+
+function getExportTimestamp() {
+  return new Date().toISOString().replace(/[:.]/g, "-");
+}
+
+function stripMapQaDebugPayload(value, depth = 0) {
+  if (value == null) return value;
+  if (typeof value === "string") {
+    if (value.length <= LONG_MAP_EXPORT_STRING_LIMIT) return value;
+    return `${value.slice(0, LONG_MAP_EXPORT_STRING_LIMIT)}… [truncated ${value.length - LONG_MAP_EXPORT_STRING_LIMIT} chars]`;
+  }
+  if (typeof value !== "object") return value;
+  if (depth >= MAX_MAP_EXPORT_DEPTH) return "[truncated: depth limit]";
+  if (Array.isArray(value)) return value.map((item) => stripMapQaDebugPayload(item, depth + 1));
+
+  return Object.fromEntries(
+    Object.entries(value)
+      .filter(([key]) => !MAP_HEAVY_EXPORT_KEYS.has(key))
+      .map(([key, entry]) => [key, stripMapQaDebugPayload(entry, depth + 1)]),
+  );
+}
+
+function isRequiredMapDebugCandidate(item = {}) {
+  return item?.status === "failed" || Number(item?.errorCount || 0) > 0;
+}
+
+function isOptionalMapDebugCandidate(item = {}) {
+  const score = Number(item?.quality?.overallQaScore ?? item?.metrics?.quality?.overallQaScore ?? 100);
+  return Boolean(item?.debugPayload)
+    || Number(item?.issueCount || 0) > 0
+    || item?.status === "review"
+    || score < 72;
+}
+
+function sortMapDebugCandidates(maps = []) {
+  return [...asArray(maps)].sort((a, b) => scoreMapDebugExportCandidate(b) - scoreMapDebugExportCandidate(a));
+}
+
+function getMapDebugExportStats(report = {}, candidates = [], { worstCaseLimit = DEFAULT_MAP_DEBUG_EXPORT_LIMIT } = {}) {
+  const allMaps = getGeneratedMaps(report);
+  const candidateIds = new Set(asArray(candidates).map((item) => item.id));
+  const failedMaps = allMaps.filter(isRequiredMapDebugCandidate);
+  const failedMissingDebugPayloadIds = failedMaps
+    .filter((item) => !candidateIds.has(item.id) || !item.debugPayload)
+    .map((item) => item.id);
+  return {
+    debugMapCount: candidates.length,
+    debugSvgCount: candidates.filter((item) => item.debugPayload?.debugSvg).length,
+    failedMapCount: failedMaps.length,
+    failedMissingDebugPayload: failedMissingDebugPayloadIds.length,
+    failedMissingDebugPayloadIds,
+    worstCaseLimit,
+  };
+}
+
+function scoreMapDebugExportCandidate(item = {}) {
+  return (
+    Number(item.errorCount || 0) * 140 +
+    Number(item.warningCount || 0) * 45 +
+    Number(item.issueCount || 0) * 65 +
+    Number(item.metrics?.corridorTunnelCount || 0) * 110 +
+    Number(item.metrics?.excessiveSpanCorridors || 0) * 55 +
+    Number(item.metrics?.longStraightCorridors || 0) * 50 +
+    Number(item.metrics?.highDetourCorridors || 0) * 35 +
+    (item.status === "failed" ? 160 : 0) +
+    (item.status === "review" ? 50 : 0)
+  );
+}
+
+function getMapDebugExportCandidates(report = {}, limit = DEFAULT_MAP_DEBUG_EXPORT_LIMIT) {
+  const normalizedLimit = normalizeInteger(limit, DEFAULT_MAP_DEBUG_EXPORT_LIMIT, 1, 500);
+  const maps = getGeneratedMaps(report);
+  const required = sortMapDebugCandidates(maps.filter(isRequiredMapDebugCandidate));
+  const requiredIds = new Set(required.map((item) => item.id));
+  const optional = sortMapDebugCandidates(
+    maps.filter((item) => !requiredIds.has(item.id) && isOptionalMapDebugCandidate(item)),
+  ).slice(0, Math.max(0, normalizedLimit - required.length));
+  return [...required, ...optional];
+}
+
+function getSafeMapDebugPayload(item = {}) {
+  return stripMapQaDebugPayload({
+    id: item.id,
+    status: item.status,
+    themeId: item.themeId,
+    themeName: item.themeName,
+    context: item.context,
+    roomCount: item.roomCount,
+    scale: item.scale,
+    complexity: item.complexity,
+    visualStyle: item.visualStyle,
+    seed: item.seed,
+    elapsedMs: item.elapsedMs,
+    issueCount: item.issueCount,
+    errorCount: item.errorCount,
+    warningCount: item.warningCount,
+    metrics: item.metrics,
+    issues: item.issues,
+    debugPayload: item.debugPayload,
+  });
+}
+
+function buildMapBatchQaDebugIndex(report = {}, candidates = [], debugExportStats = null) {
+  const suite = getBatchSuite(report);
+  return {
+    exportProfile: {
+      kind: "debug-browser-map-qa-report",
+      note: "Compact report plus separate debug JSON/SVG files for failed, warning, or outlier maps.",
+      debugPayloadCount: debugExportStats?.debugMapCount ?? candidates.length,
+      svgPayloadCount: debugExportStats?.debugSvgCount ?? candidates.filter((item) => item.debugPayload?.debugSvg).length,
+      failedMapCount: debugExportStats?.failedMapCount,
+      failedMissingDebugPayload: debugExportStats?.failedMissingDebugPayload,
+      failedMissingDebugPayloadIds: debugExportStats?.failedMissingDebugPayloadIds,
+    },
+    generatedAt: report.generatedAt,
+    metadata: report.metadata,
+    summary: report.summary,
+    analytics: suite.metrics?.analytics,
+    worstCasesFilename: "debug/worst-cases.json",
+    candidates: candidates.map((item) => ({
+      id: item.id,
+      status: item.status,
+      themeId: item.themeId,
+      themeName: item.themeName,
+      context: item.context,
+      roomCount: item.roomCount,
+      issueCount: item.issueCount,
+      errorCount: item.errorCount,
+      warningCount: item.warningCount,
+      quality: item.quality || item.metrics?.quality,
+      qualityBand: item.qualityBand || item.metrics?.qualityBand,
+      metrics: item.metrics,
+      debugJsonFilename: `debug/maps/${getMapDebugBaseName(item)}.json`,
+      debugSvgFilename: item.debugPayload?.debugSvg ? `debug/svg/${getMapDebugBaseName(item)}.svg` : null,
+    })),
+  };
+}
+
+function buildMapBatchQaReadme({ exportMode, debugCount, svgCount, failedMissingDebugPayload = 0, timestamp }) {
+  const mode = normalizeExportMode(exportMode);
+  const lines = [
+    "Cruor Map Batch QA Export",
+    "",
+    `Export Mode: ${mode}`,
+    `Timestamp: ${timestamp}`,
+    "",
+  ];
+
+  if (mode === "compact") {
+    lines.push("This ZIP contains a compact JSON report and Markdown summary for aggregate analysis.");
+    lines.push("Debug SVG and heavy generated payloads are omitted.");
+  } else if (mode === "debug") {
+    lines.push("This ZIP contains a compact JSON report, Markdown summary, worst-case index, and separate debug files for failed/warning/outlier maps.");
+    lines.push("It intentionally does not include the giant full.json payload. Use Full ZIP only when you need that.");
+    lines.push(`Debug JSON files: ${debugCount}`);
+    lines.push(`Debug SVG files: ${svgCount}`);
+    lines.push(`Failed maps missing debug payload: ${failedMissingDebugPayload}`);
+    lines.push("Use debug/debug-index.json and debug/worst-cases.json to match map IDs to debug files.");
+  } else {
+    lines.push("This ZIP contains the compact report, Markdown summary, debug index/files, and the full in-browser QA report object.");
+    lines.push("Use only when you intentionally need the complete payload.");
+  }
+
+  return `${lines.join("\n")}\n`;
+}
+
+async function deflateRawBytes(bytes) {
+  if (typeof CompressionStream === "undefined") return null;
+  try {
+    const stream = new Blob([bytes]).stream().pipeThrough(new CompressionStream("deflate-raw"));
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  } catch (error) {
+    return null;
+  }
+}
+
+async function buildZipBlob(files = [], { compress = true } = {}) {
+  const encoder = new TextEncoder();
+  const now = new Date();
+  const dos = getDosDateTime(now);
+  const localParts = [];
+  const centralParts = [];
+  let offset = 0;
+
+  for (const file of files) {
+    const nameBytes = encoder.encode(file.name);
+    const contentBytes = typeof file.content === "string" ? encoder.encode(file.content) : file.content;
+    const compressedBytes = compress ? await deflateRawBytes(contentBytes) : null;
+    const shouldUseCompression = compressedBytes && compressedBytes.length > 0 && compressedBytes.length < contentBytes.length;
+    const payloadBytes = shouldUseCompression ? compressedBytes : contentBytes;
+    const compressionMethod = shouldUseCompression ? 8 : 0;
+    const crc = calculateCrc32(contentBytes);
+    const compressedSize = payloadBytes.length;
+    const uncompressedSize = contentBytes.length;
+
+    const localHeader = [];
+    pushUint32(localHeader, 0x04034b50);
+    pushUint16(localHeader, 20);
+    pushUint16(localHeader, 0x0800);
+    pushUint16(localHeader, compressionMethod);
+    pushUint16(localHeader, dos.time);
+    pushUint16(localHeader, dos.date);
+    pushUint32(localHeader, crc);
+    pushUint32(localHeader, compressedSize);
+    pushUint32(localHeader, uncompressedSize);
+    pushUint16(localHeader, nameBytes.length);
+    pushUint16(localHeader, 0);
+
+    const localPart = concatUint8Arrays([new Uint8Array(localHeader), nameBytes, payloadBytes]);
+    localParts.push(localPart);
+
+    const centralHeader = [];
+    pushUint32(centralHeader, 0x02014b50);
+    pushUint16(centralHeader, 20);
+    pushUint16(centralHeader, 20);
+    pushUint16(centralHeader, 0x0800);
+    pushUint16(centralHeader, compressionMethod);
+    pushUint16(centralHeader, dos.time);
+    pushUint16(centralHeader, dos.date);
+    pushUint32(centralHeader, crc);
+    pushUint32(centralHeader, compressedSize);
+    pushUint32(centralHeader, uncompressedSize);
+    pushUint16(centralHeader, nameBytes.length);
+    pushUint16(centralHeader, 0);
+    pushUint16(centralHeader, 0);
+    pushUint16(centralHeader, 0);
+    pushUint16(centralHeader, 0);
+    pushUint32(centralHeader, 0);
+    pushUint32(centralHeader, offset);
+
+    centralParts.push(concatUint8Arrays([new Uint8Array(centralHeader), nameBytes]));
+    offset += localPart.length;
+  }
+
+  const centralDirectory = concatUint8Arrays(centralParts);
+  const centralOffset = offset;
+  const endRecord = [];
+  pushUint32(endRecord, 0x06054b50);
+  pushUint16(endRecord, 0);
+  pushUint16(endRecord, 0);
+  pushUint16(endRecord, files.length);
+  pushUint16(endRecord, files.length);
+  pushUint32(endRecord, centralDirectory.length);
+  pushUint32(endRecord, centralOffset);
+  pushUint16(endRecord, 0);
+
+  return new Blob([concatUint8Arrays([...localParts, centralDirectory, new Uint8Array(endRecord)])], { type: "application/zip" });
+}
+
+export async function buildMapBatchQaZipBlob(report = {}, {
+  filenamePrefix = "cruor-map-batch-qa",
+  timestamp = getExportTimestamp(),
+  exportMode = "debug",
+  debugLimit = DEFAULT_MAP_DEBUG_EXPORT_LIMIT,
+} = {}) {
+  const mode = normalizeExportMode(exportMode);
+  const debugCandidates = mode === "debug" || mode === "full" ? getMapDebugExportCandidates(report, debugLimit) : [];
+  const debugExportStats = mode === "debug" || mode === "full"
+    ? getMapDebugExportStats(report, debugCandidates, { worstCaseLimit: debugLimit })
+    : null;
+  const debugCandidateIds = new Set(debugCandidates.map((item) => item.id));
+  const compactReport = buildMapBatchQaCompactReport(report, { inlineDebugSvg: false, debugCandidateIds, debugExportStats });
+  const files = [
+    {
+      name: `${filenamePrefix}-${timestamp}.compact.json`,
+      content: JSON.stringify(compactReport, null, 2),
+    },
+    {
+      name: `${filenamePrefix}-${timestamp}.md`,
+      content: buildMapBatchQaMarkdown(report, { debugExportStats }),
+    },
+  ];
+
+  if (mode === "debug" || mode === "full") {
+    files.push({
+      name: "debug/debug-index.json",
+      content: JSON.stringify(buildMapBatchQaDebugIndex(report, debugCandidates, debugExportStats), null, 2),
+    });
+    files.push({
+      name: "debug/worst-cases.json",
+      content: JSON.stringify(buildWorstCaseIndex(report, debugLimit), null, 2),
+    });
+
+    debugCandidates.forEach((item) => {
+      const baseName = getMapDebugBaseName(item);
+      files.push({
+        name: `debug/maps/${baseName}.json`,
+        content: JSON.stringify(getSafeMapDebugPayload(item), null, 2),
+      });
+      if (item.debugPayload?.debugSvg) {
+        files.push({
+          name: `debug/svg/${baseName}.svg`,
+          content: item.debugPayload.debugSvg,
+        });
+      }
+    });
+  }
+
+  if (mode === "full") {
+    files.push({
+      name: `${filenamePrefix}-${timestamp}.full.json`,
+      content: JSON.stringify(report, null, 2),
+    });
+  }
+
+  files.push({
+    name: "README.txt",
+    content: buildMapBatchQaReadme({
+      exportMode: mode,
+      debugCount: debugExportStats?.debugMapCount ?? debugCandidates.length,
+      svgCount: debugExportStats?.debugSvgCount ?? debugCandidates.filter((item) => item.debugPayload?.debugSvg).length,
+      failedMissingDebugPayload: debugExportStats?.failedMissingDebugPayload ?? 0,
+      timestamp,
+    }),
+  });
+
+  return buildZipBlob(files, { compress: true });
+}
+
+function downloadBlobFile({ blob, filename }) {
   if (typeof document === "undefined") return;
-  const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
@@ -929,24 +1960,30 @@ function downloadTextFile({ content, filename, mimeType }) {
   window.setTimeout(() => {
     anchor.remove();
     URL.revokeObjectURL(url);
-  }, 60_000);
+  }, ZIP_REVOKE_DELAY_MS);
 }
 
-function getExportTimestamp() {
-  return new Date().toISOString().replace(/[:.]/g, "-");
-}
-
-export function downloadMapBatchQaReport(report = {}, { format = "json", filenamePrefix = "cruor-map-batch-qa" } = {}) {
+export async function downloadMapBatchQaReport(report = {}, {
+  format = "zip",
+  filenamePrefix = "cruor-map-batch-qa",
+  exportMode = "debug",
+  debugLimit = DEFAULT_MAP_DEBUG_EXPORT_LIMIT,
+} = {}) {
   const timestamp = getExportTimestamp();
+  const mode = normalizeExportMode(exportMode);
   const isMarkdown = format === "markdown";
-  const filename = `${filenamePrefix}-${timestamp}.${isMarkdown ? "md" : "json"}`;
-  const content = isMarkdown
-    ? buildMapBatchQaMarkdown(report)
-    : JSON.stringify(buildMapBatchQaCompactReport(report), null, 2);
-  downloadTextFile({
-    content,
-    filename,
-    mimeType: isMarkdown ? "text/markdown;charset=utf-8" : "application/json;charset=utf-8",
+  const isZip = format === "zip";
+  const blob = isZip
+    ? await buildMapBatchQaZipBlob(report, { filenamePrefix, timestamp, exportMode: mode, debugLimit })
+    : new Blob([
+        isMarkdown
+          ? buildMapBatchQaMarkdown(report)
+          : JSON.stringify(buildMapBatchQaCompactReport(report, { inlineDebugSvg: true }), null, 2),
+      ], { type: isMarkdown ? "text/markdown;charset=utf-8" : "application/json;charset=utf-8" });
+
+  downloadBlobFile({
+    blob,
+    filename: `${filenamePrefix}-${timestamp}${isZip ? `-${mode}` : ""}.${isZip ? "zip" : isMarkdown ? "md" : "json"}`,
   });
 }
 

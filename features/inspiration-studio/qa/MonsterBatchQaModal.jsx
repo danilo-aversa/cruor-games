@@ -1,7 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { StudioToolModalShell } from "../components/StudioToolModalShell.jsx";
 import { StudioIcon } from "../components/StudioIcon.jsx";
+import { STUDIO_TEST_IDS } from "./studio-test-presets.js";
 import {
+  MONSTER_BATCH_QA_VERSION,
   buildMonsterBatchQaMarkdown,
   downloadMonsterBatchQaReport,
   getMonsterBatchQaCostWarning,
@@ -21,6 +23,8 @@ const EXPORT_MODES = Object.freeze([
   { id: "debug", label: "Debug ZIP", help: "Compact report plus full payloads for failed/outlier monsters. Best default for analysis." },
   { id: "full", label: "Full ZIP", help: "Largest export. Includes every payload kept by the browser run." },
 ]);
+
+const TEST_ID = STUDIO_TEST_IDS.monsterBatch;
 
 function asArray(value) {
   if (!value) return [];
@@ -168,7 +172,31 @@ function OutlierTable({ generated = [], statusTone = "idle" }) {
   );
 }
 
-export function MonsterBatchQaModal({ isOpen, onClose }) {
+function normalizePresetParams(params = {}) {
+  const crMin = Number.isFinite(Number(params.crMin)) ? Number(params.crMin) : DEFAULT_CR_MIN;
+  const crMax = Number.isFinite(Number(params.crMax)) ? Number(params.crMax) : DEFAULT_CR_MAX;
+  const normalizedCrMin = Math.max(0, Math.min(30, crMin));
+  const normalizedCrMax = Math.max(0, Math.min(30, crMax));
+  const qaMode = QA_MODES.some((mode) => mode.id === params.qaMode) ? params.qaMode : "realistic";
+  const exportMode = EXPORT_MODES.some((mode) => mode.id === params.exportMode) ? params.exportMode : "debug";
+
+  return {
+    count: clampCount(params.count ?? DEFAULT_COUNT),
+    crMin: Math.min(normalizedCrMin, normalizedCrMax),
+    crMax: Math.max(normalizedCrMin, normalizedCrMax),
+    seed: String(params.seed || "cruor-studio-qa"),
+    qaMode,
+    includeOptionalSlots: params.includeOptionalSlots !== false,
+    includeFullPayloads: Boolean(params.includeFullPayloads),
+    exportMode,
+  };
+}
+
+function getDefaultPresetName(params = {}) {
+  return `Monster Batch QA · ${params.count || DEFAULT_COUNT} · CR ${params.crMin ?? DEFAULT_CR_MIN}–${params.crMax ?? DEFAULT_CR_MAX}`;
+}
+
+export function MonsterBatchQaModal({ isOpen, onClose, presetRun = null, onPresetRunConsumed, onSavePreset }) {
   const [count, setCount] = useState(DEFAULT_COUNT);
   const [crMin, setCrMin] = useState(DEFAULT_CR_MIN);
   const [crMax, setCrMax] = useState(DEFAULT_CR_MAX);
@@ -190,6 +218,45 @@ export function MonsterBatchQaModal({ isOpen, onClose }) {
     onClose?.();
   }
 
+  function getCurrentPresetParams() {
+    return normalizePresetParams({
+      count,
+      crMin,
+      crMax,
+      seed,
+      qaMode,
+      includeOptionalSlots,
+      includeFullPayloads,
+      exportMode,
+    });
+  }
+
+  function applyPresetParams(params = {}) {
+    const normalized = normalizePresetParams(params);
+    setCount(normalized.count);
+    setCrMin(normalized.crMin);
+    setCrMax(normalized.crMax);
+    setSeed(normalized.seed);
+    setQaMode(normalized.qaMode);
+    setIncludeOptionalSlots(normalized.includeOptionalSlots);
+    setIncludeFullPayloads(normalized.includeFullPayloads);
+    setExportMode(normalized.exportMode);
+    return normalized;
+  }
+
+  function savePreset() {
+    const params = getCurrentPresetParams();
+    const name = window.prompt("Preset name", getDefaultPresetName(params));
+    if (!name?.trim()) return;
+
+    onSavePreset?.({
+      testId: TEST_ID,
+      name: name.trim(),
+      version: MONSTER_BATCH_QA_VERSION,
+      params,
+    });
+  }
+
   const costWarning = useMemo(() => getMonsterBatchQaCostWarning(count), [count]);
   const suite = report?.suites?.find((item) => item.id === "monster-batch-generation") || report?.suites?.[0];
   const generated = suite?.metrics?.generated || [];
@@ -197,33 +264,52 @@ export function MonsterBatchQaModal({ isOpen, onClose }) {
   const summary = report?.summary || { total: 0, error: 0, warning: 0, info: 0 };
   const qaResultTone = getQaResultTone(report, summary, analytics, runState);
 
-  function runQa() {
+  function runQa(paramsOverride = null, { autoDownload = false } = {}) {
+    const params = normalizePresetParams(paramsOverride || getCurrentPresetParams());
     setRunState("running");
     setError("");
     setCopyState("idle");
-    setExportState("idle");
+    setExportState(autoDownload ? "exporting" : "idle");
 
     window.requestAnimationFrame(() => {
-      window.setTimeout(() => {
+      window.setTimeout(async () => {
         try {
           const result = runMonsterBatchQa({
-          count: clampCount(count),
-          crMin,
-          crMax,
-          seed,
-          qaMode,
-          includeOptionalSlots,
-          includeFullPayloads,
+            count: params.count,
+            crMin: params.crMin,
+            crMax: params.crMax,
+            seed: params.seed,
+            qaMode: params.qaMode,
+            includeOptionalSlots: params.includeOptionalSlots,
+            includeFullPayloads: params.includeFullPayloads,
           });
           setReport(result);
           setRunState("complete");
+
+          if (autoDownload) {
+            try {
+              await downloadMonsterBatchQaReport(result, { format: "zip", exportMode: params.exportMode });
+              setExportState("complete");
+            } catch (exportError) {
+              setExportState("failed");
+              setError(exportError?.message || String(exportError));
+            }
+          }
         } catch (runError) {
           setError(runError?.message || String(runError));
           setRunState("error");
+          setExportState("idle");
         }
       }, 40);
     });
   }
+
+  useEffect(() => {
+    if (!isOpen || !presetRun || presetRun.testId !== TEST_ID) return;
+    const params = applyPresetParams(presetRun.params);
+    runQa(params, { autoDownload: true });
+    onPresetRunConsumed?.(presetRun.runToken || presetRun.id);
+  }, [isOpen, presetRun?.runToken]);
 
   async function copyMarkdown() {
     if (!report) return;
@@ -374,13 +460,17 @@ export function MonsterBatchQaModal({ isOpen, onClose }) {
             </div>
           ) : null}
           <div className="studio-qa-run-row">
-            <button className="studio-button studio-button--primary studio-qa-run-button" type="button" disabled={isRunning} onClick={runQa}>
+            <button className="studio-button studio-button--primary studio-qa-run-button" type="button" disabled={isRunning} onClick={() => runQa()}>
               <StudioIcon name={runState === "running" ? "fa-spinner" : "fa-play"} />
               {runState === "running" ? "Running…" : "Run Monster Batch QA"}
             </button>
             <button className="studio-button studio-qa-run-button" type="button" disabled={isRunning || !report} onClick={copyMarkdown}>
               <StudioIcon name="fa-copy" />
               {copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy Failed" : "Copy Markdown"}
+            </button>
+            <button className="studio-button studio-qa-run-button" type="button" disabled={isRunning} onClick={savePreset}>
+              <StudioIcon name="fa-bookmark" />
+              Save Preset
             </button>
           </div>
         </section>

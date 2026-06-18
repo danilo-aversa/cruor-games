@@ -76,6 +76,12 @@ import { CoverageMatrixModal } from "./coverage/CoverageMatrixModal.jsx";
 import { MonsterBatchQaModal } from "./qa/MonsterBatchQaModal.jsx";
 import { MonsterPerGraftQaModal } from "./qa/MonsterPerGraftQaModal.jsx";
 import { MapBatchQaModal } from "./qa/MapBatchQaModal.jsx";
+import {
+  STUDIO_TEST_IDS,
+  deleteStudioTestPreset,
+  readStudioTestPresets,
+  saveStudioTestPreset,
+} from "./qa/studio-test-presets.js";
 import { downloadStudioAuditBundle } from "./reports/studio-audit-bundle.report.js";
 import { normalizeMonsterGraftRules } from "../monster-composer/model/monster-graft-rules.schema.js";
 import { groupQaIssues, runMonsterQaSuite } from "../monster-composer/qa/monster-qa-suite.js";
@@ -1391,6 +1397,8 @@ export default function InspirationStudioPage() {
   const [isMonsterBatchQaOpen, setMonsterBatchQaOpen] = useState(false);
   const [isMonsterPerGraftQaOpen, setMonsterPerGraftQaOpen] = useState(false);
   const [isMapBatchQaOpen, setMapBatchQaOpen] = useState(false);
+  const [testPresets, setTestPresets] = useState(() => readStudioTestPresets());
+  const [pendingTestPresetRun, setPendingTestPresetRun] = useState(null);
   const [identityIdsUnlocked, setIdentityIdsUnlocked] = useState(false);
   const [librarySearch, setLibrarySearch] = useState("");
   const [libraryStatusFilter, setLibraryStatusFilter] = useState("all");
@@ -1646,6 +1654,40 @@ export default function InspirationStudioPage() {
   const packTitle = packSummaries.find((pack) => pack.id === draft.packId)?.title || draft.packId;
   const imageSource = imagePreviewUrl || draft.inspiration?.media?.imageUrl || "";
 
+  function handleSaveTestPreset(presetDefinition) {
+    const savedPreset = saveStudioTestPreset(presetDefinition);
+    setTestPresets(readStudioTestPresets());
+    return savedPreset;
+  }
+
+  function handleDeleteTestPreset(presetId) {
+    deleteStudioTestPreset(presetId);
+    setTestPresets(readStudioTestPresets());
+  }
+
+  function handleRunTestPreset(preset) {
+    if (!preset?.testId) return;
+    setPendingTestPresetRun({ ...preset, runToken: `${preset.id}:${Date.now()}` });
+
+    if (preset.testId === STUDIO_TEST_IDS.monsterBatch) {
+      setMonsterBatchQaOpen(true);
+      return;
+    }
+
+    if (preset.testId === STUDIO_TEST_IDS.mapBatch) {
+      setMapBatchQaOpen(true);
+      return;
+    }
+
+    if (preset.testId === STUDIO_TEST_IDS.monsterPerGraft) {
+      setMonsterPerGraftQaOpen(true);
+    }
+  }
+
+  function handlePresetRunConsumed() {
+    setPendingTestPresetRun(null);
+  }
+
   return (
     <section className="inspiration-studio" aria-label="Inspiration Studio" data-studio-ready="true">
       <header className="inspiration-studio__header inspiration-studio__header--compact inspiration-studio__header--editing">
@@ -1673,9 +1715,12 @@ export default function InspirationStudioPage() {
             batchQaOpen={isMonsterBatchQaOpen}
             perGraftQaOpen={isMonsterPerGraftQaOpen}
             mapBatchQaOpen={isMapBatchQaOpen}
+            presets={testPresets}
             onOpenMonsterBatchQa={() => setMonsterBatchQaOpen(true)}
             onOpenMonsterPerGraftQa={() => setMonsterPerGraftQaOpen(true)}
             onOpenMapBatchQa={() => setMapBatchQaOpen(true)}
+            onRunPreset={handleRunTestPreset}
+            onDeletePreset={handleDeleteTestPreset}
           />
         </div>
       </header>
@@ -1942,15 +1987,24 @@ export default function InspirationStudioPage() {
       />
       <MonsterBatchQaModal
         isOpen={isMonsterBatchQaOpen}
+        presetRun={pendingTestPresetRun}
         onClose={() => setMonsterBatchQaOpen(false)}
+        onPresetRunConsumed={handlePresetRunConsumed}
+        onSavePreset={handleSaveTestPreset}
       />
       <MonsterPerGraftQaModal
         isOpen={isMonsterPerGraftQaOpen}
+        presetRun={pendingTestPresetRun}
         onClose={() => setMonsterPerGraftQaOpen(false)}
+        onPresetRunConsumed={handlePresetRunConsumed}
+        onSavePreset={handleSaveTestPreset}
       />
       <MapBatchQaModal
         isOpen={isMapBatchQaOpen}
+        presetRun={pendingTestPresetRun}
         onClose={() => setMapBatchQaOpen(false)}
+        onPresetRunConsumed={handlePresetRunConsumed}
+        onSavePreset={handleSaveTestPreset}
       />
     </section>
   );
