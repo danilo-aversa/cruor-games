@@ -216,6 +216,62 @@ function LocationThemeRoomProgram({ regions = [] }) {
   );
 }
 
+function LocationThemeProgramCandidates({ activeCandidateId = "", candidates = [], onSelectCandidate, onUseCandidate }) {
+  const visibleCandidates = Array.isArray(candidates) ? candidates : [];
+  if (!visibleCandidates.length) return null;
+
+  return (
+    <section className="location-theme-candidates" aria-label="Theme program candidates">
+      <div className="location-theme-candidates__head">
+        <span>Program Candidates</span>
+        <strong>{visibleCandidates.length}</strong>
+      </div>
+      <div className="location-theme-candidates__list">
+        {visibleCandidates.map((candidate, index) => {
+          const active = candidate.id === activeCandidateId || (!activeCandidateId && index === 0);
+          const rooms = Array.isArray(candidate.roomBriefs) ? candidate.roomBriefs.slice(0, 5) : [];
+          return (
+            <article className={cx("location-theme-candidate-card", active && "is-active")} key={candidate.id || index}>
+              <button
+                className="location-theme-candidate-card__main"
+                type="button"
+                aria-pressed={active}
+                onClick={() => onSelectCandidate(candidate.id)}
+              >
+                <span className="location-theme-candidate-card__title">
+                  <strong>{candidate.label || `Candidate ${index + 1}`}</strong>
+                  <small>{candidate.roomCount || rooms.length || 0} rooms · {candidate.complexity || "standard"}</small>
+                </span>
+                <em>{candidate.summary || "Theme room program"}</em>
+                <span className="location-theme-candidate-card__metrics">
+                  <small>{candidate.metrics?.hazards || 0} hazards</small>
+                  <small>{candidate.metrics?.secrets || 0} secrets</small>
+                  <small>{candidate.metrics?.branches || 0} branches</small>
+                </span>
+              </button>
+              <div className="location-theme-candidate-card__rooms">
+                {rooms.map((room, roomIndex) => (
+                  <span key={room.id || roomIndex}>
+                    <strong>{String(roomIndex + 1).padStart(2, "0")}</strong>
+                    <em>{room.name || `Room ${roomIndex + 1}`}</em>
+                  </span>
+                ))}
+              </div>
+              <button
+                className="cruor-composer-control location-primary-action location-theme-use-candidate-button"
+                type="button"
+                onClick={() => onUseCandidate(candidate.id)}
+              >
+                Use This Program
+              </button>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 function normalizeRoomFieldValue(value, fallback = "") {
   return typeof value === "string" && value.trim() ? value.trim() : fallback;
 }
@@ -407,13 +463,17 @@ export function LocationBriefPanel({
   onRegenerateScratchRoom,
   onRemoveScratchRoom,
   onSelectScratchRoom,
+  onSelectThemeProgram,
   onSetScratchRoomCount,
   onUpdateScratchRoom,
+  onUseThemeProgram,
 }) {
   const selectedHorror = toChoiceArray(state.horrors)[0] || state.horror || "";
   const dungeonMode = state.dungeonMode === "scratch" ? "scratch" : "theme";
   const selectedThemeId = state.dungeonThemeId || "generic-dark-location";
   const regions = Array.isArray(state.locationRegions) ? state.locationRegions : [];
+  const themeProgramCandidates = Array.isArray(state.themeProgramCandidates) ? state.themeProgramCandidates : [];
+  const activeThemeProgramCandidateId = state.activeThemeProgramCandidateId || themeProgramCandidates[0]?.id || "";
   const activeScratchRegion = regions.find((region) => region.id === state.activeRegionId) || regions[0] || null;
 
   return (
@@ -459,6 +519,8 @@ export function LocationBriefPanel({
                   dungeonThemeId: themeId,
                   sourceAnchors: selectedTheme?.sourceAnchorIds?.length && selectedTheme?.name ? [selectedTheme.name] : current.sourceAnchors,
                   context: selectedTheme?.mapTypeBias?.[0] || current.context,
+                  themeProgramCandidates: [],
+                  activeThemeProgramCandidateId: "",
                 }));
               }}
             />
@@ -476,6 +538,8 @@ export function LocationBriefPanel({
                   dungeonThemeId: themeId,
                   sourceAnchors: selectedTheme?.sourceAnchorIds?.length && selectedTheme?.name ? [selectedTheme.name] : current.sourceAnchors,
                   context: selectedTheme?.mapTypeBias?.[0] || current.context,
+                  themeProgramCandidates: [],
+                  activeThemeProgramCandidateId: "",
                 }));
               }}
             />
@@ -486,7 +550,12 @@ export function LocationBriefPanel({
             label="Context"
             value={state.context || ""}
             options={CONTEXT_OPTIONS}
-            onChange={(context) => setState((current) => ({ ...current, context }))}
+            onChange={(context) => setState((current) => ({
+              ...current,
+              context,
+              themeProgramCandidates: [],
+              activeThemeProgramCandidateId: "",
+            }))}
           />
 
           <LocationChoiceField
@@ -500,6 +569,8 @@ export function LocationBriefPanel({
                 ...current,
                 horror,
                 horrors: horror ? [horror] : [],
+                themeProgramCandidates: [],
+                activeThemeProgramCandidateId: "",
               }))
             }
           />
@@ -511,7 +582,12 @@ export function LocationBriefPanel({
                 label="Scale"
                 value={state.dungeonScale || "medium"}
                 options={DUNGEON_SCALE_OPTIONS}
-                onChange={(dungeonScale) => setState((current) => ({ ...current, dungeonScale }))}
+                onChange={(dungeonScale) => setState((current) => ({
+                  ...current,
+                  dungeonScale,
+                  themeProgramCandidates: [],
+                  activeThemeProgramCandidateId: "",
+                }))}
               />
 
               <LocationChoiceField
@@ -519,7 +595,12 @@ export function LocationBriefPanel({
                 label="Complexity"
                 value={state.dungeonComplexity || "standard"}
                 options={DUNGEON_COMPLEXITY_OPTIONS}
-                onChange={(dungeonComplexity) => setState((current) => ({ ...current, dungeonComplexity }))}
+                onChange={(dungeonComplexity) => setState((current) => ({
+                  ...current,
+                  dungeonComplexity,
+                  themeProgramCandidates: [],
+                  activeThemeProgramCandidateId: "",
+                }))}
               />
 
               <button
@@ -527,10 +608,19 @@ export function LocationBriefPanel({
                 type="button"
                 onClick={onGenerateThemeRooms}
               >
-                Generate Theme Rooms
+                Generate Program Options
               </button>
 
-              <LocationThemeRoomProgram regions={state.locationRegions || []} />
+              {themeProgramCandidates.length ? (
+                <LocationThemeProgramCandidates
+                  activeCandidateId={activeThemeProgramCandidateId}
+                  candidates={themeProgramCandidates}
+                  onSelectCandidate={onSelectThemeProgram}
+                  onUseCandidate={onUseThemeProgram}
+                />
+              ) : (
+                <LocationThemeRoomProgram regions={state.locationRegions || []} />
+              )}
             </>
           ) : (
             <>

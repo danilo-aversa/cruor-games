@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MONSTER_BATCH_QA_VERSION } from "../../monster-composer/qa/monster-batch-qa.js";
 import { MONSTER_PER_GRAFT_QA_VERSION } from "../../monster-composer/qa/monster-per-graft-qa.js";
+import { MAP_BATCH_QA_VERSION } from "../../darken-location/map-generator/qa/map-batch-qa.js";
 import { StudioIcon } from "./StudioIcon.jsx";
 
 function formatQaVersionLabel(version = "") {
@@ -8,7 +9,7 @@ function formatQaVersionLabel(version = "") {
   return match ? match[0] : "v?";
 }
 
-export function StudioTestsMenu({ batchQaOpen = false, perGraftQaOpen = false, onOpenMonsterBatchQa, onOpenMonsterPerGraftQa }) {
+export function StudioTestsMenu({ batchQaOpen = false, perGraftQaOpen = false, mapBatchQaOpen = false, onOpenMonsterBatchQa, onOpenMonsterPerGraftQa, onOpenMapBatchQa }) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -67,6 +68,23 @@ export function StudioTestsMenu({ batchQaOpen = false, perGraftQaOpen = false, o
             </span>
             <em className="studio-tests-menu__version" aria-label={`Monster Batch QA ${formatQaVersionLabel(MONSTER_BATCH_QA_VERSION)}`}>
               {formatQaVersionLabel(MONSTER_BATCH_QA_VERSION)}
+            </em>
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            aria-haspopup="dialog"
+            aria-expanded={mapBatchQaOpen}
+            aria-controls="studio-map-batch-qa-modal"
+            onClick={() => runAction(onOpenMapBatchQa)}
+          >
+            <StudioIcon name="fa-map-location-dot" />
+            <span>
+              <strong>Map Batch QA</strong>
+              <small>Generate and validate many maps</small>
+            </span>
+            <em className="studio-tests-menu__version" aria-label={`Map Batch QA ${formatQaVersionLabel(MAP_BATCH_QA_VERSION)}`}>
+              {formatQaVersionLabel(MAP_BATCH_QA_VERSION)}
             </em>
           </button>
           <button

@@ -49,6 +49,7 @@ import { LocationSlotRail } from "./components/LocationSlotRail.jsx";
 import { CruorMapGeneratorMvp } from "../map-generator/map-generator.page.jsx";
 import {
   createLocationRegionsFromDungeonBrief,
+  createThemeDungeonBriefCandidatesFromDarkenLocationSnapshot,
   createThemeDungeonBriefFromDarkenLocationSnapshot,
 } from "../dungeon/dungeon.index.js";
 
@@ -360,7 +361,41 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     setState((current) => {
       const currentSelectedComponents = getSelectedComponents(current);
       const currentSnapshot = createLocationComposerSnapshot(current, currentSelectedComponents);
-      const dungeonBrief = createThemeDungeonBriefFromDarkenLocationSnapshot(currentSnapshot);
+      const candidates = createThemeDungeonBriefCandidatesFromDarkenLocationSnapshot(currentSnapshot, { count: 3 });
+      const primaryCandidate = candidates[0] || null;
+      const primaryBrief = primaryCandidate?.dungeonBrief || createThemeDungeonBriefFromDarkenLocationSnapshot(currentSnapshot);
+
+      return {
+        ...current,
+        dungeonMode: "theme",
+        dungeonBriefId: primaryBrief.id,
+        dungeonThemeId: primaryBrief.themeId,
+        context: primaryBrief.context || current.context,
+        sourceAnchors: primaryBrief.theme?.sourceAnchorIds?.length && primaryBrief.themeName ? [primaryBrief.themeName] : current.sourceAnchors,
+        themeProgramCandidates: candidates,
+        activeThemeProgramCandidateId: primaryCandidate?.id || "",
+      };
+    });
+    setBuilderMode("frame");
+    setDrawerOpen(false);
+    setIsMapEditing(false);
+    setTransientDraftStatus("Theme programs generated");
+  }, [setTransientDraftStatus]);
+
+  const selectThemeProgram = useCallback((candidateId) => {
+    setState((current) => ({
+      ...current,
+      activeThemeProgramCandidateId: candidateId || current.activeThemeProgramCandidateId || "",
+    }));
+  }, []);
+
+  const useThemeProgram = useCallback((candidateId) => {
+    setState((current) => {
+      const candidates = Array.isArray(current.themeProgramCandidates) ? current.themeProgramCandidates : [];
+      const selectedCandidate = candidates.find((candidate) => candidate.id === candidateId) || candidates[0];
+      const currentSelectedComponents = getSelectedComponents(current);
+      const currentSnapshot = createLocationComposerSnapshot(current, currentSelectedComponents);
+      const dungeonBrief = selectedCandidate?.dungeonBrief || createThemeDungeonBriefFromDarkenLocationSnapshot(currentSnapshot);
       const locationRegions = createLocationRegionsFromDungeonBrief(dungeonBrief);
 
       return {
@@ -373,12 +408,13 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
         locationRegions,
         activeRegionId: locationRegions[0]?.id || "",
         activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+        activeThemeProgramCandidateId: selectedCandidate?.id || current.activeThemeProgramCandidateId || "",
       };
     });
     setBuilderMode("slots");
     setDrawerOpen(false);
     setIsMapEditing(false);
-    setTransientDraftStatus("Theme rooms generated");
+    setTransientDraftStatus("Theme program applied");
   }, [setTransientDraftStatus]);
 
   const setScratchRoomCount = useCallback((roomCount) => {
@@ -568,6 +604,8 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       onAddScratchRoom={addScratchRoom}
       onGenerateThemeRooms={generateThemeRooms}
       onRegenerateScratchRoom={regenerateScratchRoom}
+      onSelectThemeProgram={selectThemeProgram}
+      onUseThemeProgram={useThemeProgram}
       onRemoveScratchRoom={removeScratchRoom}
       onSelectScratchRoom={selectScratchRoom}
       onSetScratchRoomCount={setScratchRoomCount}

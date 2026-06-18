@@ -593,6 +593,57 @@ export function getSharedRoomConnection(
   return ranked[0].connection;
 }
 
+export function createSharedRoomLinkCorridor(
+  edge,
+  from,
+  to,
+  config,
+  gridSize,
+  rng,
+  profile,
+  manualFromAnchor = null,
+  manualToAnchor = null,
+) {
+  const pureCaveContext = getContextKey(config.context || config.biome) === "cave";
+  const corridorSurfaceKind = getCorridorSurfaceProfile(config, from, to, edge);
+  const sharedConnection = getSharedRoomConnection(
+    from,
+    to,
+    gridSize,
+    rng,
+    manualFromAnchor,
+    manualToAnchor,
+    profile,
+  );
+  if (!sharedConnection) return null;
+
+  const naturalCaveConnection =
+    pureCaveContext && shouldUseOrganicTunnel(config, from, to);
+  const sharedBreachRegion = from.surfaceKind === "structure" ? to : from;
+  const sharedDoor = markMineBreachOpening(
+    decorateDoorSegment(sharedConnection.door, config, edge, "shared"),
+    config,
+    corridorSurfaceKind,
+    sharedBreachRegion,
+  );
+
+  return {
+    ...edge,
+    isRoomLink: true,
+    surfaceKind: corridorSurfaceKind,
+    corridorStyle: naturalCaveConnection
+      ? "natural-tunnel"
+      : "structured-corridor",
+    fromAnchor: sharedConnection.fromAnchor,
+    toAnchor: sharedConnection.toAnchor,
+    floorCells: [],
+    centerline: [],
+    manualWaypoints: [],
+    waypoints: [],
+    doors: naturalCaveConnection ? [] : [sharedDoor],
+  };
+}
+
 export function corridorEndpointKey(corridorId, endpoint) {
   return `${corridorId}:${endpoint}`;
 }
@@ -1398,6 +1449,221 @@ export function routeCorridors(config, regions, graph) {
   const existingCorridors = new Set();
   const usedDoorOutsideCells = new Set();
 
+  const routeRecoveredGraphEdge = (edge) => {
+    const from = regionById.get(edge.from);
+    const to = regionById.get(edge.to);
+    if (!from || !to) return null;
+
+    const edgeRng = createSeededRng(
+      hashStringToSeed(config.seed, edge.id, "corridor-recovery"),
+    );
+    const sharedRoomLink = createSharedRoomLinkCorridor(
+      edge,
+      from,
+      to,
+      config,
+      config.gridSize,
+      edgeRng,
+      routingProfile,
+    );
+    if (sharedRoomLink) return sharedRoomLink;
+
+    const pureCaveContext =
+      getContextKey(config.context || config.biome) === "cave";
+    const corridorSurfaceKind = getCorridorSurfaceProfile(
+      config,
+      from,
+      to,
+      edge,
+    );
+    const manualDoorAnchors = config.manualDoorAnchors || {};
+    const manualFromAnchor = resolveManualDoorAnchor(
+      from,
+      manualDoorAnchors[corridorEndpointKey(edge.id, "from")],
+    );
+    const manualToAnchor = resolveManualDoorAnchor(
+      to,
+      manualDoorAnchors[corridorEndpointKey(edge.id, "to")],
+    );
+    const roomBlockedCells = new Set(dynamicRoomCells);
+    const strictForbiddenOutsideCells = new Set([
+      ...dynamicRoomCells,
+      ...usedDoorOutsideCells,
+    ]);
+    const relaxedForbiddenOutsideCells = new Set(dynamicRoomCells);
+    const selectRecoveryAnchor = (region, targetRegion, manualAnchor) => {
+      if (manualAnchor) return manualAnchor;
+      return (
+        chooseDoorAnchorForRegion(
+          region,
+          targetRegion,
+          edgeRng,
+          strictForbiddenOutsideCells,
+          routingProfile,
+        ) ||
+        chooseDoorAnchorForRegion(
+          region,
+          targetRegion,
+          edgeRng,
+          relaxedForbiddenOutsideCells,
+          routingProfile,
+        ) ||
+        getClosestBoundaryAnchorToPoint(
+          region,
+          targetRegion.labelPoint,
+          config.gridSize,
+        )
+      );
+    };
+
+    const rawFromAnchor = selectRecoveryAnchor(from, to, manualFromAnchor);
+    const rawToAnchor = selectRecoveryAnchor(to, from, manualToAnchor);
+    if (!rawFromAnchor || !rawToAnchor) return null;
+
+    const fromAnchor = createCircleDoorRoomExtensionAnchor(
+      from,
+      rawFromAnchor,
+      gridW,
+      gridH,
+      dynamicRoomCells,
+    );
+    const toAnchor = createCircleDoorRoomExtensionAnchor(
+      to,
+      rawToAnchor,
+      gridW,
+      gridH,
+      dynamicRoomCells,
+    );
+
+    const allowedApproachCells = [
+      ...getAnchorApproachCells(fromAnchor),
+      ...getAnchorApproachCells(toAnchor),
+    ];
+    const buildRoutingOptions = (extraRelaxed = false) => {
+      const blocked = new Set(roomBlockedCells);
+      allowedApproachCells.forEach((cell) =>
+        blocked.delete(cellKey(cell.x, cell.y)),
+      );
+      existingCorridors.forEach((key) => blocked.delete(key));
+      if (extraRelaxed) {
+        blocked.delete(
+          cellKey(fromAnchor.outsideCell.x, fromAnchor.outsideCell.y),
+        );
+        blocked.delete(
+          cellKey(toAnchor.outsideCell.x, toAnchor.outsideCell.y),
+        );
+      }
+      const adjacentToExistingCorridors = getAdjacentCells(existingCorridors);
+      allowedApproachCells.forEach((cell) =>
+        adjacentToExistingCorridors.delete(cellKey(cell.x, cell.y)),
+      );
+      return {
+        gridW,
+        gridH,
+        blocked,
+        softBlocked: new Set(),
+        existingCorridors,
+        adjacentToExistingCorridors,
+        routingProfile,
+      };
+    };
+
+    let routingOptions = buildRoutingOptions(false);
+    let path = routePathThroughCells(
+      [fromAnchor.outsideCell, toAnchor.outsideCell],
+      routingOptions,
+    );
+    if (path.length < 2)
+      path = routeDirectFallback(
+        fromAnchor.outsideCell,
+        toAnchor.outsideCell,
+        routingOptions,
+      );
+    if (path.length < 2) {
+      routingOptions = buildRoutingOptions(true);
+      path = routePathThroughCells(
+        [fromAnchor.outsideCell, toAnchor.outsideCell],
+        routingOptions,
+      );
+    }
+    if (path.length < 2)
+      path = routeDirectFallback(
+        fromAnchor.outsideCell,
+        toAnchor.outsideCell,
+        routingOptions,
+      );
+    if (path.length < 2) return null;
+
+    usedDoorOutsideCells.add(
+      cellKey(fromAnchor.outsideCell.x, fromAnchor.outsideCell.y),
+    );
+    usedDoorOutsideCells.add(
+      cellKey(toAnchor.outsideCell.x, toAnchor.outsideCell.y),
+    );
+    addCircleDoorRoomExtensionCellToSet(fromAnchor, dynamicRoomCells);
+    addCircleDoorRoomExtensionCellToSet(toAnchor, dynamicRoomCells);
+
+    const organicTunnel = shouldUseOrganicTunnel(config, from, to);
+    const pathCells = path.map((cell) => ({ x: cell.x, y: cell.y }));
+    const floorCells = organicTunnel
+      ? buildOrganicTunnelFloorCells(
+          pathCells,
+          config,
+          edgeRng,
+          dynamicRoomCells,
+          edge.id,
+        )
+      : pathCells;
+    floorCells.forEach((cell) =>
+      existingCorridors.add(cellKey(cell.x, cell.y)),
+    );
+    const centerline = pathCells.map((cell) => ({
+      x: (cell.x + 0.5) * config.gridSize,
+      y: (cell.y + 0.5) * config.gridSize,
+    }));
+
+    const fromDoor = markMineBreachOpening(
+      decorateDoorSegment(
+        createDoorFromAnchor(fromAnchor, config.gridSize, edge.secret),
+        config,
+        edge,
+        "from",
+      ),
+      config,
+      corridorSurfaceKind,
+      from,
+    );
+    const toDoor = markMineBreachOpening(
+      decorateDoorSegment(
+        createDoorFromAnchor(toAnchor, config.gridSize, edge.secret),
+        config,
+        edge,
+        "to",
+      ),
+      config,
+      corridorSurfaceKind,
+      to,
+    );
+
+    return {
+      ...edge,
+      recoveredGraphEdge: true,
+      surfaceKind: corridorSurfaceKind,
+      corridorStyle: organicTunnel ? "natural-tunnel" : "structured-corridor",
+      fromAnchor,
+      toAnchor,
+      floorCells,
+      pathCells,
+      centerline,
+      manualWaypoints: [],
+      waypoints: dedupePoints(extractWaypoints(centerline)),
+      doors:
+        pureCaveContext && organicTunnel
+          ? []
+          : dedupeDoorSegments([fromDoor, toDoor]),
+    };
+  };
+
   const routedCorridors = graph.flatMap((edge) => {
     const from = regionById.get(edge.from);
     const to = regionById.get(edge.to);
@@ -1422,43 +1688,18 @@ export function routeCorridors(config, regions, graph) {
       to,
       edge,
     );
-    const sharedConnection = getSharedRoomConnection(
+    const sharedRoomLink = createSharedRoomLinkCorridor(
+      edge,
       from,
       to,
+      config,
       config.gridSize,
       edgeRng,
+      routingProfile,
       manualFromAnchor,
       manualToAnchor,
-      routingProfile,
     );
-    if (sharedConnection) {
-      const naturalCaveConnection =
-        pureCaveContext && shouldUseOrganicTunnel(config, from, to);
-      const sharedBreachRegion = from.surfaceKind === "structure" ? to : from;
-      const sharedDoor = markMineBreachOpening(
-        decorateDoorSegment(sharedConnection.door, config, edge, "shared"),
-        config,
-        corridorSurfaceKind,
-        sharedBreachRegion,
-      );
-      return [
-        {
-          ...edge,
-          isRoomLink: true,
-          surfaceKind: corridorSurfaceKind,
-          corridorStyle: naturalCaveConnection
-            ? "natural-tunnel"
-            : "structured-corridor",
-          fromAnchor: sharedConnection.fromAnchor,
-          toAnchor: sharedConnection.toAnchor,
-          floorCells: [],
-          centerline: [],
-          manualWaypoints: [],
-          waypoints: [],
-          doors: naturalCaveConnection ? [] : [sharedDoor],
-        },
-      ];
-    }
+    if (sharedRoomLink) return [sharedRoomLink];
     const forbiddenOutsideCells = new Set([
       ...dynamicRoomCells,
       ...usedDoorOutsideCells,
@@ -1620,7 +1861,16 @@ export function routeCorridors(config, regions, graph) {
     ];
   });
 
-  return normalizeCorridorNetwork(routedCorridors, config.gridSize);
+  const corridorIds = new Set(routedCorridors.map((corridor) => corridor.id));
+  const recoveredGraphEdges = graph
+    .filter((edge) => !corridorIds.has(edge.id))
+    .map(routeRecoveredGraphEdge)
+    .filter(Boolean);
+
+  return normalizeCorridorNetwork(
+    [...routedCorridors, ...recoveredGraphEdges],
+    config.gridSize,
+  );
 }
 
 export function extractWaypoints(centerline) {

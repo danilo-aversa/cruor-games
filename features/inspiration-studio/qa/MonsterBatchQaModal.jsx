@@ -38,6 +38,49 @@ function clampCount(value) {
   return Math.max(1, Math.min(1000, numeric));
 }
 
+function getQaResultTone(report, summary = {}, analytics = {}, runState = "idle") {
+  if (runState === "error") return "error";
+  if (!report) return "idle";
+
+  const errorCount =
+    Number(summary.error || 0) +
+    Number(analytics.failed || 0) +
+    Number(analytics.publishBlocked || 0) +
+    Number(analytics.statBlockParserFailed || 0) +
+    Number(analytics.exportFailed || 0);
+
+  if (errorCount > 0) return "error";
+
+  const warningCount =
+    Number(summary.warning || 0) +
+    Number(analytics.review || 0) +
+    Number(analytics.statBlockParserWarnings || 0) +
+    Number(analytics.parserWarnings || 0);
+
+  if (warningCount > 0) return "warning";
+  return "clean";
+}
+
+function getQaToneClass(baseClass, tone) {
+  return tone && tone !== "idle" ? `${baseClass} ${baseClass}--${tone}` : baseClass;
+}
+
+function getExportButtonClass(exportState) {
+  return `studio-tool-action studio-qa-run-button ${exportState === "exporting" ? "studio-qa-run-button--exporting" : ""} ${exportState === "complete" ? "studio-qa-run-button--downloaded" : ""}`.trim();
+}
+
+function getExportButtonIcon(exportState, fallbackIcon) {
+  if (exportState === "exporting") return "fa-spinner";
+  if (exportState === "complete") return "fa-circle-check";
+  return fallbackIcon;
+}
+
+function getExportButtonLabel(exportState, fallbackLabel) {
+  if (exportState === "exporting") return "Exporting...";
+  if (exportState === "complete") return "Downloaded";
+  return fallbackLabel;
+}
+
 function SummaryTile({ icon = "fa-chart-simple", label, value, tone = "default" }) {
   return (
     <div className={`studio-qa-summary-tile studio-qa-summary-tile--${tone}`.trim()}>
@@ -48,11 +91,11 @@ function SummaryTile({ icon = "fa-chart-simple", label, value, tone = "default" 
   );
 }
 
-function IssueGroupList({ groups = [] }) {
+function IssueGroupList({ groups = [], statusTone = "idle" }) {
   const visibleGroups = asArray(groups).slice(0, 16);
   if (!visibleGroups.length) {
     return (
-      <div className="studio-qa-empty">
+      <div className={getQaToneClass("studio-qa-empty", statusTone)}>
         <StudioIcon name="fa-circle-check" />
         <span>No issues found in this run.</span>
       </div>
@@ -76,14 +119,14 @@ function IssueGroupList({ groups = [] }) {
   );
 }
 
-function OutlierTable({ generated = [] }) {
+function OutlierTable({ generated = [], statusTone = "idle" }) {
   const outliers = asArray(generated)
     .filter((item) => item.balanceStatus === "analyzed" && (Number(item.crDelta || 0) >= 2 || Number(item.issueCount || 0) > 0 || item.publishStatus === "blocked" || item.publishStatus === "review" || item.statBlockParserStatus === "error" || item.statBlockParserStatus === "warning"))
     .slice(0, 24);
 
   if (!outliers.length) {
     return (
-      <div className="studio-qa-empty">
+      <div className={getQaToneClass("studio-qa-empty", statusTone)}>
         <StudioIcon name="fa-shield-check" />
         <span>No generated monster outliers.</span>
       </div>
@@ -152,6 +195,7 @@ export function MonsterBatchQaModal({ isOpen, onClose }) {
   const generated = suite?.metrics?.generated || [];
   const analytics = suite?.metrics?.analytics || {};
   const summary = report?.summary || { total: 0, error: 0, warning: 0, info: 0 };
+  const qaResultTone = getQaResultTone(report, summary, analytics, runState);
 
   function runQa() {
     setRunState("running");
@@ -193,7 +237,7 @@ export function MonsterBatchQaModal({ isOpen, onClose }) {
 
 
   async function exportZip() {
-    if (!report || exportState === "exporting") return;
+    if (!report || exportState === "exporting" || exportState === "complete") return;
     setExportState("exporting");
     try {
       await downloadMonsterBatchQaReport(report, { format: "zip", exportMode });
@@ -207,12 +251,12 @@ export function MonsterBatchQaModal({ isOpen, onClose }) {
   const actions = (
     <>
       <button
-        className="studio-tool-action studio-qa-run-button"
+        className={getExportButtonClass(exportState)}
         type="button"
-        disabled={isRunning || !report || exportState === "exporting"}
+        disabled={isRunning || !report || exportState === "exporting" || exportState === "complete"}
         onClick={exportZip}
       >
-        <StudioIcon name={exportState === "exporting" ? "fa-spinner" : "fa-file-zipper"} /> {exportState === "exporting" ? "Compressing…" : `Export ${EXPORT_MODES.find((mode) => mode.id === exportMode)?.label || "ZIP"}`}
+        <StudioIcon name={getExportButtonIcon(exportState, "fa-file-zipper")} /> {getExportButtonLabel(exportState, `Export ${EXPORT_MODES.find((mode) => mode.id === exportMode)?.label || "ZIP"}`)}
       </button>
     </>
   );
@@ -341,7 +385,7 @@ export function MonsterBatchQaModal({ isOpen, onClose }) {
           </div>
         </section>
 
-        <section className="studio-panel studio-panel--qa-results">
+        <section className={`studio-panel ${getQaToneClass("studio-panel--qa-results", qaResultTone)}`.trim()}>
           <header className="studio-panel__header">
             <div>
               <span><StudioIcon name="fa-chart-simple" /> Results</span>
@@ -365,7 +409,7 @@ export function MonsterBatchQaModal({ isOpen, onClose }) {
             <SummaryTile icon="fa-arrow-trend-down" label="CR -2" value={formatNumber(analytics.belowTargetBy2)} tone={analytics.belowTargetBy2 ? "warning" : "clean"} />
             <SummaryTile icon="fa-gauge-high" label="Pressure Mismatch" value={formatNumber(analytics.lowPressureMismatch)} tone={analytics.lowPressureMismatch ? "error" : "clean"} />
           </div>
-          <IssueGroupList groups={report?.groupedIssues || []} />
+          <IssueGroupList groups={report?.groupedIssues || []} statusTone={qaResultTone} />
         </section>
 
         <section className="studio-panel studio-panel--qa-outliers">
@@ -375,7 +419,7 @@ export function MonsterBatchQaModal({ isOpen, onClose }) {
               <h3>Generated Monsters to Review</h3>
             </div>
           </header>
-          <OutlierTable generated={generated} />
+          <OutlierTable generated={generated} statusTone={qaResultTone} />
         </section>
       </div>
     </StudioToolModalShell>

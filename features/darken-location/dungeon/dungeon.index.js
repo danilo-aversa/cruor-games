@@ -25,6 +25,8 @@ export {
 export {
   createDungeonBriefFromDarkenLocationSnapshot,
   createLocationRegionsFromDungeonBrief,
+  createThemeDungeonBriefCandidatesFromDarkenLocationSnapshot,
   createThemeDungeonBriefFromDarkenLocationSnapshot,
   createThemeRoomBriefs,
+  createThemeRoomProgramCandidates,
 } from "./dungeon-brief-generator.js";

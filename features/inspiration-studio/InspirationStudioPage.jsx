@@ -75,6 +75,7 @@ import { ContentHealthModal } from "./health/ContentHealthModal.jsx";
 import { CoverageMatrixModal } from "./coverage/CoverageMatrixModal.jsx";
 import { MonsterBatchQaModal } from "./qa/MonsterBatchQaModal.jsx";
 import { MonsterPerGraftQaModal } from "./qa/MonsterPerGraftQaModal.jsx";
+import { MapBatchQaModal } from "./qa/MapBatchQaModal.jsx";
 import { downloadStudioAuditBundle } from "./reports/studio-audit-bundle.report.js";
 import { normalizeMonsterGraftRules } from "../monster-composer/model/monster-graft-rules.schema.js";
 import { groupQaIssues, runMonsterQaSuite } from "../monster-composer/qa/monster-qa-suite.js";
@@ -1389,6 +1390,7 @@ export default function InspirationStudioPage() {
   const [isCoverageMatrixOpen, setCoverageMatrixOpen] = useState(false);
   const [isMonsterBatchQaOpen, setMonsterBatchQaOpen] = useState(false);
   const [isMonsterPerGraftQaOpen, setMonsterPerGraftQaOpen] = useState(false);
+  const [isMapBatchQaOpen, setMapBatchQaOpen] = useState(false);
   const [identityIdsUnlocked, setIdentityIdsUnlocked] = useState(false);
   const [librarySearch, setLibrarySearch] = useState("");
   const [libraryStatusFilter, setLibraryStatusFilter] = useState("all");
@@ -1670,8 +1672,10 @@ export default function InspirationStudioPage() {
           <StudioTestsMenu
             batchQaOpen={isMonsterBatchQaOpen}
             perGraftQaOpen={isMonsterPerGraftQaOpen}
+            mapBatchQaOpen={isMapBatchQaOpen}
             onOpenMonsterBatchQa={() => setMonsterBatchQaOpen(true)}
             onOpenMonsterPerGraftQa={() => setMonsterPerGraftQaOpen(true)}
+            onOpenMapBatchQa={() => setMapBatchQaOpen(true)}
           />
         </div>
       </header>
@@ -1943,6 +1947,10 @@ export default function InspirationStudioPage() {
       <MonsterPerGraftQaModal
         isOpen={isMonsterPerGraftQaOpen}
         onClose={() => setMonsterPerGraftQaOpen(false)}
+      />
+      <MapBatchQaModal
+        isOpen={isMapBatchQaOpen}
+        onClose={() => setMapBatchQaOpen(false)}
       />
     </section>
   );

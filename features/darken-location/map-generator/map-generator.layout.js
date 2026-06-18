@@ -577,6 +577,87 @@ export function rectsOverlapAny(rect, placed, margin = 0) {
   );
 }
 
+export function clampRoomRectToGrid(rect, gridW, gridH, margin = 3) {
+  const safeW = clamp(Math.round(rect.w || 4), 3, Math.max(3, gridW - margin * 2));
+  const safeH = clamp(Math.round(rect.h || 4), 3, Math.max(3, gridH - margin * 2));
+  return {
+    x: clamp(Math.round(rect.x || margin), margin, Math.max(margin, gridW - safeW - margin)),
+    y: clamp(Math.round(rect.y || margin), margin, Math.max(margin, gridH - safeH - margin)),
+    w: safeW,
+    h: safeH,
+  };
+}
+
+export function findNonOverlappingRoomRect(
+  preferredRect,
+  placed,
+  gridW,
+  gridH,
+  rng,
+  options = {},
+) {
+  const margin = Number.isFinite(options.margin) ? options.margin : 3;
+  const overlapMargin = Number.isFinite(options.overlapMargin)
+    ? options.overlapMargin
+    : 0;
+  const preferred = clampRoomRectToGrid(preferredRect, gridW, gridH, margin);
+  if (!rectsOverlapAny(preferred, placed, overlapMargin)) return preferred;
+
+  const offsets = [];
+  const maxRadius = Math.max(
+    12,
+    Number.isFinite(options.maxRadius)
+      ? options.maxRadius
+      : Math.ceil(Math.max(gridW, gridH) / 2),
+  );
+  for (let radius = 1; radius <= maxRadius; radius += 1) {
+    for (let dx = -radius; dx <= radius; dx += 1) {
+      offsets.push({ dx, dy: -radius });
+      offsets.push({ dx, dy: radius });
+    }
+    for (let dy = -radius + 1; dy <= radius - 1; dy += 1) {
+      offsets.push({ dx: -radius, dy });
+      offsets.push({ dx: radius, dy });
+    }
+  }
+
+  let best = null;
+  let bestScore = Number.POSITIVE_INFINITY;
+  offsets.forEach((offset) => {
+    const candidate = clampRoomRectToGrid(
+      { ...preferred, x: preferred.x + offset.dx, y: preferred.y + offset.dy },
+      gridW,
+      gridH,
+      margin,
+    );
+    if (rectsOverlapAny(candidate, placed, overlapMargin)) return;
+    const dx = candidate.x - preferred.x;
+    const dy = candidate.y - preferred.y;
+    const edgePenalty =
+      candidate.x <= margin ||
+      candidate.y <= margin ||
+      candidate.x + candidate.w >= gridW - margin ||
+      candidate.y + candidate.h >= gridH - margin
+        ? 18
+        : 0;
+    const score = dx * dx + dy * dy + edgePenalty + (rng ? rng() : 0);
+    if (score < bestScore) {
+      best = candidate;
+      bestScore = score;
+    }
+  });
+  if (best) return best;
+
+  for (let y = margin; y <= gridH - preferred.h - margin; y += 1) {
+    for (let x = margin; x <= gridW - preferred.w - margin; x += 1) {
+      const candidate = { ...preferred, x, y };
+      if (!rectsOverlapAny(candidate, placed, overlapMargin)) return candidate;
+    }
+  }
+
+  return preferred;
+}
+
 export function createChapelSideSlots(
   naveRect,
   finalRect,
@@ -868,31 +949,30 @@ export function placeChapelRegions(config, graph, rng, profile) {
       primary: false,
       variant,
     }) || { w: 5, h: 4 };
-    for (let attempt = 0; attempt < 80; attempt += 1) {
-      const x = clamp(
-        finalRect.x + finalRect.w + 1 + Math.floor(attempt / 10),
-        3,
-        gridW - fallbackSize.w - 3,
-      );
-      const y = clamp(
-        centerY - 6 + ((attempt % 10) - 5),
-        3,
-        gridH - fallbackSize.h - 3,
-      );
-      const cellRect = { x, y, ...fallbackSize };
-      if (rectsOverlapAny(cellRect, placed, 0)) continue;
-      placed.push(
-        createPlacedRegion(
-          region,
-          shape,
-          cellRect,
-          config,
-          profile.key,
-          placed.length + 1,
-        ),
-      );
-      break;
-    }
+    const preferredRect = {
+      x: finalRect.x + finalRect.w + 1 + (hashStringToSeed(config.seed, region.id, "chapel-fallback-x") % 5),
+      y: centerY - Math.floor(fallbackSize.h / 2) +
+        ((hashStringToSeed(config.seed, region.id, "chapel-fallback-y") % 9) - 4),
+      ...fallbackSize,
+    };
+    const cellRect = findNonOverlappingRoomRect(
+      preferredRect,
+      placed,
+      gridW,
+      gridH,
+      rng,
+      { margin: 3, overlapMargin: 0 },
+    );
+    placed.push(
+      createPlacedRegion(
+        region,
+        shape,
+        cellRect,
+        config,
+        profile.key,
+        placed.length + 1,
+      ),
+    );
   });
 
   return config.regions
@@ -900,6 +980,29 @@ export function placeChapelRegions(config, graph, rng, profile) {
       placed.find((placedRegion) => placedRegion.id === region.id),
     )
     .filter(Boolean);
+}
+
+export function createNobleHouseSlots(courtyard, gridW, gridH) {
+  const rawSlots = [
+    { side: "west", x: courtyard.x - 7, y: courtyard.y + 1, w: 7, h: 5 },
+    { side: "north", x: courtyard.x, y: courtyard.y - 5, w: 6, h: 5 },
+    { side: "north", x: courtyard.x + 6, y: courtyard.y - 5, w: 6, h: 5 },
+    { side: "east", x: courtyard.x + courtyard.w, y: courtyard.y, w: 7, h: 5 },
+    { side: "east", x: courtyard.x + courtyard.w, y: courtyard.y + 5, w: 7, h: 5 },
+    { side: "south", x: courtyard.x + 4, y: courtyard.y + courtyard.h, w: 7, h: 5 },
+    { side: "south", x: courtyard.x - 3, y: courtyard.y + courtyard.h, w: 7, h: 5 },
+    { side: "west", x: courtyard.x - 7, y: courtyard.y + 6, w: 7, h: 5 },
+    { side: "north", x: courtyard.x - 6, y: courtyard.y - 5, w: 6, h: 5 },
+    { side: "north", x: courtyard.x + 12, y: courtyard.y - 5, w: 6, h: 5 },
+    { side: "south", x: courtyard.x - 9, y: courtyard.y + courtyard.h, w: 6, h: 5 },
+    { side: "south", x: courtyard.x + 11, y: courtyard.y + courtyard.h, w: 6, h: 5 },
+    { side: "west", x: courtyard.x - 13, y: courtyard.y + 2, w: 6, h: 5 },
+    { side: "east", x: courtyard.x + courtyard.w + 7, y: courtyard.y + 2, w: 6, h: 5 },
+  ];
+  return rawSlots.map((slot) => ({
+    ...slot,
+    ...clampRoomRectToGrid(slot, gridW, gridH, 3),
+  }));
 }
 
 export function placeNobleHouseRegions(config, graph, rng, profile) {
@@ -912,34 +1015,7 @@ export function placeNobleHouseRegions(config, graph, rng, profile) {
   const ordered = [...config.regions].sort(
     (a, b) => roleDepth(a) - roleDepth(b) || a.id.localeCompare(b.id),
   );
-  const slots = [
-    { side: "west", x: courtyard.x - 7, y: courtyard.y + 1, w: 7, h: 5 },
-    { side: "north", x: courtyard.x, y: courtyard.y - 5, w: 6, h: 5 },
-    { side: "north", x: courtyard.x + 6, y: courtyard.y - 5, w: 6, h: 5 },
-    { side: "east", x: courtyard.x + courtyard.w, y: courtyard.y, w: 7, h: 5 },
-    {
-      side: "east",
-      x: courtyard.x + courtyard.w,
-      y: courtyard.y + 5,
-      w: 7,
-      h: 5,
-    },
-    {
-      side: "south",
-      x: courtyard.x + 4,
-      y: courtyard.y + courtyard.h,
-      w: 7,
-      h: 5,
-    },
-    {
-      side: "south",
-      x: courtyard.x - 3,
-      y: courtyard.y + courtyard.h,
-      w: 7,
-      h: 5,
-    },
-    { side: "west", x: courtyard.x - 7, y: courtyard.y + 6, w: 7, h: 5 },
-  ];
+  const slots = createNobleHouseSlots(courtyard, gridW, gridH);
   const rolePriority = {
     entrance: 0,
     connector: 1,
@@ -958,28 +1034,41 @@ export function placeNobleHouseRegions(config, graph, rng, profile) {
   arranged.forEach((region, index) => {
     const role = getPlacementRole(region);
     const slot = slots[index % slots.length];
-    const size = resolveStructuredRoomSize(region, "noble-house") || {
-      w: slot.w,
-      h: slot.h,
+    const structuredSize = resolveStructuredRoomSize(region, "noble-house");
+    const size = structuredSize || { w: slot.w, h: slot.h };
+    let preferredRect = {
+      x: slot.x,
+      y: slot.y,
+      w: Math.min(size.w, Math.max(size.w, slot.w)),
+      h: Math.min(size.h, Math.max(size.h, slot.h)),
     };
-    const cellRect = {
-      x: clamp(slot.x, 3, gridW - size.w - 3),
-      y: clamp(slot.y, 3, gridH - size.h - 3),
-      w: slot.w,
-      h: slot.h,
-    };
+
     if (role === "final") {
-      cellRect.x = courtyard.x + courtyard.w;
-      cellRect.y = courtyard.y;
-      cellRect.w = 8;
-      cellRect.h = 6;
+      preferredRect = {
+        x: courtyard.x + courtyard.w,
+        y: courtyard.y,
+        w: 8,
+        h: 6,
+      };
     }
     if (role === "secret") {
-      cellRect.x = courtyard.x + courtyard.w - 2;
-      cellRect.y = courtyard.y + courtyard.h;
-      cellRect.w = 5;
-      cellRect.h = 4;
+      preferredRect = {
+        x: courtyard.x + courtyard.w - 2,
+        y: courtyard.y + courtyard.h,
+        w: 5,
+        h: 4,
+      };
     }
+
+    const cellRect = findNonOverlappingRoomRect(
+      preferredRect,
+      placed,
+      gridW,
+      gridH,
+      rng,
+      { margin: 3, overlapMargin: 0 },
+    );
+
     placed.push(
       createPlacedRegion(
         region,

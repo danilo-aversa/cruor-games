@@ -26,6 +26,47 @@ function clampCr(value, fallback) {
   return Math.max(0, Math.min(30, numeric));
 }
 
+function getQaResultTone(report, summary = {}, analytics = {}, runState = "idle") {
+  if (runState === "error") return "error";
+  if (!report) return "idle";
+
+  const errorCount =
+    Number(summary.error || 0) +
+    Number(analytics.failed || 0) +
+    Number(analytics.publishBlocked || 0) +
+    Number(analytics.parserFailed || 0);
+
+  if (errorCount > 0) return "error";
+
+  const warningCount =
+    Number(summary.warning || 0) +
+    Number(analytics.review || 0) +
+    Number(analytics.parserWarnings || 0);
+
+  if (warningCount > 0) return "warning";
+  return "clean";
+}
+
+function getQaToneClass(baseClass, tone) {
+  return tone && tone !== "idle" ? `${baseClass} ${baseClass}--${tone}` : baseClass;
+}
+
+function getExportButtonClass(exportState) {
+  return `studio-tool-action studio-qa-run-button ${exportState === "exporting" ? "studio-qa-run-button--exporting" : ""} ${exportState === "complete" ? "studio-qa-run-button--downloaded" : ""}`.trim();
+}
+
+function getExportButtonIcon(exportState, fallbackIcon) {
+  if (exportState === "exporting") return "fa-spinner";
+  if (exportState === "complete") return "fa-circle-check";
+  return fallbackIcon;
+}
+
+function getExportButtonLabel(exportState, fallbackLabel) {
+  if (exportState === "exporting") return "Exporting...";
+  if (exportState === "complete") return "Downloaded";
+  return fallbackLabel;
+}
+
 function SummaryTile({ icon = "fa-chart-simple", label, value, tone = "default" }) {
   return (
     <div className={`studio-qa-summary-tile studio-qa-summary-tile--${tone}`.trim()}>
@@ -36,11 +77,11 @@ function SummaryTile({ icon = "fa-chart-simple", label, value, tone = "default" 
   );
 }
 
-function IssueGroupList({ groups = [] }) {
+function IssueGroupList({ groups = [], statusTone = "idle" }) {
   const visibleGroups = asArray(groups).slice(0, 18);
   if (!visibleGroups.length) {
     return (
-      <div className="studio-qa-empty">
+      <div className={getQaToneClass("studio-qa-empty", statusTone)}>
         <StudioIcon name="fa-circle-check" />
         <span>No issues found in this run.</span>
       </div>
@@ -64,14 +105,14 @@ function IssueGroupList({ groups = [] }) {
   );
 }
 
-function PerGraftTable({ cases = [] }) {
+function PerGraftTable({ cases = [], statusTone = "idle" }) {
   const visibleCases = asArray(cases)
     .filter((item) => item.status !== "pass" || item.publishStatus !== "ready" || item.parserStatus !== "pass")
     .slice(0, 36);
 
   if (!visibleCases.length) {
     return (
-      <div className="studio-qa-empty">
+      <div className={getQaToneClass("studio-qa-empty", statusTone)}>
         <StudioIcon name="fa-shield-check" />
         <span>All forced graft cases passed cleanly.</span>
       </div>
@@ -128,6 +169,7 @@ export function MonsterPerGraftQaModal({ isOpen, onClose }) {
   const cases = suite?.metrics?.cases || [];
   const analytics = suite?.metrics?.analytics || {};
   const summary = report?.summary || { total: 0, error: 0, warning: 0, info: 0 };
+  const qaResultTone = getQaResultTone(report, summary, analytics, runState);
 
   function handleClose() {
     if (isRunning) return;
@@ -171,25 +213,30 @@ export function MonsterPerGraftQaModal({ isOpen, onClose }) {
   }
 
   function exportJson() {
-    if (!report) return;
-    try {
-      setExportState("exporting");
-      downloadMonsterPerGraftQaReport(report, { format: "json" });
-      setExportState("complete");
-    } catch (exportError) {
-      setExportState("failed");
-      setError(exportError?.message || String(exportError));
-    }
+    if (!report || exportState === "exporting" || exportState === "complete") return;
+    setExportState("exporting");
+
+    window.requestAnimationFrame(() => {
+      window.setTimeout(() => {
+        try {
+          downloadMonsterPerGraftQaReport(report, { format: "json" });
+          setExportState("complete");
+        } catch (exportError) {
+          setExportState("failed");
+          setError(exportError?.message || String(exportError));
+        }
+      }, 120);
+    });
   }
 
   const actions = (
     <button
-      className="studio-tool-action studio-qa-run-button"
+      className={getExportButtonClass(exportState)}
       type="button"
-      disabled={isRunning || !report || exportState === "exporting"}
+      disabled={isRunning || !report || exportState === "exporting" || exportState === "complete"}
       onClick={exportJson}
     >
-      <StudioIcon name="fa-file-export" /> {exportState === "complete" ? "Exported" : "Export JSON"}
+      <StudioIcon name={getExportButtonIcon(exportState, "fa-file-export")} /> {getExportButtonLabel(exportState, "Export JSON")}
     </button>
   );
 
@@ -257,7 +304,7 @@ export function MonsterPerGraftQaModal({ isOpen, onClose }) {
             </div>
           </section>
 
-          <section className="studio-panel studio-panel--qa-results">
+          <section className={`studio-panel ${getQaToneClass("studio-panel--qa-results", qaResultTone)}`.trim()}>
             <header className="studio-panel__header">
               <div>
                 <span><StudioIcon name="fa-chart-simple" /> Results</span>
@@ -278,7 +325,7 @@ export function MonsterPerGraftQaModal({ isOpen, onClose }) {
               <SummaryTile icon="fa-bullseye" label="Areas" value={formatNumber(analytics.areaGrafts)} tone="default" />
               <SummaryTile icon="fa-repeat" label="Recharge" value={formatNumber(analytics.rechargeGrafts)} tone="default" />
             </div>
-            <IssueGroupList groups={report?.groupedIssues || []} />
+            <IssueGroupList groups={report?.groupedIssues || []} statusTone={qaResultTone} />
           </section>
 
           <section className="studio-panel studio-panel--qa-outliers">
@@ -288,7 +335,7 @@ export function MonsterPerGraftQaModal({ isOpen, onClose }) {
                 <h3>Cases Requiring Review</h3>
               </div>
             </header>
-            <PerGraftTable cases={cases} />
+            <PerGraftTable cases={cases} statusTone={qaResultTone} />
           </section>
         </div>
       </StudioToolModalShell>
