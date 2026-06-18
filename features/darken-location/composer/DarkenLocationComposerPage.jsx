@@ -1,14 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../map-generator/map-generator.styles.css";
 import {
+  addScratchLocationRoom,
   assignComponentToSlot,
   createInitialLocationComposerState,
   createLocationComposerSnapshot,
   createLocationMapSeed,
   LOCATION_SLOT_SCOPE_REGION,
   normalizeLocationSlotScope,
+  regenerateScratchLocationRoom,
   removeComponentFromSlot,
+  removeScratchLocationRoom,
+  setScratchLocationRoomCount,
   toArray,
+  updateScratchLocationRoom,
 } from "./model/location-composer-state.js";
 import {
   getAssignedComponentsForSlotScope,
@@ -42,6 +47,10 @@ import { LocationCompilePreview } from "./components/LocationCompilePreview.jsx"
 import { LocationMapStage } from "./components/LocationMapStage.jsx";
 import { LocationSlotRail } from "./components/LocationSlotRail.jsx";
 import { CruorMapGeneratorMvp } from "../map-generator/map-generator.page.jsx";
+import {
+  createLocationRegionsFromDungeonBrief,
+  createThemeDungeonBriefFromDarkenLocationSnapshot,
+} from "../dungeon/dungeon.index.js";
 
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -347,6 +356,76 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     }));
   }, []);
 
+  const generateThemeRooms = useCallback(() => {
+    setState((current) => {
+      const currentSelectedComponents = getSelectedComponents(current);
+      const currentSnapshot = createLocationComposerSnapshot(current, currentSelectedComponents);
+      const dungeonBrief = createThemeDungeonBriefFromDarkenLocationSnapshot(currentSnapshot);
+      const locationRegions = createLocationRegionsFromDungeonBrief(dungeonBrief);
+
+      return {
+        ...current,
+        dungeonMode: "theme",
+        dungeonBriefId: dungeonBrief.id,
+        dungeonThemeId: dungeonBrief.themeId,
+        context: dungeonBrief.context || current.context,
+        sourceAnchors: dungeonBrief.theme?.sourceAnchorIds?.length && dungeonBrief.themeName ? [dungeonBrief.themeName] : current.sourceAnchors,
+        locationRegions,
+        activeRegionId: locationRegions[0]?.id || "",
+        activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+      };
+    });
+    setBuilderMode("slots");
+    setDrawerOpen(false);
+    setIsMapEditing(false);
+    setTransientDraftStatus("Theme rooms generated");
+  }, [setTransientDraftStatus]);
+
+  const setScratchRoomCount = useCallback((roomCount) => {
+    setState((current) => setScratchLocationRoomCount(current, roomCount));
+    setDrawerOpen(false);
+    setIsMapEditing(false);
+  }, []);
+
+  const addScratchRoom = useCallback(() => {
+    setState((current) => addScratchLocationRoom(current));
+    setBuilderMode("frame");
+    setDrawerOpen(false);
+    setIsMapEditing(false);
+    setTransientDraftStatus("Room added");
+  }, [setTransientDraftStatus]);
+
+  const removeScratchRoom = useCallback((regionId) => {
+    setState((current) => removeScratchLocationRoom(current, regionId));
+    setBuilderMode("frame");
+    setDrawerOpen(false);
+    setIsMapEditing(false);
+    setTransientDraftStatus("Room removed");
+  }, [setTransientDraftStatus]);
+
+  const regenerateScratchRoom = useCallback((regionId) => {
+    setState((current) => regenerateScratchLocationRoom(current, regionId));
+    setBuilderMode("frame");
+    setDrawerOpen(false);
+    setIsMapEditing(false);
+    setTransientDraftStatus("Room regenerated");
+  }, [setTransientDraftStatus]);
+
+  const selectScratchRoom = useCallback((regionId) => {
+    setState((current) => ({
+      ...current,
+      dungeonMode: "scratch",
+      activeRegionId: regionId || current.activeRegionId,
+      activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+    }));
+    setDrawerOpen(false);
+    setIsMapEditing(false);
+  }, []);
+
+  const updateScratchRoom = useCallback((regionId, updates) => {
+    setState((current) => updateScratchLocationRoom(current, regionId, updates));
+  }, []);
+
 
   const resetComposer = useCallback(() => {
     const confirmed = window.confirm("Reset current composer?");
@@ -486,6 +565,13 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       setState={setState}
       mapRequest={mapRequest}
       modeControls={null}
+      onAddScratchRoom={addScratchRoom}
+      onGenerateThemeRooms={generateThemeRooms}
+      onRegenerateScratchRoom={regenerateScratchRoom}
+      onRemoveScratchRoom={removeScratchRoom}
+      onSelectScratchRoom={selectScratchRoom}
+      onSetScratchRoomCount={setScratchRoomCount}
+      onUpdateScratchRoom={updateScratchRoom}
       draftControls={
         uiMode === "simple" ? null : (
           <LocationDraftControls

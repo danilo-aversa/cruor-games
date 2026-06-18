@@ -239,6 +239,7 @@ export function createConfigFromNormalizedMapRequest(
       : baseConfig.sourceAnchors,
     regions: regions.length ? regions : baseConfig.regions,
     requiredRegions,
+    dungeonBrief: initialRequest.dungeonBrief || initialRequest.metadata?.dungeonBrief || null,
     normalizedMapRequest: initialRequest,
   };
 }
