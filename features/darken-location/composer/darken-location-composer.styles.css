@@ -4536,6 +4536,9 @@
   width: 100%;
   height: 100%;
   background: var(--cruor-color-transparent);
+  --cruor-map-wall-main-stroke: #b8b0b1;
+  --cruor-map-wall-shadow-stroke: var(--cruor-color-black-a360);
+  --cruor-map-wall-sketch-stroke: rgba(184, 176, 177, 0.44);
 }
 
 /* Components */
@@ -6628,4 +6631,513 @@
   display: block;
   margin-top: 2px;
   color: var(--cruor-color-hex-d0a2aa);
+}
+
+.location-component-decision-group {
+  display: grid;
+  gap: 8px;
+}
+
+.location-component-decision-group + .location-component-decision-group {
+  margin-top: 10px;
+}
+
+.location-component-decision-group__head {
+  margin-top: 0;
+}
+
+.location-component-decision-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.location-component-decision-chip {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-milk-a090);
+  background: var(--cruor-color-white-a030);
+  color: var(--cruor-color-text-a620);
+  font-size: var(--text-size-xxs);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  padding: 4px 6px;
+  text-transform: uppercase;
+}
+
+.location-stage-navigator-overlay .location-component-option[data-decision-tier="recommended"] {
+  border-color: var(--cruor-color-blood-glow-a360);
+  background: var(--cruor-color-blood-strong-a095);
+}
+
+.location-stage-navigator-overlay .location-component-option[data-decision-tier="best-fit"] {
+  border-color: var(--cruor-color-milk-a120);
+  background: var(--cruor-color-white-a030);
+}
+
+/* Step 31 — Scratch room editing UX cleanup */
+
+.location-composer[data-location-builder-mode="theme"] .location-map-frame-rail,
+.location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail {
+  align-self: stretch;
+  display: flex;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+}
+
+.location-composer[data-location-builder-mode="theme"] .location-map-frame-rail .location-brief-panel,
+.location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail .location-brief-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  height: auto;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.location-composer[data-location-builder-mode="theme"] .location-map-frame-rail .location-brief-panel__fields,
+.location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail .location-brief-panel__fields {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 4px;
+}
+
+.location-scratch-panel-section {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-gradient-linear-060-e275339f), var(--cruor-surface-card);
+  padding: 8px;
+}
+
+.location-scratch-panel-section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  border-bottom: 1px solid var(--cruor-color-milk-a055);
+  padding-bottom: 6px;
+}
+
+.location-scratch-panel-section__head span {
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.location-scratch-panel-section--list {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.location-scratch-panel-section--list .location-scratch-room-list {
+  min-height: 0;
+}
+
+.location-map-context-panel {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 22;
+  width: min(360px, calc(100% - 28px));
+  max-height: calc(100% - 28px);
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
+}
+
+.location-scratch-room-editor--map-panel {
+  border-color: var(--cruor-color-blood-glow-a500);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-060-e275339f), var(--cruor-surface-card);
+  box-shadow: var(--cruor-shadow-box-009);
+}
+
+.location-scratch-room-feature-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+
+.location-scratch-room-feature-action {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  border: 1px solid var(--cruor-color-blood-strong-a520);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
+  color: var(--cruor-color-hex-c8a2a8);
+  padding: 0 8px;
+  text-align: left;
+}
+
+.location-scratch-room-feature-action:hover,
+.location-scratch-room-feature-action:focus-visible {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
+  outline: none;
+}
+
+.location-scratch-room-feature-action i {
+  color: var(--cruor-color-hex-b33b4e);
+  font-size: var(--text-size-xs);
+}
+
+.location-scratch-room-feature-action span {
+  overflow: hidden;
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.065em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+
+
+.room-preview-feature-marker-layer,
+.room-preview-feature-markers {
+  pointer-events: none;
+}
+
+.room-preview-feature-marker__back {
+  fill: var(--cruor-color-surface-soft);
+  stroke: var(--cruor-color-milk-a070);
+  stroke-width: 1.25px;
+  vector-effect: non-scaling-stroke;
+}
+
+.room-preview-feature-marker__foreign {
+  overflow: visible;
+  pointer-events: none;
+}
+
+.room-preview-feature-marker__icon {
+  display: grid;
+  width: 16px;
+  height: 16px;
+  place-items: center;
+  color: var(--cruor-color-hex-c8a2a8);
+  font-size: 8.5px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.room-preview-feature-marker__icon i {
+  display: block;
+  line-height: 1;
+}
+
+.room-preview-feature-marker--hazard .room-preview-feature-marker__back {
+  stroke: var(--cruor-color-blood-glow-a780);
+}
+
+.room-preview-feature-marker--clue .room-preview-feature-marker__back,
+.room-preview-feature-marker--reward .room-preview-feature-marker__back {
+  stroke: var(--cruor-color-good-a320);
+}
+
+.location-scratch-room-context-menu__size-level {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 6px;
+}
+
+.location-scratch-room-size-level-group {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.location-scratch-room-size-level-toggle {
+  display: grid;
+  place-items: center;
+  height: 28px;
+  min-height: 28px;
+  border: 1px solid var(--cruor-color-milk-a060);
+  background: var(--cruor-color-black-a420);
+  color: var(--cruor-color-hex-c8a2a8);
+  padding: 0;
+  cursor: pointer;
+}
+
+.location-scratch-room-size-level-toggle:hover,
+.location-scratch-room-size-level-toggle:focus-visible {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  outline: none;
+}
+
+.location-scratch-room-size-level-toggle.is-active {
+  border-color: var(--cruor-color-blood-glow-a820);
+  background: var(--cruor-gradient-linear-080-191c9c00);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-040);
+}
+
+.location-scratch-room-size-level-toggle i {
+  font-size: 10px;
+}
+
+.location-scratch-room-context-menu {
+  z-index: 4000;
+  position: fixed;
+  display: grid;
+  gap: 10px;
+  width: min(320px, calc(100vw - 16px));
+  max-height: min(620px, calc(100vh - 16px));
+  border: 1px solid var(--cruor-color-blood-glow-a500);
+  background: var(--cruor-color-hex-09090a);
+  padding: 10px;
+  box-shadow: var(--cruor-shadow-box-026);
+  overflow: auto;
+}
+
+.location-scratch-room-context-menu__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 8px;
+  align-items: start;
+  border-bottom: 1px solid var(--cruor-color-milk-a055);
+  padding-bottom: 8px;
+}
+
+.location-scratch-room-context-menu__head span {
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.location-scratch-room-context-menu__head strong {
+  overflow: hidden;
+  grid-column: 1;
+  color: var(--cruor-color-hex-d0a2aa);
+  font-size: var(--text-size-s);
+  font-weight: 950;
+  letter-spacing: 0.07em;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-scratch-room-context-menu__head button {
+  display: grid;
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--cruor-color-milk-a060);
+  background: var(--cruor-color-black-a300);
+  color: var(--cruor-color-hex-c8a2a8);
+  cursor: pointer;
+}
+
+.location-scratch-room-context-menu__head button:hover,
+.location-scratch-room-context-menu__head button:focus-visible {
+  border-color: var(--cruor-color-blood-glow-a780);
+  color: var(--cruor-color-hex-fff0f2);
+  outline: none;
+}
+
+.location-scratch-room-context-menu__body {
+  display: grid;
+  gap: 8px;
+}
+
+.location-scratch-room-context-menu__actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+@media (max-width: 1120px) {
+  .location-map-context-panel {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    max-height: none;
+    margin-top: 10px;
+  }
+}
+
+/* Step 31.1 — keep left-rail controls compact while the rail fills the map height. */
+.location-composer[data-location-builder-mode="theme"] .location-map-frame-rail .location-brief-panel__fields,
+.location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail .location-brief-panel__fields {
+  align-content: start;
+  align-items: start;
+  grid-auto-rows: max-content;
+}
+
+.location-composer[data-location-builder-mode="theme"] .location-map-frame-rail .location-brief-panel__fields > *,
+.location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail .location-brief-panel__fields > * {
+  align-self: start;
+  width: 100%;
+}
+
+.location-composer[data-location-builder-mode="theme"] .location-map-frame-rail .cruor-frame-select-field,
+.location-composer[data-location-builder-mode="theme"] .location-map-frame-rail .cruor-frame-icon-field,
+.location-composer[data-location-builder-mode="theme"] .location-map-frame-rail .cruor-frame-range-control,
+.location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail .cruor-frame-select-field,
+.location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail .cruor-frame-icon-field,
+.location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail .cruor-frame-range-control,
+.location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail .location-scratch-panel-section,
+.location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail .location-scratch-room-list {
+  align-self: start;
+  height: auto;
+  min-height: 0;
+}
+
+.location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail .location-scratch-room-row,
+.location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail .location-scratch-room-row__main {
+  align-self: start;
+}
+
+/* Step 31.2 — Monster-style Location rail blocks + content-based height. */
+.location-composer[data-location-builder-mode="theme"] .location-map-frame-rail,
+.location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail {
+  align-self: start;
+  display: grid;
+  align-content: start;
+  align-items: start;
+  gap: 10px;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: var(--location-stage-grid-min-height);
+  overflow-x: visible;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
+}
+
+.location-map-frame-rail .location-frame-control-block {
+  display: grid;
+  align-self: start;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  border: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
+  padding: 11px;
+  box-shadow: var(--cruor-shadow-box-075);
+  overflow: visible;
+}
+
+.location-map-frame-rail .location-frame-control-block__head {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  min-width: 0;
+  border-bottom: 1px solid var(--cruor-color-milk-a055);
+  padding-bottom: 8px;
+}
+
+.location-map-frame-rail .location-frame-control-block__head span {
+  overflow: hidden;
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-map-frame-rail .location-frame-selector-stack {
+  display: grid;
+  align-content: start;
+  align-items: start;
+  grid-auto-rows: max-content;
+  gap: 8px;
+  min-width: 0;
+}
+
+.location-map-frame-rail .location-frame-selector-stack > *,
+.location-map-frame-rail .location-frame-control-block > * {
+  align-self: start;
+  width: 100%;
+  min-height: 0;
+}
+
+.location-map-frame-rail .location-brief-panel,
+.location-map-frame-rail .location-brief-panel__fields,
+.location-map-frame-rail .location-scratch-panel-section {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+}
+
+.location-map-frame-rail .location-scratch-room-list {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.location-map-frame-rail .location-scratch-room-list__head {
+  padding: 0;
+  border-bottom: 0;
+}
+
+.location-map-frame-rail .location-scratch-room-list__head span {
+  display: none;
+}
+
+.location-map-frame-rail .location-scratch-room-list__items {
+  max-height: none;
+  overflow: visible;
+}
+
+.location-map-frame-rail .cruor-frame-select-field,
+.location-map-frame-rail .cruor-frame-icon-field,
+.location-map-frame-rail .cruor-frame-range-control,
+.location-map-frame-rail .location-scratch-room-count-field,
+.location-map-frame-rail .location-primary-action,
+.location-map-frame-rail .location-scratch-room-list,
+.location-map-frame-rail .location-scratch-room-row,
+.location-map-frame-rail .location-scratch-room-row__main {
+  align-self: start;
+  height: auto;
+  min-height: 0;
+}
+
+.location-map-frame-rail .location-primary-action {
+  min-height: 34px;
 }

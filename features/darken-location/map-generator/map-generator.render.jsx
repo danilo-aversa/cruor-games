@@ -110,7 +110,7 @@ function roundTo(value, decimals = 2) {
 }
 
 export const SVG_STYLE = `
-.paper{fill:#dccaa6}.paper-texture{opacity:.75}.map-grid line{stroke:rgba(58,46,32,.17);stroke-width:1;vector-effect:non-scaling-stroke}.map-grid circle{fill:rgba(58,46,32,.22)}.floor-grid line{stroke:rgba(29,25,21,.16);stroke-width:1.05;vector-effect:non-scaling-stroke}.floor-grid circle{fill:rgba(29,25,21,.18)}.grid-style-dotted line{display:none}.grid-style-dashed line{stroke-linecap:round}.floor-fill{fill:#685D61;stroke:none}.floor-speckle circle{fill:rgba(29,25,21,.12)}.floor-grain path{fill:none;stroke:rgba(29,25,21,.11);stroke-width:.7;stroke-linecap:round;vector-effect:non-scaling-stroke}.room-floor-accent{fill:rgba(255,248,226,.26);stroke:none}.corridor-floor-accent{fill:rgba(116,91,57,.075);stroke:none}.organic-floor-accent{fill:rgba(29,25,21,.06);stroke:rgba(29,25,21,.18);stroke-width:1.15;vector-effect:non-scaling-stroke}.shape-detail{fill:none;stroke:rgba(29,25,21,.2);stroke-width:1.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.ritual-floor-ring{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.25;vector-effect:non-scaling-stroke}.corridor-centerline{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.1;stroke-dasharray:2 8;stroke-linecap:round;vector-effect:non-scaling-stroke}.external-hatching-underlay .halo-buffer{fill:none;stroke:#dccaa6;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1}.external-hatching path{fill:none;stroke:rgba(42,33,24,.28);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-shadow path{stroke:rgba(42,33,24,.32);stroke-width:7.2;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-main path{stroke:#1d1915;stroke-width:4.05;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-sketch path{stroke:rgba(29,25,21,.32);stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-breaks path{fill:none;stroke:#1d1915;stroke-width:1.45;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-breaks .crack{stroke:rgba(29,25,21,.58);stroke-width:1.1}.door-cuts .door-opening{stroke:#efe4ca;stroke-width:7;stroke-linecap:square;vector-effect:non-scaling-stroke}.door-cuts .secret-door-opening{stroke:#efe4ca;stroke-width:5;stroke-linecap:square;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}.door-symbols .door-wall-line{stroke:#1d1915;stroke-width:4.1;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-wall-sketch{stroke:rgba(29,25,21,.3);stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-panel{fill:#efe4ca;stroke:#1d1915;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .secret-door-panel{stroke-dasharray:3 3}.door-symbols .locked-door-panel{stroke-width:2.35}.door-symbols .locked-door-mark line{stroke:#1d1915;stroke-width:2.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__main path{fill:none;stroke:#1d1915;stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__sketch path{fill:none;stroke:rgba(29,25,21,.3);stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-floor{fill:#efe4ca;stroke:none;pointer-events:none}.corridor-overpass-patches .overpass-corridor-walls path{stroke:#1d1915;stroke-width:4.05;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-wall-sketch path{stroke:rgba(29,25,21,.32);stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.map-accesses .map-access-line,.map-accesses .map-access-head-line{fill:none;stroke:#1d1915;stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-stem-sketch,.map-accesses .map-access-head-sketch{fill:none;stroke:rgba(29,25,21,.3);stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-label{fill:#1d1915;font-size:8px;font-weight:900;font-family:Inter,ui-sans-serif,system-ui;letter-spacing:.08em;paint-order:stroke;stroke:#efe4ca;stroke-width:2.5px;stroke-linejoin:round}.corridor-junctions .junction-wall-line{stroke:#1d1915;stroke-width:4.0;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-wall-sketch{stroke:rgba(29,25,21,.3);stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-door-panel{fill:#efe4ca;stroke:#1d1915;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.props rect,.props circle,.props path,.props line,.props polygon,.props ellipse{fill:none;stroke:rgba(29,25,21,.62);stroke-width:1.35;vector-effect:non-scaling-stroke}.props .prop-fill{fill:rgba(29,25,21,.045)}.props .prop-light-fill{fill:rgba(255,248,226,.16)}.props .prop-fog{fill:rgba(255,248,226,.22);stroke:rgba(29,25,21,.18);stroke-width:1.05}.props .prop-water{fill:rgba(143,161,150,.24);stroke:rgba(29,25,21,.28);stroke-width:1.1}.props .prop-pit{fill:rgba(29,25,21,.12);stroke:rgba(29,25,21,.62);stroke-width:1.4}.props .prop-rubble{fill:rgba(29,25,21,.06)}.props .prop-bones{stroke:rgba(29,25,21,.7);stroke-width:1.15}.props .prop-crack{stroke:rgba(29,25,21,.5);stroke-width:1.05}.props .prop-stairs line{stroke-width:1.05}.props .prop-altar,.props .prop-tomb,.props .prop-shelf{fill:rgba(29,25,21,.045)}.labels .room-number-badge{fill:#efe4ca;stroke:#1d1915;stroke-width:2;rx:0}.labels text{fill:#1d1915;font-size:13px;font-weight:800;font-family:Inter,ui-sans-serif,system-ui}.labels .room-number{font-size:12px;font-weight:900;letter-spacing:.01em}.labels .room-name{font-size:12px;font-family:Inter,ui-sans-serif,system-ui;font-weight:700;paint-order:stroke;stroke:#efe4ca;stroke-width:4px;stroke-linejoin:round}.editor-overlays path{fill:rgba(122,67,36,0);stroke:rgba(122,67,36,0);stroke-width:0;vector-effect:non-scaling-stroke}.room-hover-highlight{pointer-events:none}.editor-overlays .room-hover-highlight__halo path,.editor-overlays .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.32);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-hover-highlight__edge path,.editor-overlays .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.92);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-hover-highlight{pointer-events:none}.editor-overlays .corridor-hover-highlight__halo{fill:none;stroke:rgba(214,184,98,.34);stroke-width:9;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .corridor-hover-highlight__line{fill:none;stroke:rgba(255,231,143,.95);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-drag-handle{cursor:move;pointer-events:all}.editor-overlays .room-drag-handle:hover{fill:rgba(122,67,36,0)}.editor-overlays .room-drag-handle.is-dragging{fill:rgba(122,67,36,0);stroke:rgba(29,25,21,0);stroke-width:0}.wall-hover-zone{stroke:rgba(122,67,36,0);stroke-width:14;stroke-linecap:square;fill:none;cursor:crosshair;pointer-events:stroke}.wall-hover-zone:hover{stroke:rgba(122,67,36,0)}.endpoint-handle{fill:#1d1915;stroke:#efe4ca;stroke-width:2;cursor:grab;pointer-events:all}.endpoint-handle.is-dragging{fill:#7a4324;cursor:grabbing}.waypoint-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:1.5;cursor:grab;pointer-events:all}.waypoint-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.2}.waypoint-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.corridor-hover-zone{fill:rgba(122,67,36,0);stroke:none;cursor:crosshair;pointer-events:all}.corridor-hover-zone:hover{fill:rgba(122,67,36,.12)}.corridor-hover-zone.is-junction:hover{fill:rgba(214,184,98,.22);stroke:rgba(214,184,98,.54);stroke-width:1.2;vector-effect:non-scaling-stroke}.corridor-add-handle{fill:#efe4ca;stroke:#7a4324;stroke-width:2;cursor:crosshair;pointer-events:all}.corridor-add-handle:hover{fill:#7a4324;stroke:#efe4ca}.corridor-add-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.4}.corridor-add-handle.is-junction:hover{fill:#1d1915;stroke:#d6b862}.wall-connect-handle{fill:#7a4324;stroke:#efe4ca;stroke-width:2;cursor:crosshair;pointer-events:all}.wall-connect-handle:hover{fill:#1d1915}.map-access-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:2.1;cursor:grab;pointer-events:all}.map-access-handle:hover{fill:#d6b862}.map-access-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.map-access-handle__icon{fill:none;stroke:#1d1915;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}.connection-preview{stroke:#7a4324;stroke-width:2.4;stroke-dasharray:7 5;stroke-linecap:round;fill:none;vector-effect:non-scaling-stroke;pointer-events:none}.connection-preview__endpoint{fill:#efe4ca;stroke:#7a4324;stroke-width:2;pointer-events:none}.circular-room-surface-cover{pointer-events:none}.level-layer--faded{opacity:.26}.level-layer--active{opacity:1}
+.paper{fill:#dccaa6}.paper-texture{opacity:.75}.map-grid line{stroke:rgba(58,46,32,.17);stroke-width:1;vector-effect:non-scaling-stroke}.map-grid circle{fill:rgba(58,46,32,.22)}.floor-grid line{stroke:rgba(29,25,21,.16);stroke-width:1.05;vector-effect:non-scaling-stroke}.floor-grid circle{fill:rgba(29,25,21,.18)}.grid-style-dotted line{display:none}.grid-style-dashed line{stroke-linecap:round}.floor-fill{fill:#685D61;stroke:none}.floor-speckle circle{fill:rgba(29,25,21,.12)}.floor-grain path{fill:none;stroke:rgba(29,25,21,.11);stroke-width:.7;stroke-linecap:round;vector-effect:non-scaling-stroke}.room-floor-accent{fill:rgba(255,248,226,.26);stroke:none}.corridor-floor-accent{fill:rgba(116,91,57,.075);stroke:none}.organic-floor-accent{fill:rgba(29,25,21,.06);stroke:rgba(29,25,21,.18);stroke-width:1.15;vector-effect:non-scaling-stroke}.shape-detail{fill:none;stroke:rgba(29,25,21,.2);stroke-width:1.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.ritual-floor-ring{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.25;vector-effect:non-scaling-stroke}.corridor-centerline{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.1;stroke-dasharray:2 8;stroke-linecap:round;vector-effect:non-scaling-stroke}.external-hatching-underlay .halo-buffer{fill:none;stroke:#dccaa6;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1}.external-hatching path{fill:none;stroke:rgba(42,33,24,.28);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-shadow path{stroke:var(--cruor-map-wall-shadow-stroke,rgba(42,33,24,.32));stroke-width:var(--cruor-map-wall-shadow-width,7.2);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-main path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-breaks path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-break-width,1.45);stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-breaks .crack{stroke:rgba(29,25,21,.58);stroke-width:1.1}.door-cuts .door-opening{stroke:#efe4ca;stroke-width:7;stroke-linecap:square;vector-effect:non-scaling-stroke}.door-cuts .secret-door-opening{stroke:#efe4ca;stroke-width:5;stroke-linecap:square;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}.door-symbols .door-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-wall-sketch{stroke:rgba(29,25,21,.3);stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-panel{fill:#efe4ca;stroke:#1d1915;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .secret-door-panel{stroke-dasharray:3 3}.door-symbols .locked-door-panel{stroke-width:2.35}.door-symbols .locked-door-mark line{stroke:#1d1915;stroke-width:2.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__main path{fill:none;stroke:#1d1915;stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__sketch path{fill:none;stroke:rgba(29,25,21,.3);stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-floor{fill:#efe4ca;stroke:none;pointer-events:none}.corridor-overpass-patches .overpass-corridor-walls path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.map-accesses .map-access-line,.map-accesses .map-access-head-line{fill:none;stroke:#1d1915;stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-stem-sketch,.map-accesses .map-access-head-sketch{fill:none;stroke:rgba(29,25,21,.3);stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-label{fill:#1d1915;font-size:8px;font-weight:900;font-family:Inter,ui-sans-serif,system-ui;letter-spacing:.08em;paint-order:stroke;stroke:#efe4ca;stroke-width:2.5px;stroke-linejoin:round}.corridor-junctions .junction-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.0);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-wall-sketch{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.3));stroke-width:var(--cruor-map-wall-sketch-width,1.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-door-panel{fill:#efe4ca;stroke:#1d1915;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.props rect,.props circle,.props path,.props line,.props polygon,.props ellipse{fill:none;stroke:rgba(29,25,21,.62);stroke-width:1.35;vector-effect:non-scaling-stroke}.props .prop-fill{fill:rgba(29,25,21,.045)}.props .prop-light-fill{fill:rgba(255,248,226,.16)}.props .prop-fog{fill:rgba(255,248,226,.22);stroke:rgba(29,25,21,.18);stroke-width:1.05}.props .prop-water{fill:rgba(143,161,150,.24);stroke:rgba(29,25,21,.28);stroke-width:1.1}.props .prop-pit{fill:rgba(29,25,21,.12);stroke:rgba(29,25,21,.62);stroke-width:1.4}.props .prop-rubble{fill:rgba(29,25,21,.06)}.props .prop-bones{stroke:rgba(29,25,21,.7);stroke-width:1.15}.props .prop-crack{stroke:rgba(29,25,21,.5);stroke-width:1.05}.props .prop-stairs line{stroke-width:1.05}.props .prop-altar,.props .prop-tomb,.props .prop-shelf{fill:rgba(29,25,21,.045)}.labels .room-number-badge{fill:#efe4ca;stroke:#1d1915;stroke-width:2;rx:0}.labels text{fill:#1d1915;font-size:13px;font-weight:800;font-family:Inter,ui-sans-serif,system-ui}.labels .room-number{font-size:12px;font-weight:900;letter-spacing:.01em}.labels .room-name{font-size:12px;font-family:Inter,ui-sans-serif,system-ui;font-weight:700;paint-order:stroke;stroke:#efe4ca;stroke-width:4px;stroke-linejoin:round}.editor-overlays path{fill:rgba(122,67,36,0);stroke:rgba(122,67,36,0);stroke-width:0;vector-effect:non-scaling-stroke}.room-hover-highlight{pointer-events:none}.editor-overlays .room-hover-highlight__halo path,.editor-overlays .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.32);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-hover-highlight__edge path,.editor-overlays .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.92);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-hover-highlight{pointer-events:none}.editor-overlays .corridor-hover-highlight__halo{fill:none;stroke:rgba(214,184,98,.34);stroke-width:9;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .corridor-hover-highlight__line{fill:none;stroke:rgba(255,231,143,.95);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-drag-handle{cursor:move;pointer-events:all}.editor-overlays .room-drag-handle:hover{fill:rgba(122,67,36,0)}.editor-overlays .room-drag-handle.is-dragging{fill:rgba(122,67,36,0);stroke:rgba(29,25,21,0);stroke-width:0}.wall-hover-zone{stroke:rgba(122,67,36,0);stroke-width:14;stroke-linecap:square;fill:none;cursor:crosshair;pointer-events:stroke}.wall-hover-zone:hover{stroke:rgba(122,67,36,0)}.endpoint-handle{fill:#1d1915;stroke:#efe4ca;stroke-width:2;cursor:grab;pointer-events:all}.endpoint-handle.is-dragging{fill:#7a4324;cursor:grabbing}.waypoint-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:1.5;cursor:grab;pointer-events:all}.waypoint-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.2}.waypoint-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.corridor-hover-zone{fill:rgba(122,67,36,0);stroke:none;cursor:crosshair;pointer-events:all}.corridor-hover-zone:hover{fill:rgba(122,67,36,.12)}.corridor-hover-zone.is-junction:hover{fill:rgba(214,184,98,.22);stroke:rgba(214,184,98,.54);stroke-width:1.2;vector-effect:non-scaling-stroke}.corridor-add-handle{fill:#efe4ca;stroke:#7a4324;stroke-width:2;cursor:crosshair;pointer-events:all}.corridor-add-handle:hover{fill:#7a4324;stroke:#efe4ca}.corridor-add-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.4}.corridor-add-handle.is-junction:hover{fill:#1d1915;stroke:#d6b862}.wall-connect-handle{fill:#7a4324;stroke:#efe4ca;stroke-width:2;cursor:crosshair;pointer-events:all}.wall-connect-handle:hover{fill:#1d1915}.map-access-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:2.1;cursor:grab;pointer-events:all}.map-access-handle:hover{fill:#d6b862}.map-access-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.map-access-handle__icon{fill:none;stroke:#1d1915;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}.connection-preview{stroke:#7a4324;stroke-width:2.4;stroke-dasharray:7 5;stroke-linecap:round;fill:none;vector-effect:non-scaling-stroke;pointer-events:none}.connection-preview__endpoint{fill:#efe4ca;stroke:#7a4324;stroke-width:2;pointer-events:none}.circular-room-surface-cover{pointer-events:none}.level-layer--faded{opacity:.26}.level-layer--active{opacity:1}.room-preview-hotspots{pointer-events:none}.room-preview-hotspot{fill:rgba(214,184,98,0);stroke:rgba(214,184,98,0);stroke-width:0;cursor:pointer;pointer-events:all;outline:none}.room-preview-hotspot:focus-visible{fill:rgba(214,184,98,.18);stroke:rgba(255,231,143,.86);stroke-width:2.4;vector-effect:non-scaling-stroke}.room-preview-hotspot.is-active{fill:rgba(255,231,143,.08)}.room-preview-hotspot.is-hovered{fill:rgba(214,184,98,.10)}.room-preview-hotspots .room-hover-highlight,.room-preview-hotspots .room-selection-highlight{pointer-events:none}.room-preview-hotspots .room-hover-highlight__halo path,.room-preview-hotspots .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.30);stroke-width:7.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-hover-highlight__edge path,.room-preview-hotspots .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.82);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__halo path,.room-preview-hotspots .room-selection-highlight__halo line{fill:none;stroke:rgba(122,67,36,.42);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__edge path,.room-preview-hotspots .room-selection-highlight__edge line{fill:none;stroke:rgba(255,238,242,.92);stroke-width:3.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 `;
 
 export const MAP_VISUAL_STYLE = `
@@ -128,10 +128,10 @@ export const MAP_VISUAL_STYLE = `
 .map-style-cruor .floor-grain path,.map-style-cruor .shape-detail,.map-style-cruor .ritual-floor-ring,.map-style-cruor .corridor-centerline{stroke:rgba(255,255,255,.28)}
 .map-style-cruor .external-hatching-underlay .halo-buffer{stroke:rgba(28,2,8,.94)}
 .map-style-cruor .external-hatching path{stroke:rgba(255,255,255,.20)}
-.map-style-cruor .wall-shadow path{stroke:rgba(255,255,255,.16);stroke-width:8.2}
-.map-style-cruor .wall-main path,.map-style-cruor .door-symbols .door-wall-line,.map-style-cruor .corridor-overpass-patches .overpass-corridor-walls path,.map-style-cruor .corridor-junctions .junction-wall-line{stroke:#fff;stroke-width:4.15}
-.map-style-cruor .wall-sketch path,.map-style-cruor .door-symbols .door-wall-sketch,.map-style-cruor .corridor-overpass-patches .overpass-corridor-wall-sketch path,.map-style-cruor .corridor-junctions .junction-wall-sketch{stroke:rgba(255,255,255,.36)}
-.map-style-cruor .wall-breaks path,.map-style-cruor .wall-breaks .crack{stroke:rgba(255,255,255,.74)}
+.map-style-cruor .wall-shadow path{stroke:var(--cruor-map-wall-shadow-stroke,rgba(255,255,255,.16));stroke-width:var(--cruor-map-wall-shadow-width,8.2)}
+.map-style-cruor .wall-main path,.map-style-cruor .door-symbols .door-wall-line,.map-style-cruor .corridor-overpass-patches .overpass-corridor-walls path,.map-style-cruor .corridor-junctions .junction-wall-line{stroke:var(--cruor-map-wall-main-stroke,#fff);stroke-width:var(--cruor-map-wall-main-width,4.15)}
+.map-style-cruor .wall-sketch path,.map-style-cruor .door-symbols .door-wall-sketch,.map-style-cruor .corridor-overpass-patches .overpass-corridor-wall-sketch path,.map-style-cruor .corridor-junctions .junction-wall-sketch{stroke:var(--cruor-map-wall-sketch-stroke,rgba(255,255,255,.36));stroke-width:var(--cruor-map-wall-sketch-width,1.15)}
+.map-style-cruor .wall-breaks path,.map-style-cruor .wall-breaks .crack{stroke:var(--cruor-map-wall-main-stroke,rgba(255,255,255,.74));stroke-width:var(--cruor-map-wall-break-width,1.45)}
 .map-style-cruor .door-cuts .door-opening{stroke:rgba(255,255,255,.30);stroke-width:7}
 .map-style-cruor .door-cuts .secret-door-opening{stroke:rgba(255,255,255,.30)}
 .map-style-cruor .door-symbols .door-panel,.map-style-cruor .corridor-junctions .junction-door-panel{fill:rgba(18,1,6,.92);stroke:#fff}
@@ -149,13 +149,13 @@ export const MAP_VISUAL_STYLE = `
 .map-style-blood .paper-texture{opacity:.18}
 .map-style-blood .map-grid line,.map-style-blood .floor-grid line{stroke:rgba(255,238,242,.10)}
 .map-style-blood .floor-fill{fill:rgba(255,238,242,.22)}
-.map-style-blood .wall-main path,.map-style-blood .door-symbols .door-wall-line,.map-style-blood .corridor-junctions .junction-wall-line{stroke:#f5d7dc}
+.map-style-blood .wall-main path,.map-style-blood .door-symbols .door-wall-line,.map-style-blood .corridor-junctions .junction-wall-line{stroke:var(--cruor-map-wall-main-stroke,#f5d7dc)}
 .map-style-blood .wall-shadow path{stroke:rgba(0,0,0,.42)}
 .map-style-blood .door-cuts .door-opening{stroke:rgba(255,238,242,.22)}
 .map-style-blood .labels .room-number-badge{fill:rgba(51,3,12,.78);stroke:#f5d7dc}.map-style-blood .labels text{fill:#fff0f2;font-family:Inter,ui-sans-serif,system-ui}.map-style-blood .labels .room-name{stroke:rgba(20,2,8,.92)}
-.map-style-bone .paper{fill:#e8dfcf}.map-style-bone .paper-texture{opacity:.28}.map-style-bone .floor-fill{fill:rgba(255,255,255,.42)}.map-style-bone .wall-main path,.map-style-bone .door-symbols .door-wall-line,.map-style-bone .corridor-junctions .junction-wall-line{stroke:#1d1915}.map-style-bone .labels .room-number-badge{fill:#fff8e6;stroke:#1d1915}.map-style-bone .labels text{fill:#1d1915;font-family:Inter,ui-sans-serif,system-ui}
-.map-style-midnight .paper{fill:url(#midnightMapBackground)}.map-style-midnight .paper-texture{opacity:.14}.map-style-midnight .map-grid line,.map-style-midnight .floor-grid line{stroke:rgba(224,238,255,.10)}.map-style-midnight .floor-fill{fill:rgba(224,238,255,.20)}.map-style-midnight .wall-main path,.map-style-midnight .door-symbols .door-wall-line,.map-style-midnight .corridor-junctions .junction-wall-line{stroke:#dcecff}.map-style-midnight .door-cuts .door-opening{stroke:rgba(224,238,255,.20)}.map-style-midnight .labels .room-number-badge{fill:rgba(2,8,22,.72);stroke:#dcecff}.map-style-midnight .labels text{fill:#ecf5ff;font-family:Inter,ui-sans-serif,system-ui}.map-style-midnight .labels .room-name{stroke:rgba(2,8,22,.92)}
-.map-style-print .paper{fill:#fff}.map-style-print .paper-texture{opacity:0}.map-style-print .map-grid line,.map-style-print .floor-grid line{stroke:rgba(0,0,0,.10)}.map-style-print .floor-fill{fill:rgba(0,0,0,.035)}.map-style-print .room-floor-accent,.map-style-print .corridor-floor-accent{fill:rgba(0,0,0,.025)}.map-style-print .wall-main path,.map-style-print .door-symbols .door-wall-line,.map-style-print .corridor-junctions .junction-wall-line{stroke:#000}.map-style-print .wall-shadow path,.map-style-print .wall-sketch path{stroke:none}.map-style-print .door-cuts .door-opening{stroke:#fff}.map-style-print .labels .room-number-badge{fill:#fff;stroke:#000}.map-style-print .labels text{fill:#000;font-family:Inter,ui-sans-serif,system-ui}.map-style-print .labels .room-name{stroke:#fff}
+.map-style-bone .paper{fill:#e8dfcf}.map-style-bone .paper-texture{opacity:.28}.map-style-bone .floor-fill{fill:rgba(255,255,255,.42)}.map-style-bone .wall-main path,.map-style-bone .door-symbols .door-wall-line,.map-style-bone .corridor-junctions .junction-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915)}.map-style-bone .labels .room-number-badge{fill:#fff8e6;stroke:#1d1915}.map-style-bone .labels text{fill:#1d1915;font-family:Inter,ui-sans-serif,system-ui}
+.map-style-midnight .paper{fill:url(#midnightMapBackground)}.map-style-midnight .paper-texture{opacity:.14}.map-style-midnight .map-grid line,.map-style-midnight .floor-grid line{stroke:rgba(224,238,255,.10)}.map-style-midnight .floor-fill{fill:rgba(224,238,255,.20)}.map-style-midnight .wall-main path,.map-style-midnight .door-symbols .door-wall-line,.map-style-midnight .corridor-junctions .junction-wall-line{stroke:var(--cruor-map-wall-main-stroke,#dcecff)}.map-style-midnight .door-cuts .door-opening{stroke:rgba(224,238,255,.20)}.map-style-midnight .labels .room-number-badge{fill:rgba(2,8,22,.72);stroke:#dcecff}.map-style-midnight .labels text{fill:#ecf5ff;font-family:Inter,ui-sans-serif,system-ui}.map-style-midnight .labels .room-name{stroke:rgba(2,8,22,.92)}
+.map-style-print .paper{fill:#fff}.map-style-print .paper-texture{opacity:0}.map-style-print .map-grid line,.map-style-print .floor-grid line{stroke:rgba(0,0,0,.10)}.map-style-print .floor-fill{fill:rgba(0,0,0,.035)}.map-style-print .room-floor-accent,.map-style-print .corridor-floor-accent{fill:rgba(0,0,0,.025)}.map-style-print .wall-main path,.map-style-print .door-symbols .door-wall-line,.map-style-print .corridor-junctions .junction-wall-line{stroke:var(--cruor-map-wall-main-stroke,#000)}.map-style-print .wall-shadow path,.map-style-print .wall-sketch path{stroke:none}.map-style-print .door-cuts .door-opening{stroke:#fff}.map-style-print .labels .room-number-badge{fill:#fff;stroke:#000}.map-style-print .labels text{fill:#000;font-family:Inter,ui-sans-serif,system-ui}.map-style-print .labels .room-name{stroke:#fff}
 `;
 
 export const EDITOR_CAVE_STYLE = `
@@ -7853,6 +7853,224 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
   );
 }
 
+function getPreviewRegionTargetId(region) {
+  if (!region || typeof region !== "object") return "";
+  return (
+    region.sourceRegionId ||
+    region.requestMetadata?.sourceRegionId ||
+    region.metadata?.sourceRegionId ||
+    region.id ||
+    ""
+  );
+}
+
+function getPreviewRegionMatchIds(region) {
+  if (!region || typeof region !== "object") return [];
+  return [
+    region.id,
+    region.sourceRegionId,
+    region.requestMetadata?.sourceRegionId,
+    region.metadata?.sourceRegionId,
+  ].filter(Boolean);
+}
+
+function isPreviewRegionTarget(region, targetId) {
+  if (!targetId) return false;
+  return getPreviewRegionMatchIds(region).includes(targetId);
+}
+
+function getPreviewRegionMarkerList(regionMarkers = {}, region) {
+  if (!regionMarkers || !region) return [];
+  const ids = getPreviewRegionMatchIds(region);
+  for (const id of ids) {
+    const markers = regionMarkers[id];
+    if (Array.isArray(markers) && markers.length) return markers;
+  }
+  return [];
+}
+
+function getPreviewRegionMarkerAnchor(region, generatedMap) {
+  if (!region) return null;
+  const labelX = region.labelPoint?.x;
+  const labelY = region.labelPoint?.y;
+  if (Number.isFinite(labelX) && Number.isFinite(labelY)) {
+    return { x: labelX, y: labelY };
+  }
+
+  const gridSize = Math.max(1, generatedMap?.config?.gridSize || DEFAULT_CONFIG.gridSize);
+  const surface = getRegionSurface(region, generatedMap, gridSize);
+  const cells = [
+    ...(Array.isArray(surface.floorCells) ? surface.floorCells : []),
+    ...(Array.isArray(surface.extensionCells) ? surface.extensionCells : []),
+  ].filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y));
+
+  if (cells.length) {
+    const mean = cells.reduce(
+      (sum, cell) => ({
+        x: sum.x + (cell.x + 0.5) * gridSize,
+        y: sum.y + (cell.y + 0.5) * gridSize,
+      }),
+      { x: 0, y: 0 },
+    );
+    return {
+      x: mean.x / cells.length,
+      y: mean.y / cells.length,
+    };
+  }
+
+  if (region.cellRect) {
+    return {
+      x: (region.cellRect.x + region.cellRect.w / 2) * gridSize,
+      y: (region.cellRect.y + region.cellRect.h / 2) * gridSize,
+    };
+  }
+  return null;
+}
+
+function renderPreviewRegionMarkers(region, generatedMap, markers) {
+  if (!Array.isArray(markers) || !markers.length) return null;
+  const anchor = getPreviewRegionMarkerAnchor(region, generatedMap);
+  if (!anchor) return null;
+  const visibleMarkers = markers.slice(0, 5);
+  const size = 16;
+  const gap = 3;
+  const width = visibleMarkers.length * size + Math.max(0, visibleMarkers.length - 1) * gap;
+  const startX = -width / 2;
+
+  return (
+    <g
+      className="room-preview-feature-markers"
+      transform={`translate(${anchor.x} ${anchor.y})`}
+      aria-hidden="true"
+    >
+      {visibleMarkers.map((marker, markerIndex) => {
+        const x = startX + markerIndex * (size + gap);
+        const iconClassName = `fa-solid ${marker?.icon || "fa-diamond"}`;
+        const markerTitle = marker?.fullLabel || marker?.label || marker?.slotId || "Assigned feature";
+        return (
+          <g
+            className={`room-preview-feature-marker room-preview-feature-marker--${marker.slotId || "slot"}`}
+            key={`${region.id}-preview-marker-${marker.slotId || markerIndex}`}
+            transform={`translate(${x} ${-size / 2})`}
+          >
+            <title>{markerTitle}</title>
+            <rect className="room-preview-feature-marker__back" x="0" y="0" width={size} height={size} />
+            <foreignObject
+              className="room-preview-feature-marker__foreign"
+              x="0"
+              y="0"
+              width={size}
+              height={size}
+            >
+              <span className="room-preview-feature-marker__icon">
+                <i className={iconClassName} aria-hidden="true" />
+              </span>
+            </foreignObject>
+          </g>
+        );
+      })}
+    </g>
+  );
+}
+
+function createPreviewRegionPayload(region) {
+  if (!region || typeof region !== "object") return null;
+  return {
+    ...region,
+    generatedRegionId: region.id || "",
+    previewTargetId: getPreviewRegionTargetId(region),
+  };
+}
+
+export function renderPreviewRoomHotspots(generatedMap, hotspotOptions = {}) {
+  const {
+    enabled = false,
+    selectedRegionId = "",
+    hoveredRegionId = "",
+    regionMarkers = {},
+    onSelect = null,
+    onHoverChange = null,
+    onContextMenu = null,
+  } = hotspotOptions || {};
+
+  if (!enabled) return null;
+
+  const regions = Array.isArray(generatedMap?.regions) ? generatedMap.regions : [];
+  if (!regions.length) return null;
+
+  const selectedRegion = regions.find((region) => isPreviewRegionTarget(region, selectedRegionId));
+  const hoveredRegion = regions.find((region) => isPreviewRegionTarget(region, hoveredRegionId));
+
+  function selectRegion(event, region) {
+    event.preventDefault();
+    event.stopPropagation();
+    onSelect?.(createPreviewRegionPayload(region));
+  }
+
+  function setHoveredRegion(region) {
+    onHoverChange?.(createPreviewRegionPayload(region));
+  }
+
+  function openRegionContextMenu(event, region) {
+    event.preventDefault();
+    event.stopPropagation();
+    onContextMenu?.(event, createPreviewRegionPayload(region));
+  }
+
+  return (
+    <g className="room-preview-hotspots" aria-hidden={false}>
+      {renderRoomSelectionHighlight(selectedRegion, generatedMap)}
+      {renderRoomHoverHighlight(
+        hoveredRegion && hoveredRegion.id !== selectedRegion?.id ? hoveredRegion : null,
+        generatedMap,
+      )}
+      <g className="room-preview-feature-marker-layer" aria-hidden="true">
+        {regions.map((region) => renderPreviewRegionMarkers(
+          region,
+          generatedMap,
+          getPreviewRegionMarkerList(regionMarkers, region),
+        ))}
+      </g>
+      {regions.map((region) => {
+        const active = isPreviewRegionTarget(region, selectedRegionId);
+        const hovered = isPreviewRegionTarget(region, hoveredRegionId);
+        return (
+          <path
+            key={`preview-hotspot-${region.id}`}
+            className={[
+              "room-preview-hotspot",
+              active ? "is-active" : "",
+              hovered ? "is-hovered" : "",
+            ].filter(Boolean).join(" ")}
+            d={buildRegionVisualFloorPath(region, generatedMap.config.gridSize, generatedMap)}
+            fillRule="nonzero"
+            tabIndex={0}
+            focusable="true"
+            role="button"
+            aria-label={
+              region.name
+                ? `Select ${region.name}`
+                : `Select room ${region.number || ""}`.trim()
+            }
+            aria-pressed={active}
+            onPointerDown={(event) => event.stopPropagation()}
+            onPointerEnter={() => setHoveredRegion(region)}
+            onPointerLeave={() => setHoveredRegion(null)}
+            onFocus={() => setHoveredRegion(region)}
+            onBlur={() => setHoveredRegion(null)}
+            onClick={(event) => selectRegion(event, region)}
+            onContextMenu={(event) => openRegionContextMenu(event, region)}
+            onKeyDown={(event) => {
+              if (event.key !== "Enter" && event.key !== " ") return;
+              selectRegion(event, region);
+            }}
+          />
+        );
+      })}
+    </g>
+  );
+}
+
 export function MapSvg({
   generatedMap,
   showGrid,
@@ -7865,6 +8083,7 @@ export function MapSvg({
   fadeOtherLevels = true,
   editorOptions = {},
   viewportViewBox = null,
+  previewRoomHotspots = null,
   gridOpacity = 1,
   crosshatchStyle = "classic",
   crosshatchOpacity = 1,
@@ -7973,6 +8192,7 @@ export function MapSvg({
             showNames,
           })}
       </g>
+      {!showEditor && renderPreviewRoomHotspots(activeEditorMap, previewRoomHotspots)}
       {showEditor && renderEditorOverlays(activeEditorMap, editorOptions)}
     </svg>
   );

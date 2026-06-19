@@ -84,6 +84,94 @@ function hasManualLayoutOverrides(manualOverrides = {}) {
   );
 }
 
+function getExplicitConnections(config = {}) {
+  return Array.isArray(config.connections) ? config.connections.filter(Boolean) : [];
+}
+
+function isSoftExplicitConnection(connection = {}) {
+  if (!connection || typeof connection !== "object") return false;
+  if (connection.locked || connection.required || connection.hard) return false;
+  if (Array.isArray(connection.manualWaypoints) && connection.manualWaypoints.length > 0) return false;
+
+  const reason = String(connection.reason || "").toLowerCase();
+  const source = String(connection.source || "").toLowerCase();
+  const tags = Array.isArray(connection.tags)
+    ? connection.tags.map((tag) => String(tag).toLowerCase())
+    : [];
+
+  return (
+    source === "inferred" ||
+    source === "qa" ||
+    tags.includes("inferred") ||
+    tags.includes("qa") ||
+    reason.startsWith("inferred-") ||
+    reason.startsWith("qa-explicit-")
+  );
+}
+
+function getHardExplicitConnections(config = {}) {
+  return getExplicitConnections(config).filter(
+    (connection) => !isSoftExplicitConnection(connection),
+  );
+}
+
+function hasHardExplicitConnections(config = {}) {
+  return getHardExplicitConnections(config).length > 0;
+}
+
+function getGraphInferenceConfig(config = {}) {
+  return {
+    ...config,
+    connections: [],
+  };
+}
+
+function createExplicitGraph(config = {}, { includeSoft = false } = {}) {
+  const regionIds = new Set((Array.isArray(config.regions) ? config.regions : []).map((region) => region.id));
+  const seen = new Set();
+  return getExplicitConnections(config)
+    .filter((connection) => includeSoft || !isSoftExplicitConnection(connection))
+    .map((connection, index) => {
+      const from = connection?.from;
+      const to = connection?.to;
+      if (!from || !to || from === to || !regionIds.has(from) || !regionIds.has(to)) return null;
+      const key = [from, to].sort().join("::");
+      if (seen.has(key)) return null;
+      seen.add(key);
+      const id = connection.id || `explicit-edge-${from}-${to}-${index}`;
+      return {
+        id,
+        from,
+        to,
+        kind: connection.kind || "main",
+        secret: Boolean(connection.secret || connection.kind === "secret"),
+        locked: Boolean(connection.locked),
+        reason: connection.reason || "explicit-connection",
+        explicit: true,
+        dungeonConnectionId: connection.dungeonConnectionId,
+        manualWaypoints: Array.isArray(config.manualCorridorWaypoints?.[id])
+          ? config.manualCorridorWaypoints[id]
+          : Array.isArray(connection.manualWaypoints)
+            ? connection.manualWaypoints
+            : [],
+      };
+    })
+    .filter(Boolean);
+}
+
+function buildPlacementGraph(config, rng) {
+  if (hasHardExplicitConnections(config)) {
+    const explicitGraph = createExplicitGraph(config);
+    if (explicitGraph.length > 0) return explicitGraph;
+  }
+
+  const inferenceConfig = getGraphInferenceConfig(config);
+  return adaptGeneratedGraphForContext(
+    inferenceConfig,
+    buildCorridorGraph(inferenceConfig, rng),
+  );
+}
+
 function getCellList(corridor) {
   if (!corridor || typeof corridor !== "object") return [];
   if (Array.isArray(corridor.pathCells) && corridor.pathCells.length > 0)
@@ -368,10 +456,7 @@ function generateMapSingle(config) {
       config.biome,
     ),
   );
-  const generatedGraph = adaptGeneratedGraphForContext(
-    config,
-    buildCorridorGraph(config, rng),
-  );
+  const generatedGraph = buildPlacementGraph(config, rng);
   const graphConfig = {
     ...config,
     regions: annotateRegionsWithGraphMetadata(config.regions, generatedGraph),

@@ -6,9 +6,19 @@ import {
   normalizeManualOverrides,
 } from "../../map-generator/map-generator.state.js";
 
+function applyMapRequestConnectionsToConfig(config, mapRequest) {
+  return {
+    ...config,
+    connections: Array.isArray(mapRequest?.connections) ? mapRequest.connections : [],
+  };
+}
+
 export function createLocationPreviewModel(snapshot, manualOverrides = createEmptyManualOverrides()) {
   const mapRequest = createMapRequestFromDarkenLocationState(snapshot);
-  const previewConfig = createConfigFromNormalizedMapRequest(mapRequest, DEFAULT_CONFIG);
+  const previewConfig = applyMapRequestConnectionsToConfig(
+    createConfigFromNormalizedMapRequest(mapRequest, DEFAULT_CONFIG),
+    mapRequest,
+  );
   const previewManualOverrides = normalizeManualOverrides(manualOverrides);
 
   try {
@@ -65,6 +75,20 @@ function createRegionSignature(regions = []) {
     .join("|");
 }
 
+function createConnectionSignature(connections = []) {
+  if (!Array.isArray(connections) || !connections.length) return "no-connections";
+  return connections
+    .map((connection) => [
+      connection?.from || "",
+      connection?.to || "",
+      connection?.kind || "main",
+      connection?.locked ? "locked" : "open",
+      connection?.secret ? "secret" : "visible",
+    ].join("@"))
+    .sort()
+    .join("|");
+}
+
 export function getLocationPreviewResetKey(mapRequest, digest, state = {}) {
   const slotAssignments = state.slotAssignments || mapRequest.metadata?.slotAssignments || {};
 
@@ -73,6 +97,7 @@ export function getLocationPreviewResetKey(mapRequest, digest, state = {}) {
     mapRequest.context || "no-context",
     mapRequest.mapType || "no-map-type",
     createRegionSignature(mapRequest.requiredRegions),
+    createConnectionSignature(mapRequest.connections),
     state.activeSlotScope || mapRequest.metadata?.activeSlotScope || "map",
     state.activeRegionId || mapRequest.metadata?.activeRegionId || "no-active-region",
     `${digest.filledSlots || 0}/${digest.totalSlots || 0}`,

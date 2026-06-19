@@ -5,7 +5,7 @@ import {
   getRoomCellOwnershipMap,
 } from "../map-generator.corridors.js";
 
-export const MAP_BATCH_QA_VERSION = "map-qa-v0.2.1-overlap-guard";
+export const MAP_BATCH_QA_VERSION = "map-qa-v0.3.3-connections-metadata-only";
 
 const DEFAULT_CONTEXTS = Object.freeze([
   "Crypt",
@@ -15,6 +15,65 @@ const DEFAULT_CONTEXTS = Object.freeze([
   "Noble House",
   "Ruins",
 ]);
+
+export const MAP_BATCH_QA_CONTEXTS = DEFAULT_CONTEXTS;
+
+export const MAP_BATCH_CONTEXT_OPTIONS = Object.freeze([
+  Object.freeze({ value: "mixed", label: "Mixed" }),
+  ...DEFAULT_CONTEXTS.map((context) => Object.freeze({ value: context, label: context })),
+]);
+
+export const MAP_BATCH_QA_MODES = Object.freeze([
+  Object.freeze({ value: "realistic", label: "Realistic", description: "Balanced QA run for normal validation." }),
+  Object.freeze({ value: "debug", label: "Debug", description: "Includes per-map debug payloads for inspection." }),
+]);
+
+export const MAP_BATCH_DETERMINISM_MODES = Object.freeze([
+  Object.freeze({ value: "sample", label: "Sample", description: "Checks determinism on representative maps." }),
+  Object.freeze({ value: "full", label: "Full", description: "Checks determinism on every generated map." }),
+  Object.freeze({ value: "off", label: "Off", description: "Skips determinism checks for faster local iteration." }),
+]);
+
+export const MAP_BATCH_QA_DETERMINISM_MODES = MAP_BATCH_DETERMINISM_MODES;
+
+export const MAP_BATCH_EXPORT_MODES = Object.freeze([
+  Object.freeze({ value: "json", label: "JSON", extension: "json", mimeType: "application/json" }),
+  Object.freeze({ value: "markdown", label: "Markdown", extension: "md", mimeType: "text/markdown" }),
+]);
+
+
+export const MAP_BATCH_QA_DEFAULT_OPTIONS = Object.freeze({
+  count: 50,
+  context: "mixed",
+  qaMode: "realistic",
+  mode: "realistic",
+  determinism: "sample",
+  determinismSampleRate: 10,
+  roomCountMin: 4,
+  roomCountMax: 12,
+  seed: "cruor-map-npm-qa",
+  exportMode: "json",
+});
+
+export const MAP_BATCH_DEFAULT_OPTIONS = MAP_BATCH_QA_DEFAULT_OPTIONS;
+
+export const MAP_BATCH_QA_COUNT_OPTIONS = Object.freeze([
+  Object.freeze({ value: 25, label: "25", description: "Fast smoke check." }),
+  Object.freeze({ value: 50, label: "50", description: "Default local QA run." }),
+  Object.freeze({ value: 100, label: "100", description: "Broader validation pass." }),
+  Object.freeze({ value: 250, label: "250", description: "Full debug-sized QA pass." }),
+]);
+
+export const MAP_BATCH_COUNT_OPTIONS = MAP_BATCH_QA_COUNT_OPTIONS;
+
+export const MAP_BATCH_QA_ROOM_COUNT_OPTIONS = Object.freeze([
+  Object.freeze({ value: "4-8", label: "4–8", roomCountMin: 4, roomCountMax: 8 }),
+  Object.freeze({ value: "4-12", label: "4–12", roomCountMin: 4, roomCountMax: 12 }),
+  Object.freeze({ value: "6-14", label: "6–14", roomCountMin: 6, roomCountMax: 14 }),
+]);
+
+export const MAP_BATCH_ROOM_COUNT_OPTIONS = MAP_BATCH_QA_ROOM_COUNT_OPTIONS;
+
 
 const QA_ROOM_BLUEPRINTS = Object.freeze([
   Object.freeze({ role: "Entrance / Threshold", shape: "small hall", size: "Small", tags: ["entrance", "threshold"], connectors: 2 }),
@@ -100,7 +159,82 @@ function createQaRegions({ roomCount, context, seed }) {
   });
 }
 
+function addQaConnection(connections, from, to, options = {}) {
+  if (!from?.id || !to?.id || from.id === to.id) return;
+  const duplicate = connections.some(
+    (connection) =>
+      (connection.from === from.id && connection.to === to.id) ||
+      (connection.from === to.id && connection.to === from.id),
+  );
+  if (duplicate) return;
+  connections.push({
+    id: options.id || `qa-explicit-${connections.length + 1}-${from.id}-${to.id}`,
+    from: from.id,
+    to: to.id,
+    kind: options.kind || "main",
+    secret: Boolean(options.secret),
+    tags: unique(["qa", "explicit", ...(options.tags || [])]),
+    reason: options.reason || "qa-explicit-connection",
+  });
+}
+
+function createQaConnections(regions = [], runIndex = 0) {
+  if (!Array.isArray(regions) || regions.length <= 1) return [];
+  const connections = [];
+  const entrance = regions[0];
+  const finalRoom = regions[regions.length - 1];
+  const middle = regions.slice(1, -1);
+  const connector = middle.find((region) => asArray(region.tags).includes("connector"));
+  const clue = middle.find((region) => asArray(region.tags).includes("clue") || asArray(region.tags).includes("archive"));
+  const hazard = middle.find((region) => asArray(region.tags).includes("hazard") || asArray(region.tags).includes("ambush"));
+  const mainPath = [];
+  [entrance, connector, clue, hazard, finalRoom].forEach((region) => {
+    if (region && !mainPath.some((item) => item.id === region.id)) mainPath.push(region);
+  });
+  if (mainPath.length < 2) {
+    regions.slice(0, Math.min(regions.length, 4)).forEach((region) => mainPath.push(region));
+  }
+
+  for (let index = 0; index < mainPath.length - 1; index += 1) {
+    addQaConnection(connections, mainPath[index], mainPath[index + 1], {
+      id: `qa-explicit-main-${index + 1}`,
+      kind: "main",
+      tags: ["critical-path"],
+      reason: "qa-explicit-compact-main-path",
+    });
+  }
+
+  const mainIds = new Set(mainPath.map((region) => region.id));
+  regions.forEach((region, index) => {
+    if (mainIds.has(region.id)) return;
+    const isSecret = Boolean(region.secret || asArray(region.tags).includes("secret"));
+    const isService = asArray(region.tags).includes("utility") || asArray(region.tags).includes("side");
+    const anchor = isSecret
+      ? mainPath[Math.max(0, mainPath.length - 2)] || entrance
+      : mainPath[Math.max(0, Math.min(mainPath.length - 1, index % Math.max(1, mainPath.length - 1)))] || entrance;
+    addQaConnection(connections, anchor, region, {
+      id: `qa-explicit-branch-${region.id}`,
+      kind: isSecret ? "secret" : isService ? "service" : "secondary",
+      secret: isSecret,
+      tags: [isSecret ? "secret" : isService ? "service" : "branch"],
+      reason: isSecret ? "qa-explicit-secret-branch" : "qa-explicit-side-branch",
+    });
+  });
+
+  if (mainPath.length >= 4 && runIndex % 3 === 0) {
+    addQaConnection(connections, mainPath[1], mainPath[Math.min(mainPath.length - 1, 3)], {
+      id: "qa-explicit-secondary-loop",
+      kind: "secondary",
+      tags: ["loop"],
+      reason: "qa-explicit-secondary-loop",
+    });
+  }
+
+  return connections;
+}
+
 function createQaConfig({ seed, index, roomCount, context }) {
+  const regions = createQaRegions({ roomCount, context, seed });
   return {
     ...DEFAULT_CONFIG,
     seed,
@@ -109,8 +243,8 @@ function createQaConfig({ seed, index, roomCount, context }) {
     roomCount,
     horror: ["Religious Horror", index % 2 === 0 ? "Gothic" : "Body Horror"],
     sourceAnchors: ["Sedlec Ossuary", "Towers of Silence"],
-    regions: createQaRegions({ roomCount, context, seed }),
-    connections: [],
+    regions,
+    connections: createQaConnections(regions, index),
   };
 }
 
@@ -616,6 +750,21 @@ function createDebugMapPayload(result, map) {
     roomCount: result.roomCount,
     layoutCandidate: map.layoutCandidate,
     metrics: result.metrics,
+    explicitConnections: asArray(map.config?.connections).map((connection) => ({
+      id: connection.id,
+      from: connection.from,
+      to: connection.to,
+      kind: connection.kind,
+      secret: Boolean(connection.secret),
+      locked: Boolean(connection.locked),
+    })),
+    graph: asArray(map.graph).map((edge) => ({
+      id: edge.id,
+      from: edge.from,
+      to: edge.to,
+      kind: edge.kind,
+      reason: edge.reason,
+    })),
     regions: asArray(map.regions).map((region) => ({
       id: region.id,
       name: region.name,
@@ -818,4 +967,191 @@ export function buildMapBatchQaMarkdown(report) {
     buildWorstMapTable(report.results || []),
     "",
   ].join("\n");
+}
+
+
+function getOptionValue(value, fallback) {
+  if (value && typeof value === "object") {
+    return value.value ?? value.id ?? value.mode ?? fallback;
+  }
+  return value ?? fallback;
+}
+
+function getQaOptionNumber(options, key, fallback) {
+  const value = getOptionValue(options?.[key], fallback);
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
+}
+
+export function getMapBatchQaCostWarning(options = {}) {
+  const count = getQaOptionNumber(options, "count", MAP_BATCH_QA_DEFAULT_OPTIONS.count);
+  const mode = normalizeText(getOptionValue(options.qaMode ?? options.mode, MAP_BATCH_QA_DEFAULT_OPTIONS.qaMode), MAP_BATCH_QA_DEFAULT_OPTIONS.qaMode).toLowerCase();
+  const determinism = normalizeText(getOptionValue(options.determinism, MAP_BATCH_QA_DEFAULT_OPTIONS.determinism), MAP_BATCH_QA_DEFAULT_OPTIONS.determinism).toLowerCase();
+  const roomCountMax = getQaOptionNumber(options, "roomCountMax", getQaOptionNumber(options, "roomMax", MAP_BATCH_QA_DEFAULT_OPTIONS.roomCountMax));
+
+  if (count >= 250 && (mode === "debug" || determinism === "full")) {
+    return "Heavy QA run: 250 maps with debug output or full determinism can take noticeably longer.";
+  }
+
+  if (count >= 500) {
+    return "Large QA run: this may take a while in the browser. Prefer the npm runner for full validation.";
+  }
+
+  if (roomCountMax >= 14 && count >= 100) {
+    return "High room counts increase generation cost. Use this for validation, not quick iteration.";
+  }
+
+  return "";
+}
+
+export function getMapBatchQaRunEstimate(options = {}) {
+  const count = getQaOptionNumber(options, "count", MAP_BATCH_QA_DEFAULT_OPTIONS.count);
+  const mode = normalizeText(getOptionValue(options.qaMode ?? options.mode, MAP_BATCH_QA_DEFAULT_OPTIONS.qaMode), MAP_BATCH_QA_DEFAULT_OPTIONS.qaMode).toLowerCase();
+  const determinism = normalizeText(getOptionValue(options.determinism, MAP_BATCH_QA_DEFAULT_OPTIONS.determinism), MAP_BATCH_QA_DEFAULT_OPTIONS.determinism).toLowerCase();
+  const multiplier = (mode === "debug" ? 1.25 : 1) * (determinism === "full" ? 2 : determinism === "off" ? 0.85 : 1);
+  return {
+    count,
+    mode,
+    determinism,
+    weight: Math.round(count * multiplier),
+    warning: getMapBatchQaCostWarning(options),
+  };
+}
+
+export function getMapBatchQaOptionLabel(options, value, fallback = "") {
+  const selected = getOptionValue(value, value);
+  const match = asArray(options).find((option) => option?.value === selected || option?.id === selected);
+  return match?.label || fallback || String(selected || "");
+}
+
+export function getMapBatchQaModeLabel(value) {
+  return getMapBatchQaOptionLabel(MAP_BATCH_QA_MODES, value, "Realistic");
+}
+
+export function getMapBatchQaContextLabel(value) {
+  return getMapBatchQaOptionLabel(MAP_BATCH_CONTEXT_OPTIONS, value, "Mixed");
+}
+
+export function getMapBatchQaDeterminismLabel(value) {
+  return getMapBatchQaOptionLabel(MAP_BATCH_DETERMINISM_MODES, value, "Sample");
+}
+
+export function getMapBatchQaExportModeLabel(value) {
+  return getMapBatchQaOptionLabel(MAP_BATCH_EXPORT_MODES, value, "JSON");
+}
+
+export function getMapBatchQaSummary(report) {
+  const summary = report?.summary || {};
+  return {
+    total: Number(summary.total || 0),
+    error: Number(summary.error || 0),
+    warning: Number(summary.warning || 0),
+    info: Number(summary.info || 0),
+  };
+}
+
+export function getMapBatchQaSummaryText(report) {
+  const summary = getMapBatchQaSummary(report);
+  return `${summary.total} issues (${summary.error} errors, ${summary.warning} warnings, ${summary.info} info)`;
+}
+
+export function getMapBatchQaStatus(report) {
+  const summary = getMapBatchQaSummary(report);
+  if (summary.error > 0) return "failed";
+  if (summary.warning > 0) return "review";
+  return "passed";
+}
+
+export function getMapBatchQaStatusLabel(report) {
+  const status = getMapBatchQaStatus(report);
+  if (status === "failed") return "Failed";
+  if (status === "review") return "Review";
+  return "Passed";
+}
+
+export function getMapBatchQaStatusTone(report) {
+  const status = getMapBatchQaStatus(report);
+  if (status === "failed") return "danger";
+  if (status === "review") return "warning";
+  return "success";
+}
+
+export function getMapBatchQaGroupedIssueRows(report) {
+  return asArray(report?.groupedIssues).map((issue) => ({
+    key: `${issue.severity || "unknown"}:${issue.area || "general"}:${issue.check || "unknown"}:${issue.message || ""}`,
+    severity: issue.severity || "warning",
+    area: issue.area || "quality",
+    check: issue.check || "unknown",
+    count: Number(issue.count || 0),
+    message: issue.message || "QA issue.",
+    ids: asArray(issue.ids),
+  }));
+}
+
+export function getMapBatchQaExportOptions() {
+  return MAP_BATCH_EXPORT_MODES;
+}
+
+function normalizeExportMode(exportMode = "json") {
+  if (typeof exportMode === "string") return exportMode.trim().toLowerCase() || "json";
+  if (exportMode && typeof exportMode === "object") {
+    return String(exportMode.value || exportMode.id || exportMode.mode || "json").trim().toLowerCase() || "json";
+  }
+  return "json";
+}
+
+export function getMapBatchQaExportPayload(report, exportMode = "json") {
+  const mode = normalizeExportMode(exportMode);
+  if (mode === "markdown" || mode === "md") {
+    return {
+      mode: "markdown",
+      extension: "md",
+      mimeType: "text/markdown;charset=utf-8",
+      content: buildMapBatchQaMarkdown(report),
+    };
+  }
+
+  return {
+    mode: "json",
+    extension: "json",
+    mimeType: "application/json;charset=utf-8",
+    content: JSON.stringify(report, null, 2),
+  };
+}
+
+export function getMapBatchQaExportFilename(report, exportMode = "json") {
+  const payload = getMapBatchQaExportPayload(report, exportMode);
+  const generatedAt = report?.generatedAt || new Date().toISOString();
+  const stamp = String(generatedAt)
+    .replace(/[:.]/g, "-")
+    .replace(/[^0-9TZ-]/g, "")
+    .slice(0, 24) || "latest";
+  return `cruor-map-batch-qa-${stamp}.${payload.extension}`;
+}
+
+export function downloadMapBatchQaReport(report, exportMode = "json") {
+  if (!report || typeof document === "undefined" || typeof Blob === "undefined" || typeof URL === "undefined") {
+    return false;
+  }
+
+  const payload = getMapBatchQaExportPayload(report, exportMode);
+  const filename = getMapBatchQaExportFilename(report, exportMode);
+  const blob = new Blob([payload.content], { type: payload.mimeType });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.rel = "noopener";
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+  return true;
+}
+
+export async function copyMapBatchQaReport(report, exportMode = "markdown") {
+  if (!report || typeof navigator === "undefined" || !navigator.clipboard?.writeText) return false;
+  const payload = getMapBatchQaExportPayload(report, exportMode);
+  await navigator.clipboard.writeText(payload.content);
+  return true;
 }

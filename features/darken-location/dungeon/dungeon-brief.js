@@ -1,11 +1,12 @@
 import { normalizeDungeonTheme } from "./dungeon-theme.js";
 
-export const DUNGEON_BRIEF_SCHEMA_VERSION = "0.1";
+export const DUNGEON_BRIEF_SCHEMA_VERSION = "0.2";
 
 export const DUNGEON_BRIEF_MODE_THEME = "theme";
 export const DUNGEON_BRIEF_MODE_SCRATCH = "scratch";
 
 const ROOM_SIZE_SET = new Set(["Small", "Medium", "Large"]);
+const CONNECTION_KIND_SET = new Set(["main", "secondary", "secret", "service"]);
 
 function asArray(value) {
   if (!value) return [];
@@ -40,6 +41,247 @@ function createRoomNameFallback(index, theme) {
   const themeRoomTypes = asArray(theme?.roomTypeBias);
   const roomType = themeRoomTypes[index % Math.max(1, themeRoomTypes.length)] || "Location Region";
   return `${String(index + 1).padStart(2, "0")} ${roomType.replace(/^./, (letter) => letter.toUpperCase())}`;
+}
+
+function normalizeConnectionKind(value, fallback = "main") {
+  const normalized = normalizeString(value, fallback).toLowerCase();
+  if (normalized === "critical" || normalized === "path") return "main";
+  if (normalized === "side" || normalized === "loop" || normalized === "branch") return "secondary";
+  if (normalized === "hidden") return "secret";
+  return CONNECTION_KIND_SET.has(normalized) ? normalized : fallback;
+}
+
+function createConnectionId(from, to, index, kind = "main") {
+  return `connection-${String(index + 1).padStart(2, "0")}-${kind}-${from}-${to}`;
+}
+
+function getRoomConnectionRole(room) {
+  return [room?.role, room?.type, room?.name, ...(asArray(room?.tags))]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function isSecretRoom(room) {
+  const text = getRoomConnectionRole(room);
+  return Boolean(room?.secret || text.includes("secret") || text.includes("hidden"));
+}
+
+function isServiceRoom(room) {
+  const text = getRoomConnectionRole(room);
+  return text.includes("service") || text.includes("utility") || text.includes("storage");
+}
+
+function isLoopRoom(room) {
+  const text = getRoomConnectionRole(room);
+  return text.includes("loop") || text.includes("return") || text.includes("false return");
+}
+
+function isConnectorRoom(room) {
+  const text = getRoomConnectionRole(room);
+  return text.includes("connector") || text.includes("passage") || text.includes("hall") || text.includes("threshold");
+}
+
+function isClueRoom(room) {
+  const text = getRoomConnectionRole(room);
+  return text.includes("clue") || text.includes("evidence") || text.includes("archive") || text.includes("lore");
+}
+
+function isHazardRoom(room) {
+  const text = getRoomConnectionRole(room);
+  return text.includes("hazard") || text.includes("danger") || text.includes("ambush") || text.includes("nest");
+}
+
+function isFinalRoom(room) {
+  const text = getRoomConnectionRole(room);
+  return text.includes("final") || text.includes("climax") || text.includes("outcome") || text.includes("reward") || text.includes("exit");
+}
+
+function addUniqueRoom(target, room) {
+  if (!room || target.some((item) => item.id === room.id)) return;
+  target.push(room);
+}
+
+function selectFirstRoom(rooms, predicate) {
+  return rooms.find(predicate) || null;
+}
+
+function sortRoomsByIndex(rooms) {
+  return [...rooms].sort(
+    (a, b) => Number(a?.index || 0) - Number(b?.index || 0) || String(a?.id || "").localeCompare(String(b?.id || "")),
+  );
+}
+
+function buildInferredMainPath(roomBriefs = []) {
+  if (!Array.isArray(roomBriefs) || roomBriefs.length <= 1) return roomBriefs;
+  const usable = roomBriefs.filter((room) => !isSecretRoom(room) && !isServiceRoom(room));
+  const pool = usable.length > 1 ? sortRoomsByIndex(usable) : sortRoomsByIndex(roomBriefs);
+  const entrance = pool[0];
+  const finalRoom = [...pool].reverse().find(isFinalRoom) || pool[pool.length - 1];
+  const middlePool = pool.filter((room) => room.id !== entrance?.id && room.id !== finalRoom?.id);
+  const required = [];
+  addUniqueRoom(required, selectFirstRoom(middlePool, isConnectorRoom));
+  addUniqueRoom(required, selectFirstRoom(middlePool, isClueRoom));
+  addUniqueRoom(required, selectFirstRoom(middlePool, isHazardRoom));
+  const remaining = middlePool.filter((room) => !required.some((item) => item.id === room.id));
+  const mainBudget = Math.max(
+    0,
+    Math.ceil(pool.length * 0.62) - required.length - (entrance ? 1 : 0) - (finalRoom ? 1 : 0),
+  );
+  const extras = remaining.slice(0, mainBudget);
+  const mainPath = [];
+  addUniqueRoom(mainPath, entrance);
+  sortRoomsByIndex([...required, ...extras]).forEach((room) => addUniqueRoom(mainPath, room));
+  addUniqueRoom(mainPath, finalRoom);
+  return mainPath.length > 1 ? mainPath : pool;
+}
+
+function selectBranchAnchor(pathRooms = [], room, fallbackIndex = 0) {
+  if (!pathRooms.length) return null;
+  const previous = [...pathRooms]
+    .reverse()
+    .find((candidate) => Number(candidate.index || 0) < Number(room.index || fallbackIndex + 1));
+  if (previous) return previous;
+  if (isSecretRoom(room)) return pathRooms[Math.max(0, pathRooms.length - 2)] || pathRooms[0];
+  if (isHazardRoom(room)) return pathRooms[Math.min(2, pathRooms.length - 1)] || pathRooms[0];
+  if (isClueRoom(room)) return pathRooms[Math.min(1, pathRooms.length - 1)] || pathRooms[0];
+  return pathRooms[Math.max(0, Math.min(pathRooms.length - 1, fallbackIndex - 1))] || pathRooms[0];
+}
+
+function addConnection(connections, connection, roomIdSet) {
+  const from = normalizeString(connection?.from);
+  const to = normalizeString(connection?.to);
+  if (!from || !to || from === to) return null;
+  if (!roomIdSet.has(from) || !roomIdSet.has(to)) return null;
+
+  const duplicate = connections.find(
+    (existing) =>
+      (existing.from === from && existing.to === to) ||
+      (existing.from === to && existing.to === from),
+  );
+  if (duplicate) return duplicate;
+
+  const kind = normalizeConnectionKind(connection.kind);
+  const index = connections.length;
+  const normalized = {
+    id: normalizeString(connection.id, createConnectionId(from, to, index, kind)),
+    from,
+    to,
+    kind,
+    locked: Boolean(connection.locked),
+    secret: Boolean(connection.secret || kind === "secret"),
+    tags: unique(connection.tags),
+    source: normalizeString(connection.source),
+    reason: normalizeString(connection.reason, "explicit-dungeon-connection"),
+  };
+  connections.push(normalized);
+  return normalized;
+}
+
+function normalizeDungeonConnections(inputConnections = [], roomBriefs = []) {
+  const roomIds = roomBriefs.map((room) => room.id).filter(Boolean);
+  const roomIdSet = new Set(roomIds);
+  const connections = [];
+
+  asArray(inputConnections).forEach((connection) => addConnection(connections, connection, roomIdSet));
+  if (connections.length > 0 || roomBriefs.length <= 1) return connections;
+
+  const pathRooms = buildInferredMainPath(roomBriefs);
+  for (let index = 0; index < pathRooms.length - 1; index += 1) {
+    addConnection(
+      connections,
+      {
+        from: pathRooms[index].id,
+        to: pathRooms[index + 1].id,
+        kind: "main",
+        tags: ["inferred", "critical-path"],
+        source: "inferred",
+        reason: "inferred-compact-main-path",
+      },
+      roomIdSet,
+    );
+  }
+
+  const pathIndexById = new Map(pathRooms.map((room, index) => [room.id, index]));
+  roomBriefs.forEach((room, roomIndex) => {
+    if (pathIndexById.has(room.id)) return;
+    const anchor = selectBranchAnchor(pathRooms, room, roomIndex);
+    if (!anchor || anchor.id === room.id) return;
+    const kind = isSecretRoom(room) ? "secret" : isServiceRoom(room) ? "service" : "secondary";
+    addConnection(
+      connections,
+      {
+        from: anchor.id,
+        to: room.id,
+        kind,
+        secret: kind === "secret",
+        tags: ["inferred", kind, "branch"],
+        source: "inferred",
+        reason: `inferred-${kind}-branch`,
+      },
+      roomIdSet,
+    );
+  });
+
+  roomBriefs.forEach((room) => {
+    if (!isLoopRoom(room)) return;
+    const roomPathIndex = pathIndexById.get(room.id);
+    if (!Number.isFinite(roomPathIndex)) return;
+    const exitRoom = pathRooms[Math.min(pathRooms.length - 1, roomPathIndex + 2)];
+    if (!exitRoom || exitRoom.id === room.id) return;
+    addConnection(
+      connections,
+      {
+        from: room.id,
+        to: exitRoom.id,
+        kind: "secondary",
+        tags: ["inferred", "loop"],
+        source: "inferred",
+        reason: "inferred-loop-return",
+      },
+      roomIdSet,
+    );
+  });
+
+  return connections;
+}
+
+function createConnectionEndpointMap(roomBriefs, requiredRegions) {
+  const endpointMap = new Map();
+  roomBriefs.forEach((room, index) => {
+    const requiredRegion = requiredRegions[index];
+    const targetId = requiredRegion?.id;
+    if (!targetId) return;
+    [room.id, room.sourceRegionId, room.name, `room-${room.index}`, String(room.index)]
+      .filter(Boolean)
+      .forEach((key) => endpointMap.set(String(key), targetId));
+  });
+  return endpointMap;
+}
+
+function mapDungeonConnectionsToMapConnections(brief, requiredRegions) {
+  const endpointMap = createConnectionEndpointMap(brief.roomBriefs, requiredRegions);
+  const regionIds = new Set(requiredRegions.map((region) => region.id).filter(Boolean));
+
+  return asArray(brief.connections)
+    .map((connection, index) => {
+      const from = endpointMap.get(String(connection.from)) || connection.from;
+      const to = endpointMap.get(String(connection.to)) || connection.to;
+      if (!regionIds.has(from) || !regionIds.has(to) || from === to) return null;
+      return {
+        id: normalizeString(connection.id, createConnectionId(from, to, index, connection.kind)),
+        from,
+        to,
+        kind: normalizeConnectionKind(connection.kind),
+        locked: Boolean(connection.locked),
+        secret: Boolean(connection.secret || connection.kind === "secret"),
+        tags: unique(connection.tags),
+        source: normalizeString(connection.source),
+        reason: normalizeString(connection.reason, "dungeon-brief-connection"),
+        dungeonConnectionId: connection.id,
+      };
+    })
+    .filter(Boolean);
 }
 
 export function createRoomBrief(input = {}, index = 0, { theme = null } = {}) {
@@ -95,6 +337,7 @@ export function createDungeonBrief(input = {}) {
   const roomInputs = asArray(input.roomBriefs);
   const roomBriefs = roomInputs.map((room, index) => createRoomBrief(room, index, { theme }));
   const roomCount = normalizeInteger(input.roomCount, roomBriefs.length || 1, { min: 1, max: 16 });
+  const connections = normalizeDungeonConnections(input.connections, roomBriefs);
 
   return {
     schemaVersion: DUNGEON_BRIEF_SCHEMA_VERSION,
@@ -125,9 +368,11 @@ export function createDungeonBrief(input = {}) {
       rewards: unique(input.globalPalette?.rewards || theme.rewardBias),
     },
     roomBriefs,
+    connections,
     metadata: {
       ...(input.metadata || {}),
       createdFrom: normalizeString(input.metadata?.createdFrom, "darken-location-composer"),
+      connectionCount: connections.length,
     },
   };
 }
@@ -172,6 +417,7 @@ export function roomBriefToRequiredRegion(roomBrief, index = 0) {
 export function createMapRequestFromDungeonBrief(dungeonBrief = {}, { snapshot = {} } = {}) {
   const brief = createDungeonBrief(dungeonBrief);
   const requiredRegions = brief.roomBriefs.map(roomBriefToRequiredRegion);
+  const connections = mapDungeonConnectionsToMapConnections(brief, requiredRegions);
 
   return {
     source: "dungeon-brief",
@@ -182,6 +428,7 @@ export function createMapRequestFromDungeonBrief(dungeonBrief = {}, { snapshot =
     mapType: brief.mapType,
     roomCount: requiredRegions.length || brief.roomCount || undefined,
     requiredRegions,
+    connections,
     dungeonBrief: brief,
     metadata: {
       horror: brief.horror,
@@ -192,6 +439,7 @@ export function createMapRequestFromDungeonBrief(dungeonBrief = {}, { snapshot =
       activeSlotScope: normalizeString(snapshot?.activeSlotScope),
       slotAssignments: snapshot?.slotAssignments || {},
       selectedComponents: asArray(brief.metadata?.selectedComponents || snapshot?.selectedComponents),
+      dungeonConnections: brief.connections,
       regionComponentLinks: asArray(brief.metadata?.selectedComponents || snapshot?.selectedComponents)
         .filter((component) => component?.regionId)
         .map((component) => ({

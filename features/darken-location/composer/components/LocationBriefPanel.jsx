@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { getDungeonThemes } from "../../dungeon/dungeon.index.js";
 import {
@@ -524,10 +524,10 @@ function LocationScratchRoomList({ activeRegionId, onAddRoom, onRegenerateRoom, 
   );
 }
 
-function LocationScratchRoomEditor({ onUpdateRoom, region }) {
+export function LocationScratchRoomEditor({ className = "", onFocusSlot = null, onUpdateRoom, region }) {
   if (!region) {
     return (
-      <section className="location-scratch-room-editor" aria-label="Selected room">
+      <section className={cx("location-scratch-room-editor", className)} aria-label="Selected room">
         <div className="location-scratch-room-editor__empty">Select a room.</div>
       </section>
     );
@@ -537,7 +537,7 @@ function LocationScratchRoomEditor({ onUpdateRoom, region }) {
   const typeOptions = createChoiceOptions(SCRATCH_ROOM_TYPE_OPTIONS);
 
   return (
-    <section className="location-scratch-room-editor" aria-label="Selected room editor">
+    <section className={cx("location-scratch-room-editor", className)} aria-label="Selected room editor">
       <div className="location-scratch-room-editor__head">
         <span>Selected Room</span>
         <strong>{region.name || "Room"}</strong>
@@ -563,40 +563,182 @@ function LocationScratchRoomEditor({ onUpdateRoom, region }) {
         options={typeOptions}
         onChange={(roomType) => onUpdateRoom(region.id, { roomType, shape: roomType, preferredShape: roomType, tags: [region.role, roomType].filter(Boolean) })}
       />
-      <div className="location-scratch-room-editor__grid">
-        <LocationIconToggleField
-          help={LOCATION_FIELD_HELP.scratchSize}
-          label="Size"
-          value={normalizeRoomFieldValue(region.size, "Medium")}
-          options={SCRATCH_ROOM_SIZE_ICON_OPTIONS}
-          onChange={(size) => onUpdateRoom(region.id, { size })}
-        />
-        <LocationIconToggleField
-          help={LOCATION_FIELD_HELP.scratchLevel}
-          label="Level"
-          value={String(region.level ?? 0)}
-          options={SCRATCH_ROOM_LEVEL_ICON_OPTIONS}
-          onChange={(level) => onUpdateRoom(region.id, { level: Number(level) })}
-        />
+      <div className="location-scratch-room-feature-actions" aria-label="Selected room feature slots">
+        <button
+          className="cruor-composer-control location-scratch-room-feature-action"
+          type="button"
+          onClick={() => onFocusSlot?.("sensoryLayer")}
+        >
+          <i className="fa-solid fa-eye" aria-hidden="true" />
+          <span>Sensory</span>
+        </button>
+        <button
+          className="cruor-composer-control location-scratch-room-feature-action"
+          type="button"
+          onClick={() => onFocusSlot?.("hazard")}
+        >
+          <i className="fa-solid fa-triangle-exclamation" aria-hidden="true" />
+          <span>Hazard</span>
+        </button>
+        <button
+          className="cruor-composer-control location-scratch-room-feature-action"
+          type="button"
+          onClick={() => onFocusSlot?.("clue")}
+        >
+          <i className="fa-solid fa-magnifying-glass" aria-hidden="true" />
+          <span>Clue</span>
+        </button>
+        <button
+          className="cruor-composer-control location-scratch-room-feature-action"
+          type="button"
+          onClick={() => onFocusSlot?.("reward")}
+        >
+          <i className="fa-solid fa-gem" aria-hidden="true" />
+          <span>Reward</span>
+        </button>
       </div>
-      <LocationScratchTextField
-        label="Sensory Detail"
-        value={region.sensoryLayer || ""}
-        onChange={(sensoryLayer) => onUpdateRoom(region.id, { sensoryLayer })}
-      />
-      <LocationScratchTextField
-        label="Hazard"
-        value={region.danger || ""}
-        onChange={(danger) => onUpdateRoom(region.id, { danger })}
-      />
-      <LocationScratchTextField
-        label="Clue / Reward"
-        value={region.reward || region.secret || ""}
-        onChange={(reward) => onUpdateRoom(region.id, { reward })}
-      />
     </section>
   );
 }
+
+export function LocationScratchRoomSizeLevelControls({ region, onUpdateRoom }) {
+  if (!region || typeof onUpdateRoom !== "function") return null;
+  const sizeValue = normalizeRoomFieldValue(region.size, "Medium");
+  const levelValue = String(region.level ?? 0);
+
+  function updateSize(size) {
+    onUpdateRoom(region.id, { size });
+  }
+
+  function updateLevel(level) {
+    onUpdateRoom(region.id, { level: Number(level) });
+  }
+
+  return (
+    <div className="location-scratch-room-context-menu__size-level" aria-label={`Quick controls for ${region.name || "selected room"}`}>
+      <div className="location-scratch-room-size-level-group" role="radiogroup" aria-label="Room size">
+        {SCRATCH_ROOM_SIZE_ICON_OPTIONS.map((option) => (
+          <button
+            className={cx("location-scratch-room-size-level-toggle", option.value === sizeValue && "is-active")}
+            key={option.value}
+            type="button"
+            role="radio"
+            aria-checked={option.value === sizeValue}
+            aria-label={`Size: ${option.label}`}
+            title={`Size: ${option.label}`}
+            onClick={(event) => {
+              event.stopPropagation();
+              updateSize(option.value);
+            }}
+          >
+            <i className={`fa-solid ${option.icon}`} aria-hidden="true" />
+          </button>
+        ))}
+      </div>
+      <div className="location-scratch-room-size-level-group" role="radiogroup" aria-label="Room level">
+        {SCRATCH_ROOM_LEVEL_ICON_OPTIONS.map((option) => (
+          <button
+            className={cx("location-room-map-quick-toggle", option.value === levelValue && "is-active")}
+            key={option.value}
+            type="button"
+            role="radio"
+            aria-checked={option.value === levelValue}
+            aria-label={`Level: ${option.label}`}
+            title={`Level: ${option.label}`}
+            onClick={(event) => {
+              event.stopPropagation();
+              updateLevel(option.value);
+            }}
+          >
+            <i className={`fa-solid ${option.icon}`} aria-hidden="true" />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export const LocationScratchRoomContextMenu = forwardRef(function LocationScratchRoomContextMenu(
+  { region, x = 0, y = 0, onClose, onFocusSlot, onUpdateRoom },
+  ref,
+) {
+  if (!region || typeof onUpdateRoom !== "function") return null;
+
+  const roleOptions = createChoiceOptions(SCRATCH_ROOM_ROLE_OPTIONS);
+  const typeOptions = createChoiceOptions(SCRATCH_ROOM_TYPE_OPTIONS);
+
+  function focusSlot(slotId) {
+    onFocusSlot?.(slotId, region.id);
+  }
+
+  return (
+    <div
+      ref={ref}
+      className="location-scratch-room-context-menu"
+      role="menu"
+      aria-label={`Room options for ${region.name || "selected room"}`}
+      style={{ left: `${Math.max(8, x)}px`, top: `${Math.max(8, y)}px` }}
+      onClick={(event) => event.stopPropagation()}
+      onContextMenu={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+      }}
+    >
+      <div className="location-scratch-room-context-menu__head">
+        <span>Room Options</span>
+        <strong>{region.name || "Room"}</strong>
+        <button type="button" aria-label="Close room options" onClick={onClose}>
+          <i className="fa-solid fa-xmark" aria-hidden="true" />
+        </button>
+      </div>
+      <div className="location-scratch-room-context-menu__body">
+        <LocationScratchTextField
+          label="Name"
+          value={region.name || ""}
+          onChange={(name) => onUpdateRoom(region.id, { name })}
+        />
+        <LocationScratchRoomSizeLevelControls
+          region={region}
+          onUpdateRoom={onUpdateRoom}
+        />
+        <LocationChoiceField
+          help={LOCATION_FIELD_HELP.scratchRole}
+          icon="fa-signs-post"
+          label="Role"
+          value={normalizeRoomFieldValue(region.role, "transition")}
+          options={roleOptions}
+          onChange={(role) => onUpdateRoom(region.id, { role, tags: [role, region.roomType || region.shape].filter(Boolean) })}
+        />
+        <LocationChoiceField
+          help={LOCATION_FIELD_HELP.scratchType}
+          icon="fa-vector-square"
+          label="Room Type"
+          value={normalizeRoomFieldValue(region.roomType || region.shape, "corridor")}
+          options={typeOptions}
+          onChange={(roomType) => onUpdateRoom(region.id, { roomType, shape: roomType, preferredShape: roomType, tags: [region.role, roomType].filter(Boolean) })}
+        />
+        <div className="location-scratch-room-context-menu__actions" aria-label="Room feature slots">
+          <button className="cruor-composer-control location-scratch-room-feature-action" type="button" onClick={() => focusSlot("sensoryLayer")}>
+            <i className="fa-solid fa-eye" aria-hidden="true" />
+            <span>Sensory</span>
+          </button>
+          <button className="cruor-composer-control location-scratch-room-feature-action" type="button" onClick={() => focusSlot("hazard")}>
+            <i className="fa-solid fa-triangle-exclamation" aria-hidden="true" />
+            <span>Hazard</span>
+          </button>
+          <button className="cruor-composer-control location-scratch-room-feature-action" type="button" onClick={() => focusSlot("clue")}>
+            <i className="fa-solid fa-magnifying-glass" aria-hidden="true" />
+            <span>Clue</span>
+          </button>
+          <button className="cruor-composer-control location-scratch-room-feature-action" type="button" onClick={() => focusSlot("reward")}>
+            <i className="fa-solid fa-gem" aria-hidden="true" />
+            <span>Reward</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+});
 
 export function LocationBriefPanel({
   state,
@@ -619,30 +761,96 @@ export function LocationBriefPanel({
   const forcedMode = forcedDungeonMode === "scratch" || forcedDungeonMode === "theme" ? forcedDungeonMode : "";
   const dungeonMode = forcedMode || (state.dungeonMode === "scratch" ? "scratch" : "theme");
   const selectedThemeId = state.dungeonThemeId || "generic-dark-location";
-  const panelKicker = dungeonMode === "scratch" ? "Scratch Mode" : "Theme Mode";
-  const panelTitle = dungeonMode === "scratch" ? "Rooms" : "Program";
   const regions = Array.isArray(state.locationRegions) ? state.locationRegions : [];
-  const activeScratchRegion = regions.find((region) => region.id === state.activeRegionId) || regions[0] || null;
+
+  const themeChoiceField = dungeonMode === "theme" ? (
+    <LocationChoiceField
+      help={LOCATION_FIELD_HELP.theme}
+      icon="fa-book-dead"
+      label="Theme"
+      value={selectedThemeId}
+      placeholder="Choose dungeon theme"
+      options={DUNGEON_THEME_OPTIONS}
+      onChange={(themeId) => {
+        const selectedTheme = DUNGEON_THEME_OPTIONS.find((option) => option.value === themeId)?.theme;
+        setState((current) => ({
+          ...current,
+          dungeonThemeId: themeId,
+          sourceAnchors: selectedTheme?.sourceAnchorIds?.length && selectedTheme?.name ? [selectedTheme.name] : current.sourceAnchors,
+          context: selectedTheme?.mapTypeBias?.[0] || current.context,
+          themeProgramCandidates: [],
+          activeThemeProgramCandidateId: "",
+        }));
+      }}
+    />
+  ) : (
+    <LocationChoiceField
+      help={LOCATION_FIELD_HELP.themeAssist}
+      icon="fa-book-dead"
+      label="Theme Assist"
+      value={selectedThemeId}
+      placeholder="Choose optional theme"
+      options={DUNGEON_THEME_OPTIONS}
+      onChange={(themeId) => {
+        const selectedTheme = DUNGEON_THEME_OPTIONS.find((option) => option.value === themeId)?.theme;
+        setState((current) => ({
+          ...current,
+          dungeonThemeId: themeId,
+          sourceAnchors: selectedTheme?.sourceAnchorIds?.length && selectedTheme?.name ? [selectedTheme.name] : current.sourceAnchors,
+          context: selectedTheme?.mapTypeBias?.[0] || current.context,
+          themeProgramCandidates: [],
+          activeThemeProgramCandidateId: "",
+        }));
+      }}
+    />
+  );
+
+  const contextChoiceField = (
+    <LocationChoiceField
+      help={LOCATION_FIELD_HELP.context}
+      icon="fa-dungeon"
+      label="Context"
+      value={state.context || ""}
+      options={CONTEXT_OPTIONS}
+      onChange={(context) => setState((current) => ({
+        ...current,
+        context,
+        themeProgramCandidates: [],
+        activeThemeProgramCandidateId: "",
+      }))}
+    />
+  );
+
+  const horrorChoiceField = (
+    <LocationChoiceField
+      help={LOCATION_FIELD_HELP.horror}
+      icon="fa-skull"
+      label="Horror"
+      value={selectedHorror}
+      placeholder="Choose horror direction"
+      options={HORROR_OPTIONS}
+      onChange={(horror) =>
+        setState((current) => ({
+          ...current,
+          horror,
+          horrors: horror ? [horror] : [],
+          themeProgramCandidates: [],
+          activeThemeProgramCandidateId: "",
+        }))
+      }
+    />
+  );
 
   return (
     <aside className="cruor-composer-rail location-composer__rail location-composer__rail--left location-map-frame-rail" aria-label="Location frame">
       {modeControls ? modeControls : null}
-      <section className="cruor-composer-panel location-panel location-brief-panel">
-        <div className="location-panel-head location-panel-head--compact location-brief-panel__head">
-          <div>
-            <p className="location-kicker">{panelKicker}</p>
-            <h2>{panelTitle}</h2>
-          </div>
-        </div>
 
-        {draftControls ? (
-          <div className="location-brief-panel__draft">
-            {draftControls}
+      {!forcedMode ? (
+        <section className="location-frame-control-block location-frame-control-block--mode" aria-label="Build mode">
+          <div className="location-frame-control-block__head">
+            <span>Mode</span>
           </div>
-        ) : null}
-
-        <div className="location-brief-panel__fields">
-          {!forcedMode ? (
+          <div className="location-frame-selector-stack">
             <LocationBuildModeField
               mode={dungeonMode}
               onChange={(dungeonMode) =>
@@ -652,84 +860,39 @@ export function LocationBriefPanel({
                 }))
               }
             />
-          ) : null}
+          </div>
+        </section>
+      ) : null}
 
-          {dungeonMode === "theme" ? (
-            <LocationChoiceField
-              help={LOCATION_FIELD_HELP.theme}
-              icon="fa-book-dead"
-              label="Theme"
-              value={selectedThemeId}
-              placeholder="Choose dungeon theme"
-              options={DUNGEON_THEME_OPTIONS}
-              onChange={(themeId) => {
-                const selectedTheme = DUNGEON_THEME_OPTIONS.find((option) => option.value === themeId)?.theme;
-                setState((current) => ({
-                  ...current,
-                  dungeonThemeId: themeId,
-                  sourceAnchors: selectedTheme?.sourceAnchorIds?.length && selectedTheme?.name ? [selectedTheme.name] : current.sourceAnchors,
-                  context: selectedTheme?.mapTypeBias?.[0] || current.context,
-                  themeProgramCandidates: [],
-                  activeThemeProgramCandidateId: "",
-                }));
-              }}
-            />
-          ) : (
-            <LocationChoiceField
-              help={LOCATION_FIELD_HELP.themeAssist}
-              icon="fa-book-dead"
-              label="Theme Assist"
-              value={selectedThemeId}
-              placeholder="Choose optional theme"
-              options={DUNGEON_THEME_OPTIONS}
-              onChange={(themeId) => {
-                const selectedTheme = DUNGEON_THEME_OPTIONS.find((option) => option.value === themeId)?.theme;
-                setState((current) => ({
-                  ...current,
-                  dungeonThemeId: themeId,
-                  sourceAnchors: selectedTheme?.sourceAnchorIds?.length && selectedTheme?.name ? [selectedTheme.name] : current.sourceAnchors,
-                  context: selectedTheme?.mapTypeBias?.[0] || current.context,
-                  themeProgramCandidates: [],
-                  activeThemeProgramCandidateId: "",
-                }));
-              }}
-            />
-          )}
+      {draftControls ? (
+        <section className="location-frame-control-block location-frame-control-block--draft" aria-label="Draft controls">
+          <div className="location-frame-control-block__head">
+            <span>Draft</span>
+          </div>
+          <div className="location-frame-selector-stack">
+            {draftControls}
+          </div>
+        </section>
+      ) : null}
 
-          <LocationChoiceField
-            help={LOCATION_FIELD_HELP.context}
-            icon="fa-dungeon"
-            label="Context"
-            value={state.context || ""}
-            options={CONTEXT_OPTIONS}
-            onChange={(context) => setState((current) => ({
-              ...current,
-              context,
-              themeProgramCandidates: [],
-              activeThemeProgramCandidateId: "",
-            }))}
-          />
+      {dungeonMode === "theme" ? (
+        <>
+          <section className="location-frame-control-block" aria-label="Location theme controls">
+            <div className="location-frame-control-block__head">
+              <span>Theme</span>
+            </div>
+            <div className="location-frame-selector-stack">
+              {themeChoiceField}
+              {contextChoiceField}
+              {horrorChoiceField}
+            </div>
+          </section>
 
-          <LocationChoiceField
-            help={LOCATION_FIELD_HELP.horror}
-            icon="fa-skull"
-            label="Horror"
-            value={selectedHorror}
-            placeholder="Choose horror direction"
-            options={HORROR_OPTIONS}
-            onChange={(horror) =>
-              setState((current) => ({
-                ...current,
-                horror,
-                horrors: horror ? [horror] : [],
-                themeProgramCandidates: [],
-                activeThemeProgramCandidateId: "",
-              }))
-            }
-          />
-
-          {dungeonMode === "theme" ? (
-            <>
+          <section className="location-frame-control-block" aria-label="Location map controls">
+            <div className="location-frame-control-block__head">
+              <span>Map Shape</span>
+            </div>
+            <div className="location-frame-selector-stack">
               <LocationIconToggleField
                 help={LOCATION_FIELD_HELP.scale}
                 label="Scale"
@@ -781,13 +944,35 @@ export function LocationBriefPanel({
               </button>
 
               {uiMode === "debug" ? <LocationThemeLoadedProgram regions={state.locationRegions || []} /> : null}
-            </>
-          ) : (
-            <>
+            </div>
+          </section>
+        </>
+      ) : (
+        <>
+          <section className="location-frame-control-block" aria-label="Scratch room controls">
+            <div className="location-frame-control-block__head">
+              <span>Rooms</span>
+            </div>
+            <div className="location-frame-selector-stack">
+              {themeChoiceField}
+              {contextChoiceField}
+              {horrorChoiceField}
               <LocationScratchRoomCountField
                 count={regions.length || 1}
                 onChange={onSetScratchRoomCount}
               />
+              <LocationScratchGenerateAction
+                disabled={!regions.length}
+                onGenerateMap={onGenerateScratchMap}
+              />
+            </div>
+          </section>
+
+          <section className="location-frame-control-block location-frame-control-block--room-list" aria-label="Scratch room navigation">
+            <div className="location-frame-control-block__head">
+              <span>Room List</span>
+            </div>
+            <div className="location-frame-selector-stack">
               <LocationScratchRoomList
                 activeRegionId={state.activeRegionId}
                 regions={regions}
@@ -796,18 +981,10 @@ export function LocationBriefPanel({
                 onRemoveRoom={onRemoveScratchRoom}
                 onSelectRoom={onSelectScratchRoom}
               />
-              <LocationScratchRoomEditor
-                region={activeScratchRegion}
-                onUpdateRoom={onUpdateScratchRoom}
-              />
-              <LocationScratchGenerateAction
-                disabled={!regions.length}
-                onGenerateMap={onGenerateScratchMap}
-              />
-            </>
-          )}
-        </div>
-      </section>
+            </div>
+          </section>
+        </>
+      )}
     </aside>
   );
 }

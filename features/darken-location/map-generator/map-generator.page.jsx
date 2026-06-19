@@ -282,6 +282,10 @@ export function MapViewport({
   crosshatchOpacity = 0.72,
   selectedRegionId = "",
   onSelectedRegionChange = null,
+  onRegionHoverChange = null,
+  onRegionContextMenu = null,
+  enablePreviewRegionHotspots = false,
+  previewRegionMarkers = {},
   showEditor,
   showNames,
   showRoomBadges = true,
@@ -330,6 +334,7 @@ export function MapViewport({
   enableViewportInteractions = true,
   viewportMode = embeddedPreview ? "composer-preview" : "workspace",
   viewportClassName = "",
+  onViewportMetricsChange = null,
 }) {
   const viewportRef = useRef(null);
   const panRef = useRef(null);
@@ -368,6 +373,13 @@ export function MapViewport({
   });
   const viewportInteractive = enableViewportInteractions && !embeddedPreview;
   const shouldShowViewportChrome = showViewportChrome && !embeddedPreview;
+  const wallStrokeScale = clamp(view.scale / 0.85, 0.62, 1);
+  const wallStrokeVariables = {
+    "--cruor-map-wall-main-width": String(roundTo(4.15 * wallStrokeScale, 2)),
+    "--cruor-map-wall-shadow-width": String(roundTo(8.2 * wallStrokeScale, 2)),
+    "--cruor-map-wall-sketch-width": String(roundTo(Math.max(0.78, 1.15 * wallStrokeScale), 2)),
+    "--cruor-map-wall-break-width": String(roundTo(Math.max(0.92, 1.45 * wallStrokeScale), 2)),
+  };
 
   contentBoundsRef.current = generatedMap.contentBounds;
 
@@ -559,9 +571,40 @@ export function MapViewport({
     };
   }
 
-  function getViewportViewBox() {
-    return `${-view.x / view.scale} ${-view.y / view.scale} ${viewportSize.width / view.scale} ${viewportSize.height / view.scale}`;
+  function setPreviewHoveredRegion(regionId) {
+    const normalizedRegionId = regionId || null;
+    setHoveredRegionId(normalizedRegionId);
+    onRegionHoverChange?.(normalizedRegionId || "");
   }
+
+  const viewportViewBox = useMemo(
+    () => ({
+      x: -view.x / view.scale,
+      y: -view.y / view.scale,
+      width: viewportSize.width / view.scale,
+      height: viewportSize.height / view.scale,
+    }),
+    [view.x, view.y, view.scale, viewportSize.width, viewportSize.height],
+  );
+
+  function getViewportViewBox() {
+    return `${viewportViewBox.x} ${viewportViewBox.y} ${viewportViewBox.width} ${viewportViewBox.height}`;
+  }
+
+  useEffect(() => {
+    if (typeof onViewportMetricsChange !== "function") return;
+    onViewportMetricsChange({
+      viewBox: viewportViewBox,
+      scale: view.scale,
+      viewportSize,
+    });
+  }, [
+    onViewportMetricsChange,
+    view.scale,
+    viewportSize.width,
+    viewportSize.height,
+    viewportViewBox,
+  ]);
 
   const handleWheel = useCallback(
     (event) => {
@@ -1551,6 +1594,7 @@ export function MapViewport({
           viewportClassName,
         )}
         data-map-viewport-mode={viewportMode}
+        style={wallStrokeVariables}
         tabIndex={viewportInteractive ? 0 : -1}
         aria-label={embeddedPreview ? "Embedded map preview" : "Interactive map viewport"}
         onContextMenu={viewportInteractive ? openMapContextMenu : undefined}
@@ -1581,6 +1625,34 @@ export function MapViewport({
             levelView={levelView}
             fadeOtherLevels={fadeOtherLevels}
             viewportViewBox={getViewportViewBox()}
+            previewRoomHotspots={{
+              enabled: enablePreviewRegionHotspots && !showEditor,
+              selectedRegionId,
+              hoveredRegionId,
+              regionMarkers: previewRegionMarkers,
+              onSelect: (region) => onSelectedRegionChange?.(
+                region?.previewTargetId ||
+                  region?.sourceRegionId ||
+                  region?.requestMetadata?.sourceRegionId ||
+                  region?.id ||
+                  "",
+              ),
+              onHoverChange: (region) => setPreviewHoveredRegion(
+                region?.previewTargetId ||
+                  region?.sourceRegionId ||
+                  region?.requestMetadata?.sourceRegionId ||
+                  region?.id ||
+                  "",
+              ),
+              onContextMenu: (event, region) => onRegionContextMenu?.(
+                event,
+                region?.previewTargetId ||
+                  region?.sourceRegionId ||
+                  region?.requestMetadata?.sourceRegionId ||
+                  region?.id ||
+                  "",
+              ),
+            }}
             editorOptions={{
               draggingRegionId,
               hoveredRegionId,
@@ -3320,9 +3392,13 @@ export default function CruorMapGeneratorMvp({
       visualStyle,
       showGrid,
       gridStyle,
+      connections: Array.isArray(initialRequest?.connections)
+        ? initialRequest.connections
+        : initialConfig.connections || [],
     }),
     [
       initialConfig,
+      initialRequest,
       seed,
       context,
       roomCount,

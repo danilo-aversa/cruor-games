@@ -88,8 +88,10 @@ export function getMapSyncStatus(mapRequest, generatedMapPreview, regions = []) 
 }
 
 export const REGION_PREVIEW_MARKER_DEFINITIONS = Object.freeze([
+  Object.freeze({ slotId: "sensoryLayer", label: "SENS", fullLabel: "Sensory Layer", icon: "fa-eye" }),
   Object.freeze({ slotId: "hazard", label: "HAZ", fullLabel: "Hazard", icon: "fa-triangle-exclamation" }),
   Object.freeze({ slotId: "clue", label: "CLUE", fullLabel: "Clue", icon: "fa-magnifying-glass" }),
+  Object.freeze({ slotId: "reward", label: "REW", fullLabel: "Reward", icon: "fa-gem" }),
   Object.freeze({ slotId: "encounterTwist", label: "TWIST", fullLabel: "Encounter Twist", icon: "fa-shuffle" }),
 ]);
 

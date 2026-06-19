@@ -17,17 +17,231 @@ function getComponentSummary(component) {
   return component?.summary || component?.description || component?.text || component?.effect || "";
 }
 
-function getComponentMatchLabels(component, slot, regionScoped) {
-  const labels = [];
+function toArray(value) {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (value === undefined || value === null || value === "") return [];
+  return [value];
+}
 
-  if (slot?.label) labels.push(slot.label);
-  if (regionScoped) labels.push("Region");
-  if (!regionScoped) labels.push("Map");
-  if (Array.isArray(component?.contexts) && component.contexts.length) labels.push("Context");
-  if (Array.isArray(component?.horror) && component.horror.length) labels.push("Horror");
-  if (Array.isArray(component?.sourceAnchors) && component.sourceAnchors.length) labels.push("Source");
+function normalizeToken(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase();
+}
 
-  return labels.slice(0, 3);
+function normalizeTokens(values) {
+  return new Set(
+    toArray(values)
+      .map(normalizeToken)
+      .filter(Boolean)
+      .filter((value) => value !== "any" && value !== "any source"),
+  );
+}
+
+function intersects(a, b) {
+  if (!a?.size || !b?.size) return false;
+  for (const value of a) {
+    if (b.has(value)) return true;
+  }
+  return false;
+}
+
+function countIntersections(a, b) {
+  if (!a?.size || !b?.size) return 0;
+  let count = 0;
+  for (const value of a) {
+    if (b.has(value)) count += 1;
+  }
+  return count;
+}
+
+function addReason(reasons, label) {
+  if (!label || reasons.includes(label)) return;
+  reasons.push(label);
+}
+
+function getComponentTextTokens(component) {
+  return normalizeTokens([
+    component?.id,
+    component?.title,
+    component?.name,
+    component?.type,
+    component?.summary,
+    component?.description,
+    component?.text,
+    component?.effect,
+    component?.tableText,
+    component?.mechanics,
+    component?.narrative,
+    ...(Array.isArray(component?.tags) ? component.tags : []),
+    ...(Array.isArray(component?.motifs) ? component.motifs : []),
+  ]);
+}
+
+function getRegionDecisionTokens(activeRegion, generatedRoom) {
+  return normalizeTokens([
+    activeRegion?.id,
+    activeRegion?.name,
+    activeRegion?.label,
+    activeRegion?.role,
+    activeRegion?.type,
+    activeRegion?.roomType,
+    activeRegion?.size,
+    activeRegion?.shape,
+    activeRegion?.feature,
+    activeRegion?.danger,
+    activeRegion?.secret,
+    generatedRoom?.id,
+    generatedRoom?.name,
+    generatedRoom?.label,
+    generatedRoom?.role,
+    generatedRoom?.type,
+    generatedRoom?.roomType,
+    ...(Array.isArray(activeRegion?.tags) ? activeRegion.tags : []),
+    ...(Array.isArray(activeRegion?.links) ? activeRegion.links : []),
+    ...(Array.isArray(generatedRoom?.tags) ? generatedRoom.tags : []),
+  ]);
+}
+
+function getSelectedBuildTokens(selectedComponents) {
+  return normalizeTokens(
+    toArray(selectedComponents).flatMap((component) => [
+      component?.id,
+      component?.title,
+      component?.name,
+      component?.type,
+      ...(Array.isArray(component?.sourceAnchors) ? component.sourceAnchors : []),
+      ...(Array.isArray(component?.horror) ? component.horror : []),
+      ...(Array.isArray(component?.motifs) ? component.motifs : []),
+      ...(Array.isArray(component?.tags) ? component.tags : []),
+    ]),
+  );
+}
+
+function getStateDecisionProfile({ activeRegion, generatedRoom, selectedComponents, slot, state }) {
+  const contextTokens = normalizeTokens([
+    state?.context,
+    state?.mapType,
+    activeRegion?.context,
+    activeRegion?.type,
+    generatedRoom?.context,
+    generatedRoom?.type,
+    ...(Array.isArray(activeRegion?.contexts) ? activeRegion.contexts : []),
+    ...(Array.isArray(generatedRoom?.contexts) ? generatedRoom.contexts : []),
+  ]);
+  const horrorTokens = normalizeTokens([
+    state?.horror,
+    ...(Array.isArray(state?.horrors) ? state.horrors : []),
+    ...(Array.isArray(activeRegion?.horror) ? activeRegion.horror : []),
+    ...(Array.isArray(generatedRoom?.horror) ? generatedRoom.horror : []),
+  ]);
+  const sourceTokens = normalizeTokens([
+    ...(Array.isArray(state?.sourceAnchors) ? state.sourceAnchors : []),
+    ...(Array.isArray(activeRegion?.sourceAnchors) ? activeRegion.sourceAnchors : []),
+    ...(Array.isArray(generatedRoom?.sourceAnchors) ? generatedRoom.sourceAnchors : []),
+  ]);
+
+  return {
+    buildTokens: getSelectedBuildTokens(selectedComponents),
+    contextTokens,
+    horrorTokens,
+    regionTokens: getRegionDecisionTokens(activeRegion, generatedRoom),
+    slotId: slot?.id || "",
+    slotLabel: slot?.label || "",
+    sourceTokens,
+  };
+}
+
+function scoreLocationComponentDecision(component, profile, options = {}) {
+  const reasons = [];
+  let score = 0;
+
+  const componentSlots = normalizeTokens(component?.slots);
+  const componentContexts = normalizeTokens(component?.contexts);
+  const componentHorror = normalizeTokens(component?.horror);
+  const componentSources = normalizeTokens(component?.sourceAnchors);
+  const componentMotifs = normalizeTokens(component?.motifs);
+  const componentTags = normalizeTokens(component?.tags);
+  const componentPairs = normalizeTokens([
+    ...(Array.isArray(component?.pairsWellWith) ? component.pairsWellWith : []),
+    ...(Array.isArray(component?.pairWith) ? component.pairWith : []),
+  ]);
+  const componentTextTokens = getComponentTextTokens(component);
+  const slotTokens = normalizeTokens([profile.slotId, profile.slotLabel]);
+
+  if (intersects(componentSlots, slotTokens)) {
+    score += 34;
+    addReason(reasons, `Fits ${profile.slotLabel || "slot"}`);
+  }
+
+  const sourceMatches = countIntersections(componentSources, profile.sourceTokens);
+  if (sourceMatches) {
+    score += 28 + sourceMatches * 4;
+    addReason(reasons, "Matches source");
+  }
+
+  const horrorMatches = countIntersections(componentHorror, profile.horrorTokens);
+  if (horrorMatches) {
+    score += 22 + horrorMatches * 3;
+    addReason(reasons, "Supports horror");
+  }
+
+  const contextMatches = countIntersections(componentContexts, profile.contextTokens);
+  if (contextMatches) {
+    score += 20 + contextMatches * 3;
+    addReason(reasons, "Fits context");
+  }
+
+  const regionMatches =
+    countIntersections(componentContexts, profile.regionTokens) +
+    countIntersections(componentMotifs, profile.regionTokens) +
+    countIntersections(componentTags, profile.regionTokens) +
+    countIntersections(componentTextTokens, profile.regionTokens);
+  if (options.regionScoped && regionMatches) {
+    score += 18 + Math.min(18, regionMatches * 3);
+    addReason(reasons, "Fits selected room");
+  }
+
+  if (!options.activeSlotFilled) {
+    score += 12;
+    addReason(reasons, "Fills empty slot");
+  }
+
+  const buildMatches =
+    countIntersections(componentPairs, profile.buildTokens) +
+    countIntersections(componentMotifs, profile.buildTokens) +
+    countIntersections(componentTags, profile.buildTokens) +
+    countIntersections(componentSources, profile.buildTokens);
+  if (buildMatches) {
+    score += 10 + Math.min(12, buildMatches * 3);
+    addReason(reasons, "Pairs with build");
+  }
+
+  if (options.selected) {
+    score += 1000;
+    addReason(reasons, "Assigned");
+  }
+
+  if (!reasons.length) {
+    score += 1;
+    addReason(reasons, "Compatible");
+  }
+
+  return {
+    component,
+    reasons: reasons.slice(0, 4),
+    score,
+  };
+}
+
+function getDecisionReasonLabels(decision, slot, regionScoped) {
+  const labels = Array.isArray(decision?.reasons) ? decision.reasons.filter(Boolean) : [];
+  if (labels.length) return labels.slice(0, 4);
+
+  const fallback = [];
+  if (slot?.label) fallback.push(slot.label);
+  fallback.push(regionScoped ? "Region" : "Map");
+  return fallback.slice(0, 3);
 }
 
 export function LocationComponentPickerModal({
@@ -40,8 +254,10 @@ export function LocationComponentPickerModal({
   onClose,
   onRemoveComponent,
   open,
+  selectedComponents = [],
   slot,
   slotScope = "map",
+  state,
 }) {
   const [search, setSearch] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -74,6 +290,12 @@ export function LocationComponentPickerModal({
         component.summary,
         component.description,
         component.text,
+        component.tableText,
+        component.mechanics,
+        ...(Array.isArray(component.contexts) ? component.contexts : []),
+        ...(Array.isArray(component.horror) ? component.horror : []),
+        ...(Array.isArray(component.sourceAnchors) ? component.sourceAnchors : []),
+        ...(Array.isArray(component.motifs) ? component.motifs : []),
       ]
         .filter(Boolean)
         .join(" ")
@@ -83,21 +305,59 @@ export function LocationComponentPickerModal({
     });
   }, [assignedIds, components, search, statusFilter]);
 
-  const recommendedComponents = useMemo(() => {
-    if (hasSearch || statusFilter === "assigned") return [];
-    return visibleComponents
-      .filter((component) => !assignedIds.has(component.id))
-      .slice(0, 3);
-  }, [assignedIds, hasSearch, statusFilter, visibleComponents]);
-
-  const recommendedIds = useMemo(
-    () => new Set(recommendedComponents.map((component) => component.id).filter(Boolean)),
-    [recommendedComponents],
+  const decisionProfile = useMemo(
+    () => getStateDecisionProfile({ activeRegion, generatedRoom, selectedComponents, slot, state }),
+    [activeRegion, generatedRoom, selectedComponents, slot, state],
   );
 
-  const allMatchingComponents = useMemo(
-    () => visibleComponents.filter((component) => !recommendedIds.has(component.id)),
-    [recommendedIds, visibleComponents],
+  const rankedDecisions = useMemo(() => {
+    return visibleComponents
+      .map((component) =>
+        scoreLocationComponentDecision(component, decisionProfile, {
+          activeSlotFilled: assignedComponents.length > 0,
+          regionScoped,
+          selected: assignedIds.has(component.id),
+        }),
+      )
+      .sort((a, b) => {
+        if (assignedIds.has(a.component.id) !== assignedIds.has(b.component.id)) {
+          return assignedIds.has(a.component.id) ? -1 : 1;
+        }
+        if (b.score !== a.score) return b.score - a.score;
+        return getComponentTitle(a.component).localeCompare(getComponentTitle(b.component));
+      });
+  }, [assignedComponents.length, assignedIds, decisionProfile, regionScoped, visibleComponents]);
+
+  const recommendedDecisions = useMemo(() => {
+    if (statusFilter === "assigned") return [];
+    return rankedDecisions
+      .filter((decision) => !assignedIds.has(decision.component.id))
+      .filter((decision) => decision.score >= 42 || !hasSearch)
+      .slice(0, hasSearch ? 2 : 3);
+  }, [assignedIds, hasSearch, rankedDecisions, statusFilter]);
+
+  const recommendedIds = useMemo(
+    () => new Set(recommendedDecisions.map((decision) => decision.component.id).filter(Boolean)),
+    [recommendedDecisions],
+  );
+
+  const bestFitDecisions = useMemo(() => {
+    if (statusFilter === "assigned") return [];
+    return rankedDecisions
+      .filter((decision) => !recommendedIds.has(decision.component.id))
+      .filter((decision) => !assignedIds.has(decision.component.id))
+      .filter((decision) => decision.score >= 54)
+      .slice(0, 6);
+  }, [assignedIds, rankedDecisions, recommendedIds, statusFilter]);
+
+  const bestFitIds = useMemo(
+    () => new Set(bestFitDecisions.map((decision) => decision.component.id).filter(Boolean)),
+    [bestFitDecisions],
+  );
+
+  const allMatchingDecisions = useMemo(
+    () => rankedDecisions.filter((decision) => !recommendedIds.has(decision.component.id) && !bestFitIds.has(decision.component.id)),
+    [bestFitIds, rankedDecisions, recommendedIds],
   );
 
   function clearFilters() {
@@ -119,12 +379,13 @@ export function LocationComponentPickerModal({
       : "Click a room on the map to change target"
     : "Dungeon-wide slot";
 
-  function renderComponentCard(component, tier = "matching") {
+  function renderComponentCard(decision, tier = "matching") {
+    const component = decision?.component || decision;
     const componentKey = getComponentKey(component);
     const selected = assignedIds.has(component.id);
     const replaceAction = isSlotFull && !selected;
     const actionLabel = selected ? "Remove" : replaceAction ? "Replace" : "Add";
-    const matchLabels = getComponentMatchLabels(component, slot, regionScoped);
+    const matchLabels = getDecisionReasonLabels(decision, slot, regionScoped);
 
     return (
       <article
@@ -132,6 +393,7 @@ export function LocationComponentPickerModal({
           "component-card cruor-composer-card location-component-option",
           selected && "in-build is-active",
         )}
+        data-decision-score={Math.round(decision?.score || 0)}
         data-decision-tier={selected ? "assigned" : tier}
         draggable={!selected}
         key={componentKey}
@@ -153,9 +415,9 @@ export function LocationComponentPickerModal({
         </div>
 
         {matchLabels.length ? (
-          <div className="location-component-option__meta">
+          <div className="location-component-option__meta location-component-decision-row" aria-label="Recommendation reasons">
             {matchLabels.map((label) => (
-              <span key={label}>{label}</span>
+              <span className="location-component-decision-chip" key={label}>{label}</span>
             ))}
           </div>
         ) : null}
@@ -164,6 +426,18 @@ export function LocationComponentPickerModal({
           <p className="summary location-component-summary">{getComponentSummary(component)}</p>
         ) : null}
       </article>
+    );
+  }
+
+  function renderDecisionGroup(title, decisions, tier) {
+    if (!decisions.length) return null;
+    return (
+      <section className="location-component-decision-group" data-decision-tier={tier}>
+        <div className="tag-filter-row__head location-component-filter-row__head location-component-decision-group__head">
+          <span>{title}</span>
+        </div>
+        {decisions.map((decision) => renderComponentCard(decision, tier))}
+      </section>
     );
   }
 
@@ -277,23 +551,13 @@ export function LocationComponentPickerModal({
           <div className="component-list location-component-list component-navigator-modal__list cruor-scroll-surface">
             {visibleComponents.length ? (
               <>
-                {recommendedComponents.length ? (
-                  <>
-                    <div className="tag-filter-row__head location-component-filter-row__head">
-                      <span>Recommended</span>
-                    </div>
-                    {recommendedComponents.map((component) => renderComponentCard(component, "recommended"))}
-                  </>
-                ) : null}
-
-                {allMatchingComponents.length ? (
-                  <>
-                    <div className="tag-filter-row__head location-component-filter-row__head">
-                      <span>{recommendedComponents.length ? "All Matching" : "Matching Components"}</span>
-                    </div>
-                    {allMatchingComponents.map((component) => renderComponentCard(component, "matching"))}
-                  </>
-                ) : null}
+                {renderDecisionGroup("Recommended", recommendedDecisions, "recommended")}
+                {renderDecisionGroup("Best Fits", bestFitDecisions, "best-fit")}
+                {renderDecisionGroup(
+                  recommendedDecisions.length || bestFitDecisions.length ? "All Matching" : "Matching Components",
+                  allMatchingDecisions,
+                  "matching",
+                )}
               </>
             ) : (
               <p className="location-empty location-empty--quiet">No compatible options.</p>

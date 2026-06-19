@@ -79,6 +79,9 @@ function createLocationMapSourceKey(mapRequest) {
   const requiredRegions = Array.isArray(mapRequest?.requiredRegions)
     ? mapRequest.requiredRegions
     : [];
+  const connections = Array.isArray(mapRequest?.connections)
+    ? mapRequest.connections
+    : [];
 
   return [
     mapRequest?.seed || "no-seed",
@@ -98,6 +101,18 @@ function createLocationMapSourceKey(mapRequest) {
           Array.isArray(region?.links) ? region.links.join(",") : "",
         ].join("@"),
       )
+      .join("|"),
+    connections
+      .map((connection) =>
+        [
+          connection?.from || "",
+          connection?.to || "",
+          connection?.kind || "main",
+          connection?.locked ? "locked" : "open",
+          connection?.secret ? "secret" : "visible",
+        ].join("@"),
+      )
+      .sort()
       .join("|"),
   ].join("::");
 }
@@ -722,6 +737,24 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     setState((current) => removeComponentFromSlot(current, componentId, activeSlot.id));
   }, [activeSlot]);
 
+  const activeScratchRegion = useMemo(
+    () => (Array.isArray(state.locationRegions) ? state.locationRegions : []).find((region) => region.id === state.activeRegionId)
+      || (Array.isArray(state.locationRegions) ? state.locationRegions[0] : null)
+      || null,
+    [state.activeRegionId, state.locationRegions],
+  );
+
+  const focusScratchRoomSlot = useCallback((slotId, regionId = "") => {
+    if (!slotId) return;
+    setState((current) => ({
+      ...current,
+      activeSlot: slotId,
+      activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+      activeRegionId: regionId || current.activeRegionId || activeScratchRegion?.id || "",
+    }));
+    setDrawerOpen(true);
+  }, [activeScratchRegion?.id]);
+
   const leftPanel = builderMode === "theme" || builderMode === "scratch" ? (
     <LocationBriefPanel
       state={state}
@@ -774,7 +807,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     />
   );
 
-  const navigatorPanel = builderMode === "map" && drawerOpen && activeSlot ? (
+  const navigatorPanel = (builderMode === "map" || builderMode === "scratch") && drawerOpen && activeSlot ? (
     <LocationComponentPickerModal
       activeRegion={activeRegionForPicker}
       assignedComponents={assignedComponentsForActiveSlot}
@@ -783,8 +816,10 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       isSlotFull={activeSlotIsFull}
       open={drawerOpen}
       regions={state.locationRegions || []}
+      selectedComponents={selectedComponents}
       slot={activeSlot}
       slotScope={activeSlotScope}
+      state={state}
       onAddComponent={addComponentToActiveSlot}
       onClose={() => setDrawerOpen(false)}
       onRemoveComponent={removeComponentFromActiveSlot}
@@ -854,6 +889,9 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
           rightPanel={isMapEditing ? null : rightPanel}
           navigatorPanel={isMapEditing ? null : navigatorPanel}
           workspacePanel={mapWorkspacePanel}
+          contextPanel={null}
+          onScratchRoomFocusSlot={focusScratchRoomSlot}
+          onScratchRoomUpdate={updateScratchRoom}
         />
       </div>
     </div>
