@@ -89,9 +89,30 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
               </div>
             </div>
 
-            <div className="cruor-home__tool-copy">
-              <h3>{t("home.tools.dungeonTitle")}</h3>
-              <p>{t("home.tools.dungeonBody")}</p>
+            <div className="cruor-home__tool-content">
+              <div className="cruor-home__tool-copy">
+                <span className="cruor-home__tool-kicker">The Place</span>
+                <h3>{t("home.tools.dungeonTitle")}</h3>
+                <p className="cruor-home__tool-summary">
+                  Turn a dungeon, cave, chapel, ruin, or noble house into a playable horror site
+                  without replacing the session you already prepared.
+                </p>
+              </div>
+
+              <div className="cruor-home__tool-feature-block">
+                <span>What it helps you build</span>
+                <ul className="cruor-home__tool-features">
+                  <li>Source-inspired atmosphere, sensory cues, and visual signs.</li>
+                  <li>Location regions with roles, pressure, clues, and hazards.</li>
+                  <li>Map-ready structure for rooms, routes, entrances, and setpieces.</li>
+                  <li>Read-aloud text and table-use notes for immediate play.</li>
+                </ul>
+              </div>
+
+              <p className="cruor-home__tool-output">
+                <strong>Final output.</strong> A haunted location insert with regions, atmosphere,
+                hazards, clues, and a structure you can move into the map generator.
+              </p>
             </div>
 
             <button
@@ -113,9 +134,30 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
               </div>
             </div>
 
-            <div className="cruor-home__tool-copy">
-              <h3>{t("home.tools.monsterTitle")}</h3>
-              <p>{t("home.tools.monsterBody")}</p>
+            <div className="cruor-home__tool-content">
+              <div className="cruor-home__tool-copy">
+                <span className="cruor-home__tool-kicker">The Threat</span>
+                <h3>{t("home.tools.monsterTitle")}</h3>
+                <p className="cruor-home__tool-summary">
+                  Compose a creature through anatomy, pressure, weakness, role, and encounter
+                  impact instead of starting from a blank stat block.
+                </p>
+              </div>
+
+              <div className="cruor-home__tool-feature-block">
+                <span>What it helps you build</span>
+                <ul className="cruor-home__tool-features">
+                  <li>Body, mind, movement, attack pattern, and horror hook.</li>
+                  <li>Weaknesses, tells, pressure tools, lair presence, and death effects.</li>
+                  <li>Role and threat profile for how the creature behaves at the table.</li>
+                  <li>A structured monster concept ready for balancing and export passes.</li>
+                </ul>
+              </div>
+
+              <p className="cruor-home__tool-output">
+                <strong>Final output.</strong> A source-inspired monster build with identity,
+                behavior, pressure, counterplay, and table-facing direction.
+              </p>
             </div>
 
             <button

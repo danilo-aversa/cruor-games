@@ -16,6 +16,7 @@ export const DEFAULT_CONFIG = {
   mode: "editor",
   visualStyle: "cruor",
   gridStyle: "solid",
+  contextGraphAdapterMode: "off",
   regions: [
     {
       id: "region-1",
@@ -144,6 +145,25 @@ const SUPPORTED_VISUAL_STYLES = new Set(
   MAP_VISUAL_STYLES.map((style) => style.value),
 );
 
+const CONTEXT_GRAPH_ADAPTER_MODES = new Set([
+  "off",
+  "hard",
+  "all",
+  "crypt",
+  "mine",
+  "ruins",
+  "chapel",
+  "noble-house",
+]);
+
+function normalizeContextGraphAdapterMode(value, fallback = DEFAULT_CONFIG.contextGraphAdapterMode) {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (!normalized) return fallback;
+  if (normalized === "noble house") return "noble-house";
+  if (normalized === "enabled" || normalized === "true" || normalized === "adapter") return "hard";
+  return CONTEXT_GRAPH_ADAPTER_MODES.has(normalized) ? normalized : fallback;
+}
+
 export function normalizeVisualStyle(value, fallback = DEFAULT_CONFIG.visualStyle) {
   const text = String(value || "").trim();
   if (text === "one-page-dungeon") return "cartographic";
@@ -231,6 +251,10 @@ export function createConfigFromNormalizedMapRequest(
     mapWidth: normalizeMapDimension(initialRequest.mapWidth, baseConfig.mapWidth),
     mapHeight: normalizeMapDimension(initialRequest.mapHeight, baseConfig.mapHeight),
     visualStyle: normalizeVisualStyle(initialRequest.visualStyle, baseConfig.visualStyle),
+    contextGraphAdapterMode: normalizeContextGraphAdapterMode(
+      initialRequest.contextGraphAdapterMode || initialRequest.metadata?.contextGraphAdapterMode,
+      baseConfig.contextGraphAdapterMode,
+    ),
     horror: normalizeArray(initialRequest.metadata?.horror).length
       ? normalizeArray(initialRequest.metadata.horror)
       : baseConfig.horror,
@@ -291,6 +315,7 @@ export function normalizeInput(config) {
     mapWidth: normalizeMapDimension(config.mapWidth, DEFAULT_CONFIG.mapWidth),
     mapHeight: normalizeMapDimension(config.mapHeight, DEFAULT_CONFIG.mapHeight),
     visualStyle: normalizeVisualStyle(config.visualStyle),
+    contextGraphAdapterMode: normalizeContextGraphAdapterMode(config.contextGraphAdapterMode),
     regions,
     connections: Array.isArray(config.connections) ? config.connections : [],
   };

@@ -5,7 +5,8 @@ import {
   getRoomCellOwnershipMap,
 } from "../map-generator.corridors.js";
 
-export const MAP_BATCH_QA_VERSION = "map-qa-v0.3.3-connections-metadata-only";
+export const MAP_BATCH_QA_VERSION = "map-qa-v0.5.0-adapter-qa-harness";
+export const MAP_ADAPTER_QA_VERSION = "map-adapter-qa-v0.2.0-adapter-usage-diagnostics";
 
 const DEFAULT_CONTEXTS = Object.freeze([
   "Crypt",
@@ -41,6 +42,81 @@ export const MAP_BATCH_EXPORT_MODES = Object.freeze([
   Object.freeze({ value: "markdown", label: "Markdown", extension: "md", mimeType: "text/markdown" }),
 ]);
 
+export const MAP_CONTEXT_GRAPH_ADAPTER_MODES = Object.freeze([
+  Object.freeze({ value: "off", label: "Baseline", description: "Default inferred graph with context adapters disabled." }),
+  Object.freeze({ value: "crypt", label: "Crypt Adapter", description: "Crypt spine with side crypt branches." }),
+  Object.freeze({ value: "mine", label: "Mine Adapter", description: "Mine tunnel trunk with extraction branches." }),
+  Object.freeze({ value: "ruins", label: "Ruins Adapter", description: "Ruins broken path with collapsed shortcuts." }),
+  Object.freeze({ value: "noble-house", label: "Noble House Adapter", description: "House circulation hub with room branches." }),
+  Object.freeze({ value: "all", label: "All Context Adapters", description: "Enable any adapter that matches the generated context." }),
+]);
+
+export const MAP_ADAPTER_QA_DEFAULT_MODES = Object.freeze(["off", "crypt", "mine", "ruins", "noble-house"]);
+
+
+const CONTEXT_GRAPH_ADAPTER_KEYS = Object.freeze(["crypt", "mine", "ruins", "noble-house"]);
+
+function normalizeAdapterContextKey(value = "") {
+  const normalized = String(value || "").trim().toLowerCase().replace(/[\s_]+/g, "-");
+  if (normalized === "noble" || normalized === "noblehouse") return "noble-house";
+  if (normalized === "noble-house") return "noble-house";
+  if (normalized === "crypt" || normalized === "mine" || normalized === "ruins") return normalized;
+  return normalized;
+}
+
+function getAdapterModeKeys(mode = "off") {
+  const normalized = normalizeContextGraphAdapterMode(mode, "off");
+  if (normalized === "all" || normalized === "hard") return CONTEXT_GRAPH_ADAPTER_KEYS;
+  return CONTEXT_GRAPH_ADAPTER_KEYS.includes(normalized) ? [normalized] : [];
+}
+
+function getAdapterEdgeMatch(edge, adapterKeys = []) {
+  if (!edge || adapterKeys.length === 0) return null;
+  const haystack = [edge.id, edge.kind, edge.reason]
+    .map((part) => String(part || "").toLowerCase())
+    .join(" ");
+  return adapterKeys.find((key) => haystack.includes(key));
+}
+
+function getAdapterRuntimeUsage(map, mode = "off", context = "") {
+  const normalizedMode = normalizeContextGraphAdapterMode(mode, "off");
+  const adapterKeys = getAdapterModeKeys(normalizedMode);
+  if (normalizedMode === "off" || adapterKeys.length === 0) {
+    return {
+      mode: normalizedMode,
+      status: "baseline",
+      contextKey: normalizeAdapterContextKey(context),
+      applicable: false,
+      used: false,
+      fallback: false,
+      adapterEdgeCount: 0,
+      matchedAdapters: [],
+      matchedReasons: [],
+    };
+  }
+
+  const contextKey = normalizeAdapterContextKey(context || map?.config?.context || map?.config?.biome);
+  const applicable = normalizedMode === "all" || normalizedMode === "hard"
+    ? CONTEXT_GRAPH_ADAPTER_KEYS.includes(contextKey)
+    : adapterKeys.includes(contextKey);
+  const matchedEdges = asArray(map?.graph).filter((edge) => getAdapterEdgeMatch(edge, adapterKeys));
+  const matchedAdapters = unique(matchedEdges.map((edge) => getAdapterEdgeMatch(edge, adapterKeys)).filter(Boolean));
+  const matchedReasons = unique(matchedEdges.map((edge) => edge.reason || edge.id).filter(Boolean)).slice(0, 8);
+  const used = matchedEdges.length > 0;
+
+  return {
+    mode: normalizedMode,
+    status: !applicable ? "not-applicable" : used ? "used" : "fallback",
+    contextKey,
+    applicable,
+    used,
+    fallback: Boolean(applicable && !used),
+    adapterEdgeCount: matchedEdges.length,
+    matchedAdapters,
+    matchedReasons,
+  };
+}
+
 
 export const MAP_BATCH_QA_DEFAULT_OPTIONS = Object.freeze({
   count: 50,
@@ -53,6 +129,7 @@ export const MAP_BATCH_QA_DEFAULT_OPTIONS = Object.freeze({
   roomCountMax: 12,
   seed: "cruor-map-npm-qa",
   exportMode: "json",
+  contextGraphAdapterMode: "off",
 });
 
 export const MAP_BATCH_DEFAULT_OPTIONS = MAP_BATCH_QA_DEFAULT_OPTIONS;
@@ -119,6 +196,27 @@ function getContextPool(context = "mixed") {
   const requested = normalizeText(context, "mixed");
   if (requested.toLowerCase() === "mixed") return DEFAULT_CONTEXTS;
   return DEFAULT_CONTEXTS.includes(requested) ? [requested] : DEFAULT_CONTEXTS;
+}
+
+function normalizeContextGraphAdapterMode(value, fallback = "off") {
+  const raw = getOptionValue(value, fallback);
+  const normalized = String(raw || fallback || "off").trim().toLowerCase();
+  if (!normalized || normalized === "baseline" || normalized === "default") return "off";
+  if (normalized === "enabled" || normalized === "true" || normalized === "adapter") return "hard";
+  if (normalized === "noble house") return "noble-house";
+  const allowed = new Set(MAP_CONTEXT_GRAPH_ADAPTER_MODES.map((mode) => mode.value));
+  if (allowed.has(normalized) || normalized === "hard") return normalized;
+  return fallback || "off";
+}
+
+function normalizeAdapterQaModes(value) {
+  const rawModes = Array.isArray(value)
+    ? value
+    : typeof value === "string" && value.trim()
+      ? value.split(",")
+      : MAP_ADAPTER_QA_DEFAULT_MODES;
+  const modes = unique(rawModes.map((mode) => normalizeContextGraphAdapterMode(mode, "off")));
+  return modes.includes("off") ? modes : ["off", ...modes];
 }
 
 function pickFrom(values, index) {
@@ -233,7 +331,7 @@ function createQaConnections(regions = [], runIndex = 0) {
   return connections;
 }
 
-function createQaConfig({ seed, index, roomCount, context }) {
+function createQaConfig({ seed, index, roomCount, context, contextGraphAdapterMode = "off" }) {
   const regions = createQaRegions({ roomCount, context, seed });
   return {
     ...DEFAULT_CONFIG,
@@ -245,6 +343,7 @@ function createQaConfig({ seed, index, roomCount, context }) {
     sourceAnchors: ["Sedlec Ossuary", "Towers of Silence"],
     regions,
     connections: createQaConnections(regions, index),
+    contextGraphAdapterMode,
   };
 }
 
@@ -691,6 +790,11 @@ function aggregateAnalytics(results, elapsedMs) {
   );
   const determinismChecks = results.filter((result) => result.determinismChecked).length;
   const seedVariationWarnings = results.filter((result) => result.seedVariationWarning).length;
+  const adapterApplicableCount = results.filter((result) => result.adapterUsage?.applicable).length;
+  const adapterUsedCount = results.filter((result) => result.adapterUsage?.used).length;
+  const adapterFallbackCount = results.filter((result) => result.adapterUsage?.fallback).length;
+  const adapterNotApplicableCount = results.filter((result) => result.adapterUsage?.status === "not-applicable").length;
+  const adapterEdgeCount = results.reduce((sum, result) => sum + Number(result.adapterUsage?.adapterEdgeCount || 0), 0);
   const structureScore = errors ? 0 : 100;
   const averageRoutingScore = getScoreFromCounts({ errors, longCorridors: longCorridorWarnings, detours: routingDetourWarnings });
   const averageLayoutScore = getScoreFromCounts({ errors, layoutOutliers });
@@ -710,6 +814,11 @@ function aggregateAnalytics(results, elapsedMs) {
     determinismChecks,
     determinismFailures,
     seedVariationWarnings,
+    adapterApplicableCount,
+    adapterUsedCount,
+    adapterFallbackCount,
+    adapterNotApplicableCount,
+    adapterEdgeCount,
     overlapFailures,
     unreachableFailures,
     missingGraphEdgeFailures,
@@ -747,6 +856,8 @@ function createDebugMapPayload(result, map) {
     id: result.id,
     seed: result.seed,
     context: result.context,
+    contextGraphAdapterMode: result.contextGraphAdapterMode,
+    adapterUsage: result.adapterUsage,
     roomCount: result.roomCount,
     layoutCandidate: map.layoutCandidate,
     metrics: result.metrics,
@@ -795,6 +906,10 @@ export function runMapBatchQa(options = {}) {
   const includeDebugMaps = qaMode === "debug" || Boolean(options.debug);
   const determinismMode = normalizeText(options.determinism, "sample").toLowerCase();
   const determinismSampleRate = clampInteger(options.determinismSampleRate, 1, 250, 10);
+  const contextGraphAdapterMode = normalizeContextGraphAdapterMode(
+    options.contextGraphAdapterMode ?? options.adapterMode,
+    MAP_BATCH_QA_DEFAULT_OPTIONS.contextGraphAdapterMode,
+  );
   const results = [];
   const debugMaps = [];
 
@@ -804,8 +919,9 @@ export function runMapBatchQa(options = {}) {
     const roomCount = roomCountMin + (index % Math.max(1, roomSpan));
     const context = pickFrom(contexts, index);
     const mapSeed = `${seed}-${String(index + 1).padStart(4, "0")}`;
-    const config = createQaConfig({ seed: mapSeed, index, roomCount, context });
+    const config = createQaConfig({ seed: mapSeed, index, roomCount, context, contextGraphAdapterMode });
     const map = generateMap(config);
+    const adapterUsage = getAdapterRuntimeUsage(map, contextGraphAdapterMode, context);
     const deterministicSignature = getMapSignature(map);
     const verifyDeterminism =
       determinismMode === "full" ||
@@ -820,6 +936,8 @@ export function runMapBatchQa(options = {}) {
       id: mapId,
       seed: mapSeed,
       context,
+      contextGraphAdapterMode,
+      adapterUsage,
       roomCount: asArray(map.regions).length,
       corridorCount: asArray(map.corridors).length,
       doorCount: asArray(map.dungeonMask?.doors || map.doors).length,
@@ -853,6 +971,7 @@ export function runMapBatchQa(options = {}) {
       qaMode,
       themeId: normalizeText(options.themeId || options.theme, "mixed"),
       context: normalizeText(options.context, "mixed"),
+      contextGraphAdapterMode,
       determinism: determinismMode,
       determinismSampleRate,
     },
@@ -920,6 +1039,7 @@ export function buildMapBatchQaMarkdown(report) {
     `- Seed: ${report.options?.seed}`,
     `- Mode: ${report.options?.qaMode}`,
     `- Context: ${report.options?.context}`,
+    `- Graph Adapter: ${report.options?.contextGraphAdapterMode || "off"}`,
     `- Rooms: ${report.options?.roomCountMin}–${report.options?.roomCountMax}`,
     `- Determinism: ${report.options?.determinism} (${analytics.determinismChecks || 0} checks)`,
     "",
@@ -965,6 +1085,160 @@ export function buildMapBatchQaMarkdown(report) {
     "## Maps Requiring Review",
     "",
     buildWorstMapTable(report.results || []),
+    "",
+  ].join("\n");
+}
+
+
+function summarizeAdapterVariant(report, mode) {
+  return {
+    mode,
+    label: getMapContextGraphAdapterModeLabel(mode),
+    summary: report.summary,
+    analytics: report.analytics,
+    groupedIssues: report.groupedIssues,
+    adapterUsage: {
+      applicable: report.analytics?.adapterApplicableCount || 0,
+      used: report.analytics?.adapterUsedCount || 0,
+      fallback: report.analytics?.adapterFallbackCount || 0,
+      notApplicable: report.analytics?.adapterNotApplicableCount || 0,
+      edgeCount: report.analytics?.adapterEdgeCount || 0,
+    },
+    options: report.options,
+  };
+}
+
+function compareAdapterVariant(baseline, variant) {
+  const baseAnalytics = baseline?.analytics || {};
+  const variantAnalytics = variant?.analytics || {};
+  const delta = {
+    warnings: Number(variantAnalytics.warnings || 0) - Number(baseAnalytics.warnings || 0),
+    errors: Number(variantAnalytics.errors || 0) - Number(baseAnalytics.errors || 0),
+    longCorridorWarnings: Number(variantAnalytics.longCorridorWarnings || 0) - Number(baseAnalytics.longCorridorWarnings || 0),
+    routingDetourWarnings: Number(variantAnalytics.routingDetourWarnings || 0) - Number(baseAnalytics.routingDetourWarnings || 0),
+    layoutOutliers: Number(variantAnalytics.layoutOutliers || 0) - Number(baseAnalytics.layoutOutliers || 0),
+    averageOverallQaScore: Number((Number(variantAnalytics.averageOverallQaScore || 0) - Number(baseAnalytics.averageOverallQaScore || 0)).toFixed(1)),
+  };
+  const hasErrorRegression = delta.errors > 0;
+  const hasWarningRegression = delta.warnings > 0;
+  const hasQualityImprovement = delta.warnings < 0 || delta.averageOverallQaScore > 0;
+  const adapterUsage = variant.adapterUsage || {};
+  const adapterUsed = Number(adapterUsage.used || 0);
+  const adapterFallback = Number(adapterUsage.fallback || 0);
+  const recommendation = hasErrorRegression
+    ? "reject"
+    : hasWarningRegression
+      ? "keep-disabled"
+      : adapterUsed === 0 && adapterFallback > 0
+        ? "fallback-only"
+        : hasQualityImprovement
+          ? "candidate"
+          : "neutral";
+  return {
+    mode: variant.mode,
+    label: variant.label,
+    delta,
+    adapterUsage,
+    recommendation,
+  };
+}
+
+export function runMapAdapterQa(options = {}) {
+  const startedAt = Date.now();
+  const adapterModes = normalizeAdapterQaModes(options.adapterModes ?? options.adapters ?? options.contextGraphAdapterModes);
+  const reports = adapterModes.map((mode) =>
+    runMapBatchQa({
+      ...options,
+      contextGraphAdapterMode: mode,
+      adapterMode: mode,
+      determinism: options.determinism ?? "off",
+    }),
+  );
+  const baselineReport = reports.find((report) => report.options?.contextGraphAdapterMode === "off") || reports[0];
+  const variants = reports.map((report) => summarizeAdapterVariant(report, report.options?.contextGraphAdapterMode || "off"));
+  const baselineVariant = variants.find((variant) => variant.mode === "off") || variants[0];
+  const comparisons = variants
+    .filter((variant) => variant.mode !== baselineVariant.mode)
+    .map((variant) => compareAdapterVariant(baselineVariant, variant));
+
+  return {
+    reportType: "cruor-map-adapter-qa-report",
+    version: MAP_ADAPTER_QA_VERSION,
+    generatedAt: new Date().toISOString(),
+    elapsedMs: Date.now() - startedAt,
+    options: {
+      count: baselineReport?.options?.count,
+      roomCountMin: baselineReport?.options?.roomCountMin,
+      roomCountMax: baselineReport?.options?.roomCountMax,
+      seed: baselineReport?.options?.seed,
+      qaMode: baselineReport?.options?.qaMode,
+      context: baselineReport?.options?.context,
+      determinism: baselineReport?.options?.determinism,
+      adapterModes,
+    },
+    baseline: baselineVariant,
+    variants,
+    comparisons,
+    ...(options.includeReports ? { reports } : {}),
+  };
+}
+
+function buildAdapterComparisonTable(comparisons = []) {
+  if (!comparisons.length) return "No adapter comparisons.";
+  const rows = comparisons.map((comparison) => {
+    const delta = comparison.delta || {};
+    const usage = comparison.adapterUsage || {};
+    return `| ${comparison.label} | ${comparison.recommendation} | ${usage.used || 0} | ${usage.fallback || 0} | ${usage.notApplicable || 0} | ${delta.errors || 0} | ${delta.warnings || 0} | ${delta.longCorridorWarnings || 0} | ${delta.routingDetourWarnings || 0} | ${delta.layoutOutliers || 0} | ${formatNumber(delta.averageOverallQaScore || 0, 1)} |`;
+  });
+  return [
+    "| Adapter | Recommendation | Used | Fallback | N/A | Δ Errors | Δ Warnings | Δ Long | Δ Detour | Δ Layout | Δ Score |",
+    "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+    ...rows,
+  ].join("\n");
+}
+
+function buildAdapterVariantTable(variants = []) {
+  if (!variants.length) return "No adapter variants.";
+  const rows = variants.map((variant) => {
+    const analytics = variant.analytics || {};
+    const summary = variant.summary || {};
+    const usage = variant.adapterUsage || {};
+    return `| ${variant.label} | ${summary.error || 0} | ${summary.warning || 0} | ${usage.used || 0} | ${usage.fallback || 0} | ${usage.notApplicable || 0} | ${analytics.longCorridorWarnings || 0} | ${analytics.routingDetourWarnings || 0} | ${analytics.layoutOutliers || 0} | ${formatNumber(analytics.averageOverallQaScore || 0, 1)} |`;
+  });
+  return [
+    "| Variant | Errors | Warnings | Used | Fallback | N/A | Long | Detour | Layout | Score |",
+    "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+    ...rows,
+  ].join("\n");
+}
+
+export function buildMapAdapterQaMarkdown(report) {
+  return [
+    "# Cruor Map Adapter QA",
+    "",
+    `Generated: ${report.generatedAt}`,
+    `Version: ${report.version}`,
+    "",
+    "## Options",
+    "",
+    `- Count: ${report.options?.count}`,
+    `- Seed: ${report.options?.seed}`,
+    `- Context: ${report.options?.context}`,
+    `- Rooms: ${report.options?.roomCountMin}–${report.options?.roomCountMax}`,
+    `- Determinism: ${report.options?.determinism}`,
+    `- Adapter Modes: ${asArray(report.options?.adapterModes).join(", ")}`,
+    "",
+    "## Variant Results",
+    "",
+    buildAdapterVariantTable(report.variants || []),
+    "",
+    "## Adapter Runtime Diagnostics",
+    "",
+    "Used = adapter graph actually replaced the baseline graph for a map. Fallback = adapter was applicable to that context but returned to baseline. N/A = adapter did not match that map context.",
+    "",
+    "## Baseline Comparison",
+    "",
+    buildAdapterComparisonTable(report.comparisons || []),
     "",
   ].join("\n");
 }
@@ -1030,6 +1304,11 @@ export function getMapBatchQaModeLabel(value) {
 
 export function getMapBatchQaContextLabel(value) {
   return getMapBatchQaOptionLabel(MAP_BATCH_CONTEXT_OPTIONS, value, "Mixed");
+}
+
+export function getMapContextGraphAdapterModeLabel(value) {
+  const mode = normalizeContextGraphAdapterMode(value, "off");
+  return getMapBatchQaOptionLabel(MAP_CONTEXT_GRAPH_ADAPTER_MODES, mode, mode);
 }
 
 export function getMapBatchQaDeterminismLabel(value) {
@@ -1107,7 +1386,9 @@ export function getMapBatchQaExportPayload(report, exportMode = "json") {
       mode: "markdown",
       extension: "md",
       mimeType: "text/markdown;charset=utf-8",
-      content: buildMapBatchQaMarkdown(report),
+      content: report?.reportType === "cruor-map-adapter-qa-report"
+        ? buildMapAdapterQaMarkdown(report)
+        : buildMapBatchQaMarkdown(report),
     };
   }
 
@@ -1126,7 +1407,10 @@ export function getMapBatchQaExportFilename(report, exportMode = "json") {
     .replace(/[:.]/g, "-")
     .replace(/[^0-9TZ-]/g, "")
     .slice(0, 24) || "latest";
-  return `cruor-map-batch-qa-${stamp}.${payload.extension}`;
+  const prefix = report?.reportType === "cruor-map-adapter-qa-report"
+    ? "cruor-map-adapter-qa"
+    : "cruor-map-batch-qa";
+  return `${prefix}-${stamp}.${payload.extension}`;
 }
 
 export function downloadMapBatchQaReport(report, exportMode = "json") {

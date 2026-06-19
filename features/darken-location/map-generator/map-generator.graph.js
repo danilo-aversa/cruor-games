@@ -438,6 +438,248 @@ export function buildChapelPhysicalGraph(config) {
   return edges;
 }
 
+
+function getContextGraphAdapterMode(config = {}) {
+  const rawMode =
+    config.contextGraphAdapterMode ||
+    config.dungeonBrief?.contextGraphAdapterMode ||
+    config.normalizedMapRequest?.contextGraphAdapterMode ||
+    config.normalizedMapRequest?.metadata?.contextGraphAdapterMode ||
+    "off";
+  const mode = String(rawMode || "off").trim().toLowerCase();
+  if (mode === "enabled" || mode === "true" || mode === "adapter") return "hard";
+  if (mode === "noble house") return "noble-house";
+  return mode || "off";
+}
+
+function shouldUseContextGraphAdapter(config = {}, adapterKey = "") {
+  const mode = getContextGraphAdapterMode(config);
+  if (mode === "off" || mode === "metadata" || mode === "soft") return false;
+  if (mode === "hard" || mode === "all") return true;
+  return mode === adapterKey;
+}
+
+function getOrderedContextRegions(config) {
+  return [...(Array.isArray(config.regions) ? config.regions : [])].sort(
+    (a, b) =>
+      roleDepth(a) - roleDepth(b) ||
+      getRegionGraphScore(a, config.seed) - getRegionGraphScore(b, config.seed) ||
+      String(a.id || "").localeCompare(String(b.id || "")),
+  );
+}
+
+function selectContextEntrance(regions, fallback = null) {
+  return regions.find((region) => getPlacementRole(region) === "entrance") || fallback || regions[0] || null;
+}
+
+function selectContextFinal(regions, fallback = null) {
+  return (
+    [...regions].reverse().find((region) => getPlacementRole(region) === "final") ||
+    fallback ||
+    regions[regions.length - 1] ||
+    null
+  );
+}
+
+function addContextPath(edges, config, path, options = {}) {
+  const usablePath = path.filter(Boolean);
+  for (let index = 0; index < usablePath.length - 1; index += 1) {
+    addGraphEdge(edges, config, usablePath[index].id, usablePath[index + 1].id, {
+      kind: options.kind || "critical",
+      suffix: `${options.suffix || "context-path"}-${index}`,
+      reason: options.reason || "context-graph-path",
+    });
+  }
+}
+
+function addContextBranches(edges, config, rooms, anchors, options = {}) {
+  const usableAnchors = anchors.filter(Boolean);
+  if (!usableAnchors.length) return;
+  rooms.filter(Boolean).forEach((region, index) => {
+    const role = getPlacementRole(region);
+    const anchor =
+      role === "secret"
+        ? usableAnchors[Math.max(0, usableAnchors.length - 1)]
+        : usableAnchors[index % usableAnchors.length];
+    if (!anchor || anchor.id === region.id) return;
+    addGraphEdge(edges, config, anchor.id, region.id, {
+      kind: role === "secret" ? "secret" : options.kind || "side",
+      secret: role === "secret",
+      suffix: `${options.suffix || "context-branch"}-${index}`,
+      reason: options.reason || "context-graph-branch",
+    });
+  });
+}
+
+function isConnectedGraph(regions, edges) {
+  if (!regions.length) return true;
+  if (regions.length === 1) return true;
+  if (edges.length < regions.length - 1) return false;
+
+  const regionIds = new Set(regions.map((region) => region.id));
+  const adjacency = new Map(regions.map((region) => [region.id, []]));
+  for (const edge of edges) {
+    if (!regionIds.has(edge.from) || !regionIds.has(edge.to) || edge.from === edge.to) return false;
+    adjacency.get(edge.from)?.push(edge.to);
+    adjacency.get(edge.to)?.push(edge.from);
+  }
+
+  const start = regions[0].id;
+  const seen = new Set([start]);
+  const queue = [start];
+  while (queue.length) {
+    const current = queue.shift();
+    for (const next of adjacency.get(current) || []) {
+      if (seen.has(next)) continue;
+      seen.add(next);
+      queue.push(next);
+    }
+  }
+  return seen.size === regions.length;
+}
+
+function validateContextGraph(regions, edges) {
+  const regionIds = new Set(regions.map((region) => region.id));
+  if (!Array.isArray(edges) || edges.length === 0) return [];
+  const deduped = [];
+  const seen = new Set();
+  edges.forEach((edge) => {
+    if (!edge?.from || !edge?.to || edge.from === edge.to) return;
+    if (!regionIds.has(edge.from) || !regionIds.has(edge.to)) return;
+    const key = [edge.from, edge.to].sort().join("::");
+    if (seen.has(key)) return;
+    seen.add(key);
+    deduped.push(edge);
+  });
+  return isConnectedGraph(regions, deduped) ? deduped : [];
+}
+
+function buildCryptContextGraph(config) {
+  const regions = getOrderedContextRegions(config);
+  if (regions.length <= 1) return [];
+  const entrance = selectContextEntrance(regions);
+  const finalRoom = selectContextFinal(regions);
+  const middle = regions.filter((region) => ![entrance?.id, finalRoom?.id].includes(region.id));
+  const spine = [
+    entrance,
+    ...middle.filter((region) => ["connector", "clue", "hazard"].includes(getPlacementRole(region))).slice(0, 3),
+    finalRoom,
+  ].filter(Boolean);
+  const spineIds = new Set(spine.map((region) => region.id));
+  const edges = [];
+  addContextPath(edges, config, spine, {
+    suffix: "crypt-spine",
+    reason: "crypt-spine-and-side-crypts",
+  });
+  addContextBranches(
+    edges,
+    config,
+    regions.filter((region) => !spineIds.has(region.id)),
+    spine.slice(1, -1).length ? spine.slice(1, -1) : spine,
+    { suffix: "crypt-side", reason: "crypt-side-crypt" },
+  );
+  return validateContextGraph(regions, edges);
+}
+
+function buildMineContextGraph(config) {
+  const regions = getOrderedContextRegions(config);
+  if (regions.length <= 1) return [];
+  const entrance = selectContextEntrance(regions);
+  const finalRoom = selectContextFinal(regions);
+  const middle = regions.filter((region) => ![entrance?.id, finalRoom?.id].includes(region.id));
+  const trunk = [
+    entrance,
+    ...middle.filter((region) => ["connector", "hazard"].includes(getPlacementRole(region))).slice(0, 3),
+    finalRoom,
+  ].filter(Boolean);
+  const trunkIds = new Set(trunk.map((region) => region.id));
+  const edges = [];
+  addContextPath(edges, config, trunk, {
+    suffix: "mine-trunk",
+    reason: "mine-trunk-and-extraction-branches",
+  });
+  addContextBranches(
+    edges,
+    config,
+    regions.filter((region) => !trunkIds.has(region.id)),
+    trunk.slice(0, -1),
+    { suffix: "mine-branch", reason: "mine-extraction-branch" },
+  );
+  return validateContextGraph(regions, edges);
+}
+
+function buildRuinsContextGraph(config) {
+  const regions = getOrderedContextRegions(config);
+  if (regions.length <= 1) return [];
+  const entrance = selectContextEntrance(regions);
+  const finalRoom = selectContextFinal(regions);
+  const middle = regions.filter((region) => ![entrance?.id, finalRoom?.id].includes(region.id));
+  const main = [entrance, ...middle.slice(0, Math.min(3, middle.length)), finalRoom].filter(Boolean);
+  const mainIds = new Set(main.map((region) => region.id));
+  const edges = [];
+  addContextPath(edges, config, main, {
+    suffix: "ruins-broken-loop-path",
+    reason: "ruins-broken-loop-path",
+  });
+  if (main.length >= 4) {
+    addGraphEdge(edges, config, main[1].id, main[main.length - 1].id, {
+      kind: "loop",
+      suffix: "ruins-collapsed-shortcut",
+      reason: "ruins-collapsed-shortcut",
+    });
+  }
+  addContextBranches(
+    edges,
+    config,
+    regions.filter((region) => !mainIds.has(region.id)),
+    main.slice(1, -1).length ? main.slice(1, -1) : main,
+    { suffix: "ruins-fragment", reason: "ruins-fragment-branch" },
+  );
+  return validateContextGraph(regions, edges);
+}
+
+function buildNobleHouseContextGraph(config) {
+  const regions = getOrderedContextRegions(config);
+  if (regions.length <= 1) return [];
+  const entrance = selectContextEntrance(regions);
+  const finalRoom = selectContextFinal(regions);
+  const circulation =
+    regions.find((region) => getPlacementRole(region) === "connector" && region.id !== entrance?.id) ||
+    regions.find((region) => ![entrance?.id, finalRoom?.id].includes(region.id)) ||
+    entrance;
+  const edges = [];
+  if (entrance && circulation && entrance.id !== circulation.id) {
+    addGraphEdge(edges, config, entrance.id, circulation.id, {
+      kind: "critical",
+      suffix: "noble-house-entry-circulation",
+      reason: "noble-house-entry-circulation",
+    });
+  }
+  if (circulation && finalRoom && circulation.id !== finalRoom.id) {
+    addGraphEdge(edges, config, circulation.id, finalRoom.id, {
+      kind: "critical",
+      suffix: "noble-house-circulation-climax",
+      reason: "noble-house-circulation-climax",
+    });
+  }
+  addContextBranches(
+    edges,
+    config,
+    regions.filter((region) => ![entrance?.id, circulation?.id, finalRoom?.id].includes(region.id)),
+    [circulation || entrance],
+    { suffix: "noble-house-room", reason: "noble-house-room-off-circulation" },
+  );
+  return validateContextGraph(regions, edges);
+}
+
+function buildContextGraphAdapter(config, adapterKey) {
+  if (adapterKey === "crypt") return buildCryptContextGraph(config);
+  if (adapterKey === "mine") return buildMineContextGraph(config);
+  if (adapterKey === "ruins") return buildRuinsContextGraph(config);
+  if (adapterKey === "noble-house") return buildNobleHouseContextGraph(config);
+  return [];
+}
+
 export function applyManualConnectionsToGraph(config, graph) {
   const deletedConnections = new Set(
     Array.isArray(config.manualDeletedConnections)
@@ -472,7 +714,14 @@ export function applyManualConnectionsToGraph(config, graph) {
 
 export function adaptGeneratedGraphForContext(config, graph) {
   const profile = getPlacementProfile(config);
-  return profile.key === "chapel" ? buildChapelPhysicalGraph(config) : graph;
+  if (profile.key === "chapel") return buildChapelPhysicalGraph(config);
+
+  if (shouldUseContextGraphAdapter(config, profile.key)) {
+    const contextGraph = buildContextGraphAdapter(config, profile.key);
+    if (contextGraph.length > 0) return contextGraph;
+  }
+
+  return graph;
 }
 
 export function adaptGraphForContext(config, graph) {
