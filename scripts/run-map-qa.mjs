@@ -10,14 +10,20 @@ function getArgValue(name, fallback) {
   return match ? match.slice(prefix.length) : fallback;
 }
 
+const qaMode = process.argv.includes("--debug")
+  ? "debug"
+  : getArgValue("mode", "realistic");
+
 const report = runMapBatchQa({
   count: getArgValue("count", 50),
   roomCountMin: getArgValue("room-min", 4),
   roomCountMax: getArgValue("room-max", 12),
   seed: getArgValue("seed", "cruor-map-npm-qa"),
-  qaMode: getArgValue("mode", "realistic"),
+  qaMode,
   themeId: getArgValue("theme", "mixed"),
   context: getArgValue("context", "mixed"),
+  determinism: getArgValue("determinism", "sample"),
+  determinismSampleRate: getArgValue("determinism-sample-rate", 10),
 });
 
 await mkdir(OUTPUT_DIR, { recursive: true });

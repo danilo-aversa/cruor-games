@@ -4,12 +4,60 @@ import {
   createJsonExportPayload,
   getClipboardStatusMessage,
   getCompilePreview,
-  getComponentRulesText,
   getRegionSummaryText,
 } from "../model/location-composer-output.js";
 
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
+}
+
+function ExportCard({ title, children, className = "" }) {
+  return (
+    <article className={cx("location-compile-preview__card", className)}>
+      <span>{title}</span>
+      {children}
+    </article>
+  );
+}
+
+function ExportTextBlock({ text }) {
+  return (
+    <div className="location-session-insert">
+      <pre>{text}</pre>
+    </div>
+  );
+}
+
+function getCurrentMapSvgText() {
+  if (typeof document === "undefined") return "";
+  const svg = document.querySelector('[data-map-viewport-mode="composer-preview"] #cruor-map-svg') || document.querySelector("#cruor-map-svg");
+  if (!svg || typeof XMLSerializer === "undefined") return "";
+  return new XMLSerializer().serializeToString(svg);
+}
+
+function downloadTextFile(filename, text, mimeType = "text/plain;charset=utf-8") {
+  if (typeof document === "undefined" || typeof URL === "undefined" || typeof Blob === "undefined") {
+    return false;
+  }
+
+  const blob = new Blob([text], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+  return true;
+}
+
+function safeFilename(value) {
+  return String(value || "cruor-location")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "cruor-location";
 }
 
 export function LocationCompilePreview({ state, digest, mapRequest, generatedMapPreview, defaultOpen = false, uiMode = "simple" }) {
@@ -45,7 +93,23 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
     handleCopy.timeoutId = window.setTimeout(() => setCopyState(""), 2200);
   }, []);
 
+  const handleCopySvg = useCallback(async () => {
+    const svgText = getCurrentMapSvgText();
+    await handleCopy("Map SVG", svgText || "");
+  }, [handleCopy]);
+
+  const handleDownloadSvg = useCallback(() => {
+    const svgText = getCurrentMapSvgText();
+    const downloaded = svgText
+      ? downloadTextFile(`${safeFilename(compilePreview.title)}-map.svg`, svgText, "image/svg+xml;charset=utf-8")
+      : false;
+    setCopyState(downloaded ? "SVG downloaded" : "SVG unavailable");
+    window.clearTimeout(handleDownloadSvg.timeoutId);
+    handleDownloadSvg.timeoutId = window.setTimeout(() => setCopyState(""), 2200);
+  }, [compilePreview.title]);
+
   const showJson = uiMode === "debug";
+  const hasGeneratedMap = Boolean(generatedMapPreview);
 
   return (
     <section
@@ -66,19 +130,14 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
           </span>
           <strong>{isPreviewOpen ? "Collapse" : "Expand"}</strong>
         </button>
-        <div className="location-compile-preview__actions" aria-label="Compile actions">
-          <div className="location-compile-preview__metrics" aria-label="Compile metrics">
-            <span>Table View</span>
-            <span>{compilePreview.regionCount} regions</span>
-            <span>{compilePreview.componentSections.length} components</span>
-          </div>
 
+        <div className="location-compile-preview__actions" aria-label="Export actions">
           <div className="location-compile-preview__buttons">
             <button
               className="cruor-composer-control location-copy-btn"
               type="button"
               onClick={() => handleCopy("Session Insert", compilePreview.sessionInsertText)}
-              title="Copy the DM-facing session insert"
+              title="Copy the full DM-facing session insert"
             >
               Copy Insert
             </button>
@@ -86,7 +145,7 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
               className="cruor-composer-control location-copy-btn"
               type="button"
               onClick={() => handleCopy("Table Text", compilePreview.tableReadyText)}
-              title="Copy the table-ready text"
+              title="Copy the table-facing quick reference"
             >
               Copy Table
             </button>
@@ -94,16 +153,34 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
               className="cruor-composer-control location-copy-btn"
               type="button"
               onClick={() => handleCopy("Region Summary", regionSummaryText)}
-              title="Copy region summary text"
+              title="Copy only the mapped region notes"
             >
-              Copy Regions
+              Copy Rooms
+            </button>
+            <button
+              className="cruor-composer-control location-copy-btn"
+              type="button"
+              disabled={!hasGeneratedMap}
+              onClick={handleCopySvg}
+              title="Copy the current map SVG"
+            >
+              Copy SVG
+            </button>
+            <button
+              className="cruor-composer-control location-copy-btn"
+              type="button"
+              disabled={!hasGeneratedMap}
+              onClick={handleDownloadSvg}
+              title="Download the current map SVG"
+            >
+              Download SVG
             </button>
             {showJson ? (
               <button
                 className="cruor-composer-control location-copy-btn"
                 type="button"
                 onClick={() => handleCopy("JSON Snapshot", jsonSnapshotText)}
-                title="Copy JSON snapshot"
+                title="Copy debug JSON snapshot"
               >
                 Copy JSON
               </button>
@@ -118,131 +195,65 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
 
       {isPreviewOpen ? (
         <div className="location-compile-preview__body">
-          <div className="location-compile-preview__grid location-compile-preview__grid--quality">
-            <article className="location-compile-preview__card location-session-insert-card">
-              <span>Session Insert</span>
-              <div className="location-session-insert">
-                <strong>{compilePreview.premiseSection.title}</strong>
-                <p>{compilePreview.premiseSection.context} · {compilePreview.premiseSection.horrorLine} · {compilePreview.premiseSection.sourceLine}</p>
-                <pre>{compilePreview.sessionInsertText}</pre>
-              </div>
-            </article>
+          <div className="location-compile-preview__grid location-compile-preview__grid--export">
+            <ExportCard title="Session Insert" className="location-session-insert-card">
+              <ExportTextBlock text={compilePreview.sessionInsertText} />
+            </ExportCard>
 
-            <article className="location-compile-preview__card">
-              <span>Read-Aloud</span>
-              <div className="location-session-insert">
-                <pre>{compilePreview.readAloudText}</pre>
-              </div>
-            </article>
+            <ExportCard title="Read-Aloud">
+              <ExportTextBlock text={compilePreview.readAloudText} />
+            </ExportCard>
 
-            <article className="location-compile-preview__card">
-              <span>Regions</span>
+            <ExportCard title="Regions">
               <div className="location-compile-preview__stack">
                 {compilePreview.roomSections.map((section) => (
                   <div className="location-compile-region" key={section.region.id}>
-                    <strong>{section.heading}</strong>
-                    <small className="location-compile-sync-label">{section.syncLabel}</small>
+                    <strong>{section.mapLabel} — {section.region.name}</strong>
                     <p><b>Role.</b> {section.role}</p>
                     {section.readAloud ? <p><b>Read-Aloud.</b> {section.readAloud}</p> : null}
                     <p><b>Feature.</b> {section.feature || "—"}</p>
-                    <p><b>Danger.</b> {section.danger || "—"}</p>
-                    <p><b>Secret.</b> {section.secret || "—"}</p>
-                    <p><b>Reward.</b> {section.reward || "—"}</p>
+                    {section.danger && section.danger !== "—" ? <p><b>Danger.</b> {section.danger}</p> : null}
+                    {section.secret && section.secret !== "—" ? <p><b>Secret.</b> {section.secret}</p> : null}
+                    {section.reward && section.reward !== "—" ? <p><b>Reward.</b> {section.reward}</p> : null}
                     {section.components.length ? (
                       <small>{section.components.map((component) => `${component.slotLabel}: ${component.title}`).join(" · ")}</small>
-                    ) : (
-                      <small>No attached components.</small>
-                    )}
+                    ) : null}
                   </div>
                 ))}
               </div>
-            </article>
+            </ExportCard>
 
-            <article className="location-compile-preview__card">
-              <span>Hazards</span>
-              <div className="location-compile-preview__stack">
-                {compilePreview.hazardSections.length ? (
-                  compilePreview.hazardSections.map((component) => (
-                    <div className="location-compile-slot" key={`${component.slotId}-${component.id}`}>
-                      <strong>{component.reference}</strong>
-                      <p>{component.text}</p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="location-empty location-empty--action">No hazards assigned.</p>
-                )}
+            <ExportCard title="Hazards">
+              <ExportTextBlock text={compilePreview.hazardText} />
+            </ExportCard>
+
+            <ExportCard title="Clues">
+              <ExportTextBlock text={compilePreview.clueText} />
+            </ExportCard>
+
+            <ExportCard title="Twists">
+              <ExportTextBlock text={compilePreview.twistText} />
+            </ExportCard>
+
+            <ExportCard title="Map Notes">
+              <div className="location-map-notes-output">
+                {compilePreview.mapNotes.map((note) => <p key={note}>{note}</p>)}
               </div>
-            </article>
+            </ExportCard>
 
-            <article className="location-compile-preview__card">
-              <span>Clues</span>
-              <div className="location-compile-preview__stack">
-                {compilePreview.clueSections.length ? (
-                  compilePreview.clueSections.map((component) => (
-                    <div className="location-compile-slot" key={`${component.slotId}-${component.id}`}>
-                      <strong>{component.reference}</strong>
-                      <p>{component.text}</p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="location-empty location-empty--action">No clues assigned.</p>
-                )}
-              </div>
-            </article>
-
-            <article className="location-compile-preview__card">
-              <span>Twists</span>
-              <div className="location-compile-preview__stack">
-                {compilePreview.twistSections.length ? (
-                  compilePreview.twistSections.map((component) => (
-                    <div className="location-compile-slot" key={`${component.slotId}-${component.id}`}>
-                      <strong>{component.reference}</strong>
-                      <p>{component.text}</p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="location-empty location-empty--action">No twists assigned.</p>
-                )}
-              </div>
-            </article>
-
-            <article className="location-compile-preview__card">
-              <span>At the Table</span>
+            <ExportCard title="At the Table">
               <div className="location-map-notes-output">
                 {compilePreview.atTheTableRows.map((row) => (
                   <p key={row.label}><b>{row.label}.</b> {row.value}</p>
                 ))}
               </div>
-            </article>
-
-            <article className="location-compile-preview__card">
-              <span>Components</span>
-              <div className="location-compile-preview__stack">
-                {compilePreview.componentSections.length ? (
-                  compilePreview.componentSections.map((component) => (
-                    <div className="location-compile-slot" key={`${component.slotId}-${component.id}`}>
-                      <strong>{component.reference}</strong>
-                      <p>{component.text}</p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="location-empty location-empty--action">No components assigned.</p>
-                )}
-              </div>
-            </article>
-
-            <article className="location-compile-preview__card">
-              <span>Map Notes</span>
-              <div className="location-map-notes-output">
-                {compilePreview.mapNotes.map((note) => <p key={note}>{note}</p>)}
-              </div>
-            </article>
+            </ExportCard>
           </div>
 
           <div className="location-compile-preview__table" aria-label="Table ready text preview">
-        <span>Table-Ready Text</span>
-        <pre>{compilePreview.tableReadyText}</pre>
-      </div>
+            <span>Table-Ready Text</span>
+            <pre>{compilePreview.tableReadyText}</pre>
+          </div>
 
           {showJson ? (
             <div className="location-compile-preview__table location-compile-preview__table--json" aria-label="JSON snapshot preview">

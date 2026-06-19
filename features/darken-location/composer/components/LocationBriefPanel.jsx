@@ -128,12 +128,12 @@ function LocationFieldLabel({ help, label, value = "" }) {
   const valueLabel = typeof value === "string" && value.trim() ? value.trim() : "";
 
   return (
-    <div className="monster-frame-field-head location-frame-field-head">
+    <div className="cruor-frame-field-head location-frame-field-head">
       <span>{label}</span>
       {valueLabel ? <strong>{valueLabel}</strong> : null}
       {payload ? (
         <span
-          className="monster-frame-help location-field-help"
+          className="cruor-frame-help location-field-help"
           tabIndex={0}
           role="button"
           aria-label={`${payload.title}: ${payload.description}`}
@@ -213,7 +213,7 @@ function LocationChoiceField({ help, icon = "fa-circle-dot", label, meta, onChan
   const menu = open && menuPosition
     ? createPortal(
         <div
-          className="location-choice-menu location-choice-menu--portal monster-frame-select-menu"
+          className="location-choice-menu location-choice-menu--portal cruor-frame-select-menu"
           ref={menuRef}
           role="listbox"
           aria-label={label}
@@ -229,7 +229,7 @@ function LocationChoiceField({ help, icon = "fa-circle-dot", label, meta, onChan
             const active = String(optionValue) === String(value);
             return (
               <button
-                className={cx("location-choice-option monster-frame-select-option", active && "is-active")}
+                className={cx("location-choice-option cruor-frame-select-option", active && "is-active")}
                 key={optionValue}
                 type="button"
                 role="option"
@@ -252,10 +252,10 @@ function LocationChoiceField({ help, icon = "fa-circle-dot", label, meta, onChan
     : null;
 
   return (
-    <div className="location-field location-choice-field monster-frame-select-field" ref={fieldRef}>
+    <div className="location-field location-choice-field cruor-frame-select-field" ref={fieldRef}>
       <LocationFieldLabel label={label} help={help} />
       <button
-        className="cruor-composer-control location-choice-trigger monster-frame-select-trigger"
+        className="cruor-composer-control location-choice-trigger cruor-frame-select-trigger"
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
@@ -276,15 +276,15 @@ function LocationIconToggleField({ help, label, onChange, options, value }) {
   const selectedLabel = selectedOption ? getOptionLabel(selectedOption) : "";
 
   return (
-    <div className="location-field location-icon-toggle-field monster-frame-select-field monster-frame-icon-field">
+    <div className="location-field location-icon-toggle-field cruor-frame-select-field cruor-frame-icon-field">
       <LocationFieldLabel label={label} help={help} value={selectedLabel} />
-      <div className="location-icon-toggle-grid monster-frame-icon-toggle-row" role="radiogroup" aria-label={label}>
+      <div className="location-icon-toggle-grid cruor-frame-icon-toggle-row" role="radiogroup" aria-label={label}>
         {options.map((option) => {
           const active = String(option.value) === String(value);
           const optionLabel = getOptionLabel(option);
           return (
             <button
-              className={cx("location-icon-toggle-button monster-frame-icon-toggle", active && "is-active")}
+              className={cx("location-icon-toggle-button cruor-frame-icon-toggle", active && "is-active")}
               key={option.value}
               type="button"
               role="radio"
@@ -310,11 +310,11 @@ function LocationRoomCountSlider({ count, help = LOCATION_FIELD_HELP.roomCount, 
   const value = normalizeCustomRoomCount(count, 8);
 
   return (
-    <div className="location-field location-custom-room-count-field monster-frame-cr-control">
+    <div className="location-field location-custom-room-count-field cruor-frame-range-control">
       <LocationFieldLabel label={label} help={help} />
-      <div className="location-room-count-slider monster-frame-cr-slider-row">
+      <div className="location-room-count-slider cruor-frame-range-row">
         <input
-          className="monster-frame-cr-slider location-room-count-range"
+          className="cruor-frame-range location-room-count-range"
           type="range"
           min="1"
           max="16"
@@ -324,7 +324,7 @@ function LocationRoomCountSlider({ count, help = LOCATION_FIELD_HELP.roomCount, 
           onChange={(event) => onChange(normalizeCustomRoomCount(event.target.value, value))}
         />
         <input
-          className="monster-frame-cr-number location-room-count-number"
+          className="cruor-frame-number location-room-count-number"
           type="number"
           min="1"
           max="16"

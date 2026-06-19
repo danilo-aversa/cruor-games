@@ -311,6 +311,23 @@ export function chooseRoomShape(region, contextKey = "") {
   return "rect";
 }
 
+
+export function getProgressionScale(contextKey = "crypt", roomCount = 6) {
+  const count = Math.max(1, Number(roomCount) || 1);
+  const scaleByContext = {
+    crypt: count <= 4 ? 0.42 : count <= 8 ? 0.52 : 0.62,
+    mine: count <= 4 ? 0.48 : count <= 8 ? 0.58 : 0.68,
+    ruins: count <= 4 ? 0.5 : count <= 8 ? 0.6 : 0.7,
+    cave: count <= 4 ? 0.48 : count <= 8 ? 0.58 : 0.68,
+  };
+  return scaleByContext[contextKey] || 0.58;
+}
+
+export function getCompactDepthTarget(centerX, usableW, depth, profileKey, roomCount) {
+  const progressionWidth = usableW * getProgressionScale(profileKey, roomCount);
+  return centerX - progressionWidth / 2 + depth * progressionWidth;
+}
+
 export function getPlacementLane(region, profile, seed) {
   const role = getPlacementRole(region);
   const base = profile.roleLane[role] ?? 0;
@@ -374,6 +391,9 @@ export function getContextualTarget(
   const usableH = Math.max(8, gridH - size.h - 8);
   const depthX = 4 + depth * usableW;
   const depthY = 4 + depth * usableH;
+  const compactProgressionWidth = usableW * getProgressionScale(profile.key, config.roomCount);
+  const compactProgressionStart = centerX - compactProgressionWidth / 2;
+  const compactDepthX = compactProgressionStart + depth * compactProgressionWidth;
   const lateral = lane * profile.spread;
   const branch =
     ((hashStringToSeed(config.seed, region.id, "branch") % 100) / 100 - 0.5) *
@@ -404,17 +424,25 @@ export function getContextualTarget(
 
   if (profile.key === "crypt") {
     target = {
-      x: depthX,
-      y: centerY + lateral * profile.compactness + branch * 0.18,
+      x: compactDepthX,
+      y: centerY + lateral * 0.92 + branch * 0.26,
     };
+    if (role === "entrance")
+      target.x = Math.min(target.x, centerX - compactProgressionWidth * 0.42);
+    if (role === "final")
+      target.x = Math.max(target.x, centerX + compactProgressionWidth * 0.28);
     if (role === "secret")
-      target = { x: gridW - size.w - 6, y: centerY + profile.spread * 1.35 };
+      target = {
+        x: centerX + compactProgressionWidth * 0.28,
+        y: centerY + profile.spread * 1.55 + branch * 0.2,
+      };
   }
 
   if (profile.key === "mine") {
-    target = { x: depthX, y: centerY + lateral + branch };
+    target = { x: compactDepthX, y: centerY + lateral * 0.82 + branch * 0.7 };
     if (role === "connector") target.y = centerY + lane * 2.2 + branch * 0.25;
-    if (role === "hazard") target.y += profile.spread * 0.45;
+    if (role === "hazard") target.y += profile.spread * 0.34;
+    if (role === "secret") target.x = centerX + compactProgressionWidth * 0.26;
   }
 
   if (profile.key === "cave") {
@@ -449,20 +477,29 @@ export function getContextualTarget(
     const cluster =
       hashStringToSeed(config.seed, region.id, "ruin-cluster") % 4;
     const clusterOffset = [
-      { x: -profile.spread, y: -profile.spread * 0.6 },
-      { x: profile.spread * 0.8, y: -profile.spread * 0.8 },
-      { x: -profile.spread * 0.4, y: profile.spread },
-      { x: profile.spread, y: profile.spread * 0.65 },
+      { x: -profile.spread * 0.55, y: -profile.spread * 0.72 },
+      { x: profile.spread * 0.48, y: -profile.spread * 0.82 },
+      { x: -profile.spread * 0.42, y: profile.spread * 0.92 },
+      { x: profile.spread * 0.58, y: profile.spread * 0.72 },
     ][cluster];
     target = {
-      x: depthX + clusterOffset.x,
-      y: centerY + lateral + clusterOffset.y + branch * 0.28,
+      x: compactDepthX + clusterOffset.x,
+      y: centerY + lateral * 0.72 + clusterOffset.y + branch * 0.18,
     };
+    if (role === "secret") target.x = centerX + compactProgressionWidth * 0.22 + clusterOffset.x;
   }
 
   const centroid = getPlacedNeighborCentroid(region, placed, adjacency);
   if (centroid) {
-    const pull = profile.key === "cave" || profile.key === "mine" ? 0.22 : 0.14;
+    const pullByContext = {
+      cave: 0.24,
+      mine: 0.3,
+      ruins: 0.28,
+      crypt: 0.26,
+      chapel: 0.16,
+      "noble-house": 0.18,
+    };
+    const pull = pullByContext[profile.key] ?? 0.18;
     target = {
       x: target.x * (1 - pull) + centroid.x * pull - size.w / 2,
       y: target.y * (1 - pull) + centroid.y * pull - size.h / 2,

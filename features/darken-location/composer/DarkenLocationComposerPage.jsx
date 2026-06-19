@@ -242,17 +242,17 @@ function LocationExportToolsPanel({ onSelectMap, onSelectScratch, onSelectTheme 
       <section className="location-frame-info-card location-frame-info-card--hero">
         <span>Export</span>
         <strong>Location Insert</strong>
-        <em>Table-ready output for the current map.</em>
+        <em>Copy the session insert, table text, rooms, or map SVG.</em>
       </section>
-      <section className="location-frame-info-card location-location-action-card location-location-action-card--secondary" aria-label="Export actions">
+      <section className="location-frame-info-card location-location-action-card location-location-action-card--secondary" aria-label="Export navigation">
         <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectMap}>
-          Map Preview
+          Back to Map
         </button>
         <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectTheme}>
-          Theme Mode
+          Theme
         </button>
         <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectScratch}>
-          Scratch Mode
+          Scratch
         </button>
       </section>
     </aside>
@@ -823,6 +823,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       initialRequest={mapRequest}
       initialManualOverrides={mapManualOverrides}
       embeddedInComposer={true}
+      workspaceContext="composer-workspace"
       onCommitWorkspace={commitEmbeddedMapWorkspace}
       onExitWorkspace={() => setIsMapEditing(false)}
       onRefreshFromComposer={refreshEmbeddedMapWorkspace}

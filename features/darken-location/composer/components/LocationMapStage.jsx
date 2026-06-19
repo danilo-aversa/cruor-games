@@ -39,7 +39,7 @@ function LocationMapPreview({ generatedMap, error, viewResetKey, isMapEditing = 
   );
   if (!generatedMap) {
     return (
-      <div className="location-map-preview location-map-preview--fallback" aria-label="Map preview fallback">
+      <div className="location-map-preview location-map-preview-surface location-map-preview--fallback" aria-label="Map preview fallback">
         <div className="location-map-preview__fallback-card">
           <strong>{error ? "Preview unavailable" : "Preview"}</strong>
         </div>
@@ -49,7 +49,7 @@ function LocationMapPreview({ generatedMap, error, viewResetKey, isMapEditing = 
 
   return (
     <div
-      className="location-map-preview location-map-preview--live"
+      className="location-map-preview location-map-preview-surface location-map-preview--live"
       aria-label="Generated map preview"
       onContextMenuCapture={(event) => {
         if (isMapEditing) return;
@@ -72,6 +72,8 @@ function LocationMapPreview({ generatedMap, error, viewResetKey, isMapEditing = 
         embeddedPreview={true}
         showViewportChrome={false}
         enableViewportInteractions={isMapEditing}
+        viewportMode="composer-preview"
+        viewportClassName="location-map-preview-viewport"
       />
     </div>
   );
@@ -141,10 +143,14 @@ export function LocationMapStage({
           generatedMapPreview && "has-live-preview",
           isSimpleMode && "is-simple-surface",
           `is-map-${mapSyncStatus.mode}`,
+          workspacePanel ? "location-map-stage--workspace" : "location-map-stage--preview",
         )}
+        data-location-map-surface={workspacePanel ? "workspace" : "preview"}
       >
         {workspacePanel ? (
-          workspacePanel
+          <div className="location-map-workspace-host" aria-label="Full map workspace">
+            {workspacePanel}
+          </div>
         ) : (
           <>
             {leftPanel}

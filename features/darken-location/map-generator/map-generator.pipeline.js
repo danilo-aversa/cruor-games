@@ -191,6 +191,8 @@ function getCorridorQualityMetrics(map) {
   let longStraightCount = 0;
   let excessiveSpanCount = 0;
   let highDetourCount = 0;
+  let totalStraightOverflow = 0;
+  let totalSpanOverflow = 0;
 
   (map.corridors || []).forEach((corridor) => {
     if (corridor.isRoomLink || corridor.roomTraversal) return;
@@ -206,6 +208,8 @@ function getCorridorQualityMetrics(map) {
     maxSpan = Math.max(maxSpan, span);
     maxStraightRun = Math.max(maxStraightRun, straightRun);
     maxDetourRatio = Math.max(maxDetourRatio, detourRatio);
+    totalStraightOverflow += Math.max(0, straightRun - 18);
+    totalSpanOverflow += Math.max(0, span - 24);
     if (straightRun > 18) longStraightCount += 1;
     if (span > 24) excessiveSpanCount += 1;
     if (detourRatio > 2.2) highDetourCount += 1;
@@ -218,9 +222,34 @@ function getCorridorQualityMetrics(map) {
     longStraightCount,
     excessiveSpanCount,
     highDetourCount,
+    totalStraightOverflow,
+    totalSpanOverflow,
   };
 }
 
+
+
+function getRoomOverlapHitCount(map) {
+  const regions = Array.isArray(map?.regions) ? map.regions : [];
+  if (regions.length < 2) return 0;
+  const ownerByCell = new Map();
+  let overlapCount = 0;
+
+  regions.forEach((region) => {
+    const cells = Array.isArray(region.floorCells) ? region.floorCells : [];
+    cells.forEach((cell) => {
+      const key = `${cell.x},${cell.y}`;
+      const previous = ownerByCell.get(key);
+      if (previous && previous !== region.id) {
+        overlapCount += 1;
+      } else {
+        ownerByCell.set(key, region.id);
+      }
+    });
+  });
+
+  return overlapCount;
+}
 
 function getCorridorRoomTunnelHitCount(map) {
   const corridors = Array.isArray(map?.corridors) ? map.corridors : [];
@@ -257,12 +286,13 @@ function scoreGeneratedMapCandidate(map, candidateIndex = 0) {
   const expectedEdges = Array.isArray(map.graph) ? map.graph.length : 0;
   const corridorCount = Array.isArray(map.corridors) ? map.corridors.length : 0;
   const missingCorridorPenalty = Math.max(0, expectedEdges - corridorCount) * 100000;
+  const roomOverlapPenalty = getRoomOverlapHitCount(map) * 2000000;
   const corridorTunnelPenalty = getCorridorRoomTunnelHitCount(map) * 1000000;
   const roomCount = Math.max(1, map.regions?.length || 1);
-  const targetNearest = roomCount <= 4 ? 10 : roomCount <= 8 ? 12 : 14;
-  const targetSpan = roomCount <= 4 ? 18 : roomCount <= 8 ? 22 : 26;
-  const targetStraight = roomCount <= 4 ? 14 : 18;
-  const maxUsefulAspect = 2.55;
+  const targetNearest = roomCount <= 4 ? 8.5 : roomCount <= 8 ? 10.5 : 12;
+  const targetSpan = roomCount <= 4 ? 16 : roomCount <= 8 ? 20 : 23;
+  const targetStraight = roomCount <= 4 ? 12 : roomCount <= 8 ? 15 : 16;
+  const maxUsefulAspect = 2.25;
   const minUsefulCanvas = roomCount <= 4 ? 0.08 : 0.12;
 
   const spanOverflow = Math.max(0, routing.maxSpan - targetSpan);
@@ -276,15 +306,18 @@ function scoreGeneratedMapCandidate(map, candidateIndex = 0) {
 
   return (
     missingCorridorPenalty +
+    roomOverlapPenalty +
     corridorTunnelPenalty +
-    routing.excessiveSpanCount * 2600 +
-    routing.longStraightCount * 2200 +
-    routing.highDetourCount * 1800 +
-    spanOverflow * spanOverflow * 42 +
-    straightOverflow * straightOverflow * 36 +
-    distributionOverflow * distributionOverflow * 58 +
-    aspectOverflow * aspectOverflow * 1400 +
-    wasteOverflow * wasteOverflow * 20000 +
+    routing.excessiveSpanCount * 7000 +
+    routing.longStraightCount * 6000 +
+    routing.highDetourCount * 3500 +
+    spanOverflow * spanOverflow * 160 +
+    straightOverflow * straightOverflow * 140 +
+    distributionOverflow * distributionOverflow * 220 +
+    aspectOverflow * aspectOverflow * 5000 +
+    wasteOverflow * wasteOverflow * 32000 +
+    routing.totalStraightOverflow * 600 +
+    routing.totalSpanOverflow * 500 +
     routing.maxDetourRatio * 12 +
     candidateIndex * 0.01
   );
@@ -297,9 +330,9 @@ function getLayoutCandidateCount(config, manualOverrides = {}) {
   const hasManualLayout = hasManualLayoutOverrides(manualOverrides);
   if (hasManualLayout) return 3;
   if (context === "cave" && roomCount <= 3) return 3;
-  if (roomCount <= 4) return 8;
-  if (roomCount <= 8) return 7;
-  return 6;
+  if (roomCount <= 4) return 10;
+  if (roomCount <= 8) return 9;
+  return 8;
 }
 
 function getCandidateSeed(baseSeed, candidateIndex) {

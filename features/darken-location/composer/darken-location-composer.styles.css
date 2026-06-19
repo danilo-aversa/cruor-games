@@ -1814,45 +1814,7 @@
   gap: 8px;
 }
 
-.location-map-preview--live {
-  align-items: stretch;
-  justify-items: stretch;
-  opacity: 0.86;
-}
-
-
-
-.location-map-preview--live .map-pan-layer {
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-}
-
-.location-map-preview--live .map-viewport {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  border: 0;
-  background: var(--cruor-color-transparent);
-  box-shadow: none;
-  max-width: none;
-  max-height: none;
-}
-
-.location-map-preview--live canvas {
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-}
-
-.location-map-preview--live svg {
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-}
+/* Composer preview viewport rules live in the Location preview ownership section below. */
 
 .location-stage-navigator-overlay .component-navigator-modal {
   position: relative;
@@ -2734,6 +2696,10 @@
   padding: 0;
 }
 
+.location-map-workspace-host {
+  display: contents;
+}
+
 .location-composer[data-location-map-editing="true"] .location-map-stage {
   grid-template-columns: 60px minmax(0, 1fr) var(--location-side-column-width);
 }
@@ -2742,20 +2708,20 @@
   grid-template-columns: 60px minmax(0, 1fr) 44px;
 }
 
-.location-composer[data-location-map-editing="true"] .location-map-stage > .cruor-map-workspace[data-map-embedded="true"] {
+.location-composer[data-location-map-editing="true"] .location-map-workspace-host > .cruor-map-workspace[data-map-context="composer-workspace"] {
   display: contents;
   animation: location-map-mode-in 180ms ease-out both;
 }
 
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-workspace-shell {
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .map-workspace-shell {
   display: contents;
 }
 
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-workspace-shell.is-inspector-collapsed {
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .map-workspace-shell.is-inspector-collapsed {
   display: contents;
 }
 
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-tool-rail {
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-rail {
   grid-area: left;
   position: relative;
   top: auto;
@@ -2781,7 +2747,7 @@
   z-index: 4;
 }
 
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-canvas-area {
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .map-canvas-area {
   grid-column: 1 / -1;
   grid-row: 1;
   position: absolute;
@@ -2798,8 +2764,8 @@
   overflow: hidden;
 }
 
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-canvas-topbar,
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-inspector-panel {
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .map-canvas-topbar,
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-panel {
   border: 1px solid var(--cruor-color-milk-a070);
   background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
   box-shadow: var(--cruor-shadow-box-075);
@@ -2808,7 +2774,7 @@
   z-index: 4;
 }
 
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-canvas-topbar {
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .map-canvas-topbar {
   position: absolute;
   top: var(--stage-pad);
   left: calc(60px + var(--location-column-gap));
@@ -2821,7 +2787,7 @@
   right: calc(44px + var(--location-column-gap));
 }
 
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-viewport-frame {
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .map-viewport-frame {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -2833,7 +2799,7 @@
   box-shadow: none;
 }
 
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-inspector-panel {
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-panel {
   grid-area: right;
   align-self: start;
   box-sizing: border-box;
@@ -2844,7 +2810,7 @@
   max-height: 100%;
 }
 
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-inspector-panel__scroll {
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-panel__scroll {
   height: auto;
   max-height: 100%;
   gap: 10px;
@@ -2855,7 +2821,7 @@
   scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
 }
 
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-viewport {
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .map-viewport {
   min-height: 0;
   height: 100%;
   border: 0;
@@ -4525,6 +4491,15 @@
   box-shadow: none;
 }
 
+.location-composer .location-map-preview-surface {
+  contain: layout paint style;
+  isolation: isolate;
+}
+
+.location-composer .location-map-preview-viewport[data-map-viewport-mode="composer-preview"] {
+  cursor: default;
+}
+
 /* Layout */
 
 .location-composer .location-map-preview--live {
@@ -4592,16 +4567,16 @@
   display: block;
 }
 
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .paper {
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .paper {
   fill: var(--cruor-color-transparent);
 }
 
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .paper-texture,
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .map-grid {
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .paper-texture,
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .map-grid {
   display: none;
 }
 
-.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-embedded="true"] .floor-grid {
+.location-composer[data-location-map-editing="true"] .cruor-map-workspace[data-map-context="composer-workspace"] .floor-grid {
   display: block;
 }
 
@@ -4913,6 +4888,765 @@
     overflow: hidden;
   }
 }
+
+
+
+
+/* Step 28 — Composer-owned embedded workspace detail overrides */
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button[data-map-advanced-only],
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button[data-ui-mode-advanced-only] {
+  display: inline-grid;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section[data-map-advanced-only],
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section[data-ui-mode-advanced-only] {
+  display: grid;
+}
+
+
+/* Step 11 — embedded editor inspector / selection / context parity */
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section {
+  overflow: hidden;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section {
+  padding: 0;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section:hover,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section.cruor-ui-card-surface:hover {
+  padding: 0;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section:not(details):hover,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section.cruor-ui-card-surface:not(details):hover {
+  padding: 11px;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section__summary {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 9px;
+  min-height: 38px;
+  padding: 10px 11px;
+  cursor: pointer;
+  list-style: none;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section__summary::-webkit-details-marker {
+  display: none;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section__summary > i:first-child {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  color: var(--cruor-color-hex-b33b4e);
+  font-size: 13px;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section__summary > i:last-child {
+  color: var(--cruor-color-hex-8f7278);
+  font-size: 10px;
+  transition: transform 0.14s ease;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details[open] > .map-inspector-section__summary > i:last-child {
+  transform: rotate(180deg);
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section__summary span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section__summary small {
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xxs);
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section__summary strong {
+  overflow: hidden;
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-l);
+  font-weight: 950;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section__body {
+  display: grid;
+  gap: 9px;
+  padding: 0 11px 11px;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-empty {
+  margin: 0;
+  color: var(--cruor-color-text-a560);
+  font-size: var(--text-size-s);
+  line-height: 1.35;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-selected-area-card {
+  display: grid;
+  gap: 9px;
+  min-width: 0;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-selected-area-card > strong {
+  overflow: hidden;
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-l);
+  font-weight: 950;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-selected-area-card .location-frame-info-grid {
+  display: grid;
+  gap: 6px;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-selected-area-card .location-frame-info-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-milk-a055);
+  background: var(--cruor-surface-card);
+  padding: 7px 8px;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-selected-area-card .location-frame-info-row small {
+  overflow: hidden;
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-selected-area-card .location-frame-info-row strong {
+  overflow: hidden;
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-s);
+  font-weight: 950;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-control-slider-field .control-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-control-slider-field .control-label span {
+  color: var(--cruor-color-hex-f0b9c2);
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .control-range {
+  width: 100%;
+  accent-color: var(--cruor-color-blood-glow);
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-selection-highlight {
+  pointer-events: none;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .editor-overlays .room-selection-highlight__halo path,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .editor-overlays .room-selection-highlight__halo line {
+  fill: none;
+  stroke: var(--cruor-color-blood-glow-a420);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .editor-overlays .room-selection-highlight__edge path,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .editor-overlays .room-selection-highlight__edge line {
+  fill: none;
+  stroke: var(--cruor-color-rose-a920);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-context-menu {
+  -webkit-backdrop-filter: var(--cruor-filter-glass-18-125);
+  backdrop-filter: var(--cruor-filter-glass-18-125);
+  display: grid;
+  gap: 10px;
+  width: min(360px, calc(100vw - 24px));
+  max-height: min(520px, calc(100dvh - 24px));
+  overflow: auto;
+  border: 1px solid var(--cruor-color-rose-a220);
+  background: var(--cruor-gradient-radial-228-a687306d), var(--cruor-gradient-linear-148-c4bbe015);
+  padding: 12px;
+  box-shadow: var(--cruor-shadow-box-122);
+  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
+  scrollbar-width: thin;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-context-menu__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--cruor-color-milk-a075);
+  padding-bottom: 9px;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-context-menu__header span,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-context-menu__label {
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-context-menu__header strong {
+  overflow: hidden;
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-xl);
+  font-weight: 950;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-context-menu__body,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-context-menu__actions {
+  display: grid;
+  gap: 8px;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-context-menu__trigger,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-context-menu button {
+  min-height: 30px;
+  border: 1px solid var(--cruor-color-blood-strong-a560);
+  background: var(--cruor-color-blood-a220);
+  color: var(--cruor-color-hex-c8a2a8);
+  font-size: var(--text-size-s);
+  font-weight: 850;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-context-menu__trigger:hover,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-context-menu__trigger.is-active,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-context-menu button:hover,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-context-menu button.is-active {
+  border-color: var(--cruor-color-blood-glow-a720);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-color-blood-strong-a420);
+  color: var(--cruor-color-hex-fff0f2);
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .labels .room-number-badge {
+  fill: var(--cruor-color-blood-strong-a520);
+  stroke: var(--cruor-color-blood-glow-a720);
+  stroke-width: 1;
+  filter: drop-shadow(0 8px 14px var(--cruor-color-black-a340));
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .labels .room-number {
+  fill: var(--cruor-color-hex-fff0f2);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .cruor-map-svg .floor-fill {
+  fill: var(--cruor-color-text-a055);
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .cruor-map-svg .wall-main path,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .cruor-map-svg .door-symbols .door-wall-line,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .cruor-map-svg .corridor-junctions .junction-wall-line {
+  stroke: #b8b0b1;
+  stroke-opacity: 1;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .cruor-map-svg .wall-shadow path {
+  stroke: var(--cruor-color-black-a360);
+}
+
+
+
+/* Step 11e — inspector hover states without layout shift */
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section:hover,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section.cruor-ui-card-surface:hover {
+  gap: 0;
+  padding: 0;
+  transform: none;
+  translate: none;
+  scale: none;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section:not([open]):hover,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section.cruor-ui-card-surface:not([open]):hover,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section:not([open]) .map-inspector-section__summary:focus-visible {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  box-shadow: var(--cruor-shadow-box-003);
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section[open]:hover,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section.cruor-ui-card-surface[open]:hover,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section[open]:focus-within {
+  border-color: var(--cruor-color-milk-a070);
+  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
+  box-shadow: var(--cruor-shadow-box-075);
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section:hover .map-inspector-section__summary > i:first-child,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section:hover .map-inspector-section__summary > i:last-child,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section .map-inspector-section__summary:focus-visible > i:first-child,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section .map-inspector-section__summary:focus-visible > i:last-child {
+  color: var(--cruor-color-hex-f0b9c2);
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section:hover .map-inspector-section__summary strong,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section .map-inspector-section__summary:focus-visible strong {
+  color: var(--cruor-color-hex-fff0f2);
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section:hover .map-inspector-section__summary small,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] details.map-inspector-section .map-inspector-section__summary:focus-visible small {
+  color: var(--cruor-color-rose-a620);
+}
+
+
+
+/* Step 11e — content-sized embedded rails */
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-rail,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-panel {
+  align-self: start;
+  height: auto;
+  max-height: 100%;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-panel__scroll {
+  height: auto;
+  max-height: 100%;
+}
+
+
+
+/* Step 11g — map edit badge / room key polish */
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .labels .room-number-badge {
+  rx: 0;
+  filter: drop-shadow(0 8px 14px var(--cruor-color-black-a340));
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-key.cruor-scroll-surface {
+  display: grid;
+  gap: 8px;
+  max-height: 340px;
+  overflow: auto;
+  padding: 0;
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
+  scrollbar-width: thin;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-key__item.cruor-ui-card-surface {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: start;
+  gap: 9px;
+  min-height: 44px;
+  border: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
+  padding: 8px;
+  box-shadow: var(--cruor-shadow-box-075);
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-key__item.cruor-ui-card-surface:hover {
+  border-color: var(--cruor-color-blood-glow-a620);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-color-blood-strong-a220);
+  box-shadow: var(--cruor-shadow-box-003);
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-key__number.cruor-ui-chip-surface {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--cruor-color-blood-glow-a620);
+  background: var(--cruor-color-blood-strong-a520);
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  line-height: 1;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-key__name {
+  overflow: hidden;
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-s);
+  font-weight: 950;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .room-key__meta {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--cruor-color-text-a560);
+  font-size: var(--text-size-xs);
+  line-height: 1.28;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* Step 28 — Composer-owned embedded map workspace overrides */
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] {
+  min-height: 0;
+  padding: 0;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-workspace-shell {
+  min-height: 0;
+  padding: 0;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-canvas-area {
+  min-height: 0;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-viewport-frame {
+  min-height: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--cruor-color-transparent);
+  box-shadow: none;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-viewport {
+  min-height: 0;
+  border: 0;
+  background: var(--cruor-color-transparent);
+  box-shadow: none;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .paper {
+  fill: var(--cruor-color-transparent);
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .paper-texture {
+  display: none;
+}
+
+
+/* Embedded Location Composer parity */
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-rail {
+  align-self: stretch;
+  align-content: start;
+  justify-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  padding: 11px 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
+  box-shadow: var(--cruor-shadow-box-075);
+  scrollbar-width: thin;
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-rail__divider {
+  justify-self: center;
+  width: 30px;
+  height: 1px;
+  margin: 2px 0;
+  background: linear-gradient(90deg, var(--cruor-color-transparent), var(--cruor-color-blood-strong-a720), var(--cruor-color-transparent));
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  border: 1px solid var(--cruor-color-blood-strong-a560);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
+  color: var(--cruor-color-hex-b33b4e);
+  box-shadow: none;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button i,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button svg {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  color: var(--cruor-color-hex-b33b4e);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button.is-active,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:focus-visible,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:hover:not(:disabled) {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button.is-active i,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button.is-active svg,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:focus-visible i,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:focus-visible svg,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:hover:not(:disabled) i,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:hover:not(:disabled) svg {
+  color: var(--cruor-color-hex-f0b9c2);
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:disabled {
+  opacity: 0.36;
+  box-shadow: none;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-panel {
+  border: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
+  box-shadow: var(--cruor-shadow-box-075);
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-panel__scroll {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 11px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section:hover,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-inspector-section.cruor-ui-card-surface:hover {
+  display: grid;
+  gap: 9px;
+  padding: 11px;
+  border: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
+  box-shadow: var(--cruor-shadow-box-075);
+  transform: none;
+  translate: none;
+  scale: none;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-panel-eyebrow,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .control-label,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .stat__label {
+  margin: 0;
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xxs);
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .control-group {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  background: var(--cruor-color-transparent);
+  padding: 0;
+  box-shadow: none;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .control-grid {
+  gap: 10px;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .control-input,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .control-select,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .mvp-button {
+  min-height: 36px;
+  border: 1px solid var(--cruor-color-blood-strong-a580);
+  border-radius: 0;
+  background: var(--cruor-gradient-linear-078-e313bc1b), var(--cruor-surface-card);
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-l);
+  font-weight: 900;
+  letter-spacing: 0.015em;
+  box-shadow: none;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .control-input:hover,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .control-input:focus,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .control-select:hover,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .control-select:focus,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .mvp-button:hover,
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .mvp-button:focus-visible {
+  border-color: var(--cruor-color-blood-glow-a720);
+  box-shadow: var(--cruor-shadow-box-017);
+  outline: none;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .stats {
+  display: grid;
+  gap: 7px;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .stat {
+  display: grid;
+  gap: 3px;
+  min-height: 0;
+  padding: 8px;
+  border: 1px solid var(--cruor-color-blood-strong-a560);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
+  box-shadow: none;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .stat__value {
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-l);
+  font-weight: 950;
+  line-height: 1;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] [data-map-advanced-only],
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] [data-ui-mode-advanced-only] {
+  display: revert;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-rail {
+  grid-auto-rows: 36px;
+  align-content: start;
+  max-height: 100%;
+  padding-block: 9px;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-rail__divider {
+  align-self: center;
+  display: block;
+  min-height: 1px;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-control-select-field {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  background: var(--cruor-color-transparent);
+  padding: 0;
+  overflow: visible;
+  box-shadow: none;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-control-select-trigger {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 10px;
+  text-align: left;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-control-select-trigger strong {
+  overflow: hidden;
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-l);
+  font-weight: 900;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-control-select-trigger i {
+  display: inline-grid;
+  place-items: center;
+  color: var(--cruor-color-hex-b33b4e);
+  font-size: 12px;
+  line-height: 1;
+}
+
+
 
 @media (max-width: 1180px) {
   .location-stage-navigator-overlay {
@@ -5485,9 +6219,9 @@
 }
 
 /* Step 22.5 correction — align Location frame controls to Monster frame grammar. */
-.location-composer .monster-frame-select-field,
-.location-composer .monster-frame-icon-field,
-.location-composer .monster-frame-cr-control {
+.location-composer .cruor-frame-select-field,
+.location-composer .cruor-frame-icon-field,
+.location-composer .cruor-frame-range-control {
   position: relative;
   display: grid;
   gap: 7px;
@@ -5499,7 +6233,7 @@
   box-shadow: none;
 }
 
-.location-composer .monster-frame-field-head.location-frame-field-head {
+.location-composer .cruor-frame-field-head.location-frame-field-head {
   position: relative;
   display: flex;
   align-items: center;
@@ -5513,7 +6247,7 @@
   text-transform: uppercase;
 }
 
-.location-composer .monster-frame-field-head.location-frame-field-head > span:first-child {
+.location-composer .cruor-frame-field-head.location-frame-field-head > span:first-child {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -5522,7 +6256,7 @@
   line-height: 1;
 }
 
-.location-composer .monster-frame-field-head.location-frame-field-head > strong {
+.location-composer .cruor-frame-field-head.location-frame-field-head > strong {
   margin-left: auto;
   overflow: hidden;
   padding-right: 22px;
@@ -5537,7 +6271,7 @@
   white-space: nowrap;
 }
 
-.location-composer .monster-frame-help.location-field-help {
+.location-composer .cruor-frame-help.location-field-help {
   position: absolute;
   top: -3px;
   right: 0;
@@ -5558,8 +6292,8 @@
   box-shadow: none;
 }
 
-.location-composer .monster-frame-help.location-field-help:hover,
-.location-composer .monster-frame-help.location-field-help:focus-visible {
+.location-composer .cruor-frame-help.location-field-help:hover,
+.location-composer .cruor-frame-help.location-field-help:focus-visible {
   border: 0;
   background: var(--cruor-color-transparent);
   color: var(--cruor-color-r240-g215-b220-a780);
@@ -5567,7 +6301,7 @@
   outline: none;
 }
 
-.location-composer .location-choice-trigger.monster-frame-select-trigger {
+.location-composer .location-choice-trigger.cruor-frame-select-trigger {
   display: grid;
   grid-template-columns: 18px minmax(0, 1fr) auto;
   align-items: center;
@@ -5581,17 +6315,17 @@
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
 }
 
-.location-composer .location-choice-trigger.monster-frame-select-trigger:hover,
-.location-composer .location-choice-trigger.monster-frame-select-trigger[aria-expanded="true"] {
+.location-composer .location-choice-trigger.cruor-frame-select-trigger:hover,
+.location-composer .location-choice-trigger.cruor-frame-select-trigger[aria-expanded="true"] {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.location-composer .location-choice-trigger.monster-frame-select-trigger i,
-.location-choice-menu--portal.monster-frame-select-menu .monster-frame-select-option i,
-.location-composer .location-icon-toggle-button.monster-frame-icon-toggle i {
+.location-composer .location-choice-trigger.cruor-frame-select-trigger i,
+.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option i,
+.location-composer .location-icon-toggle-button.cruor-frame-icon-toggle i {
   display: inline-grid;
   place-items: center;
   width: 16px;
@@ -5601,7 +6335,7 @@
   line-height: 1;
 }
 
-.location-composer .location-choice-trigger.monster-frame-select-trigger strong {
+.location-composer .location-choice-trigger.cruor-frame-select-trigger strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
   font-size: var(--text-size-l);
@@ -5611,7 +6345,7 @@
   white-space: nowrap;
 }
 
-.location-composer .location-choice-trigger.monster-frame-select-trigger small {
+.location-composer .location-choice-trigger.cruor-frame-select-trigger small {
   color: var(--cruor-color-hex-8f7278);
   font-size: var(--text-size-xs);
   font-weight: 950;
@@ -5619,16 +6353,16 @@
   text-transform: uppercase;
 }
 
-.location-composer .location-choice-trigger.monster-frame-select-trigger:hover i,
-.location-composer .location-choice-trigger.monster-frame-select-trigger[aria-expanded="true"] i,
-.location-choice-menu--portal.monster-frame-select-menu .monster-frame-select-option:hover i,
-.location-choice-menu--portal.monster-frame-select-menu .monster-frame-select-option.is-active i,
-.location-composer .location-icon-toggle-button.monster-frame-icon-toggle:hover i,
-.location-composer .location-icon-toggle-button.monster-frame-icon-toggle.is-active i {
+.location-composer .location-choice-trigger.cruor-frame-select-trigger:hover i,
+.location-composer .location-choice-trigger.cruor-frame-select-trigger[aria-expanded="true"] i,
+.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option:hover i,
+.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option.is-active i,
+.location-composer .location-icon-toggle-button.cruor-frame-icon-toggle:hover i,
+.location-composer .location-icon-toggle-button.cruor-frame-icon-toggle.is-active i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.location-choice-menu--portal.monster-frame-select-menu {
+.location-choice-menu--portal.cruor-frame-select-menu {
   position: fixed;
   z-index: 9000;
   display: grid;
@@ -5641,7 +6375,7 @@
   box-shadow: var(--cruor-shadow-box-025);
 }
 
-.location-choice-menu--portal.monster-frame-select-menu .monster-frame-select-option {
+.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option {
   display: grid;
   grid-template-columns: 18px minmax(0, 1fr);
   align-items: center;
@@ -5655,21 +6389,21 @@
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
 }
 
-.location-choice-menu--portal.monster-frame-select-menu .monster-frame-select-option:hover,
-.location-choice-menu--portal.monster-frame-select-menu .monster-frame-select-option.is-active {
+.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option:hover,
+.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option.is-active {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.location-choice-menu--portal.monster-frame-select-menu .monster-frame-select-option span {
+.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option span {
   display: grid;
   gap: 2px;
   min-width: 0;
 }
 
-.location-choice-menu--portal.monster-frame-select-menu .monster-frame-select-option strong {
+.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
   font-size: var(--text-size-l);
@@ -5679,7 +6413,7 @@
   white-space: nowrap;
 }
 
-.location-composer .location-icon-toggle-grid.monster-frame-icon-toggle-row {
+.location-composer .location-icon-toggle-grid.cruor-frame-icon-toggle-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -5687,7 +6421,7 @@
   width: 100%;
 }
 
-.location-composer .location-icon-toggle-button.monster-frame-icon-toggle {
+.location-composer .location-icon-toggle-button.cruor-frame-icon-toggle {
   display: inline-grid;
   place-items: center;
   width: 38px;
@@ -5700,8 +6434,8 @@
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
 }
 
-.location-composer .location-icon-toggle-button.monster-frame-icon-toggle:hover,
-.location-composer .location-icon-toggle-button.monster-frame-icon-toggle:focus-visible {
+.location-composer .location-icon-toggle-button.cruor-frame-icon-toggle:hover,
+.location-composer .location-icon-toggle-button.cruor-frame-icon-toggle:focus-visible {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
@@ -5709,7 +6443,7 @@
   outline: none;
 }
 
-.location-composer .location-icon-toggle-button.monster-frame-icon-toggle.is-active {
+.location-composer .location-icon-toggle-button.cruor-frame-icon-toggle.is-active {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
@@ -5717,7 +6451,7 @@
   transform: translateY(-1px);
 }
 
-.location-composer .location-room-count-slider.monster-frame-cr-slider-row {
+.location-composer .location-room-count-slider.cruor-frame-range-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 58px;
   align-items: center;
@@ -5728,7 +6462,7 @@
   padding: 0;
 }
 
-.location-composer .location-room-count-range.monster-frame-cr-slider {
+.location-composer .location-room-count-range.cruor-frame-range {
   width: 100%;
   min-height: 32px;
   padding: 0;
@@ -5741,18 +6475,18 @@
   -webkit-appearance: none;
 }
 
-.location-composer .location-room-count-range.monster-frame-cr-slider:active {
+.location-composer .location-room-count-range.cruor-frame-range:active {
   cursor: grabbing;
 }
 
-.location-composer .location-room-count-range.monster-frame-cr-slider::-webkit-slider-runnable-track {
+.location-composer .location-room-count-range.cruor-frame-range::-webkit-slider-runnable-track {
   height: 4px;
   border: 1px solid var(--cruor-color-blood-strong-a520);
   border-radius: 0;
   background: var(--cruor-surface-card);
 }
 
-.location-composer .location-room-count-range.monster-frame-cr-slider::-webkit-slider-thumb {
+.location-composer .location-room-count-range.cruor-frame-range::-webkit-slider-thumb {
   width: 13px;
   height: 13px;
   margin-top: -5.5px;
@@ -5766,18 +6500,18 @@
   -webkit-appearance: none;
 }
 
-.location-composer .location-room-count-range.monster-frame-cr-slider:active::-webkit-slider-thumb {
+.location-composer .location-room-count-range.cruor-frame-range:active::-webkit-slider-thumb {
   cursor: grabbing;
 }
 
-.location-composer .location-room-count-range.monster-frame-cr-slider::-moz-range-track {
+.location-composer .location-room-count-range.cruor-frame-range::-moz-range-track {
   height: 4px;
   border: 1px solid var(--cruor-color-blood-strong-a520);
   border-radius: 0;
   background: var(--cruor-surface-card);
 }
 
-.location-composer .location-room-count-range.monster-frame-cr-slider::-moz-range-thumb {
+.location-composer .location-room-count-range.cruor-frame-range::-moz-range-thumb {
   width: 13px;
   height: 13px;
   border: 1px solid var(--cruor-color-blood-glow-a780);
@@ -5788,11 +6522,11 @@
   cursor: grab;
 }
 
-.location-composer .location-room-count-range.monster-frame-cr-slider:active::-moz-range-thumb {
+.location-composer .location-room-count-range.cruor-frame-range:active::-moz-range-thumb {
   cursor: grabbing;
 }
 
-.location-composer .location-room-count-number.monster-frame-cr-number {
+.location-composer .location-room-count-number.cruor-frame-number {
   min-height: 38px;
   padding: 0 7px;
   border: 1px solid var(--cruor-color-blood-strong-a580);
@@ -5814,7 +6548,7 @@
   min-width: 0;
 }
 
-.location-scratch-room-editor .location-icon-toggle-grid.monster-frame-icon-toggle-row {
+.location-scratch-room-editor .location-icon-toggle-grid.cruor-frame-icon-toggle-row {
   gap: 6px;
 }
 
@@ -5850,4 +6584,48 @@
   background: var(--cruor-color-black-a180);
   color: var(--cruor-color-muted-a480);
   box-shadow: none;
+}
+
+/* Step 27 — DM-facing export cleanup */
+.location-compile-preview__grid--export {
+  grid-template-columns: 1fr;
+}
+
+.location-session-insert-card {
+  border-color: var(--cruor-color-blood-strong-a520);
+  background: var(--cruor-gradient-linear-006-3a071190), var(--cruor-color-ink-a430);
+}
+
+.location-compile-preview__metrics,
+.location-compile-sync-label {
+  display: none;
+}
+
+.location-compile-preview__buttons .location-copy-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.location-compile-preview__card > .location-session-insert,
+.location-compile-preview__table {
+  max-width: 100%;
+}
+
+.location-compile-preview__card pre,
+.location-compile-preview__table pre {
+  color: var(--cruor-color-text-a760);
+}
+
+.location-compile-preview__grid--export .location-compile-preview__card:nth-child(n + 2) pre {
+  max-height: 240px;
+}
+
+.location-compile-preview__grid--export .location-compile-preview__card:nth-child(1) pre {
+  max-height: 520px;
+}
+
+.location-compile-region small {
+  display: block;
+  margin-top: 2px;
+  color: var(--cruor-color-hex-d0a2aa);
 }

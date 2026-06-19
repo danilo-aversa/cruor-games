@@ -1,7 +1,7 @@
 {
   "name": "cruor-games",
   "private": true,
-  "version": "12.4.1a",
+  "version": "12.5.0a",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -29,7 +29,9 @@
     "git:restore-main": "node .vscode/dev/git-restore-from-github.mjs main",
     "git:restore-current": "node .vscode/dev/git-restore-from-github.mjs current",
     "monster:qa": "node --import ./scripts/register-svg-loader.mjs scripts/run-monster-qa.mjs",
-    "qa:all": "npm run content:validate && npm run content:export && npm run monster:qa && npm run test:run"
+    "qa:all": "npm run content:validate && npm run content:export && npm run monster:qa && npm run qa:maps && npm run test:run",
+    "qa:maps": "node scripts/run-map-qa.mjs --count=250 --mode=realistic",
+    "qa:maps:debug": "node scripts/run-map-qa.mjs --count=250 --mode=debug"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",

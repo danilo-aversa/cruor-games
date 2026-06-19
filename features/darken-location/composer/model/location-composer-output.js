@@ -172,15 +172,22 @@ export function getMapPreviewQuality(state, mapRequest, generatedMapPreview, reg
 
 function getMapNotes(mapRequest, generatedMapPreview, regions = []) {
   const syncStatus = getMapSyncStatus(mapRequest, generatedMapPreview, regions);
-  return [
-    formatCompileLine("Map Type", mapRequest.mapType),
-    formatCompileLine("Seed", mapRequest.seed),
-    formatCompileLine("Sync Status", syncStatus.label),
-    formatCompileLine("Requested Rooms", syncStatus.requested),
-    formatCompileLine("Generated Rooms", syncStatus.generated || syncStatus.requested),
-    formatCompileLine("Synced Rooms", syncStatus.synced),
-    formatCompileLine("Corridors", generatedMapPreview ? syncStatus.corridors : "Preview unavailable"),
+  const roomCount = syncStatus.generated || syncStatus.requested || regions.length || 0;
+  const corridorCount = generatedMapPreview ? syncStatus.corridors : 0;
+  const notes = [
+    roomCount
+      ? `Use the numbered map as the running order for ${roomCount} room${roomCount === 1 ? "" : "s"}.`
+      : "Use the current location frame as the map reference.",
+    corridorCount
+      ? `${corridorCount} corridor${corridorCount === 1 ? "" : "s"} connect the main route and side areas.`
+      : "Treat transitions between regions as close, immediate movement unless the map shows otherwise.",
   ];
+
+  if (mapRequest?.mapType) {
+    notes.push(`Map tone: ${mapRequest.mapType}.`);
+  }
+
+  return notes;
 }
 
 function createRoomSection(region, index, generatedMapPreview, state) {
@@ -191,9 +198,9 @@ function createRoomSection(region, index, generatedMapPreview, state) {
   const components = attached.map(getComponentOutput);
   const roomNumber = room?.number || index + 1;
   const roomRole = room?.graphRole || room?.role || region.role || "Room";
-  const syncLabel = room
-    ? `Generated Room ${roomNumber} synced`
-    : `Region ${index + 1} using request metadata only`;
+  const mapLabel = room
+    ? `Map Room ${roomNumber}`
+    : `Region ${index + 1}`;
   const heading = `Room ${roomNumber}: ${region.name}`;
   const feature = region.feature || getRowValue(detailRows, "Feature");
   const danger = region.danger || getRowValue(detailRows, "Danger");
@@ -218,29 +225,26 @@ function createRoomSection(region, index, generatedMapPreview, state) {
     danger,
     secret,
     reward,
-    syncLabel,
+    mapLabel,
     tableLine: [
-      formatCompileLine("Room", roomNumber),
-      formatCompileLine("Name", region.name),
-      formatCompileLine("Map Sync", syncLabel),
-      formatCompileLine("Role", roomRole),
-      formatCompileLine("Read-Aloud", readAloud),
-      formatCompileLine("Feature", feature),
-      formatCompileLine("Danger", danger),
-      formatCompileLine("Secret", secret),
-      formatCompileLine("Reward", reward),
-      formatCompileLine("Components", componentLine),
-    ].join(" | "),
-    summaryText: [
-      heading,
-      formatCompileLine("Map Sync", syncLabel),
+      `${mapLabel} — ${region.name}`,
       formatCompileLine("Role", roomRole),
       readAloud ? formatCompileLine("Read-Aloud", readAloud) : "",
       formatCompileLine("Feature", feature),
-      formatCompileLine("Danger", danger),
-      formatCompileLine("Secret", secret),
-      formatCompileLine("Reward", reward),
-      formatCompileLine("Components", componentLine),
+      danger && danger !== "—" ? formatCompileLine("Danger", danger) : "",
+      secret && secret !== "—" ? formatCompileLine("Secret", secret) : "",
+      reward && reward !== "—" ? formatCompileLine("Reward", reward) : "",
+      components.length ? formatCompileLine("Components", componentLine) : "",
+    ].filter(Boolean).join(" | "),
+    summaryText: [
+      `${mapLabel} — ${region.name}`,
+      formatCompileLine("Role", roomRole),
+      readAloud ? formatCompileLine("Read-Aloud", readAloud) : "",
+      formatCompileLine("Feature", feature),
+      danger && danger !== "—" ? formatCompileLine("Danger", danger) : "",
+      secret && secret !== "—" ? formatCompileLine("Secret", secret) : "",
+      reward && reward !== "—" ? formatCompileLine("Reward", reward) : "",
+      components.length ? formatCompileLine("Components", componentLine) : "",
     ].filter(Boolean).join("\n"),
   };
 }
@@ -268,13 +272,12 @@ function getReadAloudText(regionSections) {
 
 function createAtTheTableRows({ context, horrorLine, sourceLine, regionSections, hazardSections, clueSections, twistSections }) {
   return [
-    { label: "Context", value: context },
-    { label: "Horror", value: horrorLine },
-    { label: "Source", value: sourceLine },
-    { label: "Regions", value: String(regionSections.length || 0) },
-    { label: "Hazards", value: String(hazardSections.length || 0) },
-    { label: "Clues", value: String(clueSections.length || 0) },
-    { label: "Twists", value: String(twistSections.length || 0) },
+    { label: "Use This When", value: `You need a ${context} horror insert shaped by ${horrorLine}.` },
+    { label: "Primary Source", value: sourceLine },
+    { label: "Run Order", value: `${regionSections.length || 0} mapped region${regionSections.length === 1 ? "" : "s"}. Follow the room numbers unless the table needs a faster route.` },
+    { label: "Pressure", value: hazardSections.length ? `${hazardSections.length} hazard hook${hazardSections.length === 1 ? "" : "s"} ready.` : "No hard hazard assigned yet; lean on atmosphere and clues." },
+    { label: "Clue Flow", value: clueSections.length ? `${clueSections.length} clue hook${clueSections.length === 1 ? "" : "s"} ready.` : "Add or improvise one clue before running this as an investigation site." },
+    { label: "Encounter Twist", value: twistSections.length ? `${twistSections.length} twist hook${twistSections.length === 1 ? "" : "s"} ready.` : "No encounter twist assigned." },
   ];
 }
 
@@ -334,34 +337,74 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
   const componentText = componentSections.length
     ? componentSections.map((component) => `${component.reference}\n${component.text}`).join("\n\n")
     : "No components assigned yet.";
-  const mapNotesText = mapNotes.join("\n");
+  const mapNotesText = mapNotes.map((note) => `- ${note}`).join("\n");
+  const hazardText = hazardSections.length
+    ? hazardSections.map((component) => `${component.reference}\n${component.text}`).join("\n\n")
+    : "No hazards assigned yet.";
+  const clueText = clueSections.length
+    ? clueSections.map((component) => `${component.reference}\n${component.text}`).join("\n\n")
+    : "No clues assigned yet.";
+  const twistText = twistSections.length
+    ? twistSections.map((component) => `${component.reference}\n${component.text}`).join("\n\n")
+    : "No encounter twists assigned yet.";
+  const atTheTableText = atTheTableRows
+    .map((row) => `${row.label}: ${row.value}`)
+    .join("\n");
 
   const sessionInsertText = [
-    "SESSION INSERT",
-    premiseSection.text,
+    title.toUpperCase(),
+    "",
+    "USE THIS WHEN",
+    `You need a ${context} horror insert shaped by ${horrorLine}.`,
+    "",
+    "FRAME",
+    formatCompileLine("Context", context),
+    formatCompileLine("Horror", horrorLine),
+    formatCompileLine("Source", sourceLine),
+    "",
+    "READ-ALOUD",
+    readAloudText,
     "",
     "REGIONS",
     roomText || "No regions generated yet.",
     "",
-    "COMPONENTS",
-    componentText,
+    "HAZARDS",
+    hazardText,
+    "",
+    "CLUES",
+    clueText,
+    "",
+    "TWISTS",
+    twistText,
     "",
     "MAP NOTES",
     mapNotesText,
+    "",
+    "AT THE TABLE",
+    atTheTableText,
   ].join("\n");
 
   const tableReadyText = [
-    "PREMISE",
-    premiseSection.text,
+    title.toUpperCase(),
+    `${context} · ${horrorLine} · ${sourceLine}`,
     "",
-    "REGION TABLE",
+    "READ-ALOUD",
+    readAloudText,
+    "",
+    "ROOMS",
     ...regionSections.map((section) => section.tableLine),
     "",
-    "COMPONENT TABLE",
-    ...slotSections.map((section) => section.text),
+    "HAZARDS",
+    hazardText,
     "",
-    "MAP NOTES",
-    mapNotesText,
+    "CLUES",
+    clueText,
+    "",
+    "TWISTS",
+    twistText,
+    "",
+    "AT THE TABLE",
+    atTheTableText,
   ].join("\n");
 
   return {
@@ -383,6 +426,10 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
     mapSyncStatus,
     mapNotes,
     mapNotesText,
+    hazardText,
+    clueText,
+    twistText,
+    atTheTableText,
     sessionInsertText,
     tableReadyText,
   };
@@ -428,7 +475,7 @@ export function createJsonExportPayload(state, digest, mapRequest, generatedMapP
       role: section.role,
       generatedRoomNumber: section.room?.number || null,
       generatedRoomShape: section.room?.shape || null,
-      syncLabel: section.syncLabel,
+      mapLabel: section.mapLabel,
       readAloud: section.readAloud,
       feature: section.feature,
       danger: section.danger,

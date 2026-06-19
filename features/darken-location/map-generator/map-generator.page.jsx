@@ -269,6 +269,10 @@ function rectsOverlapWithMargin(a, b, margin = 2) {
   );
 }
 
+function cx(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
+
 export function MapViewport({
   generatedMap,
   showGrid,
@@ -324,6 +328,8 @@ export function MapViewport({
   embeddedPreview = false,
   showViewportChrome = true,
   enableViewportInteractions = true,
+  viewportMode = embeddedPreview ? "composer-preview" : "workspace",
+  viewportClassName = "",
 }) {
   const viewportRef = useRef(null);
   const panRef = useRef(null);
@@ -1537,7 +1543,14 @@ export function MapViewport({
     <>
       <div
         ref={viewportRef}
-        className={`map-viewport ${isPanning ? "is-panning" : ""} ${embeddedPreview ? "is-embedded-preview" : ""}`}
+        className={cx(
+          "map-viewport",
+          `map-viewport--${viewportMode}`,
+          isPanning && "is-panning",
+          embeddedPreview && "is-embedded-preview",
+          viewportClassName,
+        )}
+        data-map-viewport-mode={viewportMode}
         tabIndex={viewportInteractive ? 0 : -1}
         aria-label={embeddedPreview ? "Embedded map preview" : "Interactive map viewport"}
         onContextMenu={viewportInteractive ? openMapContextMenu : undefined}
@@ -3255,6 +3268,7 @@ export default function CruorMapGeneratorMvp({
   onCommitWorkspace = null,
   onRefreshFromComposer = null,
   embeddedInComposer = false,
+  workspaceContext = embeddedInComposer ? "composer-workspace" : "standalone-workspace",
 } = {}) {
   const initialConfig = useMemo(
     () => createConfigFromNormalizedMapRequest(initialRequest, DEFAULT_CONFIG),
@@ -4236,13 +4250,19 @@ export default function CruorMapGeneratorMvp({
       embeddedPreview={false}
       showViewportChrome={!embeddedInComposer}
       enableViewportInteractions={true}
+      viewportMode={workspaceContext}
     />
   );
 
   return (
     <div
-      className="cruor-map-mvp cruor-map-workspace"
-      data-map-embedded={embeddedInComposer ? "true" : undefined}
+      className={cx(
+        "cruor-map-mvp",
+        "cruor-map-workspace",
+        `cruor-map-workspace--${workspaceContext}`,
+        embeddedInComposer && "is-embedded-in-composer",
+      )}
+      data-map-context={workspaceContext}
       data-map-inspector-collapsed={inspectorCollapsed ? "true" : undefined}
       onContextMenu={(event) => event.preventDefault()}
     >
