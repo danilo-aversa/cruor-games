@@ -21,6 +21,8 @@ import {
 import {
   routeCorridors,
   applyLevelMetadata,
+  getRoomCellOwnershipMap,
+  getNonEndpointRoomTunnelHits,
 } from "./map-generator.corridors.js";
 import {
   createMapAccesses,
@@ -219,6 +221,19 @@ function getCorridorQualityMetrics(map) {
   };
 }
 
+
+function getCorridorRoomTunnelHitCount(map) {
+  const corridors = Array.isArray(map?.corridors) ? map.corridors : [];
+  const regions = Array.isArray(map?.regions) ? map.regions : [];
+  if (corridors.length === 0 || regions.length === 0) return 0;
+  const roomOwnership = getRoomCellOwnershipMap(regions);
+  return corridors.reduce(
+    (total, corridor) =>
+      total + getNonEndpointRoomTunnelHits(corridor, roomOwnership).length,
+    0,
+  );
+}
+
 function getLayoutQualityMetrics(map) {
   const bounds = getRoomBounds(map.regions || []);
   const aspectRatio =
@@ -242,6 +257,7 @@ function scoreGeneratedMapCandidate(map, candidateIndex = 0) {
   const expectedEdges = Array.isArray(map.graph) ? map.graph.length : 0;
   const corridorCount = Array.isArray(map.corridors) ? map.corridors.length : 0;
   const missingCorridorPenalty = Math.max(0, expectedEdges - corridorCount) * 100000;
+  const corridorTunnelPenalty = getCorridorRoomTunnelHitCount(map) * 1000000;
   const roomCount = Math.max(1, map.regions?.length || 1);
   const targetNearest = roomCount <= 4 ? 10 : roomCount <= 8 ? 12 : 14;
   const targetSpan = roomCount <= 4 ? 18 : roomCount <= 8 ? 22 : 26;
@@ -260,6 +276,7 @@ function scoreGeneratedMapCandidate(map, candidateIndex = 0) {
 
   return (
     missingCorridorPenalty +
+    corridorTunnelPenalty +
     routing.excessiveSpanCount * 2600 +
     routing.longStraightCount * 2200 +
     routing.highDetourCount * 1800 +
@@ -279,10 +296,10 @@ function getLayoutCandidateCount(config, manualOverrides = {}) {
   const context = String(config.context || config.biome || "").toLowerCase();
   const hasManualLayout = hasManualLayoutOverrides(manualOverrides);
   if (hasManualLayout) return 3;
-  if (context === "cave" && roomCount <= 3) return 2;
-  if (roomCount <= 4) return 6;
-  if (roomCount <= 8) return 5;
-  return 4;
+  if (context === "cave" && roomCount <= 3) return 3;
+  if (roomCount <= 4) return 8;
+  if (roomCount <= 8) return 7;
+  return 6;
 }
 
 function getCandidateSeed(baseSeed, candidateIndex) {
