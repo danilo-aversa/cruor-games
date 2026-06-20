@@ -16,7 +16,7 @@ export const DEFAULT_CONFIG = {
   mode: "editor",
   visualStyle: "cruor",
   gridStyle: "solid",
-  contextGraphAdapterMode: "off",
+  contextGraphAdapterMode: "safe",
   regions: [
     {
       id: "region-1",
@@ -147,6 +147,7 @@ const SUPPORTED_VISUAL_STYLES = new Set(
 
 const CONTEXT_GRAPH_ADAPTER_MODES = new Set([
   "off",
+  "safe",
   "hard",
   "all",
   "crypt",
@@ -160,6 +161,7 @@ function normalizeContextGraphAdapterMode(value, fallback = DEFAULT_CONFIG.conte
   const normalized = String(value || "").trim().toLowerCase();
   if (!normalized) return fallback;
   if (normalized === "noble house") return "noble-house";
+  if (normalized === "auto" || normalized === "recommended") return "safe";
   if (normalized === "enabled" || normalized === "true" || normalized === "adapter") return "hard";
   return CONTEXT_GRAPH_ADAPTER_MODES.has(normalized) ? normalized : fallback;
 }

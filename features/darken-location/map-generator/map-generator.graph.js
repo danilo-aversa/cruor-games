@@ -448,6 +448,7 @@ function getContextGraphAdapterMode(config = {}) {
     "off";
   const mode = String(rawMode || "off").trim().toLowerCase();
   if (mode === "enabled" || mode === "true" || mode === "adapter") return "hard";
+  if (mode === "auto" || mode === "recommended") return "safe";
   if (mode === "noble house") return "noble-house";
   return mode || "off";
 }
@@ -455,6 +456,7 @@ function getContextGraphAdapterMode(config = {}) {
 function shouldUseContextGraphAdapter(config = {}, adapterKey = "") {
   const mode = getContextGraphAdapterMode(config);
   if (mode === "off" || mode === "metadata" || mode === "soft") return false;
+  if (mode === "safe") return adapterKey === "crypt" || adapterKey === "mine" || adapterKey === "ruins";
   if (mode === "hard" || mode === "all") return true;
   return mode === adapterKey;
 }

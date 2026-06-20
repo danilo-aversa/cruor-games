@@ -5,8 +5,8 @@ import {
   getRoomCellOwnershipMap,
 } from "../map-generator.corridors.js";
 
-export const MAP_BATCH_QA_VERSION = "map-qa-v0.5.0-adapter-qa-harness";
-export const MAP_ADAPTER_QA_VERSION = "map-adapter-qa-v0.2.0-adapter-usage-diagnostics";
+export const MAP_BATCH_QA_VERSION = "map-qa-v0.5.1-safe-context-adapters";
+export const MAP_ADAPTER_QA_VERSION = "map-adapter-qa-v0.3.0-safe-adapter-promotion";
 
 const DEFAULT_CONTEXTS = Object.freeze([
   "Crypt",
@@ -43,7 +43,8 @@ export const MAP_BATCH_EXPORT_MODES = Object.freeze([
 ]);
 
 export const MAP_CONTEXT_GRAPH_ADAPTER_MODES = Object.freeze([
-  Object.freeze({ value: "off", label: "Baseline", description: "Default inferred graph with context adapters disabled." }),
+  Object.freeze({ value: "off", label: "Baseline", description: "Inferred graph with context adapters disabled." }),
+  Object.freeze({ value: "safe", label: "Safe Adapters", description: "Promote only QA-neutral adapters: Crypt, Mine, and Ruins." }),
   Object.freeze({ value: "crypt", label: "Crypt Adapter", description: "Crypt spine with side crypt branches." }),
   Object.freeze({ value: "mine", label: "Mine Adapter", description: "Mine tunnel trunk with extraction branches." }),
   Object.freeze({ value: "ruins", label: "Ruins Adapter", description: "Ruins broken path with collapsed shortcuts." }),
@@ -51,10 +52,11 @@ export const MAP_CONTEXT_GRAPH_ADAPTER_MODES = Object.freeze([
   Object.freeze({ value: "all", label: "All Context Adapters", description: "Enable any adapter that matches the generated context." }),
 ]);
 
-export const MAP_ADAPTER_QA_DEFAULT_MODES = Object.freeze(["off", "crypt", "mine", "ruins", "noble-house"]);
+export const MAP_ADAPTER_QA_DEFAULT_MODES = Object.freeze(["off", "safe", "crypt", "mine", "ruins", "noble-house"]);
 
 
 const CONTEXT_GRAPH_ADAPTER_KEYS = Object.freeze(["crypt", "mine", "ruins", "noble-house"]);
+const SAFE_CONTEXT_GRAPH_ADAPTER_KEYS = Object.freeze(["crypt", "mine", "ruins"]);
 
 function normalizeAdapterContextKey(value = "") {
   const normalized = String(value || "").trim().toLowerCase().replace(/[\s_]+/g, "-");
@@ -66,6 +68,7 @@ function normalizeAdapterContextKey(value = "") {
 
 function getAdapterModeKeys(mode = "off") {
   const normalized = normalizeContextGraphAdapterMode(mode, "off");
+  if (normalized === "safe") return SAFE_CONTEXT_GRAPH_ADAPTER_KEYS;
   if (normalized === "all" || normalized === "hard") return CONTEXT_GRAPH_ADAPTER_KEYS;
   return CONTEXT_GRAPH_ADAPTER_KEYS.includes(normalized) ? [normalized] : [];
 }
@@ -129,7 +132,7 @@ export const MAP_BATCH_QA_DEFAULT_OPTIONS = Object.freeze({
   roomCountMax: 12,
   seed: "cruor-map-npm-qa",
   exportMode: "json",
-  contextGraphAdapterMode: "off",
+  contextGraphAdapterMode: "safe",
 });
 
 export const MAP_BATCH_DEFAULT_OPTIONS = MAP_BATCH_QA_DEFAULT_OPTIONS;
@@ -201,7 +204,8 @@ function getContextPool(context = "mixed") {
 function normalizeContextGraphAdapterMode(value, fallback = "off") {
   const raw = getOptionValue(value, fallback);
   const normalized = String(raw || fallback || "off").trim().toLowerCase();
-  if (!normalized || normalized === "baseline" || normalized === "default") return "off";
+  if (!normalized || normalized === "baseline") return "off";
+  if (normalized === "default" || normalized === "auto" || normalized === "recommended") return "safe";
   if (normalized === "enabled" || normalized === "true" || normalized === "adapter") return "hard";
   if (normalized === "noble house") return "noble-house";
   const allowed = new Set(MAP_CONTEXT_GRAPH_ADAPTER_MODES.map((mode) => mode.value));
