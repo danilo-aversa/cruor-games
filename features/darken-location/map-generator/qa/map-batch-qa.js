@@ -7,7 +7,7 @@ import {
 
 export const MAP_BATCH_QA_VERSION = "map-qa-v0.5.1-safe-context-adapters";
 export const MAP_ADAPTER_QA_VERSION = "map-adapter-qa-v0.4.0-noble-house-baseline-repair";
-export const MAP_VISUAL_QA_VERSION = "map-visual-qa-v0.1.0-context-preview-harness";
+export const MAP_VISUAL_QA_VERSION = "map-visual-qa-v0.4.0-cave-visual-support";
 
 const DEFAULT_CONTEXTS = Object.freeze([
   "Crypt",
@@ -70,10 +70,19 @@ export const MAP_VISUAL_QA_DEFAULT_OPTIONS = Object.freeze({
 const MAP_VISUAL_CONTEXT_CUES = Object.freeze({
   Crypt: Object.freeze(["tomb cues", "bones", "pillars", "altar/statue markers"]),
   Chapel: Object.freeze(["pews", "altar", "pillars", "statue markers"]),
-  Cave: Object.freeze(["organic chambers", "natural boundary", "cave props when available"]),
+  Cave: Object.freeze(["stalagmites", "pooled water", "sinkholes/pits", "rough rock/rubble", "misty squeeze passages"]),
   Mine: Object.freeze(["rails", "supports", "rubble", "shafts/pits"]),
   "Noble House": Object.freeze(["tables/desks", "beds/shelves/chests", "fireplace", "courtyard cue"]),
   Ruins: Object.freeze(["broken walls", "rubble", "pillars", "statue fragments"]),
+});
+
+const MAP_VISUAL_CONTEXT_CUE_KINDS = Object.freeze({
+  Crypt: Object.freeze(["altar", "bones", "pillar", "statue", "tomb"]),
+  Chapel: Object.freeze(["altar", "pew", "pillar", "statue"]),
+  Cave: Object.freeze(["fog", "pit", "rubble", "stalagmite", "water"]),
+  Mine: Object.freeze(["mine-rail", "mine-support", "pit", "rubble", "stalagmite"]),
+  "Noble House": Object.freeze(["bed", "chest", "courtyard", "desk", "fireplace", "shelf", "table"]),
+  Ruins: Object.freeze(["broken-wall", "pillar", "rubble", "statue"]),
 });
 
 
@@ -202,6 +211,13 @@ function clampInteger(value, min, max, fallback = min) {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return fallback;
   return Math.max(min, Math.min(max, Math.round(parsed)));
+}
+
+function roundTo(value, decimals = 2) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return null;
+  const precision = 10 ** clampInteger(decimals, 0, 6, 2);
+  return Math.round(parsed * precision) / precision;
 }
 
 function normalizeText(value, fallback = "") {
@@ -942,10 +958,109 @@ function getVisualQaCueList(context) {
     : ["context-specific visual cues"];
 }
 
+function getVisualQaExpectedCueKinds(context) {
+  return asArray(MAP_VISUAL_CONTEXT_CUE_KINDS[context]);
+}
+
+function normalizeVisualCueKind(kind = "") {
+  return String(kind || "").trim().toLowerCase().replace(/[\s_]+/g, "-");
+}
+
+function countUniqueVisualCueKinds(kinds = []) {
+  return [...new Set(asArray(kinds).map(normalizeVisualCueKind).filter(Boolean))].sort();
+}
+
+function createVisualCueUsage({ context = "", expectedKinds = [], renderedKinds = [], renderedCount = 0 } = {}) {
+  const expected = countUniqueVisualCueKinds(expectedKinds);
+  const rendered = countUniqueVisualCueKinds(renderedKinds);
+  const missing = expected.filter((kind) => !rendered.includes(kind));
+  const unexpected = rendered.filter((kind) => !expected.includes(kind));
+  const expectedCount = expected.length;
+  const supported = expectedCount > 0;
+  const renderedTotal = Math.max(0, Number(renderedCount) || 0);
+  const renderedExpectedCount = rendered.filter((kind) => expected.includes(kind)).length;
+  const coverage = expectedCount ? roundTo(renderedExpectedCount / expectedCount, 3) : null;
+  const minimumRenderedCues = supported ? 2 : 0;
+  const minimumRenderedExpectedKinds = expectedCount >= 4 ? 2 : Math.min(1, expectedCount);
+  const hasEnoughCueDensity = renderedTotal >= minimumRenderedCues;
+  const hasEnoughCueVariety = renderedExpectedCount >= minimumRenderedExpectedKinds;
+  const status = !supported
+    ? "not-supported"
+    : renderedTotal <= 0
+      ? "missing"
+      : hasEnoughCueDensity && hasEnoughCueVariety
+        ? "rendered"
+        : "partial";
+
+  return {
+    context,
+    status,
+    supported,
+    expectedKinds: expected,
+    renderedKinds: rendered,
+    missingKinds: missing,
+    unexpectedKinds: unexpected,
+    expectedKindCount: expectedCount,
+    renderedKindCount: rendered.length,
+    renderedExpectedKindCount: renderedExpectedCount,
+    renderedCount: renderedTotal,
+    minimumRenderedCues,
+    minimumRenderedExpectedKinds,
+    cueDensityOk: hasEnoughCueDensity,
+    cueVarietyOk: hasEnoughCueVariety,
+    coverage,
+  };
+}
+
+export function analyzeMapVisualCueSvg(svg = "", preview = {}) {
+  const source = String(svg || "");
+  const context = preview.context || "";
+  const expectedKinds = asArray(preview.expectedCueKinds);
+  const renderedKinds = [];
+  const cueTagPattern = /<g\b[^>]*class="[^"]*\bprop-context-cue\b[^"]*"[^>]*>/g;
+  const attributePattern = /\s(data-(?:context-key|prop-kind))="([^"]*)"/g;
+  let cueMatch = null;
+  let renderedCount = 0;
+
+  while ((cueMatch = cueTagPattern.exec(source))) {
+    const attributes = {};
+    let attributeMatch = null;
+    while ((attributeMatch = attributePattern.exec(cueMatch[0]))) {
+      attributes[attributeMatch[1]] = attributeMatch[2];
+    }
+    const cueContext = normalizeAdapterContextKey(attributes["data-context-key"] || context);
+    const previewContext = normalizeAdapterContextKey(context);
+    if (previewContext && cueContext && cueContext !== previewContext) continue;
+    renderedCount += 1;
+    renderedKinds.push(attributes["data-prop-kind"]);
+  }
+
+  return createVisualCueUsage({
+    context,
+    expectedKinds,
+    renderedKinds,
+    renderedCount,
+  });
+}
+
 function createSerializableVisualPreview(preview) {
   if (!preview || typeof preview !== "object") return null;
   const { generatedMap, ...serializable } = preview;
   return serializable;
+}
+
+function summarizeVisualCueUsage(previews = []) {
+  const rows = asArray(previews);
+  return {
+    rendered: rows.filter((preview) => preview.visualCueUsage?.status === "rendered").length,
+    partial: rows.filter((preview) => preview.visualCueUsage?.status === "partial").length,
+    missing: rows.filter((preview) => preview.visualCueUsage?.status === "missing").length,
+    notSupported: rows.filter((preview) => preview.visualCueUsage?.status === "not-supported").length,
+    totalRenderedCues: rows.reduce(
+      (sum, preview) => sum + Number(preview.visualCueUsage?.renderedCount || 0),
+      0,
+    ),
+  };
 }
 
 export function runMapVisualQa(options = {}) {
@@ -1008,6 +1123,11 @@ export function runMapVisualQa(options = {}) {
         contextGraphAdapterMode,
         adapterUsage,
         expectedCues: getVisualQaCueList(context),
+        expectedCueKinds: getVisualQaExpectedCueKinds(context),
+        visualCueUsage: createVisualCueUsage({
+          context,
+          expectedKinds: getVisualQaExpectedCueKinds(context),
+        }),
         filename: createMapVisualQaFilename({ id: visualId }),
         status: validation.status,
         issueCount: validation.issues.length,
@@ -1048,6 +1168,7 @@ export function runMapVisualQa(options = {}) {
       elapsedMs,
       errors: previews.reduce((sum, preview) => sum + Number(preview.errorCount || 0), 0),
       warnings: previews.reduce((sum, preview) => sum + Number(preview.warningCount || 0), 0),
+      visualCues: summarizeVisualCueUsage(previews),
     },
     previews,
   };
@@ -1056,14 +1177,16 @@ export function runMapVisualQa(options = {}) {
 function buildVisualQaPreviewTable(previews = []) {
   const rows = asArray(previews).map((preview) => {
     const usage = preview.adapterUsage || {};
+    const visualCueUsage = preview.visualCueUsage || {};
     const cues = asArray(preview.expectedCues).join(", ");
+    const renderedCueKinds = asArray(visualCueUsage.renderedKinds).join(", ") || "—";
     const path = preview.svgPath || preview.filename || "";
-    return `| ${preview.context} | ${preview.label} | ${preview.roomCount || 0} | ${usage.status || "baseline"} | ${preview.warningCount || 0} | ${path} | ${cues} |`;
+    return `| ${preview.context} | ${preview.label} | ${preview.roomCount || 0} | ${usage.status || "baseline"} | ${visualCueUsage.status || "unknown"} | ${visualCueUsage.renderedCount || 0} | ${renderedCueKinds} | ${preview.warningCount || 0} | ${path} | ${cues} |`;
   });
   if (!rows.length) return "No visual previews generated.";
   return [
-    "| Context | Preview | Rooms | Adapter | Warnings | SVG | Expected Cues |",
-    "|---|---|---:|---|---:|---|---|",
+    "| Context | Preview | Rooms | Adapter | Visual Cues | Cue Count | Rendered Cue Kinds | Warnings | SVG | Expected Cues |",
+    "|---|---|---:|---|---|---:|---|---:|---|---|",
     ...rows,
   ].join("\n");
 }
@@ -1086,6 +1209,14 @@ export function buildMapVisualQaMarkdown(report) {
     `- Rooms: ${report.options?.roomCountMin}–${report.options?.roomCountMax}`,
     `- Graph Adapter: ${report.options?.contextGraphAdapterMode}`,
     "",
+    "## Visual Cue Summary",
+    "",
+    `- Rendered / Sufficient: ${summary.visualCues?.rendered || 0}`,
+    `- Partial / Below Threshold: ${summary.visualCues?.partial || 0}`,
+    `- Missing: ${summary.visualCues?.missing || 0}`,
+    `- Not Supported: ${summary.visualCues?.notSupported || 0}`,
+    `- Total Rendered Cues: ${summary.visualCues?.totalRenderedCues || 0}`,
+    "",
     "## Review Checklist",
     "",
     "- Crypt previews should read as tombs, alcoves, ossuary or burial spaces.",
@@ -1102,9 +1233,14 @@ export function buildMapVisualQaMarkdown(report) {
 }
 
 export function serializeMapVisualQaReport(report) {
+  const previews = asArray(report?.previews).map(createSerializableVisualPreview).filter(Boolean);
   return {
     ...report,
-    previews: asArray(report?.previews).map(createSerializableVisualPreview).filter(Boolean),
+    summary: {
+      ...(report?.summary || {}),
+      visualCues: summarizeVisualCueUsage(previews),
+    },
+    previews,
   };
 }
 

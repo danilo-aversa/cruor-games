@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import {
+  analyzeMapVisualCueSvg,
   buildMapAdapterQaMarkdown,
   buildMapBatchQaMarkdown,
   buildMapVisualQaMarkdown,
@@ -76,6 +77,7 @@ async function renderVisualPreviewSvgs(report) {
         gridOpacity: 0.72,
       });
       const svg = ReactDOMServer.renderToStaticMarkup(element);
+      preview.visualCueUsage = analyzeMapVisualCueSvg(svg, preview);
       const content = `<?xml version="1.0" encoding="UTF-8"?>\n${svg}\n`;
       await writeFile(new URL(preview.filename, VISUAL_PREVIEW_DIR), content, "utf8");
       preview.svgPath = `dist/qa/map-visual-previews/${preview.filename}`;
@@ -105,7 +107,9 @@ if (visualQa) {
   console.log(`Map Visual QA: ${serializableReport.summary?.totalPreviews || 0} SVG previews.`);
   serializableReport.previews.forEach((preview) => {
     const usage = preview.adapterUsage || {};
-    console.log(`[preview] ${preview.label}: ${preview.roomCount} rooms; ${usage.status || "baseline"}; ${preview.svgPath}.`);
+    const visualCueUsage = preview.visualCueUsage || {};
+    const visualCueText = `${visualCueUsage.status || "unknown"}; cues ${visualCueUsage.renderedCount || 0}`;
+    console.log(`[preview] ${preview.label}: ${preview.roomCount} rooms; adapter ${usage.status || "baseline"}; visual ${visualCueText}; ${preview.svgPath}.`);
   });
 } else if (adapterQa) {
   const report = runMapAdapterQa({

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import "./home-page.css";
 
 const LANDING_IMAGES = {
@@ -218,6 +218,47 @@ const TOOL_CARDS = [
 
 function ToolVisual({ tool, activeIndex, mode, onSelectPreview, onZoom }) {
   const activePreview = tool.previews[activeIndex] ?? tool.previews[0];
+  const pipelineSteps = [...tool.engineFlow, ...(tool.engineItems ?? [])];
+  const pipelineRows = Math.max(1, Math.ceil(pipelineSteps.length / 2));
+  const pipelineNodeWidth = 34;
+  const pipelineSideOffset = pipelineNodeWidth / 2 + 2;
+  const pipelinePoints = pipelineSteps.map((_, index) => {
+    const row = Math.floor(index / 2);
+    const evenRow = row % 2 === 0;
+    const firstInRow = index % 2 === 0;
+    const x = firstInRow === evenRow ? 24 : 76;
+    const y = pipelineRows === 1 ? 50 : 12 + row * (66 / (pipelineRows - 1));
+
+    return { x, y };
+  });
+  const pipelineConnectors = pipelinePoints.slice(0, -1).map((point, index) => {
+    const nextPoint = pipelinePoints[index + 1];
+    const movingRight = nextPoint.x > point.x;
+    const sameRow = Math.abs(nextPoint.y - point.y) < 0.01;
+
+    if (sameRow) {
+      const x1 = point.x + (movingRight ? pipelineSideOffset : -pipelineSideOffset);
+      const x2 = nextPoint.x + (movingRight ? -pipelineSideOffset : pipelineSideOffset);
+
+      return {
+        path: `M ${x1} ${point.y} L ${x2} ${nextPoint.y}`,
+        icon: movingRight ? "fa-arrow-right" : "fa-arrow-left",
+        x: (x1 + x2) / 2,
+        y: point.y,
+      };
+    }
+
+    const onRight = point.x > 50;
+    const sideX = point.x + (onRight ? pipelineSideOffset : -pipelineSideOffset);
+    const outerX = onRight ? 98 : 2;
+
+    return {
+      path: `M ${sideX} ${point.y} L ${outerX} ${point.y} L ${outerX} ${nextPoint.y} L ${sideX} ${nextPoint.y}`,
+      icon: "fa-arrow-down",
+      x: outerX,
+      y: (point.y + nextPoint.y) / 2,
+    };
+  });
 
   if (mode === "details") {
     return (
@@ -231,31 +272,39 @@ function ToolVisual({ tool, activeIndex, mode, onSelectPreview, onZoom }) {
             </p>
           </div>
 
-          <div className="cruor-home__engine-grid">
-            {tool.engineFlow.map((item) => (
-              <p key={`${tool.id}-flow-${item.label}`}>
-                <i className={`fa-solid ${item.icon}`} aria-hidden="true" />
-                <span>
-                  <strong>{item.label}.</strong> {item.text}
-                </span>
-              </p>
+          <div className="cruor-home__engine-grid" aria-label={`${tool.title} engine pipeline`}>
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+              {pipelineConnectors.map((connector, index) => (
+                <path key={`${tool.id}-pipeline-line-${index}`} d={connector.path} />
+              ))}
+            </svg>
+            {pipelineConnectors.map((connector, index) => (
+              <i
+                key={`${tool.id}-pipeline-arrow-${index}`}
+                className={`cruor-home__engine-arrow fa-solid ${connector.icon}`}
+                aria-hidden="true"
+                style={{ "--arrow-x": connector.x, "--arrow-y": connector.y }}
+              />
             ))}
-          </div>
+            {pipelineSteps.map((item, index) => {
+              const point = pipelinePoints[index] ?? pipelinePoints[pipelinePoints.length - 1];
 
-          <p className="cruor-home__tool-output">
-            <strong>What the engine tracks.</strong> The visible result is supported by structured
-            fields, compatibility rules, validation checks, and reusable content modules.
-          </p>
-
-          <div className="cruor-home__engine-grid">
-            {tool.engineItems.map((item) => (
-              <p key={`${tool.id}-tracked-${item.label}`}>
-                <i className={`fa-solid ${item.icon}`} aria-hidden="true" />
-                <span>
-                  <strong>{item.label}.</strong> {item.text}
-                </span>
-              </p>
-            ))}
+              return (
+                <p
+                  key={`${tool.id}-pipeline-${item.label}`}
+                  style={{ "--engine-x": point.x, "--engine-y": point.y }}
+                >
+                  <span className="cruor-home__engine-node-mark">
+                    <i className={`fa-solid ${item.icon}`} aria-hidden="true" />
+                    <small>{String(index + 1).padStart(2, "0")}</small>
+                  </span>
+                  <span className="cruor-home__engine-node-copy">
+                    <strong>{item.label}</strong>
+                    {item.text}
+                  </span>
+                </p>
+              );
+            })}
           </div>
         </div>
       </figure>
@@ -266,6 +315,7 @@ function ToolVisual({ tool, activeIndex, mode, onSelectPreview, onZoom }) {
     <figure className="cruor-home__tool-image cruor-home__media-card" aria-label={`${tool.title} previews`}>
       <div className="cruor-home__tool-main-preview">
         <img
+          key={activePreview.src}
           src={activePreview.src}
           alt={activePreview.alt}
           loading="lazy"
@@ -308,6 +358,52 @@ function ToolVisual({ tool, activeIndex, mode, onSelectPreview, onZoom }) {
 function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [mode, setMode] = useState("overview");
+  const cardRef = useRef(null);
+  const previousCardHeightRef = useRef(null);
+
+  const prepareCardHeightTransition = () => {
+    previousCardHeightRef.current = cardRef.current?.offsetHeight ?? null;
+  };
+
+  const handleModeChange = (nextMode) => {
+    if (nextMode === mode) return;
+    prepareCardHeightTransition();
+    setMode(nextMode);
+  };
+
+  useLayoutEffect(() => {
+    const card = cardRef.current;
+    const previousHeight = previousCardHeightRef.current;
+
+    if (!card || previousHeight === null) return undefined;
+
+    previousCardHeightRef.current = null;
+    const nextHeight = card.offsetHeight;
+
+    if (Math.abs(nextHeight - previousHeight) < 2) return undefined;
+
+    card.style.height = `${previousHeight}px`;
+    card.classList.add("cruor-home__tool-card--resizing");
+
+    const frame = window.requestAnimationFrame(() => {
+      card.style.height = `${nextHeight}px`;
+    });
+
+    const cleanup = () => {
+      window.cancelAnimationFrame(frame);
+      card.style.height = "";
+      card.classList.remove("cruor-home__tool-card--resizing");
+    };
+
+    const timer = window.setTimeout(cleanup, 320);
+    card.addEventListener("transitionend", cleanup, { once: true });
+
+    return () => {
+      window.clearTimeout(timer);
+      card.removeEventListener("transitionend", cleanup);
+      cleanup();
+    };
+  }, [mode]);
 
   useEffect(() => {
     if (mode !== "overview" || tool.previews.length < 2) return undefined;
@@ -320,34 +416,36 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
   }, [activeIndex, mode, tool.previews.length]);
 
   const handleSelectPreview = (index) => {
+    prepareCardHeightTransition();
     setActiveIndex(index);
     setMode("overview");
   };
 
   return (
     <article
+      ref={cardRef}
       className="cruor-home__tool-card cruor-home__tool-card--image-backed"
       style={{ "--tool-art": `url('${tool.art}')` }}
     >
       <div className="cruor-home__tool-tabs" role="tablist" aria-label={`${tool.title} information view`}>
         <button
-          className="cruor-home__engine-toggle"
+          className="cruor-home__tool-tab"
           type="button"
           role="tab"
           aria-selected={mode === "overview"}
           aria-pressed={mode === "overview"}
-          onClick={() => setMode("overview")}
+          onClick={() => handleModeChange("overview")}
         >
           <i className="fa-solid fa-layer-group" aria-hidden="true" />
           <span>Overview</span>
         </button>
         <button
-          className="cruor-home__engine-toggle"
+          className="cruor-home__tool-tab"
           type="button"
           role="tab"
           aria-selected={mode === "details"}
           aria-pressed={mode === "details"}
-          onClick={() => setMode("details")}
+          onClick={() => handleModeChange("details")}
         >
           <i className="fa-solid fa-gears" aria-hidden="true" />
           <span>Details</span>
@@ -355,6 +453,7 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
       </div>
 
       <div className="cruor-home__tool-content">
+        <div key={mode} className="cruor-home__tool-content-inner">
         {mode === "details" ? (
           <>
             <div className="cruor-home__tool-copy">
@@ -405,6 +504,7 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
             </p>
           </>
         )}
+        </div>
       </div>
 
       <ToolVisual
@@ -415,14 +515,16 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
         onZoom={onZoom}
       />
 
-      <button
-        className="cruor-home__button cruor-home__button--primary"
-        type="button"
-        onClick={() => onOpenCrucibleTool?.(...tool.actionArgs)}
-      >
-        {tool.actionLabel}
-        <i className="fa-solid fa-arrow-right" aria-hidden="true" />
-      </button>
+      {mode === "overview" ? (
+        <button
+          className="cruor-home__button cruor-home__button--primary"
+          type="button"
+          onClick={() => onOpenCrucibleTool?.(...tool.actionArgs)}
+        >
+          {tool.actionLabel}
+          <i className="fa-solid fa-arrow-right" aria-hidden="true" />
+        </button>
+      ) : null}
     </article>
   );
 }
