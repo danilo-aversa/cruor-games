@@ -1,3 +1,5 @@
+import "./site-mega-menu.css";
+
 function cx(...parts) {
   return parts.filter(Boolean).join(" ");
 }
@@ -121,16 +123,29 @@ export default function SiteMegaMenu({
             <div
               className={cx(
                 "site-mega-menu__preview-art",
+                activeItem.previewImage && "site-mega-menu__preview-art--has-image",
                 `site-mega-menu__preview-art--${activeItem.previewVariant || activeItem.id}`
               )}
               aria-hidden="true"
             >
-              <span className="site-mega-menu__preview-sigil">
-                <i className={activeItem.icon || "fa-solid fa-diamond"} />
-              </span>
-              <span className="site-mega-menu__preview-grid" />
-              <span className="site-mega-menu__preview-orbit site-mega-menu__preview-orbit--one" />
-              <span className="site-mega-menu__preview-orbit site-mega-menu__preview-orbit--two" />
+              {activeItem.previewImage ? (
+                <img
+                  className="site-mega-menu__preview-image"
+                  src={activeItem.previewImage}
+                  alt={activeItem.previewImageAlt || ""}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <>
+                  <span className="site-mega-menu__preview-sigil">
+                    <i className={activeItem.icon || "fa-solid fa-diamond"} />
+                  </span>
+                  <span className="site-mega-menu__preview-grid" />
+                  <span className="site-mega-menu__preview-orbit site-mega-menu__preview-orbit--one" />
+                  <span className="site-mega-menu__preview-orbit site-mega-menu__preview-orbit--two" />
+                </>
+              )}
             </div>
 
             <div className="site-mega-menu__preview-copy">

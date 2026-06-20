@@ -1,14 +1,33 @@
 import { mkdir, writeFile } from "node:fs/promises";
-import { buildMapAdapterQaMarkdown, buildMapBatchQaMarkdown, runMapAdapterQa, runMapBatchQa } from "../features/darken-location/map-generator/qa/map-batch-qa.js";
+import {
+  buildMapAdapterQaMarkdown,
+  buildMapBatchQaMarkdown,
+  buildMapVisualQaMarkdown,
+  runMapAdapterQa,
+  runMapBatchQa,
+  runMapVisualQa,
+  serializeMapVisualQaReport,
+} from "../features/darken-location/map-generator/qa/map-batch-qa.js";
 
 const OUTPUT_DIR = new URL("../dist/qa/", import.meta.url);
+const VISUAL_PREVIEW_DIR = new URL("map-visual-previews/", OUTPUT_DIR);
 const failOnWarnings = process.argv.includes("--fail-on-warnings");
 const adapterQa = process.argv.includes("--adapter-qa") || process.argv.includes("--adapter-harness");
+const visualQa = process.argv.includes("--visual-qa") || process.argv.includes("--visual-preview-qa");
 
 function getArgValue(name, fallback) {
   const prefix = `--${name}=`;
   const match = process.argv.find((arg) => arg.startsWith(prefix));
   return match ? match.slice(prefix.length) : fallback;
+}
+
+function getBooleanArg(name, fallback = true) {
+  const value = getArgValue(name, null);
+  if (value == null) return fallback;
+  const normalized = String(value).trim().toLowerCase();
+  if (["0", "false", "no", "off"].includes(normalized)) return false;
+  if (["1", "true", "yes", "on"].includes(normalized)) return true;
+  return fallback;
 }
 
 const qaMode = process.argv.includes("--debug")
@@ -19,7 +38,7 @@ const baseOptions = {
   count: getArgValue("count", 50),
   roomCountMin: getArgValue("room-min", 4),
   roomCountMax: getArgValue("room-max", 12),
-  seed: getArgValue("seed", "cruor-map-npm-qa"),
+  seed: getArgValue("seed", visualQa ? "cruor-map-visual-qa" : "cruor-map-npm-qa"),
   qaMode,
   themeId: getArgValue("theme", "mixed"),
   context: getArgValue("context", "mixed"),
@@ -27,19 +46,72 @@ const baseOptions = {
   determinismSampleRate: getArgValue("determinism-sample-rate", 10),
 };
 
-const report = adapterQa
-  ? runMapAdapterQa({
-      ...baseOptions,
-      adapterModes: getArgValue("adapters", "off,crypt,mine,ruins,noble-house"),
-    })
-  : runMapBatchQa({
-      ...baseOptions,
-      contextGraphAdapterMode: getArgValue("graph-adapter", getArgValue("adapter", "off")),
-    });
+async function renderVisualPreviewSvgs(report) {
+  await mkdir(VISUAL_PREVIEW_DIR, { recursive: true });
+
+  const [{ createServer }, React, ReactDOMServer] = await Promise.all([
+    import("vite"),
+    import("react"),
+    import("react-dom/server"),
+  ]);
+
+  const vite = await createServer({
+    appType: "custom",
+    logLevel: "error",
+    server: { middlewareMode: true },
+  });
+
+  try {
+    const { MapSvg } = await vite.ssrLoadModule("/features/darken-location/map-generator/map-generator.render.jsx");
+    for (const preview of report.previews || []) {
+      if (!preview.generatedMap) continue;
+      const element = React.createElement(MapSvg, {
+        generatedMap: preview.generatedMap,
+        showGrid: report.options?.showGrid ?? true,
+        gridStyle: "standard",
+        showEditor: false,
+        showNames: report.options?.showNames ?? true,
+        showRoomBadges: true,
+        showProps: report.options?.showProps ?? true,
+        gridOpacity: 0.72,
+      });
+      const svg = ReactDOMServer.renderToStaticMarkup(element);
+      const content = `<?xml version="1.0" encoding="UTF-8"?>\n${svg}\n`;
+      await writeFile(new URL(preview.filename, VISUAL_PREVIEW_DIR), content, "utf8");
+      preview.svgPath = `dist/qa/map-visual-previews/${preview.filename}`;
+    }
+  } finally {
+    await vite.close();
+  }
+}
 
 await mkdir(OUTPUT_DIR, { recursive: true });
 
-if (adapterQa) {
+if (visualQa) {
+  const report = runMapVisualQa({
+    ...baseOptions,
+    samplesPerContext: getArgValue("samples", getArgValue("samples-per-context", 2)),
+    roomCountMin: getArgValue("room-min", 6),
+    roomCountMax: getArgValue("room-max", 10),
+    contextGraphAdapterMode: getArgValue("graph-adapter", getArgValue("adapter", "safe")),
+    showGrid: getBooleanArg("show-grid", true),
+    showNames: getBooleanArg("show-names", true),
+    showProps: getBooleanArg("show-props", true),
+  });
+  await renderVisualPreviewSvgs(report);
+  const serializableReport = serializeMapVisualQaReport(report);
+  await writeFile(new URL("map-visual-qa-report.json", OUTPUT_DIR), `${JSON.stringify(serializableReport, null, 2)}\n`, "utf8");
+  await writeFile(new URL("map-visual-qa-report.md", OUTPUT_DIR), `${buildMapVisualQaMarkdown(serializableReport)}\n`, "utf8");
+  console.log(`Map Visual QA: ${serializableReport.summary?.totalPreviews || 0} SVG previews.`);
+  serializableReport.previews.forEach((preview) => {
+    const usage = preview.adapterUsage || {};
+    console.log(`[preview] ${preview.label}: ${preview.roomCount} rooms; ${usage.status || "baseline"}; ${preview.svgPath}.`);
+  });
+} else if (adapterQa) {
+  const report = runMapAdapterQa({
+    ...baseOptions,
+    adapterModes: getArgValue("adapters", "off,safe,crypt,mine,ruins,noble-house"),
+  });
   await writeFile(new URL("map-adapter-qa-report.json", OUTPUT_DIR), `${JSON.stringify(report, null, 2)}\n`, "utf8");
   await writeFile(new URL("map-adapter-qa-report.md", OUTPUT_DIR), `${buildMapAdapterQaMarkdown(report)}\n`, "utf8");
   console.log(`Map Adapter QA: ${report.comparisons.length} adapter comparisons.`);
@@ -59,6 +131,10 @@ if (adapterQa) {
     process.exitCode = 1;
   }
 } else {
+  const report = runMapBatchQa({
+    ...baseOptions,
+    contextGraphAdapterMode: getArgValue("graph-adapter", getArgValue("adapter", "off")),
+  });
   await writeFile(new URL("map-qa-report.json", OUTPUT_DIR), `${JSON.stringify(report, null, 2)}\n`, "utf8");
   await writeFile(new URL("map-qa-report.md", OUTPUT_DIR), `${buildMapBatchQaMarkdown(report)}\n`, "utf8");
 

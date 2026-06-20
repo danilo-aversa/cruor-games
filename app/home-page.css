@@ -1,10 +1,8 @@
 /*
- * Cruor Games — Aggressive CSS Refactor
+ * Cruor Games — Home Page
  * File: app/home-page.css
- * Canonicalized selectors, variables, and cascade order.
+ * Clean consolidated stylesheet with a single cascade path.
  */
-
-/* Tokens */
 
 @import "../shared/styles/colors.css";
 
@@ -21,17 +19,47 @@
   padding: clamp(42px, 8vw, 96px) 0 40px;
 }
 
-/* Components */
-
-.cruor-home a {
-  font: inherit;
-}
-
+.cruor-home a,
 .cruor-home button {
   font: inherit;
 }
 
-/* Layout */
+.cruor-home h1,
+.cruor-home h2,
+.cruor-home h3 {
+  margin: 0;
+  color: var(--cruor-color-text, var(--text));
+  font-family: var(--display);
+  font-weight: 950;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+}
+
+.cruor-home h1 {
+  max-width: 920px;
+  font-size: clamp(58px, 7.8vw, 128px);
+  line-height: 0.88;
+  letter-spacing: -0.07em;
+}
+
+.cruor-home h1 span {
+  color: var(--home-accent-pale);
+  text-shadow: var(--cruor-shadow-text-011);
+}
+
+.cruor-home h2 {
+  font-size: var(--text-size-fluid-18);
+}
+
+.cruor-home h3 {
+  font-size: var(--text-size-fluid-14);
+}
+
+.cruor-home p {
+  margin: 0;
+  color: var(--cruor-color-muted, var(--muted));
+  line-height: 1.62;
+}
 
 .cruor-home__hero {
   display: grid;
@@ -42,61 +70,15 @@
   padding: 0 0 110px;
 }
 
-/* Components */
-
 .cruor-home__hero-copy {
-  max-width: 720px;
-}
-
-.cruor-home h1 {
-  margin: 0;
-  color: var(--cruor-color-text, var(--text));
-  font-family: var(--display);
-  font-weight: 950;
-  line-height: 0.95;
-  letter-spacing: -0.045em;
   max-width: 760px;
-  font-size: var(--display-size-fluid-22);
-}
-
-.cruor-home h1 span {
-  color: var(--home-accent-pale);
-  text-shadow: var(--cruor-shadow-text-011);
-}
-
-.cruor-home h2 {
-  margin: 0;
-  color: var(--cruor-color-text, var(--text));
-  font-family: var(--display);
-  font-weight: 950;
-  line-height: 0.95;
-  letter-spacing: -0.045em;
-  font-size: var(--text-size-fluid-18);
-}
-
-.cruor-home h3 {
-  margin: 0;
-  color: var(--cruor-color-text, var(--text));
-  font-family: var(--display);
-  font-weight: 950;
-  line-height: 0.95;
-  letter-spacing: -0.045em;
-  font-size: var(--text-size-fluid-14);
-}
-
-.cruor-home p {
-  margin: 0;
-  color: var(--cruor-color-muted, var(--muted));
-  line-height: 1.62;
 }
 
 .cruor-home__hero-copy > p {
-  max-width: 640px;
+  max-width: 720px;
   margin-top: 22px;
   font-size: var(--text-size-fluid-01);
 }
-
-/* Layout */
 
 .cruor-home__hero-actions {
   display: flex;
@@ -110,6 +92,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   min-height: 44px;
   padding: 0 16px;
   border: 1px solid var(--home-line);
@@ -121,28 +104,16 @@
   font-weight: 850;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
 }
 
-/* States */
-
-.cruor-home__button:focus-visible {
-  transform: translateY(-1px);
-  border-color: var(--home-line-strong);
-  color: var(--cruor-color-text, var(--text));
-  background: var(--cruor-color-blood-a340);
-  outline: none;
-}
-
+.cruor-home__button:focus-visible,
 .cruor-home__button:hover {
-  transform: translateY(-1px);
   border-color: var(--home-line-strong);
   color: var(--cruor-color-text, var(--text));
   background: var(--cruor-color-blood-a340);
   outline: none;
 }
-
-/* Components */
 
 .cruor-home__button--primary {
   color: var(--home-accent-pale);
@@ -151,46 +122,30 @@
   box-shadow: var(--cruor-shadow-box-098);
 }
 
-/* Layout */
-
 .cruor-home__text-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   min-height: 44px;
   border: 0;
   background: var(--cruor-color-transparent);
   color: var(--home-accent-pale);
   cursor: pointer;
   text-decoration: none;
-  gap: 8px;
   font-size: var(--text-size-l);
   font-weight: 850;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-/* States */
-
-.cruor-home__text-link:focus-visible {
-  color: var(--cruor-color-text, var(--text));
-  outline: none;
-}
-
+.cruor-home__text-link:focus-visible,
 .cruor-home__text-link:hover {
   color: var(--cruor-color-text, var(--text));
   outline: none;
 }
 
-/* Layout */
-
-.cruor-home__hero-visual {
-  position: relative;
-  min-height: 0;
-  padding: 0;
-  overflow: visible;
-}
-
+.cruor-home__hero-visual,
 .cruor-home__visual-board {
   position: relative;
   width: 100%;
@@ -223,25 +178,14 @@
   border: 1px solid rgba(255, 238, 242, 0.12);
   object-fit: cover;
   object-position: center;
-  filter: var(--cruor-effect-filter-035-56915c);
+  opacity: 1;
+  filter: none;
+  mix-blend-mode: normal;
 }
 
-.cruor-home__image-frame--hero {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-}
-
-.cruor-home__image-frame--hero img {
-  object-position: center;
-}
-
+.cruor-home__image-frame--hero,
 .cruor-home__media-card {
   aspect-ratio: 16 / 9;
-}
-
-.cruor-home__media-card--map img,
-.cruor-home__media-card--inspiration img {
-  object-position: center;
 }
 
 .cruor-home__placeholder {
@@ -268,8 +212,6 @@
   padding: 16px;
 }
 
-/* Components */
-
 .cruor-home__placeholder span {
   color: var(--home-accent-pale);
   font-size: var(--text-size-m);
@@ -291,8 +233,6 @@
   font-size: var(--text-size-l);
 }
 
-/* Layout */
-
 .cruor-home__statement {
   position: relative;
   padding: 18px 0 110px;
@@ -300,7 +240,7 @@
 
 .cruor-home__statement > div {
   position: relative;
-  max-width: 920px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 42px 36px;
   border: 1px solid var(--cruor-color-r208-g162-b170-a220);
@@ -309,16 +249,7 @@
   box-shadow: var(--cruor-shadow-box-112);
 }
 
-.cruor-home__statement > div::before {
-  content: "";
-  position: absolute;
-  left: 28px;
-  right: 28px;
-  height: 1px;
-  background: var(--cruor-gradient-linear-118-d4915879);
-  top: 16px;
-}
-
+.cruor-home__statement > div::before,
 .cruor-home__statement > div::after {
   content: "";
   position: absolute;
@@ -326,19 +257,22 @@
   right: 28px;
   height: 1px;
   background: var(--cruor-gradient-linear-118-d4915879);
+}
+
+.cruor-home__statement > div::before {
+  top: 16px;
+}
+
+.cruor-home__statement > div::after {
   bottom: 16px;
 }
 
-/* Components */
-
 .cruor-home__statement p {
-  max-width: 52ch;
+  max-width: 68ch;
   margin: 12px auto 0;
   font-size: var(--text-size-3xl);
   line-height: 1.68;
 }
-
-/* Layout */
 
 .cruor-home__section {
   position: relative;
@@ -380,85 +314,143 @@
   border-bottom: 1px solid var(--cruor-color-r208-g162-b170-a100);
 }
 
-/* Components */
-
 .cruor-home__section-head p {
-  max-width: 720px;
+  max-width: 960px;
   font-size: var(--text-size-2xl);
 }
 
 .cruor-home__section--tools {
   margin-bottom: 22px;
-  border-color: var(--cruor-color-r208-g162-b170-a140);
-  background: var(--cruor-gradient-linear-198-7d9b772c), var(--cruor-color-r9-g7-b8-a420);
+  padding: 0 0 50px;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
-.cruor-home__section--tools::before {
-  background: var(--cruor-gradient-linear-206-39d3cb60);
+.cruor-home__section--tools::before,
+.cruor-home__section--tools::after {
+  content: none;
 }
 
-/* Layout */
+.cruor-home__section--tools .cruor-home__section-head {
+  margin-bottom: 48px;
+}
 
 .cruor-home__tool-grid {
   position: relative;
   z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(18px, 2.8vw, 28px);
+  gap: clamp(28px, 4vw, 44px);
 }
 
 .cruor-home__tool-card {
+  position: relative;
+  isolation: isolate;
   display: grid;
-  grid-template-columns: minmax(280px, 420px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.86fr);
   grid-template-areas:
-    "image content"
-    "image action";
-  align-items: stretch;
+    "content image"
+    "action image";
+  align-items: start;
   gap: 0;
-  min-height: 0;
-  overflow: hidden;
-  border: 1px solid var(--cruor-color-r208-g162-b170-a140);
-  background: var(--cruor-gradient-linear-178-b4c96049), var(--cruor-surface-card);
-  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  margin-top: 30px;
+  overflow: visible;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a180);
+  background: rgba(8, 5, 6, 0.96);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.42), inset 0 0 0 1px rgba(255, 238, 242, 0.04);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
 }
 
-/* States */
+.cruor-home__tool-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: var(--tool-art);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.28;
+  filter: blur(22px) saturate(0.82) brightness(0.58);
+  transform: scale(1.04);
+  pointer-events: none;
+}
 
 .cruor-home__tool-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--cruor-color-r208-g162-b170-a240);
-  box-shadow: var(--cruor-shadow-box-104);
+  border-color: var(--cruor-color-r208-g162-b170-a300);
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 238, 242, 0.06);
 }
 
-/* Layout */
-
-.cruor-home__tool-image {
-  grid-area: image;
-  min-height: 100%;
-  border-width: 0 1px 0 0;
+.cruor-home__tool-tabs {
+  position: absolute;
+  top: -25px;
+  left: clamp(16px, 2vw, 28px);
+  z-index: 3;
+  display: inline-flex;
+  align-items: flex-end;
+  width: auto;
+  min-height: 25px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(208, 162, 170, 0.36);
+  border-bottom: 0;
+  background: #080506;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.42);
 }
 
-.cruor-home__tool-image.cruor-home__media-card {
-  min-height: 100%;
-  aspect-ratio: auto;
-  padding: 6px;
+.cruor-home__engine-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: auto;
+  min-width: 0;
+  min-height: 25px;
+  height: 25px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid rgba(208, 162, 170, 0.16);
+  background: transparent;
+  color: var(--cruor-color-muted, var(--muted));
+  cursor: pointer;
+  font-family: var(--body);
+  font-size: 0.56rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  transition: background 0.16s ease, color 0.16s ease;
 }
 
-.cruor-home__tool-image.cruor-home__media-card img {
-  min-height: 100%;
+.cruor-home__engine-toggle:last-child {
+  border-right: 0;
 }
 
-.cruor-home__tool-image--placeholder > div {
-  align-content: end;
-  min-height: 100%;
+.cruor-home__engine-toggle i {
+  font-size: 0.62rem;
+}
+
+.cruor-home__engine-toggle:focus-visible,
+.cruor-home__engine-toggle:hover,
+.cruor-home__engine-toggle[aria-pressed="true"],
+.cruor-home__engine-toggle[aria-selected="true"] {
+  color: var(--cruor-color-text, var(--text));
+  background: rgba(122, 26, 40, 0.32);
+  outline: none;
 }
 
 .cruor-home__tool-content {
+  position: relative;
+  z-index: 1;
   grid-area: content;
   display: grid;
   align-content: start;
   gap: 18px;
-  padding: clamp(20px, 2.4vw, 30px);
+  padding: clamp(24px, 2.6vw, 36px);
+  background: linear-gradient(90deg, rgba(5, 4, 5, 0.96), rgba(5, 4, 5, 0.84) 72%, rgba(5, 4, 5, 0.18));
 }
 
 .cruor-home__tool-copy {
@@ -466,26 +458,18 @@
   gap: 10px;
 }
 
-.cruor-home__tool-kicker {
-  color: var(--home-accent-pale);
-  font-size: var(--text-size-sm);
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
 .cruor-home__tool-summary {
-  max-width: 50ch;
-  font-size: var(--text-size-2xl);
-  line-height: 1.58;
+  max-width: none;
+  font-size: var(--text-size-xl);
+  line-height: 1.56;
 }
 
 .cruor-home__tool-feature-block {
   display: grid;
   gap: 12px;
-  padding: 18px 0;
-  border-top: 1px solid var(--cruor-color-r208-g162-b170-a100);
-  border-bottom: 1px solid var(--cruor-color-r208-g162-b170-a100);
+  padding: 16px 0;
+  border-top: 1px solid var(--cruor-color-r208-g162-b170-a120);
+  border-bottom: 1px solid var(--cruor-color-r208-g162-b170-a120);
 }
 
 .cruor-home__tool-feature-block > span {
@@ -506,101 +490,190 @@
 }
 
 .cruor-home__tool-features li {
-  position: relative;
-  padding-left: 18px;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
   color: var(--cruor-color-muted, var(--muted));
-  font-size: var(--text-size-xl);
-  line-height: 1.45;
+  font-size: var(--text-size-m);
+  line-height: 1.42;
 }
 
-.cruor-home__tool-features li::before {
-  content: "";
-  position: absolute;
-  top: 0.68em;
-  left: 0;
-  width: 7px;
-  height: 1px;
-  background: var(--home-accent-pale);
-  box-shadow: var(--cruor-shadow-text-011);
+.cruor-home__tool-features i,
+.cruor-home__engine-grid p i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: var(--home-accent-pale);
+  background: rgba(122, 26, 40, 0.16);
+  border: 1px solid rgba(208, 162, 170, 0.18);
 }
 
 .cruor-home__tool-output {
-  padding: 14px 16px;
+  padding: 13px 15px;
   border-left: 2px solid var(--home-line-strong);
-  background: var(--cruor-color-r14-g11-b13-a680);
-  font-size: var(--text-size-xl);
-  line-height: 1.52;
+  background: rgba(18, 10, 13, 0.86);
+  color: var(--cruor-color-muted, var(--muted));
+  font-size: var(--text-size-m);
+  line-height: 1.46;
 }
 
-.cruor-home__tool-output strong {
+.cruor-home__tool-output strong,
+.cruor-home__engine-grid strong {
   color: var(--cruor-color-text, var(--text));
-  font-weight: 900;
+  font-weight: 850;
 }
 
-.cruor-home__tool-card > .cruor-home__text-link {
+.cruor-home__tool-card > .cruor-home__button {
+  position: relative;
+  z-index: 1;
   grid-area: action;
   justify-self: start;
   align-self: end;
-  margin: 0 clamp(20px, 2.4vw, 30px) clamp(20px, 2.4vw, 30px);
+  margin: 0 clamp(24px, 2.6vw, 36px) clamp(24px, 2.6vw, 36px);
 }
 
-
-.cruor-home__engine-note {
-  border: 1px solid var(--cruor-color-r208-g162-b170-a120);
-  background: rgba(0, 0, 0, 0.18);
+.cruor-home__tool-image {
+  position: relative;
+  z-index: 1;
+  grid-area: image;
+  align-self: start;
 }
 
-.cruor-home__engine-note summary {
-  display: flex;
+.cruor-home__tool-image.cruor-home__media-card {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  aspect-ratio: auto;
+  padding: 8px;
+  border-width: 0 0 0 1px;
+  background: rgba(5, 4, 5, 0.98);
+}
+
+.cruor-home__tool-main-preview {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: #050405;
+}
+
+.cruor-home__tool-main-preview img,
+.cruor-home__tool-preview-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 1;
+  filter: none;
+}
+
+.cruor-home__zoom-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  min-height: 46px;
-  padding: 0 16px;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(208, 162, 170, 0.38);
+  background: rgba(5, 4, 5, 0.78);
   color: var(--home-accent-pale);
   cursor: pointer;
-  font-size: var(--text-size-l);
-  font-weight: 900;
-  letter-spacing: 0.08em;
+  opacity: 0;
+  transition: opacity 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+}
+
+.cruor-home__tool-main-preview:hover .cruor-home__zoom-button,
+.cruor-home__zoom-button:focus-visible {
+  opacity: 1;
+}
+
+.cruor-home__zoom-button:hover,
+.cruor-home__zoom-button:focus-visible {
+  border-color: var(--home-line-strong);
+  background: rgba(122, 26, 40, 0.78);
+  outline: none;
+}
+
+.cruor-home__tool-preview-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.cruor-home__tool-preview-thumb {
+  display: grid;
+  gap: 5px;
+  padding: 0;
+  border: 1px solid rgba(208, 162, 170, 0.16);
+  background: rgba(8, 5, 6, 0.92);
+  color: var(--cruor-color-muted, var(--muted));
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.16s ease, color 0.16s ease, background 0.16s ease;
+}
+
+.cruor-home__tool-preview-thumb img {
+  aspect-ratio: 16 / 9;
+}
+
+.cruor-home__tool-preview-thumb span {
+  padding: 0 8px 7px;
+  font-size: var(--text-size-xs);
+  font-weight: 800;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.cruor-home__engine-note summary::after {
-  content: "+";
+.cruor-home__tool-preview-thumb:hover,
+.cruor-home__tool-preview-thumb:focus-visible,
+.cruor-home__tool-preview-thumb[aria-pressed="true"] {
+  border-color: rgba(208, 162, 170, 0.5);
   color: var(--cruor-color-text, var(--text));
-  font-size: 18px;
-  line-height: 1;
+  background: rgba(122, 26, 40, 0.18);
+  outline: none;
 }
 
-.cruor-home__engine-note[open] summary::after {
-  content: "−";
-}
-
-.cruor-home__engine-note summary:focus-visible {
-  outline: 1px solid var(--home-line-strong);
-  outline-offset: -3px;
-}
-
-.cruor-home__engine-body {
+.cruor-home__tool-engine-panel {
   display: grid;
-  gap: 14px;
-  padding: 0 16px 18px;
-  border-top: 1px solid var(--cruor-color-r208-g162-b170-a100);
-}
-
-.cruor-home__engine-body h4 {
-  margin: 16px 0 0;
+  gap: 16px;
+  width: 100%;
+  padding: clamp(18px, 2vw, 24px);
+  border: 1px solid rgba(208, 162, 170, 0.44);
+  background: #080506;
   color: var(--cruor-color-text, var(--text));
-  font-family: var(--display);
-  font-size: var(--display-size-s);
-  line-height: 1;
-  letter-spacing: -0.025em;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.96),
+    0 16px 34px rgba(0, 0, 0, 0.44),
+    inset 0 0 0 1px rgba(255, 238, 242, 0.05);
 }
 
-.cruor-home__engine-body p {
-  max-width: 72ch;
-  font-size: var(--text-size-xl);
-  line-height: 1.55;
+.cruor-home__tool-engine-panel-head {
+  display: grid;
+  gap: 6px;
+}
+
+.cruor-home__tool-engine-panel-head h4,
+.cruor-home__tool-engine-panel h4 {
+  margin: 0;
+  color: var(--cruor-color-text, var(--text));
+  font-family: var(--body);
+  font-size: var(--text-size-m);
+  font-weight: 800;
+  line-height: 1.22;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.cruor-home__tool-engine-panel p {
+  max-width: none;
+  color: var(--cruor-color-text, var(--text));
+  font-size: var(--text-size-s);
+  line-height: 1.42;
 }
 
 .cruor-home__engine-grid {
@@ -610,16 +683,47 @@
 }
 
 .cruor-home__engine-grid p {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
   margin: 0;
-  padding: 12px;
-  border: 1px solid var(--cruor-color-r208-g162-b170-a100);
-  background: rgba(255, 238, 242, 0.025);
-  font-size: var(--text-size-l);
+  color: var(--cruor-color-muted, var(--muted));
+  font-size: var(--text-size-s);
+  line-height: 1.34;
 }
 
-.cruor-home__engine-grid strong {
+.cruor-home__tool-engine-panel > .cruor-home__engine-grid:first-of-type {
+  position: relative;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.cruor-home__tool-engine-panel > .cruor-home__engine-grid:first-of-type::before {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 24px;
+  bottom: 24px;
+  width: 1px;
+  background: linear-gradient(180deg, rgba(208, 162, 170, 0), rgba(208, 162, 170, 0.52), rgba(208, 162, 170, 0));
+}
+
+.cruor-home__tool-engine-panel > .cruor-home__engine-grid:first-of-type p {
+  position: relative;
+  min-height: 42px;
+  z-index: 1;
+}
+
+.cruor-home__tool-engine-panel > .cruor-home__engine-grid:first-of-type p i {
+  background: #080506;
+  border: 1px solid rgba(208, 162, 170, 0.34);
+  box-shadow: 0 0 0 4px #080506;
+}
+
+.cruor-home__tool-engine-panel .cruor-home__tool-output {
+  background: #120a0d;
   color: var(--cruor-color-text, var(--text));
-  font-weight: 900;
 }
 
 .cruor-home__section--sources {
@@ -632,22 +736,17 @@
   background: var(--cruor-gradient-linear-196-c7f65a74), var(--cruor-color-r11-g10-b12-a420);
 }
 
-/* Components */
-
 .cruor-home__section--sources::before {
   background: var(--cruor-gradient-linear-212-814b1c54);
 }
 
-/* Layout */
-
-.cruor-home__sources-copy {
+.cruor-home__sources-copy,
+.cruor-home__sources-visual {
   position: relative;
   z-index: 1;
 }
 
 .cruor-home__sources-visual {
-  position: relative;
-  z-index: 1;
   width: 100%;
   max-width: 620px;
   justify-self: center;
@@ -662,8 +761,6 @@
   background: var(--cruor-gradient-linear-207-407ee320);
 }
 
-/* Layout */
-
 .cruor-home__support-band {
   position: relative;
   z-index: 1;
@@ -677,8 +774,6 @@
   box-shadow: var(--cruor-shadow-box-106);
 }
 
-/* Components */
-
 .cruor-home__support-band p {
   max-width: 44ch;
   margin: 12px 0 0;
@@ -689,99 +784,80 @@
   margin-top: 26px;
 }
 
-/* Layout */
-
 .cruor-home__support-visual {
   min-height: 200px;
 }
 
-@media (max-width: 1080px) {
-  .cruor-home__hero {
-    grid-template-columns: 1fr;
-  }
-
-  
-.cruor-home__engine-note {
-  border: 1px solid var(--cruor-color-r208-g162-b170-a120);
-  background: rgba(0, 0, 0, 0.18);
+.cruor-home__zoom-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: clamp(18px, 4vw, 48px);
 }
 
-.cruor-home__engine-note summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  min-height: 46px;
-  padding: 0 16px;
-  color: var(--home-accent-pale);
-  cursor: pointer;
-  font-size: var(--text-size-l);
-  font-weight: 900;
+.cruor-home__zoom-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.84);
+  cursor: zoom-out;
+}
+
+.cruor-home__zoom-frame {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, 96vw);
+  max-height: 88vh;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid rgba(208, 162, 170, 0.48);
+  background: #050405;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.72);
+}
+
+.cruor-home__zoom-frame img {
+  display: block;
+  width: 100%;
+  max-height: calc(88vh - 52px);
+  object-fit: contain;
+}
+
+.cruor-home__zoom-frame figcaption {
+  padding-top: 8px;
+  color: var(--cruor-color-muted, var(--muted));
+  font-size: var(--text-size-s);
+  font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.cruor-home__engine-note summary::after {
-  content: "+";
+.cruor-home__zoom-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(208, 162, 170, 0.42);
+  background: #080506;
+  color: var(--home-accent-pale);
+  cursor: pointer;
+}
+
+.cruor-home__zoom-close:hover,
+.cruor-home__zoom-close:focus-visible {
   color: var(--cruor-color-text, var(--text));
-  font-size: 18px;
-  line-height: 1;
+  border-color: var(--home-line-strong);
+  outline: none;
 }
 
-.cruor-home__engine-note[open] summary::after {
-  content: "−";
-}
-
-.cruor-home__engine-note summary:focus-visible {
-  outline: 1px solid var(--home-line-strong);
-  outline-offset: -3px;
-}
-
-.cruor-home__engine-body {
-  display: grid;
-  gap: 14px;
-  padding: 0 16px 18px;
-  border-top: 1px solid var(--cruor-color-r208-g162-b170-a100);
-}
-
-.cruor-home__engine-body h4 {
-  margin: 16px 0 0;
-  color: var(--cruor-color-text, var(--text));
-  font-family: var(--display);
-  font-size: var(--display-size-s);
-  line-height: 1;
-  letter-spacing: -0.025em;
-}
-
-.cruor-home__engine-body p {
-  max-width: 72ch;
-  font-size: var(--text-size-xl);
-  line-height: 1.55;
-}
-
-.cruor-home__engine-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 16px;
-}
-
-.cruor-home__engine-grid p {
-  margin: 0;
-  padding: 12px;
-  border: 1px solid var(--cruor-color-r208-g162-b170-a100);
-  background: rgba(255, 238, 242, 0.025);
-  font-size: var(--text-size-l);
-}
-
-.cruor-home__engine-grid strong {
-  color: var(--cruor-color-text, var(--text));
-  font-weight: 900;
-}
-
-.cruor-home__section--sources {
-    grid-template-columns: 1fr;
-  }
-
+@media (max-width: 1080px) {
+  .cruor-home__hero,
+  .cruor-home__section--sources,
   .cruor-home__support-band {
     grid-template-columns: 1fr;
   }
@@ -789,20 +865,17 @@
   .cruor-home__tool-card {
     grid-template-columns: 1fr;
     grid-template-areas:
-      "image"
       "content"
+      "image"
       "action";
   }
 
-  .cruor-home__tool-image,
-  .cruor-home__tool-image.cruor-home__media-card {
-    min-height: 0;
-    aspect-ratio: 16 / 9;
-    border-width: 0 0 1px;
+  .cruor-home__tool-content {
+    background: linear-gradient(180deg, rgba(5, 4, 5, 0.96), rgba(5, 4, 5, 0.78));
   }
 
-  .cruor-home__tool-grid {
-    grid-template-columns: 1fr;
+  .cruor-home__tool-image.cruor-home__media-card {
+    border-width: 1px 0 0;
   }
 }
 
@@ -835,24 +908,40 @@
     padding: 30px 18px 70px;
   }
 
+  .cruor-home__section--tools {
+    padding: 0 0 44px;
+  }
+
+  .cruor-home__tool-card {
+    margin-top: 34px;
+  }
+
+  .cruor-home__tool-tabs {
+    top: -24px;
+    left: 14px;
+  }
+
+  .cruor-home__engine-toggle {
+    height: 24px;
+    min-height: 24px;
+    padding: 0 7px;
+    font-size: 0.52rem;
+  }
 
   .cruor-home__tool-content {
     padding: 18px;
   }
 
-  .cruor-home__tool-features {
-    grid-template-columns: 1fr;
-  }
-
+  .cruor-home__tool-features,
   .cruor-home__engine-grid {
     grid-template-columns: 1fr;
   }
 
-  .cruor-home__tool-card > .cruor-home__text-link {
-    margin: 0 18px 18px;
+  .cruor-home__tool-preview-gallery {
+    grid-template-columns: 1fr;
   }
 
-  .cruor-home__inspiration-stack {
-    min-height: 320px;
+  .cruor-home__tool-card > .cruor-home__button {
+    margin: 0 18px 18px;
   }
 }

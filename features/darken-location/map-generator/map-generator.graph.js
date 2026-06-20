@@ -640,6 +640,19 @@ function buildRuinsContextGraph(config) {
   return validateContextGraph(regions, edges);
 }
 
+
+function annotateNobleHouseBaselineGraph(config, graph) {
+  if (!Array.isArray(graph) || graph.length === 0) return [];
+  return graph.map((edge, index) => ({
+    ...edge,
+    id: edge.id || `edge-${edge.from}-${edge.to}-noble-house-baseline-${index}`,
+    kind: edge.kind || "house-circulation",
+    reason: edge.reason
+      ? `noble-house-baseline-${edge.reason}`
+      : "noble-house-baseline-circulation",
+  }));
+}
+
 function buildNobleHouseContextGraph(config) {
   const regions = getOrderedContextRegions(config);
   if (regions.length <= 1) return [];
@@ -719,6 +732,11 @@ export function adaptGeneratedGraphForContext(config, graph) {
   if (profile.key === "chapel") return buildChapelPhysicalGraph(config);
 
   if (shouldUseContextGraphAdapter(config, profile.key)) {
+    if (profile.key === "noble-house") {
+      const nobleHouseGraph = annotateNobleHouseBaselineGraph(config, graph);
+      if (nobleHouseGraph.length > 0) return nobleHouseGraph;
+    }
+
     const contextGraph = buildContextGraphAdapter(config, profile.key);
     if (contextGraph.length > 0) return contextGraph;
   }

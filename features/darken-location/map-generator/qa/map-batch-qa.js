@@ -6,7 +6,8 @@ import {
 } from "../map-generator.corridors.js";
 
 export const MAP_BATCH_QA_VERSION = "map-qa-v0.5.1-safe-context-adapters";
-export const MAP_ADAPTER_QA_VERSION = "map-adapter-qa-v0.3.0-safe-adapter-promotion";
+export const MAP_ADAPTER_QA_VERSION = "map-adapter-qa-v0.4.0-noble-house-baseline-repair";
+export const MAP_VISUAL_QA_VERSION = "map-visual-qa-v0.1.0-context-preview-harness";
 
 const DEFAULT_CONTEXTS = Object.freeze([
   "Crypt",
@@ -48,11 +49,32 @@ export const MAP_CONTEXT_GRAPH_ADAPTER_MODES = Object.freeze([
   Object.freeze({ value: "crypt", label: "Crypt Adapter", description: "Crypt spine with side crypt branches." }),
   Object.freeze({ value: "mine", label: "Mine Adapter", description: "Mine tunnel trunk with extraction branches." }),
   Object.freeze({ value: "ruins", label: "Ruins Adapter", description: "Ruins broken path with collapsed shortcuts." }),
-  Object.freeze({ value: "noble-house", label: "Noble House Adapter", description: "House circulation hub with room branches." }),
+  Object.freeze({ value: "noble-house", label: "Noble House Adapter", description: "QA-neutral house circulation adapter using the stable baseline topology." }),
   Object.freeze({ value: "all", label: "All Context Adapters", description: "Enable any adapter that matches the generated context." }),
 ]);
 
 export const MAP_ADAPTER_QA_DEFAULT_MODES = Object.freeze(["off", "safe", "crypt", "mine", "ruins", "noble-house"]);
+
+export const MAP_VISUAL_QA_DEFAULT_OPTIONS = Object.freeze({
+  samplesPerContext: 2,
+  context: "mixed",
+  roomCountMin: 6,
+  roomCountMax: 10,
+  seed: "cruor-map-visual-qa",
+  contextGraphAdapterMode: "safe",
+  showGrid: true,
+  showNames: true,
+  showProps: true,
+});
+
+const MAP_VISUAL_CONTEXT_CUES = Object.freeze({
+  Crypt: Object.freeze(["tomb cues", "bones", "pillars", "altar/statue markers"]),
+  Chapel: Object.freeze(["pews", "altar", "pillars", "statue markers"]),
+  Cave: Object.freeze(["organic chambers", "natural boundary", "cave props when available"]),
+  Mine: Object.freeze(["rails", "supports", "rubble", "shafts/pits"]),
+  "Noble House": Object.freeze(["tables/desks", "beds/shelves/chests", "fireplace", "courtyard cue"]),
+  Ruins: Object.freeze(["broken walls", "rubble", "pillars", "statue fragments"]),
+});
 
 
 const CONTEXT_GRAPH_ADAPTER_KEYS = Object.freeze(["crypt", "mine", "ruins", "noble-house"]);
@@ -896,6 +918,193 @@ function createDebugMapPayload(result, map) {
       roomLink: Boolean(corridor.isRoomLink || corridor.roomTraversal),
     })),
     issues: result.issues,
+  };
+}
+
+
+function slugifyVisualQaPart(value = "preview") {
+  const slug = String(value || "preview")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return slug || "preview";
+}
+
+function createMapVisualQaFilename({ id, extension = "svg" }) {
+  return `${slugifyVisualQaPart(id)}.${extension}`;
+}
+
+function getVisualQaCueList(context) {
+  return asArray(MAP_VISUAL_CONTEXT_CUES[context]).length
+    ? MAP_VISUAL_CONTEXT_CUES[context]
+    : ["context-specific visual cues"];
+}
+
+function createSerializableVisualPreview(preview) {
+  if (!preview || typeof preview !== "object") return null;
+  const { generatedMap, ...serializable } = preview;
+  return serializable;
+}
+
+export function runMapVisualQa(options = {}) {
+  const startedAt = Date.now();
+  const samplesPerContext = clampInteger(
+    options.samplesPerContext ?? options.samples ?? options.countPerContext,
+    1,
+    20,
+    MAP_VISUAL_QA_DEFAULT_OPTIONS.samplesPerContext,
+  );
+  const roomCountMin = clampInteger(
+    options.roomCountMin ?? options.roomMin,
+    1,
+    16,
+    MAP_VISUAL_QA_DEFAULT_OPTIONS.roomCountMin,
+  );
+  const roomCountMax = clampInteger(
+    options.roomCountMax ?? options.roomMax,
+    roomCountMin,
+    16,
+    MAP_VISUAL_QA_DEFAULT_OPTIONS.roomCountMax,
+  );
+  const seed = normalizeText(options.seed, MAP_VISUAL_QA_DEFAULT_OPTIONS.seed);
+  const contexts = getContextPool(options.context || MAP_VISUAL_QA_DEFAULT_OPTIONS.context);
+  const contextGraphAdapterMode = normalizeContextGraphAdapterMode(
+    options.contextGraphAdapterMode ?? options.adapterMode,
+    MAP_VISUAL_QA_DEFAULT_OPTIONS.contextGraphAdapterMode,
+  );
+  const previews = [];
+  let globalIndex = 0;
+
+  contexts.forEach((context, contextIndex) => {
+    for (let sampleIndex = 0; sampleIndex < samplesPerContext; sampleIndex += 1) {
+      globalIndex += 1;
+      const roomSpan = roomCountMax - roomCountMin + 1;
+      const roomCount = roomCountMin + ((contextIndex + sampleIndex) % Math.max(1, roomSpan));
+      const visualId = `map-visual-qa-${slugifyVisualQaPart(context)}-${String(sampleIndex + 1).padStart(2, "0")}`;
+      const mapSeed = `${seed}-${slugifyVisualQaPart(context)}-${String(sampleIndex + 1).padStart(2, "0")}`;
+      const config = createQaConfig({
+        seed: mapSeed,
+        index: globalIndex - 1,
+        roomCount,
+        context,
+        contextGraphAdapterMode,
+      });
+      const map = generateMap(config);
+      const adapterUsage = getAdapterRuntimeUsage(map, contextGraphAdapterMode, context);
+      const validation = validateGeneratedMap(map, {
+        mapId: visualId,
+        deterministicSignature: getMapSignature(map),
+        verifyDeterminism: false,
+      });
+      const preview = {
+        id: visualId,
+        label: `${context} ${sampleIndex + 1}`,
+        context,
+        seed: mapSeed,
+        roomCount: asArray(map.regions).length,
+        corridorCount: asArray(map.corridors).length,
+        contextGraphAdapterMode,
+        adapterUsage,
+        expectedCues: getVisualQaCueList(context),
+        filename: createMapVisualQaFilename({ id: visualId }),
+        status: validation.status,
+        issueCount: validation.issues.length,
+        warningCount: validation.issues.filter((issue) => issue.severity === "warning").length,
+        errorCount: validation.issues.filter((issue) => issue.severity === "error").length,
+        metrics: validation.metrics,
+      };
+      Object.defineProperty(preview, "generatedMap", {
+        value: map,
+        enumerable: false,
+        configurable: true,
+      });
+      previews.push(preview);
+    }
+  });
+
+  const elapsedMs = Date.now() - startedAt;
+  return {
+    reportType: "cruor-map-visual-qa-report",
+    version: MAP_VISUAL_QA_VERSION,
+    generatedAt: new Date().toISOString(),
+    options: {
+      samplesPerContext,
+      count: previews.length,
+      roomCountMin,
+      roomCountMax,
+      seed,
+      context: normalizeText(options.context, MAP_VISUAL_QA_DEFAULT_OPTIONS.context),
+      contexts,
+      contextGraphAdapterMode,
+      showGrid: options.showGrid ?? MAP_VISUAL_QA_DEFAULT_OPTIONS.showGrid,
+      showNames: options.showNames ?? MAP_VISUAL_QA_DEFAULT_OPTIONS.showNames,
+      showProps: options.showProps ?? MAP_VISUAL_QA_DEFAULT_OPTIONS.showProps,
+    },
+    summary: {
+      totalPreviews: previews.length,
+      contexts: contexts.length,
+      elapsedMs,
+      errors: previews.reduce((sum, preview) => sum + Number(preview.errorCount || 0), 0),
+      warnings: previews.reduce((sum, preview) => sum + Number(preview.warningCount || 0), 0),
+    },
+    previews,
+  };
+}
+
+function buildVisualQaPreviewTable(previews = []) {
+  const rows = asArray(previews).map((preview) => {
+    const usage = preview.adapterUsage || {};
+    const cues = asArray(preview.expectedCues).join(", ");
+    const path = preview.svgPath || preview.filename || "";
+    return `| ${preview.context} | ${preview.label} | ${preview.roomCount || 0} | ${usage.status || "baseline"} | ${preview.warningCount || 0} | ${path} | ${cues} |`;
+  });
+  if (!rows.length) return "No visual previews generated.";
+  return [
+    "| Context | Preview | Rooms | Adapter | Warnings | SVG | Expected Cues |",
+    "|---|---|---:|---|---:|---|---|",
+    ...rows,
+  ].join("\n");
+}
+
+export function buildMapVisualQaMarkdown(report) {
+  const summary = report.summary || {};
+  return [
+    "# Cruor Map Visual QA",
+    "",
+    `Generated: ${report.generatedAt}`,
+    `Version: ${report.version}`,
+    "",
+    "## Options",
+    "",
+    `- Samples Per Context: ${report.options?.samplesPerContext}`,
+    `- Total Previews: ${summary.totalPreviews || 0}`,
+    `- Seed: ${report.options?.seed}`,
+    `- Context: ${report.options?.context}`,
+    `- Contexts: ${asArray(report.options?.contexts).join(", ")}`,
+    `- Rooms: ${report.options?.roomCountMin}–${report.options?.roomCountMax}`,
+    `- Graph Adapter: ${report.options?.contextGraphAdapterMode}`,
+    "",
+    "## Review Checklist",
+    "",
+    "- Crypt previews should read as tombs, alcoves, ossuary or burial spaces.",
+    "- Mine previews should read as extraction tunnels, supports, shafts, rubble or rails.",
+    "- Ruins previews should read as broken masonry, collapsed rooms, fragments or exposed remains.",
+    "- Noble House previews should read as domestic/service/courtyard spaces, not generic dungeons.",
+    "- Chapel previews should read as nave/altar/pews/pillars rather than arbitrary rooms.",
+    "",
+    "## Preview Index",
+    "",
+    buildVisualQaPreviewTable(report.previews || []),
+    "",
+  ].join("\n");
+}
+
+export function serializeMapVisualQaReport(report) {
+  return {
+    ...report,
+    previews: asArray(report?.previews).map(createSerializableVisualPreview).filter(Boolean),
   };
 }
 

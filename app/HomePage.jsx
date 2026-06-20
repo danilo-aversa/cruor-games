@@ -1,19 +1,476 @@
+import { useEffect, useMemo, useState } from "react";
 import "./home-page.css";
 
+const LANDING_IMAGES = {
+  workbench: {
+    src: "/assets/landing-page/hero-workbench.webp",
+    alt: "Cruor workbench interface preview with advanced dark fantasy creation tools.",
+    label: "Workbench",
+  },
+  map: {
+    src: "/assets/landing-page/hero-mapcrop.webp",
+    alt: "Dark fantasy map crop generated from a structured horror location.",
+    label: "Map Output",
+  },
+  inspiration: {
+    src: "/assets/landing-page/hero-inspiration.webp",
+    alt: "Cruor inspiration archive preview showing real sources transformed into playable horror material.",
+    label: "Source Archive",
+  },
+};
+
+const TOOL_CARDS = [
+  {
+    id: "darken",
+    title: "Darken a Location",
+    summary:
+      "Build structured horror sites from context, source anchors, horror direction, location regions, clues, hazards, atmosphere, and map intent.",
+    features: [
+      {
+        icon: "fa-book-skull",
+        text: "Source-inspired atmosphere, sensory cues, and visual signs.",
+      },
+      {
+        icon: "fa-location-dot",
+        text: "Location regions with roles, pressure, clues, hazards, and setpiece intent.",
+      },
+      {
+        icon: "fa-map-location-dot",
+        text: "Map-aware material that can feed a deterministic playable layout.",
+      },
+      {
+        icon: "fa-scroll",
+        text: "Read-aloud text and table-use notes for immediate play.",
+      },
+    ],
+    output:
+      "A structured horror location with regions, atmosphere, clues, hazards, map intent, and table notes.",
+    actionLabel: "Open Darken a Location",
+    actionArgs: ["darken", "composer"],
+    art: LANDING_IMAGES.map.src,
+    previews: [LANDING_IMAGES.map, LANDING_IMAGES.workbench, LANDING_IMAGES.inspiration],
+    engineTitle: "A Location Engine, Not a Room Name Table",
+    engineIntro:
+      "Darken a Location turns a source, a context, and a horror direction into a structured site brief. It does not only generate mood text: it decides what the place is, what pressure it creates, what the players can notice, and what the map generator should understand.",
+    engineSupport:
+      "The system works by separating tone, source logic, playable regions, table text, and map intent. Each layer can be changed, replaced, or reused without collapsing the whole build into a single random prompt.",
+    engineHighlights: [
+      {
+        icon: "fa-layer-group",
+        text: "Separates atmosphere, signs, hazards, clues, and regions into usable components.",
+      },
+      {
+        icon: "fa-route",
+        text: "Turns location regions into entrances, routes, setpieces, pressure points, and map intent.",
+      },
+      {
+        icon: "fa-clipboard-check",
+        text: "Keeps the output practical: read-aloud text, operational notes, and table-facing hooks.",
+      },
+      {
+        icon: "fa-rotate",
+        text: "Lets individual pieces be swapped without rewriting the entire location concept.",
+      },
+    ],
+    engineFlow: [
+      {
+        icon: "fa-compass-drafting",
+        label: "Frame",
+        text: "Context, site type, tone, scale, intrusion level, and intended table use.",
+      },
+      {
+        icon: "fa-book-skull",
+        label: "Source Logic",
+        text: "Real inspirations provide motifs, sensory cues, images, taboos, and horror behavior.",
+      },
+      {
+        icon: "fa-dungeon",
+        label: "Region Model",
+        text: "The site becomes regions with roles, pressure, clues, hazards, and setpiece intent.",
+      },
+      {
+        icon: "fa-route",
+        label: "Map Intent",
+        text: "Connections, entrances, routes, and layout needs are prepared for the map generator.",
+      },
+    ],
+    engineItems: [
+      {
+        icon: "fa-eye",
+        label: "Signs",
+        text: "Immediate visual and sensory cues the DM can describe.",
+      },
+      {
+        icon: "fa-triangle-exclamation",
+        label: "Hazards",
+        text: "Playable pressure, danger, or environmental consequence.",
+      },
+      {
+        icon: "fa-magnifying-glass",
+        label: "Clues",
+        text: "Evidence, corpses, traces, inscriptions, and revelations.",
+      },
+      {
+        icon: "fa-scroll",
+        label: "Output",
+        text: "Read-aloud text, notes, and drop-in material for play.",
+      },
+    ],
+  },
+  {
+    id: "monster",
+    title: "Monster Composer",
+    summary:
+      "Create dark fantasy creatures through frames, tactical roles, horror grafts, pressure, weaknesses, encounter behavior, validation, and export direction.",
+    features: [
+      {
+        icon: "fa-dna",
+        text: "Body, mind, movement, attack pattern, and horror hook.",
+      },
+      {
+        icon: "fa-skull",
+        text: "Weaknesses, tells, pressure tools, lair presence, and death effects.",
+      },
+      {
+        icon: "fa-chess-knight",
+        text: "Role and threat profile for how the creature behaves at the table.",
+      },
+      {
+        icon: "fa-circle-check",
+        text: "A table-ready monster draft with structure, mechanics, and counterplay.",
+      },
+    ],
+    output:
+      "A rules-aware monster draft with identity, pressure, player-facing answers, readiness checks, and export direction.",
+    actionLabel: "Open Monster Composer",
+    actionArgs: ["monster"],
+    art: LANDING_IMAGES.workbench.src,
+    previews: [LANDING_IMAGES.workbench, LANDING_IMAGES.inspiration, LANDING_IMAGES.map],
+    engineTitle: "More Than a Random Monster Generator",
+    engineIntro:
+      "The Monster Composer builds each creature through a structured monster engine: a base frame, a tactical role, a threat profile, and modular horror grafts that shape anatomy, attacks, movement, weakness, death effects, and scene presence.",
+    engineSupport:
+      "Behind every monster, the system estimates expected damage, survivability, action pressure, control effects, counterplay, complexity, and readiness before export. The goal is a rules-aware draft that feels authored rather than stitched together.",
+    engineHighlights: [
+      {
+        icon: "fa-crosshairs",
+        text: "Starts from frame, role, tier, tempo, and danger instead of isolated flavor text.",
+      },
+      {
+        icon: "fa-hand-fist",
+        text: "Uses grafts to define anatomy, attacks, movement, weakness, death effects, and scene pressure.",
+      },
+      {
+        icon: "fa-chart-simple",
+        text: "Tracks damage, durability, action pressure, control effects, and overall complexity.",
+      },
+      {
+        icon: "fa-shield-halved",
+        text: "Preserves counterplay with readable tells and player-facing answers.",
+      },
+    ],
+    engineFlow: [
+      {
+        icon: "fa-id-card-clip",
+        label: "Frame",
+        text: "Creature type, size, role, tier, tempo, danger level, and encounter purpose.",
+      },
+      {
+        icon: "fa-dna",
+        label: "Grafts",
+        text: "Modular horror parts define body, movement, attacks, weakness, and death effect.",
+      },
+      {
+        icon: "fa-chart-line",
+        label: "Combat Profile",
+        text: "Expected damage, durability, attack bonus, save DC, pressure, and control output.",
+      },
+      {
+        icon: "fa-clipboard-check",
+        label: "Validation",
+        text: "Parser, readiness, and publish gates check the monster before export.",
+      },
+    ],
+    engineItems: [
+      {
+        icon: "fa-bolt",
+        label: "Pressure",
+        text: "How strongly the creature pushes the table each round.",
+      },
+      {
+        icon: "fa-diagram-project",
+        label: "Complexity",
+        text: "How much rule load, tracking, and decision weight the monster adds.",
+      },
+      {
+        icon: "fa-shield-halved",
+        label: "Counterplay",
+        text: "Tells, weaknesses, and player answers that keep horror fair.",
+      },
+      {
+        icon: "fa-file-export",
+        label: "Export",
+        text: "A structured draft prepared for stat block, QA, and table use.",
+      },
+    ],
+  },
+];
+
+function ToolVisual({ tool, activeIndex, mode, onSelectPreview, onZoom }) {
+  const activePreview = tool.previews[activeIndex] ?? tool.previews[0];
+
+  if (mode === "details") {
+    return (
+      <figure className="cruor-home__tool-image cruor-home__media-card" aria-label={`${tool.title} engine details`}>
+        <div className="cruor-home__tool-engine-panel">
+          <div className="cruor-home__tool-engine-panel-head">
+            <h4>Engine Pipeline</h4>
+            <p>
+              The tool breaks a dark fantasy idea into controlled parts, evaluates what each part
+              contributes, then compiles the result into material the DM can actually use.
+            </p>
+          </div>
+
+          <div className="cruor-home__engine-grid">
+            {tool.engineFlow.map((item) => (
+              <p key={`${tool.id}-flow-${item.label}`}>
+                <i className={`fa-solid ${item.icon}`} aria-hidden="true" />
+                <span>
+                  <strong>{item.label}.</strong> {item.text}
+                </span>
+              </p>
+            ))}
+          </div>
+
+          <p className="cruor-home__tool-output">
+            <strong>What the engine tracks.</strong> The visible result is supported by structured
+            fields, compatibility rules, validation checks, and reusable content modules.
+          </p>
+
+          <div className="cruor-home__engine-grid">
+            {tool.engineItems.map((item) => (
+              <p key={`${tool.id}-tracked-${item.label}`}>
+                <i className={`fa-solid ${item.icon}`} aria-hidden="true" />
+                <span>
+                  <strong>{item.label}.</strong> {item.text}
+                </span>
+              </p>
+            ))}
+          </div>
+        </div>
+      </figure>
+    );
+  }
+
+  return (
+    <figure className="cruor-home__tool-image cruor-home__media-card" aria-label={`${tool.title} previews`}>
+      <div className="cruor-home__tool-main-preview">
+        <img
+          src={activePreview.src}
+          alt={activePreview.alt}
+          loading="lazy"
+          decoding="async"
+        />
+
+        <button
+          className="cruor-home__zoom-button"
+          type="button"
+          onClick={() => onZoom(activePreview)}
+          aria-label={`Zoom in ${activePreview.label} preview`}
+        >
+          <i className="fa-solid fa-magnifying-glass-plus" aria-hidden="true" />
+        </button>
+      </div>
+
+      <div className="cruor-home__tool-preview-gallery" aria-label={`${tool.title} preview gallery`}>
+        {tool.previews.map((preview, index) => (
+          <button
+            key={`${tool.id}-${preview.label}`}
+            className="cruor-home__tool-preview-thumb"
+            type="button"
+            aria-pressed={index === activeIndex}
+            onClick={() => onSelectPreview(index)}
+          >
+            <img
+              src={preview.src}
+              alt={preview.alt}
+              loading="lazy"
+              decoding="async"
+            />
+            <span>{preview.label}</span>
+          </button>
+        ))}
+      </div>
+    </figure>
+  );
+}
+
+function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [mode, setMode] = useState("overview");
+
+  useEffect(() => {
+    if (mode !== "overview" || tool.previews.length < 2) return undefined;
+
+    const timer = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % tool.previews.length);
+    }, 10000);
+
+    return () => window.clearInterval(timer);
+  }, [activeIndex, mode, tool.previews.length]);
+
+  const handleSelectPreview = (index) => {
+    setActiveIndex(index);
+    setMode("overview");
+  };
+
+  return (
+    <article
+      className="cruor-home__tool-card cruor-home__tool-card--image-backed"
+      style={{ "--tool-art": `url('${tool.art}')` }}
+    >
+      <div className="cruor-home__tool-tabs" role="tablist" aria-label={`${tool.title} information view`}>
+        <button
+          className="cruor-home__engine-toggle"
+          type="button"
+          role="tab"
+          aria-selected={mode === "overview"}
+          aria-pressed={mode === "overview"}
+          onClick={() => setMode("overview")}
+        >
+          <i className="fa-solid fa-layer-group" aria-hidden="true" />
+          <span>Overview</span>
+        </button>
+        <button
+          className="cruor-home__engine-toggle"
+          type="button"
+          role="tab"
+          aria-selected={mode === "details"}
+          aria-pressed={mode === "details"}
+          onClick={() => setMode("details")}
+        >
+          <i className="fa-solid fa-gears" aria-hidden="true" />
+          <span>Details</span>
+        </button>
+      </div>
+
+      <div className="cruor-home__tool-content">
+        {mode === "details" ? (
+          <>
+            <div className="cruor-home__tool-copy">
+              <h3>{tool.engineTitle}</h3>
+              <p className="cruor-home__tool-summary">{tool.engineIntro}</p>
+              <p className="cruor-home__tool-summary">{tool.engineSupport}</p>
+            </div>
+
+            <div className="cruor-home__tool-feature-block">
+              <span>Why it matters</span>
+              <ul className="cruor-home__tool-features">
+                {tool.engineHighlights.map((feature) => (
+                  <li key={`${tool.id}-highlight-${feature.text}`}>
+                    <i className={`fa-solid ${feature.icon}`} aria-hidden="true" />
+                    <span>{feature.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <p className="cruor-home__tool-output">
+              <strong>Workbench logic.</strong> {tool.title} is designed to make the output feel authored:
+              fast enough for prep, structured enough for validation, and specific enough to support
+              table-facing play instead of generic dark fantasy text.
+            </p>
+          </>
+        ) : (
+          <>
+            <div className="cruor-home__tool-copy">
+              <h3>{tool.title}</h3>
+              <p className="cruor-home__tool-summary">{tool.summary}</p>
+            </div>
+
+            <div className="cruor-home__tool-feature-block">
+              <span>What it helps you build</span>
+              <ul className="cruor-home__tool-features">
+                {tool.features.map((feature) => (
+                  <li key={`${tool.id}-${feature.text}`}>
+                    <i className={`fa-solid ${feature.icon}`} aria-hidden="true" />
+                    <span>{feature.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <p className="cruor-home__tool-output">
+              <strong>Final output.</strong> {tool.output}
+            </p>
+          </>
+        )}
+      </div>
+
+      <ToolVisual
+        tool={tool}
+        activeIndex={activeIndex}
+        mode={mode}
+        onSelectPreview={handleSelectPreview}
+        onZoom={onZoom}
+      />
+
+      <button
+        className="cruor-home__button cruor-home__button--primary"
+        type="button"
+        onClick={() => onOpenCrucibleTool?.(...tool.actionArgs)}
+      >
+        {tool.actionLabel}
+        <i className="fa-solid fa-arrow-right" aria-hidden="true" />
+      </button>
+    </article>
+  );
+}
+
 export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
+  const [zoomPreview, setZoomPreview] = useState(null);
+  const tools = useMemo(() => TOOL_CARDS, []);
+
+  useEffect(() => {
+    if (!zoomPreview) return undefined;
+
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+
+    const preventPageScroll = (event) => {
+      event.preventDefault();
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setZoomPreview(null);
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("wheel", preventPageScroll, { passive: false });
+    window.addEventListener("touchmove", preventPageScroll, { passive: false });
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("wheel", preventPageScroll);
+      window.removeEventListener("touchmove", preventPageScroll);
+    };
+  }, [zoomPreview]);
+
   return (
     <section className="cruor-home" aria-labelledby="cruorHomeTitle">
       <section className="cruor-home__hero" aria-label="Cruor Games homepage hero">
         <div className="cruor-home__hero-copy">
-          <h1 id="cruorHomeTitle">
-            Build the <span>Place.</span>
-            <br />
-            Forge the Threat.
-          </h1>
+          <h1 id="cruorHomeTitle">The Dark Fantasy Workbench for 5E.</h1>
 
           <p>
-            Cruor is a dark fantasy workbench for 5E Dungeon Masters: choose a source of dread,
-            shape a haunted location or monster, and turn it into structured material for play.
+            Cruor Games builds advanced dark fantasy generators: source-inspired tools for creating
+            locations, monsters, maps, mechanics, content packs, and table-ready horror material.
           </p>
 
           <div className="cruor-home__hero-actions" aria-label="Primary home actions">
@@ -41,7 +498,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
             <figure className="cruor-home__image-frame cruor-home__image-frame--hero">
               <img
                 src="/assets/landing-page/hero-workbench.webp"
-                alt="Cruor workbench interface preview with dark fantasy creation tools."
+                alt="Cruor workbench interface preview with advanced dark fantasy creation tools."
                 decoding="async"
                 fetchPriority="high"
               />
@@ -52,158 +509,32 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
 
       <section className="cruor-home__statement" aria-label="Project statement">
         <div>
-          <h2>Not Random Tables. A Structured Horror Workbench.</h2>
+          <h2>Not a Random Generator Archive.</h2>
           <p>
-            Cruor turns folklore, history, anatomy, ritual practice, and material culture into
-            controlled systems: source anchors, motifs, components, map-aware regions, monster grafts,
-            mechanics, and table-facing notes.
+            Cruor is a modular content engine: real sources become anchors, motifs become components,
+            and components become playable 5E material through structured, rules-aware generators.
           </p>
         </div>
       </section>
 
       <section className="cruor-home__section cruor-home__section--tools" aria-labelledby="featuredToolsTitle">
         <div className="cruor-home__section-head">
-          <h2 id="featuredToolsTitle">Start With a Place or a Threat</h2>
+          <h2 id="featuredToolsTitle">Current Workbench Tools</h2>
           <p>
-            Cruor begins with the two pillars of horror play: the place the characters enter,
-            and the thing that should not be there.
+            These are the first production surfaces of a wider system for building dark fantasy 5E
+            content: locations, monsters, maps, source packs, mechanics, exports, and future generators.
           </p>
         </div>
 
         <div className="cruor-home__tool-grid">
-          <article className="cruor-home__tool-card">
-            <figure className="cruor-home__tool-image cruor-home__media-card cruor-home__media-card--map">
-              <img
-                src="/assets/landing-page/hero-mapcrop.webp"
-                alt="Dark fantasy map crop generated from a structured horror location."
-                loading="lazy"
-                decoding="async"
-              />
-            </figure>
-
-            <div className="cruor-home__tool-content">
-              <div className="cruor-home__tool-copy">
-                <span className="cruor-home__tool-kicker">The Place</span>
-                <h3>Darken a Location</h3>
-                <p className="cruor-home__tool-summary">
-                  Build a haunted site from context, source anchors, horror direction,
-                  regions, clues, hazards, and map intent.
-                </p>
-              </div>
-
-              <div className="cruor-home__tool-feature-block">
-                <span>What it helps you build</span>
-                <ul className="cruor-home__tool-features">
-                  <li>Source-inspired atmosphere, sensory cues, and visual signs.</li>
-                  <li>Structured location regions with roles, pressure, clues, and hazards.</li>
-                  <li>Map-aware material that can feed a playable layout when needed.</li>
-                  <li>Read-aloud text and table-use notes for immediate play.</li>
-                </ul>
-              </div>
-
-              <p className="cruor-home__tool-output">
-                <strong>Final output.</strong> A structured horror location with regions,
-                atmosphere, clues, hazards, map intent, and table notes.
-              </p>
-
-              <details className="cruor-home__engine-note">
-                <summary>How Darken a Location works under the hood</summary>
-                <div className="cruor-home__engine-body">
-                  <h4>More Than a Random Map Prompt</h4>
-                  <p>
-                    Darken a Location does not just pick a gloomy room name and draw a rectangle.
-                    It builds a structured location brief from context, source anchors, horror direction,
-                    intrusion level, and selected components.
-                  </p>
-                  <div className="cruor-home__engine-grid">
-                    <p><strong>Context.</strong> The site type: crypt, chapel, cave, ruin, noble house, or other location.</p>
-                    <p><strong>Sources.</strong> Real inspirations that provide motifs, sensory cues, and horror logic.</p>
-                    <p><strong>Regions.</strong> Rooms or areas with roles, pressure, clues, hazards, and setpiece intent.</p>
-                    <p><strong>Map Intent.</strong> Connections, entrances, routes, and layout needs the map generator can read.</p>
-                    <p><strong>Table Output.</strong> Read-aloud text, operational notes, and drop-in details for play.</p>
-                  </div>
-                </div>
-              </details>
-            </div>
-
-            <button
-              className="cruor-home__text-link"
-              type="button"
-              onClick={() => onOpenCrucibleTool?.("darken", "composer")}
-            >
-              Open Darken a Location
-              <i className="fa-solid fa-arrow-right" aria-hidden="true" />
-            </button>
-          </article>
-
-          <article className="cruor-home__tool-card">
-            <div className="cruor-home__tool-image cruor-home__placeholder cruor-home__tool-image--placeholder">
-              <div>
-                <span>Image Placeholder</span>
-                <strong>Monster Composer Visual</strong>
-                <p>Use a monster silhouette, anatomy stage, stat preview, or composer crop.</p>
-              </div>
-            </div>
-
-            <div className="cruor-home__tool-content">
-              <div className="cruor-home__tool-copy">
-                <span className="cruor-home__tool-kicker">The Threat</span>
-                <h3>Forge a Monster</h3>
-                <p className="cruor-home__tool-summary">
-                  Build a creature through anatomy, behavior, pressure, weakness, and encounter role,
-                  instead of starting from a blank stat block.
-                </p>
-              </div>
-
-              <div className="cruor-home__tool-feature-block">
-                <span>What it helps you build</span>
-                <ul className="cruor-home__tool-features">
-                  <li>Body, mind, movement, attack pattern, and horror hook.</li>
-                  <li>Weaknesses, tells, pressure tools, lair presence, and death effects.</li>
-                  <li>Role and threat profile for how the creature behaves at the table.</li>
-                  <li>A table-ready monster draft with structure, mechanics, and counterplay.</li>
-                </ul>
-              </div>
-
-              <p className="cruor-home__tool-output">
-                <strong>Final output.</strong> A rules-aware monster draft with identity,
-                pressure, player-facing answers, and export direction.
-              </p>
-
-              <details className="cruor-home__engine-note">
-                <summary>How the Monster Composer works under the hood</summary>
-                <div className="cruor-home__engine-body">
-                  <h4>More Than a Random Monster Generator</h4>
-                  <p>
-                    Cruor’s Monster Composer does not simply roll on a table and stitch together
-                    dark-sounding text. Each creature is built through a structured monster engine:
-                    a base frame, a tactical role, a threat profile, and a set of horror grafts.
-                  </p>
-                  <p>
-                    Behind every generated monster, the system estimates how the creature is expected
-                    to fight at the table: damage output, survivability, action pressure, control effects,
-                    counterplay, and overall complexity.
-                  </p>
-                  <div className="cruor-home__engine-grid">
-                    <p><strong>Frame.</strong> Type, size, role, tier, tempo, and danger level.</p>
-                    <p><strong>Grafts.</strong> Modular horror parts for anatomy, attacks, movement, weakness, and scene presence.</p>
-                    <p><strong>Combat Profile.</strong> Damage, durability, attack bonus, save DC, action pressure, and special effects.</p>
-                    <p><strong>Counterplay.</strong> Tells and player-facing answers, so horror remains tense without becoming arbitrary.</p>
-                    <p><strong>Validation.</strong> Parser and publish checks before the monster is treated as table-ready.</p>
-                  </div>
-                </div>
-              </details>
-            </div>
-
-            <button
-              className="cruor-home__text-link"
-              type="button"
-              onClick={() => onOpenCrucibleTool?.("monster")}
-            >
-              Open Monster Composer
-              <i className="fa-solid fa-arrow-right" aria-hidden="true" />
-            </button>
-          </article>
+          {tools.map((tool) => (
+            <ToolCard
+              key={tool.id}
+              tool={tool}
+              onOpenCrucibleTool={onOpenCrucibleTool}
+              onZoom={setZoomPreview}
+            />
+          ))}
         </div>
       </section>
 
@@ -260,6 +591,29 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           </div>
         </div>
       </section>
+
+      {zoomPreview ? (
+        <div className="cruor-home__zoom-modal" role="dialog" aria-modal="true" aria-label={`${zoomPreview.label} preview`}>
+          <button
+            className="cruor-home__zoom-backdrop"
+            type="button"
+            aria-label="Close image preview"
+            onClick={() => setZoomPreview(null)}
+          />
+          <figure className="cruor-home__zoom-frame">
+            <button
+              className="cruor-home__zoom-close"
+              type="button"
+              onClick={() => setZoomPreview(null)}
+              aria-label="Close image preview"
+            >
+              <i className="fa-solid fa-xmark" aria-hidden="true" />
+            </button>
+            <img src={zoomPreview.src} alt={zoomPreview.alt} />
+            <figcaption>{zoomPreview.label}</figcaption>
+          </figure>
+        </div>
+      ) : null}
     </section>
   );
 }

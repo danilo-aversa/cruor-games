@@ -1,0 +1,35 @@
+/* Cruor Games — Site mega menu image preview pass */
+
+.site-mega-menu__preview-art--has-image {
+  display: block;
+  background: #050405;
+}
+
+.site-mega-menu__preview-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(0.88) contrast(1.08) brightness(0.82);
+}
+
+.site-mega-menu__preview-art--has-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 238, 242, 0.12),
+    inset 0 -44px 74px rgba(0, 0, 0, 0.38);
+}
+
+.site-mega-menu__preview-copy p {
+  max-width: 40ch;
+}
+
+/* Correction pass: keep mega-menu body copy lighter than titles */
+.site-mega-menu__item-copy span,
+.site-mega-menu__preview-copy p {
+  font-weight: 600;
+}
