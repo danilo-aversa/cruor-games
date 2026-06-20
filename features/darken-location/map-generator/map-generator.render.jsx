@@ -110,7 +110,7 @@ function roundTo(value, decimals = 2) {
 }
 
 export const SVG_STYLE = `
-.paper{fill:#dccaa6}.paper-texture{opacity:.75}.map-grid line{stroke:rgba(58,46,32,.17);stroke-width:1;vector-effect:non-scaling-stroke}.map-grid circle{fill:rgba(58,46,32,.22)}.floor-grid line{stroke:rgba(29,25,21,.16);stroke-width:1.05;vector-effect:non-scaling-stroke}.floor-grid circle{fill:rgba(29,25,21,.18)}.grid-style-dotted line{display:none}.grid-style-dashed line{stroke-linecap:round}.floor-fill{fill:#685D61;stroke:none}.floor-speckle circle{fill:rgba(29,25,21,.12)}.floor-grain path{fill:none;stroke:rgba(29,25,21,.11);stroke-width:.7;stroke-linecap:round;vector-effect:non-scaling-stroke}.room-floor-accent{fill:rgba(255,248,226,.26);stroke:none}.corridor-floor-accent{fill:rgba(116,91,57,.075);stroke:none}.organic-floor-accent{fill:rgba(29,25,21,.06);stroke:rgba(29,25,21,.18);stroke-width:1.15;vector-effect:non-scaling-stroke}.shape-detail{fill:none;stroke:rgba(29,25,21,.2);stroke-width:1.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.ritual-floor-ring{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.25;vector-effect:non-scaling-stroke}.corridor-centerline{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.1;stroke-dasharray:2 8;stroke-linecap:round;vector-effect:non-scaling-stroke}.external-hatching-underlay .halo-buffer{fill:none;stroke:#dccaa6;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1}.external-hatching path{fill:none;stroke:rgba(42,33,24,.28);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-shadow path{stroke:var(--cruor-map-wall-shadow-stroke,rgba(42,33,24,.32));stroke-width:var(--cruor-map-wall-shadow-width,7.2);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-main path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-breaks path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-break-width,1.45);stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-breaks .crack{stroke:rgba(29,25,21,.58);stroke-width:1.1}.door-cuts .door-opening{stroke:#efe4ca;stroke-width:7;stroke-linecap:square;vector-effect:non-scaling-stroke}.door-cuts .secret-door-opening{stroke:#efe4ca;stroke-width:5;stroke-linecap:square;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}.door-symbols .door-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-wall-sketch{stroke:rgba(29,25,21,.3);stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-panel{fill:#efe4ca;stroke:#1d1915;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .secret-door-panel{stroke-dasharray:3 3}.door-symbols .locked-door-panel{stroke-width:2.35}.door-symbols .locked-door-mark line{stroke:#1d1915;stroke-width:2.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__main path{fill:none;stroke:#1d1915;stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__sketch path{fill:none;stroke:rgba(29,25,21,.3);stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-floor{fill:#efe4ca;stroke:none;pointer-events:none}.corridor-overpass-patches .overpass-corridor-walls path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.map-accesses .map-access-line,.map-accesses .map-access-head-line{fill:none;stroke:#1d1915;stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-stem-sketch,.map-accesses .map-access-head-sketch{fill:none;stroke:rgba(29,25,21,.3);stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-label{fill:#1d1915;font-size:8px;font-weight:900;font-family:Inter,ui-sans-serif,system-ui;letter-spacing:.08em;paint-order:stroke;stroke:#efe4ca;stroke-width:2.5px;stroke-linejoin:round}.corridor-junctions .junction-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.0);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-wall-sketch{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.3));stroke-width:var(--cruor-map-wall-sketch-width,1.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-door-panel{fill:#efe4ca;stroke:#1d1915;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.props rect,.props circle,.props path,.props line,.props polygon,.props ellipse{fill:none;stroke:rgba(29,25,21,.62);stroke-width:1.35;vector-effect:non-scaling-stroke}.props .prop-fill{fill:rgba(29,25,21,.045)}.props .prop-light-fill{fill:rgba(255,248,226,.16)}.props .prop-fog{fill:rgba(255,248,226,.22);stroke:rgba(29,25,21,.18);stroke-width:1.05}.props .prop-water{fill:rgba(143,161,150,.24);stroke:rgba(29,25,21,.28);stroke-width:1.1}.props .prop-pit{fill:rgba(29,25,21,.12);stroke:rgba(29,25,21,.62);stroke-width:1.4}.props .prop-rubble{fill:rgba(29,25,21,.06)}.props .prop-bones{stroke:rgba(29,25,21,.7);stroke-width:1.15}.props .prop-crack{stroke:rgba(29,25,21,.5);stroke-width:1.05}.props .prop-stairs line{stroke-width:1.05}.props .prop-altar,.props .prop-tomb,.props .prop-shelf{fill:rgba(29,25,21,.045)}.props .prop-context-cue{opacity:.88}.props .prop-context-cue--mine{opacity:.92}.props .prop-context-cue--cave{opacity:.9}.props .prop-context-cue--chapel,.props .prop-context-cue--noble-house{opacity:.82}.labels .room-number-badge{fill:#efe4ca;stroke:#1d1915;stroke-width:2;rx:0}.labels text{fill:#1d1915;font-size:13px;font-weight:800;font-family:Inter,ui-sans-serif,system-ui}.labels .room-number{font-size:12px;font-weight:900;letter-spacing:.01em}.labels .room-name{font-size:12px;font-family:Inter,ui-sans-serif,system-ui;font-weight:700;paint-order:stroke;stroke:#efe4ca;stroke-width:4px;stroke-linejoin:round}.editor-overlays path{fill:rgba(122,67,36,0);stroke:rgba(122,67,36,0);stroke-width:0;vector-effect:non-scaling-stroke}.room-hover-highlight{pointer-events:none}.editor-overlays .room-hover-highlight__halo path,.editor-overlays .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.32);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-hover-highlight__edge path,.editor-overlays .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.92);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-hover-highlight{pointer-events:none}.editor-overlays .corridor-hover-highlight__halo{fill:none;stroke:rgba(214,184,98,.34);stroke-width:9;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .corridor-hover-highlight__line{fill:none;stroke:rgba(255,231,143,.95);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-drag-handle{cursor:move;pointer-events:all}.editor-overlays .room-drag-handle:hover{fill:rgba(122,67,36,0)}.editor-overlays .room-drag-handle.is-dragging{fill:rgba(122,67,36,0);stroke:rgba(29,25,21,0);stroke-width:0}.wall-hover-zone{stroke:rgba(122,67,36,0);stroke-width:14;stroke-linecap:square;fill:none;cursor:crosshair;pointer-events:stroke}.wall-hover-zone:hover{stroke:rgba(122,67,36,0)}.endpoint-handle{fill:#1d1915;stroke:#efe4ca;stroke-width:2;cursor:grab;pointer-events:all}.endpoint-handle.is-dragging{fill:#7a4324;cursor:grabbing}.waypoint-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:1.5;cursor:grab;pointer-events:all}.waypoint-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.2}.waypoint-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.corridor-hover-zone{fill:rgba(122,67,36,0);stroke:none;cursor:crosshair;pointer-events:all}.corridor-hover-zone:hover{fill:rgba(122,67,36,.12)}.corridor-hover-zone.is-junction:hover{fill:rgba(214,184,98,.22);stroke:rgba(214,184,98,.54);stroke-width:1.2;vector-effect:non-scaling-stroke}.corridor-add-handle{fill:#efe4ca;stroke:#7a4324;stroke-width:2;cursor:crosshair;pointer-events:all}.corridor-add-handle:hover{fill:#7a4324;stroke:#efe4ca}.corridor-add-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.4}.corridor-add-handle.is-junction:hover{fill:#1d1915;stroke:#d6b862}.wall-connect-handle{fill:#7a4324;stroke:#efe4ca;stroke-width:2;cursor:crosshair;pointer-events:all}.wall-connect-handle:hover{fill:#1d1915}.map-access-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:2.1;cursor:grab;pointer-events:all}.map-access-handle:hover{fill:#d6b862}.map-access-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.map-access-handle__icon{fill:none;stroke:#1d1915;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}.connection-preview{stroke:#7a4324;stroke-width:2.4;stroke-dasharray:7 5;stroke-linecap:round;fill:none;vector-effect:non-scaling-stroke;pointer-events:none}.connection-preview__endpoint{fill:#efe4ca;stroke:#7a4324;stroke-width:2;pointer-events:none}.circular-room-surface-cover{pointer-events:none}.level-layer--faded{opacity:.26}.level-layer--active{opacity:1}.room-preview-hotspots{pointer-events:none}.room-preview-hotspot{fill:rgba(214,184,98,0);stroke:rgba(214,184,98,0);stroke-width:0;cursor:pointer;pointer-events:all;outline:none}.room-preview-hotspot:focus-visible{fill:rgba(214,184,98,.18);stroke:rgba(255,231,143,.86);stroke-width:2.4;vector-effect:non-scaling-stroke}.room-preview-hotspot.is-active{fill:rgba(255,231,143,.08)}.room-preview-hotspot.is-hovered{fill:rgba(214,184,98,.10)}.room-preview-hotspots .room-hover-highlight,.room-preview-hotspots .room-selection-highlight{pointer-events:none}.room-preview-hotspots .room-hover-highlight__halo path,.room-preview-hotspots .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.30);stroke-width:7.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-hover-highlight__edge path,.room-preview-hotspots .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.82);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__halo path,.room-preview-hotspots .room-selection-highlight__halo line{fill:none;stroke:rgba(122,67,36,.42);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__edge path,.room-preview-hotspots .room-selection-highlight__edge line{fill:none;stroke:rgba(255,238,242,.92);stroke-width:3.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.paper{fill:#dccaa6}.paper-texture{opacity:.75}.map-grid line{stroke:rgba(58,46,32,.17);stroke-width:1;vector-effect:non-scaling-stroke}.map-grid circle{fill:rgba(58,46,32,.22)}.floor-grid line{stroke:rgba(29,25,21,.16);stroke-width:1.05;vector-effect:non-scaling-stroke}.floor-grid circle{fill:rgba(29,25,21,.18)}.grid-style-dotted line{display:none}.grid-style-dashed line{stroke-linecap:round}.floor-fill{fill:#685D61;stroke:none}.floor-speckle circle{fill:rgba(29,25,21,.12)}.floor-grain path{fill:none;stroke:rgba(29,25,21,.11);stroke-width:.7;stroke-linecap:round;vector-effect:non-scaling-stroke}.room-floor-accent{fill:rgba(255,248,226,.26);stroke:none}.corridor-floor-accent{fill:rgba(116,91,57,.075);stroke:none}.organic-floor-accent{fill:rgba(29,25,21,.06);stroke:rgba(29,25,21,.18);stroke-width:1.15;vector-effect:non-scaling-stroke}.shape-detail{fill:none;stroke:rgba(29,25,21,.2);stroke-width:1.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.ritual-floor-ring{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.25;vector-effect:non-scaling-stroke}.corridor-centerline{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.1;stroke-dasharray:2 8;stroke-linecap:round;vector-effect:non-scaling-stroke}.external-hatching-underlay .halo-buffer{fill:none;stroke:#dccaa6;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1}.external-hatching path{fill:none;stroke:rgba(42,33,24,.28);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-shadow path{stroke:var(--cruor-map-wall-shadow-stroke,rgba(42,33,24,.32));stroke-width:var(--cruor-map-wall-shadow-width,7.2);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-main path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-breaks path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-break-width,1.45);stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-breaks .crack{stroke:rgba(29,25,21,.58);stroke-width:1.1}.door-cuts .door-opening{stroke:#efe4ca;stroke-width:7;stroke-linecap:square;vector-effect:non-scaling-stroke}.door-cuts .secret-door-opening{stroke:#efe4ca;stroke-width:5;stroke-linecap:square;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}.door-symbols .door-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-wall-sketch{stroke:rgba(29,25,21,.3);stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-panel{fill:#efe4ca;stroke:#1d1915;stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .secret-door-panel{stroke-dasharray:3 3}.door-symbols .locked-door-panel{stroke-width:2.35}.door-symbols .locked-door-mark line{stroke:#1d1915;stroke-width:2.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__main path{fill:none;stroke:#1d1915;stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__sketch path{fill:none;stroke:rgba(29,25,21,.3);stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-floor{fill:#efe4ca;stroke:none;pointer-events:none}.corridor-overpass-patches .overpass-corridor-walls path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.map-accesses .map-access-line,.map-accesses .map-access-head-line{fill:none;stroke:#1d1915;stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-stem-sketch,.map-accesses .map-access-head-sketch{fill:none;stroke:rgba(29,25,21,.3);stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-label{fill:#1d1915;font-size:8px;font-weight:900;font-family:Inter,ui-sans-serif,system-ui;letter-spacing:.08em;paint-order:stroke;stroke:#efe4ca;stroke-width:2.5px;stroke-linejoin:round}.corridor-junctions .junction-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.0);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-wall-sketch{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.3));stroke-width:var(--cruor-map-wall-sketch-width,1.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-door-panel{fill:#efe4ca;stroke:#1d1915;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.props rect,.props circle,.props path,.props line,.props polygon,.props ellipse{fill:none;stroke:rgba(29,25,21,.62);stroke-width:1.35;vector-effect:non-scaling-stroke}.props .prop-fill{fill:rgba(29,25,21,.045)}.props .prop-light-fill{fill:rgba(255,248,226,.16)}.props .prop-fog{fill:rgba(255,248,226,.22);stroke:rgba(29,25,21,.18);stroke-width:1.05}.props .prop-water{fill:rgba(143,161,150,.24);stroke:rgba(29,25,21,.28);stroke-width:1.1}.props .prop-pit{fill:rgba(29,25,21,.12);stroke:rgba(29,25,21,.62);stroke-width:1.4}.props .prop-rubble{fill:rgba(29,25,21,.06)}.props .prop-bones{stroke:rgba(29,25,21,.7);stroke-width:1.15}.props .prop-crack{stroke:rgba(29,25,21,.5);stroke-width:1.05}.props .prop-stairs line{stroke-width:1.05}.props .prop-altar,.props .prop-tomb,.props .prop-shelf{fill:rgba(29,25,21,.045)}.props .prop-context-cue{opacity:.88}.props .prop-context-cue--mine{opacity:.92}.props .prop-context-cue--cave{opacity:.9}.props .prop-context-cue--chapel,.props .prop-context-cue--noble-house{opacity:.82}.props .prop-theme-cue{opacity:.76}.props .prop-theme-cue--sedlec-ossuary,.props .prop-theme-cue--towers-of-silence{opacity:.82}.props .prop-theme-cue--the-mist{opacity:.68}.props .prop-theme-cue--wolf-spiders{opacity:.9}.props .prop-web{stroke:rgba(29,25,21,.54);stroke-width:1.05}.props .prop-egg-sac{fill:rgba(255,248,226,.13);stroke:rgba(29,25,21,.55);stroke-width:1.1}.labels .room-number-badge{fill:#efe4ca;stroke:#1d1915;stroke-width:2;rx:0}.labels text{fill:#1d1915;font-size:13px;font-weight:800;font-family:Inter,ui-sans-serif,system-ui}.labels .room-number{font-size:12px;font-weight:900;letter-spacing:.01em}.labels .room-name{font-size:12px;font-family:Inter,ui-sans-serif,system-ui;font-weight:700;paint-order:stroke;stroke:#efe4ca;stroke-width:4px;stroke-linejoin:round}.editor-overlays path{fill:rgba(122,67,36,0);stroke:rgba(122,67,36,0);stroke-width:0;vector-effect:non-scaling-stroke}.room-hover-highlight{pointer-events:none}.editor-overlays .room-hover-highlight__halo path,.editor-overlays .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.32);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-hover-highlight__edge path,.editor-overlays .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.92);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-hover-highlight{pointer-events:none}.editor-overlays .corridor-hover-highlight__halo{fill:none;stroke:rgba(214,184,98,.34);stroke-width:9;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .corridor-hover-highlight__line{fill:none;stroke:rgba(255,231,143,.95);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-drag-handle{cursor:move;pointer-events:all}.editor-overlays .room-drag-handle:hover{fill:rgba(122,67,36,0)}.editor-overlays .room-drag-handle.is-dragging{fill:rgba(122,67,36,0);stroke:rgba(29,25,21,0);stroke-width:0}.wall-hover-zone{stroke:rgba(122,67,36,0);stroke-width:14;stroke-linecap:square;fill:none;cursor:crosshair;pointer-events:stroke}.wall-hover-zone:hover{stroke:rgba(122,67,36,0)}.endpoint-handle{fill:#1d1915;stroke:#efe4ca;stroke-width:2;cursor:grab;pointer-events:all}.endpoint-handle.is-dragging{fill:#7a4324;cursor:grabbing}.waypoint-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:1.5;cursor:grab;pointer-events:all}.waypoint-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.2}.waypoint-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.corridor-hover-zone{fill:rgba(122,67,36,0);stroke:none;cursor:crosshair;pointer-events:all}.corridor-hover-zone:hover{fill:rgba(122,67,36,.12)}.corridor-hover-zone.is-junction:hover{fill:rgba(214,184,98,.22);stroke:rgba(214,184,98,.54);stroke-width:1.2;vector-effect:non-scaling-stroke}.corridor-add-handle{fill:#efe4ca;stroke:#7a4324;stroke-width:2;cursor:crosshair;pointer-events:all}.corridor-add-handle:hover{fill:#7a4324;stroke:#efe4ca}.corridor-add-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.4}.corridor-add-handle.is-junction:hover{fill:#1d1915;stroke:#d6b862}.wall-connect-handle{fill:#7a4324;stroke:#efe4ca;stroke-width:2;cursor:crosshair;pointer-events:all}.wall-connect-handle:hover{fill:#1d1915}.map-access-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:2.1;cursor:grab;pointer-events:all}.map-access-handle:hover{fill:#d6b862}.map-access-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.map-access-handle__icon{fill:none;stroke:#1d1915;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}.connection-preview{stroke:#7a4324;stroke-width:2.4;stroke-dasharray:7 5;stroke-linecap:round;fill:none;vector-effect:non-scaling-stroke;pointer-events:none}.connection-preview__endpoint{fill:#efe4ca;stroke:#7a4324;stroke-width:2;pointer-events:none}.circular-room-surface-cover{pointer-events:none}.level-layer--faded{opacity:.26}.level-layer--active{opacity:1}.room-preview-hotspots{pointer-events:none}.room-preview-hotspot{fill:rgba(214,184,98,0);stroke:rgba(214,184,98,0);stroke-width:0;cursor:pointer;pointer-events:all;outline:none}.room-preview-hotspot:focus-visible{fill:rgba(214,184,98,.18);stroke:rgba(255,231,143,.86);stroke-width:2.4;vector-effect:non-scaling-stroke}.room-preview-hotspot.is-active{fill:rgba(255,231,143,.08)}.room-preview-hotspot.is-hovered{fill:rgba(214,184,98,.10)}.room-preview-hotspots .room-hover-highlight,.room-preview-hotspots .room-selection-highlight{pointer-events:none}.room-preview-hotspots .room-hover-highlight__halo path,.room-preview-hotspots .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.30);stroke-width:7.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-hover-highlight__edge path,.room-preview-hotspots .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.82);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__halo path,.room-preview-hotspots .room-selection-highlight__halo line{fill:none;stroke:rgba(122,67,36,.42);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__edge path,.room-preview-hotspots .room-selection-highlight__edge line{fill:none;stroke:rgba(255,238,242,.92);stroke-width:3.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 `;
 
 export const MAP_VISUAL_STYLE = `
@@ -6558,6 +6558,57 @@ export function renderUnifiedDungeonSurface(generatedMap, gridStyle = "solid", r
 }
 
 
+
+const THEME_VISUAL_CUE_KIND_MAP = Object.freeze({
+  "sedlec-ossuary": Object.freeze(["altar", "bones", "pillar", "statue", "tomb"]),
+  decomposition: Object.freeze(["bones", "fog", "pit", "rubble", "water"]),
+  "towers-of-silence": Object.freeze(["altar", "bones", "pillar", "pit", "statue"]),
+  "the-mist": Object.freeze(["clue-marker", "fog", "pit", "water"]),
+  "wolf-spiders": Object.freeze(["bones", "egg-sac", "fog", "pit", "web"]),
+});
+
+function normalizeThemeVisualKey(value = "") {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  if (!normalized) return "";
+  if (normalized === "sedlec" || normalized === "sedlec-ossuary") return "sedlec-ossuary";
+  if (normalized === "decomposition") return "decomposition";
+  if (
+    normalized === "tower-of-silence" ||
+    normalized === "towers-of-silence" ||
+    normalized === "towers-silence"
+  )
+    return "towers-of-silence";
+  if (normalized === "mist" || normalized === "the-mist") return "the-mist";
+  if (normalized === "wolf-spider" || normalized === "wolf-spiders") return "wolf-spiders";
+  return THEME_VISUAL_CUE_KIND_MAP[normalized] ? normalized : "";
+}
+
+function getThemeVisualKey(generatedMap = null) {
+  const config = generatedMap?.config || {};
+  const candidates = [
+    config.themeId,
+    config.theme,
+    config.themeName,
+    ...(Array.isArray(config.sourceAnchors) ? config.sourceAnchors : []),
+    ...((config.globalPalette && Array.isArray(config.globalPalette.visual))
+      ? config.globalPalette.visual
+      : []),
+    ...((Array.isArray(generatedMap?.regions))
+      ? generatedMap.regions.flatMap((region) => region?.sourceAnchors || [])
+      : []),
+  ];
+  for (const candidate of candidates) {
+    const key = normalizeThemeVisualKey(candidate);
+    if (key) return key;
+  }
+  return "";
+}
+
 function getRegionCueText(region = {}) {
   return [
     region.name,
@@ -6659,6 +6710,121 @@ function chooseContextualCueKind(contextKey, region, index, seed) {
   return null;
 }
 
+
+function chooseThemeVisualCueKind(themeKey, region, index, seed) {
+  const text = getRegionCueText(region);
+  const semanticFlags = getRegionSemanticFlags(region);
+  const hash = hashStringToSeed(seed, region.id, themeKey, index, "theme-cue-kind");
+
+  if (themeKey === "sedlec-ossuary") {
+    if (text.includes("bone") || text.includes("skull") || text.includes("ossuary")) return "bones";
+    if (text.includes("relic") || text.includes("saint") || text.includes("shrine"))
+      return hash % 2 === 0 ? "statue" : "altar";
+    if (text.includes("corridor") || text.includes("gallery") || semanticFlags.connector) return "pillar";
+    return hash % 3 === 0 ? "tomb" : "bones";
+  }
+
+  if (themeKey === "decomposition") {
+    if (text.includes("gas") || text.includes("cloud") || text.includes("stink")) return "fog";
+    if (text.includes("wet") || text.includes("seep") || text.includes("drain") || text.includes("wax"))
+      return "water";
+    if (text.includes("collapse") || text.includes("soft") || text.includes("slip") || semanticFlags.hazard)
+      return hash % 2 === 0 ? "rubble" : "pit";
+    return hash % 3 === 0 ? "bones" : hash % 2 === 0 ? "fog" : "water";
+  }
+
+  if (themeKey === "towers-of-silence") {
+    if (text.includes("well") || text.includes("drop") || text.includes("exposure")) return "pit";
+    if (text.includes("bone") || text.includes("vulture") || text.includes("dead")) return "bones";
+    if (text.includes("purity") || text.includes("shrine") || text.includes("ritual"))
+      return hash % 2 === 0 ? "altar" : "statue";
+    return hash % 2 === 0 ? "pillar" : "bones";
+  }
+
+  if (themeKey === "the-mist") {
+    if (text.includes("supply") || text.includes("radio") || text.includes("flare") || semanticFlags.clue)
+      return "clue-marker";
+    if (text.includes("glass") || text.includes("wet") || text.includes("condensed")) return "water";
+    if (text.includes("creature") || text.includes("panic") || text.includes("threshold")) return "pit";
+    return "fog";
+  }
+
+  if (themeKey === "wolf-spiders") {
+    if (text.includes("egg") || text.includes("brood") || text.includes("nest")) return "egg-sac";
+    if (text.includes("web") || text.includes("silk") || text.includes("victim") || text.includes("ambush"))
+      return "web";
+    if (text.includes("cache") || text.includes("dead")) return "bones";
+    return hash % 3 === 0 ? "egg-sac" : hash % 2 === 0 ? "web" : "fog";
+  }
+
+  return null;
+}
+
+function createThemeVisualCueProps(generatedMap = null) {
+  if (!generatedMap?.config || !Array.isArray(generatedMap.regions)) return [];
+  const themeKey = getThemeVisualKey(generatedMap);
+  if (!themeKey || !THEME_VISUAL_CUE_KIND_MAP[themeKey]) return [];
+
+  const gridSize = generatedMap.config.gridSize || DEFAULT_CONFIG.gridSize;
+  const existingIds = new Set((generatedMap.props || []).map((prop) => prop.id));
+  const regions = generatedMap.regions;
+  const maxThemeCues = Math.max(2, Math.ceil(regions.length * 0.62));
+  let created = 0;
+
+  return regions
+    .map((region, index) => {
+      if (created >= maxThemeCues) return null;
+      const point = getRegionCuePoint(region, generatedMap.config);
+      if (!point) return null;
+      const selector = hashStringToSeed(
+        generatedMap.config.seed,
+        region.id,
+        themeKey,
+        index,
+        "theme-cue-selector",
+      );
+      const isRequiredAnchor = index === 0 || index === regions.length - 1;
+      if (!isRequiredAnchor && selector % 3 === 0) return null;
+
+      const kind = chooseThemeVisualCueKind(
+        themeKey,
+        region,
+        index,
+        generatedMap.config.seed,
+      );
+      if (!kind) return null;
+      const seed = hashStringToSeed(
+        generatedMap.config.seed,
+        region.id,
+        themeKey,
+        kind,
+        "theme-cue-prop",
+      );
+      const angle = ((seed % 360) * Math.PI) / 180;
+      const offset = gridSize * (0.16 + ((seed >>> 5) % 3) * 0.04);
+      const x = point.x + Math.cos(angle) * offset;
+      const y = point.y + Math.sin(angle) * offset;
+      const rotationSteps = kind === "web" || kind === "fog" ? 6 : 4;
+      const rotation = ((seed % rotationSteps) * 360) / rotationSteps;
+      const size = clamp(gridSize * (0.42 + ((seed >>> 4) % 4) * 0.06), 7, 18);
+      const id = `theme-cue-${themeKey}-${region.id}`;
+      if (existingIds.has(id)) return null;
+      created += 1;
+      return {
+        id,
+        regionId: region.id,
+        kind,
+        x: roundTo(x, 2),
+        y: roundTo(y, 2),
+        rotation,
+        size,
+        themeCue: true,
+        themeKey,
+      };
+    })
+    .filter(Boolean);
+}
+
 function createContextualCueProps(generatedMap = null) {
   if (!generatedMap?.config || !Array.isArray(generatedMap.regions)) return [];
   const contextKey = getContextKey(
@@ -6715,7 +6881,11 @@ function createContextualCueProps(generatedMap = null) {
 
 function getRenderableProps(props = [], generatedMap = null) {
   if (!generatedMap) return props;
-  return [...props, ...createContextualCueProps(generatedMap)];
+  return [
+    ...props,
+    ...createContextualCueProps(generatedMap),
+    ...createThemeVisualCueProps(generatedMap),
+  ];
 }
 
 export function renderProp(prop) {
@@ -6977,6 +7147,32 @@ export function renderProp(prop) {
       </g>
     );
   }
+  if (prop.kind === "web") {
+    return (
+      <g
+        className="prop-web"
+        transform={`translate(${prop.x} ${prop.y}) rotate(${prop.rotation})`}
+      >
+        <circle cx="0" cy="0" r={s * 0.42} />
+        <path d={`M${-s * 0.42} 0h${s * 0.84}M0 ${-s * 0.42}v${s * 0.84}`} />
+        <path d={`M${-s * 0.3} ${-s * 0.3}l${s * 0.6} ${s * 0.6}M${-s * 0.3} ${s * 0.3}l${s * 0.6} ${-s * 0.6}`} />
+        <path d={`M${-s * 0.18} ${-s * 0.38}C${s * 0.08} ${-s * 0.18},${s * 0.08} ${s * 0.18},${-s * 0.18} ${s * 0.38}`} />
+      </g>
+    );
+  }
+  if (prop.kind === "egg-sac") {
+    return (
+      <g
+        className="prop-egg-sac"
+        transform={`translate(${prop.x} ${prop.y}) rotate(${prop.rotation})`}
+      >
+        <ellipse cx="0" cy="0" rx={s * 0.42} ry={s * 0.56} />
+        <circle cx={-s * 0.12} cy={-s * 0.12} r={s * 0.08} />
+        <circle cx={s * 0.11} cy={s * 0.04} r={s * 0.07} />
+        <circle cx={-s * 0.02} cy={s * 0.22} r={s * 0.06} />
+      </g>
+    );
+  }
   if (prop.kind === "clue-marker") {
     return (
       <g transform={`translate(${prop.x} ${prop.y}) rotate(${prop.rotation})`}>
@@ -7025,20 +7221,24 @@ export function renderProps(props, generatedMap = null) {
   const renderableProps = getRenderableProps(props, generatedMap);
   return (
     <g className="props">
-      {renderableProps.map((prop) => (
-        <g
-          key={prop.id}
-          className={
-            prop.contextualCue
-              ? `prop-context-cue prop-context-cue--${prop.contextKey || "context"}`
-              : undefined
-          }
-          data-context-key={prop.contextualCue ? prop.contextKey || "context" : undefined}
-          data-prop-kind={prop.contextualCue ? prop.kind || "unknown" : undefined}
-        >
-          {renderProp(prop)}
-        </g>
-      ))}
+      {renderableProps.map((prop) => {
+        const classNames = [];
+        if (prop.contextualCue)
+          classNames.push(`prop-context-cue prop-context-cue--${prop.contextKey || "context"}`);
+        if (prop.themeCue)
+          classNames.push(`prop-theme-cue prop-theme-cue--${prop.themeKey || "theme"}`);
+        return (
+          <g
+            key={prop.id}
+            className={classNames.join(" ") || undefined}
+            data-context-key={prop.contextualCue ? prop.contextKey || "context" : undefined}
+            data-theme-key={prop.themeCue ? prop.themeKey || "theme" : undefined}
+            data-prop-kind={prop.contextualCue || prop.themeCue ? prop.kind || "unknown" : undefined}
+          >
+            {renderProp(prop)}
+          </g>
+        );
+      })}
     </g>
   );
 }

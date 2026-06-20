@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import {
+  analyzeMapThemeCueSvg,
   analyzeMapVisualCueSvg,
   buildMapAdapterQaMarkdown,
   buildMapBatchQaMarkdown,
@@ -59,6 +60,10 @@ async function renderVisualPreviewSvgs(report) {
   const vite = await createServer({
     appType: "custom",
     logLevel: "error",
+    optimizeDeps: {
+      entries: [],
+      noDiscovery: true,
+    },
     server: { middlewareMode: true },
   });
 
@@ -78,6 +83,7 @@ async function renderVisualPreviewSvgs(report) {
       });
       const svg = ReactDOMServer.renderToStaticMarkup(element);
       preview.visualCueUsage = analyzeMapVisualCueSvg(svg, preview);
+      preview.themeCueUsage = analyzeMapThemeCueSvg(svg, preview);
       const content = `<?xml version="1.0" encoding="UTF-8"?>\n${svg}\n`;
       await writeFile(new URL(preview.filename, VISUAL_PREVIEW_DIR), content, "utf8");
       preview.svgPath = `dist/qa/map-visual-previews/${preview.filename}`;
@@ -95,6 +101,8 @@ if (visualQa) {
     samplesPerContext: getArgValue("samples", getArgValue("samples-per-context", 2)),
     roomCountMin: getArgValue("room-min", 6),
     roomCountMax: getArgValue("room-max", 10),
+    theme: getArgValue("visual-theme", getArgValue("theme", "mixed")),
+    samplesPerTheme: getArgValue("theme-samples", getArgValue("samples-per-theme", getArgValue("samples", 2))),
     contextGraphAdapterMode: getArgValue("graph-adapter", getArgValue("adapter", "safe")),
     showGrid: getBooleanArg("show-grid", true),
     showNames: getBooleanArg("show-names", true),
@@ -108,8 +116,12 @@ if (visualQa) {
   serializableReport.previews.forEach((preview) => {
     const usage = preview.adapterUsage || {};
     const visualCueUsage = preview.visualCueUsage || {};
+    const themeCueUsage = preview.themeCueUsage || {};
     const visualCueText = `${visualCueUsage.status || "unknown"}; cues ${visualCueUsage.renderedCount || 0}`;
-    console.log(`[preview] ${preview.label}: ${preview.roomCount} rooms; adapter ${usage.status || "baseline"}; visual ${visualCueText}; ${preview.svgPath}.`);
+    const themeCueText = preview.themeKey
+      ? `; theme ${themeCueUsage.status || "unknown"}; theme cues ${themeCueUsage.renderedCount || 0}`
+      : "";
+    console.log(`[preview] ${preview.label}: ${preview.roomCount} rooms; adapter ${usage.status || "baseline"}; visual ${visualCueText}${themeCueText}; ${preview.svgPath}.`);
   });
 } else if (adapterQa) {
   const report = runMapAdapterQa({

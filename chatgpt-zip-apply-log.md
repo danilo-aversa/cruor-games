@@ -586,3 +586,173 @@ _Nessun file aggiunto._
 - `~features\darken-location\map-generator\map-generator.render.jsx`
 - `~features\darken-location\map-generator\qa\map-batch-qa.js`
 
+
+---
+
+## 2026-06-20 21:29:47
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-step39-theme-visual-differentiation-patch-20260620-2125.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-step39-theme-visual-differentiation-patch-20260620-2125.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features\darken-location\map-generator\map-generator.render.jsx`
+- `~features\darken-location\map-generator\qa\map-batch-qa.js`
+- `~scripts\run-map-qa.mjs`
+
+
+---
+
+## 2026-06-20 21:37:18
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-step39-1-theme-cue-analysis-vite-cleanup-patch-20260620-2138.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-step39-1-theme-cue-analysis-vite-cleanup-patch-20260620-2138.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features\darken-location\map-generator\qa\map-batch-qa.js`
+- `~scripts\run-map-qa.mjs`
+
+
+---
+
+## 2026-06-20 21:45:14
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-tool-card-support-style.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-tool-card-support-style.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app\home-page.css`
+- `~app\HomePage.jsx`
+- `~app\navigation\site-mega-menu.css`
+- `~app\navigation\site-navigation.data.js`
+- `~app\navigation\SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-20 21:58:23
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-hover-gallery-compact.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-hover-gallery-compact.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app\home-page.css`
+- `~app\HomePage.jsx`
+- `~app\navigation\site-mega-menu.css`
+- `~app\navigation\site-navigation.data.js`
+- `~app\navigation\SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-20 22:04:07
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-cta-edge-tabs-gallery.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-cta-edge-tabs-gallery.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app\home-page.css`
+- `~app\HomePage.jsx`
+- `~app\navigation\site-mega-menu.css`
+- `~app\navigation\site-navigation.data.js`
+- `~app\navigation\SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-20 22:11:24
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-gallery-pipeline-connector-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-gallery-pipeline-connector-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app\home-page.css`
+- `~app\HomePage.jsx`
+- `~app\navigation\site-mega-menu.css`
+- `~app\navigation\site-navigation.data.js`
+- `~app\navigation\SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-20 22:17:32
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-overview-3xl-no-card-hover.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-overview-3xl-no-card-hover.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app\home-page.css`
+- `~app\HomePage.jsx`
+- `~app\navigation\site-mega-menu.css`
+- `~app\navigation\site-navigation.data.js`
+- `~app\navigation\SiteMegaMenu.jsx`
+

@@ -7,7 +7,7 @@ import {
 
 export const MAP_BATCH_QA_VERSION = "map-qa-v0.5.1-safe-context-adapters";
 export const MAP_ADAPTER_QA_VERSION = "map-adapter-qa-v0.4.0-noble-house-baseline-repair";
-export const MAP_VISUAL_QA_VERSION = "map-visual-qa-v0.4.0-cave-visual-support";
+export const MAP_VISUAL_QA_VERSION = "map-visual-qa-v0.5.1-theme-cue-analysis-fix";
 
 const DEFAULT_CONTEXTS = Object.freeze([
   "Crypt",
@@ -57,7 +57,9 @@ export const MAP_ADAPTER_QA_DEFAULT_MODES = Object.freeze(["off", "safe", "crypt
 
 export const MAP_VISUAL_QA_DEFAULT_OPTIONS = Object.freeze({
   samplesPerContext: 2,
+  samplesPerTheme: 2,
   context: "mixed",
+  theme: "mixed",
   roomCountMin: 6,
   roomCountMax: 10,
   seed: "cruor-map-visual-qa",
@@ -83,6 +85,55 @@ const MAP_VISUAL_CONTEXT_CUE_KINDS = Object.freeze({
   Mine: Object.freeze(["mine-rail", "mine-support", "pit", "rubble", "stalagmite"]),
   "Noble House": Object.freeze(["bed", "chest", "courtyard", "desk", "fireplace", "shelf", "table"]),
   Ruins: Object.freeze(["broken-wall", "pillar", "rubble", "statue"]),
+});
+
+const MAP_VISUAL_THEME_QA_THEMES = Object.freeze([
+  Object.freeze({
+    key: "sedlec-ossuary",
+    name: "Sedlec Ossuary",
+    context: "Crypt",
+    sourceAnchors: Object.freeze(["Sedlec Ossuary"]),
+  }),
+  Object.freeze({
+    key: "decomposition",
+    name: "Decomposition",
+    context: "Cave",
+    sourceAnchors: Object.freeze(["Decomposition"]),
+  }),
+  Object.freeze({
+    key: "towers-of-silence",
+    name: "Towers of Silence",
+    context: "Ruins",
+    sourceAnchors: Object.freeze(["Towers of Silence"]),
+  }),
+  Object.freeze({
+    key: "the-mist",
+    name: "The Mist",
+    context: "Ruins",
+    sourceAnchors: Object.freeze(["The Mist"]),
+  }),
+  Object.freeze({
+    key: "wolf-spiders",
+    name: "Wolf Spiders",
+    context: "Cave",
+    sourceAnchors: Object.freeze(["Wolf Spiders"]),
+  }),
+]);
+
+const MAP_VISUAL_THEME_CUES = Object.freeze({
+  "sedlec-ossuary": Object.freeze(["skull/bone ossuary marks", "reliquary/statue cues", "bone chapel furniture"]),
+  decomposition: Object.freeze(["rot gas", "seeping wet decay", "soft collapse/rubble cues"]),
+  "towers-of-silence": Object.freeze(["exposure wells", "sun-bleached bones", "ritual boundary/statue cues"]),
+  "the-mist": Object.freeze(["fog banks", "wet glass/condensation", "panic clue markers"]),
+  "wolf-spiders": Object.freeze(["webs", "egg sacs", "victim/bone cache cues"]),
+});
+
+const MAP_VISUAL_THEME_CUE_KINDS = Object.freeze({
+  "sedlec-ossuary": Object.freeze(["altar", "bones", "pillar", "statue", "tomb"]),
+  decomposition: Object.freeze(["bones", "fog", "pit", "rubble", "water"]),
+  "towers-of-silence": Object.freeze(["altar", "bones", "pillar", "pit", "statue"]),
+  "the-mist": Object.freeze(["clue-marker", "fog", "pit", "water"]),
+  "wolf-spiders": Object.freeze(["bones", "egg-sac", "fog", "pit", "web"]),
 });
 
 
@@ -265,7 +316,7 @@ function pickFrom(values, index) {
   return values[index % Math.max(1, values.length)];
 }
 
-function createQaRegions({ roomCount, context, seed }) {
+function createQaRegions({ roomCount, context, seed, sourceAnchors = ["Sedlec Ossuary"] }) {
   return Array.from({ length: roomCount }, (_, index) => {
     const blueprint = QA_ROOM_BLUEPRINTS[index % QA_ROOM_BLUEPRINTS.length];
     const isLast = index === roomCount - 1;
@@ -284,7 +335,7 @@ function createQaRegions({ roomCount, context, seed }) {
       size: source.size,
       connectors: source.connectors,
       tags,
-      sourceAnchors: ["Sedlec Ossuary"],
+      sourceAnchors,
       links: [],
       isEntrance: index === 0,
       isExit: isLast,
@@ -293,7 +344,7 @@ function createQaRegions({ roomCount, context, seed }) {
       requestMetadata: {
         contexts: [context],
         horror: ["Religious Horror"],
-        sourceAnchors: ["Sedlec Ossuary"],
+        sourceAnchors,
       },
     };
   });
@@ -373,8 +424,9 @@ function createQaConnections(regions = [], runIndex = 0) {
   return connections;
 }
 
-function createQaConfig({ seed, index, roomCount, context, contextGraphAdapterMode = "off" }) {
-  const regions = createQaRegions({ roomCount, context, seed });
+function createQaConfig({ seed, index, roomCount, context, contextGraphAdapterMode = "off", sourceAnchors, themeId = "", themeName = "" }) {
+  const resolvedSourceAnchors = Array.isArray(sourceAnchors) ? sourceAnchors : ["Sedlec Ossuary", "Towers of Silence"];
+  const regions = createQaRegions({ roomCount, context, seed, sourceAnchors: resolvedSourceAnchors });
   return {
     ...DEFAULT_CONFIG,
     seed,
@@ -382,7 +434,9 @@ function createQaConfig({ seed, index, roomCount, context, contextGraphAdapterMo
     biome: context,
     roomCount,
     horror: ["Religious Horror", index % 2 === 0 ? "Gothic" : "Body Horror"],
-    sourceAnchors: ["Sedlec Ossuary", "Towers of Silence"],
+    sourceAnchors: resolvedSourceAnchors,
+    themeId,
+    themeName,
     regions,
     connections: createQaConnections(regions, index),
     contextGraphAdapterMode,
@@ -962,6 +1016,43 @@ function getVisualQaExpectedCueKinds(context) {
   return asArray(MAP_VISUAL_CONTEXT_CUE_KINDS[context]);
 }
 
+function normalizeVisualThemeKey(value = "") {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  if (!normalized) return "";
+  if (normalized === "sedlec" || normalized === "sedlec-ossuary") return "sedlec-ossuary";
+  if (normalized === "decomposition") return "decomposition";
+  if (
+    normalized === "tower-of-silence" ||
+    normalized === "towers-of-silence" ||
+    normalized === "towers-silence"
+  )
+    return "towers-of-silence";
+  if (normalized === "mist" || normalized === "the-mist") return "the-mist";
+  if (normalized === "wolf-spider" || normalized === "wolf-spiders") return "wolf-spiders";
+  return MAP_VISUAL_THEME_CUE_KINDS[normalized] ? normalized : "";
+}
+
+function getThemePool(theme = "mixed") {
+  const normalized = normalizeVisualThemeKey(theme);
+  if (!normalized || String(theme || "").trim().toLowerCase() === "mixed") return MAP_VISUAL_THEME_QA_THEMES;
+  return MAP_VISUAL_THEME_QA_THEMES.filter((item) => item.key === normalized);
+}
+
+function getVisualQaThemeCueList(themeKey) {
+  return asArray(MAP_VISUAL_THEME_CUES[themeKey]).length
+    ? MAP_VISUAL_THEME_CUES[themeKey]
+    : [];
+}
+
+function getVisualQaExpectedThemeCueKinds(themeKey) {
+  return asArray(MAP_VISUAL_THEME_CUE_KINDS[themeKey]);
+}
+
 function normalizeVisualCueKind(kind = "") {
   return String(kind || "").trim().toLowerCase().replace(/[\s_]+/g, "-");
 }
@@ -1012,13 +1103,17 @@ function createVisualCueUsage({ context = "", expectedKinds = [], renderedKinds 
   };
 }
 
-export function analyzeMapVisualCueSvg(svg = "", preview = {}) {
+function analyzeCueSvgByClass(svg = "", {
+  className = "prop-context-cue",
+  keyAttribute = "data-context-key",
+  keyValue = "",
+  expectedKinds = [],
+} = {}) {
   const source = String(svg || "");
-  const context = preview.context || "";
-  const expectedKinds = asArray(preview.expectedCueKinds);
   const renderedKinds = [];
-  const cueTagPattern = /<g\b[^>]*class="[^"]*\bprop-context-cue\b[^"]*"[^>]*>/g;
-  const attributePattern = /\s(data-(?:context-key|prop-kind))="([^"]*)"/g;
+  const cueTagPattern = new RegExp(`<g\\b[^>]*class="[^"]*\\b${className}\\b[^"]*"[^>]*>`, "g");
+  const attributePattern = /\s(data-(?:context-key|theme-key|prop-kind))="([^"]*)"/g;
+  const normalizedKeyValue = normalizeVisualCueKind(keyValue);
   let cueMatch = null;
   let renderedCount = 0;
 
@@ -1028,18 +1123,35 @@ export function analyzeMapVisualCueSvg(svg = "", preview = {}) {
     while ((attributeMatch = attributePattern.exec(cueMatch[0]))) {
       attributes[attributeMatch[1]] = attributeMatch[2];
     }
-    const cueContext = normalizeAdapterContextKey(attributes["data-context-key"] || context);
-    const previewContext = normalizeAdapterContextKey(context);
-    if (previewContext && cueContext && cueContext !== previewContext) continue;
+    const cueKey = normalizeVisualCueKind(attributes[keyAttribute] || keyValue);
+    if (normalizedKeyValue && cueKey && cueKey !== normalizedKeyValue) continue;
     renderedCount += 1;
     renderedKinds.push(attributes["data-prop-kind"]);
   }
 
   return createVisualCueUsage({
-    context,
+    context: keyValue,
     expectedKinds,
     renderedKinds,
     renderedCount,
+  });
+}
+
+export function analyzeMapVisualCueSvg(svg = "", preview = {}) {
+  return analyzeCueSvgByClass(svg, {
+    className: "prop-context-cue",
+    keyAttribute: "data-context-key",
+    keyValue: preview.context || "",
+    expectedKinds: asArray(preview.expectedCueKinds),
+  });
+}
+
+export function analyzeMapThemeCueSvg(svg = "", preview = {}) {
+  return analyzeCueSvgByClass(svg, {
+    className: "prop-theme-cue",
+    keyAttribute: "data-theme-key",
+    keyValue: preview.themeKey || "",
+    expectedKinds: asArray(preview.expectedThemeCueKinds),
   });
 }
 
@@ -1049,15 +1161,15 @@ function createSerializableVisualPreview(preview) {
   return serializable;
 }
 
-function summarizeVisualCueUsage(previews = []) {
+function summarizeVisualCueUsage(previews = [], usageKey = "visualCueUsage") {
   const rows = asArray(previews);
   return {
-    rendered: rows.filter((preview) => preview.visualCueUsage?.status === "rendered").length,
-    partial: rows.filter((preview) => preview.visualCueUsage?.status === "partial").length,
-    missing: rows.filter((preview) => preview.visualCueUsage?.status === "missing").length,
-    notSupported: rows.filter((preview) => preview.visualCueUsage?.status === "not-supported").length,
+    rendered: rows.filter((preview) => preview[usageKey]?.status === "rendered").length,
+    partial: rows.filter((preview) => preview[usageKey]?.status === "partial").length,
+    missing: rows.filter((preview) => preview[usageKey]?.status === "missing").length,
+    notSupported: rows.filter((preview) => preview[usageKey]?.status === "not-supported").length,
     totalRenderedCues: rows.reduce(
-      (sum, preview) => sum + Number(preview.visualCueUsage?.renderedCount || 0),
+      (sum, preview) => sum + Number(preview[usageKey]?.renderedCount || 0),
       0,
     ),
   };
@@ -1083,8 +1195,15 @@ export function runMapVisualQa(options = {}) {
     16,
     MAP_VISUAL_QA_DEFAULT_OPTIONS.roomCountMax,
   );
+  const samplesPerTheme = clampInteger(
+    options.samplesPerTheme ?? options.themeSamples,
+    0,
+    20,
+    MAP_VISUAL_QA_DEFAULT_OPTIONS.samplesPerTheme,
+  );
   const seed = normalizeText(options.seed, MAP_VISUAL_QA_DEFAULT_OPTIONS.seed);
   const contexts = getContextPool(options.context || MAP_VISUAL_QA_DEFAULT_OPTIONS.context);
+  const themes = getThemePool(options.theme || options.themeId || MAP_VISUAL_QA_DEFAULT_OPTIONS.theme);
   const contextGraphAdapterMode = normalizeContextGraphAdapterMode(
     options.contextGraphAdapterMode ?? options.adapterMode,
     MAP_VISUAL_QA_DEFAULT_OPTIONS.contextGraphAdapterMode,
@@ -1105,6 +1224,9 @@ export function runMapVisualQa(options = {}) {
         roomCount,
         context,
         contextGraphAdapterMode,
+        sourceAnchors: [],
+        themeId: "generic-dark-location",
+        themeName: "Generic Dark Location",
       });
       const map = generateMap(config);
       const adapterUsage = getAdapterRuntimeUsage(map, contextGraphAdapterMode, context);
@@ -1115,8 +1237,11 @@ export function runMapVisualQa(options = {}) {
       });
       const preview = {
         id: visualId,
+        previewType: "context",
         label: `${context} ${sampleIndex + 1}`,
         context,
+        themeKey: "",
+        themeName: "",
         seed: mapSeed,
         roomCount: asArray(map.regions).length,
         corridorCount: asArray(map.corridors).length,
@@ -1124,9 +1249,78 @@ export function runMapVisualQa(options = {}) {
         adapterUsage,
         expectedCues: getVisualQaCueList(context),
         expectedCueKinds: getVisualQaExpectedCueKinds(context),
+        expectedThemeCues: [],
+        expectedThemeCueKinds: [],
         visualCueUsage: createVisualCueUsage({
           context,
           expectedKinds: getVisualQaExpectedCueKinds(context),
+        }),
+        themeCueUsage: createVisualCueUsage(),
+        filename: createMapVisualQaFilename({ id: visualId }),
+        status: validation.status,
+        issueCount: validation.issues.length,
+        warningCount: validation.issues.filter((issue) => issue.severity === "warning").length,
+        errorCount: validation.issues.filter((issue) => issue.severity === "error").length,
+        metrics: validation.metrics,
+      };
+      Object.defineProperty(preview, "generatedMap", {
+        value: map,
+        enumerable: false,
+        configurable: true,
+      });
+      previews.push(preview);
+    }
+  });
+
+
+  themes.forEach((theme, themeIndex) => {
+    for (let sampleIndex = 0; sampleIndex < samplesPerTheme; sampleIndex += 1) {
+      globalIndex += 1;
+      const roomSpan = roomCountMax - roomCountMin + 1;
+      const roomCount = roomCountMin + ((themeIndex + sampleIndex) % Math.max(1, roomSpan));
+      const context = theme.context || "Crypt";
+      const visualId = `map-visual-qa-theme-${slugifyVisualQaPart(theme.key)}-${String(sampleIndex + 1).padStart(2, "0")}`;
+      const mapSeed = `${seed}-theme-${slugifyVisualQaPart(theme.key)}-${String(sampleIndex + 1).padStart(2, "0")}`;
+      const config = createQaConfig({
+        seed: mapSeed,
+        index: globalIndex - 1,
+        roomCount,
+        context,
+        contextGraphAdapterMode,
+        sourceAnchors: asArray(theme.sourceAnchors),
+        themeId: theme.key,
+        themeName: theme.name,
+      });
+      const map = generateMap(config);
+      const adapterUsage = getAdapterRuntimeUsage(map, contextGraphAdapterMode, context);
+      const validation = validateGeneratedMap(map, {
+        mapId: visualId,
+        deterministicSignature: getMapSignature(map),
+        verifyDeterminism: false,
+      });
+      const preview = {
+        id: visualId,
+        previewType: "theme",
+        label: `${theme.name} ${sampleIndex + 1}`,
+        context,
+        themeKey: theme.key,
+        themeName: theme.name,
+        seed: mapSeed,
+        roomCount: asArray(map.regions).length,
+        corridorCount: asArray(map.corridors).length,
+        contextGraphAdapterMode,
+        adapterUsage,
+        expectedCues: getVisualQaCueList(context),
+        expectedCueKinds: getVisualQaExpectedCueKinds(context),
+        expectedThemeCues: getVisualQaThemeCueList(theme.key),
+        expectedThemeCueKinds: getVisualQaExpectedThemeCueKinds(theme.key),
+        visualCueUsage: createVisualCueUsage({
+          context,
+          expectedKinds: getVisualQaExpectedCueKinds(context),
+        }),
+        themeCueUsage: createVisualCueUsage({
+          context: theme.key,
+          expectedKinds: getVisualQaExpectedThemeCueKinds(theme.key),
         }),
         filename: createMapVisualQaFilename({ id: visualId }),
         status: validation.status,
@@ -1151,12 +1345,15 @@ export function runMapVisualQa(options = {}) {
     generatedAt: new Date().toISOString(),
     options: {
       samplesPerContext,
+      samplesPerTheme,
       count: previews.length,
       roomCountMin,
       roomCountMax,
       seed,
       context: normalizeText(options.context, MAP_VISUAL_QA_DEFAULT_OPTIONS.context),
       contexts,
+      theme: normalizeText(options.theme || options.themeId, MAP_VISUAL_QA_DEFAULT_OPTIONS.theme),
+      themes: themes.map((theme) => theme.key),
       contextGraphAdapterMode,
       showGrid: options.showGrid ?? MAP_VISUAL_QA_DEFAULT_OPTIONS.showGrid,
       showNames: options.showNames ?? MAP_VISUAL_QA_DEFAULT_OPTIONS.showNames,
@@ -1169,6 +1366,7 @@ export function runMapVisualQa(options = {}) {
       errors: previews.reduce((sum, preview) => sum + Number(preview.errorCount || 0), 0),
       warnings: previews.reduce((sum, preview) => sum + Number(preview.warningCount || 0), 0),
       visualCues: summarizeVisualCueUsage(previews),
+      themeCues: summarizeVisualCueUsage(previews, "themeCueUsage"),
     },
     previews,
   };
@@ -1178,15 +1376,18 @@ function buildVisualQaPreviewTable(previews = []) {
   const rows = asArray(previews).map((preview) => {
     const usage = preview.adapterUsage || {};
     const visualCueUsage = preview.visualCueUsage || {};
+    const themeCueUsage = preview.themeCueUsage || {};
     const cues = asArray(preview.expectedCues).join(", ");
+    const themeCues = asArray(preview.expectedThemeCues).join(", ") || "—";
     const renderedCueKinds = asArray(visualCueUsage.renderedKinds).join(", ") || "—";
+    const renderedThemeCueKinds = asArray(themeCueUsage.renderedKinds).join(", ") || "—";
     const path = preview.svgPath || preview.filename || "";
-    return `| ${preview.context} | ${preview.label} | ${preview.roomCount || 0} | ${usage.status || "baseline"} | ${visualCueUsage.status || "unknown"} | ${visualCueUsage.renderedCount || 0} | ${renderedCueKinds} | ${preview.warningCount || 0} | ${path} | ${cues} |`;
+    return `| ${preview.previewType || "context"} | ${preview.context} | ${preview.themeName || "—"} | ${preview.label} | ${preview.roomCount || 0} | ${usage.status || "baseline"} | ${visualCueUsage.status || "unknown"} | ${visualCueUsage.renderedCount || 0} | ${renderedCueKinds} | ${themeCueUsage.status || "not-supported"} | ${themeCueUsage.renderedCount || 0} | ${renderedThemeCueKinds} | ${preview.warningCount || 0} | ${path} | ${cues} | ${themeCues} |`;
   });
   if (!rows.length) return "No visual previews generated.";
   return [
-    "| Context | Preview | Rooms | Adapter | Visual Cues | Cue Count | Rendered Cue Kinds | Warnings | SVG | Expected Cues |",
-    "|---|---|---:|---|---|---:|---|---:|---|---|",
+    "| Type | Context | Theme | Preview | Rooms | Adapter | Context Visual | Context Cue Count | Context Cue Kinds | Theme Visual | Theme Cue Count | Theme Cue Kinds | Warnings | SVG | Expected Context Cues | Expected Theme Cues |",
+    "|---|---|---|---|---:|---|---|---:|---|---|---:|---|---:|---|---|---|",
     ...rows,
   ].join("\n");
 }
@@ -1202,10 +1403,12 @@ export function buildMapVisualQaMarkdown(report) {
     "## Options",
     "",
     `- Samples Per Context: ${report.options?.samplesPerContext}`,
+    `- Samples Per Theme: ${report.options?.samplesPerTheme}`,
     `- Total Previews: ${summary.totalPreviews || 0}`,
     `- Seed: ${report.options?.seed}`,
     `- Context: ${report.options?.context}`,
     `- Contexts: ${asArray(report.options?.contexts).join(", ")}`,
+    `- Themes: ${asArray(report.options?.themes).join(", ")}`,
     `- Rooms: ${report.options?.roomCountMin}–${report.options?.roomCountMax}`,
     `- Graph Adapter: ${report.options?.contextGraphAdapterMode}`,
     "",
@@ -1215,7 +1418,15 @@ export function buildMapVisualQaMarkdown(report) {
     `- Partial / Below Threshold: ${summary.visualCues?.partial || 0}`,
     `- Missing: ${summary.visualCues?.missing || 0}`,
     `- Not Supported: ${summary.visualCues?.notSupported || 0}`,
-    `- Total Rendered Cues: ${summary.visualCues?.totalRenderedCues || 0}`,
+    `- Total Rendered Context Cues: ${summary.visualCues?.totalRenderedCues || 0}`,
+    "",
+    "## Theme Cue Summary",
+    "",
+    `- Rendered / Sufficient: ${summary.themeCues?.rendered || 0}`,
+    `- Partial / Below Threshold: ${summary.themeCues?.partial || 0}`,
+    `- Missing: ${summary.themeCues?.missing || 0}`,
+    `- Not Supported: ${summary.themeCues?.notSupported || 0}`,
+    `- Total Rendered Theme Cues: ${summary.themeCues?.totalRenderedCues || 0}`,
     "",
     "## Review Checklist",
     "",
@@ -1224,6 +1435,12 @@ export function buildMapVisualQaMarkdown(report) {
     "- Ruins previews should read as broken masonry, collapsed rooms, fragments or exposed remains.",
     "- Noble House previews should read as domestic/service/courtyard spaces, not generic dungeons.",
     "- Chapel previews should read as nave/altar/pews/pillars rather than arbitrary rooms.",
+    "- Theme previews should show source-specific cues without erasing the base context silhouette.",
+    "- Sedlec should emphasize bones/ossuary/reliquary cues.",
+    "- Decomposition should emphasize rot, seepage, gas, and soft collapse cues.",
+    "- Towers of Silence should emphasize exposure, bone wells, and ritual boundary cues.",
+    "- The Mist should emphasize fog, visibility breaks, condensation, and panic clues.",
+    "- Wolf Spiders should emphasize webs, egg sacs, and victim-cache cues.",
     "",
     "## Preview Index",
     "",
@@ -1239,6 +1456,7 @@ export function serializeMapVisualQaReport(report) {
     summary: {
       ...(report?.summary || {}),
       visualCues: summarizeVisualCueUsage(previews),
+      themeCues: summarizeVisualCueUsage(previews, "themeCueUsage"),
     },
     previews,
   };

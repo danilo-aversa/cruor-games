@@ -219,46 +219,35 @@ const TOOL_CARDS = [
 function ToolVisual({ tool, activeIndex, mode, onSelectPreview, onZoom }) {
   const activePreview = tool.previews[activeIndex] ?? tool.previews[0];
   const pipelineSteps = [...tool.engineFlow, ...(tool.engineItems ?? [])];
-  const pipelineRows = Math.max(1, Math.ceil(pipelineSteps.length / 2));
-  const pipelineNodeWidth = 34;
-  const pipelineSideOffset = pipelineNodeWidth / 2 + 2;
   const pipelinePoints = pipelineSteps.map((_, index) => {
     const row = Math.floor(index / 2);
-    const evenRow = row % 2 === 0;
-    const firstInRow = index % 2 === 0;
-    const x = firstInRow === evenRow ? 24 : 76;
-    const y = pipelineRows === 1 ? 50 : 12 + row * (66 / (pipelineRows - 1));
-
-    return { x, y };
-  });
-  const pipelineConnectors = pipelinePoints.slice(0, -1).map((point, index) => {
-    const nextPoint = pipelinePoints[index + 1];
-    const movingRight = nextPoint.x > point.x;
-    const sameRow = Math.abs(nextPoint.y - point.y) < 0.01;
-
-    if (sameRow) {
-      const x1 = point.x + (movingRight ? pipelineSideOffset : -pipelineSideOffset);
-      const x2 = nextPoint.x + (movingRight ? -pipelineSideOffset : pipelineSideOffset);
-
-      return {
-        path: `M ${x1} ${point.y} L ${x2} ${nextPoint.y}`,
-        icon: movingRight ? "fa-arrow-right" : "fa-arrow-left",
-        x: (x1 + x2) / 2,
-        y: point.y,
-      };
-    }
-
-    const onRight = point.x > 50;
-    const sideX = point.x + (onRight ? pipelineSideOffset : -pipelineSideOffset);
-    const outerX = onRight ? 98 : 2;
+    const isEvenRow = row % 2 === 0;
+    const isFirstInRow = index % 2 === 0;
+    const side = isFirstInRow === isEvenRow ? "left" : "right";
 
     return {
-      path: `M ${sideX} ${point.y} L ${outerX} ${point.y} L ${outerX} ${nextPoint.y} L ${sideX} ${nextPoint.y}`,
-      icon: "fa-arrow-down",
-      x: outerX,
-      y: (point.y + nextPoint.y) / 2,
+      side,
+      row,
+      gridColumn: side === "left" ? 1 : 2,
+      gridRow: row + 1,
     };
   });
+
+  const getConnector = (index) => {
+    const point = pipelinePoints[index];
+    const nextPoint = pipelinePoints[index + 1];
+
+    if (!point || !nextPoint) return null;
+    if (point.row === nextPoint.row) {
+      return nextPoint.side === "right"
+        ? { className: "cruor-home__engine-connector--right", icon: "fa-arrow-right" }
+        : { className: "cruor-home__engine-connector--left", icon: "fa-arrow-left" };
+    }
+
+    return point.side === "right"
+      ? { className: "cruor-home__engine-connector--down-right", icon: "fa-arrow-down" }
+      : { className: "cruor-home__engine-connector--down-left", icon: "fa-arrow-down" };
+  };
 
   if (mode === "details") {
     return (
@@ -273,26 +262,15 @@ function ToolVisual({ tool, activeIndex, mode, onSelectPreview, onZoom }) {
           </div>
 
           <div className="cruor-home__engine-grid" aria-label={`${tool.title} engine pipeline`}>
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-              {pipelineConnectors.map((connector, index) => (
-                <path key={`${tool.id}-pipeline-line-${index}`} d={connector.path} />
-              ))}
-            </svg>
-            {pipelineConnectors.map((connector, index) => (
-              <i
-                key={`${tool.id}-pipeline-arrow-${index}`}
-                className={`cruor-home__engine-arrow fa-solid ${connector.icon}`}
-                aria-hidden="true"
-                style={{ "--arrow-x": connector.x, "--arrow-y": connector.y }}
-              />
-            ))}
             {pipelineSteps.map((item, index) => {
               const point = pipelinePoints[index] ?? pipelinePoints[pipelinePoints.length - 1];
+              const connector = getConnector(index);
 
               return (
                 <p
                   key={`${tool.id}-pipeline-${item.label}`}
-                  style={{ "--engine-x": point.x, "--engine-y": point.y }}
+                  className={`cruor-home__engine-node cruor-home__engine-node--${point.side}`}
+                  style={{ "--engine-col": point.gridColumn, "--engine-row": point.gridRow }}
                 >
                   <span className="cruor-home__engine-node-mark">
                     <i className={`fa-solid ${item.icon}`} aria-hidden="true" />
@@ -302,6 +280,11 @@ function ToolVisual({ tool, activeIndex, mode, onSelectPreview, onZoom }) {
                     <strong>{item.label}</strong>
                     {item.text}
                   </span>
+                  {connector ? (
+                    <span className={`cruor-home__engine-connector ${connector.className}`} aria-hidden="true">
+                      <i className={`fa-solid ${connector.icon}`} />
+                    </span>
+                  ) : null}
                 </p>
               );
             })}
@@ -354,7 +337,6 @@ function ToolVisual({ tool, activeIndex, mode, onSelectPreview, onZoom }) {
     </figure>
   );
 }
-
 function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [mode, setMode] = useState("overview");
@@ -453,7 +435,7 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
       </div>
 
       <div className="cruor-home__tool-content">
-        <div key={mode} className="cruor-home__tool-content-inner">
+        <div key={mode} className={`cruor-home__tool-content-inner cruor-home__tool-content-inner--${mode}`}>
         {mode === "details" ? (
           <>
             <div className="cruor-home__tool-copy">

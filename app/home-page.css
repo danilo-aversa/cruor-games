@@ -352,15 +352,15 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(340px, 0.86fr);
   grid-template-areas:
-    "content image"
-    "action image";
+    "content image";
   align-items: start;
   gap: 0;
   margin-top: 30px;
+  margin-bottom: 28px;
   overflow: visible;
-  border: 1px solid rgba(208, 162, 170, 0.36);
-  background: #080506;
-  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.42);
+  border: 1px solid var(--cruor-color-r208-g162-b170-a160);
+  background: var(--cruor-gradient-linear-159-cbc8ae86), var(--cruor-color-r16-g12-b14-a500);
+  box-shadow: var(--cruor-shadow-box-115);
   transition: border-color 0.16s ease, box-shadow 0.16s ease, height 0.28s ease;
 }
 
@@ -378,9 +378,15 @@
   pointer-events: none;
 }
 
-.cruor-home__tool-card:hover {
-  border-color: rgba(208, 162, 170, 0.58);
-  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.5);
+.cruor-home__tool-card::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  height: 8px;
+  background: var(--cruor-gradient-linear-207-407ee320);
+  opacity: 0.85;
+  pointer-events: none;
 }
 
 .cruor-home__tool-tabs {
@@ -395,9 +401,9 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
-  border: 1px solid rgba(208, 162, 170, 0.36);
+  border: 1px solid var(--cruor-color-r208-g162-b170-a160);
   border-bottom: 0;
-  background: #080506;
+  background: var(--cruor-gradient-linear-159-cbc8ae86), var(--cruor-color-r16-g12-b14-a500);
   box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.42);
 }
 
@@ -413,7 +419,7 @@
   height: auto;
   padding: 4px 9px;
   border: 0;
-  border-right: 1px solid rgba(208, 162, 170, 0.16);
+  border-right: 1px solid var(--cruor-color-r208-g162-b170-a160);
   background: transparent;
   color: var(--cruor-color-muted, var(--muted));
   cursor: pointer;
@@ -443,19 +449,6 @@
   outline: none;
 }
 
-.cruor-home__tool-card:hover .cruor-home__tool-tabs {
-  border-color: rgba(208, 162, 170, 0.36);
-  background: #080506;
-}
-
-.cruor-home__tool-card:hover .cruor-home__tool-tab {
-  border-right-color: rgba(208, 162, 170, 0.16);
-}
-
-.cruor-home__tool-card:hover .cruor-home__tool-tab:not([aria-selected="true"]) {
-  color: rgba(231, 213, 198, 0.72);
-}
-
 .cruor-home__tool-content {
   position: relative;
   z-index: 1;
@@ -470,6 +463,12 @@
   display: grid;
   gap: 18px;
   animation: cruorHomeTabPanelIn 0.24s ease both;
+}
+
+.cruor-home__tool-content-inner--overview .cruor-home__tool-summary,
+.cruor-home__tool-content-inner--overview .cruor-home__tool-features li,
+.cruor-home__tool-content-inner--overview .cruor-home__tool-output {
+  font-size: var(--text-size-3xl);
 }
 
 .cruor-home__tool-card--resizing {
@@ -523,7 +522,7 @@
 }
 
 .cruor-home__tool-features i,
-.cruor-home__engine-grid p i {
+.cruor-home__engine-node-mark > i {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -550,12 +549,12 @@
 }
 
 .cruor-home__tool-card > .cruor-home__button {
-  position: relative;
-  z-index: 1;
-  grid-area: action;
-  justify-self: start;
-  align-self: end;
-  margin: 0 clamp(24px, 2.6vw, 36px) clamp(24px, 2.6vw, 36px);
+  position: absolute;
+  z-index: 4;
+  left: clamp(24px, 2.6vw, 36px);
+  bottom: 0;
+  margin: 0;
+  transform: translateY(50%);
 }
 
 .cruor-home__tool-image {
@@ -567,10 +566,11 @@
 
 .cruor-home__tool-image.cruor-home__media-card {
   display: grid;
-  gap: 10px;
+  gap: 0;
   width: 100%;
   aspect-ratio: auto;
-  padding: 8px;
+  padding: 16px 8px 8px;
+  overflow: visible;
   border: 0;
   background: transparent;
   box-shadow: none;
@@ -592,7 +592,7 @@
   object-position: center;
   opacity: 1;
   filter: none;
-  border: 1px solid rgba(208, 162, 170, 0.52);
+  border: 1px solid rgba(208, 162, 170, 0.26);
 }
 
 .cruor-home__tool-main-preview img {
@@ -629,9 +629,31 @@
 }
 
 .cruor-home__tool-preview-gallery {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: -22px;
+  z-index: 3;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
+  padding: 10px;
+  border: 1px solid rgba(208, 162, 170, 0.62);
+  background: #080506;
+  box-shadow:
+    0 22px 46px rgba(0, 0, 0, 0.68),
+    0 0 0 1px rgba(255, 238, 242, 0.05),
+    inset 0 0 0 1px rgba(255, 238, 242, 0.04);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(18px) scale(0.98);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.cruor-home__tool-image.cruor-home__media-card:hover .cruor-home__tool-preview-gallery {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
 }
 
 .cruor-home__tool-preview-thumb {
@@ -664,7 +686,7 @@
 .cruor-home__tool-preview-thumb[aria-pressed="true"] {
   border-color: rgba(208, 162, 170, 0.5);
   color: var(--cruor-color-text, var(--text));
-  background: rgba(122, 26, 40, 0.18);
+  background: rgba(122, 26, 40, 0.28);
   outline: none;
 }
 
@@ -710,60 +732,36 @@
 }
 
 .cruor-home__engine-grid {
+  --pipeline-col-gap: 66px;
+  --pipeline-row-gap: 22px;
+  --pipeline-rail: 30px;
   position: relative;
-  height: clamp(340px, 28vw, 440px);
-  overflow: visible;
-}
-
-.cruor-home__engine-grid svg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.cruor-home__engine-grid path {
-  fill: none;
-  stroke: rgba(208, 162, 170, 0.68);
-  stroke-width: 1.35;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-}
-
-.cruor-home__engine-arrow {
-  position: absolute;
-  z-index: 2;
-  left: calc(var(--arrow-x) * 1%);
-  top: calc(var(--arrow-y) * 1%);
-  display: block;
-  width: 1em;
-  height: 1em;
-  transform: translate(-50%, -50%);
-  color: var(--home-accent-pale);
-  background: transparent;
-  border: 0;
-  font-size: 14px;
-  line-height: 1;
-  text-align: center;
-}
-
-.cruor-home__engine-grid p {
-  position: absolute;
-  z-index: 1;
-  left: calc(var(--engine-x) * 1%);
-  top: calc(var(--engine-y) * 1%);
   display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-auto-rows: minmax(86px, auto);
+  gap: var(--pipeline-row-gap) var(--pipeline-col-gap);
+  align-items: stretch;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  padding: 10px var(--pipeline-rail);
+  overflow: visible;
+}
+
+.cruor-home__engine-node {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-column: var(--engine-col);
+  grid-row: var(--engine-row);
   grid-template-columns: 36px minmax(0, 1fr);
   gap: 8px;
-  align-items: start;
-  width: min(33%, 240px);
+  align-items: center;
+  width: 100%;
+  min-height: 86px;
   margin: 0;
-  padding: 8px 9px;
-  transform: translate(-50%, -50%);
+  padding: 9px 10px;
+  overflow: visible;
   border: 1px solid rgba(208, 162, 170, 0.34);
   background: #080506;
   color: var(--cruor-color-muted, var(--muted));
@@ -775,22 +773,24 @@
   line-height: 1.2;
 }
 
-.cruor-home__engine-grid p i {
-  width: 32px;
-  height: 32px;
-  color: var(--home-accent-pale);
-  background: rgba(122, 26, 40, 0.18);
-  border: 1px solid rgba(208, 162, 170, 0.42);
-}
-
 .cruor-home__engine-node-mark,
 .cruor-home__engine-node-copy {
+  position: relative;
+  z-index: 2;
   display: grid;
 }
 
 .cruor-home__engine-node-mark {
   justify-items: center;
   gap: 4px;
+}
+
+.cruor-home__engine-node-mark > i {
+  width: 32px;
+  height: 32px;
+  color: var(--home-accent-pale);
+  background: rgba(122, 26, 40, 0.18);
+  border: 1px solid rgba(208, 162, 170, 0.42);
 }
 
 .cruor-home__engine-node-mark small {
@@ -805,13 +805,92 @@
   gap: 2px;
 }
 
-.cruor-home__engine-grid p strong {
+.cruor-home__engine-node strong {
   display: block;
   margin-bottom: 1px;
   color: var(--cruor-color-text, var(--text));
   font-size: 0.88em;
+  font-weight: 850;
   letter-spacing: 0.045em;
   text-transform: uppercase;
+}
+
+.cruor-home__engine-connector {
+  position: absolute;
+  z-index: 0;
+  display: block;
+  color: var(--home-accent-pale);
+  pointer-events: none;
+}
+
+.cruor-home__engine-connector i {
+  position: absolute;
+  z-index: 1;
+  display: block;
+  width: auto;
+  height: auto;
+  border: 0;
+  background: transparent;
+  color: var(--home-accent-pale);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.cruor-home__engine-connector--right,
+.cruor-home__engine-connector--left {
+  top: 50%;
+  width: var(--pipeline-col-gap);
+  height: 1px;
+  border-top: 1px solid rgba(208, 162, 170, 0.68);
+  transform: translateY(-50%);
+}
+
+.cruor-home__engine-connector--right {
+  left: 100%;
+}
+
+.cruor-home__engine-connector--left {
+  right: 100%;
+}
+
+.cruor-home__engine-connector--right i,
+.cruor-home__engine-connector--left i {
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cruor-home__engine-connector--down-right,
+.cruor-home__engine-connector--down-left {
+  top: 50%;
+  width: var(--pipeline-rail);
+  height: calc(100% + var(--pipeline-row-gap));
+}
+
+.cruor-home__engine-connector--down-right {
+  left: 100%;
+  border-top: 1px solid rgba(208, 162, 170, 0.68);
+  border-right: 1px solid rgba(208, 162, 170, 0.68);
+  border-bottom: 1px solid rgba(208, 162, 170, 0.68);
+}
+
+.cruor-home__engine-connector--down-left {
+  right: 100%;
+  border-top: 1px solid rgba(208, 162, 170, 0.68);
+  border-left: 1px solid rgba(208, 162, 170, 0.68);
+  border-bottom: 1px solid rgba(208, 162, 170, 0.68);
+}
+
+.cruor-home__engine-connector--down-right i {
+  right: 0;
+  top: 50%;
+  transform: translate(50%, -50%);
+}
+
+.cruor-home__engine-connector--down-left i {
+  left: 0;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .cruor-home__tool-engine-panel .cruor-home__tool-output {
@@ -983,8 +1062,7 @@
     grid-template-columns: 1fr;
     grid-template-areas:
       "content"
-      "image"
-      "action";
+      "image";
   }
 
 }
@@ -1052,19 +1130,35 @@
   }
 
   .cruor-home__engine-grid {
-    height: 520px;
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 16px;
+    padding: 8px 0;
   }
 
-  .cruor-home__engine-grid p {
-    width: min(43%, 260px);
+  .cruor-home__engine-connector {
+    display: none;
+  }
+
+  .cruor-home__engine-node {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    min-height: 0;
     font-size: var(--text-size-xl);
   }
 
   .cruor-home__tool-preview-gallery {
+    position: static;
     grid-template-columns: 1fr;
+    margin-top: 8px;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
   }
 
   .cruor-home__tool-card > .cruor-home__button {
-    margin: 0 18px 18px;
+    left: 18px;
+    bottom: 0;
+    transform: translateY(50%);
   }
 }
