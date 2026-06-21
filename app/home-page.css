@@ -17,6 +17,25 @@
   width: min(var(--home-max), calc(100% - clamp(28px, 6vw, 72px)));
   margin: 0 auto;
   padding: clamp(42px, 8vw, 96px) 0 40px;
+  position: relative;
+  isolation: isolate;
+}
+
+main.cruor-home::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("/assets/textures/noise-pattern-with-subtle-cross-lines.png");
+  background-repeat: repeat;
+  background-size: 320px 320px;
+  opacity: 0.1;
+}
+
+.cruor-home > * {
+  position: relative;
+  z-index: 1;
 }
 
 .cruor-home a,
@@ -241,13 +260,18 @@
 
 .cruor-home__statement > div {
   position: relative;
-  max-width: 1080px;
-  margin: 0 auto;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
   padding: 42px 36px;
-  border: 1px solid var(--cruor-color-r208-g162-b170-a220);
-  background: var(--cruor-gradient-linear-157-94ddb68f), var(--home-panel-strong);
+  border: 1px solid var(--cruor-color-r208-g162-b170-a160);
+  background: var(--cruor-gradient-linear-159-cbc8ae86), var(--cruor-color-r16-g12-b14-a500);
   text-align: center;
-  box-shadow: var(--cruor-shadow-box-112);
+  box-shadow:
+    0 0 0 1px rgba(208, 162, 170, 0.08),
+    0 22px 58px rgba(0, 0, 0, 0.34),
+    0 0 22px rgba(153, 17, 35, 0.24),
+    0 0 54px rgba(122, 26, 40, 0.14);
 }
 
 .cruor-home__statement > div::before,
@@ -257,7 +281,7 @@
   left: 28px;
   right: 28px;
   height: 1px;
-  background: var(--cruor-gradient-linear-118-d4915879);
+  background: var(--cruor-gradient-linear-207-407ee320);
 }
 
 .cruor-home__statement > div::before {
@@ -282,7 +306,11 @@
   overflow: hidden;
   border: 1px solid var(--cruor-color-r208-g162-b170-a120);
   background: var(--cruor-gradient-linear-155-aa3bc08c), var(--cruor-surface-card);
-  box-shadow: var(--cruor-shadow-box-115);
+  box-shadow:
+    0 0 0 1px rgba(208, 162, 170, 0.07),
+    0 20px 54px rgba(0, 0, 0, 0.32),
+    0 0 22px rgba(153, 17, 35, 0.23),
+    0 0 54px rgba(122, 26, 40, 0.13);
 }
 
 .cruor-home__section::before {
@@ -343,24 +371,28 @@
   z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(28px, 4vw, 44px);
+  gap: clamp(28px, 5vw, 100px);
 }
 
 .cruor-home__tool-card {
   position: relative;
+  padding: 10px;
   isolation: isolate;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(340px, 0.86fr);
   grid-template-areas:
     "content image";
-  align-items: start;
+  align-items: stretch;
   gap: 0;
-  margin-top: 30px;
-  margin-bottom: 28px;
+  margin: 0;
   overflow: visible;
   border: 1px solid var(--cruor-color-r208-g162-b170-a160);
   background: var(--cruor-gradient-linear-159-cbc8ae86), var(--cruor-color-r16-g12-b14-a500);
-  box-shadow: var(--cruor-shadow-box-115);
+  box-shadow:
+    0 0 0 1px rgba(208, 162, 170, 0.07),
+    0 20px 54px rgba(0, 0, 0, 0.32),
+    0 0 22px rgba(153, 17, 35, 0.23),
+    0 0 54px rgba(122, 26, 40, 0.13);
   transition: border-color 0.16s ease, box-shadow 0.16s ease, height 0.28s ease;
 }
 
@@ -389,87 +421,29 @@
   pointer-events: none;
 }
 
-.cruor-home__tool-tabs {
-  position: absolute;
-  top: -32px;
-  left: clamp(16px, 2vw, 28px);
-  z-index: 3;
-  display: inline-flex;
-  align-items: flex-end;
-  width: auto;
-  min-height: 32px;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  border: 1px solid var(--cruor-color-r208-g162-b170-a160);
-  border-bottom: 0;
-  background: var(--cruor-gradient-linear-159-cbc8ae86), var(--cruor-color-r16-g12-b14-a500);
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.42);
-}
 
-.cruor-home__tool-tab {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  width: auto;
-  min-width: 0;
-  min-height: 30px;
-  height: auto;
-  padding: 4px 9px;
-  border: 0;
-  border-right: 1px solid var(--cruor-color-r208-g162-b170-a160);
-  background: transparent;
-  color: var(--cruor-color-muted, var(--muted));
-  cursor: pointer;
-  font-family: var(--body);
-  font-size: var(--text-size-xl);
-  font-weight: 650;
-  line-height: 1;
-  letter-spacing: 0.035em;
-  text-transform: uppercase;
-  transition: color 0.16s ease, border-color 0.16s ease;
-}
 
-.cruor-home__tool-tab:last-child {
-  border-right: 0;
-}
 
-.cruor-home__tool-tab i {
-  font-size: 0.9em;
-}
 
-.cruor-home__tool-tab:focus-visible,
-.cruor-home__tool-tab:hover,
-.cruor-home__tool-tab[aria-pressed="true"],
-.cruor-home__tool-tab[aria-selected="true"] {
-  color: var(--home-accent-pale);
-  background: transparent;
-  outline: none;
-}
 
 .cruor-home__tool-content {
   position: relative;
   z-index: 1;
   grid-area: content;
+  align-self: stretch;
   display: grid;
-  align-content: start;
-  gap: 18px;
-  padding: clamp(24px, 2.6vw, 36px);
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-content: stretch;
+  gap: clamp(18px, 2vw, 28px);
+  padding: clamp(28px, 3vw, 40px) clamp(28px, 3vw, 42px) 10px 20px;
 }
 
 .cruor-home__tool-content-inner {
   display: grid;
-  gap: 18px;
+  gap: clamp(20px, 2vw, 28px);
   animation: cruorHomeTabPanelIn 0.24s ease both;
 }
 
-.cruor-home__tool-content-inner--overview .cruor-home__tool-summary,
-.cruor-home__tool-content-inner--overview .cruor-home__tool-features li,
-.cruor-home__tool-content-inner--overview .cruor-home__tool-output {
-  font-size: var(--text-size-3xl);
-}
 
 .cruor-home__tool-card--resizing {
   overflow: visible;
@@ -477,19 +451,23 @@
 
 .cruor-home__tool-copy {
   display: grid;
-  gap: 10px;
+  gap: clamp(12px, 1.2vw, 16px);
+}
+
+.cruor-home__tool-copy h3 {
+  font-family: var(--font);
 }
 
 .cruor-home__tool-summary {
   max-width: none;
-  font-size: var(--text-size-xl);
-  line-height: 1.56;
+  font-size: var(--text-size-3xl);
+  line-height: 1.58;
 }
 
 .cruor-home__tool-feature-block {
   display: grid;
-  gap: 12px;
-  padding: 16px 0;
+  gap: clamp(14px, 1.4vw, 18px);
+  padding: clamp(18px, 1.8vw, 22px) 0;
   border-top: 1px solid var(--cruor-color-r208-g162-b170-a120);
   border-bottom: 1px solid var(--cruor-color-r208-g162-b170-a120);
 }
@@ -505,7 +483,7 @@
 .cruor-home__tool-features {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 18px;
+  gap: clamp(14px, 1.4vw, 18px) clamp(18px, 2vw, 24px);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -514,15 +492,14 @@
 .cruor-home__tool-features li {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr);
-  gap: 10px;
+  gap: clamp(10px, 1.1vw, 14px);
   align-items: start;
   color: var(--cruor-color-muted, var(--muted));
-  font-size: var(--text-size-xl);
-  line-height: 1.35;
+  font-size: var(--text-size-3xl);
+  line-height: 1.42;
 }
 
-.cruor-home__tool-features i,
-.cruor-home__engine-node-mark > i {
+.cruor-home__tool-features i {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -534,12 +511,20 @@
 }
 
 .cruor-home__tool-output {
-  padding: 13px 15px;
+  padding: clamp(15px, 1.5vw, 18px) clamp(16px, 1.7vw, 20px);
   border-left: 2px solid var(--home-line-strong);
   background: rgba(18, 10, 13, 0.86);
   color: var(--cruor-color-muted, var(--muted));
-  font-size: var(--text-size-xl);
-  line-height: 1.4;
+  font-size: var(--text-size-3xl);
+  line-height: 1.48;
+  transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.cruor-home__tool-output:hover {
+  border-left-color: var(--home-accent-pale);
+  background: rgba(33, 12, 18, 0.9);
+  color: var(--cruor-color-text, var(--text));
+  box-shadow: inset 0 0 0 1px rgba(208, 162, 170, 0.08), 0 0 22px rgba(153, 17, 35, 0.16);
 }
 
 .cruor-home__tool-output strong,
@@ -548,14 +533,19 @@
   font-weight: 850;
 }
 
-.cruor-home__tool-card > .cruor-home__button {
-  position: absolute;
-  z-index: 4;
-  left: clamp(24px, 2.6vw, 36px);
-  bottom: 0;
-  margin: 0;
-  transform: translateY(50%);
+.cruor-home__tool-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: center;
+  align-self: end;
+  margin-top: 0;
 }
+
+.cruor-home__tool-actions .cruor-home__button {
+  width: 100%;
+}
+
 
 .cruor-home__tool-image {
   position: relative;
@@ -564,13 +554,18 @@
   align-self: stretch;
 }
 
+.cruor-home__tool-engine-figure {
+  align-self: flex-start;
+  height: 100%;
+}
+
 .cruor-home__tool-image.cruor-home__media-card {
   display: grid;
-  gap: 0;
+  gap: 12px;
   width: 100%;
   aspect-ratio: auto;
   padding: 16px 8px 8px;
-  overflow: visible;
+  overflow: hidden;
   border: 0;
   background: transparent;
   box-shadow: none;
@@ -629,31 +624,19 @@
 }
 
 .cruor-home__tool-preview-gallery {
-  position: absolute;
-  left: 24px;
-  right: 24px;
-  bottom: -22px;
+  position: relative;
   z-index: 3;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  padding: 10px;
-  border: 1px solid rgba(208, 162, 170, 0.62);
-  background: #080506;
-  box-shadow:
-    0 22px 46px rgba(0, 0, 0, 0.68),
-    0 0 0 1px rgba(255, 238, 242, 0.05),
-    inset 0 0 0 1px rgba(255, 238, 242, 0.04);
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(18px) scale(0.98);
-  transition: opacity 0.18s ease, transform 0.18s ease;
-}
-
-.cruor-home__tool-image.cruor-home__media-card:hover .cruor-home__tool-preview-gallery {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(0) scale(1);
+  transform: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .cruor-home__tool-preview-thumb {
@@ -674,10 +657,14 @@
 }
 
 .cruor-home__tool-preview-thumb span {
-  padding: 0 8px 7px;
+  display: grid;
+  place-items: center;
+  min-height: 30px;
+  padding: 0 8px;
   font-size: var(--text-size-xs);
   font-weight: 800;
   letter-spacing: 0.06em;
+  text-align: center;
   text-transform: uppercase;
 }
 
@@ -693,18 +680,15 @@
 .cruor-home__tool-engine-panel {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  gap: 16px;
+  gap: clamp(14px, 1.5vw, 20px);
   width: 100%;
   min-height: 0;
   height: 100%;
-  padding: clamp(18px, 2vw, 24px);
-  border: 1px solid rgba(208, 162, 170, 0.44);
-  background: #080506;
+  padding: clamp(12px, 1.6vw, 18px);
+  border: 0;
+  background: transparent;
   color: var(--cruor-color-text, var(--text));
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.96),
-    0 16px 34px rgba(0, 0, 0, 0.44),
-    inset 0 0 0 1px rgba(255, 238, 242, 0.05);
+  box-shadow: none;
 }
 
 .cruor-home__tool-engine-panel-head {
@@ -727,24 +711,26 @@
 
 .cruor-home__tool-engine-panel-head p {
   max-width: none;
-  color: var(--cruor-color-text, var(--text));
-  line-height: 1.42;
+  color: var(--cruor-color-muted, var(--muted));
+  font-size: var(--text-size-3xl);
+  line-height: 1.58;
 }
 
 .cruor-home__engine-grid {
   --pipeline-col-gap: 66px;
-  --pipeline-row-gap: 22px;
+  --pipeline-row-gap: clamp(18px, 3.2vh, 34px);
   --pipeline-rail: 30px;
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-auto-rows: minmax(86px, auto);
+  grid-auto-rows: minmax(0, 1fr);
   gap: var(--pipeline-row-gap) var(--pipeline-col-gap);
+  align-content: stretch;
   align-items: stretch;
   width: 100%;
-  height: auto;
+  height: 100%;
   min-height: 0;
-  padding: 10px var(--pipeline-rail);
+  padding: 8px var(--pipeline-rail) 0;
   overflow: visible;
 }
 
@@ -756,21 +742,73 @@
   grid-row: var(--engine-row);
   grid-template-columns: 36px minmax(0, 1fr);
   gap: 8px;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
-  min-height: 86px;
+  height: 100%;
+  min-height: 0;
   margin: 0;
   padding: 9px 10px;
   overflow: visible;
-  border: 1px solid rgba(208, 162, 170, 0.34);
-  background: #080506;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a160);
+  background: var(--cruor-gradient-linear-159-cbc8ae86), var(--cruor-color-r16-g12-b14-a500);
   color: var(--cruor-color-muted, var(--muted));
   box-shadow:
-    0 0 0 5px #080506,
-    0 10px 26px rgba(0, 0, 0, 0.34),
+    0 0 0 5px var(--cruor-color-r16-g12-b14-a500),
     inset 0 0 0 1px rgba(255, 238, 242, 0.04);
   font-size: var(--text-size-xl);
   line-height: 1.2;
+  transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+}
+
+.cruor-home__engine-node:hover {
+  border-color: var(--cruor-color-r208-g162-b170-a300);
+  background: var(--cruor-gradient-linear-159-cbc8ae86), rgba(35, 10, 17, 0.68);
+  box-shadow:
+    0 0 0 5px var(--cruor-color-r16-g12-b14-a500),
+    inset 0 0 0 1px rgba(255, 238, 242, 0.06),
+    0 0 24px rgba(153, 17, 35, 0.18);
+  color: var(--cruor-color-text, var(--text));
+}
+
+.cruor-home__engine-node::before {
+  content: attr(data-step);
+  position: absolute;
+  top: 68%;
+  left: 14px;
+  z-index: 0;
+  color: var(--home-accent-pale);
+  font-size: clamp(2.55rem, 3.55vw, 4rem);
+  font-weight: 950;
+  letter-spacing: -0.08em;
+  line-height: 0.72;
+  opacity: 0.1;
+  pointer-events: none;
+  text-shadow: none;
+  transform: translateY(-50%);
+  transition: opacity 0.18s ease, text-shadow 0.18s ease, color 0.18s ease;
+}
+
+.cruor-home__engine-node:hover::before {
+  opacity: 0.2;
+  text-shadow: 0 0 18px rgba(208, 162, 170, 0.42), 0 0 34px rgba(153, 17, 35, 0.28);
+}
+
+.cruor-home__engine-node--right {
+  grid-template-columns: minmax(0, 1fr) 36px;
+}
+
+.cruor-home__engine-node--right::before {
+  right: 14px;
+  left: auto;
+}
+
+.cruor-home__engine-node--right .cruor-home__engine-node-mark {
+  grid-column: 2;
+}
+
+.cruor-home__engine-node--right .cruor-home__engine-node-copy {
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .cruor-home__engine-node-mark,
@@ -781,28 +819,36 @@
 }
 
 .cruor-home__engine-node-mark {
+  position: relative;
   justify-items: center;
-  gap: 4px;
+  align-self: flex-start;
+  gap: 0;
 }
 
 .cruor-home__engine-node-mark > i {
   width: 32px;
   height: 32px;
   color: var(--home-accent-pale);
-  background: rgba(122, 26, 40, 0.18);
-  border: 1px solid rgba(208, 162, 170, 0.42);
+  background: transparent;
+  border: 0;
 }
 
 .cruor-home__engine-node-mark small {
-  color: var(--home-accent-pale);
-  font-size: 0.62em;
-  font-weight: 850;
-  letter-spacing: 0.11em;
-  line-height: 1;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 .cruor-home__engine-node-copy {
   gap: 2px;
+  text-align: left;
+}
+
+.cruor-home__engine-node--right .cruor-home__engine-node-copy {
+  text-align: right;
 }
 
 .cruor-home__engine-node strong {
@@ -816,81 +862,87 @@
 }
 
 .cruor-home__engine-connector {
+  --engine-line-color: rgba(208, 162, 170, 0.68);
+  --engine-arrow-size: 8px;
+  --engine-arrow-inset: 8px;
   position: absolute;
   z-index: 0;
   display: block;
-  color: var(--home-accent-pale);
   pointer-events: none;
 }
 
-.cruor-home__engine-connector i {
+.cruor-home__engine-connector::after {
+  content: "";
   position: absolute;
-  z-index: 1;
-  display: block;
-  width: auto;
-  height: auto;
-  border: 0;
-  background: transparent;
-  color: var(--home-accent-pale);
-  font-size: 14px;
-  line-height: 1;
+  width: var(--engine-arrow-size);
+  height: var(--engine-arrow-size);
+  background: var(--engine-line-color);
 }
 
 .cruor-home__engine-connector--right,
 .cruor-home__engine-connector--left {
   top: 50%;
-  width: var(--pipeline-col-gap);
+  width: calc(var(--pipeline-col-gap) - (var(--engine-arrow-inset) * 2));
   height: 1px;
-  border-top: 1px solid rgba(208, 162, 170, 0.68);
+  border-top: 1px solid var(--engine-line-color);
   transform: translateY(-50%);
 }
 
 .cruor-home__engine-connector--right {
-  left: 100%;
+  left: calc(100% + var(--engine-arrow-inset));
 }
 
 .cruor-home__engine-connector--left {
-  right: 100%;
+  right: calc(100% + var(--engine-arrow-inset));
 }
 
-.cruor-home__engine-connector--right i,
-.cruor-home__engine-connector--left i {
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.cruor-home__engine-connector--right::after {
+  top: 50%;
+  right: 0;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  transform: translateY(-50%);
+}
+
+.cruor-home__engine-connector--left::after {
+  top: 50%;
+  left: 0;
+  clip-path: polygon(100% 0, 0 50%, 100% 100%);
+  transform: translateY(-50%);
 }
 
 .cruor-home__engine-connector--down-right,
 .cruor-home__engine-connector--down-left {
   top: 50%;
-  width: var(--pipeline-rail);
+  width: calc(var(--pipeline-rail) - var(--engine-arrow-inset));
   height: calc(100% + var(--pipeline-row-gap));
 }
 
 .cruor-home__engine-connector--down-right {
-  left: 100%;
-  border-top: 1px solid rgba(208, 162, 170, 0.68);
-  border-right: 1px solid rgba(208, 162, 170, 0.68);
-  border-bottom: 1px solid rgba(208, 162, 170, 0.68);
+  left: calc(100% + var(--engine-arrow-inset));
+  border-top: 1px solid var(--engine-line-color);
+  border-right: 1px solid var(--engine-line-color);
+  border-bottom: 1px solid var(--engine-line-color);
 }
 
 .cruor-home__engine-connector--down-left {
-  right: 100%;
-  border-top: 1px solid rgba(208, 162, 170, 0.68);
-  border-left: 1px solid rgba(208, 162, 170, 0.68);
-  border-bottom: 1px solid rgba(208, 162, 170, 0.68);
+  right: calc(100% + var(--engine-arrow-inset));
+  border-top: 1px solid var(--engine-line-color);
+  border-left: 1px solid var(--engine-line-color);
+  border-bottom: 1px solid var(--engine-line-color);
 }
 
-.cruor-home__engine-connector--down-right i {
-  right: 0;
-  top: 50%;
-  transform: translate(50%, -50%);
-}
-
-.cruor-home__engine-connector--down-left i {
+.cruor-home__engine-connector--down-right::after {
   left: 0;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  bottom: 0;
+  clip-path: polygon(100% 0, 0 50%, 100% 100%);
+  transform: translateY(50%);
+}
+
+.cruor-home__engine-connector--down-left::after {
+  right: 0;
+  bottom: 0;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  transform: translateY(50%);
 }
 
 .cruor-home__tool-engine-panel .cruor-home__tool-output {
@@ -924,12 +976,15 @@
 
 .cruor-home__section--sources {
   display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.8fr);
-  gap: clamp(18px, 4vw, 56px);
+  margin-top: clamp(56px, 7vw, 104px);
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 4vw, 48px);
   align-items: center;
   margin-bottom: 22px;
+  overflow: hidden;
   border-color: var(--cruor-color-r208-g162-b170-a100);
   background: var(--cruor-gradient-linear-196-c7f65a74), var(--cruor-color-r11-g10-b12-a420);
+  text-align: center;
 }
 
 .cruor-home__section--sources::before {
@@ -937,15 +992,116 @@
 }
 
 .cruor-home__sources-copy,
-.cruor-home__sources-visual {
+.cruor-home__sources-carousel {
   position: relative;
   z-index: 1;
 }
 
-.cruor-home__sources-visual {
+.cruor-home__sources-copy {
+  display: grid;
+  justify-items: center;
+  max-width: 940px;
+  margin: 0 auto;
+}
+
+.cruor-home__sources-copy .cruor-home__section-head {
+  justify-items: center;
   width: 100%;
-  max-width: 620px;
-  justify-self: center;
+  text-align: center;
+}
+
+.cruor-home__sources-copy .cruor-home__section-head p {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.cruor-home__sources-carousel {
+  width: 100%;
+  overflow: hidden;
+  padding: 8px 0 12px;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+.cruor-home__sources-carousel--grabbing {
+  cursor: grabbing;
+}
+
+.cruor-home__sources-carousel-track {
+  display: flex;
+  width: max-content;
+  gap: clamp(14px, 1.8vw, 22px);
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+.cruor-home__source-card {
+  position: relative;
+  flex: 0 0 clamp(210px, 18vw, 280px);
+  display: grid;
+  align-items: end;
+  aspect-ratio: 4 / 5;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(208, 162, 170, 0.2);
+  background: rgba(8, 5, 6, 0.92);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.78),
+    0 16px 34px rgba(0, 0, 0, 0.34);
+  text-align: left;
+}
+
+.cruor-home__source-card img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 1;
+  filter: saturate(0.86) brightness(0.7);
+  pointer-events: none;
+  user-select: none;
+}
+
+.cruor-home__source-card::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  height: 58%;
+  background: linear-gradient(180deg, transparent, rgba(5, 4, 5, 0.76) 38%, rgba(5, 4, 5, 0.96));
+  pointer-events: none;
+}
+
+.cruor-home__source-card-copy {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 8px;
+  align-content: end;
+  padding: 18px;
+}
+
+.cruor-home__source-card-copy strong {
+  color: var(--cruor-color-text, var(--text));
+  font-family: var(--display);
+  font-size: var(--display-size-s);
+  font-weight: 950;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.cruor-home__source-card-copy p {
+  color: var(--cruor-color-muted, var(--muted));
+  font-size: var(--text-size-l);
+  line-height: 1.42;
 }
 
 .cruor-home__section--support {
@@ -967,7 +1123,11 @@
   padding: 26px;
   border: 1px solid var(--cruor-color-r208-g162-b170-a120);
   background: var(--cruor-gradient-linear-156-5a9dd1db), var(--cruor-surface-card);
-  box-shadow: var(--cruor-shadow-box-106);
+  box-shadow:
+    0 0 0 1px rgba(208, 162, 170, 0.06),
+    0 18px 48px rgba(0, 0, 0, 0.36),
+    0 0 20px rgba(153, 17, 35, 0.22),
+    0 0 48px rgba(122, 26, 40, 0.12);
 }
 
 .cruor-home__support-band p {
@@ -1104,20 +1264,26 @@
     margin-top: 34px;
   }
 
-  .cruor-home__tool-tabs {
-    top: -31px;
-    left: 14px;
-  }
-
-  .cruor-home__tool-tab {
-    min-height: 29px;
-    height: auto;
-    padding: 4px 8px;
-    font-size: var(--text-size-xl);
-  }
-
   .cruor-home__tool-content {
-    padding: 18px;
+    gap: 18px;
+    padding: clamp(28px, 3vw, 40px) clamp(28px, 3vw, 42px) 10px 20px;
+  }
+
+  .cruor-home__tool-actions {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .cruor-home__tool-actions .cruor-home__button {
+    width: 100%;
+  }
+
+  .cruor-home__tool-content-inner {
+    gap: 18px;
+  }
+
+  .cruor-home__tool-feature-block {
+    padding: 16px 0;
   }
 
   .cruor-home__tool-features {
@@ -1143,22 +1309,30 @@
   .cruor-home__engine-node {
     grid-column: 1 / -1;
     grid-row: auto;
+    grid-template-columns: 36px minmax(0, 1fr);
     min-height: 0;
     font-size: var(--text-size-xl);
   }
 
-  .cruor-home__tool-preview-gallery {
-    position: static;
-    grid-template-columns: 1fr;
-    margin-top: 8px;
-    opacity: 1;
-    pointer-events: auto;
-    transform: none;
+  .cruor-home__engine-node--right .cruor-home__engine-node-mark {
+    grid-column: 1;
   }
 
-  .cruor-home__tool-card > .cruor-home__button {
-    left: 18px;
-    bottom: 0;
-    transform: translateY(50%);
+  .cruor-home__engine-node--right .cruor-home__engine-node-copy {
+    grid-column: 2;
+    text-align: left;
+  }
+
+  .cruor-home__engine-node--right::before {
+    right: auto;
+    left: 8px;
+  }
+
+  .cruor-home__tool-preview-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .cruor-home__source-card {
+    flex-basis: min(74vw, 280px);
   }
 }

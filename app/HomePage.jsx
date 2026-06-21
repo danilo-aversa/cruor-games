@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { INSPIRATION_CARDS } from "../features/crucible/crucible.sources-data.js";
 import "./home-page.css";
 
 const LANDING_IMAGES = {
@@ -24,27 +25,27 @@ const TOOL_CARDS = [
     id: "darken",
     title: "Darken a Location",
     summary:
-      "Build structured horror sites from context, source anchors, horror direction, location regions, clues, hazards, atmosphere, and map intent.",
+      "Define a dark fantasy location, choose the horror logic that shapes it, and generate a playable map with keyed regions, hazards, clues, and table text. The tool keeps creative choices connected to the final layout, so the map reflects the site you described instead of a generic dungeon.",
     features: [
       {
-        icon: "fa-book-skull",
-        text: "Source-inspired atmosphere, sensory cues, and visual signs.",
+        icon: "fa-sliders",
+        text: "Set the location type, scale, tone, source inspiration, and horror direction.",
       },
       {
-        icon: "fa-location-dot",
-        text: "Location regions with roles, pressure, clues, hazards, and setpiece intent.",
+        icon: "fa-dungeon",
+        text: "Build the site as playable regions with roles, entrances, routes, and pressure points.",
       },
       {
         icon: "fa-map-location-dot",
-        text: "Map-aware material that can feed a deterministic playable layout.",
+        text: "Generate a procedural game map from those choices instead of starting from a blank layout.",
       },
       {
         icon: "fa-scroll",
-        text: "Read-aloud text and table-use notes for immediate play.",
+        text: "Fill the map with hazards, clues, sensory details, read-aloud text, and DM notes.",
       },
     ],
     output:
-      "A structured horror location with regions, atmosphere, clues, hazards, map intent, and table notes.",
+      "A procedural playable map with keyed regions, routes, hazards, clues, read-aloud text, and table-ready notes.",
     actionLabel: "Open Darken a Location",
     actionArgs: ["darken", "composer"],
     art: LANDING_IMAGES.map.src,
@@ -76,44 +77,44 @@ const TOOL_CARDS = [
       {
         icon: "fa-compass-drafting",
         label: "Frame",
-        text: "Context, site type, tone, scale, intrusion level, and intended table use.",
+        text: "Set the site frame, tone, scale, intrusion level, and table purpose for play.",
       },
       {
         icon: "fa-book-skull",
         label: "Source Logic",
-        text: "Real inspirations provide motifs, sensory cues, images, taboos, and horror behavior.",
+        text: "Real inspirations provide motifs, sensory cues, taboos, and horror behavior.",
       },
       {
         icon: "fa-dungeon",
         label: "Region Model",
-        text: "The site becomes regions with roles, pressure, clues, hazards, and setpiece intent.",
+        text: "Shape the site into regions with roles, pressure, clues, hazards, and setpieces.",
       },
       {
         icon: "fa-route",
         label: "Map Intent",
-        text: "Connections, entrances, routes, and layout needs are prepared for the map generator.",
+        text: "Prepare entrances, routes, connections, and layout needs for map generation.",
       },
     ],
     engineItems: [
       {
         icon: "fa-eye",
         label: "Signs",
-        text: "Immediate visual and sensory cues the DM can describe.",
+        text: "Create visual and sensory cues the DM can describe immediately at the table.",
       },
       {
         icon: "fa-triangle-exclamation",
         label: "Hazards",
-        text: "Playable pressure, danger, or environmental consequence.",
+        text: "Add playable pressure, danger, and environmental consequences to the location.",
       },
       {
         icon: "fa-magnifying-glass",
         label: "Clues",
-        text: "Evidence, corpses, traces, inscriptions, and revelations.",
+        text: "Place evidence, corpses, traces, inscriptions, and revelations for discovery.",
       },
       {
         icon: "fa-scroll",
         label: "Output",
-        text: "Read-aloud text, notes, and drop-in material for play.",
+        text: "Compile read-aloud text, keyed notes, and drop-in material for actual play.",
       },
     ],
   },
@@ -121,27 +122,27 @@ const TOOL_CARDS = [
     id: "monster",
     title: "Monster Composer",
     summary:
-      "Create dark fantasy creatures through frames, tactical roles, horror grafts, pressure, weaknesses, encounter behavior, validation, and export direction.",
+      "Choose a monster concept and role, assemble its horror mechanics, validate its combat profile, and export a complete 5E stat block for play. The tool turns narrative ideas into rules-facing traits, actions, weaknesses, tactics, and encounter support.",
     features: [
       {
+        icon: "fa-id-card-clip",
+        text: "Set the creature concept, size, role, tier, encounter purpose, and danger level.",
+      },
+      {
         icon: "fa-dna",
-        text: "Body, mind, movement, attack pattern, and horror hook.",
+        text: "Add modular horror parts that define movement, attacks, defenses, weaknesses, and scene presence.",
       },
       {
-        icon: "fa-skull",
-        text: "Weaknesses, tells, pressure tools, lair presence, and death effects.",
+        icon: "fa-chart-line",
+        text: "Check damage, durability, action pressure, complexity, and counterplay before export.",
       },
       {
-        icon: "fa-chess-knight",
-        text: "Role and threat profile for how the creature behaves at the table.",
-      },
-      {
-        icon: "fa-circle-check",
-        text: "A table-ready monster draft with structure, mechanics, and counterplay.",
+        icon: "fa-file-lines",
+        text: "Generate a complete monster stat block with tactics, tells, and table-use notes.",
       },
     ],
     output:
-      "A rules-aware monster draft with identity, pressure, player-facing answers, readiness checks, and export direction.",
+      "A complete 5E monster stat block with combat actions, traits, tactics, counterplay, and table-ready support notes.",
     actionLabel: "Open Monster Composer",
     actionArgs: ["monster"],
     art: LANDING_IMAGES.workbench.src,
@@ -173,49 +174,55 @@ const TOOL_CARDS = [
       {
         icon: "fa-id-card-clip",
         label: "Frame",
-        text: "Creature type, size, role, tier, tempo, danger level, and encounter purpose.",
+        text: "Set creature type, size, role, tier, tempo, danger, and encounter purpose.",
       },
       {
         icon: "fa-dna",
         label: "Grafts",
-        text: "Modular horror parts define body, movement, attacks, weakness, and death effect.",
+        text: "Choose modular horror grafts for body, movement, attacks, weakness, and death.",
       },
       {
         icon: "fa-chart-line",
         label: "Combat Profile",
-        text: "Expected damage, durability, attack bonus, save DC, pressure, and control output.",
+        text: "Check expected damage, durability, attack bonus, save DC, pressure, and control.",
       },
       {
         icon: "fa-clipboard-check",
         label: "Validation",
-        text: "Parser, readiness, and publish gates check the monster before export.",
+        text: "Run parser, readiness, and publish checks before exporting the monster.",
       },
     ],
     engineItems: [
       {
         icon: "fa-bolt",
         label: "Pressure",
-        text: "How strongly the creature pushes the table each round.",
+        text: "Define how strongly the creature pressures the table round after round.",
       },
       {
         icon: "fa-diagram-project",
         label: "Complexity",
-        text: "How much rule load, tracking, and decision weight the monster adds.",
+        text: "Measure rule load, tracking, and decision weight added by the monster.",
       },
       {
         icon: "fa-shield-halved",
         label: "Counterplay",
-        text: "Tells, weaknesses, and player answers that keep horror fair.",
+        text: "Preserve tells, weaknesses, and player answers that keep the horror fair.",
       },
       {
         icon: "fa-file-export",
         label: "Export",
-        text: "A structured draft prepared for stat block, QA, and table use.",
+        text: "Compile a structured draft for stat block export, QA, and table-ready use.",
       },
     ],
   },
 ];
 
+const SOURCE_CAROUSEL_CARDS = INSPIRATION_CARDS.map((card) => ({
+  title: card.anchor,
+  description: card.caption,
+  imageUrl: card.imageUrl,
+  imageAlt: card.imageNote || `${card.anchor} inspiration image.`,
+}));
 function ToolVisual({ tool, activeIndex, mode, onSelectPreview, onZoom }) {
   const activePreview = tool.previews[activeIndex] ?? tool.previews[0];
   const pipelineSteps = [...tool.engineFlow, ...(tool.engineItems ?? [])];
@@ -240,18 +247,18 @@ function ToolVisual({ tool, activeIndex, mode, onSelectPreview, onZoom }) {
     if (!point || !nextPoint) return null;
     if (point.row === nextPoint.row) {
       return nextPoint.side === "right"
-        ? { className: "cruor-home__engine-connector--right", icon: "fa-arrow-right" }
-        : { className: "cruor-home__engine-connector--left", icon: "fa-arrow-left" };
+        ? { className: "cruor-home__engine-connector--right" }
+        : { className: "cruor-home__engine-connector--left" };
     }
 
     return point.side === "right"
-      ? { className: "cruor-home__engine-connector--down-right", icon: "fa-arrow-down" }
-      : { className: "cruor-home__engine-connector--down-left", icon: "fa-arrow-down" };
+      ? { className: "cruor-home__engine-connector--down-right" }
+      : { className: "cruor-home__engine-connector--down-left" };
   };
 
   if (mode === "details") {
     return (
-      <figure className="cruor-home__tool-image cruor-home__media-card" aria-label={`${tool.title} engine details`}>
+      <figure className="cruor-home__tool-image cruor-home__tool-engine-figure cruor-home__media-card" aria-label={`${tool.title} engine details`}>
         <div className="cruor-home__tool-engine-panel">
           <div className="cruor-home__tool-engine-panel-head">
             <h4>Engine Pipeline</h4>
@@ -270,20 +277,19 @@ function ToolVisual({ tool, activeIndex, mode, onSelectPreview, onZoom }) {
                 <p
                   key={`${tool.id}-pipeline-${item.label}`}
                   className={`cruor-home__engine-node cruor-home__engine-node--${point.side}`}
+                  data-step={index + 1}
                   style={{ "--engine-col": point.gridColumn, "--engine-row": point.gridRow }}
                 >
                   <span className="cruor-home__engine-node-mark">
                     <i className={`fa-solid ${item.icon}`} aria-hidden="true" />
-                    <small>{String(index + 1).padStart(2, "0")}</small>
+                    <small>{index + 1}</small>
                   </span>
                   <span className="cruor-home__engine-node-copy">
                     <strong>{item.label}</strong>
                     {item.text}
                   </span>
                   {connector ? (
-                    <span className={`cruor-home__engine-connector ${connector.className}`} aria-hidden="true">
-                      <i className={`fa-solid ${connector.icon}`} />
-                    </span>
+                    <span className={`cruor-home__engine-connector ${connector.className}`} aria-hidden="true" />
                   ) : null}
                 </p>
               );
@@ -409,31 +415,6 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
       className="cruor-home__tool-card cruor-home__tool-card--image-backed"
       style={{ "--tool-art": `url('${tool.art}')` }}
     >
-      <div className="cruor-home__tool-tabs" role="tablist" aria-label={`${tool.title} information view`}>
-        <button
-          className="cruor-home__tool-tab"
-          type="button"
-          role="tab"
-          aria-selected={mode === "overview"}
-          aria-pressed={mode === "overview"}
-          onClick={() => handleModeChange("overview")}
-        >
-          <i className="fa-solid fa-layer-group" aria-hidden="true" />
-          <span>Overview</span>
-        </button>
-        <button
-          className="cruor-home__tool-tab"
-          type="button"
-          role="tab"
-          aria-selected={mode === "details"}
-          aria-pressed={mode === "details"}
-          onClick={() => handleModeChange("details")}
-        >
-          <i className="fa-solid fa-gears" aria-hidden="true" />
-          <span>Details</span>
-        </button>
-      </div>
-
       <div className="cruor-home__tool-content">
         <div key={mode} className={`cruor-home__tool-content-inner cruor-home__tool-content-inner--${mode}`}>
         {mode === "details" ? (
@@ -457,7 +438,7 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
             </div>
 
             <p className="cruor-home__tool-output">
-              <strong>Workbench logic.</strong> {tool.title} is designed to make the output feel authored:
+              <strong>Workbench Logic.</strong> {tool.title} is designed to make the output feel authored:
               fast enough for prep, structured enough for validation, and specific enough to support
               table-facing play instead of generic dark fantasy text.
             </p>
@@ -470,7 +451,7 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
             </div>
 
             <div className="cruor-home__tool-feature-block">
-              <span>What it helps you build</span>
+              <span>How It Works</span>
               <ul className="cruor-home__tool-features">
                 {tool.features.map((feature) => (
                   <li key={`${tool.id}-${feature.text}`}>
@@ -482,10 +463,30 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
             </div>
 
             <p className="cruor-home__tool-output">
-              <strong>Final output.</strong> {tool.output}
+              <strong>Workbench Output.</strong> {tool.output}
             </p>
           </>
         )}
+        </div>
+
+        <div className="cruor-home__tool-actions" aria-label={`${tool.title} actions`}>
+          <button
+            className="cruor-home__button cruor-home__button--primary"
+            type="button"
+            onClick={() => handleModeChange(mode === "details" ? "overview" : "details")}
+          >
+            {mode === "details" ? "See Overview" : "Learn More..."}
+            <i className={`fa-solid ${mode === "details" ? "fa-layer-group" : "fa-circle-info"}`} aria-hidden="true" />
+          </button>
+          <button
+            className="cruor-home__button cruor-home__button--primary"
+            type="button"
+            onClick={() => onOpenCrucibleTool?.(...tool.actionArgs)}
+            aria-label={`Open ${tool.title} generator`}
+          >
+            Open Generator
+            <i className="fa-solid fa-arrow-right" aria-hidden="true" />
+          </button>
         </div>
       </div>
 
@@ -497,17 +498,126 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
         onZoom={onZoom}
       />
 
-      {mode === "overview" ? (
-        <button
-          className="cruor-home__button cruor-home__button--primary"
-          type="button"
-          onClick={() => onOpenCrucibleTool?.(...tool.actionArgs)}
-        >
-          {tool.actionLabel}
-          <i className="fa-solid fa-arrow-right" aria-hidden="true" />
-        </button>
-      ) : null}
     </article>
+  );
+}
+
+function InspirationSourceCarousel() {
+  const viewportRef = useRef(null);
+  const trackRef = useRef(null);
+  const frameRef = useRef(null);
+  const offsetRef = useRef(0);
+  const velocityRef = useRef(0);
+  const dragRef = useRef({ active: false, pointerId: null, x: 0, time: 0 });
+  const carouselCards = useMemo(
+    () => [...SOURCE_CAROUSEL_CARDS, ...SOURCE_CAROUSEL_CARDS, ...SOURCE_CAROUSEL_CARDS],
+    []
+  );
+
+  const applyOffset = () => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const cycleWidth = track.scrollWidth / 3;
+
+    if (cycleWidth > 0) {
+      while (offsetRef.current <= -cycleWidth) offsetRef.current += cycleWidth;
+      while (offsetRef.current > 0) offsetRef.current -= cycleWidth;
+    }
+
+    track.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
+  };
+
+  useEffect(() => {
+    const tick = () => {
+      if (!dragRef.current.active) {
+        if (Math.abs(velocityRef.current) > 0.04) {
+          offsetRef.current += velocityRef.current;
+          velocityRef.current *= 0.94;
+        } else {
+          offsetRef.current -= 0.22;
+        }
+
+        applyOffset();
+      }
+
+      frameRef.current = window.requestAnimationFrame(tick);
+    };
+
+    frameRef.current = window.requestAnimationFrame(tick);
+
+    return () => {
+      if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
+    };
+  }, []);
+
+  const handlePointerDown = (event) => {
+    event.preventDefault();
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    dragRef.current = {
+      active: true,
+      pointerId: event.pointerId,
+      x: event.clientX,
+      time: performance.now(),
+    };
+    velocityRef.current = 0;
+    viewport.classList.add("cruor-home__sources-carousel--grabbing");
+    viewport.setPointerCapture?.(event.pointerId);
+  };
+
+  const handlePointerMove = (event) => {
+    if (!dragRef.current.active || dragRef.current.pointerId !== event.pointerId) return;
+
+    const now = performance.now();
+    const dx = event.clientX - dragRef.current.x;
+    const dt = Math.max(1, now - dragRef.current.time);
+
+    offsetRef.current += dx;
+    velocityRef.current = (dx / dt) * 16;
+    dragRef.current.x = event.clientX;
+    dragRef.current.time = now;
+    applyOffset();
+  };
+
+  const stopDragging = (event) => {
+    if (!dragRef.current.active || dragRef.current.pointerId !== event.pointerId) return;
+
+    viewportRef.current?.classList.remove("cruor-home__sources-carousel--grabbing");
+    viewportRef.current?.releasePointerCapture?.(event.pointerId);
+    dragRef.current.active = false;
+    dragRef.current.pointerId = null;
+  };
+
+  return (
+    <div
+      ref={viewportRef}
+      className="cruor-home__sources-carousel"
+      aria-label="Cruor inspiration source carousel"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={stopDragging}
+      onPointerCancel={stopDragging}
+    >
+      <div ref={trackRef} className="cruor-home__sources-carousel-track">
+        {carouselCards.map((card, index) => (
+          <article className="cruor-home__source-card" key={`${card.title}-${index}`}>
+            <img
+              src={card.imageUrl}
+              alt={card.imageAlt}
+              loading="lazy"
+              decoding="async"
+              draggable="false"
+            />
+            <div className="cruor-home__source-card-copy">
+              <strong>{card.title}</strong>
+              <p>{card.description}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -547,7 +657,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
   }, [zoomPreview]);
 
   return (
-    <section className="cruor-home" aria-labelledby="cruorHomeTitle">
+    <main className="cruor-home" aria-labelledby="cruorHomeTitle">
       <section className="cruor-home__hero" aria-label="Cruor Games homepage hero">
         <div className="cruor-home__hero-copy">
           <h1 id="cruorHomeTitle">The Dark Fantasy Workbench for 5E.</h1>
@@ -642,14 +752,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           </button>
         </div>
 
-        <figure className="cruor-home__sources-visual cruor-home__media-card cruor-home__media-card--inspiration">
-          <img
-            src="/assets/landing-page/hero-inspiration.webp"
-            alt="Cruor inspiration archive preview showing real sources transformed into playable horror material."
-            loading="lazy"
-            decoding="async"
-          />
-        </figure>
+        <InspirationSourceCarousel />
       </section>
 
       <section className="cruor-home__section cruor-home__section--support" aria-labelledby="supportTitle">
@@ -698,6 +801,6 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           </figure>
         </div>
       ) : null}
-    </section>
+    </main>
   );
 }
