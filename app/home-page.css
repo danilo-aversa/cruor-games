@@ -208,6 +208,22 @@ main.cruor-home::before {
   aspect-ratio: 16 / 9;
 }
 
+.cruor-home__image-frame--hero {
+  --hero-pan-x: 0%;
+  --hero-pan-y: 0%;
+}
+
+.cruor-home__image-frame--hero img {
+  transform: translate3d(var(--hero-pan-x), var(--hero-pan-y), 0) scale(1);
+  transform-origin: center;
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.cruor-home__image-frame--hero:hover img {
+  transform: translate3d(var(--hero-pan-x), var(--hero-pan-y), 0) scale(1.25);
+}
+
 .cruor-home__placeholder {
   position: relative;
   overflow: hidden;
@@ -292,11 +308,101 @@ main.cruor-home::before {
   bottom: 16px;
 }
 
-.cruor-home__statement p {
-  max-width: 68ch;
-  margin: 12px auto 0;
+.cruor-home__statement-head {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin-bottom: clamp(24px, 3vw, 34px);
+}
+
+.cruor-home__statement-head > span {
+  color: var(--home-accent-pale);
+  font-size: var(--text-size-sm);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cruor-home__statement-head p {
+  max-width: 58ch;
+  margin: 0 auto;
   font-size: var(--text-size-3xl);
-  line-height: 1.68;
+  line-height: 1.62;
+}
+
+.cruor-home__workbench-flow {
+  --workbench-flow-gap: clamp(16px, 2.4vw, 30px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--workbench-flow-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.cruor-home__workbench-flow li {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px 14px;
+  align-items: start;
+  min-height: 100%;
+  padding: clamp(18px, 2vw, 24px);
+  overflow: visible;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a140);
+  background: linear-gradient(180deg, rgba(122, 26, 40, 0.18), rgba(8, 5, 6, 0.78));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 238, 242, 0.04),
+    0 0 24px rgba(153, 17, 35, 0.14);
+}
+
+.cruor-home__workbench-flow li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: var(--workbench-flow-gap);
+  border-top: 1px solid rgba(208, 162, 170, 0.48);
+  transform: translateY(-50%);
+}
+
+.cruor-home__workbench-flow li > span {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  align-self: stretch;
+  display: grid;
+  place-items: start center;
+  min-width: 36px;
+  color: rgba(208, 162, 170, 0.46);
+  font-size: var(--text-size-sm);
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+.cruor-home__workbench-flow i {
+  grid-column: 2;
+  color: var(--home-accent-pale);
+  font-size: var(--text-size-3xl);
+  text-shadow: 0 0 18px rgba(153, 17, 35, 0.42);
+}
+
+.cruor-home__workbench-flow strong {
+  grid-column: 2;
+  color: var(--cruor-color-text, var(--text));
+  font-size: var(--text-size-2xl);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cruor-home__workbench-flow p {
+  grid-column: 2;
+  color: var(--cruor-color-muted, var(--muted));
+  font-size: var(--text-size-xl);
+  line-height: 1.5;
 }
 
 .cruor-home__section {
@@ -366,12 +472,16 @@ main.cruor-home::before {
   margin-bottom: 48px;
 }
 
+.cruor-home__section--tools .cruor-home__section-head[hidden] {
+  display: none;
+}
+
 .cruor-home__tool-grid {
   position: relative;
   z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(28px, 5vw, 100px);
+  gap: clamp(44px, 6vw, 128px);
 }
 
 .cruor-home__tool-card {
@@ -381,7 +491,8 @@ main.cruor-home::before {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(340px, 0.86fr);
   grid-template-areas:
-    "content image";
+    "content image"
+    "content actions";
   align-items: stretch;
   gap: 0;
   margin: 0;
@@ -394,6 +505,29 @@ main.cruor-home::before {
     0 0 22px rgba(153, 17, 35, 0.23),
     0 0 54px rgba(122, 26, 40, 0.13);
   transition: border-color 0.16s ease, box-shadow 0.16s ease, height 0.28s ease;
+}
+
+.cruor-home__tool-grid .cruor-home__tool-card:nth-child(even) {
+  grid-template-columns: minmax(340px, 0.86fr) minmax(0, 1fr);
+  grid-template-areas:
+    "image content"
+    "actions content";
+}
+
+.cruor-home__tool-card[data-mode="details"] {
+  grid-template-areas:
+    "content image"
+    "actions image";
+}
+
+.cruor-home__tool-grid .cruor-home__tool-card:nth-child(even)[data-mode="details"] {
+  grid-template-areas:
+    "image content"
+    "image actions";
+}
+
+.cruor-home__tool-grid .cruor-home__tool-card:nth-child(even) .cruor-home__tool-content {
+  padding: clamp(28px, 3vw, 40px) 20px 10px clamp(28px, 3vw, 42px);
 }
 
 .cruor-home__tool-card::before {
@@ -432,8 +566,7 @@ main.cruor-home::before {
   grid-area: content;
   align-self: stretch;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  align-content: stretch;
+  align-content: start;
   gap: clamp(18px, 2vw, 28px);
   padding: clamp(28px, 3vw, 40px) clamp(28px, 3vw, 42px) 10px 20px;
 }
@@ -452,6 +585,15 @@ main.cruor-home::before {
 .cruor-home__tool-copy {
   display: grid;
   gap: clamp(12px, 1.2vw, 16px);
+}
+
+.cruor-home__tool-copy > span {
+  color: var(--home-accent-pale);
+  font-size: var(--text-size-sm);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
 .cruor-home__tool-copy h3 {
@@ -510,6 +652,20 @@ main.cruor-home::before {
   border: 1px solid rgba(208, 162, 170, 0.18);
 }
 
+.cruor-home__tool-image .cruor-home__tool-feature-block {
+  align-self: stretch;
+  margin-top: 0;
+  padding: clamp(16px, 1.7vw, 22px);
+  border: 1px solid rgba(208, 162, 170, 0.12);
+  background: rgba(8, 5, 6, 0.44);
+  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.035);
+}
+
+.cruor-home__tool-image .cruor-home__tool-features {
+  grid-template-columns: 1fr;
+  gap: clamp(12px, 1.25vw, 16px);
+}
+
 .cruor-home__tool-output {
   padding: clamp(15px, 1.5vw, 18px) clamp(16px, 1.7vw, 20px);
   border-left: 2px solid var(--home-line-strong);
@@ -534,16 +690,24 @@ main.cruor-home::before {
 }
 
 .cruor-home__tool-actions {
+  position: relative;
+  z-index: 1;
+  grid-area: actions;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   align-items: center;
   align-self: end;
   margin-top: 0;
+  padding: 0 8px 8px;
 }
 
 .cruor-home__tool-actions .cruor-home__button {
   width: 100%;
+}
+
+.cruor-home__tool-card[data-mode="details"] .cruor-home__tool-actions {
+  justify-self: stretch;
 }
 
 
@@ -580,18 +744,74 @@ main.cruor-home::before {
 
 .cruor-home__tool-main-preview img,
 .cruor-home__tool-preview-thumb img {
-  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
-  opacity: 1;
-  filter: none;
-  border: 1px solid rgba(208, 162, 170, 0.26);
+  aspect-ratio: auto;
+  border-width: 0 1px 0 0;
+  border-color: rgba(208, 162, 170, 0.18);
 }
+
 
 .cruor-home__tool-main-preview img {
   animation: cruorHomePreviewIn 0.28s ease both;
+}
+
+.cruor-home__tool-preview-caption {
+  display: block;
+  width: min(88%, 620px);
+  min-height: clamp(42px, 3.6vw, 58px);
+  margin: 0 auto;
+  padding: clamp(8px, 1vw, 12px) 0;
+  border: 0;
+  background: transparent;
+  color: var(--cruor-color-muted, var(--muted));
+  font-size: var(--text-size-xl);
+  line-height: 1.45;
+}
+
+.cruor-home__tool-preview-caption strong {
+  color: var(--cruor-color-text, var(--text));
+  font-weight: 850;
+}
+
+
+.cruor-home__tool-preview-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 44px;
+  border: 1px solid rgba(208, 162, 170, 0.28);
+  background: rgba(5, 4, 5, 0.64);
+  color: var(--home-accent-pale);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity 0.16s ease, border-color 0.16s ease, background 0.16s ease, color 0.16s ease;
+}
+
+.cruor-home__tool-preview-nav--prev {
+  left: 10px;
+}
+
+.cruor-home__tool-preview-nav--next {
+  right: 10px;
+}
+
+.cruor-home__tool-main-preview:hover .cruor-home__tool-preview-nav,
+.cruor-home__tool-preview-nav:focus-visible {
+  opacity: 1;
+}
+
+.cruor-home__tool-preview-nav:hover,
+.cruor-home__tool-preview-nav:focus-visible {
+  border-color: var(--home-line-strong);
+  background: rgba(122, 26, 40, 0.76);
+  color: var(--cruor-color-text, var(--text));
+  outline: none;
 }
 
 .cruor-home__zoom-button {
@@ -625,7 +845,7 @@ main.cruor-home::before {
 
 .cruor-home__tool-preview-gallery {
   position: relative;
-  z-index: 3;
+  z-index: 2;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
@@ -636,46 +856,61 @@ main.cruor-home::before {
   opacity: 1;
   pointer-events: auto;
   transform: none;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
+
+
+
 
 .cruor-home__tool-preview-thumb {
+  position: relative;
   display: grid;
-  gap: 5px;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: stretch;
+  min-height: 50px;
   padding: 0;
-  border: 1px solid rgba(208, 162, 170, 0.16);
-  background: rgba(8, 5, 6, 0.92);
+  overflow: hidden;
+  border: 1px solid rgba(208, 162, 170, 0.2);
+  background: rgba(8, 5, 6, 0.72);
   color: var(--cruor-color-muted, var(--muted));
   cursor: pointer;
-  text-align: left;
-  transition: border-color 0.16s ease, color 0.16s ease, background 0.16s ease;
+  text-align: center;
+  transition: border-color 0.16s ease, color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
 }
 
+
 .cruor-home__tool-preview-thumb img {
-  aspect-ratio: 16 / 9;
-  border-width: 0 0 1px 0;
+  aspect-ratio: auto;
+  border-width: 0 1px 0 0;
+  border-color: rgba(208, 162, 170, 0.18);
 }
 
 .cruor-home__tool-preview-thumb span {
+  position: static;
+  inset: auto;
   display: grid;
   place-items: center;
-  min-height: 30px;
+  min-height: 0;
   padding: 0 8px;
+  background: transparent;
   font-size: var(--text-size-xs);
-  font-weight: 800;
+  font-weight: 850;
   letter-spacing: 0.06em;
+  line-height: 1.05;
   text-align: center;
   text-transform: uppercase;
 }
 
+
 .cruor-home__tool-preview-thumb:hover,
 .cruor-home__tool-preview-thumb:focus-visible,
 .cruor-home__tool-preview-thumb[aria-pressed="true"] {
-  border-color: rgba(208, 162, 170, 0.5);
+  border-color: rgba(208, 162, 170, 0.48);
   color: var(--cruor-color-text, var(--text));
-  background: rgba(122, 26, 40, 0.28);
+  background: rgba(122, 26, 40, 0.24);
+  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.04), 0 0 16px rgba(153, 17, 35, 0.14);
   outline: none;
 }
+
 
 .cruor-home__tool-engine-panel {
   display: grid;
@@ -1144,6 +1379,52 @@ main.cruor-home::before {
   min-height: 200px;
 }
 
+.cruor-home__support-list {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cruor-home__support-list li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 6px 12px;
+  align-items: start;
+  padding: 15px 16px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a120);
+  background: rgba(8, 5, 6, 0.58);
+  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.04);
+}
+
+.cruor-home__support-list i {
+  grid-row: 1 / span 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  color: var(--home-accent-pale);
+  font-size: var(--text-size-2xl);
+}
+
+.cruor-home__support-list strong {
+  color: var(--cruor-color-text, var(--text));
+  font-size: var(--text-size-xl);
+  font-weight: 900;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.cruor-home__support-list span {
+  color: var(--cruor-color-muted, var(--muted));
+  font-size: var(--text-size-l);
+  line-height: 1.44;
+}
+
 .cruor-home__zoom-modal {
   position: fixed;
   inset: 0;
@@ -1218,11 +1499,13 @@ main.cruor-home::before {
     grid-template-columns: 1fr;
   }
 
-  .cruor-home__tool-card {
+  .cruor-home__tool-card,
+  .cruor-home__tool-grid .cruor-home__tool-card:nth-child(even) {
     grid-template-columns: 1fr;
     grid-template-areas:
       "content"
-      "image";
+      "image"
+      "actions";
   }
 
 }
@@ -1249,6 +1532,14 @@ main.cruor-home::before {
 
   .cruor-home__statement > div {
     padding: 30px 22px;
+  }
+
+  .cruor-home__workbench-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .cruor-home__workbench-flow li:not(:last-child)::after {
+    content: none;
   }
 
   .cruor-home__section {
@@ -1330,6 +1621,15 @@ main.cruor-home::before {
 
   .cruor-home__tool-preview-gallery {
     grid-template-columns: 1fr;
+  }
+
+  .cruor-home__tool-preview-thumb {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .cruor-home__tool-grid .cruor-home__tool-card:nth-child(even) .cruor-home__tool-content,
+  .cruor-home__tool-content {
+    padding: clamp(28px, 3vw, 40px) clamp(28px, 3vw, 42px) 10px 20px;
   }
 
   .cruor-home__source-card {
