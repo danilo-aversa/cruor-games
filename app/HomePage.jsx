@@ -230,6 +230,14 @@ const SOURCE_CAROUSEL_CARDS = INSPIRATION_CARDS.map((card) => ({
   imageUrl: card.imageUrl,
   imageAlt: card.imageNote || `${card.anchor} inspiration image.`,
 }));
+
+const HOME_SECTIONS = [
+  { id: "homeHero", label: "Hero" },
+  { id: "workbenchFlow", label: "How the Workbench Works" },
+  { id: "featuredTools", label: "Featured Tools" },
+  { id: "sources", label: "Inspirations" },
+  { id: "support", label: "Support" },
+];
 function ToolVisual({ tool, activeIndex, mode, onStepPreview, onZoom }) {
   const activePreview = tool.previews[activeIndex] ?? tool.previews[0];
   const pipelineSteps = [...tool.engineFlow, ...(tool.engineItems ?? [])];
@@ -517,6 +525,37 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
   );
 }
 
+function HomeScrollProgress({ activeSectionId, sectionProgress, onNavigate }) {
+  const activeIndex = HOME_SECTIONS.findIndex((section) => section.id === activeSectionId);
+
+  return (
+    <nav className="cruor-home__scroll-progress" aria-label="Homepage section progress">
+      {HOME_SECTIONS.map((section, index) => {
+        const isActive = section.id === activeSectionId;
+        const isComplete = activeIndex > index;
+        const fill = isActive ? Math.max(0.18, sectionProgress) : isComplete ? 1 : 0;
+
+        return (
+          <button
+            key={section.id}
+            className="cruor-home__scroll-progress-dot"
+            type="button"
+            style={{ "--diamond-fill": fill }}
+            aria-label={`Jump to ${section.label}`}
+            aria-current={isActive ? "true" : undefined}
+            onClick={() => onNavigate(section.id)}
+          >
+            <span aria-hidden="true" />
+            <span className="cruor-home__scroll-progress-label" aria-hidden="true">
+              {section.label}
+            </span>
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
 function InspirationSourceCarousel() {
   const viewportRef = useRef(null);
   const trackRef = useRef(null);
@@ -638,43 +677,58 @@ function InspirationSourceCarousel() {
 
 export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
   const [zoomPreview, setZoomPreview] = useState(null);
+  const [activeSectionId, setActiveSectionId] = useState(HOME_SECTIONS[0].id);
+  const [sectionProgress, setSectionProgress] = useState(0);
   const tools = useMemo(() => TOOL_CARDS, []);
 
+  useEffect(() => {
+    let animationFrame = null;
 
-  const heroZoomFrameRef = useRef(null);
-  const heroZoomAnimationRef = useRef(null);
-  const heroZoomPositionRef = useRef({ x: 0, y: 0 });
+    const updateSectionProgress = () => {
+      const sections = HOME_SECTIONS
+        .map((section) => ({ ...section, element: document.getElementById(section.id) }))
+        .filter((section) => section.element);
 
-  const applyHeroZoomPosition = () => {
-    const frame = heroZoomFrameRef.current;
-    if (!frame) return;
+      if (!sections.length) return;
 
-    frame.style.setProperty("--hero-pan-x", `${heroZoomPositionRef.current.x.toFixed(2)}%`);
-    frame.style.setProperty("--hero-pan-y", `${heroZoomPositionRef.current.y.toFixed(2)}%`);
-    heroZoomAnimationRef.current = null;
-  };
+      const probe = window.scrollY + window.innerHeight * 0.46;
+      let activeIndex = 0;
 
-  const scheduleHeroZoomUpdate = () => {
-    if (heroZoomAnimationRef.current) return;
-    heroZoomAnimationRef.current = window.requestAnimationFrame(applyHeroZoomPosition);
-  };
+      for (let index = 0; index < sections.length; index += 1) {
+        if (probe >= sections[index].element.offsetTop) activeIndex = index;
+      }
 
-  const handleHeroImagePointerMove = (event) => {
-    const frame = event.currentTarget;
-    const bounds = frame.getBoundingClientRect();
-    const x = Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width));
-    const y = Math.max(0, Math.min(1, (event.clientY - bounds.top) / bounds.height));
+      const active = sections[activeIndex];
+      const next = sections[activeIndex + 1];
+      const start = active.element.offsetTop;
+      const end = next?.element.offsetTop ?? document.documentElement.scrollHeight - window.innerHeight;
+      const progressRange = Math.max(1, end - start);
+      const progress = Math.max(0, Math.min(1, (probe - start) / progressRange));
 
-    heroZoomPositionRef.current = {
-      x: (0.5 - x) * 20,
-      y: (0.5 - y) * 16,
+      setActiveSectionId(active.id);
+      setSectionProgress(progress);
+      animationFrame = null;
     };
-    scheduleHeroZoomUpdate();
-  };
 
-  const handleHeroImagePointerLeave = () => {
-    heroZoomPositionRef.current = { x: 0, y: 0 };
-    scheduleHeroZoomUpdate();
+    const requestUpdate = () => {
+      if (animationFrame !== null) return;
+      animationFrame = window.requestAnimationFrame(updateSectionProgress);
+    };
+
+    updateSectionProgress();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+
+    return () => {
+      if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+    };
+  }, []);
+
+  const handleSectionNavigate = (sectionId) => {
+    const section = document.getElementById(sectionId);
+    section?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   useEffect(() => {
@@ -710,56 +764,32 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
 
   return (
     <main className="cruor-home" aria-labelledby="cruorHomeTitle">
-      <section className="cruor-home__hero" aria-label="Cruor Games homepage hero">
+      <section id="homeHero" className="cruor-home__hero cruor-home__hero--video" aria-label="Cruor Games homepage hero">
+        <div className="cruor-home__hero-media" aria-hidden="true">
+          <video
+            className="cruor-home__hero-video"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          >
+            <source src="/assets/video/hero-video.mp4" type="video/mp4" />
+          </video>
+        </div>
+
         <div className="cruor-home__hero-copy">
-          <h1 id="cruorHomeTitle">The Dark Fantasy Workbench for 5E.</h1>
+          <h1 id="cruorHomeTitle">The Dark Fantasy Workbench for 5E</h1>
 
           <p>
             Cruor Games builds advanced dark fantasy generators: source-inspired tools for creating
             locations, monsters, maps, mechanics, content packs, and table-ready horror material.
           </p>
 
-          <div className="cruor-home__hero-actions" aria-label="Primary home actions">
-            <button
-              className="cruor-home__button cruor-home__button--primary"
-              type="button"
-              onClick={() => onOpenCrucibleTool?.("darken", "composer")}
-            >
-              Open the Workbench
-            </button>
-
-            <button
-              className="cruor-home__text-link"
-              type="button"
-              onClick={onOpenInspirations}
-            >
-              Browse Inspirations
-              <i className="fa-solid fa-arrow-right" aria-hidden="true" />
-            </button>
-          </div>
         </div>
-
-        <aside className="cruor-home__hero-visual" aria-label="Cruor workbench preview">
-          <div className="cruor-home__visual-board">
-            <figure
-              ref={heroZoomFrameRef}
-              className="cruor-home__image-frame cruor-home__image-frame--hero"
-              onPointerMove={handleHeroImagePointerMove}
-              onPointerLeave={handleHeroImagePointerLeave}
-              onPointerCancel={handleHeroImagePointerLeave}
-            >
-              <img
-                src="/assets/landing-page/hero-workbench.webp"
-                alt="Cruor workbench interface preview with advanced dark fantasy creation tools."
-                decoding="async"
-                fetchPriority="high"
-              />
-            </figure>
-          </div>
-        </aside>
       </section>
 
-      <section className="cruor-home__statement" aria-labelledby="workbenchStepsTitle">
+      <section id="workbenchFlow" className="cruor-home__statement" aria-labelledby="workbenchStepsTitle">
         <div>
           <div className="cruor-home__statement-head">
             <span>How the Workbench Works</span>
@@ -792,7 +822,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
         </div>
       </section>
 
-      <section className="cruor-home__section cruor-home__section--tools" aria-label="Featured Workbench Tools">
+      <section id="featuredTools" className="cruor-home__section cruor-home__section--tools" aria-label="Featured Workbench Tools">
         <div className="cruor-home__section-head" hidden>
           <h2 id="featuredToolsTitle">Featured Workbench Tools</h2>
           <p>
@@ -814,7 +844,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
         </div>
       </section>
 
-      <section className="cruor-home__section cruor-home__section--sources" aria-labelledby="sourcesTitle">
+      <section id="sources" className="cruor-home__section cruor-home__section--sources" aria-labelledby="sourcesTitle">
         <div className="cruor-home__sources-copy">
           <div className="cruor-home__section-head">
             <h2 id="sourcesTitle">Real Sources, Playable Horror.</h2>
@@ -837,7 +867,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
         <InspirationSourceCarousel />
       </section>
 
-      <section className="cruor-home__section cruor-home__section--support" aria-labelledby="supportTitle">
+      <section id="support" className="cruor-home__section cruor-home__section--support" aria-labelledby="supportTitle">
         <div className="cruor-home__support-band">
           <div>
             <h2 id="supportTitle">Help Expand the Workbench</h2>
@@ -870,6 +900,12 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           </ul>
         </div>
       </section>
+
+      <HomeScrollProgress
+        activeSectionId={activeSectionId}
+        sectionProgress={sectionProgress}
+        onNavigate={handleSectionNavigate}
+      />
 
       {zoomPreview ? (
         <div className="cruor-home__zoom-modal" role="dialog" aria-modal="true" aria-label={`${zoomPreview.label} preview`}>

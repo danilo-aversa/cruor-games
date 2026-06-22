@@ -111,7 +111,7 @@ export default function SiteMegaMenu({
 
                 <span className="site-mega-menu__item-copy">
                   <strong>{item.label}</strong>
-                  <span>{item.description}</span>
+                  <span>{item.catchPhrase || item.previewText || item.description}</span>
                 </span>
               </button>
             );
@@ -149,8 +149,7 @@ export default function SiteMegaMenu({
             </div>
 
             <div className="site-mega-menu__preview-copy">
-              <strong>{activeItem.previewTitle || activeItem.label}</strong>
-              <p>{activeItem.previewText || activeItem.description}</p>
+              <p>{activeItem.catchPhrase || activeItem.previewText || activeItem.description}</p>
             </div>
           </aside>
         ) : null}

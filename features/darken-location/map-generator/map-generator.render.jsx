@@ -6717,11 +6717,16 @@ function chooseThemeVisualCueKind(themeKey, region, index, seed) {
   const hash = hashStringToSeed(seed, region.id, themeKey, index, "theme-cue-kind");
 
   if (themeKey === "sedlec-ossuary") {
-    if (text.includes("bone") || text.includes("skull") || text.includes("ossuary")) return "bones";
+    const sedlecCycle = ["bones", "tomb", "pillar", "statue", "altar"];
     if (text.includes("relic") || text.includes("saint") || text.includes("shrine"))
       return hash % 2 === 0 ? "statue" : "altar";
     if (text.includes("corridor") || text.includes("gallery") || semanticFlags.connector) return "pillar";
-    return hash % 3 === 0 ? "tomb" : "bones";
+    if (text.includes("altar") || text.includes("ritual")) return "altar";
+    if (text.includes("statue") || text.includes("figure")) return "statue";
+    if (text.includes("tomb") || text.includes("crypt") || text.includes("grave")) return "tomb";
+    if (text.includes("bone") || text.includes("skull") || text.includes("ossuary"))
+      return index % 2 === 0 ? "bones" : sedlecCycle[index % sedlecCycle.length];
+    return sedlecCycle[index % sedlecCycle.length];
   }
 
   if (themeKey === "decomposition") {
@@ -6784,9 +6789,16 @@ function createThemeVisualCueProps(generatedMap = null) {
         "theme-cue-selector",
       );
       const isRequiredAnchor = index === 0 || index === regions.length - 1;
-      if (!isRequiredAnchor && selector % 3 === 0) return null;
+      const requiredThemeCoverage = themeKey === "sedlec-ossuary"
+        ? Math.min(THEME_VISUAL_CUE_KIND_MAP[themeKey].length, regions.length, maxThemeCues)
+        : 0;
+      const isRequiredThemeCoverage = requiredThemeCoverage > 0 && index < requiredThemeCoverage;
+      if (!isRequiredAnchor && !isRequiredThemeCoverage && selector % 3 === 0) return null;
 
-      const kind = chooseThemeVisualCueKind(
+      const forcedThemeKind = themeKey === "sedlec-ossuary" && isRequiredThemeCoverage
+        ? THEME_VISUAL_CUE_KIND_MAP[themeKey][index % THEME_VISUAL_CUE_KIND_MAP[themeKey].length]
+        : "";
+      const kind = forcedThemeKind || chooseThemeVisualCueKind(
         themeKey,
         region,
         index,

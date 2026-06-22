@@ -7,7 +7,7 @@ import {
 
 export const MAP_BATCH_QA_VERSION = "map-qa-v0.5.1-safe-context-adapters";
 export const MAP_ADAPTER_QA_VERSION = "map-adapter-qa-v0.4.0-noble-house-baseline-repair";
-export const MAP_VISUAL_QA_VERSION = "map-visual-qa-v0.5.1-theme-cue-analysis-fix";
+export const MAP_VISUAL_QA_VERSION = "map-visual-qa-v0.6.0-gallery-index";
 
 const DEFAULT_CONTEXTS = Object.freeze([
   "Crypt",
@@ -283,6 +283,33 @@ function asArray(value) {
 function unique(values) {
   return [...new Set(asArray(values).map((value) => String(value)).filter(Boolean))];
 }
+
+function escapeHtml(value = "") {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function escapeAttribute(value = "") {
+  return escapeHtml(value);
+}
+
+function getVisualQaGalleryPreviewPath(preview = {}) {
+  const rawPath = String(preview.svgPath || preview.filename || "");
+  const filename = rawPath.split(/[\/]/).pop();
+  return filename || "";
+}
+
+function getVisualQaGalleryStatus(preview = {}) {
+  const contextStatus = preview.visualCueUsage?.status || "unknown";
+  const themeStatus = preview.themeKey ? preview.themeCueUsage?.status || "unknown" : "not-supported";
+  if (preview.themeKey) return themeStatus === "rendered" && contextStatus === "rendered" ? "rendered" : themeStatus;
+  return contextStatus;
+}
+
 
 function getContextPool(context = "mixed") {
   const requested = normalizeText(context, "mixed");
@@ -1390,6 +1417,219 @@ function buildVisualQaPreviewTable(previews = []) {
     "|---|---|---|---|---:|---|---|---:|---|---|---:|---|---:|---|---|---|",
     ...rows,
   ].join("\n");
+}
+
+export function buildMapVisualQaGalleryHtml(report) {
+  const previews = asArray(report?.previews);
+  const contexts = unique(previews.map((preview) => preview.context)).sort();
+  const themes = unique(previews.map((preview) => preview.themeName).filter(Boolean)).sort();
+  const statuses = unique(previews.map(getVisualQaGalleryStatus)).sort();
+  const cards = previews.map((preview) => {
+    const type = preview.previewType || "context";
+    const context = preview.context || "Unknown";
+    const theme = preview.themeName || "";
+    const label = preview.label || preview.id || "Preview";
+    const status = getVisualQaGalleryStatus(preview);
+    const contextStatus = preview.visualCueUsage?.status || "unknown";
+    const themeStatus = preview.themeKey ? preview.themeCueUsage?.status || "unknown" : "not-supported";
+    const warningCount = Number(preview.warningCount || 0);
+    const svgPath = getVisualQaGalleryPreviewPath(preview);
+    const expectedContext = asArray(preview.expectedCues).join(", ") || "—";
+    const expectedTheme = asArray(preview.expectedThemeCues).join(", ") || "—";
+    const contextKinds = asArray(preview.visualCueUsage?.renderedKinds).join(", ") || "—";
+    const themeKinds = asArray(preview.themeCueUsage?.renderedKinds).join(", ") || "—";
+    return `
+      <article class="preview-card" data-type="${escapeAttribute(type)}" data-context="${escapeAttribute(context)}" data-theme="${escapeAttribute(theme || "—")}" data-status="${escapeAttribute(status)}" data-warnings="${warningCount}">
+        <a class="preview-card__image-link" href="${escapeAttribute(svgPath)}" target="_blank" rel="noreferrer">
+          <img class="preview-card__image" src="${escapeAttribute(svgPath)}" alt="${escapeAttribute(label)}" loading="lazy" />
+        </a>
+        <div class="preview-card__body">
+          <div class="preview-card__eyebrow">${escapeHtml(type)} · ${escapeHtml(context)}</div>
+          <h2>${escapeHtml(label)}</h2>
+          ${theme ? `<p class="preview-card__theme">${escapeHtml(theme)}</p>` : ""}
+          <div class="preview-card__badges">
+            <span class="badge badge--${escapeAttribute(status)}">${escapeHtml(status)}</span>
+            <span class="badge">${escapeHtml(String(preview.roomCount || 0))} rooms</span>
+            <span class="badge">${escapeHtml(String(warningCount))} warnings</span>
+          </div>
+          <dl class="preview-card__meta">
+            <div><dt>Seed</dt><dd>${escapeHtml(preview.seed || "—")}</dd></div>
+            <div><dt>Adapter</dt><dd>${escapeHtml(preview.adapterUsage?.status || "baseline")}</dd></div>
+            <div><dt>Context Cues</dt><dd>${escapeHtml(contextStatus)} · ${escapeHtml(String(preview.visualCueUsage?.renderedCount || 0))}</dd></div>
+            <div><dt>Context Kinds</dt><dd>${escapeHtml(contextKinds)}</dd></div>
+            <div><dt>Theme Cues</dt><dd>${escapeHtml(themeStatus)} · ${escapeHtml(String(preview.themeCueUsage?.renderedCount || 0))}</dd></div>
+            <div><dt>Theme Kinds</dt><dd>${escapeHtml(themeKinds)}</dd></div>
+            <div><dt>Expected Context</dt><dd>${escapeHtml(expectedContext)}</dd></div>
+            <div><dt>Expected Theme</dt><dd>${escapeHtml(expectedTheme)}</dd></div>
+          </dl>
+          <a class="preview-card__open" href="${escapeAttribute(svgPath)}" target="_blank" rel="noreferrer">Open SVG</a>
+        </div>
+      </article>`;
+  }).join("\n");
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cruor Map Visual QA Gallery</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d0b0a;
+      --panel: #171311;
+      --panel-2: #211b18;
+      --text: #f1e8dc;
+      --muted: #a79b8d;
+      --border: rgba(241, 232, 220, 0.16);
+      --accent: #8f1f2b;
+      --ok: #8da36f;
+      --warn: #c99a55;
+      --bad: #bd5b55;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top, #221815, var(--bg) 44rem);
+      color: var(--text);
+      font: 14px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--border);
+      background: rgba(13, 11, 10, 0.92);
+      backdrop-filter: blur(12px);
+      padding: 18px clamp(18px, 4vw, 42px);
+    }
+    h1 { margin: 0 0 4px; font-size: clamp(24px, 4vw, 42px); letter-spacing: 0.02em; text-transform: uppercase; }
+    .summary { color: var(--muted); display: flex; flex-wrap: wrap; gap: 12px; }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+    label { display: grid; gap: 5px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; }
+    select, input {
+      width: 100%;
+      min-height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 0;
+      background: var(--panel);
+      color: var(--text);
+      padding: 7px 9px;
+    }
+    main { padding: 24px clamp(18px, 4vw, 42px) 44px; }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .preview-card {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.035), transparent), var(--panel);
+      min-width: 0;
+    }
+    .preview-card[hidden] { display: none; }
+    .preview-card__image-link {
+      display: block;
+      background: #f2eadf;
+      border-bottom: 1px solid var(--border);
+      aspect-ratio: 1.35;
+      overflow: hidden;
+    }
+    .preview-card__image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .preview-card__body { padding: 14px; }
+    .preview-card__eyebrow { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; }
+    h2 { margin: 4px 0 2px; font-size: 18px; }
+    .preview-card__theme { margin: 0 0 10px; color: var(--muted); }
+    .preview-card__badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+    .badge { border: 1px solid var(--border); background: var(--panel-2); padding: 2px 7px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .badge--rendered { border-color: color-mix(in srgb, var(--ok), white 10%); color: var(--ok); }
+    .badge--partial { border-color: color-mix(in srgb, var(--warn), white 10%); color: var(--warn); }
+    .badge--missing { border-color: color-mix(in srgb, var(--bad), white 10%); color: var(--bad); }
+    .badge--not-supported { color: var(--muted); }
+    .preview-card__meta { display: grid; gap: 7px; margin: 12px 0; }
+    .preview-card__meta div { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 10px; }
+    dt { color: var(--muted); }
+    dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+    .preview-card__open { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--accent); }
+    .empty { display: none; margin: 28px 0; color: var(--muted); }
+    .empty.is-visible { display: block; }
+    @media (max-width: 960px) { .controls { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 620px) { .controls { grid-template-columns: 1fr; } .gallery { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cruor Map Visual QA Gallery</h1>
+    <div class="summary">
+      <span>${escapeHtml(String(previews.length))} previews</span>
+      <span>${escapeHtml(report?.version || "")}</span>
+      <span>${escapeHtml(report?.generatedAt || "")}</span>
+    </div>
+    <section class="controls" aria-label="Gallery filters">
+      <label>Search<input id="filter-search" type="search" placeholder="seed, label, cue…" /></label>
+      <label>Type<select id="filter-type"><option value="all">All</option><option value="context">Context</option><option value="theme">Theme</option></select></label>
+      <label>Context<select id="filter-context"><option value="all">All</option>${contexts.map((item) => `<option value="${escapeAttribute(item)}">${escapeHtml(item)}</option>`).join("")}</select></label>
+      <label>Theme<select id="filter-theme"><option value="all">All</option>${themes.map((item) => `<option value="${escapeAttribute(item)}">${escapeHtml(item)}</option>`).join("")}</select></label>
+      <label>Status<select id="filter-status"><option value="all">All</option>${statuses.map((item) => `<option value="${escapeAttribute(item)}">${escapeHtml(item)}</option>`).join("")}</select></label>
+      <label>Warnings<select id="filter-warnings"><option value="all">All</option><option value="with">With warnings</option><option value="without">No warnings</option></select></label>
+    </section>
+  </header>
+  <main>
+    <p id="gallery-count" class="summary"></p>
+    <p id="gallery-empty" class="empty">No previews match the current filters.</p>
+    <section class="gallery" id="gallery">${cards}
+    </section>
+  </main>
+  <script>
+    const cards = Array.from(document.querySelectorAll('.preview-card'));
+    const controls = {
+      search: document.getElementById('filter-search'),
+      type: document.getElementById('filter-type'),
+      context: document.getElementById('filter-context'),
+      theme: document.getElementById('filter-theme'),
+      status: document.getElementById('filter-status'),
+      warnings: document.getElementById('filter-warnings'),
+    };
+    const count = document.getElementById('gallery-count');
+    const empty = document.getElementById('gallery-empty');
+    function matches(card) {
+      const search = controls.search.value.trim().toLowerCase();
+      const text = card.textContent.toLowerCase();
+      if (search && !text.includes(search)) return false;
+      if (controls.type.value !== 'all' && card.dataset.type !== controls.type.value) return false;
+      if (controls.context.value !== 'all' && card.dataset.context !== controls.context.value) return false;
+      if (controls.theme.value !== 'all' && card.dataset.theme !== controls.theme.value) return false;
+      if (controls.status.value !== 'all' && card.dataset.status !== controls.status.value) return false;
+      const warnings = Number(card.dataset.warnings || 0);
+      if (controls.warnings.value === 'with' && warnings <= 0) return false;
+      if (controls.warnings.value === 'without' && warnings > 0) return false;
+      return true;
+    }
+    function applyFilters() {
+      let visible = 0;
+      for (const card of cards) {
+        const show = matches(card);
+        card.hidden = !show;
+        if (show) visible += 1;
+      }
+      count.textContent = visible + ' / ' + cards.length + ' previews visible';
+      empty.classList.toggle('is-visible', visible === 0);
+    }
+    Object.values(controls).forEach((control) => control.addEventListener('input', applyFilters));
+    applyFilters();
+  </script>
+</body>
+</html>`;
 }
 
 export function buildMapVisualQaMarkdown(report) {

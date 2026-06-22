@@ -4,6 +4,7 @@ import {
   analyzeMapVisualCueSvg,
   buildMapAdapterQaMarkdown,
   buildMapBatchQaMarkdown,
+  buildMapVisualQaGalleryHtml,
   buildMapVisualQaMarkdown,
   runMapAdapterQa,
   runMapBatchQa,
@@ -112,7 +113,9 @@ if (visualQa) {
   const serializableReport = serializeMapVisualQaReport(report);
   await writeFile(new URL("map-visual-qa-report.json", OUTPUT_DIR), `${JSON.stringify(serializableReport, null, 2)}\n`, "utf8");
   await writeFile(new URL("map-visual-qa-report.md", OUTPUT_DIR), `${buildMapVisualQaMarkdown(serializableReport)}\n`, "utf8");
+  await writeFile(new URL("index.html", VISUAL_PREVIEW_DIR), buildMapVisualQaGalleryHtml(serializableReport), "utf8");
   console.log(`Map Visual QA: ${serializableReport.summary?.totalPreviews || 0} SVG previews.`);
+  console.log("[gallery] dist/qa/map-visual-previews/index.html");
   serializableReport.previews.forEach((preview) => {
     const usage = preview.adapterUsage || {};
     const visualCueUsage = preview.visualCueUsage || {};

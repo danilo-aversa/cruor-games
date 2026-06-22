@@ -29,7 +29,14 @@
 }
 
 /* Correction pass: keep mega-menu body copy lighter than titles */
-.site-mega-menu__item-copy span,
+.site-mega-menu__item-copy span:last-child {
+  font-weight: 500;
+}
+
 .site-mega-menu__preview-copy p {
-  font-weight: 600;
+  font-family: var(--font);
+  font-size: clamp(0.72rem, 0.68vw, 0.84rem);
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
 }
