@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AppShell from "./AppShell.jsx";
-import HomePage from "./HomePage.jsx";
+import HomePage from "./HomePageWithVideo.jsx";
 import CrucibleTopbar from "../features/crucible/components/CrucibleTopbar.jsx";
 import DarkenLocationComposerPage from "../features/darken-location/composer/darken-location-composer.index.js";
 import InspirationsPage from "../features/inspirations/inspirations.index.js";
@@ -92,6 +92,7 @@ export default function AppRouter() {
   useEffect(() => {
     setCurrentLocale(activeLocale);
   }, [activeLocale]);
+
 
   const createMapRequestFromSnapshot = useCallback(
     (snapshot) => createMapRequestFromDarkenLocationState(snapshot),

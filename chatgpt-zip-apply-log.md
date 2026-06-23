@@ -1946,3 +1946,140 @@ _Nessun file aggiunto._
 - `~app/navigation/site-navigation.data.js`
 - `~app/navigation/SiteMegaMenu.jsx`
 
+
+---
+
+## 2026-06-23 15:26:17
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-01-updated.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-01-updated.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+app/home-page-overrides.css`
+
+**File sovrascritti:** 1
+
+- `~app/router.jsx`
+
+
+---
+
+## 2026-06-23 15:52:59
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-02-dark-places-video.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-02-dark-places-video.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+app/home-page-preview-video.js`
+
+**File sovrascritti:** 2
+
+- `~app/home-page-overrides.css`
+- `~app/router.jsx`
+
+
+---
+
+## 2026-06-23 15:58:00
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-03-dark-places-video-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-03-dark-places-video-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/home-page-overrides.css`
+- `~app/home-page-preview-video.js`
+- `~app/router.jsx`
+
+
+---
+
+## 2026-06-23 16:02:39
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-04-dark-places-video-wrapper.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-04-dark-places-video-wrapper.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+app/HomePageWithVideo.jsx`
+
+**File sovrascritti:** 3
+
+- `~app/home-page-overrides.css`
+- `~app/home-page-preview-video.js`
+- `~app/router.jsx`
+
+
+---
+
+## 2026-06-23 16:05:31
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-05-dark-places-video-contained.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-05-dark-places-video-contained.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~app/home-page-overrides.css`
+- `~app/home-page-preview-video.js`
+- `~app/HomePageWithVideo.jsx`
+- `~app/router.jsx`
+
+
+---
+
+## 2026-06-23 16:14:23
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-06-safe-video-overlay.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-06-safe-video-overlay.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~app/home-page-overrides.css`
+- `~app/home-page-preview-video.js`
+- `~app/HomePageWithVideo.jsx`
+- `~app/router.jsx`
+
