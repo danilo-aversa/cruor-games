@@ -1621,3 +1621,328 @@ _Nessun file aggiunto._
 - `~app/navigation/site-navigation.data.js`
 - `~app/navigation/SiteMegaMenu.jsx`
 
+
+---
+
+## 2026-06-23 11:05:26
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-hero-title-diamonds-fade.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-hero-title-diamonds-fade.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-23 11:17:53
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-hero-title-video-cleanup.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-hero-title-video-cleanup.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-23 12:00:59
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-megamenu-preview-features.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-megamenu-preview-features.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-23 14:12:04
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-megamenu-features-layout-video-brightness.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-megamenu-features-layout-video-brightness.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-23 14:15:56
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-megamenu-structural-feature-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-megamenu-structural-feature-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-23 14:22:54
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-megamenu-feature-below-preview-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-megamenu-feature-below-preview-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-23 14:27:53
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-megamenu-16x9-features-flow.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-megamenu-16x9-features-flow.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-23 14:33:31
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-megamenu-preview-selected-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-megamenu-preview-selected-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-23 14:36:03
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-megamenu-image-selected-hardfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-megamenu-image-selected-hardfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-23 14:40:07
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-megamenu-16x9-final-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-megamenu-16x9-final-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-23 14:43:26
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-megamenu-tool-title-font.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-megamenu-tool-title-font.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-23 14:44:11
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-megamenu-tool-title-font.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-megamenu-tool-title-font.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-06-23 14:49:37
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-homepage-megamenu-font-consolidated.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-homepage-megamenu-font-consolidated.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+

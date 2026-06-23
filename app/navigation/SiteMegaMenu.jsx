@@ -83,15 +83,13 @@ export default function SiteMegaMenu({
       <div className="site-mega-menu__grid">
         <div className="site-mega-menu__list" aria-label={`${menu.label} options`}>
           {menu.items.map((item) => {
-            const isPreviewed = activeItem?.id === item.id;
-            const isSelected = selectedItemId === item.id;
+            const isSelected = false;
 
             return (
               <button
                 key={item.id}
                 className={cx(
                   "site-mega-menu__item",
-                  isPreviewed && "is-active",
                   isSelected && "is-selected",
                   item.disabled && "is-disabled"
                 )}
@@ -119,39 +117,45 @@ export default function SiteMegaMenu({
         </div>
 
         {activeItem ? (
-          <aside className="site-mega-menu__preview" aria-live="polite">
-            <div
-              className={cx(
-                "site-mega-menu__preview-art",
-                activeItem.previewImage && "site-mega-menu__preview-art--has-image",
-                `site-mega-menu__preview-art--${activeItem.previewVariant || activeItem.id}`
-              )}
-              aria-hidden="true"
-            >
-              {activeItem.previewImage ? (
-                <img
-                  className="site-mega-menu__preview-image"
-                  src={activeItem.previewImage}
-                  alt={activeItem.previewImageAlt || ""}
-                  loading="lazy"
-                  decoding="async"
-                />
-              ) : (
-                <>
-                  <span className="site-mega-menu__preview-sigil">
-                    <i className={activeItem.icon || "fa-solid fa-diamond"} />
-                  </span>
-                  <span className="site-mega-menu__preview-grid" />
-                  <span className="site-mega-menu__preview-orbit site-mega-menu__preview-orbit--one" />
-                  <span className="site-mega-menu__preview-orbit site-mega-menu__preview-orbit--two" />
-                </>
-              )}
-            </div>
+          <div className="site-mega-menu__preview-column" aria-live="polite">
+            <aside className="site-mega-menu__preview" aria-label={`${activeItem.label} preview`}>
+              <div
+                className={cx(
+                  "site-mega-menu__preview-art",
+                  activeItem.previewImage && "site-mega-menu__preview-art--has-image",
+                  `site-mega-menu__preview-art--${activeItem.previewVariant || activeItem.id}`
+                )}
+                aria-hidden="true"
+              >
+                {activeItem.previewImage ? (
+                  <img
+                    className="site-mega-menu__preview-image"
+                    src={activeItem.previewImage}
+                    alt={activeItem.previewImageAlt || ""}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <>
+                    <span className="site-mega-menu__preview-sigil">
+                      <i className={activeItem.icon || "fa-solid fa-diamond"} />
+                    </span>
+                    <span className="site-mega-menu__preview-grid" />
+                    <span className="site-mega-menu__preview-orbit site-mega-menu__preview-orbit--one" />
+                    <span className="site-mega-menu__preview-orbit site-mega-menu__preview-orbit--two" />
+                  </>
+                )}
+              </div>
+            </aside>
 
-            <div className="site-mega-menu__preview-copy">
-              <p>{activeItem.catchPhrase || activeItem.previewText || activeItem.description}</p>
+            <div className="site-mega-menu__preview-features-panel">
+              <ul className="site-mega-menu__preview-features" aria-label={`${activeItem.label} engine features`}>
+                {(activeItem.engineFeatures || []).map((feature) => (
+                  <li key={`${activeItem.id}-feature-${feature}`}>{feature}</li>
+                ))}
+              </ul>
             </div>
-          </aside>
+          </div>
         ) : null}
       </div>
     </div>

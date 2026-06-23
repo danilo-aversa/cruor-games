@@ -529,7 +529,10 @@ function HomeScrollProgress({ activeSectionId, sectionProgress, onNavigate }) {
   const activeIndex = HOME_SECTIONS.findIndex((section) => section.id === activeSectionId);
 
   return (
-    <nav className="cruor-home__scroll-progress" aria-label="Homepage section progress">
+    <nav
+      className={`cruor-home__scroll-progress${activeSectionId === HOME_SECTIONS[0].id ? " cruor-home__scroll-progress--hidden" : ""}`}
+      aria-label="Homepage section progress"
+    >
       {HOME_SECTIONS.map((section, index) => {
         const isActive = section.id === activeSectionId;
         const isComplete = activeIndex > index;

@@ -67,18 +67,21 @@ body:has(.cruor-home)::-webkit-scrollbar {
 }
 
 .cruor-home h1 {
-  max-width: 920px;
-  font-size: clamp(58px, 7.8vw, 128px);
-  line-height: 0.88;
+  max-width: 950px;
+  font-size: clamp(52px, 7vw, 112px);
+  line-height: 1;
   letter-spacing: -0.07em;
 }
 
 .cruor-home__hero-copy h1 {
-  animation: cruorHomeHeroTitleGlow 7s ease-in-out infinite;
+  position: relative;
+  display: inline-block;
+  animation: cruorHomeHeroTitleGlow 5.8s ease-in-out infinite;
   text-shadow:
     0 0 22px rgba(153, 17, 35, 0.18),
     0 0 54px rgba(153, 17, 35, 0.08);
 }
+
 
 .cruor-home h1 span {
   color: var(--home-accent-pale);
@@ -152,14 +155,14 @@ body:has(.cruor-home)::-webkit-scrollbar {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  opacity: 0.72;
-  filter: saturate(0.82) brightness(0.64) contrast(1.08);
+  opacity: 0.95;
+  filter: saturate(0.82) brightness(0.75) contrast(1.08);
 }
 
 .cruor-home__hero-copy {
   position: relative;
   z-index: 2;
-  max-width: 760px;
+  max-width: 950px;
 }
 
 .cruor-home__hero-copy > p {
@@ -240,7 +243,15 @@ body:has(.cruor-home)::-webkit-scrollbar {
   z-index: 9000;
   display: grid;
   gap: 14px;
+  opacity: 1;
   transform: translateY(-50%);
+  transition: opacity 0.42s ease, transform 0.42s ease;
+}
+
+.cruor-home__scroll-progress--hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(12px, -50%);
 }
 
 .cruor-home__scroll-progress-dot {
@@ -1347,19 +1358,22 @@ body:has(.cruor-home)::-webkit-scrollbar {
 @keyframes cruorHomeHeroTitleGlow {
   0%,
   100% {
-    opacity: 0.94;
+    opacity: 0.92;
+    filter: drop-shadow(0 0 8px rgba(153, 17, 35, 0.08));
     text-shadow:
-      0 0 18px rgba(153, 17, 35, 0.12),
-      0 0 42px rgba(153, 17, 35, 0.06);
+      0 0 16px rgba(153, 17, 35, 0.16),
+      0 0 46px rgba(153, 17, 35, 0.08);
   }
 
   45% {
     opacity: 1;
+    filter: drop-shadow(0 0 18px rgba(153, 17, 35, 0.24));
     text-shadow:
-      0 0 26px rgba(215, 62, 80, 0.24),
-      0 0 72px rgba(153, 17, 35, 0.14);
+      0 0 30px rgba(215, 62, 80, 0.36),
+      0 0 92px rgba(153, 17, 35, 0.22);
   }
 }
+
 
 @media (prefers-reduced-motion: reduce) {
   .cruor-home__hero-copy h1 {
