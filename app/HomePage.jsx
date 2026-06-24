@@ -1,25 +1,29 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { INSPIRATION_CARDS } from "../features/crucible/crucible.sources-data.js";
 import "./home-page.css";
+import "./home-page-video.css";
 
 const LANDING_IMAGES = {
   workbench: {
     src: "/assets/landing-page/hero-workbench.webp",
     alt: "Cruor workbench interface preview with advanced dark fantasy creation tools.",
     label: "Workbench",
-    caption: "Workbench view showing how Cruor organizes sources, components, and generator controls before output.",
+    caption:
+      "Workbench view showing how Cruor organizes sources, components, and generator controls before output.",
   },
   map: {
     src: "/assets/landing-page/hero-mapcrop.webp",
     alt: "Dark fantasy map crop generated from a structured horror location.",
     label: "Map Output",
-    caption: "Procedural map output shaped by location logic, keyed regions, routes, hazards, and table-ready notes.",
+    caption:
+      "Procedural map output shaped by location logic, keyed regions, routes, hazards, and table-ready notes.",
   },
   inspiration: {
     src: "/assets/landing-page/hero-inspiration.webp",
     alt: "Cruor inspiration archive preview showing real sources transformed into playable horror material.",
     label: "Source Archive",
-    caption: "Source archive preview showing real inspirations transformed into usable dark fantasy components.",
+    caption:
+      "Source archive preview showing real inspirations transformed into usable dark fantasy components.",
   },
 };
 
@@ -55,6 +59,18 @@ const TOOL_CARDS = [
     actionArgs: ["darken", "composer"],
     art: LANDING_IMAGES.map.src,
     previews: [LANDING_IMAGES.map, LANDING_IMAGES.workbench, LANDING_IMAGES.inspiration],
+    videoPreview: {
+      src: "/assets/video/dark-places-video.mp4",
+      type: "video/mp4",
+      ariaLabel: "Dark Places generator preview video",
+      captions: [
+        { from: 0, to: 6, text: "Generate a playable horror map from your session premise." },
+        { from: 6, to: 11, text: "Reshape the dungeon without losing the generated structure." },
+        { from: 11, to: 17, text: "Add traps, encounters, clues, and keyed table content." },
+        { from: 17, to: 25, text: "Tune the visual style before bringing it to the table." },
+        { from: 25, to: Number.POSITIVE_INFINITY, text: "Export the finished location." },
+      ],
+    },
     engineTitle: "A Location Engine, Not a Room Name Table",
     engineIntro:
       "Dark Places turns a source, a context, and a horror direction into a structured site brief. It does not only generate mood text: it decides what the place is, what pressure it creates, what the players can notice, and what the map generator should understand.",
@@ -154,6 +170,21 @@ const TOOL_CARDS = [
     actionArgs: ["monster"],
     art: LANDING_IMAGES.workbench.src,
     previews: [LANDING_IMAGES.workbench, LANDING_IMAGES.inspiration, LANDING_IMAGES.map],
+    videoPreview: {
+      src: "/assets/video/terrifying-monsters-video.mp4",
+      type: "video/mp4",
+      ariaLabel: "Terrifying Monster generator preview video",
+      captions: [
+        { from: 0, to: 5, text: "Start from the creature your session needs." },
+        { from: 5, to: 13, text: "Set CR, role, tier, danger, and encounter pressure." },
+        {
+          from: 13,
+          to: 27,
+          text: "Add grafts that become attacks, traits, movement, and horror mechanics.",
+        },
+        { from: 27, to: Number.POSITIVE_INFINITY, text: "Export a complete 5E stat block." },
+      ],
+    },
     engineTitle: "More Than a Random Monster Generator",
     engineIntro:
       "Terrifying Monster builds each creature through a structured monster engine: a base frame, a tactical role, a threat profile, and modular horror grafts that shape anatomy, attacks, movement, weakness, death effects, and scene presence.",
@@ -238,6 +269,108 @@ const HOME_SECTIONS = [
   { id: "sources", label: "Inspirations" },
   { id: "support", label: "Support" },
 ];
+
+function getCaptionIndex(captions, currentTime) {
+  const index = captions.findIndex((caption) => currentTime >= caption.from && currentTime < caption.to);
+  return index >= 0 ? index : 0;
+}
+
+function ToolVideoPreview({ tool, activePreview, onStepPreview, onZoom }) {
+  const videoRef = useRef(null);
+  const [videoFailed, setVideoFailed] = useState(false);
+  const [captionIndex, setCaptionIndex] = useState(0);
+  const video = tool.videoPreview;
+
+  useEffect(() => {
+    setVideoFailed(false);
+    setCaptionIndex(0);
+  }, [video?.src]);
+
+  const syncCaption = () => {
+    const element = videoRef.current;
+    if (!element || !video?.captions?.length) return;
+    const nextIndex = getCaptionIndex(video.captions, element.currentTime || 0);
+    setCaptionIndex((current) => (current === nextIndex ? current : nextIndex));
+  };
+
+  if (!video || videoFailed) {
+    return (
+      <>
+        <div className="cruor-home__tool-main-preview">
+          <img
+            key={activePreview.src}
+            src={activePreview.src}
+            alt={activePreview.alt}
+            loading="lazy"
+            decoding="async"
+          />
+
+          <button
+            className="cruor-home__tool-preview-nav cruor-home__tool-preview-nav--prev"
+            type="button"
+            onClick={() => onStepPreview(-1)}
+            aria-label={`Previous ${tool.title} preview`}
+          >
+            <i className="fa-solid fa-chevron-left" aria-hidden="true" />
+          </button>
+
+          <button
+            className="cruor-home__tool-preview-nav cruor-home__tool-preview-nav--next"
+            type="button"
+            onClick={() => onStepPreview(1)}
+            aria-label={`Next ${tool.title} preview`}
+          >
+            <i className="fa-solid fa-chevron-right" aria-hidden="true" />
+          </button>
+
+          <button
+            className="cruor-home__zoom-button"
+            type="button"
+            onClick={() => onZoom(activePreview)}
+            aria-label={`Zoom in ${activePreview.label} preview`}
+          >
+            <i className="fa-solid fa-magnifying-glass-plus" aria-hidden="true" />
+          </button>
+
+          <figcaption className="cruor-home__tool-preview-caption">
+            <strong>{activePreview.label}.</strong> {activePreview.caption}
+          </figcaption>
+        </div>
+      </>
+    );
+  }
+
+  const caption = video.captions[captionIndex] ?? video.captions[0];
+
+  return (
+    <div className="cruor-home__tool-main-preview cruor-home__tool-main-preview--video">
+      <video
+        ref={videoRef}
+        className="cruor-home__tool-preview-video"
+        poster={activePreview.src}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        aria-label={video.ariaLabel}
+        disablePictureInPicture
+        onTimeUpdate={syncCaption}
+        onLoadedMetadata={syncCaption}
+        onPlay={syncCaption}
+        onSeeked={syncCaption}
+        onError={() => setVideoFailed(true)}
+      >
+        <source src={video.src} type={video.type || "video/mp4"} />
+      </video>
+
+      <p className="cruor-home__tool-video-caption" aria-live="polite">
+        {caption.text}
+      </p>
+    </div>
+  );
+}
+
 function ToolVisual({ tool, activeIndex, mode, onStepPreview, onZoom }) {
   const activePreview = tool.previews[activeIndex] ?? tool.previews[0];
   const pipelineSteps = [...tool.engineFlow, ...(tool.engineItems ?? [])];
@@ -273,7 +406,10 @@ function ToolVisual({ tool, activeIndex, mode, onStepPreview, onZoom }) {
 
   if (mode === "details") {
     return (
-      <figure className="cruor-home__tool-image cruor-home__tool-engine-figure cruor-home__media-card" aria-label={`${tool.title} engine details`}>
+      <figure
+        className="cruor-home__tool-image cruor-home__tool-engine-figure cruor-home__media-card"
+        aria-label={`${tool.title} engine details`}
+      >
         <div className="cruor-home__tool-engine-panel">
           <div className="cruor-home__tool-engine-panel-head">
             <h4>Engine Pipeline</h4>
@@ -317,49 +453,16 @@ function ToolVisual({ tool, activeIndex, mode, onStepPreview, onZoom }) {
 
   return (
     <figure className="cruor-home__tool-image cruor-home__media-card" aria-label={`${tool.title} previews`}>
-      <div className="cruor-home__tool-main-preview">
-        <img
-          key={activePreview.src}
-          src={activePreview.src}
-          alt={activePreview.alt}
-          loading="lazy"
-          decoding="async"
-        />
-
-        <button
-          className="cruor-home__tool-preview-nav cruor-home__tool-preview-nav--prev"
-          type="button"
-          onClick={() => onStepPreview(-1)}
-          aria-label={`Previous ${tool.title} preview`}
-        >
-          <i className="fa-solid fa-chevron-left" aria-hidden="true" />
-        </button>
-
-        <button
-          className="cruor-home__tool-preview-nav cruor-home__tool-preview-nav--next"
-          type="button"
-          onClick={() => onStepPreview(1)}
-          aria-label={`Next ${tool.title} preview`}
-        >
-          <i className="fa-solid fa-chevron-right" aria-hidden="true" />
-        </button>
-
-        <button
-          className="cruor-home__zoom-button"
-          type="button"
-          onClick={() => onZoom(activePreview)}
-          aria-label={`Zoom in ${activePreview.label} preview`}
-        >
-          <i className="fa-solid fa-magnifying-glass-plus" aria-hidden="true" />
-        </button>
-      </div>
-
-      <figcaption className="cruor-home__tool-preview-caption">
-        <strong>{activePreview.label}.</strong> {activePreview.caption}
-      </figcaption>
+      <ToolVideoPreview
+        tool={tool}
+        activePreview={activePreview}
+        onStepPreview={onStepPreview}
+        onZoom={onZoom}
+      />
     </figure>
   );
 }
+
 function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [mode, setMode] = useState("overview");
@@ -411,14 +514,14 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
   }, [mode]);
 
   useEffect(() => {
-    if (mode !== "overview" || tool.previews.length < 2) return undefined;
+    if (tool.videoPreview || mode !== "overview" || tool.previews.length < 2) return undefined;
 
     const timer = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % tool.previews.length);
     }, 10000);
 
     return () => window.clearInterval(timer);
-  }, [activeIndex, mode, tool.previews.length]);
+  }, [mode, tool.previews.length, tool.videoPreview]);
 
   const handleStepPreview = (direction) => {
     prepareCardHeightTransition();
@@ -438,59 +541,54 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
     >
       <div className="cruor-home__tool-content">
         <div key={mode} className={`cruor-home__tool-content-inner cruor-home__tool-content-inner--${mode}`}>
-        {mode === "details" ? (
-          <>
-            <div className="cruor-home__tool-copy">
-              <h3>{tool.engineTitle}</h3>
-              <p className="cruor-home__tool-summary">{tool.engineIntro}</p>
-              <p className="cruor-home__tool-summary">{tool.engineSupport}</p>
-            </div>
+          {mode === "details" ? (
+            <>
+              <div className="cruor-home__tool-copy">
+                <h3>{tool.engineTitle}</h3>
+                <p className="cruor-home__tool-summary">{tool.engineIntro}</p>
+                <p className="cruor-home__tool-summary">{tool.engineSupport}</p>
+              </div>
 
-            <div className="cruor-home__tool-feature-block">
-              <span>Why it matters</span>
-              <ul className="cruor-home__tool-features">
-                {tool.engineHighlights.map((feature) => (
-                  <li key={`${tool.id}-highlight-${feature.text}`}>
-                    <i className={`fa-solid ${feature.icon}`} aria-hidden="true" />
-                    <span>{feature.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+              <div className="cruor-home__tool-feature-block">
+                <span>Why it matters</span>
+                <ul className="cruor-home__tool-features">
+                  {tool.engineHighlights.map((feature) => (
+                    <li key={`${tool.id}-highlight-${feature.text}`}>
+                      <i className={`fa-solid ${feature.icon}`} aria-hidden="true" />
+                      <span>{feature.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-            <p className="cruor-home__tool-output">
-              <strong>Workbench Logic.</strong> {tool.title} is designed to make the output feel authored:
-              fast enough for prep, structured enough for validation, and specific enough to support
-              table-facing play instead of generic dark fantasy text.
-            </p>
-          </>
-        ) : (
-          <>
-            <div className="cruor-home__tool-copy">
-              <span>{tool.descriptor}</span>
-              <h3>{tool.title}</h3>
-              <p className="cruor-home__tool-summary">{tool.summary}</p>
-            </div>
+              <p className="cruor-home__tool-output">
+                <strong>Workbench Logic.</strong> {tool.title} is designed to make the output feel authored:
+                fast enough for prep, structured enough for validation, and specific enough to support
+                table-facing play instead of generic dark fantasy text.
+              </p>
+            </>
+          ) : (
+            <>
+              <div className="cruor-home__tool-copy">
+                <span>{tool.descriptor}</span>
+                <h3>{tool.title}</h3>
+                <p className="cruor-home__tool-summary">{tool.summary}</p>
+              </div>
 
-            <div className="cruor-home__tool-feature-block">
-              <span>How It Works</span>
-              <ul className="cruor-home__tool-features">
-                {tool.features.map((feature) => (
-                  <li key={`${tool.id}-overview-${feature.text}`}>
-                    <i className={`fa-solid ${feature.icon}`} aria-hidden="true" />
-                    <span>{feature.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <p className="cruor-home__tool-output">
-              <strong>Workbench Output.</strong> {tool.output}
-            </p>
-          </>
-        )}
+              <div className="cruor-home__tool-feature-block">
+                <span>How It Works</span>
+                <ul className="cruor-home__tool-features">
+                  {tool.features.map((feature) => (
+                    <li key={`${tool.id}-overview-${feature.text}`}>
+                      <i className={`fa-solid ${feature.icon}`} aria-hidden="true" />
+                      <span>{feature.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
+          )}
         </div>
-
       </div>
 
       <ToolVisual
@@ -520,7 +618,6 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
           <i className="fa-solid fa-arrow-right" aria-hidden="true" />
         </button>
       </div>
-
     </article>
   );
 }
@@ -568,7 +665,7 @@ function InspirationSourceCarousel() {
   const dragRef = useRef({ active: false, pointerId: null, x: 0, time: 0 });
   const carouselCards = useMemo(
     () => [...SOURCE_CAROUSEL_CARDS, ...SOURCE_CAROUSEL_CARDS, ...SOURCE_CAROUSEL_CARDS],
-    []
+    [],
   );
 
   const applyOffset = () => {
@@ -769,14 +866,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
     <main className="cruor-home" aria-labelledby="cruorHomeTitle">
       <section id="homeHero" className="cruor-home__hero cruor-home__hero--video" aria-label="Cruor Games homepage hero">
         <div className="cruor-home__hero-media" aria-hidden="true">
-          <video
-            className="cruor-home__hero-video"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-          >
+          <video className="cruor-home__hero-video" autoPlay muted loop playsInline preload="metadata">
             <source src="/assets/video/hero-video.mp4" type="video/mp4" />
           </video>
         </div>
@@ -788,7 +878,6 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
             Cruor Games builds advanced dark fantasy generators: source-inspired tools for creating
             locations, monsters, maps, mechanics, content packs, and table-ready horror material.
           </p>
-
         </div>
       </section>
 
@@ -797,9 +886,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           <div className="cruor-home__statement-head">
             <span>How the Workbench Works</span>
             <h2 id="workbenchStepsTitle">From Source to Table Output.</h2>
-            <p>
-              Pick a generator, define the creative logic, and turn it into playable 5E material.
-            </p>
+            <p>Pick a generator, define the creative logic, and turn it into playable 5E material.</p>
           </div>
 
           <ol className="cruor-home__workbench-flow" aria-label="Cruor workbench process">
@@ -829,9 +916,8 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
         <div className="cruor-home__section-head" hidden>
           <h2 id="featuredToolsTitle">Featured Workbench Tools</h2>
           <p>
-            Start with the first production tools of Cruor’s dark fantasy workbench: generate
-            playable locations, procedural maps, and complete 5E monster stat blocks from
-            source-driven components.
+            Start with the first production tools of Cruor’s dark fantasy workbench: generate playable
+            locations, procedural maps, and complete 5E monster stat blocks from source-driven components.
           </p>
         </div>
 
@@ -858,11 +944,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
             </p>
           </div>
 
-          <button
-            className="cruor-home__button cruor-home__button--primary"
-            type="button"
-            onClick={onOpenInspirations}
-          >
+          <button className="cruor-home__button cruor-home__button--primary" type="button" onClick={onOpenInspirations}>
             Browse Our Inspirations
           </button>
         </div>

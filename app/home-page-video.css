@@ -1,0 +1,86 @@
+/*
+ * Cruor Games — Home Page Native Video Previews
+ * Purpose: render tool preview videos inside React while preserving image/caption fallbacks.
+ */
+
+.cruor-home__tool-card[data-mode="overview"] .cruor-home__tool-output {
+  display: none;
+}
+
+.cruor-home__tool-image.cruor-home__media-card {
+  gap: 0;
+  padding-bottom: 8px;
+}
+
+.cruor-home__tool-main-preview {
+  position: relative;
+}
+
+.cruor-home__tool-main-preview--video {
+  overflow: hidden;
+  background: #050405;
+}
+
+.cruor-home__tool-main-preview--video .cruor-home__tool-preview-video {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  background: #050405;
+}
+
+.cruor-home__tool-preview-caption,
+.cruor-home__tool-video-caption {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  z-index: 4;
+  display: block;
+  width: auto;
+  min-height: 0;
+  margin: 0;
+  padding: clamp(9px, 1vw, 13px) clamp(11px, 1.2vw, 16px);
+  border: 1px solid rgba(208, 162, 170, 0.18);
+  background:
+    linear-gradient(180deg, rgba(5, 4, 5, 0.38), rgba(5, 4, 5, 0.84)),
+    rgba(5, 4, 5, 0.72);
+  color: var(--cruor-color-muted, var(--muted));
+  font-size: var(--text-size-l);
+  line-height: 1.35;
+  box-shadow: 0 -16px 32px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(6px);
+}
+
+.cruor-home__tool-preview-caption strong {
+  color: var(--cruor-color-text, var(--text));
+}
+
+.cruor-home__tool-video-caption {
+  pointer-events: none;
+}
+
+@supports not (backdrop-filter: blur(6px)) {
+  .cruor-home__tool-preview-caption,
+  .cruor-home__tool-video-caption {
+    background: rgba(5, 4, 5, 0.86);
+  }
+}
+
+@media (max-width: 720px) {
+  .cruor-home__tool-preview-caption,
+  .cruor-home__tool-video-caption {
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    padding: 8px 10px;
+    font-size: var(--text-size-sm);
+    line-height: 1.28;
+  }
+}

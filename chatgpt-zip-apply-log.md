@@ -2083,3 +2083,52 @@ _Nessun file aggiunto._
 - `~app/HomePageWithVideo.jsx`
 - `~app/router.jsx`
 
+
+---
+
+## 2026-06-24 09:09:17
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-07-two-preview-videos.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-07-two-preview-videos.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~app/home-page-overrides.css`
+- `~app/home-page-preview-video.js`
+- `~app/HomePageWithVideo.jsx`
+- `~app/router.jsx`
+
+
+---
+
+## 2026-06-24 10:35:25
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-08-native-video-previews.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-08-native-video-previews.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+app/home-page-video.css`
+
+**File sovrascritti:** 5
+
+- `~app/home-page-overrides.css`
+- `~app/home-page-preview-video.js`
+- `~app/HomePage.jsx`
+- `~app/HomePageWithVideo.jsx`
+- `~app/router.jsx`
+
