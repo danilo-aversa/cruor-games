@@ -1375,6 +1375,290 @@ body:has(.cruor-home)::-webkit-scrollbar {
 }
 
 
+
+/* Step 09 — Home visual hierarchy and tools roadmap */
+
+.cruor-home__hero-availability {
+  max-width: 640px;
+  margin-top: 16px;
+  color: rgba(208, 162, 170, 0.78);
+  font-size: var(--text-size-l);
+  font-weight: 760;
+  letter-spacing: 0.035em;
+}
+
+.cruor-home__statement {
+  padding: clamp(72px, 8vw, 116px) 0 clamp(58px, 7vw, 96px);
+}
+
+.cruor-home__statement > div {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cruor-home__statement > div::before,
+.cruor-home__statement > div::after {
+  content: none;
+}
+
+.cruor-home__statement-head {
+  margin-bottom: clamp(24px, 3vw, 38px);
+}
+
+.cruor-home__statement-head p {
+  max-width: 66ch;
+  color: rgba(238, 238, 238, 0.78);
+}
+
+.cruor-home__workbench-flow li {
+  border-color: rgba(208, 162, 170, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 238, 242, 0.026), rgba(122, 26, 40, 0.052)),
+    rgba(5, 4, 5, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.024);
+}
+
+.cruor-home__workbench-flow li:not(:last-child)::after {
+  border-top-color: rgba(208, 162, 170, 0.22);
+}
+
+.cruor-home__section-kicker {
+  color: var(--home-accent-pale);
+  font-size: var(--text-size-sm);
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.cruor-home__section--tools {
+  margin-top: clamp(42px, 5.5vw, 84px);
+  margin-bottom: clamp(50px, 6vw, 88px);
+  padding: clamp(34px, 4vw, 54px) clamp(18px, 3vw, 34px) clamp(36px, 4.5vw, 64px);
+  overflow: visible;
+  border: 1px solid rgba(208, 162, 170, 0.16);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(122, 26, 40, 0.22), transparent 42%),
+    linear-gradient(180deg, rgba(18, 10, 13, 0.86), rgba(5, 4, 5, 0.48));
+  box-shadow:
+    0 0 0 1px rgba(255, 238, 242, 0.035),
+    0 24px 70px rgba(0, 0, 0, 0.42),
+    0 0 44px rgba(122, 26, 40, 0.18);
+}
+
+.cruor-home__section--tools::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 8px;
+  background: var(--cruor-gradient-linear-207-407ee320);
+  opacity: 0.8;
+}
+
+.cruor-home__section--tools::after {
+  content: "";
+  position: absolute;
+  top: -10%;
+  right: -12%;
+  z-index: 0;
+  width: min(520px, 44vw);
+  height: min(420px, 38vw);
+  background: radial-gradient(circle, rgba(153, 17, 35, 0.18), transparent 68%);
+  pointer-events: none;
+}
+
+.cruor-home__section-head--tools {
+  justify-items: center;
+  max-width: 980px;
+  margin: 0 auto clamp(34px, 4vw, 54px);
+  padding-bottom: clamp(18px, 2vw, 24px);
+  text-align: center;
+}
+
+.cruor-home__section-head--tools p {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.cruor-home__tool-grid {
+  gap: clamp(42px, 5vw, 82px);
+}
+
+.cruor-home__roadmap {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(22px, 2.6vw, 34px);
+  margin-top: clamp(42px, 5vw, 72px);
+  padding-top: clamp(24px, 3vw, 38px);
+  border-top: 1px solid rgba(208, 162, 170, 0.14);
+}
+
+.cruor-home__roadmap-head {
+  display: grid;
+  gap: 10px;
+  max-width: 760px;
+}
+
+.cruor-home__roadmap-head h3 {
+  font-family: var(--font);
+  font-size: var(--text-size-fluid-10);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.cruor-home__roadmap-head p {
+  max-width: 72ch;
+  font-size: var(--text-size-xl);
+}
+
+.cruor-home__roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 1.6vw, 18px);
+}
+
+.cruor-home__roadmap-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  min-height: 100%;
+  padding: clamp(16px, 1.8vw, 22px);
+  overflow: hidden;
+  border: 1px solid rgba(208, 162, 170, 0.12);
+  background:
+    linear-gradient(135deg, rgba(255, 238, 242, 0.026), rgba(122, 26, 40, 0.04)),
+    rgba(5, 4, 5, 0.36);
+  color: var(--cruor-color-muted, var(--muted));
+  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.022);
+  filter: grayscale(1);
+  opacity: 0.66;
+}
+
+.cruor-home__roadmap-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0 12px,
+    rgba(208, 162, 170, 0.026) 12px 13px
+  );
+  pointer-events: none;
+}
+
+.cruor-home__roadmap-card-status {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  color: rgba(208, 162, 170, 0.7);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cruor-home__roadmap-card > i {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  margin-top: 8px;
+  border: 1px solid rgba(208, 162, 170, 0.14);
+  color: rgba(208, 162, 170, 0.72);
+  background: rgba(8, 5, 6, 0.54);
+  font-size: var(--text-size-2xl);
+}
+
+.cruor-home__roadmap-card > div {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.cruor-home__roadmap-card div > span {
+  color: rgba(208, 162, 170, 0.7);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cruor-home__roadmap-card h3 {
+  font-family: var(--font);
+  font-size: var(--text-size-2xl);
+  line-height: 1.08;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.cruor-home__roadmap-card p {
+  max-width: none;
+  font-size: var(--text-size-l);
+  line-height: 1.44;
+}
+
+.cruor-home__section--sources {
+  margin-top: clamp(56px, 7vw, 104px);
+  padding: clamp(34px, 4vw, 54px) 0 clamp(42px, 5vw, 74px);
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cruor-home__section--sources::before,
+.cruor-home__section--sources::after {
+  content: none;
+}
+
+.cruor-home__sources-copy .cruor-home__section-head {
+  border-bottom-color: rgba(208, 162, 170, 0.08);
+}
+
+.cruor-home__sources-carousel {
+  border-top: 1px solid rgba(208, 162, 170, 0.08);
+  border-bottom: 1px solid rgba(208, 162, 170, 0.08);
+}
+
+@media (max-width: 1080px) {
+  .cruor-home__roadmap-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .cruor-home__statement {
+    padding: 56px 0 58px;
+  }
+
+  .cruor-home__section--tools {
+    padding: 30px 14px 42px;
+  }
+
+  .cruor-home__roadmap-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cruor-home__roadmap-card-status {
+    position: static;
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cruor-home__hero-copy h1 {
     animation: none;
@@ -1689,6 +1973,290 @@ body:has(.cruor-home)::-webkit-scrollbar {
 }
 
 
+
+/* Step 09 — Home visual hierarchy and tools roadmap */
+
+.cruor-home__hero-availability {
+  max-width: 640px;
+  margin-top: 16px;
+  color: rgba(208, 162, 170, 0.78);
+  font-size: var(--text-size-l);
+  font-weight: 760;
+  letter-spacing: 0.035em;
+}
+
+.cruor-home__statement {
+  padding: clamp(72px, 8vw, 116px) 0 clamp(58px, 7vw, 96px);
+}
+
+.cruor-home__statement > div {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cruor-home__statement > div::before,
+.cruor-home__statement > div::after {
+  content: none;
+}
+
+.cruor-home__statement-head {
+  margin-bottom: clamp(24px, 3vw, 38px);
+}
+
+.cruor-home__statement-head p {
+  max-width: 66ch;
+  color: rgba(238, 238, 238, 0.78);
+}
+
+.cruor-home__workbench-flow li {
+  border-color: rgba(208, 162, 170, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 238, 242, 0.026), rgba(122, 26, 40, 0.052)),
+    rgba(5, 4, 5, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.024);
+}
+
+.cruor-home__workbench-flow li:not(:last-child)::after {
+  border-top-color: rgba(208, 162, 170, 0.22);
+}
+
+.cruor-home__section-kicker {
+  color: var(--home-accent-pale);
+  font-size: var(--text-size-sm);
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.cruor-home__section--tools {
+  margin-top: clamp(42px, 5.5vw, 84px);
+  margin-bottom: clamp(50px, 6vw, 88px);
+  padding: clamp(34px, 4vw, 54px) clamp(18px, 3vw, 34px) clamp(36px, 4.5vw, 64px);
+  overflow: visible;
+  border: 1px solid rgba(208, 162, 170, 0.16);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(122, 26, 40, 0.22), transparent 42%),
+    linear-gradient(180deg, rgba(18, 10, 13, 0.86), rgba(5, 4, 5, 0.48));
+  box-shadow:
+    0 0 0 1px rgba(255, 238, 242, 0.035),
+    0 24px 70px rgba(0, 0, 0, 0.42),
+    0 0 44px rgba(122, 26, 40, 0.18);
+}
+
+.cruor-home__section--tools::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 8px;
+  background: var(--cruor-gradient-linear-207-407ee320);
+  opacity: 0.8;
+}
+
+.cruor-home__section--tools::after {
+  content: "";
+  position: absolute;
+  top: -10%;
+  right: -12%;
+  z-index: 0;
+  width: min(520px, 44vw);
+  height: min(420px, 38vw);
+  background: radial-gradient(circle, rgba(153, 17, 35, 0.18), transparent 68%);
+  pointer-events: none;
+}
+
+.cruor-home__section-head--tools {
+  justify-items: center;
+  max-width: 980px;
+  margin: 0 auto clamp(34px, 4vw, 54px);
+  padding-bottom: clamp(18px, 2vw, 24px);
+  text-align: center;
+}
+
+.cruor-home__section-head--tools p {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.cruor-home__tool-grid {
+  gap: clamp(42px, 5vw, 82px);
+}
+
+.cruor-home__roadmap {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(22px, 2.6vw, 34px);
+  margin-top: clamp(42px, 5vw, 72px);
+  padding-top: clamp(24px, 3vw, 38px);
+  border-top: 1px solid rgba(208, 162, 170, 0.14);
+}
+
+.cruor-home__roadmap-head {
+  display: grid;
+  gap: 10px;
+  max-width: 760px;
+}
+
+.cruor-home__roadmap-head h3 {
+  font-family: var(--font);
+  font-size: var(--text-size-fluid-10);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.cruor-home__roadmap-head p {
+  max-width: 72ch;
+  font-size: var(--text-size-xl);
+}
+
+.cruor-home__roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 1.6vw, 18px);
+}
+
+.cruor-home__roadmap-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  min-height: 100%;
+  padding: clamp(16px, 1.8vw, 22px);
+  overflow: hidden;
+  border: 1px solid rgba(208, 162, 170, 0.12);
+  background:
+    linear-gradient(135deg, rgba(255, 238, 242, 0.026), rgba(122, 26, 40, 0.04)),
+    rgba(5, 4, 5, 0.36);
+  color: var(--cruor-color-muted, var(--muted));
+  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.022);
+  filter: grayscale(1);
+  opacity: 0.66;
+}
+
+.cruor-home__roadmap-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0 12px,
+    rgba(208, 162, 170, 0.026) 12px 13px
+  );
+  pointer-events: none;
+}
+
+.cruor-home__roadmap-card-status {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  color: rgba(208, 162, 170, 0.7);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cruor-home__roadmap-card > i {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  margin-top: 8px;
+  border: 1px solid rgba(208, 162, 170, 0.14);
+  color: rgba(208, 162, 170, 0.72);
+  background: rgba(8, 5, 6, 0.54);
+  font-size: var(--text-size-2xl);
+}
+
+.cruor-home__roadmap-card > div {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.cruor-home__roadmap-card div > span {
+  color: rgba(208, 162, 170, 0.7);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cruor-home__roadmap-card h3 {
+  font-family: var(--font);
+  font-size: var(--text-size-2xl);
+  line-height: 1.08;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.cruor-home__roadmap-card p {
+  max-width: none;
+  font-size: var(--text-size-l);
+  line-height: 1.44;
+}
+
+.cruor-home__section--sources {
+  margin-top: clamp(56px, 7vw, 104px);
+  padding: clamp(34px, 4vw, 54px) 0 clamp(42px, 5vw, 74px);
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cruor-home__section--sources::before,
+.cruor-home__section--sources::after {
+  content: none;
+}
+
+.cruor-home__sources-copy .cruor-home__section-head {
+  border-bottom-color: rgba(208, 162, 170, 0.08);
+}
+
+.cruor-home__sources-carousel {
+  border-top: 1px solid rgba(208, 162, 170, 0.08);
+  border-bottom: 1px solid rgba(208, 162, 170, 0.08);
+}
+
+@media (max-width: 1080px) {
+  .cruor-home__roadmap-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .cruor-home__statement {
+    padding: 56px 0 58px;
+  }
+
+  .cruor-home__section--tools {
+    padding: 30px 14px 42px;
+  }
+
+  .cruor-home__roadmap-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cruor-home__roadmap-card-status {
+    position: static;
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cruor-home__hero-video {
     display: none;
@@ -1846,5 +2414,1196 @@ body:has(.cruor-home)::-webkit-scrollbar {
 
   .cruor-home__source-card {
     flex-basis: min(74vw, 280px);
+  }
+}
+
+/* Step 10 — keep the tools section structural, not boxed */
+.cruor-home__section--tools {
+  margin-top: clamp(46px, 5.5vw, 86px);
+  margin-bottom: clamp(54px, 6vw, 92px);
+  padding: clamp(10px, 1.6vw, 18px) 0 clamp(34px, 4vw, 58px);
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cruor-home__section--tools::before,
+.cruor-home__section--tools::after {
+  content: none;
+  display: none;
+}
+
+.cruor-home__section-head--tools {
+  max-width: 980px;
+  margin: 0 auto clamp(34px, 4vw, 54px);
+  padding: 0;
+}
+
+.cruor-home__section--tools .cruor-home__tool-grid {
+  position: relative;
+  z-index: 1;
+}
+
+.cruor-home__roadmap {
+  margin-top: clamp(40px, 4.5vw, 74px);
+  padding-top: clamp(24px, 3vw, 40px);
+}
+
+@media (max-width: 720px) {
+  .cruor-home__section--tools {
+    padding: 8px 0 42px;
+  }
+}
+
+
+/* Step 11 — remove nested boxes, simplify flow, add footer */
+.cruor-home__hero-availability {
+  display: none;
+}
+
+.cruor-home__workbench-flow {
+  --workbench-flow-gap: clamp(18px, 2.8vw, 42px);
+  position: relative;
+  align-items: start;
+  gap: var(--workbench-flow-gap);
+  padding-top: clamp(18px, 2vw, 26px);
+}
+
+.cruor-home__workbench-flow::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(208, 162, 170, 0.32), transparent);
+}
+
+.cruor-home__workbench-flow li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px 14px;
+  align-items: start;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cruor-home__workbench-flow li:not(:last-child)::after {
+  content: none;
+  display: none;
+}
+
+.cruor-home__workbench-flow li > span {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  align-self: start;
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  border: 1px solid rgba(208, 162, 170, 0.2);
+  background: rgba(5, 4, 5, 0.28);
+  color: rgba(208, 162, 170, 0.72);
+  font-size: var(--text-size-sm);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+}
+
+.cruor-home__workbench-flow i {
+  grid-column: 2;
+  width: fit-content;
+  margin-bottom: 2px;
+  color: rgba(208, 162, 170, 0.74);
+  font-size: var(--text-size-2xl);
+  text-shadow: none;
+}
+
+.cruor-home__workbench-flow strong {
+  grid-column: 2;
+  color: var(--cruor-color-text, var(--text));
+  font-family: var(--display);
+  font-size: clamp(1.35rem, 2.05vw, 2rem);
+  font-weight: 950;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-transform: none;
+}
+
+.cruor-home__workbench-flow p {
+  grid-column: 2;
+  max-width: 34ch;
+  color: rgba(238, 238, 238, 0.66);
+  font-size: var(--text-size-l);
+  line-height: 1.48;
+}
+
+.cruor-home__section--support {
+  margin-top: clamp(46px, 6vw, 92px);
+  padding: clamp(42px, 5.5vw, 78px) 0 clamp(40px, 5vw, 72px);
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cruor-home__section--support::before,
+.cruor-home__section--support::after {
+  content: none;
+  display: none;
+}
+
+.cruor-home__support-band {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(280px, 1.1fr);
+  gap: clamp(24px, 4vw, 58px);
+  align-items: start;
+  padding: clamp(8px, 1vw, 14px) 0 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cruor-home__support-band::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(208, 162, 170, 0.28), transparent 62%);
+}
+
+.cruor-home__support-band p {
+  max-width: 54ch;
+  margin: 14px 0 0;
+  color: rgba(238, 238, 238, 0.72);
+  font-size: var(--text-size-xl);
+  line-height: 1.55;
+}
+
+.cruor-home__support-list {
+  align-content: start;
+  gap: 0;
+  border-left: 1px solid rgba(208, 162, 170, 0.16);
+  padding-left: clamp(18px, 2.8vw, 34px);
+}
+
+.cruor-home__support-list li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 4px 14px;
+  padding: 0 0 18px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cruor-home__support-list li + li {
+  padding-top: 18px;
+  border-top: 1px solid rgba(208, 162, 170, 0.1);
+}
+
+.cruor-home__support-list i {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  width: 30px;
+  color: rgba(208, 162, 170, 0.72);
+  font-size: var(--text-size-xl);
+  text-shadow: none;
+}
+
+.cruor-home__support-list strong,
+.cruor-home__support-list span {
+  grid-column: 2;
+}
+
+.cruor-home__support-list strong {
+  color: var(--cruor-color-text, var(--text));
+  font-size: var(--text-size-xl);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.cruor-home__support-list span {
+  color: rgba(238, 238, 238, 0.62);
+  font-size: var(--text-size-l);
+  line-height: 1.45;
+}
+
+.cruor-home__footer {
+  display: flex;
+  gap: clamp(18px, 3vw, 36px);
+  justify-content: space-between;
+  align-items: end;
+  margin-top: clamp(28px, 4vw, 56px);
+  padding: clamp(24px, 3vw, 36px) 0 0;
+  border-top: 1px solid rgba(208, 162, 170, 0.16);
+  color: rgba(238, 238, 238, 0.58);
+}
+
+.cruor-home__footer-brand {
+  display: grid;
+  gap: 6px;
+}
+
+.cruor-home__footer-brand strong {
+  color: var(--cruor-color-text, var(--text));
+  font-family: var(--display);
+  font-size: clamp(1.9rem, 3vw, 3rem);
+  font-weight: 950;
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+}
+
+.cruor-home__footer-brand span {
+  color: rgba(238, 238, 238, 0.58);
+  font-size: var(--text-size-l);
+}
+
+.cruor-home__footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  justify-content: flex-end;
+}
+
+.cruor-home__footer-nav a {
+  color: rgba(208, 162, 170, 0.76);
+  font-size: var(--text-size-sm);
+  font-weight: 850;
+  letter-spacing: 0.09em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.cruor-home__footer-nav a:hover,
+.cruor-home__footer-nav a:focus-visible {
+  color: var(--cruor-color-text, var(--text));
+}
+
+@media (max-width: 920px) {
+  .cruor-home__support-band {
+    grid-template-columns: 1fr;
+  }
+
+  .cruor-home__support-list {
+    border-left: 0;
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .cruor-home__workbench-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .cruor-home__workbench-flow::before {
+    left: 18px;
+    right: auto;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(208, 162, 170, 0.3), transparent);
+  }
+
+  .cruor-home__footer {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .cruor-home__footer-nav {
+    justify-content: flex-start;
+  }
+}
+
+/* Step 12 — compact footer and soft editorial section bands */
+#workbenchFlow.cruor-home__statement {
+  margin-right: calc(50% - 50vw);
+  margin-left: calc(50% - 50vw);
+  padding:
+    clamp(72px, 8vw, 118px)
+    max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2))
+    clamp(66px, 7vw, 104px);
+  background:
+    radial-gradient(circle at 18% 42%, rgba(122, 26, 40, 0.24), transparent 36%),
+    radial-gradient(circle at 82% 58%, rgba(208, 162, 170, 0.08), transparent 34%),
+    linear-gradient(180deg, rgba(5, 4, 5, 0) 0%, rgba(122, 26, 40, 0.09) 18%, rgba(14, 8, 10, 0.42) 50%, rgba(122, 26, 40, 0.08) 82%, rgba(5, 4, 5, 0) 100%);
+}
+
+#workbenchFlow.cruor-home__statement > div {
+  position: relative;
+  z-index: 1;
+}
+
+#workbenchFlow.cruor-home__statement::before,
+#workbenchFlow.cruor-home__statement::after {
+  content: "";
+  position: absolute;
+  left: max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2));
+  right: max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2));
+  z-index: 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(208, 162, 170, 0.22), transparent);
+}
+
+#workbenchFlow.cruor-home__statement::before {
+  top: clamp(38px, 4vw, 62px);
+}
+
+#workbenchFlow.cruor-home__statement::after {
+  bottom: clamp(34px, 4vw, 58px);
+}
+
+#workbenchFlow .cruor-home__statement-head {
+  margin-bottom: clamp(30px, 3.6vw, 48px);
+}
+
+#workbenchFlow .cruor-home__workbench-flow {
+  padding: clamp(8px, 1.2vw, 16px) 0;
+}
+
+#workbenchFlow .cruor-home__workbench-flow li {
+  background:
+    linear-gradient(180deg, rgba(255, 238, 242, 0.035), rgba(122, 26, 40, 0.055)),
+    rgba(5, 4, 5, 0.14);
+}
+
+.cruor-home__section--sources,
+.cruor-home__section--support {
+  background:
+    radial-gradient(circle at 18% 20%, rgba(122, 26, 40, 0.16), transparent 34%),
+    linear-gradient(180deg, rgba(5, 4, 5, 0) 0%, rgba(14, 8, 10, 0.22) 48%, rgba(5, 4, 5, 0) 100%);
+}
+
+.cruor-home__section--support {
+  margin-right: calc(50% - 50vw);
+  margin-left: calc(50% - 50vw);
+  padding-right: max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2));
+  padding-left: max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2));
+}
+
+.cruor-home__footer {
+  box-sizing: border-box;
+  width: auto;
+  margin: clamp(34px, 4vw, 58px) calc(50% - 50vw) 0;
+  padding:
+    clamp(16px, 2vw, 22px)
+    max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2))
+    clamp(18px, 2.2vw, 26px);
+  border-top: 1px solid rgba(208, 162, 170, 0.14);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  background:
+    linear-gradient(180deg, rgba(24, 12, 16, 0.86), rgba(8, 5, 6, 0.94)),
+    rgba(8, 5, 6, 0.96);
+  color: rgba(238, 238, 238, 0.52);
+  align-items: center;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 238, 242, 0.035),
+    0 -18px 42px rgba(0, 0, 0, 0.26);
+}
+
+.cruor-home__footer-brand {
+  gap: 3px;
+}
+
+.cruor-home__footer-brand strong {
+  font-size: clamp(1.05rem, 1.45vw, 1.42rem);
+  line-height: 1;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.cruor-home__footer-brand span {
+  font-size: var(--text-size-xs);
+  letter-spacing: 0.035em;
+}
+
+.cruor-home__footer-nav {
+  gap: 8px 16px;
+}
+
+.cruor-home__footer-nav a {
+  font-size: var(--text-size-xs);
+  letter-spacing: 0.105em;
+}
+
+@media (max-width: 720px) {
+  #workbenchFlow.cruor-home__statement {
+    padding-top: 62px;
+    padding-bottom: 68px;
+  }
+
+  #workbenchFlow.cruor-home__statement::before,
+  #workbenchFlow.cruor-home__statement::after {
+    left: clamp(22px, 6vw, 36px);
+    right: clamp(22px, 6vw, 36px);
+  }
+
+  .cruor-home__footer {
+    gap: 12px;
+    align-items: flex-start;
+  }
+}
+
+/* Step 13 — topbar-style footer and seamless editorial atmosphere */
+#workbenchFlow.cruor-home__statement,
+.cruor-home__section--sources,
+.cruor-home__section--support {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  background: transparent !important;
+}
+
+#workbenchFlow.cruor-home__statement::before,
+.cruor-home__section--sources::before,
+.cruor-home__section--support::before {
+  content: "";
+  position: absolute;
+  left: calc(50% - 50vw);
+  right: calc(50% - 50vw);
+  top: calc(-1 * clamp(90px, 10vw, 160px));
+  bottom: calc(-1 * clamp(90px, 10vw, 160px));
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(122, 26, 40, 0.16) 0%, rgba(122, 26, 40, 0.08) 34%, rgba(122, 26, 40, 0) 72%),
+    radial-gradient(ellipse at 20% 42%, rgba(208, 162, 170, 0.065) 0%, rgba(208, 162, 170, 0.03) 28%, rgba(208, 162, 170, 0) 66%),
+    radial-gradient(ellipse at 82% 58%, rgba(53, 5, 13, 0.24) 0%, rgba(53, 5, 13, 0.08) 38%, rgba(53, 5, 13, 0) 74%);
+  filter: blur(18px);
+  opacity: 0.92;
+}
+
+#workbenchFlow.cruor-home__statement::after,
+.cruor-home__section--sources::after,
+.cruor-home__section--support::after {
+  content: none !important;
+  display: none !important;
+}
+
+#workbenchFlow.cruor-home__statement {
+  background: transparent !important;
+}
+
+#workbenchFlow.cruor-home__statement > div,
+.cruor-home__section--sources > *,
+.cruor-home__section--support > * {
+  position: relative;
+  z-index: 1;
+}
+
+.cruor-home__footer {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(170px, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(12px, 2vw, 22px);
+  width: auto;
+  min-height: var(--app-shell-bar-height);
+  margin: clamp(40px, 5vw, 72px) calc(50% - 50vw) 0;
+  padding: 0 clamp(16px, 3vw, 30px);
+  border-top: 1px solid var(--cruor-color-blood-glow-a220);
+  border-bottom: 0;
+  background: var(--cruor-gradient-linear-163-3f5e7ee3), var(--paper-texture);
+  color: var(--cruor-color-r240-g215-b220-a620);
+  box-shadow:
+    0 -18px 42px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 238, 242, 0.035);
+  backdrop-filter: var(--cruor-filter-glass-16-128);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-16-128);
+}
+
+.cruor-home__footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.cruor-home__footer-logo-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  overflow: visible;
+  color: var(--cruor-color-hex-fff0f2);
+}
+
+.cruor-home__footer-logo-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: var(--cruor-filter-drop-shadow-022);
+}
+
+.cruor-home__footer-brand-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+  font-family: Inter, var(--body), sans-serif;
+}
+
+.cruor-home__footer-brand-copy strong {
+  color: var(--cruor-color-text, var(--text));
+  font-family: inherit;
+  font-size: var(--text-size-fluid-04);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.cruor-home__footer-brand-copy span {
+  color: var(--cruor-color-r240-g215-b220-a520);
+  font-size: var(--text-size-xs);
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+}
+
+.cruor-home__footer-meta {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+  min-width: 0;
+}
+
+.cruor-home__footer-nav {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2px;
+}
+
+.cruor-home__footer-nav a,
+.cruor-home__footer-nav button {
+  min-height: 30px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 0;
+  background: var(--cruor-color-transparent);
+  color: var(--cruor-color-r240-g215-b220-a620);
+  font: inherit;
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.14s ease, color 0.14s ease, text-shadow 0.14s ease;
+}
+
+.cruor-home__footer-nav a:hover,
+.cruor-home__footer-nav a:focus-visible,
+.cruor-home__footer-nav button:hover,
+.cruor-home__footer-nav button:focus-visible {
+  background: var(--cruor-gradient-radial-068-e609778e);
+  color: var(--cruor-color-hex-fff0f2);
+  text-shadow: var(--cruor-shadow-text-003);
+  outline: none;
+}
+
+.cruor-home__footer-copy {
+  color: var(--cruor-color-r240-g215-b220-a480);
+  font-size: var(--text-size-xs);
+  line-height: 1.1;
+  letter-spacing: 0.035em;
+}
+
+.cruor-home__contact-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: clamp(20px, 5vw, 48px);
+}
+
+.cruor-home__contact-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.74);
+  cursor: pointer;
+}
+
+.cruor-home__contact-form {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: min(620px, 100%);
+  gap: 14px;
+  padding: clamp(22px, 3vw, 34px);
+  border: 1px solid var(--cruor-color-blood-glow-a220);
+  background:
+    linear-gradient(180deg, rgba(20, 12, 15, 0.94), rgba(7, 5, 6, 0.98)),
+    var(--paper-texture);
+  box-shadow: 0 26px 80px rgba(0, 0, 0, 0.62);
+  backdrop-filter: var(--cruor-filter-glass-16-128);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-16-128);
+}
+
+.cruor-home__contact-head {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.cruor-home__contact-head > span {
+  color: var(--home-accent-pale);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.cruor-home__contact-head h2 {
+  font-size: clamp(2rem, 4.2vw, 4.2rem);
+}
+
+.cruor-home__contact-head p {
+  max-width: 52ch;
+  color: var(--cruor-color-r240-g215-b220-a700);
+  font-size: var(--text-size-s);
+}
+
+.cruor-home__contact-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--cruor-color-r240-g215-b220-a620);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cruor-home__contact-form input,
+.cruor-home__contact-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(208, 162, 170, 0.18);
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.34);
+  color: var(--cruor-color-text, var(--text));
+  font: inherit;
+  font-size: var(--text-size-s);
+  line-height: 1.4;
+  padding: 10px 12px;
+  outline: none;
+}
+
+.cruor-home__contact-form input:focus,
+.cruor-home__contact-form textarea:focus {
+  border-color: rgba(208, 162, 170, 0.52);
+  box-shadow: 0 0 0 1px rgba(153, 17, 35, 0.28);
+}
+
+.cruor-home__contact-status {
+  color: var(--home-accent-pale);
+  font-size: var(--text-size-xs);
+  line-height: 1.4;
+}
+
+.cruor-home__contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+@media (max-width: 720px) {
+  .cruor-home__footer {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 10px;
+    min-height: 0;
+    padding-top: 13px;
+    padding-bottom: 13px;
+  }
+
+  .cruor-home__footer-meta,
+  .cruor-home__footer-nav {
+    justify-items: start;
+    justify-content: flex-start;
+  }
+
+  .cruor-home__footer-nav a,
+  .cruor-home__footer-nav button {
+    padding-right: 9px;
+    padding-left: 9px;
+  }
+}
+
+/* Step 14 — visible seamless editorial atmosphere */
+#workbenchFlow.cruor-home__statement,
+.cruor-home__section--sources,
+.cruor-home__section--support {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  background: transparent !important;
+}
+
+#workbenchFlow.cruor-home__statement::before,
+.cruor-home__section--sources::before,
+.cruor-home__section--support::before {
+  content: "" !important;
+  position: absolute;
+  left: calc(50% - 50vw);
+  right: calc(50% - 50vw);
+  top: calc(-1 * clamp(150px, 16vw, 280px));
+  bottom: calc(-1 * clamp(150px, 16vw, 280px));
+  z-index: 0;
+  display: block !important;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 72% 58% at 50% 48%, rgba(122, 26, 40, 0.34) 0%, rgba(122, 26, 40, 0.2) 24%, rgba(122, 26, 40, 0.075) 52%, rgba(122, 26, 40, 0) 78%),
+    radial-gradient(ellipse 42% 46% at 18% 44%, rgba(208, 162, 170, 0.12) 0%, rgba(208, 162, 170, 0.055) 36%, rgba(208, 162, 170, 0) 72%),
+    radial-gradient(ellipse 46% 50% at 84% 54%, rgba(53, 5, 13, 0.58) 0%, rgba(53, 5, 13, 0.22) 38%, rgba(53, 5, 13, 0) 76%),
+    linear-gradient(180deg, rgba(5, 4, 5, 0) 0%, rgba(122, 26, 40, 0.075) 26%, rgba(122, 26, 40, 0.105) 50%, rgba(122, 26, 40, 0.065) 74%, rgba(5, 4, 5, 0) 100%);
+  filter: blur(28px);
+  opacity: 1;
+  transform: translateZ(0);
+}
+
+#workbenchFlow.cruor-home__statement::before {
+  background:
+    radial-gradient(ellipse 76% 54% at 50% 52%, rgba(122, 26, 40, 0.38) 0%, rgba(122, 26, 40, 0.22) 28%, rgba(122, 26, 40, 0.08) 56%, rgba(122, 26, 40, 0) 82%),
+    radial-gradient(ellipse 38% 42% at 20% 48%, rgba(208, 162, 170, 0.14) 0%, rgba(208, 162, 170, 0.06) 38%, rgba(208, 162, 170, 0) 76%),
+    radial-gradient(ellipse 48% 52% at 80% 50%, rgba(53, 5, 13, 0.62) 0%, rgba(53, 5, 13, 0.24) 40%, rgba(53, 5, 13, 0) 78%);
+}
+
+.cruor-home__section--sources::before {
+  background:
+    radial-gradient(ellipse 76% 60% at 46% 50%, rgba(122, 26, 40, 0.26) 0%, rgba(122, 26, 40, 0.16) 28%, rgba(122, 26, 40, 0.06) 56%, rgba(122, 26, 40, 0) 84%),
+    radial-gradient(ellipse 36% 46% at 22% 44%, rgba(208, 162, 170, 0.12) 0%, rgba(208, 162, 170, 0.05) 36%, rgba(208, 162, 170, 0) 74%),
+    radial-gradient(ellipse 48% 54% at 82% 56%, rgba(53, 5, 13, 0.44) 0%, rgba(53, 5, 13, 0.18) 42%, rgba(53, 5, 13, 0) 82%);
+}
+
+.cruor-home__section--support::before {
+  background:
+    radial-gradient(ellipse 78% 60% at 52% 50%, rgba(122, 26, 40, 0.24) 0%, rgba(122, 26, 40, 0.15) 30%, rgba(122, 26, 40, 0.055) 58%, rgba(122, 26, 40, 0) 84%),
+    radial-gradient(ellipse 40% 46% at 78% 44%, rgba(208, 162, 170, 0.105) 0%, rgba(208, 162, 170, 0.045) 36%, rgba(208, 162, 170, 0) 76%),
+    radial-gradient(ellipse 48% 54% at 18% 56%, rgba(53, 5, 13, 0.44) 0%, rgba(53, 5, 13, 0.17) 42%, rgba(53, 5, 13, 0) 82%);
+}
+
+#workbenchFlow.cruor-home__statement::after,
+.cruor-home__section--sources::after,
+.cruor-home__section--support::after {
+  content: "" !important;
+  position: absolute;
+  left: calc(50% - 50vw);
+  right: calc(50% - 50vw);
+  top: calc(-1 * clamp(90px, 10vw, 180px));
+  bottom: calc(-1 * clamp(90px, 10vw, 180px));
+  z-index: 0;
+  display: block !important;
+  pointer-events: none;
+  background-image:
+    linear-gradient(90deg, rgba(208, 162, 170, 0), rgba(208, 162, 170, 0.055), rgba(208, 162, 170, 0));
+  opacity: 0.55;
+  mask-image: linear-gradient(180deg, transparent 0%, black 28%, black 72%, transparent 100%);
+}
+
+#workbenchFlow.cruor-home__statement > *,
+.cruor-home__section--sources > *,
+.cruor-home__section--support > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Step 15 — visible seamless editorial bands (direct section background, no hidden pseudo-layer) */
+#workbenchFlow.cruor-home__statement,
+.cruor-home__section--sources,
+.cruor-home__section--support {
+  position: relative;
+  isolation: auto;
+  overflow: visible;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5, 4, 5, 0) 0%,
+      rgba(18, 6, 10, 0.72) 17%,
+      rgba(51, 3, 12, 0.46) 50%,
+      rgba(18, 6, 10, 0.68) 83%,
+      rgba(5, 4, 5, 0) 100%
+    ),
+    radial-gradient(ellipse 78% 70% at 50% 50%, rgba(122, 26, 40, 0.36) 0%, rgba(122, 26, 40, 0.2) 42%, rgba(122, 26, 40, 0) 78%),
+    radial-gradient(ellipse 45% 58% at 14% 46%, rgba(208, 162, 170, 0.11) 0%, rgba(208, 162, 170, 0.045) 36%, rgba(208, 162, 170, 0) 72%),
+    radial-gradient(ellipse 46% 58% at 86% 54%, rgba(94, 8, 22, 0.42) 0%, rgba(94, 8, 22, 0.16) 42%, rgba(94, 8, 22, 0) 78%) !important;
+}
+
+#workbenchFlow.cruor-home__statement::before,
+#workbenchFlow.cruor-home__statement::after,
+.cruor-home__section--sources::before,
+.cruor-home__section--sources::after,
+.cruor-home__section--support::before,
+.cruor-home__section--support::after {
+  content: none !important;
+  display: none !important;
+}
+
+#workbenchFlow.cruor-home__statement {
+  margin-right: calc(50% - 50vw);
+  margin-left: calc(50% - 50vw);
+  padding:
+    clamp(84px, 9vw, 132px)
+    max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2))
+    clamp(78px, 8vw, 122px);
+}
+
+.cruor-home__section--sources,
+.cruor-home__section--support {
+  margin-right: calc(50% - 50vw);
+  margin-left: calc(50% - 50vw);
+  padding-right: max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2));
+  padding-left: max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2));
+}
+
+.cruor-home__section--sources {
+  padding-top: clamp(74px, 8vw, 116px);
+  padding-bottom: clamp(68px, 7vw, 108px);
+}
+
+.cruor-home__section--support {
+  padding-top: clamp(64px, 7vw, 104px);
+  padding-bottom: clamp(60px, 6.5vw, 98px);
+}
+
+#workbenchFlow.cruor-home__statement > *,
+.cruor-home__section--sources > *,
+.cruor-home__section--support > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Step 16B — stronger hero video bottom fade + subtle red breathing on existing editorial bands */
+.cruor-home__hero-media::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  z-index: 1;
+  height: clamp(320px, 46vh, 640px);
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5, 4, 5, 0) 0%,
+      rgba(5, 4, 5, 0.18) 26%,
+      rgba(5, 4, 5, 0.64) 62%,
+      rgba(5, 4, 5, 0.94) 86%,
+      #050405 100%
+    );
+}
+
+.cruor-home__hero-video {
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 48%,
+    rgba(0, 0, 0, 0.78) 66%,
+    rgba(0, 0, 0, 0.32) 84%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 48%,
+    rgba(0, 0, 0, 0.78) 66%,
+    rgba(0, 0, 0, 0.32) 84%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+@property --cruor-band-shadow {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0.72;
+}
+
+@property --cruor-band-core {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0.46;
+}
+
+@property --cruor-band-shadow-low {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0.68;
+}
+
+@property --cruor-band-glow {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0.36;
+}
+
+@property --cruor-band-glow-soft {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0.2;
+}
+
+@property --cruor-band-side {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0.42;
+}
+
+@property --cruor-band-side-soft {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0.16;
+}
+
+@property --cruor-band-highlight {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0.11;
+}
+
+@property --cruor-band-highlight-soft {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0.045;
+}
+
+#workbenchFlow.cruor-home__statement,
+.cruor-home__section--sources,
+.cruor-home__section--support {
+  --cruor-band-shadow: 0.72;
+  --cruor-band-shadow-low: 0.68;
+  --cruor-band-core: 0.46;
+  --cruor-band-glow: 0.36;
+  --cruor-band-glow-soft: 0.2;
+  --cruor-band-side: 0.42;
+  --cruor-band-side-soft: 0.16;
+  --cruor-band-highlight: 0.11;
+  --cruor-band-highlight-soft: 0.045;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5, 4, 5, 0) 0%,
+      rgba(18, 6, 10, var(--cruor-band-shadow)) 17%,
+      rgba(51, 3, 12, var(--cruor-band-core)) 50%,
+      rgba(18, 6, 10, var(--cruor-band-shadow-low)) 83%,
+      rgba(5, 4, 5, 0) 100%
+    ),
+    radial-gradient(
+      ellipse 78% 70% at 50% 50%,
+      rgba(122, 26, 40, var(--cruor-band-glow)) 0%,
+      rgba(122, 26, 40, var(--cruor-band-glow-soft)) 42%,
+      rgba(122, 26, 40, 0) 78%
+    ),
+    radial-gradient(
+      ellipse 45% 58% at 14% 46%,
+      rgba(208, 162, 170, var(--cruor-band-highlight)) 0%,
+      rgba(208, 162, 170, var(--cruor-band-highlight-soft)) 36%,
+      rgba(208, 162, 170, 0) 72%
+    ),
+    radial-gradient(
+      ellipse 46% 58% at 86% 54%,
+      rgba(94, 8, 22, var(--cruor-band-side)) 0%,
+      rgba(94, 8, 22, var(--cruor-band-side-soft)) 42%,
+      rgba(94, 8, 22, 0) 78%
+    ) !important;
+  background-repeat: no-repeat;
+  animation: cruor-editorial-red-breath 7s ease-in-out infinite;
+}
+
+.cruor-home__section--sources {
+  animation-delay: -3.4s;
+}
+
+.cruor-home__section--support {
+  animation-delay: -6.8s;
+}
+
+@keyframes cruor-editorial-red-breath {
+  0%,
+  100% {
+    --cruor-band-shadow: 0.68;
+    --cruor-band-shadow-low: 0.64;
+    --cruor-band-core: 0.42;
+    --cruor-band-glow: 0.31;
+    --cruor-band-glow-soft: 0.17;
+    --cruor-band-side: 0.36;
+    --cruor-band-side-soft: 0.13;
+    --cruor-band-highlight: 0.08;
+    --cruor-band-highlight-soft: 0.032;
+  }
+
+  48% {
+    --cruor-band-shadow: 0.84;
+    --cruor-band-shadow-low: 0.79;
+    --cruor-band-core: 0.58;
+    --cruor-band-glow: 0.5;
+    --cruor-band-glow-soft: 0.29;
+    --cruor-band-side: 0.54;
+    --cruor-band-side-soft: 0.22;
+    --cruor-band-highlight: 0.16;
+    --cruor-band-highlight-soft: 0.066;
+  }
+
+  62% {
+    --cruor-band-shadow: 0.78;
+    --cruor-band-shadow-low: 0.73;
+    --cruor-band-core: 0.52;
+    --cruor-band-glow: 0.43;
+    --cruor-band-glow-soft: 0.24;
+    --cruor-band-side: 0.47;
+    --cruor-band-side-soft: 0.19;
+    --cruor-band-highlight: 0.13;
+    --cruor-band-highlight-soft: 0.052;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #workbenchFlow.cruor-home__statement,
+  .cruor-home__section--sources,
+  .cruor-home__section--support {
+    --cruor-band-shadow: 0.74;
+    --cruor-band-shadow-low: 0.7;
+    --cruor-band-core: 0.48;
+    --cruor-band-glow: 0.38;
+    --cruor-band-glow-soft: 0.21;
+    --cruor-band-side: 0.42;
+    --cruor-band-side-soft: 0.16;
+    --cruor-band-highlight: 0.1;
+    --cruor-band-highlight-soft: 0.04;
+    animation: none;
+  }
+}
+
+/* Step 16C — precise 20px hero fade + shorter editorial breathing bands */
+.cruor-home__hero-media::after {
+  height: 24px;
+  background: linear-gradient(
+    180deg,
+    rgba(5, 4, 5, 0) 0%,
+    rgba(5, 4, 5, 0.42) 58%,
+    #050405 100%
+  );
+}
+
+.cruor-home__hero-video {
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 calc(100% - 22px),
+    rgba(0, 0, 0, 0.74) calc(100% - 13px),
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 calc(100% - 22px),
+    rgba(0, 0, 0, 0.74) calc(100% - 13px),
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+#workbenchFlow.cruor-home__statement,
+.cruor-home__section--sources,
+.cruor-home__section--support {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5, 4, 5, 0) 0%,
+      rgba(5, 4, 5, 0) 12%,
+      rgba(18, 6, 10, var(--cruor-band-shadow)) 24%,
+      rgba(51, 3, 12, var(--cruor-band-core)) 50%,
+      rgba(18, 6, 10, var(--cruor-band-shadow-low)) 76%,
+      rgba(5, 4, 5, 0) 88%,
+      rgba(5, 4, 5, 0) 100%
+    ),
+    radial-gradient(
+      ellipse 80% 62% at 50% 50%,
+      rgba(122, 26, 40, var(--cruor-band-glow)) 0%,
+      rgba(122, 26, 40, var(--cruor-band-glow-soft)) 42%,
+      rgba(122, 26, 40, 0) 82%
+    ),
+    radial-gradient(
+      ellipse 44% 52% at 14% 48%,
+      rgba(208, 162, 170, var(--cruor-band-highlight)) 0%,
+      rgba(208, 162, 170, var(--cruor-band-highlight-soft)) 34%,
+      rgba(208, 162, 170, 0) 72%
+    ),
+    radial-gradient(
+      ellipse 46% 54% at 86% 52%,
+      rgba(94, 8, 22, var(--cruor-band-side)) 0%,
+      rgba(94, 8, 22, var(--cruor-band-side-soft)) 40%,
+      rgba(94, 8, 22, 0) 80%
+    ) !important;
+}
+
+@keyframes cruor-editorial-red-breath {
+  0%,
+  100% {
+    --cruor-band-shadow: 0.62;
+    --cruor-band-shadow-low: 0.58;
+    --cruor-band-core: 0.38;
+    --cruor-band-glow: 0.29;
+    --cruor-band-glow-soft: 0.13;
+    --cruor-band-side: 0.32;
+    --cruor-band-side-soft: 0.1;
+    --cruor-band-highlight: 0.065;
+    --cruor-band-highlight-soft: 0.024;
+  }
+
+  48% {
+    --cruor-band-shadow: 0.82;
+    --cruor-band-shadow-low: 0.76;
+    --cruor-band-core: 0.56;
+    --cruor-band-glow: 0.48;
+    --cruor-band-glow-soft: 0.24;
+    --cruor-band-side: 0.5;
+    --cruor-band-side-soft: 0.18;
+    --cruor-band-highlight: 0.14;
+    --cruor-band-highlight-soft: 0.054;
+  }
+
+  62% {
+    --cruor-band-shadow: 0.74;
+    --cruor-band-shadow-low: 0.68;
+    --cruor-band-core: 0.48;
+    --cruor-band-glow: 0.39;
+    --cruor-band-glow-soft: 0.19;
+    --cruor-band-side: 0.42;
+    --cruor-band-side-soft: 0.15;
+    --cruor-band-highlight: 0.105;
+    --cruor-band-highlight-soft: 0.04;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #workbenchFlow.cruor-home__statement,
+  .cruor-home__section--sources,
+  .cruor-home__section--support {
+    --cruor-band-shadow: 0.68;
+    --cruor-band-shadow-low: 0.62;
+    --cruor-band-core: 0.44;
+    --cruor-band-glow: 0.34;
+    --cruor-band-glow-soft: 0.16;
+    --cruor-band-side: 0.36;
+    --cruor-band-side-soft: 0.12;
+    --cruor-band-highlight: 0.08;
+    --cruor-band-highlight-soft: 0.03;
   }
 }

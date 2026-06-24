@@ -255,6 +255,52 @@ const TOOL_CARDS = [
   },
 ];
 
+
+const ROADMAP_TOOL_CARDS = [
+  {
+    id: "encounter",
+    title: "Twist an Encounter",
+    descriptor: "Encounter Pressure",
+    icon: "fa-person-rays",
+    summary: "Turn a standard combat scene into a horror-driven tactical situation with pressure, reveals, terrain, and consequences.",
+  },
+  {
+    id: "item",
+    title: "Curse an Item",
+    descriptor: "Cursed Objects",
+    icon: "fa-gem",
+    summary: "Create magic items with drawbacks, rituals, obsessions, costs, and consequences that matter in play.",
+  },
+  {
+    id: "cult",
+    title: "Build a Cult",
+    descriptor: "Factions & Rites",
+    icon: "fa-people-roof",
+    summary: "Generate beliefs, rites, leaders, taboos, victims, secrets, and escalation clocks for dark fantasy cults.",
+  },
+  {
+    id: "faction",
+    title: "Darken a Faction",
+    descriptor: "Political Horror",
+    icon: "fa-chess-rook",
+    summary: "Corrupt factions with internal rot, hidden motives, public masks, forbidden methods, and pressure on the campaign world.",
+  },
+  {
+    id: "region",
+    title: "Shape a Region",
+    descriptor: "Regional Dread",
+    icon: "fa-map",
+    summary: "Build a wider horror region with landmarks, routes, rumors, factions, recurring threats, and travel pressure.",
+  },
+  {
+    id: "scene",
+    title: "Darken a Scene",
+    descriptor: "Session Moments",
+    icon: "fa-masks-theater",
+    summary: "Add dread, sensory pressure, moral tension, and table-facing complications to a scene already in your prep.",
+  },
+];
+
 const SOURCE_CAROUSEL_CARDS = INSPIRATION_CARDS.map((card) => ({
   title: card.anchor,
   description: card.caption,
@@ -622,6 +668,21 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
   );
 }
 
+
+function RoadmapToolCard({ tool }) {
+  return (
+    <article className="cruor-home__roadmap-card" aria-label={`${tool.title} is in development`}>
+      <span className="cruor-home__roadmap-card-status">In Development</span>
+      <i className={`fa-solid ${tool.icon}`} aria-hidden="true" />
+      <div>
+        <span>{tool.descriptor}</span>
+        <h3>{tool.title}</h3>
+        <p>{tool.summary}</p>
+      </div>
+    </article>
+  );
+}
+
 function HomeScrollProgress({ activeSectionId, sectionProgress, onNavigate }) {
   const activeIndex = HOME_SECTIONS.findIndex((section) => section.id === activeSectionId);
 
@@ -777,6 +838,8 @@ function InspirationSourceCarousel() {
 
 export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
   const [zoomPreview, setZoomPreview] = useState(null);
+  const [isContactFormOpen, setIsContactFormOpen] = useState(false);
+  const [contactFormStatus, setContactFormStatus] = useState("");
   const [activeSectionId, setActiveSectionId] = useState(HOME_SECTIONS[0].id);
   const [sectionProgress, setSectionProgress] = useState(0);
   const tools = useMemo(() => TOOL_CARDS, []);
@@ -832,7 +895,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
   };
 
   useEffect(() => {
-    if (!zoomPreview) return undefined;
+    if (!zoomPreview && !isContactFormOpen) return undefined;
 
     const previousBodyOverflow = document.body.style.overflow;
     const previousHtmlOverflow = document.documentElement.style.overflow;
@@ -844,6 +907,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
         setZoomPreview(null);
+        setIsContactFormOpen(false);
       }
     };
 
@@ -860,7 +924,17 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
       window.removeEventListener("wheel", preventPageScroll);
       window.removeEventListener("touchmove", preventPageScroll);
     };
-  }, [zoomPreview]);
+  }, [zoomPreview, isContactFormOpen]);
+
+  const handleContactFormSubmit = (event) => {
+    event.preventDefault();
+    setContactFormStatus("Contact form ready. Connect an email service or form endpoint to enable sending.");
+  };
+
+  const handleContactFormOpen = () => {
+    setContactFormStatus("");
+    setIsContactFormOpen(true);
+  };
 
   return (
     <main className="cruor-home" aria-labelledby="cruorHomeTitle">
@@ -878,6 +952,18 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
             Cruor Games builds advanced dark fantasy generators: source-inspired tools for creating
             locations, monsters, maps, mechanics, content packs, and table-ready horror material.
           </p>
+
+          <div className="cruor-home__hero-actions" aria-label="Cruor workbench entry points">
+            <a className="cruor-home__button cruor-home__button--primary" href="#featuredTools">
+              Explore the Workbench
+              <i className="fa-solid fa-arrow-down" aria-hidden="true" />
+            </a>
+            <a className="cruor-home__text-link" href="#sources">
+              Browse Inspirations
+              <i className="fa-solid fa-book-skull" aria-hidden="true" />
+            </a>
+          </div>
+
         </div>
       </section>
 
@@ -912,11 +998,12 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
         </div>
       </section>
 
-      <section id="featuredTools" className="cruor-home__section cruor-home__section--tools" aria-label="Featured Workbench Tools">
-        <div className="cruor-home__section-head" hidden>
-          <h2 id="featuredToolsTitle">Featured Workbench Tools</h2>
+      <section id="featuredTools" className="cruor-home__section cruor-home__section--tools" aria-labelledby="featuredToolsTitle">
+        <div className="cruor-home__section-head cruor-home__section-head--tools">
+          <span className="cruor-home__section-kicker">Available Now</span>
+          <h2 id="featuredToolsTitle">Workbench Tools.</h2>
           <p>
-            Start with the first production tools of Cruor’s dark fantasy workbench: generate playable
+            Use the first production tools of Cruor’s dark fantasy workbench: generate playable
             locations, procedural maps, and complete 5E monster stat blocks from source-driven components.
           </p>
         </div>
@@ -930,6 +1017,23 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
               onZoom={setZoomPreview}
             />
           ))}
+        </div>
+
+        <div className="cruor-home__roadmap" aria-labelledby="roadmapToolsTitle">
+          <div className="cruor-home__roadmap-head">
+            <span className="cruor-home__section-kicker">In Development</span>
+            <h3 id="roadmapToolsTitle">More generators are being forged.</h3>
+            <p>
+              Cruor is expanding beyond places and monsters into encounters, cursed items, cults,
+              factions, regions, and scene-level horror tools.
+            </p>
+          </div>
+
+          <div className="cruor-home__roadmap-grid">
+            {ROADMAP_TOOL_CARDS.map((tool) => (
+              <RoadmapToolCard key={tool.id} tool={tool} />
+            ))}
+          </div>
         </div>
       </section>
 
@@ -986,11 +1090,80 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
         </div>
       </section>
 
+      <footer className="cruor-home__footer" aria-label="Cruor Games footer">
+        <div className="cruor-home__footer-brand">
+          <span className="cruor-home__footer-logo-mark" aria-hidden="true">
+            <img src="/assets/icons/cruor-logo-small.png" alt="" />
+          </span>
+          <span className="cruor-home__footer-brand-copy">
+            <strong>Cruor Games</strong>
+            <span>Dark fantasy workbench for 5E.</span>
+          </span>
+        </div>
+
+        <div className="cruor-home__footer-meta">
+          <nav className="cruor-home__footer-nav" aria-label="Footer navigation">
+            <a href="#homeHero">Home</a>
+            <a href="#featuredTools">Tools</a>
+            <a href="#sources">Inspirations</a>
+            <a href="#support">Patreon</a>
+            <button type="button" onClick={handleContactFormOpen}>Contacts</button>
+          </nav>
+          <p className="cruor-home__footer-copy">© {new Date().getFullYear()} Cruor Games. All rights reserved.</p>
+        </div>
+      </footer>
+
       <HomeScrollProgress
         activeSectionId={activeSectionId}
         sectionProgress={sectionProgress}
         onNavigate={handleSectionNavigate}
       />
+
+
+      {isContactFormOpen ? (
+        <div className="cruor-home__contact-modal" role="dialog" aria-modal="true" aria-labelledby="cruorContactTitle">
+          <button
+            className="cruor-home__contact-backdrop"
+            type="button"
+            aria-label="Close contact form"
+            onClick={() => setIsContactFormOpen(false)}
+          />
+          <form className="cruor-home__contact-form" onSubmit={handleContactFormSubmit}>
+            <div className="cruor-home__contact-head">
+              <span>Contact</span>
+              <h2 id="cruorContactTitle">Get in touch with Cruor Games.</h2>
+              <p>Use this form for publishing, collaboration, licensing, support, or general questions.</p>
+            </div>
+
+            <label>
+              <span>Name</span>
+              <input name="name" type="text" autoComplete="name" />
+            </label>
+
+            <label>
+              <span>Email</span>
+              <input name="email" type="email" autoComplete="email" />
+            </label>
+
+            <label>
+              <span>Message</span>
+              <textarea name="message" rows="5" />
+            </label>
+
+            {contactFormStatus ? <p className="cruor-home__contact-status">{contactFormStatus}</p> : null}
+
+            <div className="cruor-home__contact-actions">
+              <button className="cruor-home__button cruor-home__button--primary" type="submit">
+                Send Message
+                <i className="fa-solid fa-paper-plane" aria-hidden="true" />
+              </button>
+              <button className="cruor-home__button cruor-home__button--ghost" type="button" onClick={() => setIsContactFormOpen(false)}>
+                Close
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : null}
 
       {zoomPreview ? (
         <div className="cruor-home__zoom-modal" role="dialog" aria-modal="true" aria-label={`${zoomPreview.label} preview`}>
