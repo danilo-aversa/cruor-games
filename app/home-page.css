@@ -659,9 +659,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
   isolation: isolate;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(340px, 0.86fr);
-  grid-template-areas:
-    "content image"
-    "content actions";
+  grid-template-areas: "content image";
   align-items: stretch;
   gap: 0;
   margin: 0;
@@ -678,25 +676,19 @@ body:has(.cruor-home)::-webkit-scrollbar {
 
 .cruor-home__tool-grid .cruor-home__tool-card:nth-child(even) {
   grid-template-columns: minmax(340px, 0.86fr) minmax(0, 1fr);
-  grid-template-areas:
-    "image content"
-    "actions content";
+  grid-template-areas: "image content";
 }
 
 .cruor-home__tool-card[data-mode="details"] {
-  grid-template-areas:
-    "content image"
-    "actions image";
+  grid-template-areas: "content image";
 }
 
 .cruor-home__tool-grid .cruor-home__tool-card:nth-child(even)[data-mode="details"] {
-  grid-template-areas:
-    "image content"
-    "image actions";
+  grid-template-areas: "image content";
 }
 
 .cruor-home__tool-grid .cruor-home__tool-card:nth-child(even) .cruor-home__tool-content {
-  padding: clamp(28px, 3vw, 40px) 20px 10px clamp(28px, 3vw, 42px);
+  padding: clamp(12px, 1.2vw, 16px) 20px clamp(12px, 1.2vw, 16px) clamp(18px, 2vw, 24px);
 }
 
 .cruor-home__tool-card::before {
@@ -725,10 +717,6 @@ body:has(.cruor-home)::-webkit-scrollbar {
 }
 
 
-
-
-
-
 .cruor-home__tool-content {
   position: relative;
   z-index: 1;
@@ -737,7 +725,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
   display: grid;
   align-content: start;
   gap: clamp(18px, 2vw, 28px);
-  padding: clamp(28px, 3vw, 40px) clamp(28px, 3vw, 42px) 10px 20px;
+  padding: clamp(12px, 1.2vw, 16px) clamp(18px, 2vw, 24px) clamp(12px, 1.2vw, 16px) 20px;
 }
 
 .cruor-home__tool-content-inner {
@@ -772,13 +760,13 @@ body:has(.cruor-home)::-webkit-scrollbar {
 .cruor-home__tool-summary {
   max-width: none;
   font-size: var(--text-size-3xl);
-  line-height: 1.58;
+  line-height: 1.5;
 }
 
 .cruor-home__tool-feature-block {
   display: grid;
   gap: clamp(14px, 1.4vw, 18px);
-  padding: clamp(18px, 1.8vw, 22px) 0;
+  padding: clamp(16px, 1.55vw, 20px) 0;
   border-top: 1px solid var(--cruor-color-r208-g162-b170-a120);
   border-bottom: 1px solid var(--cruor-color-r208-g162-b170-a120);
 }
@@ -794,7 +782,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 .cruor-home__tool-features {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(14px, 1.4vw, 18px) clamp(18px, 2vw, 24px);
+  gap: clamp(12px, 1.2vw, 16px) clamp(16px, 1.7vw, 22px);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -807,7 +795,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
   align-items: start;
   color: var(--cruor-color-muted, var(--muted));
   font-size: var(--text-size-3xl);
-  line-height: 1.42;
+  line-height: 1.34;
 }
 
 .cruor-home__tool-features i {
@@ -861,14 +849,14 @@ body:has(.cruor-home)::-webkit-scrollbar {
 .cruor-home__tool-actions {
   position: relative;
   z-index: 1;
-  grid-area: actions;
+  grid-area: auto;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   align-items: center;
-  align-self: end;
-  margin-top: 0;
-  padding: 0 8px 8px;
+  align-self: stretch;
+  margin-top: clamp(2px, 0.7vw, 8px);
+  padding: 0;
 }
 
 .cruor-home__tool-actions .cruor-home__button {
@@ -894,10 +882,11 @@ body:has(.cruor-home)::-webkit-scrollbar {
 
 .cruor-home__tool-image.cruor-home__media-card {
   display: grid;
+  align-items: flex-end;
   gap: 12px;
   width: 100%;
   aspect-ratio: auto;
-  padding: 16px 8px 8px;
+  padding: clamp(12px, 1.2vw, 16px) 8px clamp(12px, 1.2vw, 16px);
   overflow: hidden;
   border: 0;
   background: transparent;
@@ -908,7 +897,9 @@ body:has(.cruor-home)::-webkit-scrollbar {
   position: relative;
   overflow: hidden;
   aspect-ratio: 16 / 9;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a120);
   background: #050405;
+  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.035);
 }
 
 .cruor-home__tool-main-preview img,
@@ -1028,8 +1019,6 @@ body:has(.cruor-home)::-webkit-scrollbar {
 }
 
 
-
-
 .cruor-home__tool-preview-thumb {
   position: relative;
   display: grid;
@@ -1117,7 +1106,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
   max-width: none;
   color: var(--cruor-color-muted, var(--muted));
   font-size: var(--text-size-3xl);
-  line-height: 1.58;
+  line-height: 1.5;
 }
 
 .cruor-home__engine-grid {
@@ -1375,8 +1364,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 }
 
 
-
-/* Step 09 — Home visual hierarchy and tools roadmap */
+/* Home visual hierarchy and tools roadmap */
 
 .cruor-home__hero-availability {
   max-width: 640px;
@@ -1816,7 +1804,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 .cruor-home__source-card-copy p {
   color: var(--cruor-color-muted, var(--muted));
   font-size: var(--text-size-l);
-  line-height: 1.42;
+  line-height: 1.34;
 }
 
 .cruor-home__section--support {
@@ -1952,6 +1940,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 
 .cruor-home__zoom-close {
   position: absolute;
+  z-index: 1;
   top: -14px;
   right: -14px;
   display: inline-flex;
@@ -1973,8 +1962,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 }
 
 
-
-/* Step 09 — Home visual hierarchy and tools roadmap */
+/* Home visual hierarchy and tools roadmap */
 
 .cruor-home__hero-availability {
   max-width: 640px;
@@ -2262,8 +2250,14 @@ body:has(.cruor-home)::-webkit-scrollbar {
     display: none;
   }
 
-  .cruor-home__scroll-progress-dot > span:not(.cruor-home__scroll-progress-label)::before {
+  .cruor-home__scroll-progress-dot > span:not(.cruor-home__scroll-progress-label)::before,
+  .cruor-home__workbench-flow li {
     transition: none;
+  }
+
+  .cruor-home__workbench-flow::after {
+    animation: none;
+    opacity: 0.28;
   }
 }
 
@@ -2279,8 +2273,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
     grid-template-columns: 1fr;
     grid-template-areas:
       "content"
-      "image"
-      "actions";
+      "image";
   }
 
 }
@@ -2337,7 +2330,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 
   .cruor-home__tool-content {
     gap: 18px;
-    padding: clamp(28px, 3vw, 40px) clamp(28px, 3vw, 42px) 10px 20px;
+    padding: clamp(12px, 1.2vw, 16px) clamp(18px, 2vw, 24px) clamp(12px, 1.2vw, 16px) 20px;
   }
 
   .cruor-home__tool-actions {
@@ -2409,7 +2402,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 
   .cruor-home__tool-grid .cruor-home__tool-card:nth-child(even) .cruor-home__tool-content,
   .cruor-home__tool-content {
-    padding: clamp(28px, 3vw, 40px) clamp(28px, 3vw, 42px) 10px 20px;
+    padding: clamp(12px, 1.2vw, 16px) clamp(18px, 2vw, 24px) clamp(12px, 1.2vw, 16px) 20px;
   }
 
   .cruor-home__source-card {
@@ -2417,7 +2410,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
   }
 }
 
-/* Step 10 — keep the tools section structural, not boxed */
+/* Tools section layout */
 .cruor-home__section--tools {
   margin-top: clamp(46px, 5.5vw, 86px);
   margin-bottom: clamp(54px, 6vw, 92px);
@@ -2457,91 +2450,158 @@ body:has(.cruor-home)::-webkit-scrollbar {
 }
 
 
-/* Step 11 — remove nested boxes, simplify flow, add footer */
+/* Flow, support, and footer layout */
 .cruor-home__hero-availability {
   display: none;
 }
 
 .cruor-home__workbench-flow {
-  --workbench-flow-gap: clamp(18px, 2.8vw, 42px);
+  --workbench-flow-gap: clamp(18px, 2.5vw, 36px);
+  --workbench-node-size: clamp(54px, 4.6vw, 68px);
   position: relative;
-  align-items: start;
-  gap: var(--workbench-flow-gap);
-  padding-top: clamp(18px, 2vw, 26px);
-}
-
-.cruor-home__workbench-flow::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(208, 162, 170, 0.32), transparent);
-}
-
-.cruor-home__workbench-flow li {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 8px 14px;
-  align-items: start;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--workbench-flow-gap);
+  align-items: stretch;
+  margin: 0;
+  padding: clamp(24px, 3vw, 40px);
+  overflow: visible;
+  border: 1px solid rgba(208, 162, 170, 0.14);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(122, 26, 40, 0.18), transparent 66%),
+    linear-gradient(180deg, rgba(255, 238, 242, 0.036), rgba(122, 26, 40, 0.07)),
+    rgba(5, 4, 5, 0.28);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 238, 242, 0.035),
+    0 26px 72px rgba(0, 0, 0, 0.28),
+    0 0 42px rgba(122, 26, 40, 0.15);
+  list-style: none;
 }
 
-.cruor-home__workbench-flow li:not(:last-child)::after {
+.cruor-home__workbench-flow::before,
+.cruor-home__workbench-flow::after {
   content: none;
   display: none;
 }
 
+.cruor-home__workbench-flow li {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--workbench-node-size) minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  gap: 8px 16px;
+  align-items: center;
+  min-width: 0;
+  min-height: clamp(154px, 14vw, 190px);
+  padding: clamp(18px, 2.1vw, 26px);
+  border: 1px solid rgba(208, 162, 170, 0.12);
+  background:
+    linear-gradient(135deg, rgba(255, 238, 242, 0.042), rgba(122, 26, 40, 0.055) 56%, rgba(5, 4, 5, 0.16)),
+    rgba(5, 4, 5, 0.2);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 238, 242, 0.026),
+    inset 3px 0 0 rgba(122, 26, 40, 0.28);
+  outline: none;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease,
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
+.cruor-home__workbench-flow li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: calc((var(--workbench-flow-gap) * -0.5) - 8px);
+  z-index: 2;
+  width: 16px;
+  height: 16px;
+  border-top: 1px solid rgba(208, 162, 170, 0.34);
+  border-right: 1px solid rgba(208, 162, 170, 0.34);
+  background: transparent;
+  box-shadow: 5px -5px 16px rgba(122, 26, 40, 0.16);
+  pointer-events: none;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.cruor-home__workbench-flow:hover li:not(:hover),
+.cruor-home__workbench-flow:focus-within li:not(:focus-within) {
+  opacity: 0.66;
+}
+
+.cruor-home__workbench-flow li:hover,
+.cruor-home__workbench-flow li:focus-visible {
+  border-color: rgba(208, 162, 170, 0.24);
+  background:
+    linear-gradient(135deg, rgba(255, 238, 242, 0.06), rgba(122, 26, 40, 0.105) 58%, rgba(5, 4, 5, 0.24)),
+    rgba(9, 5, 7, 0.46);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 238, 242, 0.045),
+    inset 3px 0 0 rgba(208, 162, 170, 0.34),
+    0 0 28px rgba(122, 26, 40, 0.2);
+  transform: translateY(-2px);
+}
+
 .cruor-home__workbench-flow li > span {
-  grid-column: 1;
-  grid-row: 1 / span 3;
-  align-self: start;
+  position: absolute;
+  top: clamp(10px, 1vw, 14px);
+  right: clamp(10px, 1vw, 14px);
   display: inline-grid;
   place-items: center;
-  width: 38px;
-  min-width: 38px;
-  height: 38px;
-  border: 1px solid rgba(208, 162, 170, 0.2);
-  background: rgba(5, 4, 5, 0.28);
+  width: 34px;
+  min-width: 34px;
+  height: 22px;
+  border: 1px solid rgba(208, 162, 170, 0.16);
+  background: rgba(5, 4, 5, 0.46);
   color: rgba(208, 162, 170, 0.72);
-  font-size: var(--text-size-sm);
+  font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.08em;
   line-height: 1;
-  writing-mode: horizontal-tb;
-  text-orientation: mixed;
 }
 
 .cruor-home__workbench-flow i {
-  grid-column: 2;
-  width: fit-content;
-  margin-bottom: 2px;
-  color: rgba(208, 162, 170, 0.74);
-  font-size: var(--text-size-2xl);
-  text-shadow: none;
+  display: grid;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  place-items: center;
+  width: var(--workbench-node-size);
+  height: var(--workbench-node-size);
+  border: 1px solid rgba(208, 162, 170, 0.24);
+  background:
+    radial-gradient(circle at 50% 38%, rgba(208, 162, 170, 0.14), transparent 58%),
+    linear-gradient(180deg, rgba(122, 26, 40, 0.32), rgba(5, 4, 5, 0.64));
+  color: var(--home-accent-pale);
+  font-size: clamp(1.1rem, 1.7vw, 1.45rem);
+  box-shadow:
+    0 0 0 1px rgba(255, 238, 242, 0.032),
+    0 0 22px rgba(122, 26, 40, 0.24),
+    inset 0 1px 0 rgba(255, 238, 242, 0.055);
+  text-shadow: 0 0 16px rgba(153, 17, 35, 0.38);
 }
 
 .cruor-home__workbench-flow strong {
   grid-column: 2;
+  align-self: end;
+  max-width: 22ch;
   color: var(--cruor-color-text, var(--text));
-  font-family: var(--display);
-  font-size: clamp(1.35rem, 2.05vw, 2rem);
-  font-weight: 950;
-  line-height: 0.98;
-  letter-spacing: -0.035em;
-  text-transform: none;
+  font-family: var(--font);
+  font-size: clamp(0.88rem, 0.88vw, 1rem);
+  font-weight: 900;
+  line-height: 1.12;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
 }
 
 .cruor-home__workbench-flow p {
   grid-column: 2;
-  max-width: 34ch;
-  color: rgba(238, 238, 238, 0.66);
-  font-size: var(--text-size-l);
-  line-height: 1.48;
+  align-self: start;
+  max-width: 31ch;
+  color: rgba(238, 238, 238, 0.74);
+  font-size: clamp(1rem, 0.98vw, 1.12rem);
+  line-height: 1.5;
 }
 
 .cruor-home__section--support {
@@ -2669,6 +2729,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 
 .cruor-home__footer-nav {
   display: flex;
+  align-items: baseline;
   flex-wrap: wrap;
   gap: 10px 18px;
   justify-content: flex-end;
@@ -2701,15 +2762,32 @@ body:has(.cruor-home)::-webkit-scrollbar {
 
 @media (max-width: 720px) {
   .cruor-home__workbench-flow {
+    --workbench-node-size: 52px;
     grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 18px;
   }
 
-  .cruor-home__workbench-flow::before {
-    left: 18px;
-    right: auto;
-    width: 1px;
-    height: 100%;
-    background: linear-gradient(180deg, rgba(208, 162, 170, 0.3), transparent);
+  .cruor-home__workbench-flow::before,
+  .cruor-home__workbench-flow::after,
+  .cruor-home__workbench-flow li:not(:last-child)::after {
+    content: none;
+    display: none;
+  }
+
+  .cruor-home__workbench-flow li {
+    min-height: 0;
+    padding: 16px 14px;
+  }
+
+  .cruor-home__workbench-flow li > span {
+    top: 8px;
+    right: 8px;
+  }
+
+  .cruor-home__workbench-flow strong,
+  .cruor-home__workbench-flow p {
+    max-width: none;
   }
 
   .cruor-home__footer {
@@ -2722,7 +2800,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
   }
 }
 
-/* Step 12 — compact footer and soft editorial section bands */
+/* Editorial section spacing */
 #workbenchFlow.cruor-home__statement {
   margin-right: calc(50% - 50vw);
   margin-left: calc(50% - 50vw);
@@ -2766,13 +2844,13 @@ body:has(.cruor-home)::-webkit-scrollbar {
 }
 
 #workbenchFlow .cruor-home__workbench-flow {
-  padding: clamp(8px, 1.2vw, 16px) 0;
+  padding: clamp(24px, 3vw, 40px);
 }
 
 #workbenchFlow .cruor-home__workbench-flow li {
   background:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.035), rgba(122, 26, 40, 0.055)),
-    rgba(5, 4, 5, 0.14);
+    linear-gradient(135deg, rgba(255, 238, 242, 0.042), rgba(122, 26, 40, 0.055) 56%, rgba(5, 4, 5, 0.16)),
+    rgba(5, 4, 5, 0.2);
 }
 
 .cruor-home__section--sources,
@@ -2826,6 +2904,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 }
 
 .cruor-home__footer-nav {
+  align-items: baseline;
   gap: 8px 16px;
 }
 
@@ -2852,53 +2931,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
   }
 }
 
-/* Step 13 — topbar-style footer and seamless editorial atmosphere */
-#workbenchFlow.cruor-home__statement,
-.cruor-home__section--sources,
-.cruor-home__section--support {
-  position: relative;
-  isolation: isolate;
-  overflow: visible;
-  background: transparent !important;
-}
-
-#workbenchFlow.cruor-home__statement::before,
-.cruor-home__section--sources::before,
-.cruor-home__section--support::before {
-  content: "";
-  position: absolute;
-  left: calc(50% - 50vw);
-  right: calc(50% - 50vw);
-  top: calc(-1 * clamp(90px, 10vw, 160px));
-  bottom: calc(-1 * clamp(90px, 10vw, 160px));
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at 50% 50%, rgba(122, 26, 40, 0.16) 0%, rgba(122, 26, 40, 0.08) 34%, rgba(122, 26, 40, 0) 72%),
-    radial-gradient(ellipse at 20% 42%, rgba(208, 162, 170, 0.065) 0%, rgba(208, 162, 170, 0.03) 28%, rgba(208, 162, 170, 0) 66%),
-    radial-gradient(ellipse at 82% 58%, rgba(53, 5, 13, 0.24) 0%, rgba(53, 5, 13, 0.08) 38%, rgba(53, 5, 13, 0) 74%);
-  filter: blur(18px);
-  opacity: 0.92;
-}
-
-#workbenchFlow.cruor-home__statement::after,
-.cruor-home__section--sources::after,
-.cruor-home__section--support::after {
-  content: none !important;
-  display: none !important;
-}
-
-#workbenchFlow.cruor-home__statement {
-  background: transparent !important;
-}
-
-#workbenchFlow.cruor-home__statement > div,
-.cruor-home__section--sources > *,
-.cruor-home__section--support > * {
-  position: relative;
-  z-index: 1;
-}
-
+/* Footer and contact modal */
 .cruor-home__footer {
   box-sizing: border-box;
   display: grid;
@@ -2981,7 +3014,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
   display: inline-flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  align-items: center;
+  align-items: baseline;
   gap: 2px;
 }
 
@@ -3146,151 +3179,274 @@ body:has(.cruor-home)::-webkit-scrollbar {
   }
 }
 
-/* Step 14 — visible seamless editorial atmosphere */
-#workbenchFlow.cruor-home__statement,
-.cruor-home__section--sources,
-.cruor-home__section--support {
+
+/* Output examples */
+.cruor-home__section--output {
+  margin-top: clamp(58px, 7vw, 106px);
+  margin-bottom: clamp(58px, 7vw, 108px);
+}
+
+.cruor-home__output-board {
   position: relative;
-  isolation: isolate;
-  overflow: visible;
-  background: transparent !important;
+  display: grid;
+  gap: clamp(22px, 3vw, 38px);
+  padding: clamp(18px, 2.4vw, 30px);
+  overflow: hidden;
+  border: 1px solid rgba(208, 162, 170, 0.16);
+  background:
+    radial-gradient(ellipse 78% 72% at 50% 40%, rgba(122, 26, 40, 0.16), transparent 70%),
+    linear-gradient(180deg, rgba(255, 238, 242, 0.028), rgba(0, 0, 0, 0.1)),
+    rgba(7, 5, 6, 0.54);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 238, 242, 0.04),
+    0 24px 72px rgba(0, 0, 0, 0.28);
 }
 
-#workbenchFlow.cruor-home__statement::before,
-.cruor-home__section--sources::before,
-.cruor-home__section--support::before {
-  content: "" !important;
+.cruor-home__output-board::before {
+  content: "";
   position: absolute;
-  left: calc(50% - 50vw);
-  right: calc(50% - 50vw);
-  top: calc(-1 * clamp(150px, 16vw, 280px));
-  bottom: calc(-1 * clamp(150px, 16vw, 280px));
-  z-index: 0;
-  display: block !important;
+  inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 72% 58% at 50% 48%, rgba(122, 26, 40, 0.34) 0%, rgba(122, 26, 40, 0.2) 24%, rgba(122, 26, 40, 0.075) 52%, rgba(122, 26, 40, 0) 78%),
-    radial-gradient(ellipse 42% 46% at 18% 44%, rgba(208, 162, 170, 0.12) 0%, rgba(208, 162, 170, 0.055) 36%, rgba(208, 162, 170, 0) 72%),
-    radial-gradient(ellipse 46% 50% at 84% 54%, rgba(53, 5, 13, 0.58) 0%, rgba(53, 5, 13, 0.22) 38%, rgba(53, 5, 13, 0) 76%),
-    linear-gradient(180deg, rgba(5, 4, 5, 0) 0%, rgba(122, 26, 40, 0.075) 26%, rgba(122, 26, 40, 0.105) 50%, rgba(122, 26, 40, 0.065) 74%, rgba(5, 4, 5, 0) 100%);
-  filter: blur(28px);
-  opacity: 1;
-  transform: translateZ(0);
+    linear-gradient(90deg, rgba(208, 162, 170, 0.045), transparent 18%, transparent 82%, rgba(208, 162, 170, 0.045)),
+    linear-gradient(180deg, rgba(255, 238, 242, 0.035), transparent 30%, transparent 72%, rgba(122, 26, 40, 0.075));
+  opacity: 0.8;
 }
 
-#workbenchFlow.cruor-home__statement::before {
-  background:
-    radial-gradient(ellipse 76% 54% at 50% 52%, rgba(122, 26, 40, 0.38) 0%, rgba(122, 26, 40, 0.22) 28%, rgba(122, 26, 40, 0.08) 56%, rgba(122, 26, 40, 0) 82%),
-    radial-gradient(ellipse 38% 42% at 20% 48%, rgba(208, 162, 170, 0.14) 0%, rgba(208, 162, 170, 0.06) 38%, rgba(208, 162, 170, 0) 76%),
-    radial-gradient(ellipse 48% 52% at 80% 50%, rgba(53, 5, 13, 0.62) 0%, rgba(53, 5, 13, 0.24) 40%, rgba(53, 5, 13, 0) 78%);
-}
-
-.cruor-home__section--sources::before {
-  background:
-    radial-gradient(ellipse 76% 60% at 46% 50%, rgba(122, 26, 40, 0.26) 0%, rgba(122, 26, 40, 0.16) 28%, rgba(122, 26, 40, 0.06) 56%, rgba(122, 26, 40, 0) 84%),
-    radial-gradient(ellipse 36% 46% at 22% 44%, rgba(208, 162, 170, 0.12) 0%, rgba(208, 162, 170, 0.05) 36%, rgba(208, 162, 170, 0) 74%),
-    radial-gradient(ellipse 48% 54% at 82% 56%, rgba(53, 5, 13, 0.44) 0%, rgba(53, 5, 13, 0.18) 42%, rgba(53, 5, 13, 0) 82%);
-}
-
-.cruor-home__section--support::before {
-  background:
-    radial-gradient(ellipse 78% 60% at 52% 50%, rgba(122, 26, 40, 0.24) 0%, rgba(122, 26, 40, 0.15) 30%, rgba(122, 26, 40, 0.055) 58%, rgba(122, 26, 40, 0) 84%),
-    radial-gradient(ellipse 40% 46% at 78% 44%, rgba(208, 162, 170, 0.105) 0%, rgba(208, 162, 170, 0.045) 36%, rgba(208, 162, 170, 0) 76%),
-    radial-gradient(ellipse 48% 54% at 18% 56%, rgba(53, 5, 13, 0.44) 0%, rgba(53, 5, 13, 0.17) 42%, rgba(53, 5, 13, 0) 82%);
-}
-
-#workbenchFlow.cruor-home__statement::after,
-.cruor-home__section--sources::after,
-.cruor-home__section--support::after {
-  content: "" !important;
-  position: absolute;
-  left: calc(50% - 50vw);
-  right: calc(50% - 50vw);
-  top: calc(-1 * clamp(90px, 10vw, 180px));
-  bottom: calc(-1 * clamp(90px, 10vw, 180px));
-  z-index: 0;
-  display: block !important;
-  pointer-events: none;
-  background-image:
-    linear-gradient(90deg, rgba(208, 162, 170, 0), rgba(208, 162, 170, 0.055), rgba(208, 162, 170, 0));
-  opacity: 0.55;
-  mask-image: linear-gradient(180deg, transparent 0%, black 28%, black 72%, transparent 100%);
-}
-
-#workbenchFlow.cruor-home__statement > *,
-.cruor-home__section--sources > *,
-.cruor-home__section--support > * {
+.cruor-home__output-board-head,
+.cruor-home__output-rail {
   position: relative;
   z-index: 1;
 }
 
-/* Step 15 — visible seamless editorial bands (direct section background, no hidden pseudo-layer) */
-#workbenchFlow.cruor-home__statement,
-.cruor-home__section--sources,
-.cruor-home__section--support {
-  position: relative;
-  isolation: auto;
-  overflow: visible;
+.cruor-home__output-board-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+  gap: clamp(18px, 2.4vw, 34px);
+  align-items: end;
+}
+
+.cruor-home__section-head--output {
+  max-width: 760px;
+}
+
+.cruor-home__output-board-meta {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+  padding-bottom: 4px;
+  text-align: right;
+}
+
+.cruor-home__output-board-meta span,
+.cruor-home__output-board-meta small {
+  color: rgba(238, 238, 238, 0.48);
+  font-size: var(--text-size-xs);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.cruor-home__output-board-meta strong {
+  color: var(--home-accent-pale);
+  font-family: var(--body);
+  font-size: var(--text-size-l);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.cruor-home__output-board-meta small {
+  max-width: 240px;
+  color: rgba(238, 238, 238, 0.38);
+  letter-spacing: 0.055em;
+  text-transform: none;
+}
+
+.cruor-home__output-rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid rgba(208, 162, 170, 0.13);
+  background: rgba(208, 162, 170, 0.13);
+}
+
+.cruor-home__output-panel {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: clamp(12px, 1.5vw, 18px);
   background:
-    linear-gradient(
-      180deg,
-      rgba(5, 4, 5, 0) 0%,
-      rgba(18, 6, 10, 0.72) 17%,
-      rgba(51, 3, 12, 0.46) 50%,
-      rgba(18, 6, 10, 0.68) 83%,
-      rgba(5, 4, 5, 0) 100%
-    ),
-    radial-gradient(ellipse 78% 70% at 50% 50%, rgba(122, 26, 40, 0.36) 0%, rgba(122, 26, 40, 0.2) 42%, rgba(122, 26, 40, 0) 78%),
-    radial-gradient(ellipse 45% 58% at 14% 46%, rgba(208, 162, 170, 0.11) 0%, rgba(208, 162, 170, 0.045) 36%, rgba(208, 162, 170, 0) 72%),
-    radial-gradient(ellipse 46% 58% at 86% 54%, rgba(94, 8, 22, 0.42) 0%, rgba(94, 8, 22, 0.16) 42%, rgba(94, 8, 22, 0) 78%) !important;
+    linear-gradient(180deg, rgba(255, 238, 242, 0.026), rgba(0, 0, 0, 0.1)),
+    rgba(5, 4, 5, 0.72);
 }
 
-#workbenchFlow.cruor-home__statement::before,
-#workbenchFlow.cruor-home__statement::after,
-.cruor-home__section--sources::before,
-.cruor-home__section--sources::after,
-.cruor-home__section--support::before,
-.cruor-home__section--support::after {
-  content: none !important;
-  display: none !important;
+.cruor-home__output-panel-frame {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid rgba(208, 162, 170, 0.18);
+  background: #050405;
+  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.035);
 }
 
-#workbenchFlow.cruor-home__statement {
-  margin-right: calc(50% - 50vw);
-  margin-left: calc(50% - 50vw);
-  padding:
-    clamp(84px, 9vw, 132px)
-    max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2))
-    clamp(78px, 8vw, 122px);
+.cruor-home__output-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 7px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(122, 26, 40, 0.24), transparent 58%),
+    linear-gradient(135deg, rgba(122, 26, 40, 0.2), transparent 44%),
+    rgba(5, 4, 5, 0.82);
+  color: rgba(208, 162, 170, 0.68);
 }
 
-.cruor-home__section--sources,
-.cruor-home__section--support {
-  margin-right: calc(50% - 50vw);
-  margin-left: calc(50% - 50vw);
-  padding-right: max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2));
-  padding-left: max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2));
+.cruor-home__output-placeholder::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(255, 238, 242, 0.06);
+  pointer-events: none;
 }
 
-.cruor-home__section--sources {
-  padding-top: clamp(74px, 8vw, 116px);
-  padding-bottom: clamp(68px, 7vw, 108px);
+.cruor-home__output-placeholder::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255, 238, 242, 0.02) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 238, 242, 0.02) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.68;
 }
 
-.cruor-home__section--support {
-  padding-top: clamp(64px, 7vw, 104px);
-  padding-bottom: clamp(60px, 6.5vw, 98px);
-}
-
-#workbenchFlow.cruor-home__statement > *,
-.cruor-home__section--sources > *,
-.cruor-home__section--support > * {
+.cruor-home__output-placeholder i,
+.cruor-home__output-placeholder span,
+.cruor-home__output-placeholder small {
   position: relative;
   z-index: 1;
 }
 
+.cruor-home__output-placeholder i {
+  font-size: clamp(1.8rem, 2.8vw, 3rem);
+  color: rgba(208, 162, 170, 0.58);
+  filter: drop-shadow(0 0 18px rgba(122, 26, 40, 0.28));
+}
 
-/* Step 16B — stronger hero video bottom fade + subtle red breathing on existing editorial bands */
+.cruor-home__output-placeholder span,
+.cruor-home__output-placeholder small {
+  font-family: var(--body);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.cruor-home__output-placeholder span {
+  letter-spacing: 0.16em;
+}
+
+.cruor-home__output-placeholder small {
+  color: rgba(238, 238, 238, 0.42);
+  letter-spacing: 0.08em;
+}
+
+.cruor-home__output-panel-caption {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 10px;
+  border: 1px solid rgba(208, 162, 170, 0.16);
+  background: rgba(5, 4, 5, 0.78);
+  box-shadow: 0 -18px 32px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(6px);
+}
+
+.cruor-home__output-panel-caption span,
+.cruor-home__output-panel-caption strong {
+  font-family: var(--body);
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.cruor-home__output-panel-caption span {
+  color: rgba(238, 238, 238, 0.48);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.cruor-home__output-panel-caption strong {
+  color: var(--cruor-color-text, var(--text));
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-align: right;
+}
+
+.cruor-home__output-panel > p {
+  max-width: 92%;
+  color: rgba(238, 238, 238, 0.58);
+  font-size: var(--text-size-sm);
+  line-height: 1.55;
+}
+
+@media (max-width: 1040px) {
+  .cruor-home__output-rail {
+    grid-template-columns: 1fr;
+  }
+
+  .cruor-home__output-panel {
+    grid-template-columns: minmax(260px, 0.78fr) minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .cruor-home__output-panel > p {
+    max-width: 620px;
+  }
+}
+
+@media (max-width: 760px) {
+  .cruor-home__output-board-head {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .cruor-home__output-board-meta {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .cruor-home__output-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .cruor-home__output-panel-caption {
+    align-items: start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .cruor-home__output-panel-caption strong {
+    text-align: left;
+  }
+}
+
+/* Final home polish — hero fade and breathing editorial bands */
 .cruor-home__hero-media::after {
   content: "";
   position: absolute;
@@ -3298,34 +3454,29 @@ body:has(.cruor-home)::-webkit-scrollbar {
   bottom: -1px;
   left: 0;
   z-index: 1;
-  height: clamp(320px, 46vh, 640px);
+  height: 24px;
   pointer-events: none;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(5, 4, 5, 0) 0%,
-      rgba(5, 4, 5, 0.18) 26%,
-      rgba(5, 4, 5, 0.64) 62%,
-      rgba(5, 4, 5, 0.94) 86%,
-      #050405 100%
-    );
+  background: linear-gradient(
+    180deg,
+    rgba(5, 4, 5, 0) 0%,
+    rgba(5, 4, 5, 0.42) 58%,
+    #050405 100%
+  );
 }
 
 .cruor-home__hero-video {
   -webkit-mask-image: linear-gradient(
     180deg,
     #000 0%,
-    #000 48%,
-    rgba(0, 0, 0, 0.78) 66%,
-    rgba(0, 0, 0, 0.32) 84%,
+    #000 calc(100% - 22px),
+    rgba(0, 0, 0, 0.74) calc(100% - 13px),
     rgba(0, 0, 0, 0) 100%
   );
   mask-image: linear-gradient(
     180deg,
     #000 0%,
-    #000 48%,
-    rgba(0, 0, 0, 0.78) 66%,
-    rgba(0, 0, 0, 0.32) 84%,
+    #000 calc(100% - 22px),
+    rgba(0, 0, 0, 0.74) calc(100% - 13px),
     rgba(0, 0, 0, 0) 100%
   );
 }
@@ -3396,132 +3547,9 @@ body:has(.cruor-home)::-webkit-scrollbar {
   --cruor-band-side-soft: 0.16;
   --cruor-band-highlight: 0.11;
   --cruor-band-highlight-soft: 0.045;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(5, 4, 5, 0) 0%,
-      rgba(18, 6, 10, var(--cruor-band-shadow)) 17%,
-      rgba(51, 3, 12, var(--cruor-band-core)) 50%,
-      rgba(18, 6, 10, var(--cruor-band-shadow-low)) 83%,
-      rgba(5, 4, 5, 0) 100%
-    ),
-    radial-gradient(
-      ellipse 78% 70% at 50% 50%,
-      rgba(122, 26, 40, var(--cruor-band-glow)) 0%,
-      rgba(122, 26, 40, var(--cruor-band-glow-soft)) 42%,
-      rgba(122, 26, 40, 0) 78%
-    ),
-    radial-gradient(
-      ellipse 45% 58% at 14% 46%,
-      rgba(208, 162, 170, var(--cruor-band-highlight)) 0%,
-      rgba(208, 162, 170, var(--cruor-band-highlight-soft)) 36%,
-      rgba(208, 162, 170, 0) 72%
-    ),
-    radial-gradient(
-      ellipse 46% 58% at 86% 54%,
-      rgba(94, 8, 22, var(--cruor-band-side)) 0%,
-      rgba(94, 8, 22, var(--cruor-band-side-soft)) 42%,
-      rgba(94, 8, 22, 0) 78%
-    ) !important;
-  background-repeat: no-repeat;
-  animation: cruor-editorial-red-breath 7s ease-in-out infinite;
-}
-
-.cruor-home__section--sources {
-  animation-delay: -3.4s;
-}
-
-.cruor-home__section--support {
-  animation-delay: -6.8s;
-}
-
-@keyframes cruor-editorial-red-breath {
-  0%,
-  100% {
-    --cruor-band-shadow: 0.68;
-    --cruor-band-shadow-low: 0.64;
-    --cruor-band-core: 0.42;
-    --cruor-band-glow: 0.31;
-    --cruor-band-glow-soft: 0.17;
-    --cruor-band-side: 0.36;
-    --cruor-band-side-soft: 0.13;
-    --cruor-band-highlight: 0.08;
-    --cruor-band-highlight-soft: 0.032;
-  }
-
-  48% {
-    --cruor-band-shadow: 0.84;
-    --cruor-band-shadow-low: 0.79;
-    --cruor-band-core: 0.58;
-    --cruor-band-glow: 0.5;
-    --cruor-band-glow-soft: 0.29;
-    --cruor-band-side: 0.54;
-    --cruor-band-side-soft: 0.22;
-    --cruor-band-highlight: 0.16;
-    --cruor-band-highlight-soft: 0.066;
-  }
-
-  62% {
-    --cruor-band-shadow: 0.78;
-    --cruor-band-shadow-low: 0.73;
-    --cruor-band-core: 0.52;
-    --cruor-band-glow: 0.43;
-    --cruor-band-glow-soft: 0.24;
-    --cruor-band-side: 0.47;
-    --cruor-band-side-soft: 0.19;
-    --cruor-band-highlight: 0.13;
-    --cruor-band-highlight-soft: 0.052;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #workbenchFlow.cruor-home__statement,
-  .cruor-home__section--sources,
-  .cruor-home__section--support {
-    --cruor-band-shadow: 0.74;
-    --cruor-band-shadow-low: 0.7;
-    --cruor-band-core: 0.48;
-    --cruor-band-glow: 0.38;
-    --cruor-band-glow-soft: 0.21;
-    --cruor-band-side: 0.42;
-    --cruor-band-side-soft: 0.16;
-    --cruor-band-highlight: 0.1;
-    --cruor-band-highlight-soft: 0.04;
-    animation: none;
-  }
-}
-
-/* Step 16C — precise 20px hero fade + shorter editorial breathing bands */
-.cruor-home__hero-media::after {
-  height: 24px;
-  background: linear-gradient(
-    180deg,
-    rgba(5, 4, 5, 0) 0%,
-    rgba(5, 4, 5, 0.42) 58%,
-    #050405 100%
-  );
-}
-
-.cruor-home__hero-video {
-  -webkit-mask-image: linear-gradient(
-    180deg,
-    #000 0%,
-    #000 calc(100% - 22px),
-    rgba(0, 0, 0, 0.74) calc(100% - 13px),
-    rgba(0, 0, 0, 0) 100%
-  );
-  mask-image: linear-gradient(
-    180deg,
-    #000 0%,
-    #000 calc(100% - 22px),
-    rgba(0, 0, 0, 0.74) calc(100% - 13px),
-    rgba(0, 0, 0, 0) 100%
-  );
-}
-
-#workbenchFlow.cruor-home__statement,
-.cruor-home__section--sources,
-.cruor-home__section--support {
+  position: relative;
+  isolation: auto;
+  overflow: visible;
   background:
     linear-gradient(
       180deg,
@@ -3551,6 +3579,54 @@ body:has(.cruor-home)::-webkit-scrollbar {
       rgba(94, 8, 22, var(--cruor-band-side-soft)) 40%,
       rgba(94, 8, 22, 0) 80%
     ) !important;
+  background-repeat: no-repeat;
+  animation: cruor-editorial-red-breath 7s ease-in-out infinite;
+}
+
+#workbenchFlow.cruor-home__statement::before,
+#workbenchFlow.cruor-home__statement::after,
+.cruor-home__section--sources::before,
+.cruor-home__section--sources::after,
+.cruor-home__section--support::before,
+.cruor-home__section--support::after {
+  content: none !important;
+  display: none !important;
+}
+
+#workbenchFlow.cruor-home__statement {
+  margin-right: calc(50% - 50vw);
+  margin-left: calc(50% - 50vw);
+  padding:
+    clamp(84px, 9vw, 132px)
+    max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2))
+    clamp(78px, 8vw, 122px);
+}
+
+.cruor-home__section--sources,
+.cruor-home__section--support {
+  margin-right: calc(50% - 50vw);
+  margin-left: calc(50% - 50vw);
+  padding-right: max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2));
+  padding-left: max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2));
+}
+
+.cruor-home__section--sources {
+  padding-top: clamp(74px, 8vw, 116px);
+  padding-bottom: clamp(68px, 7vw, 108px);
+  animation-delay: -3.4s;
+}
+
+.cruor-home__section--support {
+  padding-top: clamp(64px, 7vw, 104px);
+  padding-bottom: clamp(60px, 6.5vw, 98px);
+  animation-delay: -6.8s;
+}
+
+#workbenchFlow.cruor-home__statement > *,
+.cruor-home__section--sources > *,
+.cruor-home__section--support > * {
+  position: relative;
+  z-index: 1;
 }
 
 @keyframes cruor-editorial-red-breath {
@@ -3605,5 +3681,282 @@ body:has(.cruor-home)::-webkit-scrollbar {
     --cruor-band-side-soft: 0.12;
     --cruor-band-highlight: 0.08;
     --cruor-band-highlight-soft: 0.03;
+    animation: none;
+  }
+}
+
+/* Step 04C — enlargeable output preview board */
+.cruor-home__output-panel-frame {
+  display: block;
+  width: 100%;
+  padding: 0;
+  color: inherit;
+  cursor: zoom-in;
+  appearance: none;
+}
+
+.cruor-home__output-panel-frame:hover,
+.cruor-home__output-panel-frame:focus-visible {
+  border-color: rgba(208, 162, 170, 0.42);
+  outline: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 238, 242, 0.055),
+    0 0 36px rgba(122, 26, 40, 0.24);
+}
+
+.cruor-home__output-panel-frame:hover .cruor-home__output-placeholder,
+.cruor-home__output-panel-frame:focus-visible .cruor-home__output-placeholder {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(122, 26, 40, 0.34), transparent 60%),
+    linear-gradient(135deg, rgba(122, 26, 40, 0.24), transparent 46%),
+    rgba(5, 4, 5, 0.8);
+}
+
+.cruor-home__output-enlarge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 9px;
+  border: 1px solid rgba(208, 162, 170, 0.18);
+  background: rgba(5, 4, 5, 0.74);
+  color: rgba(208, 162, 170, 0.78);
+  font-family: var(--body);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  line-height: 1;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.16s ease, transform 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.cruor-home__output-panel-frame:hover .cruor-home__output-enlarge,
+.cruor-home__output-panel-frame:focus-visible .cruor-home__output-enlarge {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cruor-home__zoom-frame--output {
+  width: min(1380px, 96vw);
+}
+
+.cruor-home__zoom-output-placeholder {
+  position: relative;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  aspect-ratio: 16 / 10;
+  width: 100%;
+  max-height: calc(88vh - 84px);
+  overflow: hidden;
+  border: 1px solid rgba(208, 162, 170, 0.18);
+  background:
+    radial-gradient(circle at 50% 42%, rgba(122, 26, 40, 0.34), transparent 58%),
+    linear-gradient(135deg, rgba(122, 26, 40, 0.24), transparent 44%),
+    rgba(5, 4, 5, 0.86);
+  color: rgba(208, 162, 170, 0.72);
+}
+
+.cruor-home__zoom-output-placeholder::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border: 1px solid rgba(255, 238, 242, 0.07);
+  pointer-events: none;
+}
+
+.cruor-home__zoom-output-placeholder::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255, 238, 242, 0.024) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 238, 242, 0.024) 1px, transparent 1px);
+  background-size: 38px 38px;
+  opacity: 0.72;
+}
+
+.cruor-home__zoom-output-placeholder i,
+.cruor-home__zoom-output-placeholder span,
+.cruor-home__zoom-output-placeholder small {
+  position: relative;
+  z-index: 1;
+}
+
+.cruor-home__zoom-output-placeholder i {
+  font-size: clamp(3rem, 6vw, 6rem);
+  color: rgba(208, 162, 170, 0.6);
+  filter: drop-shadow(0 0 26px rgba(122, 26, 40, 0.34));
+}
+
+.cruor-home__zoom-output-placeholder span,
+.cruor-home__zoom-output-placeholder small {
+  font-family: var(--body);
+  font-weight: 950;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.cruor-home__zoom-output-placeholder span {
+  font-size: clamp(0.82rem, 1.2vw, 1rem);
+  letter-spacing: 0.18em;
+}
+
+.cruor-home__zoom-output-placeholder small {
+  color: rgba(238, 238, 238, 0.48);
+  font-size: var(--text-size-xs);
+  letter-spacing: 0.1em;
+}
+
+.cruor-home__zoom-frame figcaption {
+  display: grid;
+  gap: 4px;
+}
+
+.cruor-home__zoom-frame figcaption strong {
+  color: var(--cruor-color-text, var(--text));
+}
+
+.cruor-home__zoom-frame figcaption span {
+  max-width: 92ch;
+  color: rgba(238, 238, 238, 0.56);
+  font-size: var(--text-size-sm);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.45;
+  text-transform: none;
+}
+
+@media (hover: none) {
+  .cruor-home__output-enlarge {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Step 05M — Workbench process strip: clean visual polish */
+#workbenchFlow .cruor-home__process-strip {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(208, 162, 170, 0.16);
+  background:
+    linear-gradient(90deg, rgba(122, 26, 40, 0.1), rgba(255, 238, 242, 0.018) 50%, rgba(122, 26, 40, 0.1)),
+    linear-gradient(180deg, rgba(255, 238, 242, 0.03), rgba(5, 4, 5, 0.04)),
+    rgba(5, 4, 5, 0.36);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 238, 242, 0.05),
+    inset 0 -1px 0 rgba(122, 26, 40, 0.16),
+    0 24px 68px rgba(0, 0, 0, 0.22);
+  list-style: none;
+}
+
+#workbenchFlow .cruor-home__process-strip::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(122, 26, 40, 0.34), rgba(208, 162, 170, 0.38), rgba(122, 26, 40, 0.34));
+}
+
+#workbenchFlow .cruor-home__process-step {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 132px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(20px, 2.2vw, 28px) clamp(20px, 2.6vw, 34px);
+  outline: none;
+  transition:
+    background 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+#workbenchFlow .cruor-home__process-step + .cruor-home__process-step {
+  border-left: 1px solid rgba(208, 162, 170, 0.12);
+}
+
+#workbenchFlow .cruor-home__process-step:not(:last-child)::after {
+  content: "→";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  z-index: 2;
+  color: rgba(208, 162, 170, 0.46);
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1;
+  transform: translate(50%, -50%);
+}
+
+#workbenchFlow .cruor-home__process-step strong {
+  display: block;
+  margin: 0;
+  color: var(--cruor-color-text, var(--text));
+  font-family: var(--font);
+  font-size: clamp(1.02rem, 1vw, 1.14rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+#workbenchFlow .cruor-home__process-step p {
+  max-width: 34ch;
+  margin: 12px 0 0;
+  color: rgba(238, 238, 238, 0.62);
+  font-size: var(--text-size-sm);
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: left;
+}
+
+#workbenchFlow .cruor-home__process-step:hover,
+#workbenchFlow .cruor-home__process-step:focus-visible {
+  background: rgba(122, 26, 40, 0.07);
+  box-shadow: inset 0 0 0 1px rgba(208, 162, 170, 0.08);
+}
+
+#workbenchFlow .cruor-home__process-step:hover strong,
+#workbenchFlow .cruor-home__process-step:focus-visible strong {
+  color: var(--home-accent-pale);
+}
+
+@media (max-width: 900px) {
+  #workbenchFlow .cruor-home__process-strip {
+    grid-template-columns: 1fr;
+  }
+
+  #workbenchFlow .cruor-home__process-step {
+    min-height: 0;
+    padding: 18px 20px;
+  }
+
+  #workbenchFlow .cruor-home__process-step + .cruor-home__process-step {
+    border-top: 1px solid rgba(208, 162, 170, 0.12);
+    border-left: 0;
+  }
+
+  #workbenchFlow .cruor-home__process-step:not(:last-child)::after {
+    content: none;
+    display: none;
   }
 }

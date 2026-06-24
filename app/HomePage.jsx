@@ -3,6 +3,9 @@ import { INSPIRATION_CARDS } from "../features/crucible/crucible.sources-data.js
 import "./home-page.css";
 import "./home-page-video.css";
 
+const CRUOR_CONTACT_EMAIL = "info@cruorgames.com";
+const CRUOR_PATREON_URL = "https://www.patreon.com/c/CruorGames";
+
 const LANDING_IMAGES = {
   workbench: {
     src: "/assets/landing-page/hero-workbench.webp",
@@ -34,23 +37,23 @@ const TOOL_CARDS = [
     descriptor: "01 / Location & Map Generator",
     openLabel: "Open Generator",
     summary:
-      "Define a dark fantasy location, choose the horror logic that shapes it, and generate a playable map with keyed regions, hazards, clues, and table text. The tool keeps creative choices connected to the final layout, so the map reflects the site you described instead of a generic dungeon.",
+      "Turn a dark fantasy premise into a playable location: mapped regions, hazards, clues, sensory details, and table-ready text shaped by your chosen horror logic.",
     features: [
       {
         icon: "fa-sliders",
-        text: "Set the location type, scale, tone, source inspiration, and horror direction.",
+        text: "Choose place, source, tone, and horror.",
       },
       {
         icon: "fa-dungeon",
-        text: "Build the site as playable regions with roles, entrances, routes, and pressure points.",
+        text: "Shape regions, routes, and pressure.",
       },
       {
         icon: "fa-map-location-dot",
-        text: "Generate a procedural game map from those choices instead of starting from a blank layout.",
+        text: "Generate a map from the site logic.",
       },
       {
         icon: "fa-scroll",
-        text: "Fill the map with hazards, clues, sensory details, read-aloud text, and DM notes.",
+        text: "Add hazards, clues, and table text.",
       },
     ],
     output:
@@ -145,23 +148,23 @@ const TOOL_CARDS = [
     descriptor: "02 / Monster & Stat Block Generator",
     openLabel: "Open Generator",
     summary:
-      "Choose a monster concept and role, assemble its horror mechanics, validate its combat profile, and export a complete 5E stat block for play. The tool turns narrative ideas into rules-facing traits, actions, weaknesses, tactics, and encounter support.",
+      "Build a 5E horror monster from concept to stat block: role, grafts, attacks, weaknesses, tactics, and encounter support in one workflow.",
     features: [
       {
         icon: "fa-id-card-clip",
-        text: "Set the creature concept, size, role, tier, encounter purpose, and danger level.",
+        text: "Set concept, role, tier, and danger.",
       },
       {
         icon: "fa-dna",
-        text: "Add modular horror parts that define movement, attacks, defenses, weaknesses, and scene presence.",
+        text: "Add movement, attacks, defenses, and horror.",
       },
       {
         icon: "fa-chart-line",
-        text: "Check damage, durability, action pressure, complexity, and counterplay before export.",
+        text: "Check damage, durability, and counterplay.",
       },
       {
         icon: "fa-file-lines",
-        text: "Generate a complete monster stat block with tactics, tells, and table-use notes.",
+        text: "Export stat block, tactics, and notes.",
       },
     ],
     output:
@@ -308,10 +311,38 @@ const SOURCE_CAROUSEL_CARDS = INSPIRATION_CARDS.map((card) => ({
   imageAlt: card.imageNote || `${card.anchor} inspiration image.`,
 }));
 
+const OUTPUT_EXAMPLES = [
+  {
+    id: "location-map",
+    eyebrow: "Map Output",
+    title: "Generated Location",
+    size: "1600 × 1000 px",
+    icon: "fa-map-location-dot",
+    description: "A mapped dark place with keyed rooms, routes, hazards, clues, and table-ready location notes.",
+  },
+  {
+    id: "monster-stat-block",
+    eyebrow: "Rules Output",
+    title: "Monster Sheet",
+    size: "1600 × 1000 px",
+    icon: "fa-dragon",
+    description: "A complete 5E horror creature with frame, role, grafts, combat actions, and counterplay support.",
+  },
+  {
+    id: "source-to-output",
+    eyebrow: "Design Output",
+    title: "Source Chain",
+    size: "1600 × 1000 px",
+    icon: "fa-book-skull",
+    description: "A visible path from real inspiration to motifs, constraints, components, and playable 5E material.",
+  },
+];
+
 const HOME_SECTIONS = [
   { id: "homeHero", label: "Hero" },
   { id: "workbenchFlow", label: "How the Workbench Works" },
   { id: "featuredTools", label: "Featured Tools" },
+  { id: "outputExamples", label: "Output Examples" },
   { id: "sources", label: "Inspirations" },
   { id: "support", label: "Support" },
 ];
@@ -634,6 +665,25 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
               </div>
             </>
           )}
+          <div className="cruor-home__tool-actions" aria-label={`${tool.title} actions`}>
+            <button
+              className="cruor-home__button cruor-home__button--primary"
+              type="button"
+              onClick={() => onOpenCrucibleTool?.(...tool.actionArgs)}
+              aria-label={`Open ${tool.title} generator`}
+            >
+              {tool.openLabel}
+              <i className="fa-solid fa-arrow-right" aria-hidden="true" />
+            </button>
+            <button
+              className="cruor-home__button"
+              type="button"
+              onClick={() => handleModeChange(mode === "details" ? "overview" : "details")}
+            >
+              {mode === "details" ? "See Overview" : "More Info"}
+              <i className={`fa-solid ${mode === "details" ? "fa-layer-group" : "fa-circle-info"}`} aria-hidden="true" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -644,26 +694,6 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
         onStepPreview={handleStepPreview}
         onZoom={onZoom}
       />
-
-      <div className="cruor-home__tool-actions" aria-label={`${tool.title} actions`}>
-        <button
-          className="cruor-home__button cruor-home__button--primary"
-          type="button"
-          onClick={() => handleModeChange(mode === "details" ? "overview" : "details")}
-        >
-          {mode === "details" ? "See Overview" : "More Info"}
-          <i className={`fa-solid ${mode === "details" ? "fa-layer-group" : "fa-circle-info"}`} aria-hidden="true" />
-        </button>
-        <button
-          className="cruor-home__button cruor-home__button--primary"
-          type="button"
-          onClick={() => onOpenCrucibleTool?.(...tool.actionArgs)}
-          aria-label={`Open ${tool.title} generator`}
-        >
-          {tool.openLabel}
-          <i className="fa-solid fa-arrow-right" aria-hidden="true" />
-        </button>
-      </div>
     </article>
   );
 }
@@ -928,7 +958,22 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
 
   const handleContactFormSubmit = (event) => {
     event.preventDefault();
-    setContactFormStatus("Contact form ready. Connect an email service or form endpoint to enable sending.");
+
+    const formData = new FormData(event.currentTarget);
+    const name = String(formData.get("name") || "").trim();
+    const email = String(formData.get("email") || "").trim();
+    const message = String(formData.get("message") || "").trim();
+    const subject = name ? `Cruor Games contact — ${name}` : "Cruor Games contact";
+    const body = [
+      name ? `Name: ${name}` : null,
+      email ? `Email: ${email}` : null,
+      message ? `Message:\n${message}` : "Message:",
+    ]
+      .filter(Boolean)
+      .join("\n\n");
+
+    window.location.href = `mailto:${CRUOR_CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setContactFormStatus(`Opening your email client to contact ${CRUOR_CONTACT_EMAIL}.`);
   };
 
   const handleContactFormOpen = () => {
@@ -958,10 +1003,10 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
               Explore the Workbench
               <i className="fa-solid fa-arrow-down" aria-hidden="true" />
             </a>
-            <a className="cruor-home__text-link" href="#sources">
+            <button className="cruor-home__text-link" type="button" onClick={onOpenInspirations}>
               Browse Inspirations
               <i className="fa-solid fa-book-skull" aria-hidden="true" />
-            </a>
+            </button>
           </div>
 
         </div>
@@ -975,24 +1020,18 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
             <p>Pick a generator, define the creative logic, and turn it into playable 5E material.</p>
           </div>
 
-          <ol className="cruor-home__workbench-flow" aria-label="Cruor workbench process">
-            <li>
-              <span>01</span>
-              <i className="fa-solid fa-toolbox" aria-hidden="true" />
-              <strong>Pick a Tool</strong>
-              <p>Choose whether you need a location map, a monster stat block, or another workbench surface.</p>
+          <ol className="cruor-home__process-strip" aria-label="Cruor workbench process">
+            <li className="cruor-home__process-step" tabIndex={0}>
+              <strong>Input</strong>
+              <p>Choose the generator and define source, tone, and scope.</p>
             </li>
-            <li>
-              <span>02</span>
-              <i className="fa-solid fa-sliders" aria-hidden="true" />
-              <strong>Set the Logic</strong>
-              <p>Select sources, tone, scale, constraints, and the rules-aware pieces that shape the build.</p>
+            <li className="cruor-home__process-step" tabIndex={0}>
+              <strong>Logic</strong>
+              <p>Set constraints, options, and rules that shape the result.</p>
             </li>
-            <li>
-              <span>03</span>
-              <i className="fa-solid fa-file-export" aria-hidden="true" />
-              <strong>Generate the Output</strong>
-              <p>Review the result, adjust what matters, and bring table-ready material directly into play.</p>
+            <li className="cruor-home__process-step" tabIndex={0}>
+              <strong>Output</strong>
+              <p>Review, adjust, export, or bring the result into play.</p>
             </li>
           </ol>
         </div>
@@ -1037,6 +1076,58 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
         </div>
       </section>
 
+      <section id="outputExamples" className="cruor-home__section cruor-home__section--output" aria-labelledby="outputExamplesTitle">
+        <div className="cruor-home__output-board">
+          <div className="cruor-home__output-board-head">
+            <div className="cruor-home__section-head cruor-home__section-head--output">
+              <span className="cruor-home__section-kicker">Output Examples</span>
+              <h2 id="outputExamplesTitle">From Tool to Table.</h2>
+              <p>
+                A compact preview board for final product screenshots: location output, monster output,
+                and the visible source logic that turns inspiration into usable 5E material.
+              </p>
+            </div>
+
+            <div className="cruor-home__output-board-meta" aria-label="Recommended screenshot dimensions">
+              <span>Recommended Image Size</span>
+              <strong>1600 × 1000 px</strong>
+              <small>Use the same ratio for all three slots.</small>
+            </div>
+          </div>
+
+          <div className="cruor-home__output-rail" aria-label="Cruor workbench output examples">
+            {OUTPUT_EXAMPLES.map((example, index) => (
+              <article className="cruor-home__output-panel" key={example.id}>
+                <button
+                  className="cruor-home__output-panel-frame"
+                  type="button"
+                  onClick={() => setZoomPreview({ ...example, label: example.title, kind: "output-example", slot: index + 1 })}
+                  aria-label={`Enlarge ${example.title} output example`}
+                >
+                  <div className="cruor-home__output-placeholder">
+                    <i className={`fa-solid ${example.icon}`} aria-hidden="true" />
+                    <span>Screenshot Slot {index + 1}</span>
+                    <small>{example.size}</small>
+                  </div>
+
+                  <span className="cruor-home__output-enlarge" aria-hidden="true">
+                    <i className="fa-solid fa-magnifying-glass-plus" aria-hidden="true" />
+                    Enlarge
+                  </span>
+
+                  <div className="cruor-home__output-panel-caption">
+                    <span>{example.eyebrow}</span>
+                    <strong>{example.title}</strong>
+                  </div>
+                </button>
+
+                <p>{example.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="sources" className="cruor-home__section cruor-home__section--sources" aria-labelledby="sourcesTitle">
         <div className="cruor-home__sources-copy">
           <div className="cruor-home__section-head">
@@ -1065,7 +1156,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
               better exports, and a larger library of playable dark fantasy material for 5E.
             </p>
 
-            <a className="cruor-home__button cruor-home__button--primary" href="#support">
+            <a className="cruor-home__button cruor-home__button--primary" href={CRUOR_PATREON_URL} target="_blank" rel="noreferrer">
               Join the Patreon
             </a>
           </div>
@@ -1105,8 +1196,9 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           <nav className="cruor-home__footer-nav" aria-label="Footer navigation">
             <a href="#homeHero">Home</a>
             <a href="#featuredTools">Tools</a>
-            <a href="#sources">Inspirations</a>
-            <a href="#support">Patreon</a>
+            <a href="#outputExamples">Examples</a>
+            <button type="button" onClick={onOpenInspirations}>Inspirations</button>
+            <a href={CRUOR_PATREON_URL} target="_blank" rel="noreferrer">Patreon</a>
             <button type="button" onClick={handleContactFormOpen}>Contacts</button>
           </nav>
           <p className="cruor-home__footer-copy">© {new Date().getFullYear()} Cruor Games. All rights reserved.</p>
@@ -1132,7 +1224,11 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
             <div className="cruor-home__contact-head">
               <span>Contact</span>
               <h2 id="cruorContactTitle">Get in touch with Cruor Games.</h2>
-              <p>Use this form for publishing, collaboration, licensing, support, or general questions.</p>
+              <p>
+                Use this form for publishing, collaboration, licensing, support, or general questions.
+                It opens your email client and sends the message to{" "}
+                <a href={`mailto:${CRUOR_CONTACT_EMAIL}`}>{CRUOR_CONTACT_EMAIL}</a>.
+              </p>
             </div>
 
             <label>
@@ -1173,7 +1269,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
             aria-label="Close image preview"
             onClick={() => setZoomPreview(null)}
           />
-          <figure className="cruor-home__zoom-frame">
+          <figure className={`cruor-home__zoom-frame${zoomPreview.kind === "output-example" ? " cruor-home__zoom-frame--output" : ""}`}>
             <button
               className="cruor-home__zoom-close"
               type="button"
@@ -1182,8 +1278,19 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
             >
               <i className="fa-solid fa-xmark" aria-hidden="true" />
             </button>
-            <img src={zoomPreview.src} alt={zoomPreview.alt} />
-            <figcaption>{zoomPreview.label}</figcaption>
+            {zoomPreview.kind === "output-example" ? (
+              <div className="cruor-home__zoom-output-placeholder">
+                <i className={`fa-solid ${zoomPreview.icon}`} aria-hidden="true" />
+                <span>Screenshot Slot {zoomPreview.slot}</span>
+                <small>{zoomPreview.size}</small>
+              </div>
+            ) : (
+              <img src={zoomPreview.src} alt={zoomPreview.alt} />
+            )}
+            <figcaption>
+              <strong>{zoomPreview.label}</strong>
+              {zoomPreview.kind === "output-example" ? <span>{zoomPreview.description}</span> : null}
+            </figcaption>
           </figure>
         </div>
       ) : null}

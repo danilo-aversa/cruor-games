@@ -7,10 +7,6 @@
   display: none;
 }
 
-.cruor-home__tool-image.cruor-home__media-card {
-  gap: 0;
-  padding-bottom: 8px;
-}
 
 .cruor-home__tool-main-preview {
   position: relative;
@@ -31,7 +27,7 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  object-position: center;
+  object-position: center bottom;
   background: #050405;
 }
 
