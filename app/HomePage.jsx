@@ -869,24 +869,18 @@ function InspirationSourceCarousel() {
 export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
   const workbenchFlowRef = useRef(null);
   const revealedWorkbenchStepRef = useRef(0);
-  const workbenchReleasedRef = useRef(false);
-  const lastWorkbenchScrollYRef = useRef(0);
-  const workbenchScrollDirectionRef = useRef("down");
-  const workbenchCollapseProgressRef = useRef(0);
-  const workbenchCollapseTargetRef = useRef(0);
-  const workbenchCollapseAnimationFrameRef = useRef(null);
-  const workbenchExpandedHeightRef = useRef(0);
-  const workbenchFinalHeightRef = useRef(0);
+  const workbenchCompletedRef = useRef(false);
+  const workbenchWheelAccumulatorRef = useRef(0);
+  const workbenchRevealLockUntilRef = useRef(0);
+  const workbenchGateActiveRef = useRef(false);
   const [zoomPreview, setZoomPreview] = useState(null);
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const [contactFormStatus, setContactFormStatus] = useState("");
   const [activeSectionId, setActiveSectionId] = useState(HOME_SECTIONS[0].id);
   const [sectionProgress, setSectionProgress] = useState(0);
   const [revealedWorkbenchStep, setRevealedWorkbenchStep] = useState(0);
-  const [workbenchReleased, setWorkbenchReleased] = useState(false);
-  const [workbenchCollapseProgress, setWorkbenchCollapseProgress] = useState(0);
-  const [workbenchSectionHeight, setWorkbenchSectionHeight] = useState(null);
-  const [workbenchStickyHeight, setWorkbenchStickyHeight] = useState(null);
+  const [workbenchCompleted, setWorkbenchCompleted] = useState(false);
+  const [workbenchGateActive, setWorkbenchGateActive] = useState(false);
   const tools = useMemo(() => TOOL_CARDS, []);
 
   useEffect(() => {
@@ -937,259 +931,164 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
   useEffect(() => {
     const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const staticLayoutQuery = window.matchMedia("(max-width: 900px)");
-    let animationFrame = null;
+    const wheelStepThreshold = 120;
+    const flipLockMs = 880;
+    let completionTimer = null;
+    let lastGateScrollY = window.scrollY;
 
-    lastWorkbenchScrollYRef.current = window.scrollY;
+    const markWorkbenchCompleted = () => {
+      if (workbenchCompletedRef.current) return;
+      workbenchCompletedRef.current = true;
+      setWorkbenchCompleted(true);
+      workbenchWheelAccumulatorRef.current = 0;
+      workbenchRevealLockUntilRef.current = 0;
+      workbenchGateActiveRef.current = false;
+      setWorkbenchGateActive(false);
+    };
+
+    const setWorkbenchStep = (nextStep) => {
+      const boundedStep = Math.max(0, Math.min(3, nextStep));
+      if (boundedStep <= revealedWorkbenchStepRef.current) return;
+
+      revealedWorkbenchStepRef.current = boundedStep;
+      setRevealedWorkbenchStep(boundedStep);
+      workbenchWheelAccumulatorRef.current = 0;
+      workbenchRevealLockUntilRef.current = performance.now() + flipLockMs;
+
+      if (boundedStep >= 3) {
+        window.clearTimeout(completionTimer);
+        completionTimer = window.setTimeout(markWorkbenchCompleted, flipLockMs);
+      }
+    };
 
     const revealAllSteps = () => {
       revealedWorkbenchStepRef.current = 3;
-      workbenchCollapseProgressRef.current = 1;
-      workbenchCollapseTargetRef.current = 1;
-      if (workbenchCollapseAnimationFrameRef.current !== null) {
-        window.cancelAnimationFrame(workbenchCollapseAnimationFrameRef.current);
-        workbenchCollapseAnimationFrameRef.current = null;
-      }
       setRevealedWorkbenchStep(3);
-      setWorkbenchCollapseProgress(1);
-      setWorkbenchSectionHeight(null);
-      setWorkbenchStickyHeight(null);
-      animationFrame = null;
+      markWorkbenchCompleted();
     };
 
-    const getWorkbenchFinalHeight = (section) => {
-      if (!section) return 1;
-
-      const stickyLayer = section.querySelector(".cruor-home__statement-sticky");
-      const inner = section.querySelector(".cruor-home__statement-inner");
-
-      if (!stickyLayer || !inner) {
-        return Math.max(1, window.innerHeight || document.documentElement.clientHeight || 1);
-      }
-
-      const stickyStyles = window.getComputedStyle(stickyLayer);
-      const paddingTop = Number.parseFloat(stickyStyles.paddingTop) || 0;
-      const paddingBottom = Number.parseFloat(stickyStyles.paddingBottom) || 0;
-      const innerHeight = inner.getBoundingClientRect().height || inner.offsetHeight || 0;
-
-      return Math.max(1, Math.ceil(innerHeight + paddingTop + paddingBottom));
+    const normalizeWheelDelta = (event) => {
+      const baseDelta = Math.abs(event.deltaY || 0);
+      if (event.deltaMode === 1) return baseDelta * 16;
+      if (event.deltaMode === 2) return baseDelta * (window.innerHeight || 1);
+      return baseDelta;
     };
 
-    const releaseWorkbenchSection = () => {
+    const getWorkbenchGateScrollY = () => {
       const section = workbenchFlowRef.current;
-      if (!section || workbenchReleasedRef.current) return;
-
-      if (workbenchCollapseAnimationFrameRef.current !== null) {
-        window.cancelAnimationFrame(workbenchCollapseAnimationFrameRef.current);
-        workbenchCollapseAnimationFrameRef.current = null;
-      }
-
-      const finalHeight = workbenchFinalHeightRef.current || getWorkbenchFinalHeight(section);
-      workbenchFinalHeightRef.current = finalHeight;
-      workbenchReleasedRef.current = true;
-      workbenchCollapseProgressRef.current = 1;
-      workbenchCollapseTargetRef.current = 1;
-      setWorkbenchCollapseProgress(1);
-      setWorkbenchSectionHeight(finalHeight);
-      setWorkbenchStickyHeight(finalHeight);
-      setWorkbenchReleased(true);
-    };
-
-    const applyWorkbenchCollapseProgress = (section, progressValue) => {
-      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 1;
-      const expandedHeight = workbenchExpandedHeightRef.current || section.offsetHeight;
-      workbenchExpandedHeightRef.current = expandedHeight;
-
-      const finalHeight = workbenchFinalHeightRef.current || getWorkbenchFinalHeight(section);
-      workbenchFinalHeightRef.current = finalHeight;
-
-      const nextProgress = Math.max(0, Math.min(1, progressValue));
-      const nextSectionHeight = Math.round(
-        expandedHeight - ((expandedHeight - finalHeight) * nextProgress)
-      );
-      const nextStickyHeight = Math.round(
-        viewportHeight - ((viewportHeight - finalHeight) * nextProgress)
-      );
-
-      workbenchCollapseProgressRef.current = nextProgress;
-      setWorkbenchCollapseProgress(nextProgress);
-      setWorkbenchSectionHeight(nextSectionHeight);
-      setWorkbenchStickyHeight(nextStickyHeight);
-
-      return nextProgress;
-    };
-
-    const animateWorkbenchCollapse = () => {
-      workbenchCollapseAnimationFrameRef.current = null;
-
-      const section = workbenchFlowRef.current;
-      if (!section || workbenchReleasedRef.current) return;
-
-      const currentProgress = workbenchCollapseProgressRef.current;
-      const targetProgress = workbenchCollapseTargetRef.current;
-      const progressGap = targetProgress - currentProgress;
-      const nextProgress = Math.abs(progressGap) < 0.004
-        ? targetProgress
-        : currentProgress + (progressGap * 0.18);
-
-      applyWorkbenchCollapseProgress(section, nextProgress);
-
-      if (targetProgress >= 1 && nextProgress >= 0.996) {
-        releaseWorkbenchSection();
-        return;
-      }
-
-      if (Math.abs(targetProgress - nextProgress) >= 0.004) {
-        workbenchCollapseAnimationFrameRef.current = window.requestAnimationFrame(animateWorkbenchCollapse);
-      }
-    };
-
-    const requestWorkbenchCollapseAnimation = () => {
-      if (workbenchCollapseAnimationFrameRef.current !== null) return;
-      workbenchCollapseAnimationFrameRef.current = window.requestAnimationFrame(animateWorkbenchCollapse);
-    };
-
-    const updateWorkbenchProgress = () => {
-      if (reduceMotionQuery.matches || staticLayoutQuery.matches) {
-        revealAllSteps();
-        return;
-      }
-
-      const section = workbenchFlowRef.current;
-      if (!section) {
-        animationFrame = null;
-        return;
-      }
-
-      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 1;
-      const topOffset = 0;
-      const sectionTop = section.offsetTop;
-      const sectionHeight = section.offsetHeight;
-      const start = sectionTop - topOffset;
-      const end = sectionTop + sectionHeight - viewportHeight - topOffset;
-      const progress = Math.max(0, Math.min(1, (window.scrollY - start) / Math.max(1, end - start)));
-
-      let visibleStep = 0;
-      if (progress >= 0.06) visibleStep = 1;
-      if (progress >= 0.3) visibleStep = 2;
-      if (progress >= 0.58) visibleStep = 3;
-
-      const direction = workbenchScrollDirectionRef.current;
-      let nextRevealedStep = revealedWorkbenchStepRef.current;
-
-      if (direction === "down" && !workbenchReleasedRef.current) {
-        nextRevealedStep = Math.max(revealedWorkbenchStepRef.current, visibleStep);
-        if (nextRevealedStep !== revealedWorkbenchStepRef.current) {
-          revealedWorkbenchStepRef.current = nextRevealedStep;
-          setRevealedWorkbenchStep(nextRevealedStep);
-        }
-      }
-
-      if (
-        direction === "down" &&
-        nextRevealedStep >= 3 &&
-        !workbenchReleasedRef.current &&
-        window.scrollY > end + 24
-      ) {
-        const rect = section.getBoundingClientRect();
-        const releaseBuffer = Math.min(96, viewportHeight * 0.1);
-        const isSafelyAboveViewport = rect.bottom < -releaseBuffer;
-
-        if (isSafelyAboveViewport) {
-          releaseWorkbenchSection();
-        }
-      }
-
-      animationFrame = null;
-    };
-
-    const collapseWorkbenchSection = (delta, direction) => {
-      const section = workbenchFlowRef.current;
-      if (!section || workbenchReleasedRef.current || revealedWorkbenchStepRef.current < 3) return false;
-      if (reduceMotionQuery.matches || staticLayoutQuery.matches) return false;
+      if (!section) return window.scrollY;
 
       const rect = section.getBoundingClientRect();
+      return Math.max(0, Math.round(window.scrollY + rect.top));
+    };
+
+    const pinWorkbenchGate = () => {
+      const nextScrollY = getWorkbenchGateScrollY();
+
+      if (Math.abs(window.scrollY - nextScrollY) > 2) {
+        window.scrollTo({ top: nextScrollY, behavior: "auto" });
+      }
+
+      if (!workbenchGateActiveRef.current) {
+        workbenchGateActiveRef.current = true;
+        setWorkbenchGateActive(true);
+      }
+    };
+
+    const releaseWorkbenchGate = () => {
+      if (!workbenchGateActiveRef.current) return;
+      workbenchGateActiveRef.current = false;
+      setWorkbenchGateActive(false);
+    };
+
+    const shouldCaptureWorkbenchDownScroll = (event) => {
+      if (workbenchCompletedRef.current) return false;
+      if (reduceMotionQuery.matches || staticLayoutQuery.matches) return false;
+      if (workbenchGateActiveRef.current) return true;
+
+      const section = workbenchFlowRef.current;
+      if (!section) return false;
+
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 1;
-      const isActive = rect.top <= 4 && rect.bottom >= viewportHeight * 0.52;
-      if (!isActive) return false;
+      const rect = section.getBoundingClientRect();
+      const normalizedDelta = normalizeWheelDelta(event);
+      const reachesNaturalPinPoint = rect.top > 0 && normalizedDelta >= rect.top;
+      const alreadyAtPinPoint = rect.top <= 2 && rect.bottom >= viewportHeight * 0.62;
 
-      workbenchScrollDirectionRef.current = direction;
-
-      if (!workbenchExpandedHeightRef.current) {
-        workbenchExpandedHeightRef.current = section.offsetHeight;
-      }
-
-      if (!workbenchFinalHeightRef.current) {
-        workbenchFinalHeightRef.current = getWorkbenchFinalHeight(section);
-      }
-
-      const collapseDistance = Math.max(560, Math.min(860, viewportHeight * 0.74));
-      const normalizedDelta = Math.min(Math.abs(delta), 84);
-      const nextTargetProgress = Math.min(
-        1,
-        workbenchCollapseTargetRef.current + (normalizedDelta / collapseDistance)
-      );
-
-      workbenchCollapseTargetRef.current = nextTargetProgress;
-      requestWorkbenchCollapseAnimation();
-
-      return true;
+      return rect.bottom >= viewportHeight * 0.62 && (alreadyAtPinPoint || reachesNaturalPinPoint);
     };
 
     const handleWorkbenchWheel = (event) => {
-      if (!event.deltaY) return;
-      const direction = event.deltaY > 0 ? "down" : "up";
-      if (collapseWorkbenchSection(event.deltaY, direction)) {
-        event.preventDefault();
+      if (event.deltaY <= 0) {
+        releaseWorkbenchGate();
+        return;
+      }
+
+      if (!shouldCaptureWorkbenchDownScroll(event)) {
+        releaseWorkbenchGate();
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+      pinWorkbenchGate();
+      lastGateScrollY = window.scrollY;
+
+      if (revealedWorkbenchStepRef.current >= 3) return;
+
+      const now = performance.now();
+      if (now < workbenchRevealLockUntilRef.current) return;
+
+      const normalizedDelta = Math.min(120, normalizeWheelDelta(event));
+      workbenchWheelAccumulatorRef.current += normalizedDelta;
+
+      if (workbenchWheelAccumulatorRef.current < wheelStepThreshold) return;
+
+      setWorkbenchStep(revealedWorkbenchStepRef.current + 1);
+    };
+
+    const handleWorkbenchScrollRescue = () => {
+      const currentScrollY = window.scrollY;
+      const isScrollingDown = currentScrollY > lastGateScrollY;
+      lastGateScrollY = currentScrollY;
+
+      if (!isScrollingDown) return;
+      if (workbenchCompletedRef.current) return;
+      if (reduceMotionQuery.matches || staticLayoutQuery.matches) return;
+
+      const section = workbenchFlowRef.current;
+      if (!section) return;
+
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 1;
+      const rect = section.getBoundingClientRect();
+      const hasPassedNaturalPinPoint = rect.top < -2 && rect.bottom >= viewportHeight * 0.62;
+
+      if (hasPassedNaturalPinPoint) {
+        pinWorkbenchGate();
+
+        const now = performance.now();
+        if (revealedWorkbenchStepRef.current < 3 && now >= workbenchRevealLockUntilRef.current) {
+          setWorkbenchStep(revealedWorkbenchStepRef.current + 1);
+        }
       }
     };
 
-    const handleWorkbenchKeyDown = (event) => {
-      const downwardKeys = new Set(["ArrowDown", "PageDown", " ", "End"]);
-      const upwardKeys = new Set(["ArrowUp", "PageUp", "Home"]);
-      if (!downwardKeys.has(event.key) && !upwardKeys.has(event.key)) return;
-
-      const direction = downwardKeys.has(event.key) ? "down" : "up";
-      const delta = direction === "down" ? 120 : -120;
-      if (collapseWorkbenchSection(delta, direction)) {
-        event.preventDefault();
-      }
+    const handleWorkbenchStaticLayout = () => {
+      if (reduceMotionQuery.matches || staticLayoutQuery.matches) revealAllSteps();
     };
 
-    const requestWorkbenchUpdate = (isScrollEvent = false) => {
-      if (isScrollEvent) {
-        const currentScrollY = window.scrollY;
-        workbenchScrollDirectionRef.current =
-          currentScrollY > lastWorkbenchScrollYRef.current ? "down" : "up";
-        lastWorkbenchScrollYRef.current = currentScrollY;
-      }
-
-      if (animationFrame !== null) return;
-      animationFrame = window.requestAnimationFrame(updateWorkbenchProgress);
-    };
-
-    const handleWorkbenchScroll = () => requestWorkbenchUpdate(true);
-    const handleWorkbenchResize = () => requestWorkbenchUpdate(false);
-
-    updateWorkbenchProgress();
-    window.addEventListener("scroll", handleWorkbenchScroll, { passive: true });
-    window.addEventListener("wheel", handleWorkbenchWheel, { passive: false });
-    window.addEventListener("keydown", handleWorkbenchKeyDown);
-    window.addEventListener("resize", handleWorkbenchResize);
-    reduceMotionQuery.addEventListener?.("change", handleWorkbenchResize);
-    staticLayoutQuery.addEventListener?.("change", handleWorkbenchResize);
+    handleWorkbenchStaticLayout();
+    window.addEventListener("wheel", handleWorkbenchWheel, { passive: false, capture: true });
+    window.addEventListener("scroll", handleWorkbenchScrollRescue, { passive: true });
+    reduceMotionQuery.addEventListener?.("change", handleWorkbenchStaticLayout);
+    staticLayoutQuery.addEventListener?.("change", handleWorkbenchStaticLayout);
 
     return () => {
-      if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
-      if (workbenchCollapseAnimationFrameRef.current !== null) {
-        window.cancelAnimationFrame(workbenchCollapseAnimationFrameRef.current);
-        workbenchCollapseAnimationFrameRef.current = null;
-      }
-      window.removeEventListener("scroll", handleWorkbenchScroll);
-      window.removeEventListener("wheel", handleWorkbenchWheel);
-      window.removeEventListener("keydown", handleWorkbenchKeyDown);
-      window.removeEventListener("resize", handleWorkbenchResize);
-      reduceMotionQuery.removeEventListener?.("change", handleWorkbenchResize);
-      staticLayoutQuery.removeEventListener?.("change", handleWorkbenchResize);
+      window.clearTimeout(completionTimer);
+      window.removeEventListener("wheel", handleWorkbenchWheel, { capture: true });
+      window.removeEventListener("scroll", handleWorkbenchScrollRescue);
+      reduceMotionQuery.removeEventListener?.("change", handleWorkbenchStaticLayout);
+      staticLayoutQuery.removeEventListener?.("change", handleWorkbenchStaticLayout);
     };
   }, []);
 
@@ -1256,9 +1155,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
   };
 
   const workbenchFlowStyle = {
-    "--workbench-collapse-progress": workbenchCollapseProgress.toFixed(3),
-    ...(workbenchSectionHeight ? { "--workbench-section-height": `${workbenchSectionHeight}px` } : {}),
-    ...(workbenchStickyHeight ? { "--workbench-sticky-height": `${workbenchStickyHeight}px` } : {}),
+    "--workbench-collapse-progress": "0",
   };
 
   return (
@@ -1299,11 +1196,14 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           "cruor-home__statement",
           "cruor-home__statement--sticky",
           `is-step-${revealedWorkbenchStep}`,
-          workbenchReleased ? "is-released" : "",
+          workbenchGateActive ? "is-gating" : "",
+          workbenchCompleted ? "is-completed" : "",
         ].filter(Boolean).join(" ")}
         aria-labelledby="workbenchStepsTitle"
         data-revealed-step={revealedWorkbenchStep}
-        data-workbench-released={workbenchReleased ? "true" : "false"}
+        data-workbench-released={workbenchCompleted ? "true" : "false"}
+        data-workbench-completed={workbenchCompleted ? "true" : "false"}
+        data-workbench-gating={workbenchGateActive ? "true" : "false"}
         style={workbenchFlowStyle}
       >
         <div className="cruor-home__statement-sticky">
@@ -1316,16 +1216,46 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
 
             <ol className="cruor-home__process-strip" aria-label="Cruor workbench process">
               <li className="cruor-home__process-step" tabIndex={0} data-step="1">
-                <strong>Input</strong>
-                <p>Choose a generator, source, tone, and scope.</p>
+                <div className="cruor-home__process-card">
+                  <div className="cruor-home__process-card-inner">
+                    <div className="cruor-home__process-card-face cruor-home__process-card-face--back">
+                      <i className="fa-solid fa-inbox" aria-hidden="true"></i>
+                    </div>
+                    <div className="cruor-home__process-card-face cruor-home__process-card-face--front">
+                      <i className="fa-solid fa-inbox" aria-hidden="true"></i>
+                      <strong>Input</strong>
+                      <p>Choose a generator, source, tone, and scope.</p>
+                    </div>
+                  </div>
+                </div>
               </li>
               <li className="cruor-home__process-step" tabIndex={0} data-step="2">
-                <strong>Logic</strong>
-                <p>Set constraints, rules, and generation logic.</p>
+                <div className="cruor-home__process-card">
+                  <div className="cruor-home__process-card-inner">
+                    <div className="cruor-home__process-card-face cruor-home__process-card-face--back">
+                      <i className="fa-solid fa-gears" aria-hidden="true"></i>
+                    </div>
+                    <div className="cruor-home__process-card-face cruor-home__process-card-face--front">
+                      <i className="fa-solid fa-gears" aria-hidden="true"></i>
+                      <strong>Logic</strong>
+                      <p>Set constraints, rules, and generation logic.</p>
+                    </div>
+                  </div>
+                </div>
               </li>
               <li className="cruor-home__process-step" tabIndex={0} data-step="3">
-                <strong>Output</strong>
-                <p>Review, adjust, and bring the result into play.</p>
+                <div className="cruor-home__process-card">
+                  <div className="cruor-home__process-card-inner">
+                    <div className="cruor-home__process-card-face cruor-home__process-card-face--back">
+                      <i className="fa-solid fa-scroll" aria-hidden="true"></i>
+                    </div>
+                    <div className="cruor-home__process-card-face cruor-home__process-card-face--front">
+                      <i className="fa-solid fa-scroll" aria-hidden="true"></i>
+                      <strong>Output</strong>
+                      <p>Review, adjust, and bring the result into play.</p>
+                    </div>
+                  </div>
+                </div>
               </li>
             </ol>
           </div>

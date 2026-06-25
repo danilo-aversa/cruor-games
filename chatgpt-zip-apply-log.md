@@ -3649,3 +3649,321 @@ _Nessun file aggiunto._
 
 - Percorso sospetto nello ZIP: eslint.config.js
 
+
+---
+
+## 2026-06-25 17:03:33
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-playing-cards-06f.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-playing-cards-06f.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 7
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~eslint.config.js`
+- `~package.json`
+- `~vite.config.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: eslint.config.js
+
+
+---
+
+## 2026-06-25 18:40:19
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-scroll-diagnostic-06g.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-scroll-diagnostic-06g.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+scripts/diagnose-workbench-scroll.mjs`
+
+**File sovrascritti:** 7
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~eslint.config.js`
+- `~package.json`
+- `~vite.config.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: eslint.config.js
+
+
+---
+
+## 2026-06-25 19:05:18
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-scroll-stability-06h.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-scroll-stability-06h.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 8
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~eslint.config.js`
+- `~package.json`
+- `~scripts/diagnose-workbench-scroll.mjs`
+- `~vite.config.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: eslint.config.js
+
+
+---
+
+## 2026-06-25 19:19:43
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-empty-scroll-diagnostic-06i.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-empty-scroll-diagnostic-06i.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 8
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~eslint.config.js`
+- `~package.json`
+- `~scripts/diagnose-workbench-scroll.mjs`
+- `~vite.config.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: eslint.config.js
+
+
+---
+
+## 2026-06-25 19:32:27
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-bidirectional-cards-06j.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-bidirectional-cards-06j.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 8
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~eslint.config.js`
+- `~package.json`
+- `~scripts/diagnose-workbench-scroll.mjs`
+- `~vite.config.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: eslint.config.js
+
+
+---
+
+## 2026-06-25 20:04:32
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-scroll-gate-06k.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-scroll-gate-06k.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 8
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~eslint.config.js`
+- `~package.json`
+- `~scripts/diagnose-workbench-scroll.mjs`
+- `~vite.config.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: eslint.config.js
+
+
+---
+
+## 2026-06-25 20:24:35
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-down-gate-06l.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-down-gate-06l.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 8
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~eslint.config.js`
+- `~package.json`
+- `~scripts/diagnose-workbench-scroll.mjs`
+- `~vite.config.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: eslint.config.js
+
+
+---
+
+## 2026-06-25 21:27:07
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-natural-entry-gate-06m.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-natural-entry-gate-06m.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 8
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~eslint.config.js`
+- `~package.json`
+- `~scripts/diagnose-workbench-scroll.mjs`
+- `~vite.config.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: eslint.config.js
+
+
+---
+
+## 2026-06-25 21:41:19
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-locked-flicker-fix-06n.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-locked-flicker-fix-06n.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 8
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~eslint.config.js`
+- `~package.json`
+- `~scripts/diagnose-workbench-scroll.mjs`
+- `~vite.config.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: eslint.config.js
+
+
+---
+
+## 2026-06-25 21:55:41
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-faster-cards-06o.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-faster-cards-06o.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 8
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~eslint.config.js`
+- `~package.json`
+- `~scripts/diagnose-workbench-scroll.mjs`
+- `~vite.config.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: eslint.config.js
+
