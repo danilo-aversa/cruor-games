@@ -870,6 +870,13 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
   const workbenchFlowRef = useRef(null);
   const revealedWorkbenchStepRef = useRef(0);
   const workbenchReleasedRef = useRef(false);
+  const lastWorkbenchScrollYRef = useRef(0);
+  const workbenchScrollDirectionRef = useRef("down");
+  const workbenchCollapseProgressRef = useRef(0);
+  const workbenchCollapseTargetRef = useRef(0);
+  const workbenchCollapseAnimationFrameRef = useRef(null);
+  const workbenchExpandedHeightRef = useRef(0);
+  const workbenchFinalHeightRef = useRef(0);
   const [zoomPreview, setZoomPreview] = useState(null);
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const [contactFormStatus, setContactFormStatus] = useState("");
@@ -877,6 +884,9 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
   const [sectionProgress, setSectionProgress] = useState(0);
   const [revealedWorkbenchStep, setRevealedWorkbenchStep] = useState(0);
   const [workbenchReleased, setWorkbenchReleased] = useState(false);
+  const [workbenchCollapseProgress, setWorkbenchCollapseProgress] = useState(0);
+  const [workbenchSectionHeight, setWorkbenchSectionHeight] = useState(null);
+  const [workbenchStickyHeight, setWorkbenchStickyHeight] = useState(null);
   const tools = useMemo(() => TOOL_CARDS, []);
 
   useEffect(() => {
@@ -929,32 +939,113 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
     const staticLayoutQuery = window.matchMedia("(max-width: 900px)");
     let animationFrame = null;
 
+    lastWorkbenchScrollYRef.current = window.scrollY;
+
     const revealAllSteps = () => {
       revealedWorkbenchStepRef.current = 3;
+      workbenchCollapseProgressRef.current = 1;
+      workbenchCollapseTargetRef.current = 1;
+      if (workbenchCollapseAnimationFrameRef.current !== null) {
+        window.cancelAnimationFrame(workbenchCollapseAnimationFrameRef.current);
+        workbenchCollapseAnimationFrameRef.current = null;
+      }
       setRevealedWorkbenchStep(3);
+      setWorkbenchCollapseProgress(1);
+      setWorkbenchSectionHeight(null);
+      setWorkbenchStickyHeight(null);
       animationFrame = null;
+    };
+
+    const getWorkbenchFinalHeight = (section) => {
+      if (!section) return 1;
+
+      const stickyLayer = section.querySelector(".cruor-home__statement-sticky");
+      const inner = section.querySelector(".cruor-home__statement-inner");
+
+      if (!stickyLayer || !inner) {
+        return Math.max(1, window.innerHeight || document.documentElement.clientHeight || 1);
+      }
+
+      const stickyStyles = window.getComputedStyle(stickyLayer);
+      const paddingTop = Number.parseFloat(stickyStyles.paddingTop) || 0;
+      const paddingBottom = Number.parseFloat(stickyStyles.paddingBottom) || 0;
+      const innerHeight = inner.getBoundingClientRect().height || inner.offsetHeight || 0;
+
+      return Math.max(1, Math.ceil(innerHeight + paddingTop + paddingBottom));
     };
 
     const releaseWorkbenchSection = () => {
       const section = workbenchFlowRef.current;
       if (!section || workbenchReleasedRef.current) return;
 
-      const beforeHeight = section.offsetHeight;
-      const beforeScrollY = window.scrollY;
+      if (workbenchCollapseAnimationFrameRef.current !== null) {
+        window.cancelAnimationFrame(workbenchCollapseAnimationFrameRef.current);
+        workbenchCollapseAnimationFrameRef.current = null;
+      }
 
+      const finalHeight = workbenchFinalHeightRef.current || getWorkbenchFinalHeight(section);
+      workbenchFinalHeightRef.current = finalHeight;
       workbenchReleasedRef.current = true;
+      workbenchCollapseProgressRef.current = 1;
+      workbenchCollapseTargetRef.current = 1;
+      setWorkbenchCollapseProgress(1);
+      setWorkbenchSectionHeight(finalHeight);
+      setWorkbenchStickyHeight(finalHeight);
       setWorkbenchReleased(true);
+    };
 
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => {
-          const afterHeight = section.offsetHeight;
-          const delta = beforeHeight - afterHeight;
+    const applyWorkbenchCollapseProgress = (section, progressValue) => {
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 1;
+      const expandedHeight = workbenchExpandedHeightRef.current || section.offsetHeight;
+      workbenchExpandedHeightRef.current = expandedHeight;
 
-          if (delta > 0) {
-            window.scrollTo(0, Math.max(0, beforeScrollY - delta));
-          }
-        });
-      });
+      const finalHeight = workbenchFinalHeightRef.current || getWorkbenchFinalHeight(section);
+      workbenchFinalHeightRef.current = finalHeight;
+
+      const nextProgress = Math.max(0, Math.min(1, progressValue));
+      const nextSectionHeight = Math.round(
+        expandedHeight - ((expandedHeight - finalHeight) * nextProgress)
+      );
+      const nextStickyHeight = Math.round(
+        viewportHeight - ((viewportHeight - finalHeight) * nextProgress)
+      );
+
+      workbenchCollapseProgressRef.current = nextProgress;
+      setWorkbenchCollapseProgress(nextProgress);
+      setWorkbenchSectionHeight(nextSectionHeight);
+      setWorkbenchStickyHeight(nextStickyHeight);
+
+      return nextProgress;
+    };
+
+    const animateWorkbenchCollapse = () => {
+      workbenchCollapseAnimationFrameRef.current = null;
+
+      const section = workbenchFlowRef.current;
+      if (!section || workbenchReleasedRef.current) return;
+
+      const currentProgress = workbenchCollapseProgressRef.current;
+      const targetProgress = workbenchCollapseTargetRef.current;
+      const progressGap = targetProgress - currentProgress;
+      const nextProgress = Math.abs(progressGap) < 0.004
+        ? targetProgress
+        : currentProgress + (progressGap * 0.18);
+
+      applyWorkbenchCollapseProgress(section, nextProgress);
+
+      if (targetProgress >= 1 && nextProgress >= 0.996) {
+        releaseWorkbenchSection();
+        return;
+      }
+
+      if (Math.abs(targetProgress - nextProgress) >= 0.004) {
+        workbenchCollapseAnimationFrameRef.current = window.requestAnimationFrame(animateWorkbenchCollapse);
+      }
+    };
+
+    const requestWorkbenchCollapseAnimation = () => {
+      if (workbenchCollapseAnimationFrameRef.current !== null) return;
+      workbenchCollapseAnimationFrameRef.current = window.requestAnimationFrame(animateWorkbenchCollapse);
     };
 
     const updateWorkbenchProgress = () => {
@@ -978,23 +1069,29 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
       const progress = Math.max(0, Math.min(1, (window.scrollY - start) / Math.max(1, end - start)));
 
       let visibleStep = 0;
-      if (progress >= 0.08) visibleStep = 1;
-      if (progress >= 0.38) visibleStep = 2;
-      if (progress >= 0.68) visibleStep = 3;
+      if (progress >= 0.06) visibleStep = 1;
+      if (progress >= 0.3) visibleStep = 2;
+      if (progress >= 0.58) visibleStep = 3;
 
-      const nextRevealedStep = Math.max(revealedWorkbenchStepRef.current, visibleStep);
-      if (nextRevealedStep !== revealedWorkbenchStepRef.current) {
-        revealedWorkbenchStepRef.current = nextRevealedStep;
-        setRevealedWorkbenchStep(nextRevealedStep);
+      const direction = workbenchScrollDirectionRef.current;
+      let nextRevealedStep = revealedWorkbenchStepRef.current;
+
+      if (direction === "down" && !workbenchReleasedRef.current) {
+        nextRevealedStep = Math.max(revealedWorkbenchStepRef.current, visibleStep);
+        if (nextRevealedStep !== revealedWorkbenchStepRef.current) {
+          revealedWorkbenchStepRef.current = nextRevealedStep;
+          setRevealedWorkbenchStep(nextRevealedStep);
+        }
       }
 
       if (
+        direction === "down" &&
         nextRevealedStep >= 3 &&
         !workbenchReleasedRef.current &&
         window.scrollY > end + 24
       ) {
         const rect = section.getBoundingClientRect();
-        const releaseBuffer = Math.min(160, viewportHeight * 0.16);
+        const releaseBuffer = Math.min(96, viewportHeight * 0.1);
         const isSafelyAboveViewport = rect.bottom < -releaseBuffer;
 
         if (isSafelyAboveViewport) {
@@ -1005,23 +1102,94 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
       animationFrame = null;
     };
 
-    const requestWorkbenchUpdate = () => {
+    const collapseWorkbenchSection = (delta, direction) => {
+      const section = workbenchFlowRef.current;
+      if (!section || workbenchReleasedRef.current || revealedWorkbenchStepRef.current < 3) return false;
+      if (reduceMotionQuery.matches || staticLayoutQuery.matches) return false;
+
+      const rect = section.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 1;
+      const isActive = rect.top <= 4 && rect.bottom >= viewportHeight * 0.52;
+      if (!isActive) return false;
+
+      workbenchScrollDirectionRef.current = direction;
+
+      if (!workbenchExpandedHeightRef.current) {
+        workbenchExpandedHeightRef.current = section.offsetHeight;
+      }
+
+      if (!workbenchFinalHeightRef.current) {
+        workbenchFinalHeightRef.current = getWorkbenchFinalHeight(section);
+      }
+
+      const collapseDistance = Math.max(560, Math.min(860, viewportHeight * 0.74));
+      const normalizedDelta = Math.min(Math.abs(delta), 84);
+      const nextTargetProgress = Math.min(
+        1,
+        workbenchCollapseTargetRef.current + (normalizedDelta / collapseDistance)
+      );
+
+      workbenchCollapseTargetRef.current = nextTargetProgress;
+      requestWorkbenchCollapseAnimation();
+
+      return true;
+    };
+
+    const handleWorkbenchWheel = (event) => {
+      if (!event.deltaY) return;
+      const direction = event.deltaY > 0 ? "down" : "up";
+      if (collapseWorkbenchSection(event.deltaY, direction)) {
+        event.preventDefault();
+      }
+    };
+
+    const handleWorkbenchKeyDown = (event) => {
+      const downwardKeys = new Set(["ArrowDown", "PageDown", " ", "End"]);
+      const upwardKeys = new Set(["ArrowUp", "PageUp", "Home"]);
+      if (!downwardKeys.has(event.key) && !upwardKeys.has(event.key)) return;
+
+      const direction = downwardKeys.has(event.key) ? "down" : "up";
+      const delta = direction === "down" ? 120 : -120;
+      if (collapseWorkbenchSection(delta, direction)) {
+        event.preventDefault();
+      }
+    };
+
+    const requestWorkbenchUpdate = (isScrollEvent = false) => {
+      if (isScrollEvent) {
+        const currentScrollY = window.scrollY;
+        workbenchScrollDirectionRef.current =
+          currentScrollY > lastWorkbenchScrollYRef.current ? "down" : "up";
+        lastWorkbenchScrollYRef.current = currentScrollY;
+      }
+
       if (animationFrame !== null) return;
       animationFrame = window.requestAnimationFrame(updateWorkbenchProgress);
     };
 
+    const handleWorkbenchScroll = () => requestWorkbenchUpdate(true);
+    const handleWorkbenchResize = () => requestWorkbenchUpdate(false);
+
     updateWorkbenchProgress();
-    window.addEventListener("scroll", requestWorkbenchUpdate, { passive: true });
-    window.addEventListener("resize", requestWorkbenchUpdate);
-    reduceMotionQuery.addEventListener?.("change", requestWorkbenchUpdate);
-    staticLayoutQuery.addEventListener?.("change", requestWorkbenchUpdate);
+    window.addEventListener("scroll", handleWorkbenchScroll, { passive: true });
+    window.addEventListener("wheel", handleWorkbenchWheel, { passive: false });
+    window.addEventListener("keydown", handleWorkbenchKeyDown);
+    window.addEventListener("resize", handleWorkbenchResize);
+    reduceMotionQuery.addEventListener?.("change", handleWorkbenchResize);
+    staticLayoutQuery.addEventListener?.("change", handleWorkbenchResize);
 
     return () => {
       if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
-      window.removeEventListener("scroll", requestWorkbenchUpdate);
-      window.removeEventListener("resize", requestWorkbenchUpdate);
-      reduceMotionQuery.removeEventListener?.("change", requestWorkbenchUpdate);
-      staticLayoutQuery.removeEventListener?.("change", requestWorkbenchUpdate);
+      if (workbenchCollapseAnimationFrameRef.current !== null) {
+        window.cancelAnimationFrame(workbenchCollapseAnimationFrameRef.current);
+        workbenchCollapseAnimationFrameRef.current = null;
+      }
+      window.removeEventListener("scroll", handleWorkbenchScroll);
+      window.removeEventListener("wheel", handleWorkbenchWheel);
+      window.removeEventListener("keydown", handleWorkbenchKeyDown);
+      window.removeEventListener("resize", handleWorkbenchResize);
+      reduceMotionQuery.removeEventListener?.("change", handleWorkbenchResize);
+      staticLayoutQuery.removeEventListener?.("change", handleWorkbenchResize);
     };
   }, []);
 
@@ -1087,6 +1255,12 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
     setIsContactFormOpen(true);
   };
 
+  const workbenchFlowStyle = {
+    "--workbench-collapse-progress": workbenchCollapseProgress.toFixed(3),
+    ...(workbenchSectionHeight ? { "--workbench-section-height": `${workbenchSectionHeight}px` } : {}),
+    ...(workbenchStickyHeight ? { "--workbench-sticky-height": `${workbenchStickyHeight}px` } : {}),
+  };
+
   return (
     <main className="cruor-home" aria-labelledby="cruorHomeTitle">
       <section id="homeHero" className="cruor-home__hero cruor-home__hero--video" aria-label="Cruor Games homepage hero">
@@ -1130,6 +1304,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
         aria-labelledby="workbenchStepsTitle"
         data-revealed-step={revealedWorkbenchStep}
         data-workbench-released={workbenchReleased ? "true" : "false"}
+        style={workbenchFlowStyle}
       >
         <div className="cruor-home__statement-sticky">
           <div className="cruor-home__statement-inner">

@@ -3849,12 +3849,14 @@ body:has(.cruor-home)::-webkit-scrollbar {
 /* Workbench sticky process */
 #workbenchFlow.cruor-home__statement--sticky {
   --workbench-progress: 0%;
+  --workbench-collapse-progress: 0;
+  --workbench-section-height: 240vh;
   --reader-max-width: 1120px;
   position: relative;
   display: block;
   width: 100vw;
   max-width: none;
-  min-height: 300vh;
+  min-height: var(--workbench-section-height, 240vh);
   margin-right: calc(50% - 50vw);
   margin-left: calc(50% - 50vw);
   padding: 0 !important;
@@ -3894,8 +3896,9 @@ body:has(.cruor-home)::-webkit-scrollbar {
   place-items: center;
   box-sizing: border-box;
   width: 100%;
-  height: 100vh;
-  min-height: 100vh;
+  --workbench-sticky-default-height: 100vh;
+  height: var(--workbench-sticky-height, var(--workbench-sticky-default-height));
+  min-height: var(--workbench-sticky-height, var(--workbench-sticky-default-height));
   max-width: none;
   margin: 0;
   padding:
@@ -3925,8 +3928,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 
 @supports (height: 100dvh) {
   #workbenchFlow.cruor-home__statement--sticky > .cruor-home__statement-sticky {
-    height: 100dvh;
-    min-height: 100dvh;
+    --workbench-sticky-default-height: 100dvh;
   }
 }
 
@@ -4074,8 +4076,13 @@ body:has(.cruor-home)::-webkit-scrollbar {
   color: var(--home-accent-pale);
 }
 
+#workbenchFlow.cruor-home__statement--sticky:not(.is-released) > .cruor-home__statement-sticky {
+  transition: none;
+  will-change: height, min-height;
+}
+
 #workbenchFlow.cruor-home__statement--sticky.is-released {
-  min-height: auto;
+  min-height: var(--workbench-section-height, auto);
 }
 
 #workbenchFlow.cruor-home__statement--sticky.is-released > .cruor-home__statement-sticky {
