@@ -868,12 +868,15 @@ function InspirationSourceCarousel() {
 
 export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
   const workbenchFlowRef = useRef(null);
+  const revealedWorkbenchStepRef = useRef(0);
+  const workbenchReleasedRef = useRef(false);
   const [zoomPreview, setZoomPreview] = useState(null);
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const [contactFormStatus, setContactFormStatus] = useState("");
   const [activeSectionId, setActiveSectionId] = useState(HOME_SECTIONS[0].id);
   const [sectionProgress, setSectionProgress] = useState(0);
   const [revealedWorkbenchStep, setRevealedWorkbenchStep] = useState(0);
+  const [workbenchReleased, setWorkbenchReleased] = useState(false);
   const tools = useMemo(() => TOOL_CARDS, []);
 
   useEffect(() => {
@@ -927,8 +930,31 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
     let animationFrame = null;
 
     const revealAllSteps = () => {
+      revealedWorkbenchStepRef.current = 3;
       setRevealedWorkbenchStep(3);
       animationFrame = null;
+    };
+
+    const releaseWorkbenchSection = () => {
+      const section = workbenchFlowRef.current;
+      if (!section || workbenchReleasedRef.current) return;
+
+      const beforeHeight = section.offsetHeight;
+      const beforeScrollY = window.scrollY;
+
+      workbenchReleasedRef.current = true;
+      setWorkbenchReleased(true);
+
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          const afterHeight = section.offsetHeight;
+          const delta = beforeHeight - afterHeight;
+
+          if (delta > 0) {
+            window.scrollTo(0, Math.max(0, beforeScrollY - delta));
+          }
+        });
+      });
     };
 
     const updateWorkbenchProgress = () => {
@@ -956,7 +982,26 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
       if (progress >= 0.38) visibleStep = 2;
       if (progress >= 0.68) visibleStep = 3;
 
-      setRevealedWorkbenchStep((currentStep) => Math.max(currentStep, visibleStep));
+      const nextRevealedStep = Math.max(revealedWorkbenchStepRef.current, visibleStep);
+      if (nextRevealedStep !== revealedWorkbenchStepRef.current) {
+        revealedWorkbenchStepRef.current = nextRevealedStep;
+        setRevealedWorkbenchStep(nextRevealedStep);
+      }
+
+      if (
+        nextRevealedStep >= 3 &&
+        !workbenchReleasedRef.current &&
+        window.scrollY > end + 24
+      ) {
+        const rect = section.getBoundingClientRect();
+        const releaseBuffer = Math.min(160, viewportHeight * 0.16);
+        const isSafelyAboveViewport = rect.bottom < -releaseBuffer;
+
+        if (isSafelyAboveViewport) {
+          releaseWorkbenchSection();
+        }
+      }
+
       animationFrame = null;
     };
 
@@ -1076,9 +1121,15 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
       <section
         ref={workbenchFlowRef}
         id="workbenchFlow"
-        className={`cruor-home__statement cruor-home__statement--sticky is-step-${revealedWorkbenchStep}`}
+        className={[
+          "cruor-home__statement",
+          "cruor-home__statement--sticky",
+          `is-step-${revealedWorkbenchStep}`,
+          workbenchReleased ? "is-released" : "",
+        ].filter(Boolean).join(" ")}
         aria-labelledby="workbenchStepsTitle"
         data-revealed-step={revealedWorkbenchStep}
+        data-workbench-released={workbenchReleased ? "true" : "false"}
       >
         <div className="cruor-home__statement-sticky">
           <div className="cruor-home__statement-inner">
