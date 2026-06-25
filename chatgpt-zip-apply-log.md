@@ -3135,3 +3135,328 @@ _Nessun file aggiunto._
 - `~app/router.jsx`
 - `~package.json`
 
+
+---
+
+## 2026-06-25 09:29:41
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-05n-progressive-workbench-reveal.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-05n-progressive-workbench-reveal.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~package.json`
+
+
+---
+
+## 2026-06-25 09:34:44
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-05o-pinned-workbench-scroll.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-05o-pinned-workbench-scroll.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~package.json`
+
+
+---
+
+## 2026-06-25 12:34:38
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-05p-sticky-background-once.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-05p-sticky-background-once.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~package.json`
+
+
+---
+
+## 2026-06-25 12:41:52
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-05q-fullwidth-release-scroll.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-05q-fullwidth-release-scroll.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~package.json`
+
+
+---
+
+## 2026-06-25 12:47:27
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-05r-wheel-lock-no-jump.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-05r-wheel-lock-no-jump.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~package.json`
+
+
+---
+
+## 2026-06-25 12:53:35
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-05s-true-scroll-lock.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-05s-true-scroll-lock.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~package.json`
+
+
+---
+
+## 2026-06-25 12:58:43
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-05t-scroll-lock-thresholds.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-05t-scroll-lock-thresholds.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~package.json`
+
+
+---
+
+## 2026-06-25 13:04:56
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-05u-fast-scroll-prelock.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-05u-fast-scroll-prelock.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~package.json`
+
+
+---
+
+## 2026-06-25 13:08:28
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-05v-scroll-lock-early-anchor.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-05v-scroll-lock-early-anchor.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~package.json`
+
+
+---
+
+## 2026-06-25 13:14:07
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-05w-top-anchor-scroll-lock.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-05w-top-anchor-scroll-lock.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~package.json`
+
+
+---
+
+## 2026-06-25 14:27:06
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-05x-bodyless-scroll-lock.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-05x-bodyless-scroll-lock.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~package.json`
+
+
+---
+
+## 2026-06-25 14:37:16
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-05y-apple-style-sticky-flow.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-step-05y-apple-style-sticky-flow.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~package.json`
+
+
+---
+
+## 2026-06-25 14:43:45
+
+**Operazione:** Apply Custom ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-step-05m-process-strip-clean.zip`
+
+**Percorso ZIP:** `h:\Users\avers\Download\cruor-home-step-05m-process-strip-clean.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/router.jsx`
+- `~package.json`
+

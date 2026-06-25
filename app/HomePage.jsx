@@ -867,11 +867,13 @@ function InspirationSourceCarousel() {
 }
 
 export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
+  const workbenchFlowRef = useRef(null);
   const [zoomPreview, setZoomPreview] = useState(null);
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const [contactFormStatus, setContactFormStatus] = useState("");
   const [activeSectionId, setActiveSectionId] = useState(HOME_SECTIONS[0].id);
   const [sectionProgress, setSectionProgress] = useState(0);
+  const [revealedWorkbenchStep, setRevealedWorkbenchStep] = useState(0);
   const tools = useMemo(() => TOOL_CARDS, []);
 
   useEffect(() => {
@@ -916,6 +918,65 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
       if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("scroll", requestUpdate);
       window.removeEventListener("resize", requestUpdate);
+    };
+  }, []);
+
+  useEffect(() => {
+    const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const staticLayoutQuery = window.matchMedia("(max-width: 900px)");
+    let animationFrame = null;
+
+    const revealAllSteps = () => {
+      setRevealedWorkbenchStep(3);
+      animationFrame = null;
+    };
+
+    const updateWorkbenchProgress = () => {
+      if (reduceMotionQuery.matches || staticLayoutQuery.matches) {
+        revealAllSteps();
+        return;
+      }
+
+      const section = workbenchFlowRef.current;
+      if (!section) {
+        animationFrame = null;
+        return;
+      }
+
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 1;
+      const topOffset = 0;
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+      const start = sectionTop - topOffset;
+      const end = sectionTop + sectionHeight - viewportHeight - topOffset;
+      const progress = Math.max(0, Math.min(1, (window.scrollY - start) / Math.max(1, end - start)));
+
+      let visibleStep = 0;
+      if (progress >= 0.08) visibleStep = 1;
+      if (progress >= 0.38) visibleStep = 2;
+      if (progress >= 0.68) visibleStep = 3;
+
+      setRevealedWorkbenchStep((currentStep) => Math.max(currentStep, visibleStep));
+      animationFrame = null;
+    };
+
+    const requestWorkbenchUpdate = () => {
+      if (animationFrame !== null) return;
+      animationFrame = window.requestAnimationFrame(updateWorkbenchProgress);
+    };
+
+    updateWorkbenchProgress();
+    window.addEventListener("scroll", requestWorkbenchUpdate, { passive: true });
+    window.addEventListener("resize", requestWorkbenchUpdate);
+    reduceMotionQuery.addEventListener?.("change", requestWorkbenchUpdate);
+    staticLayoutQuery.addEventListener?.("change", requestWorkbenchUpdate);
+
+    return () => {
+      if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
+      window.removeEventListener("scroll", requestWorkbenchUpdate);
+      window.removeEventListener("resize", requestWorkbenchUpdate);
+      reduceMotionQuery.removeEventListener?.("change", requestWorkbenchUpdate);
+      staticLayoutQuery.removeEventListener?.("change", requestWorkbenchUpdate);
     };
   }, []);
 
@@ -1012,28 +1073,36 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
         </div>
       </section>
 
-      <section id="workbenchFlow" className="cruor-home__statement" aria-labelledby="workbenchStepsTitle">
-        <div>
-          <div className="cruor-home__statement-head">
-            <span>How the Workbench Works</span>
-            <h2 id="workbenchStepsTitle">From Source to Table Output.</h2>
-            <p>Pick a generator, define the creative logic, and turn it into playable 5E material.</p>
-          </div>
+      <section
+        ref={workbenchFlowRef}
+        id="workbenchFlow"
+        className={`cruor-home__statement cruor-home__statement--sticky is-step-${revealedWorkbenchStep}`}
+        aria-labelledby="workbenchStepsTitle"
+        data-revealed-step={revealedWorkbenchStep}
+      >
+        <div className="cruor-home__statement-sticky">
+          <div className="cruor-home__statement-inner">
+            <div className="cruor-home__statement-head">
+              <span>How the Workbench Works</span>
+              <h2 id="workbenchStepsTitle">From Source to Table Output.</h2>
+              <p>Pick a generator, define the creative logic, and turn it into playable 5E material.</p>
+            </div>
 
-          <ol className="cruor-home__process-strip" aria-label="Cruor workbench process">
-            <li className="cruor-home__process-step" tabIndex={0}>
-              <strong>Input</strong>
-              <p>Choose the generator and define source, tone, and scope.</p>
-            </li>
-            <li className="cruor-home__process-step" tabIndex={0}>
-              <strong>Logic</strong>
-              <p>Set constraints, options, and rules that shape the result.</p>
-            </li>
-            <li className="cruor-home__process-step" tabIndex={0}>
-              <strong>Output</strong>
-              <p>Review, adjust, export, or bring the result into play.</p>
-            </li>
-          </ol>
+            <ol className="cruor-home__process-strip" aria-label="Cruor workbench process">
+              <li className="cruor-home__process-step" tabIndex={0} data-step="1">
+                <strong>Input</strong>
+                <p>Choose a generator, source, tone, and scope.</p>
+              </li>
+              <li className="cruor-home__process-step" tabIndex={0} data-step="2">
+                <strong>Logic</strong>
+                <p>Set constraints, rules, and generation logic.</p>
+              </li>
+              <li className="cruor-home__process-step" tabIndex={0} data-step="3">
+                <strong>Output</strong>
+                <p>Review, adjust, and bring the result into play.</p>
+              </li>
+            </ol>
+          </div>
         </div>
       </section>
 
