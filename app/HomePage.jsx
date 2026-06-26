@@ -1224,10 +1224,18 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
                     <div className="cruor-home__process-card-face cruor-home__process-card-face--front">
                       <i className="fa-solid fa-inbox" aria-hidden="true"></i>
                       <strong>Input</strong>
-                      <p>Choose a generator, source, tone, and scope.</p>
+                      <span className="cruor-home__process-subtitle">Define the Need</span>
+                      <div className="cruor-home__process-lines">
+                        <span>Choose the generator you want to use.</span>
+                        <span>Select the sources that inspire the result.</span>
+                        <span>Set tone, scope, and creative limits.</span>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </li>
+              <li className="cruor-home__process-connector" aria-hidden="true" data-connector="1">
+                <i className="fa-solid fa-chevron-right" aria-hidden="true"></i>
               </li>
               <li className="cruor-home__process-step" tabIndex={0} data-step="2">
                 <div className="cruor-home__process-card">
@@ -1237,11 +1245,19 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
                     </div>
                     <div className="cruor-home__process-card-face cruor-home__process-card-face--front">
                       <i className="fa-solid fa-gears" aria-hidden="true"></i>
-                      <strong>Logic</strong>
-                      <p>Set constraints, rules, and generation logic.</p>
+                      <strong>Engine</strong>
+                      <span className="cruor-home__process-subtitle">Shape the Result</span>
+                      <div className="cruor-home__process-lines">
+                        <span>Choose how the material should behave.</span>
+                        <span>Anchor each choice to 5E structure.</span>
+                        <span>Translate loose inspiration into playable design.</span>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </li>
+              <li className="cruor-home__process-connector" aria-hidden="true" data-connector="2">
+                <i className="fa-solid fa-chevron-right" aria-hidden="true"></i>
               </li>
               <li className="cruor-home__process-step" tabIndex={0} data-step="3">
                 <div className="cruor-home__process-card">
@@ -1252,7 +1268,12 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
                     <div className="cruor-home__process-card-face cruor-home__process-card-face--front">
                       <i className="fa-solid fa-scroll" aria-hidden="true"></i>
                       <strong>Output</strong>
-                      <p>Review, adjust, and bring the result into play.</p>
+                      <span className="cruor-home__process-subtitle">Use It at the Table</span>
+                      <div className="cruor-home__process-lines">
+                        <span>Review the generated material.</span>
+                        <span>Adjust details without starting over.</span>
+                        <span>Export or copy it into your session.</span>
+                      </div>
                     </div>
                   </div>
                 </div>
