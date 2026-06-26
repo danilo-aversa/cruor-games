@@ -744,9 +744,11 @@ export function LocationBriefPanel({
   state,
   setState,
   mapRequest,
+  mapPlanDetails = null,
   draftControls,
   modeControls,
   forcedDungeonMode = "",
+  showGenerateAction = true,
   uiMode = "simple",
   onAddScratchRoom,
   onGenerateScratchMap,
@@ -890,7 +892,7 @@ export function LocationBriefPanel({
 
           <section className="location-frame-control-block" aria-label="Location map controls">
             <div className="location-frame-control-block__head">
-              <span>Map Shape</span>
+              <span>Map Plan</span>
             </div>
             <div className="location-frame-selector-stack">
               <LocationIconToggleField
@@ -935,17 +937,27 @@ export function LocationBriefPanel({
                 }))}
               />
 
-              <button
-                className="cruor-composer-control location-primary-action location-theme-generate-button"
-                type="button"
-                onClick={onGenerateThemeRooms}
-              >
-                Generate Map
-              </button>
-
-              {uiMode === "debug" ? <LocationThemeLoadedProgram regions={state.locationRegions || []} /> : null}
+              {showGenerateAction ? (
+                <button
+                  className="cruor-composer-control location-primary-action location-theme-generate-button"
+                  type="button"
+                  onClick={onGenerateThemeRooms}
+                >
+                  Generate Map
+                </button>
+              ) : null}
             </div>
           </section>
+
+          {mapPlanDetails}
+
+          {uiMode === "debug" && Array.isArray(state.locationRegions) && state.locationRegions.length ? (
+            <section className="location-frame-control-block location-frame-control-block--debug" aria-label="Debug map program">
+              <div className="location-frame-selector-stack">
+                <LocationThemeLoadedProgram regions={state.locationRegions} />
+              </div>
+            </section>
+          ) : null}
         </>
       ) : (
         <>

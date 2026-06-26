@@ -4375,3 +4375,501 @@ _Nessun file aggiunto._
 - `~app/home-page.css`
 - `~app/HomePage.jsx`
 
+
+---
+
+## 2026-06-26 14:13:36
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-ui-pass01-modified.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-ui-pass01-modified.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+features/darken-location/composer/components/LocationComposerTopbar.jsx`
+- `+features/darken-location/composer/components/LocationGuidedFlowPanel.jsx`
+
+**File sovrascritti:** 4
+
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/composer/components/LocationSlotRail.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+
+
+---
+
+## 2026-06-26 14:22:20
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-ui-pass02-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-ui-pass02-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/composer/components/LocationGuidedFlowPanel.jsx`
+- `~features/darken-location/composer/components/LocationSlotRail.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+
+
+---
+
+## 2026-06-26 14:36:22
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-element-compare-test.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-element-compare-test.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+.vscode/element-compare.presets.json`
+- `+scripts/compare-site-elements.mjs`
+
+**File sovrascritti:** 1
+
+- `~.vscode/cruor-tools.json`
+
+
+---
+
+## 2026-06-26 14:38:30
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-ui-pass03-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-ui-pass03-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 6
+
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/composer/components/LocationGuidedFlowPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/components/LocationSlotRail.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+
+
+---
+
+## 2026-06-26 14:44:01
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-element-compare-test-v2.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-element-compare-test-v2.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+.vscode/element-snapshots/README.md`
+
+**File sovrascritti:** 3
+
+- `~.vscode/cruor-tools.json`
+- `~.vscode/element-compare.presets.json`
+- `~scripts/compare-site-elements.mjs`
+
+
+---
+
+## 2026-06-26 14:53:10
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-element-compare-test-v3.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-element-compare-test-v3.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+.vscode/element-compare.presets.json`
+- `+.vscode/element-snapshots/README.md`
+
+**File sovrascritti:** 2
+
+- `~.vscode/cruor-tools.json`
+- `~scripts/compare-site-elements.mjs`
+
+
+---
+
+## 2026-06-26 15:01:01
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-element-compare-test-v4.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-element-compare-test-v4.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~.vscode/cruor-tools.json`
+- `~.vscode/element-compare.presets.json`
+- `~.vscode/element-snapshots/README.md`
+- `~scripts/compare-site-elements.mjs`
+
+
+---
+
+## 2026-06-26 15:35:13
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-ui-pass04-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-ui-pass04-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 6
+
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/composer/components/LocationGuidedFlowPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/components/LocationSlotRail.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+
+
+---
+
+## 2026-06-26 15:59:33
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase02.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase02.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `+features/darken-location/composer/components/LocationRoomProgramPanel.jsx`
+- `+features/darken-location/composer/model/location-room-program.js`
+
+**File sovrascritti:** 4
+
+- `~features/darken-location/composer/components/LocationCompilePreview.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/model/location-composer-output.js`
+
+
+---
+
+## 2026-06-26 16:14:36
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase02-1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase02-1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+
+**File sovrascritti:** 6
+
+- `~features/darken-location/composer/components/LocationGuidedFlowPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `~features/darken-location/composer/components/LocationRoomProgramPanel.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+
+
+---
+
+## 2026-06-26 16:24:54
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase02-2.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase02-2.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~features/darken-location/composer/components/LocationGuidedFlowPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+
+
+---
+
+## 2026-06-26 16:30:43
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase02-3-sidebar-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase02-3-sidebar-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-26 17:25:31
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase02-4-action-buttons-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase02-4-action-buttons-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-26 17:40:02
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase02-5-right-rail-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase02-5-right-rail-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+
+
+---
+
+## 2026-06-26 17:54:54
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase02-6-right-rail-cleanup.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase02-6-right-rail-cleanup.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+
+
+---
+
+## 2026-06-26 18:02:34
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase02-7-debug-block-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase02-7-debug-block-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+
+
+---
+
+## 2026-06-26 18:11:50
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase03-workbench.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase03-workbench.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+features/darken-location/composer/components/LocationMapToolbar.jsx`
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+
+
+---
+
+## 2026-06-26 18:37:03
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase03-1-toolbar-icon-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase03-1-toolbar-icon-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/components/LocationMapToolbar.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-26 18:51:20
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase03-2-room-map-indicators.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase03-2-room-map-indicators.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-26 22:30:39
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase03-3-room-work-loop.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase03-3-room-work-loop.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 6
+
+- `~features/darken-location/composer/components/LocationGuidedFlowPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapToolbar.jsx`
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/model/location-room-program.js`
+
+
+---
+
+## 2026-06-26 22:52:51
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase03-4-slot-aware-picker.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase03-4-slot-aware-picker.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+features/darken-location/composer/model/location-room-slot-matching.js`
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/composer/components/LocationComponentPickerModal.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+

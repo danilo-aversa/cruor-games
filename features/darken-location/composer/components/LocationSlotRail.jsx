@@ -146,12 +146,12 @@ export function LocationSlotRail({ state, setState, modeControls, onFocusSlot })
                 {assigned[0] ? (
                   <>
                     <strong>{assigned[0].title || assigned[0].name}</strong>
-                    <em>{assigned[0].summary || assigned[0].description || "Assigned component"}</em>
+                    <em>{assigned.length > 1 ? `${assigned.length} components assigned` : "Assigned"}</em>
                   </>
                 ) : (
                   <>
-                    <strong>Empty Region Slot</strong>
-                    <em>{slot.description || "Pick a component for this region of the location."}</em>
+                    <strong>No component</strong>
+                    <em>{slot.hint || slot.description || "Choose one"}</em>
                   </>
                 )}
               </span>

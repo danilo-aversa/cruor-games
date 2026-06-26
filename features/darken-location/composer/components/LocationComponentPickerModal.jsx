@@ -1,5 +1,10 @@
 import { useMemo, useState } from "react";
 import { LOCATION_SLOT_SCOPE_REGION, normalizeLocationSlotScope } from "../model/location-composer-state.js";
+import {
+  getLocationRoomSlotContext,
+  getLocationRoomSlotMatchProfile,
+  scoreComponentForLocationRoomSlot,
+} from "../model/location-room-slot-matching.js";
 
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -168,6 +173,17 @@ function scoreLocationComponentDecision(component, profile, options = {}) {
   ]);
   const componentTextTokens = getComponentTextTokens(component);
   const slotTokens = normalizeTokens([profile.slotId, profile.slotLabel]);
+  const slotMatch = options.slotMatchProfile
+    ? scoreComponentForLocationRoomSlot(component, {
+        id: options.slotMatchProfile.id,
+        label: options.slotMatchProfile.label,
+      })
+    : { reasons: [], score: 0 };
+
+  if (slotMatch.score) {
+    score += slotMatch.score;
+    slotMatch.reasons.forEach((reason) => addReason(reasons, reason));
+  }
 
   if (intersects(componentSlots, slotTokens)) {
     score += 34;
@@ -264,6 +280,11 @@ export function LocationComponentPickerModal({
   const [statusFilter, setStatusFilter] = useState("all");
   const normalizedScope = normalizeLocationSlotScope(slotScope);
   const regionScoped = normalizedScope === LOCATION_SLOT_SCOPE_REGION;
+  const slotMatchProfile = regionScoped ? getLocationRoomSlotMatchProfile(slot?.id) : null;
+  const slotContext = useMemo(
+    () => getLocationRoomSlotContext({ activeRegion, generatedRoom, slot, state }),
+    [activeRegion, generatedRoom, slot, state],
+  );
 
   const assignedIds = useMemo(
     () => new Set(assignedComponents.map((component) => component.id).filter(Boolean)),
@@ -317,6 +338,7 @@ export function LocationComponentPickerModal({
           activeSlotFilled: assignedComponents.length > 0,
           regionScoped,
           selected: assignedIds.has(component.id),
+          slotMatchProfile,
         }),
       )
       .sort((a, b) => {
@@ -326,7 +348,7 @@ export function LocationComponentPickerModal({
         if (b.score !== a.score) return b.score - a.score;
         return getComponentTitle(a.component).localeCompare(getComponentTitle(b.component));
       });
-  }, [assignedComponents.length, assignedIds, decisionProfile, regionScoped, visibleComponents]);
+  }, [assignedComponents.length, assignedIds, decisionProfile, regionScoped, slotMatchProfile, visibleComponents]);
 
   const recommendedDecisions = useMemo(() => {
     if (statusFilter === "assigned") return [];
@@ -368,15 +390,13 @@ export function LocationComponentPickerModal({
   if (!open || !slot) return null;
 
   const drawerTitle = regionScoped
-    ? `Choose Room ${slot.label}`
+    ? slotContext.slotActionLabel
     : `Choose Map ${slot.label}`;
   const targetTitle = regionScoped
-    ? activeRegion?.name || "No room selected"
+    ? slotContext.roomName || "No room selected"
     : "Whole Map";
   const targetMeta = regionScoped
-    ? generatedRoom
-      ? `Room ${generatedRoom.number || "—"}`
-      : "Click a room on the map to change target"
+    ? `${slotContext.roomLabel} · ${slotContext.roomRoleLabel} · ${slotContext.roomTypeLabel}`
     : "Dungeon-wide slot";
 
   function renderComponentCard(decision, tier = "matching") {
@@ -447,6 +467,7 @@ export function LocationComponentPickerModal({
       data-filters-open={filtersOpen ? "true" : "false"}
       data-navigator-mode="slot"
       data-slot-scope={normalizedScope}
+      data-room-slot-kind={slotMatchProfile?.id || ""}
     >
       <div
         className="component-navigator-modal component-navigator-modal--drawer location-component-modal"
@@ -461,7 +482,9 @@ export function LocationComponentPickerModal({
         >
           <div className="component-navigator-modal__head location-component-drawer__head">
             <div className="component-navigator-modal__head-copy location-component-drawer__head-copy">
+              <span className="location-component-drawer__kicker">{regionScoped ? "Room Component" : "Map Component"}</span>
               <h2>{drawerTitle}</h2>
+              {regionScoped ? <p>{slotContext.slotDescription}</p> : null}
             </div>
             <div className="component-navigator-modal__head-actions location-component-drawer__head-actions">
               <button
@@ -485,12 +508,19 @@ export function LocationComponentPickerModal({
             </div>
           </div>
 
-          <div className="location-component-drawer__target">
+          <div className="location-component-drawer__target location-component-drawer__target--contextual">
             <div className="location-component-drawer__target-copy">
-              <span>{regionScoped ? "Target Region" : "Target Map"}</span>
+              <span>{regionScoped ? "Selected Room" : "Target Map"}</span>
               <strong>{targetTitle}</strong>
               <small>{targetMeta}</small>
             </div>
+            {regionScoped ? (
+              <div className="location-component-drawer__slot-context">
+                <span>Adding</span>
+                <strong>{slotContext.slotLabel}</strong>
+                <small>Best fits: {slotContext.bestFitLine}</small>
+              </div>
+            ) : null}
           </div>
 
           {filtersOpen ? (
@@ -551,7 +581,7 @@ export function LocationComponentPickerModal({
           <div className="component-list location-component-list component-navigator-modal__list cruor-scroll-surface">
             {visibleComponents.length ? (
               <>
-                {renderDecisionGroup("Recommended", recommendedDecisions, "recommended")}
+                {renderDecisionGroup(slotMatchProfile ? "Recommended for Slot" : "Recommended", recommendedDecisions, "recommended")}
                 {renderDecisionGroup("Best Fits", bestFitDecisions, "best-fit")}
                 {renderDecisionGroup(
                   recommendedDecisions.length || bestFitDecisions.length ? "All Matching" : "Matching Components",

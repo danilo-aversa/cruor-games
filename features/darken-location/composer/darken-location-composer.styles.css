@@ -59,6 +59,85 @@
 
 
 
+/* Location frame meter — Places-specific equivalent of Monster frame meters. */
+.location-frame-info .location-meter {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.location-frame-info .location-meter + .location-meter {
+  margin-top: 8px;
+}
+
+.location-frame-info .location-meter__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  color: var(--cruor-color-text-a620);
+  font-size: var(--text-size-m);
+  font-weight: 850;
+}
+
+.location-frame-info .location-meter__head > span:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-frame-info .location-meter__value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.location-frame-info .location-meter__value strong {
+  color: var(--cruor-color-hex-d0a2aa);
+  font-size: var(--text-size-m);
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.location-frame-info .location-meter__value .tooltip-btn,
+.location-frame-info .location-meter__head .tooltip-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  border: 1px solid var(--cruor-color-milk-a090);
+  background: var(--cruor-color-black-a240);
+  color: var(--cruor-color-text-a680);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  line-height: 1;
+  padding: 0;
+}
+
+.location-frame-info .location-meter__track {
+  height: 8px;
+  overflow: hidden;
+  border: 1px solid var(--cruor-color-blood-strong-a500);
+  background: var(--cruor-surface-card);
+}
+
+.location-frame-info .location-meter__track > div {
+  height: 100%;
+  background: var(--cruor-gradient-linear-115-7b4295c6);
+  box-shadow: var(--cruor-shadow-box-051);
+}
+
 /* States */
 
 
@@ -2612,7 +2691,8 @@
   text-transform: uppercase;
 }
 
-.location-primary-action {
+.location-primary-action,
+.location-secondary-action {
   border: 1px solid var(--cruor-color-blood-strong-a560);
   background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
@@ -2641,7 +2721,8 @@
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.location-primary-action:hover {
+.location-primary-action:hover,
+.location-secondary-action:hover {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
@@ -4406,8 +4487,10 @@
   isolation: isolate;
   display: grid;
   grid-template-columns: var(--location-side-column-width) var(--location-center-width) var(--location-side-column-width);
-  grid-template-rows: minmax(0, 1fr);
-  grid-template-areas: "left center right";
+  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "left center right"
+    "left flow right";
   gap: var(--location-card-gap) var(--location-column-gap);
   width: min(var(--location-workspace-max, 100%), 100%);
   min-height: var(--location-stage-min-height);
@@ -4728,20 +4811,20 @@
 
   .location-composer[data-location-builder-mode="frame"] .location-map-stage {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "left" "center" "right";
+    grid-template-areas: "left" "center" "right" "flow";
     overflow: auto;
   }
 
   .location-composer[data-location-builder-mode="slots"] .location-map-stage {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "left" "center" "right";
+    grid-template-areas: "left" "center" "right" "flow";
     overflow: auto;
   }
 
   .location-map-stage {
     grid-template-columns: minmax(0, 1fr);
     padding: 12px;
-    grid-template-areas: "left" "center" "right";
+    grid-template-areas: "left" "center" "right" "flow";
     overflow: auto;
   }
 
@@ -4808,17 +4891,17 @@
 
   .location-composer[data-location-builder-mode="frame"] .location-map-stage {
     grid-template-columns: 1fr;
-    grid-template-areas: "left" "center" "right";
+    grid-template-areas: "left" "center" "right" "flow";
   }
 
   .location-composer[data-location-builder-mode="slots"] .location-map-stage {
     grid-template-columns: 1fr;
-    grid-template-areas: "left" "center" "right";
+    grid-template-areas: "left" "center" "right" "flow";
   }
 
   .location-map-stage {
     grid-template-columns: 1fr;
-    grid-template-areas: "left" "center" "right";
+    grid-template-areas: "left" "center" "right" "flow";
   }
 
   .location-component-drawer {
@@ -6197,7 +6280,7 @@
 .location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail {
   align-self: start;
   min-height: 0;
-  max-height: var(--location-stage-grid-min-height);
+  max-height: 100%;
   overflow: visible;
 }
 
@@ -6221,7 +6304,7 @@
   scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
 }
 
-/* Step 22.5 correction — align Location frame controls to Monster frame grammar. */
+/* Step 22.5 correction — align Location frame controls to product frame grammar. */
 .location-composer .cruor-frame-select-field,
 .location-composer .cruor-frame-icon-field,
 .location-composer .cruor-frame-range-control {
@@ -7018,7 +7101,7 @@
   align-self: start;
 }
 
-/* Step 31.2 — Monster-style Location rail blocks + content-based height. */
+/* Step 31.2 — Location rail blocks + content-based height. */
 .location-composer[data-location-builder-mode="theme"] .location-map-frame-rail,
 .location-composer[data-location-builder-mode="scratch"] .location-map-frame-rail {
   align-self: start;
@@ -7029,7 +7112,7 @@
   width: 100%;
   height: auto;
   min-height: 0;
-  max-height: var(--location-stage-grid-min-height);
+  max-height: 100%;
   overflow-x: visible;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -7140,4 +7223,2149 @@
 
 .location-map-frame-rail .location-primary-action {
   min-height: 34px;
+}
+
+/* Dark Places product shell pass — Places-specific stage dock layout. */
+#darkenComposerPanel > .cruor-composer-shell.location-composer {
+  min-height: calc(100dvh - var(--app-shell-bar-height, 52px) - clamp(10px, 1vw, 16px));
+  padding: 10px;
+}
+
+#darkenComposerPanel > .cruor-composer-shell.location-composer[data-location-map-editing="true"] {
+  display: block;
+  padding: 0;
+}
+
+#darkenComposerPanel .cruor-composer-workspace.location-composer__workspace {
+  min-height: 0;
+}
+
+#darkenComposerPanel .location-composer__stage {
+  min-height: min(760px, calc(100dvh - var(--app-shell-bar-height, 52px) - 102px));
+  padding: 0;
+}
+
+.location-composer[data-location-map-editing="true"] .location-composer__stage {
+  min-height: calc(100dvh - var(--app-shell-bar-height, 52px) - clamp(10px, 1vw, 16px));
+  padding: 10px;
+}
+
+.location-stage-progress-dock {
+  --location-flow-step-size: 32px;
+  --location-flow-step-gap: 5px;
+  --location-flow-line-y: calc(var(--location-flow-step-size) / 2);
+  position: absolute;
+  left: 50%;
+  right: auto;
+  bottom: clamp(10px, 1.25vw, 18px);
+  z-index: 34;
+  display: block;
+  width: min(920px, calc(100% - clamp(24px, 4vw, 56px)));
+  min-width: 0;
+  max-width: min(920px, calc(100% - clamp(24px, 4vw, 56px)));
+  min-height: 0;
+  margin: 0;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.location-composer .location-flow-panel.location-flow-drawer {
+  position: relative;
+  pointer-events: none;
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  background: var(--cruor-color-transparent);
+  padding: 0;
+  box-shadow: none;
+}
+
+.location-composer .location-flow-drawer__panel {
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: minmax(240px, 1.05fr) minmax(340px, 1.45fr);
+  grid-template-areas:
+    "next timeline"
+    "status status";
+  gap: 9px 11px;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  max-height: 0;
+  border: 1px solid var(--cruor-color-rose-a180);
+  background: var(--cruor-gradient-linear-170-f87e6acf), var(--cruor-gradient-radial-223-dfaae82c), var(--cruor-color-surface-soft-a940);
+  box-shadow: var(--cruor-shadow-box-116);
+  opacity: 0;
+  padding: 0 12px;
+  transform: translateY(14px);
+  transition:
+    max-height .18s ease,
+    opacity .14s ease,
+    padding .18s ease,
+    transform .18s ease;
+  backdrop-filter: var(--cruor-filter-glass-18-128);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-18-128);
+}
+
+.location-composer .location-flow-drawer.is-open .location-flow-drawer__panel {
+  max-height: clamp(168px, 24vh, 252px);
+  opacity: 1;
+  padding: 12px;
+  transform: translateY(0);
+}
+
+.location-composer .location-flow-drawer__next {
+  grid-area: next;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-blood-glow-a320);
+  background: var(--cruor-gradient-radial-219-20501210), var(--cruor-color-black-a200);
+  padding: 10px;
+}
+
+.location-composer .location-flow-drawer__next-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.location-composer .location-flow-drawer__next-copy span {
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: .1em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.location-composer .location-flow-drawer__next-copy strong {
+  overflow: hidden;
+  min-width: 0;
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-3xl);
+  font-weight: 950;
+  line-height: 1.08;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-composer .location-flow-drawer__next-copy p {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  margin: 0;
+  color: var(--cruor-color-text-a580);
+  font-size: var(--text-size-m);
+  line-height: 1.35;
+}
+
+.location-composer .location-flow-drawer__next button {
+  min-height: 34px;
+  border: 1px solid var(--cruor-color-blood-glow-a600);
+  background: var(--cruor-color-blood-strong-a280);
+  color: var(--cruor-color-hex-fff0f2);
+  padding: 0 11px;
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: var(--cruor-shadow-box-096);
+}
+
+.location-composer .location-flow-drawer__next button:focus-visible,
+.location-composer .location-flow-drawer__next button:hover {
+  border-color: var(--cruor-color-rose-a720);
+  background: var(--cruor-color-blood-bright-a360);
+  outline: none;
+}
+
+.location-composer .location-flow-drawer__next button:disabled,
+.location-composer .location-flow-drawer__stage-btn:disabled,
+.location-composer .location-flow-nav-btn:disabled {
+  cursor: not-allowed;
+  opacity: .4;
+  transform: none;
+}
+
+.location-composer .location-flow-drawer__timeline {
+  grid-area: timeline;
+  --location-flow-step-size: 32px;
+  --location-flow-step-gap: 5px;
+  --location-flow-line-y: calc(var(--location-flow-step-size) / 2);
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 32px;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-black-a160);
+  padding: 9px;
+}
+
+.location-composer .location-flow-drawer__timeline .location-flow-nav-btn {
+  box-sizing: border-box;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--location-flow-step-size);
+  min-width: var(--location-flow-step-size);
+  max-width: var(--location-flow-step-size);
+  height: var(--location-flow-step-size);
+  min-height: var(--location-flow-step-size);
+  max-height: var(--location-flow-step-size);
+  align-self: center;
+  justify-self: center;
+  margin: 0;
+  border: 1px solid var(--cruor-color-blood-strong-a540);
+  background: var(--cruor-color-black-a220);
+  color: var(--cruor-color-r240-g215-b220-a720);
+  padding: 0;
+  transform: none;
+}
+
+.location-composer .location-flow-drawer__timeline .location-flow-nav-btn:focus-visible:not(:disabled),
+.location-composer .location-flow-drawer__timeline .location-flow-nav-btn:hover:not(:disabled) {
+  border-color: var(--cruor-color-blood-glow-a720);
+  color: var(--cruor-color-hex-fff0f2);
+  outline: none;
+}
+
+.location-composer .location-flow-nav-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.location-composer .location-flow-drawer__timeline .location-flow-progress {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--location-flow-step-count, 7), var(--location-flow-step-size));
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--location-flow-step-gap);
+  width: 100%;
+  min-width: 0;
+  height: var(--location-flow-step-size);
+  min-height: var(--location-flow-step-size);
+  max-height: var(--location-flow-step-size);
+  margin: 0;
+  overflow: visible;
+  padding: 0;
+}
+
+.location-composer .location-flow-drawer__timeline .location-flow-progress::after {
+  content: "";
+  position: absolute;
+  top: var(--location-flow-line-y);
+  left: calc(var(--location-flow-step-size) / 2);
+  right: calc(var(--location-flow-step-size) / 2);
+  z-index: 0;
+  display: block;
+  height: 2px;
+  background: var(--cruor-color-milk-a085);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.location-composer .location-flow-drawer__timeline .location-flow-progress::before {
+  content: "";
+  position: absolute;
+  top: var(--location-flow-line-y);
+  left: calc(var(--location-flow-step-size) / 2);
+  z-index: 1;
+  display: block;
+  width: calc((100% - var(--location-flow-step-size)) * var(--location-flow-active-progress, var(--location-flow-progress, 0)));
+  height: 2px;
+  background: var(--cruor-gradient-linear-211-15591d76);
+  box-shadow: var(--cruor-shadow-box-046);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.location-composer .location-flow-drawer__timeline .location-flow-step-btn {
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  align-self: center;
+  justify-self: center;
+  width: var(--location-flow-step-size);
+  min-width: var(--location-flow-step-size);
+  max-width: var(--location-flow-step-size);
+  height: var(--location-flow-step-size);
+  min-height: var(--location-flow-step-size);
+  max-height: var(--location-flow-step-size);
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: var(--cruor-color-r240-g215-b220-a680);
+  padding: 0;
+  transform: none;
+}
+
+.location-composer .location-flow-drawer__timeline .location-flow-step-btn.active,
+.location-composer .location-flow-drawer__timeline .location-flow-step-btn.active:focus-visible:not(:disabled),
+.location-composer .location-flow-drawer__timeline .location-flow-step-btn.active:hover:not(:disabled),
+.location-composer .location-flow-drawer__timeline .location-flow-step-btn:focus-visible:not(:disabled),
+.location-composer .location-flow-drawer__timeline .location-flow-step-btn:hover:not(:disabled) {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  align-self: center;
+  justify-self: center;
+  margin: 0;
+  padding: 0;
+  transform: none;
+}
+
+.location-composer .location-flow-drawer__timeline .location-flow-step-number {
+  box-sizing: border-box;
+  width: var(--location-flow-step-size);
+  min-width: var(--location-flow-step-size);
+  max-width: var(--location-flow-step-size);
+  height: var(--location-flow-step-size);
+  min-height: var(--location-flow-step-size);
+  max-height: var(--location-flow-step-size);
+  display: grid;
+  place-items: center;
+  margin: 0;
+  border: 1px solid var(--cruor-color-milk-a120);
+  background: var(--cruor-color-hex-070506);
+  color: currentColor;
+  font-size: var(--text-size-xxs);
+  font-weight: 950;
+  line-height: 1;
+  transform: none;
+}
+
+.location-composer .location-flow-drawer__timeline .location-flow-step-btn.reached:not(.active) .location-flow-step-number {
+  border-color: var(--cruor-color-good-a600);
+  background: var(--cruor-gradient-linear-165-016c880b), var(--cruor-color-hex-070506);
+  color: var(--cruor-color-hex-bec8c5);
+  box-shadow: var(--cruor-shadow-box-081);
+}
+
+.location-composer .location-flow-drawer__timeline .location-flow-step-btn.active .location-flow-step-number {
+  border-color: var(--cruor-color-blood-glow-a720);
+  background: var(--cruor-gradient-linear-211-15591d76);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-084);
+}
+
+.location-composer .location-flow-drawer__timeline .location-flow-step-label {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 50%;
+  max-width: 78px;
+  overflow: hidden;
+  color: var(--cruor-color-r240-g215-b220-a620);
+  font-size: var(--text-size-xxs);
+  font-weight: 950;
+  letter-spacing: .08em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.location-composer .location-flow-drawer__timeline .location-flow-step-btn.active .location-flow-step-label,
+.location-composer .location-flow-drawer__timeline .location-flow-step-btn:focus-visible:not(:disabled) .location-flow-step-label,
+.location-composer .location-flow-drawer__timeline .location-flow-step-btn:hover:not(:disabled) .location-flow-step-label {
+  top: calc(100% + 5px);
+  color: var(--cruor-color-hex-fff0f2);
+  transform: translateX(-50%);
+}
+
+.location-composer .location-flow-drawer__status-row {
+  grid-area: status;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, .78fr);
+  gap: 9px;
+  min-width: 0;
+}
+
+.location-composer .location-flow-drawer__readiness,
+.location-composer .location-flow-drawer__warnings {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--cruor-color-milk-a060);
+  background: var(--cruor-color-black-a160);
+  padding: 8px;
+}
+
+.location-composer .location-flow-drawer__badge {
+  display: inline-grid;
+  align-items: center;
+  place-items: center;
+  gap: 5px;
+  width: 26px;
+  min-width: 26px;
+  height: 26px;
+  min-height: 26px;
+  border: 1px solid var(--cruor-color-milk-a065);
+  background: var(--cruor-color-black-a160);
+  color: var(--cruor-color-hex-8f7278);
+  padding: 0;
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: .1em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-composer .location-flow-drawer__badge.is-ready {
+  border-color: var(--cruor-color-good-a320);
+  background: var(--cruor-color-good-a080);
+  color: var(--cruor-color-hex-bec8c5);
+}
+
+.location-composer .location-flow-drawer__badge-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.location-composer .location-flow-drawer__badge svg {
+  flex: 0 0 auto;
+  width: 13px;
+  height: 13px;
+}
+
+.location-composer .location-flow-drawer__warnings {
+  justify-content: normal;
+}
+
+.location-composer .location-flow-drawer__warning {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 24px;
+  overflow: hidden;
+  border: 1px solid var(--cruor-color-milk-a065);
+  background: var(--cruor-color-black-a160);
+  color: var(--cruor-color-r240-g215-b220-a720);
+  padding: 0 7px;
+  font-size: var(--text-size-s);
+  font-weight: 800;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-composer .location-flow-drawer__warning svg {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+}
+
+.location-composer .location-flow-drawer__warning.is-critical {
+  border-color: var(--cruor-color-rose-a580);
+  background: var(--cruor-color-blood-bright-a260);
+  color: var(--cruor-color-hex-f0b9c2);
+}
+
+.location-composer .location-flow-drawer__warning.is-major {
+  border-color: var(--cruor-color-blood-glow-a460);
+  background: var(--cruor-color-blood-strong-a200);
+  color: var(--cruor-color-hex-f0d7dc);
+}
+
+.location-composer .location-flow-drawer__warning-text {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-composer .location-flow-drawer__clean {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 24px;
+  border: 1px solid var(--cruor-color-good-a320);
+  background: var(--cruor-color-good-a080);
+  color: var(--cruor-color-hex-bec8c5);
+  padding: 0 7px;
+  white-space: nowrap;
+}
+
+.location-composer .location-flow-drawer__clean svg {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+}
+
+.location-composer .location-flow-drawer__toggle-row {
+  --location-flow-stage-btn-width: 118px;
+  --location-flow-toggle-width: 520px;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: var(--location-flow-stage-btn-width) var(--location-flow-toggle-width) var(--location-flow-stage-btn-width);
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.location-composer .location-flow-drawer__toggle-row[data-stage-navigation="false"] {
+  grid-template-columns: var(--location-flow-toggle-width);
+}
+
+.location-composer .location-flow-drawer__toggle-row .location-flow-drawer__toggle {
+  width: var(--location-flow-toggle-width);
+  min-width: var(--location-flow-toggle-width);
+  max-width: var(--location-flow-toggle-width);
+  justify-self: center;
+}
+
+.location-composer .location-flow-drawer__toggle {
+  pointer-events: auto;
+  appearance: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 22px;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  border: 1px solid var(--cruor-color-rose-a180);
+  background: var(--cruor-gradient-linear-090-f965cd31), var(--cruor-color-surface-soft-a940);
+  color: var(--cruor-color-r240-g215-b220-a740);
+  padding: 0 10px 0 12px;
+  text-align: left;
+  box-shadow: var(--cruor-shadow-box-102);
+  backdrop-filter: var(--cruor-filter-glass-16-125);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-16-125);
+}
+
+.location-composer .location-flow-drawer__toggle:focus-visible,
+.location-composer .location-flow-drawer__toggle:hover {
+  border-color: var(--cruor-color-blood-glow-a580);
+  color: var(--cruor-color-hex-fff0f2);
+  outline: none;
+}
+
+.location-composer .location-flow-drawer__toggle-main {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.location-composer .location-flow-drawer__toggle-main strong {
+  overflow: hidden;
+  min-width: 0;
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-m);
+  font-weight: 950;
+  letter-spacing: .095em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-composer .location-flow-drawer__toggle-main em {
+  overflow: hidden;
+  color: var(--cruor-color-text-a540);
+  font-size: var(--text-size-m);
+  font-style: normal;
+  font-weight: 650;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-composer .location-flow-drawer__toggle-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.location-composer .location-flow-drawer__toggle-meta span {
+  min-height: 22px;
+  border: 1px solid var(--cruor-color-milk-a065);
+  background: var(--cruor-color-black-a180);
+  color: var(--cruor-color-hex-8f7278);
+  padding: 0 6px;
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: .1em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.location-composer .location-flow-drawer__toggle > svg {
+  width: 16px;
+  height: 16px;
+  justify-self: end;
+}
+
+.location-composer .location-flow-drawer__stage-btn {
+  pointer-events: auto;
+  appearance: none;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: var(--location-flow-stage-btn-width);
+  min-width: var(--location-flow-stage-btn-width);
+  max-width: var(--location-flow-stage-btn-width);
+  min-height: 42px;
+  border: 1px solid var(--cruor-color-rose-a180);
+  background: var(--cruor-gradient-linear-090-f965cd31), var(--cruor-color-surface-soft-a940);
+  color: var(--cruor-color-r240-g215-b220-a740);
+  padding: 0 12px;
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: .08em;
+  line-height: 1;
+  text-transform: uppercase;
+  box-shadow: var(--cruor-shadow-box-101);
+  backdrop-filter: var(--cruor-filter-glass-16-125);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-16-125);
+  transition:
+    border-color .12s ease,
+    background .12s ease,
+    color .12s ease,
+    box-shadow .12s ease,
+    transform .12s ease;
+}
+
+.location-composer .location-flow-drawer__stage-btn svg {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+}
+
+.location-composer .location-flow-drawer__stage-btn span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-composer .location-flow-drawer__stage-btn:hover,
+.location-composer .location-flow-drawer__stage-btn:focus-visible {
+  border-color: var(--cruor-color-blood-glow-a580);
+  background: var(--cruor-gradient-linear-150-348bda76), var(--cruor-color-r15-g5-b7-a960);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-084);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 980px) {
+  .location-stage-progress-dock {
+    width: min(680px, calc(100% - 24px));
+    max-width: min(680px, calc(100% - 24px));
+  }
+
+  .location-composer .location-flow-drawer__panel {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "next"
+      "timeline"
+      "status";
+  }
+
+  .location-composer .location-flow-drawer__status-row {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "next"
+      "timeline"
+      "status";
+    display: grid;
+  }
+
+  .location-composer .location-flow-drawer.is-open .location-flow-drawer__panel {
+    max-height: clamp(220px, 38vh, 340px);
+  }
+}
+
+@media (max-width: 720px) {
+  #darkenComposerPanel > .cruor-composer-shell.location-composer {
+    padding: 6px;
+  }
+
+  .location-composer .location-flow-drawer__toggle-row {
+    --location-flow-stage-btn-width: minmax(0, 1fr);
+    --location-flow-toggle-width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .location-composer .location-flow-drawer__toggle-row[data-stage-navigation="false"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .location-composer .location-flow-drawer__toggle-row .location-flow-drawer__toggle {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .location-composer .location-flow-drawer__stage-btn {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .location-composer .location-flow-drawer__stage-btn--previous {
+    grid-column: 1;
+  }
+
+  .location-composer .location-flow-drawer__stage-btn--next {
+    grid-column: 2;
+  }
+
+  .location-composer .location-flow-drawer__toggle {
+    grid-template-columns: minmax(0, 1fr) 20px;
+  }
+
+  .location-composer .location-flow-drawer__toggle-meta {
+    display: none;
+  }
+
+  .location-composer .location-flow-drawer__next {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.location-composer[data-cruor-ui-mode="simple"] .location-map-recap-rail.location-frame-info .location-frame-info-card:not(.location-frame-info-card--hero):not(.location-location-action-card) {
+  display: none;
+}
+
+.location-composer[data-cruor-ui-mode="simple"] .location-map-slot-card__body em {
+  display: none;
+}
+
+.location-composer[data-cruor-ui-mode="simple"] .location-map-slot-card {
+  min-height: 58px;
+  height: 58px;
+  max-height: 58px;
+}
+
+.location-composer[data-cruor-ui-mode="simple"] .location-slot-stack {
+  grid-auto-rows: 58px;
+}
+
+@media (max-width: 980px) {
+  .location-stage-progress-dock {
+    width: min(680px, calc(100% - 24px));
+    max-width: min(680px, calc(100% - 24px));
+  }
+
+  .location-composer .location-flow-drawer__panel {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "next"
+      "timeline"
+      "status";
+  }
+
+  .location-composer .location-flow-drawer__status-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  #darkenComposerPanel > .cruor-composer-shell.location-composer {
+    padding: 6px;
+  }
+
+  .location-composer .location-flow-drawer__toggle-row {
+    --location-flow-stage-btn-width: minmax(0, 1fr);
+    --location-flow-toggle-width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .location-composer .location-flow-drawer__toggle-row .location-flow-drawer__toggle {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .location-composer .location-flow-drawer__stage-btn--previous {
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .location-composer .location-flow-drawer__stage-btn--next {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .location-composer .location-flow-drawer__toggle {
+    grid-template-columns: minmax(0, 1fr) 20px;
+  }
+
+  .location-composer .location-flow-drawer__toggle-meta,
+  .location-composer .location-flow-drawer__badge-text,
+  .location-composer .location-flow-drawer__warning-text {
+    display: none;
+  }
+
+  .location-composer .location-flow-drawer__next,
+  .location-composer .location-flow-drawer__status-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Dark Places — Phase 2 Room Program + Inspector */
+.location-room-program-rail,
+.location-room-inspector-rail {
+  min-width: 0;
+  gap: clamp(10px, 1vw, 14px);
+}
+
+.location-room-program-card,
+.location-room-program-actions,
+.location-room-inspector-card,
+.location-room-inspector-actions {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  padding: clamp(10px, 1vw, 13px);
+  border: 1px solid var(--cruor-color-r208-g162-b170-a160, rgba(208, 162, 170, 0.16));
+  background:
+    linear-gradient(180deg, var(--cruor-color-milk-a030, rgba(255, 238, 242, 0.03)), transparent 58%),
+    var(--cruor-color-r8-g5-b6-a900, rgba(8, 5, 6, 0.9));
+  box-shadow:
+    inset 0 0 0 1px var(--cruor-color-black-a420, rgba(0, 0, 0, 0.42)),
+    0 16px 38px var(--cruor-color-black-a260, rgba(0, 0, 0, 0.26));
+  min-width: 0;
+}
+
+.location-room-inspector-card > span,
+.location-room-program-card__head > span > strong,
+.location-room-inspector-card__head > span {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cruor-color-r208-g162-b170-a760, rgba(208, 162, 170, 0.76));
+}
+
+.location-room-inspector-card--frame .location-frame-name-editor input,
+.location-room-inspector-card__head > strong {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-heading, var(--font));
+  font-size: clamp(1.08rem, 1.4vw, 1.42rem);
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  color: var(--cruor-color-milk-a980, rgba(255, 238, 242, 0.98));
+}
+
+.location-room-inspector-card--frame > em,
+.location-room-program-card__head small,
+.location-room-inspector-note {
+  display: block;
+  min-width: 0;
+  font-size: 0.72rem;
+  font-style: normal;
+  line-height: 1.35;
+  color: var(--cruor-color-text-a620, rgba(238, 238, 238, 0.62));
+}
+
+.location-room-inspector-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.location-room-inspector-fact {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a100, rgba(208, 162, 170, 0.1));
+  background: var(--cruor-color-black-a240, rgba(0, 0, 0, 0.24));
+}
+
+.location-room-inspector-fact small {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cruor-color-text-a420, rgba(238, 238, 238, 0.42));
+}
+
+.location-room-inspector-fact strong {
+  overflow: hidden;
+  font-size: 0.78rem;
+  font-weight: 750;
+  color: var(--cruor-color-text-a820, rgba(238, 238, 238, 0.82));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-room-program-card {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.location-room-program-card__head,
+.location-room-inspector-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.location-room-program-card__head > span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.location-room-program-card__actions,
+.location-room-program-row__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.location-room-program-icon-btn,
+.location-room-inspector-mini-btn {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  min-height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a140, rgba(208, 162, 170, 0.14));
+  background: var(--cruor-color-black-a260, rgba(0, 0, 0, 0.26));
+  color: var(--cruor-color-text-a740, rgba(238, 238, 238, 0.74));
+}
+
+.location-room-program-icon-btn:disabled {
+  opacity: 0.38;
+}
+
+.location-room-program-meter {
+  position: relative;
+  height: 3px;
+  overflow: hidden;
+  background: var(--cruor-color-black-a460, rgba(0, 0, 0, 0.46));
+}
+
+.location-room-program-meter span {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  background: linear-gradient(90deg, var(--cruor-color-blood-glow-a780, rgba(190, 64, 82, 0.78)), var(--cruor-color-rose-a720, rgba(240, 185, 194, 0.72)));
+  transform: scaleX(var(--location-room-program-progress, 0));
+  transform-origin: left center;
+}
+
+.location-room-program-list,
+.location-room-inspector-slot-stack,
+.location-room-inspector-map-slots {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.location-room-program-list {
+  max-height: min(48vh, 440px);
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.location-room-program-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a100, rgba(208, 162, 170, 0.1));
+  background: var(--cruor-color-black-a180, rgba(0, 0, 0, 0.18));
+}
+
+.location-room-program-row:has(.location-room-program-row__actions) {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
+.location-room-program-row.is-active {
+  border-color: var(--cruor-color-blood-glow-a620, rgba(190, 64, 82, 0.62));
+  background: var(--cruor-color-blood-bright-a100, rgba(122, 26, 40, 0.1));
+  box-shadow: inset 3px 0 0 var(--cruor-color-blood-glow-a780, rgba(190, 64, 82, 0.78));
+}
+
+.location-room-program-row.is-ready {
+  border-color: var(--cruor-color-good-a280, rgba(143, 150, 148, 0.28));
+}
+
+.location-room-program-row__main {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  width: 100%;
+  min-height: 48px;
+  padding: 7px 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.location-room-program-row__main > strong {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a160, rgba(208, 162, 170, 0.16));
+  font-size: 0.68rem;
+  color: var(--cruor-color-rose-a820, rgba(240, 185, 194, 0.82));
+}
+
+.location-room-program-row__main span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.location-room-program-row__main em,
+.location-room-program-row__main small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-room-program-row__main em {
+  font-size: 0.8rem;
+  font-style: normal;
+  font-weight: 750;
+  color: var(--cruor-color-text-a860, rgba(238, 238, 238, 0.86));
+}
+
+.location-room-program-row__main small {
+  font-size: 0.66rem;
+  color: var(--cruor-color-text-a500, rgba(238, 238, 238, 0.5));
+}
+
+.location-room-program-pips {
+  display: inline-flex;
+  gap: 4px;
+  padding-right: 8px;
+}
+
+.location-room-program-pip {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a120, rgba(208, 162, 170, 0.12));
+  background: var(--cruor-color-black-a220, rgba(0, 0, 0, 0.22));
+  color: var(--cruor-color-text-a340, rgba(238, 238, 238, 0.34));
+  font-size: 0.62rem;
+}
+
+.location-room-program-pip.is-filled {
+  border-color: var(--cruor-color-good-a420, rgba(143, 150, 148, 0.42));
+  color: var(--cruor-color-good-a720, rgba(143, 150, 148, 0.72));
+}
+
+.location-room-program-row__actions {
+  padding-right: 8px;
+}
+
+.location-room-program-row__actions .location-room-program-icon-btn {
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0;
+  font-size: 0.68rem;
+}
+
+.location-room-program-empty {
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+  border: 1px dashed var(--cruor-color-r208-g162-b170-a160, rgba(208, 162, 170, 0.16));
+  color: var(--cruor-color-text-a580, rgba(238, 238, 238, 0.58));
+}
+
+.location-room-program-actions,
+.location-room-inspector-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.location-room-inspector-card--frame {
+  gap: 6px;
+}
+
+.location-room-inspector-slot,
+.location-room-inspector-map-slot {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a120, rgba(208, 162, 170, 0.12));
+  background: var(--cruor-color-black-a220, rgba(0, 0, 0, 0.22));
+  color: var(--cruor-color-text-a680, rgba(238, 238, 238, 0.68));
+  text-align: left;
+}
+
+.location-room-inspector-map-slot {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+}
+
+.location-room-inspector-slot svg {
+  width: 17px;
+  height: 17px;
+  color: var(--cruor-color-rose-a620, rgba(240, 185, 194, 0.62));
+}
+
+.location-room-inspector-slot span,
+.location-room-inspector-map-slot {
+  min-width: 0;
+}
+
+.location-room-inspector-slot strong,
+.location-room-inspector-slot small,
+.location-room-inspector-map-slot strong,
+.location-room-inspector-map-slot small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-room-inspector-slot strong,
+.location-room-inspector-map-slot strong {
+  font-size: 0.74rem;
+  color: var(--cruor-color-text-a860, rgba(238, 238, 238, 0.86));
+}
+
+.location-room-inspector-slot small,
+.location-room-inspector-map-slot small {
+  font-size: 0.66rem;
+  color: var(--cruor-color-text-a460, rgba(238, 238, 238, 0.46));
+}
+
+.location-room-inspector-slot.is-active,
+.location-room-inspector-map-slot.is-active {
+  border-color: var(--cruor-color-blood-glow-a640, rgba(190, 64, 82, 0.64));
+  background: var(--cruor-color-blood-bright-a120, rgba(122, 26, 40, 0.12));
+}
+
+.location-room-inspector-slot.is-filled,
+.location-room-inspector-map-slot.is-filled {
+  box-shadow: inset 3px 0 0 var(--cruor-color-good-a420, rgba(143, 150, 148, 0.42));
+}
+
+.location-room-inspector-note {
+  padding: 8px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a100, rgba(208, 162, 170, 0.1));
+  background: var(--cruor-color-black-a220, rgba(0, 0, 0, 0.22));
+}
+
+.location-room-inspector-mini-btn {
+  min-height: 26px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1180px) {
+    .location-room-inspector-facts,
+  .location-room-program-actions,
+  .location-room-inspector-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .location-room-program-row,
+  .location-room-program-row:has(.location-room-program-row__actions) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .location-room-program-pips,
+  .location-room-program-row__actions {
+    padding: 0 8px 8px;
+  }
+}
+
+
+/* Dark Places — Phase 2.1 Map / Rooms separation */
+.location-map-details-rail {
+  min-width: 0;
+  gap: clamp(10px, 1vw, 14px);
+}
+
+.location-map-details-card {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: clamp(10px, 1vw, 13px);
+  border: 1px solid var(--cruor-color-r208-g162-b170-a160, rgba(208, 162, 170, 0.16));
+  background:
+    linear-gradient(180deg, var(--cruor-color-milk-a030, rgba(255, 238, 242, 0.03)), transparent 58%),
+    var(--cruor-color-r8-g5-b6-a900, rgba(8, 5, 6, 0.9));
+  box-shadow:
+    inset 0 0 0 1px var(--cruor-color-black-a420, rgba(0, 0, 0, 0.42)),
+    0 16px 38px var(--cruor-color-black-a260, rgba(0, 0, 0, 0.26));
+}
+
+.location-map-details-card__head {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.location-map-details-card__head > span {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cruor-color-r208-g162-b170-a760, rgba(208, 162, 170, 0.76));
+}
+
+.location-map-details-card__head > strong {
+  overflow: hidden;
+  color: var(--cruor-color-milk-a980, rgba(255, 238, 242, 0.98));
+  font-family: var(--font-heading, var(--font));
+  font-size: clamp(1.08rem, 1.4vw, 1.42rem);
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-map-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.location-map-details-fact {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 2px 7px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a100, rgba(208, 162, 170, 0.1));
+  background: var(--cruor-color-black-a240, rgba(0, 0, 0, 0.24));
+}
+
+.location-map-details-fact svg {
+  grid-row: 1 / span 2;
+  width: 16px;
+  height: 16px;
+  color: var(--cruor-color-rose-a620, rgba(240, 185, 194, 0.62));
+}
+
+.location-map-details-fact small {
+  min-width: 0;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cruor-color-text-a420, rgba(238, 238, 238, 0.42));
+}
+
+.location-map-details-fact strong {
+  overflow: hidden;
+  min-width: 0;
+  color: var(--cruor-color-text-a820, rgba(238, 238, 238, 0.82));
+  font-size: 0.78rem;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-map-details-note {
+  margin: 0;
+  color: var(--cruor-color-text-a560, rgba(238, 238, 238, 0.56));
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.location-map-details-slot-stack {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.location-map-details-slot {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a120, rgba(208, 162, 170, 0.12));
+  background: var(--cruor-color-black-a220, rgba(0, 0, 0, 0.22));
+  color: var(--cruor-color-text-a680, rgba(238, 238, 238, 0.68));
+  text-align: left;
+}
+
+.location-map-details-slot strong,
+.location-map-details-slot small {
+  display: block;
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-map-details-slot strong {
+  color: var(--cruor-color-text-a860, rgba(238, 238, 238, 0.86));
+  font-size: 0.74rem;
+}
+
+.location-map-details-slot small {
+  color: var(--cruor-color-text-a460, rgba(238, 238, 238, 0.46));
+  font-size: 0.66rem;
+}
+
+.location-map-details-slot.is-active,
+.location-map-details-slot:hover,
+.location-map-details-slot:focus-visible {
+  border-color: var(--cruor-color-blood-glow-a640, rgba(190, 64, 82, 0.64));
+  background: var(--cruor-color-blood-bright-a120, rgba(122, 26, 40, 0.12));
+}
+
+.location-map-details-slot.is-filled {
+  border-color: var(--cruor-color-good-a280, rgba(143, 150, 148, 0.28));
+}
+
+.location-room-inspector-rail--rooms .location-room-inspector-card--frame,
+.location-room-inspector-rail--rooms .location-room-inspector-map-slots {
+  display: none;
+}
+
+/* Dark Places — Phase 2.2 macro Frame + map structure */
+.location-map-details-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.location-map-details-actions > .cruor-composer-control {
+  min-width: 0;
+  width: 100%;
+}
+
+.location-map-details-actions > .location-primary-action {
+  grid-column: 1 / -1;
+}
+
+.location-composer[data-location-builder-mode="theme"] .location-map-details-rail {
+  align-self: stretch;
+}
+
+.location-composer[data-location-builder-mode="theme"] .location-map-stage {
+  --location-stage-object-level: macro-frame;
+}
+
+.location-composer[data-location-builder-mode="scratch"] .location-map-stage {
+  --location-stage-object-level: room-work;
+}
+
+@media (max-width: 1180px) {
+  .location-map-details-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+.location-map-details-name-editor {
+  min-width: 0;
+}
+
+.location-map-details-subtitle {
+  overflow: hidden;
+  color: var(--cruor-color-text-a520, rgba(238, 238, 238, 0.52));
+  font-size: 0.72rem;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Dark Places — Phase 2.3 content-height sidebar rails. */
+.location-map-stage > .location-composer__rail,
+.location-map-stage > .location-map-frame-rail,
+.location-map-stage > .location-map-details-rail,
+.location-map-stage > .location-room-inspector-rail,
+.location-map-stage > .location-room-program-rail,
+.location-map-stage > .location-map-recap-rail {
+  align-self: start;
+  align-content: start;
+  align-items: start;
+  display: grid;
+  grid-auto-rows: max-content;
+  grid-template-rows: none;
+  gap: 10px;
+  height: auto;
+  min-height: 0;
+  max-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
+}
+
+.location-composer[data-location-builder-mode="theme"] .location-map-details-rail,
+.location-composer[data-location-builder-mode="theme"] .location-map-frame-rail,
+.location-composer[data-location-builder-mode="scratch"] .location-room-inspector-rail,
+.location-composer[data-location-builder-mode="scratch"] .location-room-program-rail,
+.location-composer[data-location-builder-mode="export"] .location-map-frame-rail,
+.location-composer[data-location-builder-mode="export"] .location-map-recap-rail {
+  align-self: start;
+  align-content: start;
+  height: auto;
+  max-height: 100%;
+}
+
+.location-map-stage > .location-composer__rail > *,
+.location-map-stage > .location-map-frame-rail > *,
+.location-map-stage > .location-map-details-rail > *,
+.location-map-stage > .location-room-inspector-rail > *,
+.location-map-stage > .location-room-program-rail > *,
+.location-map-stage > .location-map-recap-rail > * {
+  align-self: start;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+}
+
+.location-map-stage .location-frame-info-card,
+.location-map-stage .location-map-details-card,
+.location-map-stage .location-room-inspector-card,
+.location-map-stage .location-room-program-card,
+.location-map-stage .location-room-inspector-actions,
+.location-map-stage .location-room-program-actions {
+  align-content: start;
+  align-items: start;
+  grid-auto-rows: max-content;
+  height: auto;
+  min-height: 0;
+}
+
+.location-map-stage .location-room-program-actions,
+.location-map-stage .location-room-inspector-actions,
+.location-map-stage .location-map-details-actions,
+.location-map-stage .location-location-action-card {
+  align-items: start;
+}
+
+.location-map-stage .location-room-program-actions > *,
+.location-map-stage .location-room-inspector-actions > *,
+.location-map-stage .location-map-details-actions > *,
+.location-map-stage .location-location-action-card > .cruor-composer-control,
+.location-map-stage .location-location-action-card > details,
+.location-map-stage .location-secondary-actions > .cruor-composer-control {
+  align-self: start;
+  height: auto;
+  min-height: 34px;
+}
+
+.location-room-program-card {
+  overflow: visible;
+}
+
+.location-room-program-list {
+  height: auto;
+  min-height: 0;
+  max-height: min(48vh, 440px);
+  overflow-y: auto;
+}
+
+.location-room-program-row,
+.location-room-program-row__main,
+.location-room-inspector-slot,
+.location-room-inspector-map-slot,
+.location-map-details-slot {
+  align-self: start;
+  height: auto;
+}
+
+@media (max-width: 1320px) {
+  .location-map-stage > .location-composer__rail,
+  .location-map-stage > .location-map-frame-rail,
+  .location-map-stage > .location-map-details-rail,
+  .location-map-stage > .location-room-inspector-rail,
+  .location-map-stage > .location-room-program-rail,
+  .location-map-stage > .location-map-recap-rail {
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+
+
+/* Dark Places — room status indicators on the map workbench. */
+.location-composer {
+  --location-room-node-empty-border: var(--cruor-color-milk-a115);
+  --location-room-node-empty-bg: var(--cruor-gradient-linear-091-b7ddacfd), var(--cruor-color-surface-soft);
+  --location-room-node-empty-color: var(--cruor-color-text-a480);
+  --location-room-node-empty-shadow: 0 10px 24px var(--cruor-color-black-a280);
+  --location-room-node-partial-border: var(--cruor-color-blood-bright-a460);
+  --location-room-node-partial-bg: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-color-surface-soft);
+  --location-room-node-partial-color: var(--cruor-color-rose-a760);
+  --location-room-node-partial-shadow: 0 0 0 1px var(--cruor-color-blood-glow-a080), 0 12px 26px var(--cruor-color-black-a320);
+  --location-room-node-ready-border: var(--cruor-color-rose-a620);
+  --location-room-node-ready-bg: var(--cruor-gradient-radial-238-c690c792, radial-gradient(circle at 50% 0%, var(--cruor-color-blood-glow-a220), var(--cruor-color-transparent) 62%)), var(--cruor-gradient-linear-200-ba867b8d, linear-gradient(180deg, var(--cruor-color-milk-a055), var(--cruor-color-surface-soft-a960))), var(--cruor-color-surface-soft);
+  --location-room-node-ready-color: var(--cruor-color-r255-g240-b242-a900);
+  --location-room-node-ready-shadow: 0 0 0 1px var(--cruor-color-blood-glow-a110), 0 0 24px var(--cruor-color-blood-bright-a220), 0 12px 28px var(--cruor-color-black-a340);
+}
+
+.location-map-room-indicator-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.location-map-room-node {
+  position: absolute;
+  left: var(--region-x, 50%);
+  top: var(--region-y, 50%);
+  z-index: 7;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  margin: 0;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--cruor-color-milk-a090);
+  background: var(--cruor-color-surface-soft-a740);
+  color: var(--cruor-color-text-a550);
+  box-shadow: var(--cruor-shadow-box-059);
+  backdrop-filter: var(--cruor-filter-blur-10);
+  -webkit-backdrop-filter: var(--cruor-filter-blur-10);
+  cursor: pointer;
+  outline: none;
+  pointer-events: auto;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease,
+    box-shadow 0.12s ease,
+    color 0.12s ease,
+    transform 0.12s ease;
+}
+
+.location-map-room-node__number {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: currentColor;
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.location-map-room-node.is-empty:not(.is-active):not(.is-linked-hover):not(:hover):not(:focus-visible) {
+  background: var(--location-room-node-empty-bg);
+  border-color: var(--location-room-node-empty-border);
+  box-shadow: var(--location-room-node-empty-shadow);
+  color: var(--location-room-node-empty-color);
+}
+
+.location-map-room-node.is-partial:not(.is-active):not(.is-linked-hover):not(:hover):not(:focus-visible) {
+  background: var(--location-room-node-partial-bg);
+  border-color: var(--location-room-node-partial-border);
+  box-shadow: var(--location-room-node-partial-shadow);
+  color: var(--location-room-node-partial-color);
+}
+
+.location-map-room-node.is-ready:not(.is-active):not(.is-linked-hover):not(:hover):not(:focus-visible),
+.location-map-room-node.is-filled:not(.is-active):not(.is-linked-hover):not(:hover):not(:focus-visible) {
+  background: var(--location-room-node-ready-bg);
+  border-color: var(--location-room-node-ready-border);
+  box-shadow: var(--location-room-node-ready-shadow);
+  color: var(--location-room-node-ready-color);
+}
+
+.location-map-room-node.is-active,
+.location-map-room-node.is-linked-hover,
+.location-map-room-node:hover,
+.location-map-room-node:focus-visible {
+  z-index: 9;
+  background: var(--cruor-gradient-linear-201-9d442530, linear-gradient(180deg, var(--cruor-color-blood-bright-a300), var(--cruor-color-blood-strong-a520)));
+  border-color: var(--cruor-color-rose-a720);
+  box-shadow: var(--cruor-shadow-box-090);
+  color: var(--cruor-color-hex-fff0f2);
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.location-map-room-node__marker-strip {
+  position: absolute;
+  right: -6px;
+  bottom: -5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  max-width: 34px;
+  pointer-events: none;
+}
+
+.location-map-room-node__marker {
+  display: grid;
+  place-items: center;
+  width: 10px;
+  height: 10px;
+  border: 1px solid var(--cruor-color-milk-a130);
+  background: var(--cruor-color-surface-soft-a960);
+  color: var(--cruor-color-milk-a760);
+  box-shadow: 0 2px 8px var(--cruor-color-black-a380);
+}
+
+.location-map-room-node__marker i {
+  display: block;
+  font-size: 5.5px;
+  line-height: 1;
+}
+
+.location-map-room-node__marker--hazard {
+  border-color: var(--cruor-color-blood-glow-a780);
+  color: var(--cruor-color-r255-g196-b207-a920);
+}
+
+.location-map-room-node__marker--clue,
+.location-map-room-node__marker--reward {
+  border-color: var(--cruor-color-good-a320);
+  color: var(--cruor-color-r237-g255-b240-a900);
+}
+
+.location-map-room-node__marker--encounterTwist {
+  border-color: var(--cruor-color-r214-g184-b98-a400);
+  color: var(--cruor-color-r255-g232-b158-a940);
+}
+
+@media (max-width: 860px) {
+  .location-map-room-node {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+  }
+}
+
+/* Dark Places — Phase 3 map workbench toolbar. */
+.location-map-stage-toolbar {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 18;
+  width: min(520px, calc(100% - 32px));
+  min-width: 0;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.location-map-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  width: 100%;
+  pointer-events: auto;
+}
+
+.location-map-toolbar__group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 6px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a180, rgba(208, 162, 170, 0.18));
+  background:
+    linear-gradient(180deg, var(--cruor-color-milk-a045, rgba(255, 238, 242, 0.045)), var(--cruor-color-transparent) 72%),
+    var(--cruor-color-r6-g5-b6-a920, rgba(6, 5, 6, 0.92));
+  box-shadow:
+    0 16px 44px var(--cruor-color-black-a420, rgba(0, 0, 0, 0.42)),
+    inset 0 0 0 1px var(--cruor-color-black-a460, rgba(0, 0, 0, 0.46));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.location-map-toolbar__group--room-nav {
+  justify-content: space-between;
+  flex: 0 1 auto;
+  max-width: none;
+}
+
+.location-map-toolbar__group--actions {
+  flex: 0 1 auto;
+}
+
+.location-map-toolbar__button {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  min-width: 38px;
+  max-width: 38px;
+  min-height: 38px;
+  padding: 0;
+  border: 1px solid var(--cruor-color-blood-strong-a560);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
+  color: var(--cruor-color-hex-c8a2a8);
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+}
+
+.location-map-toolbar__button i {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  color: var(--cruor-color-hex-b33b4e);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.location-map-toolbar__button--primary {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
+}
+
+.location-map-toolbar__button:hover:not(:disabled),
+.location-map-toolbar__button:focus-visible:not(:disabled) {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
+  outline: none;
+}
+
+.location-map-toolbar__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.location-map-toolbar__divider {
+  display: block;
+  flex: 0 0 1px;
+  width: 1px;
+  height: 28px;
+  background: var(--cruor-color-r208-g162-b170-a160, rgba(208, 162, 170, 0.16));
+}
+
+.location-map-toolbar__target {
+  display: grid;
+  gap: 2px;
+  min-width: 112px;
+  max-width: 220px;
+  padding: 0 8px;
+  text-align: center;
+}
+
+.location-map-toolbar__target small,
+.location-map-toolbar__target strong {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-map-toolbar__target small {
+  color: var(--cruor-color-text-a460, rgba(238, 238, 238, 0.46));
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.location-map-toolbar__target strong {
+  color: var(--cruor-color-milk-a980, rgba(255, 238, 242, 0.98));
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+.location-composer[data-location-builder-mode="scratch"] .location-map-stage-toolbar {
+  top: 0;
+}
+
+.location-composer[data-location-builder-mode="export"] .location-map-stage-toolbar {
+  top: 0;
+  width: min(360px, calc(100% - 32px));
+}
+
+@media (max-width: 1180px) {
+  .location-map-stage-toolbar {
+    width: min(460px, calc(100% - 24px));
+  }
+
+  .location-map-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .location-map-toolbar__divider {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .location-map-stage-toolbar {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100%;
+    margin-bottom: 8px;
+    transform: none;
+  }
+
+  .location-map-toolbar,
+  .location-map-toolbar__group {
+    justify-content: stretch;
+  }
+
+  .location-map-toolbar__group {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .location-map-toolbar__button {
+    flex: 0 0 38px;
+  }
+}
+
+/* Dark Places — Phase 3.3 Room Work Loop */
+.location-room-inspector-title {
+  display: block;
+  min-width: 0;
+  margin: -2px 0 0;
+  overflow: hidden;
+  color: var(--cruor-color-milk-a980, rgba(255, 238, 242, 0.98));
+  font-family: var(--font-heading, var(--font));
+  font-size: clamp(1.08rem, 1.4vw, 1.42rem);
+  font-weight: 850;
+  letter-spacing: 0.01em;
+  line-height: 1.02;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-room-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 22px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a140, rgba(208, 162, 170, 0.14));
+  background: var(--cruor-color-black-a220, rgba(0, 0, 0, 0.22));
+  color: var(--cruor-color-text-a620, rgba(238, 238, 238, 0.62));
+  padding: 0 7px;
+  font-size: var(--text-size-xs, 0.68rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-room-status-pill svg {
+  width: 12px;
+  height: 12px;
+}
+
+.location-room-status-pill.is-ready {
+  border-color: var(--cruor-color-good-a360, rgba(143, 150, 148, 0.36));
+  background: var(--cruor-color-good-a080, rgba(143, 150, 148, 0.08));
+  color: var(--cruor-color-hex-bec8c5, #bec8c5);
+}
+
+.location-room-status-pill.is-partial {
+  border-color: var(--cruor-color-blood-glow-a420, rgba(190, 64, 82, 0.42));
+  background: var(--cruor-color-blood-bright-a100, rgba(122, 26, 40, 0.1));
+  color: var(--cruor-color-hex-f0b9c2, #f0b9c2);
+}
+
+.location-room-status-pill.is-empty {
+  border-style: dashed;
+  color: var(--cruor-color-text-a460, rgba(238, 238, 238, 0.46));
+}
+
+.location-room-work-meter {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.location-room-work-meter__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  color: var(--cruor-color-r208-g162-b170-a760, rgba(208, 162, 170, 0.76));
+  font-size: var(--text-size-xs, 0.68rem);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.location-room-work-meter__value {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cruor-color-text-a720, rgba(238, 238, 238, 0.72));
+  white-space: nowrap;
+}
+
+.location-room-work-meter__value strong {
+  color: var(--cruor-color-milk-a900, rgba(255, 238, 242, 0.9));
+  font-size: var(--text-size-xs, 0.68rem);
+  font-weight: 950;
+}
+
+.location-room-work-meter__value .tooltip-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a140, rgba(208, 162, 170, 0.14));
+  background: var(--cruor-color-black-a240, rgba(0, 0, 0, 0.24));
+  color: var(--cruor-color-text-a520, rgba(238, 238, 238, 0.52));
+  padding: 0;
+  font-size: 0.62rem;
+  font-weight: 950;
+}
+
+.location-room-work-meter__track {
+  position: relative;
+  height: 5px;
+  overflow: hidden;
+  border: 1px solid var(--cruor-color-black-a380, rgba(0, 0, 0, 0.38));
+  background: var(--cruor-color-black-a420, rgba(0, 0, 0, 0.42));
+}
+
+.location-room-work-meter__track > div {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cruor-color-blood-glow-a820, rgba(190, 64, 82, 0.82)), var(--cruor-color-good-a560, rgba(143, 150, 148, 0.56)));
+  transition: width 0.16s ease;
+}
+
+.location-room-inspector-card--selected,
+.location-room-inspector-card--status,
+.location-room-inspector-card--slots {
+  align-content: start;
+}
+
+.location-room-inspector-slot {
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+}
+
+.location-room-inspector-slot__copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.location-room-inspector-slot__state {
+  justify-self: end;
+  min-width: 66px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a100, rgba(208, 162, 170, 0.1));
+  background: var(--cruor-color-black-a220, rgba(0, 0, 0, 0.22));
+  color: var(--cruor-color-text-a480, rgba(238, 238, 238, 0.48));
+  padding: 4px 6px;
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.location-room-inspector-slot__state.is-filled {
+  border-color: var(--cruor-color-good-a360, rgba(143, 150, 148, 0.36));
+  background: var(--cruor-color-good-a070, rgba(143, 150, 148, 0.07));
+  color: var(--cruor-color-good-a720, rgba(143, 150, 148, 0.72));
+}
+
+.location-room-inspector-slot__state.is-missing {
+  border-color: var(--cruor-color-blood-glow-a360, rgba(190, 64, 82, 0.36));
+  background: var(--cruor-color-blood-bright-a080, rgba(122, 26, 40, 0.08));
+  color: var(--cruor-color-rose-a720, rgba(240, 185, 194, 0.72));
+}
+
+.location-room-inspector-slot.is-suggested {
+  border-color: var(--cruor-color-blood-glow-a580, rgba(190, 64, 82, 0.58));
+  background: linear-gradient(90deg, var(--cruor-color-blood-bright-a120, rgba(122, 26, 40, 0.12)), var(--cruor-color-black-a180, rgba(0, 0, 0, 0.18)));
+  box-shadow:
+    inset 3px 0 0 var(--cruor-color-blood-glow-a760, rgba(190, 64, 82, 0.76)),
+    0 0 0 1px var(--cruor-color-black-a320, rgba(0, 0, 0, 0.32));
+}
+
+.location-room-inspector-slot.is-missing:not(.is-suggested) {
+  border-style: dashed;
+}
+
+.location-room-inspector-slot:hover,
+.location-room-inspector-slot:focus-visible {
+  border-color: var(--cruor-color-blood-glow-a620, rgba(190, 64, 82, 0.62));
+  background: var(--cruor-color-blood-bright-a100, rgba(122, 26, 40, 0.1));
+  color: var(--cruor-color-milk-a900, rgba(255, 238, 242, 0.9));
+  outline: none;
+}
+
+.location-room-inspector-mini-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.location-room-inspector-mini-btn svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* Phase 3.4 — Slot-aware room component picker */
+
+.location-component-drawer__kicker {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-milk-a085);
+  background: var(--cruor-color-white-a030);
+  color: var(--cruor-color-text-a580);
+  font-family: var(--font-ui, var(--font));
+  font-size: var(--text-size-xxs);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  padding: 4px 6px;
+  text-transform: uppercase;
+}
+
+.location-component-drawer__head-copy p {
+  max-width: 46ch;
+  margin: 0;
+  color: var(--cruor-color-text-a620);
+  font-size: var(--text-size-xs);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.location-component-drawer__target--contextual {
+  grid-template-columns: minmax(0, 1fr) minmax(164px, 0.82fr);
+  align-items: stretch;
+  gap: 8px;
+}
+
+.location-component-drawer__slot-context {
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-blood-bright-a140);
+  background:
+    linear-gradient(90deg, var(--cruor-color-blood-bright-a090), var(--cruor-color-transparent) 72%),
+    var(--cruor-color-black-a160);
+  padding: 8px 9px;
+}
+
+.location-component-drawer__slot-context span,
+.location-component-drawer__slot-context small {
+  overflow: hidden;
+  color: var(--cruor-color-text-a560);
+  font-size: var(--text-size-xxs);
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-component-drawer__slot-context strong {
+  overflow: hidden;
+  color: var(--cruor-color-milk-a900);
+  font-family: var(--font-display, var(--font));
+  font-size: var(--text-size-sm);
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-component-drawer[data-room-slot-kind="hazard"] .location-component-drawer__slot-context,
+.location-component-drawer[data-room-slot-kind="hazard"] .location-component-option[data-decision-tier="recommended"] {
+  border-color: var(--cruor-color-r232-g167-b69-a320);
+}
+
+.location-component-drawer[data-room-slot-kind="clue"] .location-component-drawer__slot-context,
+.location-component-drawer[data-room-slot-kind="clue"] .location-component-option[data-decision-tier="recommended"] {
+  border-color: var(--cruor-color-good-a320);
+}
+
+.location-component-drawer[data-room-slot-kind="encounterTwist"] .location-component-drawer__slot-context,
+.location-component-drawer[data-room-slot-kind="encounterTwist"] .location-component-option[data-decision-tier="recommended"] {
+  border-color: var(--cruor-color-blood-glow-a380);
+}
+
+@media (max-width: 820px) {
+  .location-component-drawer__target--contextual {
+    grid-template-columns: 1fr;
+  }
 }

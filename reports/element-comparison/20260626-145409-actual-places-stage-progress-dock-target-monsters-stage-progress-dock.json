@@ -1,0 +1,1571 @@
+{
+  "comparison": {
+    "id": "places-stage-progress-dock-match-monsters",
+    "name": "Actual Places Stage Progress Dock → Target Monsters Stage Progress Dock",
+    "actualLabel": "Actual Places: location-stage-progress-dock",
+    "targetLabel": "Target Monsters: monster-stage-progress-dock",
+    "actualHtml": ".vscode/element-snapshots/dark-places-stage-progress.html",
+    "actualSelector": ".location-stage-progress-dock.location-stage-progress-dock--map",
+    "targetHtml": ".vscode/element-snapshots/terrifying-monsters-stage-progress.html",
+    "targetSelector": ".monster-stage-progress-dock.monster-stage-progress-dock--frame",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "timeout": 10000,
+    "wait": 250,
+    "htmlA": ".vscode/element-snapshots/dark-places-stage-progress.html",
+    "htmlB": ".vscode/element-snapshots/terrifying-monsters-stage-progress.html",
+    "urlA": null,
+    "selectorA": ".location-stage-progress-dock.location-stage-progress-dock--map",
+    "urlB": null,
+    "selectorB": ".monster-stage-progress-dock.monster-stage-progress-dock--frame",
+    "baseUrl": "http://localhost:5173"
+  },
+  "result": "MISMATCH",
+  "counts": {
+    "dom": 2,
+    "style": 13,
+    "majorStyle": 6,
+    "layout": 8,
+    "parentLayout": 4,
+    "pseudo": 0,
+    "classAOnly": 2,
+    "classBOnly": 2
+  },
+  "diff": {
+    "result": "MISMATCH",
+    "counts": {
+      "dom": 2,
+      "style": 13,
+      "majorStyle": 6,
+      "layout": 8,
+      "parentLayout": 4,
+      "pseudo": 0,
+      "classAOnly": 2,
+      "classBOnly": 2
+    },
+    "styleDiffs": [
+      {
+        "property": "position",
+        "a": "relative",
+        "b": "absolute",
+        "severity": "major"
+      },
+      {
+        "property": "inset",
+        "a": "0px",
+        "b": "570.719px -212px 18px 708px",
+        "severity": "minor"
+      },
+      {
+        "property": "top",
+        "a": "0px",
+        "b": "570.719px",
+        "severity": "minor"
+      },
+      {
+        "property": "right",
+        "a": "0px",
+        "b": "-212px",
+        "severity": "minor"
+      },
+      {
+        "property": "bottom",
+        "a": "0px",
+        "b": "18px",
+        "severity": "minor"
+      },
+      {
+        "property": "left",
+        "a": "0px",
+        "b": "708px",
+        "severity": "minor"
+      },
+      {
+        "property": "width",
+        "a": "630.906px",
+        "b": "920px",
+        "severity": "major"
+      },
+      {
+        "property": "min-width",
+        "a": "auto",
+        "b": "0px",
+        "severity": "major"
+      },
+      {
+        "property": "max-width",
+        "a": "min(980px, 100% - 24px)",
+        "b": "min(920px, 100% - 56px)",
+        "severity": "major"
+      },
+      {
+        "property": "height",
+        "a": "161.344px",
+        "b": "210.875px",
+        "severity": "major"
+      },
+      {
+        "property": "min-height",
+        "a": "auto",
+        "b": "0px",
+        "severity": "major"
+      },
+      {
+        "property": "transform",
+        "a": "none",
+        "b": "matrix(1, 0, 0, 1, -460, 0)",
+        "severity": "minor"
+      },
+      {
+        "property": "transform-origin",
+        "a": "315.453px 80.6719px",
+        "b": "460px 105.438px",
+        "severity": "minor"
+      }
+    ],
+    "layoutDiffs": [
+      {
+        "metric": "x",
+        "a": 404.55,
+        "b": 260,
+        "delta": 144.55
+      },
+      {
+        "metric": "y",
+        "a": 702.09,
+        "b": 659.11,
+        "delta": 42.98
+      },
+      {
+        "metric": "top",
+        "a": 702.09,
+        "b": 659.11,
+        "delta": 42.98
+      },
+      {
+        "metric": "left",
+        "a": 404.55,
+        "b": 260,
+        "delta": 144.55
+      },
+      {
+        "metric": "right",
+        "a": 1035.45,
+        "b": 1180,
+        "delta": -144.55
+      },
+      {
+        "metric": "bottom",
+        "a": 863.44,
+        "b": 869.98,
+        "delta": -6.54
+      },
+      {
+        "metric": "width",
+        "a": 630.91,
+        "b": 920,
+        "delta": -289.09
+      },
+      {
+        "metric": "height",
+        "a": 161.34,
+        "b": 210.88,
+        "delta": -49.54
+      }
+    ],
+    "parentOffsetDiffs": [
+      {
+        "metric": "offsetLeftFromParent",
+        "a": 393.55,
+        "b": 249,
+        "delta": 144.55
+      },
+      {
+        "metric": "offsetTopFromParent",
+        "a": 616.7,
+        "b": 571.72,
+        "delta": 44.98
+      },
+      {
+        "metric": "widthRatioToParent",
+        "a": 0.44,
+        "b": 0.65,
+        "delta": -0.21
+      },
+      {
+        "metric": "heightRatioToParent",
+        "a": 0.2,
+        "b": 0.26,
+        "delta": -0.06
+      }
+    ],
+    "classDiffs": {
+      "aOnly": [
+        "location-stage-progress-dock",
+        "location-stage-progress-dock--map"
+      ],
+      "bOnly": [
+        "monster-stage-progress-dock",
+        "monster-stage-progress-dock--frame"
+      ],
+      "shared": []
+    },
+    "domDiffs": [
+      {
+        "kind": "ancestor-tag-chain",
+        "a": "body > div > div > main > section > section > div > div > div > main > section > div",
+        "b": "body > div > div > main > section > section > section > div > main > section > div > div"
+      },
+      {
+        "kind": "subtree-shape",
+        "a": "div.location-stage-progress-dock.location-stage-progress-dock--map\n  section.location-flow-panel.location-flow-drawer.is-open\n    div#locationFlowDrawerPanel.location-flow-drawer__panel\n      div.location-flow-drawer__next\n        div.location-flow-drawer__next-copy\n        button\n      div.location-flow-drawer__timeline\n        button.location-flow-nav-btn.location-flow-nav-btn--previous\n        nav.location-flow-progress\n        button.location-flow-nav-btn.location-flow-nav-btn--next\n      div.location-flow-drawer__status-row\n        div.location-flow-drawer__readiness\n        div.location-flow-drawer__warnings\n    div.location-flow-drawer__toggle-row\n      button.location-flow-drawer__stage-btn.location-flow-drawer__stage-btn--previous.tooltip-btn\n        svg.lucide.lucide-chevron-left\n        span\n      button.location-flow-drawer__toggle\n        span.location-flow-drawer__toggle-main\n        span.location-flow-drawer__toggle-meta\n        svg.lucide.lucide-chevron-down\n      button.location-flow-drawer__stage-btn.location-flow-drawer__stage-btn--next.tooltip-btn\n        span\n        svg.lucide.lucide-chevron-right",
+        "b": "div.monster-stage-progress-dock.monster-stage-progress-dock--frame\n  section.guided-flow-panel.guided-flow-drawer.is-open\n    div#monsterFlowDrawerPanel.guided-flow-drawer__panel\n      div.guided-flow-drawer__next\n        div.guided-flow-drawer__next-copy\n        button\n      div.guided-flow-drawer__timeline\n        button.monster-flow-nav-btn.monster-flow-nav-btn--previous\n        nav.brief-wizard__progress.monster-flow-progress\n        button.monster-flow-nav-btn.monster-flow-nav-btn--next\n      div.guided-flow-drawer__status-row\n        div.guided-flow-drawer__readiness\n        div.guided-flow-drawer__warnings\n    div.guided-flow-drawer__toggle-row\n      button.guided-flow-drawer__stage-btn.guided-flow-drawer__stage-btn--previous.tooltip-btn\n        svg.lucide.lucide-chevron-left\n        span\n      button.guided-flow-drawer__toggle\n        span.guided-flow-drawer__toggle-main\n        span.guided-flow-drawer__toggle-meta\n        svg.lucide.lucide-chevron-down\n      button.guided-flow-drawer__stage-btn.guided-flow-drawer__stage-btn--next.tooltip-btn\n        span\n        svg.lucide.lucide-chevron-right"
+      }
+    ],
+    "pseudoDiffs": [],
+    "ancestorA": [
+      "body",
+      "div#root",
+      "div.app-shell",
+      "main.app-shell__workspace",
+      "section",
+      "section.darken-workspace.crucible-workspace",
+      "div#darkenComposerPanel",
+      "div.cruor-composer-shell.location-composer",
+      "div.cruor-composer-workspace.location-composer__workspace",
+      "main.cruor-composer-stage.location-composer__stage",
+      "section.location-map-stage.has-live-preview.is-simple-surface.is-map-synced.location-map-stage--preview",
+      "div.location-stage-progress-dock.location-stage-progress-dock--map"
+    ],
+    "ancestorB": [
+      "body",
+      "div#root",
+      "div.app-shell",
+      "main.app-shell__workspace",
+      "section",
+      "section.monster-crucible-workspace.crucible-workspace",
+      "section#monsterComposerPanel",
+      "div.cruor-composer-shell.monster-composer.monster-shell",
+      "main.monster-workspace",
+      "section.monster-anatomy-composer",
+      "div.monster-silhouette-stage.anatomy-stage.is-frame-mode",
+      "div.monster-stage-progress-dock.monster-stage-progress-dock--frame"
+    ],
+    "directChildA": [
+      "section"
+    ],
+    "directChildB": [
+      "section"
+    ],
+    "shapeA": [
+      "div.location-stage-progress-dock.location-stage-progress-dock--map",
+      "  section.location-flow-panel.location-flow-drawer.is-open",
+      "    div#locationFlowDrawerPanel.location-flow-drawer__panel",
+      "      div.location-flow-drawer__next",
+      "        div.location-flow-drawer__next-copy",
+      "        button",
+      "      div.location-flow-drawer__timeline",
+      "        button.location-flow-nav-btn.location-flow-nav-btn--previous",
+      "        nav.location-flow-progress",
+      "        button.location-flow-nav-btn.location-flow-nav-btn--next",
+      "      div.location-flow-drawer__status-row",
+      "        div.location-flow-drawer__readiness",
+      "        div.location-flow-drawer__warnings",
+      "    div.location-flow-drawer__toggle-row",
+      "      button.location-flow-drawer__stage-btn.location-flow-drawer__stage-btn--previous.tooltip-btn",
+      "        svg.lucide.lucide-chevron-left",
+      "        span",
+      "      button.location-flow-drawer__toggle",
+      "        span.location-flow-drawer__toggle-main",
+      "        span.location-flow-drawer__toggle-meta",
+      "        svg.lucide.lucide-chevron-down",
+      "      button.location-flow-drawer__stage-btn.location-flow-drawer__stage-btn--next.tooltip-btn",
+      "        span",
+      "        svg.lucide.lucide-chevron-right"
+    ],
+    "shapeB": [
+      "div.monster-stage-progress-dock.monster-stage-progress-dock--frame",
+      "  section.guided-flow-panel.guided-flow-drawer.is-open",
+      "    div#monsterFlowDrawerPanel.guided-flow-drawer__panel",
+      "      div.guided-flow-drawer__next",
+      "        div.guided-flow-drawer__next-copy",
+      "        button",
+      "      div.guided-flow-drawer__timeline",
+      "        button.monster-flow-nav-btn.monster-flow-nav-btn--previous",
+      "        nav.brief-wizard__progress.monster-flow-progress",
+      "        button.monster-flow-nav-btn.monster-flow-nav-btn--next",
+      "      div.guided-flow-drawer__status-row",
+      "        div.guided-flow-drawer__readiness",
+      "        div.guided-flow-drawer__warnings",
+      "    div.guided-flow-drawer__toggle-row",
+      "      button.guided-flow-drawer__stage-btn.guided-flow-drawer__stage-btn--previous.tooltip-btn",
+      "        svg.lucide.lucide-chevron-left",
+      "        span",
+      "      button.guided-flow-drawer__toggle",
+      "        span.guided-flow-drawer__toggle-main",
+      "        span.guided-flow-drawer__toggle-meta",
+      "        svg.lucide.lucide-chevron-down",
+      "      button.guided-flow-drawer__stage-btn.guided-flow-drawer__stage-btn--next.tooltip-btn",
+      "        span",
+      "        svg.lucide.lucide-chevron-right"
+    ]
+  },
+  "snapshots": {
+    "a": {
+      "label": "Actual Places: location-stage-progress-dock",
+      "selector": ".location-stage-progress-dock.location-stage-progress-dock--map",
+      "url": "about:blank",
+      "tag": "DIV",
+      "id": "",
+      "classes": [
+        "location-stage-progress-dock",
+        "location-stage-progress-dock--map"
+      ],
+      "role": "",
+      "ariaLabel": "",
+      "textExcerpt": "NEXT BEST ACTION Detail 01 Ossuary Gallery Choose or replace the active Location Premise component. OPEN SLOT 1 START 2 FRAME 3 ROOMS 4 DETAIL 5 MAP 6 REVIEW 7 EXPORT PLACE DRAFT MAPPED LOCATION TABLE DETAIL EXPORT READY NO COMPONENTS ASSIGNED. ADD AT LEAST ONE TABLE-FACING DETAIL, HAZARD, CLUE, OR ",
+      "rect": {
+        "x": 404.55,
+        "y": 702.09,
+        "width": 630.91,
+        "height": 161.34,
+        "top": 702.09,
+        "right": 1035.45,
+        "bottom": 863.44,
+        "left": 404.55
+      },
+      "parentRect": {
+        "x": 11,
+        "y": 85.39,
+        "width": 1418,
+        "height": 795.59,
+        "top": 85.39,
+        "right": 1429,
+        "bottom": 880.98,
+        "left": 11
+      },
+      "parentMetrics": {
+        "offsetLeftFromParent": 393.55,
+        "offsetTopFromParent": 616.7,
+        "widthRatioToParent": 0.44,
+        "heightRatioToParent": 0.2
+      },
+      "styles": {
+        "display": "block",
+        "position": "relative",
+        "box-sizing": "border-box",
+        "inset": "0px",
+        "top": "0px",
+        "right": "0px",
+        "bottom": "0px",
+        "left": "0px",
+        "z-index": "34",
+        "width": "630.906px",
+        "min-width": "auto",
+        "max-width": "min(980px, 100% - 24px)",
+        "height": "161.344px",
+        "min-height": "auto",
+        "max-height": "none",
+        "margin-top": "0px",
+        "margin-right": "0px",
+        "margin-bottom": "0px",
+        "margin-left": "0px",
+        "padding-top": "0px",
+        "padding-right": "0px",
+        "padding-bottom": "0px",
+        "padding-left": "0px",
+        "border-top-width": "0px",
+        "border-right-width": "0px",
+        "border-bottom-width": "0px",
+        "border-left-width": "0px",
+        "border-top-style": "none",
+        "border-right-style": "none",
+        "border-bottom-style": "none",
+        "border-left-style": "none",
+        "border-top-color": "rgb(238, 238, 238)",
+        "border-right-color": "rgb(238, 238, 238)",
+        "border-bottom-color": "rgb(238, 238, 238)",
+        "border-left-color": "rgb(238, 238, 238)",
+        "border-radius": "0px",
+        "border-top-left-radius": "0px",
+        "border-top-right-radius": "0px",
+        "border-bottom-right-radius": "0px",
+        "border-bottom-left-radius": "0px",
+        "outline-width": "3px",
+        "outline-style": "none",
+        "outline-color": "rgb(238, 238, 238)",
+        "background-color": "rgba(0, 0, 0, 0)",
+        "background-image": "none",
+        "color": "rgb(238, 238, 238)",
+        "opacity": "1",
+        "font-family": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+        "font-size": "16px",
+        "font-weight": "400",
+        "font-style": "normal",
+        "letter-spacing": "normal",
+        "line-height": "23.2px",
+        "text-align": "start",
+        "text-transform": "none",
+        "white-space": "normal",
+        "overflow": "visible",
+        "overflow-x": "visible",
+        "overflow-y": "visible",
+        "visibility": "visible",
+        "pointer-events": "none",
+        "cursor": "auto",
+        "flex-direction": "row",
+        "flex-wrap": "nowrap",
+        "align-items": "normal",
+        "align-content": "normal",
+        "justify-content": "normal",
+        "justify-items": "normal",
+        "gap": "normal",
+        "row-gap": "normal",
+        "column-gap": "normal",
+        "flex-grow": "0",
+        "flex-shrink": "1",
+        "flex-basis": "auto",
+        "order": "0",
+        "grid-template-columns": "none",
+        "grid-template-rows": "none",
+        "grid-auto-flow": "row",
+        "grid-auto-columns": "auto",
+        "grid-auto-rows": "auto",
+        "place-items": "normal",
+        "transform": "none",
+        "transform-origin": "315.453px 80.6719px",
+        "filter": "none",
+        "backdrop-filter": "none",
+        "box-shadow": "none",
+        "transition-property": "all",
+        "transition-duration": "0s"
+      },
+      "pseudo": {
+        "before": {
+          "content": "none",
+          "display": "inline",
+          "position": "static",
+          "width": "auto",
+          "height": "auto",
+          "margin-top": "0px",
+          "margin-right": "0px",
+          "margin-bottom": "0px",
+          "margin-left": "0px",
+          "padding-top": "0px",
+          "padding-right": "0px",
+          "padding-bottom": "0px",
+          "padding-left": "0px",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "color": "rgb(238, 238, 238)",
+          "border-radius": "0px",
+          "opacity": "1",
+          "transform": "none"
+        },
+        "after": {
+          "content": "none",
+          "display": "inline",
+          "position": "static",
+          "width": "auto",
+          "height": "auto",
+          "margin-top": "0px",
+          "margin-right": "0px",
+          "margin-bottom": "0px",
+          "margin-left": "0px",
+          "padding-top": "0px",
+          "padding-right": "0px",
+          "padding-bottom": "0px",
+          "padding-left": "0px",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "color": "rgb(238, 238, 238)",
+          "border-radius": "0px",
+          "opacity": "1",
+          "transform": "none"
+        }
+      },
+      "ancestorChain": [
+        {
+          "tag": "BODY",
+          "id": "",
+          "classes": [],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 3
+        },
+        {
+          "tag": "DIV",
+          "id": "root",
+          "classes": [],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 1
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": [
+            "app-shell"
+          ],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 2
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "classes": [
+            "app-shell__workspace"
+          ],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 1
+        },
+        {
+          "tag": "SECTION",
+          "id": "",
+          "classes": [],
+          "role": "",
+          "ariaLabel": "Crucible workspace",
+          "dataCompare": "",
+          "childElementCount": 1
+        },
+        {
+          "tag": "SECTION",
+          "id": "",
+          "classes": [
+            "darken-workspace",
+            "crucible-workspace"
+          ],
+          "role": "",
+          "ariaLabel": "Crucible workspace",
+          "dataCompare": "",
+          "childElementCount": 2
+        },
+        {
+          "tag": "DIV",
+          "id": "darkenComposerPanel",
+          "classes": [],
+          "role": "tabpanel",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 1
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": [
+            "cruor-composer-shell",
+            "location-composer"
+          ],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 1
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": [
+            "cruor-composer-workspace",
+            "location-composer__workspace"
+          ],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 1
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "classes": [
+            "cruor-composer-stage",
+            "location-composer__stage"
+          ],
+          "role": "",
+          "ariaLabel": "Location map stage",
+          "dataCompare": "",
+          "childElementCount": 1
+        },
+        {
+          "tag": "SECTION",
+          "id": "",
+          "classes": [
+            "location-map-stage",
+            "has-live-preview",
+            "is-simple-surface",
+            "is-map-synced",
+            "location-map-stage--preview"
+          ],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 4
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": [
+            "location-stage-progress-dock",
+            "location-stage-progress-dock--map"
+          ],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 1
+        }
+      ],
+      "directChildren": [
+        {
+          "tag": "SECTION",
+          "id": "",
+          "classes": [
+            "location-flow-panel",
+            "location-flow-drawer",
+            "is-open"
+          ],
+          "role": "",
+          "ariaLabel": "Build flow",
+          "dataCompare": "",
+          "childElementCount": 2
+        }
+      ],
+      "subtreeShape": {
+        "tag": "DIV",
+        "id": "",
+        "classes": [
+          "location-stage-progress-dock",
+          "location-stage-progress-dock--map"
+        ],
+        "role": "",
+        "ariaLabel": "",
+        "dataCompare": "",
+        "childElementCount": 1,
+        "children": [
+          {
+            "tag": "SECTION",
+            "id": "",
+            "classes": [
+              "location-flow-panel",
+              "location-flow-drawer",
+              "is-open"
+            ],
+            "role": "",
+            "ariaLabel": "Build flow",
+            "dataCompare": "",
+            "childElementCount": 2,
+            "children": [
+              {
+                "tag": "DIV",
+                "id": "locationFlowDrawerPanel",
+                "classes": [
+                  "location-flow-drawer__panel"
+                ],
+                "role": "",
+                "ariaLabel": "",
+                "dataCompare": "",
+                "childElementCount": 3,
+                "children": [
+                  {
+                    "tag": "DIV",
+                    "id": "",
+                    "classes": [
+                      "location-flow-drawer__next"
+                    ],
+                    "role": "",
+                    "ariaLabel": "",
+                    "dataCompare": "",
+                    "childElementCount": 2,
+                    "children": [
+                      {
+                        "tag": "DIV",
+                        "id": "",
+                        "classes": [
+                          "location-flow-drawer__next-copy"
+                        ],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 3,
+                        "children": []
+                      },
+                      {
+                        "tag": "BUTTON",
+                        "id": "",
+                        "classes": [],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 0,
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "DIV",
+                    "id": "",
+                    "classes": [
+                      "location-flow-drawer__timeline"
+                    ],
+                    "role": "",
+                    "ariaLabel": "",
+                    "dataCompare": "",
+                    "childElementCount": 3,
+                    "children": [
+                      {
+                        "tag": "BUTTON",
+                        "id": "",
+                        "classes": [
+                          "location-flow-nav-btn",
+                          "location-flow-nav-btn--previous"
+                        ],
+                        "role": "",
+                        "ariaLabel": "Previous build step",
+                        "dataCompare": "",
+                        "childElementCount": 1,
+                        "children": []
+                      },
+                      {
+                        "tag": "NAV",
+                        "id": "",
+                        "classes": [
+                          "location-flow-progress"
+                        ],
+                        "role": "",
+                        "ariaLabel": "Dark Places build progress",
+                        "dataCompare": "",
+                        "childElementCount": 7,
+                        "children": []
+                      },
+                      {
+                        "tag": "BUTTON",
+                        "id": "",
+                        "classes": [
+                          "location-flow-nav-btn",
+                          "location-flow-nav-btn--next"
+                        ],
+                        "role": "",
+                        "ariaLabel": "Next build step",
+                        "dataCompare": "",
+                        "childElementCount": 1,
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "DIV",
+                    "id": "",
+                    "classes": [
+                      "location-flow-drawer__status-row"
+                    ],
+                    "role": "",
+                    "ariaLabel": "",
+                    "dataCompare": "",
+                    "childElementCount": 2,
+                    "children": [
+                      {
+                        "tag": "DIV",
+                        "id": "",
+                        "classes": [
+                          "location-flow-drawer__readiness"
+                        ],
+                        "role": "",
+                        "ariaLabel": "Build readiness",
+                        "dataCompare": "",
+                        "childElementCount": 4,
+                        "children": []
+                      },
+                      {
+                        "tag": "DIV",
+                        "id": "",
+                        "classes": [
+                          "location-flow-drawer__warnings"
+                        ],
+                        "role": "",
+                        "ariaLabel": "Build warnings",
+                        "dataCompare": "",
+                        "childElementCount": 1,
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "tag": "DIV",
+                "id": "",
+                "classes": [
+                  "location-flow-drawer__toggle-row"
+                ],
+                "role": "",
+                "ariaLabel": "",
+                "dataCompare": "",
+                "childElementCount": 3,
+                "children": [
+                  {
+                    "tag": "BUTTON",
+                    "id": "",
+                    "classes": [
+                      "location-flow-drawer__stage-btn",
+                      "location-flow-drawer__stage-btn--previous",
+                      "tooltip-btn"
+                    ],
+                    "role": "",
+                    "ariaLabel": "Rooms",
+                    "dataCompare": "",
+                    "childElementCount": 2,
+                    "children": [
+                      {
+                        "tag": "svg",
+                        "id": "",
+                        "classes": [
+                          "lucide",
+                          "lucide-chevron-left"
+                        ],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 1,
+                        "children": []
+                      },
+                      {
+                        "tag": "SPAN",
+                        "id": "",
+                        "classes": [],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 0,
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "BUTTON",
+                    "id": "",
+                    "classes": [
+                      "location-flow-drawer__toggle"
+                    ],
+                    "role": "",
+                    "ariaLabel": "",
+                    "dataCompare": "",
+                    "childElementCount": 3,
+                    "children": [
+                      {
+                        "tag": "SPAN",
+                        "id": "",
+                        "classes": [
+                          "location-flow-drawer__toggle-main"
+                        ],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 2,
+                        "children": []
+                      },
+                      {
+                        "tag": "SPAN",
+                        "id": "",
+                        "classes": [
+                          "location-flow-drawer__toggle-meta"
+                        ],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 2,
+                        "children": []
+                      },
+                      {
+                        "tag": "svg",
+                        "id": "",
+                        "classes": [
+                          "lucide",
+                          "lucide-chevron-down"
+                        ],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 1,
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "BUTTON",
+                    "id": "",
+                    "classes": [
+                      "location-flow-drawer__stage-btn",
+                      "location-flow-drawer__stage-btn--next",
+                      "tooltip-btn"
+                    ],
+                    "role": "",
+                    "ariaLabel": "Export",
+                    "dataCompare": "",
+                    "childElementCount": 2,
+                    "children": [
+                      {
+                        "tag": "SPAN",
+                        "id": "",
+                        "classes": [],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 0,
+                        "children": []
+                      },
+                      {
+                        "tag": "svg",
+                        "id": "",
+                        "classes": [
+                          "lucide",
+                          "lucide-chevron-right"
+                        ],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 1,
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "b": {
+      "label": "Target Monsters: monster-stage-progress-dock",
+      "selector": ".monster-stage-progress-dock.monster-stage-progress-dock--frame",
+      "url": "about:blank",
+      "tag": "DIV",
+      "id": "",
+      "classes": [
+        "monster-stage-progress-dock",
+        "monster-stage-progress-dock--frame"
+      ],
+      "role": "",
+      "ariaLabel": "",
+      "textExcerpt": "NEXT BEST ACTION Add Body Define what the creature physically is before choosing attacks. OPEN BODY SLOT 1 START 2 BODY 3 ATTACK 4 TELL 5 COMPLETE 6 REVIEW 7 EXPORT PLAYABLE DRAFT COMPLETE MONSTER SETPIECE READY EXPORT READY No Weakness / Tell selected. Add counterplay before using this as horror, o",
+      "rect": {
+        "x": 260,
+        "y": 659.11,
+        "width": 920,
+        "height": 210.88,
+        "top": 659.11,
+        "right": 1180,
+        "bottom": 869.98,
+        "left": 260
+      },
+      "parentRect": {
+        "x": 11,
+        "y": 87.39,
+        "width": 1418,
+        "height": 801.59,
+        "top": 87.39,
+        "right": 1429,
+        "bottom": 888.98,
+        "left": 11
+      },
+      "parentMetrics": {
+        "offsetLeftFromParent": 249,
+        "offsetTopFromParent": 571.72,
+        "widthRatioToParent": 0.65,
+        "heightRatioToParent": 0.26
+      },
+      "styles": {
+        "display": "block",
+        "position": "absolute",
+        "box-sizing": "border-box",
+        "inset": "570.719px -212px 18px 708px",
+        "top": "570.719px",
+        "right": "-212px",
+        "bottom": "18px",
+        "left": "708px",
+        "z-index": "34",
+        "width": "920px",
+        "min-width": "0px",
+        "max-width": "min(920px, 100% - 56px)",
+        "height": "210.875px",
+        "min-height": "0px",
+        "max-height": "none",
+        "margin-top": "0px",
+        "margin-right": "0px",
+        "margin-bottom": "0px",
+        "margin-left": "0px",
+        "padding-top": "0px",
+        "padding-right": "0px",
+        "padding-bottom": "0px",
+        "padding-left": "0px",
+        "border-top-width": "0px",
+        "border-right-width": "0px",
+        "border-bottom-width": "0px",
+        "border-left-width": "0px",
+        "border-top-style": "none",
+        "border-right-style": "none",
+        "border-bottom-style": "none",
+        "border-left-style": "none",
+        "border-top-color": "rgb(238, 238, 238)",
+        "border-right-color": "rgb(238, 238, 238)",
+        "border-bottom-color": "rgb(238, 238, 238)",
+        "border-left-color": "rgb(238, 238, 238)",
+        "border-radius": "0px",
+        "border-top-left-radius": "0px",
+        "border-top-right-radius": "0px",
+        "border-bottom-right-radius": "0px",
+        "border-bottom-left-radius": "0px",
+        "outline-width": "3px",
+        "outline-style": "none",
+        "outline-color": "rgb(238, 238, 238)",
+        "background-color": "rgba(0, 0, 0, 0)",
+        "background-image": "none",
+        "color": "rgb(238, 238, 238)",
+        "opacity": "1",
+        "font-family": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+        "font-size": "16px",
+        "font-weight": "400",
+        "font-style": "normal",
+        "letter-spacing": "normal",
+        "line-height": "23.2px",
+        "text-align": "start",
+        "text-transform": "none",
+        "white-space": "normal",
+        "overflow": "visible",
+        "overflow-x": "visible",
+        "overflow-y": "visible",
+        "visibility": "visible",
+        "pointer-events": "none",
+        "cursor": "auto",
+        "flex-direction": "row",
+        "flex-wrap": "nowrap",
+        "align-items": "normal",
+        "align-content": "normal",
+        "justify-content": "normal",
+        "justify-items": "normal",
+        "gap": "normal",
+        "row-gap": "normal",
+        "column-gap": "normal",
+        "flex-grow": "0",
+        "flex-shrink": "1",
+        "flex-basis": "auto",
+        "order": "0",
+        "grid-template-columns": "none",
+        "grid-template-rows": "none",
+        "grid-auto-flow": "row",
+        "grid-auto-columns": "auto",
+        "grid-auto-rows": "auto",
+        "place-items": "normal",
+        "transform": "matrix(1, 0, 0, 1, -460, 0)",
+        "transform-origin": "460px 105.438px",
+        "filter": "none",
+        "backdrop-filter": "none",
+        "box-shadow": "none",
+        "transition-property": "all",
+        "transition-duration": "0s"
+      },
+      "pseudo": {
+        "before": {
+          "content": "none",
+          "display": "inline",
+          "position": "static",
+          "width": "auto",
+          "height": "auto",
+          "margin-top": "0px",
+          "margin-right": "0px",
+          "margin-bottom": "0px",
+          "margin-left": "0px",
+          "padding-top": "0px",
+          "padding-right": "0px",
+          "padding-bottom": "0px",
+          "padding-left": "0px",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "color": "rgb(238, 238, 238)",
+          "border-radius": "0px",
+          "opacity": "1",
+          "transform": "none"
+        },
+        "after": {
+          "content": "none",
+          "display": "inline",
+          "position": "static",
+          "width": "auto",
+          "height": "auto",
+          "margin-top": "0px",
+          "margin-right": "0px",
+          "margin-bottom": "0px",
+          "margin-left": "0px",
+          "padding-top": "0px",
+          "padding-right": "0px",
+          "padding-bottom": "0px",
+          "padding-left": "0px",
+          "background-color": "rgba(0, 0, 0, 0)",
+          "color": "rgb(238, 238, 238)",
+          "border-radius": "0px",
+          "opacity": "1",
+          "transform": "none"
+        }
+      },
+      "ancestorChain": [
+        {
+          "tag": "BODY",
+          "id": "",
+          "classes": [],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 3
+        },
+        {
+          "tag": "DIV",
+          "id": "root",
+          "classes": [],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 1
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": [
+            "app-shell"
+          ],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 2
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "classes": [
+            "app-shell__workspace"
+          ],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 1
+        },
+        {
+          "tag": "SECTION",
+          "id": "",
+          "classes": [],
+          "role": "",
+          "ariaLabel": "Crucible workspace",
+          "dataCompare": "",
+          "childElementCount": 1
+        },
+        {
+          "tag": "SECTION",
+          "id": "",
+          "classes": [
+            "monster-crucible-workspace",
+            "crucible-workspace"
+          ],
+          "role": "",
+          "ariaLabel": "Crucible workspace",
+          "dataCompare": "",
+          "childElementCount": 2
+        },
+        {
+          "tag": "SECTION",
+          "id": "monsterComposerPanel",
+          "classes": [],
+          "role": "tabpanel",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 1
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": [
+            "cruor-composer-shell",
+            "monster-composer",
+            "monster-shell"
+          ],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 1
+        },
+        {
+          "tag": "MAIN",
+          "id": "",
+          "classes": [
+            "monster-workspace"
+          ],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 2
+        },
+        {
+          "tag": "SECTION",
+          "id": "",
+          "classes": [
+            "monster-anatomy-composer"
+          ],
+          "role": "",
+          "ariaLabel": "Monster anatomy composer",
+          "dataCompare": "",
+          "childElementCount": 1
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": [
+            "monster-silhouette-stage",
+            "anatomy-stage",
+            "is-frame-mode"
+          ],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 2
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "classes": [
+            "monster-stage-progress-dock",
+            "monster-stage-progress-dock--frame"
+          ],
+          "role": "",
+          "ariaLabel": "",
+          "dataCompare": "",
+          "childElementCount": 1
+        }
+      ],
+      "directChildren": [
+        {
+          "tag": "SECTION",
+          "id": "",
+          "classes": [
+            "guided-flow-panel",
+            "guided-flow-drawer",
+            "is-open"
+          ],
+          "role": "",
+          "ariaLabel": "Build flow",
+          "dataCompare": "",
+          "childElementCount": 2
+        }
+      ],
+      "subtreeShape": {
+        "tag": "DIV",
+        "id": "",
+        "classes": [
+          "monster-stage-progress-dock",
+          "monster-stage-progress-dock--frame"
+        ],
+        "role": "",
+        "ariaLabel": "",
+        "dataCompare": "",
+        "childElementCount": 1,
+        "children": [
+          {
+            "tag": "SECTION",
+            "id": "",
+            "classes": [
+              "guided-flow-panel",
+              "guided-flow-drawer",
+              "is-open"
+            ],
+            "role": "",
+            "ariaLabel": "Build flow",
+            "dataCompare": "",
+            "childElementCount": 2,
+            "children": [
+              {
+                "tag": "DIV",
+                "id": "monsterFlowDrawerPanel",
+                "classes": [
+                  "guided-flow-drawer__panel"
+                ],
+                "role": "",
+                "ariaLabel": "",
+                "dataCompare": "",
+                "childElementCount": 3,
+                "children": [
+                  {
+                    "tag": "DIV",
+                    "id": "",
+                    "classes": [
+                      "guided-flow-drawer__next"
+                    ],
+                    "role": "",
+                    "ariaLabel": "",
+                    "dataCompare": "",
+                    "childElementCount": 2,
+                    "children": [
+                      {
+                        "tag": "DIV",
+                        "id": "",
+                        "classes": [
+                          "guided-flow-drawer__next-copy"
+                        ],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 3,
+                        "children": []
+                      },
+                      {
+                        "tag": "BUTTON",
+                        "id": "",
+                        "classes": [],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 0,
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "DIV",
+                    "id": "",
+                    "classes": [
+                      "guided-flow-drawer__timeline"
+                    ],
+                    "role": "",
+                    "ariaLabel": "",
+                    "dataCompare": "",
+                    "childElementCount": 3,
+                    "children": [
+                      {
+                        "tag": "BUTTON",
+                        "id": "",
+                        "classes": [
+                          "monster-flow-nav-btn",
+                          "monster-flow-nav-btn--previous"
+                        ],
+                        "role": "",
+                        "ariaLabel": "Previous build step",
+                        "dataCompare": "",
+                        "childElementCount": 1,
+                        "children": []
+                      },
+                      {
+                        "tag": "NAV",
+                        "id": "",
+                        "classes": [
+                          "brief-wizard__progress",
+                          "monster-flow-progress"
+                        ],
+                        "role": "",
+                        "ariaLabel": "Monster build progress",
+                        "dataCompare": "",
+                        "childElementCount": 7,
+                        "children": []
+                      },
+                      {
+                        "tag": "BUTTON",
+                        "id": "",
+                        "classes": [
+                          "monster-flow-nav-btn",
+                          "monster-flow-nav-btn--next"
+                        ],
+                        "role": "",
+                        "ariaLabel": "Next build step",
+                        "dataCompare": "",
+                        "childElementCount": 1,
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "DIV",
+                    "id": "",
+                    "classes": [
+                      "guided-flow-drawer__status-row"
+                    ],
+                    "role": "",
+                    "ariaLabel": "",
+                    "dataCompare": "",
+                    "childElementCount": 2,
+                    "children": [
+                      {
+                        "tag": "DIV",
+                        "id": "",
+                        "classes": [
+                          "guided-flow-drawer__readiness"
+                        ],
+                        "role": "",
+                        "ariaLabel": "Build readiness",
+                        "dataCompare": "",
+                        "childElementCount": 4,
+                        "children": []
+                      },
+                      {
+                        "tag": "DIV",
+                        "id": "",
+                        "classes": [
+                          "guided-flow-drawer__warnings"
+                        ],
+                        "role": "",
+                        "ariaLabel": "Build warnings",
+                        "dataCompare": "",
+                        "childElementCount": 3,
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "tag": "DIV",
+                "id": "",
+                "classes": [
+                  "guided-flow-drawer__toggle-row"
+                ],
+                "role": "",
+                "ariaLabel": "",
+                "dataCompare": "",
+                "childElementCount": 3,
+                "children": [
+                  {
+                    "tag": "BUTTON",
+                    "id": "",
+                    "classes": [
+                      "guided-flow-drawer__stage-btn",
+                      "guided-flow-drawer__stage-btn--previous",
+                      "tooltip-btn"
+                    ],
+                    "role": "",
+                    "ariaLabel": "Templates",
+                    "dataCompare": "",
+                    "childElementCount": 2,
+                    "children": [
+                      {
+                        "tag": "svg",
+                        "id": "",
+                        "classes": [
+                          "lucide",
+                          "lucide-chevron-left"
+                        ],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 1,
+                        "children": []
+                      },
+                      {
+                        "tag": "SPAN",
+                        "id": "",
+                        "classes": [],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 0,
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "BUTTON",
+                    "id": "",
+                    "classes": [
+                      "guided-flow-drawer__toggle"
+                    ],
+                    "role": "",
+                    "ariaLabel": "",
+                    "dataCompare": "",
+                    "childElementCount": 3,
+                    "children": [
+                      {
+                        "tag": "SPAN",
+                        "id": "",
+                        "classes": [
+                          "guided-flow-drawer__toggle-main"
+                        ],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 2,
+                        "children": []
+                      },
+                      {
+                        "tag": "SPAN",
+                        "id": "",
+                        "classes": [
+                          "guided-flow-drawer__toggle-meta"
+                        ],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 2,
+                        "children": []
+                      },
+                      {
+                        "tag": "svg",
+                        "id": "",
+                        "classes": [
+                          "lucide",
+                          "lucide-chevron-down"
+                        ],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 1,
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "BUTTON",
+                    "id": "",
+                    "classes": [
+                      "guided-flow-drawer__stage-btn",
+                      "guided-flow-drawer__stage-btn--next",
+                      "tooltip-btn"
+                    ],
+                    "role": "",
+                    "ariaLabel": "Grafts",
+                    "dataCompare": "",
+                    "childElementCount": 2,
+                    "children": [
+                      {
+                        "tag": "SPAN",
+                        "id": "",
+                        "classes": [],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 0,
+                        "children": []
+                      },
+                      {
+                        "tag": "svg",
+                        "id": "",
+                        "classes": [
+                          "lucide",
+                          "lucide-chevron-right"
+                        ],
+                        "role": "",
+                        "ariaLabel": "",
+                        "dataCompare": "",
+                        "childElementCount": 1,
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "outputPaths": {
+    "markdown": "reports\\element-comparison\\20260626-145409-actual-places-stage-progress-dock-target-monsters-stage-progress-dock.md",
+    "json": "reports\\element-comparison\\20260626-145409-actual-places-stage-progress-dock-target-monsters-stage-progress-dock.json"
+  }
+}

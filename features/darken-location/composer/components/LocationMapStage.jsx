@@ -23,9 +23,115 @@ import {
   getMapSyncStatus,
   getRegionPreviewMarkers,
 } from "../model/location-composer-output.js";
+import { getRoomProgramEntries } from "../model/location-room-program.js";
 
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
+}
+
+function getRoomNodeStateClasses(status = "empty") {
+  if (status === "ready") return "is-ready is-filled";
+  if (status === "partial") return "is-partial";
+  return "is-empty";
+}
+
+function getRoomNodeSlotLabel(slotId = "") {
+  if (slotId === "encounterTwist") return "Twist";
+  return String(slotId || "Slot")
+    .replace(/[-_]+/g, " ")
+    .replace(/(^|\s)(\S)/g, (_, spacer, letter) => `${spacer}${letter.toUpperCase()}`);
+}
+
+function getRoomNodeTooltipDescription(entry) {
+  if (!entry) return "Select this room.";
+  const markers = Array.isArray(entry.markers) && entry.markers.length
+    ? `Contains ${entry.markers.map((marker) => marker.fullLabel || marker.label || getRoomNodeSlotLabel(marker.slotId)).filter(Boolean).join(", ")}.`
+    : "No assigned room features yet.";
+  const missing = Array.isArray(entry.missingSlots) && entry.missingSlots.length
+    ? `Missing ${entry.missingSlots.map(getRoomNodeSlotLabel).join(", ")}.`
+    : "Ready room program.";
+  return `${entry.roleLabel || "Room"} · ${entry.label || "Empty"}. ${markers} ${missing}`;
+}
+
+function LocationMapRoomIndicatorLayer({
+  entries = [],
+  generatedMapPreview = null,
+  hoveredRegionId = "",
+  previewViewportMetrics = null,
+  selectedRegionId = "",
+  onRegionContextMenu = null,
+  onRegionHoverChange = null,
+  onRegionSelect = null,
+}) {
+  if (!generatedMapPreview || !entries.length) return null;
+
+  return (
+    <div className="location-map-room-indicator-layer" aria-label="Room status indicators">
+      {entries.map((entry) => {
+        const active = selectedRegionId === entry.id;
+        const hovered = hoveredRegionId === entry.id;
+        const markers = Array.isArray(entry.markers) ? entry.markers.slice(0, 3) : [];
+        const roomNumber = entry.numberLabel || String(entry.number || entry.index + 1).padStart(2, "0");
+        const tooltip = `Room ${roomNumber} · ${entry.name}`;
+
+        return (
+          <button
+            className={cx(
+              "location-map-room-node",
+              getRoomNodeStateClasses(entry.status),
+              active && "is-active",
+              hovered && "is-linked-hover",
+              markers.length > 0 && "has-markers",
+            )}
+            key={entry.id}
+            type="button"
+            aria-label={`${tooltip}. ${entry.label || "Empty"}.`}
+            aria-pressed={active}
+            data-key="tooltip-generic"
+            data-tooltip={tooltip}
+            data-tooltip-description={getRoomNodeTooltipDescription(entry)}
+            data-room-id={entry.id}
+            data-room-status={entry.status || "empty"}
+            style={getGeneratedRoomPositionStyle(
+              generatedMapPreview,
+              entry.generatedRoom,
+              entry.index,
+              previewViewportMetrics,
+            )}
+            onPointerDown={(event) => event.stopPropagation()}
+            onMouseEnter={() => onRegionHoverChange?.(entry.id)}
+            onMouseLeave={() => onRegionHoverChange?.("")}
+            onFocus={() => onRegionHoverChange?.(entry.id)}
+            onBlur={() => onRegionHoverChange?.("")}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onRegionSelect?.(entry.id);
+            }}
+            onContextMenu={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onRegionContextMenu?.(event, entry.id);
+            }}
+          >
+            <span className="location-map-room-node__number">{roomNumber}</span>
+            {markers.length ? (
+              <span className="location-map-room-node__marker-strip" aria-hidden="true">
+                {markers.map((marker) => (
+                  <span
+                    className={`location-map-room-node__marker location-map-room-node__marker--${marker.slotId || "slot"}`}
+                    key={marker.slotId || marker.label}
+                  >
+                    <i className={`fa-solid ${marker.icon || "fa-diamond"}`} aria-hidden="true" />
+                  </span>
+                ))}
+              </span>
+            ) : null}
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
 function LocationMapPreview({
@@ -115,6 +221,9 @@ export function LocationMapStage({
   navigatorPanel = null,
   workspacePanel = null,
   contextPanel = null,
+  toolbarPanel = null,
+  bottomDockPanel = null,
+  regionSelectionScope = LOCATION_SLOT_SCOPE_REGION,
   onScratchRoomFocusSlot = null,
   onScratchRoomUpdate = null,
 }) {
@@ -152,6 +261,10 @@ export function LocationMapStage({
       regions.map((region) => [region.id, getRegionPreviewMarkers(state, region.id)]),
     )
   ), [regions, state]);
+  const roomProgramEntries = useMemo(
+    () => getRoomProgramEntries(state, generatedMapPreview).filter((entry) => entry.generatedRoom),
+    [state, generatedMapPreview],
+  );
 
   function handlePreviewViewportMetricsChange(nextMetrics) {
     setPreviewViewportMetrics((currentMetrics) => {
@@ -196,7 +309,7 @@ export function LocationMapStage({
     if (isMapEditing) return;
     const target = event.target;
     if (target?.closest?.(
-      ".room-preview-hotspot, .location-region-node, .location-room-recap-anchor, .location-stage-navigator-overlay, .location-advanced-output, .location-scratch-room-context-menu, button, a, input, select, textarea",
+      ".room-preview-hotspot, .location-region-node, .location-room-recap-anchor, .location-stage-navigator-overlay, .location-map-stage-toolbar, .location-advanced-output, .location-scratch-room-context-menu, button, a, input, select, textarea",
     )) {
       return;
     }
@@ -235,10 +348,10 @@ export function LocationMapStage({
     setState((current) => ({
       ...current,
       activeRegionId: composerRegionId,
-      activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
-      activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
+      activeSlotScope: regionSelectionScope,
+      activeSlot: isSlotInScope(current.activeSlot, regionSelectionScope)
         ? current.activeSlot
-        : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
+        : getDefaultSlotIdForScope(regionSelectionScope),
     }));
   }
 
@@ -286,6 +399,12 @@ export function LocationMapStage({
             <div className="location-map-stage__center" onClick={selectWholeMapTarget}>
               {modeControls}
 
+              {toolbarPanel ? (
+                <div className="location-map-stage-toolbar" aria-label="Map stage tools">
+                  {toolbarPanel}
+                </div>
+              ) : null}
+
           <LocationMapPreview
             generatedMap={generatedMapPreview}
             error={previewError}
@@ -298,6 +417,19 @@ export function LocationMapStage({
             onViewportMetricsChange={handlePreviewViewportMetricsChange}
             previewRegionMarkers={previewRegionMarkers}
           />
+
+          {showInteractiveOverlay && generatedMapPreview ? (
+            <LocationMapRoomIndicatorLayer
+              entries={roomProgramEntries}
+              generatedMapPreview={generatedMapPreview}
+              hoveredRegionId={hoveredRegionId}
+              previewViewportMetrics={previewViewportMetrics}
+              selectedRegionId={state.activeRegionId}
+              onRegionContextMenu={(event, regionId) => openScratchRoomMenu(event, regionId)}
+              onRegionHoverChange={setHoveredRegionId}
+              onRegionSelect={selectRegionTarget}
+            />
+          ) : null}
 
           {showInteractiveOverlay && hoveredRegion ? (
             <div
@@ -430,6 +562,8 @@ export function LocationMapStage({
             </div>
 
             {rightPanel}
+
+            {bottomDockPanel}
           </>
         )}
       </section>

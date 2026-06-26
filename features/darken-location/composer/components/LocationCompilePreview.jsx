@@ -153,9 +153,9 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
               className="cruor-composer-control location-copy-btn"
               type="button"
               onClick={() => handleCopy("Region Summary", regionSummaryText)}
-              title="Copy only the mapped region notes"
+              title="Copy only the mapped room program notes"
             >
-              Copy Rooms
+              Copy Room Key
             </button>
             <button
               className="cruor-composer-control location-copy-btn"
@@ -204,7 +204,7 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
               <ExportTextBlock text={compilePreview.readAloudText} />
             </ExportCard>
 
-            <ExportCard title="Regions">
+            <ExportCard title="Room Program">
               <div className="location-compile-preview__stack">
                 {compilePreview.roomSections.map((section) => (
                   <div className="location-compile-region" key={section.region.id}>

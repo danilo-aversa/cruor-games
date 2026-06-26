@@ -6,6 +6,7 @@ import {
   createInitialLocationComposerState,
   createLocationComposerSnapshot,
   createLocationMapSeed,
+  LOCATION_SLOT_SCOPE_MAP,
   LOCATION_SLOT_SCOPE_REGION,
   normalizeLocationSlotScope,
   regenerateScratchLocationRoom,
@@ -46,17 +47,17 @@ import { LocationDraftControls } from "./components/LocationDraftControls.jsx";
 import { LocationComponentPickerModal } from "./components/LocationComponentPickerModal.jsx";
 import { LocationCompilePreview } from "./components/LocationCompilePreview.jsx";
 import { LocationMapStage } from "./components/LocationMapStage.jsx";
-import { LocationSlotRail } from "./components/LocationSlotRail.jsx";
+import { LocationGuidedFlowPanel } from "./components/LocationGuidedFlowPanel.jsx";
+import { LocationRoomInspector } from "./components/LocationRoomInspector.jsx";
+import { LocationMapDetailsPanel, LocationMapWideDetailsBlock } from "./components/LocationMapDetailsPanel.jsx";
+import { LocationMapToolbar } from "./components/LocationMapToolbar.jsx";
+import { getNextMissingRoomSlot, getSelectedRoomProgramEntry } from "./model/location-room-program.js";
 import { CruorMapGeneratorMvp } from "../map-generator/map-generator.page.jsx";
 import {
   createLocationRegionsFromDungeonBrief,
   createThemeDungeonBriefCandidatesFromDarkenLocationSnapshot,
   createThemeDungeonBriefFromDarkenLocationSnapshot,
 } from "../dungeon/dungeon.index.js";
-
-function cx(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 function LocationFrameInfoRow({ label, value }) {
   return (
@@ -118,39 +119,10 @@ function createLocationMapSourceKey(mapRequest) {
 }
 
 const LOCATION_WORKFLOW_MODES = [
-  { id: "theme", label: "Theme" },
-  { id: "scratch", label: "Scratch" },
-  { id: "map", label: "Map" },
+  { id: "theme", label: "Frame" },
+  { id: "scratch", label: "Rooms" },
   { id: "export", label: "Export" },
 ];
-
-function LocationWorkflowSwitch({ builderMode, onSelectMode }) {
-  return (
-    <section className="location-map-mode-card location-workflow-mode-card" aria-label="Dungeon workflow">
-      <div
-        className="location-map-mode-switch location-workflow-mode-switch"
-        role="group"
-        aria-label="Dungeon workflow"
-        style={{ gridTemplateColumns: "repeat(4, minmax(0, 1fr))" }}
-      >
-        {LOCATION_WORKFLOW_MODES.map((mode) => {
-          const active = builderMode === mode.id;
-          return (
-            <button
-              className={cx("location-map-mode-button", active && "is-active")}
-              key={mode.id}
-              type="button"
-              aria-pressed={active}
-              onClick={() => onSelectMode(mode.id)}
-            >
-              {mode.label}
-            </button>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
 
 function LocationRecapPanel({
   activeRegion,
@@ -216,14 +188,14 @@ function LocationRecapPanel({
           type="button"
           onClick={onOpenComponents}
         >
-          Map Components
+          Components
         </button>
         <button
           className="cruor-composer-control location-primary-action"
           type="button"
           onClick={onViewExport}
         >
-          Export Location
+          Export
         </button>
         <button
           className="cruor-composer-control location-primary-action"
@@ -248,7 +220,7 @@ function LocationRecapPanel({
 
 }
 
-function LocationExportToolsPanel({ onSelectMap, onSelectScratch, onSelectTheme }) {
+function LocationExportToolsPanel({ onSelectFrame, onSelectScratch }) {
   return (
     <aside
       className="cruor-composer-rail location-composer__rail location-composer__rail--left location-map-frame-rail location-frame-info"
@@ -260,14 +232,11 @@ function LocationExportToolsPanel({ onSelectMap, onSelectScratch, onSelectTheme 
         <em>Copy the session insert, table text, rooms, or map SVG.</em>
       </section>
       <section className="location-frame-info-card location-location-action-card location-location-action-card--secondary" aria-label="Export navigation">
-        <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectMap}>
-          Back to Map
-        </button>
-        <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectTheme}>
-          Theme
+        <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectFrame}>
+          Back to Frame
         </button>
         <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectScratch}>
-          Scratch
+          Rooms
         </button>
       </section>
     </aside>
@@ -464,10 +433,10 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
         mapManualOverrides: null,
       };
     });
-    setBuilderMode("map");
+    setBuilderMode("theme");
     setDrawerOpen(false);
     setIsMapEditing(false);
-    setTransientDraftStatus("Map generated");
+    setTransientDraftStatus("Place generated");
   }, [setTransientDraftStatus]);
 
   const setScratchRoomCount = useCallback((roomCount) => {
@@ -526,6 +495,22 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       dungeonMode: "scratch",
       activeRegionId: regionId || current.activeRegionId,
       activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+      activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
+        ? current.activeSlot
+        : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
+    }));
+    setDrawerOpen(false);
+    setIsMapEditing(false);
+  }, []);
+
+  const selectRoomTarget = useCallback((regionId) => {
+    setState((current) => ({
+      ...current,
+      activeRegionId: regionId || current.activeRegionId || current.locationRegions?.[0]?.id || "",
+      activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+      activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
+        ? current.activeSlot
+        : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
     }));
     setDrawerOpen(false);
     setIsMapEditing(false);
@@ -556,7 +541,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
         mapManualOverrides: null,
       };
     });
-    setBuilderMode("map");
+    setBuilderMode("scratch");
     setDrawerOpen(false);
     setIsMapEditing(false);
     setTransientDraftStatus("Map generated");
@@ -661,24 +646,43 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   const activeSlotIsFull = activeSlotFilled >= (activeSlot?.max || 1);
 
   const activateBuilderMode = useCallback((mode) => {
-    const nextMode = LOCATION_WORKFLOW_MODES.some((workflowMode) => workflowMode.id === mode)
-      ? mode
-      : "map";
+    const requestedMode = mode === "map" ? "theme" : mode;
+    const nextMode = LOCATION_WORKFLOW_MODES.some((workflowMode) => workflowMode.id === requestedMode)
+      ? requestedMode
+      : "theme";
 
     setBuilderMode(nextMode);
     setIsMapEditing(false);
     setDrawerOpen(false);
 
-    if (nextMode === "theme" || nextMode === "scratch") {
-      setState((current) => ({
-        ...current,
-        dungeonMode: nextMode,
-      }));
-    }
+    setState((current) => {
+      if (nextMode === "theme") {
+        return {
+          ...current,
+          activeSlotScope: LOCATION_SLOT_SCOPE_MAP,
+          activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_MAP)
+            ? current.activeSlot
+            : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_MAP),
+        };
+      }
+
+      if (nextMode === "scratch") {
+        return {
+          ...current,
+          activeRegionId: current.activeRegionId || current.locationRegions?.[0]?.id || "",
+          activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+          activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
+            ? current.activeSlot
+            : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
+        };
+      }
+
+      return current;
+    });
   }, []);
 
   const startMapEditing = useCallback(() => {
-    setBuilderMode("map");
+    setBuilderMode("theme");
     setIsMapEditing(true);
     setDrawerOpen(false);
   }, []);
@@ -705,32 +709,52 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     setTransientDraftStatus("Map edits saved");
   }, [setTransientDraftStatus]);
 
-  const builderModeControls = (
-    <LocationWorkflowSwitch
-      builderMode={builderMode}
-      onSelectMode={activateBuilderMode}
-    />
-  );
-
-  const focusSlot = useCallback((slotId, slotScope = activeSlotScope) => {
+  const focusSlot = useCallback((slotId, slotScope = activeSlotScope, regionId = "") => {
+    const normalizedScope = normalizeLocationSlotScope(slotScope);
     setState((current) => ({
       ...current,
       activeSlot: slotId,
-      activeSlotScope: normalizeLocationSlotScope(slotScope),
+      activeSlotScope: normalizedScope,
+      activeRegionId:
+        normalizedScope === LOCATION_SLOT_SCOPE_REGION
+          ? regionId || current.activeRegionId || current.locationRegions?.[0]?.id || ""
+          : current.activeRegionId,
     }));
     setDrawerOpen(true);
   }, [activeSlotScope]);
 
+  const selectSlotScope = useCallback((slotScope) => {
+    const normalizedScope = normalizeLocationSlotScope(slotScope);
+    setState((current) => ({
+      ...current,
+      activeSlotScope: normalizedScope,
+      activeSlot: isSlotInScope(current.activeSlot, normalizedScope)
+        ? current.activeSlot
+        : getDefaultSlotIdForScope(normalizedScope),
+      activeRegionId:
+        normalizedScope === LOCATION_SLOT_SCOPE_REGION
+          ? current.activeRegionId || current.locationRegions?.[0]?.id || ""
+          : current.activeRegionId,
+    }));
+  }, []);
+
   const addComponentToActiveSlot = useCallback((component) => {
     if (!activeSlot) return;
+    const closesAfterRoomAssignment = activeSlotScope === LOCATION_SLOT_SCOPE_REGION;
     setState((current) =>
       assignComponentToSlot(current, component, activeSlot, {
         scope: activeSlotScope,
         regionId: current.activeRegionId,
       }),
     );
-    setDrawerOpen(true);
-  }, [activeSlot, activeSlotScope]);
+    setDrawerOpen(!closesAfterRoomAssignment);
+    setBuilderMode(activeSlotScope === LOCATION_SLOT_SCOPE_REGION ? "scratch" : builderMode);
+    setTransientDraftStatus(
+      closesAfterRoomAssignment
+        ? `${activeSlot.label || "Room slot"} assigned`
+        : `${activeSlot.label || "Map slot"} assigned`,
+    );
+  }, [activeSlot, activeSlotScope, builderMode, setTransientDraftStatus]);
 
   const removeComponentFromActiveSlot = useCallback((componentId) => {
     if (!activeSlot) return;
@@ -742,6 +766,14 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       || (Array.isArray(state.locationRegions) ? state.locationRegions[0] : null)
       || null,
     [state.activeRegionId, state.locationRegions],
+  );
+  const activeRoomProgramEntry = useMemo(
+    () => getSelectedRoomProgramEntry(state, generatedMapPreview),
+    [generatedMapPreview, state],
+  );
+  const nextMissingRoomSlot = useMemo(
+    () => activeRoomProgramEntry ? getNextMissingRoomSlot(state, activeRoomProgramEntry.id) : null,
+    [activeRoomProgramEntry, state],
   );
 
   const focusScratchRoomSlot = useCallback((slotId, regionId = "") => {
@@ -755,16 +787,57 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     setDrawerOpen(true);
   }, [activeScratchRegion?.id]);
 
-  const leftPanel = builderMode === "theme" || builderMode === "scratch" ? (
+  const activeRegionIndex = useMemo(() => {
+    const regions = Array.isArray(state.locationRegions) ? state.locationRegions : [];
+    return regions.findIndex((region) => region.id === state.activeRegionId);
+  }, [state.activeRegionId, state.locationRegions]);
+
+  const selectRelativeRoom = useCallback((direction) => {
+    const regions = Array.isArray(state.locationRegions) ? state.locationRegions : [];
+    if (!regions.length) return;
+
+    const currentIndex = activeRegionIndex >= 0 ? activeRegionIndex : 0;
+    const nextIndex = Math.max(0, Math.min(regions.length - 1, currentIndex + direction));
+    const nextRegion = regions[nextIndex];
+    if (!nextRegion?.id) return;
+
+    setBuilderMode("scratch");
+    selectRoomTarget(nextRegion.id);
+  }, [activeRegionIndex, selectRoomTarget, state.locationRegions]);
+
+  const openRoomComponents = useCallback(() => {
+    setBuilderMode("scratch");
+    setDrawerOpen(true);
+  }, []);
+
+  const openNextMissingRoomSlot = useCallback(() => {
+    if (!nextMissingRoomSlot?.slot?.id) {
+      openRoomComponents();
+      return;
+    }
+
+    focusSlot(nextMissingRoomSlot.slot.id, LOCATION_SLOT_SCOPE_REGION, activeRoomProgramEntry?.id || activeScratchRegion?.id || "");
+    setBuilderMode("scratch");
+  }, [activeRoomProgramEntry?.id, activeScratchRegion?.id, focusSlot, nextMissingRoomSlot, openRoomComponents]);
+
+  const leftPanel = builderMode === "theme" ? (
     <LocationBriefPanel
       state={state}
       setState={setState}
       mapRequest={mapRequest}
+      mapPlanDetails={(
+        <LocationMapWideDetailsBlock
+          activeSlot={activeSlot}
+          activeSlotScope={activeSlotScope}
+          state={state}
+          onFocusSlot={focusSlot}
+        />
+      )}
       modeControls={null}
-      forcedDungeonMode={builderMode}
+      forcedDungeonMode="theme"
+      showGenerateAction={false}
       uiMode={uiMode}
       onAddScratchRoom={addScratchRoom}
-      onGenerateScratchMap={generateScratchMap}
       onGenerateThemeRooms={generateThemeRooms}
       onRegenerateScratchRoom={regenerateScratchRoom}
       onRemoveScratchRoom={removeScratchRoom}
@@ -788,26 +861,21 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
         )
       }
     />
-  ) : builderMode === "export" ? (
-    <LocationExportToolsPanel
-      onSelectMap={() => activateBuilderMode("map")}
-      onSelectScratch={() => activateBuilderMode("scratch")}
-      onSelectTheme={() => activateBuilderMode("theme")}
-    />
-  ) : (
-    <LocationSlotRail
-      state={state}
-      setState={setState}
-      selectedComponents={selectedComponents}
-      onOpenMapGenerator={onOpenMapGenerator}
-      snapshot={snapshot}
+) : builderMode === "scratch" ? (
+    <LocationRoomInspector
+      activeSlot={activeSlot}
       generatedMapPreview={generatedMapPreview}
-      modeControls={null}
+      state={state}
       onFocusSlot={focusSlot}
     />
-  );
+  ) : builderMode === "export" ? (
+    <LocationExportToolsPanel
+      onSelectFrame={() => activateBuilderMode("theme")}
+      onSelectScratch={() => activateBuilderMode("scratch")}
+    />
+  ) : null;
 
-  const navigatorPanel = (builderMode === "map" || builderMode === "scratch") && drawerOpen && activeSlot ? (
+  const navigatorPanel = (builderMode === "theme" || builderMode === "scratch") && drawerOpen && activeSlot ? (
     <LocationComponentPickerModal
       activeRegion={activeRegionForPicker}
       assignedComponents={assignedComponentsForActiveSlot}
@@ -827,28 +895,13 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     />
   ) : null;
 
-  const rightPanel = builderMode === "export" ? (
-    <LocationExportPanel
-      digest={digest}
+  const rightPanel = (
+    <LocationMapDetailsPanel
       generatedMapPreview={generatedMapPreview}
       mapRequest={mapRequest}
+      side="right"
       state={state}
-      uiMode={uiMode}
-    />
-  ) : (
-    <LocationRecapPanel
-      activeRegion={activeRegionForPicker}
-      activeSlot={activeSlot}
-      activeSlotScope={activeSlotScope}
-      onNewMapSeed={refreshMapSeed}
-      onOpenComponents={() => {
-        setBuilderMode("map");
-        setDrawerOpen(true);
-      }}
       onRenameLocation={renameLocation}
-      onStartMapEditing={startMapEditing}
-      onViewExport={() => activateBuilderMode("export")}
-      state={state}
     />
   );
 
@@ -862,6 +915,29 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       onCommitWorkspace={commitEmbeddedMapWorkspace}
       onExitWorkspace={() => setIsMapEditing(false)}
       onRefreshFromComposer={refreshEmbeddedMapWorkspace}
+    />
+  ) : null;
+
+
+  const centerToolbarPanel = !isMapEditing ? (
+    <LocationMapToolbar
+      activeRegion={activeScratchRegion}
+      builderMode={builderMode}
+      canGoNextRoom={activeRegionIndex >= 0 && activeRegionIndex < (state.locationRegions?.length || 0) - 1}
+      canGoPreviousRoom={activeRegionIndex > 0}
+      generatedMapPreview={generatedMapPreview}
+      hasRooms={Boolean(state.locationRegions?.length)}
+      nextRoomSlot={nextMissingRoomSlot}
+      onAddMissingRoomSlot={openNextMissingRoomSlot}
+      onGenerateThemeRooms={generateThemeRooms}
+      onNewMapSeed={refreshMapSeed}
+      onOpenComponents={openRoomComponents}
+      onSelectExport={() => activateBuilderMode("export")}
+      onSelectFrame={() => activateBuilderMode("theme")}
+      onSelectNextRoom={() => selectRelativeRoom(1)}
+      onSelectPreviousRoom={() => selectRelativeRoom(-1)}
+      onSelectRooms={() => activateBuilderMode("scratch")}
+      onStartMapEditing={startMapEditing}
     />
   ) : null;
 
@@ -884,12 +960,37 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
           previewResetKey={previewResetKey}
           uiMode={uiMode}
           isMapEditing={isMapEditing}
-          modeControls={isMapEditing ? null : builderModeControls}
+          modeControls={null}
           leftPanel={isMapEditing ? null : leftPanel}
           rightPanel={isMapEditing ? null : rightPanel}
           navigatorPanel={isMapEditing ? null : navigatorPanel}
           workspacePanel={mapWorkspacePanel}
           contextPanel={null}
+          toolbarPanel={centerToolbarPanel}
+          regionSelectionScope={builderMode === "theme" ? LOCATION_SLOT_SCOPE_MAP : LOCATION_SLOT_SCOPE_REGION}
+          bottomDockPanel={!isMapEditing ? (
+            <LocationGuidedFlowPanel
+              activeRegion={activeRegionForPicker}
+              activeSlot={activeSlot}
+              builderMode={builderMode}
+              generatedMapPreview={generatedMapPreview}
+              hasMapManualOverrides={Boolean(state.mapManualOverrides)}
+              regions={state.locationRegions || []}
+              selectedComponents={selectedComponents}
+              onGenerateScratchMap={generateScratchMap}
+              onGenerateThemeRooms={generateThemeRooms}
+              nextRoomSlot={nextMissingRoomSlot}
+              onOpenComponents={() => {
+                if (builderMode === "scratch" && nextMissingRoomSlot?.slot?.id) {
+                  openNextMissingRoomSlot();
+                  return;
+                }
+                setBuilderMode(builderMode === "scratch" ? "scratch" : "theme");
+                setDrawerOpen(true);
+              }}
+              onSelectMode={activateBuilderMode}
+            />
+          ) : null}
           onScratchRoomFocusSlot={focusScratchRoomSlot}
           onScratchRoomUpdate={updateScratchRoom}
         />

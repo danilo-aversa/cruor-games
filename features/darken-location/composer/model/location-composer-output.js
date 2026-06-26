@@ -367,8 +367,8 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
     "READ-ALOUD",
     readAloudText,
     "",
-    "REGIONS",
-    roomText || "No regions generated yet.",
+    "ROOM PROGRAM",
+    roomText || "No rooms generated yet.",
     "",
     "HAZARDS",
     hazardText,
@@ -393,7 +393,7 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
     "READ-ALOUD",
     readAloudText,
     "",
-    "ROOMS",
+    "ROOM KEY",
     ...regionSections.map((section) => section.tableLine),
     "",
     "HAZARDS",
@@ -439,7 +439,7 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
 
 export function getRegionSummaryText(compilePreview) {
   return [
-    "REGION SUMMARY",
+    "ROOM PROGRAM SUMMARY",
     ...compilePreview.regionSections.map((section) => section.summaryText),
   ].join("\n\n");
 }
