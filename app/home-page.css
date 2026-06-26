@@ -16,7 +16,7 @@
   --home-panel-strong: var(--cruor-color-r21-g16-b18-a840);
   width: min(var(--home-max), calc(100% - clamp(28px, 6vw, 72px)));
   margin: 0 auto;
-  padding: 0 0 40px;
+  padding: 0;
   position: relative;
   isolation: isolate;
 }
@@ -33,13 +33,13 @@ main.cruor-home::before {
   opacity: 0.1;
 }
 
-:root:has(.cruor-home),
-body:has(.cruor-home) {
+:root[data-a11y-scrollbar="custom"]:has(.cruor-home),
+:root[data-a11y-scrollbar="custom"] body:has(.cruor-home) {
   scrollbar-width: none;
 }
 
-:root:has(.cruor-home)::-webkit-scrollbar,
-body:has(.cruor-home)::-webkit-scrollbar {
+:root[data-a11y-scrollbar="custom"]:has(.cruor-home)::-webkit-scrollbar,
+:root[data-a11y-scrollbar="custom"] body:has(.cruor-home)::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
@@ -497,81 +497,6 @@ body:has(.cruor-home)::-webkit-scrollbar {
   margin: 0 auto;
   font-size: var(--text-size-3xl);
   line-height: 1.62;
-}
-
-.cruor-home__workbench-flow {
-  --workbench-flow-gap: clamp(16px, 2.4vw, 30px);
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--workbench-flow-gap);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  text-align: left;
-}
-
-.cruor-home__workbench-flow li {
-  position: relative;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 10px 14px;
-  align-items: start;
-  min-height: 100%;
-  padding: clamp(18px, 2vw, 24px);
-  overflow: visible;
-  border: 1px solid var(--cruor-color-r208-g162-b170-a140);
-  background: linear-gradient(180deg, rgba(122, 26, 40, 0.18), rgba(8, 5, 6, 0.78));
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 238, 242, 0.04),
-    0 0 24px rgba(153, 17, 35, 0.14);
-}
-
-.cruor-home__workbench-flow li:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 100%;
-  width: var(--workbench-flow-gap);
-  border-top: 1px solid rgba(208, 162, 170, 0.48);
-  transform: translateY(-50%);
-}
-
-.cruor-home__workbench-flow li > span {
-  grid-column: 1;
-  grid-row: 1 / span 3;
-  align-self: stretch;
-  display: grid;
-  place-items: start center;
-  min-width: 36px;
-  color: rgba(208, 162, 170, 0.46);
-  font-size: var(--text-size-sm);
-  font-weight: 950;
-  letter-spacing: 0.1em;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-}
-
-.cruor-home__workbench-flow i {
-  grid-column: 2;
-  color: var(--home-accent-pale);
-  font-size: var(--text-size-3xl);
-  text-shadow: 0 0 18px rgba(153, 17, 35, 0.42);
-}
-
-.cruor-home__workbench-flow strong {
-  grid-column: 2;
-  color: var(--cruor-color-text, var(--text));
-  font-size: var(--text-size-2xl);
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.cruor-home__workbench-flow p {
-  grid-column: 2;
-  color: var(--cruor-color-muted, var(--muted));
-  font-size: var(--text-size-xl);
-  line-height: 1.5;
 }
 
 .cruor-home__section {
@@ -1402,18 +1327,6 @@ body:has(.cruor-home)::-webkit-scrollbar {
   color: rgba(238, 238, 238, 0.78);
 }
 
-.cruor-home__workbench-flow li {
-  border-color: rgba(208, 162, 170, 0.12);
-  background:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.026), rgba(122, 26, 40, 0.052)),
-    rgba(5, 4, 5, 0.28);
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.024);
-}
-
-.cruor-home__workbench-flow li:not(:last-child)::after {
-  border-top-color: rgba(208, 162, 170, 0.22);
-}
-
 .cruor-home__section-kicker {
   color: var(--home-accent-pale);
   font-size: var(--text-size-sm);
@@ -1755,9 +1668,13 @@ body:has(.cruor-home)::-webkit-scrollbar {
   min-height: 0;
   margin: 0;
   overflow: hidden;
-  border: 1px solid rgba(208, 162, 170, 0.2);
+  border: 1px solid rgba(208, 162, 170, 0.22);
+  border-radius: 18px;
   background: rgba(8, 5, 6, 0.92);
   box-shadow:
+    inset 0 0 0 1px rgba(208, 162, 170, 0.16),
+    inset 0 1px 0 rgba(255, 238, 242, 0.06),
+    inset 0 -1px 0 rgba(122, 26, 40, 0.18),
     0 0 0 1px rgba(0, 0, 0, 0.78),
     0 16px 34px rgba(0, 0, 0, 0.34);
   text-align: left;
@@ -1778,6 +1695,16 @@ body:has(.cruor-home)::-webkit-scrollbar {
   user-select: none;
 }
 
+.cruor-home__source-card::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  z-index: 3;
+  border: 1px solid rgba(208, 162, 170, 0.17);
+  border-radius: 11px;
+  pointer-events: none;
+}
+
 .cruor-home__source-card::after {
   content: "";
   position: absolute;
@@ -1790,7 +1717,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 
 .cruor-home__source-card-copy {
   position: relative;
-  z-index: 2;
+  z-index: 4;
   display: grid;
   gap: 8px;
   align-content: end;
@@ -1798,12 +1725,17 @@ body:has(.cruor-home)::-webkit-scrollbar {
 }
 
 .cruor-home__source-card-copy strong {
+  display: inline-block;
+  width: fit-content;
+  padding-bottom: 7px;
+  border-bottom: 1px solid rgba(208, 162, 170, 0.32);
   color: var(--cruor-color-text, var(--text));
-  font-family: var(--display);
-  font-size: var(--display-size-s);
-  font-weight: 950;
-  line-height: 0.98;
-  letter-spacing: -0.04em;
+  font-family: var(--font);
+  font-size: clamp(1rem, 1.24vw, 1.24rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
 }
 
 .cruor-home__source-card-copy p {
@@ -2003,18 +1935,6 @@ body:has(.cruor-home)::-webkit-scrollbar {
 .cruor-home__statement-head p {
   max-width: 66ch;
   color: rgba(238, 238, 238, 0.78);
-}
-
-.cruor-home__workbench-flow li {
-  border-color: rgba(208, 162, 170, 0.12);
-  background:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.026), rgba(122, 26, 40, 0.052)),
-    rgba(5, 4, 5, 0.28);
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.024);
-}
-
-.cruor-home__workbench-flow li:not(:last-child)::after {
-  border-top-color: rgba(208, 162, 170, 0.22);
 }
 
 .cruor-home__section-kicker {
@@ -2255,16 +2175,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
     display: none;
   }
 
-  .cruor-home__scroll-progress-dot > span:not(.cruor-home__scroll-progress-label)::before,
-  .cruor-home__workbench-flow li {
-    transition: none;
-  }
-
-  .cruor-home__workbench-flow::after {
-    animation: none;
-    opacity: 0.28;
-  }
-}
+    }
 
 @media (max-width: 1080px) {
   .cruor-home__hero,
@@ -2312,15 +2223,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
     padding: 30px 22px;
   }
 
-  .cruor-home__workbench-flow {
-    grid-template-columns: 1fr;
-  }
-
-  .cruor-home__workbench-flow li:not(:last-child)::after {
-    content: none;
-  }
-
-  .cruor-home__section {
+      .cruor-home__section {
     margin-top: 22px;
     padding: 30px 18px 70px;
   }
@@ -2458,155 +2361,6 @@ body:has(.cruor-home)::-webkit-scrollbar {
 /* Flow, support, and footer layout */
 .cruor-home__hero-availability {
   display: none;
-}
-
-.cruor-home__workbench-flow {
-  --workbench-flow-gap: clamp(18px, 2.5vw, 36px);
-  --workbench-node-size: clamp(54px, 4.6vw, 68px);
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--workbench-flow-gap);
-  align-items: stretch;
-  margin: 0;
-  padding: clamp(24px, 3vw, 40px);
-  overflow: visible;
-  border: 1px solid rgba(208, 162, 170, 0.14);
-  background:
-    radial-gradient(circle at 50% 50%, rgba(122, 26, 40, 0.18), transparent 66%),
-    linear-gradient(180deg, rgba(255, 238, 242, 0.036), rgba(122, 26, 40, 0.07)),
-    rgba(5, 4, 5, 0.28);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 238, 242, 0.035),
-    0 26px 72px rgba(0, 0, 0, 0.28),
-    0 0 42px rgba(122, 26, 40, 0.15);
-  list-style: none;
-}
-
-.cruor-home__workbench-flow::before,
-.cruor-home__workbench-flow::after {
-  content: none;
-  display: none;
-}
-
-.cruor-home__workbench-flow li {
-  position: relative;
-  display: grid;
-  grid-template-columns: var(--workbench-node-size) minmax(0, 1fr);
-  grid-template-rows: auto auto;
-  gap: 8px 16px;
-  align-items: center;
-  min-width: 0;
-  min-height: clamp(154px, 14vw, 190px);
-  padding: clamp(18px, 2.1vw, 26px);
-  border: 1px solid rgba(208, 162, 170, 0.12);
-  background:
-    linear-gradient(135deg, rgba(255, 238, 242, 0.042), rgba(122, 26, 40, 0.055) 56%, rgba(5, 4, 5, 0.16)),
-    rgba(5, 4, 5, 0.2);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 238, 242, 0.026),
-    inset 3px 0 0 rgba(122, 26, 40, 0.28);
-  outline: none;
-  transition:
-    border-color 0.18s ease,
-    background 0.18s ease,
-    box-shadow 0.18s ease,
-    opacity 0.18s ease,
-    transform 0.18s ease;
-}
-
-.cruor-home__workbench-flow li:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: calc((var(--workbench-flow-gap) * -0.5) - 8px);
-  z-index: 2;
-  width: 16px;
-  height: 16px;
-  border-top: 1px solid rgba(208, 162, 170, 0.34);
-  border-right: 1px solid rgba(208, 162, 170, 0.34);
-  background: transparent;
-  box-shadow: 5px -5px 16px rgba(122, 26, 40, 0.16);
-  pointer-events: none;
-  transform: translateY(-50%) rotate(45deg);
-}
-
-.cruor-home__workbench-flow:hover li:not(:hover),
-.cruor-home__workbench-flow:focus-within li:not(:focus-within) {
-  opacity: 0.66;
-}
-
-.cruor-home__workbench-flow li:hover,
-.cruor-home__workbench-flow li:focus-visible {
-  border-color: rgba(208, 162, 170, 0.24);
-  background:
-    linear-gradient(135deg, rgba(255, 238, 242, 0.06), rgba(122, 26, 40, 0.105) 58%, rgba(5, 4, 5, 0.24)),
-    rgba(9, 5, 7, 0.46);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 238, 242, 0.045),
-    inset 3px 0 0 rgba(208, 162, 170, 0.34),
-    0 0 28px rgba(122, 26, 40, 0.2);
-  transform: translateY(-2px);
-}
-
-.cruor-home__workbench-flow li > span {
-  position: absolute;
-  top: clamp(10px, 1vw, 14px);
-  right: clamp(10px, 1vw, 14px);
-  display: inline-grid;
-  place-items: center;
-  width: 34px;
-  min-width: 34px;
-  height: 22px;
-  border: 1px solid rgba(208, 162, 170, 0.16);
-  background: rgba(5, 4, 5, 0.46);
-  color: rgba(208, 162, 170, 0.72);
-  font-size: var(--text-size-xs);
-  font-weight: 950;
-  letter-spacing: 0.08em;
-  line-height: 1;
-}
-
-.cruor-home__workbench-flow i {
-  display: grid;
-  grid-column: 1;
-  grid-row: 1 / span 2;
-  place-items: center;
-  width: var(--workbench-node-size);
-  height: var(--workbench-node-size);
-  border: 1px solid rgba(208, 162, 170, 0.24);
-  background:
-    radial-gradient(circle at 50% 38%, rgba(208, 162, 170, 0.14), transparent 58%),
-    linear-gradient(180deg, rgba(122, 26, 40, 0.32), rgba(5, 4, 5, 0.64));
-  color: var(--home-accent-pale);
-  font-size: clamp(1.1rem, 1.7vw, 1.45rem);
-  box-shadow:
-    0 0 0 1px rgba(255, 238, 242, 0.032),
-    0 0 22px rgba(122, 26, 40, 0.24),
-    inset 0 1px 0 rgba(255, 238, 242, 0.055);
-  text-shadow: 0 0 16px rgba(153, 17, 35, 0.38);
-}
-
-.cruor-home__workbench-flow strong {
-  grid-column: 2;
-  align-self: end;
-  max-width: 22ch;
-  color: var(--cruor-color-text, var(--text));
-  font-family: var(--font);
-  font-size: clamp(0.88rem, 0.88vw, 1rem);
-  font-weight: 900;
-  line-height: 1.12;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.cruor-home__workbench-flow p {
-  grid-column: 2;
-  align-self: start;
-  max-width: 31ch;
-  color: rgba(238, 238, 238, 0.74);
-  font-size: clamp(1rem, 0.98vw, 1.12rem);
-  line-height: 1.5;
 }
 
 .cruor-home__section--support {
@@ -2766,36 +2520,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 }
 
 @media (max-width: 720px) {
-  .cruor-home__workbench-flow {
-    --workbench-node-size: 52px;
-    grid-template-columns: 1fr;
-    gap: 14px;
-    padding: 18px;
-  }
-
-  .cruor-home__workbench-flow::before,
-  .cruor-home__workbench-flow::after,
-  .cruor-home__workbench-flow li:not(:last-child)::after {
-    content: none;
-    display: none;
-  }
-
-  .cruor-home__workbench-flow li {
-    min-height: 0;
-    padding: 16px 14px;
-  }
-
-  .cruor-home__workbench-flow li > span {
-    top: 8px;
-    right: 8px;
-  }
-
-  .cruor-home__workbench-flow strong,
-  .cruor-home__workbench-flow p {
-    max-width: none;
-  }
-
-  .cruor-home__footer {
+            .cruor-home__footer {
     align-items: start;
     flex-direction: column;
   }
@@ -2848,16 +2573,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
   margin-bottom: clamp(30px, 3.6vw, 48px);
 }
 
-#workbenchFlow .cruor-home__workbench-flow {
-  padding: clamp(24px, 3vw, 40px);
-}
-
-#workbenchFlow .cruor-home__workbench-flow li {
-  background:
-    linear-gradient(135deg, rgba(255, 238, 242, 0.042), rgba(122, 26, 40, 0.055) 56%, rgba(5, 4, 5, 0.16)),
-    rgba(5, 4, 5, 0.2);
-}
-
+.cruor-home__section--output,
 .cruor-home__section--sources,
 .cruor-home__section--support {
   background:
@@ -3195,27 +2911,16 @@ body:has(.cruor-home)::-webkit-scrollbar {
   position: relative;
   display: grid;
   gap: clamp(22px, 3vw, 38px);
-  padding: clamp(18px, 2.4vw, 30px);
-  overflow: hidden;
-  border: 1px solid rgba(208, 162, 170, 0.16);
-  background:
-    radial-gradient(ellipse 78% 72% at 50% 40%, rgba(122, 26, 40, 0.16), transparent 70%),
-    linear-gradient(180deg, rgba(255, 238, 242, 0.028), rgba(0, 0, 0, 0.1)),
-    rgba(7, 5, 6, 0.54);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 238, 242, 0.04),
-    0 24px 72px rgba(0, 0, 0, 0.28);
+  padding: clamp(18px, 2.4vw, 30px) 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .cruor-home__output-board::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(90deg, rgba(208, 162, 170, 0.045), transparent 18%, transparent 82%, rgba(208, 162, 170, 0.045)),
-    linear-gradient(180deg, rgba(255, 238, 242, 0.035), transparent 30%, transparent 72%, rgba(122, 26, 40, 0.075));
-  opacity: 0.8;
+  content: none;
+  display: none;
 }
 
 .cruor-home__output-board-head,
@@ -3273,19 +2978,17 @@ body:has(.cruor-home)::-webkit-scrollbar {
 .cruor-home__output-rail {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  border: 1px solid rgba(208, 162, 170, 0.13);
-  background: rgba(208, 162, 170, 0.13);
+  gap: clamp(18px, 2.2vw, 28px);
+  border: 0;
+  background: transparent;
 }
 
 .cruor-home__output-panel {
   display: grid;
   gap: 14px;
   min-width: 0;
-  padding: clamp(12px, 1.5vw, 18px);
-  background:
-    linear-gradient(180deg, rgba(255, 238, 242, 0.026), rgba(0, 0, 0, 0.1)),
-    rgba(5, 4, 5, 0.72);
+  padding: 0;
+  background: transparent;
 }
 
 .cruor-home__output-panel-frame {
@@ -3293,9 +2996,9 @@ body:has(.cruor-home)::-webkit-scrollbar {
   aspect-ratio: 16 / 10;
   min-height: 0;
   overflow: hidden;
-  border: 1px solid rgba(208, 162, 170, 0.18);
-  background: #050405;
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.035);
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .cruor-home__output-placeholder {
@@ -3306,31 +3009,18 @@ body:has(.cruor-home)::-webkit-scrollbar {
   justify-items: center;
   gap: 7px;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 42%, rgba(122, 26, 40, 0.24), transparent 58%),
-    linear-gradient(135deg, rgba(122, 26, 40, 0.2), transparent 44%),
-    rgba(5, 4, 5, 0.82);
+  background: transparent;
   color: rgba(208, 162, 170, 0.68);
 }
 
 .cruor-home__output-placeholder::before {
-  content: "";
-  position: absolute;
-  inset: 12px;
-  border: 1px solid rgba(255, 238, 242, 0.06);
-  pointer-events: none;
+  content: none;
+  display: none;
 }
 
 .cruor-home__output-placeholder::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(90deg, rgba(255, 238, 242, 0.02) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 238, 242, 0.02) 1px, transparent 1px);
-  background-size: 28px 28px;
-  opacity: 0.68;
+  content: none;
+  display: none;
 }
 
 .cruor-home__output-placeholder i,
@@ -3375,10 +3065,10 @@ body:has(.cruor-home)::-webkit-scrollbar {
   justify-content: space-between;
   gap: 12px;
   padding: 9px 10px;
-  border: 1px solid rgba(208, 162, 170, 0.16);
-  background: rgba(5, 4, 5, 0.78);
-  box-shadow: 0 -18px 32px rgba(0, 0, 0, 0.26);
-  backdrop-filter: blur(6px);
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
 .cruor-home__output-panel-caption span,
@@ -3541,6 +3231,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 }
 
 #workbenchFlow.cruor-home__statement,
+.cruor-home__section--output,
 .cruor-home__section--sources,
 .cruor-home__section--support {
   --cruor-band-shadow: 0.72;
@@ -3590,6 +3281,8 @@ body:has(.cruor-home)::-webkit-scrollbar {
 
 #workbenchFlow.cruor-home__statement::before,
 #workbenchFlow.cruor-home__statement::after,
+.cruor-home__section--output::before,
+.cruor-home__section--output::after,
 .cruor-home__section--sources::before,
 .cruor-home__section--sources::after,
 .cruor-home__section--support::before,
@@ -3607,12 +3300,19 @@ body:has(.cruor-home)::-webkit-scrollbar {
     clamp(78px, 8vw, 122px);
 }
 
+.cruor-home__section--output,
 .cruor-home__section--sources,
 .cruor-home__section--support {
   margin-right: calc(50% - 50vw);
   margin-left: calc(50% - 50vw);
   padding-right: max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2));
   padding-left: max(clamp(28px, 6vw, 72px), calc((100vw - var(--home-max)) / 2));
+}
+
+.cruor-home__section--output {
+  padding-top: clamp(72px, 8vw, 112px);
+  padding-bottom: clamp(66px, 7vw, 104px);
+  animation-delay: -1.7s;
 }
 
 .cruor-home__section--sources {
@@ -3628,6 +3328,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 }
 
 #workbenchFlow.cruor-home__statement > *,
+.cruor-home__section--output > *,
 .cruor-home__section--sources > *,
 .cruor-home__section--support > * {
   position: relative;
@@ -3916,14 +3617,16 @@ body:has(.cruor-home)::-webkit-scrollbar {
     linear-gradient(
       180deg,
       rgba(5, 4, 5, 0) 0%,
-      rgba(18, 6, 10, 0.7) 24%,
-      rgba(51, 3, 12, 0.48) 50%,
-      rgba(18, 6, 10, 0.68) 76%,
+      rgba(18, 6, 10, var(--cruor-band-shadow)) 24%,
+      rgba(51, 3, 12, var(--cruor-band-core)) 50%,
+      rgba(18, 6, 10, var(--cruor-band-shadow-low)) 76%,
       rgba(5, 4, 5, 0) 100%
     ),
-    radial-gradient(ellipse 80% 62% at 50% 50%, rgba(122, 26, 40, 0.36), rgba(122, 26, 40, 0.14) 42%, rgba(122, 26, 40, 0) 82%),
-    radial-gradient(ellipse 44% 52% at 14% 48%, rgba(208, 162, 170, 0.08), rgba(208, 162, 170, 0.03) 34%, rgba(208, 162, 170, 0) 72%),
-    radial-gradient(ellipse 46% 54% at 86% 52%, rgba(94, 8, 22, 0.38), rgba(94, 8, 22, 0.12) 40%, rgba(94, 8, 22, 0) 80%);
+    radial-gradient(ellipse 80% 62% at 50% 50%, rgba(122, 26, 40, var(--cruor-band-glow)), rgba(122, 26, 40, var(--cruor-band-glow-soft)) 42%, rgba(122, 26, 40, 0) 82%),
+    radial-gradient(ellipse 44% 52% at 14% 48%, rgba(208, 162, 170, var(--cruor-band-highlight)), rgba(208, 162, 170, var(--cruor-band-highlight-soft)) 34%, rgba(208, 162, 170, 0) 72%),
+    radial-gradient(ellipse 46% 54% at 86% 52%, rgba(94, 8, 22, var(--cruor-band-side)), rgba(94, 8, 22, var(--cruor-band-side-soft)) 40%, rgba(94, 8, 22, 0) 80%);
+  background-repeat: no-repeat;
+  animation: cruor-editorial-red-breath 7s ease-in-out infinite;
   box-shadow: none;
   filter: none;
   transform: none;
@@ -4052,7 +3755,7 @@ body:has(.cruor-home)::-webkit-scrollbar {
 #workbenchFlow .cruor-home__process-card {
   position: relative;
   overflow: visible;
-  width: min(100%, 246px);
+  width: min(100%, 272px);
   margin: 0 auto;
   aspect-ratio: var(--process-card-ratio);
   transform-style: preserve-3d;
@@ -4239,12 +3942,12 @@ body:has(.cruor-home)::-webkit-scrollbar {
   transition-delay: 0s;
 }
 
-#workbenchFlow.is-step-1 .cruor-home__process-connector[data-connector="1"],
-#workbenchFlow.is-step-2 .cruor-home__process-connector,
-#workbenchFlow.is-step-3 .cruor-home__process-connector {
+#workbenchFlow.is-step-2 .cruor-home__process-connector[data-connector="1"],
+#workbenchFlow.is-step-3 .cruor-home__process-connector,
+#workbenchFlow.cruor-home__statement--sticky.is-completed .cruor-home__process-connector {
   color: rgba(208, 162, 170, 0.82);
   opacity: 1;
-  transform: scale(1.06);
+  transform: translateY(1px) scale(1.06);
 }
 
 

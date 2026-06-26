@@ -37,7 +37,7 @@ const TOOL_CARDS = [
     descriptor: "01 / Location & Map Generator",
     openLabel: "Open Generator",
     summary:
-      "Turn a dark fantasy premise into a playable location: mapped regions, hazards, clues, sensory details, and table-ready text shaped by your chosen horror logic.",
+      "Turn a dark fantasy premise into a playable location: a plague chapel, cursed ossuary, flooded crypt, or ruined manor with mapped regions, hazards, clues, sensory details, and table-ready notes.",
     features: [
       {
         icon: "fa-sliders",
@@ -148,7 +148,7 @@ const TOOL_CARDS = [
     descriptor: "02 / Monster & Stat Block Generator",
     openLabel: "Open Generator",
     summary:
-      "Build a 5E horror monster from concept to stat block: role, grafts, attacks, weaknesses, tactics, and encounter support in one workflow.",
+      "Build a 5E horror monster from concept to stat block: a corpse-fed ghoul, bone saint, plague beast, or cursed knight with role, grafts, attacks, weaknesses, tactics, and encounter support.",
     features: [
       {
         icon: "fa-id-card-clip",
@@ -1379,9 +1379,10 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           <div className="cruor-home__section-head">
             <h2 id="sourcesTitle">Real Sources, Playable Horror.</h2>
             <p>
-              Cruor keeps its inspirations visible. Folklore, historical sites, ritual practice,
-              disease, anatomy, architecture, and material culture become source anchors, motifs,
-              and components the tools can actually use.
+              Cruor keeps its inspirations visible. An ossuary can become room logic, a ritual
+              practice can become a hazard, and anatomy can become monster grafts. Folklore,
+              historical sites, disease, architecture, and material culture become source anchors
+              the tools can actually use.
             </p>
           </div>
 

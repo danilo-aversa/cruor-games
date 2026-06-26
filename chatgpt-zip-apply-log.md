@@ -4159,3 +4159,125 @@ _Nessun file aggiunto._
 
 - Percorso sospetto nello ZIP: eslint.config.js
 
+
+---
+
+## 2026-06-26 09:59:42
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-ui-audit-fixes-12-15-1a.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-ui-audit-fixes-12-15-1a.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~app/home-page.css`
+- `~shared/accessibility/accessibility.settings.js`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+
+
+---
+
+## 2026-06-26 10:04:54
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-ui-audit-fixes-12-15-1a-b.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-ui-audit-fixes-12-15-1a-b.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~app/home-page.css`
+- `~shared/accessibility/accessibility.settings.js`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+
+
+---
+
+## 2026-06-26 10:05:06
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-ui-audit-fixes-12-15-1a-b.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-ui-audit-fixes-12-15-1a-b.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~app/home-page.css`
+- `~shared/accessibility/accessibility.settings.js`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+
+
+---
+
+## 2026-06-26 10:15:15
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-concrete-copy-12-15-1a-c.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-concrete-copy-12-15-1a-c.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~shared/accessibility/accessibility.settings.js`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+
+
+---
+
+## 2026-06-26 10:56:00
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-editorial-polish-12-15-1a-d.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-editorial-polish-12-15-1a-d.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~shared/accessibility/accessibility.settings.js`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+

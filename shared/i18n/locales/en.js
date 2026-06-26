@@ -122,6 +122,20 @@ export default {
           },
         },
       },
+      scrollbar: {
+        label: "Scrollbar",
+        description: "Choose between Cruor's custom page progress and the native browser scrollbar.",
+        options: {
+          custom: {
+            label: "Custom",
+            description: "Use Cruor's custom scroll progress and hide the browser scrollbar.",
+          },
+          browser: {
+            label: "Browser",
+            description: "Use the native browser scrollbar for the homepage.",
+          },
+        },
+      },
     },
   },
   app: {

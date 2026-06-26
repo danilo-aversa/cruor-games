@@ -7,6 +7,7 @@ export const DEFAULT_ACCESSIBILITY_SETTINGS = Object.freeze({
   text: "default",
   focus: "default",
   tooltips: "default",
+  scrollbar: "custom",
 });
 
 export const ACCESSIBILITY_SETTING_GROUPS = Object.freeze([
@@ -134,6 +135,23 @@ export const ACCESSIBILITY_SETTING_GROUPS = Object.freeze([
         id: "off",
         labelKey: "settings.accessibility.tooltips.options.off.label",
         descriptionKey: "settings.accessibility.tooltips.options.off.description",
+      },
+    ],
+  },
+  {
+    id: "scrollbar",
+    labelKey: "settings.accessibility.scrollbar.label",
+    descriptionKey: "settings.accessibility.scrollbar.description",
+    options: [
+      {
+        id: "custom",
+        labelKey: "settings.accessibility.scrollbar.options.custom.label",
+        descriptionKey: "settings.accessibility.scrollbar.options.custom.description",
+      },
+      {
+        id: "browser",
+        labelKey: "settings.accessibility.scrollbar.options.browser.label",
+        descriptionKey: "settings.accessibility.scrollbar.options.browser.description",
       },
     ],
   },
