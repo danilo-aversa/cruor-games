@@ -4281,3 +4281,97 @@ _Nessun file aggiunto._
 - `~shared/i18n/locales/en.js`
 - `~shared/i18n/locales/it.js`
 
+
+---
+
+## 2026-06-26 11:05:26
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-carousel-section-polish-12-15-1a-e.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-carousel-section-polish-12-15-1a-e.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~shared/accessibility/accessibility.settings.js`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+
+
+---
+
+## 2026-06-26 11:08:50
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-carousel-flicker-revert-12-15-1a-f.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-carousel-flicker-revert-12-15-1a-f.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~shared/accessibility/accessibility.settings.js`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+
+
+---
+
+## 2026-06-26 12:18:20
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-carousel-real-fix-12-15-1a-g.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-carousel-real-fix-12-15-1a-g.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+
+---
+
+## 2026-06-26 12:24:52
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-carousel-speed-drag-fix-12-15-1a-h.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-carousel-speed-drag-fix-12-15-1a-h.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+

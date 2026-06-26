@@ -748,91 +748,163 @@ function HomeScrollProgress({ activeSectionId, sectionProgress, onNavigate }) {
 }
 
 function InspirationSourceCarousel() {
+  const carouselSets = useMemo(() => [0, 1, 2], []);
   const viewportRef = useRef(null);
   const trackRef = useRef(null);
-  const frameRef = useRef(null);
-  const offsetRef = useRef(0);
-  const velocityRef = useRef(0);
-  const dragRef = useRef({ active: false, pointerId: null, x: 0, time: 0 });
-  const carouselCards = useMemo(
-    () => [...SOURCE_CAROUSEL_CARDS, ...SOURCE_CAROUSEL_CARDS, ...SOURCE_CAROUSEL_CARDS],
-    [],
-  );
+  const inertiaFrameRef = useRef(null);
+  const dragRef = useRef({
+    active: false,
+    pointerId: null,
+    x: 0,
+    time: 0,
+    offset: 0,
+    velocity: 0,
+    cycleWidth: 0,
+  });
 
-  const applyOffset = () => {
+  const getCycleWidth = () => {
+    const track = trackRef.current;
+    if (!track) return 0;
+    return Math.max(1, track.scrollWidth / carouselSets.length);
+  };
+
+  const normalizeOffset = (offset, cycleWidth = getCycleWidth()) => {
+    if (!cycleWidth) return offset;
+    let nextOffset = offset;
+
+    while (nextOffset <= -cycleWidth) nextOffset += cycleWidth;
+    while (nextOffset > 0) nextOffset -= cycleWidth;
+
+    return nextOffset;
+  };
+
+  const getRenderedOffset = () => {
+    const track = trackRef.current;
+    if (!track || typeof window === "undefined") return 0;
+
+    const matrix = window.getComputedStyle(track).transform;
+    if (!matrix || matrix === "none") return 0;
+
+    try {
+      return new DOMMatrixReadOnly(matrix).m41 || 0;
+    } catch {
+      const values = matrix.match(/matrix.*\((.+)\)/)?.[1]?.split(",") ?? [];
+      return Number.parseFloat(values[4]) || 0;
+    }
+  };
+
+  const setManualOffset = (offset) => {
     const track = trackRef.current;
     if (!track) return;
 
-    const cycleWidth = track.scrollWidth / 3;
-
-    if (cycleWidth > 0) {
-      while (offsetRef.current <= -cycleWidth) offsetRef.current += cycleWidth;
-      while (offsetRef.current > 0) offsetRef.current -= cycleWidth;
-    }
-
-    track.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
+    const cycleWidth = dragRef.current.cycleWidth || getCycleWidth();
+    const normalizedOffset = normalizeOffset(offset, cycleWidth);
+    dragRef.current.offset = normalizedOffset;
+    track.style.transform = `translate3d(${normalizedOffset}px, 0, 0)`;
   };
 
-  useEffect(() => {
-    const tick = () => {
-      if (!dragRef.current.active) {
-        if (Math.abs(velocityRef.current) > 0.04) {
-          offsetRef.current += velocityRef.current;
-          velocityRef.current *= 0.94;
-        } else {
-          offsetRef.current -= 0.22;
-        }
+  const syncMarqueePhase = () => {
+    const track = trackRef.current;
+    const cycleWidth = dragRef.current.cycleWidth || getCycleWidth();
+    if (!track || !cycleWidth) return;
 
-        applyOffset();
+    const duration = Number.parseFloat(getComputedStyle(track).getPropertyValue("--sources-carousel-duration-ms")) || 98800;
+    const progress = Math.max(0, Math.min(1, -normalizeOffset(dragRef.current.offset, cycleWidth) / cycleWidth));
+
+    track.style.setProperty("--sources-carousel-delay", `${-(progress * duration)}ms`);
+    track.style.transform = "";
+  };
+
+  const stopInertia = () => {
+    if (!inertiaFrameRef.current) return;
+    window.cancelAnimationFrame(inertiaFrameRef.current);
+    inertiaFrameRef.current = null;
+  };
+
+  const startInertia = () => {
+    const viewport = viewportRef.current;
+    const track = trackRef.current;
+    if (!viewport || !track) return;
+
+    let lastTime = performance.now();
+
+    const step = (time) => {
+      const elapsed = Math.min(32, time - lastTime);
+      lastTime = time;
+      dragRef.current.velocity *= 0.94;
+      setManualOffset(dragRef.current.offset + dragRef.current.velocity * (elapsed / 16));
+
+      if (Math.abs(dragRef.current.velocity) > 0.035) {
+        inertiaFrameRef.current = window.requestAnimationFrame(step);
+        return;
       }
 
-      frameRef.current = window.requestAnimationFrame(tick);
+      inertiaFrameRef.current = null;
+      syncMarqueePhase();
+      viewport.classList.remove("is-dragging", "is-inertia");
     };
 
-    frameRef.current = window.requestAnimationFrame(tick);
+    viewport.classList.add("is-inertia");
+    inertiaFrameRef.current = window.requestAnimationFrame(step);
+  };
 
-    return () => {
-      if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
-    };
-  }, []);
+  useEffect(() => () => stopInertia(), []);
 
   const handlePointerDown = (event) => {
-    event.preventDefault();
+    if (event.button !== undefined && event.button !== 0) return;
+
     const viewport = viewportRef.current;
     if (!viewport) return;
+
+    event.preventDefault();
+    stopInertia();
+
+    const cycleWidth = getCycleWidth();
+    const offset = normalizeOffset(getRenderedOffset(), cycleWidth);
 
     dragRef.current = {
       active: true,
       pointerId: event.pointerId,
       x: event.clientX,
       time: performance.now(),
+      offset,
+      velocity: 0,
+      cycleWidth,
     };
-    velocityRef.current = 0;
-    viewport.classList.add("cruor-home__sources-carousel--grabbing");
+
+    viewport.classList.add("is-dragging");
+    setManualOffset(offset);
     viewport.setPointerCapture?.(event.pointerId);
   };
 
   const handlePointerMove = (event) => {
-    if (!dragRef.current.active || dragRef.current.pointerId !== event.pointerId) return;
+    const drag = dragRef.current;
+    if (!drag.active || drag.pointerId !== event.pointerId) return;
 
     const now = performance.now();
-    const dx = event.clientX - dragRef.current.x;
-    const dt = Math.max(1, now - dragRef.current.time);
+    const dx = event.clientX - drag.x;
+    const dt = Math.max(1, now - drag.time);
 
-    offsetRef.current += dx;
-    velocityRef.current = (dx / dt) * 16;
-    dragRef.current.x = event.clientX;
-    dragRef.current.time = now;
-    applyOffset();
+    drag.velocity = (dx / dt) * 16;
+    drag.x = event.clientX;
+    drag.time = now;
+    setManualOffset(drag.offset + dx);
   };
 
   const stopDragging = (event) => {
-    if (!dragRef.current.active || dragRef.current.pointerId !== event.pointerId) return;
+    const drag = dragRef.current;
+    if (!drag.active || drag.pointerId !== event.pointerId) return;
 
-    viewportRef.current?.classList.remove("cruor-home__sources-carousel--grabbing");
     viewportRef.current?.releasePointerCapture?.(event.pointerId);
-    dragRef.current.active = false;
-    dragRef.current.pointerId = null;
+    drag.active = false;
+
+    if (Math.abs(drag.velocity) > 0.25) {
+      startInertia();
+      return;
+    }
+
+    syncMarqueePhase();
+    viewportRef.current?.classList.remove("is-dragging", "is-inertia");
   };
 
   return (
@@ -846,20 +918,28 @@ function InspirationSourceCarousel() {
       onPointerCancel={stopDragging}
     >
       <div ref={trackRef} className="cruor-home__sources-carousel-track">
-        {carouselCards.map((card, index) => (
-          <article className="cruor-home__source-card" key={`${card.title}-${index}`}>
-            <img
-              src={card.imageUrl}
-              alt={card.imageAlt}
-              loading="lazy"
-              decoding="async"
-              draggable="false"
-            />
-            <div className="cruor-home__source-card-copy">
-              <strong>{card.title}</strong>
-              <p>{card.description}</p>
-            </div>
-          </article>
+        {carouselSets.map((setIndex) => (
+          <div
+            className="cruor-home__sources-carousel-set"
+            key={`sources-set-${setIndex}`}
+            aria-hidden={setIndex > 0 ? "true" : undefined}
+          >
+            {SOURCE_CAROUSEL_CARDS.map((card) => (
+              <article className="cruor-home__source-card" key={`${setIndex}-${card.title}`}>
+                <img
+                  src={card.imageUrl}
+                  alt={setIndex === 0 ? card.imageAlt : ""}
+                  loading="lazy"
+                  decoding="async"
+                  draggable="false"
+                />
+                <div className="cruor-home__source-card-copy">
+                  <strong>{card.title}</strong>
+                  <p>{card.description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
         ))}
       </div>
     </div>
@@ -1210,7 +1290,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           <div className="cruor-home__statement-inner">
             <div className="cruor-home__statement-head">
               <span>How the Workbench Works</span>
-              <h2 id="workbenchStepsTitle">From Source to Table Output.</h2>
+              <h2 id="workbenchStepsTitle">From Source to Table Output</h2>
               <p>Pick a generator, define the creative logic, and turn it into playable 5E material.</p>
             </div>
 
@@ -1286,7 +1366,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
       <section id="featuredTools" className="cruor-home__section cruor-home__section--tools" aria-labelledby="featuredToolsTitle">
         <div className="cruor-home__section-head cruor-home__section-head--tools">
           <span className="cruor-home__section-kicker">Available Now</span>
-          <h2 id="featuredToolsTitle">Workbench Tools.</h2>
+          <h2 id="featuredToolsTitle">Workbench Tools</h2>
           <p>
             Use the first production tools of Cruor’s dark fantasy workbench: generate playable
             locations, procedural maps, and complete 5E monster stat blocks from source-driven components.
@@ -1307,7 +1387,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
         <div className="cruor-home__roadmap" aria-labelledby="roadmapToolsTitle">
           <div className="cruor-home__roadmap-head">
             <span className="cruor-home__section-kicker">In Development</span>
-            <h3 id="roadmapToolsTitle">More generators are being forged.</h3>
+            <h3 id="roadmapToolsTitle">More generators are being forged</h3>
             <p>
               Cruor is expanding beyond places and monsters into encounters, cursed items, cults,
               factions, regions, and scene-level horror tools.
@@ -1327,7 +1407,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           <div className="cruor-home__output-board-head">
             <div className="cruor-home__section-head cruor-home__section-head--output">
               <span className="cruor-home__section-kicker">Output Examples</span>
-              <h2 id="outputExamplesTitle">From Tool to Table.</h2>
+              <h2 id="outputExamplesTitle">From Tool to Table</h2>
               <p>
                 A compact preview board for final product screenshots: location output, monster output,
                 and the visible source logic that turns inspiration into usable 5E material.
@@ -1377,7 +1457,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
       <section id="sources" className="cruor-home__section cruor-home__section--sources" aria-labelledby="sourcesTitle">
         <div className="cruor-home__sources-copy">
           <div className="cruor-home__section-head">
-            <h2 id="sourcesTitle">Real Sources, Playable Horror.</h2>
+            <h2 id="sourcesTitle">Real Sources, Playable Horror</h2>
             <p>
               Cruor keeps its inspirations visible. An ossuary can become room logic, a ritual
               practice can become a hazard, and anatomy can become monster grafts. Folklore,
@@ -1470,7 +1550,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           <form className="cruor-home__contact-form" onSubmit={handleContactFormSubmit}>
             <div className="cruor-home__contact-head">
               <span>Contact</span>
-              <h2 id="cruorContactTitle">Get in touch with Cruor Games.</h2>
+              <h2 id="cruorContactTitle">Get in touch with Cruor Games</h2>
               <p>
                 Use this form for publishing, collaboration, licensing, support, or general questions.
                 It opens your email client and sends the message to{" "}
