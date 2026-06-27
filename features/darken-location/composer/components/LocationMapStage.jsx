@@ -66,7 +66,7 @@ function LocationMapRoomIndicatorLayer({
   if (!generatedMapPreview || !entries.length) return null;
 
   return (
-    <div className="location-map-room-indicator-layer" aria-label="Room status indicators">
+    <div className="location-map-room-indicator-layer" aria-label="Room status indicators" data-testid="dark-places-room-indicators">
       {entries.map((entry) => {
         const active = selectedRegionId === entry.id;
         const hovered = hoveredRegionId === entry.id;
@@ -92,6 +92,7 @@ function LocationMapRoomIndicatorLayer({
             data-tooltip-description={getRoomNodeTooltipDescription(entry)}
             data-room-id={entry.id}
             data-room-status={entry.status || "empty"}
+            data-testid="dark-places-room-node"
             style={getGeneratedRoomPositionStyle(
               generatedMapPreview,
               entry.generatedRoom,
@@ -223,9 +224,9 @@ export function LocationMapStage({
   contextPanel = null,
   toolbarPanel = null,
   bottomDockPanel = null,
-  regionSelectionScope = LOCATION_SLOT_SCOPE_REGION,
   onScratchRoomFocusSlot = null,
   onScratchRoomUpdate = null,
+  onComposerRegionSelect = null,
 }) {
   const isSimpleMode = uiMode === "simple";
   const showStageDetails = !isSimpleMode;
@@ -348,11 +349,12 @@ export function LocationMapStage({
     setState((current) => ({
       ...current,
       activeRegionId: composerRegionId,
-      activeSlotScope: regionSelectionScope,
-      activeSlot: isSlotInScope(current.activeSlot, regionSelectionScope)
+      activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+      activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
         ? current.activeSlot
-        : getDefaultSlotIdForScope(regionSelectionScope),
+        : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
     }));
+    onComposerRegionSelect?.(composerRegionId);
   }
 
   function openScratchRoomMenu(event, regionId) {
@@ -381,6 +383,7 @@ export function LocationMapStage({
           workspacePanel ? "location-map-stage--workspace" : "location-map-stage--preview",
         )}
         data-location-map-surface={workspacePanel ? "workspace" : "preview"}
+        data-testid="dark-places-map-stage"
       >
         {workspacePanel ? (
           <div className="location-map-workspace-host" aria-label="Full map workspace">

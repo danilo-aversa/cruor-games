@@ -45,6 +45,7 @@ function ExportRoomKeyCard({ section, onSelectRoom }) {
         `is-${section?.readinessStatus || "empty"}`,
         missing.length && "has-missing-content",
       )}
+      data-testid="dark-places-room-key-card"
     >
       <header className="location-export-room-key-card__head">
         <span>Room {String(section?.roomNumber || "—").padStart(2, "0")}</span>
@@ -107,7 +108,7 @@ export function LocationExportRoomKeyPanel({
       : "No rooms";
 
   return (
-    <section className="location-export-room-key-panel" aria-label="Export room key">
+    <section className="location-export-room-key-panel" aria-label="Export room key" data-testid="dark-places-room-key">
       <header className="location-export-room-key-panel__head">
         <div className="location-export-room-key-panel__title">
           <p className="location-kicker">Export Room Key</p>
@@ -116,11 +117,11 @@ export function LocationExportRoomKeyPanel({
         </div>
 
         <div className="location-export-room-key-actions" aria-label="Room key export actions">
-          <button className="location-export-room-key-action" type="button" onClick={onCopyMarkdown}>
+          <button className="location-export-room-key-action" type="button" onClick={onCopyMarkdown} data-testid="dark-places-copy-markdown-panel">
             <i className="fa-solid fa-copy" aria-hidden="true" />
             <span>Copy Markdown</span>
           </button>
-          <button className="location-export-room-key-action" type="button" onClick={onCopyTable}>
+          <button className="location-export-room-key-action" type="button" onClick={onCopyTable} data-testid="dark-places-copy-table">
             <i className="fa-solid fa-table-list" aria-hidden="true" />
             <span>Copy Table</span>
           </button>
@@ -129,6 +130,7 @@ export function LocationExportRoomKeyPanel({
             type="button"
             disabled={!incompleteRoomCount}
             onClick={onReviewMissing}
+            data-testid="dark-places-review-missing-panel"
           >
             <i className="fa-solid fa-circle-exclamation" aria-hidden="true" />
             <span>Review Missing</span>
@@ -142,11 +144,11 @@ export function LocationExportRoomKeyPanel({
         <ExportRoomKeyMetric label="Missing Rooms" value={String(incompleteRoomCount)} />
       </div>
 
-      <span className={cx("location-export-room-key-copy-status", copyStatus && "is-visible")} aria-live="polite">
+      <span className={cx("location-export-room-key-copy-status", copyStatus && "is-visible")} aria-live="polite" data-testid="dark-places-copy-status">
         {copyStatus || "Markdown export ready"}
       </span>
 
-      <div className="location-export-room-key-list">
+      <div className="location-export-room-key-list" data-testid="dark-places-room-key-list">
         {roomSections.map((section) => (
           <ExportRoomKeyCard key={section.region.id} section={section} onSelectRoom={onSelectRoom} />
         ))}

@@ -4900,3 +4900,124 @@ _Nessun file aggiunto._
 - `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
 - `~features/darken-location/composer/model/location-composer-output.js`
 
+
+---
+
+## 2026-06-27 10:46:17
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase03-6a-e2e-pipeline-tests.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase03-6a-e2e-pipeline-tests.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+tests/e2e/dark-places-pipeline.spec.js`
+- `+tests/e2e/dark-places.helpers.js`
+
+**File sovrascritti:** 7
+
+- `~features/darken-location/composer/components/LocationComponentPickerModal.jsx`
+- `~features/darken-location/composer/components/LocationExportRoomKeyPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/components/LocationMapToolbar.jsx`
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~package.json`
+
+
+---
+
+## 2026-06-27 10:56:53
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase03-6b-e2e-open-harness-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase03-6b-e2e-open-harness-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/router.jsx`
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~tests/e2e/dark-places.helpers.js`
+
+
+---
+
+## 2026-06-27 11:00:45
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase03-6c-e2e-picker-empty-state-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase03-6c-e2e-picker-empty-state-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~tests/e2e/dark-places.helpers.js`
+
+
+---
+
+## 2026-06-27 11:14:20
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase03-6b-visual-interaction-pass.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase03-6b-visual-interaction-pass.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 6
+
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~tests/e2e/dark-places-pipeline.spec.js`
+- `~tests/e2e/dark-places.helpers.js`
+
+
+---
+
+## 2026-06-27 12:53:45
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-monster-vitest-qa-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-monster-vitest-qa-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/monster-composer/model/monster-graft-balance-profile-smoke.test.js`
+- `~features/monster-composer/model/monster-passive-weakness-renderer-smoke.test.js`
+- `~features/monster-composer/qa/monster-qa-suite.test.js`
+

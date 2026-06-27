@@ -62,19 +62,50 @@ function buildMonsterViews(locale) {
 }
 
 
+function getInitialSearchParams() {
+  if (typeof window === "undefined") return new URLSearchParams();
+  return new URLSearchParams(window.location.search);
+}
+
+function isDarkPlacesTestHarness(params = getInitialSearchParams()) {
+  return (
+    params.get("cruorTest") === "dark-places" ||
+    params.get("testHarness") === "dark-places" ||
+    params.get("section") === "crucible" ||
+    params.get("tool") === "darken"
+  );
+}
+
 function getInitialSection() {
-  if (typeof window === "undefined") return "home";
-  const params = new URLSearchParams(window.location.search);
-  return params.get("studio") === "1" || params.get("admin") === "studio" ? "inspiration-studio" : "home";
+  const params = getInitialSearchParams();
+  if (params.get("studio") === "1" || params.get("admin") === "studio") return "inspiration-studio";
+  if (isDarkPlacesTestHarness(params)) return "crucible";
+  return "home";
+}
+
+function getInitialCrucibleGenerator() {
+  const params = getInitialSearchParams();
+  const generator = params.get("generator") || params.get("tool");
+  return generator === "monster" ? "monster" : "darken";
+}
+
+function getInitialDarkenTab() {
+  const params = getInitialSearchParams();
+  const view = params.get("view") || params.get("darkenView");
+  return view === "map" || view === "map-generator" ? "map-generator" : "composer";
+}
+
+function getInitialMapGeneratorOpened() {
+  return getInitialSection() === "crucible" && getInitialCrucibleGenerator() === "darken" && getInitialDarkenTab() === "map-generator";
 }
 
 export default function AppRouter() {
   const [activeSection, setActiveSection] = useState(getInitialSection);
   const [activeUiMode, setActiveUiMode] = useState("simple");
   const [activeLocale, setActiveLocaleState] = useState(getCurrentLocale);
-  const [activeCrucibleGenerator, setActiveCrucibleGenerator] = useState("darken");
-  const [activeDarkenTab, setActiveDarkenTab] = useState("composer");
-  const [hasOpenedMapGenerator, setHasOpenedMapGenerator] = useState(false);
+  const [activeCrucibleGenerator, setActiveCrucibleGenerator] = useState(getInitialCrucibleGenerator);
+  const [activeDarkenTab, setActiveDarkenTab] = useState(getInitialDarkenTab);
+  const [hasOpenedMapGenerator, setHasOpenedMapGenerator] = useState(getInitialMapGeneratorOpened);
   const [mapRequest, setMapRequest] = useState(null);
   const [mapRequestRevision, setMapRequestRevision] = useState(0);
   const [monsterInspirationSeed, setMonsterInspirationSeed] = useState(null);

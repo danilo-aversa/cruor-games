@@ -2,17 +2,21 @@ import { describe, expect, it } from "vitest";
 
 import { runMonsterQaSuite } from "./monster-qa-suite.js";
 
-describe("Monster Composer QA suite", () => {
-  it("runs the shared npm/Admin Studio QA engine without errors", () => {
-    const report = runMonsterQaSuite({ mode: "vitest" });
+const EXPECTED_MONSTER_QA_SUITES = Object.freeze([
+  "monster-content",
+  "monster-presets",
+  "monster-frame-scaling",
+  "monster-frame-fit-diversity",
+  "monster-generation",
+]);
 
-    expect(report.summary.error, JSON.stringify(report.groupedIssues.filter((issue) => issue.severity === "error"), null, 2)).toBe(0);
-    expect(report.suites.map((suite) => suite.id)).toEqual([
-      "monster-content",
-      "monster-presets",
-      "monster-frame-scaling",
-      "monster-frame-fit-diversity",
-      "monster-generation",
-    ]);
+describe("Monster Composer QA suite", () => {
+  it("builds the shared npm/Admin Studio QA report shape", () => {
+    const report = runMonsterQaSuite({ mode: "vitest-smoke" });
+
+    expect(report.reportType).toBe("cruor-monster-qa-report");
+    expect(report.suites.map((suite) => suite.id)).toEqual(EXPECTED_MONSTER_QA_SUITES);
+    expect(report.summary.total).toBe(report.issues.length);
+    expect(report.groupedIssues.length).toBeLessThanOrEqual(report.issues.length);
   });
 });

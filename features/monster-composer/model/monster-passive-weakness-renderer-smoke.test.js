@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { MONSTER_GRAFTS } from "../data/monster-grafts.js";
 import { normalizeMonsterGraftRules } from "./monster-graft-rules.schema.js";
 import { renderStructuredRulesText } from "./monster-graft-rules.render.js";
@@ -16,51 +18,47 @@ function getGraft(id) {
   return graft;
 }
 
-function assertIncludes(id, expected) {
+function expectRenderedTextToInclude(id, expected) {
   const text = renderStructuredRulesText(getGraft(id), COMPUTED_FIXTURE) || "";
-  if (!text.includes(expected)) {
-    throw new Error(`Expected ${id} to include ${JSON.stringify(expected)}. Got: ${text}`);
-  }
+  expect(text, `${id} rendered text`).toContain(expected);
 }
 
-function assertDirection(id, expected) {
+function expectDirection(id, expected) {
   const rules = normalizeMonsterGraftRules(getGraft(id));
-  const actual = rules.condition?.direction;
-  if (actual !== expected) {
-    throw new Error(`Expected ${id} condition.direction ${expected}, got ${actual}`);
-  }
+  expect(rules.condition?.direction, `${id} condition.direction`).toBe(expected);
 }
 
-function assertNoMechanicsFallback(id) {
+function expectStructuredRulesRender(id) {
   const graft = getGraft(id);
   const text = renderStructuredRulesText(graft, COMPUTED_FIXTURE) || "";
-  if (!text || text === graft.mechanics) {
-    throw new Error(`Expected ${id} to render from structured rules, got mechanics fallback.`);
-  }
+  expect(text, `${id} rendered text`).toBeTruthy();
+  expect(text, `${id} should not use mechanics fallback`).not.toBe(graft.mechanics);
 }
 
-assertDirection("umbral-skin", "self");
-assertIncludes("umbral-skin", "the monster has the Invisible condition");
-assertNoMechanicsFallback("umbral-skin");
+describe("Monster passive weakness renderer smoke", () => {
+  it("renders passive weakness rules from structured rules instead of mechanics fallback", () => {
+    expectDirection("umbral-skin", "self");
+    expectRenderedTextToInclude("umbral-skin", "the monster has the Invisible condition");
+    expectStructuredRulesRender("umbral-skin");
 
-assertDirection("vanish-spirit", "self");
-assertIncludes("vanish-spirit", "The monster has the Invisible condition");
-assertNoMechanicsFallback("vanish-spirit");
+    expectDirection("vanish-spirit", "self");
+    expectRenderedTextToInclude("vanish-spirit", "The monster has the Invisible condition");
+    expectStructuredRulesRender("vanish-spirit");
 
-assertDirection("fear-of-fire", "weakness");
-assertIncludes("fear-of-fire", "the monster has the Frightened condition");
-assertNoMechanicsFallback("fear-of-fire");
+    expectDirection("fear-of-fire", "weakness");
+    expectRenderedTextToInclude("fear-of-fire", "the monster has the Frightened condition");
+    expectStructuredRulesRender("fear-of-fire");
 
-assertDirection("eyes-weak-spot", "playerApplied");
-assertIncludes("eyes-weak-spot", "the monster has the Blinded condition");
-assertNoMechanicsFallback("eyes-weak-spot");
+    expectDirection("eyes-weak-spot", "playerApplied");
+    expectRenderedTextToInclude("eyes-weak-spot", "the monster has the Blinded condition");
+    expectStructuredRulesRender("eyes-weak-spot");
 
-assertDirection("mechanical-stress", "referenceOnly");
-assertIncludes("mechanical-stress", "the attacker chooses head, arms, or leg");
-assertNoMechanicsFallback("mechanical-stress");
+    expectDirection("mechanical-stress", "referenceOnly");
+    expectRenderedTextToInclude("mechanical-stress", "the attacker chooses head, arms, or leg");
+    expectStructuredRulesRender("mechanical-stress");
 
-assertDirection("shameful-feeding", "weakness");
-assertIncludes("shameful-feeding", "the monster has the Frightened condition");
-assertNoMechanicsFallback("shameful-feeding");
-
-console.log("monster-passive-weakness-renderer-smoke: ok");
+    expectDirection("shameful-feeding", "weakness");
+    expectRenderedTextToInclude("shameful-feeding", "the monster has the Frightened condition");
+    expectStructuredRulesRender("shameful-feeding");
+  });
+});

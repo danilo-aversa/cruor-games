@@ -9,6 +9,7 @@ function LocationMapToolbarButton({
   onClick,
   title = "",
   variant = "secondary",
+  testId = "",
 }) {
   const label = title || (typeof children === "string" ? children : "Map action");
 
@@ -28,6 +29,7 @@ function LocationMapToolbarButton({
       data-key="tooltip-generic"
       data-tooltip={label}
       data-tooltip-description={label}
+      data-testid={testId || undefined}
     >
       {icon ? <i className={`fa-solid ${icon}`} aria-hidden="true" /> : null}
     </button>
@@ -67,13 +69,14 @@ export function LocationMapToolbar({
 
   if (mode === "export") {
     return (
-      <nav className="location-map-toolbar location-map-toolbar--export" aria-label="Location export toolbar">
+      <nav className="location-map-toolbar location-map-toolbar--export" aria-label="Location export toolbar" data-testid="dark-places-toolbar-export">
         <div className="location-map-toolbar__group location-map-toolbar__group--actions">
           <LocationMapToolbarButton
             icon="fa-copy"
             onClick={onCopyMarkdown}
             title="Copy the room key as Markdown"
             variant="primary"
+            testId="dark-places-copy-markdown"
           >
             Copy Markdown
           </LocationMapToolbarButton>
@@ -82,13 +85,14 @@ export function LocationMapToolbar({
             icon="fa-circle-exclamation"
             onClick={onReviewMissing}
             title={exportIncompleteCount ? `Review ${exportIncompleteCount} incomplete room${exportIncompleteCount === 1 ? "" : "s"}` : "No missing room content"}
+            testId="dark-places-review-missing"
           >
             Review Missing
           </LocationMapToolbarButton>
-          <LocationMapToolbarButton icon="fa-arrow-left" onClick={onSelectRooms} title="Return to room work">
+          <LocationMapToolbarButton icon="fa-arrow-left" onClick={onSelectRooms} title="Return to room work" testId="dark-places-toolbar-rooms-action">
             Rooms
           </LocationMapToolbarButton>
-          <LocationMapToolbarButton icon="fa-map" onClick={onSelectFrame} title="Return to the place frame">
+          <LocationMapToolbarButton icon="fa-map" onClick={onSelectFrame} title="Return to the place frame" testId="dark-places-toolbar-frame-action">
             Frame
           </LocationMapToolbarButton>
         </div>
@@ -98,13 +102,14 @@ export function LocationMapToolbar({
 
   if (mode === "scratch") {
     return (
-      <nav className="location-map-toolbar location-map-toolbar--rooms" aria-label="Selected room toolbar">
+      <nav className="location-map-toolbar location-map-toolbar--rooms" aria-label="Selected room toolbar" data-testid="dark-places-toolbar-rooms">
         <div className="location-map-toolbar__group location-map-toolbar__group--room-nav">
           <LocationMapToolbarButton
             disabled={!canGoPreviousRoom}
             icon="fa-chevron-left"
             onClick={onSelectPreviousRoom}
             title="Select previous room"
+            testId="dark-places-previous-room"
           >
             Previous
           </LocationMapToolbarButton>
@@ -117,6 +122,7 @@ export function LocationMapToolbar({
             icon="fa-chevron-right"
             onClick={onSelectNextRoom}
             title="Select next room"
+            testId="dark-places-next-room"
           >
             Next
           </LocationMapToolbarButton>
@@ -129,6 +135,7 @@ export function LocationMapToolbar({
             onClick={onAddMissingRoomSlot}
             title={nextRoomSlot ? `Add ${nextRoomSlotLabel}` : "Room required slots are filled"}
             variant="primary"
+            testId="dark-places-add-missing-slot"
           >
             Add Missing Slot
           </LocationMapToolbarButton>
@@ -137,13 +144,14 @@ export function LocationMapToolbar({
             icon="fa-puzzle-piece"
             onClick={onOpenComponents}
             title="Open components for the active room slot"
+            testId="dark-places-open-components"
           >
             Components
           </LocationMapToolbarButton>
-          <LocationMapToolbarButton icon="fa-map" onClick={onSelectFrame} title="Edit the place frame">
+          <LocationMapToolbarButton icon="fa-map" onClick={onSelectFrame} title="Edit the place frame" testId="dark-places-toolbar-frame-action">
             Frame
           </LocationMapToolbarButton>
-          <LocationMapToolbarButton icon="fa-file-lines" onClick={onSelectExport} title="Review the location insert">
+          <LocationMapToolbarButton icon="fa-file-lines" onClick={onSelectExport} title="Review the location insert" testId="dark-places-toolbar-export-action">
             Export
           </LocationMapToolbarButton>
         </div>
@@ -152,23 +160,24 @@ export function LocationMapToolbar({
   }
 
   return (
-    <nav className="location-map-toolbar location-map-toolbar--frame" aria-label="Map workbench toolbar">
+    <nav className="location-map-toolbar location-map-toolbar--frame" aria-label="Map workbench toolbar" data-testid="dark-places-toolbar-frame">
       <div className="location-map-toolbar__group location-map-toolbar__group--actions">
         <LocationMapToolbarButton
           icon="fa-wand-magic-sparkles"
           onClick={onGenerateThemeRooms}
           title={hasMap ? "Regenerate the place map" : "Generate the place map"}
           variant="primary"
+          testId="dark-places-generate"
         >
           {hasMap ? "Regenerate Place" : "Generate Place"}
         </LocationMapToolbarButton>
-        <LocationMapToolbarButton icon="fa-dice" onClick={onNewMapSeed} title="Refresh the map seed">
+        <LocationMapToolbarButton icon="fa-dice" onClick={onNewMapSeed} title="Refresh the map seed" testId="dark-places-new-seed">
           New Seed
         </LocationMapToolbarButton>
-        <LocationMapToolbarButton disabled={!hasMap} icon="fa-pen-ruler" onClick={onStartMapEditing} title="Open the map editor">
+        <LocationMapToolbarButton disabled={!hasMap} icon="fa-pen-ruler" onClick={onStartMapEditing} title="Open the map editor" testId="dark-places-edit-map">
           Edit Map
         </LocationMapToolbarButton>
-        <LocationMapToolbarButton disabled={!hasRooms} icon="fa-list-check" onClick={onSelectRooms} title="Move to room-by-room work">
+        <LocationMapToolbarButton disabled={!hasRooms} icon="fa-list-check" onClick={onSelectRooms} title="Move to room-by-room work" testId="dark-places-toolbar-rooms-action">
           Rooms
         </LocationMapToolbarButton>
       </div>

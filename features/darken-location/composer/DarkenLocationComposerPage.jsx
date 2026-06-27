@@ -868,6 +868,12 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     selectRoomTarget(regionId);
   }, [selectRoomTarget]);
 
+  const activateRoomWorkFromMap = useCallback(() => {
+    setBuilderMode("scratch");
+    setDrawerOpen(false);
+    setIsMapEditing(false);
+  }, []);
+
   const leftPanel = builderMode === "theme" ? (
     <LocationBriefPanel
       state={state}
@@ -915,6 +921,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       generatedMapPreview={generatedMapPreview}
       state={state}
       onFocusSlot={focusSlot}
+      onSelectRoom={selectRoomTarget}
     />
   ) : builderMode === "export" ? (
     <LocationExportToolsPanel
@@ -1010,6 +1017,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       data-location-builder-mode={builderMode}
       data-location-map-editing={isMapEditing ? "true" : "false"}
       data-location-composer-ready="true"
+      data-testid="dark-places-composer"
     >
       <div className="cruor-composer-workspace location-composer__workspace">
         <LocationMapStage
@@ -1029,7 +1037,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
           workspacePanel={mapWorkspacePanel}
           contextPanel={exportContextPanel}
           toolbarPanel={centerToolbarPanel}
-          regionSelectionScope={builderMode === "theme" ? LOCATION_SLOT_SCOPE_MAP : LOCATION_SLOT_SCOPE_REGION}
           bottomDockPanel={!isMapEditing ? (
             <LocationGuidedFlowPanel
               activeRegion={activeRegionForPicker}
@@ -1058,6 +1065,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
           ) : null}
           onScratchRoomFocusSlot={focusScratchRoomSlot}
           onScratchRoomUpdate={updateScratchRoom}
+          onComposerRegionSelect={activateRoomWorkFromMap}
         />
       </div>
     </div>

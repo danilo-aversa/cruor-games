@@ -415,6 +415,7 @@ export function LocationComponentPickerModal({
         )}
         data-decision-score={Math.round(decision?.score || 0)}
         data-decision-tier={selected ? "assigned" : tier}
+        data-testid="dark-places-component-card"
         draggable={!selected}
         key={componentKey}
       >
@@ -422,6 +423,7 @@ export function LocationComponentPickerModal({
           className="component-toggle-btn location-component-toggle-btn"
           type="button"
           aria-label={selected ? `Remove ${getComponentTitle(component)}` : `${actionLabel} ${getComponentTitle(component)}`}
+          data-testid={selected ? "dark-places-component-remove" : "dark-places-component-add"}
           onClick={() => (selected ? onRemoveComponent?.(component.id) : onAddComponent?.(component))}
         >
           <i className={cx("fa-solid", selected ? "fa-xmark" : replaceAction ? "fa-repeat" : "fa-plus")} aria-hidden="true" />
@@ -468,6 +470,7 @@ export function LocationComponentPickerModal({
       data-navigator-mode="slot"
       data-slot-scope={normalizedScope}
       data-room-slot-kind={slotMatchProfile?.id || ""}
+      data-testid="dark-places-component-picker"
     >
       <div
         className="component-navigator-modal component-navigator-modal--drawer location-component-modal"
@@ -532,6 +535,7 @@ export function LocationComponentPickerModal({
                     value={search}
                     placeholder="Search components…"
                     aria-label="Search location components"
+                    data-testid="dark-places-component-search"
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </div>

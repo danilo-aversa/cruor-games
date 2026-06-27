@@ -9771,3 +9771,117 @@
     flex: 1 1 160px;
   }
 }
+
+/* Dark Places — Phase 3.6B Room interaction polish */
+.location-room-inspector-card--navigator {
+  align-content: start;
+}
+
+.location-room-mini-nav {
+  display: grid;
+  gap: 5px;
+  max-height: 174px;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-color-black-a240);
+}
+
+.location-room-mini-nav__item {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 9px;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-milk-a060, rgba(255, 238, 242, 0.06));
+  background: var(--cruor-color-black-a260, rgba(0, 0, 0, 0.26));
+  color: var(--cruor-color-hex-c8a2a8);
+  padding: 7px 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.location-room-mini-nav__item:hover,
+.location-room-mini-nav__item:focus-visible,
+.location-room-mini-nav__item.is-active {
+  border-color: var(--cruor-color-blood-glow-a620, rgba(190, 64, 82, 0.62));
+  background: var(--cruor-color-blood-bright-a100, rgba(122, 26, 40, 0.1));
+  color: var(--cruor-color-milk-a940, rgba(255, 238, 242, 0.94));
+  outline: none;
+}
+
+.location-room-mini-nav__item.is-active {
+  box-shadow: inset 3px 0 0 var(--cruor-color-blood-glow-a760, rgba(190, 64, 82, 0.76));
+}
+
+.location-room-mini-nav__number {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 24px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a120, rgba(208, 162, 170, 0.12));
+  background: var(--cruor-color-black-a360, rgba(0, 0, 0, 0.36));
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: 0.62rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.location-room-mini-nav__copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.location-room-mini-nav__copy strong,
+.location-room-mini-nav__copy small {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-room-mini-nav__copy strong {
+  color: inherit;
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  line-height: 1.1;
+}
+
+.location-room-mini-nav__copy small {
+  color: var(--cruor-color-text-a460, rgba(238, 238, 238, 0.46));
+  font-size: var(--text-size-xxs);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.location-room-mini-nav__status {
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a200, rgba(208, 162, 170, 0.2));
+  background: var(--cruor-color-black-a440, rgba(0, 0, 0, 0.44));
+}
+
+.location-room-mini-nav__item.is-partial .location-room-mini-nav__status {
+  border-color: var(--cruor-color-blood-glow-a520, rgba(190, 64, 82, 0.52));
+  background: var(--cruor-color-blood-bright-a520, rgba(122, 26, 40, 0.52));
+}
+
+.location-room-mini-nav__item.is-ready .location-room-mini-nav__status {
+  border-color: var(--cruor-color-good-a520, rgba(143, 150, 148, 0.52));
+  background: var(--cruor-color-good-a560, rgba(143, 150, 148, 0.56));
+}
+
+.location-room-mini-nav__item.is-empty .location-room-mini-nav__status {
+  opacity: 0.58;
+}
+
+@media (max-height: 760px) {
+  .location-room-mini-nav {
+    max-height: 124px;
+  }
+}

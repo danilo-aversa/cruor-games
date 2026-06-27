@@ -6,6 +6,7 @@ import {
 } from "../model/location-composer-selectors.js";
 import {
   getNextMissingRoomSlot,
+  getRoomProgramEntries,
   getRoomSlotProgramRows,
   getRoomWorkProgress,
   getSelectedRoomProgramEntry,
@@ -75,12 +76,68 @@ function LocationRoomWorkMeter({ progress }) {
   );
 }
 
+function LocationRoomNavigator({ activeRegionId = "", entries = [], onSelectRoom }) {
+  if (!entries.length) return null;
+
+  const readyCount = entries.filter((entry) => entry.status === "ready").length;
+
+  return (
+    <section
+      className="location-room-inspector-card location-room-inspector-card--navigator"
+      aria-label="Room navigator"
+      data-testid="dark-places-room-navigator"
+    >
+      <div className="location-room-inspector-card__head">
+        <span>Room Navigator</span>
+        <small>{readyCount}/{entries.length} Ready</small>
+      </div>
+      <div className="location-room-mini-nav" role="list" aria-label="Room work queue">
+        {entries.map((room) => {
+          const active = activeRegionId === room.id;
+          const label = `Room ${room.numberLabel || String(room.index + 1).padStart(2, "0")} — ${room.name}`;
+
+          return (
+            <button
+              className={cx(
+                "location-room-mini-nav__item",
+                `is-${room.status || "empty"}`,
+                active && "is-active",
+              )}
+              key={room.id}
+              type="button"
+              role="listitem"
+              aria-label={`Select ${label}`}
+              aria-pressed={active}
+              data-testid="dark-places-room-nav-item"
+              data-room-id={room.id}
+              data-room-status={room.status || "empty"}
+              onClick={() => onSelectRoom?.(room.id)}
+              data-key="tooltip-generic"
+              data-tooltip={label}
+              data-tooltip-description={`${room.roleLabel || "Room"}. ${room.label || "Empty"}.`}
+            >
+              <span className="location-room-mini-nav__number">{room.numberLabel}</span>
+              <span className="location-room-mini-nav__copy">
+                <strong>{room.name}</strong>
+                <small>{room.roleLabel}</small>
+              </span>
+              <span className="location-room-mini-nav__status" aria-hidden="true" />
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 export function LocationRoomInspector({
   activeSlot,
   generatedMapPreview = null,
   onFocusSlot,
+  onSelectRoom,
   state,
 }) {
+  const roomEntries = getRoomProgramEntries(state, generatedMapPreview);
   const entry = getSelectedRoomProgramEntry(state, generatedMapPreview);
   const roomRows = entry ? getRoomSlotProgramRows(state, entry.id) : [];
   const roomProgress = entry ? getRoomWorkProgress(state, entry.id) : { completed: 0, total: 0, progress: 0 };
@@ -97,6 +154,7 @@ export function LocationRoomInspector({
     <aside
       className="cruor-composer-rail location-composer__rail location-composer__rail--left location-room-inspector-rail location-room-inspector-rail--rooms"
       aria-label="Selected room"
+      data-testid="dark-places-room-inspector"
     >
       <section className="location-room-inspector-card location-room-inspector-card--selected" aria-label="Selected room summary">
         <div className="location-room-inspector-card__head">
@@ -135,6 +193,14 @@ export function LocationRoomInspector({
         </section>
       ) : null}
 
+      {entry ? (
+        <LocationRoomNavigator
+          activeRegionId={entry.id}
+          entries={roomEntries}
+          onSelectRoom={onSelectRoom}
+        />
+      ) : null}
+
       <section className="location-room-inspector-card location-room-inspector-card--slots" aria-label="Room work slots">
         <div className="location-room-inspector-card__head">
           <span>Room Slots</span>
@@ -142,6 +208,7 @@ export function LocationRoomInspector({
             <button
               className="location-room-inspector-mini-btn"
               type="button"
+              data-testid="dark-places-room-add-next"
               onClick={() => focusSlot(nextMissingRow.slot.id)}
             >
               <Plus aria-hidden="true" />
@@ -155,6 +222,9 @@ export function LocationRoomInspector({
             const active = activeSlotId === row.slot.id;
             return (
               <button
+                data-testid="dark-places-room-slot"
+                data-room-slot-id={row.slot.id}
+                data-room-slot-status={row.filled ? "filled" : row.missing ? "missing" : "optional"}
                 className={cx(
                   "location-room-inspector-slot",
                   row.filled ? "is-filled" : "is-empty",

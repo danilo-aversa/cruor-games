@@ -1,4 +1,5 @@
-import assert from "node:assert/strict";
+import { describe, expect, it } from "vitest";
+
 import { ALL_MONSTER_GRAFTS } from "../data/monster-content-pack-feed.js";
 import {
   buildLegacyStatsMigrationAudit,
@@ -8,32 +9,33 @@ import {
   sumFeatureBalanceStats,
 } from "./monster-graft-balance-profile.js";
 
-function runBalanceProfileSmokeTest() {
-  assert.equal(ALL_MONSTER_GRAFTS.length, 90, "expected current graft catalog size");
+describe("Monster graft balance profile smoke", () => {
+  it("normalizes legacy stats into stable balance profiles", () => {
+    expect(ALL_MONSTER_GRAFTS).toHaveLength(90);
 
-  ALL_MONSTER_GRAFTS.forEach((feature) => {
-    const profile = getMonsterGraftBalanceProfile(feature);
-    assert.equal(profile.schemaVersion, "monster-graft-balance-v1.0");
-    Object.entries(profile.stats).forEach(([key, value]) => {
-      assert.equal(Number.isFinite(value), true, `${feature.id} ${key} must be numeric`);
+    ALL_MONSTER_GRAFTS.forEach((feature) => {
+      const profile = getMonsterGraftBalanceProfile(feature);
+      expect(profile.schemaVersion).toBe("monster-graft-balance-v1.0");
+
+      Object.entries(profile.stats).forEach(([key, value]) => {
+        expect(Number.isFinite(value), `${feature.id} ${key} must be numeric`).toBe(true);
+      });
+
+      Object.entries(feature.stats || {}).forEach(([key, value]) => {
+        if (!(key in profile.stats)) return;
+        expect(getFeatureBalanceStat(feature, key), `${feature.id} ${key} must preserve legacy stat value`).toBe(Number(value || 0));
+      });
     });
-    Object.entries(feature.stats || {}).forEach(([key, value]) => {
-      if (!(key in profile.stats)) return;
-      assert.equal(getFeatureBalanceStat(feature, key), Number(value || 0), `${feature.id} ${key} must preserve legacy stat value`);
-    });
+
+    const firstFive = ALL_MONSTER_GRAFTS.slice(0, 5);
+    const summed = sumFeatureBalanceStats(firstFive);
+    const manualHp = firstFive.reduce((sum, feature) => sum + Number(feature.stats?.hp || 0), 0);
+    expect(summed.hp).toBe(manualHp);
+
+    const audit = buildLegacyStatsMigrationAudit(ALL_MONSTER_GRAFTS);
+    expect(audit.total).toBe(90);
+    expect(audit.usingLegacyStats).toBe(90);
+    expect(audit.usingBalanceProfile).toBe(0);
+    expect(getFeatureBalanceStats({ id: "empty" }).dpr).toBe(0);
   });
-
-  const firstFive = ALL_MONSTER_GRAFTS.slice(0, 5);
-  const summed = sumFeatureBalanceStats(firstFive);
-  const manualHp = firstFive.reduce((sum, feature) => sum + Number(feature.stats?.hp || 0), 0);
-  assert.equal(summed.hp, manualHp, "summed hp must match legacy aggregate");
-
-  const audit = buildLegacyStatsMigrationAudit(ALL_MONSTER_GRAFTS);
-  assert.equal(audit.total, 90);
-  assert.equal(audit.usingLegacyStats, 90);
-  assert.equal(audit.usingBalanceProfile, 0);
-  assert.equal(getFeatureBalanceStats({ id: "empty" }).dpr, 0);
-}
-
-runBalanceProfileSmokeTest();
-console.log("monster-graft-balance-profile smoke test passed");
+});
