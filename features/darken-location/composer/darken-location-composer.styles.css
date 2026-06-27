@@ -9369,3 +9369,405 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Dark Places — Phase 3.5 Export Room Key */
+.location-composer[data-location-builder-mode="export"] .location-map-context-panel {
+  top: 48px;
+  right: 14px;
+  bottom: 14px;
+  left: 14px;
+  width: auto;
+  max-height: calc(100% - 62px);
+  pointer-events: auto;
+}
+
+.location-export-room-key-panel {
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  max-height: 100%;
+  border: 1px solid var(--cruor-color-blood-glow-a380);
+  background:
+    linear-gradient(180deg, var(--cruor-color-black-a860, rgba(0, 0, 0, 0.86)), var(--cruor-color-black-a760, rgba(0, 0, 0, 0.76))),
+    var(--cruor-surface-card);
+  padding: 12px;
+  box-shadow: var(--cruor-shadow-box-026);
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.location-export-room-key-panel__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  min-width: 0;
+  border-bottom: 1px solid var(--cruor-color-milk-a070);
+  padding-bottom: 10px;
+}
+
+.location-export-room-key-panel__title {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.location-export-room-key-panel__title h2 {
+  overflow: hidden;
+  margin: 0;
+  color: var(--cruor-color-hex-fff0f2);
+  font-family: var(--font);
+  font-size: clamp(1.28rem, 2vw, 1.9rem);
+  font-weight: 950;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-export-room-key-panel__title small {
+  overflow: hidden;
+  color: var(--cruor-color-hex-d0a2aa);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-export-room-key-actions {
+  display: flex;
+  align-items: start;
+  justify-content: end;
+  gap: 6px;
+  min-width: 0;
+}
+
+.location-export-room-key-action {
+  display: inline-grid;
+  grid-template-columns: 14px minmax(0, auto);
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  border: 1px solid var(--cruor-color-blood-strong-a520);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
+  color: var(--cruor-color-hex-c8a2a8);
+  padding: 0 9px;
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.065em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.location-export-room-key-action:hover:not(:disabled),
+.location-export-room-key-action:focus-visible:not(:disabled) {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  outline: none;
+  box-shadow: var(--cruor-shadow-box-003);
+}
+
+.location-export-room-key-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.location-export-room-key-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.location-export-room-key-metric {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-milk-a055);
+  background: var(--cruor-color-black-a360);
+  padding: 8px 9px;
+}
+
+.location-export-room-key-metric small {
+  overflow: hidden;
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xxs);
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-export-room-key-metric strong {
+  overflow: hidden;
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-s);
+  font-weight: 950;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-export-room-key-copy-status {
+  display: block;
+  min-height: 16px;
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.location-export-room-key-copy-status.is-visible {
+  color: var(--cruor-color-good, #8fd19e);
+}
+
+.location-export-room-key-list {
+  display: grid;
+  gap: 10px;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 3px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
+}
+
+.location-export-room-key-card {
+  display: grid;
+  gap: 9px;
+  border: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
+  padding: 10px;
+  box-shadow: var(--cruor-shadow-box-075);
+}
+
+.location-export-room-key-card.is-ready {
+  border-color: var(--cruor-color-good-a320);
+}
+
+.location-export-room-key-card.has-missing-content {
+  border-color: var(--cruor-color-r214-g184-b98-a400);
+}
+
+.location-export-room-key-card__head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 28px;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.location-export-room-key-card__head > span {
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.location-export-room-key-card__head strong {
+  overflow: hidden;
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-m);
+  font-weight: 950;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-export-room-key-card__jump {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--cruor-color-milk-a060);
+  background: var(--cruor-color-black-a300);
+  color: var(--cruor-color-hex-c8a2a8);
+  cursor: pointer;
+}
+
+.location-export-room-key-card__jump:hover,
+.location-export-room-key-card__jump:focus-visible {
+  border-color: var(--cruor-color-blood-glow-a780);
+  color: var(--cruor-color-hex-fff0f2);
+  outline: none;
+}
+
+.location-export-room-key-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.location-export-room-key-card__meta span,
+.location-export-room-key-card__missing {
+  border: 1px solid var(--cruor-color-milk-a055);
+  background: var(--cruor-color-black-a260);
+  color: var(--cruor-color-hex-d0a2aa);
+  padding: 5px 7px;
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.location-export-room-key-card__missing {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  color: var(--cruor-color-r255-g232-b158-a940);
+}
+
+.location-export-room-key-card__missing small {
+  color: var(--cruor-color-hex-8f7278);
+  font-weight: 950;
+}
+
+.location-export-room-key-readaloud {
+  display: grid;
+  gap: 5px;
+  border-left: 2px solid var(--cruor-color-blood-glow-a500);
+  background: var(--cruor-color-black-a220);
+  padding: 8px 10px;
+}
+
+.location-export-room-key-readaloud span,
+.location-export-room-key-slot > span {
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xxs);
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.location-export-room-key-readaloud p {
+  margin: 0;
+  color: var(--cruor-color-milk-a900);
+  font-size: var(--text-size-s);
+  line-height: 1.45;
+}
+
+.location-export-room-key-slot-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.location-export-room-key-slot {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-milk-a055);
+  background: var(--cruor-color-black-a260);
+  padding: 8px;
+}
+
+.location-export-room-key-slot.is-filled {
+  border-color: var(--cruor-color-good-a240);
+}
+
+.location-export-room-key-slot.is-missing {
+  border-color: var(--cruor-color-r214-g184-b98-a280);
+}
+
+.location-export-room-key-slot em {
+  color: var(--cruor-color-r255-g232-b158-a940);
+  font-size: var(--text-size-xs);
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.location-export-room-key-slot__components {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.location-export-room-key-slot__components p {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  min-width: 0;
+}
+
+.location-export-room-key-slot__components b {
+  overflow: hidden;
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-s);
+  font-weight: 950;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-export-room-key-slot__components span {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--cruor-color-text-a720, rgba(238, 238, 238, 0.72));
+  font-size: var(--text-size-xs);
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.location-export-room-key-empty {
+  border: 1px dashed var(--cruor-color-milk-a090);
+  color: var(--cruor-color-hex-8f7278);
+  padding: 14px;
+  font-size: var(--text-size-s);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.location-compile-region.is-ready {
+  border-color: var(--cruor-color-good-a240);
+}
+
+.location-compile-region.is-partial,
+.location-compile-region.is-empty {
+  border-color: var(--cruor-color-r214-g184-b98-a280);
+}
+
+@media (max-width: 1120px) {
+  .location-composer[data-location-builder-mode="export"] .location-map-context-panel {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: 100%;
+    max-height: none;
+    margin-top: 10px;
+  }
+
+  .location-export-room-key-panel {
+    max-height: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .location-export-room-key-panel__head,
+  .location-export-room-key-summary,
+  .location-export-room-key-slot-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .location-export-room-key-actions {
+    justify-content: stretch;
+    flex-wrap: wrap;
+  }
+
+  .location-export-room-key-action {
+    flex: 1 1 160px;
+  }
+}

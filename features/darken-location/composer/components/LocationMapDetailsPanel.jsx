@@ -112,6 +112,7 @@ export function LocationMapDetailsPanel({
 }) {
   const frame = getLocationPlaceFrame(state, mapRequest);
   const metrics = getRoomProgramMetrics(state, generatedMapPreview);
+  const readyRooms = metrics.ready ?? metrics.readyCount ?? 0;
   const sideClass = side === "left" ? "location-composer__rail--left" : "location-composer__rail--right";
   const sourceLabel = getSourceLabel(state);
   const horrorLabel = getHorrorLabel(state);
@@ -150,7 +151,7 @@ export function LocationMapDetailsPanel({
       <section className="location-frame-info-card" aria-label="Location readiness">
         <LocationFrameMeter
           label="Ready Rooms"
-          value={metrics.ready || 0}
+          value={readyRooms}
           max={metrics.total || 0}
           description="Ready Rooms measures how many rooms have enough table-facing content to be used in the generated location."
         />

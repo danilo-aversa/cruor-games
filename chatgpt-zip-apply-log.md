@@ -4873,3 +4873,30 @@ _Nessun file aggiunto._
 - `~features/darken-location/composer/darken-location-composer.styles.css`
 - `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
 
+
+---
+
+## 2026-06-27 10:26:18
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase03-5-export-room-key.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase03-5-export-room-key.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+features/darken-location/composer/components/LocationExportRoomKeyPanel.jsx`
+
+**File sovrascritti:** 7
+
+- `~features/darken-location/composer/components/LocationCompilePreview.jsx`
+- `~features/darken-location/composer/components/LocationGuidedFlowPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapToolbar.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/model/location-composer-output.js`
+

@@ -38,6 +38,51 @@ function formatComponentReference(component) {
   return `${slotLabel}: ${component.title}`;
 }
 
+const ROOM_KEY_SLOT_DEFINITIONS = Object.freeze([
+  Object.freeze({ slotId: "hazard", label: "Environmental Hazard", heading: "Environmental Hazard" }),
+  Object.freeze({ slotId: "clue", label: "Disturbing Clue", heading: "Disturbing Clue" }),
+  Object.freeze({ slotId: "encounterTwist", label: "Encounter Twist", heading: "Encounter Twist" }),
+]);
+
+function getRoomKeySlotDefinition(slotId = "") {
+  return ROOM_KEY_SLOT_DEFINITIONS.find((definition) => definition.slotId === slotId) || {
+    slotId,
+    label: cleanText(slotId, "Component"),
+    heading: cleanText(slotId, "Component"),
+  };
+}
+
+function getRoomStatusFromMissingSlots(missingSlots = [], components = []) {
+  if (!missingSlots.length) return { status: "ready", label: "Ready" };
+  if (components.length) return { status: "partial", label: "Partial" };
+  return { status: "empty", label: "Empty" };
+}
+
+function createRoomKeySlotRows(components = []) {
+  return ROOM_KEY_SLOT_DEFINITIONS.map((definition) => {
+    const slotComponents = components.filter((component) => component.slotId === definition.slotId);
+    return {
+      ...definition,
+      components: slotComponents,
+      filled: slotComponents.length > 0,
+    };
+  });
+}
+
+function getRoomKeySlotText(slotRow) {
+  if (!slotRow?.components?.length) return "_Missing._";
+  return slotRow.components
+    .map((component) => {
+      const title = component.title ? `**${component.title}.** ` : "";
+      return `${title}${component.text || component.summary || "No table text yet."}`;
+    })
+    .join("\n\n");
+}
+
+function getMissingRoomSlotLabels(missingSlotIds = []) {
+  return missingSlotIds.map((slotId) => getRoomKeySlotDefinition(slotId).label);
+}
+
 function getRowValue(detailRows, label) {
   return detailRows.find((row) => row.label === label)?.value || "";
 }
@@ -211,6 +256,11 @@ function createRoomSection(region, index, generatedMapPreview, state) {
   const componentLine = components.length
     ? components.map((component) => `${component.slotLabel}: ${component.title}`).join("; ")
     : "—";
+  const roomKeySlotRows = createRoomKeySlotRows(components);
+  const missingSlotIds = roomKeySlotRows.filter((slotRow) => !slotRow.filled).map((slotRow) => slotRow.slotId);
+  const completedSlotIds = roomKeySlotRows.filter((slotRow) => slotRow.filled).map((slotRow) => slotRow.slotId);
+  const readiness = getRoomStatusFromMissingSlots(missingSlotIds, components);
+  const missingSlotLabels = getMissingRoomSlotLabels(missingSlotIds);
 
   return {
     id: region.id,
@@ -228,6 +278,14 @@ function createRoomSection(region, index, generatedMapPreview, state) {
     secret,
     reward,
     mapLabel,
+    roomKeySlotRows,
+    missingSlotIds,
+    missingSlotLabels,
+    completedSlotIds,
+    readinessStatus: readiness.status,
+    readinessLabel: readiness.label,
+    readySlotCount: completedSlotIds.length,
+    readySlotTotal: ROOM_KEY_SLOT_DEFINITIONS.length,
     tableLine: [
       `${mapLabel} — ${region.name}`,
       formatCompileLine("Role", roomRole),
@@ -283,6 +341,71 @@ function createAtTheTableRows({ context, horrorLine, sourceLine, regionSections,
   ];
 }
 
+function createRoomKeyMarkdown({ title, context, horrorLine, sourceLine, regionSections, atTheTableRows }) {
+  const readyCount = regionSections.filter((section) => section.readinessStatus === "ready").length;
+  const incompleteSections = regionSections.filter((section) => section.missingSlotIds.length);
+  const lines = [
+    `# ${title}`,
+    "",
+    `**Context:** ${context}`,
+    `**Horror:** ${horrorLine}`,
+    `**Source:** ${sourceLine}`,
+    `**Rooms Ready:** ${readyCount}/${regionSections.length || 0}`,
+    "",
+  ];
+
+  if (incompleteSections.length) {
+    lines.push("## Missing Content", "");
+    incompleteSections.forEach((section) => {
+      lines.push(`- **Room ${String(section.roomNumber).padStart(2, "0")} — ${section.region.name}:** ${section.missingSlotLabels.join(", ")}`);
+    });
+    lines.push("");
+  }
+
+  lines.push("## Room Key", "");
+
+  regionSections.forEach((section) => {
+    lines.push(`### Room ${String(section.roomNumber).padStart(2, "0")} — ${section.region.name}`);
+    lines.push("");
+    lines.push(`**Role:** ${cleanText(section.role)}`);
+    lines.push(`**Status:** ${section.readinessLabel} (${section.readySlotCount}/${section.readySlotTotal})`);
+    if (section.missingSlotLabels.length) {
+      lines.push(`**Missing:** ${section.missingSlotLabels.join(", ")}`);
+    }
+    if (section.readAloud) {
+      lines.push("", "#### Read-Aloud", section.readAloud);
+    }
+    if (section.feature && section.feature !== "—") {
+      lines.push("", `**Feature:** ${section.feature}`);
+    }
+
+    section.roomKeySlotRows.forEach((slotRow) => {
+      lines.push("", `#### ${slotRow.heading}`, getRoomKeySlotText(slotRow));
+    });
+
+    const tableNotes = [
+      section.danger && section.danger !== "—" ? `**Danger:** ${section.danger}` : "",
+      section.secret && section.secret !== "—" ? `**Secret:** ${section.secret}` : "",
+      section.reward && section.reward !== "—" ? `**Reward:** ${section.reward}` : "",
+    ].filter(Boolean);
+
+    if (tableNotes.length) {
+      lines.push("", "#### At the Table", ...tableNotes);
+    }
+
+    lines.push("");
+  });
+
+  if (atTheTableRows.length) {
+    lines.push("## At the Table", "");
+    atTheTableRows.forEach((row) => {
+      lines.push(`- **${row.label}:** ${row.value}`);
+    });
+  }
+
+  return lines.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+}
+
 
 export function getCompilePreview(state, digest, mapRequest, generatedMapPreview) {
   const slots = getLocationSlots();
@@ -335,6 +458,10 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
   const mapSyncStatus = getMapSyncStatus(mapRequest, generatedMapPreview, state.locationRegions || []);
   const mapNotes = getMapNotes(mapRequest, generatedMapPreview, state.locationRegions || []);
 
+  const readyRoomCount = regionSections.filter((section) => section.readinessStatus === "ready").length;
+  const incompleteRoomCount = Math.max(0, regionSections.length - readyRoomCount);
+  const missingRoomSections = regionSections.filter((section) => section.missingSlotIds.length);
+
   const roomText = regionSections.map((section) => section.summaryText).join("\n\n");
   const componentText = componentSections.length
     ? componentSections.map((component) => `${component.reference}\n${component.text}`).join("\n\n")
@@ -352,6 +479,14 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
   const atTheTableText = atTheTableRows
     .map((row) => `${row.label}: ${row.value}`)
     .join("\n");
+  const roomKeyMarkdown = createRoomKeyMarkdown({
+    title,
+    context,
+    horrorLine,
+    sourceLine,
+    regionSections,
+    atTheTableRows,
+  });
 
   const sessionInsertText = [
     title.toUpperCase(),
@@ -415,6 +550,9 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
     filledSlots: digest.filledSlots,
     totalSlots: digest.totalSlots,
     regionCount: regionSections.length,
+    readyRoomCount,
+    incompleteRoomCount,
+    missingRoomSections,
     premiseSection,
     slotSections,
     regionSections,
@@ -432,6 +570,7 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
     clueText,
     twistText,
     atTheTableText,
+    roomKeyMarkdown,
     sessionInsertText,
     tableReadyText,
   };
@@ -462,6 +601,7 @@ export function createJsonExportPayload(state, digest, mapRequest, generatedMapP
     mapNotes: compilePreview.mapNotes,
     sessionInsertText: compilePreview.sessionInsertText,
     tableReadyText: compilePreview.tableReadyText,
+    roomKeyMarkdown: compilePreview.roomKeyMarkdown,
     slotAssignments: state.slotAssignments,
     components: compilePreview.componentSections,
     tableView: {

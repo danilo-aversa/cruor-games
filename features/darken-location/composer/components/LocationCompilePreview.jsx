@@ -160,6 +160,14 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
             <button
               className="cruor-composer-control location-copy-btn"
               type="button"
+              onClick={() => handleCopy("Room Key Markdown", compilePreview.roomKeyMarkdown)}
+              title="Copy the full room key as Markdown"
+            >
+              Copy Markdown
+            </button>
+            <button
+              className="cruor-composer-control location-copy-btn"
+              type="button"
               disabled={!hasGeneratedMap}
               onClick={handleCopySvg}
               title="Copy the current map SVG"
@@ -207,17 +215,23 @@ export function LocationCompilePreview({ state, digest, mapRequest, generatedMap
             <ExportCard title="Room Program">
               <div className="location-compile-preview__stack">
                 {compilePreview.roomSections.map((section) => (
-                  <div className="location-compile-region" key={section.region.id}>
+                  <div className={`location-compile-region is-${section.readinessStatus || "empty"}`} key={section.region.id}>
                     <strong>{section.mapLabel} — {section.region.name}</strong>
                     <p><b>Role.</b> {section.role}</p>
+                    <p><b>Status.</b> {section.readinessLabel || "Empty"} · {section.readySlotCount || 0}/{section.readySlotTotal || 0}</p>
+                    {section.missingSlotLabels?.length ? (
+                      <p><b>Missing.</b> {section.missingSlotLabels.join(", ")}</p>
+                    ) : null}
                     {section.readAloud ? <p><b>Read-Aloud.</b> {section.readAloud}</p> : null}
                     <p><b>Feature.</b> {section.feature || "—"}</p>
+                    {section.roomKeySlotRows?.map((slotRow) => (
+                      <p key={slotRow.slotId}>
+                        <b>{slotRow.label}.</b> {slotRow.components?.length ? slotRow.components.map((component) => component.title).join(" · ") : "Missing"}
+                      </p>
+                    ))}
                     {section.danger && section.danger !== "—" ? <p><b>Danger.</b> {section.danger}</p> : null}
                     {section.secret && section.secret !== "—" ? <p><b>Secret.</b> {section.secret}</p> : null}
                     {section.reward && section.reward !== "—" ? <p><b>Reward.</b> {section.reward}</p> : null}
-                    {section.components.length ? (
-                      <small>{section.components.map((component) => `${component.slotLabel}: ${component.title}`).join(" · ")}</small>
-                    ) : null}
                   </div>
                 ))}
               </div>

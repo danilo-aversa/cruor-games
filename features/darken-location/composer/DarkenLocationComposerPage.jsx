@@ -51,6 +51,12 @@ import { LocationGuidedFlowPanel } from "./components/LocationGuidedFlowPanel.js
 import { LocationRoomInspector } from "./components/LocationRoomInspector.jsx";
 import { LocationMapDetailsPanel, LocationMapWideDetailsBlock } from "./components/LocationMapDetailsPanel.jsx";
 import { LocationMapToolbar } from "./components/LocationMapToolbar.jsx";
+import { LocationExportRoomKeyPanel } from "./components/LocationExportRoomKeyPanel.jsx";
+import {
+  copyTextToClipboard,
+  getClipboardStatusMessage,
+  getCompilePreview,
+} from "./model/location-composer-output.js";
 import { getNextMissingRoomSlot, getSelectedRoomProgramEntry } from "./model/location-room-program.js";
 import { CruorMapGeneratorMvp } from "../map-generator/map-generator.page.jsx";
 import {
@@ -301,7 +307,9 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isMapEditing, setIsMapEditing] = useState(false);
   const [mapWorkspaceRevision, setMapWorkspaceRevision] = useState(0);
+  const [exportCopyStatus, setExportCopyStatus] = useState("");
   const draftStatusTimeoutRef = useRef(null);
+  const exportCopyStatusTimeoutRef = useRef(null);
 
   const selectedComponents = useMemo(() => getSelectedComponents(state), [state]);
   const snapshot = useMemo(() => createLocationComposerSnapshot(state, selectedComponents), [state, selectedComponents]);
@@ -316,6 +324,10 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   const { mapRequest, previewResult } = previewModel;
   const generatedMapPreview = previewResult.generatedMap;
   const digest = useMemo(() => getComposerDigest(state), [state]);
+  const compilePreview = useMemo(
+    () => getCompilePreview(state, digest, mapRequest, generatedMapPreview),
+    [state, digest, mapRequest, generatedMapPreview],
+  );
   const draftFingerprint = useMemo(() => createDraftFingerprint(state), [state]);
   const hasUnsavedChanges = Boolean(savedDraftFingerprint) && draftFingerprint !== savedDraftFingerprint;
   const previewResetKey = useMemo(() => getLocationPreviewResetKey(mapRequest, digest, state), [digest, mapRequest, state]);
@@ -327,6 +339,26 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     window.clearTimeout(draftStatusTimeoutRef.current);
     draftStatusTimeoutRef.current = window.setTimeout(() => setDraftStatus(""), 2200);
   }, []);
+
+  const copyExportText = useCallback(async (label, text) => {
+    try {
+      const result = await copyTextToClipboard(text);
+      setExportCopyStatus(getClipboardStatusMessage(label, result));
+    } catch (error) {
+      setExportCopyStatus(`${label}: copy failed`);
+    }
+
+    window.clearTimeout(exportCopyStatusTimeoutRef.current);
+    exportCopyStatusTimeoutRef.current = window.setTimeout(() => setExportCopyStatus(""), 2400);
+  }, []);
+
+  const copyRoomKeyMarkdown = useCallback(() => {
+    copyExportText("Room Key Markdown", compilePreview.roomKeyMarkdown);
+  }, [compilePreview.roomKeyMarkdown, copyExportText]);
+
+  const copyTableReadyText = useCallback(() => {
+    copyExportText("Table Text", compilePreview.tableReadyText);
+  }, [compilePreview.tableReadyText, copyExportText]);
 
   const saveDraft = useCallback(() => {
     const result = saveLocationDraftWithStatus(state);
@@ -579,7 +611,10 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   }, [hasUnsavedChanges]);
 
   useEffect(() => {
-    return () => window.clearTimeout(draftStatusTimeoutRef.current);
+    return () => {
+      window.clearTimeout(draftStatusTimeoutRef.current);
+      window.clearTimeout(exportCopyStatusTimeoutRef.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -820,6 +855,19 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     setBuilderMode("scratch");
   }, [activeRoomProgramEntry?.id, activeScratchRegion?.id, focusSlot, nextMissingRoomSlot, openRoomComponents]);
 
+  const openFirstMissingExportRoom = useCallback(() => {
+    const firstMissingRegionId = compilePreview.missingRoomSections?.[0]?.region?.id || state.locationRegions?.[0]?.id || "";
+    if (!firstMissingRegionId) return;
+    setBuilderMode("scratch");
+    selectRoomTarget(firstMissingRegionId);
+  }, [compilePreview.missingRoomSections, selectRoomTarget, state.locationRegions]);
+
+  const selectExportRoom = useCallback((regionId) => {
+    if (!regionId) return;
+    setBuilderMode("scratch");
+    selectRoomTarget(regionId);
+  }, [selectRoomTarget]);
+
   const leftPanel = builderMode === "theme" ? (
     <LocationBriefPanel
       state={state}
@@ -918,6 +966,17 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     />
   ) : null;
 
+  const exportContextPanel = builderMode === "export" ? (
+    <LocationExportRoomKeyPanel
+      compilePreview={compilePreview}
+      copyStatus={exportCopyStatus}
+      onCopyMarkdown={copyRoomKeyMarkdown}
+      onCopyTable={copyTableReadyText}
+      onReviewMissing={openFirstMissingExportRoom}
+      onSelectRoom={selectExportRoom}
+    />
+  ) : null;
+
 
   const centerToolbarPanel = !isMapEditing ? (
     <LocationMapToolbar
@@ -928,12 +987,15 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       generatedMapPreview={generatedMapPreview}
       hasRooms={Boolean(state.locationRegions?.length)}
       nextRoomSlot={nextMissingRoomSlot}
+      exportIncompleteCount={compilePreview.incompleteRoomCount}
       onAddMissingRoomSlot={openNextMissingRoomSlot}
+      onCopyMarkdown={copyRoomKeyMarkdown}
       onGenerateThemeRooms={generateThemeRooms}
       onNewMapSeed={refreshMapSeed}
       onOpenComponents={openRoomComponents}
       onSelectExport={() => activateBuilderMode("export")}
       onSelectFrame={() => activateBuilderMode("theme")}
+      onReviewMissing={openFirstMissingExportRoom}
       onSelectNextRoom={() => selectRelativeRoom(1)}
       onSelectPreviousRoom={() => selectRelativeRoom(-1)}
       onSelectRooms={() => activateBuilderMode("scratch")}
@@ -965,7 +1027,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
           rightPanel={isMapEditing ? null : rightPanel}
           navigatorPanel={isMapEditing ? null : navigatorPanel}
           workspacePanel={mapWorkspacePanel}
-          contextPanel={null}
+          contextPanel={exportContextPanel}
           toolbarPanel={centerToolbarPanel}
           regionSelectionScope={builderMode === "theme" ? LOCATION_SLOT_SCOPE_MAP : LOCATION_SLOT_SCOPE_REGION}
           bottomDockPanel={!isMapEditing ? (
@@ -977,6 +1039,8 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
               hasMapManualOverrides={Boolean(state.mapManualOverrides)}
               regions={state.locationRegions || []}
               selectedComponents={selectedComponents}
+              exportIncompleteCount={compilePreview.incompleteRoomCount}
+              onCopyMarkdown={copyRoomKeyMarkdown}
               onGenerateScratchMap={generateScratchMap}
               onGenerateThemeRooms={generateThemeRooms}
               nextRoomSlot={nextMissingRoomSlot}
@@ -988,6 +1052,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
                 setBuilderMode(builderMode === "scratch" ? "scratch" : "theme");
                 setDrawerOpen(true);
               }}
+              onReviewMissing={openFirstMissingExportRoom}
               onSelectMode={activateBuilderMode}
             />
           ) : null}

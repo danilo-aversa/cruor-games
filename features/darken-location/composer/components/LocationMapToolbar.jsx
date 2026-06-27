@@ -46,12 +46,15 @@ export function LocationMapToolbar({
   generatedMapPreview = null,
   hasRooms = false,
   nextRoomSlot = null,
+  exportIncompleteCount = 0,
   onAddMissingRoomSlot,
+  onCopyMarkdown,
   onGenerateThemeRooms,
   onNewMapSeed,
   onOpenComponents,
   onSelectExport,
   onSelectFrame,
+  onReviewMissing,
   onSelectNextRoom,
   onSelectPreviousRoom,
   onSelectRooms,
@@ -65,7 +68,23 @@ export function LocationMapToolbar({
   if (mode === "export") {
     return (
       <nav className="location-map-toolbar location-map-toolbar--export" aria-label="Location export toolbar">
-        <div className="location-map-toolbar__group">
+        <div className="location-map-toolbar__group location-map-toolbar__group--actions">
+          <LocationMapToolbarButton
+            icon="fa-copy"
+            onClick={onCopyMarkdown}
+            title="Copy the room key as Markdown"
+            variant="primary"
+          >
+            Copy Markdown
+          </LocationMapToolbarButton>
+          <LocationMapToolbarButton
+            disabled={!exportIncompleteCount}
+            icon="fa-circle-exclamation"
+            onClick={onReviewMissing}
+            title={exportIncompleteCount ? `Review ${exportIncompleteCount} incomplete room${exportIncompleteCount === 1 ? "" : "s"}` : "No missing room content"}
+          >
+            Review Missing
+          </LocationMapToolbarButton>
           <LocationMapToolbarButton icon="fa-arrow-left" onClick={onSelectRooms} title="Return to room work">
             Rooms
           </LocationMapToolbarButton>

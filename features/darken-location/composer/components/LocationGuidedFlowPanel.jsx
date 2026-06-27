@@ -110,7 +110,16 @@ function getActiveStepIndex(builderMode) {
   return 0;
 }
 
-function getNextAction({ builderMode, generatedMapPreview, regions, activeRegion, activeSlot, selectedComponents, nextRoomSlot }) {
+function getNextAction({
+  builderMode,
+  generatedMapPreview,
+  regions,
+  activeRegion,
+  activeSlot,
+  selectedComponents,
+  nextRoomSlot,
+  exportIncompleteCount = 0,
+}) {
   const normalizedMode = normalizeBuilderMode(builderMode);
   const roomCount = Array.isArray(regions) ? regions.length : 0;
   const componentCount = Array.isArray(selectedComponents) ? selectedComponents.length : 0;
@@ -168,13 +177,24 @@ function getNextAction({ builderMode, generatedMapPreview, regions, activeRegion
     };
   }
 
+  if (exportIncompleteCount > 0) {
+    return {
+      title: `${exportIncompleteCount} room${exportIncompleteCount === 1 ? "" : "s"} incomplete`,
+      detail: "Review missing hazards, clues, and encounter twists before copying the room key.",
+      cta: "Review Missing",
+      label: "Review Missing Content",
+      kind: "review-missing",
+      disabled: false,
+    };
+  }
+
   return {
-    title: "Review Export",
-    detail: "Check the compiled location insert before copying it to the table.",
-    cta: "Export Ready",
-    label: "Review Export",
-    kind: "none",
-    disabled: true,
+    title: "Ready to Export",
+    detail: "The room key has the required room work slots and can be copied as Markdown.",
+    cta: "Copy Markdown",
+    label: "Copy Markdown",
+    kind: "copy-markdown",
+    disabled: false,
   };
 }
 
@@ -245,9 +265,12 @@ export function LocationGuidedFlowPanel({
   generatedMapPreview,
   hasMapManualOverrides = false,
   nextRoomSlot = null,
+  exportIncompleteCount = 0,
+  onCopyMarkdown,
   onGenerateScratchMap,
   onGenerateThemeRooms,
   onOpenComponents,
+  onReviewMissing,
   onSelectMode,
   regions = [],
   selectedComponents = [],
@@ -265,6 +288,7 @@ export function LocationGuidedFlowPanel({
     activeSlot,
     selectedComponents,
     nextRoomSlot,
+    exportIncompleteCount,
   });
   const warnings = getWarnings({ generatedMapPreview, regions, selectedComponents, builderMode });
   const readiness = getReadiness({ generatedMapPreview, regions, selectedComponents, hasMapManualOverrides });
@@ -306,6 +330,8 @@ export function LocationGuidedFlowPanel({
     if (nextAction.kind === "open-components") onOpenComponents?.();
     if (nextAction.kind === "open-rooms") openMode("scratch");
     if (nextAction.kind === "open-theme") openMode("theme");
+    if (nextAction.kind === "review-missing") onReviewMissing?.();
+    if (nextAction.kind === "copy-markdown") onCopyMarkdown?.();
   }
 
   return (
