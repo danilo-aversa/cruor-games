@@ -1895,7 +1895,7 @@
 
 /* Composer preview viewport rules live in the Location preview ownership section below. */
 
-.location-stage-navigator-overlay .component-navigator-modal {
+.location-stage__navigator-column .component-navigator-modal {
   position: relative;
   inset: auto;
   z-index: auto;
@@ -1908,7 +1908,7 @@
   pointer-events: auto;
 }
 
-.location-stage-navigator-overlay .component-navigator-modal--drawer {
+.location-stage__navigator-column .component-navigator-modal--drawer {
   position: relative;
   inset: auto;
   z-index: auto;
@@ -1921,7 +1921,7 @@
   pointer-events: auto;
 }
 
-.location-stage-navigator-overlay .location-component-modal {
+.location-stage__navigator-column .location-component-modal {
   position: relative;
   inset: auto;
   z-index: auto;
@@ -1934,19 +1934,19 @@
   pointer-events: auto;
 }
 
-.location-stage-navigator-overlay .component-navigator-modal__head-copy {
+.location-stage__navigator-column .component-navigator-modal__head-copy {
   display: grid;
   gap: 3px;
   min-width: 0;
 }
 
-.location-stage-navigator-overlay .location-component-drawer__head-copy {
+.location-stage__navigator-column .location-component-drawer__head-copy {
   display: grid;
   gap: 3px;
   min-width: 0;
 }
 
-.location-stage-navigator-overlay .component-navigator-modal__head h2 {
+.location-stage__navigator-column .component-navigator-modal__head h2 {
   overflow: hidden;
   margin: 0;
   color: var(--cruor-color-hex-fff0f2);
@@ -1960,7 +1960,7 @@
   white-space: nowrap;
 }
 
-.location-stage-navigator-overlay .location-component-drawer__head h2 {
+.location-stage__navigator-column .location-component-drawer__head h2 {
   overflow: hidden;
   margin: 0;
   color: var(--cruor-color-hex-fff0f2);
@@ -1974,7 +1974,7 @@
   white-space: nowrap;
 }
 
-.location-stage-navigator-overlay .component-navigator-modal__head-actions {
+.location-stage__navigator-column .component-navigator-modal__head-actions {
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
@@ -1982,7 +1982,7 @@
   flex: 0 0 auto;
 }
 
-.location-stage-navigator-overlay .location-component-drawer__head-actions {
+.location-stage__navigator-column .location-component-drawer__head-actions {
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
@@ -1990,21 +1990,21 @@
   flex: 0 0 auto;
 }
 
-.location-stage-navigator-overlay .location-component-search-row {
+.location-stage__navigator-column .location-component-search-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 8px;
   align-items: center;
 }
 
-.location-stage-navigator-overlay .navigator-search-row {
+.location-stage__navigator-column .navigator-search-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 8px;
   align-items: center;
 }
 
-.location-stage-navigator-overlay .location-component-search input {
+.location-stage__navigator-column .location-component-search input {
   width: 100%;
   min-height: 36px;
   border: 1px solid var(--cruor-color-milk-a080);
@@ -2015,7 +2015,7 @@
   font-size: var(--text-size-l);
 }
 
-.location-stage-navigator-overlay .search-wrap input {
+.location-stage__navigator-column .search-wrap input {
   width: 100%;
   min-height: 36px;
   border: 1px solid var(--cruor-color-milk-a080);
@@ -2026,7 +2026,7 @@
   font-size: var(--text-size-l);
 }
 
-.location-stage-navigator-overlay .location-component-count {
+.location-stage__navigator-column .location-component-count {
   display: grid;
   place-items: center;
   min-width: 42px;
@@ -2038,7 +2038,7 @@
   font-weight: 950;
 }
 
-.location-stage-navigator-overlay .navigator-count {
+.location-stage__navigator-column .navigator-count {
   display: grid;
   place-items: center;
   min-width: 42px;
@@ -2050,7 +2050,7 @@
   font-weight: 950;
 }
 
-.location-stage-navigator-overlay .location-component-filter-row {
+.location-stage__navigator-column .location-component-filter-row {
   display: grid;
   gap: 8px;
   margin-top: 0;
@@ -2060,7 +2060,7 @@
   box-shadow: none;
 }
 
-.location-stage-navigator-overlay .tag-filter-row {
+.location-stage__navigator-column .tag-filter-row {
   display: grid;
   gap: 8px;
   margin-top: 0;
@@ -2070,7 +2070,7 @@
   box-shadow: none;
 }
 
-.location-stage-navigator-overlay .location-component-filter-row__head {
+.location-stage__navigator-column .location-component-filter-row__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2084,7 +2084,7 @@
   text-transform: uppercase;
 }
 
-.location-stage-navigator-overlay .tag-filter-row__head {
+.location-stage__navigator-column .tag-filter-row__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2098,27 +2098,27 @@
   text-transform: uppercase;
 }
 
-.location-stage-navigator-overlay .location-component-filter-panel {
+.location-stage__navigator-column .location-component-filter-panel {
   display: grid;
   gap: 8px;
 }
 
-.location-stage-navigator-overlay .location-component-filter-section {
+.location-stage__navigator-column .location-component-filter-section {
   display: grid;
   gap: 8px;
 }
 
-.location-stage-navigator-overlay .navigator-filter-panel {
+.location-stage__navigator-column .navigator-filter-panel {
   display: grid;
   gap: 8px;
 }
 
-.location-stage-navigator-overlay .navigator-filter-section {
+.location-stage__navigator-column .navigator-filter-section {
   display: grid;
   gap: 8px;
 }
 
-.location-stage-navigator-overlay .location-component-filter-section strong {
+.location-stage__navigator-column .location-component-filter-section strong {
   color: var(--cruor-color-hex-8f7278);
   font-size: var(--text-size-xs);
   font-weight: 950;
@@ -2126,7 +2126,7 @@
   text-transform: uppercase;
 }
 
-.location-stage-navigator-overlay .navigator-filter-section strong {
+.location-stage__navigator-column .navigator-filter-section strong {
   color: var(--cruor-color-hex-8f7278);
   font-size: var(--text-size-xs);
   font-weight: 950;
@@ -2134,25 +2134,25 @@
   text-transform: uppercase;
 }
 
-.location-stage-navigator-overlay .filter-chip-grid {
+.location-stage__navigator-column .filter-chip-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
 }
 
-.location-stage-navigator-overlay .location-component-drawer__region-grid {
+.location-stage__navigator-column .location-component-drawer__region-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
 }
 
-.location-stage-navigator-overlay .location-component-filter-chip-grid {
+.location-stage__navigator-column .location-component-filter-chip-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
 }
 
-.location-stage-navigator-overlay .location-component-filter-chip {
+.location-stage__navigator-column .location-component-filter-chip {
   min-height: 28px;
   border: 1px solid var(--cruor-color-blood-strong-a560);
   background: var(--cruor-color-blood-a200);
@@ -2163,7 +2163,7 @@
   text-align: left;
 }
 
-.location-stage-navigator-overlay .location-component-filter-clear {
+.location-stage__navigator-column .location-component-filter-clear {
   min-height: 28px;
   border: 1px solid var(--cruor-color-blood-strong-a560);
   background: var(--cruor-color-blood-a200);
@@ -2176,7 +2176,7 @@
 
 
 
-.location-stage-navigator-overlay .navigator-filter-chip {
+.location-stage__navigator-column .navigator-filter-chip {
   min-height: 28px;
   border: 1px solid var(--cruor-color-blood-strong-a560);
   background: var(--cruor-color-blood-a200);
@@ -2187,7 +2187,7 @@
   text-align: left;
 }
 
-.location-stage-navigator-overlay .tag-clear-btn {
+.location-stage__navigator-column .tag-clear-btn {
   min-height: 28px;
   border: 1px solid var(--cruor-color-blood-strong-a560);
   background: var(--cruor-color-blood-a200);
@@ -2198,7 +2198,7 @@
   text-align: left;
 }
 
-.location-stage-navigator-overlay .location-component-filter-clear:hover:not(:disabled) {
+.location-stage__navigator-column .location-component-filter-clear:hover:not(:disabled) {
   border-color: var(--cruor-color-blood-glow-a720);
   background: var(--cruor-color-blood-strong-a380);
   color: var(--cruor-color-hex-fff0f2);
@@ -2210,41 +2210,41 @@
 
 
 
-.location-stage-navigator-overlay .navigator-filter-chip.active {
+.location-stage__navigator-column .navigator-filter-chip.active {
   border-color: var(--cruor-color-blood-glow-a720);
   background: var(--cruor-color-blood-strong-a380);
   color: var(--cruor-color-hex-fff0f2);
 }
 
-.location-stage-navigator-overlay .navigator-filter-chip.is-active {
+.location-stage__navigator-column .navigator-filter-chip.is-active {
   border-color: var(--cruor-color-blood-glow-a720);
   background: var(--cruor-color-blood-strong-a380);
   color: var(--cruor-color-hex-fff0f2);
 }
 
-.location-stage-navigator-overlay .navigator-filter-chip:hover {
+.location-stage__navigator-column .navigator-filter-chip:hover {
   border-color: var(--cruor-color-blood-glow-a720);
   background: var(--cruor-color-blood-strong-a380);
   color: var(--cruor-color-hex-fff0f2);
 }
 
-.location-stage-navigator-overlay .tag-clear-btn:hover:not(:disabled) {
+.location-stage__navigator-column .tag-clear-btn:hover:not(:disabled) {
   border-color: var(--cruor-color-blood-glow-a720);
   background: var(--cruor-color-blood-strong-a380);
   color: var(--cruor-color-hex-fff0f2);
 }
 
-.location-stage-navigator-overlay .location-component-filter-clear:disabled {
+.location-stage__navigator-column .location-component-filter-clear:disabled {
   cursor: not-allowed;
   opacity: 0.42;
 }
 
-.location-stage-navigator-overlay .tag-clear-btn:disabled {
+.location-stage__navigator-column .tag-clear-btn:disabled {
   cursor: not-allowed;
   opacity: 0.42;
 }
 
-.location-stage-navigator-overlay .location-component-drawer__target {
+.location-stage__navigator-column .location-component-drawer__target {
   display: grid;
   gap: 8px;
   border: 1px solid var(--cruor-color-milk-a075);
@@ -2252,13 +2252,13 @@
   padding: 9px;
 }
 
-.location-stage-navigator-overlay .location-component-drawer__target-copy {
+.location-stage__navigator-column .location-component-drawer__target-copy {
   display: grid;
   gap: 3px;
   min-width: 0;
 }
 
-.location-stage-navigator-overlay .location-component-drawer__target span {
+.location-stage__navigator-column .location-component-drawer__target span {
   color: var(--cruor-color-hex-8f7278);
   font-size: var(--text-size-xxs);
   font-weight: 950;
@@ -2267,7 +2267,7 @@
   text-transform: uppercase;
 }
 
-.location-stage-navigator-overlay .location-component-drawer__target strong {
+.location-stage__navigator-column .location-component-drawer__target strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
   font-size: var(--text-size-l);
@@ -2276,13 +2276,13 @@
   white-space: nowrap;
 }
 
-.location-stage-navigator-overlay .location-component-drawer__target small {
+.location-stage__navigator-column .location-component-drawer__target small {
   color: var(--cruor-color-r240-g215-b220-a560);
   font-size: var(--text-size-s);
   font-weight: 800;
 }
 
-.location-stage-navigator-overlay .component-card {
+.location-stage__navigator-column .component-card {
   position: relative;
   display: grid;
   align-content: start;
@@ -2300,7 +2300,7 @@
   transition: border-color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
 }
 
-.location-stage-navigator-overlay .location-component-option {
+.location-stage__navigator-column .location-component-option {
   position: relative;
   display: grid;
   align-content: start;
@@ -2318,47 +2318,47 @@
   transition: border-color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
 }
 
-.location-stage-navigator-overlay .component-card.in-build {
+.location-stage__navigator-column .component-card.in-build {
   border-color: var(--cruor-color-blood-glow-a420);
   background-color: var(--cruor-color-blood-strong-a130);
   box-shadow: var(--cruor-shadow-box-005);
 }
 
-.location-stage-navigator-overlay .component-card:hover {
+.location-stage__navigator-column .component-card:hover {
   border-color: var(--cruor-color-blood-glow-a420);
   background-color: var(--cruor-color-blood-strong-a130);
   box-shadow: var(--cruor-shadow-box-005);
 }
 
-.location-stage-navigator-overlay .location-component-option.in-build {
+.location-stage__navigator-column .location-component-option.in-build {
   border-color: var(--cruor-color-blood-glow-a420);
   background-color: var(--cruor-color-blood-strong-a130);
   box-shadow: var(--cruor-shadow-box-005);
 }
 
-.location-stage-navigator-overlay .location-component-option.is-active {
+.location-stage__navigator-column .location-component-option.is-active {
   border-color: var(--cruor-color-blood-glow-a420);
   background-color: var(--cruor-color-blood-strong-a130);
   box-shadow: var(--cruor-shadow-box-005);
 }
 
-.location-stage-navigator-overlay .location-component-option:hover {
+.location-stage__navigator-column .location-component-option:hover {
   border-color: var(--cruor-color-blood-glow-a420);
   background-color: var(--cruor-color-blood-strong-a130);
   box-shadow: var(--cruor-shadow-box-005);
 }
 
-.location-stage-navigator-overlay .component-card.slot-full {
+.location-stage__navigator-column .component-card.slot-full {
   cursor: not-allowed;
   opacity: 0.58;
 }
 
-.location-stage-navigator-overlay .location-component-option.slot-full {
+.location-stage__navigator-column .location-component-option.slot-full {
   cursor: not-allowed;
   opacity: 0.58;
 }
 
-.location-stage-navigator-overlay .card-top {
+.location-stage__navigator-column .card-top {
   display: flex;
   align-items: start;
   justify-content: space-between;
@@ -2367,7 +2367,7 @@
   padding-right: 46px;
 }
 
-.location-stage-navigator-overlay .location-component-card-top {
+.location-stage__navigator-column .location-component-card-top {
   display: flex;
   align-items: start;
   justify-content: space-between;
@@ -2376,21 +2376,21 @@
   padding-right: 46px;
 }
 
-.location-stage-navigator-overlay .component-title-stack {
+.location-stage__navigator-column .component-title-stack {
   display: grid;
   gap: 2px;
   min-width: 0;
   padding-right: 0;
 }
 
-.location-stage-navigator-overlay .location-component-title-stack {
+.location-stage__navigator-column .location-component-title-stack {
   display: grid;
   gap: 2px;
   min-width: 0;
   padding-right: 0;
 }
 
-.location-stage-navigator-overlay .component-card h3 {
+.location-stage__navigator-column .component-card h3 {
   margin: 0;
   color: var(--cruor-color-hex-fff0f2);
   font-size: var(--text-size-l);
@@ -2399,7 +2399,7 @@
   letter-spacing: -0.01em;
 }
 
-.location-stage-navigator-overlay .location-component-option h3 {
+.location-stage__navigator-column .location-component-option h3 {
   margin: 0;
   color: var(--cruor-color-hex-fff0f2);
   font-size: var(--text-size-l);
@@ -2408,7 +2408,7 @@
   letter-spacing: -0.01em;
 }
 
-.location-stage-navigator-overlay .location-component-summary {
+.location-stage__navigator-column .location-component-summary {
   display: -webkit-box;
   overflow: hidden;
   margin: 0;
@@ -2419,7 +2419,7 @@
   -webkit-line-clamp: 2;
 }
 
-.location-stage-navigator-overlay .summary {
+.location-stage__navigator-column .summary {
   display: -webkit-box;
   overflow: hidden;
   margin: 0;
@@ -2430,7 +2430,7 @@
   -webkit-line-clamp: 2;
 }
 
-.location-stage-navigator-overlay .component-toggle-btn {
+.location-stage__navigator-column .component-toggle-btn {
   position: absolute;
   top: 8px;
   right: 8px;
@@ -2450,7 +2450,7 @@
   text-transform: uppercase;
 }
 
-.location-stage-navigator-overlay .location-component-toggle-btn {
+.location-stage__navigator-column .location-component-toggle-btn {
   position: absolute;
   top: 8px;
   right: 8px;
@@ -2470,37 +2470,37 @@
   text-transform: uppercase;
 }
 
-.location-stage-navigator-overlay .component-toggle-btn i {
+.location-stage__navigator-column .component-toggle-btn i {
   width: 11px;
   height: 11px;
   font-size: var(--text-size-m);
 }
 
-.location-stage-navigator-overlay .component-toggle-btn svg {
+.location-stage__navigator-column .component-toggle-btn svg {
   width: 11px;
   height: 11px;
   font-size: var(--text-size-m);
 }
 
-.location-stage-navigator-overlay .location-component-toggle-btn i {
+.location-stage__navigator-column .location-component-toggle-btn i {
   width: 11px;
   height: 11px;
   font-size: var(--text-size-m);
 }
 
-.location-stage-navigator-overlay .location-component-toggle-btn svg {
+.location-stage__navigator-column .location-component-toggle-btn svg {
   width: 11px;
   height: 11px;
   font-size: var(--text-size-m);
 }
 
-.location-stage-navigator-overlay .component-toggle-btn:hover:not(:disabled) {
+.location-stage__navigator-column .component-toggle-btn:hover:not(:disabled) {
   border-color: var(--cruor-color-rose-a660);
   background: var(--cruor-color-blood-bright-a340);
   color: var(--cruor-color-hex-fff0f2);
 }
 
-.location-stage-navigator-overlay .location-component-toggle-btn:hover:not(:disabled) {
+.location-stage__navigator-column .location-component-toggle-btn:hover:not(:disabled) {
   border-color: var(--cruor-color-rose-a660);
   background: var(--cruor-color-blood-bright-a340);
   color: var(--cruor-color-hex-fff0f2);
@@ -2923,7 +2923,7 @@
 }
 
 
-.location-stage-navigator-overlay {
+.location-stage__navigator-column {
   grid-column: 2 / 4;
   grid-row: 1;
   position: absolute;
@@ -2942,7 +2942,7 @@
 
 /* Tokens */
 
-.location-stage-navigator-overlay .location-component-drawer {
+.location-stage__navigator-column .location-component-drawer {
   --component-stage-list-width: var(--location-component-drawer-closed-width);
   --component-stage-rail-width: var(--location-component-filter-column-width);
   --component-stage-drawer-gap: var(--location-component-drawer-gap);
@@ -2962,12 +2962,12 @@
 
 /* Layout */
 
-.location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] {
+.location-stage__navigator-column .location-component-drawer[data-filters-open="true"] {
   width: min(calc(100vw - 64px), calc(var(--location-component-drawer-closed-width) + var(--location-component-filter-column-width) + var(--location-component-drawer-gap)));
   max-width: 100%;
 }
 
-.location-stage-navigator-overlay .component-navigator-modal__panel {
+.location-stage__navigator-column .component-navigator-modal__panel {
   position: relative;
   z-index: 1;
   display: grid;
@@ -2992,7 +2992,7 @@
   min-width: 0;
 }
 
-.location-stage-navigator-overlay .location-component-drawer__panel {
+.location-stage__navigator-column .location-component-drawer__panel {
   position: relative;
   z-index: 1;
   display: grid;
@@ -3017,19 +3017,19 @@
   min-width: 0;
 }
 
-.location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .component-navigator-modal__panel {
+.location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .component-navigator-modal__panel {
   grid-template-columns: minmax(0, 1fr) minmax(0, var(--location-component-filter-column-width));
   grid-template-rows: auto minmax(0, 1fr);
   grid-template-areas: "head rail" "list rail";
 }
 
-.location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .location-component-drawer__panel {
+.location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .location-component-drawer__panel {
   grid-template-columns: minmax(0, 1fr) minmax(0, var(--location-component-filter-column-width));
   grid-template-rows: auto minmax(0, 1fr);
   grid-template-areas: "head rail" "list rail";
 }
 
-.location-stage-navigator-overlay .component-navigator-modal__head {
+.location-stage__navigator-column .component-navigator-modal__head {
   grid-area: head;
   display: flex;
   align-items: flex-start;
@@ -3040,7 +3040,7 @@
   padding: 0 0 9px;
 }
 
-.location-stage-navigator-overlay .location-component-drawer__head {
+.location-stage__navigator-column .location-component-drawer__head {
   grid-area: head;
   display: flex;
   align-items: flex-start;
@@ -3051,7 +3051,7 @@
   padding: 0 0 9px;
 }
 
-.location-stage-navigator-overlay .navigator-tools {
+.location-stage__navigator-column .navigator-tools {
   grid-area: rail;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -3066,7 +3066,7 @@
   overflow: auto;
 }
 
-.location-stage-navigator-overlay .component-card.location-component-option {
+.location-stage__navigator-column .component-card.location-component-option {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -3084,7 +3084,7 @@
   overflow: hidden;
 }
 
-.location-stage-navigator-overlay .location-component-option.component-card {
+.location-stage__navigator-column .location-component-option.component-card {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -3102,42 +3102,42 @@
   overflow: hidden;
 }
 
-.location-stage-navigator-overlay .component-card.location-component-option.in-build {
+.location-stage__navigator-column .component-card.location-component-option.in-build {
   transform: none;
   border-color: var(--cruor-color-blood-glow-a420);
   background: var(--cruor-color-blood-strong-a130);
   box-shadow: var(--cruor-shadow-box-005);
 }
 
-.location-stage-navigator-overlay .component-card.location-component-option:hover {
+.location-stage__navigator-column .component-card.location-component-option:hover {
   transform: none;
   border-color: var(--cruor-color-blood-glow-a420);
   background: var(--cruor-color-blood-strong-a130);
   box-shadow: var(--cruor-shadow-box-005);
 }
 
-.location-stage-navigator-overlay .location-component-option.component-card.in-build {
+.location-stage__navigator-column .location-component-option.component-card.in-build {
   transform: none;
   border-color: var(--cruor-color-blood-glow-a420);
   background: var(--cruor-color-blood-strong-a130);
   box-shadow: var(--cruor-shadow-box-005);
 }
 
-.location-stage-navigator-overlay .location-component-option.component-card.is-active {
+.location-stage__navigator-column .location-component-option.component-card.is-active {
   transform: none;
   border-color: var(--cruor-color-blood-glow-a420);
   background: var(--cruor-color-blood-strong-a130);
   box-shadow: var(--cruor-shadow-box-005);
 }
 
-.location-stage-navigator-overlay .location-component-option.component-card:hover {
+.location-stage__navigator-column .location-component-option.component-card:hover {
   transform: none;
   border-color: var(--cruor-color-blood-glow-a420);
   background: var(--cruor-color-blood-strong-a130);
   box-shadow: var(--cruor-shadow-box-005);
 }
 
-.location-stage-navigator-overlay .component-card.location-component-option .card-top {
+.location-stage__navigator-column .component-card.location-component-option .card-top {
   display: block;
   width: 100%;
   min-width: 0;
@@ -3145,7 +3145,7 @@
   padding: 0;
 }
 
-.location-stage-navigator-overlay .component-card.location-component-option .component-title-stack {
+.location-stage__navigator-column .component-card.location-component-option .component-title-stack {
   display: block;
   width: 100%;
   min-width: 0;
@@ -3153,7 +3153,7 @@
   padding: 0;
 }
 
-.location-stage-navigator-overlay .location-component-option.component-card .location-component-card-top {
+.location-stage__navigator-column .location-component-option.component-card .location-component-card-top {
   display: block;
   width: 100%;
   min-width: 0;
@@ -3161,7 +3161,7 @@
   padding: 0;
 }
 
-.location-stage-navigator-overlay .location-component-option.component-card .location-component-title-stack {
+.location-stage__navigator-column .location-component-option.component-card .location-component-title-stack {
   display: block;
   width: 100%;
   min-width: 0;
@@ -3169,7 +3169,7 @@
   padding: 0;
 }
 
-.location-stage-navigator-overlay .component-card.location-component-option h3 {
+.location-stage__navigator-column .component-card.location-component-option h3 {
   display: block;
   width: 100%;
   min-width: 0;
@@ -3183,7 +3183,7 @@
   hyphens: none;
 }
 
-.location-stage-navigator-overlay .location-component-option.component-card h3 {
+.location-stage__navigator-column .location-component-option.component-card h3 {
   display: block;
   width: 100%;
   min-width: 0;
@@ -3197,7 +3197,7 @@
   hyphens: none;
 }
 
-.location-stage-navigator-overlay .component-card.location-component-option .summary {
+.location-stage__navigator-column .component-card.location-component-option .summary {
   width: 100%;
   min-width: 0;
   max-width: 100%;
@@ -3205,7 +3205,7 @@
   color: var(--muted, var(--cruor-color-text-a620));
 }
 
-.location-stage-navigator-overlay .location-component-option.component-card .location-component-summary {
+.location-stage__navigator-column .location-component-option.component-card .location-component-summary {
   width: 100%;
   min-width: 0;
   max-width: 100%;
@@ -3213,7 +3213,7 @@
   color: var(--muted, var(--cruor-color-text-a620));
 }
 
-.location-stage-navigator-overlay .icon-btn {
+.location-stage__navigator-column .icon-btn {
   position: relative;
   display: grid;
   place-items: center;
@@ -3228,7 +3228,7 @@
   box-shadow: var(--cruor-shadow-box-028);
 }
 
-.location-stage-navigator-overlay .location-component-drawer__close {
+.location-stage__navigator-column .location-component-drawer__close {
   position: relative;
   display: grid;
   place-items: center;
@@ -3243,7 +3243,7 @@
   box-shadow: var(--cruor-shadow-box-028);
 }
 
-.location-stage-navigator-overlay .location-navigator-filter-btn {
+.location-stage__navigator-column .location-navigator-filter-btn {
   position: relative;
   display: grid;
   place-items: center;
@@ -3258,7 +3258,7 @@
   box-shadow: var(--cruor-shadow-box-028);
 }
 
-.location-stage-navigator-overlay .navigator-filter-btn {
+.location-stage__navigator-column .navigator-filter-btn {
   position: relative;
   display: grid;
   place-items: center;
@@ -3273,7 +3273,7 @@
   box-shadow: var(--cruor-shadow-box-028);
 }
 
-.location-stage-navigator-overlay .icon-btn:focus-visible {
+.location-stage__navigator-column .icon-btn:focus-visible {
   border-color: var(--cruor-color-blood-glow-a660);
   background: var(--cruor-color-blood-strong-a360);
   color: var(--cruor-color-hex-fff0f2);
@@ -3281,7 +3281,7 @@
   outline: none;
 }
 
-.location-stage-navigator-overlay .icon-btn:hover {
+.location-stage__navigator-column .icon-btn:hover {
   border-color: var(--cruor-color-blood-glow-a660);
   background: var(--cruor-color-blood-strong-a360);
   color: var(--cruor-color-hex-fff0f2);
@@ -3289,7 +3289,7 @@
   outline: none;
 }
 
-.location-stage-navigator-overlay .location-component-drawer__close:hover {
+.location-stage__navigator-column .location-component-drawer__close:hover {
   border-color: var(--cruor-color-blood-glow-a660);
   background: var(--cruor-color-blood-strong-a360);
   color: var(--cruor-color-hex-fff0f2);
@@ -3297,7 +3297,7 @@
   outline: none;
 }
 
-.location-stage-navigator-overlay .location-navigator-filter-btn.active {
+.location-stage__navigator-column .location-navigator-filter-btn.active {
   border-color: var(--cruor-color-blood-glow-a660);
   background: var(--cruor-color-blood-strong-a360);
   color: var(--cruor-color-hex-fff0f2);
@@ -3305,7 +3305,7 @@
   outline: none;
 }
 
-.location-stage-navigator-overlay .location-navigator-filter-btn.is-active {
+.location-stage__navigator-column .location-navigator-filter-btn.is-active {
   border-color: var(--cruor-color-blood-glow-a660);
   background: var(--cruor-color-blood-strong-a360);
   color: var(--cruor-color-hex-fff0f2);
@@ -3313,7 +3313,7 @@
   outline: none;
 }
 
-.location-stage-navigator-overlay .location-navigator-filter-btn:hover {
+.location-stage__navigator-column .location-navigator-filter-btn:hover {
   border-color: var(--cruor-color-blood-glow-a660);
   background: var(--cruor-color-blood-strong-a360);
   color: var(--cruor-color-hex-fff0f2);
@@ -3321,7 +3321,7 @@
   outline: none;
 }
 
-.location-stage-navigator-overlay .navigator-filter-btn.active {
+.location-stage__navigator-column .navigator-filter-btn.active {
   border-color: var(--cruor-color-blood-glow-a660);
   background: var(--cruor-color-blood-strong-a360);
   color: var(--cruor-color-hex-fff0f2);
@@ -3329,7 +3329,7 @@
   outline: none;
 }
 
-.location-stage-navigator-overlay .navigator-filter-btn.is-active {
+.location-stage__navigator-column .navigator-filter-btn.is-active {
   border-color: var(--cruor-color-blood-glow-a660);
   background: var(--cruor-color-blood-strong-a360);
   color: var(--cruor-color-hex-fff0f2);
@@ -3337,7 +3337,7 @@
   outline: none;
 }
 
-.location-stage-navigator-overlay .navigator-filter-btn:hover {
+.location-stage__navigator-column .navigator-filter-btn:hover {
   border-color: var(--cruor-color-blood-glow-a660);
   background: var(--cruor-color-blood-strong-a360);
   color: var(--cruor-color-hex-fff0f2);
@@ -3345,13 +3345,13 @@
   outline: none;
 }
 
-.location-stage-navigator-overlay .component-card.location-component-option .component-toggle-btn {
+.location-stage__navigator-column .component-card.location-component-option .component-toggle-btn {
   position: absolute;
   top: 12px;
   right: 12px;
 }
 
-.location-stage-navigator-overlay .location-component-option.component-card .location-component-toggle-btn {
+.location-stage__navigator-column .location-component-option.component-card .location-component-toggle-btn {
   position: absolute;
   top: 12px;
   right: 12px;
@@ -4213,7 +4213,7 @@
 
 
 
-.location-stage-navigator-overlay .component-navigator-modal__list {
+.location-stage__navigator-column .component-navigator-modal__list {
   grid-area: list;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -4233,7 +4233,7 @@
   scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
 }
 
-.location-stage-navigator-overlay .component-navigator-modal__rail {
+.location-stage__navigator-column .component-navigator-modal__rail {
   grid-area: rail;
   display: grid;
   align-content: start;
@@ -4254,7 +4254,7 @@
   scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
 }
 
-.location-stage-navigator-overlay .location-component-list {
+.location-stage__navigator-column .location-component-list {
   grid-area: list;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -4274,7 +4274,7 @@
   scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
 }
 
-.location-stage-navigator-overlay .location-navigator-tools {
+.location-stage__navigator-column .location-navigator-tools {
   grid-area: rail;
   display: grid;
   align-content: start;
@@ -4312,22 +4312,22 @@
 
 
 
-.location-stage-navigator-overlay .component-navigator-modal__list::-webkit-scrollbar {
+.location-stage__navigator-column .component-navigator-modal__list::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-.location-stage-navigator-overlay .component-navigator-modal__rail::-webkit-scrollbar {
+.location-stage__navigator-column .component-navigator-modal__rail::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-.location-stage-navigator-overlay .location-component-list::-webkit-scrollbar {
+.location-stage__navigator-column .location-component-list::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-.location-stage-navigator-overlay .location-navigator-tools::-webkit-scrollbar {
+.location-stage__navigator-column .location-navigator-tools::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
@@ -4353,22 +4353,22 @@
 
 /* Layout */
 
-.location-stage-navigator-overlay .component-navigator-modal__list::-webkit-scrollbar-track {
+.location-stage__navigator-column .component-navigator-modal__list::-webkit-scrollbar-track {
   background: var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-013);
 }
 
-.location-stage-navigator-overlay .component-navigator-modal__rail::-webkit-scrollbar-track {
+.location-stage__navigator-column .component-navigator-modal__rail::-webkit-scrollbar-track {
   background: var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-013);
 }
 
-.location-stage-navigator-overlay .location-component-list::-webkit-scrollbar-track {
+.location-stage__navigator-column .location-component-list::-webkit-scrollbar-track {
   background: var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-013);
 }
 
-.location-stage-navigator-overlay .location-navigator-tools::-webkit-scrollbar-track {
+.location-stage__navigator-column .location-navigator-tools::-webkit-scrollbar-track {
   background: var(--cruor-surface-card);
   box-shadow: var(--cruor-shadow-box-013);
 }
@@ -4394,22 +4394,22 @@
 
 /* Layout */
 
-.location-stage-navigator-overlay .component-navigator-modal__list::-webkit-scrollbar-thumb {
+.location-stage__navigator-column .component-navigator-modal__list::-webkit-scrollbar-thumb {
   border: 2px solid var(--cruor-color-surface-soft-a960);
   background: var(--cruor-gradient-linear-014-13668961);
 }
 
-.location-stage-navigator-overlay .component-navigator-modal__rail::-webkit-scrollbar-thumb {
+.location-stage__navigator-column .component-navigator-modal__rail::-webkit-scrollbar-thumb {
   border: 2px solid var(--cruor-color-surface-soft-a960);
   background: var(--cruor-gradient-linear-014-13668961);
 }
 
-.location-stage-navigator-overlay .location-component-list::-webkit-scrollbar-thumb {
+.location-stage__navigator-column .location-component-list::-webkit-scrollbar-thumb {
   border: 2px solid var(--cruor-color-surface-soft-a960);
   background: var(--cruor-gradient-linear-014-13668961);
 }
 
-.location-stage-navigator-overlay .location-navigator-tools::-webkit-scrollbar-thumb {
+.location-stage__navigator-column .location-navigator-tools::-webkit-scrollbar-thumb {
   border: 2px solid var(--cruor-color-surface-soft-a960);
   background: var(--cruor-gradient-linear-014-13668961);
 }
@@ -4432,19 +4432,19 @@
 
 /* Layout */
 
-.location-stage-navigator-overlay .component-navigator-modal__list::-webkit-scrollbar-thumb:hover {
+.location-stage__navigator-column .component-navigator-modal__list::-webkit-scrollbar-thumb:hover {
   background: var(--cruor-gradient-linear-018-ba88b005);
 }
 
-.location-stage-navigator-overlay .component-navigator-modal__rail::-webkit-scrollbar-thumb:hover {
+.location-stage__navigator-column .component-navigator-modal__rail::-webkit-scrollbar-thumb:hover {
   background: var(--cruor-gradient-linear-018-ba88b005);
 }
 
-.location-stage-navigator-overlay .location-component-list::-webkit-scrollbar-thumb:hover {
+.location-stage__navigator-column .location-component-list::-webkit-scrollbar-thumb:hover {
   background: var(--cruor-gradient-linear-018-ba88b005);
 }
 
-.location-stage-navigator-overlay .location-navigator-tools::-webkit-scrollbar-thumb:hover {
+.location-stage__navigator-column .location-navigator-tools::-webkit-scrollbar-thumb:hover {
   background: var(--cruor-gradient-linear-018-ba88b005);
 }
 
@@ -4466,19 +4466,19 @@
 
 /* Layout */
 
-.location-stage-navigator-overlay .component-navigator-modal__list::-webkit-scrollbar-corner {
+.location-stage__navigator-column .component-navigator-modal__list::-webkit-scrollbar-corner {
   background: var(--cruor-surface-card);
 }
 
-.location-stage-navigator-overlay .component-navigator-modal__rail::-webkit-scrollbar-corner {
+.location-stage__navigator-column .component-navigator-modal__rail::-webkit-scrollbar-corner {
   background: var(--cruor-surface-card);
 }
 
-.location-stage-navigator-overlay .location-component-list::-webkit-scrollbar-corner {
+.location-stage__navigator-column .location-component-list::-webkit-scrollbar-corner {
   background: var(--cruor-surface-card);
 }
 
-.location-stage-navigator-overlay .location-navigator-tools::-webkit-scrollbar-corner {
+.location-stage__navigator-column .location-navigator-tools::-webkit-scrollbar-corner {
   background: var(--cruor-surface-card);
 }
 
@@ -4840,7 +4840,7 @@
     max-width: none;
   }
 
-  .location-stage-navigator-overlay {
+  .location-stage__navigator-column {
     position: absolute;
     inset: 0;
     grid-area: center;
@@ -4848,27 +4848,27 @@
     width: 100%;
   }
 
-  .location-stage-navigator-overlay .location-component-drawer {
+  .location-stage__navigator-column .location-component-drawer {
     --component-stage-list-width: 100%;
     --component-stage-rail-width: 100%;
     width: 100%;
     max-width: 100%;
   }
 
-  .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] {
+  .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] {
     --component-stage-list-width: 100%;
     --component-stage-rail-width: 100%;
     width: 100%;
     max-width: 100%;
   }
 
-  .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .component-navigator-modal__panel {
+  .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .component-navigator-modal__panel {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto auto minmax(0, 1fr);
     grid-template-areas: "head" "rail" "list";
   }
 
-  .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] .location-component-drawer__panel {
+  .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .location-component-drawer__panel {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto auto minmax(0, 1fr);
     grid-template-areas: "head" "rail" "list";
@@ -5735,18 +5735,18 @@
 
 
 @media (max-width: 1180px) {
-  .location-stage-navigator-overlay {
+  .location-stage__navigator-column {
     grid-column: 1 / 4;
     left: 0;
     right: 0;
     justify-content: center;
   }
 
-  .location-stage-navigator-overlay .location-component-drawer {
+  .location-stage__navigator-column .location-component-drawer {
     width: min(760px, 100%);
   }
 
-  .location-stage-navigator-overlay .location-component-drawer[data-filters-open="true"] {
+  .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] {
     width: min(760px, 100%);
   }
 }
@@ -6750,12 +6750,12 @@
   text-transform: uppercase;
 }
 
-.location-stage-navigator-overlay .location-component-option[data-decision-tier="recommended"] {
+.location-stage__navigator-column .location-component-option[data-decision-tier="recommended"] {
   border-color: var(--cruor-color-blood-glow-a360);
   background: var(--cruor-color-blood-strong-a095);
 }
 
-.location-stage-navigator-overlay .location-component-option[data-decision-tier="best-fit"] {
+.location-stage__navigator-column .location-component-option[data-decision-tier="best-fit"] {
   border-color: var(--cruor-color-milk-a120);
   background: var(--cruor-color-white-a030);
 }
@@ -8537,15 +8537,24 @@
 }
 
 .location-map-details-slot {
+  -webkit-backdrop-filter: var(--cruor-filter-blur-12);
+  backdrop-filter: var(--cruor-filter-blur-12);
+  background: var(--cruor-ui-card-bg);
+  border: 1px solid var(--cruor-ui-card-border-color, var(--cruor-color-milk-a075));
+  border-color: var(--cruor-ui-card-border-color, var(--cruor-color-milk-a075));
+  box-shadow: var(--cruor-ui-card-shadow);
+  color: var(--cruor-color-text-a620);
   display: grid;
-  gap: 2px;
-  min-width: 0;
-  width: 100%;
-  padding: 8px;
-  border: 1px solid var(--cruor-color-r208-g162-b170-a120, rgba(208, 162, 170, 0.12));
-  background: var(--cruor-color-black-a220, rgba(0, 0, 0, 0.22));
-  color: var(--cruor-color-text-a680, rgba(238, 238, 238, 0.68));
+  gap: 6px;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 76px;
+  overflow: hidden;
+  padding: 9px 10px;
+  position: relative;
   text-align: left;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, width 0.14s ease;
+  width: 100%;
+  z-index: 4;
 }
 
 .location-map-details-slot strong,
@@ -8570,8 +8579,11 @@
 .location-map-details-slot.is-active,
 .location-map-details-slot:hover,
 .location-map-details-slot:focus-visible {
-  border-color: var(--cruor-color-blood-glow-a640, rgba(190, 64, 82, 0.64));
-  background: var(--cruor-color-blood-bright-a120, rgba(122, 26, 40, 0.12));
+  background: var(--cruor-gradient-linear-188-b079ccaf), var(--cruor-color-surface-soft);
+  background-color: var(--cruor-color-surface-soft);
+  border-color: var(--cruor-ui-card-border-color-active, var(--cruor-color-blood-glow-a420));
+  box-shadow: var(--cruor-ui-card-shadow-active);
+  color: var(--cruor-color-hex-fff0f2);
 }
 
 .location-map-details-slot.is-filled {
@@ -9883,5 +9895,1644 @@
 @media (max-height: 760px) {
   .location-room-mini-nav {
     max-height: 124px;
+  }
+}
+
+/* Dark Places — Phase 3.7C Navigator shell parity */
+.location-stage__navigator-column {
+  --component-stage-list-width: var(--location-component-drawer-closed-width);
+  --component-stage-rail-width: var(--location-component-filter-column-width);
+  --component-stage-drawer-gap: var(--location-component-drawer-gap);
+  display: grid;
+  min-height: 0;
+  min-width: 0;
+  pointer-events: auto;
+}
+
+.location-stage__navigator-column .component-navigator-drawer,
+.location-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] {
+  filter: none;
+  height: 100%;
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+}
+
+.location-stage__navigator-column .component-navigator-modal,
+.location-stage__navigator-column .component-navigator-modal--drawer,
+.location-stage__navigator-column .component-navigator-modal__panel,
+.location-stage__navigator-column .location-component-drawer__panel {
+  height: 100%;
+  max-height: none;
+  overflow: visible;
+}
+
+.location-stage__navigator-column .location-component-drawer[data-filters-open="true"] {
+  max-width: 100%;
+  width: 100%;
+}
+
+.location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .component-navigator-modal__panel,
+.location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .location-component-drawer__panel,
+.location-stage__navigator-column .component-navigator-modal__panel,
+.location-stage__navigator-column .location-component-drawer__panel {
+  display: grid;
+  grid-template-areas:
+    "head"
+    "smart"
+    "list";
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
+  max-width: 100%;
+  min-width: 0;
+  overflow: visible;
+  width: 100%;
+}
+
+.location-stage__navigator-column .location-component-drawer__target,
+.location-stage__navigator-column .location-component-drawer__target--contextual {
+  grid-area: smart;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 7px;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-surface-card);
+  padding: 8px;
+}
+
+.location-stage__navigator-column .location-component-drawer__slot-context {
+  min-width: 0;
+  padding: 7px 8px;
+}
+
+.location-stage__navigator-column .component-navigator-modal__rail,
+.location-stage__navigator-column .navigator-tools,
+.location-stage__navigator-column .location-navigator-tools {
+  -webkit-backdrop-filter: var(--cruor-filter-glass-18-125);
+  backdrop-filter: var(--cruor-filter-glass-18-125);
+  background: var(--cruor-gradient-radial-126-b620ddfb), var(--cruor-gradient-linear-107-9e0d4ab7);
+  border: 1px solid var(--cruor-color-rose-a160);
+  bottom: 0;
+  box-shadow: var(--cruor-shadow-box-009);
+  display: grid;
+  grid-area: rail;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 8px;
+  height: 100%;
+  left: calc(100% + var(--component-stage-drawer-gap, 10px));
+  max-height: 100%;
+  max-width: min(var(--component-stage-rail-width, 340px), calc(100vw - 32px));
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  padding: 10px;
+  position: absolute;
+  top: 0;
+  width: var(--component-stage-rail-width, clamp(260px, 24vw, 340px));
+  z-index: 170;
+}
+
+.location-stage__navigator-column .component-navigator-modal__list,
+.location-stage__navigator-column .location-component-list {
+  grid-area: list;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  max-height: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  border: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-surface-card);
+  padding: 7px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.location-stage__navigator-column .location-component-decision-group {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.location-stage__navigator-column .location-component-decision-group__head {
+  min-height: 22px;
+  border: 0;
+  border-bottom: 1px solid var(--cruor-color-milk-a055);
+  padding: 2px 3px 5px;
+  color: var(--cruor-color-text-a520);
+  font-size: var(--text-size-3xs);
+}
+
+.location-stage__navigator-column .component-card.location-component-option,
+.location-stage__navigator-column .location-component-option.component-card {
+  min-height: 0;
+  height: auto;
+  align-content: start;
+  grid-template-rows: auto auto auto auto;
+  overflow: visible;
+  border-width: 1px;
+  padding: 8px 8px 7px;
+  padding-bottom: 7px;
+  gap: 5px;
+  opacity: 1;
+  filter: none;
+  cursor: grab;
+  transform: none;
+}
+
+.location-stage__navigator-column .component-card.location-component-option.in-build,
+.location-stage__navigator-column .location-component-option.component-card.in-build,
+.location-stage__navigator-column .location-component-option.component-card.is-active {
+  border-color: var(--cruor-color-blood-glow-a420);
+  background: var(--cruor-color-blood-strong-a130);
+  box-shadow: var(--cruor-shadow-box-005);
+}
+
+.location-stage__navigator-column .component-card.location-component-option:hover,
+.location-stage__navigator-column .location-component-option.component-card:hover {
+  transform: none;
+  border-color: var(--cruor-color-blood-glow-a420);
+  background: var(--cruor-color-blood-strong-a130);
+  box-shadow: var(--cruor-shadow-box-005);
+}
+
+.location-stage__navigator-column .component-card.location-component-option .card-top,
+.location-stage__navigator-column .location-component-option.component-card .location-component-card-top {
+  display: flex;
+  align-items: start;
+  min-height: 0;
+  gap: 8px;
+  padding-right: 46px;
+  pointer-events: none;
+}
+
+.location-stage__navigator-column .component-card.location-component-option .component-title-stack,
+.location-stage__navigator-column .location-component-option.component-card .location-component-title-stack {
+  display: grid;
+  gap: 2px;
+  padding-right: 0;
+}
+
+.location-stage__navigator-column .component-card.location-component-option h3,
+.location-stage__navigator-column .location-component-option.component-card h3 {
+  color: var(--cruor-color-hex-fff0f2);
+  font-family: var(--cruor-font-body, Inter, ui-sans-serif, system-ui, sans-serif);
+  font-size: var(--text-size-l);
+  font-weight: 900;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+
+.location-stage__navigator-column .component-card.location-component-option .summary,
+.location-stage__navigator-column .location-component-option.component-card .location-component-summary {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: var(--cruor-color-text-a620);
+  font-size: var(--text-size-s-plus);
+  line-height: 1.24;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.location-stage__navigator-column .component-card.location-component-option .component-toggle-btn,
+.location-stage__navigator-column .location-component-option.component-card .location-component-toggle-btn {
+  top: 6px;
+  right: 6px;
+  min-width: 34px;
+  width: auto;
+  min-height: 21px;
+  height: 21px;
+  gap: 3px;
+  padding: 0 5px;
+  font-size: var(--text-size-xxs);
+  letter-spacing: 0.07em;
+  z-index: 60;
+  pointer-events: auto;
+}
+
+.location-stage__navigator-column .component-card.location-component-option .component-toggle-btn i,
+.location-stage__navigator-column .location-component-option.component-card .location-component-toggle-btn i {
+  width: 10px;
+  height: 10px;
+  font-size: var(--text-size-xs);
+}
+
+.location-stage__navigator-column .location-component-impact-dock,
+.location-stage__navigator-column .component-impact-dock {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+  margin-top: 0;
+}
+
+.location-stage__navigator-column .location-component-impact-metric,
+.location-stage__navigator-column .component-impact-metric {
+  display: inline-grid;
+  align-items: center;
+  min-height: 18px;
+  border: 1px solid var(--cruor-color-milk-a055);
+  background: var(--cruor-color-black-a180);
+  color: var(--cruor-color-text-a560);
+  padding: 1px 5px;
+  font-size: var(--text-size-3xs);
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.location-stage__navigator-column .component-details,
+.location-stage__navigator-column .location-component-details {
+  z-index: 30;
+  display: inline-grid;
+  width: max-content;
+  max-width: 100%;
+  margin-top: 1px;
+  overflow: visible;
+}
+
+.location-stage__navigator-column .component-details__trigger,
+.location-stage__navigator-column .location-component-details__trigger {
+  width: fit-content;
+  min-height: 10px;
+  border: 0;
+  background: transparent;
+  color: var(--cruor-color-text-a540);
+  padding: 0 0 1px;
+  font-size: var(--text-size-xxs);
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.location-stage__navigator-column .component-details__panel,
+.location-stage__navigator-column .component-details > .meta-list,
+.location-stage__navigator-column .location-component-details__panel {
+  -webkit-backdrop-filter: var(--cruor-filter-glass-16-122);
+  backdrop-filter: var(--cruor-filter-glass-16-122);
+  background: var(--cruor-gradient-linear-003-33222bdf), var(--cruor-gradient-radial-004-b311c202), var(--cruor-color-r6-g5-b6-a990);
+  border: 1px solid var(--cruor-color-rose-a160);
+  box-shadow: var(--cruor-shadow-box-009);
+  display: grid;
+  gap: 5px;
+  left: 0;
+  min-width: min(320px, calc(100vw - 42px));
+  opacity: 0;
+  padding: 8px;
+  pointer-events: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  transform: translateY(-2px);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  z-index: 120;
+}
+
+.location-stage__navigator-column .component-details:focus-within .component-details__panel,
+.location-stage__navigator-column .component-details:hover .component-details__panel,
+.location-stage__navigator-column .component-details:focus-within > .meta-list,
+.location-stage__navigator-column .component-details:hover > .meta-list {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.location-stage__navigator-column .meta-row {
+  display: grid;
+  gap: 3px;
+  border-top: 1px solid var(--cruor-color-milk-a045);
+  padding-top: 5px;
+}
+
+.location-stage__navigator-column .meta-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.location-stage__navigator-column .meta-label {
+  color: var(--cruor-color-text-a500);
+  font-size: var(--text-size-3xs);
+  font-weight: 950;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.location-stage__navigator-column .meta-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.location-stage__navigator-column .meta-value {
+  border: 1px solid var(--cruor-color-milk-a055);
+  background: var(--cruor-color-white-a035);
+  color: var(--cruor-color-text-a620);
+  padding: 2px 5px;
+  font-size: var(--text-size-xxs);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.location-stage__navigator-column .meta-value.source-chip,
+.location-stage__navigator-column .meta-value.strong-chip {
+  border-color: var(--cruor-color-blood-glow-a320);
+  color: var(--cruor-color-hex-fff0f2);
+}
+
+.location-stage__navigator-column .meta-value.pack-chip {
+  border-color: var(--cruor-color-milk-a070);
+  color: var(--cruor-color-text-a700);
+}
+
+@media (max-width: 980px) {
+  .location-stage__navigator-column .component-navigator-modal__rail,
+  .location-stage__navigator-column .navigator-tools,
+  .location-stage__navigator-column .location-navigator-tools {
+    grid-area: rail;
+    height: auto;
+    inset: auto;
+    max-height: min(280px, 40vh);
+    max-width: 100%;
+    position: relative;
+    width: 100%;
+  }
+
+  .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .component-navigator-modal__panel,
+  .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .location-component-drawer__panel {
+    grid-template-areas:
+      "head"
+      "rail"
+      "smart"
+      "list";
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+  }
+}
+
+
+/* Dark Places — Navigator structural parity.
+ * The stage navigator is a stage column, not an overlay wrapper.
+ */
+.location-composer .location-map-stage:has(.location-stage__navigator-column) {
+  overflow: hidden;
+}
+
+.location-composer .location-map-stage .location-stage__navigator-column {
+  --component-stage-list-width: var(--location-component-drawer-closed-width);
+  --component-stage-rail-width: var(--location-component-filter-column-width);
+  --component-stage-drawer-gap: var(--location-component-drawer-gap);
+  display: grid;
+  grid-area: auto;
+  height: 100%;
+  inset-block: var(--stage-pad);
+  inset-inline-start: calc(var(--stage-pad) + var(--location-side-column-width) + var(--location-column-gap));
+  max-height: calc(100% - (var(--stage-pad) * 2));
+  max-width: min(
+    var(--location-component-drawer-closed-width),
+    calc(100% - var(--stage-pad) - var(--location-side-column-width) - var(--location-column-gap))
+  );
+  min-height: 0;
+  min-width: 0;
+  overflow: visible;
+  pointer-events: auto;
+  position: absolute;
+  width: var(--location-component-drawer-closed-width);
+  z-index: 160;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-drawer,
+.location-composer .location-stage__navigator-column .component-navigator-drawer[data-filters-open="true"],
+.location-composer .location-stage__navigator-column .location-component-drawer,
+.location-composer .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] {
+  filter: none;
+  height: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: visible;
+  width: 100%;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal,
+.location-composer .location-stage__navigator-column .component-navigator-modal--drawer,
+.location-composer .location-stage__navigator-column .component-navigator-modal__panel,
+.location-composer .location-stage__navigator-column .location-component-drawer__panel {
+  height: 100%;
+  max-height: none;
+  overflow: visible;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__panel,
+.location-composer .location-stage__navigator-column .location-component-drawer__panel,
+.location-composer .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .component-navigator-modal__panel,
+.location-composer .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .location-component-drawer__panel {
+  display: grid;
+  grid-template-areas:
+    "head"
+    "tabs"
+    "smart"
+    "list";
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  max-width: 100%;
+  min-width: 0;
+  overflow: visible;
+  width: 100%;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__slot-tabs,
+.location-composer .location-stage__navigator-column .location-component-drawer__slot-tabs {
+  grid-area: tabs;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-height: 0;
+  max-height: 74px;
+  margin: 0;
+  overflow: auto;
+  border: 0;
+  border-bottom: 1px solid var(--cruor-color-milk-a055);
+  padding: 0 0 8px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__slot-tabs .navigator-filter-chip,
+.location-composer .location-stage__navigator-column .location-component-drawer__slot-tabs .navigator-filter-chip {
+  pointer-events: none;
+  width: auto;
+  min-height: 24px;
+  padding: 3px 7px;
+}
+
+.location-composer .location-stage__navigator-column .location-component-drawer__target,
+.location-composer .location-stage__navigator-column .location-component-drawer__target--contextual {
+  grid-area: smart;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail,
+.location-composer .location-stage__navigator-column .navigator-tools,
+.location-composer .location-stage__navigator-column .location-navigator-tools {
+  -webkit-backdrop-filter: var(--cruor-filter-glass-18-125);
+  backdrop-filter: var(--cruor-filter-glass-18-125);
+  background: var(--cruor-gradient-radial-126-b620ddfb), var(--cruor-gradient-linear-107-9e0d4ab7);
+  border: 1px solid var(--cruor-color-rose-a160);
+  bottom: 0;
+  box-shadow: var(--cruor-shadow-box-009);
+  height: 100%;
+  left: calc(100% + var(--component-stage-drawer-gap, 10px));
+  max-height: 100%;
+  max-width: min(var(--component-stage-rail-width, 340px), calc(100vw - 32px));
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  width: var(--component-stage-rail-width, clamp(260px, 24vw, 340px));
+  z-index: 170;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list,
+.location-composer .location-stage__navigator-column .location-component-list {
+  grid-area: list;
+  max-width: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
+}
+
+@media (max-width: 980px) {
+  .location-composer .location-map-stage .location-stage__navigator-column {
+    inset-block: var(--stage-pad);
+    inset-inline: var(--stage-pad);
+    max-height: calc(100% - (var(--stage-pad) * 2));
+    max-width: calc(100% - (var(--stage-pad) * 2));
+    width: min(760px, calc(100% - (var(--stage-pad) * 2)));
+  }
+
+  .location-composer .location-stage__navigator-column .component-navigator-modal__rail,
+  .location-composer .location-stage__navigator-column .navigator-tools,
+  .location-composer .location-stage__navigator-column .location-navigator-tools {
+    grid-area: rail;
+    height: auto;
+    inset: auto;
+    max-height: min(280px, 40vh);
+    max-width: 100%;
+    position: relative;
+    width: 100%;
+  }
+
+  .location-composer .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .component-navigator-modal__panel,
+  .location-composer .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .location-component-drawer__panel {
+    grid-template-areas:
+      "head"
+      "rail"
+      "tabs"
+      "smart"
+      "list";
+    grid-template-rows: auto auto auto auto minmax(0, 1fr);
+  }
+}
+
+/* Phase 3.7C hotfix — drawer overlay and Monster-like filter rail parity. */
+.location-composer .location-map-stage:has(.location-stage__navigator-column) {
+  isolation: isolate;
+}
+
+.location-composer .location-map-stage .location-stage__navigator-focus-overlay {
+  -webkit-backdrop-filter: var(--cruor-filter-blur-2);
+  backdrop-filter: var(--cruor-filter-blur-2);
+  background: rgba(4, 3, 4, 0.56);
+  box-shadow: var(--cruor-shadow-box-128);
+  display: block;
+  grid-area: 1 / 1 / -1 / -1;
+  inset: 0;
+  pointer-events: auto;
+  position: absolute;
+  z-index: 60;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-map-stage__center,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-map-recap-rail,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--right {
+  z-index: 10;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left {
+  position: relative;
+  z-index: 70;
+}
+
+.location-composer .location-stage__navigator-column {
+  z-index: 160;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__slot-tabs,
+.location-composer .location-stage__navigator-column .location-component-drawer__slot-tabs {
+  display: none;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
+.location-composer .location-stage__navigator-column .component-navigator-modal[data-navigator-mode="slot"] .location-component-drawer__panel,
+.location-composer .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
+.location-composer .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="slot"] .location-component-drawer__panel {
+  grid-template-areas:
+    "head"
+    "smart"
+    "list";
+  grid-template-rows: auto auto minmax(0, 1fr);
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail,
+.location-composer .location-stage__navigator-column .navigator-tools,
+.location-composer .location-stage__navigator-column .location-navigator-tools {
+  align-content: start;
+  background: var(--cruor-gradient-linear-094-26e867cb), var(--cruor-surface-card);
+  border: 1px solid var(--cruor-color-milk-a075);
+  box-shadow: var(--cruor-shadow-box-009);
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-search-row,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-search-row {
+  align-items: center;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: minmax(0, 1fr) 34px 42px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .search-wrap input,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-search input {
+  min-height: 34px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-btn,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-navigator-filter-btn {
+  height: 34px;
+  min-height: 34px;
+  min-width: 34px;
+  position: relative;
+  width: 34px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-count,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-count {
+  color: var(--cruor-color-text-a580);
+  font-size: var(--text-size-s);
+  font-weight: 900;
+  height: 34px;
+  min-height: 34px;
+  min-width: 42px;
+  position: static;
+  width: auto;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .tag-filter-row,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-filter-row {
+  background: var(--cruor-surface-card);
+  border-color: var(--cruor-color-milk-a070);
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  max-height: none;
+  overflow: visible;
+  padding: 9px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-panel,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-filter-panel {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-section,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-filter-section {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-section > .tag-filter-row__head,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-filter-section > .location-component-filter-row__head {
+  align-items: center;
+  border-bottom: 0;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 0;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-section > .tag-filter-row__head > span,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-filter-section > .location-component-filter-row__head > span {
+  align-items: center;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .filter-chip-grid,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-filter-chip-grid {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-chip,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-filter-chip {
+  justify-content: flex-start;
+  min-height: 31px;
+  width: 100%;
+}
+
+.location-composer .location-stage__navigator-column .location-component-decision-group,
+.location-composer .location-stage__navigator-column .location-component-decision-group__head {
+  display: contents;
+}
+
+@media (max-width: 980px) {
+  .location-composer .location-stage__navigator-column .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
+  .location-composer .location-stage__navigator-column .component-navigator-modal[data-navigator-mode="slot"] .location-component-drawer__panel,
+  .location-composer .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
+  .location-composer .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="slot"] .location-component-drawer__panel {
+    grid-template-areas:
+      "head"
+      "rail"
+      "smart"
+      "list";
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+  }
+}
+
+/* Phase 3.7C hotfix — focus overlay covers the left rail except the active slot. */
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left {
+  z-index: auto;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-mode-card,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-switch,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-target,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card:not(.is-active) {
+  position: relative;
+  z-index: 1;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card.is-active {
+  position: relative;
+  z-index: 80;
+}
+
+/* Phase 3.7C hotfix 2 — the global focus overlay cannot sit above the rail parent and still leave a child visible.
+   Keep the left rail above the global overlay, then draw a rail-local overlay below the active slot only. */
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left {
+  position: relative;
+  z-index: 90;
+  isolation: isolate;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left::before {
+  content: "";
+  position: absolute;
+  inset: -1px 0 -1px -1px;
+  z-index: 40;
+  pointer-events: auto;
+  background: rgba(3, 3, 4, 0.56);
+  box-shadow: inset -1px 0 0 rgba(255, 238, 242, 0.035);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card.is-active {
+  position: relative;
+  z-index: 70;
+}
+
+/* Phase 3.7C hotfix 3 — left-rail focus mask without covering the active slot.
+ * The global navigator overlay starts after the left rail. The left rail then dims
+ * its own inactive controls individually, so the active slot is never underneath
+ * a parent/sibling overlay stacking context.
+ */
+.location-composer .location-map-stage:has(.location-stage__navigator-column) .location-stage__navigator-focus-overlay {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: calc(var(--stage-pad, 10px) + var(--location-side-column-width, 260px) + var(--location-column-gap, 10px));
+  width: auto;
+  height: auto;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left {
+  position: relative;
+  z-index: 70;
+  isolation: auto;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left::before {
+  content: none;
+  display: none;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-mode-card,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-switch,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-target,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card:not(.is-active) {
+  position: relative;
+  isolation: isolate;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-mode-card::after,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-switch::after,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-target::after,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card:not(.is-active)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: block;
+  pointer-events: auto;
+  background: rgba(4, 3, 4, 0.56);
+  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.025);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card.is-active {
+  position: relative;
+  z-index: 80;
+  isolation: isolate;
+  filter: none;
+  opacity: 1;
+}
+
+@media (max-width: 980px) {
+  .location-composer .location-map-stage:has(.location-stage__navigator-column) .location-stage__navigator-focus-overlay {
+    left: 0;
+  }
+}
+
+/* Phase 3.7C hotfix 4 — exact left-rail focus layering.
+ * The focus overlay must cover the whole stage, including the left sidebar.
+ * Only the selected details slot is lifted above it. Do not lift the rail itself.
+ */
+.location-composer .location-map-stage:has(.location-stage__navigator-column) .location-stage__navigator-focus-overlay {
+  inset: 0;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  height: auto;
+  z-index: 60;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left {
+  position: relative;
+  z-index: auto;
+  isolation: auto;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left::before {
+  content: none;
+  display: none;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-mode-card,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-switch,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-target,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-details-slot-stack,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-details-slot:not(.is-active) {
+  position: relative;
+  z-index: auto;
+  isolation: auto;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-mode-card::after,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-switch::after,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-target::after,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card::after,
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-details-slot::after {
+  content: none;
+  display: none;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card.is-active {
+  position: relative;
+  z-index: auto;
+  isolation: auto;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left button.location-map-details-slot.is-active {
+  background: var(--cruor-gradient-radial-239-83344c81), var(--cruor-ui-card-bg-active);
+  border-color: var(--cruor-color-rose-a860);
+  box-shadow: var(--cruor-shadow-box-092);
+  filter: none;
+  isolation: isolate;
+  opacity: 1;
+  pointer-events: auto;
+  position: relative;
+  z-index: 80;
+}
+
+@media (max-width: 980px) {
+  .location-composer .location-map-stage:has(.location-stage__navigator-column) .location-stage__navigator-focus-overlay {
+    inset: 0;
+    left: 0;
+  }
+}
+
+/* Dark Places — component navigator drawer parity.
+ * This replaces the previous corrective layers instead of stacking new overrides.
+ * Keep the location namespace; use the shared Component Navigator classes as the styling surface.
+ */
+.location-composer .location-map-stage:has(.location-stage__navigator-column) {
+  overflow: visible;
+  position: relative;
+}
+
+.location-composer .location-map-stage .location-stage__navigator-column {
+  --component-stage-list-width: var(--location-component-drawer-closed-width, 336px);
+  --component-stage-rail-width: var(--location-component-filter-column-width, clamp(260px, 24vw, 340px));
+  --component-stage-drawer-gap: var(--location-component-drawer-gap, 10px);
+  --font: var(--cruor-font-body, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+  --display: var(--cruor-font-display, "Lovato-Black", Georgia, "Times New Roman", serif);
+  --faint: var(--cruor-color-faint);
+  --line: var(--cruor-color-line);
+  display: grid;
+  grid-area: auto;
+  height: 100%;
+  inset-block: var(--stage-pad, 10px);
+  inset-inline-start: calc(var(--stage-pad, 10px) + var(--location-side-column-width, 260px) + var(--location-column-gap, 10px));
+  max-height: calc(100% - (var(--stage-pad, 10px) * 2));
+  max-width: min(
+    var(--component-stage-list-width),
+    calc(100% - var(--stage-pad, 10px) - var(--location-side-column-width, 260px) - var(--location-column-gap, 10px))
+  );
+  min-height: 0;
+  min-width: 0;
+  overflow: visible;
+  pointer-events: auto;
+  position: absolute;
+  width: var(--component-stage-list-width);
+  z-index: 160;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-drawer,
+.location-composer .location-stage__navigator-column .component-navigator-drawer[data-filters-open="true"],
+.location-composer .location-stage__navigator-column .component-navigator-drawer[data-filters-open="false"] {
+  filter: none;
+  height: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: visible;
+  position: relative;
+  width: 100%;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal,
+.location-composer .location-stage__navigator-column .component-navigator-modal--drawer {
+  display: block;
+  height: 100%;
+  inset: auto;
+  isolation: auto;
+  max-height: none;
+  min-width: 0;
+  overflow: visible;
+  padding: 0;
+  pointer-events: auto;
+  position: relative;
+  width: 100%;
+  z-index: auto;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__panel,
+.location-composer .location-stage__navigator-column .component-navigator-drawer[data-filters-open="false"] .component-navigator-modal__panel,
+.location-composer .location-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__panel,
+.location-composer .location-stage__navigator-column .component-navigator-modal[data-filters-open="false"] .component-navigator-modal__panel,
+.location-composer .location-stage__navigator-column .component-navigator-modal[data-filters-open="true"] .component-navigator-modal__panel {
+  -webkit-backdrop-filter: var(--cruor-filter-glass-18-125);
+  backdrop-filter: var(--cruor-filter-glass-18-125);
+  background: var(--cruor-gradient-linear-020-984b6edd), var(--cruor-gradient-radial-021-910b9ce8), var(--cruor-color-r6-g5-b6-a920);
+  border: 1px solid var(--cruor-color-rose-a160);
+  box-shadow: var(--cruor-shadow-box-009);
+  display: grid;
+  gap: 10px;
+  grid-template-areas:
+    "head"
+    "tabs"
+    "smart"
+    "list";
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  height: 100%;
+  margin: 0;
+  max-height: none;
+  max-width: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: visible;
+  padding: 10px;
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__head {
+  align-items: flex-start;
+  border-bottom: 1px solid var(--cruor-color-milk-a065);
+  display: flex;
+  flex: 0 0 auto;
+  gap: 10px;
+  grid-area: head;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 0 0 9px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__head-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__head h2 {
+  color: var(--cruor-color-hex-fff0f2);
+  font-family: var(--font);
+  font-size: var(--text-size-xl);
+  font-weight: 950;
+  letter-spacing: 0.045em;
+  line-height: 1.05;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__head-copy p {
+  color: var(--cruor-color-text-a460);
+  font-size: var(--text-size-s-plus);
+  font-weight: 650;
+  line-height: 1.25;
+  margin: 0;
+  max-width: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__head-actions {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 6px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__head-actions .icon-btn,
+.location-composer .location-stage__navigator-column .navigator-filter-btn,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-btn {
+  align-items: center;
+  background: var(--cruor-ui-control-bg);
+  border: 1px solid var(--cruor-ui-control-border);
+  color: var(--cruor-ui-control-text);
+  display: inline-grid;
+  height: 34px;
+  justify-items: center;
+  min-height: 34px;
+  min-width: 34px;
+  padding: 0;
+  place-items: center;
+  position: relative;
+  width: 34px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__head-actions .icon-btn:hover,
+.location-composer .location-stage__navigator-column .component-navigator-modal__head-actions .icon-btn.active,
+.location-composer .location-stage__navigator-column .navigator-filter-btn:hover,
+.location-composer .location-stage__navigator-column .navigator-filter-btn.active {
+  background: var(--cruor-ui-control-bg-active);
+  border-color: var(--cruor-ui-control-border-active);
+  box-shadow: var(--cruor-shadow-box-001);
+  color: var(--cruor-ui-control-text-active);
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__head-actions .navigator-filter-btn[data-active-count="1"]::after,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-btn[data-active-count="1"]::after {
+  background: var(--cruor-color-hex-d0a2aa);
+  box-shadow: var(--cruor-shadow-box-020);
+  content: "";
+  height: 6px;
+  pointer-events: none;
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  width: 6px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail,
+.location-composer .location-stage__navigator-column .navigator-tools {
+  -webkit-backdrop-filter: var(--cruor-filter-glass-18-125);
+  align-content: start;
+  backdrop-filter: var(--cruor-filter-glass-18-125);
+  background: var(--cruor-gradient-radial-126-b620ddfb), var(--cruor-gradient-linear-107-9e0d4ab7);
+  border: 1px solid var(--cruor-color-rose-a160);
+  bottom: 0;
+  box-shadow: var(--cruor-shadow-box-009);
+  display: grid;
+  gap: 10px;
+  grid-area: rail;
+  height: 100%;
+  left: calc(100% + var(--component-stage-drawer-gap, 10px));
+  margin: 0;
+  max-height: 100%;
+  max-width: min(var(--component-stage-rail-width, 340px), calc(100vw - 32px));
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  padding: 10px;
+  position: absolute;
+  top: 0;
+  width: var(--component-stage-rail-width, clamp(260px, 24vw, 340px));
+  z-index: 170;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-drawer[data-filters-open="false"] .component-navigator-modal__rail,
+.location-composer .location-stage__navigator-column .component-navigator-modal[data-filters-open="false"] .component-navigator-modal__rail {
+  display: none;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-search-row {
+  align-items: center;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: minmax(0, 1fr) 42px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .search-wrap input {
+  min-height: 34px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-count {
+  color: var(--cruor-color-text-a580);
+  font-size: var(--text-size-s);
+  font-weight: 900;
+  height: 34px;
+  min-height: 34px;
+  min-width: 42px;
+  position: static;
+  width: auto;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .tag-filter-row {
+  background: var(--cruor-color-surface-soft-a580);
+  border: 1px solid var(--cruor-color-blood-strong-a760);
+  box-shadow: none;
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  max-height: none;
+  overflow: visible;
+  padding: 6px;
+}
+
+.location-composer .location-stage__navigator-column .tag-filter-row__head,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .tag-filter-row__head {
+  align-items: center;
+  border: 0;
+  border-bottom: 1px solid var(--cruor-color-blood-strong-a340);
+  color: var(--faint);
+  display: flex;
+  font-size: var(--text-size-s);
+  font-weight: 900;
+  gap: 10px;
+  justify-content: space-between;
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+  min-height: 0;
+  padding: 4px 5px 7px;
+  text-transform: uppercase;
+}
+
+.location-composer .location-stage__navigator-column .tag-filter-row__head svg {
+  height: 14px;
+  width: 14px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-panel {
+display: grid;
+  gap: 11px;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-section {
+display: grid;
+  gap: 7px;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-section strong {
+color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .filter-chip-grid {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: 1fr;
+  min-width: 0;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-chip {
+  justify-content: flex-start;
+  min-height: 32px;
+  text-align: left;
+  width: 100%;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-chip--stacked {
+  align-content: center;
+  display: grid;
+  gap: 2px;
+  min-height: 38px;
+  padding-block: 5px;
+  text-align: left;
+}
+
+.location-composer .location-stage__navigator-column .navigator-filter-chip__main {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-composer .location-stage__navigator-column .navigator-filter-chip__meta {
+  color: var(--cruor-color-r208-g162-b170-a620);
+  font-size: var(--text-size-xxs);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list {
+  align-content: start;
+  align-items: start;
+  background: var(--cruor-surface-card);
+  border: 1px solid var(--cruor-color-milk-a070);
+  display: grid;
+  gap: 6px;
+  grid-area: list;
+  grid-auto-rows: min-content;
+  grid-template-columns: minmax(0, 1fr);
+  height: 100%;
+  max-height: none;
+  min-height: 0;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 7px;
+  scrollbar-color: auto;
+  scrollbar-width: auto;
+  width: 100%;
+}
+
+.location-composer .location-stage__navigator-column .component-card {
+  -webkit-backdrop-filter: var(--cruor-filter-glass-10-115);
+  backdrop-filter: var(--cruor-filter-glass-10-115);
+  background: var(--cruor-ui-card-bg);
+  border: 2px solid var(--cruor-ui-card-border-color, var(--cruor-color-milk-a075));
+  border-color: var(--cruor-ui-card-border-color, var(--cruor-color-milk-a075));
+  border-width: 2px;
+  box-shadow: var(--cruor-ui-card-shadow);
+  color: var(--cruor-color-text-a660);
+  cursor: grab;
+  display: grid;
+  gap: 8px;
+  overflow: hidden;
+  padding: 12px;
+  position: relative;
+  transition: border-color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+}
+
+.location-composer .location-stage__navigator-column .component-card[data-decision-tier="recommended"] {
+  border-color: var(--cruor-color-blood-glow-a380);
+}
+
+.location-composer .location-stage__navigator-column .component-card[data-decision-tier="blocked"],
+.location-composer .location-stage__navigator-column .component-card[data-decision-tier="risky"] {
+  border-color: var(--cruor-color-blood-glow-a380);
+}
+
+.location-composer .location-stage__navigator-column .component-card.compatibility-incompatible,
+.location-composer .location-stage__navigator-column .component-card.compatibility-missing {
+  border-color: var(--cruor-color-blood-glow-a680);
+}
+
+.location-composer .location-stage__navigator-column .component-card:hover,
+.location-composer .location-stage__navigator-column .component-card.in-build,
+.location-composer .location-stage__navigator-column .component-card.expanded {
+  background: var(--cruor-ui-card-bg-active);
+  border-color: var(--cruor-ui-card-border-color-active, var(--cruor-color-blood-glow-a420));
+  box-shadow: var(--cruor-ui-card-shadow-active);
+  transform: translateY(-1px);
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card,
+.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card.slot-full,
+.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card:has(.component-toggle-btn:disabled) {
+  align-content: start;
+  border-width: 1px;
+  display: grid;
+  filter: none;
+  gap: 5px;
+  height: auto;
+  min-height: 0;
+  opacity: 1;
+  overflow: visible;
+  padding: 8px 8px 7px;
+  padding-bottom: 7px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card:hover,
+.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card.details-open,
+.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card:has(.component-details:focus-within),
+.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card:has(.component-details:hover) {
+  transform: none;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card:hover {
+  background: var(--cruor-ui-card-bg-active);
+  border-color: var(--cruor-ui-card-border-color-active, var(--cruor-color-blood-glow-a420));
+  box-shadow: var(--cruor-ui-card-shadow-active);
+  transform: none;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card.slot-full,
+.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card:has(.component-toggle-btn:disabled) {
+  cursor: not-allowed;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card.slot-full:hover,
+.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card:has(.component-toggle-btn:disabled):hover {
+  background: var(--cruor-ui-card-bg);
+  border-color: var(--cruor-ui-card-border-color, var(--cruor-color-milk-a075));
+  box-shadow: var(--cruor-ui-card-shadow);
+  transform: none;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .card-top {
+  align-items: start;
+  display: flex;
+  gap: 8px;
+  min-height: 0;
+  padding-right: 46px;
+  pointer-events: none;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-title-stack {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding-right: 0;
+}
+
+.location-composer .location-stage__navigator-column .component-card h3,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-card h3 {
+  color: var(--cruor-color-hex-fff0f2);
+  display: -webkit-box;
+  font-family: var(--font);
+  font-size: var(--text-size-l);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 1.12;
+  margin: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.location-composer .location-stage__navigator-column .component-card:hover h3 {
+  color: var(--cruor-color-hex-fff0f2);
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .summary {
+  color: var(--cruor-color-text-a580);
+  display: -webkit-box;
+  font-size: var(--text-size-s-plus);
+  line-height: 1.24;
+  margin: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .compatibility-note {
+  border-left-width: 1px;
+  display: -webkit-box;
+  font-size: var(--text-size-s-plus);
+  line-height: 1.24;
+  margin: 0;
+  overflow: hidden;
+  padding-left: 6px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-toggle-btn {
+  font-size: var(--text-size-xxs);
+  gap: 3px;
+  height: 21px;
+  letter-spacing: 0.07em;
+  min-height: 21px;
+  min-width: 34px;
+  opacity: 0;
+  padding: 0 5px;
+  pointer-events: none;
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  transform: translateY(-2px);
+  width: auto;
+  z-index: 60;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-card:hover .component-toggle-btn,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-card:focus-within .component-toggle-btn {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-card.slot-full .component-toggle-btn,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-toggle-btn:disabled {
+  opacity: 0.45;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-toggle-btn svg {
+  height: 10px;
+  width: 10px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-impact-dock {
+align-items: center;
+  align-self: end;
+  display: inline-flex;
+  gap: 7px;
+  justify-content: flex-end;
+  justify-self: end;
+  margin: 0;
+  max-width: 100%;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  pointer-events: none;
+  position: static;
+  width: fit-content;
+  z-index: 2;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-details {
+  display: inline-grid;
+  margin-top: 1px;
+  overflow: visible;
+  position: relative;
+  width: max-content;
+  z-index: 30;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-details__trigger {
+  font-size: var(--text-size-xxs);
+  min-height: 10px;
+  padding-bottom: 1px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-details > .meta-list,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-details__panel {
+  -webkit-backdrop-filter: var(--cruor-filter-glass-16-122);
+  backdrop-filter: var(--cruor-filter-glass-16-122);
+  background: var(--cruor-gradient-linear-003-33222bdf), var(--cruor-gradient-radial-004-b311c202), var(--cruor-color-r6-g5-b6-a990);
+  box-sizing: border-box;
+  filter: none;
+  opacity: 0;
+  z-index: 120;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-card.details-open .component-details > .meta-list,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-card.details-open .component-details__panel,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-details:focus-within .component-details__panel,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-details:focus-within > .meta-list,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-details:hover .component-details__panel,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-details:hover > .meta-list {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.location-composer .location-stage__navigator-column .meta-list {
+  display: grid;
+  gap: 4px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-row,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-list .meta-row {
+  align-items: start;
+  border-top: 1px solid var(--cruor-color-blood-bright-a120);
+  display: grid;
+  gap: 6px;
+  grid-template-columns: 78px minmax(0, 1fr);
+  padding-top: 4px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-row:first-child,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-list .meta-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.location-composer .location-stage__navigator-column .meta-label,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-label {
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  letter-spacing: 0.085em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.location-composer .location-stage__navigator-column .meta-values,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  min-width: 0;
+}
+
+.location-composer .location-stage__navigator-column .meta-value {
+  background: var(--cruor-ui-chip-bg);
+  border: 1px solid var(--cruor-ui-chip-border);
+  color: var(--cruor-ui-chip-text);
+  font-size: var(--text-size-s);
+  font-weight: 800;
+  padding: 3px 6px;
+}
+
+.location-composer .location-stage__navigator-column .meta-value.source-chip {
+  background: var(--cruor-color-blood-a320);
+  border-color: var(--cruor-color-blood-strong-a680);
+  color: var(--cruor-color-hex-d0a2aa);
+}
+
+.location-composer .location-stage__navigator-column .compatibility-badge.avoid,
+.location-composer .location-stage__navigator-column .compatibility-badge.soft,
+.location-composer .location-stage__navigator-column .meta-value.strong-chip {
+  background: var(--cruor-color-blood-strong-a300);
+  border-color: var(--cruor-color-blood-glow-a540);
+  color: var(--cruor-color-hex-f0d7dc);
+}
+
+.location-composer .location-stage__navigator-column .compatibility-badge.incompatible,
+.location-composer .location-stage__navigator-column .compatibility-badge.missing,
+.location-composer .location-stage__navigator-column .meta-value.danger-chip {
+  background: var(--cruor-color-blood-bright-a320);
+  border-color: var(--cruor-color-rose-a640);
+  color: var(--cruor-color-hex-f0b9c2);
+}
+
+.location-map-details-slot {
+  -webkit-backdrop-filter: var(--cruor-filter-blur-12);
+  backdrop-filter: var(--cruor-filter-blur-12);
+  background: var(--cruor-ui-card-bg);
+  border: 1px solid var(--cruor-ui-card-border-color, var(--cruor-color-milk-a075));
+  border-color: var(--cruor-ui-card-border-color, var(--cruor-color-milk-a075));
+  box-shadow: var(--cruor-ui-card-shadow);
+  color: var(--cruor-color-text-a620);
+  display: grid;
+  gap: 6px;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 76px;
+  overflow: hidden;
+  padding: 9px 10px;
+  position: relative;
+  text-align: left;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, width 0.14s ease;
+  width: 100%;
+  z-index: 4;
+}
+
+.location-map-details-slot.is-active,
+.location-map-details-slot:hover,
+.location-map-details-slot:focus-visible {
+  background: var(--cruor-gradient-linear-188-b079ccaf), var(--cruor-color-surface-soft);
+  background-color: var(--cruor-color-surface-soft);
+  border-color: var(--cruor-ui-card-border-color-active, var(--cruor-color-blood-glow-a420));
+  box-shadow: var(--cruor-ui-card-shadow-active);
+  color: var(--cruor-color-hex-fff0f2);
+}
+
+.location-map-details-slot strong {
+  color: var(--cruor-color-hex-f0d7dc);
+  font-size: var(--text-size-l);
+  font-weight: 900;
+  line-height: 1.16;
+}
+
+.location-map-details-slot small {
+  color: var(--cruor-color-text-a500);
+  font-size: var(--text-size-m);
+  font-style: normal;
+  line-height: 1.32;
+  white-space: normal;
+}
+
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left button.location-map-details-slot.is-active {
+  background: var(--cruor-gradient-radial-239-83344c81), var(--cruor-ui-card-bg-active);
+  border-color: var(--cruor-color-rose-a860);
+  box-shadow: var(--cruor-shadow-box-092);
+  filter: none;
+  opacity: 1;
+  pointer-events: auto;
+  position: relative;
+  z-index: 80;
+}
+
+@media (max-width: 980px) {
+  .location-composer .location-stage__navigator-column {
+    max-width: calc(100% - 16px);
+    width: min(var(--component-stage-list-width), calc(100% - 16px));
+  }
+
+  .location-composer .location-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__panel {
+    grid-template-areas:
+      "head"
+      "rail"
+      "tabs"
+      "smart"
+      "list";
+    grid-template-rows: auto auto auto auto minmax(0, 1fr);
+  }
+
+  .location-composer .location-stage__navigator-column .component-navigator-drawer[data-filters-open="true"] .component-navigator-modal__rail,
+  .location-composer .location-stage__navigator-column .component-navigator-modal[data-filters-open="true"] .component-navigator-modal__rail {
+    grid-area: rail;
+    height: auto;
+    inset: auto;
+    left: auto;
+    max-height: min(280px, 40vh);
+    max-width: 100%;
+    position: relative;
+    width: 100%;
   }
 }

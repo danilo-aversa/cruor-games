@@ -310,7 +310,7 @@ export function LocationMapStage({
     if (isMapEditing) return;
     const target = event.target;
     if (target?.closest?.(
-      ".room-preview-hotspot, .location-region-node, .location-room-recap-anchor, .location-stage-navigator-overlay, .location-map-stage-toolbar, .location-advanced-output, .location-scratch-room-context-menu, button, a, input, select, textarea",
+      ".room-preview-hotspot, .location-region-node, .location-room-recap-anchor, .location-stage__navigator-column, .location-map-stage-toolbar, .location-advanced-output, .location-scratch-room-context-menu, button, a, input, select, textarea",
     )) {
       return;
     }
@@ -391,10 +391,14 @@ export function LocationMapStage({
           </div>
         ) : (
           <>
+            {navigatorPanel ? (
+              <div className="location-stage__navigator-focus-overlay" aria-hidden="true" />
+            ) : null}
+
             {leftPanel}
 
             {navigatorPanel ? (
-              <div className="location-stage-navigator-overlay" aria-label="Location component navigator drawer">
+              <div className="location-stage__navigator-column" aria-label="Location component navigator drawer">
                 {navigatorPanel}
               </div>
             ) : null}

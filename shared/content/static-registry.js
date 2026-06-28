@@ -10,6 +10,7 @@ import { buildContentPackProvenance } from "./content-pack-provenance.js";
 import { CORE_CRUOR_CONTENT_PACK } from "./content-packs/core-cruor-pack.js";
 import { DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK } from "./content-packs/decomposition-inspiration-module-pack.js";
 import { EXISTING_INSPIRATIONS_CONTENT_PACK } from "./content-packs/existing-inspirations-pack.js";
+import { DARK_PLACES_CANONICAL_EXPANSION_CONTENT_PACK } from "./content-packs/dark-places-canonical-expansion-pack.js";
 import { SEDLEC_OSSUARY_INSPIRATION_MODULE_CONTENT_PACK } from "./content-packs/sedlec-ossuary-inspiration-module-pack.js";
 import { LEGACY_DARKEN_LOCATION_CONTENT_PACK } from "./content-packs/legacy-darken-location-pack.js";
 
@@ -17,6 +18,7 @@ export const STATIC_CONTENT_PACKS = Object.freeze([
   DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK,
   SEDLEC_OSSUARY_INSPIRATION_MODULE_CONTENT_PACK,
   EXISTING_INSPIRATIONS_CONTENT_PACK,
+  DARK_PLACES_CANONICAL_EXPANSION_CONTENT_PACK,
   CORE_CRUOR_CONTENT_PACK,
   LEGACY_DARKEN_LOCATION_CONTENT_PACK,
 ]);

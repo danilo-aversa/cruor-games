@@ -1,5 +1,6 @@
 import { SHARED_DARKEN_LOCATION_COMPONENTS } from "./adapters/darken-components.js";
 import { SHARED_LOCATION_REGION_COMPONENTS } from "./adapters/location-regions.js";
+import { DARK_PLACES_CANONICAL_EXPANSION_COMPONENTS } from "./content-packs/dark-places-canonical-expansion-pack.js";
 import {
   defineInspirationModule,
   flattenInspirationModuleCollection,
@@ -80,6 +81,7 @@ export function buildInspirationModules({
     ...SHARED_MONSTER_COMPONENTS,
     ...SHARED_DARKEN_LOCATION_COMPONENTS,
     ...SHARED_LOCATION_REGION_COMPONENTS,
+    ...DARK_PLACES_CANONICAL_EXPANSION_COMPONENTS,
   ],
   packId = "core-cruor",
   excludedSourceAnchorIds = CRUOR_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET,

@@ -1,5 +1,6 @@
 import { SHARED_DARKEN_LOCATION_COMPONENTS } from "../adapters/darken-components.js";
 import { SHARED_LOCATION_REGION_COMPONENTS } from "../adapters/location-regions.js";
+import { DARK_PLACES_CANONICAL_EXPANSION_COMPONENTS } from "../content-packs/dark-places-canonical-expansion-pack.js";
 import { defineInspirationModule, uniqueById } from "../inspiration-module-schema.js";
 import { SHARED_MONSTER_COMPONENTS } from "../monster-components.js";
 import { normalizeSourceAnchorIds, SHARED_SOURCE_ANCHORS } from "../source-anchors.js";
@@ -51,6 +52,7 @@ const COMPONENT_SOURCES = [
   ...SHARED_MONSTER_COMPONENTS,
   ...SHARED_DARKEN_LOCATION_COMPONENTS,
   ...SHARED_LOCATION_REGION_COMPONENTS,
+  ...DARK_PLACES_CANONICAL_EXPANSION_COMPONENTS,
 ];
 
 export function buildInspirationAssetUrl(imageKey, basePath = INSPIRATION_ASSET_BASE_PATH) {
