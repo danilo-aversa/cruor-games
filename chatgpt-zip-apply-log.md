@@ -5395,3 +5395,66 @@ _Nessun file aggiunto._
 - `~features/darken-location/composer/components/LocationComponentPickerModal.jsx`
 - `~features/darken-location/composer/darken-location-composer.styles.css`
 
+
+---
+
+## 2026-06-28 22:12:25
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase03-7c-hover-details-rail-cleanup-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase03-7c-hover-details-rail-cleanup-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-28 22:12:33
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase03-7c-hover-details-rail-cleanup-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase03-7c-hover-details-rail-cleanup-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-28 22:23:16
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase03-7c-css-dedupe-cleanup.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase03-7c-css-dedupe-cleanup.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
