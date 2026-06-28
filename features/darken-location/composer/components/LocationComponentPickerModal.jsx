@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Gauge, Plus, Repeat, ShieldAlert, ShieldCheck, SlidersHorizontal, X } from "lucide-react";
+import { Plus, Repeat, SlidersHorizontal, X } from "lucide-react";
 import { LOCATION_SLOT_SCOPE_REGION, normalizeLocationSlotScope } from "../model/location-composer-state.js";
 import {
   getLocationRoomSlotContext,
@@ -305,20 +305,6 @@ function hasDelta(value) {
   return Number(value || 0) !== 0;
 }
 
-function getDeltaTone(value) {
-  const number = Number(value || 0);
-  if (number <= 0) return "good";
-  if (number <= 1) return "low";
-  if (number <= 2) return "medium";
-  return "high";
-}
-
-function getCounterplayTone(counterplay) {
-  if (counterplay === "Improves") return "positive";
-  if (counterplay === "Worsens" || counterplay === "Needs Tell") return "negative";
-  return "";
-}
-
 function scoreTextScale(value, fallback = 1) {
   const token = normalizeToken(value);
   if (!token) return fallback;
@@ -369,40 +355,6 @@ function getLocationCompatibility(component, impact, decision, selected) {
     };
   }
   return null;
-}
-
-function ImpactMetricDock({ impact }) {
-  const pressureTone = getDeltaTone(impact?.pressureDelta);
-  const complexityTone = getDeltaTone(impact?.complexityDelta);
-  const counterplayTone = getCounterplayTone(impact?.counterplay);
-  const CounterplayIcon = counterplayTone === "positive" ? ShieldCheck : ShieldAlert;
-
-  return (
-    <div className="component-impact-dock" aria-label="Component impact">
-      <span
-        className={`component-impact-metric component-impact-metric--pressure is-${pressureTone}`}
-        aria-label={`Pressure ${signedDelta(impact?.pressureDelta)}`}
-      >
-        <Gauge aria-hidden="true" />
-        <strong>{signedDelta(impact?.pressureDelta)}</strong>
-      </span>
-      <span
-        className={`component-impact-metric component-impact-metric--complexity is-${complexityTone}`}
-        aria-label={`Complexity ${signedDelta(impact?.complexityDelta)}`}
-      >
-        <SlidersHorizontal aria-hidden="true" />
-        <strong>{signedDelta(impact?.complexityDelta)}</strong>
-      </span>
-      {counterplayTone ? (
-        <span
-          className={`component-impact-metric component-impact-metric--counterplay is-${counterplayTone}`}
-          aria-label={`Counterplay ${impact.counterplay}`}
-        >
-          <CounterplayIcon aria-hidden="true" />
-        </span>
-      ) : null}
-    </div>
-  );
 }
 
 function ImpactMetaRows({ impact }) {
@@ -516,8 +468,6 @@ function LocationComponentCard({
       </div>
 
       {getComponentSummary(component) ? <p className="summary">{getComponentSummary(component)}</p> : null}
-      <ImpactMetricDock impact={impact} />
-
       {replaceAction ? <p className="compatibility-note">This slot is full. Remove a component first.</p> : null}
 
       <div
@@ -961,7 +911,7 @@ export function LocationComponentPickerModal({
                 </div>
               </div>
 
-              <div className="tag-filter-row" aria-label="Filter location components">
+              <div className="tag-filter-row location-source-grid-open" aria-label="Filter location components">
                 <div className="tag-filter-row__head">
                   <span>Component Filters</span>
                   <button

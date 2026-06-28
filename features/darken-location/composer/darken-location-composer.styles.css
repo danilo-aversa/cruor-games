@@ -10125,30 +10125,6 @@
   font-size: var(--text-size-xs);
 }
 
-.location-stage__navigator-column .location-component-impact-dock,
-.location-stage__navigator-column .component-impact-dock {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  min-width: 0;
-  margin-top: 0;
-}
-
-.location-stage__navigator-column .location-component-impact-metric,
-.location-stage__navigator-column .component-impact-metric {
-  display: inline-grid;
-  align-items: center;
-  min-height: 18px;
-  border: 1px solid var(--cruor-color-milk-a055);
-  background: var(--cruor-color-black-a180);
-  color: var(--cruor-color-text-a560);
-  padding: 1px 5px;
-  font-size: var(--text-size-3xs);
-  font-weight: 900;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
-
 .location-stage__navigator-column .component-details,
 .location-stage__navigator-column .location-component-details {
   z-index: 30;
@@ -10439,295 +10415,16 @@
   }
 }
 
-/* Phase 3.7C hotfix — drawer overlay and Monster-like filter rail parity. */
+/* Dark Places — component navigator drawer parity.
+ * Clean pass: replace prior hotfix layers and keep Locations on the shared Component Navigator surface.
+ */
 .location-composer .location-map-stage:has(.location-stage__navigator-column) {
-  isolation: isolate;
-}
-
-.location-composer .location-map-stage .location-stage__navigator-focus-overlay {
-  -webkit-backdrop-filter: var(--cruor-filter-blur-2);
-  backdrop-filter: var(--cruor-filter-blur-2);
-  background: rgba(4, 3, 4, 0.56);
-  box-shadow: var(--cruor-shadow-box-128);
-  display: block;
-  grid-area: 1 / 1 / -1 / -1;
-  inset: 0;
-  pointer-events: auto;
-  position: absolute;
-  z-index: 60;
-}
-
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-map-stage__center,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-map-recap-rail,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--right {
-  z-index: 10;
-}
-
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left {
-  position: relative;
-  z-index: 70;
-}
-
-.location-composer .location-stage__navigator-column {
-  z-index: 160;
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__slot-tabs,
-.location-composer .location-stage__navigator-column .location-component-drawer__slot-tabs {
-  display: none;
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
-.location-composer .location-stage__navigator-column .component-navigator-modal[data-navigator-mode="slot"] .location-component-drawer__panel,
-.location-composer .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
-.location-composer .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="slot"] .location-component-drawer__panel {
-  grid-template-areas:
-    "head"
-    "smart"
-    "list";
-  grid-template-rows: auto auto minmax(0, 1fr);
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail,
-.location-composer .location-stage__navigator-column .navigator-tools,
-.location-composer .location-stage__navigator-column .location-navigator-tools {
-  align-content: start;
-  background: var(--cruor-gradient-linear-094-26e867cb), var(--cruor-surface-card);
-  border: 1px solid var(--cruor-color-milk-a075);
-  box-shadow: var(--cruor-shadow-box-009);
-  display: grid;
-  gap: 10px;
-  padding: 10px;
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-search-row,
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-search-row {
-  align-items: center;
-  display: grid;
-  gap: 6px;
-  grid-template-columns: minmax(0, 1fr) 34px 42px;
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .search-wrap input,
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-search input {
-  min-height: 34px;
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-btn,
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-navigator-filter-btn {
-  height: 34px;
-  min-height: 34px;
-  min-width: 34px;
-  position: relative;
-  width: 34px;
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-count,
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-count {
-  color: var(--cruor-color-text-a580);
-  font-size: var(--text-size-s);
-  font-weight: 900;
-  height: 34px;
-  min-height: 34px;
-  min-width: 42px;
-  position: static;
-  width: auto;
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .tag-filter-row,
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-filter-row {
-  background: var(--cruor-surface-card);
-  border-color: var(--cruor-color-milk-a070);
-  display: grid;
-  gap: 10px;
-  margin: 0;
-  max-height: none;
   overflow: visible;
-  padding: 9px;
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-panel,
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-filter-panel {
-  display: grid;
-  gap: 7px;
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-section,
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-filter-section {
-  display: grid;
-  gap: 7px;
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-section > .tag-filter-row__head,
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-filter-section > .location-component-filter-row__head {
-  align-items: center;
-  border-bottom: 0;
-  display: flex;
-  gap: 8px;
-  justify-content: space-between;
-  padding: 0;
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-section > .tag-filter-row__head > span,
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-filter-section > .location-component-filter-row__head > span {
-  align-items: center;
-  display: inline-flex;
-  gap: 6px;
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .filter-chip-grid,
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-filter-chip-grid {
-  display: grid;
-  gap: 7px;
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-chip,
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .location-component-filter-chip {
-  justify-content: flex-start;
-  min-height: 31px;
-  width: 100%;
-}
-
-.location-composer .location-stage__navigator-column .location-component-decision-group,
-.location-composer .location-stage__navigator-column .location-component-decision-group__head {
-  display: contents;
-}
-
-@media (max-width: 980px) {
-  .location-composer .location-stage__navigator-column .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
-  .location-composer .location-stage__navigator-column .component-navigator-modal[data-navigator-mode="slot"] .location-component-drawer__panel,
-  .location-composer .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="slot"] .component-navigator-modal__panel,
-  .location-composer .location-stage__navigator-column .location-component-drawer[data-filters-open="true"] .component-navigator-modal[data-navigator-mode="slot"] .location-component-drawer__panel {
-    grid-template-areas:
-      "head"
-      "rail"
-      "smart"
-      "list";
-    grid-template-rows: auto auto auto minmax(0, 1fr);
-  }
-}
-
-/* Phase 3.7C hotfix — focus overlay covers the left rail except the active slot. */
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left {
-  z-index: auto;
-}
-
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-mode-card,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-switch,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-target,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card:not(.is-active) {
   position: relative;
-  z-index: 1;
 }
 
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card.is-active {
-  position: relative;
-  z-index: 80;
-}
-
-/* Phase 3.7C hotfix 2 — the global focus overlay cannot sit above the rail parent and still leave a child visible.
-   Keep the left rail above the global overlay, then draw a rail-local overlay below the active slot only. */
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left {
-  position: relative;
-  z-index: 90;
-  isolation: isolate;
-}
-
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left::before {
-  content: "";
-  position: absolute;
-  inset: -1px 0 -1px -1px;
-  z-index: 40;
-  pointer-events: auto;
-  background: rgba(3, 3, 4, 0.56);
-  box-shadow: inset -1px 0 0 rgba(255, 238, 242, 0.035);
-  backdrop-filter: blur(1px);
-  -webkit-backdrop-filter: blur(1px);
-}
-
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card.is-active {
-  position: relative;
-  z-index: 70;
-}
-
-/* Phase 3.7C hotfix 3 — left-rail focus mask without covering the active slot.
- * The global navigator overlay starts after the left rail. The left rail then dims
- * its own inactive controls individually, so the active slot is never underneath
- * a parent/sibling overlay stacking context.
- */
-.location-composer .location-map-stage:has(.location-stage__navigator-column) .location-stage__navigator-focus-overlay {
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: calc(var(--stage-pad, 10px) + var(--location-side-column-width, 260px) + var(--location-column-gap, 10px));
-  width: auto;
-  height: auto;
-}
-
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left {
-  position: relative;
-  z-index: 70;
-  isolation: auto;
-}
-
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left::before {
-  content: none;
-  display: none;
-}
-
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-mode-card,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-switch,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-target,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card:not(.is-active) {
-  position: relative;
-  isolation: isolate;
-}
-
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-mode-card::after,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-switch::after,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-target::after,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card:not(.is-active)::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 40;
-  display: block;
-  pointer-events: auto;
-  background: rgba(4, 3, 4, 0.56);
-  box-shadow: inset 0 0 0 1px rgba(255, 238, 242, 0.025);
-  backdrop-filter: blur(1px);
-  -webkit-backdrop-filter: blur(1px);
-}
-
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card.is-active {
-  position: relative;
-  z-index: 80;
-  isolation: isolate;
-  filter: none;
-  opacity: 1;
-}
-
-@media (max-width: 980px) {
-  .location-composer .location-map-stage:has(.location-stage__navigator-column) .location-stage__navigator-focus-overlay {
-    left: 0;
-  }
-}
-
-/* Phase 3.7C hotfix 4 — exact left-rail focus layering.
- * The focus overlay must cover the whole stage, including the left sidebar.
- * Only the selected details slot is lifted above it. Do not lift the rail itself.
- */
 .location-composer .location-map-stage:has(.location-stage__navigator-column) .location-stage__navigator-focus-overlay {
   inset: 0;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: auto;
-  height: auto;
   z-index: 60;
 }
 
@@ -10737,22 +10434,7 @@
   isolation: auto;
 }
 
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left::before {
-  content: none;
-  display: none;
-}
-
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-mode-card,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-switch,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-target,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-details-slot-stack,
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-details-slot:not(.is-active) {
-  position: relative;
-  z-index: auto;
-  isolation: auto;
-}
-
+.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left::before,
 .location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-mode-card::after,
 .location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-switch::after,
 .location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-slot-scope-target::after,
@@ -10760,40 +10442,6 @@
 .location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-details-slot::after {
   content: none;
   display: none;
-}
-
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left .location-map-slot-card.is-active {
-  position: relative;
-  z-index: auto;
-  isolation: auto;
-}
-
-.location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left button.location-map-details-slot.is-active {
-  background: var(--cruor-gradient-radial-239-83344c81), var(--cruor-ui-card-bg-active);
-  border-color: var(--cruor-color-rose-a860);
-  box-shadow: var(--cruor-shadow-box-092);
-  filter: none;
-  isolation: isolate;
-  opacity: 1;
-  pointer-events: auto;
-  position: relative;
-  z-index: 80;
-}
-
-@media (max-width: 980px) {
-  .location-composer .location-map-stage:has(.location-stage__navigator-column) .location-stage__navigator-focus-overlay {
-    inset: 0;
-    left: 0;
-  }
-}
-
-/* Dark Places — component navigator drawer parity.
- * This replaces the previous corrective layers instead of stacking new overrides.
- * Keep the location namespace; use the shared Component Navigator classes as the styling surface.
- */
-.location-composer .location-map-stage:has(.location-stage__navigator-column) {
-  overflow: visible;
-  position: relative;
 }
 
 .location-composer .location-map-stage .location-stage__navigator-column {
@@ -10805,15 +10453,11 @@
   --faint: var(--cruor-color-faint);
   --line: var(--cruor-color-line);
   display: grid;
-  grid-area: auto;
   height: 100%;
   inset-block: var(--stage-pad, 10px);
   inset-inline-start: calc(var(--stage-pad, 10px) + var(--location-side-column-width, 260px) + var(--location-column-gap, 10px));
   max-height: calc(100% - (var(--stage-pad, 10px) * 2));
-  max-width: min(
-    var(--component-stage-list-width),
-    calc(100% - var(--stage-pad, 10px) - var(--location-side-column-width, 260px) - var(--location-column-gap, 10px))
-  );
+  max-width: min(var(--component-stage-list-width), calc(100% - var(--stage-pad, 10px) - var(--location-side-column-width, 260px) - var(--location-column-gap, 10px)));
   min-height: 0;
   min-width: 0;
   overflow: visible;
@@ -10840,7 +10484,6 @@
   display: block;
   height: 100%;
   inset: auto;
-  isolation: auto;
   max-height: none;
   min-width: 0;
   overflow: visible;
@@ -10848,7 +10491,6 @@
   pointer-events: auto;
   position: relative;
   width: 100%;
-  z-index: auto;
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-modal__panel,
@@ -10887,7 +10529,6 @@
   align-items: flex-start;
   border-bottom: 1px solid var(--cruor-color-milk-a065);
   display: flex;
-  flex: 0 0 auto;
   gap: 10px;
   grid-area: head;
   justify-content: space-between;
@@ -10921,7 +10562,6 @@
   font-weight: 650;
   line-height: 1.25;
   margin: 0;
-  max-width: none;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -10931,39 +10571,29 @@
   align-items: center;
   display: inline-flex;
   flex: 0 0 auto;
-  gap: 6px;
+  gap: 8px;
+  justify-content: flex-end;
 }
 
-.location-composer .location-stage__navigator-column .component-navigator-modal__head-actions .icon-btn,
-.location-composer .location-stage__navigator-column .navigator-filter-btn,
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-btn {
+.location-composer .location-stage__navigator-column .component-navigator-modal__head-actions > .icon-btn {
   align-items: center;
-  background: var(--cruor-ui-control-bg);
-  border: 1px solid var(--cruor-ui-control-border);
-  color: var(--cruor-ui-control-text);
   display: inline-grid;
-  height: 34px;
+  flex: 0 0 auto;
   justify-items: center;
-  min-height: 34px;
-  min-width: 34px;
+  min-height: 42px;
+  min-width: 42px;
   padding: 0;
   place-items: center;
   position: relative;
-  width: 34px;
+  width: 42px;
 }
 
-.location-composer .location-stage__navigator-column .component-navigator-modal__head-actions .icon-btn:hover,
-.location-composer .location-stage__navigator-column .component-navigator-modal__head-actions .icon-btn.active,
-.location-composer .location-stage__navigator-column .navigator-filter-btn:hover,
-.location-composer .location-stage__navigator-column .navigator-filter-btn.active {
-  background: var(--cruor-ui-control-bg-active);
-  border-color: var(--cruor-ui-control-border-active);
-  box-shadow: var(--cruor-shadow-box-001);
-  color: var(--cruor-ui-control-text-active);
+.location-composer .location-stage__navigator-column .component-navigator-modal__head-actions > .icon-btn svg {
+  height: 16px;
+  width: 16px;
 }
 
-.location-composer .location-stage__navigator-column .component-navigator-modal__head-actions .navigator-filter-btn[data-active-count="1"]::after,
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-btn[data-active-count="1"]::after {
+.location-composer .location-stage__navigator-column .component-navigator-modal__head-actions .navigator-filter-btn[data-active-count="1"]::after {
   background: var(--cruor-color-hex-d0a2aa);
   box-shadow: var(--cruor-shadow-box-020);
   content: "";
@@ -10973,6 +10603,10 @@
   right: 7px;
   top: 7px;
   width: 6px;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__slot-tabs {
+  display: none;
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-modal__rail,
@@ -11010,26 +10644,29 @@
 .location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-search-row {
   align-items: center;
   display: grid;
-  gap: 6px;
-  grid-template-columns: minmax(0, 1fr) 42px;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .search-wrap {
+  min-width: 0;
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-modal__rail .search-wrap input {
-  min-height: 34px;
+  background: var(--cruor-surface-card);
+  border-color: var(--cruor-color-milk-a080);
+  color: var(--cruor-color-text-a880);
+  font-size: var(--text-size-l);
+  min-height: 36px;
 }
 
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-count {
-  color: var(--cruor-color-text-a580);
-  font-size: var(--text-size-s);
-  font-weight: 900;
-  height: 34px;
-  min-height: 34px;
-  min-width: 42px;
-  position: static;
-  width: auto;
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-count,
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-btn {
+  display: none;
 }
 
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .tag-filter-row {
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .tag-filter-row,
+.location-composer .location-stage__navigator-column .tag-filter-row.location-source-grid-open {
   background: var(--cruor-color-surface-soft-a580);
   border: 1px solid var(--cruor-color-blood-strong-a760);
   box-shadow: none;
@@ -11039,12 +10676,12 @@
   max-height: none;
   overflow: visible;
   padding: 6px;
+  position: static;
+  width: auto;
 }
 
-.location-composer .location-stage__navigator-column .tag-filter-row__head,
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .tag-filter-row__head {
+.location-composer .location-stage__navigator-column .tag-filter-row__head {
   align-items: center;
-  border: 0;
   border-bottom: 1px solid var(--cruor-color-blood-strong-a340);
   color: var(--faint);
   display: flex;
@@ -11053,8 +10690,6 @@
   gap: 10px;
   justify-content: space-between;
   letter-spacing: 0.1em;
-  line-height: 1.1;
-  min-height: 0;
   padding: 4px 5px 7px;
   text-transform: uppercase;
 }
@@ -11065,21 +10700,19 @@
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-panel {
-display: grid;
+  display: grid;
   gap: 11px;
-  grid-template-columns: minmax(0, 1fr);
   min-width: 0;
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-section {
-display: grid;
+  display: grid;
   gap: 7px;
-  grid-template-columns: minmax(0, 1fr);
   min-width: 0;
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-section strong {
-color: var(--cruor-color-hex-8f7278);
+  color: var(--cruor-color-hex-8f7278);
   font-size: var(--text-size-xs);
   font-weight: 950;
   letter-spacing: 0.1em;
@@ -11087,26 +10720,20 @@ color: var(--cruor-color-hex-8f7278);
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-modal__rail .filter-chip-grid {
-  display: grid;
-  gap: 6px;
-  grid-template-columns: 1fr;
-  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-chip {
-  justify-content: flex-start;
-  min-height: 32px;
-  text-align: left;
-  width: 100%;
+  width: auto;
 }
 
-.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-chip--stacked {
-  align-content: center;
-  display: grid;
-  gap: 2px;
-  min-height: 38px;
-  padding-block: 5px;
-  text-align: left;
+.location-composer .location-stage__navigator-column .component-navigator-modal__rail .navigator-filter-chip.active {
+  background: var(--cruor-color-blood-strong-a360);
+  border-color: var(--cruor-color-blood-glow-a820);
+  box-shadow: var(--cruor-shadow-box-022);
+  color: var(--cruor-color-hex-fff0f2);
 }
 
 .location-composer .location-stage__navigator-column .navigator-filter-chip__main {
@@ -11128,13 +10755,11 @@ color: var(--cruor-color-hex-8f7278);
 
 .location-composer .location-stage__navigator-column .component-navigator-modal__list {
   align-content: start;
-  align-items: start;
   background: var(--cruor-surface-card);
   border: 1px solid var(--cruor-color-milk-a070);
   display: grid;
   gap: 6px;
   grid-area: list;
-  grid-auto-rows: min-content;
   grid-template-columns: minmax(0, 1fr);
   height: 100%;
   max-height: none;
@@ -11144,8 +10769,6 @@ color: var(--cruor-color-hex-8f7278);
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 7px;
-  scrollbar-color: auto;
-  scrollbar-width: auto;
   width: 100%;
 }
 
@@ -11153,9 +10776,7 @@ color: var(--cruor-color-hex-8f7278);
   -webkit-backdrop-filter: var(--cruor-filter-glass-10-115);
   backdrop-filter: var(--cruor-filter-glass-10-115);
   background: var(--cruor-ui-card-bg);
-  border: 2px solid var(--cruor-ui-card-border-color, var(--cruor-color-milk-a075));
-  border-color: var(--cruor-ui-card-border-color, var(--cruor-color-milk-a075));
-  border-width: 2px;
+  border: 2px solid var(--cruor-ui-card-border);
   box-shadow: var(--cruor-ui-card-shadow);
   color: var(--cruor-color-text-a660);
   cursor: grab;
@@ -11168,7 +10789,7 @@ color: var(--cruor-color-hex-8f7278);
 }
 
 .location-composer .location-stage__navigator-column .component-card[data-decision-tier="recommended"] {
-  border-color: var(--cruor-color-blood-glow-a380);
+  border-color: var(--cruor-color-good-a380);
 }
 
 .location-composer .location-stage__navigator-column .component-card[data-decision-tier="blocked"],
@@ -11187,7 +10808,6 @@ color: var(--cruor-color-hex-8f7278);
   background: var(--cruor-ui-card-bg-active);
   border-color: var(--cruor-ui-card-border-color-active, var(--cruor-color-blood-glow-a420));
   box-shadow: var(--cruor-ui-card-shadow-active);
-  transform: translateY(-1px);
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card,
@@ -11195,7 +10815,6 @@ color: var(--cruor-color-hex-8f7278);
 .location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card:has(.component-toggle-btn:disabled) {
   align-content: start;
   border-width: 1px;
-  display: grid;
   filter: none;
   gap: 5px;
   height: auto;
@@ -11203,7 +10822,7 @@ color: var(--cruor-color-hex-8f7278);
   opacity: 1;
   overflow: visible;
   padding: 8px 8px 7px;
-  padding-bottom: 7px;
+  transform: none;
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card:hover,
@@ -11213,31 +10832,20 @@ color: var(--cruor-color-hex-8f7278);
   transform: none;
 }
 
-.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card:hover {
-  background: var(--cruor-ui-card-bg-active);
-  border-color: var(--cruor-ui-card-border-color-active, var(--cruor-color-blood-glow-a420));
-  box-shadow: var(--cruor-ui-card-shadow-active);
-  transform: none;
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card.slot-full,
-.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card:has(.component-toggle-btn:disabled) {
-  cursor: not-allowed;
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card.slot-full:hover,
-.location-composer .location-stage__navigator-column .component-navigator-drawer .component-navigator-modal__list .component-card:has(.component-toggle-btn:disabled):hover {
-  background: var(--cruor-ui-card-bg);
-  border-color: var(--cruor-ui-card-border-color, var(--cruor-color-milk-a075));
-  box-shadow: var(--cruor-ui-card-shadow);
-  transform: none;
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-card.details-open,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-card:has(.component-details:focus-within),
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-card:has(.component-details:hover) {
+  overflow: visible;
+  z-index: 30;
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-modal__list .card-top {
   align-items: start;
   display: flex;
   gap: 8px;
+  margin: 0;
   min-height: 0;
+  padding: 0;
   padding-right: 46px;
   pointer-events: none;
 }
@@ -11245,15 +10853,14 @@ color: var(--cruor-color-hex-8f7278);
 .location-composer .location-stage__navigator-column .component-navigator-modal__list .component-title-stack {
   display: grid;
   gap: 2px;
+  min-height: 0;
   min-width: 0;
-  padding-right: 0;
+  padding: 0;
 }
 
-.location-composer .location-stage__navigator-column .component-card h3,
 .location-composer .location-stage__navigator-column .component-navigator-modal__list .component-card h3 {
   color: var(--cruor-color-hex-fff0f2);
   display: -webkit-box;
-  font-family: var(--font);
   font-size: var(--text-size-l);
   font-weight: 900;
   letter-spacing: -0.01em;
@@ -11264,12 +10871,8 @@ color: var(--cruor-color-hex-8f7278);
   -webkit-line-clamp: 2;
 }
 
-.location-composer .location-stage__navigator-column .component-card:hover h3 {
-  color: var(--cruor-color-hex-fff0f2);
-}
-
 .location-composer .location-stage__navigator-column .component-navigator-modal__list .summary {
-  color: var(--cruor-color-text-a580);
+  color: var(--muted);
   display: -webkit-box;
   font-size: var(--text-size-s-plus);
   line-height: 1.24;
@@ -11279,69 +10882,23 @@ color: var(--cruor-color-hex-8f7278);
   -webkit-line-clamp: 2;
 }
 
-.location-composer .location-stage__navigator-column .component-navigator-modal__list .compatibility-note {
-  border-left-width: 1px;
-  display: -webkit-box;
-  font-size: var(--text-size-s-plus);
-  line-height: 1.24;
-  margin: 0;
-  overflow: hidden;
-  padding-left: 6px;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-}
-
 .location-composer .location-stage__navigator-column .component-navigator-modal__list .component-toggle-btn {
-  font-size: var(--text-size-xxs);
   gap: 3px;
   height: 21px;
   letter-spacing: 0.07em;
   min-height: 21px;
   min-width: 34px;
-  opacity: 0;
   padding: 0 5px;
-  pointer-events: none;
-  position: absolute;
+  pointer-events: auto;
   right: 6px;
   top: 6px;
-  transform: translateY(-2px);
   width: auto;
   z-index: 60;
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-card:hover .component-toggle-btn,
-.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-card:focus-within .component-toggle-btn {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-card.slot-full .component-toggle-btn,
-.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-toggle-btn:disabled {
-  opacity: 0.45;
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-modal__list .component-toggle-btn svg {
   height: 10px;
   width: 10px;
-}
-
-.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-impact-dock {
-align-items: center;
-  align-self: end;
-  display: inline-flex;
-  gap: 7px;
-  justify-content: flex-end;
-  justify-self: end;
-  margin: 0;
-  max-width: 100%;
-  min-height: 0;
-  min-width: 0;
-  padding: 0;
-  pointer-events: none;
-  position: static;
-  width: fit-content;
-  z-index: 2;
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-modal__list .component-details {
@@ -11354,9 +10911,25 @@ align-items: center;
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-modal__list .component-details__trigger {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--cruor-color-hex-8f7278);
+  cursor: pointer;
+  display: inline-flex;
   font-size: var(--text-size-xxs);
+  font-weight: 950;
+  letter-spacing: 0.1em;
   min-height: 10px;
-  padding-bottom: 1px;
+  padding: 0 0 1px;
+  text-transform: uppercase;
+}
+
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-details__trigger:hover,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-details__trigger:focus-visible,
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .component-card.details-open .component-details__trigger {
+  color: var(--cruor-color-hex-d0a2aa);
+  outline: none;
 }
 
 .location-composer .location-stage__navigator-column .component-navigator-modal__list .component-details > .meta-list,
@@ -11364,9 +10937,21 @@ align-items: center;
   -webkit-backdrop-filter: var(--cruor-filter-glass-16-122);
   backdrop-filter: var(--cruor-filter-glass-16-122);
   background: var(--cruor-gradient-linear-003-33222bdf), var(--cruor-gradient-radial-004-b311c202), var(--cruor-color-r6-g5-b6-a990);
-  box-sizing: border-box;
+  border: 1px solid var(--cruor-color-rose-a160);
+  box-shadow: var(--cruor-shadow-box-009);
+  display: grid;
   filter: none;
+  gap: 5px;
+  left: 0;
+  min-width: min(320px, calc(100vw - 42px));
   opacity: 0;
+  padding: 8px;
+  pointer-events: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  transform: translateY(-2px);
+  transition: opacity 0.12s ease, transform 0.12s ease, visibility 0.12s ease;
+  visibility: hidden;
   z-index: 120;
 }
 
@@ -11378,16 +10963,16 @@ align-items: center;
 .location-composer .location-stage__navigator-column .component-navigator-modal__list .component-details:hover > .meta-list {
   opacity: 1;
   pointer-events: auto;
+  transform: translateY(0);
   visibility: visible;
 }
 
-.location-composer .location-stage__navigator-column .meta-list {
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-list {
   display: grid;
   gap: 4px;
 }
 
-.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-row,
-.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-list .meta-row {
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-row {
   align-items: start;
   border-top: 1px solid var(--cruor-color-blood-bright-a120);
   display: grid;
@@ -11396,13 +10981,11 @@ align-items: center;
   padding-top: 4px;
 }
 
-.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-row:first-child,
-.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-list .meta-row:first-child {
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-row:first-child {
   border-top: 0;
   padding-top: 0;
 }
 
-.location-composer .location-stage__navigator-column .meta-label,
 .location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-label {
   color: var(--cruor-color-hex-8f7278);
   font-size: var(--text-size-xs);
@@ -11412,7 +10995,6 @@ align-items: center;
   text-transform: uppercase;
 }
 
-.location-composer .location-stage__navigator-column .meta-values,
 .location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-values {
   display: flex;
   flex-wrap: wrap;
@@ -11420,87 +11002,55 @@ align-items: center;
   min-width: 0;
 }
 
-.location-composer .location-stage__navigator-column .meta-value {
-  background: var(--cruor-ui-chip-bg);
-  border: 1px solid var(--cruor-ui-chip-border);
-  color: var(--cruor-ui-chip-text);
-  font-size: var(--text-size-s);
-  font-weight: 800;
-  padding: 3px 6px;
-}
-
-.location-composer .location-stage__navigator-column .meta-value.source-chip {
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-value.source-chip {
   background: var(--cruor-color-blood-a320);
   border-color: var(--cruor-color-blood-strong-a680);
   color: var(--cruor-color-hex-d0a2aa);
 }
 
-.location-composer .location-stage__navigator-column .compatibility-badge.avoid,
-.location-composer .location-stage__navigator-column .compatibility-badge.soft,
-.location-composer .location-stage__navigator-column .meta-value.strong-chip {
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-value.strong-chip {
   background: var(--cruor-color-blood-strong-a300);
   border-color: var(--cruor-color-blood-glow-a540);
   color: var(--cruor-color-hex-f0d7dc);
 }
 
-.location-composer .location-stage__navigator-column .compatibility-badge.incompatible,
-.location-composer .location-stage__navigator-column .compatibility-badge.missing,
-.location-composer .location-stage__navigator-column .meta-value.danger-chip {
+.location-composer .location-stage__navigator-column .component-navigator-modal__list .meta-value.danger-chip {
   background: var(--cruor-color-blood-bright-a320);
   border-color: var(--cruor-color-rose-a640);
   color: var(--cruor-color-hex-f0b9c2);
 }
 
 .location-map-details-slot {
-  -webkit-backdrop-filter: var(--cruor-filter-blur-12);
-  backdrop-filter: var(--cruor-filter-blur-12);
-  background: var(--cruor-ui-card-bg);
-  border: 1px solid var(--cruor-ui-card-border-color, var(--cruor-color-milk-a075));
-  border-color: var(--cruor-ui-card-border-color, var(--cruor-color-milk-a075));
-  box-shadow: var(--cruor-ui-card-shadow);
-  color: var(--cruor-color-text-a620);
-  display: grid;
-  gap: 6px;
-  grid-template-rows: auto minmax(0, 1fr);
   min-height: 76px;
-  overflow: hidden;
-  padding: 9px 10px;
-  position: relative;
-  text-align: left;
-  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, width 0.14s ease;
-  width: 100%;
-  z-index: 4;
 }
 
 .location-map-details-slot.is-active,
 .location-map-details-slot:hover,
 .location-map-details-slot:focus-visible {
-  background: var(--cruor-gradient-linear-188-b079ccaf), var(--cruor-color-surface-soft);
-  background-color: var(--cruor-color-surface-soft);
-  border-color: var(--cruor-ui-card-border-color-active, var(--cruor-color-blood-glow-a420));
+  background: var(--cruor-ui-card-bg-active);
+  border-color: var(--cruor-color-rose-a680);
   box-shadow: var(--cruor-ui-card-shadow-active);
   color: var(--cruor-color-hex-fff0f2);
 }
 
 .location-map-details-slot strong {
-  color: var(--cruor-color-hex-f0d7dc);
-  font-size: var(--text-size-l);
-  font-weight: 900;
-  line-height: 1.16;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 }
 
 .location-map-details-slot small {
-  color: var(--cruor-color-text-a500);
-  font-size: var(--text-size-m);
-  font-style: normal;
-  line-height: 1.32;
-  white-space: normal;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .location-composer .location-map-stage:has(.location-stage__navigator-column) > .location-composer__rail--left button.location-map-details-slot.is-active {
-  background: var(--cruor-gradient-radial-239-83344c81), var(--cruor-ui-card-bg-active);
-  border-color: var(--cruor-color-rose-a860);
-  box-shadow: var(--cruor-shadow-box-092);
+  background: var(--cruor-ui-card-bg-active);
+  border-color: var(--cruor-color-rose-a680);
+  box-shadow: var(--cruor-ui-card-shadow-active);
   filter: none;
   opacity: 1;
   pointer-events: auto;

@@ -5373,3 +5373,25 @@ _Nessun file aggiunto._
 - `~features/darken-location/composer/components/LocationComponentPickerModal.jsx`
 - `~features/darken-location/composer/darken-location-composer.styles.css`
 
+
+---
+
+## 2026-06-28 20:23:38
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase03-7c-clean-navigator-style-parity-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase03-7c-clean-navigator-style-parity-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/components/LocationComponentPickerModal.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
