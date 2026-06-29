@@ -98,7 +98,6 @@ import {
   getMonsterRuleset,
   getMonsterRulesetOption,
 } from "./rulesets/index.js";
-import { MonsterComposerTopbar } from "./components/monster-composer.shell.jsx";
 import { GuidedFlowPanel, TemplatePickerModal } from "./components/monster-composer.start-flow.jsx";
 import { MonsterSilhouetteMap } from "./components/monster-composer.anatomy.jsx";
 import { ComponentNavigatorDrawer } from "./components/monster-composer.navigator.jsx";
@@ -2685,21 +2684,6 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
         className={`monster-workspace ${isScrollableMonsterView ? "monster-workspace--scrollable-view" : ""}`}
         style={monsterWorkspaceStyle}
       >
-        <MonsterComposerTopbar
-          activePreset={activePreset}
-          targetCr={targetCr}
-          tacticalRole={tacticalRole}
-          monsterTier={monsterTier}
-          tempoProfile={tempoProfile}
-          viewMode={viewMode}
-          onSetViewMode={setViewMode}
-          composerStageMode={composerStageMode}
-          onSetComposerStageMode={setComposerStageModeFromNavigation}
-          uiMode={uiMode}
-          liveExportPopoutOpen={liveExportPopoutOpen}
-          onToggleLiveExportPopout={() => setLiveExportPopoutOpen((open) => !open)}
-        />
-
         {viewMode === "composer" && (
           <>
             <MonsterSilhouetteMap

@@ -5458,3 +5458,26 @@ _Nessun file aggiunto._
 
 - `~features/darken-location/composer/darken-location-composer.styles.css`
 
+
+---
+
+## 2026-06-29 10:51:48
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-topbar-cleanup-fixed.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-topbar-cleanup-fixed.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/monster-composer/components/monster-composer.shell.jsx`
+- `~features/monster-composer/monster-composer.page.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
