@@ -6873,10 +6873,15 @@
   -webkit-backdrop-filter: blur(14px);
 }
 
-.location-map-toolbar__group--room-nav {
+.location-map-toolbar__group--room-nav,
+.location-map-toolbar__group--room-unified {
   justify-content: space-between;
   flex: 0 1 auto;
   max-width: none;
+}
+
+.location-map-toolbar__group--room-unified {
+  gap: 7px;
 }
 
 .location-map-toolbar__group--actions {
@@ -6971,6 +6976,7 @@
 
 .location-composer[data-location-builder-mode="scratch"] .location-map-stage-toolbar {
   top: 0;
+  width: min(780px, calc(100% - 32px));
 }
 
 .location-composer[data-location-builder-mode="export"] .location-map-stage-toolbar {
@@ -7021,6 +7027,11 @@
 
   .location-map-toolbar {
     flex-wrap: wrap;
+  }
+
+  .location-map-toolbar__group--room-unified {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .location-map-toolbar__divider {
@@ -7850,5 +7861,234 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "next" "timeline" "status";
     display: grid;
+  }
+}
+
+/* Dark Places map toolbar refinement: map tools are the only workflow bridge here. */
+.location-map-toolbar__group--room-unified {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.location-map-toolbar__inline-editor-tools {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.location-map-toolbar__group--room-unified .location-map-toolbar__target {
+  flex: 0 1 180px;
+}
+
+/* Dark Places toolbar layout hotfix: keep the map workbench in one coherent row. */
+.location-map-stage-toolbar {
+  width: max-content;
+  max-width: calc(100% - 32px);
+}
+
+.location-map-toolbar {
+  width: max-content;
+  max-width: 100%;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.location-map-toolbar__group {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.location-map-toolbar__group--actions {
+  flex: 0 1 auto;
+  max-width: 100%;
+}
+
+.location-map-toolbar__group--room-nav {
+  flex: 0 0 auto;
+  justify-content: center;
+}
+
+.location-map-toolbar__inline-editor-tools {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.location-map-toolbar__target {
+  flex: 0 1 220px;
+}
+
+.location-composer[data-location-builder-mode="scratch"] .location-map-stage-toolbar {
+  width: max-content;
+  max-width: calc(100% - 32px);
+}
+
+@media (max-width: 760px) {
+  .location-map-stage-toolbar {
+    width: min(100%, calc(100% - 24px));
+  }
+
+  .location-map-toolbar {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
+
+/* Dark Places room toolbar dropdown: room queue moved out of the left rail. */
+.location-map-toolbar__group--room-nav {
+  position: relative;
+  overflow: visible;
+}
+
+.location-map-toolbar__target-menu {
+  position: relative;
+  display: inline-flex;
+  flex: 0 1 220px;
+  min-width: 0;
+}
+
+.location-map-toolbar__target-button {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+.location-map-toolbar__target-button:hover:not(:disabled),
+.location-map-toolbar__target-button:focus-visible:not(:disabled),
+.location-map-toolbar__target-button[aria-expanded="true"] {
+  border-color: var(--cruor-color-blood-glow-a420, rgba(190, 64, 82, 0.42));
+  background: var(--cruor-color-blood-bright-a070, rgba(122, 26, 40, 0.07));
+  box-shadow: inset 0 1px 0 var(--cruor-color-milk-a045, rgba(255, 238, 242, 0.045));
+  outline: none;
+}
+
+.location-map-toolbar__target-button:disabled {
+  cursor: default;
+  opacity: 0.58;
+}
+
+.location-map-toolbar__room-menu-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  z-index: 80;
+  display: grid;
+  width: min(320px, calc(100vw - 36px));
+  max-height: min(430px, calc(100vh - 180px));
+  gap: 6px;
+  padding: 8px;
+  overflow: auto;
+  user-select: none;
+  transform: translateX(-50%);
+  border: 1px solid var(--cruor-color-r208-g162-b170-a240, rgba(208, 162, 170, 0.24));
+  background:
+    linear-gradient(180deg, var(--cruor-color-milk-a045, rgba(255, 238, 242, 0.045)), var(--cruor-color-transparent) 64%),
+    var(--cruor-color-r6-g5-b6-a990, rgba(6, 5, 6, 0.99));
+  box-shadow:
+    0 24px 70px var(--cruor-color-black-a780, rgba(0, 0, 0, 0.78)),
+    0 0 0 1px var(--cruor-color-black-a820, rgba(0, 0, 0, 0.82)),
+    inset 0 1px 0 var(--cruor-color-milk-a060, rgba(255, 238, 242, 0.06));
+  backdrop-filter: blur(14px) saturate(122%);
+  -webkit-backdrop-filter: blur(14px) saturate(122%);
+}
+
+.location-map-toolbar__room-menu-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid var(--cruor-color-milk-a060, rgba(255, 238, 242, 0.06));
+  background: var(--cruor-color-white-a018, rgba(255, 255, 255, 0.018));
+  color: var(--cruor-color-milk-a900, rgba(255, 238, 242, 0.9));
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.location-map-toolbar__room-menu-item:hover,
+.location-map-toolbar__room-menu-item:focus-visible,
+.location-map-toolbar__room-menu-item.is-active {
+  border-color: var(--cruor-color-blood-glow-a480, rgba(190, 64, 82, 0.48));
+  background: var(--cruor-color-blood-bright-a120, rgba(122, 26, 40, 0.12));
+  outline: none;
+}
+
+.location-map-toolbar__room-menu-item.is-active {
+  box-shadow: inset 3px 0 0 var(--cruor-color-blood-glow-a780, rgba(190, 64, 82, 0.78));
+}
+
+.location-map-toolbar__room-menu-number {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--cruor-color-blood-strong-a420, rgba(95, 7, 22, 0.42));
+  background: var(--cruor-color-black-a320, rgba(0, 0, 0, 0.32));
+  color: var(--cruor-color-rose-a820, rgba(240, 185, 194, 0.82));
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.location-map-toolbar__room-menu-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.location-map-toolbar__room-menu-copy strong,
+.location-map-toolbar__room-menu-copy small {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-map-toolbar__room-menu-copy strong {
+  color: var(--cruor-color-milk-a980, rgba(255, 238, 242, 0.98));
+  font-size: 0.82rem;
+  font-weight: 850;
+  line-height: 1.1;
+}
+
+.location-map-toolbar__room-menu-copy small,
+.location-map-toolbar__room-menu-status {
+  color: var(--cruor-color-text-a540, rgba(238, 238, 238, 0.54));
+  font-size: 0.66rem;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.location-map-toolbar__room-menu-status {
+  justify-self: end;
+}
+
+.location-map-toolbar__room-menu-item.is-ready .location-map-toolbar__room-menu-status {
+  color: var(--cruor-color-good-a720, rgba(143, 150, 148, 0.72));
+}
+
+.location-map-toolbar__room-menu-item.is-partial .location-map-toolbar__room-menu-status {
+  color: var(--cruor-color-r232-g167-b69-a840, rgba(232, 167, 69, 0.84));
+}
+
+.location-map-toolbar__room-menu-item.is-empty .location-map-toolbar__room-menu-status {
+  color: var(--cruor-color-text-a420, rgba(238, 238, 238, 0.42));
+}
+
+@media (max-width: 760px) {
+  .location-map-toolbar__target-menu {
+    flex: 1 1 180px;
+  }
+
+  .location-map-toolbar__room-menu-panel {
+    left: 0;
+    transform: none;
   }
 }

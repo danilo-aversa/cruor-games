@@ -122,6 +122,7 @@ import {
   getCellBoundarySegmentsForCell,
   getNeighborForCellSide,
   getRegionSurfaceKind,
+  buildDungeonMask,
 } from "./map-generator.mask.js";
 import {
   getRoomCellSet,
@@ -152,6 +153,8 @@ import {
   getCorridorLocalWallSegmentsForCell,
   getCorridorEndpointCell,
   getWallSegmentAdjacentCells,
+  routeCorridors,
+  applyLevelMetadata,
 } from "./map-generator.corridors.js";
 import {
   normalizeMapAccessType,
@@ -330,11 +333,13 @@ export function MapViewport({
   onImportState,
   viewResetKey,
   embeddedPreview = false,
+  allowEmbeddedInteractions = false,
   showViewportChrome = true,
   enableViewportInteractions = true,
   viewportMode = embeddedPreview ? "composer-preview" : "workspace",
   viewportClassName = "",
   onViewportMetricsChange = null,
+  onViewportControlsChange = null,
 }) {
   const viewportRef = useRef(null);
   const panRef = useRef(null);
@@ -371,7 +376,7 @@ export function MapViewport({
     width: generatedMap.config.mapWidth,
     height: generatedMap.config.mapHeight,
   });
-  const viewportInteractive = enableViewportInteractions && !embeddedPreview;
+  const viewportInteractive = enableViewportInteractions && (!embeddedPreview || allowEmbeddedInteractions);
   const shouldShowViewportChrome = showViewportChrome && !embeddedPreview;
   const wallStrokeScale = clamp(view.scale / 0.85, 0.62, 1);
   const wallStrokeVariables = {
@@ -561,6 +566,31 @@ export function MapViewport({
     [zoomAtPoint],
   );
 
+
+  const viewportControls = useMemo(
+    () => ({
+      zoomIn: () => zoomAtCenter(1.15),
+      zoomOut: () => zoomAtCenter(0.85),
+      resetZoom: fitView,
+      scale: view.scale,
+    }),
+    [fitView, view.scale, zoomAtCenter],
+  );
+
+  useEffect(() => {
+    if (typeof onViewportControlsChange !== "function") return;
+    onViewportControlsChange(viewportControls);
+  }, [onViewportControlsChange, viewportControls]);
+
+  useEffect(
+    () => () => {
+      if (typeof onViewportControlsChange === "function") {
+        onViewportControlsChange(null);
+      }
+    },
+    [onViewportControlsChange],
+  );
+
   function clientToMapPoint(event) {
     const viewport = viewportRef.current;
     if (!viewport) return null;
@@ -682,12 +712,14 @@ export function MapViewport({
     setHoverCorridorHandle(null);
     setHoveredCorridorId(null);
     setHoveredRegionId(region.id);
+    onRegionHoverChange?.(region.id);
   }
 
   function handleRoomPointerLeave(event, region) {
     if (!showEditor || roomDragRef.current) return;
     event.stopPropagation();
     setHoveredRegionId((current) => (current === region.id ? null : current));
+    onRegionHoverChange?.("");
   }
 
   function handleRoomPointerDown(event, region) {
@@ -695,6 +727,7 @@ export function MapViewport({
     event.preventDefault();
     event.stopPropagation();
     setHoveredRegionId(region.id);
+    onRegionHoverChange?.(region.id);
     onEditStart?.();
     const point = clientToMapPoint(event);
     if (!point) return;
@@ -1482,6 +1515,7 @@ export function MapViewport({
     setHoverWallHandle(null);
     setHoverCorridorHandle(null);
     setHoveredCorridorId(null);
+    onRegionHoverChange?.("");
     if (showEditor) onSelectedRegionChange?.("");
     event.currentTarget.focus();
     panRef.current = {
@@ -1589,6 +1623,7 @@ export function MapViewport({
         className={cx(
           "map-viewport",
           `map-viewport--${viewportMode}`,
+          viewportInteractive && "is-pannable",
           isPanning && "is-panning",
           embeddedPreview && "is-embedded-preview",
           viewportClassName,
@@ -3014,6 +3049,35 @@ function getGenericTooltipAttrs(label, description = "", kbd = "") {
   return attrs;
 }
 
+function suppressToolbarTextSelection(event) {
+  event.preventDefault();
+}
+
+function isEventInsideNode(event, node) {
+  if (!node) return false;
+  const path = typeof event.composedPath === "function" ? event.composedPath() : [];
+  return path.length > 0 ? path.includes(node) : node.contains(event.target);
+}
+
+const MAP_GRID_STYLE_LABELS = {
+  solid: "Solid",
+  dotted: "Dotted",
+  dashed: "Dashed",
+  none: "None",
+};
+
+const MAP_GRID_STYLE_ICONS = {
+  solid: "table-cells",
+  dotted: "braille",
+  dashed: "grip-lines",
+  none: "eye-slash",
+};
+
+const CROSSHATCH_STYLE_OPTIONS = [
+  { value: "classic", label: "Classic", icon: "grip-lines" },
+  { value: "none", label: "None", icon: "eye-slash" },
+];
+
 function MapToolButton({
   icon,
   label,
@@ -3022,12 +3086,17 @@ function MapToolButton({
   active = false,
   disabled = false,
   visibility = "",
+  className = "",
   onClick,
 }) {
   return (
     <button
       type="button"
-      className={active ? "map-tool-button cruor-ui-control-surface cruor-button cruor-button--icon is-active" : "map-tool-button cruor-ui-control-surface cruor-button cruor-button--icon"}
+      className={cx(
+        "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary",
+        active && "is-active",
+        className,
+      )}
       data-ui-mode-advanced-only={visibility === "advanced" ? "" : undefined}
       data-ui-mode-debug-only={visibility === "debug" ? "" : undefined}
       data-map-advanced-only={visibility === "advanced" ? "" : undefined}
@@ -3036,10 +3105,409 @@ function MapToolButton({
       aria-label={label}
       aria-pressed={active || undefined}
       disabled={disabled}
+      onMouseDown={suppressToolbarTextSelection}
       onClick={onClick}
     >
       <i className={`fa-solid fa-${icon}`} aria-hidden="true" />
     </button>
+  );
+}
+
+function MapToolMenuButton({
+  icon,
+  label,
+  description = "",
+  active = false,
+  disabled = false,
+  danger = false,
+  onClick,
+}) {
+  return (
+    <button
+      type="button"
+      className={cx(
+        "location-map-toolbar__map-menu-action",
+        active && "is-active",
+        danger && "is-danger",
+      )}
+      {...getGenericTooltipAttrs(label, description || label)}
+      aria-label={label}
+      aria-pressed={active || undefined}
+      disabled={disabled}
+      onMouseDown={suppressToolbarTextSelection}
+      onClick={onClick}
+      role="menuitem"
+    >
+      <i className={`fa-solid fa-${icon}`} aria-hidden="true" />
+      <span>{label}</span>
+    </button>
+  );
+}
+
+function MapStyleOptionButton({ icon, label, active = false, onClick }) {
+  return (
+    <button
+      type="button"
+      className={cx("location-map-toolbar__style-option", active && "is-active")}
+      onMouseDown={suppressToolbarTextSelection}
+      onClick={onClick}
+    >
+      <i className={`fa-solid fa-${icon}`} aria-hidden="true" />
+      <span>{label}</span>
+      <i
+        className={active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"}
+        aria-hidden="true"
+      />
+    </button>
+  );
+}
+
+function MapStyleSlider({ id, label, value, onChange }) {
+  const normalizedValue = Number.isFinite(Number(value)) ? Number(value) : 0;
+  return (
+    <label className="location-map-toolbar__style-slider" htmlFor={id}>
+      <span>
+        {label}
+        <strong>{Math.round(normalizedValue * 100)}%</strong>
+      </span>
+      <input
+        id={id}
+        type="range"
+        min="0"
+        max="1"
+        step="0.05"
+        value={normalizedValue}
+        onMouseDown={(event) => event.stopPropagation()}
+        onChange={(event) => onChange?.(Number(event.target.value))}
+      />
+    </label>
+  );
+}
+
+function MapStyleDropdown({
+  open = false,
+  visualStyle,
+  gridStyle,
+  gridOpacity = 0.72,
+  crosshatchStyle = "classic",
+  crosshatchOpacity = 0.72,
+  onToggle,
+  onVisualStyleChange,
+  onGridStyleChange,
+  onGridOpacityChange,
+  onCrosshatchStyleChange,
+  onCrosshatchOpacityChange,
+}) {
+  const normalizedGridStyle = normalizeGridStyle(gridStyle);
+  const normalizedVisualStyle = normalizeVisualStyle(visualStyle);
+  const normalizedCrosshatchStyle = crosshatchStyle === "none" ? "none" : "classic";
+
+  return (
+    <>
+      <button
+        type="button"
+        className={cx(
+          "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary location-map-toolbar__style-menu-trigger",
+          open && "is-active",
+        )}
+        {...getGenericTooltipAttrs("Map Style", "Choose grid and map drawing styles.")}
+        aria-label="Map Style"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        onMouseDown={suppressToolbarTextSelection}
+        onClick={onToggle}
+      >
+        <i className="fa-solid fa-sliders" aria-hidden="true" />
+      </button>
+      {open ? (
+        <span
+          className="location-map-toolbar__style-panel cruor-ui-panel-surface"
+          role="menu"
+          aria-label="Map style controls"
+          onMouseDown={(event) => event.stopPropagation()}
+        >
+          <span className="location-map-toolbar__style-section">
+            <span className="location-map-toolbar__style-section-title">
+              <i className="fa-solid fa-border-all" aria-hidden="true" />
+              Grid Style
+            </span>
+            <span className="location-map-toolbar__style-options">
+              {GRID_STYLE_OPTIONS.map((style) => (
+                <MapStyleOptionButton
+                  key={style}
+                  icon={MAP_GRID_STYLE_ICONS[style] || "border-all"}
+                  label={MAP_GRID_STYLE_LABELS[style] || style}
+                  active={normalizedGridStyle === style}
+                  onClick={() => onGridStyleChange?.(style)}
+                />
+              ))}
+            </span>
+            <MapStyleSlider
+              id="inline-map-grid-opacity"
+              label="Grid Opacity"
+              value={gridOpacity}
+              onChange={onGridOpacityChange}
+            />
+          </span>
+
+          <span className="location-map-toolbar__style-section">
+            <span className="location-map-toolbar__style-section-title">
+              <i className="fa-solid fa-map" aria-hidden="true" />
+              Map Style
+            </span>
+            <span className="location-map-toolbar__style-options">
+              {MAP_VISUAL_STYLES.map((style) => (
+                <MapStyleOptionButton
+                  key={style.value}
+                  icon={style.value === "ink" ? "pen-nib" : style.value === "parchment" ? "scroll" : "map"}
+                  label={style.label}
+                  active={normalizedVisualStyle === style.value}
+                  onClick={() => onVisualStyleChange?.(style.value)}
+                />
+              ))}
+            </span>
+            <span className="location-map-toolbar__style-subtitle">Hatching</span>
+            <span className="location-map-toolbar__style-options location-map-toolbar__style-options--compact">
+              {CROSSHATCH_STYLE_OPTIONS.map((style) => (
+                <MapStyleOptionButton
+                  key={style.value}
+                  icon={style.icon}
+                  label={style.label}
+                  active={normalizedCrosshatchStyle === style.value}
+                  onClick={() => onCrosshatchStyleChange?.(style.value)}
+                />
+              ))}
+            </span>
+            <MapStyleSlider
+              id="inline-map-hatching-opacity"
+              label="Hatching Opacity"
+              value={crosshatchOpacity}
+              onChange={onCrosshatchOpacityChange}
+            />
+          </span>
+        </span>
+      ) : null}
+    </>
+  );
+}
+
+function InlineMapEditorToolbar({
+  showGrid = true,
+  showNames = false,
+  showRoomBadges = true,
+  showProps = false,
+  manualHistory = { past: [], future: [] },
+  viewportControls = null,
+  visualStyle = DEFAULT_CONFIG.visualStyle,
+  gridStyle = "solid",
+  gridOpacity = 0.72,
+  crosshatchStyle = "classic",
+  crosshatchOpacity = 0.72,
+  onRefreshFromComposer,
+  onUndo,
+  onRedo,
+  onToggleGrid,
+  onToggleRoomBadges,
+  onToggleNames,
+  onToggleProps,
+  onResetEdits,
+  onVisualStyleChange,
+  onGridStyleChange,
+  onGridOpacityChange,
+  onCrosshatchStyleChange,
+  onCrosshatchOpacityChange,
+}) {
+  const [toolbarTarget, setToolbarTarget] = useState(null);
+  const [mapMenuOpen, setMapMenuOpen] = useState(false);
+  const [styleMenuOpen, setStyleMenuOpen] = useState(false);
+  const toolbarToolsRef = useRef(null);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return undefined;
+
+    let frame = 0;
+    const resolveTarget = () => {
+      frame = 0;
+      const nextTarget = document.querySelector('[data-location-map-tools-host="true"]');
+      setToolbarTarget((currentTarget) => (currentTarget === nextTarget ? currentTarget : nextTarget));
+    };
+
+    resolveTarget();
+    frame = window.requestAnimationFrame(resolveTarget);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  });
+
+  useEffect(() => {
+    if ((!mapMenuOpen && !styleMenuOpen) || typeof document === "undefined") return undefined;
+
+    const closeIfOutside = (event) => {
+      if (isEventInsideNode(event, toolbarToolsRef.current)) return;
+      setMapMenuOpen(false);
+      setStyleMenuOpen(false);
+    };
+    const closeOnEscape = (event) => {
+      if (event.key !== "Escape") return;
+      setMapMenuOpen(false);
+      setStyleMenuOpen(false);
+    };
+
+    document.addEventListener("pointerdown", closeIfOutside, true);
+    document.addEventListener("focusin", closeIfOutside, true);
+    document.addEventListener("keydown", closeOnEscape, true);
+    return () => {
+      document.removeEventListener("pointerdown", closeIfOutside, true);
+      document.removeEventListener("focusin", closeIfOutside, true);
+      document.removeEventListener("keydown", closeOnEscape, true);
+    };
+  }, [mapMenuOpen, styleMenuOpen]);
+
+  if (!toolbarTarget) return null;
+
+  const closeMapMenu = () => setMapMenuOpen(false);
+
+  return createPortal(
+    <span
+      className="location-map-toolbar__map-tools"
+      aria-label="Map editing actions"
+      ref={toolbarToolsRef}
+    >
+      <span className="location-map-toolbar__divider" aria-hidden="true" />
+      <span className="location-map-toolbar__map-tools-primary">
+        <MapToolButton
+          icon="rotate-left"
+          label="Undo"
+          disabled={!manualHistory.past?.length}
+          onClick={onUndo}
+        />
+        <MapToolButton
+          icon="rotate-right"
+          label="Redo"
+          disabled={!manualHistory.future?.length}
+          onClick={onRedo}
+        />
+        <span className="location-map-toolbar__divider" aria-hidden="true" />
+        <MapToolButton
+          icon="magnifying-glass-minus"
+          label="Zoom Out"
+          kbd="-"
+          disabled={!viewportControls?.zoomOut}
+          onClick={() => viewportControls?.zoomOut?.()}
+        />
+        <MapToolButton
+          icon="magnifying-glass-plus"
+          label="Zoom In"
+          kbd="+"
+          disabled={!viewportControls?.zoomIn}
+          onClick={() => viewportControls?.zoomIn?.()}
+        />
+        <MapToolButton
+          icon="expand"
+          label="Reset Zoom"
+          kbd="0"
+          disabled={!viewportControls?.resetZoom}
+          onClick={() => viewportControls?.resetZoom?.()}
+        />
+        <span className="location-map-toolbar__zoom-scale" aria-label="Current zoom">
+          {Math.round((viewportControls?.scale || 1) * 100)}%
+        </span>
+        <span className="location-map-toolbar__divider" aria-hidden="true" />
+        <MapToolButton
+          icon="border-all"
+          label="Toggle Grid"
+          active={showGrid}
+          onClick={onToggleGrid}
+        />
+        <MapToolButton
+          icon="square-pen"
+          label="Toggle Room Badges"
+          active={showRoomBadges}
+          onClick={onToggleRoomBadges}
+        />
+        <MapToolButton
+          icon="signature"
+          label="Toggle Room Names"
+          active={showNames}
+          onClick={onToggleNames}
+        />
+        <span className="location-map-toolbar__divider" aria-hidden="true" />
+        <MapStyleDropdown
+          open={styleMenuOpen}
+          visualStyle={visualStyle}
+          gridStyle={gridStyle}
+          gridOpacity={gridOpacity}
+          crosshatchStyle={crosshatchStyle}
+          crosshatchOpacity={crosshatchOpacity}
+          onToggle={() => {
+            setStyleMenuOpen((open) => !open);
+            setMapMenuOpen(false);
+          }}
+          onVisualStyleChange={onVisualStyleChange}
+          onGridStyleChange={onGridStyleChange}
+          onGridOpacityChange={onGridOpacityChange}
+          onCrosshatchStyleChange={onCrosshatchStyleChange}
+          onCrosshatchOpacityChange={onCrosshatchOpacityChange}
+        />
+      </span>
+      <button
+        type="button"
+        className={cx(
+          "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary location-map-toolbar__map-menu-trigger",
+          mapMenuOpen && "is-active",
+        )}
+        {...getGenericTooltipAttrs("More map tools", "Show secondary map editing tools.")}
+        aria-label="More map tools"
+        aria-expanded={mapMenuOpen}
+        aria-haspopup="menu"
+        onMouseDown={suppressToolbarTextSelection}
+        onClick={() => {
+          setMapMenuOpen((open) => !open);
+          setStyleMenuOpen(false);
+        }}
+      >
+        <i className="fa-solid fa-ellipsis" aria-hidden="true" />
+      </button>
+      {mapMenuOpen ? (
+        <span
+          className="location-map-toolbar__map-menu-panel cruor-ui-panel-surface"
+          role="menu"
+          aria-label="Secondary map tools"
+          onMouseDown={suppressToolbarTextSelection}
+        >
+            <MapToolMenuButton
+              icon="arrows-rotate"
+              label="Refresh from Composer"
+              description="Rebuild the map from the latest Composer regions."
+              disabled={!onRefreshFromComposer}
+              onClick={() => {
+                onRefreshFromComposer?.();
+                closeMapMenu();
+              }}
+            />
+            <MapToolMenuButton
+              icon="boxes-stacked"
+              label="Props"
+              active={showProps}
+              onClick={() => {
+                onToggleProps?.();
+                closeMapMenu();
+              }}
+            />
+            <MapToolMenuButton
+              icon="eraser"
+              label="Reset Edits"
+              description="Clear manual map edits."
+              danger
+              onClick={() => {
+                onResetEdits?.();
+                closeMapMenu();
+              }}
+            />
+        </span>
+      ) : null}
+    </span>,
+    toolbarTarget,
   );
 }
 
@@ -3315,7 +3783,7 @@ function MapTestsModal({ open, testSuite, onClose }) {
           </div>
           <button
             type="button"
-            className="map-tool-button cruor-ui-control-surface cruor-button cruor-button--icon"
+            className="map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary"
             {...getGenericTooltipAttrs(
               "Close Tests",
               "Close the structural test suite.",
@@ -3340,6 +3808,12 @@ export default function CruorMapGeneratorMvp({
   onCommitWorkspace = null,
   onRefreshFromComposer = null,
   embeddedInComposer = false,
+  inlineComposerEditor = false,
+  composerSelectedRegionId = "",
+  previewRegionMarkers = {},
+  onComposerRegionHoverChange = null,
+  onComposerSelectedRegionChange = null,
+  onViewportMetricsChange = null,
   workspaceContext = embeddedInComposer ? "composer-workspace" : "standalone-workspace",
 } = {}) {
   const initialConfig = useMemo(
@@ -3348,8 +3822,11 @@ export default function CruorMapGeneratorMvp({
   );
   const stateFileInputRef = useRef(null);
   const manualEditSnapshotRef = useRef(null);
+  const manualLayoutGeometryRef = useRef(null);
+  const pendingInlineManualCommitRef = useRef(null);
   const [stateStatus, setStateStatus] = useState("");
   const [seed, setSeed] = useState(initialConfig.seed);
+  const [manualLayoutSeed, setManualLayoutSeed] = useState("");
   const [roomCount, setRoomCount] = useState(initialConfig.roomCount);
   const [context, setContext] = useState(initialConfig.context);
   const [mapWidth, setMapWidth] = useState(initialConfig.mapWidth);
@@ -3361,7 +3838,7 @@ export default function CruorMapGeneratorMvp({
   const [gridOpacity, setGridOpacity] = useState(0.72);
   const [crosshatchStyle, setCrosshatchStyle] = useState("classic");
   const [crosshatchOpacity, setCrosshatchOpacity] = useState(0.72);
-  const [selectedRegionId, setSelectedRegionId] = useState("");
+  const [selectedRegionId, setSelectedRegionId] = useState(composerSelectedRegionId || "");
   const [levelView, setLevelView] = useState(LEVEL_VIEW_ALL);
   const [fadeOtherLevels, setFadeOtherLevels] = useState(true);
   const [showGrid, setShowGrid] = useState(true);
@@ -3369,6 +3846,7 @@ export default function CruorMapGeneratorMvp({
   const [showNames, setShowNames] = useState(false);
   const [showRoomBadges, setShowRoomBadges] = useState(true);
   const [showProps, setShowProps] = useState(false);
+  const [inlineViewportControls, setInlineViewportControls] = useState(null);
   const [manualOverrides, setManualOverrides] = useState(() =>
     normalizeManualOverrides(initialManualOverrides || createEmptyManualOverrides()),
   );
@@ -3380,11 +3858,15 @@ export default function CruorMapGeneratorMvp({
   const importedRegions = Array.isArray(initialRequest?.requiredRegions)
     ? initialRequest.requiredRegions
     : [];
+  const manualRoomPositionsActive = Boolean(
+    manualOverrides.roomPositions &&
+      Object.keys(manualOverrides.roomPositions).length > 0,
+  );
 
   const config = useMemo(
     () => ({
       ...initialConfig,
-      seed,
+      seed: manualRoomPositionsActive && manualLayoutSeed ? manualLayoutSeed : seed,
       context,
       roomCount,
       mapWidth,
@@ -3400,6 +3882,8 @@ export default function CruorMapGeneratorMvp({
       initialConfig,
       initialRequest,
       seed,
+      manualLayoutSeed,
+      manualRoomPositionsActive,
       context,
       roomCount,
       mapWidth,
@@ -3409,10 +3893,57 @@ export default function CruorMapGeneratorMvp({
       gridStyle,
     ],
   );
-  const generatedMap = useMemo(
-    () => generateMap(config, manualOverrides),
-    [config, manualOverrides],
+  const lockedManualLayoutActive = manualRoomPositionsActive && Boolean(manualLayoutSeed);
+  const generationManualOverrides = useMemo(() => {
+    const normalized = normalizeManualOverrides(manualOverrides);
+    if (!lockedManualLayoutActive) return normalized;
+    return {
+      ...normalized,
+      roomPositions: {},
+      doorAnchors: {},
+      corridorJunctions: {},
+      corridorWaypoints: {},
+      customConnections: [],
+      deletedConnections: [],
+    };
+  }, [lockedManualLayoutActive, manualOverrides]);
+  const generationConfig = useMemo(() => {
+    if (!lockedManualLayoutActive) return config;
+    const normalized = normalizeManualOverrides(manualOverrides);
+    return {
+      ...config,
+      manualRoomPositions: normalized.roomPositions,
+      manualDoorAnchors: normalized.doorAnchors,
+      manualDoorTypes: normalized.doorTypes,
+      manualStairTransitions: normalized.levels?.stairs || {},
+      manualLevels: normalized.levels,
+      manualMapAccesses: normalized.mapAccesses,
+      manualCorridorJunctions: normalized.corridorJunctions,
+      manualCorridorWaypoints: normalized.corridorWaypoints,
+      manualCustomConnections: normalized.customConnections,
+      manualRoomStyles: normalized.roomStyles,
+      manualDeletedConnections: normalized.deletedConnections,
+    };
+  }, [config, lockedManualLayoutActive, manualOverrides]);
+  const rawGeneratedMap = useMemo(
+    () => generateMap(generationConfig, generationManualOverrides),
+    [generationConfig, generationManualOverrides],
   );
+  const generatedMap = useMemo(() => {
+    if (!lockedManualLayoutActive || !manualLayoutGeometryRef.current) {
+      return rawGeneratedMap;
+    }
+    return buildManualGeometryLockedMap(
+      manualLayoutGeometryRef.current,
+      rawGeneratedMap,
+      manualOverrides,
+    );
+  }, [lockedManualLayoutActive, rawGeneratedMap, manualOverrides]);
+  useEffect(() => {
+    if (!lockedManualLayoutActive && !isManualEditActive) {
+      manualLayoutGeometryRef.current = cloneMapGeometry(rawGeneratedMap);
+    }
+  }, [lockedManualLayoutActive, isManualEditActive, rawGeneratedMap]);
   const pureCaveMap = isPureCaveMap(generatedMap);
   const selectedRegion = useMemo(() => {
     return generatedMap.regions.find((region) => region.id === selectedRegionId) || null;
@@ -3422,6 +3953,65 @@ export default function CruorMapGeneratorMvp({
     [generatedMap],
   );
   const availableLevelsKey = availableLevels.join(":");
+
+  useEffect(() => {
+    if (!inlineComposerEditor) return;
+    const nextSelectedRegionId = composerSelectedRegionId || "";
+    if (nextSelectedRegionId !== selectedRegionId) {
+      setSelectedRegionId(nextSelectedRegionId);
+    }
+  }, [composerSelectedRegionId, inlineComposerEditor, selectedRegionId]);
+
+  useEffect(() => {
+    if (!inlineComposerEditor || isManualEditActive) return;
+
+    setSeed((current) => (current === initialConfig.seed ? current : initialConfig.seed));
+    setRoomCount((current) => (current === initialConfig.roomCount ? current : initialConfig.roomCount));
+    setContext((current) => (current === initialConfig.context ? current : initialConfig.context));
+    setMapWidth((current) => (current === initialConfig.mapWidth ? current : initialConfig.mapWidth));
+    setMapHeight((current) => (current === initialConfig.mapHeight ? current : initialConfig.mapHeight));
+    setVisualStyle((current) => {
+      const next = normalizeVisualStyle(initialConfig.visualStyle);
+      return current === next ? current : next;
+    });
+    setGridStyle((current) => {
+      const next = normalizeGridStyle(initialConfig.gridStyle || "solid");
+      return current === next ? current : next;
+    });
+  }, [
+    initialConfig.context,
+    initialConfig.gridStyle,
+    initialConfig.mapHeight,
+    initialConfig.mapWidth,
+    initialConfig.roomCount,
+    initialConfig.seed,
+    initialConfig.visualStyle,
+    inlineComposerEditor,
+    isManualEditActive,
+  ]);
+
+  useEffect(() => {
+    if (!inlineComposerEditor || isManualEditActive) return;
+
+    const nextManualOverrides = normalizeManualOverrides(initialManualOverrides || createEmptyManualOverrides());
+    const currentManualOverrides = normalizeManualOverrides(manualOverrides);
+    const pendingInlineManualCommit = pendingInlineManualCommitRef.current;
+
+    if (
+      pendingInlineManualCommit &&
+      areManualOverridesEqual(currentManualOverrides, pendingInlineManualCommit) &&
+      !areManualOverridesEqual(nextManualOverrides, pendingInlineManualCommit)
+    ) {
+      return;
+    }
+
+    pendingInlineManualCommitRef.current = null;
+
+    if (areManualOverridesEqual(currentManualOverrides, nextManualOverrides)) return;
+    setManualOverrides(nextManualOverrides);
+    clearManualHistory();
+  }, [initialManualOverrides, inlineComposerEditor, isManualEditActive, manualOverrides]);
+
   const [exportValidation, setExportValidation] = useState({
     passed: false,
     missingSvg: true,
@@ -3533,7 +4123,435 @@ export default function CruorMapGeneratorMvp({
     setStateStatus(status);
   }
 
+  function cloneMapGeometry(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function translateCell(cell, dx, dy) {
+    if (!cell || typeof cell !== "object") return cell;
+    return {
+      ...cell,
+      x: Number(cell.x || 0) + dx,
+      y: Number(cell.y || 0) + dy,
+    };
+  }
+
+  function translatePoint(point, dxPx, dyPx) {
+    if (!point || typeof point !== "object") return point;
+    return {
+      ...point,
+      x: Number(point.x || 0) + dxPx,
+      y: Number(point.y || 0) + dyPx,
+    };
+  }
+
+  function translateSegment(segment, dxPx, dyPx) {
+    if (!segment || typeof segment !== "object") return segment;
+    return {
+      ...segment,
+      ...(Number.isFinite(Number(segment.x1)) ? { x1: Number(segment.x1) + dxPx } : {}),
+      ...(Number.isFinite(Number(segment.y1)) ? { y1: Number(segment.y1) + dyPx } : {}),
+      ...(Number.isFinite(Number(segment.x2)) ? { x2: Number(segment.x2) + dxPx } : {}),
+      ...(Number.isFinite(Number(segment.y2)) ? { y2: Number(segment.y2) + dyPx } : {}),
+      ...(segment.start ? { start: translatePoint(segment.start, dxPx, dyPx) } : {}),
+      ...(segment.end ? { end: translatePoint(segment.end, dxPx, dyPx) } : {}),
+    };
+  }
+
+  function translateLineLike(line, dxPx, dyPx) {
+    if (!line || typeof line !== "object") return line;
+    return {
+      ...line,
+      ...(Number.isFinite(Number(line.x1)) ? { x1: Number(line.x1) + dxPx } : {}),
+      ...(Number.isFinite(Number(line.y1)) ? { y1: Number(line.y1) + dyPx } : {}),
+      ...(Number.isFinite(Number(line.x2)) ? { x2: Number(line.x2) + dxPx } : {}),
+      ...(Number.isFinite(Number(line.y2)) ? { y2: Number(line.y2) + dyPx } : {}),
+    };
+  }
+
+  function translateFloorExtension(extension, dxPx, dyPx) {
+    if (!extension || typeof extension !== "object") return extension;
+    return {
+      ...extension,
+      ...(extension.inner ? { inner: translatePoint(extension.inner, dxPx, dyPx) } : {}),
+      ...(extension.outer ? { outer: translatePoint(extension.outer, dxPx, dyPx) } : {}),
+      ...(Array.isArray(extension.points)
+        ? { points: extension.points.map((point) => translatePoint(point, dxPx, dyPx)) }
+        : {}),
+      // Drop cached SVG path after a geometric move. Renderers can rebuild organic access
+      // floors from the translated wall gap/anchor instead of reusing a stale path.
+      ...(extension.path ? { path: "" } : {}),
+    };
+  }
+
+  function translateAnchor(anchor, dx, dy, gridSize) {
+    if (!anchor || typeof anchor !== "object") return anchor;
+    const dxPx = dx * gridSize;
+    const dyPx = dy * gridSize;
+    return {
+      ...anchor,
+      ...(anchor.cell ? { cell: translateCell(anchor.cell, dx, dy) } : {}),
+      ...(anchor.insideCell ? { insideCell: translateCell(anchor.insideCell, dx, dy) } : {}),
+      ...(anchor.outsideCell ? { outsideCell: translateCell(anchor.outsideCell, dx, dy) } : {}),
+      ...(anchor.boundaryCell ? { boundaryCell: translateCell(anchor.boundaryCell, dx, dy) } : {}),
+      ...(anchor.floorCell ? { floorCell: translateCell(anchor.floorCell, dx, dy) } : {}),
+      ...(anchor.point ? { point: translatePoint(anchor.point, dxPx, dyPx) } : {}),
+      ...(anchor.center ? { center: translatePoint(anchor.center, dxPx, dyPx) } : {}),
+      ...(anchor.segment ? { segment: translateSegment(anchor.segment, dxPx, dyPx) } : {}),
+      ...(Number.isFinite(Number(anchor.x)) ? { x: Number(anchor.x) + dxPx } : {}),
+      ...(Number.isFinite(Number(anchor.y)) ? { y: Number(anchor.y) + dyPx } : {}),
+    };
+  }
+
+  function translateRegionGeometry(region, targetPosition, gridSize) {
+    if (!region?.cellRect || !targetPosition) return region;
+    const nextX = Math.round(Number(targetPosition.x));
+    const nextY = Math.round(Number(targetPosition.y));
+    const dx = nextX - Math.round(Number(region.cellRect.x));
+    const dy = nextY - Math.round(Number(region.cellRect.y));
+    if (dx === 0 && dy === 0) return region;
+    const dxPx = dx * gridSize;
+    const dyPx = dy * gridSize;
+    const cellRect = {
+      ...region.cellRect,
+      x: Number(region.cellRect.x) + dx,
+      y: Number(region.cellRect.y) + dy,
+    };
+    return {
+      ...region,
+      cellRect,
+      floorCells: Array.isArray(region.floorCells)
+        ? region.floorCells.map((cell) => translateCell(cell, dx, dy))
+        : region.floorCells,
+      wallSegments: Array.isArray(region.wallSegments)
+        ? region.wallSegments.map((segment) => translateSegment(segment, dxPx, dyPx))
+        : region.wallSegments,
+      doorAnchors: Array.isArray(region.doorAnchors)
+        ? region.doorAnchors.map((anchor) => translateAnchor(anchor, dx, dy, gridSize))
+        : region.doorAnchors,
+      labelPoint: translatePoint(region.labelPoint, dxPx, dyPx),
+    };
+  }
+
+  function getRegionDeltaMap(baseRegions, movedRegions, gridSize) {
+    const deltas = new Map();
+    const movedById = new Map((movedRegions || []).map((region) => [region.id, region]));
+    (baseRegions || []).forEach((region) => {
+      const moved = movedById.get(region.id);
+      if (!region?.cellRect || !moved?.cellRect) return;
+      const dx = Number(moved.cellRect.x) - Number(region.cellRect.x);
+      const dy = Number(moved.cellRect.y) - Number(region.cellRect.y);
+      deltas.set(region.id, { dx, dy, dxPx: dx * gridSize, dyPx: dy * gridSize });
+    });
+    return deltas;
+  }
+
+  function translateMapAccess(access, deltas, gridSize) {
+    if (!access || typeof access !== "object") return access;
+    const delta = deltas.get(access.regionId) || deltas.get(access.sourceRegionId);
+    if (!delta || (delta.dx === 0 && delta.dy === 0)) return access;
+    return {
+      ...access,
+      ...(access.anchor ? { anchor: translateAnchor(access.anchor, delta.dx, delta.dy, gridSize) } : {}),
+      ...(access.displayAnchor ? { displayAnchor: translateAnchor(access.displayAnchor, delta.dx, delta.dy, gridSize) } : {}),
+      ...(access.cell ? { cell: translateCell(access.cell, delta.dx, delta.dy) } : {}),
+      ...(access.point ? { point: translatePoint(access.point, delta.dxPx, delta.dyPx) } : {}),
+      ...(access.displayPoint ? { displayPoint: translatePoint(access.displayPoint, delta.dxPx, delta.dyPx) } : {}),
+      ...(access.start ? { start: translatePoint(access.start, delta.dxPx, delta.dyPx) } : {}),
+      ...(access.end ? { end: translatePoint(access.end, delta.dxPx, delta.dyPx) } : {}),
+      ...(access.wallGap ? { wallGap: translateLineLike(access.wallGap, delta.dxPx, delta.dyPx) } : {}),
+      ...(access.displayWallGap ? { displayWallGap: translateLineLike(access.displayWallGap, delta.dxPx, delta.dyPx) } : {}),
+      ...(access.floorExtension ? { floorExtension: translateFloorExtension(access.floorExtension, delta.dxPx, delta.dyPx) } : {}),
+      ...(Number.isFinite(Number(access.x)) ? { x: Number(access.x) + delta.dxPx } : {}),
+      ...(Number.isFinite(Number(access.y)) ? { y: Number(access.y) + delta.dyPx } : {}),
+    };
+  }
+
+  function getAnchorPointForSnap(anchor, gridSize) {
+    if (!anchor) return null;
+    if (anchor.point) return anchor.point;
+    if (anchor.center) return anchor.center;
+    if (anchor.cell) {
+      return {
+        x: (Number(anchor.cell.x) + 0.5) * gridSize,
+        y: (Number(anchor.cell.y) + 0.5) * gridSize,
+      };
+    }
+    try {
+      return getAnchorHandlePoint(anchor, gridSize);
+    } catch (error) {
+      void error;
+      return null;
+    }
+  }
+
+  function getAnchorWallSegment(anchor, gridSize) {
+    if (!anchor?.cell || !anchor.side) return null;
+    const x = Number(anchor.cell.x) * gridSize;
+    const y = Number(anchor.cell.y) * gridSize;
+    if (anchor.side === "north") {
+      return { x1: x, y1: y, x2: x + gridSize, y2: y };
+    }
+    if (anchor.side === "south") {
+      return { x1: x, y1: y + gridSize, x2: x + gridSize, y2: y + gridSize };
+    }
+    if (anchor.side === "west") {
+      return { x1: x, y1: y, x2: x, y2: y + gridSize };
+    }
+    if (anchor.side === "east") {
+      return { x1: x + gridSize, y1: y, x2: x + gridSize, y2: y + gridSize };
+    }
+    return null;
+  }
+
+  function getPointToSegmentDistanceSquared(point, segment) {
+    if (!point || !segment) return Number.POSITIVE_INFINITY;
+    const vx = segment.x2 - segment.x1;
+    const vy = segment.y2 - segment.y1;
+    const lengthSquared = vx * vx + vy * vy;
+    if (lengthSquared <= 0) {
+      const dx = point.x - segment.x1;
+      const dy = point.y - segment.y1;
+      return dx * dx + dy * dy;
+    }
+    const rawT =
+      ((point.x - segment.x1) * vx + (point.y - segment.y1) * vy) /
+      lengthSquared;
+    const t = Math.max(0, Math.min(1, rawT));
+    const closest = {
+      x: segment.x1 + vx * t,
+      y: segment.y1 + vy * t,
+    };
+    const dx = point.x - closest.x;
+    const dy = point.y - closest.y;
+    return dx * dx + dy * dy;
+  }
+
+  function scoreManualDoorAnchor(anchor, point, gridSize) {
+    const segment = getAnchorWallSegment(anchor, gridSize);
+    const segmentScore = getPointToSegmentDistanceSquared(point, segment);
+    const handlePoint = getAnchorHandlePoint(anchor, gridSize);
+    const handleDx = handlePoint.x - point.x;
+    const handleDy = handlePoint.y - point.y;
+    const handleScore = handleDx * handleDx + handleDy * handleDy;
+    return segmentScore * 12 + handleScore * 0.08;
+  }
+
+  function getClosestRawBoundaryAnchorCandidate(region, point, gridSize) {
+    if (!region || !point) return null;
+    const boundary = getBoundaryCells(region);
+    if (boundary.length === 0) return null;
+    return boundary
+      .map((anchor) => ({
+        anchor,
+        score: scoreManualDoorAnchor(anchor, point, gridSize),
+      }))
+      .sort((a, b) => a.score - b.score)[0];
+  }
+
+  function getClosestRawBoundaryAnchorToPoint(region, point, gridSize) {
+    return getClosestRawBoundaryAnchorCandidate(region, point, gridSize)?.anchor || null;
+  }
+
+  function getBoundaryAnchorWithSameSideAndCell(region, anchor) {
+    if (!region || !anchor?.side || !anchor.cell) return null;
+    return (
+      getBoundaryCells(region).find(
+        (candidate) =>
+          candidate.side === anchor.side &&
+          candidate.cell?.x === anchor.cell.x &&
+          candidate.cell?.y === anchor.cell.y,
+      ) || null
+    );
+  }
+
+  function getManualDoorDragAnchor(region, point, gridSize) {
+    return getClosestRawBoundaryAnchorToPoint(region, point, gridSize);
+  }
+
+  function getGraphEdgeEndpointRegionId(edge, endpoint) {
+    if (!edge || !endpoint) return null;
+    return endpoint === "from" ? edge.from : edge.to;
+  }
+
+  function normalizeManualDoorAnchorsForLockedRegions(
+    doorAnchors,
+    graph,
+    regions,
+    deltas,
+    gridSize,
+  ) {
+    const normalizedAnchors = {};
+    const edgeById = new Map((graph || []).map((edge) => [edge.id, edge]));
+    const regionById = new Map((regions || []).map((region) => [region.id, region]));
+    Object.entries(doorAnchors || {}).forEach(([key, anchor]) => {
+      const separatorIndex = key.lastIndexOf(":");
+      if (separatorIndex <= 0) {
+        normalizedAnchors[key] = anchor;
+        return;
+      }
+      const corridorId = key.slice(0, separatorIndex);
+      const endpoint = key.slice(separatorIndex + 1);
+      const edge = edgeById.get(corridorId);
+      const regionId = getGraphEdgeEndpointRegionId(edge, endpoint);
+      const region = regionById.get(regionId);
+      if (!region || !anchor) {
+        normalizedAnchors[key] = anchor;
+        return;
+      }
+      const delta = deltas.get(region.id);
+      const translatedAnchor = delta
+        ? translateAnchor(anchor, delta.dx, delta.dy, gridSize)
+        : anchor;
+      const exactAnchor = getBoundaryAnchorWithSameSideAndCell(
+        region,
+        translatedAnchor,
+      );
+      if (exactAnchor) {
+        normalizedAnchors[key] = serializeManualAnchor(exactAnchor);
+        return;
+      }
+      const translatedPoint = getAnchorPointForSnap(translatedAnchor, gridSize);
+      const translatedCandidate = getClosestRawBoundaryAnchorCandidate(
+        region,
+        translatedPoint,
+        gridSize,
+      );
+      normalizedAnchors[key] = serializeManualAnchor(
+        translatedCandidate?.anchor || translatedAnchor,
+      );
+    });
+    return normalizedAnchors;
+  }
+
+  function buildManualGeometryLockedMap(baseMap, generatedCandidate, overrides) {
+    const normalized = normalizeManualOverrides(overrides);
+    const positions = normalized.roomPositions || {};
+    if (!baseMap?.regions?.length || Object.keys(positions).length === 0) {
+      return generatedCandidate;
+    }
+    const gridSize = Number(baseMap.config?.gridSize || generatedCandidate.config?.gridSize || 20);
+    const movedRegions = baseMap.regions.map((region) =>
+      translateRegionGeometry(region, positions[region.id], gridSize),
+    );
+    const deltas = getRegionDeltaMap(baseMap.regions, movedRegions, gridSize);
+    const routingGraph = generatedCandidate.graph || baseMap.graph || [];
+    const normalizedDoorAnchors = normalizeManualDoorAnchorsForLockedRegions(
+      normalized.doorAnchors || {},
+      routingGraph,
+      movedRegions,
+      deltas,
+      gridSize,
+    );
+    const routingConfig = {
+      ...(generatedCandidate.config || baseMap.config || {}),
+      manualRoomPositions: positions,
+      manualDoorAnchors: normalizedDoorAnchors,
+      manualDoorTypes: normalized.doorTypes || {},
+      manualStairTransitions: normalized.levels?.stairs || {},
+      manualLevels: normalized.levels || {},
+      manualMapAccesses: normalized.mapAccesses || {},
+      manualCorridorJunctions: normalized.corridorJunctions || {},
+      manualCorridorWaypoints: normalized.corridorWaypoints || {},
+      manualCustomConnections: normalized.customConnections || [],
+      manualDeletedConnections: normalized.deletedConnections || [],
+      manualRoomStyles: normalized.roomStyles || {},
+    };
+    const reroutedCorridors = routeCorridors(
+      routingConfig,
+      movedRegions,
+      routingGraph,
+    );
+    const leveledMap = applyLevelMetadata(
+      movedRegions,
+      reroutedCorridors,
+      routingConfig,
+    );
+    const regions = leveledMap.regions || movedRegions;
+    const corridors = leveledMap.corridors || reroutedCorridors;
+    const rebuiltDungeonMask = buildDungeonMask(
+      regions,
+      corridors,
+      gridSize,
+    );
+    const baseMapAccesses =
+      baseMap.dungeonMask?.mapAccesses || baseMap.mapAccesses || [];
+    const mapAccesses = baseMapAccesses.map((access) =>
+      translateMapAccess(access, deltas, gridSize),
+    );
+    const dungeonMask = {
+      ...rebuiltDungeonMask,
+      mapAccesses,
+    };
+    return {
+      ...generatedCandidate,
+      config: routingConfig,
+      regions,
+      corridors,
+      dungeonMask,
+      mapAccesses,
+      props: generatedCandidate.props,
+      finalGeometry: generatedCandidate.finalGeometry,
+    };
+  }
+
+  function lockManualLayoutSeed() {
+    if (manualLayoutSeed) return;
+    const candidateSeed =
+      generatedMap.layoutCandidate?.seed ||
+      generatedMap.config?.layoutCandidateSeed ||
+      generatedMap.config?.seed ||
+      seed;
+    if (candidateSeed && candidateSeed !== manualLayoutSeed) {
+      setManualLayoutSeed(String(candidateSeed));
+    }
+  }
+
+  function getFrozenRoomPositions(extraPositions = {}) {
+    const frozenPositions = {};
+    (generatedMap.regions || []).forEach((region) => {
+      if (!region?.id || !region.cellRect) return;
+      frozenPositions[region.id] = {
+        x: Math.round(region.cellRect.x),
+        y: Math.round(region.cellRect.y),
+      };
+    });
+    return {
+      ...frozenPositions,
+      ...extraPositions,
+    };
+  }
+
+  function getFrozenRoomStyles(existingStyles = {}) {
+    const frozenStyles = { ...(existingStyles || {}) };
+    (generatedMap.regions || []).forEach((region) => {
+      if (!region?.id) return;
+      const currentStyle = frozenStyles[region.id] || {};
+      frozenStyles[region.id] = {
+        surfaceKind: currentStyle.surfaceKind || region.surfaceKind || "structure",
+        shape: currentStyle.shape || inferGeneratedRoomShape(region),
+        roomType: currentStyle.roomType || inferGeneratedRoomType(region),
+        notch: Boolean(currentStyle.notch),
+        ruined: Boolean(currentStyle.ruined),
+        ...(currentStyle.sizePreset ? { sizePreset: currentStyle.sizePreset } : {}),
+      };
+    });
+    return frozenStyles;
+  }
+
+  function freezeCurrentRoomLayout(overrides, extraPositions = {}) {
+    return {
+      ...overrides,
+      roomPositions: getFrozenRoomPositions(extraPositions),
+      roomStyles: getFrozenRoomStyles(overrides.roomStyles),
+    };
+  }
+
   function beginManualEdit() {
+    if (!manualLayoutGeometryRef.current) {
+      manualLayoutGeometryRef.current = cloneMapGeometry(generatedMap);
+    }
+    lockManualLayoutSeed();
     setIsManualEditActive(true);
     manualEditSnapshotRef.current = cloneManualOverrides(manualOverrides);
   }
@@ -3543,6 +4561,7 @@ export default function CruorMapGeneratorMvp({
     const snapshot = manualEditSnapshotRef.current;
     manualEditSnapshotRef.current = null;
     if (!snapshot || areManualOverridesEqual(snapshot, manualOverrides)) return;
+    pendingInlineManualCommitRef.current = cloneManualOverrides(manualOverrides);
     pushManualHistorySnapshot(snapshot);
     setStateStatus("");
   }
@@ -3610,6 +4629,8 @@ export default function CruorMapGeneratorMvp({
       "next-seed",
     ).toString(36);
     setSeed(`cruor-${nextSeed}`);
+    setManualLayoutSeed("");
+    manualLayoutGeometryRef.current = null;
     setManualOverrides(resetManualOverrides());
     clearManualHistory();
     setStateStatus("");
@@ -3647,6 +4668,8 @@ export default function CruorMapGeneratorMvp({
         const payload = parseMapStatePayload(String(reader.result || ""));
         const importedConfig = payload.config || {};
         setSeed(String(importedConfig.seed || DEFAULT_CONFIG.seed));
+        setManualLayoutSeed("");
+        manualLayoutGeometryRef.current = null;
         setContext(String(importedConfig.context || DEFAULT_CONFIG.context));
         setMapWidth(
           normalizeMapDimension(
@@ -3741,13 +4764,11 @@ export default function CruorMapGeneratorMvp({
       occupiedCells.has(cellKey(cell.x + dx, cell.y + dy)),
     );
     if (overlaps) return;
-    setManualOverrides((current) => ({
-      ...current,
-      roomPositions: {
-        ...current.roomPositions,
+    setManualOverrides((current) =>
+      freezeCurrentRoomLayout(current, {
         [regionId]: { x: candidate.x, y: candidate.y },
-      },
-    }));
+      }),
+    );
   }
 
   function areSerializedAnchorsEqual(a, b) {
@@ -3792,39 +4813,45 @@ export default function CruorMapGeneratorMvp({
           areSerializedAnchorsEqual(current.doorAnchors?.[toKey], nextToAnchor)
         )
           return current;
-        return {
+        return freezeCurrentRoomLayout({
           ...current,
           doorAnchors: {
             ...current.doorAnchors,
             [fromKey]: nextFromAnchor,
             [toKey]: nextToAnchor,
           },
-        };
+        });
       });
       return;
     }
     const regionId = endpoint === "from" ? corridor.from : corridor.to;
     const region = generatedMap.regions.find((item) => item.id === regionId);
     if (!region) return;
-    const anchor = getClosestBoundaryAnchorToPoint(
-      region,
-      point,
-      generatedMap.config.gridSize,
-      generatedMap,
-    );
+    const anchor =
+      getManualDoorDragAnchor(
+        region,
+        point,
+        generatedMap.config.gridSize,
+      ) ||
+      getClosestBoundaryAnchorToPoint(
+        region,
+        point,
+        generatedMap.config.gridSize,
+        generatedMap,
+      );
     if (!anchor) return;
     const nextAnchor = serializeManualAnchor(anchor);
     setManualOverrides((current) => {
       const key = corridorEndpointKey(corridorId, endpoint);
       if (areSerializedAnchorsEqual(current.doorAnchors?.[key], nextAnchor))
         return current;
-      return {
+      return freezeCurrentRoomLayout({
         ...current,
         doorAnchors: {
           ...current.doorAnchors,
           [key]: nextAnchor,
         },
-      };
+      });
     });
   }
 
@@ -3867,13 +4894,13 @@ export default function CruorMapGeneratorMvp({
       } else {
         nextWaypoints = [cell];
       }
-      return {
+      return freezeCurrentRoomLayout({
         ...current,
         corridorWaypoints: {
           ...currentWaypoints,
           [corridorId]: nextWaypoints.filter(isValidPoint),
         },
-      };
+      });
     });
   }
 
@@ -3909,13 +4936,13 @@ export default function CruorMapGeneratorMvp({
       );
       const nextWaypoints = [...currentManual];
       nextWaypoints.splice(safeIndex, 0, cell);
-      return {
+      return freezeCurrentRoomLayout({
         ...current,
         corridorWaypoints: {
           ...currentWaypoints,
           [corridorId]: nextWaypoints.filter(isValidPoint),
         },
-      };
+      });
     });
   }
 
@@ -3931,13 +4958,13 @@ export default function CruorMapGeneratorMvp({
       const nextWaypoints = currentManual.filter(
         (_, index) => index !== safeIndex,
       );
-      return {
+      return freezeCurrentRoomLayout({
         ...current,
         corridorWaypoints: {
           ...currentWaypoints,
           [corridorId]: nextWaypoints,
         },
-      };
+      });
     });
   }
 
@@ -3972,7 +4999,7 @@ export default function CruorMapGeneratorMvp({
       delete levels.corridors[corridorId];
       const corridorWaypoints = { ...(normalized.corridorWaypoints || {}) };
       delete corridorWaypoints[corridorId];
-      return {
+      return freezeCurrentRoomLayout({
         ...normalized,
         customConnections,
         doorAnchors,
@@ -3983,7 +5010,7 @@ export default function CruorMapGeneratorMvp({
         deletedConnections: deletedConnections.includes(corridorId)
           ? deletedConnections
           : [...deletedConnections, corridorId],
-      };
+      });
     });
   }
 
@@ -4198,7 +5225,7 @@ export default function CruorMapGeneratorMvp({
       const deletedConnections = Array.isArray(normalized.deletedConnections)
         ? normalized.deletedConnections.filter((id) => id !== edgeId)
         : [];
-      return {
+      return freezeCurrentRoomLayout({
         ...current,
         deletedConnections,
         manualConnectionSequence: nextSequence,
@@ -4217,7 +5244,7 @@ export default function CruorMapGeneratorMvp({
           [corridorEndpointKey(edgeId, "from")]: fromAnchor,
           [corridorEndpointKey(edgeId, "to")]: toAnchor,
         },
-      };
+      });
     });
   }
 
@@ -4261,6 +5288,31 @@ export default function CruorMapGeneratorMvp({
     });
   }
 
+  function selectMapRegion(regionId) {
+    const nextRegionId = regionId || "";
+    setSelectedRegionId(nextRegionId);
+    onComposerSelectedRegionChange?.(nextRegionId);
+  }
+
+  useEffect(() => {
+    if (!inlineComposerEditor || typeof onCommitWorkspace !== "function" || isManualEditActive) return;
+    onCommitWorkspace(createWorkspaceStatePayload());
+  }, [
+    inlineComposerEditor,
+    onCommitWorkspace,
+    manualOverrides,
+    showEditor,
+    showNames,
+    showRoomBadges,
+    showProps,
+    gridStyle,
+    visualStyle,
+    levelView,
+    fadeOtherLevels,
+    generatedMap,
+    isManualEditActive,
+  ]);
+
   const mapViewport = (
     <MapViewport
       generatedMap={generatedMap}
@@ -4270,7 +5322,9 @@ export default function CruorMapGeneratorMvp({
       crosshatchStyle={crosshatchStyle}
       crosshatchOpacity={crosshatchOpacity}
       selectedRegionId={selectedRegionId}
-      onSelectedRegionChange={setSelectedRegionId}
+      onSelectedRegionChange={selectMapRegion}
+      onRegionHoverChange={onComposerRegionHoverChange}
+      previewRegionMarkers={previewRegionMarkers}
       showEditor={showEditor}
       showNames={showNames}
       showRoomBadges={showRoomBadges}
@@ -4310,12 +5364,14 @@ export default function CruorMapGeneratorMvp({
       onToggleFadeOtherLevels={() =>
         setFadeOtherLevels((value) => !value)
       }
-      onResetEdits={() =>
+      onResetEdits={() => {
+        setManualLayoutSeed("");
+        manualLayoutGeometryRef.current = null;
         updateManualOverridesWithHistory(
           resetManualOverrides(),
           "Edits reset.",
-        )
-      }
+        );
+      }}
       onExportSvg={downloadSvg}
       onExportGmSvg={downloadGmSvg}
       onExportPlayerSvg={downloadPlayerSvg}
@@ -4323,12 +5379,67 @@ export default function CruorMapGeneratorMvp({
       onExportState={exportState}
       onImportState={requestImportState}
       viewResetKey={`${seed}:${roomCount}:${context}:${mapWidth}:${mapHeight}`}
-      embeddedPreview={false}
-      showViewportChrome={!embeddedInComposer}
+      embeddedPreview={inlineComposerEditor}
+      allowEmbeddedInteractions={inlineComposerEditor}
+      showViewportChrome={!embeddedInComposer && !inlineComposerEditor}
       enableViewportInteractions={true}
-      viewportMode={workspaceContext}
+      viewportMode={inlineComposerEditor ? "composer-inline-editor" : workspaceContext}
+      viewportClassName={inlineComposerEditor ? "location-map-inline-editor-viewport" : ""}
+      onViewportMetricsChange={onViewportMetricsChange}
+      onViewportControlsChange={inlineComposerEditor ? setInlineViewportControls : null}
     />
   );
+
+  if (inlineComposerEditor) {
+    return (
+      <div
+        className="cruor-map-inline-editor"
+        data-map-context="composer-inline-editor"
+        data-map-inspector-collapsed="true"
+        onContextMenu={(event) => event.preventDefault()}
+      >
+        <InlineMapEditorToolbar
+          showGrid={showGrid}
+          showNames={showNames}
+          showRoomBadges={showRoomBadges}
+          showProps={showProps}
+          manualHistory={manualHistory}
+          viewportControls={inlineViewportControls}
+          visualStyle={visualStyle}
+          gridStyle={gridStyle}
+          gridOpacity={gridOpacity}
+          crosshatchStyle={crosshatchStyle}
+          crosshatchOpacity={crosshatchOpacity}
+          onRefreshFromComposer={onRefreshFromComposer}
+          onUndo={undoManualEdit}
+          onRedo={redoManualEdit}
+          onToggleGrid={toggleGridVisibility}
+          onToggleRoomBadges={() => setShowRoomBadges((value) => !value)}
+          onToggleNames={() => setShowNames((value) => !value)}
+          onToggleProps={() => setShowProps((value) => !value)}
+          onVisualStyleChange={(value) => setVisualStyle(normalizeVisualStyle(value))}
+          onGridStyleChange={setGridRenderingStyle}
+          onGridOpacityChange={setGridOpacity}
+          onCrosshatchStyleChange={(value) => setCrosshatchStyle(value === "none" ? "none" : "classic")}
+          onCrosshatchOpacityChange={setCrosshatchOpacity}
+          onResetEdits={() => {
+            setManualLayoutSeed("");
+            manualLayoutGeometryRef.current = null;
+            updateManualOverridesWithHistory(
+              resetManualOverrides(),
+              "Edits reset.",
+            );
+          }}
+        />
+        {mapViewport}
+        <MapTestsModal
+          open={testsModalOpen}
+          testSuite={testSuite}
+          onClose={() => setTestsModalOpen(false)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -4425,10 +5536,14 @@ export default function CruorMapGeneratorMvp({
             label="Reset Edits"
             visibility="advanced"
             onClick={() =>
-              updateManualOverridesWithHistory(
-                resetManualOverrides(),
-                "Edits reset.",
-              )
+              {
+                setManualLayoutSeed("");
+                manualLayoutGeometryRef.current = null;
+                updateManualOverridesWithHistory(
+                  resetManualOverrides(),
+                  "Edits reset.",
+                );
+              }
             }
           />
           <MapToolButton
@@ -4618,6 +5733,8 @@ export default function CruorMapGeneratorMvp({
                   value={seed}
                   onChange={(event) => {
                     setSeed(event.target.value);
+                    setManualLayoutSeed("");
+                    manualLayoutGeometryRef.current = null;
                     setManualOverrides(resetManualOverrides());
                     clearManualHistory();
                   }}
@@ -4638,6 +5755,8 @@ export default function CruorMapGeneratorMvp({
                     setRoomCount(
                       normalizeRoomCount(event.target.value, roomCount),
                     );
+                    setManualLayoutSeed("");
+                    manualLayoutGeometryRef.current = null;
                     setManualOverrides(resetManualOverrides());
                     clearManualHistory();
                   }}
@@ -4696,6 +5815,8 @@ export default function CruorMapGeneratorMvp({
                 options={["Crypt", "Chapel", "Cave", "Mine", "Noble House", "Ruins"]}
                 onChange={(value) => {
                   setContext(value);
+                  setManualLayoutSeed("");
+                  manualLayoutGeometryRef.current = null;
                   setManualOverrides(resetManualOverrides());
                   clearManualHistory();
                 }}

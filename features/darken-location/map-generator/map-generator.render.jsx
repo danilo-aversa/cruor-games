@@ -7255,12 +7255,69 @@ export function renderProps(props, generatedMap = null) {
   );
 }
 
+function renderRoomBadgeFeatureMarkers(region, markers = []) {
+  if (!Array.isArray(markers) || !markers.length || !region?.labelPoint) return null;
+
+  const visibleMarkers = markers.slice(0, 3);
+  const size = 13;
+  const gap = 2;
+  const startX = region.labelPoint.x + 19;
+  const startY = region.labelPoint.y - 18;
+
+  return (
+    <g className="room-number-feature-markers" aria-hidden="true">
+      {visibleMarkers.map((marker, markerIndex) => {
+        const iconClassName = `fa-solid ${marker?.icon || "fa-diamond"}`;
+        const markerTitle = marker?.fullLabel || marker?.label || marker?.slotId || "Assigned feature";
+        return (
+          <g
+            className={`room-number-feature-marker room-number-feature-marker--${marker.slotId || "slot"}`}
+            key={`${region.id}-badge-marker-${marker.slotId || markerIndex}`}
+            transform={`translate(${startX + markerIndex * (size + gap)} ${startY})`}
+          >
+            <title>{markerTitle}</title>
+            <rect
+              className="room-number-feature-marker__back"
+              x="0"
+              y="0"
+              width={size}
+              height={size}
+              fill="#efe4ca"
+              stroke="#1d1915"
+              strokeWidth="1.2"
+            />
+            <foreignObject x="0" y="0" width={size} height={size}>
+              <span
+                className="room-number-feature-marker__icon"
+                style={{
+                  alignItems: "center",
+                  color: "#1d1915",
+                  display: "flex",
+                  fontSize: "8px",
+                  height: "100%",
+                  justifyContent: "center",
+                  lineHeight: 1,
+                  width: "100%",
+                }}
+              >
+                <i className={iconClassName} aria-hidden="true" />
+              </span>
+            </foreignObject>
+          </g>
+        );
+      })}
+    </g>
+  );
+}
+
 export function renderLabels(generatedMap, options = {}) {
   const showBadges = options.showBadges !== false;
+  const regionMarkers = options.regionMarkers || {};
   return (
     <g className="labels">
       {generatedMap.regions.map((region) => {
         const formattedNumber = String(region.number).padStart(2, "0");
+        const markers = getPreviewRegionMarkerList(regionMarkers, region);
         return (
           <g key={`label-${region.id}`}>
             {showBadges ? (
@@ -7281,6 +7338,7 @@ export function renderLabels(generatedMap, options = {}) {
                 >
                   {formattedNumber}
                 </text>
+                {renderRoomBadgeFeatureMarkers(region, markers)}
               </>
             ) : null}
             {options.showNames && (
@@ -8581,6 +8639,7 @@ export function MapSvg({
             renderLabels(fadedMap, {
               showBadges: showEditor && showRoomBadges,
               showNames,
+              regionMarkers: previewRoomHotspots?.regionMarkers || {},
             })}
         </g>
       )}
@@ -8591,6 +8650,7 @@ export function MapSvg({
           renderLabels(activeMap, {
             showBadges: showEditor && showRoomBadges,
             showNames,
+            regionMarkers: previewRoomHotspots?.regionMarkers || {},
           })}
       </g>
       {!showEditor && renderPreviewRoomHotspots(activeEditorMap, previewRoomHotspots)}

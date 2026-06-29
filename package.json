@@ -1,7 +1,7 @@
 {
   "name": "cruor-games",
   "private": true,
-  "version": "12.20.3a",
+  "version": "12.21.0a",
   "type": "module",
   "scripts": {
     "dev": "vite",

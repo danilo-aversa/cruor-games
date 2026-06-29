@@ -38,10 +38,12 @@ import {
 } from "./model/location-composer-draft.js";
 import {
   createLocationPreviewModel,
-  getLocationPreviewResetKey,
 } from "./model/location-composer-preview.js";
 import { getGeneratedRoomForRegion } from "./model/location-composer-map-preview.js";
-import { normalizeManualOverrides } from "../map-generator/map-generator.state.js";
+import {
+  areManualOverridesEqual,
+  normalizeManualOverrides,
+} from "../map-generator/map-generator.state.js";
 import { LocationBriefPanel } from "./components/LocationBriefPanel.jsx";
 import { LocationDraftControls } from "./components/LocationDraftControls.jsx";
 import { LocationComponentPickerModal } from "./components/LocationComponentPickerModal.jsx";
@@ -57,8 +59,7 @@ import {
   getClipboardStatusMessage,
   getCompilePreview,
 } from "./model/location-composer-output.js";
-import { getNextMissingRoomSlot, getSelectedRoomProgramEntry } from "./model/location-room-program.js";
-import { CruorMapGeneratorMvp } from "../map-generator/map-generator.page.jsx";
+import { getNextMissingRoomSlot, getRoomProgramEntries, getSelectedRoomProgramEntry } from "./model/location-room-program.js";
 import {
   createLocationRegionsFromDungeonBrief,
   createThemeDungeonBriefCandidatesFromDarkenLocationSnapshot,
@@ -305,8 +306,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   const [savedDraftFingerprint, setSavedDraftFingerprint] = useState("");
   const [builderMode, setBuilderMode] = useState("theme");
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [isMapEditing, setIsMapEditing] = useState(false);
-  const [mapWorkspaceRevision, setMapWorkspaceRevision] = useState(0);
   const [exportCopyStatus, setExportCopyStatus] = useState("");
   const draftStatusTimeoutRef = useRef(null);
   const exportCopyStatusTimeoutRef = useRef(null);
@@ -330,7 +329,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   );
   const draftFingerprint = useMemo(() => createDraftFingerprint(state), [state]);
   const hasUnsavedChanges = Boolean(savedDraftFingerprint) && draftFingerprint !== savedDraftFingerprint;
-  const previewResetKey = useMemo(() => getLocationPreviewResetKey(mapRequest, digest, state), [digest, mapRequest, state]);
   const mapSourceKey = useMemo(() => createLocationMapSourceKey(mapRequest), [mapRequest]);
   const previousMapSourceKeyRef = useRef(mapSourceKey);
 
@@ -467,7 +465,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     });
     setBuilderMode("theme");
     setDrawerOpen(false);
-    setIsMapEditing(false);
     setTransientDraftStatus("Place generated");
   }, [setTransientDraftStatus]);
 
@@ -479,7 +476,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       mapManualOverrides: null,
     }));
     setDrawerOpen(false);
-    setIsMapEditing(false);
   }, []);
 
   const addScratchRoom = useCallback(() => {
@@ -491,7 +487,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     }));
     setBuilderMode("scratch");
     setDrawerOpen(false);
-    setIsMapEditing(false);
     setTransientDraftStatus("Room added");
   }, [setTransientDraftStatus]);
 
@@ -504,7 +499,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     }));
     setBuilderMode("scratch");
     setDrawerOpen(false);
-    setIsMapEditing(false);
     setTransientDraftStatus("Room removed");
   }, [setTransientDraftStatus]);
 
@@ -517,7 +511,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     }));
     setBuilderMode("scratch");
     setDrawerOpen(false);
-    setIsMapEditing(false);
     setTransientDraftStatus("Room regenerated");
   }, [setTransientDraftStatus]);
 
@@ -532,7 +525,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
         : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
     }));
     setDrawerOpen(false);
-    setIsMapEditing(false);
   }, []);
 
   const selectRoomTarget = useCallback((regionId) => {
@@ -545,7 +537,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
         : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
     }));
     setDrawerOpen(false);
-    setIsMapEditing(false);
   }, []);
 
   const updateScratchRoom = useCallback((regionId, updates) => {
@@ -575,7 +566,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     });
     setBuilderMode("scratch");
     setDrawerOpen(false);
-    setIsMapEditing(false);
     setTransientDraftStatus("Map generated");
   }, [setTransientDraftStatus]);
 
@@ -589,7 +579,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     setSavedDraftFingerprint(createDraftFingerprint(resetState));
     setBuilderMode("theme");
     setDrawerOpen(false);
-    setIsMapEditing(false);
     setTransientDraftStatus("Composer reset");
   }, [setTransientDraftStatus]);
 
@@ -687,7 +676,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       : "theme";
 
     setBuilderMode(nextMode);
-    setIsMapEditing(false);
     setDrawerOpen(false);
 
     setState((current) => {
@@ -716,13 +704,8 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     });
   }, []);
 
-  const startMapEditing = useCallback(() => {
-    setBuilderMode("theme");
-    setIsMapEditing(true);
-    setDrawerOpen(false);
-  }, []);
 
-  const refreshEmbeddedMapWorkspace = useCallback(() => {
+  const refreshInlineMapWorkspace = useCallback(() => {
     setState((current) =>
       current.mapManualOverrides
         ? {
@@ -731,18 +714,20 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
           }
         : current,
     );
-    setMapWorkspaceRevision((revision) => revision + 1);
-    setTransientDraftStatus("Map workspace refreshed");
+    setTransientDraftStatus("Map refreshed from Composer");
   }, [setTransientDraftStatus]);
 
-  const commitEmbeddedMapWorkspace = useCallback((workspaceState) => {
+  const syncInlineMapWorkspace = useCallback((workspaceState) => {
     const nextManualOverrides = normalizeManualOverrides(workspaceState?.manualOverrides || {});
-    setState((current) => ({
-      ...current,
-      mapManualOverrides: nextManualOverrides,
-    }));
-    setTransientDraftStatus("Map edits saved");
-  }, [setTransientDraftStatus]);
+    setState((current) => {
+      const currentManualOverrides = normalizeManualOverrides(current.mapManualOverrides || {});
+      if (areManualOverridesEqual(currentManualOverrides, nextManualOverrides)) return current;
+      return {
+        ...current,
+        mapManualOverrides: nextManualOverrides,
+      };
+    });
+  }, []);
 
   const focusSlot = useCallback((slotId, slotScope = activeSlotScope, regionId = "") => {
     const normalizedScope = normalizeLocationSlotScope(slotScope);
@@ -806,21 +791,15 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     () => getSelectedRoomProgramEntry(state, generatedMapPreview),
     [generatedMapPreview, state],
   );
+  const roomToolbarEntries = useMemo(
+    () => getRoomProgramEntries(state, generatedMapPreview),
+    [generatedMapPreview, state],
+  );
   const nextMissingRoomSlot = useMemo(
     () => activeRoomProgramEntry ? getNextMissingRoomSlot(state, activeRoomProgramEntry.id) : null,
     [activeRoomProgramEntry, state],
   );
 
-  const focusScratchRoomSlot = useCallback((slotId, regionId = "") => {
-    if (!slotId) return;
-    setState((current) => ({
-      ...current,
-      activeSlot: slotId,
-      activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
-      activeRegionId: regionId || current.activeRegionId || activeScratchRegion?.id || "",
-    }));
-    setDrawerOpen(true);
-  }, [activeScratchRegion?.id]);
 
   const activeRegionIndex = useMemo(() => {
     const regions = Array.isArray(state.locationRegions) ? state.locationRegions : [];
@@ -871,7 +850,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   const activateRoomWorkFromMap = useCallback(() => {
     setBuilderMode("scratch");
     setDrawerOpen(false);
-    setIsMapEditing(false);
   }, []);
 
   const leftPanel = builderMode === "theme" ? (
@@ -960,18 +938,6 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     />
   );
 
-  const mapWorkspacePanel = isMapEditing ? (
-    <CruorMapGeneratorMvp
-      key={`location-map-workspace-${previewResetKey}-${mapWorkspaceRevision}`}
-      initialRequest={mapRequest}
-      initialManualOverrides={mapManualOverrides}
-      embeddedInComposer={true}
-      workspaceContext="composer-workspace"
-      onCommitWorkspace={commitEmbeddedMapWorkspace}
-      onExitWorkspace={() => setIsMapEditing(false)}
-      onRefreshFromComposer={refreshEmbeddedMapWorkspace}
-    />
-  ) : null;
 
   const exportContextPanel = builderMode === "export" ? (
     <LocationExportRoomKeyPanel
@@ -985,7 +951,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   ) : null;
 
 
-  const centerToolbarPanel = !isMapEditing ? (
+  const centerToolbarPanel = (
     <LocationMapToolbar
       activeRegion={activeScratchRegion}
       builderMode={builderMode}
@@ -993,6 +959,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       canGoPreviousRoom={activeRegionIndex > 0}
       generatedMapPreview={generatedMapPreview}
       hasRooms={Boolean(state.locationRegions?.length)}
+      roomEntries={roomToolbarEntries}
       nextRoomSlot={nextMissingRoomSlot}
       exportIncompleteCount={compilePreview.incompleteRoomCount}
       onAddMissingRoomSlot={openNextMissingRoomSlot}
@@ -1005,17 +972,17 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       onReviewMissing={openFirstMissingExportRoom}
       onSelectNextRoom={() => selectRelativeRoom(1)}
       onSelectPreviousRoom={() => selectRelativeRoom(-1)}
+      onSelectRoom={selectRoomTarget}
       onSelectRooms={() => activateBuilderMode("scratch")}
-      onStartMapEditing={startMapEditing}
     />
-  ) : null;
+  );
 
   return (
     <div
       className="cruor-composer-shell location-composer"
       data-cruor-ui-mode={uiMode}
       data-location-builder-mode={builderMode}
-      data-location-map-editing={isMapEditing ? "true" : "false"}
+      data-location-map-editing="inline"
       data-location-composer-ready="true"
       data-testid="dark-places-composer"
     >
@@ -1027,17 +994,17 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
           digest={digest}
           generatedMapPreview={generatedMapPreview}
           previewError={previewResult.error}
-          previewResetKey={previewResetKey}
           uiMode={uiMode}
-          isMapEditing={isMapEditing}
+          mapManualOverrides={mapManualOverrides}
+          onManualWorkspaceChange={syncInlineMapWorkspace}
+          onRefreshMapWorkspace={refreshInlineMapWorkspace}
           modeControls={null}
-          leftPanel={isMapEditing ? null : leftPanel}
-          rightPanel={isMapEditing ? null : rightPanel}
-          navigatorPanel={isMapEditing ? null : navigatorPanel}
-          workspacePanel={mapWorkspacePanel}
+          leftPanel={leftPanel}
+          rightPanel={rightPanel}
+          navigatorPanel={navigatorPanel}
           contextPanel={exportContextPanel}
           toolbarPanel={centerToolbarPanel}
-          bottomDockPanel={!isMapEditing ? (
+          bottomDockPanel={(
             <LocationGuidedFlowPanel
               activeRegion={activeRegionForPicker}
               activeSlot={activeSlot}
@@ -1062,9 +1029,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
               onReviewMissing={openFirstMissingExportRoom}
               onSelectMode={activateBuilderMode}
             />
-          ) : null}
-          onScratchRoomFocusSlot={focusScratchRoomSlot}
-          onScratchRoomUpdate={updateScratchRoom}
+          )}
           onComposerRegionSelect={activateRoomWorkFromMap}
         />
       </div>

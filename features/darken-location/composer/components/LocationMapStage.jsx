@@ -1,8 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { LocationRoomRecapCard } from "./LocationRoomRecapCard.jsx";
-import { LocationScratchRoomContextMenu } from "./LocationBriefPanel.jsx";
-import { MapViewport } from "../../map-generator/map-generator.page.jsx";
-import { LEVEL_VIEW_ALL } from "../../map-generator/map-generator.state.js";
+import { CruorMapGeneratorMvp } from "../../map-generator/map-generator.page.jsx";
 import {
   LOCATION_SLOT_SCOPE_MAP,
   LOCATION_SLOT_SCOPE_REGION,
@@ -23,140 +21,24 @@ import {
   getMapSyncStatus,
   getRegionPreviewMarkers,
 } from "../model/location-composer-output.js";
-import { getRoomProgramEntries } from "../model/location-room-program.js";
 
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-function getRoomNodeStateClasses(status = "empty") {
-  if (status === "ready") return "is-ready is-filled";
-  if (status === "partial") return "is-partial";
-  return "is-empty";
-}
-
-function getRoomNodeSlotLabel(slotId = "") {
-  if (slotId === "encounterTwist") return "Twist";
-  return String(slotId || "Slot")
-    .replace(/[-_]+/g, " ")
-    .replace(/(^|\s)(\S)/g, (_, spacer, letter) => `${spacer}${letter.toUpperCase()}`);
-}
-
-function getRoomNodeTooltipDescription(entry) {
-  if (!entry) return "Select this room.";
-  const markers = Array.isArray(entry.markers) && entry.markers.length
-    ? `Contains ${entry.markers.map((marker) => marker.fullLabel || marker.label || getRoomNodeSlotLabel(marker.slotId)).filter(Boolean).join(", ")}.`
-    : "No assigned room features yet.";
-  const missing = Array.isArray(entry.missingSlots) && entry.missingSlots.length
-    ? `Missing ${entry.missingSlots.map(getRoomNodeSlotLabel).join(", ")}.`
-    : "Ready room program.";
-  return `${entry.roleLabel || "Room"} · ${entry.label || "Empty"}. ${markers} ${missing}`;
-}
-
-function LocationMapRoomIndicatorLayer({
-  entries = [],
-  generatedMapPreview = null,
-  hoveredRegionId = "",
-  previewViewportMetrics = null,
-  selectedRegionId = "",
-  onRegionContextMenu = null,
-  onRegionHoverChange = null,
-  onRegionSelect = null,
-}) {
-  if (!generatedMapPreview || !entries.length) return null;
-
-  return (
-    <div className="location-map-room-indicator-layer" aria-label="Room status indicators" data-testid="dark-places-room-indicators">
-      {entries.map((entry) => {
-        const active = selectedRegionId === entry.id;
-        const hovered = hoveredRegionId === entry.id;
-        const markers = Array.isArray(entry.markers) ? entry.markers.slice(0, 3) : [];
-        const roomNumber = entry.numberLabel || String(entry.number || entry.index + 1).padStart(2, "0");
-        const tooltip = `Room ${roomNumber} · ${entry.name}`;
-
-        return (
-          <button
-            className={cx(
-              "location-map-room-node",
-              getRoomNodeStateClasses(entry.status),
-              active && "is-active",
-              hovered && "is-linked-hover",
-              markers.length > 0 && "has-markers",
-            )}
-            key={entry.id}
-            type="button"
-            aria-label={`${tooltip}. ${entry.label || "Empty"}.`}
-            aria-pressed={active}
-            data-key="tooltip-generic"
-            data-tooltip={tooltip}
-            data-tooltip-description={getRoomNodeTooltipDescription(entry)}
-            data-room-id={entry.id}
-            data-room-status={entry.status || "empty"}
-            data-testid="dark-places-room-node"
-            style={getGeneratedRoomPositionStyle(
-              generatedMapPreview,
-              entry.generatedRoom,
-              entry.index,
-              previewViewportMetrics,
-            )}
-            onPointerDown={(event) => event.stopPropagation()}
-            onMouseEnter={() => onRegionHoverChange?.(entry.id)}
-            onMouseLeave={() => onRegionHoverChange?.("")}
-            onFocus={() => onRegionHoverChange?.(entry.id)}
-            onBlur={() => onRegionHoverChange?.("")}
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              onRegionSelect?.(entry.id);
-            }}
-            onContextMenu={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              onRegionContextMenu?.(event, entry.id);
-            }}
-          >
-            <span className="location-map-room-node__number">{roomNumber}</span>
-            {markers.length ? (
-              <span className="location-map-room-node__marker-strip" aria-hidden="true">
-                {markers.map((marker) => (
-                  <span
-                    className={`location-map-room-node__marker location-map-room-node__marker--${marker.slotId || "slot"}`}
-                    key={marker.slotId || marker.label}
-                  >
-                    <i className={`fa-solid ${marker.icon || "fa-diamond"}`} aria-hidden="true" />
-                  </span>
-                ))}
-              </span>
-            ) : null}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 function LocationMapPreview({
-  generatedMap,
   error,
-  viewResetKey,
-  isMapEditing = false,
-  selectedRegionId = "",
-  onRegionSelect = null,
-  onRegionHoverChange = null,
-  onRegionContextMenu = null,
-  onViewportMetricsChange = null,
+  initialManualOverrides = null,
+  mapRequest,
   previewRegionMarkers = {},
+  onManualWorkspaceChange = null,
+  onRefreshFromComposer = null,
+  onViewportMetricsChange = null,
+  selectedRegionId = "",
+  onRegionHoverChange = null,
+  onRegionSelect = null,
 }) {
-  const previewManualOverrides = useMemo(
-    () => ({
-      rooms: {},
-      corridors: {},
-      props: {},
-      labels: {},
-    }),
-    [],
-  );
-  if (!generatedMap) {
+  if (!mapRequest) {
     return (
       <div className="location-map-preview location-map-preview-surface location-map-preview--fallback" aria-label="Map preview fallback">
         <div className="location-map-preview__fallback-card">
@@ -168,39 +50,22 @@ function LocationMapPreview({
 
   return (
     <div
-      className="location-map-preview location-map-preview-surface location-map-preview--live"
-      aria-label="Generated map preview"
-      onContextMenuCapture={(event) => {
-        if (isMapEditing) return;
-        if (event.target?.closest?.(".room-preview-hotspot")) return;
-        event.preventDefault();
-        event.stopPropagation();
-      }}
+      className="location-map-preview location-map-preview-surface location-map-preview--live location-map-preview--inline-editor"
+      aria-label="Editable generated map"
     >
-      <MapViewport
-        generatedMap={generatedMap}
-        showGrid={true}
-        gridStyle="solid"
-        showEditor={isMapEditing}
-        showNames={isMapEditing}
-        showProps={isMapEditing}
-        levelView={LEVEL_VIEW_ALL}
-        fadeOtherLevels={true}
-        availableLevels={[]}
-        manualOverrides={previewManualOverrides}
-        selectedRegionId={selectedRegionId}
-        onSelectedRegionChange={onRegionSelect}
-        onRegionHoverChange={onRegionHoverChange}
-        onRegionContextMenu={onRegionContextMenu}
-        viewResetKey={viewResetKey}
-        embeddedPreview={true}
-        showViewportChrome={false}
-        enableViewportInteractions={isMapEditing}
-        enablePreviewRegionHotspots={!isMapEditing}
-        viewportMode="composer-preview"
-        viewportClassName="location-map-preview-viewport"
-        onViewportMetricsChange={onViewportMetricsChange}
+      <CruorMapGeneratorMvp
+        initialRequest={mapRequest}
+        initialManualOverrides={initialManualOverrides}
+        embeddedInComposer={true}
+        inlineComposerEditor={true}
+        workspaceContext="composer-inline-editor"
+        composerSelectedRegionId={selectedRegionId}
         previewRegionMarkers={previewRegionMarkers}
+        onComposerRegionHoverChange={onRegionHoverChange}
+        onComposerSelectedRegionChange={onRegionSelect}
+        onCommitWorkspace={onManualWorkspaceChange}
+        onRefreshFromComposer={onRefreshFromComposer}
+        onViewportMetricsChange={onViewportMetricsChange}
       />
     </div>
   );
@@ -213,9 +78,10 @@ export function LocationMapStage({
   digest,
   generatedMapPreview,
   previewError,
-  previewResetKey,
   uiMode = "simple",
-  isMapEditing = false,
+  mapManualOverrides = null,
+  onManualWorkspaceChange = null,
+  onRefreshMapWorkspace = null,
   modeControls = null,
   leftPanel = null,
   rightPanel = null,
@@ -224,20 +90,16 @@ export function LocationMapStage({
   contextPanel = null,
   toolbarPanel = null,
   bottomDockPanel = null,
-  onScratchRoomFocusSlot = null,
-  onScratchRoomUpdate = null,
   onComposerRegionSelect = null,
 }) {
   const isSimpleMode = uiMode === "simple";
   const showStageDetails = !isSimpleMode;
-  const showInteractiveOverlay = !isMapEditing;
+  const showInteractiveOverlay = true;
   const regions = state.locationRegions || [];
   const selectedSources = toArray(state.sourceAnchors);
   const selectedHorrors = toArray(state.horrors);
   const [hoveredRegionId, setHoveredRegionId] = useState("");
   const [previewViewportMetrics, setPreviewViewportMetrics] = useState(null);
-  const [scratchRoomMenu, setScratchRoomMenu] = useState(null);
-  const scratchRoomMenuRef = useRef(null);
   const activeRegionComponents = getAssignedComponentsForRegion(state, state.activeRegionId);
   const activeGeneratedRoom = getGeneratedRoomForRegion(generatedMapPreview, state.activeRegionId);
   const hoveredRegionIndex = regions.findIndex((region) => region.id === hoveredRegionId);
@@ -252,20 +114,11 @@ export function LocationMapStage({
     ? getGeneratedRoomSurfaceLabel(hoveredGeneratedRoom)
     : "";
   const mapSyncStatus = getMapSyncStatus(mapRequest, generatedMapPreview, regions);
-  const showScratchRoomControls = Boolean(
-    !isMapEditing &&
-    state.dungeonMode === "scratch" &&
-    onScratchRoomUpdate
-  );
   const previewRegionMarkers = useMemo(() => (
     Object.fromEntries(
       regions.map((region) => [region.id, getRegionPreviewMarkers(state, region.id)]),
     )
   ), [regions, state]);
-  const roomProgramEntries = useMemo(
-    () => getRoomProgramEntries(state, generatedMapPreview).filter((entry) => entry.generatedRoom),
-    [state, generatedMapPreview],
-  );
 
   function handlePreviewViewportMetricsChange(nextMetrics) {
     setPreviewViewportMetrics((currentMetrics) => {
@@ -285,32 +138,11 @@ export function LocationMapStage({
     });
   }
 
-  useEffect(() => {
-    if (!scratchRoomMenu || typeof document === "undefined") return undefined;
-
-    function handlePointerDown(event) {
-      if (scratchRoomMenuRef.current?.contains?.(event.target)) return;
-      if (event.target?.closest?.(".location-choice-menu, .location-choice-option")) return;
-      setScratchRoomMenu(null);
-    }
-
-    function handleKeyDown(event) {
-      if (event.key === "Escape") setScratchRoomMenu(null);
-    }
-
-    document.addEventListener("pointerdown", handlePointerDown, true);
-    document.addEventListener("keydown", handleKeyDown, true);
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown, true);
-      document.removeEventListener("keydown", handleKeyDown, true);
-    };
-  }, [scratchRoomMenu]);
 
   function selectWholeMapTarget(event) {
-    if (isMapEditing) return;
     const target = event.target;
     if (target?.closest?.(
-      ".room-preview-hotspot, .location-region-node, .location-room-recap-anchor, .location-stage__navigator-column, .location-map-stage-toolbar, .location-advanced-output, .location-scratch-room-context-menu, button, a, input, select, textarea",
+      ".cruor-map-inline-editor, .map-viewport, .map-pan-layer, svg, .editor-overlays, .labels, .room-preview-hotspot, .location-region-node, .location-room-recap-anchor, .location-stage__navigator-column, .location-map-stage-toolbar, .location-advanced-output, .location-scratch-room-context-menu, button, a, input, select, textarea",
     )) {
       return;
     }
@@ -345,7 +177,7 @@ export function LocationMapStage({
 
   function selectRegionTarget(regionId) {
     const composerRegionId = resolveComposerRegionId(regionId);
-    if (!composerRegionId || isMapEditing) return;
+    if (!composerRegionId) return;
     setState((current) => ({
       ...current,
       activeRegionId: composerRegionId,
@@ -357,20 +189,6 @@ export function LocationMapStage({
     onComposerRegionSelect?.(composerRegionId);
   }
 
-  function openScratchRoomMenu(event, regionId) {
-    const composerRegionId = resolveComposerRegionId(regionId);
-    if (!composerRegionId || isMapEditing || state.dungeonMode !== "scratch") return;
-    event?.preventDefault?.();
-    event?.stopPropagation?.();
-    selectRegionTarget(composerRegionId);
-    const viewportWidth = typeof window === "undefined" ? 1280 : window.innerWidth;
-    const viewportHeight = typeof window === "undefined" ? 720 : window.innerHeight;
-    setScratchRoomMenu({
-      regionId: composerRegionId,
-      x: Math.min((event?.clientX || 0) + 8, viewportWidth - 320),
-      y: Math.min((event?.clientY || 0) + 8, viewportHeight - 420),
-    });
-  }
 
   return (
     <main className="cruor-composer-stage location-composer__stage" aria-label="Location map stage">
@@ -413,30 +231,17 @@ export function LocationMapStage({
               ) : null}
 
           <LocationMapPreview
-            generatedMap={generatedMapPreview}
             error={previewError}
-            viewResetKey={previewResetKey}
-            isMapEditing={isMapEditing}
+            mapRequest={mapRequest}
+            initialManualOverrides={mapManualOverrides}
             selectedRegionId={state.activeRegionId}
-            onRegionSelect={selectRegionTarget}
-            onRegionHoverChange={setHoveredRegionId}
-            onRegionContextMenu={(event, regionId) => openScratchRoomMenu(event, regionId)}
-            onViewportMetricsChange={handlePreviewViewportMetricsChange}
             previewRegionMarkers={previewRegionMarkers}
+            onRegionHoverChange={setHoveredRegionId}
+            onRegionSelect={selectRegionTarget}
+            onManualWorkspaceChange={onManualWorkspaceChange}
+            onRefreshFromComposer={onRefreshMapWorkspace}
+            onViewportMetricsChange={handlePreviewViewportMetricsChange}
           />
-
-          {showInteractiveOverlay && generatedMapPreview ? (
-            <LocationMapRoomIndicatorLayer
-              entries={roomProgramEntries}
-              generatedMapPreview={generatedMapPreview}
-              hoveredRegionId={hoveredRegionId}
-              previewViewportMetrics={previewViewportMetrics}
-              selectedRegionId={state.activeRegionId}
-              onRegionContextMenu={(event, regionId) => openScratchRoomMenu(event, regionId)}
-              onRegionHoverChange={setHoveredRegionId}
-              onRegionSelect={selectRegionTarget}
-            />
-          ) : null}
 
           {showInteractiveOverlay && hoveredRegion ? (
             <div
@@ -461,18 +266,6 @@ export function LocationMapStage({
             <div className="location-map-context-panel" aria-label="Selected room controls">
               {contextPanel}
             </div>
-          ) : null}
-
-          {scratchRoomMenu && showScratchRoomControls ? (
-            <LocationScratchRoomContextMenu
-              ref={scratchRoomMenuRef}
-              region={regions.find((region) => region.id === scratchRoomMenu.regionId)}
-              x={scratchRoomMenu.x}
-              y={scratchRoomMenu.y}
-              onClose={() => setScratchRoomMenu(null)}
-              onFocusSlot={onScratchRoomFocusSlot}
-              onUpdateRoom={onScratchRoomUpdate}
-            />
           ) : null}
 
           {showStageDetails ? (

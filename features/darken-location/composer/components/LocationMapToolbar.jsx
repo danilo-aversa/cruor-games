@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -36,8 +38,116 @@ function LocationMapToolbarButton({
   );
 }
 
-function LocationMapToolbarDivider() {
-  return <span className="location-map-toolbar__divider" aria-hidden="true" />;
+function LocationMapInlineEditorToolsHost() {
+  return (
+    <span
+      className="location-map-toolbar__inline-editor-tools"
+      data-location-map-tools-host="true"
+      aria-label="Map editing tools"
+    />
+  );
+}
+
+function getRoomStatusLabel(status = "empty") {
+  if (status === "ready") return "Ready";
+  if (status === "partial") return "Partial";
+  return "Empty";
+}
+
+function getRoomNumberLabel(room, index) {
+  return room?.numberLabel || String((room?.index ?? index) + 1).padStart(2, "0");
+}
+
+function LocationRoomTargetDropdown({
+  activeRegionId = "",
+  onSelectRoom,
+  roomEntries = [],
+  roomName = "Selected Room",
+}) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef(null);
+  const hasRooms = roomEntries.length > 0;
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    function handlePointerDown(event) {
+      if (rootRef.current?.contains(event.target)) return;
+      setOpen(false);
+    }
+
+    function handleKeyDown(event) {
+      if (event.key === "Escape") setOpen(false);
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <span className="location-map-toolbar__target-menu" ref={rootRef}>
+      <button
+        className="location-map-toolbar__target location-map-toolbar__target-button"
+        type="button"
+        title={roomName}
+        aria-label="Choose room"
+        aria-expanded={open}
+        aria-haspopup="menu"
+        disabled={!hasRooms}
+        onClick={() => setOpen((current) => !current)}
+        data-key="tooltip-generic"
+        data-tooltip="Room Work"
+        data-tooltip-description="Choose a room to edit."
+      >
+        <small>Room Work</small>
+        <strong>{roomName}</strong>
+      </button>
+      {open && hasRooms ? (
+        <div
+          className="location-map-toolbar__room-menu-panel cruor-ui-panel-surface"
+          role="menu"
+          aria-label="Room work queue"
+          onMouseDown={(event) => event.preventDefault()}
+        >
+          {roomEntries.map((room, index) => {
+            const active = activeRegionId === room.id;
+            const numberLabel = getRoomNumberLabel(room, index);
+            const status = room.status || "empty";
+            return (
+              <button
+                className={cx(
+                  "location-map-toolbar__room-menu-item",
+                  `is-${status}`,
+                  active && "is-active",
+                )}
+                key={room.id || `${numberLabel}-${room.name}`}
+                type="button"
+                role="menuitemradio"
+                aria-checked={active}
+                onClick={() => {
+                  onSelectRoom?.(room.id);
+                  setOpen(false);
+                }}
+                data-room-id={room.id || undefined}
+                data-room-status={status}
+              >
+                <span className="location-map-toolbar__room-menu-number">{numberLabel}</span>
+                <span className="location-map-toolbar__room-menu-copy">
+                  <strong>{room.name || `Room ${numberLabel}`}</strong>
+                  <small>{room.roleLabel || room.mapLabel || "Room"}</small>
+                </span>
+                <span className="location-map-toolbar__room-menu-status">{getRoomStatusLabel(status)}</span>
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+    </span>
+  );
 }
 
 export function LocationMapToolbar({
@@ -46,55 +156,22 @@ export function LocationMapToolbar({
   canGoNextRoom = false,
   canGoPreviousRoom = false,
   generatedMapPreview = null,
-  hasRooms = false,
-  nextRoomSlot = null,
-  exportIncompleteCount = 0,
-  onAddMissingRoomSlot,
-  onCopyMarkdown,
   onGenerateThemeRooms,
   onNewMapSeed,
-  onOpenComponents,
-  onSelectExport,
-  onSelectFrame,
-  onReviewMissing,
   onSelectNextRoom,
   onSelectPreviousRoom,
-  onSelectRooms,
-  onStartMapEditing,
+  onSelectRoom,
+  roomEntries = [],
 }) {
   const mode = builderMode === "map" ? "theme" : builderMode;
   const hasMap = Boolean(generatedMapPreview);
   const roomName = activeRegion?.name || "Selected Room";
-  const nextRoomSlotLabel = nextRoomSlot?.slot?.label || nextRoomSlot?.label || "Missing Detail";
 
   if (mode === "export") {
     return (
       <nav className="location-map-toolbar location-map-toolbar--export" aria-label="Location export toolbar" data-testid="dark-places-toolbar-export">
         <div className="location-map-toolbar__group location-map-toolbar__group--actions">
-          <LocationMapToolbarButton
-            icon="fa-copy"
-            onClick={onCopyMarkdown}
-            title="Copy the room key as Markdown"
-            variant="primary"
-            testId="dark-places-copy-markdown"
-          >
-            Copy Markdown
-          </LocationMapToolbarButton>
-          <LocationMapToolbarButton
-            disabled={!exportIncompleteCount}
-            icon="fa-circle-exclamation"
-            onClick={onReviewMissing}
-            title={exportIncompleteCount ? `Review ${exportIncompleteCount} incomplete room${exportIncompleteCount === 1 ? "" : "s"}` : "No missing room content"}
-            testId="dark-places-review-missing"
-          >
-            Review Missing
-          </LocationMapToolbarButton>
-          <LocationMapToolbarButton icon="fa-arrow-left" onClick={onSelectRooms} title="Return to room work" testId="dark-places-toolbar-rooms-action">
-            Rooms
-          </LocationMapToolbarButton>
-          <LocationMapToolbarButton icon="fa-map" onClick={onSelectFrame} title="Return to the place frame" testId="dark-places-toolbar-frame-action">
-            Frame
-          </LocationMapToolbarButton>
+          <LocationMapInlineEditorToolsHost />
         </div>
       </nav>
     );
@@ -113,10 +190,12 @@ export function LocationMapToolbar({
           >
             Previous
           </LocationMapToolbarButton>
-          <span className="location-map-toolbar__target" title={roomName}>
-            <small>Room Work</small>
-            <strong>{roomName}</strong>
-          </span>
+          <LocationRoomTargetDropdown
+            activeRegionId={activeRegion?.id || ""}
+            onSelectRoom={onSelectRoom}
+            roomEntries={roomEntries}
+            roomName={roomName}
+          />
           <LocationMapToolbarButton
             disabled={!canGoNextRoom}
             icon="fa-chevron-right"
@@ -127,33 +206,8 @@ export function LocationMapToolbar({
             Next
           </LocationMapToolbarButton>
         </div>
-        <LocationMapToolbarDivider />
         <div className="location-map-toolbar__group location-map-toolbar__group--actions">
-          <LocationMapToolbarButton
-            disabled={!activeRegion || !nextRoomSlot}
-            icon="fa-plus"
-            onClick={onAddMissingRoomSlot}
-            title={nextRoomSlot ? `Add ${nextRoomSlotLabel}` : "Room required slots are filled"}
-            variant="primary"
-            testId="dark-places-add-missing-slot"
-          >
-            Add Missing Slot
-          </LocationMapToolbarButton>
-          <LocationMapToolbarButton
-            disabled={!activeRegion}
-            icon="fa-puzzle-piece"
-            onClick={onOpenComponents}
-            title="Open components for the active room slot"
-            testId="dark-places-open-components"
-          >
-            Components
-          </LocationMapToolbarButton>
-          <LocationMapToolbarButton icon="fa-map" onClick={onSelectFrame} title="Edit the place frame" testId="dark-places-toolbar-frame-action">
-            Frame
-          </LocationMapToolbarButton>
-          <LocationMapToolbarButton icon="fa-file-lines" onClick={onSelectExport} title="Review the location insert" testId="dark-places-toolbar-export-action">
-            Export
-          </LocationMapToolbarButton>
+          <LocationMapInlineEditorToolsHost />
         </div>
       </nav>
     );
@@ -174,12 +228,7 @@ export function LocationMapToolbar({
         <LocationMapToolbarButton icon="fa-dice" onClick={onNewMapSeed} title="Refresh the map seed" testId="dark-places-new-seed">
           New Seed
         </LocationMapToolbarButton>
-        <LocationMapToolbarButton disabled={!hasMap} icon="fa-pen-ruler" onClick={onStartMapEditing} title="Open the map editor" testId="dark-places-edit-map">
-          Edit Map
-        </LocationMapToolbarButton>
-        <LocationMapToolbarButton disabled={!hasRooms} icon="fa-list-check" onClick={onSelectRooms} title="Move to room-by-room work" testId="dark-places-toolbar-rooms-action">
-          Rooms
-        </LocationMapToolbarButton>
+        <LocationMapInlineEditorToolsHost />
       </div>
     </nav>
   );

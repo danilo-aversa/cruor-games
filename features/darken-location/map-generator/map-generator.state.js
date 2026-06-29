@@ -110,21 +110,96 @@ export function areManualOverridesEqual(a, b) {
   );
 }
 
+
+function hasObjectEntries(value) {
+  return Boolean(value && typeof value === "object" && Object.keys(value).length > 0);
+}
+
+function hasArrayEntries(value) {
+  return Array.isArray(value) && value.length > 0;
+}
+
+function preferObjectOverride(value, fallback = {}) {
+  return hasObjectEntries(value)
+    ? value
+    : fallback && typeof fallback === "object"
+      ? fallback
+      : {};
+}
+
+function preferArrayOverride(value, fallback = []) {
+  return hasArrayEntries(value)
+    ? value
+    : Array.isArray(fallback)
+      ? fallback
+      : [];
+}
+
+function hasLevelOverrideEntries(levels = {}) {
+  return (
+    hasObjectEntries(levels.regions) ||
+    hasObjectEntries(levels.corridors) ||
+    hasObjectEntries(levels.stairs)
+  );
+}
+
+function preferLevelOverrides(value, fallback = createEmptyLevelOverrides()) {
+  return hasLevelOverrideEntries(value)
+    ? value
+    : fallback && typeof fallback === "object"
+      ? fallback
+      : createEmptyLevelOverrides();
+}
+
 export function applyManualOverridesToConfig(config, manualOverrides = {}) {
   const normalizedOverrides = normalizeManualOverrides(manualOverrides);
+  const preferredLevels = preferLevelOverrides(
+    normalizedOverrides.levels,
+    config.manualLevels,
+  );
   return {
     ...config,
-    manualRoomPositions: normalizedOverrides.roomPositions,
-    manualDoorAnchors: normalizedOverrides.doorAnchors,
-    manualDoorTypes: normalizedOverrides.doorTypes,
-    manualStairTransitions: normalizedOverrides.levels.stairs,
-    manualLevels: normalizedOverrides.levels,
-    manualMapAccesses: normalizedOverrides.mapAccesses,
-    manualCorridorJunctions: normalizedOverrides.corridorJunctions,
-    manualCorridorWaypoints: normalizedOverrides.corridorWaypoints,
-    manualCustomConnections: normalizedOverrides.customConnections,
-    manualRoomStyles: normalizedOverrides.roomStyles,
-    manualDeletedConnections: normalizedOverrides.deletedConnections,
+    manualRoomPositions: preferObjectOverride(
+      normalizedOverrides.roomPositions,
+      config.manualRoomPositions,
+    ),
+    manualDoorAnchors: preferObjectOverride(
+      normalizedOverrides.doorAnchors,
+      config.manualDoorAnchors,
+    ),
+    manualDoorTypes: preferObjectOverride(
+      normalizedOverrides.doorTypes,
+      config.manualDoorTypes,
+    ),
+    manualStairTransitions: preferObjectOverride(
+      normalizedOverrides.levels.stairs,
+      config.manualStairTransitions,
+    ),
+    manualLevels: preferredLevels,
+    manualMapAccesses: preferObjectOverride(
+      normalizedOverrides.mapAccesses,
+      config.manualMapAccesses,
+    ),
+    manualCorridorJunctions: preferObjectOverride(
+      normalizedOverrides.corridorJunctions,
+      config.manualCorridorJunctions,
+    ),
+    manualCorridorWaypoints: preferObjectOverride(
+      normalizedOverrides.corridorWaypoints,
+      config.manualCorridorWaypoints,
+    ),
+    manualCustomConnections: preferArrayOverride(
+      normalizedOverrides.customConnections,
+      config.manualCustomConnections,
+    ),
+    manualRoomStyles: preferObjectOverride(
+      normalizedOverrides.roomStyles,
+      config.manualRoomStyles,
+    ),
+    manualDeletedConnections: preferArrayOverride(
+      normalizedOverrides.deletedConnections,
+      config.manualDeletedConnections,
+    ),
   };
 }
 

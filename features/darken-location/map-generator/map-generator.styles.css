@@ -616,6 +616,8 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .cruor-map-workspace .map-viewport-frame {
@@ -1608,3 +1610,538 @@
 
 
 
+
+/* Inline Composer editor */
+.cruor-map-inline-editor {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.location-map-toolbar__inline-editor-tools {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.location-map-toolbar__map-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.location-map-toolbar__map-tools .map-tool-button i {
+  pointer-events: none;
+}
+
+.cruor-map-inline-editor .location-map-inline-editor-viewport,
+.cruor-map-inline-editor .map-viewport {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 1px solid var(--cruor-color-blood-strong-a420);
+  background: var(--cruor-color-r7-g6-b5-a920);
+}
+
+.cruor-map-inline-editor .map-pan-layer {
+  min-height: 0;
+}
+
+.cruor-map-inline-editor .editor-overlays .room-drag-handle,
+.cruor-map-inline-editor .editor-overlays .room-drag-handle:hover,
+.cruor-map-inline-editor .editor-overlays .room-drag-handle.is-dragging {
+  fill: transparent;
+  fill-opacity: 0;
+  stroke: transparent;
+  stroke-opacity: 0;
+  stroke-width: 0;
+  opacity: 0;
+  pointer-events: all;
+}
+
+.cruor-map-inline-editor .editor-overlays .wall-hover-zone,
+.cruor-map-inline-editor .editor-overlays .wall-hover-zone:hover {
+  fill: none;
+  stroke: transparent;
+  stroke-opacity: 0;
+  opacity: 0;
+  pointer-events: stroke;
+}
+
+.cruor-map-inline-editor .room-shape-accents .shape-detail {
+  display: none;
+}
+
+@media (max-width: 980px) {
+  .location-map-toolbar__map-tools {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+}
+
+/* Inline Composer toolbar refinement */
+.location-map-toolbar__map-tools {
+  position: relative;
+  gap: 5px;
+}
+
+.location-map-toolbar__map-tools-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.location-map-toolbar__map-tools .location-map-toolbar__divider {
+  margin-inline: 1px 2px;
+}
+
+.location-map-toolbar__map-menu-trigger {
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+}
+
+.location-map-toolbar__map-menu-trigger i {
+  display: block;
+  margin: 0;
+  line-height: 1;
+}
+
+.location-map-toolbar__map-menu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.location-map-toolbar__map-menu.is-open .location-map-toolbar__map-menu-trigger {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
+}
+
+.location-map-toolbar__map-menu-panel {
+  position: absolute;
+  z-index: 90;
+  top: calc(100% + 8px);
+  right: 0;
+  display: grid;
+  gap: 4px;
+  min-width: 196px;
+  padding: 6px;
+  border: 1px solid var(--cruor-color-blood-strong-a640);
+  background: rgba(7, 5, 6, 0.98);
+  background-image: var(--cruor-gradient-linear-015-d1025658);
+  box-shadow: var(--cruor-shadow-box-075);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.location-map-toolbar__map-menu-action {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 32px;
+  border: 1px solid var(--cruor-color-blood-strong-a360);
+  border-radius: 0;
+  background: var(--cruor-color-blood-a120);
+  color: var(--cruor-color-hex-c8a2a8);
+  padding: 0 8px;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.location-map-toolbar__map-menu-action i {
+  display: inline-grid;
+  place-items: center;
+  color: var(--cruor-color-hex-b33b4e);
+  font-size: 13px;
+}
+
+.location-map-toolbar__map-menu-action span {
+  overflow: hidden;
+  min-width: 0;
+  color: inherit;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-map-toolbar__map-menu-action:hover:not(:disabled),
+.location-map-toolbar__map-menu-action:focus-visible:not(:disabled),
+.location-map-toolbar__map-menu-action.is-active {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-color-blood-strong-a360);
+  color: var(--cruor-color-hex-fff0f2);
+  outline: none;
+}
+
+.location-map-toolbar__map-menu-action:hover:not(:disabled) i,
+.location-map-toolbar__map-menu-action:focus-visible:not(:disabled) i,
+.location-map-toolbar__map-menu-action.is-active i {
+  color: var(--cruor-color-hex-f0b9c2);
+}
+
+.location-map-toolbar__map-menu-action.is-danger:hover:not(:disabled),
+.location-map-toolbar__map-menu-action.is-danger:focus-visible:not(:disabled) {
+  border-color: var(--cruor-color-blood-bright-a780);
+  background: var(--cruor-color-blood-strong-a520);
+}
+
+.location-map-toolbar__map-menu-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+/* Inline Composer canvas refinement */
+.cruor-map-inline-editor .location-map-inline-editor-viewport,
+.cruor-map-inline-editor .map-viewport {
+  border-color: var(--cruor-color-blood-strong-a320);
+  background:
+    radial-gradient(circle at 50% 42%, var(--cruor-color-milk-a045), var(--cruor-color-transparent) 46%),
+    var(--cruor-color-r7-g6-b5-a920);
+  box-shadow:
+    inset 0 0 0 1px var(--cruor-color-black-a540),
+    inset 0 0 80px var(--cruor-color-black-a320);
+}
+
+.cruor-map-inline-editor .endpoint-handle,
+.cruor-map-inline-editor .map-access-handle,
+.cruor-map-inline-editor .waypoint-handle {
+  filter: drop-shadow(0 2px 4px var(--cruor-color-black-a520));
+  transition: fill 0.12s ease, stroke 0.12s ease, filter 0.12s ease;
+}
+
+.cruor-map-inline-editor .endpoint-handle:hover,
+.cruor-map-inline-editor .map-access-handle:hover,
+.cruor-map-inline-editor .waypoint-handle:hover {
+  filter: drop-shadow(0 0 6px rgba(214, 184, 98, 0.55));
+}
+
+.cruor-map-inline-editor .endpoint-handle.is-dragging,
+.cruor-map-inline-editor .map-access-handle.is-dragging,
+.cruor-map-inline-editor .waypoint-handle.is-dragging {
+  filter: drop-shadow(0 0 8px rgba(255, 231, 143, 0.65));
+}
+
+.cruor-map-inline-editor .corridor-hover-zone:hover {
+  fill: rgba(214, 184, 98, 0.10);
+  stroke: rgba(214, 184, 98, 0.26);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.cruor-map-inline-editor .labels .room-number-badge {
+  filter: drop-shadow(0 4px 7px rgba(0, 0, 0, 0.36));
+}
+
+.cruor-map-inline-editor .room-number-feature-marker__back {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.32));
+}
+
+@media (max-width: 980px) {
+  .location-map-toolbar__map-menu-panel {
+    right: auto;
+    left: 0;
+  }
+}
+
+/* Inline Composer toolbar: visible map toggles, zoom, and style dropdown */
+.location-map-toolbar__map-tools-primary > .location-map-toolbar__divider {
+  margin-inline: 3px;
+}
+
+.location-map-toolbar__zoom-scale {
+  display: inline-grid;
+  place-items: center;
+  min-width: 42px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a140, rgba(208, 162, 170, 0.14));
+  background: var(--cruor-color-black-a220, rgba(0, 0, 0, 0.22));
+  color: var(--cruor-color-text-a620, rgba(238, 238, 238, 0.62));
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  user-select: none;
+}
+
+.location-map-toolbar__style-menu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.location-map-toolbar__style-menu.is-open .location-map-toolbar__style-menu-trigger {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
+}
+
+.location-map-toolbar__style-panel {
+  position: absolute;
+  z-index: 92;
+  top: calc(100% + 8px);
+  right: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(210px, 1fr));
+  gap: 10px;
+  width: min(560px, calc(100vw - 48px));
+  padding: 10px;
+  border: 1px solid var(--cruor-color-blood-strong-a640);
+  background: rgba(7, 5, 6, 0.985);
+  background-image: var(--cruor-gradient-linear-015-d1025658);
+  box-shadow: var(--cruor-shadow-box-075);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.location-map-toolbar__style-section {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a120, rgba(208, 162, 170, 0.12));
+  background: var(--cruor-color-black-a180, rgba(0, 0, 0, 0.18));
+}
+
+.location-map-toolbar__style-section-title,
+.location-map-toolbar__style-subtitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--cruor-color-milk-a820, rgba(255, 238, 242, 0.82));
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.location-map-toolbar__style-subtitle {
+  margin-top: 4px;
+  color: var(--cruor-color-text-a540, rgba(238, 238, 238, 0.54));
+  font-size: 0.58rem;
+}
+
+.location-map-toolbar__style-section-title i {
+  color: var(--cruor-color-hex-b33b4e);
+  font-size: 12px;
+}
+
+.location-map-toolbar__style-options {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.location-map-toolbar__style-options--compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.location-map-toolbar__style-option {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  width: 100%;
+  padding: 0 7px;
+  border: 1px solid var(--cruor-color-blood-strong-a320);
+  border-radius: 0;
+  background: var(--cruor-color-blood-a100, rgba(51, 3, 12, 0.1));
+  color: var(--cruor-color-hex-c8a2a8);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.location-map-toolbar__style-option i {
+  display: inline-grid;
+  place-items: center;
+  color: var(--cruor-color-hex-b33b4e);
+  font-size: 12px;
+}
+
+.location-map-toolbar__style-option span {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.location-map-toolbar__style-option:hover,
+.location-map-toolbar__style-option:focus-visible,
+.location-map-toolbar__style-option.is-active {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-color-blood-strong-a360);
+  color: var(--cruor-color-hex-fff0f2);
+  outline: none;
+}
+
+.location-map-toolbar__style-slider {
+  display: grid;
+  gap: 5px;
+  margin-top: 3px;
+  color: var(--cruor-color-text-a620, rgba(238, 238, 238, 0.62));
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.location-map-toolbar__style-slider > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.location-map-toolbar__style-slider strong {
+  color: var(--cruor-color-milk-a820, rgba(255, 238, 242, 0.82));
+  font-size: 0.62rem;
+}
+
+.location-map-toolbar__style-slider input {
+  width: 100%;
+  accent-color: var(--cruor-color-blood-bright);
+  cursor: ew-resize;
+}
+
+.cruor-map-inline-editor .map-viewport.is-pannable {
+  cursor: grab;
+}
+
+.cruor-map-inline-editor .map-viewport.is-panning,
+.cruor-map-inline-editor .map-viewport.is-panning * {
+  cursor: grabbing !important;
+}
+
+.cruor-map-inline-editor .editor-overlays .room-drag-handle {
+  cursor: move;
+}
+
+.cruor-map-inline-editor .endpoint-handle,
+.cruor-map-inline-editor .map-access-handle,
+.cruor-map-inline-editor .waypoint-handle,
+.cruor-map-inline-editor .corridor-add-handle,
+.cruor-map-inline-editor .wall-access-handle {
+  cursor: grab;
+}
+
+.cruor-map-inline-editor .endpoint-handle.is-dragging,
+.cruor-map-inline-editor .map-access-handle.is-dragging,
+.cruor-map-inline-editor .waypoint-handle.is-dragging {
+  cursor: grabbing;
+}
+
+@media (max-width: 1120px) {
+  .location-map-toolbar__style-panel {
+    right: auto;
+    left: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .location-map-toolbar__style-panel {
+    grid-template-columns: 1fr;
+    width: min(320px, calc(100vw - 32px));
+  }
+}
+
+/* Dark Places toolbar dropdown/layout hotfix. */
+.location-map-toolbar__map-tools {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 5px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.location-map-toolbar__map-tools-primary {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 5px;
+  min-width: 0;
+}
+
+.location-map-toolbar__style-menu-trigger,
+.location-map-toolbar__map-menu-trigger {
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+}
+
+.location-map-toolbar__style-menu-trigger i,
+.location-map-toolbar__map-menu-trigger i {
+  display: inline-grid;
+  place-items: center;
+  margin: 0;
+  line-height: 1;
+}
+
+.location-map-toolbar__style-menu-trigger.is-active,
+.location-map-toolbar__map-menu-trigger.is-active {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
+}
+
+.location-map-toolbar__map-menu-panel,
+.location-map-toolbar__style-panel {
+  border-color: var(--cruor-color-blood-strong-a640);
+  background: var(--cruor-gradient-linear-015-d1025658), rgba(7, 5, 6, 0.995);
+  box-shadow:
+    0 28px 72px var(--cruor-color-black-a760, rgba(0, 0, 0, 0.76)),
+    var(--cruor-shadow-box-075);
+  -webkit-backdrop-filter: blur(14px) saturate(118%);
+  backdrop-filter: blur(14px) saturate(118%);
+}
+
+.location-map-toolbar__style-section,
+.location-map-toolbar__map-menu-action {
+  background-color: rgba(12, 6, 8, 0.94);
+}
+
+@media (max-width: 980px) {
+  .location-map-toolbar__style-panel,
+  .location-map-toolbar__map-menu-panel {
+    right: auto;
+    left: 0;
+  }
+}
