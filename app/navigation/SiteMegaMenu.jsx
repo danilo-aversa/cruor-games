@@ -5,7 +5,9 @@ function cx(...parts) {
 }
 
 function focusMenuItem(menuElement, nextIndex) {
-  const items = Array.from(menuElement.querySelectorAll("[data-site-mega-item]:not(:disabled)"));
+  const items = Array.from(
+    menuElement.querySelectorAll("[data-site-mega-item]:not(:disabled)"),
+  );
   if (!items.length) return;
 
   const clampedIndex = (nextIndex + items.length) % items.length;
@@ -33,7 +35,9 @@ export default function SiteMegaMenu({
 
   function handleMenuKeyDown(event) {
     const itemButtons = Array.from(
-      event.currentTarget.querySelectorAll("[data-site-mega-item]:not(:disabled)")
+      event.currentTarget.querySelectorAll(
+        "[data-site-mega-item]:not(:disabled)",
+      ),
     );
     const currentIndex = itemButtons.indexOf(document.activeElement);
 
@@ -81,9 +85,12 @@ export default function SiteMegaMenu({
       onKeyDown={handleMenuKeyDown}
     >
       <div className="site-mega-menu__grid">
-        <div className="site-mega-menu__list" aria-label={`${menu.label} options`}>
+        <div
+          className="site-mega-menu__list"
+          aria-label={`${menu.label} options`}
+        >
           {menu.items.map((item) => {
-            const isSelected = false;
+            const isSelected = selectedItemId === item.id;
 
             return (
               <button
@@ -91,7 +98,7 @@ export default function SiteMegaMenu({
                 className={cx(
                   "site-mega-menu__item",
                   isSelected && "is-selected",
-                  item.disabled && "is-disabled"
+                  item.disabled && "is-disabled",
                 )}
                 type="button"
                 role="menuitem"
@@ -109,7 +116,9 @@ export default function SiteMegaMenu({
 
                 <span className="site-mega-menu__item-copy">
                   <strong>{item.label}</strong>
-                  <span>{item.catchPhrase || item.previewText || item.description}</span>
+                  <span>
+                    {item.catchPhrase || item.previewText || item.description}
+                  </span>
                 </span>
               </button>
             );
@@ -118,12 +127,16 @@ export default function SiteMegaMenu({
 
         {activeItem ? (
           <div className="site-mega-menu__preview-column" aria-live="polite">
-            <aside className="site-mega-menu__preview" aria-label={`${activeItem.label} preview`}>
+            <aside
+              className="site-mega-menu__preview"
+              aria-label={`${activeItem.label} preview`}
+            >
               <div
                 className={cx(
                   "site-mega-menu__preview-art",
-                  activeItem.previewImage && "site-mega-menu__preview-art--has-image",
-                  `site-mega-menu__preview-art--${activeItem.previewVariant || activeItem.id}`
+                  activeItem.previewImage &&
+                    "site-mega-menu__preview-art--has-image",
+                  `site-mega-menu__preview-art--${activeItem.previewVariant || activeItem.id}`,
                 )}
                 aria-hidden="true"
               >
@@ -149,7 +162,10 @@ export default function SiteMegaMenu({
             </aside>
 
             <div className="site-mega-menu__preview-features-panel">
-              <ul className="site-mega-menu__preview-features" aria-label={`${activeItem.label} engine features`}>
+              <ul
+                className="site-mega-menu__preview-features"
+                aria-label={`${activeItem.label} engine features`}
+              >
                 {(activeItem.engineFeatures || []).map((feature) => (
                   <li key={`${activeItem.id}-feature-${feature}`}>{feature}</li>
                 ))}

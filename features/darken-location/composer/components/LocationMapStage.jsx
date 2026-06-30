@@ -90,6 +90,7 @@ export function LocationMapStage({
   contextPanel = null,
   toolbarPanel = null,
   bottomDockPanel = null,
+  onCloseNavigator = null,
   onComposerRegionSelect = null,
 }) {
   const isSimpleMode = uiMode === "simple";
@@ -139,6 +140,19 @@ export function LocationMapStage({
   }
 
 
+  function clearRegionTarget() {
+    onCloseNavigator?.();
+    setState((current) => ({
+      ...current,
+      activeRegionId: "",
+      activeSlotScope: LOCATION_SLOT_SCOPE_MAP,
+      activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_MAP)
+        ? current.activeSlot
+        : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_MAP),
+    }));
+    onComposerRegionSelect?.("");
+  }
+
   function selectWholeMapTarget(event) {
     const target = event.target;
     if (target?.closest?.(
@@ -147,13 +161,7 @@ export function LocationMapStage({
       return;
     }
 
-    setState((current) => ({
-      ...current,
-      activeSlotScope: LOCATION_SLOT_SCOPE_MAP,
-      activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_MAP)
-        ? current.activeSlot
-        : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_MAP),
-    }));
+    clearRegionTarget();
   }
 
   function resolveComposerRegionId(regionId) {
@@ -177,7 +185,12 @@ export function LocationMapStage({
 
   function selectRegionTarget(regionId) {
     const composerRegionId = resolveComposerRegionId(regionId);
-    if (!composerRegionId) return;
+
+    if (!composerRegionId) {
+      clearRegionTarget();
+      return;
+    }
+
     const currentRegionSlotIsValid = isSlotInScope(state.activeSlot, LOCATION_SLOT_SCOPE_REGION);
     const alreadySelected =
       state.activeRegionId === composerRegionId &&
@@ -217,7 +230,11 @@ export function LocationMapStage({
         ) : (
           <>
             {navigatorPanel ? (
-              <div className="location-stage__navigator-focus-overlay" aria-hidden="true" />
+              <div
+                className="location-stage__navigator-focus-overlay"
+                aria-hidden="true"
+                onClick={() => onCloseNavigator?.()}
+              />
             ) : null}
 
             {leftPanel}

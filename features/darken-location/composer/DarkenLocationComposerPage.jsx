@@ -535,14 +535,29 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   }, []);
 
   const selectRoomTarget = useCallback((regionId) => {
-    setState((current) => ({
-      ...current,
-      activeRegionId: regionId || current.activeRegionId || current.locationRegions?.[0]?.id || "",
-      activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
-      activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
-        ? current.activeSlot
-        : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
-    }));
+    const nextRegionId = String(regionId || "").trim();
+
+    setState((current) => {
+      if (!nextRegionId) {
+        return {
+          ...current,
+          activeRegionId: "",
+          activeSlotScope: LOCATION_SLOT_SCOPE_MAP,
+          activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_MAP)
+            ? current.activeSlot
+            : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_MAP),
+        };
+      }
+
+      return {
+        ...current,
+        activeRegionId: nextRegionId,
+        activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+        activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
+          ? current.activeSlot
+          : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
+      };
+    });
     setDrawerOpen(false);
   }, []);
 
@@ -736,6 +751,10 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     });
   }, []);
 
+  const closeComponentNavigator = useCallback(() => {
+    setDrawerOpen(false);
+  }, []);
+
   const focusSlot = useCallback((slotId, slotScope = activeSlotScope, regionId = "") => {
     const normalizedScope = normalizeLocationSlotScope(slotScope);
     setState((current) => ({
@@ -774,7 +793,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
         regionId: current.activeRegionId,
       }),
     );
-    setDrawerOpen(!closesAfterRoomAssignment);
+    setDrawerOpen(false);
     setBuilderMode(activeSlotScope === LOCATION_SLOT_SCOPE_REGION ? "scratch" : builderMode);
     setTransientDraftStatus(
       closesAfterRoomAssignment
@@ -854,9 +873,21 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     selectRoomTarget(regionId);
   }, [selectRoomTarget]);
 
-  const activateRoomWorkFromMap = useCallback(() => {
+  const activateRoomWorkFromMap = useCallback((regionId = "") => {
+    const nextRegionId = String(regionId || "").trim();
     setBuilderMode("scratch");
     setDrawerOpen(false);
+
+    if (!nextRegionId) {
+      setState((current) => ({
+        ...current,
+        activeRegionId: "",
+        activeSlotScope: LOCATION_SLOT_SCOPE_MAP,
+        activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_MAP)
+          ? current.activeSlot
+          : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_MAP),
+      }));
+    }
   }, []);
 
   const leftPanel = builderMode === "theme" ? (
@@ -868,6 +899,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
         <LocationMapWideDetailsBlock
           activeSlot={activeSlot}
           activeSlotScope={activeSlotScope}
+          pickerOpen={drawerOpen && activeSlotScope === LOCATION_SLOT_SCOPE_MAP}
           state={state}
           onFocusSlot={focusSlot}
         />
@@ -904,6 +936,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
     <LocationRoomInspector
       activeSlot={activeSlot}
       generatedMapPreview={generatedMapPreview}
+      pickerOpen={drawerOpen && activeSlotScope === LOCATION_SLOT_SCOPE_REGION}
       state={state}
       onFocusSlot={focusSlot}
       onSelectRoom={selectRoomTarget}
@@ -929,7 +962,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
       slotScope={activeSlotScope}
       state={state}
       onAddComponent={addComponentToActiveSlot}
-      onClose={() => setDrawerOpen(false)}
+      onClose={closeComponentNavigator}
       onRemoveComponent={removeComponentFromActiveSlot}
       onSelectRegion={(regionId) => setState((current) => ({ ...current, activeRegionId: regionId }))}
     />
@@ -1011,6 +1044,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
           navigatorPanel={navigatorPanel}
           contextPanel={exportContextPanel}
           toolbarPanel={centerToolbarPanel}
+          onCloseNavigator={closeComponentNavigator}
           bottomDockPanel={(
             <LocationGuidedFlowPanel
               activeRegion={activeRegionForPicker}

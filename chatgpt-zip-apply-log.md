@@ -6041,3 +6041,512 @@ _Nessun file aggiunto._
 
 - `~features/darken-location/composer/darken-location-composer.styles.css`
 
+
+---
+
+## 2026-06-30 12:44:18
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-parallel-crosshatch-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-parallel-crosshatch-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-06-30 14:28:24
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-crosshatch-group-parallel-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-crosshatch-group-parallel-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-06-30 14:48:09
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-routing-url-state-modified.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-routing-url-state-modified.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+- `~app/router.jsx`
+- `~tests/e2e/dark-places.helpers.js`
+
+
+---
+
+## 2026-06-30 15:01:43
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-slot-navigator-ui-state-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-slot-navigator-ui-state-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 8
+
+- `~features/darken-location/composer/components/LocationComponentPickerModal.jsx`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/components/LocationMapToolbar.jsx`
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-06-30 15:16:11
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-left-rail-slot-selection-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-left-rail-slot-selection-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-06-30 15:26:50
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-selection-scrollbar-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-selection-scrollbar-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-06-30 15:30:11
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-left-rail-visible-scrollbar-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-left-rail-visible-scrollbar-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-30 15:37:16
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-clean-left-rail-scrollbar-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-clean-left-rail-scrollbar-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-06-30 15:43:18
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-frame-rail-scrollbar-cascade-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-frame-rail-scrollbar-cascade-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-30 16:22:23
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-frame-rail-scrollbar-target-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-frame-rail-scrollbar-target-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-30 16:29:43
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-left-rail-scrollbar-spacing-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-left-rail-scrollbar-spacing-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-30 16:46:43
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-composer-css-cleanup-refactor.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-composer-css-cleanup-refactor.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-30 16:57:09
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-slot-card-monsters-alignment-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-slot-card-monsters-alignment-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-30 17:07:35
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-toolbar-room-nav-dropdown-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-toolbar-room-nav-dropdown-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-30 18:47:45
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-slot-hover-border-color-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-slot-hover-border-color-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-30 19:24:34
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-map-style-grid-profiles-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-map-style-grid-profiles-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~features/darken-location/map-generator/map-generator.input.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+- `~features/darken-location/map-generator/map-generator.state.js`
+
+
+---
+
+## 2026-06-30 21:43:53
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-cruor-default-map-style-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-cruor-default-map-style-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/map-generator/map-generator.input.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-06-30 22:00:27
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-cruor-grid-access-dots-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-cruor-grid-access-dots-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~features/darken-location/map-generator/map-generator.input.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+- `~features/darken-location/map-generator/map-generator.state.js`
+
+
+---
+
+## 2026-06-30 22:06:35
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-full-stage-map-pan-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-full-stage-map-pan-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-06-30 22:13:52
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-deselect-empty-room-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-deselect-empty-room-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+
+
+---
+
+## 2026-06-30 22:56:33
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-access-pan-performance-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-access-pan-performance-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-06-30 23:04:38
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-empty-click-no-autoselect-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-empty-click-no-autoselect-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/model/location-room-program.js`
+
+
+---
+
+## 2026-06-30 23:19:52
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-drag-preview-commit-performance-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-drag-preview-commit-performance-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+

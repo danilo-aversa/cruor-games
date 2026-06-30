@@ -19,6 +19,8 @@ import {
   LEVEL_VIEW_ALL,
   MANUAL_OVERRIDE_SCHEMA_VERSION,
   GRID_STYLE_OPTIONS,
+  GRID_WEIGHT_OPTIONS,
+  GRID_COLOR_OPTIONS,
   DOOR_TYPE_OPTIONS,
   STAIR_TRANSITION_OPTIONS,
   JUNCTION_TYPE_OPTIONS,
@@ -28,7 +30,9 @@ import {
   createEmptyLevelOverrides,
   normalizeManualOverrides,
   resetManualOverrides,
+  normalizeGridColor,
   normalizeGridStyle,
+  normalizeGridWeight,
   doorTypeKey,
   normalizeDoorType,
   stairTransitionKey,
@@ -276,11 +280,26 @@ function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+const MAP_WALL_STYLE_PROFILES = Object.freeze({
+  cruor: Object.freeze({ main: 3.8, shadow: 7.6, sketch: 1.05, break: 1.35 }),
+  ink: Object.freeze({ main: 4.05, shadow: 7.2, sketch: 1.15, break: 1.45 }),
+  cartographic: Object.freeze({ main: 2.2, shadow: 3.2, sketch: 0.01, break: 1 }),
+  blood: Object.freeze({ main: 5.15, shadow: 9.2, sketch: 1.45, break: 1.7 }),
+  bone: Object.freeze({ main: 3.15, shadow: 6.2, sketch: 1.05, break: 1.2 }),
+  print: Object.freeze({ main: 2.8, shadow: 0.01, sketch: 0.01, break: 1 }),
+});
+
+function getMapWallStyleProfile(visualStyle) {
+  return MAP_WALL_STYLE_PROFILES[normalizeVisualStyle(visualStyle)] || MAP_WALL_STYLE_PROFILES.cruor;
+}
+
 export function MapViewport({
   generatedMap,
   showGrid,
-  gridStyle,
+  gridStyle = DEFAULT_CONFIG.gridStyle,
   gridOpacity = 0.72,
+  gridColor = DEFAULT_CONFIG.gridColor,
+  gridWeight = DEFAULT_CONFIG.gridWeight,
   crosshatchStyle = "classic",
   crosshatchOpacity = 0.72,
   selectedRegionId = "",
@@ -293,6 +312,7 @@ export function MapViewport({
   showNames,
   showRoomBadges = true,
   showProps,
+  showAccessDots = true,
   levelView = LEVEL_VIEW_ALL,
   fadeOtherLevels = true,
   availableLevels = [],
@@ -322,6 +342,7 @@ export function MapViewport({
   onToggleEditor,
   onToggleNames,
   onToggleProps,
+  onToggleAccessDots,
   onLevelViewChange,
   onToggleFadeOtherLevels,
   onResetEdits,
@@ -343,6 +364,8 @@ export function MapViewport({
 }) {
   const viewportRef = useRef(null);
   const panRef = useRef(null);
+  const panMoveFrameRef = useRef(null);
+  const pendingPanViewRef = useRef(null);
   const roomDragRef = useRef(null);
   const roomMoveFrameRef = useRef(null);
   const pendingRoomMoveRef = useRef(null);
@@ -379,11 +402,12 @@ export function MapViewport({
   const viewportInteractive = enableViewportInteractions && (!embeddedPreview || allowEmbeddedInteractions);
   const shouldShowViewportChrome = showViewportChrome && !embeddedPreview;
   const wallStrokeScale = clamp(view.scale / 0.85, 0.62, 1);
+  const wallStyleProfile = getMapWallStyleProfile(generatedMap.config.visualStyle);
   const wallStrokeVariables = {
-    "--cruor-map-wall-main-width": String(roundTo(4.15 * wallStrokeScale, 2)),
-    "--cruor-map-wall-shadow-width": String(roundTo(8.2 * wallStrokeScale, 2)),
-    "--cruor-map-wall-sketch-width": String(roundTo(Math.max(0.78, 1.15 * wallStrokeScale), 2)),
-    "--cruor-map-wall-break-width": String(roundTo(Math.max(0.92, 1.45 * wallStrokeScale), 2)),
+    "--cruor-map-wall-main-width": String(roundTo(wallStyleProfile.main * wallStrokeScale, 2)),
+    "--cruor-map-wall-shadow-width": String(roundTo(wallStyleProfile.shadow * wallStrokeScale, 2)),
+    "--cruor-map-wall-sketch-width": String(roundTo(wallStyleProfile.sketch * wallStrokeScale, 2)),
+    "--cruor-map-wall-break-width": String(roundTo(wallStyleProfile.break * wallStrokeScale, 2)),
   };
 
   contentBoundsRef.current = generatedMap.contentBounds;
@@ -415,15 +439,14 @@ export function MapViewport({
       frame = 0;
       const viewportRect = viewport.getBoundingClientRect();
       const stageRect = stage.getBoundingClientRect();
-      const normalizedGridStyle = normalizeGridStyle(gridStyle);
-      const gridVisible = showGrid && normalizedGridStyle !== "none";
+      const gridVisible = Boolean(showGrid);
       const gridSize = Math.max(1, generatedMap.config.gridSize || 20);
       const scaledGridSize = Math.max(1, gridSize * view.scale);
       const gridOriginX = viewportRect.left - stageRect.left + view.x;
       const gridOriginY = viewportRect.top - stageRect.top + view.y;
 
       stage.dataset.mapGridVisible = gridVisible ? "true" : "false";
-      stage.dataset.mapGridStyle = normalizedGridStyle;
+      stage.dataset.mapGridStyle = "solid";
       stage.style.setProperty("--location-map-stage-grid-size", `${scaledGridSize}px`);
       stage.style.setProperty("--location-map-stage-grid-x", `${gridOriginX}px`);
       stage.style.setProperty("--location-map-stage-grid-y", `${gridOriginY}px`);
@@ -448,7 +471,7 @@ export function MapViewport({
       stage.style.removeProperty("--location-map-stage-grid-x");
       stage.style.removeProperty("--location-map-stage-grid-y");
     };
-  }, [generatedMap.config.gridSize, gridStyle, showGrid, view.x, view.y, view.scale, viewportSize.width, viewportSize.height]);
+  }, [generatedMap.config.gridSize, showGrid, view.x, view.y, view.scale, viewportSize.width, viewportSize.height]);
 
   const constrainView = useCallback(
     (candidate) => {
@@ -666,6 +689,8 @@ export function MapViewport({
         window.cancelAnimationFrame(roomMoveFrameRef.current);
       if (accessMoveFrameRef.current)
         window.cancelAnimationFrame(accessMoveFrameRef.current);
+      if (panMoveFrameRef.current)
+        window.cancelAnimationFrame(panMoveFrameRef.current);
     },
     [],
   );
@@ -1031,11 +1056,7 @@ export function MapViewport({
       generatedMap,
     );
     if (!anchor) return true;
-    if (pureCaveEditor) {
-      scheduleMapAccessPreview(drag.regionId, drag.id, anchor, drag.accessType);
-      return true;
-    }
-    scheduleMapAccessMove(drag.regionId, anchor, drag.accessType);
+    scheduleMapAccessPreview(drag.regionId, drag.id, anchor, drag.accessType);
     return true;
   }
 
@@ -1044,18 +1065,14 @@ export function MapViewport({
     if (!drag || drag.pointerId !== event.pointerId) return false;
     event.preventDefault();
     event.stopPropagation();
-    if (pureCaveEditor) {
-      const pending = pendingAccessMoveRef.current;
-      if (accessMoveFrameRef.current) {
-        window.cancelAnimationFrame(accessMoveFrameRef.current);
-        accessMoveFrameRef.current = null;
-      }
-      pendingAccessMoveRef.current = null;
-      if (pending)
-        onMapAccessMove?.(pending.regionId, pending.anchor, pending.accessType);
-    } else {
-      flushPendingMapAccessMove();
+    const pending = pendingAccessMoveRef.current;
+    if (accessMoveFrameRef.current) {
+      window.cancelAnimationFrame(accessMoveFrameRef.current);
+      accessMoveFrameRef.current = null;
     }
+    pendingAccessMoveRef.current = null;
+    if (pending)
+      onMapAccessMove?.(pending.regionId, pending.anchor, pending.accessType);
     accessDragRef.current = null;
     setDraggingMapAccessId(null);
     setMapAccessDragPreview(null);
@@ -1529,6 +1546,33 @@ export function MapViewport({
     setIsPanning(true);
   }
 
+  function flushPendingPanMove() {
+    if (panMoveFrameRef.current) {
+      window.cancelAnimationFrame(panMoveFrameRef.current);
+      panMoveFrameRef.current = null;
+    }
+    const pending = pendingPanViewRef.current;
+    pendingPanViewRef.current = null;
+    if (!pending) return;
+    setView((current) =>
+      constrainView({ ...current, x: pending.x, y: pending.y }),
+    );
+  }
+
+  function schedulePanMove(nextX, nextY) {
+    pendingPanViewRef.current = { x: nextX, y: nextY };
+    if (panMoveFrameRef.current) return;
+    panMoveFrameRef.current = window.requestAnimationFrame(() => {
+      panMoveFrameRef.current = null;
+      const pending = pendingPanViewRef.current;
+      pendingPanViewRef.current = null;
+      if (!pending) return;
+      setView((current) =>
+        constrainView({ ...current, x: pending.x, y: pending.y }),
+      );
+    });
+  }
+
   function handlePointerMove(event) {
     if (handleConnectionPointerMove(event)) return;
     if (handleMapAccessPointerMove(event)) return;
@@ -1540,7 +1584,7 @@ export function MapViewport({
     const dy = event.clientY - pan.startY;
     const nextX = pan.originX + dx;
     const nextY = pan.originY + dy;
-    setView((current) => constrainView({ ...current, x: nextX, y: nextY }));
+    schedulePanMove(nextX, nextY);
   }
 
   function endPan(event) {
@@ -1549,6 +1593,7 @@ export function MapViewport({
     if (endCorridorDrag(event)) return;
     if (endRoomDrag(event)) return;
     if (!panRef.current || panRef.current.pointerId !== event.pointerId) return;
+    flushPendingPanMove();
     try {
       event.currentTarget.releasePointerCapture(event.pointerId);
     } catch (error) {
@@ -1651,12 +1696,15 @@ export function MapViewport({
             showGrid={showGrid}
             gridStyle={gridStyle}
             gridOpacity={gridOpacity}
+            gridColor={gridColor}
+            gridWeight={gridWeight}
             crosshatchStyle={crosshatchStyle}
             crosshatchOpacity={crosshatchOpacity}
             showEditor={showEditor}
             showNames={showNames}
             showRoomBadges={showRoomBadges}
             showProps={showProps}
+            showAccessDots={showAccessDots}
             levelView={levelView}
             fadeOtherLevels={fadeOtherLevels}
             viewportViewBox={getViewportViewBox()}
@@ -1699,6 +1747,7 @@ export function MapViewport({
               hoveredCorridorId,
               connectionDraft,
               selectedRegionId,
+              showAccessDots,
               onRoomSelect: (region) => onSelectedRegionChange?.(region?.id || ""),
               onRoomPointerDown: handleRoomPointerDown,
               onRoomPointerEnter: handleRoomPointerEnter,
@@ -1783,6 +1832,7 @@ export function MapViewport({
             showGrid={showGrid}
             showEditor={showEditor}
             showProps={showProps}
+            showAccessDots={showAccessDots}
             levelView={levelView}
             availableLevels={availableLevels}
             fadeOtherLevels={fadeOtherLevels}
@@ -1792,6 +1842,7 @@ export function MapViewport({
             onGridStyleChange={onGridStyleChange}
             onToggleEditor={onToggleEditor}
             onToggleProps={onToggleProps}
+            onToggleAccessDots={onToggleAccessDots}
             onLevelViewChange={onLevelViewChange}
             onToggleFadeOtherLevels={onToggleFadeOtherLevels}
             onExportSvg={onExportSvg}
@@ -2656,6 +2707,7 @@ function MapActionContextMenu({
   showGrid,
   showEditor,
   showProps,
+  showAccessDots = true,
   levelView = LEVEL_VIEW_ALL,
   availableLevels = [],
   fadeOtherLevels = true,
@@ -2665,6 +2717,7 @@ function MapActionContextMenu({
   onGridStyleChange,
   onToggleEditor,
   onToggleProps,
+  onToggleAccessDots,
   onLevelViewChange,
   onToggleFadeOtherLevels,
   onExportSvg,
@@ -2810,6 +2863,18 @@ function MapActionContextMenu({
         >
           <span>{icon("boxes-stacked")} Props</span>
           <span>{showProps ? "On" : "Off"}</span>
+        </button>
+        <button
+          type="button"
+          className={
+            showAccessDots
+              ? "room-context-menu__trigger is-active"
+              : "room-context-menu__trigger"
+          }
+          onClick={() => run(onToggleAccessDots)}
+        >
+          <span>{icon("location-dot")} Access Dots</span>
+          <span>{showAccessDots ? "On" : "Off"}</span>
         </button>
         <div className="room-context-menu__item">
           <button type="button" className="room-context-menu__trigger">
@@ -3073,6 +3138,46 @@ const MAP_GRID_STYLE_ICONS = {
   none: "eye-slash",
 };
 
+const MAP_GRID_WEIGHT_LABELS = {
+  fine: "Fine",
+  normal: "Normal",
+  bold: "Bold",
+};
+
+const MAP_GRID_WEIGHT_ICONS = {
+  fine: "minus",
+  normal: "grip-lines",
+  bold: "equals",
+};
+
+const MAP_GRID_COLOR_LABELS = {
+  default: "Default",
+  light: "Light Grey",
+  darker: "Darker",
+  blood: "Blood",
+  sepia: "Sepia",
+  black: "Black",
+};
+
+const MAP_GRID_COLOR_ICONS = {
+  default: "circle-half-stroke",
+  light: "circle",
+  darker: "moon",
+  blood: "droplet",
+  sepia: "scroll",
+  black: "circle",
+};
+
+const MAP_VISUAL_STYLE_ICONS = {
+  cruor: "moon",
+  ink: "pen-nib",
+  cartographic: "ruler-combined",
+  blood: "droplet",
+  bone: "scroll",
+  print: "print",
+};
+
+
 const CROSSHATCH_STYLE_OPTIONS = [
   { value: "classic", label: "Classic", icon: "grip-lines" },
   { value: "none", label: "None", icon: "eye-slash" },
@@ -3187,18 +3292,24 @@ function MapStyleSlider({ id, label, value, onChange }) {
 function MapStyleDropdown({
   open = false,
   visualStyle,
-  gridStyle,
+  gridStyle = DEFAULT_CONFIG.gridStyle,
   gridOpacity = 0.72,
+  gridColor = DEFAULT_CONFIG.gridColor,
+  gridWeight = DEFAULT_CONFIG.gridWeight,
   crosshatchStyle = "classic",
   crosshatchOpacity = 0.72,
   onToggle,
   onVisualStyleChange,
   onGridStyleChange,
+  onGridColorChange,
+  onGridWeightChange,
   onGridOpacityChange,
   onCrosshatchStyleChange,
   onCrosshatchOpacityChange,
 }) {
   const normalizedGridStyle = normalizeGridStyle(gridStyle);
+  const normalizedGridColor = normalizeGridColor(gridColor);
+  const normalizedGridWeight = normalizeGridWeight(gridWeight);
   const normalizedVisualStyle = normalizeVisualStyle(visualStyle);
   const normalizedCrosshatchStyle = crosshatchStyle === "none" ? "none" : "classic";
 
@@ -3242,6 +3353,30 @@ function MapStyleDropdown({
                 />
               ))}
             </span>
+            <span className="location-map-toolbar__style-subtitle">Grid Color</span>
+            <span className="location-map-toolbar__style-options location-map-toolbar__style-options--compact">
+              {GRID_COLOR_OPTIONS.map((color) => (
+                <MapStyleOptionButton
+                  key={color}
+                  icon={MAP_GRID_COLOR_ICONS[color] || "circle"}
+                  label={MAP_GRID_COLOR_LABELS[color] || color}
+                  active={normalizedGridColor === color}
+                  onClick={() => onGridColorChange?.(color)}
+                />
+              ))}
+            </span>
+            <span className="location-map-toolbar__style-subtitle">Grid Weight</span>
+            <span className="location-map-toolbar__style-options location-map-toolbar__style-options--compact">
+              {GRID_WEIGHT_OPTIONS.map((weight) => (
+                <MapStyleOptionButton
+                  key={weight}
+                  icon={MAP_GRID_WEIGHT_ICONS[weight] || "grip-lines"}
+                  label={MAP_GRID_WEIGHT_LABELS[weight] || weight}
+                  active={normalizedGridWeight === weight}
+                  onClick={() => onGridWeightChange?.(weight)}
+                />
+              ))}
+            </span>
             <MapStyleSlider
               id="inline-map-grid-opacity"
               label="Grid Opacity"
@@ -3259,7 +3394,7 @@ function MapStyleDropdown({
               {MAP_VISUAL_STYLES.map((style) => (
                 <MapStyleOptionButton
                   key={style.value}
-                  icon={style.value === "ink" ? "pen-nib" : style.value === "parchment" ? "scroll" : "map"}
+                  icon={MAP_VISUAL_STYLE_ICONS[style.value] || "map"}
                   label={style.label}
                   active={normalizedVisualStyle === style.value}
                   onClick={() => onVisualStyleChange?.(style.value)}
@@ -3296,11 +3431,14 @@ function InlineMapEditorToolbar({
   showNames = false,
   showRoomBadges = true,
   showProps = false,
+  showAccessDots = true,
   manualHistory = { past: [], future: [] },
   viewportControls = null,
   visualStyle = DEFAULT_CONFIG.visualStyle,
-  gridStyle = "solid",
+  gridStyle = DEFAULT_CONFIG.gridStyle,
   gridOpacity = 0.72,
+  gridColor = DEFAULT_CONFIG.gridColor,
+  gridWeight = DEFAULT_CONFIG.gridWeight,
   crosshatchStyle = "classic",
   crosshatchOpacity = 0.72,
   onRefreshFromComposer,
@@ -3310,9 +3448,12 @@ function InlineMapEditorToolbar({
   onToggleRoomBadges,
   onToggleNames,
   onToggleProps,
+  onToggleAccessDots,
   onResetEdits,
   onVisualStyleChange,
   onGridStyleChange,
+  onGridColorChange,
+  onGridWeightChange,
   onGridOpacityChange,
   onCrosshatchStyleChange,
   onCrosshatchOpacityChange,
@@ -3431,12 +3572,20 @@ function InlineMapEditorToolbar({
           active={showNames}
           onClick={onToggleNames}
         />
+        <MapToolButton
+          icon="location-dot"
+          label="Toggle Access/Doors"
+          active={showAccessDots}
+          onClick={onToggleAccessDots}
+        />
         <span className="location-map-toolbar__divider" aria-hidden="true" />
         <MapStyleDropdown
           open={styleMenuOpen}
           visualStyle={visualStyle}
           gridStyle={gridStyle}
           gridOpacity={gridOpacity}
+          gridColor={gridColor}
+          gridWeight={gridWeight}
           crosshatchStyle={crosshatchStyle}
           crosshatchOpacity={crosshatchOpacity}
           onToggle={() => {
@@ -3445,6 +3594,8 @@ function InlineMapEditorToolbar({
           }}
           onVisualStyleChange={onVisualStyleChange}
           onGridStyleChange={onGridStyleChange}
+          onGridColorChange={onGridColorChange}
+          onGridWeightChange={onGridWeightChange}
           onGridOpacityChange={onGridOpacityChange}
           onCrosshatchStyleChange={onCrosshatchStyleChange}
           onCrosshatchOpacityChange={onCrosshatchOpacityChange}
@@ -3834,7 +3985,9 @@ export default function CruorMapGeneratorMvp({
   const [visualStyle, setVisualStyle] = useState(
     normalizeVisualStyle(initialConfig.visualStyle),
   );
-  const [gridStyle, setGridStyle] = useState(normalizeGridStyle(initialConfig.gridStyle || "solid"));
+  const [gridStyle, setGridStyle] = useState(normalizeGridStyle(initialConfig.gridStyle || DEFAULT_CONFIG.gridStyle));
+  const [gridColor, setGridColor] = useState(normalizeGridColor(initialConfig.gridColor || DEFAULT_CONFIG.gridColor));
+  const [gridWeight, setGridWeight] = useState(normalizeGridWeight(initialConfig.gridWeight || DEFAULT_CONFIG.gridWeight));
   const [gridOpacity, setGridOpacity] = useState(0.72);
   const [crosshatchStyle, setCrosshatchStyle] = useState("classic");
   const [crosshatchOpacity, setCrosshatchOpacity] = useState(0.72);
@@ -3846,6 +3999,7 @@ export default function CruorMapGeneratorMvp({
   const [showNames, setShowNames] = useState(false);
   const [showRoomBadges, setShowRoomBadges] = useState(true);
   const [showProps, setShowProps] = useState(false);
+  const [showAccessDots, setShowAccessDots] = useState(true);
   const [inlineViewportControls, setInlineViewportControls] = useState(null);
   const [manualOverrides, setManualOverrides] = useState(() =>
     normalizeManualOverrides(initialManualOverrides || createEmptyManualOverrides()),
@@ -3971,12 +4125,22 @@ export default function CruorMapGeneratorMvp({
       return current === next ? current : next;
     });
     setGridStyle((current) => {
-      const next = normalizeGridStyle(initialConfig.gridStyle || "solid");
+      const next = normalizeGridStyle(initialConfig.gridStyle || DEFAULT_CONFIG.gridStyle);
+      return current === next ? current : next;
+    });
+    setGridColor((current) => {
+      const next = normalizeGridColor(initialConfig.gridColor || DEFAULT_CONFIG.gridColor);
+      return current === next ? current : next;
+    });
+    setGridWeight((current) => {
+      const next = normalizeGridWeight(initialConfig.gridWeight || DEFAULT_CONFIG.gridWeight);
       return current === next ? current : next;
     });
   }, [
     initialConfig.context,
     initialConfig.gridStyle,
+    initialConfig.gridColor,
+    initialConfig.gridWeight,
     initialConfig.mapHeight,
     initialConfig.mapWidth,
     initialConfig.roomCount,
@@ -4031,10 +4195,16 @@ export default function CruorMapGeneratorMvp({
     showEditor,
     showGrid,
     gridStyle,
+    gridColor,
+    gridWeight,
+    gridOpacity,
+    crosshatchStyle,
+    crosshatchOpacity,
     visualStyle,
     showNames,
     showRoomBadges,
     showProps,
+    showAccessDots,
     shouldRunMapDiagnostics,
   ]);
 
@@ -4573,7 +4743,10 @@ export default function CruorMapGeneratorMvp({
         showNames,
         showRoomBadges,
         showProps,
+        showAccessDots,
         gridStyle,
+        gridColor,
+        gridWeight,
         visualStyle,
         levelView,
         fadeOtherLevels,
@@ -4648,7 +4821,10 @@ export default function CruorMapGeneratorMvp({
         showNames,
         showRoomBadges,
         showProps,
+        showAccessDots,
         gridStyle,
+        gridColor,
+        gridWeight,
         visualStyle,
         levelView,
         fadeOtherLevels,
@@ -4689,6 +4865,9 @@ export default function CruorMapGeneratorMvp({
         setVisualStyle(
           normalizeVisualStyle(importedConfig.visualStyle, DEFAULT_CONFIG.visualStyle),
         );
+        setGridStyle(normalizeGridStyle(importedConfig.gridStyle || DEFAULT_CONFIG.gridStyle));
+        setGridColor(normalizeGridColor(importedConfig.gridColor || DEFAULT_CONFIG.gridColor));
+        setGridWeight(normalizeGridWeight(importedConfig.gridWeight || DEFAULT_CONFIG.gridWeight));
         setRoomCount(
           normalizeRoomCount(
             importedConfig.roomCount,
@@ -4705,8 +4884,14 @@ export default function CruorMapGeneratorMvp({
             setShowRoomBadges(payload.uiState.showRoomBadges);
           if (typeof payload.uiState.showProps === "boolean")
             setShowProps(payload.uiState.showProps);
+          if (typeof payload.uiState.showAccessDots === "boolean")
+            setShowAccessDots(payload.uiState.showAccessDots);
           if (typeof payload.uiState.gridStyle === "string")
             setGridStyle(normalizeGridStyle(payload.uiState.gridStyle));
+          if (typeof payload.uiState.gridColor === "string")
+            setGridColor(normalizeGridColor(payload.uiState.gridColor));
+          if (typeof payload.uiState.gridWeight === "string")
+            setGridWeight(normalizeGridWeight(payload.uiState.gridWeight));
           if (typeof payload.uiState.visualStyle === "string")
             setVisualStyle(
               normalizeVisualStyle(payload.uiState.visualStyle, visualStyle),
@@ -5276,17 +5461,20 @@ export default function CruorMapGeneratorMvp({
   }
 
   function setGridRenderingStyle(value) {
-    const nextGridStyle = normalizeGridStyle(value || "solid");
-    setGridStyle(nextGridStyle);
-    setShowGrid(nextGridStyle !== "none");
+    setGridStyle(normalizeGridStyle(value || "solid"));
+  }
+
+  function setGridRenderingColor(value) {
+    setGridColor(normalizeGridColor(value || "default"));
+  }
+
+  function setGridRenderingWeight(value) {
+    setGridWeight(normalizeGridWeight(value || "normal"));
   }
 
   function toggleGridVisibility() {
     setShowGrid((current) => {
       const next = !current;
-      if (next && normalizeGridStyle(gridStyle) === "none") {
-        setGridStyle("solid");
-      }
       return next;
     });
   }
@@ -5314,6 +5502,8 @@ export default function CruorMapGeneratorMvp({
       showGrid={showGrid}
       gridStyle={gridStyle}
       gridOpacity={gridOpacity}
+      gridColor={gridColor}
+      gridWeight={gridWeight}
       crosshatchStyle={crosshatchStyle}
       crosshatchOpacity={crosshatchOpacity}
       selectedRegionId={selectedRegionId}
@@ -5324,6 +5514,7 @@ export default function CruorMapGeneratorMvp({
       showNames={showNames}
       showRoomBadges={showRoomBadges}
       showProps={showProps}
+      showAccessDots={showAccessDots}
       levelView={levelView}
       fadeOtherLevels={fadeOtherLevels}
       availableLevels={availableLevels}
@@ -5353,6 +5544,7 @@ export default function CruorMapGeneratorMvp({
       onToggleEditor={() => setShowEditor((value) => !value)}
       onToggleNames={() => setShowNames((value) => !value)}
       onToggleProps={() => setShowProps((value) => !value)}
+      onToggleAccessDots={() => setShowAccessDots((value) => !value)}
       onLevelViewChange={(value) =>
         setLevelView(normalizeLevelView(value, availableLevels))
       }
@@ -5398,11 +5590,14 @@ export default function CruorMapGeneratorMvp({
           showNames={showNames}
           showRoomBadges={showRoomBadges}
           showProps={showProps}
+          showAccessDots={showAccessDots}
           manualHistory={manualHistory}
           viewportControls={inlineViewportControls}
           visualStyle={visualStyle}
           gridStyle={gridStyle}
           gridOpacity={gridOpacity}
+          gridColor={gridColor}
+          gridWeight={gridWeight}
           crosshatchStyle={crosshatchStyle}
           crosshatchOpacity={crosshatchOpacity}
           onRefreshFromComposer={onRefreshFromComposer}
@@ -5412,8 +5607,11 @@ export default function CruorMapGeneratorMvp({
           onToggleRoomBadges={() => setShowRoomBadges((value) => !value)}
           onToggleNames={() => setShowNames((value) => !value)}
           onToggleProps={() => setShowProps((value) => !value)}
+          onToggleAccessDots={() => setShowAccessDots((value) => !value)}
           onVisualStyleChange={(value) => setVisualStyle(normalizeVisualStyle(value))}
           onGridStyleChange={setGridRenderingStyle}
+          onGridColorChange={setGridRenderingColor}
+          onGridWeightChange={setGridRenderingWeight}
           onGridOpacityChange={setGridOpacity}
           onCrosshatchStyleChange={(value) => setCrosshatchStyle(value === "none" ? "none" : "classic")}
           onCrosshatchOpacityChange={setCrosshatchOpacity}
@@ -5661,6 +5859,26 @@ export default function CruorMapGeneratorMvp({
                   { value: "none", label: "None" },
                 ]}
                 onChange={setGridRenderingStyle}
+              />
+              <MapControlSelect
+                id="grid-color"
+                label="Grid Color"
+                value={gridColor}
+                options={GRID_COLOR_OPTIONS.map((color) => ({
+                  value: color,
+                  label: MAP_GRID_COLOR_LABELS[color] || color,
+                }))}
+                onChange={setGridRenderingColor}
+              />
+              <MapControlSelect
+                id="grid-weight"
+                label="Grid Weight"
+                value={gridWeight}
+                options={GRID_WEIGHT_OPTIONS.map((weight) => ({
+                  value: weight,
+                  label: MAP_GRID_WEIGHT_LABELS[weight] || weight,
+                }))}
+                onChange={setGridRenderingWeight}
               />
               <MapControlSlider
                 id="grid-opacity"

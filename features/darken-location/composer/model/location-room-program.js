@@ -112,8 +112,11 @@ export function getRoomProgramEntries(state = {}, generatedMapPreview = null) {
 }
 
 export function getSelectedRoomProgramEntry(state = {}, generatedMapPreview = null) {
+  const activeRegionId = String(state.activeRegionId || "").trim();
+  if (!activeRegionId) return null;
+
   const entries = getRoomProgramEntries(state, generatedMapPreview);
-  return entries.find((entry) => entry.id === state.activeRegionId) || entries[0] || null;
+  return entries.find((entry) => entry.id === activeRegionId) || null;
 }
 
 export function getRoomProgramMetrics(state = {}, generatedMapPreview = null) {

@@ -602,7 +602,7 @@ export function LocationComponentPickerModal({
   state,
 }) {
   const [search, setSearch] = useState("");
-  const [filtersOpen, setFiltersOpen] = useState(true);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [sourceFilterIds, setSourceFilterIds] = useState([]);
   const [packFilter, setPackFilter] = useState("all");
   const [pickFilter, setPickFilter] = useState("all");
@@ -911,7 +911,7 @@ export function LocationComponentPickerModal({
                 </div>
               </div>
 
-              <div className="tag-filter-row location-source-grid-open" aria-label="Filter location components">
+              <div className="tag-filter-row monster-source-grid-open location-source-grid-open" aria-label="Filter location components">
                 <div className="tag-filter-row__head">
                   <span>Component Filters</span>
                   <button

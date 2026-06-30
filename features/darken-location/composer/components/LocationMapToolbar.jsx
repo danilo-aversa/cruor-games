@@ -50,7 +50,7 @@ function LocationMapInlineEditorToolsHost() {
 
 function getRoomStatusLabel(status = "empty") {
   if (status === "ready") return "Ready";
-  if (status === "partial") return "Partial";
+  if (status === "partial") return "Used";
   return "Empty";
 }
 

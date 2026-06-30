@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle2, Circle, Eye, Gem, RotateCcw, Search } from "lucide-react";
+import { AlertTriangle, Eye, Gem, RotateCcw, Search } from "lucide-react";
 import { LOCATION_SLOT_SCOPE_REGION } from "../model/location-composer-state.js";
 import {
   getDefaultSlotIdForScope,
@@ -31,32 +31,37 @@ function LocationInspectorFact({ label, value }) {
   );
 }
 
-function LocationRoomStatusPill({ status = "empty" }) {
-  const label = status === "ready" ? "Ready" : status === "partial" ? "Partial" : "Empty";
-  const Icon = status === "ready" ? CheckCircle2 : status === "partial" ? AlertTriangle : Circle;
-
-  return (
-    <span className={cx("location-room-status-pill", `is-${status}`)}>
-      <Icon aria-hidden="true" />
-      <span>{label}</span>
-    </span>
-  );
-}
 
 export function LocationRoomInspector({
   activeSlot,
   generatedMapPreview = null,
   onFocusSlot,
+  pickerOpen = false,
   state,
 }) {
   const entry = getSelectedRoomProgramEntry(state, generatedMapPreview);
   const roomRows = entry ? getRoomSlotProgramRows(state, entry.id) : [];
-  const activeSlotId = isSlotInScope(activeSlot?.id || state.activeSlot, LOCATION_SLOT_SCOPE_REGION)
+  const activeSlotId = pickerOpen && isSlotInScope(activeSlot?.id || state.activeSlot, LOCATION_SLOT_SCOPE_REGION)
     ? activeSlot?.id || state.activeSlot
-    : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION);
+    : "";
 
   function focusSlot(slotId) {
     onFocusSlot?.(slotId, LOCATION_SLOT_SCOPE_REGION, entry?.id || state.activeRegionId || "");
+  }
+
+  if (!entry) {
+    return (
+      <aside
+        className="cruor-composer-rail location-composer__rail location-composer__rail--left location-room-inspector-rail location-room-inspector-rail--rooms"
+        aria-label="Select room"
+        data-testid="dark-places-room-inspector"
+      >
+        <section className="location-room-inspector-card location-room-inspector-card--selected location-room-inspector-card--empty" aria-label="Select room prompt">
+          <strong className="location-room-inspector-title">Select Room</strong>
+          <div className="location-room-inspector-note">Click a room on the map to edit its slots.</div>
+        </section>
+      </aside>
+    );
   }
 
   return (
@@ -68,21 +73,14 @@ export function LocationRoomInspector({
       <section className="location-room-inspector-card location-room-inspector-card--selected" aria-label="Selected room summary">
         <div className="location-room-inspector-card__head">
           <span>Selected Room</span>
-          {entry ? <LocationRoomStatusPill status={entry.status} /> : null}
         </div>
-        <strong className="location-room-inspector-title">{entry ? entry.name : "No Room"}</strong>
-        {entry ? (
-          <>
-            <div className="location-room-inspector-facts">
-              <LocationInspectorFact label="Map" value={entry.mapLabel} />
-              <LocationInspectorFact label="Role" value={entry.roleLabel} />
-              <LocationInspectorFact label="Type" value={entry.roomTypeLabel} />
-              <LocationInspectorFact label="Level" value={String(entry.level)} />
-            </div>
-          </>
-        ) : (
-          <div className="location-room-inspector-note">Generate or select a room program first.</div>
-        )}
+        <strong className="location-room-inspector-title">{entry.name}</strong>
+        <div className="location-room-inspector-facts">
+          <LocationInspectorFact label="Map" value={entry.mapLabel} />
+          <LocationInspectorFact label="Role" value={entry.roleLabel} />
+          <LocationInspectorFact label="Type" value={entry.roomTypeLabel} />
+          <LocationInspectorFact label="Level" value={String(entry.level)} />
+        </div>
       </section>
 
       <div className="location-room-inspector-slot-stack" role="list" aria-label="Room work slots">
@@ -124,9 +122,6 @@ export function LocationRoomInspector({
               </button>
             );
           })}
-          {!roomRows.length ? (
-            <div className="location-room-inspector-note">Select a room to show its work slots.</div>
-          ) : null}
       </div>
     </aside>
   );

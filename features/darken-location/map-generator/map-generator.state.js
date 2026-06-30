@@ -208,6 +208,8 @@ export function resetManualOverrides() {
 }
 
 export const GRID_STYLE_OPTIONS = ["solid", "dotted", "dashed", "none"];
+export const GRID_WEIGHT_OPTIONS = ["fine", "normal", "bold"];
+export const GRID_COLOR_OPTIONS = ["default", "light", "darker", "blood", "sepia", "black"];
 export const DOOR_TYPE_OPTIONS = ["default", "secret", "locked", "open"];
 export const STAIR_TRANSITION_OPTIONS = ["none", "up", "down"];
 export const JUNCTION_TYPE_OPTIONS = ["merge", "wall", "door"];
@@ -215,6 +217,14 @@ export const LEVEL_VIEW_ALL = "all";
 
 export function normalizeGridStyle(value) {
   return GRID_STYLE_OPTIONS.includes(value) ? value : "solid";
+}
+
+export function normalizeGridWeight(value) {
+  return GRID_WEIGHT_OPTIONS.includes(value) ? value : "normal";
+}
+
+export function normalizeGridColor(value) {
+  return GRID_COLOR_OPTIONS.includes(value) ? value : "default";
 }
 
 export function doorTypeKey(corridorId, endpoint) {

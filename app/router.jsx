@@ -1,4 +1,12 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import AppShell from "./AppShell.jsx";
 import HomePage from "./HomePage.jsx";
 import CrucibleTopbar from "../features/crucible/components/CrucibleTopbar.jsx";
@@ -10,7 +18,8 @@ import { createMapRequestFromDarkenLocationState } from "../features/darken-loca
 import { getCurrentLocale, setCurrentLocale, t } from "../shared/i18n/index.js";
 
 const CruorMapGeneratorMvp = lazy(
-  () => import("../features/darken-location/map-generator/map-generator.index.js"),
+  () =>
+    import("../features/darken-location/map-generator/map-generator.index.js"),
 );
 
 function buildCrucibleGenerators(locale) {
@@ -61,59 +70,182 @@ function buildMonsterViews(locale) {
   ];
 }
 
+const CRUOR_ROUTES = {
+  home: "/",
+  darkPlaces: "/darkplaces",
+  darkPlacesMap: "/darkplaces/map",
+  terrifyingMonsters: "/terrifyingmonsters",
+  inspirations: "/inspirations",
+  inspirationStudio: "/inspiration-studio",
+};
 
-function getInitialSearchParams() {
-  if (typeof window === "undefined") return new URLSearchParams();
-  return new URLSearchParams(window.location.search);
+function normalizeRoutePath(pathname = "/") {
+  const normalizedPath = pathname.replace(/\/+$/, "") || "/";
+  return normalizedPath.toLowerCase();
 }
 
-function isDarkPlacesTestHarness(params = getInitialSearchParams()) {
-  return (
-    params.get("cruorTest") === "dark-places" ||
-    params.get("testHarness") === "dark-places" ||
+function getCruorRouteFromLocation(
+  location = typeof window !== "undefined" ? window.location : undefined,
+) {
+  const pathname = normalizeRoutePath(location?.pathname || "/");
+  const params = new URLSearchParams(location?.search || "");
+
+  if (pathname === CRUOR_ROUTES.darkPlacesMap) {
+    return {
+      section: "crucible",
+      crucibleGenerator: "darken",
+      darkenTab: "map-generator",
+    };
+  }
+
+  if (pathname === CRUOR_ROUTES.darkPlaces) {
+    return {
+      section: "crucible",
+      crucibleGenerator: "darken",
+      darkenTab: "composer",
+    };
+  }
+
+  if (pathname === CRUOR_ROUTES.terrifyingMonsters) {
+    return {
+      section: "crucible",
+      crucibleGenerator: "monster",
+      darkenTab: "composer",
+    };
+  }
+
+  if (pathname === CRUOR_ROUTES.inspirations) {
+    return {
+      section: "inspirations",
+      crucibleGenerator: "darken",
+      darkenTab: "composer",
+    };
+  }
+
+  if (pathname === CRUOR_ROUTES.inspirationStudio) {
+    return {
+      section: "inspiration-studio",
+      crucibleGenerator: "darken",
+      darkenTab: "composer",
+    };
+  }
+
+  if (params.get("studio") === "1" || params.get("admin") === "studio") {
+    return {
+      section: "inspiration-studio",
+      crucibleGenerator: "darken",
+      darkenTab: "composer",
+    };
+  }
+
+  if (params.get("section") === "inspirations") {
+    return {
+      section: "inspirations",
+      crucibleGenerator: "darken",
+      darkenTab: "composer",
+    };
+  }
+
+  if (
     params.get("section") === "crucible" ||
-    params.get("tool") === "darken"
-  );
+    params.get("tool") ||
+    params.get("generator")
+  ) {
+    const generator = params.get("generator") || params.get("tool");
+    const view = params.get("view") || params.get("darkenView");
+
+    return {
+      section: "crucible",
+      crucibleGenerator: generator === "monster" ? "monster" : "darken",
+      darkenTab:
+        view === "map" || view === "map-generator"
+          ? "map-generator"
+          : "composer",
+    };
+  }
+
+  if (
+    params.get("cruorTest") === "dark-places" ||
+    params.get("testHarness") === "dark-places"
+  ) {
+    return {
+      section: "crucible",
+      crucibleGenerator: "darken",
+      darkenTab: "composer",
+    };
+  }
+
+  return {
+    section: "home",
+    crucibleGenerator: "darken",
+    darkenTab: "composer",
+  };
 }
 
-function getInitialSection() {
-  const params = getInitialSearchParams();
-  if (params.get("studio") === "1" || params.get("admin") === "studio") return "inspiration-studio";
-  if (isDarkPlacesTestHarness(params)) return "crucible";
-  return "home";
+function getRoutePath(route) {
+  if (route.section === "inspirations") return CRUOR_ROUTES.inspirations;
+  if (route.section === "inspiration-studio")
+    return CRUOR_ROUTES.inspirationStudio;
+
+  if (route.section === "crucible") {
+    if (route.crucibleGenerator === "monster")
+      return CRUOR_ROUTES.terrifyingMonsters;
+    if (route.darkenTab === "map-generator") return CRUOR_ROUTES.darkPlacesMap;
+    return CRUOR_ROUTES.darkPlaces;
+  }
+
+  return CRUOR_ROUTES.home;
 }
 
-function getInitialCrucibleGenerator() {
-  const params = getInitialSearchParams();
-  const generator = params.get("generator") || params.get("tool");
-  return generator === "monster" ? "monster" : "darken";
-}
+function writeRouteToHistory(route, { replace = false } = {}) {
+  if (typeof window === "undefined") return;
 
-function getInitialDarkenTab() {
-  const params = getInitialSearchParams();
-  const view = params.get("view") || params.get("darkenView");
-  return view === "map" || view === "map-generator" ? "map-generator" : "composer";
-}
+  const nextPath = getRoutePath(route);
+  const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
 
-function getInitialMapGeneratorOpened() {
-  return getInitialSection() === "crucible" && getInitialCrucibleGenerator() === "darken" && getInitialDarkenTab() === "map-generator";
+  if (currentPath === nextPath) return;
+
+  const method = replace ? "replaceState" : "pushState";
+  window.history[method]({ cruorRoute: route }, "", nextPath);
 }
 
 export default function AppRouter() {
-  const [activeSection, setActiveSection] = useState(getInitialSection);
+  const [activeSection, setActiveSection] = useState(
+    () => getCruorRouteFromLocation().section,
+  );
   const [activeUiMode, setActiveUiMode] = useState("simple");
   const [activeLocale, setActiveLocaleState] = useState(getCurrentLocale);
-  const [activeCrucibleGenerator, setActiveCrucibleGenerator] = useState(getInitialCrucibleGenerator);
-  const [activeDarkenTab, setActiveDarkenTab] = useState(getInitialDarkenTab);
-  const [hasOpenedMapGenerator, setHasOpenedMapGenerator] = useState(getInitialMapGeneratorOpened);
+  const [activeCrucibleGenerator, setActiveCrucibleGenerator] = useState(
+    () => getCruorRouteFromLocation().crucibleGenerator,
+  );
+  const [activeDarkenTab, setActiveDarkenTab] = useState(
+    () => getCruorRouteFromLocation().darkenTab,
+  );
+  const [hasOpenedMapGenerator, setHasOpenedMapGenerator] = useState(() => {
+    const initialRoute = getCruorRouteFromLocation();
+    return (
+      initialRoute.section === "crucible" &&
+      initialRoute.crucibleGenerator === "darken" &&
+      initialRoute.darkenTab === "map-generator"
+    );
+  });
   const [mapRequest, setMapRequest] = useState(null);
   const [mapRequestRevision, setMapRequestRevision] = useState(0);
   const [monsterInspirationSeed, setMonsterInspirationSeed] = useState(null);
   const darkenSnapshotProviderRef = useRef(null);
 
-  const crucibleGenerators = useMemo(() => buildCrucibleGenerators(activeLocale), [activeLocale]);
-  const darkenViews = useMemo(() => buildDarkenViews(activeLocale), [activeLocale]);
-  const monsterViews = useMemo(() => buildMonsterViews(activeLocale), [activeLocale]);
+  const crucibleGenerators = useMemo(
+    () => buildCrucibleGenerators(activeLocale),
+    [activeLocale],
+  );
+  const darkenViews = useMemo(
+    () => buildDarkenViews(activeLocale),
+    [activeLocale],
+  );
+  const monsterViews = useMemo(
+    () => buildMonsterViews(activeLocale),
+    [activeLocale],
+  );
 
   const handleLocaleChange = useCallback((locale) => {
     const normalizedLocale = setCurrentLocale(locale);
@@ -124,6 +256,55 @@ export default function AppRouter() {
     setCurrentLocale(activeLocale);
   }, [activeLocale]);
 
+  const syncStateFromRoute = useCallback((route) => {
+    setActiveSection(route.section);
+    setActiveCrucibleGenerator(route.crucibleGenerator);
+    setActiveDarkenTab(route.darkenTab);
+
+    if (
+      route.section === "crucible" &&
+      route.crucibleGenerator === "darken" &&
+      route.darkenTab === "map-generator"
+    ) {
+      setHasOpenedMapGenerator(true);
+    }
+  }, []);
+
+  const navigateToRoute = useCallback(
+    (route, options = {}) => {
+      writeRouteToHistory(route, options);
+      syncStateFromRoute(route);
+    },
+    [syncStateFromRoute],
+  );
+
+  const activateSection = useCallback(
+    (sectionId) => {
+      const nextSection =
+        sectionId === "inspirations" || sectionId === "inspiration-studio"
+          ? sectionId
+          : "home";
+
+      navigateToRoute({
+        section: nextSection,
+        crucibleGenerator: activeCrucibleGenerator,
+        darkenTab: activeDarkenTab,
+      });
+    },
+    [activeCrucibleGenerator, activeDarkenTab, navigateToRoute],
+  );
+
+  useEffect(() => {
+    function handlePopState() {
+      syncStateFromRoute(getCruorRouteFromLocation());
+    }
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [syncStateFromRoute]);
 
   const createMapRequestFromSnapshot = useCallback(
     (snapshot) => createMapRequestFromDarkenLocationState(snapshot),
@@ -132,35 +313,47 @@ export default function AppRouter() {
 
   const initializeMapRequest = useCallback(
     (snapshot) => {
-      setMapRequest((currentRequest) => currentRequest || createMapRequestFromSnapshot(snapshot));
+      setMapRequest(
+        (currentRequest) =>
+          currentRequest || createMapRequestFromSnapshot(snapshot),
+      );
     },
     [createMapRequestFromSnapshot],
   );
 
   const refreshMapFromComposer = useCallback(() => {
     if (hasOpenedMapGenerator) {
-      const confirmed = window.confirm(t("crucible.messages.refreshMapConfirm", {}, activeLocale));
+      const confirmed = window.confirm(
+        t("crucible.messages.refreshMapConfirm", {}, activeLocale),
+      );
       if (!confirmed) return;
     }
 
     const snapshot = darkenSnapshotProviderRef.current?.();
     setMapRequest(createMapRequestFromSnapshot(snapshot));
     setMapRequestRevision((value) => value + 1);
-    setHasOpenedMapGenerator(true);
-    setActiveCrucibleGenerator("darken");
-    setActiveDarkenTab("map-generator");
-    setActiveSection("crucible");
-  }, [activeLocale, createMapRequestFromSnapshot, hasOpenedMapGenerator]);
+    navigateToRoute({
+      section: "crucible",
+      crucibleGenerator: "darken",
+      darkenTab: "map-generator",
+    });
+  }, [
+    activeLocale,
+    createMapRequestFromSnapshot,
+    hasOpenedMapGenerator,
+    navigateToRoute,
+  ]);
 
   const openMapGenerator = useCallback(
     (snapshot) => {
       initializeMapRequest(snapshot);
-      setHasOpenedMapGenerator(true);
-      setActiveCrucibleGenerator("darken");
-      setActiveDarkenTab("map-generator");
-      setActiveSection("crucible");
+      navigateToRoute({
+        section: "crucible",
+        crucibleGenerator: "darken",
+        darkenTab: "map-generator",
+      });
     },
-    [initializeMapRequest],
+    [initializeMapRequest, navigateToRoute],
   );
 
   const setDarkenSnapshotProvider = useCallback((provider) => {
@@ -175,21 +368,25 @@ export default function AppRouter() {
         setHasOpenedMapGenerator(true);
       }
 
-      setActiveSection("crucible");
-      setActiveCrucibleGenerator("darken");
-      setActiveDarkenTab(tabId);
+      navigateToRoute({
+        section: "crucible",
+        crucibleGenerator: "darken",
+        darkenTab: tabId === "map-generator" ? "map-generator" : "composer",
+      });
     },
-    [hasOpenedMapGenerator, initializeMapRequest],
+    [hasOpenedMapGenerator, initializeMapRequest, navigateToRoute],
   );
 
-  const activateCrucibleGenerator = useCallback((generatorId) => {
-    setActiveSection("crucible");
-    setActiveCrucibleGenerator(generatorId);
-
-    if (generatorId === "darken") {
-      setActiveDarkenTab("composer");
-    }
-  }, []);
+  const activateCrucibleGenerator = useCallback(
+    (generatorId) => {
+      navigateToRoute({
+        section: "crucible",
+        crucibleGenerator: generatorId === "monster" ? "monster" : "darken",
+        darkenTab: "composer",
+      });
+    },
+    [navigateToRoute],
+  );
 
   const openCrucibleTool = useCallback(
     (generatorId, viewId) => {
@@ -203,26 +400,33 @@ export default function AppRouter() {
     [activateCrucibleGenerator, activateDarkenTab],
   );
 
-  const openMonsterFromInspiration = useCallback((seed = {}) => {
-    setMonsterInspirationSeed({
-      ...seed,
-      revision: Date.now(),
-    });
-    setActiveSection("crucible");
-    setActiveCrucibleGenerator("monster");
-  }, []);
+  const openMonsterFromInspiration = useCallback(
+    (seed = {}) => {
+      setMonsterInspirationSeed({
+        ...seed,
+        revision: Date.now(),
+      });
+      navigateToRoute({
+        section: "crucible",
+        crucibleGenerator: "monster",
+        darkenTab: "composer",
+      });
+    },
+    [navigateToRoute],
+  );
 
   const homeContent = (
     <HomePage
       onOpenCrucibleTool={openCrucibleTool}
-      onOpenInspirations={() => setActiveSection("inspirations")}
+      onOpenInspirations={() => activateSection("inspirations")}
     />
   );
 
   const crucibleContent = (
     <section
       className={
-        activeCrucibleGenerator === "darken" && activeDarkenTab === "map-generator"
+        activeCrucibleGenerator === "darken" &&
+        activeDarkenTab === "map-generator"
           ? "darken-workspace crucible-workspace is-map-tab"
           : activeCrucibleGenerator === "darken"
             ? "darken-workspace crucible-workspace"
@@ -233,11 +437,17 @@ export default function AppRouter() {
     >
       <CrucibleTopbar
         activeGeneratorId={activeCrucibleGenerator}
-        activeViewId={activeCrucibleGenerator === "darken" ? activeDarkenTab : "composer"}
+        activeViewId={
+          activeCrucibleGenerator === "darken" ? activeDarkenTab : "composer"
+        }
         generators={crucibleGenerators}
         onGeneratorChange={activateCrucibleGenerator}
-        onViewChange={activeCrucibleGenerator === "darken" ? activateDarkenTab : undefined}
-        views={activeCrucibleGenerator === "darken" ? darkenViews : monsterViews}
+        onViewChange={
+          activeCrucibleGenerator === "darken" ? activateDarkenTab : undefined
+        }
+        views={
+          activeCrucibleGenerator === "darken" ? darkenViews : monsterViews
+        }
       />
 
       {activeCrucibleGenerator === "darken" ? (
@@ -263,7 +473,13 @@ export default function AppRouter() {
               aria-labelledby="crucibleViewTab-darken-map-generator"
               hidden={activeDarkenTab !== "map-generator"}
             >
-              <Suspense fallback={<div className="status">{t("app.labels.loadingMapGenerator", {}, activeLocale)}</div>}>
+              <Suspense
+                fallback={
+                  <div className="status">
+                    {t("app.labels.loadingMapGenerator", {}, activeLocale)}
+                  </div>
+                }
+              >
                 <CruorMapGeneratorMvp
                   key={mapRequestRevision}
                   initialRequest={mapRequest}
@@ -279,7 +495,11 @@ export default function AppRouter() {
           role="tabpanel"
           aria-labelledby="crucibleViewTab-monster-composer"
         >
-          <MonsterComposerPage uiMode={activeUiMode} inspirationSeed={monsterInspirationSeed} locale={activeLocale} />
+          <MonsterComposerPage
+            uiMode={activeUiMode}
+            inspirationSeed={monsterInspirationSeed}
+            locale={activeLocale}
+          />
         </section>
       )}
     </section>
@@ -292,12 +512,14 @@ export default function AppRouter() {
       activeCrucibleGenerator={activeCrucibleGenerator}
       activeLocale={activeLocale}
       onLocaleChange={handleLocaleChange}
-      onSectionChange={setActiveSection}
+      onSectionChange={activateSection}
       onUiModeChange={setActiveUiMode}
       onOpenCrucibleTool={openCrucibleTool}
       homeContent={homeContent}
       crucibleContent={crucibleContent}
-      inspirationsContent={<InspirationsPage onOpenMonsterComposer={openMonsterFromInspiration} />}
+      inspirationsContent={
+        <InspirationsPage onOpenMonsterComposer={openMonsterFromInspiration} />
+      }
       inspirationStudioContent={<InspirationStudioPage />}
     />
   );

@@ -28,6 +28,7 @@ export function getSiteNavItems(locale) {
       icon: "fa-solid fa-house-chimney",
       type: "section",
       sectionId: "home",
+      href: "/",
     },
     {
       id: "crucible",
@@ -38,44 +39,64 @@ export function getSiteNavItems(locale) {
         {
           id: "locations",
           label: "Dark Places",
-          description: "Build structured horror sites with regions, clues, hazards, atmosphere, and map intent.",
-          catchPhrase: "Turn real sources into playable horror locations and procedural maps.",
+          description:
+            "Build structured horror sites with regions, clues, hazards, atmosphere, and map intent.",
+          catchPhrase:
+            "Turn real sources into playable horror locations and procedural maps.",
           engineFeatures: [
             "Choose source logic and horror direction.",
             "Build regions, routes, clues, hazards.",
             "Generate a procedural playable map.",
             "Export notes for fast table use.",
           ],
-          mobileDescription: "Create horror locations with regions, clues, hazards, and map-aware structure.",
+          mobileDescription:
+            "Create horror locations with regions, clues, hazards, and map-aware structure.",
           icon: "fa-solid fa-location-dot",
-          action: { type: "crucible-tool", toolId: "darken", viewId: "composer" },
+          action: {
+            type: "crucible-tool",
+            toolId: "darken",
+            viewId: "composer",
+            href: "/darkplaces",
+          },
+          href: "/darkplaces",
           previewTitle: "Dark Places",
           previewText:
             "Compose a horror site from context, source anchors, intrusion level, location regions, hazards, clues, atmosphere, and map-readable structure.",
           previewVariant: "locations",
           previewImage: "/assets/landing-page/hero-mapcrop.webp",
-          previewImageAlt: "Dark fantasy map crop generated from the Dark Places workbench.",
+          previewImageAlt:
+            "Dark fantasy map crop generated from the Dark Places workbench.",
         },
         {
           id: "monsters",
           label: "Terrifying Monster",
-          description: "Create rules-aware horror creatures with frames, grafts, pressure, weakness, and validation.",
-          catchPhrase: "Shape dark fantasy creatures into complete, table-ready 5E stat blocks.",
+          description:
+            "Create rules-aware horror creatures with frames, grafts, pressure, weakness, and validation.",
+          catchPhrase:
+            "Shape dark fantasy creatures into complete, table-ready 5E stat blocks.",
           engineFeatures: [
             "Choose concept, role, tier, danger.",
             "Add grafts, attacks, defenses, weakness.",
             "Check pressure, complexity, counterplay.",
             "Export a complete 5E stat block.",
           ],
-          mobileDescription: "Build horror monsters with frames, grafts, pressure, weakness, and validation.",
+          mobileDescription:
+            "Build horror monsters with frames, grafts, pressure, weakness, and validation.",
           icon: "fa-solid fa-skull",
-          action: { type: "crucible-tool", toolId: "monster", viewId: "composer" },
+          action: {
+            type: "crucible-tool",
+            toolId: "monster",
+            viewId: "composer",
+            href: "/terrifyingmonsters",
+          },
+          href: "/terrifyingmonsters",
           previewTitle: "Terrifying Monster",
           previewText:
             "Build dark fantasy creatures through base frames, tactical roles, horror grafts, combat pressure, counterplay, readiness checks, and export-facing mechanics.",
           previewVariant: "monsters",
           previewImage: "/assets/landing-page/hero-workbench.webp",
-          previewImageAlt: "Cruor workbench interface preview used for Terrifying Monster.",
+          previewImageAlt:
+            "Cruor workbench interface preview used for Terrifying Monster.",
         },
       ],
     },
@@ -85,6 +106,7 @@ export function getSiteNavItems(locale) {
       icon: "fa-solid fa-book-skull",
       type: "section",
       sectionId: "inspirations",
+      href: "/inspirations",
     },
   ];
 }
@@ -98,5 +120,8 @@ export function getCrucibleMenuItemId(generatorId) {
 }
 
 export function getModeLabel(modeId, locale) {
-  return getAppModeOptions(locale).find((mode) => mode.id === modeId)?.label || t("modes.simple.label", {}, locale);
+  return (
+    getAppModeOptions(locale).find((mode) => mode.id === modeId)?.label ||
+    t("modes.simple.label", {}, locale)
+  );
 }

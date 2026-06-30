@@ -16,6 +16,8 @@ export const DEFAULT_CONFIG = {
   mode: "editor",
   visualStyle: "cruor",
   gridStyle: "solid",
+  gridWeight: "normal",
+  gridColor: "light",
   contextGraphAdapterMode: "safe",
   regions: [
     {
@@ -134,11 +136,11 @@ export const GENERATED_REGION_TEMPLATES = [
 
 export const MAP_VISUAL_STYLES = Object.freeze([
   Object.freeze({ value: "cruor", label: "Cruor" }),
-  Object.freeze({ value: "cartographic", label: "Cartographic" }),
-  Object.freeze({ value: "blood", label: "Blood Ink" }),
-  Object.freeze({ value: "bone", label: "Bone" }),
-  Object.freeze({ value: "midnight", label: "Midnight" }),
-  Object.freeze({ value: "print", label: "Print" }),
+  Object.freeze({ value: "ink", label: "Ink Draft" }),
+  Object.freeze({ value: "cartographic", label: "Clean Blueprint" }),
+  Object.freeze({ value: "blood", label: "Heavy Ink" }),
+  Object.freeze({ value: "bone", label: "Faded Manuscript" }),
+  Object.freeze({ value: "print", label: "VTT High Contrast" }),
 ]);
 
 const SUPPORTED_VISUAL_STYLES = new Set(
@@ -169,6 +171,7 @@ function normalizeContextGraphAdapterMode(value, fallback = DEFAULT_CONFIG.conte
 export function normalizeVisualStyle(value, fallback = DEFAULT_CONFIG.visualStyle) {
   const text = String(value || "").trim();
   if (text === "one-page-dungeon") return "cartographic";
+  if (text === "midnight") return "cruor";
   return SUPPORTED_VISUAL_STYLES.has(text) ? text : fallback;
 }
 

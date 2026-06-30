@@ -74,13 +74,14 @@ export function LocationMapWideDetailsBlock({
   activeSlot,
   activeSlotScope,
   onFocusSlot,
+  pickerOpen = false,
   state,
 }) {
   const mapSlots = getLocationSlotsForScope(LOCATION_SLOT_SCOPE_MAP);
   const activeSlotId = isSlotInScope(activeSlot?.id || state.activeSlot, LOCATION_SLOT_SCOPE_MAP)
     ? activeSlot?.id || state.activeSlot
     : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_MAP);
-  const mapScopeActive = activeSlotScope === LOCATION_SLOT_SCOPE_MAP;
+  const mapScopeActive = pickerOpen && activeSlotScope === LOCATION_SLOT_SCOPE_MAP;
 
   function focusMapSlot(slotId) {
     onFocusSlot?.(slotId, LOCATION_SLOT_SCOPE_MAP, state.activeRegionId || "");
