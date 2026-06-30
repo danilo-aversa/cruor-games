@@ -1,11 +1,10 @@
-import { AlertTriangle, CheckCircle2, Circle, Eye, Gem, Plus, RotateCcw, Search } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Circle, Eye, Gem, RotateCcw, Search } from "lucide-react";
 import { LOCATION_SLOT_SCOPE_REGION } from "../model/location-composer-state.js";
 import {
   getDefaultSlotIdForScope,
   isSlotInScope,
 } from "../model/location-composer-selectors.js";
 import {
-  getNextMissingRoomSlot,
   getRoomSlotProgramRows,
   getSelectedRoomProgramEntry,
 } from "../model/location-room-program.js";
@@ -52,7 +51,6 @@ export function LocationRoomInspector({
 }) {
   const entry = getSelectedRoomProgramEntry(state, generatedMapPreview);
   const roomRows = entry ? getRoomSlotProgramRows(state, entry.id) : [];
-  const nextMissingRow = entry ? getNextMissingRoomSlot(state, entry.id) : null;
   const activeSlotId = isSlotInScope(activeSlot?.id || state.activeSlot, LOCATION_SLOT_SCOPE_REGION)
     ? activeSlot?.id || state.activeSlot
     : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION);
@@ -87,22 +85,7 @@ export function LocationRoomInspector({
         )}
       </section>
 
-      <section className="location-room-inspector-card location-room-inspector-card--slots" aria-label="Room work slots">
-        <div className="location-room-inspector-card__head">
-          <span>Room Slots</span>
-          {nextMissingRow ? (
-            <button
-              className="location-room-inspector-mini-btn"
-              type="button"
-              data-testid="dark-places-room-add-next"
-              onClick={() => focusSlot(nextMissingRow.slot.id)}
-            >
-              <Plus aria-hidden="true" />
-              Add Next
-            </button>
-          ) : null}
-        </div>
-        <div className="location-room-inspector-slot-stack">
+      <div className="location-room-inspector-slot-stack" role="list" aria-label="Room work slots">
           {roomRows.map((row) => {
             const Icon = getSlotIcon(row.slot.id);
             const active = activeSlotId === row.slot.id;
@@ -120,19 +103,23 @@ export function LocationRoomInspector({
                 )}
                 key={row.slot.id}
                 type="button"
+                role="listitem"
                 aria-pressed={active}
                 onClick={() => focusSlot(row.slot.id)}
                 data-key="tooltip-generic"
                 data-tooltip={row.slot.label}
                 data-tooltip-description={row.filled ? "Open this filled room slot." : "Open a filtered component picker for this room slot."}
               >
-                <Icon aria-hidden="true" />
-                <span className="location-room-inspector-slot__copy">
-                  <strong>{row.slot.label}</strong>
-                  <small>{row.components[0]?.title || row.slot.description || "Choose component"}</small>
+                <span className="location-room-inspector-slot__head">
+                  <span>
+                    <Icon aria-hidden="true" />
+                    {row.slot.label}
+                  </span>
+                  <strong>{row.filled ? row.statusLabel : "—"}</strong>
                 </span>
-                <span className={cx("location-room-inspector-slot__state", row.filled ? "is-filled" : row.missing ? "is-missing" : "is-optional")}>
-                  {row.statusLabel}
+                <span className="location-room-inspector-slot__body">
+                  <strong>{row.components[0]?.title || "Empty Slot"}</strong>
+                  <em>{row.components[0]?.description || row.slot.description || "Choose component"}</em>
                 </span>
               </button>
             );
@@ -140,8 +127,7 @@ export function LocationRoomInspector({
           {!roomRows.length ? (
             <div className="location-room-inspector-note">Select a room to show its work slots.</div>
           ) : null}
-        </div>
-      </section>
+      </div>
     </aside>
   );
 }

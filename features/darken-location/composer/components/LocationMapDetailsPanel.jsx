@@ -11,6 +11,16 @@ function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+function getMapSlotIconClass(slotId) {
+  if (slotId === "sensoryLayer") return "fa-solid fa-eye";
+  if (slotId === "visualSigns") return "fa-solid fa-signs-post";
+  if (slotId === "lairEffect") return "fa-solid fa-wand-magic-sparkles";
+  if (slotId === "creatureCorruption") return "fa-solid fa-skull";
+  if (slotId === "hazard") return "fa-solid fa-triangle-exclamation";
+  if (slotId === "clue") return "fa-solid fa-magnifying-glass";
+  return "fa-solid fa-diamond";
+}
+
 function LocationFrameInfoRow({ label, value }) {
   return (
     <span className="location-frame-info-row">
@@ -77,29 +87,36 @@ export function LocationMapWideDetailsBlock({
   }
 
   return (
-    <section className="location-frame-control-block location-map-wide-details-block" aria-label="Map-wide details">
-      <div className="location-frame-control-block__head">
-        <span>Map-Wide Details</span>
-      </div>
+    <div className="location-map-wide-details-block" aria-label="Map-wide details">
       <div className="location-map-details-slot-stack">
         {mapSlots.map((slot) => {
           const assigned = getAssignedComponentsForSlotScope(state, slot.id, LOCATION_SLOT_SCOPE_MAP);
           const active = mapScopeActive && activeSlotId === slot.id;
           return (
             <button
-              className={cx("location-map-details-slot", assigned.length && "is-filled", active && "is-active")}
+              className={cx("location-map-details-slot", assigned.length ? "is-filled" : "is-empty", active && "is-active")}
               key={slot.id}
               type="button"
+              aria-label={`Focus ${slot.label}`}
               aria-pressed={active}
               onClick={() => focusMapSlot(slot.id)}
             >
-              <strong>{slot.label}</strong>
-              <small>{assigned[0]?.title || slot.description || "Map-wide component"}</small>
+              <span className="location-map-details-slot__head">
+                <span>
+                  <i className={getMapSlotIconClass(slot.id)} aria-hidden="true" />
+                  {slot.label}
+                </span>
+                <strong>{assigned.length ? "Filled" : "—"}</strong>
+              </span>
+              <span className="location-map-details-slot__body">
+                <strong>{assigned[0]?.title || "Empty Slot"}</strong>
+                <em>{assigned[0]?.description || slot.description || "Map-wide component"}</em>
+              </span>
             </button>
           );
         })}
       </div>
-    </section>
+    </div>
   );
 }
 

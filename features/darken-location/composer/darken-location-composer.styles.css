@@ -8092,3 +8092,306 @@
     transform: none;
   }
 }
+
+/* Dark Places — unified opaque dropdown surfaces and Monster-style slot cards */
+.location-map-toolbar__room-menu-panel,
+.location-map-toolbar__map-menu-panel,
+.location-map-toolbar__style-panel {
+  border: 1px solid var(--cruor-color-r208-g162-b170-a280, rgba(208, 162, 170, 0.28));
+  background:
+    linear-gradient(180deg, var(--cruor-color-milk-a060, rgba(255, 238, 242, 0.06)), var(--cruor-color-transparent) 58%),
+    var(--cruor-color-r6-g5-b6-a990, rgba(6, 5, 6, 0.99)) !important;
+  box-shadow:
+    0 30px 90px var(--cruor-color-black-a860, rgba(0, 0, 0, 0.86)),
+    0 0 0 1px var(--cruor-color-black-a920, rgba(0, 0, 0, 0.92)),
+    0 0 38px var(--cruor-color-blood-bright-a180, rgba(122, 26, 40, 0.18)),
+    inset 0 1px 0 var(--cruor-color-milk-a075, rgba(255, 238, 242, 0.075)) !important;
+  backdrop-filter: blur(18px) saturate(128%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(128%) !important;
+  isolation: isolate;
+}
+
+.location-map-toolbar__room-menu-panel::before,
+.location-map-toolbar__map-menu-panel::before,
+.location-map-toolbar__style-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--cruor-color-r6-g5-b6-a980, rgba(6, 5, 6, 0.98));
+  pointer-events: none;
+}
+
+.location-map-toolbar__room-menu-panel,
+.location-map-toolbar__room-menu-panel * {
+  user-select: none;
+}
+
+.location-composer {
+  --location-slot-card-height: 76px;
+  --location-slot-empty-border: var(--cruor-color-milk-a115, rgba(255, 238, 242, 0.115));
+  --location-slot-empty-bg: var(--cruor-gradient-linear-091-b7ddacfd), var(--cruor-color-surface-soft, #050506);
+  --location-slot-empty-color: var(--cruor-color-text-a480, rgba(238, 238, 238, 0.48));
+  --location-slot-empty-shadow: 0 10px 24px var(--cruor-color-black-a280, rgba(0, 0, 0, 0.28));
+  --location-slot-filled-border: var(--cruor-color-rose-a620, rgba(240, 185, 194, 0.62));
+  --location-slot-filled-bg: var(--cruor-gradient-radial-238-c690c792), var(--cruor-gradient-linear-200-ba867b8d), var(--cruor-color-surface-soft, #050506);
+  --location-slot-filled-color: var(--cruor-color-r255-g240-b242-a900, rgba(255, 240, 242, 0.9));
+  --location-slot-filled-shadow: 0 0 0 1px var(--cruor-color-blood-glow-a110, rgba(190, 64, 82, 0.11)), 0 0 24px var(--cruor-color-blood-bright-a220, rgba(122, 26, 40, 0.22)), 0 12px 28px var(--cruor-color-black-a340, rgba(0, 0, 0, 0.34));
+}
+
+.location-room-inspector-slot,
+.location-map-details-slot {
+  position: relative;
+  z-index: 4;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--location-slot-card-height);
+  overflow: hidden;
+  padding: 9px 10px;
+  border: 1px solid var(--cruor-ui-card-border, var(--cruor-color-milk-a090, rgba(255, 238, 242, 0.09)));
+  background: var(--location-slot-empty-bg);
+  background-color: var(--cruor-color-surface-soft, #050506);
+  color: var(--location-slot-empty-color);
+  box-shadow: var(--location-slot-empty-shadow);
+  text-align: left;
+  cursor: pointer;
+  backdrop-filter: var(--cruor-filter-blur-12, blur(12px));
+  -webkit-backdrop-filter: var(--cruor-filter-blur-12, blur(12px));
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+}
+
+.location-room-inspector-slot.is-filled:not(.is-active):not(:hover):not(:focus-visible),
+.location-map-details-slot.is-filled:not(.is-active):not(:hover):not(:focus-visible) {
+  border-color: var(--location-slot-filled-border);
+  background: var(--location-slot-filled-bg);
+  background-color: var(--cruor-color-surface-soft, #050506);
+  color: var(--location-slot-filled-color);
+  box-shadow: var(--location-slot-filled-shadow);
+}
+
+.location-room-inspector-slot.is-empty:not(.is-active):not(:hover):not(:focus-visible),
+.location-map-details-slot.is-empty:not(.is-active):not(:hover):not(:focus-visible) {
+  border-color: var(--location-slot-empty-border);
+  background: var(--location-slot-empty-bg);
+  background-color: var(--cruor-color-surface-soft, #050506);
+  color: var(--location-slot-empty-color);
+  box-shadow: var(--location-slot-empty-shadow);
+}
+
+.location-room-inspector-slot.is-active,
+.location-room-inspector-slot:hover,
+.location-room-inspector-slot:focus-visible,
+.location-map-details-slot.is-active,
+.location-map-details-slot:hover,
+.location-map-details-slot:focus-visible {
+  border-color: var(--cruor-ui-card-border-active, var(--cruor-color-rose-a680, rgba(240, 185, 194, 0.68)));
+  background: var(--cruor-gradient-linear-188-b079ccaf), var(--cruor-color-surface-soft, #050506);
+  background-color: var(--cruor-color-surface-soft, #050506);
+  color: var(--cruor-color-hex-fff0f2, #fff0f2);
+  box-shadow: var(--cruor-ui-card-shadow-active, var(--cruor-shadow-box-092));
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.location-room-inspector-slot.is-filled:is(.is-active, :hover, :focus-visible),
+.location-map-details-slot.is-filled:is(.is-active, :hover, :focus-visible) {
+  background: var(--cruor-gradient-radial-240-f49773b2), var(--cruor-gradient-linear-162-88b5a70e), var(--cruor-color-surface-soft, #050506);
+  background-color: var(--cruor-color-surface-soft, #050506);
+}
+
+.location-room-inspector-slot.is-missing:not(.is-suggested) {
+  border-style: solid;
+}
+
+.location-room-inspector-slot.is-suggested:not(.is-active):not(:hover):not(:focus-visible) {
+  border-color: var(--cruor-color-blood-glow-a580, rgba(190, 64, 82, 0.58));
+  box-shadow: inset 3px 0 0 var(--cruor-color-blood-glow-a760, rgba(190, 64, 82, 0.76)), var(--location-slot-empty-shadow);
+}
+
+.location-room-inspector-slot__head,
+.location-map-details-slot__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.location-room-inspector-slot__head > span,
+.location-map-details-slot__head > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  overflow: hidden;
+  color: inherit;
+  font-size: var(--text-size-xs, 0.68rem);
+  font-weight: 950;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.location-room-inspector-slot__head svg,
+.location-map-details-slot__head i {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  color: currentColor;
+}
+
+.location-map-details-slot__head i {
+  display: inline-grid;
+  place-items: center;
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+.location-room-inspector-slot__head strong,
+.location-map-details-slot__head strong {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  min-height: 20px;
+  padding: 0 5px;
+  border: 1px solid var(--cruor-color-milk-a080, rgba(255, 238, 242, 0.08));
+  background: var(--cruor-surface-card, rgba(5, 5, 6, 0.54));
+  color: var(--cruor-color-hex-8f7278, #8f7278);
+  font-size: var(--text-size-xs, 0.68rem);
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.location-room-inspector-slot.is-filled .location-room-inspector-slot__head strong,
+.location-map-details-slot.is-filled .location-map-details-slot__head strong {
+  border-color: var(--cruor-color-good-a200, rgba(143, 150, 148, 0.2));
+  color: var(--cruor-color-good-a720, rgba(143, 150, 148, 0.72));
+}
+
+.location-room-inspector-slot__body,
+.location-map-details-slot__body {
+  display: grid;
+  align-content: start;
+  gap: 3px;
+  min-width: 0;
+}
+
+.location-room-inspector-slot__body strong,
+.location-map-details-slot__body strong {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--cruor-color-hex-f0d7dc, #f0d7dc);
+  font-size: var(--text-size-l, 0.94rem);
+  font-weight: 900;
+  line-height: 1.16;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.location-room-inspector-slot__body em,
+.location-map-details-slot__body em {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--cruor-color-text-a500, rgba(238, 238, 238, 0.5));
+  font-size: var(--text-size-m, 0.78rem);
+  font-style: normal;
+  line-height: 1.32;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.location-room-inspector-slot.is-active .location-room-inspector-slot__body em,
+.location-room-inspector-slot:hover .location-room-inspector-slot__body em,
+.location-map-details-slot.is-active .location-map-details-slot__body em,
+.location-map-details-slot:hover .location-map-details-slot__body em {
+  color: var(--cruor-color-text-a680, rgba(238, 238, 238, 0.68));
+  -webkit-line-clamp: 2;
+}
+
+
+/* Dark Places slot stacks — mirror Monsters anatomy slot columns without wrapper chrome. */
+.location-map-wide-details-block,
+.location-room-inspector-slot-stack,
+.location-map-details-slot-stack {
+  min-width: 0;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.location-map-wide-details-block {
+  display: block;
+  width: 100%;
+}
+
+.location-room-inspector-slot-stack,
+.location-map-details-slot-stack {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.location-room-inspector-card--slots {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.location-room-inspector-card--slots > .location-room-inspector-card__head,
+.location-map-wide-details-block .location-frame-control-block__head {
+  display: none !important;
+}
+
+.location-room-inspector-slot,
+.location-map-details-slot {
+  min-height: 76px;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--location-slot-empty-border) !important;
+  background: var(--location-slot-empty-bg) !important;
+  background-color: var(--cruor-color-surface-soft, #050506) !important;
+  box-shadow: var(--location-slot-empty-shadow) !important;
+  transform: none !important;
+}
+
+.location-room-inspector-slot.is-filled:not(.is-active):not(:hover):not(:focus-visible),
+.location-map-details-slot.is-filled:not(.is-active):not(:hover):not(:focus-visible) {
+  border-color: var(--location-slot-filled-border) !important;
+  background: var(--location-slot-filled-bg) !important;
+  background-color: var(--cruor-color-surface-soft, #050506) !important;
+  box-shadow: var(--location-slot-filled-shadow) !important;
+}
+
+.location-room-inspector-slot.is-active,
+.location-room-inspector-slot:hover,
+.location-room-inspector-slot:focus-visible,
+.location-map-details-slot.is-active,
+.location-map-details-slot:hover,
+.location-map-details-slot:focus-visible {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--cruor-ui-card-border-active, var(--cruor-color-rose-a680, rgba(240, 185, 194, 0.68))) !important;
+  background: var(--cruor-gradient-linear-188-b079ccaf), var(--cruor-color-surface-soft, #050506) !important;
+  background-color: var(--cruor-color-surface-soft, #050506) !important;
+  box-shadow: var(--cruor-ui-card-shadow-active, var(--cruor-shadow-box-092)) !important;
+  transform: none !important;
+}
+
+.location-room-inspector-slot.is-suggested:not(.is-active):not(:hover):not(:focus-visible),
+.location-room-inspector-slot.is-missing:not(.is-active):not(:hover):not(:focus-visible) {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--location-slot-empty-border) !important;
+  box-shadow: var(--location-slot-empty-shadow) !important;
+}
