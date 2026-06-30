@@ -331,6 +331,13 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
   const hasUnsavedChanges = Boolean(savedDraftFingerprint) && draftFingerprint !== savedDraftFingerprint;
   const mapSourceKey = useMemo(() => createLocationMapSourceKey(mapRequest), [mapRequest]);
   const previousMapSourceKeyRef = useRef(mapSourceKey);
+  const stableMapSourceKeyRef = useRef(mapSourceKey);
+  const stableMapRequestRef = useRef(mapRequest);
+  if (stableMapSourceKeyRef.current !== mapSourceKey) {
+    stableMapSourceKeyRef.current = mapSourceKey;
+    stableMapRequestRef.current = mapRequest;
+  }
+  const stableMapRequest = stableMapRequestRef.current;
 
   const setTransientDraftStatus = useCallback((message) => {
     setDraftStatus(message);
@@ -990,7 +997,7 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
         <LocationMapStage
           state={state}
           setState={setState}
-          mapRequest={mapRequest}
+          mapRequest={stableMapRequest}
           digest={digest}
           generatedMapPreview={generatedMapPreview}
           previewError={previewResult.error}

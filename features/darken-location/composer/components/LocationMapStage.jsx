@@ -178,14 +178,21 @@ export function LocationMapStage({
   function selectRegionTarget(regionId) {
     const composerRegionId = resolveComposerRegionId(regionId);
     if (!composerRegionId) return;
-    setState((current) => ({
-      ...current,
-      activeRegionId: composerRegionId,
-      activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
-      activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
-        ? current.activeSlot
-        : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
-    }));
+    const currentRegionSlotIsValid = isSlotInScope(state.activeSlot, LOCATION_SLOT_SCOPE_REGION);
+    const alreadySelected =
+      state.activeRegionId === composerRegionId &&
+      state.activeSlotScope === LOCATION_SLOT_SCOPE_REGION &&
+      currentRegionSlotIsValid;
+    if (!alreadySelected) {
+      setState((current) => ({
+        ...current,
+        activeRegionId: composerRegionId,
+        activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+        activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
+          ? current.activeSlot
+          : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
+      }));
+    }
     onComposerRegionSelect?.(composerRegionId);
   }
 

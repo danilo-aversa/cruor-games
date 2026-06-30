@@ -13,6 +13,29 @@ function applyMapRequestConnectionsToConfig(config, mapRequest) {
   };
 }
 
+let cachedPreviewGenerationKey = "";
+let cachedPreviewGeneratedMap = null;
+
+function stripPreviewOnlyConfigFields(config = {}) {
+  const {
+    gridStyle: _gridStyle,
+    metadata: _metadata,
+    showGrid: _showGrid,
+    showNames: _showNames,
+    showProps: _showProps,
+    showRoomBadges: _showRoomBadges,
+    ...generationConfig
+  } = config || {};
+  return generationConfig;
+}
+
+function createPreviewGenerationKey(previewConfig, previewManualOverrides) {
+  return JSON.stringify({
+    config: stripPreviewOnlyConfigFields(previewConfig),
+    manualOverrides: previewManualOverrides,
+  });
+}
+
 export function createLocationPreviewModel(snapshot, manualOverrides = createEmptyManualOverrides()) {
   const mapRequest = createMapRequestFromDarkenLocationState(snapshot);
   const previewConfig = applyMapRequestConnectionsToConfig(
@@ -20,17 +43,32 @@ export function createLocationPreviewModel(snapshot, manualOverrides = createEmp
     mapRequest,
   );
   const previewManualOverrides = normalizeManualOverrides(manualOverrides);
+  const previewGenerationKey = createPreviewGenerationKey(
+    previewConfig,
+    previewManualOverrides,
+  );
 
   try {
+    const generatedMap =
+      cachedPreviewGeneratedMap && cachedPreviewGenerationKey === previewGenerationKey
+        ? cachedPreviewGeneratedMap
+        : generateMap(previewConfig, previewManualOverrides);
+
+    cachedPreviewGenerationKey = previewGenerationKey;
+    cachedPreviewGeneratedMap = generatedMap;
+
     return {
       mapRequest,
       previewConfig,
       previewResult: {
-        generatedMap: generateMap(previewConfig, previewManualOverrides),
+        generatedMap,
         error: "",
       },
     };
   } catch (error) {
+    cachedPreviewGenerationKey = "";
+    cachedPreviewGeneratedMap = null;
+
     return {
       mapRequest,
       previewConfig,

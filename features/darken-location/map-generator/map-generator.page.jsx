@@ -3872,8 +3872,6 @@ export default function CruorMapGeneratorMvp({
       mapWidth,
       mapHeight,
       visualStyle,
-      showGrid,
-      gridStyle,
       connections: Array.isArray(initialRequest?.connections)
         ? initialRequest.connections
         : initialConfig.connections || [],
@@ -3889,8 +3887,6 @@ export default function CruorMapGeneratorMvp({
       mapWidth,
       mapHeight,
       visualStyle,
-      showGrid,
-      gridStyle,
     ],
   );
   const lockedManualLayoutActive = manualRoomPositionsActive && Boolean(manualLayoutSeed);
@@ -4017,13 +4013,14 @@ export default function CruorMapGeneratorMvp({
     missingSvg: true,
     leakedTokens: [],
   });
+  const shouldRunMapDiagnostics = !inlineComposerEditor && !isManualEditActive;
 
   useEffect(() => {
     setLevelView((current) => normalizeLevelView(current, availableLevels));
   }, [availableLevelsKey]);
 
   useEffect(() => {
-    if (isManualEditActive) return undefined;
+    if (!shouldRunMapDiagnostics) return undefined;
     const frame = window.requestAnimationFrame(() => {
       const svg = document.querySelector("#cruor-map-svg");
       setExportValidation(validateExportSvgString(serializeSvg(svg)));
@@ -4038,15 +4035,15 @@ export default function CruorMapGeneratorMvp({
     showNames,
     showRoomBadges,
     showProps,
-    isManualEditActive,
+    shouldRunMapDiagnostics,
   ]);
 
   const computedTestSuite = useMemo(
     () =>
-      isManualEditActive
-        ? null
-        : buildFullStructuralTestSuite(generatedMap, config, exportValidation),
-    [generatedMap, config, exportValidation, isManualEditActive],
+      shouldRunMapDiagnostics
+        ? buildFullStructuralTestSuite(generatedMap, config, exportValidation)
+        : null,
+    [generatedMap, config, exportValidation, shouldRunMapDiagnostics],
   );
   if (computedTestSuite) lastTestSuiteRef.current = computedTestSuite;
   const testSuite = lastTestSuiteRef.current || {
@@ -4581,6 +4578,12 @@ export default function CruorMapGeneratorMvp({
         levelView,
         fadeOtherLevels,
       },
+    };
+  }
+
+  function createManualWorkspaceStatePayload() {
+    return {
+      manualOverrides: cloneManualOverrides(manualOverrides),
     };
   }
 
@@ -5290,26 +5293,18 @@ export default function CruorMapGeneratorMvp({
 
   function selectMapRegion(regionId) {
     const nextRegionId = regionId || "";
+    if (nextRegionId === selectedRegionId) return;
     setSelectedRegionId(nextRegionId);
     onComposerSelectedRegionChange?.(nextRegionId);
   }
 
   useEffect(() => {
     if (!inlineComposerEditor || typeof onCommitWorkspace !== "function" || isManualEditActive) return;
-    onCommitWorkspace(createWorkspaceStatePayload());
+    onCommitWorkspace(createManualWorkspaceStatePayload());
   }, [
     inlineComposerEditor,
     onCommitWorkspace,
     manualOverrides,
-    showEditor,
-    showNames,
-    showRoomBadges,
-    showProps,
-    gridStyle,
-    visualStyle,
-    levelView,
-    fadeOtherLevels,
-    generatedMap,
     isManualEditActive,
   ]);
 

@@ -5952,3 +5952,92 @@ _Nessun file aggiunto._
 - `~features/darken-location/composer/components/LocationRoomInspector.jsx`
 - `~features/darken-location/composer/darken-location-composer.styles.css`
 
+
+---
+
+## 2026-06-30 11:22:04
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-performance-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-performance-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/model/location-composer-preview.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+
+
+---
+
+## 2026-06-30 12:11:28
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-drag-layer-performance-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-drag-layer-performance-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-06-30 12:14:55
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-drag-behavior-revert-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-drag-behavior-revert-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-06-30 12:35:07
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-crosshatch-editor-restore-hotfix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-crosshatch-editor-restore-hotfix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+

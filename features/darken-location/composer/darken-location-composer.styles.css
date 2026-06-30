@@ -3306,6 +3306,11 @@
   display: none;
 }
 
+.location-composer .location-map-preview--live.location-map-preview--inline-editor .external-hatching,
+.location-composer .location-map-preview--live.location-map-preview--inline-editor .external-hatching-underlay {
+  display: inline;
+}
+
 .location-composer .location-map-preview--live .paper-texture {
   display: none;
 }
