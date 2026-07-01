@@ -336,6 +336,18 @@ export const EDITOR_CAVE_STYLE = `
 .cave-passage-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}
 `;
 
+export const DRAG_PREVIEW_STYLE = `
+.drag-preview-layer{pointer-events:none}
+.drag-preview-corridor-floor{fill:none;stroke:#685D61;stroke-linecap:square;stroke-linejoin:round;pointer-events:none;vector-effect:non-scaling-stroke}
+.drag-preview-corridor-wall{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-linecap:round;stroke-linejoin:round;pointer-events:none;vector-effect:non-scaling-stroke}
+.map-style-cruor .drag-preview-corridor-floor{stroke:#21191d}
+.map-style-ink .drag-preview-corridor-floor{stroke:#efe4ca}
+.map-style-cartographic .drag-preview-corridor-floor{stroke:#fff9eb}
+.map-style-blood .drag-preview-corridor-floor{stroke:#e8d2be}
+.map-style-bone .drag-preview-corridor-floor{stroke:#f7efd8}
+.map-style-print .drag-preview-corridor-floor{stroke:#fff}
+`;
+
 export const HEX_CAVE_DIRECTIONS = [
   { q: 1, r: 0, edge: [5, 0] },
   { q: 1, r: -1, edge: [0, 1] },
@@ -8180,12 +8192,400 @@ export function getCavePassageHandles(generatedMap) {
     });
 }
 
+
+function buildSegmentsPath(segments = []) {
+  return (segments || [])
+    .map((segment) => {
+      if (
+        !Number.isFinite(segment?.x1) ||
+        !Number.isFinite(segment?.y1) ||
+        !Number.isFinite(segment?.x2) ||
+        !Number.isFinite(segment?.y2)
+      )
+        return "";
+      return `M${segment.x1} ${segment.y1}L${segment.x2} ${segment.y2}`;
+    })
+    .filter(Boolean)
+    .join(" ");
+}
+
+function buildPointPath(points = []) {
+  const cleanPoints = (points || []).filter(
+    (point) => Number.isFinite(point?.x) && Number.isFinite(point?.y),
+  );
+  if (cleanPoints.length < 2) return "";
+  return cleanPoints
+    .map((point, index) => `${index === 0 ? "M" : "L"}${point.x} ${point.y}`)
+    .join(" ");
+}
+
+function clonePoint(point) {
+  return Number.isFinite(point?.x) && Number.isFinite(point?.y)
+    ? { x: point.x, y: point.y }
+    : null;
+}
+
+function translatePoint(point, dx, dy) {
+  return Number.isFinite(point?.x) && Number.isFinite(point?.y)
+    ? { x: point.x + dx, y: point.y + dy }
+    : null;
+}
+
+function getCorridorAnchorPoint(corridor, endpoint, gridSize) {
+  const anchor = endpoint === "from" ? corridor?.fromAnchor : corridor?.toAnchor;
+  if (anchor) return getAnchorHandlePoint(anchor, gridSize);
+  const cells = getCorridorTopologyCells(corridor);
+  const cell = endpoint === "from" ? cells[0] : cells[cells.length - 1];
+  return cell ? { x: (cell.x + 0.5) * gridSize, y: (cell.y + 0.5) * gridSize } : null;
+}
+
+function getCorridorManualWaypointPoints(corridor, gridSize) {
+  return Array.isArray(corridor?.manualWaypoints)
+    ? corridor.manualWaypoints
+        .filter(isValidPoint)
+        .map((cell) => ({ x: (cell.x + 0.5) * gridSize, y: (cell.y + 0.5) * gridSize }))
+    : [];
+}
+
+function getCorridorPreviewControlPoints(corridor, gridSize) {
+  const start = getCorridorAnchorPoint(corridor, "from", gridSize);
+  const end = getCorridorAnchorPoint(corridor, "to", gridSize);
+  const manualWaypoints = getCorridorManualWaypointPoints(corridor, gridSize);
+  const points = [start, ...manualWaypoints, end].filter(Boolean);
+  if (points.length >= 2) return points;
+  if (Array.isArray(corridor?.centerline) && corridor.centerline.length >= 2)
+    return corridor.centerline.map(clonePoint).filter(Boolean);
+  const topologyCells = getCorridorTopologyCells(corridor);
+  return topologyCells.map((cell) => ({ x: (cell.x + 0.5) * gridSize, y: (cell.y + 0.5) * gridSize }));
+}
+
+function getRoomDragPreviewOffset(roomDragPreview, region, gridSize) {
+  if (!roomDragPreview || !region?.cellRect) return null;
+  const targetX = Number.isFinite(roomDragPreview.x)
+    ? roomDragPreview.x
+    : roomDragPreview.originX;
+  const targetY = Number.isFinite(roomDragPreview.y)
+    ? roomDragPreview.y
+    : roomDragPreview.originY;
+  if (!Number.isFinite(targetX) || !Number.isFinite(targetY)) return null;
+  const dxCells = targetX - region.cellRect.x;
+  const dyCells = targetY - region.cellRect.y;
+  const dx = dxCells * gridSize;
+  const dy = dyCells * gridSize;
+  return {
+    regionId: region.id,
+    dxCells,
+    dyCells,
+    dx,
+    dy,
+    active: Math.abs(dxCells) > 0 || Math.abs(dyCells) > 0,
+    transform: `translate(${dx} ${dy})`,
+  };
+}
+
+function getCorridorFromRegionId(corridor) {
+  return corridor?.from || corridor?.fromRegionId || corridor?.sourceRegionId || corridor?.startRegionId || "";
+}
+
+function getCorridorToRegionId(corridor) {
+  return corridor?.to || corridor?.toRegionId || corridor?.targetRegionId || corridor?.endRegionId || "";
+}
+
+function doesCorridorTouchRegion(corridor, regionId) {
+  return (
+    Boolean(corridor && regionId) &&
+    (getCorridorFromRegionId(corridor) === regionId || getCorridorToRegionId(corridor) === regionId)
+  );
+}
+
+function shouldShiftCorridorEndpointForRoom(corridor, endpoint, regionId) {
+  if (!corridor || !regionId) return false;
+  if (endpoint === "from") return getCorridorFromRegionId(corridor) === regionId;
+  if (endpoint === "to") return getCorridorToRegionId(corridor) === regionId;
+  if (endpoint === "shared") return doesCorridorTouchRegion(corridor, regionId);
+  return false;
+}
+
+function getRoomShiftedEndpointPoint(corridor, endpoint, point, roomOffset) {
+  if (!roomOffset?.active || !shouldShiftCorridorEndpointForRoom(corridor, endpoint, roomOffset.regionId))
+    return null;
+  return translatePoint(point, roomOffset.dx, roomOffset.dy);
+}
+
+function getDragPreviewStyleTokens(generatedMap) {
+  const style = generatedMap?.config?.visualStyle || generatedMap?.config?.style || "ink";
+  if (style === "cruor") {
+    return {
+      floor: "#21191d",
+      wall: "var(--cruor-map-wall-main-stroke,#806b72)",
+      wallWidth: "var(--cruor-map-wall-main-width,3.8)",
+      wallShadow: "rgba(0,0,0,.66)",
+      wallShadowWidth: "var(--cruor-map-wall-shadow-width,7.6)",
+      wallSketch: "rgba(240,215,220,.28)",
+      wallSketchWidth: "var(--cruor-map-wall-sketch-width,1.05)",
+    };
+  }
+  if (style === "cartographic") {
+    return {
+      floor: "#fff9eb",
+      wall: "var(--cruor-map-wall-main-stroke,#1d1915)",
+      wallWidth: "var(--cruor-map-wall-main-width,2.2)",
+      wallShadow: "rgba(29,25,21,.12)",
+      wallShadowWidth: "var(--cruor-map-wall-shadow-width,3.2)",
+      wallSketch: "transparent",
+      wallSketchWidth: 0,
+    };
+  }
+  if (style === "blood") {
+    return {
+      floor: "#e8d2be",
+      wall: "var(--cruor-map-wall-main-stroke,#33030c)",
+      wallWidth: "var(--cruor-map-wall-main-width,5.15)",
+      wallShadow: "rgba(20,2,8,.44)",
+      wallShadowWidth: "var(--cruor-map-wall-shadow-width,9.2)",
+      wallSketch: "rgba(51,3,12,.52)",
+      wallSketchWidth: "var(--cruor-map-wall-sketch-width,1.45)",
+    };
+  }
+  if (style === "bone") {
+    return {
+      floor: "#f7efd8",
+      wall: "var(--cruor-map-wall-main-stroke,#493523)",
+      wallWidth: "var(--cruor-map-wall-main-width,3.15)",
+      wallShadow: "rgba(116,91,57,.28)",
+      wallShadowWidth: "var(--cruor-map-wall-shadow-width,6.2)",
+      wallSketch: "rgba(116,91,57,.30)",
+      wallSketchWidth: "var(--cruor-map-wall-sketch-width,1.05)",
+    };
+  }
+  if (style === "print") {
+    return {
+      floor: "#fff",
+      wall: "var(--cruor-map-wall-main-stroke,#000)",
+      wallWidth: "var(--cruor-map-wall-main-width,2.8)",
+      wallShadow: "none",
+      wallShadowWidth: 0,
+      wallSketch: "transparent",
+      wallSketchWidth: 0,
+    };
+  }
+  return {
+    floor: "#efe4ca",
+    wall: "var(--cruor-map-wall-main-stroke,#1d1915)",
+    wallWidth: "var(--cruor-map-wall-main-width,4.05)",
+    wallShadow: "var(--cruor-map-wall-shadow-stroke,rgba(42,33,24,.30))",
+    wallShadowWidth: "var(--cruor-map-wall-shadow-width,7.2)",
+    wallSketch: "var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32))",
+    wallSketchWidth: "var(--cruor-map-wall-sketch-width,1.15)",
+  };
+}
+
+function getPreviewFloorPathStyle(tokens) {
+  return { fill: tokens.floor, stroke: "none", mixBlendMode: "normal" };
+}
+
+function getPreviewCorridorFloorStyle(tokens, gridSize) {
+  return {
+    fill: "none",
+    stroke: tokens.floor,
+    strokeWidth: gridSize * 0.88,
+    strokeLinecap: "square",
+    strokeLinejoin: "round",
+    pointerEvents: "none",
+    vectorEffect: "non-scaling-stroke",
+  };
+}
+
+function getPreviewWallStyle(tokens, opacity = 1) {
+  return {
+    fill: "none",
+    opacity,
+    stroke: tokens.wall,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: tokens.wallWidth,
+    pointerEvents: "none",
+    vectorEffect: "non-scaling-stroke",
+  };
+}
+
+function getPreviewWallShadowStyle(tokens) {
+  return {
+    fill: "none",
+    stroke: tokens.wallShadow,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: tokens.wallShadowWidth,
+    pointerEvents: "none",
+    vectorEffect: "non-scaling-stroke",
+  };
+}
+
+function getPreviewWallSketchStyle(tokens) {
+  return {
+    fill: "none",
+    stroke: tokens.wallSketch,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeWidth: tokens.wallSketchWidth,
+    pointerEvents: "none",
+    vectorEffect: "non-scaling-stroke",
+  };
+}
+
+function getCorridorHandlePreviewPoints(corridor, preview, gridSize) {
+  const points = getCorridorPreviewControlPoints(corridor, gridSize);
+  if (!preview || points.length < 2) return points;
+  const nextPoints = points.map(clonePoint).filter(Boolean);
+  const previewPoint = clonePoint(preview.point || preview);
+  if (!previewPoint) return nextPoints;
+  if (preview.type === "door") {
+    if (preview.endpoint === "from") nextPoints[0] = previewPoint;
+    else if (preview.endpoint === "to") nextPoints[nextPoints.length - 1] = previewPoint;
+    else {
+      nextPoints[0] = previewPoint;
+      nextPoints[nextPoints.length - 1] = previewPoint;
+    }
+    return nextPoints.filter(Boolean);
+  }
+  const insertIndex = clamp(
+    Number.isInteger(preview.insertIndex) ? preview.insertIndex : nextPoints.length - 2,
+    0,
+    Math.max(0, nextPoints.length - 2),
+  );
+  if (preview.type === "waypoint-insert") {
+    nextPoints.splice(insertIndex + 1, 0, previewPoint);
+    return nextPoints.filter(Boolean);
+  }
+  const waypointIndex = clamp(
+    Number.isInteger(preview.waypointIndex) ? preview.waypointIndex : 0,
+    0,
+    Math.max(0, nextPoints.length - 3),
+  );
+  if (preview.source === "manual") nextPoints[waypointIndex + 1] = previewPoint;
+  else nextPoints.splice(1, Math.max(0, nextPoints.length - 2), previewPoint);
+  return nextPoints.filter(Boolean);
+}
+
+function renderRoomDragPreviewSurface(generatedMap, region, roomOffset, editorOptions = {}) {
+  if (!region || !roomOffset?.active) return null;
+  const gridSize = generatedMap.config.gridSize;
+  const tokens = getDragPreviewStyleTokens(generatedMap);
+  const regionSurface = getRegionSurface(region, generatedMap, gridSize);
+  const regionWallPath =
+    regionSurface.wallArcPath ||
+    buildSegmentsPath(regionSurface.wallSegments || regionSurface.boundarySegments || []);
+  const showProps = editorOptions.showProps !== false;
+  const props = showProps
+    ? (generatedMap.props || []).filter((prop) => prop.regionId === region.id)
+    : [];
+  const formattedNumber = String(region.number || "").padStart(2, "0");
+  const showBadges = editorOptions.showRoomBadges !== false;
+  const showNames = Boolean(editorOptions.showNames);
+
+  return (
+    <g className="drag-preview-layer room-drag-preview-layer">
+      <g className="room-drag-preview-layer__surface">
+        <g transform={roomOffset.transform}>
+          <path
+            className="floor-fill"
+            d={regionSurface.visualFloorPath}
+            fillRule="nonzero"
+            style={getPreviewFloorPathStyle(tokens)}
+          />
+          {props.length > 0 ? renderProps(props, generatedMap) : null}
+          {showBadges || showNames ? (
+            <g className="labels">
+              {showBadges ? (
+                <>
+                  <rect
+                    className="room-number-badge"
+                    x={region.labelPoint.x - 15}
+                    y={region.labelPoint.y - 15}
+                    width={30}
+                    height={30}
+                    rx={0}
+                  />
+                  <text
+                    className="room-number"
+                    x={region.labelPoint.x}
+                    y={region.labelPoint.y + 4}
+                    textAnchor="middle"
+                  >
+                    {formattedNumber}
+                  </text>
+                </>
+              ) : null}
+              {showNames ? (
+                <text
+                  className="room-name"
+                  x={region.labelPoint.x}
+                  y={region.labelPoint.y + 27}
+                  textAnchor="middle"
+                >
+                  {region.name}
+                </text>
+              ) : null}
+            </g>
+          ) : null}
+          {regionWallPath ? (
+            <>
+              <g className="wall-shadow">
+                <path d={regionWallPath} style={getPreviewWallShadowStyle(tokens)} />
+              </g>
+              <g className="wall-main">
+                <path d={regionWallPath} style={getPreviewWallStyle(tokens)} />
+              </g>
+              <g className="wall-sketch">
+                <path d={regionWallPath} style={getPreviewWallSketchStyle(tokens)} />
+              </g>
+            </>
+          ) : null}
+          {renderRoomBoundaryHighlight(region, generatedMap, "room-selection-highlight")}
+        </g>
+      </g>
+    </g>
+  );
+}
+
+function renderCorridorDragPreviewSurface(generatedMap, corridorDragPreview) {
+  if (!corridorDragPreview?.corridorId) return null;
+  const corridor = generatedMap.corridors.find(
+    (item) => item.id === corridorDragPreview.corridorId,
+  );
+  if (!corridor) return null;
+  const gridSize = generatedMap.config.gridSize;
+  const tokens = getDragPreviewStyleTokens(generatedMap);
+  const previewPath = buildPointPath(
+    getCorridorHandlePreviewPoints(corridor, corridorDragPreview, gridSize),
+  );
+  if (!previewPath) return null;
+  return (
+    <g className="drag-preview-layer corridor-drag-preview-layer">
+      <g className="corridor-drag-preview-layer__surface">
+        <path
+          className="drag-preview-corridor-floor"
+          d={previewPath}
+          style={getPreviewCorridorFloorStyle(tokens, gridSize)}
+        />
+        <path
+          className="drag-preview-corridor-wall"
+          d={previewPath}
+          style={getPreviewWallStyle(tokens, 0.72)}
+        />
+      </g>
+    </g>
+  );
+}
+
 export function renderEditorOverlays(generatedMap, editorOptions = {}) {
   const { regions, corridors, config } = generatedMap;
   const {
     draggingRegionId,
     hoveredRegionId,
+    roomDragPreview,
     draggingCorridorHandle,
+    corridorDragPreview,
     draggingMapAccessId,
     mapAccessDragPreview,
     hoveredCorridorId,
@@ -8216,6 +8616,19 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
     showAccessDots = true,
   } = editorOptions;
   const accessDotsVisible = showAccessDots !== false;
+  const roomDragPreviewRegion = roomDragPreview
+    ? regions.find((region) => region.id === roomDragPreview.regionId)
+    : null;
+  const roomDragPreviewOffset = getRoomDragPreviewOffset(
+    roomDragPreview,
+    roomDragPreviewRegion,
+    config.gridSize,
+  );
+  const previewedCorridorHandleId = corridorDragPreview?.id || "";
+  const getPreviewedHandlePoint = (handleId) =>
+    previewedCorridorHandleId === handleId && corridorDragPreview
+      ? { x: corridorDragPreview.x, y: corridorDragPreview.y }
+      : null;
   const wallConnectionZones = regions.flatMap((region) =>
     getWallConnectionZones(region, regions, config.gridSize, generatedMap),
   );
@@ -8241,51 +8654,94 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
     })
     .filter((item) => item.anchor)
     .map((item) => {
+      const id = `${item.corridor.id}:${item.endpoint}`;
       const door = createDoorFromAnchor(item.anchor, config.gridSize, false);
+      const basePoint = { x: (door.x1 + door.x2) / 2, y: (door.y1 + door.y2) / 2 };
+      const preview =
+        getPreviewedHandlePoint(id) ||
+        getRoomShiftedEndpointPoint(
+          item.corridor,
+          item.endpoint,
+          basePoint,
+          roomDragPreviewOffset,
+        );
       return {
-        id: `${item.corridor.id}:${item.endpoint}`,
+        id,
         corridor: item.corridor,
         endpoint: item.endpoint,
-        x: (door.x1 + door.x2) / 2,
-        y: (door.y1 + door.y2) / 2,
+        x: preview?.x ?? basePoint.x,
+        y: preview?.y ?? basePoint.y,
       };
     });
   const waypointHandles = corridors.flatMap((corridor) => {
     const manualPoints = Array.isArray(corridor.manualWaypoints)
       ? corridor.manualWaypoints.filter(isValidPoint)
       : [];
-    return manualPoints.map((cell, index) => ({
-      id: `${corridor.id}:manual-waypoint:${index}`,
-      corridor,
-      index,
-      source: "manual",
-      x: (cell.x + 0.5) * config.gridSize,
-      y: (cell.y + 0.5) * config.gridSize,
-    }));
+    return manualPoints.map((cell, index) => {
+      const id = `${corridor.id}:manual-waypoint:${index}`;
+      const preview = getPreviewedHandlePoint(id);
+      return {
+        id,
+        corridor,
+        index,
+        source: "manual",
+        x: preview?.x ?? (cell.x + 0.5) * config.gridSize,
+        y: preview?.y ?? (cell.y + 0.5) * config.gridSize,
+      };
+    });
   });
+  const previewInsertedWaypointHandle =
+    corridorDragPreview?.type === "waypoint-insert"
+      ? {
+          id: corridorDragPreview.id,
+          corridor: corridors.find((corridor) => corridor.id === corridorDragPreview.corridorId),
+          index: corridorDragPreview.insertIndex,
+          source: "manual",
+          x: corridorDragPreview.x,
+          y: corridorDragPreview.y,
+        }
+      : null;
+  const previewInsertedWaypointAlreadyMaterialized =
+    previewInsertedWaypointHandle &&
+    waypointHandles.some(
+      (handle) =>
+        handle.corridor?.id === previewInsertedWaypointHandle.corridor?.id &&
+        Math.abs(handle.x - previewInsertedWaypointHandle.x) < 0.5 &&
+        Math.abs(handle.y - previewInsertedWaypointHandle.y) < 0.5,
+    );
+  const visibleWaypointHandles =
+    previewInsertedWaypointHandle?.corridor && !previewInsertedWaypointAlreadyMaterialized
+      ? [...waypointHandles, previewInsertedWaypointHandle]
+      : waypointHandles;
   const accessHandles = (
     generatedMap.dungeonMask.mapAccesses ||
     generatedMap.mapAccesses ||
     []
   ).map((access) => {
-    const preview =
-      mapAccessDragPreview?.id === access.id ? mapAccessDragPreview : null;
-    return {
-      access,
-      id: access.id,
-      regionId: access.regionId,
+    const basePoint = {
       x:
-        preview?.x ??
         access.displayPoint?.x ??
         ((access.displayWallGap || access.wallGap).x1 +
           (access.displayWallGap || access.wallGap).x2) /
           2,
       y:
-        preview?.y ??
         access.displayPoint?.y ??
         ((access.displayWallGap || access.wallGap).y1 +
           (access.displayWallGap || access.wallGap).y2) /
           2,
+    };
+    const roomPreview =
+      roomDragPreviewOffset?.active && access.regionId === roomDragPreviewOffset.regionId
+        ? translatePoint(basePoint, roomDragPreviewOffset.dx, roomDragPreviewOffset.dy)
+        : null;
+    const preview =
+      mapAccessDragPreview?.id === access.id ? mapAccessDragPreview : roomPreview;
+    return {
+      access,
+      id: access.id,
+      regionId: access.regionId,
+      x: preview?.x ?? basePoint.x,
+      y: preview?.y ?? basePoint.y,
     };
   });
   const highlightedRegion = regions.find(
@@ -8301,7 +8757,18 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
   const highlightedCorridor = corridors.find(
     (corridor) => corridor.id === activeCorridorId,
   );
-  const cavePassageHandles = getCavePassageHandles(generatedMap);
+  const cavePassageHandles = getCavePassageHandles(generatedMap).map((handle) => {
+    const basePoint = { x: handle.x, y: handle.y };
+    const preview =
+      getPreviewedHandlePoint(handle.id) ||
+      getRoomShiftedEndpointPoint(
+        handle.corridor,
+        handle.endpoint,
+        basePoint,
+        roomDragPreviewOffset,
+      );
+    return preview ? { ...handle, x: preview.x, y: preview.y } : handle;
+  });
   return (
     <g className="editor-overlays">
       {renderCaveEditorZoneOverlays(generatedMap, {
@@ -8309,8 +8776,21 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
         hoveredRegionId,
       })}
       {renderCaveTunnelTraces(generatedMap, activeCorridorId)}
-      {renderRoomSelectionHighlight(selectedRegion, generatedMap)}
-      {renderRoomHoverHighlight(highlightedRegion, generatedMap)}
+      {renderCorridorDragPreviewSurface(generatedMap, corridorDragPreview)}
+      {renderRoomDragPreviewSurface(
+        generatedMap,
+        roomDragPreviewRegion,
+        roomDragPreviewOffset,
+        editorOptions,
+      )}
+      {renderRoomSelectionHighlight(
+        selectedRegion?.id === roomDragPreview?.regionId ? null : selectedRegion,
+        generatedMap,
+      )}
+      {renderRoomHoverHighlight(
+        highlightedRegion?.id === roomDragPreview?.regionId ? null : highlightedRegion,
+        generatedMap,
+      )}
       {renderCorridorHoverHighlight(highlightedCorridor, config.gridSize)}
       {regions.map((region) => (
         <path
@@ -8519,7 +8999,7 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
           onPointerDown={(event) => onDoorPointerDown?.(event, handle)}
         />
       ))}
-      {accessDotsVisible && waypointHandles.map((handle) => {
+      {accessDotsVisible && visibleWaypointHandles.map((handle) => {
         const cell = {
           x: Math.floor(handle.x / config.gridSize),
           y: Math.floor(handle.y / config.gridSize),
@@ -8834,7 +9314,7 @@ export function MapSvg({
     () => (
       <>
         <defs>
-          <style>{`${SVG_STYLE}${MAP_VISUAL_STYLE}${EDITOR_CAVE_STYLE}`}</style>
+          <style>{`${SVG_STYLE}${MAP_VISUAL_STYLE}${EDITOR_CAVE_STYLE}${DRAG_PREVIEW_STYLE}`}</style>
           <linearGradient id="cruorMapBackground" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#3d0712" />
             <stop offset="42%" stopColor="#160207" />
@@ -8945,6 +9425,9 @@ export function MapSvg({
       {showEditor && renderEditorOverlays(activeEditorMap, {
         ...editorOptions,
         showAccessDots: accessDotsVisible,
+        showNames,
+        showProps,
+        showRoomBadges,
       })}
     </svg>
   );

@@ -293,7 +293,51 @@ function getMapWallStyleProfile(visualStyle) {
   return MAP_WALL_STYLE_PROFILES[normalizeVisualStyle(visualStyle)] || MAP_WALL_STYLE_PROFILES.cruor;
 }
 
-export function MapViewport({
+function stableSerializeForMemo(value) {
+  if (Array.isArray(value)) {
+    return `[${value.map((item) => stableSerializeForMemo(item)).join(",")}]`;
+  }
+  if (value && typeof value === "object") {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${stableSerializeForMemo(value[key])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function createLockedGenerationManualSnapshot(manualOverrides) {
+  const normalized = normalizeManualOverrides(manualOverrides);
+  return {
+    doorAnchors: normalized.doorAnchors || {},
+    doorTypes: normalized.doorTypes || {},
+    levels: normalized.levels || {},
+    mapAccesses: normalized.mapAccesses || {},
+    corridorJunctions: normalized.corridorJunctions || {},
+    corridorWaypoints: normalized.corridorWaypoints || {},
+    customConnections: normalized.customConnections || [],
+    deletedConnections: normalized.deletedConnections || [],
+    roomStyles: normalized.roomStyles || {},
+  };
+}
+
+function createLockedRawGenerationManualOverrides(snapshot = {}) {
+  return {
+    roomPositions: {},
+    doorAnchors: {},
+    doorTypes: snapshot.doorTypes || {},
+    levels: snapshot.levels || {},
+    mapAccesses: snapshot.mapAccesses || {},
+    corridorJunctions: {},
+    corridorWaypoints: {},
+    customConnections: [],
+    deletedConnections: [],
+    roomStyles: snapshot.roomStyles || {},
+  };
+}
+
+
+function MapViewport({
   generatedMap,
   showGrid,
   gridStyle = DEFAULT_CONFIG.gridStyle,
@@ -369,7 +413,11 @@ export function MapViewport({
   const roomDragRef = useRef(null);
   const roomMoveFrameRef = useRef(null);
   const pendingRoomMoveRef = useRef(null);
+  const roomDragPreviewRef = useRef(null);
   const corridorDragRef = useRef(null);
+  const corridorMoveFrameRef = useRef(null);
+  const pendingCorridorMoveRef = useRef(null);
+  const corridorDragPreviewRef = useRef(null);
   const accessDragRef = useRef(null);
   const accessMoveFrameRef = useRef(null);
   const pendingAccessMoveRef = useRef(null);
@@ -379,7 +427,9 @@ export function MapViewport({
   const [isPanning, setIsPanning] = useState(false);
   const [draggingRegionId, setDraggingRegionId] = useState(null);
   const [hoveredRegionId, setHoveredRegionId] = useState(null);
+  const [roomDragPreview, setRoomDragPreview] = useState(null);
   const [draggingCorridorHandle, setDraggingCorridorHandle] = useState(null);
+  const [corridorDragPreview, setCorridorDragPreview] = useState(null);
   const [draggingMapAccessId, setDraggingMapAccessId] = useState(null);
   const [mapAccessDragPreview, setMapAccessDragPreview] = useState(null);
   const [hoverWallHandle, setHoverWallHandle] = useState(null);
@@ -624,6 +674,33 @@ export function MapViewport({
     };
   }
 
+  function setRoomDragPreviewState(nextPreview) {
+    roomDragPreviewRef.current = nextPreview;
+    setRoomDragPreview(nextPreview);
+  }
+
+  function setCorridorDragPreviewState(nextPreview) {
+    corridorDragPreviewRef.current = nextPreview;
+    setCorridorDragPreview(nextPreview);
+  }
+
+  useEffect(() => {
+    const roomPreview = roomDragPreviewRef.current;
+    const corridorPreview = corridorDragPreviewRef.current;
+    if (roomPreview?.phase !== "committing" && corridorPreview?.phase !== "committing") return undefined;
+
+    const frame = window.requestAnimationFrame(() => {
+      if (roomDragPreviewRef.current?.phase === "committing") {
+        setRoomDragPreviewState(null);
+      }
+      if (corridorDragPreviewRef.current?.phase === "committing") {
+        setCorridorDragPreviewState(null);
+      }
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [generatedMap]);
+
   function setPreviewHoveredRegion(regionId) {
     const normalizedRegionId = regionId || null;
     setHoveredRegionId(normalizedRegionId);
@@ -687,6 +764,8 @@ export function MapViewport({
     () => () => {
       if (roomMoveFrameRef.current)
         window.cancelAnimationFrame(roomMoveFrameRef.current);
+      if (corridorMoveFrameRef.current)
+        window.cancelAnimationFrame(corridorMoveFrameRef.current);
       if (accessMoveFrameRef.current)
         window.cancelAnimationFrame(accessMoveFrameRef.current);
       if (panMoveFrameRef.current)
@@ -1234,6 +1313,7 @@ export function MapViewport({
     const pending = pendingRoomMoveRef.current;
     pendingRoomMoveRef.current = null;
     if (pending) onRoomMove?.(pending.regionId, pending.position);
+    setRoomDragPreviewState(null);
     roomDragRef.current = null;
     setDraggingRegionId(null);
     setHoveredRegionId(null);
@@ -1406,18 +1486,51 @@ export function MapViewport({
     setHoveredCorridorId(handle.corridor.id);
   }
 
+  function createCorridorDragPreview(drag, point, phase = "dragging") {
+    if (!drag || !point) return null;
+    return {
+      phase,
+      type: drag.type,
+      id: drag.id,
+      corridorId: drag.corridorId,
+      endpoint: drag.endpoint,
+      waypointIndex: drag.waypointIndex,
+      insertIndex: drag.insertIndex,
+      source: drag.source,
+      point,
+      x: point.x,
+      y: point.y,
+    };
+  }
+
+  function scheduleCorridorDragPreview(drag, point) {
+    pendingCorridorMoveRef.current = createCorridorDragPreview(drag, point);
+    if (corridorMoveFrameRef.current) return;
+    corridorMoveFrameRef.current = window.requestAnimationFrame(() => {
+      corridorMoveFrameRef.current = null;
+      const pending = pendingCorridorMoveRef.current;
+      pendingCorridorMoveRef.current = null;
+      if (!pending) return;
+      setCorridorDragPreviewState(pending);
+    });
+  }
+
   function handleDoorPointerDown(event, handle) {
     if (!showEditor || event.button !== 0) return;
     event.preventDefault();
     event.stopPropagation();
     onEditStart?.();
-    corridorDragRef.current = {
+    const startPoint = { x: handle.x, y: handle.y };
+    const drag = {
       type: "door",
       pointerId: event.pointerId,
       id: handle.id,
       corridorId: handle.corridor.id,
       endpoint: handle.endpoint,
+      startPoint,
     };
+    corridorDragRef.current = drag;
+    setCorridorDragPreviewState(createCorridorDragPreview(drag, startPoint));
     try {
       event.currentTarget.setPointerCapture(event.pointerId);
     } catch (error) {
@@ -1431,23 +1544,26 @@ export function MapViewport({
     event.preventDefault();
     event.stopPropagation();
     onEditStart?.();
-    onWaypointInsert?.(handle.corridor.id, handle.insertIndex, handle.point);
-    corridorDragRef.current = {
-      type: "waypoint",
+    const id = `new-waypoint-${handle.corridor.id}-${handle.insertIndex}`;
+    const startPoint = handle.point;
+    const drag = {
+      type: "waypoint-insert",
       pointerId: event.pointerId,
-      id: `new-waypoint-${handle.corridor.id}-${handle.insertIndex}`,
+      id,
       corridorId: handle.corridor.id,
       waypointIndex: handle.insertIndex,
+      insertIndex: handle.insertIndex,
       source: "manual",
+      startPoint,
     };
+    corridorDragRef.current = drag;
+    setCorridorDragPreviewState(createCorridorDragPreview(drag, startPoint));
     try {
       event.currentTarget.setPointerCapture(event.pointerId);
     } catch (error) {
       void error;
     }
-    setDraggingCorridorHandle(
-      `new-waypoint-${handle.corridor.id}-${handle.insertIndex}`,
-    );
+    setDraggingCorridorHandle(id);
     setHoverCorridorHandle(null);
   }
 
@@ -1456,14 +1572,18 @@ export function MapViewport({
     event.preventDefault();
     event.stopPropagation();
     onEditStart?.();
-    corridorDragRef.current = {
+    const startPoint = { x: handle.x, y: handle.y };
+    const drag = {
       type: "waypoint",
       pointerId: event.pointerId,
       id: handle.id,
       corridorId: handle.corridor.id,
       waypointIndex: handle.index,
       source: handle.source,
+      startPoint,
     };
+    corridorDragRef.current = drag;
+    setCorridorDragPreviewState(createCorridorDragPreview(drag, startPoint));
     try {
       event.currentTarget.setPointerCapture(event.pointerId);
     } catch (error) {
@@ -1479,11 +1599,7 @@ export function MapViewport({
     event.stopPropagation();
     const point = clientToMapPoint(event);
     if (!point) return true;
-    if (drag.type === "door") {
-      onDoorMove?.(drag.corridorId, drag.endpoint, point);
-      return true;
-    }
-    onWaypointMove?.(drag.corridorId, drag.waypointIndex, point, drag.source);
+    scheduleCorridorDragPreview(drag, point);
     return true;
   }
 
@@ -1492,6 +1608,30 @@ export function MapViewport({
     if (!drag || drag.pointerId !== event.pointerId) return false;
     event.preventDefault();
     event.stopPropagation();
+    if (corridorMoveFrameRef.current) {
+      window.cancelAnimationFrame(corridorMoveFrameRef.current);
+      corridorMoveFrameRef.current = null;
+    }
+    const pending = pendingCorridorMoveRef.current || corridorDragPreviewRef.current;
+    pendingCorridorMoveRef.current = null;
+    const point = pending?.point || drag.startPoint;
+    const moved =
+      drag.type === "waypoint-insert" ||
+      (point &&
+        drag.startPoint &&
+        Math.hypot(point.x - drag.startPoint.x, point.y - drag.startPoint.y) > 0.5);
+    let committed = false;
+    if (point && moved) {
+      setCorridorDragPreviewState(createCorridorDragPreview(drag, point, "committing"));
+      if (drag.type === "door") {
+        committed = onDoorMove?.(drag.corridorId, drag.endpoint, point) === true;
+      } else if (drag.type === "waypoint-insert") {
+        committed = onWaypointInsert?.(drag.corridorId, drag.insertIndex, point) === true;
+      } else {
+        committed = onWaypointMove?.(drag.corridorId, drag.waypointIndex, point, drag.source) === true;
+      }
+    }
+    if (!committed) setCorridorDragPreviewState(null);
     corridorDragRef.current = null;
     setDraggingCorridorHandle(null);
     setHoverCorridorHandle(null);
@@ -1739,7 +1879,9 @@ export function MapViewport({
             editorOptions={{
               draggingRegionId,
               hoveredRegionId,
+              roomDragPreview,
               draggingCorridorHandle,
+              corridorDragPreview,
               draggingMapAccessId,
               mapAccessDragPreview,
               hoverWallHandle,
@@ -4004,6 +4146,8 @@ export default function CruorMapGeneratorMvp({
   const [manualOverrides, setManualOverrides] = useState(() =>
     normalizeManualOverrides(initialManualOverrides || createEmptyManualOverrides()),
   );
+  const manualOverridesRef = useRef(manualOverrides);
+  manualOverridesRef.current = manualOverrides;
   const [manualHistory, setManualHistory] = useState({ past: [], future: [] });
   const [isManualEditActive, setIsManualEditActive] = useState(false);
   const [inspectorCollapsed, setInspectorCollapsed] = useState(false);
@@ -4044,25 +4188,33 @@ export default function CruorMapGeneratorMvp({
     ],
   );
   const lockedManualLayoutActive = manualRoomPositionsActive && Boolean(manualLayoutSeed);
-  const generationManualOverrides = useMemo(() => {
-    const normalized = normalizeManualOverrides(manualOverrides);
-    if (!lockedManualLayoutActive) return normalized;
-    return {
-      ...normalized,
-      roomPositions: {},
-      doorAnchors: {},
-      corridorJunctions: {},
-      corridorWaypoints: {},
-      customConnections: [],
-      deletedConnections: [],
-    };
+  const unlockedGenerationManualOverrides = useMemo(
+    () => normalizeManualOverrides(manualOverrides),
+    [manualOverrides],
+  );
+  const lockedGenerationManualSignature = useMemo(() => {
+    if (!lockedManualLayoutActive) return "";
+    return stableSerializeForMemo(
+      createLockedGenerationManualSnapshot(manualOverrides),
+    );
   }, [lockedManualLayoutActive, manualOverrides]);
-  const generationConfig = useMemo(() => {
-    if (!lockedManualLayoutActive) return config;
-    const normalized = normalizeManualOverrides(manualOverrides);
+  const lockedGenerationManualSnapshot = useMemo(() => {
+    if (!lockedManualLayoutActive) return null;
+    return createLockedGenerationManualSnapshot(manualOverrides);
+  }, [lockedManualLayoutActive, lockedGenerationManualSignature]);
+  const lockedGenerationManualOverrides = useMemo(
+    () => createLockedRawGenerationManualOverrides(lockedGenerationManualSnapshot || {}),
+    [lockedGenerationManualSnapshot],
+  );
+  const generationManualOverrides = lockedManualLayoutActive
+    ? lockedGenerationManualOverrides
+    : unlockedGenerationManualOverrides;
+  const lockedGenerationConfig = useMemo(() => {
+    if (!lockedGenerationManualSnapshot) return config;
+    const normalized = lockedGenerationManualSnapshot;
     return {
       ...config,
-      manualRoomPositions: normalized.roomPositions,
+      manualRoomPositions: {},
       manualDoorAnchors: normalized.doorAnchors,
       manualDoorTypes: normalized.doorTypes,
       manualStairTransitions: normalized.levels?.stairs || {},
@@ -4074,7 +4226,8 @@ export default function CruorMapGeneratorMvp({
       manualRoomStyles: normalized.roomStyles,
       manualDeletedConnections: normalized.deletedConnections,
     };
-  }, [config, lockedManualLayoutActive, manualOverrides]);
+  }, [config, lockedGenerationManualSnapshot]);
+  const generationConfig = lockedManualLayoutActive ? lockedGenerationConfig : config;
   const rawGeneratedMap = useMemo(
     () => generateMap(generationConfig, generationManualOverrides),
     [generationConfig, generationManualOverrides],
@@ -4280,14 +4433,27 @@ export default function CruorMapGeneratorMvp({
   }
 
   function updateManualOverridesWithHistory(updater, status = "") {
-    const previous = cloneManualOverrides(manualOverrides);
+    const previous = cloneManualOverrides(manualOverridesRef.current);
     const next = cloneManualOverrides(
-      typeof updater === "function" ? updater(manualOverrides) : updater,
+      typeof updater === "function" ? updater(previous) : updater,
     );
-    if (areManualOverridesEqual(previous, next)) return;
+    if (areManualOverridesEqual(previous, next)) return false;
     pushManualHistorySnapshot(previous);
+    manualOverridesRef.current = next;
     setManualOverrides(next);
     setStateStatus(status);
+    return true;
+  }
+
+  function setManualOverridesFromCurrent(updater) {
+    const previous = cloneManualOverrides(manualOverridesRef.current);
+    const next = cloneManualOverrides(
+      typeof updater === "function" ? updater(previous) : updater,
+    );
+    if (areManualOverridesEqual(previous, next)) return false;
+    manualOverridesRef.current = next;
+    setManualOverrides(next);
+    return true;
   }
 
   function cloneMapGeometry(value) {
@@ -4591,6 +4757,57 @@ export default function CruorMapGeneratorMvp({
     return normalizedAnchors;
   }
 
+  function getManualOverrideCorridorId(key) {
+    const text = String(key || "");
+    const separatorIndex = text.lastIndexOf(":");
+    return separatorIndex > 0 ? text.slice(0, separatorIndex) : text;
+  }
+
+  function getMovedRegionIdsFromDeltas(deltas) {
+    const movedRegionIds = new Set();
+    deltas.forEach((delta, regionId) => {
+      if (Math.abs(delta?.dx || 0) > 0 || Math.abs(delta?.dy || 0) > 0) {
+        movedRegionIds.add(regionId);
+      }
+    });
+    return movedRegionIds;
+  }
+
+  function hasGlobalManualRoutingOverrides(normalized) {
+    return (
+      (Array.isArray(normalized.customConnections) && normalized.customConnections.length > 0) ||
+      (Array.isArray(normalized.deletedConnections) && normalized.deletedConnections.length > 0) ||
+      Object.keys(normalized.corridorJunctions || {}).length > 0
+    );
+  }
+
+  function getImpactedManualCorridorIds(normalized, graph, movedRegionIds) {
+    const ids = new Set();
+    (graph || []).forEach((edge) => {
+      if (movedRegionIds.has(edge.from) || movedRegionIds.has(edge.to)) ids.add(edge.id);
+    });
+    Object.keys(normalized.doorAnchors || {}).forEach((key) => {
+      const corridorId = getManualOverrideCorridorId(key);
+      if (corridorId) ids.add(corridorId);
+    });
+    Object.keys(normalized.corridorWaypoints || {}).forEach((corridorId) => {
+      if (corridorId) ids.add(corridorId);
+    });
+    return ids;
+  }
+
+  function mergePartiallyRoutedCorridors(baseCorridors, routedCorridors, impactedIds) {
+    const routedById = new Map((routedCorridors || []).map((corridor) => [corridor.id, corridor]));
+    const merged = (baseCorridors || []).map((corridor) =>
+      impactedIds.has(corridor.id) ? routedById.get(corridor.id) || corridor : corridor,
+    );
+    const mergedIds = new Set(merged.map((corridor) => corridor.id));
+    (routedCorridors || []).forEach((corridor) => {
+      if (!mergedIds.has(corridor.id)) merged.push(corridor);
+    });
+    return merged;
+  }
+
   function buildManualGeometryLockedMap(baseMap, generatedCandidate, overrides) {
     const normalized = normalizeManualOverrides(overrides);
     const positions = normalized.roomPositions || {};
@@ -4624,18 +4841,41 @@ export default function CruorMapGeneratorMvp({
       manualDeletedConnections: normalized.deletedConnections || [],
       manualRoomStyles: normalized.roomStyles || {},
     };
-    const reroutedCorridors = routeCorridors(
-      routingConfig,
-      movedRegions,
+    const movedRegionIds = getMovedRegionIdsFromDeltas(deltas);
+    const impactedCorridorIds = getImpactedManualCorridorIds(
+      normalized,
       routingGraph,
+      movedRegionIds,
     );
+    const shouldRerouteWholeNetwork = hasGlobalManualRoutingOverrides(normalized);
+    const routedGraph = shouldRerouteWholeNetwork
+      ? routingGraph
+      : routingGraph.filter((edge) => impactedCorridorIds.has(edge.id));
+    const routedCorridors = routedGraph.length > 0
+      ? routeCorridors(
+          routingConfig,
+          movedRegions,
+          routedGraph,
+        )
+      : [];
+    const baseCorridors =
+      (Array.isArray(generatedCandidate.corridors) && generatedCandidate.corridors.length > 0
+        ? generatedCandidate.corridors
+        : baseMap.corridors) || [];
+    const mergedCorridors = shouldRerouteWholeNetwork
+      ? routedCorridors
+      : mergePartiallyRoutedCorridors(
+          baseCorridors,
+          routedCorridors,
+          impactedCorridorIds,
+        );
     const leveledMap = applyLevelMetadata(
       movedRegions,
-      reroutedCorridors,
+      mergedCorridors,
       routingConfig,
     );
     const regions = leveledMap.regions || movedRegions;
-    const corridors = leveledMap.corridors || reroutedCorridors;
+    const corridors = leveledMap.corridors || mergedCorridors;
     const rebuiltDungeonMask = buildDungeonMask(
       regions,
       corridors,
@@ -4720,15 +4960,16 @@ export default function CruorMapGeneratorMvp({
     }
     lockManualLayoutSeed();
     setIsManualEditActive(true);
-    manualEditSnapshotRef.current = cloneManualOverrides(manualOverrides);
+    manualEditSnapshotRef.current = cloneManualOverrides(manualOverridesRef.current);
   }
 
   function commitManualEdit() {
     setIsManualEditActive(false);
     const snapshot = manualEditSnapshotRef.current;
+    const currentManualOverrides = cloneManualOverrides(manualOverridesRef.current);
     manualEditSnapshotRef.current = null;
-    if (!snapshot || areManualOverridesEqual(snapshot, manualOverrides)) return;
-    pendingInlineManualCommitRef.current = cloneManualOverrides(manualOverrides);
+    if (!snapshot || areManualOverridesEqual(snapshot, currentManualOverrides)) return;
+    pendingInlineManualCommitRef.current = currentManualOverrides;
     pushManualHistorySnapshot(snapshot);
     setStateStatus("");
   }
@@ -4919,7 +5160,7 @@ export default function CruorMapGeneratorMvp({
     const target = generatedMap.regions.find(
       (region) => region.id === regionId,
     );
-    if (!target) return;
+    if (!target) return false;
     const gridW = Math.floor(
       generatedMap.config.mapWidth / generatedMap.config.gridSize,
     );
@@ -4941,6 +5182,7 @@ export default function CruorMapGeneratorMvp({
     };
     const dx = candidate.x - target.cellRect.x;
     const dy = candidate.y - target.cellRect.y;
+    if (dx === 0 && dy === 0) return false;
     const occupiedCells = new Set();
     generatedMap.regions.forEach((region) => {
       if (region.id === regionId) return;
@@ -4951,8 +5193,8 @@ export default function CruorMapGeneratorMvp({
     const overlaps = target.floorCells.some((cell) =>
       occupiedCells.has(cellKey(cell.x + dx, cell.y + dy)),
     );
-    if (overlaps) return;
-    setManualOverrides((current) =>
+    if (overlaps) return false;
+    return setManualOverridesFromCurrent((current) =>
       freezeCurrentRoomLayout(current, {
         [regionId]: { x: candidate.x, y: candidate.y },
       }),
@@ -4972,7 +5214,7 @@ export default function CruorMapGeneratorMvp({
     const corridor = generatedMap.corridors.find(
       (item) => item.id === corridorId,
     );
-    if (!corridor) return;
+    if (!corridor) return false;
     if (corridor.isRoomLink || endpoint === "shared") {
       const fromRegion = generatedMap.regions.find(
         (item) => item.id === corridor.from,
@@ -4980,41 +5222,41 @@ export default function CruorMapGeneratorMvp({
       const toRegion = generatedMap.regions.find(
         (item) => item.id === corridor.to,
       );
-      if (!fromRegion || !toRegion) return;
+      if (!fromRegion || !toRegion) return false;
       const sharedConnection = getClosestSharedRoomConnectionToPoint(
         fromRegion,
         toRegion,
         point,
         generatedMap.config.gridSize,
       );
-      if (!sharedConnection) return;
+      if (!sharedConnection) return false;
       const nextFromAnchor = serializeManualAnchor(sharedConnection.fromAnchor);
       const nextToAnchor = serializeManualAnchor(sharedConnection.toAnchor);
-      setManualOverrides((current) => {
-        const fromKey = corridorEndpointKey(corridorId, "from");
-        const toKey = corridorEndpointKey(corridorId, "to");
-        if (
-          areSerializedAnchorsEqual(
-            current.doorAnchors?.[fromKey],
-            nextFromAnchor,
-          ) &&
-          areSerializedAnchorsEqual(current.doorAnchors?.[toKey], nextToAnchor)
-        )
-          return current;
-        return freezeCurrentRoomLayout({
-          ...current,
+      const fromKey = corridorEndpointKey(corridorId, "from");
+      const toKey = corridorEndpointKey(corridorId, "to");
+      const current = normalizeManualOverrides(manualOverridesRef.current);
+      if (
+        areSerializedAnchorsEqual(
+          current.doorAnchors?.[fromKey],
+          nextFromAnchor,
+        ) &&
+        areSerializedAnchorsEqual(current.doorAnchors?.[toKey], nextToAnchor)
+      )
+        return false;
+      return setManualOverridesFromCurrent((currentOverrides) =>
+        freezeCurrentRoomLayout({
+          ...currentOverrides,
           doorAnchors: {
-            ...current.doorAnchors,
+            ...currentOverrides.doorAnchors,
             [fromKey]: nextFromAnchor,
             [toKey]: nextToAnchor,
           },
-        });
-      });
-      return;
+        }),
+      );
     }
     const regionId = endpoint === "from" ? corridor.from : corridor.to;
     const region = generatedMap.regions.find((item) => item.id === regionId);
-    if (!region) return;
+    if (!region) return false;
     const anchor =
       getManualDoorDragAnchor(
         region,
@@ -5027,27 +5269,28 @@ export default function CruorMapGeneratorMvp({
         generatedMap.config.gridSize,
         generatedMap,
       );
-    if (!anchor) return;
+    if (!anchor) return false;
     const nextAnchor = serializeManualAnchor(anchor);
-    setManualOverrides((current) => {
-      const key = corridorEndpointKey(corridorId, endpoint);
-      if (areSerializedAnchorsEqual(current.doorAnchors?.[key], nextAnchor))
-        return current;
-      return freezeCurrentRoomLayout({
-        ...current,
+    const key = corridorEndpointKey(corridorId, endpoint);
+    const current = normalizeManualOverrides(manualOverridesRef.current);
+    if (areSerializedAnchorsEqual(current.doorAnchors?.[key], nextAnchor))
+      return false;
+    return setManualOverridesFromCurrent((currentOverrides) =>
+      freezeCurrentRoomLayout({
+        ...currentOverrides,
         doorAnchors: {
-          ...current.doorAnchors,
+          ...currentOverrides.doorAnchors,
           [key]: nextAnchor,
         },
-      });
-    });
+      }),
+    );
   }
 
   function moveWaypoint(corridorId, waypointIndex, point, source) {
     const corridor = generatedMap.corridors.find(
       (item) => item.id === corridorId,
     );
-    if (!corridor) return;
+    if (!corridor) return false;
     const gridW = Math.floor(
       generatedMap.config.mapWidth / generatedMap.config.gridSize,
     );
@@ -5060,43 +5303,55 @@ export default function CruorMapGeneratorMvp({
       gridW,
       gridH,
     );
-    if (!cell) return;
+    if (!cell) return false;
     const roomCells = getRoomCellSet(generatedMap.regions);
-    if (roomCells.has(cellKey(cell.x, cell.y))) return;
-    setManualOverrides((current) => {
-      const currentWaypoints = current.corridorWaypoints || {};
-      const currentManual = Array.isArray(currentWaypoints[corridorId])
-        ? currentWaypoints[corridorId].filter(isValidPoint)
-        : [];
-      let nextWaypoints;
-      if (source === "manual") {
-        nextWaypoints = [...currentManual];
-        const safeIndex = clamp(
-          Number.isInteger(waypointIndex)
-            ? waypointIndex
-            : nextWaypoints.length,
-          0,
-          nextWaypoints.length,
-        );
-        nextWaypoints[safeIndex] = cell;
-      } else {
-        nextWaypoints = [cell];
-      }
-      return freezeCurrentRoomLayout({
-        ...current,
+    if (roomCells.has(cellKey(cell.x, cell.y))) return false;
+    const current = normalizeManualOverrides(manualOverridesRef.current);
+    const currentWaypoints = current.corridorWaypoints || {};
+    const currentManual = Array.isArray(currentWaypoints[corridorId])
+      ? currentWaypoints[corridorId].filter(isValidPoint)
+      : [];
+    let nextWaypoints;
+    if (source === "manual") {
+      nextWaypoints = [...currentManual];
+      const safeIndex = clamp(
+        Number.isInteger(waypointIndex)
+          ? waypointIndex
+          : nextWaypoints.length,
+        0,
+        nextWaypoints.length,
+      );
+      if (
+        currentManual[safeIndex]?.x === cell.x &&
+        currentManual[safeIndex]?.y === cell.y
+      )
+        return false;
+      nextWaypoints[safeIndex] = cell;
+    } else {
+      nextWaypoints = [cell];
+      if (
+        currentManual.length === 1 &&
+        currentManual[0]?.x === cell.x &&
+        currentManual[0]?.y === cell.y
+      )
+        return false;
+    }
+    return setManualOverridesFromCurrent((currentOverrides) =>
+      freezeCurrentRoomLayout({
+        ...currentOverrides,
         corridorWaypoints: {
-          ...currentWaypoints,
+          ...(currentOverrides.corridorWaypoints || {}),
           [corridorId]: nextWaypoints.filter(isValidPoint),
         },
-      });
-    });
+      }),
+    );
   }
 
   function insertWaypoint(corridorId, insertIndex, point) {
     const corridor = generatedMap.corridors.find(
       (item) => item.id === corridorId,
     );
-    if (!corridor) return;
+    if (!corridor) return false;
     const gridW = Math.floor(
       generatedMap.config.mapWidth / generatedMap.config.gridSize,
     );
@@ -5109,29 +5364,30 @@ export default function CruorMapGeneratorMvp({
       gridW,
       gridH,
     );
-    if (!cell) return;
+    if (!cell) return false;
     const roomCells = getRoomCellSet(generatedMap.regions);
-    if (roomCells.has(cellKey(cell.x, cell.y))) return;
-    setManualOverrides((current) => {
-      const currentWaypoints = current.corridorWaypoints || {};
-      const currentManual = Array.isArray(currentWaypoints[corridorId])
-        ? currentWaypoints[corridorId].filter(isValidPoint)
-        : [];
-      const safeIndex = clamp(
-        Number.isInteger(insertIndex) ? insertIndex : currentManual.length,
-        0,
-        currentManual.length,
-      );
-      const nextWaypoints = [...currentManual];
-      nextWaypoints.splice(safeIndex, 0, cell);
-      return freezeCurrentRoomLayout({
-        ...current,
+    if (roomCells.has(cellKey(cell.x, cell.y))) return false;
+    const current = normalizeManualOverrides(manualOverridesRef.current);
+    const currentWaypoints = current.corridorWaypoints || {};
+    const currentManual = Array.isArray(currentWaypoints[corridorId])
+      ? currentWaypoints[corridorId].filter(isValidPoint)
+      : [];
+    const safeIndex = clamp(
+      Number.isInteger(insertIndex) ? insertIndex : currentManual.length,
+      0,
+      currentManual.length,
+    );
+    const nextWaypoints = [...currentManual];
+    nextWaypoints.splice(safeIndex, 0, cell);
+    return setManualOverridesFromCurrent((currentOverrides) =>
+      freezeCurrentRoomLayout({
+        ...currentOverrides,
         corridorWaypoints: {
-          ...currentWaypoints,
+          ...(currentOverrides.corridorWaypoints || {}),
           [corridorId]: nextWaypoints.filter(isValidPoint),
         },
-      });
-    });
+      }),
+    );
   }
 
   function deleteWaypoint(corridorId, waypointIndex, source) {
