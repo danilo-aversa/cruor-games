@@ -6723,3 +6723,130 @@ _Nessun file aggiunto._
 
 - `~features/darken-location/map-generator/map-generator.page.jsx`
 
+
+---
+
+## 2026-07-01 16:51:57
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-corridor-hub-engine-patch-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-corridor-hub-engine-patch-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+
+
+---
+
+## 2026-07-01 17:37:30
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-corridor-hub-engine-patch-v2.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-corridor-hub-engine-patch-v2.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+
+
+---
+
+## 2026-07-01 18:16:38
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-corridor-hub-engine-patch-v2.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-corridor-hub-engine-patch-v2.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+
+
+---
+
+## 2026-07-01 23:47:54
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-corridor-hub-engine-patch-v3.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-corridor-hub-engine-patch-v3.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+
+
+---
+
+## 2026-07-01 23:58:29
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-corridor-hub-engine-patch-v4.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-corridor-hub-engine-patch-v4.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+- `~features/darken-location/map-generator/map-generator.mask.js`
+
+
+---
+
+## 2026-07-02 00:06:56
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-corridor-hub-engine-patch-v5.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-corridor-hub-engine-patch-v5.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+

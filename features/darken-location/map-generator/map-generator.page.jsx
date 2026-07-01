@@ -4796,11 +4796,85 @@ export default function CruorMapGeneratorMvp({
     return ids;
   }
 
+  function getCorridorAutoHubGroupId(corridor) {
+    if (!corridor) return "";
+    if (corridor.autoHubId) return corridor.autoHubId;
+    if (corridor.autoHubStem && typeof corridor.id === "string") {
+      return corridor.id.endsWith("-stem")
+        ? corridor.id.slice(0, -"-stem".length)
+        : corridor.id;
+    }
+    return "";
+  }
+
+  function corridorReferencesMovedRegion(corridor, movedRegionIds) {
+    if (!corridor || !movedRegionIds || movedRegionIds.size === 0) return false;
+    return (
+      movedRegionIds.has(corridor.from) ||
+      movedRegionIds.has(corridor.to) ||
+      movedRegionIds.has(corridor.autoHubSourceRegionId) ||
+      movedRegionIds.has(corridor.fromAnchor?.regionId) ||
+      movedRegionIds.has(corridor.toAnchor?.regionId)
+    );
+  }
+
+  function expandImpactedCorridorIdsForAutoHubs(
+    baseCorridors,
+    impactedIds,
+    movedRegionIds,
+  ) {
+    const expanded = new Set(impactedIds);
+    const impactedHubIds = new Set();
+
+    (baseCorridors || []).forEach((corridor) => {
+      const hubId = getCorridorAutoHubGroupId(corridor);
+      if (!hubId) return;
+      if (
+        expanded.has(corridor.id) ||
+        corridorReferencesMovedRegion(corridor, movedRegionIds)
+      ) {
+        impactedHubIds.add(hubId);
+      }
+    });
+
+    if (impactedHubIds.size === 0) return expanded;
+
+    (baseCorridors || []).forEach((corridor) => {
+      const hubId = getCorridorAutoHubGroupId(corridor);
+      if (!hubId || !impactedHubIds.has(hubId)) return;
+      if (corridor.id) expanded.add(corridor.id);
+    });
+
+    return expanded;
+  }
+
+  function shouldDropUnresolvedImpactedCorridor(corridor) {
+    return Boolean(
+      corridor?.autoHub ||
+        corridor?.autoHubStem ||
+        corridor?.autoHubId ||
+        corridor?.recoveredGraphEdge ||
+        corridor?.recoveredRoomTraversal,
+    );
+  }
+
   function mergePartiallyRoutedCorridors(baseCorridors, routedCorridors, impactedIds) {
     const routedById = new Map((routedCorridors || []).map((corridor) => [corridor.id, corridor]));
-    const merged = (baseCorridors || []).map((corridor) =>
-      impactedIds.has(corridor.id) ? routedById.get(corridor.id) || corridor : corridor,
-    );
+    const merged = [];
+    (baseCorridors || []).forEach((corridor) => {
+      if (!impactedIds.has(corridor.id)) {
+        merged.push(corridor);
+        return;
+      }
+      const routed = routedById.get(corridor.id);
+      if (routed) {
+        merged.push(routed);
+        return;
+      }
+      if (!shouldDropUnresolvedImpactedCorridor(corridor)) {
+        merged.push(corridor);
+      }
+    });
     const mergedIds = new Set(merged.map((corridor) => corridor.id));
     (routedCorridors || []).forEach((corridor) => {
       if (!mergedIds.has(corridor.id)) merged.push(corridor);
@@ -4842,9 +4916,18 @@ export default function CruorMapGeneratorMvp({
       manualRoomStyles: normalized.roomStyles || {},
     };
     const movedRegionIds = getMovedRegionIdsFromDeltas(deltas);
-    const impactedCorridorIds = getImpactedManualCorridorIds(
+    const baseCorridors =
+      (Array.isArray(generatedCandidate.corridors) && generatedCandidate.corridors.length > 0
+        ? generatedCandidate.corridors
+        : baseMap.corridors) || [];
+    const initialImpactedCorridorIds = getImpactedManualCorridorIds(
       normalized,
       routingGraph,
+      movedRegionIds,
+    );
+    const impactedCorridorIds = expandImpactedCorridorIdsForAutoHubs(
+      baseCorridors,
+      initialImpactedCorridorIds,
       movedRegionIds,
     );
     const shouldRerouteWholeNetwork = hasGlobalManualRoutingOverrides(normalized);
@@ -4858,10 +4941,6 @@ export default function CruorMapGeneratorMvp({
           routedGraph,
         )
       : [];
-    const baseCorridors =
-      (Array.isArray(generatedCandidate.corridors) && generatedCandidate.corridors.length > 0
-        ? generatedCandidate.corridors
-        : baseMap.corridors) || [];
     const mergedCorridors = shouldRerouteWholeNetwork
       ? routedCorridors
       : mergePartiallyRoutedCorridors(

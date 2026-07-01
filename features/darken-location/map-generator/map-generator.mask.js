@@ -885,15 +885,63 @@ export function dedupePoints(points) {
   });
 }
 
-export function dedupeDoorSegments(doors) {
+function getDoorOccupancyKey(door) {
+  if (!door) return null;
+  if (door.outsideCell) return cellKey(door.outsideCell.x, door.outsideCell.y);
+  return null;
+}
+
+function getDoorDedupePriority(door) {
+  return (
+    Number(door?.doorOccupancyPriority || 0) +
+    (door?.hasStairs || door?.stairTransition && door.stairTransition !== "none" ? 100 : 0) +
+    (door?.doorType === "locked" || door?.locked ? 30 : 0) +
+    (door?.doorType === "secret" || door?.secret ? 20 : 0)
+  );
+}
+
+export function dedupeDoorSegments(doors, options = {}) {
   const seen = new Set();
-  return doors.filter((door) => {
+  const exactDoors = doors.filter((door) => {
     if (!door) return false;
     const key = doorKey(door);
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
   });
+
+  if (!options.byOccupancy) return exactDoors;
+
+  const output = [];
+  const generatedDoorByCell = new Map();
+
+  exactDoors.forEach((door) => {
+    const occupancyKey = getDoorOccupancyKey(door);
+    const isManual = Boolean(door.manualDoorAnchor || door.manual || door.userPlaced);
+    if (!occupancyKey || isManual) {
+      output.push(door);
+      return;
+    }
+
+    const current = {
+      door,
+      index: output.length,
+      score: getDoorDedupePriority(door),
+    };
+    const previous = generatedDoorByCell.get(occupancyKey);
+    if (!previous) {
+      generatedDoorByCell.set(occupancyKey, current);
+      output.push(door);
+      return;
+    }
+
+    if (current.score > previous.score) {
+      output[previous.index] = door;
+      generatedDoorByCell.set(occupancyKey, { ...current, index: previous.index });
+    }
+  });
+
+  return output;
 }
 
 export function mergeDungeonSurfaces(regions, corridors) {
@@ -1139,6 +1187,7 @@ export function buildDungeonMask(regions, corridors, gridSize) {
   const dungeonMask = mergeDungeonSurfaces(regions, corridors);
   const doorSegments = dedupeDoorSegments(
     corridors.flatMap((corridor) => corridor.doors),
+    { byOccupancy: true },
   );
   const externalWallSegments = computeBoundarySegments(
     dungeonMask.floorCells,

@@ -1132,24 +1132,35 @@ export function findPath(start, goal, options) {
       const wallPenalty = softBlocked.has(nextKey)
         ? (routingProfile.wallPenalty ?? 1.5)
         : 0;
-      const corridorOverlapPenalty =
+      const reusesExistingCorridor =
         existingCorridors.has(nextKey) &&
         nextKey !== goalKey &&
-        nextKey !== startKey
-          ? (routingProfile.corridorOverlapPenalty ?? 0)
-          : 0;
+        nextKey !== startKey;
+      const corridorOverlapPenalty = reusesExistingCorridor
+        ? (routingProfile.corridorOverlapPenalty ?? 0)
+        : 0;
+      const corridorReuseBonus = reusesExistingCorridor
+        ? clamp(
+            Number(routingProfile.corridorReuseBonus ?? 0.62),
+            0,
+            0.82,
+          )
+        : 0;
       const parallelCorridorPenalty =
         adjacentToExistingCorridors.has(nextKey) &&
         !existingCorridors.has(nextKey)
           ? (routingProfile.adjacentCorridorPenalty ?? 0.25)
           : 0;
-      const g =
-        current.g +
+      const stepCost = Math.max(
+        0.18,
         1 +
-        turnCost +
-        wallPenalty +
-        parallelCorridorPenalty +
-        corridorOverlapPenalty;
+          turnCost +
+          wallPenalty +
+          parallelCorridorPenalty +
+          corridorOverlapPenalty -
+          corridorReuseBonus,
+      );
+      const g = current.g + stepCost;
       if (!bestCost.has(nextKey) || g < bestCost.get(nextKey)) {
         bestCost.set(nextKey, g);
         cameFrom.set(nextKey, current.key);
@@ -1652,6 +1663,460 @@ export function buildOrganicTunnelFloorCells(
   return Array.from(cleaned).map(parseCellKey);
 }
 
+
+const AUTO_CORRIDOR_HUB_DEFAULT_MIN_EDGES = 3;
+
+function getAutoCorridorHubMinEdges(config = {}) {
+  const raw = Number(
+    config.autoCorridorHubMinEdges ??
+      config.dungeonBrief?.autoCorridorHubMinEdges ??
+      config.normalizedMapRequest?.autoCorridorHubMinEdges ??
+      config.normalizedMapRequest?.metadata?.autoCorridorHubMinEdges,
+  );
+  return clamp(
+    Number.isFinite(raw) ? Math.round(raw) : AUTO_CORRIDOR_HUB_DEFAULT_MIN_EDGES,
+    3,
+    8,
+  );
+}
+
+function shouldUseAutoCorridorHubs(config = {}) {
+  const raw =
+    config.autoCorridorHubs ??
+    config.dungeonBrief?.autoCorridorHubs ??
+    config.normalizedMapRequest?.autoCorridorHubs ??
+    config.normalizedMapRequest?.metadata?.autoCorridorHubs;
+  if (raw === false) return false;
+  if (typeof raw === "string") {
+    const value = raw.trim().toLowerCase();
+    if (["off", "false", "0", "disabled", "none"].includes(value)) return false;
+  }
+  return true;
+}
+
+function shouldReuseAutoCorridorDoors(config = {}) {
+  const raw =
+    config.autoCorridorDoorReuse ??
+    config.dungeonBrief?.autoCorridorDoorReuse ??
+    config.normalizedMapRequest?.autoCorridorDoorReuse ??
+    config.normalizedMapRequest?.metadata?.autoCorridorDoorReuse;
+  if (raw === false) return false;
+  if (typeof raw === "string") {
+    const value = raw.trim().toLowerCase();
+    if (["off", "false", "0", "disabled", "none"].includes(value)) return false;
+  }
+  return true;
+}
+
+function getAutoCorridorDoorReuseRadius(config = {}) {
+  const raw = Number(
+    config.autoCorridorDoorReuseRadius ??
+      config.dungeonBrief?.autoCorridorDoorReuseRadius ??
+      config.normalizedMapRequest?.autoCorridorDoorReuseRadius ??
+      config.normalizedMapRequest?.metadata?.autoCorridorDoorReuseRadius,
+  );
+  return clamp(Number.isFinite(raw) ? Math.round(raw) : 2, 1, 4);
+}
+
+function getAutoCorridorDoorSpacingRadius(config = {}) {
+  const raw = Number(
+    config.autoCorridorDoorSpacingRadius ??
+      config.dungeonBrief?.autoCorridorDoorSpacingRadius ??
+      config.normalizedMapRequest?.autoCorridorDoorSpacingRadius ??
+      config.normalizedMapRequest?.metadata?.autoCorridorDoorSpacingRadius,
+  );
+  return clamp(Number.isFinite(raw) ? Math.round(raw) : 1, 0, 3);
+}
+
+function getDoorOccupancyKey(door, gridSize = 1) {
+  if (door?.outsideCell)
+    return cellKey(door.outsideCell.x, door.outsideCell.y);
+  if (door?.cell) return cellKey(door.cell.x, door.cell.y);
+  if (
+    Number.isFinite(door?.x1) &&
+    Number.isFinite(door?.y1) &&
+    Number.isFinite(door?.x2) &&
+    Number.isFinite(door?.y2) &&
+    gridSize > 0
+  ) {
+    const centerX = (door.x1 + door.x2) / 2;
+    const centerY = (door.y1 + door.y2) / 2;
+    return cellKey(
+      Math.floor(centerX / gridSize),
+      Math.floor(centerY / gridSize),
+    );
+  }
+  return null;
+}
+
+function isManualDoorSegment(config = {}, door = {}) {
+  if (!door?.corridorId || !door?.endpoint) return false;
+  return Boolean(
+    config.manualDoorAnchors?.[corridorEndpointKey(door.corridorId, door.endpoint)],
+  );
+}
+
+function getGeneratedDoorPriority(door = {}, corridor = {}) {
+  let score = 0;
+  if (door.stairTransition && door.stairTransition !== "none") score += 100;
+  if (door.doorType === "locked") score += 30;
+  if (door.doorType === "secret" || door.secret) score += 20;
+  if (corridor.autoHubStem) score += 8;
+  if (corridor.autoHub) score += 4;
+  if (corridor.recoveredGraphEdge) score -= 6;
+  return score;
+}
+
+function normalizeGeneratedDoorOccupancy(corridors, config = {}, gridSize = 1) {
+  // Do not remove doors from corridor data here. A duplicate door square can
+  // still be the semantic endpoint that keeps a corridor attached to its room,
+  // especially after room drags or recovery routing. Visible/cut door
+  // de-duplication is handled later by buildDungeonMask via dedupeDoorSegments,
+  // where the corridor topology remains intact.
+  if (!Array.isArray(corridors) || corridors.length === 0) return corridors;
+  return corridors.map((corridor) => {
+    if (!Array.isArray(corridor?.doors)) return corridor;
+    return {
+      ...corridor,
+      doors: dedupeDoorSegments(corridor.doors),
+    };
+  });
+}
+
+function getRegionCenterInCells(region) {
+  const rect = region?.cellRect;
+  if (!rect) return null;
+  return {
+    x: rect.x + rect.w / 2,
+    y: rect.y + rect.h / 2,
+  };
+}
+
+function getSideFromRegionToRegion(source, target) {
+  const sourceCenter = getRegionCenterInCells(source);
+  const targetCenter = getRegionCenterInCells(target);
+  const sourceRect = source?.cellRect;
+  const targetRect = target?.cellRect;
+  if (!sourceCenter || !targetCenter || !sourceRect || !targetRect) return "east";
+
+  if (targetCenter.x >= sourceRect.x + sourceRect.w) return "east";
+  if (targetCenter.x <= sourceRect.x) return "west";
+  if (targetCenter.y >= sourceRect.y + sourceRect.h) return "south";
+  if (targetCenter.y <= sourceRect.y) return "north";
+
+  const dx = targetCenter.x - sourceCenter.x;
+  const dy = targetCenter.y - sourceCenter.y;
+  if (Math.abs(dx) >= Math.abs(dy)) return dx >= 0 ? "east" : "west";
+  return dy >= 0 ? "south" : "north";
+}
+
+function getNormalForSide(side) {
+  if (side === "north") return { x: 0, y: -1 };
+  if (side === "south") return { x: 0, y: 1 };
+  if (side === "west") return { x: -1, y: 0 };
+  return { x: 1, y: 0 };
+}
+
+function getTangentForNormal(normal) {
+  return Math.abs(normal.x) > Math.abs(normal.y)
+    ? { x: 0, y: 1 }
+    : { x: 1, y: 0 };
+}
+
+function getEdgeEndpointForRegion(edge, regionId) {
+  if (edge?.from === regionId) return "from";
+  if (edge?.to === regionId) return "to";
+  return null;
+}
+
+function getOtherRegionIdForEdge(edge, regionId) {
+  if (edge?.from === regionId) return edge.to;
+  if (edge?.to === regionId) return edge.from;
+  return null;
+}
+
+function hasManualDoorAnchorForEndpoint(config, edge, endpoint) {
+  return Boolean(
+    endpoint &&
+      edge?.id &&
+      config.manualDoorAnchors?.[corridorEndpointKey(edge.id, endpoint)],
+  );
+}
+
+function isAutoHubEligibleEdge(config, edge, regionId) {
+  const endpoint = getEdgeEndpointForRegion(edge, regionId);
+  const otherEndpoint = endpoint === "from" ? "to" : endpoint === "to" ? "from" : null;
+  if (!endpoint || !otherEndpoint) return false;
+  if (!edge?.id || edge.secret || edge.locked || edge.explicit) return false;
+  if (edge.kind === "manual" || edge.reason === "manual-editor-connection") return false;
+  if (Array.isArray(edge.manualWaypoints) && edge.manualWaypoints.length > 0)
+    return false;
+  if (hasManualDoorAnchorForEndpoint(config, edge, endpoint)) return false;
+  if (hasManualDoorAnchorForEndpoint(config, edge, otherEndpoint)) return false;
+  return true;
+}
+
+function buildAutoCorridorHubGroups(config, regions, graph) {
+  if (!shouldUseAutoCorridorHubs(config)) return [];
+  const minEdges = getAutoCorridorHubMinEdges(config);
+  const regionById = new Map(regions.map((region) => [region.id, region]));
+  const buckets = new Map();
+
+  graph.forEach((edge) => {
+    [edge.from, edge.to].forEach((regionId) => {
+      const region = regionById.get(regionId);
+      const other = regionById.get(getOtherRegionIdForEdge(edge, regionId));
+      if (!region || !other || !isAutoHubEligibleEdge(config, edge, regionId))
+        return;
+      const side = getSideFromRegionToRegion(region, other);
+      const key = `${regionId}:${side}`;
+      if (!buckets.has(key)) {
+        buckets.set(key, { region, side, entries: [] });
+      }
+      buckets.get(key).entries.push({ edge, target: other });
+    });
+  });
+
+  const claimedEdgeIds = new Set();
+  return Array.from(buckets.values())
+    .map((bucket) => ({
+      ...bucket,
+      entries: bucket.entries.filter((entry) => !claimedEdgeIds.has(entry.edge.id)),
+    }))
+    .filter((bucket) => bucket.entries.length >= minEdges)
+    .sort(
+      (a, b) =>
+        b.entries.length - a.entries.length ||
+        getRegionGraphSortKey(a.region, config.seed) -
+          getRegionGraphSortKey(b.region, config.seed),
+    )
+    .map((bucket, index) => {
+      const entries = bucket.entries.filter((entry) => !claimedEdgeIds.has(entry.edge.id));
+      if (entries.length < minEdges) return null;
+      entries.forEach((entry) => claimedEdgeIds.add(entry.edge.id));
+      return {
+        id: `auto-hub-${bucket.region.id}-${bucket.side}-${index}`,
+        region: bucket.region,
+        side: bucket.side,
+        entries,
+      };
+    })
+    .filter(Boolean);
+}
+
+function getRegionGraphSortKey(region, seed) {
+  return hashStringToSeed(seed, region?.id || "region", "auto-hub-order");
+}
+
+function getTargetCentroid(entries) {
+  const centers = entries
+    .map((entry) => getRegionCenterInCells(entry.target))
+    .filter(Boolean);
+  if (centers.length === 0) return null;
+  return {
+    x: centers.reduce((sum, center) => sum + center.x, 0) / centers.length,
+    y: centers.reduce((sum, center) => sum + center.y, 0) / centers.length,
+  };
+}
+
+function chooseHubAnchorForRegionSide(
+  region,
+  side,
+  targetCentroid,
+  rng,
+  forbiddenOutsideCells,
+  profile,
+  generatedMap = null,
+) {
+  const boundary = getDoorBoundaryCells(region, generatedMap).filter(
+    (anchor) =>
+      anchor.side === side &&
+      isDoorOrientationCompatibleWithLocalWall(anchor) &&
+      !forbiddenOutsideCells?.has(cellKey(anchor.outsideCell.x, anchor.outsideCell.y)),
+  );
+  const candidates = boundary.length > 0
+    ? boundary
+    : getDoorBoundaryCells(region, generatedMap).filter(
+        (anchor) =>
+          !forbiddenOutsideCells?.has(
+            cellKey(anchor.outsideCell.x, anchor.outsideCell.y),
+          ),
+      );
+  if (candidates.length === 0) return null;
+  const centerBias = getDoorArchitectureBias(region, profile);
+  const ranked = candidates
+    .map((anchor) => {
+      const edgeCenter = getAnchorDoorEdgeCenterInCells(anchor);
+      const dx = targetCentroid ? edgeCenter.x - targetCentroid.x : 0;
+      const dy = targetCentroid ? edgeCenter.y - targetCentroid.y : 0;
+      const sidePenalty = anchor.side === side ? 0 : 80;
+      const centerPenalty = Math.pow(getAnchorCenterOffset(anchor, region), 2) * centerBias;
+      return {
+        anchor,
+        score: dx * dx + dy * dy + sidePenalty + centerPenalty + rng() * 0.35,
+      };
+    })
+    .sort((a, b) => a.score - b.score);
+  return ranked[0].anchor;
+}
+
+function isCellInsideGrid(cell, gridW, gridH) {
+  return Boolean(
+    cell && cell.x > 0 && cell.y > 0 && cell.x < gridW - 1 && cell.y < gridH - 1,
+  );
+}
+
+function findAutoHubCell(anchor, gridW, gridH, blockedRoomCells, existingCorridors, usedDoorOutsideCells) {
+  if (!anchor?.outsideCell) return null;
+  const normal = anchor.normal || getNormalForSide(anchor.side);
+  const tangent = getTangentForNormal(normal);
+  const candidates = [];
+  [2, 3, 4, 5, 1, 6].forEach((distance) => {
+    [0, -1, 1, -2, 2].forEach((offset) => {
+      candidates.push({
+        x: anchor.outsideCell.x + normal.x * distance + tangent.x * offset,
+        y: anchor.outsideCell.y + normal.y * distance + tangent.y * offset,
+      });
+    });
+  });
+  const ranked = candidates
+    .filter((cell) => isCellInsideGrid(cell, gridW, gridH))
+    .map((cell) => {
+      const key = cellKey(cell.x, cell.y);
+      if (blockedRoomCells.has(key) || usedDoorOutsideCells.has(key)) return null;
+      const corridorPenalty = existingCorridors.has(key) ? 4 : 0;
+      const dx = cell.x - anchor.outsideCell.x;
+      const dy = cell.y - anchor.outsideCell.y;
+      return { cell, score: dx * dx + dy * dy + corridorPenalty };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.score - b.score);
+  return ranked[0]?.cell || null;
+}
+
+function createVirtualHubAnchor(hubCell, side, gridSize, hubId) {
+  const normal = getNormalForSide(side);
+  return {
+    regionId: hubId,
+    regionShape: "corridor-hub",
+    side,
+    cell: { x: hubCell.x, y: hubCell.y },
+    outsideCell: { x: hubCell.x, y: hubCell.y },
+    normal,
+    finalGeometry: true,
+    virtualJunction: true,
+    hubId,
+    point: {
+      x: (hubCell.x + 0.5) * gridSize,
+      y: (hubCell.y + 0.5) * gridSize,
+    },
+  };
+}
+
+function getAnchorOutsideKey(anchor) {
+  return anchor?.outsideCell
+    ? cellKey(anchor.outsideCell.x, anchor.outsideCell.y)
+    : null;
+}
+
+function getAnchorDistance(a, b) {
+  if (!a?.outsideCell || !b?.outsideCell) return Number.POSITIVE_INFINITY;
+  return (
+    Math.abs(a.outsideCell.x - b.outsideCell.x) +
+    Math.abs(a.outsideCell.y - b.outsideCell.y)
+  );
+}
+
+function isCorridorDoorReuseEligible(edge = {}, endpoint = null) {
+  if (!endpoint || !edge?.id) return false;
+  if (edge.secret || edge.locked || edge.explicit) return false;
+  if (edge.kind === "manual" || edge.reason === "manual-editor-connection")
+    return false;
+  if (Array.isArray(edge.manualWaypoints) && edge.manualWaypoints.length > 0)
+    return false;
+  return true;
+}
+
+function cloneReusableAnchor(anchor) {
+  if (!anchor) return null;
+  return {
+    ...anchor,
+    cell: anchor.cell ? { x: anchor.cell.x, y: anchor.cell.y } : anchor.cell,
+    outsideCell: anchor.outsideCell
+      ? { x: anchor.outsideCell.x, y: anchor.outsideCell.y }
+      : anchor.outsideCell,
+    normal: anchor.normal ? { x: anchor.normal.x, y: anchor.normal.y } : anchor.normal,
+    point: anchor.point ? { x: anchor.point.x, y: anchor.point.y } : anchor.point,
+    segment: anchor.segment ? { ...anchor.segment } : anchor.segment,
+  };
+}
+
+function findReusableDoorAnchor(
+  doorAnchorsByRegion,
+  config,
+  region,
+  targetRegion,
+  idealAnchor,
+  edge,
+  endpoint,
+  profile,
+) {
+  if (!shouldReuseAutoCorridorDoors(config)) return null;
+  if (!region || !targetRegion || !isCorridorDoorReuseEligible(edge, endpoint))
+    return null;
+  const candidates = doorAnchorsByRegion.get(region.id) || [];
+  if (candidates.length === 0) return null;
+  const desiredSide = idealAnchor?.side || getSideFromRegionToRegion(region, targetRegion);
+  const radius = getAutoCorridorDoorReuseRadius(config);
+  const ranked = candidates
+    .map((entry) => {
+      const anchor = entry?.anchor;
+      if (!anchor?.outsideCell || anchor.virtualJunction) return null;
+      if (entry.secret || entry.locked) return null;
+      if (anchor.side !== desiredSide) return null;
+      if (!isDoorOrientationCompatibleWithLocalWall(anchor)) return null;
+      const distance = idealAnchor ? getAnchorDistance(anchor, idealAnchor) : 0;
+      if (distance > radius) return null;
+      return {
+        anchor,
+        score:
+          distance * 6 +
+          getDirectionalDoorScore(anchor, region, targetRegion) +
+          Math.pow(getAnchorCenterOffset(anchor, region), 2) *
+            getDoorArchitectureBias(region, profile) *
+            0.5 +
+          (entry.corridorId === edge.id ? 20 : 0),
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.score - b.score);
+  return cloneReusableAnchor(ranked[0]?.anchor || null);
+}
+
+function getDoorSpacingCellsForRegion(usedDoorOutsideCellsByRegion, regionId, radius) {
+  if (!regionId || radius <= 0) return [];
+  const cells = usedDoorOutsideCellsByRegion.get(regionId);
+  if (!cells || cells.size === 0) return [];
+  const output = [];
+  cells.forEach((key) => {
+    const cell = parseCellKey(key);
+    for (let dy = -radius; dy <= radius; dy += 1) {
+      for (let dx = -radius; dx <= radius; dx += 1) {
+        if (Math.abs(dx) + Math.abs(dy) > radius) continue;
+        output.push({ x: cell.x + dx, y: cell.y + dy });
+      }
+    }
+  });
+  return output;
+}
+
+function cellsToCenterline(cells, gridSize) {
+  return cells.map((cell) => ({
+    x: (cell.x + 0.5) * gridSize,
+    y: (cell.y + 0.5) * gridSize,
+  }));
+}
+
 export function routeCorridors(config, regions, graph) {
   const routingProfile = getPlacementProfile(config);
   const gridW = Math.floor(config.mapWidth / config.gridSize);
@@ -1662,6 +2127,83 @@ export function routeCorridors(config, regions, graph) {
   const dynamicRoomCells = new Set(allRoomCells);
   const existingCorridors = new Set();
   const usedDoorOutsideCells = new Set();
+  const usedDoorOutsideCellsByRegion = new Map();
+  const doorAnchorsByRegion = new Map();
+  const markDoorOutsideCellUsed = (regionId, anchor) => {
+    const key = getAnchorOutsideKey(anchor);
+    if (!regionId || !key) return;
+    usedDoorOutsideCells.add(key);
+    if (!usedDoorOutsideCellsByRegion.has(regionId))
+      usedDoorOutsideCellsByRegion.set(regionId, new Set());
+    usedDoorOutsideCellsByRegion.get(regionId).add(key);
+  };
+  const registerReusableDoorAnchor = (region, anchor, door, corridorId, endpoint) => {
+    if (!region?.id || !anchor?.outsideCell || !door) return;
+    markDoorOutsideCellUsed(region.id, anchor);
+    if (door.secret || door.locked || door.doorType === "secret") return;
+    if (!doorAnchorsByRegion.has(region.id))
+      doorAnchorsByRegion.set(region.id, []);
+    const key = getAnchorOutsideKey(anchor);
+    const entries = doorAnchorsByRegion.get(region.id);
+    if (entries.some((entry) => getAnchorOutsideKey(entry.anchor) === key)) return;
+    entries.push({
+      anchor: cloneReusableAnchor(anchor),
+      corridorId,
+      endpoint,
+      secret: Boolean(door.secret),
+      locked: Boolean(door.locked),
+    });
+  };
+  const createDoorForbiddenOutsideCells = (regionId, includeSpacing = false) => {
+    const forbidden = new Set([...dynamicRoomCells, ...usedDoorOutsideCells]);
+    if (includeSpacing) {
+      getDoorSpacingCellsForRegion(
+        usedDoorOutsideCellsByRegion,
+        regionId,
+        getAutoCorridorDoorSpacingRadius(config),
+      ).forEach((cell) => forbidden.add(cellKey(cell.x, cell.y)));
+    }
+    return forbidden;
+  };
+  const selectDoorAnchorForEndpoint = (
+    region,
+    targetRegion,
+    rng,
+    edge,
+    endpoint,
+    manualAnchor = null,
+  ) => {
+    if (manualAnchor) return manualAnchor;
+    const exactForbidden = createDoorForbiddenOutsideCells(region?.id, false);
+    const idealAnchor = chooseDoorAnchorForRegion(
+      region,
+      targetRegion,
+      rng,
+      exactForbidden,
+      routingProfile,
+    );
+    const reusableAnchor = findReusableDoorAnchor(
+      doorAnchorsByRegion,
+      config,
+      region,
+      targetRegion,
+      idealAnchor,
+      edge,
+      endpoint,
+      routingProfile,
+    );
+    if (reusableAnchor) return reusableAnchor;
+    const spacedForbidden = createDoorForbiddenOutsideCells(region?.id, true);
+    return (
+      chooseDoorAnchorForRegion(
+        region,
+        targetRegion,
+        rng,
+        spacedForbidden,
+        routingProfile,
+      ) || idealAnchor
+    );
+  };
   const canUnblockForEndpointRegions = (cell, endpointRegionIds) =>
     isRoomCellOwnedOnlyByEndpointRegions(
       cellKey(cell.x, cell.y),
@@ -1678,6 +2220,307 @@ export function routeCorridors(config, regions, graph) {
     existingCorridors.forEach((key) => {
       if (!roomOwnership.has(key)) blocked.delete(key);
     });
+  };
+
+  const buildRoutingOptions = (
+    allowedApproachCells,
+    endpointRegionIds,
+    extraBlockedDeletes = [],
+  ) => {
+    const blocked = new Set(dynamicRoomCells);
+    unblockApproachCells(blocked, allowedApproachCells, endpointRegionIds);
+    unblockExistingCorridorCells(blocked);
+    extraBlockedDeletes.forEach((cell) => {
+      if (cell) blocked.delete(cellKey(cell.x, cell.y));
+    });
+    const adjacentToExistingCorridors = getAdjacentCells(existingCorridors);
+    allowedApproachCells.forEach((cell) =>
+      adjacentToExistingCorridors.delete(cellKey(cell.x, cell.y)),
+    );
+    return {
+      gridW,
+      gridH,
+      blocked,
+      softBlocked: new Set(),
+      existingCorridors,
+      adjacentToExistingCorridors,
+      routingProfile,
+    };
+  };
+
+  const routeCellsBetweenPoints = (
+    points,
+    allowedApproachCells,
+    endpointRegionIds,
+    fallbackStart,
+    fallbackGoal,
+    extraBlockedDeletes = [],
+  ) => {
+    const routingOptions = buildRoutingOptions(
+      allowedApproachCells,
+      endpointRegionIds,
+      extraBlockedDeletes,
+    );
+    let path = routePathThroughCells(points, routingOptions);
+    if (!isUsableCorridorPath(path, fallbackStart, fallbackGoal)) {
+      path = routeDirectFallback(fallbackStart, fallbackGoal, routingOptions);
+    }
+    return isUsableCorridorPath(path, fallbackStart, fallbackGoal) ? path : [];
+  };
+
+  const routeAutoHubGroup = (group) => {
+    const source = group.region;
+    if (!source || !Array.isArray(group.entries) || group.entries.length === 0)
+      return null;
+
+    const hubRng = createSeededRng(
+      hashStringToSeed(config.seed, group.id, "auto-corridor-hub"),
+    );
+    const sourceRawAnchor = chooseHubAnchorForRegionSide(
+      source,
+      group.side,
+      getTargetCentroid(group.entries),
+      hubRng,
+      createDoorForbiddenOutsideCells(source.id, true),
+      routingProfile,
+    );
+    if (!sourceRawAnchor) return null;
+
+    const sourceAnchor = createCircleDoorRoomExtensionAnchor(
+      source,
+      sourceRawAnchor,
+      gridW,
+      gridH,
+      dynamicRoomCells,
+    );
+    const hubCell = findAutoHubCell(
+      sourceAnchor,
+      gridW,
+      gridH,
+      dynamicRoomCells,
+      existingCorridors,
+      usedDoorOutsideCells,
+    );
+    if (!hubCell) return null;
+
+    const hubAnchor = createVirtualHubAnchor(
+      hubCell,
+      group.side,
+      config.gridSize,
+      group.id,
+    );
+    const sourceApproachCells = [
+      ...getAnchorApproachCells(sourceAnchor),
+      hubCell,
+    ];
+    const sourcePath = routeCellsBetweenPoints(
+      [sourceAnchor.outsideCell, hubCell],
+      sourceApproachCells,
+      new Set([source.id]),
+      sourceAnchor.outsideCell,
+      hubCell,
+      [sourceAnchor.outsideCell, hubCell],
+    );
+    if (!isUsableCorridorPath(sourcePath, sourceAnchor.outsideCell, hubCell))
+      return null;
+
+    const sourcePathCells = sourcePath.map((cell) => ({ x: cell.x, y: cell.y }));
+    const hubStemId = `${group.id}-stem`;
+    const hubStemEdge = {
+      id: hubStemId,
+      from: source.id,
+      to: group.id,
+      kind: "junction-stem",
+      reason: "auto-corridor-hub-stem",
+    };
+    const stemSurfaceKind = getCorridorSurfaceProfile(
+      config,
+      source,
+      group.entries[0]?.target || source,
+      hubStemEdge,
+    );
+    const stemCenterline = cellsToCenterline(sourcePathCells, config.gridSize);
+    const sourceDoor = markMineBreachOpening(
+      decorateDoorSegment(
+        createDoorFromAnchor(sourceAnchor, config.gridSize, false),
+        config,
+        hubStemEdge,
+        "from",
+      ),
+      config,
+      stemSurfaceKind,
+      source,
+    );
+    const plannedCorridors = [
+      {
+        ...hubStemEdge,
+        autoHub: true,
+        autoHubStem: true,
+        surfaceKind: stemSurfaceKind,
+        corridorStyle: "structured-corridor",
+        fromAnchor: sourceAnchor,
+        toAnchor: hubAnchor,
+        floorCells: sourcePathCells,
+        pathCells: sourcePathCells,
+        centerline: stemCenterline,
+        manualWaypoints: [],
+        waypoints: dedupePoints(extractWaypoints(stemCenterline)),
+        doors: [sourceDoor],
+      },
+    ];
+
+    const plannedCells = new Set(
+      sourcePathCells.map((cell) => cellKey(cell.x, cell.y)),
+    );
+    const plannedDoorCells = new Set([
+      cellKey(sourceAnchor.outsideCell.x, sourceAnchor.outsideCell.y),
+    ]);
+    const plannedExtensionAnchors = [];
+    const plannedDoorRegistrations = [
+      { region: source, anchor: sourceAnchor, door: sourceDoor, corridorId: hubStemId, endpoint: "from" },
+    ];
+
+    for (const entry of group.entries) {
+      const edge = entry.edge;
+      const target = entry.target;
+      if (!edge || !target) return null;
+      const sourceEndpoint = getEdgeEndpointForRegion(edge, source.id);
+      const targetEndpoint = sourceEndpoint === "from" ? "to" : "from";
+      const edgeRng = createSeededRng(
+        hashStringToSeed(config.seed, edge.id, "corridor-hub-branch"),
+      );
+      const targetRawAnchor =
+        findReusableDoorAnchor(
+          doorAnchorsByRegion,
+          config,
+          target,
+          source,
+          getClosestBoundaryAnchorToPoint(target, hubAnchor.point, config.gridSize),
+          edge,
+          targetEndpoint,
+          routingProfile,
+        ) ||
+        getClosestBoundaryAnchorToPoint(
+          target,
+          hubAnchor.point,
+          config.gridSize,
+        ) ||
+        chooseDoorAnchorForRegion(
+          target,
+          source,
+          edgeRng,
+          createDoorForbiddenOutsideCells(target.id, true),
+          routingProfile,
+        );
+      if (!targetRawAnchor) return null;
+      const targetAnchor = createCircleDoorRoomExtensionAnchor(
+        target,
+        targetRawAnchor,
+        gridW,
+        gridH,
+        dynamicRoomCells,
+      );
+      const startAnchor = sourceEndpoint === "from" ? hubAnchor : targetAnchor;
+      const goalAnchor = sourceEndpoint === "from" ? targetAnchor : hubAnchor;
+      const allowedApproachCells = [
+        hubCell,
+        ...getAnchorApproachCells(targetAnchor),
+      ];
+      const routePoints = [startAnchor.outsideCell, goalAnchor.outsideCell];
+      const branchPath = routeCellsBetweenPoints(
+        routePoints,
+        allowedApproachCells,
+        new Set([target.id]),
+        startAnchor.outsideCell,
+        goalAnchor.outsideCell,
+        [hubCell, targetAnchor.outsideCell],
+      );
+      if (
+        !isUsableCorridorPath(
+          branchPath,
+          startAnchor.outsideCell,
+          goalAnchor.outsideCell,
+        )
+      )
+        return null;
+
+      const organicTunnel = shouldUseOrganicTunnel(config, source, target);
+      const pathCells = branchPath.map((cell) => ({ x: cell.x, y: cell.y }));
+      const floorCells = organicTunnel
+        ? buildOrganicTunnelFloorCells(
+            pathCells,
+            config,
+            edgeRng,
+            dynamicRoomCells,
+            edge.id,
+          )
+        : pathCells;
+      const centerline = cellsToCenterline(pathCells, config.gridSize);
+      const corridorSurfaceKind = getCorridorSurfaceProfile(
+        config,
+        source,
+        target,
+        edge,
+      );
+      const targetDoor = markMineBreachOpening(
+        decorateDoorSegment(
+          createDoorFromAnchor(targetAnchor, config.gridSize, edge.secret),
+          config,
+          edge,
+          targetEndpoint,
+        ),
+        config,
+        corridorSurfaceKind,
+        target,
+      );
+
+      plannedCorridors.push({
+        ...edge,
+        autoHub: true,
+        autoHubId: group.id,
+        autoHubSourceRegionId: source.id,
+        surfaceKind: corridorSurfaceKind,
+        corridorStyle: organicTunnel ? "natural-tunnel" : "structured-corridor",
+        fromAnchor: sourceEndpoint === "from" ? hubAnchor : targetAnchor,
+        toAnchor: sourceEndpoint === "from" ? targetAnchor : hubAnchor,
+        floorCells,
+        pathCells,
+        centerline,
+        manualWaypoints: [],
+        waypoints: dedupePoints(extractWaypoints(centerline)),
+        doors:
+          getContextKey(config.context || config.biome) === "cave" && organicTunnel
+            ? []
+            : [targetDoor],
+      });
+
+      floorCells.forEach((cell) => plannedCells.add(cellKey(cell.x, cell.y)));
+      plannedDoorCells.add(cellKey(targetAnchor.outsideCell.x, targetAnchor.outsideCell.y));
+      plannedExtensionAnchors.push(targetAnchor);
+      plannedDoorRegistrations.push({
+        region: target,
+        anchor: targetAnchor,
+        door: targetDoor,
+        corridorId: edge.id,
+        endpoint: targetEndpoint,
+      });
+    }
+
+    plannedCells.forEach((key) => existingCorridors.add(key));
+    plannedDoorRegistrations.forEach((entry) =>
+      registerReusableDoorAnchor(
+        entry.region,
+        entry.anchor,
+        entry.door,
+        entry.corridorId,
+        entry.endpoint,
+      ),
+    );
+    addCircleDoorRoomExtensionCellToSet(sourceAnchor, dynamicRoomCells);
+    plannedExtensionAnchors.forEach((anchor) =>
+      addCircleDoorRoomExtensionCellToSet(anchor, dynamicRoomCells),
+    );
+    return plannedCorridors;
   };
 
   const routeRecoveredGraphEdge = (edge) => {
@@ -1717,26 +2560,22 @@ export function routeCorridors(config, regions, graph) {
       manualDoorAnchors[corridorEndpointKey(edge.id, "to")],
     );
     const roomBlockedCells = new Set(dynamicRoomCells);
-    const strictForbiddenOutsideCells = new Set([
-      ...dynamicRoomCells,
-      ...usedDoorOutsideCells,
-    ]);
-    const relaxedForbiddenOutsideCells = new Set(dynamicRoomCells);
-    const selectRecoveryAnchor = (region, targetRegion, manualAnchor) => {
+    const selectRecoveryAnchor = (region, targetRegion, manualAnchor, endpoint) => {
       if (manualAnchor) return manualAnchor;
       return (
-        chooseDoorAnchorForRegion(
+        selectDoorAnchorForEndpoint(
           region,
           targetRegion,
           edgeRng,
-          strictForbiddenOutsideCells,
-          routingProfile,
+          edge,
+          endpoint,
+          null,
         ) ||
         chooseDoorAnchorForRegion(
           region,
           targetRegion,
           edgeRng,
-          relaxedForbiddenOutsideCells,
+          new Set(dynamicRoomCells),
           routingProfile,
         ) ||
         getClosestBoundaryAnchorToPoint(
@@ -1747,8 +2586,8 @@ export function routeCorridors(config, regions, graph) {
       );
     };
 
-    const rawFromAnchor = selectRecoveryAnchor(from, to, manualFromAnchor);
-    const rawToAnchor = selectRecoveryAnchor(to, from, manualToAnchor);
+    const rawFromAnchor = selectRecoveryAnchor(from, to, manualFromAnchor, "from");
+    const rawToAnchor = selectRecoveryAnchor(to, from, manualToAnchor, "to");
     if (!rawFromAnchor || !rawToAnchor) return null;
 
     const fromAnchor = createCircleDoorRoomExtensionAnchor(
@@ -1852,12 +2691,6 @@ export function routeCorridors(config, regions, graph) {
     )
       return null;
 
-    usedDoorOutsideCells.add(
-      cellKey(fromAnchor.outsideCell.x, fromAnchor.outsideCell.y),
-    );
-    usedDoorOutsideCells.add(
-      cellKey(toAnchor.outsideCell.x, toAnchor.outsideCell.y),
-    );
     addCircleDoorRoomExtensionCellToSet(fromAnchor, dynamicRoomCells);
     addCircleDoorRoomExtensionCellToSet(toAnchor, dynamicRoomCells);
 
@@ -1903,6 +2736,9 @@ export function routeCorridors(config, regions, graph) {
       to,
     );
 
+    registerReusableDoorAnchor(from, fromAnchor, fromDoor, edge.id, "from");
+    registerReusableDoorAnchor(to, toAnchor, toDoor, edge.id, "to");
+
     return {
       ...edge,
       recoveredGraphEdge: true,
@@ -1922,7 +2758,18 @@ export function routeCorridors(config, regions, graph) {
     };
   };
 
-  const routedCorridors = graph.flatMap((edge) => {
+  const autoHubHandledEdgeIds = new Set();
+  const autoHubCorridors = [];
+  buildAutoCorridorHubGroups(config, regions, graph).forEach((group) => {
+    const routedGroup = routeAutoHubGroup(group);
+    if (!Array.isArray(routedGroup) || routedGroup.length === 0) return;
+    routedGroup.forEach((corridor) => autoHubCorridors.push(corridor));
+    group.entries.forEach((entry) => autoHubHandledEdgeIds.add(entry.edge.id));
+  });
+
+  const routedCorridors = graph
+    .filter((edge) => !autoHubHandledEdgeIds.has(edge.id))
+    .flatMap((edge) => {
     const from = regionById.get(edge.from);
     const to = regionById.get(edge.to);
     if (!from || !to) return [];
@@ -1958,28 +2805,22 @@ export function routeCorridors(config, regions, graph) {
       manualToAnchor,
     );
     if (sharedRoomLink) return [sharedRoomLink];
-    const forbiddenOutsideCells = new Set([
-      ...dynamicRoomCells,
-      ...usedDoorOutsideCells,
-    ]);
-    const rawFromAnchor =
-      manualFromAnchor ||
-      chooseDoorAnchorForRegion(
-        from,
-        to,
-        edgeRng,
-        forbiddenOutsideCells,
-        routingProfile,
-      );
-    const rawToAnchor =
-      manualToAnchor ||
-      chooseDoorAnchorForRegion(
-        to,
-        from,
-        edgeRng,
-        forbiddenOutsideCells,
-        routingProfile,
-      );
+    const rawFromAnchor = selectDoorAnchorForEndpoint(
+      from,
+      to,
+      edgeRng,
+      edge,
+      "from",
+      manualFromAnchor,
+    );
+    const rawToAnchor = selectDoorAnchorForEndpoint(
+      to,
+      from,
+      edgeRng,
+      edge,
+      "to",
+      manualToAnchor,
+    );
     if (!rawFromAnchor || !rawToAnchor) return [];
     const fromAnchor = createCircleDoorRoomExtensionAnchor(
       from,
@@ -1994,12 +2835,6 @@ export function routeCorridors(config, regions, graph) {
       gridW,
       gridH,
       dynamicRoomCells,
-    );
-    usedDoorOutsideCells.add(
-      cellKey(fromAnchor.outsideCell.x, fromAnchor.outsideCell.y),
-    );
-    usedDoorOutsideCells.add(
-      cellKey(toAnchor.outsideCell.x, toAnchor.outsideCell.y),
     );
     addCircleDoorRoomExtensionCellToSet(fromAnchor, dynamicRoomCells);
     addCircleDoorRoomExtensionCellToSet(toAnchor, dynamicRoomCells);
@@ -2120,6 +2955,9 @@ export function routeCorridors(config, regions, graph) {
       to,
     );
 
+    registerReusableDoorAnchor(from, fromAnchor, fromDoor, edge.id, "from");
+    registerReusableDoorAnchor(to, toAnchor, toDoor, edge.id, "to");
+
     return [
       {
         ...edge,
@@ -2140,7 +2978,8 @@ export function routeCorridors(config, regions, graph) {
     ];
   });
 
-  const corridorIds = new Set(routedCorridors.map((corridor) => corridor.id));
+  const primaryCorridors = [...autoHubCorridors, ...routedCorridors];
+  const corridorIds = new Set(primaryCorridors.map((corridor) => corridor.id));
   const recoveredGraphEdges = graph
     .filter((edge) => !corridorIds.has(edge.id))
     .map(routeRecoveredGraphEdge)
@@ -2150,7 +2989,11 @@ export function routeCorridors(config, regions, graph) {
     regions,
     config.gridSize,
   );
-  const routedAndRecovered = [...routedCorridors, ...recoveredGraphEdges];
+  const routedAndRecovered = normalizeGeneratedDoorOccupancy(
+    [...primaryCorridors, ...recoveredGraphEdges],
+    config,
+    config.gridSize,
+  );
   const routedAndRecoveredIds = new Set(
     routedAndRecovered.map((corridor) => corridor.id),
   );
@@ -2170,7 +3013,11 @@ export function routeCorridors(config, regions, graph) {
     .filter(Boolean);
 
   const sanitizedCorridors = normalizeCorridorNetwork(
-    [...routedAndRecovered, ...roomTraversalRecoveries],
+    normalizeGeneratedDoorOccupancy(
+      [...routedAndRecovered, ...roomTraversalRecoveries],
+      config,
+      config.gridSize,
+    ),
     config.gridSize,
   ).map((corridor) => {
     const tunnelHits = getNonEndpointRoomTunnelHits(corridor, roomOwnership);
@@ -2293,6 +3140,15 @@ export function decorateDoorSegment(door, config, edge, endpoint) {
     endpoint,
     "none",
   );
+  const manualDoorAnchor = Boolean(
+    config.manualDoorAnchors?.[corridorEndpointKey(edge.id, endpoint)],
+  );
+  const doorOccupancyPriority =
+    (stairTransition !== "none" ? 100 : 0) +
+    (doorType === "locked" ? 30 : 0) +
+    (doorType === "secret" ? 20 : 0) +
+    (edge.reason === "auto-corridor-hub-stem" ? 8 : 0) +
+    (edge.recoveredGraphEdge ? -6 : 0);
   return {
     ...door,
     corridorId: edge.id,
@@ -2303,6 +3159,9 @@ export function decorateDoorSegment(door, config, edge, endpoint) {
     secret: doorType === "secret",
     locked: doorType === "locked",
     open: doorType === "open",
+    manualDoorAnchor,
+    generatedDoor: !manualDoorAnchor,
+    doorOccupancyPriority,
   };
 }
 
