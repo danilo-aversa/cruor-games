@@ -11,6 +11,8 @@ import {
   runMapVisualQa,
   serializeMapVisualQaReport,
 } from "../features/darken-location/map-generator/qa/map-batch-qa.js";
+import { DEFAULT_CONFIG } from "../features/darken-location/map-generator/map-generator.input.js";
+import { generateMap } from "../features/darken-location/map-generator/map-generator.pipeline.js";
 
 const OUTPUT_DIR = new URL("../dist/qa/", import.meta.url);
 const VISUAL_PREVIEW_DIR = new URL("map-visual-previews/", OUTPUT_DIR);
@@ -48,6 +50,234 @@ const baseOptions = {
   determinism: getArgValue("determinism", adapterQa ? "off" : "sample"),
   determinismSampleRate: getArgValue("determinism-sample-rate", 10),
 };
+
+const manualMoveQa = getBooleanArg("manual-move-qa", qaMode === "debug");
+
+function asArray(value) {
+  if (!value) return [];
+  return Array.isArray(value) ? value.filter(Boolean) : [value].filter(Boolean);
+}
+
+function cellKey(cellOrX, y) {
+  if (typeof cellOrX === "object") return `${cellOrX.x},${cellOrX.y}`;
+  return `${cellOrX},${y}`;
+}
+
+function getCellList(item) {
+  if (!item || typeof item !== "object") return [];
+  if (Array.isArray(item.floorCells) && item.floorCells.length > 0) return item.floorCells;
+  if (Array.isArray(item.pathCells) && item.pathCells.length > 0) return item.pathCells;
+  if (Array.isArray(item.cells) && item.cells.length > 0) return item.cells;
+  return [];
+}
+
+function buildFloorCellComponentMap(map) {
+  const cells = new Map();
+  const cellSources = new Map();
+  const addCellSource = (cell, source) => {
+    if (!Number.isFinite(cell?.x) || !Number.isFinite(cell?.y)) return;
+    const key = cellKey(cell);
+    cells.set(key, { x: cell.x, y: cell.y });
+    const sources = cellSources.get(key) || { rooms: new Set(), corridors: new Set() };
+    if (source?.roomId) sources.rooms.add(source.roomId);
+    if (source?.corridorId) sources.corridors.add(source.corridorId);
+    cellSources.set(key, sources);
+  };
+  asArray(map?.regions).forEach((region) => {
+    getCellList(region).forEach((cell) => addCellSource(cell, { roomId: region.id }));
+  });
+  asArray(map?.corridors).forEach((corridor) => {
+    getCellList(corridor).forEach((cell) => addCellSource(cell, { corridorId: corridor.id }));
+  });
+
+  const componentByCell = new Map();
+  let componentId = 0;
+  const directions = [
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1],
+  ];
+
+  for (const [startKey, startCell] of cells.entries()) {
+    if (componentByCell.has(startKey)) continue;
+    componentId += 1;
+    const queue = [startCell];
+    componentByCell.set(startKey, componentId);
+    while (queue.length) {
+      const cell = queue.shift();
+      directions.forEach(([dx, dy]) => {
+        const nextKey = cellKey(cell.x + dx, cell.y + dy);
+        if (!cells.has(nextKey) || componentByCell.has(nextKey)) return;
+        componentByCell.set(nextKey, componentId);
+        queue.push(cells.get(nextKey));
+      });
+    }
+  }
+  const componentSources = new Map();
+  componentByCell.forEach((component, key) => {
+    const sources = cellSources.get(key);
+    const entry = componentSources.get(component) || { component, cellCount: 0, rooms: new Set(), corridors: new Set(), sampleCells: [] };
+    entry.cellCount += 1;
+    if (entry.sampleCells.length < 8) entry.sampleCells.push(key);
+    sources?.rooms?.forEach((roomId) => entry.rooms.add(roomId));
+    sources?.corridors?.forEach((corridorId) => entry.corridors.add(corridorId));
+    componentSources.set(component, entry);
+  });
+  return { componentByCell, componentCount: componentId, componentSources };
+}
+
+function getRegionComponentIds(region, componentByCell) {
+  return [
+    ...new Set(
+      getCellList(region)
+        .map((cell) => componentByCell.get(cellKey(cell)))
+        .filter(Number.isFinite),
+    ),
+  ];
+}
+
+function validatePhysicalFloorConnectivity(map, mapId) {
+  const regions = asArray(map?.regions);
+  if (regions.length <= 1) return [];
+  const { componentByCell, componentCount, componentSources } = buildFloorCellComponentMap(map);
+  if (componentCount <= 1) return [];
+  const issues = [];
+  const entranceComponent = getRegionComponentIds(regions[0], componentByCell)[0];
+  const disconnectedRooms = regions
+    .map((region) => ({
+      id: region.id,
+      components: getRegionComponentIds(region, componentByCell),
+    }))
+    .filter((row) => !row.components.includes(entranceComponent));
+  if (disconnectedRooms.length) {
+    issues.push({
+      id: mapId,
+      severity: "error",
+      area: "routing",
+      check: "physical-floor-connectivity",
+      message: "One or more rooms are not connected to the entrance through the physical floor/corridor cell network.",
+      data: { componentCount, entranceComponent, disconnectedRooms },
+    });
+  }
+  const orphanComponents = [...(componentSources?.values?.() || [])]
+    .filter((component) => component.rooms.size === 0 && component.corridors.size > 0)
+    .map((component) => ({
+      component: component.component,
+      cellCount: component.cellCount,
+      corridors: [...component.corridors].slice(0, 12),
+      sampleCells: component.sampleCells,
+    }));
+  if (orphanComponents.length) {
+    issues.push({
+      id: mapId,
+      severity: "error",
+      area: "routing",
+      check: "orphan-corridor-floor",
+      message: "One or more corridor floor components are disconnected from every room.",
+      data: { componentCount, orphanComponents },
+    });
+  }
+  return issues;
+}
+
+function getContextSamples(context = "mixed") {
+  const contexts = ["Crypt", "Chapel", "Cave", "Mine", "Noble House", "Ruins"];
+  const requested = String(context || "mixed").trim().toLowerCase();
+  if (requested === "mixed") return contexts;
+  return contexts.filter((item) => item.toLowerCase() === requested) || contexts;
+}
+
+function clampInteger(value, min, max, fallback) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.max(min, Math.min(max, Math.round(parsed)));
+}
+
+function runManualMovePhysicalQa(options = {}) {
+  const contexts = getContextSamples(options.context);
+  const sampleCount = clampInteger(options.count, 1, 30, 8);
+  const roomMin = clampInteger(options.roomCountMin, 3, 14, 4);
+  const roomMax = clampInteger(options.roomCountMax, roomMin, 14, 8);
+  const issues = [];
+  const samples = [];
+  for (let index = 0; index < sampleCount; index += 1) {
+    const context = contexts[index % Math.max(1, contexts.length)] || "Crypt";
+    const roomCount = roomMin + (index % Math.max(1, roomMax - roomMin + 1));
+    const seed = `${options.seed || "cruor-map-manual-move-qa"}-manual-${String(index + 1).padStart(3, "0")}`;
+    const baseMap = generateMap({
+      ...DEFAULT_CONFIG,
+      seed,
+      context,
+      biome: context,
+      roomCount,
+      contextGraphAdapterMode: options.contextGraphAdapterMode || "safe",
+    });
+    const movableRegion = asArray(baseMap.regions).find((region, regionIndex) => regionIndex > 0 && region?.cellRect);
+    if (!movableRegion?.cellRect) continue;
+    const attempts = [
+      { x: -2, y: 0 },
+      { x: 2, y: 0 },
+      { x: 0, y: -2 },
+      { x: 0, y: 2 },
+    ];
+    attempts.forEach((delta, attemptIndex) => {
+      const targetPosition = {
+        x: Math.max(1, Number(movableRegion.cellRect.x) + delta.x),
+        y: Math.max(1, Number(movableRegion.cellRect.y) + delta.y),
+      };
+      const movedMap = generateMap({
+        ...(baseMap.config || {}),
+        seed,
+        manualRoomPositions: { [movableRegion.id]: targetPosition },
+      });
+      const mapId = `manual-move-qa-${String(index + 1).padStart(3, "0")}-${attemptIndex + 1}`;
+      const sampleIssues = validatePhysicalFloorConnectivity(movedMap, mapId);
+      issues.push(...sampleIssues);
+      samples.push({
+        id: mapId,
+        seed,
+        context,
+        roomCount,
+        movedRegionId: movableRegion.id,
+        targetPosition,
+        issueCount: sampleIssues.length,
+        status: sampleIssues.some((issue) => issue.severity === "error") ? "failed" : "passed",
+      });
+    });
+  }
+  return {
+    reportType: "cruor-map-manual-move-physical-qa-report",
+    generatedAt: new Date().toISOString(),
+    options: { count: sampleCount, roomCountMin: roomMin, roomCountMax: roomMax, context: options.context },
+    summary: {
+      samples: samples.length,
+      total: issues.length,
+      error: issues.filter((issue) => issue.severity === "error").length,
+      warning: issues.filter((issue) => issue.severity === "warning").length,
+      info: issues.filter((issue) => issue.severity === "info").length,
+    },
+    samples,
+    issues,
+  };
+}
+
+async function writeManualMoveQaReport() {
+  if (!manualMoveQa || visualQa || adapterQa) return null;
+  const report = runManualMovePhysicalQa({
+    ...baseOptions,
+    count: getArgValue("manual-move-count", 8),
+    contextGraphAdapterMode: getArgValue("graph-adapter", getArgValue("adapter", "safe")),
+  });
+  await writeFile(new URL("map-manual-move-qa-report.json", OUTPUT_DIR), `${JSON.stringify(report, null, 2)}\n`, "utf8");
+  const { total, error, warning, info } = report.summary;
+  console.log(`Map Manual Move QA: ${total} issues (${error} errors, ${warning} warnings, ${info} info).`);
+  report.issues.slice(0, 20).forEach((issue) => {
+    console.log(`[${issue.severity}] ${issue.area}/${issue.check}: ${issue.message} — ${issue.id}`);
+  });
+  if (error || (failOnWarnings && warning)) process.exitCode = 1;
+  return report;
+}
 
 async function renderVisualPreviewSvgs(report) {
   await mkdir(VISUAL_PREVIEW_DIR, { recursive: true });
@@ -164,6 +394,8 @@ if (visualQa) {
     const ids = group.ids.length ? ` — ${group.ids.join(", ")}` : "";
     console.log(`[${group.severity}] ${group.count}× ${group.area}/${group.check}: ${group.message}${ids}`);
   });
+
+  await writeManualMoveQaReport();
 
   if (error || (failOnWarnings && warning)) {
     process.exitCode = 1;

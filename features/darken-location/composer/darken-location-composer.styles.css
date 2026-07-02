@@ -1416,6 +1416,8 @@
   background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
   padding: 11px;
   box-shadow: var(--cruor-shadow-box-075);
+  -webkit-backdrop-filter: blur(16px) saturate(118%);
+  backdrop-filter: blur(16px) saturate(118%);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
@@ -1940,6 +1942,8 @@
   background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
   padding: 11px;
   box-shadow: var(--cruor-shadow-box-075);
+  -webkit-backdrop-filter: blur(16px) saturate(118%);
+  backdrop-filter: blur(16px) saturate(118%);
 }
 
 .location-frame-info-card--hero {
@@ -6087,6 +6091,8 @@
   border: 1px solid var(--cruor-color-r208-g162-b170-a160, rgba(208, 162, 170, 0.16));
   background: linear-gradient(180deg, var(--cruor-color-milk-a030, rgba(255, 238, 242, 0.03)), transparent 58%), var(--cruor-color-r8-g5-b6-a900, rgba(8, 5, 6, 0.9));
   box-shadow: inset 0 0 0 1px var(--cruor-color-black-a420, rgba(0, 0, 0, 0.42)), 0 16px 38px var(--cruor-color-black-a260, rgba(0, 0, 0, 0.26));
+  -webkit-backdrop-filter: blur(16px) saturate(118%);
+  backdrop-filter: blur(16px) saturate(118%);
   min-width: 0;
 }
 
@@ -6350,6 +6356,8 @@
   border: 1px solid var(--cruor-color-r208-g162-b170-a160, rgba(208, 162, 170, 0.16));
   background: linear-gradient(180deg, var(--cruor-color-milk-a030, rgba(255, 238, 242, 0.03)), transparent 58%), var(--cruor-color-r8-g5-b6-a900, rgba(8, 5, 6, 0.9));
   box-shadow: inset 0 0 0 1px var(--cruor-color-black-a420, rgba(0, 0, 0, 0.42)), 0 16px 38px var(--cruor-color-black-a260, rgba(0, 0, 0, 0.26));
+  -webkit-backdrop-filter: blur(16px) saturate(118%);
+  backdrop-filter: blur(16px) saturate(118%);
 }
 
 .location-map-details-card__head {
@@ -6543,6 +6551,8 @@
   grid-auto-rows: max-content;
   height: auto;
   min-height: 0;
+  -webkit-backdrop-filter: blur(16px) saturate(118%);
+  backdrop-filter: blur(16px) saturate(118%);
 }
 
 .location-map-stage .location-room-program-actions, .location-map-stage .location-room-inspector-actions, .location-map-stage .location-map-details-actions, .location-map-stage .location-location-action-card {
@@ -6938,37 +6948,50 @@
   left: 50%;
   z-index: 80;
   display: grid;
-  width: min(320px, calc(100vw - 36px));
+  width: min(360px, calc(100vw - 36px));
   max-height: min(430px, calc(100vh - 180px));
-  gap: 6px;
+  gap: 4px;
   padding: 8px;
   overflow: auto;
+  overscroll-behavior: contain;
   user-select: none;
   transform: translateX(-50%);
-  border: 1px solid var(--cruor-color-r208-g162-b170-a280, rgba(208, 162, 170, 0.28));
-  background:
-    linear-gradient(180deg, var(--cruor-color-milk-a060, rgba(255, 238, 242, 0.06)), var(--cruor-color-transparent) 58%),
-    var(--cruor-color-r6-g5-b6-a990, rgba(6, 5, 6, 0.99));
-  box-shadow:
-    0 30px 90px var(--cruor-color-black-a860, rgba(0, 0, 0, 0.86)),
-    0 0 0 1px var(--cruor-color-black-a920, rgba(0, 0, 0, 0.92)),
-    0 0 38px var(--cruor-color-blood-bright-a180, rgba(122, 26, 40, 0.18)),
-    inset 0 1px 0 var(--cruor-color-milk-a075, rgba(255, 238, 242, 0.075));
+  border: 1px solid var(--cruor-color-blood-strong-a640);
+  background: rgba(7, 5, 6, 0.985);
+  background-image: var(--cruor-gradient-linear-015-d1025658);
+  box-shadow: var(--cruor-shadow-box-075);
+  scrollbar-width: thin;
+  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-color-black-a460, rgba(0,0,0,.46));
   backdrop-filter: blur(18px) saturate(128%);
   -webkit-backdrop-filter: blur(18px) saturate(128%);
+}
+
+
+.location-map-toolbar__room-menu-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.location-map-toolbar__room-menu-panel::-webkit-scrollbar-track {
+  background: var(--cruor-color-black-a420, rgba(0, 0, 0, 0.42));
+}
+
+.location-map-toolbar__room-menu-panel::-webkit-scrollbar-thumb {
+  border: 2px solid var(--cruor-color-black-a420, rgba(0, 0, 0, 0.42));
+  background: var(--cruor-color-blood-bright-a520, rgba(122, 26, 40, 0.52));
 }
 
 .location-map-toolbar__room-menu-item {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
   width: 100%;
   min-width: 0;
-  padding: 9px 10px;
-  border: 1px solid var(--cruor-color-milk-a060, rgba(255, 238, 242, 0.06));
-  background: var(--cruor-color-white-a018, rgba(255, 255, 255, 0.018));
-  color: var(--cruor-color-milk-a900, rgba(255, 238, 242, 0.9));
+  min-height: 34px;
+  padding: 6px 8px;
+  border: 1px solid var(--cruor-color-blood-strong-a320);
+  background: var(--cruor-color-blood-a100, rgba(51, 3, 12, 0.1));
+  color: var(--cruor-color-hex-c8a2a8);
   cursor: pointer;
   font: inherit;
   text-align: left;
@@ -6977,8 +7000,9 @@
 .location-map-toolbar__room-menu-item:hover,
 .location-map-toolbar__room-menu-item:focus-visible,
 .location-map-toolbar__room-menu-item.is-active {
-  border-color: var(--cruor-color-blood-glow-a480, rgba(190, 64, 82, 0.48));
-  background: var(--cruor-color-blood-bright-a120, rgba(122, 26, 40, 0.12));
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-color-blood-strong-a360);
+  color: var(--cruor-color-hex-fff0f2);
   outline: none;
 }
 
@@ -8031,4 +8055,78 @@
 
 @media (max-width: 760px) {
 
+}
+
+
+/* Composer rail blur and Map Style flyout stacking refinement. */
+.location-map-stage:has(.location-map-toolbar__style-menu.is-open) {
+  overflow: visible;
+}
+
+.location-map-stage__center:has(.location-map-toolbar__style-menu.is-open) {
+  z-index: 80;
+  overflow: visible;
+}
+
+.location-map-stage > .location-composer__rail,
+.cruor-composer-rail.location-frame-info,
+.location-map-frame-rail {
+  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-black-a280, rgba(0, 0, 0, 0.28));
+  -webkit-backdrop-filter: blur(16px) saturate(118%);
+  backdrop-filter: blur(16px) saturate(118%);
+}
+
+.location-brief-panel,
+.location-panel,
+.location-frame-info-card,
+.location-map-frame-rail > .location-map-mode-card,
+.location-map-frame-rail .location-brief-panel,
+.location-map-frame-rail .location-frame-control-block,
+.location-map-frame-rail .location-scratch-panel-section,
+.location-map-frame-rail .location-scratch-room-list,
+.location-map-frame-rail .cruor-frame-select-field,
+.location-map-frame-rail .cruor-frame-icon-field,
+.location-map-frame-rail .cruor-frame-range-control,
+.location-map-frame-rail .location-scratch-room-count-field,
+.location-map-frame-rail .location-scratch-room-row,
+.location-map-frame-rail .location-scratch-room-row__main {
+  -webkit-backdrop-filter: blur(16px) saturate(118%);
+  backdrop-filter: blur(16px) saturate(118%);
+}
+
+/* Map Style flyout must escape composer rail stacking. */
+.location-map-stage:has(.location-map-toolbar__style-panel[data-style-menu="root"]),
+.location-map-stage:has(.location-map-toolbar__style-menu-trigger.is-active) {
+  overflow: visible;
+}
+
+.location-map-stage__center:has(.location-map-toolbar__style-panel[data-style-menu="root"]),
+.location-map-stage__center:has(.location-map-toolbar__style-menu-trigger.is-active) {
+  z-index: 18000;
+  overflow: visible;
+}
+
+.location-map-stage__center:has(.location-map-toolbar__style-panel[data-style-menu="root"]) .location-map-stage-toolbar,
+.location-map-stage__center:has(.location-map-toolbar__style-menu-trigger.is-active) .location-map-stage-toolbar {
+  z-index: 18000;
+}
+
+/* Map Style menu is portaled to body, so the map center must not rise above rails. */
+.location-map-stage:has(.location-map-toolbar__style-menu.is-open),
+.location-map-stage:has(.location-map-toolbar__style-menu-trigger.is-active),
+.location-map-stage:has(.location-map-toolbar__style-panel[data-style-menu="root"]) {
+  overflow: hidden;
+}
+
+.location-map-stage__center:has(.location-map-toolbar__style-menu.is-open),
+.location-map-stage__center:has(.location-map-toolbar__style-menu-trigger.is-active),
+.location-map-stage__center:has(.location-map-toolbar__style-panel[data-style-menu="root"]) {
+  z-index: 1;
+  overflow: hidden;
+}
+
+.location-map-stage__center:has(.location-map-toolbar__style-menu.is-open) .location-map-stage-toolbar,
+.location-map-stage__center:has(.location-map-toolbar__style-menu-trigger.is-active) .location-map-stage-toolbar,
+.location-map-stage__center:has(.location-map-toolbar__style-panel[data-style-menu="root"]) .location-map-stage-toolbar {
+  z-index: 16;
 }

@@ -154,13 +154,25 @@ export function getFinalBoundarySegments(generatedMap, region) {
     : [];
 }
 
-export function createFinalAnchorFromSegment(
-  segment,
-  region,
-  generatedMap,
-  index = 0,
-) {
-  const gridSize = generatedMap?.config?.gridSize || 1;
+function getAxialNormalForSide(side) {
+  if (side === "east") return { x: 1, y: 0 };
+  if (side === "west") return { x: -1, y: 0 };
+  if (side === "south") return { x: 0, y: 1 };
+  return { x: 0, y: -1 };
+}
+
+function getDominantSideFromNormal(normal, fallback = "north") {
+  if (!normal || (!Number.isFinite(normal.x) && !Number.isFinite(normal.y)))
+    return fallback;
+  const x = Number.isFinite(normal.x) ? normal.x : 0;
+  const y = Number.isFinite(normal.y) ? normal.y : 0;
+  if (Math.abs(x) > Math.abs(y)) return x >= 0 ? "east" : "west";
+  if (Math.abs(y) > 0) return y >= 0 ? "south" : "north";
+  return fallback;
+}
+
+function inferFinalSegmentSide(segment, region, generatedMap, gridSize) {
+  if (!segment) return "north";
   const mid = {
     x: (segment.x1 + segment.x2) / 2,
     y: (segment.y1 + segment.y2) / 2,
@@ -190,59 +202,125 @@ export function createFinalAnchorFromSegment(
     candidateB.x * outwardVector.x + candidateB.y * outwardVector.y
       ? candidateA
       : candidateB;
-  const side =
-    Math.abs(normal.x) > Math.abs(normal.y)
-      ? normal.x >= 0
-        ? "east"
-        : "west"
-      : normal.y >= 0
-        ? "south"
-        : "north";
-  const cell = {
-    x: clamp(
-      Math.floor(mid.x / gridSize),
-      0,
-      Math.max(
-        0,
-        Math.floor(
-          (generatedMap?.config?.mapWidth || mid.x + gridSize) / gridSize,
-        ) - 1,
-      ),
-    ),
-    y: clamp(
-      Math.floor(mid.y / gridSize),
-      0,
-      Math.max(
-        0,
-        Math.floor(
-          (generatedMap?.config?.mapHeight || mid.y + gridSize) / gridSize,
-        ) - 1,
-      ),
-    ),
-  };
-  const outsideCell = {
-    x: clamp(
-      Math.floor((mid.x + normal.x * gridSize * 0.75) / gridSize),
-      0,
-      Math.max(
-        0,
-        Math.floor(
-          (generatedMap?.config?.mapWidth || mid.x + gridSize) / gridSize,
-        ) - 1,
-      ),
-    ),
-    y: clamp(
-      Math.floor((mid.y + normal.y * gridSize * 0.75) / gridSize),
-      0,
-      Math.max(
-        0,
-        Math.floor(
-          (generatedMap?.config?.mapHeight || mid.y + gridSize) / gridSize,
-        ) - 1,
-      ),
-    ),
-  };
+  return getDominantSideFromNormal(normal);
+}
+
+function getFinalAnchorReferencePoint(anchor, segment, gridSize) {
+  if (
+    anchor?.point &&
+    Number.isFinite(anchor.point.x) &&
+    Number.isFinite(anchor.point.y)
+  )
+    return { x: anchor.point.x, y: anchor.point.y };
+  if (segment)
+    return {
+      x: (segment.x1 + segment.x2) / 2,
+      y: (segment.y1 + segment.y2) / 2,
+    };
+  if (anchor?.cell)
+    return {
+      x: (anchor.cell.x + 0.5) * gridSize,
+      y: (anchor.cell.y + 0.5) * gridSize,
+    };
+  return null;
+}
+
+function findNearestRegionBoundaryAnchor(region, side, point, gridSize) {
+  if (!region || !point || !Array.isArray(region.floorCells)) return null;
+  const boundary = getBoundaryCells(region);
+  if (boundary.length === 0) return null;
+  const scored = boundary.map((anchor) => {
+    const handlePoint = getAnchorHandlePoint(anchor, gridSize);
+    const sidePenalty = anchor.side === side ? 0 : gridSize * 6;
+    const dx = handlePoint.x - point.x;
+    const dy = handlePoint.y - point.y;
+    return {
+      anchor,
+      score: dx * dx + dy * dy + sidePenalty * sidePenalty,
+    };
+  });
+  scored.sort((a, b) => a.score - b.score);
+  return scored[0]?.anchor || null;
+}
+
+function isFinalAnchorPhysicallyValid(anchor, region) {
+  if (!anchor?.cell || !anchor?.outsideCell) return false;
+  const roomCells = new Set(
+    Array.isArray(region?.floorCells)
+      ? region.floorCells.map((cell) => cellKey(cell.x, cell.y))
+      : [],
+  );
+  if (!roomCells.has(cellKey(anchor.cell.x, anchor.cell.y))) return false;
+  return getCellManhattanDistance(anchor.cell, anchor.outsideCell) === 1;
+}
+
+function getSnappedBoundarySegment(anchor, gridSize) {
+  if (!anchor?.cell || !anchor.side) return null;
+  return (
+    getCellBoundarySegmentsForCell(anchor.cell, gridSize).find(
+      (segment) => segment.side === anchor.side,
+    ) || null
+  );
+}
+
+function normalizeFinalConnectionAnchor(anchor, region, generatedMap, index = 0) {
+  if (!anchor) return null;
+  const gridSize = generatedMap?.config?.gridSize || 1;
+  const segment = anchor.segment
+    ? {
+        x1: anchor.segment.x1,
+        y1: anchor.segment.y1,
+        x2: anchor.segment.x2,
+        y2: anchor.segment.y2,
+      }
+    : null;
+  const fallbackSide = segment
+    ? inferFinalSegmentSide(segment, region, generatedMap, gridSize)
+    : getDominantSideFromNormal(anchor.normal, anchor.side || "north");
+  const requestedSide = anchor.side || fallbackSide;
+  const referencePoint = getFinalAnchorReferencePoint(anchor, segment, gridSize);
+  const snapped = findNearestRegionBoundaryAnchor(
+    region,
+    requestedSide,
+    referencePoint,
+    gridSize,
+  );
+  const side = snapped?.side || requestedSide;
+  const normal = snapped?.normal || getAxialNormalForSide(side);
+  const cell =
+    snapped?.cell ||
+    (anchor.cell ? { x: anchor.cell.x, y: anchor.cell.y } : null);
+  const outsideCell =
+    snapped?.outsideCell ||
+    (cell
+      ? {
+          x: cell.x + normal.x,
+          y: cell.y + normal.y,
+        }
+      : anchor.outsideCell
+        ? { x: anchor.outsideCell.x, y: anchor.outsideCell.y }
+        : null);
+  const shouldSnapSegment =
+    snapped && !isFinalAnchorPhysicallyValid(anchor, region);
+  const snappedSegment = shouldSnapSegment
+    ? getSnappedBoundarySegment(snapped, gridSize)
+    : null;
+  const normalizedSegment = snappedSegment
+    ? {
+        x1: snappedSegment.x1,
+        y1: snappedSegment.y1,
+        x2: snappedSegment.x2,
+        y2: snappedSegment.y2,
+      }
+    : segment;
+  const normalizedPoint = normalizedSegment
+    ? {
+        x: (normalizedSegment.x1 + normalizedSegment.x2) / 2,
+        y: (normalizedSegment.y1 + normalizedSegment.y2) / 2,
+      }
+    : referencePoint;
   return {
+    ...anchor,
     regionId: region.id,
     regionShape: region.shape,
     side,
@@ -250,10 +328,38 @@ export function createFinalAnchorFromSegment(
     outsideCell,
     normal,
     finalGeometry: true,
-    finalBoundaryIndex: index,
-    segment: { x1: segment.x1, y1: segment.y1, x2: segment.x2, y2: segment.y2 },
-    point: mid,
+    finalBoundaryIndex: anchor.finalBoundaryIndex ?? index,
+    ...(normalizedSegment ? { segment: normalizedSegment } : {}),
+    ...(normalizedPoint ? { point: normalizedPoint } : {}),
   };
+}
+
+export function createFinalAnchorFromSegment(
+  segment,
+  region,
+  generatedMap,
+  index = 0,
+) {
+  const side = inferFinalSegmentSide(
+    segment,
+    region,
+    generatedMap,
+    generatedMap?.config?.gridSize || 1,
+  );
+  return normalizeFinalConnectionAnchor(
+    {
+      side,
+      segment: { x1: segment.x1, y1: segment.y1, x2: segment.x2, y2: segment.y2 },
+      point: {
+        x: (segment.x1 + segment.x2) / 2,
+        y: (segment.y1 + segment.y2) / 2,
+      },
+      finalBoundaryIndex: index,
+    },
+    region,
+    generatedMap,
+    index,
+  );
 }
 
 export function getFinalConnectionAnchors(generatedMap, region) {
@@ -262,10 +368,16 @@ export function getFinalConnectionAnchors(generatedMap, region) {
     Array.isArray(regionGeometry?.connectionAnchors) &&
     regionGeometry.connectionAnchors.length > 0
   )
-    return regionGeometry.connectionAnchors;
-  return getFinalBoundarySegments(generatedMap, region).map((segment, index) =>
-    createFinalAnchorFromSegment(segment, region, generatedMap, index),
-  );
+    return regionGeometry.connectionAnchors
+      .map((anchor, index) =>
+        normalizeFinalConnectionAnchor(anchor, region, generatedMap, index),
+      )
+      .filter(Boolean);
+  return getFinalBoundarySegments(generatedMap, region)
+    .map((segment, index) =>
+      createFinalAnchorFromSegment(segment, region, generatedMap, index),
+    )
+    .filter(Boolean);
 }
 
 export function getDoorBoundaryCells(region, generatedMap = null) {
@@ -1056,6 +1168,54 @@ export function isUsableCorridorPath(path, start, goal) {
   return Array.isArray(path) && path.length === 1 && areSameCell(start, goal);
 }
 
+
+function cloneCell(cell) {
+  return cell && Number.isFinite(cell.x) && Number.isFinite(cell.y)
+    ? { x: cell.x, y: cell.y }
+    : null;
+}
+
+function getCellManhattanDistance(a, b) {
+  if (!a || !b) return Number.POSITIVE_INFINITY;
+  return Math.abs(Number(a.x) - Number(b.x)) + Math.abs(Number(a.y) - Number(b.y));
+}
+
+function getAnchorBridgeCell(anchor, roomCells = null) {
+  if (!anchor?.finalGeometry || !anchor.cell || !anchor.outsideCell) return null;
+  if (areSameCell(anchor.cell, anchor.outsideCell)) return null;
+  if (getCellManhattanDistance(anchor.cell, anchor.outsideCell) !== 1) return null;
+  const key = cellKey(anchor.cell.x, anchor.cell.y);
+  if (roomCells?.has?.(key)) return null;
+  return cloneCell(anchor.cell);
+}
+
+function mergeEndpointBridgeCells(pathCells, fromBridgeCell = null, toBridgeCell = null) {
+  const cells = Array.isArray(pathCells)
+    ? pathCells.map(cloneCell).filter(Boolean)
+    : [];
+  const hasCell = (candidate) =>
+    candidate && cells.some((cell) => areSameCell(cell, candidate));
+  const first = cells[0] || null;
+  const last = cells[cells.length - 1] || null;
+  if (fromBridgeCell && first && !hasCell(fromBridgeCell) && getCellManhattanDistance(fromBridgeCell, first) === 1) {
+    cells.unshift(cloneCell(fromBridgeCell));
+  }
+  if (toBridgeCell && last && !hasCell(toBridgeCell) && getCellManhattanDistance(toBridgeCell, last) === 1) {
+    cells.push(cloneCell(toBridgeCell));
+  }
+  return cells;
+}
+
+function applyAnchorBridgeCells(pathCells, fromAnchor, toAnchor, roomCells = null) {
+  const fromAnchorBridgeCell = getAnchorBridgeCell(fromAnchor, roomCells);
+  const toAnchorBridgeCell = getAnchorBridgeCell(toAnchor, roomCells);
+  return {
+    pathCells: mergeEndpointBridgeCells(pathCells, fromAnchorBridgeCell, toAnchorBridgeCell),
+    fromAnchorBridgeCell,
+    toAnchorBridgeCell,
+  };
+}
+
 export function appendPathSegment(fullPath, segment) {
   const cells = Array.isArray(segment) ? segment : [];
   if (cells.length === 0) return fullPath;
@@ -1334,14 +1494,19 @@ export function rebuildCorridorOnNetwork(corridor, normalizedCells, gridSize) {
   );
   const path = findPathThroughCellSet(normalizedCells, routePoints);
   if (path.length < 2) return corridor;
-  const centerline = path.map((cell) => ({
+  const bridgedPath = mergeEndpointBridgeCells(
+    path,
+    corridor.fromAnchorBridgeCell,
+    corridor.toAnchorBridgeCell,
+  );
+  const centerline = bridgedPath.map((cell) => ({
     x: (cell.x + 0.5) * gridSize,
     y: (cell.y + 0.5) * gridSize,
   }));
   return {
     ...corridor,
-    floorCells: path.map((cell) => ({ x: cell.x, y: cell.y })),
-    pathCells: path.map((cell) => ({ x: cell.x, y: cell.y })),
+    floorCells: bridgedPath.map((cell) => ({ x: cell.x, y: cell.y })),
+    pathCells: bridgedPath.map((cell) => ({ x: cell.x, y: cell.y })),
     centerline,
     waypoints: dedupePoints(extractWaypoints(centerline)),
   };
@@ -2117,6 +2282,125 @@ function cellsToCenterline(cells, gridSize) {
   }));
 }
 
+
+function collectPhysicalFloorComponents(regions, corridors) {
+  const cellSources = new Map();
+  const addSource = (cell, source) => {
+    if (!cell || !Number.isFinite(cell.x) || !Number.isFinite(cell.y)) return;
+    const key = cellKey(cell.x, cell.y);
+    if (!cellSources.has(key)) {
+      cellSources.set(key, {
+        cell: { x: cell.x, y: cell.y },
+        roomIds: new Set(),
+        corridorIds: new Set(),
+      });
+    }
+    const entry = cellSources.get(key);
+    if (source.roomId) entry.roomIds.add(source.roomId);
+    if (source.corridorId) entry.corridorIds.add(source.corridorId);
+  };
+
+  (regions || []).forEach((region) => {
+    (region.floorCells || []).forEach((cell) =>
+      addSource(cell, { roomId: region.id }),
+    );
+  });
+  (corridors || []).forEach((corridor) => {
+    if (corridor?.isRoomLink) return;
+    (corridor.floorCells || []).forEach((cell) =>
+      addSource(cell, { corridorId: corridor.id }),
+    );
+  });
+
+  const visited = new Set();
+  const components = [];
+  cellSources.forEach((entry, startKey) => {
+    if (visited.has(startKey)) return;
+    const queue = [startKey];
+    visited.add(startKey);
+    const component = {
+      cellKeys: new Set(),
+      roomIds: new Set(),
+      corridorIds: new Set(),
+    };
+    while (queue.length > 0) {
+      const key = queue.shift();
+      const source = cellSources.get(key);
+      if (!source) continue;
+      component.cellKeys.add(key);
+      source.roomIds.forEach((roomId) => component.roomIds.add(roomId));
+      source.corridorIds.forEach((corridorId) =>
+        component.corridorIds.add(corridorId),
+      );
+      getCellNeighbors(source.cell).forEach((neighbor) => {
+        const neighborKey = cellKey(neighbor.x, neighbor.y);
+        if (!cellSources.has(neighborKey) || visited.has(neighborKey)) return;
+        visited.add(neighborKey);
+        queue.push(neighborKey);
+      });
+    }
+    components.push(component);
+  });
+  return components;
+}
+
+function getLargestRoomPhysicalComponent(components) {
+  return [...components]
+    .filter((component) => component.roomIds.size > 0)
+    .sort((a, b) => {
+      if (b.roomIds.size !== a.roomIds.size) return b.roomIds.size - a.roomIds.size;
+      return b.cellKeys.size - a.cellKeys.size;
+    })[0] || null;
+}
+
+function rebuildCorridorWithFilteredCells(corridor, allowedCellKeys, gridSize) {
+  if (corridor?.isRoomLink || !Array.isArray(corridor?.floorCells)) return corridor;
+  const floorCells = corridor.floorCells.filter((cell) =>
+    allowedCellKeys.has(cellKey(cell.x, cell.y)),
+  );
+  if (floorCells.length === 0) return null;
+  if (floorCells.length === corridor.floorCells.length) return corridor;
+  const floorKeys = new Set(floorCells.map((cell) => cellKey(cell.x, cell.y)));
+  const pathCells = (Array.isArray(corridor.pathCells) && corridor.pathCells.length > 0
+    ? corridor.pathCells
+    : corridor.floorCells
+  ).filter((cell) => floorKeys.has(cellKey(cell.x, cell.y)));
+  const routedCells = pathCells.length > 0 ? pathCells : floorCells;
+  const centerline = cellsToCenterline(routedCells, gridSize);
+  return {
+    ...corridor,
+    floorCells: floorCells.map(cloneCell).filter(Boolean),
+    pathCells: routedCells.map(cloneCell).filter(Boolean),
+    centerline,
+    waypoints: dedupePoints(extractWaypoints(centerline)),
+  };
+}
+
+function removeCorridorOnlyPhysicalComponents(corridors, components, gridSize) {
+  const orphanCellKeys = new Set();
+  components.forEach((component) => {
+    if (component.roomIds.size > 0) return;
+    component.cellKeys.forEach((key) => orphanCellKeys.add(key));
+  });
+  if (orphanCellKeys.size === 0) return corridors;
+  const allowedCellKeys = new Set();
+  (corridors || []).forEach((corridor) => {
+    (corridor.floorCells || []).forEach((cell) => {
+      const key = cellKey(cell.x, cell.y);
+      if (!orphanCellKeys.has(key)) allowedCellKeys.add(key);
+    });
+  });
+  return (corridors || [])
+    .map((corridor) => rebuildCorridorWithFilteredCells(corridor, allowedCellKeys, gridSize))
+    .filter(Boolean);
+}
+
+function scorePhysicalComponentAnchorPair(fromAnchor, toAnchor) {
+  if (!fromAnchor?.outsideCell || !toAnchor?.outsideCell)
+    return Number.POSITIVE_INFINITY;
+  return getCellManhattanDistance(fromAnchor.outsideCell, toAnchor.outsideCell);
+}
+
 export function routeCorridors(config, regions, graph) {
   const routingProfile = getPlacementProfile(config);
   const gridW = Math.floor(config.mapWidth / config.gridSize);
@@ -2268,6 +2552,466 @@ export function routeCorridors(config, regions, graph) {
     return isUsableCorridorPath(path, fallbackStart, fallbackGoal) ? path : [];
   };
 
+
+  const syncExistingCorridorCells = (corridors) => {
+    existingCorridors.clear();
+    (corridors || []).forEach((corridor) => {
+      if (corridor?.isRoomLink) return;
+      (corridor.floorCells || []).forEach((cell) =>
+        existingCorridors.add(cellKey(cell.x, cell.y)),
+      );
+    });
+  };
+
+  const createPhysicalRepairCorridor = (
+    fromRegion,
+    toRegion,
+    repairIndex,
+  ) => {
+    if (!fromRegion || !toRegion || fromRegion.id === toRegion.id) return null;
+    const edge = {
+      id: `physical-repair-${repairIndex}-${fromRegion.id}-${toRegion.id}`,
+      from: fromRegion.id,
+      to: toRegion.id,
+      reason: "physical-connectivity-repair",
+      recoveredGraphEdge: true,
+    };
+    const repairRng = createSeededRng(
+      hashStringToSeed(config.seed, edge.id, "physical-repair"),
+    );
+    const fromRawAnchor = chooseDoorAnchorForRegion(
+      fromRegion,
+      toRegion,
+      repairRng,
+      createDoorForbiddenOutsideCells(fromRegion.id, false),
+      routingProfile,
+    );
+    const toRawAnchor = chooseDoorAnchorForRegion(
+      toRegion,
+      fromRegion,
+      repairRng,
+      createDoorForbiddenOutsideCells(toRegion.id, false),
+      routingProfile,
+    );
+    if (!fromRawAnchor || !toRawAnchor) return null;
+
+    const fromAnchor = createCircleDoorRoomExtensionAnchor(
+      fromRegion,
+      fromRawAnchor,
+      gridW,
+      gridH,
+      dynamicRoomCells,
+    );
+    const toAnchor = createCircleDoorRoomExtensionAnchor(
+      toRegion,
+      toRawAnchor,
+      gridW,
+      gridH,
+      dynamicRoomCells,
+    );
+    addCircleDoorRoomExtensionCellToSet(fromAnchor, dynamicRoomCells);
+    addCircleDoorRoomExtensionCellToSet(toAnchor, dynamicRoomCells);
+
+    const allowedApproachCells = [
+      ...getAnchorApproachCells(fromAnchor),
+      ...getAnchorApproachCells(toAnchor),
+    ];
+    const routePoints = [fromAnchor.outsideCell, toAnchor.outsideCell];
+    const path = routeCellsBetweenPoints(
+      routePoints,
+      allowedApproachCells,
+      new Set([fromRegion.id, toRegion.id]),
+      fromAnchor.outsideCell,
+      toAnchor.outsideCell,
+    );
+    if (!isUsableCorridorPath(path, fromAnchor.outsideCell, toAnchor.outsideCell)) {
+      return null;
+    }
+
+    const pathBridge = applyAnchorBridgeCells(
+      path.map((cell) => ({ x: cell.x, y: cell.y })),
+      fromAnchor,
+      toAnchor,
+      dynamicRoomCells,
+    );
+    const pathCells = pathBridge.pathCells;
+    const floorCells = pathCells.map((cell) => ({ x: cell.x, y: cell.y }));
+    floorCells.forEach((cell) => existingCorridors.add(cellKey(cell.x, cell.y)));
+    const centerline = cellsToCenterline(pathCells, config.gridSize);
+    const corridorSurfaceKind = getCorridorSurfaceProfile(
+      config,
+      fromRegion,
+      toRegion,
+      edge,
+    );
+    const fromDoor = markMineBreachOpening(
+      decorateDoorSegment(
+        createDoorFromAnchor(fromAnchor, config.gridSize, false),
+        config,
+        edge,
+        "from",
+      ),
+      config,
+      corridorSurfaceKind,
+      fromRegion,
+    );
+    const toDoor = markMineBreachOpening(
+      decorateDoorSegment(
+        createDoorFromAnchor(toAnchor, config.gridSize, false),
+        config,
+        edge,
+        "to",
+      ),
+      config,
+      corridorSurfaceKind,
+      toRegion,
+    );
+    registerReusableDoorAnchor(fromRegion, fromAnchor, fromDoor, edge.id, "from");
+    registerReusableDoorAnchor(toRegion, toAnchor, toDoor, edge.id, "to");
+
+    return {
+      ...edge,
+      physicalConnectivityRepair: true,
+      surfaceKind: corridorSurfaceKind,
+      corridorStyle: "structured-corridor",
+      fromAnchor,
+      toAnchor,
+      fromAnchorBridgeCell: pathBridge.fromAnchorBridgeCell,
+      toAnchorBridgeCell: pathBridge.toAnchorBridgeCell,
+      floorCells,
+      pathCells,
+      centerline,
+      manualWaypoints: [],
+      waypoints: dedupePoints(extractWaypoints(centerline)),
+      doors: dedupeDoorSegments([fromDoor, toDoor]),
+    };
+  };
+
+  const findPhysicalRepairCandidate = (
+    sourceComponent,
+    targetComponent,
+    repairIndex,
+  ) => {
+    const sourceRegions = [...sourceComponent.roomIds]
+      .map((regionId) => regionById.get(regionId))
+      .filter(Boolean);
+    const targetRegions = [...targetComponent.roomIds]
+      .map((regionId) => regionById.get(regionId))
+      .filter(Boolean);
+    let best = null;
+    sourceRegions.forEach((fromRegion) => {
+      targetRegions.forEach((toRegion) => {
+        const corridor = createPhysicalRepairCorridor(
+          fromRegion,
+          toRegion,
+          repairIndex,
+        );
+        if (!corridor) return;
+        const score =
+          corridor.floorCells.length * 1.5 +
+          scorePhysicalComponentAnchorPair(
+            corridor.fromAnchor,
+            corridor.toAnchor,
+          );
+        if (!best || score < best.score) best = { corridor, score };
+      });
+    });
+    return best?.corridor || null;
+  };
+
+  const getComponentRoomBoundaryCells = (component) => {
+    const output = [];
+    if (!component?.roomIds || component.roomIds.size === 0) return output;
+    component.roomIds.forEach((regionId) => {
+      const region = regionById.get(regionId);
+      if (!region || !Array.isArray(region.floorCells)) return;
+      const regionCellKeys = new Set(
+        region.floorCells.map((cell) => cellKey(cell.x, cell.y)),
+      );
+      region.floorCells.forEach((cell) => {
+        const key = cellKey(cell.x, cell.y);
+        if (!component.cellKeys.has(key)) return;
+        const isBoundary = getCellNeighbors(cell).some(
+          (neighbor) => !regionCellKeys.has(cellKey(neighbor.x, neighbor.y)),
+        );
+        if (!isBoundary) return;
+        output.push({ region, cell: cloneCell(cell) });
+      });
+    });
+    return output;
+  };
+
+  const getBoundedBridgePath = (start, goal, allowBlockedRoomKeys = new Set()) => {
+    if (!start || !goal) return [];
+    const blocked = new Set(allRoomCells);
+    blocked.delete(cellKey(start.x, start.y));
+    blocked.delete(cellKey(goal.x, goal.y));
+    allowBlockedRoomKeys.forEach((key) => blocked.delete(key));
+    const path = findPath(start, goal, {
+      gridW,
+      gridH,
+      blocked,
+      softBlocked: new Set(),
+      existingCorridors,
+      adjacentToExistingCorridors: new Set(),
+      routingProfile: {
+        ...routingProfile,
+        adjacentCorridorPenalty: 0,
+        corridorOverlapPenalty: 0,
+        corridorReuseBonus: Math.max(
+          0.72,
+          Number(routingProfile.corridorReuseBonus ?? 0),
+        ),
+        turnCost: Math.min(1.2, Number(routingProfile.turnCost ?? 1.2)),
+      },
+    });
+    if (isUsableCorridorPath(path, start, goal)) return path;
+    return linePathBetweenCells(start, goal).filter(
+      (cell) => cell.x > 0 && cell.y > 0 && cell.x < gridW - 1 && cell.y < gridH - 1,
+    );
+  };
+
+  const createForcedPhysicalAnchor = (region, roomCell, outsideCell) => {
+    if (!region || !roomCell || !outsideCell) return null;
+    const normal = {
+      x: Math.sign(outsideCell.x - roomCell.x),
+      y: Math.sign(outsideCell.y - roomCell.y),
+    };
+    if (Math.abs(normal.x) + Math.abs(normal.y) !== 1) return null;
+    return {
+      side: getDominantSideFromNormal(normal, "east"),
+      cell: cloneCell(roomCell),
+      outsideCell: cloneCell(outsideCell),
+      normal,
+      regionId: region.id,
+      regionShape: region.shape,
+      forcedPhysicalRepairAnchor: true,
+    };
+  };
+
+  const createForcedPhysicalRepairCorridor = (
+    sourceComponent,
+    targetComponent,
+    repairIndex,
+  ) => {
+    const sourceAnchors = getComponentRoomBoundaryCells(sourceComponent);
+    const targetAnchors = getComponentRoomBoundaryCells(targetComponent);
+    if (sourceAnchors.length === 0 || targetAnchors.length === 0) return null;
+
+    const pairs = [];
+    sourceAnchors.forEach((source) => {
+      targetAnchors.forEach((target) => {
+        pairs.push({
+          source,
+          target,
+          score: getCellManhattanDistance(source.cell, target.cell),
+        });
+      });
+    });
+    pairs.sort((a, b) => a.score - b.score);
+
+    for (const pair of pairs.slice(0, 96)) {
+      const path = getBoundedBridgePath(pair.source.cell, pair.target.cell);
+      if (!Array.isArray(path) || path.length < 3) continue;
+      const fromOutsideCell = path[1];
+      const toOutsideCell = path[path.length - 2];
+      const fromAnchor = createForcedPhysicalAnchor(
+        pair.source.region,
+        pair.source.cell,
+        fromOutsideCell,
+      );
+      const toAnchor = createForcedPhysicalAnchor(
+        pair.target.region,
+        pair.target.cell,
+        toOutsideCell,
+      );
+      if (!fromAnchor || !toAnchor) continue;
+      const corridorPath = path.slice(1, -1).map(cloneCell).filter(Boolean);
+      if (corridorPath.length === 0) continue;
+      const edge = {
+        id: `physical-force-repair-${repairIndex}-${pair.source.region.id}-${pair.target.region.id}`,
+        from: pair.source.region.id,
+        to: pair.target.region.id,
+        reason: "physical-connectivity-force-repair",
+        recoveredGraphEdge: true,
+      };
+      const centerline = cellsToCenterline(corridorPath, config.gridSize);
+      const corridorSurfaceKind = getCorridorSurfaceProfile(
+        config,
+        pair.source.region,
+        pair.target.region,
+        edge,
+      );
+      const fromDoor = markMineBreachOpening(
+        decorateDoorSegment(
+          createDoorFromAnchor(fromAnchor, config.gridSize, false),
+          config,
+          edge,
+          "from",
+        ),
+        config,
+        corridorSurfaceKind,
+        pair.source.region,
+      );
+      const toDoor = markMineBreachOpening(
+        decorateDoorSegment(
+          createDoorFromAnchor(toAnchor, config.gridSize, false),
+          config,
+          edge,
+          "to",
+        ),
+        config,
+        corridorSurfaceKind,
+        pair.target.region,
+      );
+      corridorPath.forEach((cell) => existingCorridors.add(cellKey(cell.x, cell.y)));
+      registerReusableDoorAnchor(
+        pair.source.region,
+        fromAnchor,
+        fromDoor,
+        edge.id,
+        "from",
+      );
+      registerReusableDoorAnchor(
+        pair.target.region,
+        toAnchor,
+        toDoor,
+        edge.id,
+        "to",
+      );
+      return {
+        ...edge,
+        physicalConnectivityRepair: true,
+        forcedPhysicalConnectivityRepair: true,
+        surfaceKind: corridorSurfaceKind,
+        corridorStyle: "structured-corridor",
+        fromAnchor,
+        toAnchor,
+        floorCells: corridorPath.map(cloneCell).filter(Boolean),
+        pathCells: corridorPath.map(cloneCell).filter(Boolean),
+        centerline,
+        manualWaypoints: [],
+        waypoints: dedupePoints(extractWaypoints(centerline)),
+        doors: dedupeDoorSegments([fromDoor, toDoor]),
+      };
+    }
+
+    return null;
+  };
+
+  const findForcedPhysicalRepairCandidate = (
+    sourceComponent,
+    targetComponent,
+    repairIndex,
+  ) => createForcedPhysicalRepairCorridor(
+    sourceComponent,
+    targetComponent,
+    repairIndex,
+  );
+
+  const forcePhysicalConnectivityClosure = (inputCorridors, startRepairIndex = 0) => {
+    let closedCorridors = Array.isArray(inputCorridors)
+      ? inputCorridors.filter(Boolean)
+      : [];
+    let repairIndex = startRepairIndex;
+    let components = collectPhysicalFloorComponents(regions, closedCorridors);
+
+    while (repairIndex < startRepairIndex + Math.max(2, regions.length * 2 + 4)) {
+      const mainComponent = getLargestRoomPhysicalComponent(components);
+      if (!mainComponent) return closedCorridors;
+      const disconnectedComponents = components.filter(
+        (component) =>
+          component.roomIds.size > 0 && component !== mainComponent,
+      );
+      if (disconnectedComponents.length === 0) break;
+      syncExistingCorridorCells(closedCorridors);
+      let bestRepair = null;
+      disconnectedComponents.forEach((component) => {
+        const candidate = findForcedPhysicalRepairCandidate(
+          component,
+          mainComponent,
+          repairIndex,
+        );
+        if (!candidate) return;
+        const score = candidate.floorCells.length;
+        if (!bestRepair || score < bestRepair.score) {
+          bestRepair = { corridor: candidate, score };
+        }
+      });
+      if (!bestRepair?.corridor) break;
+      const previousDisconnectedCount = disconnectedComponents.length;
+      closedCorridors = [...closedCorridors, bestRepair.corridor];
+      components = collectPhysicalFloorComponents(regions, closedCorridors);
+      const nextMainComponent = getLargestRoomPhysicalComponent(components);
+      const nextDisconnectedCount = nextMainComponent
+        ? components.filter(
+            (component) =>
+              component.roomIds.size > 0 && component !== nextMainComponent,
+          ).length
+        : previousDisconnectedCount;
+      repairIndex += 1;
+      if (nextDisconnectedCount >= previousDisconnectedCount) break;
+    }
+    return closedCorridors;
+  };
+
+  const repairPhysicalCorridorNetwork = (inputCorridors) => {
+    let repairedCorridors = Array.isArray(inputCorridors)
+      ? inputCorridors.filter(Boolean)
+      : [];
+    let components = collectPhysicalFloorComponents(regions, repairedCorridors);
+    repairedCorridors = removeCorridorOnlyPhysicalComponents(
+      repairedCorridors,
+      components,
+      config.gridSize,
+    );
+    components = collectPhysicalFloorComponents(regions, repairedCorridors);
+
+    let repairIndex = 0;
+    while (repairIndex < Math.max(1, regions.length + 2)) {
+      const mainComponent = getLargestRoomPhysicalComponent(components);
+      if (!mainComponent) return repairedCorridors;
+      const disconnectedComponents = components.filter(
+        (component) =>
+          component.roomIds.size > 0 && component !== mainComponent,
+      );
+      if (disconnectedComponents.length === 0) break;
+      syncExistingCorridorCells(repairedCorridors);
+      let bestRepair = null;
+      disconnectedComponents.forEach((component) => {
+        const candidate = findPhysicalRepairCandidate(
+          component,
+          mainComponent,
+          repairIndex,
+        );
+        if (!candidate) return;
+        const score = candidate.floorCells.length;
+        if (!bestRepair || score < bestRepair.score) {
+          bestRepair = { corridor: candidate, score };
+        }
+      });
+      if (!bestRepair?.corridor) break;
+      repairedCorridors = [...repairedCorridors, bestRepair.corridor];
+      components = collectPhysicalFloorComponents(regions, repairedCorridors);
+      repairIndex += 1;
+    }
+
+    const cleanedCorridors = removeCorridorOnlyPhysicalComponents(
+      repairedCorridors,
+      collectPhysicalFloorComponents(regions, repairedCorridors),
+      config.gridSize,
+    );
+    const closedCorridors = forcePhysicalConnectivityClosure(
+      cleanedCorridors,
+      repairIndex,
+    );
+    return removeCorridorOnlyPhysicalComponents(
+      closedCorridors,
+      collectPhysicalFloorComponents(regions, closedCorridors),
+      config.gridSize,
+    );
+  };
+
   const routeAutoHubGroup = (group) => {
     const source = group.region;
     if (!source || !Array.isArray(group.entries) || group.entries.length === 0)
@@ -2324,7 +3068,13 @@ export function routeCorridors(config, regions, graph) {
     if (!isUsableCorridorPath(sourcePath, sourceAnchor.outsideCell, hubCell))
       return null;
 
-    const sourcePathCells = sourcePath.map((cell) => ({ x: cell.x, y: cell.y }));
+    const sourcePathBridge = applyAnchorBridgeCells(
+      sourcePath.map((cell) => ({ x: cell.x, y: cell.y })),
+      sourceAnchor,
+      hubAnchor,
+      dynamicRoomCells,
+    );
+    const sourcePathCells = sourcePathBridge.pathCells;
     const hubStemId = `${group.id}-stem`;
     const hubStemEdge = {
       id: hubStemId,
@@ -2360,6 +3110,8 @@ export function routeCorridors(config, regions, graph) {
         corridorStyle: "structured-corridor",
         fromAnchor: sourceAnchor,
         toAnchor: hubAnchor,
+        fromAnchorBridgeCell: sourcePathBridge.fromAnchorBridgeCell,
+        toAnchorBridgeCell: sourcePathBridge.toAnchorBridgeCell,
         floorCells: sourcePathCells,
         pathCells: sourcePathCells,
         centerline: stemCenterline,
@@ -2444,8 +3196,14 @@ export function routeCorridors(config, regions, graph) {
       )
         return null;
 
+      const branchPathBridge = applyAnchorBridgeCells(
+        branchPath.map((cell) => ({ x: cell.x, y: cell.y })),
+        startAnchor,
+        goalAnchor,
+        dynamicRoomCells,
+      );
       const organicTunnel = shouldUseOrganicTunnel(config, source, target);
-      const pathCells = branchPath.map((cell) => ({ x: cell.x, y: cell.y }));
+      const pathCells = branchPathBridge.pathCells;
       const floorCells = organicTunnel
         ? buildOrganicTunnelFloorCells(
             pathCells,
@@ -2483,6 +3241,8 @@ export function routeCorridors(config, regions, graph) {
         corridorStyle: organicTunnel ? "natural-tunnel" : "structured-corridor",
         fromAnchor: sourceEndpoint === "from" ? hubAnchor : targetAnchor,
         toAnchor: sourceEndpoint === "from" ? targetAnchor : hubAnchor,
+        fromAnchorBridgeCell: branchPathBridge.fromAnchorBridgeCell,
+        toAnchorBridgeCell: branchPathBridge.toAnchorBridgeCell,
         floorCells,
         pathCells,
         centerline,
@@ -2694,8 +3454,14 @@ export function routeCorridors(config, regions, graph) {
     addCircleDoorRoomExtensionCellToSet(fromAnchor, dynamicRoomCells);
     addCircleDoorRoomExtensionCellToSet(toAnchor, dynamicRoomCells);
 
+    const pathBridge = applyAnchorBridgeCells(
+      path.map((cell) => ({ x: cell.x, y: cell.y })),
+      fromAnchor,
+      toAnchor,
+      dynamicRoomCells,
+    );
     const organicTunnel = shouldUseOrganicTunnel(config, from, to);
-    const pathCells = path.map((cell) => ({ x: cell.x, y: cell.y }));
+    const pathCells = pathBridge.pathCells;
     const floorCells = organicTunnel
       ? buildOrganicTunnelFloorCells(
           pathCells,
@@ -2746,6 +3512,8 @@ export function routeCorridors(config, regions, graph) {
       corridorStyle: organicTunnel ? "natural-tunnel" : "structured-corridor",
       fromAnchor,
       toAnchor,
+      fromAnchorBridgeCell: pathBridge.fromAnchorBridgeCell,
+      toAnchorBridgeCell: pathBridge.toAnchorBridgeCell,
       floorCells,
       pathCells,
       centerline,
@@ -2913,8 +3681,14 @@ export function routeCorridors(config, regions, graph) {
       )
     )
       return [];
+    const pathBridge = applyAnchorBridgeCells(
+      path.map((cell) => ({ x: cell.x, y: cell.y })),
+      fromAnchor,
+      toAnchor,
+      dynamicRoomCells,
+    );
     const organicTunnel = shouldUseOrganicTunnel(config, from, to);
-    const pathCells = path.map((cell) => ({ x: cell.x, y: cell.y }));
+    const pathCells = pathBridge.pathCells;
     const floorCells = organicTunnel
       ? buildOrganicTunnelFloorCells(
           pathCells,
@@ -2965,6 +3739,8 @@ export function routeCorridors(config, regions, graph) {
         corridorStyle: organicTunnel ? "natural-tunnel" : "structured-corridor",
         fromAnchor,
         toAnchor,
+        fromAnchorBridgeCell: pathBridge.fromAnchorBridgeCell,
+        toAnchorBridgeCell: pathBridge.toAnchorBridgeCell,
         floorCells,
         pathCells,
         centerline,
@@ -3035,7 +3811,7 @@ export function routeCorridors(config, regions, graph) {
     );
   });
 
-  return sanitizedCorridors;
+  return repairPhysicalCorridorNetwork(sanitizedCorridors);
 }
 
 export function extractWaypoints(centerline) {

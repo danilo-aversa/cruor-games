@@ -293,6 +293,33 @@ function getMapWallStyleProfile(visualStyle) {
   return MAP_WALL_STYLE_PROFILES[normalizeVisualStyle(visualStyle)] || MAP_WALL_STYLE_PROFILES.cruor;
 }
 
+const WALL_DRAWING_STYLE_OPTIONS = Object.freeze([
+  Object.freeze({ value: "drawn", label: "Drawn", icon: "pen-nib" }),
+  Object.freeze({ value: "precise", label: "Precise", icon: "ruler-combined" }),
+]);
+
+const HATCH_SHADOW_COLOR_OPTIONS = Object.freeze([
+  Object.freeze({ value: "default", label: "Default", icon: "circle-half-stroke" }),
+  Object.freeze({ value: "black", label: "Black", icon: "circle" }),
+  Object.freeze({ value: "blood", label: "Blood", icon: "droplet" }),
+  Object.freeze({ value: "bone", label: "Bone", icon: "bone" }),
+  Object.freeze({ value: "none", label: "None", icon: "ban" }),
+]);
+
+function normalizeWallDrawingStyle(value) {
+  return value === "precise" ? "precise" : "drawn";
+}
+
+function normalizeHatchShadowColor(value) {
+  return HATCH_SHADOW_COLOR_OPTIONS.some((option) => option.value === value)
+    ? value
+    : "default";
+}
+
+function getOptionLabel(options, value, fallback = "") {
+  return options.find((option) => option.value === value)?.label || fallback || value || "";
+}
+
 function stableSerializeForMemo(value) {
   if (Array.isArray(value)) {
     return `[${value.map((item) => stableSerializeForMemo(item)).join(",")}]`;
@@ -346,6 +373,8 @@ function MapViewport({
   gridWeight = DEFAULT_CONFIG.gridWeight,
   crosshatchStyle = "classic",
   crosshatchOpacity = 0.72,
+  wallDrawingStyle = "drawn",
+  hatchShadowColor = "default",
   selectedRegionId = "",
   onSelectedRegionChange = null,
   onRegionHoverChange = null,
@@ -1673,7 +1702,6 @@ function MapViewport({
     setHoverCorridorHandle(null);
     setHoveredCorridorId(null);
     onRegionHoverChange?.("");
-    if (showEditor) onSelectedRegionChange?.("");
     event.currentTarget.focus();
     panRef.current = {
       pointerId: event.pointerId,
@@ -1840,6 +1868,8 @@ function MapViewport({
             gridWeight={gridWeight}
             crosshatchStyle={crosshatchStyle}
             crosshatchOpacity={crosshatchOpacity}
+            wallDrawingStyle={wallDrawingStyle}
+            hatchShadowColor={hatchShadowColor}
             showEditor={showEditor}
             showNames={showNames}
             showRoomBadges={showRoomBadges}
@@ -3431,6 +3461,65 @@ function MapStyleSlider({ id, label, value, onChange }) {
   );
 }
 
+function MapStyleMenuSection({ icon, label, valueLabel, children }) {
+  return (
+    <span className="location-map-toolbar__style-section" role="none">
+      <button
+        type="button"
+        className="location-map-toolbar__style-section-title"
+        role="menuitem"
+        aria-haspopup="menu"
+        onMouseDown={suppressToolbarTextSelection}
+        onClick={(event) => event.preventDefault()}
+      >
+        <span>
+          <i className={`fa-solid fa-${icon}`} aria-hidden="true" />
+          {label}
+        </span>
+        <span className="location-map-toolbar__style-subtitle">
+          {valueLabel}
+          <i className="fa-solid fa-chevron-right" aria-hidden="true" />
+        </span>
+      </button>
+      <span
+        className="location-map-toolbar__style-panel cruor-ui-panel-surface"
+        data-style-menu="flyout"
+        role="menu"
+        aria-label={`${label} style options`}
+      >
+        {children}
+      </span>
+    </span>
+  );
+}
+
+function getStyleMenuPortalPlacement(triggerNode) {
+  if (typeof window === "undefined" || !triggerNode?.getBoundingClientRect) {
+    return null;
+  }
+
+  const triggerRect = triggerNode.getBoundingClientRect();
+  const viewportWidth = window.innerWidth || 0;
+  const viewportHeight = window.innerHeight || 0;
+  const margin = 12;
+  const rootWidth = 190;
+  const flyoutWidth = 318;
+  const gap = 6;
+  const availableRight = viewportWidth - triggerRect.right - margin;
+  const flyoutSide = availableRight >= flyoutWidth + gap ? "right" : "left";
+  const preferredLeft = triggerRect.right - rootWidth;
+  const maxLeft = Math.max(margin, viewportWidth - rootWidth - margin);
+  const left = Math.max(margin, Math.min(preferredLeft, maxLeft));
+  const maxTop = Math.max(margin, viewportHeight - 80);
+  const top = Math.max(margin, Math.min(triggerRect.bottom + 8, maxTop));
+
+  return {
+    top,
+    left,
+    flyoutSide,
+  };
+}
+
 function MapStyleDropdown({
   open = false,
   visualStyle,
@@ -3440,6 +3529,8 @@ function MapStyleDropdown({
   gridWeight = DEFAULT_CONFIG.gridWeight,
   crosshatchStyle = "classic",
   crosshatchOpacity = 0.72,
+  wallDrawingStyle = "drawn",
+  hatchShadowColor = "default",
   onToggle,
   onVisualStyleChange,
   onGridStyleChange,
@@ -3448,16 +3539,194 @@ function MapStyleDropdown({
   onGridOpacityChange,
   onCrosshatchStyleChange,
   onCrosshatchOpacityChange,
+  onWallDrawingStyleChange,
+  onHatchShadowColorChange,
 }) {
   const normalizedGridStyle = normalizeGridStyle(gridStyle);
   const normalizedGridColor = normalizeGridColor(gridColor);
   const normalizedGridWeight = normalizeGridWeight(gridWeight);
   const normalizedVisualStyle = normalizeVisualStyle(visualStyle);
   const normalizedCrosshatchStyle = crosshatchStyle === "none" ? "none" : "classic";
+  const normalizedWallDrawingStyle = normalizeWallDrawingStyle(wallDrawingStyle);
+  const normalizedHatchShadowColor = normalizeHatchShadowColor(hatchShadowColor);
+  const triggerRef = useRef(null);
+  const [portalPlacement, setPortalPlacement] = useState(null);
+
+  useEffect(() => {
+    if (!open) {
+      setPortalPlacement(null);
+      return undefined;
+    }
+
+    let frame = 0;
+    const updatePlacement = () => {
+      frame = 0;
+      setPortalPlacement(getStyleMenuPortalPlacement(triggerRef.current));
+    };
+
+    updatePlacement();
+    const schedulePlacement = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(updatePlacement);
+    };
+
+    window.addEventListener("resize", schedulePlacement);
+    window.addEventListener("scroll", schedulePlacement, true);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", schedulePlacement);
+      window.removeEventListener("scroll", schedulePlacement, true);
+    };
+  }, [open]);
+
+  const stylePanel = open ? (
+    <span
+      className="location-map-toolbar__style-panel cruor-ui-panel-surface"
+      data-style-menu="root"
+      data-style-floating="portal"
+      data-flyout-side={portalPlacement?.flyoutSide || "right"}
+      role="menu"
+      aria-label="Map style controls"
+      style={
+        portalPlacement
+          ? {
+              position: "fixed",
+              top: `${portalPlacement.top}px`,
+              right: "auto",
+              left: `${portalPlacement.left}px`,
+            }
+          : { position: "fixed", visibility: "hidden" }
+      }
+      onMouseDown={(event) => event.stopPropagation()}
+    >
+      <MapStyleMenuSection
+        icon="border-all"
+        label="Grid"
+        valueLabel={MAP_GRID_STYLE_LABELS[normalizedGridStyle] || normalizedGridStyle}
+      >
+        <span className="location-map-toolbar__style-subtitle">Grid Style</span>
+        <span className="location-map-toolbar__style-options">
+          {GRID_STYLE_OPTIONS.map((style) => (
+            <MapStyleOptionButton
+              key={style}
+              icon={MAP_GRID_STYLE_ICONS[style] || "border-all"}
+              label={MAP_GRID_STYLE_LABELS[style] || style}
+              active={normalizedGridStyle === style}
+              onClick={() => onGridStyleChange?.(style)}
+            />
+          ))}
+        </span>
+        <span className="location-map-toolbar__style-subtitle">Grid Color</span>
+        <span className="location-map-toolbar__style-options location-map-toolbar__style-options--compact">
+          {GRID_COLOR_OPTIONS.map((color) => (
+            <MapStyleOptionButton
+              key={color}
+              icon={MAP_GRID_COLOR_ICONS[color] || "circle"}
+              label={MAP_GRID_COLOR_LABELS[color] || color}
+              active={normalizedGridColor === color}
+              onClick={() => onGridColorChange?.(color)}
+            />
+          ))}
+        </span>
+        <span className="location-map-toolbar__style-subtitle">Grid Weight</span>
+        <span className="location-map-toolbar__style-options location-map-toolbar__style-options--compact">
+          {GRID_WEIGHT_OPTIONS.map((weight) => (
+            <MapStyleOptionButton
+              key={weight}
+              icon={MAP_GRID_WEIGHT_ICONS[weight] || "grip-lines"}
+              label={MAP_GRID_WEIGHT_LABELS[weight] || weight}
+              active={normalizedGridWeight === weight}
+              onClick={() => onGridWeightChange?.(weight)}
+            />
+          ))}
+        </span>
+        <MapStyleSlider
+          id="inline-map-grid-opacity"
+          label="Grid Opacity"
+          value={gridOpacity}
+          onChange={onGridOpacityChange}
+        />
+      </MapStyleMenuSection>
+
+      <MapStyleMenuSection
+        icon="map"
+        label="Map"
+        valueLabel={MAP_VISUAL_STYLES.find((style) => style.value === normalizedVisualStyle)?.label || normalizedVisualStyle}
+      >
+        <span className="location-map-toolbar__style-options">
+          {MAP_VISUAL_STYLES.map((style) => (
+            <MapStyleOptionButton
+              key={style.value}
+              icon={MAP_VISUAL_STYLE_ICONS[style.value] || "map"}
+              label={style.label}
+              active={normalizedVisualStyle === style.value}
+              onClick={() => onVisualStyleChange?.(style.value)}
+            />
+          ))}
+        </span>
+      </MapStyleMenuSection>
+
+      <MapStyleMenuSection
+        icon="pen-nib"
+        label="Walls"
+        valueLabel={getOptionLabel(WALL_DRAWING_STYLE_OPTIONS, normalizedWallDrawingStyle)}
+      >
+        <span className="location-map-toolbar__style-options">
+          {WALL_DRAWING_STYLE_OPTIONS.map((style) => (
+            <MapStyleOptionButton
+              key={style.value}
+              icon={style.icon}
+              label={style.label}
+              active={normalizedWallDrawingStyle === style.value}
+              onClick={() => onWallDrawingStyleChange?.(style.value)}
+            />
+          ))}
+        </span>
+      </MapStyleMenuSection>
+
+      <MapStyleMenuSection
+        icon="grip-lines"
+        label="Hatching"
+        valueLabel={getOptionLabel(CROSSHATCH_STYLE_OPTIONS, normalizedCrosshatchStyle)}
+      >
+        <span className="location-map-toolbar__style-subtitle">Hatching Style</span>
+        <span className="location-map-toolbar__style-options location-map-toolbar__style-options--compact">
+          {CROSSHATCH_STYLE_OPTIONS.map((style) => (
+            <MapStyleOptionButton
+              key={style.value}
+              icon={style.icon}
+              label={style.label}
+              active={normalizedCrosshatchStyle === style.value}
+              onClick={() => onCrosshatchStyleChange?.(style.value)}
+            />
+          ))}
+        </span>
+        <span className="location-map-toolbar__style-subtitle">Shadow Color</span>
+        <span className="location-map-toolbar__style-options location-map-toolbar__style-options--compact">
+          {HATCH_SHADOW_COLOR_OPTIONS.map((color) => (
+            <MapStyleOptionButton
+              key={color.value}
+              icon={color.icon}
+              label={color.label}
+              active={normalizedHatchShadowColor === color.value}
+              onClick={() => onHatchShadowColorChange?.(color.value)}
+            />
+          ))}
+        </span>
+        <MapStyleSlider
+          id="inline-map-hatching-opacity"
+          label="Hatching Opacity"
+          value={crosshatchOpacity}
+          onChange={onCrosshatchOpacityChange}
+        />
+      </MapStyleMenuSection>
+    </span>
+  ) : null;
 
   return (
     <>
       <button
+        ref={triggerRef}
         type="button"
         className={cx(
           "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary location-map-toolbar__style-menu-trigger",
@@ -3472,98 +3741,7 @@ function MapStyleDropdown({
       >
         <i className="fa-solid fa-sliders" aria-hidden="true" />
       </button>
-      {open ? (
-        <span
-          className="location-map-toolbar__style-panel cruor-ui-panel-surface"
-          role="menu"
-          aria-label="Map style controls"
-          onMouseDown={(event) => event.stopPropagation()}
-        >
-          <span className="location-map-toolbar__style-section">
-            <span className="location-map-toolbar__style-section-title">
-              <i className="fa-solid fa-border-all" aria-hidden="true" />
-              Grid Style
-            </span>
-            <span className="location-map-toolbar__style-options">
-              {GRID_STYLE_OPTIONS.map((style) => (
-                <MapStyleOptionButton
-                  key={style}
-                  icon={MAP_GRID_STYLE_ICONS[style] || "border-all"}
-                  label={MAP_GRID_STYLE_LABELS[style] || style}
-                  active={normalizedGridStyle === style}
-                  onClick={() => onGridStyleChange?.(style)}
-                />
-              ))}
-            </span>
-            <span className="location-map-toolbar__style-subtitle">Grid Color</span>
-            <span className="location-map-toolbar__style-options location-map-toolbar__style-options--compact">
-              {GRID_COLOR_OPTIONS.map((color) => (
-                <MapStyleOptionButton
-                  key={color}
-                  icon={MAP_GRID_COLOR_ICONS[color] || "circle"}
-                  label={MAP_GRID_COLOR_LABELS[color] || color}
-                  active={normalizedGridColor === color}
-                  onClick={() => onGridColorChange?.(color)}
-                />
-              ))}
-            </span>
-            <span className="location-map-toolbar__style-subtitle">Grid Weight</span>
-            <span className="location-map-toolbar__style-options location-map-toolbar__style-options--compact">
-              {GRID_WEIGHT_OPTIONS.map((weight) => (
-                <MapStyleOptionButton
-                  key={weight}
-                  icon={MAP_GRID_WEIGHT_ICONS[weight] || "grip-lines"}
-                  label={MAP_GRID_WEIGHT_LABELS[weight] || weight}
-                  active={normalizedGridWeight === weight}
-                  onClick={() => onGridWeightChange?.(weight)}
-                />
-              ))}
-            </span>
-            <MapStyleSlider
-              id="inline-map-grid-opacity"
-              label="Grid Opacity"
-              value={gridOpacity}
-              onChange={onGridOpacityChange}
-            />
-          </span>
-
-          <span className="location-map-toolbar__style-section">
-            <span className="location-map-toolbar__style-section-title">
-              <i className="fa-solid fa-map" aria-hidden="true" />
-              Map Style
-            </span>
-            <span className="location-map-toolbar__style-options">
-              {MAP_VISUAL_STYLES.map((style) => (
-                <MapStyleOptionButton
-                  key={style.value}
-                  icon={MAP_VISUAL_STYLE_ICONS[style.value] || "map"}
-                  label={style.label}
-                  active={normalizedVisualStyle === style.value}
-                  onClick={() => onVisualStyleChange?.(style.value)}
-                />
-              ))}
-            </span>
-            <span className="location-map-toolbar__style-subtitle">Hatching</span>
-            <span className="location-map-toolbar__style-options location-map-toolbar__style-options--compact">
-              {CROSSHATCH_STYLE_OPTIONS.map((style) => (
-                <MapStyleOptionButton
-                  key={style.value}
-                  icon={style.icon}
-                  label={style.label}
-                  active={normalizedCrosshatchStyle === style.value}
-                  onClick={() => onCrosshatchStyleChange?.(style.value)}
-                />
-              ))}
-            </span>
-            <MapStyleSlider
-              id="inline-map-hatching-opacity"
-              label="Hatching Opacity"
-              value={crosshatchOpacity}
-              onChange={onCrosshatchOpacityChange}
-            />
-          </span>
-        </span>
-      ) : null}
+      {stylePanel && typeof document !== "undefined" ? createPortal(stylePanel, document.body) : null}
     </>
   );
 }
@@ -3583,6 +3761,8 @@ function InlineMapEditorToolbar({
   gridWeight = DEFAULT_CONFIG.gridWeight,
   crosshatchStyle = "classic",
   crosshatchOpacity = 0.72,
+  wallDrawingStyle = "drawn",
+  hatchShadowColor = "default",
   onRefreshFromComposer,
   onUndo,
   onRedo,
@@ -3599,6 +3779,8 @@ function InlineMapEditorToolbar({
   onGridOpacityChange,
   onCrosshatchStyleChange,
   onCrosshatchOpacityChange,
+  onWallDrawingStyleChange,
+  onHatchShadowColorChange,
 }) {
   const [toolbarTarget, setToolbarTarget] = useState(null);
   const [mapMenuOpen, setMapMenuOpen] = useState(false);
@@ -3627,6 +3809,12 @@ function InlineMapEditorToolbar({
 
     const closeIfOutside = (event) => {
       if (isEventInsideNode(event, toolbarToolsRef.current)) return;
+      if (
+        styleMenuOpen &&
+        event.target?.closest?.('.location-map-toolbar__style-panel[data-style-menu]')
+      ) {
+        return;
+      }
       setMapMenuOpen(false);
       setStyleMenuOpen(false);
     };
@@ -3730,6 +3918,8 @@ function InlineMapEditorToolbar({
           gridWeight={gridWeight}
           crosshatchStyle={crosshatchStyle}
           crosshatchOpacity={crosshatchOpacity}
+          wallDrawingStyle={wallDrawingStyle}
+          hatchShadowColor={hatchShadowColor}
           onToggle={() => {
             setStyleMenuOpen((open) => !open);
             setMapMenuOpen(false);
@@ -3741,6 +3931,8 @@ function InlineMapEditorToolbar({
           onGridOpacityChange={onGridOpacityChange}
           onCrosshatchStyleChange={onCrosshatchStyleChange}
           onCrosshatchOpacityChange={onCrosshatchOpacityChange}
+          onWallDrawingStyleChange={onWallDrawingStyleChange}
+          onHatchShadowColorChange={onHatchShadowColorChange}
         />
       </span>
       <button
@@ -4133,6 +4325,8 @@ export default function CruorMapGeneratorMvp({
   const [gridOpacity, setGridOpacity] = useState(0.72);
   const [crosshatchStyle, setCrosshatchStyle] = useState("classic");
   const [crosshatchOpacity, setCrosshatchOpacity] = useState(0.72);
+  const [wallDrawingStyle, setWallDrawingStyle] = useState("drawn");
+  const [hatchShadowColor, setHatchShadowColor] = useState("default");
   const [selectedRegionId, setSelectedRegionId] = useState(composerSelectedRegionId || "");
   const [levelView, setLevelView] = useState(LEVEL_VIEW_ALL);
   const [fadeOtherLevels, setFadeOtherLevels] = useState(true);
@@ -4353,6 +4547,8 @@ export default function CruorMapGeneratorMvp({
     gridOpacity,
     crosshatchStyle,
     crosshatchOpacity,
+    wallDrawingStyle,
+    hatchShadowColor,
     visualStyle,
     showNames,
     showRoomBadges,
@@ -4930,7 +5126,13 @@ export default function CruorMapGeneratorMvp({
       initialImpactedCorridorIds,
       movedRegionIds,
     );
-    const shouldRerouteWholeNetwork = hasGlobalManualRoutingOverrides(normalized);
+    // Room moves can invalidate corridor hubs, stems, and recovered corridors
+    // beyond the direct room-to-room edge list. Partial reroute may preserve
+    // stale corridor floor cells, leaving detached/monco corridor fragments.
+    // Since room dragging now commits only on release, correctness is more
+    // important than preserving the partial reroute optimization here.
+    const shouldRerouteWholeNetwork =
+      hasGlobalManualRoutingOverrides(normalized) || movedRegionIds.size > 0;
     const routedGraph = shouldRerouteWholeNetwork
       ? routingGraph
       : routingGraph.filter((edge) => impactedCorridorIds.has(edge.id));
@@ -5068,6 +5270,8 @@ export default function CruorMapGeneratorMvp({
         gridColor,
         gridWeight,
         visualStyle,
+        wallDrawingStyle,
+        hatchShadowColor,
         levelView,
         fadeOtherLevels,
       },
@@ -5146,6 +5350,8 @@ export default function CruorMapGeneratorMvp({
         gridColor,
         gridWeight,
         visualStyle,
+        wallDrawingStyle,
+        hatchShadowColor,
         levelView,
         fadeOtherLevels,
       },
@@ -5216,6 +5422,10 @@ export default function CruorMapGeneratorMvp({
             setVisualStyle(
               normalizeVisualStyle(payload.uiState.visualStyle, visualStyle),
             );
+          if (typeof payload.uiState.wallDrawingStyle === "string")
+            setWallDrawingStyle(normalizeWallDrawingStyle(payload.uiState.wallDrawingStyle));
+          if (typeof payload.uiState.hatchShadowColor === "string")
+            setHatchShadowColor(normalizeHatchShadowColor(payload.uiState.hatchShadowColor));
           if (typeof payload.uiState.fadeOtherLevels === "boolean")
             setFadeOtherLevels(payload.uiState.fadeOtherLevels);
           if (typeof payload.uiState.levelView !== "undefined")
@@ -5841,6 +6051,8 @@ export default function CruorMapGeneratorMvp({
       gridWeight={gridWeight}
       crosshatchStyle={crosshatchStyle}
       crosshatchOpacity={crosshatchOpacity}
+      wallDrawingStyle={wallDrawingStyle}
+      hatchShadowColor={hatchShadowColor}
       selectedRegionId={selectedRegionId}
       onSelectedRegionChange={selectMapRegion}
       onRegionHoverChange={onComposerRegionHoverChange}
@@ -5935,6 +6147,8 @@ export default function CruorMapGeneratorMvp({
           gridWeight={gridWeight}
           crosshatchStyle={crosshatchStyle}
           crosshatchOpacity={crosshatchOpacity}
+          wallDrawingStyle={wallDrawingStyle}
+          hatchShadowColor={hatchShadowColor}
           onRefreshFromComposer={onRefreshFromComposer}
           onUndo={undoManualEdit}
           onRedo={redoManualEdit}
@@ -5950,6 +6164,8 @@ export default function CruorMapGeneratorMvp({
           onGridOpacityChange={setGridOpacity}
           onCrosshatchStyleChange={(value) => setCrosshatchStyle(value === "none" ? "none" : "classic")}
           onCrosshatchOpacityChange={setCrosshatchOpacity}
+          onWallDrawingStyleChange={(value) => setWallDrawingStyle(normalizeWallDrawingStyle(value))}
+          onHatchShadowColorChange={(value) => setHatchShadowColor(normalizeHatchShadowColor(value))}
           onResetEdits={() => {
             setManualLayoutSeed("");
             manualLayoutGeometryRef.current = null;
@@ -6184,6 +6400,16 @@ export default function CruorMapGeneratorMvp({
                 }
               />
               <MapControlSelect
+                id="wall-drawing-style"
+                label="Wall Drawing"
+                value={wallDrawingStyle}
+                options={WALL_DRAWING_STYLE_OPTIONS.map((style) => ({
+                  value: style.value,
+                  label: style.label,
+                }))}
+                onChange={(value) => setWallDrawingStyle(normalizeWallDrawingStyle(value))}
+              />
+              <MapControlSelect
                 id="grid-style"
                 label="Grid Style"
                 value={gridStyle}
@@ -6230,6 +6456,16 @@ export default function CruorMapGeneratorMvp({
                   { value: "none", label: "None" },
                 ]}
                 onChange={(value) => setCrosshatchStyle(value === "none" ? "none" : "classic")}
+              />
+              <MapControlSelect
+                id="hatch-shadow-color"
+                label="Hatch Shadow"
+                value={hatchShadowColor}
+                options={HATCH_SHADOW_COLOR_OPTIONS.map((color) => ({
+                  value: color.value,
+                  label: color.label,
+                }))}
+                onChange={(value) => setHatchShadowColor(normalizeHatchShadowColor(value))}
               />
               <MapControlSlider
                 id="crosshatch-opacity"
