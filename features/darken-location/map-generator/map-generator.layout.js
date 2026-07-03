@@ -7,6 +7,7 @@ import {
   getPlacementRole,
   getRegionSurfaceProfile,
   getRegionText,
+  resolveRoomArchetype,
   roleDepth,
 } from "./map-generator.profile.js";
 import { getGraphAdjacency } from "./map-generator.graph.js";
@@ -45,6 +46,30 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
+function resolveRoomArchetypeSize(region, contextKey, rng) {
+  const archetype = resolveRoomArchetype(region, contextKey);
+  const sizeByPreset = archetype?.sizeByPreset;
+  if (!sizeByPreset) return null;
+  const presetKey = sizeByPreset[region.size] ? region.size : "Medium";
+  const preset = sizeByPreset[presetKey] || sizeByPreset.Medium;
+  if (!preset) return null;
+  return {
+    w: randomInt(rng, preset.minW, preset.maxW),
+    h: randomInt(rng, preset.minH, preset.maxH),
+  };
+}
+
+function getRoomArchetypeShapeOptions(region, contextKey) {
+  const archetype = resolveRoomArchetype(region, contextKey);
+  if (!archetype) return region.shapeOptions || null;
+  return {
+    ...(region.shapeOptions || {}),
+    roomType: archetype.roomType || region.shapeOptions?.roomType || "none",
+    archetypeId: archetype.id,
+    archetypeLabel: archetype.label,
+  };
+}
+
 function rectsOverlapWithMargin(a, b, margin = 2) {
   return !(
     a.x + a.w + margin <= b.x ||
@@ -58,6 +83,9 @@ export function resolveRoomSize(region, rng, config = null) {
   const contextKey = getContextKey(config?.context || config?.biome);
   if (isMineCaveLikeRegion(region, contextKey))
     return resolveMineCaveRoomSize(region, rng, config);
+
+  const archetypeSize = resolveRoomArchetypeSize(region, contextKey, rng);
+  if (archetypeSize) return archetypeSize;
 
   const preset = SIZE_PRESETS[region.size] || SIZE_PRESETS.Medium;
   let w = randomInt(rng, preset.minW, preset.maxW);
@@ -204,6 +232,8 @@ export function chooseRoomShape(region, contextKey = "") {
   const shape = region.preferredShape.toLowerCase();
   const role = getPlacementRole(region);
   const text = getRegionText(region);
+  const archetype = resolveRoomArchetype(region, contextKey);
+  if (archetype?.shape) return archetype.shape;
 
   if (contextKey === "chapel") {
     if (role === "final") return "apse";
@@ -562,6 +592,8 @@ export function createPlacedRegion(
   number,
 ) {
   const surfaceKind = getRegionSurfaceProfile(region, profileKey);
+  const archetype = resolveRoomArchetype(region, profileKey);
+  const archetypeShapeOptions = getRoomArchetypeShapeOptions(region, profileKey);
   const caveChamberProfile =
     profileKey === "mine" &&
     (surfaceKind === "cave" || surfaceKind === "hybrid")
@@ -573,6 +605,18 @@ export function createPlacedRegion(
     cellRect,
     placementProfile: profileKey,
     surfaceKind,
+    ...(archetype
+      ? {
+          roomArchetype: archetype.id,
+          roomArchetypeLabel: archetype.label,
+          roomArchetypeFamily: archetype.family,
+          roomArchetypeSource: archetype.source,
+          roomType: archetype.roomType || region.roomType || "none",
+          shapeOptions: archetypeShapeOptions,
+        }
+      : archetypeShapeOptions
+        ? { shapeOptions: archetypeShapeOptions }
+        : {}),
     ...(caveChamberProfile ? { caveChamberProfile } : {}),
     floorCells: [],
     wallSegments: [],
@@ -708,39 +752,39 @@ export function createChapelSideSlots(
     {
       id: "north-chapel-a",
       x: naveRect.x + 2,
-      y: naveRect.y - 4,
+      y: naveRect.y - 8,
       w: 5,
-      h: 4,
+      h: 5,
       kind: "side",
     },
     {
       id: "south-chapel-a",
       x: naveRect.x + 2,
-      y: naveRect.y + naveRect.h,
+      y: naveRect.y + naveRect.h + 3,
       w: 5,
-      h: 4,
+      h: 5,
       kind: "side",
     },
     {
       id: "north-chapel-b",
       x: naveRect.x + Math.max(6, Math.floor(naveRect.w / 2)),
-      y: naveRect.y - 4,
+      y: naveRect.y - 8,
       w: 5,
-      h: 4,
+      h: 5,
       kind: "side",
     },
     {
       id: "south-chapel-b",
       x: naveRect.x + Math.max(6, Math.floor(naveRect.w / 2)),
-      y: naveRect.y + naveRect.h,
+      y: naveRect.y + naveRect.h + 3,
       w: 5,
-      h: 4,
+      h: 5,
       kind: "side",
     },
     {
       id: "north-transept",
       x: transeptX,
-      y: finalRect.y - 5,
+      y: finalRect.y - 8,
       w: 6,
       h: 5,
       kind: "transept",
@@ -748,7 +792,7 @@ export function createChapelSideSlots(
     {
       id: "south-transept",
       x: transeptX,
-      y: finalRect.y + finalRect.h,
+      y: finalRect.y + finalRect.h + 3,
       w: 6,
       h: 5,
       kind: "transept",
@@ -1042,6 +1086,82 @@ export function createNobleHouseSlots(courtyard, gridW, gridH) {
   }));
 }
 
+
+function getRectCenter(rect) {
+  if (!rect) return null;
+  return {
+    x: Number(rect.x) + Number(rect.w || 0) / 2,
+    y: Number(rect.y) + Number(rect.h || 0) / 2,
+  };
+}
+
+function getNobleHouseConnectedPlacedCentroid(region, placed, graph) {
+  const connected = graph
+    .filter((edge) => edge.from === region.id || edge.to === region.id)
+    .map((edge) => (edge.from === region.id ? edge.to : edge.from));
+  const points = connected
+    .map((id) => placed.find((placedRegion) => placedRegion.id === id))
+    .filter(Boolean)
+    .map((placedRegion) => getRectCenter(placedRegion.cellRect))
+    .filter(Boolean);
+  if (!points.length) return null;
+  return {
+    x: points.reduce((sum, point) => sum + point.x, 0) / points.length,
+    y: points.reduce((sum, point) => sum + point.y, 0) / points.length,
+  };
+}
+
+function getNobleHouseRoleSlotBias(role, slot, courtyard) {
+  const center = getRectCenter(slot);
+  const courtyardCenter = getRectCenter(courtyard);
+  if (!center || !courtyardCenter) return 0;
+  const west = Math.max(0, courtyardCenter.x - center.x);
+  const east = Math.max(0, center.x - courtyardCenter.x);
+  const north = Math.max(0, courtyardCenter.y - center.y);
+  const south = Math.max(0, center.y - courtyardCenter.y);
+  if (role === "entrance") return slot.side === "west" ? -140 : east * 8 + Math.abs(center.y - courtyardCenter.y) * 3;
+  if (role === "connector") return slot.side === "west" || slot.side === "north" ? -60 : 0;
+  if (role === "final") return slot.side === "east" ? -90 : west * 6 + Math.abs(center.y - courtyardCenter.y) * 2;
+  if (role === "secret") return slot.side === "south" || slot.side === "east" ? -45 : 20;
+  if (role === "hazard") return east * -2 + south * -1;
+  if (role === "clue") return north * -1.5 + west * -0.5;
+  return 0;
+}
+
+function takeBestNobleHouseSlot(region, slots, placed, graph, courtyard, fallbackIndex = 0) {
+  if (!slots.length) return null;
+  const role = getPlacementRole(region);
+  const connectedCentroid = getNobleHouseConnectedPlacedCentroid(region, placed, graph);
+  const courtyardCenter = getRectCenter(courtyard);
+  let bestIndex = 0;
+  let bestScore = Number.POSITIVE_INFINITY;
+
+  slots.forEach((slot, index) => {
+    const center = getRectCenter(slot);
+    const anchor = connectedCentroid || courtyardCenter || center;
+    const dx = center.x - anchor.x;
+    const dy = center.y - anchor.y;
+    const connectionScore = connectedCentroid ? dx * dx + dy * dy : Math.abs(index - fallbackIndex) * 18;
+    const roleBias = getNobleHouseRoleSlotBias(role, slot, courtyard);
+    const reuseOrderBias = index * 0.04;
+    const score = connectionScore + roleBias + reuseOrderBias;
+    if (score < bestScore) {
+      bestScore = score;
+      bestIndex = index;
+    }
+  });
+
+  const [slot] = slots.splice(bestIndex, 1);
+  return slot;
+}
+
+function takeOrderedNobleHouseSlot(slots, fallbackIndex = 0) {
+  if (!slots.length) return null;
+  const safeIndex = Math.max(0, Math.min(slots.length - 1, fallbackIndex));
+  const [slot] = slots.splice(safeIndex, 1);
+  return slot;
+}
+
 export function placeNobleHouseRegions(config, graph, rng, profile) {
   const gridW = Math.floor(config.mapWidth / config.gridSize);
   const gridH = Math.floor(config.mapHeight / config.gridSize);
@@ -1070,7 +1190,16 @@ export function placeNobleHouseRegions(config, graph, rng, profile) {
 
   arranged.forEach((region, index) => {
     const role = getPlacementRole(region);
-    const slot = slots[index % slots.length];
+    const useCompactNobleSlotOrder = config.regions.length <= 5;
+    const slot = (useCompactNobleSlotOrder
+      ? takeOrderedNobleHouseSlot(slots, 0)
+      : takeBestNobleHouseSlot(region, slots, placed, graph, courtyard, index)) || {
+      x: courtyard.x,
+      y: courtyard.y,
+      w: 6,
+      h: 5,
+      side: "fallback",
+    };
     const structuredSize = resolveStructuredRoomSize(region, "noble-house");
     const size = structuredSize || { w: slot.w, h: slot.h };
     let preferredRect = {
@@ -1080,7 +1209,7 @@ export function placeNobleHouseRegions(config, graph, rng, profile) {
       h: Math.min(size.h, Math.max(size.h, slot.h)),
     };
 
-    if (role === "final") {
+    if (role === "final" && !getNobleHouseConnectedPlacedCentroid(region, placed, graph)) {
       preferredRect = {
         x: courtyard.x + courtyard.w,
         y: courtyard.y,
@@ -1088,7 +1217,7 @@ export function placeNobleHouseRegions(config, graph, rng, profile) {
         h: 6,
       };
     }
-    if (role === "secret") {
+    if (role === "secret" && !getNobleHouseConnectedPlacedCentroid(region, placed, graph)) {
       preferredRect = {
         x: courtyard.x + courtyard.w - 2,
         y: courtyard.y + courtyard.h,
@@ -1658,28 +1787,16 @@ export function placeRegions(config, graph, rng) {
     }
 
     const cellRect = best;
-    const surfaceKind = getRegionSurfaceProfile(region, profile.key);
-    const caveChamberProfile =
-      profile.key === "mine" &&
-      (surfaceKind === "cave" || surfaceKind === "hybrid")
-        ? getMineCaveChamberProfile(region, profile.key)
-        : null;
-    placed.push({
-      ...region,
-      shape,
-      cellRect,
-      placementProfile: profile.key,
-      surfaceKind,
-      ...(caveChamberProfile ? { caveChamberProfile } : {}),
-      floorCells: [],
-      wallSegments: [],
-      doorAnchors: [],
-      labelPoint: {
-        x: (cellRect.x + cellRect.w / 2) * config.gridSize,
-        y: (cellRect.y + cellRect.h / 2) * config.gridSize,
-      },
-      number: index + 1,
-    });
+    placed.push(
+      createPlacedRegion(
+        region,
+        shape,
+        cellRect,
+        config,
+        profile.key,
+        index + 1,
+      ),
+    );
   });
 
   return config.regions

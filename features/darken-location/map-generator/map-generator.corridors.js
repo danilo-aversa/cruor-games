@@ -2344,6 +2344,303 @@ function collectPhysicalFloorComponents(regions, corridors) {
   return components;
 }
 
+function summarizePhysicalFloorComponent(component, index = 0) {
+  return {
+    index,
+    cellCount: component?.cellKeys?.size || 0,
+    roomIds: Array.from(component?.roomIds || []).sort(),
+    corridorIds: Array.from(component?.corridorIds || []).sort(),
+  };
+}
+
+function getRegionFloorCellKeys(region) {
+  return new Set(
+    (Array.isArray(region?.floorCells) ? region.floorCells : []).map((cell) =>
+      cellKey(cell.x, cell.y),
+    ),
+  );
+}
+
+function getCorridorFloorCellKeys(corridor) {
+  return new Set(
+    (Array.isArray(corridor?.floorCells) ? corridor.floorCells : []).map((cell) =>
+      cellKey(cell.x, cell.y),
+    ),
+  );
+}
+
+function isAnchorAttachedToRegion(region, anchor) {
+  if (!region?.id || !anchor?.cell || !anchor?.outsideCell) return false;
+  const regionFloorKeys = getRegionFloorCellKeys(region);
+  return (
+    regionFloorKeys.has(cellKey(anchor.cell.x, anchor.cell.y)) &&
+    getCellManhattanDistance(anchor.cell, anchor.outsideCell) === 1
+  );
+}
+
+function isCorridorEndpointInFloor(corridor, anchor) {
+  if (!anchor?.outsideCell) return false;
+  return getCorridorFloorCellKeys(corridor).has(
+    cellKey(anchor.outsideCell.x, anchor.outsideCell.y),
+  );
+}
+
+function isCorridorEndpointPathConnected(corridor) {
+  if (corridor?.isRoomLink || corridor?.roomTraversal) return true;
+  if (!corridor?.fromAnchor?.outsideCell || !corridor?.toAnchor?.outsideCell)
+    return false;
+  const corridorFloorKeys = getCorridorFloorCellKeys(corridor);
+  if (corridorFloorKeys.size === 0) return false;
+  if (
+    !corridorFloorKeys.has(
+      cellKey(corridor.fromAnchor.outsideCell.x, corridor.fromAnchor.outsideCell.y),
+    ) ||
+    !corridorFloorKeys.has(
+      cellKey(corridor.toAnchor.outsideCell.x, corridor.toAnchor.outsideCell.y),
+    )
+  )
+    return false;
+  return (
+    findPathInCellSet(
+      corridorFloorKeys,
+      corridor.fromAnchor.outsideCell,
+      corridor.toAnchor.outsideCell,
+    ).length >= 2
+  );
+}
+
+function getRoomTraversalConnectionIds(corridor, roomIds) {
+  const traversalIds = Array.isArray(corridor?.traversalRegionIds)
+    ? corridor.traversalRegionIds.filter((regionId) => roomIds.has(regionId))
+    : [];
+  if (traversalIds.length >= 2) return traversalIds;
+  return [corridor?.from, corridor?.to].filter((regionId) => roomIds.has(regionId));
+}
+
+function isVirtualCorridorAnchor(anchor) {
+  return Boolean(
+    anchor?.virtualHub ||
+      anchor?.virtualJunction ||
+      String(anchor?.regionId || "").startsWith("auto-hub-")
+  );
+}
+
+function getDoorConnectedRegionChains(corridor, roomIds) {
+  return (Array.isArray(corridor?.doors) ? corridor.doors : [])
+    .map((door) =>
+      Array.isArray(door?.connectedRegionIds)
+        ? door.connectedRegionIds.filter((regionId) => roomIds.has(regionId))
+        : [],
+    )
+    .filter((ids) => ids.length >= 2);
+}
+
+function hasDirectSharedRoomBoundaryConnection(fromRegion, toRegion, fromAnchor, toAnchor) {
+  if (!fromRegion || !toRegion || !fromAnchor || !toAnchor) return false;
+  if (
+    !isAnchorAttachedToRegion(fromRegion, fromAnchor) ||
+    !isAnchorAttachedToRegion(toRegion, toAnchor)
+  )
+    return false;
+  const fromRoomCells = getRegionFloorCellKeys(fromRegion);
+  const toRoomCells = getRegionFloorCellKeys(toRegion);
+  return (
+    toRoomCells.has(cellKey(fromAnchor.outsideCell.x, fromAnchor.outsideCell.y)) &&
+    fromRoomCells.has(cellKey(toAnchor.outsideCell.x, toAnchor.outsideCell.y))
+  );
+}
+
+function collectRoomConnectivityGraph(regions, corridors) {
+  const roomIds = new Set(regions.map((region) => region.id).filter(Boolean));
+  const regionById = new Map(regions.map((region) => [region.id, region]));
+  const adjacency = new Map(
+    Array.from(roomIds).map((roomId) => [roomId, new Set()]),
+  );
+  const invalidCorridorConnections = [];
+
+  const connectRooms = (fromId, toId) => {
+    if (!roomIds.has(fromId) || !roomIds.has(toId) || fromId === toId) return;
+    adjacency.get(fromId).add(toId);
+    adjacency.get(toId).add(fromId);
+  };
+
+  corridors.forEach((corridor) => {
+    if (!corridor?.id) return;
+    const doorConnectionChains = getDoorConnectedRegionChains(corridor, roomIds);
+    if (corridor.isRoomLink || corridor.roomTraversal || doorConnectionChains.length > 0) {
+      const traversalChains = doorConnectionChains.length > 0
+        ? doorConnectionChains
+        : [getRoomTraversalConnectionIds(corridor, roomIds)];
+      let connectedAnyChain = false;
+      traversalChains.forEach((ids) => {
+        if (ids.length < 2) return;
+        connectedAnyChain = true;
+        for (let index = 0; index < ids.length - 1; index += 1) {
+          connectRooms(ids[index], ids[index + 1]);
+        }
+      });
+      if (!connectedAnyChain) {
+        invalidCorridorConnections.push({
+          id: corridor.id,
+          reason: "room-link-without-region-chain",
+          endpoints: traversalChains.flat(),
+        });
+      }
+      return;
+    }
+
+    const fromRegion = regionById.get(corridor.from || corridor.fromAnchor?.regionId);
+    const toRegion = regionById.get(corridor.to || corridor.toAnchor?.regionId);
+    const fromAttached = isAnchorAttachedToRegion(fromRegion, corridor.fromAnchor);
+    const toAttached = isAnchorAttachedToRegion(toRegion, corridor.toAnchor);
+    const fromEndpointInFloor = isCorridorEndpointInFloor(corridor, corridor.fromAnchor);
+    const toEndpointInFloor = isCorridorEndpointInFloor(corridor, corridor.toAnchor);
+    const endpointPathConnected = isCorridorEndpointPathConnected(corridor);
+    const hasVirtualEndpoint =
+      isVirtualCorridorAnchor(corridor.fromAnchor) ||
+      isVirtualCorridorAnchor(corridor.toAnchor);
+
+    if (corridor.autoHubStem && fromAttached && endpointPathConnected) return;
+
+    if (
+      fromRegion &&
+      toRegion &&
+      hasDirectSharedRoomBoundaryConnection(
+        fromRegion,
+        toRegion,
+        corridor.fromAnchor,
+        corridor.toAnchor,
+      )
+    ) {
+      connectRooms(fromRegion.id, toRegion.id);
+      return;
+    }
+
+    if (
+      corridor.autoHub &&
+      fromRegion &&
+      toRegion &&
+      hasVirtualEndpoint &&
+      (fromAttached || toAttached) &&
+      endpointPathConnected
+    ) {
+      connectRooms(fromRegion.id, toRegion.id);
+      return;
+    }
+
+    if (
+      fromRegion &&
+      toRegion &&
+      fromAttached &&
+      toAttached &&
+      fromEndpointInFloor &&
+      toEndpointInFloor &&
+      endpointPathConnected
+    ) {
+      connectRooms(fromRegion.id, toRegion.id);
+      return;
+    }
+
+    invalidCorridorConnections.push({
+      id: corridor.id,
+      from: corridor.from || corridor.fromAnchor?.regionId,
+      to: corridor.to || corridor.toAnchor?.regionId,
+      fromAttached,
+      toAttached,
+      fromEndpointInFloor,
+      toEndpointInFloor,
+      endpointPathConnected,
+      reason: "corridor-endpoints-not-physically-linked",
+    });
+  });
+
+  const startRoomId = Array.from(roomIds)[0] || null;
+  const reachableRoomIds = new Set();
+  if (startRoomId) {
+    const queue = [startRoomId];
+    reachableRoomIds.add(startRoomId);
+    while (queue.length > 0) {
+      const current = queue.shift();
+      (adjacency.get(current) || []).forEach((next) => {
+        if (reachableRoomIds.has(next)) return;
+        reachableRoomIds.add(next);
+        queue.push(next);
+      });
+    }
+  }
+
+  return {
+    adjacency,
+    reachableRoomIds,
+    disconnectedRoomIds: Array.from(roomIds)
+      .filter((roomId) => !reachableRoomIds.has(roomId))
+      .sort(),
+    invalidCorridorConnections,
+  };
+}
+
+export function getPhysicalFloorConnectivityReport(regions = [], corridors = []) {
+  const safeRegions = Array.isArray(regions) ? regions.filter(Boolean) : [];
+  const safeCorridors = Array.isArray(corridors) ? corridors.filter(Boolean) : [];
+  const roomIds = new Set(
+    safeRegions.map((region) => region.id).filter(Boolean),
+  );
+  const emptyRoomIds = safeRegions
+    .filter(
+      (region) =>
+        region?.id &&
+        (!Array.isArray(region.floorCells) || region.floorCells.length === 0),
+    )
+    .map((region) => region.id)
+    .sort();
+  const components = collectPhysicalFloorComponents(safeRegions, safeCorridors);
+  const roomComponents = components.filter((component) => component.roomIds.size > 0);
+  const corridorOnlyComponents = components.filter(
+    (component) => component.roomIds.size === 0 && component.corridorIds.size > 0,
+  );
+  const mainComponent = getLargestRoomPhysicalComponent(components);
+  const mainRoomIds = mainComponent?.roomIds || new Set();
+  const floorDisconnectedRoomIds = Array.from(roomIds)
+    .filter((roomId) => !mainRoomIds.has(roomId))
+    .sort();
+  const roomGraph = collectRoomConnectivityGraph(safeRegions, safeCorridors);
+  const floorConnected =
+    emptyRoomIds.length === 0 &&
+    corridorOnlyComponents.length === 0 &&
+    (roomIds.size <= 1 || floorDisconnectedRoomIds.length === 0);
+  const semanticDisconnectedRoomIds = Array.from(
+    new Set([...floorDisconnectedRoomIds, ...roomGraph.disconnectedRoomIds]),
+  ).sort();
+  const semanticConnected =
+    floorConnected &&
+    roomGraph.invalidCorridorConnections.length === 0 &&
+    semanticDisconnectedRoomIds.length === 0;
+
+  return {
+    connected: floorConnected,
+    semanticConnected,
+    componentCount: components.length,
+    roomComponentCount: roomComponents.length,
+    corridorOnlyComponentCount: corridorOnlyComponents.length,
+    invalidCorridorConnectionCount: roomGraph.invalidCorridorConnections.length,
+    roomCount: roomIds.size,
+    mainRoomCount: mainRoomIds.size,
+    disconnectedRoomIds: floorDisconnectedRoomIds,
+    floorDisconnectedRoomIds,
+    graphDisconnectedRoomIds: roomGraph.disconnectedRoomIds,
+    semanticDisconnectedRoomIds,
+    emptyRoomIds,
+    invalidCorridorConnections: roomGraph.invalidCorridorConnections,
+    components: components.map(summarizePhysicalFloorComponent),
+    mainComponent: mainComponent
+      ? summarizePhysicalFloorComponent(mainComponent, components.indexOf(mainComponent))
+      : null,
+    corridorOnlyComponents: corridorOnlyComponents.map((component) =>
+      summarizePhysicalFloorComponent(component, components.indexOf(component)),
+    ),
+  };
+}
+
 function getLargestRoomPhysicalComponent(components) {
   return [...components]
     .filter((component) => component.roomIds.size > 0)

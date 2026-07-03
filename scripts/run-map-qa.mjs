@@ -13,6 +13,7 @@ import {
 } from "../features/darken-location/map-generator/qa/map-batch-qa.js";
 import { DEFAULT_CONFIG } from "../features/darken-location/map-generator/map-generator.input.js";
 import { generateMap } from "../features/darken-location/map-generator/map-generator.pipeline.js";
+import { getPhysicalFloorConnectivityReport } from "../features/darken-location/map-generator/map-generator.corridors.js";
 
 const OUTPUT_DIR = new URL("../dist/qa/", import.meta.url);
 const VISUAL_PREVIEW_DIR = new URL("map-visual-previews/", OUTPUT_DIR);
@@ -58,126 +59,52 @@ function asArray(value) {
   return Array.isArray(value) ? value.filter(Boolean) : [value].filter(Boolean);
 }
 
-function cellKey(cellOrX, y) {
-  if (typeof cellOrX === "object") return `${cellOrX.x},${cellOrX.y}`;
-  return `${cellOrX},${y}`;
-}
-
-function getCellList(item) {
-  if (!item || typeof item !== "object") return [];
-  if (Array.isArray(item.floorCells) && item.floorCells.length > 0) return item.floorCells;
-  if (Array.isArray(item.pathCells) && item.pathCells.length > 0) return item.pathCells;
-  if (Array.isArray(item.cells) && item.cells.length > 0) return item.cells;
-  return [];
-}
-
-function buildFloorCellComponentMap(map) {
-  const cells = new Map();
-  const cellSources = new Map();
-  const addCellSource = (cell, source) => {
-    if (!Number.isFinite(cell?.x) || !Number.isFinite(cell?.y)) return;
-    const key = cellKey(cell);
-    cells.set(key, { x: cell.x, y: cell.y });
-    const sources = cellSources.get(key) || { rooms: new Set(), corridors: new Set() };
-    if (source?.roomId) sources.rooms.add(source.roomId);
-    if (source?.corridorId) sources.corridors.add(source.corridorId);
-    cellSources.set(key, sources);
-  };
-  asArray(map?.regions).forEach((region) => {
-    getCellList(region).forEach((cell) => addCellSource(cell, { roomId: region.id }));
-  });
-  asArray(map?.corridors).forEach((corridor) => {
-    getCellList(corridor).forEach((cell) => addCellSource(cell, { corridorId: corridor.id }));
-  });
-
-  const componentByCell = new Map();
-  let componentId = 0;
-  const directions = [
-    [1, 0],
-    [-1, 0],
-    [0, 1],
-    [0, -1],
-  ];
-
-  for (const [startKey, startCell] of cells.entries()) {
-    if (componentByCell.has(startKey)) continue;
-    componentId += 1;
-    const queue = [startCell];
-    componentByCell.set(startKey, componentId);
-    while (queue.length) {
-      const cell = queue.shift();
-      directions.forEach(([dx, dy]) => {
-        const nextKey = cellKey(cell.x + dx, cell.y + dy);
-        if (!cells.has(nextKey) || componentByCell.has(nextKey)) return;
-        componentByCell.set(nextKey, componentId);
-        queue.push(cells.get(nextKey));
-      });
-    }
-  }
-  const componentSources = new Map();
-  componentByCell.forEach((component, key) => {
-    const sources = cellSources.get(key);
-    const entry = componentSources.get(component) || { component, cellCount: 0, rooms: new Set(), corridors: new Set(), sampleCells: [] };
-    entry.cellCount += 1;
-    if (entry.sampleCells.length < 8) entry.sampleCells.push(key);
-    sources?.rooms?.forEach((roomId) => entry.rooms.add(roomId));
-    sources?.corridors?.forEach((corridorId) => entry.corridors.add(corridorId));
-    componentSources.set(component, entry);
-  });
-  return { componentByCell, componentCount: componentId, componentSources };
-}
-
-function getRegionComponentIds(region, componentByCell) {
-  return [
-    ...new Set(
-      getCellList(region)
-        .map((cell) => componentByCell.get(cellKey(cell)))
-        .filter(Number.isFinite),
-    ),
-  ];
-}
-
 function validatePhysicalFloorConnectivity(map, mapId) {
-  const regions = asArray(map?.regions);
-  if (regions.length <= 1) return [];
-  const { componentByCell, componentCount, componentSources } = buildFloorCellComponentMap(map);
-  if (componentCount <= 1) return [];
+  const report =
+    map?.integrity?.physicalFloorConnectivity ||
+    getPhysicalFloorConnectivityReport(map?.regions || [], map?.corridors || []);
+  if (report.connected) return [];
+
   const issues = [];
-  const entranceComponent = getRegionComponentIds(regions[0], componentByCell)[0];
-  const disconnectedRooms = regions
-    .map((region) => ({
-      id: region.id,
-      components: getRegionComponentIds(region, componentByCell),
-    }))
-    .filter((row) => !row.components.includes(entranceComponent));
-  if (disconnectedRooms.length) {
+  if (
+    report.disconnectedRoomIds.length ||
+    report.emptyRoomIds.length ||
+    report.invalidCorridorConnectionCount > 0
+  ) {
     issues.push({
       id: mapId,
       severity: "error",
       area: "routing",
       check: "physical-floor-connectivity",
-      message: "One or more rooms are not connected to the entrance through the physical floor/corridor cell network.",
-      data: { componentCount, entranceComponent, disconnectedRooms },
+      message:
+        "One or more rooms are not connected to the main physical floor/corridor cell network.",
+      data: {
+        componentCount: report.componentCount,
+        roomComponentCount: report.roomComponentCount,
+        disconnectedRoomIds: report.disconnectedRoomIds,
+        emptyRoomIds: report.emptyRoomIds,
+        mainComponent: report.mainComponent,
+        invalidCorridorConnections: report.invalidCorridorConnections,
+        components: report.components,
+      },
     });
   }
-  const orphanComponents = [...(componentSources?.values?.() || [])]
-    .filter((component) => component.rooms.size === 0 && component.corridors.size > 0)
-    .map((component) => ({
-      component: component.component,
-      cellCount: component.cellCount,
-      corridors: [...component.corridors].slice(0, 12),
-      sampleCells: component.sampleCells,
-    }));
-  if (orphanComponents.length) {
+
+  if (report.corridorOnlyComponentCount > 0) {
     issues.push({
       id: mapId,
       severity: "error",
       area: "routing",
       check: "orphan-corridor-floor",
-      message: "One or more corridor floor components are disconnected from every room.",
-      data: { componentCount, orphanComponents },
+      message:
+        "One or more corridor floor components are disconnected from every room.",
+      data: {
+        componentCount: report.componentCount,
+        orphanComponents: report.corridorOnlyComponents,
+      },
     });
   }
+
   return issues;
 }
 

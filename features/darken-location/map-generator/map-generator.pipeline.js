@@ -23,6 +23,7 @@ import {
   applyLevelMetadata,
   getRoomCellOwnershipMap,
   getNonEndpointRoomTunnelHits,
+  getPhysicalFloorConnectivityReport,
 } from "./map-generator.corridors.js";
 import {
   createMapAccesses,
@@ -278,9 +279,12 @@ function getCorridorQualityMetrics(map) {
   let maxDetourRatio = 0;
   let longStraightCount = 0;
   let excessiveSpanCount = 0;
+  let longCorridorWarningCount = 0;
   let highDetourCount = 0;
   let totalStraightOverflow = 0;
   let totalSpanOverflow = 0;
+  let totalDetourOverflow = 0;
+  let totalDetourOverflowSquared = 0;
 
   (map.corridors || []).forEach((corridor) => {
     if (corridor.isRoomLink || corridor.roomTraversal) return;
@@ -296,10 +300,16 @@ function getCorridorQualityMetrics(map) {
     maxSpan = Math.max(maxSpan, span);
     maxStraightRun = Math.max(maxStraightRun, straightRun);
     maxDetourRatio = Math.max(maxDetourRatio, detourRatio);
-    totalStraightOverflow += Math.max(0, straightRun - 18);
-    totalSpanOverflow += Math.max(0, span - 24);
+    const straightOverflow = Math.max(0, straightRun - 18);
+    const spanOverflow = Math.max(0, span - 24);
+    const detourOverflow = Math.max(0, detourRatio - 2.2);
+    totalStraightOverflow += straightOverflow;
+    totalSpanOverflow += spanOverflow;
+    totalDetourOverflow += detourOverflow;
+    totalDetourOverflowSquared += detourOverflow * detourOverflow;
     if (straightRun > 18) longStraightCount += 1;
     if (span > 24) excessiveSpanCount += 1;
+    if (straightRun > 18 || span > 24) longCorridorWarningCount += 1;
     if (detourRatio > 2.2) highDetourCount += 1;
   });
 
@@ -309,9 +319,12 @@ function getCorridorQualityMetrics(map) {
     maxDetourRatio,
     longStraightCount,
     excessiveSpanCount,
+    longCorridorWarningCount,
     highDetourCount,
     totalStraightOverflow,
     totalSpanOverflow,
+    totalDetourOverflow,
+    totalDetourOverflowSquared,
   };
 }
 
@@ -351,6 +364,31 @@ function getCorridorRoomTunnelHitCount(map) {
   );
 }
 
+function getPhysicalConnectivityMetrics(map) {
+  return (
+    map?.integrity?.physicalFloorConnectivity ||
+    getPhysicalFloorConnectivityReport(map?.regions || [], map?.corridors || [])
+  );
+}
+
+function getPhysicalConnectivityPenalty(map) {
+  const report = getPhysicalConnectivityMetrics(map);
+  if (report.connected) {
+    return (
+      (report.invalidCorridorConnectionCount || 0) * 50000 +
+      (report.graphDisconnectedRoomIds?.length || 0) * 50000
+    );
+  }
+  return (
+    100000000 +
+    report.disconnectedRoomIds.length * 2000000 +
+    report.emptyRoomIds.length * 2000000 +
+    report.corridorOnlyComponentCount * 750000 +
+    report.invalidCorridorConnectionCount * 1500000 +
+    Math.max(0, report.roomComponentCount - 1) * 1000000
+  );
+}
+
 function getLayoutQualityMetrics(map) {
   const bounds = getRoomBounds(map.regions || []);
   const aspectRatio =
@@ -360,11 +398,28 @@ function getLayoutQualityMetrics(map) {
   const gridW = Math.max(1, Math.floor(map.config.mapWidth / map.config.gridSize));
   const gridH = Math.max(1, Math.floor(map.config.mapHeight / map.config.gridSize));
   const canvasUsage = bounds.area / Math.max(1, gridW * gridH);
+  const averageNearestDistance = getAverageNearestRoomDistance(map.regions || []);
+  const roomCount = Math.max(1, map.regions?.length || 1);
+  const qaAspectLimit = 2.75;
+  const qaMinCanvasUsage = roomCount <= 4 ? 0.06 : 0.1;
+  const qaNearestLimit = roomCount <= 4 ? 12 : roomCount <= 8 ? 14 : 16;
+  const aspectOverflow = Math.max(0, aspectRatio - qaAspectLimit);
+  const canvasWasteOverflow = Math.max(0, qaMinCanvasUsage - canvasUsage);
+  const distributionOverflow = Math.max(0, averageNearestDistance - qaNearestLimit);
+  const layoutOutlierCount = [
+    aspectOverflow > 0,
+    canvasWasteOverflow > 0,
+    distributionOverflow > 0,
+  ].filter(Boolean).length;
   return {
     bounds,
     aspectRatio,
     canvasUsage,
-    averageNearestDistance: getAverageNearestRoomDistance(map.regions || []),
+    averageNearestDistance,
+    layoutOutlierCount,
+    aspectOverflow,
+    canvasWasteOverflow,
+    distributionOverflow,
   };
 }
 
@@ -374,39 +429,53 @@ function scoreGeneratedMapCandidate(map, candidateIndex = 0) {
   const expectedEdges = Array.isArray(map.graph) ? map.graph.length : 0;
   const corridorCount = Array.isArray(map.corridors) ? map.corridors.length : 0;
   const missingCorridorPenalty = Math.max(0, expectedEdges - corridorCount) * 100000;
+  const physicalConnectivityPenalty = getPhysicalConnectivityPenalty(map);
   const roomOverlapPenalty = getRoomOverlapHitCount(map) * 2000000;
   const corridorTunnelPenalty = getCorridorRoomTunnelHitCount(map) * 1000000;
   const roomCount = Math.max(1, map.regions?.length || 1);
-  const targetNearest = roomCount <= 4 ? 8.5 : roomCount <= 8 ? 10.5 : 12;
-  const targetSpan = roomCount <= 4 ? 16 : roomCount <= 8 ? 20 : 23;
-  const targetStraight = roomCount <= 4 ? 12 : roomCount <= 8 ? 15 : 16;
-  const maxUsefulAspect = 2.25;
-  const minUsefulCanvas = roomCount <= 4 ? 0.08 : 0.12;
+  const targetNearest = roomCount <= 4 ? 9.5 : roomCount <= 8 ? 11.5 : 13.5;
+  const targetSpan = roomCount <= 4 ? 15 : roomCount <= 8 ? 18 : 21;
+  const targetStraight = roomCount <= 4 ? 11 : roomCount <= 8 ? 14 : 15;
+  const comfortableAspect = 2.18;
+  const comfortableCanvas = roomCount <= 4 ? 0.085 : 0.12;
 
   const spanOverflow = Math.max(0, routing.maxSpan - targetSpan);
   const straightOverflow = Math.max(0, routing.maxStraightRun - targetStraight);
-  const distributionOverflow = Math.max(
+  const comfortableDistributionOverflow = Math.max(
     0,
     layout.averageNearestDistance - targetNearest,
   );
-  const aspectOverflow = Math.max(0, layout.aspectRatio - maxUsefulAspect);
-  const wasteOverflow = Math.max(0, minUsefulCanvas - layout.canvasUsage);
+  const comfortableAspectOverflow = Math.max(0, layout.aspectRatio - comfortableAspect);
+  const comfortableCanvasWaste = Math.max(0, comfortableCanvas - layout.canvasUsage);
+  const qaWarningCount =
+    routing.longCorridorWarningCount +
+    routing.highDetourCount +
+    layout.layoutOutlierCount;
 
   return (
+    physicalConnectivityPenalty +
     missingCorridorPenalty +
     roomOverlapPenalty +
     corridorTunnelPenalty +
-    routing.excessiveSpanCount * 7000 +
-    routing.longStraightCount * 6000 +
-    routing.highDetourCount * 3500 +
-    spanOverflow * spanOverflow * 160 +
-    straightOverflow * straightOverflow * 140 +
-    distributionOverflow * distributionOverflow * 220 +
-    aspectOverflow * aspectOverflow * 5000 +
-    wasteOverflow * wasteOverflow * 32000 +
-    routing.totalStraightOverflow * 600 +
-    routing.totalSpanOverflow * 500 +
-    routing.maxDetourRatio * 12 +
+    qaWarningCount * 85000 +
+    routing.longCorridorWarningCount * 42000 +
+    routing.highDetourCount * 56000 +
+    layout.layoutOutlierCount * 52000 +
+    routing.excessiveSpanCount * 18000 +
+    routing.longStraightCount * 16000 +
+    spanOverflow * spanOverflow * 520 +
+    straightOverflow * straightOverflow * 440 +
+    routing.totalDetourOverflowSquared * 90000 +
+    routing.totalDetourOverflow * 18000 +
+    comfortableDistributionOverflow * comfortableDistributionOverflow * 540 +
+    layout.distributionOverflow * layout.distributionOverflow * 22000 +
+    comfortableAspectOverflow * comfortableAspectOverflow * 9000 +
+    layout.aspectOverflow * layout.aspectOverflow * 65000 +
+    comfortableCanvasWaste * comfortableCanvasWaste * 52000 +
+    layout.canvasWasteOverflow * layout.canvasWasteOverflow * 140000 +
+    routing.totalStraightOverflow * 1200 +
+    routing.totalSpanOverflow * 1100 +
+    routing.maxDetourRatio * 24 +
     candidateIndex * 0.01
   );
 }
@@ -417,10 +486,11 @@ function getLayoutCandidateCount(config, manualOverrides = {}) {
   const context = String(config.context || config.biome || "").toLowerCase();
   const hasManualLayout = hasManualLayoutOverrides(manualOverrides);
   if (hasManualLayout) return 3;
-  if (context === "cave" && roomCount <= 3) return 3;
-  if (roomCount <= 4) return 10;
-  if (roomCount <= 8) return 9;
-  return 8;
+  if (context === "cave" && roomCount <= 3) return 5;
+  if (context === "chapel" && roomCount >= 9) return 28;
+  if (roomCount <= 4) return 14;
+  if (roomCount <= 8) return 16;
+  return 18;
 }
 
 function getCandidateSeed(baseSeed, candidateIndex) {
@@ -437,6 +507,8 @@ function restorePublicSeed(map, publicSeed, candidateSeed, candidateIndex, score
       index: candidateIndex,
       seed: candidateSeed,
       score,
+      physicalFloorConnected:
+        map.integrity?.physicalFloorConnectivity?.connected !== false,
     },
     config: {
       ...map.config,
@@ -570,11 +642,19 @@ function generateMapSingle(config) {
     corridors: finalCorridors,
     dungeonMask: finalDungeonMask,
   });
+  const physicalFloorConnectivity = getPhysicalFloorConnectivityReport(
+    routedRegions,
+    finalCorridors,
+  );
   return {
     ...provisionalMap,
     dungeonMask: finalDungeonMask,
     mapAccesses: finalMapAccesses,
     props,
+    integrity: {
+      ...(provisionalMap.integrity || {}),
+      physicalFloorConnectivity,
+    },
   };
 }
 
@@ -585,28 +665,42 @@ export function generateMap(rawConfig, manualOverrides = {}) {
   const publicSeed = config.seed;
   const candidateCount = getLayoutCandidateCount(config, manualOverrides);
 
-  let bestMap = null;
-  let bestScore = Number.POSITIVE_INFINITY;
-  let bestCandidateSeed = publicSeed;
-  let bestCandidateIndex = 0;
+  let bestValidMap = null;
+  let bestValidScore = Number.POSITIVE_INFINITY;
+  let bestValidCandidateSeed = publicSeed;
+  let bestValidCandidateIndex = 0;
+  let fallbackMap = null;
+  let fallbackScore = Number.POSITIVE_INFINITY;
+  let fallbackCandidateSeed = publicSeed;
+  let fallbackCandidateIndex = 0;
 
   for (let candidateIndex = 0; candidateIndex < candidateCount; candidateIndex += 1) {
     const candidateSeed = getCandidateSeed(publicSeed, candidateIndex);
     const candidateMap = generateMapSingle({ ...config, seed: candidateSeed });
     const candidateScore = scoreGeneratedMapCandidate(candidateMap, candidateIndex);
-    if (candidateScore < bestScore) {
-      bestMap = candidateMap;
-      bestScore = candidateScore;
-      bestCandidateSeed = candidateSeed;
-      bestCandidateIndex = candidateIndex;
+    const physicalConnectivity = getPhysicalConnectivityMetrics(candidateMap);
+
+    if (physicalConnectivity.connected && candidateScore < bestValidScore) {
+      bestValidMap = candidateMap;
+      bestValidScore = candidateScore;
+      bestValidCandidateSeed = candidateSeed;
+      bestValidCandidateIndex = candidateIndex;
+    }
+
+    if (candidateScore < fallbackScore) {
+      fallbackMap = candidateMap;
+      fallbackScore = candidateScore;
+      fallbackCandidateSeed = candidateSeed;
+      fallbackCandidateIndex = candidateIndex;
     }
   }
 
+  const selectedMap = bestValidMap || fallbackMap;
   return restorePublicSeed(
-    bestMap,
+    selectedMap,
     publicSeed,
-    bestCandidateSeed,
-    bestCandidateIndex,
-    bestScore,
+    bestValidMap ? bestValidCandidateSeed : fallbackCandidateSeed,
+    bestValidMap ? bestValidCandidateIndex : fallbackCandidateIndex,
+    bestValidMap ? bestValidScore : fallbackScore,
   );
 }

@@ -343,6 +343,21 @@ function pickFrom(values, index) {
   return values[index % Math.max(1, values.length)];
 }
 
+function getQaCryptRoomArchetype(source = {}, context = "", index = 0, isLast = false) {
+  if (context !== "Crypt") return "";
+  const tags = asArray(source.tags).map((tag) => String(tag).toLowerCase());
+  const text = `${source.role || ""} ${source.shape || ""} ${tags.join(" ")}`.toLowerCase();
+  if (tags.includes("entrance") || tags.includes("connector") || text.includes("corridor") || text.includes("hall")) {
+    return "processional-crypt-hall";
+  }
+  if (tags.includes("vertical") || text.includes("shaft") || text.includes("well")) return "bone-well";
+  if (source.secret || tags.includes("secret") || tags.includes("lore")) return "hidden-reliquary";
+  if (tags.includes("archive") || tags.includes("clue")) return index % 2 === 0 ? "reliquary-niche" : "hidden-reliquary";
+  if (isLast || tags.includes("main") || tags.includes("hazard") || tags.includes("ambush")) return "charnel-vault";
+  if (tags.includes("side") || tags.includes("branch")) return index % 2 === 0 ? "crypt-burial-cell" : "ossuary-gallery";
+  return "sealed-family-tomb";
+}
+
 function createQaRegions({ roomCount, context, seed, sourceAnchors = ["Sedlec Ossuary"] }) {
   return Array.from({ length: roomCount }, (_, index) => {
     const blueprint = QA_ROOM_BLUEPRINTS[index % QA_ROOM_BLUEPRINTS.length];
@@ -354,11 +369,13 @@ function createQaRegions({ roomCount, context, seed, sourceAnchors = ["Sedlec Os
       index === 0 ? "entrance" : "",
       isLast ? "final" : "",
     ]);
+    const roomArchetype = getQaCryptRoomArchetype(source, context, index, isLast);
     return {
       id: `qa-region-${String(index + 1).padStart(2, "0")}`,
       name: `${String(index + 1).padStart(2, "0")} ${source.role}`,
       role: source.role,
       preferredShape: source.shape,
+      roomArchetype,
       size: source.size,
       connectors: source.connectors,
       tags,
@@ -577,6 +594,7 @@ function getMapSignature(map) {
   return JSON.stringify({
     regions: asArray(map.regions).map((region) => ({
       id: region.id,
+      roomArchetype: region.roomArchetype || "",
       rect: region.cellRect,
       floor: asArray(region.floorCells).map(cellKey).sort(),
     })),
@@ -595,6 +613,7 @@ function getTopologySignature(map) {
   return JSON.stringify({
     rooms: asArray(map.regions).map((region) => ({
       size: region.size,
+      roomArchetype: region.roomArchetype || "",
       rect: region.cellRect ? { w: region.cellRect.w, h: region.cellRect.h } : null,
     })),
     graph: asArray(map.graph).map((edge) => getPairKey(edge.from, edge.to)).sort(),
@@ -1004,6 +1023,9 @@ function createDebugMapPayload(result, map) {
       name: region.name,
       role: region.role,
       size: region.size,
+      roomArchetype: region.roomArchetype || "",
+      roomArchetypeLabel: region.roomArchetypeLabel || "",
+      shape: region.shape,
       cellRect: region.cellRect,
       floorCellCount: asArray(region.floorCells).length,
     })),

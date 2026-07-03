@@ -29,6 +29,7 @@ export const DEFAULT_CONFIG = {
       connectors: 2,
       tags: ["entrance", "threshold"],
       sourceAnchors: ["Sedlec Ossuary"],
+      roomArchetype: "processional-crypt-hall",
       isEntrance: true,
     },
     {
@@ -50,6 +51,7 @@ export const DEFAULT_CONFIG = {
       connectors: 3,
       tags: ["vertical", "setpiece", "hazard"],
       sourceAnchors: ["Towers of Silence"],
+      roomArchetype: "bone-well",
     },
     {
       id: "region-4",
@@ -80,6 +82,7 @@ export const DEFAULT_CONFIG = {
       connectors: 3,
       tags: ["main", "body horror"],
       sourceAnchors: ["Gashadokuro"],
+      roomArchetype: "charnel-vault",
     },
     {
       id: "region-7",
@@ -90,6 +93,7 @@ export const DEFAULT_CONFIG = {
       connectors: 1,
       tags: ["secret", "lore", "archive"],
       sourceAnchors: ["Anthropodermic Bibliopegy"],
+      roomArchetype: "hidden-reliquary",
       secret: true,
     },
   ],
@@ -213,6 +217,13 @@ function normalizeRequestRegion(region, index) {
     name: region.label || region.name || `Location Region ${index + 1}`,
     role: region.role || "Location Region",
     preferredShape: region.shape || region.preferredShape || "rect",
+    roomArchetype:
+      region.roomArchetype ||
+      region.roomArchetypeId ||
+      region.archetype ||
+      metadata.roomArchetype ||
+      metadata.roomArchetypeId ||
+      "",
     size: region.size || "Medium",
     connectors: Number(region.connectors || (index === 0 ? 2 : 1)),
     tags,
@@ -297,6 +308,13 @@ export function normalizeInput(config) {
         source.role ||
         (index === 0 ? "Entrance / Threshold" : "Location Region"),
       preferredShape: source.preferredShape || source.shape || "rect",
+      roomArchetype:
+        source.roomArchetype ||
+        source.roomArchetypeId ||
+        source.archetype ||
+        source.metadata?.roomArchetype ||
+        source.metadata?.roomArchetypeId ||
+        "",
       size: source.size || "Medium",
       connectors: Number(source.connectors || (index === 0 ? 2 : 1)),
       tags,

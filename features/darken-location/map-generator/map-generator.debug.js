@@ -19,6 +19,7 @@ import {
   getCorridorIntersectionCells,
   getCorridorPlanarLevel,
   getCrossLevelCorridorIntersectionCells,
+  getPhysicalFloorConnectivityReport,
   isOrganicCorridor,
 } from "./map-generator.corridors.js";
 import { getMapSurface, getRegionSurface } from "./map-generator.render.jsx";
@@ -639,6 +640,38 @@ export function validateGeneratedMap(
     ),
   );
 
+  const physicalFloorConnectivity =
+    generatedMap.integrity?.physicalFloorConnectivity ||
+    getPhysicalFloorConnectivityReport(
+      generatedMap.regions || [],
+      generatedMap.corridors || [],
+    );
+  tests.push(
+    makeTestResult(
+      "physical-floor-connectivity",
+      "All rooms share one physical floor/corridor network",
+      physicalFloorConnectivity.connected,
+      physicalFloorConnectivity.connected
+        ? `${physicalFloorConnectivity.roomCount} room(s) in one physical network`
+        : [
+            physicalFloorConnectivity.disconnectedRoomIds.length > 0
+              ? `Disconnected room(s): ${physicalFloorConnectivity.disconnectedRoomIds.join(", ")}`
+              : "",
+            physicalFloorConnectivity.emptyRoomIds.length > 0
+              ? `Empty room mask(s): ${physicalFloorConnectivity.emptyRoomIds.join(", ")}`
+              : "",
+            physicalFloorConnectivity.corridorOnlyComponentCount > 0
+              ? `${physicalFloorConnectivity.corridorOnlyComponentCount} orphan corridor component(s)`
+              : "",
+            physicalFloorConnectivity.invalidCorridorConnectionCount > 0
+              ? `${physicalFloorConnectivity.invalidCorridorConnectionCount} invalid corridor connection(s)`
+              : "",
+          ]
+            .filter(Boolean)
+            .join("; "),
+    ),
+  );
+
   const solidCorridorBlocks = countUnwantedSolidCorridorBlocks(generatedMap);
   tests.push(
     makeTestResult(
@@ -792,6 +825,13 @@ export function validateGeneratedMap(
       crossLevelCrossings: levelValidation.crossLevelCrossings.length,
       floorCells: generatedMap.dungeonMask.floorCells.length,
       solidCorridorBlocks,
+      physicalFloorConnected: physicalFloorConnectivity.connected,
+      physicalFloorComponents: physicalFloorConnectivity.componentCount,
+      disconnectedRooms: physicalFloorConnectivity.disconnectedRoomIds.length,
+      orphanCorridorComponents:
+        physicalFloorConnectivity.corridorOnlyComponentCount,
+      invalidCorridorConnections:
+        physicalFloorConnectivity.invalidCorridorConnectionCount,
     },
   };
 }
