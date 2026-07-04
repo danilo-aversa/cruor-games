@@ -98,6 +98,18 @@ function createAssignmentSignature(assignments = {}) {
     .join("|") || "none";
 }
 
+function createMapInfluenceSignature(mapInfluence = null) {
+  if (!mapInfluence || typeof mapInfluence !== "object") return "";
+  return [
+    mapInfluence.roomArchetype || mapInfluence.roomArchetypeId || "",
+    mapInfluence.forcedRoomArchetype || mapInfluence.forcedRoomArchetypeId || "",
+    (Array.isArray(mapInfluence.preferredRoomArchetypes) ? mapInfluence.preferredRoomArchetypes : []).join(","),
+    (Array.isArray(mapInfluence.forbiddenRoomArchetypes) ? mapInfluence.forbiddenRoomArchetypes : []).join(","),
+    mapInfluence.forceRoomArchetype ? "force" : "soft",
+    mapInfluence.weight ?? "",
+  ].join("~");
+}
+
 function createRegionSignature(regions = []) {
   if (!Array.isArray(regions) || !regions.length) return "no-regions";
 
@@ -107,6 +119,9 @@ function createRegionSignature(regions = []) {
     region.role || "",
     region.size || "",
     region.shape || "",
+    region.roomArchetype || "",
+    region.roomArchetypeSource || "",
+    createMapInfluenceSignature(region.mapInfluence || region.metadata?.mapInfluence),
     (region.links || []).join(","),
     (region.metadata?.assignedSlotIds || []).join(","),
   ].join("@"))

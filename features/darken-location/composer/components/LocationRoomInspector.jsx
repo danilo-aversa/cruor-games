@@ -31,6 +31,41 @@ function LocationInspectorFact({ label, value }) {
   );
 }
 
+function toArray(value) {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (value === undefined || value === null || value === "") return [];
+  return [value];
+}
+
+function titleCaseLabel(value) {
+  return String(value || "")
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/(^|\s)(\S)/g, (_, spacer, letter) => `${spacer}${letter.toUpperCase()}`);
+}
+
+function getComponentMapInfluence(component = {}) {
+  return component?.mapInfluence || component?.location?.mapInfluence || component?.locationRegion?.mapInfluence || component?.map?.mapInfluence || null;
+}
+
+function getRoomSlotMapInfluenceLabel(row = {}) {
+  const influences = toArray(row.components).map(getComponentMapInfluence).filter(Boolean);
+  if (!influences.length) return "";
+  const forced = influences.find((influence) => influence.forceRoomArchetype || influence.force || influence.required);
+  const source = forced || influences[0];
+  const preferred = [
+    source.roomArchetype,
+    source.roomArchetypeId,
+    source.forcedRoomArchetype,
+    source.forcedRoomArchetypeId,
+    ...toArray(source.preferredRoomArchetypes),
+    ...toArray(source.preferredRoomArchetypeIds),
+  ].filter(Boolean)[0];
+  if (!preferred) return `${influences.length} map influence${influences.length === 1 ? "" : "s"}`;
+  return `${forced ? "Forces" : "Suggests"} ${titleCaseLabel(preferred)}`;
+}
+
 
 export function LocationRoomInspector({
   activeSlot,
@@ -79,6 +114,8 @@ export function LocationRoomInspector({
           <LocationInspectorFact label="Map" value={entry.mapLabel} />
           <LocationInspectorFact label="Role" value={entry.roleLabel} />
           <LocationInspectorFact label="Type" value={entry.roomTypeLabel} />
+          <LocationInspectorFact label="Archetype" value={entry.roomArchetypeLabel || "Auto"} />
+          <LocationInspectorFact label="Source" value={entry.roomArchetypeHasMapInfluence ? "Map Influence" : titleCaseLabel(entry.roomArchetypeSource || "Inferred")} />
           <LocationInspectorFact label="Level" value={String(entry.level)} />
         </div>
       </section>
@@ -117,7 +154,7 @@ export function LocationRoomInspector({
                 </span>
                 <span className="location-room-inspector-slot__body">
                   <strong>{row.components[0]?.title || "Empty Slot"}</strong>
-                  <em>{row.components[0]?.description || row.slot.description || "Choose component"}</em>
+                  <em>{getRoomSlotMapInfluenceLabel(row) || row.components[0]?.description || row.slot.description || "Choose component"}</em>
                 </span>
               </button>
             );

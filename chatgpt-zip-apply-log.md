@@ -7430,3 +7430,28 @@ _Nessun file aggiunto._
 
 - `~features/inspiration-studio/InspirationStudioPage.jsx`
 
+
+---
+
+## 2026-07-04 11:58:44
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-composer-map-influence-bridge-patch-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-composer-map-influence-bridge-patch-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/composer/components/LocationComponentPickerModal.jsx`
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/model/location-composer-preview.js`
+- `~features/darken-location/composer/model/location-room-program.js`
+

@@ -33,6 +33,40 @@ function getPrimaryUse(context = "", horror = "") {
   return "Exploration insert";
 }
 
+function getComponentMapInfluence(component = {}) {
+  return component?.mapInfluence || component?.location?.mapInfluence || component?.locationRegion?.mapInfluence || component?.map?.mapInfluence || null;
+}
+
+function getRoomArchetypeSummary(region = {}, generatedRoom = null, assigned = []) {
+  const resolution = generatedRoom?.roomArchetypeResolution || {};
+  const resolvedId =
+    resolution.resolvedRoomArchetype ||
+    generatedRoom?.roomArchetype ||
+    region.roomArchetype ||
+    region.locationRegion?.roomArchetype ||
+    region.map?.roomArchetype ||
+    "";
+  const label =
+    resolution.resolvedRoomArchetypeLabel ||
+    generatedRoom?.roomArchetypeLabel ||
+    (resolvedId ? titleCase(resolvedId) : "Auto");
+  const source =
+    resolution.resolvedRoomArchetypeSource ||
+    generatedRoom?.roomArchetypeSource ||
+    region.roomArchetypeSource ||
+    "inferred";
+  const influenceCount = assigned.filter((component) => Boolean(getComponentMapInfluence(component))).length;
+
+  return {
+    id: resolvedId,
+    label,
+    source,
+    influenceCount,
+    hasMapInfluence: influenceCount > 0 || source === "map-influence",
+    forced: Boolean(resolution.hasForce),
+  };
+}
+
 export function getLocationPlaceFrame(state = {}, mapRequest = null) {
   const sourceAnchors = toArray(state.sourceAnchors).filter((source) => source !== "Any Source");
   const horrors = toArray(state.horrors);
@@ -63,6 +97,7 @@ export function getLocationPlaceFrame(state = {}, mapRequest = null) {
 export function getRoomProgramEntryStatus(state = {}, regionId = "") {
   const assigned = getAssignedComponentsForRegion(state, regionId);
   const assignedSlotIds = new Set(assigned.map((component) => component.assignment?.slotId).filter(Boolean));
+  const mapInfluenceComponents = assigned.filter((component) => Boolean(getComponentMapInfluence(component)));
   const completedSlots = REGION_READY_SLOT_IDS.filter((slotId) => assignedSlotIds.has(slotId));
   const missingSlots = REGION_READY_SLOT_IDS.filter((slotId) => !assignedSlotIds.has(slotId));
   const hasAny = assigned.length > 0;
@@ -73,6 +108,8 @@ export function getRoomProgramEntryStatus(state = {}, regionId = "") {
     assignedSlotIds,
     completedSlots,
     missingSlots,
+    mapInfluenceComponents,
+    mapInfluenceCount: mapInfluenceComponents.length,
     complete,
     status: complete ? "ready" : hasAny ? "partial" : "empty",
     label: complete ? "Ready" : hasAny ? "Partial" : "Empty",
@@ -89,6 +126,7 @@ export function getRoomProgramEntries(state = {}, generatedMapPreview = null) {
     const roomNumber = generatedRoom?.number || index + 1;
     const role = region.role || generatedRoom?.graphRole || generatedRoom?.role || "room";
     const roomType = region.roomType || region.shape || region.preferredShape || generatedRoom?.shape || "room";
+    const roomArchetype = getRoomArchetypeSummary(region, generatedRoom, status.assigned);
 
     return {
       id: region.id,
@@ -102,6 +140,11 @@ export function getRoomProgramEntries(state = {}, generatedMapPreview = null) {
       roleLabel: titleCase(role),
       roomType,
       roomTypeLabel: titleCase(roomType),
+      roomArchetype: roomArchetype.id,
+      roomArchetypeLabel: roomArchetype.label,
+      roomArchetypeSource: roomArchetype.source,
+      roomArchetypeHasMapInfluence: roomArchetype.hasMapInfluence,
+      roomArchetypeForced: roomArchetype.forced,
       size: cleanLabel(region.size, "Medium"),
       level: Number.isFinite(Number(region.level)) ? Number(region.level) : 0,
       markers,

@@ -23,6 +23,39 @@ function getComponentSummary(component) {
   return component?.summary || component?.description || component?.text || component?.effect || "";
 }
 
+function getComponentMapInfluence(component = {}) {
+  return component?.mapInfluence || component?.location?.mapInfluence || component?.locationRegion?.mapInfluence || component?.map?.mapInfluence || null;
+}
+
+function getMapInfluenceArchetypes(influence = null) {
+  if (!influence || typeof influence !== "object") return [];
+  return [
+    influence.roomArchetype,
+    influence.roomArchetypeId,
+    influence.forcedRoomArchetype,
+    influence.forcedRoomArchetypeId,
+    ...toArray(influence.preferredRoomArchetypes),
+    ...toArray(influence.preferredRoomArchetypeIds),
+  ].filter(Boolean);
+}
+
+function getMapInfluenceForbiddenArchetypes(influence = null) {
+  if (!influence || typeof influence !== "object") return [];
+  return [
+    influence.forbiddenRoomArchetype,
+    influence.forbiddenRoomArchetypeId,
+    ...toArray(influence.forbiddenRoomArchetypes),
+    ...toArray(influence.forbiddenRoomArchetypeIds),
+  ].filter(Boolean);
+}
+
+function getMapInfluenceLabel(influence = null) {
+  const archetype = getMapInfluenceArchetypes(influence)[0];
+  if (!archetype) return "";
+  const forced = Boolean(influence?.forceRoomArchetype || influence?.force || influence?.required || influence?.forcedRoomArchetype || influence?.forcedRoomArchetypeId);
+  return `${forced ? "Forces" : "Suggests"} ${formatLocationMetaToken(archetype)}`;
+}
+
 function toArray(value) {
   if (Array.isArray(value)) return value.filter(Boolean);
   if (value === undefined || value === null || value === "") return [];
@@ -81,6 +114,8 @@ function getComponentTextTokens(component) {
     component?.narrative,
     ...(Array.isArray(component?.tags) ? component.tags : []),
     ...(Array.isArray(component?.motifs) ? component.motifs : []),
+    ...getMapInfluenceArchetypes(getComponentMapInfluence(component)),
+    ...getMapInfluenceForbiddenArchetypes(getComponentMapInfluence(component)),
   ]);
 }
 
@@ -103,6 +138,14 @@ function getRegionDecisionTokens(activeRegion, generatedRoom) {
     generatedRoom?.role,
     generatedRoom?.type,
     generatedRoom?.roomType,
+    activeRegion?.roomArchetype,
+    activeRegion?.roomArchetypeId,
+    activeRegion?.locationRegion?.roomArchetype,
+    activeRegion?.map?.roomArchetype,
+    generatedRoom?.roomArchetype,
+    generatedRoom?.roomArchetypeLabel,
+    generatedRoom?.roomArchetypeResolution?.resolvedRoomArchetype,
+    generatedRoom?.roomArchetypeResolution?.resolvedRoomArchetypeLabel,
     ...(Array.isArray(activeRegion?.tags) ? activeRegion.tags : []),
     ...(Array.isArray(activeRegion?.links) ? activeRegion.links : []),
     ...(Array.isArray(generatedRoom?.tags) ? generatedRoom.tags : []),
@@ -146,12 +189,23 @@ function getStateDecisionProfile({ activeRegion, generatedRoom, selectedComponen
     ...(Array.isArray(activeRegion?.sourceAnchors) ? activeRegion.sourceAnchors : []),
     ...(Array.isArray(generatedRoom?.sourceAnchors) ? generatedRoom.sourceAnchors : []),
   ]);
+  const roomArchetypeTokens = normalizeTokens([
+    activeRegion?.roomArchetype,
+    activeRegion?.roomArchetypeId,
+    activeRegion?.locationRegion?.roomArchetype,
+    activeRegion?.map?.roomArchetype,
+    generatedRoom?.roomArchetype,
+    generatedRoom?.roomArchetypeLabel,
+    generatedRoom?.roomArchetypeResolution?.resolvedRoomArchetype,
+    generatedRoom?.roomArchetypeResolution?.resolvedRoomArchetypeLabel,
+  ]);
 
   return {
     buildTokens: getSelectedBuildTokens(selectedComponents),
     contextTokens,
     horrorTokens,
     regionTokens: getRegionDecisionTokens(activeRegion, generatedRoom),
+    roomArchetypeTokens,
     slotId: slot?.id || "",
     slotLabel: slot?.label || "",
     sourceTokens,
@@ -217,6 +271,17 @@ function scoreLocationComponentDecision(component, profile, options = {}) {
   if (options.regionScoped && regionMatches) {
     score += 18 + Math.min(18, regionMatches * 3);
     addReason(reasons, "Fits selected room");
+  }
+
+  const mapInfluence = getComponentMapInfluence(component);
+  const mapInfluenceArchetypeTokens = normalizeTokens(getMapInfluenceArchetypes(mapInfluence));
+  const mapInfluenceMatches = countIntersections(mapInfluenceArchetypeTokens, profile.roomArchetypeTokens);
+  if (options.regionScoped && mapInfluenceMatches) {
+    score += 24 + Math.min(18, mapInfluenceMatches * 6);
+    addReason(reasons, "Shapes selected room");
+  } else if (options.regionScoped && mapInfluenceArchetypeTokens.size) {
+    score += 8;
+    addReason(reasons, "Guides map shape");
   }
 
   if (!options.activeSlotFilled) {
@@ -431,6 +496,10 @@ function LocationComponentCard({
   const contextValues = toArray(component?.contexts);
   const horrorValues = toArray(component?.horror);
   const sourceTypeValues = toArray(component?.sourceTypes || component?.sourceType);
+  const mapInfluence = getComponentMapInfluence(component);
+  const mapInfluenceLabel = getMapInfluenceLabel(mapInfluence);
+  const mapInfluenceArchetypes = getMapInfluenceArchetypes(mapInfluence);
+  const forbiddenArchetypes = getMapInfluenceForbiddenArchetypes(mapInfluence);
   const compatibilityReasons = getDecisionReasonLabels(decision, slot, regionScoped);
 
   return (
@@ -504,6 +573,16 @@ function LocationComponentCard({
             </span>
           </div>
           <ImpactMetaRows impact={impact} />
+          {mapInfluenceLabel || mapInfluenceArchetypes.length || forbiddenArchetypes.length ? (
+            <div className="meta-row">
+              <span className="meta-label">Map Influence</span>
+              <span className="meta-values">
+                {mapInfluenceLabel ? <span className="meta-value strong-chip">{mapInfluenceLabel}</span> : null}
+                {mapInfluence?.weight ? <span className="meta-value">Weight {mapInfluence.weight}</span> : null}
+                {forbiddenArchetypes.length ? <span className="meta-value danger-chip">Avoids {forbiddenArchetypes.map(formatLocationMetaToken).join(", ")}</span> : null}
+              </span>
+            </div>
+          ) : null}
           {compatibility || compatibilityReasons.length ? (
             <div className="meta-row">
               <span className="meta-label">Compatibility</span>
@@ -696,6 +775,8 @@ export function LocationComponentPickerModal({
         ...(Array.isArray(component.horror) ? component.horror : []),
         ...(Array.isArray(component.sourceAnchors) ? component.sourceAnchors : []),
         ...(Array.isArray(component.motifs) ? component.motifs : []),
+        ...getMapInfluenceArchetypes(getComponentMapInfluence(component)),
+        ...getMapInfluenceForbiddenArchetypes(getComponentMapInfluence(component)),
       ]
         .filter(Boolean)
         .join(" ")

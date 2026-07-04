@@ -83,6 +83,18 @@ function getHorrorLabel(state) {
   return toArray(state.horrors)[0] || state.horror || "Horror";
 }
 
+function createMapInfluenceSourceKey(mapInfluence = null) {
+  if (!mapInfluence || typeof mapInfluence !== "object") return "";
+  return [
+    mapInfluence.roomArchetype || mapInfluence.roomArchetypeId || "",
+    mapInfluence.forcedRoomArchetype || mapInfluence.forcedRoomArchetypeId || "",
+    Array.isArray(mapInfluence.preferredRoomArchetypes) ? mapInfluence.preferredRoomArchetypes.join(",") : "",
+    Array.isArray(mapInfluence.forbiddenRoomArchetypes) ? mapInfluence.forbiddenRoomArchetypes.join(",") : "",
+    mapInfluence.forceRoomArchetype ? "force" : "soft",
+    mapInfluence.weight ?? "",
+  ].join("~");
+}
+
 function createLocationMapSourceKey(mapRequest) {
   const requiredRegions = Array.isArray(mapRequest?.requiredRegions)
     ? mapRequest.requiredRegions
@@ -106,6 +118,10 @@ function createLocationMapSourceKey(mapRequest) {
           region?.role || "",
           region?.size || "",
           region?.shape || "",
+          region?.roomArchetype || "",
+          region?.roomArchetypeSource || "",
+          createMapInfluenceSourceKey(region?.mapInfluence || region?.metadata?.mapInfluence),
+          Array.isArray(region?.metadata?.assignedSlotIds) ? region.metadata.assignedSlotIds.join(",") : "",
           Array.isArray(region?.links) ? region.links.join(",") : "",
         ].join("@"),
       )
