@@ -149,6 +149,17 @@ export const ROOM_ARCHETYPES_BY_ID = Object.freeze({
   ...CRYPT_ROOM_ARCHETYPES,
 });
 
+export const ROOM_ARCHETYPE_OPTIONS = Object.freeze(
+  Object.values(ROOM_ARCHETYPES_BY_ID).map((archetype) =>
+    Object.freeze({
+      id: archetype.id,
+      label: archetype.label,
+      family: archetype.family,
+      contexts: Object.freeze([...(archetype.contexts || [])]),
+    }),
+  ),
+);
+
 const ROOM_ARCHETYPE_ALIASES = Object.freeze({
   burial: "crypt-burial-cell",
   "burial-cell": "crypt-burial-cell",
@@ -188,11 +199,100 @@ export function getRoomArchetypeDefinition(id = "") {
   return normalized ? ROOM_ARCHETYPES_BY_ID[normalized] || null : null;
 }
 
-export function getExplicitRoomArchetypeId(region = {}) {
+function asList(value) {
+  if (!value) return [];
+  return Array.isArray(value) ? value.filter(Boolean) : [value].filter(Boolean);
+}
+
+function uniqueRoomArchetypeIds(values = []) {
+  return [...new Set(asList(values).map(normalizeRoomArchetypeId).filter(Boolean))];
+}
+
+function getInfluencePreferredRoomArchetypes(influence = {}) {
+  if (!influence || typeof influence !== "object" || Array.isArray(influence)) return [];
+  return uniqueRoomArchetypeIds([
+    influence.roomArchetype,
+    influence.roomArchetypeId,
+    influence.forcedRoomArchetype,
+    influence.forcedRoomArchetypeId,
+    influence.preferredRoomArchetype,
+    influence.preferredRoomArchetypeId,
+    ...asList(influence.preferredRoomArchetypes),
+    ...asList(influence.preferredRoomArchetypeIds),
+  ]);
+}
+
+function getInfluenceForbiddenRoomArchetypes(influence = {}) {
+  if (!influence || typeof influence !== "object" || Array.isArray(influence)) return [];
+  return uniqueRoomArchetypeIds([
+    influence.forbiddenRoomArchetype,
+    influence.forbiddenRoomArchetypeId,
+    ...asList(influence.forbiddenRoomArchetypes),
+    ...asList(influence.forbiddenRoomArchetypeIds),
+  ]);
+}
+
+function getRoomArchetypeFromInfluence(influence = {}, forbiddenIds = [], contextKey = "crypt") {
+  const forbidden = new Set(uniqueRoomArchetypeIds(forbiddenIds));
+  const preferred = getInfluencePreferredRoomArchetypes(influence);
+  const isForced = Boolean(influence?.forceRoomArchetype || influence?.force || influence?.required);
+  return preferred.find((id) => {
+    const definition = getRoomArchetypeDefinition(id);
+    if (!definition) return false;
+    if (!isForced && forbidden.has(id)) return false;
+    return !definition.contexts?.length || definition.contexts.includes(contextKey);
+  }) || "";
+}
+
+function getRegionForbiddenRoomArchetypeIds(region = {}) {
+  return uniqueRoomArchetypeIds(
+    getRegionMapInfluenceSources(region).flatMap(getInfluenceForbiddenRoomArchetypes),
+  );
+}
+
+function isRoomArchetypeUsable(id, contextKey = "crypt", forbiddenIds = []) {
+  const normalized = normalizeRoomArchetypeId(id);
+  if (!normalized) return false;
+  if (new Set(uniqueRoomArchetypeIds(forbiddenIds)).has(normalized)) return false;
+  const definition = getRoomArchetypeDefinition(normalized);
+  if (!definition) return false;
+  return !definition.contexts?.length || definition.contexts.includes(contextKey);
+}
+
+function findFallbackRoomArchetypeId(preferredIds = [], contextKey = "crypt", forbiddenIds = []) {
+  return uniqueRoomArchetypeIds(preferredIds).find((id) => isRoomArchetypeUsable(id, contextKey, forbiddenIds)) || "";
+}
+
+function getRegionMapInfluenceSources(region = {}) {
+  return [
+    region.mapInfluence,
+    region.location?.mapInfluence,
+    region.locationRegion?.mapInfluence,
+    region.map?.mapInfluence,
+    region.metadata?.mapInfluence,
+    region.requestMetadata?.mapInfluence,
+  ].filter(Boolean);
+}
+
+function getDeclaredRoomArchetypeSource(region = {}) {
+  return String(
+    region.roomArchetypeSource ||
+      region.metadata?.roomArchetypeSource ||
+      region.requestMetadata?.roomArchetypeSource ||
+      "",
+  ).trim();
+}
+
+function getDirectRoomArchetypeId(region = {}) {
+  if (getDeclaredRoomArchetypeSource(region) === "map-influence") return "";
   return normalizeRoomArchetypeId(
     region.roomArchetype ||
       region.roomArchetypeId ||
       region.archetype ||
+      region.locationRegion?.roomArchetype ||
+      region.locationRegion?.roomArchetypeId ||
+      region.map?.roomArchetype ||
+      region.map?.roomArchetypeId ||
       region.metadata?.roomArchetype ||
       region.metadata?.roomArchetypeId ||
       region.requestMetadata?.roomArchetype ||
@@ -201,15 +301,69 @@ export function getExplicitRoomArchetypeId(region = {}) {
   );
 }
 
+function getInfluencedRoomArchetypeId(region = {}, contextKey = "crypt") {
+  const sources = getRegionMapInfluenceSources(region);
+  const forbiddenIds = getRegionForbiddenRoomArchetypeIds(region);
+  const forced = sources
+    .filter((influence) => influence?.forceRoomArchetype || influence?.force || influence?.required)
+    .map((influence) => getRoomArchetypeFromInfluence(influence, [], contextKey))
+    .find(Boolean);
+  if (forced) return forced;
+  return sources.map((influence) => getRoomArchetypeFromInfluence(influence, forbiddenIds, contextKey)).find(Boolean) || "";
+}
+
+export function getExplicitRoomArchetypeId(region = {}) {
+  return getDirectRoomArchetypeId(region) || getInfluencedRoomArchetypeId(region, getContextKey(region?.context || region?.biome || "crypt"));
+}
+
+export function getRoomArchetypeResolutionSummary(region = {}, contextKey = "crypt", resolvedArchetype = null) {
+  const sources = getRegionMapInfluenceSources(region);
+  const directRoomArchetype = getDirectRoomArchetypeId(region);
+  const forbiddenRoomArchetypes = getRegionForbiddenRoomArchetypeIds(region);
+  const preferredRoomArchetypes = uniqueRoomArchetypeIds(
+    sources.flatMap(getInfluencePreferredRoomArchetypes),
+  );
+  const forcedRoomArchetypes = uniqueRoomArchetypeIds(
+    sources
+      .filter((influence) => influence?.forceRoomArchetype || influence?.force || influence?.required)
+      .flatMap(getInfluencePreferredRoomArchetypes),
+  );
+  const influencedRoomArchetype = directRoomArchetype
+    ? ""
+    : getInfluencedRoomArchetypeId(region, contextKey);
+  const resolved = resolvedArchetype || resolveRoomArchetype(region, contextKey);
+
+  return {
+    schemaVersion: `${ROOM_ARCHETYPE_SCHEMA_VERSION}:resolution-v0.1`,
+    context: contextKey,
+    resolvedRoomArchetype: resolved?.id || "",
+    resolvedRoomArchetypeLabel: resolved?.label || "",
+    resolvedRoomArchetypeSource: resolved?.source || "",
+    directRoomArchetype,
+    influencedRoomArchetype,
+    preferredRoomArchetypes,
+    forbiddenRoomArchetypes,
+    forcedRoomArchetypes,
+    mapInfluenceCount: sources.length,
+    hasMapInfluence: sources.length > 0,
+    hasForce: forcedRoomArchetypes.length > 0,
+    hasForbiddenConflict: forbiddenRoomArchetypes.includes(resolved?.id || ""),
+  };
+}
+
 export function resolveRoomArchetype(region = {}, contextKey = "crypt") {
-  const explicitId = getExplicitRoomArchetypeId(region);
+  const directId = getDirectRoomArchetypeId(region);
+  const forbiddenIds = getRegionForbiddenRoomArchetypeIds(region);
+  const influencedId = directId ? "" : getInfluencedRoomArchetypeId(region, contextKey);
+  const explicitId = directId || influencedId;
+  const declaredSource = getDeclaredRoomArchetypeSource(region);
   if (explicitId) {
     const explicitDefinition = getRoomArchetypeDefinition(explicitId);
     if (
       explicitDefinition &&
       (!explicitDefinition.contexts?.length || explicitDefinition.contexts.includes(contextKey))
     ) {
-      return { ...explicitDefinition, source: "explicit" };
+      return { ...explicitDefinition, source: declaredSource || (directId ? "explicit" : "map-influence") };
     }
   }
 
@@ -237,6 +391,19 @@ export function resolveRoomArchetype(region = {}, contextKey = "crypt") {
     id = "charnel-vault";
   } else if (text.includes("ossuary") || text.includes("bone") || text.includes("skull")) {
     id = "ossuary-gallery";
+  }
+
+  if (forbiddenIds.includes(id)) {
+    id = findFallbackRoomArchetypeId([
+      "crypt-burial-cell",
+      "ossuary-gallery",
+      "reliquary-niche",
+      "sealed-family-tomb",
+      "hidden-reliquary",
+      "processional-crypt-hall",
+      "charnel-vault",
+      "bone-well",
+    ], contextKey, forbiddenIds) || id;
   }
 
   const definition = getRoomArchetypeDefinition(id);

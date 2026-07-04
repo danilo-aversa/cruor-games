@@ -7,6 +7,7 @@ import {
   getPlacementRole,
   getRegionSurfaceProfile,
   getRegionText,
+  getRoomArchetypeResolutionSummary,
   resolveRoomArchetype,
   roleDepth,
 } from "./map-generator.profile.js";
@@ -593,6 +594,7 @@ export function createPlacedRegion(
 ) {
   const surfaceKind = getRegionSurfaceProfile(region, profileKey);
   const archetype = resolveRoomArchetype(region, profileKey);
+  const roomArchetypeResolution = getRoomArchetypeResolutionSummary(region, profileKey, archetype);
   const archetypeShapeOptions = getRoomArchetypeShapeOptions(region, profileKey);
   const caveChamberProfile =
     profileKey === "mine" &&
@@ -611,12 +613,13 @@ export function createPlacedRegion(
           roomArchetypeLabel: archetype.label,
           roomArchetypeFamily: archetype.family,
           roomArchetypeSource: archetype.source,
+          roomArchetypeResolution,
           roomType: archetype.roomType || region.roomType || "none",
           shapeOptions: archetypeShapeOptions,
         }
       : archetypeShapeOptions
-        ? { shapeOptions: archetypeShapeOptions }
-        : {}),
+        ? { roomArchetypeResolution, shapeOptions: archetypeShapeOptions }
+        : { roomArchetypeResolution }),
     ...(caveChamberProfile ? { caveChamberProfile } : {}),
     floorCells: [],
     wallSegments: [],

@@ -96,6 +96,9 @@ import {
   MONSTER_FRAME_FIT_VALUES,
   normalizeMonsterFrameFit,
 } from "../monster-composer/model/monster-frame-fit.js";
+import {
+  ROOM_ARCHETYPE_OPTIONS,
+} from "../darken-location/map-generator/map-generator.profile.js";
 
 
 const STUDIO_SECTIONS = [
@@ -709,6 +712,13 @@ const FIELD_HELP = {
   regionSize: "Expected map footprint. Use practical labels such as Small, Medium, Large, or Huge.",
   regionShape: "Preferred room geometry or layout cue for the map generator.",
   regionConnectors: "Expected number of entrances/exits or links to other regions.",
+  regionRoomArchetype: "Optional semantic room archetype used by the Map Generator before it falls back to inference.",
+  mapInfluencePreferredArchetypes: "Room archetypes this component should make more likely when it is assigned to a room.",
+  mapInfluenceForbiddenArchetypes: "Room archetypes this component should block unless a forced archetype explicitly overrides the block.",
+  mapInfluenceForce: "When enabled, this component forces the selected influence archetype instead of only recommending it.",
+  mapInfluenceWeight: "Relative influence strength used when several components affect the same room.",
+  mapInfluenceSource: "Optional source label for debugging why this component influenced the generated map.",
+  mapInfluenceNote: "Optional editorial note explaining the intended map behavior.",
   componentSearch: "Filter the current component family by title, id, slot, tag, summary, or mechanics.",
 };
 
@@ -736,6 +746,15 @@ const BASIC_COMPONENT_EDITOR_TABS = Object.freeze([
   { id: "output", label: "Output", icon: "fa-scroll", hint: "Playable mechanics and region output fields." },
   { id: "qa", label: "QA / Debug", icon: "fa-shield-halved", hint: "Raw JSON inspection." },
 ]);
+
+const ROOM_ARCHETYPE_SELECT_OPTIONS = Object.freeze([
+  ["", "Auto / Inferred"],
+  ...ROOM_ARCHETYPE_OPTIONS.map((option) => [option.id, option.label || option.id]),
+]);
+
+const ROOM_ARCHETYPE_SUGGESTIONS = Object.freeze(
+  ROOM_ARCHETYPE_OPTIONS.map((option) => option.id),
+);
 
 function getComponentEditorTabs(component = {}) {
   if (component.contentType === "monster-graft") return COMPONENT_EDITOR_TABS;
@@ -2745,6 +2764,48 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
     setField(["slots"], splitList(value));
   }
 
+  function setMapInfluenceField(path, value) {
+    onChange((nextComponent) => {
+      const holder = isLocationRegion
+        ? (nextComponent.locationRegion = nextComponent.locationRegion || {})
+        : (nextComponent.location = nextComponent.location || {});
+      holder.mapInfluence = holder.mapInfluence || {};
+      let target = holder.mapInfluence;
+      for (const key of path.slice(0, -1)) {
+        target[key] = target[key] || {};
+        target = target[key];
+      }
+      target[path[path.length - 1]] = value;
+    });
+  }
+
+  function setMapInfluenceArray(field, value) {
+    setMapInfluenceField([field], value);
+  }
+
+  function clearMapInfluence() {
+    onChange((nextComponent) => {
+      if (nextComponent.location?.mapInfluence) delete nextComponent.location.mapInfluence;
+      if (nextComponent.locationRegion?.mapInfluence) delete nextComponent.locationRegion.mapInfluence;
+      if (nextComponent.mapInfluence) delete nextComponent.mapInfluence;
+    });
+  }
+
+  function setLocationRegionRoomArchetype(value) {
+    setField(["locationRegion", "roomArchetype"], value);
+  }
+
+  function setLocationRegionSize(value) {
+    setField(["locationRegion", "size"], value);
+    setField(["map", "size"], value);
+  }
+
+  function setLocationRegionShape(value) {
+    setField(["locationRegion", "shape"], value);
+    setField(["map", "shape"], value);
+    setField(["map", "preferredShape"], value);
+  }
+
   function setMonsterConstraintArray(field, value) {
     onChange((nextComponent) => {
       const monster = nextComponent.monster = nextComponent.monster || {};
@@ -3301,6 +3362,26 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
   const hasProcedureBlock = Boolean(activeRulesBlocks.procedure) || procedureEnabled;
   const hasOutputTextBlock = Boolean(activeRulesBlocks.outputText) || Boolean(outputTextValue || hasAttackEventText || hasSaveOutcomeText || monsterRules.text?.response || monsterRules.text?.effect);
   const hasCounterplayBlock = Boolean(activeRulesBlocks.counterplay) || Boolean(component.counterplay);
+  const isLocationComponent = component.contentType === "location-component";
+  const editableMapInfluence = isLocationRegion
+    ? (component.locationRegion?.mapInfluence || {})
+    : (component.location?.mapInfluence || component.mapInfluence || {});
+  const regionRoomArchetype = component.locationRegion?.roomArchetype || component.locationRegion?.roomArchetypeId || "";
+  const mapInfluenceRoomArchetype = editableMapInfluence.roomArchetype
+    || editableMapInfluence.roomArchetypeId
+    || editableMapInfluence.forcedRoomArchetype
+    || editableMapInfluence.forcedRoomArchetypeId
+    || "";
+  const hasMapInfluenceData = Boolean(
+    mapInfluenceRoomArchetype
+      || editableMapInfluence.forceRoomArchetype
+      || editableMapInfluence.weight
+      || editableMapInfluence.source
+      || editableMapInfluence.note
+      || asArray(editableMapInfluence.preferredRoomArchetypes).length
+      || asArray(editableMapInfluence.forbiddenRoomArchetypes).length,
+  );
+
   const addableRulesBlocks = [
     { id: "targeting", label: "Targeting", icon: "fa-crosshairs", active: hasTargetingBlock },
     { id: "areaEffect", label: "Area Timing", icon: "fa-circle-nodes", active: hasAreaEffectBlock },
@@ -4478,23 +4559,66 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
       ) : null}
 
 
-      {isLocationRegion ? (
+      {!isMonsterGraft && activeComponentEditorTab === "output" ? (
         <div className="studio-component-editor__subpanel" data-editor-zone="output">
-          <h4><Icon name="fa-dungeon" /> Location Region Data</h4>
-          <div className="studio-form-grid studio-form-grid--compact">
-            <FormRow label="Role" icon="fa-compass" hint={FIELD_HELP.regionRole}>
-              <TextInput value={component.locationRegion?.role} onChange={(value) => setField(["locationRegion", "role"], value)} />
-            </FormRow>
-            <FormRow label="Size" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.regionSize}>
-              <TextInput value={component.locationRegion?.size} onChange={(value) => setField(["locationRegion", "size"], value)} />
-            </FormRow>
-            <FormRow label="Shape" icon="fa-draw-polygon" hint={FIELD_HELP.regionShape}>
-              <TextInput value={component.locationRegion?.shape} onChange={(value) => setField(["locationRegion", "shape"], value)} />
-            </FormRow>
-            <FormRow label="Connectors" icon="fa-code-branch" hint={FIELD_HELP.regionConnectors}>
-              <input type="number" value={component.locationRegion?.connectors ?? 0} onChange={(event) => setField(["locationRegion", "connectors"], Number(event.target.value))} />
-            </FormRow>
-          </div>
+          {isLocationRegion ? (
+            <RulesGroup defaultOpen icon="fa-dungeon" title="Location Region Data" help="Map-region fields consumed by Dark Places and the Map Generator.">
+              <div className="studio-form-grid studio-form-grid--compact">
+                <FormRow label="Role" icon="fa-compass" hint={FIELD_HELP.regionRole}>
+                  <TextInput value={component.locationRegion?.role} onChange={(value) => setField(["locationRegion", "role"], value)} />
+                </FormRow>
+                <FormRow label="Size" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.regionSize}>
+                  <SelectInput options={[["Small", "Small"], ["Medium", "Medium"], ["Large", "Large"]]} value={component.locationRegion?.size || "Medium"} onChange={setLocationRegionSize} />
+                </FormRow>
+                <FormRow label="Shape" icon="fa-draw-polygon" hint={FIELD_HELP.regionShape}>
+                  <TextInput value={component.locationRegion?.shape} onChange={setLocationRegionShape} />
+                </FormRow>
+                <FormRow label="Connectors" icon="fa-code-branch" hint={FIELD_HELP.regionConnectors}>
+                  <input type="number" min="0" max="8" value={component.locationRegion?.connectors ?? 0} onChange={(event) => setField(["locationRegion", "connectors"], Number(event.target.value))} />
+                </FormRow>
+                <FormRow label="Room Archetype" icon="fa-dungeon" hint={FIELD_HELP.regionRoomArchetype}>
+                  <SelectInput options={ROOM_ARCHETYPE_SELECT_OPTIONS} value={regionRoomArchetype} onChange={setLocationRegionRoomArchetype} />
+                </FormRow>
+              </div>
+            </RulesGroup>
+          ) : null}
+
+          {(isLocationRegion || isLocationComponent) ? (
+            <RulesGroup
+              defaultOpen
+              icon="fa-map-location-dot"
+              title="Map Influence"
+              help="Optional map-generation influence. Use this when a component assigned to a room should prefer, forbid, or force a room archetype."
+              actions={hasMapInfluenceData ? <RemoveRulesBlockButton label="Map Influence" onClick={clearMapInfluence} /> : null}
+            >
+              <div className="studio-form-grid studio-form-grid--compact">
+                <FormRow label="Influence Archetype" icon="fa-dungeon" hint="Optional direct archetype target used when Force is enabled, or as a strong preference when combined with preferred archetypes.">
+                  <SelectInput options={ROOM_ARCHETYPE_SELECT_OPTIONS} value={mapInfluenceRoomArchetype} onChange={(value) => setMapInfluenceField(["roomArchetype"], value)} />
+                </FormRow>
+                <FormRow label="Preferred Archetypes" icon="fa-star" hint={FIELD_HELP.mapInfluencePreferredArchetypes}>
+                  <KeywordPillInput allowCustom={false} fieldId={`${component.id}-preferred-room-archetypes`} icon="fa-star" value={editableMapInfluence.preferredRoomArchetypes} onChange={(value) => setMapInfluenceArray("preferredRoomArchetypes", value)} placeholder="bone-well, reliquary-niche" suggestions={ROOM_ARCHETYPE_SUGGESTIONS} />
+                </FormRow>
+                <FormRow label="Forbidden Archetypes" icon="fa-ban" hint={FIELD_HELP.mapInfluenceForbiddenArchetypes}>
+                  <KeywordPillInput allowCustom={false} fieldId={`${component.id}-forbidden-room-archetypes`} icon="fa-ban" value={editableMapInfluence.forbiddenRoomArchetypes} onChange={(value) => setMapInfluenceArray("forbiddenRoomArchetypes", value)} placeholder="bone-well" suggestions={ROOM_ARCHETYPE_SUGGESTIONS} />
+                </FormRow>
+                <FormRow label="Force Archetype" icon="fa-lock" hint={FIELD_HELP.mapInfluenceForce}>
+                  <select value={editableMapInfluence.forceRoomArchetype ? "true" : "false"} onChange={(event) => setMapInfluenceField(["forceRoomArchetype"], event.target.value === "true")}>
+                    <option value="false">Recommend only</option>
+                    <option value="true">Force selected archetype</option>
+                  </select>
+                </FormRow>
+                <FormRow label="Weight" icon="fa-scale-balanced" hint={FIELD_HELP.mapInfluenceWeight}>
+                  <input type="number" min="0" step="0.25" value={editableMapInfluence.weight ?? ""} onChange={(event) => setMapInfluenceField(["weight"], event.target.value === "" ? "" : Number(event.target.value))} placeholder="2" />
+                </FormRow>
+                <FormRow label="Influence Source" icon="fa-fingerprint" hint={FIELD_HELP.mapInfluenceSource}>
+                  <TextInput value={editableMapInfluence.source} onChange={(value) => setMapInfluenceField(["source"], value)} placeholder={component.id} />
+                </FormRow>
+              </div>
+              <FormRow label="Influence Note" icon="fa-note-sticky" hint={FIELD_HELP.mapInfluenceNote}>
+                <TextArea rows={2} value={editableMapInfluence.note} onChange={(value) => setMapInfluenceField(["note"], value)} placeholder="Explain why this component should change the generated room archetype." />
+              </FormRow>
+            </RulesGroup>
+          ) : null}
         </div>
       ) : null}
 

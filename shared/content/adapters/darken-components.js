@@ -142,6 +142,7 @@ export function legacyDarkenComponentToSharedComponent(component) {
     location: {
       componentType: contentSubtype,
       legacyType: component.type || "",
+      mapInfluence: component.location?.mapInfluence || component.mapInfluence || undefined,
       sensoryKind: component.sensoryKind || "",
       intrusion: component.intrusion || "",
       prep: component.prep || "",

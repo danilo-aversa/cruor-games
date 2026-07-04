@@ -370,12 +370,30 @@ function createQaRegions({ roomCount, context, seed, sourceAnchors = ["Sedlec Os
       isLast ? "final" : "",
     ]);
     const roomArchetype = getQaCryptRoomArchetype(source, context, index, isLast);
+    const useInfluenceOnly = Boolean(roomArchetype && context === "Crypt" && index % 5 === 2);
+    const useForbiddenProbe = Boolean(roomArchetype && context === "Crypt" && index % 7 === 3);
+    const forbiddenProbeArchetype = roomArchetype === "bone-well" ? "reliquary-niche" : "bone-well";
+    const mapInfluence = useForbiddenProbe
+      ? {
+          preferredRoomArchetypes: [forbiddenProbeArchetype, roomArchetype],
+          forbiddenRoomArchetypes: [forbiddenProbeArchetype],
+          source: "map-batch-qa-forbidden-influence",
+          weight: 3,
+        }
+      : useInfluenceOnly
+        ? {
+            preferredRoomArchetypes: [roomArchetype],
+            source: "map-batch-qa-component-influence",
+            weight: 2,
+          }
+        : null;
     return {
       id: `qa-region-${String(index + 1).padStart(2, "0")}`,
       name: `${String(index + 1).padStart(2, "0")} ${source.role}`,
       role: source.role,
       preferredShape: source.shape,
-      roomArchetype,
+      roomArchetype: useInfluenceOnly || useForbiddenProbe ? "" : roomArchetype,
+      mapInfluence,
       size: source.size,
       connectors: source.connectors,
       tags,
@@ -389,6 +407,7 @@ function createQaRegions({ roomCount, context, seed, sourceAnchors = ["Sedlec Os
         contexts: [context],
         horror: ["Religious Horror"],
         sourceAnchors,
+        mapInfluence,
       },
     };
   });
@@ -790,6 +809,85 @@ function validateCorridorRoomTunneling(map, mapId) {
   return issues;
 }
 
+function normalizeRoomArchetypeToken(value = "") {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function getRoomInfluenceSources(region = {}) {
+  return [
+    region.mapInfluence,
+    region.location?.mapInfluence,
+    region.locationRegion?.mapInfluence,
+    region.map?.mapInfluence,
+    region.metadata?.mapInfluence,
+    region.requestMetadata?.mapInfluence,
+  ].filter(Boolean);
+}
+
+function getInfluencePreferredRoomArchetypes(influence = {}) {
+  return unique([
+    influence.roomArchetype,
+    influence.roomArchetypeId,
+    influence.forcedRoomArchetype,
+    influence.forcedRoomArchetypeId,
+    influence.preferredRoomArchetype,
+    influence.preferredRoomArchetypeId,
+    ...asArray(influence.preferredRoomArchetypes),
+    ...asArray(influence.preferredRoomArchetypeIds),
+  ]).map(normalizeRoomArchetypeToken).filter(Boolean);
+}
+
+function getInfluenceForbiddenRoomArchetypes(influence = {}) {
+  return unique([
+    influence.forbiddenRoomArchetype,
+    influence.forbiddenRoomArchetypeId,
+    ...asArray(influence.forbiddenRoomArchetypes),
+    ...asArray(influence.forbiddenRoomArchetypeIds),
+  ]).map(normalizeRoomArchetypeToken).filter(Boolean);
+}
+
+function validateRoomArchetypeInfluence(map, mapId) {
+  const issues = [];
+  asArray(map.regions).forEach((region) => {
+    const resolved = normalizeRoomArchetypeToken(region.roomArchetype);
+    if (!resolved) return;
+    const sources = getRoomInfluenceSources(region);
+    if (!sources.length) return;
+    const forbidden = new Set(sources.flatMap(getInfluenceForbiddenRoomArchetypes));
+    if (forbidden.has(resolved)) {
+      issues.push(createIssue({
+        mapId,
+        severity: "error",
+        area: "archetype",
+        check: "forbidden-room-archetype",
+        message: "A resolved room archetype is forbidden by mapInfluence.",
+        data: { regionId: region.id, roomArchetype: resolved },
+      }));
+    }
+    sources.forEach((influence) => {
+      const isForced = Boolean(influence.forceRoomArchetype || influence.force || influence.required);
+      if (!isForced) return;
+      const expected = getInfluencePreferredRoomArchetypes(influence)[0];
+      if (expected && expected !== resolved) {
+        issues.push(createIssue({
+          mapId,
+          severity: "error",
+          area: "archetype",
+          check: "forced-room-archetype",
+          message: "A forced mapInfluence room archetype was not respected.",
+          data: { regionId: region.id, expected, actual: resolved },
+        }));
+      }
+    });
+  });
+  return issues;
+}
+
 function validateQualityWarnings(map, mapId, metrics) {
   const issues = [];
   if (metrics.routing.longCorridorWarnings > 0) {
@@ -840,6 +938,7 @@ function validateGeneratedMap(map, { mapId, deterministicSignature, verifyDeterm
     ...validateGraphEdgesHaveCorridors(map, mapId),
     ...validateReachability(map, mapId),
     ...validateCorridorRoomTunneling(map, mapId),
+    ...validateRoomArchetypeInfluence(map, mapId),
     ...validateQualityWarnings(map, mapId, metrics),
   ];
 

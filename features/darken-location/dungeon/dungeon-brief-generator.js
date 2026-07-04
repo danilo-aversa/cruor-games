@@ -15,6 +15,137 @@ function normalizeString(value, fallback = "") {
   return typeof value === "string" && value.trim() ? value.trim() : fallback;
 }
 
+function unique(values) {
+  return [...new Set(asArray(values).map((value) => String(value).trim()).filter(Boolean))];
+}
+
+function isPlainObject(value) {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value));
+}
+
+function normalizeNumber(value, fallback = 0) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function getMapInfluenceSource(source = {}) {
+  if (!isPlainObject(source)) return null;
+  return (
+    source.mapInfluence ||
+    source.location?.mapInfluence ||
+    source.locationRegion?.mapInfluence ||
+    source.map?.mapInfluence ||
+    source.map?.influence ||
+    null
+  );
+}
+
+function normalizeMapInfluence(value = {}) {
+  if (!isPlainObject(value)) return null;
+  const forcedRoomArchetype = normalizeString(
+    value.forcedRoomArchetype || value.forcedRoomArchetypeId,
+  );
+  const directRoomArchetype = normalizeString(
+    forcedRoomArchetype || value.roomArchetype || value.roomArchetypeId,
+  );
+  const preferredRoomArchetypes = unique([
+    directRoomArchetype && !forcedRoomArchetype ? directRoomArchetype : "",
+    value.preferredRoomArchetype,
+    value.preferredRoomArchetypeId,
+    ...asArray(value.preferredRoomArchetypes),
+    ...asArray(value.preferredRoomArchetypeIds),
+  ]);
+  const forbiddenRoomArchetypes = unique([
+    value.forbiddenRoomArchetype,
+    value.forbiddenRoomArchetypeId,
+    ...asArray(value.forbiddenRoomArchetypes),
+    ...asArray(value.forbiddenRoomArchetypeIds),
+  ]);
+  const hasInfluence = Boolean(
+    directRoomArchetype ||
+      preferredRoomArchetypes.length ||
+      forbiddenRoomArchetypes.length ||
+      value.forceRoomArchetype ||
+      value.force ||
+      value.required,
+  );
+  if (!hasInfluence) return null;
+  return {
+    roomArchetype: directRoomArchetype,
+    preferredRoomArchetypes,
+    forbiddenRoomArchetypes,
+    forceRoomArchetype: Boolean(value.forceRoomArchetype || value.force || value.required || forcedRoomArchetype),
+    weight: normalizeNumber(value.weight ?? value.priority, 1),
+    source: normalizeString(value.source || value.componentId || value.componentTitle),
+  };
+}
+
+function normalizeInfluenceToken(value = "") {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function getRoomArchetypeFromMapInfluence(influence = {}) {
+  if (!isPlainObject(influence)) return "";
+  const forbidden = new Set(asArray(influence.forbiddenRoomArchetypes).map(normalizeInfluenceToken));
+  const isForced = Boolean(influence.forceRoomArchetype || influence.force || influence.required);
+  const candidates = unique([
+    influence.roomArchetype,
+    influence.roomArchetypeId,
+    influence.forcedRoomArchetype,
+    influence.forcedRoomArchetypeId,
+    ...asArray(influence.preferredRoomArchetypes),
+    ...asArray(influence.preferredRoomArchetypeIds),
+  ]);
+  return candidates.find((candidate) => isForced || !forbidden.has(normalizeInfluenceToken(candidate))) || "";
+}
+
+function mergeMapInfluences(influences = []) {
+  const normalized = asArray(influences).map(normalizeMapInfluence).filter(Boolean);
+  if (!normalized.length) return null;
+  const ordered = [...normalized].sort((a, b) => {
+    if (a.forceRoomArchetype !== b.forceRoomArchetype) return a.forceRoomArchetype ? -1 : 1;
+    return normalizeNumber(b.weight, 1) - normalizeNumber(a.weight, 1);
+  });
+  const primary = ordered.find((item) => getRoomArchetypeFromMapInfluence(item)) || ordered[0];
+  return {
+    roomArchetype: getRoomArchetypeFromMapInfluence(primary),
+    preferredRoomArchetypes: unique(ordered.flatMap((item) => item.preferredRoomArchetypes)),
+    forbiddenRoomArchetypes: unique(ordered.flatMap((item) => item.forbiddenRoomArchetypes)),
+    forceRoomArchetype: ordered.some((item) => item.forceRoomArchetype),
+    weight: ordered.reduce((sum, item) => sum + normalizeNumber(item.weight, 1), 0),
+    sources: unique(ordered.map((item) => item.source)),
+  };
+}
+
+function clonePlainObject(value) {
+  if (!isPlainObject(value)) return {};
+  return JSON.parse(JSON.stringify(value));
+}
+
+function buildComponentMapInfluence(component = {}) {
+  const source = getMapInfluenceSource(component) || {};
+  return normalizeMapInfluence({
+    ...source,
+    componentId: component.id,
+    componentTitle: component.title || component.label,
+    roomArchetype:
+      source.roomArchetype ||
+      source.roomArchetypeId ||
+      component.roomArchetype ||
+      component.roomArchetypeId ||
+      component.locationRegion?.roomArchetype ||
+      component.locationRegion?.roomArchetypeId ||
+      component.map?.roomArchetype ||
+      component.map?.roomArchetypeId ||
+      "",
+  });
+}
+
 function normalizeSourceAnchorIds(sourceAnchors = []) {
   return [...new Set(asArray(sourceAnchors).map(getSourceAnchorId).filter(Boolean))];
 }
@@ -53,13 +184,20 @@ function normalizeAssignedComponents(slotAssignments, selectedComponents = []) {
     .flatMap(([slotId, assignments]) =>
       asArray(assignments).map((assignment) => {
         const component = componentIndex.get(assignment.componentId) || {};
+        const mapInfluence = buildComponentMapInfluence(component);
         return {
           id: normalizeString(assignment.componentId || component.id),
           title: normalizeString(component.title),
           type: normalizeString(component.type),
+          contentType: normalizeString(component.contentType),
           summary: normalizeString(component.summary),
           slotId: normalizeString(assignment.slotId, slotId),
           regionId: normalizeString(assignment.regionId),
+          sourceAnchors: normalizeSourceAnchorIds(component.sourceAnchors),
+          tags: asArray(component.tags),
+          mapInfluence,
+          locationRegion: clonePlainObject(component.locationRegion),
+          map: clonePlainObject(component.map),
         };
       }),
     )
@@ -72,9 +210,15 @@ function normalizeAssignedComponents(slotAssignments, selectedComponents = []) {
       id: normalizeString(component?.id),
       title: normalizeString(component?.title),
       type: normalizeString(component?.type),
+      contentType: normalizeString(component?.contentType),
       summary: normalizeString(component?.summary),
       slotId: normalizeString(component?.slotId),
       regionId: normalizeString(component?.regionId),
+      sourceAnchors: normalizeSourceAnchorIds(component?.sourceAnchors),
+      tags: asArray(component?.tags),
+      mapInfluence: buildComponentMapInfluence(component),
+      locationRegion: clonePlainObject(component?.locationRegion),
+      map: clonePlainObject(component?.map),
     }))
     .filter((component) => component.id || component.title || component.slotId);
 }
@@ -101,6 +245,33 @@ function normalizeRegionToRoomBrief(region, index, assignedComponents = [], them
   const sourceRegionId = normalizeString(region.id, `location-region-${index + 1}`);
   const regionComponents = getAssignedComponentsForRegion(sourceRegionId, assignedComponents);
   const roomSlotComponents = regionComponents.filter((component) => ROOM_SLOT_IDS.has(component.slotId));
+  const regionLocation = isPlainObject(region.locationRegion) ? region.locationRegion : {};
+  const regionMap = isPlainObject(region.map) ? region.map : {};
+  const regionMapInfluence = normalizeMapInfluence({
+    ...(getMapInfluenceSource(region) || {}),
+    roomArchetype:
+      region.roomArchetype ||
+      region.roomArchetypeId ||
+      region.archetype ||
+      regionLocation.roomArchetype ||
+      regionLocation.roomArchetypeId ||
+      regionMap.roomArchetype ||
+      regionMap.roomArchetypeId ||
+      "",
+  });
+  const componentInfluences = regionComponents.map((component) => component.mapInfluence).filter(Boolean);
+  const mapInfluence = mergeMapInfluences([regionMapInfluence, ...componentInfluences]);
+  const directRoomArchetype = normalizeString(
+    region.roomArchetype ||
+      region.roomArchetypeId ||
+      region.archetype ||
+      regionLocation.roomArchetype ||
+      regionLocation.roomArchetypeId ||
+      regionMap.roomArchetype ||
+      regionMap.roomArchetypeId,
+  );
+  const roomArchetype = normalizeString(directRoomArchetype || getRoomArchetypeFromMapInfluence(mapInfluence));
+  const roomArchetypeSource = directRoomArchetype ? "explicit" : roomArchetype ? "map-influence" : "";
   const tags = [
     ...(asArray(region.tags)),
     region.role,
@@ -114,6 +285,9 @@ function normalizeRegionToRoomBrief(region, index, assignedComponents = [], them
     name: normalizeString(region.name || region.label, `Location Region ${index + 1}`),
     role: normalizeString(region.role, theme?.roomRoleSequence?.[index % Math.max(1, theme.roomRoleSequence.length)] || "location region"),
     type: normalizeString(region.roomType || region.shape || region.preferredShape, theme?.roomTypeBias?.[index % Math.max(1, theme.roomTypeBias.length)] || "room"),
+    roomArchetype,
+    roomArchetypeSource,
+    mapInfluence,
     size: normalizeString(region.size, "Medium"),
     connectors: region.connectors,
     density: normalizeString(region.density),
@@ -758,6 +932,9 @@ export function createLocationRegionsFromDungeonBrief(dungeonBrief = {}) {
     name: room.name,
     role: room.role,
     roomType: room.type,
+    roomArchetype: room.roomArchetype,
+    roomArchetypeSource: room.roomArchetypeSource,
+    mapInfluence: room.mapInfluence,
     shape: room.shape,
     preferredShape: room.shape,
     size: room.size,

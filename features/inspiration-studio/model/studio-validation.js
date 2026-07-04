@@ -16,6 +16,10 @@ import {
 } from "../../monster-composer/model/anatomy.js";
 import { validateMonsterFrameFit } from "../../monster-composer/model/monster-frame-fit.js";
 import {
+  ROOM_ARCHETYPES_BY_ID,
+  normalizeRoomArchetypeId,
+} from "../../darken-location/map-generator/map-generator.profile.js";
+import {
   COMPONENT_TYPE_LABELS,
   STATUS_OPTIONS,
   asArray,
@@ -147,6 +151,56 @@ function validateMonsterAnatomyGrantsForStudio(component = {}, index, issues) {
 
   if (!MONSTER_ANATOMY_GRANT_FIELDS.some((field) => asArray(grants[field]).length)) {
     issues.push(makeIssue("info", `components[${index}].monster.anatomyGrants`, "Anatomy grants contain only a note and do not change the effective build.", id));
+  }
+}
+
+
+function validateRoomArchetypeRefs(values = [], path, issues, id, label = "room archetype") {
+  asArray(values).forEach((value) => {
+    const normalized = normalizeRoomArchetypeId(value);
+    if (!normalized || !ROOM_ARCHETYPES_BY_ID[normalized]) {
+      issues.push(makeIssue("warning", path, `Unknown ${label}: ${value}. Add it to the room archetype registry if intentional.`, id));
+    }
+  });
+}
+
+function getRoomArchetypeRefSet(values = []) {
+  return new Set(asArray(values).map(normalizeRoomArchetypeId).filter(Boolean));
+}
+
+function validateMapInfluenceForStudio(mapInfluence, path, issues, id) {
+  if (!isPlainObject(mapInfluence)) return;
+  const preferred = asArray([
+    mapInfluence.roomArchetype,
+    mapInfluence.roomArchetypeId,
+    mapInfluence.forcedRoomArchetype,
+    mapInfluence.forcedRoomArchetypeId,
+    mapInfluence.preferredRoomArchetype,
+    mapInfluence.preferredRoomArchetypeId,
+    ...asArray(mapInfluence.preferredRoomArchetypes),
+    ...asArray(mapInfluence.preferredRoomArchetypeIds),
+  ]);
+  const forbidden = asArray([
+    mapInfluence.forbiddenRoomArchetype,
+    mapInfluence.forbiddenRoomArchetypeId,
+    ...asArray(mapInfluence.forbiddenRoomArchetypes),
+    ...asArray(mapInfluence.forbiddenRoomArchetypeIds),
+  ]);
+  const direct = mapInfluence.roomArchetype || mapInfluence.roomArchetypeId || mapInfluence.forcedRoomArchetype || mapInfluence.forcedRoomArchetypeId;
+  if (!direct && !preferred.length && !forbidden.length && !mapInfluence.forceRoomArchetype) return;
+
+  validateRoomArchetypeRefs(preferred, `${path}.preferredRoomArchetypes`, issues, id);
+  validateRoomArchetypeRefs(forbidden, `${path}.forbiddenRoomArchetypes`, issues, id);
+
+  const preferredSet = getRoomArchetypeRefSet(preferred);
+  const forbiddenSet = getRoomArchetypeRefSet(forbidden);
+  const conflicts = [...preferredSet].filter((item) => forbiddenSet.has(item));
+  if (conflicts.length) {
+    issues.push(makeIssue("warning", path, `Map influence both prefers and forbids: ${conflicts.join(", ")}. Forced values still win; otherwise the resolver will skip conflicts.`, id));
+  }
+
+  if (mapInfluence.forceRoomArchetype && !direct && !preferred.length) {
+    issues.push(makeIssue("warning", path, "forceRoomArchetype is enabled but no room archetype is defined.", id));
   }
 }
 
@@ -292,6 +346,12 @@ export function validateStudioDraft(draft, contentPackExport) {
       if (!hasText(component.summary) && !hasText(component.tableText) && !hasText(component.mechanics)) {
         issues.push(makeIssue("warning", `components[${index}].playableText`, "Location component has no summary, table text, or mechanics.", id));
       }
+      validateMapInfluenceForStudio(
+        component.location?.mapInfluence || component.mapInfluence,
+        `components[${index}].location.mapInfluence`,
+        issues,
+        id,
+      );
     }
 
     if (type === "location-region") {
@@ -307,6 +367,18 @@ export function validateStudioDraft(draft, contentPackExport) {
             issues.push(makeIssue("warning", `components[${index}].locationRegion.${field}`, `Location region has no ${field}.`, id));
           }
         });
+        validateRoomArchetypeRefs(
+          [regionMetadata.roomArchetype || regionMetadata.roomArchetypeId],
+          `components[${index}].locationRegion.roomArchetype`,
+          issues,
+          id,
+        );
+        validateMapInfluenceForStudio(
+          regionMetadata.mapInfluence,
+          `components[${index}].locationRegion.mapInfluence`,
+          issues,
+          id,
+        );
       }
     }
   });

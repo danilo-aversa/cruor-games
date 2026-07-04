@@ -5,6 +5,214 @@ import {
   slugify,
 } from "./studio-component-normalizers.js";
 
+
+const CRYPT_ROOM_ARCHETYPE_TEMPLATE_IDS = Object.freeze([
+  "location-region-crypt-burial-cell",
+  "location-region-ossuary-gallery",
+  "location-region-reliquary-niche",
+  "location-region-charnel-vault",
+  "location-region-sealed-family-tomb",
+  "location-region-processional-crypt-hall",
+  "location-region-bone-well",
+  "location-region-hidden-reliquary",
+  "location-influence-crypt-burial-cell",
+  "location-influence-ossuary-gallery",
+  "location-influence-reliquary-niche",
+  "location-influence-charnel-vault",
+  "location-influence-sealed-family-tomb",
+  "location-influence-processional-crypt-hall",
+  "location-influence-bone-well",
+  "location-influence-hidden-reliquary",
+]);
+
+const CRYPT_ROOM_ARCHETYPE_TEMPLATE_BLUEPRINTS = Object.freeze([
+  Object.freeze({
+    archetypeId: "crypt-burial-cell",
+    label: "Crypt Burial Cell",
+    shortLabel: "Burial Cell",
+    icon: "fa-box-archive",
+    title: "New Crypt Burial Cell",
+    role: "side burial chamber",
+    size: "Small",
+    shape: "rect",
+    connectors: 1,
+    density: "low",
+    summary: "A compact burial cell, sealed tomb bay, or quiet chamber for one or a few dead.",
+    tableText: "A narrow burial cell waits in stale silence, its dead arranged with deliberate care.",
+  }),
+  Object.freeze({
+    archetypeId: "ossuary-gallery",
+    label: "Ossuary Gallery",
+    shortLabel: "Ossuary",
+    icon: "fa-bone",
+    title: "New Ossuary Gallery",
+    role: "side ossuary gallery",
+    size: "Medium",
+    shape: "alcove",
+    connectors: 2,
+    density: "high",
+    summary: "A bone-lined gallery, ossuary wall, or display passage for arranged remains.",
+    tableText: "Stacked bones form a pale gallery along the walls, arranged like devotional architecture.",
+  }),
+  Object.freeze({
+    archetypeId: "reliquary-niche",
+    label: "Reliquary Niche",
+    shortLabel: "Reliquary",
+    icon: "fa-gem",
+    title: "New Reliquary Niche",
+    role: "secret reliquary niche",
+    size: "Small",
+    shape: "alcove",
+    connectors: 1,
+    density: "medium",
+    summary: "A small devotional niche, relic recess, or side shrine built around a preserved object.",
+    tableText: "A recessed niche frames a relic-like object, set apart from the rest of the chamber.",
+  }),
+  Object.freeze({
+    archetypeId: "charnel-vault",
+    label: "Charnel Vault",
+    shortLabel: "Charnel",
+    icon: "fa-skull",
+    title: "New Charnel Vault",
+    role: "hazardous charnel chamber",
+    size: "Large",
+    shape: "notched",
+    connectors: 2,
+    density: "high",
+    summary: "A crowded vault of mixed remains, disturbed burials, and dangerous funerary refuse.",
+    tableText: "The chamber has become a vault of mingled remains, its floor broken by heaps and hollows.",
+  }),
+  Object.freeze({
+    archetypeId: "sealed-family-tomb",
+    label: "Sealed Family Tomb",
+    shortLabel: "Family Tomb",
+    icon: "fa-door-closed",
+    title: "New Sealed Family Tomb",
+    role: "sealed family tomb",
+    size: "Medium",
+    shape: "notched",
+    connectors: 1,
+    density: "medium",
+    summary: "A lineage tomb, sealed burial room, or noble crypt chamber with controlled access.",
+    tableText: "A sealed family tomb marks its threshold with names, crests, or damaged funerary signs.",
+  }),
+  Object.freeze({
+    archetypeId: "processional-crypt-hall",
+    label: "Processional Crypt Hall",
+    shortLabel: "Crypt Hall",
+    icon: "fa-road",
+    title: "New Processional Crypt Hall",
+    role: "main processional hall",
+    size: "Large",
+    shape: "hall",
+    connectors: 3,
+    density: "medium",
+    summary: "A long crypt hall, ritual passage, or threshold axis used to organize the map flow.",
+    tableText: "A processional hall draws the eye forward, its route framed by repeated funerary markers.",
+  }),
+  Object.freeze({
+    archetypeId: "bone-well",
+    label: "Bone Well",
+    shortLabel: "Bone Well",
+    icon: "fa-circle-down",
+    title: "New Bone Well",
+    role: "vertical bone well",
+    size: "Medium",
+    shape: "shaft",
+    connectors: 1,
+    density: "high",
+    summary: "A vertical shaft, bone pit, ossuary drop, or hazardous well of remains.",
+    tableText: "A dark vertical hollow opens in the chamber, its sides crowded with pale fragments.",
+  }),
+  Object.freeze({
+    archetypeId: "hidden-reliquary",
+    label: "Hidden Reliquary",
+    shortLabel: "Hidden Relic",
+    icon: "fa-vault",
+    title: "New Hidden Reliquary",
+    role: "hidden reliquary room",
+    size: "Medium",
+    shape: "archive",
+    connectors: 1,
+    density: "medium",
+    summary: "A concealed relic room, sacred store, or hidden archive attached to the crypt.",
+    tableText: "A hidden reliquary chamber preserves its contents behind a controlled, secretive threshold.",
+  }),
+]);
+
+function buildRoomArchetypeRegionTemplate(blueprint) {
+  return {
+    id: `location-region-${blueprint.archetypeId}`,
+    label: `${blueprint.label} Region`,
+    shortLabel: blueprint.shortLabel,
+    icon: blueprint.icon,
+    contentType: "location-region",
+    title: blueprint.title,
+    slot: "locationRegion",
+    summary: blueprint.summary,
+    tableText: blueprint.tableText,
+    mechanics: "",
+    locationRegion: {
+      role: blueprint.role,
+      size: blueprint.size,
+      shape: blueprint.shape,
+      roomArchetype: blueprint.archetypeId,
+      mapInfluence: {
+        preferredRoomArchetypes: [blueprint.archetypeId],
+        forbiddenRoomArchetypes: [],
+        forceRoomArchetype: true,
+        weight: 3,
+        source: `studio-template:${blueprint.archetypeId}`,
+      },
+      connectors: blueprint.connectors,
+      density: blueprint.density,
+      readAloud: { compact: blueprint.tableText, extended: blueprint.tableText },
+    },
+    metadata: {
+      roomArchetypeTemplate: true,
+      roomArchetypeId: blueprint.archetypeId,
+    },
+  };
+}
+
+function buildRoomArchetypeInfluenceTemplate(blueprint) {
+  return {
+    id: `location-influence-${blueprint.archetypeId}`,
+    label: `${blueprint.label} Influence`,
+    shortLabel: `${blueprint.shortLabel} Bias`,
+    icon: blueprint.icon,
+    contentType: "location-component",
+    title: `New ${blueprint.label} Influence`,
+    slot: "clue",
+    summary: `A Dark Places component that biases the assigned room toward the ${blueprint.label} archetype without becoming a full region template.`,
+    tableText: blueprint.tableText,
+    mechanics: "Assign this component to a room when the clue, hazard, sign, or reward should determine that room's spatial archetype.",
+    location: {
+      mapInfluence: {
+        preferredRoomArchetypes: [blueprint.archetypeId],
+        forbiddenRoomArchetypes: [],
+        forceRoomArchetype: false,
+        weight: 2,
+        source: `studio-template:${blueprint.archetypeId}`,
+      },
+    },
+    metadata: {
+      mapInfluenceTemplate: true,
+      roomArchetypeId: blueprint.archetypeId,
+    },
+  };
+}
+
+const CRYPT_ROOM_ARCHETYPE_STUDIO_TEMPLATES = Object.freeze(
+  CRYPT_ROOM_ARCHETYPE_TEMPLATE_BLUEPRINTS.reduce((templates, blueprint) => {
+    const regionTemplate = buildRoomArchetypeRegionTemplate(blueprint);
+    const influenceTemplate = buildRoomArchetypeInfluenceTemplate(blueprint);
+    templates[regionTemplate.id] = regionTemplate;
+    templates[influenceTemplate.id] = influenceTemplate;
+    return templates;
+  }, {}),
+);
+
 export const STUDIO_COMPONENT_TEMPLATE_GROUPS = Object.freeze([
   {
     id: "monster",
@@ -28,6 +236,7 @@ export const STUDIO_COMPONENT_TEMPLATE_GROUPS = Object.freeze([
       "location-description",
       "location-hazard",
       "location-region",
+      ...CRYPT_ROOM_ARCHETYPE_TEMPLATE_IDS,
       "location-sensory-detail",
       "location-visual-sign",
     ],
@@ -193,6 +402,14 @@ export const STUDIO_COMPONENT_TEMPLATES = Object.freeze({
     summary: "Describe the visible danger or pressure in the location.",
     tableText: "Describe what the characters notice before the hazard triggers.",
     mechanics: "Trigger. Add the trigger here.\nSave. Add the DC and ability here.\nEffect. Add the consequence here.",
+    location: {
+      mapInfluence: {
+        preferredRoomArchetypes: [],
+        forbiddenRoomArchetypes: [],
+        forceRoomArchetype: false,
+        weight: 1,
+      },
+    },
   },
   "location-region": {
     id: "location-region",
@@ -209,11 +426,19 @@ export const STUDIO_COMPONENT_TEMPLATES = Object.freeze({
       role: "side",
       size: "Medium",
       shape: "standard",
+      roomArchetype: "",
+      mapInfluence: {
+        preferredRoomArchetypes: [],
+        forbiddenRoomArchetypes: [],
+        forceRoomArchetype: false,
+        weight: 1,
+      },
       connectors: 2,
       density: "medium",
       readAloud: { compact: "", extended: "" },
     },
   },
+  ...CRYPT_ROOM_ARCHETYPE_STUDIO_TEMPLATES,
   "location-sensory-detail": {
     id: "location-sensory-detail",
     label: "Sensory Detail",
@@ -307,6 +532,7 @@ function buildBaseComponent(template, draft = {}) {
     mechanics: template.mechanics || "",
     tags: [`template:${template.id}`],
     metadata: {
+      ...(template.metadata || {}),
       templateId: template.id,
       templateLabel: template.label,
       createdBy: "inspiration-studio-template",
@@ -348,11 +574,19 @@ function buildMonsterComponent(template, draft = {}) {
 
 function buildLocationComponent(template, draft = {}) {
   const component = buildBaseComponent(template, draft);
+  if (template.location) component.location = clone(template.location);
   if (template.contentType === "location-region") {
     component.locationRegion = clone(template.locationRegion || {
       role: "side",
       size: "Medium",
       shape: "standard",
+      roomArchetype: "",
+      mapInfluence: {
+        preferredRoomArchetypes: [],
+        forbiddenRoomArchetypes: [],
+        forceRoomArchetype: false,
+        weight: 1,
+      },
       connectors: 2,
       density: "medium",
       readAloud: { compact: "", extended: "" },

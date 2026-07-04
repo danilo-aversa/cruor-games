@@ -1,6 +1,6 @@
 import { normalizeDungeonTheme } from "./dungeon-theme.js";
 
-export const DUNGEON_BRIEF_SCHEMA_VERSION = "0.2";
+export const DUNGEON_BRIEF_SCHEMA_VERSION = "0.3";
 
 export const DUNGEON_BRIEF_MODE_THEME = "theme";
 export const DUNGEON_BRIEF_MODE_SCRATCH = "scratch";
@@ -26,6 +26,109 @@ function normalizeInteger(value, fallback = 0, { min = 0, max = 999 } = {}) {
 
 function unique(values) {
   return [...new Set(asArray(values).map((value) => String(value).trim()).filter(Boolean))];
+}
+
+function isPlainObject(value) {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value));
+}
+
+function normalizeNumber(value, fallback = 0) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function getMapInfluenceSource(source = {}) {
+  if (!isPlainObject(source)) return null;
+  return (
+    source.mapInfluence ||
+    source.location?.mapInfluence ||
+    source.locationRegion?.mapInfluence ||
+    source.map?.mapInfluence ||
+    source.map?.influence ||
+    null
+  );
+}
+
+function normalizeMapInfluence(value = {}) {
+  if (!isPlainObject(value)) return null;
+  const forcedRoomArchetype = normalizeString(
+    value.forcedRoomArchetype || value.forcedRoomArchetypeId,
+  );
+  const directRoomArchetype = normalizeString(
+    forcedRoomArchetype || value.roomArchetype || value.roomArchetypeId,
+  );
+  const preferredRoomArchetypes = unique([
+    directRoomArchetype && !forcedRoomArchetype ? directRoomArchetype : "",
+    value.preferredRoomArchetype,
+    value.preferredRoomArchetypeId,
+    ...asArray(value.preferredRoomArchetypes),
+    ...asArray(value.preferredRoomArchetypeIds),
+  ]);
+  const forbiddenRoomArchetypes = unique([
+    value.forbiddenRoomArchetype,
+    value.forbiddenRoomArchetypeId,
+    ...asArray(value.forbiddenRoomArchetypes),
+    ...asArray(value.forbiddenRoomArchetypeIds),
+  ]);
+  const hasInfluence = Boolean(
+    directRoomArchetype ||
+      preferredRoomArchetypes.length ||
+      forbiddenRoomArchetypes.length ||
+      value.forceRoomArchetype ||
+      value.force ||
+      value.required,
+  );
+  if (!hasInfluence) return null;
+  return {
+    roomArchetype: directRoomArchetype,
+    preferredRoomArchetypes,
+    forbiddenRoomArchetypes,
+    forceRoomArchetype: Boolean(value.forceRoomArchetype || value.force || value.required || forcedRoomArchetype),
+    weight: normalizeNumber(value.weight ?? value.priority, 1),
+    source: normalizeString(value.source || value.componentId || value.componentTitle),
+  };
+}
+
+function normalizeInfluenceToken(value = "") {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function getRoomArchetypeFromMapInfluence(influence = {}) {
+  if (!isPlainObject(influence)) return "";
+  const forbidden = new Set(asArray(influence.forbiddenRoomArchetypes).map(normalizeInfluenceToken));
+  const isForced = Boolean(influence.forceRoomArchetype || influence.force || influence.required);
+  const candidates = unique([
+    influence.roomArchetype,
+    influence.roomArchetypeId,
+    influence.forcedRoomArchetype,
+    influence.forcedRoomArchetypeId,
+    ...asArray(influence.preferredRoomArchetypes),
+    ...asArray(influence.preferredRoomArchetypeIds),
+  ]);
+  return candidates.find((candidate) => isForced || !forbidden.has(normalizeInfluenceToken(candidate))) || "";
+}
+
+function mergeMapInfluences(influences = []) {
+  const normalized = asArray(influences).map(normalizeMapInfluence).filter(Boolean);
+  if (!normalized.length) return null;
+  const ordered = [...normalized].sort((a, b) => {
+    if (a.forceRoomArchetype !== b.forceRoomArchetype) return a.forceRoomArchetype ? -1 : 1;
+    return normalizeNumber(b.weight, 1) - normalizeNumber(a.weight, 1);
+  });
+  const primary = ordered.find((item) => getRoomArchetypeFromMapInfluence(item)) || ordered[0];
+  return {
+    roomArchetype: getRoomArchetypeFromMapInfluence(primary),
+    preferredRoomArchetypes: unique(ordered.flatMap((item) => item.preferredRoomArchetypes)),
+    forbiddenRoomArchetypes: unique(ordered.flatMap((item) => item.forbiddenRoomArchetypes)),
+    forceRoomArchetype: ordered.some((item) => item.forceRoomArchetype),
+    weight: ordered.reduce((sum, item) => sum + normalizeNumber(item.weight, 1), 0),
+    sources: unique(ordered.map((item) => item.source)),
+  };
 }
 
 function normalizeRoomSize(value, fallback = "Medium") {
@@ -288,6 +391,35 @@ export function createRoomBrief(input = {}, index = 0, { theme = null } = {}) {
   const normalizedTheme = normalizeDungeonTheme(theme);
   const metadata = input.metadata && typeof input.metadata === "object" ? input.metadata : {};
   const assignedComponents = asArray(input.assignedComponents || metadata.assignedComponents).filter(Boolean);
+  const componentInfluences = assignedComponents
+    .map((component) => normalizeMapInfluence(getMapInfluenceSource(component)))
+    .filter(Boolean);
+  const regionInfluence = normalizeMapInfluence({
+    ...(getMapInfluenceSource(input) || {}),
+    ...(getMapInfluenceSource(metadata) || {}),
+    roomArchetype:
+      input.roomArchetype ||
+      input.roomArchetypeId ||
+      input.archetype ||
+      metadata.roomArchetype ||
+      metadata.roomArchetypeId ||
+      metadata.archetype ||
+      getMapInfluenceSource(input)?.roomArchetype ||
+      getMapInfluenceSource(metadata)?.roomArchetype ||
+      "",
+  });
+  const mapInfluence = mergeMapInfluences([regionInfluence, ...componentInfluences]);
+  const influencedRoomArchetype = getRoomArchetypeFromMapInfluence(mapInfluence);
+  const directRoomArchetype = normalizeString(
+    input.roomArchetype ||
+      input.roomArchetypeId ||
+      input.archetype ||
+      metadata.roomArchetype ||
+      metadata.roomArchetypeId ||
+      metadata.archetype,
+  );
+  const roomArchetype = normalizeString(directRoomArchetype || influencedRoomArchetype);
+  const roomArchetypeSource = directRoomArchetype ? "explicit" : roomArchetype ? "map-influence" : "";
   const sourceRegionId = normalizeString(input.sourceRegionId || input.id || metadata.sourceRegionId, createRoomId(index));
   const role = normalizeString(input.role, normalizedTheme.roomRoleSequence[index % Math.max(1, normalizedTheme.roomRoleSequence.length)] || "location region");
   const type = normalizeString(input.type || input.roomType || input.shape || input.preferredShape, normalizedTheme.roomTypeBias[index % Math.max(1, normalizedTheme.roomTypeBias.length)] || "room");
@@ -306,6 +438,9 @@ export function createRoomBrief(input = {}, index = 0, { theme = null } = {}) {
     connectors: normalizeInteger(input.connectors, index === 0 ? 2 : 1, { min: 0, max: 8 }),
     density: normalizeString(input.density || metadata.density, "interactive"),
     shape: normalizeString(input.shape || input.preferredShape, type),
+    roomArchetype,
+    roomArchetypeSource,
+    mapInfluence,
     sourceRegionId,
     sourceAnchors: unique(input.sourceAnchors || metadata.sourceAnchors || normalizedTheme.sourceAnchorIds),
     horror: unique(input.horror || metadata.horror),
@@ -386,6 +521,9 @@ export function roomBriefToRequiredRegion(roomBrief, index = 0) {
     role: room.role,
     size: room.size,
     shape: room.shape,
+    roomArchetype: room.roomArchetype,
+    roomArchetypeSource: room.roomArchetypeSource,
+    mapInfluence: room.mapInfluence,
     connectors: room.connectors,
     density: room.density,
     links: room.links,
@@ -394,6 +532,9 @@ export function roomBriefToRequiredRegion(roomBrief, index = 0) {
       roomBriefId: room.id,
       roomIndex: room.index,
       roomType: room.type,
+      roomArchetype: room.roomArchetype,
+      roomArchetypeSource: room.roomArchetypeSource,
+      mapInfluence: room.mapInfluence,
       level: room.level,
       contexts: room.contexts,
       horror: room.horror,

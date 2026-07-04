@@ -799,6 +799,19 @@ export function validateGeneratedMap(
     if (!test.passed) errors.push(`${test.label}: ${test.details}`);
   });
 
+  const roomArchetypeResolutions = (generatedMap.regions || [])
+    .map((region) => region.roomArchetypeResolution)
+    .filter(Boolean);
+  const mapInfluencedRoomArchetypes = roomArchetypeResolutions.filter(
+    (resolution) => resolution.resolvedRoomArchetypeSource === "map-influence",
+  );
+  const forcedRoomArchetypes = roomArchetypeResolutions.filter(
+    (resolution) => resolution.hasForce,
+  );
+  const forbiddenArchetypeConflicts = roomArchetypeResolutions.filter(
+    (resolution) => resolution.hasForbiddenConflict,
+  );
+
   const expectedDoorCount = generatedMap.corridors.reduce(
     (sum, corridor) => sum + (corridor.isRoomLink ? 1 : 2),
     0,
@@ -832,6 +845,11 @@ export function validateGeneratedMap(
         physicalFloorConnectivity.corridorOnlyComponentCount,
       invalidCorridorConnections:
         physicalFloorConnectivity.invalidCorridorConnectionCount,
+      roomArchetypeRooms: generatedMap.regions.filter((region) => region.roomArchetype).length,
+      roomArchetypeResolutionCount: roomArchetypeResolutions.length,
+      mapInfluencedRoomArchetypes: mapInfluencedRoomArchetypes.length,
+      forcedRoomArchetypes: forcedRoomArchetypes.length,
+      forbiddenArchetypeConflicts: forbiddenArchetypeConflicts.length,
     },
   };
 }

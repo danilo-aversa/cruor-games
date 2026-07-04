@@ -7308,3 +7308,125 @@ _Nessun file aggiunto._
 - `~features/darken-location/map-generator/map-generator.profile.js`
 - `~features/darken-location/map-generator/qa/map-batch-qa.js`
 
+
+---
+
+## 2026-07-03 22:56:05
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-room-archetype-influence-patch-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-room-archetype-influence-patch-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 10
+
+- `~features/darken-location/dungeon/dungeon-brief-generator.js`
+- `~features/darken-location/dungeon/dungeon-brief.js`
+- `~features/darken-location/map-generator/map-generator.input.js`
+- `~features/darken-location/map-generator/map-generator.profile.js`
+- `~features/darken-location/map-generator/qa/map-batch-qa.js`
+- `~features/inspiration-studio/model/studio-component-templates.js`
+- `~features/inspiration-studio/model/studio-export.js`
+- `~features/inspiration-studio/model/studio-validation.js`
+- `~shared/content/adapters/darken-components.js`
+- `~shared/content/adapters/location-regions.js`
+
+
+---
+
+## 2026-07-04 09:16:39
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-room-archetype-influence-patch-v2.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-room-archetype-influence-patch-v2.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 7
+
+- `~features/darken-location/dungeon/dungeon-brief-generator.js`
+- `~features/darken-location/dungeon/dungeon-brief.js`
+- `~features/darken-location/map-generator/map-generator.input.js`
+- `~features/darken-location/map-generator/map-generator.profile.js`
+- `~features/darken-location/map-generator/qa/map-batch-qa.js`
+- `~features/inspiration-studio/model/studio-export.js`
+- `~features/inspiration-studio/model/studio-validation.js`
+
+
+---
+
+## 2026-07-04 10:26:06
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-room-archetype-influence-patch-v3.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-room-archetype-influence-patch-v3.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/inspiration-studio/model/studio-component-templates.js`
+
+
+---
+
+## 2026-07-04 11:00:13
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-room-archetype-influence-patch-v4.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-room-archetype-influence-patch-v4.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/map-generator/map-generator.debug.js`
+- `~features/darken-location/map-generator/map-generator.layout.js`
+- `~features/darken-location/map-generator/map-generator.profile.js`
+
+
+---
+
+## 2026-07-04 11:19:28
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-studio-map-influence-ui-patch-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-studio-map-influence-ui-patch-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+

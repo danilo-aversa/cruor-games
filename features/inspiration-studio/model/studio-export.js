@@ -22,6 +22,41 @@ import { normalizeModuleForDraft } from "./studio-draft.js";
 
 const SHARED_SOURCE_ANCHOR_BY_ID = new Map(SHARED_SOURCE_ANCHORS.map((sourceAnchor) => [sourceAnchor.id, sourceAnchor]));
 
+function normalizeMapInfluenceExport(mapInfluence = {}) {
+  if (!mapInfluence || typeof mapInfluence !== "object" || Array.isArray(mapInfluence)) return null;
+  const preferredRoomArchetypes = asArray([
+    mapInfluence.preferredRoomArchetype,
+    mapInfluence.preferredRoomArchetypeId,
+    ...asArray(mapInfluence.preferredRoomArchetypes),
+    ...asArray(mapInfluence.preferredRoomArchetypeIds),
+  ]);
+  const forbiddenRoomArchetypes = asArray([
+    mapInfluence.forbiddenRoomArchetype,
+    mapInfluence.forbiddenRoomArchetypeId,
+    ...asArray(mapInfluence.forbiddenRoomArchetypes),
+    ...asArray(mapInfluence.forbiddenRoomArchetypeIds),
+  ]);
+  const roomArchetype = mapInfluence.roomArchetype || mapInfluence.roomArchetypeId || mapInfluence.forcedRoomArchetype || mapInfluence.forcedRoomArchetypeId || "";
+  const forceRoomArchetype = Boolean(mapInfluence.forceRoomArchetype || mapInfluence.force || mapInfluence.required || mapInfluence.forcedRoomArchetype || mapInfluence.forcedRoomArchetypeId);
+  const hasInfluence = Boolean(
+    roomArchetype ||
+      preferredRoomArchetypes.length ||
+      forbiddenRoomArchetypes.length ||
+      forceRoomArchetype ||
+      mapInfluence.weight ||
+      mapInfluence.source,
+  );
+  if (!hasInfluence) return null;
+  return {
+    ...(roomArchetype ? { roomArchetype } : {}),
+    ...(preferredRoomArchetypes.length ? { preferredRoomArchetypes } : {}),
+    ...(forbiddenRoomArchetypes.length ? { forbiddenRoomArchetypes } : {}),
+    ...(forceRoomArchetype ? { forceRoomArchetype } : {}),
+    ...(mapInfluence.weight ? { weight: Number(mapInfluence.weight) || mapInfluence.weight } : {}),
+    ...(mapInfluence.source ? { source: mapInfluence.source } : {}),
+  };
+}
+
 function getReferencedSourceAnchorIds(sourceAnchor, inspiration, components = []) {
   return [
     sourceAnchor?.id,
@@ -102,6 +137,28 @@ export function normalizeExportComponent(component = {}, sourceAnchor = {}) {
           : ["visibleAnomaly"],
   };
 
+  if (normalizedComponent.contentType === "location-component") {
+    const mapInfluence = normalizeMapInfluenceExport(
+      normalizedComponent.location?.mapInfluence || normalizedComponent.mapInfluence,
+    );
+    if (mapInfluence) {
+      normalizedComponent.location = {
+        ...(normalizedComponent.location || {}),
+        mapInfluence,
+      };
+    } else if (normalizedComponent.location?.mapInfluence) {
+      normalizedComponent.location = { ...(normalizedComponent.location || {}) };
+      delete normalizedComponent.location.mapInfluence;
+      if (!Object.keys(normalizedComponent.location).length) delete normalizedComponent.location;
+    }
+  }
+
+  if (normalizedComponent.contentType === "location-region" && normalizedComponent.locationRegion?.mapInfluence) {
+    const mapInfluence = normalizeMapInfluenceExport(normalizedComponent.locationRegion.mapInfluence);
+    if (mapInfluence) normalizedComponent.locationRegion.mapInfluence = mapInfluence;
+    else delete normalizedComponent.locationRegion.mapInfluence;
+  }
+
   if (normalizedComponent.contentType === "monster-graft") {
     const constraints = normalizeMonsterConstraintData(component);
     const anatomyGrants = normalizeMonsterGrantData(component);
@@ -123,6 +180,12 @@ export function normalizeExportComponent(component = {}, sourceAnchor = {}) {
       role: normalizedComponent.map.role || "side",
       size: normalizedComponent.map.size || "Medium",
       shape: normalizedComponent.map.shape || normalizedComponent.map.preferredShape || "standard",
+      roomArchetype:
+        normalizedComponent.map.roomArchetype ||
+        normalizedComponent.map.roomArchetypeId ||
+        normalizedComponent.map.archetype ||
+        "",
+      mapInfluence: normalizeMapInfluenceExport(normalizedComponent.map.mapInfluence || normalizedComponent.map.influence) || undefined,
       connectors: normalizedComponent.map.connectors ?? 1,
       density: normalizedComponent.map.density || "interactive",
       readAloud: normalizedComponent.map.readAloud || { compact: normalizedComponent.tableText || "", extended: normalizedComponent.tableText || "" },

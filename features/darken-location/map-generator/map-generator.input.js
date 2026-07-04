@@ -212,18 +212,30 @@ function normalizeRequestRegion(region, index) {
   ]
     .filter(Boolean)
     .map((item) => String(item).toLowerCase());
+  const declaredRoomArchetypeSource =
+    region.roomArchetypeSource ||
+    metadata.roomArchetypeSource ||
+    "";
+  const rawDirectRoomArchetype =
+    region.roomArchetype ||
+    region.roomArchetypeId ||
+    region.archetype ||
+    metadata.roomArchetype ||
+    metadata.roomArchetypeId ||
+    "";
+  const directRoomArchetype =
+    declaredRoomArchetypeSource === "map-influence" ? "" : rawDirectRoomArchetype;
   return {
     id: region.id || `region-${index + 1}`,
     name: region.label || region.name || `Location Region ${index + 1}`,
     role: region.role || "Location Region",
     preferredShape: region.shape || region.preferredShape || "rect",
-    roomArchetype:
-      region.roomArchetype ||
-      region.roomArchetypeId ||
-      region.archetype ||
-      metadata.roomArchetype ||
-      metadata.roomArchetypeId ||
-      "",
+    roomArchetype: directRoomArchetype,
+    roomArchetypeSource:
+      region.roomArchetypeSource ||
+      metadata.roomArchetypeSource ||
+      (directRoomArchetype ? "explicit" : ""),
+    mapInfluence: region.mapInfluence || metadata.mapInfluence || null,
     size: region.size || "Medium",
     connectors: Number(region.connectors || (index === 0 ? 2 : 1)),
     tags,
@@ -301,6 +313,22 @@ export function normalizeInput(config) {
       GENERATED_REGION_TEMPLATES[index % GENERATED_REGION_TEMPLATES.length];
     const source = baseRegions[index] || template || {};
     const tags = Array.isArray(source.tags) ? source.tags : [];
+    const declaredRoomArchetypeSource =
+      source.roomArchetypeSource ||
+      source.metadata?.roomArchetypeSource ||
+      source.requestMetadata?.roomArchetypeSource ||
+      "";
+    const rawDirectRoomArchetype =
+      source.roomArchetype ||
+      source.roomArchetypeId ||
+      source.archetype ||
+      source.metadata?.roomArchetype ||
+      source.metadata?.roomArchetypeId ||
+      source.requestMetadata?.roomArchetype ||
+      source.requestMetadata?.roomArchetypeId ||
+      "";
+    const directRoomArchetype =
+      declaredRoomArchetypeSource === "map-influence" ? "" : rawDirectRoomArchetype;
     return {
       id: source.id || `region-${index + 1}`,
       name: source.name || `Generated Region ${index + 1}`,
@@ -308,13 +336,13 @@ export function normalizeInput(config) {
         source.role ||
         (index === 0 ? "Entrance / Threshold" : "Location Region"),
       preferredShape: source.preferredShape || source.shape || "rect",
-      roomArchetype:
-        source.roomArchetype ||
-        source.roomArchetypeId ||
-        source.archetype ||
-        source.metadata?.roomArchetype ||
-        source.metadata?.roomArchetypeId ||
-        "",
+      roomArchetype: directRoomArchetype,
+      roomArchetypeSource:
+        source.roomArchetypeSource ||
+        source.metadata?.roomArchetypeSource ||
+        source.requestMetadata?.roomArchetypeSource ||
+        (directRoomArchetype ? "explicit" : ""),
+      mapInfluence: source.mapInfluence || source.metadata?.mapInfluence || source.requestMetadata?.mapInfluence || null,
       size: source.size || "Medium",
       connectors: Number(source.connectors || (index === 0 ? 2 : 1)),
       tags,
