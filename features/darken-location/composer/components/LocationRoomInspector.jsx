@@ -65,6 +65,68 @@ function getRoomSlotMapInfluenceLabel(row = {}) {
   if (!preferred) return `${influences.length} map influence${influences.length === 1 ? "" : "s"}`;
   return `${forced ? "Forces" : "Suggests"} ${titleCaseLabel(preferred)}`;
 }
+function getRoomSlotMapInfluenceTarget(row = {}) {
+  const sourceEntry = getRoomSlotMapInfluenceSource(row);
+  const influence = sourceEntry?.influence || null;
+  return [
+    influence?.roomArchetype,
+    influence?.roomArchetypeId,
+    influence?.forcedRoomArchetype,
+    influence?.forcedRoomArchetypeId,
+    ...toArray(influence?.preferredRoomArchetypes),
+    ...toArray(influence?.preferredRoomArchetypeIds),
+  ].filter(Boolean)[0] || "";
+}
+
+function getRoomMapInfluenceFact(entry = {}) {
+  const count = Number(entry?.mapInfluenceCount || 0);
+  if (count > 0) return `${count} Component${count === 1 ? "" : "s"}`;
+  if (entry?.roomArchetypeHasMapInfluence) return "Map Influence";
+  return "—";
+}
+
+function getRoomMapInfluenceStatus(entry = {}) {
+  if (entry?.roomArchetypeForced) return "Forced";
+  if (entry?.roomArchetypeHasMapInfluence) return "Suggested";
+  return "Auto";
+}
+
+
+function getRoomSlotMapInfluenceSource(row = {}) {
+  const components = toArray(row.components);
+  const entries = components
+    .map((component) => ({ component, influence: getComponentMapInfluence(component) }))
+    .filter((entry) => entry.influence);
+  if (!entries.length) return null;
+  const forced = entries.find(
+    ({ influence }) => influence.forceRoomArchetype || influence.force || influence.required,
+  );
+  return forced || entries[0];
+}
+
+function getRoomMapInfluenceNote(entry = {}, rows = []) {
+  if (!entry?.roomArchetypeHasMapInfluence) return "";
+  const sourceEntry = rows.map(getRoomSlotMapInfluenceSource).find(Boolean);
+  const influence = sourceEntry?.influence || null;
+  const component = sourceEntry?.component || null;
+  const target =
+    entry.roomArchetypeLabel ||
+    titleCaseLabel(
+      influence?.roomArchetype ||
+        influence?.roomArchetypeId ||
+        influence?.forcedRoomArchetype ||
+        influence?.forcedRoomArchetypeId ||
+        toArray(influence?.preferredRoomArchetypes)[0] ||
+        toArray(influence?.preferredRoomArchetypeIds)[0] ||
+        entry.roomArchetype ||
+        "",
+    );
+  const componentLabel = component?.title || component?.label || influence?.source || "assigned component";
+  const verb = influence?.forceRoomArchetype || influence?.force || influence?.required ? "forced" : "suggested";
+  return target
+    ? `Map influence ${verb} ${target} from ${componentLabel}.`
+    : `Map influence from ${componentLabel}.`;
+}
 
 
 export function LocationRoomInspector({
@@ -76,6 +138,7 @@ export function LocationRoomInspector({
 }) {
   const entry = getSelectedRoomProgramEntry(state, generatedMapPreview);
   const roomRows = entry ? getRoomSlotProgramRows(state, entry.id) : [];
+  const mapInfluenceNote = getRoomMapInfluenceNote(entry, roomRows);
   const activeSlotId = pickerOpen && isSlotInScope(activeSlot?.id || state.activeSlot, LOCATION_SLOT_SCOPE_REGION)
     ? activeSlot?.id || state.activeSlot
     : "";
@@ -116,19 +179,26 @@ export function LocationRoomInspector({
           <LocationInspectorFact label="Type" value={entry.roomTypeLabel} />
           <LocationInspectorFact label="Archetype" value={entry.roomArchetypeLabel || "Auto"} />
           <LocationInspectorFact label="Source" value={entry.roomArchetypeHasMapInfluence ? "Map Influence" : titleCaseLabel(entry.roomArchetypeSource || "Inferred")} />
+          <LocationInspectorFact label="Influence" value={getRoomMapInfluenceFact(entry)} />
+          <LocationInspectorFact label="Mode" value={getRoomMapInfluenceStatus(entry)} />
           <LocationInspectorFact label="Level" value={String(entry.level)} />
         </div>
+        {mapInfluenceNote ? <div className="location-room-inspector-note">{mapInfluenceNote}</div> : null}
       </section>
 
       <div className="location-room-inspector-slot-stack" role="list" aria-label="Room work slots">
           {roomRows.map((row) => {
             const Icon = getSlotIcon(row.slot.id);
             const active = activeSlotId === row.slot.id;
+            const mapInfluenceLabel = getRoomSlotMapInfluenceLabel(row);
+            const mapInfluenceTarget = getRoomSlotMapInfluenceTarget(row);
             return (
               <button
                 data-testid="dark-places-room-slot"
                 data-room-slot-id={row.slot.id}
                 data-room-slot-status={row.filled ? "filled" : row.missing ? "missing" : "optional"}
+                data-map-influence={mapInfluenceLabel ? "true" : "false"}
+                data-map-influence-target={mapInfluenceTarget}
                 className={cx(
                   "location-room-inspector-slot",
                   row.filled ? "is-filled" : "is-empty",
@@ -143,7 +213,7 @@ export function LocationRoomInspector({
                 onClick={() => focusSlot(row.slot.id)}
                 data-key="tooltip-generic"
                 data-tooltip={row.slot.label}
-                data-tooltip-description={row.filled ? "Open this filled room slot." : "Open a filtered component picker for this room slot."}
+                data-tooltip-description={mapInfluenceLabel || (row.filled ? "Open this filled room slot." : "Open a filtered component picker for this room slot.")}
               >
                 <span className="location-room-inspector-slot__head">
                   <span>
@@ -154,7 +224,7 @@ export function LocationRoomInspector({
                 </span>
                 <span className="location-room-inspector-slot__body">
                   <strong>{row.components[0]?.title || "Empty Slot"}</strong>
-                  <em>{getRoomSlotMapInfluenceLabel(row) || row.components[0]?.description || row.slot.description || "Choose component"}</em>
+                  <em>{mapInfluenceLabel || row.components[0]?.description || row.slot.description || "Choose component"}</em>
                 </span>
               </button>
             );

@@ -12,7 +12,7 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
-export const ROOM_ARCHETYPE_SCHEMA_VERSION = "room-archetype-v0.1";
+export const ROOM_ARCHETYPE_SCHEMA_VERSION = "room-archetype-v0.2";
 
 export const CRYPT_ROOM_ARCHETYPES = Object.freeze({
   "crypt-burial-cell": Object.freeze({
@@ -22,6 +22,8 @@ export const CRYPT_ROOM_ARCHETYPES = Object.freeze({
     contexts: Object.freeze(["crypt"]),
     shape: "rect",
     roomType: "none",
+    maskProfile: "burial-cell",
+    detailProfile: "burial-cell",
     sizeByPreset: Object.freeze({
       Tiny: Object.freeze({ minW: 3, maxW: 4, minH: 3, maxH: 4 }),
       Small: Object.freeze({ minW: 4, maxW: 5, minH: 3, maxH: 4 }),
@@ -38,6 +40,8 @@ export const CRYPT_ROOM_ARCHETYPES = Object.freeze({
     contexts: Object.freeze(["crypt", "chapel"]),
     shape: "alcove",
     roomType: "alcove",
+    maskProfile: "ossuary-gallery",
+    detailProfile: "ossuary-gallery",
     sizeByPreset: Object.freeze({
       Tiny: Object.freeze({ minW: 5, maxW: 6, minH: 3, maxH: 4 }),
       Small: Object.freeze({ minW: 6, maxW: 7, minH: 4, maxH: 4 }),
@@ -54,6 +58,8 @@ export const CRYPT_ROOM_ARCHETYPES = Object.freeze({
     contexts: Object.freeze(["crypt", "chapel"]),
     shape: "alcove",
     roomType: "alcove",
+    maskProfile: "reliquary-niche",
+    detailProfile: "reliquary-niche",
     sizeByPreset: Object.freeze({
       Tiny: Object.freeze({ minW: 3, maxW: 4, minH: 3, maxH: 4 }),
       Small: Object.freeze({ minW: 4, maxW: 5, minH: 3, maxH: 4 }),
@@ -70,6 +76,8 @@ export const CRYPT_ROOM_ARCHETYPES = Object.freeze({
     contexts: Object.freeze(["crypt"]),
     shape: "notched",
     roomType: "alcove",
+    maskProfile: "charnel-vault",
+    detailProfile: "charnel-vault",
     sizeByPreset: Object.freeze({
       Tiny: Object.freeze({ minW: 5, maxW: 6, minH: 4, maxH: 5 }),
       Small: Object.freeze({ minW: 6, maxW: 7, minH: 5, maxH: 5 }),
@@ -84,8 +92,10 @@ export const CRYPT_ROOM_ARCHETYPES = Object.freeze({
     label: "Sealed Family Tomb",
     family: "crypt",
     contexts: Object.freeze(["crypt", "noble-house"]),
-    shape: "notched",
+    shape: "rect",
     roomType: "none",
+    maskProfile: "sealed-family-tomb",
+    detailProfile: "sealed-family-tomb",
     sizeByPreset: Object.freeze({
       Tiny: Object.freeze({ minW: 4, maxW: 5, minH: 3, maxH: 4 }),
       Small: Object.freeze({ minW: 5, maxW: 6, minH: 4, maxH: 5 }),
@@ -102,6 +112,8 @@ export const CRYPT_ROOM_ARCHETYPES = Object.freeze({
     contexts: Object.freeze(["crypt", "chapel"]),
     shape: "hall",
     roomType: "none",
+    maskProfile: "processional-crypt-hall",
+    detailProfile: "processional-crypt-hall",
     sizeByPreset: Object.freeze({
       Tiny: Object.freeze({ minW: 6, maxW: 7, minH: 3, maxH: 3 }),
       Small: Object.freeze({ minW: 7, maxW: 9, minH: 3, maxH: 4 }),
@@ -118,6 +130,8 @@ export const CRYPT_ROOM_ARCHETYPES = Object.freeze({
     contexts: Object.freeze(["crypt", "chapel"]),
     shape: "shaft",
     roomType: "none",
+    maskProfile: "bone-well",
+    detailProfile: "bone-well",
     sizeByPreset: Object.freeze({
       Tiny: Object.freeze({ minW: 4, maxW: 5, minH: 4, maxH: 5 }),
       Small: Object.freeze({ minW: 5, maxW: 6, minH: 5, maxH: 6 }),
@@ -134,6 +148,8 @@ export const CRYPT_ROOM_ARCHETYPES = Object.freeze({
     contexts: Object.freeze(["crypt", "chapel"]),
     shape: "archive",
     roomType: "archive",
+    maskProfile: "hidden-reliquary",
+    detailProfile: "hidden-reliquary",
     sizeByPreset: Object.freeze({
       Tiny: Object.freeze({ minW: 4, maxW: 5, minH: 3, maxH: 4 }),
       Small: Object.freeze({ minW: 5, maxW: 6, minH: 4, maxH: 4 }),
@@ -263,7 +279,30 @@ function findFallbackRoomArchetypeId(preferredIds = [], contextKey = "crypt", fo
   return uniqueRoomArchetypeIds(preferredIds).find((id) => isRoomArchetypeUsable(id, contextKey, forbiddenIds)) || "";
 }
 
+function createMapInfluenceFingerprint(influence = {}) {
+  if (!influence || typeof influence !== "object" || Array.isArray(influence)) return "";
+  return JSON.stringify({
+    roomArchetype: influence.roomArchetype || influence.roomArchetypeId || "",
+    forcedRoomArchetype: influence.forcedRoomArchetype || influence.forcedRoomArchetypeId || "",
+    preferredRoomArchetypes: uniqueRoomArchetypeIds([
+      influence.preferredRoomArchetype,
+      influence.preferredRoomArchetypeId,
+      ...asList(influence.preferredRoomArchetypes),
+      ...asList(influence.preferredRoomArchetypeIds),
+    ]),
+    forbiddenRoomArchetypes: uniqueRoomArchetypeIds([
+      influence.forbiddenRoomArchetype,
+      influence.forbiddenRoomArchetypeId,
+      ...asList(influence.forbiddenRoomArchetypes),
+      ...asList(influence.forbiddenRoomArchetypeIds),
+    ]),
+    forceRoomArchetype: Boolean(influence.forceRoomArchetype || influence.force || influence.required),
+    source: asList(influence.sources).join("|") || influence.source || "",
+  });
+}
+
 function getRegionMapInfluenceSources(region = {}) {
+  const seen = new Set();
   return [
     region.mapInfluence,
     region.location?.mapInfluence,
@@ -271,7 +310,13 @@ function getRegionMapInfluenceSources(region = {}) {
     region.map?.mapInfluence,
     region.metadata?.mapInfluence,
     region.requestMetadata?.mapInfluence,
-  ].filter(Boolean);
+  ].filter((influence) => {
+    if (!influence) return false;
+    const fingerprint = createMapInfluenceFingerprint(influence);
+    if (seen.has(fingerprint)) return false;
+    seen.add(fingerprint);
+    return true;
+  });
 }
 
 function getDeclaredRoomArchetypeSource(region = {}) {
@@ -885,7 +930,7 @@ export function getFallbackMapAccessIntent(region, generatedMap) {
 
 export function getRegionSemanticFlags(region) {
   const text =
-    `${region.role || ""} ${(region.tags || []).join(" ")} ${(region.sourceAnchors || []).join(" ")} ${region.name || ""} ${region.roomType || ""} ${region.shape || ""}`.toLowerCase();
+    `${region.role || ""} ${(region.tags || []).join(" ")} ${(region.sourceAnchors || []).join(" ")} ${region.name || ""} ${region.roomType || ""} ${region.shape || ""} ${region.roomArchetype || ""} ${region.roomArchetypeLabel || ""} ${region.shapeOptions?.archetypeId || ""}`.toLowerCase();
   return {
     archive:
       text.includes("archive") ||

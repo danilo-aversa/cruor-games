@@ -531,7 +531,7 @@ function generateMapSingle(config) {
   const generatedGraph = buildPlacementGraph(config, rng);
   const graphConfig = {
     ...config,
-    regions: annotateRegionsWithGraphMetadata(config.regions, generatedGraph),
+    regions: annotateRegionsWithGraphMetadata(config.regions, generatedGraph, config),
   };
   const placedRegions = placeRegions(graphConfig, generatedGraph, rng);
   const centeredRegions = centerAutoPlacedRegions(placedRegions, graphConfig);

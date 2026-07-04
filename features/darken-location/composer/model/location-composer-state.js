@@ -172,14 +172,31 @@ export function assignComponentToSlot(state, component, slot, target = {}) {
   };
 }
 
-export function removeComponentFromSlot(state, componentId, slotId = "") {
+function assignmentMatchesTarget(assignment, target) {
+  if (!target) return true;
+
+  const assignmentScope = assignment?.regionId
+    ? LOCATION_SLOT_SCOPE_REGION
+    : LOCATION_SLOT_SCOPE_MAP;
+
+  if (target.scope !== assignmentScope) return false;
+  if (target.scope === LOCATION_SLOT_SCOPE_REGION) {
+    return String(assignment?.regionId || "") === String(target.regionId || "");
+  }
+
+  return !assignment?.regionId;
+}
+
+export function removeComponentFromSlot(state, componentId, slotId = "", target = null) {
   const normalizedAssignments = normalizeSlotAssignments(state.slotAssignments);
+  const normalizedTarget = target ? normalizeAssignmentTarget(state, target) : null;
   const nextSlotAssignmentsMap = Object.fromEntries(
     Object.entries(normalizedAssignments).map(([currentSlotId, assignments]) => [
       currentSlotId,
       assignments.filter((assignment) => {
         if (slotId && currentSlotId !== slotId) return true;
-        return assignment.componentId !== componentId;
+        if (assignment.componentId !== componentId) return true;
+        return !assignmentMatchesTarget(assignment, normalizedTarget);
       }),
     ]),
   );

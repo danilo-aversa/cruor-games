@@ -52,8 +52,53 @@ function getMapInfluenceForbiddenArchetypes(influence = null) {
 function getMapInfluenceLabel(influence = null) {
   const archetype = getMapInfluenceArchetypes(influence)[0];
   if (!archetype) return "";
-  const forced = Boolean(influence?.forceRoomArchetype || influence?.force || influence?.required || influence?.forcedRoomArchetype || influence?.forcedRoomArchetypeId);
+  const forced = isForcedMapInfluence(influence);
   return `${forced ? "Forces" : "Suggests"} ${formatLocationMetaToken(archetype)}`;
+}
+
+function isForcedMapInfluence(influence = null) {
+  return Boolean(
+    influence?.forceRoomArchetype ||
+      influence?.force ||
+      influence?.required ||
+      influence?.forcedRoomArchetype ||
+      influence?.forcedRoomArchetypeId,
+  );
+}
+
+function getMapInfluencePrimaryArchetype(influence = null) {
+  return getMapInfluenceArchetypes(influence)[0] || "";
+}
+
+function getMapInfluencePreviewText(influence = null, regionScoped = false) {
+  const archetype = getMapInfluencePrimaryArchetype(influence);
+  if (!archetype) return "";
+  const verb = isForcedMapInfluence(influence) ? "will force" : "can suggest";
+  const target = regionScoped ? "this room" : "a room";
+  return `Map preview: adding this ${verb} ${formatLocationMetaToken(archetype)} for ${target}.`;
+}
+
+function getTargetRoomLabel(activeRegion = null, generatedRoom = null) {
+  return activeRegion?.name || activeRegion?.label || generatedRoom?.name || generatedRoom?.label || "Selected room";
+}
+
+function getTargetRoomArchetypeLabel(activeRegion = null, generatedRoom = null) {
+  const resolution = generatedRoom?.roomArchetypeResolution || {};
+  const label =
+    resolution.resolvedRoomArchetypeLabel ||
+    generatedRoom?.roomArchetypeLabel ||
+    activeRegion?.roomArchetypeLabel ||
+    activeRegion?.locationRegion?.roomArchetypeLabel ||
+    "";
+  const id =
+    resolution.resolvedRoomArchetype ||
+    generatedRoom?.roomArchetype ||
+    activeRegion?.roomArchetype ||
+    activeRegion?.roomArchetypeId ||
+    activeRegion?.locationRegion?.roomArchetype ||
+    activeRegion?.map?.roomArchetype ||
+    "";
+  return label || (id ? formatLocationMetaToken(id) : "Auto");
 }
 
 function toArray(value) {
@@ -500,6 +545,9 @@ function LocationComponentCard({
   const mapInfluenceLabel = getMapInfluenceLabel(mapInfluence);
   const mapInfluenceArchetypes = getMapInfluenceArchetypes(mapInfluence);
   const forbiddenArchetypes = getMapInfluenceForbiddenArchetypes(mapInfluence);
+  const mapInfluencePrimaryArchetype = getMapInfluencePrimaryArchetype(mapInfluence);
+  const mapInfluencePreviewText = getMapInfluencePreviewText(mapInfluence, regionScoped);
+  const mapInfluenceMode = mapInfluenceLabel ? (isForcedMapInfluence(mapInfluence) ? "forced" : "suggested") : "none";
   const compatibilityReasons = getDecisionReasonLabels(decision, slot, regionScoped);
 
   return (
@@ -513,6 +561,9 @@ function LocationComponentCard({
         compatibility?.kind && `compatibility-${compatibility.kind}`,
       )}
       data-decision-tier={decisionTier}
+      data-map-influence={mapInfluenceLabel ? "true" : "false"}
+      data-map-influence-mode={mapInfluenceMode}
+      data-map-influence-target={mapInfluencePrimaryArchetype}
       data-testid="dark-places-component-card"
       draggable={!selected}
       key={getComponentKey(component)}
@@ -537,6 +588,7 @@ function LocationComponentCard({
       </div>
 
       {getComponentSummary(component) ? <p className="summary">{getComponentSummary(component)}</p> : null}
+      {mapInfluencePreviewText ? <p className="compatibility-note" data-map-influence-preview="true">{mapInfluencePreviewText}</p> : null}
       {replaceAction ? <p className="compatibility-note">This slot is full. Remove a component first.</p> : null}
 
       <div
@@ -810,6 +862,11 @@ export function LocationComponentPickerModal({
       });
   }, [assignedComponents.length, assignedIds, decisionProfile, regionScoped, slotMatchProfile, visibleComponents]);
 
+  const mapShapingCount = useMemo(
+    () => rankedDecisions.filter((decision) => Boolean(getComponentMapInfluence(decision.component))).length,
+    [rankedDecisions],
+  );
+
   const recommendedDecisions = useMemo(() => {
     return rankedDecisions
       .filter((decision) => !assignedIds.has(decision.component.id))
@@ -859,6 +916,9 @@ export function LocationComponentPickerModal({
         ...rowsFor(bestFitDecisions, "best-picks"),
       ];
     }
+    if (pickFilter === "map-shaping") {
+      return allRows.filter(({ decision }) => Boolean(getComponentMapInfluence(decision.component)));
+    }
     if (pickFilter === "safe") {
       return allRows.filter(({ decision }) => {
         const impact = getLocationComponentImpact(decision.component, decision);
@@ -904,6 +964,11 @@ export function LocationComponentPickerModal({
   const drawerTitle = regionScoped
     ? slotContext.slotActionLabel
     : `Choose Map ${slot.label}`;
+  const targetRoomLabel = regionScoped ? getTargetRoomLabel(activeRegion, generatedRoom) : "Map-wide build";
+  const targetRoomArchetypeLabel = regionScoped ? getTargetRoomArchetypeLabel(activeRegion, generatedRoom) : "Any room";
+  const targetPreviewText = regionScoped
+    ? `${targetRoomLabel} · current archetype: ${targetRoomArchetypeLabel} · ${mapShapingCount} map-shaping pick${mapShapingCount === 1 ? "" : "s"}`
+    : `${mapShapingCount} component${mapShapingCount === 1 ? "" : "s"} can influence room shape when assigned to a room.`;
   function renderComponentCard(decision, tier = "matching", itemKey = null) {
     const component = decision?.component || decision;
     const selected = assignedIds.has(component.id);
@@ -950,6 +1015,7 @@ export function LocationComponentPickerModal({
             <div className="component-navigator-modal__head-copy">
               <h2>{drawerTitle}</h2>
               {regionScoped ? <p>{slotContext.slotDescription}</p> : null}
+              <p data-map-influence-target-preview="true">{targetPreviewText}</p>
             </div>
             <div className="component-navigator-modal__head-actions">
               <button
@@ -1064,6 +1130,7 @@ export function LocationComponentPickerModal({
                         ["all", "All Components"],
                         ["best-picks", "Best Picks"],
                         ["recommended", "Recommended"],
+                        ["map-shaping", "Map Shaping"],
                         ["safe", "Safe"],
                         ["spicy", "Spicy"],
                       ].map(([value, label]) => (

@@ -58,6 +58,74 @@ const COMPONENT_TYPE_BY_SLOT = Object.freeze({
 
 const REGION_SCOPED_SLOT_IDS = new Set(["hazard", "clue", "encounterTwist"]);
 
+
+const LOCATION_COMPONENT_MAP_INFLUENCE_BY_ID = Object.freeze({
+  "places-hazard-weight-sermon-slab": {
+    preferredRoomArchetypes: ["processional-crypt-hall"],
+    weight: 2,
+  },
+  "places-hazard-reliquary-tripwire": {
+    preferredRoomArchetypes: ["reliquary-niche"],
+    weight: 3,
+  },
+  "places-hazard-lime-pocket-collapse": {
+    preferredRoomArchetypes: ["charnel-vault", "bone-well"],
+    forbiddenRoomArchetypes: ["reliquary-niche"],
+    weight: 2,
+  },
+  "places-hazard-gas-bloat-vent": {
+    preferredRoomArchetypes: ["bone-well", "charnel-vault"],
+    forbiddenRoomArchetypes: ["processional-crypt-hall"],
+    weight: 2,
+  },
+  "places-clue-miscounted-skull-row": {
+    preferredRoomArchetypes: ["ossuary-gallery"],
+    weight: 3,
+  },
+  "places-clue-bone-chandelier-map": {
+    preferredRoomArchetypes: ["processional-crypt-hall", "hidden-reliquary"],
+    weight: 2,
+  },
+  "places-clue-insect-free-corpse": {
+    preferredRoomArchetypes: ["crypt-burial-cell", "charnel-vault"],
+    weight: 2,
+  },
+  "places-clue-rot-timeline-wall": {
+    preferredRoomArchetypes: ["sealed-family-tomb", "hidden-reliquary"],
+    weight: 2,
+  },
+});
+
+const LOCATION_REGION_ROOM_ARCHETYPE_BY_ID = Object.freeze({
+  "reliquary-threshold-ossuary": "reliquary-niche",
+  "bone-chandelier-nave": "processional-crypt-hall",
+  "grave-wax-sump": "bone-well",
+  "rot-ledger-archive": "hidden-reliquary",
+});
+
+const LOCATION_REGION_MAP_INFLUENCE_BY_ID = Object.freeze({
+  "reliquary-threshold-ossuary": {
+    preferredRoomArchetypes: ["reliquary-niche", "processional-crypt-hall"],
+    forceRoomArchetype: true,
+    weight: 4,
+  },
+  "bone-chandelier-nave": {
+    preferredRoomArchetypes: ["processional-crypt-hall", "ossuary-gallery"],
+    forceRoomArchetype: true,
+    weight: 4,
+  },
+  "grave-wax-sump": {
+    preferredRoomArchetypes: ["bone-well", "charnel-vault"],
+    forceRoomArchetype: true,
+    weight: 4,
+  },
+  "rot-ledger-archive": {
+    preferredRoomArchetypes: ["hidden-reliquary", "sealed-family-tomb"],
+    forceRoomArchetype: true,
+    weight: 4,
+  },
+});
+
 function asArray(value) {
   if (!value) return [];
   return Array.isArray(value) ? value.filter(Boolean) : [value].filter(Boolean);
@@ -65,6 +133,79 @@ function asArray(value) {
 
 function uniqueArray(values = []) {
   return [...new Set(asArray(values).map((value) => String(value).trim()).filter(Boolean))];
+}
+
+function normalizeMapInfluenceDefinition(value, { source = "", title = "" } = {}) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const preferredRoomArchetypes = uniqueArray([
+    value.preferredRoomArchetype,
+    value.preferredRoomArchetypeId,
+    ...asArray(value.preferredRoomArchetypes),
+    ...asArray(value.preferredRoomArchetypeIds),
+  ]);
+  const forbiddenRoomArchetypes = uniqueArray([
+    value.forbiddenRoomArchetype,
+    value.forbiddenRoomArchetypeId,
+    ...asArray(value.forbiddenRoomArchetypes),
+    ...asArray(value.forbiddenRoomArchetypeIds),
+  ]);
+  const directRoomArchetype = String(value.roomArchetype || value.roomArchetypeId || "").trim();
+  const forcedRoomArchetype = String(value.forcedRoomArchetype || value.forcedRoomArchetypeId || "").trim();
+  const weight = Number(value.weight ?? value.priority ?? 1);
+  const sources = uniqueArray([
+    ...asArray(value.sources),
+    value.source,
+    source,
+    title,
+  ]);
+  const hasInfluence = Boolean(
+    directRoomArchetype ||
+      forcedRoomArchetype ||
+      preferredRoomArchetypes.length ||
+      forbiddenRoomArchetypes.length ||
+      value.forceRoomArchetype ||
+      value.force ||
+      value.required,
+  );
+  if (!hasInfluence) return undefined;
+  return Object.freeze({
+    ...(directRoomArchetype ? { roomArchetype: directRoomArchetype } : {}),
+    ...(forcedRoomArchetype ? { forcedRoomArchetype } : {}),
+    ...(preferredRoomArchetypes.length ? { preferredRoomArchetypes } : {}),
+    ...(forbiddenRoomArchetypes.length ? { forbiddenRoomArchetypes } : {}),
+    forceRoomArchetype: Boolean(value.forceRoomArchetype || value.force || value.required || forcedRoomArchetype),
+    weight: Number.isFinite(weight) ? weight : 1,
+    source: sources[0] || source,
+    sources,
+  });
+}
+
+function getLocationComponentMapInfluence(blueprint) {
+  return normalizeMapInfluenceDefinition(LOCATION_COMPONENT_MAP_INFLUENCE_BY_ID[blueprint.id] || blueprint.mapInfluence, {
+    source: blueprint.id,
+    title: blueprint.title,
+  });
+}
+
+function getLocationRegionRoomArchetype(blueprint) {
+  return String(
+    blueprint.roomArchetype ||
+      blueprint.roomArchetypeId ||
+      LOCATION_REGION_ROOM_ARCHETYPE_BY_ID[blueprint.id] ||
+      "",
+  ).trim();
+}
+
+function getLocationRegionMapInfluence(blueprint) {
+  const roomArchetype = getLocationRegionRoomArchetype(blueprint);
+  const influence = LOCATION_REGION_MAP_INFLUENCE_BY_ID[blueprint.id] || blueprint.mapInfluence || null;
+  return normalizeMapInfluenceDefinition(
+    influence || (roomArchetype ? { preferredRoomArchetypes: [roomArchetype], forceRoomArchetype: true, weight: 3 } : null),
+    {
+      source: `location-region:${blueprint.id}`,
+      title: blueprint.title,
+    },
+  );
 }
 
 function slugify(value) {
@@ -4314,6 +4455,7 @@ function createLocationComponent(blueprint) {
   const sourceTypes = uniqueArray([...(sourceMetadata.sourceTypes || []), ...(blueprint.sourceTypes || [])]);
   const outputSection = OUTPUT_SECTION_BY_SLOT[slot] || COMPONENT_TYPE_BY_SLOT[slot] || "Location Component";
   const componentType = COMPONENT_TYPE_BY_SLOT[slot] || "Location Component";
+  const mapInfluence = getLocationComponentMapInfluence(blueprint);
 
   return Object.freeze({
     id: blueprint.id,
@@ -4351,6 +4493,7 @@ function createLocationComponent(blueprint) {
       gmFacingOnly: blueprint.tableRole === "gm-facing" || Boolean(blueprint.mechanics),
       tableRole: blueprint.tableRole || (blueprint.mechanics ? "rules" : "read-aloud"),
       rules: blueprint.mechanics ? { text: blueprint.mechanics } : null,
+      ...(mapInfluence ? { mapInfluence } : {}),
       migration: {
         source: "shared/content/content-packs/dark-places-canonical-expansion-pack.js",
         legacyId: "",
@@ -4383,6 +4526,8 @@ function createLocationRegion(blueprint) {
     compact: blueprint.compact || blueprint.feature || "",
     extended: blueprint.extended || blueprint.compact || blueprint.feature || "",
   };
+  const roomArchetype = getLocationRegionRoomArchetype(blueprint);
+  const mapInfluence = getLocationRegionMapInfluence(blueprint);
 
   return Object.freeze({
     id: `location-region-${templateId}`,
@@ -4408,6 +4553,8 @@ function createLocationRegion(blueprint) {
       role: blueprint.role || "Location Region",
       size: blueprint.size || "Medium",
       shape: blueprint.shape || "room",
+      ...(roomArchetype ? { roomArchetype } : {}),
+      ...(mapInfluence ? { mapInfluence } : {}),
       connectors: Number(blueprint.connectors || 1),
       density: blueprint.density || "interactive",
       readAloud,
@@ -4418,6 +4565,8 @@ function createLocationRegion(blueprint) {
       role: blueprint.role || "Location Region",
       shape: blueprint.shape || "room",
       preferredShape: blueprint.preferredShape || blueprint.shape || "room",
+      ...(roomArchetype ? { roomArchetype } : {}),
+      ...(mapInfluence ? { mapInfluence } : {}),
       size: blueprint.size || "Medium",
       connectors: Number(blueprint.connectors || 1),
       density: blueprint.density || "interactive",

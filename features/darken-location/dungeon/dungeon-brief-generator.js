@@ -61,6 +61,12 @@ function normalizeMapInfluence(value = {}) {
     ...asArray(value.forbiddenRoomArchetypes),
     ...asArray(value.forbiddenRoomArchetypeIds),
   ]);
+  const sources = unique([
+    ...asArray(value.sources),
+    value.source,
+    value.componentId,
+    value.componentTitle,
+  ]);
   const hasInfluence = Boolean(
     directRoomArchetype ||
       preferredRoomArchetypes.length ||
@@ -76,7 +82,8 @@ function normalizeMapInfluence(value = {}) {
     forbiddenRoomArchetypes,
     forceRoomArchetype: Boolean(value.forceRoomArchetype || value.force || value.required || forcedRoomArchetype),
     weight: normalizeNumber(value.weight ?? value.priority, 1),
-    source: normalizeString(value.source || value.componentId || value.componentTitle),
+    source: sources[0] || "",
+    sources,
   };
 }
 
@@ -118,7 +125,7 @@ function mergeMapInfluences(influences = []) {
     forbiddenRoomArchetypes: unique(ordered.flatMap((item) => item.forbiddenRoomArchetypes)),
     forceRoomArchetype: ordered.some((item) => item.forceRoomArchetype),
     weight: ordered.reduce((sum, item) => sum + normalizeNumber(item.weight, 1), 0),
-    sources: unique(ordered.map((item) => item.source)),
+    sources: unique(ordered.flatMap((item) => [...asArray(item.sources), item.source])),
   };
 }
 
@@ -247,29 +254,29 @@ function normalizeRegionToRoomBrief(region, index, assignedComponents = [], them
   const roomSlotComponents = regionComponents.filter((component) => ROOM_SLOT_IDS.has(component.slotId));
   const regionLocation = isPlainObject(region.locationRegion) ? region.locationRegion : {};
   const regionMap = isPlainObject(region.map) ? region.map : {};
+  const declaredRoomArchetypeSource = normalizeString(
+    region.roomArchetypeSource ||
+      region.metadata?.roomArchetypeSource ||
+      region.requestMetadata?.roomArchetypeSource,
+  );
+  const rawDirectRoomArchetype =
+    region.roomArchetype ||
+    region.roomArchetypeId ||
+    region.archetype ||
+    regionLocation.roomArchetype ||
+    regionLocation.roomArchetypeId ||
+    regionMap.roomArchetype ||
+    regionMap.roomArchetypeId ||
+    "";
+  const directRoomArchetype = normalizeString(
+    declaredRoomArchetypeSource === "map-influence" ? "" : rawDirectRoomArchetype,
+  );
   const regionMapInfluence = normalizeMapInfluence({
     ...(getMapInfluenceSource(region) || {}),
-    roomArchetype:
-      region.roomArchetype ||
-      region.roomArchetypeId ||
-      region.archetype ||
-      regionLocation.roomArchetype ||
-      regionLocation.roomArchetypeId ||
-      regionMap.roomArchetype ||
-      regionMap.roomArchetypeId ||
-      "",
+    roomArchetype: rawDirectRoomArchetype,
   });
   const componentInfluences = regionComponents.map((component) => component.mapInfluence).filter(Boolean);
   const mapInfluence = mergeMapInfluences([regionMapInfluence, ...componentInfluences]);
-  const directRoomArchetype = normalizeString(
-    region.roomArchetype ||
-      region.roomArchetypeId ||
-      region.archetype ||
-      regionLocation.roomArchetype ||
-      regionLocation.roomArchetypeId ||
-      regionMap.roomArchetype ||
-      regionMap.roomArchetypeId,
-  );
   const roomArchetype = normalizeString(directRoomArchetype || getRoomArchetypeFromMapInfluence(mapInfluence));
   const roomArchetypeSource = directRoomArchetype ? "explicit" : roomArchetype ? "map-influence" : "";
   const tags = [

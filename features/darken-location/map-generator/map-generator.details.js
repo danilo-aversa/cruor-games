@@ -1141,6 +1141,11 @@ export function makeProp(region, kind, cell, config, index, options = {}) {
     size: config.gridSize * (options.sizeScale || 1),
     rotation: Number.isFinite(options.rotation) ? options.rotation : 0,
     sourceAnchors: region.sourceAnchors || [],
+    ...(options.archetypeCue ? { archetypeCue: options.archetypeCue } : {}),
+    ...(options.detailProfile ? { detailProfile: options.detailProfile } : {}),
+    ...(options.archetypeSignature || options.signature
+      ? { archetypeSignature: true }
+      : {}),
   };
 }
 
@@ -1454,8 +1459,142 @@ export function createRuinsPropPlan(region, flags, budget) {
   ].slice(0, budget);
 }
 
+
+export function getRegionDetailProfile(region = {}) {
+  return String(
+    region.shapeOptions?.detailProfile ||
+      region.shapeOptions?.archetypeId ||
+      region.roomArchetype ||
+      "",
+  ).trim();
+}
+
+export function tagArchetypePropPlan(plan, profile) {
+  return plan.map((item, index) => ({
+    ...item,
+    archetypeCue: profile,
+    detailProfile: profile,
+    archetypeSignature: index === 0 || Boolean(item.archetypeSignature),
+  }));
+}
+
+export function createCryptArchetypePropPlan(region, budget, rng) {
+  const profile = getRegionDetailProfile(region);
+  const axis = getRoomAxis(region);
+  const alongRotation = axis === "horizontal" ? 0 : 90;
+  const crossRotation = axis === "horizontal" ? 90 : 0;
+
+  if (profile === "bone-well") {
+    return tagArchetypePropPlan([
+      { kind: "bone-well-rim", rx: 0.5, ry: 0.5, rotation: 0, sizeScale: 1.2 },
+      { kind: "bones", rx: 0.32, ry: 0.34, rotation: 0 },
+      { kind: "bones", rx: 0.68, ry: 0.66, rotation: 90 },
+      { kind: "pillar", rx: 0.5, ry: 0.22, rotation: 0 },
+      { kind: "pillar", rx: 0.5, ry: 0.78, rotation: 0 },
+    ].slice(0, budget), profile);
+  }
+
+  if (profile === "ossuary-gallery") {
+    const count = clamp(budget, 1, 8);
+    return tagArchetypePropPlan(Array.from({ length: count }, (_, index) => {
+      const t = count === 1 ? 0.5 : 0.14 + index * (0.72 / Math.max(1, count - 1));
+      const nearWall = index % 2 === 0;
+      if (index === 0) {
+        return axis === "horizontal"
+          ? { kind: "ossuary-niche-row", rx: t, ry: nearWall ? 0.2 : 0.8, rotation: alongRotation, sizeScale: 0.94 }
+          : { kind: "ossuary-niche-row", rx: nearWall ? 0.2 : 0.8, ry: t, rotation: alongRotation + 90, sizeScale: 0.94 };
+      }
+      return axis === "horizontal"
+        ? {
+            kind: index % 3 === 1 ? "tomb" : "bones",
+            rx: t,
+            ry: nearWall ? 0.22 : 0.78,
+            rotation: alongRotation,
+            sizeScale: 0.92,
+          }
+        : {
+            kind: index % 3 === 1 ? "tomb" : "bones",
+            rx: nearWall ? 0.22 : 0.78,
+            ry: t,
+            rotation: alongRotation,
+            sizeScale: 0.92,
+          };
+    }), profile);
+  }
+
+  if (profile === "reliquary-niche") {
+    return tagArchetypePropPlan([
+      { kind: "reliquary-shrine", rx: 0.5, ry: 0.52, rotation: crossRotation, sizeScale: 0.92 },
+      { kind: "statue", rx: 0.5, ry: 0.24, rotation: 0, sizeScale: 0.82 },
+      { kind: "pillar", rx: 0.25, ry: 0.72, rotation: 0, sizeScale: 0.82 },
+      { kind: "pillar", rx: 0.75, ry: 0.72, rotation: 0, sizeScale: 0.82 },
+    ].slice(0, budget), profile);
+  }
+
+  if (profile === "hidden-reliquary") {
+    return tagArchetypePropPlan([
+      { kind: "hidden-relic-cache", rx: 0.58, ry: 0.52, rotation: crossRotation, sizeScale: 0.92 },
+      { kind: "shelf", rx: 0.14, ry: 0.3, rotation: 90 },
+      { kind: "shelf", rx: 0.14, ry: 0.7, rotation: 90 },
+      { kind: "chest", rx: 0.76, ry: 0.28, rotation: 0 },
+      { kind: "scroll-table", rx: 0.5, ry: 0.5, rotation: 0, sizeScale: 0.86 },
+    ].slice(0, budget), profile);
+  }
+
+  if (profile === "charnel-vault") {
+    return tagArchetypePropPlan([
+      { kind: "charnel-heap", rx: 0.48, ry: 0.48, rotation: randomInt(rng, 0, 3) * 90, sizeScale: 1.16 },
+      { kind: "bones", rx: 0.28, ry: 0.64, rotation: 0 },
+      { kind: "rubble", rx: 0.68, ry: 0.34, rotation: 0 },
+      { kind: "crack", rx: 0.72, ry: 0.72, rotation: 0 },
+      { kind: "fog", rx: 0.36, ry: 0.28, rotation: 0, sizeScale: 0.9 },
+    ].slice(0, budget), profile);
+  }
+
+  if (profile === "sealed-family-tomb") {
+    return tagArchetypePropPlan([
+      { kind: "sealed-tomb-slab", rx: 0.5, ry: 0.5, rotation: alongRotation, sizeScale: 1.16 },
+      { kind: "statue", rx: 0.24, ry: 0.28, rotation: 0, sizeScale: 0.82 },
+      { kind: "statue", rx: 0.76, ry: 0.28, rotation: 0, sizeScale: 0.82 },
+      { kind: "pillar", rx: 0.24, ry: 0.76, rotation: 0, sizeScale: 0.82 },
+      { kind: "pillar", rx: 0.76, ry: 0.76, rotation: 0, sizeScale: 0.82 },
+    ].slice(0, budget), profile);
+  }
+
+  if (profile === "processional-crypt-hall") {
+    const longCount = clamp(Math.floor((axis === "horizontal" ? region.cellRect.w : region.cellRect.h) / 3), 2, 5);
+    const plan = [];
+    for (let index = 0; index < longCount; index += 1) {
+      const t = longCount === 1 ? 0.5 : 0.18 + index * (0.64 / Math.max(1, longCount - 1));
+      if (axis === "horizontal") {
+        plan.push({ kind: "pillar", rx: t, ry: 0.28, rotation: 0, sizeScale: 0.82 });
+        plan.push({ kind: "pillar", rx: t, ry: 0.72, rotation: 0, sizeScale: 0.82 });
+      } else {
+        plan.push({ kind: "pillar", rx: 0.28, ry: t, rotation: 0, sizeScale: 0.82 });
+        plan.push({ kind: "pillar", rx: 0.72, ry: t, rotation: 0, sizeScale: 0.82 });
+      }
+    }
+    plan.unshift({ kind: "processional-axis", rx: 0.5, ry: 0.5, rotation: alongRotation, sizeScale: 1.18 });
+    if (budget > plan.length) plan.push({ kind: "bones", rx: 0.5, ry: 0.5, rotation: alongRotation, sizeScale: 0.9 });
+    return tagArchetypePropPlan(plan.slice(0, budget), profile);
+  }
+
+  if (profile === "burial-cell" || profile === "crypt-burial-cell") {
+    return tagArchetypePropPlan([
+      { kind: "burial-slab", rx: 0.5, ry: 0.5, rotation: alongRotation, sizeScale: 1.04 },
+      { kind: "bones", rx: 0.28, ry: 0.5, rotation: 0, sizeScale: 0.86 },
+      { kind: "pillar", rx: 0.78, ry: 0.5, rotation: 0, sizeScale: 0.8 },
+    ].slice(0, budget), profile);
+  }
+
+  return null;
+}
+
 export function createCryptPropPlan(region, flags, budget, rng) {
   const role = getPlacementRole(region);
+  const archetypePlan = createCryptArchetypePropPlan(region, budget, rng);
+  if (archetypePlan) return archetypePlan;
+
   const area = Math.max(
     1,
     region.floorCells?.length || region.cellRect.w * region.cellRect.h,

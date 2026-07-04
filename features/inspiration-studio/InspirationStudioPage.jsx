@@ -35,7 +35,7 @@ import {
 } from "./model/studio-component-normalizers.js";
 import {
   EMPTY_DRAFT,
-  buildComponentTemplate,
+  buildComponentTemplates,
   getModuleComponentGroups,
   normalizeModuleForDraft,
   syncDraftIdentityIds,
@@ -755,6 +755,84 @@ const ROOM_ARCHETYPE_SELECT_OPTIONS = Object.freeze([
 const ROOM_ARCHETYPE_SUGGESTIONS = Object.freeze(
   ROOM_ARCHETYPE_OPTIONS.map((option) => option.id),
 );
+
+const ROOM_ARCHETYPE_LABEL_BY_ID = Object.freeze(
+  ROOM_ARCHETYPE_OPTIONS.reduce((labels, option) => {
+    labels[option.id] = option.label || option.id;
+    return labels;
+  }, {}),
+);
+
+function uniqueStrings(values = []) {
+  return [...new Set(asArray(values).map((value) => String(value || "").trim()).filter(Boolean))];
+}
+
+function getRoomArchetypeLabel(value) {
+  const id = String(value || "").trim();
+  if (!id) return "Auto / Inferred";
+  return ROOM_ARCHETYPE_LABEL_BY_ID[id] || id;
+}
+
+function getMapInfluenceEditorModel(mapInfluence = {}, { regionRoomArchetype = "" } = {}) {
+  const directRoomArchetype = String(
+    mapInfluence.roomArchetype ||
+      mapInfluence.roomArchetypeId ||
+      mapInfluence.forcedRoomArchetype ||
+      mapInfluence.forcedRoomArchetypeId ||
+      "",
+  ).trim();
+  const preferredRoomArchetypes = uniqueStrings([
+    directRoomArchetype,
+    mapInfluence.preferredRoomArchetype,
+    mapInfluence.preferredRoomArchetypeId,
+    ...asArray(mapInfluence.preferredRoomArchetypes),
+    ...asArray(mapInfluence.preferredRoomArchetypeIds),
+  ]);
+  const forbiddenRoomArchetypes = uniqueStrings([
+    mapInfluence.forbiddenRoomArchetype,
+    mapInfluence.forbiddenRoomArchetypeId,
+    ...asArray(mapInfluence.forbiddenRoomArchetypes),
+    ...asArray(mapInfluence.forbiddenRoomArchetypeIds),
+  ]);
+  const forced = Boolean(
+    mapInfluence.forceRoomArchetype ||
+      mapInfluence.force ||
+      mapInfluence.required ||
+      mapInfluence.forcedRoomArchetype ||
+      mapInfluence.forcedRoomArchetypeId,
+  );
+  const conflicts = preferredRoomArchetypes.filter((id) => forbiddenRoomArchetypes.includes(id));
+  const hasTarget = Boolean(directRoomArchetype || preferredRoomArchetypes.length || forbiddenRoomArchetypes.length);
+  const targetId = directRoomArchetype || preferredRoomArchetypes[0] || regionRoomArchetype || "";
+  const targetLabel = getRoomArchetypeLabel(targetId);
+  const preferredLabels = preferredRoomArchetypes.map(getRoomArchetypeLabel);
+  const forbiddenLabels = forbiddenRoomArchetypes.map(getRoomArchetypeLabel);
+  const mode = forced && targetId ? "Forced" : preferredRoomArchetypes.length || directRoomArchetype ? "Suggested" : forbiddenRoomArchetypes.length ? "Forbid only" : "Inactive";
+  const summary = mode === "Inactive"
+    ? "No map influence is set. This component will not shape a generated room."
+    : mode === "Forbid only"
+      ? `Forbids ${forbiddenLabels.join(", ")}.`
+      : `${mode} ${targetLabel}${preferredLabels.length > 1 ? `; alternatives: ${preferredLabels.slice(1).join(", ")}` : ""}${forbiddenLabels.length ? `; forbids ${forbiddenLabels.join(", ")}` : ""}.`;
+
+  return {
+    conflicts,
+    directRoomArchetype,
+    forbiddenLabels,
+    forbiddenRoomArchetypes,
+    forced,
+    hasTarget,
+    mode,
+    preferredLabels,
+    preferredRoomArchetypes,
+    summary,
+    targetId,
+    targetLabel,
+  };
+}
+
+function getMapInfluenceSourceFallback(component = {}) {
+  return component.id ? `studio:${component.id}` : "studio:component";
+}
 
 function getComponentEditorTabs(component = {}) {
   if (component.contentType === "monster-graft") return COMPONENT_EDITOR_TABS;
@@ -1582,15 +1660,26 @@ export default function InspirationStudioPage() {
   }
 
   function addComponent(templateId) {
-    const component = buildComponentTemplate(templateId, draft);
-    const contentType = component.contentType;
+    const componentsToAdd = buildComponentTemplates(templateId, draft);
+    const primaryComponent = componentsToAdd[0];
+    if (!primaryComponent) return;
+    const contentType = primaryComponent.contentType;
+    const addedContentTypes = new Set(componentsToAdd.map((component) => component.contentType));
     setActiveSection("components");
     setComponentMode(contentType === "monster-graft" ? "monsters" : "locations");
-    setLocationFilter(contentType === "location-region" ? "location-region" : contentType === "location-component" ? "location-component" : "all");
+    setLocationFilter(
+      addedContentTypes.has("location-region") && addedContentTypes.has("location-component")
+        ? "all"
+        : contentType === "location-region"
+          ? "location-region"
+          : contentType === "location-component"
+            ? "location-component"
+            : "all",
+    );
     setComponentSearch("");
-    setSelectedComponentId(component.id);
+    setSelectedComponentId(primaryComponent.id);
     updateDraft((nextDraft) => {
-      nextDraft.components.unshift(component);
+      nextDraft.components.unshift(...componentsToAdd);
     });
   }
 
@@ -2795,6 +2884,22 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
     setField(["locationRegion", "roomArchetype"], value);
   }
 
+  function syncRegionArchetypeToMapInfluence() {
+    if (!regionRoomArchetype) return;
+    onChange((nextComponent) => {
+      const locationRegion = nextComponent.locationRegion = nextComponent.locationRegion || {};
+      locationRegion.mapInfluence = {
+        ...(locationRegion.mapInfluence || {}),
+        roomArchetype: regionRoomArchetype,
+        preferredRoomArchetypes: [regionRoomArchetype],
+        forbiddenRoomArchetypes: [],
+        forceRoomArchetype: true,
+        weight: Number(locationRegion.mapInfluence?.weight) || 3,
+        source: locationRegion.mapInfluence?.source || getMapInfluenceSourceFallback(nextComponent),
+      };
+    });
+  }
+
   function setLocationRegionSize(value) {
     setField(["locationRegion", "size"], value);
     setField(["map", "size"], value);
@@ -3372,15 +3477,15 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
     || editableMapInfluence.forcedRoomArchetype
     || editableMapInfluence.forcedRoomArchetypeId
     || "";
+  const mapInfluenceEditorModel = getMapInfluenceEditorModel(editableMapInfluence, { regionRoomArchetype });
   const hasMapInfluenceData = Boolean(
-    mapInfluenceRoomArchetype
+    mapInfluenceEditorModel.hasTarget
       || editableMapInfluence.forceRoomArchetype
       || editableMapInfluence.weight
       || editableMapInfluence.source
-      || editableMapInfluence.note
-      || asArray(editableMapInfluence.preferredRoomArchetypes).length
-      || asArray(editableMapInfluence.forbiddenRoomArchetypes).length,
+      || editableMapInfluence.note,
   );
+  const canSyncRegionArchetypeInfluence = isLocationRegion && regionRoomArchetype && !mapInfluenceEditorModel.hasTarget;
 
   const addableRulesBlocks = [
     { id: "targeting", label: "Targeting", icon: "fa-crosshairs", active: hasTargetingBlock },
@@ -4591,6 +4696,19 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
               help="Optional map-generation influence. Use this when a component assigned to a room should prefer, forbid, or force a room archetype."
               actions={hasMapInfluenceData ? <RemoveRulesBlockButton label="Map Influence" onClick={clearMapInfluence} /> : null}
             >
+              <div className="studio-inferred-rules-note" data-map-influence-mode={mapInfluenceEditorModel.mode.toLowerCase().replaceAll(" ", "-")}>
+                <Icon name={mapInfluenceEditorModel.mode === "Forced" ? "fa-lock" : mapInfluenceEditorModel.mode === "Forbid only" ? "fa-ban" : mapInfluenceEditorModel.mode === "Suggested" ? "fa-map-location-dot" : "fa-circle-info"} />
+                <span>
+                  <strong>{mapInfluenceEditorModel.mode === "Inactive" ? "No map influence" : `Map Influence · ${mapInfluenceEditorModel.mode}`}</strong>
+                  {` ${mapInfluenceEditorModel.summary}`}
+                  {mapInfluenceEditorModel.conflicts.length ? ` Conflict: ${mapInfluenceEditorModel.conflicts.map(getRoomArchetypeLabel).join(", ")} is both preferred and forbidden.` : ""}
+                </span>
+                {canSyncRegionArchetypeInfluence ? (
+                  <button type="button" className="studio-icon-button" onClick={syncRegionArchetypeToMapInfluence} title="Use this region archetype as forced map influence">
+                    <Icon name="fa-link" />
+                  </button>
+                ) : null}
+              </div>
               <div className="studio-form-grid studio-form-grid--compact">
                 <FormRow label="Influence Archetype" icon="fa-dungeon" hint="Optional direct archetype target used when Force is enabled, or as a strong preference when combined with preferred archetypes.">
                   <SelectInput options={ROOM_ARCHETYPE_SELECT_OPTIONS} value={mapInfluenceRoomArchetype} onChange={(value) => setMapInfluenceField(["roomArchetype"], value)} />
@@ -4611,7 +4729,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                   <input type="number" min="0" step="0.25" value={editableMapInfluence.weight ?? ""} onChange={(event) => setMapInfluenceField(["weight"], event.target.value === "" ? "" : Number(event.target.value))} placeholder="2" />
                 </FormRow>
                 <FormRow label="Influence Source" icon="fa-fingerprint" hint={FIELD_HELP.mapInfluenceSource}>
-                  <TextInput value={editableMapInfluence.source} onChange={(value) => setMapInfluenceField(["source"], value)} placeholder={component.id} />
+                  <TextInput value={editableMapInfluence.source} onChange={(value) => setMapInfluenceField(["source"], value)} placeholder={getMapInfluenceSourceFallback(component)} />
                 </FormRow>
               </div>
               <FormRow label="Influence Note" icon="fa-note-sticky" hint={FIELD_HELP.mapInfluenceNote}>

@@ -4,6 +4,7 @@ import {
   getPlacementProfile,
   getPlacementRole,
   roleDepth,
+  resolveRoomArchetype,
 } from "./map-generator.profile.js";
 
 function hashStringToSeed(...parts) {
@@ -19,6 +20,104 @@ function hashStringToSeed(...parts) {
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
+
+const ROOM_ARCHETYPE_TOPOLOGY_HINTS = Object.freeze({
+  "processional-crypt-hall": Object.freeze({
+    role: "connector",
+    criticalPath: true,
+    scoreBias: -18,
+    anchorPreference: "main-spine",
+  }),
+  "ossuary-gallery": Object.freeze({
+    role: "connector",
+    criticalPath: true,
+    scoreBias: -10,
+    anchorPreference: "main-spine",
+  }),
+  "bone-well": Object.freeze({
+    role: "hazard",
+    criticalPath: true,
+    scoreBias: 10,
+    anchorPreference: "deep",
+  }),
+  "charnel-vault": Object.freeze({
+    role: "hazard",
+    criticalPath: true,
+    scoreBias: 8,
+    anchorPreference: "deep",
+  }),
+  "reliquary-niche": Object.freeze({
+    role: "clue",
+    sideBranch: true,
+    scoreBias: 6,
+    anchorPreference: "early-side",
+  }),
+  "hidden-reliquary": Object.freeze({
+    role: "secret",
+    secretBranch: true,
+    scoreBias: 80,
+    anchorPreference: "deep-secret",
+  }),
+  "sealed-family-tomb": Object.freeze({
+    role: "side",
+    sideBranch: true,
+    scoreBias: 18,
+    anchorPreference: "deep",
+  }),
+  "crypt-burial-cell": Object.freeze({
+    role: "side",
+    sideBranch: true,
+    scoreBias: 4,
+    anchorPreference: "mid-side",
+  }),
+});
+
+function getTopologyContextKey(config = {}) {
+  return getPlacementProfile(config).key || "crypt";
+}
+
+function getRoomArchetypeTopologyHint(region = {}, config = {}) {
+  const archetype = resolveRoomArchetype(region, getTopologyContextKey(config));
+  if (!archetype?.id || archetype.source === "inferred") return null;
+  return ROOM_ARCHETYPE_TOPOLOGY_HINTS[archetype.id] || null;
+}
+
+function getTopologyPlacementRole(region = {}, config = {}) {
+  const flags = classifyRegion(region);
+  if (flags.entrance) return "entrance";
+  if (flags.climax || flags.outcome || flags.exit) return "final";
+
+  const hint = getRoomArchetypeTopologyHint(region, config);
+  if (flags.secret || hint?.secretBranch) return "secret";
+  if (hint?.role) return hint.role;
+  if (flags.hazard) return "hazard";
+  if (flags.clue) return "clue";
+  if (flags.connector) return "connector";
+  return getPlacementRole(region);
+}
+
+function isTopologySecretBranch(region = {}, config = {}) {
+  const flags = classifyRegion(region);
+  if (flags.entrance || flags.exit || flags.climax || flags.outcome) return false;
+  return flags.secret || Boolean(getRoomArchetypeTopologyHint(region, config)?.secretBranch);
+}
+
+function getRegionTopologyGraphScore(region = {}, config = {}) {
+  const baseScore = getRegionGraphScore(region, config.seed);
+  const hint = getRoomArchetypeTopologyHint(region, config);
+  const role = getTopologyPlacementRole(region, config);
+  const roleBias = {
+    entrance: -120,
+    connector: -28,
+    clue: -12,
+    hazard: 0,
+    side: 10,
+    final: 72,
+    secret: 96,
+  }[role] || 0;
+  return baseScore + roleBias + (hint?.scoreBias || 0);
+}
+
 
 export function getRegionGraphScore(region, seed) {
   const flags = classifyRegion(region);
@@ -124,32 +223,38 @@ export function buildCriticalPathRegions(config, rng) {
   );
   const nonEntrance = regions.filter((region) => region.id !== entrance.id);
   const nonSecret = nonEntrance.filter(
-    (region) => !flagsById.get(region.id).secret,
+    (region) => !isTopologySecretBranch(region, config),
   );
   const finalRoom =
     selectFinalRegion(nonSecret, config.seed) ||
     [...nonSecret].sort(
       (a, b) =>
-        getRegionGraphScore(b, config.seed) -
-        getRegionGraphScore(a, config.seed),
+        getRegionTopologyGraphScore(b, config) -
+        getRegionTopologyGraphScore(a, config),
     )[0];
   const middlePool = nonSecret.filter((region) => region.id !== finalRoom?.id);
   const required = [];
   const firstConnector = selectRegionByFlags(
     middlePool,
-    (region) => flagsById.get(region.id).connector,
+    (region) =>
+      flagsById.get(region.id).connector ||
+      getTopologyPlacementRole(region, config) === "connector",
     null,
     config.seed,
   );
   const firstClue = selectRegionByFlags(
     middlePool,
-    (region) => flagsById.get(region.id).clue,
+    (region) =>
+      flagsById.get(region.id).clue ||
+      getTopologyPlacementRole(region, config) === "clue",
     null,
     config.seed,
   );
   const firstHazard = selectRegionByFlags(
     middlePool,
-    (region) => flagsById.get(region.id).hazard,
+    (region) =>
+      flagsById.get(region.id).hazard ||
+      getTopologyPlacementRole(region, config) === "hazard",
     null,
     config.seed,
   );
@@ -162,8 +267,8 @@ export function buildCriticalPathRegions(config, rng) {
     .filter((region) => !required.some((item) => item.id === region.id))
     .sort(
       (a, b) =>
-        getRegionGraphScore(a, config.seed) -
-        getRegionGraphScore(b, config.seed),
+        getRegionTopologyGraphScore(a, config) -
+        getRegionTopologyGraphScore(b, config),
     );
   const mainBudget = Math.max(
     0,
@@ -172,29 +277,49 @@ export function buildCriticalPathRegions(config, rng) {
   const mainExtras = remaining.slice(0, mainBudget);
   const orderedMiddle = [...required, ...mainExtras].sort(
     (a, b) =>
-      getRegionGraphScore(a, config.seed) - getRegionGraphScore(b, config.seed),
+      getRegionTopologyGraphScore(a, config) - getRegionTopologyGraphScore(b, config),
   );
   return [entrance, ...orderedMiddle, finalRoom].filter(Boolean);
 }
 
-export function chooseSideAnchor(mainPath, sideRegion, seed) {
+export function chooseSideAnchor(mainPath, sideRegion, seed, config = {}) {
   const flags = classifyRegion(sideRegion);
+  const role = getTopologyPlacementRole(sideRegion, config);
+  const hint = getRoomArchetypeTopologyHint(sideRegion, config);
   const usable =
     mainPath.slice(0, -1).length > 0 ? mainPath.slice(0, -1) : mainPath;
-  if (flags.clue) return usable[Math.min(1, usable.length - 1)] || usable[0];
-  if (flags.hazard) return usable[Math.min(2, usable.length - 1)] || usable[0];
-  if (flags.connector || flags.loop)
-    return usable[Math.max(0, Math.floor(usable.length / 2))] || usable[0];
+  const middleAnchor = usable[Math.max(0, Math.floor(usable.length / 2))] || usable[0];
+  const deepAnchor = usable[Math.max(0, usable.length - 1)] || usable[0];
+
+  if (hint?.anchorPreference === "early-side")
+    return usable[Math.min(1, usable.length - 1)] || usable[0];
+  if (hint?.anchorPreference === "deep") return deepAnchor;
+  if (hint?.anchorPreference === "mid-side") return middleAnchor;
+
+  if (flags.clue || role === "clue")
+    return usable[Math.min(1, usable.length - 1)] || usable[0];
+  if (flags.hazard || role === "hazard")
+    return usable[Math.min(2, usable.length - 1)] || usable[0];
+  if (flags.connector || flags.loop || role === "connector") return middleAnchor;
   const index =
     hashStringToSeed(seed, sideRegion.id, "side-anchor") %
     Math.max(1, usable.length);
   return usable[index];
 }
 
-export function chooseSecretAnchor(mainPath, secretRegion, seed) {
-  const clueAnchor = mainPath.find((region) => classifyRegion(region).clue);
-  const hazardAnchor = mainPath.find((region) => classifyRegion(region).hazard);
+export function chooseSecretAnchor(mainPath, secretRegion, seed, config = {}) {
+  const hint = getRoomArchetypeTopologyHint(secretRegion, config);
+  const clueAnchor = mainPath.find((region) => {
+    const role = getTopologyPlacementRole(region, config);
+    return classifyRegion(region).clue || role === "clue";
+  });
+  const hazardAnchor = mainPath.find((region) => {
+    const role = getTopologyPlacementRole(region, config);
+    return classifyRegion(region).hazard || role === "hazard";
+  });
   const deepAnchor = mainPath[Math.max(0, mainPath.length - 2)];
+  if (hint?.anchorPreference === "deep-secret")
+    return clueAnchor || deepAnchor || hazardAnchor || mainPath[0];
   return clueAnchor || hazardAnchor || deepAnchor || mainPath[0];
 }
 
@@ -254,19 +379,20 @@ export function buildRegionGraph(config, rng) {
   const unassigned = config.regions.filter(
     (region) => !mainPathIds.has(region.id),
   );
-  const secretRegions = unassigned.filter(
-    (region) => classifyRegion(region).secret,
+  const secretRegions = unassigned.filter((region) =>
+    isTopologySecretBranch(region, config),
   );
   const sideRegions = unassigned.filter(
-    (region) => !classifyRegion(region).secret,
+    (region) => !isTopologySecretBranch(region, config),
   );
 
   sideRegions.forEach((region) => {
-    const anchor = chooseSideAnchor(mainPath, region, config.seed);
+    const anchor = chooseSideAnchor(mainPath, region, config.seed, config);
     if (!anchor) return;
     const flags = classifyRegion(region);
+    const role = getTopologyPlacementRole(region, config);
     addGraphEdge(edges, config, anchor.id, region.id, {
-      kind: flags.loop || flags.connector ? "side" : "dead-end",
+      kind: flags.loop || flags.connector || role === "connector" ? "side" : "dead-end",
       suffix: flags.loop ? "side-loop-entry" : "side",
       reason: flags.loop ? "side-loop-entry" : "controlled-side-path",
     });
@@ -293,7 +419,7 @@ export function buildRegionGraph(config, rng) {
   });
 
   secretRegions.forEach((region) => {
-    const anchor = chooseSecretAnchor(mainPath, region, config.seed);
+    const anchor = chooseSecretAnchor(mainPath, region, config.seed, config);
     if (!anchor) return;
     addGraphEdge(edges, config, anchor.id, region.id, {
       kind: "secret",
@@ -360,23 +486,23 @@ export function buildChapelPhysicalGraph(config) {
   };
   const ordered = [...regions].sort(
     (a, b) =>
-      (roleWeight[getPlacementRole(a)] ?? 4) -
-        (roleWeight[getPlacementRole(b)] ?? 4) ||
+      (roleWeight[getTopologyPlacementRole(a, config)] ?? 4) -
+        (roleWeight[getTopologyPlacementRole(b, config)] ?? 4) ||
       roleDepth(a) - roleDepth(b) ||
       a.id.localeCompare(b.id),
   );
   const entrance =
-    ordered.find((region) => getPlacementRole(region) === "entrance") ||
+    ordered.find((region) => getTopologyPlacementRole(region, config) === "entrance") ||
     ordered[0];
   const finalRoom =
     [...ordered]
       .reverse()
-      .find((region) => getPlacementRole(region) === "final") ||
+      .find((region) => getTopologyPlacementRole(region, config) === "final") ||
     ordered[ordered.length - 1];
   const naveRegion =
     ordered.find(
       (region) =>
-        getPlacementRole(region) === "connector" &&
+        getTopologyPlacementRole(region, config) === "connector" &&
         region.id !== entrance?.id &&
         region.id !== finalRoom?.id,
     ) ||
@@ -404,7 +530,7 @@ export function buildChapelPhysicalGraph(config) {
         ![entrance?.id, naveRegion?.id, finalRoom?.id].includes(region.id),
     )
     .forEach((region) => {
-      const role = getPlacementRole(region);
+      const role = getTopologyPlacementRole(region, config);
       const anchor = role === "secret" ? finalRoom : naveRegion;
       if (!anchor || anchor.id === region.id) return;
       addGraphEdge(edges, config, anchor.id, region.id, {
@@ -465,18 +591,18 @@ function getOrderedContextRegions(config) {
   return [...(Array.isArray(config.regions) ? config.regions : [])].sort(
     (a, b) =>
       roleDepth(a) - roleDepth(b) ||
-      getRegionGraphScore(a, config.seed) - getRegionGraphScore(b, config.seed) ||
+      getRegionTopologyGraphScore(a, config) - getRegionTopologyGraphScore(b, config) ||
       String(a.id || "").localeCompare(String(b.id || "")),
   );
 }
 
-function selectContextEntrance(regions, fallback = null) {
-  return regions.find((region) => getPlacementRole(region) === "entrance") || fallback || regions[0] || null;
+function selectContextEntrance(regions, fallback = null, config = {}) {
+  return regions.find((region) => getTopologyPlacementRole(region, config) === "entrance") || fallback || regions[0] || null;
 }
 
-function selectContextFinal(regions, fallback = null) {
+function selectContextFinal(regions, fallback = null, config = {}) {
   return (
-    [...regions].reverse().find((region) => getPlacementRole(region) === "final") ||
+    [...regions].reverse().find((region) => getTopologyPlacementRole(region, config) === "final") ||
     fallback ||
     regions[regions.length - 1] ||
     null
@@ -498,7 +624,7 @@ function addContextBranches(edges, config, rooms, anchors, options = {}) {
   const usableAnchors = anchors.filter(Boolean);
   if (!usableAnchors.length) return;
   rooms.filter(Boolean).forEach((region, index) => {
-    const role = getPlacementRole(region);
+    const role = getTopologyPlacementRole(region, config);
     const anchor =
       role === "secret"
         ? usableAnchors[Math.max(0, usableAnchors.length - 1)]
@@ -559,12 +685,12 @@ function validateContextGraph(regions, edges) {
 function buildCryptContextGraph(config) {
   const regions = getOrderedContextRegions(config);
   if (regions.length <= 1) return [];
-  const entrance = selectContextEntrance(regions);
-  const finalRoom = selectContextFinal(regions);
+  const entrance = selectContextEntrance(regions, null, config);
+  const finalRoom = selectContextFinal(regions, null, config);
   const middle = regions.filter((region) => ![entrance?.id, finalRoom?.id].includes(region.id));
   const spine = [
     entrance,
-    ...middle.filter((region) => ["connector", "clue", "hazard"].includes(getPlacementRole(region))).slice(0, 3),
+    ...middle.filter((region) => ["connector", "clue", "hazard"].includes(getTopologyPlacementRole(region, config))).slice(0, 3),
     finalRoom,
   ].filter(Boolean);
   const spineIds = new Set(spine.map((region) => region.id));
@@ -586,12 +712,12 @@ function buildCryptContextGraph(config) {
 function buildMineContextGraph(config) {
   const regions = getOrderedContextRegions(config);
   if (regions.length <= 1) return [];
-  const entrance = selectContextEntrance(regions);
-  const finalRoom = selectContextFinal(regions);
+  const entrance = selectContextEntrance(regions, null, config);
+  const finalRoom = selectContextFinal(regions, null, config);
   const middle = regions.filter((region) => ![entrance?.id, finalRoom?.id].includes(region.id));
   const trunk = [
     entrance,
-    ...middle.filter((region) => ["connector", "hazard"].includes(getPlacementRole(region))).slice(0, 3),
+    ...middle.filter((region) => ["connector", "hazard"].includes(getTopologyPlacementRole(region, config))).slice(0, 3),
     finalRoom,
   ].filter(Boolean);
   const trunkIds = new Set(trunk.map((region) => region.id));
@@ -613,8 +739,8 @@ function buildMineContextGraph(config) {
 function buildRuinsContextGraph(config) {
   const regions = getOrderedContextRegions(config);
   if (regions.length <= 1) return [];
-  const entrance = selectContextEntrance(regions);
-  const finalRoom = selectContextFinal(regions);
+  const entrance = selectContextEntrance(regions, null, config);
+  const finalRoom = selectContextFinal(regions, null, config);
   const middle = regions.filter((region) => ![entrance?.id, finalRoom?.id].includes(region.id));
   const main = [entrance, ...middle.slice(0, Math.min(3, middle.length)), finalRoom].filter(Boolean);
   const mainIds = new Set(main.map((region) => region.id));
@@ -656,10 +782,10 @@ function annotateNobleHouseBaselineGraph(config, graph) {
 function buildNobleHouseContextGraph(config) {
   const regions = getOrderedContextRegions(config);
   if (regions.length <= 1) return [];
-  const entrance = selectContextEntrance(regions);
-  const finalRoom = selectContextFinal(regions);
+  const entrance = selectContextEntrance(regions, null, config);
+  const finalRoom = selectContextFinal(regions, null, config);
   const circulation =
-    regions.find((region) => getPlacementRole(region) === "connector" && region.id !== entrance?.id) ||
+    regions.find((region) => getTopologyPlacementRole(region, config) === "connector" && region.id !== entrance?.id) ||
     regions.find((region) => ![entrance?.id, finalRoom?.id].includes(region.id)) ||
     entrance;
   const edges = [];
@@ -777,31 +903,20 @@ export function computeGraphDepths(regions, graph) {
   return depth;
 }
 
-export function annotateRegionsWithGraphMetadata(regions, graph) {
+export function annotateRegionsWithGraphMetadata(regions, graph, config = {}) {
   const depthMap = computeGraphDepths(regions, graph);
   const maxDepth = Math.max(1, ...Array.from(depthMap.values()));
   return regions.map((region) => {
     const rawDepth = depthMap.get(region.id) || 0;
     const flags = classifyRegion(region);
-    const normalizedDepth = flags.secret
+    const topologyRole = getTopologyPlacementRole(region, config);
+    const normalizedDepth = topologyRole === "secret" || flags.secret
       ? 6
       : clamp(Math.round((rawDepth / maxDepth) * 5), 0, 5);
     return {
       ...region,
       graphDepth: normalizedDepth,
-      graphRole: flags.secret
-        ? "secret"
-        : flags.climax || flags.outcome || flags.exit
-          ? "final"
-          : flags.hazard
-            ? "hazard"
-            : flags.clue
-              ? "clue"
-              : flags.connector
-                ? "connector"
-                : flags.entrance
-                  ? "entrance"
-                  : "side",
+      graphRole: topologyRole,
     };
   });
 }

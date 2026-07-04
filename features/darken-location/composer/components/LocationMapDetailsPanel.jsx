@@ -70,6 +70,23 @@ function getHorrorLabel(state) {
   return horrors[0] || state?.horror || "Horror";
 }
 
+function getMapInfluenceFrameLabel(metrics = {}) {
+  const entries = Array.isArray(metrics.entries) ? metrics.entries : [];
+  const influenced = entries.filter((entry) => entry.mapInfluenceCount > 0 || entry.roomArchetypeHasMapInfluence).length;
+  const forced = entries.filter((entry) => entry.roomArchetypeForced).length;
+  if (!entries.length) return "—";
+  if (!influenced) return "0 Rooms";
+  return forced ? `${influenced} Rooms · ${forced} Forced` : `${influenced} Rooms`;
+}
+
+function getAssignedMapInfluenceLabel(components = []) {
+  const influenced = components.filter((component) =>
+    Boolean(component?.mapInfluence || component?.location?.mapInfluence || component?.locationRegion?.mapInfluence || component?.map?.mapInfluence),
+  );
+  if (!influenced.length) return "";
+  return `${influenced.length} map-shaping component${influenced.length === 1 ? "" : "s"}`;
+}
+
 export function LocationMapWideDetailsBlock({
   activeSlot,
   activeSlotScope,
@@ -111,7 +128,7 @@ export function LocationMapWideDetailsBlock({
               </span>
               <span className="location-map-details-slot__body">
                 <strong>{assigned[0]?.title || "Empty Slot"}</strong>
-                <em>{assigned[0]?.description || slot.description || "Map-wide component"}</em>
+                <em>{assigned[0]?.description || getAssignedMapInfluenceLabel(assigned) || slot.description || "Map-wide component"}</em>
               </span>
             </button>
           );
@@ -162,6 +179,7 @@ export function LocationMapDetailsPanel({
           <LocationFrameInfoRow label="Route" value={frame.routePressure} />
           <LocationFrameInfoRow label="Scale" value={frame.scale} />
           <LocationFrameInfoRow label="Complexity" value={frame.complexity} />
+          <LocationFrameInfoRow label="Shaped Rooms" value={getMapInfluenceFrameLabel(metrics)} />
           <LocationFrameInfoRow label="Status" value={mapStatus} />
         </div>
       </section>

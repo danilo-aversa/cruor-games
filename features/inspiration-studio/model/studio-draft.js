@@ -3,7 +3,10 @@ import {
   clone,
   slugify,
 } from "./studio-component-normalizers.js";
-import { buildStudioComponentFromTemplate } from "./studio-component-templates.js";
+import {
+  buildStudioComponentFromTemplate,
+  buildStudioComponentsFromTemplate,
+} from "./studio-component-templates.js";
 
 export const EMPTY_DRAFT = Object.freeze({
   id: "new-inspiration",
@@ -123,4 +126,8 @@ export function normalizeModuleForDraft(module) {
 
 export function buildComponentTemplate(templateId, draft) {
   return buildStudioComponentFromTemplate(templateId, normalizeModuleForDraft(draft));
+}
+
+export function buildComponentTemplates(templateId, draft) {
+  return buildStudioComponentsFromTemplate(templateId, normalizeModuleForDraft(draft));
 }

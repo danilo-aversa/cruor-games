@@ -168,6 +168,10 @@ function getRoomArchetypeRefSet(values = []) {
   return new Set(asArray(values).map(normalizeRoomArchetypeId).filter(Boolean));
 }
 
+function hasMapInfluenceEditorialData(mapInfluence = {}) {
+  return Object.values(mapInfluence).some((value) => Array.isArray(value) ? value.length : hasText(value));
+}
+
 function validateMapInfluenceForStudio(mapInfluence, path, issues, id) {
   if (!isPlainObject(mapInfluence)) return;
   const preferred = asArray([
@@ -187,7 +191,16 @@ function validateMapInfluenceForStudio(mapInfluence, path, issues, id) {
     ...asArray(mapInfluence.forbiddenRoomArchetypeIds),
   ]);
   const direct = mapInfluence.roomArchetype || mapInfluence.roomArchetypeId || mapInfluence.forcedRoomArchetype || mapInfluence.forcedRoomArchetypeId;
-  if (!direct && !preferred.length && !forbidden.length && !mapInfluence.forceRoomArchetype) return;
+  const hasTarget = Boolean(direct || preferred.length || forbidden.length);
+
+  if (!hasTarget) {
+    if (mapInfluence.forceRoomArchetype) {
+      issues.push(makeIssue("warning", path, "forceRoomArchetype is enabled but no room archetype is defined.", id));
+    } else if (hasMapInfluenceEditorialData(mapInfluence)) {
+      issues.push(makeIssue("info", path, "Map influence contains only source, note, weight, or empty fields and will not be exported as an active map influence.", id));
+    }
+    return;
+  }
 
   validateRoomArchetypeRefs(preferred, `${path}.preferredRoomArchetypes`, issues, id);
   validateRoomArchetypeRefs(forbidden, `${path}.forbiddenRoomArchetypes`, issues, id);
@@ -201,6 +214,21 @@ function validateMapInfluenceForStudio(mapInfluence, path, issues, id) {
 
   if (mapInfluence.forceRoomArchetype && !direct && !preferred.length) {
     issues.push(makeIssue("warning", path, "forceRoomArchetype is enabled but no room archetype is defined.", id));
+  }
+
+  if (mapInfluence.forceRoomArchetype && !direct && preferred.length > 1) {
+    issues.push(makeIssue("warning", path, "forceRoomArchetype is enabled with multiple preferred archetypes and no direct Influence Archetype. Set one direct archetype to make the forced target unambiguous.", id));
+  }
+
+  if (mapInfluence.weight !== undefined && mapInfluence.weight !== "") {
+    const weight = Number(mapInfluence.weight);
+    if (!Number.isFinite(weight) || weight < 0) {
+      issues.push(makeIssue("warning", `${path}.weight`, "Map influence weight should be a non-negative number.", id));
+    }
+  }
+
+  if (!hasText(mapInfluence.source)) {
+    issues.push(makeIssue("info", `${path}.source`, "Map influence has no explicit source label; preview/debug will fall back to the component id.", id));
   }
 }
 

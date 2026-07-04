@@ -29,31 +29,36 @@ function normalizeMapInfluenceExport(mapInfluence = {}) {
     mapInfluence.preferredRoomArchetypeId,
     ...asArray(mapInfluence.preferredRoomArchetypes),
     ...asArray(mapInfluence.preferredRoomArchetypeIds),
-  ]);
+  ]).map((value) => String(value || "").trim()).filter(Boolean);
   const forbiddenRoomArchetypes = asArray([
     mapInfluence.forbiddenRoomArchetype,
     mapInfluence.forbiddenRoomArchetypeId,
     ...asArray(mapInfluence.forbiddenRoomArchetypes),
     ...asArray(mapInfluence.forbiddenRoomArchetypeIds),
-  ]);
-  const roomArchetype = mapInfluence.roomArchetype || mapInfluence.roomArchetypeId || mapInfluence.forcedRoomArchetype || mapInfluence.forcedRoomArchetypeId || "";
-  const forceRoomArchetype = Boolean(mapInfluence.forceRoomArchetype || mapInfluence.force || mapInfluence.required || mapInfluence.forcedRoomArchetype || mapInfluence.forcedRoomArchetypeId);
-  const hasInfluence = Boolean(
-    roomArchetype ||
-      preferredRoomArchetypes.length ||
-      forbiddenRoomArchetypes.length ||
-      forceRoomArchetype ||
-      mapInfluence.weight ||
-      mapInfluence.source,
+  ]).map((value) => String(value || "").trim()).filter(Boolean);
+  const roomArchetype = String(
+    mapInfluence.roomArchetype ||
+      mapInfluence.roomArchetypeId ||
+      mapInfluence.forcedRoomArchetype ||
+      mapInfluence.forcedRoomArchetypeId ||
+      "",
+  ).trim();
+  const forceRoomArchetype = Boolean(
+    roomArchetype &&
+      (mapInfluence.forceRoomArchetype || mapInfluence.force || mapInfluence.required || mapInfluence.forcedRoomArchetype || mapInfluence.forcedRoomArchetypeId),
   );
+  const hasInfluence = Boolean(roomArchetype || preferredRoomArchetypes.length || forbiddenRoomArchetypes.length);
   if (!hasInfluence) return null;
+
+  const weight = Number(mapInfluence.weight);
   return {
     ...(roomArchetype ? { roomArchetype } : {}),
     ...(preferredRoomArchetypes.length ? { preferredRoomArchetypes } : {}),
     ...(forbiddenRoomArchetypes.length ? { forbiddenRoomArchetypes } : {}),
     ...(forceRoomArchetype ? { forceRoomArchetype } : {}),
-    ...(mapInfluence.weight ? { weight: Number(mapInfluence.weight) || mapInfluence.weight } : {}),
-    ...(mapInfluence.source ? { source: mapInfluence.source } : {}),
+    ...(Number.isFinite(weight) && weight > 0 ? { weight } : {}),
+    ...(hasText(mapInfluence.source) ? { source: mapInfluence.source } : {}),
+    ...(hasText(mapInfluence.note) ? { note: mapInfluence.note } : {}),
   };
 }
 
@@ -151,6 +156,7 @@ export function normalizeExportComponent(component = {}, sourceAnchor = {}) {
       delete normalizedComponent.location.mapInfluence;
       if (!Object.keys(normalizedComponent.location).length) delete normalizedComponent.location;
     }
+    if (normalizedComponent.mapInfluence) delete normalizedComponent.mapInfluence;
   }
 
   if (normalizedComponent.contentType === "location-region" && normalizedComponent.locationRegion?.mapInfluence) {

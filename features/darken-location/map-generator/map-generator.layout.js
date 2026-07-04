@@ -68,6 +68,8 @@ function getRoomArchetypeShapeOptions(region, contextKey) {
     roomType: archetype.roomType || region.shapeOptions?.roomType || "none",
     archetypeId: archetype.id,
     archetypeLabel: archetype.label,
+    maskProfile: archetype.maskProfile || archetype.id,
+    detailProfile: archetype.detailProfile || archetype.id,
   };
 }
 

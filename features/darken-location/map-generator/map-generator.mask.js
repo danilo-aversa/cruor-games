@@ -318,6 +318,110 @@ export function buildCircleMask(room) {
   return cells;
 }
 
+
+export function getRoomMaskProfile(room = {}) {
+  return String(
+    room.shapeOptions?.maskProfile ||
+      room.shapeOptions?.archetypeId ||
+      room.roomArchetype ||
+      "",
+  ).trim();
+}
+
+export function buildOssuaryGalleryMask(room, rng) {
+  const cells = buildRectMask(room);
+  const { x, y, w, h } = room.cellRect;
+  if (w < 5 || h < 3) return buildAlcoveMask(room, rng);
+  const horizontal = w >= h;
+  const long = horizontal ? w : h;
+  const start = 1;
+  const end = Math.max(start, long - 1);
+  for (let offset = start; offset < end; offset += 2) {
+    const useNearSide = ((offset + Math.floor(rng() * 2)) % 2) === 0;
+    if (horizontal) {
+      const cx = x + offset;
+      const cy = useNearSide ? y : y + h - 1;
+      cells.delete(cellKey(cx, cy));
+    } else {
+      const cy = y + offset;
+      const cx = useNearSide ? x : x + w - 1;
+      cells.delete(cellKey(cx, cy));
+    }
+  }
+  return cells;
+}
+
+export function buildReliquaryNicheMask(room, rng) {
+  const cells = buildRectMask(room);
+  const { x, y, w, h } = room.cellRect;
+  if (w < 4 || h < 3) return buildAlcoveMask(room, rng);
+  const horizontal = w >= h;
+  const side = rng() > 0.5 ? "far" : "near";
+  if (horizontal) {
+    const cx = side === "near" ? x : x + w - 1;
+    cells.delete(cellKey(cx, y));
+    cells.delete(cellKey(cx, y + h - 1));
+    if (h >= 5) cells.delete(cellKey(cx, y + Math.floor(h / 2)));
+  } else {
+    const cy = side === "near" ? y : y + h - 1;
+    cells.delete(cellKey(x, cy));
+    cells.delete(cellKey(x + w - 1, cy));
+    if (w >= 5) cells.delete(cellKey(x + Math.floor(w / 2), cy));
+  }
+  return cells;
+}
+
+export function buildCharnelVaultMask(room, rng) {
+  const cells = buildNotchedMask(room, rng);
+  const { x, y, w, h } = room.cellRect;
+  if (w < 5 || h < 4) return cells;
+  const corners = ["nw", "ne", "sw", "se"];
+  const first = pickOne(rng, corners);
+  const opposite = { nw: "se", ne: "sw", sw: "ne", se: "nw" }[first];
+  carveCorner(cells, x, y, w, h, first, 1, 1);
+  if (w >= 7 && h >= 5) carveCorner(cells, x, y, w, h, opposite, 1, 1);
+  return cells;
+}
+
+export function buildBurialCellMask(room, rng) {
+  const cells = buildRectMask(room);
+  const { x, y, w, h } = room.cellRect;
+  if (w >= 5 && h >= 4 && rng() > 0.55) {
+    const corner = pickOne(rng, ["nw", "ne", "sw", "se"]);
+    carveCorner(cells, x, y, w, h, corner, 1, 1);
+  }
+  return cells;
+}
+
+export function buildHiddenReliquaryMask(room, rng) {
+  const cells = buildArchiveMask(room, rng);
+  const { x, y, w, h } = room.cellRect;
+  if (w >= 6 && h >= 4) {
+    const horizontal = w >= h;
+    if (horizontal) {
+      const cx = rng() > 0.5 ? x : x + w - 1;
+      cells.delete(cellKey(cx, y + Math.floor(h / 2)));
+    } else {
+      const cy = rng() > 0.5 ? y : y + h - 1;
+      cells.delete(cellKey(x + Math.floor(w / 2), cy));
+    }
+  }
+  return cells;
+}
+
+export function buildArchetypeRoomMask(room, rng) {
+  const profile = getRoomMaskProfile(room);
+  if (profile === "ossuary-gallery") return buildOssuaryGalleryMask(room, rng);
+  if (profile === "reliquary-niche") return buildReliquaryNicheMask(room, rng);
+  if (profile === "charnel-vault") return buildCharnelVaultMask(room, rng);
+  if (profile === "burial-cell" || profile === "crypt-burial-cell") return buildBurialCellMask(room, rng);
+  if (profile === "hidden-reliquary") return buildHiddenReliquaryMask(room, rng);
+  if (profile === "sealed-family-tomb") return buildRectMask(room);
+  if (profile === "processional-crypt-hall") return buildHallMask(room, rng);
+  if (profile === "bone-well") return buildOvalMask(room);
+  return null;
+}
+
 export function buildCaveMask(room, rng) {
   const cells = new Set();
   const { x, y, w, h } = room.cellRect;
@@ -644,15 +748,17 @@ export function applyMaskModifier(baseCells, room, rng, modifier) {
 
 export function buildRoomMask(room, rng) {
   const type = room.shapeOptions?.roomType || "none";
+  const archetypeCells = buildArchetypeRoomMask(room, rng);
   let cells =
-    type === "apse"
+    archetypeCells ||
+    (type === "apse"
       ? buildApseMask(room)
       : type === "ruined"
         ? buildRuinedMask(room, rng)
-        : buildBaseRoomMask(room, rng);
-  if (type === "alcove" && room.shape !== "alcove")
+        : buildBaseRoomMask(room, rng));
+  if (!archetypeCells && type === "alcove" && room.shape !== "alcove")
     cells = applyMaskModifier(cells, room, rng, "alcove");
-  if (type === "archive" && room.shape !== "archive")
+  if (!archetypeCells && type === "archive" && room.shape !== "archive")
     cells = applyMaskModifier(cells, room, rng, "archive");
   if (
     room.shapeOptions?.notch &&

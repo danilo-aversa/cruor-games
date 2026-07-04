@@ -236,6 +236,7 @@ export const STUDIO_COMPONENT_TEMPLATE_GROUPS = Object.freeze([
       "location-description",
       "location-hazard",
       "location-region",
+      "location-map-influence-e2e-fixture",
       ...CRYPT_ROOM_ARCHETYPE_TEMPLATE_IDS,
       "location-sensory-detail",
       "location-visual-sign",
@@ -439,6 +440,177 @@ export const STUDIO_COMPONENT_TEMPLATES = Object.freeze({
     },
   },
   ...CRYPT_ROOM_ARCHETYPE_STUDIO_TEMPLATES,
+  "location-map-influence-e2e-fixture": {
+    id: "location-map-influence-e2e-fixture",
+    label: "Map Influence E2E Fixture",
+    shortLabel: "E2E Fixture",
+    icon: "fa-route",
+    contentType: "location-component",
+    title: "Map Influence E2E Fixture",
+    slot: "hazard",
+    summary: "Creates a minimal Studio authoring fixture for testing component mapInfluence through export, Composer assignment, and Map Generator debug.",
+    tableText: "Use this fixture only for authoring QA: assign each fixture component to its matching target room and verify the generated map resolves the expected archetype.",
+    mechanics: "Fixture. Creates two neutral target rooms and three region-scoped components: a suggested Bone Well, a forced Hidden Reliquary, and a forbidden fallback that should resolve to Reliquary Niche.",
+    fixtureComponents: [
+      {
+        id: "location-fixture-neutral-target-room",
+        label: "Fixture Target Room",
+        shortLabel: "Target Room",
+        icon: "fa-dungeon",
+        contentType: "location-region",
+        title: "Fixture Target Room",
+        slot: "locationRegion",
+        summary: "A neutral test room with no direct room archetype, used to verify component-driven map influence.",
+        tableText: "A plain chamber waits for the assigned component to define its generated shape.",
+        mechanics: "Assign a fixture component to this room in the Composer, then inspect the generated room archetype/debug output.",
+        locationRegion: {
+          role: "side test chamber",
+          size: "Medium",
+          shape: "standard",
+          roomArchetype: "",
+          mapInfluence: {
+            preferredRoomArchetypes: [],
+            forbiddenRoomArchetypes: [],
+            forceRoomArchetype: false,
+            weight: 1,
+          },
+          connectors: 2,
+          density: "medium",
+          readAloud: {
+            compact: "A plain chamber waits for the assigned component to define its generated shape.",
+            extended: "A plain chamber waits for the assigned component to define its generated shape.",
+          },
+        },
+        metadata: {
+          mapInfluenceE2eFixture: true,
+          fixtureRole: "neutral-target-room",
+        },
+      },
+      {
+        id: "location-fixture-secret-target-room",
+        label: "Fixture Secret Target",
+        shortLabel: "Secret Target",
+        icon: "fa-door-closed",
+        contentType: "location-region",
+        title: "Fixture Secret Target Room",
+        slot: "locationRegion",
+        summary: "A neutral side room used to verify that forced Hidden Reliquary influence controls both archetype and topology bias.",
+        tableText: "A quiet side chamber has no obvious identity until a component marks what it hides.",
+        mechanics: "Assign the forced Hidden Reliquary fixture component to this room and verify the generated room resolves as Hidden Reliquary.",
+        locationRegion: {
+          role: "side test chamber",
+          size: "Small",
+          shape: "standard",
+          roomArchetype: "",
+          mapInfluence: {
+            preferredRoomArchetypes: [],
+            forbiddenRoomArchetypes: [],
+            forceRoomArchetype: false,
+            weight: 1,
+          },
+          connectors: 1,
+          density: "medium",
+          readAloud: {
+            compact: "A quiet side chamber has no obvious identity until a component marks what it hides.",
+            extended: "A quiet side chamber has no obvious identity until a component marks what it hides.",
+          },
+        },
+        metadata: {
+          mapInfluenceE2eFixture: true,
+          fixtureRole: "secret-target-room",
+        },
+      },
+      {
+        id: "location-fixture-bone-well-cue",
+        label: "Fixture Bone Well Cue",
+        shortLabel: "Bone Well Cue",
+        icon: "fa-circle-dot",
+        contentType: "location-component",
+        title: "Fixture Bone Well Cue",
+        slot: "hazard",
+        summary: "A region-scoped hazard fixture that should suggest Bone Well when assigned to a room.",
+        tableText: "The floor mark sinks inward like the room remembers a vertical drop beneath it.",
+        mechanics: "Expected result. Assign to a neutral target room; the generated room should resolve to Bone Well with source map-influence.",
+        location: {
+          mapInfluence: {
+            preferredRoomArchetypes: ["bone-well"],
+            forbiddenRoomArchetypes: [],
+            forceRoomArchetype: false,
+            weight: 2,
+            source: "studio-fixture:bone-well-cue",
+            note: "End-to-end fixture: component suggestion should survive Studio export, registry normalization, Composer assignment, and map generation.",
+          },
+        },
+        metadata: {
+          mapInfluenceE2eFixture: true,
+          fixtureRole: "suggested-bone-well",
+          expectedRoomArchetype: "bone-well",
+          expectedRoomArchetypeSource: "map-influence",
+        },
+      },
+      {
+        id: "location-fixture-hidden-reliquary-force",
+        label: "Fixture Hidden Reliquary Force",
+        shortLabel: "Hidden Force",
+        icon: "fa-lock",
+        contentType: "location-component",
+        title: "Fixture Hidden Reliquary Force",
+        slot: "clue",
+        summary: "A region-scoped clue fixture that should force Hidden Reliquary when assigned to a room.",
+        tableText: "A seam in the wall refuses to align with the rest of the chamber, as if a relic has been hidden behind the plan itself.",
+        mechanics: "Expected result. Assign to a neutral or secret target room; the generated room should resolve to Hidden Reliquary with source map-influence.",
+        location: {
+          mapInfluence: {
+            roomArchetype: "hidden-reliquary",
+            preferredRoomArchetypes: ["hidden-reliquary"],
+            forbiddenRoomArchetypes: [],
+            forceRoomArchetype: true,
+            weight: 3,
+            source: "studio-fixture:hidden-reliquary-force",
+            note: "End-to-end fixture: forced influence should override softer/default archetype choices and mark the room as map-influenced.",
+          },
+        },
+        metadata: {
+          mapInfluenceE2eFixture: true,
+          fixtureRole: "forced-hidden-reliquary",
+          expectedRoomArchetype: "hidden-reliquary",
+          expectedRoomArchetypeSource: "map-influence",
+        },
+      },
+      {
+        id: "location-fixture-forbidden-fallback-cue",
+        label: "Fixture Forbidden Fallback",
+        shortLabel: "Fallback Cue",
+        icon: "fa-ban",
+        contentType: "location-component",
+        title: "Fixture Forbidden Fallback Cue",
+        slot: "clue",
+        summary: "A region-scoped clue fixture that prefers Bone Well first, forbids Bone Well, and should fall back to Reliquary Niche.",
+        tableText: "A small reliquary mark sits where a shaft should have opened, refusing the vertical descent implied by the surrounding bones.",
+        mechanics: "Expected result. Assign to a neutral target room; the generated room should resolve to Reliquary Niche because Bone Well is forbidden.",
+        location: {
+          mapInfluence: {
+            preferredRoomArchetypes: ["bone-well", "reliquary-niche"],
+            forbiddenRoomArchetypes: ["bone-well"],
+            forceRoomArchetype: false,
+            weight: 3,
+            source: "studio-fixture:forbidden-fallback-cue",
+            note: "End-to-end fixture: forbidden preferred archetype should be skipped in favor of the next allowed preference.",
+          },
+        },
+        metadata: {
+          mapInfluenceE2eFixture: true,
+          fixtureRole: "forbidden-fallback",
+          expectedRoomArchetype: "reliquary-niche",
+          expectedRoomArchetypeSource: "map-influence",
+        },
+      },
+    ],
+    metadata: {
+      mapInfluenceE2eFixture: true,
+      fixtureRole: "template-set",
+    },
+  },
   "location-sensory-detail": {
     id: "location-sensory-detail",
     label: "Sensory Detail",
@@ -595,8 +767,28 @@ function buildLocationComponent(template, draft = {}) {
   return component;
 }
 
-export function buildStudioComponentFromTemplate(templateId, draft = {}) {
-  const template = getStudioComponentTemplate(templateId);
+function buildComponentFromResolvedTemplate(template, draft = {}) {
   if (template.contentType === "monster-graft") return buildMonsterComponent(template, draft);
   return buildLocationComponent(template, draft);
+}
+
+export function buildStudioComponentsFromTemplate(templateId, draft = {}) {
+  const template = getStudioComponentTemplate(templateId);
+  const fixtureComponents = asArray(template.fixtureComponents);
+  if (fixtureComponents.length) {
+    return fixtureComponents.map((fixtureTemplate) => buildComponentFromResolvedTemplate({
+      ...fixtureTemplate,
+      metadata: {
+        ...(template.metadata || {}),
+        ...(fixtureTemplate.metadata || {}),
+        fixtureTemplateId: template.id,
+        fixtureTemplateLabel: template.label,
+      },
+    }, draft));
+  }
+  return [buildComponentFromResolvedTemplate(template, draft)];
+}
+
+export function buildStudioComponentFromTemplate(templateId, draft = {}) {
+  return buildStudioComponentsFromTemplate(templateId, draft)[0];
 }

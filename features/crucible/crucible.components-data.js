@@ -989,6 +989,11 @@ export const COMPONENTS = [
     prep: "5 minutes",
     sourceAnchors: ["Sedlec Ossuary"],
     motifs: ["skull garlands", "confession", "anonymous remains"],
+    mapInfluence: {
+      preferredRoomArchetypes: ["ossuary-gallery", "processional-crypt-hall"],
+      weight: 2,
+      source: "legacy-component:skulls-turn-toward-confession",
+    },
     summary:
       "The skulls in the walls turn whenever someone speaks a secret, granting the room a brief judgmental focus.",
     tableText:

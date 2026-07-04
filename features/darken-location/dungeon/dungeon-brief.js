@@ -70,6 +70,12 @@ function normalizeMapInfluence(value = {}) {
     ...asArray(value.forbiddenRoomArchetypes),
     ...asArray(value.forbiddenRoomArchetypeIds),
   ]);
+  const sources = unique([
+    ...asArray(value.sources),
+    value.source,
+    value.componentId,
+    value.componentTitle,
+  ]);
   const hasInfluence = Boolean(
     directRoomArchetype ||
       preferredRoomArchetypes.length ||
@@ -85,7 +91,8 @@ function normalizeMapInfluence(value = {}) {
     forbiddenRoomArchetypes,
     forceRoomArchetype: Boolean(value.forceRoomArchetype || value.force || value.required || forcedRoomArchetype),
     weight: normalizeNumber(value.weight ?? value.priority, 1),
-    source: normalizeString(value.source || value.componentId || value.componentTitle),
+    source: sources[0] || "",
+    sources,
   };
 }
 
@@ -127,7 +134,7 @@ function mergeMapInfluences(influences = []) {
     forbiddenRoomArchetypes: unique(ordered.flatMap((item) => item.forbiddenRoomArchetypes)),
     forceRoomArchetype: ordered.some((item) => item.forceRoomArchetype),
     weight: ordered.reduce((sum, item) => sum + normalizeNumber(item.weight, 1), 0),
-    sources: unique(ordered.map((item) => item.source)),
+    sources: unique(ordered.flatMap((item) => [...asArray(item.sources), item.source])),
   };
 }
 
@@ -391,33 +398,42 @@ export function createRoomBrief(input = {}, index = 0, { theme = null } = {}) {
   const normalizedTheme = normalizeDungeonTheme(theme);
   const metadata = input.metadata && typeof input.metadata === "object" ? input.metadata : {};
   const assignedComponents = asArray(input.assignedComponents || metadata.assignedComponents).filter(Boolean);
-  const componentInfluences = assignedComponents
-    .map((component) => normalizeMapInfluence(getMapInfluenceSource(component)))
-    .filter(Boolean);
+  const hasMergedMapInfluence = Boolean(
+    input.schemaVersion ||
+      input.mapInfluence?.sources ||
+      metadata.mapInfluence?.sources ||
+      metadata.dungeonRoomBrief,
+  );
+  const componentInfluences = hasMergedMapInfluence
+    ? []
+    : assignedComponents
+        .map((component) => normalizeMapInfluence(getMapInfluenceSource(component)))
+        .filter(Boolean);
+  const declaredRoomArchetypeSource = normalizeString(
+    input.roomArchetypeSource || metadata.roomArchetypeSource,
+  );
+  const rawDirectRoomArchetype =
+    input.roomArchetype ||
+    input.roomArchetypeId ||
+    input.archetype ||
+    metadata.roomArchetype ||
+    metadata.roomArchetypeId ||
+    metadata.archetype ||
+    "";
+  const directRoomArchetype = normalizeString(
+    declaredRoomArchetypeSource === "map-influence" ? "" : rawDirectRoomArchetype,
+  );
   const regionInfluence = normalizeMapInfluence({
     ...(getMapInfluenceSource(input) || {}),
     ...(getMapInfluenceSource(metadata) || {}),
     roomArchetype:
-      input.roomArchetype ||
-      input.roomArchetypeId ||
-      input.archetype ||
-      metadata.roomArchetype ||
-      metadata.roomArchetypeId ||
-      metadata.archetype ||
+      rawDirectRoomArchetype ||
       getMapInfluenceSource(input)?.roomArchetype ||
       getMapInfluenceSource(metadata)?.roomArchetype ||
       "",
   });
   const mapInfluence = mergeMapInfluences([regionInfluence, ...componentInfluences]);
   const influencedRoomArchetype = getRoomArchetypeFromMapInfluence(mapInfluence);
-  const directRoomArchetype = normalizeString(
-    input.roomArchetype ||
-      input.roomArchetypeId ||
-      input.archetype ||
-      metadata.roomArchetype ||
-      metadata.roomArchetypeId ||
-      metadata.archetype,
-  );
   const roomArchetype = normalizeString(directRoomArchetype || influencedRoomArchetype);
   const roomArchetypeSource = directRoomArchetype ? "explicit" : roomArchetype ? "map-influence" : "";
   const sourceRegionId = normalizeString(input.sourceRegionId || input.id || metadata.sourceRegionId, createRoomId(index));

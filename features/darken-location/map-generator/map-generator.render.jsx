@@ -7473,6 +7473,76 @@ export function renderProp(prop) {
       </g>
     );
   }
+  if (prop.kind === "bone-well-rim") {
+    return (
+      <g transform={`translate(${prop.x} ${prop.y}) rotate(${prop.rotation})`}>
+        <circle className="prop-pit" cx="0" cy="0" r={s * 0.44} />
+        <circle cx="0" cy="0" r={s * 0.62} />
+        <path d={`M${-s * 0.62} 0h${s * 0.22}M${s * 0.4} 0h${s * 0.22}M0 ${-s * 0.62}v${s * 0.22}M0 ${s * 0.4}v${s * 0.22}`} />
+      </g>
+    );
+  }
+  if (prop.kind === "ossuary-niche-row") {
+    return (
+      <g transform={`translate(${prop.x} ${prop.y}) rotate(${prop.rotation})`}>
+        <path d={`M${-s * 0.62} ${-s * 0.18}h${s * 1.24}v${s * 0.36}h${-s * 1.24}z`} />
+        <line x1={-s * 0.31} y1={-s * 0.18} x2={-s * 0.31} y2={s * 0.18} />
+        <line x1="0" y1={-s * 0.18} x2="0" y2={s * 0.18} />
+        <line x1={s * 0.31} y1={-s * 0.18} x2={s * 0.31} y2={s * 0.18} />
+        <circle cx={-s * 0.46} cy="0" r={s * 0.06} />
+        <circle cx="0" cy="0" r={s * 0.06} />
+        <circle cx={s * 0.46} cy="0" r={s * 0.06} />
+      </g>
+    );
+  }
+  if (prop.kind === "reliquary-shrine") {
+    return (
+      <g transform={`translate(${prop.x} ${prop.y}) rotate(${prop.rotation})`}>
+        <rect className="prop-altar" x={-s * 0.48} y={-s * 0.26} width={s * 0.96} height={s * 0.52} rx="1" />
+        <circle className="prop-light-fill" cx="0" cy="0" r={s * 0.18} />
+        <path d={`M0 ${-s * 0.36}v${s * 0.72}M${-s * 0.2} ${-s * 0.08}h${s * 0.4}`} />
+      </g>
+    );
+  }
+  if (prop.kind === "hidden-relic-cache") {
+    return (
+      <g transform={`translate(${prop.x} ${prop.y}) rotate(${prop.rotation})`}>
+        <rect className="prop-shelf" x={-s * 0.54} y={-s * 0.32} width={s * 1.08} height={s * 0.64} rx="1" />
+        <rect className="prop-fill" x={-s * 0.2} y={-s * 0.18} width={s * 0.4} height={s * 0.36} rx="1" />
+        <path d={`M${-s * 0.48} ${-s * 0.05}h${s * 0.22}M${s * 0.26} ${-s * 0.05}h${s * 0.22}M0 ${-s * 0.18}v${s * 0.36}`} />
+      </g>
+    );
+  }
+  if (prop.kind === "charnel-heap") {
+    return (
+      <g className="prop-bones" transform={`translate(${prop.x} ${prop.y}) rotate(${prop.rotation})`}>
+        <ellipse className="prop-fill" cx="0" cy="0" rx={s * 0.58} ry={s * 0.38} />
+        <line x1={-s * 0.42} y1={-s * 0.12} x2={s * 0.36} y2={s * 0.18} />
+        <line x1={-s * 0.34} y1={s * 0.18} x2={s * 0.42} y2={-s * 0.12} />
+        <circle cx={-s * 0.5} cy={-s * 0.06} r={s * 0.08} />
+        <circle cx={s * 0.5} cy={s * 0.08} r={s * 0.08} />
+        <path className="prop-crack" d={`M${-s * 0.08} ${-s * 0.28}l${s * 0.16} ${s * 0.18}l${-s * 0.1} ${s * 0.2}`} />
+      </g>
+    );
+  }
+  if (prop.kind === "sealed-tomb-slab" || prop.kind === "burial-slab") {
+    const inset = prop.kind === "sealed-tomb-slab" ? 0.12 : 0.18;
+    return (
+      <g transform={`translate(${prop.x} ${prop.y}) rotate(${prop.rotation})`}>
+        <rect className="prop-tomb" x={-s * 0.56} y={-s * 0.3} width={s * 1.12} height={s * 0.6} rx="2" />
+        <rect x={-s * (0.56 - inset)} y={-s * (0.3 - inset)} width={s * (1.12 - inset * 2)} height={s * (0.6 - inset * 2)} rx="1" />
+        <path d={`M0 ${-s * 0.2}v${s * 0.4}M${-s * 0.24} 0h${s * 0.48}`} />
+      </g>
+    );
+  }
+  if (prop.kind === "processional-axis") {
+    return (
+      <g transform={`translate(${prop.x} ${prop.y}) rotate(${prop.rotation})`}>
+        <line x1={-s * 0.72} y1="0" x2={s * 0.72} y2="0" />
+        <path d={`M${-s * 0.48} ${-s * 0.16}l${s * 0.16} ${s * 0.16}l${-s * 0.16} ${s * 0.16}M${s * 0.48} ${-s * 0.16}l${s * 0.16} ${s * 0.16}l${-s * 0.16} ${s * 0.16}`} />
+      </g>
+    );
+  }
   if (prop.kind === "courtyard") {
     return (
       <g transform={`translate(${prop.x} ${prop.y}) rotate(${prop.rotation})`}>
@@ -7519,13 +7589,24 @@ export function renderProps(props, generatedMap = null) {
           classNames.push(`prop-context-cue prop-context-cue--${prop.contextKey || "context"}`);
         if (prop.themeCue)
           classNames.push(`prop-theme-cue prop-theme-cue--${prop.themeKey || "theme"}`);
+        if (prop.archetypeCue)
+          classNames.push(
+            `prop-archetype-cue prop-archetype-cue--${prop.archetypeCue}`,
+          );
+        if (prop.archetypeSignature) classNames.push("prop-archetype-signature");
         return (
           <g
             key={prop.id}
             className={classNames.join(" ") || undefined}
             data-context-key={prop.contextualCue ? prop.contextKey || "context" : undefined}
             data-theme-key={prop.themeCue ? prop.themeKey || "theme" : undefined}
-            data-prop-kind={prop.contextualCue || prop.themeCue ? prop.kind || "unknown" : undefined}
+            data-archetype-key={prop.archetypeCue || undefined}
+            data-detail-profile={prop.detailProfile || undefined}
+            data-prop-kind={
+              prop.contextualCue || prop.themeCue || prop.archetypeCue
+                ? prop.kind || "unknown"
+                : undefined
+            }
           >
             {renderProp(prop)}
           </g>

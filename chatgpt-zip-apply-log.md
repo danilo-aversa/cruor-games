@@ -7455,3 +7455,293 @@ _Nessun file aggiunto._
 - `~features/darken-location/composer/model/location-composer-preview.js`
 - `~features/darken-location/composer/model/location-room-program.js`
 
+
+---
+
+## 2026-07-04 12:10:11
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-composer-map-influence-bridge-patch-v1 (1).zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-composer-map-influence-bridge-patch-v1 (1).zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/dungeon/dungeon-brief-generator.js`
+- `~features/darken-location/dungeon/dungeon-brief.js`
+- `~features/darken-location/map-generator/map-generator.profile.js`
+
+
+---
+
+## 2026-07-04 12:20:58
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-room-archetype-geometry-patch-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-room-archetype-geometry-patch-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~features/darken-location/map-generator/map-generator.details.js`
+- `~features/darken-location/map-generator/map-generator.layout.js`
+- `~features/darken-location/map-generator/map-generator.mask.js`
+- `~features/darken-location/map-generator/map-generator.profile.js`
+
+
+---
+
+## 2026-07-04 12:31:01
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-room-archetype-visual-details-patch-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-room-archetype-visual-details-patch-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `~features/darken-location/map-generator/map-generator.details.js`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-07-04 13:15:28
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-real-content-wiring-patch-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-real-content-wiring-patch-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/crucible/crucible.components-data.js`
+- `~features/crucible/crucible.location-regions.js`
+- `~shared/content/content-packs/dark-places-canonical-expansion-pack.js`
+
+
+---
+
+## 2026-07-04 14:02:32
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-archetype-aware-topology-patch-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-archetype-aware-topology-patch-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/map-generator.graph.js`
+- `~features/darken-location/map-generator/map-generator.pipeline.js`
+
+
+---
+
+## 2026-07-04 14:55:45
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-composer-map-influence-preview-ux-patch-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-composer-map-influence-preview-ux-patch-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/composer/components/LocationComponentPickerModal.jsx`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+
+
+---
+
+## 2026-07-04 15:09:57
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-authoring-studio-qa-patch-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-authoring-studio-qa-patch-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/model/studio-export.js`
+- `~features/inspiration-studio/model/studio-validation.js`
+
+
+---
+
+## 2026-07-04 15:28:40
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-authoring-fixture-e2e-patch-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-authoring-fixture-e2e-patch-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/model/studio-component-templates.js`
+- `~features/inspiration-studio/model/studio-draft.js`
+
+
+---
+
+## 2026-07-04 16:01:58
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-composer-assignment-regression-tests-patch-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-composer-assignment-regression-tests-patch-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+scripts/run-composer-assignment-qa.mjs`
+
+**File sovrascritti:** 1
+
+- `~package.json`
+
+
+---
+
+## 2026-07-04 16:11:34
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-composer-assignment-regression-fix-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-composer-assignment-regression-fix-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/model/location-composer-state.js`
+- `~scripts/run-composer-assignment-qa.mjs`
+
+
+---
+
+## 2026-07-04 16:15:04
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-composer-assignment-regression-fix-v2.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-composer-assignment-regression-fix-v2.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~scripts/run-composer-assignment-qa.mjs`
+
+
+---
+
+## 2026-07-04 16:36:43
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-map-archetype-qa-harness-patch-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-map-archetype-qa-harness-patch-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+scripts/run-map-archetype-qa.mjs`
+
+**File sovrascritti:** 1
+
+- `~package.json`
+
+
+---
+
+## 2026-07-04 17:19:36
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-map-archetype-visual-gallery-patch-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-map-archetype-visual-gallery-patch-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+scripts/run-map-archetype-gallery.mjs`
+
+**File sovrascritti:** 1
+
+- `~package.json`
+
