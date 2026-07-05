@@ -931,39 +931,283 @@ export function isCircleDoorEdgeInsidePerimeter(anchor) {
   return insideCount >= 2;
 }
 
+function getCircleExtensionCellManhattanDistance(a, b) {
+  if (!a || !b) return Number.POSITIVE_INFINITY;
+  return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+}
+
+function getCircleExtensionAnchorSideFromNormal(normal, fallback = "east") {
+  if (!normal) return fallback;
+  const x = Number.isFinite(normal.x) ? normal.x : 0;
+  const y = Number.isFinite(normal.y) ? normal.y : 0;
+  if (Math.abs(x) >= Math.abs(y)) return x >= 0 ? "east" : "west";
+  return y >= 0 ? "south" : "north";
+}
+
+function getCircleExtensionAxialNormal(side) {
+  if (side === "west") return { x: -1, y: 0 };
+  if (side === "south") return { x: 0, y: 1 };
+  if (side === "north") return { x: 0, y: -1 };
+  return { x: 1, y: 0 };
+}
+
+function normalizeCircleExtensionVector(vector, fallback = { x: 1, y: 0 }) {
+  const x = Number.isFinite(vector?.x) ? vector.x : fallback.x;
+  const y = Number.isFinite(vector?.y) ? vector.y : fallback.y;
+  const length = Math.hypot(x, y);
+  if (!Number.isFinite(length) || length <= 0.0001) return { ...fallback };
+  return { x: x / length, y: y / length };
+}
+
+function getCircleExtensionCellCenter(cell) {
+  return { x: cell.x + 0.5, y: cell.y + 0.5 };
+}
+
+function getCircleExtensionCellDistance(cell, circle) {
+  if (!cell || !circle) return Number.NEGATIVE_INFINITY;
+  const center = getCircleExtensionCellCenter(cell);
+  return Math.hypot(center.x - circle.cxCells, center.y - circle.cyCells);
+}
+
+function isCircleExtensionCellInBounds(cell, gridW, gridH) {
+  return (
+    cell &&
+    cell.x >= 1 &&
+    cell.y >= 1 &&
+    cell.x < gridW - 1 &&
+    cell.y < gridH - 1
+  );
+}
+
+function isCircleExtensionCellReserved(cell, reservedRoomCells) {
+  return Boolean(reservedRoomCells?.has(cellKey(cell.x, cell.y)));
+}
+
+function getCircleCellRectDistanceRange(cell, circle) {
+  if (!cell || !circle) {
+    return {
+      min: Number.POSITIVE_INFINITY,
+      max: Number.NEGATIVE_INFINITY,
+    };
+  }
+  const minX = cell.x;
+  const minY = cell.y;
+  const maxX = cell.x + 1;
+  const maxY = cell.y + 1;
+  const dx = Math.max(minX - circle.cxCells, 0, circle.cxCells - maxX);
+  const dy = Math.max(minY - circle.cyCells, 0, circle.cyCells - maxY);
+  return {
+    min: Math.hypot(dx, dy),
+    max: Math.max(
+      Math.hypot(minX - circle.cxCells, minY - circle.cyCells),
+      Math.hypot(maxX - circle.cxCells, minY - circle.cyCells),
+      Math.hypot(minX - circle.cxCells, maxY - circle.cyCells),
+      Math.hypot(maxX - circle.cxCells, maxY - circle.cyCells),
+    ),
+  };
+}
+
+function isCirclePortalCellUsable(cell, circle, gridW, gridH, reservedRoomCells) {
+  if (!isCircleExtensionCellInBounds(cell, gridW, gridH)) return false;
+  if (isCircleExtensionCellReserved(cell, reservedRoomCells)) return false;
+  const range = getCircleCellRectDistanceRange(cell, circle);
+  return range.min < circle.rCells - 0.001 && range.max >= circle.rCells - 0.001;
+}
+
+function getProjectedCircleExtensionCell(circle, radial, offsetCells) {
+  return {
+    x: Math.floor(circle.cxCells + radial.x * (circle.rCells + offsetCells)),
+    y: Math.floor(circle.cyCells + radial.y * (circle.rCells + offsetCells)),
+  };
+}
+
+function getCircleExtensionAnchorRadial(
+  region,
+  anchor,
+  normal,
+  gridSize = DEFAULT_CONFIG.gridSize,
+) {
+  const circle = getCircleGeometryFromRegion(region, 1);
+  if (anchor?.point && Number.isFinite(anchor.point.x) && Number.isFinite(anchor.point.y)) {
+    const scale = Math.max(1, Number(gridSize) || DEFAULT_CONFIG.gridSize);
+    return normalizeCircleExtensionVector(
+      {
+        x: anchor.point.x / scale - circle.cxCells,
+        y: anchor.point.y / scale - circle.cyCells,
+      },
+      normal,
+    );
+  }
+  if (anchor?.circular?.normal) {
+    return normalizeCircleExtensionVector(anchor.circular.normal, normal);
+  }
+  const referenceCell = anchor?.outsideCell || anchor?.portalRoomCell || anchor?.originalOutsideCell || anchor?.cell;
+  if (referenceCell) {
+    const center = getCircleExtensionCellCenter(referenceCell);
+    return normalizeCircleExtensionVector(
+      { x: center.x - circle.cxCells, y: center.y - circle.cyCells },
+      normal,
+    );
+  }
+  return normalizeCircleExtensionVector(normal);
+}
+
+function getInwardCirclePortalCandidate(anchor, normal, circle, gridW, gridH, reservedRoomCells) {
+  const start = anchor?.portalRoomCell || anchor?.outsideCell || anchor?.cell;
+  if (!start || !normal) return null;
+  for (let step = 0; step <= 4; step += 1) {
+    const candidate = {
+      x: start.x - normal.x * step,
+      y: start.y - normal.y * step,
+    };
+    if (isCirclePortalCellUsable(candidate, circle, gridW, gridH, reservedRoomCells)) {
+      return candidate;
+    }
+  }
+  return null;
+}
+
+function chooseCirclePortalRoomCell(
+  region,
+  anchor,
+  normal,
+  gridW,
+  gridH,
+  reservedRoomCells,
+  gridSize = DEFAULT_CONFIG.gridSize,
+) {
+  const circle = getCircleGeometryFromRegion(region, 1);
+  const radial = getCircleExtensionAnchorRadial(region, anchor, normal, gridSize);
+  const inwardPortalCell = getInwardCirclePortalCandidate(
+    anchor,
+    normal,
+    circle,
+    gridW,
+    gridH,
+    reservedRoomCells,
+  );
+  if (inwardPortalCell) return { x: inwardPortalCell.x, y: inwardPortalCell.y };
+  const projectedPortalCell = getProjectedCircleExtensionCell(circle, radial, -0.01);
+  const projectedOuterCell = getProjectedCircleExtensionCell(circle, radial, 0.55);
+  const candidates = [
+    inwardPortalCell,
+    projectedPortalCell,
+    anchor.portalRoomCell,
+    anchor.outsideCell,
+    anchor.cell,
+    getProjectedCircleExtensionCell(circle, radial, -0.25),
+    getProjectedCircleExtensionCell(circle, radial, 0.25),
+    projectedOuterCell,
+    getProjectedCircleExtensionCell(circle, radial, 0.95),
+    ...(projectedPortalCell
+      ? [
+          { x: projectedPortalCell.x + normal.x, y: projectedPortalCell.y + normal.y },
+          { x: projectedPortalCell.x - normal.x, y: projectedPortalCell.y - normal.y },
+        ]
+      : []),
+  ].filter(Boolean);
+
+  const usable = candidates
+    .filter((cell) =>
+      isCirclePortalCellUsable(cell, circle, gridW, gridH, reservedRoomCells),
+    )
+    .map((cell) => {
+      const center = getCircleExtensionCellCenter(cell);
+      const projected = {
+        x: circle.cxCells + radial.x * circle.rCells,
+        y: circle.cyCells + radial.y * circle.rCells,
+      };
+      const dx = Math.max(cell.x - projected.x, 0, projected.x - (cell.x + 1));
+      const dy = Math.max(cell.y - projected.y, 0, projected.y - (cell.y + 1));
+      const centerDx = center.x - projected.x;
+      const centerDy = center.y - projected.y;
+      return {
+        cell: { x: cell.x, y: cell.y },
+        score: dx * dx + dy * dy + (centerDx * centerDx + centerDy * centerDy) * 0.04,
+      };
+    })
+    .sort((a, b) => a.score - b.score);
+
+  return usable[0]?.cell || null;
+}
+
+function chooseCircleRoutingOutsideCell(
+  region,
+  anchor,
+  portalRoomCell,
+  normal,
+  gridW,
+  gridH,
+  reservedRoomCells,
+) {
+  const circle = getCircleGeometryFromRegion(region, 1);
+  const portalDistance = getCircleExtensionCellDistance(portalRoomCell, circle);
+  const candidates = [
+    anchor.routingOutsideCell,
+    anchor.outsideCell,
+    {
+      x: portalRoomCell.x + normal.x,
+      y: portalRoomCell.y + normal.y,
+    },
+  ].filter(Boolean);
+  const usable = candidates
+    .filter((cell) => isCircleExtensionCellInBounds(cell, gridW, gridH))
+    .filter((cell) => !isCircleExtensionCellReserved(cell, reservedRoomCells))
+    .filter((cell) => getCircleExtensionCellManhattanDistance(cell, portalRoomCell) === 1)
+    .filter((cell) => getCircleExtensionCellDistance(cell, circle) > portalDistance + 0.05)
+    .map((cell) => ({
+      cell: { x: cell.x, y: cell.y },
+      distance: getCircleExtensionCellDistance(cell, circle),
+    }))
+    .sort((a, b) => b.distance - a.distance);
+  return usable[0]?.cell || null;
+}
+
 export function createCircleDoorRoomExtensionAnchor(
   region,
   anchor,
   gridW,
   gridH,
   reservedRoomCells = null,
+  gridSize = DEFAULT_CONFIG.gridSize,
 ) {
   if (!anchor || region.shape !== "circle") return anchor;
-  const portalRoomCell = { x: anchor.outsideCell.x, y: anchor.outsideCell.y };
-  const outsideCell = {
-    x: portalRoomCell.x + anchor.normal.x,
-    y: portalRoomCell.y + anchor.normal.y,
-  };
-  if (
-    outsideCell.x < 1 ||
-    outsideCell.y < 1 ||
-    outsideCell.x >= gridW - 1 ||
-    outsideCell.y >= gridH - 1
-  )
-    return anchor;
-  if (reservedRoomCells?.has(cellKey(portalRoomCell.x, portalRoomCell.y)))
-    return anchor;
-  if (reservedRoomCells?.has(cellKey(outsideCell.x, outsideCell.y)))
-    return anchor;
+  const side = anchor.side || getCircleExtensionAnchorSideFromNormal(anchor.normal);
+  const normal = anchor.normal || getCircleExtensionAxialNormal(side);
+  const portalRoomCell = chooseCirclePortalRoomCell(
+    region,
+    anchor,
+    normal,
+    gridW,
+    gridH,
+    reservedRoomCells,
+    gridSize,
+  );
+  if (!portalRoomCell) return anchor;
+  const outsideCell = chooseCircleRoutingOutsideCell(
+    region,
+    anchor,
+    portalRoomCell,
+    normal,
+    gridW,
+    gridH,
+    reservedRoomCells,
+  );
+  if (!outsideCell) return anchor;
   return {
     ...anchor,
+    side,
+    normal,
     cell: portalRoomCell,
     outsideCell,
     circular: null,
     expandedCircleDoor: true,
     portalRoomCell,
-    originalCell: { x: anchor.cell.x, y: anchor.cell.y },
-    originalOutsideCell: { x: anchor.outsideCell.x, y: anchor.outsideCell.y },
+    routingOutsideCell: outsideCell,
+    originalCell: anchor.cell ? { x: anchor.cell.x, y: anchor.cell.y } : null,
+    originalOutsideCell: anchor.outsideCell
+      ? { x: anchor.outsideCell.x, y: anchor.outsideCell.y }
+      : null,
     wasCircleDoorEdgeInsidePerimeter: isCircleDoorEdgeInsidePerimeter(anchor),
   };
 }

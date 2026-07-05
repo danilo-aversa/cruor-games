@@ -1,7 +1,7 @@
 {
   "name": "cruor-games",
   "private": true,
-  "version": "13.1.0a",
+  "version": "13.2.0a",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -41,7 +41,8 @@
     "qa:map-archetypes": "node scripts/run-map-archetype-qa.mjs",
     "qa:map-archetype-gallery": "node scripts/run-map-archetype-gallery.mjs",
     "qa:room-design": "node scripts/run-room-design-qa.mjs",
-    "qa:room-design-gallery": "node scripts/run-room-design-gallery.mjs"
+    "qa:room-design-gallery": "node scripts/run-room-design-gallery.mjs",
+    "qa:circle-connectors": "vitest run --config scripts/vitest.circle-connectors.config.mjs --reporter=default"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",

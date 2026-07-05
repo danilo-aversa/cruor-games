@@ -69,6 +69,12 @@ import {
   getAdjacentCells,
 } from "./map-generator.corridors.js";
 import {
+  createCircleConnectionAnchorCandidates,
+  createCircleDragAnchor,
+  doesCircleAnchorCellTouchVisualCircle,
+  getCircleAnchorRoutingCell,
+} from "./map-generator.circle-anchors.js";
+import {
   createCaveMapSurfaceFromCaveSurface as createGeometryCaveMapSurfaceFromCaveSurface,
   finalizeCaveGeometry as finalizeGeometryCaveGeometry,
 } from "./map-generator.geometry.js";
@@ -1689,36 +1695,169 @@ export function buildCircleRoomPath(region, gridSize) {
   return `M${cx} ${cy - r}A${r} ${r} 0 1 1 ${cx} ${cy + r}A${r} ${r} 0 1 1 ${cx} ${cy - r}Z`;
 }
 
-export function getCirclePortalCellFromAnchor(region, anchor) {
-  if (!anchor) return null;
-  if (anchor.portalRoomCell)
-    return { x: anchor.portalRoomCell.x, y: anchor.portalRoomCell.y };
-  return getSnappedCirclePortalCellFromAnchor(anchor) || anchor.cell;
+function getCircleAnchorFallbackPoint(region, anchor, gridSize) {
+  if (anchor?.point && Number.isFinite(anchor.point.x) && Number.isFinite(anchor.point.y)) {
+    return anchor.point;
+  }
+  const referenceCell =
+    anchor?.portalRoomCell ||
+    anchor?.outsideCell ||
+    anchor?.routingOutsideCell ||
+    anchor?.cell;
+  if (referenceCell) {
+    return {
+      x: (referenceCell.x + 0.5) * gridSize,
+      y: (referenceCell.y + 0.5) * gridSize,
+    };
+  }
+  if (anchor?.circular?.normal) {
+    const circle = getCircleGeometryFromRegion(region, gridSize);
+    return {
+      x: circle.cx + anchor.circular.normal.x * circle.r,
+      y: circle.cy + anchor.circular.normal.y * circle.r,
+    };
+  }
+  return null;
 }
 
-export function getCirclePortalSupportCell(region, portal) {
+function getInwardCirclePortalCell(anchor, circle, gridSize) {
+  const side = anchor?.side;
+  const normal =
+    side === "west"
+      ? { x: -1, y: 0 }
+      : side === "east"
+        ? { x: 1, y: 0 }
+        : side === "north"
+          ? { x: 0, y: -1 }
+          : side === "south"
+            ? { x: 0, y: 1 }
+            : anchor?.normal || null;
+  const start = anchor?.portalRoomCell || anchor?.outsideCell || anchor?.cell;
+  if (!start || !normal) return null;
+  for (let step = 0; step <= 4; step += 1) {
+    const cell = { x: start.x - normal.x * step, y: start.y - normal.y * step };
+    if (doesCircleAnchorCellTouchVisualCircle(cell, circle, gridSize)) return cell;
+  }
+  return null;
+}
+
+export function getCirclePortalCellFromAnchor(region, anchor, gridSize = DEFAULT_CONFIG.gridSize) {
+  if (!anchor || region?.shape !== "circle") return null;
+  const circle = getCircleGeometryFromRegion(region, gridSize);
+  const isUsablePortal = (cell) =>
+    Boolean(cell) && doesCircleAnchorCellTouchVisualCircle(cell, circle, gridSize);
+
+  if (isUsablePortal(anchor.portalRoomCell)) {
+    return { x: anchor.portalRoomCell.x, y: anchor.portalRoomCell.y };
+  }
+
+  const inward = getInwardCirclePortalCell(anchor, circle, gridSize);
+  if (isUsablePortal(inward)) return { x: inward.x, y: inward.y };
+
+  const snapped = getSnappedCirclePortalCellFromAnchor(anchor);
+  if (isUsablePortal(snapped)) return { x: snapped.x, y: snapped.y };
+
+  if (isUsablePortal(anchor.cell)) return { x: anchor.cell.x, y: anchor.cell.y };
+
+  const fallbackPoint = getCircleAnchorFallbackPoint(region, anchor, gridSize);
+  const repairedAnchor = fallbackPoint
+    ? createCircleDragAnchor(region, fallbackPoint, gridSize)
+    : null;
+  if (isUsablePortal(repairedAnchor?.portalRoomCell)) {
+    return {
+      x: repairedAnchor.portalRoomCell.x,
+      y: repairedAnchor.portalRoomCell.y,
+    };
+  }
+
+  return anchor.portalRoomCell || anchor.outsideCell || anchor.cell || null;
+}
+
+function getCircleCellOverlapRatio(region, cell, gridSize) {
+  if (!region || region.shape !== "circle" || !cell) return 0;
+  const circle = getCircleGeometryFromRegion(region, gridSize);
+  const samples = [0.16, 0.32, 0.5, 0.68, 0.84];
+  let inside = 0;
+  let total = 0;
+  samples.forEach((sx) => {
+    samples.forEach((sy) => {
+      total += 1;
+      const x = (cell.x + sx) * gridSize;
+      const y = (cell.y + sy) * gridSize;
+      if (Math.hypot(x - circle.cx, y - circle.cy) <= circle.r + 0.01) {
+        inside += 1;
+      }
+    });
+  });
+  return total > 0 ? inside / total : 0;
+}
+
+export function getCirclePortalSupportCell(
+  region,
+  portal,
+  gridSize = DEFAULT_CONFIG.gridSize,
+) {
   if (!portal?.anchor || region.shape !== "circle") return null;
-  const anchor = portal.anchor;
   const portalCell = { x: portal.x, y: portal.y };
-  const supportCell = anchor.originalCell
-    ? { x: anchor.originalCell.x, y: anchor.originalCell.y }
-    : anchor.expandedCircleDoor && anchor.normal
-      ? { x: portalCell.x - anchor.normal.x, y: portalCell.y - anchor.normal.y }
-      : null;
+  const circle = getCircleGeometryFromRegion(region, gridSize);
+  const portalOverlap = getCircleCellOverlapRatio(region, portalCell, gridSize);
 
-  if (!supportCell) return null;
-  const distance =
-    Math.abs(supportCell.x - portalCell.x) +
-    Math.abs(supportCell.y - portalCell.y);
-  if (distance !== 1) return null;
+  // A square that only clips a tiny corner of the circle creates awkward
+  // partial wall segments. Add one regular support square toward the circle
+  // center, so the rendered connector behaves like a single composed shape.
+  if (portalOverlap >= 0.34) return null;
 
-  return {
-    x: supportCell.x,
-    y: supportCell.y,
-    side: anchor.side,
-    anchor,
-    support: true,
+  const center = {
+    x: (portalCell.x + 0.5) * gridSize,
+    y: (portalCell.y + 0.5) * gridSize,
   };
+  const dx = circle.cx - center.x;
+  const dy = circle.cy - center.y;
+  const primary =
+    Math.abs(dx) >= Math.abs(dy)
+      ? { x: Math.sign(dx) || 0, y: 0 }
+      : { x: 0, y: Math.sign(dy) || 0 };
+  const secondary =
+    Math.abs(dx) >= Math.abs(dy)
+      ? { x: 0, y: Math.sign(dy) || 0 }
+      : { x: Math.sign(dx) || 0, y: 0 };
+  const candidates = [primary, secondary]
+    .filter((delta) => delta.x !== 0 || delta.y !== 0)
+    .map((delta) => ({
+      x: portalCell.x + delta.x,
+      y: portalCell.y + delta.y,
+    }))
+    .filter((cell) =>
+      doesCircleAnchorCellTouchVisualCircle(cell, circle, gridSize),
+    )
+    .map((cell) => ({
+      cell,
+      overlap: getCircleCellOverlapRatio(region, cell, gridSize),
+    }))
+    .filter((candidate) => candidate.overlap > portalOverlap + 0.04)
+    .sort((a, b) => b.overlap - a.overlap);
+
+  return candidates[0]?.cell || null;
+}
+
+export function createCircleDoorMouthPath() {
+  // Circular connectors are rendered as exactly one regular portal square.
+  // The square itself fills the floor connection; adding an arc-shaped mouth here
+  // creates irregular overhangs around oblique anchors.
+  return "";
+}
+
+export function getCircleDoorMouthPaths(generatedMap, region) {
+  if (!generatedMap || region?.shape !== "circle") return [];
+  const gridSize = generatedMap.config.gridSize;
+  return (generatedMap.corridors || [])
+    .flatMap((corridor) => [
+      corridor.from === region.id ? corridor.fromAnchor : null,
+      corridor.to === region.id ? corridor.toAnchor : null,
+    ])
+    .filter(Boolean)
+    .map((anchor) => createCircleDoorMouthPath(region, anchor, gridSize))
+    .filter(Boolean);
 }
 
 export function isCellCenterOutsideCircle(cell, circle) {
@@ -1739,6 +1878,7 @@ export function isCircleCompositeCellNearCircle(region, cell, marginCells = 2.05
 
 export function getCirclePortalCells(generatedMap, region) {
   if (!generatedMap || region.shape !== "circle") return [];
+  const gridSize = generatedMap.config?.gridSize || DEFAULT_CONFIG.gridSize;
   const seen = new Set();
   const cells = [];
   const addCell = (cell, source = {}) => {
@@ -1762,7 +1902,7 @@ export function getCirclePortalCells(generatedMap, region) {
     ]
       .filter(Boolean)
       .forEach((anchor) => {
-        const portalCell = getCirclePortalCellFromAnchor(region, anchor);
+        const portalCell = getCirclePortalCellFromAnchor(region, anchor, gridSize);
         const portal = {
           x: portalCell.x,
           y: portalCell.y,
@@ -1770,7 +1910,7 @@ export function getCirclePortalCells(generatedMap, region) {
           anchor,
         };
         addCell(portal, portal);
-        addCell(getCirclePortalSupportCell(region, portal), {
+        addCell(getCirclePortalSupportCell(region, portal, gridSize), {
           anchor,
           side: anchor.side,
           support: true,
@@ -1807,15 +1947,24 @@ export function getCircleCompositeSquareCells(generatedMap, region) {
     ]
       .filter((anchor) => anchor?.expandedCircleDoor && anchor.portalRoomCell)
       .forEach((anchor) => {
+        const resolvedPortalCell = getCirclePortalCellFromAnchor(
+          region,
+          anchor,
+          generatedMap.config.gridSize,
+        );
         const portal = {
-          x: anchor.portalRoomCell.x,
-          y: anchor.portalRoomCell.y,
+          x: resolvedPortalCell.x,
+          y: resolvedPortalCell.y,
           side: anchor.side,
           anchor,
         };
         addCompositeCell(portal, "expanded-door", anchor);
         addCompositeCell(
-          getCirclePortalSupportCell(region, portal),
+          getCirclePortalSupportCell(
+            region,
+            portal,
+            generatedMap.config.gridSize,
+          ),
           "support",
           anchor,
         );
@@ -1881,7 +2030,12 @@ export function createCircleCompositeRegionSurface(
   const extensionPath = extensionCells
     .map((cell) => cellRectToPath(cell, gridSize))
     .join(" ");
-  const visualFloorPath = [circlePath, extensionPath].filter(Boolean).join(" ");
+  const mouthPath = generatedMap
+    ? getCircleDoorMouthPaths(generatedMap, region).join(" ")
+    : "";
+  const visualFloorPath = [circlePath, mouthPath, extensionPath]
+    .filter(Boolean)
+    .join(" ");
   const hoverPath = generatedMap
     ? createCircleCompositeArcPath(region, generatedMap)
     : circlePath;
@@ -4885,12 +5039,13 @@ export function getCircleRectInsideIntervals(circle, rect, gridSize) {
 }
 
 export function shrinkCircleDoorGapForWallOverlap(interval, circle, gridSize) {
-  const overlap = Math.max(0.01, (gridSize * 0.025) / Math.max(1, circle.r));
-  const length = interval.end - interval.start;
-  if (length <= overlap * 2.6) return interval;
+  // Despite the historical name, circular connector gaps must expand slightly,
+  // not shrink. Shrinking leaves a visible wall sliver between the circle and
+  // the portal square at exact north/south/east/west anchors.
+  const overlap = Math.max(0.018, (gridSize * 0.09) / Math.max(1, circle.r));
   return {
-    start: interval.start + overlap,
-    end: interval.end - overlap,
+    start: interval.start - overlap,
+    end: interval.end + overlap,
   };
 }
 
@@ -4928,14 +5083,29 @@ export function getCircleDoorGaps(region, generatedMap) {
 
 export function mergeAngleIntervals(intervals) {
   if (intervals.length === 0) return [];
-  const expanded = intervals.flatMap((interval) =>
-    interval.start <= interval.end
+  const full = Math.PI * 2;
+  const expanded = intervals.flatMap((interval) => {
+    if (!interval) return [];
+    if (interval.start <= 0 && interval.end >= full) return [{ start: 0, end: full }];
+    if (interval.start < 0) {
+      return [
+        { start: 0, end: Math.min(full, interval.end) },
+        { start: full + interval.start, end: full },
+      ].filter((item) => item.end > item.start);
+    }
+    if (interval.end > full) {
+      return [
+        { start: interval.start, end: full },
+        { start: 0, end: interval.end - full },
+      ].filter((item) => item.end > item.start);
+    }
+    return interval.start <= interval.end
       ? [interval]
       : [
           { start: 0, end: interval.end },
-          { start: interval.start, end: Math.PI * 2 },
-        ],
-  );
+          { start: interval.start, end: full },
+        ];
+  });
   expanded.sort((a, b) => a.start - b.start);
   const merged = [];
   expanded.forEach((interval) => {
@@ -6680,6 +6850,36 @@ export function splitSegmentOutsideCircle(segment, circle, gridSize) {
   return segments;
 }
 
+function getOppositeSide(side) {
+  if (side === "north") return "south";
+  if (side === "south") return "north";
+  if (side === "east") return "west";
+  if (side === "west") return "east";
+  return null;
+}
+
+function isCirclePortalEdgeFacingRoom(cell, edge) {
+  const anchor = cell?.anchor;
+  if (!anchor?.side || !edge?.side) return false;
+  return edge.side === getOppositeSide(anchor.side);
+}
+
+
+function addUniqueSegment(segments, seen, segment) {
+  if (!segment) return;
+  const length = Math.hypot(segment.x2 - segment.x1, segment.y2 - segment.y1);
+  if (!Number.isFinite(length) || length < 0.01) return;
+  const key = segmentKey({
+    x1: Math.round(segment.x1 * 100) / 100,
+    y1: Math.round(segment.y1 * 100) / 100,
+    x2: Math.round(segment.x2 * 100) / 100,
+    y2: Math.round(segment.y2 * 100) / 100,
+  });
+  if (seen.has(key)) return;
+  seen.add(key);
+  segments.push(segment);
+}
+
 export function getCirclePortalSquareWallSegments(region, generatedMap) {
   if (region.shape !== "circle") return [];
   const circle = getCircleGeometryFromRegion(
@@ -6690,6 +6890,11 @@ export function getCirclePortalSquareWallSegments(region, generatedMap) {
   const extensionCellKeys = new Set(
     compositeCells.map((cell) => cellKey(cell.x, cell.y)),
   );
+  const corridorCellKeys = new Set(
+    (generatedMap.dungeonMask?.corridorFloorCells || []).map((cell) =>
+      cellKey(cell.x, cell.y),
+    ),
+  );
   const seen = new Set();
   const segments = [];
 
@@ -6699,27 +6904,26 @@ export function getCirclePortalSquareWallSegments(region, generatedMap) {
       generatedMap.config.gridSize,
     ).forEach((edge) => {
       const neighbor = getNeighborForCellSide(cell, edge.side);
-      if (extensionCellKeys.has(cellKey(neighbor.x, neighbor.y))) return;
+      const neighborKey = cellKey(neighbor.x, neighbor.y);
+      if (extensionCellKeys.has(neighborKey)) return;
+      if (corridorCellKeys.has(neighborKey)) return;
+      if (isCirclePortalEdgeFacingRoom(cell, edge)) return;
       splitSegmentOutsideCircle(
         edge,
         circle,
         generatedMap.config.gridSize,
       ).forEach((part) => {
-        const key = segmentKey({
-          x1: Math.round(part.x1 * 100) / 100,
-          y1: Math.round(part.y1 * 100) / 100,
-          x2: Math.round(part.x2 * 100) / 100,
-          y2: Math.round(part.y2 * 100) / 100,
-        });
-        if (seen.has(key)) return;
-        seen.add(key);
-        segments.push(part);
+        addUniqueSegment(segments, seen, part);
       });
     });
+    // Wall segments are derived from the union boundary: square edges outside
+    // the circle, with edges shared by corridors or the circular room removed.
+    // Extra bridge strokes produce protrusions and can mask real floor gaps.
   });
 
   return segments;
 }
+
 
 export function getDrawableWallSegments(generatedMap) {
   const gridWalls = trimWallSegmentsAgainstMineCaveOpenings(
@@ -7902,156 +8106,14 @@ export function getHybridFinalWallConnectionZones(region, generatedMap) {
     });
 }
 
-function getDominantCircleEditorSideFromNormal(normal, fallback = "east") {
-  if (!normal) return fallback;
-  const x = Number.isFinite(normal.x) ? normal.x : 0;
-  const y = Number.isFinite(normal.y) ? normal.y : 0;
-  if (Math.abs(x) >= Math.abs(y)) return x >= 0 ? "east" : "west";
-  return y >= 0 ? "south" : "north";
-}
-
-function getCircleEditorAxialNormal(side) {
-  if (side === "west") return { x: -1, y: 0 };
-  if (side === "south") return { x: 0, y: 1 };
-  if (side === "north") return { x: 0, y: -1 };
-  return { x: 1, y: 0 };
-}
-
-function getCircleEditorCellCenter(cell, gridSize) {
-  return {
-    x: (cell.x + 0.5) * gridSize,
-    y: (cell.y + 0.5) * gridSize,
-  };
-}
-
-function isCircleEditorCellInsideVisualCircle(cell, circle, gridSize, tolerance = 0) {
-  if (!cell || !circle) return false;
-  const center = getCircleEditorCellCenter(cell, gridSize);
-  return Math.hypot(center.x - circle.cx, center.y - circle.cy) < circle.r - tolerance;
-}
-
-function getCircleEditorWallPoint(cell, outsideCell, normal, gridSize) {
-  if (!cell || !outsideCell || !normal) return null;
-  if (normal.x > 0)
-    return { x: outsideCell.x * gridSize, y: (outsideCell.y + 0.5) * gridSize };
-  if (normal.x < 0)
-    return { x: (outsideCell.x + 1) * gridSize, y: (outsideCell.y + 0.5) * gridSize };
-  if (normal.y > 0)
-    return { x: (outsideCell.x + 0.5) * gridSize, y: outsideCell.y * gridSize };
-  return { x: (outsideCell.x + 0.5) * gridSize, y: (outsideCell.y + 1) * gridSize };
-}
-
-function getCircleEditorWallSegment(point, normal, gridSize) {
-  if (!point || !normal) return null;
-  const half = gridSize * 0.42;
-  if (Math.abs(normal.x) > Math.abs(normal.y)) {
-    return { x1: point.x, y1: point.y - half, x2: point.x, y2: point.y + half };
-  }
-  return { x1: point.x - half, y1: point.y, x2: point.x + half, y2: point.y };
-}
-
-function normalizeEditorAngle(angle) {
-  const full = Math.PI * 2;
-  return ((angle % full) + full) % full;
-}
-
-function isEditorAngleInsideIntervals(angle, intervals) {
-  if (!Array.isArray(intervals) || intervals.length === 0) return true;
-  const normalized = normalizeEditorAngle(angle);
-  return intervals.some((interval) => {
-    const start = normalizeEditorAngle(interval.start);
-    const end = normalizeEditorAngle(interval.end);
-    if (start <= end) return normalized >= start && normalized <= end;
-    return normalized >= start || normalized <= end;
-  });
-}
-
-function isCircleEditorOutsideCellValid(outsideCell, circle, gridSize) {
-  if (!outsideCell || !circle) return false;
-  return !isCircleEditorCellInsideVisualCircle(outsideCell, circle, gridSize, gridSize * 0.02);
-}
-
-function createCircleEditorConnectionAnchorFromOutsideCell(
-  region,
-  generatedMap,
-  outsideCell,
-  index,
-) {
-  const gridSize = generatedMap?.config?.gridSize || 1;
-  const circle = getCircleGeometryFromRegion(region, gridSize);
-  if (!isCircleEditorOutsideCellValid(outsideCell, circle, gridSize)) return null;
-  const outsideCenter = getCircleEditorCellCenter(outsideCell, gridSize);
-  const dx = outsideCenter.x - circle.cx;
-  const dy = outsideCenter.y - circle.cy;
-  const length = Math.hypot(dx, dy) || 1;
-  const radial = { x: dx / length, y: dy / length };
-  const side = getDominantCircleEditorSideFromNormal(radial, "east");
-  const normal = getCircleEditorAxialNormal(side);
-  const cell = {
-    x: outsideCell.x - normal.x,
-    y: outsideCell.y - normal.y,
-  };
-  const point = getCircleEditorWallPoint(cell, outsideCell, normal, gridSize);
-  if (!point) return null;
-  const signedWallDistance = Math.hypot(point.x - circle.cx, point.y - circle.cy) - circle.r;
-  if (signedWallDistance < -gridSize * 0.08) return null;
-  const distanceFromWall = Math.abs(signedWallDistance);
-  if (distanceFromWall > gridSize * 0.92) return null;
-  const segment = getCircleEditorWallSegment(point, normal, gridSize);
-  const angle = normalizeEditorAngle(Math.atan2(radial.y, radial.x));
-  return {
-    regionId: region.id,
-    regionShape: region.shape,
-    side,
-    cell,
-    outsideCell: { x: outsideCell.x, y: outsideCell.y },
-    normal,
-    circular: {
-      cx: circle.cxCells,
-      cy: circle.cyCells,
-      r: circle.rCells,
-      normal: radial,
-    },
-    finalGeometry: true,
-    circleBoundaryAnchor: true,
-    finalBoundaryIndex: Math.round((angle / (Math.PI * 2)) * 10000) + index,
-    segment,
-    point,
-    snapGridQuantized: true,
-  };
-}
-
 function getCircleEditorConnectionAnchors(region, generatedMap) {
   if (!generatedMap || region?.shape !== "circle") return [];
   const gridSize = generatedMap.config?.gridSize || 1;
   const circle = getCircleGeometryFromRegion(region, gridSize);
   const intervals = getVisibleCircleIntervals(getCircleDoorGaps(region, generatedMap));
-  const minX = Math.floor((circle.cx - circle.r - gridSize * 1.5) / gridSize);
-  const maxX = Math.ceil((circle.cx + circle.r + gridSize * 1.5) / gridSize);
-  const minY = Math.floor((circle.cy - circle.r - gridSize * 1.5) / gridSize);
-  const maxY = Math.ceil((circle.cy + circle.r + gridSize * 1.5) / gridSize);
-  const anchors = [];
-  const seen = new Set();
-  for (let y = minY; y <= maxY; y += 1) {
-    for (let x = minX; x <= maxX; x += 1) {
-      const outsideCell = { x, y };
-      const center = getCircleEditorCellCenter(outsideCell, gridSize);
-      const angle = normalizeEditorAngle(Math.atan2(center.y - circle.cy, center.x - circle.cx));
-      if (!isEditorAngleInsideIntervals(angle, intervals)) continue;
-      const anchor = createCircleEditorConnectionAnchorFromOutsideCell(
-        region,
-        generatedMap,
-        outsideCell,
-        anchors.length,
-      );
-      if (!anchor) continue;
-      const key = `${anchor.side}:${anchor.outsideCell.x}:${anchor.outsideCell.y}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      anchors.push(anchor);
-    }
-  }
-  return anchors.sort((a, b) => (a.finalBoundaryIndex || 0) - (b.finalBoundaryIndex || 0));
+  return createCircleConnectionAnchorCandidates(region, circle, gridSize, {
+    angleIntervals: intervals,
+  });
 }
 
 export function getWallConnectionZones(
@@ -8896,8 +8958,9 @@ function getCorridorPreviewRouteCells(corridor, preview, generatedMap, gridSize)
   let start = getCorridorEndpointCellForPreview(corridor, "from", gridSize, gridW, gridH);
   let goal = getCorridorEndpointCellForPreview(corridor, "to", gridSize, gridW, gridH);
   const previewPoint = clonePoint(preview.point || preview);
-  const snapEndpointCell = preview?.snapAnchor?.outsideCell
-    ? normalizePreviewCell(preview.snapAnchor.outsideCell, gridSize, gridW, gridH)
+  const snapRoutingCell = getCircleAnchorRoutingCell(preview?.snapAnchor);
+  const snapEndpointCell = snapRoutingCell
+    ? normalizePreviewCell(snapRoutingCell, gridSize, gridW, gridH)
     : null;
   const previewCell =
     snapEndpointCell ||
@@ -8957,7 +9020,8 @@ function buildCorridorDragPreviewPath(generatedMap, corridor, corridorDragPrevie
 }
 
 function getConnectionDraftEndpointCell(anchor, point, gridSize, gridW, gridH) {
-  if (anchor?.outsideCell) return normalizePreviewCell(anchor.outsideCell, gridSize, gridW, gridH);
+  const routingCell = getCircleAnchorRoutingCell(anchor);
+  if (routingCell) return normalizePreviewCell(routingCell, gridSize, gridW, gridH);
   if (anchor?.cell) return normalizePreviewCell(anchor.cell, gridSize, gridW, gridH);
   return point ? normalizePreviewCell(point, gridSize, gridW, gridH) : null;
 }

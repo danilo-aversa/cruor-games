@@ -113,7 +113,6 @@ import {
   cellKey,
   parseCellKey,
   getCellNeighbors,
-  getCircleGeometryFromRegion,
   getCircleExtensionCellKeys,
   pointKey,
   doorKey,
@@ -129,6 +128,7 @@ import {
   buildDungeonMask,
   applyCircleDoorRoomExtensions,
 } from "./map-generator.mask.js";
+import { createCircleDragAnchor } from "./map-generator.circle-anchors.js";
 import {
   getRoomCellSet,
   getBoundaryCells,
@@ -1560,159 +1560,9 @@ function MapViewport({
     setHoveredCorridorId(handle.corridor.id);
   }
 
-  function getCircleDoorDragSideFromNormal(normal) {
-    if (!normal) return "east";
-    if (Math.abs(normal.x) >= Math.abs(normal.y))
-      return normal.x < 0 ? "west" : "east";
-    return normal.y < 0 ? "north" : "south";
-  }
-
-  function getCircleDoorDragAxialNormal(side) {
-    if (side === "west") return { x: -1, y: 0 };
-    if (side === "north") return { x: 0, y: -1 };
-    if (side === "south") return { x: 0, y: 1 };
-    return { x: 1, y: 0 };
-  }
-
-  function getCircleCellCenter(cell, gridSize) {
-    return {
-      x: (cell.x + 0.5) * gridSize,
-      y: (cell.y + 0.5) * gridSize,
-    };
-  }
-
-  function isPointInsideCircleGeometry(point, circle, tolerance = 0) {
-    if (!point || !circle) return false;
-    return Math.hypot(point.x - circle.cx, point.y - circle.cy) < circle.r - tolerance;
-  }
-
-  function getCircleDoorDragWallPoint(cell, outsideCell, normal, gridSize) {
-    if (!cell || !outsideCell || !normal) return null;
-    if (normal.x > 0)
-      return { x: outsideCell.x * gridSize, y: (outsideCell.y + 0.5) * gridSize };
-    if (normal.x < 0)
-      return { x: (outsideCell.x + 1) * gridSize, y: (outsideCell.y + 0.5) * gridSize };
-    if (normal.y > 0)
-      return { x: (outsideCell.x + 0.5) * gridSize, y: outsideCell.y * gridSize };
-    return { x: (outsideCell.x + 0.5) * gridSize, y: (outsideCell.y + 1) * gridSize };
-  }
-
-  function getCircleDoorDragWallSegment(point, normal, gridSize) {
-    if (!point || !normal) return null;
-    const half = gridSize * 0.42;
-    if (Math.abs(normal.x) > Math.abs(normal.y)) {
-      return { x1: point.x, y1: point.y - half, x2: point.x, y2: point.y + half };
-    }
-    return { x1: point.x - half, y1: point.y, x2: point.x + half, y2: point.y };
-  }
-
-  function isCircleDoorDragOutsideCellValid(outsideCell, circle, gridSize) {
-    if (!outsideCell || !circle) return false;
-    const center = getCircleCellCenter(outsideCell, gridSize);
-    return !isPointInsideCircleGeometry(center, circle, gridSize * 0.02);
-  }
-
-  function getCircleDoorDragCandidateAnchor(region, circle, outsideCell, gridSize, index = 0) {
-    if (!outsideCell || !circle) return null;
-    const outsideCenter = getCircleCellCenter(outsideCell, gridSize);
-    const dx = outsideCenter.x - circle.cx;
-    const dy = outsideCenter.y - circle.cy;
-    const length = Math.hypot(dx, dy) || 1;
-    const radial = { x: dx / length, y: dy / length };
-    const side = getCircleDoorDragSideFromNormal(radial);
-    const normal = getCircleDoorDragAxialNormal(side);
-    const cell = {
-      x: outsideCell.x - normal.x,
-      y: outsideCell.y - normal.y,
-    };
-    const point = getCircleDoorDragWallPoint(cell, outsideCell, normal, gridSize);
-    if (!point) return null;
-    const signedWallDistance = Math.hypot(point.x - circle.cx, point.y - circle.cy) - circle.r;
-    if (signedWallDistance < -gridSize * 0.08) return null;
-    const distanceFromWall = Math.abs(signedWallDistance);
-    if (distanceFromWall > gridSize * 0.92) return null;
-    if (!isCircleDoorDragOutsideCellValid(outsideCell, circle, gridSize)) return null;
-    const segment = getCircleDoorDragWallSegment(point, normal, gridSize);
-    const angle = (Math.atan2(radial.y, radial.x) + Math.PI * 2) % (Math.PI * 2);
-    return {
-      regionId: region.id,
-      regionShape: region.shape,
-      side,
-      cell,
-      outsideCell,
-      normal,
-      circular: {
-        cx: circle.cxCells,
-        cy: circle.cyCells,
-        r: circle.rCells,
-        normal: radial,
-      },
-      finalGeometry: true,
-      circleBoundaryAnchor: true,
-      circleDoorDragAnchor: true,
-      finalBoundaryIndex: Math.round((angle / (Math.PI * 2)) * 10000) + index,
-      segment,
-      point,
-      snapGridQuantized: true,
-    };
-  }
-
-  function getCircleDoorDragCandidateAnchors(region, circle, gridSize) {
-    if (!region || !circle) return [];
-    const minX = Math.floor((circle.cx - circle.r - gridSize * 1.5) / gridSize);
-    const maxX = Math.ceil((circle.cx + circle.r + gridSize * 1.5) / gridSize);
-    const minY = Math.floor((circle.cy - circle.r - gridSize * 1.5) / gridSize);
-    const maxY = Math.ceil((circle.cy + circle.r + gridSize * 1.5) / gridSize);
-    const candidates = [];
-    const seen = new Set();
-    for (let y = minY; y <= maxY; y += 1) {
-      for (let x = minX; x <= maxX; x += 1) {
-        const outsideCell = { x, y };
-        const anchor = getCircleDoorDragCandidateAnchor(
-          region,
-          circle,
-          outsideCell,
-          gridSize,
-          candidates.length,
-        );
-        if (!anchor) continue;
-        const key = `${anchor.side}:${anchor.outsideCell.x}:${anchor.outsideCell.y}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        candidates.push(anchor);
-      }
-    }
-    return candidates;
-  }
-
-  function createCircleDoorDragAnchor(region, point, gridSize) {
-    if (region?.shape !== "circle" || !point) return null;
-    const circle = getCircleGeometryFromRegion(region, gridSize);
-    if (!circle || !Number.isFinite(circle.r) || circle.r <= 0) return null;
-    const candidates = getCircleDoorDragCandidateAnchors(region, circle, gridSize);
-    if (candidates.length === 0) return null;
-    const best = candidates
-      .map((anchor) => {
-        const dx = anchor.point.x - point.x;
-        const dy = anchor.point.y - point.y;
-        const outsideCenter = getCircleCellCenter(anchor.outsideCell, gridSize);
-        const outsideDx = outsideCenter.x - point.x;
-        const outsideDy = outsideCenter.y - point.y;
-        const wallDistance = Math.abs(
-          Math.hypot(anchor.point.x - circle.cx, anchor.point.y - circle.cy) - circle.r,
-        );
-        return {
-          anchor,
-          score: dx * dx + dy * dy + (outsideDx * outsideDx + outsideDy * outsideDy) * 0.08 + wallDistance * wallDistance * 2,
-        };
-      })
-      .sort((a, b) => a.score - b.score)[0]?.anchor || null;
-    return best;
-  }
-
   function getDoorDragManualAnchor(region, point, gridSize) {
     if (!region || !point) return null;
-    const circleAnchor = createCircleDoorDragAnchor(region, point, gridSize);
+    const circleAnchor = createCircleDragAnchor(region, point, gridSize);
     if (circleAnchor) return circleAnchor;
     const finalBoundary = getDoorBoundaryCells(region, generatedMap);
     const rawBoundary = getBoundaryCells(region);
@@ -1928,7 +1778,13 @@ function MapViewport({
       }
     }
     if (!committed) setCorridorDragPreviewState(null);
+    try {
+      event.currentTarget?.releasePointerCapture?.(event.pointerId);
+    } catch (error) {
+      void error;
+    }
     corridorDragRef.current = null;
+    pendingCorridorMoveRef.current = null;
     setDraggingCorridorHandle(null);
     setHoverCorridorHandle(null);
     setHoveredCorridorId(null);
@@ -5339,6 +5195,13 @@ export default function CruorMapGeneratorMvp({
     return getClosestManualDoorBoundaryAnchorCandidate(region, point, gridSize)?.anchor || null;
   }
 
+  function getDoorDragManualAnchor(region, point, gridSize) {
+    if (!region || !point) return null;
+    const circleAnchor = createCircleDragAnchor(region, point, gridSize);
+    if (circleAnchor) return circleAnchor;
+    return getClosestManualDoorBoundaryAnchorCandidate(region, point, gridSize)?.anchor || null;
+  }
+
   function getBoundaryAnchorWithSameSideAndCell(region, anchor) {
     if (!region || !anchor?.side || !anchor.cell) return null;
     return (
@@ -5542,11 +5405,10 @@ export default function CruorMapGeneratorMvp({
       return generatedCandidate;
     }
     const gridSize = Number(baseMap.config?.gridSize || generatedCandidate.config?.gridSize || 20);
-    const sourceRegions =
-      Array.isArray(generatedCandidate?.regions) &&
-      generatedCandidate.regions.length > 0
-        ? generatedCandidate.regions
-        : baseMap.regions;
+    // Keep the locked room geometry as the source of truth. Corridor endpoint
+    // drags must not let a fresh generator candidate reshape rectangular rooms;
+    // only corridors should adapt around the existing room footprint.
+    const sourceRegions = Array.isArray(baseMap.regions) ? baseMap.regions : [];
     const movedRegions = sourceRegions.map((region) =>
       translateRegionGeometry(region, positions[region.id], gridSize),
     );
@@ -6046,7 +5908,11 @@ export default function CruorMapGeneratorMvp({
       const fromKey = corridorEndpointKey(corridorId, "from");
       const toKey = corridorEndpointKey(corridorId, "to");
       const current = normalizeManualOverrides(manualOverridesRef.current);
+      const hasManualWaypoints = Array.isArray(
+        current.corridorWaypoints?.[corridorId],
+      );
       if (
+        !hasManualWaypoints &&
         areSerializedAnchorsEqual(
           current.doorAnchors?.[fromKey],
           nextFromAnchor,
@@ -6054,16 +5920,21 @@ export default function CruorMapGeneratorMvp({
         areSerializedAnchorsEqual(current.doorAnchors?.[toKey], nextToAnchor)
       )
         return false;
-      return setManualOverridesFromCurrent((currentOverrides) =>
-        freezeCurrentRoomLayout({
+      return setManualOverridesFromCurrent((currentOverrides) => {
+        const corridorWaypoints = {
+          ...(currentOverrides.corridorWaypoints || {}),
+        };
+        delete corridorWaypoints[corridorId];
+        return freezeCurrentRoomLayout({
           ...currentOverrides,
+          corridorWaypoints,
           doorAnchors: {
             ...currentOverrides.doorAnchors,
             [fromKey]: nextFromAnchor,
             [toKey]: nextToAnchor,
           },
-        }),
-      );
+        });
+      });
     }
     const regionId = endpoint === "from" ? corridor.from : corridor.to;
     const region = generatedMap.regions.find((item) => item.id === regionId);
@@ -6085,17 +5956,28 @@ export default function CruorMapGeneratorMvp({
     const nextAnchor = serializeManualAnchor(anchor);
     const key = corridorEndpointKey(corridorId, endpoint);
     const current = normalizeManualOverrides(manualOverridesRef.current);
-    if (areSerializedAnchorsEqual(current.doorAnchors?.[key], nextAnchor))
+    const hasManualWaypoints = Array.isArray(
+      current.corridorWaypoints?.[corridorId],
+    );
+    if (
+      !hasManualWaypoints &&
+      areSerializedAnchorsEqual(current.doorAnchors?.[key], nextAnchor)
+    )
       return false;
-    return setManualOverridesFromCurrent((currentOverrides) =>
-      freezeCurrentRoomLayout({
+    return setManualOverridesFromCurrent((currentOverrides) => {
+      const corridorWaypoints = {
+        ...(currentOverrides.corridorWaypoints || {}),
+      };
+      delete corridorWaypoints[corridorId];
+      return freezeCurrentRoomLayout({
         ...currentOverrides,
+        corridorWaypoints,
         doorAnchors: {
           ...currentOverrides.doorAnchors,
           [key]: nextAnchor,
         },
-      }),
-    );
+      });
+    });
   }
 
   function moveWaypoint(corridorId, waypointIndex, point, source) {

@@ -2,6 +2,7 @@ import {
   resolveDoorType,
   resolveStairTransition,
 } from "./map-generator.state.js";
+import { DEFAULT_CONFIG } from "./map-generator.input.js";
 import {
   classifyRegion,
   getContextKey,
@@ -22,9 +23,11 @@ import {
   getCircleExtensionCellKeys,
   getSharedEdgeSegment,
   getCellBoundarySegmentsForCell,
+  getNeighborForCellSide,
   dedupePoints,
   dedupeDoorSegments,
 } from "./map-generator.mask.js";
+import { createCircleConnectionAnchorCandidates } from "./map-generator.circle-anchors.js";
 
 function hashStringToSeed(...parts) {
   const text = parts.join("::");
@@ -265,79 +268,11 @@ function getFinalAnchorReferencePoint(anchor, segment, gridSize) {
 }
 
 
-function getCircleConnectionAnchorCount(circle, gridSize) {
-  const circumference = Math.PI * 2 * Math.max(gridSize, circle.r);
-  return Math.max(20, Math.min(56, Math.ceil(circumference / (gridSize * 0.72))));
-}
-
-function createCircleConnectionAnchor(region, generatedMap, angleStart, angleEnd, index) {
-  const gridSize = generatedMap?.config?.gridSize || 1;
-  const circle = getCircleGeometryFromRegion(region, gridSize);
-  const angle = (angleStart + angleEnd) / 2;
-  const radial = { x: Math.cos(angle), y: Math.sin(angle) };
-  const side = getDominantSideFromNormal(radial, "east");
-  const normal = getAxialNormalForSide(side);
-  const edgePoint = {
-    x: circle.cx + radial.x * circle.r,
-    y: circle.cy + radial.y * circle.r,
-  };
-  const outsidePoint = {
-    x: edgePoint.x + normal.x * gridSize * 0.08,
-    y: edgePoint.y + normal.y * gridSize * 0.08,
-  };
-  const outsideCell = {
-    x: Math.floor(outsidePoint.x / gridSize),
-    y: Math.floor(outsidePoint.y / gridSize),
-  };
-  const cell = {
-    x: outsideCell.x - normal.x,
-    y: outsideCell.y - normal.y,
-  };
-  const p1 = {
-    x: circle.cx + Math.cos(angleStart) * circle.r,
-    y: circle.cy + Math.sin(angleStart) * circle.r,
-  };
-  const p2 = {
-    x: circle.cx + Math.cos(angleEnd) * circle.r,
-    y: circle.cy + Math.sin(angleEnd) * circle.r,
-  };
-  return {
-    regionId: region.id,
-    regionShape: region.shape,
-    side,
-    cell,
-    outsideCell,
-    normal,
-    circular: {
-      cx: circle.cxCells,
-      cy: circle.cyCells,
-      r: circle.rCells,
-      normal: radial,
-    },
-    finalGeometry: true,
-    finalBoundaryIndex: index,
-    segment: { x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y },
-    point: edgePoint,
-    circleBoundaryAnchor: true,
-  };
-}
-
 function getCircleConnectionAnchors(generatedMap, region) {
   if (!generatedMap || region?.shape !== "circle") return [];
   const gridSize = generatedMap.config?.gridSize || 1;
   const circle = getCircleGeometryFromRegion(region, gridSize);
-  const count = getCircleConnectionAnchorCount(circle, gridSize);
-  const full = Math.PI * 2;
-  const step = full / count;
-  return Array.from({ length: count }, (_, index) =>
-    createCircleConnectionAnchor(
-      region,
-      generatedMap,
-      index * step,
-      (index + 1) * step,
-      index,
-    ),
-  );
+  return createCircleConnectionAnchorCandidates(region, circle, gridSize);
 }
 
 function findNearestRegionBoundaryAnchor(region, side, point, gridSize) {
@@ -1119,9 +1054,13 @@ export function serializeManualAnchor(anchor) {
           outsideCell: anchor.outsideCell
             ? { x: anchor.outsideCell.x, y: anchor.outsideCell.y }
             : null,
+          routingOutsideCell: anchor.routingOutsideCell
+            ? { x: anchor.routingOutsideCell.x, y: anchor.routingOutsideCell.y }
+            : null,
           normal: anchor.normal
             ? { x: anchor.normal.x, y: anchor.normal.y }
             : null,
+          circleBoundaryAnchor: Boolean(anchor.circleBoundaryAnchor),
         }
       : {}),
     ...(anchor.expandedCircleDoor && anchor.portalRoomCell
@@ -1177,7 +1116,11 @@ export function findClosestBoundaryAnchorAcrossRegions(
   return best;
 }
 
-export function resolveManualDoorAnchor(region, manualAnchor) {
+export function resolveManualDoorAnchor(
+  region,
+  manualAnchor,
+  gridSize = DEFAULT_CONFIG.gridSize,
+) {
   if (!manualAnchor) return null;
   if (
     manualAnchor.finalGeometry &&
@@ -1186,6 +1129,26 @@ export function resolveManualDoorAnchor(region, manualAnchor) {
     manualAnchor.outsideCell &&
     manualAnchor.normal
   ) {
+    const point = manualAnchor.point
+      ? { x: manualAnchor.point.x, y: manualAnchor.point.y }
+      : {
+          x: (manualAnchor.segment.x1 + manualAnchor.segment.x2) / 2,
+          y: (manualAnchor.segment.y1 + manualAnchor.segment.y2) / 2,
+        };
+    const circle = region?.shape === "circle"
+      ? getCircleGeometryFromRegion(region, 1)
+      : null;
+    const pixelCircle = region?.shape === "circle"
+      ? getCircleGeometryFromRegion(region, gridSize || DEFAULT_CONFIG.gridSize)
+      : null;
+    const radial = circle && pixelCircle && point
+      ? (() => {
+          const dx = point.x - pixelCircle.cx;
+          const dy = point.y - pixelCircle.cy;
+          const length = Math.hypot(dx, dy) || 1;
+          return { x: dx / length, y: dy / length };
+        })()
+      : null;
     return {
       regionId: region.id,
       regionShape: region.shape,
@@ -1195,8 +1158,18 @@ export function resolveManualDoorAnchor(region, manualAnchor) {
         x: manualAnchor.outsideCell.x,
         y: manualAnchor.outsideCell.y,
       },
+      routingOutsideCell: manualAnchor.routingOutsideCell
+        ? {
+            x: manualAnchor.routingOutsideCell.x,
+            y: manualAnchor.routingOutsideCell.y,
+          }
+        : null,
       normal: { x: manualAnchor.normal.x, y: manualAnchor.normal.y },
+      circular: radial && circle
+        ? { cx: circle.cxCells, cy: circle.cyCells, r: circle.rCells, normal: radial }
+        : null,
       finalGeometry: true,
+      circleBoundaryAnchor: Boolean(manualAnchor.circleBoundaryAnchor || region?.shape === "circle"),
       finalBoundaryIndex: manualAnchor.finalBoundaryIndex,
       segment: {
         x1: manualAnchor.segment.x1,
@@ -1204,12 +1177,7 @@ export function resolveManualDoorAnchor(region, manualAnchor) {
         x2: manualAnchor.segment.x2,
         y2: manualAnchor.segment.y2,
       },
-      point: manualAnchor.point
-        ? { x: manualAnchor.point.x, y: manualAnchor.point.y }
-        : {
-            x: (manualAnchor.segment.x1 + manualAnchor.segment.x2) / 2,
-            y: (manualAnchor.segment.y1 + manualAnchor.segment.y2) / 2,
-          },
+      point,
     };
   }
   const boundary = getDoorBoundaryCells(region);
@@ -3043,6 +3011,7 @@ export function routeCorridors(config, regions, graph) {
       gridW,
       gridH,
       getCircleDoorReservedCells(fromRegion.id),
+      config.gridSize,
     );
     const toAnchor = createCircleDoorRoomExtensionAnchor(
       toRegion,
@@ -3050,6 +3019,7 @@ export function routeCorridors(config, regions, graph) {
       gridW,
       gridH,
       getCircleDoorReservedCells(toRegion.id),
+      config.gridSize,
     );
     addCircleDoorRoomExtensionCellToSet(fromAnchor, dynamicRoomCells);
     addCircleDoorRoomExtensionCellToSet(toAnchor, dynamicRoomCells);
@@ -3478,6 +3448,7 @@ export function routeCorridors(config, regions, graph) {
       gridW,
       gridH,
       getCircleDoorReservedCells(source.id),
+      config.gridSize,
     );
     const hubCell = findAutoHubCell(
       sourceAnchor,
@@ -3613,6 +3584,7 @@ export function routeCorridors(config, regions, graph) {
         gridW,
         gridH,
         getCircleDoorReservedCells(target.id),
+        config.gridSize,
       );
       const startAnchor = sourceEndpoint === "from" ? hubAnchor : targetAnchor;
       const goalAnchor = sourceEndpoint === "from" ? targetAnchor : hubAnchor;
@@ -3756,10 +3728,12 @@ export function routeCorridors(config, regions, graph) {
     const manualFromAnchor = resolveManualDoorAnchor(
       from,
       manualDoorAnchors[corridorEndpointKey(edge.id, "from")],
+      config.gridSize,
     );
     const manualToAnchor = resolveManualDoorAnchor(
       to,
       manualDoorAnchors[corridorEndpointKey(edge.id, "to")],
+      config.gridSize,
     );
     const roomBlockedCells = new Set(dynamicRoomCells);
     const selectRecoveryAnchor = (region, targetRegion, manualAnchor, endpoint) => {
@@ -3798,6 +3772,7 @@ export function routeCorridors(config, regions, graph) {
       gridW,
       gridH,
       getCircleDoorReservedCells(from.id),
+      config.gridSize,
     );
     const toAnchor = createCircleDoorRoomExtensionAnchor(
       to,
@@ -3805,6 +3780,7 @@ export function routeCorridors(config, regions, graph) {
       gridW,
       gridH,
       getCircleDoorReservedCells(to.id),
+      config.gridSize,
     );
 
     const allowedApproachCells = [
@@ -3990,10 +3966,12 @@ export function routeCorridors(config, regions, graph) {
     const manualFromAnchor = resolveManualDoorAnchor(
       from,
       manualDoorAnchors[corridorEndpointKey(edge.id, "from")],
+      config.gridSize,
     );
     const manualToAnchor = resolveManualDoorAnchor(
       to,
       manualDoorAnchors[corridorEndpointKey(edge.id, "to")],
+      config.gridSize,
     );
     const pureCaveContext =
       getContextKey(config.context || config.biome) === "cave";
@@ -4038,6 +4016,7 @@ export function routeCorridors(config, regions, graph) {
       gridW,
       gridH,
       getCircleDoorReservedCells(from.id),
+      config.gridSize,
     );
     const toAnchor = createCircleDoorRoomExtensionAnchor(
       to,
@@ -4045,6 +4024,7 @@ export function routeCorridors(config, regions, graph) {
       gridW,
       gridH,
       getCircleDoorReservedCells(to.id),
+      config.gridSize,
     );
     addCircleDoorRoomExtensionCellToSet(fromAnchor, dynamicRoomCells);
     addCircleDoorRoomExtensionCellToSet(toAnchor, dynamicRoomCells);

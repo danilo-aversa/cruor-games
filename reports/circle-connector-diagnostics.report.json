@@ -1,0 +1,4750 @@
+[
+  {
+    "label": "generated:0:50,21",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 21
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 21
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 21
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 21,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:1:50,22",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 22
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 22
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 22
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 22,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:2:50,23",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:3:50,24",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 24,
+        "source": "expanded-door"
+      },
+      {
+        "x": 49,
+        "y": 24,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:4:49,24",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 50,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 24,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:5:49,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 49,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 25,
+        "source": "expanded-door"
+      },
+      {
+        "x": 49,
+        "y": 24,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:6:48,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 48,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 48,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 48,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 48,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:7:47,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 47,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 47,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 47,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 47,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:8:46,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 46,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 46,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 46,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 46,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:9:45,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 45,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 45,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 45,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 45,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:10:44,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 44,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 44,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 44,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 44,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:11:43,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 43,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 25,
+        "source": "expanded-door"
+      },
+      {
+        "x": 43,
+        "y": 24,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:12:43,24",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 42,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 24,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:13:42,24",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 24,
+        "source": "expanded-door"
+      },
+      {
+        "x": 43,
+        "y": 24,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:14:42,23",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:15:42,22",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 22
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 22
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 22
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 22,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:16:42,21",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 21
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 21
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 21
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 21,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:17:42,20",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 20
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 20
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 20
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 20,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:18:42,19",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 19
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 19
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 19
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 19,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:19:42,18",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 18,
+        "source": "expanded-door"
+      },
+      {
+        "x": 43,
+        "y": 18,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:20:43,18",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 42,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 18,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:21:43,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 43,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 17,
+        "source": "expanded-door"
+      },
+      {
+        "x": 43,
+        "y": 18,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:22:44,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 44,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 44,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 44,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 44,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:23:45,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 45,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 45,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 45,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 45,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:24:46,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 46,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 46,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 46,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 46,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:25:47,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 47,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 47,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 47,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 47,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:26:48,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 48,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 48,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 48,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 48,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:27:49,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 49,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 17,
+        "source": "expanded-door"
+      },
+      {
+        "x": 49,
+        "y": 18,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:28:49,18",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 50,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 18,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:29:50,18",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 18,
+        "source": "expanded-door"
+      },
+      {
+        "x": 49,
+        "y": 18,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:30:50,19",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 19
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 19
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 19
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 19,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "generated:31:50,20",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 20
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 20
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 20
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 20,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:0:50,21",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 21
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 21
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 21
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 21,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:1:50,21",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 21
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 21
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 21
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 21,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:2:50,21",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 21
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 21
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 21
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 21,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:3:50,22",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 22
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 22
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 22
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 22,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:4:50,22",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 22
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 22
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 22
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 22,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:5:50,22",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 22
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 22
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 22
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 22,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:6:50,22",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 22
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 22
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 22
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 22,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:7:50,22",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 22
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 22
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 22
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 22,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:8:50,23",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:9:50,23",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:10:50,23",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:11:50,23",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:12:50,23",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:13:50,23",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:14:50,24",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 24,
+        "source": "expanded-door"
+      },
+      {
+        "x": 49,
+        "y": 24,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:15:50,24",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 24,
+        "source": "expanded-door"
+      },
+      {
+        "x": 49,
+        "y": 24,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:16:49,24",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 50,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 24,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:17:49,24",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 50,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 24,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:18:49,24",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 50,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 24,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:19:49,24",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 50,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 24,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:20:49,24",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 50,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 24,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:21:49,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 49,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 25,
+        "source": "expanded-door"
+      },
+      {
+        "x": 49,
+        "y": 24,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:22:49,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 49,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 25,
+        "source": "expanded-door"
+      },
+      {
+        "x": 49,
+        "y": 24,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:23:48,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 48,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 48,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 48,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 48,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:24:48,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 48,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 48,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 48,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 48,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:25:48,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 48,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 48,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 48,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 48,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:26:48,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 48,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 48,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 48,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 48,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:27:48,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 48,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 48,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 48,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 48,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:28:48,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 48,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 48,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 48,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 48,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:29:47,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 47,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 47,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 47,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 47,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:30:47,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 47,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 47,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 47,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 47,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:31:47,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 47,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 47,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 47,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 47,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:32:47,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 47,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 47,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 47,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 47,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:33:47,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 47,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 47,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 47,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 47,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:34:46,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 46,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 46,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 46,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 46,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:35:46,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 46,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 46,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 46,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 46,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:36:46,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 46,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 46,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 46,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 46,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:37:46,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 46,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 46,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 46,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 46,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:38:46,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 46,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 46,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 46,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 46,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:39:45,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 45,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 45,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 45,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 45,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:40:45,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 45,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 45,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 45,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 45,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:41:45,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 45,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 45,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 45,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 45,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:42:45,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 45,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 45,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 45,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 45,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:43:45,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 45,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 45,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 45,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 45,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:44:44,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 44,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 44,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 44,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 44,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:45:44,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 44,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 44,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 44,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 44,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:46:44,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 44,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 44,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 44,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 44,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:47:44,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 44,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 44,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 44,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 44,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:48:44,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 44,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 44,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 44,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 44,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:49:44,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 44,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 44,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 44,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 44,
+        "y": 25,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:50:43,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 43,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 25,
+        "source": "expanded-door"
+      },
+      {
+        "x": 43,
+        "y": 24,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:51:43,25",
+    "side": "south",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 25
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 25
+    },
+    "routingCell": {
+      "x": 43,
+      "y": 26
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 25,
+        "source": "expanded-door"
+      },
+      {
+        "x": 43,
+        "y": 24,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:52:43,24",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 42,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 24,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:53:43,24",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 42,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 24,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:54:43,24",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 42,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 24,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:55:43,24",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 42,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 24,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:56:43,24",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 42,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 24,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:57:42,24",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 24,
+        "source": "expanded-door"
+      },
+      {
+        "x": 43,
+        "y": 24,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:58:42,24",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 24
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 24
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 24
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 24,
+        "source": "expanded-door"
+      },
+      {
+        "x": 43,
+        "y": 24,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:59:42,23",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:60:42,23",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:61:42,23",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:62:42,23",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:63:42,23",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:64:42,23",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:65:42,22",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 22
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 22
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 22
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 22,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:66:42,22",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 22
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 22
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 22
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 22,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:67:42,22",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 22
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 22
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 22
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 22,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:68:42,22",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 22
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 22
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 22
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 22,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:69:42,22",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 22
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 22
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 22
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 22,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:70:42,21",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 21
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 21
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 21
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 21,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:71:42,21",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 21
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 21
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 21
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 21,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:72:42,21",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 21
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 21
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 21
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 21,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:73:42,21",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 21
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 21
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 21
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 21,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:74:42,21",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 21
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 21
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 21
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 21,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:75:42,20",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 20
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 20
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 20
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 20,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:76:42,20",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 20
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 20
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 20
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 20,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:77:42,20",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 20
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 20
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 20
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 20,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:78:42,20",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 20
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 20
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 20
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 20,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:79:42,20",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 20
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 20
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 20
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 20,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:80:42,19",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 19
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 19
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 19
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 19,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:81:42,19",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 19
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 19
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 19
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 19,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:82:42,19",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 19
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 19
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 19
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 19,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:83:42,19",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 19
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 19
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 19
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 19,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:84:42,19",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 19
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 19
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 19
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 19,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:85:42,19",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 19
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 19
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 19
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 19,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:86:42,18",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 18,
+        "source": "expanded-door"
+      },
+      {
+        "x": 43,
+        "y": 18,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:87:42,18",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 42,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 18,
+        "source": "expanded-door"
+      },
+      {
+        "x": 43,
+        "y": 18,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:88:43,18",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 42,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 18,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:89:43,18",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 42,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 18,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:90:43,18",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 42,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 18,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:91:43,18",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 42,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 18,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:92:43,18",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 42,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 18,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:93:43,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 43,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 17,
+        "source": "expanded-door"
+      },
+      {
+        "x": 43,
+        "y": 18,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:94:43,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 43,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 43,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 43,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 43,
+        "y": 17,
+        "source": "expanded-door"
+      },
+      {
+        "x": 43,
+        "y": 18,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:95:44,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 44,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 44,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 44,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 44,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:96:44,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 44,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 44,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 44,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 44,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:97:44,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 44,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 44,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 44,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 44,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:98:44,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 44,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 44,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 44,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 44,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:99:44,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 44,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 44,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 44,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 44,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:100:44,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 44,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 44,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 44,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 44,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:101:45,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 45,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 45,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 45,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 45,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:102:45,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 45,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 45,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 45,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 45,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:103:45,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 45,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 45,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 45,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 45,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:104:45,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 45,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 45,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 45,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 45,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:105:45,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 45,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 45,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 45,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 45,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:106:46,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 46,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 46,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 46,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 46,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:107:46,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 46,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 46,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 46,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 46,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:108:46,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 46,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 46,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 46,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 46,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:109:46,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 46,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 46,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 46,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 46,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:110:46,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 46,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 46,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 46,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 46,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:111:47,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 47,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 47,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 47,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 47,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:112:47,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 47,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 47,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 47,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 47,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:113:47,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 47,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 47,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 47,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 47,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:114:47,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 47,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 47,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 47,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 47,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:115:47,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 47,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 47,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 47,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 47,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:116:48,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 48,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 48,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 48,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 48,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:117:48,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 48,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 48,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 48,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 48,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:118:48,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 48,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 48,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 48,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 48,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:119:48,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 48,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 48,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 48,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 48,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:120:48,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 48,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 48,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 48,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 48,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:121:48,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 48,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 48,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 48,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 48,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:122:49,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 49,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 17,
+        "source": "expanded-door"
+      },
+      {
+        "x": 49,
+        "y": 18,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:123:49,17",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 17
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 49,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 17,
+        "source": "expanded-door"
+      },
+      {
+        "x": 49,
+        "y": 18,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:124:49,18",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 50,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 18,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:125:49,18",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 50,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 18,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:126:49,18",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 50,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 18,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:127:49,18",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 50,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 18,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:128:49,18",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 49,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 49,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 50,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 49,
+        "y": 18,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:129:50,18",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 18,
+        "source": "expanded-door"
+      },
+      {
+        "x": 49,
+        "y": 18,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:130:50,18",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 18
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 18
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 18
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 18,
+        "source": "expanded-door"
+      },
+      {
+        "x": 49,
+        "y": 18,
+        "source": "support"
+      }
+    ],
+    "wallSegmentCount": 3,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:131:50,19",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 19
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 19
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 19
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 19,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:132:50,19",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 19
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 19
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 19
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 19,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:133:50,19",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 19
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 19
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 19
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 19,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:134:50,19",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 19
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 19
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 19
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 19,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:135:50,19",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 19
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 19
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 19
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 19,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:136:50,19",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 19
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 19
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 19
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 19,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:137:50,20",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 20
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 20
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 20
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 20,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:138:50,20",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 20
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 20
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 20
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 20,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:139:50,20",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 20
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 20
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 20
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 20,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:140:50,20",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 20
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 20
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 20
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 20,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:141:50,20",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 20
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 20
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 20
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 20,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 1,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:142:50,21",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 21
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 21
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 21
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 21,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "drag:143:50,21",
+    "side": "east",
+    "inputPortalCell": {
+      "x": 50,
+      "y": 21
+    },
+    "portalCell": {
+      "x": 50,
+      "y": 21
+    },
+    "routingCell": {
+      "x": 51,
+      "y": 21
+    },
+    "compositeCells": [
+      {
+        "x": 50,
+        "y": 21,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "stale-west-gap:41,23-to-42,23",
+    "side": "west",
+    "inputPortalCell": {
+      "x": 41,
+      "y": 23
+    },
+    "portalCell": {
+      "x": 42,
+      "y": 23
+    },
+    "routingCell": {
+      "x": 41,
+      "y": 23
+    },
+    "compositeCells": [
+      {
+        "x": 42,
+        "y": 23,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 2,
+    "clipHasPortalSquare": true,
+    "failures": []
+  },
+  {
+    "label": "stale-north-tangent:46,16",
+    "side": "north",
+    "inputPortalCell": {
+      "x": 46,
+      "y": 16
+    },
+    "portalCell": {
+      "x": 46,
+      "y": 17
+    },
+    "routingCell": {
+      "x": 46,
+      "y": 16
+    },
+    "compositeCells": [
+      {
+        "x": 46,
+        "y": 17,
+        "source": "expanded-door"
+      }
+    ],
+    "wallSegmentCount": 0,
+    "clipHasPortalSquare": true,
+    "failures": []
+  }
+]
