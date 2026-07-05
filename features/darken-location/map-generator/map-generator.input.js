@@ -198,6 +198,29 @@ function normalizeArray(value) {
   return Array.isArray(value) ? value.filter(Boolean) : [];
 }
 
+function isPlainObject(value) {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value));
+}
+
+function clonePlainObject(value) {
+  return isPlainObject(value) ? JSON.parse(JSON.stringify(value)) : null;
+}
+
+function getRoomDesignSource(source = {}) {
+  if (!isPlainObject(source)) return null;
+  return (
+    source.roomDesign ||
+    source.location?.roomDesign ||
+    source.locationRegion?.roomDesign ||
+    source.map?.roomDesign ||
+    source.metadata?.roomDesign ||
+    source.requestMetadata?.roomDesign ||
+    source.metadata?.dungeonRoomBrief?.roomDesign ||
+    source.requestMetadata?.dungeonRoomBrief?.roomDesign ||
+    null
+  );
+}
+
 function normalizeRequestRegion(region, index) {
   if (!region || typeof region !== "object") return null;
   const metadata =
@@ -236,6 +259,7 @@ function normalizeRequestRegion(region, index) {
       metadata.roomArchetypeSource ||
       (directRoomArchetype ? "explicit" : ""),
     mapInfluence: region.mapInfluence || metadata.mapInfluence || null,
+    roomDesign: clonePlainObject(getRoomDesignSource(region) || getRoomDesignSource(metadata)),
     size: region.size || "Medium",
     connectors: Number(region.connectors || (index === 0 ? 2 : 1)),
     tags,
@@ -343,6 +367,7 @@ export function normalizeInput(config) {
         source.requestMetadata?.roomArchetypeSource ||
         (directRoomArchetype ? "explicit" : ""),
       mapInfluence: source.mapInfluence || source.metadata?.mapInfluence || source.requestMetadata?.mapInfluence || null,
+      roomDesign: clonePlainObject(getRoomDesignSource(source)),
       size: source.size || "Medium",
       connectors: Number(source.connectors || (index === 0 ? 2 : 1)),
       tags,

@@ -66,10 +66,49 @@ function inferGeneratedRoomType(region) {
   return "none";
 }
 
+function doesCellBoxIntersectCircle(x, y, circle, padding = 0) {
+  if (!circle) return false;
+  const closestX = clamp(circle.cxCells, x, x + 1);
+  const closestY = clamp(circle.cyCells, y, y + 1);
+  const dx = closestX - circle.cxCells;
+  const dy = closestY - circle.cyCells;
+  const radius = Math.max(0, circle.rCells + padding);
+  return dx * dx + dy * dy <= radius * radius;
+}
+
+function getRegionBlockingCellKeys(region) {
+  const keys = new Set();
+  (Array.isArray(region?.floorCells) ? region.floorCells : []).forEach((cell) =>
+    keys.add(cellKey(cell.x, cell.y)),
+  );
+
+  if (region?.shape === "circle" && region.cellRect) {
+    const circle = getCircleGeometryFromRegion(region, 1);
+    const minX = Math.floor(circle.cxCells - circle.rCells - 1);
+    const maxX = Math.ceil(circle.cxCells + circle.rCells + 1);
+    const minY = Math.floor(circle.cyCells - circle.rCells - 1);
+    const maxY = Math.ceil(circle.cyCells + circle.rCells + 1);
+    for (let y = minY; y <= maxY; y += 1) {
+      for (let x = minX; x <= maxX; x += 1) {
+        if (doesCellBoxIntersectCircle(x, y, circle, 0.035)) {
+          keys.add(cellKey(x, y));
+        }
+      }
+    }
+  }
+
+  (Array.isArray(region?.circleExtensionCells)
+    ? region.circleExtensionCells
+    : []
+  ).forEach((cell) => keys.add(cellKey(cell.x, cell.y)));
+
+  return keys;
+}
+
 export function getRoomCellSet(regions) {
   const set = new Set();
   regions.forEach((region) => {
-    region.floorCells.forEach((cell) => set.add(cellKey(cell.x, cell.y)));
+    getRegionBlockingCellKeys(region).forEach((key) => set.add(key));
   });
   return set;
 }
@@ -225,6 +264,82 @@ function getFinalAnchorReferencePoint(anchor, segment, gridSize) {
   return null;
 }
 
+
+function getCircleConnectionAnchorCount(circle, gridSize) {
+  const circumference = Math.PI * 2 * Math.max(gridSize, circle.r);
+  return Math.max(20, Math.min(56, Math.ceil(circumference / (gridSize * 0.72))));
+}
+
+function createCircleConnectionAnchor(region, generatedMap, angleStart, angleEnd, index) {
+  const gridSize = generatedMap?.config?.gridSize || 1;
+  const circle = getCircleGeometryFromRegion(region, gridSize);
+  const angle = (angleStart + angleEnd) / 2;
+  const radial = { x: Math.cos(angle), y: Math.sin(angle) };
+  const side = getDominantSideFromNormal(radial, "east");
+  const normal = getAxialNormalForSide(side);
+  const edgePoint = {
+    x: circle.cx + radial.x * circle.r,
+    y: circle.cy + radial.y * circle.r,
+  };
+  const outsidePoint = {
+    x: edgePoint.x + normal.x * gridSize * 0.08,
+    y: edgePoint.y + normal.y * gridSize * 0.08,
+  };
+  const outsideCell = {
+    x: Math.floor(outsidePoint.x / gridSize),
+    y: Math.floor(outsidePoint.y / gridSize),
+  };
+  const cell = {
+    x: outsideCell.x - normal.x,
+    y: outsideCell.y - normal.y,
+  };
+  const p1 = {
+    x: circle.cx + Math.cos(angleStart) * circle.r,
+    y: circle.cy + Math.sin(angleStart) * circle.r,
+  };
+  const p2 = {
+    x: circle.cx + Math.cos(angleEnd) * circle.r,
+    y: circle.cy + Math.sin(angleEnd) * circle.r,
+  };
+  return {
+    regionId: region.id,
+    regionShape: region.shape,
+    side,
+    cell,
+    outsideCell,
+    normal,
+    circular: {
+      cx: circle.cxCells,
+      cy: circle.cyCells,
+      r: circle.rCells,
+      normal: radial,
+    },
+    finalGeometry: true,
+    finalBoundaryIndex: index,
+    segment: { x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y },
+    point: edgePoint,
+    circleBoundaryAnchor: true,
+  };
+}
+
+function getCircleConnectionAnchors(generatedMap, region) {
+  if (!generatedMap || region?.shape !== "circle") return [];
+  const gridSize = generatedMap.config?.gridSize || 1;
+  const circle = getCircleGeometryFromRegion(region, gridSize);
+  const count = getCircleConnectionAnchorCount(circle, gridSize);
+  const full = Math.PI * 2;
+  const step = full / count;
+  return Array.from({ length: count }, (_, index) =>
+    createCircleConnectionAnchor(
+      region,
+      generatedMap,
+      index * step,
+      (index + 1) * step,
+      index,
+    ),
+  );
+}
+
 function findNearestRegionBoundaryAnchor(region, side, point, gridSize) {
   if (!region || !point || !Array.isArray(region.floorCells)) return null;
   const boundary = getBoundaryCells(region);
@@ -363,6 +478,7 @@ export function createFinalAnchorFromSegment(
 }
 
 export function getFinalConnectionAnchors(generatedMap, region) {
+  if (region?.shape === "circle") return getCircleConnectionAnchors(generatedMap, region);
   const regionGeometry = getFinalRegionGeometry(generatedMap, region);
   if (
     Array.isArray(regionGeometry?.connectionAnchors) &&
@@ -815,8 +931,7 @@ export function getCorridorEndpointRegionIds(corridor) {
 export function getRoomCellOwnershipMap(regions) {
   const ownership = new Map();
   regions.forEach((region) => {
-    region.floorCells.forEach((cell) => {
-      const key = cellKey(cell.x, cell.y);
+    getRegionBlockingCellKeys(region).forEach((key) => {
       if (!ownership.has(key)) ownership.set(key, []);
       ownership.get(key).push(region.id);
     });
@@ -2285,6 +2400,7 @@ function cellsToCenterline(cells, gridSize) {
 
 function collectPhysicalFloorComponents(regions, corridors) {
   const cellSources = new Map();
+  const regionIds = new Set((regions || []).map((region) => region?.id).filter(Boolean));
   const addSource = (cell, source) => {
     if (!cell || !Number.isFinite(cell.x) || !Number.isFinite(cell.y)) return;
     const key = cellKey(cell.x, cell.y);
@@ -2299,6 +2415,16 @@ function collectPhysicalFloorComponents(regions, corridors) {
     if (source.roomId) entry.roomIds.add(source.roomId);
     if (source.corridorId) entry.corridorIds.add(source.corridorId);
   };
+  const addExpandedCircleDoorPortal = (anchor) => {
+    if (
+      !anchor?.expandedCircleDoor ||
+      !anchor?.portalRoomCell ||
+      !anchor?.regionId ||
+      !regionIds.has(anchor.regionId)
+    )
+      return;
+    addSource(anchor.portalRoomCell, { roomId: anchor.regionId });
+  };
 
   (regions || []).forEach((region) => {
     (region.floorCells || []).forEach((cell) =>
@@ -2307,6 +2433,8 @@ function collectPhysicalFloorComponents(regions, corridors) {
   });
   (corridors || []).forEach((corridor) => {
     if (corridor?.isRoomLink) return;
+    addExpandedCircleDoorPortal(corridor.fromAnchor);
+    addExpandedCircleDoorPortal(corridor.toAnchor);
     (corridor.floorCells || []).forEach((cell) =>
       addSource(cell, { corridorId: corridor.id }),
     );
@@ -2372,8 +2500,13 @@ function getCorridorFloorCellKeys(corridor) {
 function isAnchorAttachedToRegion(region, anchor) {
   if (!region?.id || !anchor?.cell || !anchor?.outsideCell) return false;
   const regionFloorKeys = getRegionFloorCellKeys(region);
+  const attachedCellKey = cellKey(anchor.cell.x, anchor.cell.y);
+  const expandedPortalKey = anchor?.expandedCircleDoor && anchor.portalRoomCell
+    ? cellKey(anchor.portalRoomCell.x, anchor.portalRoomCell.y)
+    : null;
   return (
-    regionFloorKeys.has(cellKey(anchor.cell.x, anchor.cell.y)) &&
+    (regionFloorKeys.has(attachedCellKey) ||
+      (anchor.regionId === region.id && expandedPortalKey === attachedCellKey)) &&
     getCellManhattanDistance(anchor.cell, anchor.outsideCell) === 1
   );
 }
@@ -2705,6 +2838,18 @@ export function routeCorridors(config, regions, graph) {
   const regionById = new Map(regions.map((region) => [region.id, region]));
   const allRoomCells = getRoomCellSet(regions);
   const roomOwnership = getRoomCellOwnershipMap(regions);
+  const getCircleDoorReservedCells = (regionId) => {
+    const reserved = new Set(allRoomCells);
+    roomOwnership.forEach((owners, key) => {
+      if (
+        owners.length > 0 &&
+        owners.every((ownerId) => ownerId === regionId)
+      ) {
+        reserved.delete(key);
+      }
+    });
+    return reserved;
+  };
   const dynamicRoomCells = new Set(allRoomCells);
   const existingCorridors = new Set();
   const usedDoorOutsideCells = new Set();
@@ -2897,14 +3042,14 @@ export function routeCorridors(config, regions, graph) {
       fromRawAnchor,
       gridW,
       gridH,
-      dynamicRoomCells,
+      getCircleDoorReservedCells(fromRegion.id),
     );
     const toAnchor = createCircleDoorRoomExtensionAnchor(
       toRegion,
       toRawAnchor,
       gridW,
       gridH,
-      dynamicRoomCells,
+      getCircleDoorReservedCells(toRegion.id),
     );
     addCircleDoorRoomExtensionCellToSet(fromAnchor, dynamicRoomCells);
     addCircleDoorRoomExtensionCellToSet(toAnchor, dynamicRoomCells);
@@ -3332,7 +3477,7 @@ export function routeCorridors(config, regions, graph) {
       sourceRawAnchor,
       gridW,
       gridH,
-      dynamicRoomCells,
+      getCircleDoorReservedCells(source.id),
     );
     const hubCell = findAutoHubCell(
       sourceAnchor,
@@ -3467,7 +3612,7 @@ export function routeCorridors(config, regions, graph) {
         targetRawAnchor,
         gridW,
         gridH,
-        dynamicRoomCells,
+        getCircleDoorReservedCells(target.id),
       );
       const startAnchor = sourceEndpoint === "from" ? hubAnchor : targetAnchor;
       const goalAnchor = sourceEndpoint === "from" ? targetAnchor : hubAnchor;
@@ -3652,14 +3797,14 @@ export function routeCorridors(config, regions, graph) {
       rawFromAnchor,
       gridW,
       gridH,
-      dynamicRoomCells,
+      getCircleDoorReservedCells(from.id),
     );
     const toAnchor = createCircleDoorRoomExtensionAnchor(
       to,
       rawToAnchor,
       gridW,
       gridH,
-      dynamicRoomCells,
+      getCircleDoorReservedCells(to.id),
     );
 
     const allowedApproachCells = [
@@ -3892,14 +4037,14 @@ export function routeCorridors(config, regions, graph) {
       rawFromAnchor,
       gridW,
       gridH,
-      dynamicRoomCells,
+      getCircleDoorReservedCells(from.id),
     );
     const toAnchor = createCircleDoorRoomExtensionAnchor(
       to,
       rawToAnchor,
       gridW,
       gridH,
-      dynamicRoomCells,
+      getCircleDoorReservedCells(to.id),
     );
     addCircleDoorRoomExtensionCellToSet(fromAnchor, dynamicRoomCells);
     addCircleDoorRoomExtensionCellToSet(toAnchor, dynamicRoomCells);
@@ -4132,7 +4277,61 @@ export function getSnappedCirclePortalCellFromAnchor(anchor) {
   return anchor?.cell || null;
 }
 
+function createDoorFromExpandedCircleAnchor(anchor, gridSize, secret = false) {
+  if (!anchor?.expandedCircleDoor || !anchor?.portalRoomCell) return null;
+  const cell = anchor.portalRoomCell || anchor.cell;
+  const x = cell.x * gridSize;
+  const y = cell.y * gridSize;
+  const midX = x + gridSize / 2;
+  const midY = y + gridSize / 2;
+  const half = gridSize * 0.34;
+  const anchorMeta = {
+    side: anchor.side,
+    secret,
+    regionId: anchor.regionId,
+    regionShape: anchor.regionShape,
+    cell: anchor.cell ? { x: anchor.cell.x, y: anchor.cell.y } : null,
+    outsideCell: anchor.outsideCell
+      ? { x: anchor.outsideCell.x, y: anchor.outsideCell.y }
+      : null,
+    normal: anchor.normal ? { x: anchor.normal.x, y: anchor.normal.y } : null,
+    expandedCircleDoor: true,
+    portalRoomCell: { x: cell.x, y: cell.y },
+    originalCell: anchor.originalCell
+      ? { x: anchor.originalCell.x, y: anchor.originalCell.y }
+      : null,
+    originalOutsideCell: anchor.originalOutsideCell
+      ? { x: anchor.originalOutsideCell.x, y: anchor.originalOutsideCell.y }
+      : null,
+  };
+  if (anchor.side === "north")
+    return { x1: midX - half, y1: y, x2: midX + half, y2: y, ...anchorMeta };
+  if (anchor.side === "south")
+    return {
+      x1: midX - half,
+      y1: y + gridSize,
+      x2: midX + half,
+      y2: y + gridSize,
+      ...anchorMeta,
+    };
+  if (anchor.side === "west")
+    return { x1: x, y1: midY - half, x2: x, y2: midY + half, ...anchorMeta };
+  return {
+    x1: x + gridSize,
+    y1: midY - half,
+    x2: x + gridSize,
+    y2: midY + half,
+    ...anchorMeta,
+  };
+}
+
 export function createDoorFromAnchor(anchor, gridSize, secret = false) {
+  const expandedCircleDoor = createDoorFromExpandedCircleAnchor(
+    anchor,
+    gridSize,
+    secret,
+  );
+  if (expandedCircleDoor) return expandedCircleDoor;
   if (anchor?.segment) {
     const length =
       Math.hypot(

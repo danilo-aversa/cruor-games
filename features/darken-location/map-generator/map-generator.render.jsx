@@ -62,6 +62,11 @@ import {
   getCorridorLocalWallSegmentsForCell,
   getCorridorEndpointCell,
   getWallSegmentAdjacentCells,
+  normalizeManualWaypoint,
+  routePathThroughCells,
+  routeDirectFallback,
+  isUsableCorridorPath,
+  getAdjacentCells,
 } from "./map-generator.corridors.js";
 import {
   createCaveMapSurfaceFromCaveSurface as createGeometryCaveMapSurfaceFromCaveSurface,
@@ -1505,9 +1510,7 @@ export function buildOrganicCorridorBoundaryPath(
   gridSize = DEFAULT_CONFIG.gridSize,
   layer = "surface",
 ) {
-  const floorCells = Array.isArray(corridor.floorCells)
-    ? corridor.floorCells
-    : [];
+  const floorCells = getVisibleCorridorFloorCells(corridor, generatedMap);
   if (!isOrganicCorridor(corridor) || floorCells.length === 0) return "";
   const seed = generatedMap?.config?.seed || DEFAULT_CONFIG.seed;
   const organicContourPath = buildOrganicCaveContourPath(
@@ -1535,6 +1538,78 @@ export function buildOrganicCorridorBoundaryPath(
     .join(" ");
 }
 
+function getGeneratedMapRoomFloorKeys(generatedMap) {
+  const keys = new Set();
+  (generatedMap?.regions || []).forEach((region) => {
+    (Array.isArray(region?.floorCells) ? region.floorCells : []).forEach((cell) => {
+      if (Number.isFinite(cell?.x) && Number.isFinite(cell?.y)) {
+        keys.add(cellKey(cell.x, cell.y));
+      }
+    });
+  });
+  return keys;
+}
+
+function filterCorridorCellsOutsideRooms(cells, generatedMap) {
+  if (!generatedMap || !Array.isArray(cells) || cells.length === 0) return cells || [];
+  const roomFloorKeys = getGeneratedMapRoomFloorKeys(generatedMap);
+  if (roomFloorKeys.size === 0) return cells;
+  return cells.filter((cell) => !roomFloorKeys.has(cellKey(cell.x, cell.y)));
+}
+
+function splitContiguousCellSegments(cells = []) {
+  const segments = [];
+  let current = [];
+  cells.forEach((cell) => {
+    if (!Number.isFinite(cell?.x) || !Number.isFinite(cell?.y)) return;
+    const previous = current[current.length - 1];
+    const contiguous =
+      previous && Math.abs(previous.x - cell.x) + Math.abs(previous.y - cell.y) === 1;
+    if (previous && !contiguous) {
+      if (current.length > 0) segments.push(current);
+      current = [];
+    }
+    current.push(cell);
+  });
+  if (current.length > 0) segments.push(current);
+  return segments;
+}
+
+function buildCellCenterlinePath(cellSegments = [], gridSize = DEFAULT_CONFIG.gridSize) {
+  return (cellSegments || [])
+    .filter((segment) => Array.isArray(segment) && segment.length >= 2)
+    .map((segment) =>
+      segment
+        .map((cell, index) =>
+          `${index === 0 ? "M" : "L"}${(cell.x + 0.5) * gridSize} ${(cell.y + 0.5) * gridSize}`,
+        )
+        .join(""),
+    )
+    .filter(Boolean)
+    .join(" ");
+}
+
+function getVisibleCorridorFloorCells(corridor, generatedMap) {
+  const floorCells = Array.isArray(corridor?.floorCells) ? corridor.floorCells : [];
+  if (!generatedMap || corridor?.isRoomLink || isOrganicCorridor(corridor)) return floorCells;
+  return filterCorridorCellsOutsideRooms(floorCells, generatedMap);
+}
+
+function getVisibleCorridorTopologyCells(corridor, generatedMap) {
+  const topologyCells = getCorridorTopologyCells(corridor);
+  if (!generatedMap || corridor?.isRoomLink || isOrganicCorridor(corridor)) return topologyCells;
+  return filterCorridorCellsOutsideRooms(topologyCells, generatedMap);
+}
+
+function buildVisibleCorridorCenterlinePath(corridor, generatedMap, gridSize) {
+  if (isOrganicCorridor(corridor) || !generatedMap) {
+    return buildPointPath(Array.isArray(corridor?.centerline) ? corridor.centerline : []);
+  }
+  const visibleCells = getVisibleCorridorTopologyCells(corridor, generatedMap);
+  const segments = splitContiguousCellSegments(visibleCells);
+  return buildCellCenterlinePath(segments, gridSize);
+}
+
 export function createCorridorSurface(
   corridor,
   generatedMap = null,
@@ -1544,9 +1619,7 @@ export function createCorridorSurface(
     generatedMap?.config?.gridSize ||
     gridSizeFallback ||
     DEFAULT_CONFIG.gridSize;
-  const floorCells = Array.isArray(corridor.floorCells)
-    ? corridor.floorCells
-    : [];
+  const floorCells = getVisibleCorridorFloorCells(corridor, generatedMap);
   const organicPath = buildOrganicCorridorBoundaryPath(
     corridor,
     generatedMap,
@@ -1564,7 +1637,7 @@ export function createCorridorSurface(
       : "corridor-cell-mask",
     gridSize,
     floorCells,
-    pathCells: getCorridorTopologyCells(corridor),
+    pathCells: getVisibleCorridorTopologyCells(corridor, generatedMap),
     visualFloorPath,
     clipPath: visualFloorPath,
     wallPath: organicSurface
@@ -1656,6 +1729,14 @@ export function isCellCenterOutsideCircle(cell, circle) {
   );
 }
 
+export function isCircleCompositeCellNearCircle(region, cell, marginCells = 2.05) {
+  if (!region || region.shape !== "circle" || !cell) return false;
+  const circle = getCircleGeometryFromRegion(region, 1);
+  const dx = cell.x + 0.5 - circle.cxCells;
+  const dy = cell.y + 0.5 - circle.cyCells;
+  return Math.hypot(dx, dy) <= circle.rCells + marginCells;
+}
+
 export function getCirclePortalCells(generatedMap, region) {
   if (!generatedMap || region.shape !== "circle") return [];
   const seen = new Set();
@@ -1704,6 +1785,7 @@ export function getCircleCompositeSquareCells(generatedMap, region) {
   const cellsByKey = new Map();
   const addCompositeCell = (cell, source, anchor = null) => {
     if (!cell) return;
+    if (!isCircleCompositeCellNearCircle(region, cell)) return;
     const key = cellKey(cell.x, cell.y);
     if (cellsByKey.has(key)) return;
     cellsByKey.set(key, {
@@ -1715,13 +1797,9 @@ export function getCircleCompositeSquareCells(generatedMap, region) {
     });
   };
 
-  (Array.isArray(region.circleExtensionCells)
-    ? region.circleExtensionCells
-    : []
-  ).forEach((cell) => {
-    addCompositeCell(cell, "extension");
-  });
-
+  // Do not trust persisted circleExtensionCells here. They are derived from
+  // corridor anchors and can become stale after room drags or endpoint edits.
+  // Rebuild the visible composite mouth cells from the current corridors below.
   generatedMap.corridors.forEach((corridor) => {
     [
       corridor.from === region.id ? corridor.fromAnchor : null,
@@ -2515,13 +2593,12 @@ export function renderVisualAccents(generatedMap) {
       </g>
       <g className="corridor-texture">
         {corridors.map((corridor) => {
-          if (corridor.centerline.length < 2) return null;
-          const d = corridor.centerline
-            .map(
-              (point, index) =>
-                `${index === 0 ? "M" : "L"}${point.x} ${point.y}`,
-            )
-            .join("");
+          const d = buildVisibleCorridorCenterlinePath(
+            corridor,
+            generatedMap,
+            config.gridSize,
+          );
+          if (!d) return null;
           return (
             <path
               key={`corridor-center-${corridor.id}`}
@@ -4884,6 +4961,10 @@ export function getVisibleCircleIntervals(gaps) {
 }
 
 export function createCircleArcPathFromInterval(circle, interval) {
+  const full = Math.PI * 2;
+  if (interval.end - interval.start >= full - 0.0001) {
+    return `M${circle.cx.toFixed(2)} ${(circle.cy - circle.r).toFixed(2)}A${circle.r.toFixed(2)} ${circle.r.toFixed(2)} 0 1 1 ${circle.cx.toFixed(2)} ${(circle.cy + circle.r).toFixed(2)}A${circle.r.toFixed(2)} ${circle.r.toFixed(2)} 0 1 1 ${circle.cx.toFixed(2)} ${(circle.cy - circle.r).toFixed(2)}`;
+  }
   const startX = circle.cx + Math.cos(interval.start) * circle.r;
   const startY = circle.cy + Math.sin(interval.start) * circle.r;
   const endX = circle.cx + Math.cos(interval.end) * circle.r;
@@ -6605,19 +6686,19 @@ export function getCirclePortalSquareWallSegments(region, generatedMap) {
     region,
     generatedMap.config.gridSize,
   );
-  const portals = getCircleCompositeSquareCells(generatedMap, region);
+  const compositeCells = getCircleCompositeSquareCells(generatedMap, region);
   const extensionCellKeys = new Set(
-    portals.map((cell) => cellKey(cell.x, cell.y)),
+    compositeCells.map((cell) => cellKey(cell.x, cell.y)),
   );
   const seen = new Set();
   const segments = [];
 
-  portals.forEach((portal) => {
+  compositeCells.forEach((cell) => {
     getCellBoundarySegmentsForCell(
-      portal,
+      cell,
       generatedMap.config.gridSize,
     ).forEach((edge) => {
-      const neighbor = getNeighborForCellSide(portal, edge.side);
+      const neighbor = getNeighborForCellSide(cell, edge.side);
       if (extensionCellKeys.has(cellKey(neighbor.x, neighbor.y))) return;
       splitSegmentOutsideCircle(
         edge,
@@ -7821,6 +7902,158 @@ export function getHybridFinalWallConnectionZones(region, generatedMap) {
     });
 }
 
+function getDominantCircleEditorSideFromNormal(normal, fallback = "east") {
+  if (!normal) return fallback;
+  const x = Number.isFinite(normal.x) ? normal.x : 0;
+  const y = Number.isFinite(normal.y) ? normal.y : 0;
+  if (Math.abs(x) >= Math.abs(y)) return x >= 0 ? "east" : "west";
+  return y >= 0 ? "south" : "north";
+}
+
+function getCircleEditorAxialNormal(side) {
+  if (side === "west") return { x: -1, y: 0 };
+  if (side === "south") return { x: 0, y: 1 };
+  if (side === "north") return { x: 0, y: -1 };
+  return { x: 1, y: 0 };
+}
+
+function getCircleEditorCellCenter(cell, gridSize) {
+  return {
+    x: (cell.x + 0.5) * gridSize,
+    y: (cell.y + 0.5) * gridSize,
+  };
+}
+
+function isCircleEditorCellInsideVisualCircle(cell, circle, gridSize, tolerance = 0) {
+  if (!cell || !circle) return false;
+  const center = getCircleEditorCellCenter(cell, gridSize);
+  return Math.hypot(center.x - circle.cx, center.y - circle.cy) < circle.r - tolerance;
+}
+
+function getCircleEditorWallPoint(cell, outsideCell, normal, gridSize) {
+  if (!cell || !outsideCell || !normal) return null;
+  if (normal.x > 0)
+    return { x: outsideCell.x * gridSize, y: (outsideCell.y + 0.5) * gridSize };
+  if (normal.x < 0)
+    return { x: (outsideCell.x + 1) * gridSize, y: (outsideCell.y + 0.5) * gridSize };
+  if (normal.y > 0)
+    return { x: (outsideCell.x + 0.5) * gridSize, y: outsideCell.y * gridSize };
+  return { x: (outsideCell.x + 0.5) * gridSize, y: (outsideCell.y + 1) * gridSize };
+}
+
+function getCircleEditorWallSegment(point, normal, gridSize) {
+  if (!point || !normal) return null;
+  const half = gridSize * 0.42;
+  if (Math.abs(normal.x) > Math.abs(normal.y)) {
+    return { x1: point.x, y1: point.y - half, x2: point.x, y2: point.y + half };
+  }
+  return { x1: point.x - half, y1: point.y, x2: point.x + half, y2: point.y };
+}
+
+function normalizeEditorAngle(angle) {
+  const full = Math.PI * 2;
+  return ((angle % full) + full) % full;
+}
+
+function isEditorAngleInsideIntervals(angle, intervals) {
+  if (!Array.isArray(intervals) || intervals.length === 0) return true;
+  const normalized = normalizeEditorAngle(angle);
+  return intervals.some((interval) => {
+    const start = normalizeEditorAngle(interval.start);
+    const end = normalizeEditorAngle(interval.end);
+    if (start <= end) return normalized >= start && normalized <= end;
+    return normalized >= start || normalized <= end;
+  });
+}
+
+function isCircleEditorOutsideCellValid(outsideCell, circle, gridSize) {
+  if (!outsideCell || !circle) return false;
+  return !isCircleEditorCellInsideVisualCircle(outsideCell, circle, gridSize, gridSize * 0.02);
+}
+
+function createCircleEditorConnectionAnchorFromOutsideCell(
+  region,
+  generatedMap,
+  outsideCell,
+  index,
+) {
+  const gridSize = generatedMap?.config?.gridSize || 1;
+  const circle = getCircleGeometryFromRegion(region, gridSize);
+  if (!isCircleEditorOutsideCellValid(outsideCell, circle, gridSize)) return null;
+  const outsideCenter = getCircleEditorCellCenter(outsideCell, gridSize);
+  const dx = outsideCenter.x - circle.cx;
+  const dy = outsideCenter.y - circle.cy;
+  const length = Math.hypot(dx, dy) || 1;
+  const radial = { x: dx / length, y: dy / length };
+  const side = getDominantCircleEditorSideFromNormal(radial, "east");
+  const normal = getCircleEditorAxialNormal(side);
+  const cell = {
+    x: outsideCell.x - normal.x,
+    y: outsideCell.y - normal.y,
+  };
+  const point = getCircleEditorWallPoint(cell, outsideCell, normal, gridSize);
+  if (!point) return null;
+  const signedWallDistance = Math.hypot(point.x - circle.cx, point.y - circle.cy) - circle.r;
+  if (signedWallDistance < -gridSize * 0.08) return null;
+  const distanceFromWall = Math.abs(signedWallDistance);
+  if (distanceFromWall > gridSize * 0.92) return null;
+  const segment = getCircleEditorWallSegment(point, normal, gridSize);
+  const angle = normalizeEditorAngle(Math.atan2(radial.y, radial.x));
+  return {
+    regionId: region.id,
+    regionShape: region.shape,
+    side,
+    cell,
+    outsideCell: { x: outsideCell.x, y: outsideCell.y },
+    normal,
+    circular: {
+      cx: circle.cxCells,
+      cy: circle.cyCells,
+      r: circle.rCells,
+      normal: radial,
+    },
+    finalGeometry: true,
+    circleBoundaryAnchor: true,
+    finalBoundaryIndex: Math.round((angle / (Math.PI * 2)) * 10000) + index,
+    segment,
+    point,
+    snapGridQuantized: true,
+  };
+}
+
+function getCircleEditorConnectionAnchors(region, generatedMap) {
+  if (!generatedMap || region?.shape !== "circle") return [];
+  const gridSize = generatedMap.config?.gridSize || 1;
+  const circle = getCircleGeometryFromRegion(region, gridSize);
+  const intervals = getVisibleCircleIntervals(getCircleDoorGaps(region, generatedMap));
+  const minX = Math.floor((circle.cx - circle.r - gridSize * 1.5) / gridSize);
+  const maxX = Math.ceil((circle.cx + circle.r + gridSize * 1.5) / gridSize);
+  const minY = Math.floor((circle.cy - circle.r - gridSize * 1.5) / gridSize);
+  const maxY = Math.ceil((circle.cy + circle.r + gridSize * 1.5) / gridSize);
+  const anchors = [];
+  const seen = new Set();
+  for (let y = minY; y <= maxY; y += 1) {
+    for (let x = minX; x <= maxX; x += 1) {
+      const outsideCell = { x, y };
+      const center = getCircleEditorCellCenter(outsideCell, gridSize);
+      const angle = normalizeEditorAngle(Math.atan2(center.y - circle.cy, center.x - circle.cx));
+      if (!isEditorAngleInsideIntervals(angle, intervals)) continue;
+      const anchor = createCircleEditorConnectionAnchorFromOutsideCell(
+        region,
+        generatedMap,
+        outsideCell,
+        anchors.length,
+      );
+      if (!anchor) continue;
+      const key = `${anchor.side}:${anchor.outsideCell.x}:${anchor.outsideCell.y}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      anchors.push(anchor);
+    }
+  }
+  return anchors.sort((a, b) => (a.finalBoundaryIndex || 0) - (b.finalBoundaryIndex || 0));
+}
+
 export function getWallConnectionZones(
   region,
   regions,
@@ -7871,11 +8104,15 @@ export function getWallConnectionZones(
   );
   if (hybridFinalZones.length > 0) return hybridFinalZones;
   const ownerByCell = getCellRegionOwnerMap(regions);
-  const finalAnchors = getFinalConnectionAnchors(generatedMap, region);
+  const finalAnchors =
+    region.shape === "circle"
+      ? getCircleEditorConnectionAnchors(region, generatedMap)
+      : getFinalConnectionAnchors(generatedMap, region);
   const anchors =
     finalAnchors.length > 0 ? finalAnchors : getBoundaryCells(region);
+  const seenZones = new Set();
   return anchors
-    .map((anchor) => {
+    .map((anchor, index) => {
       const segment =
         anchor.segment ||
         getSharedEdgeSegment(anchor.cell, anchor.outsideCell, gridSize);
@@ -7887,17 +8124,22 @@ export function getWallConnectionZones(
         adjacentRegionId && adjacentRegionId !== region.id
           ? createOppositeSharedAnchor(anchor, adjacentRegionId)
           : null;
-      return segment
-        ? {
-            id: `${region.id}:${anchor.side}:${anchor.cell.x}:${anchor.cell.y}`,
-            regionId: region.id,
-            adjacentRegionId: adjacentAnchor ? adjacentRegionId : null,
-            adjacentAnchor,
-            anchor,
-            point,
-            ...segment,
-          }
-        : null;
+      if (!segment) return null;
+      const roundedSegmentKey = `${Math.round(segment.x1 * 10) / 10}:${Math.round(segment.y1 * 10) / 10}:${Math.round(segment.x2 * 10) / 10}:${Math.round(segment.y2 * 10) / 10}`;
+      const zoneKey = anchor.circleBoundaryAnchor
+        ? `${region.id}:circle:${anchor.finalBoundaryIndex ?? index}:${roundedSegmentKey}`
+        : `${region.id}:${anchor.side}:${anchor.cell.x}:${anchor.cell.y}:${index}:${roundedSegmentKey}`;
+      if (seenZones.has(zoneKey)) return null;
+      seenZones.add(zoneKey);
+      return {
+        id: zoneKey,
+        regionId: region.id,
+        adjacentRegionId: adjacentAnchor ? adjacentRegionId : null,
+        adjacentAnchor,
+        anchor,
+        point,
+        ...segment,
+      };
     })
     .filter(Boolean);
 }
@@ -8182,9 +8424,11 @@ export function corridorPathD(corridor, gridSize) {
     .join("");
 }
 
-export function renderCorridorHoverHighlight(corridor, gridSize) {
+export function renderCorridorHoverHighlight(corridor, gridSize, generatedMap = null) {
   if (!corridor) return null;
-  const d = corridorPathD(corridor, gridSize);
+  const d = generatedMap
+    ? buildVisibleCorridorCenterlinePath(corridor, generatedMap, gridSize)
+    : corridorPathD(corridor, gridSize);
   if (!d) return null;
   return (
     <g className="corridor-hover-highlight">
@@ -8575,6 +8819,234 @@ function getCorridorHandlePreviewPoints(corridor, preview, gridSize) {
   return nextPoints.filter(Boolean);
 }
 
+function dedupeConsecutiveCells(cells = []) {
+  const output = [];
+  cells.forEach((cell) => {
+    if (!Number.isFinite(cell?.x) || !Number.isFinite(cell?.y)) return;
+    const previous = output[output.length - 1];
+    if (previous && previous.x === cell.x && previous.y === cell.y) return;
+    output.push({ x: cell.x, y: cell.y });
+  });
+  return output;
+}
+
+function normalizePreviewCell(point, gridSize, gridW, gridH) {
+  return normalizeManualWaypoint(point, gridSize, gridW, gridH);
+}
+
+function getCorridorEndpointCellForPreview(corridor, endpoint, gridSize, gridW, gridH) {
+  const anchor = endpoint === "from" ? corridor?.fromAnchor : corridor?.toAnchor;
+  if (anchor?.outsideCell) {
+    return normalizePreviewCell(anchor.outsideCell, gridSize, gridW, gridH);
+  }
+  const point = getCorridorAnchorPoint(corridor, endpoint, gridSize);
+  return point ? normalizePreviewCell(point, gridSize, gridW, gridH) : null;
+}
+
+function getExistingVisibleCorridorKeysForPreview(generatedMap, activeCorridorId) {
+  const keys = new Set();
+  (generatedMap?.corridors || []).forEach((corridor) => {
+    if (!corridor || corridor.id === activeCorridorId || corridor.isRoomLink) return;
+    getVisibleCorridorFloorCells(corridor, generatedMap).forEach((cell) => {
+      keys.add(cellKey(cell.x, cell.y));
+    });
+  });
+  return keys;
+}
+
+function getPreviewManualWaypointCells(corridor, preview, gridSize, gridW, gridH) {
+  const manualWaypoints = Array.isArray(corridor?.manualWaypoints)
+    ? corridor.manualWaypoints
+        .map((point) => normalizePreviewCell(point, gridSize, gridW, gridH))
+        .filter(Boolean)
+    : [];
+  const previewPoint = clonePoint(preview?.point || preview);
+  const previewCell = previewPoint
+    ? normalizePreviewCell(previewPoint, gridSize, gridW, gridH)
+    : null;
+  if (!previewCell) return manualWaypoints;
+  if (preview?.type === "waypoint-insert") {
+    const insertIndex = clamp(
+      Number.isInteger(preview.insertIndex) ? preview.insertIndex : manualWaypoints.length,
+      0,
+      manualWaypoints.length,
+    );
+    const next = [...manualWaypoints];
+    next.splice(insertIndex, 0, previewCell);
+    return next;
+  }
+  if (preview?.type === "waypoint") {
+    const next = [...manualWaypoints];
+    const index = clamp(
+      Number.isInteger(preview.waypointIndex) ? preview.waypointIndex : 0,
+      0,
+      Math.max(0, next.length - 1),
+    );
+    if (preview.source === "manual" && next.length > 0) next[index] = previewCell;
+    else return [previewCell];
+    return next;
+  }
+  return manualWaypoints;
+}
+
+function getCorridorPreviewRouteCells(corridor, preview, generatedMap, gridSize) {
+  if (!corridor || !preview || !generatedMap?.config) return [];
+  const gridW = Math.max(2, Math.floor(generatedMap.config.mapWidth / gridSize));
+  const gridH = Math.max(2, Math.floor(generatedMap.config.mapHeight / gridSize));
+  let start = getCorridorEndpointCellForPreview(corridor, "from", gridSize, gridW, gridH);
+  let goal = getCorridorEndpointCellForPreview(corridor, "to", gridSize, gridW, gridH);
+  const previewPoint = clonePoint(preview.point || preview);
+  const snapEndpointCell = preview?.snapAnchor?.outsideCell
+    ? normalizePreviewCell(preview.snapAnchor.outsideCell, gridSize, gridW, gridH)
+    : null;
+  const previewCell =
+    snapEndpointCell ||
+    (previewPoint ? normalizePreviewCell(previewPoint, gridSize, gridW, gridH) : null);
+  if (preview.type === "door" && previewCell) {
+    if (preview.endpoint === "from") start = previewCell;
+    else if (preview.endpoint === "to") goal = previewCell;
+  }
+  if (!start || !goal) return [];
+
+  const manualCells = preview.type === "door"
+    ? (Array.isArray(corridor.manualWaypoints)
+        ? corridor.manualWaypoints
+            .map((point) => normalizePreviewCell(point, gridSize, gridW, gridH))
+            .filter(Boolean)
+        : [])
+    : getPreviewManualWaypointCells(corridor, preview, gridSize, gridW, gridH);
+  const routePoints = dedupeConsecutiveCells([start, ...manualCells, goal]);
+  if (routePoints.length < 2) return [];
+
+  const blocked = getGeneratedMapRoomFloorKeys(generatedMap);
+  routePoints.forEach((cell) => blocked.delete(cellKey(cell.x, cell.y)));
+  const existingCorridors = getExistingVisibleCorridorKeysForPreview(
+    generatedMap,
+    corridor.id,
+  );
+  const adjacentToExistingCorridors = getAdjacentCells(existingCorridors);
+  routePoints.forEach((cell) => adjacentToExistingCorridors.delete(cellKey(cell.x, cell.y)));
+  const routingOptions = {
+    gridW,
+    gridH,
+    blocked,
+    softBlocked: new Set(),
+    existingCorridors,
+    adjacentToExistingCorridors,
+    routingProfile: generatedMap.config.routingProfile || {},
+  };
+  const routed = routePathThroughCells(routePoints, routingOptions);
+  if (routed.length >= routePoints.length) return routed;
+  const direct = routeDirectFallback(start, goal, routingOptions);
+  return isUsableCorridorPath(direct, start, goal) ? direct : [];
+}
+
+function buildCorridorDragPreviewPath(generatedMap, corridor, corridorDragPreview, gridSize) {
+  const routeCells = getCorridorPreviewRouteCells(
+    corridor,
+    corridorDragPreview,
+    generatedMap,
+    gridSize,
+  );
+  if (routeCells.length >= 2) {
+    return buildCellCenterlinePath([routeCells], gridSize);
+  }
+  return buildPointPath(
+    getCorridorHandlePreviewPoints(corridor, corridorDragPreview, gridSize),
+  );
+}
+
+function getConnectionDraftEndpointCell(anchor, point, gridSize, gridW, gridH) {
+  if (anchor?.outsideCell) return normalizePreviewCell(anchor.outsideCell, gridSize, gridW, gridH);
+  if (anchor?.cell) return normalizePreviewCell(anchor.cell, gridSize, gridW, gridH);
+  return point ? normalizePreviewCell(point, gridSize, gridW, gridH) : null;
+}
+
+function getConnectionDraftPreviewRouteCells(generatedMap, connectionDraft, gridSize) {
+  if (!generatedMap?.config || !connectionDraft) return [];
+  const gridW = Math.max(2, Math.floor(generatedMap.config.mapWidth / gridSize));
+  const gridH = Math.max(2, Math.floor(generatedMap.config.mapHeight / gridSize));
+  const start = getConnectionDraftEndpointCell(
+    connectionDraft.fromAnchor,
+    connectionDraft.start,
+    gridSize,
+    gridW,
+    gridH,
+  );
+  const goal = getConnectionDraftEndpointCell(
+    connectionDraft.toAnchor || connectionDraft.target?.anchor,
+    connectionDraft.current,
+    gridSize,
+    gridW,
+    gridH,
+  );
+  if (!start || !goal) return [];
+  const routePoints = dedupeConsecutiveCells([start, goal]);
+  if (routePoints.length < 2) return [];
+  const blocked = getGeneratedMapRoomFloorKeys(generatedMap);
+  routePoints.forEach((cell) => blocked.delete(cellKey(cell.x, cell.y)));
+  const existingCorridors = getExistingVisibleCorridorKeysForPreview(generatedMap, null);
+  const adjacentToExistingCorridors = getAdjacentCells(existingCorridors);
+  routePoints.forEach((cell) => adjacentToExistingCorridors.delete(cellKey(cell.x, cell.y)));
+  const routingOptions = {
+    gridW,
+    gridH,
+    blocked,
+    softBlocked: new Set(),
+    existingCorridors,
+    adjacentToExistingCorridors,
+    routingProfile: generatedMap.config.routingProfile || {},
+  };
+  const routed = routePathThroughCells(routePoints, routingOptions);
+  if (routed.length >= routePoints.length) return routed;
+  const direct = routeDirectFallback(start, goal, routingOptions);
+  return isUsableCorridorPath(direct, start, goal) ? direct : [];
+}
+
+function buildConnectionDraftPreviewPath(generatedMap, connectionDraft, gridSize) {
+  const routeCells = getConnectionDraftPreviewRouteCells(
+    generatedMap,
+    connectionDraft,
+    gridSize,
+  );
+  if (routeCells.length >= 2) return buildCellCenterlinePath([routeCells], gridSize);
+  return buildPointPath([connectionDraft?.start, connectionDraft?.current].filter(Boolean));
+}
+
+function renderConnectionDraftPreviewSurface(generatedMap, connectionDraft) {
+  if (!connectionDraft) return null;
+  const gridSize = generatedMap.config.gridSize;
+  const tokens = getDragPreviewStyleTokens(generatedMap);
+  const previewPath = buildConnectionDraftPreviewPath(generatedMap, connectionDraft, gridSize);
+  if (!previewPath) return null;
+  return (
+    <g className="connection-preview-layer">
+      <path
+        className="drag-preview-corridor-floor"
+        d={previewPath}
+        style={getPreviewCorridorFloorStyle(tokens, gridSize)}
+      />
+      <path
+        className="drag-preview-corridor-wall"
+        d={previewPath}
+        style={getPreviewWallStyle(tokens, 0.72)}
+      />
+      <circle
+        className="connection-preview__endpoint"
+        cx={connectionDraft.start.x}
+        cy={connectionDraft.start.y}
+        r={4}
+      />
+      <circle
+        className="connection-preview__endpoint"
+        cx={connectionDraft.current.x}
+        cy={connectionDraft.current.y}
+        r={4}
+      />
+    </g>
+  );
+}
+
 function renderRoomDragPreviewSurface(generatedMap, region, roomOffset, editorOptions = {}) {
   if (!region || !roomOffset?.active) return null;
   const gridSize = generatedMap.config.gridSize;
@@ -8664,8 +9136,11 @@ function renderCorridorDragPreviewSurface(generatedMap, corridorDragPreview) {
   if (!corridor) return null;
   const gridSize = generatedMap.config.gridSize;
   const tokens = getDragPreviewStyleTokens(generatedMap);
-  const previewPath = buildPointPath(
-    getCorridorHandlePreviewPoints(corridor, corridorDragPreview, gridSize),
+  const previewPath = buildCorridorDragPreviewPath(
+    generatedMap,
+    corridor,
+    corridorDragPreview,
+    gridSize,
   );
   if (!previewPath) return null;
   return (
@@ -8721,9 +9196,9 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
     onWallHandlePointerLeave,
     onMapAccessPointerDown,
     onMapAccessContextMenu,
-    showAccessDots = true,
+    showAccessDots = false,
   } = editorOptions;
-  const accessDotsVisible = showAccessDots !== false;
+  const accessDotsVisible = showAccessDots === true;
   const roomDragPreviewRegion = roomDragPreview
     ? regions.find((region) => region.id === roomDragPreview.regionId)
     : null;
@@ -8740,9 +9215,10 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
   const wallConnectionZones = regions.flatMap((region) =>
     getWallConnectionZones(region, regions, config.gridSize, generatedMap),
   );
-  const corridorInsertionZones = corridors.flatMap((corridor) =>
-    getCorridorInsertionZones(corridor, config.gridSize),
-  );
+  const overlayRoomFloorKeys = getGeneratedMapRoomFloorKeys(generatedMap);
+  const corridorInsertionZones = corridors
+    .flatMap((corridor) => getCorridorInsertionZones(corridor, config.gridSize))
+    .filter((zone) => !overlayRoomFloorKeys.has(cellKey(zone.cell.x, zone.cell.y)));
   const junctionByCell = new Map(
     getCorridorIntersectionCells(corridors).map((junction) => [
       junction.key,
@@ -8885,6 +9361,56 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
       })}
       {renderCaveTunnelTraces(generatedMap, activeCorridorId)}
       {renderCorridorDragPreviewSurface(generatedMap, corridorDragPreview)}
+      {corridorDragPreview?.type === "door" && corridorDragPreview.snapPoint ? (
+        <g className="door-snap-preview" pointerEvents="none">
+          <circle
+            cx={corridorDragPreview.snapPoint.x}
+            cy={corridorDragPreview.snapPoint.y}
+            r={9}
+            style={{
+              fill: "none",
+              stroke: "rgba(255,231,143,.95)",
+              strokeWidth: 2.4,
+              vectorEffect: "non-scaling-stroke",
+            }}
+          />
+          <circle
+            cx={corridorDragPreview.snapPoint.x}
+            cy={corridorDragPreview.snapPoint.y}
+            r={3.2}
+            style={{
+              fill: "rgba(255,231,143,.85)",
+              stroke: "rgba(29,25,21,.72)",
+              strokeWidth: 1.4,
+              vectorEffect: "non-scaling-stroke",
+            }}
+          />
+          <line
+            x1={corridorDragPreview.snapPoint.x - 13}
+            y1={corridorDragPreview.snapPoint.y}
+            x2={corridorDragPreview.snapPoint.x + 13}
+            y2={corridorDragPreview.snapPoint.y}
+            style={{
+              stroke: "rgba(255,231,143,.78)",
+              strokeWidth: 1.4,
+              strokeLinecap: "round",
+              vectorEffect: "non-scaling-stroke",
+            }}
+          />
+          <line
+            x1={corridorDragPreview.snapPoint.x}
+            y1={corridorDragPreview.snapPoint.y - 13}
+            x2={corridorDragPreview.snapPoint.x}
+            y2={corridorDragPreview.snapPoint.y + 13}
+            style={{
+              stroke: "rgba(255,231,143,.78)",
+              strokeWidth: 1.4,
+              strokeLinecap: "round",
+              vectorEffect: "non-scaling-stroke",
+            }}
+          />
+        </g>
+      ) : null}
       {renderRoomDragPreviewSurface(
         generatedMap,
         roomDragPreviewRegion,
@@ -8899,7 +9425,7 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
         highlightedRegion?.id === roomDragPreview?.regionId ? null : highlightedRegion,
         generatedMap,
       )}
-      {renderCorridorHoverHighlight(highlightedCorridor, config.gridSize)}
+      {renderCorridorHoverHighlight(highlightedCorridor, config.gridSize, generatedMap)}
       {regions.map((region) => (
         <path
           key={`overlay-${region.id}`}
@@ -8976,29 +9502,7 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
           onContextMenu={(event) => onCorridorAddContextMenu?.(event, zone)}
         />
       ))}
-      {connectionDraft && (
-        <g className="connection-preview-layer">
-          <line
-            className="connection-preview"
-            x1={connectionDraft.start.x}
-            y1={connectionDraft.start.y}
-            x2={connectionDraft.current.x}
-            y2={connectionDraft.current.y}
-          />
-          <circle
-            className="connection-preview__endpoint"
-            cx={connectionDraft.start.x}
-            cy={connectionDraft.start.y}
-            r={4}
-          />
-          <circle
-            className="connection-preview__endpoint"
-            cx={connectionDraft.current.x}
-            cy={connectionDraft.current.y}
-            r={4}
-          />
-        </g>
-      )}
+      {renderConnectionDraftPreviewSurface(generatedMap, connectionDraft)}
       {editorOptions.hoverCorridorHandle &&
         !connectionDraft &&
         (() => {
@@ -9067,16 +9571,9 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
         </g>
       ))}
       {accessDotsVisible && endpointHandles.map((handle) => (
-        <circle
+        <g
           key={`endpoint-${handle.id}`}
-          className={
-            draggingCorridorHandle === handle.id
-              ? "endpoint-handle is-dragging"
-              : "endpoint-handle"
-          }
-          cx={handle.x}
-          cy={handle.y}
-          r={5}
+          className="endpoint-handle-hit-area"
           onPointerEnter={(event) =>
             editorOptions.onCorridorHandlePointerEnter?.(event, handle)
           }
@@ -9085,7 +9582,28 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
           }
           onPointerDown={(event) => onDoorPointerDown?.(event, handle)}
           onContextMenu={(event) => onDoorContextMenu?.(event, handle)}
-        />
+        >
+          <circle
+            cx={handle.x}
+            cy={handle.y}
+            r={11}
+            style={{
+              fill: "transparent",
+              stroke: "transparent",
+              pointerEvents: "all",
+            }}
+          />
+          <circle
+            className={
+              draggingCorridorHandle === handle.id
+                ? "endpoint-handle is-dragging"
+                : "endpoint-handle"
+            }
+            cx={handle.x}
+            cy={handle.y}
+            r={5}
+          />
+        </g>
       ))}
       {accessDotsVisible && cavePassageHandles.map((handle) => (
         <circle
@@ -9479,7 +9997,7 @@ export function MapSvg({
     ...getGridVisualVariables({ gridColor, gridWeight }),
     "--cruor-map-hatch-underlay-stroke": getHatchShadowStroke(normalizedHatchShadowColor, visualStyle),
   };
-  const accessDotsVisible = editorOptions.showAccessDots !== false;
+  const accessDotsVisible = editorOptions.showAccessDots === true;
   const previewRegionMarkers =
     previewRoomHotspots?.regionMarkers || EMPTY_REGION_MARKERS;
   const staticMapContent = React.useMemo(

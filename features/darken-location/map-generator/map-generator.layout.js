@@ -12,6 +12,12 @@ import {
   roleDepth,
 } from "./map-generator.profile.js";
 import { getGraphAdjacency } from "./map-generator.graph.js";
+import {
+  applyRoomDesignSizeConstraints,
+  getRoomDesignShape,
+  getRoomDesignShapeOptions,
+  resolveRoomDesign,
+} from "./map-generator.room-design.js";
 
 const SIZE_PRESETS = {
   Tiny: { minW: 3, maxW: 4, minH: 3, maxH: 4 },
@@ -22,11 +28,11 @@ const SIZE_PRESETS = {
 };
 
 const ROOM_SIZE_MENU_PRESETS = {
-  Tiny: { w: 3, h: 3 },
-  Small: { w: 5, h: 4 },
-  Medium: { w: 7, h: 5 },
-  Large: { w: 9, h: 7 },
-  Huge: { w: 12, h: 9 },
+  Tiny: { w: 3, h: 3, circleD: 3 },
+  Small: { w: 5, h: 4, circleD: 5 },
+  Medium: { w: 7, h: 5, circleD: 7 },
+  Large: { w: 9, h: 7, circleD: 9 },
+  Huge: { w: 12, h: 9, circleD: 12 },
 };
 
 function hashStringToSeed(...parts) {
@@ -60,16 +66,28 @@ function resolveRoomArchetypeSize(region, contextKey, rng) {
   };
 }
 
-function getRoomArchetypeShapeOptions(region, contextKey) {
-  const archetype = resolveRoomArchetype(region, contextKey);
-  if (!archetype) return region.shapeOptions || null;
+function getRoomShapeOptions(region, contextKey, archetype = null, roomDesign = null) {
+  const resolvedArchetype = archetype || resolveRoomArchetype(region, contextKey);
+  const resolvedRoomDesign = roomDesign || resolveRoomDesign(region, contextKey, { archetype: resolvedArchetype });
+  const roomDesignOptions = getRoomDesignShapeOptions(resolvedRoomDesign) || {};
+  if (!resolvedArchetype && !Object.keys(roomDesignOptions).length) return region.shapeOptions || null;
+  const hasExplicitRoomDesign = resolvedRoomDesign?.source === "room-design";
   return {
     ...(region.shapeOptions || {}),
-    roomType: archetype.roomType || region.shapeOptions?.roomType || "none",
-    archetypeId: archetype.id,
-    archetypeLabel: archetype.label,
-    maskProfile: archetype.maskProfile || archetype.id,
-    detailProfile: archetype.detailProfile || archetype.id,
+    ...(resolvedArchetype
+      ? {
+          roomType: resolvedArchetype.roomType || region.shapeOptions?.roomType || "none",
+          archetypeId: resolvedArchetype.id,
+          archetypeLabel: resolvedArchetype.label,
+          ...(!hasExplicitRoomDesign
+            ? {
+                maskProfile: resolvedArchetype.maskProfile || resolvedArchetype.id,
+                detailProfile: resolvedArchetype.detailProfile || resolvedArchetype.id,
+              }
+            : {}),
+        }
+      : {}),
+    ...roomDesignOptions,
   };
 }
 
@@ -82,18 +100,15 @@ function rectsOverlapWithMargin(a, b, margin = 2) {
   );
 }
 
-export function resolveRoomSize(region, rng, config = null) {
-  const contextKey = getContextKey(config?.context || config?.biome);
-  if (isMineCaveLikeRegion(region, contextKey))
-    return resolveMineCaveRoomSize(region, rng, config);
+function getShapeAdjustedRoomSize(size, region, roomDesign) {
+  let w = Number(size?.w);
+  let h = Number(size?.h);
+  if (!Number.isFinite(w) || !Number.isFinite(h)) return size;
 
-  const archetypeSize = resolveRoomArchetypeSize(region, contextKey, rng);
-  if (archetypeSize) return archetypeSize;
-
-  const preset = SIZE_PRESETS[region.size] || SIZE_PRESETS.Medium;
-  let w = randomInt(rng, preset.minW, preset.maxW);
-  let h = randomInt(rng, preset.minH, preset.maxH);
-  const shape = region.preferredShape.toLowerCase();
+  const designShape = getRoomDesignShape(roomDesign);
+  const shape = String(
+    designShape || region.shape || region.preferredShape || "",
+  ).toLowerCase();
 
   if (shape.includes("hall") || shape.includes("corridor")) {
     w = Math.max(w + 2, h + 3);
@@ -117,7 +132,46 @@ export function resolveRoomSize(region, rng, config = null) {
     h = Math.max(h, 5);
   }
 
-  return { w, h };
+  return { ...size, w, h };
+}
+
+function resolveMenuPresetRoomSize(region, roomDesign) {
+  const preset = ROOM_SIZE_MENU_PRESETS[region.size];
+  if (!preset) return null;
+  return getShapeAdjustedRoomSize(
+    { w: preset.w, h: preset.h },
+    region,
+    roomDesign,
+  );
+}
+
+export function resolveRoomSize(region, rng, config = null) {
+  const contextKey = getContextKey(config?.context || config?.biome);
+  const archetype = resolveRoomArchetype(region, contextKey);
+  const roomDesign = resolveRoomDesign(region, contextKey, { archetype });
+  if (isMineCaveLikeRegion(region, contextKey)) {
+    const caveSize = resolveMineCaveRoomSize(region, rng, config);
+    return applyRoomDesignSizeConstraints(
+      getShapeAdjustedRoomSize(caveSize, region, roomDesign),
+      roomDesign,
+    );
+  }
+
+  const menuPresetSize = resolveMenuPresetRoomSize(region, roomDesign);
+  if (menuPresetSize) {
+    return applyRoomDesignSizeConstraints(menuPresetSize, roomDesign);
+  }
+
+  const preset = SIZE_PRESETS[region.size] || SIZE_PRESETS.Medium;
+  const baseSize = {
+    w: randomInt(rng, preset.minW, preset.maxW),
+    h: randomInt(rng, preset.minH, preset.maxH),
+  };
+
+  return applyRoomDesignSizeConstraints(
+    getShapeAdjustedRoomSize(baseSize, region, roomDesign),
+    roomDesign,
+  );
 }
 
 export function isMineCaveLikeRegion(region, contextKey = "mine") {
@@ -236,6 +290,8 @@ export function chooseRoomShape(region, contextKey = "") {
   const role = getPlacementRole(region);
   const text = getRegionText(region);
   const archetype = resolveRoomArchetype(region, contextKey);
+  const roomDesignShape = getRoomDesignShape(resolveRoomDesign(region, contextKey, { archetype }));
+  if (roomDesignShape) return roomDesignShape;
   if (archetype?.shape) return archetype.shape;
 
   if (contextKey === "chapel") {
@@ -596,8 +652,9 @@ export function createPlacedRegion(
 ) {
   const surfaceKind = getRegionSurfaceProfile(region, profileKey);
   const archetype = resolveRoomArchetype(region, profileKey);
+  const roomDesign = resolveRoomDesign(region, profileKey, { archetype });
   const roomArchetypeResolution = getRoomArchetypeResolutionSummary(region, profileKey, archetype);
-  const archetypeShapeOptions = getRoomArchetypeShapeOptions(region, profileKey);
+  const roomShapeOptions = getRoomShapeOptions(region, profileKey, archetype, roomDesign);
   const caveChamberProfile =
     profileKey === "mine" &&
     (surfaceKind === "cave" || surfaceKind === "hybrid")
@@ -617,11 +674,12 @@ export function createPlacedRegion(
           roomArchetypeSource: archetype.source,
           roomArchetypeResolution,
           roomType: archetype.roomType || region.roomType || "none",
-          shapeOptions: archetypeShapeOptions,
+          shapeOptions: roomShapeOptions,
         }
-      : archetypeShapeOptions
-        ? { roomArchetypeResolution, shapeOptions: archetypeShapeOptions }
+      : roomShapeOptions
+        ? { roomArchetypeResolution, shapeOptions: roomShapeOptions }
         : { roomArchetypeResolution }),
+    ...(roomDesign ? { roomDesign } : {}),
     ...(caveChamberProfile ? { caveChamberProfile } : {}),
     floorCells: [],
     wallSegments: [],
@@ -1895,8 +1953,106 @@ export function applyManualRoomPositions(regions, config) {
   });
 }
 
-export function resizeRoomAroundCenter(region, sizePreset, config) {
-  const size = ROOM_SIZE_MENU_PRESETS[sizePreset];
+function getManualRoomStyleShape(region, style = {}) {
+  return String(
+    style.shape ||
+      getRoomDesignShape(!style.shape ? region.roomDesign : null) ||
+      region.shape ||
+      region.preferredShape ||
+      "",
+  ).toLowerCase();
+}
+
+function isRoundRoomStyle(region, style = {}) {
+  const shape = getManualRoomStyleShape(region, style);
+  return (
+    shape === "circle" ||
+    shape === "shaft" ||
+    shape === "oval" ||
+    shape.includes("circle") ||
+    shape.includes("circular") ||
+    shape.includes("round") ||
+    shape.includes("shaft") ||
+    shape.includes("well")
+  );
+}
+
+function normalizeManualDimension(value, fallback, min, max) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return clamp(Math.round(fallback), min, max);
+  return clamp(Math.round(numeric), min, max);
+}
+
+function resolveManualRoomSize(region, style = {}, config = DEFAULT_CONFIG) {
+  const gridW = Math.max(4, Math.floor(config.mapWidth / config.gridSize));
+  const gridH = Math.max(4, Math.floor(config.mapHeight / config.gridSize));
+  const maxW = Math.max(2, gridW - 2);
+  const maxH = Math.max(2, gridH - 2);
+  const customSize =
+    style.customSize && typeof style.customSize === "object"
+      ? style.customSize
+      : null;
+
+  if (style.sizePreset === "Custom") {
+    if (isRoundRoomStyle(region, style)) {
+      const fallbackRadius = Math.max(1.5, Math.min(region.cellRect.w, region.cellRect.h) / 2);
+      const radius = Number(customSize?.radiusCells ?? customSize?.radius);
+      const diameter = normalizeManualDimension(
+        Number.isFinite(radius) ? radius * 2 : null,
+        fallbackRadius * 2,
+        3,
+        Math.min(maxW, maxH),
+      );
+      return { w: diameter, h: diameter, label: "Custom" };
+    }
+    return {
+      w: normalizeManualDimension(
+        customSize?.widthCells ?? customSize?.w ?? customSize?.width,
+        region.cellRect.w,
+        2,
+        maxW,
+      ),
+      h: normalizeManualDimension(
+        customSize?.heightCells ?? customSize?.h ?? customSize?.height,
+        region.cellRect.h,
+        2,
+        maxH,
+      ),
+      label: "Custom",
+    };
+  }
+
+  const preset = ROOM_SIZE_MENU_PRESETS[style.sizePreset];
+  if (!preset) return null;
+  if (isRoundRoomStyle(region, style)) {
+    const diameter = normalizeManualDimension(
+      preset.circleD || Math.max(preset.w, preset.h),
+      Math.max(preset.w, preset.h),
+      3,
+      Math.min(maxW, maxH),
+    );
+    return { w: diameter, h: diameter, label: style.sizePreset };
+  }
+  const shapeAdjustedPreset = getShapeAdjustedRoomSize(
+    { w: preset.w, h: preset.h },
+    {
+      ...region,
+      ...(style.shape
+        ? { shape: style.shape, preferredShape: style.shape }
+        : {}),
+    },
+    style.shape ? null : region.roomDesign,
+  );
+  return {
+    w: normalizeManualDimension(shapeAdjustedPreset.w, preset.w, 2, maxW),
+    h: normalizeManualDimension(shapeAdjustedPreset.h, preset.h, 2, maxH),
+    label: style.sizePreset,
+  };
+}
+
+export function resizeRoomAroundCenter(region, sizePreset, config, style = null) {
+  const effectiveStyle = { ...(style || {}), sizePreset };
+  const size = resolveManualRoomSize(region, effectiveStyle, config);
   if (!size) return region;
   const gridW = Math.floor(config.mapWidth / config.gridSize);
   const gridH = Math.floor(config.mapHeight / config.gridSize);
@@ -1919,7 +2075,7 @@ export function resizeRoomAroundCenter(region, sizePreset, config) {
   };
   return {
     ...region,
-    size: sizePreset,
+    size: size.label || sizePreset,
     cellRect,
     labelPoint: {
       x: (cellRect.x + cellRect.w / 2) * config.gridSize,
@@ -1928,18 +2084,60 @@ export function resizeRoomAroundCenter(region, sizePreset, config) {
   };
 }
 
+function withRoomCellRect(region, cellRect, config) {
+  return {
+    ...region,
+    cellRect,
+    labelPoint: {
+      x: (cellRect.x + cellRect.w / 2) * config.gridSize,
+      y: (cellRect.y + cellRect.h / 2) * config.gridSize,
+    },
+  };
+}
+
+function resolveNonOverlappingManualResize(region, resized, regions, config) {
+  const gridW = Math.floor(config.mapWidth / config.gridSize);
+  const gridH = Math.floor(config.mapHeight / config.gridSize);
+  const overlaps = (cellRect) =>
+    regions.some(
+      (otherRegion) =>
+        otherRegion.id !== region.id &&
+        rectsOverlapWithMargin(cellRect, otherRegion.cellRect, 0),
+    );
+  if (!overlaps(resized.cellRect)) return resized;
+
+  const base = resized.cellRect;
+  const maxShift = 5;
+  const shifts = [];
+  for (let radius = 1; radius <= maxShift; radius += 1) {
+    for (let dy = -radius; dy <= radius; dy += 1) {
+      for (let dx = -radius; dx <= radius; dx += 1) {
+        if (Math.max(Math.abs(dx), Math.abs(dy)) !== radius) continue;
+        shifts.push({ dx, dy });
+      }
+    }
+  }
+
+  for (const shift of shifts) {
+    const cellRect = {
+      ...base,
+      x: clamp(base.x + shift.dx, 1, Math.max(1, gridW - base.w - 1)),
+      y: clamp(base.y + shift.dy, 1, Math.max(1, gridH - base.h - 1)),
+    };
+    if (!overlaps(cellRect)) return withRoomCellRect(resized, cellRect, config);
+  }
+
+  return region;
+}
+
 export function applyRoomSizeOverrides(regions, config) {
   const styles = config.manualRoomStyles || {};
   return regions.map((region) => {
-    const sizePreset = styles[region.id]?.sizePreset;
+    const style = styles[region.id];
+    const sizePreset = style?.sizePreset;
     if (!sizePreset) return region;
-    const resized = resizeRoomAroundCenter(region, sizePreset, config);
-    const overlaps = regions.some(
-      (otherRegion) =>
-        otherRegion.id !== region.id &&
-        rectsOverlapWithMargin(resized.cellRect, otherRegion.cellRect, 0),
-    );
-    return overlaps ? region : resized;
+    const resized = resizeRoomAroundCenter(region, sizePreset, config, style);
+    return resolveNonOverlappingManualResize(region, resized, regions, config);
   });
 }
 
@@ -1959,16 +2157,50 @@ export function applyRoomStyleOverrides(regions, config) {
       shape = "rect";
       surfaceKind = "structure";
     }
+    const generatedShape = region.shape || "rect";
+    const generatedRoomType = region.roomType || "none";
+    const shapeWasExplicitlyChanged =
+      Boolean(style.shape) && style.shape !== generatedShape;
+    const roomTypeWasExplicitlyChanged =
+      Boolean(style.roomType) && style.roomType !== generatedRoomType;
+    const preservedShapeOptions = shapeWasExplicitlyChanged || roomTypeWasExplicitlyChanged
+      ? Object.fromEntries(
+          Object.entries(region.shapeOptions || {}).filter(
+            ([key]) =>
+              ![
+                "archetypeId",
+                "archetypeLabel",
+                "detailProfile",
+                "maskProfile",
+                "roomDesign",
+                "roomDesignPresetId",
+                "roomDesignSchemaVersion",
+              ].includes(key),
+          ),
+        )
+      : { ...(region.shapeOptions || {}) };
     return {
       ...region,
       shape,
       surfaceKind,
       roomType: style.roomType || region.roomType || "none",
       shapeOptions: {
+        ...preservedShapeOptions,
         sizePreset: style.sizePreset || null,
-        roomType: style.roomType || "none",
-        notch: Boolean(style.notch),
-        ruined: Boolean(style.ruined),
+        customSize: style.customSize || null,
+        roomType:
+          style.roomType ||
+          preservedShapeOptions.roomType ||
+          region.roomType ||
+          "none",
+        notch:
+          "notch" in style
+            ? Boolean(style.notch)
+            : Boolean(preservedShapeOptions.notch),
+        ruined:
+          "ruined" in style
+            ? Boolean(style.ruined)
+            : Boolean(preservedShapeOptions.ruined),
       },
     };
   });

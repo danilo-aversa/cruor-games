@@ -2584,3 +2584,77 @@
     max-width: min(318px, calc(100vw - 32px));
   }
 }
+
+/* Room style menu: keep flyout submenus selectable.
+   The base context menu is portaled to body and uses overflow for compact menus,
+   but absolute room-style flyouts are clipped by that overflow. */
+.room-style-context-menu {
+  max-height: none;
+  overflow: visible;
+  width: 260px;
+}
+
+.room-style-context-menu .room-context-menu__body {
+  overflow: visible;
+}
+
+.room-style-context-menu .room-context-menu__item {
+  position: relative;
+}
+
+.room-style-context-menu .room-context-menu__item:hover > .room-context-submenu,
+.room-style-context-menu .room-context-menu__item:focus-within > .room-context-submenu {
+  display: grid;
+}
+
+.room-style-context-menu .room-context-submenu {
+  max-height: min(460px, calc(100dvh - 24px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
+  scrollbar-width: thin;
+}
+
+.room-context-custom-size {
+  display: grid;
+  gap: 7px;
+  margin-top: 7px;
+  padding-top: 7px;
+  border-top: 1px solid var(--cruor-color-milk-a080);
+}
+
+.room-context-custom-size__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.room-context-custom-size label {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cruor-color-muted, var(--muted));
+}
+
+.room-context-custom-size input {
+  width: 100%;
+  min-width: 0;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--cruor-color-milk-a120);
+  border-radius: 0;
+  background: var(--cruor-color-black-a320);
+  color: var(--cruor-color-text, var(--text));
+  font: inherit;
+  font-size: 0.78rem;
+  outline: none;
+}
+
+.room-context-custom-size input:focus {
+  border-color: var(--cruor-color-blood-bright-a620);
+  box-shadow: 0 0 0 1px var(--cruor-color-blood-bright-a320);
+}

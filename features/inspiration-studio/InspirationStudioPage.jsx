@@ -99,7 +99,139 @@ import {
 import {
   ROOM_ARCHETYPE_OPTIONS,
 } from "../darken-location/map-generator/map-generator.profile.js";
+import {
+  ROOM_DESIGN_SHAPE_KIND_OPTIONS,
+  compileRoomArchetypeToRoomDesign,
+  normalizeRoomDesign,
+} from "../darken-location/map-generator/map-generator.room-design.js";
 
+
+const ROOM_DESIGN_SHAPE_LABELS = Object.freeze({
+  rect: "Rectangular Room",
+  square: "Square Room",
+  hall: "Hall / Corridor",
+  gallery: "Gallery",
+  circle: "Circular Room",
+  oval: "Oval Room",
+  shaft: "Shaft / Well Room",
+  "l-shape": "L-Shaped Room",
+  "t-shape": "T-Shaped Room",
+  cross: "Cross / Cruciform Room",
+  alcove: "Alcove",
+  niche: "Niche",
+  archive: "Archive / Library",
+  apse: "Apse",
+  ritual: "Ritual Chamber",
+  irregular: "Irregular Room",
+  broken: "Broken / Ruined Room",
+  cave: "Cave / Organic Room",
+});
+
+const ROOM_DESIGN_SHAPE_SELECT_OPTIONS = [
+  ["", "Automatic Shape"],
+  ...ROOM_DESIGN_SHAPE_KIND_OPTIONS.map((kind) => [kind, ROOM_DESIGN_SHAPE_LABELS[kind] || kind]),
+];
+
+const ROOM_DESIGN_PRESET_SELECT_OPTIONS = [
+  ["", "No preset"],
+  ...ROOM_ARCHETYPE_OPTIONS.map((option) => [option.id, option.label || option.id]),
+];
+
+const ROOM_DESIGN_SIZE_SCALE_OPTIONS = [
+  ["", "Automatic"],
+  ["Tiny", "Tiny"],
+  ["Small", "Small"],
+  ["Medium", "Medium"],
+  ["Large", "Large"],
+  ["Huge", "Huge"],
+];
+
+const ROOM_DESIGN_ASPECT_OPTIONS = [
+  ["", "Automatic"],
+  ["compact", "Compact"],
+  ["square", "Square"],
+  ["wide", "Wide"],
+  ["tall", "Tall"],
+  ["long", "Long"],
+];
+
+const ROOM_DESIGN_MODIFIER_OPTIONS = Object.freeze([
+  "notch",
+  "ruined",
+  "side-alcoves",
+  "central-void",
+  "secret-recess",
+  "symmetrical",
+  "asymmetrical",
+  "chamfered-corners",
+  "pillared",
+  "partitioned",
+  "collapsed-edge",
+]);
+
+const ROOM_DESIGN_PROP_KIND_OPTIONS = [
+  ["", "No required prop"],
+  ["pit", "Well / Pit"],
+  ["well", "Well / Pit (semantic)"],
+  ["altar", "Altar"],
+  ["reliquary", "Reliquary / Shrine (semantic)"],
+  ["tomb", "Sarcophagus / Tomb"],
+  ["sarcophagus", "Sarcophagus / Tomb (semantic)"],
+  ["pillar", "Pillar"],
+  ["statue", "Statue"],
+  ["shelf", "Shelf"],
+  ["chest", "Chest"],
+  ["bones", "Bones"],
+  ["rubble", "Rubble"],
+  ["crack", "Crack"],
+  ["fog", "Fog"],
+  ["desk", "Desk"],
+  ["table", "Table"],
+  ["fireplace", "Fireplace"],
+  ["bed", "Bed"],
+  ["pew", "Pew"],
+];
+
+const ROOM_DESIGN_PROP_KIND_LABEL_BY_ID = Object.freeze(
+  ROOM_DESIGN_PROP_KIND_OPTIONS.reduce((labels, [id, label]) => {
+    if (id) labels[id] = label;
+    return labels;
+  }, {}),
+);
+
+const ROOM_DESIGN_PLACEMENT_OPTIONS = [
+  ["center", "Center"],
+  ["near-center", "Near Center"],
+  ["far-wall", "Far Wall"],
+  ["near-wall", "Near Wall"],
+  ["north-wall", "North Wall"],
+  ["south-wall", "South Wall"],
+  ["east-wall", "East Wall"],
+  ["west-wall", "West Wall"],
+  ["corner", "Corner"],
+  ["random", "Random"],
+];
+
+const ROOM_DESIGN_BRANCH_BIAS_OPTIONS = [
+  ["", "Automatic"],
+  ["main", "Prefer Main Path"],
+  ["side", "Prefer Side Branch"],
+  ["secret", "Prefer Secret Branch"],
+  ["terminal", "Prefer Terminal Branch"],
+];
+
+const ROOM_DESIGN_DEPTH_BIAS_OPTIONS = [
+  ["", "Automatic"],
+  ["early", "Early"],
+  ["mid", "Middle"],
+  ["deep", "Deep"],
+];
+
+const ROOM_DESIGN_SECRET_OPTIONS = [
+  ["", "Automatic"],
+  ["true", "Secret"],
+  ["false", "Not Secret"],
+];
 
 const STUDIO_SECTIONS = [
   {
@@ -719,6 +851,9 @@ const FIELD_HELP = {
   mapInfluenceWeight: "Relative influence strength used when several components affect the same room.",
   mapInfluenceSource: "Optional source label for debugging why this component influenced the generated map.",
   mapInfluenceNote: "Optional editorial note explaining the intended map behavior.",
+  roomDesignShape: "Structured roomDesign shape primitive. Prefer this over text-only shape notes when the map needs a specific geometry.",
+  roomDesignSize: "Optional hard constraints for the generated room footprint, in grid cells.",
+  roomDesignProps: "Required map props that should always be placed in this room, independent of the archetype preset.",
   componentSearch: "Filter the current component family by title, id, slot, tag, summary, or mechanics.",
 };
 
@@ -827,6 +962,60 @@ function getMapInfluenceEditorModel(mapInfluence = {}, { regionRoomArchetype = "
     summary,
     targetId,
     targetLabel,
+  };
+}
+
+
+function getRoomDesignShapeLabel(kind = "") {
+  const id = String(kind || "").trim();
+  return ROOM_DESIGN_SHAPE_LABELS[id] || id || "Automatic";
+}
+
+function getRoomDesignPropLabel(kind = "") {
+  const id = String(kind || "").trim();
+  return ROOM_DESIGN_PROP_KIND_LABEL_BY_ID[id] || id || "No prop";
+}
+
+function formatRoomDesignNumber(value) {
+  return Number.isFinite(Number(value)) ? String(value) : "";
+}
+
+function getRoomDesignEditorModel(roomDesign = {}) {
+  const normalized = normalizeRoomDesign(roomDesign) || {};
+  const shape = normalized.shape || {};
+  const size = normalized.size || {};
+  const props = normalized.props || {};
+  const requiredProps = asArray(props.required);
+  const modifiers = uniqueStrings([
+    ...asArray(normalized.modifiers),
+    ...asArray(shape.modifiers),
+  ]);
+  const topology = normalized.topology || {};
+  const summaryParts = [];
+  if (shape.kind) summaryParts.push(getRoomDesignShapeLabel(shape.kind));
+  if (size.scale) summaryParts.push(`${size.scale} scale`);
+  if (size.aspectRatio) summaryParts.push(`${size.aspectRatio} proportion`);
+  if (Number.isFinite(Number(size.minDiameterCells))) summaryParts.push(`min diameter ${size.minDiameterCells}`);
+  else if (Number.isFinite(Number(size.minWidthCells)) || Number.isFinite(Number(size.minHeightCells))) {
+    summaryParts.push(`min ${size.minWidthCells || "?"}×${size.minHeightCells || "?"}`);
+  }
+  if (Number.isFinite(Number(size.minAreaCells))) summaryParts.push(`min area ${size.minAreaCells}`);
+  if (modifiers.length) summaryParts.push(`modifiers: ${modifiers.join(", ")}`);
+  if (requiredProps.length) {
+    summaryParts.push(`requires: ${requiredProps.map((prop) => `${getRoomDesignPropLabel(prop.kind)}${prop.placement ? ` @ ${prop.placement}` : ""}`).join(", ")}`);
+  }
+  if (topology.branchBias || topology.depthBias || topology.secret !== undefined) {
+    summaryParts.push(`topology: ${[topology.branchBias, topology.depthBias, topology.secret === true ? "secret" : topology.secret === false ? "not secret" : ""].filter(Boolean).join(" / ")}`);
+  }
+  return {
+    normalized,
+    shape,
+    size,
+    requiredProps,
+    modifiers,
+    topology,
+    hasDesign: Boolean(summaryParts.length),
+    summary: summaryParts.length ? summaryParts.join(" · ") : "No roomDesign set. Shape, size, props, and topology will be inferred.",
   };
 }
 
@@ -2911,6 +3100,112 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
     setField(["map", "preferredShape"], value);
   }
 
+  function getRoomDesignHolder(nextComponent) {
+    if (isLocationRegion) return nextComponent.locationRegion = nextComponent.locationRegion || {};
+    if (isLocationComponent) return nextComponent.location = nextComponent.location || {};
+    return nextComponent;
+  }
+
+  function setLocationRegionRoomDesignField(path, value) {
+    onChange((nextComponent) => {
+      const holder = getRoomDesignHolder(nextComponent);
+      holder.roomDesign = holder.roomDesign || {};
+      let target = holder.roomDesign;
+      for (const key of path.slice(0, -1)) {
+        target[key] = target[key] || {};
+        target = target[key];
+      }
+      const finalKey = path[path.length - 1];
+      if (value === "" || value === null || value === undefined) delete target[finalKey];
+      else target[finalKey] = value;
+    });
+  }
+
+  function setLocationRegionRoomDesignNumber(path, value) {
+    const parsed = value === "" ? "" : Number(value);
+    setLocationRegionRoomDesignField(path, Number.isFinite(parsed) ? parsed : "");
+  }
+
+  function setLocationRegionRoomDesignArray(path, value) {
+    onChange((nextComponent) => {
+      const holder = getRoomDesignHolder(nextComponent);
+      holder.roomDesign = holder.roomDesign || {};
+      let target = holder.roomDesign;
+      for (const key of path.slice(0, -1)) {
+        target[key] = target[key] || {};
+        target = target[key];
+      }
+      const finalKey = path[path.length - 1];
+      const values = uniqueStrings(value);
+      if (values.length) target[finalKey] = values;
+      else delete target[finalKey];
+    });
+  }
+
+  function setLocationRegionRequiredPropField(index, path, value) {
+    onChange((nextComponent) => {
+      const holder = getRoomDesignHolder(nextComponent);
+      holder.roomDesign = holder.roomDesign || {};
+      holder.roomDesign.props = holder.roomDesign.props || {};
+      const required = Array.isArray(holder.roomDesign.props.required)
+        ? [...holder.roomDesign.props.required]
+        : [];
+      required[index] = { ...(required[index] || {}) };
+      const finalKey = path[path.length - 1];
+      if (value === "" || value === null || value === undefined) delete required[index][finalKey];
+      else required[index][finalKey] = value;
+      holder.roomDesign.props.required = required.filter((prop) => Object.keys(prop || {}).length);
+      if (!holder.roomDesign.props.required.length) delete holder.roomDesign.props.required;
+      if (!Object.keys(holder.roomDesign.props).length) delete holder.roomDesign.props;
+    });
+  }
+
+  function addLocationRegionRequiredProp() {
+    onChange((nextComponent) => {
+      const holder = getRoomDesignHolder(nextComponent);
+      holder.roomDesign = holder.roomDesign || {};
+      holder.roomDesign.props = holder.roomDesign.props || {};
+      const required = Array.isArray(holder.roomDesign.props.required)
+        ? [...holder.roomDesign.props.required]
+        : [];
+      required.push({ kind: "altar", placement: "center" });
+      holder.roomDesign.props.required = required;
+    });
+  }
+
+  function removeLocationRegionRequiredProp(index) {
+    onChange((nextComponent) => {
+      const holder = getRoomDesignHolder(nextComponent);
+      if (!holder.roomDesign?.props?.required) return;
+      const required = holder.roomDesign.props.required.filter((_, propIndex) => propIndex !== index);
+      if (required.length) holder.roomDesign.props.required = required;
+      else delete holder.roomDesign.props.required;
+      if (!Object.keys(holder.roomDesign.props).length) delete holder.roomDesign.props;
+    });
+  }
+
+  function applyRoomDesignPreset(presetId) {
+    if (!presetId) {
+      setLocationRegionRoomDesignField(["presetId"], "");
+      return;
+    }
+    const presetDesign = compileRoomArchetypeToRoomDesign(presetId);
+    if (!presetDesign) return;
+    onChange((nextComponent) => {
+      const holder = getRoomDesignHolder(nextComponent);
+      holder.roomDesign = clone(presetDesign);
+    });
+  }
+
+  function clearLocationRegionRoomDesign() {
+    onChange((nextComponent) => {
+      if (nextComponent.locationRegion?.roomDesign) delete nextComponent.locationRegion.roomDesign;
+      if (nextComponent.location?.roomDesign) delete nextComponent.location.roomDesign;
+      if (nextComponent.map?.roomDesign) delete nextComponent.map.roomDesign;
+      if (nextComponent.roomDesign) delete nextComponent.roomDesign;
+    });
+  }
+
   function setMonsterConstraintArray(field, value) {
     onChange((nextComponent) => {
       const monster = nextComponent.monster = nextComponent.monster || {};
@@ -3472,6 +3767,19 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
     ? (component.locationRegion?.mapInfluence || {})
     : (component.location?.mapInfluence || component.mapInfluence || {});
   const regionRoomArchetype = component.locationRegion?.roomArchetype || component.locationRegion?.roomArchetypeId || "";
+  const regionRoomDesign = isLocationRegion
+    ? (component.locationRegion?.roomDesign || component.map?.roomDesign || component.roomDesign || {})
+    : isLocationComponent
+      ? (component.location?.roomDesign || component.map?.roomDesign || component.roomDesign || {})
+      : {};
+  const roomDesignEditorModel = getRoomDesignEditorModel(regionRoomDesign);
+  const regionRoomDesignShape = roomDesignEditorModel.shape;
+  const regionRoomDesignSize = roomDesignEditorModel.size;
+  const regionRoomDesignRequiredProps = asArray(regionRoomDesign.props?.required).length
+    ? asArray(regionRoomDesign.props.required)
+    : [{}];
+  const regionRoomDesignTopology = roomDesignEditorModel.topology;
+  const hasRoomDesignData = roomDesignEditorModel.hasDesign;
   const mapInfluenceRoomArchetype = editableMapInfluence.roomArchetype
     || editableMapInfluence.roomArchetypeId
     || editableMapInfluence.forcedRoomArchetype
@@ -4683,6 +4991,107 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                 </FormRow>
                 <FormRow label="Room Archetype" icon="fa-dungeon" hint={FIELD_HELP.regionRoomArchetype}>
                   <SelectInput options={ROOM_ARCHETYPE_SELECT_OPTIONS} value={regionRoomArchetype} onChange={setLocationRegionRoomArchetype} />
+                </FormRow>
+              </div>
+            </RulesGroup>
+          ) : null}
+
+          {(isLocationRegion || isLocationComponent) ? (
+            <RulesGroup
+              defaultOpen={hasRoomDesignData}
+              icon="fa-shapes"
+              title="Room Design"
+              help="Structured room shape, size constraints, required props, and topology hints. Presets only fill fields; they do not lock editing."
+              actions={hasRoomDesignData ? <RemoveRulesBlockButton label="Room Design" onClick={clearLocationRegionRoomDesign} /> : null}
+            >
+              <div className="studio-inferred-rules-note" data-room-design-active={hasRoomDesignData ? "true" : "false"}>
+                <Icon name={hasRoomDesignData ? "fa-shapes" : "fa-circle-info"} />
+                <span>
+                  <strong>{hasRoomDesignData ? "Room Design" : "No Room Design"}</strong>
+                  {` ${roomDesignEditorModel.summary}`}
+                </span>
+              </div>
+
+              <div className="studio-form-grid studio-form-grid--compact">
+                <FormRow label="Apply Preset" icon="fa-wand-magic-sparkles" hint="Optional shortcut. Applying a preset fills modular roomDesign fields; every field remains editable afterward.">
+                  <SelectInput options={ROOM_DESIGN_PRESET_SELECT_OPTIONS} value={regionRoomDesign.presetId || ""} onChange={applyRoomDesignPreset} />
+                </FormRow>
+                <FormRow label="Shape Kind" icon="fa-draw-polygon" hint={FIELD_HELP.roomDesignShape}>
+                  <SelectInput options={ROOM_DESIGN_SHAPE_SELECT_OPTIONS} value={regionRoomDesignShape.kind || ""} onChange={(value) => setLocationRegionRoomDesignField(["shape", "kind"], value)} />
+                </FormRow>
+                <FormRow label="Size Scale" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.roomDesignSize}>
+                  <SelectInput options={ROOM_DESIGN_SIZE_SCALE_OPTIONS} value={regionRoomDesignSize.scale || ""} onChange={(value) => setLocationRegionRoomDesignField(["size", "scale"], value)} />
+                </FormRow>
+                <FormRow label="Proportion" icon="fa-expand" hint={FIELD_HELP.roomDesignSize}>
+                  <SelectInput options={ROOM_DESIGN_ASPECT_OPTIONS} value={regionRoomDesignSize.aspectRatio || ""} onChange={(value) => setLocationRegionRoomDesignField(["size", "aspectRatio"], value)} />
+                </FormRow>
+                <FormRow label="Min Diameter" icon="fa-circle" hint={FIELD_HELP.roomDesignSize}>
+                  <input type="number" min="1" max="40" value={formatRoomDesignNumber(regionRoomDesignSize.minDiameterCells)} onChange={(event) => setLocationRegionRoomDesignNumber(["size", "minDiameterCells"], event.target.value)} />
+                </FormRow>
+                <FormRow label="Min Width" icon="fa-arrows-left-right" hint={FIELD_HELP.roomDesignSize}>
+                  <input type="number" min="1" max="40" value={formatRoomDesignNumber(regionRoomDesignSize.minWidthCells)} onChange={(event) => setLocationRegionRoomDesignNumber(["size", "minWidthCells"], event.target.value)} />
+                </FormRow>
+                <FormRow label="Min Height" icon="fa-arrows-up-down" hint={FIELD_HELP.roomDesignSize}>
+                  <input type="number" min="1" max="40" value={formatRoomDesignNumber(regionRoomDesignSize.minHeightCells)} onChange={(event) => setLocationRegionRoomDesignNumber(["size", "minHeightCells"], event.target.value)} />
+                </FormRow>
+                <FormRow label="Max Width" icon="fa-compress" hint={FIELD_HELP.roomDesignSize}>
+                  <input type="number" min="1" max="40" value={formatRoomDesignNumber(regionRoomDesignSize.maxWidthCells)} onChange={(event) => setLocationRegionRoomDesignNumber(["size", "maxWidthCells"], event.target.value)} />
+                </FormRow>
+                <FormRow label="Max Height" icon="fa-compress" hint={FIELD_HELP.roomDesignSize}>
+                  <input type="number" min="1" max="40" value={formatRoomDesignNumber(regionRoomDesignSize.maxHeightCells)} onChange={(event) => setLocationRegionRoomDesignNumber(["size", "maxHeightCells"], event.target.value)} />
+                </FormRow>
+                <FormRow label="Min Area" icon="fa-border-all" hint={FIELD_HELP.roomDesignSize}>
+                  <input type="number" min="1" max="400" value={formatRoomDesignNumber(regionRoomDesignSize.minAreaCells)} onChange={(event) => setLocationRegionRoomDesignNumber(["size", "minAreaCells"], event.target.value)} />
+                </FormRow>
+                <FormRow label="Max Area" icon="fa-border-none" hint={FIELD_HELP.roomDesignSize}>
+                  <input type="number" min="1" max="400" value={formatRoomDesignNumber(regionRoomDesignSize.maxAreaCells)} onChange={(event) => setLocationRegionRoomDesignNumber(["size", "maxAreaCells"], event.target.value)} />
+                </FormRow>
+              </div>
+
+              <FormRow label="Shape Modifiers" icon="fa-sliders" hint="Optional geometry modifiers that the engine can progressively support without creating one-off archetypes.">
+                <KeywordPillInput allowCustom={false} fieldId={`${component.id}-room-design-modifiers`} icon="fa-sliders" value={roomDesignEditorModel.modifiers} onChange={(value) => setLocationRegionRoomDesignArray(["shape", "modifiers"], value)} placeholder="notch, ruined, side-alcoves" suggestions={ROOM_DESIGN_MODIFIER_OPTIONS} />
+              </FormRow>
+
+              <DividerLabel zone="output" icon="fa-location-dot" title="Required Props" help="Props listed here should always be placed when possible. Use them to build presets like a circular room with a center well without hardcoding a one-off archetype." />
+              <div className="studio-rules-list" data-room-design-props={regionRoomDesignRequiredProps.length}>
+                {regionRoomDesignRequiredProps.map((prop, propIndex) => (
+                  <div className="studio-form-grid studio-form-grid--compact" key={`room-design-prop-${propIndex}`}>
+                    <FormRow label={`Prop ${propIndex + 1}`} icon="fa-location-dot" hint={FIELD_HELP.roomDesignProps}>
+                      <SelectInput options={ROOM_DESIGN_PROP_KIND_OPTIONS} value={prop.kind || ""} onChange={(value) => setLocationRegionRequiredPropField(propIndex, ["kind"], value)} />
+                    </FormRow>
+                    <FormRow label="Placement" icon="fa-crosshairs" hint={FIELD_HELP.roomDesignProps}>
+                      <SelectInput options={ROOM_DESIGN_PLACEMENT_OPTIONS} value={prop.placement || "center"} onChange={(value) => setLocationRegionRequiredPropField(propIndex, ["placement"], value)} />
+                    </FormRow>
+                    <FormRow label="Radius" icon="fa-circle-dot" hint="Optional minimum radius in cells for circular props such as wells, pits, or voids.">
+                      <input type="number" min="0" max="12" step="0.25" value={formatRoomDesignNumber(prop.minRadiusCells)} onChange={(event) => setLocationRegionRequiredPropField(propIndex, ["minRadiusCells"], event.target.value === "" ? "" : Number(event.target.value))} />
+                    </FormRow>
+                    <FormRow label="Scale" icon="fa-up-right-and-down-left-from-center" hint="Optional visual scale multiplier for this required prop.">
+                      <input type="number" min="0.25" max="3" step="0.05" value={formatRoomDesignNumber(prop.sizeScale)} onChange={(event) => setLocationRegionRequiredPropField(propIndex, ["sizeScale"], event.target.value === "" ? "" : Number(event.target.value))} />
+                    </FormRow>
+                    {regionRoomDesignRequiredProps.length > 1 || prop.kind ? (
+                      <FormRow label="Remove Prop" icon="fa-trash" hint="Remove this required prop from the roomDesign payload.">
+                        <button type="button" className="studio-inline-action studio-inline-action--compact" onClick={() => removeLocationRegionRequiredProp(propIndex)}>
+                          <Icon name="fa-trash" /> Remove Prop
+                        </button>
+                      </FormRow>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+              <button type="button" className="studio-inline-action studio-inline-action--compact" onClick={addLocationRegionRequiredProp}>
+                <Icon name="fa-plus" /> Add Required Prop
+              </button>
+
+              <DividerLabel zone="output" icon="fa-diagram-project" title="Topology Hints" help="Optional placement hints. These should guide the graph without replacing mapInfluence or manual map editing." />
+              <div className="studio-form-grid studio-form-grid--compact">
+                <FormRow label="Branch Bias" icon="fa-code-branch" hint="Optional graph preference for where this room should sit in the generated map.">
+                  <SelectInput options={ROOM_DESIGN_BRANCH_BIAS_OPTIONS} value={regionRoomDesignTopology.branchBias || ""} onChange={(value) => setLocationRegionRoomDesignField(["topology", "branchBias"], value)} />
+                </FormRow>
+                <FormRow label="Depth Bias" icon="fa-route" hint="Optional preference for early, middle, or deep placement.">
+                  <SelectInput options={ROOM_DESIGN_DEPTH_BIAS_OPTIONS} value={regionRoomDesignTopology.depthBias || ""} onChange={(value) => setLocationRegionRoomDesignField(["topology", "depthBias"], value)} />
+                </FormRow>
+                <FormRow label="Secret" icon="fa-user-secret" hint="Optional secret-room hint. Leave automatic unless the room must be treated as hidden.">
+                  <SelectInput options={ROOM_DESIGN_SECRET_OPTIONS} value={regionRoomDesignTopology.secret === true ? "true" : regionRoomDesignTopology.secret === false ? "false" : ""} onChange={(value) => setLocationRegionRoomDesignField(["topology", "secret"], value === "" ? "" : value === "true")} />
                 </FormRow>
               </div>
             </RulesGroup>

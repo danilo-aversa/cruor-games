@@ -716,34 +716,99 @@ export function buildBaseRoomMask(room, rng) {
   return buildRectMask(room);
 }
 
-export function applyMaskModifier(baseCells, room, rng, modifier) {
+export function getRoomDesignMaskModifiers(room = {}) {
+  return Array.isArray(room.shapeOptions?.roomDesignModifiers)
+    ? room.shapeOptions.roomDesignModifiers
+    : [];
+}
+
+function intersectWithMask(baseCells, modifierCells) {
   const draft = new Set(baseCells);
-  const proxyRoom = { ...room };
-  if (modifier === "notch") {
-    const notched = buildNotchedMask(proxyRoom, rng);
-    baseCells.forEach((key) => {
-      if (!notched.has(key)) draft.delete(key);
-    });
-  }
-  if (modifier === "ruined") {
-    const ruined = buildRuinedMask(proxyRoom, rng);
-    baseCells.forEach((key) => {
-      if (!ruined.has(key)) draft.delete(key);
-    });
-  }
-  if (modifier === "alcove") {
-    const alcove = buildAlcoveMask(proxyRoom, rng);
-    baseCells.forEach((key) => {
-      if (!alcove.has(key)) draft.delete(key);
-    });
-  }
-  if (modifier === "archive") {
-    const archive = buildArchiveMask(proxyRoom, rng);
-    baseCells.forEach((key) => {
-      if (!archive.has(key)) draft.delete(key);
-    });
+  baseCells.forEach((key) => {
+    if (!modifierCells.has(key)) draft.delete(key);
+  });
+  return draft;
+}
+
+function removeEllipseCells(cells, room, cx, cy, rx, ry) {
+  const draft = new Set(cells);
+  const { x, y, w, h } = room.cellRect;
+  for (let yy = y; yy < y + h; yy += 1) {
+    for (let xx = x; xx < x + w; xx += 1) {
+      const dx = (xx + 0.5 - cx) / Math.max(0.5, rx);
+      const dy = (yy + 0.5 - cy) / Math.max(0.5, ry);
+      if (dx * dx + dy * dy <= 1) draft.delete(cellKey(xx, yy));
+    }
   }
   return draft;
+}
+
+function applySideAlcoveModifier(baseCells, room) {
+  const draft = new Set(baseCells);
+  const { x, y, w, h } = room.cellRect;
+  const horizontal = w >= h;
+  const count = horizontal ? Math.max(1, Math.floor(w / 3)) : Math.max(1, Math.floor(h / 3));
+  for (let index = 0; index < count; index += 1) {
+    const t = count === 1 ? 0.5 : 0.18 + index * (0.64 / Math.max(1, count - 1));
+    if (horizontal) {
+      const cx = clamp(Math.round(x + t * (w - 1)), x + 1, x + w - 2);
+      draft.delete(cellKey(cx, index % 2 === 0 ? y : y + h - 1));
+    } else {
+      const cy = clamp(Math.round(y + t * (h - 1)), y + 1, y + h - 2);
+      draft.delete(cellKey(index % 2 === 0 ? x : x + w - 1, cy));
+    }
+  }
+  return draft;
+}
+
+function applySecretRecessModifier(baseCells, room, rng) {
+  const draft = new Set(baseCells);
+  const { x, y, w, h } = room.cellRect;
+  if (w < 4 || h < 4) return draft;
+  const side = pickOne(rng, ["north", "south", "east", "west"]);
+  const recessLength = side === "north" || side === "south" ? Math.max(1, Math.floor(w / 4)) : Math.max(1, Math.floor(h / 4));
+  const offsetMax = side === "north" || side === "south" ? Math.max(1, w - recessLength - 1) : Math.max(1, h - recessLength - 1);
+  const offset = randomInt(rng, 1, offsetMax);
+  if (side === "north") removeRectCells(draft, x + offset, y, recessLength, 1);
+  if (side === "south") removeRectCells(draft, x + offset, y + h - 1, recessLength, 1);
+  if (side === "west") removeRectCells(draft, x, y + offset, 1, recessLength);
+  if (side === "east") removeRectCells(draft, x + w - 1, y + offset, 1, recessLength);
+  return draft;
+}
+
+function applyChamferedCornersModifier(baseCells, room) {
+  const draft = new Set(baseCells);
+  const { x, y, w, h } = room.cellRect;
+  if (w < 4 || h < 4) return draft;
+  carveCorner(draft, x, y, w, h, "nw", 1, 1);
+  carveCorner(draft, x, y, w, h, "ne", 1, 1);
+  carveCorner(draft, x, y, w, h, "sw", 1, 1);
+  carveCorner(draft, x, y, w, h, "se", 1, 1);
+  return draft;
+}
+
+export function applyMaskModifier(baseCells, room, rng, modifier) {
+  const proxyRoom = { ...room };
+  if (modifier === "notch" || modifier === "asymmetrical") {
+    return intersectWithMask(baseCells, buildNotchedMask(proxyRoom, rng));
+  }
+  if (modifier === "ruined" || modifier === "collapsed-edge") {
+    return intersectWithMask(baseCells, buildRuinedMask(proxyRoom, rng));
+  }
+  if (modifier === "alcove" || modifier === "side-alcoves") {
+    return applySideAlcoveModifier(baseCells, room);
+  }
+  if (modifier === "archive") {
+    return intersectWithMask(baseCells, buildArchiveMask(proxyRoom, rng));
+  }
+  if (modifier === "central-void") {
+    const { x, y, w, h } = room.cellRect;
+    const radius = Math.max(0.65, Math.min(1.35, Math.min(w, h) * 0.16));
+    return removeEllipseCells(baseCells, room, x + w / 2, y + h / 2, radius, radius);
+  }
+  if (modifier === "secret-recess") return applySecretRecessModifier(baseCells, room, rng);
+  if (modifier === "chamfered-corners") return applyChamferedCornersModifier(baseCells, room);
+  return new Set(baseCells);
 }
 
 export function buildRoomMask(room, rng) {
@@ -771,6 +836,10 @@ export function buildRoomMask(room, rng) {
     !["ruined-rect", "broken"].includes(room.shape)
   )
     cells = applyMaskModifier(cells, room, rng, "ruined");
+  getRoomDesignMaskModifiers(room).forEach((modifier) => {
+    if (["notch", "ruined"].includes(modifier)) return;
+    cells = applyMaskModifier(cells, room, rng, modifier);
+  });
   return ensureRoomMaskViable(cells, room);
 }
 
@@ -924,31 +993,47 @@ export function applyCircleDoorRoomExtensions(regions, corridors) {
     addExtension(corridor.to, corridor.toAnchor);
   });
 
-  if (extensionsByRegion.size === 0) return regions;
-
   return regions.map((region) => {
-    const extensions = extensionsByRegion.get(region.id);
-    if (!extensions || region.shape !== "circle") return region;
+    if (region.shape !== "circle") return region;
 
-    const previousExtensions = new Map(
+    const extensions = extensionsByRegion.get(region.id);
+    const circle = getCircleGeometryFromRegion(region, 1);
+    const currentExtensions = Array.from(extensions?.values?.() || []).filter((cell) => {
+      const dx = cell.x + 0.5 - circle.cxCells;
+      const dy = cell.y + 0.5 - circle.cyCells;
+      return Math.hypot(dx, dy) <= circle.rCells + 2.05;
+    });
+
+    const previousExtensionKeys = new Set(
       (Array.isArray(region.circleExtensionCells)
         ? region.circleExtensionCells
         : []
-      ).map((cell) => [cellKey(cell.x, cell.y), { x: cell.x, y: cell.y }]),
+      ).map((cell) => cellKey(cell.x, cell.y)),
     );
-    extensions.forEach((cell, key) => previousExtensions.set(key, cell));
-
+    const hasPreviousExtensions = previousExtensionKeys.size > 0;
+    const isNativeCircleCell = (cell) => {
+      const dx = cell.x + 0.5 - circle.cxCells;
+      const dy = cell.y + 0.5 - circle.cyCells;
+      return Math.hypot(dx, dy) <= circle.rCells + 0.04;
+    };
+    const originalFloorCells = Array.isArray(region.floorCells) ? region.floorCells : [];
+    const baseFloorCells = originalFloorCells.filter(
+      (cell) => isNativeCircleCell(cell) && !previousExtensionKeys.has(cellKey(cell.x, cell.y)),
+    );
+    const removedStaleFloorCells = baseFloorCells.length !== originalFloorCells.length;
     const existingFloor = new Set(
-      region.floorCells.map((cell) => cellKey(cell.x, cell.y)),
+      baseFloorCells.map((cell) => cellKey(cell.x, cell.y)),
     );
-    const addedFloorCells = Array.from(previousExtensions.values()).filter(
+    const addedFloorCells = currentExtensions.filter(
       (cell) => !existingFloor.has(cellKey(cell.x, cell.y)),
     );
 
+    if (!hasPreviousExtensions && !removedStaleFloorCells && addedFloorCells.length === 0) return region;
+
     return {
       ...region,
-      floorCells: [...region.floorCells, ...addedFloorCells],
-      circleExtensionCells: Array.from(previousExtensions.values()),
+      floorCells: [...baseFloorCells, ...addedFloorCells],
+      circleExtensionCells: currentExtensions,
     };
   });
 }

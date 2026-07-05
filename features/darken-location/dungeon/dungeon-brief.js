@@ -37,6 +37,25 @@ function normalizeNumber(value, fallback = 0) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
+function getRoomDesignSource(source = {}) {
+  if (!isPlainObject(source)) return null;
+  return (
+    source.roomDesign ||
+    source.location?.roomDesign ||
+    source.locationRegion?.roomDesign ||
+    source.map?.roomDesign ||
+    source.metadata?.roomDesign ||
+    source.requestMetadata?.roomDesign ||
+    source.metadata?.dungeonRoomBrief?.roomDesign ||
+    source.requestMetadata?.dungeonRoomBrief?.roomDesign ||
+    null
+  );
+}
+
+function cloneOptionalPlainObject(value) {
+  return isPlainObject(value) ? JSON.parse(JSON.stringify(value)) : null;
+}
+
 function getMapInfluenceSource(source = {}) {
   if (!isPlainObject(source)) return null;
   return (
@@ -432,6 +451,17 @@ export function createRoomBrief(input = {}, index = 0, { theme = null } = {}) {
       getMapInfluenceSource(metadata)?.roomArchetype ||
       "",
   });
+  const componentRoomDesigns = hasMergedMapInfluence
+    ? []
+    : assignedComponents.map((component) => getRoomDesignSource(component)).filter(Boolean);
+  const roomDesign = cloneOptionalPlainObject(
+    getRoomDesignSource(input) || getRoomDesignSource(metadata),
+  ) || (componentRoomDesigns.length === 1 ? cloneOptionalPlainObject(componentRoomDesigns[0]) : componentRoomDesigns.length ? {
+    props: {
+      required: componentRoomDesigns.flatMap((design) => design.props?.required || []),
+      optional: componentRoomDesigns.flatMap((design) => design.props?.optional || []),
+    },
+  } : null);
   const mapInfluence = mergeMapInfluences([regionInfluence, ...componentInfluences]);
   const influencedRoomArchetype = getRoomArchetypeFromMapInfluence(mapInfluence);
   const roomArchetype = normalizeString(directRoomArchetype || influencedRoomArchetype);
@@ -457,6 +487,7 @@ export function createRoomBrief(input = {}, index = 0, { theme = null } = {}) {
     roomArchetype,
     roomArchetypeSource,
     mapInfluence,
+    roomDesign,
     sourceRegionId,
     sourceAnchors: unique(input.sourceAnchors || metadata.sourceAnchors || normalizedTheme.sourceAnchorIds),
     horror: unique(input.horror || metadata.horror),
@@ -540,6 +571,7 @@ export function roomBriefToRequiredRegion(roomBrief, index = 0) {
     roomArchetype: room.roomArchetype,
     roomArchetypeSource: room.roomArchetypeSource,
     mapInfluence: room.mapInfluence,
+    roomDesign: room.roomDesign,
     connectors: room.connectors,
     density: room.density,
     links: room.links,
@@ -551,6 +583,7 @@ export function roomBriefToRequiredRegion(roomBrief, index = 0) {
       roomArchetype: room.roomArchetype,
       roomArchetypeSource: room.roomArchetypeSource,
       mapInfluence: room.mapInfluence,
+      roomDesign: room.roomDesign,
       level: room.level,
       contexts: room.contexts,
       horror: room.horror,

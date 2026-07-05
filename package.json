@@ -1,7 +1,7 @@
 {
   "name": "cruor-games",
   "private": true,
-  "version": "13.0.0a",
+  "version": "13.1.0a",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -33,13 +33,15 @@
     "git:restore-main": "node .vscode/dev/git-restore-from-github.mjs main",
     "git:restore-current": "node .vscode/dev/git-restore-from-github.mjs current",
     "monster:qa": "node --import ./scripts/register-svg-loader.mjs scripts/run-monster-qa.mjs",
-    "qa:all": "npm run content:validate && npm run content:export && npm run monster:qa && npm run qa:composer-assignment && npm run qa:map-archetypes && npm run qa:maps && npm run test:run",
+    "qa:all": "npm run content:validate && npm run content:export && npm run monster:qa && npm run qa:composer-assignment && npm run qa:room-design && npm run qa:room-design-gallery && npm run qa:map-archetypes && npm run qa:maps && npm run test:run",
     "qa:maps": "node scripts/run-map-qa.mjs --count=250 --mode=realistic",
     "qa:maps:debug": "node scripts/run-map-qa.mjs --count=250 --mode=debug",
     "qa:maps:adapters": "node scripts/run-map-qa.mjs --adapter-qa --count=250 --mode=debug --determinism=off",
     "qa:composer-assignment": "node scripts/run-composer-assignment-qa.mjs",
     "qa:map-archetypes": "node scripts/run-map-archetype-qa.mjs",
-    "qa:map-archetype-gallery": "node scripts/run-map-archetype-gallery.mjs"
+    "qa:map-archetype-gallery": "node scripts/run-map-archetype-gallery.mjs",
+    "qa:room-design": "node scripts/run-room-design-qa.mjs",
+    "qa:room-design-gallery": "node scripts/run-room-design-gallery.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",

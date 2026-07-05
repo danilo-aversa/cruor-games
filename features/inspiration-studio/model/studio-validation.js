@@ -20,6 +20,10 @@ import {
   normalizeRoomArchetypeId,
 } from "../../darken-location/map-generator/map-generator.profile.js";
 import {
+  normalizeRoomDesignShapeKind,
+  normalizeRoomDesignPropKind,
+} from "../../darken-location/map-generator/map-generator.room-design.js";
+import {
   COMPONENT_TYPE_LABELS,
   STATUS_OPTIONS,
   asArray,
@@ -166,6 +170,44 @@ function validateRoomArchetypeRefs(values = [], path, issues, id, label = "room 
 
 function getRoomArchetypeRefSet(values = []) {
   return new Set(asArray(values).map(normalizeRoomArchetypeId).filter(Boolean));
+}
+
+
+function validateRoomDesignForStudio(roomDesign, path, issues, id) {
+  if (!roomDesign) return;
+  if (!isPlainObject(roomDesign)) {
+    issues.push(makeIssue("error", path, "roomDesign must be an object.", id));
+    return;
+  }
+  const shape = isPlainObject(roomDesign.shape) ? roomDesign.shape : { kind: roomDesign.shape || roomDesign.shapeKind || roomDesign.kind };
+  const shapeKind = normalizeRoomDesignShapeKind(shape.kind || shape.type || "");
+  if (hasText(shape.kind || shape.type) && !shapeKind) {
+    issues.push(makeIssue("error", `${path}.shape.kind`, `Unknown roomDesign shape kind: ${shape.kind || shape.type}.`, id));
+  }
+  if (!hasText(shape.kind || shape.type) && !isPlainObject(roomDesign.size) && !isPlainObject(roomDesign.props)) {
+    issues.push(makeIssue("info", path, "roomDesign has no shape, size, or props yet.", id));
+  }
+  const size = isPlainObject(roomDesign.size) ? roomDesign.size : {};
+  ["minWidthCells", "minHeightCells", "maxWidthCells", "maxHeightCells", "minAreaCells", "maxAreaCells", "minDiameterCells"].forEach((field) => {
+    if (size[field] === undefined || size[field] === "") return;
+    const parsed = Number(size[field]);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      issues.push(makeIssue("error", `${path}.size.${field}`, `${field} must be a positive number.`, id));
+    }
+  });
+  if (Number(size.maxWidthCells) > 0 && Number(size.minWidthCells) > Number(size.maxWidthCells)) {
+    issues.push(makeIssue("error", `${path}.size`, "minWidthCells cannot exceed maxWidthCells.", id));
+  }
+  if (Number(size.maxHeightCells) > 0 && Number(size.minHeightCells) > Number(size.maxHeightCells)) {
+    issues.push(makeIssue("error", `${path}.size`, "minHeightCells cannot exceed maxHeightCells.", id));
+  }
+  const requiredProps = asArray(roomDesign.props?.required || roomDesign.requiredProps);
+  requiredProps.forEach((prop, propIndex) => {
+    const kind = typeof prop === "string" ? prop : prop?.kind || prop?.type || "";
+    if (!normalizeRoomDesignPropKind(kind)) {
+      issues.push(makeIssue("error", `${path}.props.required[${propIndex}].kind`, "Required roomDesign prop is missing a kind.", id));
+    }
+  });
 }
 
 function hasMapInfluenceEditorialData(mapInfluence = {}) {
@@ -380,6 +422,12 @@ export function validateStudioDraft(draft, contentPackExport) {
         issues,
         id,
       );
+      validateRoomDesignForStudio(
+        component.location?.roomDesign || component.map?.roomDesign || component.roomDesign,
+        `components[${index}].location.roomDesign`,
+        issues,
+        id,
+      );
     }
 
     if (type === "location-region") {
@@ -404,6 +452,12 @@ export function validateStudioDraft(draft, contentPackExport) {
         validateMapInfluenceForStudio(
           regionMetadata.mapInfluence,
           `components[${index}].locationRegion.mapInfluence`,
+          issues,
+          id,
+        );
+        validateRoomDesignForStudio(
+          regionMetadata.roomDesign,
+          `components[${index}].locationRegion.roomDesign`,
           issues,
           id,
         );

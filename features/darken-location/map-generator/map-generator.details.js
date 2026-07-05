@@ -7,6 +7,12 @@ import {
 } from "./map-generator.profile.js";
 import { cellKey } from "./map-generator.mask.js";
 import {
+  getRoomDesignModifiers,
+  getRoomDesignRequiredPropCount,
+  getRoomDesignRequiredProps,
+  normalizeRoomDesignPropKind,
+} from "./map-generator.room-design.js";
+import {
   getAnchorCenterOffset,
   getAnchorHandlePoint,
   getBoundaryCells,
@@ -1146,6 +1152,9 @@ export function makeProp(region, kind, cell, config, index, options = {}) {
     ...(options.archetypeSignature || options.signature
       ? { archetypeSignature: true }
       : {}),
+    ...(options.roomDesignRequired ? { roomDesignRequired: true } : {}),
+    ...(options.roomDesignModifier ? { roomDesignModifier: options.roomDesignModifier } : {}),
+    ...(options.roomDesignPropKind ? { roomDesignPropKind: options.roomDesignPropKind } : {}),
   };
 }
 
@@ -1164,6 +1173,119 @@ export function addPlannedProp(
   reservePropCell(reservedCells, cell);
   props.push(makeProp(region, plan.kind, cell, config, index, plan));
   return index + 1;
+}
+
+function placementToRatio(placement = "center", index = 0) {
+  const normalized = String(placement || "center").trim().toLowerCase();
+  if (normalized === "far-wall" || normalized === "north-wall") return { rx: 0.5, ry: 0.18 };
+  if (normalized === "near-wall" || normalized === "south-wall") return { rx: 0.5, ry: 0.82 };
+  if (normalized === "east-wall") return { rx: 0.82, ry: 0.5 };
+  if (normalized === "west-wall") return { rx: 0.18, ry: 0.5 };
+  if (normalized === "corner") {
+    return [
+      { rx: 0.22, ry: 0.22 },
+      { rx: 0.78, ry: 0.22 },
+      { rx: 0.22, ry: 0.78 },
+      { rx: 0.78, ry: 0.78 },
+    ][index % 4];
+  }
+  if (normalized === "near-center") return { rx: 0.5, ry: 0.58 };
+  if (normalized === "random") {
+    return [
+      { rx: 0.36, ry: 0.36 },
+      { rx: 0.64, ry: 0.36 },
+      { rx: 0.36, ry: 0.64 },
+      { rx: 0.64, ry: 0.64 },
+    ][index % 4];
+  }
+  return { rx: 0.5, ry: 0.5 };
+}
+
+function createRoomDesignRequiredPropPlan(region) {
+  return getRoomDesignRequiredProps(region.roomDesign).map((prop, index) => {
+    const ratio = placementToRatio(prop.placement, index);
+    return {
+      kind: normalizeRoomDesignPropKind(prop.kind),
+      rx: ratio.rx,
+      ry: ratio.ry,
+      rotation: Number.isFinite(prop.rotation) ? prop.rotation : wallRotationForRatio(ratio.rx, ratio.ry, 0),
+      sizeScale: prop.sizeScale || (prop.minRadiusCells ? Math.max(0.9, Math.min(1.8, prop.minRadiusCells / 1.5)) : 1),
+      roomDesignRequired: true,
+      roomDesignPropKind: prop.kind,
+      signature: true,
+      detailProfile: region.roomDesign?.detailProfile || region.shapeOptions?.detailProfile || "room-design",
+    };
+  });
+}
+
+function createRoomDesignModifierPropPlan(region) {
+  const modifiers = getRoomDesignModifiers(region.roomDesign);
+  const plan = [];
+  const push = (modifier, item) => {
+    plan.push({
+      ...item,
+      roomDesignModifier: modifier,
+      detailProfile: region.roomDesign?.detailProfile || region.shapeOptions?.detailProfile || "room-design",
+    });
+  };
+
+  if (modifiers.includes("central-void")) {
+    push("central-void", { kind: "pit", rx: 0.5, ry: 0.5, rotation: 0, sizeScale: 1.08 });
+  }
+  if (modifiers.includes("pillared")) {
+    [
+      { rx: 0.24, ry: 0.24 },
+      { rx: 0.76, ry: 0.24 },
+      { rx: 0.24, ry: 0.76 },
+      { rx: 0.76, ry: 0.76 },
+    ].forEach((target) => push("pillared", { kind: "pillar", ...target, rotation: 0, sizeScale: 0.82 }));
+  }
+  if (modifiers.includes("partitioned")) {
+    push("partitioned", { kind: "broken-wall", rx: 0.5, ry: 0.5, rotation: getRoomAxis(region) === "horizontal" ? 90 : 0, sizeScale: 0.98 });
+  }
+  if (modifiers.includes("side-alcoves")) {
+    const axis = getRoomAxis(region);
+    const rotation = axis === "horizontal" ? 0 : 90;
+    push("side-alcoves", axis === "horizontal" ? { kind: "tomb", rx: 0.28, ry: 0.2, rotation } : { kind: "tomb", rx: 0.2, ry: 0.28, rotation });
+    push("side-alcoves", axis === "horizontal" ? { kind: "tomb", rx: 0.72, ry: 0.8, rotation } : { kind: "tomb", rx: 0.8, ry: 0.72, rotation });
+  }
+  if (modifiers.includes("secret-recess")) {
+    push("secret-recess", { kind: "chest", rx: 0.82, ry: 0.5, rotation: 0, sizeScale: 0.86 });
+  }
+  if (modifiers.includes("collapsed-edge")) {
+    push("collapsed-edge", { kind: "rubble", rx: 0.28, ry: 0.28, rotation: 0, sizeScale: 1.0 });
+    push("collapsed-edge", { kind: "crack", rx: 0.72, ry: 0.68, rotation: 0, sizeScale: 0.92 });
+  }
+  if (modifiers.includes("chamfered-corners")) {
+    push("chamfered-corners", { kind: "pillar", rx: 0.5, ry: 0.5, rotation: 0, sizeScale: 0.78 });
+  }
+
+  return plan;
+}
+
+function getRoomDesignModifierPropCount(regionOrDesign = null) {
+  const roomDesign = regionOrDesign?.roomDesign || regionOrDesign;
+  const modifiers = getRoomDesignModifiers(roomDesign);
+  let count = 0;
+  if (modifiers.includes("central-void")) count += 1;
+  if (modifiers.includes("pillared")) count += 4;
+  if (modifiers.includes("partitioned")) count += 1;
+  if (modifiers.includes("side-alcoves")) count += 2;
+  if (modifiers.includes("secret-recess")) count += 1;
+  if (modifiers.includes("collapsed-edge")) count += 2;
+  if (modifiers.includes("chamfered-corners")) count += 1;
+  return count;
+}
+
+function mergeRoomDesignRequiredProps(required = [], modifierProps = [], base = [], budget = 0) {
+  const protectedItems = [...required, ...modifierProps];
+  if (!protectedItems.length) return base.slice(0, budget);
+  const seen = new Set(protectedItems.map((item) => `${item.kind}:${item.rx}:${item.ry}`));
+  const merged = [
+    ...protectedItems,
+    ...base.filter((item) => !seen.has(`${item.kind}:${item.rx}:${item.ry}`)),
+  ];
+  return merged.slice(0, Math.max(budget, protectedItems.length));
 }
 
 export function wallRotationForRatio(rx, ry, fallback = 0) {
@@ -1718,17 +1840,21 @@ export function createCryptPropPlan(region, flags, budget, rng) {
 
 export function createPropLayoutPlan(region, flags, budget, rng, contextKey) {
   if (budget <= 0) return [];
+  const required = createRoomDesignRequiredPropPlan(region);
+  const modifierProps = createRoomDesignModifierPropPlan(region);
+  let base = [];
   if (contextKey === "chapel")
-    return createChapelPropPlan(region, flags, budget, rng);
-  if (contextKey === "noble-house")
-    return createNobleHousePropPlan(region, flags, budget, rng);
-  if (contextKey === "mine")
-    return createMinePropPlan(region, flags, budget, rng);
-  if (contextKey === "cave")
-    return createCavePropPlan(region, flags, budget, rng);
-  if (contextKey === "ruins")
-    return createRuinsPropPlan(region, flags, budget, rng);
-  return createCryptPropPlan(region, flags, budget, rng);
+    base = createChapelPropPlan(region, flags, budget, rng);
+  else if (contextKey === "noble-house")
+    base = createNobleHousePropPlan(region, flags, budget, rng);
+  else if (contextKey === "mine")
+    base = createMinePropPlan(region, flags, budget, rng);
+  else if (contextKey === "cave")
+    base = createCavePropPlan(region, flags, budget, rng);
+  else if (contextKey === "ruins")
+    base = createRuinsPropPlan(region, flags, budget, rng);
+  else base = createCryptPropPlan(region, flags, budget, rng);
+  return mergeRoomDesignRequiredProps(required, modifierProps, base, budget);
 }
 
 export function createProps(generatedMap) {
@@ -1740,7 +1866,10 @@ export function createProps(generatedMap) {
     const rng = createSeededRng(
       hashStringToSeed(config.seed, region.id, "content-props"),
     );
-    const budget = getPropBudget(region, flags, contextKey);
+    const budget = Math.max(
+      getPropBudget(region, flags, contextKey),
+      getRoomDesignRequiredPropCount(region) + getRoomDesignModifierPropCount(region),
+    );
     const reservedCells = new Set();
     const plan = createPropLayoutPlan(region, flags, budget, rng, contextKey);
     let index = 0;

@@ -28,6 +28,19 @@ function normalizeNumber(value, fallback = 0) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
+function getRoomDesignSource(source = {}) {
+  if (!isPlainObject(source)) return null;
+  return (
+    source.roomDesign ||
+    source.location?.roomDesign ||
+    source.locationRegion?.roomDesign ||
+    source.map?.roomDesign ||
+    source.metadata?.roomDesign ||
+    source.requestMetadata?.roomDesign ||
+    null
+  );
+}
+
 function getMapInfluenceSource(source = {}) {
   if (!isPlainObject(source)) return null;
   return (
@@ -134,6 +147,10 @@ function clonePlainObject(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+function cloneOptionalPlainObject(value) {
+  return isPlainObject(value) ? JSON.parse(JSON.stringify(value)) : null;
+}
+
 function buildComponentMapInfluence(component = {}) {
   const source = getMapInfluenceSource(component) || {};
   return normalizeMapInfluence({
@@ -203,6 +220,7 @@ function normalizeAssignedComponents(slotAssignments, selectedComponents = []) {
           sourceAnchors: normalizeSourceAnchorIds(component.sourceAnchors),
           tags: asArray(component.tags),
           mapInfluence,
+          roomDesign: cloneOptionalPlainObject(getRoomDesignSource(component)),
           locationRegion: clonePlainObject(component.locationRegion),
           map: clonePlainObject(component.map),
         };
@@ -224,6 +242,7 @@ function normalizeAssignedComponents(slotAssignments, selectedComponents = []) {
       sourceAnchors: normalizeSourceAnchorIds(component?.sourceAnchors),
       tags: asArray(component?.tags),
       mapInfluence: buildComponentMapInfluence(component),
+      roomDesign: cloneOptionalPlainObject(getRoomDesignSource(component)),
       locationRegion: clonePlainObject(component?.locationRegion),
       map: clonePlainObject(component?.map),
     }))
@@ -276,6 +295,17 @@ function normalizeRegionToRoomBrief(region, index, assignedComponents = [], them
     roomArchetype: rawDirectRoomArchetype,
   });
   const componentInfluences = regionComponents.map((component) => component.mapInfluence).filter(Boolean);
+  const componentRoomDesigns = regionComponents.map((component) => component.roomDesign).filter(Boolean);
+  const roomDesign = cloneOptionalPlainObject(
+    getRoomDesignSource(region) ||
+      getRoomDesignSource(regionLocation) ||
+      getRoomDesignSource(regionMap),
+  ) || (componentRoomDesigns.length === 1 ? componentRoomDesigns[0] : componentRoomDesigns.length ? {
+    props: {
+      required: componentRoomDesigns.flatMap((design) => design.props?.required || []),
+      optional: componentRoomDesigns.flatMap((design) => design.props?.optional || []),
+    },
+  } : null);
   const mapInfluence = mergeMapInfluences([regionMapInfluence, ...componentInfluences]);
   const roomArchetype = normalizeString(directRoomArchetype || getRoomArchetypeFromMapInfluence(mapInfluence));
   const roomArchetypeSource = directRoomArchetype ? "explicit" : roomArchetype ? "map-influence" : "";
@@ -295,6 +325,7 @@ function normalizeRegionToRoomBrief(region, index, assignedComponents = [], them
     roomArchetype,
     roomArchetypeSource,
     mapInfluence,
+    roomDesign,
     size: normalizeString(region.size, "Medium"),
     connectors: region.connectors,
     density: normalizeString(region.density),
