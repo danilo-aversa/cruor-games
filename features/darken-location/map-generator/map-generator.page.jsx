@@ -181,7 +181,11 @@ import {
   parseMapStatePayload,
 } from "./map-generator.export.js";
 import { generateMap } from "./map-generator.pipeline.js";
-import { buildFullStructuralTestSuite, validateExportSvgString } from "./map-generator.debug.js";
+import {
+  buildFullStructuralTestSuite,
+  validateExportSvgString,
+  validateGeneratedMap,
+} from "./map-generator.debug.js";
 
 const SIZE_PRESETS = {
   Tiny: { minW: 3, maxW: 4, minH: 3, maxH: 4 },
@@ -1035,6 +1039,11 @@ export function MapViewport({
       outsideCell: summarizeViewportDebugCell(anchor.outsideCell),
       portalRoomCell: summarizeViewportDebugCell(anchor.portalRoomCell),
       routingOutsideCell: summarizeViewportDebugCell(anchor.routingOutsideCell),
+      raccordoCell: summarizeViewportDebugCell(anchor.raccordoCell),
+      raccordoCells: Array.isArray(anchor.raccordoCells)
+        ? anchor.raccordoCells.map(summarizeViewportDebugCell).filter(Boolean)
+        : [],
+      corridorStartCell: summarizeViewportDebugCell(anchor.corridorStartCell),
       snapCell: summarizeViewportDebugCell(anchor.snapCell),
       finalGeometry: Boolean(anchor.finalGeometry),
       expandedCircleDoor: Boolean(anchor.expandedCircleDoor),
@@ -5622,6 +5631,11 @@ export default function CruorMapGeneratorMvp({
       snapCell: summarizeDebugCell(anchor.snapCell),
       portalRoomCell: summarizeDebugCell(anchor.portalRoomCell),
       routingOutsideCell: summarizeDebugCell(anchor.routingOutsideCell),
+      raccordoCell: summarizeDebugCell(anchor.raccordoCell),
+      raccordoCells: Array.isArray(anchor.raccordoCells)
+        ? anchor.raccordoCells.map(summarizeDebugCell).filter(Boolean)
+        : [],
+      corridorStartCell: summarizeDebugCell(anchor.corridorStartCell),
       finalGeometry: Boolean(anchor.finalGeometry),
       expandedCircleDoor: Boolean(anchor.expandedCircleDoor),
       circleBoundaryAnchor: Boolean(anchor.circleBoundaryAnchor),
@@ -8105,6 +8119,110 @@ export default function CruorMapGeneratorMvp({
     );
   }
 
+  function getQaScenarioIterationBudget(settings = {}, fallback = 12) {
+    if (settings.speed === "fast") return Math.max(6, Math.floor(fallback * 0.55));
+    if (settings.speed === "slow") return Math.max(fallback, Math.floor(fallback * 1.45));
+    return fallback;
+  }
+
+  function getQaCircleSmokeRegionLimit(settings = {}) {
+    if (settings.speed === "fast") return 2;
+    if (settings.speed === "slow") return 5;
+    return 4;
+  }
+
+  function getQaCircleSmokeAnchorSteps(settings = {}) {
+    if (settings.speed === "fast") return 10;
+    if (settings.speed === "slow") return 28;
+    return 20;
+  }
+
+  function getQaEvenlySpacedItems(items = [], count = items.length) {
+    const safeItems = Array.isArray(items) ? items.filter(Boolean) : [];
+    if (safeItems.length <= count) return safeItems;
+    const selected = [];
+    const seen = new Set();
+    for (let index = 0; index < count; index += 1) {
+      const itemIndex = Math.min(
+        safeItems.length - 1,
+        Math.floor((index * safeItems.length) / count),
+      );
+      if (seen.has(itemIndex)) continue;
+      seen.add(itemIndex);
+      selected.push(safeItems[itemIndex]);
+    }
+    return selected.length > 0 ? selected : safeItems.slice(0, count);
+  }
+
+  function getQaCircleSmokeCandidateRegions(map = getQaGeneratedMap(), settings = {}) {
+    const regions = [...(map?.regions || [])]
+      .filter((region) => region && getQaCorridorForRegion(region.id, map))
+      .sort((a, b) => {
+        const areaA = Number(a?.cellRect?.w || 0) * Number(a?.cellRect?.h || 0);
+        const areaB = Number(b?.cellRect?.w || 0) * Number(b?.cellRect?.h || 0);
+        if (areaA !== areaB) return areaB - areaA;
+        return String(a?.id || "").localeCompare(String(b?.id || ""));
+      });
+    return regions.slice(0, getQaCircleSmokeRegionLimit(settings));
+  }
+
+  function getQaCircleMoveOffsets(settings = {}) {
+    const baseOffsets = [
+      { x: 1, y: 0, label: "right-1" },
+      { x: -1, y: 0, label: "left-1" },
+      { x: 0, y: 1, label: "down-1" },
+      { x: 0, y: 3, label: "down-3" },
+      { x: 1, y: 4, label: "down-right-4" },
+      { x: -1, y: 4, label: "down-left-4" },
+      { x: 0, y: 6, label: "deep-down" },
+      { x: 0, y: -1, label: "up-1" },
+      { x: 0, y: -3, label: "up-3" },
+      { x: 2, y: 2, label: "down-right-2" },
+      { x: -2, y: 2, label: "down-left-2" },
+      { x: 2, y: -2, label: "up-right-2" },
+      { x: -2, y: -2, label: "up-left-2" },
+    ];
+    return getQaEvenlySpacedItems(
+      baseOffsets,
+      getQaScenarioIterationBudget(settings, settings.speed === "fast" ? 7 : 13),
+    );
+  }
+
+  function assertQaMapValidationPasses(map = getQaGeneratedMap(), context = {}) {
+    const validation = validateGeneratedMap(map, map?.config || config);
+    const failedTests = (validation?.tests || []).filter((test) => !test?.passed);
+    if (failedTests.length > 0 || validation?.errors?.length > 0) {
+      recordQaDiagnostic("structural validation failed", {
+        context,
+        failedTests: failedTests.map((test) => ({
+          id: test.id,
+          label: test.label,
+          details: test.details,
+        })),
+        errors: validation?.errors || [],
+        warnings: validation?.warnings || [],
+        metrics: validation?.metrics || null,
+        ...summarizeQaCorridorTopology(map),
+      });
+    }
+    assertQa(
+      failedTests.length === 0 && (validation?.errors || []).length === 0,
+      "Scenario Runner structural validation failed.",
+      {
+        context,
+        failedTests: failedTests.map((test) => ({
+          id: test.id,
+          label: test.label,
+          details: test.details,
+        })),
+        errors: validation?.errors || [],
+        warnings: validation?.warnings || [],
+        metrics: validation?.metrics || null,
+        ...summarizeQaCorridorTopology(map),
+      },
+    );
+  }
+
   function getQaCorridorForRegion(regionId, map = getQaGeneratedMap()) {
     return (
       (map?.corridors || []).find(
@@ -8374,10 +8492,17 @@ export default function CruorMapGeneratorMvp({
     runId,
     signal,
     settings = {},
-    scenarioLabel = "Circle Anchor Test"
+    scenarioLabel = "Circle Anchor Test",
+    options = {},
   ) {
     let map = getQaGeneratedMap();
-    let region = getQaLargestRegion(map);
+    let region = options.regionId
+      ? map?.regions?.find((item) => item.id === options.regionId)
+      : null;
+    if (!region) region = getQaLargestRegion(map);
+    if (region && !getQaCorridorForRegion(region.id, map)) {
+      region = getQaCircleSmokeCandidateRegions(map, settings)[0] || region;
+    }
     assertQa(region, "No region available for circle anchor test.");
 
     setQaRunnerStep(runId, {
@@ -8386,12 +8511,23 @@ export default function CruorMapGeneratorMvp({
       targetRegionId: region.id,
       category: "room-style",
     });
-    updateRoomStyle(region.id, { shape: "circle", sizePreset: "Large", customSize: null });
-    await waitForQaRender(signal, settings);
+    if (options.prepare !== false || region.shape !== "circle") {
+      updateRoomStyle(region.id, {
+        shape: "circle",
+        sizePreset: options.sizePreset || "Large",
+        customSize: null,
+      });
+      await waitForQaRender(signal, settings);
+    }
 
     map = getQaGeneratedMap();
     region = map.regions.find((item) => item.id === region.id) || region;
     assertQa(region?.shape === "circle", "Target room did not become circular.", {
+      region: summarizeDebugRegion(region),
+    });
+    assertQaMapValidationPasses(map, {
+      scenarioLabel,
+      phase: "circle-prepared",
       region: summarizeDebugRegion(region),
     });
 
@@ -8399,14 +8535,20 @@ export default function CruorMapGeneratorMvp({
     assertQa(corridor, "No corridor connected to the circular test room.", { regionId: region.id });
     const initialEndpoint = getQaEndpointForRegion(corridor, region.id);
     const initialDoor = getQaCorridorDoor(corridor, initialEndpoint);
-    const preferredSide = initialDoor?.side || null;
+    const preferredSide = Object.prototype.hasOwnProperty.call(options, "preferredSide")
+      ? options.preferredSide
+      : initialDoor?.side || null;
     const initialAnchors = getQaCircleAnchorSweepAnchors(region, map, preferredSide);
-    const stepCount = Math.min(initialAnchors.length, settings.speed === "fast" ? 3 : 5);
+    const requestedStepCount = options.stepCount || getQaCircleSmokeAnchorSteps(settings);
+    const sweepAnchors = getQaEvenlySpacedItems(initialAnchors, Math.min(initialAnchors.length, requestedStepCount));
+    const stepCount = sweepAnchors.length;
     recordQaDiagnostic("circle anchor availability", {
       phase: "before-sweep",
       corridor: summarizeDebugCorridor(corridor),
       endpoint: initialEndpoint,
       preferredSide,
+      requestedStepCount,
+      stepCount,
       availability: summarizeQaCircleAnchorAvailability(region, map, preferredSide),
     }, "anchor-trace");
     assertQa(stepCount >= 2, "Not enough reachable circle anchors for sweep.", {
@@ -8423,7 +8565,18 @@ export default function CruorMapGeneratorMvp({
         corridor;
       const endpoint = getQaEndpointForRegion(currentCorridor, region.id);
       const anchors = getQaCircleAnchorSweepAnchors(region, map, preferredSide);
-      const anchor = anchors[index % Math.max(1, anchors.length)] || null;
+      const requestedAnchor = sweepAnchors[index] || null;
+      const requestedCell = getQaCircleAnchorSortCell(requestedAnchor);
+      const anchor = requestedCell
+        ? anchors.find((candidate) => {
+            const cell = getQaCircleAnchorSortCell(candidate);
+            return (
+              cell?.x === requestedCell.x &&
+              cell?.y === requestedCell.y &&
+              (!requestedAnchor?.side || candidate?.side === requestedAnchor.side)
+            );
+          }) || anchors[index % Math.max(1, anchors.length)] || null
+        : anchors[index % Math.max(1, anchors.length)] || null;
       const cell = getQaCircleAnchorSortCell(anchor);
       if (!anchor) {
         recordQaDiagnostic("circle anchor build failed", {
@@ -8512,7 +8665,120 @@ export default function CruorMapGeneratorMvp({
       };
       assertQaNoDuplicateCorridors(map, checkContext);
       assertQaNoVisualCorridorTopologyIssues(map, checkContext);
+      assertQaMapValidationPasses(map, checkContext);
     }
+  }
+
+  async function runQaCircleRoomMoveMatrix(
+    runId,
+    signal,
+    settings = {},
+    scenarioLabel = "Circle Room Move Matrix",
+    regionId = "",
+  ) {
+    let map = getQaGeneratedMap();
+    let region = map?.regions?.find((item) => item.id === regionId) || null;
+    assertQa(region, "No circular region available for move matrix.", { regionId });
+    if (region.shape !== "circle") {
+      updateRoomStyle(region.id, { shape: "circle", sizePreset: "Large", customSize: null });
+      await waitForQaRender(signal, settings);
+      map = getQaGeneratedMap();
+      region = map?.regions?.find((item) => item.id === region.id) || region;
+    }
+
+    const base = { x: region.cellRect.x, y: region.cellRect.y };
+    const attempts = [];
+    let successfulMoves = 0;
+    let successfulDownMoves = 0;
+
+    for (const offset of getQaCircleMoveOffsets(settings)) {
+      map = getQaGeneratedMap();
+      region = map?.regions?.find((item) => item.id === region.id) || region;
+      const target = {
+        x: base.x + offset.x,
+        y: base.y + offset.y,
+      };
+      setQaRunnerStep(runId, {
+        scenarioLabel,
+        stepLabel: `Move circular room ${region.label || region.id}: ${offset.label}`,
+        targetRegionId: region.id,
+        targetCell: target,
+        category: "room-move",
+      });
+      const moved = moveRoom(region.id, target);
+      attempts.push({ label: offset.label, target, moved: moved !== null });
+      if (moved === null) {
+        recordQaDiagnostic("circle room move skipped", {
+          region: summarizeDebugRegion(region),
+          offset,
+          target,
+          reason: "moveRoom returned null",
+          attempts,
+        }, "room-move");
+        continue;
+      }
+      successfulMoves += 1;
+      if (offset.y > 0) successfulDownMoves += 1;
+      await waitForQaRender(signal, settings);
+      map = getQaGeneratedMap();
+      const checkContext = {
+        scenarioLabel,
+        phase: "circle-room-move",
+        regionId: region.id,
+        offset,
+        target,
+        attempts,
+      };
+      assertQaNoDuplicateCorridors(map, checkContext);
+      assertQaNoVisualCorridorTopologyIssues(map, checkContext);
+      assertQaMapValidationPasses(map, checkContext);
+    }
+
+    assertQa(successfulMoves > 0, "Circle room move matrix could not move the room at all.", {
+      regionId: region.id,
+      attempts,
+    });
+    assertQa(successfulDownMoves > 0, "Circle room move matrix did not execute any downward move.", {
+      regionId: region.id,
+      attempts,
+    });
+  }
+
+  async function runQaSmokeScenario(
+    runId,
+    signal,
+    settings = {},
+    scenarioLabel = "Smoke Test"
+  ) {
+    let map = getQaGeneratedMap();
+    assertQaMapValidationPasses(map, { scenarioLabel, phase: "initial" });
+    const candidateRegions = getQaCircleSmokeCandidateRegions(map, settings);
+    assertQa(candidateRegions.length > 0, "No connected room available for circular smoke scenario.", {
+      regionCount: map?.regions?.length || 0,
+      corridors: (map?.corridors || []).map(summarizeDebugCorridor),
+    });
+
+    for (let index = 0; index < candidateRegions.length; index += 1) {
+      map = getQaGeneratedMap();
+      const region = map.regions.find((item) => item.id === candidateRegions[index].id);
+      if (!region) continue;
+      setQaRunnerStep(runId, {
+        scenarioLabel,
+        stepLabel: `Circular smoke room ${index + 1}/${candidateRegions.length}: ${region.label || region.id}`,
+        targetRegionId: region.id,
+        category: "room-style",
+      });
+      await runQaCircleAnchorSweep(runId, signal, settings, scenarioLabel, {
+        regionId: region.id,
+        preferredSide: null,
+        stepCount: getQaCircleSmokeAnchorSteps(settings),
+        sizePreset: "Large",
+      });
+      await runQaCircleRoomMoveMatrix(runId, signal, settings, scenarioLabel, region.id);
+    }
+
+    if (!signal?.aborted) await runQaCorridorCreation(runId, signal, settings, scenarioLabel);
+    if (!signal?.aborted) await runQaRoomMoveReroute(runId, signal, settings, scenarioLabel);
   }
 
   async function runQaCorridorCreation(
@@ -8565,6 +8831,12 @@ export default function CruorMapGeneratorMvp({
     const nextMap = getQaGeneratedMap();
     assertQaNoDuplicateCorridors(nextMap);
     assertQaNoVisualCorridorTopologyIssues(nextMap);
+    assertQaMapValidationPasses(nextMap, {
+      scenarioLabel,
+      phase: "corridor-create",
+      fromRegionId: fromRegion.id,
+      toRegionId: toRegion.id,
+    });
     const afterCount = nextMap.corridors.length;
     assertQa(afterCount <= beforeCount + 1, "Corridor creation added too many corridors.", {
       beforeCount,
@@ -8600,6 +8872,12 @@ export default function CruorMapGeneratorMvp({
     map = getQaGeneratedMap();
     assertQaNoDuplicateCorridors(map);
     assertQaNoVisualCorridorTopologyIssues(map);
+    assertQaMapValidationPasses(map, {
+      scenarioLabel,
+      phase: "room-move-reroute",
+      regionId: region.id,
+      target,
+    });
   }
 
   async function runMapQaScenario(eventDetail = {}) {
@@ -8635,11 +8913,7 @@ export default function CruorMapGeneratorMvp({
       } else if (scenarioId === "room-move-reroute") {
         await runQaRoomMoveReroute(runId, abortController.signal, settings, scenarioLabel);
       } else {
-        await runQaCircleAnchorSweep(runId, abortController.signal, settings, scenarioLabel);
-        if (!abortController.signal.aborted)
-          await runQaCorridorCreation(runId, abortController.signal, settings, scenarioLabel);
-        if (!abortController.signal.aborted)
-          await runQaRoomMoveReroute(runId, abortController.signal, settings, scenarioLabel);
+        await runQaSmokeScenario(runId, abortController.signal, settings, scenarioLabel);
       }
       finishQaRunner(runId, {
         state: "passed",

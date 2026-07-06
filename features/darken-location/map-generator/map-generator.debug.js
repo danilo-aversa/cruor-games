@@ -11,7 +11,13 @@ import {
   formatMapLevel,
   getAvailableMapLevels,
 } from "./map-generator.layout.js";
-import { cellKey, doorKey, parseCellKey } from "./map-generator.mask.js";
+import {
+  cellKey,
+  doorKey,
+  getCircleGeometryFromRegion,
+  getSharedEdgeSegment,
+  parseCellKey,
+} from "./map-generator.mask.js";
 import {
   getBoundaryCells,
   getCorridorConfiguredLevelDelta,
@@ -22,7 +28,12 @@ import {
   getPhysicalFloorConnectivityReport,
   isOrganicCorridor,
 } from "./map-generator.corridors.js";
-import { getMapSurface, getRegionSurface } from "./map-generator.render.jsx";
+import {
+  cellRectToPath,
+  getCircleCompositeSquareCells,
+  getMapSurface,
+  getRegionSurface,
+} from "./map-generator.render.jsx";
 
 export function createMapSignature(generatedMap) {
   const regions = generatedMap.regions
@@ -114,6 +125,29 @@ export function getRoomCellOwnerMap(regions) {
 
 export function isAnchorOnRegionBoundary(region, anchor) {
   if (!anchor) return false;
+  if (region?.shape === "circle") {
+    const raccordoCells = getCircleRaccordoCellsFromAnchor(anchor);
+    const portal = getRaccordoPortalCell(raccordoCells, anchor);
+    const doorRaccordo = getCircleDoorRaccordoCellFromAnchor(anchor);
+    const corridorStart =
+      anchor.corridorStartCell ||
+      anchor.routingOutsideCell ||
+      anchor.outsideCell ||
+      null;
+    if (!portal || !doorRaccordo || !corridorStart) return false;
+    if (!areRaccordoCellsContiguous(raccordoCells)) return false;
+    if (getCellManhattanDistance(doorRaccordo, corridorStart) !== 1) return false;
+    const circle = getCircleGeometryFromRegion(region, 1);
+    const portalRange = getCircleCellRectDistanceRange(portal, circle);
+    const doorRaccordoRange = getCircleCellRectDistanceRange(doorRaccordo, circle);
+    const corridorRange = getCircleCellRectDistanceRange(corridorStart, circle);
+    return (
+      portalRange.min <= circle.rCells + 0.035 &&
+      portalRange.max >= circle.rCells + 0.025 &&
+      doorRaccordoRange.min >= circle.rCells - 0.025 &&
+      corridorRange.min >= circle.rCells + 0.025
+    );
+  }
   return getBoundaryCells(region).some(
     (candidate) =>
       candidate.side === anchor.side &&
@@ -264,6 +298,289 @@ export function validateLevelSystem(generatedMap) {
     ),
   };
 }
+
+function getCircleConnectorAnchorsForRegion(generatedMap, regionId) {
+  return (generatedMap.corridors || []).flatMap((corridor) => [
+    corridor.from === regionId ? corridor.fromAnchor : null,
+    corridor.to === regionId ? corridor.toAnchor : null,
+  ]).filter((anchor) =>
+    anchor?.expandedCircleDoor ||
+    anchor?.circleBoundaryAnchor ||
+    anchor?.finalGeometry ||
+    anchor?.regionShape === "circle",
+  );
+}
+
+function getCircleCellRectDistanceRange(cell, circle) {
+  if (!cell || !circle) {
+    return {
+      min: Number.POSITIVE_INFINITY,
+      max: Number.NEGATIVE_INFINITY,
+      center: Number.POSITIVE_INFINITY,
+    };
+  }
+  const minX = cell.x;
+  const minY = cell.y;
+  const maxX = cell.x + 1;
+  const maxY = cell.y + 1;
+  const dx = Math.max(minX - circle.cxCells, 0, circle.cxCells - maxX);
+  const dy = Math.max(minY - circle.cyCells, 0, circle.cyCells - maxY);
+  const center = Math.hypot(
+    cell.x + 0.5 - circle.cxCells,
+    cell.y + 0.5 - circle.cyCells,
+  );
+  return {
+    min: Math.hypot(dx, dy),
+    max: Math.max(
+      Math.hypot(minX - circle.cxCells, minY - circle.cyCells),
+      Math.hypot(maxX - circle.cxCells, minY - circle.cyCells),
+      Math.hypot(minX - circle.cxCells, maxY - circle.cyCells),
+      Math.hypot(maxX - circle.cxCells, maxY - circle.cyCells),
+    ),
+    center,
+  };
+}
+
+function getCellManhattanDistance(a, b) {
+  if (!a || !b) return Number.POSITIVE_INFINITY;
+  return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+}
+
+function getCircleRaccordoCellsFromAnchor(anchor) {
+  if (Array.isArray(anchor?.raccordoCells) && anchor.raccordoCells.length > 0) {
+    return anchor.raccordoCells
+      .filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y))
+      .map((cell) => ({ x: cell.x, y: cell.y }));
+  }
+  const first = anchor?.portalRoomCell || null;
+  const last = anchor?.raccordoCell || anchor?.cell || first;
+  if (first && last && (first.x !== last.x || first.y !== last.y)) {
+    const dx = Math.sign(last.x - first.x);
+    const dy = Math.sign(last.y - first.y);
+    if ((dx === 0 || dy === 0) && (dx !== 0 || dy !== 0)) {
+      const cells = [];
+      let x = first.x;
+      let y = first.y;
+      cells.push({ x, y });
+      while (x !== last.x || y !== last.y) {
+        if (x !== last.x) x += dx;
+        if (y !== last.y) y += dy;
+        cells.push({ x, y });
+      }
+      return cells;
+    }
+  }
+  return last ? [{ x: last.x, y: last.y }] : [];
+}
+
+function getCircleDoorRaccordoCellFromAnchor(anchor) {
+  const cells = getCircleRaccordoCellsFromAnchor(anchor);
+  return cells[cells.length - 1] || anchor?.raccordoCell || anchor?.portalRoomCell || anchor?.cell || null;
+}
+
+function areRaccordoCellsContiguous(cells = []) {
+  if (!Array.isArray(cells) || cells.length === 0) return false;
+  for (let index = 1; index < cells.length; index += 1) {
+    if (getCellManhattanDistance(cells[index - 1], cells[index]) !== 1) return false;
+  }
+  return true;
+}
+
+function getRaccordoPortalCell(cells = [], anchor = null) {
+  return cells[0] || anchor?.portalRoomCell || anchor?.cell || null;
+}
+
+function getCorridorCellsInsideVectorCircleRooms(generatedMap) {
+  const circleRegions = (generatedMap.regions || []).filter(
+    (region) => region.shape === "circle",
+  );
+  if (circleRegions.length === 0) return [];
+  return (generatedMap.corridors || []).flatMap((corridor) =>
+    (corridor.floorCells || []).flatMap((cell) =>
+      circleRegions
+        .filter((region) => {
+          const circle = getCircleGeometryFromRegion(region, 1);
+          const range = getCircleCellRectDistanceRange(cell, circle);
+          // Corridor squares must stay out of the vector circle entirely. A
+          // center-only test misses the exact visual failure where a corridor
+          // cell clips into the circle wall.
+          return range.min < circle.rCells - 0.025;
+        })
+        .map((region) => ({
+          corridorId: corridor.id,
+          regionId: region.id,
+          cell: { x: cell.x, y: cell.y },
+        })),
+    ),
+  );
+}
+
+function getCircleConnectorVisualArtifacts(generatedMap) {
+  return (generatedMap.regions || [])
+    .filter((region) => region.shape === "circle")
+    .flatMap((region) => {
+      const circle = getCircleGeometryFromRegion(region, 1);
+      const extensionKeys = new Set();
+      const duplicateExtensions = [];
+      (Array.isArray(region.circleExtensionCells) ? region.circleExtensionCells : []).forEach((cell) => {
+        const key = cellKey(cell.x, cell.y);
+        if (extensionKeys.has(key)) duplicateExtensions.push(cell);
+        extensionKeys.add(key);
+      });
+
+      const anchors = getCircleConnectorAnchorsForRegion(generatedMap, region.id);
+      const anchorArtifacts = anchors.flatMap((anchor) => {
+        const artifacts = [];
+        const raccordoCells = getCircleRaccordoCellsFromAnchor(anchor);
+        const portal = getRaccordoPortalCell(raccordoCells, anchor);
+        const doorRaccordo = getCircleDoorRaccordoCellFromAnchor(anchor);
+        const routing = anchor.corridorStartCell || anchor.routingOutsideCell || anchor.outsideCell || null;
+        if (raccordoCells.length === 0 || !portal || !doorRaccordo) {
+          artifacts.push({ regionId: region.id, type: "missing-raccordo-cell", cell: null });
+        } else {
+          const portalRange = getCircleCellRectDistanceRange(portal, circle);
+          if (portalRange.max < circle.rCells + 0.025) {
+            artifacts.push({
+              regionId: region.id,
+              type: "raccordo-fully-inside-circle",
+              cell: { x: portal.x, y: portal.y },
+            });
+          }
+          if (portalRange.min > circle.rCells + 0.035) {
+            artifacts.push({
+              regionId: region.id,
+              type: "raccordo-not-adjacent-to-circle",
+              cell: { x: portal.x, y: portal.y },
+            });
+          }
+          if (!areRaccordoCellsContiguous(raccordoCells)) {
+            artifacts.push({
+              regionId: region.id,
+              type: "raccordo-chain-not-contiguous",
+              cell: { x: portal.x, y: portal.y },
+            });
+          }
+          raccordoCells.forEach((raccordoCell) => {
+            if (!extensionKeys.has(cellKey(raccordoCell.x, raccordoCell.y))) {
+              artifacts.push({
+                regionId: region.id,
+                type: "raccordo-not-in-room-extension-cells",
+                cell: { x: raccordoCell.x, y: raccordoCell.y },
+              });
+            }
+          });
+          const doorRange = getCircleCellRectDistanceRange(doorRaccordo, circle);
+          if (doorRange.min < circle.rCells - 0.025) {
+            artifacts.push({
+              regionId: region.id,
+              type: "door-raccordo-overlaps-circle",
+              cell: { x: doorRaccordo.x, y: doorRaccordo.y },
+            });
+          }
+        }
+        if (doorRaccordo && routing && getCellManhattanDistance(doorRaccordo, routing) !== 1) {
+          artifacts.push({
+            regionId: region.id,
+            type: "corridor-not-adjacent-to-raccordo",
+            cell: { x: doorRaccordo.x, y: doorRaccordo.y },
+          });
+        }
+        if (doorRaccordo && routing && cellKey(doorRaccordo.x, doorRaccordo.y) === cellKey(routing.x, routing.y)) {
+          artifacts.push({
+            regionId: region.id,
+            type: "raccordo-collapsed-onto-corridor-start",
+            cell: { x: doorRaccordo.x, y: doorRaccordo.y },
+          });
+        }
+        if (routing && extensionKeys.has(cellKey(routing.x, routing.y))) {
+          artifacts.push({
+            regionId: region.id,
+            type: "corridor-start-rendered-as-raccordo",
+            cell: { x: routing.x, y: routing.y },
+          });
+        }
+        if (routing) {
+          const routingRange = getCircleCellRectDistanceRange(routing, circle);
+          if (routingRange.min < circle.rCells + 0.025) {
+            artifacts.push({
+              regionId: region.id,
+              type: "corridor-start-overlaps-circle",
+              cell: { x: routing.x, y: routing.y },
+            });
+          }
+        }
+        return artifacts;
+      });
+
+      return [
+        ...duplicateExtensions.map((cell) => ({
+          regionId: region.id,
+          type: "duplicate-raccordo-cell",
+          cell: { x: cell.x, y: cell.y },
+        })),
+        ...anchorArtifacts,
+      ];
+    });
+}
+
+function getCircleDoorPlacementErrors(generatedMap, regionById) {
+  const gridSize = generatedMap.config?.gridSize || 20;
+  const tolerance = Math.max(0.5, gridSize * 0.05);
+  return (generatedMap.dungeonMask?.doorSegments || [])
+    .filter((door) =>
+      door?.expandedCircleDoor ||
+      door?.circleBoundaryAnchor ||
+      door?.regionShape === "circle",
+    )
+    .map((door) => {
+      const region = regionById.get(door.regionId);
+      if (!region || region.shape !== "circle") return null;
+      const raccordo = getCircleDoorRaccordoCellFromAnchor(door);
+      const corridorStart =
+        door.corridorStartCell ||
+        door.routingOutsideCell ||
+        door.outsideCell ||
+        null;
+      const expected = raccordo && corridorStart
+        ? getSharedEdgeSegment(raccordo, corridorStart, gridSize)
+        : null;
+      if (!expected) {
+        return {
+          regionId: region.id,
+          corridorId: door.corridorId || null,
+          side: door.side || null,
+          reason: "missing-raccordo-shared-edge",
+          delta: "missing",
+        };
+      }
+      const deltas = [
+        Math.abs(door.x1 - expected.x1),
+        Math.abs(door.y1 - expected.y1),
+        Math.abs(door.x2 - expected.x2),
+        Math.abs(door.y2 - expected.y2),
+      ];
+      const reversedDeltas = [
+        Math.abs(door.x1 - expected.x2),
+        Math.abs(door.y1 - expected.y2),
+        Math.abs(door.x2 - expected.x1),
+        Math.abs(door.y2 - expected.y1),
+      ];
+      const delta = Math.min(
+        Math.max(...deltas),
+        Math.max(...reversedDeltas),
+      );
+      if (delta <= tolerance) return null;
+      return {
+        regionId: region.id,
+        corridorId: door.corridorId || null,
+        side: door.side || null,
+        reason: "door-not-on-raccordo-corridor-edge",
+        delta: Math.round(delta * 100) / 100,
+      };
+    })
+    .filter(Boolean);
+}
+
 
 export function validateExportSvgString(svgText) {
   const forbidden = [
@@ -579,6 +896,21 @@ export function validateGeneratedMap(
     ),
   );
 
+  const corridorCellsInsideCircles = getCorridorCellsInsideVectorCircleRooms(generatedMap);
+  tests.push(
+    makeTestResult(
+      "corridors-outside-circle-rooms",
+      "No corridor floor cell is rendered inside circular room interiors",
+      corridorCellsInsideCircles.length === 0,
+      corridorCellsInsideCircles.length > 0
+        ? corridorCellsInsideCircles
+            .slice(0, 4)
+            .map((item) => `${item.corridorId}@${item.cell.x},${item.cell.y}->${item.regionId}`)
+            .join(", ")
+        : "no circle intrusions",
+    ),
+  );
+
   const invalidAnchors = [];
   generatedMap.corridors.forEach((corridor) => {
     const fromRegion = regionById.get(corridor.from);
@@ -597,6 +929,39 @@ export function validateGeneratedMap(
       "Every door is on a room boundary",
       invalidAnchors.length === 0,
       invalidAnchors.slice(0, 4).join(", "),
+    ),
+  );
+
+  const circleConnectorArtifacts = getCircleConnectorVisualArtifacts(generatedMap);
+  tests.push(
+    makeTestResult(
+      "circle-connectors-use-raccordo-cells",
+      "Circular room connectors use a grid raccordo chain before the corridor",
+      circleConnectorArtifacts.length === 0,
+      circleConnectorArtifacts.length > 0
+        ? circleConnectorArtifacts
+            .slice(0, 4)
+            .map((item) => `${item.regionId}:${item.type}@${item.cell ? `${item.cell.x},${item.cell.y}` : "unknown"}`)
+            .join(", ")
+        : "all circular connectors have valid raccordo chains",
+    ),
+  );
+
+  const circleDoorPlacementErrors = getCircleDoorPlacementErrors(
+    generatedMap,
+    regionById,
+  );
+  tests.push(
+    makeTestResult(
+      "circle-doors-on-raccordo-edge",
+      "Circular room doors sit on the shared raccordo/corridor grid edge",
+      circleDoorPlacementErrors.length === 0,
+      circleDoorPlacementErrors.length > 0
+        ? circleDoorPlacementErrors
+            .slice(0, 4)
+            .map((item) => `${item.regionId}:${item.corridorId || "door"} Δ${item.delta}`)
+            .join(", ")
+        : "all circular doors on raccordo/corridor grid edge",
     ),
   );
 

@@ -1057,6 +1057,23 @@ export function serializeManualAnchor(anchor) {
       y: anchor.portalRoomCell.y,
     };
   }
+  if (anchor.raccordoCell) {
+    serialized.raccordoCell = {
+      x: anchor.raccordoCell.x,
+      y: anchor.raccordoCell.y,
+    };
+  }
+  if (Array.isArray(anchor.raccordoCells)) {
+    serialized.raccordoCells = anchor.raccordoCells
+      .filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y))
+      .map((cell) => ({ x: cell.x, y: cell.y }));
+  }
+  if (anchor.corridorStartCell) {
+    serialized.corridorStartCell = {
+      x: anchor.corridorStartCell.x,
+      y: anchor.corridorStartCell.y,
+    };
+  }
   if (anchor.originalCell) {
     serialized.originalCell = { x: anchor.originalCell.x, y: anchor.originalCell.y };
   }
@@ -1068,6 +1085,16 @@ export function serializeManualAnchor(anchor) {
   }
   if (anchor.normal) {
     serialized.normal = { x: anchor.normal.x, y: anchor.normal.y };
+  }
+  if (anchor.circular) {
+    serialized.circular = {
+      ...(Number.isFinite(anchor.circular.cx) ? { cx: anchor.circular.cx } : {}),
+      ...(Number.isFinite(anchor.circular.cy) ? { cy: anchor.circular.cy } : {}),
+      ...(Number.isFinite(anchor.circular.r) ? { r: anchor.circular.r } : {}),
+      ...(anchor.circular.normal
+        ? { normal: { x: anchor.circular.normal.x, y: anchor.circular.normal.y } }
+        : {}),
+    };
   }
   if (anchor.point) {
     serialized.point = { x: anchor.point.x, y: anchor.point.y };
@@ -1081,6 +1108,7 @@ export function serializeManualAnchor(anchor) {
     };
   }
   if (anchor.circleBoundaryAnchor) serialized.circleBoundaryAnchor = true;
+  if (anchor.circleRaccordoCell) serialized.circleRaccordoCell = true;
   if (anchor.finalGeometry) {
     serialized.finalGeometry = true;
     serialized.finalBoundaryIndex = anchor.finalBoundaryIndex;
@@ -1164,7 +1192,12 @@ function getManualAnchorWithExactOutsideCell(region, manualAnchor, gridSize) {
   if (!side) return null;
   const snapCell = getCellCopy(manualAnchor.snapCell);
   const routingOutsideCell = getCellCopy(manualAnchor.routingOutsideCell);
-  const portalRoomCell = getCellCopy(manualAnchor.portalRoomCell);
+  const portalRoomCell = getCellCopy(manualAnchor.portalRoomCell || manualAnchor.raccordoCell);
+  const raccordoCell = getCellCopy(manualAnchor.raccordoCell || manualAnchor.portalRoomCell);
+  const raccordoCells = Array.isArray(manualAnchor.raccordoCells)
+    ? manualAnchor.raccordoCells.map(getCellCopy).filter(Boolean)
+    : [];
+  const corridorStartCell = getCellCopy(manualAnchor.corridorStartCell || manualAnchor.routingOutsideCell || manualAnchor.outsideCell);
   const originalCell = getCellCopy(manualAnchor.originalCell);
   const originalOutsideCell = getCellCopy(manualAnchor.originalOutsideCell);
   const normal = inferAnchorNormalFromCells(cell, outsideCell, manualAnchor.normal);
@@ -1178,14 +1211,17 @@ function getManualAnchorWithExactOutsideCell(region, manualAnchor, gridSize) {
     cell,
     outsideCell,
     portalRoomCell,
+    raccordoCell,
+    raccordoCells,
     snapCell,
     routingOutsideCell,
+    corridorStartCell,
     originalCell,
     originalOutsideCell,
     normal,
     circular: manualAnchor.circular || null,
     finalGeometry: Boolean(manualAnchor.finalGeometry),
-    expandedCircleDoor: Boolean(manualAnchor.expandedCircleDoor),
+    expandedCircleDoor: Boolean(manualAnchor.expandedCircleDoor || region?.shape === "circle"),
     circleBoundaryAnchor: Boolean(
       manualAnchor.circleBoundaryAnchor ||
       region?.shape === "circle" ||
@@ -1206,13 +1242,11 @@ function getManualAnchorWithExactOutsideCell(region, manualAnchor, gridSize) {
 }
 
 function shouldPreserveExactManualCircleAnchor(region, anchor) {
-  return Boolean(
-    region?.shape === "circle" &&
-      anchor?.circleBoundaryAnchor &&
-      anchor?.finalGeometry &&
-      anchor?.cell &&
-      anchor?.outsideCell
-  );
+  if (region?.shape !== "circle" || !anchor?.circleBoundaryAnchor) return false;
+  // Circular anchors are derived from the current circle geometry. Preserving an
+  // exact saved grid cell after a room drag can resurrect stale raccordo cells
+  // inside the new circle, so always rematerialize them against the live room.
+  return false;
 }
 
 function materializeEndpointDoorAnchor(
@@ -1279,10 +1313,16 @@ export function resolveManualDoorAnchor(
         x: manualAnchor.outsideCell.x,
         y: manualAnchor.outsideCell.y,
       },
-      portalRoomCell: manualAnchor.portalRoomCell
+      portalRoomCell: manualAnchor.portalRoomCell || manualAnchor.raccordoCell
         ? {
-            x: manualAnchor.portalRoomCell.x,
-            y: manualAnchor.portalRoomCell.y,
+            x: (manualAnchor.portalRoomCell || manualAnchor.raccordoCell).x,
+            y: (manualAnchor.portalRoomCell || manualAnchor.raccordoCell).y,
+          }
+        : null,
+      raccordoCell: manualAnchor.raccordoCell || manualAnchor.portalRoomCell
+        ? {
+            x: (manualAnchor.raccordoCell || manualAnchor.portalRoomCell).x,
+            y: (manualAnchor.raccordoCell || manualAnchor.portalRoomCell).y,
           }
         : null,
       snapCell: manualAnchor.snapCell
@@ -1291,10 +1331,16 @@ export function resolveManualDoorAnchor(
             y: manualAnchor.snapCell.y,
           }
         : null,
-      routingOutsideCell: manualAnchor.routingOutsideCell
+      routingOutsideCell: manualAnchor.routingOutsideCell || manualAnchor.corridorStartCell
         ? {
-            x: manualAnchor.routingOutsideCell.x,
-            y: manualAnchor.routingOutsideCell.y,
+            x: (manualAnchor.routingOutsideCell || manualAnchor.corridorStartCell).x,
+            y: (manualAnchor.routingOutsideCell || manualAnchor.corridorStartCell).y,
+          }
+        : null,
+      corridorStartCell: manualAnchor.corridorStartCell || manualAnchor.routingOutsideCell || manualAnchor.outsideCell
+        ? {
+            x: (manualAnchor.corridorStartCell || manualAnchor.routingOutsideCell || manualAnchor.outsideCell).x,
+            y: (manualAnchor.corridorStartCell || manualAnchor.routingOutsideCell || manualAnchor.outsideCell).y,
           }
         : null,
       originalCell: manualAnchor.originalCell
@@ -1307,11 +1353,16 @@ export function resolveManualDoorAnchor(
           }
         : null,
       normal: { x: manualAnchor.normal.x, y: manualAnchor.normal.y },
-      circular: radial && circle
-        ? { cx: circle.cxCells, cy: circle.cyCells, r: circle.rCells, normal: radial }
+      circular: circle
+        ? {
+            cx: circle.cxCells,
+            cy: circle.cyCells,
+            r: circle.rCells,
+            normal: manualAnchor.circular?.normal || radial,
+          }
         : null,
       finalGeometry: true,
-      expandedCircleDoor: Boolean(manualAnchor.expandedCircleDoor),
+      expandedCircleDoor: Boolean(manualAnchor.expandedCircleDoor || region?.shape === "circle"),
       circleBoundaryAnchor: Boolean(manualAnchor.circleBoundaryAnchor || region?.shape === "circle"),
       finalBoundaryIndex: manualAnchor.finalBoundaryIndex,
       segment: {
@@ -2487,6 +2538,23 @@ function cloneReusableAnchor(anchor) {
     outsideCell: anchor.outsideCell
       ? { x: anchor.outsideCell.x, y: anchor.outsideCell.y }
       : anchor.outsideCell,
+    portalRoomCell: anchor.portalRoomCell
+      ? { x: anchor.portalRoomCell.x, y: anchor.portalRoomCell.y }
+      : anchor.portalRoomCell,
+    routingOutsideCell: anchor.routingOutsideCell
+      ? { x: anchor.routingOutsideCell.x, y: anchor.routingOutsideCell.y }
+      : anchor.routingOutsideCell,
+    raccordoCell: anchor.raccordoCell
+      ? { x: anchor.raccordoCell.x, y: anchor.raccordoCell.y }
+      : anchor.raccordoCell,
+    raccordoCells: Array.isArray(anchor.raccordoCells)
+      ? anchor.raccordoCells
+          .filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y))
+          .map((cell) => ({ x: cell.x, y: cell.y }))
+      : anchor.raccordoCells,
+    corridorStartCell: anchor.corridorStartCell
+      ? { x: anchor.corridorStartCell.x, y: anchor.corridorStartCell.y }
+      : anchor.corridorStartCell,
     normal: anchor.normal ? { x: anchor.normal.x, y: anchor.normal.y } : anchor.normal,
     point: anchor.point ? { x: anchor.point.x, y: anchor.point.y } : anchor.point,
     segment: anchor.segment ? { ...anchor.segment } : anchor.segment,
@@ -4566,15 +4634,76 @@ export function getSnappedCirclePortalCellFromAnchor(anchor) {
   return anchor?.cell || null;
 }
 
-function createDoorFromExpandedCircleAnchor(anchor, gridSize, secret = false) {
-  if (!anchor?.expandedCircleDoor || !anchor?.portalRoomCell) return null;
-  const cell = anchor.portalRoomCell || anchor.cell;
-  const x = cell.x * gridSize;
-  const y = cell.y * gridSize;
-  const midX = x + gridSize / 2;
-  const midY = y + gridSize / 2;
-  const half = gridSize * 0.34;
-  const anchorMeta = {
+function getCircleDoorRaccordoCellsFromAnchor(anchor) {
+  if (Array.isArray(anchor?.raccordoCells) && anchor.raccordoCells.length > 0) {
+    return anchor.raccordoCells
+      .filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y))
+      .map((cell) => ({ x: cell.x, y: cell.y }));
+  }
+  const first = cloneCell(anchor?.portalRoomCell || null);
+  const last = cloneCell(anchor?.raccordoCell || anchor?.cell || first || null);
+  if (first && last && (first.x !== last.x || first.y !== last.y)) {
+    const dx = Math.sign(last.x - first.x);
+    const dy = Math.sign(last.y - first.y);
+    if ((dx === 0 || dy === 0) && (dx !== 0 || dy !== 0)) {
+      const cells = [];
+      let x = first.x;
+      let y = first.y;
+      cells.push({ x, y });
+      while (x !== last.x || y !== last.y) {
+        if (x !== last.x) x += dx;
+        if (y !== last.y) y += dy;
+        cells.push({ x, y });
+      }
+      return cells;
+    }
+  }
+  return last ? [last] : [];
+}
+
+function getCircleDoorRaccordoCellFromAnchor(anchor) {
+  const cells = getCircleDoorRaccordoCellsFromAnchor(anchor);
+  return cloneCell(cells[cells.length - 1] || anchor?.raccordoCell || anchor?.portalRoomCell || anchor?.cell || null);
+}
+
+function getCircleDoorCorridorStartCellFromAnchor(anchor) {
+  return cloneCell(
+    anchor?.corridorStartCell ||
+      anchor?.routingOutsideCell ||
+      anchor?.outsideCell ||
+      null,
+  );
+}
+
+function createGridRaccordoDoorGeometry(anchor, gridSize) {
+  const raccordoCell = getCircleDoorRaccordoCellFromAnchor(anchor);
+  const corridorStartCell = getCircleDoorCorridorStartCellFromAnchor(anchor);
+  if (
+    !raccordoCell ||
+    !corridorStartCell ||
+    getCellManhattanDistance(raccordoCell, corridorStartCell) !== 1
+  ) {
+    return null;
+  }
+  const segment = getSharedEdgeSegment(raccordoCell, corridorStartCell, gridSize);
+  if (!segment) return null;
+  return {
+    x1: segment.x1,
+    y1: segment.y1,
+    x2: segment.x2,
+    y2: segment.y2,
+    point: {
+      x: (segment.x1 + segment.x2) / 2,
+      y: (segment.y1 + segment.y2) / 2,
+    },
+    segment,
+    raccordoCell,
+    corridorStartCell,
+  };
+}
+
+function createCircleDoorAnchorMeta(anchor, secret = false) {
+  return {
     side: anchor.side,
     secret,
     regionId: anchor.regionId,
@@ -4584,8 +4713,33 @@ function createDoorFromExpandedCircleAnchor(anchor, gridSize, secret = false) {
       ? { x: anchor.outsideCell.x, y: anchor.outsideCell.y }
       : null,
     normal: anchor.normal ? { x: anchor.normal.x, y: anchor.normal.y } : null,
-    expandedCircleDoor: true,
-    portalRoomCell: { x: cell.x, y: cell.y },
+    circular: anchor.circular || null,
+    expandedCircleDoor: Boolean(anchor.expandedCircleDoor),
+    circleBoundaryAnchor: Boolean(anchor.circleBoundaryAnchor),
+    circleRaccordoCell: Boolean(anchor.circleRaccordoCell),
+    portalRoomCell: anchor.portalRoomCell
+      ? { x: anchor.portalRoomCell.x, y: anchor.portalRoomCell.y }
+      : null,
+    routingOutsideCell: anchor.routingOutsideCell
+      ? { x: anchor.routingOutsideCell.x, y: anchor.routingOutsideCell.y }
+      : null,
+    raccordoCell: anchor.raccordoCell
+      ? { x: anchor.raccordoCell.x, y: anchor.raccordoCell.y }
+      : anchor.portalRoomCell
+        ? { x: anchor.portalRoomCell.x, y: anchor.portalRoomCell.y }
+        : null,
+    raccordoCells: Array.isArray(anchor.raccordoCells)
+      ? anchor.raccordoCells
+          .filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y))
+          .map((cell) => ({ x: cell.x, y: cell.y }))
+      : null,
+    corridorStartCell: anchor.corridorStartCell
+      ? { x: anchor.corridorStartCell.x, y: anchor.corridorStartCell.y }
+      : anchor.routingOutsideCell
+        ? { x: anchor.routingOutsideCell.x, y: anchor.routingOutsideCell.y }
+        : anchor.outsideCell
+          ? { x: anchor.outsideCell.x, y: anchor.outsideCell.y }
+          : null,
     originalCell: anchor.originalCell
       ? { x: anchor.originalCell.x, y: anchor.originalCell.y }
       : null,
@@ -4593,24 +4747,103 @@ function createDoorFromExpandedCircleAnchor(anchor, gridSize, secret = false) {
       ? { x: anchor.originalOutsideCell.x, y: anchor.originalOutsideCell.y }
       : null,
   };
-  if (anchor.side === "north")
-    return { x1: midX - half, y1: y, x2: midX + half, y2: y, ...anchorMeta };
-  if (anchor.side === "south")
+}
+
+function normalizeCircleDoorSegment(anchor, gridSize) {
+  if (anchor?.segment) {
+    const center = anchor.point && Number.isFinite(anchor.point.x) && Number.isFinite(anchor.point.y)
+      ? { x: anchor.point.x, y: anchor.point.y }
+      : {
+          x: (anchor.segment.x1 + anchor.segment.x2) / 2,
+          y: (anchor.segment.y1 + anchor.segment.y2) / 2,
+        };
+    const length = Math.hypot(
+      anchor.segment.x2 - anchor.segment.x1,
+      anchor.segment.y2 - anchor.segment.y1,
+    ) || 1;
+    const ux = (anchor.segment.x2 - anchor.segment.x1) / length;
+    const uy = (anchor.segment.y2 - anchor.segment.y1) / length;
+    const half = Math.min(gridSize * 0.43, length / 2);
     return {
-      x1: midX - half,
-      y1: y + gridSize,
-      x2: midX + half,
-      y2: y + gridSize,
-      ...anchorMeta,
+      x1: center.x - ux * half,
+      y1: center.y - uy * half,
+      x2: center.x + ux * half,
+      y2: center.y + uy * half,
+      point: center,
+      segment: { ...anchor.segment },
     };
-  if (anchor.side === "west")
-    return { x1: x, y1: midY - half, x2: x, y2: midY + half, ...anchorMeta };
+  }
+  const circular = anchor?.circular;
+  const radial = circular?.normal || anchor?.normal;
+  if (
+    circular &&
+    radial &&
+    Number.isFinite(circular.cx) &&
+    Number.isFinite(circular.cy) &&
+    Number.isFinite(circular.r)
+  ) {
+    const length = Math.hypot(radial.x, radial.y) || 1;
+    const normal = { x: radial.x / length, y: radial.y / length };
+    const point = {
+      x: (circular.cx + normal.x * circular.r) * gridSize,
+      y: (circular.cy + normal.y * circular.r) * gridSize,
+    };
+    const tangent = { x: -normal.y, y: normal.x };
+    const half = gridSize * 0.42;
+    const segment = {
+      x1: point.x - tangent.x * half,
+      y1: point.y - tangent.y * half,
+      x2: point.x + tangent.x * half,
+      y2: point.y + tangent.y * half,
+    };
+    return { ...segment, point, segment };
+  }
+  return null;
+}
+
+function createDoorFromCircleBoundaryAnchor(anchor, gridSize, secret = false) {
+  if (!(anchor?.circleBoundaryAnchor || anchor?.regionShape === "circle" || anchor?.circular)) {
+    return null;
+  }
+  const gridGeometry = createGridRaccordoDoorGeometry(anchor, gridSize);
+  if (gridGeometry) {
+    return {
+      x1: gridGeometry.x1,
+      y1: gridGeometry.y1,
+      x2: gridGeometry.x2,
+      y2: gridGeometry.y2,
+      ...createCircleDoorAnchorMeta(anchor, secret),
+      expandedCircleDoor: true,
+      circleBoundaryAnchor: true,
+      portalRoomCell: gridGeometry.raccordoCell,
+      raccordoCell: gridGeometry.raccordoCell,
+      routingOutsideCell: gridGeometry.corridorStartCell,
+      corridorStartCell: gridGeometry.corridorStartCell,
+      point: gridGeometry.point,
+      segment: gridGeometry.segment,
+    };
+  }
+  return null;
+}
+
+function createDoorFromExpandedCircleAnchor(anchor, gridSize, secret = false) {
+  if (!(anchor?.expandedCircleDoor || anchor?.circleBoundaryAnchor || anchor?.regionShape === "circle")) return null;
+  const gridGeometry = createGridRaccordoDoorGeometry(anchor, gridSize);
+  if (!gridGeometry) return null;
   return {
-    x1: x + gridSize,
-    y1: midY - half,
-    x2: x + gridSize,
-    y2: midY + half,
-    ...anchorMeta,
+    x1: gridGeometry.x1,
+    y1: gridGeometry.y1,
+    x2: gridGeometry.x2,
+    y2: gridGeometry.y2,
+    ...createCircleDoorAnchorMeta(anchor, secret),
+    expandedCircleDoor: true,
+    circleBoundaryAnchor: true,
+    portalRoomCell: gridGeometry.raccordoCell,
+    raccordoCell: gridGeometry.raccordoCell,
+    routingOutsideCell: gridGeometry.corridorStartCell,
+    corridorStartCell: gridGeometry.corridorStartCell,
+    point: gridGeometry.point,
+    segment: gridGeometry.segment,
   };
 }
 
@@ -4621,6 +4854,12 @@ export function createDoorFromAnchor(anchor, gridSize, secret = false) {
     secret,
   );
   if (expandedCircleDoor) return expandedCircleDoor;
+  const circleBoundaryDoor = createDoorFromCircleBoundaryAnchor(
+    anchor,
+    gridSize,
+    secret,
+  );
+  if (circleBoundaryDoor) return circleBoundaryDoor;
   if (anchor?.segment) {
     const length =
       Math.hypot(

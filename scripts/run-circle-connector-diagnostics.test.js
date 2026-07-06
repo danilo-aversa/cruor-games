@@ -14,10 +14,12 @@ import {
 } from "../features/darken-location/map-generator/map-generator.circle-anchors.js";
 import {
   createCircleCompositeRegionSurface,
-  createCircleDoorMouthPath,
   getCircleCompositeSquareCells,
   getCirclePortalSquareWallSegments,
 } from "../features/darken-location/map-generator/map-generator.render.jsx";
+import {
+  createDoorFromAnchor,
+} from "../features/darken-location/map-generator/map-generator.corridors.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -169,23 +171,46 @@ function validateExpandedAnchor(anchor, label) {
     null;
   const surface = createCircleCompositeRegionSurface(circleRegion, generatedMap, gridSize);
   const walls = getCirclePortalSquareWallSegments(circleRegion, generatedMap);
-  const mouthPath = createCircleDoorMouthPath(circleRegion, expanded, gridSize);
+  const door = createDoorFromAnchor(expanded, gridSize, false);
+  const doorRaccordoCell = expanded?.raccordoCell || expanded?.portalRoomCell || expanded?.cell || null;
+  const expectedDoorEdge = doorRaccordoCell && routing
+    ? edgeLineForCell(doorRaccordoCell, expanded.side)
+    : null;
+  const doorEdgeDelta = door && expectedDoorEdge
+    ? Math.min(
+        Math.max(
+          Math.abs(door.x1 - expectedDoorEdge.x1),
+          Math.abs(door.y1 - expectedDoorEdge.y1),
+          Math.abs(door.x2 - expectedDoorEdge.x2),
+          Math.abs(door.y2 - expectedDoorEdge.y2),
+        ),
+        Math.max(
+          Math.abs(door.x1 - expectedDoorEdge.x2),
+          Math.abs(door.y1 - expectedDoorEdge.y2),
+          Math.abs(door.x2 - expectedDoorEdge.x1),
+          Math.abs(door.y2 - expectedDoorEdge.y1),
+        ),
+      )
+    : Number.POSITIVE_INFINITY;
   const failures = [];
 
   if (!expanded?.expandedCircleDoor) failures.push("anchor-not-expanded");
   if (!expanded?.portalRoomCell) failures.push("missing-portal-cell");
   if (!routing) failures.push("missing-routing-cell");
   if (expanded?.portalRoomCell && !cellCrossesCircle(expanded.portalRoomCell)) {
-    failures.push("portal-cell-does-not-cross-circle-outline");
+    failures.push("raccordo-cell-does-not-touch-circle-outline");
   }
-  if (expanded?.portalRoomCell && routing && manhattan(expanded.portalRoomCell, routing) !== 1) {
-    failures.push("routing-cell-not-adjacent-to-portal");
+  if (doorRaccordoCell && routing && manhattan(doorRaccordoCell, routing) !== 1) {
+    failures.push("routing-cell-not-adjacent-to-door-raccordo");
   }
   if (expanded?.portalRoomCell && routing && cellCenterDistance(routing) <= cellCenterDistance(expanded.portalRoomCell)) {
     failures.push("routing-cell-not-farther-from-circle");
   }
-  if (compositeCells.length < 1 || compositeCells.length > 2) {
-    failures.push("composite-cell-count-outside-supported-range");
+  const expectedRaccordoCells = Array.isArray(expanded?.raccordoCells) && expanded.raccordoCells.length > 0
+    ? expanded.raccordoCells
+    : [doorRaccordoCell].filter(Boolean);
+  if (compositeCells.length < expectedRaccordoCells.length) {
+    failures.push("missing-raccordo-chain-cells");
   }
   if (
     renderedPortalCell &&
@@ -193,16 +218,12 @@ function validateExpandedAnchor(anchor, label) {
   ) {
     failures.push("composite-cells-missing-portal");
   }
-  if (compositeCells.length === 2) {
-    const support = compositeCells.find((cell) => cell.source === "support");
-    if (!support) failures.push("second-composite-cell-is-not-support");
-    if (support && renderedPortalCell && manhattan(support, renderedPortalCell) !== 1) {
-      failures.push("support-cell-not-adjacent-to-portal");
-    }
-  }
-  if (mouthPath) failures.push("irregular-mouth-path-present");
   if (renderedPortalCell && !surface.clipPath.includes(rectPathForCell(renderedPortalCell))) {
-    failures.push("clip-path-missing-portal-square");
+    failures.push("clip-path-missing-raccordo-square");
+  }
+  if (!door) failures.push("missing-door-segment");
+  if (door && doorEdgeDelta > gridSize * 0.05) {
+    failures.push("door-segment-not-on-raccordo-corridor-edge");
   }
 
   if (renderedPortalCell && expanded?.side) {
@@ -228,6 +249,9 @@ function validateExpandedAnchor(anchor, label) {
       clipHasPortalSquare: renderedPortalCell
         ? surface.clipPath.includes(rectPathForCell(renderedPortalCell))
         : false,
+      doorEdgeDelta: Number.isFinite(doorEdgeDelta)
+        ? Math.round(doorEdgeDelta * 100) / 100
+        : null,
     },
     failures,
   );
@@ -256,7 +280,7 @@ function writeReports() {
 afterAll(writeReports);
 
 describe("circle connector diagnostics", () => {
-  test("all generated circle anchor portals are boundary squares with external routing cells", () => {
+  test("all generated circle anchors use outside raccordo squares with external routing cells", () => {
     const anchors = createCircleConnectionAnchorCandidates(circleRegion, circle, gridSize);
     expect(anchors.length).toBeGreaterThanOrEqual(32);
     const failures = anchors.flatMap((anchor, index) =>
@@ -265,7 +289,7 @@ describe("circle connector diagnostics", () => {
     expect(failures).toEqual([]);
   });
 
-  test("dragging around the whole perimeter never chooses a non-touching portal square", () => {
+  test("dragging around the whole perimeter never chooses an inside raccordo square", () => {
     const failures = [];
     for (let step = 0; step < 144; step += 1) {
       const angle = (Math.PI * 2 * step) / 144;
@@ -279,7 +303,7 @@ describe("circle connector diagnostics", () => {
         const entry = record(
           `drag:${step}`,
           { inputPortalCell: null, portalCell: cloneCell(portalCell), routingCell: cloneCell(getCircleAnchorRoutingCell(anchor)) },
-          ["drag-picked-non-boundary-portal"],
+          ["drag-picked-inside-raccordo"],
         );
         failures.push(entry);
         continue;
@@ -303,7 +327,7 @@ describe("circle connector diagnostics", () => {
           outsideCell: { x: 40, y: 23 },
           routingOutsideCell: { x: 40, y: 23 },
         },
-        expectedPortal: { x: 42, y: 23 },
+        expectedPortal: { x: 41, y: 23 },
       },
       {
         label: "stale-north-tangent:46,16",
@@ -317,7 +341,7 @@ describe("circle connector diagnostics", () => {
           outsideCell: { x: 46, y: 15 },
           routingOutsideCell: { x: 46, y: 15 },
         },
-        expectedPortal: { x: 46, y: 17 },
+        expectedPortal: { x: 46, y: 16 },
       },
     ];
 
@@ -335,7 +359,7 @@ describe("circle connector diagnostics", () => {
             compositeCells: [],
             wallSegmentCount: null,
           },
-          ["stale-portal-not-repaired-to-boundary-cell"],
+          ["stale-portal-not-repaired-to-outside-raccordo-cell"],
         );
         failures.push(entry);
       }

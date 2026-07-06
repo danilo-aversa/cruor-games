@@ -65,6 +65,7 @@ import {
   normalizeManualWaypoint,
   routePathThroughCells,
   routeDirectFallback,
+  linePathBetweenCells,
   isUsableCorridorPath,
   getAdjacentCells,
 } from "./map-generator.corridors.js";
@@ -73,6 +74,7 @@ import {
   createCircleDragAnchor,
   doesCircleAnchorCellTouchVisualCircle,
   getCircleAnchorRoutingCell,
+  isCircleRaccordoCellUsable,
 } from "./map-generator.circle-anchors.js";
 import {
   createCaveMapSurfaceFromCaveSurface as createGeometryCaveMapSurfaceFromCaveSurface,
@@ -1556,11 +1558,29 @@ function getGeneratedMapRoomFloorKeys(generatedMap) {
   return keys;
 }
 
+function isCorridorCellInsideVectorCircleRoom(cell, generatedMap) {
+  if (!cell || !generatedMap?.config) return false;
+  const gridSize = generatedMap.config.gridSize || DEFAULT_CONFIG.gridSize;
+  const center = {
+    x: (cell.x + 0.5) * gridSize,
+    y: (cell.y + 0.5) * gridSize,
+  };
+  return (generatedMap.regions || [])
+    .filter((region) => region.shape === "circle")
+    .some((region) => {
+      const circle = getCircleGeometryFromRegion(region, gridSize);
+      return Math.hypot(center.x - circle.cx, center.y - circle.cy) < circle.r - gridSize * 0.08;
+    });
+}
+
 function filterCorridorCellsOutsideRooms(cells, generatedMap) {
   if (!generatedMap || !Array.isArray(cells) || cells.length === 0) return cells || [];
   const roomFloorKeys = getGeneratedMapRoomFloorKeys(generatedMap);
-  if (roomFloorKeys.size === 0) return cells;
-  return cells.filter((cell) => !roomFloorKeys.has(cellKey(cell.x, cell.y)));
+  return cells.filter(
+    (cell) =>
+      !roomFloorKeys.has(cellKey(cell.x, cell.y)) &&
+      !isCorridorCellInsideVectorCircleRoom(cell, generatedMap),
+  );
 }
 
 function splitContiguousCellSegments(cells = []) {
@@ -1745,7 +1765,7 @@ export function getCirclePortalCellFromAnchor(region, anchor, gridSize = DEFAULT
   if (!anchor || region?.shape !== "circle") return null;
   const circle = getCircleGeometryFromRegion(region, gridSize);
   const isUsablePortal = (cell) =>
-    Boolean(cell) && doesCircleAnchorCellTouchVisualCircle(cell, circle, gridSize);
+    Boolean(cell) && isCircleRaccordoCellUsable(cell, circle, gridSize);
 
   if (isUsablePortal(anchor.portalRoomCell)) {
     return { x: anchor.portalRoomCell.x, y: anchor.portalRoomCell.y };
@@ -1770,7 +1790,7 @@ export function getCirclePortalCellFromAnchor(region, anchor, gridSize = DEFAULT
     };
   }
 
-  return anchor.portalRoomCell || anchor.outsideCell || anchor.cell || null;
+  return null;
 }
 
 function getCircleCellOverlapRatio(region, cell, gridSize) {
@@ -1840,16 +1860,80 @@ export function getCirclePortalSupportCell(
   return candidates[0]?.cell || null;
 }
 
-export function createCircleDoorMouthPath() {
-  // Circular connectors are rendered as exactly one regular portal square.
-  // The square itself fills the floor connection; adding an arc-shaped mouth here
-  // creates irregular overhangs around oblique anchors.
+function formatCircleMouthNumber(value) {
+  return (Math.round(value * 100) / 100).toFixed(2).replace(/\.00$/, "");
+}
+
+function normalizeCircleMouthVector(vector, fallback = { x: 1, y: 0 }) {
+  const x = Number.isFinite(vector?.x) ? vector.x : fallback.x;
+  const y = Number.isFinite(vector?.y) ? vector.y : fallback.y;
+  const length = Math.hypot(x, y);
+  if (!Number.isFinite(length) || length <= 0.0001) return { ...fallback };
+  return { x: x / length, y: y / length };
+}
+
+function getCircleMouthAnchorPoint(region, anchor, circle, gridSize) {
+  if (anchor?.point && Number.isFinite(anchor.point.x) && Number.isFinite(anchor.point.y)) {
+    return { x: anchor.point.x, y: anchor.point.y };
+  }
+  if (anchor?.segment) {
+    return {
+      x: (anchor.segment.x1 + anchor.segment.x2) / 2,
+      y: (anchor.segment.y1 + anchor.segment.y2) / 2,
+    };
+  }
+  const referenceCell =
+    getCirclePortalCellFromAnchor(region, anchor, gridSize) ||
+    anchor?.portalRoomCell ||
+    anchor?.cell ||
+    anchor?.outsideCell ||
+    anchor?.routingOutsideCell;
+  if (referenceCell) {
+    const center = {
+      x: (referenceCell.x + 0.5) * gridSize,
+      y: (referenceCell.y + 0.5) * gridSize,
+    };
+    const radial = normalizeCircleMouthVector({
+      x: center.x - circle.cx,
+      y: center.y - circle.cy,
+    });
+    return {
+      x: circle.cx + radial.x * circle.r,
+      y: circle.cy + radial.y * circle.r,
+    };
+  }
+  return null;
+}
+
+function getCircleMouthOutwardLength(anchor, point, radial, gridSize) {
+  const outsideCell = anchor?.routingOutsideCell || anchor?.outsideCell || null;
+  if (outsideCell) {
+    const outsideCenter = {
+      x: (outsideCell.x + 0.5) * gridSize,
+      y: (outsideCell.y + 0.5) * gridSize,
+    };
+    const projected =
+      (outsideCenter.x - point.x) * radial.x +
+      (outsideCenter.y - point.y) * radial.y;
+    if (Number.isFinite(projected)) {
+      return Math.max(gridSize * 0.68, Math.min(gridSize * 1.45, projected + gridSize * 0.36));
+    }
+  }
+  return gridSize * 0.92;
+}
+
+export function createCircleDoorMouthPath(region, anchor, gridSize = DEFAULT_CONFIG.gridSize) {
+  // Grid-first circular connectors do not use freeform mouth polygons. The
+  // visible connector is the full square raccordo cell, and the door is drawn on
+  // the shared grid edge between raccordo and corridorStart.
   return "";
 }
+
 
 export function getCircleDoorMouthPaths(generatedMap, region) {
   if (!generatedMap || region?.shape !== "circle") return [];
   const gridSize = generatedMap.config.gridSize;
+  const seen = new Set();
   return (generatedMap.corridors || [])
     .flatMap((corridor) => [
       corridor.from === region.id ? corridor.fromAnchor : null,
@@ -1857,7 +1941,12 @@ export function getCircleDoorMouthPaths(generatedMap, region) {
     ])
     .filter(Boolean)
     .map((anchor) => createCircleDoorMouthPath(region, anchor, gridSize))
-    .filter(Boolean);
+    .filter(Boolean)
+    .filter((path) => {
+      if (seen.has(path)) return false;
+      seen.add(path);
+      return true;
+    });
 }
 
 export function isCellCenterOutsideCircle(cell, circle) {
@@ -1868,7 +1957,7 @@ export function isCellCenterOutsideCircle(cell, circle) {
   );
 }
 
-export function isCircleCompositeCellNearCircle(region, cell, marginCells = 2.05) {
+export function isCircleCompositeCellNearCircle(region, cell, marginCells = 4.05) {
   if (!region || region.shape !== "circle" || !cell) return false;
   const circle = getCircleGeometryFromRegion(region, 1);
   const dx = cell.x + 0.5 - circle.cxCells;
@@ -1903,6 +1992,7 @@ export function getCirclePortalCells(generatedMap, region) {
       .filter(Boolean)
       .forEach((anchor) => {
         const portalCell = getCirclePortalCellFromAnchor(region, anchor, gridSize);
+        if (!portalCell) return;
         const portal = {
           x: portalCell.x,
           y: portalCell.y,
@@ -1918,6 +2008,33 @@ export function getCirclePortalCells(generatedMap, region) {
       });
   });
   return cells;
+}
+
+function getCircleRaccordoCellsFromAnchor(anchor, fallbackPortalCell = null) {
+  if (Array.isArray(anchor?.raccordoCells) && anchor.raccordoCells.length > 0) {
+    return anchor.raccordoCells
+      .filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y))
+      .map((cell) => ({ x: cell.x, y: cell.y }));
+  }
+  const first = fallbackPortalCell || anchor?.portalRoomCell || null;
+  const last = anchor?.raccordoCell || first || anchor?.cell || null;
+  if (first && last && (first.x !== last.x || first.y !== last.y)) {
+    const dx = Math.sign(last.x - first.x);
+    const dy = Math.sign(last.y - first.y);
+    if ((dx === 0 || dy === 0) && (dx !== 0 || dy !== 0)) {
+      const cells = [];
+      let x = first.x;
+      let y = first.y;
+      cells.push({ x, y });
+      while (x !== last.x || y !== last.y) {
+        if (x !== last.x) x += dx;
+        if (y !== last.y) y += dy;
+        cells.push({ x, y });
+      }
+      return cells;
+    }
+  }
+  return last ? [{ x: last.x, y: last.y }] : [];
 }
 
 export function getCircleCompositeSquareCells(generatedMap, region) {
@@ -1952,22 +2069,23 @@ export function getCircleCompositeSquareCells(generatedMap, region) {
           anchor,
           generatedMap.config.gridSize,
         );
-        const portal = {
-          x: resolvedPortalCell.x,
-          y: resolvedPortalCell.y,
-          side: anchor.side,
+        if (!resolvedPortalCell) return;
+        const raccordoCells = getCircleRaccordoCellsFromAnchor(
           anchor,
-        };
-        addCompositeCell(portal, "expanded-door", anchor);
-        addCompositeCell(
-          getCirclePortalSupportCell(
-            region,
-            portal,
-            generatedMap.config.gridSize,
-          ),
-          "support",
-          anchor,
+          resolvedPortalCell,
         );
+        raccordoCells.forEach((cell) => {
+          addCompositeCell(
+            {
+              x: cell.x,
+              y: cell.y,
+              side: anchor.side,
+              anchor,
+            },
+            "expanded-door",
+            anchor,
+          );
+        });
       });
   });
 
@@ -2030,10 +2148,10 @@ export function createCircleCompositeRegionSurface(
   const extensionPath = extensionCells
     .map((cell) => cellRectToPath(cell, gridSize))
     .join(" ");
-  const mouthPath = generatedMap
-    ? getCircleDoorMouthPaths(generatedMap, region).join(" ")
-    : "";
-  const visualFloorPath = [circlePath, mouthPath, extensionPath]
+  // Circular rooms connect to corridors through a full grid raccordo square.
+  // No freeform mouth/trapezoid is rendered here; only the circular room itself
+  // is allowed to be non-grid.
+  const visualFloorPath = [circlePath, extensionPath]
     .filter(Boolean)
     .join(" ");
   const hoverPath = generatedMap
@@ -5225,12 +5343,7 @@ export function renderCircleRoomWalls(generatedMap) {
               (segment, index) => (
                 <path
                   key={`circle-portal-wall-${region.id}-${index}`}
-                  d={createRoughWallPath(
-                    segment,
-                    generatedMap.config,
-                    `circle-portal-${region.id}-${index}`,
-                    "main",
-                  )}
+                  d={createPreciseWallPath(segment)}
                 />
               ),
             )}
@@ -5247,12 +5360,7 @@ export function renderCircleRoomWalls(generatedMap) {
               (segment, index) => (
                 <path
                   key={`circle-portal-wall-sketch-${region.id}-${index}`}
-                  d={createRoughWallPath(
-                    segment,
-                    generatedMap.config,
-                    `circle-portal-sketch-${region.id}-${index}`,
-                    "sketch",
-                  )}
+                  d={createPreciseWallPath(segment)}
                 />
               ),
             )}
@@ -6801,7 +6909,12 @@ export function getCorridorWallSegmentsNearVectorRooms(generatedMap) {
     .flatMap((wall) => splitSegmentOutsideVectorRooms(wall, generatedMap));
 }
 
-export function splitSegmentOutsideCircle(segment, circle, gridSize) {
+export function splitSegmentOutsideCircle(
+  segment,
+  circle,
+  gridSize,
+  outsideTolerance = gridSize * 0.045,
+) {
   const dx = segment.x2 - segment.x1;
   const dy = segment.y2 - segment.y1;
   const a = dx * dx + dy * dy;
@@ -6832,8 +6945,7 @@ export function splitSegmentOutsideCircle(segment, circle, gridSize) {
     const mid = (start + end) / 2;
     const mx = segment.x1 + dx * mid;
     const my = segment.y1 + dy * mid;
-    const outside =
-      Math.hypot(mx - circle.cx, my - circle.cy) >= circle.r - gridSize * 0.045;
+    const outside = Math.hypot(mx - circle.cx, my - circle.cy) >= circle.r - outsideTolerance;
     if (!outside) continue;
     const clipped = {
       x1: segment.x1 + dx * start,
@@ -6882,10 +6994,8 @@ function addUniqueSegment(segments, seen, segment) {
 
 export function getCirclePortalSquareWallSegments(region, generatedMap) {
   if (region.shape !== "circle") return [];
-  const circle = getCircleGeometryFromRegion(
-    region,
-    generatedMap.config.gridSize,
-  );
+  const gridSize = generatedMap.config.gridSize;
+  const circle = getCircleGeometryFromRegion(region, gridSize);
   const compositeCells = getCircleCompositeSquareCells(generatedMap, region);
   const extensionCellKeys = new Set(
     compositeCells.map((cell) => cellKey(cell.x, cell.y)),
@@ -6899,30 +7009,28 @@ export function getCirclePortalSquareWallSegments(region, generatedMap) {
   const segments = [];
 
   compositeCells.forEach((cell) => {
-    getCellBoundarySegmentsForCell(
-      cell,
-      generatedMap.config.gridSize,
-    ).forEach((edge) => {
+    getCellBoundarySegmentsForCell(cell, gridSize).forEach((edge) => {
       const neighbor = getNeighborForCellSide(cell, edge.side);
       const neighborKey = cellKey(neighbor.x, neighbor.y);
       if (extensionCellKeys.has(neighborKey)) return;
       if (corridorCellKeys.has(neighborKey)) return;
       if (isCirclePortalEdgeFacingRoom(cell, edge)) return;
-      splitSegmentOutsideCircle(
-        edge,
-        circle,
-        generatedMap.config.gridSize,
-      ).forEach((part) => {
-        addUniqueSegment(segments, seen, part);
-      });
+
+      // The raccordo wall is not an independent square outline placed on top of
+      // the circular room. It is the straight portion of the outer contour of
+      // the union shape: circle + full raccordo square. Therefore each raccordo
+      // edge only contributes the part that is outside the mathematical circle.
+      // Any edge portion already inside the circle would visually cut into the
+      // room and must be omitted.
+      splitSegmentOutsideCircle(edge, circle, gridSize, 0.01).forEach(
+        (segment) => addUniqueSegment(segments, seen, segment),
+      );
     });
-    // Wall segments are derived from the union boundary: square edges outside
-    // the circle, with edges shared by corridors or the circular room removed.
-    // Extra bridge strokes produce protrusions and can mask real floor gaps.
   });
 
   return segments;
 }
+
 
 
 export function getDrawableWallSegments(generatedMap) {
@@ -9133,6 +9241,40 @@ function getConnectionDraftPreviewRouteCells(generatedMap, connectionDraft, grid
   return isUsableCorridorPath(direct, start, goal) ? direct : [];
 }
 
+function getConnectionDraftFallbackRouteCells(generatedMap, connectionDraft, gridSize) {
+  if (!generatedMap?.config || !connectionDraft) return [];
+  const gridW = Math.max(2, Math.floor(generatedMap.config.mapWidth / gridSize));
+  const gridH = Math.max(2, Math.floor(generatedMap.config.mapHeight / gridSize));
+  const start = getConnectionDraftEndpointCell(
+    connectionDraft.fromAnchor,
+    connectionDraft.start,
+    gridSize,
+    gridW,
+    gridH,
+  );
+  const goal = getConnectionDraftEndpointCell(
+    connectionDraft.toAnchor || connectionDraft.target?.anchor,
+    connectionDraft.current,
+    gridSize,
+    gridW,
+    gridH,
+  );
+  if (!start || !goal) return [];
+  return linePathBetweenCells(start, goal);
+}
+
+function buildConnectionDraftFallbackPointPath(connectionDraft) {
+  const start = clonePoint(connectionDraft?.start);
+  const current = clonePoint(connectionDraft?.current);
+  if (!start || !current) return "";
+  const dx = Math.abs(current.x - start.x);
+  const dy = Math.abs(current.y - start.y);
+  const bend = dx >= dy
+    ? { x: current.x, y: start.y }
+    : { x: start.x, y: current.y };
+  return buildPointPath([start, bend, current]);
+}
+
 function buildConnectionDraftPreviewPath(generatedMap, connectionDraft, gridSize) {
   const routeCells = getConnectionDraftPreviewRouteCells(
     generatedMap,
@@ -9140,7 +9282,15 @@ function buildConnectionDraftPreviewPath(generatedMap, connectionDraft, gridSize
     gridSize,
   );
   if (routeCells.length >= 2) return buildCellCenterlinePath([routeCells], gridSize);
-  return buildPointPath([connectionDraft?.start, connectionDraft?.current].filter(Boolean));
+
+  const fallbackCells = getConnectionDraftFallbackRouteCells(
+    generatedMap,
+    connectionDraft,
+    gridSize,
+  );
+  if (fallbackCells.length >= 2) return buildCellCenterlinePath([fallbackCells], gridSize);
+
+  return buildConnectionDraftFallbackPointPath(connectionDraft);
 }
 
 function getExactPreviewCorridorPath(previewMap, corridorId) {

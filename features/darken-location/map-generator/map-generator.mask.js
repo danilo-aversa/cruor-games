@@ -940,8 +940,11 @@ function getCircleExtensionAnchorSideFromNormal(normal, fallback = "east") {
   if (!normal) return fallback;
   const x = Number.isFinite(normal.x) ? normal.x : 0;
   const y = Number.isFinite(normal.y) ? normal.y : 0;
-  if (Math.abs(x) >= Math.abs(y)) return x >= 0 ? "east" : "west";
-  return y >= 0 ? "south" : "north";
+  const absX = Math.abs(x);
+  const absY = Math.abs(y);
+  if (absY >= absX * 0.82 && absY > 0) return y >= 0 ? "south" : "north";
+  if (absX > 0) return x >= 0 ? "east" : "west";
+  return fallback;
 }
 
 function getCircleExtensionAxialNormal(side) {
@@ -957,6 +960,50 @@ function normalizeCircleExtensionVector(vector, fallback = { x: 1, y: 0 }) {
   const length = Math.hypot(x, y);
   if (!Number.isFinite(length) || length <= 0.0001) return { ...fallback };
   return { x: x / length, y: y / length };
+}
+
+function getCircleExtensionPerimeterPoint(circle, radial, gridSize) {
+  return {
+    x: (circle.cxCells + radial.x * circle.rCells) * gridSize,
+    y: (circle.cyCells + radial.y * circle.rCells) * gridSize,
+  };
+}
+
+function getCircleExtensionTangentSegment(point, radial, gridSize) {
+  if (!point || !radial) return null;
+  const length = Math.hypot(radial.x, radial.y) || 1;
+  const tangent = { x: -radial.y / length, y: radial.x / length };
+  const half = gridSize * 0.42;
+  return {
+    x1: point.x - tangent.x * half,
+    y1: point.y - tangent.y * half,
+    x2: point.x + tangent.x * half,
+    y2: point.y + tangent.y * half,
+  };
+}
+
+function createCircleExtensionDoorGeometry(region, radial, gridSize) {
+  const circle = getCircleGeometryFromRegion(region, 1);
+  const normalizedRadial = normalizeCircleExtensionVector(radial);
+  const point = getCircleExtensionPerimeterPoint(
+    circle,
+    normalizedRadial,
+    gridSize,
+  );
+  return {
+    circular: {
+      cx: circle.cxCells,
+      cy: circle.cyCells,
+      r: circle.rCells,
+      normal: normalizedRadial,
+    },
+    point,
+    segment: getCircleExtensionTangentSegment(
+      point,
+      normalizedRadial,
+      gridSize,
+    ),
+  };
 }
 
 function getCircleExtensionCellCenter(cell) {
@@ -1011,7 +1058,111 @@ function isCirclePortalCellUsable(cell, circle, gridW, gridH, reservedRoomCells)
   if (!isCircleExtensionCellInBounds(cell, gridW, gridH)) return false;
   if (isCircleExtensionCellReserved(cell, reservedRoomCells)) return false;
   const range = getCircleCellRectDistanceRange(cell, circle);
-  return range.min < circle.rCells - 0.001 && range.max >= circle.rCells - 0.001;
+  // The portal cell is the grid raccordo: a full square integrated into the
+  // circular room wall. It must touch/cross the mathematical circle boundary,
+  // but it may have its center inside the circle because the whole point is to
+  // complete the grid square at the wall. Fully internal cells are rejected.
+  return (
+    range.min <= circle.rCells + 0.035 &&
+    range.max >= circle.rCells + 0.025
+  );
+}
+
+function isCircleCorridorStartCellUsable(cell, circle, gridW, gridH, reservedRoomCells) {
+  if (!isCircleExtensionCellInBounds(cell, gridW, gridH)) return false;
+  if (isCircleExtensionCellReserved(cell, reservedRoomCells)) return false;
+  const range = getCircleCellRectDistanceRange(cell, circle);
+  // Corridors are grid-only. The first corridor square must be entirely outside
+  // the vector circle; only the raccordo squares are allowed to overlap the
+  // circular wall.
+  return range.min >= circle.rCells + 0.025;
+}
+
+function isCircleDoorBearingRaccordoCellUsable(cell, circle, gridW, gridH, reservedRoomCells) {
+  if (!isCircleExtensionCellInBounds(cell, gridW, gridH)) return false;
+  if (isCircleExtensionCellReserved(cell, reservedRoomCells)) return false;
+  const range = getCircleCellRectDistanceRange(cell, circle);
+  // The first raccordo cell completes the square intersected by the circular
+  // wall. If that cell still overlaps the circle, keep extending outward until
+  // the door-bearing raccordo cell is outside/tangent to the circle.
+  return range.min >= circle.rCells - 0.025;
+}
+
+function cloneCircleExtensionCell(cell) {
+  return cell ? { x: cell.x, y: cell.y } : null;
+}
+
+function getCircleAdjacentCorridorStartCell(portalRoomCell, normal) {
+  if (!portalRoomCell || !normal) return null;
+  return {
+    x: portalRoomCell.x + normal.x,
+    y: portalRoomCell.y + normal.y,
+  };
+}
+
+function getCircleRaccordoChainForPortalCell(
+  portalRoomCell,
+  normal,
+  circle,
+  gridW,
+  gridH,
+  reservedRoomCells,
+) {
+  if (!portalRoomCell || !normal) return null;
+  if (!isCirclePortalCellUsable(portalRoomCell, circle, gridW, gridH, reservedRoomCells)) {
+    return null;
+  }
+  const raccordoCells = [cloneCircleExtensionCell(portalRoomCell)];
+  let doorRaccordoCell = cloneCircleExtensionCell(portalRoomCell);
+  for (let step = 0; step < 4; step += 1) {
+    if (
+      isCircleDoorBearingRaccordoCellUsable(
+        doorRaccordoCell,
+        circle,
+        gridW,
+        gridH,
+        reservedRoomCells,
+      )
+    ) {
+      break;
+    }
+    doorRaccordoCell = {
+      x: doorRaccordoCell.x + normal.x,
+      y: doorRaccordoCell.y + normal.y,
+    };
+    if (!isCircleExtensionCellInBounds(doorRaccordoCell, gridW, gridH)) return null;
+    if (isCircleExtensionCellReserved(doorRaccordoCell, reservedRoomCells)) return null;
+    raccordoCells.push(cloneCircleExtensionCell(doorRaccordoCell));
+  }
+  if (
+    !isCircleDoorBearingRaccordoCellUsable(
+      doorRaccordoCell,
+      circle,
+      gridW,
+      gridH,
+      reservedRoomCells,
+    )
+  ) {
+    return null;
+  }
+  const corridorStartCell = getCircleAdjacentCorridorStartCell(doorRaccordoCell, normal);
+  if (
+    !isCircleCorridorStartCellUsable(
+      corridorStartCell,
+      circle,
+      gridW,
+      gridH,
+      reservedRoomCells,
+    )
+  ) {
+    return null;
+  }
+  return {
+    portalRoomCell: cloneCircleExtensionCell(portalRoomCell),
+    raccordoCell: cloneCircleExtensionCell(doorRaccordoCell),
+    raccordoCells,
+    corridorStartCell: cloneCircleExtensionCell(corridorStartCell),
+  };
 }
 
 function getProjectedCircleExtensionCell(circle, radial, offsetCells) {
@@ -1028,6 +1179,11 @@ function getCircleExtensionAnchorRadial(
   gridSize = DEFAULT_CONFIG.gridSize,
 ) {
   const circle = getCircleGeometryFromRegion(region, 1);
+  // The radial is the stable identity of a circular connector. Prefer it over
+  // absolute pixel points, because manual door anchors can outlive room drags.
+  if (anchor?.circular?.normal) {
+    return normalizeCircleExtensionVector(anchor.circular.normal, normal);
+  }
   if (anchor?.point && Number.isFinite(anchor.point.x) && Number.isFinite(anchor.point.y)) {
     const scale = Math.max(1, Number(gridSize) || DEFAULT_CONFIG.gridSize);
     return normalizeCircleExtensionVector(
@@ -1037,9 +1193,6 @@ function getCircleExtensionAnchorRadial(
       },
       normal,
     );
-  }
-  if (anchor?.circular?.normal) {
-    return normalizeCircleExtensionVector(anchor.circular.normal, normal);
   }
   const referenceCell = anchor?.outsideCell || anchor?.portalRoomCell || anchor?.originalOutsideCell || anchor?.cell;
   if (referenceCell) {
@@ -1086,19 +1239,31 @@ function chooseCirclePortalRoomCell(
     gridH,
     reservedRoomCells,
   );
-  if (inwardPortalCell) return { x: inwardPortalCell.x, y: inwardPortalCell.y };
-  const projectedPortalCell = getProjectedCircleExtensionCell(circle, radial, -0.01);
-  const projectedOuterCell = getProjectedCircleExtensionCell(circle, radial, 0.55);
+  if (
+    inwardPortalCell &&
+    getCircleRaccordoChainForPortalCell(
+      inwardPortalCell,
+      normal,
+      circle,
+      gridW,
+      gridH,
+      reservedRoomCells,
+    )
+  ) {
+    return { x: inwardPortalCell.x, y: inwardPortalCell.y };
+  }
+  const projectedPortalCell = getProjectedCircleExtensionCell(circle, radial, 0.45);
+  const projectedOuterCell = getProjectedCircleExtensionCell(circle, radial, 1.25);
   const candidates = [
     inwardPortalCell,
     projectedPortalCell,
     anchor.portalRoomCell,
     anchor.outsideCell,
     anchor.cell,
-    getProjectedCircleExtensionCell(circle, radial, -0.25),
-    getProjectedCircleExtensionCell(circle, radial, 0.25),
+    getProjectedCircleExtensionCell(circle, radial, 0.05),
+    getProjectedCircleExtensionCell(circle, radial, 0.85),
     projectedOuterCell,
-    getProjectedCircleExtensionCell(circle, radial, 0.95),
+    getProjectedCircleExtensionCell(circle, radial, 1.65),
     ...(projectedPortalCell
       ? [
           { x: projectedPortalCell.x + normal.x, y: projectedPortalCell.y + normal.y },
@@ -1109,7 +1274,16 @@ function chooseCirclePortalRoomCell(
 
   const usable = candidates
     .filter((cell) =>
-      isCirclePortalCellUsable(cell, circle, gridW, gridH, reservedRoomCells),
+      Boolean(
+        getCircleRaccordoChainForPortalCell(
+          cell,
+          normal,
+          circle,
+          gridW,
+          gridH,
+          reservedRoomCells,
+        ),
+      ),
     )
     .map((cell) => {
       const center = getCircleExtensionCellCenter(cell);
@@ -1131,7 +1305,7 @@ function chooseCirclePortalRoomCell(
   return usable[0]?.cell || null;
 }
 
-function chooseCircleRoutingOutsideCell(
+function chooseCircleRaccordoChain(
   region,
   anchor,
   portalRoomCell,
@@ -1141,26 +1315,14 @@ function chooseCircleRoutingOutsideCell(
   reservedRoomCells,
 ) {
   const circle = getCircleGeometryFromRegion(region, 1);
-  const portalDistance = getCircleExtensionCellDistance(portalRoomCell, circle);
-  const candidates = [
-    anchor.routingOutsideCell,
-    anchor.outsideCell,
-    {
-      x: portalRoomCell.x + normal.x,
-      y: portalRoomCell.y + normal.y,
-    },
-  ].filter(Boolean);
-  const usable = candidates
-    .filter((cell) => isCircleExtensionCellInBounds(cell, gridW, gridH))
-    .filter((cell) => !isCircleExtensionCellReserved(cell, reservedRoomCells))
-    .filter((cell) => getCircleExtensionCellManhattanDistance(cell, portalRoomCell) === 1)
-    .filter((cell) => getCircleExtensionCellDistance(cell, circle) > portalDistance + 0.05)
-    .map((cell) => ({
-      cell: { x: cell.x, y: cell.y },
-      distance: getCircleExtensionCellDistance(cell, circle),
-    }))
-    .sort((a, b) => b.distance - a.distance);
-  return usable[0]?.cell || null;
+  return getCircleRaccordoChainForPortalCell(
+    portalRoomCell,
+    normal,
+    circle,
+    gridW,
+    gridH,
+    reservedRoomCells,
+  );
 }
 
 export function createCircleDoorRoomExtensionAnchor(
@@ -1172,8 +1334,16 @@ export function createCircleDoorRoomExtensionAnchor(
   gridSize = DEFAULT_CONFIG.gridSize,
 ) {
   if (!anchor || region.shape !== "circle") return anchor;
-  const side = anchor.side || getCircleExtensionAnchorSideFromNormal(anchor.normal);
-  const normal = anchor.normal || getCircleExtensionAxialNormal(side);
+  const fallbackSide = anchor.side || getCircleExtensionAnchorSideFromNormal(anchor.normal);
+  const fallbackNormal = anchor.normal || getCircleExtensionAxialNormal(fallbackSide);
+  const radial = getCircleExtensionAnchorRadial(
+    region,
+    anchor,
+    fallbackNormal,
+    gridSize,
+  );
+  const side = getCircleExtensionAnchorSideFromNormal(radial, fallbackSide);
+  const normal = getCircleExtensionAxialNormal(side);
   const portalRoomCell = chooseCirclePortalRoomCell(
     region,
     anchor,
@@ -1184,7 +1354,7 @@ export function createCircleDoorRoomExtensionAnchor(
     gridSize,
   );
   if (!portalRoomCell) return anchor;
-  const outsideCell = chooseCircleRoutingOutsideCell(
+  const raccordoChain = chooseCircleRaccordoChain(
     region,
     anchor,
     portalRoomCell,
@@ -1193,17 +1363,36 @@ export function createCircleDoorRoomExtensionAnchor(
     gridH,
     reservedRoomCells,
   );
-  if (!outsideCell) return anchor;
+  if (!raccordoChain?.corridorStartCell || !raccordoChain?.raccordoCell) return anchor;
+  const outsideCell = raccordoChain.corridorStartCell;
+  const doorRaccordoCell = raccordoChain.raccordoCell;
+  const sharedSegment = getSharedEdgeSegment(doorRaccordoCell, outsideCell, gridSize);
+  const sharedPoint = sharedSegment
+    ? {
+        x: (sharedSegment.x1 + sharedSegment.x2) / 2,
+        y: (sharedSegment.y1 + sharedSegment.y2) / 2,
+      }
+    : null;
   return {
     ...anchor,
     side,
     normal,
-    cell: portalRoomCell,
+    cell: doorRaccordoCell,
     outsideCell,
-    circular: null,
+    circular: {
+      ...getCircleGeometryFromRegion(region, 1),
+      normal,
+    },
+    point: sharedPoint,
+    segment: sharedSegment,
     expandedCircleDoor: true,
+    circleBoundaryAnchor: true,
+    circleRaccordoCell: true,
     portalRoomCell,
     routingOutsideCell: outsideCell,
+    raccordoCell: { x: doorRaccordoCell.x, y: doorRaccordoCell.y },
+    raccordoCells: raccordoChain.raccordoCells.map((cell) => ({ x: cell.x, y: cell.y })),
+    corridorStartCell: { x: outsideCell.x, y: outsideCell.y },
     originalCell: anchor.cell ? { x: anchor.cell.x, y: anchor.cell.y } : null,
     originalOutsideCell: anchor.outsideCell
       ? { x: anchor.outsideCell.x, y: anchor.outsideCell.y }
@@ -1212,9 +1401,50 @@ export function createCircleDoorRoomExtensionAnchor(
   };
 }
 
+function isSameCircleExtensionCell(a, b) {
+  return Boolean(a && b && a.x === b.x && a.y === b.y);
+}
+
+function getCircleDoorRaccordoCells(anchor) {
+  if (Array.isArray(anchor?.raccordoCells) && anchor.raccordoCells.length > 0) {
+    return anchor.raccordoCells
+      .filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y))
+      .map((cell) => ({ x: cell.x, y: cell.y }));
+  }
+  const first = anchor?.portalRoomCell || null;
+  const last = anchor?.raccordoCell || anchor?.cell || first;
+  if (first && last && (first.x !== last.x || first.y !== last.y)) {
+    const dx = Math.sign(last.x - first.x);
+    const dy = Math.sign(last.y - first.y);
+    if ((dx === 0 || dy === 0) && (dx !== 0 || dy !== 0)) {
+      const cells = [];
+      let x = first.x;
+      let y = first.y;
+      cells.push({ x, y });
+      while (x !== last.x || y !== last.y) {
+        if (x !== last.x) x += dx;
+        if (y !== last.y) y += dy;
+        cells.push({ x, y });
+      }
+      return cells;
+    }
+  }
+  return last ? [{ x: last.x, y: last.y }] : [];
+}
+
+function getCircleDoorRaccordoCell(anchor) {
+  const cells = getCircleDoorRaccordoCells(anchor);
+  return cells[cells.length - 1] || anchor?.raccordoCell || anchor?.portalRoomCell || anchor?.cell || null;
+}
+
+function getCircleDoorCorridorStartCell(anchor) {
+  return anchor?.corridorStartCell || anchor?.routingOutsideCell || anchor?.outsideCell || null;
+}
+
 function isCircleDoorPortalAnchor(anchor) {
+  const raccordoCell = getCircleDoorRaccordoCell(anchor);
   return Boolean(
-    anchor?.portalRoomCell &&
+    raccordoCell &&
       (anchor.expandedCircleDoor ||
         anchor.circleBoundaryAnchor ||
         anchor.finalGeometry ||
@@ -1224,22 +1454,41 @@ function isCircleDoorPortalAnchor(anchor) {
 
 export function addCircleDoorRoomExtensionCellToSet(anchor, cells) {
   if (!isCircleDoorPortalAnchor(anchor)) return;
-  cells.add(cellKey(anchor.portalRoomCell.x, anchor.portalRoomCell.y));
+  const raccordoCells = getCircleDoorRaccordoCells(anchor);
+  const corridorStartCell = getCircleDoorCorridorStartCell(anchor);
+  // Raccordo cells are room floor; the corridor start square is corridor floor.
+  raccordoCells.forEach((raccordoCell) => {
+    if (isSameCircleExtensionCell(raccordoCell, corridorStartCell)) return;
+    cells.add(cellKey(raccordoCell.x, raccordoCell.y));
+  });
 }
 
 export function applyCircleDoorRoomExtensions(regions, corridors) {
   const extensionsByRegion = new Map();
+  const corridorStartsByRegion = new Map();
   const addExtension = (regionId, anchor) => {
     if (!regionId || !isCircleDoorPortalAnchor(anchor))
       return;
+    const corridorStartCell = getCircleDoorCorridorStartCell(anchor);
+    if (corridorStartCell) {
+      if (!corridorStartsByRegion.has(regionId))
+        corridorStartsByRegion.set(regionId, new Set());
+      corridorStartsByRegion
+        .get(regionId)
+        .add(cellKey(corridorStartCell.x, corridorStartCell.y));
+    }
+    const raccordoCells = getCircleDoorRaccordoCells(anchor);
     if (!extensionsByRegion.has(regionId))
       extensionsByRegion.set(regionId, new Map());
-    extensionsByRegion
-      .get(regionId)
-      .set(cellKey(anchor.portalRoomCell.x, anchor.portalRoomCell.y), {
-        x: anchor.portalRoomCell.x,
-        y: anchor.portalRoomCell.y,
-      });
+    raccordoCells.forEach((raccordoCell) => {
+      if (isSameCircleExtensionCell(raccordoCell, corridorStartCell)) return;
+      extensionsByRegion
+        .get(regionId)
+        .set(cellKey(raccordoCell.x, raccordoCell.y), {
+          x: raccordoCell.x,
+          y: raccordoCell.y,
+        });
+    });
   };
 
   corridors.forEach((corridor) => {
@@ -1252,11 +1501,14 @@ export function applyCircleDoorRoomExtensions(regions, corridors) {
 
     const extensions = extensionsByRegion.get(region.id);
     const circle = getCircleGeometryFromRegion(region, 1);
-    const currentExtensions = Array.from(extensions?.values?.() || []).filter((cell) => {
-      const dx = cell.x + 0.5 - circle.cxCells;
-      const dy = cell.y + 0.5 - circle.cyCells;
-      return Math.hypot(dx, dy) <= circle.rCells + 2.05;
-    });
+    const corridorStartKeys = corridorStartsByRegion.get(region.id) || new Set();
+    const currentExtensions = Array.from(extensions?.values?.() || []).filter(
+      (cell) => {
+        if (corridorStartKeys.has(cellKey(cell.x, cell.y))) return false;
+        const range = getCircleCellRectDistanceRange(cell, circle);
+        return range.max >= circle.rCells + 0.025 && range.min <= circle.rCells + 2.25;
+      },
+    );
 
     const previousExtensionKeys = new Set(
       (Array.isArray(region.circleExtensionCells)
