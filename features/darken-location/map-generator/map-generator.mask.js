@@ -1212,15 +1212,25 @@ export function createCircleDoorRoomExtensionAnchor(
   };
 }
 
+function isCircleDoorPortalAnchor(anchor) {
+  return Boolean(
+    anchor?.portalRoomCell &&
+      (anchor.expandedCircleDoor ||
+        anchor.circleBoundaryAnchor ||
+        anchor.finalGeometry ||
+        anchor.regionShape === "circle")
+  );
+}
+
 export function addCircleDoorRoomExtensionCellToSet(anchor, cells) {
-  if (!anchor?.expandedCircleDoor || !anchor.portalRoomCell) return;
+  if (!isCircleDoorPortalAnchor(anchor)) return;
   cells.add(cellKey(anchor.portalRoomCell.x, anchor.portalRoomCell.y));
 }
 
 export function applyCircleDoorRoomExtensions(regions, corridors) {
   const extensionsByRegion = new Map();
   const addExtension = (regionId, anchor) => {
-    if (!regionId || !anchor?.expandedCircleDoor || !anchor.portalRoomCell)
+    if (!regionId || !isCircleDoorPortalAnchor(anchor))
       return;
     if (!extensionsByRegion.has(regionId))
       extensionsByRegion.set(regionId, new Map());

@@ -5347,6 +5347,7 @@ export default function CruorMapGeneratorMvp({
   const generatedMapRef = useRef(null);
   const qaRunnerAbortRef = useRef(null);
   const qaRunnerSequenceRef = useRef(0);
+  const qaDiagnosticMapSignatureRef = useRef("");
   const [debugRecording, setDebugRecording] = useState(false);
   const [debugCategories, setDebugCategories] = useState(DEFAULT_MAP_DEBUG_CATEGORIES);
   const [debugEntries, setDebugEntries] = useState([]);
@@ -5547,6 +5548,35 @@ export default function CruorMapGeneratorMvp({
       );
     }
   }, [debugRecording, recordDebugEvent]);
+
+  useEffect(() => {
+    if (!debugRecordingRef.current) return;
+    const repairs = getQaRepairCorridors(generatedMap);
+    const duplicates = getQaCorridorPairDuplicates(generatedMap);
+    const visualIssues = getQaCorridorVisualTopologyIssues(generatedMap);
+    if (!repairs.length && !duplicates.length && !visualIssues.length) {
+      qaDiagnosticMapSignatureRef.current = "";
+      return;
+    }
+    const signature = JSON.stringify({
+      repairs: repairs.map((corridor) => corridor.id),
+      duplicates,
+      visualIssues: visualIssues.map((issue) => issue.corridorId),
+      corridorIds: (generatedMap?.corridors || []).map((corridor) => corridor.id),
+    });
+    if (qaDiagnosticMapSignatureRef.current === signature) return;
+    qaDiagnosticMapSignatureRef.current = signature;
+    recordDebugEvent(
+      "qa diagnostics: generated map repair state",
+      {
+        repairs: repairs.map(summarizeDebugCorridor),
+        duplicates,
+        visualIssues,
+        topology: summarizeQaCorridorTopology(generatedMap),
+      },
+      { category: "generated-map", source: "map-generator" }
+    );
+  }, [generatedMap, recordDebugEvent]);
 
   function isMapEditorDebugEnabled() {
     return Boolean(debugMode && debugRecording);
@@ -8108,15 +8138,79 @@ export default function CruorMapGeneratorMvp({
     return createCircleConnectionAnchorFromOutsideCell(region, circle, outsideCell, gridSize);
   }
 
-  function getQaCircleAnchorSweepCells(region, map = getQaGeneratedMap()) {
+  function getQaCircleAnchorSortCell(anchor) {
+    return anchor?.snapCell || anchor?.outsideCell || anchor?.routingOutsideCell || anchor?.cell || null;
+  }
+
+  function summarizeQaCircleAnchorCandidate(anchor) {
+    const cell = getQaCircleAnchorSortCell(anchor);
+    return {
+      side: anchor?.side || null,
+      sortCell: summarizeDebugCell(cell),
+      anchor: summarizeDebugAnchor(anchor),
+    };
+  }
+
+  function getQaCircleAnchorSweepAnchors(region, map = getQaGeneratedMap(), preferredSide = null) {
+    if (!region || region.shape !== "circle") return [];
     const gridSize = map?.config?.gridSize || config.gridSize || 20;
     const circle = getCircleGeometryFromRegion(region, gridSize);
     if (!circle) return [];
-    const cy = Math.floor(circle.cyCells + circle.rCells);
-    const cx = Math.floor(circle.cxCells);
-    return [cx - 2, cx - 1, cx, cx + 1, cx + 2, cx + 3]
-      .map((x) => ({ x, y: cy }))
-      .filter((cell) => getQaCircleAnchorForOutsideCell(region, cell, map));
+    const candidates = createCircleConnectionAnchorCandidates(region, circle, gridSize);
+    const unique = [];
+    const seen = new Set();
+    candidates.forEach((anchor) => {
+      const cell = getQaCircleAnchorSortCell(anchor);
+      if (!cell) return;
+      const key = `${anchor.side || "side"}:${cell.x}:${cell.y}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      unique.push(anchor);
+    });
+    const sideFiltered = preferredSide
+      ? unique.filter((anchor) => anchor.side === preferredSide)
+      : [];
+    const pool = sideFiltered.length >= 2 ? sideFiltered : unique;
+    return [...pool].sort((a, b) => {
+      const cellA = getQaCircleAnchorSortCell(a) || { x: 0, y: 0 };
+      const cellB = getQaCircleAnchorSortCell(b) || { x: 0, y: 0 };
+      if ((a.side || "") !== (b.side || "")) return String(a.side || "").localeCompare(String(b.side || ""));
+      if (cellA.y !== cellB.y) return cellA.y - cellB.y;
+      if (cellA.x !== cellB.x) return cellA.x - cellB.x;
+      return (a.finalBoundaryIndex || 0) - (b.finalBoundaryIndex || 0);
+    });
+  }
+
+  function summarizeQaCircleAnchorAvailability(region, map = getQaGeneratedMap(), preferredSide = null) {
+    const gridSize = map?.config?.gridSize || config.gridSize || 20;
+    const circle = region ? getCircleGeometryFromRegion(region, gridSize) : null;
+    const candidates = region?.shape === "circle" && circle
+      ? createCircleConnectionAnchorCandidates(region, circle, gridSize)
+      : [];
+    const bySide = candidates.reduce((acc, anchor) => {
+      const side = anchor?.side || "unknown";
+      acc[side] = (acc[side] || 0) + 1;
+      return acc;
+    }, {});
+    const sweepAnchors = getQaCircleAnchorSweepAnchors(region, map, preferredSide);
+    return {
+      region: summarizeDebugRegion(region),
+      circle: circle
+        ? {
+            cx: roundDebugNumber(circle.cx),
+            cy: roundDebugNumber(circle.cy),
+            r: roundDebugNumber(circle.r),
+            cxCells: roundDebugNumber(circle.cxCells),
+            cyCells: roundDebugNumber(circle.cyCells),
+            rCells: roundDebugNumber(circle.rCells),
+          }
+        : null,
+      candidateCount: candidates.length,
+      bySide,
+      preferredSide: preferredSide || null,
+      sweepCount: sweepAnchors.length,
+      sample: sweepAnchors.slice(0, 12).map(summarizeQaCircleAnchorCandidate),
+    };
   }
 
   async function waitForQaRender(signal, settings = {}) {
@@ -8131,17 +8225,149 @@ export default function CruorMapGeneratorMvp({
     throw error;
   }
 
-  function assertQaNoDuplicateCorridors(map = getQaGeneratedMap()) {
+  function getQaCorridorPairDuplicates(map = getQaGeneratedMap()) {
     const seen = new Map();
     (map?.corridors || []).forEach((corridor) => {
       const pair = [corridor.from, corridor.to].filter(Boolean).sort().join("::");
       if (!pair) return;
       const current = seen.get(pair) || [];
-      current.push(corridor.id);
+      current.push(corridor);
       seen.set(pair, current);
     });
-    const duplicates = [...seen.entries()].filter(([, ids]) => ids.length > 1);
-    assertQa(!duplicates.length, "Duplicate corridors between the same room pair.", { duplicates });
+    return [...seen.entries()]
+      .filter(([, corridors]) => corridors.length > 1)
+      .map(([pair, corridors]) => [pair, corridors.map((corridor) => corridor.id)]);
+  }
+
+  function getQaRepairCorridors(map = getQaGeneratedMap()) {
+    return (map?.corridors || []).filter((corridor) =>
+      String(corridor?.id || "").startsWith("physical-repair-") ||
+      String(corridor?.id || "").startsWith("physical-force-repair-") ||
+      String(corridor?.reason || "").includes("physical-connectivity")
+    );
+  }
+
+  function getQaCorridorCellSet(corridor) {
+    return new Set(
+      (Array.isArray(corridor?.floorCells) ? corridor.floorCells : [])
+        .filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y))
+        .map((cell) => cellKey(cell.x, cell.y)),
+    );
+  }
+
+  function getQaCorridorCellDegree(cell, cellSet) {
+    return getCellNeighbors(cell).filter((neighbor) =>
+      cellSet.has(cellKey(neighbor.x, neighbor.y)),
+    ).length;
+  }
+
+  function getQaCorridorPathContinuityIssues(corridor) {
+    const cells = Array.isArray(corridor?.pathCells) && corridor.pathCells.length > 0
+      ? corridor.pathCells
+      : corridor?.floorCells || [];
+    const issues = [];
+    for (let index = 1; index < cells.length; index += 1) {
+      const previous = cells[index - 1];
+      const current = cells[index];
+      if (!previous || !current) continue;
+      const distance = Math.abs(previous.x - current.x) + Math.abs(previous.y - current.y);
+      if (distance <= 1) continue;
+      issues.push({
+        type: "discontinuous-corridor-path",
+        index,
+        previous: summarizeDebugCell(previous),
+        current: summarizeDebugCell(current),
+        distance,
+      });
+    }
+    return issues;
+  }
+
+  function getQaCorridorBranchIssues(corridor) {
+    if (
+      corridor?.isRoomLink ||
+      corridor?.roomTraversal ||
+      corridor?.surfaceKind === "cave" ||
+      corridor?.corridorStyle === "natural-tunnel"
+    )
+      return [];
+    const cellSet = getQaCorridorCellSet(corridor);
+    if (cellSet.size <= 2) return [];
+    const cells = [...cellSet].map(parseCellKey);
+    const branchCells = cells
+      .map((cell) => ({
+        cell,
+        degree: getQaCorridorCellDegree(cell, cellSet),
+      }))
+      .filter((entry) => entry.degree > 2);
+    return branchCells.map((entry) => ({
+      type: "branched-corridor-floor",
+      cell: summarizeDebugCell(entry.cell),
+      degree: entry.degree,
+    }));
+  }
+
+  function getQaCorridorVisualTopologyIssues(map = getQaGeneratedMap()) {
+    return (map?.corridors || []).flatMap((corridor) => {
+      const issues = [
+        ...getQaCorridorPathContinuityIssues(corridor),
+        ...getQaCorridorBranchIssues(corridor),
+      ];
+      if (issues.length === 0) return [];
+      return [{
+        corridorId: corridor.id,
+        from: corridor.from,
+        to: corridor.to,
+        issues,
+        corridor: summarizeDebugCorridor(corridor),
+      }];
+    });
+  }
+
+  function assertQaNoVisualCorridorTopologyIssues(map = getQaGeneratedMap(), context = {}) {
+    const visualIssues = getQaCorridorVisualTopologyIssues(map);
+    if (visualIssues.length) {
+      recordQaDiagnostic("visual corridor topology issues detected", {
+        visualIssues,
+        context,
+        ...summarizeQaCorridorTopology(map),
+      });
+    }
+    assertQa(!visualIssues.length, "Visual corridor topology is invalid.", {
+      visualIssues,
+      context,
+      ...summarizeQaCorridorTopology(map),
+    });
+  }
+
+  function summarizeQaCorridorTopology(map = getQaGeneratedMap()) {
+    return {
+      corridorCount: map?.corridors?.length || 0,
+      corridors: (map?.corridors || []).map(summarizeDebugCorridor),
+      repairCorridors: getQaRepairCorridors(map).map(summarizeDebugCorridor),
+      visualIssues: getQaCorridorVisualTopologyIssues(map),
+      manualOverrides: summarizeDebugManualOverrides(manualOverridesRef.current),
+    };
+  }
+
+  function recordQaDiagnostic(label, payload = {}, category = "generated-map") {
+    recordQaRunnerEvent(`qa diagnostics: ${label}`, payload, category);
+  }
+
+  function assertQaNoDuplicateCorridors(map = getQaGeneratedMap(), context = {}) {
+    const duplicates = getQaCorridorPairDuplicates(map);
+    if (duplicates.length) {
+      recordQaDiagnostic("duplicate corridors detected", {
+        duplicates,
+        context,
+        ...summarizeQaCorridorTopology(map),
+      });
+    }
+    assertQa(!duplicates.length, "Duplicate corridors between the same room pair.", {
+      duplicates,
+      context,
+      ...summarizeQaCorridorTopology(map),
+    });
   }
 
   async function runQaCircleAnchorSweep(
@@ -8171,28 +8397,47 @@ export default function CruorMapGeneratorMvp({
 
     const corridor = getQaCorridorForRegion(region.id, map);
     assertQa(corridor, "No corridor connected to the circular test room.", { regionId: region.id });
-    const endpoint = getQaEndpointForRegion(corridor, region.id);
-    const cells = getQaCircleAnchorSweepCells(region, map).slice(
-      0,
-      settings.speed === "fast" ? 3 : 5
-    );
-    assertQa(cells.length >= 2, "Not enough reachable circle anchors for sweep.", {
-      region: summarizeDebugRegion(region),
-      cells,
+    const initialEndpoint = getQaEndpointForRegion(corridor, region.id);
+    const initialDoor = getQaCorridorDoor(corridor, initialEndpoint);
+    const preferredSide = initialDoor?.side || null;
+    const initialAnchors = getQaCircleAnchorSweepAnchors(region, map, preferredSide);
+    const stepCount = Math.min(initialAnchors.length, settings.speed === "fast" ? 3 : 5);
+    recordQaDiagnostic("circle anchor availability", {
+      phase: "before-sweep",
+      corridor: summarizeDebugCorridor(corridor),
+      endpoint: initialEndpoint,
+      preferredSide,
+      availability: summarizeQaCircleAnchorAvailability(region, map, preferredSide),
+    }, "anchor-trace");
+    assertQa(stepCount >= 2, "Not enough reachable circle anchors for sweep.", {
+      preferredSide,
+      availability: summarizeQaCircleAnchorAvailability(region, map, preferredSide),
     });
 
-    for (let index = 0; index < cells.length; index += 1) {
-      const cell = cells[index];
+    for (let index = 0; index < stepCount; index += 1) {
       map = getQaGeneratedMap();
       region = map.regions.find((item) => item.id === region.id) || region;
       const currentCorridor =
         map.corridors.find((item) => item.id === corridor.id) ||
         getQaCorridorForPair(corridor.from, corridor.to, map) ||
         corridor;
-      const anchor = getQaCircleAnchorForOutsideCell(region, cell, map);
+      const endpoint = getQaEndpointForRegion(currentCorridor, region.id);
+      const anchors = getQaCircleAnchorSweepAnchors(region, map, preferredSide);
+      const anchor = anchors[index % Math.max(1, anchors.length)] || null;
+      const cell = getQaCircleAnchorSortCell(anchor);
+      if (!anchor) {
+        recordQaDiagnostic("circle anchor build failed", {
+          stepIndex: index,
+          preferredSide,
+          availability: summarizeQaCircleAnchorAvailability(region, map, preferredSide),
+          corridor: summarizeDebugCorridor(currentCorridor),
+          topology: summarizeQaCorridorTopology(map),
+        }, "anchor-trace");
+      }
       assertQa(anchor, "Could not build circle anchor for target cell.", {
-        cell,
-        region: summarizeDebugRegion(region),
+        preferredSide,
+        availability: summarizeQaCircleAnchorAvailability(region, map, preferredSide),
+        corridor: summarizeDebugCorridor(currentCorridor),
       });
       const point =
         anchor.point ||
@@ -8200,13 +8445,22 @@ export default function CruorMapGeneratorMvp({
         getQaCellCenterPoint(cell, map.config.gridSize);
       setQaRunnerStep(runId, {
         scenarioLabel,
-        stepLabel: `Move anchor ${index + 1}/${cells.length} to cell ${cell.x},${cell.y}`,
+        stepLabel: `Move anchor ${index + 1}/${stepCount} to cell ${cell.x},${cell.y}`,
         targetRegionId: region.id,
         targetCorridorId: currentCorridor.id,
         targetCell: cell,
         targetPoint: roundDebugPoint(point),
         category: "anchor-trace",
       });
+      recordQaDiagnostic("before anchor move", {
+        stepIndex: index,
+        corridorId: currentCorridor.id,
+        endpoint,
+        targetCell: summarizeDebugCell(cell),
+        targetAnchor: summarizeDebugAnchor(anchor),
+        corridor: summarizeDebugCorridor(currentCorridor),
+        topology: summarizeQaCorridorTopology(map),
+      }, "anchor-trace");
       const committed = moveDoor(currentCorridor.id, endpoint, point, anchor, {
         releasePoint: point,
         releaseCell: cell,
@@ -8219,25 +8473,45 @@ export default function CruorMapGeneratorMvp({
         endpoint,
         cell,
         anchor: summarizeDebugAnchor(anchor),
+        topology: summarizeQaCorridorTopology(map),
       });
       await waitForQaRender(signal, settings);
       map = getQaGeneratedMap();
       const updatedCorridor =
         map.corridors.find((item) => item.id === currentCorridor.id) ||
         getQaCorridorForPair(currentCorridor.from, currentCorridor.to, map);
-      const updatedDoor = getQaCorridorDoor(updatedCorridor, endpoint);
+      const updatedEndpoint = getQaEndpointForRegion(updatedCorridor, region.id);
+      const updatedDoor = getQaCorridorDoor(updatedCorridor, updatedEndpoint);
+      recordQaDiagnostic("after anchor move", {
+        stepIndex: index,
+        corridorId: updatedCorridor?.id || currentCorridor.id,
+        endpoint: updatedEndpoint,
+        requestedAnchor: summarizeDebugAnchor(anchor),
+        renderedDoor: summarizeDebugAnchor(updatedDoor),
+        renderedCorridor: summarizeDebugCorridor(updatedCorridor),
+        topology: summarizeQaCorridorTopology(map),
+        duplicates: getQaCorridorPairDuplicates(map),
+      }, "anchor-trace");
       assertQa(
         updatedDoor?.cell?.x === anchor.cell?.x && updatedDoor?.cell?.y === anchor.cell?.y,
         "Rendered corridor endpoint did not move to the requested circle anchor.",
         {
           corridorId: updatedCorridor?.id || currentCorridor.id,
-          endpoint,
+          endpoint: updatedEndpoint,
           requestedAnchor: summarizeDebugAnchor(anchor),
           renderedDoor: updatedDoor,
           renderedCorridor: summarizeDebugCorridor(updatedCorridor),
+          topology: summarizeQaCorridorTopology(map),
         }
       );
-      assertQaNoDuplicateCorridors(map);
+      const checkContext = {
+        stepIndex: index,
+        scenarioLabel,
+        targetCell: summarizeDebugCell(cell),
+        targetAnchor: summarizeDebugAnchor(anchor),
+      };
+      assertQaNoDuplicateCorridors(map, checkContext);
+      assertQaNoVisualCorridorTopologyIssues(map, checkContext);
     }
   }
 
@@ -8290,6 +8564,7 @@ export default function CruorMapGeneratorMvp({
     await waitForQaRender(signal, settings);
     const nextMap = getQaGeneratedMap();
     assertQaNoDuplicateCorridors(nextMap);
+    assertQaNoVisualCorridorTopologyIssues(nextMap);
     const afterCount = nextMap.corridors.length;
     assertQa(afterCount <= beforeCount + 1, "Corridor creation added too many corridors.", {
       beforeCount,
@@ -8324,6 +8599,7 @@ export default function CruorMapGeneratorMvp({
     await waitForQaRender(signal, settings);
     map = getQaGeneratedMap();
     assertQaNoDuplicateCorridors(map);
+    assertQaNoVisualCorridorTopologyIssues(map);
   }
 
   async function runMapQaScenario(eventDetail = {}) {

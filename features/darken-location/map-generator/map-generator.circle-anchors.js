@@ -20,8 +20,15 @@ export function getCircleAnchorSideFromNormal(normal, fallback = "east") {
   if (!normal) return fallback;
   const x = Number.isFinite(normal.x) ? normal.x : 0;
   const y = Number.isFinite(normal.y) ? normal.y : 0;
-  if (Math.abs(x) >= Math.abs(y)) return x >= 0 ? "east" : "west";
-  return y >= 0 ? "south" : "north";
+  const absX = Math.abs(x);
+  const absY = Math.abs(y);
+  // On near-diagonal circular cells, prefer the vertical exit. A horizontal
+  // tie makes bottom/top anchors run sideways inside the circular room before
+  // leaving it, which produces the visible raccordo intrusion reported in the
+  // editor.
+  if (absY >= absX * 0.82 && absY > 0) return y >= 0 ? "south" : "north";
+  if (absX > 0) return x >= 0 ? "east" : "west";
+  return fallback;
 }
 
 export function getCircleAnchorAxialNormal(side) {
@@ -224,6 +231,104 @@ function getCircleSnapSideAndNormal(snapCell, circle, gridSize, fallbackRadial =
   return { side, normal: getCircleAnchorAxialNormal(side), radial };
 }
 
+function getCircleAnchorCellPath(start, goal) {
+  if (!start || !goal) return [];
+  const path = [{ x: start.x, y: start.y }];
+  let x = start.x;
+  let y = start.y;
+  while (x !== goal.x) {
+    x += Math.sign(goal.x - x);
+    path.push({ x, y });
+  }
+  while (y !== goal.y) {
+    y += Math.sign(goal.y - y);
+    path.push({ x, y });
+  }
+  return path;
+}
+
+function isCircleAnchorCellInsideVisualCircle(cell, circle, gridSize) {
+  if (!cell || !circle) return false;
+  return getMaxDistanceFromCircleCenterToCellRect(cell, circle, gridSize) < circle.r - 0.01;
+}
+
+function scoreCircleAnchorPlacement(placement, snapCell, snapRadial, circle, gridSize) {
+  if (!placement?.portalCell || !placement?.routingOutsideCell)
+    return Number.POSITIVE_INFINITY;
+  const bridgePath = getCircleAnchorCellPath(
+    placement.portalCell,
+    placement.routingOutsideCell,
+  );
+  const intrusionCount = bridgePath
+    .slice(1)
+    .filter((cell) => isCircleAnchorCellInsideVisualCircle(cell, circle, gridSize))
+    .length;
+  const snapDistance = Math.abs(placement.routingOutsideCell.x - snapCell.x) +
+    Math.abs(placement.routingOutsideCell.y - snapCell.y);
+  const radialDot = Math.max(
+    -1,
+    Math.min(
+      1,
+      (snapRadial?.x || 0) * placement.normal.x +
+        (snapRadial?.y || 0) * placement.normal.y,
+    ),
+  );
+  const verticalTieBonus =
+    Math.abs(Math.abs(snapRadial?.x || 0) - Math.abs(snapRadial?.y || 0)) < 0.24 &&
+    placement.normal.y !== 0
+      ? -1.8
+      : 0;
+  return (
+    intrusionCount * 100 +
+    Math.max(0, 1 - radialDot) * 16 +
+    snapDistance * 6 +
+    bridgePath.length * 1.4 +
+    verticalTieBonus
+  );
+}
+
+function chooseCircleAnchorPlacementForSnapCell(
+  snapCell,
+  circle,
+  gridSize,
+  snapRadial,
+) {
+  const sides = ["north", "south", "east", "west"];
+  const candidates = sides
+    .map((side) => {
+      const normal = getCircleAnchorAxialNormal(side);
+      const radialDot = (snapRadial?.x || 0) * normal.x + (snapRadial?.y || 0) * normal.y;
+      if (radialDot < -0.12) return null;
+      const portalCell = getCirclePortalCellForSnapCell(
+        snapCell,
+        circle,
+        gridSize,
+        normal,
+      );
+      if (!portalCell) return null;
+      const routingOutsideCell = isCirclePortalCellUsable(snapCell, circle, gridSize)
+        ? getCircleRoutingCellForPortalCell(portalCell, circle, gridSize, normal)
+        : snapCell;
+      if (!routingOutsideCell) return null;
+      return {
+        side,
+        normal,
+        portalCell,
+        routingOutsideCell,
+        score: scoreCircleAnchorPlacement(
+          { side, normal, portalCell, routingOutsideCell },
+          snapCell,
+          snapRadial,
+          circle,
+          gridSize,
+        ),
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.score - b.score);
+  return candidates[0] || null;
+}
+
 function getCirclePortalCellForSnapCell(snapCell, circle, gridSize, normal) {
   if (!snapCell || !circle || !normal) return null;
   for (let step = 0; step <= 6; step += 1) {
@@ -280,24 +385,20 @@ export function createCircleConnectionAnchorFromOutsideCell(
   );
   if (snapDistanceFromCenter > circle.r + gridSize * 1.75) return null;
 
-  const { side, normal, radial: snapRadial } = getCircleSnapSideAndNormal(
+  const { radial: snapRadial } = getCircleSnapSideAndNormal(
     snapCell,
     circle,
     gridSize,
   );
-  const portalCell = getCirclePortalCellForSnapCell(
+  const placement = chooseCircleAnchorPlacementForSnapCell(
     snapCell,
     circle,
     gridSize,
-    normal,
+    snapRadial,
   );
-  if (!portalCell) return null;
+  if (!placement) return null;
 
-  const routingOutsideCell = isCirclePortalCellUsable(snapCell, circle, gridSize)
-    ? getCircleRoutingCellForPortalCell(portalCell, circle, gridSize, normal)
-    : snapCell;
-  if (!routingOutsideCell) return null;
-
+  const { side, normal, portalCell, routingOutsideCell } = placement;
   const portalCenter = getCircleAnchorCellCenter(portalCell, gridSize);
   const radial = snapRadial || getRadialFromPoint(portalCenter, circle);
   if (!radial) return null;

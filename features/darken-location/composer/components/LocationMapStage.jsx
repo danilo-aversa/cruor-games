@@ -4,7 +4,6 @@ import { CruorMapGeneratorMvp } from "../../map-generator/map-generator.page.jsx
 import {
   LOCATION_SLOT_SCOPE_MAP,
   LOCATION_SLOT_SCOPE_REGION,
-  toArray,
 } from "../model/location-composer-state.js";
 import {
   getAssignedComponentsForRegion,
@@ -12,7 +11,6 @@ import {
   isSlotInScope,
 } from "../model/location-composer-selectors.js";
 import {
-  getGeneratedRoomForRegion,
   getGeneratedRoomForRegionIndex,
   getGeneratedRoomPositionStyle,
   getGeneratedRoomSurfaceLabel,
@@ -97,12 +95,9 @@ export function LocationMapStage({
   const showStageDetails = !isSimpleMode;
   const showInteractiveOverlay = true;
   const regions = state.locationRegions || [];
-  const selectedSources = toArray(state.sourceAnchors);
-  const selectedHorrors = toArray(state.horrors);
   const [hoveredRegionId, setHoveredRegionId] = useState("");
   const [previewViewportMetrics, setPreviewViewportMetrics] = useState(null);
   const activeRegionComponents = getAssignedComponentsForRegion(state, state.activeRegionId);
-  const activeGeneratedRoom = getGeneratedRoomForRegion(generatedMapPreview, state.activeRegionId);
   const hoveredRegionIndex = regions.findIndex((region) => region.id === hoveredRegionId);
   const hoveredRegion = hoveredRegionIndex >= 0 ? regions[hoveredRegionIndex] : null;
   const hoveredRegionComponents = hoveredRegion
@@ -292,13 +287,6 @@ export function LocationMapStage({
             </div>
           ) : null}
 
-          {showStageDetails ? (
-            <div className="location-map-stage__head location-map-stage__head--compact">
-              <p className="location-kicker">Map</p>
-              <h2>{state.title || "Cursed Location"}</h2>
-              <p>{state.context} · {selectedHorrors[0] || "Horror"} · {selectedSources[0] || "Source"}</p>
-            </div>
-          ) : null}
 
           {showInteractiveOverlay && !generatedMapPreview ? (
             <div className="location-region-board" aria-label="Generated location regions">
@@ -376,13 +364,6 @@ export function LocationMapStage({
             </div>
           ) : null}
 
-          {showStageDetails ? (
-            <div className="location-stage-footer location-stage-footer--compact">
-              <div><strong>{digest.filledSlots}/{digest.totalSlots}</strong></div>
-              <div><strong>{mapSyncStatus.mode === "synced" ? "Synced" : mapSyncStatus.label}</strong></div>
-              <div><strong>{activeGeneratedRoom ? `Room ${activeGeneratedRoom.number || "—"}` : "Region"}</strong></div>
-            </div>
-          ) : null}
             </div>
 
             {rightPanel}

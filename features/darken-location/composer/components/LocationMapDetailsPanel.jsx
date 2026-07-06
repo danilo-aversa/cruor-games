@@ -10,14 +10,14 @@ import { getLocationPlaceFrame, getRoomProgramMetrics } from "../model/location-
 
 
 const MAP_DEBUG_CATEGORY_OPTIONS = [
-  { id: "room-move", label: "Room Move" },
-  { id: "corridor-move", label: "Corridor Move" },
-  { id: "corridor-create", label: "Corridor Create" },
-  { id: "room-style", label: "Shape / Size" },
-  { id: "manual-overrides", label: "Manual Overrides" },
-  { id: "generated-map", label: "Generated Map" },
-  { id: "anchor-trace", label: "Anchor Trace" },
-  { id: "performance", label: "Performance" },
+  { id: "room-move", label: "Room Move", icon: "fa-solid fa-up-down-left-right", description: "Room drag, room position and room movement events." },
+  { id: "corridor-move", label: "Corridor Move", icon: "fa-solid fa-route", description: "Existing corridor endpoint, door and waypoint movement events." },
+  { id: "corridor-create", label: "Corridor Create", icon: "fa-solid fa-plus", description: "New corridor drafts, target acquisition and commit events." },
+  { id: "room-style", label: "Shape / Size", icon: "fa-solid fa-shapes", description: "Room shape, size and style override events." },
+  { id: "manual-overrides", label: "Manual Overrides", icon: "fa-solid fa-sliders", description: "Manual override state snapshots and mutations." },
+  { id: "generated-map", label: "Generated Map", icon: "fa-solid fa-map", description: "Generated map snapshots, regions, corridors and accesses." },
+  { id: "anchor-trace", label: "Anchor Trace", icon: "fa-solid fa-location-dot", description: "Anchor snap, release and endpoint trace events." },
+  { id: "performance", label: "Performance", icon: "fa-solid fa-gauge-high", description: "Runner, lifecycle, timing and diagnostic events." },
 ];
 
 const DEFAULT_MAP_DEBUG_CATEGORIES = MAP_DEBUG_CATEGORY_OPTIONS.reduce(
@@ -26,11 +26,34 @@ const DEFAULT_MAP_DEBUG_CATEGORIES = MAP_DEBUG_CATEGORY_OPTIONS.reduce(
 );
 
 const MAP_QA_SCENARIO_OPTIONS = [
-  { id: "smoke", label: "Smoke Test", description: "Run a short map-edit sanity pass." },
-  { id: "circle-anchor-sweep", label: "Circle Anchor Test", description: "Move a circular-room corridor endpoint across several anchors." },
-  { id: "corridor-create", label: "Corridor Creation Test", description: "Create or reuse a corridor and verify endpoint stability." },
-  { id: "room-move-reroute", label: "Room Move + Reroute", description: "Move a room and verify corridors are not duplicated." },
+  { id: "smoke", label: "Smoke Test", icon: "fa-solid fa-vial", description: "Run a short map-edit sanity pass." },
+  { id: "circle-anchor-sweep", label: "Circle Anchor Test", icon: "fa-regular fa-circle-dot", description: "Move a circular-room corridor endpoint across several anchors." },
+  { id: "corridor-create", label: "Corridor Creation Test", icon: "fa-solid fa-diagram-project", description: "Create or reuse a corridor and verify endpoint stability." },
+  { id: "room-move-reroute", label: "Room Move + Reroute", icon: "fa-solid fa-arrows-to-circle", description: "Move a room and verify corridors are not duplicated." },
 ];
+
+
+function getGenericTooltipAttrs(label, description = "") {
+  const attrs = {
+    "data-key": "tooltip-generic",
+    "data-tooltip": label,
+  };
+  if (description) attrs["data-tooltip-description"] = description;
+  return attrs;
+}
+
+function getIconToggleClass(active, extra = "") {
+  return cx(
+    "map-tool-button",
+    "location-map-toolbar__button",
+    "location-icon-toggle-button",
+    "cruor-frame-icon-toggle",
+    "location-map-toolbar__button--secondary",
+    "map-debug-recorder__icon-toggle",
+    active && "is-active",
+    extra,
+  );
+}
 
 function readStoredMapDebugMode() {
   if (typeof window === "undefined") return false;
@@ -152,19 +175,24 @@ function MapDebugRecorderPanel({
           <span>Download TXT</span>
         </button>
       </div>
-      <div className="map-debug-recorder__categories" role="group" aria-label="Debug listener categories">
-        {MAP_DEBUG_CATEGORY_OPTIONS.map((category) => (
-          <button
-            key={category.id}
-            type="button"
-            className={categories[category.id] ? "map-debug-recorder__category is-active" : "map-debug-recorder__category"}
-            aria-pressed={Boolean(categories[category.id])}
-            onClick={() => onToggleCategory(category.id)}
-          >
-            <i className={categories[category.id] ? "fa-solid fa-toggle-on" : "fa-solid fa-toggle-off"} aria-hidden="true" />
-            <span>{category.label}</span>
-          </button>
-        ))}
+      <div className="map-debug-recorder__categories map-debug-recorder__icon-toggle-grid" role="group" aria-label="Debug listener categories">
+        {MAP_DEBUG_CATEGORY_OPTIONS.map((category) => {
+          const active = Boolean(categories[category.id]);
+          return (
+            <button
+              key={category.id}
+              type="button"
+              className={getIconToggleClass(active)}
+              aria-label={`${active ? "Disable" : "Enable"} ${category.label} logging`}
+              aria-pressed={active}
+              onClick={() => onToggleCategory(category.id)}
+              {...getGenericTooltipAttrs(category.label, category.description)}
+            >
+              <i className={category.icon} aria-hidden="true" />
+              <span className="sr-only">{category.label}</span>
+            </button>
+          );
+        })}
       </div>
       <div className="map-debug-recorder__runner" aria-label="Map QA scenario runner">
         <div className="map-debug-recorder__runner-header">
@@ -172,7 +200,7 @@ function MapDebugRecorderPanel({
           <strong>{qaRunnerStatus?.state || "idle"}</strong>
         </div>
         <div className="map-debug-recorder__runner-controls">
-          <label>
+          <label className="map-debug-recorder__runner-speed">
             <span>Speed</span>
             <select
               value={qaSettings.speed || "normal"}
@@ -186,13 +214,15 @@ function MapDebugRecorderPanel({
           </label>
           <button
             type="button"
-            className={qaSettings.stopOnError === false ? "map-debug-recorder__category" : "map-debug-recorder__category is-active"}
+            className={getIconToggleClass(qaSettings.stopOnError !== false, "map-debug-recorder__stop-toggle")}
+            aria-label={qaSettings.stopOnError === false ? "Enable stop on first error" : "Disable stop on first error"}
             aria-pressed={qaSettings.stopOnError !== false}
             onClick={() => onQaSettingChange?.({ stopOnError: qaSettings.stopOnError === false })}
             disabled={qaRunning}
+            {...getGenericTooltipAttrs("Stop on Error", "Stop the QA scenario immediately when the first assertion fails.")}
           >
-            <i className={qaSettings.stopOnError === false ? "fa-solid fa-toggle-off" : "fa-solid fa-toggle-on"} aria-hidden="true" />
-            <span>Stop on Error</span>
+            <i className="fa-solid fa-triangle-exclamation" aria-hidden="true" />
+            <span className="sr-only">Stop on Error</span>
           </button>
         </div>
         <div className="map-debug-recorder__runner-actions">
@@ -200,20 +230,21 @@ function MapDebugRecorderPanel({
             <button
               key={scenario.id}
               type="button"
-              className="mvp-button cruor-button"
+              className="map-debug-recorder__runner-button"
               onClick={() => onQaScenarioRun?.(scenario.id)}
               disabled={qaRunning}
-              title={scenario.description}
+              {...getGenericTooltipAttrs(scenario.label, scenario.description)}
             >
-              <i className="fa-solid fa-play" aria-hidden="true" />
+              <i className={scenario.icon} aria-hidden="true" />
               <span>{scenario.label}</span>
             </button>
           ))}
           <button
             type="button"
-            className="mvp-button cruor-button"
+            className="map-debug-recorder__runner-button map-debug-recorder__runner-button--stop"
             onClick={onQaScenarioStop}
             disabled={!qaRunning}
+            {...getGenericTooltipAttrs("Stop Scenario", "Stop the currently running browser QA scenario.")}
           >
             <i className="fa-solid fa-stop" aria-hidden="true" />
             <span>Stop Scenario</span>

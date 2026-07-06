@@ -8978,3 +8978,136 @@ _Nessun file aggiunto._
 - `~features/darken-location/map-generator/map-generator.page.jsx`
 - `~features/darken-location/map-generator/map-generator.styles.css`
 
+
+---
+
+## 2026-07-06 18:14:43
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-circle-bridge-connectivity-13.1.0ab.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-circle-bridge-connectivity-13.1.0ab.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+- `~features/darken-location/map-generator/map-generator.mask.js`
+
+
+---
+
+## 2026-07-06 18:23:46
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-debug-panel-ui-cleanup-13.1.0ac.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-debug-panel-ui-cleanup-13.1.0ac.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+
+---
+
+## 2026-07-06 18:27:17
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-debug-panel-layout-cleanup-13.1.0ad.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-debug-panel-layout-cleanup-13.1.0ad.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+
+---
+
+## 2026-07-06 18:36:18
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-merge-physical-repair-13.1.0ae.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-merge-physical-repair-13.1.0ae.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+- `~features/darken-location/map-generator/map-generator.mask.js`
+
+
+---
+
+## 2026-07-06 18:50:48
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-qa-diagnostics-runner-13.1.0af.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-qa-diagnostics-runner-13.1.0af.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+
+
+---
+
+## 2026-07-06 19:11:08
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-corridor-visual-topology-13.1.0ag.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-corridor-visual-topology-13.1.0ag.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/map-generator/map-generator.circle-anchors.js`
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+
