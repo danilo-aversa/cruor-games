@@ -8916,6 +8916,72 @@ function getExistingVisibleCorridorKeysForPreview(generatedMap, activeCorridorId
   return keys;
 }
 
+function getGeneratedMapRoomFloorKeysForRoomDragPreview(generatedMap, roomOffset) {
+  if (!roomOffset?.active) return getGeneratedMapRoomFloorKeys(generatedMap);
+  const keys = new Set();
+  (generatedMap?.regions || []).forEach((region) => {
+    const cells = Array.isArray(region.floorCells) ? region.floorCells : [];
+    if (region.id === roomOffset.regionId) {
+      cells.forEach((cell) => {
+        keys.add(cellKey(cell.x + roomOffset.dxCells, cell.y + roomOffset.dyCells));
+      });
+      return;
+    }
+    cells.forEach((cell) => keys.add(cellKey(cell.x, cell.y)));
+  });
+  return keys;
+}
+
+function shiftPreviewCellForRoomOffset(corridor, endpoint, cell, roomOffset) {
+  if (!cell || !roomOffset?.active) return cell;
+  if (!shouldShiftCorridorEndpointForRoom(corridor, endpoint, roomOffset.regionId)) {
+    return cell;
+  }
+  return {
+    x: cell.x + roomOffset.dxCells,
+    y: cell.y + roomOffset.dyCells,
+  };
+}
+
+function getCorridorRoomDragPreviewRouteCells(corridor, roomOffset, generatedMap, gridSize) {
+  if (!corridor || !roomOffset?.active || corridor.isRoomLink || !doesCorridorTouchRegion(corridor, roomOffset.regionId)) return [];
+  if (!generatedMap?.config) return [];
+  const gridW = Math.max(2, Math.floor(generatedMap.config.mapWidth / gridSize));
+  const gridH = Math.max(2, Math.floor(generatedMap.config.mapHeight / gridSize));
+  let start = getCorridorEndpointCellForPreview(corridor, "from", gridSize, gridW, gridH);
+  let goal = getCorridorEndpointCellForPreview(corridor, "to", gridSize, gridW, gridH);
+  start = shiftPreviewCellForRoomOffset(corridor, "from", start, roomOffset);
+  goal = shiftPreviewCellForRoomOffset(corridor, "to", goal, roomOffset);
+  if (!start || !goal) return [];
+
+  const manualCells = Array.isArray(corridor.manualWaypoints)
+    ? corridor.manualWaypoints
+        .map((point) => normalizePreviewCell(point, gridSize, gridW, gridH))
+        .filter(Boolean)
+    : [];
+  const routePoints = dedupeConsecutiveCells([start, ...manualCells, goal]);
+  if (routePoints.length < 2) return [];
+
+  const blocked = getGeneratedMapRoomFloorKeysForRoomDragPreview(generatedMap, roomOffset);
+  routePoints.forEach((cell) => blocked.delete(cellKey(cell.x, cell.y)));
+  const existingCorridors = getExistingVisibleCorridorKeysForPreview(generatedMap, corridor.id);
+  const adjacentToExistingCorridors = getAdjacentCells(existingCorridors);
+  routePoints.forEach((cell) => adjacentToExistingCorridors.delete(cellKey(cell.x, cell.y)));
+  const routingOptions = {
+    gridW,
+    gridH,
+    blocked,
+    softBlocked: new Set(),
+    existingCorridors,
+    adjacentToExistingCorridors,
+    routingProfile: generatedMap.config.routingProfile || {},
+  };
+  const routed = routePathThroughCells(routePoints, routingOptions);
+  if (routed.length >= routePoints.length) return routed;
+  const direct = routeDirectFallback(start, goal, routingOptions);
+  return isUsableCorridorPath(direct, start, goal) ? direct : [];
+}
+
 function getPreviewManualWaypointCells(corridor, preview, gridSize, gridW, gridH) {
   const manualWaypoints = Array.isArray(corridor?.manualWaypoints)
     ? corridor.manualWaypoints
@@ -9077,23 +9143,110 @@ function buildConnectionDraftPreviewPath(generatedMap, connectionDraft, gridSize
   return buildPointPath([connectionDraft?.start, connectionDraft?.current].filter(Boolean));
 }
 
-function renderConnectionDraftPreviewSurface(generatedMap, connectionDraft) {
-  if (!connectionDraft) return null;
-  const gridSize = generatedMap.config.gridSize;
-  const tokens = getDragPreviewStyleTokens(generatedMap);
-  const previewPath = buildConnectionDraftPreviewPath(generatedMap, connectionDraft, gridSize);
-  if (!previewPath) return null;
+function getExactPreviewCorridorPath(previewMap, corridorId) {
+  if (!previewMap || !corridorId) return "";
+  const corridor = (previewMap.corridors || []).find((item) => item.id === corridorId);
+  if (!corridor) return "";
+  return buildVisibleCorridorCenterlinePath(
+    corridor,
+    previewMap,
+    previewMap.config.gridSize,
+  );
+}
+
+function getInvalidPreviewStrokeStyle(opacity = 0.95) {
+  return {
+    stroke: "rgba(255,78,78,.96)",
+    strokeWidth: 2.8,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    strokeDasharray: "7 5",
+    opacity,
+    vectorEffect: "non-scaling-stroke",
+  };
+}
+
+function getInvalidPreviewFloorStyle(gridSize) {
+  return {
+    fill: "none",
+    stroke: "rgba(255,78,78,.26)",
+    strokeWidth: Math.max(10, gridSize * 0.72),
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    opacity: 0.92,
+    vectorEffect: "non-scaling-stroke",
+  };
+}
+
+function renderInvalidAnchorMarker(point, key = "invalid-anchor") {
+  if (!point) return null;
+  const size = 9;
   return (
-    <g className="connection-preview-layer">
+    <g key={key} className="invalid-anchor-preview" pointerEvents="none">
+      <circle
+        cx={point.x}
+        cy={point.y}
+        r={11}
+        style={{
+          fill: "rgba(255,78,78,.12)",
+          stroke: "rgba(255,78,78,.92)",
+          strokeWidth: 2.2,
+          vectorEffect: "non-scaling-stroke",
+        }}
+      />
+      <line
+        x1={point.x - size}
+        y1={point.y - size}
+        x2={point.x + size}
+        y2={point.y + size}
+        style={getInvalidPreviewStrokeStyle(1)}
+      />
+      <line
+        x1={point.x + size}
+        y1={point.y - size}
+        x2={point.x - size}
+        y2={point.y + size}
+        style={getInvalidPreviewStrokeStyle(1)}
+      />
+    </g>
+  );
+}
+
+function renderConnectionDraftPreviewSurface(
+  generatedMap,
+  connectionDraft,
+  previewMap = null,
+  previewCorridorId = "",
+) {
+  if (!connectionDraft) return null;
+  const renderMap = previewMap || generatedMap;
+  const gridSize = renderMap.config.gridSize;
+  const tokens = getDragPreviewStyleTokens(renderMap);
+  const exactPreviewPath = getExactPreviewCorridorPath(previewMap, previewCorridorId);
+  const previewPath =
+    exactPreviewPath ||
+    buildConnectionDraftPreviewPath(generatedMap, connectionDraft, generatedMap.config.gridSize);
+  if (!previewPath) return null;
+  const invalid = Boolean(connectionDraft.invalid);
+  return (
+    <g className={invalid ? "connection-preview-layer is-invalid" : "connection-preview-layer"}>
       <path
         className="drag-preview-corridor-floor"
         d={previewPath}
-        style={getPreviewCorridorFloorStyle(tokens, gridSize)}
+        style={
+          invalid
+            ? getInvalidPreviewFloorStyle(gridSize)
+            : getPreviewCorridorFloorStyle(tokens, gridSize)
+        }
       />
       <path
         className="drag-preview-corridor-wall"
         d={previewPath}
-        style={getPreviewWallStyle(tokens, 0.72)}
+        style={
+          invalid
+            ? getInvalidPreviewStrokeStyle(0.96)
+            : getPreviewWallStyle(tokens, 0.72)
+        }
       />
       <circle
         className="connection-preview__endpoint"
@@ -9106,7 +9259,9 @@ function renderConnectionDraftPreviewSurface(generatedMap, connectionDraft) {
         cx={connectionDraft.current.x}
         cy={connectionDraft.current.y}
         r={4}
+        style={invalid ? { fill: "rgba(255,78,78,.92)", stroke: "rgba(255,238,238,.9)" } : null}
       />
+      {invalid ? renderInvalidAnchorMarker(connectionDraft.current, "invalid-connection-anchor") : null}
     </g>
   );
 }
@@ -9192,6 +9347,126 @@ function renderRoomDragPreviewSurface(generatedMap, region, roomOffset, editorOp
   );
 }
 
+function getRoomDragPlaceholderPath(generatedMap, roomDragPreviewOffset) {
+  if (!roomDragPreviewOffset?.active) return "";
+  const region = (generatedMap.regions || []).find(
+    (item) => item.id === roomDragPreviewOffset.regionId,
+  );
+  const roomPath = region
+    ? buildRegionVisualFloorPath(region, generatedMap.config.gridSize, generatedMap)
+    : "";
+  const corridorPath = buildCorridorsVisualFloorPath(
+    (generatedMap.corridors || []).filter((corridor) =>
+      doesCorridorTouchRegion(corridor, roomDragPreviewOffset.regionId),
+    ),
+    generatedMap,
+    generatedMap.config.gridSize,
+  );
+  return [roomPath, corridorPath].filter(Boolean).join(" ");
+}
+
+function renderRoomDragPlaceholderFade(generatedMap, roomDragPreviewOffset) {
+  if (!roomDragPreviewOffset?.active) return null;
+  const placeholderPath = getRoomDragPlaceholderPath(generatedMap, roomDragPreviewOffset);
+  if (!placeholderPath) return null;
+  const tokens = getDragPreviewStyleTokens(generatedMap);
+  return (
+    <g className="room-drag-placeholder-fade" pointerEvents="none">
+      <path
+        d={placeholderPath}
+        fillRule="nonzero"
+        style={{
+          fill: tokens.floor,
+          opacity: 0.68,
+          stroke: "none",
+        }}
+      />
+    </g>
+  );
+}
+
+function getRoomDragExactPreviewCorridorPaths(previewMap, regionId) {
+  if (!previewMap || !regionId) return [];
+  return (previewMap.corridors || [])
+    .filter((corridor) => doesCorridorTouchRegion(corridor, regionId))
+    .map((corridor) => ({
+      id: corridor.id,
+      path: buildVisibleCorridorCenterlinePath(
+        corridor,
+        previewMap,
+        previewMap.config.gridSize,
+      ),
+    }))
+    .filter((item) => item.path);
+}
+
+function renderRoomDragCorridorPreviewSurface(
+  generatedMap,
+  roomDragPreviewOffset,
+  previewMap = null,
+) {
+  if (!roomDragPreviewOffset?.active) return null;
+  const renderMap = previewMap || generatedMap;
+  const gridSize = renderMap.config.gridSize;
+  const tokens = getDragPreviewStyleTokens(renderMap);
+  const exactPaths = getRoomDragExactPreviewCorridorPaths(
+    previewMap,
+    roomDragPreviewOffset.regionId,
+  );
+  const paths = exactPaths.length > 0
+    ? exactPaths
+    : (generatedMap.corridors || [])
+        .filter((corridor) => doesCorridorTouchRegion(corridor, roomDragPreviewOffset.regionId))
+        .map((corridor) => {
+      const routeCells = getCorridorRoomDragPreviewRouteCells(
+        corridor,
+        roomDragPreviewOffset,
+        generatedMap,
+        gridSize,
+      );
+      if (routeCells.length >= 2) {
+        return {
+          id: corridor.id,
+          path: buildCellCenterlinePath([routeCells], gridSize),
+        };
+      }
+      const points = getCorridorPreviewControlPoints(corridor, gridSize).map((point, index, allPoints) => {
+        if (index === 0 && shouldShiftCorridorEndpointForRoom(corridor, "from", roomDragPreviewOffset.regionId)) {
+          return translatePoint(point, roomDragPreviewOffset.dx, roomDragPreviewOffset.dy);
+        }
+        if (index === allPoints.length - 1 && shouldShiftCorridorEndpointForRoom(corridor, "to", roomDragPreviewOffset.regionId)) {
+          return translatePoint(point, roomDragPreviewOffset.dx, roomDragPreviewOffset.dy);
+        }
+        return point;
+      });
+      return { id: corridor.id, path: buildPointPath(points) };
+    })
+    .filter((item) => item.path);
+  if (paths.length === 0) return null;
+  return (
+    <g className="drag-preview-layer room-drag-corridor-preview-layer">
+      <g className="room-drag-corridor-preview-layer__surface">
+        {paths.map((item) => (
+          <path
+            key={`room-drag-corridor-floor-${item.id}`}
+            className="drag-preview-corridor-floor"
+            d={item.path}
+            style={getPreviewCorridorFloorStyle(tokens, gridSize)}
+          />
+        ))}
+        {paths.map((item) => (
+          <path
+            key={`room-drag-corridor-wall-${item.id}`}
+            className="drag-preview-corridor-wall"
+            d={item.path}
+            style={getPreviewWallStyle(tokens, 0.66)}
+          />
+        ))}
+      </g>
+    </g>
+  );
+}
+
 function renderCorridorDragPreviewSurface(generatedMap, corridorDragPreview) {
   if (!corridorDragPreview?.corridorId) return null;
   const corridor = generatedMap.corridors.find(
@@ -9207,19 +9482,34 @@ function renderCorridorDragPreviewSurface(generatedMap, corridorDragPreview) {
     gridSize,
   );
   if (!previewPath) return null;
+  const invalid = Boolean(corridorDragPreview.invalid);
   return (
-    <g className="drag-preview-layer corridor-drag-preview-layer">
+    <g className={invalid ? "drag-preview-layer corridor-drag-preview-layer is-invalid" : "drag-preview-layer corridor-drag-preview-layer"}>
       <g className="corridor-drag-preview-layer__surface">
         <path
           className="drag-preview-corridor-floor"
           d={previewPath}
-          style={getPreviewCorridorFloorStyle(tokens, gridSize)}
+          style={
+            invalid
+              ? getInvalidPreviewFloorStyle(gridSize)
+              : getPreviewCorridorFloorStyle(tokens, gridSize)
+          }
         />
         <path
           className="drag-preview-corridor-wall"
           d={previewPath}
-          style={getPreviewWallStyle(tokens, 0.72)}
+          style={
+            invalid
+              ? getInvalidPreviewStrokeStyle(0.96)
+              : getPreviewWallStyle(tokens, 0.72)
+          }
         />
+        {invalid
+          ? renderInvalidAnchorMarker(
+              corridorDragPreview.rawPoint || corridorDragPreview.point,
+              `invalid-corridor-anchor-${corridorDragPreview.corridorId}`,
+            )
+          : null}
       </g>
     </g>
   );
@@ -9238,6 +9528,9 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
     hoveredCorridorId,
     hoverWallHandle,
     connectionDraft,
+    roomDragPreviewMap = null,
+    connectionDraftPreviewMap = null,
+    connectionDraftPreviewCorridorId = "",
     onRoomPointerDown,
     onRoomPointerEnter,
     onRoomPointerLeave,
@@ -9424,8 +9717,14 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
         hoveredRegionId,
       })}
       {renderCaveTunnelTraces(generatedMap, activeCorridorId)}
+      {renderRoomDragPlaceholderFade(generatedMap, roomDragPreviewOffset)}
       {renderCorridorDragPreviewSurface(generatedMap, corridorDragPreview)}
-      {corridorDragPreview?.type === "door" && corridorDragPreview.snapPoint ? (
+      {renderRoomDragCorridorPreviewSurface(
+        generatedMap,
+        roomDragPreviewOffset,
+        roomDragPreviewMap,
+      )}
+      {corridorDragPreview?.type === "door" && corridorDragPreview.snapPoint && !corridorDragPreview.invalid ? (
         <g className="door-snap-preview" pointerEvents="none">
           <circle
             cx={corridorDragPreview.snapPoint.x}
@@ -9566,7 +9865,12 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
           onContextMenu={(event) => onCorridorAddContextMenu?.(event, zone)}
         />
       ))}
-      {renderConnectionDraftPreviewSurface(generatedMap, connectionDraft)}
+      {renderConnectionDraftPreviewSurface(
+        generatedMap,
+        connectionDraft,
+        connectionDraftPreviewMap,
+        connectionDraftPreviewCorridorId,
+      )}
       {editorOptions.hoverCorridorHandle &&
         !connectionDraft &&
         (() => {

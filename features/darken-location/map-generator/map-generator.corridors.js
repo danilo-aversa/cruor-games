@@ -1035,53 +1035,58 @@ export function getAnchorHandlePoint(anchor, gridSize) {
 
 export function serializeManualAnchor(anchor) {
   if (!anchor) return null;
-  return {
+  const serialized = {
     side: anchor.side,
     cell: { x: anchor.cell.x, y: anchor.cell.y },
-    ...(anchor.finalGeometry
-      ? {
-          finalGeometry: true,
-          finalBoundaryIndex: anchor.finalBoundaryIndex,
-          segment: anchor.segment
-            ? {
-                x1: anchor.segment.x1,
-                y1: anchor.segment.y1,
-                x2: anchor.segment.x2,
-                y2: anchor.segment.y2,
-              }
-            : null,
-          point: anchor.point ? { x: anchor.point.x, y: anchor.point.y } : null,
-          outsideCell: anchor.outsideCell
-            ? { x: anchor.outsideCell.x, y: anchor.outsideCell.y }
-            : null,
-          routingOutsideCell: anchor.routingOutsideCell
-            ? { x: anchor.routingOutsideCell.x, y: anchor.routingOutsideCell.y }
-            : null,
-          normal: anchor.normal
-            ? { x: anchor.normal.x, y: anchor.normal.y }
-            : null,
-          circleBoundaryAnchor: Boolean(anchor.circleBoundaryAnchor),
-        }
-      : {}),
-    ...(anchor.expandedCircleDoor && anchor.portalRoomCell
-      ? {
-          expandedCircleDoor: true,
-          portalRoomCell: {
-            x: anchor.portalRoomCell.x,
-            y: anchor.portalRoomCell.y,
-          },
-          originalCell: anchor.originalCell
-            ? { x: anchor.originalCell.x, y: anchor.originalCell.y }
-            : null,
-          originalOutsideCell: anchor.originalOutsideCell
-            ? {
-                x: anchor.originalOutsideCell.x,
-                y: anchor.originalOutsideCell.y,
-              }
-            : null,
-        }
-      : {}),
   };
+  if (anchor.outsideCell) {
+    serialized.outsideCell = { x: anchor.outsideCell.x, y: anchor.outsideCell.y };
+  }
+  if (anchor.snapCell) {
+    serialized.snapCell = { x: anchor.snapCell.x, y: anchor.snapCell.y };
+  }
+  if (anchor.routingOutsideCell) {
+    serialized.routingOutsideCell = {
+      x: anchor.routingOutsideCell.x,
+      y: anchor.routingOutsideCell.y,
+    };
+  }
+  if (anchor.normal) {
+    serialized.normal = { x: anchor.normal.x, y: anchor.normal.y };
+  }
+  if (anchor.point) {
+    serialized.point = { x: anchor.point.x, y: anchor.point.y };
+  }
+  if (anchor.segment) {
+    serialized.segment = {
+      x1: anchor.segment.x1,
+      y1: anchor.segment.y1,
+      x2: anchor.segment.x2,
+      y2: anchor.segment.y2,
+    };
+  }
+  if (anchor.circleBoundaryAnchor) serialized.circleBoundaryAnchor = true;
+  if (anchor.finalGeometry) {
+    serialized.finalGeometry = true;
+    serialized.finalBoundaryIndex = anchor.finalBoundaryIndex;
+  }
+  if (anchor.expandedCircleDoor && anchor.portalRoomCell) {
+    serialized.expandedCircleDoor = true;
+    serialized.portalRoomCell = {
+      x: anchor.portalRoomCell.x,
+      y: anchor.portalRoomCell.y,
+    };
+    serialized.originalCell = anchor.originalCell
+      ? { x: anchor.originalCell.x, y: anchor.originalCell.y }
+      : null;
+    serialized.originalOutsideCell = anchor.originalOutsideCell
+      ? {
+          x: anchor.originalOutsideCell.x,
+          y: anchor.originalOutsideCell.y,
+        }
+      : null;
+  }
+  return serialized;
 }
 
 export function findClosestBoundaryAnchorAcrossRegions(
@@ -1114,6 +1119,81 @@ export function findClosestBoundaryAnchorAcrossRegions(
     });
   });
   return best;
+}
+
+function getCellCopy(cell) {
+  return cell && Number.isFinite(cell.x) && Number.isFinite(cell.y)
+    ? { x: cell.x, y: cell.y }
+    : null;
+}
+
+function inferAnchorSideFromCells(cell, outsideCell, fallbackSide = null) {
+  if (!cell || !outsideCell) return fallbackSide;
+  const dx = outsideCell.x - cell.x;
+  const dy = outsideCell.y - cell.y;
+  if (Math.abs(dx) >= Math.abs(dy)) {
+    if (dx > 0) return "east";
+    if (dx < 0) return "west";
+  }
+  if (dy > 0) return "south";
+  if (dy < 0) return "north";
+  return fallbackSide;
+}
+
+function inferAnchorNormalFromCells(cell, outsideCell, fallbackNormal = null) {
+  if (fallbackNormal) return { x: fallbackNormal.x, y: fallbackNormal.y };
+  if (!cell || !outsideCell) return null;
+  const dx = outsideCell.x - cell.x;
+  const dy = outsideCell.y - cell.y;
+  if (Math.abs(dx) >= Math.abs(dy)) {
+    if (dx > 0) return { x: 1, y: 0 };
+    if (dx < 0) return { x: -1, y: 0 };
+  }
+  if (dy > 0) return { x: 0, y: 1 };
+  if (dy < 0) return { x: 0, y: -1 };
+  return null;
+}
+
+function getManualAnchorWithExactOutsideCell(region, manualAnchor, gridSize) {
+  const cell = getCellCopy(manualAnchor?.cell);
+  const outsideCell = getCellCopy(manualAnchor?.outsideCell);
+  if (!cell || !outsideCell) return null;
+  const side = inferAnchorSideFromCells(cell, outsideCell, manualAnchor.side);
+  if (!side) return null;
+  const snapCell = getCellCopy(manualAnchor.snapCell);
+  const routingOutsideCell = getCellCopy(manualAnchor.routingOutsideCell);
+  const normal = inferAnchorNormalFromCells(cell, outsideCell, manualAnchor.normal);
+  const point = manualAnchor.point
+    ? { x: manualAnchor.point.x, y: manualAnchor.point.y }
+    : getAnchorHandlePoint({ side, cell, outsideCell, point: null }, gridSize);
+  return {
+    regionId: region.id,
+    regionShape: region.shape,
+    side,
+    cell,
+    outsideCell,
+    snapCell,
+    routingOutsideCell,
+    normal,
+    circular: manualAnchor.circular || null,
+    finalGeometry: Boolean(manualAnchor.finalGeometry),
+    circleBoundaryAnchor: Boolean(
+      manualAnchor.circleBoundaryAnchor ||
+      region?.shape === "circle" ||
+      snapCell ||
+      routingOutsideCell,
+    ),
+    finalBoundaryIndex: manualAnchor.finalBoundaryIndex,
+    segment: manualAnchor.segment
+      ? {
+          x1: manualAnchor.segment.x1,
+          y1: manualAnchor.segment.y1,
+          x2: manualAnchor.segment.x2,
+          y2: manualAnchor.segment.y2,
+        }
+      : null,
+    point,
+  };
 }
 
 export function resolveManualDoorAnchor(
@@ -1158,6 +1238,12 @@ export function resolveManualDoorAnchor(
         x: manualAnchor.outsideCell.x,
         y: manualAnchor.outsideCell.y,
       },
+      snapCell: manualAnchor.snapCell
+        ? {
+            x: manualAnchor.snapCell.x,
+            y: manualAnchor.snapCell.y,
+          }
+        : null,
       routingOutsideCell: manualAnchor.routingOutsideCell
         ? {
             x: manualAnchor.routingOutsideCell.x,
@@ -1180,6 +1266,13 @@ export function resolveManualDoorAnchor(
       point,
     };
   }
+  const exactOutsideAnchor = getManualAnchorWithExactOutsideCell(
+    region,
+    manualAnchor,
+    gridSize,
+  );
+  if (exactOutsideAnchor) return exactOutsideAnchor;
+
   const boundary = getDoorBoundaryCells(region);
   const requestedCell =
     manualAnchor.expandedCircleDoor && manualAnchor.originalCell

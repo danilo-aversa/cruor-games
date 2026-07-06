@@ -125,10 +125,15 @@ import {
   getCellBoundarySegmentsForCell,
   getNeighborForCellSide,
   getRegionSurfaceKind,
+  getCircleGeometryFromRegion,
   buildDungeonMask,
   applyCircleDoorRoomExtensions,
 } from "./map-generator.mask.js";
-import { createCircleDragAnchor } from "./map-generator.circle-anchors.js";
+import {
+  createCircleConnectionAnchorCandidates,
+  createCircleConnectionAnchorFromOutsideCell,
+  createCircleDragAnchor,
+} from "./map-generator.circle-anchors.js";
 import {
   getRoomCellSet,
   getBoundaryCells,
@@ -363,6 +368,46 @@ function createLockedRawGenerationManualOverrides(snapshot = {}) {
   };
 }
 
+function getPreviewAnchorIdentity(anchor) {
+  if (!anchor) return "none";
+  const cell =
+    anchor.snapCell ||
+    anchor.routingOutsideCell ||
+    anchor.outsideCell ||
+    anchor.cell ||
+    null;
+  const point = anchor.point || anchor.displayPoint || null;
+  return [
+    anchor.side || "",
+    cell ? cell.x : "",
+    cell ? cell.y : "",
+    point && Number.isFinite(point.x) ? Math.round(point.x * 10) / 10 : "",
+    point && Number.isFinite(point.y) ? Math.round(point.y * 10) / 10 : "",
+  ].join(":");
+}
+
+function getRoomDragRoutedPreviewKey(roomDragPreview) {
+  if (!roomDragPreview || roomDragPreview.phase === "committing") return "";
+  return [
+    "room",
+    roomDragPreview.regionId || "",
+    roomDragPreview.x ?? "",
+    roomDragPreview.y ?? "",
+  ].join(":");
+}
+
+function getConnectionDraftRoutedPreviewKey(connectionDraft) {
+  if (!connectionDraft || connectionDraft.invalid) return "";
+  if (!connectionDraft.fromRegionId || !connectionDraft.toRegionId) return "";
+  return [
+    "connection",
+    connectionDraft.fromRegionId,
+    getPreviewAnchorIdentity(connectionDraft.fromAnchor),
+    connectionDraft.toRegionId,
+    getPreviewAnchorIdentity(connectionDraft.toAnchor || connectionDraft.target?.anchor),
+  ].join("|");
+}
+
 
 function MapViewport({
   generatedMap,
@@ -434,6 +479,8 @@ function MapViewport({
   viewportClassName = "",
   onViewportMetricsChange = null,
   onViewportControlsChange = null,
+  onCreateRoomDragPreviewMap = null,
+  onCreateConnectionDraftPreviewMap = null,
 }) {
   const viewportRef = useRef(null);
   const panRef = useRef(null);
@@ -451,6 +498,12 @@ function MapViewport({
   const accessMoveFrameRef = useRef(null);
   const pendingAccessMoveRef = useRef(null);
   const connectionDragRef = useRef(null);
+  const connectionDraftRef = useRef(null);
+  const roomRoutedPreviewTimerRef = useRef(null);
+  const connectionRoutedPreviewTimerRef = useRef(null);
+  const routedPreviewCacheRef = useRef(new Map());
+  const roomDragPreviewMapCallbackRef = useRef(onCreateRoomDragPreviewMap);
+  const connectionDraftPreviewMapCallbackRef = useRef(onCreateConnectionDraftPreviewMap);
   const contentBoundsRef = useRef(generatedMap.contentBounds);
   const lastViewResetKeyRef = useRef(null);
   const [isPanning, setIsPanning] = useState(false);
@@ -465,6 +518,20 @@ function MapViewport({
   const [hoverCorridorHandle, setHoverCorridorHandle] = useState(null);
   const [hoveredCorridorId, setHoveredCorridorId] = useState(null);
   const [connectionDraft, setConnectionDraft] = useState(null);
+  const [roomDragRoutedPreviewState, setRoomDragRoutedPreviewState] = useState(null);
+  const [connectionDraftRoutedPreviewState, setConnectionDraftRoutedPreviewState] = useState(null);
+  roomDragPreviewMapCallbackRef.current = onCreateRoomDragPreviewMap;
+  connectionDraftPreviewMapCallbackRef.current = onCreateConnectionDraftPreviewMap;
+  const roomDragPreviewKey = getRoomDragRoutedPreviewKey(roomDragPreview);
+  const connectionDraftPreviewKey = getConnectionDraftRoutedPreviewKey(connectionDraft);
+  const roomDragRoutedPreview =
+    roomDragRoutedPreviewState?.key === roomDragPreviewKey
+      ? roomDragRoutedPreviewState.value
+      : null;
+  const connectionDraftRoutedPreview =
+    connectionDraftRoutedPreviewState?.key === connectionDraftPreviewKey
+      ? connectionDraftRoutedPreviewState.value
+      : null;
   const [roomContextMenu, setRoomContextMenu] = useState(null);
   const [doorContextMenu, setDoorContextMenu] = useState(null);
   const [junctionContextMenu, setJunctionContextMenu] = useState(null);
@@ -490,6 +557,11 @@ function MapViewport({
   };
 
   contentBoundsRef.current = generatedMap.contentBounds;
+
+  function setConnectionDraftState(nextDraft) {
+    connectionDraftRef.current = nextDraft;
+    setConnectionDraft(nextDraft);
+  }
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -703,6 +775,135 @@ function MapViewport({
     };
   }
 
+  function isViewportMapEditorDebugEnabled() {
+    if (typeof window === "undefined") return false;
+    if (!window.__cruorMapDebug) {
+      window.__cruorMapDebug = {
+        enabled: true,
+        enable() {
+          this.enabled = true;
+          console.info("[Cruor Map Debug] enabled");
+        },
+        disable() {
+          this.enabled = false;
+          console.info("[Cruor Map Debug] disabled");
+        },
+      };
+    }
+    return window.__cruorMapDebug.enabled !== false;
+  }
+
+  function roundViewportDebugNumber(value) {
+    return Number.isFinite(Number(value)) ? Math.round(Number(value) * 100) / 100 : value;
+  }
+
+  function roundViewportDebugPoint(point) {
+    if (!point || typeof point !== "object") return point || null;
+    return {
+      x: roundViewportDebugNumber(point.x),
+      y: roundViewportDebugNumber(point.y),
+    };
+  }
+
+  function getViewportDebugPointCell(point) {
+    if (!point) return null;
+    const gridSize = generatedMap?.config?.gridSize || 20;
+    return {
+      x: Math.floor(point.x / gridSize),
+      y: Math.floor(point.y / gridSize),
+    };
+  }
+
+  function summarizeViewportDebugCell(cell) {
+    if (!cell) return null;
+    return { x: cell.x, y: cell.y };
+  }
+
+  function summarizeViewportDebugAnchor(anchor) {
+    if (!anchor) return null;
+    return {
+      side: anchor.side || null,
+      cell: summarizeViewportDebugCell(anchor.cell),
+      outsideCell: summarizeViewportDebugCell(anchor.outsideCell),
+      portalRoomCell: summarizeViewportDebugCell(anchor.portalRoomCell),
+      routingOutsideCell: summarizeViewportDebugCell(anchor.routingOutsideCell),
+      snapCell: summarizeViewportDebugCell(anchor.snapCell),
+      finalGeometry: Boolean(anchor.finalGeometry),
+      expandedCircleDoor: Boolean(anchor.expandedCircleDoor),
+      circleBoundaryAnchor: Boolean(anchor.circleBoundaryAnchor),
+    };
+  }
+
+  function summarizeViewportDebugCorridor(corridor) {
+    if (!corridor) return null;
+    return {
+      id: corridor.id,
+      from: corridor.from,
+      to: corridor.to,
+      cells: Array.isArray(corridor.cells) ? corridor.cells.length : 0,
+      doors: Array.isArray(corridor.doors)
+        ? corridor.doors.map((door) => ({
+            endpoint: door.endpoint || null,
+            regionId: door.regionId || null,
+            cell: summarizeViewportDebugCell(door.cell),
+            side: door.side || null,
+          }))
+        : [],
+      waypointCount: Array.isArray(corridor.manualWaypoints)
+        ? corridor.manualWaypoints.length
+        : Array.isArray(corridor.waypoints)
+          ? corridor.waypoints.length
+          : 0,
+      isRoomLink: Boolean(corridor.isRoomLink),
+      recovered: Boolean(corridor.recovered),
+    };
+  }
+
+  function summarizeViewportDebugManualOverrides(overrides) {
+    const normalized = normalizeManualOverrides(overrides || {});
+    return {
+      doorAnchorKeys: Object.keys(normalized.doorAnchors || {}).sort(),
+      corridorWaypointKeys: Object.keys(normalized.corridorWaypoints || {}).sort(),
+      customConnectionIds: (normalized.customConnections || []).map((connection) => connection.id).sort(),
+      deletedConnections: [...(normalized.deletedConnections || [])].sort(),
+      mapAccessKeys: Object.keys(normalized.mapAccesses || {}).sort(),
+      roomPositionKeys: Object.keys(normalized.roomPositions || {}).sort(),
+      roomStyleKeys: Object.keys(normalized.roomStyles || {}).sort(),
+    };
+  }
+
+  function summarizeViewportDebugMap(map) {
+    if (!map) return null;
+    return {
+      corridorCount: Array.isArray(map.corridors) ? map.corridors.length : 0,
+      corridorIds: (map.corridors || []).map((corridor) => corridor.id).sort(),
+      regionCount: Array.isArray(map.regions) ? map.regions.length : 0,
+      mapAccesses: (map.dungeonMask?.mapAccesses || map.mapAccesses || []).map((access) => ({
+        id: access.id || null,
+        regionId: access.regionId || null,
+        type: access.type || null,
+        cell: summarizeViewportDebugCell(access.cell),
+        side: access.side || null,
+      })),
+    };
+  }
+
+  function viewportDebugEvent(label, payload = {}) {
+    if (!isViewportMapEditorDebugEnabled()) return;
+    const header = `[Cruor Map Debug][viewport] ${label}`;
+    try {
+      if (typeof console.groupCollapsed === "function") {
+        console.groupCollapsed(header);
+        console.log(payload);
+        console.groupEnd();
+      } else {
+        console.log(header, payload);
+      }
+    } catch (error) {
+      void error;
+    }
+  }
+
   function setRoomDragPreviewState(nextPreview) {
     roomDragPreviewRef.current = nextPreview;
     setRoomDragPreview(nextPreview);
@@ -712,6 +913,108 @@ function MapViewport({
     corridorDragPreviewRef.current = nextPreview;
     setCorridorDragPreview(nextPreview);
   }
+
+  useEffect(() => {
+    routedPreviewCacheRef.current.clear();
+    setRoomDragRoutedPreviewState(null);
+    setConnectionDraftRoutedPreviewState(null);
+  }, [generatedMap]);
+
+  useEffect(() => {
+    const key = getRoomDragRoutedPreviewKey(roomDragPreview);
+    if (roomRoutedPreviewTimerRef.current) {
+      window.clearTimeout(roomRoutedPreviewTimerRef.current);
+      roomRoutedPreviewTimerRef.current = null;
+    }
+    if (!key || typeof roomDragPreviewMapCallbackRef.current !== "function") {
+      setRoomDragRoutedPreviewState(null);
+      return undefined;
+    }
+    const cached = routedPreviewCacheRef.current.get(key);
+    if (cached) {
+      setRoomDragRoutedPreviewState({ key, value: cached });
+      return undefined;
+    }
+    roomRoutedPreviewTimerRef.current = window.setTimeout(() => {
+      roomRoutedPreviewTimerRef.current = null;
+      const active = roomDragPreviewRef.current;
+      if (getRoomDragRoutedPreviewKey(active) !== key) return;
+      try {
+        const result = roomDragPreviewMapCallbackRef.current?.(active.regionId, {
+          x: active.x,
+          y: active.y,
+        });
+        if (!result) return;
+        routedPreviewCacheRef.current.set(key, result);
+        if (routedPreviewCacheRef.current.size > 48) {
+          const firstKey = routedPreviewCacheRef.current.keys().next().value;
+          routedPreviewCacheRef.current.delete(firstKey);
+        }
+        if (getRoomDragRoutedPreviewKey(roomDragPreviewRef.current) === key) {
+          setRoomDragRoutedPreviewState({ key, value: result });
+        }
+      } catch (error) {
+        viewportDebugEvent("room drag routed preview failed", {
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }, 220);
+    return () => {
+      if (roomRoutedPreviewTimerRef.current) {
+        window.clearTimeout(roomRoutedPreviewTimerRef.current);
+        roomRoutedPreviewTimerRef.current = null;
+      }
+    };
+  }, [roomDragPreview]);
+
+  useEffect(() => {
+    const key = getConnectionDraftRoutedPreviewKey(connectionDraft);
+    if (connectionRoutedPreviewTimerRef.current) {
+      window.clearTimeout(connectionRoutedPreviewTimerRef.current);
+      connectionRoutedPreviewTimerRef.current = null;
+    }
+    if (!key || typeof connectionDraftPreviewMapCallbackRef.current !== "function") {
+      setConnectionDraftRoutedPreviewState(null);
+      return undefined;
+    }
+    const cached = routedPreviewCacheRef.current.get(key);
+    if (cached) {
+      setConnectionDraftRoutedPreviewState({ key, value: cached });
+      return undefined;
+    }
+    connectionRoutedPreviewTimerRef.current = window.setTimeout(() => {
+      connectionRoutedPreviewTimerRef.current = null;
+      const active = connectionDraftRef.current;
+      if (getConnectionDraftRoutedPreviewKey(active) !== key) return;
+      try {
+        const result = connectionDraftPreviewMapCallbackRef.current?.({
+          fromRegionId: active.fromRegionId,
+          fromAnchor: active.fromAnchor,
+          toRegionId: active.toRegionId,
+          toAnchor: active.toAnchor || active.target?.anchor || null,
+        });
+        if (!result) return;
+        routedPreviewCacheRef.current.set(key, result);
+        if (routedPreviewCacheRef.current.size > 48) {
+          const firstKey = routedPreviewCacheRef.current.keys().next().value;
+          routedPreviewCacheRef.current.delete(firstKey);
+        }
+        if (getConnectionDraftRoutedPreviewKey(connectionDraftRef.current) === key) {
+          setConnectionDraftRoutedPreviewState({ key, value: result });
+        }
+      } catch (error) {
+        viewportDebugEvent("connection routed preview failed", {
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }, 260);
+    return () => {
+      if (connectionRoutedPreviewTimerRef.current) {
+        window.clearTimeout(connectionRoutedPreviewTimerRef.current);
+        connectionRoutedPreviewTimerRef.current = null;
+      }
+    };
+  }, [connectionDraft]);
 
   useEffect(() => {
     const roomPreview = roomDragPreviewRef.current;
@@ -1198,7 +1501,7 @@ function MapViewport({
     });
     setHoverWallHandle(null);
     setHoverCorridorHandle(null);
-    setConnectionDraft(null);
+    setConnectionDraftState(null);
     return true;
   }
 
@@ -1218,7 +1521,7 @@ function MapViewport({
     } catch (error) {
       void error;
     }
-    setConnectionDraft({
+    setConnectionDraftState({
       start: zone.point,
       current: zone.point,
       fromAnchor: zone.anchor,
@@ -1304,6 +1607,32 @@ function MapViewport({
     );
   }
 
+  function createRoomDragPreview(drag, position, phase = "dragging") {
+    if (!drag || !position) return null;
+    return {
+      phase,
+      regionId: drag.regionId,
+      originX: drag.originX,
+      originY: drag.originY,
+      x: position.x,
+      y: position.y,
+    };
+  }
+
+  function scheduleRoomDragPreview(drag, position) {
+    pendingRoomMoveRef.current = {
+      regionId: drag.regionId,
+      position,
+    };
+    if (roomMoveFrameRef.current) return;
+    roomMoveFrameRef.current = window.requestAnimationFrame(() => {
+      roomMoveFrameRef.current = null;
+      const pending = pendingRoomMoveRef.current;
+      if (!pending) return;
+      setRoomDragPreviewState(createRoomDragPreview(drag, pending.position));
+    });
+  }
+
   function handleRoomPointerMove(event) {
     const drag = roomDragRef.current;
     if (!drag || drag.pointerId !== event.pointerId) return;
@@ -1321,18 +1650,7 @@ function MapViewport({
     if (drag.lastX === nextPosition.x && drag.lastY === nextPosition.y) return;
     drag.lastX = nextPosition.x;
     drag.lastY = nextPosition.y;
-    pendingRoomMoveRef.current = {
-      regionId: drag.regionId,
-      position: nextPosition,
-    };
-    if (roomMoveFrameRef.current) return;
-    roomMoveFrameRef.current = window.requestAnimationFrame(() => {
-      roomMoveFrameRef.current = null;
-      const pending = pendingRoomMoveRef.current;
-      pendingRoomMoveRef.current = null;
-      if (!pending) return;
-      onRoomMove?.(pending.regionId, pending.position);
-    });
+    scheduleRoomDragPreview(drag, nextPosition);
   }
 
   function endRoomDrag(event) {
@@ -1344,10 +1662,21 @@ function MapViewport({
       window.cancelAnimationFrame(roomMoveFrameRef.current);
       roomMoveFrameRef.current = null;
     }
-    const pending = pendingRoomMoveRef.current;
+    const pending = pendingRoomMoveRef.current ||
+      (drag.lastX !== drag.originX || drag.lastY !== drag.originY
+        ? { regionId: drag.regionId, position: { x: drag.lastX, y: drag.lastY } }
+        : null);
     pendingRoomMoveRef.current = null;
-    if (pending) onRoomMove?.(pending.regionId, pending.position);
-    setRoomDragPreviewState(null);
+    if (pending) {
+      setRoomDragPreviewState(createRoomDragPreview(drag, pending.position, "committing"));
+      viewportDebugEvent("drag:end room result", {
+        regionId: pending.regionId,
+        position: pending.position,
+      });
+      onRoomMove?.(pending.regionId, pending.position);
+    } else {
+      setRoomDragPreviewState(null);
+    }
     roomDragRef.current = null;
     setDraggingRegionId(null);
     setHoveredRegionId(null);
@@ -1371,17 +1700,196 @@ function MapViewport({
     } catch (error) {
       void error;
     }
-    setConnectionDraft({
+    setConnectionDraftState({
       start: handle.point,
       current: handle.point,
       fromAnchor: handle.anchor,
+      fromRegionId: handle.regionId,
     });
   }
 
+  function getAnchorOutwardNormal(anchor) {
+    if (anchor?.normal && Number.isFinite(anchor.normal.x) && Number.isFinite(anchor.normal.y)) {
+      const length = Math.hypot(anchor.normal.x, anchor.normal.y) || 1;
+      return { x: anchor.normal.x / length, y: anchor.normal.y / length };
+    }
+    if (anchor?.side === "west") return { x: -1, y: 0 };
+    if (anchor?.side === "east") return { x: 1, y: 0 };
+    if (anchor?.side === "north") return { x: 0, y: -1 };
+    if (anchor?.side === "south") return { x: 0, y: 1 };
+    return null;
+  }
+
+  function getAnchorConnectionFacingPenalty(anchor, anchorPoint, drag) {
+    if (!anchor || !anchorPoint || !drag?.start) return 0;
+    const normal = getAnchorOutwardNormal(anchor);
+    if (!normal) return 0;
+    const vx = drag.start.x - anchorPoint.x;
+    const vy = drag.start.y - anchorPoint.y;
+    const length = Math.hypot(vx, vy);
+    if (!length) return 0;
+    const dot = (normal.x * vx + normal.y * vy) / length;
+    const gridSize = generatedMap.config.gridSize || 20;
+    if (dot >= 0.3) return -gridSize * 0.55;
+    if (dot >= 0) return 0;
+    return Math.abs(dot) * gridSize * 4.5;
+  }
+
+  function dedupeEditorBoundaryAnchors(anchors, gridSize) {
+    const seen = new Set();
+    const output = [];
+    (anchors || []).forEach((anchor) => {
+      if (!anchor) return;
+      const handlePoint = getAnchorHandlePoint(anchor, gridSize);
+      if (!handlePoint) return;
+      const snapCell = anchor.snapCell || anchor.outsideCell || anchor.cell || {};
+      const key = [
+        anchor.side || "",
+        snapCell.x ?? "",
+        snapCell.y ?? "",
+        Math.round(handlePoint.x * 10) / 10,
+        Math.round(handlePoint.y * 10) / 10,
+      ].join(":");
+      if (seen.has(key)) return;
+      seen.add(key);
+      output.push(anchor);
+    });
+    return output;
+  }
+
+  function getCircleCandidateCellRing(point, gridSize, radius = 1) {
+    if (!point || !Number.isFinite(gridSize) || gridSize <= 0) return [];
+    const baseCell = {
+      x: Math.floor(point.x / gridSize),
+      y: Math.floor(point.y / gridSize),
+    };
+    const cells = [];
+    for (let dy = -radius; dy <= radius; dy += 1) {
+      for (let dx = -radius; dx <= radius; dx += 1) {
+        cells.push({ x: baseCell.x + dx, y: baseCell.y + dy });
+      }
+    }
+    return cells;
+  }
+
+  function getDistanceFromPointToCellCenter(point, cell, gridSize) {
+    if (!point || !cell) return Number.POSITIVE_INFINITY;
+    const cx = (cell.x + 0.5) * gridSize;
+    const cy = (cell.y + 0.5) * gridSize;
+    return Math.hypot(point.x - cx, point.y - cy);
+  }
+
+  function getStrictCircleDoorDragAnchor(region, point, gridSize, options = {}) {
+    if (region?.shape !== "circle" || !point) return null;
+    const circle = getCircleGeometryFromRegion(region, gridSize);
+    if (!circle || !Number.isFinite(circle.r) || circle.r <= 0) return null;
+    const radius = Number.isFinite(options.searchRadius) ? options.searchRadius : 1;
+    const maxHandleDistance = Number.isFinite(options.maxHandleDistance)
+      ? options.maxHandleDistance
+      : gridSize * 1.15;
+    const seen = new Set();
+    const candidates = [];
+
+    getCircleCandidateCellRing(point, gridSize, radius).forEach((cell) => {
+      const key = cellKey(cell.x, cell.y);
+      if (seen.has(key)) return;
+      seen.add(key);
+      const anchor = createCircleConnectionAnchorFromOutsideCell(
+        region,
+        circle,
+        cell,
+        gridSize,
+      );
+      if (!anchor) return;
+      const handlePoint = getAnchorHandlePoint(anchor, gridSize) || anchor.point;
+      if (!handlePoint) return;
+      const handleDistance = Math.hypot(
+        handlePoint.x - point.x,
+        handlePoint.y - point.y,
+      );
+      const snapDistance = getDistanceFromPointToCellCenter(
+        point,
+        anchor.snapCell || cell,
+        gridSize,
+      );
+      if (handleDistance > maxHandleDistance && snapDistance > gridSize * 1.35) return;
+      candidates.push({
+        anchor,
+        score: handleDistance + snapDistance * 0.18,
+      });
+    });
+
+    return candidates.sort((a, b) => a.score - b.score)[0]?.anchor || null;
+  }
+
+  function isPointNearCircleBoundary(region, point, gridSize) {
+    if (region?.shape !== "circle" || !point) return false;
+    const circle = getCircleGeometryFromRegion(region, gridSize);
+    if (!circle || !Number.isFinite(circle.r) || circle.r <= 0) return false;
+    const distance = Math.hypot(point.x - circle.cx, point.y - circle.cy);
+    return Math.abs(distance - circle.r) <= gridSize * 1.9;
+  }
+
+  function findClosestInvalidCircleAnchorTarget(
+    regions,
+    point,
+    gridSize,
+    excludeRegionId = null,
+  ) {
+    let best = null;
+    (regions || []).forEach((region) => {
+      if (!region || region.id === excludeRegionId || region.shape !== "circle") return;
+      if (!isPointNearCircleBoundary(region, point, gridSize)) return;
+      const circle = getCircleGeometryFromRegion(region, gridSize);
+      const boundaryDistance = Math.abs(
+        Math.hypot(point.x - circle.cx, point.y - circle.cy) - circle.r,
+      );
+      if (!best || boundaryDistance < best.distance) {
+        best = {
+          region,
+          point,
+          distance: boundaryDistance,
+          invalid: true,
+          reason: "circle-anchor-unreachable",
+        };
+      }
+    });
+    return best;
+  }
+
+  function getEditorBoundaryAnchorCandidatesForRegion(region, point, gridSize) {
+    if (!region || !point) return [];
+    if (region.shape === "circle") {
+      const strictPointerAnchor = getStrictCircleDoorDragAnchor(
+        region,
+        point,
+        gridSize,
+        { searchRadius: 1 },
+      );
+      if (strictPointerAnchor) return [strictPointerAnchor];
+      const circle = getCircleGeometryFromRegion(region, gridSize);
+      const circleCandidates = circle
+        ? createCircleConnectionAnchorCandidates(region, circle, gridSize)
+        : [];
+      return dedupeEditorBoundaryAnchors(circleCandidates, gridSize);
+    }
+    const finalBoundary = getDoorBoundaryCells(region, generatedMap);
+    const rawBoundary = getBoundaryCells(region);
+    const boundary = finalBoundary.length > 0 ? finalBoundary : rawBoundary;
+    return dedupeEditorBoundaryAnchors(boundary, gridSize);
+  }
+
   function getEditorBoundaryAnchorForRegion(region, point, gridSize) {
-    if (!region || !point) return null;
-    if (region.shape === "circle") return getDoorDragManualAnchor(region, point, gridSize);
-    return getClosestBoundaryAnchorToPoint(region, point, gridSize, generatedMap);
+    const candidates = getEditorBoundaryAnchorCandidatesForRegion(region, point, gridSize);
+    if (candidates.length === 0) return null;
+    return candidates
+      .map((anchor) => {
+        const handlePoint = getAnchorHandlePoint(anchor, gridSize);
+        const dx = handlePoint.x - point.x;
+        const dy = handlePoint.y - point.y;
+        return { anchor, score: dx * dx + dy * dy };
+      })
+      .sort((a, b) => a.score - b.score)[0]?.anchor || null;
   }
 
   function findClosestEditorBoundaryAnchorAcrossRegions(
@@ -1390,33 +1898,63 @@ function MapViewport({
     gridSize,
     excludeRegionId = null,
     maxDistance = gridSize * 1.35,
+    drag = null,
   ) {
     let best = null;
     (regions || []).forEach((region) => {
       if (!region || region.id === excludeRegionId) return;
-      const anchor = getEditorBoundaryAnchorForRegion(region, point, gridSize);
-      if (!anchor) return;
-      const handlePoint = getAnchorHandlePoint(anchor, gridSize);
-      const dx = handlePoint.x - point.x;
-      const dy = handlePoint.y - point.y;
-      const distance = Math.hypot(dx, dy);
-      if (distance > maxDistance) return;
-      if (!best || distance < best.distance)
-        best = { region, anchor, point: handlePoint, distance };
+      const circleAnchor = region.shape === "circle"
+        ? getStrictCircleDoorDragAnchor(region, point, gridSize, { searchRadius: 1 })
+        : null;
+      const candidates = region.shape === "circle"
+        ? circleAnchor
+          ? [circleAnchor]
+          : []
+        : getEditorBoundaryAnchorCandidatesForRegion(
+            region,
+            point,
+            gridSize,
+          );
+      candidates.forEach((anchor) => {
+        const handlePoint = getAnchorHandlePoint(anchor, gridSize);
+        if (!handlePoint) return;
+        const dx = handlePoint.x - point.x;
+        const dy = handlePoint.y - point.y;
+        const distance = Math.hypot(dx, dy);
+        const isPointerResolvedCircleAnchor =
+          region.shape === "circle" &&
+          anchor.snapGridQuantized &&
+          anchor.snapCell &&
+          Math.floor(point.x / gridSize) === anchor.snapCell.x &&
+          Math.floor(point.y / gridSize) === anchor.snapCell.y;
+        if (!isPointerResolvedCircleAnchor && distance > maxDistance) return;
+        const facingPenalty = getAnchorConnectionFacingPenalty(
+          anchor,
+          handlePoint,
+          drag,
+        );
+        const score = distance + facingPenalty;
+        if (!best || score < best.score)
+          best = { region, anchor, point: handlePoint, distance, score };
+      });
     });
     return best;
   }
 
   function createConnectionDraftState(drag, point, target = null) {
-    const current = target ? target.point : point;
+    const invalid = Boolean(target?.invalid);
+    const current = target && !invalid ? target.point : point;
     return {
       start: drag.start,
       current,
       fromAnchor: drag.fromAnchor,
       target,
-      toAnchor: target?.anchor || null,
+      toAnchor: invalid ? null : target?.anchor || null,
       fromRegionId: drag.fromRegionId,
-      toRegionId: target?.region?.id || null,
+      toRegionId: invalid ? null : target?.region?.id || null,
+      invalid,
+      invalidRegionId: invalid ? target?.region?.id || null : null,
+      invalidReason: invalid ? target?.reason || "invalid-anchor" : null,
     };
   }
 
@@ -1432,9 +1970,16 @@ function MapViewport({
       point,
       generatedMap.config.gridSize,
       drag.fromRegionId,
-      generatedMap.config.gridSize * 1.35,
+      generatedMap.config.gridSize * 1.8,
+      drag,
     );
-    setConnectionDraft(createConnectionDraftState(drag, point, target));
+    const resolvedTarget = target || findClosestInvalidCircleAnchorTarget(
+      generatedMap.regions,
+      point,
+      generatedMap.config.gridSize,
+      drag.fromRegionId,
+    );
+    setConnectionDraftState(createConnectionDraftState(drag, point, resolvedTarget));
     return true;
   }
 
@@ -1444,25 +1989,58 @@ function MapViewport({
     event.preventDefault();
     event.stopPropagation();
     const point = clientToMapPoint(event);
-    const target = point
-      ? findClosestEditorBoundaryAnchorAcrossRegions(
-          generatedMap.regions,
-          point,
-          generatedMap.config.gridSize,
-          drag.fromRegionId,
-          generatedMap.config.gridSize * 1.35,
-        )
-      : null;
-    if (target) {
+    const draftTarget = connectionDraftRef.current?.target || null;
+    const target =
+      draftTarget ||
+      (point
+        ? findClosestEditorBoundaryAnchorAcrossRegions(
+            generatedMap.regions,
+            point,
+            generatedMap.config.gridSize,
+            drag.fromRegionId,
+            generatedMap.config.gridSize * 1.8,
+            drag,
+          )
+        : null);
+    viewportDebugEvent("anchor trace: release", {
+      kind: "new-corridor",
+      fromRegionId: drag.fromRegionId,
+      pointer: {
+        point: roundViewportDebugPoint(point),
+        cell: getViewportDebugPointCell(point),
+      },
+      target: target
+        ? {
+            invalid: Boolean(target.invalid),
+            regionId: target.region?.id || null,
+            point: roundViewportDebugPoint(target.point),
+            cell: getViewportDebugPointCell(target.point),
+            distance: roundViewportDebugNumber(target.distance),
+            score: roundViewportDebugNumber(target.score),
+            reason: target.reason || null,
+            anchor: summarizeViewportDebugAnchor(target.anchor),
+          }
+        : null,
+      fromAnchor: summarizeViewportDebugAnchor(drag.fromAnchor),
+    });
+    if (target && !target.invalid) {
       onCreateConnection?.({
         fromRegionId: drag.fromRegionId,
         fromAnchor: drag.fromAnchor,
         toRegionId: target.region.id,
         toAnchor: target.anchor,
+        debugTrace: {
+          releasePoint: point,
+          releaseCell: getViewportDebugPointCell(point),
+          targetPoint: target.point,
+          targetCell: getViewportDebugPointCell(target.point),
+          targetDistance: target.distance,
+          targetScore: target.score,
+        },
       });
     }
     connectionDragRef.current = null;
-    setConnectionDraft(null);
+    setConnectionDraftState(null);
     setHoverWallHandle(null);
     return true;
   }
@@ -1560,10 +2138,20 @@ function MapViewport({
     setHoveredCorridorId(handle.corridor.id);
   }
 
-  function getDoorDragManualAnchor(region, point, gridSize) {
+  function getDoorDragManualAnchor(region, point, gridSize, options = {}) {
     if (!region || !point) return null;
-    const circleAnchor = createCircleDragAnchor(region, point, gridSize);
-    if (circleAnchor) return circleAnchor;
+    if (region.shape === "circle") {
+      const strictCircleAnchor = getStrictCircleDoorDragAnchor(
+        region,
+        point,
+        gridSize,
+        { searchRadius: options.searchRadius ?? 1 },
+      );
+      if (strictCircleAnchor) return strictCircleAnchor;
+      return options.allowLooseCircleFallback
+        ? createCircleDragAnchor(region, point, gridSize)
+        : null;
+    }
     const finalBoundary = getDoorBoundaryCells(region, generatedMap);
     const rawBoundary = getBoundaryCells(region);
     const boundary = finalBoundary.length > 0 ? finalBoundary : rawBoundary;
@@ -1619,15 +2207,34 @@ function MapViewport({
     const regionId = drag.endpoint === "from" ? corridor.from : corridor.to;
     const region = generatedMap.regions.find((item) => item.id === regionId);
     if (!region) return null;
-    const anchor = getDoorDragManualAnchor(region, point, generatedMap.config.gridSize);
+    const gridSize = generatedMap.config.gridSize;
+    const anchor = region.shape === "circle"
+      ? getStrictCircleDoorDragAnchor(region, point, gridSize, {
+          searchRadius: 1,
+          maxHandleDistance: gridSize * 1.35,
+        })
+      : getDoorDragManualAnchor(region, point, gridSize);
     if (!anchor) return null;
-    const handlePoint = getAnchorHandlePoint(anchor, generatedMap.config.gridSize);
+    const handlePoint = getAnchorHandlePoint(anchor, gridSize);
     return handlePoint ? { point: handlePoint, anchor } : null;
+  }
+
+  function isInvalidCircleDoorDragTarget(drag, point) {
+    if (!drag || drag.type !== "door" || !point) return false;
+    const corridor = generatedMap.corridors.find(
+      (item) => item.id === drag.corridorId,
+    );
+    if (!corridor || corridor.isRoomLink || drag.endpoint === "shared") return false;
+    const regionId = drag.endpoint === "from" ? corridor.from : corridor.to;
+    const region = generatedMap.regions.find((item) => item.id === regionId);
+    if (region?.shape !== "circle") return false;
+    return isPointNearCircleBoundary(region, point, generatedMap.config.gridSize);
   }
 
   function createCorridorDragPreview(drag, point, phase = "dragging") {
     if (!drag || !point) return null;
     const snapTarget = getDoorDragSnapTarget(drag, point);
+    const invalid = drag.type === "door" && !snapTarget && isInvalidCircleDoorDragTarget(drag, point);
     const previewPoint = snapTarget?.point || point;
     return {
       phase,
@@ -1642,6 +2249,8 @@ function MapViewport({
       rawPoint: point,
       snapPoint: snapTarget?.point || null,
       snapAnchor: snapTarget?.anchor || null,
+      invalid,
+      invalidReason: invalid ? "circle-anchor-unreachable" : null,
       x: previewPoint.x,
       y: previewPoint.y,
     };
@@ -1673,6 +2282,11 @@ function MapViewport({
       endpoint: handle.endpoint,
       startPoint,
     };
+    viewportDebugEvent("drag:start door endpoint", {
+      drag,
+      corridor: summarizeViewportDebugCorridor(handle.corridor),
+      currentManualOverrides: summarizeViewportDebugManualOverrides(manualOverrides),
+    });
     corridorDragRef.current = drag;
     setCorridorDragPreviewState(createCorridorDragPreview(drag, startPoint));
     try {
@@ -1700,6 +2314,11 @@ function MapViewport({
       source: "manual",
       startPoint,
     };
+    viewportDebugEvent("drag:start waypoint insert", {
+      drag,
+      corridor: summarizeViewportDebugCorridor(handle.corridor),
+      handleCell: summarizeViewportDebugCell(handle.cell),
+    });
     corridorDragRef.current = drag;
     setCorridorDragPreviewState(createCorridorDragPreview(drag, startPoint));
     try {
@@ -1726,6 +2345,10 @@ function MapViewport({
       source: handle.source,
       startPoint,
     };
+    viewportDebugEvent("drag:start waypoint", {
+      drag,
+      corridor: summarizeViewportDebugCorridor(handle.corridor),
+    });
     corridorDragRef.current = drag;
     setCorridorDragPreviewState(createCorridorDragPreview(drag, startPoint));
     try {
@@ -1766,17 +2389,58 @@ function MapViewport({
       (rawPoint &&
         drag.startPoint &&
         Math.hypot(rawPoint.x - drag.startPoint.x, rawPoint.y - drag.startPoint.y) > 0.5);
+    viewportDebugEvent("anchor trace: release", {
+      kind: "existing-corridor-anchor",
+      corridorId: drag.corridorId || null,
+      endpoint: drag.endpoint || null,
+      dragType: drag.type,
+      moved,
+      pointer: {
+        point: roundViewportDebugPoint(rawPoint),
+        cell: getViewportDebugPointCell(rawPoint),
+      },
+      previewSnap: {
+        point: roundViewportDebugPoint(point),
+        cell: getViewportDebugPointCell(point),
+        anchor: summarizeViewportDebugAnchor(snapAnchor),
+      },
+      pendingInvalid: Boolean(pending?.invalid),
+      pendingInvalidReason: pending?.invalidReason || null,
+    });
+    viewportDebugEvent("drag:end corridor handle", {
+      drag,
+      moved,
+      point: roundViewportDebugPoint(point),
+      rawPoint: roundViewportDebugPoint(rawPoint),
+      snapAnchor: summarizeViewportDebugAnchor(snapAnchor),
+      pending,
+      mapBeforeCommit: summarizeViewportDebugMap(generatedMap),
+      manualBeforeCommit: summarizeViewportDebugManualOverrides(manualOverrides),
+    });
     let committed = false;
-    if (point && moved) {
+    if (point && moved && !pending?.invalid) {
       setCorridorDragPreviewState(createCorridorDragPreview(drag, rawPoint || point, "committing"));
       if (drag.type === "door") {
-        committed = onDoorMove?.(drag.corridorId, drag.endpoint, point, snapAnchor) === true;
+        committed =
+          onDoorMove?.(drag.corridorId, drag.endpoint, point, snapAnchor, {
+            releasePoint: rawPoint || point,
+            releaseCell: getViewportDebugPointCell(rawPoint || point),
+            snapPoint: point,
+            snapCell: getViewportDebugPointCell(point),
+            snapAnchor,
+          }) === true;
       } else if (drag.type === "waypoint-insert") {
         committed = onWaypointInsert?.(drag.corridorId, drag.insertIndex, point) === true;
       } else {
         committed = onWaypointMove?.(drag.corridorId, drag.waypointIndex, point, drag.source) === true;
       }
     }
+    viewportDebugEvent("drag:end corridor handle result", {
+      drag,
+      committed,
+      moved,
+      manualAfterHandler: summarizeViewportDebugManualOverrides(manualOverrides),
+    });
     if (!committed) setCorridorDragPreviewState(null);
     try {
       event.currentTarget?.releasePointerCapture?.(event.pointerId);
@@ -2045,6 +2709,9 @@ function MapViewport({
               hoverCorridorHandle,
               hoveredCorridorId,
               connectionDraft,
+              roomDragPreviewMap: roomDragRoutedPreview?.map || null,
+              connectionDraftPreviewMap: connectionDraftRoutedPreview?.map || null,
+              connectionDraftPreviewCorridorId: connectionDraftRoutedPreview?.corridorId || "",
               selectedRegionId,
               showAccessDots,
               onRoomSelect: (region) => onSelectedRegionChange?.(region?.id || ""),
@@ -4636,6 +5303,10 @@ export default function CruorMapGeneratorMvp({
   const [inspectorCollapsed, setInspectorCollapsed] = useState(false);
   const [testsModalOpen, setTestsModalOpen] = useState(false);
   const lastTestSuiteRef = useRef(null);
+  const debugPreviousMapRef = useRef(null);
+  const debugPreviousManualOverridesRef = useRef(null);
+  const debugSequenceRef = useRef(0);
+  const debugPendingAnchorTraceRef = useRef(null);
   const importedRegions = Array.isArray(initialRequest?.requiredRegions)
     ? initialRequest.requiredRegions
     : [];
@@ -4739,6 +5410,449 @@ export default function CruorMapGeneratorMvp({
     [generatedMap],
   );
   const availableLevelsKey = availableLevels.join(":");
+
+  function isMapEditorDebugEnabled() {
+    if (typeof window === "undefined") return false;
+    try {
+      const flag = window.localStorage?.getItem("cruorMapDebug");
+      return flag !== "0";
+    } catch (error) {
+      void error;
+      return true;
+    }
+  }
+
+  function roundDebugNumber(value) {
+    return Number.isFinite(Number(value)) ? Math.round(Number(value) * 100) / 100 : value;
+  }
+
+  function roundDebugPoint(point) {
+    if (!point || typeof point !== "object") return point || null;
+    return {
+      x: roundDebugNumber(point.x),
+      y: roundDebugNumber(point.y),
+    };
+  }
+
+  function getDebugPointCell(point, gridSize = generatedMap?.config?.gridSize || config?.gridSize || 20) {
+    if (!point || typeof point !== "object") return null;
+    return {
+      x: Math.floor(Number(point.x) / gridSize),
+      y: Math.floor(Number(point.y) / gridSize),
+    };
+  }
+
+  function summarizeDebugCell(cell) {
+    if (!cell || typeof cell !== "object") return cell || null;
+    return {
+      x: Number.isFinite(Number(cell.x)) ? Number(cell.x) : cell.x,
+      y: Number.isFinite(Number(cell.y)) ? Number(cell.y) : cell.y,
+    };
+  }
+
+  function summarizeDebugAnchor(anchor) {
+    if (!anchor || typeof anchor !== "object") return null;
+    return {
+      side: anchor.side || null,
+      cell: summarizeDebugCell(anchor.cell),
+      outsideCell: summarizeDebugCell(anchor.outsideCell),
+      snapCell: summarizeDebugCell(anchor.snapCell),
+      portalRoomCell: summarizeDebugCell(anchor.portalRoomCell),
+      routingOutsideCell: summarizeDebugCell(anchor.routingOutsideCell),
+      finalGeometry: Boolean(anchor.finalGeometry),
+      expandedCircleDoor: Boolean(anchor.expandedCircleDoor),
+      circleBoundaryAnchor: Boolean(anchor.circleBoundaryAnchor),
+      point: roundDebugPoint(anchor.point),
+      segment: anchor.segment
+        ? {
+            x1: roundDebugNumber(anchor.segment.x1),
+            y1: roundDebugNumber(anchor.segment.y1),
+            x2: roundDebugNumber(anchor.segment.x2),
+            y2: roundDebugNumber(anchor.segment.y2),
+          }
+        : null,
+    };
+  }
+
+  function debugObjectKeys(value) {
+    return value && typeof value === "object" ? Object.keys(value).sort() : [];
+  }
+
+  function summarizeDebugCorridor(corridor) {
+    if (!corridor || typeof corridor !== "object") return null;
+    const topologyCells =
+      corridor.cells ||
+      corridor.floorCells ||
+      corridor.pathCells ||
+      corridor.routeCells ||
+      corridor.topologyCells ||
+      [];
+    const waypoints = Array.isArray(corridor.waypoints)
+      ? corridor.waypoints
+      : Array.isArray(corridor.manualWaypoints)
+        ? corridor.manualWaypoints
+        : [];
+    return {
+      id: corridor.id || null,
+      from: corridor.from || null,
+      to: corridor.to || null,
+      kind: corridor.kind || null,
+      isRoomLink: Boolean(corridor.isRoomLink),
+      secret: Boolean(corridor.secret),
+      locked: Boolean(corridor.locked),
+      level: Number.isFinite(corridor.level) ? corridor.level : null,
+      cellCount: Array.isArray(topologyCells) ? topologyCells.length : 0,
+      waypointCount: Array.isArray(waypoints) ? waypoints.length : 0,
+      fromDoor: summarizeDebugAnchor(corridor.fromDoor || corridor.fromAnchor),
+      toDoor: summarizeDebugAnchor(corridor.toDoor || corridor.toAnchor),
+      endpointCells: {
+        from: summarizeDebugCell(getCorridorEndpointCell(corridor, "from")),
+        to: summarizeDebugCell(getCorridorEndpointCell(corridor, "to")),
+      },
+      keys: debugObjectKeys(corridor),
+    };
+  }
+
+  function getDebugCorridorAnchor(corridor, endpoint) {
+    if (!corridor || !endpoint) return null;
+    if (endpoint === "from") return corridor.fromDoor || corridor.fromAnchor || null;
+    if (endpoint === "to") return corridor.toDoor || corridor.toAnchor || null;
+    return null;
+  }
+
+  function getDebugAnchorCell(anchor) {
+    return anchor?.snapCell || anchor?.outsideCell || anchor?.routingOutsideCell || anchor?.cell || null;
+  }
+
+  function getDebugCellDelta(fromCell, toCell) {
+    if (!fromCell || !toCell) return null;
+    const fx = Number(fromCell.x);
+    const fy = Number(fromCell.y);
+    const tx = Number(toCell.x);
+    const ty = Number(toCell.y);
+    if (![fx, fy, tx, ty].every(Number.isFinite)) return null;
+    return { dx: tx - fx, dy: ty - fy };
+  }
+
+  function summarizeDebugAnchorTraceResult(trace, map) {
+    if (!trace || !map) return null;
+    const corridors = Array.isArray(map.corridors) ? map.corridors : [];
+    const corridorId = trace.corridorId || trace.edgeId || null;
+    const actualCorridor = corridorId
+      ? corridors.find((corridor) => corridor.id === corridorId) || null
+      : null;
+    const endpoint = trace.endpoint || "to";
+    const actualAnchor = actualCorridor
+      ? getDebugCorridorAnchor(actualCorridor, endpoint)
+      : null;
+    const requestedCell =
+      trace.requestedAnchorCell ||
+      getDebugAnchorCell(trace.requestedAnchor) ||
+      trace.releaseCell ||
+      null;
+    const actualCell =
+      getDebugAnchorCell(actualAnchor) ||
+      getCorridorEndpointCell(actualCorridor, endpoint) ||
+      null;
+    return {
+      trace,
+      actualCorridor: summarizeDebugCorridor(actualCorridor),
+      actualAnchor: summarizeDebugAnchor(actualAnchor),
+      comparison: {
+        requestedCell: summarizeDebugCell(requestedCell),
+        actualCell: summarizeDebugCell(actualCell),
+        deltaCells: getDebugCellDelta(requestedCell, actualCell),
+      },
+    };
+  }
+
+  function debugSetPendingAnchorTrace(trace) {
+    debugPendingAnchorTraceRef.current = {
+      id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+      ...trace,
+    };
+    debugEvent("anchor trace: commit requested", { trace: debugPendingAnchorTraceRef.current });
+  }
+
+  function summarizeDebugRegion(region) {
+    if (!region || typeof region !== "object") return null;
+    return {
+      id: region.id || null,
+      number: region.number || null,
+      shape: region.shape || null,
+      surfaceKind: region.surfaceKind || null,
+      cellRect: region.cellRect
+        ? {
+            x: region.cellRect.x,
+            y: region.cellRect.y,
+            w: region.cellRect.w,
+            h: region.cellRect.h,
+          }
+        : null,
+      floorCellCount: Array.isArray(region.floorCells) ? region.floorCells.length : 0,
+    };
+  }
+
+  function summarizeDebugMapAccess(access) {
+    if (!access || typeof access !== "object") return null;
+    return {
+      id: access.id || null,
+      regionId: access.regionId || null,
+      type: access.type || null,
+      label: access.label || null,
+      point: roundDebugPoint(access.point || access.displayPoint || access.start),
+      anchor: summarizeDebugAnchor(access.anchor || access.displayAnchor || access),
+    };
+  }
+
+  function summarizeDebugMap(map) {
+    const corridors = Array.isArray(map?.corridors) ? map.corridors : [];
+    const regions = Array.isArray(map?.regions) ? map.regions : [];
+    const mapAccesses =
+      map?.dungeonMask?.mapAccesses ||
+      map?.mapAccesses ||
+      [];
+    return {
+      lockedManualLayoutActive,
+      isManualEditActive,
+      manualLayoutSeed: manualLayoutSeed || "",
+      seed: map?.config?.seed || seed,
+      corridorCount: corridors.length,
+      corridorIds: corridors.map((corridor) => corridor.id).filter(Boolean).sort(),
+      corridors: corridors.map(summarizeDebugCorridor),
+      regionCount: regions.length,
+      regions: regions.map(summarizeDebugRegion),
+      mapAccessCount: Array.isArray(mapAccesses) ? mapAccesses.length : 0,
+      mapAccesses: Array.isArray(mapAccesses) ? mapAccesses.map(summarizeDebugMapAccess) : [],
+    };
+  }
+
+  function summarizeDebugManualOverrides(overrides) {
+    const normalized = normalizeManualOverrides(overrides || createEmptyManualOverrides());
+    const doorAnchors = normalized.doorAnchors || {};
+    return {
+      manualConnectionSequence: normalized.manualConnectionSequence || 0,
+      roomPositions: normalized.roomPositions || {},
+      roomStyleKeys: debugObjectKeys(normalized.roomStyles),
+      doorAnchorKeys: debugObjectKeys(doorAnchors),
+      doorAnchors: Object.fromEntries(
+        Object.entries(doorAnchors).map(([key, anchor]) => [
+          key,
+          summarizeDebugAnchor(anchor),
+        ]),
+      ),
+      corridorWaypointKeys: debugObjectKeys(normalized.corridorWaypoints),
+      corridorWaypoints: normalized.corridorWaypoints || {},
+      customConnectionIds: Array.isArray(normalized.customConnections)
+        ? normalized.customConnections.map((connection) => connection?.id).filter(Boolean)
+        : [],
+      customConnections: normalized.customConnections || [],
+      deletedConnections: normalized.deletedConnections || [],
+      mapAccessKeys: debugObjectKeys(normalized.mapAccesses),
+      mapAccesses: normalized.mapAccesses || {},
+      corridorJunctionKeys: debugObjectKeys(normalized.corridorJunctions),
+      doorTypeKeys: debugObjectKeys(normalized.doorTypes),
+    };
+  }
+
+  function debugDiffIds(previousIds = [], nextIds = []) {
+    const previousSet = new Set(previousIds || []);
+    const nextSet = new Set(nextIds || []);
+    return {
+      added: [...nextSet].filter((id) => !previousSet.has(id)).sort(),
+      removed: [...previousSet].filter((id) => !nextSet.has(id)).sort(),
+    };
+  }
+
+  function debugChangedCorridors(previousSummary, nextSummary) {
+    const previousById = new Map(
+      (previousSummary?.corridors || []).map((corridor) => [corridor.id, corridor]),
+    );
+    return (nextSummary?.corridors || [])
+      .filter((corridor) => {
+        const previous = previousById.get(corridor.id);
+        return previous && JSON.stringify(previous) !== JSON.stringify(corridor);
+      })
+      .map((corridor) => ({
+        id: corridor.id,
+        before: previousById.get(corridor.id),
+        after: corridor,
+      }));
+  }
+
+  function debugChangedRegions(previousSummary, nextSummary) {
+    const previousById = new Map(
+      (previousSummary?.regions || []).map((region) => [region.id, region]),
+    );
+    return (nextSummary?.regions || [])
+      .filter((region) => {
+        const previous = previousById.get(region.id);
+        return previous && JSON.stringify(previous) !== JSON.stringify(region);
+      })
+      .map((region) => ({
+        id: region.id,
+        before: previousById.get(region.id),
+        after: region,
+      }));
+  }
+
+  function debugChangedMapAccesses(previousSummary, nextSummary) {
+    const getKey = (access, index) => access?.id || access?.regionId || `access-${index}`;
+    const previousByKey = new Map(
+      (previousSummary?.mapAccesses || []).map((access, index) => [getKey(access, index), access]),
+    );
+    return (nextSummary?.mapAccesses || [])
+      .filter((access, index) => {
+        const previous = previousByKey.get(getKey(access, index));
+        return previous && JSON.stringify(previous) !== JSON.stringify(access);
+      })
+      .map((access, index) => ({
+        id: getKey(access, index),
+        before: previousByKey.get(getKey(access, index)),
+        after: access,
+      }));
+  }
+
+  function debugEvent(label, payload = {}) {
+    if (!isMapEditorDebugEnabled()) return;
+    const sequence = (debugSequenceRef.current || 0) + 1;
+    debugSequenceRef.current = sequence;
+    const header = `[Cruor Map Debug #${sequence}] ${label}`;
+    try {
+      if (typeof console.groupCollapsed === "function") {
+        console.groupCollapsed(header);
+        console.log({
+          lockedManualLayoutActive,
+          manualLayoutSeed: manualLayoutSeed || "",
+          isManualEditActive,
+          ...payload,
+        });
+        console.groupEnd();
+      } else {
+        console.log(header, payload);
+      }
+    } catch (error) {
+      void error;
+    }
+  }
+
+  function debugManualOverridesTransition(label, previous, next, extra = {}) {
+    if (!isMapEditorDebugEnabled()) return;
+    const before = summarizeDebugManualOverrides(previous);
+    const after = summarizeDebugManualOverrides(next);
+    debugEvent(label, {
+      ...extra,
+      changed: JSON.stringify(before) !== JSON.stringify(after),
+      before,
+      after,
+      doorAnchorDiff: debugDiffIds(before.doorAnchorKeys, after.doorAnchorKeys),
+      waypointDiff: debugDiffIds(before.corridorWaypointKeys, after.corridorWaypointKeys),
+      customConnectionDiff: debugDiffIds(before.customConnectionIds, after.customConnectionIds),
+      deletedConnectionDiff: debugDiffIds(before.deletedConnections, after.deletedConnections),
+      mapAccessDiff: debugDiffIds(before.mapAccessKeys, after.mapAccessKeys),
+    });
+  }
+
+
+  useEffect(() => {
+    if (!isMapEditorDebugEnabled()) return;
+    const nextSummary = summarizeDebugMap(generatedMap);
+    const previousSummary = debugPreviousMapRef.current;
+    if (!previousSummary) {
+      debugEvent("generatedMap: initial snapshot", { snapshot: nextSummary });
+    } else {
+      const corridorIdDiff = debugDiffIds(
+        previousSummary.corridorIds,
+        nextSummary.corridorIds,
+      );
+      const changedCorridors = debugChangedCorridors(previousSummary, nextSummary);
+      const changedRegions = debugChangedRegions(previousSummary, nextSummary);
+      const changedMapAccesses = debugChangedMapAccesses(previousSummary, nextSummary);
+      if (
+        corridorIdDiff.added.length > 0 ||
+        corridorIdDiff.removed.length > 0 ||
+        changedCorridors.length > 0 ||
+        changedRegions.length > 0 ||
+        changedMapAccesses.length > 0 ||
+        previousSummary.lockedManualLayoutActive !== nextSummary.lockedManualLayoutActive ||
+        previousSummary.manualLayoutSeed !== nextSummary.manualLayoutSeed
+      ) {
+        debugEvent("generatedMap: changed", {
+          corridorIdDiff,
+          changedCorridors,
+          changedRegions,
+          changedMapAccesses,
+          beforeCounts: {
+            corridors: previousSummary.corridorCount,
+            regions: previousSummary.regionCount,
+            mapAccesses: previousSummary.mapAccessCount,
+          },
+          afterCounts: {
+            corridors: nextSummary.corridorCount,
+            regions: nextSummary.regionCount,
+            mapAccesses: nextSummary.mapAccessCount,
+          },
+          before: previousSummary,
+          after: nextSummary,
+        });
+        if (debugPendingAnchorTraceRef.current) {
+          const traceResult = summarizeDebugAnchorTraceResult(
+            debugPendingAnchorTraceRef.current,
+            generatedMap,
+          );
+          debugEvent("anchor trace: generated result", traceResult || {});
+          debugPendingAnchorTraceRef.current = null;
+        }
+      }
+    }
+    debugPreviousMapRef.current = nextSummary;
+  }, [generatedMap, lockedManualLayoutActive, manualLayoutSeed, isManualEditActive]);
+
+  useEffect(() => {
+    if (!isMapEditorDebugEnabled()) return;
+    const nextSummary = summarizeDebugManualOverrides(manualOverrides);
+    const previousSummary = debugPreviousManualOverridesRef.current;
+    if (!previousSummary) {
+      debugEvent("manualOverrides: initial snapshot", { snapshot: nextSummary });
+    } else if (JSON.stringify(previousSummary) !== JSON.stringify(nextSummary)) {
+      debugEvent("manualOverrides: changed by React state", {
+        doorAnchorDiff: debugDiffIds(previousSummary.doorAnchorKeys, nextSummary.doorAnchorKeys),
+        waypointDiff: debugDiffIds(previousSummary.corridorWaypointKeys, nextSummary.corridorWaypointKeys),
+        customConnectionDiff: debugDiffIds(previousSummary.customConnectionIds, nextSummary.customConnectionIds),
+        deletedConnectionDiff: debugDiffIds(previousSummary.deletedConnections, nextSummary.deletedConnections),
+        mapAccessDiff: debugDiffIds(previousSummary.mapAccessKeys, nextSummary.mapAccessKeys),
+        before: previousSummary,
+        after: nextSummary,
+      });
+    }
+    debugPreviousManualOverridesRef.current = nextSummary;
+  }, [manualOverrides]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    window.__cruorMapDebug = {
+      enable() {
+        window.localStorage?.setItem("cruorMapDebug", "1");
+        console.log("[Cruor Map Debug] enabled");
+      },
+      disable() {
+        window.localStorage?.setItem("cruorMapDebug", "0");
+        console.log("[Cruor Map Debug] disabled");
+      },
+      snapshot() {
+        const payload = {
+          generatedMap: summarizeDebugMap(generatedMap),
+          manualOverrides: summarizeDebugManualOverrides(manualOverridesRef.current),
+          pendingAnchorTrace: debugPendingAnchorTraceRef.current,
+        };
+        console.log("[Cruor Map Debug] manual snapshot", payload);
+        return payload;
+      },
+    };
+    return () => {
+      if (window.__cruorMapDebug?.snapshot) delete window.__cruorMapDebug;
+    };
+  }, [generatedMap, manualOverrides]);
 
   useEffect(() => {
     if (!inlineComposerEditor) return;
@@ -4922,12 +6036,16 @@ export default function CruorMapGeneratorMvp({
     pendingInlineManualCommitRef.current = cloneManualOverrides(nextManualOverrides);
   }
 
-  function updateManualOverridesWithHistory(updater, status = "") {
+  function updateManualOverridesWithHistory(updater, status = "", debugLabel = "updateManualOverridesWithHistory") {
     const previous = cloneManualOverrides(manualOverridesRef.current);
     const next = cloneManualOverrides(
       typeof updater === "function" ? updater(previous) : updater,
     );
-    if (areManualOverridesEqual(previous, next)) return false;
+    if (areManualOverridesEqual(previous, next)) {
+      debugManualOverridesTransition(`${debugLabel}: no-op`, previous, next, { status });
+      return false;
+    }
+    debugManualOverridesTransition(`${debugLabel}: apply`, previous, next, { status });
     pushManualHistorySnapshot(previous);
     manualOverridesRef.current = next;
     markPendingInlineManualCommit(next);
@@ -4936,12 +6054,16 @@ export default function CruorMapGeneratorMvp({
     return true;
   }
 
-  function setManualOverridesFromCurrent(updater) {
+  function setManualOverridesFromCurrent(updater, debugLabel = "setManualOverridesFromCurrent") {
     const previous = cloneManualOverrides(manualOverridesRef.current);
     const next = cloneManualOverrides(
       typeof updater === "function" ? updater(previous) : updater,
     );
-    if (areManualOverridesEqual(previous, next)) return false;
+    if (areManualOverridesEqual(previous, next)) {
+      debugManualOverridesTransition(`${debugLabel}: no-op`, previous, next);
+      return false;
+    }
+    debugManualOverridesTransition(`${debugLabel}: apply`, previous, next);
     manualOverridesRef.current = next;
     markPendingInlineManualCommit(next);
     setManualOverrides(next);
@@ -5289,11 +6411,13 @@ export default function CruorMapGeneratorMvp({
     return movedRegionIds;
   }
 
-  function hasGlobalManualRoutingOverrides(normalized) {
+  function hasManualRoutingOverrides(normalized) {
     return (
+      Object.keys(normalized.doorAnchors || {}).length > 0 ||
+      Object.keys(normalized.corridorWaypoints || {}).length > 0 ||
+      Object.keys(normalized.corridorJunctions || {}).length > 0 ||
       (Array.isArray(normalized.customConnections) && normalized.customConnections.length > 0) ||
-      (Array.isArray(normalized.deletedConnections) && normalized.deletedConnections.length > 0) ||
-      Object.keys(normalized.corridorJunctions || {}).length > 0
+      (Array.isArray(normalized.deletedConnections) && normalized.deletedConnections.length > 0)
     );
   }
 
@@ -5467,7 +6591,7 @@ export default function CruorMapGeneratorMvp({
     // Since room dragging now commits only on release, correctness is more
     // important than preserving the partial reroute optimization here.
     const shouldRerouteWholeNetwork =
-      hasGlobalManualRoutingOverrides(normalized) || movedRegionIds.size > 0;
+      hasManualRoutingOverrides(normalized) || movedRegionIds.size > 0;
     const routedGraph = shouldRerouteWholeNetwork
       ? routingGraph
       : routingGraph.filter((edge) => impactedCorridorIds.has(edge.id));
@@ -5501,15 +6625,38 @@ export default function CruorMapGeneratorMvp({
       corridors,
       gridSize,
     );
-    const baseMapAccesses =
-      generatedCandidate.dungeonMask?.mapAccesses ||
-      generatedCandidate.mapAccesses ||
+    const lockedMapAccesses =
       baseMap.dungeonMask?.mapAccesses ||
       baseMap.mapAccesses ||
       [];
-    const mapAccesses = baseMapAccesses.map((access) =>
-      translateMapAccess(access, deltas, gridSize),
+    const regeneratedMapAccesses =
+      generatedCandidate.dungeonMask?.mapAccesses ||
+      generatedCandidate.mapAccesses ||
+      [];
+    const manualAccessRegionIds = new Set(
+      Object.entries(normalized.mapAccesses || {})
+        .filter(([, override]) => override && !override.disabled)
+        .map(([regionId]) => regionId),
     );
+    const regeneratedAccessByRegionId = new Map(
+      regeneratedMapAccesses
+        .filter((access) => access?.regionId)
+        .map((access) => [access.regionId, access]),
+    );
+    const seenAccessRegionIds = new Set();
+    const mapAccesses = lockedMapAccesses.map((access) => {
+      if (access?.regionId) seenAccessRegionIds.add(access.regionId);
+      if (access?.regionId && manualAccessRegionIds.has(access.regionId)) {
+        return regeneratedAccessByRegionId.get(access.regionId) ||
+          translateMapAccess(access, deltas, gridSize);
+      }
+      return translateMapAccess(access, deltas, gridSize);
+    });
+    manualAccessRegionIds.forEach((regionId) => {
+      if (seenAccessRegionIds.has(regionId)) return;
+      const regeneratedAccess = regeneratedAccessByRegionId.get(regionId);
+      if (regeneratedAccess) mapAccesses.push(regeneratedAccess);
+    });
     const dungeonMask = {
       ...rebuiltDungeonMask,
       mapAccesses,
@@ -5580,6 +6727,11 @@ export default function CruorMapGeneratorMvp({
   }
 
   function beginManualEdit() {
+    debugEvent("manual edit: begin", {
+      hadLockedGeometry: Boolean(manualLayoutGeometryRef.current),
+      mapSnapshot: summarizeDebugMap(generatedMap),
+      manualOverrides: summarizeDebugManualOverrides(manualOverridesRef.current),
+    });
     if (!manualLayoutGeometryRef.current) {
       manualLayoutGeometryRef.current = cloneMapGeometry(generatedMap);
     }
@@ -5593,6 +6745,9 @@ export default function CruorMapGeneratorMvp({
     const snapshot = manualEditSnapshotRef.current;
     const currentManualOverrides = cloneManualOverrides(manualOverridesRef.current);
     manualEditSnapshotRef.current = null;
+    debugManualOverridesTransition("manual edit: commit", snapshot, currentManualOverrides, {
+      hadSnapshot: Boolean(snapshot),
+    });
     if (!snapshot || areManualOverridesEqual(snapshot, currentManualOverrides)) return;
     pendingInlineManualCommitRef.current = currentManualOverrides;
     pushManualHistorySnapshot(snapshot);
@@ -5789,11 +6944,11 @@ export default function CruorMapGeneratorMvp({
     reader.readAsText(file);
   }
 
-  function moveRoom(regionId, position) {
+  function createRoomMoveManualOverrides(currentOverrides, regionId, position) {
     const target = generatedMap.regions.find(
       (region) => region.id === regionId,
     );
-    if (!target) return false;
+    if (!target) return null;
     const gridW = Math.floor(
       generatedMap.config.mapWidth / generatedMap.config.gridSize,
     );
@@ -5815,7 +6970,7 @@ export default function CruorMapGeneratorMvp({
     };
     const dx = candidate.x - target.cellRect.x;
     const dy = candidate.y - target.cellRect.y;
-    if (dx === 0 && dy === 0) return false;
+    if (dx === 0 && dy === 0) return null;
     const occupiedCells = new Set();
     generatedMap.regions.forEach((region) => {
       if (region.id === regionId) return;
@@ -5826,12 +6981,17 @@ export default function CruorMapGeneratorMvp({
     const overlaps = target.floorCells.some((cell) =>
       occupiedCells.has(cellKey(cell.x + dx, cell.y + dy)),
     );
-    if (overlaps) return false;
-    return setManualOverridesFromCurrent((current) =>
-      freezeCurrentRoomLayout(current, {
-        [regionId]: { x: candidate.x, y: candidate.y },
-      }),
-    );
+    if (overlaps) return null;
+    return freezeCurrentRoomLayout(currentOverrides, {
+      [regionId]: { x: candidate.x, y: candidate.y },
+    });
+  }
+
+  function moveRoom(regionId, position) {
+    return setManualOverridesFromCurrent((current) => {
+      const next = createRoomMoveManualOverrides(current, regionId, position);
+      return next || current;
+    }, `moveRoom:${regionId}`);
   }
 
   function roundSerializedAnchorValue(value) {
@@ -5877,17 +7037,38 @@ export default function CruorMapGeneratorMvp({
       Boolean(a.finalGeometry) === Boolean(b.finalGeometry) &&
       Boolean(a.expandedCircleDoor) === Boolean(b.expandedCircleDoor) &&
       areSerializedAnchorCellsEqual(a.outsideCell, b.outsideCell) &&
+      areSerializedAnchorCellsEqual(a.snapCell, b.snapCell) &&
       areSerializedAnchorCellsEqual(a.portalRoomCell, b.portalRoomCell) &&
       areSerializedAnchorPointsEqual(a.point, b.point) &&
       areSerializedAnchorSegmentsEqual(a.segment, b.segment)
     );
   }
 
-  function moveDoor(corridorId, endpoint, point, committedAnchor = null) {
+  function moveDoor(corridorId, endpoint, point, committedAnchor = null, debugTrace = null) {
     const corridor = generatedMap.corridors.find(
       (item) => item.id === corridorId,
     );
-    if (!corridor) return false;
+    if (!corridor) {
+      debugEvent("moveDoor: corridor not found", { corridorId, endpoint, point: roundDebugPoint(point) });
+      return false;
+    }
+    debugEvent("moveDoor: start", {
+      corridorId,
+      endpoint,
+      point: roundDebugPoint(point),
+      committedAnchor: summarizeDebugAnchor(committedAnchor),
+      debugTrace: debugTrace
+        ? {
+            releasePoint: roundDebugPoint(debugTrace.releasePoint),
+            releaseCell: summarizeDebugCell(debugTrace.releaseCell),
+            snapPoint: roundDebugPoint(debugTrace.snapPoint),
+            snapCell: summarizeDebugCell(debugTrace.snapCell),
+            snapAnchor: summarizeDebugAnchor(debugTrace.snapAnchor),
+          }
+        : null,
+      corridor: summarizeDebugCorridor(corridor),
+      manualBefore: summarizeDebugManualOverrides(manualOverridesRef.current),
+    });
     if (corridor.isRoomLink || endpoint === "shared") {
       const fromRegion = generatedMap.regions.find(
         (item) => item.id === corridor.from,
@@ -5895,14 +7076,29 @@ export default function CruorMapGeneratorMvp({
       const toRegion = generatedMap.regions.find(
         (item) => item.id === corridor.to,
       );
-      if (!fromRegion || !toRegion) return false;
+      if (!fromRegion || !toRegion) {
+        debugEvent("moveDoor: shared endpoint missing region", {
+          corridorId,
+          endpoint,
+          fromRegionFound: Boolean(fromRegion),
+          toRegionFound: Boolean(toRegion),
+        });
+        return false;
+      }
       const sharedConnection = getClosestSharedRoomConnectionToPoint(
         fromRegion,
         toRegion,
         point,
         generatedMap.config.gridSize,
       );
-      if (!sharedConnection) return false;
+      if (!sharedConnection) {
+        debugEvent("moveDoor: shared endpoint no shared connection", {
+          corridorId,
+          endpoint,
+          point: roundDebugPoint(point),
+        });
+        return false;
+      }
       const nextFromAnchor = serializeManualAnchor(sharedConnection.fromAnchor);
       const nextToAnchor = serializeManualAnchor(sharedConnection.toAnchor);
       const fromKey = corridorEndpointKey(corridorId, "from");
@@ -5918,8 +7114,39 @@ export default function CruorMapGeneratorMvp({
           nextFromAnchor,
         ) &&
         areSerializedAnchorsEqual(current.doorAnchors?.[toKey], nextToAnchor)
-      )
+      ) {
+        debugEvent("moveDoor: shared endpoint no-op", {
+          corridorId,
+          endpoint,
+          nextFromAnchor: summarizeDebugAnchor(nextFromAnchor),
+          nextToAnchor: summarizeDebugAnchor(nextToAnchor),
+        });
         return false;
+      }
+      debugEvent("moveDoor: shared endpoint committing anchors", {
+        corridorId,
+        endpoint,
+        fromKey,
+        toKey,
+        nextFromAnchor: summarizeDebugAnchor(nextFromAnchor),
+        nextToAnchor: summarizeDebugAnchor(nextToAnchor),
+        deletesManualWaypoints: hasManualWaypoints,
+      });
+      debugSetPendingAnchorTrace({
+        kind: "existing-corridor-shared-anchor",
+        corridorId,
+        endpoint,
+        releasePoint: roundDebugPoint(debugTrace?.releasePoint || point),
+        releaseCell: summarizeDebugCell(debugTrace?.releaseCell || getDebugPointCell(debugTrace?.releasePoint || point)),
+        snapPoint: roundDebugPoint(debugTrace?.snapPoint || sharedConnection.point || point),
+        snapCell: summarizeDebugCell(debugTrace?.snapCell || getDebugPointCell(debugTrace?.snapPoint || sharedConnection.point || point)),
+        requestedAnchor: {
+          from: summarizeDebugAnchor(nextFromAnchor),
+          to: summarizeDebugAnchor(nextToAnchor),
+        },
+        requestedAnchorCell: summarizeDebugCell(getDebugAnchorCell(endpoint === "to" ? nextToAnchor : nextFromAnchor)),
+        corridorBefore: summarizeDebugCorridor(corridor),
+      });
       return setManualOverridesFromCurrent((currentOverrides) => {
         const corridorWaypoints = {
           ...(currentOverrides.corridorWaypoints || {}),
@@ -5934,11 +7161,14 @@ export default function CruorMapGeneratorMvp({
             [toKey]: nextToAnchor,
           },
         });
-      });
+      }, `moveDoor:${corridorId}:${endpoint}:shared`);
     }
     const regionId = endpoint === "from" ? corridor.from : corridor.to;
     const region = generatedMap.regions.find((item) => item.id === regionId);
-    if (!region) return false;
+    if (!region) {
+      debugEvent("moveDoor: endpoint region not found", { corridorId, endpoint, regionId });
+      return false;
+    }
     const anchor =
       committedAnchor ||
       getDoorDragManualAnchor(
@@ -5952,7 +7182,15 @@ export default function CruorMapGeneratorMvp({
         generatedMap.config.gridSize,
         generatedMap,
       );
-    if (!anchor) return false;
+    if (!anchor) {
+      debugEvent("moveDoor: no anchor resolved", {
+        corridorId,
+        endpoint,
+        regionId,
+        point: roundDebugPoint(point),
+      });
+      return false;
+    }
     const nextAnchor = serializeManualAnchor(anchor);
     const key = corridorEndpointKey(corridorId, endpoint);
     const current = normalizeManualOverrides(manualOverridesRef.current);
@@ -5962,8 +7200,36 @@ export default function CruorMapGeneratorMvp({
     if (
       !hasManualWaypoints &&
       areSerializedAnchorsEqual(current.doorAnchors?.[key], nextAnchor)
-    )
+    ) {
+      debugEvent("moveDoor: endpoint no-op", {
+        corridorId,
+        endpoint,
+        key,
+        nextAnchor: summarizeDebugAnchor(nextAnchor),
+      });
       return false;
+    }
+    debugEvent("moveDoor: endpoint committing anchor", {
+      corridorId,
+      endpoint,
+      key,
+      nextAnchor: summarizeDebugAnchor(nextAnchor),
+      deletesManualWaypoints: hasManualWaypoints,
+      currentAnchor: summarizeDebugAnchor(current.doorAnchors?.[key]),
+    });
+    debugSetPendingAnchorTrace({
+      kind: "existing-corridor-anchor",
+      corridorId,
+      endpoint,
+      releasePoint: roundDebugPoint(debugTrace?.releasePoint || point),
+      releaseCell: summarizeDebugCell(debugTrace?.releaseCell || getDebugPointCell(debugTrace?.releasePoint || point)),
+      snapPoint: roundDebugPoint(debugTrace?.snapPoint || point),
+      snapCell: summarizeDebugCell(debugTrace?.snapCell || getDebugPointCell(debugTrace?.snapPoint || point)),
+      requestedAnchor: summarizeDebugAnchor(nextAnchor),
+      requestedAnchorCell: summarizeDebugCell(getDebugAnchorCell(nextAnchor)),
+      previousAnchor: summarizeDebugAnchor(current.doorAnchors?.[key]),
+      corridorBefore: summarizeDebugCorridor(corridor),
+    });
     return setManualOverridesFromCurrent((currentOverrides) => {
       const corridorWaypoints = {
         ...(currentOverrides.corridorWaypoints || {}),
@@ -6030,6 +7296,13 @@ export default function CruorMapGeneratorMvp({
       )
         return false;
     }
+    debugEvent("moveWaypoint: committing", {
+      corridorId,
+      waypointIndex,
+      source,
+      cell: summarizeDebugCell(cell),
+      nextWaypoints,
+    });
     return setManualOverridesFromCurrent((currentOverrides) =>
       freezeCurrentRoomLayout({
         ...currentOverrides,
@@ -6038,6 +7311,7 @@ export default function CruorMapGeneratorMvp({
           [corridorId]: nextWaypoints.filter(isValidPoint),
         },
       }),
+      `moveWaypoint:${corridorId}`,
     );
   }
 
@@ -6073,6 +7347,12 @@ export default function CruorMapGeneratorMvp({
     );
     const nextWaypoints = [...currentManual];
     nextWaypoints.splice(safeIndex, 0, cell);
+    debugEvent("insertWaypoint: committing", {
+      corridorId,
+      insertIndex,
+      cell: summarizeDebugCell(cell),
+      nextWaypoints,
+    });
     return setManualOverridesFromCurrent((currentOverrides) =>
       freezeCurrentRoomLayout({
         ...currentOverrides,
@@ -6081,6 +7361,7 @@ export default function CruorMapGeneratorMvp({
           [corridorId]: nextWaypoints.filter(isValidPoint),
         },
       }),
+      `insertWaypoint:${corridorId}`,
     );
   }
 
@@ -6108,6 +7389,11 @@ export default function CruorMapGeneratorMvp({
 
   function deleteConnection(corridorId) {
     if (!corridorId) return;
+    debugEvent("deleteConnection: requested", {
+      corridorId,
+      corridor: summarizeDebugCorridor(generatedMap.corridors.find((item) => item.id === corridorId)),
+      manualBefore: summarizeDebugManualOverrides(manualOverridesRef.current),
+    });
     updateManualOverridesWithHistory((current) => {
       const normalized = normalizeManualOverrides(current);
       const deletedConnections = Array.isArray(normalized.deletedConnections)
@@ -6149,7 +7435,7 @@ export default function CruorMapGeneratorMvp({
           ? deletedConnections
           : [...deletedConnections, corridorId],
       });
-    });
+    }, "", `deleteConnection:${corridorId}`);
   }
 
   function updateDoorType(corridorId, endpoint, doorType) {
@@ -6274,16 +7560,31 @@ export default function CruorMapGeneratorMvp({
   function setMapAccess(regionId, anchor, accessType = null) {
     const nextOverride = buildMapAccessOverride(regionId, anchor, accessType);
     if (!nextOverride) return;
+    debugEvent("setMapAccess: requested", {
+      regionId,
+      accessType,
+      anchor: summarizeDebugAnchor(anchor),
+      nextOverride,
+    });
     setManualOverrides((current) => {
       const mapAccesses = { ...(current.mapAccesses || {}) };
       const previous = mapAccesses[regionId];
-      if (mapAccessOverrideEquals(previous, nextOverride)) return current;
+      if (mapAccessOverrideEquals(previous, nextOverride)) {
+        debugEvent("setMapAccess: no-op", { regionId, previous, nextOverride });
+        return current;
+      }
       preservePureCaveAccessOverrides(mapAccesses, regionId);
       mapAccesses[regionId] = nextOverride;
-      return {
+      const next = {
         ...current,
         mapAccesses,
       };
+      debugManualOverridesTransition("setMapAccess: apply", current, next, {
+        regionId,
+        previous,
+        nextOverride,
+      });
+      return next;
     });
   }
 
@@ -6300,7 +7601,7 @@ export default function CruorMapGeneratorMvp({
         ...current,
         mapAccesses,
       };
-    });
+    }, "", `setMapAccessWithHistory:${regionId}`);
   }
 
   function removeMapAccess(regionId) {
@@ -6311,7 +7612,7 @@ export default function CruorMapGeneratorMvp({
         ...(current.mapAccesses || {}),
         [regionId]: { disabled: true },
       },
-    }));
+    }), "", `removeMapAccess:${regionId}`);
   }
 
   function updateJunctionType(junctionKey, junctionType) {
@@ -6342,29 +7643,62 @@ export default function CruorMapGeneratorMvp({
     });
   }
 
-  function createConnectionFromWallDrag(connection) {
+  function buildPreviewMapFromManualOverrides(nextOverrides) {
+    const normalized = normalizeManualOverrides(nextOverrides);
+    const snapshot = createLockedGenerationManualSnapshot(normalized);
+    const previewGenerationConfig = {
+      ...config,
+      manualRoomPositions: {},
+      manualDoorAnchors: snapshot.doorAnchors,
+      manualDoorTypes: snapshot.doorTypes,
+      manualStairTransitions: snapshot.levels?.stairs || {},
+      manualLevels: snapshot.levels,
+      manualMapAccesses: snapshot.mapAccesses,
+      manualCorridorJunctions: snapshot.corridorJunctions,
+      manualCorridorWaypoints: snapshot.corridorWaypoints,
+      manualCustomConnections: snapshot.customConnections,
+      manualDeletedConnections: snapshot.deletedConnections,
+      manualRoomStyles: snapshot.roomStyles,
+    };
+    const previewRawOverrides = createLockedRawGenerationManualOverrides(snapshot);
+    const previewRawMap = generateMap(previewGenerationConfig, previewRawOverrides);
+    const baseGeometry = manualLayoutGeometryRef.current || cloneMapGeometry(generatedMap);
+    return buildManualGeometryLockedMap(baseGeometry, previewRawMap, normalized);
+  }
+
+  function createRoomDragPreviewMap(regionId, position) {
+    const nextOverrides = createRoomMoveManualOverrides(
+      manualOverridesRef.current,
+      regionId,
+      position,
+    );
+    if (!nextOverrides) return null;
+    return { map: buildPreviewMapFromManualOverrides(nextOverrides) };
+  }
+
+  function createConnectionManualOverrides(currentOverrides, connection) {
     if (
       !connection?.fromRegionId ||
       !connection?.toRegionId ||
       connection.fromRegionId === connection.toRegionId
     )
-      return;
+      return null;
     const fromAnchor = serializeManualAnchor(connection.fromAnchor);
     const toAnchor = serializeManualAnchor(connection.toAnchor);
-    if (!fromAnchor || !toAnchor) return;
-
-    updateManualOverridesWithHistory((current) => {
-      const normalized = normalizeManualOverrides(current);
-      const customConnections = Array.isArray(normalized.customConnections)
-        ? normalized.customConnections
-        : [];
-      const nextSequence = normalized.manualConnectionSequence + 1;
-      const edgeId = `manual-edge-${connection.fromRegionId}-${connection.toRegionId}-${nextSequence.toString(36)}`;
-      const deletedConnections = Array.isArray(normalized.deletedConnections)
-        ? normalized.deletedConnections.filter((id) => id !== edgeId)
-        : [];
-      return freezeCurrentRoomLayout({
-        ...current,
+    if (!fromAnchor || !toAnchor) return null;
+    const normalized = normalizeManualOverrides(currentOverrides);
+    const customConnections = Array.isArray(normalized.customConnections)
+      ? normalized.customConnections
+      : [];
+    const nextSequence = normalized.manualConnectionSequence + 1;
+    const edgeId = `manual-edge-${connection.fromRegionId}-${connection.toRegionId}-${nextSequence.toString(36)}`;
+    const deletedConnections = Array.isArray(normalized.deletedConnections)
+      ? normalized.deletedConnections.filter((id) => id !== edgeId)
+      : [];
+    return {
+      edgeId,
+      overrides: freezeCurrentRoomLayout({
+        ...currentOverrides,
         deletedConnections,
         manualConnectionSequence: nextSequence,
         customConnections: [
@@ -6382,11 +7716,82 @@ export default function CruorMapGeneratorMvp({
           [corridorEndpointKey(edgeId, "from")]: fromAnchor,
           [corridorEndpointKey(edgeId, "to")]: toAnchor,
         },
-      });
+      }),
+    };
+  }
+
+  function createConnectionDraftPreviewMap(connection) {
+    const result = createConnectionManualOverrides(
+      manualOverridesRef.current,
+      connection,
+    );
+    if (!result?.overrides) return null;
+    return {
+      corridorId: result.edgeId,
+      map: buildPreviewMapFromManualOverrides(result.overrides),
+    };
+  }
+
+  function createConnectionFromWallDrag(connection) {
+    debugEvent("createConnectionFromWallDrag: requested", {
+      connection: {
+        ...connection,
+        debugTrace: connection?.debugTrace
+          ? {
+              releasePoint: roundDebugPoint(connection.debugTrace.releasePoint),
+              releaseCell: summarizeDebugCell(connection.debugTrace.releaseCell),
+              targetPoint: roundDebugPoint(connection.debugTrace.targetPoint),
+              targetCell: summarizeDebugCell(connection.debugTrace.targetCell),
+              targetDistance: roundDebugNumber(connection.debugTrace.targetDistance),
+              targetScore: roundDebugNumber(connection.debugTrace.targetScore),
+            }
+          : null,
+        fromAnchor: summarizeDebugAnchor(connection?.fromAnchor),
+        toAnchor: summarizeDebugAnchor(connection?.toAnchor),
+      },
+      manualBefore: summarizeDebugManualOverrides(manualOverridesRef.current),
     });
+    updateManualOverridesWithHistory((current) => {
+      const result = createConnectionManualOverrides(current, connection);
+      if (result?.overrides) {
+        debugSetPendingAnchorTrace({
+          kind: "new-corridor",
+          edgeId: result.edgeId,
+          corridorId: result.edgeId,
+          endpoint: "to",
+          fromRegionId: connection?.fromRegionId || null,
+          toRegionId: connection?.toRegionId || null,
+          releasePoint: roundDebugPoint(connection?.debugTrace?.releasePoint),
+          releaseCell: summarizeDebugCell(connection?.debugTrace?.releaseCell),
+          targetPoint: roundDebugPoint(connection?.debugTrace?.targetPoint),
+          targetCell: summarizeDebugCell(connection?.debugTrace?.targetCell),
+          targetDistance: roundDebugNumber(connection?.debugTrace?.targetDistance),
+          targetScore: roundDebugNumber(connection?.debugTrace?.targetScore),
+          requestedAnchor: summarizeDebugAnchor(serializeManualAnchor(connection?.toAnchor)),
+          requestedAnchorCell: summarizeDebugCell(getDebugAnchorCell(serializeManualAnchor(connection?.toAnchor))),
+          fromAnchor: summarizeDebugAnchor(serializeManualAnchor(connection?.fromAnchor)),
+          manualBefore: summarizeDebugManualOverrides(current),
+        });
+      }
+      return result?.overrides || current;
+    }, "", `createConnectionFromWallDrag:${connection?.fromRegionId || "?"}->${connection?.toRegionId || "?"}`);
+  }
+
+  function releaseManualGeometryLockForRoomStyleEdit() {
+    debugEvent("room style edit: release manual geometry lock", {
+      hadManualLayoutGeometry: Boolean(manualLayoutGeometryRef.current),
+      manualLayoutSeed: manualLayoutSeed || "",
+    });
+    // Corridor and endpoint edits intentionally lock the current geometry so
+    // rerouting cannot reshape rooms implicitly. Explicit room edits are the
+    // opposite case: Shape, Size, type, and modifier controls must be allowed
+    // to rebuild the edited room geometry from manualRoomStyles.
+    manualLayoutGeometryRef.current = null;
+    setManualLayoutSeed("");
   }
 
   function updateRoomStyle(regionId, patch) {
+    releaseManualGeometryLockForRoomStyleEdit();
     updateManualOverridesWithHistory((current) => {
       const currentStyle = current.roomStyles?.[regionId] || {};
       const region = generatedMap.regions.find((item) => item.id === regionId);
@@ -6410,10 +7815,11 @@ export default function CruorMapGeneratorMvp({
           },
         },
       };
-    });
+    }, "", `updateRoomStyle:${regionId}`);
   }
 
   function resetRoomStyle(regionId) {
+    releaseManualGeometryLockForRoomStyleEdit();
     updateManualOverridesWithHistory((current) => {
       const nextStyles = { ...(current.roomStyles || {}) };
       delete nextStyles[regionId];
@@ -6421,7 +7827,7 @@ export default function CruorMapGeneratorMvp({
         ...current,
         roomStyles: nextStyles,
       };
-    });
+    }, "", `resetRoomStyle:${regionId}`);
   }
 
   function setGridRenderingStyle(value) {
@@ -6540,6 +7946,8 @@ export default function CruorMapGeneratorMvp({
       viewportClassName={inlineComposerEditor ? "location-map-inline-editor-viewport" : ""}
       onViewportMetricsChange={onViewportMetricsChange}
       onViewportControlsChange={inlineComposerEditor ? setInlineViewportControls : null}
+      onCreateRoomDragPreviewMap={createRoomDragPreviewMap}
+      onCreateConnectionDraftPreviewMap={createConnectionDraftPreviewMap}
     />
   );
 

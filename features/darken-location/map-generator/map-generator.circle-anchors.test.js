@@ -324,6 +324,36 @@ describe("circle connector snap coverage", () => {
     expect(getCircleAnchorRoutingCell(anchor)).toEqual({ x: 46, y: 26 });
   });
 
+
+  test("cardinal-adjacent routing squares keep distinct snap cells", () => {
+    const cardinalRegion = {
+      id: "south-adjacent-circle-room",
+      shape: "circle",
+      cellRect: { x: 42, y: 17, w: 9, h: 9 },
+      floorCells: [],
+    };
+    const left = createCircleDragAnchor(
+      cardinalRegion,
+      getCircleAnchorCellCenter({ x: 45, y: 26 }, gridSize),
+      gridSize,
+    );
+    const center = createCircleDragAnchor(
+      cardinalRegion,
+      getCircleAnchorCellCenter({ x: 46, y: 26 }, gridSize),
+      gridSize,
+    );
+    const right = createCircleDragAnchor(
+      cardinalRegion,
+      getCircleAnchorCellCenter({ x: 47, y: 26 }, gridSize),
+      gridSize,
+    );
+
+    expect(left?.snapCell).toEqual({ x: 45, y: 26 });
+    expect(center?.snapCell).toEqual({ x: 46, y: 26 });
+    expect(right?.snapCell).toEqual({ x: 47, y: 26 });
+    expect(new Set([left?.point?.x, center?.point?.x, right?.point?.x])).toHaveProperty("size", 3);
+  });
+
   test("corner-skimming circular portals get one regular support square", () => {
     const cornerRegion = {
       id: "corner-support-circle-room",

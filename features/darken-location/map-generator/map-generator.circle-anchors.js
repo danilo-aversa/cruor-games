@@ -199,7 +199,7 @@ function getProjectedCircleAnchorOutsideCell(circle, radial, gridSize) {
 
 function scoreCircleDragAnchor(anchor, radial, projectedCell, circle, gridSize) {
   if (!anchor) return Number.POSITIVE_INFINITY;
-  const snapCell = anchor.routingOutsideCell || anchor.outsideCell;
+  const snapCell = anchor.snapCell || anchor.routingOutsideCell || anchor.outsideCell;
   const portalScore = scorePortalCellForRadial(
     anchor.outsideCell,
     radial,
@@ -299,7 +299,7 @@ export function createCircleConnectionAnchorFromOutsideCell(
   if (!routingOutsideCell) return null;
 
   const portalCenter = getCircleAnchorCellCenter(portalCell, gridSize);
-  const radial = getRadialFromPoint(portalCenter, circle) || snapRadial;
+  const radial = snapRadial || getRadialFromPoint(portalCenter, circle);
   if (!radial) return null;
 
   const point = getCirclePerimeterPoint(circle, radial);
@@ -311,6 +311,7 @@ export function createCircleConnectionAnchorFromOutsideCell(
     regionShape: region.shape,
     side,
     cell: { x: portalCell.x, y: portalCell.y },
+    snapCell: { x: snapCell.x, y: snapCell.y },
     outsideCell: { x: routingOutsideCell.x, y: routingOutsideCell.y },
     portalRoomCell: { x: portalCell.x, y: portalCell.y },
     routingOutsideCell: { x: routingOutsideCell.x, y: routingOutsideCell.y },
@@ -363,7 +364,8 @@ export function createCircleConnectionAnchorCandidates(
         anchors.length,
       );
       if (!anchor) continue;
-      const key = `${anchor.side}:${anchor.outsideCell.x}:${anchor.outsideCell.y}`;
+      const snapKey = anchor.snapCell || anchor.outsideCell;
+      const key = `${anchor.side}:${snapKey.x}:${snapKey.y}`;
       if (seen.has(key)) continue;
       seen.add(key);
       anchors.push(anchor);
