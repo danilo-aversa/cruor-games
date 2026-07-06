@@ -5473,9 +5473,13 @@ export default function CruorMapGeneratorMvp({
   const debugRecordingRef = useRef(false);
   const debugCategoriesRef = useRef(DEFAULT_MAP_DEBUG_CATEGORIES);
   const debugModeRef = useRef(Boolean(debugMode));
+  const generatedMapRef = useRef(null);
+  const qaRunnerAbortRef = useRef(null);
+  const qaRunnerSequenceRef = useRef(0);
   const [debugRecording, setDebugRecording] = useState(false);
   const [debugCategories, setDebugCategories] = useState(DEFAULT_MAP_DEBUG_CATEGORIES);
   const [debugEntries, setDebugEntries] = useState([]);
+  const [qaRunnerOverlay, setQaRunnerOverlay] = useState(null);
   const importedRegions = Array.isArray(initialRequest?.requiredRegions)
     ? initialRequest.requiredRegions
     : [];
@@ -5565,6 +5569,7 @@ export default function CruorMapGeneratorMvp({
       manualOverrides,
     );
   }, [lockedManualLayoutActive, rawGeneratedMap, manualOverrides]);
+  generatedMapRef.current = generatedMap;
   useEffect(() => {
     if (!lockedManualLayoutActive && !isManualEditActive) {
       manualLayoutGeometryRef.current = cloneMapGeometry(rawGeneratedMap);
@@ -6895,10 +6900,11 @@ export default function CruorMapGeneratorMvp({
 
   function lockManualLayoutSeed() {
     if (manualLayoutSeed) return;
+    const activeMap = generatedMapRef.current || generatedMap;
     const candidateSeed =
-      generatedMap.layoutCandidate?.seed ||
-      generatedMap.config?.layoutCandidateSeed ||
-      generatedMap.config?.seed ||
+      activeMap.layoutCandidate?.seed ||
+      activeMap.config?.layoutCandidateSeed ||
+      activeMap.config?.seed ||
       seed;
     if (candidateSeed && candidateSeed !== manualLayoutSeed) {
       setManualLayoutSeed(String(candidateSeed));
@@ -6906,8 +6912,9 @@ export default function CruorMapGeneratorMvp({
   }
 
   function getFrozenRoomPositions(extraPositions = {}) {
+    const activeMap = generatedMapRef.current || generatedMap;
     const frozenPositions = {};
-    (generatedMap.regions || []).forEach((region) => {
+    (activeMap.regions || []).forEach((region) => {
       if (!region?.id || !region.cellRect) return;
       frozenPositions[region.id] = {
         x: Math.round(region.cellRect.x),
@@ -6921,8 +6928,9 @@ export default function CruorMapGeneratorMvp({
   }
 
   function getFrozenRoomStyles(existingStyles = {}) {
+    const activeMap = generatedMapRef.current || generatedMap;
     const frozenStyles = { ...(existingStyles || {}) };
-    (generatedMap.regions || []).forEach((region) => {
+    (activeMap.regions || []).forEach((region) => {
       if (!region?.id) return;
       const currentStyle = frozenStyles[region.id] || {};
       frozenStyles[region.id] = {
@@ -7265,7 +7273,8 @@ export default function CruorMapGeneratorMvp({
   }
 
   function moveDoor(corridorId, endpoint, point, committedAnchor = null, debugTrace = null) {
-    const corridor = generatedMap.corridors.find(
+    const activeMap = generatedMapRef.current || generatedMap;
+    const corridor = activeMap.corridors.find(
       (item) => item.id === corridorId,
     );
     if (!corridor) {
@@ -7290,10 +7299,10 @@ export default function CruorMapGeneratorMvp({
       manualBefore: summarizeDebugManualOverrides(manualOverridesRef.current),
     });
     if (corridor.isRoomLink || endpoint === "shared") {
-      const fromRegion = generatedMap.regions.find(
+      const fromRegion = activeMap.regions.find(
         (item) => item.id === corridor.from,
       );
-      const toRegion = generatedMap.regions.find(
+      const toRegion = activeMap.regions.find(
         (item) => item.id === corridor.to,
       );
       if (!fromRegion || !toRegion) {
@@ -7309,7 +7318,7 @@ export default function CruorMapGeneratorMvp({
         fromRegion,
         toRegion,
         point,
-        generatedMap.config.gridSize,
+        activeMap.config.gridSize,
       );
       if (!sharedConnection) {
         debugEvent("moveDoor: shared endpoint no shared connection", {
@@ -7384,7 +7393,7 @@ export default function CruorMapGeneratorMvp({
       }, `moveDoor:${corridorId}:${endpoint}:shared`);
     }
     const regionId = endpoint === "from" ? corridor.from : corridor.to;
-    const region = generatedMap.regions.find((item) => item.id === regionId);
+    const region = activeMap.regions.find((item) => item.id === regionId);
     if (!region) {
       debugEvent("moveDoor: endpoint region not found", { corridorId, endpoint, regionId });
       return false;
@@ -7394,12 +7403,12 @@ export default function CruorMapGeneratorMvp({
       getDoorDragManualAnchor(
         region,
         point,
-        generatedMap.config.gridSize,
+        activeMap.config.gridSize,
       ) ||
       getClosestBoundaryAnchorToPoint(
         region,
         point,
-        generatedMap.config.gridSize,
+        activeMap.config.gridSize,
         generatedMap,
       );
     if (!anchor) {
@@ -7910,6 +7919,7 @@ export default function CruorMapGeneratorMvp({
   }
 
   function findExistingConnectionForManualConnection(connection, normalizedOverrides) {
+    const activeMap = generatedMapRef.current || generatedMap;
     const pairKey = getManualConnectionPairKey(connection?.fromRegionId, connection?.toRegionId);
     if (!pairKey) return null;
     const customConnections = Array.isArray(normalizedOverrides?.customConnections)
@@ -7917,8 +7927,8 @@ export default function CruorMapGeneratorMvp({
       : [];
     const customIds = new Set(customConnections.map((item) => item?.id).filter(Boolean));
     const graphCandidates = [
-      ...(Array.isArray(generatedMap.graph) ? generatedMap.graph : []),
-      ...(Array.isArray(generatedMap.corridors) ? generatedMap.corridors : []),
+      ...(Array.isArray(activeMap.graph) ? activeMap.graph : []),
+      ...(Array.isArray(activeMap.corridors) ? activeMap.corridors : []),
       ...customConnections,
     ].filter((item) => item?.id && getConnectionLikePairKey(item) === pairKey);
     const baseCandidate = graphCandidates.find(
@@ -8186,6 +8196,391 @@ export default function CruorMapGeneratorMvp({
     onComposerSelectedRegionChange?.(nextRegionId);
   }
 
+  function getQaRunnerDelay(settings = {}) {
+    if (settings.speed === "slow") return 720;
+    if (settings.speed === "fast") return 80;
+    return 260;
+  }
+
+  function sleepQaRunner(ms, signal) {
+    return new Promise((resolve, reject) => {
+      if (signal?.aborted) {
+        reject(new Error("Scenario stopped."));
+        return;
+      }
+      const timeout = window.setTimeout(resolve, ms);
+      const abort = () => {
+        window.clearTimeout(timeout);
+        signal?.removeEventListener?.("abort", abort);
+        reject(new Error("Scenario stopped."));
+      };
+      signal?.addEventListener?.("abort", abort, { once: true });
+    });
+  }
+
+  function dispatchQaRunnerStatus(detail = {}) {
+    if (typeof window === "undefined") return;
+    window.dispatchEvent(new CustomEvent("cruor:map-qa-runner-status", {
+      detail,
+    }));
+  }
+
+  function recordQaRunnerEvent(label, payload = {}, category = "performance") {
+    recordDebugEvent(label, payload, {
+      category,
+      source: "map-qa-runner",
+    });
+  }
+
+  function getQaRunnerScenarioLabel(scenarioId, fallback = "Map QA Scenario") {
+    if (scenarioId === "circle-anchor-sweep") return "Circle Anchor Test";
+    if (scenarioId === "corridor-create") return "Corridor Creation Test";
+    if (scenarioId === "room-move-reroute") return "Room Move + Reroute";
+    if (scenarioId === "smoke") return "Smoke Test";
+    return fallback || "Map QA Scenario";
+  }
+
+  function setQaRunnerStep(runId, detail = {}) {
+    if (qaRunnerSequenceRef.current !== runId) return;
+    const nextDetail = {
+      state: "running",
+      ...detail,
+    };
+    setQaRunnerOverlay(nextDetail);
+    dispatchQaRunnerStatus(nextDetail);
+    recordQaRunnerEvent(`qa runner: ${detail.stepLabel || detail.message || "step"}`, nextDetail, detail.category || "performance");
+  }
+
+  function finishQaRunner(runId, detail = {}) {
+    if (qaRunnerSequenceRef.current !== runId) return;
+    const nextDetail = {
+      state: detail.state || "passed",
+      stepLabel: detail.stepLabel || detail.message || "Complete.",
+      message: detail.message || detail.stepLabel || "Complete.",
+      ...detail,
+    };
+    setQaRunnerOverlay(nextDetail);
+    dispatchQaRunnerStatus(nextDetail);
+    recordQaRunnerEvent(`qa runner: ${nextDetail.state}`, nextDetail, nextDetail.state === "failed" ? "performance" : "generated-map");
+  }
+
+  function getQaGeneratedMap() {
+    return generatedMapRef.current || generatedMap;
+  }
+
+  function getQaCellCenterPoint(cell, gridSize) {
+    return {
+      x: (Number(cell.x) + 0.5) * gridSize,
+      y: (Number(cell.y) + 0.5) * gridSize,
+    };
+  }
+
+  function getQaRegionCenterPoint(region, gridSize) {
+    const rect = region?.cellRect || {};
+    return {
+      x: (Number(rect.x || 0) + Number(rect.w || 1) / 2) * gridSize,
+      y: (Number(rect.y || 0) + Number(rect.h || 1) / 2) * gridSize,
+    };
+  }
+
+  function getQaRegionCenterCell(region) {
+    const rect = region?.cellRect || {};
+    return {
+      x: Math.floor(Number(rect.x || 0) + Number(rect.w || 1) / 2),
+      y: Math.floor(Number(rect.y || 0) + Number(rect.h || 1) / 2),
+    };
+  }
+
+  function getQaLargestRegion(map = getQaGeneratedMap()) {
+    return [...(map?.regions || [])]
+      .sort((a, b) => {
+        const areaA = Number(a?.cellRect?.w || 0) * Number(a?.cellRect?.h || 0);
+        const areaB = Number(b?.cellRect?.w || 0) * Number(b?.cellRect?.h || 0);
+        return areaB - areaA;
+      })[0] || null;
+  }
+
+  function getQaCorridorForRegion(regionId, map = getQaGeneratedMap()) {
+    return (map?.corridors || []).find((corridor) =>
+      corridor?.from === regionId || corridor?.to === regionId,
+    ) || null;
+  }
+
+  function getQaCorridorForPair(fromRegionId, toRegionId, map = getQaGeneratedMap()) {
+    const pair = [fromRegionId, toRegionId].sort().join("::");
+    return (map?.corridors || []).find((corridor) =>
+      [corridor?.from, corridor?.to].sort().join("::") === pair,
+    ) || null;
+  }
+
+  function getQaEndpointForRegion(corridor, regionId) {
+    if (!corridor || !regionId) return "from";
+    return corridor.from === regionId ? "from" : "to";
+  }
+
+  function getQaCorridorDoor(corridor, endpoint) {
+    return (corridor?.doors || []).find((door) => door?.endpoint === endpoint) || null;
+  }
+
+  function getQaCircleAnchorForOutsideCell(region, outsideCell, map = getQaGeneratedMap()) {
+    if (!region || region.shape !== "circle" || !outsideCell) return null;
+    const gridSize = map?.config?.gridSize || config.gridSize || 20;
+    const circle = getCircleGeometryFromRegion(region, gridSize);
+    return createCircleConnectionAnchorFromOutsideCell(region, circle, outsideCell, gridSize);
+  }
+
+  function getQaCircleAnchorSweepCells(region, map = getQaGeneratedMap()) {
+    const gridSize = map?.config?.gridSize || config.gridSize || 20;
+    const circle = getCircleGeometryFromRegion(region, gridSize);
+    if (!circle) return [];
+    const cy = Math.floor(circle.cyCells + circle.rCells);
+    const cx = Math.floor(circle.cxCells);
+    return [cx - 2, cx - 1, cx, cx + 1, cx + 2, cx + 3]
+      .map((x) => ({ x, y: cy }))
+      .filter((cell) => getQaCircleAnchorForOutsideCell(region, cell, map));
+  }
+
+  async function waitForQaRender(signal, settings = {}) {
+    await sleepQaRunner(getQaRunnerDelay(settings), signal);
+    await new Promise((resolve) => window.requestAnimationFrame(() => resolve()));
+  }
+
+  function assertQa(condition, message, payload = {}) {
+    if (condition) return;
+    const error = new Error(message);
+    error.payload = payload;
+    throw error;
+  }
+
+  function assertQaNoDuplicateCorridors(map = getQaGeneratedMap()) {
+    const seen = new Map();
+    (map?.corridors || []).forEach((corridor) => {
+      const pair = [corridor.from, corridor.to].filter(Boolean).sort().join("::");
+      if (!pair) return;
+      const current = seen.get(pair) || [];
+      current.push(corridor.id);
+      seen.set(pair, current);
+    });
+    const duplicates = [...seen.entries()].filter(([, ids]) => ids.length > 1);
+    assertQa(!duplicates.length, "Duplicate corridors between the same room pair.", { duplicates });
+  }
+
+  async function runQaCircleAnchorSweep(runId, signal, settings = {}, scenarioLabel = "Circle Anchor Test") {
+    let map = getQaGeneratedMap();
+    let region = getQaLargestRegion(map);
+    assertQa(region, "No region available for circle anchor test.");
+
+    setQaRunnerStep(runId, {
+      scenarioLabel,
+      stepLabel: `Prepare ${region.label || region.id} as a circle`,
+      targetRegionId: region.id,
+      category: "room-style",
+    });
+    updateRoomStyle(region.id, { shape: "circle", sizePreset: "Large", customSize: null });
+    await waitForQaRender(signal, settings);
+
+    map = getQaGeneratedMap();
+    region = map.regions.find((item) => item.id === region.id) || region;
+    assertQa(region?.shape === "circle", "Target room did not become circular.", { region: summarizeDebugRegion(region) });
+
+    const corridor = getQaCorridorForRegion(region.id, map);
+    assertQa(corridor, "No corridor connected to the circular test room.", { regionId: region.id });
+    const endpoint = getQaEndpointForRegion(corridor, region.id);
+    const cells = getQaCircleAnchorSweepCells(region, map).slice(0, settings.speed === "fast" ? 3 : 5);
+    assertQa(cells.length >= 2, "Not enough reachable circle anchors for sweep.", { region: summarizeDebugRegion(region), cells });
+
+    for (let index = 0; index < cells.length; index += 1) {
+      const cell = cells[index];
+      map = getQaGeneratedMap();
+      region = map.regions.find((item) => item.id === region.id) || region;
+      const currentCorridor = map.corridors.find((item) => item.id === corridor.id) || getQaCorridorForPair(corridor.from, corridor.to, map) || corridor;
+      const anchor = getQaCircleAnchorForOutsideCell(region, cell, map);
+      assertQa(anchor, "Could not build circle anchor for target cell.", { cell, region: summarizeDebugRegion(region) });
+      const point = anchor.point || getAnchorHandlePoint(anchor, map.config.gridSize) || getQaCellCenterPoint(cell, map.config.gridSize);
+      setQaRunnerStep(runId, {
+        scenarioLabel,
+        stepLabel: `Move anchor ${index + 1}/${cells.length} to cell ${cell.x},${cell.y}`,
+        targetRegionId: region.id,
+        targetCorridorId: currentCorridor.id,
+        targetCell: cell,
+        targetPoint: roundDebugPoint(point),
+        category: "anchor-trace",
+      });
+      const committed = moveDoor(currentCorridor.id, endpoint, point, anchor, {
+        releasePoint: point,
+        releaseCell: cell,
+        snapPoint: point,
+        snapCell: anchor.snapCell || cell,
+        snapAnchor: anchor,
+      });
+      assertQa(committed, "moveDoor did not commit a new anchor.", { corridorId: currentCorridor.id, endpoint, cell, anchor: summarizeDebugAnchor(anchor) });
+      await waitForQaRender(signal, settings);
+      map = getQaGeneratedMap();
+      const updatedCorridor = map.corridors.find((item) => item.id === currentCorridor.id) || getQaCorridorForPair(currentCorridor.from, currentCorridor.to, map);
+      const updatedDoor = getQaCorridorDoor(updatedCorridor, endpoint);
+      assertQa(updatedDoor?.cell?.x === anchor.cell?.x && updatedDoor?.cell?.y === anchor.cell?.y, "Rendered corridor endpoint did not move to the requested circle anchor.", {
+        corridorId: updatedCorridor?.id || currentCorridor.id,
+        endpoint,
+        requestedAnchor: summarizeDebugAnchor(anchor),
+        renderedDoor: updatedDoor,
+        renderedCorridor: summarizeDebugCorridor(updatedCorridor),
+      });
+      assertQaNoDuplicateCorridors(map);
+    }
+  }
+
+  async function runQaCorridorCreation(runId, signal, settings = {}, scenarioLabel = "Corridor Creation Test") {
+    const map = getQaGeneratedMap();
+    assertQa((map?.regions || []).length >= 2, "Need at least two rooms to create a corridor.");
+    const [fromRegion, toRegion] = [...map.regions].sort((a, b) => (b.cellRect?.w || 0) - (a.cellRect?.w || 0)).slice(0, 2);
+    const gridSize = map.config.gridSize || config.gridSize || 20;
+    const fromPoint = getQaRegionCenterPoint(fromRegion, gridSize);
+    const toPoint = getQaRegionCenterPoint(toRegion, gridSize);
+    const fromAnchor = getDoorDragManualAnchor(fromRegion, fromPoint, gridSize) || getClosestBoundaryAnchorToPoint(fromRegion, toPoint, gridSize, map);
+    const toAnchor = getDoorDragManualAnchor(toRegion, toPoint, gridSize) || getClosestBoundaryAnchorToPoint(toRegion, fromPoint, gridSize, map);
+    assertQa(fromAnchor && toAnchor, "Could not resolve connection anchors.", { fromRegion: fromRegion.id, toRegion: toRegion.id });
+    const beforeCount = map.corridors.length;
+    setQaRunnerStep(runId, {
+      scenarioLabel,
+      stepLabel: `Create/reuse corridor ${fromRegion.id} → ${toRegion.id}`,
+      targetRegionId: fromRegion.id,
+      targetCell: toAnchor.outsideCell || toAnchor.cell,
+      category: "corridor-create",
+    });
+    createConnectionFromWallDrag({
+      fromRegionId: fromRegion.id,
+      toRegionId: toRegion.id,
+      fromAnchor,
+      toAnchor,
+      debugTrace: {
+        releasePoint: getAnchorHandlePoint(toAnchor, gridSize) || toPoint,
+        releaseCell: toAnchor.outsideCell || toAnchor.cell,
+        targetPoint: getAnchorHandlePoint(toAnchor, gridSize) || toPoint,
+        targetCell: toAnchor.outsideCell || toAnchor.cell,
+        targetDistance: 0,
+        targetScore: 0,
+      },
+    });
+    await waitForQaRender(signal, settings);
+    const nextMap = getQaGeneratedMap();
+    assertQaNoDuplicateCorridors(nextMap);
+    const afterCount = nextMap.corridors.length;
+    assertQa(afterCount <= beforeCount + 1, "Corridor creation added too many corridors.", { beforeCount, afterCount, corridors: nextMap.corridors.map((item) => item.id) });
+  }
+
+  async function runQaRoomMoveReroute(runId, signal, settings = {}, scenarioLabel = "Room Move + Reroute") {
+    let map = getQaGeneratedMap();
+    const region = getQaLargestRegion(map);
+    assertQa(region, "No region available for room move test.");
+    const start = { x: region.cellRect.x, y: region.cellRect.y };
+    const target = { x: start.x + 1, y: start.y };
+    setQaRunnerStep(runId, {
+      scenarioLabel,
+      stepLabel: `Move ${region.label || region.id} by one cell`,
+      targetRegionId: region.id,
+      targetCell: target,
+      category: "room-move",
+    });
+    const moved = moveRoom(region.id, target);
+    assertQa(moved !== null, "Room move returned an invalid result.", { regionId: region.id, target });
+    await waitForQaRender(signal, settings);
+    map = getQaGeneratedMap();
+    assertQaNoDuplicateCorridors(map);
+  }
+
+  async function runMapQaScenario(eventDetail = {}) {
+    if (typeof window === "undefined") return;
+    const runId = (qaRunnerSequenceRef.current || 0) + 1;
+    qaRunnerSequenceRef.current = runId;
+    qaRunnerAbortRef.current?.abort?.();
+    const abortController = new AbortController();
+    qaRunnerAbortRef.current = abortController;
+    const scenarioId = eventDetail.scenarioId || "smoke";
+    const settings = {
+      speed: eventDetail.settings?.speed || "normal",
+      stopOnError: eventDetail.settings?.stopOnError !== false,
+    };
+    const scenarioLabel = getQaRunnerScenarioLabel(scenarioId, eventDetail.scenarioLabel);
+
+    setDebugRecording(true);
+    setQaRunnerStep(runId, {
+      state: "running",
+      scenarioId,
+      scenarioLabel,
+      settings,
+      stepLabel: "Starting scenario…",
+      message: "Starting scenario…",
+      category: "performance",
+    });
+
+    try {
+      if (scenarioId === "circle-anchor-sweep") {
+        await runQaCircleAnchorSweep(runId, abortController.signal, settings, scenarioLabel);
+      } else if (scenarioId === "corridor-create") {
+        await runQaCorridorCreation(runId, abortController.signal, settings, scenarioLabel);
+      } else if (scenarioId === "room-move-reroute") {
+        await runQaRoomMoveReroute(runId, abortController.signal, settings, scenarioLabel);
+      } else {
+        await runQaCircleAnchorSweep(runId, abortController.signal, settings, scenarioLabel);
+        if (!abortController.signal.aborted) await runQaCorridorCreation(runId, abortController.signal, settings, scenarioLabel);
+        if (!abortController.signal.aborted) await runQaRoomMoveReroute(runId, abortController.signal, settings, scenarioLabel);
+      }
+      finishQaRunner(runId, {
+        state: "passed",
+        scenarioId,
+        scenarioLabel,
+        settings,
+        stepLabel: "Scenario passed.",
+        message: "Scenario passed.",
+      });
+    } catch (error) {
+      const stopped = abortController.signal.aborted;
+      const payload = {
+        state: stopped ? "stopped" : "failed",
+        scenarioId,
+        scenarioLabel,
+        settings,
+        stepLabel: stopped ? "Scenario stopped." : "Scenario failed.",
+        message: stopped ? "Scenario stopped." : error?.message || String(error),
+        error: stopped ? "" : error?.message || String(error),
+        payload: cloneMapDebugPayload(error?.payload || {}),
+      };
+      finishQaRunner(runId, payload);
+      if (!stopped && settings.stopOnError === false) {
+        recordQaRunnerEvent("qa runner: continued after error", payload, "performance");
+      }
+    }
+  }
+
+  useEffect(() => {
+    function handleRun(event) {
+      runMapQaScenario(event?.detail || {});
+    }
+
+    function handleStop() {
+      qaRunnerAbortRef.current?.abort?.();
+      dispatchQaRunnerStatus({
+        state: "stopped",
+        stepLabel: "Scenario stopped.",
+        message: "Scenario stopped.",
+      });
+      setQaRunnerOverlay((current) => ({
+        ...(current || {}),
+        state: "stopped",
+        stepLabel: "Scenario stopped.",
+        message: "Scenario stopped.",
+      }));
+    }
+
+    window.addEventListener("cruor:map-qa-runner-run", handleRun);
+    window.addEventListener("cruor:map-qa-runner-stop", handleStop);
+    return () => {
+      window.removeEventListener("cruor:map-qa-runner-run", handleRun);
+      window.removeEventListener("cruor:map-qa-runner-stop", handleStop);
+      qaRunnerAbortRef.current?.abort?.();
+    };
+  }, [recordDebugEvent]);
+
   useEffect(() => {
     if (!inlineComposerEditor || typeof onCommitWorkspace !== "function" || isManualEditActive) return;
     onCommitWorkspace(createManualWorkspaceStatePayload());
@@ -8355,6 +8750,17 @@ export default function CruorMapGeneratorMvp({
       data-map-inspector-collapsed={inspectorCollapsed ? "true" : undefined}
       onContextMenu={(event) => event.preventDefault()}
     >
+      {qaRunnerOverlay ? (
+        <div className={`map-qa-runner-overlay is-${qaRunnerOverlay.state || "idle"}`} aria-live="polite">
+          <div className="map-qa-runner-overlay__header">
+            <span>Map QA Runner</span>
+            <strong>{qaRunnerOverlay.state || "idle"}</strong>
+          </div>
+          <p>{qaRunnerOverlay.scenarioLabel || "Scenario"}</p>
+          <em>{qaRunnerOverlay.stepLabel || qaRunnerOverlay.message || "Running…"}</em>
+          {qaRunnerOverlay.error ? <code>{qaRunnerOverlay.error}</code> : null}
+        </div>
+      ) : null}
       <div
         className={
           inspectorCollapsed

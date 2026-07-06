@@ -8955,3 +8955,26 @@ _Nessun file aggiunto._
 
 - `~features/darken-location/map-generator/map-generator.corridors.js`
 
+
+---
+
+## 2026-07-06 16:39:11
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-browser-qa-runner-13.1.0z.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-browser-qa-runner-13.1.0z.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+

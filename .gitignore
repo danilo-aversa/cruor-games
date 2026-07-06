@@ -63,5 +63,6 @@ prettier.config.cjs
 vite.config.js
 vitest.config.js
 playwright-report/
-dist
 cruor-games.code-workspace
+tests/
+test-results/

@@ -2786,3 +2786,145 @@
   font-size: 0.74rem;
   line-height: 1.3;
 }
+
+.cruor-map-workspace .map-debug-recorder__runner,
+.location-composer .map-debug-recorder__runner {
+  display: grid;
+  gap: 10px;
+  padding-top: 10px;
+  margin-top: 10px;
+  border-top: 1px solid rgba(208, 162, 170, 0.12);
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-header,
+.location-composer .map-debug-recorder__runner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(244, 225, 224, 0.72);
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-header strong,
+.location-composer .map-debug-recorder__runner-header strong {
+  color: rgba(244, 225, 224, 0.9);
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-controls,
+.cruor-map-workspace .map-debug-recorder__runner-actions,
+.location-composer .map-debug-recorder__runner-controls,
+.location-composer .map-debug-recorder__runner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-controls label,
+.location-composer .map-debug-recorder__runner-controls label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 0.72rem;
+  color: rgba(244, 225, 224, 0.66);
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-controls select,
+.location-composer .map-debug-recorder__runner-controls select {
+  min-height: 28px;
+  padding: 0 8px;
+  border: 1px solid rgba(208, 162, 170, 0.18);
+  background: rgba(10, 5, 7, 0.82);
+  color: rgba(244, 225, 224, 0.88);
+  font: inherit;
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-status,
+.location-composer .map-debug-recorder__runner-status {
+  display: grid;
+  gap: 3px;
+  padding: 8px;
+  border: 1px solid rgba(208, 162, 170, 0.12);
+  background: rgba(255, 238, 242, 0.026);
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-status strong,
+.location-composer .map-debug-recorder__runner-status strong {
+  font-size: 0.76rem;
+  color: rgba(244, 225, 224, 0.9);
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-status span,
+.location-composer .map-debug-recorder__runner-status span {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: rgba(244, 225, 224, 0.64);
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-status em,
+.location-composer .map-debug-recorder__runner-status em {
+  font-style: normal;
+  font-size: 0.72rem;
+  color: rgba(255, 150, 164, 0.88);
+}
+
+.cruor-map-workspace .map-qa-runner-overlay {
+  position: absolute;
+  z-index: 45;
+  top: 12px;
+  left: 50%;
+  width: min(360px, calc(100% - 32px));
+  transform: translateX(-50%);
+  display: grid;
+  gap: 5px;
+  padding: 10px 12px;
+  pointer-events: none;
+  border: 1px solid rgba(208, 162, 170, 0.22);
+  background: rgba(7, 5, 6, 0.92);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.46);
+}
+
+.cruor-map-workspace .map-qa-runner-overlay__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(244, 225, 224, 0.68);
+}
+
+.cruor-map-workspace .map-qa-runner-overlay p,
+.cruor-map-workspace .map-qa-runner-overlay em,
+.cruor-map-workspace .map-qa-runner-overlay code {
+  margin: 0;
+}
+
+.cruor-map-workspace .map-qa-runner-overlay p {
+  font-size: 0.8rem;
+  color: rgba(244, 225, 224, 0.92);
+}
+
+.cruor-map-workspace .map-qa-runner-overlay em {
+  font-style: normal;
+  font-size: 0.74rem;
+  color: rgba(244, 225, 224, 0.68);
+}
+
+.cruor-map-workspace .map-qa-runner-overlay code {
+  white-space: normal;
+  font-size: 0.68rem;
+  color: rgba(255, 150, 164, 0.92);
+}
+
+.cruor-map-workspace .map-qa-runner-overlay.is-failed {
+  border-color: rgba(255, 92, 114, 0.48);
+}
+
+.cruor-map-workspace .map-qa-runner-overlay.is-passed {
+  border-color: rgba(126, 203, 143, 0.34);
+}

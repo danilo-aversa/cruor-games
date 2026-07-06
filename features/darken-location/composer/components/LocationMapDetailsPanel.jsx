@@ -25,6 +25,13 @@ const DEFAULT_MAP_DEBUG_CATEGORIES = MAP_DEBUG_CATEGORY_OPTIONS.reduce(
   {},
 );
 
+const MAP_QA_SCENARIO_OPTIONS = [
+  { id: "smoke", label: "Smoke Test", description: "Run a short map-edit sanity pass." },
+  { id: "circle-anchor-sweep", label: "Circle Anchor Test", description: "Move a circular-room corridor endpoint across several anchors." },
+  { id: "corridor-create", label: "Corridor Creation Test", description: "Create or reuse a corridor and verify endpoint stability." },
+  { id: "room-move-reroute", label: "Room Move + Reroute", description: "Move a room and verify corridors are not duplicated." },
+];
+
 function readStoredMapDebugMode() {
   if (typeof window === "undefined") return false;
   try {
@@ -101,12 +108,18 @@ function MapDebugRecorderPanel({
   onClear,
   onDownloadJson,
   onDownloadTxt,
+  onQaScenarioRun,
+  onQaScenarioStop,
+  onQaSettingChange,
   onRecordingChange,
   onToggleCategory,
+  qaRunnerStatus = null,
   recording,
 }) {
   const enabledCount = MAP_DEBUG_CATEGORY_OPTIONS.filter((category) => categories[category.id]).length;
   const latestEntries = entries.slice(-6).reverse();
+  const qaRunning = qaRunnerStatus?.state === "running";
+  const qaSettings = qaRunnerStatus?.settings || {};
 
   return (
     <section className="map-debug-recorder location-frame-info-card" aria-label="Dark Places debug recorder">
@@ -152,6 +165,65 @@ function MapDebugRecorderPanel({
             <span>{category.label}</span>
           </button>
         ))}
+      </div>
+      <div className="map-debug-recorder__runner" aria-label="Map QA scenario runner">
+        <div className="map-debug-recorder__runner-header">
+          <span>Scenario Runner</span>
+          <strong>{qaRunnerStatus?.state || "idle"}</strong>
+        </div>
+        <div className="map-debug-recorder__runner-controls">
+          <label>
+            <span>Speed</span>
+            <select
+              value={qaSettings.speed || "normal"}
+              onChange={(event) => onQaSettingChange?.({ speed: event.target.value })}
+              disabled={qaRunning}
+            >
+              <option value="slow">Slow</option>
+              <option value="normal">Normal</option>
+              <option value="fast">Fast</option>
+            </select>
+          </label>
+          <button
+            type="button"
+            className={qaSettings.stopOnError === false ? "map-debug-recorder__category" : "map-debug-recorder__category is-active"}
+            aria-pressed={qaSettings.stopOnError !== false}
+            onClick={() => onQaSettingChange?.({ stopOnError: qaSettings.stopOnError === false })}
+            disabled={qaRunning}
+          >
+            <i className={qaSettings.stopOnError === false ? "fa-solid fa-toggle-off" : "fa-solid fa-toggle-on"} aria-hidden="true" />
+            <span>Stop on Error</span>
+          </button>
+        </div>
+        <div className="map-debug-recorder__runner-actions">
+          {MAP_QA_SCENARIO_OPTIONS.map((scenario) => (
+            <button
+              key={scenario.id}
+              type="button"
+              className="mvp-button cruor-button"
+              onClick={() => onQaScenarioRun?.(scenario.id)}
+              disabled={qaRunning}
+              title={scenario.description}
+            >
+              <i className="fa-solid fa-play" aria-hidden="true" />
+              <span>{scenario.label}</span>
+            </button>
+          ))}
+          <button
+            type="button"
+            className="mvp-button cruor-button"
+            onClick={onQaScenarioStop}
+            disabled={!qaRunning}
+          >
+            <i className="fa-solid fa-stop" aria-hidden="true" />
+            <span>Stop Scenario</span>
+          </button>
+        </div>
+        <div className="map-debug-recorder__runner-status" aria-live="polite">
+          <strong>{qaRunnerStatus?.scenarioLabel || "No scenario selected"}</strong>
+          <span>{qaRunnerStatus?.stepLabel || qaRunnerStatus?.message || "Ready."}</span>
+          {qaRunnerStatus?.error ? <em>{qaRunnerStatus.error}</em> : null}
+        </div>
       </div>
       <div className="map-debug-recorder__feed" aria-live="polite">
         {latestEntries.length ? latestEntries.map((entry) => (
@@ -318,6 +390,15 @@ export function LocationMapDetailsPanel({
   const [debugRecording, setDebugRecording] = useState(false);
   const [debugCategories, setDebugCategories] = useState(DEFAULT_MAP_DEBUG_CATEGORIES);
   const [debugEntries, setDebugEntries] = useState([]);
+  const [qaRunnerStatus, setQaRunnerStatus] = useState({
+    state: "idle",
+    scenarioId: "",
+    scenarioLabel: "",
+    stepLabel: "Ready.",
+    message: "Ready.",
+    settings: { speed: "normal", stopOnError: true },
+  });
+  const qaRunnerStatusRef = useRef(qaRunnerStatus);
   const debugEntriesRef = useRef([]);
   const debugSequenceRef = useRef(0);
   const debugModeActive = Boolean(debugMode || uiMode === "debug" || storedDebugModeActive);
@@ -335,6 +416,27 @@ export function LocationMapDetailsPanel({
     if (debugModeActive) return;
     setDebugRecording(false);
   }, [debugModeActive]);
+
+  useEffect(() => {
+    qaRunnerStatusRef.current = qaRunnerStatus;
+  }, [qaRunnerStatus]);
+
+  useEffect(() => {
+    function handleQaRunnerStatus(event) {
+      const detail = event?.detail || {};
+      setQaRunnerStatus((current) => ({
+        ...current,
+        ...detail,
+        settings: {
+          ...(current.settings || {}),
+          ...(detail.settings || {}),
+        },
+      }));
+    }
+
+    window.addEventListener("cruor:map-qa-runner-status", handleQaRunnerStatus);
+    return () => window.removeEventListener("cruor:map-qa-runner-status", handleQaRunnerStatus);
+  }, []);
 
   useEffect(() => {
     debugEntriesRef.current = debugEntries;
@@ -417,6 +519,45 @@ export function LocationMapDetailsPanel({
     }));
   }
 
+  function updateQaRunnerSetting(patch = {}) {
+    setQaRunnerStatus((current) => ({
+      ...current,
+      settings: {
+        ...(current.settings || {}),
+        ...patch,
+      },
+    }));
+  }
+
+  function runQaScenario(scenarioId) {
+    const scenario = MAP_QA_SCENARIO_OPTIONS.find((item) => item.id === scenarioId);
+    if (!scenario) return;
+    setDebugRecording(true);
+    const settings = qaRunnerStatusRef.current?.settings || {};
+    setQaRunnerStatus((current) => ({
+      ...current,
+      state: "queued",
+      scenarioId,
+      scenarioLabel: scenario.label,
+      stepLabel: "Queued.",
+      message: "Queued.",
+      error: "",
+    }));
+    window.dispatchEvent(new CustomEvent("cruor:map-qa-runner-run", {
+      detail: {
+        scenarioId,
+        scenarioLabel: scenario.label,
+        settings,
+      },
+    }));
+  }
+
+  function stopQaScenario() {
+    window.dispatchEvent(new CustomEvent("cruor:map-qa-runner-stop", {
+      detail: { source: "composer-right-rail" },
+    }));
+  }
+
   function downloadDebugEntries(format = "json") {
     const stamp = new Date().toISOString().replace(/[:.]/g, "-");
     const payload = {
@@ -433,6 +574,7 @@ export function LocationMapDetailsPanel({
         generatedMapCorridors: Array.isArray(generatedMapPreview?.corridors) ? generatedMapPreview.corridors.length : 0,
       },
       mapRequest: cloneMapDebugPayload(mapRequest),
+      qaRunner: cloneMapDebugPayload(qaRunnerStatusRef.current),
       entries: debugEntriesRef.current,
     };
 
@@ -500,6 +642,10 @@ export function LocationMapDetailsPanel({
           onRecordingChange={setDebugRecording}
           onToggleCategory={toggleDebugCategory}
           onClear={clearDebugEntries}
+          qaRunnerStatus={qaRunnerStatus}
+          onQaScenarioRun={runQaScenario}
+          onQaScenarioStop={stopQaScenario}
+          onQaSettingChange={updateQaRunnerSetting}
           onDownloadJson={() => downloadDebugEntries("json")}
           onDownloadTxt={() => downloadDebugEntries("txt")}
         />
