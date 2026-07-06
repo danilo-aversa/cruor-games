@@ -213,6 +213,179 @@ const ROOM_SIZE_MENU_PRESETS = {
   Huge: { w: 12, h: 9, circleD: 12 },
 };
 
+const MAP_DEBUG_CATEGORY_OPTIONS = [
+  { id: "room-move", label: "Room Move" },
+  { id: "corridor-move", label: "Corridor Move" },
+  { id: "corridor-create", label: "Corridor Create" },
+  { id: "room-style", label: "Shape / Size" },
+  { id: "manual-overrides", label: "Manual Overrides" },
+  { id: "generated-map", label: "Generated Map" },
+  { id: "anchor-trace", label: "Anchor Trace" },
+  { id: "performance", label: "Performance" },
+];
+
+const DEFAULT_MAP_DEBUG_CATEGORIES = MAP_DEBUG_CATEGORY_OPTIONS.reduce(
+  (next, category) => ({ ...next, [category.id]: true }),
+  {},
+);
+
+function getMapDebugCategory(label = "") {
+  const normalized = String(label).toLowerCase();
+  if (normalized.includes("anchor trace")) return "anchor-trace";
+  if (normalized.includes("creatconnection") || normalized.includes("createconnection") || normalized.includes("connection draft") || normalized.includes("wall drag")) return "corridor-create";
+  if (normalized.includes("movedoor") || normalized.includes("movewaypoint") || normalized.includes("insertwaypoint") || normalized.includes("deletewaypoint") || normalized.includes("corridor handle") || normalized.includes("waypoint")) return "corridor-move";
+  if (normalized.includes("moveroom") || normalized.includes("room drag")) return "room-move";
+  if (normalized.includes("room style") || normalized.includes("updateroomstyle") || normalized.includes("resetroomstyle") || normalized.includes("shape") || normalized.includes("size")) return "room-style";
+  if (normalized.includes("manualoverride") || normalized.includes("manual edit") || normalized.includes("setmanualoverrides")) return "manual-overrides";
+  if (normalized.includes("generatedmap")) return "generated-map";
+  if (normalized.includes("performance") || normalized.includes("preview failed") || normalized.includes("violation")) return "performance";
+  return "performance";
+}
+
+function cloneMapDebugPayload(value) {
+  const seen = new WeakSet();
+  try {
+    return JSON.parse(JSON.stringify(value, (key, nestedValue) => {
+      if (typeof nestedValue === "function") return `[Function ${nestedValue.name || "anonymous"}]`;
+      if (nestedValue instanceof Error) {
+        return {
+          name: nestedValue.name,
+          message: nestedValue.message,
+          stack: nestedValue.stack,
+        };
+      }
+      if (typeof nestedValue === "object" && nestedValue !== null) {
+        if (seen.has(nestedValue)) return "[Circular]";
+        seen.add(nestedValue);
+      }
+      return nestedValue;
+    }));
+  } catch (error) {
+    return {
+      unserializable: true,
+      error: error instanceof Error ? error.message : String(error),
+      value: String(value),
+    };
+  }
+}
+
+function getGlobalMapDebugRecorder() {
+  if (typeof window === "undefined") return null;
+  const recorder = window.__cruorMapDebugRecorder;
+  if (!recorder || typeof recorder !== "object") return null;
+  return recorder;
+}
+
+function downloadMapDebugBlob(filename, content, type = "application/json") {
+  if (typeof document === "undefined") return;
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+function createMapDebugExportPayload({ categories, entries, generatedMap, manualOverrides, recording }) {
+  return {
+    schema: "cruor-map-debug-recorder/v1",
+    exportedAt: new Date().toISOString(),
+    recording: Boolean(recording),
+    categories,
+    counts: {
+      entries: entries.length,
+      corridors: Array.isArray(generatedMap?.corridors) ? generatedMap.corridors.length : 0,
+      regions: Array.isArray(generatedMap?.regions) ? generatedMap.regions.length : 0,
+      manualDoorAnchors: Object.keys(manualOverrides?.doorAnchors || {}).length,
+      manualWaypoints: Object.keys(manualOverrides?.corridorWaypoints || {}).length,
+    },
+    entries,
+  };
+}
+
+function formatMapDebugEntryText(entry) {
+  return [
+    `[${entry.index}] ${entry.timestamp} · ${entry.category} · ${entry.label}`,
+    JSON.stringify(entry.payload, null, 2),
+  ].join("\n");
+}
+
+function MapDebugRecorderPanel({
+  categories,
+  entries,
+  onClear,
+  onDownloadJson,
+  onDownloadTxt,
+  onRecordingChange,
+  onToggleCategory,
+  recording,
+}) {
+  const enabledCount = MAP_DEBUG_CATEGORY_OPTIONS.filter((category) => categories[category.id]).length;
+  const latestEntries = entries.slice(-6).reverse();
+
+  return (
+    <section className="map-debug-recorder location-frame-info-card" aria-label="Dark Places debug recorder">
+      <div className="map-debug-recorder__header">
+        <span>Debug Recorder</span>
+        <strong>{recording ? "Recording" : "Idle"}</strong>
+      </div>
+      <p className="map-debug-recorder__summary">
+        {entries.length} event{entries.length === 1 ? "" : "s"} · {enabledCount} listener{enabledCount === 1 ? "" : "s"} active
+      </p>
+      <div className="map-debug-recorder__actions">
+        <button
+          type="button"
+          className={recording ? "mvp-button cruor-button is-active" : "mvp-button cruor-button"}
+          onClick={() => onRecordingChange(!recording)}
+        >
+          <i className={recording ? "fa-solid fa-stop" : "fa-solid fa-circle"} aria-hidden="true" />
+          <span>{recording ? "Stop" : "Start Recording"}</span>
+        </button>
+        <button type="button" className="mvp-button cruor-button" onClick={onClear} disabled={!entries.length}>
+          <i className="fa-solid fa-trash-can" aria-hidden="true" />
+          <span>Clear</span>
+        </button>
+        <button type="button" className="mvp-button cruor-button" onClick={onDownloadJson} disabled={!entries.length}>
+          <i className="fa-solid fa-file-code" aria-hidden="true" />
+          <span>Download JSON</span>
+        </button>
+        <button type="button" className="mvp-button cruor-button" onClick={onDownloadTxt} disabled={!entries.length}>
+          <i className="fa-solid fa-file-lines" aria-hidden="true" />
+          <span>Download TXT</span>
+        </button>
+      </div>
+      <div className="map-debug-recorder__categories" role="group" aria-label="Debug listener categories">
+        {MAP_DEBUG_CATEGORY_OPTIONS.map((category) => (
+          <button
+            key={category.id}
+            type="button"
+            className={categories[category.id] ? "map-debug-recorder__category is-active" : "map-debug-recorder__category"}
+            aria-pressed={Boolean(categories[category.id])}
+            onClick={() => onToggleCategory(category.id)}
+          >
+            <i className={categories[category.id] ? "fa-solid fa-toggle-on" : "fa-solid fa-toggle-off"} aria-hidden="true" />
+            <span>{category.label}</span>
+          </button>
+        ))}
+      </div>
+      <div className="map-debug-recorder__feed" aria-live="polite">
+        {latestEntries.length ? latestEntries.map((entry) => (
+          <article className="map-debug-recorder__entry" key={entry.id}>
+            <small>{entry.category} · #{entry.index}</small>
+            <strong>{entry.label}</strong>
+          </article>
+        )) : (
+          <p>No events recorded yet.</p>
+        )}
+      </div>
+    </section>
+  );
+}
+
+
 function hashStringToSeed(...parts) {
   const text = parts.join("::");
   let hash = 2166136261;
@@ -481,6 +654,7 @@ function MapViewport({
   onViewportControlsChange = null,
   onCreateRoomDragPreviewMap = null,
   onCreateConnectionDraftPreviewMap = null,
+  onDebugRecord = null,
 }) {
   const viewportRef = useRef(null);
   const panRef = useRef(null);
@@ -776,21 +950,7 @@ function MapViewport({
   }
 
   function isViewportMapEditorDebugEnabled() {
-    if (typeof window === "undefined") return false;
-    if (!window.__cruorMapDebug) {
-      window.__cruorMapDebug = {
-        enabled: true,
-        enable() {
-          this.enabled = true;
-          console.info("[Cruor Map Debug] enabled");
-        },
-        disable() {
-          this.enabled = false;
-          console.info("[Cruor Map Debug] disabled");
-        },
-      };
-    }
-    return window.__cruorMapDebug.enabled !== false;
+    return typeof onDebugRecord === "function";
   }
 
   function roundViewportDebugNumber(value) {
@@ -890,18 +1050,7 @@ function MapViewport({
 
   function viewportDebugEvent(label, payload = {}) {
     if (!isViewportMapEditorDebugEnabled()) return;
-    const header = `[Cruor Map Debug][viewport] ${label}`;
-    try {
-      if (typeof console.groupCollapsed === "function") {
-        console.groupCollapsed(header);
-        console.log(payload);
-        console.groupEnd();
-      } else {
-        console.log(header, payload);
-      }
-    } catch (error) {
-      void error;
-    }
+    onDebugRecord?.(label, payload, { source: "viewport" });
   }
 
   function setRoomDragPreviewState(nextPreview) {
@@ -1787,6 +1936,18 @@ function MapViewport({
     const maxHandleDistance = Number.isFinite(options.maxHandleDistance)
       ? options.maxHandleDistance
       : gridSize * 1.15;
+    const pointerCell = {
+      x: Math.floor(point.x / gridSize),
+      y: Math.floor(point.y / gridSize),
+    };
+    const pointerAnchor = createCircleConnectionAnchorFromOutsideCell(
+      region,
+      circle,
+      pointerCell,
+      gridSize,
+    );
+    if (pointerAnchor) return pointerAnchor;
+
     const seen = new Set();
     const candidates = [];
 
@@ -5255,6 +5416,7 @@ export default function CruorMapGeneratorMvp({
   onComposerRegionHoverChange = null,
   onComposerSelectedRegionChange = null,
   onViewportMetricsChange = null,
+  debugMode = false,
   workspaceContext = embeddedInComposer ? "composer-workspace" : "standalone-workspace",
 } = {}) {
   const initialConfig = useMemo(
@@ -5307,6 +5469,13 @@ export default function CruorMapGeneratorMvp({
   const debugPreviousManualOverridesRef = useRef(null);
   const debugSequenceRef = useRef(0);
   const debugPendingAnchorTraceRef = useRef(null);
+  const debugEntriesRef = useRef([]);
+  const debugRecordingRef = useRef(false);
+  const debugCategoriesRef = useRef(DEFAULT_MAP_DEBUG_CATEGORIES);
+  const debugModeRef = useRef(Boolean(debugMode));
+  const [debugRecording, setDebugRecording] = useState(false);
+  const [debugCategories, setDebugCategories] = useState(DEFAULT_MAP_DEBUG_CATEGORIES);
+  const [debugEntries, setDebugEntries] = useState([]);
   const importedRegions = Array.isArray(initialRequest?.requiredRegions)
     ? initialRequest.requiredRegions
     : [];
@@ -5411,15 +5580,102 @@ export default function CruorMapGeneratorMvp({
   );
   const availableLevelsKey = availableLevels.join(":");
 
-  function isMapEditorDebugEnabled() {
-    if (typeof window === "undefined") return false;
-    try {
-      const flag = window.localStorage?.getItem("cruorMapDebug");
-      return flag !== "0";
-    } catch (error) {
-      void error;
-      return true;
+  debugRecordingRef.current = debugRecording;
+  debugCategoriesRef.current = debugCategories;
+  debugModeRef.current = Boolean(debugMode);
+
+  const recordDebugEvent = useCallback((label, payload = {}, options = {}) => {
+    const category = options.category || getMapDebugCategory(label);
+    const globalRecorder = getGlobalMapDebugRecorder();
+    if (
+      globalRecorder?.enabled &&
+      globalRecorder?.recording &&
+      globalRecorder?.categories?.[category] &&
+      typeof globalRecorder.record === "function"
+    ) {
+      globalRecorder.record(label, payload, {
+        ...options,
+        category,
+        source: options.source || "map-generator",
+      });
     }
+
+    if (!debugModeRef.current || !debugRecordingRef.current) return;
+    if (!debugCategoriesRef.current?.[category]) return;
+    const nextIndex = (debugSequenceRef.current || 0) + 1;
+    debugSequenceRef.current = nextIndex;
+    const entry = {
+      id: `map-debug-${Date.now()}-${nextIndex}`,
+      index: nextIndex,
+      timestamp: new Date().toISOString(),
+      source: options.source || "map-generator",
+      category,
+      label,
+      payload: cloneMapDebugPayload(payload),
+    };
+    const nextEntries = [...debugEntriesRef.current, entry].slice(-1500);
+    debugEntriesRef.current = nextEntries;
+    setDebugEntries(nextEntries);
+  }, []);
+
+  function clearDebugEntries() {
+    debugEntriesRef.current = [];
+    setDebugEntries([]);
+    debugPreviousMapRef.current = null;
+    debugPreviousManualOverridesRef.current = null;
+    debugPendingAnchorTraceRef.current = null;
+    debugSequenceRef.current = 0;
+  }
+
+  function toggleDebugCategory(categoryId) {
+    setDebugCategories((current) => ({
+      ...current,
+      [categoryId]: !current[categoryId],
+    }));
+  }
+
+  function downloadDebugEntries(format = "json") {
+    const payload = createMapDebugExportPayload({
+      categories: debugCategoriesRef.current,
+      entries: debugEntriesRef.current,
+      generatedMap,
+      manualOverrides: manualOverridesRef.current,
+      recording: debugRecordingRef.current,
+    });
+    const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+    if (format === "txt") {
+      downloadMapDebugBlob(
+        `cruor-map-debug-${stamp}.txt`,
+        payload.entries.map(formatMapDebugEntryText).join("\n\n---\n\n"),
+        "text/plain",
+      );
+      return;
+    }
+    downloadMapDebugBlob(
+      `cruor-map-debug-${stamp}.json`,
+      JSON.stringify(payload, null, 2),
+      "application/json",
+    );
+  }
+
+  useEffect(() => {
+    if (debugMode) return;
+    setDebugRecording(false);
+  }, [debugMode]);
+
+  useEffect(() => {
+    debugPreviousMapRef.current = null;
+    debugPreviousManualOverridesRef.current = null;
+    if (debugRecording) {
+      recordDebugEvent("debug recorder: recording started", {
+        generatedMap: summarizeDebugMap(generatedMap),
+        manualOverrides: summarizeDebugManualOverrides(manualOverridesRef.current),
+      }, { category: "performance" });
+    }
+  }, [debugRecording, recordDebugEvent]);
+
+  function isMapEditorDebugEnabled() {
+    return Boolean(debugMode && debugRecording);
   }
 
   function roundDebugNumber(value) {
@@ -5715,25 +5971,12 @@ export default function CruorMapGeneratorMvp({
 
   function debugEvent(label, payload = {}) {
     if (!isMapEditorDebugEnabled()) return;
-    const sequence = (debugSequenceRef.current || 0) + 1;
-    debugSequenceRef.current = sequence;
-    const header = `[Cruor Map Debug #${sequence}] ${label}`;
-    try {
-      if (typeof console.groupCollapsed === "function") {
-        console.groupCollapsed(header);
-        console.log({
-          lockedManualLayoutActive,
-          manualLayoutSeed: manualLayoutSeed || "",
-          isManualEditActive,
-          ...payload,
-        });
-        console.groupEnd();
-      } else {
-        console.log(header, payload);
-      }
-    } catch (error) {
-      void error;
-    }
+    recordDebugEvent(label, {
+      lockedManualLayoutActive,
+      manualLayoutSeed: manualLayoutSeed || "",
+      isManualEditActive,
+      ...payload,
+    });
   }
 
   function debugManualOverridesTransition(label, previous, next, extra = {}) {
@@ -5827,32 +6070,6 @@ export default function CruorMapGeneratorMvp({
     }
     debugPreviousManualOverridesRef.current = nextSummary;
   }, [manualOverrides]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-    window.__cruorMapDebug = {
-      enable() {
-        window.localStorage?.setItem("cruorMapDebug", "1");
-        console.log("[Cruor Map Debug] enabled");
-      },
-      disable() {
-        window.localStorage?.setItem("cruorMapDebug", "0");
-        console.log("[Cruor Map Debug] disabled");
-      },
-      snapshot() {
-        const payload = {
-          generatedMap: summarizeDebugMap(generatedMap),
-          manualOverrides: summarizeDebugManualOverrides(manualOverridesRef.current),
-          pendingAnchorTrace: debugPendingAnchorTraceRef.current,
-        };
-        console.log("[Cruor Map Debug] manual snapshot", payload);
-        return payload;
-      },
-    };
-    return () => {
-      if (window.__cruorMapDebug?.snapshot) delete window.__cruorMapDebug;
-    };
-  }, [generatedMap, manualOverrides]);
 
   useEffect(() => {
     if (!inlineComposerEditor) return;
@@ -6537,7 +6754,10 @@ export default function CruorMapGeneratorMvp({
       translateRegionGeometry(region, positions[region.id], gridSize),
     );
     const deltas = getRegionDeltaMap(sourceRegions, movedRegions, gridSize);
-    const routingGraph = generatedCandidate.graph || baseMap.graph || [];
+    const routingGraph = dedupeRoutingGraphForManualDuplicatePairs(
+      generatedCandidate.graph || baseMap.graph || [],
+      normalized.customConnections || [],
+    );
     const movedRegionIds = getMovedRegionIdsFromDeltas(deltas);
     const movedRegionCorridorIds = new Set();
     (routingGraph || []).forEach((edge) => {
@@ -7676,6 +7896,81 @@ export default function CruorMapGeneratorMvp({
     return { map: buildPreviewMapFromManualOverrides(nextOverrides) };
   }
 
+  function getManualConnectionPairKey(fromRegionId, toRegionId) {
+    if (!fromRegionId || !toRegionId) return "";
+    return [String(fromRegionId), String(toRegionId)].sort().join("::");
+  }
+
+  function getConnectionLikePairKey(connection) {
+    return getManualConnectionPairKey(connection?.from, connection?.to);
+  }
+
+  function isManualConnectionId(id) {
+    return String(id || "").startsWith("manual-edge-");
+  }
+
+  function findExistingConnectionForManualConnection(connection, normalizedOverrides) {
+    const pairKey = getManualConnectionPairKey(connection?.fromRegionId, connection?.toRegionId);
+    if (!pairKey) return null;
+    const customConnections = Array.isArray(normalizedOverrides?.customConnections)
+      ? normalizedOverrides.customConnections
+      : [];
+    const customIds = new Set(customConnections.map((item) => item?.id).filter(Boolean));
+    const graphCandidates = [
+      ...(Array.isArray(generatedMap.graph) ? generatedMap.graph : []),
+      ...(Array.isArray(generatedMap.corridors) ? generatedMap.corridors : []),
+      ...customConnections,
+    ].filter((item) => item?.id && getConnectionLikePairKey(item) === pairKey);
+    const baseCandidate = graphCandidates.find(
+      (item) => !customIds.has(item.id) && !isManualConnectionId(item.id),
+    );
+    if (baseCandidate) return baseCandidate;
+    return graphCandidates[0] || null;
+  }
+
+  function dedupeCustomConnectionsForPair(customConnections, pairKey, keepConnectionId = "") {
+    const kept = [];
+    let keptPairConnection = false;
+    (customConnections || []).forEach((connection) => {
+      if (!connection?.id) return;
+      if (getConnectionLikePairKey(connection) !== pairKey) {
+        kept.push(connection);
+        return;
+      }
+      if (connection.id === keepConnectionId && !keptPairConnection) {
+        kept.push(connection);
+        keptPairConnection = true;
+      }
+    });
+    return kept;
+  }
+
+  function dedupeRoutingGraphForManualDuplicatePairs(graph, customConnections = []) {
+    if (!Array.isArray(graph) || graph.length <= 1) return graph || [];
+    const customIds = new Set(
+      (customConnections || []).map((connection) => connection?.id).filter(Boolean),
+    );
+    const seenBasePairs = new Set();
+    const kept = [];
+    graph.forEach((edge) => {
+      const pairKey = getConnectionLikePairKey(edge);
+      if (!pairKey) {
+        kept.push(edge);
+        return;
+      }
+      const manual = customIds.has(edge.id) || isManualConnectionId(edge.id) || edge.kind === "manual";
+      if (!manual) {
+        seenBasePairs.add(pairKey);
+        kept.push(edge);
+        return;
+      }
+      if (seenBasePairs.has(pairKey)) return;
+      if (kept.some((item) => getConnectionLikePairKey(item) === pairKey)) return;
+      kept.push(edge);
+    });
+    return kept;
+  }
+
   function createConnectionManualOverrides(currentOverrides, connection) {
     if (
       !connection?.fromRegionId ||
@@ -7687,21 +7982,40 @@ export default function CruorMapGeneratorMvp({
     const toAnchor = serializeManualAnchor(connection.toAnchor);
     if (!fromAnchor || !toAnchor) return null;
     const normalized = normalizeManualOverrides(currentOverrides);
+    const pairKey = getManualConnectionPairKey(
+      connection.fromRegionId,
+      connection.toRegionId,
+    );
     const customConnections = Array.isArray(normalized.customConnections)
       ? normalized.customConnections
       : [];
+    const existingConnection = findExistingConnectionForManualConnection(
+      connection,
+      normalized,
+    );
+    const useExistingConnection = Boolean(existingConnection?.id);
     const nextSequence = normalized.manualConnectionSequence + 1;
-    const edgeId = `manual-edge-${connection.fromRegionId}-${connection.toRegionId}-${nextSequence.toString(36)}`;
-    const deletedConnections = Array.isArray(normalized.deletedConnections)
-      ? normalized.deletedConnections.filter((id) => id !== edgeId)
-      : [];
-    return {
-      edgeId,
-      overrides: freezeCurrentRoomLayout({
-        ...currentOverrides,
-        deletedConnections,
-        manualConnectionSequence: nextSequence,
-        customConnections: [
+    const edgeId = useExistingConnection
+      ? existingConnection.id
+      : `manual-edge-${connection.fromRegionId}-${connection.toRegionId}-${nextSequence.toString(36)}`;
+    const existingFromMatchesDrag = existingConnection?.from === connection.fromRegionId;
+    const fromEndpoint = useExistingConnection
+      ? existingFromMatchesDrag
+        ? "from"
+        : "to"
+      : "from";
+    const toEndpoint = useExistingConnection
+      ? existingFromMatchesDrag
+        ? "to"
+        : "from"
+      : "to";
+    const nextCustomConnections = useExistingConnection
+      ? dedupeCustomConnectionsForPair(
+          customConnections,
+          pairKey,
+          isManualConnectionId(edgeId) ? edgeId : "",
+        )
+      : [
           ...customConnections,
           {
             id: edgeId,
@@ -7710,11 +8024,26 @@ export default function CruorMapGeneratorMvp({
             kind: "manual",
             locked: true,
           },
-        ],
+        ];
+    const deletedConnections = Array.isArray(normalized.deletedConnections)
+      ? normalized.deletedConnections.filter((id) => id !== edgeId)
+      : [];
+    return {
+      edgeId,
+      fromEndpoint,
+      toEndpoint,
+      reusedExistingConnection: useExistingConnection,
+      overrides: freezeCurrentRoomLayout({
+        ...currentOverrides,
+        deletedConnections,
+        manualConnectionSequence: useExistingConnection
+          ? normalized.manualConnectionSequence
+          : nextSequence,
+        customConnections: nextCustomConnections,
         doorAnchors: {
           ...normalized.doorAnchors,
-          [corridorEndpointKey(edgeId, "from")]: fromAnchor,
-          [corridorEndpointKey(edgeId, "to")]: toAnchor,
+          [corridorEndpointKey(edgeId, fromEndpoint)]: fromAnchor,
+          [corridorEndpointKey(edgeId, toEndpoint)]: toAnchor,
         },
       }),
     };
@@ -7758,7 +8087,8 @@ export default function CruorMapGeneratorMvp({
           kind: "new-corridor",
           edgeId: result.edgeId,
           corridorId: result.edgeId,
-          endpoint: "to",
+          endpoint: result.toEndpoint || "to",
+          reusedExistingConnection: Boolean(result.reusedExistingConnection),
           fromRegionId: connection?.fromRegionId || null,
           toRegionId: connection?.toRegionId || null,
           releasePoint: roundDebugPoint(connection?.debugTrace?.releasePoint),
@@ -7948,6 +8278,7 @@ export default function CruorMapGeneratorMvp({
       onViewportControlsChange={inlineComposerEditor ? setInlineViewportControls : null}
       onCreateRoomDragPreviewMap={createRoomDragPreviewMap}
       onCreateConnectionDraftPreviewMap={createConnectionDraftPreviewMap}
+      onDebugRecord={recordDebugEvent}
     />
   );
 
@@ -8191,6 +8522,19 @@ export default function CruorMapGeneratorMvp({
           aria-hidden={inspectorCollapsed}
         >
           <div className="map-inspector-panel__scroll cruor-scroll-surface">
+            {debugMode ? (
+              <MapDebugRecorderPanel
+                categories={debugCategories}
+                entries={debugEntries}
+                recording={debugRecording}
+                onRecordingChange={setDebugRecording}
+                onToggleCategory={toggleDebugCategory}
+                onClear={clearDebugEntries}
+                onDownloadJson={() => downloadDebugEntries("json")}
+                onDownloadTxt={() => downloadDebugEntries("txt")}
+              />
+            ) : null}
+
             <MapInspectorSection icon="vector-square" title="Selected Area" eyebrow="Selection">
               {(() => {
                 const metrics = getSelectedAreaMetrics(selectedRegion, generatedMap);

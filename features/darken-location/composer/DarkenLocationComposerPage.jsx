@@ -314,7 +314,7 @@ function getInitialLocationRegionTemplates() {
   });
 }
 
-export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnapshotProviderReady, uiMode = "simple" } = {}) {
+export default function DarkenLocationComposerPage({ debugMode = false, onOpenMapGenerator, onSnapshotProviderReady, uiMode = "simple" } = {}) {
   const [state, setState] = useState(() => createInitialLocationComposerState(getInitialLocationRegionTemplates()));
   const [draftStatus, setDraftStatus] = useState("");
   const [draftSummary, setDraftSummary] = useState(() => getStoredDraftSummary());
@@ -986,10 +986,12 @@ export default function DarkenLocationComposerPage({ onOpenMapGenerator, onSnaps
 
   const rightPanel = (
     <LocationMapDetailsPanel
+      debugMode={debugMode || uiMode === "debug"}
       generatedMapPreview={generatedMapPreview}
       mapRequest={mapRequest}
       side="right"
       state={state}
+      uiMode={uiMode}
       onRenameLocation={renameLocation}
     />
   );

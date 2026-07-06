@@ -17,6 +17,8 @@ export default function AppShell({
   activeCrucibleGenerator = "darken",
   activeLocale = "en",
   onLocaleChange,
+  debugModeActive = false,
+  onDebugModeChange,
   onSectionChange,
   onUiModeChange,
   onOpenCrucibleTool,
@@ -67,6 +69,8 @@ export default function AppShell({
         activeCrucibleGenerator={activeCrucibleGenerator}
         activeLocale={activeLocale}
         onLocaleChange={onLocaleChange}
+        debugModeActive={debugModeActive}
+        onDebugModeChange={onDebugModeChange}
         onSectionChange={onSectionChange}
         onUiModeChange={onUiModeChange}
         onOpenCrucibleTool={onOpenCrucibleTool}

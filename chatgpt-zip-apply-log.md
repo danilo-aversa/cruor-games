@@ -8861,3 +8861,97 @@ _Nessun file aggiunto._
 
 - `~features/darken-location/map-generator/map-generator.corridors.js`
 
+
+---
+
+## 2026-07-06 12:45:09
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-site-debug-recorder-13.1.0v.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-site-debug-recorder-13.1.0v.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/AppShell.jsx`
+- `~app/navigation/SiteTopbar.jsx`
+- `~app/router.jsx`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+
+---
+
+## 2026-07-06 13:00:26
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-composer-rail-debug-recorder-13.1.0w.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-composer-rail-debug-recorder-13.1.0w.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 7
+
+- `~app/AppShell.jsx`
+- `~app/navigation/SiteTopbar.jsx`
+- `~app/router.jsx`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+
+---
+
+## 2026-07-06 14:09:28
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-corridor-dedupe-circle-snap-13.1.0x.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-corridor-dedupe-circle-snap-13.1.0x.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+
+
+---
+
+## 2026-07-06 15:41:39
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-exact-circle-manual-anchor-13.1.0y.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-exact-circle-manual-anchor-13.1.0y.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+

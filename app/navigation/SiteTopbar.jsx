@@ -22,6 +22,8 @@ export default function SiteTopbar({
   onOpenCrucibleTool,
   activeLocale = "en",
   onLocaleChange,
+  debugModeActive = false,
+  onDebugModeChange,
   accessibilitySettings = {},
   onAccessibilitySettingChange,
   onAccessibilitySettingsReset,
@@ -380,6 +382,28 @@ export default function SiteTopbar({
                         <span>{mode.label}</span>
                       </button>
                     ))}
+                  </div>
+                </div>
+
+                <div className="site-topbar__settings-section">
+                  <span className="site-topbar__utility-label">Developer</span>
+                  <div className="site-topbar__mode-list" role="group" aria-label="Developer tools">
+                    <button
+                      className={cx(
+                        "site-topbar__mode-option",
+                        debugModeActive && "is-active",
+                      )}
+                      type="button"
+                      role="menuitemcheckbox"
+                      aria-checked={debugModeActive}
+                      title="Show the Dark Places debug recorder."
+                      onClick={() => {
+                        onDebugModeChange?.(!debugModeActive);
+                      }}
+                    >
+                      <i className="fa-solid fa-bug" aria-hidden="true" />
+                      <span>Debug</span>
+                    </button>
                   </div>
                 </div>
 

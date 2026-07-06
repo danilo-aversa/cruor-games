@@ -1051,6 +1051,21 @@ export function serializeManualAnchor(anchor) {
       y: anchor.routingOutsideCell.y,
     };
   }
+  if (anchor.portalRoomCell) {
+    serialized.portalRoomCell = {
+      x: anchor.portalRoomCell.x,
+      y: anchor.portalRoomCell.y,
+    };
+  }
+  if (anchor.originalCell) {
+    serialized.originalCell = { x: anchor.originalCell.x, y: anchor.originalCell.y };
+  }
+  if (anchor.originalOutsideCell) {
+    serialized.originalOutsideCell = {
+      x: anchor.originalOutsideCell.x,
+      y: anchor.originalOutsideCell.y,
+    };
+  }
   if (anchor.normal) {
     serialized.normal = { x: anchor.normal.x, y: anchor.normal.y };
   }
@@ -1070,21 +1085,8 @@ export function serializeManualAnchor(anchor) {
     serialized.finalGeometry = true;
     serialized.finalBoundaryIndex = anchor.finalBoundaryIndex;
   }
-  if (anchor.expandedCircleDoor && anchor.portalRoomCell) {
+  if (anchor.expandedCircleDoor) {
     serialized.expandedCircleDoor = true;
-    serialized.portalRoomCell = {
-      x: anchor.portalRoomCell.x,
-      y: anchor.portalRoomCell.y,
-    };
-    serialized.originalCell = anchor.originalCell
-      ? { x: anchor.originalCell.x, y: anchor.originalCell.y }
-      : null;
-    serialized.originalOutsideCell = anchor.originalOutsideCell
-      ? {
-          x: anchor.originalOutsideCell.x,
-          y: anchor.originalOutsideCell.y,
-        }
-      : null;
   }
   return serialized;
 }
@@ -1162,6 +1164,9 @@ function getManualAnchorWithExactOutsideCell(region, manualAnchor, gridSize) {
   if (!side) return null;
   const snapCell = getCellCopy(manualAnchor.snapCell);
   const routingOutsideCell = getCellCopy(manualAnchor.routingOutsideCell);
+  const portalRoomCell = getCellCopy(manualAnchor.portalRoomCell);
+  const originalCell = getCellCopy(manualAnchor.originalCell);
+  const originalOutsideCell = getCellCopy(manualAnchor.originalOutsideCell);
   const normal = inferAnchorNormalFromCells(cell, outsideCell, manualAnchor.normal);
   const point = manualAnchor.point
     ? { x: manualAnchor.point.x, y: manualAnchor.point.y }
@@ -1172,11 +1177,15 @@ function getManualAnchorWithExactOutsideCell(region, manualAnchor, gridSize) {
     side,
     cell,
     outsideCell,
+    portalRoomCell,
     snapCell,
     routingOutsideCell,
+    originalCell,
+    originalOutsideCell,
     normal,
     circular: manualAnchor.circular || null,
     finalGeometry: Boolean(manualAnchor.finalGeometry),
+    expandedCircleDoor: Boolean(manualAnchor.expandedCircleDoor),
     circleBoundaryAnchor: Boolean(
       manualAnchor.circleBoundaryAnchor ||
       region?.shape === "circle" ||
@@ -1194,6 +1203,38 @@ function getManualAnchorWithExactOutsideCell(region, manualAnchor, gridSize) {
       : null,
     point,
   };
+}
+
+function shouldPreserveExactManualCircleAnchor(region, anchor) {
+  return Boolean(
+    region?.shape === "circle" &&
+      anchor?.circleBoundaryAnchor &&
+      anchor?.finalGeometry &&
+      anchor?.cell &&
+      anchor?.outsideCell
+  );
+}
+
+function materializeEndpointDoorAnchor(
+  region,
+  rawAnchor,
+  manualAnchor,
+  gridW,
+  gridH,
+  reservedCells,
+  gridSize,
+) {
+  if (shouldPreserveExactManualCircleAnchor(region, manualAnchor)) {
+    return manualAnchor;
+  }
+  return createCircleDoorRoomExtensionAnchor(
+    region,
+    rawAnchor,
+    gridW,
+    gridH,
+    reservedCells,
+    gridSize,
+  );
 }
 
 export function resolveManualDoorAnchor(
@@ -1238,6 +1279,12 @@ export function resolveManualDoorAnchor(
         x: manualAnchor.outsideCell.x,
         y: manualAnchor.outsideCell.y,
       },
+      portalRoomCell: manualAnchor.portalRoomCell
+        ? {
+            x: manualAnchor.portalRoomCell.x,
+            y: manualAnchor.portalRoomCell.y,
+          }
+        : null,
       snapCell: manualAnchor.snapCell
         ? {
             x: manualAnchor.snapCell.x,
@@ -1250,11 +1297,21 @@ export function resolveManualDoorAnchor(
             y: manualAnchor.routingOutsideCell.y,
           }
         : null,
+      originalCell: manualAnchor.originalCell
+        ? { x: manualAnchor.originalCell.x, y: manualAnchor.originalCell.y }
+        : null,
+      originalOutsideCell: manualAnchor.originalOutsideCell
+        ? {
+            x: manualAnchor.originalOutsideCell.x,
+            y: manualAnchor.originalOutsideCell.y,
+          }
+        : null,
       normal: { x: manualAnchor.normal.x, y: manualAnchor.normal.y },
       circular: radial && circle
         ? { cx: circle.cxCells, cy: circle.cyCells, r: circle.rCells, normal: radial }
         : null,
       finalGeometry: true,
+      expandedCircleDoor: Boolean(manualAnchor.expandedCircleDoor),
       circleBoundaryAnchor: Boolean(manualAnchor.circleBoundaryAnchor || region?.shape === "circle"),
       finalBoundaryIndex: manualAnchor.finalBoundaryIndex,
       segment: {
@@ -3859,17 +3916,19 @@ export function routeCorridors(config, regions, graph) {
     const rawToAnchor = selectRecoveryAnchor(to, from, manualToAnchor, "to");
     if (!rawFromAnchor || !rawToAnchor) return null;
 
-    const fromAnchor = createCircleDoorRoomExtensionAnchor(
+    const fromAnchor = materializeEndpointDoorAnchor(
       from,
       rawFromAnchor,
+      manualFromAnchor,
       gridW,
       gridH,
       getCircleDoorReservedCells(from.id),
       config.gridSize,
     );
-    const toAnchor = createCircleDoorRoomExtensionAnchor(
+    const toAnchor = materializeEndpointDoorAnchor(
       to,
       rawToAnchor,
+      manualToAnchor,
       gridW,
       gridH,
       getCircleDoorReservedCells(to.id),
@@ -4103,17 +4162,19 @@ export function routeCorridors(config, regions, graph) {
       manualToAnchor,
     );
     if (!rawFromAnchor || !rawToAnchor) return [];
-    const fromAnchor = createCircleDoorRoomExtensionAnchor(
+    const fromAnchor = materializeEndpointDoorAnchor(
       from,
       rawFromAnchor,
+      manualFromAnchor,
       gridW,
       gridH,
       getCircleDoorReservedCells(from.id),
       config.gridSize,
     );
-    const toAnchor = createCircleDoorRoomExtensionAnchor(
+    const toAnchor = materializeEndpointDoorAnchor(
       to,
       rawToAnchor,
+      manualToAnchor,
       gridW,
       gridH,
       getCircleDoorReservedCells(to.id),
