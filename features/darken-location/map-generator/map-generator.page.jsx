@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { registerTooltipProvider } from "../../../shared/tooltips/tooltip.registry.js";
 import {
@@ -176,12 +170,7 @@ import {
   serializeMapAccessAnchor,
   getClosestExternalBoundaryAnchorToPoint,
 } from "./map-generator.details.js";
-import {
-  MapSvg,
-  getMapSurface,
-  getRegionSurface,
-  isPureCaveMap,
-} from "./map-generator.render.jsx";
+import { MapSvg, getMapSurface, getRegionSurface, isPureCaveMap } from "./map-generator.render.jsx";
 import {
   serializeSvg,
   downloadSvg,
@@ -192,10 +181,7 @@ import {
   parseMapStatePayload,
 } from "./map-generator.export.js";
 import { generateMap } from "./map-generator.pipeline.js";
-import {
-  buildFullStructuralTestSuite,
-  validateExportSvgString,
-} from "./map-generator.debug.js";
+import { buildFullStructuralTestSuite, validateExportSvgString } from "./map-generator.debug.js";
 
 const SIZE_PRESETS = {
   Tiny: { minW: 3, maxW: 4, minH: 3, maxH: 4 },
@@ -226,40 +212,74 @@ const MAP_DEBUG_CATEGORY_OPTIONS = [
 
 const DEFAULT_MAP_DEBUG_CATEGORIES = MAP_DEBUG_CATEGORY_OPTIONS.reduce(
   (next, category) => ({ ...next, [category.id]: true }),
-  {},
+  {}
 );
 
 function getMapDebugCategory(label = "") {
   const normalized = String(label).toLowerCase();
   if (normalized.includes("anchor trace")) return "anchor-trace";
-  if (normalized.includes("creatconnection") || normalized.includes("createconnection") || normalized.includes("connection draft") || normalized.includes("wall drag")) return "corridor-create";
-  if (normalized.includes("movedoor") || normalized.includes("movewaypoint") || normalized.includes("insertwaypoint") || normalized.includes("deletewaypoint") || normalized.includes("corridor handle") || normalized.includes("waypoint")) return "corridor-move";
+  if (
+    normalized.includes("creatconnection") ||
+    normalized.includes("createconnection") ||
+    normalized.includes("connection draft") ||
+    normalized.includes("wall drag")
+  )
+    return "corridor-create";
+  if (
+    normalized.includes("movedoor") ||
+    normalized.includes("movewaypoint") ||
+    normalized.includes("insertwaypoint") ||
+    normalized.includes("deletewaypoint") ||
+    normalized.includes("corridor handle") ||
+    normalized.includes("waypoint")
+  )
+    return "corridor-move";
   if (normalized.includes("moveroom") || normalized.includes("room drag")) return "room-move";
-  if (normalized.includes("room style") || normalized.includes("updateroomstyle") || normalized.includes("resetroomstyle") || normalized.includes("shape") || normalized.includes("size")) return "room-style";
-  if (normalized.includes("manualoverride") || normalized.includes("manual edit") || normalized.includes("setmanualoverrides")) return "manual-overrides";
+  if (
+    normalized.includes("room style") ||
+    normalized.includes("updateroomstyle") ||
+    normalized.includes("resetroomstyle") ||
+    normalized.includes("shape") ||
+    normalized.includes("size")
+  )
+    return "room-style";
+  if (
+    normalized.includes("manualoverride") ||
+    normalized.includes("manual edit") ||
+    normalized.includes("setmanualoverrides")
+  )
+    return "manual-overrides";
   if (normalized.includes("generatedmap")) return "generated-map";
-  if (normalized.includes("performance") || normalized.includes("preview failed") || normalized.includes("violation")) return "performance";
+  if (
+    normalized.includes("performance") ||
+    normalized.includes("preview failed") ||
+    normalized.includes("violation")
+  )
+    return "performance";
   return "performance";
 }
 
 function cloneMapDebugPayload(value) {
   const seen = new WeakSet();
   try {
-    return JSON.parse(JSON.stringify(value, (key, nestedValue) => {
-      if (typeof nestedValue === "function") return `[Function ${nestedValue.name || "anonymous"}]`;
-      if (nestedValue instanceof Error) {
-        return {
-          name: nestedValue.name,
-          message: nestedValue.message,
-          stack: nestedValue.stack,
-        };
-      }
-      if (typeof nestedValue === "object" && nestedValue !== null) {
-        if (seen.has(nestedValue)) return "[Circular]";
-        seen.add(nestedValue);
-      }
-      return nestedValue;
-    }));
+    return JSON.parse(
+      JSON.stringify(value, (key, nestedValue) => {
+        if (typeof nestedValue === "function")
+          return `[Function ${nestedValue.name || "anonymous"}]`;
+        if (nestedValue instanceof Error) {
+          return {
+            name: nestedValue.name,
+            message: nestedValue.message,
+            stack: nestedValue.stack,
+          };
+        }
+        if (typeof nestedValue === "object" && nestedValue !== null) {
+          if (seen.has(nestedValue)) return "[Circular]";
+          seen.add(nestedValue);
+        }
+        return nestedValue;
+      })
+    );
   } catch (error) {
     return {
       unserializable: true,
@@ -289,7 +309,13 @@ function downloadMapDebugBlob(filename, content, type = "application/json") {
   window.setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
-function createMapDebugExportPayload({ categories, entries, generatedMap, manualOverrides, recording }) {
+function createMapDebugExportPayload({
+  categories,
+  entries,
+  generatedMap,
+  manualOverrides,
+  recording,
+}) {
   return {
     schema: "cruor-map-debug-recorder/v1",
     exportedAt: new Date().toISOString(),
@@ -323,17 +349,23 @@ function MapDebugRecorderPanel({
   onToggleCategory,
   recording,
 }) {
-  const enabledCount = MAP_DEBUG_CATEGORY_OPTIONS.filter((category) => categories[category.id]).length;
+  const enabledCount = MAP_DEBUG_CATEGORY_OPTIONS.filter(
+    (category) => categories[category.id]
+  ).length;
   const latestEntries = entries.slice(-6).reverse();
 
   return (
-    <section className="map-debug-recorder location-frame-info-card" aria-label="Dark Places debug recorder">
+    <section
+      className="map-debug-recorder location-frame-info-card"
+      aria-label="Dark Places debug recorder"
+    >
       <div className="map-debug-recorder__header">
         <span>Debug Recorder</span>
         <strong>{recording ? "Recording" : "Idle"}</strong>
       </div>
       <p className="map-debug-recorder__summary">
-        {entries.length} event{entries.length === 1 ? "" : "s"} · {enabledCount} listener{enabledCount === 1 ? "" : "s"} active
+        {entries.length} event{entries.length === 1 ? "" : "s"} · {enabledCount} listener
+        {enabledCount === 1 ? "" : "s"} active
       </p>
       <div className="map-debug-recorder__actions">
         <button
@@ -344,47 +376,78 @@ function MapDebugRecorderPanel({
           <i className={recording ? "fa-solid fa-stop" : "fa-solid fa-circle"} aria-hidden="true" />
           <span>{recording ? "Stop" : "Start Recording"}</span>
         </button>
-        <button type="button" className="mvp-button cruor-button" onClick={onClear} disabled={!entries.length}>
+        <button
+          type="button"
+          className="mvp-button cruor-button"
+          onClick={onClear}
+          disabled={!entries.length}
+        >
           <i className="fa-solid fa-trash-can" aria-hidden="true" />
           <span>Clear</span>
         </button>
-        <button type="button" className="mvp-button cruor-button" onClick={onDownloadJson} disabled={!entries.length}>
+        <button
+          type="button"
+          className="mvp-button cruor-button"
+          onClick={onDownloadJson}
+          disabled={!entries.length}
+        >
           <i className="fa-solid fa-file-code" aria-hidden="true" />
           <span>Download JSON</span>
         </button>
-        <button type="button" className="mvp-button cruor-button" onClick={onDownloadTxt} disabled={!entries.length}>
+        <button
+          type="button"
+          className="mvp-button cruor-button"
+          onClick={onDownloadTxt}
+          disabled={!entries.length}
+        >
           <i className="fa-solid fa-file-lines" aria-hidden="true" />
           <span>Download TXT</span>
         </button>
       </div>
-      <div className="map-debug-recorder__categories" role="group" aria-label="Debug listener categories">
+      <div
+        className="map-debug-recorder__categories"
+        role="group"
+        aria-label="Debug listener categories"
+      >
         {MAP_DEBUG_CATEGORY_OPTIONS.map((category) => (
           <button
             key={category.id}
             type="button"
-            className={categories[category.id] ? "map-debug-recorder__category is-active" : "map-debug-recorder__category"}
+            className={
+              categories[category.id]
+                ? "map-debug-recorder__category is-active"
+                : "map-debug-recorder__category"
+            }
             aria-pressed={Boolean(categories[category.id])}
             onClick={() => onToggleCategory(category.id)}
           >
-            <i className={categories[category.id] ? "fa-solid fa-toggle-on" : "fa-solid fa-toggle-off"} aria-hidden="true" />
+            <i
+              className={
+                categories[category.id] ? "fa-solid fa-toggle-on" : "fa-solid fa-toggle-off"
+              }
+              aria-hidden="true"
+            />
             <span>{category.label}</span>
           </button>
         ))}
       </div>
       <div className="map-debug-recorder__feed" aria-live="polite">
-        {latestEntries.length ? latestEntries.map((entry) => (
-          <article className="map-debug-recorder__entry" key={entry.id}>
-            <small>{entry.category} · #{entry.index}</small>
-            <strong>{entry.label}</strong>
-          </article>
-        )) : (
+        {latestEntries.length ? (
+          latestEntries.map((entry) => (
+            <article className="map-debug-recorder__entry" key={entry.id}>
+              <small>
+                {entry.category} · #{entry.index}
+              </small>
+              <strong>{entry.label}</strong>
+            </article>
+          ))
+        ) : (
           <p>No events recorded yet.</p>
         )}
       </div>
     </section>
   );
 }
-
 
 function hashStringToSeed(...parts) {
   const text = parts.join("::");
@@ -397,8 +460,7 @@ function hashStringToSeed(...parts) {
 }
 
 function createSeededRng(seed) {
-  let state =
-    typeof seed === "number" ? seed >>> 0 : hashStringToSeed(String(seed));
+  let state = typeof seed === "number" ? seed >>> 0 : hashStringToSeed(String(seed));
   return function rng() {
     state += 0x6d2b79f5;
     let t = state;
@@ -422,21 +484,11 @@ function clamp(value, min, max) {
 
 function getFixedContextMenuPosition(event, width = 250, height = 280) {
   const margin = 8;
-  const viewportWidth =
-    typeof window === "undefined" ? width + margin * 2 : window.innerWidth;
-  const viewportHeight =
-    typeof window === "undefined" ? height + margin * 2 : window.innerHeight;
+  const viewportWidth = typeof window === "undefined" ? width + margin * 2 : window.innerWidth;
+  const viewportHeight = typeof window === "undefined" ? height + margin * 2 : window.innerHeight;
   return {
-    x: clamp(
-      event.clientX,
-      margin,
-      Math.max(margin, viewportWidth - width - margin),
-    ),
-    y: clamp(
-      event.clientY,
-      margin,
-      Math.max(margin, viewportHeight - height - margin),
-    ),
+    x: clamp(event.clientX, margin, Math.max(margin, viewportWidth - width - margin)),
+    y: clamp(event.clientY, margin, Math.max(margin, viewportHeight - height - margin)),
   };
 }
 
@@ -468,7 +520,9 @@ const MAP_WALL_STYLE_PROFILES = Object.freeze({
 });
 
 function getMapWallStyleProfile(visualStyle) {
-  return MAP_WALL_STYLE_PROFILES[normalizeVisualStyle(visualStyle)] || MAP_WALL_STYLE_PROFILES.cruor;
+  return (
+    MAP_WALL_STYLE_PROFILES[normalizeVisualStyle(visualStyle)] || MAP_WALL_STYLE_PROFILES.cruor
+  );
 }
 
 const WALL_DRAWING_STYLE_OPTIONS = Object.freeze([
@@ -489,9 +543,7 @@ function normalizeWallDrawingStyle(value) {
 }
 
 function normalizeHatchShadowColor(value) {
-  return HATCH_SHADOW_COLOR_OPTIONS.some((option) => option.value === value)
-    ? value
-    : "default";
+  return HATCH_SHADOW_COLOR_OPTIONS.some((option) => option.value === value) ? value : "default";
 }
 
 function getOptionLabel(options, value, fallback = "") {
@@ -544,11 +596,7 @@ function createLockedRawGenerationManualOverrides(snapshot = {}) {
 function getPreviewAnchorIdentity(anchor) {
   if (!anchor) return "none";
   const cell =
-    anchor.snapCell ||
-    anchor.routingOutsideCell ||
-    anchor.outsideCell ||
-    anchor.cell ||
-    null;
+    anchor.snapCell || anchor.routingOutsideCell || anchor.outsideCell || anchor.cell || null;
   const point = anchor.point || anchor.displayPoint || null;
   return [
     anchor.side || "",
@@ -581,8 +629,7 @@ function getConnectionDraftRoutedPreviewKey(connectionDraft) {
   ].join("|");
 }
 
-
-function MapViewport({
+export function MapViewport({
   generatedMap,
   showGrid,
   gridStyle = DEFAULT_CONFIG.gridStyle,
@@ -719,7 +766,8 @@ function MapViewport({
     width: generatedMap.config.mapWidth,
     height: generatedMap.config.mapHeight,
   });
-  const viewportInteractive = enableViewportInteractions && (!embeddedPreview || allowEmbeddedInteractions);
+  const viewportInteractive =
+    enableViewportInteractions && (!embeddedPreview || allowEmbeddedInteractions);
   const shouldShowViewportChrome = showViewportChrome && !embeddedPreview;
   const wallStrokeScale = clamp(view.scale / 0.85, 0.62, 1);
   const wallStyleProfile = getMapWallStyleProfile(generatedMap.config.visualStyle);
@@ -796,7 +844,15 @@ function MapViewport({
       stage.style.removeProperty("--location-map-stage-grid-x");
       stage.style.removeProperty("--location-map-stage-grid-y");
     };
-  }, [generatedMap.config.gridSize, showGrid, view.x, view.y, view.scale, viewportSize.width, viewportSize.height]);
+  }, [
+    generatedMap.config.gridSize,
+    showGrid,
+    view.x,
+    view.y,
+    view.scale,
+    viewportSize.width,
+    viewportSize.height,
+  ]);
 
   const constrainView = useCallback(
     (candidate) => {
@@ -809,17 +865,14 @@ function MapViewport({
       const minY = Math.min(0, rect.height - scaledHeight);
       return {
         ...candidate,
-        x:
-          scaledWidth <= rect.width
-            ? (rect.width - scaledWidth) / 2
-            : clamp(candidate.x, minX, 0),
+        x: scaledWidth <= rect.width ? (rect.width - scaledWidth) / 2 : clamp(candidate.x, minX, 0),
         y:
           scaledHeight <= rect.height
             ? (rect.height - scaledHeight) / 2
             : clamp(candidate.y, minY, 0),
       };
     },
-    [generatedMap.config.mapWidth, generatedMap.config.mapHeight],
+    [generatedMap.config.mapWidth, generatedMap.config.mapHeight]
   );
 
   const fitView = useCallback(() => {
@@ -833,14 +886,14 @@ function MapViewport({
     const nextScale = clamp(
       Math.min(availableWidth / bounds.width, availableHeight / bounds.height),
       0.35,
-      1.45,
+      1.45
     );
     setView(
       constrainView({
         scale: nextScale,
         x: (rect.width - bounds.width * nextScale) / 2 - bounds.x * nextScale,
         y: (rect.height - bounds.height * nextScale) / 2 - bounds.y * nextScale,
-      }),
+      })
     );
   }, [constrainView]);
 
@@ -897,7 +950,7 @@ function MapViewport({
         });
       });
     },
-    [constrainView],
+    [constrainView]
   );
 
   const zoomAtCenter = useCallback(
@@ -905,15 +958,10 @@ function MapViewport({
       const viewport = viewportRef.current;
       if (!viewport) return;
       const rect = viewport.getBoundingClientRect();
-      zoomAtPoint(
-        rect.left + rect.width / 2,
-        rect.top + rect.height / 2,
-        factor,
-      );
+      zoomAtPoint(rect.left + rect.width / 2, rect.top + rect.height / 2, factor);
     },
-    [zoomAtPoint],
+    [zoomAtPoint]
   );
-
 
   const viewportControls = useMemo(
     () => ({
@@ -922,7 +970,7 @@ function MapViewport({
       resetZoom: fitView,
       scale: view.scale,
     }),
-    [fitView, view.scale, zoomAtCenter],
+    [fitView, view.scale, zoomAtCenter]
   );
 
   useEffect(() => {
@@ -936,7 +984,7 @@ function MapViewport({
         onViewportControlsChange(null);
       }
     },
-    [onViewportControlsChange],
+    [onViewportControlsChange]
   );
 
   function clientToMapPoint(event) {
@@ -1024,7 +1072,9 @@ function MapViewport({
     return {
       doorAnchorKeys: Object.keys(normalized.doorAnchors || {}).sort(),
       corridorWaypointKeys: Object.keys(normalized.corridorWaypoints || {}).sort(),
-      customConnectionIds: (normalized.customConnections || []).map((connection) => connection.id).sort(),
+      customConnectionIds: (normalized.customConnections || [])
+        .map((connection) => connection.id)
+        .sort(),
       deletedConnections: [...(normalized.deletedConnections || [])].sort(),
       mapAccessKeys: Object.keys(normalized.mapAccesses || {}).sort(),
       roomPositionKeys: Object.keys(normalized.roomPositions || {}).sort(),
@@ -1168,7 +1218,8 @@ function MapViewport({
   useEffect(() => {
     const roomPreview = roomDragPreviewRef.current;
     const corridorPreview = corridorDragPreviewRef.current;
-    if (roomPreview?.phase !== "committing" && corridorPreview?.phase !== "committing") return undefined;
+    if (roomPreview?.phase !== "committing" && corridorPreview?.phase !== "committing")
+      return undefined;
 
     const frame = window.requestAnimationFrame(() => {
       if (roomDragPreviewRef.current?.phase === "committing") {
@@ -1195,7 +1246,7 @@ function MapViewport({
       width: viewportSize.width / view.scale,
       height: viewportSize.height / view.scale,
     }),
-    [view.x, view.y, view.scale, viewportSize.width, viewportSize.height],
+    [view.x, view.y, view.scale, viewportSize.width, viewportSize.height]
   );
 
   function getViewportViewBox() {
@@ -1230,7 +1281,7 @@ function MapViewport({
         return;
       zoomAtPoint(event.clientX, event.clientY, event.deltaY > 0 ? 0.9 : 1.1);
     },
-    [zoomAtPoint],
+    [zoomAtPoint]
   );
 
   useEffect(() => {
@@ -1243,16 +1294,12 @@ function MapViewport({
 
   useEffect(
     () => () => {
-      if (roomMoveFrameRef.current)
-        window.cancelAnimationFrame(roomMoveFrameRef.current);
-      if (corridorMoveFrameRef.current)
-        window.cancelAnimationFrame(corridorMoveFrameRef.current);
-      if (accessMoveFrameRef.current)
-        window.cancelAnimationFrame(accessMoveFrameRef.current);
-      if (panMoveFrameRef.current)
-        window.cancelAnimationFrame(panMoveFrameRef.current);
+      if (roomMoveFrameRef.current) window.cancelAnimationFrame(roomMoveFrameRef.current);
+      if (corridorMoveFrameRef.current) window.cancelAnimationFrame(corridorMoveFrameRef.current);
+      if (accessMoveFrameRef.current) window.cancelAnimationFrame(accessMoveFrameRef.current);
+      if (panMoveFrameRef.current) window.cancelAnimationFrame(panMoveFrameRef.current);
     },
-    [],
+    []
   );
 
   function openMapContextMenu(event) {
@@ -1338,17 +1385,15 @@ function MapViewport({
     if (!pureCaveEditor || !zone?.anchor?.finalGeometry || !zone.anchor.segment)
       return zone?.anchor || null;
     const point = clientToMapPoint(event) || zone.point || zone.anchor.point;
-    const segments =
-      generatedMap.finalGeometry?.caveSurface?.boundarySegments || [];
-    const bounds =
-      zone.anchor.caveBounds || getCaveAccessBounds(segments, generatedMap);
+    const segments = generatedMap.finalGeometry?.caveSurface?.boundarySegments || [];
+    const bounds = zone.anchor.caveBounds || getCaveAccessBounds(segments, generatedMap);
     return (
       createCaveAccessBoundaryAnchor(
         zone.anchor.segment,
         generatedMap,
         zone.anchor.finalBoundaryIndex,
         bounds,
-        point,
+        point
       ) || zone.anchor
     );
   }
@@ -1377,9 +1422,7 @@ function MapViewport({
       return;
     event.stopPropagation();
     const anchor = getPureCaveWallAnchorFromEvent(event, zone) || zone.anchor;
-    const point = anchor
-      ? getAnchorHandlePoint(anchor, generatedMap.config.gridSize)
-      : zone.point;
+    const point = anchor ? getAnchorHandlePoint(anchor, generatedMap.config.gridSize) : zone.point;
     setHoveredRegionId(zone.regionId);
     setHoverCorridorHandle((current) => (current ? null : current));
     setHoveredCorridorId((current) => (current ? null : current));
@@ -1411,7 +1454,7 @@ function MapViewport({
       current &&
       zoneOrHandle &&
       current.regionId === zoneOrHandle.regionId &&
-      anchorsMatchEditorLocation(current.anchor, zoneOrHandle.anchor),
+      anchorsMatchEditorLocation(current.anchor, zoneOrHandle.anchor)
     );
   }
 
@@ -1426,12 +1469,8 @@ function MapViewport({
       return;
     event.stopPropagation();
     if (eventRelatedTargetHasClass(event, "wall-connect-handle")) return;
-    setHoverWallHandle((current) =>
-      isSameWallHoverHandle(current, zone) ? null : current,
-    );
-    setHoveredRegionId((current) =>
-      current === zone.regionId ? null : current,
-    );
+    setHoverWallHandle((current) => (isSameWallHoverHandle(current, zone) ? null : current));
+    setHoveredRegionId((current) => (current === zone.regionId ? null : current));
   }
 
   function handleWallHandlePointerLeave(event, handle) {
@@ -1445,39 +1484,24 @@ function MapViewport({
       return;
     event.stopPropagation();
     if (eventRelatedTargetHasClass(event, "wall-hover-zone")) return;
-    setHoverWallHandle((current) =>
-      isSameWallHoverHandle(current, handle) ? null : current,
-    );
-    setHoveredRegionId((current) =>
-      current === handle.regionId ? null : current,
-    );
+    setHoverWallHandle((current) => (isSameWallHoverHandle(current, handle) ? null : current));
+    setHoveredRegionId((current) => (current === handle.regionId ? null : current));
   }
 
   function isExternalMapBoundaryZone(zone) {
     if (!zone?.anchor) return false;
-    if (
-      pureCaveEditor &&
-      zone.anchor.finalGeometry &&
-      zone.anchor.caveAccessBoundary
-    )
-      return true;
+    if (pureCaveEditor && zone.anchor.finalGeometry && zone.anchor.caveAccessBoundary) return true;
     const floorSet = new Set(
-      generatedMap.dungeonMask.floorCells.map((cell) =>
-        cellKey(cell.x, cell.y),
-      ),
+      generatedMap.dungeonMask.floorCells.map((cell) => cellKey(cell.x, cell.y))
     );
-    return !floorSet.has(
-      cellKey(zone.anchor.outsideCell.x, zone.anchor.outsideCell.y),
-    );
+    return !floorSet.has(cellKey(zone.anchor.outsideCell.x, zone.anchor.outsideCell.y));
   }
 
   function getMapAccessForRegion(regionId) {
     return (
-      (
-        generatedMap.dungeonMask.mapAccesses ||
-        generatedMap.mapAccesses ||
-        []
-      ).find((access) => access.regionId === regionId) || null
+      (generatedMap.dungeonMask.mapAccesses || generatedMap.mapAccesses || []).find(
+        (access) => access.regionId === regionId
+      ) || null
     );
   }
 
@@ -1521,14 +1545,12 @@ function MapViewport({
     if (!showEditor || !handle?.access) return;
     event.preventDefault();
     event.stopPropagation();
-    const region = generatedMap.regions.find(
-      (item) => item.id === handle.regionId,
-    );
+    const region = generatedMap.regions.find((item) => item.id === handle.regionId);
     if (!region) return;
     const anchor = resolveMapAccessAnchor(
       region,
       handle.access.displayAnchor || handle.access,
-      generatedMap,
+      generatedMap
     );
     if (!anchor) return;
     const zone = { regionId: region.id, anchor };
@@ -1561,8 +1583,7 @@ function MapViewport({
     }
     const pending = pendingAccessMoveRef.current;
     pendingAccessMoveRef.current = null;
-    if (pending)
-      onMapAccessMove?.(pending.regionId, pending.anchor, pending.accessType);
+    if (pending) onMapAccessMove?.(pending.regionId, pending.anchor, pending.accessType);
   }
 
   function scheduleMapAccessMove(regionId, anchor, accessType) {
@@ -1584,10 +1605,7 @@ function MapViewport({
       accessMoveFrameRef.current = null;
       const pending = pendingAccessMoveRef.current;
       if (!pending) return;
-      const point = getAnchorHandlePoint(
-        pending.anchor,
-        generatedMap.config.gridSize,
-      );
+      const point = getAnchorHandlePoint(pending.anchor, generatedMap.config.gridSize);
       setMapAccessDragPreview({
         id: accessId,
         regionId: pending.regionId,
@@ -1606,15 +1624,9 @@ function MapViewport({
     event.stopPropagation();
     const point = clientToMapPoint(event);
     if (!point) return true;
-    const region = generatedMap.regions.find(
-      (item) => item.id === drag.regionId,
-    );
+    const region = generatedMap.regions.find((item) => item.id === drag.regionId);
     if (!region) return true;
-    const anchor = getClosestExternalBoundaryAnchorToPoint(
-      region,
-      point,
-      generatedMap,
-    );
+    const anchor = getClosestExternalBoundaryAnchorToPoint(region, point, generatedMap);
     if (!anchor) return true;
     scheduleMapAccessPreview(drag.regionId, drag.id, anchor, drag.accessType);
     return true;
@@ -1631,8 +1643,7 @@ function MapViewport({
       accessMoveFrameRef.current = null;
     }
     pendingAccessMoveRef.current = null;
-    if (pending)
-      onMapAccessMove?.(pending.regionId, pending.anchor, pending.accessType);
+    if (pending) onMapAccessMove?.(pending.regionId, pending.anchor, pending.accessType);
     accessDragRef.current = null;
     setDraggingMapAccessId(null);
     setMapAccessDragPreview(null);
@@ -1710,11 +1721,9 @@ function MapViewport({
     event.stopPropagation();
     if (eventRelatedTargetHasClass(event, "corridor-add-handle")) return;
     setHoverCorridorHandle((current) =>
-      isSameCorridorHoverHandle(current, zone) ? null : current,
+      isSameCorridorHoverHandle(current, zone) ? null : current
     );
-    setHoveredCorridorId((current) =>
-      current === zone.corridor.id ? null : current,
-    );
+    setHoveredCorridorId((current) => (current === zone.corridor.id ? null : current));
   }
 
   function handleCorridorAddPointerLeave(event, handle) {
@@ -1729,20 +1738,13 @@ function MapViewport({
     event.stopPropagation();
     if (eventRelatedTargetHasClass(event, "corridor-hover-zone")) return;
     setHoverCorridorHandle((current) =>
-      isSameCorridorHoverHandle(current, handle) ? null : current,
+      isSameCorridorHoverHandle(current, handle) ? null : current
     );
-    setHoveredCorridorId((current) =>
-      current === handle.corridor.id ? null : current,
-    );
+    setHoveredCorridorId((current) => (current === handle.corridor.id ? null : current));
   }
 
   function handleCorridorHandlePointerEnter(event, handle) {
-    if (
-      !showEditor ||
-      roomDragRef.current ||
-      accessDragRef.current ||
-      connectionDragRef.current
-    )
+    if (!showEditor || roomDragRef.current || accessDragRef.current || connectionDragRef.current)
       return;
     event.stopPropagation();
     setHoveredCorridorId(handle.corridor.id);
@@ -1751,9 +1753,7 @@ function MapViewport({
   function handleCorridorHandlePointerLeave(event, handle) {
     if (!showEditor || corridorDragRef.current) return;
     event.stopPropagation();
-    setHoveredCorridorId((current) =>
-      current === handle.corridor.id ? null : current,
-    );
+    setHoveredCorridorId((current) => (current === handle.corridor.id ? null : current));
   }
 
   function createRoomDragPreview(drag, position, phase = "dragging") {
@@ -1789,12 +1789,8 @@ function MapViewport({
     event.stopPropagation();
     const point = clientToMapPoint(event);
     if (!point) return;
-    const dx = Math.round(
-      (point.x - drag.startX) / generatedMap.config.gridSize,
-    );
-    const dy = Math.round(
-      (point.y - drag.startY) / generatedMap.config.gridSize,
-    );
+    const dx = Math.round((point.x - drag.startX) / generatedMap.config.gridSize);
+    const dy = Math.round((point.y - drag.startY) / generatedMap.config.gridSize);
     const nextPosition = { x: drag.originX + dx, y: drag.originY + dy };
     if (drag.lastX === nextPosition.x && drag.lastY === nextPosition.y) return;
     drag.lastX = nextPosition.x;
@@ -1811,7 +1807,8 @@ function MapViewport({
       window.cancelAnimationFrame(roomMoveFrameRef.current);
       roomMoveFrameRef.current = null;
     }
-    const pending = pendingRoomMoveRef.current ||
+    const pending =
+      pendingRoomMoveRef.current ||
       (drag.lastX !== drag.originX || drag.lastY !== drag.originY
         ? { regionId: drag.regionId, position: { x: drag.lastX, y: drag.lastY } }
         : null);
@@ -1944,7 +1941,7 @@ function MapViewport({
       region,
       circle,
       pointerCell,
-      gridSize,
+      gridSize
     );
     if (pointerAnchor) return pointerAnchor;
 
@@ -1955,23 +1952,15 @@ function MapViewport({
       const key = cellKey(cell.x, cell.y);
       if (seen.has(key)) return;
       seen.add(key);
-      const anchor = createCircleConnectionAnchorFromOutsideCell(
-        region,
-        circle,
-        cell,
-        gridSize,
-      );
+      const anchor = createCircleConnectionAnchorFromOutsideCell(region, circle, cell, gridSize);
       if (!anchor) return;
       const handlePoint = getAnchorHandlePoint(anchor, gridSize) || anchor.point;
       if (!handlePoint) return;
-      const handleDistance = Math.hypot(
-        handlePoint.x - point.x,
-        handlePoint.y - point.y,
-      );
+      const handleDistance = Math.hypot(handlePoint.x - point.x, handlePoint.y - point.y);
       const snapDistance = getDistanceFromPointToCellCenter(
         point,
         anchor.snapCell || cell,
-        gridSize,
+        gridSize
       );
       if (handleDistance > maxHandleDistance && snapDistance > gridSize * 1.35) return;
       candidates.push({
@@ -1991,19 +1980,14 @@ function MapViewport({
     return Math.abs(distance - circle.r) <= gridSize * 1.9;
   }
 
-  function findClosestInvalidCircleAnchorTarget(
-    regions,
-    point,
-    gridSize,
-    excludeRegionId = null,
-  ) {
+  function findClosestInvalidCircleAnchorTarget(regions, point, gridSize, excludeRegionId = null) {
     let best = null;
     (regions || []).forEach((region) => {
       if (!region || region.id === excludeRegionId || region.shape !== "circle") return;
       if (!isPointNearCircleBoundary(region, point, gridSize)) return;
       const circle = getCircleGeometryFromRegion(region, gridSize);
       const boundaryDistance = Math.abs(
-        Math.hypot(point.x - circle.cx, point.y - circle.cy) - circle.r,
+        Math.hypot(point.x - circle.cx, point.y - circle.cy) - circle.r
       );
       if (!best || boundaryDistance < best.distance) {
         best = {
@@ -2021,12 +2005,9 @@ function MapViewport({
   function getEditorBoundaryAnchorCandidatesForRegion(region, point, gridSize) {
     if (!region || !point) return [];
     if (region.shape === "circle") {
-      const strictPointerAnchor = getStrictCircleDoorDragAnchor(
-        region,
-        point,
-        gridSize,
-        { searchRadius: 1 },
-      );
+      const strictPointerAnchor = getStrictCircleDoorDragAnchor(region, point, gridSize, {
+        searchRadius: 1,
+      });
       if (strictPointerAnchor) return [strictPointerAnchor];
       const circle = getCircleGeometryFromRegion(region, gridSize);
       const circleCandidates = circle
@@ -2043,14 +2024,16 @@ function MapViewport({
   function getEditorBoundaryAnchorForRegion(region, point, gridSize) {
     const candidates = getEditorBoundaryAnchorCandidatesForRegion(region, point, gridSize);
     if (candidates.length === 0) return null;
-    return candidates
-      .map((anchor) => {
-        const handlePoint = getAnchorHandlePoint(anchor, gridSize);
-        const dx = handlePoint.x - point.x;
-        const dy = handlePoint.y - point.y;
-        return { anchor, score: dx * dx + dy * dy };
-      })
-      .sort((a, b) => a.score - b.score)[0]?.anchor || null;
+    return (
+      candidates
+        .map((anchor) => {
+          const handlePoint = getAnchorHandlePoint(anchor, gridSize);
+          const dx = handlePoint.x - point.x;
+          const dy = handlePoint.y - point.y;
+          return { anchor, score: dx * dx + dy * dy };
+        })
+        .sort((a, b) => a.score - b.score)[0]?.anchor || null
+    );
   }
 
   function findClosestEditorBoundaryAnchorAcrossRegions(
@@ -2059,23 +2042,21 @@ function MapViewport({
     gridSize,
     excludeRegionId = null,
     maxDistance = gridSize * 1.35,
-    drag = null,
+    drag = null
   ) {
     let best = null;
     (regions || []).forEach((region) => {
       if (!region || region.id === excludeRegionId) return;
-      const circleAnchor = region.shape === "circle"
-        ? getStrictCircleDoorDragAnchor(region, point, gridSize, { searchRadius: 1 })
-        : null;
-      const candidates = region.shape === "circle"
-        ? circleAnchor
-          ? [circleAnchor]
-          : []
-        : getEditorBoundaryAnchorCandidatesForRegion(
-            region,
-            point,
-            gridSize,
-          );
+      const circleAnchor =
+        region.shape === "circle"
+          ? getStrictCircleDoorDragAnchor(region, point, gridSize, { searchRadius: 1 })
+          : null;
+      const candidates =
+        region.shape === "circle"
+          ? circleAnchor
+            ? [circleAnchor]
+            : []
+          : getEditorBoundaryAnchorCandidatesForRegion(region, point, gridSize);
       candidates.forEach((anchor) => {
         const handlePoint = getAnchorHandlePoint(anchor, gridSize);
         if (!handlePoint) return;
@@ -2089,11 +2070,7 @@ function MapViewport({
           Math.floor(point.x / gridSize) === anchor.snapCell.x &&
           Math.floor(point.y / gridSize) === anchor.snapCell.y;
         if (!isPointerResolvedCircleAnchor && distance > maxDistance) return;
-        const facingPenalty = getAnchorConnectionFacingPenalty(
-          anchor,
-          handlePoint,
-          drag,
-        );
+        const facingPenalty = getAnchorConnectionFacingPenalty(anchor, handlePoint, drag);
         const score = distance + facingPenalty;
         if (!best || score < best.score)
           best = { region, anchor, point: handlePoint, distance, score };
@@ -2132,14 +2109,16 @@ function MapViewport({
       generatedMap.config.gridSize,
       drag.fromRegionId,
       generatedMap.config.gridSize * 1.8,
-      drag,
+      drag
     );
-    const resolvedTarget = target || findClosestInvalidCircleAnchorTarget(
-      generatedMap.regions,
-      point,
-      generatedMap.config.gridSize,
-      drag.fromRegionId,
-    );
+    const resolvedTarget =
+      target ||
+      findClosestInvalidCircleAnchorTarget(
+        generatedMap.regions,
+        point,
+        generatedMap.config.gridSize,
+        drag.fromRegionId
+      );
     setConnectionDraftState(createConnectionDraftState(drag, point, resolvedTarget));
     return true;
   }
@@ -2160,7 +2139,7 @@ function MapViewport({
             generatedMap.config.gridSize,
             drag.fromRegionId,
             generatedMap.config.gridSize * 1.8,
-            drag,
+            drag
           )
         : null);
     viewportDebugEvent("anchor trace: release", {
@@ -2254,7 +2233,7 @@ function MapViewport({
     setWaypointContextMenu(null);
     setMapContextMenu(null);
     const junction = getCorridorIntersectionCells(generatedMap.corridors).find(
-      (item) => item.key === cellKey(handle.cell.x, handle.cell.y),
+      (item) => item.key === cellKey(handle.cell.x, handle.cell.y)
     );
     setAddWaypointContextMenu({
       corridorId: handle.corridor.id,
@@ -2262,8 +2241,7 @@ function MapViewport({
       point: handle.point,
       cell: handle.cell,
       junctionKey: junction?.key || null,
-      junctionCorridorIds:
-        junction?.corridors?.map((corridor) => corridor.id) || [],
+      junctionCorridorIds: junction?.corridors?.map((corridor) => corridor.id) || [],
       ...getFixedContextMenuPosition(event, 250, 220),
     });
     setHoveredCorridorId(handle.corridor.id);
@@ -2278,7 +2256,7 @@ function MapViewport({
       y: Math.floor(handle.y / generatedMap.config.gridSize),
     };
     const junction = getCorridorIntersectionCells(generatedMap.corridors).find(
-      (item) => item.key === cellKey(cell.x, cell.y),
+      (item) => item.key === cellKey(cell.x, cell.y)
     );
     setRoomContextMenu(null);
     setDoorContextMenu(null);
@@ -2291,8 +2269,7 @@ function MapViewport({
       source: handle.source,
       cell,
       junctionKey: junction?.key || null,
-      junctionCorridorIds:
-        junction?.corridors?.map((corridor) => corridor.id) || [],
+      junctionCorridorIds: junction?.corridors?.map((corridor) => corridor.id) || [],
       ...getFixedContextMenuPosition(event, 250, 280),
     });
     setHoverCorridorHandle(null);
@@ -2302,12 +2279,9 @@ function MapViewport({
   function getDoorDragManualAnchor(region, point, gridSize, options = {}) {
     if (!region || !point) return null;
     if (region.shape === "circle") {
-      const strictCircleAnchor = getStrictCircleDoorDragAnchor(
-        region,
-        point,
-        gridSize,
-        { searchRadius: options.searchRadius ?? 1 },
-      );
+      const strictCircleAnchor = getStrictCircleDoorDragAnchor(region, point, gridSize, {
+        searchRadius: options.searchRadius ?? 1,
+      });
       if (strictCircleAnchor) return strictCircleAnchor;
       return options.allowLooseCircleFallback
         ? createCircleDragAnchor(region, point, gridSize)
@@ -2317,12 +2291,14 @@ function MapViewport({
     const rawBoundary = getBoundaryCells(region);
     const boundary = finalBoundary.length > 0 ? finalBoundary : rawBoundary;
     if (boundary.length === 0) return null;
-    return boundary
-      .map((anchor) => ({
-        anchor,
-        score: scoreDoorDragManualAnchor(anchor, point, gridSize),
-      }))
-      .sort((a, b) => a.score - b.score)[0]?.anchor || null;
+    return (
+      boundary
+        .map((anchor) => ({
+          anchor,
+          score: scoreDoorDragManualAnchor(anchor, point, gridSize),
+        }))
+        .sort((a, b) => a.score - b.score)[0]?.anchor || null
+    );
   }
 
   function scoreDoorDragManualAnchor(anchor, point, gridSize) {
@@ -2341,24 +2317,18 @@ function MapViewport({
 
   function getDoorDragSnapTarget(drag, point) {
     if (!drag || drag.type !== "door" || !point) return null;
-    const corridor = generatedMap.corridors.find(
-      (item) => item.id === drag.corridorId,
-    );
+    const corridor = generatedMap.corridors.find((item) => item.id === drag.corridorId);
     if (!corridor) return null;
     if (corridor.isRoomLink || drag.endpoint === "shared") {
-      const fromRegion = generatedMap.regions.find(
-        (item) => item.id === corridor.from,
-      );
-      const toRegion = generatedMap.regions.find(
-        (item) => item.id === corridor.to,
-      );
+      const fromRegion = generatedMap.regions.find((item) => item.id === corridor.from);
+      const toRegion = generatedMap.regions.find((item) => item.id === corridor.to);
       const sharedConnection =
         fromRegion && toRegion
           ? getClosestSharedRoomConnectionToPoint(
               fromRegion,
               toRegion,
               point,
-              generatedMap.config.gridSize,
+              generatedMap.config.gridSize
             )
           : null;
       return sharedConnection?.point
@@ -2369,12 +2339,13 @@ function MapViewport({
     const region = generatedMap.regions.find((item) => item.id === regionId);
     if (!region) return null;
     const gridSize = generatedMap.config.gridSize;
-    const anchor = region.shape === "circle"
-      ? getStrictCircleDoorDragAnchor(region, point, gridSize, {
-          searchRadius: 1,
-          maxHandleDistance: gridSize * 1.35,
-        })
-      : getDoorDragManualAnchor(region, point, gridSize);
+    const anchor =
+      region.shape === "circle"
+        ? getStrictCircleDoorDragAnchor(region, point, gridSize, {
+            searchRadius: 1,
+            maxHandleDistance: gridSize * 1.35,
+          })
+        : getDoorDragManualAnchor(region, point, gridSize);
     if (!anchor) return null;
     const handlePoint = getAnchorHandlePoint(anchor, gridSize);
     return handlePoint ? { point: handlePoint, anchor } : null;
@@ -2382,9 +2353,7 @@ function MapViewport({
 
   function isInvalidCircleDoorDragTarget(drag, point) {
     if (!drag || drag.type !== "door" || !point) return false;
-    const corridor = generatedMap.corridors.find(
-      (item) => item.id === drag.corridorId,
-    );
+    const corridor = generatedMap.corridors.find((item) => item.id === drag.corridorId);
     if (!corridor || corridor.isRoomLink || drag.endpoint === "shared") return false;
     const regionId = drag.endpoint === "from" ? corridor.from : corridor.to;
     const region = generatedMap.regions.find((item) => item.id === regionId);
@@ -2395,7 +2364,8 @@ function MapViewport({
   function createCorridorDragPreview(drag, point, phase = "dragging") {
     if (!drag || !point) return null;
     const snapTarget = getDoorDragSnapTarget(drag, point);
-    const invalid = drag.type === "door" && !snapTarget && isInvalidCircleDoorDragTarget(drag, point);
+    const invalid =
+      drag.type === "door" && !snapTarget && isInvalidCircleDoorDragTarget(drag, point);
     const previewPoint = snapTarget?.point || point;
     return {
       phase,
@@ -2593,7 +2563,8 @@ function MapViewport({
       } else if (drag.type === "waypoint-insert") {
         committed = onWaypointInsert?.(drag.corridorId, drag.insertIndex, point) === true;
       } else {
-        committed = onWaypointMove?.(drag.corridorId, drag.waypointIndex, point, drag.source) === true;
+        committed =
+          onWaypointMove?.(drag.corridorId, drag.waypointIndex, point, drag.source) === true;
       }
     }
     viewportDebugEvent("drag:end corridor handle result", {
@@ -2671,9 +2642,7 @@ function MapViewport({
     const pending = pendingPanViewRef.current;
     pendingPanViewRef.current = null;
     if (!pending) return;
-    setView((current) =>
-      constrainView({ ...current, x: pending.x, y: pending.y }),
-    );
+    setView((current) => constrainView({ ...current, x: pending.x, y: pending.y }));
   }
 
   function schedulePanMove(nextX, nextY) {
@@ -2684,9 +2653,7 @@ function MapViewport({
       const pending = pendingPanViewRef.current;
       pendingPanViewRef.current = null;
       if (!pending) return;
-      setView((current) =>
-        constrainView({ ...current, x: pending.x, y: pending.y }),
-      );
+      setView((current) => constrainView({ ...current, x: pending.x, y: pending.y }));
     });
   }
 
@@ -2754,30 +2721,22 @@ function MapViewport({
     }
     if (event.key === "ArrowUp") {
       event.preventDefault();
-      setView((current) =>
-        constrainView({ ...current, y: current.y + panAmount }),
-      );
+      setView((current) => constrainView({ ...current, y: current.y + panAmount }));
       return;
     }
     if (event.key === "ArrowDown") {
       event.preventDefault();
-      setView((current) =>
-        constrainView({ ...current, y: current.y - panAmount }),
-      );
+      setView((current) => constrainView({ ...current, y: current.y - panAmount }));
       return;
     }
     if (event.key === "ArrowLeft") {
       event.preventDefault();
-      setView((current) =>
-        constrainView({ ...current, x: current.x + panAmount }),
-      );
+      setView((current) => constrainView({ ...current, x: current.x + panAmount }));
       return;
     }
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      setView((current) =>
-        constrainView({ ...current, x: current.x - panAmount }),
-      );
+      setView((current) => constrainView({ ...current, x: current.x - panAmount }));
     }
   }
 
@@ -2791,7 +2750,7 @@ function MapViewport({
           viewportInteractive && "is-pannable",
           isPanning && "is-panning",
           embeddedPreview && "is-embedded-preview",
-          viewportClassName,
+          viewportClassName
         )}
         data-map-viewport-mode={viewportMode}
         style={wallStrokeVariables}
@@ -2835,28 +2794,31 @@ function MapViewport({
               selectedRegionId,
               hoveredRegionId,
               regionMarkers: previewRegionMarkers,
-              onSelect: (region) => onSelectedRegionChange?.(
-                region?.previewTargetId ||
-                  region?.sourceRegionId ||
-                  region?.requestMetadata?.sourceRegionId ||
-                  region?.id ||
-                  "",
-              ),
-              onHoverChange: (region) => setPreviewHoveredRegion(
-                region?.previewTargetId ||
-                  region?.sourceRegionId ||
-                  region?.requestMetadata?.sourceRegionId ||
-                  region?.id ||
-                  "",
-              ),
-              onContextMenu: (event, region) => onRegionContextMenu?.(
-                event,
-                region?.previewTargetId ||
-                  region?.sourceRegionId ||
-                  region?.requestMetadata?.sourceRegionId ||
-                  region?.id ||
-                  "",
-              ),
+              onSelect: (region) =>
+                onSelectedRegionChange?.(
+                  region?.previewTargetId ||
+                    region?.sourceRegionId ||
+                    region?.requestMetadata?.sourceRegionId ||
+                    region?.id ||
+                    ""
+                ),
+              onHoverChange: (region) =>
+                setPreviewHoveredRegion(
+                  region?.previewTargetId ||
+                    region?.sourceRegionId ||
+                    region?.requestMetadata?.sourceRegionId ||
+                    region?.id ||
+                    ""
+                ),
+              onContextMenu: (event, region) =>
+                onRegionContextMenu?.(
+                  event,
+                  region?.previewTargetId ||
+                    region?.sourceRegionId ||
+                    region?.requestMetadata?.sourceRegionId ||
+                    region?.id ||
+                    ""
+                ),
             }}
             editorOptions={{
               draggingRegionId,
@@ -2906,133 +2868,123 @@ function MapViewport({
           />
         </div>
         {viewportInteractive ? (
-        <ContextMenuPortal>
-          <RoomStyleContextMenu
-            menu={roomContextMenu}
-            generatedMap={generatedMap}
-            manualOverrides={manualOverrides || createEmptyManualOverrides()}
-            onChange={onRoomStyleChange}
-            onReset={onRoomStyleReset}
-            onClose={() => setRoomContextMenu(null)}
-          />
-          <DoorContextMenu
-            menu={doorContextMenu}
-            manualOverrides={manualOverrides || createEmptyManualOverrides()}
-            isPureCave={pureCaveEditor}
-            onTypeChange={onDoorTypeChange}
-            onStairChange={onDoorStairChange}
-            onDelete={onConnectionDelete}
-            onClose={() => setDoorContextMenu(null)}
-          />
-          <CorridorJunctionContextMenu
-            menu={junctionContextMenu}
-            manualOverrides={manualOverrides || createEmptyManualOverrides()}
-            isPureCave={pureCaveEditor}
-            onChange={onJunctionTypeChange}
-            onClose={() => setJunctionContextMenu(null)}
-          />
-          <WaypointContextMenu
-            menu={waypointContextMenu}
-            manualOverrides={manualOverrides || createEmptyManualOverrides()}
-            isPureCave={pureCaveEditor}
-            onDeleteWaypoint={onWaypointDelete}
-            onDeleteConnection={onConnectionDelete}
-            onJunctionChange={onJunctionTypeChange}
-            onClose={() => setWaypointContextMenu(null)}
-          />
-          <AddWaypointContextMenu
-            menu={addWaypointContextMenu}
-            manualOverrides={manualOverrides || createEmptyManualOverrides()}
-            isPureCave={pureCaveEditor}
-            onAddWaypoint={onWaypointInsert}
-            onJunctionChange={onJunctionTypeChange}
-            onClose={() => setAddWaypointContextMenu(null)}
-          />
-          <WallAccessContextMenu
-            menu={wallAccessContextMenu}
-            onSet={onMapAccessSet}
-            onRemove={onMapAccessRemove}
-            onClose={() => setWallAccessContextMenu(null)}
-          />
-          <MapActionContextMenu
-            menu={mapContextMenu}
-            showGrid={showGrid}
-            showEditor={showEditor}
-            showProps={showProps}
-            showAccessDots={showAccessDots}
-            levelView={levelView}
-            availableLevels={availableLevels}
-            fadeOtherLevels={fadeOtherLevels}
-            gridStyle={gridStyle}
-            onNewSeed={onNewSeed}
-            onToggleGrid={onToggleGrid}
-            onGridStyleChange={onGridStyleChange}
-            onToggleEditor={onToggleEditor}
-            onToggleProps={onToggleProps}
-            onToggleAccessDots={onToggleAccessDots}
-            onLevelViewChange={onLevelViewChange}
-            onToggleFadeOtherLevels={onToggleFadeOtherLevels}
-            onExportSvg={onExportSvg}
-            onExportGmSvg={onExportGmSvg}
-            onExportPlayerSvg={onExportPlayerSvg}
-            onExportPrintSvg={onExportPrintSvg}
-            onExportState={onExportState}
-            onImportState={onImportState}
-            onUndo={onUndo}
-            onRedo={onRedo}
-            onClose={() => setMapContextMenu(null)}
-          />
-        </ContextMenuPortal>
+          <ContextMenuPortal>
+            <RoomStyleContextMenu
+              menu={roomContextMenu}
+              generatedMap={generatedMap}
+              manualOverrides={manualOverrides || createEmptyManualOverrides()}
+              onChange={onRoomStyleChange}
+              onReset={onRoomStyleReset}
+              onClose={() => setRoomContextMenu(null)}
+            />
+            <DoorContextMenu
+              menu={doorContextMenu}
+              manualOverrides={manualOverrides || createEmptyManualOverrides()}
+              isPureCave={pureCaveEditor}
+              onTypeChange={onDoorTypeChange}
+              onStairChange={onDoorStairChange}
+              onDelete={onConnectionDelete}
+              onClose={() => setDoorContextMenu(null)}
+            />
+            <CorridorJunctionContextMenu
+              menu={junctionContextMenu}
+              manualOverrides={manualOverrides || createEmptyManualOverrides()}
+              isPureCave={pureCaveEditor}
+              onChange={onJunctionTypeChange}
+              onClose={() => setJunctionContextMenu(null)}
+            />
+            <WaypointContextMenu
+              menu={waypointContextMenu}
+              manualOverrides={manualOverrides || createEmptyManualOverrides()}
+              isPureCave={pureCaveEditor}
+              onDeleteWaypoint={onWaypointDelete}
+              onDeleteConnection={onConnectionDelete}
+              onJunctionChange={onJunctionTypeChange}
+              onClose={() => setWaypointContextMenu(null)}
+            />
+            <AddWaypointContextMenu
+              menu={addWaypointContextMenu}
+              manualOverrides={manualOverrides || createEmptyManualOverrides()}
+              isPureCave={pureCaveEditor}
+              onAddWaypoint={onWaypointInsert}
+              onJunctionChange={onJunctionTypeChange}
+              onClose={() => setAddWaypointContextMenu(null)}
+            />
+            <WallAccessContextMenu
+              menu={wallAccessContextMenu}
+              onSet={onMapAccessSet}
+              onRemove={onMapAccessRemove}
+              onClose={() => setWallAccessContextMenu(null)}
+            />
+            <MapActionContextMenu
+              menu={mapContextMenu}
+              showGrid={showGrid}
+              showEditor={showEditor}
+              showProps={showProps}
+              showAccessDots={showAccessDots}
+              levelView={levelView}
+              availableLevels={availableLevels}
+              fadeOtherLevels={fadeOtherLevels}
+              gridStyle={gridStyle}
+              onNewSeed={onNewSeed}
+              onToggleGrid={onToggleGrid}
+              onGridStyleChange={onGridStyleChange}
+              onToggleEditor={onToggleEditor}
+              onToggleProps={onToggleProps}
+              onToggleAccessDots={onToggleAccessDots}
+              onLevelViewChange={onLevelViewChange}
+              onToggleFadeOtherLevels={onToggleFadeOtherLevels}
+              onExportSvg={onExportSvg}
+              onExportGmSvg={onExportGmSvg}
+              onExportPlayerSvg={onExportPlayerSvg}
+              onExportPrintSvg={onExportPrintSvg}
+              onExportState={onExportState}
+              onImportState={onImportState}
+              onUndo={onUndo}
+              onRedo={onRedo}
+              onClose={() => setMapContextMenu(null)}
+            />
+          </ContextMenuPortal>
         ) : null}
       </div>
       {shouldShowViewportChrome ? (
-      <div className="map-canvas-bottombar cruor-ui-panel-surface">
-        <div className="zoom-toolbar" aria-label="Map zoom controls">
-          <button
-            type="button"
-            className="map-tool-button zoom-button cruor-ui-control-surface cruor-button cruor-button--sm"
-            {...getGenericTooltipAttrs(
-              "Zoom In",
-              "Increase the map zoom.",
-              "+",
-            )}
-            aria-label="Zoom In"
-            onClick={() => zoomAtCenter(1.15)}
-          >
-            <i className="fa-solid fa-plus" aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            className="map-tool-button zoom-button cruor-ui-control-surface cruor-button cruor-button--sm"
-            {...getGenericTooltipAttrs(
-              "Zoom Out",
-              "Decrease the map zoom.",
-              "-",
-            )}
-            aria-label="Zoom Out"
-            onClick={() => zoomAtCenter(0.85)}
-          >
-            <i className="fa-solid fa-minus" aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            className="map-tool-button zoom-button cruor-ui-control-surface cruor-button cruor-button--sm"
-            {...getGenericTooltipAttrs(
-              "Fit Map",
-              "Fit the whole map in view.",
-              "0",
-            )}
-            aria-label="Fit Map"
-            onClick={fitView}
-          >
-            <i className="fa-solid fa-expand" aria-hidden="true" />
-          </button>
-          <span className="zoom-scale cruor-ui-chip-surface cruor-micro-chip">{Math.round(view.scale * 100)}%</span>
+        <div className="map-canvas-bottombar cruor-ui-panel-surface">
+          <div className="zoom-toolbar" aria-label="Map zoom controls">
+            <button
+              type="button"
+              className="map-tool-button zoom-button cruor-ui-control-surface cruor-button cruor-button--sm"
+              {...getGenericTooltipAttrs("Zoom In", "Increase the map zoom.", "+")}
+              aria-label="Zoom In"
+              onClick={() => zoomAtCenter(1.15)}
+            >
+              <i className="fa-solid fa-plus" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className="map-tool-button zoom-button cruor-ui-control-surface cruor-button cruor-button--sm"
+              {...getGenericTooltipAttrs("Zoom Out", "Decrease the map zoom.", "-")}
+              aria-label="Zoom Out"
+              onClick={() => zoomAtCenter(0.85)}
+            >
+              <i className="fa-solid fa-minus" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className="map-tool-button zoom-button cruor-ui-control-surface cruor-button cruor-button--sm"
+              {...getGenericTooltipAttrs("Fit Map", "Fit the whole map in view.", "0")}
+              aria-label="Fit Map"
+              onClick={fitView}
+            >
+              <i className="fa-solid fa-expand" aria-hidden="true" />
+            </button>
+            <span className="zoom-scale cruor-ui-chip-surface cruor-micro-chip">
+              {Math.round(view.scale * 100)}%
+            </span>
+          </div>
+          <div className="zoom-hint">
+            Wheel zooms. Drag pans. Arrow keys pan. + / - zoom. 0 or Home fits.
+          </div>
         </div>
-        <div className="zoom-hint">
-          Wheel zooms. Drag pans. Arrow keys pan. + / - zoom. 0 or Home fits.
-        </div>
-      </div>
       ) : null}
     </>
   );
@@ -3045,20 +2997,14 @@ function getRoomStyleMenuOptions(contextKey) {
     { value: "l-shape", label: "L-Shape" },
     { value: "circle", label: "Circle" },
     { value: "shaft", label: "Shaft / Oval" },
-    ...(contextKey === "cave" || contextKey === "mine"
-      ? [{ value: "cave", label: "Cave" }]
-      : []),
+    ...(contextKey === "cave" || contextKey === "mine" ? [{ value: "cave", label: "Cave" }] : []),
   ];
   const types = [
     { value: "none", label: "None" },
     { value: "archive", label: "Archive" },
-    ...(contextKey === "crypt"
-      ? [{ value: "alcove", label: "Crypt Alcoves" }]
-      : []),
+    ...(contextKey === "crypt" ? [{ value: "alcove", label: "Crypt Alcoves" }] : []),
     ...(contextKey === "chapel" ? [{ value: "apse", label: "Apse" }] : []),
-    ...(contextKey === "ruins"
-      ? [{ value: "ruined", label: "Ruined Room" }]
-      : []),
+    ...(contextKey === "ruins" ? [{ value: "ruined", label: "Ruined Room" }] : []),
   ];
   return {
     shapes,
@@ -3083,10 +3029,13 @@ function isCircularRoomMenuShape(shape) {
 function getRoomMenuPresetDimensions(size, shape) {
   if (!size) return "";
   if (isCircularRoomMenuShape(shape)) {
-    const diameter = size.circleDiameter || ROOM_SIZE_MENU_PRESETS[size.value]?.circleD || Math.max(
-      ROOM_SIZE_MENU_PRESETS[size.value]?.w || 0,
-      ROOM_SIZE_MENU_PRESETS[size.value]?.h || 0,
-    );
+    const diameter =
+      size.circleDiameter ||
+      ROOM_SIZE_MENU_PRESETS[size.value]?.circleD ||
+      Math.max(
+        ROOM_SIZE_MENU_PRESETS[size.value]?.w || 0,
+        ROOM_SIZE_MENU_PRESETS[size.value]?.h || 0
+      );
     return `r ${diameter / 2} / \u00F8 ${diameter}`;
   }
   return size.dimensions;
@@ -3094,9 +3043,7 @@ function getRoomMenuPresetDimensions(size, shape) {
 
 function getCustomSizeLabel(style, region) {
   const customSize =
-    style.customSize && typeof style.customSize === "object"
-      ? style.customSize
-      : null;
+    style.customSize && typeof style.customSize === "object" ? style.customSize : null;
   if (style.sizePreset !== "Custom" || !customSize) return "Custom";
   if (isCircularRoomMenuShape(style.shape)) {
     const fallbackRadius = Math.max(1.5, Math.min(region.cellRect.w, region.cellRect.h) / 2);
@@ -3119,21 +3066,23 @@ function normalizeCustomSizeInput(value, fallback, min, max, allowHalf = false) 
 function RoomSizeCustomControls({ region, style, onApply }) {
   const circular = isCircularRoomMenuShape(style.shape);
   const customSize =
-    style.customSize && typeof style.customSize === "object"
-      ? style.customSize
-      : {};
+    style.customSize && typeof style.customSize === "object" ? style.customSize : {};
   const fallbackRadius = Math.max(1.5, Math.min(region.cellRect.w, region.cellRect.h) / 2);
   const [draft, setDraft] = useState(() => ({
     radius: String(customSize.radiusCells ?? customSize.radius ?? fallbackRadius),
     width: String(customSize.widthCells ?? customSize.w ?? customSize.width ?? region.cellRect.w),
-    height: String(customSize.heightCells ?? customSize.h ?? customSize.height ?? region.cellRect.h),
+    height: String(
+      customSize.heightCells ?? customSize.h ?? customSize.height ?? region.cellRect.h
+    ),
   }));
 
   useEffect(() => {
     setDraft({
       radius: String(customSize.radiusCells ?? customSize.radius ?? fallbackRadius),
       width: String(customSize.widthCells ?? customSize.w ?? customSize.width ?? region.cellRect.w),
-      height: String(customSize.heightCells ?? customSize.h ?? customSize.height ?? region.cellRect.h),
+      height: String(
+        customSize.heightCells ?? customSize.h ?? customSize.height ?? region.cellRect.h
+      ),
     });
   }, [
     circular,
@@ -3231,18 +3180,12 @@ function inferGeneratedRoomType(region) {
   if (region.shape === "archive") return "archive";
   if (region.shape === "alcove") return "alcove";
   if (region.shape === "apse") return "apse";
-  if (region.shape === "ruined-rect" || region.shape === "broken")
-    return "ruined";
+  if (region.shape === "ruined-rect" || region.shape === "broken") return "ruined";
   return "none";
 }
 
 function inferGeneratedRoomShape(region) {
-  if (
-    ["archive", "alcove", "apse", "ruined-rect", "broken"].includes(
-      region.shape,
-    )
-  )
-    return "rect";
+  if (["archive", "alcove", "apse", "ruined-rect", "broken"].includes(region.shape)) return "rect";
   return region.shape || "rect";
 }
 
@@ -3316,29 +3259,18 @@ function useContextMenuDismiss(isOpen, onClose) {
   return menuRef;
 }
 
-function RoomStyleContextMenu({
-  menu,
-  generatedMap,
-  manualOverrides,
-  onChange,
-  onReset,
-  onClose,
-}) {
+function RoomStyleContextMenu({ menu, generatedMap, manualOverrides, onChange, onReset, onClose }) {
   const [activeGroup, setActiveGroup] = useState("type");
   if (!menu) return null;
   const region = generatedMap.regions.find((item) => item.id === menu.regionId);
   if (!region) return null;
-  const contextKey = getContextKey(
-    generatedMap.config.context || generatedMap.config.biome,
-  );
+  const contextKey = getContextKey(generatedMap.config.context || generatedMap.config.biome);
   const options = getRoomStyleMenuOptions(contextKey);
   const cavernSupported = contextKey === "cave" || contextKey === "mine";
   let style = getRoomStyleForMenu(region, manualOverrides);
   if (
     !cavernSupported &&
-    (style.shape === "cave" ||
-      style.surfaceKind === "cave" ||
-      style.surfaceKind === "hybrid")
+    (style.shape === "cave" || style.surfaceKind === "cave" || style.surfaceKind === "hybrid")
   ) {
     style = {
       ...style,
@@ -3347,29 +3279,21 @@ function RoomStyleContextMenu({
     };
   }
   const roomKind =
-    style.shape === "cave" ||
-    style.surfaceKind === "cave" ||
-    style.surfaceKind === "hybrid"
+    style.shape === "cave" || style.surfaceKind === "cave" || style.surfaceKind === "hybrid"
       ? "cavern"
       : "building";
   const activeShape =
-    options.shapes.find((shape) => shape.value === style.shape)?.label ||
-    style.shape;
+    options.shapes.find((shape) => shape.value === style.shape)?.label || style.shape;
   const activeType = roomKind === "cavern" ? "Cavern" : "Building";
   const activeSize =
     style.sizePreset === "Custom"
       ? getCustomSizeLabel(style, region)
-      : options.sizes.find((size) => size.value === style.sizePreset)?.label ||
-        style.sizePreset;
+      : options.sizes.find((size) => size.value === style.sizePreset)?.label || style.sizePreset;
   const activeRoomType =
-    options.types.find((type) => type.value === style.roomType)?.label ||
-    style.roomType ||
-    "None";
+    options.types.find((type) => type.value === style.roomType)?.label || style.roomType || "None";
   const activeModifiers = [
     ...(style.roomType && style.roomType !== "none" ? [activeRoomType] : []),
-    ...options.toggles
-      .filter((toggle) => style[toggle.key])
-      .map((toggle) => toggle.label),
+    ...options.toggles.filter((toggle) => style[toggle.key]).map((toggle) => toggle.label),
   ];
 
   return (
@@ -3388,10 +3312,7 @@ function RoomStyleContextMenu({
         </span>
       </div>
       <div className="room-context-menu__body">
-        <div
-          className="room-context-menu__item"
-          onPointerEnter={() => setActiveGroup("type")}
-        >
+        <div className="room-context-menu__item" onPointerEnter={() => setActiveGroup("type")}>
           <button type="button" className="room-context-menu__trigger">
             <span>Type</span>
             <span>
@@ -3400,9 +3321,7 @@ function RoomStyleContextMenu({
           </button>
           {activeGroup === "type" && (
             <div className="room-context-submenu">
-              <div className="room-context-submenu__hint">
-                Region surface model
-              </div>
+              <div className="room-context-submenu__hint">Region surface model</div>
               <button
                 type="button"
                 className={roomKind === "building" ? "is-active" : ""}
@@ -3432,20 +3351,13 @@ function RoomStyleContextMenu({
               >
                 <span>Cavern</span>
                 <span>
-                  {!cavernSupported
-                    ? "Unavailable"
-                    : roomKind === "cavern"
-                      ? "Active"
-                      : ""}
+                  {!cavernSupported ? "Unavailable" : roomKind === "cavern" ? "Active" : ""}
                 </span>
               </button>
             </div>
           )}
         </div>
-        <div
-          className="room-context-menu__item"
-          onPointerEnter={() => setActiveGroup("shape")}
-        >
+        <div className="room-context-menu__item" onPointerEnter={() => setActiveGroup("shape")}>
           <button type="button" className="room-context-menu__trigger">
             <span>Shape</span>
             <span>
@@ -3476,10 +3388,7 @@ function RoomStyleContextMenu({
             </div>
           )}
         </div>
-        <div
-          className="room-context-menu__item"
-          onPointerEnter={() => setActiveGroup("size")}
-        >
+        <div className="room-context-menu__item" onPointerEnter={() => setActiveGroup("size")}>
           <button type="button" className="room-context-menu__trigger">
             <span>Size</span>
             <span>
@@ -3488,9 +3397,7 @@ function RoomStyleContextMenu({
           </button>
           {activeGroup === "size" && (
             <div className="room-context-submenu">
-              <div className="room-context-submenu__hint">
-                Room bounding box
-              </div>
+              <div className="room-context-submenu__hint">Room bounding box</div>
               {options.sizes.map((size) => (
                 <button
                   key={size.value}
@@ -3518,10 +3425,7 @@ function RoomStyleContextMenu({
             </div>
           )}
         </div>
-        <div
-          className="room-context-menu__item"
-          onPointerEnter={() => setActiveGroup("modifiers")}
-        >
+        <div className="room-context-menu__item" onPointerEnter={() => setActiveGroup("modifiers")}>
           <button type="button" className="room-context-menu__trigger">
             <span>Modifiers</span>
             <span>
@@ -3535,9 +3439,7 @@ function RoomStyleContextMenu({
           </button>
           {activeGroup === "modifiers" && (
             <div className="room-context-submenu">
-              <div className="room-context-submenu__hint">
-                Room-specific structure
-              </div>
+              <div className="room-context-submenu__hint">Room-specific structure</div>
               {roomKind === "cavern" ? (
                 <button type="button" disabled>
                   <span>Not available</span>
@@ -3549,17 +3451,11 @@ function RoomStyleContextMenu({
                     <button
                       key={type.value}
                       type="button"
-                      className={
-                        style.roomType === type.value ? "is-active" : ""
-                      }
-                      onClick={() =>
-                        onChange(region.id, { roomType: type.value })
-                      }
+                      className={style.roomType === type.value ? "is-active" : ""}
+                      onClick={() => onChange(region.id, { roomType: type.value })}
                     >
                       <span>{type.label}</span>
-                      <span>
-                        {style.roomType === type.value ? "Active" : ""}
-                      </span>
+                      <span>{style.roomType === type.value ? "Active" : ""}</span>
                     </button>
                   ))}
                   {options.toggles.map((toggle) => (
@@ -3663,11 +3559,7 @@ function AddWaypointContextMenu({
   if (!menu) return null;
   const hasJunction = Boolean(menu.junctionKey);
   const currentJunctionType = hasJunction
-    ? getManualJunctionType(
-        manualOverrides.corridorJunctions || {},
-        menu.junctionKey,
-        "merge",
-      )
+    ? getManualJunctionType(manualOverrides.corridorJunctions || {}, menu.junctionKey, "merge")
     : null;
   const junctionLabels = {
     merge: isPureCave ? "Natural Merge" : "Normal Merge",
@@ -3675,9 +3567,7 @@ function AddWaypointContextMenu({
     door: isPureCave ? "Passage" : "Door",
   };
   const pointLabel = isPureCave ? "Tunnel Point" : "Corridor Point";
-  const junctionPointLabel = isPureCave
-    ? "Tunnel Junction Point"
-    : "Corridor Junction Point";
+  const junctionPointLabel = isPureCave ? "Tunnel Junction Point" : "Corridor Junction Point";
   const addLabel = isPureCave ? "Add Tunnel Point" : "Add Waypoint";
   const junctionLabel = isPureCave ? "Connection" : "Junction";
   return (
@@ -3749,11 +3639,7 @@ function WaypointContextMenu({
   if (!menu) return null;
   const hasJunction = Boolean(menu.junctionKey);
   const currentJunctionType = hasJunction
-    ? getManualJunctionType(
-        manualOverrides.corridorJunctions || {},
-        menu.junctionKey,
-        "merge",
-      )
+    ? getManualJunctionType(manualOverrides.corridorJunctions || {}, menu.junctionKey, "merge")
     : null;
   const junctionLabels = {
     merge: isPureCave ? "Natural Merge" : "Normal Merge",
@@ -3761,13 +3647,9 @@ function WaypointContextMenu({
     door: isPureCave ? "Passage" : "Door",
   };
   const waypointLabel = isPureCave ? "Tunnel Point" : "Corridor Waypoint";
-  const junctionWaypointLabel = isPureCave
-    ? "Tunnel Junction Point"
-    : "Corridor Junction Waypoint";
+  const junctionWaypointLabel = isPureCave ? "Tunnel Junction Point" : "Corridor Junction Waypoint";
   const deleteLabel = isPureCave ? "Delete Tunnel Point" : "Delete Waypoint";
-  const confirmDeleteLabel = isPureCave
-    ? "Confirm Delete Tunnel Point"
-    : "Confirm Delete Waypoint";
+  const confirmDeleteLabel = isPureCave ? "Confirm Delete Tunnel Point" : "Confirm Delete Waypoint";
   const junctionLabel = isPureCave ? "Connection" : "Junction";
   return (
     <div
@@ -3786,9 +3668,7 @@ function WaypointContextMenu({
         <ConfirmingDeleteButton
           label={deleteLabel}
           confirmLabel={confirmDeleteLabel}
-          onConfirm={() =>
-            onDeleteWaypoint?.(menu.corridorId, menu.waypointIndex, menu.source)
-          }
+          onConfirm={() => onDeleteWaypoint?.(menu.corridorId, menu.waypointIndex, menu.source)}
           onClose={onClose}
         />
         {hasJunction && (
@@ -3834,7 +3714,7 @@ function CorridorJunctionContextMenu({
   const currentType = getManualJunctionType(
     manualOverrides.corridorJunctions || {},
     menu.key,
-    "merge",
+    "merge"
   );
   const labels = {
     merge: isPureCave ? "Natural Merge" : "Normal Merge",
@@ -3849,9 +3729,7 @@ function CorridorJunctionContextMenu({
       onContextMenu={(event) => event.preventDefault()}
     >
       <div className="room-context-menu__header">
-        <strong>
-          {isPureCave ? "Tunnel Connection" : "Corridor Junction"}
-        </strong>
+        <strong>{isPureCave ? "Tunnel Connection" : "Corridor Junction"}</strong>
         <span>
           Cell {menu.cell.x},{menu.cell.y} {"\u00B7"} {menu.corridorIds.length}{" "}
           {isPureCave ? "passages" : "corridors"}
@@ -3907,13 +3785,13 @@ function DoorContextMenu({
     manualOverrides.doorTypes || {},
     menu.corridorId,
     menu.endpoint,
-    menu.fallbackType || "default",
+    menu.fallbackType || "default"
   );
   const currentStair = getManualStairTransition(
     manualOverrides.stairTransitions || {},
     menu.corridorId,
     menu.endpoint,
-    "none",
+    "none"
   );
   const labels = {
     default: "Default",
@@ -4038,14 +3916,11 @@ function MapActionContextMenu({
     normalizedLevelView === LEVEL_VIEW_ALL
       ? "All Levels"
       : `Level ${formatMapLevel(normalizedLevelView)}`;
-  const levelIconName = (level) =>
-    level > 0 ? "arrow-up" : level < 0 ? "arrow-down" : "minus";
+  const levelIconName = (level) => (level > 0 ? "arrow-up" : level < 0 ? "arrow-down" : "minus");
   const setGridStyleOnly = (style) => {
     onGridStyleChange?.(style);
   };
-  const icon = (name) => (
-    <i className={`fa-solid fa-${name}`} aria-hidden="true" />
-  );
+  const icon = (name) => <i className={`fa-solid fa-${name}`} aria-hidden="true" />;
 
   return (
     <div
@@ -4117,9 +3992,7 @@ function MapActionContextMenu({
               <button
                 key={style}
                 type="button"
-                className={
-                  normalizeGridStyle(gridStyle) === style ? "is-active" : ""
-                }
+                className={normalizeGridStyle(gridStyle) === style ? "is-active" : ""}
                 onClick={() => setGridStyleOnly(style)}
               >
                 <span>
@@ -4130,13 +4003,11 @@ function MapActionContextMenu({
                         ? "braille"
                         : style === "dashed"
                           ? "grip-lines"
-                          : "eye-slash",
+                          : "eye-slash"
                   )}{" "}
                   {gridLabels[style]}
                 </span>
-                <span>
-                  {normalizeGridStyle(gridStyle) === style ? "\u2713" : ""}
-                </span>
+                <span>{normalizeGridStyle(gridStyle) === style ? "\u2713" : ""}</span>
               </button>
             ))}
           </div>
@@ -4144,9 +4015,7 @@ function MapActionContextMenu({
         <button
           type="button"
           className={
-            showProps
-              ? "room-context-menu__trigger is-active"
-              : "room-context-menu__trigger"
+            showProps ? "room-context-menu__trigger is-active" : "room-context-menu__trigger"
           }
           onClick={() => run(onToggleProps)}
         >
@@ -4156,9 +4025,7 @@ function MapActionContextMenu({
         <button
           type="button"
           className={
-            showAccessDots
-              ? "room-context-menu__trigger is-active"
-              : "room-context-menu__trigger"
+            showAccessDots ? "room-context-menu__trigger is-active" : "room-context-menu__trigger"
           }
           onClick={() => run(onToggleAccessDots)}
         >
@@ -4176,15 +4043,11 @@ function MapActionContextMenu({
             <div className="room-context-submenu__hint">Level visibility</div>
             <button
               type="button"
-              className={
-                normalizedLevelView === LEVEL_VIEW_ALL ? "is-active" : ""
-              }
+              className={normalizedLevelView === LEVEL_VIEW_ALL ? "is-active" : ""}
               onClick={() => onLevelViewChange?.(LEVEL_VIEW_ALL)}
             >
               <span>{icon("layer-group")} All Levels</span>
-              <span>
-                {normalizedLevelView === LEVEL_VIEW_ALL ? "\u2713" : ""}
-              </span>
+              <span>{normalizedLevelView === LEVEL_VIEW_ALL ? "\u2713" : ""}</span>
             </button>
             {availableLevels.map((level) => (
               <button
@@ -4262,14 +4125,12 @@ function RoomKey({ generatedMap }) {
             <div>
               <div className="room-key__name">{region.name}</div>
               <div className="room-key__meta">
-                {region.role} {"\u00B7"} {region.graphRole || "region"}{" "}
-                {"\u00B7"} level {region.level ?? 0} {"\u00B7"} depth{" "}
-                {region.graphDepth ?? "\u2014"} {"\u00B7"}{" "}
+                {region.role} {"\u00B7"} {region.graphRole || "region"} {"\u00B7"} level{" "}
+                {region.level ?? 0} {"\u00B7"} depth {region.graphDepth ?? "\u2014"} {"\u00B7"}{" "}
                 {region.placementProfile || "layout"} {"\u00B7"} surface{" "}
-                {getRegionSurfaceKind(region, generatedMap)} {"\u00B7"}{" "}
-                {region.shape || "rect"} {"\u00B7"}{" "}
-                {region.roomType || region.shapeOptions?.roomType || "none"}{" "}
-                {"\u00B7"} {region.cellRect.w}
+                {getRegionSurfaceKind(region, generatedMap)} {"\u00B7"} {region.shape || "rect"}{" "}
+                {"\u00B7"} {region.roomType || region.shapeOptions?.roomType || "none"} {"\u00B7"}{" "}
+                {region.cellRect.w}
                 {"\u00D7"}
                 {region.cellRect.h}
               </div>
@@ -4286,9 +4147,7 @@ function formatTooltipList(values) {
 }
 
 function getRegionMetadata(region) {
-  return region?.metadata && typeof region.metadata === "object"
-    ? region.metadata
-    : {};
+  return region?.metadata && typeof region.metadata === "object" ? region.metadata : {};
 }
 
 function getImportedRegionForTooltip(region, importedRegions) {
@@ -4300,7 +4159,7 @@ function getImportedRegionForTooltip(region, importedRegions) {
         item.sourceRegionId === region.id ||
         item.id === region.sourceRegionId ||
         item.sourceRegionId === region.sourceRegionId ||
-        item.label === region.name,
+        item.label === region.name
     ) || null
   );
 }
@@ -4335,18 +4194,13 @@ function createRoomTooltipPayload(region, generatedMap, importedRegion = null) {
     region.size ||
     `${region.cellRect?.w || "?"}\u00D7${region.cellRect?.h || "?"}`;
   const generatedLinks = generatedMap.corridors.filter(
-    (corridor) => corridor.from === region.id || corridor.to === region.id,
+    (corridor) => corridor.from === region.id || corridor.to === region.id
   ).length;
   const importedConnectors = Number(importedRegion?.connectors);
-  const linkCount = Number.isFinite(importedConnectors)
-    ? importedConnectors
-    : generatedLinks;
-  const metaParts = [
-    role,
-    shape,
-    size,
-    `${linkCount} link${linkCount === 1 ? "" : "s"}`,
-  ].filter(Boolean);
+  const linkCount = Number.isFinite(importedConnectors) ? importedConnectors : generatedLinks;
+  const metaParts = [role, shape, size, `${linkCount} link${linkCount === 1 ? "" : "s"}`].filter(
+    Boolean
+  );
   const importedReadAloud =
     getTooltipReadAloud(getImportedRegionValue(importedRegion, "readAloud")) ||
     getImportedRegionValue(importedRegion, "read");
@@ -4359,10 +4213,7 @@ function createRoomTooltipPayload(region, generatedMap, importedRegion = null) {
 
   return {
     type: "room",
-    title:
-      importedRegion?.label ||
-      region.name ||
-      `Region ${region.number || ""}`.trim(),
+    title: importedRegion?.label || region.name || `Region ${region.number || ""}`.trim(),
     role,
     shape,
     meta: metaParts.join(" \u00B7 "),
@@ -4466,7 +4317,6 @@ const MAP_VISUAL_STYLE_ICONS = {
   print: "print",
 };
 
-
 const CROSSHATCH_STYLE_OPTIONS = [
   { value: "classic", label: "Classic", icon: "grip-lines" },
   { value: "none", label: "None", icon: "eye-slash" },
@@ -4489,7 +4339,7 @@ function MapToolButton({
       className={cx(
         "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary",
         active && "is-active",
-        className,
+        className
       )}
       data-ui-mode-advanced-only={visibility === "advanced" ? "" : undefined}
       data-ui-mode-debug-only={visibility === "debug" ? "" : undefined}
@@ -4522,7 +4372,7 @@ function MapToolMenuButton({
       className={cx(
         "location-map-toolbar__map-menu-action",
         active && "is-active",
-        danger && "is-danger",
+        danger && "is-danger"
       )}
       {...getGenericTooltipAttrs(label, description || label)}
       aria-label={label}
@@ -4768,7 +4618,10 @@ function MapStyleDropdown({
       <MapStyleMenuSection
         icon="map"
         label="Map"
-        valueLabel={MAP_VISUAL_STYLES.find((style) => style.value === normalizedVisualStyle)?.label || normalizedVisualStyle}
+        valueLabel={
+          MAP_VISUAL_STYLES.find((style) => style.value === normalizedVisualStyle)?.label ||
+          normalizedVisualStyle
+        }
       >
         <span className="location-map-toolbar__style-options">
           {MAP_VISUAL_STYLES.map((style) => (
@@ -4847,7 +4700,7 @@ function MapStyleDropdown({
         type="button"
         className={cx(
           "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary location-map-toolbar__style-menu-trigger",
-          open && "is-active",
+          open && "is-active"
         )}
         {...getGenericTooltipAttrs("Map Style", "Choose grid and map drawing styles.")}
         aria-label="Map Style"
@@ -4858,7 +4711,9 @@ function MapStyleDropdown({
       >
         <i className="fa-solid fa-sliders" aria-hidden="true" />
       </button>
-      {stylePanel && typeof document !== "undefined" ? createPortal(stylePanel, document.body) : null}
+      {stylePanel && typeof document !== "undefined"
+        ? createPortal(stylePanel, document.body)
+        : null}
     </>
   );
 }
@@ -4911,7 +4766,9 @@ function InlineMapEditorToolbar({
     const resolveTarget = () => {
       frame = 0;
       const nextTarget = document.querySelector('[data-location-map-tools-host="true"]');
-      setToolbarTarget((currentTarget) => (currentTarget === nextTarget ? currentTarget : nextTarget));
+      setToolbarTarget((currentTarget) =>
+        currentTarget === nextTarget ? currentTarget : nextTarget
+      );
     };
 
     resolveTarget();
@@ -4928,7 +4785,7 @@ function InlineMapEditorToolbar({
       if (isEventInsideNode(event, toolbarToolsRef.current)) return;
       if (
         styleMenuOpen &&
-        event.target?.closest?.('.location-map-toolbar__style-panel[data-style-menu]')
+        event.target?.closest?.(".location-map-toolbar__style-panel[data-style-menu]")
       ) {
         return;
       }
@@ -5056,7 +4913,7 @@ function InlineMapEditorToolbar({
         type="button"
         className={cx(
           "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary location-map-toolbar__map-menu-trigger",
-          mapMenuOpen && "is-active",
+          mapMenuOpen && "is-active"
         )}
         {...getGenericTooltipAttrs("More map tools", "Show secondary map editing tools.")}
         aria-label="More map tools"
@@ -5077,49 +4934,43 @@ function InlineMapEditorToolbar({
           aria-label="Secondary map tools"
           onMouseDown={suppressToolbarTextSelection}
         >
-            <MapToolMenuButton
-              icon="arrows-rotate"
-              label="Refresh from Composer"
-              description="Rebuild the map from the latest Composer regions."
-              disabled={!onRefreshFromComposer}
-              onClick={() => {
-                onRefreshFromComposer?.();
-                closeMapMenu();
-              }}
-            />
-            <MapToolMenuButton
-              icon="boxes-stacked"
-              label="Props"
-              active={showProps}
-              onClick={() => {
-                onToggleProps?.();
-                closeMapMenu();
-              }}
-            />
-            <MapToolMenuButton
-              icon="eraser"
-              label="Reset Edits"
-              description="Clear manual map edits."
-              danger
-              onClick={() => {
-                onResetEdits?.();
-                closeMapMenu();
-              }}
-            />
+          <MapToolMenuButton
+            icon="arrows-rotate"
+            label="Refresh from Composer"
+            description="Rebuild the map from the latest Composer regions."
+            disabled={!onRefreshFromComposer}
+            onClick={() => {
+              onRefreshFromComposer?.();
+              closeMapMenu();
+            }}
+          />
+          <MapToolMenuButton
+            icon="boxes-stacked"
+            label="Props"
+            active={showProps}
+            onClick={() => {
+              onToggleProps?.();
+              closeMapMenu();
+            }}
+          />
+          <MapToolMenuButton
+            icon="eraser"
+            label="Reset Edits"
+            description="Clear manual map edits."
+            danger
+            onClick={() => {
+              onResetEdits?.();
+              closeMapMenu();
+            }}
+          />
         </span>
       ) : null}
     </span>,
-    toolbarTarget,
+    toolbarTarget
   );
 }
 
-function MapControlSelect({
-  id,
-  label,
-  value,
-  options,
-  onChange,
-}) {
+function MapControlSelect({ id, label, value, options, onChange }) {
   const [open, setOpen] = useState(false);
   const [menuStyle, setMenuStyle] = useState(null);
   const fieldRef = useRef(null);
@@ -5128,10 +4979,15 @@ function MapControlSelect({
   const normalizedOptions = options.map((option) =>
     typeof option === "string"
       ? { value: option, label: option }
-      : { value: option.value, label: option.label ?? option.value, description: option.description ?? "" },
+      : {
+          value: option.value,
+          label: option.label ?? option.value,
+          description: option.description ?? "",
+        }
   );
   const selectedOption =
-    normalizedOptions.find((option) => String(option.value) === String(value)) || normalizedOptions[0];
+    normalizedOptions.find((option) => String(option.value) === String(value)) ||
+    normalizedOptions[0];
   const selectedLabel = selectedOption?.label || "—";
 
   useEffect(() => {
@@ -5164,13 +5020,18 @@ function MapControlSelect({
       const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
       const gap = 8;
-      const width = Math.min(300, Math.max(rect.width, 220), Math.max(220, viewportWidth - gap * 2));
+      const width = Math.min(
+        300,
+        Math.max(rect.width, 220),
+        Math.max(220, viewportWidth - gap * 2)
+      );
       const maxHeight = Math.min(320, Math.max(180, viewportHeight - gap * 2));
       const left = clamp(rect.left, gap, Math.max(gap, viewportWidth - width - gap));
       const belowTop = rect.bottom + 6;
-      const top = belowTop + maxHeight <= viewportHeight - gap
-        ? belowTop
-        : Math.max(gap, rect.top - maxHeight - 6);
+      const top =
+        belowTop + maxHeight <= viewportHeight - gap
+          ? belowTop
+          : Math.max(gap, rect.top - maxHeight - 6);
 
       setMenuStyle({
         top: `${Math.round(top)}px`,
@@ -5196,9 +5057,10 @@ function MapControlSelect({
     };
   }, [open, value, options]);
 
-  const menuPortalTarget = typeof document !== "undefined"
-    ? document.querySelector(".location-map-stage") || document.body
-    : null;
+  const menuPortalTarget =
+    typeof document !== "undefined"
+      ? document.querySelector(".location-map-stage") || document.body
+      : null;
 
   return (
     <div className="control-group map-control-select-field" ref={fieldRef}>
@@ -5235,7 +5097,9 @@ function MapControlSelect({
                     type="button"
                     role="option"
                     aria-selected={active}
-                    className={active ? "map-control-select-option is-active" : "map-control-select-option"}
+                    className={
+                      active ? "map-control-select-option is-active" : "map-control-select-option"
+                    }
                     onClick={() => {
                       onChange(option.value);
                       setOpen(false);
@@ -5245,18 +5109,20 @@ function MapControlSelect({
                       <strong>{option.label}</strong>
                       {option.description ? <small>{option.description}</small> : null}
                     </span>
-                    <i className={active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"} aria-hidden="true" />
+                    <i
+                      className={active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"}
+                      aria-hidden="true"
+                    />
                   </button>
                 );
               })}
             </div>,
-            menuPortalTarget,
+            menuPortalTarget
           )
         : null}
     </div>
   );
 }
-
 
 function MapControlSlider({ id, label, value, min = 0, max = 1, step = 0.05, onChange }) {
   const normalizedValue = Number.isFinite(Number(value)) ? Number(value) : min;
@@ -5280,9 +5146,19 @@ function MapControlSlider({ id, label, value, min = 0, max = 1, step = 0.05, onC
   );
 }
 
-function MapInspectorSection({ icon, title, eyebrow = "", children, defaultOpen = true, className = "" }) {
+function MapInspectorSection({
+  icon,
+  title,
+  eyebrow = "",
+  children,
+  defaultOpen = true,
+  className = "",
+}) {
   return (
-    <details className={`map-inspector-section cruor-ui-card-surface ${className}`.trim()} defaultOpen={defaultOpen}>
+    <details
+      className={`map-inspector-section cruor-ui-card-surface ${className}`.trim()}
+      defaultOpen={defaultOpen}
+    >
       <summary className="map-inspector-section__summary">
         <i className={`fa-solid fa-${icon}`} aria-hidden="true" />
         <span>
@@ -5291,9 +5167,7 @@ function MapInspectorSection({ icon, title, eyebrow = "", children, defaultOpen 
         </span>
         <i className="fa-solid fa-chevron-down" aria-hidden="true" />
       </summary>
-      <div className="map-inspector-section__body">
-        {children}
-      </div>
+      <div className="map-inspector-section__body">{children}</div>
     </details>
   );
 }
@@ -5317,19 +5191,20 @@ function getSelectedAreaMetrics(region, generatedMap) {
   };
 }
 
-
 function TestReport({ testSuite }) {
   return (
     <div
       className={
-        testSuite.passed ? "test-report cruor-ui-card-surface is-passing" : "test-report cruor-ui-card-surface is-failing"
+        testSuite.passed
+          ? "test-report cruor-ui-card-surface is-passing"
+          : "test-report cruor-ui-card-surface is-failing"
       }
       data-ui-mode-debug-only=""
       data-map-debug-only=""
     >
       <div className="test-report__summary cruor-ui-chip-surface">
-        {testSuite.tests.filter((test) => test.passed).length}/
-        {testSuite.tests.length} checks passing
+        {testSuite.tests.filter((test) => test.passed).length}/{testSuite.tests.length} checks
+        passing
       </div>
       <div className="test-report__list cruor-scroll-surface">
         {testSuite.tests.map((test) => (
@@ -5348,14 +5223,10 @@ function TestReport({ testSuite }) {
         ))}
       </div>
       {testSuite.structural.warnings.length > 0 && (
-        <div className="test-report__warning">
-          {testSuite.structural.warnings[0]}
-        </div>
+        <div className="test-report__warning">{testSuite.structural.warnings[0]}</div>
       )}
       {testSuite.structural.errors.length > 0 && (
-        <div className="test-report__error">
-          {testSuite.structural.errors[0]}
-        </div>
+        <div className="test-report__error">{testSuite.structural.errors[0]}</div>
       )}
     </div>
   );
@@ -5386,11 +5257,7 @@ function MapTestsModal({ open, testSuite, onClose }) {
           <button
             type="button"
             className="map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary"
-            {...getGenericTooltipAttrs(
-              "Close Tests",
-              "Close the structural test suite.",
-              "Esc",
-            )}
+            {...getGenericTooltipAttrs("Close Tests", "Close the structural test suite.", "Esc")}
             aria-label="Close Tests"
             onClick={onClose}
           >
@@ -5421,7 +5288,7 @@ export default function CruorMapGeneratorMvp({
 } = {}) {
   const initialConfig = useMemo(
     () => createConfigFromNormalizedMapRequest(initialRequest, DEFAULT_CONFIG),
-    [initialRequest],
+    [initialRequest]
   );
   const stateFileInputRef = useRef(null);
   const manualEditSnapshotRef = useRef(null);
@@ -5434,12 +5301,16 @@ export default function CruorMapGeneratorMvp({
   const [context, setContext] = useState(initialConfig.context);
   const [mapWidth, setMapWidth] = useState(initialConfig.mapWidth);
   const [mapHeight, setMapHeight] = useState(initialConfig.mapHeight);
-  const [visualStyle, setVisualStyle] = useState(
-    normalizeVisualStyle(initialConfig.visualStyle),
+  const [visualStyle, setVisualStyle] = useState(normalizeVisualStyle(initialConfig.visualStyle));
+  const [gridStyle, setGridStyle] = useState(
+    normalizeGridStyle(initialConfig.gridStyle || DEFAULT_CONFIG.gridStyle)
   );
-  const [gridStyle, setGridStyle] = useState(normalizeGridStyle(initialConfig.gridStyle || DEFAULT_CONFIG.gridStyle));
-  const [gridColor, setGridColor] = useState(normalizeGridColor(initialConfig.gridColor || DEFAULT_CONFIG.gridColor));
-  const [gridWeight, setGridWeight] = useState(normalizeGridWeight(initialConfig.gridWeight || DEFAULT_CONFIG.gridWeight));
+  const [gridColor, setGridColor] = useState(
+    normalizeGridColor(initialConfig.gridColor || DEFAULT_CONFIG.gridColor)
+  );
+  const [gridWeight, setGridWeight] = useState(
+    normalizeGridWeight(initialConfig.gridWeight || DEFAULT_CONFIG.gridWeight)
+  );
   const [gridOpacity, setGridOpacity] = useState(0.72);
   const [crosshatchStyle, setCrosshatchStyle] = useState("classic");
   const [crosshatchOpacity, setCrosshatchOpacity] = useState(0.72);
@@ -5456,7 +5327,7 @@ export default function CruorMapGeneratorMvp({
   const [showAccessDots, setShowAccessDots] = useState(false);
   const [inlineViewportControls, setInlineViewportControls] = useState(null);
   const [manualOverrides, setManualOverrides] = useState(() =>
-    normalizeManualOverrides(initialManualOverrides || createEmptyManualOverrides()),
+    normalizeManualOverrides(initialManualOverrides || createEmptyManualOverrides())
   );
   const manualOverridesRef = useRef(manualOverrides);
   manualOverridesRef.current = manualOverrides;
@@ -5484,8 +5355,7 @@ export default function CruorMapGeneratorMvp({
     ? initialRequest.requiredRegions
     : [];
   const manualRoomPositionsActive = Boolean(
-    manualOverrides.roomPositions &&
-      Object.keys(manualOverrides.roomPositions).length > 0,
+    manualOverrides.roomPositions && Object.keys(manualOverrides.roomPositions).length > 0
   );
 
   const config = useMemo(
@@ -5512,18 +5382,16 @@ export default function CruorMapGeneratorMvp({
       mapWidth,
       mapHeight,
       visualStyle,
-    ],
+    ]
   );
   const lockedManualLayoutActive = manualRoomPositionsActive && Boolean(manualLayoutSeed);
   const unlockedGenerationManualOverrides = useMemo(
     () => normalizeManualOverrides(manualOverrides),
-    [manualOverrides],
+    [manualOverrides]
   );
   const lockedGenerationManualSignature = useMemo(() => {
     if (!lockedManualLayoutActive) return "";
-    return stableSerializeForMemo(
-      createLockedGenerationManualSnapshot(manualOverrides),
-    );
+    return stableSerializeForMemo(createLockedGenerationManualSnapshot(manualOverrides));
   }, [lockedManualLayoutActive, manualOverrides]);
   const lockedGenerationManualSnapshot = useMemo(() => {
     if (!lockedManualLayoutActive) return null;
@@ -5531,7 +5399,7 @@ export default function CruorMapGeneratorMvp({
   }, [lockedManualLayoutActive, lockedGenerationManualSignature]);
   const lockedGenerationManualOverrides = useMemo(
     () => createLockedRawGenerationManualOverrides(lockedGenerationManualSnapshot || {}),
-    [lockedGenerationManualSnapshot],
+    [lockedGenerationManualSnapshot]
   );
   const generationManualOverrides = lockedManualLayoutActive
     ? lockedGenerationManualOverrides
@@ -5557,7 +5425,7 @@ export default function CruorMapGeneratorMvp({
   const generationConfig = lockedManualLayoutActive ? lockedGenerationConfig : config;
   const rawGeneratedMap = useMemo(
     () => generateMap(generationConfig, generationManualOverrides),
-    [generationConfig, generationManualOverrides],
+    [generationConfig, generationManualOverrides]
   );
   const generatedMap = useMemo(() => {
     if (!lockedManualLayoutActive || !manualLayoutGeometryRef.current) {
@@ -5566,7 +5434,7 @@ export default function CruorMapGeneratorMvp({
     return buildManualGeometryLockedMap(
       manualLayoutGeometryRef.current,
       rawGeneratedMap,
-      manualOverrides,
+      manualOverrides
     );
   }, [lockedManualLayoutActive, rawGeneratedMap, manualOverrides]);
   generatedMapRef.current = generatedMap;
@@ -5579,10 +5447,7 @@ export default function CruorMapGeneratorMvp({
   const selectedRegion = useMemo(() => {
     return generatedMap.regions.find((region) => region.id === selectedRegionId) || null;
   }, [generatedMap.regions, selectedRegionId]);
-  const availableLevels = useMemo(
-    () => getAvailableMapLevels(generatedMap),
-    [generatedMap],
-  );
+  const availableLevels = useMemo(() => getAvailableMapLevels(generatedMap), [generatedMap]);
   const availableLevelsKey = availableLevels.join(":");
 
   debugRecordingRef.current = debugRecording;
@@ -5652,14 +5517,14 @@ export default function CruorMapGeneratorMvp({
       downloadMapDebugBlob(
         `cruor-map-debug-${stamp}.txt`,
         payload.entries.map(formatMapDebugEntryText).join("\n\n---\n\n"),
-        "text/plain",
+        "text/plain"
       );
       return;
     }
     downloadMapDebugBlob(
       `cruor-map-debug-${stamp}.json`,
       JSON.stringify(payload, null, 2),
-      "application/json",
+      "application/json"
     );
   }
 
@@ -5672,10 +5537,14 @@ export default function CruorMapGeneratorMvp({
     debugPreviousMapRef.current = null;
     debugPreviousManualOverridesRef.current = null;
     if (debugRecording) {
-      recordDebugEvent("debug recorder: recording started", {
-        generatedMap: summarizeDebugMap(generatedMap),
-        manualOverrides: summarizeDebugManualOverrides(manualOverridesRef.current),
-      }, { category: "performance" });
+      recordDebugEvent(
+        "debug recorder: recording started",
+        {
+          generatedMap: summarizeDebugMap(generatedMap),
+          manualOverrides: summarizeDebugManualOverrides(manualOverridesRef.current),
+        },
+        { category: "performance" }
+      );
     }
   }, [debugRecording, recordDebugEvent]);
 
@@ -5695,7 +5564,10 @@ export default function CruorMapGeneratorMvp({
     };
   }
 
-  function getDebugPointCell(point, gridSize = generatedMap?.config?.gridSize || config?.gridSize || 20) {
+  function getDebugPointCell(
+    point,
+    gridSize = generatedMap?.config?.gridSize || config?.gridSize || 20
+  ) {
     if (!point || typeof point !== "object") return null;
     return {
       x: Math.floor(Number(point.x) / gridSize),
@@ -5782,7 +5654,9 @@ export default function CruorMapGeneratorMvp({
   }
 
   function getDebugAnchorCell(anchor) {
-    return anchor?.snapCell || anchor?.outsideCell || anchor?.routingOutsideCell || anchor?.cell || null;
+    return (
+      anchor?.snapCell || anchor?.outsideCell || anchor?.routingOutsideCell || anchor?.cell || null
+    );
   }
 
   function getDebugCellDelta(fromCell, toCell) {
@@ -5803,18 +5677,14 @@ export default function CruorMapGeneratorMvp({
       ? corridors.find((corridor) => corridor.id === corridorId) || null
       : null;
     const endpoint = trace.endpoint || "to";
-    const actualAnchor = actualCorridor
-      ? getDebugCorridorAnchor(actualCorridor, endpoint)
-      : null;
+    const actualAnchor = actualCorridor ? getDebugCorridorAnchor(actualCorridor, endpoint) : null;
     const requestedCell =
       trace.requestedAnchorCell ||
       getDebugAnchorCell(trace.requestedAnchor) ||
       trace.releaseCell ||
       null;
     const actualCell =
-      getDebugAnchorCell(actualAnchor) ||
-      getCorridorEndpointCell(actualCorridor, endpoint) ||
-      null;
+      getDebugAnchorCell(actualAnchor) || getCorridorEndpointCell(actualCorridor, endpoint) || null;
     return {
       trace,
       actualCorridor: summarizeDebugCorridor(actualCorridor),
@@ -5869,17 +5739,17 @@ export default function CruorMapGeneratorMvp({
   function summarizeDebugMap(map) {
     const corridors = Array.isArray(map?.corridors) ? map.corridors : [];
     const regions = Array.isArray(map?.regions) ? map.regions : [];
-    const mapAccesses =
-      map?.dungeonMask?.mapAccesses ||
-      map?.mapAccesses ||
-      [];
+    const mapAccesses = map?.dungeonMask?.mapAccesses || map?.mapAccesses || [];
     return {
       lockedManualLayoutActive,
       isManualEditActive,
       manualLayoutSeed: manualLayoutSeed || "",
       seed: map?.config?.seed || seed,
       corridorCount: corridors.length,
-      corridorIds: corridors.map((corridor) => corridor.id).filter(Boolean).sort(),
+      corridorIds: corridors
+        .map((corridor) => corridor.id)
+        .filter(Boolean)
+        .sort(),
       corridors: corridors.map(summarizeDebugCorridor),
       regionCount: regions.length,
       regions: regions.map(summarizeDebugRegion),
@@ -5897,10 +5767,7 @@ export default function CruorMapGeneratorMvp({
       roomStyleKeys: debugObjectKeys(normalized.roomStyles),
       doorAnchorKeys: debugObjectKeys(doorAnchors),
       doorAnchors: Object.fromEntries(
-        Object.entries(doorAnchors).map(([key, anchor]) => [
-          key,
-          summarizeDebugAnchor(anchor),
-        ]),
+        Object.entries(doorAnchors).map(([key, anchor]) => [key, summarizeDebugAnchor(anchor)])
       ),
       corridorWaypointKeys: debugObjectKeys(normalized.corridorWaypoints),
       corridorWaypoints: normalized.corridorWaypoints || {},
@@ -5927,7 +5794,7 @@ export default function CruorMapGeneratorMvp({
 
   function debugChangedCorridors(previousSummary, nextSummary) {
     const previousById = new Map(
-      (previousSummary?.corridors || []).map((corridor) => [corridor.id, corridor]),
+      (previousSummary?.corridors || []).map((corridor) => [corridor.id, corridor])
     );
     return (nextSummary?.corridors || [])
       .filter((corridor) => {
@@ -5943,7 +5810,7 @@ export default function CruorMapGeneratorMvp({
 
   function debugChangedRegions(previousSummary, nextSummary) {
     const previousById = new Map(
-      (previousSummary?.regions || []).map((region) => [region.id, region]),
+      (previousSummary?.regions || []).map((region) => [region.id, region])
     );
     return (nextSummary?.regions || [])
       .filter((region) => {
@@ -5960,7 +5827,7 @@ export default function CruorMapGeneratorMvp({
   function debugChangedMapAccesses(previousSummary, nextSummary) {
     const getKey = (access, index) => access?.id || access?.regionId || `access-${index}`;
     const previousByKey = new Map(
-      (previousSummary?.mapAccesses || []).map((access, index) => [getKey(access, index), access]),
+      (previousSummary?.mapAccesses || []).map((access, index) => [getKey(access, index), access])
     );
     return (nextSummary?.mapAccesses || [])
       .filter((access, index) => {
@@ -6001,7 +5868,6 @@ export default function CruorMapGeneratorMvp({
     });
   }
 
-
   useEffect(() => {
     if (!isMapEditorDebugEnabled()) return;
     const nextSummary = summarizeDebugMap(generatedMap);
@@ -6009,10 +5875,7 @@ export default function CruorMapGeneratorMvp({
     if (!previousSummary) {
       debugEvent("generatedMap: initial snapshot", { snapshot: nextSummary });
     } else {
-      const corridorIdDiff = debugDiffIds(
-        previousSummary.corridorIds,
-        nextSummary.corridorIds,
-      );
+      const corridorIdDiff = debugDiffIds(previousSummary.corridorIds, nextSummary.corridorIds);
       const changedCorridors = debugChangedCorridors(previousSummary, nextSummary);
       const changedRegions = debugChangedRegions(previousSummary, nextSummary);
       const changedMapAccesses = debugChangedMapAccesses(previousSummary, nextSummary);
@@ -6046,7 +5909,7 @@ export default function CruorMapGeneratorMvp({
         if (debugPendingAnchorTraceRef.current) {
           const traceResult = summarizeDebugAnchorTraceResult(
             debugPendingAnchorTraceRef.current,
-            generatedMap,
+            generatedMap
           );
           debugEvent("anchor trace: generated result", traceResult || {});
           debugPendingAnchorTraceRef.current = null;
@@ -6065,9 +5928,18 @@ export default function CruorMapGeneratorMvp({
     } else if (JSON.stringify(previousSummary) !== JSON.stringify(nextSummary)) {
       debugEvent("manualOverrides: changed by React state", {
         doorAnchorDiff: debugDiffIds(previousSummary.doorAnchorKeys, nextSummary.doorAnchorKeys),
-        waypointDiff: debugDiffIds(previousSummary.corridorWaypointKeys, nextSummary.corridorWaypointKeys),
-        customConnectionDiff: debugDiffIds(previousSummary.customConnectionIds, nextSummary.customConnectionIds),
-        deletedConnectionDiff: debugDiffIds(previousSummary.deletedConnections, nextSummary.deletedConnections),
+        waypointDiff: debugDiffIds(
+          previousSummary.corridorWaypointKeys,
+          nextSummary.corridorWaypointKeys
+        ),
+        customConnectionDiff: debugDiffIds(
+          previousSummary.customConnectionIds,
+          nextSummary.customConnectionIds
+        ),
+        deletedConnectionDiff: debugDiffIds(
+          previousSummary.deletedConnections,
+          nextSummary.deletedConnections
+        ),
         mapAccessDiff: debugDiffIds(previousSummary.mapAccessKeys, nextSummary.mapAccessKeys),
         before: previousSummary,
         after: nextSummary,
@@ -6088,10 +5960,16 @@ export default function CruorMapGeneratorMvp({
     if (!inlineComposerEditor || isManualEditActive) return;
 
     setSeed((current) => (current === initialConfig.seed ? current : initialConfig.seed));
-    setRoomCount((current) => (current === initialConfig.roomCount ? current : initialConfig.roomCount));
+    setRoomCount((current) =>
+      current === initialConfig.roomCount ? current : initialConfig.roomCount
+    );
     setContext((current) => (current === initialConfig.context ? current : initialConfig.context));
-    setMapWidth((current) => (current === initialConfig.mapWidth ? current : initialConfig.mapWidth));
-    setMapHeight((current) => (current === initialConfig.mapHeight ? current : initialConfig.mapHeight));
+    setMapWidth((current) =>
+      current === initialConfig.mapWidth ? current : initialConfig.mapWidth
+    );
+    setMapHeight((current) =>
+      current === initialConfig.mapHeight ? current : initialConfig.mapHeight
+    );
     setVisualStyle((current) => {
       const next = normalizeVisualStyle(initialConfig.visualStyle);
       return current === next ? current : next;
@@ -6125,7 +6003,9 @@ export default function CruorMapGeneratorMvp({
   useEffect(() => {
     if (!inlineComposerEditor || isManualEditActive) return;
 
-    const nextManualOverrides = normalizeManualOverrides(initialManualOverrides || createEmptyManualOverrides());
+    const nextManualOverrides = normalizeManualOverrides(
+      initialManualOverrides || createEmptyManualOverrides()
+    );
     const currentManualOverrides = normalizeManualOverrides(manualOverrides);
     const pendingInlineManualCommit = pendingInlineManualCommitRef.current;
 
@@ -6187,7 +6067,7 @@ export default function CruorMapGeneratorMvp({
       shouldRunMapDiagnostics
         ? buildFullStructuralTestSuite(generatedMap, config, exportValidation)
         : null,
-    [generatedMap, config, exportValidation, shouldRunMapDiagnostics],
+    [generatedMap, config, exportValidation, shouldRunMapDiagnostics]
   );
   if (computedTestSuite) lastTestSuiteRef.current = computedTestSuite;
   const testSuite = lastTestSuiteRef.current || {
@@ -6202,10 +6082,7 @@ export default function CruorMapGeneratorMvp({
     function handleTestsShortcut(event) {
       if (event.key !== "F2") return;
       const target = event.target;
-      if (
-        target?.closest?.("input, select, textarea, [contenteditable='true']")
-      )
-        return;
+      if (target?.closest?.("input, select, textarea, [contenteditable='true']")) return;
       event.preventDefault();
       setTestsModalOpen((value) => !value);
     }
@@ -6229,13 +6106,13 @@ export default function CruorMapGeneratorMvp({
   useEffect(() => {
     return registerTooltipProvider("tooltip-room", (id) => {
       const region = generatedMap.regions.find(
-        (item) => item.id === id || item.sourceRegionId === id,
+        (item) => item.id === id || item.sourceRegionId === id
       );
       if (!region) return null;
       return createRoomTooltipPayload(
         region,
         generatedMap,
-        getImportedRegionForTooltip(region, importedRegions),
+        getImportedRegionForTooltip(region, importedRegions)
       );
     });
   }, [generatedMap, importedRegions]);
@@ -6258,11 +6135,13 @@ export default function CruorMapGeneratorMvp({
     pendingInlineManualCommitRef.current = cloneManualOverrides(nextManualOverrides);
   }
 
-  function updateManualOverridesWithHistory(updater, status = "", debugLabel = "updateManualOverridesWithHistory") {
+  function updateManualOverridesWithHistory(
+    updater,
+    status = "",
+    debugLabel = "updateManualOverridesWithHistory"
+  ) {
     const previous = cloneManualOverrides(manualOverridesRef.current);
-    const next = cloneManualOverrides(
-      typeof updater === "function" ? updater(previous) : updater,
-    );
+    const next = cloneManualOverrides(typeof updater === "function" ? updater(previous) : updater);
     if (areManualOverridesEqual(previous, next)) {
       debugManualOverridesTransition(`${debugLabel}: no-op`, previous, next, { status });
       return false;
@@ -6278,9 +6157,7 @@ export default function CruorMapGeneratorMvp({
 
   function setManualOverridesFromCurrent(updater, debugLabel = "setManualOverridesFromCurrent") {
     const previous = cloneManualOverrides(manualOverridesRef.current);
-    const next = cloneManualOverrides(
-      typeof updater === "function" ? updater(previous) : updater,
-    );
+    const next = cloneManualOverrides(typeof updater === "function" ? updater(previous) : updater);
     if (areManualOverridesEqual(previous, next)) {
       debugManualOverridesTransition(`${debugLabel}: no-op`, previous, next);
       return false;
@@ -6424,16 +6301,28 @@ export default function CruorMapGeneratorMvp({
     if (!delta || (delta.dx === 0 && delta.dy === 0)) return access;
     return {
       ...access,
-      ...(access.anchor ? { anchor: translateAnchor(access.anchor, delta.dx, delta.dy, gridSize) } : {}),
-      ...(access.displayAnchor ? { displayAnchor: translateAnchor(access.displayAnchor, delta.dx, delta.dy, gridSize) } : {}),
+      ...(access.anchor
+        ? { anchor: translateAnchor(access.anchor, delta.dx, delta.dy, gridSize) }
+        : {}),
+      ...(access.displayAnchor
+        ? { displayAnchor: translateAnchor(access.displayAnchor, delta.dx, delta.dy, gridSize) }
+        : {}),
       ...(access.cell ? { cell: translateCell(access.cell, delta.dx, delta.dy) } : {}),
       ...(access.point ? { point: translatePoint(access.point, delta.dxPx, delta.dyPx) } : {}),
-      ...(access.displayPoint ? { displayPoint: translatePoint(access.displayPoint, delta.dxPx, delta.dyPx) } : {}),
+      ...(access.displayPoint
+        ? { displayPoint: translatePoint(access.displayPoint, delta.dxPx, delta.dyPx) }
+        : {}),
       ...(access.start ? { start: translatePoint(access.start, delta.dxPx, delta.dyPx) } : {}),
       ...(access.end ? { end: translatePoint(access.end, delta.dxPx, delta.dyPx) } : {}),
-      ...(access.wallGap ? { wallGap: translateLineLike(access.wallGap, delta.dxPx, delta.dyPx) } : {}),
-      ...(access.displayWallGap ? { displayWallGap: translateLineLike(access.displayWallGap, delta.dxPx, delta.dyPx) } : {}),
-      ...(access.floorExtension ? { floorExtension: translateFloorExtension(access.floorExtension, delta.dxPx, delta.dyPx) } : {}),
+      ...(access.wallGap
+        ? { wallGap: translateLineLike(access.wallGap, delta.dxPx, delta.dyPx) }
+        : {}),
+      ...(access.displayWallGap
+        ? { displayWallGap: translateLineLike(access.displayWallGap, delta.dxPx, delta.dyPx) }
+        : {}),
+      ...(access.floorExtension
+        ? { floorExtension: translateFloorExtension(access.floorExtension, delta.dxPx, delta.dyPx) }
+        : {}),
       ...(Number.isFinite(Number(access.x)) ? { x: Number(access.x) + delta.dxPx } : {}),
       ...(Number.isFinite(Number(access.y)) ? { y: Number(access.y) + delta.dyPx } : {}),
     };
@@ -6486,9 +6375,7 @@ export default function CruorMapGeneratorMvp({
       const dy = point.y - segment.y1;
       return dx * dx + dy * dy;
     }
-    const rawT =
-      ((point.x - segment.x1) * vx + (point.y - segment.y1) * vy) /
-      lengthSquared;
+    const rawT = ((point.x - segment.x1) * vx + (point.y - segment.y1) * vy) / lengthSquared;
     const t = Math.max(0, Math.min(1, rawT));
     const closest = {
       x: segment.x1 + vx * t,
@@ -6553,7 +6440,7 @@ export default function CruorMapGeneratorMvp({
         (candidate) =>
           candidate.side === anchor.side &&
           candidate.cell?.x === anchor.cell.x &&
-          candidate.cell?.y === anchor.cell.y,
+          candidate.cell?.y === anchor.cell.y
       ) || null
     );
   }
@@ -6572,7 +6459,7 @@ export default function CruorMapGeneratorMvp({
     graph,
     regions,
     deltas,
-    gridSize,
+    gridSize
   ) {
     const normalizedAnchors = {};
     const edgeById = new Map((graph || []).map((edge) => [edge.id, edge]));
@@ -6596,10 +6483,7 @@ export default function CruorMapGeneratorMvp({
       const translatedAnchor = delta
         ? translateAnchor(anchor, delta.dx, delta.dy, gridSize)
         : anchor;
-      const exactAnchor = getBoundaryAnchorWithSameSideAndCell(
-        region,
-        translatedAnchor,
-      );
+      const exactAnchor = getBoundaryAnchorWithSameSideAndCell(region, translatedAnchor);
       if (exactAnchor) {
         normalizedAnchors[key] = serializeManualAnchor(exactAnchor);
         return;
@@ -6608,10 +6492,10 @@ export default function CruorMapGeneratorMvp({
       const translatedCandidate = getClosestRawBoundaryAnchorCandidate(
         region,
         translatedPoint,
-        gridSize,
+        gridSize
       );
       normalizedAnchors[key] = serializeManualAnchor(
-        translatedCandidate?.anchor || translatedAnchor,
+        translatedCandidate?.anchor || translatedAnchor
       );
     });
     return normalizedAnchors;
@@ -6662,9 +6546,7 @@ export default function CruorMapGeneratorMvp({
     if (!corridor) return "";
     if (corridor.autoHubId) return corridor.autoHubId;
     if (corridor.autoHubStem && typeof corridor.id === "string") {
-      return corridor.id.endsWith("-stem")
-        ? corridor.id.slice(0, -"-stem".length)
-        : corridor.id;
+      return corridor.id.endsWith("-stem") ? corridor.id.slice(0, -"-stem".length) : corridor.id;
     }
     return "";
   }
@@ -6680,21 +6562,14 @@ export default function CruorMapGeneratorMvp({
     );
   }
 
-  function expandImpactedCorridorIdsForAutoHubs(
-    baseCorridors,
-    impactedIds,
-    movedRegionIds,
-  ) {
+  function expandImpactedCorridorIdsForAutoHubs(baseCorridors, impactedIds, movedRegionIds) {
     const expanded = new Set(impactedIds);
     const impactedHubIds = new Set();
 
     (baseCorridors || []).forEach((corridor) => {
       const hubId = getCorridorAutoHubGroupId(corridor);
       if (!hubId) return;
-      if (
-        expanded.has(corridor.id) ||
-        corridorReferencesMovedRegion(corridor, movedRegionIds)
-      ) {
+      if (expanded.has(corridor.id) || corridorReferencesMovedRegion(corridor, movedRegionIds)) {
         impactedHubIds.add(hubId);
       }
     });
@@ -6713,10 +6588,10 @@ export default function CruorMapGeneratorMvp({
   function shouldDropUnresolvedImpactedCorridor(corridor) {
     return Boolean(
       corridor?.autoHub ||
-        corridor?.autoHubStem ||
-        corridor?.autoHubId ||
-        corridor?.recoveredGraphEdge ||
-        corridor?.recoveredRoomTraversal,
+      corridor?.autoHubStem ||
+      corridor?.autoHubId ||
+      corridor?.recoveredGraphEdge ||
+      corridor?.recoveredRoomTraversal
     );
   }
 
@@ -6756,12 +6631,12 @@ export default function CruorMapGeneratorMvp({
     // only corridors should adapt around the existing room footprint.
     const sourceRegions = Array.isArray(baseMap.regions) ? baseMap.regions : [];
     const movedRegions = sourceRegions.map((region) =>
-      translateRegionGeometry(region, positions[region.id], gridSize),
+      translateRegionGeometry(region, positions[region.id], gridSize)
     );
     const deltas = getRegionDeltaMap(sourceRegions, movedRegions, gridSize);
     const routingGraph = dedupeRoutingGraphForManualDuplicatePairs(
       generatedCandidate.graph || baseMap.graph || [],
-      normalized.customConnections || [],
+      normalized.customConnections || []
     );
     const movedRegionIds = getMovedRegionIdsFromDeltas(deltas);
     const movedRegionCorridorIds = new Set();
@@ -6776,7 +6651,7 @@ export default function CruorMapGeneratorMvp({
       routingGraph,
       movedRegions,
       deltas,
-      gridSize,
+      gridSize
     );
     const normalizedCorridorWaypoints = { ...(normalized.corridorWaypoints || {}) };
     movedRegionCorridorIds.forEach((corridorId) => {
@@ -6803,12 +6678,12 @@ export default function CruorMapGeneratorMvp({
     const initialImpactedCorridorIds = getImpactedManualCorridorIds(
       normalized,
       routingGraph,
-      movedRegionIds,
+      movedRegionIds
     );
     const impactedCorridorIds = expandImpactedCorridorIdsForAutoHubs(
       baseCorridors,
       initialImpactedCorridorIds,
-      movedRegionIds,
+      movedRegionIds
     );
     // Room moves can invalidate corridor hubs, stems, and recovered corridors
     // beyond the direct room-to-room edge list. Partial reroute may preserve
@@ -6820,60 +6695,37 @@ export default function CruorMapGeneratorMvp({
     const routedGraph = shouldRerouteWholeNetwork
       ? routingGraph
       : routingGraph.filter((edge) => impactedCorridorIds.has(edge.id));
-    const routedCorridors = routedGraph.length > 0
-      ? routeCorridors(
-          routingConfig,
-          movedRegions,
-          routedGraph,
-        )
-      : [];
+    const routedCorridors =
+      routedGraph.length > 0 ? routeCorridors(routingConfig, movedRegions, routedGraph) : [];
     const mergedCorridors = shouldRerouteWholeNetwork
       ? routedCorridors
-      : mergePartiallyRoutedCorridors(
-          baseCorridors,
-          routedCorridors,
-          impactedCorridorIds,
-        );
-    const extensionRegions = applyCircleDoorRoomExtensions(
-      movedRegions,
-      mergedCorridors,
-    );
-    const leveledMap = applyLevelMetadata(
-      extensionRegions,
-      mergedCorridors,
-      routingConfig,
-    );
+      : mergePartiallyRoutedCorridors(baseCorridors, routedCorridors, impactedCorridorIds);
+    const extensionRegions = applyCircleDoorRoomExtensions(movedRegions, mergedCorridors);
+    const leveledMap = applyLevelMetadata(extensionRegions, mergedCorridors, routingConfig);
     const regions = leveledMap.regions || movedRegions;
     const corridors = leveledMap.corridors || mergedCorridors;
-    const rebuiltDungeonMask = buildDungeonMask(
-      regions,
-      corridors,
-      gridSize,
-    );
-    const lockedMapAccesses =
-      baseMap.dungeonMask?.mapAccesses ||
-      baseMap.mapAccesses ||
-      [];
+    const rebuiltDungeonMask = buildDungeonMask(regions, corridors, gridSize);
+    const lockedMapAccesses = baseMap.dungeonMask?.mapAccesses || baseMap.mapAccesses || [];
     const regeneratedMapAccesses =
-      generatedCandidate.dungeonMask?.mapAccesses ||
-      generatedCandidate.mapAccesses ||
-      [];
+      generatedCandidate.dungeonMask?.mapAccesses || generatedCandidate.mapAccesses || [];
     const manualAccessRegionIds = new Set(
       Object.entries(normalized.mapAccesses || {})
         .filter(([, override]) => override && !override.disabled)
-        .map(([regionId]) => regionId),
+        .map(([regionId]) => regionId)
     );
     const regeneratedAccessByRegionId = new Map(
       regeneratedMapAccesses
         .filter((access) => access?.regionId)
-        .map((access) => [access.regionId, access]),
+        .map((access) => [access.regionId, access])
     );
     const seenAccessRegionIds = new Set();
     const mapAccesses = lockedMapAccesses.map((access) => {
       if (access?.regionId) seenAccessRegionIds.add(access.regionId);
       if (access?.regionId && manualAccessRegionIds.has(access.regionId)) {
-        return regeneratedAccessByRegionId.get(access.regionId) ||
-          translateMapAccess(access, deltas, gridSize);
+        return (
+          regeneratedAccessByRegionId.get(access.regionId) ||
+          translateMapAccess(access, deltas, gridSize)
+        );
       }
       return translateMapAccess(access, deltas, gridSize);
     });
@@ -7021,9 +6873,7 @@ export default function CruorMapGeneratorMvp({
   function undoManualEdit() {
     setManualHistory((history) => {
       if (history.past.length === 0) return history;
-      const previous = cloneManualOverrides(
-        history.past[history.past.length - 1],
-      );
+      const previous = cloneManualOverrides(history.past[history.past.length - 1]);
       const current = cloneManualOverrides(manualOverrides);
       setManualOverrides(previous);
       setStateStatus("Undone.");
@@ -7049,12 +6899,7 @@ export default function CruorMapGeneratorMvp({
   }
 
   function randomizeSeed() {
-    const nextSeed = hashStringToSeed(
-      seed,
-      roomCount,
-      context,
-      "next-seed",
-    ).toString(36);
+    const nextSeed = hashStringToSeed(seed, roomCount, context, "next-seed").toString(36);
     setSeed(`cruor-${nextSeed}`);
     setManualLayoutSeed("");
     manualLayoutGeometryRef.current = null;
@@ -7082,7 +6927,7 @@ export default function CruorMapGeneratorMvp({
         levelView,
         fadeOtherLevels,
       },
-      generatedMap,
+      generatedMap
     );
     setStateStatus("State exported.");
   }
@@ -7103,30 +6948,15 @@ export default function CruorMapGeneratorMvp({
         setManualLayoutSeed("");
         manualLayoutGeometryRef.current = null;
         setContext(String(importedConfig.context || DEFAULT_CONFIG.context));
-        setMapWidth(
-          normalizeMapDimension(
-            importedConfig.mapWidth,
-            DEFAULT_CONFIG.mapWidth,
-          ),
-        );
-        setMapHeight(
-          normalizeMapDimension(
-            importedConfig.mapHeight,
-            DEFAULT_CONFIG.mapHeight,
-          ),
-        );
+        setMapWidth(normalizeMapDimension(importedConfig.mapWidth, DEFAULT_CONFIG.mapWidth));
+        setMapHeight(normalizeMapDimension(importedConfig.mapHeight, DEFAULT_CONFIG.mapHeight));
         setVisualStyle(
-          normalizeVisualStyle(importedConfig.visualStyle, DEFAULT_CONFIG.visualStyle),
+          normalizeVisualStyle(importedConfig.visualStyle, DEFAULT_CONFIG.visualStyle)
         );
         setGridStyle(normalizeGridStyle(importedConfig.gridStyle || DEFAULT_CONFIG.gridStyle));
         setGridColor(normalizeGridColor(importedConfig.gridColor || DEFAULT_CONFIG.gridColor));
         setGridWeight(normalizeGridWeight(importedConfig.gridWeight || DEFAULT_CONFIG.gridWeight));
-        setRoomCount(
-          normalizeRoomCount(
-            importedConfig.roomCount,
-            DEFAULT_CONFIG.roomCount,
-          ),
-        );
+        setRoomCount(normalizeRoomCount(importedConfig.roomCount, DEFAULT_CONFIG.roomCount));
         setShowGrid(Boolean(importedConfig.showGrid));
         if (payload.uiState && typeof payload.uiState === "object") {
           if (typeof payload.uiState.showEditor === "boolean")
@@ -7146,9 +6976,7 @@ export default function CruorMapGeneratorMvp({
           if (typeof payload.uiState.gridWeight === "string")
             setGridWeight(normalizeGridWeight(payload.uiState.gridWeight));
           if (typeof payload.uiState.visualStyle === "string")
-            setVisualStyle(
-              normalizeVisualStyle(payload.uiState.visualStyle, visualStyle),
-            );
+            setVisualStyle(normalizeVisualStyle(payload.uiState.visualStyle, visualStyle));
           if (typeof payload.uiState.wallDrawingStyle === "string")
             setWallDrawingStyle(normalizeWallDrawingStyle(payload.uiState.wallDrawingStyle));
           if (typeof payload.uiState.hatchShadowColor === "string")
@@ -7162,9 +6990,7 @@ export default function CruorMapGeneratorMvp({
         clearManualHistory();
         setStateStatus("State imported.");
       } catch (error) {
-        setStateStatus(
-          error instanceof Error ? error.message : "Could not import state.",
-        );
+        setStateStatus(error instanceof Error ? error.message : "Could not import state.");
       } finally {
         event.target.value = "";
       }
@@ -7173,28 +6999,14 @@ export default function CruorMapGeneratorMvp({
   }
 
   function createRoomMoveManualOverrides(currentOverrides, regionId, position) {
-    const target = generatedMap.regions.find(
-      (region) => region.id === regionId,
-    );
+    const target = generatedMap.regions.find((region) => region.id === regionId);
     if (!target) return null;
-    const gridW = Math.floor(
-      generatedMap.config.mapWidth / generatedMap.config.gridSize,
-    );
-    const gridH = Math.floor(
-      generatedMap.config.mapHeight / generatedMap.config.gridSize,
-    );
+    const gridW = Math.floor(generatedMap.config.mapWidth / generatedMap.config.gridSize);
+    const gridH = Math.floor(generatedMap.config.mapHeight / generatedMap.config.gridSize);
     const candidate = {
       ...target.cellRect,
-      x: clamp(
-        Math.round(position.x),
-        1,
-        Math.max(1, gridW - target.cellRect.w - 1),
-      ),
-      y: clamp(
-        Math.round(position.y),
-        1,
-        Math.max(1, gridH - target.cellRect.h - 1),
-      ),
+      x: clamp(Math.round(position.x), 1, Math.max(1, gridW - target.cellRect.w - 1)),
+      y: clamp(Math.round(position.y), 1, Math.max(1, gridH - target.cellRect.h - 1)),
     };
     const dx = candidate.x - target.cellRect.x;
     const dy = candidate.y - target.cellRect.y;
@@ -7202,12 +7014,10 @@ export default function CruorMapGeneratorMvp({
     const occupiedCells = new Set();
     generatedMap.regions.forEach((region) => {
       if (region.id === regionId) return;
-      region.floorCells.forEach((cell) =>
-        occupiedCells.add(cellKey(cell.x, cell.y)),
-      );
+      region.floorCells.forEach((cell) => occupiedCells.add(cellKey(cell.x, cell.y)));
     });
     const overlaps = target.floorCells.some((cell) =>
-      occupiedCells.has(cellKey(cell.x + dx, cell.y + dy)),
+      occupiedCells.has(cellKey(cell.x + dx, cell.y + dy))
     );
     if (overlaps) return null;
     return freezeCurrentRoomLayout(currentOverrides, {
@@ -7254,10 +7064,7 @@ export default function CruorMapGeneratorMvp({
 
   function areSerializedAnchorsEqual(a, b) {
     if (!a || !b) return false;
-    const sameBasicCell =
-      a.side === b.side &&
-      a.cell?.x === b.cell?.x &&
-      a.cell?.y === b.cell?.y;
+    const sameBasicCell = a.side === b.side && a.cell?.x === b.cell?.x && a.cell?.y === b.cell?.y;
     if (!(a.finalGeometry || b.finalGeometry || a.expandedCircleDoor || b.expandedCircleDoor))
       return sameBasicCell;
     return (
@@ -7274,11 +7081,13 @@ export default function CruorMapGeneratorMvp({
 
   function moveDoor(corridorId, endpoint, point, committedAnchor = null, debugTrace = null) {
     const activeMap = generatedMapRef.current || generatedMap;
-    const corridor = activeMap.corridors.find(
-      (item) => item.id === corridorId,
-    );
+    const corridor = activeMap.corridors.find((item) => item.id === corridorId);
     if (!corridor) {
-      debugEvent("moveDoor: corridor not found", { corridorId, endpoint, point: roundDebugPoint(point) });
+      debugEvent("moveDoor: corridor not found", {
+        corridorId,
+        endpoint,
+        point: roundDebugPoint(point),
+      });
       return false;
     }
     debugEvent("moveDoor: start", {
@@ -7299,12 +7108,8 @@ export default function CruorMapGeneratorMvp({
       manualBefore: summarizeDebugManualOverrides(manualOverridesRef.current),
     });
     if (corridor.isRoomLink || endpoint === "shared") {
-      const fromRegion = activeMap.regions.find(
-        (item) => item.id === corridor.from,
-      );
-      const toRegion = activeMap.regions.find(
-        (item) => item.id === corridor.to,
-      );
+      const fromRegion = activeMap.regions.find((item) => item.id === corridor.from);
+      const toRegion = activeMap.regions.find((item) => item.id === corridor.to);
       if (!fromRegion || !toRegion) {
         debugEvent("moveDoor: shared endpoint missing region", {
           corridorId,
@@ -7318,7 +7123,7 @@ export default function CruorMapGeneratorMvp({
         fromRegion,
         toRegion,
         point,
-        activeMap.config.gridSize,
+        activeMap.config.gridSize
       );
       if (!sharedConnection) {
         debugEvent("moveDoor: shared endpoint no shared connection", {
@@ -7333,15 +7138,10 @@ export default function CruorMapGeneratorMvp({
       const fromKey = corridorEndpointKey(corridorId, "from");
       const toKey = corridorEndpointKey(corridorId, "to");
       const current = normalizeManualOverrides(manualOverridesRef.current);
-      const hasManualWaypoints = Array.isArray(
-        current.corridorWaypoints?.[corridorId],
-      );
+      const hasManualWaypoints = Array.isArray(current.corridorWaypoints?.[corridorId]);
       if (
         !hasManualWaypoints &&
-        areSerializedAnchorsEqual(
-          current.doorAnchors?.[fromKey],
-          nextFromAnchor,
-        ) &&
+        areSerializedAnchorsEqual(current.doorAnchors?.[fromKey], nextFromAnchor) &&
         areSerializedAnchorsEqual(current.doorAnchors?.[toKey], nextToAnchor)
       ) {
         debugEvent("moveDoor: shared endpoint no-op", {
@@ -7366,14 +7166,21 @@ export default function CruorMapGeneratorMvp({
         corridorId,
         endpoint,
         releasePoint: roundDebugPoint(debugTrace?.releasePoint || point),
-        releaseCell: summarizeDebugCell(debugTrace?.releaseCell || getDebugPointCell(debugTrace?.releasePoint || point)),
+        releaseCell: summarizeDebugCell(
+          debugTrace?.releaseCell || getDebugPointCell(debugTrace?.releasePoint || point)
+        ),
         snapPoint: roundDebugPoint(debugTrace?.snapPoint || sharedConnection.point || point),
-        snapCell: summarizeDebugCell(debugTrace?.snapCell || getDebugPointCell(debugTrace?.snapPoint || sharedConnection.point || point)),
+        snapCell: summarizeDebugCell(
+          debugTrace?.snapCell ||
+            getDebugPointCell(debugTrace?.snapPoint || sharedConnection.point || point)
+        ),
         requestedAnchor: {
           from: summarizeDebugAnchor(nextFromAnchor),
           to: summarizeDebugAnchor(nextToAnchor),
         },
-        requestedAnchorCell: summarizeDebugCell(getDebugAnchorCell(endpoint === "to" ? nextToAnchor : nextFromAnchor)),
+        requestedAnchorCell: summarizeDebugCell(
+          getDebugAnchorCell(endpoint === "to" ? nextToAnchor : nextFromAnchor)
+        ),
         corridorBefore: summarizeDebugCorridor(corridor),
       });
       return setManualOverridesFromCurrent((currentOverrides) => {
@@ -7400,17 +7207,8 @@ export default function CruorMapGeneratorMvp({
     }
     const anchor =
       committedAnchor ||
-      getDoorDragManualAnchor(
-        region,
-        point,
-        activeMap.config.gridSize,
-      ) ||
-      getClosestBoundaryAnchorToPoint(
-        region,
-        point,
-        activeMap.config.gridSize,
-        generatedMap,
-      );
+      getDoorDragManualAnchor(region, point, activeMap.config.gridSize) ||
+      getClosestBoundaryAnchorToPoint(region, point, activeMap.config.gridSize, generatedMap);
     if (!anchor) {
       debugEvent("moveDoor: no anchor resolved", {
         corridorId,
@@ -7423,13 +7221,8 @@ export default function CruorMapGeneratorMvp({
     const nextAnchor = serializeManualAnchor(anchor);
     const key = corridorEndpointKey(corridorId, endpoint);
     const current = normalizeManualOverrides(manualOverridesRef.current);
-    const hasManualWaypoints = Array.isArray(
-      current.corridorWaypoints?.[corridorId],
-    );
-    if (
-      !hasManualWaypoints &&
-      areSerializedAnchorsEqual(current.doorAnchors?.[key], nextAnchor)
-    ) {
+    const hasManualWaypoints = Array.isArray(current.corridorWaypoints?.[corridorId]);
+    if (!hasManualWaypoints && areSerializedAnchorsEqual(current.doorAnchors?.[key], nextAnchor)) {
       debugEvent("moveDoor: endpoint no-op", {
         corridorId,
         endpoint,
@@ -7451,9 +7244,13 @@ export default function CruorMapGeneratorMvp({
       corridorId,
       endpoint,
       releasePoint: roundDebugPoint(debugTrace?.releasePoint || point),
-      releaseCell: summarizeDebugCell(debugTrace?.releaseCell || getDebugPointCell(debugTrace?.releasePoint || point)),
+      releaseCell: summarizeDebugCell(
+        debugTrace?.releaseCell || getDebugPointCell(debugTrace?.releasePoint || point)
+      ),
       snapPoint: roundDebugPoint(debugTrace?.snapPoint || point),
-      snapCell: summarizeDebugCell(debugTrace?.snapCell || getDebugPointCell(debugTrace?.snapPoint || point)),
+      snapCell: summarizeDebugCell(
+        debugTrace?.snapCell || getDebugPointCell(debugTrace?.snapPoint || point)
+      ),
       requestedAnchor: summarizeDebugAnchor(nextAnchor),
       requestedAnchorCell: summarizeDebugCell(getDebugAnchorCell(nextAnchor)),
       previousAnchor: summarizeDebugAnchor(current.doorAnchors?.[key]),
@@ -7476,22 +7273,11 @@ export default function CruorMapGeneratorMvp({
   }
 
   function moveWaypoint(corridorId, waypointIndex, point, source) {
-    const corridor = generatedMap.corridors.find(
-      (item) => item.id === corridorId,
-    );
+    const corridor = generatedMap.corridors.find((item) => item.id === corridorId);
     if (!corridor) return false;
-    const gridW = Math.floor(
-      generatedMap.config.mapWidth / generatedMap.config.gridSize,
-    );
-    const gridH = Math.floor(
-      generatedMap.config.mapHeight / generatedMap.config.gridSize,
-    );
-    const cell = normalizeManualWaypoint(
-      point,
-      generatedMap.config.gridSize,
-      gridW,
-      gridH,
-    );
+    const gridW = Math.floor(generatedMap.config.mapWidth / generatedMap.config.gridSize);
+    const gridH = Math.floor(generatedMap.config.mapHeight / generatedMap.config.gridSize);
+    const cell = normalizeManualWaypoint(point, generatedMap.config.gridSize, gridW, gridH);
     if (!cell) return false;
     const roomCells = getRoomCellSet(generatedMap.regions);
     if (roomCells.has(cellKey(cell.x, cell.y))) return false;
@@ -7504,16 +7290,11 @@ export default function CruorMapGeneratorMvp({
     if (source === "manual") {
       nextWaypoints = [...currentManual];
       const safeIndex = clamp(
-        Number.isInteger(waypointIndex)
-          ? waypointIndex
-          : nextWaypoints.length,
+        Number.isInteger(waypointIndex) ? waypointIndex : nextWaypoints.length,
         0,
-        nextWaypoints.length,
+        nextWaypoints.length
       );
-      if (
-        currentManual[safeIndex]?.x === cell.x &&
-        currentManual[safeIndex]?.y === cell.y
-      )
+      if (currentManual[safeIndex]?.x === cell.x && currentManual[safeIndex]?.y === cell.y)
         return false;
       nextWaypoints[safeIndex] = cell;
     } else {
@@ -7532,35 +7313,25 @@ export default function CruorMapGeneratorMvp({
       cell: summarizeDebugCell(cell),
       nextWaypoints,
     });
-    return setManualOverridesFromCurrent((currentOverrides) =>
-      freezeCurrentRoomLayout({
-        ...currentOverrides,
-        corridorWaypoints: {
-          ...(currentOverrides.corridorWaypoints || {}),
-          [corridorId]: nextWaypoints.filter(isValidPoint),
-        },
-      }),
-      `moveWaypoint:${corridorId}`,
+    return setManualOverridesFromCurrent(
+      (currentOverrides) =>
+        freezeCurrentRoomLayout({
+          ...currentOverrides,
+          corridorWaypoints: {
+            ...(currentOverrides.corridorWaypoints || {}),
+            [corridorId]: nextWaypoints.filter(isValidPoint),
+          },
+        }),
+      `moveWaypoint:${corridorId}`
     );
   }
 
   function insertWaypoint(corridorId, insertIndex, point) {
-    const corridor = generatedMap.corridors.find(
-      (item) => item.id === corridorId,
-    );
+    const corridor = generatedMap.corridors.find((item) => item.id === corridorId);
     if (!corridor) return false;
-    const gridW = Math.floor(
-      generatedMap.config.mapWidth / generatedMap.config.gridSize,
-    );
-    const gridH = Math.floor(
-      generatedMap.config.mapHeight / generatedMap.config.gridSize,
-    );
-    const cell = normalizeManualWaypoint(
-      point,
-      generatedMap.config.gridSize,
-      gridW,
-      gridH,
-    );
+    const gridW = Math.floor(generatedMap.config.mapWidth / generatedMap.config.gridSize);
+    const gridH = Math.floor(generatedMap.config.mapHeight / generatedMap.config.gridSize);
+    const cell = normalizeManualWaypoint(point, generatedMap.config.gridSize, gridW, gridH);
     if (!cell) return false;
     const roomCells = getRoomCellSet(generatedMap.regions);
     if (roomCells.has(cellKey(cell.x, cell.y))) return false;
@@ -7572,7 +7343,7 @@ export default function CruorMapGeneratorMvp({
     const safeIndex = clamp(
       Number.isInteger(insertIndex) ? insertIndex : currentManual.length,
       0,
-      currentManual.length,
+      currentManual.length
     );
     const nextWaypoints = [...currentManual];
     nextWaypoints.splice(safeIndex, 0, cell);
@@ -7582,15 +7353,16 @@ export default function CruorMapGeneratorMvp({
       cell: summarizeDebugCell(cell),
       nextWaypoints,
     });
-    return setManualOverridesFromCurrent((currentOverrides) =>
-      freezeCurrentRoomLayout({
-        ...currentOverrides,
-        corridorWaypoints: {
-          ...(currentOverrides.corridorWaypoints || {}),
-          [corridorId]: nextWaypoints.filter(isValidPoint),
-        },
-      }),
-      `insertWaypoint:${corridorId}`,
+    return setManualOverridesFromCurrent(
+      (currentOverrides) =>
+        freezeCurrentRoomLayout({
+          ...currentOverrides,
+          corridorWaypoints: {
+            ...(currentOverrides.corridorWaypoints || {}),
+            [corridorId]: nextWaypoints.filter(isValidPoint),
+          },
+        }),
+      `insertWaypoint:${corridorId}`
     );
   }
 
@@ -7603,9 +7375,7 @@ export default function CruorMapGeneratorMvp({
         : [];
       const safeIndex = Number.isInteger(waypointIndex) ? waypointIndex : -1;
       if (safeIndex < 0 || safeIndex >= currentManual.length) return current;
-      const nextWaypoints = currentManual.filter(
-        (_, index) => index !== safeIndex,
-      );
+      const nextWaypoints = currentManual.filter((_, index) => index !== safeIndex);
       return freezeCurrentRoomLayout({
         ...current,
         corridorWaypoints: {
@@ -7620,51 +7390,55 @@ export default function CruorMapGeneratorMvp({
     if (!corridorId) return;
     debugEvent("deleteConnection: requested", {
       corridorId,
-      corridor: summarizeDebugCorridor(generatedMap.corridors.find((item) => item.id === corridorId)),
+      corridor: summarizeDebugCorridor(
+        generatedMap.corridors.find((item) => item.id === corridorId)
+      ),
       manualBefore: summarizeDebugManualOverrides(manualOverridesRef.current),
     });
-    updateManualOverridesWithHistory((current) => {
-      const normalized = normalizeManualOverrides(current);
-      const deletedConnections = Array.isArray(normalized.deletedConnections)
-        ? normalized.deletedConnections
-        : [];
-      const customConnections = Array.isArray(normalized.customConnections)
-        ? normalized.customConnections.filter(
-            (connection) => connection.id !== corridorId,
-          )
-        : [];
-      const doorAnchors = { ...(normalized.doorAnchors || {}) };
-      delete doorAnchors[corridorEndpointKey(corridorId, "from")];
-      delete doorAnchors[corridorEndpointKey(corridorId, "to")];
-      const doorTypes = { ...(normalized.doorTypes || {}) };
-      delete doorTypes[doorTypeKey(corridorId, "from")];
-      delete doorTypes[doorTypeKey(corridorId, "to")];
-      delete doorTypes[doorTypeKey(corridorId, "shared")];
-      const stairTransitions = { ...(normalized.levels.stairs || {}) };
-      delete stairTransitions[stairTransitionKey(corridorId, "from")];
-      delete stairTransitions[stairTransitionKey(corridorId, "to")];
-      delete stairTransitions[stairTransitionKey(corridorId, "shared")];
-      const levels = {
-        ...normalized.levels,
-        stairs: stairTransitions,
-        corridors: { ...(normalized.levels.corridors || {}) },
-      };
-      delete levels.corridors[corridorId];
-      const corridorWaypoints = { ...(normalized.corridorWaypoints || {}) };
-      delete corridorWaypoints[corridorId];
-      return freezeCurrentRoomLayout({
-        ...normalized,
-        customConnections,
-        doorAnchors,
-        doorTypes,
-        stairTransitions,
-        levels,
-        corridorWaypoints,
-        deletedConnections: deletedConnections.includes(corridorId)
-          ? deletedConnections
-          : [...deletedConnections, corridorId],
-      });
-    }, "", `deleteConnection:${corridorId}`);
+    updateManualOverridesWithHistory(
+      (current) => {
+        const normalized = normalizeManualOverrides(current);
+        const deletedConnections = Array.isArray(normalized.deletedConnections)
+          ? normalized.deletedConnections
+          : [];
+        const customConnections = Array.isArray(normalized.customConnections)
+          ? normalized.customConnections.filter((connection) => connection.id !== corridorId)
+          : [];
+        const doorAnchors = { ...(normalized.doorAnchors || {}) };
+        delete doorAnchors[corridorEndpointKey(corridorId, "from")];
+        delete doorAnchors[corridorEndpointKey(corridorId, "to")];
+        const doorTypes = { ...(normalized.doorTypes || {}) };
+        delete doorTypes[doorTypeKey(corridorId, "from")];
+        delete doorTypes[doorTypeKey(corridorId, "to")];
+        delete doorTypes[doorTypeKey(corridorId, "shared")];
+        const stairTransitions = { ...(normalized.levels.stairs || {}) };
+        delete stairTransitions[stairTransitionKey(corridorId, "from")];
+        delete stairTransitions[stairTransitionKey(corridorId, "to")];
+        delete stairTransitions[stairTransitionKey(corridorId, "shared")];
+        const levels = {
+          ...normalized.levels,
+          stairs: stairTransitions,
+          corridors: { ...(normalized.levels.corridors || {}) },
+        };
+        delete levels.corridors[corridorId];
+        const corridorWaypoints = { ...(normalized.corridorWaypoints || {}) };
+        delete corridorWaypoints[corridorId];
+        return freezeCurrentRoomLayout({
+          ...normalized,
+          customConnections,
+          doorAnchors,
+          doorTypes,
+          stairTransitions,
+          levels,
+          corridorWaypoints,
+          deletedConnections: deletedConnections.includes(corridorId)
+            ? deletedConnections
+            : [...deletedConnections, corridorId],
+        });
+      },
+      "",
+      `deleteConnection:${corridorId}`
+    );
   }
 
   function updateDoorType(corridorId, endpoint, doorType) {
@@ -7703,8 +7477,7 @@ export default function CruorMapGeneratorMvp({
     if (access.displayAnchor) {
       return {
         ...access.displayAnchor,
-        finalBoundaryIndex:
-          access.finalBoundaryIndex ?? access.displayAnchor.finalBoundaryIndex,
+        finalBoundaryIndex: access.finalBoundaryIndex ?? access.displayAnchor.finalBoundaryIndex,
         segment: access.segment || access.displayAnchor.segment,
         point: access.point || access.displayAnchor.point,
         normal: access.normal || access.displayAnchor.normal,
@@ -7739,7 +7512,7 @@ export default function CruorMapGeneratorMvp({
     const fallbackIntent = getFallbackMapAccessIntent(region, generatedMap);
     const type = normalizeMapAccessType(
       accessType || existingAccess?.type || fallbackIntent.type,
-      fallbackIntent.type || "passage",
+      fallbackIntent.type || "passage"
     );
     const serializedAnchor = serializeMapAccessAnchor(anchor);
     if (!serializedAnchor) return null;
@@ -7757,18 +7530,13 @@ export default function CruorMapGeneratorMvp({
     return (
       Boolean(previous && !previous.disabled && nextOverride) &&
       previous.type === nextOverride.type &&
-      JSON.stringify(previous.anchor || null) ===
-        JSON.stringify(nextOverride.anchor || null)
+      JSON.stringify(previous.anchor || null) === JSON.stringify(nextOverride.anchor || null)
     );
   }
 
   function preservePureCaveAccessOverrides(mapAccesses, targetRegionId) {
     if (!pureCaveMap) return mapAccesses;
-    (
-      generatedMap.dungeonMask.mapAccesses ||
-      generatedMap.mapAccesses ||
-      []
-    ).forEach((access) => {
+    (generatedMap.dungeonMask.mapAccesses || generatedMap.mapAccesses || []).forEach((access) => {
       if (
         !access?.regionId ||
         access.regionId === targetRegionId ||
@@ -7776,11 +7544,7 @@ export default function CruorMapGeneratorMvp({
       )
         return;
       const anchor = getMapAccessAnchorForOverride(access);
-      const frozenOverride = buildMapAccessOverride(
-        access.regionId,
-        anchor,
-        access.type,
-      );
+      const frozenOverride = buildMapAccessOverride(access.regionId, anchor, access.type);
       if (frozenOverride) mapAccesses[access.regionId] = frozenOverride;
     });
     return mapAccesses;
@@ -7820,46 +7584,48 @@ export default function CruorMapGeneratorMvp({
   function setMapAccessWithHistory(regionId, anchor, accessType = null) {
     const nextOverride = buildMapAccessOverride(regionId, anchor, accessType);
     if (!nextOverride) return;
-    updateManualOverridesWithHistory((current) => {
-      const mapAccesses = { ...(current.mapAccesses || {}) };
-      const previous = mapAccesses[regionId];
-      if (mapAccessOverrideEquals(previous, nextOverride)) return current;
-      preservePureCaveAccessOverrides(mapAccesses, regionId);
-      mapAccesses[regionId] = nextOverride;
-      return {
-        ...current,
-        mapAccesses,
-      };
-    }, "", `setMapAccessWithHistory:${regionId}`);
+    updateManualOverridesWithHistory(
+      (current) => {
+        const mapAccesses = { ...(current.mapAccesses || {}) };
+        const previous = mapAccesses[regionId];
+        if (mapAccessOverrideEquals(previous, nextOverride)) return current;
+        preservePureCaveAccessOverrides(mapAccesses, regionId);
+        mapAccesses[regionId] = nextOverride;
+        return {
+          ...current,
+          mapAccesses,
+        };
+      },
+      "",
+      `setMapAccessWithHistory:${regionId}`
+    );
   }
 
   function removeMapAccess(regionId) {
     if (!regionId) return;
-    updateManualOverridesWithHistory((current) => ({
-      ...current,
-      mapAccesses: {
-        ...(current.mapAccesses || {}),
-        [regionId]: { disabled: true },
-      },
-    }), "", `removeMapAccess:${regionId}`);
+    updateManualOverridesWithHistory(
+      (current) => ({
+        ...current,
+        mapAccesses: {
+          ...(current.mapAccesses || {}),
+          [regionId]: { disabled: true },
+        },
+      }),
+      "",
+      `removeMapAccess:${regionId}`
+    );
   }
 
   function updateJunctionType(junctionKey, junctionType) {
     if (!junctionKey) return;
     updateManualOverridesWithHistory((current) => {
       const corridorJunctions = { ...(current.corridorJunctions || {}) };
-      const previous = getManualJunctionOverride(
-        corridorJunctions,
-        junctionKey,
-        "merge",
-      );
+      const previous = getManualJunctionOverride(corridorJunctions, junctionKey, "merge");
       const nextType = normalizeJunctionType(junctionType);
       if (nextType === "merge") delete corridorJunctions[junctionKey];
       else {
         const nextSideIndex =
-          previous.type === nextType
-            ? (previous.sideIndex + 1) % 4
-            : previous.sideIndex;
+          previous.type === nextType ? (previous.sideIndex + 1) % 4 : previous.sideIndex;
         corridorJunctions[junctionKey] = {
           type: nextType,
           sideIndex: nextSideIndex,
@@ -7899,7 +7665,7 @@ export default function CruorMapGeneratorMvp({
     const nextOverrides = createRoomMoveManualOverrides(
       manualOverridesRef.current,
       regionId,
-      position,
+      position
     );
     if (!nextOverrides) return null;
     return { map: buildPreviewMapFromManualOverrides(nextOverrides) };
@@ -7932,7 +7698,7 @@ export default function CruorMapGeneratorMvp({
       ...customConnections,
     ].filter((item) => item?.id && getConnectionLikePairKey(item) === pairKey);
     const baseCandidate = graphCandidates.find(
-      (item) => !customIds.has(item.id) && !isManualConnectionId(item.id),
+      (item) => !customIds.has(item.id) && !isManualConnectionId(item.id)
     );
     if (baseCandidate) return baseCandidate;
     return graphCandidates[0] || null;
@@ -7958,7 +7724,7 @@ export default function CruorMapGeneratorMvp({
   function dedupeRoutingGraphForManualDuplicatePairs(graph, customConnections = []) {
     if (!Array.isArray(graph) || graph.length <= 1) return graph || [];
     const customIds = new Set(
-      (customConnections || []).map((connection) => connection?.id).filter(Boolean),
+      (customConnections || []).map((connection) => connection?.id).filter(Boolean)
     );
     const seenBasePairs = new Set();
     const kept = [];
@@ -7968,7 +7734,8 @@ export default function CruorMapGeneratorMvp({
         kept.push(edge);
         return;
       }
-      const manual = customIds.has(edge.id) || isManualConnectionId(edge.id) || edge.kind === "manual";
+      const manual =
+        customIds.has(edge.id) || isManualConnectionId(edge.id) || edge.kind === "manual";
       if (!manual) {
         seenBasePairs.add(pairKey);
         kept.push(edge);
@@ -7992,38 +7759,24 @@ export default function CruorMapGeneratorMvp({
     const toAnchor = serializeManualAnchor(connection.toAnchor);
     if (!fromAnchor || !toAnchor) return null;
     const normalized = normalizeManualOverrides(currentOverrides);
-    const pairKey = getManualConnectionPairKey(
-      connection.fromRegionId,
-      connection.toRegionId,
-    );
+    const pairKey = getManualConnectionPairKey(connection.fromRegionId, connection.toRegionId);
     const customConnections = Array.isArray(normalized.customConnections)
       ? normalized.customConnections
       : [];
-    const existingConnection = findExistingConnectionForManualConnection(
-      connection,
-      normalized,
-    );
+    const existingConnection = findExistingConnectionForManualConnection(connection, normalized);
     const useExistingConnection = Boolean(existingConnection?.id);
     const nextSequence = normalized.manualConnectionSequence + 1;
     const edgeId = useExistingConnection
       ? existingConnection.id
       : `manual-edge-${connection.fromRegionId}-${connection.toRegionId}-${nextSequence.toString(36)}`;
     const existingFromMatchesDrag = existingConnection?.from === connection.fromRegionId;
-    const fromEndpoint = useExistingConnection
-      ? existingFromMatchesDrag
-        ? "from"
-        : "to"
-      : "from";
-    const toEndpoint = useExistingConnection
-      ? existingFromMatchesDrag
-        ? "to"
-        : "from"
-      : "to";
+    const fromEndpoint = useExistingConnection ? (existingFromMatchesDrag ? "from" : "to") : "from";
+    const toEndpoint = useExistingConnection ? (existingFromMatchesDrag ? "to" : "from") : "to";
     const nextCustomConnections = useExistingConnection
       ? dedupeCustomConnectionsForPair(
           customConnections,
           pairKey,
-          isManualConnectionId(edgeId) ? edgeId : "",
+          isManualConnectionId(edgeId) ? edgeId : ""
         )
       : [
           ...customConnections,
@@ -8060,10 +7813,7 @@ export default function CruorMapGeneratorMvp({
   }
 
   function createConnectionDraftPreviewMap(connection) {
-    const result = createConnectionManualOverrides(
-      manualOverridesRef.current,
-      connection,
-    );
+    const result = createConnectionManualOverrides(manualOverridesRef.current, connection);
     if (!result?.overrides) return null;
     return {
       corridorId: result.edgeId,
@@ -8090,31 +7840,37 @@ export default function CruorMapGeneratorMvp({
       },
       manualBefore: summarizeDebugManualOverrides(manualOverridesRef.current),
     });
-    updateManualOverridesWithHistory((current) => {
-      const result = createConnectionManualOverrides(current, connection);
-      if (result?.overrides) {
-        debugSetPendingAnchorTrace({
-          kind: "new-corridor",
-          edgeId: result.edgeId,
-          corridorId: result.edgeId,
-          endpoint: result.toEndpoint || "to",
-          reusedExistingConnection: Boolean(result.reusedExistingConnection),
-          fromRegionId: connection?.fromRegionId || null,
-          toRegionId: connection?.toRegionId || null,
-          releasePoint: roundDebugPoint(connection?.debugTrace?.releasePoint),
-          releaseCell: summarizeDebugCell(connection?.debugTrace?.releaseCell),
-          targetPoint: roundDebugPoint(connection?.debugTrace?.targetPoint),
-          targetCell: summarizeDebugCell(connection?.debugTrace?.targetCell),
-          targetDistance: roundDebugNumber(connection?.debugTrace?.targetDistance),
-          targetScore: roundDebugNumber(connection?.debugTrace?.targetScore),
-          requestedAnchor: summarizeDebugAnchor(serializeManualAnchor(connection?.toAnchor)),
-          requestedAnchorCell: summarizeDebugCell(getDebugAnchorCell(serializeManualAnchor(connection?.toAnchor))),
-          fromAnchor: summarizeDebugAnchor(serializeManualAnchor(connection?.fromAnchor)),
-          manualBefore: summarizeDebugManualOverrides(current),
-        });
-      }
-      return result?.overrides || current;
-    }, "", `createConnectionFromWallDrag:${connection?.fromRegionId || "?"}->${connection?.toRegionId || "?"}`);
+    updateManualOverridesWithHistory(
+      (current) => {
+        const result = createConnectionManualOverrides(current, connection);
+        if (result?.overrides) {
+          debugSetPendingAnchorTrace({
+            kind: "new-corridor",
+            edgeId: result.edgeId,
+            corridorId: result.edgeId,
+            endpoint: result.toEndpoint || "to",
+            reusedExistingConnection: Boolean(result.reusedExistingConnection),
+            fromRegionId: connection?.fromRegionId || null,
+            toRegionId: connection?.toRegionId || null,
+            releasePoint: roundDebugPoint(connection?.debugTrace?.releasePoint),
+            releaseCell: summarizeDebugCell(connection?.debugTrace?.releaseCell),
+            targetPoint: roundDebugPoint(connection?.debugTrace?.targetPoint),
+            targetCell: summarizeDebugCell(connection?.debugTrace?.targetCell),
+            targetDistance: roundDebugNumber(connection?.debugTrace?.targetDistance),
+            targetScore: roundDebugNumber(connection?.debugTrace?.targetScore),
+            requestedAnchor: summarizeDebugAnchor(serializeManualAnchor(connection?.toAnchor)),
+            requestedAnchorCell: summarizeDebugCell(
+              getDebugAnchorCell(serializeManualAnchor(connection?.toAnchor))
+            ),
+            fromAnchor: summarizeDebugAnchor(serializeManualAnchor(connection?.fromAnchor)),
+            manualBefore: summarizeDebugManualOverrides(current),
+          });
+        }
+        return result?.overrides || current;
+      },
+      "",
+      `createConnectionFromWallDrag:${connection?.fromRegionId || "?"}->${connection?.toRegionId || "?"}`
+    );
   }
 
   function releaseManualGeometryLockForRoomStyleEdit() {
@@ -8132,42 +7888,50 @@ export default function CruorMapGeneratorMvp({
 
   function updateRoomStyle(regionId, patch) {
     releaseManualGeometryLockForRoomStyleEdit();
-    updateManualOverridesWithHistory((current) => {
-      const currentStyle = current.roomStyles?.[regionId] || {};
-      const region = generatedMap.regions.find((item) => item.id === regionId);
-      const shouldFreezeVisibleSize =
-        patch &&
-        typeof patch === "object" &&
-        !("sizePreset" in patch) &&
-        !("customSize" in patch) &&
-        ("shape" in patch || "surfaceKind" in patch || "roomType" in patch) &&
-        !currentStyle.sizePreset;
-      return {
-        ...current,
-        roomStyles: {
-          ...current.roomStyles,
-          [regionId]: {
-            ...currentStyle,
-            ...(shouldFreezeVisibleSize
-              ? { sizePreset: region?.size || "Medium", customSize: null }
-              : {}),
-            ...patch,
+    updateManualOverridesWithHistory(
+      (current) => {
+        const currentStyle = current.roomStyles?.[regionId] || {};
+        const region = generatedMap.regions.find((item) => item.id === regionId);
+        const shouldFreezeVisibleSize =
+          patch &&
+          typeof patch === "object" &&
+          !("sizePreset" in patch) &&
+          !("customSize" in patch) &&
+          ("shape" in patch || "surfaceKind" in patch || "roomType" in patch) &&
+          !currentStyle.sizePreset;
+        return {
+          ...current,
+          roomStyles: {
+            ...current.roomStyles,
+            [regionId]: {
+              ...currentStyle,
+              ...(shouldFreezeVisibleSize
+                ? { sizePreset: region?.size || "Medium", customSize: null }
+                : {}),
+              ...patch,
+            },
           },
-        },
-      };
-    }, "", `updateRoomStyle:${regionId}`);
+        };
+      },
+      "",
+      `updateRoomStyle:${regionId}`
+    );
   }
 
   function resetRoomStyle(regionId) {
     releaseManualGeometryLockForRoomStyleEdit();
-    updateManualOverridesWithHistory((current) => {
-      const nextStyles = { ...(current.roomStyles || {}) };
-      delete nextStyles[regionId];
-      return {
-        ...current,
-        roomStyles: nextStyles,
-      };
-    }, "", `resetRoomStyle:${regionId}`);
+    updateManualOverridesWithHistory(
+      (current) => {
+        const nextStyles = { ...(current.roomStyles || {}) };
+        delete nextStyles[regionId];
+        return {
+          ...current,
+          roomStyles: nextStyles,
+        };
+      },
+      "",
+      `resetRoomStyle:${regionId}`
+    );
   }
 
   function setGridRenderingStyle(value) {
@@ -8220,9 +7984,11 @@ export default function CruorMapGeneratorMvp({
 
   function dispatchQaRunnerStatus(detail = {}) {
     if (typeof window === "undefined") return;
-    window.dispatchEvent(new CustomEvent("cruor:map-qa-runner-status", {
-      detail,
-    }));
+    window.dispatchEvent(
+      new CustomEvent("cruor:map-qa-runner-status", {
+        detail,
+      })
+    );
   }
 
   function recordQaRunnerEvent(label, payload = {}, category = "performance") {
@@ -8248,7 +8014,11 @@ export default function CruorMapGeneratorMvp({
     };
     setQaRunnerOverlay(nextDetail);
     dispatchQaRunnerStatus(nextDetail);
-    recordQaRunnerEvent(`qa runner: ${detail.stepLabel || detail.message || "step"}`, nextDetail, detail.category || "performance");
+    recordQaRunnerEvent(
+      `qa runner: ${detail.stepLabel || detail.message || "step"}`,
+      nextDetail,
+      detail.category || "performance"
+    );
   }
 
   function finishQaRunner(runId, detail = {}) {
@@ -8261,7 +8031,11 @@ export default function CruorMapGeneratorMvp({
     };
     setQaRunnerOverlay(nextDetail);
     dispatchQaRunnerStatus(nextDetail);
-    recordQaRunnerEvent(`qa runner: ${nextDetail.state}`, nextDetail, nextDetail.state === "failed" ? "performance" : "generated-map");
+    recordQaRunnerEvent(
+      `qa runner: ${nextDetail.state}`,
+      nextDetail,
+      nextDetail.state === "failed" ? "performance" : "generated-map"
+    );
   }
 
   function getQaGeneratedMap() {
@@ -8292,25 +8066,30 @@ export default function CruorMapGeneratorMvp({
   }
 
   function getQaLargestRegion(map = getQaGeneratedMap()) {
-    return [...(map?.regions || [])]
-      .sort((a, b) => {
+    return (
+      [...(map?.regions || [])].sort((a, b) => {
         const areaA = Number(a?.cellRect?.w || 0) * Number(a?.cellRect?.h || 0);
         const areaB = Number(b?.cellRect?.w || 0) * Number(b?.cellRect?.h || 0);
         return areaB - areaA;
-      })[0] || null;
+      })[0] || null
+    );
   }
 
   function getQaCorridorForRegion(regionId, map = getQaGeneratedMap()) {
-    return (map?.corridors || []).find((corridor) =>
-      corridor?.from === regionId || corridor?.to === regionId,
-    ) || null;
+    return (
+      (map?.corridors || []).find(
+        (corridor) => corridor?.from === regionId || corridor?.to === regionId
+      ) || null
+    );
   }
 
   function getQaCorridorForPair(fromRegionId, toRegionId, map = getQaGeneratedMap()) {
     const pair = [fromRegionId, toRegionId].sort().join("::");
-    return (map?.corridors || []).find((corridor) =>
-      [corridor?.from, corridor?.to].sort().join("::") === pair,
-    ) || null;
+    return (
+      (map?.corridors || []).find(
+        (corridor) => [corridor?.from, corridor?.to].sort().join("::") === pair
+      ) || null
+    );
   }
 
   function getQaEndpointForRegion(corridor, regionId) {
@@ -8365,7 +8144,12 @@ export default function CruorMapGeneratorMvp({
     assertQa(!duplicates.length, "Duplicate corridors between the same room pair.", { duplicates });
   }
 
-  async function runQaCircleAnchorSweep(runId, signal, settings = {}, scenarioLabel = "Circle Anchor Test") {
+  async function runQaCircleAnchorSweep(
+    runId,
+    signal,
+    settings = {},
+    scenarioLabel = "Circle Anchor Test"
+  ) {
     let map = getQaGeneratedMap();
     let region = getQaLargestRegion(map);
     assertQa(region, "No region available for circle anchor test.");
@@ -8381,22 +8165,39 @@ export default function CruorMapGeneratorMvp({
 
     map = getQaGeneratedMap();
     region = map.regions.find((item) => item.id === region.id) || region;
-    assertQa(region?.shape === "circle", "Target room did not become circular.", { region: summarizeDebugRegion(region) });
+    assertQa(region?.shape === "circle", "Target room did not become circular.", {
+      region: summarizeDebugRegion(region),
+    });
 
     const corridor = getQaCorridorForRegion(region.id, map);
     assertQa(corridor, "No corridor connected to the circular test room.", { regionId: region.id });
     const endpoint = getQaEndpointForRegion(corridor, region.id);
-    const cells = getQaCircleAnchorSweepCells(region, map).slice(0, settings.speed === "fast" ? 3 : 5);
-    assertQa(cells.length >= 2, "Not enough reachable circle anchors for sweep.", { region: summarizeDebugRegion(region), cells });
+    const cells = getQaCircleAnchorSweepCells(region, map).slice(
+      0,
+      settings.speed === "fast" ? 3 : 5
+    );
+    assertQa(cells.length >= 2, "Not enough reachable circle anchors for sweep.", {
+      region: summarizeDebugRegion(region),
+      cells,
+    });
 
     for (let index = 0; index < cells.length; index += 1) {
       const cell = cells[index];
       map = getQaGeneratedMap();
       region = map.regions.find((item) => item.id === region.id) || region;
-      const currentCorridor = map.corridors.find((item) => item.id === corridor.id) || getQaCorridorForPair(corridor.from, corridor.to, map) || corridor;
+      const currentCorridor =
+        map.corridors.find((item) => item.id === corridor.id) ||
+        getQaCorridorForPair(corridor.from, corridor.to, map) ||
+        corridor;
       const anchor = getQaCircleAnchorForOutsideCell(region, cell, map);
-      assertQa(anchor, "Could not build circle anchor for target cell.", { cell, region: summarizeDebugRegion(region) });
-      const point = anchor.point || getAnchorHandlePoint(anchor, map.config.gridSize) || getQaCellCenterPoint(cell, map.config.gridSize);
+      assertQa(anchor, "Could not build circle anchor for target cell.", {
+        cell,
+        region: summarizeDebugRegion(region),
+      });
+      const point =
+        anchor.point ||
+        getAnchorHandlePoint(anchor, map.config.gridSize) ||
+        getQaCellCenterPoint(cell, map.config.gridSize);
       setQaRunnerStep(runId, {
         scenarioLabel,
         stepLabel: `Move anchor ${index + 1}/${cells.length} to cell ${cell.x},${cell.y}`,
@@ -8413,32 +8214,57 @@ export default function CruorMapGeneratorMvp({
         snapCell: anchor.snapCell || cell,
         snapAnchor: anchor,
       });
-      assertQa(committed, "moveDoor did not commit a new anchor.", { corridorId: currentCorridor.id, endpoint, cell, anchor: summarizeDebugAnchor(anchor) });
+      assertQa(committed, "moveDoor did not commit a new anchor.", {
+        corridorId: currentCorridor.id,
+        endpoint,
+        cell,
+        anchor: summarizeDebugAnchor(anchor),
+      });
       await waitForQaRender(signal, settings);
       map = getQaGeneratedMap();
-      const updatedCorridor = map.corridors.find((item) => item.id === currentCorridor.id) || getQaCorridorForPair(currentCorridor.from, currentCorridor.to, map);
+      const updatedCorridor =
+        map.corridors.find((item) => item.id === currentCorridor.id) ||
+        getQaCorridorForPair(currentCorridor.from, currentCorridor.to, map);
       const updatedDoor = getQaCorridorDoor(updatedCorridor, endpoint);
-      assertQa(updatedDoor?.cell?.x === anchor.cell?.x && updatedDoor?.cell?.y === anchor.cell?.y, "Rendered corridor endpoint did not move to the requested circle anchor.", {
-        corridorId: updatedCorridor?.id || currentCorridor.id,
-        endpoint,
-        requestedAnchor: summarizeDebugAnchor(anchor),
-        renderedDoor: updatedDoor,
-        renderedCorridor: summarizeDebugCorridor(updatedCorridor),
-      });
+      assertQa(
+        updatedDoor?.cell?.x === anchor.cell?.x && updatedDoor?.cell?.y === anchor.cell?.y,
+        "Rendered corridor endpoint did not move to the requested circle anchor.",
+        {
+          corridorId: updatedCorridor?.id || currentCorridor.id,
+          endpoint,
+          requestedAnchor: summarizeDebugAnchor(anchor),
+          renderedDoor: updatedDoor,
+          renderedCorridor: summarizeDebugCorridor(updatedCorridor),
+        }
+      );
       assertQaNoDuplicateCorridors(map);
     }
   }
 
-  async function runQaCorridorCreation(runId, signal, settings = {}, scenarioLabel = "Corridor Creation Test") {
+  async function runQaCorridorCreation(
+    runId,
+    signal,
+    settings = {},
+    scenarioLabel = "Corridor Creation Test"
+  ) {
     const map = getQaGeneratedMap();
     assertQa((map?.regions || []).length >= 2, "Need at least two rooms to create a corridor.");
-    const [fromRegion, toRegion] = [...map.regions].sort((a, b) => (b.cellRect?.w || 0) - (a.cellRect?.w || 0)).slice(0, 2);
+    const [fromRegion, toRegion] = [...map.regions]
+      .sort((a, b) => (b.cellRect?.w || 0) - (a.cellRect?.w || 0))
+      .slice(0, 2);
     const gridSize = map.config.gridSize || config.gridSize || 20;
     const fromPoint = getQaRegionCenterPoint(fromRegion, gridSize);
     const toPoint = getQaRegionCenterPoint(toRegion, gridSize);
-    const fromAnchor = getDoorDragManualAnchor(fromRegion, fromPoint, gridSize) || getClosestBoundaryAnchorToPoint(fromRegion, toPoint, gridSize, map);
-    const toAnchor = getDoorDragManualAnchor(toRegion, toPoint, gridSize) || getClosestBoundaryAnchorToPoint(toRegion, fromPoint, gridSize, map);
-    assertQa(fromAnchor && toAnchor, "Could not resolve connection anchors.", { fromRegion: fromRegion.id, toRegion: toRegion.id });
+    const fromAnchor =
+      getDoorDragManualAnchor(fromRegion, fromPoint, gridSize) ||
+      getClosestBoundaryAnchorToPoint(fromRegion, toPoint, gridSize, map);
+    const toAnchor =
+      getDoorDragManualAnchor(toRegion, toPoint, gridSize) ||
+      getClosestBoundaryAnchorToPoint(toRegion, fromPoint, gridSize, map);
+    assertQa(fromAnchor && toAnchor, "Could not resolve connection anchors.", {
+      fromRegion: fromRegion.id,
+      toRegion: toRegion.id,
+    });
     const beforeCount = map.corridors.length;
     setQaRunnerStep(runId, {
       scenarioLabel,
@@ -8465,10 +8291,19 @@ export default function CruorMapGeneratorMvp({
     const nextMap = getQaGeneratedMap();
     assertQaNoDuplicateCorridors(nextMap);
     const afterCount = nextMap.corridors.length;
-    assertQa(afterCount <= beforeCount + 1, "Corridor creation added too many corridors.", { beforeCount, afterCount, corridors: nextMap.corridors.map((item) => item.id) });
+    assertQa(afterCount <= beforeCount + 1, "Corridor creation added too many corridors.", {
+      beforeCount,
+      afterCount,
+      corridors: nextMap.corridors.map((item) => item.id),
+    });
   }
 
-  async function runQaRoomMoveReroute(runId, signal, settings = {}, scenarioLabel = "Room Move + Reroute") {
+  async function runQaRoomMoveReroute(
+    runId,
+    signal,
+    settings = {},
+    scenarioLabel = "Room Move + Reroute"
+  ) {
     let map = getQaGeneratedMap();
     const region = getQaLargestRegion(map);
     assertQa(region, "No region available for room move test.");
@@ -8482,7 +8317,10 @@ export default function CruorMapGeneratorMvp({
       category: "room-move",
     });
     const moved = moveRoom(region.id, target);
-    assertQa(moved !== null, "Room move returned an invalid result.", { regionId: region.id, target });
+    assertQa(moved !== null, "Room move returned an invalid result.", {
+      regionId: region.id,
+      target,
+    });
     await waitForQaRender(signal, settings);
     map = getQaGeneratedMap();
     assertQaNoDuplicateCorridors(map);
@@ -8522,8 +8360,10 @@ export default function CruorMapGeneratorMvp({
         await runQaRoomMoveReroute(runId, abortController.signal, settings, scenarioLabel);
       } else {
         await runQaCircleAnchorSweep(runId, abortController.signal, settings, scenarioLabel);
-        if (!abortController.signal.aborted) await runQaCorridorCreation(runId, abortController.signal, settings, scenarioLabel);
-        if (!abortController.signal.aborted) await runQaRoomMoveReroute(runId, abortController.signal, settings, scenarioLabel);
+        if (!abortController.signal.aborted)
+          await runQaCorridorCreation(runId, abortController.signal, settings, scenarioLabel);
+        if (!abortController.signal.aborted)
+          await runQaRoomMoveReroute(runId, abortController.signal, settings, scenarioLabel);
       }
       finishQaRunner(runId, {
         state: "passed",
@@ -8582,14 +8422,10 @@ export default function CruorMapGeneratorMvp({
   }, [recordDebugEvent]);
 
   useEffect(() => {
-    if (!inlineComposerEditor || typeof onCommitWorkspace !== "function" || isManualEditActive) return;
+    if (!inlineComposerEditor || typeof onCommitWorkspace !== "function" || isManualEditActive)
+      return;
     onCommitWorkspace(createManualWorkspaceStatePayload());
-  }, [
-    inlineComposerEditor,
-    onCommitWorkspace,
-    manualOverrides,
-    isManualEditActive,
-  ]);
+  }, [inlineComposerEditor, onCommitWorkspace, manualOverrides, isManualEditActive]);
 
   const mapViewport = (
     <MapViewport
@@ -8642,19 +8478,12 @@ export default function CruorMapGeneratorMvp({
       onToggleNames={() => setShowNames((value) => !value)}
       onToggleProps={() => setShowProps((value) => !value)}
       onToggleAccessDots={() => setShowAccessDots((value) => !value)}
-      onLevelViewChange={(value) =>
-        setLevelView(normalizeLevelView(value, availableLevels))
-      }
-      onToggleFadeOtherLevels={() =>
-        setFadeOtherLevels((value) => !value)
-      }
+      onLevelViewChange={(value) => setLevelView(normalizeLevelView(value, availableLevels))}
+      onToggleFadeOtherLevels={() => setFadeOtherLevels((value) => !value)}
       onResetEdits={() => {
         setManualLayoutSeed("");
         manualLayoutGeometryRef.current = null;
-        updateManualOverridesWithHistory(
-          resetManualOverrides(),
-          "Edits reset.",
-        );
+        updateManualOverridesWithHistory(resetManualOverrides(), "Edits reset.");
       }}
       onExportSvg={downloadSvg}
       onExportGmSvg={downloadGmSvg}
@@ -8715,17 +8544,20 @@ export default function CruorMapGeneratorMvp({
           onGridColorChange={setGridRenderingColor}
           onGridWeightChange={setGridRenderingWeight}
           onGridOpacityChange={setGridOpacity}
-          onCrosshatchStyleChange={(value) => setCrosshatchStyle(value === "none" ? "none" : "classic")}
+          onCrosshatchStyleChange={(value) =>
+            setCrosshatchStyle(value === "none" ? "none" : "classic")
+          }
           onCrosshatchOpacityChange={setCrosshatchOpacity}
-          onWallDrawingStyleChange={(value) => setWallDrawingStyle(normalizeWallDrawingStyle(value))}
-          onHatchShadowColorChange={(value) => setHatchShadowColor(normalizeHatchShadowColor(value))}
+          onWallDrawingStyleChange={(value) =>
+            setWallDrawingStyle(normalizeWallDrawingStyle(value))
+          }
+          onHatchShadowColorChange={(value) =>
+            setHatchShadowColor(normalizeHatchShadowColor(value))
+          }
           onResetEdits={() => {
             setManualLayoutSeed("");
             manualLayoutGeometryRef.current = null;
-            updateManualOverridesWithHistory(
-              resetManualOverrides(),
-              "Edits reset.",
-            );
+            updateManualOverridesWithHistory(resetManualOverrides(), "Edits reset.");
           }}
         />
         {mapViewport}
@@ -8744,14 +8576,17 @@ export default function CruorMapGeneratorMvp({
         "cruor-map-mvp",
         "cruor-map-workspace",
         `cruor-map-workspace--${workspaceContext}`,
-        embeddedInComposer && "is-embedded-in-composer",
+        embeddedInComposer && "is-embedded-in-composer"
       )}
       data-map-context={workspaceContext}
       data-map-inspector-collapsed={inspectorCollapsed ? "true" : undefined}
       onContextMenu={(event) => event.preventDefault()}
     >
       {qaRunnerOverlay ? (
-        <div className={`map-qa-runner-overlay is-${qaRunnerOverlay.state || "idle"}`} aria-live="polite">
+        <div
+          className={`map-qa-runner-overlay is-${qaRunnerOverlay.state || "idle"}`}
+          aria-live="polite"
+        >
           <div className="map-qa-runner-overlay__header">
             <span>Map QA Runner</span>
             <strong>{qaRunnerOverlay.state || "idle"}</strong>
@@ -8763,9 +8598,7 @@ export default function CruorMapGeneratorMvp({
       ) : null}
       <div
         className={
-          inspectorCollapsed
-            ? "map-workspace-shell is-inspector-collapsed"
-            : "map-workspace-shell"
+          inspectorCollapsed ? "map-workspace-shell is-inspector-collapsed" : "map-workspace-shell"
         }
       >
         <aside
@@ -8843,16 +8676,11 @@ export default function CruorMapGeneratorMvp({
             icon="eraser"
             label="Reset Edits"
             visibility="advanced"
-            onClick={() =>
-              {
-                setManualLayoutSeed("");
-                manualLayoutGeometryRef.current = null;
-                updateManualOverridesWithHistory(
-                  resetManualOverrides(),
-                  "Edits reset.",
-                );
-              }
-            }
+            onClick={() => {
+              setManualLayoutSeed("");
+              manualLayoutGeometryRef.current = null;
+              updateManualOverridesWithHistory(resetManualOverrides(), "Edits reset.");
+            }}
           />
           <MapToolButton
             icon="clipboard-check"
@@ -8878,8 +8706,7 @@ export default function CruorMapGeneratorMvp({
               <p className="map-panel-eyebrow">Map Workspace</p>
               <div className="map-toolbar__title">
                 {context} {"\u00B7"}{" "}
-                {normalizeLevelView(levelView, availableLevels) ===
-                LEVEL_VIEW_ALL
+                {normalizeLevelView(levelView, availableLevels) === LEVEL_VIEW_ALL
                   ? "all levels"
                   : `level ${formatMapLevel(normalizeLevelView(levelView, availableLevels))}`}{" "}
                 {"\u00B7"} {String(generatedMap.seed).slice(0, 20)}
@@ -8896,18 +8723,14 @@ export default function CruorMapGeneratorMvp({
                 type="button"
                 className="map-tool-button map-inspector-toggle cruor-ui-control-surface cruor-button cruor-button--icon"
                 {...getGenericTooltipAttrs(
-                  inspectorCollapsed ? "Open Inspector" : "Collapse Inspector",
-                )}
-                aria-label={
                   inspectorCollapsed ? "Open Inspector" : "Collapse Inspector"
-                }
+                )}
+                aria-label={inspectorCollapsed ? "Open Inspector" : "Collapse Inspector"}
                 onClick={() => setInspectorCollapsed((value) => !value)}
               >
                 <i
                   className={
-                    inspectorCollapsed
-                      ? "fa-solid fa-angles-left"
-                      : "fa-solid fa-angles-right"
+                    inspectorCollapsed ? "fa-solid fa-angles-left" : "fa-solid fa-angles-right"
                   }
                   aria-hidden="true"
                 />
@@ -8915,10 +8738,10 @@ export default function CruorMapGeneratorMvp({
             </div>
           </div>
 
-          {embeddedInComposer ? mapViewport : (
-            <div className="map-viewport-frame">
-              {mapViewport}
-            </div>
+          {embeddedInComposer ? (
+            mapViewport
+          ) : (
+            <div className="map-viewport-frame">{mapViewport}</div>
           )}
         </main>
 
@@ -8951,12 +8774,32 @@ export default function CruorMapGeneratorMvp({
                   <div className="map-selected-area-card">
                     <strong>{metrics.label}</strong>
                     <div className="location-frame-info-grid">
-                      <div className="location-frame-info-row"><small>Room</small><strong>{metrics.number}</strong></div>
-                      <div className="location-frame-info-row"><small>Squares</small><strong>{metrics.squares}</strong></div>
-                      <div className="location-frame-info-row"><small>Size</small><strong>{metrics.width} × {metrics.height}</strong></div>
-                      <div className="location-frame-info-row"><small>Type</small><strong>{metrics.shape}</strong></div>
-                      <div className="location-frame-info-row"><small>Role</small><strong>{metrics.role}</strong></div>
-                      <div className="location-frame-info-row"><small>Level</small><strong>{metrics.level}</strong></div>
+                      <div className="location-frame-info-row">
+                        <small>Room</small>
+                        <strong>{metrics.number}</strong>
+                      </div>
+                      <div className="location-frame-info-row">
+                        <small>Squares</small>
+                        <strong>{metrics.squares}</strong>
+                      </div>
+                      <div className="location-frame-info-row">
+                        <small>Size</small>
+                        <strong>
+                          {metrics.width} × {metrics.height}
+                        </strong>
+                      </div>
+                      <div className="location-frame-info-row">
+                        <small>Type</small>
+                        <strong>{metrics.shape}</strong>
+                      </div>
+                      <div className="location-frame-info-row">
+                        <small>Role</small>
+                        <strong>{metrics.role}</strong>
+                      </div>
+                      <div className="location-frame-info-row">
+                        <small>Level</small>
+                        <strong>{metrics.level}</strong>
+                      </div>
                     </div>
                   </div>
                 );
@@ -8972,9 +8815,7 @@ export default function CruorMapGeneratorMvp({
                   value: style.value,
                   label: style.label,
                 }))}
-                onChange={(value) =>
-                  setVisualStyle(normalizeVisualStyle(value))
-                }
+                onChange={(value) => setVisualStyle(normalizeVisualStyle(value))}
               />
               <MapControlSelect
                 id="wall-drawing-style"
@@ -9061,11 +8902,7 @@ export default function CruorMapGeneratorMvp({
                     label: `Level ${formatMapLevel(level)}`,
                   })),
                 ]}
-                onChange={(value) =>
-                  setLevelView(
-                    normalizeLevelView(value, availableLevels),
-                  )
-                }
+                onChange={(value) => setLevelView(normalizeLevelView(value, availableLevels))}
               />
               <div className="control-group">
                 <button
@@ -9113,9 +8950,7 @@ export default function CruorMapGeneratorMvp({
                   max="16"
                   value={roomCount}
                   onChange={(event) => {
-                    setRoomCount(
-                      normalizeRoomCount(event.target.value, roomCount),
-                    );
+                    setRoomCount(normalizeRoomCount(event.target.value, roomCount));
                     setManualLayoutSeed("");
                     manualLayoutGeometryRef.current = null;
                     setManualOverrides(resetManualOverrides());
@@ -9137,12 +8972,7 @@ export default function CruorMapGeneratorMvp({
                     step="20"
                     value={mapWidth}
                     onChange={(event) =>
-                      setMapWidth(
-                        normalizeMapDimension(
-                          event.target.value,
-                          mapWidth,
-                        ),
-                      )
+                      setMapWidth(normalizeMapDimension(event.target.value, mapWidth))
                     }
                   />
                 </div>
@@ -9159,12 +8989,7 @@ export default function CruorMapGeneratorMvp({
                     step="20"
                     value={mapHeight}
                     onChange={(event) =>
-                      setMapHeight(
-                        normalizeMapDimension(
-                          event.target.value,
-                          mapHeight,
-                        ),
-                      )
+                      setMapHeight(normalizeMapDimension(event.target.value, mapHeight))
                     }
                   />
                 </div>
@@ -9190,8 +9015,8 @@ export default function CruorMapGeneratorMvp({
                 aria-label="Imported Darken a Location regions"
               >
                 <strong>
-                  Imported from Darken a Location: {importedRegions.length}{" "}
-                  region{importedRegions.length === 1 ? "" : "s"}
+                  Imported from Darken a Location: {importedRegions.length} region
+                  {importedRegions.length === 1 ? "" : "s"}
                 </strong>
                 {importedRegions.length > 0 && (
                   <span>
@@ -9199,38 +9024,33 @@ export default function CruorMapGeneratorMvp({
                       .slice(0, 5)
                       .map((region) => region.label || region.id)
                       .join(", ")}
-                    {importedRegions.length > 5
-                      ? `, +${importedRegions.length - 5} more`
-                      : ""}
+                    {importedRegions.length > 5 ? `, +${importedRegions.length - 5} more` : ""}
                   </span>
                 )}
               </section>
             )}
 
-            <MapInspectorSection icon="chart-simple" title="Stats" eyebrow="Diagnostics" defaultOpen={false}>
+            <MapInspectorSection
+              icon="chart-simple"
+              title="Stats"
+              eyebrow="Diagnostics"
+              defaultOpen={false}
+            >
               <div className="stats">
                 <div className="stat cruor-ui-chip-surface cruor-stat">
-                  <div className="stat__value">
-                    {generatedMap.regions.length}
-                  </div>
+                  <div className="stat__value">{generatedMap.regions.length}</div>
                   <div className="stat__label">Regions</div>
                 </div>
                 <div className="stat cruor-ui-chip-surface cruor-stat">
-                  <div className="stat__value">
-                    {generatedMap.corridors.length}
-                  </div>
+                  <div className="stat__value">{generatedMap.corridors.length}</div>
                   <div className="stat__label">Connections</div>
                 </div>
                 <div className="stat cruor-ui-chip-surface cruor-stat">
-                  <div className="stat__value">
-                    {generatedMap.dungeonMask.floorCells.length}
-                  </div>
+                  <div className="stat__value">{generatedMap.dungeonMask.floorCells.length}</div>
                   <div className="stat__label">Floor Cells</div>
                 </div>
                 <div className="stat cruor-ui-chip-surface cruor-stat">
-                  <div className="stat__value">
-                    {generatedMap.dungeonMask.doorSegments.length}
-                  </div>
+                  <div className="stat__value">{generatedMap.dungeonMask.doorSegments.length}</div>
                   <div className="stat__label">Doors</div>
                 </div>
                 <div className="stat cruor-ui-chip-surface cruor-stat">
@@ -9248,7 +9068,12 @@ export default function CruorMapGeneratorMvp({
 
             {stateStatus && <div className="state-status cruor-ui-card-surface">{stateStatus}</div>}
 
-            <MapInspectorSection icon="list-ol" title="Room Key" eyebrow="Reference" defaultOpen={false}>
+            <MapInspectorSection
+              icon="list-ol"
+              title="Room Key"
+              eyebrow="Reference"
+              defaultOpen={false}
+            >
               <RoomKey generatedMap={generatedMap} />
             </MapInspectorSection>
           </div>
