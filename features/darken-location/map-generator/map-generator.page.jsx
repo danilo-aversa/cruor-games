@@ -8429,9 +8429,15 @@ export default function CruorMapGeneratorMvp({
   }
 
   function getQaCircleSmokeAnchorSteps(settings = {}) {
-    if (settings.speed === "fast") return 10;
-    if (settings.speed === "slow") return 28;
-    return 20;
+    if (settings.speed === "fast") return 2;
+    if (settings.speed === "slow") return 4;
+    return 3;
+  }
+
+  function getQaCircleSweepAnchorSteps(settings = {}) {
+    if (settings.speed === "fast") return 6;
+    if (settings.speed === "slow") return 14;
+    return 10;
   }
 
   function getQaEvenlySpacedItems(items = [], count = items.length) {
@@ -8449,6 +8455,261 @@ export default function CruorMapGeneratorMvp({
       selected.push(safeItems[itemIndex]);
     }
     return selected.length > 0 ? selected : safeItems.slice(0, count);
+  }
+
+  function getQaCellManhattanDistance(a, b) {
+    if (!a || !b) return Number.POSITIVE_INFINITY;
+    return Math.abs(Number(a.x || 0) - Number(b.x || 0)) +
+      Math.abs(Number(a.y || 0) - Number(b.y || 0));
+  }
+
+  function getQaCellSquaredDistance(a, b) {
+    if (!a || !b) return Number.POSITIVE_INFINITY;
+    const dx = Number(a.x || 0) - Number(b.x || 0);
+    const dy = Number(a.y || 0) - Number(b.y || 0);
+    return dx * dx + dy * dy;
+  }
+
+  function getQaRealisticRoomMoveOffsets(settings = {}) {
+    const offsets = [
+      { x: 1, y: 0, label: "right-1" },
+      { x: 0, y: 1, label: "down-1" },
+      { x: -1, y: 0, label: "left-1" },
+      { x: 0, y: -1, label: "up-1" },
+      { x: 1, y: 1, label: "down-right-1" },
+    ];
+    if (settings.speed === "fast") return offsets.slice(0, 2);
+    if (settings.speed === "slow") return offsets;
+    return offsets.slice(0, 3);
+  }
+
+
+  function getQaRegionRect(region) {
+    const rect = region?.cellRect || {};
+    return {
+      x: Number(rect.x || 0),
+      y: Number(rect.y || 0),
+      w: Math.max(1, Number(rect.w || 1)),
+      h: Math.max(1, Number(rect.h || 1)),
+    };
+  }
+
+  function getQaConnectedRegions(regionId, map = getQaGeneratedMap()) {
+    if (!regionId) return [];
+    const regionsById = new Map((map?.regions || []).map((region) => [region.id, region]));
+    return (map?.corridors || [])
+      .map((corridor) => {
+        if (corridor?.from === regionId) return regionsById.get(corridor.to) || null;
+        if (corridor?.to === regionId) return regionsById.get(corridor.from) || null;
+        return null;
+      })
+      .filter(Boolean);
+  }
+
+  function getQaClusterBounds(regions = []) {
+    const rects = regions.map(getQaRegionRect).filter((rect) => rect.w > 0 && rect.h > 0);
+    if (!rects.length) return null;
+    const minX = Math.min(...rects.map((rect) => rect.x));
+    const minY = Math.min(...rects.map((rect) => rect.y));
+    const maxX = Math.max(...rects.map((rect) => rect.x + rect.w));
+    const maxY = Math.max(...rects.map((rect) => rect.y + rect.h));
+    return {
+      minX,
+      minY,
+      maxX,
+      maxY,
+      centerX: (minX + maxX) / 2,
+      centerY: (minY + maxY) / 2,
+    };
+  }
+
+  function getQaClampRoomTarget(target, region, map = getQaGeneratedMap()) {
+    const rect = getQaRegionRect(region);
+    const gridWidth = Number(map?.config?.gridWidth || map?.config?.columns || 80);
+    const gridHeight = Number(map?.config?.gridHeight || map?.config?.rows || 50);
+    const margin = 1;
+    return {
+      x: Math.max(margin, Math.min(gridWidth - rect.w - margin, Math.round(Number(target.x || 0)))),
+      y: Math.max(margin, Math.min(gridHeight - rect.h - margin, Math.round(Number(target.y || 0)))),
+    };
+  }
+
+  function getQaRectCenterCellFromRect(rect) {
+    return {
+      x: Number(rect.x || 0) + Number(rect.w || 1) / 2,
+      y: Number(rect.y || 0) + Number(rect.h || 1) / 2,
+    };
+  }
+
+  function getQaCompactRoomTargets(region, map = getQaGeneratedMap(), settings = {}) {
+    const rect = getQaRegionRect(region);
+    const connectedRegions = getQaConnectedRegions(region?.id, map);
+    const allOtherRegions = (map?.regions || []).filter((item) => item?.id && item.id !== region?.id);
+    const neighbors = allOtherRegions.length ? allOtherRegions : connectedRegions;
+    const cluster = getQaClusterBounds(neighbors);
+    const connectedCluster = getQaClusterBounds(connectedRegions);
+    if (!cluster) return [];
+
+    const gap = settings.speed === "fast" ? 1 : 2;
+    const looseGap = settings.speed === "slow" ? 4 : 3;
+    const yNearCluster = Math.round(cluster.centerY - rect.h / 2);
+    const xNearCluster = Math.round(cluster.centerX - rect.w / 2);
+    const rawTargets = [
+      { x: cluster.maxX + gap, y: yNearCluster, label: "right-of-cluster" },
+      { x: cluster.maxX + gap, y: cluster.maxY - rect.h, label: "right-lower-overlap" },
+      { x: cluster.maxX + gap, y: cluster.minY, label: "right-upper-overlap" },
+      { x: cluster.maxX + looseGap, y: yNearCluster, label: "right-of-cluster-loose" },
+      { x: xNearCluster, y: cluster.maxY + gap, label: "below-cluster" },
+      { x: xNearCluster, y: cluster.minY - rect.h - gap, label: "above-cluster" },
+      { x: cluster.minX - rect.w - gap, y: yNearCluster, label: "left-of-cluster" },
+    ];
+
+    const current = { x: rect.x, y: rect.y };
+    const clusterCenter = { x: cluster.centerX, y: cluster.centerY };
+    const connectedCenter = connectedCluster
+      ? { x: connectedCluster.centerX, y: connectedCluster.centerY }
+      : clusterCenter;
+    const seen = new Set();
+    return rawTargets
+      .map((target) => ({
+        ...getQaClampRoomTarget(target, region, map),
+        label: target.label,
+      }))
+      .filter((target) => {
+        const key = `${target.x}:${target.y}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return target.x !== current.x || target.y !== current.y;
+      })
+      .map((target) => {
+        const targetCenter = {
+          x: target.x + rect.w / 2,
+          y: target.y + rect.h / 2,
+        };
+        const clusterDistance = getQaCellSquaredDistance(targetCenter, clusterCenter);
+        const connectedDistance = getQaCellSquaredDistance(targetCenter, connectedCenter);
+        const currentDistance = getQaCellSquaredDistance(target, current);
+        const detachedPenalty = target.x > cluster.maxX + looseGap || target.y < cluster.minY - rect.h - looseGap
+          ? 24
+          : 0;
+        return {
+          ...target,
+          score: clusterDistance + connectedDistance * 0.35 + currentDistance * 0.08 + detachedPenalty,
+          connectedRegionIds: connectedRegions.map((item) => item.id),
+          neighborRegionIds: neighbors.map((item) => item.id),
+        };
+      })
+      .sort((a, b) => a.score - b.score);
+  }
+
+
+  function getQaClosestConnectedRegionDistance(region, map = getQaGeneratedMap()) {
+    const rect = getQaRegionRect(region);
+    const regionCenter = getQaRectCenterCellFromRect(rect);
+    const connectedRegions = getQaConnectedRegions(region?.id, map);
+    if (!connectedRegions.length) return null;
+    return connectedRegions
+      .map((connectedRegion) => {
+        const connectedRect = getQaRegionRect(connectedRegion);
+        const connectedCenter = getQaRectCenterCellFromRect(connectedRect);
+        return {
+          regionId: connectedRegion.id,
+          distance: Math.abs(regionCenter.x - connectedCenter.x) + Math.abs(regionCenter.y - connectedCenter.y),
+          region: summarizeDebugRegion(connectedRegion),
+        };
+      })
+      .sort((a, b) => a.distance - b.distance)[0] || null;
+  }
+
+  function assertQaRegionNearConnectedCluster(region, map = getQaGeneratedMap(), settings = {}, context = {}) {
+    const nearest = getQaClosestConnectedRegionDistance(region, map);
+    if (!nearest) return;
+    const maxDistance = settings.speed === "slow" ? 30 : settings.speed === "fast" ? 22 : 24;
+    if (nearest.distance > maxDistance) {
+      recordQaDiagnostic("smoke layout became too sparse", {
+        context,
+        maxDistance,
+        nearest,
+        region: summarizeDebugRegion(region),
+        topology: summarizeQaCorridorTopology(map),
+      }, "room-move");
+    }
+    assertQa(
+      nearest.distance <= maxDistance,
+      "Smoke Test produced an unrealistically sparse layout.",
+      {
+        context,
+        maxDistance,
+        nearest,
+        region: summarizeDebugRegion(region),
+        topology: summarizeQaCorridorTopology(map),
+      }
+    );
+  }
+
+  function getQaRealisticNearbyCircleAnchors(
+    region,
+    corridor,
+    endpoint,
+    map = getQaGeneratedMap(),
+    settings = {},
+    preferredSideOverride = null,
+  ) {
+    const currentAnchor = getDebugCorridorAnchor(corridor, endpoint) || getQaCorridorDoor(corridor, endpoint);
+    const currentCell = getQaCircleAnchorSortCell(currentAnchor);
+    const preferredSide = preferredSideOverride || currentAnchor?.side || null;
+    const candidates = getQaCircleAnchorSweepAnchors(region, map, preferredSide);
+    if (!candidates.length || !currentCell) return [];
+    const maxDistance = settings.speed === "slow" ? 3 : 2;
+    const otherRegionId = endpoint === "from" ? corridor?.to : corridor?.from;
+    const otherRegion = (map?.regions || []).find((item) => item?.id === otherRegionId) || null;
+    const otherCenter = otherRegion ? getQaRectCenterCellFromRect(getQaRegionRect(otherRegion)) : null;
+    const scoreNearbyAnchor = (entry, allowSideFallback = false) => {
+      const sideMismatch = preferredSide && entry.anchor?.side !== preferredSide;
+      const sameSidePenalty = sideMismatch ? (allowSideFallback ? 180 : 1000) : 0;
+      const currentDistance = getQaCellSquaredDistance(entry.cell, currentCell);
+      const otherDistance = otherCenter ? getQaCellSquaredDistance(entry.cell, otherCenter) : 0;
+      const verticalUpPenalty = (preferredSide === "west" || preferredSide === "east") && entry.cell.y < currentCell.y
+        ? 8
+        : 0;
+      const horizontalAwayPenalty = preferredSide === "north" || preferredSide === "south"
+        ? Math.max(0, Math.abs(entry.cell.x - currentCell.x) - 1) * 3
+        : 0;
+      return sameSidePenalty + currentDistance + otherDistance * 0.08 + verticalUpPenalty + horizontalAwayPenalty;
+    };
+    const ranked = candidates
+      .map((anchor) => ({ anchor, cell: getQaCircleAnchorSortCell(anchor) }))
+      .filter((entry) => entry.cell)
+      .filter((entry) => getQaCellManhattanDistance(entry.cell, currentCell) > 0)
+      .filter((entry) => getQaCellManhattanDistance(entry.cell, currentCell) <= maxDistance)
+      .filter((entry) => !preferredSide || entry.anchor?.side === preferredSide)
+      .sort((a, b) => {
+        const scoreA = scoreNearbyAnchor(a);
+        const scoreB = scoreNearbyAnchor(b);
+        if (scoreA !== scoreB) return scoreA - scoreB;
+        if (a.cell.y !== b.cell.y) return b.cell.y - a.cell.y;
+        return Math.abs(a.cell.x - currentCell.x) - Math.abs(b.cell.x - currentCell.x);
+      });
+    const fallbackRanked = ranked.length >= 2
+      ? ranked
+      : candidates
+          .map((anchor) => ({ anchor, cell: getQaCircleAnchorSortCell(anchor) }))
+          .filter((entry) => entry.cell)
+          .filter((entry) => getQaCellManhattanDistance(entry.cell, currentCell) > 0)
+          .filter((entry) => getQaCellManhattanDistance(entry.cell, currentCell) <= maxDistance)
+          .sort((a, b) => scoreNearbyAnchor(a, true) - scoreNearbyAnchor(b, true));
+    const selected = [];
+    const seen = new Set();
+    for (const entry of fallbackRanked) {
+      const anchor = entry.anchor;
+      const cell = entry.cell;
+      const key = `${anchor?.side || "side"}:${cell?.x}:${cell?.y}`;
+      if (!cell || seen.has(key)) continue;
+      seen.add(key);
+      selected.push(anchor);
+      if (selected.length >= getQaCircleSmokeAnchorSteps(settings)) break;
+    }
+    return selected;
   }
 
   function getQaCircleSmokeCandidateRegions(map = getQaGeneratedMap(), settings = {}) {
@@ -8843,15 +9104,28 @@ export default function CruorMapGeneratorMvp({
     const preferredSide = Object.prototype.hasOwnProperty.call(options, "preferredSide")
       ? options.preferredSide
       : initialDoor?.side || null;
-    const initialAnchors = getQaCircleAnchorSweepAnchors(region, map, preferredSide);
-    const requestedStepCount = options.stepCount || getQaCircleSmokeAnchorSteps(settings);
-    const sweepAnchors = getQaEvenlySpacedItems(initialAnchors, Math.min(initialAnchors.length, requestedStepCount));
-    const stepCount = sweepAnchors.length;
+    const anchorStrategy = options.anchorStrategy || "distributed";
+    const fixedNearbyPreferredSide = anchorStrategy === "nearby" ? preferredSide : null;
+    const initialAnchors = anchorStrategy === "nearby"
+      ? getQaRealisticNearbyCircleAnchors(
+          region,
+          corridor,
+          initialEndpoint,
+          map,
+          settings,
+          fixedNearbyPreferredSide,
+        )
+      : getQaCircleAnchorSweepAnchors(region, map, preferredSide);
+    const requestedStepCount = options.stepCount || (anchorStrategy === "nearby"
+      ? getQaCircleSmokeAnchorSteps(settings)
+      : getQaCircleSweepAnchorSteps(settings));
+    const stepCount = Math.min(initialAnchors.length, requestedStepCount);
     recordQaDiagnostic("circle anchor availability", {
       phase: "before-sweep",
       corridor: summarizeDebugCorridor(corridor),
       endpoint: initialEndpoint,
       preferredSide,
+      anchorStrategy,
       requestedStepCount,
       stepCount,
       availability: summarizeQaCircleAnchorAvailability(region, map, preferredSide),
@@ -8869,19 +9143,23 @@ export default function CruorMapGeneratorMvp({
         getQaCorridorForPair(corridor.from, corridor.to, map) ||
         corridor;
       const endpoint = getQaEndpointForRegion(currentCorridor, region.id);
-      const anchors = getQaCircleAnchorSweepAnchors(region, map, preferredSide);
-      const requestedAnchor = sweepAnchors[index] || null;
-      const requestedCell = getQaCircleAnchorSortCell(requestedAnchor);
-      const anchor = requestedCell
-        ? anchors.find((candidate) => {
-            const cell = getQaCircleAnchorSortCell(candidate);
-            return (
-              cell?.x === requestedCell.x &&
-              cell?.y === requestedCell.y &&
-              (!requestedAnchor?.side || candidate?.side === requestedAnchor.side)
-            );
-          }) || anchors[index % Math.max(1, anchors.length)] || null
-        : anchors[index % Math.max(1, anchors.length)] || null;
+      const anchors = anchorStrategy === "nearby"
+        ? getQaRealisticNearbyCircleAnchors(
+            region,
+            currentCorridor,
+            endpoint,
+            map,
+            settings,
+            fixedNearbyPreferredSide,
+          )
+        : getQaCircleAnchorSweepAnchors(region, map, preferredSide);
+      const anchorIndex = anchorStrategy === "nearby"
+        ? 0
+        : Math.min(
+            Math.max(0, anchors.length - 1),
+            Math.floor((index * Math.max(1, anchors.length)) / Math.max(1, stepCount)),
+          );
+      const anchor = anchors[anchorIndex] || null;
       const cell = getQaCircleAnchorSortCell(anchor);
       if (!anchor) {
         recordQaDiagnostic("circle anchor build failed", {
@@ -8940,28 +9218,46 @@ export default function CruorMapGeneratorMvp({
         getQaCorridorForPair(currentCorridor.from, currentCorridor.to, map);
       const updatedEndpoint = getQaEndpointForRegion(updatedCorridor, region.id);
       const updatedDoor = getQaCorridorDoor(updatedCorridor, updatedEndpoint);
+      const updatedEndpointAnchor = getDebugCorridorAnchor(updatedCorridor, updatedEndpoint);
+      const renderedLogicalAnchor = updatedEndpointAnchor || updatedDoor;
       recordQaDiagnostic("after anchor move", {
         stepIndex: index,
         corridorId: updatedCorridor?.id || currentCorridor.id,
         endpoint: updatedEndpoint,
         requestedAnchor: summarizeDebugAnchor(anchor),
+        renderedEndpointAnchor: summarizeDebugAnchor(updatedEndpointAnchor),
         renderedDoor: summarizeDebugAnchor(updatedDoor),
         renderedCorridor: summarizeDebugCorridor(updatedCorridor),
         topology: summarizeQaCorridorTopology(map),
         duplicates: getQaCorridorPairDuplicates(map),
       }, "anchor-trace");
       const requestedIdentityCell = getQaCircleAnchorSortCell(anchor);
-      const renderedIdentityCell = getQaCircleAnchorSortCell(updatedDoor);
-      assertQa(
+      const renderedIdentityCell = getQaCircleAnchorSortCell(renderedLogicalAnchor);
+      const logicalSnapRetained =
         renderedIdentityCell?.x === requestedIdentityCell?.x &&
-          renderedIdentityCell?.y === requestedIdentityCell?.y &&
-          (!anchor?.side || !updatedDoor?.side || updatedDoor.side === anchor.side),
-        "Rendered corridor endpoint did not retain the requested circle anchor snap cell.",
+        renderedIdentityCell?.y === requestedIdentityCell?.y;
+      const physicalSideChanged =
+        Boolean(anchor?.side && renderedLogicalAnchor?.side && renderedLogicalAnchor.side !== anchor.side);
+      if (logicalSnapRetained && physicalSideChanged) {
+        recordQaDiagnostic("circle anchor physical side adjusted", {
+          corridorId: updatedCorridor?.id || currentCorridor.id,
+          endpoint: updatedEndpoint,
+          requestedSide: anchor?.side || null,
+          renderedSide: renderedLogicalAnchor?.side || null,
+          requestedAnchor: summarizeDebugAnchor(anchor),
+          renderedEndpointAnchor: summarizeDebugAnchor(updatedEndpointAnchor),
+          renderedDoor: summarizeDebugAnchor(updatedDoor),
+        }, "anchor-trace");
+      }
+      assertQa(
+        logicalSnapRetained,
+        "Rendered corridor endpoint did not retain the requested logical circle anchor snap cell.",
         {
           corridorId: updatedCorridor?.id || currentCorridor.id,
           endpoint: updatedEndpoint,
           requestedAnchor: summarizeDebugAnchor(anchor),
           requestedIdentityCell: summarizeDebugCell(requestedIdentityCell),
+          renderedEndpointAnchor: updatedEndpointAnchor,
           renderedDoor: updatedDoor,
           renderedIdentityCell: summarizeDebugCell(renderedIdentityCell),
           renderedCorridor: summarizeDebugCorridor(updatedCorridor),
@@ -9055,6 +9351,158 @@ export default function CruorMapGeneratorMvp({
     });
   }
 
+  async function runQaRealisticRoomStyleStep(
+    runId,
+    signal,
+    settings = {},
+    scenarioLabel = "Smoke Test",
+    regionId = "",
+    patch = {},
+    label = "Update room style",
+  ) {
+    let map = getQaGeneratedMap();
+    let region = map?.regions?.find((item) => item.id === regionId) || null;
+    assertQa(region, "No room available for realistic style step.", { regionId, patch });
+    setQaRunnerStep(runId, {
+      scenarioLabel,
+      stepLabel: `${label}: ${region.label || region.id}`,
+      targetRegionId: region.id,
+      category: "room-style",
+    });
+    updateRoomStyle(region.id, patch);
+    await waitForQaRender(signal, settings);
+    map = getQaGeneratedMap();
+    region = map?.regions?.find((item) => item.id === regionId) || region;
+    const checkContext = {
+      scenarioLabel,
+      phase: "realistic-room-style",
+      regionId,
+      patch,
+      region: summarizeDebugRegion(region),
+    };
+    recordQaDiagnostic("realistic room style step", checkContext, "room-style");
+    assertQaNoDuplicateCorridors(map, checkContext);
+    assertQaNoVisualCorridorTopologyIssues(map, checkContext);
+    assertQaMapValidationPasses(map, checkContext);
+    return region;
+  }
+
+  async function runQaRealisticRoomMoveStep(
+    runId,
+    signal,
+    settings = {},
+    scenarioLabel = "Smoke Test",
+    regionId = "",
+    offset = { x: 1, y: 0, label: "right-1" },
+  ) {
+    let map = getQaGeneratedMap();
+    const region = map?.regions?.find((item) => item.id === regionId) || null;
+    assertQa(region, "No room available for realistic move step.", { regionId, offset });
+    const target = {
+      x: Number(region.cellRect?.x || 0) + Number(offset.x || 0),
+      y: Number(region.cellRect?.y || 0) + Number(offset.y || 0),
+    };
+    setQaRunnerStep(runId, {
+      scenarioLabel,
+      stepLabel: `Move ${region.label || region.id}: ${offset.label || `${offset.x},${offset.y}`}`,
+      targetRegionId: region.id,
+      targetCell: target,
+      category: "room-move",
+    });
+    const moved = moveRoom(region.id, target);
+    if (moved === null) {
+      recordQaDiagnostic("realistic room move skipped", {
+        region: summarizeDebugRegion(region),
+        offset,
+        target,
+        reason: "moveRoom returned null",
+      }, "room-move");
+      return false;
+    }
+    await waitForQaRender(signal, settings);
+    map = getQaGeneratedMap();
+    const checkContext = {
+      scenarioLabel,
+      phase: "realistic-room-move",
+      regionId: region.id,
+      offset,
+      target,
+    };
+    assertQaNoDuplicateCorridors(map, checkContext);
+    assertQaNoVisualCorridorTopologyIssues(map, checkContext);
+    assertQaMapValidationPasses(map, checkContext);
+    return true;
+  }
+
+
+  async function runQaCompactRoomNearClusterStep(
+    runId,
+    signal,
+    settings = {},
+    scenarioLabel = "Smoke Test",
+    regionId = "",
+    label = "Keep room near connected cluster",
+  ) {
+    let map = getQaGeneratedMap();
+    let region = map?.regions?.find((item) => item.id === regionId) || null;
+    assertQa(region, "No room available for compact layout step.", { regionId });
+    const targets = getQaCompactRoomTargets(region, map, settings);
+    if (!targets.length) {
+      recordQaDiagnostic("compact room move skipped", {
+        region: summarizeDebugRegion(region),
+        reason: "no compact targets",
+        topology: summarizeQaCorridorTopology(map),
+      }, "room-move");
+      return false;
+    }
+
+    const attempts = [];
+    for (const target of targets) {
+      setQaRunnerStep(runId, {
+        scenarioLabel,
+        stepLabel: `${label}: ${region.label || region.id} → ${target.label}`,
+        targetRegionId: region.id,
+        targetCell: { x: target.x, y: target.y },
+        category: "room-move",
+      });
+      const moved = moveRoom(region.id, { x: target.x, y: target.y });
+      attempts.push({
+        label: target.label,
+        target: { x: target.x, y: target.y },
+        moved: moved !== null,
+        score: roundDebugNumber(target.score),
+        connectedRegionIds: target.connectedRegionIds || [],
+      });
+      if (moved === null) continue;
+
+      await waitForQaRender(signal, settings);
+      map = getQaGeneratedMap();
+      region = map?.regions?.find((item) => item.id === regionId) || region;
+      const checkContext = {
+        scenarioLabel,
+        phase: "compact-room-near-cluster",
+        regionId: region.id,
+        target: { x: target.x, y: target.y },
+        label: target.label,
+        attempts,
+        region: summarizeDebugRegion(region),
+      };
+      recordQaDiagnostic("compact room move committed", checkContext, "room-move");
+      assertQaNoDuplicateCorridors(map, checkContext);
+      assertQaNoVisualCorridorTopologyIssues(map, checkContext);
+      assertQaMapValidationPasses(map, checkContext);
+      return true;
+    }
+
+    recordQaDiagnostic("compact room move skipped", {
+      region: summarizeDebugRegion(region),
+      reason: "all compact targets rejected by moveRoom",
+      attempts,
+      topology: summarizeQaCorridorTopology(map),
+    }, "room-move");
+    return false;
+  }
+
   async function runQaSmokeScenario(
     runId,
     signal,
@@ -9064,32 +9512,151 @@ export default function CruorMapGeneratorMvp({
     let map = getQaGeneratedMap();
     assertQaMapValidationPasses(map, { scenarioLabel, phase: "initial" });
     const candidateRegions = getQaCircleSmokeCandidateRegions(map, settings);
-    assertQa(candidateRegions.length > 0, "No connected room available for circular smoke scenario.", {
+    assertQa(candidateRegions.length > 0, "No connected room available for realistic smoke scenario.", {
       regionCount: map?.regions?.length || 0,
       corridors: (map?.corridors || []).map(summarizeDebugCorridor),
     });
 
-    for (let index = 0; index < candidateRegions.length; index += 1) {
-      map = getQaGeneratedMap();
-      const region = map.regions.find((item) => item.id === candidateRegions[index].id);
-      if (!region) continue;
-      setQaRunnerStep(runId, {
+    let circleRegion = candidateRegions[0];
+    await runQaRealisticRoomStyleStep(
+      runId,
+      signal,
+      settings,
+      scenarioLabel,
+      circleRegion.id,
+      { shape: "circle", sizePreset: "Medium", customSize: null },
+      "Make room circular medium",
+    );
+    await runQaCompactRoomNearClusterStep(
+      runId,
+      signal,
+      settings,
+      scenarioLabel,
+      circleRegion.id,
+      "Keep circular room near connected rooms",
+    );
+
+    if (settings.speed !== "fast") {
+      await runQaRealisticRoomStyleStep(
+        runId,
+        signal,
+        settings,
         scenarioLabel,
-        stepLabel: `Circular smoke room ${index + 1}/${candidateRegions.length}: ${region.label || region.id}`,
-        targetRegionId: region.id,
-        category: "room-style",
-      });
-      await runQaCircleAnchorSweep(runId, signal, settings, scenarioLabel, {
-        regionId: region.id,
-        preferredSide: null,
-        stepCount: getQaCircleSmokeAnchorSteps(settings),
-        sizePreset: "Large",
-      });
-      await runQaCircleRoomMoveMatrix(runId, signal, settings, scenarioLabel, region.id);
+        circleRegion.id,
+        { shape: "circle", sizePreset: "Large", customSize: null },
+        "Resize circular room",
+      );
+      await runQaCompactRoomNearClusterStep(
+        runId,
+        signal,
+        settings,
+        scenarioLabel,
+        circleRegion.id,
+        "Recompact resized circular room",
+      );
+    }
+
+    map = getQaGeneratedMap();
+    circleRegion = map?.regions?.find((region) => region.id === circleRegion.id) || circleRegion;
+    assertQaRegionNearConnectedCluster(circleRegion, map, settings, {
+      scenarioLabel,
+      phase: "after-circle-style-and-compact",
+    });
+
+    await runQaCircleAnchorSweep(runId, signal, settings, scenarioLabel, {
+      regionId: circleRegion.id,
+      preferredSide: null,
+      stepCount: getQaCircleSmokeAnchorSteps(settings),
+      prepare: false,
+      anchorStrategy: "nearby",
+    });
+
+    await runQaCompactRoomNearClusterStep(
+      runId,
+      signal,
+      settings,
+      scenarioLabel,
+      circleRegion.id,
+      "Recompact after nearby anchor edits",
+    );
+
+    map = getQaGeneratedMap();
+    circleRegion = map?.regions?.find((region) => region.id === circleRegion.id) || circleRegion;
+    assertQaRegionNearConnectedCluster(circleRegion, map, settings, {
+      scenarioLabel,
+      phase: "after-nearby-circle-anchor-moves",
+    });
+
+    const realisticOffsets = getQaRealisticRoomMoveOffsets(settings);
+    await runQaRealisticRoomMoveStep(
+      runId,
+      signal,
+      settings,
+      scenarioLabel,
+      circleRegion.id,
+      realisticOffsets[1] || { x: 0, y: 1, label: "down-1" },
+    );
+    await runQaCompactRoomNearClusterStep(
+      runId,
+      signal,
+      settings,
+      scenarioLabel,
+      circleRegion.id,
+      "Recompact after user room nudge",
+    );
+
+    map = getQaGeneratedMap();
+    const secondaryRegion = (map?.regions || []).find(
+      (region) => region?.id && region.id !== circleRegion.id,
+    );
+    if (secondaryRegion) {
+      await runQaRealisticRoomStyleStep(
+        runId,
+        signal,
+        settings,
+        scenarioLabel,
+        secondaryRegion.id,
+        { shape: "hall", sizePreset: "Small", customSize: null },
+        "Change adjacent room type",
+      );
+      if (settings.speed !== "fast") {
+        await runQaRealisticRoomMoveStep(
+          runId,
+          signal,
+          settings,
+          scenarioLabel,
+          secondaryRegion.id,
+          realisticOffsets[2] || { x: -1, y: 0, label: "left-1" },
+        );
+        await runQaCompactRoomNearClusterStep(
+          runId,
+          signal,
+          settings,
+          scenarioLabel,
+          circleRegion.id,
+          "Keep circular room near moved neighbor",
+        );
+      }
     }
 
     if (!signal?.aborted) await runQaCorridorCreation(runId, signal, settings, scenarioLabel);
-    if (!signal?.aborted) await runQaRoomMoveReroute(runId, signal, settings, scenarioLabel);
+    if (!signal?.aborted) {
+      await runQaCompactRoomNearClusterStep(
+        runId,
+        signal,
+        settings,
+        scenarioLabel,
+        circleRegion.id,
+        "Final compactness pass",
+      );
+    }
+
+    map = getQaGeneratedMap();
+    circleRegion = map?.regions?.find((region) => region.id === circleRegion.id) || circleRegion;
+    assertQaRegionNearConnectedCluster(circleRegion, map, settings, {
+      scenarioLabel,
+      phase: "final-smoke-layout",
+    });
   }
 
   async function runQaCorridorCreation(
