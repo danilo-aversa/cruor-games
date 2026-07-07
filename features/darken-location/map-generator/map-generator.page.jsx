@@ -227,30 +227,6 @@ const MAP_DEBUG_SPEED_OPTIONS = [
   { id: "slow", label: "Slow" },
 ];
 
-const MAP_DEBUG_ICON_BUTTON_STYLE = {
-  width: 30,
-  height: 30,
-  minWidth: 30,
-  padding: 0,
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-};
-
-const MAP_DEBUG_COMPACT_ROW_STYLE = {
-  display: "flex",
-  flexWrap: "wrap",
-  alignItems: "center",
-  gap: 6,
-};
-
-const MAP_DEBUG_CATEGORY_GRID_STYLE = {
-  display: "grid",
-  gridTemplateColumns: "repeat(8, 30px)",
-  gap: 6,
-  alignItems: "center",
-};
-
 const DEFAULT_MAP_DEBUG_CATEGORIES = MAP_DEBUG_CATEGORY_OPTIONS.reduce(
   (next, category) => ({ ...next, [category.id]: true }),
   {}
@@ -409,10 +385,12 @@ function MapDebugRecorderPanel({
   const icon = (name) => <i className={`fa-solid fa-${name}`} aria-hidden="true" />;
   const iconButtonClass = (active = false) =>
     active
-      ? "mvp-button cruor-button map-debug-recorder__icon-button is-active"
-      : "mvp-button cruor-button map-debug-recorder__icon-button";
+      ? "mvp-button cruor-button map-debug-recorder__icon-toggle is-active"
+      : "mvp-button cruor-button map-debug-recorder__icon-toggle";
   const categoryButtonClass = (active = false) =>
-    active ? "map-debug-recorder__category is-active" : "map-debug-recorder__category";
+    active
+      ? "mvp-button cruor-button map-debug-recorder__icon-toggle map-debug-recorder__category is-active"
+      : "mvp-button cruor-button map-debug-recorder__icon-toggle map-debug-recorder__category";
   const setQaSetting = (patch) => {
     onQaSettingsChange?.({
       speed,
@@ -438,12 +416,10 @@ function MapDebugRecorderPanel({
 
       <div
         className="map-debug-recorder__actions map-debug-recorder__icon-toggle-grid"
-        style={MAP_DEBUG_COMPACT_ROW_STYLE}
       >
         <button
           type="button"
           className={iconButtonClass(recording)}
-          style={MAP_DEBUG_ICON_BUTTON_STYLE}
           aria-label={recording ? "Stop recording" : "Start recording"}
           {...getGenericTooltipAttrs(recording ? "Stop Recording" : "Start Recording")}
           onClick={() => onRecordingChange(!recording)}
@@ -453,7 +429,6 @@ function MapDebugRecorderPanel({
         <button
           type="button"
           className={iconButtonClass(showDebugCoordinates)}
-          style={MAP_DEBUG_ICON_BUTTON_STYLE}
           aria-label={showDebugCoordinates ? "Hide map coordinates" : "Show map coordinates"}
           aria-pressed={Boolean(showDebugCoordinates)}
           {...getGenericTooltipAttrs(
@@ -466,42 +441,9 @@ function MapDebugRecorderPanel({
         </button>
         <button
           type="button"
-          className={iconButtonClass(false)}
-          style={MAP_DEBUG_ICON_BUTTON_STYLE}
-          aria-label="Clear debug events"
-          {...getGenericTooltipAttrs("Clear Events")}
-          onClick={onClear}
-          disabled={!entries.length}
-        >
-          {icon("trash-can")}
-        </button>
-        <button
-          type="button"
-          className={iconButtonClass(false)}
-          style={MAP_DEBUG_ICON_BUTTON_STYLE}
-          aria-label="Download debug JSON"
-          {...getGenericTooltipAttrs("Download JSON")}
-          onClick={onDownloadJson}
-          disabled={!entries.length}
-        >
-          {icon("file-code")}
-        </button>
-        <button
-          type="button"
-          className={iconButtonClass(false)}
-          style={MAP_DEBUG_ICON_BUTTON_STYLE}
-          aria-label="Download debug TXT"
-          {...getGenericTooltipAttrs("Download TXT")}
-          onClick={onDownloadTxt}
-          disabled={!entries.length}
-        >
-          {icon("file-lines")}
-        </button>
-        <button
-          type="button"
-          className={iconButtonClass(false)}
-          style={MAP_DEBUG_ICON_BUTTON_STYLE}
+          className={`${iconButtonClass(false)} map-debug-recorder__svg-action map-debug-recorder__svg-copy`}
           aria-label="Copy debug SVG with coordinates"
+          title="Copy Debug SVG with coordinates"
           {...getGenericTooltipAttrs(
             "Copy Debug SVG",
             "Copy the current rendered SVG with coordinate labels included."
@@ -512,9 +454,9 @@ function MapDebugRecorderPanel({
         </button>
         <button
           type="button"
-          className={iconButtonClass(false)}
-          style={MAP_DEBUG_ICON_BUTTON_STYLE}
+          className={`${iconButtonClass(false)} map-debug-recorder__svg-action map-debug-recorder__svg-download`}
           aria-label="Download debug SVG with coordinates"
+          title="Download Debug SVG with coordinates"
           {...getGenericTooltipAttrs(
             "Download Debug SVG",
             "Download the current rendered SVG with coordinate labels included."
@@ -523,11 +465,40 @@ function MapDebugRecorderPanel({
         >
           {icon("file-arrow-down")}
         </button>
+        <button
+          type="button"
+          className={iconButtonClass(false)}
+          aria-label="Clear debug events"
+          {...getGenericTooltipAttrs("Clear Events")}
+          onClick={onClear}
+          disabled={!entries.length}
+        >
+          {icon("trash-can")}
+        </button>
+        <button
+          type="button"
+          className={iconButtonClass(false)}
+          aria-label="Download debug JSON"
+          {...getGenericTooltipAttrs("Download JSON")}
+          onClick={onDownloadJson}
+          disabled={!entries.length}
+        >
+          {icon("file-code")}
+        </button>
+        <button
+          type="button"
+          className={iconButtonClass(false)}
+          aria-label="Download debug TXT"
+          {...getGenericTooltipAttrs("Download TXT")}
+          onClick={onDownloadTxt}
+          disabled={!entries.length}
+        >
+          {icon("file-lines")}
+        </button>
       </div>
 
       <div
         className="map-debug-recorder__actions map-debug-recorder__scenario-actions"
-        style={MAP_DEBUG_COMPACT_ROW_STYLE}
       >
         <select
           className="map-debug-recorder__speed-select"
@@ -535,7 +506,6 @@ function MapDebugRecorderPanel({
           title="QA runner speed"
           value={speed}
           onChange={(event) => setQaSetting({ speed: event.target.value })}
-          style={{ height: 30 }}
         >
           {MAP_DEBUG_SPEED_OPTIONS.map((option) => (
             <option key={option.id} value={option.id}>
@@ -545,8 +515,7 @@ function MapDebugRecorderPanel({
         </select>
         <button
           type="button"
-          className={iconButtonClass(stopOnError)}
-          style={MAP_DEBUG_ICON_BUTTON_STYLE}
+          className={`${iconButtonClass(stopOnError)} map-debug-recorder__stop-toggle`}
           aria-label={stopOnError ? "Stop on error enabled" : "Stop on error disabled"}
           aria-pressed={Boolean(stopOnError)}
           {...getGenericTooltipAttrs(
@@ -562,7 +531,6 @@ function MapDebugRecorderPanel({
             key={scenario.id}
             type="button"
             className={iconButtonClass(qaRunning && qaRunnerState?.scenarioId === scenario.id)}
-            style={MAP_DEBUG_ICON_BUTTON_STYLE}
             aria-label={scenario.label}
             {...getGenericTooltipAttrs(scenario.label)}
             onClick={() => onRunQaScenario?.(scenario.id, { speed, stopOnError })}
@@ -574,7 +542,6 @@ function MapDebugRecorderPanel({
         <button
           type="button"
           className={iconButtonClass(false)}
-          style={MAP_DEBUG_ICON_BUTTON_STYLE}
           aria-label="Stop QA runner"
           {...getGenericTooltipAttrs("Stop QA Runner")}
           onClick={onStopQaScenario}
@@ -588,14 +555,12 @@ function MapDebugRecorderPanel({
         className="map-debug-recorder__categories map-debug-recorder__icon-toggle-grid"
         role="group"
         aria-label="Debug listener categories"
-        style={MAP_DEBUG_CATEGORY_GRID_STYLE}
       >
         {MAP_DEBUG_CATEGORY_OPTIONS.map((category) => (
           <button
             key={category.id}
             type="button"
             className={categoryButtonClass(Boolean(categories[category.id]))}
-            style={MAP_DEBUG_ICON_BUTTON_STYLE}
             aria-label={category.label}
             aria-pressed={Boolean(categories[category.id])}
             {...getGenericTooltipAttrs(category.label)}

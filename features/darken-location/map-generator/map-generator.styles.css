@@ -3026,131 +3026,150 @@
 
 .cruor-map-workspace .map-debug-recorder__actions,
 .location-composer .map-debug-recorder__actions {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: stretch;
-}
-
-.cruor-map-workspace .map-debug-recorder__actions .mvp-button,
-.location-composer .map-debug-recorder__actions .mvp-button {
-  width: 100%;
-  min-width: 0;
-  min-height: 36px;
-  padding: 0 8px;
-  line-height: 1.1;
-  white-space: normal;
-}
-
-.cruor-map-workspace .map-debug-recorder__actions .mvp-button span,
-.location-composer .map-debug-recorder__actions .mvp-button span {
-  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
 }
 
 .cruor-map-workspace .map-debug-recorder__icon-toggle-grid,
 .location-composer .map-debug-recorder__icon-toggle-grid,
 .cruor-map-workspace .map-debug-recorder__categories,
 .location-composer .map-debug-recorder__categories {
-  grid-template-columns: repeat(4, 34px);
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(8, 30px);
+  justify-content: start;
   align-items: center;
   justify-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
+.cruor-map-workspace .map-debug-recorder__actions .mvp-button,
+.location-composer .map-debug-recorder__actions .mvp-button,
 .cruor-map-workspace .map-debug-recorder__icon-toggle,
-.location-composer .map-debug-recorder__icon-toggle {
+.location-composer .map-debug-recorder__icon-toggle,
+.cruor-map-workspace .map-debug-recorder__category,
+.location-composer .map-debug-recorder__category {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   place-self: center;
-  width: 34px;
-  min-width: 34px;
-  max-width: 34px;
-  height: 34px;
-  min-height: 34px;
-  max-height: 34px;
+  width: 30px;
+  min-width: 30px;
+  max-width: 30px;
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
   margin: 0;
   padding: 0;
   line-height: 1;
+  white-space: nowrap;
 }
 
-.cruor-map-workspace .map-debug-recorder__runner-controls,
-.location-composer .map-debug-recorder__runner-controls {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 34px;
-  align-items: end;
-  gap: 8px;
+.cruor-map-workspace .map-debug-recorder__actions .mvp-button span,
+.location-composer .map-debug-recorder__actions .mvp-button span,
+.cruor-map-workspace .map-debug-recorder__category span,
+.location-composer .map-debug-recorder__category span {
+  display: none;
 }
 
-.cruor-map-workspace .map-debug-recorder__runner-speed,
-.location-composer .map-debug-recorder__runner-speed {
-  display: grid;
-  grid-template-columns: 1fr;
-  align-items: stretch;
-  gap: 4px;
-  min-width: 0;
-}
-
-.cruor-map-workspace .map-debug-recorder__runner-speed span,
-.location-composer .map-debug-recorder__runner-speed span {
-  font-size: 0.62rem;
-  line-height: 1;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.cruor-map-workspace .map-debug-recorder__runner-speed select,
-.location-composer .map-debug-recorder__runner-speed select {
-  width: 100%;
-  min-width: 0;
-  height: 34px;
-}
-
-.cruor-map-workspace .map-debug-recorder__runner-actions,
-.location-composer .map-debug-recorder__runner-actions {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: stretch;
-  gap: 8px;
-}
-
-.cruor-map-workspace .map-debug-recorder__runner-button,
-.location-composer .map-debug-recorder__runner-button {
-  width: 100%;
-  min-width: 0;
-  min-height: 42px;
-  display: grid;
-  grid-template-columns: 18px minmax(0, 1fr);
-  align-items: center;
-  justify-items: start;
-  column-gap: 8px;
-  padding: 7px 8px;
-  line-height: 1.15;
-  white-space: normal;
-}
-
-.cruor-map-workspace .map-debug-recorder__runner-button span,
-.location-composer .map-debug-recorder__runner-button span {
-  min-width: 0;
-}
-
-.cruor-map-workspace .map-debug-recorder__runner-button i,
-.location-composer .map-debug-recorder__runner-button i {
-  width: 18px;
-  min-width: 18px;
+.cruor-map-workspace .map-debug-recorder__icon-toggle i,
+.location-composer .map-debug-recorder__icon-toggle i,
+.cruor-map-workspace .map-debug-recorder__category i,
+.location-composer .map-debug-recorder__category i {
+  width: 1em;
+  min-width: 1em;
   margin: 0;
-}
-
-.cruor-map-workspace .map-debug-recorder__runner-button--stop,
-.location-composer .map-debug-recorder__runner-button--stop {
-  grid-column: 1 / -1;
-  grid-template-columns: 18px auto;
-  justify-content: center;
-  justify-items: center;
+  font-size: 0.86rem;
+  line-height: 1;
   text-align: center;
 }
 
-@media (max-width: 1160px) {
-  .cruor-map-workspace .map-debug-recorder__runner-actions,
-  .location-composer .map-debug-recorder__runner-actions {
-    grid-template-columns: 1fr;
+.cruor-map-workspace .map-debug-recorder__actions select,
+.location-composer .map-debug-recorder__actions select,
+.cruor-map-workspace .map-debug-recorder__speed-select,
+.location-composer .map-debug-recorder__speed-select {
+  align-self: center;
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+  min-width: 78px;
+  max-width: 112px;
+  border: 1px solid rgba(208, 162, 170, 0.18);
+  border-radius: 0;
+  background: rgba(10, 5, 7, 0.82);
+  color: rgba(244, 225, 224, 0.88);
+  padding: 0 7px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.cruor-map-workspace .map-debug-recorder__actions .mvp-button:disabled,
+.location-composer .map-debug-recorder__actions .mvp-button:disabled,
+.cruor-map-workspace .map-debug-recorder__category:disabled,
+.location-composer .map-debug-recorder__category:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+@media (max-width: 520px) {
+  .cruor-map-workspace .map-debug-recorder__icon-toggle-grid,
+  .location-composer .map-debug-recorder__icon-toggle-grid,
+  .cruor-map-workspace .map-debug-recorder__categories,
+  .location-composer .map-debug-recorder__categories {
+    grid-template-columns: repeat(4, 30px);
+  }
+}
+
+/* Debug recorder width/alignment refinements */
+.cruor-map-workspace .map-debug-recorder__scenario-actions,
+.location-composer .map-debug-recorder__scenario-actions {
+  display: grid;
+  grid-template-columns: minmax(118px, 1fr) repeat(6, 30px);
+  align-items: center;
+  justify-content: stretch;
+  width: 100%;
+  gap: 2px;
+}
+
+.cruor-map-workspace .map-debug-recorder__scenario-actions .map-debug-recorder__speed-select,
+.location-composer .map-debug-recorder__scenario-actions .map-debug-recorder__speed-select {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+
+.cruor-map-workspace .map-debug-recorder__scenario-actions .map-debug-recorder__icon-toggle,
+.location-composer .map-debug-recorder__scenario-actions .map-debug-recorder__icon-toggle,
+.cruor-map-workspace .map-debug-recorder__scenario-actions .map-debug-recorder__icon-button,
+.location-composer .map-debug-recorder__scenario-actions .map-debug-recorder__icon-button,
+.cruor-map-workspace .map-debug-recorder__scenario-actions .map-debug-recorder__stop-toggle,
+.location-composer .map-debug-recorder__scenario-actions .map-debug-recorder__stop-toggle {
+  align-self: center;
+  width: 30px;
+  min-width: 30px;
+  max-width: 30px;
+  height: 30px !important;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  padding: 0;
+}
+
+.cruor-map-workspace .map-debug-recorder__categories.map-debug-recorder__icon-toggle-grid,
+.location-composer .map-debug-recorder__categories.map-debug-recorder__icon-toggle-grid {
+  justify-content: center;
+  gap: 8px;
+}
+
+.cruor-map-workspace .map-debug-recorder__svg-action,
+.location-composer .map-debug-recorder__svg-action {
+  border-color: rgba(214, 184, 98, 0.46);
+}
+
+@media (max-width: 520px) {
+  .cruor-map-workspace .map-debug-recorder__scenario-actions,
+  .location-composer .map-debug-recorder__scenario-actions {
+    grid-template-columns: minmax(108px, 1fr) repeat(3, 30px);
   }
 }

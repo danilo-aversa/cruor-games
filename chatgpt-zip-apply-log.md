@@ -9755,3 +9755,47 @@ _Nessun file aggiunto._
 
 - `~app/app-shell.css`
 
+
+---
+
+## 2026-07-07 12:27:20
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-debug-recorder-only-restored-layout.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-debug-recorder-only-restored-layout.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+
+---
+
+## 2026-07-07 12:48:19
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-debug-recorder-layout-adjustments-v2.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-debug-recorder-layout-adjustments-v2.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
