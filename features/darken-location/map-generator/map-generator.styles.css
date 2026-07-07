@@ -964,12 +964,15 @@
   border-radius: 0;
   background-color: var(--cruor-ui-panel-bg);
   background-image: var(--cruor-ui-panel-image);
+  color: var(--cruor-color-text, var(--text));
   box-shadow: var(--cruor-ui-panel-shadow);
   padding: 8px;
   display: none;
   gap: 5px;
   border-top-color: var(--cruor-ui-panel-border-top);
   background-blend-mode: overlay, overlay, normal;
+  backdrop-filter: var(--cruor-filter-glass-14-125);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-14-125);
 }
 
 .cruor-map-mvp .imported-map-request {
@@ -2617,6 +2620,9 @@
   max-height: min(460px, calc(100dvh - 24px));
   overflow-y: auto;
   overscroll-behavior: contain;
+  border: 1px solid var(--cruor-color-rose-a220);
+  background: var(--cruor-gradient-radial-228-a687306d), var(--cruor-gradient-linear-148-c4bbe015);
+  box-shadow: var(--cruor-shadow-box-122);
   scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
   scrollbar-width: thin;
 }

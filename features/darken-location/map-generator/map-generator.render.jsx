@@ -353,6 +353,8 @@ export const EDITOR_CAVE_STYLE = `
 `;
 
 export const DRAG_PREVIEW_STYLE = `
+.debug-cell-coordinates{pointer-events:none}.debug-cell-coordinate-label{fill:rgba(255,231,143,.96);stroke:rgba(0,0,0,.92);stroke-width:2.15px;paint-order:stroke;stroke-linejoin:round;font-family:Inter,ui-sans-serif,system-ui;font-weight:900;letter-spacing:-.04em;vector-effect:non-scaling-stroke}.map-style-ink .debug-cell-coordinate-label,.map-style-cartographic .debug-cell-coordinate-label,.map-style-bone .debug-cell-coordinate-label,.map-style-print .debug-cell-coordinate-label{fill:rgba(51,3,12,.96);stroke:rgba(255,248,226,.92)}
+
 .drag-preview-layer{pointer-events:none}
 .drag-preview-corridor-floor{fill:none;stroke:#685D61;stroke-linecap:square;stroke-linejoin:round;pointer-events:none;vector-effect:non-scaling-stroke}
 .drag-preview-corridor-wall{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-linecap:round;stroke-linejoin:round;pointer-events:none;vector-effect:non-scaling-stroke}
@@ -2802,6 +2804,83 @@ export function renderFloorGrid(generatedMap, gridStyle = "solid", renderOptions
       {style === "solid"
         ? createGridElements(config, style, "fg")
         : renderGridPattern(config, style, "fg", options)}
+    </g>
+  );
+}
+
+function doesDebugCellRectIntersectCircle(cell, circle) {
+  if (!cell || !circle) return false;
+  const minX = cell.x;
+  const minY = cell.y;
+  const maxX = cell.x + 1;
+  const maxY = cell.y + 1;
+  const dx = Math.max(minX - circle.cxCells, 0, circle.cxCells - maxX);
+  const dy = Math.max(minY - circle.cyCells, 0, circle.cyCells - maxY);
+  return Math.hypot(dx, dy) <= circle.rCells + 0.025;
+}
+
+function addDebugCircleCoordinateCells(region, addCell) {
+  if (region?.shape !== "circle") return;
+  const circle = getCircleGeometryFromRegion(region, 1);
+  if (!circle) return;
+  const minX = Math.floor(circle.cxCells - circle.rCells - 1);
+  const maxX = Math.ceil(circle.cxCells + circle.rCells + 1);
+  const minY = Math.floor(circle.cyCells - circle.rCells - 1);
+  const maxY = Math.ceil(circle.cyCells + circle.rCells + 1);
+  for (let y = minY; y <= maxY; y += 1) {
+    for (let x = minX; x <= maxX; x += 1) {
+      const cell = { x, y };
+      if (doesDebugCellRectIntersectCircle(cell, circle)) addCell(cell);
+    }
+  }
+}
+
+export function getDebugCoordinateCells(generatedMap) {
+  const cellsByKey = new Map();
+  const addCell = (cell) => {
+    if (!Number.isFinite(cell?.x) || !Number.isFinite(cell?.y)) return;
+    cellsByKey.set(cellKey(cell.x, cell.y), { x: cell.x, y: cell.y });
+  };
+
+  (generatedMap?.dungeonMask?.floorCells || []).forEach(addCell);
+  (generatedMap?.regions || []).forEach((region) => {
+    (region?.floorCells || []).forEach(addCell);
+    (region?.circleExtensionCells || []).forEach(addCell);
+    addDebugCircleCoordinateCells(region, addCell);
+  });
+  (generatedMap?.corridors || []).forEach((corridor) =>
+    (corridor?.floorCells || []).forEach(addCell),
+  );
+
+  return Array.from(cellsByKey.values()).sort(
+    (a, b) => a.y - b.y || a.x - b.x,
+  );
+}
+
+export function renderDebugCellCoordinates(generatedMap) {
+  const gridSize = generatedMap?.config?.gridSize || DEFAULT_CONFIG.gridSize;
+  const cells = getDebugCoordinateCells(generatedMap);
+  if (cells.length === 0) return null;
+  const fontSize = clamp(gridSize * 0.27, 4.4, 6.4);
+
+  return (
+    <g
+      className="debug-cell-coordinates"
+      aria-hidden="true"
+    >
+      {cells.map((cell) => (
+        <text
+          key={`debug-cell-coordinate-${cell.x}-${cell.y}`}
+          className="debug-cell-coordinate-label"
+          x={(cell.x + 0.5) * gridSize}
+          y={(cell.y + 0.53) * gridSize}
+          fontSize={fontSize}
+          textAnchor="middle"
+          dominantBaseline="middle"
+        >
+          {cell.x},{cell.y}
+        </text>
+      ))}
     </g>
   );
 }
@@ -5780,7 +5859,13 @@ export function renderCircularRoomSurfaceOverlay(generatedMap) {
   );
   if (circles.length === 0) return null;
   const d = circles
-    .map((region) => buildCircleRoomPath(region, generatedMap.config.gridSize))
+    .map((region) =>
+      createCircleCompositeRegionSurface(
+        region,
+        generatedMap,
+        generatedMap.config.gridSize,
+      ).visualFloorPath || buildCircleRoomPath(region, generatedMap.config.gridSize),
+    )
     .join(" ");
   return (
     <g className="circular-room-surface-cover">
@@ -6015,6 +6100,17 @@ export function renderWallImperfections(generatedMap) {
       })}
     </g>
   );
+}
+
+function getAnchorEditorHandlePoint(anchor, gridSize) {
+  if (
+    anchor?.displayPoint &&
+    Number.isFinite(anchor.displayPoint.x) &&
+    Number.isFinite(anchor.displayPoint.y)
+  ) {
+    return { x: anchor.displayPoint.x, y: anchor.displayPoint.y };
+  }
+  return getAnchorHandlePoint(anchor, gridSize);
 }
 
 export function getDoorGeometry(door, gridSize) {
@@ -7014,14 +7110,18 @@ export function getCirclePortalSquareWallSegments(region, generatedMap) {
       const neighborKey = cellKey(neighbor.x, neighbor.y);
       if (extensionCellKeys.has(neighborKey)) return;
       if (corridorCellKeys.has(neighborKey)) return;
-      if (isCirclePortalEdgeFacingRoom(cell, edge)) return;
 
       // The raccordo wall is not an independent square outline placed on top of
       // the circular room. It is the straight portion of the outer contour of
-      // the union shape: circle + full raccordo square. Therefore each raccordo
-      // edge only contributes the part that is outside the mathematical circle.
-      // Any edge portion already inside the circle would visually cut into the
-      // room and must be omitted.
+      // the union shape: circle + full raccordo square. Therefore every exposed
+      // raccordo edge contributes only the part that is outside the mathematical
+      // circle.
+      //
+      // Do not drop the edge facing the circular room wholesale. At diagonal or
+      // corner-like contacts that edge is often only partially inside the
+      // circle; the remaining outside portion is required to close the union
+      // contour and to make the first raccordo cell visually fuse with the
+      // circle instead of looking like an open/isolated square.
       splitSegmentOutsideCircle(edge, circle, gridSize, 0.01).forEach(
         (segment) => addUniqueSegment(segments, seen, segment),
       );
@@ -8284,9 +8384,10 @@ export function getWallConnectionZones(
   return anchors
     .map((anchor, index) => {
       const segment =
+        anchor.displaySegment ||
         anchor.segment ||
         getSharedEdgeSegment(anchor.cell, anchor.outsideCell, gridSize);
-      const point = getAnchorHandlePoint(anchor, gridSize);
+      const point = getAnchorEditorHandlePoint(anchor, gridSize);
       const adjacentRegionId = ownerByCell.get(
         cellKey(anchor.outsideCell.x, anchor.outsideCell.y),
       );
@@ -9747,7 +9848,10 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
     .map((item) => {
       const id = `${item.corridor.id}:${item.endpoint}`;
       const door = createDoorFromAnchor(item.anchor, config.gridSize, false);
-      const basePoint = { x: (door.x1 + door.x2) / 2, y: (door.y1 + door.y2) / 2 };
+      const basePoint = getAnchorEditorHandlePoint(item.anchor, config.gridSize) || {
+        x: (door.x1 + door.x2) / 2,
+        y: (door.y1 + door.y2) / 2,
+      };
       const preview =
         getPreviewedHandlePoint(id) ||
         getRoomShiftedEndpointPoint(
@@ -10472,6 +10576,7 @@ export function MapSvg({
   crosshatchOpacity = 1,
   wallDrawingStyle = "drawn",
   hatchShadowColor = "default",
+  showDebugCellCoordinates = false,
 }) {
   const { config } = generatedMap;
   const visualStyle = normalizeVisualStyle(config.visualStyle);
@@ -10614,6 +10719,7 @@ export function MapSvg({
       showNames,
       showProps,
       showRoomBadges,
+      showDebugCellCoordinates,
     ],
   );
 
@@ -10640,6 +10746,7 @@ export function MapSvg({
         showProps,
         showRoomBadges,
       })}
+      {showDebugCellCoordinates && renderDebugCellCoordinates(activeEditorSurfaceMap || activeSurfaceMap)}
     </svg>
   );
 }

@@ -204,15 +204,52 @@ const ROOM_SIZE_MENU_PRESETS = {
 };
 
 const MAP_DEBUG_CATEGORY_OPTIONS = [
-  { id: "room-move", label: "Room Move" },
-  { id: "corridor-move", label: "Corridor Move" },
-  { id: "corridor-create", label: "Corridor Create" },
-  { id: "room-style", label: "Shape / Size" },
-  { id: "manual-overrides", label: "Manual Overrides" },
-  { id: "generated-map", label: "Generated Map" },
-  { id: "anchor-trace", label: "Anchor Trace" },
-  { id: "performance", label: "Performance" },
+  { id: "room-move", label: "Room Move", icon: "arrows-up-down-left-right" },
+  { id: "corridor-move", label: "Corridor Move", icon: "route" },
+  { id: "corridor-create", label: "Corridor Create", icon: "draw-polygon" },
+  { id: "room-style", label: "Shape / Size", icon: "vector-square" },
+  { id: "manual-overrides", label: "Manual Overrides", icon: "pen-to-square" },
+  { id: "generated-map", label: "Generated Map", icon: "map" },
+  { id: "anchor-trace", label: "Anchor Trace", icon: "location-crosshairs" },
+  { id: "performance", label: "Performance", icon: "gauge-high" },
 ];
+
+const MAP_DEBUG_SCENARIO_OPTIONS = [
+  { id: "smoke", label: "Smoke Test", icon: "vial-circle-check" },
+  { id: "circle-anchor-sweep", label: "Circle Anchor Test", icon: "circle-nodes" },
+  { id: "corridor-create", label: "Corridor Creation Test", icon: "draw-polygon" },
+  { id: "room-move-reroute", label: "Room Move + Reroute", icon: "arrows-up-down-left-right" },
+];
+
+const MAP_DEBUG_SPEED_OPTIONS = [
+  { id: "fast", label: "Fast" },
+  { id: "normal", label: "Normal" },
+  { id: "slow", label: "Slow" },
+];
+
+const MAP_DEBUG_ICON_BUTTON_STYLE = {
+  width: 30,
+  height: 30,
+  minWidth: 30,
+  padding: 0,
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+const MAP_DEBUG_COMPACT_ROW_STYLE = {
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: 6,
+};
+
+const MAP_DEBUG_CATEGORY_GRID_STYLE = {
+  display: "grid",
+  gridTemplateColumns: "repeat(8, 30px)",
+  gap: 6,
+  alignItems: "center",
+};
 
 const DEFAULT_MAP_DEBUG_CATEGORIES = MAP_DEBUG_CATEGORY_OPTIONS.reduce(
   (next, category) => ({ ...next, [category.id]: true }),
@@ -347,16 +384,42 @@ function MapDebugRecorderPanel({
   categories,
   entries,
   onClear,
+  onCopyDebugSvg,
+  onDownloadDebugSvg,
   onDownloadJson,
   onDownloadTxt,
+  onQaSettingsChange,
   onRecordingChange,
+  onRunQaScenario,
+  onStopQaScenario,
   onToggleCategory,
+  onToggleDebugCoordinates,
+  qaRunnerState = null,
+  qaSettings = { speed: "normal", stopOnError: true },
   recording,
+  showDebugCoordinates = true,
 }) {
   const enabledCount = MAP_DEBUG_CATEGORY_OPTIONS.filter(
     (category) => categories[category.id]
   ).length;
   const latestEntries = entries.slice(-6).reverse();
+  const speed = qaSettings?.speed || "normal";
+  const stopOnError = qaSettings?.stopOnError !== false;
+  const qaRunning = qaRunnerState?.state === "running";
+  const icon = (name) => <i className={`fa-solid fa-${name}`} aria-hidden="true" />;
+  const iconButtonClass = (active = false) =>
+    active
+      ? "mvp-button cruor-button map-debug-recorder__icon-button is-active"
+      : "mvp-button cruor-button map-debug-recorder__icon-button";
+  const categoryButtonClass = (active = false) =>
+    active ? "map-debug-recorder__category is-active" : "map-debug-recorder__category";
+  const setQaSetting = (patch) => {
+    onQaSettingsChange?.({
+      speed,
+      stopOnError,
+      ...patch,
+    });
+  };
 
   return (
     <section
@@ -370,68 +433,175 @@ function MapDebugRecorderPanel({
       <p className="map-debug-recorder__summary">
         {entries.length} event{entries.length === 1 ? "" : "s"} · {enabledCount} listener
         {enabledCount === 1 ? "" : "s"} active
+        {qaRunnerState?.state ? ` · QA ${qaRunnerState.state}` : ""}
       </p>
-      <div className="map-debug-recorder__actions">
+
+      <div
+        className="map-debug-recorder__actions map-debug-recorder__icon-toggle-grid"
+        style={MAP_DEBUG_COMPACT_ROW_STYLE}
+      >
         <button
           type="button"
-          className={recording ? "mvp-button cruor-button is-active" : "mvp-button cruor-button"}
+          className={iconButtonClass(recording)}
+          style={MAP_DEBUG_ICON_BUTTON_STYLE}
+          aria-label={recording ? "Stop recording" : "Start recording"}
+          {...getGenericTooltipAttrs(recording ? "Stop Recording" : "Start Recording")}
           onClick={() => onRecordingChange(!recording)}
         >
-          <i className={recording ? "fa-solid fa-stop" : "fa-solid fa-circle"} aria-hidden="true" />
-          <span>{recording ? "Stop" : "Start Recording"}</span>
+          {icon(recording ? "stop" : "circle")}
         </button>
         <button
           type="button"
-          className="mvp-button cruor-button"
+          className={iconButtonClass(showDebugCoordinates)}
+          style={MAP_DEBUG_ICON_BUTTON_STYLE}
+          aria-label={showDebugCoordinates ? "Hide map coordinates" : "Show map coordinates"}
+          aria-pressed={Boolean(showDebugCoordinates)}
+          {...getGenericTooltipAttrs(
+            showDebugCoordinates ? "Hide Coordinates" : "Show Coordinates",
+            "Toggle debug coordinate labels on the rendered map."
+          )}
+          onClick={() => onToggleDebugCoordinates?.(!showDebugCoordinates)}
+        >
+          {icon("table-cells")}
+        </button>
+        <button
+          type="button"
+          className={iconButtonClass(false)}
+          style={MAP_DEBUG_ICON_BUTTON_STYLE}
+          aria-label="Clear debug events"
+          {...getGenericTooltipAttrs("Clear Events")}
           onClick={onClear}
           disabled={!entries.length}
         >
-          <i className="fa-solid fa-trash-can" aria-hidden="true" />
-          <span>Clear</span>
+          {icon("trash-can")}
         </button>
         <button
           type="button"
-          className="mvp-button cruor-button"
+          className={iconButtonClass(false)}
+          style={MAP_DEBUG_ICON_BUTTON_STYLE}
+          aria-label="Download debug JSON"
+          {...getGenericTooltipAttrs("Download JSON")}
           onClick={onDownloadJson}
           disabled={!entries.length}
         >
-          <i className="fa-solid fa-file-code" aria-hidden="true" />
-          <span>Download JSON</span>
+          {icon("file-code")}
         </button>
         <button
           type="button"
-          className="mvp-button cruor-button"
+          className={iconButtonClass(false)}
+          style={MAP_DEBUG_ICON_BUTTON_STYLE}
+          aria-label="Download debug TXT"
+          {...getGenericTooltipAttrs("Download TXT")}
           onClick={onDownloadTxt}
           disabled={!entries.length}
         >
-          <i className="fa-solid fa-file-lines" aria-hidden="true" />
-          <span>Download TXT</span>
+          {icon("file-lines")}
+        </button>
+        <button
+          type="button"
+          className={iconButtonClass(false)}
+          style={MAP_DEBUG_ICON_BUTTON_STYLE}
+          aria-label="Copy debug SVG with coordinates"
+          {...getGenericTooltipAttrs(
+            "Copy Debug SVG",
+            "Copy the current rendered SVG with coordinate labels included."
+          )}
+          onClick={onCopyDebugSvg}
+        >
+          {icon("copy")}
+        </button>
+        <button
+          type="button"
+          className={iconButtonClass(false)}
+          style={MAP_DEBUG_ICON_BUTTON_STYLE}
+          aria-label="Download debug SVG with coordinates"
+          {...getGenericTooltipAttrs(
+            "Download Debug SVG",
+            "Download the current rendered SVG with coordinate labels included."
+          )}
+          onClick={onDownloadDebugSvg}
+        >
+          {icon("file-arrow-down")}
         </button>
       </div>
+
       <div
-        className="map-debug-recorder__categories"
+        className="map-debug-recorder__actions map-debug-recorder__scenario-actions"
+        style={MAP_DEBUG_COMPACT_ROW_STYLE}
+      >
+        <select
+          className="map-debug-recorder__speed-select"
+          aria-label="QA runner speed"
+          title="QA runner speed"
+          value={speed}
+          onChange={(event) => setQaSetting({ speed: event.target.value })}
+          style={{ height: 30 }}
+        >
+          {MAP_DEBUG_SPEED_OPTIONS.map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          className={iconButtonClass(stopOnError)}
+          style={MAP_DEBUG_ICON_BUTTON_STYLE}
+          aria-label={stopOnError ? "Stop on error enabled" : "Stop on error disabled"}
+          aria-pressed={Boolean(stopOnError)}
+          {...getGenericTooltipAttrs(
+            "Stop on Error",
+            stopOnError ? "QA runner stops after the first failure." : "QA runner records failures and continues when possible."
+          )}
+          onClick={() => setQaSetting({ stopOnError: !stopOnError })}
+        >
+          {icon(stopOnError ? "octagon-exclamation" : "triangle-exclamation")}
+        </button>
+        {MAP_DEBUG_SCENARIO_OPTIONS.map((scenario) => (
+          <button
+            key={scenario.id}
+            type="button"
+            className={iconButtonClass(qaRunning && qaRunnerState?.scenarioId === scenario.id)}
+            style={MAP_DEBUG_ICON_BUTTON_STYLE}
+            aria-label={scenario.label}
+            {...getGenericTooltipAttrs(scenario.label)}
+            onClick={() => onRunQaScenario?.(scenario.id, { speed, stopOnError })}
+            disabled={qaRunning}
+          >
+            {icon(scenario.icon)}
+          </button>
+        ))}
+        <button
+          type="button"
+          className={iconButtonClass(false)}
+          style={MAP_DEBUG_ICON_BUTTON_STYLE}
+          aria-label="Stop QA runner"
+          {...getGenericTooltipAttrs("Stop QA Runner")}
+          onClick={onStopQaScenario}
+          disabled={!qaRunning}
+        >
+          {icon("square")}
+        </button>
+      </div>
+
+      <div
+        className="map-debug-recorder__categories map-debug-recorder__icon-toggle-grid"
         role="group"
         aria-label="Debug listener categories"
+        style={MAP_DEBUG_CATEGORY_GRID_STYLE}
       >
         {MAP_DEBUG_CATEGORY_OPTIONS.map((category) => (
           <button
             key={category.id}
             type="button"
-            className={
-              categories[category.id]
-                ? "map-debug-recorder__category is-active"
-                : "map-debug-recorder__category"
-            }
+            className={categoryButtonClass(Boolean(categories[category.id]))}
+            style={MAP_DEBUG_ICON_BUTTON_STYLE}
+            aria-label={category.label}
             aria-pressed={Boolean(categories[category.id])}
+            {...getGenericTooltipAttrs(category.label)}
             onClick={() => onToggleCategory(category.id)}
           >
-            <i
-              className={
-                categories[category.id] ? "fa-solid fa-toggle-on" : "fa-solid fa-toggle-off"
-              }
-              aria-hidden="true"
-            />
-            <span>{category.label}</span>
+            {icon(category.icon || (categories[category.id] ? "toggle-on" : "toggle-off"))}
           </button>
         ))}
       </div>
@@ -706,6 +876,7 @@ export function MapViewport({
   onCreateRoomDragPreviewMap = null,
   onCreateConnectionDraftPreviewMap = null,
   onDebugRecord = null,
+  showDebugCellCoordinates = false,
 }) {
   const viewportRef = useRef(null);
   const panRef = useRef(null);
@@ -1934,6 +2105,17 @@ export function MapViewport({
     return Math.hypot(point.x - cx, point.y - cy);
   }
 
+  function getCircleAnchorEditorPoint(anchor, gridSize) {
+    if (
+      anchor?.displayPoint &&
+      Number.isFinite(anchor.displayPoint.x) &&
+      Number.isFinite(anchor.displayPoint.y)
+    ) {
+      return { x: anchor.displayPoint.x, y: anchor.displayPoint.y };
+    }
+    return getAnchorHandlePoint(anchor, gridSize);
+  }
+
   function getStrictCircleDoorDragAnchor(region, point, gridSize, options = {}) {
     if (region?.shape !== "circle" || !point) return null;
     const circle = getCircleGeometryFromRegion(region, gridSize);
@@ -1963,7 +2145,7 @@ export function MapViewport({
       seen.add(key);
       const anchor = createCircleConnectionAnchorFromOutsideCell(region, circle, cell, gridSize);
       if (!anchor) return;
-      const handlePoint = getAnchorHandlePoint(anchor, gridSize) || anchor.point;
+      const handlePoint = getCircleAnchorEditorPoint(anchor, gridSize) || anchor.point;
       if (!handlePoint) return;
       const handleDistance = Math.hypot(handlePoint.x - point.x, handlePoint.y - point.y);
       const snapDistance = getDistanceFromPointToCellCenter(
@@ -2036,7 +2218,9 @@ export function MapViewport({
     return (
       candidates
         .map((anchor) => {
-          const handlePoint = getAnchorHandlePoint(anchor, gridSize);
+          const handlePoint = region.shape === "circle"
+            ? getCircleAnchorEditorPoint(anchor, gridSize)
+            : getAnchorHandlePoint(anchor, gridSize);
           const dx = handlePoint.x - point.x;
           const dy = handlePoint.y - point.y;
           return { anchor, score: dx * dx + dy * dy };
@@ -2067,7 +2251,9 @@ export function MapViewport({
             : []
           : getEditorBoundaryAnchorCandidatesForRegion(region, point, gridSize);
       candidates.forEach((anchor) => {
-        const handlePoint = getAnchorHandlePoint(anchor, gridSize);
+        const handlePoint = region.shape === "circle"
+          ? getCircleAnchorEditorPoint(anchor, gridSize)
+          : getAnchorHandlePoint(anchor, gridSize);
         if (!handlePoint) return;
         const dx = handlePoint.x - point.x;
         const dy = handlePoint.y - point.y;
@@ -2312,7 +2498,7 @@ export function MapViewport({
 
   function scoreDoorDragManualAnchor(anchor, point, gridSize) {
     if (!anchor || !point) return Number.POSITIVE_INFINITY;
-    const handlePoint = getAnchorHandlePoint(anchor, gridSize);
+    const handlePoint = getCircleAnchorEditorPoint(anchor, gridSize);
     if (!handlePoint) return Number.POSITIVE_INFINITY;
     const dx = handlePoint.x - point.x;
     const dy = handlePoint.y - point.y;
@@ -2356,7 +2542,9 @@ export function MapViewport({
           })
         : getDoorDragManualAnchor(region, point, gridSize);
     if (!anchor) return null;
-    const handlePoint = getAnchorHandlePoint(anchor, gridSize);
+    const handlePoint = region.shape === "circle"
+      ? getCircleAnchorEditorPoint(anchor, gridSize)
+      : getAnchorHandlePoint(anchor, gridSize);
     return handlePoint ? { point: handlePoint, anchor } : null;
   }
 
@@ -2790,6 +2978,7 @@ export function MapViewport({
             crosshatchOpacity={crosshatchOpacity}
             wallDrawingStyle={wallDrawingStyle}
             hatchShadowColor={hatchShadowColor}
+            showDebugCellCoordinates={showDebugCellCoordinates}
             showEditor={showEditor}
             showNames={showNames}
             showRoomBadges={showRoomBadges}
@@ -5279,6 +5468,33 @@ function MapTestsModal({ open, testSuite, onClose }) {
   );
 }
 
+
+function readDebugUiModeFromDocument() {
+  if (typeof document === "undefined") return false;
+  return document.querySelector(".app-shell")?.dataset?.uiMode === "debug";
+}
+
+function useDocumentDebugUiMode() {
+  const [isDebugUiMode, setIsDebugUiMode] = useState(readDebugUiModeFromDocument);
+
+  useEffect(() => {
+    if (typeof document === "undefined" || typeof MutationObserver === "undefined") return undefined;
+
+    const readNextValue = () => setIsDebugUiMode(readDebugUiModeFromDocument());
+    readNextValue();
+
+    const appShell = document.querySelector(".app-shell");
+    if (!appShell) return undefined;
+
+    const observer = new MutationObserver(readNextValue);
+    observer.observe(appShell, { attributes: true, attributeFilter: ["data-ui-mode"] });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return isDebugUiMode;
+}
+
 export default function CruorMapGeneratorMvp({
   initialRequest = null,
   initialManualOverrides = null,
@@ -5295,6 +5511,8 @@ export default function CruorMapGeneratorMvp({
   debugMode = false,
   workspaceContext = embeddedInComposer ? "composer-workspace" : "standalone-workspace",
 } = {}) {
+  const documentDebugUiMode = useDocumentDebugUiMode();
+  const effectiveDebugMode = Boolean(debugMode || documentDebugUiMode);
   const initialConfig = useMemo(
     () => createConfigFromNormalizedMapRequest(initialRequest, DEFAULT_CONFIG),
     [initialRequest]
@@ -5352,7 +5570,7 @@ export default function CruorMapGeneratorMvp({
   const debugEntriesRef = useRef([]);
   const debugRecordingRef = useRef(false);
   const debugCategoriesRef = useRef(DEFAULT_MAP_DEBUG_CATEGORIES);
-  const debugModeRef = useRef(Boolean(debugMode));
+  const debugModeRef = useRef(Boolean(effectiveDebugMode));
   const generatedMapRef = useRef(null);
   const qaRunnerAbortRef = useRef(null);
   const qaRunnerSequenceRef = useRef(0);
@@ -5360,6 +5578,15 @@ export default function CruorMapGeneratorMvp({
   const [debugRecording, setDebugRecording] = useState(false);
   const [debugCategories, setDebugCategories] = useState(DEFAULT_MAP_DEBUG_CATEGORIES);
   const [debugEntries, setDebugEntries] = useState([]);
+  const [showDebugCoordinates, setShowDebugCoordinates] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return window.localStorage.getItem("cruorMapDebugCoordinates") !== "false";
+  });
+  const [forceDebugCoordinatesForExport, setForceDebugCoordinatesForExport] = useState(false);
+  const [qaRunnerSettings, setQaRunnerSettings] = useState({
+    speed: "normal",
+    stopOnError: true,
+  });
   const [qaRunnerOverlay, setQaRunnerOverlay] = useState(null);
   const importedRegions = Array.isArray(initialRequest?.requiredRegions)
     ? initialRequest.requiredRegions
@@ -5462,7 +5689,15 @@ export default function CruorMapGeneratorMvp({
 
   debugRecordingRef.current = debugRecording;
   debugCategoriesRef.current = debugCategories;
-  debugModeRef.current = Boolean(debugMode);
+  debugModeRef.current = Boolean(effectiveDebugMode);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(
+      "cruorMapDebugCoordinates",
+      showDebugCoordinates ? "true" : "false"
+    );
+  }, [showDebugCoordinates]);
 
   const recordDebugEvent = useCallback((label, payload = {}, options = {}) => {
     const category = options.category || getMapDebugCategory(label);
@@ -5539,9 +5774,9 @@ export default function CruorMapGeneratorMvp({
   }
 
   useEffect(() => {
-    if (debugMode) return;
+    if (effectiveDebugMode) return;
     setDebugRecording(false);
-  }, [debugMode]);
+  }, [effectiveDebugMode]);
 
   useEffect(() => {
     debugPreviousMapRef.current = null;
@@ -5588,7 +5823,7 @@ export default function CruorMapGeneratorMvp({
   }, [generatedMap, recordDebugEvent]);
 
   function isMapEditorDebugEnabled() {
-    return Boolean(debugMode && debugRecording);
+    return Boolean(effectiveDebugMode && debugRecording);
   }
 
   function roundDebugNumber(value) {
@@ -6283,11 +6518,20 @@ export default function CruorMapGeneratorMvp({
       ...(anchor.cell ? { cell: translateCell(anchor.cell, dx, dy) } : {}),
       ...(anchor.insideCell ? { insideCell: translateCell(anchor.insideCell, dx, dy) } : {}),
       ...(anchor.outsideCell ? { outsideCell: translateCell(anchor.outsideCell, dx, dy) } : {}),
+      ...(anchor.routingOutsideCell ? { routingOutsideCell: translateCell(anchor.routingOutsideCell, dx, dy) } : {}),
+      ...(anchor.portalRoomCell ? { portalRoomCell: translateCell(anchor.portalRoomCell, dx, dy) } : {}),
+      ...(anchor.raccordoCell ? { raccordoCell: translateCell(anchor.raccordoCell, dx, dy) } : {}),
+      ...(anchor.corridorStartCell ? { corridorStartCell: translateCell(anchor.corridorStartCell, dx, dy) } : {}),
+      ...(Array.isArray(anchor.raccordoCells)
+        ? { raccordoCells: anchor.raccordoCells.map((cell) => translateCell(cell, dx, dy)) }
+        : {}),
       ...(anchor.boundaryCell ? { boundaryCell: translateCell(anchor.boundaryCell, dx, dy) } : {}),
       ...(anchor.floorCell ? { floorCell: translateCell(anchor.floorCell, dx, dy) } : {}),
       ...(anchor.point ? { point: translatePoint(anchor.point, dxPx, dyPx) } : {}),
+      ...(anchor.displayPoint ? { displayPoint: translatePoint(anchor.displayPoint, dxPx, dyPx) } : {}),
       ...(anchor.center ? { center: translatePoint(anchor.center, dxPx, dyPx) } : {}),
       ...(anchor.segment ? { segment: translateSegment(anchor.segment, dxPx, dyPx) } : {}),
+      ...(anchor.displaySegment ? { displaySegment: translateSegment(anchor.displaySegment, dxPx, dyPx) } : {}),
       ...(Number.isFinite(Number(anchor.x)) ? { x: Number(anchor.x) + dxPx } : {}),
       ...(Number.isFinite(Number(anchor.y)) ? { y: Number(anchor.y) + dyPx } : {}),
     };
@@ -6952,6 +7196,78 @@ export default function CruorMapGeneratorMvp({
     setStateStatus("");
   }
 
+  function waitForNextAnimationFrame() {
+    if (typeof window === "undefined" || typeof window.requestAnimationFrame !== "function") {
+      return Promise.resolve();
+    }
+    return new Promise((resolve) => window.requestAnimationFrame(() => resolve()));
+  }
+
+  async function serializeDebugSvgWithCoordinates() {
+    if (typeof document === "undefined") return "";
+    setForceDebugCoordinatesForExport(true);
+    try {
+      await waitForNextAnimationFrame();
+      await waitForNextAnimationFrame();
+      const svg = document.querySelector("#cruor-map-svg");
+      const serialized = serializeSvg(svg);
+      return serialized || "";
+    } finally {
+      setForceDebugCoordinatesForExport(false);
+    }
+  }
+
+  function getDebugSvgFilename() {
+    return `cruor-map-debug-${new Date().toISOString().replace(/[:.]/g, "-")}.svg`;
+  }
+
+  async function copyTextToClipboard(text) {
+    if (!text) return false;
+    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+    if (typeof document === "undefined") return false;
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copied = document.execCommand("copy");
+    textarea.remove();
+    return copied;
+  }
+
+  async function copyDebugSvg() {
+    try {
+      const svg = await serializeDebugSvgWithCoordinates();
+      if (!svg) {
+        setStateStatus("Debug SVG unavailable.");
+        return;
+      }
+      const copied = await copyTextToClipboard(svg);
+      setStateStatus(copied ? "Debug SVG copied." : "Unable to copy Debug SVG.");
+    } catch (error) {
+      setStateStatus(`Unable to copy Debug SVG: ${error?.message || String(error)}`);
+    }
+  }
+
+  async function downloadDebugSvg() {
+    try {
+      const svg = await serializeDebugSvgWithCoordinates();
+      if (!svg) {
+        setStateStatus("Debug SVG unavailable.");
+        return;
+      }
+      downloadMapDebugBlob(getDebugSvgFilename(), svg, "image/svg+xml;charset=utf-8");
+      setStateStatus("Debug SVG downloaded.");
+    } catch (error) {
+      setStateStatus(`Unable to download Debug SVG: ${error?.message || String(error)}`);
+    }
+  }
+
   function exportState() {
     downloadMapState(
       config,
@@ -7119,7 +7435,9 @@ export default function CruorMapGeneratorMvp({
       areSerializedAnchorCellsEqual(a.snapCell, b.snapCell) &&
       areSerializedAnchorCellsEqual(a.portalRoomCell, b.portalRoomCell) &&
       areSerializedAnchorPointsEqual(a.point, b.point) &&
-      areSerializedAnchorSegmentsEqual(a.segment, b.segment)
+      areSerializedAnchorPointsEqual(a.displayPoint, b.displayPoint) &&
+      areSerializedAnchorSegmentsEqual(a.segment, b.segment) &&
+      areSerializedAnchorSegmentsEqual(a.displaySegment, b.displaySegment)
     );
   }
 
@@ -8942,24 +9260,28 @@ export default function CruorMapGeneratorMvp({
     }
   }
 
+  function stopMapQaScenario() {
+    qaRunnerAbortRef.current?.abort?.();
+    dispatchQaRunnerStatus({
+      state: "stopped",
+      stepLabel: "Scenario stopped.",
+      message: "Scenario stopped.",
+    });
+    setQaRunnerOverlay((current) => ({
+      ...(current || {}),
+      state: "stopped",
+      stepLabel: "Scenario stopped.",
+      message: "Scenario stopped.",
+    }));
+  }
+
   useEffect(() => {
     function handleRun(event) {
       runMapQaScenario(event?.detail || {});
     }
 
     function handleStop() {
-      qaRunnerAbortRef.current?.abort?.();
-      dispatchQaRunnerStatus({
-        state: "stopped",
-        stepLabel: "Scenario stopped.",
-        message: "Scenario stopped.",
-      });
-      setQaRunnerOverlay((current) => ({
-        ...(current || {}),
-        state: "stopped",
-        stepLabel: "Scenario stopped.",
-        message: "Scenario stopped.",
-      }));
+      stopMapQaScenario();
     }
 
     window.addEventListener("cruor:map-qa-runner-run", handleRun);
@@ -9053,6 +9375,9 @@ export default function CruorMapGeneratorMvp({
       onCreateRoomDragPreviewMap={createRoomDragPreviewMap}
       onCreateConnectionDraftPreviewMap={createConnectionDraftPreviewMap}
       onDebugRecord={recordDebugEvent}
+      showDebugCellCoordinates={
+        effectiveDebugMode && (showDebugCoordinates || forceDebugCoordinatesForExport)
+      }
     />
   );
 
@@ -9301,16 +9626,27 @@ export default function CruorMapGeneratorMvp({
           aria-hidden={inspectorCollapsed}
         >
           <div className="map-inspector-panel__scroll cruor-scroll-surface">
-            {debugMode ? (
+            {effectiveDebugMode ? (
               <MapDebugRecorderPanel
                 categories={debugCategories}
                 entries={debugEntries}
                 recording={debugRecording}
+                showDebugCoordinates={showDebugCoordinates}
+                qaSettings={qaRunnerSettings}
+                qaRunnerState={qaRunnerOverlay}
                 onRecordingChange={setDebugRecording}
                 onToggleCategory={toggleDebugCategory}
+                onToggleDebugCoordinates={setShowDebugCoordinates}
+                onQaSettingsChange={setQaRunnerSettings}
+                onRunQaScenario={(scenarioId, settings) =>
+                  runMapQaScenario({ scenarioId, settings, scenarioLabel: getQaRunnerScenarioLabel(scenarioId) })
+                }
+                onStopQaScenario={stopMapQaScenario}
                 onClear={clearDebugEntries}
                 onDownloadJson={() => downloadDebugEntries("json")}
                 onDownloadTxt={() => downloadDebugEntries("txt")}
+                onCopyDebugSvg={copyDebugSvg}
+                onDownloadDebugSvg={downloadDebugSvg}
               />
             ) : null}
 

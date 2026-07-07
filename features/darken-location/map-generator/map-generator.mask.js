@@ -969,6 +969,71 @@ function getCircleExtensionPerimeterPoint(circle, radial, gridSize) {
   };
 }
 
+function getCircleExtensionAxisCenteredDisplayGeometry(
+  circle,
+  referenceCell,
+  normal,
+  gridSize,
+  fallbackRadial = null,
+) {
+  const radial = normalizeCircleExtensionVector(
+    fallbackRadial ||
+      (referenceCell
+        ? {
+            x: referenceCell.x + 0.5 - circle.cxCells,
+            y: referenceCell.y + 0.5 - circle.cyCells,
+          }
+        : null) ||
+      normal ||
+      { x: 1, y: 0 },
+    normal || { x: 1, y: 0 },
+  );
+  const fallbackPoint = getCircleExtensionPerimeterPoint(circle, radial, gridSize);
+  if (!circle || !referenceCell || !normal) {
+    return { point: fallbackPoint, radial };
+  }
+
+  const signX = normal.x >= 0 ? 1 : -1;
+  const signY = normal.y >= 0 ? 1 : -1;
+  const epsilon = 0.0001;
+
+  if (Math.abs(normal.x) >= Math.abs(normal.y) && normal.x !== 0) {
+    const yCells = referenceCell.y + 0.5;
+    const dy = yCells - circle.cyCells;
+    const remaining = circle.rCells * circle.rCells - dy * dy;
+    if (remaining >= -epsilon) {
+      const xCells = circle.cxCells + signX * Math.sqrt(Math.max(0, remaining));
+      const point = { x: xCells * gridSize, y: yCells * gridSize };
+      return {
+        point,
+        radial: normalizeCircleExtensionVector(
+          { x: xCells - circle.cxCells, y: yCells - circle.cyCells },
+          radial,
+        ),
+      };
+    }
+  }
+
+  if (normal.y !== 0) {
+    const xCells = referenceCell.x + 0.5;
+    const dx = xCells - circle.cxCells;
+    const remaining = circle.rCells * circle.rCells - dx * dx;
+    if (remaining >= -epsilon) {
+      const yCells = circle.cyCells + signY * Math.sqrt(Math.max(0, remaining));
+      const point = { x: xCells * gridSize, y: yCells * gridSize };
+      return {
+        point,
+        radial: normalizeCircleExtensionVector(
+          { x: xCells - circle.cxCells, y: yCells - circle.cyCells },
+          radial,
+        ),
+      };
+    }
+  }
+
+  return { point: fallbackPoint, radial };
+}
+
 function getCircleExtensionTangentSegment(point, radial, gridSize) {
   if (!point || !radial) return null;
   const length = Math.hypot(radial.x, radial.y) || 1;
@@ -1092,6 +1157,62 @@ function cloneCircleExtensionCell(cell) {
   return cell ? { x: cell.x, y: cell.y } : null;
 }
 
+function isSameCircleChainCell(a, b) {
+  return Boolean(a && b && a.x === b.x && a.y === b.y);
+}
+
+function addUniqueCircleChainCell(cells, cell) {
+  if (!cell) return;
+  if (cells.some((existing) => isSameCircleChainCell(existing, cell))) return;
+  cells.push(cloneCircleExtensionCell(cell));
+}
+
+function prependInnerCircleRaccordoSupportCells(
+  raccordoCells,
+  portalRoomCell,
+  normal,
+  circle,
+  gridW,
+  gridH,
+  reservedRoomCells,
+) {
+  if (!Array.isArray(raccordoCells) || !portalRoomCell || !normal || !circle) {
+    return raccordoCells;
+  }
+
+  const innerCells = [];
+  let referenceRange = getCircleCellRectDistanceRange(portalRoomCell, circle);
+  let candidate = {
+    x: portalRoomCell.x - normal.x,
+    y: portalRoomCell.y - normal.y,
+  };
+
+  for (let step = 0; step < 3; step += 1) {
+    if (!isCirclePortalCellUsable(candidate, circle, gridW, gridH, reservedRoomCells)) {
+      break;
+    }
+    const candidateRange = getCircleCellRectDistanceRange(candidate, circle);
+    // If the chosen portal cell only nicks the circle, keep the adjacent
+    // raccordo square that is closer to the circle too. Otherwise a one-cell
+    // drag can make the room lose the square that visually connects the
+    // raccordo to the circular floor. Fully internal cells are still rejected
+    // by isCirclePortalCellUsable().
+    if (!(candidateRange.min < referenceRange.min - 0.0001)) break;
+    innerCells.unshift(cloneCircleExtensionCell(candidate));
+    referenceRange = candidateRange;
+    candidate = {
+      x: candidate.x - normal.x,
+      y: candidate.y - normal.y,
+    };
+  }
+
+  if (innerCells.length === 0) return raccordoCells;
+  const merged = [];
+  innerCells.forEach((cell) => addUniqueCircleChainCell(merged, cell));
+  raccordoCells.forEach((cell) => addUniqueCircleChainCell(merged, cell));
+  return merged;
+}
+
 function getCircleAdjacentCorridorStartCell(portalRoomCell, normal) {
   if (!portalRoomCell || !normal) return null;
   return {
@@ -1145,6 +1266,15 @@ function getCircleRaccordoChainForPortalCell(
   ) {
     return null;
   }
+  const completeRaccordoCells = prependInnerCircleRaccordoSupportCells(
+    raccordoCells,
+    portalRoomCell,
+    normal,
+    circle,
+    gridW,
+    gridH,
+    reservedRoomCells,
+  );
   const corridorStartCell = getCircleAdjacentCorridorStartCell(doorRaccordoCell, normal);
   if (
     !isCircleCorridorStartCellUsable(
@@ -1160,7 +1290,7 @@ function getCircleRaccordoChainForPortalCell(
   return {
     portalRoomCell: cloneCircleExtensionCell(portalRoomCell),
     raccordoCell: cloneCircleExtensionCell(doorRaccordoCell),
-    raccordoCells,
+    raccordoCells: completeRaccordoCells,
     corridorStartCell: cloneCircleExtensionCell(corridorStartCell),
   };
 }
@@ -1179,8 +1309,25 @@ function getCircleExtensionAnchorRadial(
   gridSize = DEFAULT_CONFIG.gridSize,
 ) {
   const circle = getCircleGeometryFromRegion(region, 1);
+  // The display point is the user's visible target on the circular wall. Prefer
+  // it when present so old grid-door positions do not pull the connector toward
+  // the external raccordo square during a later normalization pass.
+  if (
+    anchor?.displayPoint &&
+    Number.isFinite(anchor.displayPoint.x) &&
+    Number.isFinite(anchor.displayPoint.y)
+  ) {
+    const scale = Math.max(1, Number(gridSize) || DEFAULT_CONFIG.gridSize);
+    return normalizeCircleExtensionVector(
+      {
+        x: anchor.displayPoint.x / scale - circle.cxCells,
+        y: anchor.displayPoint.y / scale - circle.cyCells,
+      },
+      normal,
+    );
+  }
   // The radial is the stable identity of a circular connector. Prefer it over
-  // absolute pixel points, because manual door anchors can outlive room drags.
+  // absolute grid-door points, because manual door anchors can outlive room drags.
   if (anchor?.circular?.normal) {
     return normalizeCircleExtensionVector(anchor.circular.normal, normal);
   }
@@ -1373,6 +1520,21 @@ export function createCircleDoorRoomExtensionAnchor(
         y: (sharedSegment.y1 + sharedSegment.y2) / 2,
       }
     : null;
+  const circleGeometry = getCircleGeometryFromRegion(region, 1);
+  const displayGeometry = getCircleExtensionAxisCenteredDisplayGeometry(
+    circleGeometry,
+    portalRoomCell,
+    normal,
+    gridSize,
+    radial,
+  );
+  const displayPoint = displayGeometry.point;
+  const displayRadial = displayGeometry.radial || radial;
+  const displaySegment = getCircleExtensionTangentSegment(
+    displayPoint,
+    displayRadial,
+    gridSize,
+  );
   return {
     ...anchor,
     side,
@@ -1380,11 +1542,13 @@ export function createCircleDoorRoomExtensionAnchor(
     cell: doorRaccordoCell,
     outsideCell,
     circular: {
-      ...getCircleGeometryFromRegion(region, 1),
-      normal,
+      ...circleGeometry,
+      normal: displayRadial,
     },
     point: sharedPoint,
+    displayPoint,
     segment: sharedSegment,
+    displaySegment,
     expandedCircleDoor: true,
     circleBoundaryAnchor: true,
     circleRaccordoCell: true,

@@ -22,8 +22,6 @@ export default function SiteTopbar({
   onOpenCrucibleTool,
   activeLocale = "en",
   onLocaleChange,
-  debugModeActive = false,
-  onDebugModeChange,
   accessibilitySettings = {},
   onAccessibilitySettingChange,
   onAccessibilitySettingsReset,
@@ -32,6 +30,7 @@ export default function SiteTopbar({
   const megaMenuRef = useRef(null);
   const megaTriggerRefs = useRef({});
   const closeMenuTimerRef = useRef(null);
+  const utilityCloseTimerRef = useRef(null);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [megaMenuPosition, setMegaMenuPosition] = useState({ left: 0, top: 0 });
   const [activePreviewId, setActivePreviewId] = useState(() =>
@@ -83,6 +82,7 @@ export default function SiteTopbar({
 
     return () => {
       clearCloseMenuTimer();
+      clearUtilityCloseTimer();
       document.removeEventListener("pointerdown", handleDocumentPointerDown);
       document.removeEventListener("keydown", handleDocumentKeyDown);
     };
@@ -131,8 +131,31 @@ export default function SiteTopbar({
     closeMenuTimerRef.current = null;
   }
 
+  function clearUtilityCloseTimer() {
+    if (!utilityCloseTimerRef.current) return;
+    window.clearTimeout(utilityCloseTimerRef.current);
+    utilityCloseTimerRef.current = null;
+  }
+
+  function openUtilityMenu() {
+    clearUtilityCloseTimer();
+    clearCloseMenuTimer();
+    setIsUtilityOpen(true);
+    setOpenMenuId(null);
+    setIsMobileOpen(false);
+  }
+
+  function scheduleUtilityClose() {
+    clearUtilityCloseTimer();
+    utilityCloseTimerRef.current = window.setTimeout(() => {
+      setIsUtilityOpen(false);
+      utilityCloseTimerRef.current = null;
+    }, 140);
+  }
+
   function closeTransientNavigation() {
     clearCloseMenuTimer();
+    clearUtilityCloseTimer();
     setOpenMenuId(null);
     setIsUtilityOpen(false);
     setIsMobileOpen(false);
@@ -148,6 +171,7 @@ export default function SiteTopbar({
 
   function openMegaMenu(itemId) {
     clearCloseMenuTimer();
+    clearUtilityCloseTimer();
     updateMegaMenuPosition(itemId);
     setOpenMenuId(itemId);
     setIsUtilityOpen(false);
@@ -344,11 +368,10 @@ export default function SiteTopbar({
               aria-haspopup="menu"
               aria-expanded={isUtilityOpen}
               aria-controls="siteUtilityMenu"
-              onClick={() => {
-                setIsUtilityOpen((value) => !value);
-                setOpenMenuId(null);
-                setIsMobileOpen(false);
-              }}
+              onMouseEnter={openUtilityMenu}
+              onMouseLeave={scheduleUtilityClose}
+              onFocus={openUtilityMenu}
+              onClick={openUtilityMenu}
             >
               <i className="fa-solid fa-gear" aria-hidden="true" />
               <span>{t("settings.label", {}, activeLocale)}</span>
@@ -360,6 +383,8 @@ export default function SiteTopbar({
                 id="siteUtilityMenu"
                 role="menu"
                 aria-label={t("settings.aria.panel", {}, activeLocale)}
+                onMouseEnter={clearUtilityCloseTimer}
+                onMouseLeave={scheduleUtilityClose}
               >
                 <div className="site-topbar__settings-section">
                   <span className="site-topbar__utility-label">{t("settings.sections.mode", {}, activeLocale)}</span>
@@ -385,27 +410,6 @@ export default function SiteTopbar({
                   </div>
                 </div>
 
-                <div className="site-topbar__settings-section">
-                  <span className="site-topbar__utility-label">Developer</span>
-                  <div className="site-topbar__mode-list" role="group" aria-label="Developer tools">
-                    <button
-                      className={cx(
-                        "site-topbar__mode-option",
-                        debugModeActive && "is-active",
-                      )}
-                      type="button"
-                      role="menuitemcheckbox"
-                      aria-checked={debugModeActive}
-                      title="Show the Dark Places debug recorder."
-                      onClick={() => {
-                        onDebugModeChange?.(!debugModeActive);
-                      }}
-                    >
-                      <i className="fa-solid fa-bug" aria-hidden="true" />
-                      <span>Debug</span>
-                    </button>
-                  </div>
-                </div>
 
                 <div className="site-topbar__settings-section">
                   <span className="site-topbar__utility-label">{t("settings.sections.language", {}, activeLocale)}</span>
@@ -565,7 +569,7 @@ export default function SiteTopbar({
             <SiteMegaMenu
               menu={openMegaMenuItem}
               activeItemId={activePreviewId}
-              selectedItemId={activeCrucibleMenuItemId}
+              selectedItemId={activeSection === "crucible" ? activeCrucibleMenuItemId : null}
               menuRef={megaMenuRef}
               style={{
                 "--site-mega-menu-left": `${megaMenuPosition.left}px`,

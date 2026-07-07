@@ -1099,12 +1099,23 @@ export function serializeManualAnchor(anchor) {
   if (anchor.point) {
     serialized.point = { x: anchor.point.x, y: anchor.point.y };
   }
+  if (anchor.displayPoint) {
+    serialized.displayPoint = { x: anchor.displayPoint.x, y: anchor.displayPoint.y };
+  }
   if (anchor.segment) {
     serialized.segment = {
       x1: anchor.segment.x1,
       y1: anchor.segment.y1,
       x2: anchor.segment.x2,
       y2: anchor.segment.y2,
+    };
+  }
+  if (anchor.displaySegment) {
+    serialized.displaySegment = {
+      x1: anchor.displaySegment.x1,
+      y1: anchor.displaySegment.y1,
+      x2: anchor.displaySegment.x2,
+      y2: anchor.displaySegment.y2,
     };
   }
   if (anchor.circleBoundaryAnchor) serialized.circleBoundaryAnchor = true;
@@ -1184,6 +1195,78 @@ function inferAnchorNormalFromCells(cell, outsideCell, fallbackNormal = null) {
   return null;
 }
 
+function normalizeManualCircleVector(vector, fallback = { x: 1, y: 0 }) {
+  const x = Number.isFinite(vector?.x) ? vector.x : fallback.x;
+  const y = Number.isFinite(vector?.y) ? vector.y : fallback.y;
+  const length = Math.hypot(x, y);
+  if (!Number.isFinite(length) || length <= 0.0001) return { ...fallback };
+  return { x: x / length, y: y / length };
+}
+
+function getManualCircleTangentSegment(point, radial, gridSize) {
+  if (!point || !radial) return null;
+  const length = Math.hypot(radial.x, radial.y) || 1;
+  const tangent = { x: -radial.y / length, y: radial.x / length };
+  const half = gridSize * 0.42;
+  return {
+    x1: point.x - tangent.x * half,
+    y1: point.y - tangent.y * half,
+    x2: point.x + tangent.x * half,
+    y2: point.y + tangent.y * half,
+  };
+}
+
+function getAxisCenteredManualCircleDisplay(region, anchor, referenceCell, normal, gridSize) {
+  if (region?.shape !== "circle" || !referenceCell || !normal) return null;
+  const circle = getCircleGeometryFromRegion(region, gridSize || DEFAULT_CONFIG.gridSize);
+  if (!circle || !Number.isFinite(circle.r) || circle.r <= 0) return null;
+  const fallbackRadial = normalizeManualCircleVector(
+    anchor?.circular?.normal ||
+      (anchor?.displayPoint
+        ? { x: anchor.displayPoint.x - circle.cx, y: anchor.displayPoint.y - circle.cy }
+        : anchor?.point
+          ? { x: anchor.point.x - circle.cx, y: anchor.point.y - circle.cy }
+          : {
+              x: (referenceCell.x + 0.5) * gridSize - circle.cx,
+              y: (referenceCell.y + 0.5) * gridSize - circle.cy,
+            }),
+    normal,
+  );
+  const fallbackPoint = {
+    x: circle.cx + fallbackRadial.x * circle.r,
+    y: circle.cy + fallbackRadial.y * circle.r,
+  };
+  const epsilon = gridSize * 0.0001;
+  let point = fallbackPoint;
+  let radial = fallbackRadial;
+
+  if (Math.abs(normal.x || 0) >= Math.abs(normal.y || 0) && normal.x !== 0) {
+    const y = (referenceCell.y + 0.5) * gridSize;
+    const dy = y - circle.cy;
+    const remaining = circle.r * circle.r - dy * dy;
+    if (remaining >= -epsilon) {
+      const x = circle.cx + (normal.x >= 0 ? 1 : -1) * Math.sqrt(Math.max(0, remaining));
+      point = { x, y };
+      radial = normalizeManualCircleVector({ x: point.x - circle.cx, y: point.y - circle.cy }, fallbackRadial);
+    }
+  } else if (normal.y !== 0) {
+    const x = (referenceCell.x + 0.5) * gridSize;
+    const dx = x - circle.cx;
+    const remaining = circle.r * circle.r - dx * dx;
+    if (remaining >= -epsilon) {
+      const y = circle.cy + (normal.y >= 0 ? 1 : -1) * Math.sqrt(Math.max(0, remaining));
+      point = { x, y };
+      radial = normalizeManualCircleVector({ x: point.x - circle.cx, y: point.y - circle.cy }, fallbackRadial);
+    }
+  }
+
+  return {
+    displayPoint: point,
+    displaySegment: getManualCircleTangentSegment(point, radial, gridSize),
+    circularNormal: radial,
+  };
+}
+
 function getManualAnchorWithExactOutsideCell(region, manualAnchor, gridSize) {
   const cell = getCellCopy(manualAnchor?.cell);
   const outsideCell = getCellCopy(manualAnchor?.outsideCell);
@@ -1204,6 +1287,13 @@ function getManualAnchorWithExactOutsideCell(region, manualAnchor, gridSize) {
   const point = manualAnchor.point
     ? { x: manualAnchor.point.x, y: manualAnchor.point.y }
     : getAnchorHandlePoint({ side, cell, outsideCell, point: null }, gridSize);
+  const circleDisplay = getAxisCenteredManualCircleDisplay(
+    region,
+    manualAnchor,
+    portalRoomCell || raccordoCell || cell,
+    normal,
+    gridSize,
+  );
   return {
     regionId: region.id,
     regionShape: region.shape,
@@ -1219,7 +1309,9 @@ function getManualAnchorWithExactOutsideCell(region, manualAnchor, gridSize) {
     originalCell,
     originalOutsideCell,
     normal,
-    circular: manualAnchor.circular || null,
+    circular: circleDisplay?.circularNormal
+      ? { ...(manualAnchor.circular || {}), normal: circleDisplay.circularNormal }
+      : manualAnchor.circular || null,
     finalGeometry: Boolean(manualAnchor.finalGeometry),
     expandedCircleDoor: Boolean(manualAnchor.expandedCircleDoor || region?.shape === "circle"),
     circleBoundaryAnchor: Boolean(
@@ -1238,6 +1330,23 @@ function getManualAnchorWithExactOutsideCell(region, manualAnchor, gridSize) {
         }
       : null,
     point,
+    ...(circleDisplay?.displayPoint
+      ? { displayPoint: circleDisplay.displayPoint }
+      : manualAnchor.displayPoint
+        ? { displayPoint: { x: manualAnchor.displayPoint.x, y: manualAnchor.displayPoint.y } }
+        : {}),
+    ...(circleDisplay?.displaySegment
+      ? { displaySegment: circleDisplay.displaySegment }
+      : manualAnchor.displaySegment
+        ? {
+            displaySegment: {
+              x1: manualAnchor.displaySegment.x1,
+              y1: manualAnchor.displaySegment.y1,
+              x2: manualAnchor.displaySegment.x2,
+              y2: manualAnchor.displaySegment.y2,
+            },
+          }
+        : {}),
   };
 }
 
@@ -1304,6 +1413,18 @@ export function resolveManualDoorAnchor(
           return { x: dx / length, y: dy / length };
         })()
       : null;
+    const referenceCell =
+      manualAnchor.portalRoomCell ||
+      (Array.isArray(manualAnchor.raccordoCells) ? manualAnchor.raccordoCells[0] : null) ||
+      manualAnchor.raccordoCell ||
+      manualAnchor.cell;
+    const circleDisplay = getAxisCenteredManualCircleDisplay(
+      region,
+      manualAnchor,
+      referenceCell,
+      manualAnchor.normal,
+      gridSize,
+    );
     return {
       regionId: region.id,
       regionShape: region.shape,
@@ -1325,6 +1446,9 @@ export function resolveManualDoorAnchor(
             y: (manualAnchor.raccordoCell || manualAnchor.portalRoomCell).y,
           }
         : null,
+      raccordoCells: Array.isArray(manualAnchor.raccordoCells)
+        ? manualAnchor.raccordoCells.map(getCellCopy).filter(Boolean)
+        : [],
       snapCell: manualAnchor.snapCell
         ? {
             x: manualAnchor.snapCell.x,
@@ -1358,7 +1482,7 @@ export function resolveManualDoorAnchor(
             cx: circle.cxCells,
             cy: circle.cyCells,
             r: circle.rCells,
-            normal: manualAnchor.circular?.normal || radial,
+            normal: circleDisplay?.circularNormal || manualAnchor.circular?.normal || radial,
           }
         : null,
       finalGeometry: true,
@@ -1372,6 +1496,23 @@ export function resolveManualDoorAnchor(
         y2: manualAnchor.segment.y2,
       },
       point,
+      ...(circleDisplay?.displayPoint
+        ? { displayPoint: circleDisplay.displayPoint }
+        : manualAnchor.displayPoint
+          ? { displayPoint: { x: manualAnchor.displayPoint.x, y: manualAnchor.displayPoint.y } }
+          : {}),
+      ...(circleDisplay?.displaySegment
+        ? { displaySegment: circleDisplay.displaySegment }
+        : manualAnchor.displaySegment
+          ? {
+              displaySegment: {
+                x1: manualAnchor.displaySegment.x1,
+                y1: manualAnchor.displaySegment.y1,
+                x2: manualAnchor.displaySegment.x2,
+                y2: manualAnchor.displaySegment.y2,
+              },
+            }
+          : {}),
     };
   }
   const exactOutsideAnchor = getManualAnchorWithExactOutsideCell(
@@ -4714,6 +4855,17 @@ function createCircleDoorAnchorMeta(anchor, secret = false) {
       : null,
     normal: anchor.normal ? { x: anchor.normal.x, y: anchor.normal.y } : null,
     circular: anchor.circular || null,
+    displayPoint: anchor.displayPoint
+      ? { x: anchor.displayPoint.x, y: anchor.displayPoint.y }
+      : null,
+    displaySegment: anchor.displaySegment
+      ? {
+          x1: anchor.displaySegment.x1,
+          y1: anchor.displaySegment.y1,
+          x2: anchor.displaySegment.x2,
+          y2: anchor.displaySegment.y2,
+        }
+      : null,
     expandedCircleDoor: Boolean(anchor.expandedCircleDoor),
     circleBoundaryAnchor: Boolean(anchor.circleBoundaryAnchor),
     circleRaccordoCell: Boolean(anchor.circleRaccordoCell),

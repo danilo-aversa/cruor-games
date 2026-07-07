@@ -202,6 +202,51 @@ function getCirclePerimeterPoint(circle, radial, outwardOffset = 0) {
   };
 }
 
+function getCircleAxisCenteredDisplayGeometry(
+  circle,
+  referenceCell,
+  normal,
+  gridSize,
+  fallbackRadial = null,
+) {
+  const radial = fallbackRadial || getRadialFromPoint(
+    referenceCell ? getCircleAnchorCellCenter(referenceCell, gridSize) : null,
+    circle,
+  ) || normal || { x: 1, y: 0 };
+  const fallbackPoint = getCirclePerimeterPoint(circle, radial);
+  if (!circle || !referenceCell || !normal) {
+    return { point: fallbackPoint, radial: getRadialFromPoint(fallbackPoint, circle) || radial };
+  }
+
+  const signX = normal.x >= 0 ? 1 : -1;
+  const signY = normal.y >= 0 ? 1 : -1;
+  const epsilon = gridSize * 0.0001;
+
+  if (Math.abs(normal.x) >= Math.abs(normal.y) && normal.x !== 0) {
+    const y = (referenceCell.y + 0.5) * gridSize;
+    const dy = y - circle.cy;
+    const remaining = circle.r * circle.r - dy * dy;
+    if (remaining >= -epsilon) {
+      const x = circle.cx + signX * Math.sqrt(Math.max(0, remaining));
+      const point = { x, y };
+      return { point, radial: getRadialFromPoint(point, circle) || radial };
+    }
+  }
+
+  if (normal.y !== 0) {
+    const x = (referenceCell.x + 0.5) * gridSize;
+    const dx = x - circle.cx;
+    const remaining = circle.r * circle.r - dx * dx;
+    if (remaining >= -epsilon) {
+      const y = circle.cy + signY * Math.sqrt(Math.max(0, remaining));
+      const point = { x, y };
+      return { point, radial: getRadialFromPoint(point, circle) || radial };
+    }
+  }
+
+  return { point: fallbackPoint, radial: getRadialFromPoint(fallbackPoint, circle) || radial };
+}
+
 function scorePortalCellForRadial(portalCell, radial, circle, gridSize) {
   const center = getCircleAnchorCellCenter(portalCell, gridSize);
   const candidateRadial = getRadialFromPoint(center, circle);
@@ -275,6 +320,40 @@ function cloneCircleCell(cell) {
   return cell ? { x: cell.x, y: cell.y } : null;
 }
 
+function isSameCircleChainCell(a, b) {
+  return Boolean(a && b && a.x === b.x && a.y === b.y);
+}
+
+function addUniqueCircleChainCell(cells, cell) {
+  if (!cell) return;
+  if (cells.some((existing) => isSameCircleChainCell(existing, cell))) return;
+  cells.push(cloneCircleCell(cell));
+}
+
+function prependInnerCircleRaccordoSupportCells(raccordoCells, portalCell, circle, gridSize, normal) {
+  if (!Array.isArray(raccordoCells) || !portalCell || !circle || !normal) {
+    return raccordoCells;
+  }
+  const innerCells = [];
+  let referenceRange = getCircleCellRectDistanceRange(portalCell, circle, gridSize);
+  let candidate = { x: portalCell.x - normal.x, y: portalCell.y - normal.y };
+
+  for (let step = 0; step < 3; step += 1) {
+    if (!isCirclePortalCellUsable(candidate, circle, gridSize)) break;
+    const candidateRange = getCircleCellRectDistanceRange(candidate, circle, gridSize);
+    if (!(candidateRange.min < referenceRange.min - 0.0001)) break;
+    innerCells.unshift(cloneCircleCell(candidate));
+    referenceRange = candidateRange;
+    candidate = { x: candidate.x - normal.x, y: candidate.y - normal.y };
+  }
+
+  if (innerCells.length === 0) return raccordoCells;
+  const merged = [];
+  innerCells.forEach((cell) => addUniqueCircleChainCell(merged, cell));
+  raccordoCells.forEach((cell) => addUniqueCircleChainCell(merged, cell));
+  return merged;
+}
+
 function getCircleRaccordoChainForPortalCell(portalCell, circle, gridSize, normal) {
   if (!portalCell || !circle || !normal) return null;
   if (!isCirclePortalCellUsable(portalCell, circle, gridSize)) return null;
@@ -293,6 +372,13 @@ function getCircleRaccordoChainForPortalCell(portalCell, circle, gridSize, norma
   if (!isCircleDoorBearingRaccordoCellUsable(doorRaccordoCell, circle, gridSize)) {
     return null;
   }
+  const completeRaccordoCells = prependInnerCircleRaccordoSupportCells(
+    raccordoCells,
+    portalCell,
+    circle,
+    gridSize,
+    normal,
+  );
   const corridorStartCell = {
     x: doorRaccordoCell.x + normal.x,
     y: doorRaccordoCell.y + normal.y,
@@ -303,7 +389,7 @@ function getCircleRaccordoChainForPortalCell(portalCell, circle, gridSize, norma
   return {
     portalCell: cloneCircleCell(portalCell),
     raccordoCell: cloneCircleCell(doorRaccordoCell),
-    raccordoCells,
+    raccordoCells: completeRaccordoCells,
     routingOutsideCell: cloneCircleCell(corridorStartCell),
     corridorStartCell: cloneCircleCell(corridorStartCell),
   };
@@ -490,7 +576,21 @@ export function createCircleConnectionAnchorFromOutsideCell(
   const point = segment
     ? { x: (segment.x1 + segment.x2) / 2, y: (segment.y1 + segment.y2) / 2 }
     : getCirclePerimeterPoint(circle, radial);
-  const angle = normalizeCircleAnchorAngle(Math.atan2(radial.y, radial.x));
+  const displayGeometry = getCircleAxisCenteredDisplayGeometry(
+    circle,
+    portalCell,
+    normal,
+    gridSize,
+    radial,
+  );
+  const displayPoint = displayGeometry.point;
+  const displayRadial = displayGeometry.radial || radial;
+  const displaySegment = getCircleAnchorTangentSegment(
+    displayPoint,
+    displayRadial,
+    gridSize,
+  );
+  const angle = normalizeCircleAnchorAngle(Math.atan2(displayRadial.y, displayRadial.x));
 
   return {
     regionId: region.id,
@@ -509,7 +609,7 @@ export function createCircleConnectionAnchorFromOutsideCell(
       cx: circle.cxCells,
       cy: circle.cyCells,
       r: circle.rCells,
-      normal: radial,
+      normal: displayRadial,
     },
     finalGeometry: true,
     expandedCircleDoor: true,
@@ -517,6 +617,8 @@ export function createCircleConnectionAnchorFromOutsideCell(
     finalBoundaryIndex: Math.round((angle / (Math.PI * 2)) * 10000) + index,
     segment,
     point,
+    displayPoint,
+    displaySegment,
     snapGridQuantized: true,
   };
 }

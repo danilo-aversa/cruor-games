@@ -214,15 +214,6 @@ export default function AppRouter() {
     () => getCruorRouteFromLocation().section,
   );
   const [activeUiMode, setActiveUiMode] = useState("simple");
-  const [debugModeActive, setDebugModeActive] = useState(() => {
-    if (typeof window === "undefined") return false;
-    try {
-      return window.localStorage?.getItem("cruorMapDebugMode") === "1";
-    } catch (error) {
-      void error;
-      return false;
-    }
-  });
   const [activeLocale, setActiveLocaleState] = useState(getCurrentLocale);
   const [activeCrucibleGenerator, setActiveCrucibleGenerator] = useState(
     () => getCruorRouteFromLocation().crucibleGenerator,
@@ -259,22 +250,6 @@ export default function AppRouter() {
   const handleLocaleChange = useCallback((locale) => {
     const normalizedLocale = setCurrentLocale(locale);
     setActiveLocaleState(normalizedLocale);
-  }, []);
-
-  const handleDebugModeChange = useCallback((enabled) => {
-    const nextEnabled = Boolean(enabled);
-    setDebugModeActive(nextEnabled);
-    if (typeof window === "undefined") return;
-    try {
-      window.localStorage?.setItem("cruorMapDebugMode", nextEnabled ? "1" : "0");
-      window.dispatchEvent(
-        new CustomEvent("cruor:map-debug-mode-change", {
-          detail: { enabled: nextEnabled },
-        }),
-      );
-    } catch (error) {
-      void error;
-    }
   }, []);
 
   useEffect(() => {
@@ -485,7 +460,7 @@ export default function AppRouter() {
           >
             <DarkenLocationComposerPage
               uiMode={activeUiMode}
-              debugMode={debugModeActive || activeUiMode === "debug"}
+              debugMode={activeUiMode === "debug"}
               onOpenMapGenerator={openMapGenerator}
               onSnapshotProviderReady={setDarkenSnapshotProvider}
             />
@@ -510,7 +485,7 @@ export default function AppRouter() {
                   key={mapRequestRevision}
                   initialRequest={mapRequest}
                   onRefreshFromComposer={refreshMapFromComposer}
-                  debugMode={debugModeActive || activeUiMode === "debug"}
+                  debugMode={activeUiMode === "debug"}
                 />
               </Suspense>
             </section>
@@ -539,8 +514,6 @@ export default function AppRouter() {
       activeCrucibleGenerator={activeCrucibleGenerator}
       activeLocale={activeLocale}
       onLocaleChange={handleLocaleChange}
-      debugModeActive={debugModeActive}
-      onDebugModeChange={handleDebugModeChange}
       onSectionChange={activateSection}
       onUiModeChange={setActiveUiMode}
       onOpenCrucibleTool={openCrucibleTool}

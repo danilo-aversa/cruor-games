@@ -9324,3 +9324,434 @@ _Nessun file aggiunto._
 - `~features/darken-location/map-generator/map-generator.render.jsx`
 - `~scripts/run-circle-connector-diagnostics.test.js`
 
+
+---
+
+## 2026-07-07 10:31:19
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-circle-inner-raccordo-union-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-circle-inner-raccordo-union-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-07-07 10:39:12
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-debug-cell-coordinates-overlay.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-debug-cell-coordinates-overlay.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-07-07 10:44:44
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `site-topbar-single-debug-mode-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\site-topbar-single-debug-mode-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/AppShell.jsx`
+- `~app/navigation/SiteTopbar.jsx`
+- `~app/router.jsx`
+
+
+---
+
+## 2026-07-07 10:48:17
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-debug-coordinates-mode-bridge-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-debug-coordinates-mode-bridge-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-07-07 10:57:13
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-circle-raccordo-inner-support-debug-labels-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-circle-raccordo-inner-support-debug-labels-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/map-generator/map-generator.circle-anchors.js`
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+- `~features/darken-location/map-generator/map-generator.mask.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-07-07 11:07:12
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-circle-anchor-wall-ui-snap-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-circle-anchor-wall-ui-snap-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/map-generator/map-generator.circle-anchors.js`
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+- `~features/darken-location/map-generator/map-generator.mask.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-07-07 11:17:10
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-circle-axis-centered-anchor-display-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-circle-axis-centered-anchor-display-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/map-generator/map-generator.circle-anchors.js`
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+- `~features/darken-location/map-generator/map-generator.mask.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-07-07 11:24:57
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-circle-axis-centered-anchor-display-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-circle-axis-centered-anchor-display-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/map-generator/map-generator.circle-anchors.js`
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+- `~features/darken-location/map-generator/map-generator.mask.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-07-07 11:36:48
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-debug-recorder-tools-layout-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-debug-recorder-tools-layout-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+
+
+---
+
+## 2026-07-07 11:38:17
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-debug-recorder-tools-layout-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\dark-places-debug-recorder-tools-layout-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+
+
+---
+
+## 2026-07-07 11:50:46
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `topbar-megamenu-utility-contextmenu-hover-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\topbar-megamenu-utility-contextmenu-hover-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/SiteTopbar.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+
+---
+
+## 2026-07-07 12:00:19
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `topbar-megamenu-hover-no-extra-utility-css-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\topbar-megamenu-hover-no-extra-utility-css-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/SiteTopbar.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+
+---
+
+## 2026-07-07 12:15:09
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `topbar-appshell-correct-surface-backdrop-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\topbar-appshell-correct-surface-backdrop-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/app-shell.css`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/SiteTopbar.jsx`
+
+
+---
+
+## 2026-07-07 12:18:55
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `topbar-parent-blur-layer-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\topbar-parent-blur-layer-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~app/app-shell.css`
+
+
+---
+
+## 2026-07-07 12:19:45
+
+**Operazione:** Apply Custom ChatGPT ZIP
+
+**ZIP applicato:** `topbar-megamenu-utility-contextmenu-hover-fix.zip`
+
+**Percorso ZIP:** `h:\Users\avers\Download\topbar-megamenu-utility-contextmenu-hover-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/SiteTopbar.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+
+---
+
+## 2026-07-07 12:19:56
+
+**Operazione:** Apply Custom ChatGPT ZIP
+
+**ZIP applicato:** `dark-places-debug-recorder-tools-layout-fix.zip`
+
+**Percorso ZIP:** `h:\Users\avers\Download\dark-places-debug-recorder-tools-layout-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+
+
+---
+
+## 2026-07-07 12:20:11
+
+**Operazione:** Apply Custom ChatGPT ZIP
+
+**ZIP applicato:** `topbar-megamenu-utility-contextmenu-hover-fix.zip`
+
+**Percorso ZIP:** `h:\Users\avers\Download\topbar-megamenu-utility-contextmenu-hover-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/SiteTopbar.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+
+---
+
+## 2026-07-07 12:20:20
+
+**Operazione:** Apply Custom ChatGPT ZIP
+
+**ZIP applicato:** `topbar-appshell-correct-surface-backdrop-fix.zip`
+
+**Percorso ZIP:** `h:\Users\avers\Download\topbar-appshell-correct-surface-backdrop-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/app-shell.css`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/SiteTopbar.jsx`
+
+
+---
+
+## 2026-07-07 12:20:22
+
+**Operazione:** Apply Custom ChatGPT ZIP
+
+**ZIP applicato:** `topbar-parent-blur-layer-fix.zip`
+
+**Percorso ZIP:** `h:\Users\avers\Download\topbar-parent-blur-layer-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~app/app-shell.css`
+
