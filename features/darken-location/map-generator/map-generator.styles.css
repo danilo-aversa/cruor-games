@@ -3029,7 +3029,8 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  width: 100%;
+  gap: 2px;
 }
 
 .cruor-map-workspace .map-debug-recorder__icon-toggle-grid,
@@ -3038,10 +3039,10 @@
 .location-composer .map-debug-recorder__categories {
   display: grid;
   grid-template-columns: repeat(8, 30px);
-  justify-content: start;
+  justify-content: center;
   align-items: center;
   justify-items: center;
-  gap: 6px;
+  gap: 2px;
 }
 
 .cruor-map-workspace .map-debug-recorder__actions .mvp-button,
@@ -3093,8 +3094,8 @@
   height: 30px;
   min-height: 30px;
   max-height: 30px;
-  min-width: 78px;
-  max-width: 112px;
+  min-width: 118px;
+  max-width: none;
   border: 1px solid rgba(208, 162, 170, 0.18);
   border-radius: 0;
   background: rgba(10, 5, 7, 0.82);
@@ -3171,5 +3172,104 @@
   .cruor-map-workspace .map-debug-recorder__scenario-actions,
   .location-composer .map-debug-recorder__scenario-actions {
     grid-template-columns: minmax(108px, 1fr) repeat(3, 30px);
+  }
+}
+
+/* Debug recorder legacy runner fallback: keeps older JSX usable if Vite is still serving it. */
+.cruor-map-workspace .map-debug-recorder__runner,
+.location-composer .map-debug-recorder__runner {
+  width: 100%;
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-controls,
+.location-composer .map-debug-recorder__runner-controls {
+  display: grid;
+  grid-template-columns: minmax(118px, 1fr) 30px;
+  align-items: center;
+  width: 100%;
+  gap: 2px;
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-speed,
+.location-composer .map-debug-recorder__runner-speed {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  gap: 2px;
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-speed span,
+.location-composer .map-debug-recorder__runner-speed span {
+  display: none;
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-speed select,
+.location-composer .map-debug-recorder__runner-speed select {
+  width: 100%;
+  min-width: 0;
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-controls .map-debug-recorder__stop-toggle,
+.location-composer .map-debug-recorder__runner-controls .map-debug-recorder__stop-toggle {
+  align-self: center;
+  width: 30px;
+  min-width: 30px;
+  max-width: 30px;
+  height: 30px !important;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  padding: 0;
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-actions,
+.location-composer .map-debug-recorder__runner-actions {
+  display: grid;
+  grid-template-columns: repeat(5, 30px);
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
+  gap: 2px;
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-button,
+.location-composer .map-debug-recorder__runner-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  min-width: 30px;
+  max-width: 30px;
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+  padding: 0;
+  line-height: 1;
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-button span,
+.location-composer .map-debug-recorder__runner-button span {
+  display: none;
+}
+
+.cruor-map-workspace .map-debug-recorder__runner-button i,
+.location-composer .map-debug-recorder__runner-button i {
+  width: 1em;
+  min-width: 1em;
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1;
+  text-align: center;
+}
+
+@media (max-width: 520px) {
+  .cruor-map-workspace .map-debug-recorder__runner-actions,
+  .location-composer .map-debug-recorder__runner-actions {
+    grid-template-columns: repeat(5, 30px);
   }
 }

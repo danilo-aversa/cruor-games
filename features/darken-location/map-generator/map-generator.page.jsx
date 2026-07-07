@@ -402,6 +402,7 @@ function MapDebugRecorderPanel({
   return (
     <section
       className="map-debug-recorder location-frame-info-card"
+      data-debug-recorder-tools="coordinates-svg-v3"
       aria-label="Dark Places debug recorder"
     >
       <div className="map-debug-recorder__header">
@@ -502,6 +503,7 @@ function MapDebugRecorderPanel({
       >
         <select
           className="map-debug-recorder__speed-select"
+          data-debug-control="qa-speed"
           aria-label="QA runner speed"
           title="QA runner speed"
           value={speed}
