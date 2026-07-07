@@ -382,7 +382,7 @@ function MapDebugRecorderPanel({
   const speed = qaSettings?.speed || "normal";
   const stopOnError = qaSettings?.stopOnError !== false;
   const qaRunning = qaRunnerState?.state === "running";
-  const icon = (name) => <i className={`fa-solid fa-${name}`} aria-hidden="true" />;
+  const icon = (name) => <i className={`fa-solid fa-${name} debug-icon`} aria-hidden="true" />;
   const iconButtonClass = (active = false) =>
     active
       ? "mvp-button cruor-button map-debug-recorder__icon-toggle is-active"
@@ -5666,6 +5666,18 @@ export default function CruorMapGeneratorMvp({
     );
   }, [showDebugCoordinates]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    function handleDebugCoordinatesChange(event) {
+      if (!event?.detail || !("enabled" in event.detail)) return;
+      setShowDebugCoordinates(Boolean(event.detail.enabled));
+    }
+    window.addEventListener("cruor:map-debug-coordinates-change", handleDebugCoordinatesChange);
+    return () => {
+      window.removeEventListener("cruor:map-debug-coordinates-change", handleDebugCoordinatesChange);
+    };
+  }, []);
+
   const recordDebugEvent = useCallback((label, payload = {}, options = {}) => {
     const category = options.category || getMapDebugCategory(label);
     const globalRecorder = getGlobalMapDebugRecorder();
@@ -8542,7 +8554,15 @@ export default function CruorMapGeneratorMvp({
   }
 
   function getQaCircleAnchorSortCell(anchor) {
-    return anchor?.snapCell || anchor?.outsideCell || anchor?.routingOutsideCell || anchor?.cell || null;
+    return (
+      anchor?.snapCell ||
+      anchor?.originalCell ||
+      anchor?.cell ||
+      anchor?.portalRoomCell ||
+      anchor?.routingOutsideCell ||
+      anchor?.outsideCell ||
+      null
+    );
   }
 
   function summarizeQaCircleAnchorCandidate(anchor) {
@@ -8930,14 +8950,20 @@ export default function CruorMapGeneratorMvp({
         topology: summarizeQaCorridorTopology(map),
         duplicates: getQaCorridorPairDuplicates(map),
       }, "anchor-trace");
+      const requestedIdentityCell = getQaCircleAnchorSortCell(anchor);
+      const renderedIdentityCell = getQaCircleAnchorSortCell(updatedDoor);
       assertQa(
-        updatedDoor?.cell?.x === anchor.cell?.x && updatedDoor?.cell?.y === anchor.cell?.y,
-        "Rendered corridor endpoint did not move to the requested circle anchor.",
+        renderedIdentityCell?.x === requestedIdentityCell?.x &&
+          renderedIdentityCell?.y === requestedIdentityCell?.y &&
+          (!anchor?.side || !updatedDoor?.side || updatedDoor.side === anchor.side),
+        "Rendered corridor endpoint did not retain the requested circle anchor snap cell.",
         {
           corridorId: updatedCorridor?.id || currentCorridor.id,
           endpoint: updatedEndpoint,
           requestedAnchor: summarizeDebugAnchor(anchor),
+          requestedIdentityCell: summarizeDebugCell(requestedIdentityCell),
           renderedDoor: updatedDoor,
+          renderedIdentityCell: summarizeDebugCell(renderedIdentityCell),
           renderedCorridor: summarizeDebugCorridor(updatedCorridor),
           topology: summarizeQaCorridorTopology(map),
         }

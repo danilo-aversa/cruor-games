@@ -25,6 +25,7 @@ function cx(...classes) {
 }
 
 function LocationMapPreview({
+  debugMode = false,
   error,
   initialManualOverrides = null,
   mapRequest,
@@ -54,6 +55,7 @@ function LocationMapPreview({
       <CruorMapGeneratorMvp
         initialRequest={mapRequest}
         initialManualOverrides={initialManualOverrides}
+        debugMode={debugMode}
         embeddedInComposer={true}
         inlineComposerEditor={true}
         workspaceContext="composer-inline-editor"
@@ -250,6 +252,7 @@ export function LocationMapStage({
               ) : null}
 
           <LocationMapPreview
+            debugMode={uiMode === "debug"}
             error={previewError}
             mapRequest={mapRequest}
             initialManualOverrides={mapManualOverrides}

@@ -8130,3 +8130,47 @@
 .location-map-stage__center:has(.location-map-toolbar__style-panel[data-style-menu="root"]) .location-map-stage-toolbar {
   z-index: 16;
 }
+
+/* Debug Recorder icon sizing overrides: keep recorder controls independent from map toolbar buttons. */
+.location-composer .map-debug-recorder .location-map-toolbar__button.map-debug-recorder__icon-toggle,
+.location-composer .map-debug-recorder .location-icon-toggle-button.cruor-frame-icon-toggle.map-debug-recorder__icon-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  place-items: center;
+  width: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  max-height: 24px;
+  gap: 0;
+  padding: 0;
+  line-height: 1;
+  transform: none;
+}
+
+.location-composer .map-debug-recorder .location-map-toolbar__button.map-debug-recorder__icon-toggle.is-active,
+.location-composer .map-debug-recorder .location-icon-toggle-button.cruor-frame-icon-toggle.map-debug-recorder__icon-toggle.is-active {
+  transform: none;
+}
+
+.location-composer .map-debug-recorder .debug-icon,
+.location-composer .map-debug-recorder .location-map-toolbar__button .debug-icon,
+.location-composer .map-debug-recorder .location-icon-toggle-button.cruor-frame-icon-toggle .debug-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 12px;
+  width: 12px;
+  min-width: 12px;
+  max-width: 12px;
+  height: 12px;
+  min-height: 12px;
+  max-height: 12px;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  line-height: 12px;
+  text-align: center;
+}

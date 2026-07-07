@@ -129,6 +129,8 @@ function MapDebugRecorderPanel({
   categories,
   entries,
   onClear,
+  onCopyDebugSvg,
+  onDownloadDebugSvg,
   onDownloadJson,
   onDownloadTxt,
   onQaScenarioRun,
@@ -136,8 +138,10 @@ function MapDebugRecorderPanel({
   onQaSettingChange,
   onRecordingChange,
   onToggleCategory,
+  onToggleDebugCoordinates,
   qaRunnerStatus = null,
   recording,
+  showDebugCoordinates = false,
 }) {
   const enabledCount = MAP_DEBUG_CATEGORY_OPTIONS.filter((category) => categories[category.id]).length;
   const latestEntries = entries.slice(-6).reverse();
@@ -145,7 +149,11 @@ function MapDebugRecorderPanel({
   const qaSettings = qaRunnerStatus?.settings || {};
 
   return (
-    <section className="map-debug-recorder location-frame-info-card" aria-label="Dark Places debug recorder">
+    <section
+      className="map-debug-recorder location-frame-info-card"
+      data-debug-recorder-tools="composer-coordinates-svg-v1"
+      aria-label="Dark Places debug recorder"
+    >
       <div className="map-debug-recorder__header">
         <span>Debug Recorder</span>
         <strong>{recording ? "Recording" : "Idle"}</strong>
@@ -153,26 +161,91 @@ function MapDebugRecorderPanel({
       <p className="map-debug-recorder__summary">
         {entries.length} event{entries.length === 1 ? "" : "s"} · {enabledCount} listener{enabledCount === 1 ? "" : "s"} active
       </p>
-      <div className="map-debug-recorder__actions">
+      <div className="map-debug-recorder__actions map-debug-recorder__icon-toggle-grid">
         <button
           type="button"
-          className={recording ? "mvp-button cruor-button is-active" : "mvp-button cruor-button"}
+          className={getIconToggleClass(recording)}
+          aria-label={recording ? "Stop recording" : "Start recording"}
           onClick={() => onRecordingChange(!recording)}
+          {...getGenericTooltipAttrs(recording ? "Stop Recording" : "Start Recording")}
         >
-          <i className={recording ? "fa-solid fa-stop" : "fa-solid fa-circle"} aria-hidden="true" />
-          <span>{recording ? "Stop" : "Start Recording"}</span>
+          <i className={recording ? "fa-solid fa-stop debug-icon" : "fa-solid fa-circle debug-icon"} aria-hidden="true" />
+          <span className="sr-only">{recording ? "Stop" : "Start Recording"}</span>
         </button>
-        <button type="button" className="mvp-button cruor-button" onClick={onClear} disabled={!entries.length}>
-          <i className="fa-solid fa-trash-can" aria-hidden="true" />
-          <span>Clear</span>
+        <button
+          type="button"
+          className={getIconToggleClass(showDebugCoordinates)}
+          aria-label={showDebugCoordinates ? "Hide map coordinates" : "Show map coordinates"}
+          aria-pressed={Boolean(showDebugCoordinates)}
+          onClick={() => onToggleDebugCoordinates?.(!showDebugCoordinates)}
+          {...getGenericTooltipAttrs(
+            showDebugCoordinates ? "Hide Coordinates" : "Show Coordinates",
+            "Toggle debug coordinate labels on the rendered map.",
+          )}
+        >
+          <i className="fa-solid fa-table-cells debug-icon" aria-hidden="true" />
+          <span className="sr-only">Coordinates</span>
         </button>
-        <button type="button" className="mvp-button cruor-button" onClick={onDownloadJson} disabled={!entries.length}>
-          <i className="fa-solid fa-file-code" aria-hidden="true" />
-          <span>Download JSON</span>
+        <button
+          type="button"
+          className={getIconToggleClass(false, "map-debug-recorder__svg-action map-debug-recorder__svg-copy")}
+          aria-label="Copy debug SVG with coordinates"
+          title="Copy Debug SVG with coordinates"
+          onClick={onCopyDebugSvg}
+          {...getGenericTooltipAttrs(
+            "Copy Debug SVG",
+            "Copy the current rendered SVG with coordinate labels included.",
+          )}
+        >
+          <i className="fa-solid fa-copy debug-icon" aria-hidden="true" />
+          <span className="sr-only">Copy Debug SVG</span>
         </button>
-        <button type="button" className="mvp-button cruor-button" onClick={onDownloadTxt} disabled={!entries.length}>
-          <i className="fa-solid fa-file-lines" aria-hidden="true" />
-          <span>Download TXT</span>
+        <button
+          type="button"
+          className={getIconToggleClass(false, "map-debug-recorder__svg-action map-debug-recorder__svg-download")}
+          aria-label="Download debug SVG with coordinates"
+          title="Download Debug SVG with coordinates"
+          onClick={onDownloadDebugSvg}
+          {...getGenericTooltipAttrs(
+            "Download Debug SVG",
+            "Download the current rendered SVG with coordinate labels included.",
+          )}
+        >
+          <i className="fa-solid fa-file-arrow-down debug-icon" aria-hidden="true" />
+          <span className="sr-only">Download Debug SVG</span>
+        </button>
+        <button
+          type="button"
+          className={getIconToggleClass(false)}
+          aria-label="Clear debug events"
+          onClick={onClear}
+          disabled={!entries.length}
+          {...getGenericTooltipAttrs("Clear Events")}
+        >
+          <i className="fa-solid fa-trash-can debug-icon" aria-hidden="true" />
+          <span className="sr-only">Clear</span>
+        </button>
+        <button
+          type="button"
+          className={getIconToggleClass(false)}
+          aria-label="Download debug JSON"
+          onClick={onDownloadJson}
+          disabled={!entries.length}
+          {...getGenericTooltipAttrs("Download JSON")}
+        >
+          <i className="fa-solid fa-file-code debug-icon" aria-hidden="true" />
+          <span className="sr-only">Download JSON</span>
+        </button>
+        <button
+          type="button"
+          className={getIconToggleClass(false)}
+          aria-label="Download debug TXT"
+          onClick={onDownloadTxt}
+          disabled={!entries.length}
+          {...getGenericTooltipAttrs("Download TXT")}
+        >
+          <i className="fa-solid fa-file-lines debug-icon" aria-hidden="true" />
+          <span className="sr-only">Download TXT</span>
         </button>
       </div>
       <div className="map-debug-recorder__categories map-debug-recorder__icon-toggle-grid" role="group" aria-label="Debug listener categories">
@@ -188,7 +261,7 @@ function MapDebugRecorderPanel({
               onClick={() => onToggleCategory(category.id)}
               {...getGenericTooltipAttrs(category.label, category.description)}
             >
-              <i className={category.icon} aria-hidden="true" />
+              <i className={`${category.icon} debug-icon`} aria-hidden="true" />
               <span className="sr-only">{category.label}</span>
             </button>
           );
@@ -221,7 +294,7 @@ function MapDebugRecorderPanel({
             disabled={qaRunning}
             {...getGenericTooltipAttrs("Stop on Error", "Stop the QA scenario immediately when the first assertion fails.")}
           >
-            <i className="fa-solid fa-triangle-exclamation" aria-hidden="true" />
+            <i className="fa-solid fa-triangle-exclamation debug-icon" aria-hidden="true" />
             <span className="sr-only">Stop on Error</span>
           </button>
         </div>
@@ -235,7 +308,7 @@ function MapDebugRecorderPanel({
               disabled={qaRunning}
               {...getGenericTooltipAttrs(scenario.label, scenario.description)}
             >
-              <i className={scenario.icon} aria-hidden="true" />
+              <i className={`${scenario.icon} debug-icon`} aria-hidden="true" />
               <span>{scenario.label}</span>
             </button>
           ))}
@@ -246,7 +319,7 @@ function MapDebugRecorderPanel({
             disabled={!qaRunning}
             {...getGenericTooltipAttrs("Stop Scenario", "Stop the currently running browser QA scenario.")}
           >
-            <i className="fa-solid fa-stop" aria-hidden="true" />
+            <i className="fa-solid fa-stop debug-icon" aria-hidden="true" />
             <span>Stop Scenario</span>
           </button>
         </div>
@@ -421,6 +494,16 @@ export function LocationMapDetailsPanel({
   const [debugRecording, setDebugRecording] = useState(false);
   const [debugCategories, setDebugCategories] = useState(DEFAULT_MAP_DEBUG_CATEGORIES);
   const [debugEntries, setDebugEntries] = useState([]);
+  const [showDebugCoordinates, setShowDebugCoordinates] = useState(() => {
+    if (typeof window === "undefined") return true;
+    try {
+      return window.localStorage?.getItem("cruorMapDebugCoordinates") !== "false";
+    } catch (error) {
+      void error;
+      return true;
+    }
+  });
+  const showDebugCoordinatesRef = useRef(showDebugCoordinates);
   const [qaRunnerStatus, setQaRunnerStatus] = useState({
     state: "idle",
     scenarioId: "",
@@ -451,6 +534,32 @@ export function LocationMapDetailsPanel({
   useEffect(() => {
     qaRunnerStatusRef.current = qaRunnerStatus;
   }, [qaRunnerStatus]);
+
+  useEffect(() => {
+    showDebugCoordinatesRef.current = showDebugCoordinates;
+  }, [showDebugCoordinates]);
+
+  function dispatchDebugCoordinatesChange(enabled, { persist = true } = {}) {
+    const nextEnabled = Boolean(enabled);
+    showDebugCoordinatesRef.current = nextEnabled;
+    setShowDebugCoordinates(nextEnabled);
+    if (typeof window === "undefined") return;
+    try {
+      if (persist) {
+        window.localStorage?.setItem("cruorMapDebugCoordinates", nextEnabled ? "true" : "false");
+      }
+    } catch (error) {
+      void error;
+    }
+    window.dispatchEvent(new CustomEvent("cruor:map-debug-coordinates-change", {
+      detail: { enabled: nextEnabled, source: "composer-debug-recorder" },
+    }));
+  }
+
+  useEffect(() => {
+    if (!debugModeActive) return;
+    dispatchDebugCoordinatesChange(showDebugCoordinatesRef.current, { persist: false });
+  }, [debugModeActive]);
 
   useEffect(() => {
     function handleQaRunnerStatus(event) {
@@ -589,6 +698,78 @@ export function LocationMapDetailsPanel({
     }));
   }
 
+  function waitForNextAnimationFrame() {
+    if (typeof window === "undefined" || typeof window.requestAnimationFrame !== "function") {
+      return Promise.resolve();
+    }
+    return new Promise((resolve) => window.requestAnimationFrame(() => resolve()));
+  }
+
+  function getDebugSvgElement() {
+    if (typeof document === "undefined") return null;
+    return (
+      document.querySelector(".location-map-preview--inline-editor #cruor-map-svg") ||
+      document.querySelector("#cruor-map-svg")
+    );
+  }
+
+  function serializeDebugSvgElement(svgElement) {
+    if (!svgElement) return "";
+    const clone = svgElement.cloneNode(true);
+    clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    clone.querySelectorAll(".editor-overlays").forEach((node) => node.remove());
+    return new XMLSerializer().serializeToString(clone);
+  }
+
+  async function serializeDebugSvgWithCoordinates() {
+    const previousCoordinates = showDebugCoordinatesRef.current;
+    dispatchDebugCoordinatesChange(true, { persist: false });
+    try {
+      await waitForNextAnimationFrame();
+      await waitForNextAnimationFrame();
+      return serializeDebugSvgElement(getDebugSvgElement());
+    } finally {
+      if (!previousCoordinates) {
+        dispatchDebugCoordinatesChange(false, { persist: false });
+      }
+    }
+  }
+
+  function getDebugSvgFilename() {
+    return `cruor-map-debug-${new Date().toISOString().replace(/[:.]/g, "-")}.svg`;
+  }
+
+  async function copyTextToClipboard(text) {
+    if (!text) return false;
+    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+    if (typeof document === "undefined") return false;
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copied = document.execCommand("copy");
+    textarea.remove();
+    return copied;
+  }
+
+  async function copyDebugSvg() {
+    const svg = await serializeDebugSvgWithCoordinates();
+    if (!svg) return;
+    await copyTextToClipboard(svg);
+  }
+
+  async function downloadDebugSvg() {
+    const svg = await serializeDebugSvgWithCoordinates();
+    if (!svg) return;
+    downloadMapDebugBlob(getDebugSvgFilename(), svg, "image/svg+xml;charset=utf-8");
+  }
+
   function downloadDebugEntries(format = "json") {
     const stamp = new Date().toISOString().replace(/[:.]/g, "-");
     const payload = {
@@ -677,6 +858,10 @@ export function LocationMapDetailsPanel({
           onQaScenarioRun={runQaScenario}
           onQaScenarioStop={stopQaScenario}
           onQaSettingChange={updateQaRunnerSetting}
+          onToggleDebugCoordinates={dispatchDebugCoordinatesChange}
+          showDebugCoordinates={showDebugCoordinates}
+          onCopyDebugSvg={copyDebugSvg}
+          onDownloadDebugSvg={downloadDebugSvg}
           onDownloadJson={() => downloadDebugEntries("json")}
           onDownloadTxt={() => downloadDebugEntries("txt")}
         />

@@ -1143,14 +1143,62 @@ function isCircleCorridorStartCellUsable(cell, circle, gridW, gridH, reservedRoo
   return range.min >= circle.rCells + 0.025;
 }
 
-function isCircleDoorBearingRaccordoCellUsable(cell, circle, gridW, gridH, reservedRoomCells) {
+function isCircleDoorSharedEdgeOutsideVisualCircle(
+  raccordoCell,
+  corridorStartCell,
+  circle,
+) {
+  if (!raccordoCell || !corridorStartCell || !circle) return false;
+  const dx = corridorStartCell.x - raccordoCell.x;
+  const dy = corridorStartCell.y - raccordoCell.y;
+  if (Math.abs(dx) + Math.abs(dy) !== 1) return false;
+
+  const samples = [0.12, 0.28, 0.5, 0.72, 0.88];
+  const tolerance = 0.025;
+  return samples.every((offset) => {
+    const point =
+      dx !== 0
+        ? {
+            x: dx > 0 ? raccordoCell.x + 1 : raccordoCell.x,
+            y: raccordoCell.y + offset,
+          }
+        : {
+            x: raccordoCell.x + offset,
+            y: dy > 0 ? raccordoCell.y + 1 : raccordoCell.y,
+          };
+    return (
+      Math.hypot(point.x - circle.cxCells, point.y - circle.cyCells) >=
+      circle.rCells - tolerance
+    );
+  });
+}
+
+function isCircleDoorBearingRaccordoCellUsable(
+  cell,
+  corridorStartCell,
+  circle,
+  gridW,
+  gridH,
+  reservedRoomCells,
+) {
   if (!isCircleExtensionCellInBounds(cell, gridW, gridH)) return false;
   if (isCircleExtensionCellReserved(cell, reservedRoomCells)) return false;
   const range = getCircleCellRectDistanceRange(cell, circle);
-  // The first raccordo cell completes the square intersected by the circular
-  // wall. If that cell still overlaps the circle, keep extending outward until
-  // the door-bearing raccordo cell is outside/tangent to the circle.
-  return range.min >= circle.rCells - 0.025;
+  // The door should be as close as possible to the circular room. A raccordo
+  // square may still overlap the visual circle; what matters for the actual door
+  // is that the shared edge to the corridor start is outside the circle and does
+  // not cut the curved wall.
+  return (
+    range.min <= circle.rCells + 2.25 &&
+    isCircleCorridorStartCellUsable(
+      corridorStartCell,
+      circle,
+      gridW,
+      gridH,
+      reservedRoomCells,
+    ) &&
+    isCircleDoorSharedEdgeOutsideVisualCircle(cell, corridorStartCell, circle)
+  );
 }
 
 function cloneCircleExtensionCell(cell) {
@@ -1235,10 +1283,12 @@ function getCircleRaccordoChainForPortalCell(
   }
   const raccordoCells = [cloneCircleExtensionCell(portalRoomCell)];
   let doorRaccordoCell = cloneCircleExtensionCell(portalRoomCell);
+  let corridorStartCell = getCircleAdjacentCorridorStartCell(doorRaccordoCell, normal);
   for (let step = 0; step < 4; step += 1) {
     if (
       isCircleDoorBearingRaccordoCellUsable(
         doorRaccordoCell,
+        corridorStartCell,
         circle,
         gridW,
         gridH,
@@ -1254,10 +1304,12 @@ function getCircleRaccordoChainForPortalCell(
     if (!isCircleExtensionCellInBounds(doorRaccordoCell, gridW, gridH)) return null;
     if (isCircleExtensionCellReserved(doorRaccordoCell, reservedRoomCells)) return null;
     raccordoCells.push(cloneCircleExtensionCell(doorRaccordoCell));
+    corridorStartCell = getCircleAdjacentCorridorStartCell(doorRaccordoCell, normal);
   }
   if (
     !isCircleDoorBearingRaccordoCellUsable(
       doorRaccordoCell,
+      corridorStartCell,
       circle,
       gridW,
       gridH,
@@ -1275,18 +1327,7 @@ function getCircleRaccordoChainForPortalCell(
     gridH,
     reservedRoomCells,
   );
-  const corridorStartCell = getCircleAdjacentCorridorStartCell(doorRaccordoCell, normal);
-  if (
-    !isCircleCorridorStartCellUsable(
-      corridorStartCell,
-      circle,
-      gridW,
-      gridH,
-      reservedRoomCells,
-    )
-  ) {
-    return null;
-  }
+  if (!corridorStartCell) return null;
   return {
     portalRoomCell: cloneCircleExtensionCell(portalRoomCell),
     raccordoCell: cloneCircleExtensionCell(doorRaccordoCell),
@@ -1355,16 +1396,32 @@ function getCircleExtensionAnchorRadial(
 function getInwardCirclePortalCandidate(anchor, normal, circle, gridW, gridH, reservedRoomCells) {
   const start = anchor?.portalRoomCell || anchor?.outsideCell || anchor?.cell;
   if (!start || !normal) return null;
+  const candidates = [];
   for (let step = 0; step <= 4; step += 1) {
     const candidate = {
       x: start.x - normal.x * step,
       y: start.y - normal.y * step,
     };
-    if (isCirclePortalCellUsable(candidate, circle, gridW, gridH, reservedRoomCells)) {
-      return candidate;
+    if (!isCirclePortalCellUsable(candidate, circle, gridW, gridH, reservedRoomCells)) {
+      continue;
     }
+    const chain = getCircleRaccordoChainForPortalCell(
+      candidate,
+      normal,
+      circle,
+      gridW,
+      gridH,
+      reservedRoomCells,
+    );
+    if (!chain) continue;
+    const range = getCircleCellRectDistanceRange(chain.raccordoCell || candidate, circle);
+    candidates.push({
+      cell: candidate,
+      score: range.min + step * 0.01,
+    });
   }
-  return null;
+  candidates.sort((a, b) => a.score - b.score);
+  return candidates[0]?.cell || null;
 }
 
 function chooseCirclePortalRoomCell(
@@ -1680,7 +1737,6 @@ export function applyCircleDoorRoomExtensions(regions, corridors) {
         : []
       ).map((cell) => cellKey(cell.x, cell.y)),
     );
-    const hasPreviousExtensions = previousExtensionKeys.size > 0;
     const isNativeCircleCell = (cell) => {
       const dx = cell.x + 0.5 - circle.cxCells;
       const dy = cell.y + 0.5 - circle.cyCells;
@@ -1697,8 +1753,14 @@ export function applyCircleDoorRoomExtensions(regions, corridors) {
     const addedFloorCells = currentExtensions.filter(
       (cell) => !existingFloor.has(cellKey(cell.x, cell.y)),
     );
+    const currentExtensionKeys = new Set(
+      currentExtensions.map((cell) => cellKey(cell.x, cell.y)),
+    );
+    const extensionMetadataChanged =
+      currentExtensionKeys.size !== previousExtensionKeys.size ||
+      Array.from(currentExtensionKeys).some((key) => !previousExtensionKeys.has(key));
 
-    if (!hasPreviousExtensions && !removedStaleFloorCells && addedFloorCells.length === 0) return region;
+    if (!extensionMetadataChanged && !removedStaleFloorCells && addedFloorCells.length === 0) return region;
 
     return {
       ...region,

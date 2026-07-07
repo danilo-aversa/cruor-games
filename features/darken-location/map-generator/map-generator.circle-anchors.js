@@ -306,14 +306,45 @@ function isCircleCorridorStartCellUsable(cell, circle, gridSize) {
   return range.min >= circle.r + gridSize * 0.025;
 }
 
-function isCircleDoorBearingRaccordoCellUsable(cell, circle, gridSize) {
+function isCircleDoorSharedEdgeOutsideVisualCircle(
+  raccordoCell,
+  corridorStartCell,
+  circle,
+  gridSize,
+) {
+  if (!raccordoCell || !corridorStartCell || !circle) return false;
+  const segment = getSharedEdgeSegment(raccordoCell, corridorStartCell, gridSize);
+  if (!segment) return false;
+  const samples = [0.12, 0.28, 0.5, 0.72, 0.88];
+  const tolerance = gridSize * 0.025;
+  return samples.every((offset) => {
+    const x = segment.x1 + (segment.x2 - segment.x1) * offset;
+    const y = segment.y1 + (segment.y2 - segment.y1) * offset;
+    return Math.hypot(x - circle.cx, y - circle.cy) >= circle.r - tolerance;
+  });
+}
+
+function isCircleDoorBearingRaccordoCellUsable(
+  cell,
+  corridorStartCell,
+  circle,
+  gridSize,
+) {
   if (!cell || !circle) return false;
   const range = getCircleCellRectDistanceRange(cell, circle, gridSize);
-  // The cell that carries the door should be outside/tangent to the vector
-  // circle. The first raccordo square may overlap the circle wall, but if the
-  // door would be drawn inside that overlapping square we extend the raccordo
-  // by one or more full grid cells and place the door on the outermost cell.
-  return range.min >= circle.r - gridSize * 0.025;
+  // The door-bearing raccordo should be the closest valid square toward the
+  // circle. The square may overlap the visual circle, as long as the actual door
+  // edge to the corridor start is outside the curved wall.
+  return (
+    range.min <= circle.r + gridSize * 2.25 &&
+    isCircleCorridorStartCellUsable(corridorStartCell, circle, gridSize) &&
+    isCircleDoorSharedEdgeOutsideVisualCircle(
+      cell,
+      corridorStartCell,
+      circle,
+      gridSize,
+    )
+  );
 }
 
 function cloneCircleCell(cell) {
@@ -359,8 +390,19 @@ function getCircleRaccordoChainForPortalCell(portalCell, circle, gridSize, norma
   if (!isCirclePortalCellUsable(portalCell, circle, gridSize)) return null;
   const raccordoCells = [cloneCircleCell(portalCell)];
   let doorRaccordoCell = cloneCircleCell(portalCell);
+  let corridorStartCell = {
+    x: doorRaccordoCell.x + normal.x,
+    y: doorRaccordoCell.y + normal.y,
+  };
   for (let step = 0; step < 4; step += 1) {
-    if (isCircleDoorBearingRaccordoCellUsable(doorRaccordoCell, circle, gridSize)) {
+    if (
+      isCircleDoorBearingRaccordoCellUsable(
+        doorRaccordoCell,
+        corridorStartCell,
+        circle,
+        gridSize,
+      )
+    ) {
       break;
     }
     doorRaccordoCell = {
@@ -368,8 +410,19 @@ function getCircleRaccordoChainForPortalCell(portalCell, circle, gridSize, norma
       y: doorRaccordoCell.y + normal.y,
     };
     raccordoCells.push(cloneCircleCell(doorRaccordoCell));
+    corridorStartCell = {
+      x: doorRaccordoCell.x + normal.x,
+      y: doorRaccordoCell.y + normal.y,
+    };
   }
-  if (!isCircleDoorBearingRaccordoCellUsable(doorRaccordoCell, circle, gridSize)) {
+  if (
+    !isCircleDoorBearingRaccordoCellUsable(
+      doorRaccordoCell,
+      corridorStartCell,
+      circle,
+      gridSize,
+    )
+  ) {
     return null;
   }
   const completeRaccordoCells = prependInnerCircleRaccordoSupportCells(
@@ -379,13 +432,7 @@ function getCircleRaccordoChainForPortalCell(portalCell, circle, gridSize, norma
     gridSize,
     normal,
   );
-  const corridorStartCell = {
-    x: doorRaccordoCell.x + normal.x,
-    y: doorRaccordoCell.y + normal.y,
-  };
-  if (!isCircleCorridorStartCellUsable(corridorStartCell, circle, gridSize)) {
-    return null;
-  }
+  if (!corridorStartCell) return null;
   return {
     portalCell: cloneCircleCell(portalCell),
     raccordoCell: cloneCircleCell(doorRaccordoCell),
@@ -514,9 +561,29 @@ function getCirclePortalCellForSnapCell(snapCell, circle, gridSize, normal) {
       y: snapCell.y + normal.y * step,
     };
     if (!isCirclePortalCellUsable(cell, circle, gridSize)) continue;
+    const chain = getCircleRaccordoChainForPortalCell(
+      cell,
+      circle,
+      gridSize,
+      normal,
+    );
+    if (!chain) continue;
+    const doorRange = getCircleCellRectDistanceRange(
+      chain.raccordoCell || cell,
+      circle,
+      gridSize,
+    );
+    const corridorStartDistance = chain.corridorStartCell
+      ? Math.abs(chain.corridorStartCell.x - snapCell.x) +
+        Math.abs(chain.corridorStartCell.y - snapCell.y)
+      : 4;
     candidates.push({
       cell,
-      score: scoreCircleRaccordoCell(cell, snapCell, circle, gridSize),
+      score:
+        (doorRange.min / gridSize) * 5 +
+        corridorStartDistance * 1.4 +
+        (chain.raccordoCells?.length || 1) * 0.45 +
+        scoreCircleRaccordoCell(cell, snapCell, circle, gridSize) * 0.001,
     });
   }
   candidates.sort((a, b) => a.score - b.score);

@@ -3029,6 +3029,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-start;
   width: 100%;
   gap: 2px;
 }
@@ -3038,8 +3039,8 @@
 .cruor-map-workspace .map-debug-recorder__categories,
 .location-composer .map-debug-recorder__categories {
   display: grid;
-  grid-template-columns: repeat(8, 30px);
-  justify-content: center;
+  grid-template-columns: repeat(8, 24px);
+  justify-content: start;
   align-items: center;
   justify-items: center;
   gap: 2px;
@@ -3055,12 +3056,12 @@
   align-items: center;
   justify-content: center;
   place-self: center;
-  width: 30px;
-  min-width: 30px;
-  max-width: 30px;
-  height: 30px;
-  min-height: 30px;
-  max-height: 30px;
+  width: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  max-height: 24px;
   margin: 0;
   padding: 0;
   line-height: 1;
@@ -3081,8 +3082,31 @@
   width: 1em;
   min-width: 1em;
   margin: 0;
-  font-size: 0.86rem;
+  font-size: 0.74rem;
   line-height: 1;
+  text-align: center;
+}
+
+.cruor-map-workspace .map-debug-recorder .debug-icon,
+.location-composer .map-debug-recorder .debug-icon,
+.cruor-map-workspace .map-debug-recorder__icon-toggle .debug-icon,
+.location-composer .map-debug-recorder__icon-toggle .debug-icon,
+.cruor-map-workspace .map-debug-recorder__runner-button .debug-icon,
+.location-composer .map-debug-recorder__runner-button .debug-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 12px;
+  width: 12px;
+  min-width: 12px;
+  max-width: 12px;
+  height: 12px;
+  min-height: 12px;
+  max-height: 12px;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  line-height: 12px;
   text-align: center;
 }
 
@@ -3091,10 +3115,10 @@
 .cruor-map-workspace .map-debug-recorder__speed-select,
 .location-composer .map-debug-recorder__speed-select {
   align-self: center;
-  height: 30px;
-  min-height: 30px;
-  max-height: 30px;
-  min-width: 118px;
+  height: 24px;
+  min-height: 24px;
+  max-height: 24px;
+  min-width: 96px;
   max-width: none;
   border: 1px solid rgba(208, 162, 170, 0.18);
   border-radius: 0;
@@ -3119,7 +3143,7 @@
   .location-composer .map-debug-recorder__icon-toggle-grid,
   .cruor-map-workspace .map-debug-recorder__categories,
   .location-composer .map-debug-recorder__categories {
-    grid-template-columns: repeat(4, 30px);
+    grid-template-columns: repeat(4, 24px);
   }
 }
 
@@ -3127,7 +3151,7 @@
 .cruor-map-workspace .map-debug-recorder__scenario-actions,
 .location-composer .map-debug-recorder__scenario-actions {
   display: grid;
-  grid-template-columns: minmax(118px, 1fr) repeat(6, 30px);
+  grid-template-columns: minmax(96px, 1fr) repeat(6, 24px);
   align-items: center;
   justify-content: stretch;
   width: 100%;
@@ -3148,18 +3172,18 @@
 .cruor-map-workspace .map-debug-recorder__scenario-actions .map-debug-recorder__stop-toggle,
 .location-composer .map-debug-recorder__scenario-actions .map-debug-recorder__stop-toggle {
   align-self: center;
-  width: 30px;
-  min-width: 30px;
-  max-width: 30px;
-  height: 30px !important;
-  min-height: 30px !important;
-  max-height: 30px !important;
+  width: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  height: 24px !important;
+  min-height: 24px !important;
+  max-height: 24px !important;
   padding: 0;
 }
 
 .cruor-map-workspace .map-debug-recorder__categories.map-debug-recorder__icon-toggle-grid,
 .location-composer .map-debug-recorder__categories.map-debug-recorder__icon-toggle-grid {
-  justify-content: center;
+  justify-content: start;
   gap: 8px;
 }
 
@@ -3171,7 +3195,7 @@
 @media (max-width: 520px) {
   .cruor-map-workspace .map-debug-recorder__scenario-actions,
   .location-composer .map-debug-recorder__scenario-actions {
-    grid-template-columns: minmax(108px, 1fr) repeat(3, 30px);
+    grid-template-columns: minmax(92px, 1fr) repeat(3, 24px);
   }
 }
 
@@ -3184,7 +3208,7 @@
 .cruor-map-workspace .map-debug-recorder__runner-controls,
 .location-composer .map-debug-recorder__runner-controls {
   display: grid;
-  grid-template-columns: minmax(118px, 1fr) 30px;
+  grid-template-columns: minmax(96px, 1fr) 24px;
   align-items: center;
   width: 100%;
   gap: 2px;
@@ -3209,28 +3233,28 @@
 .location-composer .map-debug-recorder__runner-speed select {
   width: 100%;
   min-width: 0;
-  height: 30px;
-  min-height: 30px;
-  max-height: 30px;
+  height: 24px;
+  min-height: 24px;
+  max-height: 24px;
 }
 
 .cruor-map-workspace .map-debug-recorder__runner-controls .map-debug-recorder__stop-toggle,
 .location-composer .map-debug-recorder__runner-controls .map-debug-recorder__stop-toggle {
   align-self: center;
-  width: 30px;
-  min-width: 30px;
-  max-width: 30px;
-  height: 30px !important;
-  min-height: 30px !important;
-  max-height: 30px !important;
+  width: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  height: 24px !important;
+  min-height: 24px !important;
+  max-height: 24px !important;
   padding: 0;
 }
 
 .cruor-map-workspace .map-debug-recorder__runner-actions,
 .location-composer .map-debug-recorder__runner-actions {
   display: grid;
-  grid-template-columns: repeat(5, 30px);
-  justify-content: center;
+  grid-template-columns: repeat(5, 24px);
+  justify-content: start;
   align-items: center;
   justify-items: center;
   width: 100%;
@@ -3242,12 +3266,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  min-width: 30px;
-  max-width: 30px;
-  height: 30px;
-  min-height: 30px;
-  max-height: 30px;
+  width: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  max-height: 24px;
   padding: 0;
   line-height: 1;
 }
@@ -3262,7 +3286,7 @@
   width: 1em;
   min-width: 1em;
   margin: 0;
-  font-size: 0.86rem;
+  font-size: 0.74rem;
   line-height: 1;
   text-align: center;
 }
@@ -3270,6 +3294,26 @@
 @media (max-width: 520px) {
   .cruor-map-workspace .map-debug-recorder__runner-actions,
   .location-composer .map-debug-recorder__runner-actions {
-    grid-template-columns: repeat(5, 30px);
+    grid-template-columns: repeat(5, 24px);
   }
+}
+
+.cruor-map-workspace .map-debug-recorder .map-debug-recorder__icon-toggle.location-icon-toggle-button,
+.location-composer .map-debug-recorder .map-debug-recorder__icon-toggle.location-icon-toggle-button,
+.cruor-map-workspace .map-debug-recorder .map-debug-recorder__icon-toggle.location-map-toolbar__button,
+.location-composer .map-debug-recorder .map-debug-recorder__icon-toggle.location-map-toolbar__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  place-items: center;
+  width: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  max-height: 24px;
+  gap: 0;
+  padding: 0;
+  line-height: 1;
+  transform: none;
 }

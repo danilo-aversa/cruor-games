@@ -5199,24 +5199,25 @@ export function getCircleRectIntersectionAngles(circle, rect) {
   );
 }
 
-export function getCircleRectInsideIntervals(circle, rect, gridSize) {
-  const full = Math.PI * 2;
-  const intersections = getCircleRectIntersectionAngles(circle, rect);
-  if (intersections.length === 0) {
-    const centerAngle = normalizeAngle(
-      Math.atan2(
-        rect.y + rect.h / 2 - circle.cy,
-        rect.x + rect.w / 2 - circle.cx,
-      ),
-    );
-    return isCirclePointInsideRectAtAngle(circle, rect, centerAngle)
-      ? [{ start: 0, end: full }]
-      : [];
-  }
+export function isCircleCardinalPointInsideRect(circle, rect, tolerance = 0) {
+  if (!circle || !rect) return false;
+  return [
+    { x: circle.cx - circle.r, y: circle.cy },
+    { x: circle.cx + circle.r, y: circle.cy },
+    { x: circle.cx, y: circle.cy - circle.r },
+    { x: circle.cx, y: circle.cy + circle.r },
+  ].some(
+    (point) =>
+      point.x >= rect.x - tolerance &&
+      point.x <= rect.x + rect.w + tolerance &&
+      point.y >= rect.y - tolerance &&
+      point.y <= rect.y + rect.h + tolerance,
+  );
+}
 
-  const cuts = [0, full, ...intersections].sort((a, b) => a - b);
+function collectCircleRectInsideIntervals(circle, rect, cuts, inset) {
+  const full = Math.PI * 2;
   const intervals = [];
-  const inset = Math.min(gridSize * 0.015, 0.5);
   for (let index = 0; index < cuts.length - 1; index += 1) {
     const start = cuts[index];
     const end = cuts[index + 1];
@@ -5233,6 +5234,42 @@ export function getCircleRectInsideIntervals(circle, rect, gridSize) {
   }
 
   return mergeAngleIntervals(intervals);
+}
+
+export function getCircleRectInsideIntervals(circle, rect, gridSize) {
+  const full = Math.PI * 2;
+  const intersections = getCircleRectIntersectionAngles(circle, rect);
+  if (intersections.length === 0) {
+    const centerAngle = normalizeAngle(
+      Math.atan2(
+        rect.y + rect.h / 2 - circle.cy,
+        rect.x + rect.w / 2 - circle.cx,
+      ),
+    );
+    return isCirclePointInsideRectAtAngle(circle, rect, centerAngle)
+      ? [{ start: 0, end: full }]
+      : [];
+  }
+
+  const cuts = [0, full, ...intersections].sort((a, b) => a - b);
+  const inset = Math.min(gridSize * 0.015, 0.5);
+  const intervals = collectCircleRectInsideIntervals(circle, rect, cuts, inset);
+  if (intervals.length > 0) return intervals;
+
+  // At the exact N/S/E/W points the circular wall can be tangent to the
+  // raccordo square. The normal inset above intentionally rejects tiny sliver
+  // overlaps on generic cells, but for cardinal raccordi that would leave the
+  // full circular wall drawn between the room and its grid connector. Relax the
+  // hit test only for rectangles containing a cardinal circle point, so the
+  // wall gap is cut through the raccordo mouth without reopening unrelated
+  // corner grazes.
+  if (!isCircleCardinalPointInsideRect(circle, rect, gridSize * 0.04)) return [];
+  return collectCircleRectInsideIntervals(
+    circle,
+    rect,
+    cuts,
+    -Math.min(gridSize * 0.035, 0.9),
+  );
 }
 
 export function shrinkCircleDoorGapForWallOverlap(interval, circle, gridSize) {

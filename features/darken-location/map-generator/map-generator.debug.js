@@ -139,12 +139,11 @@ export function isAnchorOnRegionBoundary(region, anchor) {
     if (getCellManhattanDistance(doorRaccordo, corridorStart) !== 1) return false;
     const circle = getCircleGeometryFromRegion(region, 1);
     const portalRange = getCircleCellRectDistanceRange(portal, circle);
-    const doorRaccordoRange = getCircleCellRectDistanceRange(doorRaccordo, circle);
     const corridorRange = getCircleCellRectDistanceRange(corridorStart, circle);
     return (
       portalRange.min <= circle.rCells + 0.035 &&
       portalRange.max >= circle.rCells + 0.025 &&
-      doorRaccordoRange.min >= circle.rCells - 0.025 &&
+      isCircleDoorSharedEdgeOutsideVisualCircle(doorRaccordo, corridorStart, circle) &&
       corridorRange.min >= circle.rCells + 0.025
     );
   }
@@ -346,6 +345,36 @@ function getCellManhattanDistance(a, b) {
   return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
 
+function isCircleDoorSharedEdgeOutsideVisualCircle(
+  raccordoCell,
+  corridorStartCell,
+  circle,
+) {
+  if (!raccordoCell || !corridorStartCell || !circle) return false;
+  const dx = corridorStartCell.x - raccordoCell.x;
+  const dy = corridorStartCell.y - raccordoCell.y;
+  if (Math.abs(dx) + Math.abs(dy) !== 1) return false;
+
+  const samples = [0.12, 0.28, 0.5, 0.72, 0.88];
+  const tolerance = 0.025;
+  return samples.every((offset) => {
+    const point =
+      dx !== 0
+        ? {
+            x: dx > 0 ? raccordoCell.x + 1 : raccordoCell.x,
+            y: raccordoCell.y + offset,
+          }
+        : {
+            x: raccordoCell.x + offset,
+            y: dy > 0 ? raccordoCell.y + 1 : raccordoCell.y,
+          };
+    return (
+      Math.hypot(point.x - circle.cxCells, point.y - circle.cyCells) >=
+      circle.rCells - tolerance
+    );
+  });
+}
+
 function getCircleRaccordoCellsFromAnchor(anchor) {
   if (Array.isArray(anchor?.raccordoCells) && anchor.raccordoCells.length > 0) {
     return anchor.raccordoCells
@@ -469,8 +498,7 @@ function getCircleConnectorVisualArtifacts(generatedMap) {
               });
             }
           });
-          const doorRange = getCircleCellRectDistanceRange(doorRaccordo, circle);
-          if (doorRange.min < circle.rCells - 0.025) {
+          if (!isCircleDoorSharedEdgeOutsideVisualCircle(doorRaccordo, routing, circle)) {
             artifacts.push({
               regionId: region.id,
               type: "door-raccordo-overlaps-circle",
