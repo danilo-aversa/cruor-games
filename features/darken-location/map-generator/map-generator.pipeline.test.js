@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { DEFAULT_CONFIG } from "./map-generator.input.js";
+import { applyManualConnectionsToGraph } from "./map-generator.graph.js";
 import { createMapRequestFromDarkenLocationState } from "../darken-location.map-request.js";
 import { getLocationPreviewResetKey } from "../composer/model/location-composer-preview.js";
 import { MAP_VISUAL_STYLE, SVG_STYLE } from "./map-generator.render.jsx";
@@ -112,6 +113,25 @@ describe("map generator pipeline", () => {
   test("uses an opaque Cruor floor fill in generated SVG styles", () => {
     expect(SVG_STYLE).toContain(".floor-fill{fill:#685D61;stroke:none}");
     expect(MAP_VISUAL_STYLE).toContain(".map-style-cruor .floor-fill{fill:#685D61");
+  });
+
+  test("keeps manual duplicate corridors while generated graph pairs remain deduped", () => {
+    const graph = [
+      { id: "base-a-b", from: "room-a", to: "room-b", kind: "critical" },
+    ];
+    const config = buildConfig({
+      manualCustomConnections: [
+        { id: "manual-edge-room-a-room-b-1", from: "room-a", to: "room-b" },
+      ],
+    });
+
+    const next = applyManualConnectionsToGraph(config, graph);
+
+    expect(next.map((edge) => edge.id)).toEqual([
+      "base-a-b",
+      "manual-edge-room-a-room-b-1",
+    ]);
+    expect(next.filter((edge) => edge.from === "room-a" && edge.to === "room-b")).toHaveLength(2);
   });
 
 });

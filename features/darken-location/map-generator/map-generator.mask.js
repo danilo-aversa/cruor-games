@@ -1123,13 +1123,15 @@ function isCirclePortalCellUsable(cell, circle, gridW, gridH, reservedRoomCells)
   if (!isCircleExtensionCellInBounds(cell, gridW, gridH)) return false;
   if (isCircleExtensionCellReserved(cell, reservedRoomCells)) return false;
   const range = getCircleCellRectDistanceRange(cell, circle);
-  // The portal cell is the grid raccordo: a full square integrated into the
-  // circular room wall. It must touch/cross the mathematical circle boundary,
-  // but it may have its center inside the circle because the whole point is to
-  // complete the grid square at the wall. Fully internal cells are rejected.
+  // The portal cell is the door-bearing grid raccordo square. It may cross the
+  // mathematical circle boundary or sit immediately outside a tangent/cardinal
+  // circle edge. Inner bridge cells are prepended to the raccordo chain when
+  // needed, so stale/manual portals keep their external identity while the
+  // rendered surface remains visually connected to the circle. Fully internal
+  // cells are still rejected by the max-distance guard.
   return (
-    range.min <= circle.rCells + 0.035 &&
-    range.max >= circle.rCells + 0.025
+    range.min <= circle.rCells + 0.26 &&
+    range.max >= circle.rCells - 0.025
   );
 }
 
@@ -1396,6 +1398,19 @@ function getCircleExtensionAnchorRadial(
 function getInwardCirclePortalCandidate(anchor, normal, circle, gridW, gridH, reservedRoomCells) {
   const start = anchor?.portalRoomCell || anchor?.outsideCell || anchor?.cell;
   if (!start || !normal) return null;
+  if (
+    isCirclePortalCellUsable(start, circle, gridW, gridH, reservedRoomCells) &&
+    getCircleRaccordoChainForPortalCell(
+      start,
+      normal,
+      circle,
+      gridW,
+      gridH,
+      reservedRoomCells,
+    )
+  ) {
+    return { x: start.x, y: start.y };
+  }
   const candidates = [];
   for (let step = 0; step <= 4; step += 1) {
     const candidate = {

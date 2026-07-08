@@ -141,10 +141,12 @@ export function doesCircleAnchorCellTouchVisualCircle(
     circle,
     gridSize,
   );
-  // A valid circular portal is any grid square crossed by the circle outline.
-  // The center may legitimately be inside the visual circle on diagonal/near-
-  // cardinal cells, so center-based outside checks make snap points disappear.
-  return minDistance < circle.r - tolerance && maxDistance >= circle.r - tolerance;
+  // A valid circular portal/raccordo is any grid square that is crossed by the
+  // circle outline or sits immediately outside a tangent/cardinal circle edge.
+  // The outward square is still part of the composed mouth; inner support cells
+  // are added separately so the visual surface remains fused to the circle.
+  const outwardTolerance = Math.max(tolerance, gridSize * 0.26);
+  return minDistance <= circle.r + outwardTolerance && maxDistance >= circle.r - tolerance;
 }
 
 export function getCircleAnchorRoutingCell(anchor) {
@@ -291,12 +293,13 @@ function scoreCircleDragAnchor(anchor, radial, projectedCell, circle, gridSize) 
 export function isCircleRaccordoCellUsable(cell, circle, gridSize) {
   if (!cell || !circle) return false;
   const range = getCircleCellRectDistanceRange(cell, circle, gridSize);
-  // The raccordo is a full grid square completed at the circular wall. It must
-  // touch/cross the mathematical circle boundary; it is allowed to overlap the
-  // circle because it becomes part of the adapted room perimeter.
+  // The raccordo is a full grid square completed at the circular wall. Accept
+  // both circle-crossing cells and the immediately external tangent/cardinal
+  // square; prependInnerCircleRaccordoSupportCells() adds the inner bridge cell
+  // when the chosen door-bearing square sits just outside the vector circle.
   return (
-    range.min <= circle.r + gridSize * 0.035 &&
-    range.max >= circle.r + gridSize * 0.025
+    range.min <= circle.r + gridSize * 0.26 &&
+    range.max >= circle.r - gridSize * 0.025
   );
 }
 

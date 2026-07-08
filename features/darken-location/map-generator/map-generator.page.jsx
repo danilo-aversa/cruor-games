@@ -7065,10 +7065,23 @@ export default function CruorMapGeneratorMvp({
     return frozenStyles;
   }
 
+  function getStableFrozenRoomPositions(overrides = {}, extraPositions = {}) {
+    const existingPositions =
+      overrides?.roomPositions && typeof overrides.roomPositions === "object"
+        ? overrides.roomPositions
+        : {};
+    const hasExistingPositions = Object.keys(existingPositions).length > 0;
+    if (!hasExistingPositions) return getFrozenRoomPositions(extraPositions);
+    return {
+      ...existingPositions,
+      ...extraPositions,
+    };
+  }
+
   function freezeCurrentRoomLayout(overrides, extraPositions = {}) {
     return {
       ...overrides,
-      roomPositions: getFrozenRoomPositions(extraPositions),
+      roomPositions: getStableFrozenRoomPositions(overrides, extraPositions),
       roomStyles: getFrozenRoomStyles(overrides.roomStyles),
     };
   }
@@ -8025,41 +8038,16 @@ export default function CruorMapGeneratorMvp({
     return String(id || "").startsWith("manual-edge-");
   }
 
-  function findExistingConnectionForManualConnection(connection, normalizedOverrides) {
-    const activeMap = generatedMapRef.current || generatedMap;
-    const pairKey = getManualConnectionPairKey(connection?.fromRegionId, connection?.toRegionId);
-    if (!pairKey) return null;
-    const customConnections = Array.isArray(normalizedOverrides?.customConnections)
-      ? normalizedOverrides.customConnections
-      : [];
-    const customIds = new Set(customConnections.map((item) => item?.id).filter(Boolean));
-    const graphCandidates = [
-      ...(Array.isArray(activeMap.graph) ? activeMap.graph : []),
-      ...(Array.isArray(activeMap.corridors) ? activeMap.corridors : []),
-      ...customConnections,
-    ].filter((item) => item?.id && getConnectionLikePairKey(item) === pairKey);
-    const baseCandidate = graphCandidates.find(
-      (item) => !customIds.has(item.id) && !isManualConnectionId(item.id)
+  function isManualConnectionLike(connection) {
+    return (
+      isManualConnectionId(connection?.id) ||
+      connection?.kind === "manual" ||
+      String(connection?.reason || "") === "manual-editor-connection"
     );
-    if (baseCandidate) return baseCandidate;
-    return graphCandidates[0] || null;
   }
 
-  function dedupeCustomConnectionsForPair(customConnections, pairKey, keepConnectionId = "") {
-    const kept = [];
-    let keptPairConnection = false;
-    (customConnections || []).forEach((connection) => {
-      if (!connection?.id) return;
-      if (getConnectionLikePairKey(connection) !== pairKey) {
-        kept.push(connection);
-        return;
-      }
-      if (connection.id === keepConnectionId && !keptPairConnection) {
-        kept.push(connection);
-        keptPairConnection = true;
-      }
-    });
-    return kept;
+  function createManualConnectionEdgeId(fromRegionId, toRegionId, sequence) {
+    return `manual-edge-${fromRegionId}-${toRegionId}-${sequence.toString(36)}`;
   }
 
   function dedupeRoutingGraphForManualDuplicatePairs(graph, customConnections = []) {
@@ -8067,23 +8055,23 @@ export default function CruorMapGeneratorMvp({
     const customIds = new Set(
       (customConnections || []).map((connection) => connection?.id).filter(Boolean)
     );
-    const seenBasePairs = new Set();
+    const seenGeneratedPairs = new Set();
+    const seenIds = new Set();
     const kept = [];
     graph.forEach((edge) => {
+      if (!edge?.id || seenIds.has(edge.id)) return;
       const pairKey = getConnectionLikePairKey(edge);
-      if (!pairKey) {
+      const manual = customIds.has(edge.id) || isManualConnectionLike(edge);
+      if (manual) {
+        seenIds.add(edge.id);
         kept.push(edge);
         return;
       }
-      const manual =
-        customIds.has(edge.id) || isManualConnectionId(edge.id) || edge.kind === "manual";
-      if (!manual) {
-        seenBasePairs.add(pairKey);
-        kept.push(edge);
-        return;
+      if (pairKey) {
+        if (seenGeneratedPairs.has(pairKey)) return;
+        seenGeneratedPairs.add(pairKey);
       }
-      if (seenBasePairs.has(pairKey)) return;
-      if (kept.some((item) => getConnectionLikePairKey(item) === pairKey)) return;
+      seenIds.add(edge.id);
       kept.push(edge);
     });
     return kept;
@@ -8100,35 +8088,27 @@ export default function CruorMapGeneratorMvp({
     const toAnchor = serializeManualAnchor(connection.toAnchor);
     if (!fromAnchor || !toAnchor) return null;
     const normalized = normalizeManualOverrides(currentOverrides);
-    const pairKey = getManualConnectionPairKey(connection.fromRegionId, connection.toRegionId);
     const customConnections = Array.isArray(normalized.customConnections)
       ? normalized.customConnections
       : [];
-    const existingConnection = findExistingConnectionForManualConnection(connection, normalized);
-    const useExistingConnection = Boolean(existingConnection?.id);
     const nextSequence = normalized.manualConnectionSequence + 1;
-    const edgeId = useExistingConnection
-      ? existingConnection.id
-      : `manual-edge-${connection.fromRegionId}-${connection.toRegionId}-${nextSequence.toString(36)}`;
-    const existingFromMatchesDrag = existingConnection?.from === connection.fromRegionId;
-    const fromEndpoint = useExistingConnection ? (existingFromMatchesDrag ? "from" : "to") : "from";
-    const toEndpoint = useExistingConnection ? (existingFromMatchesDrag ? "to" : "from") : "to";
-    const nextCustomConnections = useExistingConnection
-      ? dedupeCustomConnectionsForPair(
-          customConnections,
-          pairKey,
-          isManualConnectionId(edgeId) ? edgeId : ""
-        )
-      : [
-          ...customConnections,
-          {
-            id: edgeId,
-            from: connection.fromRegionId,
-            to: connection.toRegionId,
-            kind: "manual",
-            locked: true,
-          },
-        ];
+    const edgeId = createManualConnectionEdgeId(
+      connection.fromRegionId,
+      connection.toRegionId,
+      nextSequence,
+    );
+    const fromEndpoint = "from";
+    const toEndpoint = "to";
+    const nextCustomConnections = [
+      ...customConnections,
+      {
+        id: edgeId,
+        from: connection.fromRegionId,
+        to: connection.toRegionId,
+        kind: "manual",
+        locked: true,
+      },
+    ];
     const deletedConnections = Array.isArray(normalized.deletedConnections)
       ? normalized.deletedConnections.filter((id) => id !== edgeId)
       : [];
@@ -8136,13 +8116,11 @@ export default function CruorMapGeneratorMvp({
       edgeId,
       fromEndpoint,
       toEndpoint,
-      reusedExistingConnection: useExistingConnection,
+      reusedExistingConnection: false,
       overrides: freezeCurrentRoomLayout({
         ...currentOverrides,
         deletedConnections,
-        manualConnectionSequence: useExistingConnection
-          ? normalized.manualConnectionSequence
-          : nextSequence,
+        manualConnectionSequence: nextSequence,
         customConnections: nextCustomConnections,
         doorAnchors: {
           ...normalized.doorAnchors,
@@ -8647,6 +8625,18 @@ export default function CruorMapGeneratorMvp({
     );
   }
 
+  function getQaCircleAnchorPhysicalSortCell(anchor) {
+    return (
+      anchor?.corridorStartCell ||
+      anchor?.routingOutsideCell ||
+      anchor?.outsideCell ||
+      anchor?.raccordoCell ||
+      anchor?.cell ||
+      anchor?.portalRoomCell ||
+      null
+    );
+  }
+
   function getQaRealisticNearbyCircleAnchors(
     region,
     corridor,
@@ -8656,11 +8646,24 @@ export default function CruorMapGeneratorMvp({
     preferredSideOverride = null,
   ) {
     const currentAnchor = getDebugCorridorAnchor(corridor, endpoint) || getQaCorridorDoor(corridor, endpoint);
-    const currentCell = getQaCircleAnchorSortCell(currentAnchor);
     const preferredSide = preferredSideOverride || currentAnchor?.side || null;
     const candidates = getQaCircleAnchorSweepAnchors(region, map, preferredSide);
-    if (!candidates.length || !currentCell) return [];
+    if (!candidates.length) return [];
     const maxDistance = settings.speed === "slow" ? 3 : 2;
+    const candidateEntries = candidates
+      .map((anchor) => ({ anchor, cell: getQaCircleAnchorSortCell(anchor) }))
+      .filter((entry) => entry.cell);
+    const identityCell = getQaCircleAnchorSortCell(currentAnchor);
+    const physicalCell = getQaCircleAnchorPhysicalSortCell(currentAnchor);
+    const hasNearbyIdentityCandidate =
+      identityCell &&
+      candidateEntries.some(
+        (entry) =>
+          getQaCellManhattanDistance(entry.cell, identityCell) > 0 &&
+          getQaCellManhattanDistance(entry.cell, identityCell) <= maxDistance,
+      );
+    const currentCell = hasNearbyIdentityCandidate ? identityCell : physicalCell || identityCell;
+    if (!currentCell) return [];
     const otherRegionId = endpoint === "from" ? corridor?.to : corridor?.from;
     const otherRegion = (map?.regions || []).find((item) => item?.id === otherRegionId) || null;
     const otherCenter = otherRegion ? getQaRectCenterCellFromRect(getQaRegionRect(otherRegion)) : null;
@@ -8675,12 +8678,21 @@ export default function CruorMapGeneratorMvp({
       const horizontalAwayPenalty = preferredSide === "north" || preferredSide === "south"
         ? Math.max(0, Math.abs(entry.cell.x - currentCell.x) - 1) * 3
         : 0;
-      return sameSidePenalty + currentDistance + otherDistance * 0.08 + verticalUpPenalty + horizontalAwayPenalty;
+      const staleIdentityPenalty = !hasNearbyIdentityCandidate && identityCell
+        ? getQaCellSquaredDistance(entry.cell, identityCell) * 0.03
+        : 0;
+      return (
+        sameSidePenalty +
+        currentDistance +
+        otherDistance * 0.08 +
+        verticalUpPenalty +
+        horizontalAwayPenalty +
+        staleIdentityPenalty
+      );
     };
-    const ranked = candidates
-      .map((anchor) => ({ anchor, cell: getQaCircleAnchorSortCell(anchor) }))
-      .filter((entry) => entry.cell)
-      .filter((entry) => getQaCellManhattanDistance(entry.cell, currentCell) > 0)
+    const movableEntries = candidateEntries
+      .filter((entry) => getQaCellManhattanDistance(entry.cell, currentCell) > 0);
+    const ranked = movableEntries
       .filter((entry) => getQaCellManhattanDistance(entry.cell, currentCell) <= maxDistance)
       .filter((entry) => !preferredSide || entry.anchor?.side === preferredSide)
       .sort((a, b) => {
@@ -8692,15 +8704,15 @@ export default function CruorMapGeneratorMvp({
       });
     const fallbackRanked = ranked.length >= 2
       ? ranked
-      : candidates
-          .map((anchor) => ({ anchor, cell: getQaCircleAnchorSortCell(anchor) }))
-          .filter((entry) => entry.cell)
-          .filter((entry) => getQaCellManhattanDistance(entry.cell, currentCell) > 0)
+      : movableEntries
           .filter((entry) => getQaCellManhattanDistance(entry.cell, currentCell) <= maxDistance)
           .sort((a, b) => scoreNearbyAnchor(a, true) - scoreNearbyAnchor(b, true));
+    const recoveryRanked = fallbackRanked.length > 0
+      ? fallbackRanked
+      : movableEntries.sort((a, b) => scoreNearbyAnchor(a, true) - scoreNearbyAnchor(b, true));
     const selected = [];
     const seen = new Set();
-    for (const entry of fallbackRanked) {
+    for (const entry of recoveryRanked) {
       const anchor = entry.anchor;
       const cell = entry.cell;
       const key = `${anchor?.side || "side"}:${cell?.x}:${cell?.y}`;
@@ -8919,6 +8931,10 @@ export default function CruorMapGeneratorMvp({
       seen.set(pair, current);
     });
     return [...seen.entries()]
+      .map(([pair, corridors]) => {
+        const generatedCorridors = corridors.filter((corridor) => !isManualConnectionLike(corridor));
+        return [pair, generatedCorridors];
+      })
       .filter(([, corridors]) => corridors.length > 1)
       .map(([pair, corridors]) => [pair, corridors.map((corridor) => corridor.id)]);
   }
@@ -9686,12 +9702,12 @@ export default function CruorMapGeneratorMvp({
     const beforeCount = map.corridors.length;
     setQaRunnerStep(runId, {
       scenarioLabel,
-      stepLabel: `Create/reuse corridor ${fromRegion.id} → ${toRegion.id}`,
+      stepLabel: `Create manual corridor ${fromRegion.id} → ${toRegion.id}`,
       targetRegionId: fromRegion.id,
       targetCell: toAnchor.outsideCell || toAnchor.cell,
       category: "corridor-create",
     });
-    createConnectionFromWallDrag({
+    const connectionPayload = {
       fromRegionId: fromRegion.id,
       toRegionId: toRegion.id,
       fromAnchor,
@@ -9704,7 +9720,32 @@ export default function CruorMapGeneratorMvp({
         targetDistance: 0,
         targetScore: 0,
       },
+    };
+    const preview = createConnectionDraftPreviewMap(connectionPayload);
+    const previewCorridor = preview?.map?.corridors?.find((item) => item.id === preview.corridorId);
+    const previewCells = previewCorridor ? getCorridorTopologyCells(previewCorridor) : [];
+    assertQa(preview?.map && previewCorridor && previewCells.length >= 2, "Corridor creation routed preview is unavailable.", {
+      phase: "corridor-create-preview",
+      fromRegionId: fromRegion.id,
+      toRegionId: toRegion.id,
+      previewCorridorId: preview?.corridorId || null,
+      previewCells: previewCells.map(summarizeDebugCell),
     });
+    assertQaNoVisualCorridorTopologyIssues(preview.map, {
+      scenarioLabel,
+      phase: "corridor-create-preview",
+      fromRegionId: fromRegion.id,
+      toRegionId: toRegion.id,
+    });
+    recordQaDiagnostic("corridor create routed preview built", {
+      scenarioLabel,
+      phase: "corridor-create-preview",
+      fromRegionId: fromRegion.id,
+      toRegionId: toRegion.id,
+      previewCorridorId: preview.corridorId,
+      previewCellCount: previewCells.length,
+    }, "corridor-create");
+    createConnectionFromWallDrag(connectionPayload);
     await waitForQaRender(signal, settings);
     const nextMap = getQaGeneratedMap();
     assertQaNoDuplicateCorridors(nextMap);

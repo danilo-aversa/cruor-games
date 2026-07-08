@@ -17,9 +17,7 @@ import {
   getCircleCompositeSquareCells,
   getCirclePortalSquareWallSegments,
 } from "../features/darken-location/map-generator/map-generator.render.jsx";
-import {
-  createDoorFromAnchor,
-} from "../features/darken-location/map-generator/map-generator.corridors.js";
+import { createDoorFromAnchor } from "../features/darken-location/map-generator/map-generator.corridors.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -159,6 +157,20 @@ function record(label, data, failures = []) {
   return entry;
 }
 
+function getRaccordoContactCells(expanded, doorRaccordoCell) {
+  const cells = [];
+  const addCell = (cell) => {
+    if (!cell) return;
+    if (cells.some((existing) => cellKey(existing) === cellKey(cell))) return;
+    cells.push(cell);
+  };
+  if (Array.isArray(expanded?.raccordoCells)) expanded.raccordoCells.forEach(addCell);
+  addCell(doorRaccordoCell);
+  addCell(expanded?.portalRoomCell);
+  addCell(expanded?.cell);
+  return cells;
+}
+
 function validateExpandedAnchor(anchor, label) {
   const expanded = expandAnchor(anchor);
   const routing = getCircleAnchorRoutingCell(expanded);
@@ -197,9 +209,12 @@ function validateExpandedAnchor(anchor, label) {
   if (!expanded?.expandedCircleDoor) failures.push("anchor-not-expanded");
   if (!expanded?.portalRoomCell) failures.push("missing-portal-cell");
   if (!routing) failures.push("missing-routing-cell");
-  if (expanded?.portalRoomCell && !cellCrossesCircle(expanded.portalRoomCell)) {
+
+  const raccordoContactCells = getRaccordoContactCells(expanded, doorRaccordoCell);
+  if (expanded?.portalRoomCell && !raccordoContactCells.some(cellCrossesCircle)) {
     failures.push("raccordo-cell-does-not-touch-circle-outline");
   }
+
   if (doorRaccordoCell && routing && manhattan(doorRaccordoCell, routing) !== 1) {
     failures.push("routing-cell-not-adjacent-to-door-raccordo");
   }

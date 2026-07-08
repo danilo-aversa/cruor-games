@@ -138,11 +138,9 @@ export function isAnchorOnRegionBoundary(region, anchor) {
     if (!areRaccordoCellsContiguous(raccordoCells)) return false;
     if (getCellManhattanDistance(doorRaccordo, corridorStart) !== 1) return false;
     const circle = getCircleGeometryFromRegion(region, 1);
-    const portalRange = getCircleCellRectDistanceRange(portal, circle);
     const corridorRange = getCircleCellRectDistanceRange(corridorStart, circle);
     return (
-      portalRange.min <= circle.rCells + 0.035 &&
-      portalRange.max >= circle.rCells + 0.025 &&
+      Boolean(getCircleRaccordoChainTouchCell(raccordoCells, circle)) &&
       isCircleDoorSharedEdgeOutsideVisualCircle(doorRaccordo, corridorStart, circle) &&
       corridorRange.min >= circle.rCells + 0.025
     );
@@ -340,6 +338,15 @@ function getCircleCellRectDistanceRange(cell, circle) {
   };
 }
 
+function doesCircleRaccordoCellTouchVisualCircle(cell, circle, tolerance = 0.035) {
+  const range = getCircleCellRectDistanceRange(cell, circle);
+  return range.min <= circle.rCells + tolerance && range.max >= circle.rCells - tolerance;
+}
+
+function getCircleRaccordoChainTouchCell(cells = [], circle) {
+  return cells.find((cell) => doesCircleRaccordoCellTouchVisualCircle(cell, circle)) || null;
+}
+
 function getCellManhattanDistance(a, b) {
   if (!a || !b) return Number.POSITIVE_INFINITY;
   return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
@@ -467,15 +474,16 @@ function getCircleConnectorVisualArtifacts(generatedMap) {
         if (raccordoCells.length === 0 || !portal || !doorRaccordo) {
           artifacts.push({ regionId: region.id, type: "missing-raccordo-cell", cell: null });
         } else {
-          const portalRange = getCircleCellRectDistanceRange(portal, circle);
-          if (portalRange.max < circle.rCells + 0.025) {
+          const chainTouchCell = getCircleRaccordoChainTouchCell(raccordoCells, circle);
+          const doorRaccordoRange = getCircleCellRectDistanceRange(doorRaccordo, circle);
+          if (doorRaccordoRange.max < circle.rCells - 0.025) {
             artifacts.push({
               regionId: region.id,
               type: "raccordo-fully-inside-circle",
-              cell: { x: portal.x, y: portal.y },
+              cell: { x: doorRaccordo.x, y: doorRaccordo.y },
             });
           }
-          if (portalRange.min > circle.rCells + 0.035) {
+          if (!chainTouchCell) {
             artifacts.push({
               regionId: region.id,
               type: "raccordo-not-adjacent-to-circle",
@@ -489,15 +497,17 @@ function getCircleConnectorVisualArtifacts(generatedMap) {
               cell: { x: portal.x, y: portal.y },
             });
           }
-          raccordoCells.forEach((raccordoCell) => {
-            if (!extensionKeys.has(cellKey(raccordoCell.x, raccordoCell.y))) {
-              artifacts.push({
-                regionId: region.id,
-                type: "raccordo-not-in-room-extension-cells",
-                cell: { x: raccordoCell.x, y: raccordoCell.y },
-              });
-            }
-          });
+          if (extensionKeys.size > 0) {
+            raccordoCells.forEach((raccordoCell) => {
+              if (!extensionKeys.has(cellKey(raccordoCell.x, raccordoCell.y))) {
+                artifacts.push({
+                  regionId: region.id,
+                  type: "raccordo-not-in-room-extension-cells",
+                  cell: { x: raccordoCell.x, y: raccordoCell.y },
+                });
+              }
+            });
+          }
           if (!isCircleDoorSharedEdgeOutsideVisualCircle(doorRaccordo, routing, circle)) {
             artifacts.push({
               regionId: region.id,

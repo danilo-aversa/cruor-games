@@ -10123,3 +10123,95 @@ _Nessun file aggiunto._
 
 - `~features/darken-location/map-generator/map-generator.page.jsx`
 
+
+---
+
+## 2026-07-08 17:50:23
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-circle-anchor-smoke-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-circle-anchor-smoke-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+
+
+---
+
+## 2026-07-08 18:00:29
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-circle-connector-model-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-circle-connector-model-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/map-generator/map-generator.circle-anchors.js`
+- `~features/darken-location/map-generator/map-generator.mask.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+
+
+---
+
+## 2026-07-08 18:25:14
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-circle-connector-final-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-circle-connector-final-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~features/darken-location/map-generator/map-generator.circle-anchors.js`
+- `~features/darken-location/map-generator/map-generator.mask.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~scripts/run-circle-connector-diagnostics.test.js`
+
+
+---
+
+## 2026-07-08 18:49:01
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-corridor-anchor-contract-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-corridor-anchor-contract-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~features/darken-location/map-generator/map-generator.circle-anchors.test.js`
+- `~features/darken-location/map-generator/map-generator.debug.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.pipeline.test.js`
+

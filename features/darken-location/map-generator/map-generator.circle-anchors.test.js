@@ -49,6 +49,23 @@ function cellRectCrossesCircle(cell, circle) {
   return minDistance <= circle.rCells + 0.001 && maxDistance >= circle.rCells - 0.001;
 }
 
+function cellKey(cell) {
+  return cell ? `${cell.x},${cell.y}` : "null";
+}
+
+function raccordoChainTouchesCircle(cells, circle) {
+  return (cells || []).some((cell) => cellRectCrossesCircle(cell, circle));
+}
+
+function expectExpandedRaccordoChainOutside(expanded, circle) {
+  expect(expanded?.expandedCircleDoor).toBe(true);
+  expect(expanded.portalRoomCell).toBeTruthy();
+  expect(expanded.raccordoCell).toBeTruthy();
+  expect(expanded.corridorStartCell || expanded.routingOutsideCell || expanded.outsideCell).toBeTruthy();
+  expect(expanded.raccordoCells?.length || 0).toBeGreaterThan(0);
+  expect(raccordoChainTouchesCircle(expanded.raccordoCells, circle)).toBe(true);
+}
+
 function expectExpandedCircleDoorOutside(expanded, circle) {
   expect(expanded?.expandedCircleDoor).toBe(true);
   expect(expanded.portalRoomCell).toBeTruthy();
@@ -373,7 +390,7 @@ describe("circle connector snap coverage", () => {
 
 
 describe("circle composite connector regression", () => {
-  test("stale circular portal cells are repaired to the square crossed by the circle", () => {
+  test("stale circular portal cells preserve the external portal and build a support chain", () => {
     const staleRegion = {
       id: "stale-west-circle-room",
       shape: "circle",
@@ -403,20 +420,37 @@ describe("circle composite connector regression", () => {
       ],
       dungeonMask: {
         mapAccesses: [],
-        corridorFloorCells: [{ x: 41, y: 23 }],
+        corridorFloorCells: [{ x: 40, y: 23 }],
       },
       mapAccesses: [],
     };
 
     const circle = getCircleGeometryFromRegion(staleRegion, gridSize);
+    const expanded = createCircleDoorRoomExtensionAnchor(
+      staleRegion,
+      staleAnchor,
+      80,
+      60,
+      null,
+      gridSize,
+    );
     const compositeCells = getCircleCompositeSquareCells(generatedMap, staleRegion);
     const walls = getCirclePortalSquareWallSegments(staleRegion, generatedMap);
 
-    expect(compositeCells).toEqual([
-      expect.objectContaining({ x: 42, y: 23, source: "expanded-door" }),
-    ]);
+    expectExpandedRaccordoChainOutside(expanded, circle);
+    expect(expanded.portalRoomCell).toEqual({ x: 41, y: 23 });
+    expect(expanded.raccordoCell).toEqual({ x: 41, y: 23 });
+    expect(expanded.raccordoCells.map(cellKey)).toEqual(["42,23", "41,23"]);
+
+    expect(compositeCells).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ x: 41, y: 23, source: "expanded-door" }),
+        expect.objectContaining({ x: 42, y: 23, source: "expanded-door" }),
+      ]),
+    );
+    expect(raccordoChainTouchesCircle(compositeCells, circle)).toBe(true);
+    expect(doesCircleAnchorCellTouchVisualCircle({ x: 41, y: 23 }, circle, gridSize)).toBe(true);
     expect(doesCircleAnchorCellTouchVisualCircle({ x: 42, y: 23 }, circle, gridSize)).toBe(true);
-    expect(doesCircleAnchorCellTouchVisualCircle({ x: 41, y: 23 }, circle, gridSize)).toBe(false);
     expect(walls.length).toBeGreaterThan(0);
     expect(walls).toEqual(
       expect.not.arrayContaining([
