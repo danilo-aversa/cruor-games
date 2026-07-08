@@ -1,7 +1,7 @@
 {
   "name": "cruor-games",
   "private": true,
-  "version": "13.10.0a",
+  "version": "13.11.0a",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -33,7 +33,7 @@
     "git:restore-main": "node .vscode/dev/git-restore-from-github.mjs main",
     "git:restore-current": "node .vscode/dev/git-restore-from-github.mjs current",
     "monster:qa": "node --import ./scripts/register-svg-loader.mjs scripts/run-monster-qa.mjs",
-    "qa:all": "npm run content:validate && npm run content:export && npm run monster:qa && npm run qa:composer-assignment && npm run qa:room-design && npm run qa:room-design-gallery && npm run qa:map-archetypes && npm run qa:maps && npm run test:run",
+    "qa:all": "npm run content:validate && npm run content:export && npm run monster:qa && npm run qa:composer-assignment && npm run qa:room-design && npm run qa:room-design-gallery && npm run qa:map-archetypes && npm run qa:maps && npm run qa:circle-connectors && npm run test:run",
     "qa:maps": "node scripts/run-map-qa.mjs --count=250 --mode=realistic",
     "qa:maps:debug": "node scripts/run-map-qa.mjs --count=250 --mode=debug",
     "qa:maps:adapters": "node scripts/run-map-qa.mjs --adapter-qa --count=250 --mode=debug --determinism=off",

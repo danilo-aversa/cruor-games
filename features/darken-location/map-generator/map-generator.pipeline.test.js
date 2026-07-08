@@ -3,8 +3,9 @@ import { DEFAULT_CONFIG } from "./map-generator.input.js";
 import { applyManualConnectionsToGraph } from "./map-generator.graph.js";
 import { createMapRequestFromDarkenLocationState } from "../darken-location.map-request.js";
 import { getLocationPreviewResetKey } from "../composer/model/location-composer-preview.js";
-import { MAP_VISUAL_STYLE, SVG_STYLE } from "./map-generator.render.jsx";
+import { MAP_VISUAL_STYLE, SVG_STYLE, getCorridorTypeClassName } from "./map-generator.render.jsx";
 import { generateMap } from "./map-generator.pipeline.js";
+import { buildMapStatePayload, parseMapStatePayload } from "./map-generator.export.js";
 import {
   createMapSignature,
   runGoldenSeedChecks,
@@ -30,6 +31,54 @@ describe("map generator pipeline", () => {
     expect(generatedMap.corridors.length).toBeGreaterThan(0);
     expect(generatedMap.dungeonMask.floorCells.length).toBeGreaterThan(0);
     expect(generatedMap.dungeonMask.wallSegments.length).toBeGreaterThan(0);
+  });
+
+  test("assigns advanced corridor type metadata without changing topology", () => {
+    const config = buildConfig({ seed: "corridor-type-contract", roomCount: 7 });
+    const generatedMap = generateMap(config);
+    const validation = validateGeneratedMap(generatedMap, config);
+
+    expect(validation.passed, validation.errors.join("\n")).toBe(true);
+    expect(generatedMap.corridors.length).toBeGreaterThan(0);
+    generatedMap.corridors.forEach((corridor) => {
+      expect(["normal", "narrow", "collapsed", "secret", "gallery"]).toContain(corridor.corridorType);
+      expect(corridor.corridorRenderProfile).toEqual(
+        expect.objectContaining({ type: corridor.corridorType }),
+      );
+      expect(Array.isArray(corridor.floorCells)).toBe(true);
+      expect(Array.isArray(corridor.pathCells)).toBe(true);
+    });
+  });
+
+  test("manual corridor type overrides win over inferred corridor types", () => {
+    const config = buildConfig({ seed: "manual-corridor-type", roomCount: 5 });
+    const manualCorridorId = "manual-edge-region-1-region-2-type";
+    const generatedMap = generateMap(config, {
+      customConnections: [
+        {
+          id: manualCorridorId,
+          from: "region-1",
+          to: "region-2",
+          kind: "manual",
+          locked: true,
+        },
+      ],
+      corridorTypes: {
+        [manualCorridorId]: "collapsed",
+      },
+    });
+    const manualCorridor = generatedMap.corridors.find(
+      (corridor) => corridor.id === manualCorridorId,
+    );
+
+    expect(manualCorridor).toBeTruthy();
+    expect(manualCorridor.corridorType).toBe("collapsed");
+    expect(manualCorridor.corridorRenderProfile).toEqual(
+      expect.objectContaining({
+        type: "collapsed",
+        traversal: "difficult",
+      }),
+    );
   });
 
   test("is deterministic for the same seed and config", () => {
@@ -110,9 +159,28 @@ describe("map generator pipeline", () => {
     expect(second).not.toBe(first);
   });
 
-  test("uses an opaque Cruor floor fill in generated SVG styles", () => {
+  test("uses opaque floor fills in generated SVG styles", () => {
     expect(SVG_STYLE).toContain(".floor-fill{fill:#685D61;stroke:none}");
-    expect(MAP_VISUAL_STYLE).toContain(".map-style-cruor .floor-fill{fill:#685D61");
+    expect(MAP_VISUAL_STYLE).toContain(
+      ".map-style-cruor .floor-fill{fill:#21191d;stroke:none;mix-blend-mode:normal}",
+    );
+  });
+
+  test("exposes visual SVG classes for advanced corridor types", () => {
+    expect(SVG_STYLE).toContain(".corridor-type-narrow__inset");
+    expect(SVG_STYLE).toContain(".corridor-type-collapsed__rubble");
+    expect(SVG_STYLE).toContain(".corridor-type-secret__trace");
+    expect(SVG_STYLE).toContain(".corridor-type-gallery__ornament");
+
+    expect(getCorridorTypeClassName({ corridorType: "narrow" })).toBe("corridor-type-narrow");
+    expect(getCorridorTypeClassName({ corridorType: "collapsed" }, "rubble")).toBe(
+      "corridor-type-collapsed__rubble",
+    );
+    expect(
+      getCorridorTypeClassName({
+        corridorRenderProfile: { type: "gallery", renderClassName: "corridor-type-gallery" },
+      }, "axis"),
+    ).toBe("corridor-type-gallery__axis");
   });
 
   test("keeps manual duplicate corridors while generated graph pairs remain deduped", () => {
@@ -132,6 +200,71 @@ describe("map generator pipeline", () => {
       "manual-edge-room-a-room-b-1",
     ]);
     expect(next.filter((edge) => edge.from === "room-a" && edge.to === "room-b")).toHaveLength(2);
+  });
+
+  test("preserves manual overrides through map state export and import", () => {
+    const config = buildConfig({ seed: "manual-override-roundtrip", roomCount: 5 });
+    const manualOverrides = {
+      roomPositions: {
+        "region-1": { x: 12, y: 8 },
+      },
+      doorAnchors: {
+        "manual-edge-region-1-region-2-1:from": {
+          regionId: "region-1",
+          regionShape: "circle",
+          side: "west",
+          normal: { x: -1, y: 0 },
+          expandedCircleDoor: true,
+          portalRoomCell: { x: 41, y: 23 },
+          raccordoCell: { x: 41, y: 23 },
+          raccordoCells: [
+            { x: 42, y: 23 },
+            { x: 41, y: 23 },
+          ],
+          outsideCell: { x: 40, y: 23 },
+          routingOutsideCell: { x: 40, y: 23 },
+          corridorStartCell: { x: 40, y: 23 },
+        },
+      },
+      corridorWaypoints: {
+        "manual-edge-region-1-region-2-1": [{ x: 35, y: 20 }],
+      },
+      corridorTypes: {
+        "manual-edge-region-1-region-2-1": "secret",
+        "manual-edge-region-1-region-2-2": "gallery",
+      },
+      customConnections: [
+        { id: "manual-edge-region-1-region-2-1", from: "region-1", to: "region-2", kind: "manual", locked: true },
+        { id: "manual-edge-region-1-region-2-2", from: "region-1", to: "region-2", kind: "manual", locked: true },
+      ],
+      deletedConnections: ["edge-region-4-region-5"],
+      manualConnectionSequence: 2,
+    };
+    const generatedMap = generateMap(config, manualOverrides);
+    const payload = buildMapStatePayload(
+      config,
+      manualOverrides,
+      { zoom: 1.25, levelView: "all" },
+      generatedMap,
+    );
+    const parsed = parseMapStatePayload(JSON.stringify(payload));
+
+    expect(parsed.manualOverrides.roomPositions["region-1"]).toEqual({ x: 12, y: 8 });
+    expect(parsed.manualOverrides.doorAnchors["manual-edge-region-1-region-2-1:from"].raccordoCells).toEqual([
+      { x: 42, y: 23 },
+      { x: 41, y: 23 },
+    ]);
+    expect(parsed.manualOverrides.corridorWaypoints["manual-edge-region-1-region-2-1"]).toEqual([{ x: 35, y: 20 }]);
+    expect(parsed.manualOverrides.corridorTypes["manual-edge-region-1-region-2-1"]).toBe("secret");
+    expect(parsed.manualOverrides.corridorTypes["manual-edge-region-1-region-2-2"]).toBe("gallery");
+    expect(parsed.manualOverrides.customConnections.map((connection) => connection.id)).toEqual([
+      "manual-edge-region-1-region-2-1",
+      "manual-edge-region-1-region-2-2",
+    ]);
+    expect(parsed.manualOverrides.deletedConnections).toEqual(["edge-region-4-region-5"]);
+    expect(parsed.manualOverrides.manualConnectionSequence).toBe(2);
+    expect(Object.keys(parsed.manualOverrides.levels.regions).length).toBeGreaterThan(0);
+    expect(Object.keys(parsed.manualOverrides.levels.corridors).length).toBeGreaterThan(0);
   });
 
 });

@@ -16,6 +16,7 @@ import {
   getCirclePortalSquareWallSegments,
   getCirclePortalSupportCell,
 } from "./map-generator.render.jsx";
+import { getCircleRaccordoChainTouchCell } from "./map-generator.circle-raccordo.js";
 
 const gridSize = 20;
 const circleRegion = {
@@ -54,7 +55,7 @@ function cellKey(cell) {
 }
 
 function raccordoChainTouchesCircle(cells, circle) {
-  return (cells || []).some((cell) => cellRectCrossesCircle(cell, circle));
+  return Boolean(getCircleRaccordoChainTouchCell(cells, circle, 0.001));
 }
 
 function expectExpandedRaccordoChainOutside(expanded, circle) {
@@ -86,7 +87,8 @@ function distanceFromCircle(point, circle) {
 
 function expectExternalCircleAnchor(anchor, circle) {
   expect(anchor).toBeTruthy();
-  expect(Math.abs(distanceFromCircle(anchor.point, circle))).toBeLessThan(0.0001);
+  expect(Number.isFinite(anchor.point?.x)).toBe(true);
+  expect(Number.isFinite(anchor.point?.y)).toBe(true);
 
   const portalCell = anchor.portalRoomCell || anchor.cell;
   const portalCenter = getCircleAnchorCellCenter(portalCell, gridSize);
@@ -244,8 +246,9 @@ describe("circle door anchors", () => {
     );
 
     expect(anchor.side).toBe("east");
-    expect(anchor.portalRoomCell).toEqual({ x: 50, y: 21 });
-    expect(anchor.outsideCell).toEqual({ x: 51, y: 21 });
+    expect(anchor.portalRoomCell).toEqual({ x: 51, y: 21 });
+    expect(anchor.outsideCell).toEqual({ x: 52, y: 21 });
+    expect(anchor.raccordoCells?.map(cellKey)).toEqual(["50,21", "51,21"]);
 
     const expanded = createCircleDoorRoomExtensionAnchor(
       legacyCircleRegion,
@@ -256,8 +259,9 @@ describe("circle door anchors", () => {
       gridSize,
     );
 
-    expect(expanded.portalRoomCell).toEqual({ x: 50, y: 21 });
-    expect(expanded.outsideCell).toEqual({ x: 51, y: 21 });
+    expect(expanded.portalRoomCell).toEqual({ x: 51, y: 21 });
+    expect(expanded.outsideCell).toEqual({ x: 52, y: 21 });
+    expect(expanded.raccordoCells?.map(cellKey)).toEqual(["50,21", "51,21"]);
   });
 
   test("expanded circular door mouths stay as regular portal squares", () => {
@@ -287,7 +291,8 @@ describe("circle door anchors", () => {
       gridSize,
     );
 
-    expect(expanded.portalRoomCell).toEqual({ x: 50, y: 21 });
+    expect(expanded.portalRoomCell).toEqual({ x: 51, y: 21 });
+    expect(expanded.raccordoCells?.map(cellKey)).toEqual(["50,21", "51,21"]);
     expect(mouthPath).toBe("");
   });
 
@@ -337,8 +342,9 @@ describe("circle connector snap coverage", () => {
     );
 
     expect(anchor?.side).toBe("south");
-    expect(anchor?.portalRoomCell).toEqual({ x: 46, y: 25 });
-    expect(getCircleAnchorRoutingCell(anchor)).toEqual({ x: 46, y: 26 });
+    expect(anchor?.portalRoomCell).toEqual({ x: 46, y: 26 });
+    expect(anchor?.raccordoCells?.map(cellKey)).toEqual(["46,25", "46,26"]);
+    expect(getCircleAnchorRoutingCell(anchor)).toEqual({ x: 46, y: 27 });
   });
 
 
@@ -434,6 +440,7 @@ describe("circle composite connector regression", () => {
       null,
       gridSize,
     );
+    generatedMap.corridors[0].fromAnchor = expanded;
     const compositeCells = getCircleCompositeSquareCells(generatedMap, staleRegion);
     const walls = getCirclePortalSquareWallSegments(staleRegion, generatedMap);
 

@@ -1,5 +1,7 @@
 import {
+  normalizeCorridorType,
   resolveDoorType,
+  resolveManualCorridorType,
   resolveStairTransition,
 } from "./map-generator.state.js";
 import { DEFAULT_CONFIG } from "./map-generator.input.js";
@@ -10,6 +12,7 @@ import {
   getPlacementProfile,
   getPlacementRole,
   getRegionSemanticFlags,
+  getRegionText,
 } from "./map-generator.profile.js";
 import {
   cellKey,
@@ -28,6 +31,11 @@ import {
   dedupeDoorSegments,
 } from "./map-generator.mask.js";
 import { createCircleConnectionAnchorCandidates } from "./map-generator.circle-anchors.js";
+import {
+  getCircleDoorCorridorStartCellFromAnchor,
+  getCircleDoorRaccordoCellFromAnchor,
+  getCircleRaccordoCellsFromAnchor as getCircleDoorRaccordoCellsFromAnchor,
+} from "./map-generator.circle-raccordo.js";
 
 function hashStringToSeed(...parts) {
   const text = parts.join("::");
@@ -57,6 +65,186 @@ function pickOne(rng, values) {
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
+}
+
+const CORRIDOR_RENDER_PROFILES = Object.freeze({
+  normal: Object.freeze({
+    type: "normal",
+    visibility: "normal",
+    traversal: "open",
+    width: "standard",
+    renderClassName: "corridor-type-normal",
+  }),
+  narrow: Object.freeze({
+    type: "narrow",
+    visibility: "normal",
+    traversal: "open",
+    width: "narrow",
+    renderClassName: "corridor-type-narrow",
+  }),
+  collapsed: Object.freeze({
+    type: "collapsed",
+    visibility: "normal",
+    traversal: "difficult",
+    width: "standard",
+    renderClassName: "corridor-type-collapsed",
+  }),
+  secret: Object.freeze({
+    type: "secret",
+    visibility: "gm-only",
+    traversal: "open",
+    width: "narrow",
+    renderClassName: "corridor-type-secret",
+  }),
+  gallery: Object.freeze({
+    type: "gallery",
+    visibility: "normal",
+    traversal: "open",
+    width: "wide",
+    renderClassName: "corridor-type-gallery",
+  }),
+});
+
+export function getCorridorRenderProfile(corridorType = "normal") {
+  const type = normalizeCorridorType(corridorType, "normal");
+  return { ...(CORRIDOR_RENDER_PROFILES[type] || CORRIDOR_RENDER_PROFILES.normal) };
+}
+
+function getCorridorSemanticText(config = {}, fromRegion = null, toRegion = null, corridor = {}) {
+  return [
+    config?.context,
+    config?.biome,
+    corridor?.id,
+    corridor?.kind,
+    corridor?.type,
+    corridor?.reason,
+    corridor?.label,
+    corridor?.corridorType,
+    corridor?.surfaceKind,
+    corridor?.corridorStyle,
+    fromRegion?.roomArchetype,
+    toRegion?.roomArchetype,
+    getRegionText(fromRegion || {}),
+    getRegionText(toRegion || {}),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function textIncludesAny(text, terms) {
+  return terms.some((term) => text.includes(term));
+}
+
+function hasGalleryRegionCue(region = {}) {
+  const source = region || {};
+  const text = `${source?.roomArchetype || ""} ${source?.shape || ""} ${source?.roomType || ""} ${getRegionText(source)}`.toLowerCase();
+  return textIncludesAny(text, [
+    "gallery",
+    "processional",
+    "nave",
+    "aisle",
+    "arcade",
+    "colonnade",
+  ]);
+}
+
+export function inferCorridorType(
+  config = {},
+  fromRegion = null,
+  toRegion = null,
+  corridor = {},
+) {
+  const manualType = resolveManualCorridorType(config, corridor?.id, null);
+  if (manualType) return manualType;
+
+  const explicitType = normalizeCorridorType(
+    corridor?.corridorType || corridor?.corridorProfile?.type || "",
+    "",
+  );
+  if (explicitType) return explicitType;
+
+  const text = getCorridorSemanticText(config, fromRegion, toRegion, corridor);
+  const contextKey = getContextKey(config?.context || config?.biome);
+  const fromRole = fromRegion ? getPlacementRole(fromRegion) : "";
+  const toRole = toRegion ? getPlacementRole(toRegion) : "";
+  const fromFlags = fromRegion ? classifyRegion(fromRegion) : {};
+  const toFlags = toRegion ? classifyRegion(toRegion) : {};
+
+  if (
+    corridor?.secret ||
+    corridor?.kind === "secret" ||
+    fromRole === "secret" ||
+    toRole === "secret" ||
+    fromFlags.secret ||
+    toFlags.secret ||
+    textIncludesAny(text, ["secret", "hidden", "concealed", "false wall"])
+  ) {
+    return "secret";
+  }
+
+  if (
+    corridor?.surfaceKind === "collapsed-transition" ||
+    textIncludesAny(text, [
+      "collapsed",
+      "collapse",
+      "rubble",
+      "breach",
+      "broken",
+      "ruined",
+      "caved-in",
+    ]) ||
+    ((contextKey === "mine" || contextKey === "ruins") &&
+      Boolean(corridor?.forcedPhysicalConnectivityRepair))
+  ) {
+    return "collapsed";
+  }
+
+  if (
+    hasGalleryRegionCue(fromRegion) ||
+    hasGalleryRegionCue(toRegion) ||
+    textIncludesAny(text, [
+      "gallery",
+      "processional",
+      "nave",
+      "aisle",
+      "arcade",
+      "colonnade",
+      "house-circulation",
+    ])
+  ) {
+    return "gallery";
+  }
+
+  if (
+    corridor?.kind === "dead-end" ||
+    textIncludesAny(text, [
+      "narrow",
+      "fissure",
+      "crevice",
+      "crawl",
+      "crawlspace",
+      "service passage",
+      "servant",
+    ])
+  ) {
+    return "narrow";
+  }
+
+  return "normal";
+}
+
+function applyCorridorTypeMetadata(corridors, config, regionById) {
+  return (Array.isArray(corridors) ? corridors : []).map((corridor) => {
+    const fromRegion = regionById.get(corridor?.from || corridor?.fromAnchor?.regionId);
+    const toRegion = regionById.get(corridor?.to || corridor?.toAnchor?.regionId);
+    const corridorType = inferCorridorType(config, fromRegion, toRegion, corridor);
+    return {
+      ...corridor,
+      corridorType,
+      corridorRenderProfile: getCorridorRenderProfile(corridorType),
+    };
+  });
 }
 
 function inferGeneratedRoomType(region) {
@@ -4751,7 +4939,11 @@ export function routeCorridors(config, regions, graph) {
     );
   });
 
-  return repairPhysicalCorridorNetwork(sanitizedCorridors);
+  return applyCorridorTypeMetadata(
+    repairPhysicalCorridorNetwork(sanitizedCorridors),
+    config,
+    regionById,
+  );
 }
 
 export function extractWaypoints(centerline) {
@@ -4773,47 +4965,6 @@ export function extractWaypoints(centerline) {
 
 export function getSnappedCirclePortalCellFromAnchor(anchor) {
   return anchor?.cell || null;
-}
-
-function getCircleDoorRaccordoCellsFromAnchor(anchor) {
-  if (Array.isArray(anchor?.raccordoCells) && anchor.raccordoCells.length > 0) {
-    return anchor.raccordoCells
-      .filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y))
-      .map((cell) => ({ x: cell.x, y: cell.y }));
-  }
-  const first = cloneCell(anchor?.portalRoomCell || null);
-  const last = cloneCell(anchor?.raccordoCell || anchor?.cell || first || null);
-  if (first && last && (first.x !== last.x || first.y !== last.y)) {
-    const dx = Math.sign(last.x - first.x);
-    const dy = Math.sign(last.y - first.y);
-    if ((dx === 0 || dy === 0) && (dx !== 0 || dy !== 0)) {
-      const cells = [];
-      let x = first.x;
-      let y = first.y;
-      cells.push({ x, y });
-      while (x !== last.x || y !== last.y) {
-        if (x !== last.x) x += dx;
-        if (y !== last.y) y += dy;
-        cells.push({ x, y });
-      }
-      return cells;
-    }
-  }
-  return last ? [last] : [];
-}
-
-function getCircleDoorRaccordoCellFromAnchor(anchor) {
-  const cells = getCircleDoorRaccordoCellsFromAnchor(anchor);
-  return cloneCell(cells[cells.length - 1] || anchor?.raccordoCell || anchor?.portalRoomCell || anchor?.cell || null);
-}
-
-function getCircleDoorCorridorStartCellFromAnchor(anchor) {
-  return cloneCell(
-    anchor?.corridorStartCell ||
-      anchor?.routingOutsideCell ||
-      anchor?.outsideCell ||
-      null,
-  );
 }
 
 function createGridRaccordoDoorGeometry(anchor, gridSize) {

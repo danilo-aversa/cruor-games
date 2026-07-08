@@ -6,6 +6,7 @@ import {
 } from "./map-generator.input.js";
 import {
   LEVEL_VIEW_ALL,
+  normalizeCorridorType,
   getManualJunctionOverride,
   normalizeDoorType,
   normalizeGridColor,
@@ -76,6 +77,7 @@ import {
   getCircleAnchorRoutingCell,
   isCircleRaccordoCellUsable,
 } from "./map-generator.circle-anchors.js";
+import { getCircleRaccordoCellsFromAnchor } from "./map-generator.circle-raccordo.js";
 import {
   createCaveMapSurfaceFromCaveSurface as createGeometryCaveMapSurfaceFromCaveSurface,
   finalizeCaveGeometry as finalizeGeometryCaveGeometry,
@@ -195,8 +197,8 @@ function getGridLayerClassName(baseClass, gridStyle, gridOptions = {}) {
   ].join(" ");
 }
 
-const SVG_STYLE = `
-.paper{fill:#dccaa6}.paper-texture{opacity:.75}.map-grid line{stroke:var(--cruor-map-grid-stroke,rgba(58,46,32,.24));stroke-width:var(--cruor-map-grid-width,1);vector-effect:non-scaling-stroke}.map-grid circle{fill:var(--cruor-map-grid-dot,rgba(58,46,32,.30));r:var(--cruor-map-grid-dot-radius,.86)}.floor-grid line{stroke:var(--cruor-floor-grid-stroke,rgba(29,25,21,.28));stroke-width:var(--cruor-floor-grid-width,1.08);vector-effect:non-scaling-stroke}.floor-grid circle{fill:var(--cruor-floor-grid-dot,rgba(29,25,21,.32));r:var(--cruor-floor-grid-dot-radius,.94)}.grid-style-dotted line{display:none}.grid-style-dashed line{stroke-linecap:round}.floor-fill{fill:#685D61;stroke:none}.floor-speckle circle{fill:rgba(29,25,21,.12)}.floor-grain path{fill:none;stroke:rgba(29,25,21,.11);stroke-width:.7;stroke-linecap:round;vector-effect:non-scaling-stroke}.room-floor-accent{fill:rgba(255,248,226,.26);stroke:none}.corridor-floor-accent{fill:rgba(116,91,57,.075);stroke:none}.organic-floor-accent{fill:rgba(29,25,21,.06);stroke:rgba(29,25,21,.18);stroke-width:1.15;vector-effect:non-scaling-stroke}.shape-detail{fill:none;stroke:rgba(29,25,21,.2);stroke-width:1.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.ritual-floor-ring{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.25;vector-effect:non-scaling-stroke}.corridor-centerline{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.1;stroke-dasharray:2 8;stroke-linecap:round;vector-effect:non-scaling-stroke}.external-hatching-underlay .halo-buffer{fill:none;stroke:var(--cruor-map-hatch-underlay-stroke,#dccaa6);stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1}.external-hatching path{fill:none;stroke:rgba(42,33,24,.28);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-shadow path{stroke:var(--cruor-map-wall-shadow-stroke,rgba(42,33,24,.32));stroke-width:var(--cruor-map-wall-shadow-width,7.2);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-main path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-breaks path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-break-width,1.45);stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-breaks .crack{stroke:rgba(29,25,21,.58);stroke-width:1.1}.door-cuts .door-opening{stroke:#efe4ca;stroke-width:7;stroke-linecap:square;vector-effect:non-scaling-stroke}.door-cuts .secret-door-opening{stroke:#efe4ca;stroke-width:5;stroke-linecap:square;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}.door-symbols .door-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-wall-sketch{stroke:rgba(29,25,21,.3);stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-panel{fill:#efe4ca;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .secret-door-panel{stroke-dasharray:3 3}.door-symbols .locked-door-panel{stroke-width:2.35}.door-symbols .locked-door-mark line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__main path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__sketch path{fill:none;stroke:rgba(29,25,21,.3);stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-floor{fill:#efe4ca;stroke:none;pointer-events:none}.corridor-overpass-patches .overpass-corridor-walls path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.map-accesses .map-access-line,.map-accesses .map-access-head-line{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-stem-sketch,.map-accesses .map-access-head-sketch{fill:none;stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.3));stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-label{fill:#1d1915;font-size:8px;font-weight:900;font-family:Inter,ui-sans-serif,system-ui;letter-spacing:.08em;paint-order:stroke;stroke:#efe4ca;stroke-width:2.5px;stroke-linejoin:round}.corridor-junctions .junction-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.0);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-wall-sketch{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.3));stroke-width:var(--cruor-map-wall-sketch-width,1.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-door-panel{fill:#efe4ca;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.props rect,.props circle,.props path,.props line,.props polygon,.props ellipse{fill:none;stroke:rgba(29,25,21,.62);stroke-width:1.35;vector-effect:non-scaling-stroke}.props .prop-fill{fill:rgba(29,25,21,.045)}.props .prop-light-fill{fill:rgba(255,248,226,.16)}.props .prop-fog{fill:rgba(255,248,226,.22);stroke:rgba(29,25,21,.18);stroke-width:1.05}.props .prop-water{fill:rgba(143,161,150,.24);stroke:rgba(29,25,21,.28);stroke-width:1.1}.props .prop-pit{fill:rgba(29,25,21,.12);stroke:rgba(29,25,21,.62);stroke-width:1.4}.props .prop-rubble{fill:rgba(29,25,21,.06)}.props .prop-bones{stroke:rgba(29,25,21,.7);stroke-width:1.15}.props .prop-crack{stroke:rgba(29,25,21,.5);stroke-width:1.05}.props .prop-stairs line{stroke-width:1.05}.props .prop-altar,.props .prop-tomb,.props .prop-shelf{fill:rgba(29,25,21,.045)}.props .prop-context-cue{opacity:.88}.props .prop-context-cue--mine{opacity:.92}.props .prop-context-cue--cave{opacity:.9}.props .prop-context-cue--chapel,.props .prop-context-cue--noble-house{opacity:.82}.props .prop-theme-cue{opacity:.76}.props .prop-theme-cue--sedlec-ossuary,.props .prop-theme-cue--towers-of-silence{opacity:.82}.props .prop-theme-cue--the-mist{opacity:.68}.props .prop-theme-cue--wolf-spiders{opacity:.9}.props .prop-web{stroke:rgba(29,25,21,.54);stroke-width:1.05}.props .prop-egg-sac{fill:rgba(255,248,226,.13);stroke:rgba(29,25,21,.55);stroke-width:1.1}.labels .room-number-badge{fill:#efe4ca;stroke:#1d1915;stroke-width:2;rx:0}.labels text{fill:#1d1915;font-size:13px;font-weight:800;font-family:Inter,ui-sans-serif,system-ui}.labels .room-number{font-size:12px;font-weight:900;letter-spacing:.01em}.labels .room-name{font-size:12px;font-family:Inter,ui-sans-serif,system-ui;font-weight:700;paint-order:stroke;stroke:#efe4ca;stroke-width:4px;stroke-linejoin:round}.editor-overlays path{fill:rgba(122,67,36,0);stroke:rgba(122,67,36,0);stroke-width:0;vector-effect:non-scaling-stroke}.room-hover-highlight{pointer-events:none}.editor-overlays .room-hover-highlight__halo path,.editor-overlays .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.32);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-hover-highlight__edge path,.editor-overlays .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.92);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-selection-highlight{pointer-events:none}.editor-overlays .room-selection-highlight__halo path,.editor-overlays .room-selection-highlight__halo line{fill:none;stroke:rgba(190,64,82,.52);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-selection-highlight__edge path,.editor-overlays .room-selection-highlight__edge line{fill:none;stroke:rgba(240,185,194,.92);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-hover-highlight{pointer-events:none}.editor-overlays .corridor-hover-highlight__halo{fill:none;stroke:rgba(214,184,98,.34);stroke-width:9;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .corridor-hover-highlight__line{fill:none;stroke:rgba(255,231,143,.95);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-drag-handle{cursor:move;pointer-events:all}.editor-overlays .room-drag-handle:hover{fill:rgba(122,67,36,0)}.editor-overlays .room-drag-handle.is-dragging{fill:rgba(122,67,36,0);stroke:rgba(29,25,21,0);stroke-width:0}.wall-hover-zone{stroke:rgba(122,67,36,0);stroke-width:14;stroke-linecap:square;fill:none;cursor:crosshair;pointer-events:stroke}.wall-hover-zone:hover{stroke:rgba(122,67,36,0)}.endpoint-handle{fill:#1d1915;stroke:#efe4ca;stroke-width:2;cursor:grab;pointer-events:all}.endpoint-handle.is-dragging{fill:#7a4324;cursor:grabbing}.waypoint-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:1.5;cursor:grab;pointer-events:all}.waypoint-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.2}.waypoint-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.corridor-hover-zone{fill:rgba(122,67,36,0);stroke:none;cursor:crosshair;pointer-events:all}.corridor-hover-zone:hover{fill:rgba(122,67,36,.12)}.corridor-hover-zone.is-junction:hover{fill:rgba(214,184,98,.22);stroke:rgba(214,184,98,.54);stroke-width:1.2;vector-effect:non-scaling-stroke}.corridor-add-handle{fill:#efe4ca;stroke:#7a4324;stroke-width:2;cursor:crosshair;pointer-events:all}.corridor-add-handle:hover{fill:#7a4324;stroke:#efe4ca}.corridor-add-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.4}.corridor-add-handle.is-junction:hover{fill:#1d1915;stroke:#d6b862}.wall-connect-handle{fill:#7a4324;stroke:#efe4ca;stroke-width:2;cursor:crosshair;pointer-events:all}.wall-connect-handle:hover{fill:#1d1915}.map-access-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:2.1;cursor:grab;pointer-events:all}.map-access-handle:hover{fill:#d6b862}.map-access-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.map-access-handle__icon{fill:none;stroke:#1d1915;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}.connection-preview{stroke:#7a4324;stroke-width:2.4;stroke-dasharray:7 5;stroke-linecap:round;fill:none;vector-effect:non-scaling-stroke;pointer-events:none}.connection-preview__endpoint{fill:#efe4ca;stroke:#7a4324;stroke-width:2;pointer-events:none}.circular-room-surface-cover{pointer-events:none}.level-layer--faded{opacity:.26}.level-layer--active{opacity:1}.room-preview-hotspots{pointer-events:none}.room-preview-hotspot{fill:rgba(214,184,98,0);stroke:rgba(214,184,98,0);stroke-width:0;cursor:pointer;pointer-events:all;outline:none}.room-preview-hotspot:focus-visible{fill:rgba(214,184,98,.18);stroke:rgba(255,231,143,.86);stroke-width:2.4;vector-effect:non-scaling-stroke}.room-preview-hotspot.is-active{fill:rgba(255,231,143,.08)}.room-preview-hotspot.is-hovered{fill:rgba(214,184,98,.10)}.room-preview-hotspots .room-hover-highlight,.room-preview-hotspots .room-selection-highlight{pointer-events:none}.room-preview-hotspots .room-hover-highlight__halo path,.room-preview-hotspots .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.30);stroke-width:7.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-hover-highlight__edge path,.room-preview-hotspots .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.82);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__halo path,.room-preview-hotspots .room-selection-highlight__halo line{fill:none;stroke:rgba(122,67,36,.42);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__edge path,.room-preview-hotspots .room-selection-highlight__edge line{fill:none;stroke:rgba(255,238,242,.92);stroke-width:3.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+export const SVG_STYLE = `
+.paper{fill:#dccaa6}.paper-texture{opacity:.75}.map-grid line{stroke:var(--cruor-map-grid-stroke,rgba(58,46,32,.24));stroke-width:var(--cruor-map-grid-width,1);vector-effect:non-scaling-stroke}.map-grid circle{fill:var(--cruor-map-grid-dot,rgba(58,46,32,.30));r:var(--cruor-map-grid-dot-radius,.86)}.floor-grid line{stroke:var(--cruor-floor-grid-stroke,rgba(29,25,21,.28));stroke-width:var(--cruor-floor-grid-width,1.08);vector-effect:non-scaling-stroke}.floor-grid circle{fill:var(--cruor-floor-grid-dot,rgba(29,25,21,.32));r:var(--cruor-floor-grid-dot-radius,.94)}.grid-style-dotted line{display:none}.grid-style-dashed line{stroke-linecap:round}.floor-fill{fill:#685D61;stroke:none}.floor-speckle circle{fill:rgba(29,25,21,.12)}.floor-grain path{fill:none;stroke:rgba(29,25,21,.11);stroke-width:.7;stroke-linecap:round;vector-effect:non-scaling-stroke}.room-floor-accent{fill:rgba(255,248,226,.26);stroke:none}.corridor-floor-accent{fill:rgba(116,91,57,.075);stroke:none}.organic-floor-accent{fill:rgba(29,25,21,.06);stroke:rgba(29,25,21,.18);stroke-width:1.15;vector-effect:non-scaling-stroke}.shape-detail{fill:none;stroke:rgba(29,25,21,.2);stroke-width:1.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.ritual-floor-ring{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.25;vector-effect:non-scaling-stroke}.corridor-centerline{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.1;stroke-dasharray:2 8;stroke-linecap:round;vector-effect:non-scaling-stroke}.corridor-type-accents{pointer-events:none}.corridor-type-accent{fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-type-narrow__inset{stroke:rgba(255,248,226,.18);stroke-width:7.2}.corridor-type-narrow__edge{stroke:rgba(29,25,21,.22);stroke-width:1.15;stroke-dasharray:1.5 5}.corridor-type-collapsed__scar{stroke:rgba(29,25,21,.34);stroke-width:3.2;stroke-dasharray:4 5}.corridor-type-collapsed__rubble{fill:rgba(29,25,21,.18);stroke:rgba(29,25,21,.34);stroke-width:.85;vector-effect:non-scaling-stroke}.corridor-type-secret__trace{stroke:rgba(29,25,21,.38);stroke-width:2.35;stroke-dasharray:2.4 7.2}.corridor-type-secret__veil{stroke:rgba(255,248,226,.13);stroke-width:6.2;stroke-dasharray:1 9}.corridor-type-gallery__axis{stroke:rgba(255,248,226,.18);stroke-width:8.4}.corridor-type-gallery__ornament{stroke:rgba(29,25,21,.24);stroke-width:1.25}.map-style-cruor .corridor-type-narrow__inset{stroke:rgba(240,215,220,.11)}.map-style-cruor .corridor-type-collapsed__scar,.map-style-cruor .corridor-type-secret__trace,.map-style-cruor .corridor-type-gallery__ornament{stroke:rgba(240,215,220,.28)}.map-style-cruor .corridor-type-collapsed__rubble{fill:rgba(240,215,220,.16);stroke:rgba(240,215,220,.3)}.map-style-cruor .corridor-type-secret__veil,.map-style-cruor .corridor-type-gallery__axis{stroke:rgba(240,215,220,.1)}.external-hatching-underlay .halo-buffer{fill:none;stroke:var(--cruor-map-hatch-underlay-stroke,#dccaa6);stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1}.external-hatching path{fill:none;stroke:rgba(42,33,24,.28);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-shadow path{stroke:var(--cruor-map-wall-shadow-stroke,rgba(42,33,24,.32));stroke-width:var(--cruor-map-wall-shadow-width,7.2);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-main path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-breaks path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-break-width,1.45);stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-breaks .crack{stroke:rgba(29,25,21,.58);stroke-width:1.1}.door-cuts .door-opening{stroke:#efe4ca;stroke-width:7;stroke-linecap:square;vector-effect:non-scaling-stroke}.door-cuts .secret-door-opening{stroke:#efe4ca;stroke-width:5;stroke-linecap:square;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}.door-symbols .door-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-wall-sketch{stroke:rgba(29,25,21,.3);stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-panel{fill:#efe4ca;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .secret-door-panel{stroke-dasharray:3 3}.door-symbols .locked-door-panel{stroke-width:2.35}.door-symbols .locked-door-mark line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__main path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__sketch path{fill:none;stroke:rgba(29,25,21,.3);stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-floor{fill:#efe4ca;stroke:none;pointer-events:none}.corridor-overpass-patches .overpass-corridor-walls path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.map-accesses .map-access-line,.map-accesses .map-access-head-line{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-stem-sketch,.map-accesses .map-access-head-sketch{fill:none;stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.3));stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-label{fill:#1d1915;font-size:8px;font-weight:900;font-family:Inter,ui-sans-serif,system-ui;letter-spacing:.08em;paint-order:stroke;stroke:#efe4ca;stroke-width:2.5px;stroke-linejoin:round}.corridor-junctions .junction-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.0);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-wall-sketch{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.3));stroke-width:var(--cruor-map-wall-sketch-width,1.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-door-panel{fill:#efe4ca;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.props rect,.props circle,.props path,.props line,.props polygon,.props ellipse{fill:none;stroke:rgba(29,25,21,.62);stroke-width:1.35;vector-effect:non-scaling-stroke}.props .prop-fill{fill:rgba(29,25,21,.045)}.props .prop-light-fill{fill:rgba(255,248,226,.16)}.props .prop-fog{fill:rgba(255,248,226,.22);stroke:rgba(29,25,21,.18);stroke-width:1.05}.props .prop-water{fill:rgba(143,161,150,.24);stroke:rgba(29,25,21,.28);stroke-width:1.1}.props .prop-pit{fill:rgba(29,25,21,.12);stroke:rgba(29,25,21,.62);stroke-width:1.4}.props .prop-rubble{fill:rgba(29,25,21,.06)}.props .prop-bones{stroke:rgba(29,25,21,.7);stroke-width:1.15}.props .prop-crack{stroke:rgba(29,25,21,.5);stroke-width:1.05}.props .prop-stairs line{stroke-width:1.05}.props .prop-altar,.props .prop-tomb,.props .prop-shelf{fill:rgba(29,25,21,.045)}.props .prop-context-cue{opacity:.88}.props .prop-context-cue--mine{opacity:.92}.props .prop-context-cue--cave{opacity:.9}.props .prop-context-cue--chapel,.props .prop-context-cue--noble-house{opacity:.82}.props .prop-theme-cue{opacity:.76}.props .prop-theme-cue--sedlec-ossuary,.props .prop-theme-cue--towers-of-silence{opacity:.82}.props .prop-theme-cue--the-mist{opacity:.68}.props .prop-theme-cue--wolf-spiders{opacity:.9}.props .prop-web{stroke:rgba(29,25,21,.54);stroke-width:1.05}.props .prop-egg-sac{fill:rgba(255,248,226,.13);stroke:rgba(29,25,21,.55);stroke-width:1.1}.labels .room-number-badge{fill:#efe4ca;stroke:#1d1915;stroke-width:2;rx:0}.labels text{fill:#1d1915;font-size:13px;font-weight:800;font-family:Inter,ui-sans-serif,system-ui}.labels .room-number{font-size:12px;font-weight:900;letter-spacing:.01em}.labels .room-name{font-size:12px;font-family:Inter,ui-sans-serif,system-ui;font-weight:700;paint-order:stroke;stroke:#efe4ca;stroke-width:4px;stroke-linejoin:round}.editor-overlays path{fill:rgba(122,67,36,0);stroke:rgba(122,67,36,0);stroke-width:0;vector-effect:non-scaling-stroke}.room-hover-highlight{pointer-events:none}.editor-overlays .room-hover-highlight__halo path,.editor-overlays .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.32);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-hover-highlight__edge path,.editor-overlays .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.92);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-selection-highlight{pointer-events:none}.editor-overlays .room-selection-highlight__halo path,.editor-overlays .room-selection-highlight__halo line{fill:none;stroke:rgba(190,64,82,.52);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-selection-highlight__edge path,.editor-overlays .room-selection-highlight__edge line{fill:none;stroke:rgba(240,185,194,.92);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-hover-highlight{pointer-events:none}.editor-overlays .corridor-hover-highlight__halo{fill:none;stroke:rgba(214,184,98,.34);stroke-width:9;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .corridor-hover-highlight__line{fill:none;stroke:rgba(255,231,143,.95);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-drag-handle{cursor:move;pointer-events:all}.editor-overlays .room-drag-handle:hover{fill:rgba(122,67,36,0)}.editor-overlays .room-drag-handle.is-dragging{fill:rgba(122,67,36,0);stroke:rgba(29,25,21,0);stroke-width:0}.wall-hover-zone{stroke:rgba(122,67,36,0);stroke-width:14;stroke-linecap:square;fill:none;cursor:crosshair;pointer-events:stroke}.wall-hover-zone:hover{stroke:rgba(122,67,36,0)}.endpoint-handle{fill:#1d1915;stroke:#efe4ca;stroke-width:2;cursor:grab;pointer-events:all}.endpoint-handle.is-dragging{fill:#7a4324;cursor:grabbing}.waypoint-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:1.5;cursor:grab;pointer-events:all}.waypoint-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.2}.waypoint-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.corridor-hover-zone{fill:rgba(122,67,36,0);stroke:none;cursor:crosshair;pointer-events:all}.corridor-hover-zone:hover{fill:rgba(122,67,36,.12)}.corridor-hover-zone.is-junction:hover{fill:rgba(214,184,98,.22);stroke:rgba(214,184,98,.54);stroke-width:1.2;vector-effect:non-scaling-stroke}.corridor-add-handle{fill:#efe4ca;stroke:#7a4324;stroke-width:2;cursor:crosshair;pointer-events:all}.corridor-add-handle:hover{fill:#7a4324;stroke:#efe4ca}.corridor-add-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.4}.corridor-add-handle.is-junction:hover{fill:#1d1915;stroke:#d6b862}.wall-connect-handle{fill:#7a4324;stroke:#efe4ca;stroke-width:2;cursor:crosshair;pointer-events:all}.wall-connect-handle:hover{fill:#1d1915}.map-access-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:2.1;cursor:grab;pointer-events:all}.map-access-handle:hover{fill:#d6b862}.map-access-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.map-access-handle__icon{fill:none;stroke:#1d1915;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}.connection-preview{stroke:#7a4324;stroke-width:2.4;stroke-dasharray:7 5;stroke-linecap:round;fill:none;vector-effect:non-scaling-stroke;pointer-events:none}.connection-preview__endpoint{fill:#efe4ca;stroke:#7a4324;stroke-width:2;pointer-events:none}.circular-room-surface-cover{pointer-events:none}.level-layer--faded{opacity:.26}.level-layer--active{opacity:1}.room-preview-hotspots{pointer-events:none}.room-preview-hotspot{fill:rgba(214,184,98,0);stroke:rgba(214,184,98,0);stroke-width:0;cursor:pointer;pointer-events:all;outline:none}.room-preview-hotspot:focus-visible{fill:rgba(214,184,98,.18);stroke:rgba(255,231,143,.86);stroke-width:2.4;vector-effect:non-scaling-stroke}.room-preview-hotspot.is-active{fill:rgba(255,231,143,.08)}.room-preview-hotspot.is-hovered{fill:rgba(214,184,98,.10)}.room-preview-hotspots .room-hover-highlight,.room-preview-hotspots .room-selection-highlight{pointer-events:none}.room-preview-hotspots .room-hover-highlight__halo path,.room-preview-hotspots .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.30);stroke-width:7.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-hover-highlight__edge path,.room-preview-hotspots .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.82);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__halo path,.room-preview-hotspots .room-selection-highlight__halo line{fill:none;stroke:rgba(122,67,36,.42);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__edge path,.room-preview-hotspots .room-selection-highlight__edge line{fill:none;stroke:rgba(255,238,242,.92);stroke-width:3.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 
 [data-wall-drawing="precise"] .wall-sketch,[data-wall-drawing="precise"] .wall-breaks{display:none}
 [data-wall-drawing="precise"] .wall-main path,[data-wall-drawing="precise"] .wall-shadow path,[data-wall-drawing="precise"] .door-symbols .door-wall-line,[data-wall-drawing="precise"] .map-accesses .map-access-line,[data-wall-drawing="precise"] .map-accesses .map-access-head-line,[data-wall-drawing="precise"] .corridor-junctions .junction-wall-line{stroke-linecap:square;stroke-linejoin:miter}
@@ -1638,6 +1640,141 @@ function buildVisibleCorridorCenterlinePath(corridor, generatedMap, gridSize) {
   return buildCellCenterlinePath(segments, gridSize);
 }
 
+
+export function getCorridorTypeClassName(corridor = {}, suffix = "") {
+  const type = normalizeCorridorType(
+    corridor?.corridorRenderProfile?.type || corridor?.corridorType,
+    "normal",
+  );
+  const baseClass = corridor?.corridorRenderProfile?.renderClassName || `corridor-type-${type}`;
+  return suffix ? `${baseClass}__${suffix}` : baseClass;
+}
+
+function getCorridorType(corridor = {}) {
+  return normalizeCorridorType(
+    corridor?.corridorRenderProfile?.type || corridor?.corridorType,
+    "normal",
+  );
+}
+
+function getCorridorCellCenter(cell, gridSize) {
+  return {
+    x: (cell.x + 0.5) * gridSize,
+    y: (cell.y + 0.5) * gridSize,
+  };
+}
+
+function getCorridorAccentDirection(cells, index) {
+  const previous = cells[index - 1] || null;
+  const next = cells[index + 1] || null;
+  const current = cells[index];
+  const dx = Math.sign((next?.x ?? current.x) - (previous?.x ?? current.x));
+  const dy = Math.sign((next?.y ?? current.y) - (previous?.y ?? current.y));
+  if (Math.abs(dx) >= Math.abs(dy) && dx !== 0) return { x: dx, y: 0 };
+  if (dy !== 0) return { x: 0, y: dy };
+  return { x: 1, y: 0 };
+}
+
+function getCorridorCellNormal(cells, index) {
+  const direction = getCorridorAccentDirection(cells, index);
+  return { x: -direction.y, y: direction.x };
+}
+
+function shouldRenderCorridorTypeAccent(corridor = {}) {
+  const type = getCorridorType(corridor);
+  return type !== "normal" && !corridor?.isRoomLink && !isOrganicCorridor(corridor);
+}
+
+function renderCollapsedCorridorRubble(corridor, generatedMap, cells, gridSize) {
+  const seed = generatedMap?.config?.seed || "cruor-map";
+  return cells
+    .map((cell, index) => {
+      const roll = hashStringToSeed(seed, corridor.id, cell.x, cell.y, "collapsed-rubble") % 100;
+      if (roll >= 42) return null;
+      const cx = (cell.x + 0.33 + (roll % 23) / 72) * gridSize;
+      const cy = (cell.y + 0.33 + ((roll * 7) % 23) / 72) * gridSize;
+      const size = gridSize * (0.08 + (roll % 5) * 0.012);
+      return (
+        <path
+          key={`corridor-collapsed-rubble-${corridor.id}-${cell.x}-${cell.y}-${index}`}
+          className={getCorridorTypeClassName(corridor, "rubble")}
+          d={`M${cx} ${cy - size}l${size} ${size}l${-size * 0.65} ${size * 0.9}l${-size * 0.9} ${-size * 0.55}Z`}
+        />
+      );
+    })
+    .filter(Boolean);
+}
+
+function renderGalleryCorridorOrnaments(corridor, cells, gridSize) {
+  return cells
+    .map((cell, index) => {
+      if (index <= 0 || index >= cells.length - 1 || index % 2 !== 0) return null;
+      const center = getCorridorCellCenter(cell, gridSize);
+      const normal = getCorridorCellNormal(cells, index);
+      const half = gridSize * 0.28;
+      return (
+        <line
+          key={`corridor-gallery-ornament-${corridor.id}-${cell.x}-${cell.y}-${index}`}
+          className={getCorridorTypeClassName(corridor, "ornament")}
+          x1={center.x - normal.x * half}
+          y1={center.y - normal.y * half}
+          x2={center.x + normal.x * half}
+          y2={center.y + normal.y * half}
+        />
+      );
+    })
+    .filter(Boolean);
+}
+
+export function renderCorridorTypeAccents(generatedMap) {
+  const corridors = Array.isArray(generatedMap?.corridors) ? generatedMap.corridors : [];
+  const gridSize = generatedMap?.config?.gridSize || DEFAULT_CONFIG.gridSize;
+  const rendered = corridors
+    .map((corridor) => {
+      if (!shouldRenderCorridorTypeAccent(corridor)) return null;
+      const type = getCorridorType(corridor);
+      const cells = getVisibleCorridorTopologyCells(corridor, generatedMap);
+      const d = buildVisibleCorridorCenterlinePath(corridor, generatedMap, gridSize);
+      if (!d || cells.length < 2) return null;
+      if (type === "narrow") {
+        return (
+          <g key={`corridor-type-${corridor.id}`} className={`corridor-type-accent ${getCorridorTypeClassName(corridor)}`}>
+            <path className={getCorridorTypeClassName(corridor, "inset")} d={d} />
+            <path className={getCorridorTypeClassName(corridor, "edge")} d={d} />
+          </g>
+        );
+      }
+      if (type === "collapsed") {
+        return (
+          <g key={`corridor-type-${corridor.id}`} className={`corridor-type-accent ${getCorridorTypeClassName(corridor)}`}>
+            <path className={getCorridorTypeClassName(corridor, "scar")} d={d} />
+            {renderCollapsedCorridorRubble(corridor, generatedMap, cells, gridSize)}
+          </g>
+        );
+      }
+      if (type === "secret") {
+        return (
+          <g key={`corridor-type-${corridor.id}`} className={`corridor-type-accent ${getCorridorTypeClassName(corridor)}`}>
+            <path className={getCorridorTypeClassName(corridor, "veil")} d={d} />
+            <path className={getCorridorTypeClassName(corridor, "trace")} d={d} />
+          </g>
+        );
+      }
+      if (type === "gallery") {
+        return (
+          <g key={`corridor-type-${corridor.id}`} className={`corridor-type-accent ${getCorridorTypeClassName(corridor)}`}>
+            <path className={getCorridorTypeClassName(corridor, "axis")} d={d} />
+            {renderGalleryCorridorOrnaments(corridor, cells, gridSize)}
+          </g>
+        );
+      }
+      return null;
+    })
+    .filter(Boolean);
+  if (rendered.length === 0) return null;
+  return <g className="corridor-type-accents">{rendered}</g>;
+}
+
 export function createCorridorSurface(
   corridor,
   generatedMap = null,
@@ -2010,33 +2147,6 @@ export function getCirclePortalCells(generatedMap, region) {
       });
   });
   return cells;
-}
-
-function getCircleRaccordoCellsFromAnchor(anchor, fallbackPortalCell = null) {
-  if (Array.isArray(anchor?.raccordoCells) && anchor.raccordoCells.length > 0) {
-    return anchor.raccordoCells
-      .filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y))
-      .map((cell) => ({ x: cell.x, y: cell.y }));
-  }
-  const first = fallbackPortalCell || anchor?.portalRoomCell || null;
-  const last = anchor?.raccordoCell || first || anchor?.cell || null;
-  if (first && last && (first.x !== last.x || first.y !== last.y)) {
-    const dx = Math.sign(last.x - first.x);
-    const dy = Math.sign(last.y - first.y);
-    if ((dx === 0 || dy === 0) && (dx !== 0 || dy !== 0)) {
-      const cells = [];
-      let x = first.x;
-      let y = first.y;
-      cells.push({ x, y });
-      while (x !== last.x || y !== last.y) {
-        if (x !== last.x) x += dx;
-        if (y !== last.y) y += dy;
-        cells.push({ x, y });
-      }
-      return cells;
-    }
-  }
-  return last ? [{ x: last.x, y: last.y }] : [];
 }
 
 export function getCircleCompositeSquareCells(generatedMap, region) {
@@ -2959,6 +3069,7 @@ export function renderVisualAccents(generatedMap) {
           );
         })}
       </g>
+      {renderCorridorTypeAccents(generatedMap)}
     </>
   );
 }

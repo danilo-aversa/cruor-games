@@ -24,15 +24,6 @@ describe("Dark Places canonical expansion pack", () => {
 
     expect(DARK_PLACES_CANONICAL_LOCATION_COMPONENTS.length).toBeGreaterThanOrEqual(100);
     expect(DARK_PLACES_CANONICAL_LOCATION_REGION_COMPONENTS.length).toBeGreaterThanOrEqual(12);
-    expect(slotCounts).toMatchObject({
-      horrorPremise: 12,
-      sensoryLayer: 20,
-      visibleAnomaly: 20,
-      hazard: 16,
-      clue: 16,
-      encounterTwist: 16,
-      reward: 12,
-    });
     expect(slotCounts.horrorPremise).toBeGreaterThanOrEqual(14);
     expect(slotCounts.sensoryLayer).toBeGreaterThanOrEqual(22);
     expect(slotCounts.visibleAnomaly).toBeGreaterThanOrEqual(22);
@@ -61,7 +52,6 @@ describe("Dark Places canonical expansion pack", () => {
       expect(region.map?.templateId).toBeTruthy();
     });
   });
-
 
   it("surfaces authored canonical components in Inspiration Studio modules", () => {
     const modules = getStaticInspirationModules({ includeRegistryFallback: false });

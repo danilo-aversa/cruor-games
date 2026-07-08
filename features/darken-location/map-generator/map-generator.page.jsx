@@ -16,6 +16,7 @@ import {
   GRID_WEIGHT_OPTIONS,
   GRID_COLOR_OPTIONS,
   DOOR_TYPE_OPTIONS,
+  CORRIDOR_TYPE_OPTIONS,
   STAIR_TRANSITION_OPTIONS,
   JUNCTION_TYPE_OPTIONS,
   cloneManualOverrides,
@@ -29,6 +30,9 @@ import {
   normalizeGridWeight,
   doorTypeKey,
   normalizeDoorType,
+  corridorTypeKey,
+  normalizeCorridorType,
+  getManualCorridorType,
   stairTransitionKey,
   normalizeStairTransition,
   getManualStairTransition,
@@ -713,6 +717,7 @@ function createLockedGenerationManualSnapshot(manualOverrides) {
     mapAccesses: normalized.mapAccesses || {},
     corridorJunctions: normalized.corridorJunctions || {},
     corridorWaypoints: normalized.corridorWaypoints || {},
+    corridorTypes: normalized.corridorTypes || {},
     customConnections: normalized.customConnections || [],
     deletedConnections: normalized.deletedConnections || [],
     roomStyles: normalized.roomStyles || {},
@@ -728,6 +733,7 @@ function createLockedRawGenerationManualOverrides(snapshot = {}) {
     mapAccesses: snapshot.mapAccesses || {},
     corridorJunctions: {},
     corridorWaypoints: {},
+    corridorTypes: snapshot.corridorTypes || {},
     customConnections: [],
     deletedConnections: [],
     roomStyles: snapshot.roomStyles || {},
@@ -800,6 +806,7 @@ export function MapViewport({
   onDoorMove,
   onDoorTypeChange,
   onDoorStairChange,
+  onCorridorTypeChange,
   onMapAccessMove,
   onMapAccessSet,
   onMapAccessRemove,
@@ -1458,7 +1465,7 @@ export function MapViewport({
     setWaypointContextMenu(null);
     setAddWaypointContextMenu(null);
     setMapContextMenu({
-      ...getFixedContextMenuPosition(event, 250, 280),
+      ...getFixedContextMenuPosition(event, 270, 420),
     });
   }
 
@@ -1679,7 +1686,7 @@ export function MapViewport({
       hasRegionAccess: Boolean(regionAccess),
       hasAccessAtAnchor: mapAccessMatchesAnchor(regionAccess, anchor),
       accessType: regionAccess?.type || "passage",
-      ...getFixedContextMenuPosition(event, 250, 220),
+      ...getFixedContextMenuPosition(event, 270, 390),
     });
     return true;
   }
@@ -2360,7 +2367,8 @@ export function MapViewport({
       corridorId: handle.corridor.id,
       endpoint: handle.endpoint,
       fallbackType: handle.corridor.secret ? "secret" : "default",
-      ...getFixedContextMenuPosition(event, 250, 250),
+      fallbackCorridorType: handle.corridor.corridorType || "normal",
+      ...getFixedContextMenuPosition(event, 270, 340),
     });
     setHoverCorridorHandle(null);
     setHoverWallHandle(null);
@@ -2399,12 +2407,13 @@ export function MapViewport({
     );
     setAddWaypointContextMenu({
       corridorId: handle.corridor.id,
+      fallbackCorridorType: handle.corridor.corridorType || "normal",
       insertIndex: handle.insertIndex,
       point: handle.point,
       cell: handle.cell,
       junctionKey: junction?.key || null,
       junctionCorridorIds: junction?.corridors?.map((corridor) => corridor.id) || [],
-      ...getFixedContextMenuPosition(event, 250, 220),
+      ...getFixedContextMenuPosition(event, 270, 390),
     });
     setHoveredCorridorId(handle.corridor.id);
   }
@@ -2427,12 +2436,13 @@ export function MapViewport({
     setAddWaypointContextMenu(null);
     setWaypointContextMenu({
       corridorId: handle.corridor.id,
+      fallbackCorridorType: handle.corridor.corridorType || "normal",
       waypointIndex: handle.index,
       source: handle.source,
       cell,
       junctionKey: junction?.key || null,
       junctionCorridorIds: junction?.corridors?.map((corridor) => corridor.id) || [],
-      ...getFixedContextMenuPosition(event, 250, 280),
+      ...getFixedContextMenuPosition(event, 270, 420),
     });
     setHoverCorridorHandle(null);
     setHoveredCorridorId(handle.corridor.id);
@@ -2636,6 +2646,7 @@ export function MapViewport({
       pointerId: event.pointerId,
       id: handle.id,
       corridorId: handle.corridor.id,
+      fallbackCorridorType: handle.corridor.corridorType || "normal",
       waypointIndex: handle.index,
       source: handle.source,
       startPoint,
@@ -3048,6 +3059,7 @@ export function MapViewport({
               isPureCave={pureCaveEditor}
               onTypeChange={onDoorTypeChange}
               onStairChange={onDoorStairChange}
+              onCorridorTypeChange={onCorridorTypeChange}
               onDelete={onConnectionDelete}
               onClose={() => setDoorContextMenu(null)}
             />
@@ -3065,6 +3077,7 @@ export function MapViewport({
               onDeleteWaypoint={onWaypointDelete}
               onDeleteConnection={onConnectionDelete}
               onJunctionChange={onJunctionTypeChange}
+              onCorridorTypeChange={onCorridorTypeChange}
               onClose={() => setWaypointContextMenu(null)}
             />
             <AddWaypointContextMenu
@@ -3073,6 +3086,7 @@ export function MapViewport({
               isPureCave={pureCaveEditor}
               onAddWaypoint={onWaypointInsert}
               onJunctionChange={onJunctionTypeChange}
+              onCorridorTypeChange={onCorridorTypeChange}
               onClose={() => setAddWaypointContextMenu(null)}
             />
             <WallAccessContextMenu
@@ -3719,6 +3733,7 @@ function AddWaypointContextMenu({
   isPureCave = false,
   onAddWaypoint,
   onJunctionChange,
+  onCorridorTypeChange,
   onClose,
 }) {
   if (!menu) return null;
@@ -3760,6 +3775,13 @@ function AddWaypointContextMenu({
           <span>{addLabel}</span>
           <span aria-hidden="true">{"\u203A"}</span>
         </button>
+        <CorridorTypeMenuSection
+          corridorId={menu.corridorId}
+          manualOverrides={manualOverrides}
+          fallbackType={menu.fallbackCorridorType}
+          isPureCave={isPureCave}
+          onChange={onCorridorTypeChange}
+        />
         {hasJunction && (
           <>
             <div className="room-context-menu__label">{junctionLabel}</div>
@@ -3799,6 +3821,7 @@ function WaypointContextMenu({
   onDeleteWaypoint,
   onDeleteConnection,
   onJunctionChange,
+  onCorridorTypeChange,
   onClose,
 }) {
   if (!menu) return null;
@@ -3836,6 +3859,13 @@ function WaypointContextMenu({
           onConfirm={() => onDeleteWaypoint?.(menu.corridorId, menu.waypointIndex, menu.source)}
           onClose={onClose}
         />
+        <CorridorTypeMenuSection
+          corridorId={menu.corridorId}
+          manualOverrides={manualOverrides}
+          fallbackType={menu.fallbackCorridorType}
+          isPureCave={isPureCave}
+          onChange={onCorridorTypeChange}
+        />
         {hasJunction && (
           <>
             <div className="room-context-menu__label">{junctionLabel}</div>
@@ -3865,6 +3895,72 @@ function WaypointContextMenu({
         </button>
       </div>
     </div>
+  );
+}
+
+function CorridorTypeMenuSection({
+  corridorId,
+  manualOverrides,
+  fallbackType = "normal",
+  isPureCave = false,
+  onChange,
+}) {
+  if (!corridorId) return null;
+  const corridorTypes = manualOverrides?.corridorTypes || {};
+  const key = corridorTypeKey(corridorId);
+  const hasManualType = Object.prototype.hasOwnProperty.call(corridorTypes, key);
+  const currentType = getManualCorridorType(
+    corridorTypes,
+    corridorId,
+    normalizeCorridorType(fallbackType, "normal")
+  );
+  const labels = isPureCave
+    ? {
+        normal: "Natural",
+        narrow: "Narrow",
+        collapsed: "Collapsed",
+        secret: "Hidden",
+        gallery: "Gallery",
+      }
+    : {
+        normal: "Normal",
+        narrow: "Narrow",
+        collapsed: "Collapsed",
+        secret: "Secret",
+        gallery: "Gallery",
+      };
+  return (
+    <>
+      <div className="room-context-menu__label">Corridor Type</div>
+      {CORRIDOR_TYPE_OPTIONS.map((type) => (
+        <button
+          key={type}
+          type="button"
+          className={
+            currentType === type
+              ? "room-context-menu__trigger is-active"
+              : "room-context-menu__trigger"
+          }
+          onClick={() => {
+            onChange?.(corridorId, type);
+          }}
+        >
+          <span>{labels[type]}</span>
+          <span>{currentType === type ? "\u2713" : ""}</span>
+        </button>
+      ))}
+      <button
+        type="button"
+        className="room-context-menu__trigger"
+        disabled={!hasManualType}
+        onClick={() => {
+          onChange?.(corridorId, null);
+        }}
+      >
+        <span>Reset Type</span>
+        <span>{hasManualType ? "" : "Inferred"}</span>
+      </button>
+    </>
   );
 }
 
@@ -3942,6 +4038,7 @@ function DoorContextMenu({
   isPureCave = false,
   onTypeChange,
   onStairChange,
+  onCorridorTypeChange,
   onDelete,
   onClose,
 }) {
@@ -4018,6 +4115,13 @@ function DoorContextMenu({
             <span>{currentStair === type ? "\u2713" : ""}</span>
           </button>
         ))}
+        <CorridorTypeMenuSection
+          corridorId={menu.corridorId}
+          manualOverrides={manualOverrides}
+          fallbackType={menu.fallbackCorridorType}
+          isPureCave={isPureCave}
+          onChange={onCorridorTypeChange}
+        />
       </div>
       <div className="room-context-menu__actions">
         <ConfirmingDeleteButton
@@ -5621,6 +5725,7 @@ export default function CruorMapGeneratorMvp({
       manualMapAccesses: normalized.mapAccesses,
       manualCorridorJunctions: normalized.corridorJunctions,
       manualCorridorWaypoints: normalized.corridorWaypoints,
+      manualCorridorTypes: normalized.corridorTypes,
       manualCustomConnections: normalized.customConnections,
       manualRoomStyles: normalized.roomStyles,
       manualDeletedConnections: normalized.deletedConnections,
@@ -6037,6 +6142,8 @@ export default function CruorMapGeneratorMvp({
       mapAccessKeys: debugObjectKeys(normalized.mapAccesses),
       mapAccesses: normalized.mapAccesses || {},
       corridorJunctionKeys: debugObjectKeys(normalized.corridorJunctions),
+      corridorTypeKeys: debugObjectKeys(normalized.corridorTypes),
+      corridorTypes: normalized.corridorTypes || {},
       doorTypeKeys: debugObjectKeys(normalized.doorTypes),
     };
   }
@@ -6934,6 +7041,7 @@ export default function CruorMapGeneratorMvp({
       manualMapAccesses: normalized.mapAccesses || {},
       manualCorridorJunctions: normalized.corridorJunctions || {},
       manualCorridorWaypoints: normalizedCorridorWaypoints,
+      manualCorridorTypes: normalized.corridorTypes || {},
       manualCustomConnections: normalized.customConnections || [],
       manualDeletedConnections: normalized.deletedConnections || [],
       manualRoomStyles: normalized.roomStyles || {},
@@ -7777,6 +7885,8 @@ export default function CruorMapGeneratorMvp({
         delete levels.corridors[corridorId];
         const corridorWaypoints = { ...(normalized.corridorWaypoints || {}) };
         delete corridorWaypoints[corridorId];
+        const corridorTypes = { ...(normalized.corridorTypes || {}) };
+        delete corridorTypes[corridorTypeKey(corridorId)];
         return freezeCurrentRoomLayout({
           ...normalized,
           customConnections,
@@ -7785,6 +7895,7 @@ export default function CruorMapGeneratorMvp({
           stairTransitions,
           levels,
           corridorWaypoints,
+          corridorTypes,
           deletedConnections: deletedConnections.includes(corridorId)
             ? deletedConnections
             : [...deletedConnections, corridorId],
@@ -7824,6 +7935,28 @@ export default function CruorMapGeneratorMvp({
         },
       };
     });
+  }
+
+  function updateCorridorType(corridorId, corridorType) {
+    if (!corridorId) return;
+    updateManualOverridesWithHistory(
+      (current) => {
+        const normalized = normalizeManualOverrides(current);
+        const corridorTypes = { ...(normalized.corridorTypes || {}) };
+        const key = corridorTypeKey(corridorId);
+        if (corridorType === null || corridorType === undefined || corridorType === "reset") {
+          delete corridorTypes[key];
+        } else {
+          corridorTypes[key] = normalizeCorridorType(corridorType, "normal");
+        }
+        return {
+          ...normalized,
+          corridorTypes,
+        };
+      },
+      corridorType ? `Corridor type: ${normalizeCorridorType(corridorType, "normal")}.` : "Corridor type reset.",
+      `updateCorridorType:${corridorId}`
+    );
   }
 
   function getMapAccessAnchorForOverride(access) {
@@ -8005,6 +8138,7 @@ export default function CruorMapGeneratorMvp({
       manualMapAccesses: snapshot.mapAccesses,
       manualCorridorJunctions: snapshot.corridorJunctions,
       manualCorridorWaypoints: snapshot.corridorWaypoints,
+      manualCorridorTypes: snapshot.corridorTypes,
       manualCustomConnections: snapshot.customConnections,
       manualDeletedConnections: snapshot.deletedConnections,
       manualRoomStyles: snapshot.roomStyles,
@@ -9928,6 +10062,7 @@ export default function CruorMapGeneratorMvp({
       onDoorMove={moveDoor}
       onDoorTypeChange={updateDoorType}
       onDoorStairChange={updateDoorStair}
+      onCorridorTypeChange={updateCorridorType}
       onMapAccessMove={setMapAccess}
       onMapAccessSet={setMapAccessWithHistory}
       onMapAccessRemove={removeMapAccess}

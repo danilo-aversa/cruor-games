@@ -1,6 +1,7 @@
 import { normalizeInput } from "./map-generator.input.js";
 import { generateMap } from "./map-generator.pipeline.js";
 import {
+  CORRIDOR_TYPE_OPTIONS,
   MANUAL_OVERRIDE_SCHEMA_VERSION,
   createEmptyManualOverrides,
   normalizeStairTransition,
@@ -34,6 +35,17 @@ import {
   getMapSurface,
   getRegionSurface,
 } from "./map-generator.render.jsx";
+import {
+  areCircleRaccordoCellsContiguous,
+  getCellManhattanDistance,
+  getCircleCellRectDistanceRange,
+  getCircleDoorCorridorStartCellFromAnchor,
+  getCircleDoorRaccordoCellFromAnchor,
+  getCircleRaccordoCellsFromAnchor,
+  getCircleRaccordoChainTouchCell,
+  getCircleRaccordoPortalCell,
+  isCircleDoorSharedEdgeOutsideVisualCircle,
+} from "./map-generator.circle-raccordo.js";
 
 export function createMapSignature(generatedMap) {
   const regions = generatedMap.regions
@@ -127,15 +139,12 @@ export function isAnchorOnRegionBoundary(region, anchor) {
   if (!anchor) return false;
   if (region?.shape === "circle") {
     const raccordoCells = getCircleRaccordoCellsFromAnchor(anchor);
-    const portal = getRaccordoPortalCell(raccordoCells, anchor);
+    const portal = getCircleRaccordoPortalCell(raccordoCells, anchor);
     const doorRaccordo = getCircleDoorRaccordoCellFromAnchor(anchor);
     const corridorStart =
-      anchor.corridorStartCell ||
-      anchor.routingOutsideCell ||
-      anchor.outsideCell ||
-      null;
+      getCircleDoorCorridorStartCellFromAnchor(anchor);
     if (!portal || !doorRaccordo || !corridorStart) return false;
-    if (!areRaccordoCellsContiguous(raccordoCells)) return false;
+    if (!areCircleRaccordoCellsContiguous(raccordoCells)) return false;
     if (getCellManhattanDistance(doorRaccordo, corridorStart) !== 1) return false;
     const circle = getCircleGeometryFromRegion(region, 1);
     const corridorRange = getCircleCellRectDistanceRange(corridorStart, circle);
@@ -308,124 +317,6 @@ function getCircleConnectorAnchorsForRegion(generatedMap, regionId) {
   );
 }
 
-function getCircleCellRectDistanceRange(cell, circle) {
-  if (!cell || !circle) {
-    return {
-      min: Number.POSITIVE_INFINITY,
-      max: Number.NEGATIVE_INFINITY,
-      center: Number.POSITIVE_INFINITY,
-    };
-  }
-  const minX = cell.x;
-  const minY = cell.y;
-  const maxX = cell.x + 1;
-  const maxY = cell.y + 1;
-  const dx = Math.max(minX - circle.cxCells, 0, circle.cxCells - maxX);
-  const dy = Math.max(minY - circle.cyCells, 0, circle.cyCells - maxY);
-  const center = Math.hypot(
-    cell.x + 0.5 - circle.cxCells,
-    cell.y + 0.5 - circle.cyCells,
-  );
-  return {
-    min: Math.hypot(dx, dy),
-    max: Math.max(
-      Math.hypot(minX - circle.cxCells, minY - circle.cyCells),
-      Math.hypot(maxX - circle.cxCells, minY - circle.cyCells),
-      Math.hypot(minX - circle.cxCells, maxY - circle.cyCells),
-      Math.hypot(maxX - circle.cxCells, maxY - circle.cyCells),
-    ),
-    center,
-  };
-}
-
-function doesCircleRaccordoCellTouchVisualCircle(cell, circle, tolerance = 0.035) {
-  const range = getCircleCellRectDistanceRange(cell, circle);
-  return range.min <= circle.rCells + tolerance && range.max >= circle.rCells - tolerance;
-}
-
-function getCircleRaccordoChainTouchCell(cells = [], circle) {
-  return cells.find((cell) => doesCircleRaccordoCellTouchVisualCircle(cell, circle)) || null;
-}
-
-function getCellManhattanDistance(a, b) {
-  if (!a || !b) return Number.POSITIVE_INFINITY;
-  return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
-}
-
-function isCircleDoorSharedEdgeOutsideVisualCircle(
-  raccordoCell,
-  corridorStartCell,
-  circle,
-) {
-  if (!raccordoCell || !corridorStartCell || !circle) return false;
-  const dx = corridorStartCell.x - raccordoCell.x;
-  const dy = corridorStartCell.y - raccordoCell.y;
-  if (Math.abs(dx) + Math.abs(dy) !== 1) return false;
-
-  const samples = [0.12, 0.28, 0.5, 0.72, 0.88];
-  const tolerance = 0.025;
-  return samples.every((offset) => {
-    const point =
-      dx !== 0
-        ? {
-            x: dx > 0 ? raccordoCell.x + 1 : raccordoCell.x,
-            y: raccordoCell.y + offset,
-          }
-        : {
-            x: raccordoCell.x + offset,
-            y: dy > 0 ? raccordoCell.y + 1 : raccordoCell.y,
-          };
-    return (
-      Math.hypot(point.x - circle.cxCells, point.y - circle.cyCells) >=
-      circle.rCells - tolerance
-    );
-  });
-}
-
-function getCircleRaccordoCellsFromAnchor(anchor) {
-  if (Array.isArray(anchor?.raccordoCells) && anchor.raccordoCells.length > 0) {
-    return anchor.raccordoCells
-      .filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y))
-      .map((cell) => ({ x: cell.x, y: cell.y }));
-  }
-  const first = anchor?.portalRoomCell || null;
-  const last = anchor?.raccordoCell || anchor?.cell || first;
-  if (first && last && (first.x !== last.x || first.y !== last.y)) {
-    const dx = Math.sign(last.x - first.x);
-    const dy = Math.sign(last.y - first.y);
-    if ((dx === 0 || dy === 0) && (dx !== 0 || dy !== 0)) {
-      const cells = [];
-      let x = first.x;
-      let y = first.y;
-      cells.push({ x, y });
-      while (x !== last.x || y !== last.y) {
-        if (x !== last.x) x += dx;
-        if (y !== last.y) y += dy;
-        cells.push({ x, y });
-      }
-      return cells;
-    }
-  }
-  return last ? [{ x: last.x, y: last.y }] : [];
-}
-
-function getCircleDoorRaccordoCellFromAnchor(anchor) {
-  const cells = getCircleRaccordoCellsFromAnchor(anchor);
-  return cells[cells.length - 1] || anchor?.raccordoCell || anchor?.portalRoomCell || anchor?.cell || null;
-}
-
-function areRaccordoCellsContiguous(cells = []) {
-  if (!Array.isArray(cells) || cells.length === 0) return false;
-  for (let index = 1; index < cells.length; index += 1) {
-    if (getCellManhattanDistance(cells[index - 1], cells[index]) !== 1) return false;
-  }
-  return true;
-}
-
-function getRaccordoPortalCell(cells = [], anchor = null) {
-  return cells[0] || anchor?.portalRoomCell || anchor?.cell || null;
-}
-
 function getCorridorCellsInsideVectorCircleRooms(generatedMap) {
   const circleRegions = (generatedMap.regions || []).filter(
     (region) => region.shape === "circle",
@@ -468,9 +359,9 @@ function getCircleConnectorVisualArtifacts(generatedMap) {
       const anchorArtifacts = anchors.flatMap((anchor) => {
         const artifacts = [];
         const raccordoCells = getCircleRaccordoCellsFromAnchor(anchor);
-        const portal = getRaccordoPortalCell(raccordoCells, anchor);
+        const portal = getCircleRaccordoPortalCell(raccordoCells, anchor);
         const doorRaccordo = getCircleDoorRaccordoCellFromAnchor(anchor);
-        const routing = anchor.corridorStartCell || anchor.routingOutsideCell || anchor.outsideCell || null;
+        const routing = getCircleDoorCorridorStartCellFromAnchor(anchor);
         if (raccordoCells.length === 0 || !portal || !doorRaccordo) {
           artifacts.push({ regionId: region.id, type: "missing-raccordo-cell", cell: null });
         } else {
@@ -490,7 +381,7 @@ function getCircleConnectorVisualArtifacts(generatedMap) {
               cell: { x: portal.x, y: portal.y },
             });
           }
-          if (!areRaccordoCellsContiguous(raccordoCells)) {
+          if (!areCircleRaccordoCellsContiguous(raccordoCells)) {
             artifacts.push({
               regionId: region.id,
               type: "raccordo-chain-not-contiguous",
@@ -697,6 +588,31 @@ export function validateGeneratedMap(
       missingEdges.length > 0
         ? `Missing corridor(s): ${missingEdges.map((edge) => edge.id).join(", ")}`
         : `${generatedMap.corridors.length} corridor(s)`,
+    ),
+  );
+
+  const validCorridorTypes = new Set(CORRIDOR_TYPE_OPTIONS);
+  const invalidCorridorTypes = generatedMap.corridors.filter((corridor) => {
+    if (!validCorridorTypes.has(corridor?.corridorType)) return true;
+    if (corridor?.corridorRenderProfile?.type !== corridor.corridorType) return true;
+    return false;
+  });
+  tests.push(
+    makeTestResult(
+      "corridors-have-valid-types",
+      "Every corridor has a valid advanced corridor type contract",
+      invalidCorridorTypes.length === 0,
+      invalidCorridorTypes.length > 0
+        ? invalidCorridorTypes
+            .map((corridor) =>
+              `${corridor.id}:${corridor.corridorType || "missing"}/${corridor.corridorRenderProfile?.type || "missing-profile"}`,
+            )
+            .join(", ")
+        : Array.from(
+            new Set(generatedMap.corridors.map((corridor) => corridor.corridorType)),
+          )
+            .sort()
+            .join(", "),
     ),
   );
 

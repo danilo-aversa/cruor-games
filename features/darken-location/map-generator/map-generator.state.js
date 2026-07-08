@@ -52,6 +52,7 @@ export function createEmptyManualOverrides() {
     mapAccesses: {},
     corridorJunctions: {},
     corridorWaypoints: {},
+    corridorTypes: {},
     customConnections: [],
     roomStyles: {},
     deletedConnections: [],
@@ -80,6 +81,8 @@ export function normalizeManualOverrides(overrides = {}) {
       overrides.corridorJunctions || overrides.manualCorridorJunctions || {},
     corridorWaypoints:
       overrides.corridorWaypoints || overrides.manualCorridorWaypoints || {},
+    corridorTypes:
+      overrides.corridorTypes || overrides.manualCorridorTypes || {},
     customConnections: Array.isArray(
       overrides.customConnections || overrides.manualCustomConnections,
     )
@@ -188,6 +191,10 @@ export function applyManualOverridesToConfig(config, manualOverrides = {}) {
       normalizedOverrides.corridorWaypoints,
       config.manualCorridorWaypoints,
     ),
+    manualCorridorTypes: preferObjectOverride(
+      normalizedOverrides.corridorTypes,
+      config.manualCorridorTypes,
+    ),
     manualCustomConnections: preferArrayOverride(
       normalizedOverrides.customConnections,
       config.manualCustomConnections,
@@ -211,6 +218,7 @@ export const GRID_STYLE_OPTIONS = ["solid", "dotted", "dashed", "none"];
 export const GRID_WEIGHT_OPTIONS = ["fine", "normal", "bold"];
 export const GRID_COLOR_OPTIONS = ["default", "light", "darker", "blood", "sepia", "black"];
 export const DOOR_TYPE_OPTIONS = ["default", "secret", "locked", "open"];
+export const CORRIDOR_TYPE_OPTIONS = ["normal", "narrow", "collapsed", "secret", "gallery"];
 export const STAIR_TRANSITION_OPTIONS = ["none", "up", "down"];
 export const JUNCTION_TYPE_OPTIONS = ["merge", "wall", "door"];
 export const LEVEL_VIEW_ALL = "all";
@@ -225,6 +233,58 @@ export function normalizeGridWeight(value) {
 
 export function normalizeGridColor(value) {
   return GRID_COLOR_OPTIONS.includes(value) ? value : "default";
+}
+
+
+export function corridorTypeKey(corridorId) {
+  return String(corridorId || "");
+}
+
+export function normalizeCorridorType(value, fallback = "normal") {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/_/g, "-")
+    .replace(/\s+/g, "-");
+  const aliases = {
+    default: "normal",
+    standard: "normal",
+    regular: "normal",
+    slim: "narrow",
+    tight: "narrow",
+    crawlspace: "narrow",
+    crawl: "narrow",
+    rubble: "collapsed",
+    ruined: "collapsed",
+    broken: "collapsed",
+    hidden: "secret",
+    concealed: "secret",
+    passage: "secret",
+    arcade: "gallery",
+    aisle: "gallery",
+    hall: "gallery",
+  };
+  const candidate = aliases[normalized] || normalized;
+  return CORRIDOR_TYPE_OPTIONS.includes(candidate) ? candidate : fallback;
+}
+
+export function getManualCorridorType(
+  corridorTypes,
+  corridorId,
+  fallback = null,
+) {
+  const key = corridorTypeKey(corridorId);
+  const raw = corridorTypes?.[key] ?? corridorTypes?.[corridorId];
+  if (raw === undefined || raw === null || raw === "") return fallback;
+  return normalizeCorridorType(raw, fallback || "normal");
+}
+
+export function resolveManualCorridorType(config, corridorId, fallback = null) {
+  return getManualCorridorType(
+    config?.manualCorridorTypes || {},
+    corridorId,
+    fallback,
+  );
 }
 
 export function doorTypeKey(corridorId, endpoint) {

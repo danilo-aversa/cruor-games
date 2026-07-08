@@ -1,4 +1,9 @@
 import { DEFAULT_CONFIG } from "./map-generator.input.js";
+import {
+  getCircleDoorCorridorStartCellFromAnchor as getCircleDoorCorridorStartCell,
+  getCircleDoorRaccordoCellFromAnchor as getCircleDoorRaccordoCell,
+  getCircleRaccordoCellsFromAnchor as getCircleDoorRaccordoCells,
+} from "./map-generator.circle-raccordo.js";
 import { getContextKey } from "./map-generator.profile.js";
 
 function hashStringToSeed(...parts) {
@@ -1639,42 +1644,6 @@ export function createCircleDoorRoomExtensionAnchor(
 
 function isSameCircleExtensionCell(a, b) {
   return Boolean(a && b && a.x === b.x && a.y === b.y);
-}
-
-function getCircleDoorRaccordoCells(anchor) {
-  if (Array.isArray(anchor?.raccordoCells) && anchor.raccordoCells.length > 0) {
-    return anchor.raccordoCells
-      .filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y))
-      .map((cell) => ({ x: cell.x, y: cell.y }));
-  }
-  const first = anchor?.portalRoomCell || null;
-  const last = anchor?.raccordoCell || anchor?.cell || first;
-  if (first && last && (first.x !== last.x || first.y !== last.y)) {
-    const dx = Math.sign(last.x - first.x);
-    const dy = Math.sign(last.y - first.y);
-    if ((dx === 0 || dy === 0) && (dx !== 0 || dy !== 0)) {
-      const cells = [];
-      let x = first.x;
-      let y = first.y;
-      cells.push({ x, y });
-      while (x !== last.x || y !== last.y) {
-        if (x !== last.x) x += dx;
-        if (y !== last.y) y += dy;
-        cells.push({ x, y });
-      }
-      return cells;
-    }
-  }
-  return last ? [{ x: last.x, y: last.y }] : [];
-}
-
-function getCircleDoorRaccordoCell(anchor) {
-  const cells = getCircleDoorRaccordoCells(anchor);
-  return cells[cells.length - 1] || anchor?.raccordoCell || anchor?.portalRoomCell || anchor?.cell || null;
-}
-
-function getCircleDoorCorridorStartCell(anchor) {
-  return anchor?.corridorStartCell || anchor?.routingOutsideCell || anchor?.outsideCell || null;
 }
 
 function isCircleDoorPortalAnchor(anchor) {

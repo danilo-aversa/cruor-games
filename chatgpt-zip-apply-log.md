@@ -10215,3 +10215,166 @@ _Nessun file aggiunto._
 - `~features/darken-location/map-generator/map-generator.page.jsx`
 - `~features/darken-location/map-generator/map-generator.pipeline.test.js`
 
+
+---
+
+## 2026-07-08 19:42:23
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass1-contract-hardening.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass1-contract-hardening.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+features/darken-location/map-generator/CORRIDOR_ANCHOR_CONTRACT.md`
+- `+features/darken-location/map-generator/map-generator.circle-raccordo.js`
+
+**File sovrascritti:** 7
+
+- `~features/darken-location/map-generator/map-generator.circle-anchors.test.js`
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+- `~features/darken-location/map-generator/map-generator.debug.js`
+- `~features/darken-location/map-generator/map-generator.mask.js`
+- `~features/darken-location/map-generator/map-generator.pipeline.test.js`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+- `~package.json`
+
+
+---
+
+## 2026-07-08 21:08:20
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass2a-corridor-type-contract.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass2a-corridor-type-contract.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/map-generator/CORRIDOR_ANCHOR_CONTRACT.md`
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+- `~features/darken-location/map-generator/map-generator.debug.js`
+- `~features/darken-location/map-generator/map-generator.pipeline.test.js`
+- `~features/darken-location/map-generator/map-generator.state.js`
+
+
+---
+
+## 2026-07-08 21:46:31
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass2a-test-alignment-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass2a-test-alignment-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/map-generator/map-generator.circle-anchors.test.js`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+- `~shared/content/dark-places-canonical-expansion-pack.test.js`
+
+
+---
+
+## 2026-07-08 22:22:17
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass2a-svg-style-test-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass2a-svg-style-test-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.pipeline.test.js`
+
+
+---
+
+## 2026-07-08 23:01:08
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass2b-corridor-render-profiles.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass2b-corridor-render-profiles.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/map-generator/CORRIDOR_ANCHOR_CONTRACT.md`
+- `~features/darken-location/map-generator/map-generator.pipeline.test.js`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-07-08 23:04:56
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass2b-transform-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass2b-transform-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-07-08 23:25:41
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass2c-corridor-type-editor.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass2c-corridor-type-editor.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/CORRIDOR_ANCHOR_CONTRACT.md`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+
