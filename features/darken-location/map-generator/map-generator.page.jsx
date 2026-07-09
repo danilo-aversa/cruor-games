@@ -215,6 +215,7 @@ const ROOM_SIZE_MENU_PRESETS = {
 };
 
 const ROOM_LEVEL_MENU_OPTIONS = [-3, -2, -1, 0, 1, 2, 3];
+const EDITOR_DISABLED_CORRIDOR_TYPES = new Set(["collapsed", "gallery"]);
 
 const MAP_DEBUG_CATEGORY_OPTIONS = getEditorMapDebugCategories();
 const MAP_DEBUG_SCENARIO_OPTIONS = getEditorMapQaScenarios();
@@ -3931,23 +3932,29 @@ function CorridorTypeMenuSection({
   return (
     <>
       <div className="room-context-menu__label">Corridor Type</div>
-      {CORRIDOR_TYPE_OPTIONS.map((type) => (
-        <button
-          key={type}
-          type="button"
-          className={
-            currentType === type
-              ? "room-context-menu__trigger is-active"
-              : "room-context-menu__trigger"
-          }
-          onClick={() => {
-            onChange?.(corridorId, type);
-          }}
-        >
-          <span>{labels[type]}</span>
-          <span>{currentType === type ? "\u2713" : ""}</span>
-        </button>
-      ))}
+      {CORRIDOR_TYPE_OPTIONS.map((type) => {
+        const disabled = EDITOR_DISABLED_CORRIDOR_TYPES.has(type);
+        return (
+          <button
+            key={type}
+            type="button"
+            className={cx(
+              "room-context-menu__trigger",
+              currentType === type && "is-active",
+              disabled && "is-disabled",
+            )}
+            disabled={disabled}
+            aria-disabled={disabled}
+            onClick={() => {
+              if (disabled) return;
+              onChange?.(corridorId, type);
+            }}
+          >
+            <span>{labels[type]}</span>
+            <span>{disabled ? "Later" : currentType === type ? "\u2713" : ""}</span>
+          </button>
+        );
+      })}
       <button
         type="button"
         className="room-context-menu__trigger"
@@ -8109,7 +8116,9 @@ export default function CruorMapGeneratorMvp({
         if (corridorType === null || corridorType === undefined || corridorType === "reset") {
           delete corridorTypes[key];
         } else {
-          corridorTypes[key] = normalizeCorridorType(corridorType, "normal");
+          const normalizedType = normalizeCorridorType(corridorType, "normal");
+          if (EDITOR_DISABLED_CORRIDOR_TYPES.has(normalizedType)) return normalized;
+          corridorTypes[key] = normalizedType;
         }
         return {
           ...normalized,

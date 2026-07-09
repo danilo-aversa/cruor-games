@@ -1,3 +1,4 @@
+import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { DEFAULT_CONFIG } from "./map-generator.input.js";
 import { applyManualConnectionsToGraph } from "./map-generator.graph.js";
@@ -6,7 +7,9 @@ import { getLocationPreviewResetKey } from "../composer/model/location-composer-
 import {
   MAP_VISUAL_STYLE,
   SVG_STYLE,
+  createCorridorSurface,
   createLevelFilteredMap,
+  getMapSurface,
   createStairDirectionArrowSegments,
   getCorridorLevelShiftDescription,
   getCorridorLevelShiftLabel,
@@ -14,6 +17,7 @@ import {
   getCorridorTypeClassName,
   getRenderedCorridorStairMarkerCount,
   getRoomLevelBadgeLabel,
+  renderCorridorTypeWallAccents,
 } from "./map-generator.render.jsx";
 import { generateMap } from "./map-generator.pipeline.js";
 import {
@@ -84,6 +88,32 @@ describe("map generator pipeline", () => {
     expect(getMapDebugCategory("Set room level override")).toBe("levels");
     expect(getMapDebugCategory("CreateConnection draft committed")).toBe("corridor-create");
     expect(getMapDebugCategory("MoveWaypoint applied")).toBe("corridor-move");
+  });
+
+  test("keeps Dark Places debug runner wired to real mounted files", () => {
+    const registryPath = new URL("./map-generator.debug-options.js", import.meta.url);
+    const mapPagePath = new URL("./map-generator.page.jsx", import.meta.url);
+    const composerPanelPath = new URL("../composer/components/LocationMapDetailsPanel.jsx", import.meta.url);
+    const phantomPanelPath = new URL("../components/LocationMapDetailsPanel.jsx", import.meta.url);
+
+    expect(existsSync(registryPath)).toBe(true);
+    expect(existsSync(mapPagePath)).toBe(true);
+    expect(existsSync(composerPanelPath)).toBe(true);
+    expect(existsSync(phantomPanelPath)).toBe(false);
+
+    const registry = readFileSync(registryPath, "utf8");
+    const mapPage = readFileSync(mapPagePath, "utf8");
+    const composerPanel = readFileSync(composerPanelPath, "utf8");
+
+    expect(registry).toContain('id: "levels"');
+    expect(registry).toContain('id: "level-stairs"');
+    expect(registry).toContain('id: "level-view"');
+    expect(mapPage).toContain('./map-generator.debug-options.js');
+    expect(composerPanel).toContain('../../map-generator/map-generator.debug-options.js');
+    expect(mapPage).not.toMatch(/const\s+MAP_QA_SCENARIO_OPTIONS\s*=\s*\[/);
+    expect(composerPanel).not.toMatch(/const\s+MAP_QA_SCENARIO_OPTIONS\s*=\s*\[/);
+    expect(composerPanel).toContain("data-debug-scenario={scenario.id}");
+    expect(composerPanel).toContain("data-debug-category={category.id}");
   });
 
   test("assigns advanced corridor type metadata without changing topology", () => {
@@ -474,9 +504,11 @@ describe("map generator pipeline", () => {
   });
 
   test("exposes visual SVG classes for advanced corridor types", () => {
-    expect(SVG_STYLE).toContain(".corridor-type-narrow__inset");
+    expect(SVG_STYLE).toContain(".corridor-type-narrow__wall-main");
+    expect(SVG_STYLE).toContain(".corridor-type-secret__wall-main path{stroke-dasharray:10 10}");
+    expect(SVG_STYLE).not.toContain("corridor-type-secret__shadow-erase");
+    expect(SVG_STYLE).not.toContain("corridor-type-narrow__wall-erase");
     expect(SVG_STYLE).toContain(".corridor-type-collapsed__rubble");
-    expect(SVG_STYLE).toContain(".corridor-type-secret__trace");
     expect(SVG_STYLE).toContain(".corridor-type-gallery__ornament");
 
     expect(getCorridorTypeClassName({ corridorType: "narrow" })).toBe("corridor-type-narrow");
@@ -488,6 +520,61 @@ describe("map generator pipeline", () => {
         corridorRenderProfile: { type: "gallery", renderClassName: "corridor-type-gallery" },
       }, "axis"),
     ).toBe("corridor-type-gallery__axis");
+  });
+
+  test("renders narrow and secret corridors with wall-grammar overlays", () => {
+    const config = buildConfig({ seed: "corridor-wall-grammar", roomCount: 5 });
+    const narrowId = "manual-edge-region-1-region-2-narrow-wall-grammar";
+    const secretId = "manual-edge-region-2-region-3-secret-wall-grammar";
+    const generatedMap = generateMap(config, {
+      customConnections: [
+        { id: narrowId, from: "region-1", to: "region-2", kind: "manual", locked: true },
+        { id: secretId, from: "region-2", to: "region-3", kind: "manual", locked: true },
+      ],
+      corridorTypes: {
+        [narrowId]: "narrow",
+        [secretId]: "secret",
+      },
+    });
+    const accentLayer = renderCorridorTypeWallAccents(generatedMap);
+
+    expect(accentLayer).toBeTruthy();
+    const children = Array.isArray(accentLayer.props.children)
+      ? accentLayer.props.children
+      : [accentLayer.props.children];
+    const narrowLayer = children.find((child) => child?.props?.["data-corridor-visual-width"] === "half-cell");
+    expect(narrowLayer).toBeTruthy();
+    expect(children.some((child) => child?.props?.["data-corridor-wall-style"] === "dashed")).toBe(true);
+    expect(JSON.stringify(children)).not.toContain("shadow-erase");
+    expect(JSON.stringify(children)).not.toContain("wall-erase");
+    expect(JSON.stringify(narrowLayer)).not.toContain("corridor-type-narrow__erase-fill");
+    expect(JSON.stringify(narrowLayer)).not.toContain("corridor-type-narrow__floor-ribbon");
+    expect(JSON.stringify(narrowLayer)).not.toContain("corridor-type-narrow__floor-line");
+  });
+
+  test("uses the narrow corridor surface as the actual floor and grid clip", () => {
+    const config = buildConfig({ seed: "narrow-surface-clip", roomCount: 5 });
+    const narrowId = "manual-edge-region-1-region-2-narrow-surface-clip";
+    const generatedMap = generateMap(config, {
+      customConnections: [
+        { id: narrowId, from: "region-1", to: "region-2", kind: "manual", locked: true },
+      ],
+      corridorTypes: {
+        [narrowId]: "narrow",
+      },
+    });
+    const corridor = generatedMap.corridors.find((candidate) => candidate.id === narrowId);
+    expect(corridor).toBeTruthy();
+
+    const surface = createCorridorSurface(corridor, generatedMap, config.gridSize);
+    const fullCellPath = corridor.floorCells
+      .map((cell) => `M${cell.x * config.gridSize} ${cell.y * config.gridSize}`)
+      .find(Boolean);
+
+    expect(surface.geometryKind).toBe("narrow-corridor-mask");
+    expect(surface.visualFloorPath).toContain("Z");
+    expect(surface.visualFloorPath).not.toContain(fullCellPath);
+    expect(getMapSurface(generatedMap).visualFloorPath).toContain(surface.visualFloorPath);
   });
 
   test("keeps manual duplicate corridors while generated graph pairs remain deduped", () => {

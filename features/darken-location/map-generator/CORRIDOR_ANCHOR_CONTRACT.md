@@ -241,3 +241,58 @@ Pass 3D consolidates the debug recorder and QA runner metadata so the editor can
 - the pipeline test now checks the shared category/scenario registry, including `Levels / Stairs`, `Room Level → Stairs Test`, and `Level View Test`.
 
 Pass 3D is intentionally a regression-hardening pass: it does not change routing, render geometry, manual override data, Level View behavior, export/import payloads, or the browser QA scenario implementations.
+
+## Pass 4A stabilization / acceptance QA contract
+
+Pass 4A is a stabilization pass. It must not change corridor routing, room placement, level derivation, stair rendering, SVG geometry, or manual override semantics.
+
+It adds an explicit acceptance gate for the mounted Dark Places system:
+
+- `map-generator.debug-options.js` is the only source of truth for debug categories and QA scenarios;
+- `map-generator.page.jsx` and `composer/components/LocationMapDetailsPanel.jsx` must both consume that registry;
+- `features/darken-location/components/LocationMapDetailsPanel.jsx` is a phantom path and must not exist;
+- room-level derived stairs, Level View, export/import, player-safe SVG export, circle connectors, and debug runner wiring must remain covered by automated checks.
+
+The acceptance command is:
+
+```bash
+npm run qa:dark-places:acceptance
+```
+
+The broader local gate is:
+
+```bash
+npm run qa:dark-places:full
+```
+
+## Pass 4B corridor render correction contract
+
+Pass 4B corrects the visual grammar for manually selected corridor types without changing corridor topology:
+
+- `narrow` remains a full-cell logical corridor for routing, collision, anchors, doors, export/import, and QA;
+- `narrow` is visually redrawn as a half-cell passage by erasing only the full-cell visual corridor layer, drawing a centered narrow floor strip, and redrawing its two side walls with the same `wall-main` / `wall-sketch` classes used by ordinary dungeon walls;
+- `secret` remains a full-cell logical corridor, but its wall overlay is redrawn with dashed walls using the same wall classes and stroke variables as ordinary walls;
+- `secret` must not use centerline traces or large unrelated overlays as its primary visual language;
+- `collapsed` and `gallery` remain valid data-model corridor types but are disabled in the editor menu until their visual behavior is explicitly designed;
+- the correction does not mutate `floorCells`, `pathCells`, routing, door anchors, room levels, stair metadata, Level View, or serialized manual overrides.
+
+### Pass 4B follow-up: narrow/secret render correction
+
+- `secret` corridors keep the wall-grammar render path, but their dashed walls use longer and more separated dashes.
+- `narrow` corridors must not be rendered by per-cell strip rectangles. The visual override is a single half-cell centerline floor stroke plus two continuous rail paths, after the full-width logical corridor is masked.
+- `narrow` remains full-width in topology, routing, collision, anchors, export/import and QA. The half-cell behavior is visual-only.
+
+## Pass 4B narrow corridor render correction follow-up
+
+Narrow corridor rendering must not use the normal corridor centerline texture and must not draw a stroked center floor line with square caps. A narrow corridor remains full-cell in logical topology, but the visual overlay erases the full-cell corridor and replaces it with a filled half-cell ribbon plus two rail paths generated through the same rough wall renderer used by normal walls. Endpoint geometry must include the real door boundary centers so the narrow ribbon connects to door openings instead of stopping or continuing straight past them.
+
+## Pass 4B narrow surface correction follow-up
+
+Narrow corridor rendering must be handled by the corridor surface contract, not by a late overlay.
+
+- `narrow` corridors stay full-cell for topology, routing, door anchors, collision, serialization, and editor hit-testing.
+- The rendered `createCorridorSurface()` for a narrow corridor uses `geometryKind: "narrow-corridor-mask"` and exposes a half-cell `visualFloorPath`.
+- `getMapSurface()` must therefore remove the full logical corridor cells from the base floor and add back only the narrow visual floor path.
+- The root `clip-dungeon-floor` must include the narrow half-cell surface, so `floor-fill`, `corridor-floor-accent`, floor texture, and `floor-grid` are clipped to the narrow corridor instead of being drawn full-cell underneath it.
+- The late corridor type wall layer may erase/redraw only the full-width wall outlines and rail walls; it must not paint a replacement floor over the grid.
+- `secret` keeps the dashed wall grammar from the previous correction.

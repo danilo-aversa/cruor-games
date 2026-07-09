@@ -198,7 +198,7 @@ function getGridLayerClassName(baseClass, gridStyle, gridOptions = {}) {
 }
 
 export const SVG_STYLE = `
-.paper{fill:#dccaa6}.paper-texture{opacity:.75}.map-grid line{stroke:var(--cruor-map-grid-stroke,rgba(58,46,32,.24));stroke-width:var(--cruor-map-grid-width,1);vector-effect:non-scaling-stroke}.map-grid circle{fill:var(--cruor-map-grid-dot,rgba(58,46,32,.30));r:var(--cruor-map-grid-dot-radius,.86)}.floor-grid line{stroke:var(--cruor-floor-grid-stroke,rgba(29,25,21,.28));stroke-width:var(--cruor-floor-grid-width,1.08);vector-effect:non-scaling-stroke}.floor-grid circle{fill:var(--cruor-floor-grid-dot,rgba(29,25,21,.32));r:var(--cruor-floor-grid-dot-radius,.94)}.grid-style-dotted line{display:none}.grid-style-dashed line{stroke-linecap:round}.floor-fill{fill:#685D61;stroke:none}.floor-speckle circle{fill:rgba(29,25,21,.12)}.floor-grain path{fill:none;stroke:rgba(29,25,21,.11);stroke-width:.7;stroke-linecap:round;vector-effect:non-scaling-stroke}.room-floor-accent{fill:rgba(255,248,226,.26);stroke:none}.corridor-floor-accent{fill:rgba(116,91,57,.075);stroke:none}.organic-floor-accent{fill:rgba(29,25,21,.06);stroke:rgba(29,25,21,.18);stroke-width:1.15;vector-effect:non-scaling-stroke}.shape-detail{fill:none;stroke:rgba(29,25,21,.2);stroke-width:1.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.ritual-floor-ring{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.25;vector-effect:non-scaling-stroke}.corridor-centerline{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.1;stroke-dasharray:2 8;stroke-linecap:round;vector-effect:non-scaling-stroke}.corridor-type-accents{pointer-events:none}.corridor-type-accent{fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-type-narrow__inset{stroke:rgba(255,248,226,.18);stroke-width:7.2}.corridor-type-narrow__edge{stroke:rgba(29,25,21,.22);stroke-width:1.15;stroke-dasharray:1.5 5}.corridor-type-collapsed__scar{stroke:rgba(29,25,21,.34);stroke-width:3.2;stroke-dasharray:4 5}.corridor-type-collapsed__rubble{fill:rgba(29,25,21,.18);stroke:rgba(29,25,21,.34);stroke-width:.85;vector-effect:non-scaling-stroke}.corridor-type-secret__trace{stroke:rgba(29,25,21,.38);stroke-width:2.35;stroke-dasharray:2.4 7.2}.corridor-type-secret__veil{stroke:rgba(255,248,226,.13);stroke-width:6.2;stroke-dasharray:1 9}.corridor-type-gallery__axis{stroke:rgba(255,248,226,.18);stroke-width:8.4}.corridor-type-gallery__ornament{stroke:rgba(29,25,21,.24);stroke-width:1.25}.map-style-cruor .corridor-type-narrow__inset{stroke:rgba(240,215,220,.11)}.map-style-cruor .corridor-type-collapsed__scar,.map-style-cruor .corridor-type-secret__trace,.map-style-cruor .corridor-type-gallery__ornament{stroke:rgba(240,215,220,.28)}.map-style-cruor .corridor-type-collapsed__rubble{fill:rgba(240,215,220,.16);stroke:rgba(240,215,220,.3)}.map-style-cruor .corridor-type-secret__veil,.map-style-cruor .corridor-type-gallery__axis{stroke:rgba(240,215,220,.1)}.external-hatching-underlay .halo-buffer{fill:none;stroke:var(--cruor-map-hatch-underlay-stroke,#dccaa6);stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1}.external-hatching path{fill:none;stroke:rgba(42,33,24,.28);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-shadow path{stroke:var(--cruor-map-wall-shadow-stroke,rgba(42,33,24,.32));stroke-width:var(--cruor-map-wall-shadow-width,7.2);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-main path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-breaks path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-break-width,1.45);stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-breaks .crack{stroke:rgba(29,25,21,.58);stroke-width:1.1}.door-cuts .door-opening{stroke:#efe4ca;stroke-width:7;stroke-linecap:square;vector-effect:non-scaling-stroke}.door-cuts .secret-door-opening{stroke:#efe4ca;stroke-width:5;stroke-linecap:square;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}.door-symbols .door-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-wall-sketch{stroke:rgba(29,25,21,.3);stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-panel{fill:#efe4ca;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .secret-door-panel{stroke-dasharray:3 3}.door-symbols .locked-door-panel{stroke-width:2.35}.door-symbols .locked-door-mark line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__main path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__sketch path{fill:none;stroke:rgba(29,25,21,.3);stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__arrow path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.15;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-floor{fill:#efe4ca;stroke:none;pointer-events:none}.corridor-overpass-patches .overpass-corridor-walls path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.map-accesses .map-access-line,.map-accesses .map-access-head-line{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-stem-sketch,.map-accesses .map-access-head-sketch{fill:none;stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.3));stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-label{fill:#1d1915;font-size:8px;font-weight:900;font-family:Inter,ui-sans-serif,system-ui;letter-spacing:.08em;paint-order:stroke;stroke:#efe4ca;stroke-width:2.5px;stroke-linejoin:round}.corridor-junctions .junction-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.0);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-wall-sketch{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.3));stroke-width:var(--cruor-map-wall-sketch-width,1.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-door-panel{fill:#efe4ca;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.props rect,.props circle,.props path,.props line,.props polygon,.props ellipse{fill:none;stroke:rgba(29,25,21,.62);stroke-width:1.35;vector-effect:non-scaling-stroke}.props .prop-fill{fill:rgba(29,25,21,.045)}.props .prop-light-fill{fill:rgba(255,248,226,.16)}.props .prop-fog{fill:rgba(255,248,226,.22);stroke:rgba(29,25,21,.18);stroke-width:1.05}.props .prop-water{fill:rgba(143,161,150,.24);stroke:rgba(29,25,21,.28);stroke-width:1.1}.props .prop-pit{fill:rgba(29,25,21,.12);stroke:rgba(29,25,21,.62);stroke-width:1.4}.props .prop-rubble{fill:rgba(29,25,21,.06)}.props .prop-bones{stroke:rgba(29,25,21,.7);stroke-width:1.15}.props .prop-crack{stroke:rgba(29,25,21,.5);stroke-width:1.05}.props .prop-stairs line{stroke-width:1.05}.props .prop-altar,.props .prop-tomb,.props .prop-shelf{fill:rgba(29,25,21,.045)}.props .prop-context-cue{opacity:.88}.props .prop-context-cue--mine{opacity:.92}.props .prop-context-cue--cave{opacity:.9}.props .prop-context-cue--chapel,.props .prop-context-cue--noble-house{opacity:.82}.props .prop-theme-cue{opacity:.76}.props .prop-theme-cue--sedlec-ossuary,.props .prop-theme-cue--towers-of-silence{opacity:.82}.props .prop-theme-cue--the-mist{opacity:.68}.props .prop-theme-cue--wolf-spiders{opacity:.9}.props .prop-web{stroke:rgba(29,25,21,.54);stroke-width:1.05}.props .prop-egg-sac{fill:rgba(255,248,226,.13);stroke:rgba(29,25,21,.55);stroke-width:1.1}.labels .room-number-badge{fill:#efe4ca;stroke:#1d1915;stroke-width:2;rx:0}.labels text{fill:#1d1915;font-size:13px;font-weight:800;font-family:Inter,ui-sans-serif,system-ui}.labels .room-number{font-size:12px;font-weight:900;letter-spacing:.01em}.labels .room-level-badge{fill:#1d1915;stroke:#efe4ca;stroke-width:1.2;rx:0}.labels .room-level-marker--above .room-level-badge{fill:#efe4ca;stroke:#1d1915}.labels .room-level-marker--above .room-level-text{fill:#1d1915}.labels .room-level-text{fill:#efe4ca;font-size:8px;font-weight:900;letter-spacing:.04em}.corridor-level-shift-labels{pointer-events:none}.corridor-level-shift__badge{fill:#efe4ca;stroke:#1d1915;stroke-width:1.55;rx:0}.corridor-level-shift__text{fill:#1d1915;font-size:8px;font-weight:900;font-family:Inter,ui-sans-serif,system-ui;letter-spacing:.04em}.corridor-level-shift--up .corridor-level-shift__badge{fill:#f4ead1}.corridor-level-shift--down .corridor-level-shift__badge{fill:#d8c49d}.stair-mark--derived-room-level .stair-mark__arrow path{stroke-width:2.45}.labels .room-name{font-size:12px;font-family:Inter,ui-sans-serif,system-ui;font-weight:700;paint-order:stroke;stroke:#efe4ca;stroke-width:4px;stroke-linejoin:round}.editor-overlays path{fill:rgba(122,67,36,0);stroke:rgba(122,67,36,0);stroke-width:0;vector-effect:non-scaling-stroke}.room-hover-highlight{pointer-events:none}.editor-overlays .room-hover-highlight__halo path,.editor-overlays .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.32);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-hover-highlight__edge path,.editor-overlays .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.92);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-selection-highlight{pointer-events:none}.editor-overlays .room-selection-highlight__halo path,.editor-overlays .room-selection-highlight__halo line{fill:none;stroke:rgba(190,64,82,.52);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-selection-highlight__edge path,.editor-overlays .room-selection-highlight__edge line{fill:none;stroke:rgba(240,185,194,.92);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-hover-highlight{pointer-events:none}.editor-overlays .corridor-hover-highlight__halo{fill:none;stroke:rgba(214,184,98,.34);stroke-width:9;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .corridor-hover-highlight__line{fill:none;stroke:rgba(255,231,143,.95);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-drag-handle{cursor:move;pointer-events:all}.editor-overlays .room-drag-handle:hover{fill:rgba(122,67,36,0)}.editor-overlays .room-drag-handle.is-dragging{fill:rgba(122,67,36,0);stroke:rgba(29,25,21,0);stroke-width:0}.wall-hover-zone{stroke:rgba(122,67,36,0);stroke-width:14;stroke-linecap:square;fill:none;cursor:crosshair;pointer-events:stroke}.wall-hover-zone:hover{stroke:rgba(122,67,36,0)}.endpoint-handle{fill:#1d1915;stroke:#efe4ca;stroke-width:2;cursor:grab;pointer-events:all}.endpoint-handle.is-dragging{fill:#7a4324;cursor:grabbing}.waypoint-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:1.5;cursor:grab;pointer-events:all}.waypoint-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.2}.waypoint-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.corridor-hover-zone{fill:rgba(122,67,36,0);stroke:none;cursor:crosshair;pointer-events:all}.corridor-hover-zone:hover{fill:rgba(122,67,36,.12)}.corridor-hover-zone.is-junction:hover{fill:rgba(214,184,98,.22);stroke:rgba(214,184,98,.54);stroke-width:1.2;vector-effect:non-scaling-stroke}.corridor-add-handle{fill:#efe4ca;stroke:#7a4324;stroke-width:2;cursor:crosshair;pointer-events:all}.corridor-add-handle:hover{fill:#7a4324;stroke:#efe4ca}.corridor-add-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.4}.corridor-add-handle.is-junction:hover{fill:#1d1915;stroke:#d6b862}.wall-connect-handle{fill:#7a4324;stroke:#efe4ca;stroke-width:2;cursor:crosshair;pointer-events:all}.wall-connect-handle:hover{fill:#1d1915}.map-access-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:2.1;cursor:grab;pointer-events:all}.map-access-handle:hover{fill:#d6b862}.map-access-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.map-access-handle__icon{fill:none;stroke:#1d1915;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}.connection-preview{stroke:#7a4324;stroke-width:2.4;stroke-dasharray:7 5;stroke-linecap:round;fill:none;vector-effect:non-scaling-stroke;pointer-events:none}.connection-preview__endpoint{fill:#efe4ca;stroke:#7a4324;stroke-width:2;pointer-events:none}.circular-room-surface-cover{pointer-events:none}.level-layer--faded{opacity:.26}.level-layer--active{opacity:1}.room-preview-hotspots{pointer-events:none}.room-preview-hotspot{fill:rgba(214,184,98,0);stroke:rgba(214,184,98,0);stroke-width:0;cursor:pointer;pointer-events:all;outline:none}.room-preview-hotspot:focus-visible{fill:rgba(214,184,98,.18);stroke:rgba(255,231,143,.86);stroke-width:2.4;vector-effect:non-scaling-stroke}.room-preview-hotspot.is-active{fill:rgba(255,231,143,.08)}.room-preview-hotspot.is-hovered{fill:rgba(214,184,98,.10)}.room-preview-hotspots .room-hover-highlight,.room-preview-hotspots .room-selection-highlight{pointer-events:none}.room-preview-hotspots .room-hover-highlight__halo path,.room-preview-hotspots .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.30);stroke-width:7.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-hover-highlight__edge path,.room-preview-hotspots .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.82);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__halo path,.room-preview-hotspots .room-selection-highlight__halo line{fill:none;stroke:rgba(122,67,36,.42);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__edge path,.room-preview-hotspots .room-selection-highlight__edge line{fill:none;stroke:rgba(255,238,242,.92);stroke-width:3.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.paper{fill:#dccaa6}.paper-texture{opacity:.75}.map-grid line{stroke:var(--cruor-map-grid-stroke,rgba(58,46,32,.24));stroke-width:var(--cruor-map-grid-width,1);vector-effect:non-scaling-stroke}.map-grid circle{fill:var(--cruor-map-grid-dot,rgba(58,46,32,.30));r:var(--cruor-map-grid-dot-radius,.86)}.floor-grid line{stroke:var(--cruor-floor-grid-stroke,rgba(29,25,21,.28));stroke-width:var(--cruor-floor-grid-width,1.08);vector-effect:non-scaling-stroke}.floor-grid circle{fill:var(--cruor-floor-grid-dot,rgba(29,25,21,.32));r:var(--cruor-floor-grid-dot-radius,.94)}.grid-style-dotted line{display:none}.grid-style-dashed line{stroke-linecap:round}.floor-fill{fill:#685D61;stroke:none}.floor-speckle circle{fill:rgba(29,25,21,.12)}.floor-grain path{fill:none;stroke:rgba(29,25,21,.11);stroke-width:.7;stroke-linecap:round;vector-effect:non-scaling-stroke}.room-floor-accent{fill:rgba(255,248,226,.26);stroke:none}.corridor-floor-accent{fill:rgba(116,91,57,.075);stroke:none}.organic-floor-accent{fill:rgba(29,25,21,.06);stroke:rgba(29,25,21,.18);stroke-width:1.15;vector-effect:non-scaling-stroke}.shape-detail{fill:none;stroke:rgba(29,25,21,.2);stroke-width:1.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.ritual-floor-ring{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.25;vector-effect:non-scaling-stroke}.corridor-centerline{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.1;stroke-dasharray:2 8;stroke-linecap:round;vector-effect:non-scaling-stroke}.corridor-type-accents{pointer-events:none}.corridor-type-accent{fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-type-narrow__wall-main path,.corridor-type-narrow__wall-sketch path,.corridor-type-secret__wall-main path,.corridor-type-secret__wall-sketch path{fill:none;vector-effect:non-scaling-stroke}.corridor-type-secret__wall-main path{stroke-dasharray:10 10}.corridor-type-secret__wall-sketch path{stroke-dasharray:5 8}.corridor-type-collapsed__scar{stroke:rgba(29,25,21,.34);stroke-width:3.2;stroke-dasharray:4 5}.corridor-type-collapsed__rubble{fill:rgba(29,25,21,.18);stroke:rgba(29,25,21,.34);stroke-width:.85;vector-effect:non-scaling-stroke}.corridor-type-secret__trace{stroke:rgba(29,25,21,.38);stroke-width:2.35;stroke-dasharray:2.4 7.2}.corridor-type-secret__veil{stroke:rgba(255,248,226,.13);stroke-width:6.2;stroke-dasharray:1 9}.corridor-type-gallery__axis{stroke:rgba(255,248,226,.18);stroke-width:8.4}.corridor-type-gallery__ornament{stroke:rgba(29,25,21,.24);stroke-width:1.25}.map-style-cruor .corridor-type-collapsed__scar,.map-style-cruor .corridor-type-gallery__ornament{stroke:rgba(240,215,220,.28)}.map-style-cruor .corridor-type-collapsed__rubble{fill:rgba(240,215,220,.16);stroke:rgba(240,215,220,.3)}.map-style-cruor .corridor-type-gallery__axis{stroke:rgba(240,215,220,.1)}.external-hatching-underlay .halo-buffer{fill:none;stroke:var(--cruor-map-hatch-underlay-stroke,#dccaa6);stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1}.external-hatching path{fill:none;stroke:rgba(42,33,24,.28);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-shadow path{stroke:var(--cruor-map-wall-shadow-stroke,rgba(42,33,24,.32));stroke-width:var(--cruor-map-wall-shadow-width,7.2);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-main path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-breaks path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-break-width,1.45);stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-breaks .crack{stroke:rgba(29,25,21,.58);stroke-width:1.1}.door-cuts .door-opening{stroke:#efe4ca;stroke-width:7;stroke-linecap:square;vector-effect:non-scaling-stroke}.door-cuts .secret-door-opening{stroke:#efe4ca;stroke-width:5;stroke-linecap:square;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}.door-symbols .door-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-wall-sketch{stroke:rgba(29,25,21,.3);stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-panel{fill:#efe4ca;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .secret-door-panel{stroke-dasharray:3 3}.door-symbols .locked-door-panel{stroke-width:2.35}.door-symbols .locked-door-mark line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__main path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__sketch path{fill:none;stroke:rgba(29,25,21,.3);stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__arrow path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.15;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-floor{fill:#efe4ca;stroke:none;pointer-events:none}.corridor-overpass-patches .overpass-corridor-walls path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.map-accesses .map-access-line,.map-accesses .map-access-head-line{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-stem-sketch,.map-accesses .map-access-head-sketch{fill:none;stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.3));stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-label{fill:#1d1915;font-size:8px;font-weight:900;font-family:Inter,ui-sans-serif,system-ui;letter-spacing:.08em;paint-order:stroke;stroke:#efe4ca;stroke-width:2.5px;stroke-linejoin:round}.corridor-junctions .junction-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.0);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-wall-sketch{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.3));stroke-width:var(--cruor-map-wall-sketch-width,1.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-door-panel{fill:#efe4ca;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.props rect,.props circle,.props path,.props line,.props polygon,.props ellipse{fill:none;stroke:rgba(29,25,21,.62);stroke-width:1.35;vector-effect:non-scaling-stroke}.props .prop-fill{fill:rgba(29,25,21,.045)}.props .prop-light-fill{fill:rgba(255,248,226,.16)}.props .prop-fog{fill:rgba(255,248,226,.22);stroke:rgba(29,25,21,.18);stroke-width:1.05}.props .prop-water{fill:rgba(143,161,150,.24);stroke:rgba(29,25,21,.28);stroke-width:1.1}.props .prop-pit{fill:rgba(29,25,21,.12);stroke:rgba(29,25,21,.62);stroke-width:1.4}.props .prop-rubble{fill:rgba(29,25,21,.06)}.props .prop-bones{stroke:rgba(29,25,21,.7);stroke-width:1.15}.props .prop-crack{stroke:rgba(29,25,21,.5);stroke-width:1.05}.props .prop-stairs line{stroke-width:1.05}.props .prop-altar,.props .prop-tomb,.props .prop-shelf{fill:rgba(29,25,21,.045)}.props .prop-context-cue{opacity:.88}.props .prop-context-cue--mine{opacity:.92}.props .prop-context-cue--cave{opacity:.9}.props .prop-context-cue--chapel,.props .prop-context-cue--noble-house{opacity:.82}.props .prop-theme-cue{opacity:.76}.props .prop-theme-cue--sedlec-ossuary,.props .prop-theme-cue--towers-of-silence{opacity:.82}.props .prop-theme-cue--the-mist{opacity:.68}.props .prop-theme-cue--wolf-spiders{opacity:.9}.props .prop-web{stroke:rgba(29,25,21,.54);stroke-width:1.05}.props .prop-egg-sac{fill:rgba(255,248,226,.13);stroke:rgba(29,25,21,.55);stroke-width:1.1}.labels .room-number-badge{fill:#efe4ca;stroke:#1d1915;stroke-width:2;rx:0}.labels text{fill:#1d1915;font-size:13px;font-weight:800;font-family:Inter,ui-sans-serif,system-ui}.labels .room-number{font-size:12px;font-weight:900;letter-spacing:.01em}.labels .room-level-badge{fill:#1d1915;stroke:#efe4ca;stroke-width:1.2;rx:0}.labels .room-level-marker--above .room-level-badge{fill:#efe4ca;stroke:#1d1915}.labels .room-level-marker--above .room-level-text{fill:#1d1915}.labels .room-level-text{fill:#efe4ca;font-size:8px;font-weight:900;letter-spacing:.04em}.corridor-level-shift-labels{pointer-events:none}.corridor-level-shift__badge{fill:#efe4ca;stroke:#1d1915;stroke-width:1.55;rx:0}.corridor-level-shift__text{fill:#1d1915;font-size:8px;font-weight:900;font-family:Inter,ui-sans-serif,system-ui;letter-spacing:.04em}.corridor-level-shift--up .corridor-level-shift__badge{fill:#f4ead1}.corridor-level-shift--down .corridor-level-shift__badge{fill:#d8c49d}.stair-mark--derived-room-level .stair-mark__arrow path{stroke-width:2.45}.labels .room-name{font-size:12px;font-family:Inter,ui-sans-serif,system-ui;font-weight:700;paint-order:stroke;stroke:#efe4ca;stroke-width:4px;stroke-linejoin:round}.editor-overlays path{fill:rgba(122,67,36,0);stroke:rgba(122,67,36,0);stroke-width:0;vector-effect:non-scaling-stroke}.room-hover-highlight{pointer-events:none}.editor-overlays .room-hover-highlight__halo path,.editor-overlays .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.32);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-hover-highlight__edge path,.editor-overlays .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.92);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-selection-highlight{pointer-events:none}.editor-overlays .room-selection-highlight__halo path,.editor-overlays .room-selection-highlight__halo line{fill:none;stroke:rgba(190,64,82,.52);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-selection-highlight__edge path,.editor-overlays .room-selection-highlight__edge line{fill:none;stroke:rgba(240,185,194,.92);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-hover-highlight{pointer-events:none}.editor-overlays .corridor-hover-highlight__halo{fill:none;stroke:rgba(214,184,98,.34);stroke-width:9;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .corridor-hover-highlight__line{fill:none;stroke:rgba(255,231,143,.95);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-drag-handle{cursor:move;pointer-events:all}.editor-overlays .room-drag-handle:hover{fill:rgba(122,67,36,0)}.editor-overlays .room-drag-handle.is-dragging{fill:rgba(122,67,36,0);stroke:rgba(29,25,21,0);stroke-width:0}.wall-hover-zone{stroke:rgba(122,67,36,0);stroke-width:14;stroke-linecap:square;fill:none;cursor:crosshair;pointer-events:stroke}.wall-hover-zone:hover{stroke:rgba(122,67,36,0)}.endpoint-handle{fill:#1d1915;stroke:#efe4ca;stroke-width:2;cursor:grab;pointer-events:all}.endpoint-handle.is-dragging{fill:#7a4324;cursor:grabbing}.waypoint-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:1.5;cursor:grab;pointer-events:all}.waypoint-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.2}.waypoint-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.corridor-hover-zone{fill:rgba(122,67,36,0);stroke:none;cursor:crosshair;pointer-events:all}.corridor-hover-zone:hover{fill:rgba(122,67,36,.12)}.corridor-hover-zone.is-junction:hover{fill:rgba(214,184,98,.22);stroke:rgba(214,184,98,.54);stroke-width:1.2;vector-effect:non-scaling-stroke}.corridor-add-handle{fill:#efe4ca;stroke:#7a4324;stroke-width:2;cursor:crosshair;pointer-events:all}.corridor-add-handle:hover{fill:#7a4324;stroke:#efe4ca}.corridor-add-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.4}.corridor-add-handle.is-junction:hover{fill:#1d1915;stroke:#d6b862}.wall-connect-handle{fill:#7a4324;stroke:#efe4ca;stroke-width:2;cursor:crosshair;pointer-events:all}.wall-connect-handle:hover{fill:#1d1915}.map-access-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:2.1;cursor:grab;pointer-events:all}.map-access-handle:hover{fill:#d6b862}.map-access-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.map-access-handle__icon{fill:none;stroke:#1d1915;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}.connection-preview{stroke:#7a4324;stroke-width:2.4;stroke-dasharray:7 5;stroke-linecap:round;fill:none;vector-effect:non-scaling-stroke;pointer-events:none}.connection-preview__endpoint{fill:#efe4ca;stroke:#7a4324;stroke-width:2;pointer-events:none}.circular-room-surface-cover{pointer-events:none}.level-layer--faded{opacity:.26}.level-layer--active{opacity:1}.room-preview-hotspots{pointer-events:none}.room-preview-hotspot{fill:rgba(214,184,98,0);stroke:rgba(214,184,98,0);stroke-width:0;cursor:pointer;pointer-events:all;outline:none}.room-preview-hotspot:focus-visible{fill:rgba(214,184,98,.18);stroke:rgba(255,231,143,.86);stroke-width:2.4;vector-effect:non-scaling-stroke}.room-preview-hotspot.is-active{fill:rgba(255,231,143,.08)}.room-preview-hotspot.is-hovered{fill:rgba(214,184,98,.10)}.room-preview-hotspots .room-hover-highlight,.room-preview-hotspots .room-selection-highlight{pointer-events:none}.room-preview-hotspots .room-hover-highlight__halo path,.room-preview-hotspots .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.30);stroke-width:7.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-hover-highlight__edge path,.room-preview-hotspots .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.82);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__halo path,.room-preview-hotspots .room-selection-highlight__halo line{fill:none;stroke:rgba(122,67,36,.42);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__edge path,.room-preview-hotspots .room-selection-highlight__edge line{fill:none;stroke:rgba(255,238,242,.92);stroke-width:3.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 
 [data-wall-drawing="precise"] .wall-sketch,[data-wall-drawing="precise"] .wall-breaks{display:none}
 [data-wall-drawing="precise"] .wall-main path,[data-wall-drawing="precise"] .wall-shadow path,[data-wall-drawing="precise"] .door-symbols .door-wall-line,[data-wall-drawing="precise"] .map-accesses .map-access-line,[data-wall-drawing="precise"] .map-accesses .map-access-head-line,[data-wall-drawing="precise"] .corridor-junctions .junction-wall-line{stroke-linecap:square;stroke-linejoin:miter}
@@ -1732,6 +1732,256 @@ function renderGalleryCorridorOrnaments(corridor, cells, gridSize) {
     .filter(Boolean);
 }
 
+function pointDistance(a, b) {
+  if (!a || !b) return 0;
+  return Math.hypot((b.x || 0) - (a.x || 0), (b.y || 0) - (a.y || 0));
+}
+
+function normalizeVector(vector) {
+  const length = Math.hypot(vector?.x || 0, vector?.y || 0);
+  if (!length) return { x: 0, y: 0 };
+  return { x: vector.x / length, y: vector.y / length };
+}
+
+function getSegmentNormal(from, to) {
+  const direction = normalizeVector({ x: to.x - from.x, y: to.y - from.y });
+  return { x: -direction.y, y: direction.x };
+}
+
+function buildPolylinePath(points) {
+  const safePoints = Array.isArray(points) ? points.filter((point) => Number.isFinite(point?.x) && Number.isFinite(point?.y)) : [];
+  if (safePoints.length < 2) return "";
+  return safePoints
+    .map((point, index) => `${index === 0 ? "M" : "L"}${point.x} ${point.y}`)
+    .join("");
+}
+
+function getDoorBoundaryCenterPoint(door) {
+  if (!door) return null;
+  const x1 = Number(door.x1);
+  const y1 = Number(door.y1);
+  const x2 = Number(door.x2);
+  const y2 = Number(door.y2);
+  if (!Number.isFinite(x1) || !Number.isFinite(y1) || !Number.isFinite(x2) || !Number.isFinite(y2)) return null;
+  return { x: (x1 + x2) / 2, y: (y1 + y2) / 2 };
+}
+
+function getCorridorEndpointDoorCenters(corridor, generatedMap) {
+  const doors = (generatedMap?.dungeonMask?.doorSegments || [])
+    .filter((door) => door?.corridorId === corridor?.id)
+    .map((door) => ({ door, point: getDoorBoundaryCenterPoint(door) }))
+    .filter((entry) => entry.point);
+  const byEndpoint = new Map(doors.map((entry) => [entry.door.endpoint || "", entry.point]));
+  return {
+    from: byEndpoint.get("from") || doors[0]?.point || null,
+    to: byEndpoint.get("to") || doors.find((entry) => entry.point !== byEndpoint.get("from"))?.point || doors[1]?.point || null,
+  };
+}
+
+function maybeAddEndpointPoint(points, point, atStart) {
+  if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) return points;
+  const compare = atStart ? points[0] : points[points.length - 1];
+  if (!compare || pointDistance(point, compare) <= 0.01) return points;
+  return atStart ? [point, ...points] : [...points, point];
+}
+
+function getNarrowCorridorCenterlinePoints(corridor, generatedMap, cells, gridSize) {
+  const rawPoints = (Array.isArray(cells) ? cells : [])
+    .map((cell) => getCorridorCellCenter(cell, gridSize))
+    .filter((point) => Number.isFinite(point.x) && Number.isFinite(point.y));
+  let points = rawPoints.filter((point, index) => index === 0 || pointDistance(point, rawPoints[index - 1]) > 0.01);
+  if (points.length < 2) return points;
+
+  const doorCenters = getCorridorEndpointDoorCenters(corridor, generatedMap);
+  [doorCenters.from, doorCenters.to].filter(Boolean).forEach((doorPoint) => {
+    const first = points[0];
+    const last = points[points.length - 1];
+    const attachAtStart = pointDistance(doorPoint, first) <= pointDistance(doorPoint, last);
+    points = maybeAddEndpointPoint(points, doorPoint, attachAtStart);
+  });
+  return points;
+}
+
+function offsetPolylinePoints(points, offset) {
+  if (!Array.isArray(points) || points.length < 2) return [];
+  return points.map((point, index) => {
+    const previous = points[index - 1] || null;
+    const next = points[index + 1] || null;
+    if (!previous && next) {
+      const normal = getSegmentNormal(point, next);
+      return { x: point.x + normal.x * offset, y: point.y + normal.y * offset };
+    }
+    if (previous && !next) {
+      const normal = getSegmentNormal(previous, point);
+      return { x: point.x + normal.x * offset, y: point.y + normal.y * offset };
+    }
+    const previousNormal = getSegmentNormal(previous, point);
+    const nextNormal = getSegmentNormal(point, next);
+    const bisector = normalizeVector({
+      x: previousNormal.x + nextNormal.x,
+      y: previousNormal.y + nextNormal.y,
+    });
+    const denominator = Math.max(0.38, Math.abs(bisector.x * previousNormal.x + bisector.y * previousNormal.y));
+    const miter = offset / denominator;
+    return { x: point.x + bisector.x * miter, y: point.y + bisector.y * miter };
+  });
+}
+
+function buildNarrowCorridorFloorPath(corridor, generatedMap, cells, gridSize) {
+  const centerlinePoints = getNarrowCorridorCenterlinePoints(corridor, generatedMap, cells, gridSize);
+  if (centerlinePoints.length < 2) return "";
+  const offset = gridSize * 0.25;
+  const left = offsetPolylinePoints(centerlinePoints, offset);
+  const right = offsetPolylinePoints(centerlinePoints, -offset).reverse();
+  const polygon = [...left, ...right].filter((point) => Number.isFinite(point?.x) && Number.isFinite(point?.y));
+  if (polygon.length < 3) return "";
+  return `${buildPolylinePath(polygon)}Z`;
+}
+
+function pointsToSegments(points = []) {
+  const safePoints = points.filter((point) => Number.isFinite(point?.x) && Number.isFinite(point?.y));
+  return safePoints.slice(1).map((point, index) => {
+    const previous = safePoints[index];
+    return { x1: previous.x, y1: previous.y, x2: point.x, y2: point.y };
+  });
+}
+
+function buildRoughPointPath(points, config, seedPrefix, variant = "main") {
+  return pointsToSegments(points)
+    .map((segment, index) => createRoughWallPath(segment, config, `${seedPrefix}-${index}`, variant))
+    .filter(Boolean)
+    .join(" ");
+}
+
+function buildNarrowCorridorRailPaths(corridor, generatedMap, cells, gridSize) {
+  const centerlinePoints = getNarrowCorridorCenterlinePoints(corridor, generatedMap, cells, gridSize);
+  const offset = gridSize * 0.25;
+  return [
+    offsetPolylinePoints(centerlinePoints, offset),
+    offsetPolylinePoints(centerlinePoints, -offset),
+  ];
+}
+
+function getCorridorTypeBoundarySegments(corridor, generatedMap, gridSize) {
+  const floorCells = getVisibleCorridorFloorCells(corridor, generatedMap);
+  return computeBoundarySegments(floorCells, gridSize);
+}
+
+function getCorridorTypeWallReplacementSegments(generatedMap) {
+  const config = generatedMap?.config || DEFAULT_CONFIG;
+  const gridSize = config.gridSize || DEFAULT_CONFIG.gridSize;
+  return (Array.isArray(generatedMap?.corridors) ? generatedMap.corridors : []).flatMap((corridor) => {
+    if (!shouldRenderCorridorTypeAccent(corridor)) return [];
+    const type = getCorridorType(corridor);
+    if (type !== "narrow" && type !== "secret") return [];
+    const floorCells = getVisibleCorridorFloorCells(corridor, generatedMap);
+    if (floorCells.length === 0) return [];
+    return getCorridorTypeBoundarySegments(corridor, generatedMap, gridSize);
+  });
+}
+
+function removeCorridorTypeReplacementWalls(walls, generatedMap) {
+  const replacements = getCorridorTypeWallReplacementSegments(generatedMap);
+  if (replacements.length === 0) return walls;
+  return walls.flatMap((wall) => {
+    let parts = [wall];
+    replacements.forEach((replacement) => {
+      parts = parts.flatMap((part) => splitWallSegmentByGap(part, replacement));
+    });
+    return parts;
+  });
+}
+
+function buildRoughSegmentPaths(segments, config, seedPrefix, variant = "main") {
+  return segments
+    .map((segment, index) =>
+      createRoughWallPath(segment, config, `${seedPrefix}-${index}`, variant),
+    )
+    .filter(Boolean)
+    .join(" ");
+}
+
+export function renderCorridorTypeWallAccents(generatedMap) {
+  const corridors = Array.isArray(generatedMap?.corridors) ? generatedMap.corridors : [];
+  const config = generatedMap?.config || DEFAULT_CONFIG;
+  const gridSize = config.gridSize || DEFAULT_CONFIG.gridSize;
+  const rendered = corridors
+    .map((corridor) => {
+      if (!shouldRenderCorridorTypeAccent(corridor)) return null;
+      const type = getCorridorType(corridor);
+      if (type !== "narrow" && type !== "secret") return null;
+      const floorCells = getVisibleCorridorFloorCells(corridor, generatedMap);
+      const cells = getVisibleCorridorTopologyCells(corridor, generatedMap);
+      if (floorCells.length === 0 || cells.length === 0) return null;
+      const wallReplacementSegments = getCorridorTypeBoundarySegments(corridor, generatedMap, gridSize);
+      if (wallReplacementSegments.length === 0) return null;
+
+      if (type === "narrow") {
+        const railPointPaths = buildNarrowCorridorRailPaths(corridor, generatedMap, cells, gridSize);
+        const railMainPaths = railPointPaths.map((points, index) =>
+          buildRoughPointPath(points, config, `corridor-type-narrow-${corridor.id}-rail-${index}`, "main"),
+        ).filter(Boolean);
+        const railSketchPaths = railPointPaths.map((points, index) =>
+          buildRoughPointPath(points, config, `corridor-type-narrow-sketch-${corridor.id}-rail-${index}`, "sketch"),
+        ).filter(Boolean);
+        if (railMainPaths.length < 2) return null;
+        return (
+          <g
+            key={`corridor-type-wall-${corridor.id}`}
+            className={`corridor-type-wall-accent ${getCorridorTypeClassName(corridor)}`}
+            data-corridor-id={corridor.id}
+            data-corridor-type={type}
+            data-corridor-visual-width="half-cell"
+          >
+            <g className="wall-main corridor-type-narrow__wall-main">
+              {railMainPaths.map((path, index) => (
+                <path key={`narrow-rail-main-${corridor.id}-${index}`} d={path} />
+              ))}
+            </g>
+            <g className="wall-sketch corridor-type-narrow__wall-sketch">
+              {railSketchPaths.map((path, index) => (
+                <path key={`narrow-rail-sketch-${corridor.id}-${index}`} d={path} />
+              ))}
+            </g>
+          </g>
+        );
+      }
+
+      const secretMainPath = buildRoughSegmentPaths(
+        wallReplacementSegments,
+        config,
+        `corridor-type-secret-${corridor.id}`,
+        "main",
+      );
+      const secretSketchPath = buildRoughSegmentPaths(
+        wallReplacementSegments,
+        config,
+        `corridor-type-secret-sketch-${corridor.id}`,
+        "sketch",
+      );
+      if (!secretMainPath) return null;
+      return (
+        <g
+          key={`corridor-type-wall-${corridor.id}`}
+          className={`corridor-type-wall-accent ${getCorridorTypeClassName(corridor)}`}
+          data-corridor-id={corridor.id}
+          data-corridor-type={type}
+          data-corridor-wall-style="dashed"
+        >
+          <g className="wall-main corridor-type-secret__wall-main">
+            <path d={secretMainPath} />
+          </g>
+          <g className="wall-sketch corridor-type-secret__wall-sketch">
+            <path d={secretSketchPath || secretMainPath} />
+          </g>
+        </g>
+      );
+    })
+    .filter(Boolean);
+  if (rendered.length === 0) return null;
+  return <g className="corridor-type-wall-accents">{rendered}</g>;
+}
+
 export function renderCorridorTypeAccents(generatedMap) {
   const corridors = Array.isArray(generatedMap?.corridors) ? generatedMap.corridors : [];
   const gridSize = generatedMap?.config?.gridSize || DEFAULT_CONFIG.gridSize;
@@ -1742,19 +1992,7 @@ export function renderCorridorTypeAccents(generatedMap) {
       const cells = getVisibleCorridorTopologyCells(corridor, generatedMap);
       const d = buildVisibleCorridorCenterlinePath(corridor, generatedMap, gridSize);
       if (!d || cells.length < 2) return null;
-      if (type === "narrow") {
-        return (
-          <g
-            key={`corridor-type-${corridor.id}`}
-            className={`corridor-type-accent ${getCorridorTypeClassName(corridor)}`}
-            data-corridor-id={corridor.id}
-            data-corridor-type={type}
-          >
-            <path className={getCorridorTypeClassName(corridor, "inset")} d={d} />
-            <path className={getCorridorTypeClassName(corridor, "edge")} d={d} />
-          </g>
-        );
-      }
+      if (type === "narrow") return null;
       if (type === "collapsed") {
         return (
           <g
@@ -1768,19 +2006,7 @@ export function renderCorridorTypeAccents(generatedMap) {
           </g>
         );
       }
-      if (type === "secret") {
-        return (
-          <g
-            key={`corridor-type-${corridor.id}`}
-            className={`corridor-type-accent ${getCorridorTypeClassName(corridor)}`}
-            data-corridor-id={corridor.id}
-            data-corridor-type={type}
-          >
-            <path className={getCorridorTypeClassName(corridor, "veil")} d={d} />
-            <path className={getCorridorTypeClassName(corridor, "trace")} d={d} />
-          </g>
-        );
-      }
+      if (type === "secret") return null;
       if (type === "gallery") {
         return (
           <g
@@ -1975,24 +2201,38 @@ export function createCorridorSurface(
     gridSizeFallback ||
     DEFAULT_CONFIG.gridSize;
   const floorCells = getVisibleCorridorFloorCells(corridor, generatedMap);
+  const pathCells = getVisibleCorridorTopologyCells(corridor, generatedMap);
   const organicPath = buildOrganicCorridorBoundaryPath(
     corridor,
     generatedMap,
     gridSize,
     "surface",
   );
-  const visualFloorPath = organicPath || buildFloorPath(floorCells, gridSize);
+  const narrowSurface =
+    !organicPath &&
+    getCorridorType(corridor) === "narrow" &&
+    !corridor?.isRoomLink;
+  const narrowFloorPath = narrowSurface
+    ? buildNarrowCorridorFloorPath(corridor, generatedMap, pathCells, gridSize)
+    : "";
+  const visualFloorPath =
+    organicPath ||
+    narrowFloorPath ||
+    buildFloorPath(floorCells, gridSize);
   const organicSurface = Boolean(organicPath);
+  const geometryKind = organicSurface
+    ? "organic-corridor-mask"
+    : narrowFloorPath
+      ? "narrow-corridor-mask"
+      : "corridor-cell-mask";
   return {
     corridorId: corridor.id,
     surfaceKind: isOrganicCorridor(corridor) ? "cave" : "dungeon",
-    kind: organicSurface ? "organic-corridor-mask" : "corridor-cell-mask",
-    geometryKind: organicSurface
-      ? "organic-corridor-mask"
-      : "corridor-cell-mask",
+    kind: geometryKind,
+    geometryKind,
     gridSize,
     floorCells,
-    pathCells: getVisibleCorridorTopologyCells(corridor, generatedMap),
+    pathCells,
     visualFloorPath,
     clipPath: visualFloorPath,
     wallPath: organicSurface
@@ -3244,6 +3484,7 @@ export function renderVisualAccents(generatedMap) {
       </g>
       <g className="corridor-texture">
         {corridors.map((corridor) => {
+          if (getCorridorType(corridor) === "narrow") return null;
           const d = buildVisibleCorridorCenterlinePath(
             corridor,
             generatedMap,
@@ -7554,8 +7795,12 @@ export function getDrawableWallSegments(generatedMap) {
     );
   const corridorWallsNearCircles =
     getCorridorWallSegmentsNearVectorRooms(generatedMap);
+  const replaceableWalls = removeCorridorTypeReplacementWalls(
+    [...gridWalls, ...corridorWallsNearCircles],
+    generatedMap,
+  );
   const baseWalls = trimWallSegmentsAgainstMineCaveOpenings(
-    mergeCollinearWallSegments([...gridWalls, ...corridorWallsNearCircles]),
+    mergeCollinearWallSegments(replaceableWalls),
     generatedMap,
   );
   const openDoorGaps = (generatedMap.dungeonMask.doorSegments || [])
@@ -7710,6 +7955,7 @@ export function renderUnifiedDungeonSurface(generatedMap, gridStyle = "solid", r
       {renderCircleRoomWalls(generatedMap)}
       {renderOrganicCorridorWalls(generatedMap)}
       {renderCrossLevelCorridorOverpasses(generatedMap)}
+      {renderCorridorTypeWallAccents(generatedMap)}
       <g className="door-cuts">
         {dungeonMask.doorSegments.map((door, index) => {
           const doorType = normalizeDoorType(
