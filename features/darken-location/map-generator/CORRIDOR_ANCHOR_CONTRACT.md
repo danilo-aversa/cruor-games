@@ -188,3 +188,56 @@ Pass 2G makes the existing Level View easier to audit without changing physical 
 - the direct site QA scenario `Level View Test` assigns two connected rooms to different levels, switches to the target level, validates active/faded subsets, checks the stair connector remains visible, and restores the previous state.
 
 Pass 2G still does not split cross-level corridors into separate per-level route fragments. That remains a future multi-level routing/export pass.
+
+## Pass 3A Level View UI contract
+
+Pass 3A exposes Level View as a first-class editor control instead of leaving it only inside inspector/debug surfaces:
+
+- the full map workspace topbar includes a compact `Level View` select with `All Levels` plus every level present in the generated map;
+- the same topbar includes a `Fade Other Levels` / `Solo Active Level` toggle so the current level filter is not hidden behind the inspector;
+- the inline Composer map toolbar includes a dedicated layer-group button with a Level View flyout using the same `All Levels`, per-level, `Fade Others`, and `Solo Active` controls;
+- both controls mutate only the UI state (`levelView` and `fadeOtherLevels`) and never mutate manual overrides, room levels, corridor levels, stair metadata, routing, anchors, or geometry;
+- the existing right-click map actions Level submenu remains valid as a secondary access path;
+- controls expose `data-level-view-control`, `data-level-view-value`, and `data-level-view-fade-other-levels` attributes so outerHTML/debug captures can confirm the active UI state directly.
+
+Pass 3A still does not implement per-level physical routing, per-level export splitting, or automatic hiding of cross-level connector geometry beyond the existing active/faded Level View behavior.
+
+## Pass 3B Level/Stair UX polish contract
+
+Pass 3B improves readability of the level/stair system without changing the data model:
+
+- cross-level stair corridors render a compact `↑N` or `↓N` badge near the corridor centerline;
+- `N` is the same rendered stair count used by distributed stair markers, so the label and marker count stay in sync;
+- room level badges expose `data-room-level` and differentiate above/below-zero levels with dedicated classes;
+- stair marker groups expose `data-stair-transition`, marker index/count metadata, and SVG `<title>` labels for debug/inspection;
+- corridor level-shift badges expose `data-corridor-id`, `data-level-delta`, `data-stair-count`, and `data-stair-direction` attributes;
+- the visual labels are derived from existing `fromLevel`, `toLevel`, `levelDelta`, `stairTransition`, and `levelTransition` metadata and never mutate state.
+
+Pass 3B still does not split cross-level corridors into per-level physical route fragments and does not change Level View filtering semantics.
+
+## Pass 3C Export/Import hardening contract
+
+Pass 3C hardens state and SVG export/import without changing generation or editor geometry:
+
+- state export now writes version `3` and keeps the explicit-level model as the durable state model;
+- exported UI state is normalized before writing, including `levelView` and `fadeOtherLevels`;
+- state export includes an `exportManifest` with generated-map counts, manual override counts, available levels, cross-level corridor count, derived stair corridor count, and corridor type histogram;
+- parsing older state files remains supported through `normalizeManualOverrides` and legacy stair-transition normalization;
+- SVG serialization stamps `data-export-mode` and `data-export-player-safe` on the exported root SVG so exports can be audited from the file alone;
+- player SVG export removes labels, editor overlays, secret door hints, and secret corridor accent hints while preserving the underlying structural map geometry;
+- corridor type accent groups expose `data-corridor-id` and `data-corridor-type` so exported SVGs can be inspected and filtered safely.
+
+Pass 3C still does not implement true per-level SVG bundle export, player-safe removal of hidden secret corridor topology, or physical multi-level route splitting. Those remain future export/routing passes.
+
+## Pass 3D Regression audit contract
+
+Pass 3D consolidates the debug recorder and QA runner metadata so the editor canvas and the Composer side panel cannot drift apart again:
+
+- debug listener categories live in `map-generator.debug-options.js` as shared definitions;
+- QA scenario definitions live in the same shared module;
+- the map editor projects those definitions with editor Font Awesome icon names;
+- the Composer debug recorder projects the same definitions with full Composer icon classes and descriptions;
+- `getMapDebugCategory()` is shared by both recorders, so new labels such as room levels or stairs are categorized consistently;
+- the pipeline test now checks the shared category/scenario registry, including `Levels / Stairs`, `Room Level → Stairs Test`, and `Level View Test`.
+
+Pass 3D is intentionally a regression-hardening pass: it does not change routing, render geometry, manual override data, Level View behavior, export/import payloads, or the browser QA scenario implementations.

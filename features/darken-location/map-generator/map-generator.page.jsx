@@ -191,6 +191,12 @@ import {
   validateExportSvgString,
   validateGeneratedMap,
 } from "./map-generator.debug.js";
+import {
+  createDefaultMapDebugCategories,
+  getEditorMapDebugCategories,
+  getEditorMapQaScenarios,
+  getMapDebugCategory,
+} from "./map-generator.debug-options.js";
 
 const SIZE_PRESETS = {
   Tiny: { minW: 3, maxW: 4, minH: 3, maxH: 4 },
@@ -210,26 +216,8 @@ const ROOM_SIZE_MENU_PRESETS = {
 
 const ROOM_LEVEL_MENU_OPTIONS = [-3, -2, -1, 0, 1, 2, 3];
 
-const MAP_DEBUG_CATEGORY_OPTIONS = [
-  { id: "room-move", label: "Room Move", icon: "arrows-up-down-left-right" },
-  { id: "corridor-move", label: "Corridor Move", icon: "route" },
-  { id: "corridor-create", label: "Corridor Create", icon: "draw-polygon" },
-  { id: "levels", label: "Levels / Stairs", icon: "stairs" },
-  { id: "room-style", label: "Shape / Size", icon: "vector-square" },
-  { id: "manual-overrides", label: "Manual Overrides", icon: "pen-to-square" },
-  { id: "generated-map", label: "Generated Map", icon: "map" },
-  { id: "anchor-trace", label: "Anchor Trace", icon: "location-crosshairs" },
-  { id: "performance", label: "Performance", icon: "gauge-high" },
-];
-
-const MAP_DEBUG_SCENARIO_OPTIONS = [
-  { id: "smoke", label: "Smoke Test", icon: "vial-circle-check" },
-  { id: "circle-anchor-sweep", label: "Circle Anchor Test", icon: "circle-nodes" },
-  { id: "corridor-create", label: "Corridor Creation Test", icon: "draw-polygon" },
-  { id: "level-stairs", label: "Room Level → Stairs Test", icon: "stairs" },
-  { id: "level-view", label: "Level View Test", icon: "layer-group" },
-  { id: "room-move-reroute", label: "Room Move + Reroute", icon: "arrows-up-down-left-right" },
-];
+const MAP_DEBUG_CATEGORY_OPTIONS = getEditorMapDebugCategories();
+const MAP_DEBUG_SCENARIO_OPTIONS = getEditorMapQaScenarios();
 
 const MAP_DEBUG_SPEED_OPTIONS = [
   { id: "fast", label: "Fast" },
@@ -237,60 +225,7 @@ const MAP_DEBUG_SPEED_OPTIONS = [
   { id: "slow", label: "Slow" },
 ];
 
-const DEFAULT_MAP_DEBUG_CATEGORIES = MAP_DEBUG_CATEGORY_OPTIONS.reduce(
-  (next, category) => ({ ...next, [category.id]: true }),
-  {}
-);
-
-function getMapDebugCategory(label = "") {
-  const normalized = String(label).toLowerCase();
-  if (normalized.includes("anchor trace")) return "anchor-trace";
-  if (
-    normalized.includes("creatconnection") ||
-    normalized.includes("createconnection") ||
-    normalized.includes("connection draft") ||
-    normalized.includes("wall drag")
-  )
-    return "corridor-create";
-  if (
-    normalized.includes("movedoor") ||
-    normalized.includes("movewaypoint") ||
-    normalized.includes("insertwaypoint") ||
-    normalized.includes("deletewaypoint") ||
-    normalized.includes("corridor handle") ||
-    normalized.includes("waypoint")
-  )
-    return "corridor-move";
-  if (normalized.includes("moveroom") || normalized.includes("room drag")) return "room-move";
-  if (
-    normalized.includes("room style") ||
-    normalized.includes("updateroomstyle") ||
-    normalized.includes("resetroomstyle") ||
-    normalized.includes("shape") ||
-    normalized.includes("size")
-  )
-    return "room-style";
-  if (
-    normalized.includes("level") ||
-    normalized.includes("stair") ||
-    normalized.includes("stairs")
-  )
-    return "levels";
-  if (
-    normalized.includes("manualoverride") ||
-    normalized.includes("manual edit") ||
-    normalized.includes("setmanualoverrides")
-  )
-    return "manual-overrides";
-  if (normalized.includes("generatedmap")) return "generated-map";
-  if (
-    normalized.includes("performance") ||
-    normalized.includes("preview failed") ||
-    normalized.includes("violation")
-  )
-    return "performance";
-  return "performance";
-}
+const DEFAULT_MAP_DEBUG_CATEGORIES = createDefaultMapDebugCategories(MAP_DEBUG_CATEGORY_OPTIONS);
 
 function cloneMapDebugPayload(value) {
   const seen = new WeakSet();
@@ -5051,6 +4986,148 @@ function MapStyleDropdown({
   );
 }
 
+
+function LevelViewToolbarDropdown({
+  open = false,
+  levelView = LEVEL_VIEW_ALL,
+  availableLevels = [],
+  fadeOtherLevels = true,
+  onToggle,
+  onLevelViewChange,
+  onToggleFadeOtherLevels,
+}) {
+  const normalizedLevelView = normalizeLevelView(levelView, availableLevels);
+  const levelLabel =
+    normalizedLevelView === LEVEL_VIEW_ALL
+      ? "All Levels"
+      : `Level ${formatMapLevel(normalizedLevelView)}`;
+  const levelOptions = [
+    { value: LEVEL_VIEW_ALL, label: "All Levels", icon: "layer-group" },
+    ...availableLevels.map((level) => ({
+      value: level,
+      label: `Level ${formatMapLevel(level)}`,
+      icon: level > 0 ? "arrow-up" : level < 0 ? "arrow-down" : "minus",
+    })),
+  ];
+  const triggerRef = useRef(null);
+  const [portalPlacement, setPortalPlacement] = useState(null);
+
+  useEffect(() => {
+    if (!open) {
+      setPortalPlacement(null);
+      return undefined;
+    }
+
+    let frame = 0;
+    const updatePlacement = () => {
+      frame = 0;
+      setPortalPlacement(getStyleMenuPortalPlacement(triggerRef.current));
+    };
+
+    updatePlacement();
+    const schedulePlacement = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(updatePlacement);
+    };
+
+    window.addEventListener("resize", schedulePlacement);
+    window.addEventListener("scroll", schedulePlacement, true);
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", schedulePlacement);
+      window.removeEventListener("scroll", schedulePlacement, true);
+    };
+  }, [open]);
+
+  const levelPanel = open ? (
+    <span
+      className="location-map-toolbar__style-panel location-map-toolbar__level-view-panel cruor-ui-panel-surface"
+      data-style-menu="root"
+      data-style-floating="portal"
+      data-level-view-menu="toolbar"
+      data-level-view-value={String(normalizedLevelView)}
+      data-level-view-fade-other-levels={fadeOtherLevels ? "true" : "false"}
+      role="menu"
+      aria-label="Level View controls"
+      style={
+        portalPlacement
+          ? {
+              position: "fixed",
+              top: `${portalPlacement.top}px`,
+              right: "auto",
+              left: `${portalPlacement.left}px`,
+            }
+          : { position: "fixed", visibility: "hidden" }
+      }
+      onMouseDown={(event) => event.stopPropagation()}
+    >
+      <span className="location-map-toolbar__style-subtitle">Visible Level</span>
+      <span
+        className="location-map-toolbar__style-options location-map-toolbar__style-options--compact"
+        data-level-view-options="true"
+      >
+        {levelOptions.map((option) => (
+          <MapStyleOptionButton
+            key={`toolbar-level-view-${option.value}`}
+            icon={option.icon}
+            label={option.label}
+            active={String(normalizedLevelView) === String(option.value)}
+            onClick={() => onLevelViewChange?.(option.value)}
+          />
+        ))}
+      </span>
+      <span className="location-map-toolbar__style-subtitle">Other Levels</span>
+      <span className="location-map-toolbar__style-options location-map-toolbar__style-options--compact">
+        <MapStyleOptionButton
+          icon="circle-half-stroke"
+          label="Fade Others"
+          active={fadeOtherLevels}
+          onClick={() => {
+            if (!fadeOtherLevels) onToggleFadeOtherLevels?.();
+          }}
+        />
+        <MapStyleOptionButton
+          icon="eye-slash"
+          label="Solo Active"
+          active={!fadeOtherLevels}
+          onClick={() => {
+            if (fadeOtherLevels) onToggleFadeOtherLevels?.();
+          }}
+        />
+      </span>
+    </span>
+  ) : null;
+
+  return (
+    <>
+      <button
+        ref={triggerRef}
+        type="button"
+        className={cx(
+          "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary location-map-toolbar__level-view-trigger",
+          open && "is-active",
+          normalizedLevelView !== LEVEL_VIEW_ALL && "has-active-level-view"
+        )}
+        data-level-view-control="toolbar"
+        data-level-view-value={String(normalizedLevelView)}
+        data-level-view-fade-other-levels={fadeOtherLevels ? "true" : "false"}
+        {...getGenericTooltipAttrs("Level View", `Currently showing ${levelLabel}.`)}
+        aria-label={`Level View: ${levelLabel}`}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        onMouseDown={suppressToolbarTextSelection}
+        onClick={onToggle}
+      >
+        <i className="fa-solid fa-layer-group" aria-hidden="true" />
+        <span className="sr-only">{levelLabel}</span>
+      </button>
+      {levelPanel && typeof document !== "undefined"
+        ? createPortal(levelPanel, document.body)
+        : null}
+    </>
+  );
+}
+
 function InlineMapEditorToolbar({
   showGrid = true,
   showNames = false,
@@ -5068,6 +5145,9 @@ function InlineMapEditorToolbar({
   crosshatchOpacity = 0.72,
   wallDrawingStyle = "drawn",
   hatchShadowColor = "default",
+  levelView = LEVEL_VIEW_ALL,
+  availableLevels = [],
+  fadeOtherLevels = true,
   onRefreshFromComposer,
   onUndo,
   onRedo,
@@ -5086,10 +5166,13 @@ function InlineMapEditorToolbar({
   onCrosshatchOpacityChange,
   onWallDrawingStyleChange,
   onHatchShadowColorChange,
+  onLevelViewChange,
+  onToggleFadeOtherLevels,
 }) {
   const [toolbarTarget, setToolbarTarget] = useState(null);
   const [mapMenuOpen, setMapMenuOpen] = useState(false);
   const [styleMenuOpen, setStyleMenuOpen] = useState(false);
+  const [levelViewMenuOpen, setLevelViewMenuOpen] = useState(false);
   const toolbarToolsRef = useRef(null);
 
   useEffect(() => {
@@ -5112,23 +5195,23 @@ function InlineMapEditorToolbar({
   });
 
   useEffect(() => {
-    if ((!mapMenuOpen && !styleMenuOpen) || typeof document === "undefined") return undefined;
+    if ((!mapMenuOpen && !styleMenuOpen && !levelViewMenuOpen) || typeof document === "undefined")
+      return undefined;
 
     const closeIfOutside = (event) => {
       if (isEventInsideNode(event, toolbarToolsRef.current)) return;
-      if (
-        styleMenuOpen &&
-        event.target?.closest?.(".location-map-toolbar__style-panel[data-style-menu]")
-      ) {
+      if (event.target?.closest?.(".location-map-toolbar__style-panel[data-style-menu]")) {
         return;
       }
       setMapMenuOpen(false);
       setStyleMenuOpen(false);
+      setLevelViewMenuOpen(false);
     };
     const closeOnEscape = (event) => {
       if (event.key !== "Escape") return;
       setMapMenuOpen(false);
       setStyleMenuOpen(false);
+      setLevelViewMenuOpen(false);
     };
 
     document.addEventListener("pointerdown", closeIfOutside, true);
@@ -5139,7 +5222,7 @@ function InlineMapEditorToolbar({
       document.removeEventListener("focusin", closeIfOutside, true);
       document.removeEventListener("keydown", closeOnEscape, true);
     };
-  }, [mapMenuOpen, styleMenuOpen]);
+  }, [mapMenuOpen, styleMenuOpen, levelViewMenuOpen]);
 
   if (!toolbarTarget) return null;
 
@@ -5230,6 +5313,7 @@ function InlineMapEditorToolbar({
           onToggle={() => {
             setStyleMenuOpen((open) => !open);
             setMapMenuOpen(false);
+            setLevelViewMenuOpen(false);
           }}
           onVisualStyleChange={onVisualStyleChange}
           onGridStyleChange={onGridStyleChange}
@@ -5240,6 +5324,19 @@ function InlineMapEditorToolbar({
           onCrosshatchOpacityChange={onCrosshatchOpacityChange}
           onWallDrawingStyleChange={onWallDrawingStyleChange}
           onHatchShadowColorChange={onHatchShadowColorChange}
+        />
+        <LevelViewToolbarDropdown
+          open={levelViewMenuOpen}
+          levelView={levelView}
+          availableLevels={availableLevels}
+          fadeOtherLevels={fadeOtherLevels}
+          onToggle={() => {
+            setLevelViewMenuOpen((open) => !open);
+            setStyleMenuOpen(false);
+            setMapMenuOpen(false);
+          }}
+          onLevelViewChange={onLevelViewChange}
+          onToggleFadeOtherLevels={onToggleFadeOtherLevels}
         />
       </span>
       <button
@@ -5256,6 +5353,7 @@ function InlineMapEditorToolbar({
         onClick={() => {
           setMapMenuOpen((open) => !open);
           setStyleMenuOpen(false);
+          setLevelViewMenuOpen(false);
         }}
       >
         <i className="fa-solid fa-ellipsis" aria-hidden="true" />
@@ -10535,6 +10633,9 @@ export default function CruorMapGeneratorMvp({
           crosshatchOpacity={crosshatchOpacity}
           wallDrawingStyle={wallDrawingStyle}
           hatchShadowColor={hatchShadowColor}
+          levelView={levelView}
+          availableLevels={availableLevels}
+          fadeOtherLevels={fadeOtherLevels}
           onRefreshFromComposer={onRefreshFromComposer}
           onUndo={undoManualEdit}
           onRedo={redoManualEdit}
@@ -10558,6 +10659,8 @@ export default function CruorMapGeneratorMvp({
           onHatchShadowColorChange={(value) =>
             setHatchShadowColor(normalizeHatchShadowColor(value))
           }
+          onLevelViewChange={(value) => setLevelView(normalizeLevelView(value, availableLevels))}
+          onToggleFadeOtherLevels={() => setFadeOtherLevels((value) => !value)}
           onResetEdits={() => {
             setManualLayoutSeed("");
             manualLayoutGeometryRef.current = null;
@@ -10723,6 +10826,50 @@ export default function CruorMapGeneratorMvp({
                 <span>{generatedMap.regions.length} regions</span>
               )}
               <span>{generatedMap.corridors.length} connections</span>
+              <label
+                className="map-canvas-topbar__level-view"
+                data-level-view-control="topbar"
+                data-level-view-value={String(normalizeLevelView(levelView, availableLevels))}
+              >
+                <span className="sr-only">Level View</span>
+                <i className="fa-solid fa-layer-group" aria-hidden="true" />
+                <select
+                  className="control-select cruor-select"
+                  aria-label="Level View"
+                  value={String(normalizeLevelView(levelView, availableLevels))}
+                  onChange={(event) =>
+                    setLevelView(normalizeLevelView(event.target.value, availableLevels))
+                  }
+                >
+                  <option value={LEVEL_VIEW_ALL}>All Levels</option>
+                  {availableLevels.map((level) => (
+                    <option key={`topbar-level-${level}`} value={String(level)}>
+                      Level {formatMapLevel(level)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button
+                type="button"
+                className={cx(
+                  "map-tool-button map-canvas-topbar__level-fade cruor-ui-control-surface cruor-button cruor-button--icon",
+                  fadeOtherLevels && "is-active"
+                )}
+                data-level-view-fade-toggle="topbar"
+                data-level-view-fade-other-levels={fadeOtherLevels ? "true" : "false"}
+                {...getGenericTooltipAttrs(
+                  fadeOtherLevels ? "Fade Other Levels" : "Solo Active Level",
+                  "Choose whether inactive levels stay visible as a faded context layer."
+                )}
+                aria-label={fadeOtherLevels ? "Fade other levels" : "Solo active level"}
+                aria-pressed={Boolean(fadeOtherLevels)}
+                onClick={() => setFadeOtherLevels((value) => !value)}
+              >
+                <i
+                  className={fadeOtherLevels ? "fa-solid fa-circle-half-stroke" : "fa-solid fa-eye-slash"}
+                  aria-hidden="true"
+                />
+              </button>
               <button
                 type="button"
                 className="map-tool-button map-inspector-toggle cruor-ui-control-surface cruor-button cruor-button--icon"

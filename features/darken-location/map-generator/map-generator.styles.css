@@ -3317,3 +3317,58 @@
   line-height: 1;
   transform: none;
 }
+
+/* Pass 3A: visible Level View controls. */
+.cruor-map-workspace .map-canvas-topbar__level-view {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  height: 32px;
+  padding: 0 7px;
+  border: 1px solid var(--cruor-color-r208-g162-b170-a160, rgba(208, 162, 170, 0.16));
+  background: var(--cruor-color-black-a180, rgba(0, 0, 0, 0.18));
+  color: var(--cruor-color-milk-a820, rgba(255, 238, 242, 0.82));
+}
+
+.cruor-map-workspace .map-canvas-topbar__level-view i {
+  color: var(--cruor-color-hex-b33b4e);
+  font-size: 12px;
+}
+
+.cruor-map-workspace .map-canvas-topbar__level-view .control-select {
+  width: auto;
+  min-width: 118px;
+  height: 26px;
+  padding: 0 24px 0 8px;
+  border: 0;
+  background-color: transparent;
+  color: inherit;
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cruor-map-workspace .map-canvas-topbar__level-fade.is-active i,
+.location-map-toolbar__level-view-trigger.has-active-level-view i {
+  color: var(--cruor-color-hex-f0b3be, #f0b3be);
+}
+
+.location-map-toolbar__level-view-panel[data-style-floating="portal"] {
+  width: min(258px, calc(100vw - 48px));
+  min-width: 224px;
+  max-width: min(258px, calc(100vw - 24px));
+  max-height: min(520px, calc(100dvh - 24px));
+  overflow: auto;
+}
+
+.location-map-toolbar__level-view-panel > .location-map-toolbar__style-subtitle,
+.location-map-toolbar__level-view-panel > .location-map-toolbar__style-options {
+  margin-right: 8px;
+  margin-left: 8px;
+}
+
+.location-map-toolbar__level-view-panel .location-map-toolbar__style-option {
+  min-height: 36px;
+}

@@ -7,31 +7,16 @@ import {
   isSlotInScope,
 } from "../model/location-composer-selectors.js";
 import { getLocationPlaceFrame, getRoomProgramMetrics } from "../model/location-room-program.js";
+import {
+  createDefaultMapDebugCategories,
+  getComposerMapDebugCategories,
+  getComposerMapQaScenarios,
+  getMapDebugCategory,
+} from "../../map-generator/map-generator.debug-options.js";
 
-
-const MAP_DEBUG_CATEGORY_OPTIONS = [
-  { id: "room-move", label: "Room Move", icon: "fa-solid fa-up-down-left-right", description: "Room drag, room position and room movement events." },
-  { id: "corridor-move", label: "Corridor Move", icon: "fa-solid fa-route", description: "Existing corridor endpoint, door and waypoint movement events." },
-  { id: "corridor-create", label: "Corridor Create", icon: "fa-solid fa-plus", description: "New corridor drafts, target acquisition and commit events." },
-  { id: "room-style", label: "Shape / Size", icon: "fa-solid fa-shapes", description: "Room shape, size and style override events." },
-  { id: "manual-overrides", label: "Manual Overrides", icon: "fa-solid fa-sliders", description: "Manual override state snapshots and mutations." },
-  { id: "generated-map", label: "Generated Map", icon: "fa-solid fa-map", description: "Generated map snapshots, regions, corridors and accesses." },
-  { id: "anchor-trace", label: "Anchor Trace", icon: "fa-solid fa-location-dot", description: "Anchor snap, release and endpoint trace events." },
-  { id: "performance", label: "Performance", icon: "fa-solid fa-gauge-high", description: "Runner, lifecycle, timing and diagnostic events." },
-];
-
-const DEFAULT_MAP_DEBUG_CATEGORIES = MAP_DEBUG_CATEGORY_OPTIONS.reduce(
-  (next, category) => ({ ...next, [category.id]: true }),
-  {},
-);
-
-const MAP_QA_SCENARIO_OPTIONS = [
-  { id: "smoke", label: "Smoke Test", icon: "fa-solid fa-vial", description: "Run a short map-edit sanity pass." },
-  { id: "circle-anchor-sweep", label: "Circle Anchor Test", icon: "fa-regular fa-circle-dot", description: "Move a circular-room corridor endpoint across several anchors." },
-  { id: "corridor-create", label: "Corridor Creation Test", icon: "fa-solid fa-diagram-project", description: "Create or reuse a corridor and verify endpoint stability." },
-  { id: "room-move-reroute", label: "Room Move + Reroute", icon: "fa-solid fa-arrows-to-circle", description: "Move a room and verify corridors are not duplicated." },
-];
-
+const MAP_DEBUG_CATEGORY_OPTIONS = getComposerMapDebugCategories();
+const DEFAULT_MAP_DEBUG_CATEGORIES = createDefaultMapDebugCategories(MAP_DEBUG_CATEGORY_OPTIONS);
+const MAP_QA_SCENARIO_OPTIONS = getComposerMapQaScenarios();
 
 function getGenericTooltipAttrs(label, description = "") {
   const attrs = {
@@ -63,19 +48,6 @@ function readStoredMapDebugMode() {
     void error;
     return false;
   }
-}
-
-function getMapDebugCategory(label = "") {
-  const normalized = String(label).toLowerCase();
-  if (normalized.includes("anchor trace")) return "anchor-trace";
-  if (normalized.includes("createconnection") || normalized.includes("connection draft") || normalized.includes("wall drag")) return "corridor-create";
-  if (normalized.includes("movedoor") || normalized.includes("movewaypoint") || normalized.includes("insertwaypoint") || normalized.includes("deletewaypoint") || normalized.includes("corridor handle") || normalized.includes("waypoint")) return "corridor-move";
-  if (normalized.includes("moveroom") || normalized.includes("room drag")) return "room-move";
-  if (normalized.includes("room style") || normalized.includes("updateroomstyle") || normalized.includes("resetroomstyle") || normalized.includes("shape") || normalized.includes("size")) return "room-style";
-  if (normalized.includes("manualoverride") || normalized.includes("manual edit") || normalized.includes("setmanualoverrides")) return "manual-overrides";
-  if (normalized.includes("generatedmap") || normalized.includes("generated map")) return "generated-map";
-  if (normalized.includes("performance") || normalized.includes("preview failed") || normalized.includes("violation")) return "performance";
-  return "performance";
 }
 
 function cloneMapDebugPayload(value) {
@@ -258,6 +230,7 @@ function MapDebugRecorderPanel({
               className={getIconToggleClass(active)}
               aria-label={`${active ? "Disable" : "Enable"} ${category.label} logging`}
               aria-pressed={active}
+              data-debug-category={category.id}
               onClick={() => onToggleCategory(category.id)}
               {...getGenericTooltipAttrs(category.label, category.description)}
             >
@@ -304,6 +277,7 @@ function MapDebugRecorderPanel({
               key={scenario.id}
               type="button"
               className="map-debug-recorder__runner-button"
+              data-debug-scenario={scenario.id}
               onClick={() => onQaScenarioRun?.(scenario.id)}
               disabled={qaRunning}
               {...getGenericTooltipAttrs(scenario.label, scenario.description)}

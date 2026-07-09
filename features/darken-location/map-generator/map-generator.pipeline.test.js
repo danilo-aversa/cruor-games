@@ -8,13 +8,21 @@ import {
   SVG_STYLE,
   createLevelFilteredMap,
   createStairDirectionArrowSegments,
+  getCorridorLevelShiftDescription,
+  getCorridorLevelShiftLabel,
   getCorridorStairMarkerVirtualDoors,
   getCorridorTypeClassName,
   getRenderedCorridorStairMarkerCount,
   getRoomLevelBadgeLabel,
 } from "./map-generator.render.jsx";
 import { generateMap } from "./map-generator.pipeline.js";
-import { buildMapStatePayload, parseMapStatePayload } from "./map-generator.export.js";
+import {
+  buildMapStatePayload,
+  createMapStateExportManifest,
+  normalizeMapUiState,
+  parseMapStatePayload,
+  serializeSvg,
+} from "./map-generator.export.js";
 import {
   createMapSignature,
   runGoldenSeedChecks,
@@ -24,6 +32,16 @@ import {
   createEditorStairLevelOverrides,
   stairTransitionKey,
 } from "./map-generator.state.js";
+import {
+  MAP_DEBUG_CATEGORY_DEFINITIONS,
+  MAP_QA_SCENARIO_DEFINITIONS,
+  createDefaultMapDebugCategories,
+  getComposerMapDebugCategories,
+  getComposerMapQaScenarios,
+  getEditorMapDebugCategories,
+  getEditorMapQaScenarios,
+  getMapDebugCategory,
+} from "./map-generator.debug-options.js";
 
 function buildConfig(overrides = {}) {
   return {
@@ -44,6 +62,28 @@ describe("map generator pipeline", () => {
     expect(generatedMap.corridors.length).toBeGreaterThan(0);
     expect(generatedMap.dungeonMask.floorCells.length).toBeGreaterThan(0);
     expect(generatedMap.dungeonMask.wallSegments.length).toBeGreaterThan(0);
+  });
+
+  test("keeps map debug runner options centralized for editor and composer", () => {
+    const categoryIds = MAP_DEBUG_CATEGORY_DEFINITIONS.map((category) => category.id);
+    const scenarioIds = MAP_QA_SCENARIO_DEFINITIONS.map((scenario) => scenario.id);
+
+    expect(new Set(categoryIds).size).toBe(categoryIds.length);
+    expect(new Set(scenarioIds).size).toBe(scenarioIds.length);
+    expect(categoryIds).toContain("levels");
+    expect(scenarioIds).toEqual(
+      expect.arrayContaining(["smoke", "circle-anchor-sweep", "corridor-create", "level-stairs", "level-view", "room-move-reroute"]),
+    );
+
+    expect(getEditorMapQaScenarios().find((scenario) => scenario.id === "level-view")?.icon).toBe("layer-group");
+    expect(getComposerMapQaScenarios().find((scenario) => scenario.id === "level-view")?.icon).toBe("fa-solid fa-layer-group");
+    expect(getEditorMapDebugCategories().find((category) => category.id === "levels")?.icon).toBe("stairs");
+    expect(getComposerMapDebugCategories().find((category) => category.id === "levels")?.icon).toBe("fa-solid fa-stairs");
+    expect(createDefaultMapDebugCategories(getEditorMapDebugCategories()).levels).toBe(true);
+
+    expect(getMapDebugCategory("Set room level override")).toBe("levels");
+    expect(getMapDebugCategory("CreateConnection draft committed")).toBe("corridor-create");
+    expect(getMapDebugCategory("MoveWaypoint applied")).toBe("corridor-move");
   });
 
   test("assigns advanced corridor type metadata without changing topology", () => {
@@ -197,6 +237,15 @@ describe("map generator pipeline", () => {
     );
     expect(getRenderedCorridorStairMarkerCount(corridor)).toBe(3);
     expect(getCorridorStairMarkerVirtualDoors(corridor, generatedMap)).toHaveLength(3);
+    expect(getCorridorLevelShiftLabel(corridor)).toBe("↓3");
+    expect(getCorridorLevelShiftDescription(corridor)).toContain("Level 0 to Level -3");
+    expect(getCorridorStairMarkerVirtualDoors(corridor, generatedMap)[0]).toEqual(
+      expect.objectContaining({
+        derivedRoomLevelStair: true,
+        markerIndex: 0,
+        markerCount: 3,
+      }),
+    );
   });
 
   test("filters level views and labels nonzero room levels", () => {
@@ -233,6 +282,8 @@ describe("map generator pipeline", () => {
     expect(inactiveRegionIds).toContain("region-1");
     expect(getRoomLevelBadgeLabel(targetRegion)).toBe("L-2");
     expect(SVG_STYLE).toContain(".labels .room-level-badge");
+    expect(SVG_STYLE).toContain(".corridor-level-shift__badge");
+    expect(MAP_VISUAL_STYLE).toContain(".map-style-cruor .corridor-level-shift__badge");
     expect(visibleStairCorridor).toEqual(
       expect.objectContaining({
         crossLevel: true,
@@ -456,6 +507,97 @@ describe("map generator pipeline", () => {
       "manual-edge-room-a-room-b-1",
     ]);
     expect(next.filter((edge) => edge.from === "room-a" && edge.to === "room-b")).toHaveLength(2);
+  });
+
+  test("hardens map state export manifest and level UI state", () => {
+    const config = buildConfig({ seed: "state-export-manifest", roomCount: 5 });
+    const manualCorridorId = "manual-edge-region-1-region-2-export-manifest";
+    const manualOverrides = {
+      corridorTypes: {
+        [manualCorridorId]: "secret",
+      },
+      levels: {
+        regions: {
+          "region-1": 0,
+          "region-2": -2,
+        },
+      },
+      customConnections: [
+        { id: manualCorridorId, from: "region-1", to: "region-2", kind: "manual", locked: true },
+      ],
+    };
+    const generatedMap = generateMap(config, manualOverrides);
+    const manifest = createMapStateExportManifest(
+      config,
+      manualOverrides,
+      generatedMap,
+      { levelView: -2, fadeOtherLevels: false },
+    );
+    const payload = buildMapStatePayload(
+      config,
+      manualOverrides,
+      { levelView: -2, fadeOtherLevels: false },
+      generatedMap,
+    );
+    const parsed = parseMapStatePayload(JSON.stringify(payload));
+
+    expect(normalizeMapUiState({ levelView: 99 }, generatedMap).levelView).toBe("all");
+    expect(manifest.schema).toBe("cruor-map-generator-export-manifest");
+    expect(manifest.levelView).toBe(-2);
+    expect(manifest.fadeOtherLevels).toBe(false);
+    expect(manifest.levels.available).toContain(-2);
+    expect(manifest.counts.manualCorridorTypes).toBe(1);
+    expect(manifest.counts.manualRoomLevels).toBe(2);
+    expect(manifest.counts.crossLevelCorridors).toBeGreaterThan(0);
+    expect(manifest.counts.derivedStairCorridors).toBeGreaterThan(0);
+    expect(manifest.corridorTypes.secret).toBeGreaterThan(0);
+    expect(payload.version).toBe(3);
+    expect(payload.exportManifest).toEqual(manifest);
+    expect(parsed.uiState.levelView).toBe(-2);
+    expect(parsed.uiState.fadeOtherLevels).toBe(false);
+    expect(parsed.exportManifest.levelView).toBe(-2);
+  });
+
+  test("serializes SVG export modes and strips player-only secret hints", () => {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("id", "cruor-map-svg");
+    svg.setAttribute("data-level-view", "-1");
+
+    const editor = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    editor.setAttribute("class", "editor-overlays");
+    editor.appendChild(document.createElementNS("http://www.w3.org/2000/svg", "path"));
+    svg.appendChild(editor);
+
+    const labels = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    labels.setAttribute("class", "labels");
+    svg.appendChild(labels);
+
+    const secretCorridor = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    secretCorridor.setAttribute("class", "corridor-type-accent corridor-type-secret");
+    secretCorridor.setAttribute("data-corridor-type", "secret");
+    svg.appendChild(secretCorridor);
+
+    const secretDoor = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    secretDoor.setAttribute("class", "secret-door-opening");
+    svg.appendChild(secretDoor);
+
+    const gm = serializeSvg(svg, { mode: "gm" });
+    const player = serializeSvg(svg, {
+      mode: "player",
+      hideSecretDoors: true,
+      hideSecretCorridorHints: true,
+      removeLabels: true,
+    });
+
+    expect(gm).toContain('data-export-mode="gm"');
+    expect(gm).toContain("corridor-type-secret");
+    expect(player).toContain('data-export-mode="player"');
+    expect(player).toContain('data-export-player-safe="true"');
+    expect(player).not.toContain("editor-overlays");
+    expect(player).not.toContain('class="labels"');
+    expect(player).not.toContain("corridor-type-secret");
+    expect(player).not.toContain("secret-door-opening");
+    expect(player).toContain('data-level-view="-1"');
   });
 
   test("preserves manual overrides through map state export and import", () => {
