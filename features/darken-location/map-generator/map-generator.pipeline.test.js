@@ -116,21 +116,57 @@ describe("map generator pipeline", () => {
     expect(composerPanel).toContain("data-debug-category={category.id}");
   });
 
-  test("assigns advanced corridor type metadata without changing topology", () => {
-    const config = buildConfig({ seed: "corridor-type-contract", roomCount: 7 });
-    const generatedMap = generateMap(config);
+  test("generates normal corridor type metadata by default without changing topology", () => {
+    const seeds = [
+      "corridor-type-contract",
+      "generated-secret-role-normalized",
+      "generated-narrow-role-normalized",
+    ];
+
+    seeds.forEach((seed) => {
+      const config = buildConfig({ seed, roomCount: 7 });
+      const generatedMap = generateMap(config);
+      const validation = validateGeneratedMap(generatedMap, config);
+
+      expect(validation.passed, validation.errors.join("\n")).toBe(true);
+      expect(generatedMap.corridors.length).toBeGreaterThan(0);
+      generatedMap.corridors.forEach((corridor) => {
+        expect(corridor.corridorType).toBe("normal");
+        expect(corridor.corridorRenderProfile).toEqual(
+          expect.objectContaining({ type: "normal" }),
+        );
+        expect(Array.isArray(corridor.floorCells)).toBe(true);
+        expect(Array.isArray(corridor.pathCells)).toBe(true);
+      });
+    });
+  });
+
+  test("can opt into generated corridor type inference for future generator passes", () => {
+    const config = buildConfig({
+      seed: "corridor-type-contract-opt-in",
+      roomCount: 5,
+      enableGeneratedCorridorTypes: true,
+    });
+    const inferredCorridorId = "manual-edge-region-1-region-2-inferred-secret";
+    const generatedMap = generateMap(config, {
+      customConnections: [
+        {
+          id: inferredCorridorId,
+          from: "region-1",
+          to: "region-2",
+          kind: "secret",
+          locked: true,
+        },
+      ],
+    });
     const validation = validateGeneratedMap(generatedMap, config);
+    const inferredCorridor = generatedMap.corridors.find(
+      (corridor) => corridor.id === inferredCorridorId,
+    );
 
     expect(validation.passed, validation.errors.join("\n")).toBe(true);
-    expect(generatedMap.corridors.length).toBeGreaterThan(0);
-    generatedMap.corridors.forEach((corridor) => {
-      expect(["normal", "narrow", "collapsed", "secret", "gallery"]).toContain(corridor.corridorType);
-      expect(corridor.corridorRenderProfile).toEqual(
-        expect.objectContaining({ type: corridor.corridorType }),
-      );
-      expect(Array.isArray(corridor.floorCells)).toBe(true);
-      expect(Array.isArray(corridor.pathCells)).toBe(true);
-    });
+    expect(inferredCorridor).toBeTruthy();
+    expect(inferredCorridor.corridorType).toBe("secret");
   });
 
   test("manual corridor type overrides win over inferred corridor types", () => {

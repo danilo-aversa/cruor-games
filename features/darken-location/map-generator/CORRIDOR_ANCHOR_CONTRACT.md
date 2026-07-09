@@ -80,9 +80,10 @@ Rules:
 
 1. Every final corridor must expose a normalized `corridorType`.
 2. Every final corridor must expose a matching `corridorRenderProfile.type`.
-3. Manual overrides in `manualOverrides.corridorTypes` win over inferred types.
-4. Type inference must not mutate `floorCells`, `pathCells`, doors, anchors, level metadata, or connectivity.
-5. `stairs` are not a corridor type. Stairs remain a level-transition concept and are handled by the level/stair contract.
+3. Manual overrides in `manualOverrides.corridorTypes` win over generated/default types.
+4. Until generated corridor-type inference is explicitly re-enabled, generator-authored corridors default to `normal`; `narrow` and `secret` remain valid editor-authored values.
+5. Type assignment must not mutate `floorCells`, `pathCells`, doors, anchors, level metadata, or connectivity.
+6. `stairs` are not a corridor type. Stairs remain a level-transition concept and are handled by the level/stair contract.
 
 Pass 2B adds SVG visual accents for corridor types while preserving the topology contract:
 
@@ -96,8 +97,8 @@ These accents must never mutate `floorCells`, `pathCells`, doors, anchors, level
 Pass 2C adds editor controls for the same contract:
 
 - corridor type can be set from corridor point, waypoint, and endpoint context menus;
-- setting `normal` is an explicit manual override and may override inferred `secret`, `collapsed`, or `gallery`;
-- `Reset Type` removes the manual override and returns the corridor to inference;
+- setting `normal` is an explicit manual override and may override any generated/default type;
+- `Reset Type` removes the manual override and returns the corridor to the current generator default (`normal` until generated type inference is re-enabled);
 - deleting a corridor must also remove its `manualOverrides.corridorTypes[corridorId]` entry;
 - editor controls must only mutate `manualOverrides.corridorTypes`; they must not mutate corridor topology, doors, anchors, levels, or stairs.
 
@@ -264,35 +265,3 @@ The broader local gate is:
 ```bash
 npm run qa:dark-places:full
 ```
-
-## Pass 4B corridor render correction contract
-
-Pass 4B corrects the visual grammar for manually selected corridor types without changing corridor topology:
-
-- `narrow` remains a full-cell logical corridor for routing, collision, anchors, doors, export/import, and QA;
-- `narrow` is visually redrawn as a half-cell passage by erasing only the full-cell visual corridor layer, drawing a centered narrow floor strip, and redrawing its two side walls with the same `wall-main` / `wall-sketch` classes used by ordinary dungeon walls;
-- `secret` remains a full-cell logical corridor, but its wall overlay is redrawn with dashed walls using the same wall classes and stroke variables as ordinary walls;
-- `secret` must not use centerline traces or large unrelated overlays as its primary visual language;
-- `collapsed` and `gallery` remain valid data-model corridor types but are disabled in the editor menu until their visual behavior is explicitly designed;
-- the correction does not mutate `floorCells`, `pathCells`, routing, door anchors, room levels, stair metadata, Level View, or serialized manual overrides.
-
-### Pass 4B follow-up: narrow/secret render correction
-
-- `secret` corridors keep the wall-grammar render path, but their dashed walls use longer and more separated dashes.
-- `narrow` corridors must not be rendered by per-cell strip rectangles. The visual override is a single half-cell centerline floor stroke plus two continuous rail paths, after the full-width logical corridor is masked.
-- `narrow` remains full-width in topology, routing, collision, anchors, export/import and QA. The half-cell behavior is visual-only.
-
-## Pass 4B narrow corridor render correction follow-up
-
-Narrow corridor rendering must not use the normal corridor centerline texture and must not draw a stroked center floor line with square caps. A narrow corridor remains full-cell in logical topology, but the visual overlay erases the full-cell corridor and replaces it with a filled half-cell ribbon plus two rail paths generated through the same rough wall renderer used by normal walls. Endpoint geometry must include the real door boundary centers so the narrow ribbon connects to door openings instead of stopping or continuing straight past them.
-
-## Pass 4B narrow surface correction follow-up
-
-Narrow corridor rendering must be handled by the corridor surface contract, not by a late overlay.
-
-- `narrow` corridors stay full-cell for topology, routing, door anchors, collision, serialization, and editor hit-testing.
-- The rendered `createCorridorSurface()` for a narrow corridor uses `geometryKind: "narrow-corridor-mask"` and exposes a half-cell `visualFloorPath`.
-- `getMapSurface()` must therefore remove the full logical corridor cells from the base floor and add back only the narrow visual floor path.
-- The root `clip-dungeon-floor` must include the narrow half-cell surface, so `floor-fill`, `corridor-floor-accent`, floor texture, and `floor-grid` are clipped to the narrow corridor instead of being drawn full-cell underneath it.
-- The late corridor type wall layer may erase/redraw only the full-width wall outlines and rail walls; it must not paint a replacement floor over the grid.
-- `secret` keeps the dashed wall grammar from the previous correction.

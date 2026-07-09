@@ -152,6 +152,14 @@ function hasGalleryRegionCue(region = {}) {
   ]);
 }
 
+export function shouldInferGeneratedCorridorTypes(config = {}) {
+  return Boolean(
+    config?.enableGeneratedCorridorTypes ||
+      config?.experimentalGeneratedCorridorTypes ||
+      config?.features?.generatedCorridorTypes,
+  );
+}
+
 export function inferCorridorType(
   config = {},
   fromRegion = null,
@@ -160,6 +168,8 @@ export function inferCorridorType(
 ) {
   const manualType = resolveManualCorridorType(config, corridor?.id, null);
   if (manualType) return manualType;
+
+  if (!shouldInferGeneratedCorridorTypes(config)) return "normal";
 
   const explicitType = normalizeCorridorType(
     corridor?.corridorType || corridor?.corridorProfile?.type || "",
