@@ -101,3 +101,90 @@ Pass 2C adds editor controls for the same contract:
 - deleting a corridor must also remove its `manualOverrides.corridorTypes[corridorId]` entry;
 - editor controls must only mutate `manualOverrides.corridorTypes`; they must not mutate corridor topology, doors, anchors, levels, or stairs.
 
+
+## Level and stair transition contract
+
+Pass 2D promotes the existing level prototype into an explicit metadata contract while preserving the legacy `stairTransitions` API.
+
+Level state has three explicit containers:
+
+- `manualOverrides.levels.regions`: manual room level overrides by region id.
+- `manualOverrides.levels.corridors`: manual corridor level overrides by corridor id.
+- `manualOverrides.levels.stairs`: level-transition overrides by `corridorId:endpoint`.
+
+Legacy `manualOverrides.stairTransitions` / `config.manualStairTransitions` remain supported. A legacy value such as `"up"` or `"down"` is interpreted as a stair transition with the corresponding direction.
+
+A resolved corridor must expose:
+
+- `fromLevel` and `toLevel`: endpoint room levels.
+- `level`: the planar level where the corridor is drawn.
+- `levelDelta`: `toLevel - fromLevel`.
+- `levelTransition`: normalized object metadata.
+- `stairTransition`: legacy direction mirror, still `none`, `up`, or `down`.
+- `verticalTransition` / `crossLevel`: true when the endpoints sit on different levels.
+
+A normalized stair transition has this shape:
+
+```js
+{
+  type: "stairs",
+  direction: "up" | "down",
+  placement: "from-endpoint" | "to-endpoint" | "shared" | "whole-corridor",
+  endpoint: "from" | "to" | "shared",
+  fromLevel: 0,
+  toLevel: -1,
+  levelDelta: -1,
+  corridorId: "edge-id"
+}
+```
+
+Rules:
+
+1. `stairs` remain a level-transition concept, not a `corridorType`.
+2. Old string overrides and new object overrides must both resolve to the same door symbols and level deltas.
+3. Explicit stair overrides may create unit deltas, while room-level-derived stairs may create multi-level deltas.
+4. Cross-level corridors must expose a non-`none` `levelTransition`.
+5. Same-level corridors must continue to expose `levelTransition.type === "none"`.
+6. Level metadata must not mutate corridor topology, anchors, doors, or render cells.
+7. Region/corridor manual level overrides win over derived levels, but debug validation must surface contradictory stair constraints.
+8. `stairCount` must match `abs(levelDelta)` for rendered stair transitions.
+
+Pass 2D does not add a full stairs UI and does not change routing. It hardens the data model so Pass 2E can implement visual/editable stair behavior safely.
+
+Pass 2E adds editable stair behavior on top of the Pass 2D level-transition model:
+
+- the door context menu still exposes `No Stair`, `Stairs Up`, and `Stairs Down`;
+- choosing `up` or `down` now writes an object transition into `manualOverrides.levels.stairs` instead of a bare legacy string;
+- the editor also writes scoped corridor level metadata so the stair immediately resolves to a coherent `fromLevel`, `toLevel`, `levelDelta`, and planar draw level;
+- editor-created level overrides carry `source: "editor-stair"` and `corridorId`, allowing `No Stair` to remove only level data it created itself;
+- user-authored region/corridor levels without the editor-stair source are preserved;
+- rendered stair marks now include directional arrow strokes in addition to step strokes, making `up` and `down` visually distinct.
+
+Pass 2E still does not implement full multi-level routing, whole-corridor stairs, shafts, ramps, or a dedicated level-management UI.
+
+
+Pass 2F promotes room levels to the primary editor workflow:
+
+- right-clicking a room exposes a `Level` submenu with manual levels from `-3` to `+3` and `Reset Level`;
+- room level edits write to `manualOverrides.levels.regions[regionId]`;
+- connected editor-created stair overrides are cleared when a room level is edited, so room levels can drive the corridor result;
+- if two connected rooms have different levels and no explicit authorial stair override blocks them, the corridor derives `levelTransition.type === "stairs"` automatically;
+- derived stair direction is based on `toLevel - fromLevel`: positive is `up`, negative is `down` from the corridor's `from` endpoint toward `to`;
+- derived `stairCount` equals `abs(levelDelta)`, and render distributes that many stair markers along the corridor path;
+- the direct site QA scenario `Room Level → Stairs Test` sets two connected room levels, validates the derived stair metadata, and then restores the previous manual overrides.
+
+Pass 2F still does not split a cross-level corridor into separate level-specific physical routes. The corridor remains a single 2D editorial connection with stair markers indicating vertical travel.
+
+
+## Pass 2G level-view readability contract
+
+Pass 2G makes the existing Level View easier to audit without changing physical routing:
+
+- nonzero room levels render a compact `L±N` badge next to the room number badge;
+- the SVG root exposes `data-level-view`, `data-level-filtered`, and `data-active-level` so exported/debug SVGs carry their current level context;
+- Level View still filters visible room geometry by room level;
+- cross-level stair corridors remain visible on both endpoint levels as editorial stair connectors;
+- faded Level View remains a visual overlay only and does not mutate generated map data;
+- the direct site QA scenario `Level View Test` assigns two connected rooms to different levels, switches to the target level, validates active/faded subsets, checks the stair connector remains visible, and restores the previous state.
+
+Pass 2G still does not split cross-level corridors into separate per-level route fragments. That remains a future multi-level routing/export pass.

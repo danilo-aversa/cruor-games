@@ -1,6 +1,9 @@
 import {
   normalizeCorridorType,
+  normalizeLevelNumber,
+  normalizeLevelTransition,
   resolveDoorType,
+  resolveLevelTransition,
   resolveManualCorridorType,
   resolveStairTransition,
 } from "./map-generator.state.js";
@@ -5268,26 +5271,118 @@ export function decorateDoorSegment(door, config, edge, endpoint) {
   };
 }
 
+function getEndpointLevelTransitionPlacement(endpoint = "shared") {
+  if (endpoint === "from") return "from-endpoint";
+  if (endpoint === "to") return "to-endpoint";
+  return "shared";
+}
+
+function getLevelTransitionEndpoint(transition = {}) {
+  if (transition.endpoint === "from" || transition.placement === "from-endpoint")
+    return "from";
+  if (transition.endpoint === "to" || transition.placement === "to-endpoint")
+    return "to";
+  if (transition.endpoint === "shared" || transition.placement === "shared")
+    return "shared";
+  if (transition.placement === "whole-corridor") return "shared";
+  return null;
+}
+
+function resolveEndpointLevelTransition(config, corridor, endpoint) {
+  const transition = resolveLevelTransition(config, corridor.id, endpoint, {
+    endpoint,
+    placement: getEndpointLevelTransitionPlacement(endpoint),
+  });
+  return normalizeLevelTransition(transition, {
+    endpoint,
+    placement: getEndpointLevelTransitionPlacement(endpoint),
+  });
+}
+
+export function getPrimaryCorridorLevelTransitionObject(config, corridor) {
+  const transitions = [
+    resolveEndpointLevelTransition(config, corridor, "from"),
+    resolveEndpointLevelTransition(config, corridor, "to"),
+    resolveEndpointLevelTransition(config, corridor, "shared"),
+  ];
+  return (
+    transitions.find(
+      (transition) =>
+        transition.type !== "none" && transition.direction !== "none",
+    ) || {
+      type: "none",
+      direction: "none",
+      endpoint: null,
+      placement: "shared",
+    }
+  );
+}
+
 export function getPrimaryCorridorLevelTransition(config, corridor) {
-  const from = resolveStairTransition(config, corridor.id, "from", "none");
-  const to = resolveStairTransition(config, corridor.id, "to", "none");
-  const shared = resolveStairTransition(config, corridor.id, "shared", "none");
-  if (from !== "none") return { endpoint: "from", type: from };
-  if (to !== "none") return { endpoint: "to", type: to };
-  if (shared !== "none") return { endpoint: "shared", type: shared };
-  return { endpoint: null, type: "none" };
+  const transition = getPrimaryCorridorLevelTransitionObject(config, corridor);
+  const endpoint = getLevelTransitionEndpoint(transition);
+  return {
+    endpoint,
+    type: transition.direction || "none",
+    transitionType: transition.type || "none",
+    direction: transition.direction || "none",
+    placement: transition.placement || getEndpointLevelTransitionPlacement(endpoint),
+    levelTransition: transition,
+  };
+}
+
+export function getExpectedLevelDeltaForLevelTransition(transition = {}) {
+  const normalized = normalizeLevelTransition(transition);
+  if (normalized.type === "none" || normalized.direction === "none") return 0;
+  const endpoint = getLevelTransitionEndpoint(normalized);
+  if (endpoint === "to") return normalized.direction === "up" ? -1 : 1;
+  return normalized.direction === "up" ? 1 : -1;
 }
 
 export function getCorridorConfiguredLevelDelta(config, corridor) {
-  const transition = getPrimaryCorridorLevelTransition(config, corridor);
-  if (transition.type === "none") return 0;
-  if (transition.endpoint === "from" || transition.endpoint === "shared")
-    return transition.type === "up" ? 1 : -1;
-  return transition.type === "up" ? -1 : 1;
+  return getExpectedLevelDeltaForLevelTransition(
+    getPrimaryCorridorLevelTransitionObject(config, corridor),
+  );
+}
+
+function getManualRegionLevelOverrides(config = {}) {
+  const raw = config.manualLevels?.regions || {};
+  const levels = new Map();
+  Object.entries(raw).forEach(([regionId, value]) => {
+    if (!regionId) return;
+    const levelValue =
+      value && typeof value === "object" && !Array.isArray(value)
+        ? value.level
+        : value;
+    levels.set(regionId, normalizeLevelNumber(levelValue, 0));
+  });
+  return levels;
+}
+
+function getManualCorridorLevelOverride(config = {}, corridorId) {
+  const raw = config.manualLevels?.corridors?.[corridorId];
+  if (raw === undefined || raw === null) return null;
+  if (typeof raw === "number" || typeof raw === "string") {
+    const parsed = Number(raw);
+    return Number.isFinite(parsed) ? { level: Math.round(parsed) } : null;
+  }
+  if (typeof raw !== "object" || Array.isArray(raw)) return null;
+  return {
+    ...(Number.isFinite(Number(raw.level))
+      ? { level: normalizeLevelNumber(raw.level) }
+      : {}),
+    ...(Number.isFinite(Number(raw.fromLevel))
+      ? { fromLevel: normalizeLevelNumber(raw.fromLevel) }
+      : {}),
+    ...(Number.isFinite(Number(raw.toLevel))
+      ? { toLevel: normalizeLevelNumber(raw.toLevel) }
+      : {}),
+  };
 }
 
 export function computeRegionLevels(regions, corridors, config) {
   const regionIds = new Set(regions.map((region) => region.id));
+  const explicitRegionLevels = getManualRegionLevelOverrides(config);
   const adjacency = new Map(regions.map((region) => [region.id, []]));
   corridors.forEach((corridor) => {
     if (!regionIds.has(corridor.from) || !regionIds.has(corridor.to)) return;
@@ -5297,24 +5392,48 @@ export function computeRegionLevels(regions, corridors, config) {
   });
 
   const levels = new Map();
+  const queue = [];
+  const queued = new Set();
+  const enqueue = (regionId) => {
+    if (!regionId || !regionIds.has(regionId) || queued.has(regionId)) return;
+    queued.add(regionId);
+    queue.push(regionId);
+  };
+  const flood = () => {
+    while (queue.length > 0) {
+      const current = queue.shift();
+      const currentLevel = levels.get(current) || 0;
+      (adjacency.get(current) || []).forEach((neighbor) => {
+        if (!regionIds.has(neighbor.id)) return;
+        const nextLevel = currentLevel + neighbor.delta;
+        if (explicitRegionLevels.has(neighbor.id)) {
+          levels.set(neighbor.id, explicitRegionLevels.get(neighbor.id));
+          enqueue(neighbor.id);
+          return;
+        }
+        if (levels.has(neighbor.id)) return;
+        levels.set(neighbor.id, nextLevel);
+        enqueue(neighbor.id);
+      });
+    }
+  };
+
+  explicitRegionLevels.forEach((level, regionId) => {
+    if (!regionIds.has(regionId)) return;
+    levels.set(regionId, level);
+    enqueue(regionId);
+  });
+  flood();
+
   const starts = [
     regions.find((region) => classifyRegion(region).entrance) || regions[0],
     ...regions,
   ].filter(Boolean);
   starts.forEach((start) => {
-    if (levels.has(start.id)) return;
-    levels.set(start.id, 0);
-    const queue = [start.id];
-    while (queue.length > 0) {
-      const current = queue.shift();
-      const currentLevel = levels.get(current) || 0;
-      (adjacency.get(current) || []).forEach((neighbor) => {
-        const nextLevel = currentLevel + neighbor.delta;
-        if (levels.has(neighbor.id)) return;
-        levels.set(neighbor.id, nextLevel);
-        queue.push(neighbor.id);
-      });
-    }
+    if (!start?.id || levels.has(start.id)) return;
+    levels.set(start.id, explicitRegionLevels.get(start.id) ?? 0);
+    enqueue(start.id);
+    flood();
   });
   return levels;
 }
@@ -5325,34 +5444,106 @@ export function resolveCorridorDrawLevel(
   toLevel,
   transition,
 ) {
-  if (transition.endpoint === "from") return toLevel;
-  if (transition.endpoint === "to") return fromLevel;
-  if (transition.endpoint === "shared") return Math.max(fromLevel, toLevel);
+  const normalizedTransition = normalizeLevelTransition(
+    transition?.levelTransition || transition,
+  );
+  const endpoint = getLevelTransitionEndpoint({
+    ...normalizedTransition,
+    endpoint: transition?.endpoint ?? normalizedTransition.endpoint,
+  });
+  if (normalizedTransition.type !== "none") {
+    if (endpoint === "from") return toLevel;
+    if (endpoint === "to") return fromLevel;
+    if (endpoint === "shared") return Math.max(fromLevel, toLevel);
+  }
   return fromLevel;
 }
 
+function createResolvedCorridorLevelTransition(
+  corridor,
+  fromLevel,
+  toLevel,
+  transition,
+) {
+  const normalizedTransition = normalizeLevelTransition(
+    transition?.levelTransition || transition,
+  );
+  const levelDelta = toLevel - fromLevel;
+  const absoluteDelta = Math.abs(levelDelta);
+  const hasExplicitTransition =
+    normalizedTransition.type !== "none" && normalizedTransition.direction !== "none";
+  const derivedDirection =
+    levelDelta > 0 ? "up" : levelDelta < 0 ? "down" : "none";
+  const derivedEndpoint = levelDelta === 0 ? null : "from";
+  const endpoint =
+    transition?.endpoint ??
+    getLevelTransitionEndpoint(normalizedTransition) ??
+    derivedEndpoint;
+  const type = hasExplicitTransition
+    ? normalizedTransition.type
+    : levelDelta === 0
+      ? "none"
+      : "stairs";
+  const direction = hasExplicitTransition
+    ? normalizedTransition.direction
+    : derivedDirection;
+  return {
+    type,
+    direction,
+    placement:
+      hasExplicitTransition && normalizedTransition.placement
+        ? normalizedTransition.placement
+        : getEndpointLevelTransitionPlacement(endpoint),
+    endpoint,
+    fromLevel,
+    toLevel,
+    levelDelta,
+    stairCount: type === "none" || direction === "none" ? 0 : absoluteDelta,
+    derivedFromRoomLevels: !hasExplicitTransition && absoluteDelta > 0,
+    corridorId: corridor.id,
+  };
+}
+
 export function applyLevelMetadata(regions, corridors, config) {
+  const explicitRegionLevels = getManualRegionLevelOverrides(config);
   const levelMap = computeRegionLevels(regions, corridors, config);
   const leveledRegions = regions.map((region) => ({
     ...region,
     level: levelMap.get(region.id) ?? 0,
+    levelSource: explicitRegionLevels.has(region.id) ? "manual" : "derived",
   }));
   const regionById = new Map(
     leveledRegions.map((region) => [region.id, region]),
   );
   const leveledCorridors = corridors.map((corridor) => {
-    const fromLevel = regionById.get(corridor.from)?.level ?? 0;
-    const toLevel = regionById.get(corridor.to)?.level ?? fromLevel;
+    const corridorLevelOverride = getManualCorridorLevelOverride(config, corridor.id);
+    const regionFromLevel = regionById.get(corridor.from)?.level ?? 0;
+    const regionToLevel = regionById.get(corridor.to)?.level ?? regionFromLevel;
+    const fromLevel = corridorLevelOverride?.fromLevel ?? regionFromLevel;
+    const toLevel = corridorLevelOverride?.toLevel ?? regionToLevel;
     const transition = getPrimaryCorridorLevelTransition(config, corridor);
+    const levelTransition = createResolvedCorridorLevelTransition(
+      corridor,
+      fromLevel,
+      toLevel,
+      transition,
+    );
+    const planarLevel =
+      corridorLevelOverride?.level ??
+      resolveCorridorDrawLevel(corridor, fromLevel, toLevel, transition);
     return {
       ...corridor,
       fromLevel,
       toLevel,
-      level: resolveCorridorDrawLevel(corridor, fromLevel, toLevel, transition),
+      level: planarLevel,
+      levelSource: corridorLevelOverride ? "manual" : "derived",
       levelDelta: toLevel - fromLevel,
-      stairEndpoint: transition.endpoint,
-      stairTransition: transition.type,
+      levelTransition,
+      stairEndpoint: levelTransition.endpoint,
+      stairTransition: levelTransition.direction || levelTransition.type || "none",
+      stairCount: levelTransition.stairCount || 0,
       verticalTransition: fromLevel !== toLevel,
+      crossLevel: fromLevel !== toLevel,
     };
   });
   return { regions: leveledRegions, corridors: leveledCorridors };

@@ -220,6 +220,14 @@ export const GRID_COLOR_OPTIONS = ["default", "light", "darker", "blood", "sepia
 export const DOOR_TYPE_OPTIONS = ["default", "secret", "locked", "open"];
 export const CORRIDOR_TYPE_OPTIONS = ["normal", "narrow", "collapsed", "secret", "gallery"];
 export const STAIR_TRANSITION_OPTIONS = ["none", "up", "down"];
+export const LEVEL_TRANSITION_TYPE_OPTIONS = ["none", "stairs"];
+export const LEVEL_TRANSITION_DIRECTION_OPTIONS = STAIR_TRANSITION_OPTIONS;
+export const LEVEL_TRANSITION_PLACEMENT_OPTIONS = [
+  "from-endpoint",
+  "to-endpoint",
+  "shared",
+  "whole-corridor",
+];
 export const JUNCTION_TYPE_OPTIONS = ["merge", "wall", "door"];
 export const LEVEL_VIEW_ALL = "all";
 
@@ -299,8 +307,190 @@ export function stairTransitionKey(corridorId, endpoint) {
   return `${corridorId}:${endpoint || "shared"}`;
 }
 
+export function normalizeLevelNumber(value, fallback = 0) {
+  const raw =
+    value && typeof value === "object" && !Array.isArray(value)
+      ? value.level ?? value.value ?? value.id
+      : value;
+  const number = Number(raw);
+  return Number.isFinite(number) ? Math.round(number) : fallback;
+}
+
+export function normalizeLevelId(value, fallback = 0) {
+  return normalizeLevelNumber(value, fallback);
+}
+
+export function normalizeLevelTransitionDirection(value, fallback = "none") {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/_/g, "-")
+    .replace(/\s+/g, "-");
+  const aliases = {
+    upstairs: "up",
+    ascend: "up",
+    ascending: "up",
+    above: "up",
+    downstairs: "down",
+    descend: "down",
+    descending: "down",
+    below: "down",
+    no: "none",
+    false: "none",
+    off: "none",
+  };
+  const candidate = aliases[normalized] || normalized;
+  return LEVEL_TRANSITION_DIRECTION_OPTIONS.includes(candidate)
+    ? candidate
+    : fallback;
+}
+
 export function normalizeStairTransition(value, fallback = "none") {
-  return STAIR_TRANSITION_OPTIONS.includes(value) ? value : fallback;
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return normalizeLevelTransitionDirection(
+      value.direction ?? value.stairTransition ?? value.transition,
+      fallback,
+    );
+  }
+  return normalizeLevelTransitionDirection(value, fallback);
+}
+
+export function normalizeLevelTransitionPlacement(value, fallback = "shared") {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/_/g, "-")
+    .replace(/\s+/g, "-");
+  const aliases = {
+    from: "from-endpoint",
+    start: "from-endpoint",
+    source: "from-endpoint",
+    a: "from-endpoint",
+    to: "to-endpoint",
+    end: "to-endpoint",
+    target: "to-endpoint",
+    b: "to-endpoint",
+    both: "shared",
+    endpoint: "shared",
+    door: "shared",
+    corridor: "whole-corridor",
+    whole: "whole-corridor",
+    full: "whole-corridor",
+  };
+  const candidate = aliases[normalized] || normalized;
+  return LEVEL_TRANSITION_PLACEMENT_OPTIONS.includes(candidate)
+    ? candidate
+    : fallback;
+}
+
+function getEndpointLevelTransitionPlacement(endpoint = "shared") {
+  if (endpoint === "from") return "from-endpoint";
+  if (endpoint === "to") return "to-endpoint";
+  return "shared";
+}
+
+export function normalizeLevelTransitionType(value, fallback = "none") {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/_/g, "-")
+    .replace(/\s+/g, "-");
+  const aliases = {
+    stair: "stairs",
+    stairway: "stairs",
+    staircase: "stairs",
+    steps: "stairs",
+    up: "stairs",
+    down: "stairs",
+    no: "none",
+    false: "none",
+    off: "none",
+  };
+  const candidate = aliases[normalized] || normalized;
+  return LEVEL_TRANSITION_TYPE_OPTIONS.includes(candidate) ? candidate : fallback;
+}
+
+export function normalizeLevelTransition(value, fallback = {}) {
+  const fallbackTransition =
+    fallback && typeof fallback === "object" && !Array.isArray(fallback)
+      ? fallback
+      : {};
+  const fallbackEndpoint = fallbackTransition.endpoint || "shared";
+  const fallbackPlacement = normalizeLevelTransitionPlacement(
+    fallbackTransition.placement,
+    getEndpointLevelTransitionPlacement(fallbackEndpoint),
+  );
+  const fallbackDirection = normalizeLevelTransitionDirection(
+    fallbackTransition.direction ?? fallbackTransition.stairTransition,
+    "none",
+  );
+
+  if (value === undefined || value === null || value === "") {
+    return {
+      type: fallbackDirection === "none" ? "none" : "stairs",
+      direction: fallbackDirection,
+      placement: fallbackPlacement,
+      endpoint: fallbackEndpoint,
+    };
+  }
+
+  if (typeof value === "string") {
+    const direction = normalizeLevelTransitionDirection(value, fallbackDirection);
+    return {
+      type: direction === "none" ? "none" : "stairs",
+      direction,
+      placement: fallbackPlacement,
+      endpoint: fallbackEndpoint,
+    };
+  }
+
+  if (typeof value === "number") {
+    return {
+      type: "none",
+      direction: "none",
+      placement: fallbackPlacement,
+      endpoint: fallbackEndpoint,
+      level: normalizeLevelNumber(value),
+    };
+  }
+
+  if (typeof value === "object" && !Array.isArray(value)) {
+    const endpoint = value.endpoint || fallbackEndpoint;
+    const direction = normalizeLevelTransitionDirection(
+      value.direction ?? value.stairTransition ?? value.transition,
+      fallbackDirection,
+    );
+    const type = normalizeLevelTransitionType(
+      value.type ?? value.transitionType ?? (direction === "none" ? "none" : "stairs"),
+      direction === "none" ? "none" : "stairs",
+    );
+    const placement = normalizeLevelTransitionPlacement(
+      value.placement,
+      getEndpointLevelTransitionPlacement(endpoint),
+    );
+    return {
+      type: type === "none" || direction === "none" ? "none" : type,
+      direction: type === "none" ? "none" : direction,
+      placement,
+      endpoint,
+      ...(Number.isFinite(Number(value.fromLevel))
+        ? { fromLevel: normalizeLevelNumber(value.fromLevel) }
+        : {}),
+      ...(Number.isFinite(Number(value.toLevel))
+        ? { toLevel: normalizeLevelNumber(value.toLevel) }
+        : {}),
+      ...(Number.isFinite(Number(value.level))
+        ? { level: normalizeLevelNumber(value.level) }
+        : {}),
+    };
+  }
+
+  return {
+    type: fallbackDirection === "none" ? "none" : "stairs",
+    direction: fallbackDirection,
+    placement: fallbackPlacement,
+    endpoint: fallbackEndpoint,
+  };
 }
 
 export function getManualStairTransition(
@@ -315,18 +505,211 @@ export function getManualStairTransition(
   );
 }
 
+export function getManualLevelTransition(
+  levelTransitions,
+  corridorId,
+  endpoint,
+  fallback = {},
+) {
+  const key = stairTransitionKey(corridorId, endpoint);
+  const raw = levelTransitions?.[key] ?? levelTransitions?.[corridorId];
+  return normalizeLevelTransition(raw, {
+    endpoint: endpoint || "shared",
+    placement: getEndpointLevelTransitionPlacement(endpoint || "shared"),
+    ...fallback,
+  });
+}
+
+export function resolveLevelTransition(
+  config,
+  corridorId,
+  endpoint,
+  fallback = {},
+) {
+  return getManualLevelTransition(
+    {
+      ...(config?.manualStairTransitions || {}),
+      ...(config?.manualLevels?.stairs || {}),
+    },
+    corridorId,
+    endpoint,
+    fallback,
+  );
+}
+
 export function resolveStairTransition(
   config,
   corridorId,
   endpoint,
   fallback = "none",
 ) {
-  return getManualStairTransition(
-    config.manualStairTransitions || {},
+  const transition = resolveLevelTransition(config, corridorId, endpoint, {
+    direction: fallback,
+  });
+  return normalizeStairTransition(transition, fallback);
+}
+
+
+export function getExpectedLevelDeltaForStairTransition(endpoint, stairTransition) {
+  const direction = normalizeStairTransition(stairTransition, "none");
+  if (direction === "none") return 0;
+  if (endpoint === "to") return direction === "up" ? -1 : 1;
+  return direction === "up" ? 1 : -1;
+}
+
+function isEditorStairLevelOverride(value, corridorId) {
+  return Boolean(
+    value &&
+      typeof value === "object" &&
+      !Array.isArray(value) &&
+      value.source === "editor-stair" &&
+      (!value.corridorId || value.corridorId === corridorId),
+  );
+}
+
+function shouldWriteEditorStairLevelOverride(value, corridorId) {
+  return value === undefined || isEditorStairLevelOverride(value, corridorId);
+}
+
+function getLevelOverrideValue(value, fallback = 0) {
+  return normalizeLevelNumber(value, fallback);
+}
+
+function createEditorStairRegionLevel(level, corridorId, endpoint) {
+  return {
+    level: normalizeLevelNumber(level, 0),
+    source: "editor-stair",
     corridorId,
     endpoint,
-    fallback,
+  };
+}
+
+function createEditorStairCorridorLevel({
+  corridorId,
+  endpoint,
+  stairTransition,
+  fromLevel,
+  toLevel,
+}) {
+  return {
+    level: endpoint === "from" ? toLevel : fromLevel,
+    fromLevel,
+    toLevel,
+    source: "editor-stair",
+    corridorId,
+    stairEndpoint: endpoint,
+    stairTransition,
+  };
+}
+
+export function createEditorStairTransitionOverride(
+  corridorId,
+  endpoint,
+  stairTransition,
+) {
+  const direction = normalizeStairTransition(stairTransition, "none");
+  if (direction === "none") return null;
+  return {
+    type: "stairs",
+    direction,
+    placement: getEndpointLevelTransitionPlacement(endpoint),
+    endpoint,
+    source: "editor-stair",
+    corridorId,
+  };
+}
+
+export function createEditorStairLevelOverrides({
+  levels = createEmptyLevelOverrides(),
+  corridor = null,
+  endpoint = "from",
+  stairTransition = "none",
+} = {}) {
+  const safeLevels = normalizeLevelOverrides(levels);
+  const corridorId = corridor?.id || "";
+  const safeEndpoint = endpoint === "to" ? "to" : "from";
+  const key = stairTransitionKey(corridorId, safeEndpoint);
+  const direction = normalizeStairTransition(stairTransition, "none");
+  const regions = { ...(safeLevels.regions || {}) };
+  const corridors = { ...(safeLevels.corridors || {}) };
+  const stairs = { ...(safeLevels.stairs || {}) };
+
+  if (!corridorId || direction === "none") {
+    if (corridorId) {
+      delete stairs[key];
+      if (isEditorStairLevelOverride(corridors[corridorId], corridorId)) {
+        delete corridors[corridorId];
+      }
+      [corridor?.from, corridor?.to].filter(Boolean).forEach((regionId) => {
+        if (isEditorStairLevelOverride(regions[regionId], corridorId)) {
+          delete regions[regionId];
+        }
+      });
+    }
+    return {
+      levels: { regions, corridors, stairs },
+      stairTransitions: stairs,
+    };
+  }
+
+  stairs[key] = createEditorStairTransitionOverride(
+    corridorId,
+    safeEndpoint,
+    direction,
   );
+
+  const fromRegionId = corridor?.from || null;
+  const toRegionId = corridor?.to || null;
+  const expectedDelta = getExpectedLevelDeltaForStairTransition(
+    safeEndpoint,
+    direction,
+  );
+  const existingFromLevel = getLevelOverrideValue(
+    fromRegionId ? regions[fromRegionId] : undefined,
+    Number.isFinite(corridor?.fromLevel) ? corridor.fromLevel : 0,
+  );
+  const existingToLevel = getLevelOverrideValue(
+    toRegionId ? regions[toRegionId] : undefined,
+    Number.isFinite(corridor?.toLevel) ? corridor.toLevel : existingFromLevel,
+  );
+  const fromLevel =
+    safeEndpoint === "to" ? existingToLevel - expectedDelta : existingFromLevel;
+  const toLevel =
+    safeEndpoint === "to" ? existingToLevel : fromLevel + expectedDelta;
+
+  corridors[corridorId] = createEditorStairCorridorLevel({
+    corridorId,
+    endpoint: safeEndpoint,
+    stairTransition: direction,
+    fromLevel,
+    toLevel,
+  });
+
+  if (
+    fromRegionId &&
+    shouldWriteEditorStairLevelOverride(regions[fromRegionId], corridorId)
+  ) {
+    regions[fromRegionId] = createEditorStairRegionLevel(
+      fromLevel,
+      corridorId,
+      "from",
+    );
+  }
+  if (
+    toRegionId &&
+    shouldWriteEditorStairLevelOverride(regions[toRegionId], corridorId)
+  ) {
+    regions[toRegionId] = createEditorStairRegionLevel(
+      toLevel,
+      corridorId,
+      "to",
+    );
+  }
+
+  return {
+    levels: { regions, corridors, stairs },
+    stairTransitions: stairs,
+  };
 }
 
 export function normalizeJunctionType(value, fallback = "merge") {

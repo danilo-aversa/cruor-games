@@ -120,12 +120,12 @@ export function buildExplicitLevelOverrides(
     ...normalized,
     levels: {
       regions: {
-        ...(normalized.levels.regions || {}),
         ...derived.regions,
+        ...(normalized.levels.regions || {}),
       },
       corridors: {
-        ...(normalized.levels.corridors || {}),
         ...derived.corridors,
+        ...(normalized.levels.corridors || {}),
       },
       stairs: {
         ...normalized.levels.stairs,

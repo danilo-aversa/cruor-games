@@ -10378,3 +10378,146 @@ _Nessun file aggiunto._
 - `~features/darken-location/map-generator/CORRIDOR_ANCHOR_CONTRACT.md`
 - `~features/darken-location/map-generator/map-generator.page.jsx`
 
+
+---
+
+## 2026-07-09 10:05:10
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass2d-level-transition-contract.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass2d-level-transition-contract.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/map-generator/CORRIDOR_ANCHOR_CONTRACT.md`
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+- `~features/darken-location/map-generator/map-generator.debug.js`
+- `~features/darken-location/map-generator/map-generator.pipeline.test.js`
+- `~features/darken-location/map-generator/map-generator.state.js`
+
+
+---
+
+## 2026-07-09 10:19:16
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass2d-level-transition-test-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass2d-level-transition-test-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+- `~features/darken-location/map-generator/map-generator.export.js`
+
+
+---
+
+## 2026-07-09 10:31:18
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass2e-stair-editor-render.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass2e-stair-editor-render.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/map-generator/CORRIDOR_ANCHOR_CONTRACT.md`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.pipeline.test.js`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+- `~features/darken-location/map-generator/map-generator.state.js`
+
+
+---
+
+## 2026-07-09 11:24:50
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass2f-room-level-derived-stairs.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass2f-room-level-derived-stairs.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 6
+
+- `~features/darken-location/map-generator/CORRIDOR_ANCHOR_CONTRACT.md`
+- `~features/darken-location/map-generator/map-generator.corridors.js`
+- `~features/darken-location/map-generator/map-generator.debug.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.pipeline.test.js`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-07-09 11:38:15
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass2g-level-view-readability.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass2g-level-view-readability.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~features/darken-location/map-generator/CORRIDOR_ANCHOR_CONTRACT.md`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.pipeline.test.js`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+
+
+---
+
+## 2026-07-09 12:41:50
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass2g-debug-runner-ui-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass2g-debug-runner-ui-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+features/darken-location/components/LocationMapDetailsPanel.jsx`
+
+**File sovrascritti:** 0
+
+_Nessun file sovrascritto._
+

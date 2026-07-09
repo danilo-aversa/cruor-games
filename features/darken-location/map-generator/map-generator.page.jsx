@@ -33,9 +33,10 @@ import {
   corridorTypeKey,
   normalizeCorridorType,
   getManualCorridorType,
+  normalizeLevelNumber,
   stairTransitionKey,
-  normalizeStairTransition,
   getManualStairTransition,
+  createEditorStairLevelOverrides,
   resolveStairTransition,
   getManualJunctionOverride,
   normalizeJunctionType,
@@ -174,7 +175,7 @@ import {
   serializeMapAccessAnchor,
   getClosestExternalBoundaryAnchorToPoint,
 } from "./map-generator.details.js";
-import { MapSvg, getMapSurface, getRegionSurface, isPureCaveMap } from "./map-generator.render.jsx";
+import { MapSvg, createLevelFilteredMap, getMapSurface, getRegionSurface, isPureCaveMap } from "./map-generator.render.jsx";
 import {
   serializeSvg,
   downloadSvg,
@@ -207,10 +208,13 @@ const ROOM_SIZE_MENU_PRESETS = {
   Huge: { w: 12, h: 9, circleD: 12 },
 };
 
+const ROOM_LEVEL_MENU_OPTIONS = [-3, -2, -1, 0, 1, 2, 3];
+
 const MAP_DEBUG_CATEGORY_OPTIONS = [
   { id: "room-move", label: "Room Move", icon: "arrows-up-down-left-right" },
   { id: "corridor-move", label: "Corridor Move", icon: "route" },
   { id: "corridor-create", label: "Corridor Create", icon: "draw-polygon" },
+  { id: "levels", label: "Levels / Stairs", icon: "stairs" },
   { id: "room-style", label: "Shape / Size", icon: "vector-square" },
   { id: "manual-overrides", label: "Manual Overrides", icon: "pen-to-square" },
   { id: "generated-map", label: "Generated Map", icon: "map" },
@@ -222,6 +226,8 @@ const MAP_DEBUG_SCENARIO_OPTIONS = [
   { id: "smoke", label: "Smoke Test", icon: "vial-circle-check" },
   { id: "circle-anchor-sweep", label: "Circle Anchor Test", icon: "circle-nodes" },
   { id: "corridor-create", label: "Corridor Creation Test", icon: "draw-polygon" },
+  { id: "level-stairs", label: "Room Level → Stairs Test", icon: "stairs" },
+  { id: "level-view", label: "Level View Test", icon: "layer-group" },
   { id: "room-move-reroute", label: "Room Move + Reroute", icon: "arrows-up-down-left-right" },
 ];
 
@@ -264,6 +270,12 @@ function getMapDebugCategory(label = "") {
     normalized.includes("size")
   )
     return "room-style";
+  if (
+    normalized.includes("level") ||
+    normalized.includes("stair") ||
+    normalized.includes("stairs")
+  )
+    return "levels";
   if (
     normalized.includes("manualoverride") ||
     normalized.includes("manual edit") ||
@@ -818,6 +830,8 @@ export function MapViewport({
   onCreateConnection,
   onRoomStyleChange,
   onRoomStyleReset,
+  onRoomLevelChange,
+  onRoomLevelReset,
   onEditStart,
   onEditCommit,
   onUndo,
@@ -3051,6 +3065,8 @@ export function MapViewport({
               manualOverrides={manualOverrides || createEmptyManualOverrides()}
               onChange={onRoomStyleChange}
               onReset={onRoomStyleReset}
+              onLevelChange={onRoomLevelChange}
+              onLevelReset={onRoomLevelReset}
               onClose={() => setRoomContextMenu(null)}
             />
             <DoorContextMenu
@@ -3438,7 +3454,16 @@ function useContextMenuDismiss(isOpen, onClose) {
   return menuRef;
 }
 
-function RoomStyleContextMenu({ menu, generatedMap, manualOverrides, onChange, onReset, onClose }) {
+function RoomStyleContextMenu({
+  menu,
+  generatedMap,
+  manualOverrides,
+  onChange,
+  onReset,
+  onLevelChange,
+  onLevelReset,
+  onClose,
+}) {
   const [activeGroup, setActiveGroup] = useState("type");
   if (!menu) return null;
   const region = generatedMap.regions.find((item) => item.id === menu.regionId);
@@ -3470,6 +3495,13 @@ function RoomStyleContextMenu({ menu, generatedMap, manualOverrides, onChange, o
       : options.sizes.find((size) => size.value === style.sizePreset)?.label || style.sizePreset;
   const activeRoomType =
     options.types.find((type) => type.value === style.roomType)?.label || style.roomType || "None";
+  const manualRegionLevels = manualOverrides?.levels?.regions || {};
+  const hasManualLevel = Object.prototype.hasOwnProperty.call(manualRegionLevels, region.id);
+  const currentLevel = normalizeLevelNumber(
+    hasManualLevel ? manualRegionLevels[region.id] : region.level,
+    0,
+  );
+  const activeLevelLabel = `Level ${formatMapLevel(currentLevel)}`;
   const activeModifiers = [
     ...(style.roomType && style.roomType !== "none" ? [activeRoomType] : []),
     ...options.toggles.filter((toggle) => style[toggle.key]).map((toggle) => toggle.label),
@@ -3601,6 +3633,38 @@ function RoomStyleContextMenu({ menu, generatedMap, manualOverrides, onChange, o
                 style={style}
                 onApply={(patch) => onChange(region.id, patch)}
               />
+            </div>
+          )}
+        </div>
+        <div className="room-context-menu__item" onPointerEnter={() => setActiveGroup("level")}>
+          <button type="button" className="room-context-menu__trigger">
+            <span>Level</span>
+            <span>
+              {activeLevelLabel} {"›"}
+            </span>
+          </button>
+          {activeGroup === "level" && (
+            <div className="room-context-submenu">
+              <div className="room-context-submenu__hint">Room elevation drives connected stairs</div>
+              {ROOM_LEVEL_MENU_OPTIONS.map((level) => (
+                <button
+                  key={`room-level-${level}`}
+                  type="button"
+                  className={currentLevel === level ? "is-active" : ""}
+                  onClick={() => onLevelChange?.(region.id, level)}
+                >
+                  <span>Level {formatMapLevel(level)}</span>
+                  <span>{currentLevel === level ? "Active" : ""}</span>
+                </button>
+              ))}
+              <button
+                type="button"
+                disabled={!hasManualLevel}
+                onClick={() => onLevelReset?.(region.id)}
+              >
+                <span>Reset Level</span>
+                <span>{hasManualLevel ? "Manual" : "Derived"}</span>
+              </button>
             </div>
           )}
         </div>
@@ -7921,18 +7985,18 @@ export default function CruorMapGeneratorMvp({
     if (!corridorId || !endpoint) return;
     updateManualOverridesWithHistory((current) => {
       const normalized = normalizeManualOverrides(current);
-      const stairTransitions = { ...(normalized.levels.stairs || {}) };
-      const next = normalizeStairTransition(stairTransition, "none");
-      const key = stairTransitionKey(corridorId, endpoint);
-      if (next === "none") delete stairTransitions[key];
-      else stairTransitions[key] = next;
+      const activeMap = generatedMapRef.current || generatedMap;
+      const corridor = activeMap?.corridors?.find((item) => item.id === corridorId) || null;
+      const stairLevelOverrides = createEditorStairLevelOverrides({
+        levels: normalized.levels,
+        corridor,
+        endpoint,
+        stairTransition,
+      });
       return {
         ...normalized,
-        stairTransitions,
-        levels: {
-          ...normalized.levels,
-          stairs: stairTransitions,
-        },
+        stairTransitions: stairLevelOverrides.stairTransitions,
+        levels: stairLevelOverrides.levels,
       };
     });
   }
@@ -8387,6 +8451,101 @@ export default function CruorMapGeneratorMvp({
     );
   }
 
+  function isEditorStairLevelOverrideValue(value, corridorId = null) {
+    return Boolean(
+      value &&
+        typeof value === "object" &&
+        !Array.isArray(value) &&
+        value.source === "editor-stair" &&
+        (!corridorId || !value.corridorId || value.corridorId === corridorId)
+    );
+  }
+
+  function getConnectedCorridorIdsForRegion(regionId) {
+    const map = generatedMapRef.current || generatedMap;
+    return new Set(
+      (map?.corridors || [])
+        .filter((corridor) => corridor?.from === regionId || corridor?.to === regionId)
+        .map((corridor) => corridor.id)
+        .filter(Boolean),
+    );
+  }
+
+  function removeEditorStairOverridesForRoomLevelChange(levels, regionId) {
+    const connectedCorridorIds = getConnectedCorridorIdsForRegion(regionId);
+    if (connectedCorridorIds.size === 0) return levels;
+    const nextLevels = {
+      ...levels,
+      regions: { ...(levels.regions || {}) },
+      corridors: { ...(levels.corridors || {}) },
+      stairs: { ...(levels.stairs || {}) },
+    };
+    connectedCorridorIds.forEach((corridorId) => {
+      if (isEditorStairLevelOverrideValue(nextLevels.corridors[corridorId], corridorId)) {
+        delete nextLevels.corridors[corridorId];
+      }
+      ["from", "to", "shared"].forEach((endpoint) => {
+        const key = stairTransitionKey(corridorId, endpoint);
+        if (isEditorStairLevelOverrideValue(nextLevels.stairs[key], corridorId)) {
+          delete nextLevels.stairs[key];
+        }
+      });
+    });
+    return nextLevels;
+  }
+
+  function updateRoomLevel(regionId, level) {
+    if (!regionId) return;
+    updateManualOverridesWithHistory(
+      (current) => {
+        const normalized = normalizeManualOverrides(current);
+        const levels = removeEditorStairOverridesForRoomLevelChange(
+          {
+            ...normalized.levels,
+            regions: { ...(normalized.levels?.regions || {}) },
+            corridors: { ...(normalized.levels?.corridors || {}) },
+            stairs: { ...(normalized.levels?.stairs || {}) },
+          },
+          regionId,
+        );
+        levels.regions[regionId] = normalizeLevelNumber(level, 0);
+        return freezeCurrentRoomLayout({
+          ...normalized,
+          levels,
+          stairTransitions: levels.stairs,
+        });
+      },
+      "",
+      `updateRoomLevel:${regionId}`
+    );
+  }
+
+  function resetRoomLevel(regionId) {
+    if (!regionId) return;
+    updateManualOverridesWithHistory(
+      (current) => {
+        const normalized = normalizeManualOverrides(current);
+        const levels = removeEditorStairOverridesForRoomLevelChange(
+          {
+            ...normalized.levels,
+            regions: { ...(normalized.levels?.regions || {}) },
+            corridors: { ...(normalized.levels?.corridors || {}) },
+            stairs: { ...(normalized.levels?.stairs || {}) },
+          },
+          regionId,
+        );
+        delete levels.regions[regionId];
+        return freezeCurrentRoomLayout({
+          ...normalized,
+          levels,
+          stairTransitions: levels.stairs,
+        });
+      },
+      "",
+      `resetRoomLevel:${regionId}`
+    );
+  }
+
   function setGridRenderingStyle(value) {
     setGridStyle(normalizeGridStyle(value || "solid"));
   }
@@ -8454,6 +8613,8 @@ export default function CruorMapGeneratorMvp({
   function getQaRunnerScenarioLabel(scenarioId, fallback = "Map QA Scenario") {
     if (scenarioId === "circle-anchor-sweep") return "Circle Anchor Test";
     if (scenarioId === "corridor-create") return "Corridor Creation Test";
+    if (scenarioId === "level-stairs") return "Room Level → Stairs Test";
+    if (scenarioId === "level-view") return "Level View Test";
     if (scenarioId === "room-move-reroute") return "Room Move + Reroute";
     if (scenarioId === "smoke") return "Smoke Test";
     return fallback || "Map QA Scenario";
@@ -9809,6 +9970,232 @@ export default function CruorMapGeneratorMvp({
     });
   }
 
+  async function runQaRoomLevelStairs(
+    runId,
+    signal,
+    settings = {},
+    scenarioLabel = "Room Level → Stairs Test"
+  ) {
+    const originalOverrides = cloneManualOverrides(manualOverridesRef.current);
+    const map = getQaGeneratedMap();
+    const corridor = (map?.corridors || []).find(
+      (candidate) =>
+        candidate?.id &&
+        !candidate.isRoomLink &&
+        candidate.from &&
+        candidate.to &&
+        (map.regions || []).some((region) => region.id === candidate.from) &&
+        (map.regions || []).some((region) => region.id === candidate.to),
+    );
+    assertQa(corridor, "Need a room-to-room corridor for the level/stair test.", {
+      corridorCount: map?.corridors?.length || 0,
+    });
+    const fromRegion = map.regions.find((region) => region.id === corridor.from);
+    const toRegion = map.regions.find((region) => region.id === corridor.to);
+    const fromLevel = 0;
+    const toLevel = -3;
+    const expectedDelta = toLevel - fromLevel;
+    setQaRunnerStep(runId, {
+      scenarioLabel,
+      stepLabel: `Set ${fromRegion.name || fromRegion.id} to Level ${formatMapLevel(fromLevel)} and ${toRegion.name || toRegion.id} to Level ${formatMapLevel(toLevel)}`,
+      targetRegionId: toRegion.id,
+      category: "levels",
+    });
+    setManualOverridesFromCurrent((current) => {
+      const normalized = normalizeManualOverrides(current);
+      let levels = {
+        ...normalized.levels,
+        regions: { ...(normalized.levels?.regions || {}) },
+        corridors: { ...(normalized.levels?.corridors || {}) },
+        stairs: { ...(normalized.levels?.stairs || {}) },
+      };
+      levels = removeEditorStairOverridesForRoomLevelChange(levels, fromRegion.id);
+      levels = removeEditorStairOverridesForRoomLevelChange(levels, toRegion.id);
+      levels.regions[fromRegion.id] = fromLevel;
+      levels.regions[toRegion.id] = toLevel;
+      return freezeCurrentRoomLayout({
+        ...normalized,
+        levels,
+        stairTransitions: levels.stairs,
+      });
+    }, "qaRoomLevelStairs:setLevels");
+    await waitForQaRender(signal, settings);
+    const nextMap = getQaGeneratedMap();
+    const nextCorridor =
+      nextMap.corridors.find((candidate) => candidate.id === corridor.id) ||
+      getQaCorridorForPair(fromRegion.id, toRegion.id, nextMap);
+    assertQa(nextCorridor, "Level/stair test corridor disappeared after setting room levels.", {
+      corridorId: corridor.id,
+      fromRegionId: fromRegion.id,
+      toRegionId: toRegion.id,
+    });
+    assertQa(nextCorridor.fromLevel === fromLevel, "Cross-level corridor has the wrong fromLevel.", {
+      corridor: summarizeDebugCorridor(nextCorridor),
+      expected: fromLevel,
+    });
+    assertQa(nextCorridor.toLevel === toLevel, "Cross-level corridor has the wrong toLevel.", {
+      corridor: summarizeDebugCorridor(nextCorridor),
+      expected: toLevel,
+    });
+    assertQa(nextCorridor.levelDelta === expectedDelta, "Cross-level corridor has the wrong levelDelta.", {
+      corridor: summarizeDebugCorridor(nextCorridor),
+      expected: expectedDelta,
+    });
+    assertQa(nextCorridor.crossLevel && nextCorridor.verticalTransition, "Room levels did not create a vertical transition.", {
+      corridor: summarizeDebugCorridor(nextCorridor),
+    });
+    assertQa(nextCorridor.stairTransition === "down", "Derived stair direction should be down.", {
+      corridor: summarizeDebugCorridor(nextCorridor),
+    });
+    assertQa(nextCorridor.stairCount === Math.abs(expectedDelta), "Derived stair marker count does not match level difference.", {
+      corridor: summarizeDebugCorridor(nextCorridor),
+      expected: Math.abs(expectedDelta),
+    });
+    assertQa(nextCorridor.levelTransition?.derivedFromRoomLevels === true, "Stair transition was not derived from room levels.", {
+      corridor: summarizeDebugCorridor(nextCorridor),
+    });
+    assertQaMapValidationPasses(nextMap, {
+      scenarioLabel,
+      phase: "room-level-derived-stairs",
+      fromRegionId: fromRegion.id,
+      toRegionId: toRegion.id,
+      corridorId: nextCorridor.id,
+    });
+    recordQaDiagnostic("room levels derived corridor stairs", {
+      scenarioLabel,
+      fromRegionId: fromRegion.id,
+      toRegionId: toRegion.id,
+      corridorId: nextCorridor.id,
+      fromLevel,
+      toLevel,
+      levelDelta: nextCorridor.levelDelta,
+      stairCount: nextCorridor.stairCount,
+      direction: nextCorridor.stairTransition,
+    }, "levels");
+    setQaRunnerStep(runId, {
+      scenarioLabel,
+      stepLabel: "Restore previous room levels",
+      targetRegionId: toRegion.id,
+      category: "levels",
+    });
+    setManualOverridesFromCurrent(originalOverrides, "qaRoomLevelStairs:restore");
+    await waitForQaRender(signal, settings);
+  }
+
+  async function runQaLevelView(
+    runId,
+    signal,
+    settings = {},
+    scenarioLabel = "Level View Test"
+  ) {
+    const originalOverrides = cloneManualOverrides(manualOverridesRef.current);
+    const originalLevelView = levelView;
+    const originalFadeOtherLevels = fadeOtherLevels;
+    const map = getQaGeneratedMap();
+    const corridor = (map?.corridors || []).find(
+      (candidate) =>
+        candidate?.id &&
+        !candidate.isRoomLink &&
+        candidate.from &&
+        candidate.to &&
+        (map.regions || []).some((region) => region.id === candidate.from) &&
+        (map.regions || []).some((region) => region.id === candidate.to),
+    );
+    assertQa(corridor, "Need a room-to-room corridor for the level view test.", {
+      corridorCount: map?.corridors?.length || 0,
+    });
+    const fromRegion = map.regions.find((region) => region.id === corridor.from);
+    const toRegion = map.regions.find((region) => region.id === corridor.to);
+    const fromLevel = 0;
+    const toLevel = -2;
+
+    setQaRunnerStep(runId, {
+      scenarioLabel,
+      stepLabel: `Assign levels and switch to Level ${formatMapLevel(toLevel)}`,
+      targetRegionId: toRegion.id,
+      category: "levels",
+    });
+    setManualOverridesFromCurrent((current) => {
+      const normalized = normalizeManualOverrides(current);
+      let levels = {
+        ...normalized.levels,
+        regions: { ...(normalized.levels?.regions || {}) },
+        corridors: { ...(normalized.levels?.corridors || {}) },
+        stairs: { ...(normalized.levels?.stairs || {}) },
+      };
+      levels = removeEditorStairOverridesForRoomLevelChange(levels, fromRegion.id);
+      levels = removeEditorStairOverridesForRoomLevelChange(levels, toRegion.id);
+      levels.regions[fromRegion.id] = fromLevel;
+      levels.regions[toRegion.id] = toLevel;
+      return freezeCurrentRoomLayout({
+        ...normalized,
+        levels,
+        stairTransitions: levels.stairs,
+      });
+    }, "qaLevelView:setLevels");
+    setLevelView(toLevel);
+    setFadeOtherLevels(true);
+    await waitForQaRender(signal, settings);
+
+    const nextMap = getQaGeneratedMap();
+    const available = getAvailableMapLevels(nextMap);
+    const normalizedView = normalizeLevelView(toLevel, available);
+    const activeMap = createLevelFilteredMap(nextMap, normalizedView, "active");
+    const inactiveMap = createLevelFilteredMap(nextMap, normalizedView, "inactive");
+    const activeRegionIds = new Set((activeMap.regions || []).map((region) => region.id));
+    const inactiveRegionIds = new Set((inactiveMap.regions || []).map((region) => region.id));
+    const visibleCorridor = (activeMap.corridors || []).find(
+      (candidate) => candidate.id === corridor.id || (candidate.from === fromRegion.id && candidate.to === toRegion.id),
+    );
+
+    assertQa(normalizedView === toLevel, "Level View did not normalize to the requested target level.", {
+      requested: toLevel,
+      availableLevels: available,
+      normalizedView,
+    });
+    assertQa(activeRegionIds.has(toRegion.id), "Active Level View does not include the target-level room.", {
+      targetRegionId: toRegion.id,
+      activeRegionIds: Array.from(activeRegionIds),
+    });
+    assertQa(!activeRegionIds.has(fromRegion.id), "Active Level View includes a room from another level.", {
+      fromRegionId: fromRegion.id,
+      activeRegionIds: Array.from(activeRegionIds),
+    });
+    assertQa(inactiveRegionIds.has(fromRegion.id), "Faded Level View does not include the other-level room.", {
+      fromRegionId: fromRegion.id,
+      inactiveRegionIds: Array.from(inactiveRegionIds),
+    });
+    assertQa(visibleCorridor?.crossLevel, "Cross-level corridor should stay visible as a stair connector on the active level.", {
+      corridor: summarizeDebugCorridor(visibleCorridor),
+      normalizedView,
+    });
+    assertQa(visibleCorridor?.stairCount === Math.abs(toLevel - fromLevel), "Level View stair connector has the wrong stair marker count.", {
+      corridor: summarizeDebugCorridor(visibleCorridor),
+      expected: Math.abs(toLevel - fromLevel),
+    });
+    recordQaDiagnostic("level view isolates active room level", {
+      scenarioLabel,
+      fromRegionId: fromRegion.id,
+      toRegionId: toRegion.id,
+      levelView: normalizedView,
+      activeRegionIds: Array.from(activeRegionIds),
+      inactiveRegionIds: Array.from(inactiveRegionIds),
+      corridorId: visibleCorridor?.id || corridor.id,
+      stairCount: visibleCorridor?.stairCount || 0,
+    }, "levels");
+
+    setQaRunnerStep(runId, {
+      scenarioLabel,
+      stepLabel: "Restore previous Level View and room levels",
+      targetRegionId: toRegion.id,
+      category: "levels",
+    });
+    setLevelView(originalLevelView);
+    setFadeOtherLevels(originalFadeOtherLevels);
+    setManualOverridesFromCurrent(originalOverrides, "qaLevelView:restore");
+    await waitForQaRender(signal, settings);
+  }
+
   async function runQaCorridorCreation(
     runId,
     signal,
@@ -9963,6 +10350,10 @@ export default function CruorMapGeneratorMvp({
         await runQaCircleAnchorSweep(runId, abortController.signal, settings, scenarioLabel);
       } else if (scenarioId === "corridor-create") {
         await runQaCorridorCreation(runId, abortController.signal, settings, scenarioLabel);
+      } else if (scenarioId === "level-stairs") {
+        await runQaRoomLevelStairs(runId, abortController.signal, settings, scenarioLabel);
+      } else if (scenarioId === "level-view") {
+        await runQaLevelView(runId, abortController.signal, settings, scenarioLabel);
       } else if (scenarioId === "room-move-reroute") {
         await runQaRoomMoveReroute(runId, abortController.signal, settings, scenarioLabel);
       } else {
@@ -10075,6 +10466,8 @@ export default function CruorMapGeneratorMvp({
       manualOverrides={manualOverrides}
       onRoomStyleChange={updateRoomStyle}
       onRoomStyleReset={resetRoomStyle}
+      onRoomLevelChange={updateRoomLevel}
+      onRoomLevelReset={resetRoomLevel}
       onEditStart={beginManualEdit}
       onEditCommit={commitManualEdit}
       onUndo={undoManualEdit}

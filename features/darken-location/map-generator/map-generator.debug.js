@@ -4,6 +4,7 @@ import {
   CORRIDOR_TYPE_OPTIONS,
   MANUAL_OVERRIDE_SCHEMA_VERSION,
   createEmptyManualOverrides,
+  normalizeLevelTransition,
   normalizeStairTransition,
 } from "./map-generator.state.js";
 import { getContextKey } from "./map-generator.profile.js";
@@ -210,6 +211,10 @@ export function cellsMatch(a, b) {
   return Boolean(a && b) && a.x === b.x && a.y === b.y;
 }
 
+function areLevelOverrideValuesEqual(a, b) {
+  return JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+}
+
 export function validateLevelSystem(generatedMap) {
   const corridorById = new Map(
     generatedMap.corridors.map((corridor) => [corridor.id, corridor]),
@@ -272,13 +277,44 @@ export function validateLevelSystem(generatedMap) {
         !Number.isFinite(corridor.toLevel)
       )
         return true;
-      const expectedDelta = getCorridorConfiguredLevelDelta(
-        generatedMap.config,
-        corridor,
-      );
-      return corridor.toLevel - corridor.fromLevel !== expectedDelta;
+      const actualDelta = corridor.toLevel - corridor.fromLevel;
+      const expectedDelta = corridor.levelTransition?.derivedFromRoomLevels
+        ? actualDelta
+        : getCorridorConfiguredLevelDelta(
+            generatedMap.config,
+            corridor,
+          );
+      return actualDelta !== expectedDelta;
     },
   );
+
+  const invalidLevelTransitionMetadata = generatedMap.corridors.filter(
+    (corridor) => {
+      const transition = normalizeLevelTransition(corridor.levelTransition || {});
+      if (!corridor.levelTransition) return true;
+      if (transition.type !== (corridor.levelTransition.type || "none")) return true;
+      if (corridor.levelTransition.fromLevel !== corridor.fromLevel) return true;
+      if (corridor.levelTransition.toLevel !== corridor.toLevel) return true;
+      if (corridor.levelTransition.levelDelta !== corridor.toLevel - corridor.fromLevel)
+        return true;
+      return false;
+    },
+  );
+
+  const crossLevelWithoutTransition = generatedMap.corridors.filter((corridor) => {
+    const transition = normalizeLevelTransition(corridor.levelTransition || {});
+    return (
+      Math.abs((corridor.toLevel || 0) - (corridor.fromLevel || 0)) > 0 &&
+      (transition.type === "none" || transition.direction === "none")
+    );
+  });
+
+  const transitionWithoutLevelDelta = generatedMap.corridors.filter((corridor) => {
+    const transition = normalizeLevelTransition(corridor.levelTransition || {});
+    if (transition.type === "none" || transition.direction === "none") return false;
+    const absoluteDelta = Math.abs((corridor.toLevel || 0) - (corridor.fromLevel || 0));
+    return absoluteDelta < 1 || (corridor.levelTransition?.stairCount || 0) !== absoluteDelta;
+  });
 
   const crossLevelJunctions = getCorridorIntersectionCells(
     generatedMap.corridors,
@@ -298,6 +334,9 @@ export function validateLevelSystem(generatedMap) {
     stairsWithoutLevelDelta,
     stairPlacementErrors,
     inconsistentLevelConstraints,
+    invalidLevelTransitionMetadata,
+    crossLevelWithoutTransition,
+    transitionWithoutLevelDelta,
     crossLevelJunctions,
     crossLevelCrossings: getCrossLevelCorridorIntersectionCells(
       generatedMap.corridors,
@@ -1008,7 +1047,7 @@ export function validateGeneratedMap(
     new Set([...Object.keys(explicitStairs), ...Object.keys(legacyStairs)]),
   );
   const staleStairMirror = stairMirrorKeys.filter(
-    (key) => explicitStairs[key] !== legacyStairs[key],
+    (key) => !areLevelOverrideValuesEqual(explicitStairs[key], legacyStairs[key]),
   );
   tests.push(
     makeTestResult(
@@ -1098,6 +1137,29 @@ export function validateGeneratedMap(
             )
             .join(", ")
         : `${getAvailableMapLevels(generatedMap).map(formatMapLevel).join(", ") || "0"}`,
+    ),
+  );
+
+  tests.push(
+    makeTestResult(
+      "level-transition-metadata-consistent",
+      "Corridors expose normalized levelTransition metadata",
+      levelValidation.invalidLevelTransitionMetadata.length === 0 &&
+        levelValidation.crossLevelWithoutTransition.length === 0 &&
+        levelValidation.transitionWithoutLevelDelta.length === 0,
+      [
+        levelValidation.invalidLevelTransitionMetadata.length > 0
+          ? `Invalid metadata: ${levelValidation.invalidLevelTransitionMetadata.map((corridor) => corridor.id).join(", ")}`
+          : "",
+        levelValidation.crossLevelWithoutTransition.length > 0
+          ? `Cross-level without transition: ${levelValidation.crossLevelWithoutTransition.map((corridor) => corridor.id).join(", ")}`
+          : "",
+        levelValidation.transitionWithoutLevelDelta.length > 0
+          ? `Transition without matching stair count: ${levelValidation.transitionWithoutLevelDelta.map((corridor) => corridor.id).join(", ")}`
+          : "",
+      ]
+        .filter(Boolean)
+        .join("; ") || `${levelValidation.renderedStairs.length} level transition(s)`,
     ),
   );
 
