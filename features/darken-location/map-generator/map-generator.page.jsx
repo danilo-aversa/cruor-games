@@ -175,7 +175,7 @@ import {
   serializeMapAccessAnchor,
   getClosestExternalBoundaryAnchorToPoint,
 } from "./map-generator.details.js";
-import { MapSvg, createLevelFilteredMap, getCorridorStairMarkerVirtualDoors, getMapSurface, getRegionSurface, isPureCaveMap } from "./map-generator.render.jsx";
+import { MapSvg, createLevelFilteredMap, getCorridorStairMarkerVirtualDoors, getStairMarkerId, getMapSurface, getRegionSurface, isPureCaveMap } from "./map-generator.render.jsx";
 import {
   serializeSvg,
   downloadSvg,
@@ -837,6 +837,10 @@ export function MapViewport({
   const [hoverWallHandle, setHoverWallHandle] = useState(null);
   const [hoverCorridorHandle, setHoverCorridorHandle] = useState(null);
   const [hoveredCorridorId, setHoveredCorridorId] = useState(null);
+  const [selectedStairMarker, setSelectedStairMarker] = useState(null);
+  const selectedStairMarkerId = selectedStairMarker?.id || "";
+  const selectedStairCorridorId = selectedStairMarker?.corridorId || "";
+  const selectedStairIndex = selectedStairMarker?.markerIndex ?? null;
   const [connectionDraft, setConnectionDraft] = useState(null);
   const [roomDragRoutedPreviewState, setRoomDragRoutedPreviewState] = useState(null);
   const [connectionDraftRoutedPreviewState, setConnectionDraftRoutedPreviewState] = useState(null);
@@ -1221,7 +1225,22 @@ export function MapViewport({
     routedPreviewCacheRef.current.clear();
     setRoomDragRoutedPreviewState(null);
     setConnectionDraftRoutedPreviewState(null);
+    setSelectedStairMarker((current) => {
+      if (!current) return current;
+      const corridor = generatedMap.corridors?.find(
+        (candidate) => candidate.id === current.corridorId,
+      );
+      if (!corridor) return null;
+      const stillExists = getCorridorStairMarkerVirtualDoors(corridor, generatedMap).some(
+        (marker) => getStairMarkerId(marker) === current.id,
+      );
+      return stillExists ? current : null;
+    });
   }, [generatedMap]);
+
+  useEffect(() => {
+    if (!showEditor) setSelectedStairMarker(null);
+  }, [showEditor]);
 
   useEffect(() => {
     const key = getRoomDragRoutedPreviewKey(roomDragPreview);
@@ -1409,6 +1428,7 @@ export function MapViewport({
   function openMapContextMenu(event) {
     event.preventDefault();
     event.stopPropagation();
+    setSelectedStairMarker(null);
     setRoomContextMenu(null);
     setDoorContextMenu(null);
     setJunctionContextMenu(null);
@@ -1423,6 +1443,7 @@ export function MapViewport({
     if (!showEditor) return;
     event.preventDefault();
     event.stopPropagation();
+    setSelectedStairMarker(null);
     setMapContextMenu(null);
     setDoorContextMenu(null);
     setJunctionContextMenu(null);
@@ -1462,6 +1483,7 @@ export function MapViewport({
     if (!showEditor) return;
     event.preventDefault();
     event.stopPropagation();
+    setSelectedStairMarker(null);
     setHoveredRegionId(region.id);
     onRegionHoverChange?.(region.id);
     onEditStart?.();
@@ -1624,6 +1646,7 @@ export function MapViewport({
     event.stopPropagation();
     const anchor = getPureCaveWallAnchorFromEvent(event, zone) || zone.anchor;
     const regionAccess = getMapAccessForRegion(zone.regionId);
+    setSelectedStairMarker(null);
     setRoomContextMenu(null);
     setDoorContextMenu(null);
     setJunctionContextMenu(null);
@@ -1665,6 +1688,7 @@ export function MapViewport({
     if (!showEditor || event.button !== 0 || !handle?.access) return;
     event.preventDefault();
     event.stopPropagation();
+    setSelectedStairMarker(null);
     onEditStart?.();
     accessDragRef.current = {
       pointerId: event.pointerId,
@@ -1773,6 +1797,7 @@ export function MapViewport({
     if (!showEditor) return;
     event.preventDefault();
     event.stopPropagation();
+    setSelectedStairMarker(null);
     if (createDirectSharedRoomDoor(zone)) return;
     connectionDragRef.current = {
       pointerId: event.pointerId,
@@ -1938,6 +1963,7 @@ export function MapViewport({
     if (!showEditor) return;
     event.preventDefault();
     event.stopPropagation();
+    setSelectedStairMarker(null);
     if (createDirectSharedRoomDoor(handle)) return;
     connectionDragRef.current = {
       pointerId: event.pointerId,
@@ -2304,10 +2330,52 @@ export function MapViewport({
     return true;
   }
 
+  function selectStairMarker(event, handle) {
+    if (!showEditor || !handle?.id) return;
+    event.preventDefault();
+    event.stopPropagation();
+    setRoomContextMenu(null);
+    setMapContextMenu(null);
+    setDoorContextMenu(null);
+    setJunctionContextMenu(null);
+    setWaypointContextMenu(null);
+    setAddWaypointContextMenu(null);
+    setWallAccessContextMenu(null);
+    setHoverWallHandle(null);
+    setHoverCorridorHandle(null);
+    setHoveredCorridorId(null);
+    setHoveredRegionId(null);
+    onRegionHoverChange?.("");
+    onSelectedRegionChange?.("");
+    setSelectedStairMarker({
+      id: handle.id,
+      corridorId: handle.corridorId,
+      markerIndex: handle.markerIndex,
+    });
+    viewportDebugEvent("select stair marker", {
+      stairMarkerId: handle.id,
+      corridorId: handle.corridorId,
+      markerIndex: handle.markerIndex,
+      markerCount: handle.markerCount,
+      transition: handle.transition,
+    });
+  }
+
+  function handleStairMarkerPointerDown(event, handle) {
+    if (event.button !== 0) return;
+    selectStairMarker(event, handle);
+  }
+
+  function handleStairMarkerKeyDown(event, handle) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    selectStairMarker(event, handle);
+  }
+
   function handleDoorContextMenu(event, handle) {
     if (!showEditor) return;
     event.preventDefault();
     event.stopPropagation();
+    setSelectedStairMarker(null);
     setRoomContextMenu(null);
     setMapContextMenu(null);
     setJunctionContextMenu(null);
@@ -2328,6 +2396,7 @@ export function MapViewport({
     if (!showEditor || !junction) return;
     event.preventDefault();
     event.stopPropagation();
+    setSelectedStairMarker(null);
     setRoomContextMenu(null);
     setDoorContextMenu(null);
     setMapContextMenu(null);
@@ -2347,6 +2416,7 @@ export function MapViewport({
     if (!showEditor || !handle) return;
     event.preventDefault();
     event.stopPropagation();
+    setSelectedStairMarker(null);
     setRoomContextMenu(null);
     setDoorContextMenu(null);
     setJunctionContextMenu(null);
@@ -2372,6 +2442,7 @@ export function MapViewport({
     if (!showEditor) return;
     event.preventDefault();
     event.stopPropagation();
+    setSelectedStairMarker(null);
     const cell = {
       x: Math.floor(handle.x / generatedMap.config.gridSize),
       y: Math.floor(handle.y / generatedMap.config.gridSize),
@@ -2527,6 +2598,7 @@ export function MapViewport({
     if (!showEditor || event.button !== 0) return;
     event.preventDefault();
     event.stopPropagation();
+    setSelectedStairMarker(null);
     onEditStart?.();
     const startPoint = { x: handle.x, y: handle.y };
     const drag = {
@@ -2556,6 +2628,7 @@ export function MapViewport({
     if (!showEditor || event.button !== 0) return;
     event.preventDefault();
     event.stopPropagation();
+    setSelectedStairMarker(null);
     onEditStart?.();
     const id = `new-waypoint-${handle.corridor.id}-${handle.insertIndex}`;
     const startPoint = handle.point;
@@ -2589,6 +2662,7 @@ export function MapViewport({
     if (!showEditor || event.button !== 0) return;
     event.preventDefault();
     event.stopPropagation();
+    setSelectedStairMarker(null);
     onEditStart?.();
     const startPoint = { x: handle.x, y: handle.y };
     const drag = {
@@ -2812,7 +2886,10 @@ export function MapViewport({
     const wasClick = !panRef.current.moved;
     panRef.current = null;
     setIsPanning(false);
-    if (wasClick) onSelectedRegionChange?.("");
+    if (wasClick) {
+      setSelectedStairMarker(null);
+      onSelectedRegionChange?.("");
+    }
   }
 
   function handleKeyDown(event) {
@@ -2962,8 +3039,16 @@ export function MapViewport({
               connectionDraftPreviewMap: connectionDraftRoutedPreview?.map || null,
               connectionDraftPreviewCorridorId: connectionDraftRoutedPreview?.corridorId || "",
               selectedRegionId,
+              selectedStairMarkerId,
+              selectedStairCorridorId,
+              selectedStairIndex,
               showAccessDots,
-              onRoomSelect: (region) => onSelectedRegionChange?.(region?.id || ""),
+              onRoomSelect: (region) => {
+                setSelectedStairMarker(null);
+                onSelectedRegionChange?.(region?.id || "");
+              },
+              onStairMarkerPointerDown: handleStairMarkerPointerDown,
+              onStairMarkerKeyDown: handleStairMarkerKeyDown,
               onRoomPointerDown: handleRoomPointerDown,
               onRoomPointerEnter: handleRoomPointerEnter,
               onRoomPointerLeave: handleRoomPointerLeave,

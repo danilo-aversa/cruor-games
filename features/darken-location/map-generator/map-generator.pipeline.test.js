@@ -1,4 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, test } from "vitest";
 import { DEFAULT_CONFIG } from "./map-generator.input.js";
 import { applyManualConnectionsToGraph } from "./map-generator.graph.js";
@@ -14,12 +16,15 @@ import {
   getCorridorLevelShiftDescription,
   getCorridorLevelShiftLabel,
   getCorridorStairMarkerVirtualDoors,
+  getMapStairMarkerEditorHandles,
+  getStairMarkerId,
   getCorridorStairRenderInfo,
   getRenderOnlyRoomLevelStairInfo,
   getCorridorTypeClassName,
   getRenderedCorridorStairMarkerCount,
   getRoomLevelBadgeLabel,
   renderCorridorTypeWallAccents,
+  renderEditorOverlays,
 } from "./map-generator.render.jsx";
 import { generateMap } from "./map-generator.pipeline.js";
 import {
@@ -55,6 +60,10 @@ function buildConfig(overrides = {}) {
     ...overrides,
     regions: overrides.regions || DEFAULT_CONFIG.regions,
   };
+}
+
+function repoPath(...segments) {
+  return resolve(process.cwd(), ...segments);
 }
 
 describe("map generator pipeline", () => {
@@ -93,10 +102,31 @@ describe("map generator pipeline", () => {
   });
 
   test("keeps Dark Places debug runner wired to real mounted files", () => {
-    const registryPath = new URL("./map-generator.debug-options.js", import.meta.url);
-    const mapPagePath = new URL("./map-generator.page.jsx", import.meta.url);
-    const composerPanelPath = new URL("../composer/components/LocationMapDetailsPanel.jsx", import.meta.url);
-    const phantomPanelPath = new URL("../components/LocationMapDetailsPanel.jsx", import.meta.url);
+    const registryPath = repoPath(
+      "features",
+      "darken-location",
+      "map-generator",
+      "map-generator.debug-options.js",
+    );
+    const mapPagePath = repoPath(
+      "features",
+      "darken-location",
+      "map-generator",
+      "map-generator.page.jsx",
+    );
+    const composerPanelPath = repoPath(
+      "features",
+      "darken-location",
+      "composer",
+      "components",
+      "LocationMapDetailsPanel.jsx",
+    );
+    const phantomPanelPath = repoPath(
+      "features",
+      "darken-location",
+      "components",
+      "LocationMapDetailsPanel.jsx",
+    );
 
     expect(existsSync(registryPath)).toBe(true);
     expect(existsSync(mapPagePath)).toBe(true);
@@ -263,7 +293,12 @@ describe("map generator pipeline", () => {
 
 
   test("room level edits do not freeze layout or reroute corridors", () => {
-    const pagePath = new URL("./map-generator.page.jsx", import.meta.url);
+    const pagePath = repoPath(
+      "features",
+      "darken-location",
+      "map-generator",
+      "map-generator.page.jsx",
+    );
     const mapPage = readFileSync(pagePath, "utf8");
     const updateRoomLevelBody = mapPage.match(/function updateRoomLevel\([\s\S]*?\n  }\n\n  function resetRoomLevel/)?.[0] || "";
     const resetRoomLevelBody = mapPage.match(/function resetRoomLevel\([\s\S]*?\n  }\n\n  function setGridRenderingStyle/)?.[0] || "";
@@ -437,6 +472,100 @@ describe("map generator pipeline", () => {
         stairTravelDirection: { x: 0, y: -1 },
       }),
     );
+  });
+
+  test("exposes stable selectable stair marker handles without mutating corridor topology", () => {
+    const corridor = {
+      id: "editor-stair-selection",
+      from: "region-1",
+      to: "region-2",
+      cells: [
+        { x: 4, y: 5 },
+        { x: 5, y: 5 },
+        { x: 6, y: 5 },
+      ],
+      pathCells: [
+        { x: 4, y: 5 },
+        { x: 5, y: 5 },
+        { x: 6, y: 5 },
+      ],
+      corridorType: "normal",
+      isRoomLink: false,
+    };
+    const generatedMap = {
+      config: buildConfig({ seed: "stair-selection" }),
+      regions: [
+        { id: "region-1", level: 0, cells: [] },
+        { id: "region-2", level: 2, cells: [] },
+      ],
+      corridors: [corridor],
+      dungeonMask: { doorSegments: [] },
+    };
+    const originalPathCells = structuredClone(corridor.pathCells);
+    const handles = getMapStairMarkerEditorHandles(generatedMap);
+
+    expect(handles).toHaveLength(2);
+    expect(handles.map((handle) => handle.id)).toEqual([
+      "stair-marker:editor-stair-selection:0",
+      "stair-marker:editor-stair-selection:1",
+    ]);
+    expect(handles[0]).toEqual(
+      expect.objectContaining({
+        corridorId: corridor.id,
+        markerIndex: 0,
+        markerCount: 2,
+        transition: "up",
+      }),
+    );
+    expect(getStairMarkerId(handles[1].door)).toBe(handles[1].id);
+    expect(Number.isFinite(handles[0].x)).toBe(true);
+    expect(Number.isFinite(handles[0].y)).toBe(true);
+    expect(corridor.pathCells).toEqual(originalPathCells);
+  });
+
+  test("renders stair selection hit zones and a selected marker highlight", () => {
+    const config = buildConfig({
+      seed: "stair-selection-overlay",
+      roomCount: 5,
+      enableDerivedRoomLevelStairs: true,
+    });
+    const manualCorridorId = "manual-edge-region-1-region-2-stair-selection";
+    const generatedMap = generateMap(config, {
+      customConnections: [
+        {
+          id: manualCorridorId,
+          from: "region-1",
+          to: "region-2",
+          kind: "manual",
+          locked: true,
+        },
+      ],
+      levels: {
+        regions: {
+          "region-1": 0,
+          "region-2": 2,
+        },
+      },
+    });
+    const allHandles = getMapStairMarkerEditorHandles(generatedMap);
+    const handles = allHandles.filter(
+      (handle) => handle.corridorId === manualCorridorId,
+    );
+
+    expect(handles).toHaveLength(2);
+    const markup = renderToStaticMarkup(
+      renderEditorOverlays(generatedMap, {
+        selectedStairMarkerId: handles[0].id,
+      }),
+    );
+
+    expect(markup).toContain('class="stair-marker-selection"');
+    expect(markup).toContain(`data-stair-marker-id="${handles[0].id}"`);
+    expect(markup).toContain('class="stair-marker-hit-zone is-selected"');
+    expect(markup).toContain('aria-pressed="true"');
+    allHandles.forEach((handle) => {
+      expect(markup).toContain(`data-stair-marker-id="${handle.id}"`);
+    });
   });
 
   test("can derive stair markers from manually assigned room levels when enabled", () => {
@@ -691,6 +820,8 @@ describe("map generator pipeline", () => {
   test("uses opaque floor fills in generated SVG styles", () => {
     expect(SVG_STYLE).toContain(".floor-fill{fill:#685D61;stroke:none}");
     expect(SVG_STYLE).toContain(".door-symbols .stair-mark__arrow path");
+    expect(SVG_STYLE).toContain(".stair-marker-hit-zone");
+    expect(SVG_STYLE).toContain(".stair-marker-selection__edge");
     expect(MAP_VISUAL_STYLE).toContain(
       ".map-style-cruor .floor-fill{fill:#21191d;stroke:none;mix-blend-mode:normal}",
     );
@@ -820,7 +951,11 @@ describe("map generator pipeline", () => {
   });
 
   test("hardens map state export manifest and level UI state", () => {
-    const config = buildConfig({ seed: "state-export-manifest", roomCount: 5 });
+    const config = buildConfig({
+      seed: "state-export-manifest",
+      roomCount: 5,
+      enableDerivedRoomLevelStairs: true,
+    });
     const manualCorridorId = "manual-edge-region-1-region-2-export-manifest";
     const manualOverrides = {
       corridorTypes: {

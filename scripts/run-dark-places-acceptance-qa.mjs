@@ -202,6 +202,26 @@ expectContains(
 );
 expectContains(
   "features/darken-location/map-generator/map-generator.render.jsx",
+  "getMapStairMarkerEditorHandles",
+  "Render layer exposes selectable stair marker handles",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.render.jsx",
+  "data-stair-marker-id",
+  "Rendered stair markers expose stable editor identities",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.page.jsx",
+  "selectedStairMarkerId",
+  "Map editor owns stair marker selection state",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.page.jsx",
+  "onStairMarkerPointerDown",
+  "Map editor wires stair marker pointer selection",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.render.jsx",
   "data-level-view",
   "SVG root exposes level-view metadata",
 );
@@ -237,8 +257,13 @@ expectContains(
 );
 expectContains(
   "features/darken-location/map-generator/map-generator.pipeline.test.js",
-  "derives stair markers from manually assigned room levels",
+  "can derive stair markers from manually assigned room levels when enabled",
   "Vitest covers room-level derived stairs",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.pipeline.test.js",
+  "renders stair selection hit zones and a selected marker highlight",
+  "Vitest covers stair selection overlay rendering",
 );
 expectContains(
   "features/darken-location/map-generator/map-generator.pipeline.test.js",

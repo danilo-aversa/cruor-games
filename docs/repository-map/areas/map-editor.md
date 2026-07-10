@@ -8,7 +8,7 @@ Map editor behavior is concentrated in `features/darken-location/map-generator/m
 
 - Own selected room/corridor/anchor state.
 - Apply manual room position, size, shape, style, and corridor overrides.
-- Handle dragging, endpoint edits, intermediate anchors, snapping, circular room behavior, context menus, zoom, pan, reset, tests modal, and debug recording.
+- Handle dragging, endpoint edits, intermediate anchors, snapping, circular room behavior, selectable stair-marker overlays, context menus, zoom, pan, reset, tests modal, and debug recording.
 - Serialize rendered SVG and debug payloads for copy/download.
 
 ## Event Ownership
@@ -21,7 +21,7 @@ Generated map data comes from the pipeline. Editor state overlays manual overrid
 
 ## Tests
 
-Automated map generation QA is strong, but editor pointer/keyboard behavior is only partially covered. Manual browser verification is required after interaction changes.
+Automated map generation QA is strong, and Pass 4F-A structurally covers stable stair-marker identities and hit-zone wiring. Editor pointer/keyboard behavior is still only partially covered, so manual browser verification is required after interaction changes.
 
 ## Findings
 

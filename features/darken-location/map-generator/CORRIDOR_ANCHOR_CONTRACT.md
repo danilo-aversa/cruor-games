@@ -314,3 +314,15 @@ Render-only stair markers derived from room levels must follow one coherent corr
 - Multi-marker stairs use the corridor path order from `from` to `to` for every marker.
 - The last marker of a corridor uses `current - previous`, not `previous - current`, so endpoint markers do not point back toward one another.
 - Virtual stair doors expose `stairTravelDirection` so stair step and arrow rendering can use the fixed render-only travel vector without changing real door semantics.
+
+## Pass 4F-A stair marker selection contract
+
+Pass 4F-A makes render-only stair markers selectable without turning selection into map data.
+
+- Every rendered stair marker exposes a stable editor identity in the form `stair-marker:<corridorId>:<markerIndex>`.
+- Editor hit zones are derived from the same virtual stair marker objects used by the renderer.
+- Selection stores marker id, corridor id, and marker index only in viewport/editor UI state.
+- Selecting or highlighting a stair marker must not write manual overrides or mutate `pathCells`, `floorCells`, doors, anchors, levels, `crossLevel`, or connectivity.
+- Selection is cleared when the marker ceases to exist, when editor mode is disabled, or when another map object/empty canvas is selected.
+- Dragging, persisted positions, reset/remove actions, and stair marker context menus belong to later Pass 4F patches.
+
