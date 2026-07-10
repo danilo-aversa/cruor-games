@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cruor.games/schemas/repository-map.schema.json",
+  "title": "Cruor Games Repository Map",
+  "type": "object",
+  "required": ["metadata", "files", "dependencyGraph"],
+  "additionalProperties": false,
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "generatedAt",
+        "inspectedCommit",
+        "branch",
+        "trackedFileCount",
+        "generator",
+        "counts"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "schemaVersion": { "type": "string" },
+        "generatedAt": { "type": "string" },
+        "inspectedCommit": { "type": "string" },
+        "branch": { "type": "string" },
+        "trackedFileCount": { "type": "integer", "minimum": 0 },
+        "supplementalUntrackedFiles": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "generator": { "type": "string" },
+        "schemaPath": { "type": "string" },
+        "packageScripts": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/fileRecord" }
+    },
+    "dependencyGraph": {
+      "type": "object",
+      "required": ["edges", "cycles", "highFanIn", "highFanOut"],
+      "additionalProperties": true,
+      "properties": {
+        "edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["from", "to", "kind"],
+            "properties": {
+              "from": { "type": "string" },
+              "to": { "type": "string" },
+              "kind": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "cycles": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "highFanIn": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/fanMetric" }
+        },
+        "highFanOut": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/fanMetric" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "fanMetric": {
+      "type": "object",
+      "required": ["file", "count"],
+      "properties": {
+        "file": { "type": "string" },
+        "count": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "fileRecord": {
+      "type": "object",
+      "required": [
+        "path",
+        "name",
+        "extension",
+        "language",
+        "category",
+        "area",
+        "status",
+        "role",
+        "responsibilities",
+        "architecturalLayer",
+        "entryPoint",
+        "publicApi",
+        "imports",
+        "importedBy",
+        "dataConsumed",
+        "dataProduced",
+        "sideEffects",
+        "browserApis",
+        "stateOwnership",
+        "runtimeFlows",
+        "relatedFiles",
+        "tests",
+        "changeRisk",
+        "changeRiskReasons",
+        "generated",
+        "vendored",
+        "referenceOnly",
+        "legacy",
+        "deprecated",
+        "confidence",
+        "notes",
+        "findings",
+        "generatedFields"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "path": { "type": "string" },
+        "name": { "type": "string" },
+        "extension": { "type": "string" },
+        "language": { "type": "string" },
+        "category": { "type": "string" },
+        "area": { "type": "string" },
+        "status": { "type": "string" },
+        "role": { "type": "string" },
+        "responsibilities": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "architecturalLayer": { "type": "string" },
+        "entryPoint": { "type": "boolean" },
+        "publicApi": {
+          "type": "object",
+          "required": ["defaultExport", "namedExports", "reExports"],
+          "additionalProperties": true
+        },
+        "imports": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/importRecord" }
+        },
+        "importedBy": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "symbols"],
+            "properties": {
+              "path": { "type": "string" },
+              "symbols": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "dataConsumed": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "dataProduced": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "sideEffects": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "browserApis": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "stateOwnership": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "runtimeFlows": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "relatedFiles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "relationship"],
+            "properties": {
+              "path": { "type": "string" },
+              "relationship": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "tests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "coverage"],
+            "properties": {
+              "path": { "type": "string" },
+              "coverage": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "changeRisk": {
+          "type": "string",
+          "enum": ["low", "medium", "high", "critical"]
+        },
+        "changeRiskReasons": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "generated": { "type": "boolean" },
+        "vendored": { "type": "boolean" },
+        "referenceOnly": { "type": "boolean" },
+        "legacy": { "type": "boolean" },
+        "deprecated": { "type": "boolean" },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low"]
+        },
+        "notes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "findings": {
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "generatedInfo": {
+          "type": ["object", "null"]
+        },
+        "documentation": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "generatedFields": {
+          "type": "object",
+          "required": ["hash", "bytes", "lineCount", "binary", "tracked", "supplemental", "generatedAt"],
+          "additionalProperties": true,
+          "properties": {
+            "hash": { "type": ["string", "null"] },
+            "bytes": { "type": "integer", "minimum": 0 },
+            "lineCount": { "type": ["integer", "null"], "minimum": 0 },
+            "binary": { "type": "boolean" },
+            "tracked": { "type": "boolean" },
+            "supplemental": { "type": "boolean" },
+            "generatedAt": { "type": "string" }
+          }
+        }
+      }
+    },
+    "importRecord": {
+      "type": "object",
+      "required": ["source", "kind", "symbols", "external", "resolvedPath"],
+      "additionalProperties": true,
+      "properties": {
+        "source": { "type": "string" },
+        "kind": { "type": "string" },
+        "symbols": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "external": { "type": "boolean" },
+        "resolvedPath": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

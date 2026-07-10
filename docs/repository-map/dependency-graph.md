@@ -1,0 +1,89 @@
+# Dependency Graph
+
+The exhaustive import graph is generated in [repository-map.json](repository-map.json). This document summarizes the graph by subsystem.
+
+## Feature Level
+
+```mermaid
+flowchart TD
+  App[app/router.jsx and AppShell] --> Home
+  App --> Darken
+  App --> MapGenerator
+  App --> MonsterComposer
+  App --> Inspirations
+  App --> InspirationStudio
+  Darken --> MapBridge[darken-location.map-request.js]
+  MapBridge --> MapGenerator
+  SharedContent --> Darken
+  SharedContent --> MonsterComposer
+  SharedContent --> Inspirations
+  SharedContent --> InspirationStudio
+  SharedI18n --> App
+  SharedStyles --> App
+```
+
+## Shared Content
+
+```mermaid
+flowchart LR
+  Schema[content-pack-schema.js] --> Packs[content-packs]
+  Packs --> StaticRegistry[static-registry.js]
+  StaticRegistry --> Registry[registry.js]
+  Registry --> Adapter[content-repository.adapter.js]
+  Registry --> Modules[inspiration modules]
+  Adapter --> Features[feature consumers]
+```
+
+## Map Generator
+
+```mermaid
+flowchart TD
+  Page[map-generator.page.jsx] --> Input[map-generator.input.js]
+  Page --> State[map-generator.state.js]
+  Page --> Pipeline[map-generator.pipeline.js]
+  Pipeline --> Graph[graph.js]
+  Pipeline --> Layout[layout.js]
+  Pipeline --> Masks[mask.js]
+  Pipeline --> Corridors[corridors.js]
+  Pipeline --> Details[details.js]
+  Pipeline --> Geometry[geometry.js]
+  Page --> Render[map-generator.render.jsx]
+  Page --> Export[map-generator.export.js]
+```
+
+## Monster Composer
+
+```mermaid
+flowchart TD
+  Page[monster-composer.page.jsx] --> NativeData[monster-grafts.js]
+  Page --> Rules[monster-graft-rules.schema.js]
+  Page --> Feed[monster-content-pack-feed.js]
+  Feed --> SharedRegistry[shared content registry]
+  Page --> QAData[qa builders and reports]
+  Page --> Export[stat block and debug payloads]
+```
+
+## Central Modules
+
+High fan-in baseline from the generated graph includes:
+
+- `features/darken-location/map-generator/map-generator.input.js`
+- `features/inspiration-studio/components/StudioIcon.jsx`
+- `features/monster-composer/data/monster-content-pack-feed.js`
+- `features/monster-composer/model/monster-graft-rules.schema.js`
+- `shared/content/content-pack-schema.js`
+- `shared/content/inspiration-modules/inspiration-module.factory.js`
+
+High fan-out baseline includes:
+
+- `features/inspiration-studio/InspirationStudioPage.jsx`
+- `shared/content/content.index.js`
+- `features/monster-composer/monster-composer.page.jsx`
+- `shared/content/inspiration-modules.js`
+- `features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `features/darken-location/map-generator/map-generator.page.jsx`
+
+## Cycles And Boundary Notes
+
+No static circular dependency candidates were detected in the generated baseline. Cross-feature imports are mainly intentional through app routing, shared content adapters, and the Darken-to-map bridge. New cross-feature imports should prefer `shared/` contracts or explicit bridge modules.
+

@@ -8,6 +8,17 @@ Cruor Games is a modular web application for tabletop RPG tools and dark fantasy
 
 Work efficiently, make safe and maintainable changes, and avoid unnecessary token/credit usage.
 
+## Repository Map
+
+- Treat the current code as the technical source of truth.
+- Consult `docs/repository-map/index.md` before architectural work.
+- Read the relevant repository-map area document before modifying a subsystem.
+- Verify repository-map documentation against current code when it guides a change.
+- Update the repository map when files, imports, exports, routes, state ownership, data contracts, runtime flows, or QA coverage change.
+- Run `npm run docs:repo-map` and `npm run docs:repo-map:check` after repository-map-relevant changes.
+- Do not manually edit generated structural fields in `docs/repository-map/repository-map.json`.
+- Explicitly report when repository-map documentation appears stale.
+
 ## Core Rules
 
 - Keep features modular.
