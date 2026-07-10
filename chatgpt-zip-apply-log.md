@@ -11164,3 +11164,26 @@ _Nessun file aggiunto._
 - `~features/darken-location/map-generator/map-generator.state.js`
 - `~scripts/run-dark-places-acceptance-qa.mjs`
 
+
+---
+
+## 2026-07-10 21:07:06
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-pages-deploy-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-pages-deploy-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~.github/workflows/ci.yml`
+- `~.github/workflows/deploy-pages.yml`
+- `~vite.config.js`
+

@@ -4,8 +4,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const pagesBase = process.env.CRUOR_PAGES_BASE || "/";
 
 export default defineConfig({
+  base: pagesBase,
   plugins: [react()],
   resolve: {
     alias: {

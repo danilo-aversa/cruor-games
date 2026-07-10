@@ -37,7 +37,23 @@ jobs:
         run: npm ci
 
       - name: Build Vite site
+        env:
+          CRUOR_PAGES_BASE: /cruor-games/
         run: npm run build
+
+      - name: Verify built Pages artifact
+        run: |
+          test -f dist/index.html
+
+          if grep -q '/app/main.jsx' dist/index.html; then
+            echo "::error::dist/index.html still points to the uncompiled JSX entry point."
+            exit 1
+          fi
+
+          if ! grep -q '/cruor-games/assets/' dist/index.html; then
+            echo "::error::dist/index.html does not contain the expected GitHub Pages asset base path."
+            exit 1
+          fi
 
       - name: Add SPA fallback
         run: cp dist/index.html dist/404.html
