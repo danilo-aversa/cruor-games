@@ -222,6 +222,51 @@ expectContains(
 );
 expectContains(
   "features/darken-location/map-generator/map-generator.render.jsx",
+  "getClosestCorridorStairMarkerDragTarget",
+  "Render layer constrains stair marker drags to valid corridor targets",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.state.js",
+  "createStairMarkerPositionOverride",
+  "State layer normalizes persistent stair marker positions",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.page.jsx",
+  "manualOverrides?.stairMarkers",
+  "Map editor resolves stair marker positions from manual overrides",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.page.jsx",
+  "onStairMarkerMove",
+  "Map editor persists valid stair marker drops",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.page.jsx",
+  "drag:end stair marker",
+  "Map editor records stair marker drag completion",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.state.js",
+  "createStairMarkerRemovalOverride",
+  "State layer exposes stair marker removal tombstones",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.page.jsx",
+  "Reset Position",
+  "Stair marker context menu exposes position reset",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.page.jsx",
+  "Remove Stair Marker",
+  "Stair marker context menu exposes marker removal",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.render.jsx",
+  "markerPositions?.[markerId]?.removed === true",
+  "Render layer suppresses removed stair markers",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.render.jsx",
   "data-level-view",
   "SVG root exposes level-view metadata",
 );
@@ -267,8 +312,48 @@ expectContains(
 );
 expectContains(
   "features/darken-location/map-generator/map-generator.pipeline.test.js",
+  "snaps stair marker drags to free corridor cells without changing topology",
+  "Vitest covers constrained stair marker drag snapping",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.pipeline.test.js",
+  "persists stair marker positions as render-only manual overrides",
+  "Vitest covers persistent stair marker overrides",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.export.js",
+  "manualStairMarkers",
+  "Map state manifest counts persistent stair markers",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.export.js",
+  "manualPositionedStairMarkers",
+  "Map state manifest distinguishes positioned stair markers",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.export.js",
+  "manualRemovedStairMarkers",
+  "Map state manifest distinguishes removed stair markers",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.state.js",
+  "if (removed)",
+  "Imported stair removal tombstones discard stale position data",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.pipeline.test.js",
   "hardens map state export manifest and level UI state",
   "Vitest covers export/import hardening",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.pipeline.test.js",
+  "round-trips positioned and removed stair markers without duplication",
+  "Vitest covers positioned and removed stair round trips",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.pipeline.test.js",
+  "canonicalizes legacy and malformed stair marker overrides during import",
+  "Vitest covers legacy and malformed stair imports",
 );
 expectContains(
   "package.json",

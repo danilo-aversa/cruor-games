@@ -138,6 +138,24 @@ function countArrayEntries(value) {
   return Array.isArray(value) ? value.length : 0;
 }
 
+function createStairMarkerOverrideCounts(stairMarkers = {}) {
+  const source =
+    stairMarkers &&
+    typeof stairMarkers === "object" &&
+    !Array.isArray(stairMarkers)
+      ? stairMarkers
+      : {};
+  const overrides = Object.values(source);
+  const removed = overrides.filter(
+    (override) => override?.removed === true,
+  ).length;
+  return {
+    total: overrides.length,
+    positioned: overrides.length - removed,
+    removed,
+  };
+}
+
 function createCorridorTypeHistogram(corridors = []) {
   return (corridors || []).reduce((histogram, corridor) => {
     const type = normalizeCorridorType(
@@ -177,11 +195,15 @@ export function createMapStateExportManifest(
     (corridor) => corridor.levelTransition?.derivedFromRoomLevels,
   );
   const availableLevels = getAvailableMapLevels(generatedMap);
+  const stairMarkerCounts = createStairMarkerOverrideCounts(
+    normalizedOverrides.stairMarkers,
+  );
 
   return {
     schema: "cruor-map-generator-export-manifest",
     version: 1,
     stateModel: "explicit-levels",
+    manualOverrideSchemaVersion: normalizedOverrides.schemaVersion,
     seed: String(config.seed ?? generatedMap?.seed ?? ""),
     levelView: normalizedUiState.levelView,
     fadeOtherLevels: normalizedUiState.fadeOtherLevels,
@@ -199,6 +221,9 @@ export function createMapStateExportManifest(
       manualRoomLevels: countObjectEntries(normalizedOverrides.levels.regions),
       manualCorridorLevels: countObjectEntries(normalizedOverrides.levels.corridors),
       manualStairTransitions: countObjectEntries(normalizedOverrides.levels.stairs),
+      manualStairMarkers: stairMarkerCounts.total,
+      manualPositionedStairMarkers: stairMarkerCounts.positioned,
+      manualRemovedStairMarkers: stairMarkerCounts.removed,
       manualCustomConnections: countArrayEntries(normalizedOverrides.customConnections),
       manualDeletedConnections: countArrayEntries(normalizedOverrides.deletedConnections),
       crossLevelCorridors: crossLevelCorridors.length,

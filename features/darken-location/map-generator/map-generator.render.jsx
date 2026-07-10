@@ -200,6 +200,14 @@ function getGridLayerClassName(baseClass, gridStyle, gridOptions = {}) {
 export const SVG_STYLE = `
 .paper{fill:#dccaa6}.paper-texture{opacity:.75}.map-grid line{stroke:var(--cruor-map-grid-stroke,rgba(58,46,32,.24));stroke-width:var(--cruor-map-grid-width,1);vector-effect:non-scaling-stroke}.map-grid circle{fill:var(--cruor-map-grid-dot,rgba(58,46,32,.30));r:var(--cruor-map-grid-dot-radius,.86)}.floor-grid line{stroke:var(--cruor-floor-grid-stroke,rgba(29,25,21,.28));stroke-width:var(--cruor-floor-grid-width,1.08);vector-effect:non-scaling-stroke}.floor-grid circle{fill:var(--cruor-floor-grid-dot,rgba(29,25,21,.32));r:var(--cruor-floor-grid-dot-radius,.94)}.grid-style-dotted line{display:none}.grid-style-dashed line{stroke-linecap:round}.floor-fill{fill:#685D61;stroke:none}.floor-speckle circle{fill:rgba(29,25,21,.12)}.floor-grain path{fill:none;stroke:rgba(29,25,21,.11);stroke-width:.7;stroke-linecap:round;vector-effect:non-scaling-stroke}.room-floor-accent{fill:rgba(255,248,226,.26);stroke:none}.corridor-floor-accent{fill:rgba(116,91,57,.075);stroke:none}.organic-floor-accent{fill:rgba(29,25,21,.06);stroke:rgba(29,25,21,.18);stroke-width:1.15;vector-effect:non-scaling-stroke}.shape-detail{fill:none;stroke:rgba(29,25,21,.2);stroke-width:1.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.ritual-floor-ring{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.25;vector-effect:non-scaling-stroke}.corridor-centerline{fill:none;stroke:rgba(29,25,21,.18);stroke-width:1.1;stroke-dasharray:2 8;stroke-linecap:round;vector-effect:non-scaling-stroke}.corridor-type-accents{pointer-events:none}.corridor-type-accent{fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-type-narrow__wall-main path,.corridor-type-narrow__wall-sketch path,.corridor-type-secret__wall-main path,.corridor-type-secret__wall-sketch path{fill:none;vector-effect:non-scaling-stroke}.corridor-type-secret__wall-main path{stroke-dasharray:10 10}.corridor-type-secret__wall-sketch path{stroke-dasharray:5 8}.corridor-type-collapsed__scar{stroke:rgba(29,25,21,.34);stroke-width:3.2;stroke-dasharray:4 5}.corridor-type-collapsed__rubble{fill:rgba(29,25,21,.18);stroke:rgba(29,25,21,.34);stroke-width:.85;vector-effect:non-scaling-stroke}.corridor-type-secret__trace{stroke:rgba(29,25,21,.38);stroke-width:2.35;stroke-dasharray:2.4 7.2}.corridor-type-secret__veil{stroke:rgba(255,248,226,.13);stroke-width:6.2;stroke-dasharray:1 9}.corridor-type-gallery__axis{stroke:rgba(255,248,226,.18);stroke-width:8.4}.corridor-type-gallery__ornament{stroke:rgba(29,25,21,.24);stroke-width:1.25}.map-style-cruor .corridor-type-collapsed__scar,.map-style-cruor .corridor-type-gallery__ornament{stroke:rgba(240,215,220,.28)}.map-style-cruor .corridor-type-collapsed__rubble{fill:rgba(240,215,220,.16);stroke:rgba(240,215,220,.3)}.map-style-cruor .corridor-type-gallery__axis{stroke:rgba(240,215,220,.1)}.external-hatching-underlay .halo-buffer{fill:none;stroke:var(--cruor-map-hatch-underlay-stroke,#dccaa6);stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:1}.external-hatching path{fill:none;stroke:rgba(42,33,24,.28);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-shadow path{stroke:var(--cruor-map-wall-shadow-stroke,rgba(42,33,24,.32));stroke-width:var(--cruor-map-wall-shadow-width,7.2);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-main path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.wall-breaks path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-break-width,1.45);stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.wall-breaks .crack{stroke:rgba(29,25,21,.58);stroke-width:1.1}.door-cuts .door-opening{stroke:#efe4ca;stroke-width:7;stroke-linecap:square;vector-effect:non-scaling-stroke}.door-cuts .secret-door-opening{stroke:#efe4ca;stroke-width:5;stroke-linecap:square;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}.door-symbols .door-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-wall-sketch{stroke:rgba(29,25,21,.3);stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.door-symbols .door-panel{fill:#efe4ca;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .secret-door-panel{stroke-dasharray:3 3}.door-symbols .locked-door-panel{stroke-width:2.35}.door-symbols .locked-door-mark line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.05;stroke-linecap:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__main path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__sketch path{fill:none;stroke:rgba(29,25,21,.3);stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.door-symbols .stair-mark__arrow path{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.15;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-floor{fill:#efe4ca;stroke:none;pointer-events:none}.corridor-overpass-patches .overpass-corridor-walls path{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.05);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-overpass-patches .overpass-corridor-wall-sketch path{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.32));stroke-width:var(--cruor-map-wall-sketch-width,1.15);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.map-accesses .map-access-line,.map-accesses .map-access-head-line{fill:none;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:3.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-stem-sketch,.map-accesses .map-access-head-sketch{fill:none;stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.3));stroke-width:1.05;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.map-accesses .map-access-label{fill:#1d1915;font-size:8px;font-weight:900;font-family:Inter,ui-sans-serif,system-ui;letter-spacing:.08em;paint-order:stroke;stroke:#efe4ca;stroke-width:2.5px;stroke-linejoin:round}.corridor-junctions .junction-wall-line{stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:var(--cruor-map-wall-main-width,4.0);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-wall-sketch{stroke:var(--cruor-map-wall-sketch-stroke,rgba(29,25,21,.3));stroke-width:var(--cruor-map-wall-sketch-width,1.1);stroke-linecap:round;stroke-linejoin:round;fill:none;vector-effect:non-scaling-stroke}.corridor-junctions .junction-door-panel{fill:#efe4ca;stroke:var(--cruor-map-wall-main-stroke,#1d1915);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.props rect,.props circle,.props path,.props line,.props polygon,.props ellipse{fill:none;stroke:rgba(29,25,21,.62);stroke-width:1.35;vector-effect:non-scaling-stroke}.props .prop-fill{fill:rgba(29,25,21,.045)}.props .prop-light-fill{fill:rgba(255,248,226,.16)}.props .prop-fog{fill:rgba(255,248,226,.22);stroke:rgba(29,25,21,.18);stroke-width:1.05}.props .prop-water{fill:rgba(143,161,150,.24);stroke:rgba(29,25,21,.28);stroke-width:1.1}.props .prop-pit{fill:rgba(29,25,21,.12);stroke:rgba(29,25,21,.62);stroke-width:1.4}.props .prop-rubble{fill:rgba(29,25,21,.06)}.props .prop-bones{stroke:rgba(29,25,21,.7);stroke-width:1.15}.props .prop-crack{stroke:rgba(29,25,21,.5);stroke-width:1.05}.props .prop-stairs line{stroke-width:1.05}.props .prop-altar,.props .prop-tomb,.props .prop-shelf{fill:rgba(29,25,21,.045)}.props .prop-context-cue{opacity:.88}.props .prop-context-cue--mine{opacity:.92}.props .prop-context-cue--cave{opacity:.9}.props .prop-context-cue--chapel,.props .prop-context-cue--noble-house{opacity:.82}.props .prop-theme-cue{opacity:.76}.props .prop-theme-cue--sedlec-ossuary,.props .prop-theme-cue--towers-of-silence{opacity:.82}.props .prop-theme-cue--the-mist{opacity:.68}.props .prop-theme-cue--wolf-spiders{opacity:.9}.props .prop-web{stroke:rgba(29,25,21,.54);stroke-width:1.05}.props .prop-egg-sac{fill:rgba(255,248,226,.13);stroke:rgba(29,25,21,.55);stroke-width:1.1}.labels .room-number-badge{fill:#efe4ca;stroke:#1d1915;stroke-width:2;rx:0}.labels text{fill:#1d1915;font-size:13px;font-weight:800;font-family:Inter,ui-sans-serif,system-ui}.labels .room-number{font-size:12px;font-weight:900;letter-spacing:.01em}.labels .room-level-badge{fill:#1d1915;stroke:#efe4ca;stroke-width:1.2;rx:0}.labels .room-level-marker--above .room-level-badge{fill:#efe4ca;stroke:#1d1915}.labels .room-level-marker--above .room-level-text{fill:#1d1915}.labels .room-level-text{fill:#efe4ca;font-size:8px;font-weight:900;letter-spacing:.04em}.corridor-level-shift-labels{pointer-events:none}.corridor-level-shift__badge{fill:#efe4ca;stroke:#1d1915;stroke-width:1.55;rx:0}.corridor-level-shift__text{fill:#1d1915;font-size:8px;font-weight:900;font-family:Inter,ui-sans-serif,system-ui;letter-spacing:.04em}.corridor-level-shift--up .corridor-level-shift__badge{fill:#f4ead1}.corridor-level-shift--down .corridor-level-shift__badge{fill:#d8c49d}.stair-mark--derived-room-level .stair-mark__arrow path{stroke-width:2.45}.stair-marker-selection{pointer-events:none}.editor-overlays .stair-marker-selection__halo{fill:rgba(190,64,82,.12);stroke:rgba(190,64,82,.58);stroke-width:8;vector-effect:non-scaling-stroke}.editor-overlays .stair-marker-selection__edge{fill:none;stroke:rgba(240,185,194,.96);stroke-width:2.8;vector-effect:non-scaling-stroke}.editor-overlays .stair-marker-hit-zone{fill:rgba(214,184,98,0);stroke:rgba(214,184,98,0);stroke-width:0;cursor:pointer;pointer-events:all;outline:none}.editor-overlays .stair-marker-hit-zone:hover,.editor-overlays .stair-marker-hit-zone:focus-visible{fill:rgba(214,184,98,.12);stroke:rgba(255,231,143,.82);stroke-width:1.8;vector-effect:non-scaling-stroke}.editor-overlays .stair-marker-hit-zone.is-selected{fill:rgba(190,64,82,.08)}.labels .room-name{font-size:12px;font-family:Inter,ui-sans-serif,system-ui;font-weight:700;paint-order:stroke;stroke:#efe4ca;stroke-width:4px;stroke-linejoin:round}.editor-overlays path{fill:rgba(122,67,36,0);stroke:rgba(122,67,36,0);stroke-width:0;vector-effect:non-scaling-stroke}.room-hover-highlight{pointer-events:none}.editor-overlays .room-hover-highlight__halo path,.editor-overlays .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.32);stroke-width:8;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-hover-highlight__edge path,.editor-overlays .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.92);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-selection-highlight{pointer-events:none}.editor-overlays .room-selection-highlight__halo path,.editor-overlays .room-selection-highlight__halo line{fill:none;stroke:rgba(190,64,82,.52);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-selection-highlight__edge path,.editor-overlays .room-selection-highlight__edge line{fill:none;stroke:rgba(240,185,194,.92);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.corridor-hover-highlight{pointer-events:none}.editor-overlays .corridor-hover-highlight__halo{fill:none;stroke:rgba(214,184,98,.34);stroke-width:9;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .corridor-hover-highlight__line{fill:none;stroke:rgba(255,231,143,.95);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.editor-overlays .room-drag-handle{cursor:move;pointer-events:all}.editor-overlays .room-drag-handle:hover{fill:rgba(122,67,36,0)}.editor-overlays .room-drag-handle.is-dragging{fill:rgba(122,67,36,0);stroke:rgba(29,25,21,0);stroke-width:0}.wall-hover-zone{stroke:rgba(122,67,36,0);stroke-width:14;stroke-linecap:square;fill:none;cursor:crosshair;pointer-events:stroke}.wall-hover-zone:hover{stroke:rgba(122,67,36,0)}.endpoint-handle{fill:#1d1915;stroke:#efe4ca;stroke-width:2;cursor:grab;pointer-events:all}.endpoint-handle.is-dragging{fill:#7a4324;cursor:grabbing}.waypoint-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:1.5;cursor:grab;pointer-events:all}.waypoint-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.2}.waypoint-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.corridor-hover-zone{fill:rgba(122,67,36,0);stroke:none;cursor:crosshair;pointer-events:all}.corridor-hover-zone:hover{fill:rgba(122,67,36,.12)}.corridor-hover-zone.is-junction:hover{fill:rgba(214,184,98,.22);stroke:rgba(214,184,98,.54);stroke-width:1.2;vector-effect:non-scaling-stroke}.corridor-add-handle{fill:#efe4ca;stroke:#7a4324;stroke-width:2;cursor:crosshair;pointer-events:all}.corridor-add-handle:hover{fill:#7a4324;stroke:#efe4ca}.corridor-add-handle.is-junction{fill:#d6b862;stroke:#1d1915;stroke-width:2.4}.corridor-add-handle.is-junction:hover{fill:#1d1915;stroke:#d6b862}.wall-connect-handle{fill:#7a4324;stroke:#efe4ca;stroke-width:2;cursor:crosshair;pointer-events:all}.wall-connect-handle:hover{fill:#1d1915}.map-access-handle{fill:#efe4ca;stroke:#1d1915;stroke-width:2.1;cursor:grab;pointer-events:all}.map-access-handle:hover{fill:#d6b862}.map-access-handle.is-dragging{fill:#7a4324;stroke:#efe4ca;cursor:grabbing}.map-access-handle__icon{fill:none;stroke:#1d1915;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}.connection-preview{stroke:#7a4324;stroke-width:2.4;stroke-dasharray:7 5;stroke-linecap:round;fill:none;vector-effect:non-scaling-stroke;pointer-events:none}.connection-preview__endpoint{fill:#efe4ca;stroke:#7a4324;stroke-width:2;pointer-events:none}.circular-room-surface-cover{pointer-events:none}.level-layer--faded{opacity:.26}.level-layer--active{opacity:1}.room-preview-hotspots{pointer-events:none}.room-preview-hotspot{fill:rgba(214,184,98,0);stroke:rgba(214,184,98,0);stroke-width:0;cursor:pointer;pointer-events:all;outline:none}.room-preview-hotspot:focus-visible{fill:rgba(214,184,98,.18);stroke:rgba(255,231,143,.86);stroke-width:2.4;vector-effect:non-scaling-stroke}.room-preview-hotspot.is-active{fill:rgba(255,231,143,.08)}.room-preview-hotspot.is-hovered{fill:rgba(214,184,98,.10)}.room-preview-hotspots .room-hover-highlight,.room-preview-hotspots .room-selection-highlight{pointer-events:none}.room-preview-hotspots .room-hover-highlight__halo path,.room-preview-hotspots .room-hover-highlight__halo line{fill:none;stroke:rgba(214,184,98,.30);stroke-width:7.5;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-hover-highlight__edge path,.room-preview-hotspots .room-hover-highlight__edge line{fill:none;stroke:rgba(255,231,143,.82);stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__halo path,.room-preview-hotspots .room-selection-highlight__halo line{fill:none;stroke:rgba(122,67,36,.42);stroke-width:10;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.room-preview-hotspots .room-selection-highlight__edge path,.room-preview-hotspots .room-selection-highlight__edge line{fill:none;stroke:rgba(255,238,242,.92);stroke-width:3.1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 
+.editor-overlays .stair-marker-hit-zone{cursor:grab}
+.editor-overlays .stair-marker-hit-zone.is-dragging{cursor:grabbing;fill:rgba(190,64,82,.14);stroke:rgba(240,185,194,.94);stroke-width:2.2;vector-effect:non-scaling-stroke}
+.stair-marker-drag-preview{pointer-events:none}
+.editor-overlays .stair-marker-drag-preview__target{fill:rgba(214,184,98,.16);stroke:rgba(255,231,143,.92);stroke-width:2.2;vector-effect:non-scaling-stroke}
+.editor-overlays .stair-marker-drag-preview__cross{stroke:rgba(255,231,143,.84);stroke-width:1.5;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.editor-overlays .stair-marker-drag-preview.is-invalid .stair-marker-drag-preview__target{fill:rgba(122,26,40,.18);stroke:rgba(240,96,116,.94)}
+.editor-overlays .stair-marker-drag-preview.is-invalid .stair-marker-drag-preview__cross{stroke:rgba(240,96,116,.92)}
+
 [data-wall-drawing="precise"] .wall-sketch,[data-wall-drawing="precise"] .wall-breaks{display:none}
 [data-wall-drawing="precise"] .wall-main path,[data-wall-drawing="precise"] .wall-shadow path,[data-wall-drawing="precise"] .door-symbols .door-wall-line,[data-wall-drawing="precise"] .map-accesses .map-access-line,[data-wall-drawing="precise"] .map-accesses .map-access-head-line,[data-wall-drawing="precise"] .corridor-junctions .junction-wall-line{stroke-linecap:square;stroke-linejoin:miter}
 `;
@@ -2164,11 +2172,176 @@ function getCorridorStairMarkerIndexes(cells, markerCount) {
   });
 }
 
+function getCorridorStairDoorwayCellKeys(corridor = {}, generatedMap = null) {
+  const keys = new Set();
+  const addDoorCell = (door) => {
+    const cell = door?.outsideCell || door?.cell || door?.routingOutsideCell || null;
+    if (!Number.isFinite(cell?.x) || !Number.isFinite(cell?.y)) return;
+    keys.add(cellKey(cell.x, cell.y));
+  };
+  (corridor.doors || []).forEach(addDoorCell);
+  (generatedMap?.dungeonMask?.doorSegments || [])
+    .filter((door) => door?.corridorId === corridor.id)
+    .forEach(addDoorCell);
+  return keys;
+}
+
+function getMapRegionFloorCellKeys(generatedMap = null) {
+  const keys = new Set();
+  (generatedMap?.regions || []).forEach((region) => {
+    const cells = Array.isArray(region?.floorCells)
+      ? region.floorCells
+      : Array.isArray(region?.cells)
+        ? region.cells
+        : [];
+    cells.forEach((cell) => {
+      if (!Number.isFinite(cell?.x) || !Number.isFinite(cell?.y)) return;
+      keys.add(cellKey(cell.x, cell.y));
+    });
+  });
+  return keys;
+}
+
+export function getCorridorStairMarkerDragTargets(corridor, generatedMap) {
+  if (!corridor || !generatedMap?.config || corridor.isRoomLink) return [];
+  const gridSize = generatedMap.config.gridSize || DEFAULT_CONFIG.gridSize;
+  const doorwayCellKeys = getCorridorStairDoorwayCellKeys(corridor, generatedMap);
+  const regionFloorCellKeys = getMapRegionFloorCellKeys(generatedMap);
+  const cells = getVisibleCorridorTopologyCells(corridor, generatedMap);
+  return cells
+    .map((cell, pathIndex) => ({
+      corridorId: corridor.id,
+      pathIndex,
+      pathLength: cells.length,
+      normalizedOffset: cells.length <= 1 ? 0 : pathIndex / (cells.length - 1),
+      pathCellKey: cellKey(cell.x, cell.y),
+      cell: { x: cell.x, y: cell.y },
+      point: getCorridorCellCenter(cell, gridSize),
+      travel: getCorridorForwardDirection(cells, pathIndex),
+    }))
+    .filter((target) => {
+      const key = cellKey(target.cell.x, target.cell.y);
+      return !doorwayCellKeys.has(key) && !regionFloorCellKeys.has(key);
+    });
+}
+
+export function getClosestCorridorStairMarkerDragTarget(
+  corridor,
+  generatedMap,
+  point,
+  options = {},
+) {
+  if (!isValidPoint(point) || !generatedMap?.config) return null;
+  const gridSize = generatedMap.config.gridSize || DEFAULT_CONFIG.gridSize;
+  const pointerCell = {
+    x: Math.floor(point.x / gridSize),
+    y: Math.floor(point.y / gridSize),
+  };
+  const pointerCellKey = cellKey(pointerCell.x, pointerCell.y);
+  if (
+    getMapRegionFloorCellKeys(generatedMap).has(pointerCellKey) ||
+    getCorridorStairDoorwayCellKeys(corridor, generatedMap).has(pointerCellKey)
+  ) {
+    return null;
+  }
+  const occupiedPathIndexes = new Set(
+    (options.occupiedPathIndexes || [])
+      .map((value) => Number(value))
+      .filter(Number.isFinite)
+      .map((value) => Math.round(value)),
+  );
+  const maxDistance = Number.isFinite(Number(options.maxDistance))
+    ? Math.max(0, Number(options.maxDistance))
+    : gridSize * 0.82;
+  const candidates = getCorridorStairMarkerDragTargets(corridor, generatedMap)
+    .filter((target) => !occupiedPathIndexes.has(target.pathIndex))
+    .map((target) => ({
+      ...target,
+      distance: Math.hypot(point.x - target.point.x, point.y - target.point.y),
+    }))
+    .sort((a, b) => a.distance - b.distance || a.pathIndex - b.pathIndex);
+  const closest = candidates[0] || null;
+  if (!closest || closest.distance > maxDistance) return null;
+  return closest;
+}
+
+function getResolvedStairMarkerPathIndex(
+  markerId,
+  automaticPathIndex,
+  dragTargets,
+  markerPositions,
+  occupiedPathIndexes = new Set(),
+) {
+  const position = markerPositions?.[markerId];
+  const availableTargets = dragTargets.filter(
+    (target) => !occupiedPathIndexes.has(target.pathIndex),
+  );
+  if (!position || availableTargets.length === 0) {
+    const automaticTarget = dragTargets.find(
+      (target) =>
+        target.pathIndex === automaticPathIndex &&
+        !occupiedPathIndexes.has(target.pathIndex),
+    );
+    const fallback = automaticTarget || availableTargets[0] || null;
+    return {
+      pathIndex: fallback?.pathIndex ?? automaticPathIndex,
+      positionSource: "automatic",
+    };
+  }
+
+  const requestedCellKey = String(position.pathCellKey || "").trim();
+  const exactCell = requestedCellKey
+    ? availableTargets.find((target) => target.pathCellKey === requestedCellKey)
+    : null;
+  if (exactCell) {
+    return { pathIndex: exactCell.pathIndex, positionSource: "manual-override" };
+  }
+
+  const rawPathIndex = Number(position.pathIndex);
+  const hasNormalizedOffset =
+    position.normalizedOffset !== null &&
+    typeof position.normalizedOffset !== "undefined" &&
+    Number.isFinite(Number(position.normalizedOffset));
+  const rawOffset = hasNormalizedOffset
+    ? Number(position.normalizedOffset)
+    : Number.NaN;
+  const pathLength = Math.max(
+    1,
+    Number(dragTargets[0]?.pathLength) ||
+      (dragTargets.length > 0
+        ? Math.max(...dragTargets.map((target) => target.pathIndex)) + 1
+        : 1),
+  );
+  const requestedPathIndex = Number.isFinite(rawOffset)
+    ? Math.round(clamp(rawOffset, 0, 1) * Math.max(0, pathLength - 1))
+    : Number.isFinite(rawPathIndex)
+      ? Math.max(0, Math.round(rawPathIndex))
+      : automaticPathIndex;
+  const exactIndex = availableTargets.find(
+    (target) => target.pathIndex === requestedPathIndex,
+  );
+  const resolved = exactIndex || [...availableTargets].sort(
+    (a, b) =>
+      Math.abs(a.pathIndex - requestedPathIndex) -
+        Math.abs(b.pathIndex - requestedPathIndex) || a.pathIndex - b.pathIndex,
+  )[0];
+  return {
+    pathIndex: resolved?.pathIndex ?? automaticPathIndex,
+    positionSource: resolved
+      ? String(position.positionSource || "manual-override")
+      : "automatic",
+  };
+}
+
 function shouldRenderDerivedCorridorStairMarkers(corridor = {}, generatedMap = null) {
   return Boolean(getCorridorStairRenderInfo(corridor, generatedMap));
 }
 
-export function getCorridorStairMarkerVirtualDoors(corridor, generatedMap) {
+export function getCorridorStairMarkerVirtualDoors(
+  corridor,
+  generatedMap,
+  markerPositions = null,
+) {
   if (!shouldRenderDerivedCorridorStairMarkers(corridor, generatedMap)) return [];
   const renderInfo = getCorridorStairRenderInfo(corridor, generatedMap);
   if (!renderInfo) return [];
@@ -2177,10 +2350,26 @@ export function getCorridorStairMarkerVirtualDoors(corridor, generatedMap) {
   const markerCount = getRenderedCorridorStairMarkerCount(corridor, generatedMap);
   const direction = normalizeStairTransition(renderInfo.direction, "none");
   if (direction === "none") return [];
-  return getCorridorStairMarkerIndexes(cells, markerCount).map((index, markerIndex) => {
-    const cell = cells[index] || cells[0];
-    const travel = getCorridorForwardDirection(cells, index);
-    return {
+  const automaticIndexes = getCorridorStairMarkerIndexes(cells, markerCount);
+  const dragTargets = markerPositions
+    ? getCorridorStairMarkerDragTargets(corridor, generatedMap)
+    : [];
+  const occupiedPathIndexes = new Set();
+  return automaticIndexes.flatMap((automaticPathIndex, markerIndex) => {
+    const markerId = getStairMarkerId({ corridorId: corridor.id, markerIndex });
+    if (markerPositions?.[markerId]?.removed === true) return [];
+    const resolved = getResolvedStairMarkerPathIndex(
+      markerId,
+      automaticPathIndex,
+      dragTargets,
+      markerPositions,
+      occupiedPathIndexes,
+    );
+    const pathIndex = clamp(resolved.pathIndex, 0, cells.length - 1);
+    occupiedPathIndexes.add(pathIndex);
+    const cell = cells[pathIndex] || cells[automaticPathIndex] || cells[0];
+    const travel = getCorridorForwardDirection(cells, pathIndex);
+    return [{
       corridorId: corridor.id,
       endpoint: "shared",
       outsideCell: { x: cell.x, y: cell.y },
@@ -2200,7 +2389,10 @@ export function getCorridorStairMarkerVirtualDoors(corridor, generatedMap) {
       renderOnlyRoomLevelStair: Boolean(renderInfo.renderOnly),
       markerIndex,
       markerCount,
-    };
+      pathIndex,
+      automaticPathIndex,
+      positionSource: resolved.positionSource,
+    }];
   });
 }
 
@@ -2212,11 +2404,11 @@ export function getStairMarkerId(marker = {}) {
   return `stair-marker:${corridorId}:${markerIndex}`;
 }
 
-export function getMapStairMarkerEditorHandles(generatedMap) {
+export function getMapStairMarkerEditorHandles(generatedMap, markerPositions = null) {
   if (!generatedMap?.config) return [];
   const gridSize = generatedMap.config.gridSize || DEFAULT_CONFIG.gridSize;
   return (generatedMap.corridors || []).flatMap((corridor) =>
-    getCorridorStairMarkerVirtualDoors(corridor, generatedMap).map((door) => {
+    getCorridorStairMarkerVirtualDoors(corridor, generatedMap, markerPositions).map((door) => {
       const id = getStairMarkerId(door);
       const point = getDoorSquareCenter(door, gridSize);
       const markerIndex = Number(door.markerIndex || 0);
@@ -2228,6 +2420,9 @@ export function getMapStairMarkerEditorHandles(generatedMap) {
         corridor,
         markerIndex,
         markerCount,
+        pathIndex: Number(door.pathIndex ?? door.automaticPathIndex ?? 0),
+        automaticPathIndex: Number(door.automaticPathIndex ?? door.pathIndex ?? 0),
+        positionSource: door.positionSource || "automatic",
         transition,
         door,
         x: point.x,
@@ -2332,10 +2527,10 @@ export function renderCorridorLevelShiftLabels(generatedMap) {
   return <g className="corridor-level-shift-labels">{rendered}</g>;
 }
 
-export function renderDerivedCorridorStairMarkers(generatedMap) {
+export function renderDerivedCorridorStairMarkers(generatedMap, markerPositions = null) {
   const corridors = Array.isArray(generatedMap?.corridors) ? generatedMap.corridors : [];
   const rendered = corridors.flatMap((corridor) =>
-    getCorridorStairMarkerVirtualDoors(corridor, generatedMap).map((door, index) =>
+    getCorridorStairMarkerVirtualDoors(corridor, generatedMap, markerPositions).map((door, index) =>
       renderStairMark(door, door.stairTransition, `${corridor.id}-${index}`, generatedMap),
     ),
   );
@@ -7104,7 +7299,7 @@ export function renderStairMark(door, stairTransition, index, generatedMap) {
   );
 }
 
-export function renderDoorSymbols(generatedMap) {
+export function renderDoorSymbols(generatedMap, renderOptions = {}) {
   const { config, dungeonMask } = generatedMap;
   return (
     <g className="door-symbols">
@@ -7165,7 +7360,7 @@ export function renderDoorSymbols(generatedMap) {
           </g>
         );
       })}
-      {renderDerivedCorridorStairMarkers(generatedMap)}
+      {renderDerivedCorridorStairMarkers(generatedMap, renderOptions.stairMarkerPositions)}
     </g>
   );
 }
@@ -8136,7 +8331,7 @@ export function renderUnifiedDungeonSurface(generatedMap, gridStyle = "solid", r
           );
         })}
       </g>
-      {renderDoorSymbols(generatedMap)}
+      {renderDoorSymbols(generatedMap, renderOptions)}
       {renderMapAccessSymbols(generatedMap)}
       {renderCorridorJunctionOverrides(generatedMap)}
     </>
@@ -10658,7 +10853,11 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
     onMapAccessPointerDown,
     onMapAccessContextMenu,
     selectedStairMarkerId = "",
+    draggingStairMarkerId = "",
+    stairMarkerPositions = null,
+    stairMarkerDragPreview = null,
     onStairMarkerPointerDown,
+    onStairMarkerContextMenu,
     onStairMarkerKeyDown,
     showAccessDots = false,
   } = editorOptions;
@@ -10795,7 +10994,10 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
       y: preview?.y ?? basePoint.y,
     };
   });
-  const stairMarkerHandles = getMapStairMarkerEditorHandles(generatedMap);
+  const stairMarkerHandles = getMapStairMarkerEditorHandles(
+    generatedMap,
+    stairMarkerPositions,
+  );
   const selectedStairMarker = stairMarkerHandles.find(
     (handle) => handle.id === selectedStairMarkerId,
   );
@@ -10903,6 +11105,56 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
         generatedMap,
       )}
       {renderCorridorHoverHighlight(highlightedCorridor, config.gridSize, generatedMap)}
+      {stairMarkerDragPreview?.rawPoint ? (
+        <g
+          className={`stair-marker-drag-preview ${stairMarkerDragPreview.valid ? "is-valid" : "is-invalid"}`}
+          data-stair-marker-id={stairMarkerDragPreview.id || undefined}
+          data-corridor-id={stairMarkerDragPreview.corridorId || undefined}
+          data-stair-drag-valid={stairMarkerDragPreview.valid ? "true" : "false"}
+          aria-hidden="true"
+        >
+          <circle
+            className="stair-marker-drag-preview__target"
+            cx={stairMarkerDragPreview.valid
+              ? stairMarkerDragPreview.target?.point?.x
+              : stairMarkerDragPreview.rawPoint.x}
+            cy={stairMarkerDragPreview.valid
+              ? stairMarkerDragPreview.target?.point?.y
+              : stairMarkerDragPreview.rawPoint.y}
+            r={config.gridSize * 0.34}
+          />
+          <line
+            className="stair-marker-drag-preview__cross"
+            x1={(stairMarkerDragPreview.valid
+              ? stairMarkerDragPreview.target?.point?.x
+              : stairMarkerDragPreview.rawPoint.x) - config.gridSize * 0.46}
+            y1={stairMarkerDragPreview.valid
+              ? stairMarkerDragPreview.target?.point?.y
+              : stairMarkerDragPreview.rawPoint.y}
+            x2={(stairMarkerDragPreview.valid
+              ? stairMarkerDragPreview.target?.point?.x
+              : stairMarkerDragPreview.rawPoint.x) + config.gridSize * 0.46}
+            y2={stairMarkerDragPreview.valid
+              ? stairMarkerDragPreview.target?.point?.y
+              : stairMarkerDragPreview.rawPoint.y}
+          />
+          <line
+            className="stair-marker-drag-preview__cross"
+            x1={stairMarkerDragPreview.valid
+              ? stairMarkerDragPreview.target?.point?.x
+              : stairMarkerDragPreview.rawPoint.x}
+            y1={(stairMarkerDragPreview.valid
+              ? stairMarkerDragPreview.target?.point?.y
+              : stairMarkerDragPreview.rawPoint.y) - config.gridSize * 0.46}
+            x2={stairMarkerDragPreview.valid
+              ? stairMarkerDragPreview.target?.point?.x
+              : stairMarkerDragPreview.rawPoint.x}
+            y2={(stairMarkerDragPreview.valid
+              ? stairMarkerDragPreview.target?.point?.y
+              : stairMarkerDragPreview.rawPoint.y) + config.gridSize * 0.46}
+          />
+        </g>
+      ) : null}
       {selectedStairMarker ? (
         <g
           className="stair-marker-selection"
@@ -11165,11 +11417,13 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
         {stairMarkerHandles.map((handle) => (
           <circle
             key={`stair-marker-hit-zone-${handle.id}`}
-            className={
-              handle.id === selectedStairMarkerId
-                ? "stair-marker-hit-zone is-selected"
-                : "stair-marker-hit-zone"
-            }
+            className={[
+              "stair-marker-hit-zone",
+              handle.id === selectedStairMarkerId ? "is-selected" : "",
+              handle.id === draggingStairMarkerId ? "is-dragging" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
             data-stair-marker-id={handle.id}
             data-corridor-id={handle.corridorId}
             data-stair-marker-index={handle.markerIndex}
@@ -11179,9 +11433,10 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
             tabIndex={0}
             focusable="true"
             role="button"
-            aria-label={`Select ${handle.label.toLowerCase()}`}
+            aria-label={`${handle.id === draggingStairMarkerId ? "Dragging" : "Select"} ${handle.label.toLowerCase()}`}
             aria-pressed={handle.id === selectedStairMarkerId}
             onPointerDown={(event) => onStairMarkerPointerDown?.(event, handle)}
+            onContextMenu={(event) => onStairMarkerContextMenu?.(event, handle)}
             onKeyDown={(event) => onStairMarkerKeyDown?.(event, handle)}
           />
         ))}
@@ -11532,6 +11787,7 @@ export function MapSvg({
     getAvailableMapLevels(generatedMap),
   );
   const accessDotsVisible = editorOptions.showAccessDots === true;
+  const stairMarkerPositions = editorOptions.stairMarkerPositions || null;
   const previewRegionMarkers =
     previewRoomHotspots?.regionMarkers || EMPTY_REGION_MARKERS;
   const staticMapContent = React.useMemo(
@@ -11588,7 +11844,7 @@ export function MapSvg({
         {showGrid && renderGrid(config, gridStyle, { gridColor, gridWeight })}
         {fadedMap && hasRenderableGeometry(fadedSurfaceMap) && (
           <g className="level-layer level-layer--faded">
-            {renderUnifiedDungeonSurface(fadedSurfaceMap, "none", { gridOpacity, gridColor, gridWeight, crosshatchStyle, crosshatchOpacity })}
+            {renderUnifiedDungeonSurface(fadedSurfaceMap, "none", { gridOpacity, gridColor, gridWeight, crosshatchStyle, crosshatchOpacity, stairMarkerPositions })}
             {showProps && renderProps(fadedSurfaceMap.props, fadedSurfaceMap)}
             {showEditor && showRoomBadges && renderCorridorLevelShiftLabels(fadedSurfaceMap)}
             {((showEditor && showRoomBadges) || showNames) &&
@@ -11600,7 +11856,7 @@ export function MapSvg({
           </g>
         )}
         <g className="level-layer level-layer--active">
-          {renderUnifiedDungeonSurface(activeSurfaceMap, layerGridStyle, { gridOpacity, gridColor, gridWeight, crosshatchStyle, crosshatchOpacity })}
+          {renderUnifiedDungeonSurface(activeSurfaceMap, layerGridStyle, { gridOpacity, gridColor, gridWeight, crosshatchStyle, crosshatchOpacity, stairMarkerPositions })}
           {showProps && renderProps(activeSurfaceMap.props, activeSurfaceMap)}
           {showEditor && showRoomBadges && renderCorridorLevelShiftLabels(activeSurfaceMap)}
           {((showEditor && showRoomBadges) || showNames) &&
@@ -11633,6 +11889,7 @@ export function MapSvg({
       showProps,
       showRoomBadges,
       showDebugCellCoordinates,
+      stairMarkerPositions,
     ],
   );
 

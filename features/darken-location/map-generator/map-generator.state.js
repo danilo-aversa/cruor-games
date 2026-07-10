@@ -2,7 +2,7 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
-export const MANUAL_OVERRIDE_SCHEMA_VERSION = 2;
+export const MANUAL_OVERRIDE_SCHEMA_VERSION = 4;
 
 export function createEmptyLevelOverrides() {
   return {
@@ -37,6 +37,114 @@ export function normalizeLevelOverrides(
   };
 }
 
+export function normalizeStairMarkerOverride(value = {}) {
+  const source = value && typeof value === "object" ? value : {};
+  const corridorId = String(source.corridorId || "").trim();
+  const rawMarkerIndex = Number(source.markerIndex);
+  const markerIndex = Number.isFinite(rawMarkerIndex)
+    ? Math.max(0, Math.round(rawMarkerIndex))
+    : 0;
+  const removed = source.removed === true;
+  if (removed) {
+    return {
+      corridorId,
+      markerIndex,
+      pathIndex: 0,
+      normalizedOffset: null,
+      pathCellKey: "",
+      removed: true,
+    };
+  }
+  const rawPathIndex = Number(source.pathIndex);
+  const rawOffset = Number(source.normalizedOffset);
+  const cell =
+    source.cell && typeof source.cell === "object"
+      ? { x: Number(source.cell.x), y: Number(source.cell.y) }
+      : null;
+  const normalizedCell =
+    Number.isFinite(cell?.x) && Number.isFinite(cell?.y)
+      ? { x: Math.round(cell.x), y: Math.round(cell.y) }
+      : null;
+  const explicitCellKey = String(source.pathCellKey || "").trim();
+  const pathCellKey =
+    explicitCellKey ||
+    (normalizedCell ? `${normalizedCell.x},${normalizedCell.y}` : "");
+  const normalized = {
+    corridorId,
+    markerIndex,
+    pathIndex: Number.isFinite(rawPathIndex)
+      ? Math.max(0, Math.round(rawPathIndex))
+      : 0,
+    normalizedOffset: Number.isFinite(rawOffset)
+      ? clamp(rawOffset, 0, 1)
+      : null,
+    pathCellKey,
+    removed: false,
+  };
+  if (normalizedCell) normalized.cell = normalizedCell;
+  return normalized;
+}
+
+export function normalizeStairMarkerOverrides(value = {}) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  return Object.fromEntries(
+    Object.entries(value)
+      .filter(
+        ([markerId, override]) =>
+          markerId && override && typeof override === "object",
+      )
+      .map(([markerId, override]) => [
+        markerId,
+        normalizeStairMarkerOverride(override),
+      ])
+      .filter(([, override]) => override.corridorId),
+  );
+}
+
+export function createStairMarkerPositionOverride({
+  corridorId = "",
+  markerIndex = 0,
+  pathIndex = 0,
+  pathLength = 1,
+  cell = null,
+  normalizedOffset = null,
+} = {}) {
+  const safePathLength = Math.max(1, Math.round(Number(pathLength) || 1));
+  const safePathIndex = clamp(
+    Math.round(Number(pathIndex) || 0),
+    0,
+    Math.max(0, safePathLength - 1),
+  );
+  const hasExplicitOffset =
+    normalizedOffset !== null &&
+    typeof normalizedOffset !== "undefined" &&
+    Number.isFinite(Number(normalizedOffset));
+  const resolvedOffset = hasExplicitOffset
+    ? Number(normalizedOffset)
+    : safePathLength <= 1
+      ? 0
+      : safePathIndex / (safePathLength - 1);
+  return normalizeStairMarkerOverride({
+    corridorId,
+    markerIndex,
+    pathIndex: safePathIndex,
+    normalizedOffset: resolvedOffset,
+    cell,
+    removed: false,
+  });
+}
+
+export function createStairMarkerRemovalOverride({
+  corridorId = "",
+  markerIndex = 0,
+} = {}) {
+  return normalizeStairMarkerOverride({
+    corridorId,
+    markerIndex,
+    removed: true,
+  });
+}
+
 export function getLegacyStairTransitionsFromOverrides(overrides = {}) {
   return overrides.stairTransitions || overrides.manualStairTransitions || {};
 }
@@ -48,6 +156,7 @@ export function createEmptyManualOverrides() {
     doorAnchors: {},
     doorTypes: {},
     stairTransitions: {},
+    stairMarkers: {},
     levels: createEmptyLevelOverrides(),
     mapAccesses: {},
     corridorJunctions: {},
@@ -75,6 +184,9 @@ export function normalizeManualOverrides(overrides = {}) {
     doorAnchors: overrides.doorAnchors || overrides.manualDoorAnchors || {},
     doorTypes: overrides.doorTypes || overrides.manualDoorTypes || {},
     stairTransitions: levels.stairs,
+    stairMarkers: normalizeStairMarkerOverrides(
+      overrides.stairMarkers || overrides.manualStairMarkers || {},
+    ),
     levels,
     mapAccesses: overrides.mapAccesses || overrides.manualMapAccesses || {},
     corridorJunctions:
@@ -177,6 +289,10 @@ export function applyManualOverridesToConfig(config, manualOverrides = {}) {
     manualStairTransitions: preferObjectOverride(
       normalizedOverrides.levels.stairs,
       config.manualStairTransitions,
+    ),
+    manualStairMarkers: preferObjectOverride(
+      normalizedOverrides.stairMarkers,
+      config.manualStairMarkers,
     ),
     manualLevels: preferredLevels,
     manualMapAccesses: preferObjectOverride(

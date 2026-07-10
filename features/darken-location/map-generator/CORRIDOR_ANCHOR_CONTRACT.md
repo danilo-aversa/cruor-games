@@ -326,3 +326,52 @@ Pass 4F-A makes render-only stair markers selectable without turning selection i
 - Selection is cleared when the marker ceases to exist, when editor mode is disabled, or when another map object/empty canvas is selected.
 - Dragging, persisted positions, reset/remove actions, and stair marker context menus belong to later Pass 4F patches.
 
+## Pass 4F-B stair marker drag contract
+
+Pass 4F-B lets a selected render-only stair marker move along its owning corridor without turning the result into persisted map data yet.
+
+- Drag targets come only from the owning corridor's ordered visible topology cells.
+- Cells occupied by rooms or doorway transitions are excluded from the valid target set.
+- A target already occupied by another stair marker on the same corridor is excluded.
+- The pointer snaps to the nearest remaining valid corridor-cell center and becomes invalid when it is inside a room or farther than the corridor snap threshold.
+- The live preview may move the rendered virtual marker, but an invalid release restores its previous position.
+- A valid release commits only to viewport session state; Pass 4F-C will define the persisted `manualOverrides` representation and migration behavior.
+- Dragging must not mutate corridor `pathCells`, `floorCells`, doors, anchors, room levels, `crossLevel`, routing, or connectivity.
+- Changing the map/view reset key clears session-only stair positions so stale path indexes cannot leak into a regenerated layout.
+
+
+## Pass 4F-C stair marker persistence contract
+
+Pass 4F-C promotes valid stair-marker drops from viewport session state to render-only manual overrides.
+
+- Persisted positions live in `manualOverrides.stairMarkers`; `manualOverrides.levels.stairs` remains reserved for authored vertical-transition semantics.
+- Each marker override records its stable marker id key, corridor id, marker index, snapped path index, snapped cell identity, and normalized path offset.
+- Resolution prefers the exact saved corridor cell, then uses the normalized offset/path index to find the nearest valid corridor target if the route length changes.
+- Multiple persisted markers on the same corridor may not resolve to the same path cell; later markers fall back to the nearest unoccupied valid target.
+- Stair-marker overrides are render-only and are excluded from generation-affecting manual override signatures, so moving a stair does not rerun or reroute the map pipeline.
+- Valid drops participate in manual history and survive workspace state export/import through the normalized manual override schema.
+- Dedicated export/import QA hardening remains Pass 4F-E.
+
+## Pass 4F-D stair marker reset/remove contract
+
+Pass 4F-D adds the MVP context menu for visible stair markers without changing their level semantics.
+
+- Right-clicking a visible marker selects it and opens a stair-specific context menu.
+- `Reset Position` deletes that marker's `manualOverrides.stairMarkers` entry, returning it to the automatic path position while preserving its stable id and derived direction.
+- `Remove Stair Marker` stores a render-only tombstone with `removed: true`; the renderer suppresses that stable marker instead of generating a replacement.
+- Removed markers remain absent until their tombstone is cleared by reset-all, import replacement, undo, or another explicit override clear.
+- Reset and remove participate in manual undo/redo history and never call `generateMap`, freeze room layout, reroute corridors, or mutate `pathCells`, `floorCells`, doors, anchors, room levels, `crossLevel`, or connectivity.
+- Reverse Direction and Lock Stair remain outside the MVP because direction continues to derive from the connected room level delta.
+
+## Pass 4F-E stair marker export/import QA contract
+
+Pass 4F-E closes Manual Stair Placement by hardening state round trips and compatibility checks without adding new editor actions.
+
+- Positioned markers and removal tombstones must survive JSON export/import under `manualOverrides.stairMarkers` with the same stable marker ids.
+- A restored position must resolve to one valid corridor target and a restored tombstone must suppress only its own marker; import must never duplicate automatic markers.
+- Legacy `manualStairMarkers` input remains accepted through manual-override normalization.
+- Imported marker indexes, path indexes, normalized offsets, and cell coordinates are normalized; entries without a corridor id are discarded.
+- Removal tombstones are canonicalized to transition identity only, discarding stale path/cell data that must not influence future reset or rendering behavior.
+- The export manifest reports total, positioned, and removed manual stair-marker counts plus the manual-override schema version.
+- Export/import must not mutate the supplied manual overrides, corridor `pathCells`, corridor `floorCells`, doors, anchors, levels, routing, or connectivity.
+- The map-state payload remains version 3; this pass strengthens the existing normalized manual-override contract rather than introducing a new persistence model.

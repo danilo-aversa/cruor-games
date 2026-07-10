@@ -37,6 +37,8 @@ import {
   stairTransitionKey,
   getManualStairTransition,
   createEditorStairLevelOverrides,
+  createStairMarkerPositionOverride,
+  createStairMarkerRemovalOverride,
   resolveStairTransition,
   getManualJunctionOverride,
   normalizeJunctionType,
@@ -175,7 +177,17 @@ import {
   serializeMapAccessAnchor,
   getClosestExternalBoundaryAnchorToPoint,
 } from "./map-generator.details.js";
-import { MapSvg, createLevelFilteredMap, getCorridorStairMarkerVirtualDoors, getStairMarkerId, getMapSurface, getRegionSurface, isPureCaveMap } from "./map-generator.render.jsx";
+import {
+  MapSvg,
+  createLevelFilteredMap,
+  getClosestCorridorStairMarkerDragTarget,
+  getCorridorStairMarkerVirtualDoors,
+  getMapStairMarkerEditorHandles,
+  getStairMarkerId,
+  getMapSurface,
+  getRegionSurface,
+  isPureCaveMap,
+} from "./map-generator.render.jsx";
 import {
   serializeSvg,
   downloadSvg,
@@ -656,6 +668,12 @@ function stableSerializeForMemo(value) {
   return JSON.stringify(value);
 }
 
+function createGenerationManualOverrides(manualOverrides) {
+  const generationOverrides = { ...normalizeManualOverrides(manualOverrides) };
+  delete generationOverrides.stairMarkers;
+  return generationOverrides;
+}
+
 function createLockedGenerationManualSnapshot(manualOverrides) {
   const normalized = normalizeManualOverrides(manualOverrides);
   return {
@@ -754,6 +772,9 @@ export function MapViewport({
   onDoorMove,
   onDoorTypeChange,
   onDoorStairChange,
+  onStairMarkerMove,
+  onStairMarkerReset,
+  onStairMarkerRemove,
   onCorridorTypeChange,
   onMapAccessMove,
   onMapAccessSet,
@@ -817,6 +838,8 @@ export function MapViewport({
   const accessDragRef = useRef(null);
   const accessMoveFrameRef = useRef(null);
   const pendingAccessMoveRef = useRef(null);
+  const stairMarkerDragRef = useRef(null);
+  const stairMarkerDragPreviewRef = useRef(null);
   const connectionDragRef = useRef(null);
   const connectionDraftRef = useRef(null);
   const roomRoutedPreviewTimerRef = useRef(null);
@@ -841,6 +864,31 @@ export function MapViewport({
   const selectedStairMarkerId = selectedStairMarker?.id || "";
   const selectedStairCorridorId = selectedStairMarker?.corridorId || "";
   const selectedStairIndex = selectedStairMarker?.markerIndex ?? null;
+  const [draggingStairMarkerId, setDraggingStairMarkerId] = useState(null);
+  const [stairMarkerDragPreview, setStairMarkerDragPreview] = useState(null);
+  const stairMarkerPositions = manualOverrides?.stairMarkers || {};
+  const effectiveStairMarkerPositions = useMemo(() => {
+    if (
+      !stairMarkerDragPreview?.moved ||
+      !stairMarkerDragPreview.valid ||
+      !stairMarkerDragPreview.target
+    ) {
+      return stairMarkerPositions;
+    }
+    return {
+      ...stairMarkerPositions,
+      [stairMarkerDragPreview.id]: {
+        corridorId: stairMarkerDragPreview.corridorId,
+        markerIndex: stairMarkerDragPreview.markerIndex,
+        pathIndex: stairMarkerDragPreview.target.pathIndex,
+        pathLength: stairMarkerDragPreview.target.pathLength,
+        normalizedOffset: stairMarkerDragPreview.target.normalizedOffset,
+        pathCellKey: stairMarkerDragPreview.target.pathCellKey,
+        cell: stairMarkerDragPreview.target.cell,
+        positionSource: "drag-preview",
+      },
+    };
+  }, [stairMarkerDragPreview, stairMarkerPositions]);
   const [connectionDraft, setConnectionDraft] = useState(null);
   const [roomDragRoutedPreviewState, setRoomDragRoutedPreviewState] = useState(null);
   const [connectionDraftRoutedPreviewState, setConnectionDraftRoutedPreviewState] = useState(null);
@@ -858,6 +906,7 @@ export function MapViewport({
       : null;
   const [roomContextMenu, setRoomContextMenu] = useState(null);
   const [doorContextMenu, setDoorContextMenu] = useState(null);
+  const [stairMarkerContextMenu, setStairMarkerContextMenu] = useState(null);
   const [junctionContextMenu, setJunctionContextMenu] = useState(null);
   const [waypointContextMenu, setWaypointContextMenu] = useState(null);
   const [addWaypointContextMenu, setAddWaypointContextMenu] = useState(null);
@@ -1009,6 +1058,12 @@ export function MapViewport({
   }, [fitView, viewResetKey]);
 
   useEffect(() => {
+    stairMarkerDragRef.current = null;
+    setStairMarkerDragPreviewState(null);
+    setDraggingStairMarkerId(null);
+  }, [viewResetKey]);
+
+  useEffect(() => {
     const viewport = viewportRef.current;
     if (!viewport) return undefined;
 
@@ -1018,6 +1073,7 @@ export function MapViewport({
         roomDragRef.current ||
         corridorDragRef.current ||
         accessDragRef.current ||
+        stairMarkerDragRef.current ||
         connectionDragRef.current
       )
         return;
@@ -1221,6 +1277,11 @@ export function MapViewport({
     setCorridorDragPreview(nextPreview);
   }
 
+  function setStairMarkerDragPreviewState(nextPreview) {
+    stairMarkerDragPreviewRef.current = nextPreview;
+    setStairMarkerDragPreview(nextPreview);
+  }
+
   useEffect(() => {
     routedPreviewCacheRef.current.clear();
     setRoomDragRoutedPreviewState(null);
@@ -1239,7 +1300,11 @@ export function MapViewport({
   }, [generatedMap]);
 
   useEffect(() => {
-    if (!showEditor) setSelectedStairMarker(null);
+    if (showEditor) return;
+    stairMarkerDragRef.current = null;
+    setStairMarkerDragPreviewState(null);
+    setDraggingStairMarkerId(null);
+    setSelectedStairMarker(null);
   }, [showEditor]);
 
   useEffect(() => {
@@ -1399,6 +1464,7 @@ export function MapViewport({
         roomDragRef.current ||
         corridorDragRef.current ||
         accessDragRef.current ||
+        stairMarkerDragRef.current ||
         connectionDragRef.current
       )
         return;
@@ -1431,6 +1497,7 @@ export function MapViewport({
     setSelectedStairMarker(null);
     setRoomContextMenu(null);
     setDoorContextMenu(null);
+    setStairMarkerContextMenu(null);
     setJunctionContextMenu(null);
     setWaypointContextMenu(null);
     setAddWaypointContextMenu(null);
@@ -1446,6 +1513,7 @@ export function MapViewport({
     setSelectedStairMarker(null);
     setMapContextMenu(null);
     setDoorContextMenu(null);
+    setStairMarkerContextMenu(null);
     setJunctionContextMenu(null);
     setWaypointContextMenu(null);
     setAddWaypointContextMenu(null);
@@ -1461,6 +1529,7 @@ export function MapViewport({
       roomDragRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
+      stairMarkerDragRef.current ||
       connectionDragRef.current
     )
       return;
@@ -1543,6 +1612,7 @@ export function MapViewport({
       roomDragRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
+      stairMarkerDragRef.current ||
       connectionDragRef.current
     )
       return;
@@ -1590,6 +1660,7 @@ export function MapViewport({
       roomDragRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
+      stairMarkerDragRef.current ||
       connectionDragRef.current
     )
       return;
@@ -1605,6 +1676,7 @@ export function MapViewport({
       roomDragRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
+      stairMarkerDragRef.current ||
       connectionDragRef.current
     )
       return;
@@ -1649,6 +1721,7 @@ export function MapViewport({
     setSelectedStairMarker(null);
     setRoomContextMenu(null);
     setDoorContextMenu(null);
+    setStairMarkerContextMenu(null);
     setJunctionContextMenu(null);
     setWaypointContextMenu(null);
     setAddWaypointContextMenu(null);
@@ -1824,6 +1897,7 @@ export function MapViewport({
       roomDragRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
+      stairMarkerDragRef.current ||
       connectionDragRef.current
     )
       return;
@@ -1844,6 +1918,7 @@ export function MapViewport({
       roomDragRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
+      stairMarkerDragRef.current ||
       connectionDragRef.current
     )
       return;
@@ -1861,6 +1936,7 @@ export function MapViewport({
       roomDragRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
+      stairMarkerDragRef.current ||
       connectionDragRef.current
     )
       return;
@@ -2337,6 +2413,7 @@ export function MapViewport({
     setRoomContextMenu(null);
     setMapContextMenu(null);
     setDoorContextMenu(null);
+    setStairMarkerContextMenu(null);
     setJunctionContextMenu(null);
     setWaypointContextMenu(null);
     setAddWaypointContextMenu(null);
@@ -2358,12 +2435,170 @@ export function MapViewport({
       markerIndex: handle.markerIndex,
       markerCount: handle.markerCount,
       transition: handle.transition,
+      pathIndex: handle.pathIndex,
     });
   }
 
+  function createStairMarkerDragPreview(drag, point) {
+    if (!drag || !point) return null;
+    const corridor = generatedMap.corridors?.find(
+      (candidate) => candidate.id === drag.corridorId,
+    );
+    if (!corridor) {
+      return {
+        id: drag.id,
+        corridorId: drag.corridorId,
+        markerIndex: drag.markerIndex,
+        rawPoint: point,
+        moved: true,
+        valid: false,
+        invalidReason: "missing-corridor",
+        target: null,
+      };
+    }
+    const occupiedPathIndexes = getMapStairMarkerEditorHandles(
+      generatedMap,
+      stairMarkerPositions,
+    )
+      .filter(
+        (handle) => handle.corridorId === drag.corridorId && handle.id !== drag.id,
+      )
+      .map((handle) => handle.pathIndex);
+    const target = getClosestCorridorStairMarkerDragTarget(
+      corridor,
+      generatedMap,
+      point,
+      {
+        occupiedPathIndexes,
+        maxDistance: generatedMap.config.gridSize * 0.82,
+      },
+    );
+    return {
+      id: drag.id,
+      corridorId: drag.corridorId,
+      markerIndex: drag.markerIndex,
+      rawPoint: point,
+      moved: Math.hypot(point.x - drag.startPoint.x, point.y - drag.startPoint.y) > 0.5,
+      valid: Boolean(target),
+      invalidReason: target ? null : "outside-valid-corridor-cell",
+      target,
+    };
+  }
+
   function handleStairMarkerPointerDown(event, handle) {
-    if (event.button !== 0) return;
+    if (!showEditor || event.button !== 0 || !handle?.id) return;
     selectStairMarker(event, handle);
+    const startPoint = { x: handle.x, y: handle.y };
+    const drag = {
+      pointerId: event.pointerId,
+      id: handle.id,
+      corridorId: handle.corridorId,
+      markerIndex: handle.markerIndex,
+      startPathIndex: handle.pathIndex,
+      startPoint,
+      captureTarget: event.currentTarget,
+    };
+    stairMarkerDragRef.current = drag;
+    setStairMarkerDragPreviewState({
+      id: handle.id,
+      corridorId: handle.corridorId,
+      markerIndex: handle.markerIndex,
+      rawPoint: startPoint,
+      moved: false,
+      valid: true,
+      invalidReason: null,
+      target: {
+        corridorId: handle.corridorId,
+        pathIndex: handle.pathIndex,
+        cell: { ...handle.door.cell },
+        point: startPoint,
+      },
+    });
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch (error) {
+      void error;
+    }
+    setDraggingStairMarkerId(handle.id);
+    viewportDebugEvent("drag:start stair marker", {
+      stairMarkerId: handle.id,
+      corridorId: handle.corridorId,
+      markerIndex: handle.markerIndex,
+      startPathIndex: handle.pathIndex,
+      persistedPosition: handle.positionSource === "manual-override",
+    });
+  }
+
+  function handleStairMarkerPointerMove(event) {
+    const drag = stairMarkerDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return false;
+    event.preventDefault();
+    event.stopPropagation();
+    const point = clientToMapPoint(event);
+    if (!point) return true;
+    setStairMarkerDragPreviewState(createStairMarkerDragPreview(drag, point));
+    return true;
+  }
+
+  function endStairMarkerDrag(event) {
+    const drag = stairMarkerDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return false;
+    event.preventDefault();
+    event.stopPropagation();
+    const preview = stairMarkerDragPreviewRef.current;
+    const cancelled = event.type === "pointercancel";
+    const target = !cancelled && preview?.moved && preview.valid ? preview.target : null;
+    const moved = Boolean(target && target.pathIndex !== drag.startPathIndex);
+    const committed = Boolean(
+      target &&
+      moved &&
+      onStairMarkerMove?.({
+        id: drag.id,
+        corridorId: drag.corridorId,
+        markerIndex: drag.markerIndex,
+        pathIndex: target.pathIndex,
+        pathLength: target.pathLength,
+        normalizedOffset: target.normalizedOffset,
+        pathCellKey: target.pathCellKey,
+        cell: target.cell,
+      }),
+    );
+    viewportDebugEvent("drag:end stair marker", {
+      stairMarkerId: drag.id,
+      corridorId: drag.corridorId,
+      markerIndex: drag.markerIndex,
+      startPathIndex: drag.startPathIndex,
+      targetPathIndex: target?.pathIndex ?? null,
+      valid: Boolean(target),
+      moved,
+      committed,
+      cancelled,
+      persisted: committed,
+    });
+    try {
+      drag.captureTarget?.releasePointerCapture?.(event.pointerId);
+    } catch (error) {
+      void error;
+    }
+    stairMarkerDragRef.current = null;
+    setStairMarkerDragPreviewState(null);
+    setDraggingStairMarkerId(null);
+    return true;
+  }
+
+  function handleStairMarkerContextMenu(event, handle) {
+    if (!showEditor || !handle?.id) return;
+    selectStairMarker(event, handle);
+    const override = stairMarkerPositions?.[handle.id] || null;
+    setStairMarkerContextMenu({
+      id: handle.id,
+      corridorId: handle.corridorId,
+      markerIndex: handle.markerIndex,
+      markerCount: handle.markerCount,
+      transition: handle.transition,
+      hasManualPosition: Boolean(override && override.removed !== true),
+      ...getFixedContextMenuPosition(event, 270, 250),
+    });
   }
 
   function handleStairMarkerKeyDown(event, handle) {
@@ -2378,6 +2613,7 @@ export function MapViewport({
     setSelectedStairMarker(null);
     setRoomContextMenu(null);
     setMapContextMenu(null);
+    setStairMarkerContextMenu(null);
     setJunctionContextMenu(null);
     setWaypointContextMenu(null);
     setAddWaypointContextMenu(null);
@@ -2399,6 +2635,7 @@ export function MapViewport({
     setSelectedStairMarker(null);
     setRoomContextMenu(null);
     setDoorContextMenu(null);
+    setStairMarkerContextMenu(null);
     setMapContextMenu(null);
     setWaypointContextMenu(null);
     setAddWaypointContextMenu(null);
@@ -2419,6 +2656,7 @@ export function MapViewport({
     setSelectedStairMarker(null);
     setRoomContextMenu(null);
     setDoorContextMenu(null);
+    setStairMarkerContextMenu(null);
     setJunctionContextMenu(null);
     setWaypointContextMenu(null);
     setMapContextMenu(null);
@@ -2788,6 +3026,7 @@ export function MapViewport({
   }
 
   function handleEditorPointerMove(event) {
+    if (handleStairMarkerPointerMove(event)) return;
     if (handleConnectionPointerMove(event)) return;
     if (handleMapAccessPointerMove(event)) return;
     if (handleCorridorPointerMove(event)) return;
@@ -2795,6 +3034,7 @@ export function MapViewport({
   }
 
   function endEditorDrag(event) {
+    if (endStairMarkerDrag(event)) return;
     if (endConnectionDrag(event)) return;
     if (endMapAccessDrag(event)) return;
     if (endCorridorDrag(event)) return;
@@ -2806,6 +3046,7 @@ export function MapViewport({
       roomDragRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
+      stairMarkerDragRef.current ||
       connectionDragRef.current
     )
       return;
@@ -2813,6 +3054,7 @@ export function MapViewport({
     setRoomContextMenu(null);
     setMapContextMenu(null);
     setDoorContextMenu(null);
+    setStairMarkerContextMenu(null);
     setJunctionContextMenu(null);
     setWaypointContextMenu(null);
     setAddWaypointContextMenu(null);
@@ -2857,6 +3099,7 @@ export function MapViewport({
   }
 
   function handlePointerMove(event) {
+    if (handleStairMarkerPointerMove(event)) return;
     if (handleConnectionPointerMove(event)) return;
     if (handleMapAccessPointerMove(event)) return;
     if (handleCorridorPointerMove(event)) return;
@@ -2872,6 +3115,7 @@ export function MapViewport({
   }
 
   function endPan(event) {
+    if (endStairMarkerDrag(event)) return;
     if (endConnectionDrag(event)) return;
     if (endMapAccessDrag(event)) return;
     if (endCorridorDrag(event)) return;
@@ -3042,12 +3286,16 @@ export function MapViewport({
               selectedStairMarkerId,
               selectedStairCorridorId,
               selectedStairIndex,
+              draggingStairMarkerId,
+              stairMarkerPositions: effectiveStairMarkerPositions,
+              stairMarkerDragPreview,
               showAccessDots,
               onRoomSelect: (region) => {
                 setSelectedStairMarker(null);
                 onSelectedRegionChange?.(region?.id || "");
               },
               onStairMarkerPointerDown: handleStairMarkerPointerDown,
+              onStairMarkerContextMenu: handleStairMarkerContextMenu,
               onStairMarkerKeyDown: handleStairMarkerKeyDown,
               onRoomPointerDown: handleRoomPointerDown,
               onRoomPointerEnter: handleRoomPointerEnter,
@@ -3099,6 +3347,16 @@ export function MapViewport({
               onCorridorTypeChange={onCorridorTypeChange}
               onDelete={onConnectionDelete}
               onClose={() => setDoorContextMenu(null)}
+            />
+            <StairMarkerContextMenu
+              menu={stairMarkerContextMenu}
+              onReset={(markerId) => onStairMarkerReset?.(markerId)}
+              onRemove={(marker) => {
+                const removed = onStairMarkerRemove?.(marker);
+                if (removed) setSelectedStairMarker(null);
+                return removed;
+              }}
+              onClose={() => setStairMarkerContextMenu(null)}
             />
             <CorridorJunctionContextMenu
               menu={junctionContextMenu}
@@ -4115,6 +4373,62 @@ function CorridorJunctionContextMenu({
         >
           Reset
         </button>
+        <button type="button" onClick={onClose}>
+          Close
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function StairMarkerContextMenu({
+  menu,
+  onReset,
+  onRemove,
+  onClose,
+}) {
+  const menuRef = useContextMenuDismiss(Boolean(menu), onClose);
+  if (!menu) return null;
+  const directionLabel = menu.transition === "up" ? "Up" : "Down";
+  return (
+    <div
+      ref={menuRef}
+      className="room-context-menu stair-marker-context-menu"
+      style={{ left: menu.x, top: menu.y }}
+      onPointerDown={(event) => event.stopPropagation()}
+      onContextMenu={(event) => event.preventDefault()}
+    >
+      <div className="room-context-menu__header">
+        <strong>Stair Marker</strong>
+        <span>
+          {menu.corridorId} {"\u00B7"} {directionLabel} {menu.markerIndex + 1}/{menu.markerCount}
+        </span>
+      </div>
+      <div className="room-context-menu__body">
+        <button
+          type="button"
+          className="room-context-menu__trigger"
+          disabled={!menu.hasManualPosition}
+          onClick={() => {
+            onReset?.(menu.id);
+            onClose?.();
+          }}
+        >
+          <span>Reset Position</span>
+          <span aria-hidden="true">{menu.hasManualPosition ? "\u21BA" : ""}</span>
+        </button>
+        <ConfirmingDeleteButton
+          label="Remove Stair Marker"
+          confirmLabel="Confirm Remove Stair"
+          onConfirm={() => onRemove?.({
+            id: menu.id,
+            corridorId: menu.corridorId,
+            markerIndex: menu.markerIndex,
+          })}
+          onClose={onClose}
+        />
+      </div>
+      <div className="room-context-menu__actions">
         <button type="button" onClick={onClose}>
           Close
         </button>
@@ -5947,9 +6261,13 @@ export default function CruorMapGeneratorMvp({
     ]
   );
   const lockedManualLayoutActive = manualRoomPositionsActive && Boolean(manualLayoutSeed);
-  const unlockedGenerationManualOverrides = useMemo(
-    () => normalizeManualOverrides(manualOverrides),
+  const unlockedGenerationManualSignature = useMemo(
+    () => stableSerializeForMemo(createGenerationManualOverrides(manualOverrides)),
     [manualOverrides]
+  );
+  const unlockedGenerationManualOverrides = useMemo(
+    () => createGenerationManualOverrides(manualOverrides),
+    [unlockedGenerationManualSignature]
   );
   const lockedGenerationManualSignature = useMemo(() => {
     if (!lockedManualLayoutActive) return "";
@@ -6399,6 +6717,8 @@ export default function CruorMapGeneratorMvp({
       corridorTypeKeys: debugObjectKeys(normalized.corridorTypes),
       corridorTypes: normalized.corridorTypes || {},
       doorTypeKeys: debugObjectKeys(normalized.doorTypes),
+      stairMarkerKeys: debugObjectKeys(normalized.stairMarkers),
+      stairMarkers: normalized.stairMarkers || {},
     };
   }
 
@@ -7737,6 +8057,59 @@ export default function CruorMapGeneratorMvp({
     return freezeCurrentRoomLayout(currentOverrides, {
       [regionId]: { x: candidate.x, y: candidate.y },
     });
+  }
+
+  function moveStairMarker(position) {
+    if (!position?.id || !position?.corridorId) return false;
+    const corridor = generatedMap.corridors.find(
+      (candidate) => candidate.id === position.corridorId,
+    );
+    if (!corridor) return false;
+    const override = createStairMarkerPositionOverride(position);
+    return updateManualOverridesWithHistory(
+      (current) => ({
+        ...current,
+        stairMarkers: {
+          ...(current.stairMarkers || {}),
+          [position.id]: override,
+        },
+      }),
+      "Stair position saved.",
+      `moveStairMarker:${position.id}`,
+    );
+  }
+
+  function resetStairMarkerPosition(markerId) {
+    if (!markerId || !manualOverridesRef.current?.stairMarkers?.[markerId]) return false;
+    return updateManualOverridesWithHistory(
+      (current) => {
+        const stairMarkers = { ...(current.stairMarkers || {}) };
+        delete stairMarkers[markerId];
+        return { ...current, stairMarkers };
+      },
+      "Stair marker reset to its automatic position.",
+      `resetStairMarker:${markerId}`,
+    );
+  }
+
+  function removeStairMarker(marker) {
+    if (!marker?.id || !marker?.corridorId) return false;
+    const corridor = generatedMap.corridors.find(
+      (candidate) => candidate.id === marker.corridorId,
+    );
+    if (!corridor) return false;
+    const override = createStairMarkerRemovalOverride(marker);
+    return updateManualOverridesWithHistory(
+      (current) => ({
+        ...current,
+        stairMarkers: {
+          ...(current.stairMarkers || {}),
+          [marker.id]: override,
+        },
+      }),
+      "Stair marker removed.",
+      `removeStairMarker:${marker.id}`,
+    );
   }
 
   function moveRoom(regionId, position) {
@@ -10664,6 +11037,9 @@ export default function CruorMapGeneratorMvp({
       onDoorMove={moveDoor}
       onDoorTypeChange={updateDoorType}
       onDoorStairChange={updateDoorStair}
+      onStairMarkerMove={moveStairMarker}
+      onStairMarkerReset={resetStairMarkerPosition}
+      onStairMarkerRemove={removeStairMarker}
       onCorridorTypeChange={updateCorridorType}
       onMapAccessMove={setMapAccess}
       onMapAccessSet={setMapAccessWithHistory}

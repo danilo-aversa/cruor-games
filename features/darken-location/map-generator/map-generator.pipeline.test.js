@@ -16,6 +16,8 @@ import {
   getCorridorLevelShiftDescription,
   getCorridorLevelShiftLabel,
   getCorridorStairMarkerVirtualDoors,
+  getCorridorStairMarkerDragTargets,
+  getClosestCorridorStairMarkerDragTarget,
   getMapStairMarkerEditorHandles,
   getStairMarkerId,
   getCorridorStairRenderInfo,
@@ -40,7 +42,11 @@ import {
   validateGeneratedMap,
 } from "./map-generator.debug.js";
 import {
+  MANUAL_OVERRIDE_SCHEMA_VERSION,
   createEditorStairLevelOverrides,
+  createStairMarkerPositionOverride,
+  createStairMarkerRemovalOverride,
+  normalizeManualOverrides,
   stairTransitionKey,
 } from "./map-generator.state.js";
 import {
@@ -545,6 +551,322 @@ describe("map generator pipeline", () => {
     expect(corridor.pathCells).toEqual(originalPathCells);
   });
 
+  test("snaps stair marker drags to free corridor cells without changing topology", () => {
+    const corridor = {
+      id: "editor-stair-drag",
+      from: "region-1",
+      to: "region-2",
+      floorCells: [
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 2, y: 0 },
+        { x: 3, y: 0 },
+        { x: 4, y: 0 },
+        { x: 5, y: 0 },
+      ],
+      pathCells: [
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 2, y: 0 },
+        { x: 3, y: 0 },
+        { x: 4, y: 0 },
+        { x: 5, y: 0 },
+      ],
+      doors: [
+        { corridorId: "editor-stair-drag", outsideCell: { x: 1, y: 0 } },
+        { corridorId: "editor-stair-drag", outsideCell: { x: 4, y: 0 } },
+      ],
+      corridorType: "normal",
+      isRoomLink: false,
+    };
+    const generatedMap = {
+      config: buildConfig({ seed: "stair-drag", gridSize: 20 }),
+      regions: [
+        { id: "region-1", level: 0, cells: [{ x: 0, y: 0 }] },
+        { id: "region-2", level: 2, cells: [{ x: 5, y: 0 }] },
+      ],
+      corridors: [corridor],
+      dungeonMask: {
+        doorSegments: [
+          { corridorId: corridor.id, outsideCell: { x: 1, y: 0 } },
+          { corridorId: corridor.id, outsideCell: { x: 4, y: 0 } },
+        ],
+      },
+    };
+    const originalPathCells = structuredClone(corridor.pathCells);
+    const originalFloorCells = structuredClone(corridor.floorCells);
+    const targets = getCorridorStairMarkerDragTargets(corridor, generatedMap);
+
+    expect(targets.map((target) => target.pathIndex)).toEqual([2, 3]);
+    expect(targets.map((target) => target.cell)).toEqual([
+      { x: 2, y: 0 },
+      { x: 3, y: 0 },
+    ]);
+    expect(
+      getClosestCorridorStairMarkerDragTarget(
+        corridor,
+        generatedMap,
+        { x: 50, y: 10 },
+      ),
+    ).toEqual(expect.objectContaining({ pathIndex: 2, cell: { x: 2, y: 0 } }));
+    expect(
+      getClosestCorridorStairMarkerDragTarget(
+        corridor,
+        generatedMap,
+        { x: 10, y: 10 },
+      ),
+    ).toBeNull();
+    expect(
+      getClosestCorridorStairMarkerDragTarget(
+        corridor,
+        generatedMap,
+        { x: 30, y: 10 },
+        { maxDistance: 30 },
+      ),
+    ).toBeNull();
+    expect(
+      getClosestCorridorStairMarkerDragTarget(
+        corridor,
+        generatedMap,
+        { x: 50, y: 80 },
+      ),
+    ).toBeNull();
+    expect(
+      getClosestCorridorStairMarkerDragTarget(
+        corridor,
+        generatedMap,
+        { x: 60, y: 10 },
+        { occupiedPathIndexes: [2], maxDistance: 30 },
+      ),
+    ).toEqual(expect.objectContaining({ pathIndex: 3, cell: { x: 3, y: 0 } }));
+
+    const initialHandles = getMapStairMarkerEditorHandles(generatedMap);
+    const markerId = initialHandles[0].id;
+    const movedHandles = getMapStairMarkerEditorHandles(generatedMap, {
+      [markerId]: {
+        corridorId: corridor.id,
+        markerIndex: 0,
+        pathIndex: 2,
+      },
+    });
+    const movedHandle = movedHandles.find((handle) => handle.id === markerId);
+
+    expect(movedHandle).toEqual(
+      expect.objectContaining({
+        pathIndex: 2,
+        x: 50,
+        y: 10,
+        positionSource: "manual-override",
+      }),
+    );
+    expect(corridor.pathCells).toEqual(originalPathCells);
+    expect(corridor.floorCells).toEqual(originalFloorCells);
+  });
+
+  test("persists stair marker positions as render-only manual overrides", () => {
+    const corridor = {
+      id: "persistent-stair-corridor",
+      from: "region-1",
+      to: "region-2",
+      floorCells: [
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 2, y: 0 },
+        { x: 3, y: 0 },
+        { x: 4, y: 0 },
+        { x: 5, y: 0 },
+      ],
+      pathCells: [
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 2, y: 0 },
+        { x: 3, y: 0 },
+        { x: 4, y: 0 },
+        { x: 5, y: 0 },
+      ],
+      doors: [
+        { corridorId: "persistent-stair-corridor", outsideCell: { x: 1, y: 0 } },
+        { corridorId: "persistent-stair-corridor", outsideCell: { x: 4, y: 0 } },
+      ],
+      corridorType: "normal",
+      isRoomLink: false,
+    };
+    const generatedMap = {
+      config: buildConfig({ seed: "persistent-stair-position", gridSize: 20 }),
+      regions: [
+        { id: "region-1", level: 0, cells: [{ x: 0, y: 0 }] },
+        { id: "region-2", level: 2, cells: [{ x: 5, y: 0 }] },
+      ],
+      corridors: [corridor],
+      dungeonMask: {
+        doorSegments: [
+          { corridorId: corridor.id, outsideCell: { x: 1, y: 0 } },
+          { corridorId: corridor.id, outsideCell: { x: 4, y: 0 } },
+        ],
+      },
+    };
+    const originalPathCells = structuredClone(corridor.pathCells);
+    const originalFloorCells = structuredClone(corridor.floorCells);
+    const markerIds = getMapStairMarkerEditorHandles(generatedMap).map((handle) => handle.id);
+    const sharedTarget = { x: 2, y: 0 };
+    const normalized = normalizeManualOverrides({
+      stairMarkers: {
+        [markerIds[0]]: createStairMarkerPositionOverride({
+          markerId: markerIds[0],
+          corridorId: corridor.id,
+          markerIndex: 0,
+          pathIndex: 2,
+          pathLength: corridor.pathCells.length,
+          cell: sharedTarget,
+        }),
+        [markerIds[1]]: createStairMarkerPositionOverride({
+          markerId: markerIds[1],
+          corridorId: corridor.id,
+          markerIndex: 1,
+          pathIndex: 2,
+          pathLength: corridor.pathCells.length,
+          cell: sharedTarget,
+        }),
+      },
+    });
+    const handles = getMapStairMarkerEditorHandles(
+      generatedMap,
+      normalized.stairMarkers,
+    );
+
+    expect(normalized.schemaVersion).toBe(MANUAL_OVERRIDE_SCHEMA_VERSION);
+    expect(MANUAL_OVERRIDE_SCHEMA_VERSION).toBe(4);
+    expect(normalized.stairMarkers[markerIds[0]]).toEqual(
+      expect.objectContaining({
+        corridorId: corridor.id,
+        markerIndex: 0,
+        pathIndex: 2,
+        pathCellKey: "2,0",
+        normalizedOffset: 0.4,
+        cell: sharedTarget,
+      }),
+    );
+    expect(handles.map((handle) => handle.pathIndex)).toEqual([2, 3]);
+    expect(handles.every((handle) => handle.positionSource === "manual-override")).toBe(true);
+    expect(corridor.pathCells).toEqual(originalPathCells);
+    expect(corridor.floorCells).toEqual(originalFloorCells);
+  });
+
+  test("suppresses removed stair markers with resettable render-only tombstones", () => {
+    const config = buildConfig({
+      seed: "removed-stair-marker",
+      roomCount: 5,
+      enableDerivedRoomLevelStairs: true,
+    });
+    const corridorId = "manual-edge-region-1-region-2-removed-stair";
+    const generatedMap = generateMap(config, {
+      customConnections: [
+        {
+          id: corridorId,
+          from: "region-1",
+          to: "region-2",
+          kind: "manual",
+          locked: true,
+        },
+      ],
+      levels: {
+        regions: {
+          "region-1": 0,
+          "region-2": 2,
+        },
+      },
+    });
+    const corridor = generatedMap.corridors.find((candidate) => candidate.id === corridorId);
+    const originalPathCells = structuredClone(corridor.pathCells);
+    const originalFloorCells = structuredClone(corridor.floorCells);
+    const automaticHandles = getMapStairMarkerEditorHandles(generatedMap).filter(
+      (handle) => handle.corridorId === corridorId,
+    );
+    const removedMarker = automaticHandles[0];
+    const tombstone = createStairMarkerRemovalOverride({
+      corridorId,
+      markerIndex: removedMarker.markerIndex,
+    });
+    const markerOverrides = {
+      [removedMarker.id]: tombstone,
+    };
+    const remainingHandles = getMapStairMarkerEditorHandles(
+      generatedMap,
+      markerOverrides,
+    ).filter((handle) => handle.corridorId === corridorId);
+    const resetHandles = getMapStairMarkerEditorHandles(
+      generatedMap,
+      {},
+    ).filter((handle) => handle.corridorId === corridorId);
+
+    expect(tombstone).toEqual(
+      expect.objectContaining({
+        corridorId,
+        markerIndex: removedMarker.markerIndex,
+        removed: true,
+      }),
+    );
+    expect(automaticHandles).toHaveLength(2);
+    expect(remainingHandles).toHaveLength(1);
+    expect(remainingHandles.map((handle) => handle.id)).not.toContain(removedMarker.id);
+    expect(resetHandles.map((handle) => handle.id)).toEqual(
+      automaticHandles.map((handle) => handle.id),
+    );
+    expect(corridor.pathCells).toEqual(originalPathCells);
+    expect(corridor.floorCells).toEqual(originalFloorCells);
+  });
+
+  test("wires stair marker reset and remove actions without generation changes", () => {
+    const pagePath = repoPath(
+      "features",
+      "darken-location",
+      "map-generator",
+      "map-generator.page.jsx",
+    );
+    const mapPage = readFileSync(pagePath, "utf8");
+    const resetBody =
+      mapPage.match(
+        /function resetStairMarkerPosition\([\s\S]*?\n  }\n\n  function removeStairMarker/,
+      )?.[0] || "";
+    const removeBody =
+      mapPage.match(
+        /function removeStairMarker\([\s\S]*?\n  }\n\n  function moveRoom/,
+      )?.[0] || "";
+
+    expect(mapPage).toContain("onStairMarkerContextMenu");
+    expect(mapPage).toContain("Reset Position");
+    expect(mapPage).toContain("Remove Stair Marker");
+    expect(resetBody).toContain("delete stairMarkers[markerId]");
+    expect(resetBody).toContain("updateManualOverridesWithHistory");
+    expect(resetBody).not.toContain("generateMap");
+    expect(removeBody).toContain("createStairMarkerRemovalOverride");
+    expect(removeBody).toContain("updateManualOverridesWithHistory");
+    expect(removeBody).not.toContain("freezeCurrentRoomLayout");
+    expect(removeBody).not.toContain("generateMap");
+  });
+
+  test("keeps persistent stair positions out of map generation inputs", () => {
+    const pagePath = repoPath(
+      "features",
+      "darken-location",
+      "map-generator",
+      "map-generator.page.jsx",
+    );
+    const mapPage = readFileSync(pagePath, "utf8");
+    const generationOverrideBody =
+      mapPage.match(
+        /function createGenerationManualOverrides\([\s\S]*?\n}\n\nfunction createLockedGenerationManualSnapshot/,
+      )?.[0] || "";
+    const moveStairMarkerBody =
+      mapPage.match(/function moveStairMarker\([\s\S]*?\n  }\n\n  function moveRoom/)?.[0] || "";
+
+    expect(generationOverrideBody).toContain("delete generationOverrides.stairMarkers");
+    expect(moveStairMarkerBody).toContain("updateManualOverridesWithHistory");
+    expect(moveStairMarkerBody).toContain("stairMarkers");
+    expect(moveStairMarkerBody).not.toContain("freezeCurrentRoomLayout");
+    expect(moveStairMarkerBody).not.toContain("generateMap");
+  });
+
   test("renders stair selection hit zones and a selected marker highlight", () => {
     const config = buildConfig({
       seed: "stair-selection-overlay",
@@ -989,6 +1311,16 @@ describe("map generator pipeline", () => {
           "region-2": -2,
         },
       },
+      stairMarkers: {
+        [`stair-marker:${manualCorridorId}:0`]: {
+          corridorId: manualCorridorId,
+          markerIndex: 0,
+          pathIndex: 2,
+          normalizedOffset: 0.5,
+          pathCellKey: "2,0",
+          cell: { x: 2, y: 0 },
+        },
+      },
       customConnections: [
         { id: manualCorridorId, from: "region-1", to: "region-2", kind: "manual", locked: true },
       ],
@@ -1015,6 +1347,12 @@ describe("map generator pipeline", () => {
     expect(manifest.levels.available).toContain(-2);
     expect(manifest.counts.manualCorridorTypes).toBe(1);
     expect(manifest.counts.manualRoomLevels).toBe(2);
+    expect(manifest.counts.manualStairMarkers).toBe(1);
+    expect(manifest.counts.manualPositionedStairMarkers).toBe(1);
+    expect(manifest.counts.manualRemovedStairMarkers).toBe(0);
+    expect(manifest.manualOverrideSchemaVersion).toBe(
+      MANUAL_OVERRIDE_SCHEMA_VERSION,
+    );
     expect(manifest.counts.crossLevelCorridors).toBeGreaterThan(0);
     expect(manifest.counts.derivedStairCorridors).toBeGreaterThan(0);
     expect(manifest.corridorTypes.secret).toBeGreaterThan(0);
@@ -1023,6 +1361,189 @@ describe("map generator pipeline", () => {
     expect(parsed.uiState.levelView).toBe(-2);
     expect(parsed.uiState.fadeOtherLevels).toBe(false);
     expect(parsed.exportManifest.levelView).toBe(-2);
+  });
+
+  test("round-trips positioned and removed stair markers without duplication", () => {
+    const config = buildConfig({
+      seed: "stair-export-import-roundtrip",
+      gridSize: 20,
+    });
+    const corridor = {
+      id: "stair-export-import-corridor",
+      from: "region-1",
+      to: "region-2",
+      floorCells: Array.from({ length: 8 }, (_, x) => ({ x, y: 0 })),
+      pathCells: Array.from({ length: 8 }, (_, x) => ({ x, y: 0 })),
+      doors: [
+        { corridorId: "stair-export-import-corridor", outsideCell: { x: 1, y: 0 } },
+        { corridorId: "stair-export-import-corridor", outsideCell: { x: 6, y: 0 } },
+      ],
+      corridorType: "normal",
+      isRoomLink: false,
+    };
+    const generatedMap = {
+      seed: config.seed,
+      config,
+      regions: [
+        { id: "region-1", level: 0, cells: [{ x: 0, y: 0 }] },
+        { id: "region-2", level: 2, cells: [{ x: 7, y: 0 }] },
+      ],
+      corridors: [corridor],
+      dungeonMask: {
+        doorSegments: [
+          { corridorId: corridor.id, outsideCell: { x: 1, y: 0 } },
+          { corridorId: corridor.id, outsideCell: { x: 6, y: 0 } },
+        ],
+      },
+    };
+    const originalTopology = {
+      pathCells: structuredClone(corridor.pathCells),
+      floorCells: structuredClone(corridor.floorCells),
+    };
+    const automaticHandles = getMapStairMarkerEditorHandles(generatedMap).filter(
+      (handle) => handle.corridorId === corridor.id,
+    );
+    const dragTargets = getCorridorStairMarkerDragTargets(corridor, generatedMap);
+    const movedTarget = dragTargets.find(
+      (target) =>
+        !automaticHandles.some((handle) => handle.pathIndex === target.pathIndex),
+    );
+
+    expect(automaticHandles).toHaveLength(2);
+    expect(movedTarget).toBeTruthy();
+
+    const manualOverrides = {
+      stairMarkers: {
+        [automaticHandles[0].id]: createStairMarkerPositionOverride({
+          corridorId: corridor.id,
+          markerIndex: automaticHandles[0].markerIndex,
+          pathIndex: movedTarget.pathIndex,
+          pathLength: movedTarget.pathLength,
+          cell: movedTarget.cell,
+        }),
+        [automaticHandles[1].id]: createStairMarkerRemovalOverride({
+          corridorId: corridor.id,
+          markerIndex: automaticHandles[1].markerIndex,
+        }),
+      },
+    };
+    const originalOverrides = structuredClone(manualOverrides);
+    const payload = buildMapStatePayload(
+      config,
+      manualOverrides,
+      { levelView: "all" },
+      generatedMap,
+    );
+    const parsed = parseMapStatePayload(JSON.stringify(payload));
+    const restoredHandles = getMapStairMarkerEditorHandles(
+      generatedMap,
+      parsed.manualOverrides.stairMarkers,
+    ).filter((handle) => handle.corridorId === corridor.id);
+    const restoredDoors = getCorridorStairMarkerVirtualDoors(
+      corridor,
+      generatedMap,
+      parsed.manualOverrides.stairMarkers,
+    );
+    const reparsed = parseMapStatePayload(
+      JSON.stringify(
+        buildMapStatePayload(
+          config,
+          parsed.manualOverrides,
+          parsed.uiState,
+          generatedMap,
+        ),
+      ),
+    );
+
+    expect(payload.exportManifest.counts.manualStairMarkers).toBe(2);
+    expect(payload.exportManifest.counts.manualPositionedStairMarkers).toBe(1);
+    expect(payload.exportManifest.counts.manualRemovedStairMarkers).toBe(1);
+    expect(restoredHandles).toHaveLength(1);
+    expect(restoredDoors).toHaveLength(1);
+    expect(restoredHandles[0]).toEqual(
+      expect.objectContaining({
+        id: automaticHandles[0].id,
+        pathIndex: movedTarget.pathIndex,
+        positionSource: "manual-override",
+      }),
+    );
+    expect(restoredHandles.map((handle) => handle.id)).not.toContain(
+      automaticHandles[1].id,
+    );
+    expect(parsed.manualOverrides.stairMarkers[automaticHandles[1].id]).toEqual({
+      corridorId: corridor.id,
+      markerIndex: automaticHandles[1].markerIndex,
+      pathIndex: 0,
+      normalizedOffset: null,
+      pathCellKey: "",
+      removed: true,
+    });
+    expect(reparsed.manualOverrides.stairMarkers).toEqual(
+      parsed.manualOverrides.stairMarkers,
+    );
+    expect(manualOverrides).toEqual(originalOverrides);
+    expect(corridor.pathCells).toEqual(originalTopology.pathCells);
+    expect(corridor.floorCells).toEqual(originalTopology.floorCells);
+  });
+
+  test("canonicalizes legacy and malformed stair marker overrides during import", () => {
+    const parsed = parseMapStatePayload(
+      JSON.stringify({
+        schema: "cruor-map-generator-state",
+        version: 2,
+        config: { seed: "legacy-stair-import" },
+        manualOverrides: {
+          manualStairMarkers: {
+            "legacy-position": {
+              corridorId: "legacy-corridor",
+              markerIndex: "1.6",
+              pathIndex: "-5",
+              normalizedOffset: "1.4",
+              cell: { x: 2.6, y: 3.2 },
+            },
+            "legacy-removed": {
+              corridorId: "legacy-corridor",
+              markerIndex: 0,
+              pathIndex: 99,
+              normalizedOffset: 0.9,
+              pathCellKey: "99,99",
+              cell: { x: 99, y: 99 },
+              removed: true,
+            },
+            "missing-corridor": {
+              markerIndex: 0,
+              pathIndex: 1,
+            },
+          },
+        },
+        uiState: {},
+      }),
+    );
+
+    expect(parsed.version).toBe(2);
+    expect(parsed.manualOverrides.schemaVersion).toBe(
+      MANUAL_OVERRIDE_SCHEMA_VERSION,
+    );
+    expect(parsed.manualOverrides.stairMarkers["legacy-position"]).toEqual({
+      corridorId: "legacy-corridor",
+      markerIndex: 2,
+      pathIndex: 0,
+      normalizedOffset: 1,
+      pathCellKey: "3,3",
+      removed: false,
+      cell: { x: 3, y: 3 },
+    });
+    expect(parsed.manualOverrides.stairMarkers["legacy-removed"]).toEqual({
+      corridorId: "legacy-corridor",
+      markerIndex: 0,
+      pathIndex: 0,
+      normalizedOffset: null,
+      pathCellKey: "",
+      removed: true,
+    });
+    expect(
+      parsed.manualOverrides.stairMarkers["missing-corridor"],
+    ).toBeUndefined();
   });
 
   test("serializes SVG export modes and strips player-only secret hints", () => {
@@ -1114,6 +1635,16 @@ describe("map generator pipeline", () => {
           },
         },
       },
+      stairMarkers: {
+        "stair-marker:manual-edge-region-1-region-2-1:0": {
+          corridorId: "manual-edge-region-1-region-2-1",
+          markerIndex: 0,
+          pathIndex: 3,
+          normalizedOffset: 0.375,
+          pathCellKey: "35,20",
+          cell: { x: 35, y: 20 },
+        },
+      },
       customConnections: [
         { id: "manual-edge-region-1-region-2-1", from: "region-1", to: "region-2", kind: "manual", locked: true },
         { id: "manual-edge-region-1-region-2-2", from: "region-1", to: "region-2", kind: "manual", locked: true },
@@ -1145,6 +1676,16 @@ describe("map generator pipeline", () => {
         type: "stairs",
         direction: "down",
         placement: "from-endpoint",
+      }),
+    );
+    expect(parsed.manualOverrides.stairMarkers["stair-marker:manual-edge-region-1-region-2-1:0"]).toEqual(
+      expect.objectContaining({
+        corridorId: "manual-edge-region-1-region-2-1",
+        markerIndex: 0,
+        pathIndex: 3,
+        normalizedOffset: 0.375,
+        pathCellKey: "35,20",
+        cell: { x: 35, y: 20 },
       }),
     );
     expect(parsed.manualOverrides.customConnections.map((connection) => connection.id)).toEqual([
