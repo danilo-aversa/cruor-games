@@ -5397,6 +5397,11 @@ export function computeRegionLevels(regions, corridors, config) {
   corridors.forEach((corridor) => {
     if (!regionIds.has(corridor.from) || !regionIds.has(corridor.to)) return;
     const delta = getCorridorConfiguredLevelDelta(config, corridor);
+    // Room-level overrides are scoped authorial edits. A normal corridor has no
+    // configured vertical delta, so it must not broadcast one edited room level
+    // across the connected component. Only explicit stair/level-transition
+    // constraints are allowed to propagate levels to neighboring rooms.
+    if (delta === 0) return;
     adjacency.get(corridor.from)?.push({ id: corridor.to, delta });
     adjacency.get(corridor.to)?.push({ id: corridor.from, delta: -delta });
   });
@@ -5469,11 +5474,20 @@ export function resolveCorridorDrawLevel(
   return fromLevel;
 }
 
+function shouldDeriveRoomLevelStairs(config = {}) {
+  return Boolean(
+    config?.enableDerivedRoomLevelStairs ||
+      config?.levelOptions?.deriveRoomLevelStairs ||
+      config?.debugOptions?.deriveRoomLevelStairs,
+  );
+}
+
 function createResolvedCorridorLevelTransition(
   corridor,
   fromLevel,
   toLevel,
   transition,
+  config = {},
 ) {
   const normalizedTransition = normalizeLevelTransition(
     transition?.levelTransition || transition,
@@ -5482,21 +5496,24 @@ function createResolvedCorridorLevelTransition(
   const absoluteDelta = Math.abs(levelDelta);
   const hasExplicitTransition =
     normalizedTransition.type !== "none" && normalizedTransition.direction !== "none";
+  const canDeriveFromRoomLevels =
+    !hasExplicitTransition && shouldDeriveRoomLevelStairs(config) && absoluteDelta > 0;
   const derivedDirection =
     levelDelta > 0 ? "up" : levelDelta < 0 ? "down" : "none";
-  const derivedEndpoint = levelDelta === 0 ? null : "from";
-  const endpoint =
-    transition?.endpoint ??
-    getLevelTransitionEndpoint(normalizedTransition) ??
-    derivedEndpoint;
+  const derivedEndpoint = canDeriveFromRoomLevels ? "from" : null;
+  const endpoint = hasExplicitTransition
+    ? transition?.endpoint ?? getLevelTransitionEndpoint(normalizedTransition)
+    : derivedEndpoint;
   const type = hasExplicitTransition
     ? normalizedTransition.type
-    : levelDelta === 0
-      ? "none"
-      : "stairs";
+    : canDeriveFromRoomLevels
+      ? "stairs"
+      : "none";
   const direction = hasExplicitTransition
     ? normalizedTransition.direction
-    : derivedDirection;
+    : canDeriveFromRoomLevels
+      ? derivedDirection
+      : "none";
   return {
     type,
     direction,
@@ -5509,7 +5526,7 @@ function createResolvedCorridorLevelTransition(
     toLevel,
     levelDelta,
     stairCount: type === "none" || direction === "none" ? 0 : absoluteDelta,
-    derivedFromRoomLevels: !hasExplicitTransition && absoluteDelta > 0,
+    derivedFromRoomLevels: canDeriveFromRoomLevels,
     corridorId: corridor.id,
   };
 }
@@ -5529,15 +5546,25 @@ export function applyLevelMetadata(regions, corridors, config) {
     const corridorLevelOverride = getManualCorridorLevelOverride(config, corridor.id);
     const regionFromLevel = regionById.get(corridor.from)?.level ?? 0;
     const regionToLevel = regionById.get(corridor.to)?.level ?? regionFromLevel;
-    const fromLevel = corridorLevelOverride?.fromLevel ?? regionFromLevel;
-    const toLevel = corridorLevelOverride?.toLevel ?? regionToLevel;
     const transition = getPrimaryCorridorLevelTransition(config, corridor);
+    const hasExplicitTransition =
+      transition.transitionType !== "none" && transition.direction !== "none";
+    const allowRoomDerivedStairs = shouldDeriveRoomLevelStairs(config);
+    const fromLevel = corridorLevelOverride?.fromLevel ?? regionFromLevel;
+    const rawToLevel = corridorLevelOverride?.toLevel ?? regionToLevel;
+    const toLevel =
+      hasExplicitTransition || corridorLevelOverride?.toLevel !== undefined || allowRoomDerivedStairs
+        ? rawToLevel
+        : fromLevel;
     const levelTransition = createResolvedCorridorLevelTransition(
       corridor,
       fromLevel,
       toLevel,
       transition,
+      config,
     );
+    const hasLevelTransition =
+      levelTransition.type !== "none" && levelTransition.direction !== "none";
     const planarLevel =
       corridorLevelOverride?.level ??
       resolveCorridorDrawLevel(corridor, fromLevel, toLevel, transition);
@@ -5552,8 +5579,8 @@ export function applyLevelMetadata(regions, corridors, config) {
       stairEndpoint: levelTransition.endpoint,
       stairTransition: levelTransition.direction || levelTransition.type || "none",
       stairCount: levelTransition.stairCount || 0,
-      verticalTransition: fromLevel !== toLevel,
-      crossLevel: fromLevel !== toLevel,
+      verticalTransition: hasLevelTransition && fromLevel !== toLevel,
+      crossLevel: hasLevelTransition && fromLevel !== toLevel,
     };
   });
   return { regions: leveledRegions, corridors: leveledCorridors };

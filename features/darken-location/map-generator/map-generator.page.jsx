@@ -175,7 +175,7 @@ import {
   serializeMapAccessAnchor,
   getClosestExternalBoundaryAnchorToPoint,
 } from "./map-generator.details.js";
-import { MapSvg, createLevelFilteredMap, getMapSurface, getRegionSurface, isPureCaveMap } from "./map-generator.render.jsx";
+import { MapSvg, createLevelFilteredMap, getCorridorStairMarkerVirtualDoors, getMapSurface, getRegionSurface, isPureCaveMap } from "./map-generator.render.jsx";
 import {
   serializeSvg,
   downloadSvg,
@@ -8616,11 +8616,11 @@ export default function CruorMapGeneratorMvp({
           regionId,
         );
         levels.regions[regionId] = normalizeLevelNumber(level, 0);
-        return freezeCurrentRoomLayout({
+        return {
           ...normalized,
           levels,
           stairTransitions: levels.stairs,
-        });
+        };
       },
       "",
       `updateRoomLevel:${regionId}`
@@ -8642,11 +8642,11 @@ export default function CruorMapGeneratorMvp({
           regionId,
         );
         delete levels.regions[regionId];
-        return freezeCurrentRoomLayout({
+        return {
           ...normalized,
           levels,
           stairTransitions: levels.stairs,
-        });
+        };
       },
       "",
       `resetRoomLevel:${regionId}`
@@ -10101,7 +10101,6 @@ export default function CruorMapGeneratorMvp({
     const toRegion = map.regions.find((region) => region.id === corridor.to);
     const fromLevel = 0;
     const toLevel = -3;
-    const expectedDelta = toLevel - fromLevel;
     setQaRunnerStep(runId, {
       scenarioLabel,
       stepLabel: `Set ${fromRegion.name || fromRegion.id} to Level ${formatMapLevel(fromLevel)} and ${toRegion.name || toRegion.id} to Level ${formatMapLevel(toLevel)}`,
@@ -10120,11 +10119,11 @@ export default function CruorMapGeneratorMvp({
       levels = removeEditorStairOverridesForRoomLevelChange(levels, toRegion.id);
       levels.regions[fromRegion.id] = fromLevel;
       levels.regions[toRegion.id] = toLevel;
-      return freezeCurrentRoomLayout({
+      return {
         ...normalized,
         levels,
         stairTransitions: levels.stairs,
-      });
+      };
     }, "qaRoomLevelStairs:setLevels");
     await waitForQaRender(signal, settings);
     const nextMap = getQaGeneratedMap();
@@ -10136,30 +10135,49 @@ export default function CruorMapGeneratorMvp({
       fromRegionId: fromRegion.id,
       toRegionId: toRegion.id,
     });
-    assertQa(nextCorridor.fromLevel === fromLevel, "Cross-level corridor has the wrong fromLevel.", {
+    const nextFromRegion = nextMap.regions.find((region) => region.id === fromRegion.id);
+    const nextToRegion = nextMap.regions.find((region) => region.id === toRegion.id);
+    assertQa(nextFromRegion?.level === fromLevel, "Source room level was not preserved.", {
+      region: nextFromRegion,
+      expected: fromLevel,
+    });
+    assertQa(nextToRegion?.level === toLevel, "Target room level was not scoped to the edited room.", {
+      region: nextToRegion,
+      expected: toLevel,
+    });
+    assertQa(nextCorridor.fromLevel === fromLevel, "Room level scope should not mutate corridor fromLevel before stair placement is enabled.", {
       corridor: summarizeDebugCorridor(nextCorridor),
       expected: fromLevel,
     });
-    assertQa(nextCorridor.toLevel === toLevel, "Cross-level corridor has the wrong toLevel.", {
+    assertQa(nextCorridor.toLevel === fromLevel, "Room level scope should not turn the corridor into a cross-level route yet.", {
       corridor: summarizeDebugCorridor(nextCorridor),
-      expected: toLevel,
+      expected: fromLevel,
     });
-    assertQa(nextCorridor.levelDelta === expectedDelta, "Cross-level corridor has the wrong levelDelta.", {
+    assertQa(nextCorridor.levelDelta === 0, "Room level scope should keep the corridor levelDelta neutral before stair placement is enabled.", {
       corridor: summarizeDebugCorridor(nextCorridor),
-      expected: expectedDelta,
+      expected: 0,
     });
-    assertQa(nextCorridor.crossLevel && nextCorridor.verticalTransition, "Room levels did not create a vertical transition.", {
-      corridor: summarizeDebugCorridor(nextCorridor),
-    });
-    assertQa(nextCorridor.stairTransition === "down", "Derived stair direction should be down.", {
+    assertQa(!nextCorridor.crossLevel && !nextCorridor.verticalTransition, "Room level scope should not create a vertical corridor transition yet.", {
       corridor: summarizeDebugCorridor(nextCorridor),
     });
-    assertQa(nextCorridor.stairCount === Math.abs(expectedDelta), "Derived stair marker count does not match level difference.", {
+    assertQa(nextCorridor.stairTransition === "none", "Room level scope should not derive stair direction until stair placement is enabled.", {
       corridor: summarizeDebugCorridor(nextCorridor),
-      expected: Math.abs(expectedDelta),
     });
-    assertQa(nextCorridor.levelTransition?.derivedFromRoomLevels === true, "Stair transition was not derived from room levels.", {
+    assertQa(nextCorridor.stairCount === 0, "Room level scope should not derive stair marker metadata until stair placement is enabled.", {
       corridor: summarizeDebugCorridor(nextCorridor),
+      expected: 0,
+    });
+    assertQa(nextCorridor.levelTransition?.derivedFromRoomLevels !== true, "Room level scope should not enable room-derived stair metadata yet.", {
+      corridor: summarizeDebugCorridor(nextCorridor),
+    });
+    const renderOnlyStairMarkers = getCorridorStairMarkerVirtualDoors(nextCorridor, nextMap);
+    assertQa(renderOnlyStairMarkers.length === Math.min(Math.abs(toLevel - fromLevel), 8), "Room level scope should render visual stair markers without mutating corridor metadata.", {
+      corridor: summarizeDebugCorridor(nextCorridor),
+      expected: Math.min(Math.abs(toLevel - fromLevel), 8),
+      actual: renderOnlyStairMarkers.length,
+    });
+    assertQa(renderOnlyStairMarkers.every((marker) => marker.renderOnlyRoomLevelStair === true), "Room-level visual stair markers must be render-only.", {
+      markers: renderOnlyStairMarkers,
     });
     assertQaMapValidationPasses(nextMap, {
       scenarioLabel,
@@ -10168,15 +10186,16 @@ export default function CruorMapGeneratorMvp({
       toRegionId: toRegion.id,
       corridorId: nextCorridor.id,
     });
-    recordQaDiagnostic("room levels derived corridor stairs", {
+    recordQaDiagnostic("room levels scoped with render-only stair markers", {
       scenarioLabel,
       fromRegionId: fromRegion.id,
       toRegionId: toRegion.id,
       corridorId: nextCorridor.id,
       fromLevel,
       toLevel,
-      levelDelta: nextCorridor.levelDelta,
+      corridorLevelDelta: nextCorridor.levelDelta,
       stairCount: nextCorridor.stairCount,
+      renderedStairCount: renderOnlyStairMarkers.length,
       direction: nextCorridor.stairTransition,
     }, "levels");
     setQaRunnerStep(runId, {
@@ -10234,11 +10253,11 @@ export default function CruorMapGeneratorMvp({
       levels = removeEditorStairOverridesForRoomLevelChange(levels, toRegion.id);
       levels.regions[fromRegion.id] = fromLevel;
       levels.regions[toRegion.id] = toLevel;
-      return freezeCurrentRoomLayout({
+      return {
         ...normalized,
         levels,
         stairTransitions: levels.stairs,
-      });
+      };
     }, "qaLevelView:setLevels");
     setLevelView(toLevel);
     setFadeOtherLevels(true);

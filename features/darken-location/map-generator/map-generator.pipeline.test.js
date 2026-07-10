@@ -14,6 +14,8 @@ import {
   getCorridorLevelShiftDescription,
   getCorridorLevelShiftLabel,
   getCorridorStairMarkerVirtualDoors,
+  getCorridorStairRenderInfo,
+  getRenderOnlyRoomLevelStairInfo,
   getCorridorTypeClassName,
   getRenderedCorridorStairMarkerCount,
   getRoomLevelBadgeLabel,
@@ -260,8 +262,189 @@ describe("map generator pipeline", () => {
   });
 
 
-  test("derives stair markers from manually assigned room levels", () => {
-    const config = buildConfig({ seed: "room-level-derived-stairs", roomCount: 5 });
+  test("room level edits do not freeze layout or reroute corridors", () => {
+    const pagePath = new URL("./map-generator.page.jsx", import.meta.url);
+    const mapPage = readFileSync(pagePath, "utf8");
+    const updateRoomLevelBody = mapPage.match(/function updateRoomLevel\([\s\S]*?\n  }\n\n  function resetRoomLevel/)?.[0] || "";
+    const resetRoomLevelBody = mapPage.match(/function resetRoomLevel\([\s\S]*?\n  }\n\n  function setGridRenderingStyle/)?.[0] || "";
+    const qaRoomLevelSetBody = mapPage.match(/setManualOverridesFromCurrent\(\(current\) => \{[\s\S]*?\}, "qaRoomLevelStairs:setLevels"\);/)?.[0] || "";
+    const qaLevelViewSetBody = mapPage.match(/setManualOverridesFromCurrent\(\(current\) => \{[\s\S]*?\}, "qaLevelView:setLevels"\);/)?.[0] || "";
+
+    expect(updateRoomLevelBody).toContain("levels.regions[regionId]");
+    expect(updateRoomLevelBody).not.toContain("freezeCurrentRoomLayout");
+    expect(resetRoomLevelBody).toContain("delete levels.regions[regionId]");
+    expect(resetRoomLevelBody).not.toContain("freezeCurrentRoomLayout");
+    expect(qaRoomLevelSetBody).not.toContain("freezeCurrentRoomLayout");
+    expect(qaLevelViewSetBody).not.toContain("freezeCurrentRoomLayout");
+
+    const config = buildConfig({
+      seed: "darken-cursed-location-build-crypt-sedlec-ossuary-sedlec-ossuary-bone-lit-vesti",
+      context: "Crypt",
+      mapType: "Crypt",
+      roomCount: 3,
+    });
+    const baseMap = generateMap(config);
+    const editedRegion = baseMap.regions[baseMap.regions.length - 1];
+    const leveledMap = generateMap(config, {
+      levels: {
+        regions: {
+          [editedRegion.id]: -1,
+        },
+      },
+    });
+
+    const summarizeGeometry = (map) => ({
+      regions: map.regions.map((region) => ({
+        id: region.id,
+        shape: region.shape,
+        cellRect: region.cellRect,
+        floorCells: region.floorCells.map((cell) => `${cell.x},${cell.y}`),
+      })),
+      corridors: map.corridors.map((corridor) => ({
+        id: corridor.id,
+        from: corridor.from,
+        to: corridor.to,
+        fromAnchor: corridor.fromAnchor?.cell,
+        toAnchor: corridor.toAnchor?.cell,
+        fromOutside: corridor.fromAnchor?.outsideCell,
+        toOutside: corridor.toAnchor?.outsideCell,
+        floorCells: corridor.floorCells.map((cell) => `${cell.x},${cell.y}`),
+        pathCells: corridor.pathCells.map((cell) => `${cell.x},${cell.y}`),
+      })),
+    });
+
+    expect(summarizeGeometry(leveledMap)).toEqual(summarizeGeometry(baseMap));
+    expect(leveledMap.regions.find((region) => region.id === editedRegion.id)?.level).toBe(-1);
+  });
+
+  test("keeps a manual room level scoped to the selected region", () => {
+    const config = buildConfig({ seed: "room-level-scope", roomCount: 5 });
+    const manualCorridorId = "manual-edge-region-1-region-2-level-scope";
+    const generatedMap = generateMap(config, {
+      customConnections: [
+        {
+          id: manualCorridorId,
+          from: "region-1",
+          to: "region-2",
+          kind: "manual",
+          locked: true,
+        },
+      ],
+      levels: {
+        regions: {
+          "region-2": -1,
+        },
+      },
+    });
+    const region1 = generatedMap.regions.find((region) => region.id === "region-1");
+    const region2 = generatedMap.regions.find((region) => region.id === "region-2");
+    const uneditedRegions = generatedMap.regions.filter((region) => region.id !== "region-2");
+    const corridor = generatedMap.corridors.find(
+      (candidate) => candidate.id === manualCorridorId,
+    );
+
+    expect(region1?.level).toBe(0);
+    expect(region1?.levelSource).toBe("derived");
+    expect(region2?.level).toBe(-1);
+    expect(region2?.levelSource).toBe("manual");
+    expect(uneditedRegions.every((region) => region.level === 0)).toBe(true);
+    expect(corridor).toBeTruthy();
+    expect(corridor.fromLevel).toBe(0);
+    expect(corridor.toLevel).toBe(0);
+    expect(corridor.levelDelta).toBe(0);
+    expect(corridor.crossLevel).toBe(false);
+    expect(corridor.verticalTransition).toBe(false);
+    expect(corridor.stairTransition).toBe("none");
+    expect(corridor.stairCount).toBe(0);
+    expect(corridor.levelTransition).toEqual(
+      expect.objectContaining({
+        type: "none",
+        direction: "none",
+        derivedFromRoomLevels: false,
+        stairCount: 0,
+      }),
+    );
+    expect(getRenderOnlyRoomLevelStairInfo(corridor, generatedMap)).toEqual(
+      expect.objectContaining({
+        direction: "down",
+        levelDelta: -1,
+        stairCount: 1,
+        renderOnly: true,
+      }),
+    );
+    expect(getCorridorStairRenderInfo(corridor, generatedMap)).toEqual(
+      expect.objectContaining({
+        direction: "down",
+        stairCount: 1,
+        renderOnly: true,
+      }),
+    );
+    expect(getRenderedCorridorStairMarkerCount(corridor, generatedMap)).toBe(1);
+    expect(getCorridorStairMarkerVirtualDoors(corridor, generatedMap)).toEqual([
+      expect.objectContaining({
+        derivedRoomLevelStair: true,
+        renderOnlyRoomLevelStair: true,
+        markerIndex: 0,
+        markerCount: 1,
+      }),
+    ]);
+  });
+
+  test("keeps multi-marker render-only stairs aligned with corridor travel direction", () => {
+    const corridor = {
+      id: "corridor-render-only-stair-direction",
+      from: "region-1",
+      to: "region-2",
+      floorCells: [
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 2, y: 0 },
+        { x: 2, y: -1 },
+      ],
+      pathCells: [
+        { x: 0, y: 0 },
+        { x: 1, y: 0 },
+        { x: 2, y: 0 },
+        { x: 2, y: -1 },
+      ],
+      corridorType: "normal",
+      isRoomLink: false,
+    };
+    const generatedMap = {
+      config: buildConfig({ seed: "render-only-stair-direction" }),
+      regions: [
+        { id: "region-1", level: 0, cells: [] },
+        { id: "region-2", level: -2, cells: [] },
+      ],
+      corridors: [corridor],
+      dungeonMask: { doorSegments: [] },
+    };
+
+    const markers = getCorridorStairMarkerVirtualDoors(corridor, generatedMap);
+
+    expect(markers).toHaveLength(2);
+    expect(markers[0]).toEqual(
+      expect.objectContaining({
+        markerIndex: 0,
+        stairTransition: "down",
+        stairTravelDirection: { x: 1, y: 0 },
+      }),
+    );
+    expect(markers[1]).toEqual(
+      expect.objectContaining({
+        markerIndex: 1,
+        stairTransition: "down",
+        stairTravelDirection: { x: 0, y: -1 },
+      }),
+    );
+  });
+
+  test("can derive stair markers from manually assigned room levels when enabled", () => {
+    const config = buildConfig({
+      seed: "room-level-derived-stairs",
+      roomCount: 5,
+      enableDerivedRoomLevelStairs: true,
+    });
     const manualCorridorId = "manual-edge-region-1-region-2-room-levels";
     const generatedMap = generateMap(config, {
       customConnections: [
@@ -301,7 +484,7 @@ describe("map generator pipeline", () => {
         stairCount: 3,
       }),
     );
-    expect(getRenderedCorridorStairMarkerCount(corridor)).toBe(3);
+    expect(getRenderedCorridorStairMarkerCount(corridor, generatedMap)).toBe(3);
     expect(getCorridorStairMarkerVirtualDoors(corridor, generatedMap)).toHaveLength(3);
     expect(getCorridorLevelShiftLabel(corridor)).toBe("↓3");
     expect(getCorridorLevelShiftDescription(corridor)).toContain("Level 0 to Level -3");
@@ -315,7 +498,11 @@ describe("map generator pipeline", () => {
   });
 
   test("filters level views and labels nonzero room levels", () => {
-    const config = buildConfig({ seed: "level-view-filter", roomCount: 5 });
+    const config = buildConfig({
+      seed: "level-view-filter",
+      roomCount: 5,
+      enableDerivedRoomLevelStairs: true,
+    });
     const manualCorridorId = "manual-edge-region-1-region-2-level-view";
     const generatedMap = generateMap(config, {
       customConnections: [

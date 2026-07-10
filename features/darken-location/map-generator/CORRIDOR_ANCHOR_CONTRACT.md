@@ -265,3 +265,52 @@ The broader local gate is:
 ```bash
 npm run qa:dark-places:full
 ```
+
+## Pass 4D room level scope correction
+
+Room level edits are scoped authorial overrides, not connected-component seeds.
+
+- Setting `manualOverrides.levels.regions[regionId]` must change only that room's manual level override.
+- Normal same-level corridors have configured level delta `0` and must not propagate one edited room level to every connected room.
+- Only explicit stair / level-transition constraints may propagate derived levels across rooms.
+- If one manually edited room differs from an otherwise default neighboring room, the connecting corridor derives stair metadata from the two endpoint room levels.
+- Resetting a room level removes only that room's region override and any editor-created stair overrides attached to its connected corridors.
+
+## Pass 4D-B room level stability correction
+
+Room Level editing is scoped before automatic stair placement is enabled.
+
+- Setting `manualOverrides.levels.regions[regionId]` changes only that room's displayed level.
+- Normal corridors must not become cross-level routes merely because two endpoint rooms have different manual levels.
+- Room-level-derived stair metadata is disabled by default behind `enableDerivedRoomLevelStairs`; future stair-placement passes can enable it deliberately.
+- Until that future pass, corridor topology, door positions, anchors, floor cells, wall segments, and render cells must remain stable when a room level is changed.
+- Explicit editor/authored stair overrides still create coherent corridor `fromLevel`, `toLevel`, `levelDelta`, `crossLevel`, and `stairCount` metadata.
+
+## Pass 4D-C room level stability correction
+
+Room level edits are metadata edits, not geometry edits.
+
+- `updateRoomLevel()` and `resetRoomLevel()` must only mutate `manualOverrides.levels.regions` and any connected editor-stair overrides that explicitly depend on that room.
+- They must not call `freezeCurrentRoomLayout()` when no geometric edit has occurred.
+- Setting a room level must not create `manualOverrides.roomPositions`, `manualOverrides.roomStyles`, door anchors, waypoints, custom connections, or deleted connections.
+- Setting a room level must not reroute corridors, move corridor endpoints, change room shapes, or lock a previously unlocked manual layout.
+- Room-derived stair placement remains disabled until the dedicated stair placement pass enables it explicitly.
+
+## Pass 4D-D render-only room-level stair markers
+
+Room level editing must not reroute or mutate corridor metadata, but connected rooms with different manual levels still need visible stair markers.
+
+- `updateRoomLevel()` and `resetRoomLevel()` remain metadata-only operations for `manualOverrides.levels.regions`.
+- Generated corridor geometry, door anchors, `fromLevel`, `toLevel`, `levelDelta`, `crossLevel`, and `stairTransition` stay neutral unless there is an explicit stair/corridor override.
+- The SVG render layer may derive stair markers from the current connected room levels without mutating the generated corridor object.
+- Render-only stair markers use `renderOnlyRoomLevelStair: true` and `derivedRoomLevelStair: true` on their virtual doors.
+- A one-level room difference renders one marker on the first available corridor cell after the source door; larger differences render endpoint markers plus evenly distributed interior markers.
+
+
+## Pass 4D-E render-only stair direction consistency
+
+Render-only stair markers derived from room levels must follow one coherent corridor travel direction.
+
+- Multi-marker stairs use the corridor path order from `from` to `to` for every marker.
+- The last marker of a corridor uses `current - previous`, not `previous - current`, so endpoint markers do not point back toward one another.
+- Virtual stair doors expose `stairTravelDirection` so stair step and arrow rendering can use the fixed render-only travel vector without changing real door semantics.

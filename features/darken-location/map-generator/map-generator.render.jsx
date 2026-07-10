@@ -1670,14 +1670,35 @@ function getCorridorCellCenter(cell, gridSize) {
   };
 }
 
+function normalizeCardinalDirection(vector = null) {
+  const dx = Math.sign(Number(vector?.x || 0));
+  const dy = Math.sign(Number(vector?.y || 0));
+  if (Math.abs(dx) >= Math.abs(dy) && dx !== 0) return { x: dx, y: 0 };
+  if (dy !== 0) return { x: 0, y: dy };
+  return { x: 1, y: 0 };
+}
+
 function getCorridorAccentDirection(cells, index) {
   const previous = cells[index - 1] || null;
   const next = cells[index + 1] || null;
   const current = cells[index];
-  const dx = Math.sign((next?.x ?? current.x) - (previous?.x ?? current.x));
-  const dy = Math.sign((next?.y ?? current.y) - (previous?.y ?? current.y));
-  if (Math.abs(dx) >= Math.abs(dy) && dx !== 0) return { x: dx, y: 0 };
-  if (dy !== 0) return { x: 0, y: dy };
+  return normalizeCardinalDirection({
+    x: (next?.x ?? current.x) - (previous?.x ?? current.x),
+    y: (next?.y ?? current.y) - (previous?.y ?? current.y),
+  });
+}
+
+function getCorridorForwardDirection(cells, index) {
+  const current = cells[index] || null;
+  if (!current) return { x: 1, y: 0 };
+  const next = cells[index + 1] || null;
+  const previous = cells[index - 1] || null;
+  if (next) {
+    return normalizeCardinalDirection({ x: next.x - current.x, y: next.y - current.y });
+  }
+  if (previous) {
+    return normalizeCardinalDirection({ x: current.x - previous.x, y: current.y - previous.y });
+  }
   return { x: 1, y: 0 };
 }
 
@@ -2027,48 +2048,145 @@ export function renderCorridorTypeAccents(generatedMap) {
   return <g className="corridor-type-accents">{rendered}</g>;
 }
 
-export function getRenderedCorridorStairMarkerCount(corridor = {}) {
-  const rawCount = Number(corridor.stairCount ?? Math.abs(Number(corridor.levelDelta || 0)));
-  if (!Number.isFinite(rawCount) || rawCount <= 0) return 0;
-  return clamp(Math.round(rawCount), 1, 8);
+function clampCorridorStairMarkerCount(rawCount) {
+  const numeric = Number(rawCount);
+  if (!Number.isFinite(numeric) || numeric <= 0) return 0;
+  return clamp(Math.round(numeric), 1, 8);
 }
 
-function shouldRenderDerivedCorridorStairMarkers(corridor = {}) {
-  return Boolean(
-    corridor &&
-      !corridor.isRoomLink &&
-      corridor.levelTransition?.derivedFromRoomLevels &&
-      corridor.levelTransition?.type === "stairs" &&
-      corridor.levelTransition?.direction !== "none" &&
-      getRenderedCorridorStairMarkerCount(corridor) > 0
+function getRegionById(generatedMap, regionId) {
+  if (!regionId) return null;
+  return (generatedMap?.regions || []).find((region) => region.id === regionId) || null;
+}
+
+function hasExplicitCorridorStairVisual(corridor = {}) {
+  const corridorDirection = normalizeStairTransition(
+    corridor.levelTransition?.direction || corridor.stairTransition,
+    "none",
+  );
+  if (corridorDirection !== "none" || Number(corridor.stairCount || 0) > 0) {
+    return true;
+  }
+  return (corridor.doors || []).some(
+    (door) => normalizeStairTransition(door?.stairTransition, "none") !== "none",
   );
 }
 
-export function getCorridorStairMarkerVirtualDoors(corridor, generatedMap) {
-  if (!shouldRenderDerivedCorridorStairMarkers(corridor)) return [];
-  const cells = getVisibleCorridorTopologyCells(corridor, generatedMap);
-  if (cells.length === 0) return [];
-  const markerCount = getRenderedCorridorStairMarkerCount(corridor);
+function getMetadataDerivedCorridorStairRenderInfo(corridor = {}) {
   const direction = normalizeStairTransition(
     corridor.levelTransition?.direction || corridor.stairTransition,
     "none",
   );
-  if (direction === "none") return [];
+  const markerCount = clampCorridorStairMarkerCount(
+    corridor.stairCount ?? Math.abs(Number(corridor.levelDelta || 0)),
+  );
+  if (
+    !corridor ||
+    corridor.isRoomLink ||
+    !corridor.levelTransition?.derivedFromRoomLevels ||
+    corridor.levelTransition?.type !== "stairs" ||
+    direction === "none" ||
+    markerCount <= 0
+  ) {
+    return null;
+  }
+  return {
+    type: "stairs",
+    direction,
+    fromLevel: Number.isFinite(corridor.levelTransition?.fromLevel)
+      ? corridor.levelTransition.fromLevel
+      : corridor.fromLevel,
+    toLevel: Number.isFinite(corridor.levelTransition?.toLevel)
+      ? corridor.levelTransition.toLevel
+      : corridor.toLevel,
+    levelDelta: Number(corridor.levelTransition?.levelDelta ?? corridor.levelDelta ?? 0),
+    stairCount: markerCount,
+    derivedFromRoomLevels: true,
+    renderOnly: false,
+  };
+}
+
+export function getRenderOnlyRoomLevelStairInfo(corridor = {}, generatedMap = null) {
+  if (!corridor || corridor.isRoomLink || !generatedMap) return null;
+  if (hasExplicitCorridorStairVisual(corridor)) return null;
+  const fromRegion = getRegionById(generatedMap, corridor.from);
+  const toRegion = getRegionById(generatedMap, corridor.to);
+  if (!fromRegion || !toRegion) return null;
+  const fromLevel = getRegionLevel(fromRegion);
+  const toLevel = getRegionLevel(toRegion);
+  const levelDelta = toLevel - fromLevel;
+  const stairCount = clampCorridorStairMarkerCount(Math.abs(levelDelta));
+  if (levelDelta === 0 || stairCount <= 0) return null;
+  return {
+    type: "stairs",
+    direction: levelDelta > 0 ? "up" : "down",
+    fromLevel,
+    toLevel,
+    levelDelta,
+    stairCount,
+    derivedFromRoomLevels: true,
+    renderOnly: true,
+  };
+}
+
+export function getCorridorStairRenderInfo(corridor = {}, generatedMap = null) {
+  return (
+    getMetadataDerivedCorridorStairRenderInfo(corridor) ||
+    getRenderOnlyRoomLevelStairInfo(corridor, generatedMap)
+  );
+}
+
+export function getRenderedCorridorStairMarkerCount(corridor = {}, generatedMap = null) {
+  const renderInfo = getCorridorStairRenderInfo(corridor, generatedMap);
+  if (renderInfo) return clampCorridorStairMarkerCount(renderInfo.stairCount);
+  return clampCorridorStairMarkerCount(
+    corridor.stairCount ?? Math.abs(Number(corridor.levelDelta || 0)),
+  );
+}
+
+function getCorridorStairMarkerIndexes(cells, markerCount) {
+  if (!Array.isArray(cells) || cells.length === 0 || markerCount <= 0) return [];
+  if (cells.length === 1) return [0];
+  if (markerCount === 1) return [0];
+  if (markerCount === 2) return [0, cells.length - 1];
+  const indexes = [0, cells.length - 1];
+  const interiorSlots = markerCount - indexes.length;
+  for (let slot = 1; slot <= interiorSlots; slot += 1) {
+    indexes.push(Math.round((slot / (interiorSlots + 1)) * (cells.length - 1)));
+  }
   const usedIndexes = new Set();
-  return Array.from({ length: markerCount }, (_, markerIndex) => {
-    const rawIndex = Math.round(((markerIndex + 1) / (markerCount + 1)) * (cells.length - 1));
+  return indexes.map((rawIndex) => {
     let index = clamp(rawIndex, 0, cells.length - 1);
     while (usedIndexes.has(index) && index < cells.length - 1) index += 1;
     while (usedIndexes.has(index) && index > 0) index -= 1;
     usedIndexes.add(index);
+    return index;
+  });
+}
+
+function shouldRenderDerivedCorridorStairMarkers(corridor = {}, generatedMap = null) {
+  return Boolean(getCorridorStairRenderInfo(corridor, generatedMap));
+}
+
+export function getCorridorStairMarkerVirtualDoors(corridor, generatedMap) {
+  if (!shouldRenderDerivedCorridorStairMarkers(corridor, generatedMap)) return [];
+  const renderInfo = getCorridorStairRenderInfo(corridor, generatedMap);
+  if (!renderInfo) return [];
+  const cells = getVisibleCorridorTopologyCells(corridor, generatedMap);
+  if (cells.length === 0) return [];
+  const markerCount = getRenderedCorridorStairMarkerCount(corridor, generatedMap);
+  const direction = normalizeStairTransition(renderInfo.direction, "none");
+  if (direction === "none") return [];
+  return getCorridorStairMarkerIndexes(cells, markerCount).map((index, markerIndex) => {
     const cell = cells[index] || cells[0];
-    const travel = getCorridorAccentDirection(cells, index);
+    const travel = getCorridorForwardDirection(cells, index);
     return {
       corridorId: corridor.id,
       endpoint: "shared",
       outsideCell: { x: cell.x, y: cell.y },
       cell: { x: cell.x, y: cell.y },
       normal: travel,
+      stairTravelDirection: travel,
       side:
         Math.abs(travel.x) >= Math.abs(travel.y)
           ? travel.x >= 0
@@ -2079,6 +2197,7 @@ export function getCorridorStairMarkerVirtualDoors(corridor, generatedMap) {
             : "north",
       stairTransition: direction,
       derivedRoomLevelStair: true,
+      renderOnlyRoomLevelStair: Boolean(renderInfo.renderOnly),
       markerIndex,
       markerCount,
     };
@@ -6772,6 +6891,9 @@ export function normalizeDirectionVector(vector) {
 }
 
 export function getDoorCorridorTravelDirection(door, generatedMap) {
+  if (door?.stairTravelDirection) {
+    return normalizeDirectionVector(door.stairTravelDirection);
+  }
   const fallback = normalizeDirectionVector(door?.normal || { x: 1, y: 0 });
   const corridor = generatedMap?.corridors?.find(
     (item) => item.id === door?.corridorId,
