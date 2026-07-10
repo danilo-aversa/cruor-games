@@ -11030,3 +11030,29 @@ _Nessun file aggiunto._
 
 - `~features/darken-location/map-generator/map-generator.pipeline.test.js`
 
+
+---
+
+## 2026-07-10 17:11:39
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass4f-a-complete-fixed.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass4f-a-complete-fixed.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 6
+
+- `~docs/repository-map/areas/map-editor.md`
+- `~features/darken-location/map-generator/CORRIDOR_ANCHOR_CONTRACT.md`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.pipeline.test.js`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+- `~scripts/run-dark-places-acceptance-qa.mjs`
+

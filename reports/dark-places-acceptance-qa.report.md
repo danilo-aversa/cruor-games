@@ -1,12 +1,12 @@
 # Dark Places Acceptance QA
 
-Generated: 2026-07-09T15:40:47.329Z
+Generated: 2026-07-10T15:06:08.932Z
 Working directory: H:\Users\avers\Documenti\GitHub\cruor-games
 
 ## Summary
 
-- Checks: 53
-- Passed: 53
+- Checks: 58
+- Passed: 58
 - Failed: 0
 
 ## Checks
@@ -51,6 +51,10 @@ Working directory: H:\Users\avers\Documenti\GitHub\cruor-games
 - ✅ Render layer exposes level-filtered maps
 - ✅ Render layer exposes cross-level corridor badges
 - ✅ Render layer marks stairs derived from room levels
+- ✅ Render layer exposes selectable stair marker handles
+- ✅ Rendered stair markers expose stable editor identities
+- ✅ Map editor owns stair marker selection state
+- ✅ Map editor wires stair marker pointer selection
 - ✅ SVG root exposes level-view metadata
 - ✅ Map state export includes export manifest
 - ✅ Map export/import normalizes Level View UI state
@@ -59,6 +63,7 @@ Working directory: H:\Users\avers\Documenti\GitHub\cruor-games
 - ✅ Debug validation checks level transition consistency
 - ✅ Vitest covers shared debug runner registry
 - ✅ Vitest covers room-level derived stairs
+- ✅ Vitest covers stair selection overlay rendering
 - ✅ Vitest covers export/import hardening
 - ✅ package exposes circle connector QA
 - ✅ package exposes map debug QA

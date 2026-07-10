@@ -66,6 +66,20 @@ function repoPath(...segments) {
   return resolve(process.cwd(), ...segments);
 }
 
+function getTaggedManualOverrideUpdateBody(source, label) {
+  const labelToken = `"${label}"`;
+  const labelIndex = source.indexOf(labelToken);
+  if (labelIndex < 0) return "";
+
+  const invocationStart = source.lastIndexOf(
+    "setManualOverridesFromCurrent((current) => {",
+    labelIndex,
+  );
+  if (invocationStart < 0) return "";
+
+  return source.slice(invocationStart, labelIndex + labelToken.length);
+}
+
 describe("map generator pipeline", () => {
   test("generates a structurally valid default map", () => {
     const config = buildConfig();
@@ -302,9 +316,17 @@ describe("map generator pipeline", () => {
     const mapPage = readFileSync(pagePath, "utf8");
     const updateRoomLevelBody = mapPage.match(/function updateRoomLevel\([\s\S]*?\n  }\n\n  function resetRoomLevel/)?.[0] || "";
     const resetRoomLevelBody = mapPage.match(/function resetRoomLevel\([\s\S]*?\n  }\n\n  function setGridRenderingStyle/)?.[0] || "";
-    const qaRoomLevelSetBody = mapPage.match(/setManualOverridesFromCurrent\(\(current\) => \{[\s\S]*?\}, "qaRoomLevelStairs:setLevels"\);/)?.[0] || "";
-    const qaLevelViewSetBody = mapPage.match(/setManualOverridesFromCurrent\(\(current\) => \{[\s\S]*?\}, "qaLevelView:setLevels"\);/)?.[0] || "";
+    const qaRoomLevelSetBody = getTaggedManualOverrideUpdateBody(
+      mapPage,
+      "qaRoomLevelStairs:setLevels",
+    );
+    const qaLevelViewSetBody = getTaggedManualOverrideUpdateBody(
+      mapPage,
+      "qaLevelView:setLevels",
+    );
 
+    expect(qaRoomLevelSetBody).not.toBe("");
+    expect(qaLevelViewSetBody).not.toBe("");
     expect(updateRoomLevelBody).toContain("levels.regions[regionId]");
     expect(updateRoomLevelBody).not.toContain("freezeCurrentRoomLayout");
     expect(resetRoomLevelBody).toContain("delete levels.regions[regionId]");
