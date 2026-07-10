@@ -1,8 +1,7 @@
-name: CI
+name: Full QA
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
   pull_request:
     branches: [main]
 
@@ -35,7 +34,7 @@ jobs:
       - name: Unit tests
         run: npm run test:run
 
-      - name: End-to-end tests (non-blocking)
+      - name: End-to-end tests
         id: e2e
         if: steps.playwright-install.outcome == 'success'
         continue-on-error: true
@@ -43,7 +42,7 @@ jobs:
 
       - name: Report non-blocking E2E failure
         if: always() && (steps.playwright-install.outcome == 'failure' || steps.e2e.outcome == 'failure')
-        run: echo "::warning::End-to-end tests failed or Playwright could not be installed. Build and unit tests passed, so publication is not blocked. Review the Playwright artifact for details."
+        run: echo "::warning::End-to-end tests failed or Playwright could not be installed. Build and unit tests remain the blocking checks."
 
       - name: Upload Playwright report
         if: always()

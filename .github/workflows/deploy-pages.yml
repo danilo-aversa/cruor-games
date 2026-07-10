@@ -4,6 +4,15 @@ on:
   push:
     branches: ["main"]
   workflow_dispatch:
+    inputs:
+      mode:
+        description: Deployment mode
+        required: true
+        default: fast
+        type: choice
+        options:
+          - fast
+          - full
 
 permissions:
   contents: read
@@ -16,7 +25,7 @@ concurrency:
 
 jobs:
   build-and-deploy:
-    name: Build and deploy
+    name: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'full' && 'Full QA and deploy' || 'Fast deploy' }}
     runs-on: ubuntu-latest
 
     environment:
@@ -36,9 +45,38 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Playwright browsers
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'full'
+        id: playwright-install
+        continue-on-error: true
+        run: npx playwright install --with-deps chromium
+
+      - name: Unit tests
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'full'
+        run: npm run test:run
+
+      - name: End-to-end tests
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'full' && steps.playwright-install.outcome == 'success'
+        id: e2e
+        continue-on-error: true
+        run: npm run test:e2e
+
+      - name: Report non-blocking E2E failure
+        if: always() && github.event_name == 'workflow_dispatch' && inputs.mode == 'full' && (steps.playwright-install.outcome == 'failure' || steps.e2e.outcome == 'failure')
+        run: echo "::warning::End-to-end tests failed or Playwright could not be installed. The report is preserved, but deployment continues."
+
+      - name: Upload Playwright report
+        if: always() && github.event_name == 'workflow_dispatch' && inputs.mode == 'full'
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Build Vite site
         env:
-          CRUOR_PAGES_BASE: /cruor-games/
+          CRUOR_PAGES_BASE: /
         run: npm run build
 
       - name: Verify built Pages artifact
@@ -50,8 +88,13 @@ jobs:
             exit 1
           fi
 
-          if ! grep -q '/cruor-games/assets/' dist/index.html; then
-            echo "::error::dist/index.html does not contain the expected GitHub Pages asset base path."
+          if grep -q '/cruor-games/' dist/index.html; then
+            echo "::error::The build still uses the repository subpath, but the custom domain is served from the root."
+            exit 1
+          fi
+
+          if ! grep -q '"/assets/' dist/index.html; then
+            echo "::error::dist/index.html does not contain root-relative asset paths for the custom domain."
             exit 1
           fi
 

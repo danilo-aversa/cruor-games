@@ -11187,3 +11187,25 @@ _Nessun file aggiunto._
 - `~.github/workflows/deploy-pages.yml`
 - `~vite.config.js`
 
+
+---
+
+## 2026-07-10 21:37:03
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-fast-full-deploy-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-fast-full-deploy-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~.github/workflows/ci.yml`
+- `~.github/workflows/deploy-pages.yml`
+
