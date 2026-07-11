@@ -1,10 +1,14 @@
 export function LocationDraftControls({
   canLoadDraft,
+  canRedo = false,
+  canUndo = false,
   draftStatus,
   onClearDraft,
   onLoadDraft,
+  onRedo,
   onResetComposer,
   onSaveDraft,
+  onUndo,
   uiMode = "simple",
 }) {
   const isSimpleMode = uiMode === "simple";
@@ -14,6 +18,24 @@ export function LocationDraftControls({
       <div className="location-draft-strip__actions">
         <button className="cruor-composer-control location-draft-btn" type="button" onClick={onSaveDraft}>
           Save
+        </button>
+
+        <button
+          className="cruor-composer-control location-draft-btn location-draft-btn--ghost"
+          type="button"
+          onClick={onUndo}
+          disabled={!canUndo}
+        >
+          Undo
+        </button>
+
+        <button
+          className="cruor-composer-control location-draft-btn location-draft-btn--ghost"
+          type="button"
+          onClick={onRedo}
+          disabled={!canRedo}
+        >
+          Redo
         </button>
 
         <button

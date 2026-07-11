@@ -46,6 +46,24 @@ function uniqueArray(values) {
   return [...new Set(normalizeStringArray(values))];
 }
 
+function isPlainObject(value) {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value));
+}
+
+function cloneOptionalPlainObject(value) {
+  return isPlainObject(value) ? JSON.parse(JSON.stringify(value)) : undefined;
+}
+
+function getNestedLocationMetadata(component, field) {
+  return (
+    component?.location?.[field] ||
+    component?.locationRegion?.[field] ||
+    component?.map?.[field] ||
+    component?.[field] ||
+    undefined
+  );
+}
+
 function referencesKnownActiveSourceAnchor(sourceAnchors = []) {
   const sourceAnchorIds = normalizeSourceAnchorIds(sourceAnchors);
   if (!sourceAnchorIds.length) return true;
@@ -142,7 +160,9 @@ export function legacyDarkenComponentToSharedComponent(component) {
     location: {
       componentType: contentSubtype,
       legacyType: component.type || "",
-      mapInfluence: component.location?.mapInfluence || component.mapInfluence || undefined,
+      mapInfluence: cloneOptionalPlainObject(getNestedLocationMetadata(component, "mapInfluence")),
+      roomDesign: cloneOptionalPlainObject(getNestedLocationMetadata(component, "roomDesign")),
+      roomCompatibility: cloneOptionalPlainObject(getNestedLocationMetadata(component, "roomCompatibility")),
       sensoryKind: component.sensoryKind || "",
       intrusion: component.intrusion || "",
       prep: component.prep || "",

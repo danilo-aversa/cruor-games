@@ -76,3 +76,11 @@ Important references:
 - Use references to understand algorithms, visual conventions, and useful rendering techniques.
 - Reimplement only the necessary ideas in Cruor's architecture.
 - Keep Cruor function names simple and project-specific.
+
+## Semantic Room Shape Contract
+
+A normalized required area may carry `roomDesign.shape.kind`. Supported authored kinds are defined only in `shared/content/contracts/room-shapes.js`; the generator must preserve that identity instead of converting it to a similar legacy footprint.
+
+The current engine provides dedicated masks for all registered kinds, including `square`, `gallery`, `t-shape`, `cross`, `niche`, and `irregular`. Shape-specific modifier support is evaluated before assignment. Unknown shapes or unsupported shape/modifier combinations must produce an explicit `unsupported` resolution rather than silently falling back to `rect`, `hall`, `notched`, `alcove`, or `cave`.
+
+An inferred room archetype may still provide detail behavior, but it may not replace an explicit semantic shape mask. Archetype mask substitution is allowed only when the effective room design explicitly supplies a `maskProfile`.

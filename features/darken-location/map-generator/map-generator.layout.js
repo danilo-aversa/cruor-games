@@ -14,8 +14,10 @@ import {
 import { getGraphAdjacency } from "./map-generator.graph.js";
 import {
   applyRoomDesignSizeConstraints,
+  getEngineShapeFromRoomDesignKind,
   getRoomDesignShape,
   getRoomDesignShapeOptions,
+  getRoomShapeDefinition,
   resolveRoomDesign,
 } from "./map-generator.room-design.js";
 
@@ -106,28 +108,40 @@ function getShapeAdjustedRoomSize(size, region, roomDesign) {
   if (!Number.isFinite(w) || !Number.isFinite(h)) return size;
 
   const designShape = getRoomDesignShape(roomDesign);
-  const shape = String(
+  const explicitShape = getEngineShapeFromRoomDesignKind(
     designShape || region.shape || region.preferredShape || "",
-  ).toLowerCase();
+  );
+  const shape = explicitShape || String(region.shape || "rect").toLowerCase();
+  const definition = getRoomShapeDefinition(shape);
 
-  if (shape.includes("hall") || shape.includes("corridor")) {
-    w = Math.max(w + 2, h + 3);
-    h = Math.max(3, Math.min(h, 4));
+  if (definition?.family === "linear") {
+    const horizontal = w >= h;
+    const longSide = Math.max(w, h, definition.minWidthCells || 5);
+    const shortSide = Math.max(
+      definition.minHeightCells || 3,
+      Math.min(Math.min(w, h), shape === "gallery" ? 5 : 4),
+    );
+    if (horizontal) {
+      w = Math.max(longSide, shortSide + (shape === "gallery" ? 4 : 3));
+      h = shortSide;
+    } else {
+      h = Math.max(longSide, shortSide + (shape === "gallery" ? 4 : 3));
+      w = shortSide;
+    }
   }
 
-  if (
-    shape.includes("shaft") ||
-    shape.includes("oval") ||
-    shape.includes("circular") ||
-    shape.includes("circle") ||
-    shape.includes("round")
-  ) {
-    const d = Math.max(w, h);
+  if (definition?.forceSquare) {
+    const d = Math.max(w, h, definition.minWidthCells || 3);
     w = d;
     h = d;
   }
 
-  if (shape.includes("library") || shape.includes("archive")) {
+  if (Number.isFinite(definition?.minWidthCells))
+    w = Math.max(w, definition.minWidthCells);
+  if (Number.isFinite(definition?.minHeightCells))
+    h = Math.max(h, definition.minHeightCells);
+
+  if (shape === "archive") {
     w = Math.max(w, 7);
     h = Math.max(h, 5);
   }
@@ -285,13 +299,45 @@ export function resolveMineCaveRoomSize(region, rng, config = null) {
   };
 }
 
+function inferExplicitRoomShape(value = "") {
+  const raw = String(value || "").trim().toLowerCase();
+  const exact = getEngineShapeFromRoomDesignKind(raw);
+  if (exact) return exact;
+  if (raw.includes("t-shape") || raw.includes("t shape") || raw.includes("t-shaped"))
+    return "t-shape";
+  if (raw.includes("cross") || raw.includes("cruciform")) return "cross";
+  if (raw.includes("l-shape") || raw.includes("l shape") || raw.includes("l-shaped"))
+    return "l-shape";
+  if (raw.includes("gallery")) return "gallery";
+  if (raw.includes("niche")) return "niche";
+  if (raw.includes("square")) return "square";
+  if (raw.includes("irregular")) return "irregular";
+  if (raw.includes("circle") || raw.includes("circular") || raw.includes("round"))
+    return "circle";
+  if (raw.includes("oval")) return "oval";
+  if (raw.includes("shaft") || raw.includes("well")) return "shaft";
+  if (raw.includes("ritual")) return "ritual";
+  if (raw.includes("archive") || raw.includes("library")) return "archive";
+  if (raw.includes("alcove")) return "alcove";
+  if (raw.includes("apse")) return "apse";
+  if (raw.includes("cave") || raw.includes("organic")) return "cave";
+  if (raw.includes("broken") || raw.includes("ruined")) return "broken";
+  if (raw.includes("hall") || raw.includes("corridor")) return "hall";
+  if (raw.includes("rect")) return "rect";
+  return "";
+}
+
 export function chooseRoomShape(region, contextKey = "") {
-  const shape = region.preferredShape.toLowerCase();
+  const shape = String(region.preferredShape || "").toLowerCase();
   const role = getPlacementRole(region);
   const text = getRegionText(region);
   const archetype = resolveRoomArchetype(region, contextKey);
-  const roomDesignShape = getRoomDesignShape(resolveRoomDesign(region, contextKey, { archetype }));
+  const roomDesignShape = getRoomDesignShape(
+    resolveRoomDesign(region, contextKey, { archetype }),
+  );
   if (roomDesignShape) return roomDesignShape;
+  const explicitShape = inferExplicitRoomShape(region.preferredShape || region.shape);
+  if (explicitShape) return explicitShape;
   if (archetype?.shape) return archetype.shape;
 
   if (contextKey === "chapel") {
@@ -393,7 +439,9 @@ export function chooseRoomShape(region, contextKey = "") {
   )
     return "circle";
   if (shape.includes("shaft") || shape.includes("oval")) return "shaft";
-  if (shape.includes("irregular") || shape.includes("cave")) return "cave";
+  if (shape.includes("irregular")) return "irregular";
+  if (shape.includes("cave")) return "cave";
+  if (shape.includes("gallery")) return "gallery";
   if (shape.includes("hall") || shape.includes("corridor")) return "hall";
   if (shape.includes("ritual")) return "ritual";
   if (shape.includes("archive") || shape.includes("library")) return "archive";
@@ -1965,16 +2013,12 @@ function getManualRoomStyleShape(region, style = {}) {
 
 function isRoundRoomStyle(region, style = {}) {
   const shape = getManualRoomStyleShape(region, style);
-  return (
-    shape === "circle" ||
-    shape === "shaft" ||
-    shape === "oval" ||
-    shape.includes("circle") ||
-    shape.includes("circular") ||
-    shape.includes("round") ||
-    shape.includes("shaft") ||
-    shape.includes("well")
-  );
+  return shape === "circle" || shape === "shaft";
+}
+
+function isEqualDimensionRoomStyle(region, style = {}) {
+  const shape = getManualRoomStyleShape(region, style);
+  return Boolean(getRoomShapeDefinition(shape)?.forceSquare);
 }
 
 function normalizeManualDimension(value, fallback, min, max) {
@@ -2005,21 +2049,23 @@ function resolveManualRoomSize(region, style = {}, config = DEFAULT_CONFIG) {
       );
       return { w: diameter, h: diameter, label: "Custom" };
     }
-    return {
-      w: normalizeManualDimension(
-        customSize?.widthCells ?? customSize?.w ?? customSize?.width,
-        region.cellRect.w,
-        2,
-        maxW,
-      ),
-      h: normalizeManualDimension(
-        customSize?.heightCells ?? customSize?.h ?? customSize?.height,
-        region.cellRect.h,
-        2,
-        maxH,
-      ),
-      label: "Custom",
-    };
+    const customWidth = normalizeManualDimension(
+      customSize?.widthCells ?? customSize?.w ?? customSize?.width,
+      region.cellRect.w,
+      2,
+      maxW,
+    );
+    const customHeight = normalizeManualDimension(
+      customSize?.heightCells ?? customSize?.h ?? customSize?.height,
+      region.cellRect.h,
+      2,
+      maxH,
+    );
+    if (isEqualDimensionRoomStyle(region, style)) {
+      const diameter = Math.min(Math.max(customWidth, customHeight), maxW, maxH);
+      return { w: diameter, h: diameter, label: "Custom" };
+    }
+    return { w: customWidth, h: customHeight, label: "Custom" };
   }
 
   const preset = ROOM_SIZE_MENU_PRESETS[style.sizePreset];

@@ -8176,3 +8176,84 @@
   line-height: 12px;
   text-align: center;
 }
+
+/* Dark Places immersive mode: retain only the map toolbar and central editor. */
+.location-map-toolbar__button.is-active,
+.location-map-toolbar__button[aria-pressed="true"] {
+  border-color: var(--cruor-color-blood-glow-a860);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
+}
+
+.location-map-toolbar__group--view {
+  flex: 0 0 auto;
+}
+
+.location-composer[data-location-immersive="true"] .location-composer__workspace,
+.location-composer[data-location-immersive="true"] .location-composer__stage,
+.location-composer[data-location-immersive="true"] .location-map-stage,
+.location-composer[data-location-immersive="true"] .location-map-stage__center {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.location-composer[data-location-immersive="true"] .location-map-stage {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "center";
+  border-top: 0;
+}
+
+.location-composer[data-location-immersive="true"] .location-map-stage-toolbar {
+  top: 10px;
+}
+
+@supports selector(:has(*)) {
+  html:has(#darkenComposerPanel:not([hidden]) .location-composer[data-location-immersive="true"]),
+  html:has(#darkenComposerPanel:not([hidden]) .location-composer[data-location-immersive="true"]) body,
+  html:has(#darkenComposerPanel:not([hidden]) .location-composer[data-location-immersive="true"]) #root {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  html:has(#darkenComposerPanel:not([hidden]) .location-composer[data-location-immersive="true"]) .site-topbar {
+    display: none;
+  }
+
+  html:has(#darkenComposerPanel:not([hidden]) .location-composer[data-location-immersive="true"]) .app-shell {
+    --app-shell-bar-height: 0px;
+    width: 100%;
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden;
+  }
+
+  html:has(#darkenComposerPanel:not([hidden]) .location-composer[data-location-immersive="true"]) .app-shell__workspace,
+  html:has(#darkenComposerPanel:not([hidden]) .location-composer[data-location-immersive="true"]) .app-shell[data-active-section="crucible"] > .app-shell__workspace > section,
+  html:has(#darkenComposerPanel:not([hidden]) .location-composer[data-location-immersive="true"]) .darken-workspace,
+  html:has(#darkenComposerPanel:not([hidden]) .location-composer[data-location-immersive="true"]) #darkenComposerPanel,
+  html:has(#darkenComposerPanel:not([hidden]) .location-composer[data-location-immersive="true"]) #darkenComposerPanel > .cruor-composer-shell.location-composer,
+  html:has(#darkenComposerPanel:not([hidden]) .location-composer[data-location-immersive="true"]) #darkenComposerPanel .cruor-composer-workspace.location-composer__workspace,
+  html:has(#darkenComposerPanel:not([hidden]) .location-composer[data-location-immersive="true"]) #darkenComposerPanel .location-composer__stage {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  html:has(#darkenComposerPanel:not([hidden]) .location-composer[data-location-immersive="true"]) .darken-workspace {
+    grid-template-rows: minmax(0, 1fr);
+    padding-top: 0;
+  }
+
+  html:has(#darkenComposerPanel:not([hidden]) .location-composer[data-location-immersive="true"]) #darkenComposerPanel {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+}

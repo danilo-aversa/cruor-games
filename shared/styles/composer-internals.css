@@ -5,6 +5,279 @@
  * the final source of truth for site-wide Composer styling.
  */
 
+/* Canonical Composer internal scrollbar.
+   This file is imported after feature styles, so legacy rail/list scrollbar
+   declarations cannot replace the shared Cruor treatment. */
+.cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface {
+  scrollbar-width: auto;
+  scrollbar-color: auto;
+}
+
+.cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface::-webkit-scrollbar-track {
+  border: 0;
+  background: var(--cruor-color-transparent);
+  box-shadow: none;
+}
+
+.cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface::-webkit-scrollbar-thumb {
+  border: 0;
+  border-radius: 0;
+  background: var(--cruor-gradient-linear-005-2d835da9);
+  box-shadow: var(--cruor-shadow-box-004);
+}
+
+.cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface::-webkit-scrollbar-thumb:hover {
+  background: var(--cruor-gradient-linear-008-6f99f992);
+}
+
+.cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface::-webkit-scrollbar-corner {
+  background: var(--cruor-color-transparent);
+}
+
+/* Shared contrast applies only to content inside Composer rails. */
+
+.cruor-composer-shell .cruor-composer-rail-card {
+  border: var(--cruor-composer-rail-card-border);
+  background: var(--cruor-composer-rail-card-background);
+  box-shadow: var(--cruor-composer-rail-card-shadow);
+}
+
+.cruor-composer-shell .cruor-composer-rail--left .cruor-composer-rail-card {
+  box-shadow:
+    inset 2px 0 0 var(--cruor-composer-sidebar-block-edge),
+    var(--cruor-composer-rail-card-shadow);
+}
+
+.cruor-composer-shell .cruor-composer-rail--right .cruor-composer-rail-card {
+  box-shadow:
+    inset -2px 0 0 var(--cruor-composer-sidebar-block-edge),
+    var(--cruor-composer-rail-card-shadow);
+}
+
+.cruor-composer-shell .cruor-composer-sidebar-block {
+  min-width: 0;
+  border: var(--cruor-composer-rail-card-border);
+  background: var(--cruor-composer-rail-card-background);
+  box-shadow: var(--cruor-composer-rail-card-shadow);
+}
+
+.cruor-composer-shell .cruor-composer-rail--left .cruor-composer-sidebar-block {
+  box-shadow:
+    inset 2px 0 0 var(--cruor-composer-sidebar-block-edge),
+    var(--cruor-composer-rail-card-shadow);
+}
+
+.cruor-composer-shell .cruor-composer-rail--right .cruor-composer-sidebar-block {
+  box-shadow:
+    inset -2px 0 0 var(--cruor-composer-sidebar-block-edge),
+    var(--cruor-composer-rail-card-shadow);
+}
+
+/* Shared collapsible sections for left Composer rails. */
+
+.cruor-composer-shell .cruor-composer-collapsible-section {
+  position: relative;
+  isolation: isolate;
+  gap: 0;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: var(--cruor-composer-section-header-hover-background);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease;
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section:has(> .cruor-composer-collapsible-section__trigger:is(:hover, :focus-visible)) {
+  border-color: var(--cruor-composer-section-header-hover-border);
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section:has(> .cruor-composer-collapsible-section__trigger:is(:hover, :focus-visible))::before {
+  opacity: 1;
+}
+
+.cruor-composer-shell .cruor-composer-rail--left .cruor-composer-collapsible-section:has(> .cruor-composer-collapsible-section__trigger:is(:hover, :focus-visible)) {
+  box-shadow:
+    inset 2px 0 0 var(--cruor-composer-section-header-hover-border),
+    var(--cruor-composer-rail-card-shadow);
+}
+
+.cruor-composer-shell .cruor-composer-rail--right .cruor-composer-collapsible-section:has(> .cruor-composer-collapsible-section__trigger:is(:hover, :focus-visible)) {
+  box-shadow:
+    inset -2px 0 0 var(--cruor-composer-section-header-hover-border),
+    var(--cruor-composer-rail-card-shadow);
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section:has(> .cruor-composer-collapsible-section__trigger:focus-visible) {
+  box-shadow:
+    inset 0 0 0 1px var(--cruor-composer-control-border-color-active),
+    var(--cruor-composer-rail-card-shadow);
+}
+
+.cruor-composer-shell .cruor-composer-rail--left .cruor-composer-collapsible-section:has(> .cruor-composer-collapsible-section__trigger:focus-visible) {
+  box-shadow:
+    inset 2px 0 0 var(--cruor-composer-section-header-hover-border),
+    inset 0 0 0 1px var(--cruor-composer-control-border-color-active),
+    var(--cruor-composer-rail-card-shadow);
+}
+
+.cruor-composer-shell .cruor-composer-rail--right .cruor-composer-collapsible-section:has(> .cruor-composer-collapsible-section__trigger:focus-visible) {
+  box-shadow:
+    inset -2px 0 0 var(--cruor-composer-section-header-hover-border),
+    inset 0 0 0 1px var(--cruor-composer-control-border-color-active),
+    var(--cruor-composer-rail-card-shadow);
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section__trigger {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: calc(100% + 12px);
+  min-width: 0;
+  min-height: 30px;
+  margin: -5px -6px 0;
+  border: 0;
+  border-bottom: 1px solid var(--cruor-composer-divider-color);
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  padding: 5px 6px 8px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: none;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    padding-bottom var(--cruor-composer-section-transition-duration) var(--cruor-composer-section-transition-easing);
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section__trigger:is(:hover, :focus-visible) {
+  color: var(--cruor-color-hex-fff0f2);
+  outline: none;
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section__trigger:focus-visible {
+  box-shadow: none;
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section__trigger > .cruor-composer-collapsible-section__chevron {
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  margin-right: 3px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  color: var(--cruor-composer-section-chevron-color);
+  transform: rotate(45deg);
+  transform-origin: center;
+  transition:
+    color 150ms ease,
+    transform var(--cruor-composer-section-transition-duration) var(--cruor-composer-section-transition-easing);
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section__trigger:is(:hover, :focus-visible) > .cruor-composer-collapsible-section__chevron {
+  color: var(--cruor-composer-section-chevron-color-active);
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section__region {
+  display: grid;
+  grid-template-rows: 1fr;
+  min-width: 0;
+  margin-top: 9px;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    grid-template-rows var(--cruor-composer-section-transition-duration) var(--cruor-composer-section-transition-easing),
+    margin-top var(--cruor-composer-section-transition-duration) var(--cruor-composer-section-transition-easing),
+    opacity 170ms ease,
+    visibility 0s linear 0s;
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section__body {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section.is-collapsed .cruor-composer-collapsible-section__trigger {
+  border-bottom-color: transparent;
+  padding-bottom: 5px;
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section.is-collapsed .cruor-composer-collapsible-section__trigger > .cruor-composer-collapsible-section__chevron {
+  transform: rotate(-45deg);
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section.is-collapsed .cruor-composer-collapsible-section__region {
+  grid-template-rows: 0fr;
+  margin-top: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    grid-template-rows var(--cruor-composer-section-transition-duration) var(--cruor-composer-section-transition-easing),
+    margin-top var(--cruor-composer-section-transition-duration) var(--cruor-composer-section-transition-easing),
+    opacity 140ms ease,
+    visibility 0s linear var(--cruor-composer-section-transition-duration);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cruor-composer-shell .cruor-composer-collapsible-section,
+  .cruor-composer-shell .cruor-composer-collapsible-section::before,
+  .cruor-composer-shell .cruor-composer-collapsible-section__trigger,
+  .cruor-composer-shell .cruor-composer-collapsible-section__chevron,
+  .cruor-composer-shell .cruor-composer-collapsible-section__region {
+    transition-duration: 0.01ms;
+  }
+}
+
+.cruor-composer-shell .cruor-composer-rail-card--hero {
+  background: var(--cruor-composer-rail-card-hero-background);
+}
+
+.cruor-composer-shell .cruor-composer-fact-row {
+  border: var(--cruor-composer-fact-row-border);
+  background: var(--cruor-composer-fact-row-background);
+}
+
+.cruor-composer-shell .component-navigator-modal__panel .component-navigator-modal__head {
+  border-bottom-color: var(--cruor-composer-divider-color);
+}
+
 /* Navigator headers and icon controls */
 
 .cruor-composer-shell .cruor-composer-navigator-head-actions {
@@ -70,8 +343,8 @@
 .cruor-composer-shell .component-navigator-modal__rail .cruor-composer-navigator-search-input {
   width: 100%;
   min-height: 36px;
-  border: 1px solid var(--cruor-color-milk-a080);
-  background: var(--cruor-surface-card);
+  border: var(--cruor-composer-control-border);
+  background: var(--cruor-composer-control-bg);
   color: var(--cruor-color-text-a880);
   padding-inline: 10px;
   font-size: var(--text-size-l);
@@ -85,8 +358,8 @@
 .cruor-composer-shell .component-navigator-modal__rail .cruor-composer-navigator-count {
   min-width: 38px;
   min-height: 36px;
-  border: 1px solid var(--cruor-color-milk-a080);
-  background: var(--cruor-surface-card);
+  border: var(--cruor-composer-control-border);
+  background: var(--cruor-composer-control-bg);
   color: var(--cruor-color-hex-d0a2aa);
   padding-inline: 9px;
   font-size: var(--text-size-m);
@@ -139,8 +412,8 @@
 
 .cruor-composer-shell .component-navigator-modal__panel .cruor-composer-component-list {
   gap: 5px;
-  border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-gradient-linear-060-e275339f), var(--cruor-surface-card);
+  border: 1px solid var(--cruor-composer-divider-color);
+  background: var(--cruor-gradient-linear-060-e275339f), var(--cruor-composer-inset-surface);
   padding: 6px;
   scrollbar-width: auto;
   scrollbar-color: auto;
@@ -150,7 +423,9 @@
   border: var(--cruor-composer-card-border);
   background: var(--cruor-composer-card-bg);
   color: var(--cruor-color-text-a660);
-  box-shadow: var(--cruor-composer-card-shadow);
+  box-shadow:
+    inset 2px 0 0 var(--cruor-composer-sidebar-block-edge),
+    var(--cruor-composer-card-shadow);
   opacity: 1;
   filter: none;
   transform: none;
@@ -173,7 +448,9 @@
 .cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-card:is(.slot-full, :has(.cruor-composer-component-action:disabled)):hover {
   border: var(--cruor-composer-card-border);
   background: var(--cruor-composer-card-bg);
-  box-shadow: var(--cruor-composer-card-shadow);
+  box-shadow:
+    inset 2px 0 0 var(--cruor-composer-sidebar-block-edge),
+    var(--cruor-composer-card-shadow);
 }
 
 .cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-action {
@@ -230,16 +507,22 @@
   text-transform: uppercase;
 }
 
-.cruor-composer-shell .cruor-composer-compatibility-badge:is(.soft, .avoid) {
-  border-color: var(--cruor-color-blood-glow-a540);
-  background: var(--cruor-color-blood-strong-a300);
-  color: var(--cruor-color-hex-f0d7dc);
+.cruor-composer-shell .cruor-composer-compatibility-badge.soft {
+  border-color: var(--cruor-composer-compatibility-soft-border);
+  background: var(--cruor-composer-compatibility-soft-background);
+  color: var(--cruor-composer-compatibility-soft-text);
+}
+
+.cruor-composer-shell .cruor-composer-compatibility-badge.avoid {
+  border-color: var(--cruor-composer-compatibility-avoid-border);
+  background: var(--cruor-composer-compatibility-avoid-background);
+  color: var(--cruor-composer-compatibility-avoid-text);
 }
 
 .cruor-composer-shell .cruor-composer-compatibility-badge:is(.incompatible, .missing) {
-  border-color: var(--cruor-color-rose-a640);
-  background: var(--cruor-color-blood-bright-a320);
-  color: var(--cruor-color-hex-f0b9c2);
+  border-color: var(--cruor-composer-compatibility-error-border);
+  background: var(--cruor-composer-compatibility-error-background);
+  color: var(--cruor-composer-compatibility-error-text);
 }
 
 /* Details popover and metadata */
@@ -268,7 +551,7 @@
 
 .cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-details-panel {
   border: 1px solid var(--cruor-color-blood-glow-a420);
-  background: var(--cruor-gradient-linear-003-33222bdf), var(--cruor-gradient-radial-004-b311c202), var(--cruor-color-r6-g5-b6-a990);
+  background: var(--cruor-composer-sidebar-inset-background);
   padding: 10px;
   box-shadow: var(--cruor-shadow-box-024);
   backdrop-filter: var(--cruor-filter-glass-16-122);

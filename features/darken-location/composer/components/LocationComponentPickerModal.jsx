@@ -6,6 +6,7 @@ import {
   getLocationRoomSlotMatchProfile,
   scoreComponentForLocationRoomSlot,
 } from "../model/location-room-slot-matching.js";
+import { evaluateDarkPlacesRoomCandidate } from "../../room-constraint-evaluation.js";
 
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -448,8 +449,47 @@ function getLocationComponentImpact(component, decision) {
   };
 }
 
-function getLocationCompatibility(component, impact, decision, selected) {
+function getLocationCompatibility(component, impact, decision, selected, roomEvaluation, regionScoped) {
   if (selected) return null;
+
+  if (regionScoped && roomEvaluation) {
+    if (roomEvaluation.replaceable) {
+      return {
+        kind: "soft",
+        label: "Replace",
+        message: roomEvaluation.reason || "Assigning this component requires replacing a conflicting room component.",
+      };
+    }
+    if (roomEvaluation.status === "unsupported") {
+      return {
+        kind: "incompatible",
+        label: "Unsupported",
+        message: roomEvaluation.reason || "The current map engine cannot realize this room requirement.",
+      };
+    }
+    if (roomEvaluation.status === "incompatible") {
+      return {
+        kind: "incompatible",
+        label: "Incompatible",
+        message: roomEvaluation.reason || "This component conflicts with the current room requirements.",
+      };
+    }
+    if (roomEvaluation.status === "warning") {
+      return {
+        kind: "soft",
+        label: "Warning",
+        message: roomEvaluation.reason || "This component can be assigned with a room constraint warning.",
+      };
+    }
+    if (roomEvaluation.status === "transforms-room") {
+      return {
+        kind: "transforms-room",
+        label: "Transforms Room",
+        message: roomEvaluation.changeSummaries.join(" · ") || "This component changes the room design.",
+      };
+    }
+  }
+
   if (impact?.pressureDelta >= 4 || impact?.complexityDelta >= 4 || component?.location?.gmFacingOnly) {
     return {
       kind: "soft",
@@ -462,6 +502,13 @@ function getLocationCompatibility(component, impact, decision, selected) {
       kind: "soft",
       label: "Soft Warning",
       message: "Compatible, but not one of the strongest matches for this slot.",
+    };
+  }
+  if (regionScoped && roomEvaluation?.status === "compatible") {
+    return {
+      kind: "compatible",
+      label: "Compatible",
+      message: "No room geometry changes are required.",
     };
   }
   return null;
@@ -520,16 +567,31 @@ function LocationComponentCard({
   isSlotFull,
   onAddComponent,
   onRemoveComponent,
+  onReplaceComponent,
   regionScoped,
+  roomAssignedComponents = [],
+  roomEvaluation,
   selected,
   slot,
+  slotAssignedComponents = [],
   tier = "matching",
 }) {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const impact = getLocationComponentImpact(component, decision);
-  const compatibility = getLocationCompatibility(component, impact, decision, selected);
-  const replaceAction = isSlotFull && !selected;
-  const actionLabel = selected ? "Added" : replaceAction ? "Replace" : "Add";
+  const compatibility = getLocationCompatibility(component, impact, decision, selected, roomEvaluation, regionScoped);
+  const constraintReplaceAction = Boolean(roomEvaluation?.replaceable && !selected);
+  const slotReplaceAction = Boolean(isSlotFull && !selected);
+  const replaceAction = constraintReplaceAction || slotReplaceAction;
+  const actionBlocked = Boolean(roomEvaluation?.blocking && !selected);
+  const replacementComponentIds = [...new Set([
+    ...(constraintReplaceAction ? roomEvaluation.replacementComponentIds || [] : []),
+    ...(slotReplaceAction ? slotAssignedComponents.map((item) => item.id).filter(Boolean) : []),
+  ])];
+  const replacementTitles = [...new Set(replacementComponentIds.map((componentId) => {
+    const assigned = [...roomAssignedComponents, ...slotAssignedComponents].find((item) => item.id === componentId);
+    return assigned ? getComponentTitle(assigned) : componentId;
+  }))];
+  const actionLabel = selected ? "Remove" : replaceAction ? "Replace" : "Add";
   const ActionIcon = selected ? X : replaceAction ? Repeat : Plus;
   const decisionTier = selected ? "assigned" : "risky";
   const mechanicText = component?.mechanics || component?.rules || component?.location?.rules || "";
@@ -571,10 +633,22 @@ function LocationComponentCard({
       <button
         className="component-toggle-btn cruor-composer-component-action"
         type="button"
-        aria-label={selected ? `${getComponentTitle(component)} already assigned` : `${actionLabel} ${getComponentTitle(component)}`}
+        aria-label={`${actionLabel} ${getComponentTitle(component)}`}
         data-testid={selected ? "dark-places-component-remove" : "dark-places-component-add"}
-        disabled={selected}
-        onClick={() => (selected ? onRemoveComponent?.(component.id) : onAddComponent?.(component))}
+        disabled={actionBlocked}
+        title={actionBlocked ? compatibility?.message : undefined}
+        onClick={() => {
+          if (actionBlocked) return;
+          if (selected) {
+            onRemoveComponent?.(component.id);
+            return;
+          }
+          if (replaceAction) {
+            onReplaceComponent?.(component, replacementComponentIds);
+            return;
+          }
+          onAddComponent?.(component);
+        }}
       >
         <ActionIcon aria-hidden="true" />
         <span>{actionLabel}</span>
@@ -589,7 +663,21 @@ function LocationComponentCard({
 
       {getComponentSummary(component) ? <p className="summary cruor-composer-component-summary">{getComponentSummary(component)}</p> : null}
       {mapInfluencePreviewText ? <p className="compatibility-note cruor-composer-compatibility-note" data-map-influence-preview="true">{mapInfluencePreviewText}</p> : null}
-      {replaceAction ? <p className="compatibility-note cruor-composer-compatibility-note">This slot is full. Remove a component first.</p> : null}
+      {roomEvaluation?.changeSummaries?.length ? (
+        <p className="compatibility-note cruor-composer-compatibility-note" data-room-transform-preview="true">
+          Will change this room: {roomEvaluation.changeSummaries.join(" · ")}
+        </p>
+      ) : null}
+      {compatibility?.message && !roomEvaluation?.changeSummaries?.length ? (
+        <p className="compatibility-note cruor-composer-compatibility-note" data-room-compatibility-reason="true">
+          {compatibility.message}
+        </p>
+      ) : null}
+      {replaceAction ? (
+        <p className="compatibility-note cruor-composer-compatibility-note" data-room-replacement-preview="true">
+          Will replace {replacementTitles.length ? replacementTitles.join(", ") : "the current slot assignment"}.
+        </p>
+      ) : null}
 
       <div
         className="component-details cruor-composer-component-details"
@@ -723,9 +811,12 @@ export function LocationComponentPickerModal({
   components = [],
   generatedRoom,
   isSlotFull,
+  manualOverrides = null,
   onAddComponent,
   onClose,
   onRemoveComponent,
+  onReplaceComponent,
+  roomAssignedComponents = [],
   open,
   selectedComponents = [],
   slot,
@@ -842,6 +933,20 @@ export function LocationComponentPickerModal({
     () => getStateDecisionProfile({ activeRegion, generatedRoom, selectedComponents, slot, state }),
     [activeRegion, generatedRoom, selectedComponents, slot, state],
   );
+
+  const roomEvaluations = useMemo(() => {
+    if (!regionScoped) return new Map();
+    return new Map(visibleComponents.map((component) => [
+      component.id,
+      evaluateDarkPlacesRoomCandidate({
+        activeRegion,
+        generatedRoom,
+        assignedComponents: roomAssignedComponents,
+        candidateComponent: component,
+        manualOverrides,
+      }),
+    ]));
+  }, [activeRegion, generatedRoom, manualOverrides, regionScoped, roomAssignedComponents, visibleComponents]);
 
   const rankedDecisions = useMemo(() => {
     return visibleComponents
@@ -981,9 +1086,13 @@ export function LocationComponentPickerModal({
         key={itemKey || getComponentKey(component)}
         onAddComponent={onAddComponent}
         onRemoveComponent={onRemoveComponent}
+        onReplaceComponent={onReplaceComponent}
         regionScoped={regionScoped}
+        roomAssignedComponents={roomAssignedComponents}
+        roomEvaluation={roomEvaluations.get(component.id) || null}
         selected={selected}
         slot={slot}
+        slotAssignedComponents={assignedComponents}
         tier={tier}
       />
     );

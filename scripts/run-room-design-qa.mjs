@@ -39,10 +39,10 @@ function createPrimitiveConfig() {
     seed: "room-design-qa-primitives",
     context: "Crypt",
     biome: "Crypt",
-    roomCount: 8,
+    roomCount: 12,
     gridSize: 20,
-    mapWidth: 1400,
-    mapHeight: 900,
+    mapWidth: 1800,
+    mapHeight: 1000,
     contextGraphAdapterMode: "safe",
     regions: [
       {
@@ -130,8 +130,52 @@ function createPrimitiveConfig() {
         size: "Medium",
         preferredShape: "rect",
         roomDesign: {
-          shape: { kind: "hall", modifiers: ["side-alcoves", "secret-recess", "collapsed-edge"] },
+          shape: { kind: "gallery", modifiers: ["side-alcoves", "secret-recess", "collapsed-edge"] },
           size: { minWidthCells: 8, aspectRatio: "wide" },
+        },
+      },
+      {
+        id: "room-design-square",
+        name: "Square Guard Room",
+        role: "Side Room",
+        size: "Small",
+        preferredShape: "rect",
+        roomDesign: {
+          shape: { kind: "square" },
+          size: { minWidthCells: 5 },
+        },
+      },
+      {
+        id: "room-design-t-shape",
+        name: "T-Shaped Junction",
+        role: "Connector",
+        size: "Large",
+        preferredShape: "rect",
+        roomDesign: {
+          shape: { kind: "t-shape" },
+          size: { minWidthCells: 7, minHeightCells: 6 },
+        },
+      },
+      {
+        id: "room-design-cross",
+        name: "Cruciform Vault",
+        role: "Setpiece Room",
+        size: "Large",
+        preferredShape: "rect",
+        roomDesign: {
+          shape: { kind: "cross" },
+          size: { minWidthCells: 7, minHeightCells: 7 },
+        },
+      },
+      {
+        id: "room-design-niche",
+        name: "Reliquary Niche",
+        role: "Secret Room",
+        size: "Small",
+        preferredShape: "rect",
+        roomDesign: {
+          shape: { kind: "niche" },
+          size: { minWidthCells: 4, minHeightCells: 4 },
         },
       },
     ],
@@ -142,12 +186,16 @@ function validatePrimitiveMap(map, issues) {
   const expectations = [
     { id: "room-design-circle", shape: "circle", minW: 7, minH: 7, requiredProp: "pit" },
     { id: "room-design-l-shape", shape: "l-shape", minW: 6, minH: 5 },
-    { id: "room-design-irregular", shape: "cave", minArea: 32 },
+    { id: "room-design-irregular", shape: "irregular", minArea: 32 },
     { id: "room-design-hall", shape: "hall", minW: 9 },
     { id: "room-design-shaft", shape: "shaft", requiredProp: "altar" },
     { id: "room-design-rect", shape: "rect", minArea: 16 },
     { id: "room-design-modified-chamber", shape: "rect", minW: 7, minH: 6, minArea: 34, modifierProps: ["central-void", "pillared", "partitioned", "chamfered-corners"] },
-    { id: "room-design-recess-gallery", shape: "hall", minW: 8, modifierProps: ["side-alcoves", "secret-recess", "collapsed-edge"] },
+    { id: "room-design-recess-gallery", shape: "gallery", minW: 8, modifierProps: ["side-alcoves", "secret-recess", "collapsed-edge"] },
+    { id: "room-design-square", shape: "square", minW: 5, minH: 5, equalDimensions: true },
+    { id: "room-design-t-shape", shape: "t-shape", minW: 7, minH: 6 },
+    { id: "room-design-cross", shape: "cross", minW: 7, minH: 7 },
+    { id: "room-design-niche", shape: "niche", minW: 4, minH: 4 },
   ];
 
   expectations.forEach((expected) => {
@@ -167,6 +215,9 @@ function validatePrimitiveMap(map, issues) {
     }
     if (expected.minH && region.cellRect.h < expected.minH) {
       issues.push(createIssue("error", "primitive", "min-height", `${expected.id} height ${region.cellRect.h} is below ${expected.minH}.`));
+    }
+    if (expected.equalDimensions && region.cellRect.w !== region.cellRect.h) {
+      issues.push(createIssue("error", "primitive", "equal-dimensions", `${expected.id} expected equal dimensions, got ${region.cellRect.w}x${region.cellRect.h}.`));
     }
     if (expected.minArea && area(region) < expected.minArea) {
       issues.push(createIssue("error", "primitive", "min-area", `${expected.id} area ${area(region)} is below ${expected.minArea}.`));
@@ -233,6 +284,111 @@ async function validateBridge(issues) {
   }
 }
 
+async function validateMultiComponentBridge(issues) {
+  const selectedComponents = [
+    {
+      id: "qa-circle-pit",
+      title: "QA Circle Pit",
+      location: {
+        roomDesign: {
+          shape: { kind: "circle", modifiers: ["central-void"] },
+          size: { minWidthCells: 7, minAreaCells: 30 },
+          props: { required: [{ kind: "pit", placement: "center" }] },
+          topology: { branchBias: "terminal" },
+        },
+      },
+    },
+    {
+      id: "qa-pillared-altar",
+      title: "QA Pillared Altar",
+      location: {
+        roomDesign: {
+          shape: { kind: "circle", modifiers: ["pillared"] },
+          size: { minHeightCells: 6 },
+          props: { required: [{ kind: "altar", placement: "center" }] },
+          topology: { secret: true },
+        },
+      },
+    },
+  ];
+  const snapshot = {
+    seed: "room-design-multi-component-bridge",
+    context: "Crypt",
+    slotAssignments: {
+      hazard: [{ componentId: "qa-circle-pit", slotId: "hazard", regionId: "qa-room" }],
+      clue: [{ componentId: "qa-pillared-altar", slotId: "clue", regionId: "qa-room" }],
+    },
+    selectedComponents,
+    locationRegions: [
+      {
+        id: "qa-room",
+        name: "QA Multi-component Room",
+        role: "Clue Room",
+        size: "Medium",
+        shape: "rect",
+      },
+    ],
+  };
+  const mapRequest = createMapRequestFromDarkenLocationState(snapshot);
+  const requiredRegion = mapRequest.requiredRegions?.[0];
+  const resolution = requiredRegion?.roomConstraintResolution;
+  const design = requiredRegion?.effectiveRoomDesign;
+
+  if (resolution?.status !== "transforms-room" || resolution?.conflicts?.length) {
+    issues.push(createIssue("error", "bridge", "multi-component-resolution", "Compatible component roomDesign contributions did not resolve cleanly.", { resolution }));
+    return;
+  }
+  if (
+    design?.shape?.kind !== "circle" ||
+    !design?.shape?.modifiers?.includes("central-void") ||
+    !design?.shape?.modifiers?.includes("pillared") ||
+    design?.size?.minWidthCells !== 7 ||
+    design?.size?.minHeightCells !== 6 ||
+    design?.size?.minAreaCells !== 30 ||
+    design?.topology?.branchBias !== "terminal" ||
+    design?.topology?.secret !== true
+  ) {
+    issues.push(createIssue("error", "bridge", "multi-component-room-design", "Multiple component roomDesign fields were not preserved in the effective design.", { design }));
+    return;
+  }
+  const requiredPropKinds = new Set((design?.props?.required || []).map((prop) => prop.kind));
+  if (!requiredPropKinds.has("pit") || !requiredPropKinds.has("altar")) {
+    issues.push(createIssue("error", "bridge", "multi-component-props", "Multiple component required props were not preserved.", { design }));
+    return;
+  }
+  const config = createConfigFromNormalizedMapRequest(mapRequest);
+  const map = generateMap(config);
+  const generatedRegion = findRegion(map, config.regions?.[0]?.id);
+  if (generatedRegion?.shape !== "circle") {
+    issues.push(createIssue("error", "bridge", "multi-component-generated-shape", `Resolved multi-component room expected circle, got ${generatedRegion?.shape || "missing"}.`, { generatedRegion }));
+    return;
+  }
+  for (const kind of ["pit", "altar"]) {
+    const prop = map.props.find((item) => item.regionId === generatedRegion.id && item.kind === kind && item.roomDesignRequired);
+    if (!prop) {
+      issues.push(createIssue("error", "bridge", "multi-component-generated-prop", `Resolved multi-component room is missing required prop ${kind}.`, { props: map.props.filter((item) => item.regionId === generatedRegion.id) }));
+    }
+  }
+
+  const conflictRequest = createMapRequestFromDarkenLocationState({
+    ...snapshot,
+    selectedComponents: [
+      selectedComponents[0],
+      {
+        ...selectedComponents[1],
+        location: { roomDesign: { shape: { kind: "l-shape" } } },
+      },
+    ],
+  });
+  const conflictResolution = conflictRequest.requiredRegions?.[0]?.roomConstraintResolution;
+  if (
+    conflictResolution?.status !== "incompatible" ||
+    !conflictResolution?.conflicts?.some((conflict) => conflict.code === "ROOM_SHAPE_REQUIRED_CONFLICT")
+  ) {
+    issues.push(createIssue("error", "bridge", "multi-component-conflict-report", "Conflicting hard component shapes did not produce a structured blocking report.", { conflictResolution }));
+  }
+}
+
 function validateNormalizer(issues) {
   const normalized = normalizeRoomDesign({
     shape: { kind: "circular", modifiers: ["notched", "central-pit", "pillars"] },
@@ -259,6 +415,7 @@ async function main() {
   const map = generateMap(createPrimitiveConfig());
   validatePrimitiveMap(map, issues);
   await validateBridge(issues);
+  await validateMultiComponentBridge(issues);
 
   fs.mkdirSync(DIST_DIR, { recursive: true });
   const summary = summarizeIssues(issues);

@@ -10,6 +10,7 @@ The test area includes `tests/e2e/`, active `.test.*` files under configured inc
 - Vitest tests included by `vitest.config.js`: `app/**/*.test`, `features/**/*.test`, and `shared/**/*.test`.
 - Circle connector diagnostics through `scripts/vitest.circle-connectors.config.mjs`.
 - Script-backed QA for content, maps, Monster Composer, room design, and assignments.
+- Focused Dungeon Brief room-constraint tests cover multi-component handoff, blocking conflict reports, stale-report invalidation, required map props, and legacy Darken adapter metadata.
 
 ## Legacy Coverage
 

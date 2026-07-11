@@ -29,7 +29,7 @@ const ROOM_DESIGN_CASES = Object.freeze([
     id: "square-basic",
     title: "Square Room",
     group: "Base Shapes",
-    summary: "Rect engine shape constrained toward a compact square footprint.",
+    summary: "Dedicated square footprint with equal width and height.",
     role: "Side Room",
     size: "Medium",
     roomDesign: {
@@ -105,7 +105,7 @@ const ROOM_DESIGN_CASES = Object.freeze([
     id: "gallery-alcoves",
     title: "Gallery + Side Alcoves",
     group: "Linear Shapes",
-    summary: "Gallery compiles to the hall primitive and adds side-alcove modifier props.",
+    summary: "Dedicated long gallery footprint with alternating wall bays and side alcoves.",
     role: "Connector",
     size: "Medium",
     roomDesign: {
@@ -118,7 +118,7 @@ const ROOM_DESIGN_CASES = Object.freeze([
     id: "niche-reliquary",
     title: "Niche + Reliquary",
     group: "Small Rooms",
-    summary: "Niche compiles to alcove and uses a required reliquary/shrine prop.",
+    summary: "Dedicated recessed niche footprint with a narrow entrance and reliquary prop.",
     role: "Clue Room",
     size: "Small",
     roomDesign: {
@@ -127,6 +127,56 @@ const ROOM_DESIGN_CASES = Object.freeze([
       props: { required: [{ kind: "reliquary", placement: "center" }] },
     },
     expectedRequiredProps: ["altar"],
+  },
+  {
+    id: "t-shape-junction",
+    title: "T-Shaped Junction",
+    group: "Composite Shapes",
+    summary: "True T-shaped footprint with a full cap and centered stem.",
+    role: "Connector",
+    size: "Large",
+    roomDesign: {
+      shape: { kind: "t-shape" },
+      size: { minWidthCells: 7, minHeightCells: 7, minAreaCells: 28 },
+    },
+  },
+  {
+    id: "cross-sanctum",
+    title: "Cross-Shaped Sanctum",
+    group: "Composite Shapes",
+    summary: "True cross footprint with four distinct arms around a central core.",
+    role: "Setpiece Room",
+    size: "Large",
+    roomDesign: {
+      shape: { kind: "cross" },
+      size: { minWidthCells: 7, minHeightCells: 7, minAreaCells: 30 },
+    },
+  },
+  {
+    id: "apse-shrine",
+    title: "Apse Shrine",
+    group: "Special Shapes",
+    summary: "Dedicated apse footprint with a tapered sacred end.",
+    role: "Clue Room",
+    size: "Medium",
+    roomDesign: {
+      shape: { kind: "apse" },
+      size: { minWidthCells: 7, minHeightCells: 6, minAreaCells: 24 },
+      props: { required: [{ kind: "altar", placement: "far-wall" }] },
+    },
+    expectedRequiredProps: ["altar"],
+  },
+  {
+    id: "ritual-octagon",
+    title: "Ritual Chamber",
+    group: "Special Shapes",
+    summary: "Dedicated square-constrained ritual footprint with clipped corners.",
+    role: "Setpiece Room",
+    size: "Large",
+    roomDesign: {
+      shape: { kind: "ritual" },
+      size: { minDiameterCells: 7, aspectRatio: "square", minAreaCells: 36 },
+    },
   },
   {
     id: "alcove-altar",
@@ -160,7 +210,7 @@ const ROOM_DESIGN_CASES = Object.freeze([
     id: "irregular-vault",
     title: "Irregular Room",
     group: "Organic / Broken Shapes",
-    summary: "Irregular compiles to the cave/blob mask primitive.",
+    summary: "Structured irregular footprint assembled from connected orthogonal wings.",
     role: "Hazard Room",
     size: "Large",
     roomDesign: {

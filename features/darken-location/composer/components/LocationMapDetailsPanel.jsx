@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { ComposerRail } from "../../../../components/ui/composer-rail.jsx";
 import { LOCATION_SLOT_SCOPE_MAP } from "../model/location-composer-state.js";
 import {
   getAssignedComponentsForSlotScope,
@@ -123,7 +122,7 @@ function MapDebugRecorderPanel({
 
   return (
     <section
-      className="map-debug-recorder cruor-composer-rail-card location-frame-info-card"
+      className="map-debug-recorder location-frame-info-card"
       data-debug-recorder-tools="composer-coordinates-svg-v1"
       aria-label="Dark Places debug recorder"
     >
@@ -334,7 +333,7 @@ function getMapSlotIconClass(slotId) {
 
 function LocationFrameInfoRow({ label, value }) {
   return (
-    <span className="cruor-composer-fact-row location-frame-info-row">
+    <span className="location-frame-info-row">
       <small>{label}</small>
       <strong>{value || "—"}</strong>
     </span>
@@ -416,7 +415,7 @@ export function LocationMapWideDetailsBlock({
   }
 
   return (
-    <div className="location-map-wide-details-block" aria-label="Map-wide details">
+    <div className="location-map-wide-details-block cruor-scroll-surface" aria-label="Map-wide details">
       <div className="location-map-details-slot-stack">
         {mapSlots.map((slot) => {
           const assigned = getAssignedComponentsForSlotScope(state, slot.id, LOCATION_SLOT_SCOPE_MAP);
@@ -782,15 +781,11 @@ export function LocationMapDetailsPanel({
   }
 
   return (
-    <ComposerRail
-      side={side}
-      variant="info"
-      surface
-      scrollable
-      className={`location-composer__rail ${sideClass} location-map-details-rail location-frame-info`}
+    <aside
+      className={`cruor-composer-rail location-composer__rail ${sideClass} location-map-details-rail location-frame-info`}
       aria-label="Current Place Frame"
     >
-      <section className="cruor-composer-rail-card cruor-composer-rail-card--hero location-frame-info-card location-frame-info-card--hero">
+      <section className="location-frame-info-card location-frame-info-card--hero">
         <span>Current Frame</span>
         <label className="location-frame-name-editor location-map-details-name-editor">
           <span className="sr-only">Location name</span>
@@ -804,8 +799,8 @@ export function LocationMapDetailsPanel({
         <em>{sourceLabel} · {horrorLabel}</em>
       </section>
 
-      <section className="cruor-composer-rail-card location-frame-info-card" aria-label="Place frame summary">
-        <div className="cruor-composer-fact-grid location-frame-info-grid">
+      <section className="location-frame-info-card" aria-label="Place frame summary">
+        <div className="location-frame-info-grid">
           <LocationFrameInfoRow label="Context" value={frame.context || state.context || "Context"} />
           <LocationFrameInfoRow label="Use" value={frame.use || "Ritual reveal"} />
           <LocationFrameInfoRow label="Route" value={frame.routePressure} />
@@ -816,7 +811,7 @@ export function LocationMapDetailsPanel({
         </div>
       </section>
 
-      <section className="cruor-composer-rail-card location-frame-info-card" aria-label="Location readiness">
+      <section className="location-frame-info-card" aria-label="Location readiness">
         <LocationFrameMeter
           label="Ready Rooms"
           value={readyRooms}
@@ -845,6 +840,6 @@ export function LocationMapDetailsPanel({
           onDownloadTxt={() => downloadDebugEntries("txt")}
         />
       ) : null}
-    </ComposerRail>
+    </aside>
   );
 }

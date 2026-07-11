@@ -77,4 +77,27 @@ test.describe("Dark Places user pipeline", () => {
     await expect(page.getByTestId("dark-places-room-navigator")).toBeVisible();
     await expect(page.getByTestId("dark-places-room-nav-item").first()).toBeVisible();
   });
+
+  test("immersive mode keeps the toolbar and editor while hiding peripheral UI", async ({ page }) => {
+    await openDarkPlaces(page);
+    await generateDarkPlace(page);
+
+    const immersiveToggle = page.getByTestId("dark-places-immersive-mode");
+    await expect(immersiveToggle).toBeVisible();
+    await expect(immersiveToggle).toHaveAttribute("aria-pressed", "false");
+
+    await immersiveToggle.click();
+
+    await expect(immersiveToggle).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator(".site-topbar")).toBeHidden();
+    await expect(page.getByTestId("dark-places-map-stage")).toBeVisible();
+    await expect(page.locator(".location-composer__rail")).toHaveCount(0);
+    await expect(page.locator(".location-stage-progress-dock")).toHaveCount(0);
+
+    await immersiveToggle.click();
+
+    await expect(immersiveToggle).toHaveAttribute("aria-pressed", "false");
+    await expect(page.locator(".site-topbar")).toBeVisible();
+    await expect(page.locator(".location-composer__rail").first()).toBeVisible();
+  });
 });

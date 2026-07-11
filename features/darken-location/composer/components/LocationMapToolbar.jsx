@@ -5,11 +5,13 @@ function cx(...classes) {
 }
 
 function LocationMapToolbarButton({
+  active = false,
   children,
   disabled = false,
   icon = "",
   onClick,
   title = "",
+  toggle = false,
   variant = "secondary",
   testId = "",
 }) {
@@ -22,10 +24,12 @@ function LocationMapToolbarButton({
         "location-icon-toggle-button",
         "cruor-frame-icon-toggle",
         `location-map-toolbar__button--${variant}`,
+        active && "is-active",
       )}
       type="button"
       disabled={disabled}
       onClick={onClick}
+      aria-pressed={toggle ? active : undefined}
       aria-label={label}
       title={undefined}
       data-key="tooltip-generic"
@@ -161,11 +165,27 @@ export function LocationMapToolbar({
   onSelectNextRoom,
   onSelectPreviousRoom,
   onSelectRoom,
+  onToggleImmersiveMode,
   roomEntries = [],
+  immersiveMode = false,
 }) {
   const mode = builderMode === "map" ? "theme" : builderMode;
   const hasMap = Boolean(generatedMapPreview);
   const roomName = activeRegion?.name || "Selected Room";
+  const immersiveControl = (
+    <div className="location-map-toolbar__group location-map-toolbar__group--view">
+      <LocationMapToolbarButton
+        active={immersiveMode}
+        icon={immersiveMode ? "fa-compress" : "fa-expand"}
+        onClick={onToggleImmersiveMode}
+        title={immersiveMode ? "Exit immersive mode" : "Enter immersive mode"}
+        testId="dark-places-immersive-mode"
+        toggle
+      >
+        Immersive Mode
+      </LocationMapToolbarButton>
+    </div>
+  );
 
   if (mode === "export") {
     return (
@@ -173,6 +193,7 @@ export function LocationMapToolbar({
         <div className="location-map-toolbar__group location-map-toolbar__group--actions">
           <LocationMapInlineEditorToolsHost />
         </div>
+        {immersiveControl}
       </nav>
     );
   }
@@ -209,6 +230,7 @@ export function LocationMapToolbar({
         <div className="location-map-toolbar__group location-map-toolbar__group--actions">
           <LocationMapInlineEditorToolsHost />
         </div>
+        {immersiveControl}
       </nav>
     );
   }
@@ -230,6 +252,7 @@ export function LocationMapToolbar({
         </LocationMapToolbarButton>
         <LocationMapInlineEditorToolsHost />
       </div>
+      {immersiveControl}
     </nav>
   );
 }

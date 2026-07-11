@@ -11444,3 +11444,469 @@ _Nessun file aggiunto._
 - `~features/monster-composer/components/monster-composer.navigator.jsx`
 - `~features/monster-composer/monster-composer.page.jsx`
 
+
+---
+
+## 2026-07-11 16:17:55
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-room-metadata-engine-pass1-shared-contracts-20260711.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-room-metadata-engine-pass1-shared-contracts-20260711.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 5
+
+- `+shared/content/contracts/room-archetypes.js`
+- `+shared/content/contracts/room-capabilities.js`
+- `+shared/content/contracts/room-compatibility.js`
+- `+shared/content/contracts/room-contracts.test.js`
+- `+shared/content/contracts/room-design.js`
+
+**File sovrascritti:** 10
+
+- `~docs/repository-map/areas/inspiration-studio.md`
+- `~docs/repository-map/areas/map-generator.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/dependency-graph.md`
+- `~docs/repository-map/state-and-data-flow.md`
+- `~features/darken-location/map-generator/map-generator.profile.js`
+- `~features/darken-location/map-generator/map-generator.room-design.js`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/model/studio-validation.js`
+- `~shared/content/content.index.js`
+
+
+---
+
+## 2026-07-11 17:09:44
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-room-metadata-engine-pass2-resolver-20260711.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-room-metadata-engine-pass2-resolver-20260711.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+shared/content/contracts/room-constraint-resolver.js`
+- `+shared/content/contracts/room-constraint-resolver.test.js`
+
+**File sovrascritti:** 6
+
+- `~docs/repository-map/architecture.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/dependency-graph.md`
+- `~docs/repository-map/state-and-data-flow.md`
+- `~shared/content/content.index.js`
+- `~shared/content/contracts/room-compatibility.js`
+
+
+---
+
+## 2026-07-11 17:13:39
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-composer-sidebar-contrast-patch.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-composer-sidebar-contrast-patch.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~components/ui/composer-rail.jsx`
+- `~shared/styles/composer-internals.css`
+- `~shared/styles/composer-system.css`
+
+
+---
+
+## 2026-07-11 17:18:01
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-composer-transparent-rail-base-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-composer-transparent-rail-base-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~components/ui/composer-rail.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~shared/styles/composer-internals.css`
+- `~shared/styles/composer-system.css`
+
+
+---
+
+## 2026-07-11 17:32:54
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-room-metadata-engine-pass3-handoff-20260711.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-room-metadata-engine-pass3-handoff-20260711.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+features/darken-location/dungeon/dungeon-brief-room-constraints.test.js`
+- `+features/darken-location/dungeon/dungeon-room-constraints.js`
+
+**File sovrascritti:** 11
+
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/areas/tests-and-qa.md`
+- `~docs/repository-map/dependency-graph.md`
+- `~docs/repository-map/runtime-flows.md`
+- `~docs/repository-map/state-and-data-flow.md`
+- `~docs/repository-map/tests-and-qa.md`
+- `~features/darken-location/dungeon/dungeon-brief-generator.js`
+- `~features/darken-location/dungeon/dungeon-brief.js`
+- `~scripts/run-room-design-qa.mjs`
+- `~shared/content/adapters/darken-components.js`
+
+
+---
+
+## 2026-07-11 17:33:01
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-composer-sidebar-blood-tint-trial.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-composer-sidebar-blood-tint-trial.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~shared/styles/composer-internals.css`
+- `~shared/styles/composer-system.css`
+
+
+---
+
+## 2026-07-11 18:19:50
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-room-metadata-engine-pass4-picker-compatibility-20260711.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-room-metadata-engine-pass4-picker-compatibility-20260711.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+features/darken-location/composer/components/LocationComponentPickerModal.test.jsx`
+- `+features/darken-location/room-constraint-evaluation.js`
+- `+features/darken-location/room-constraint-evaluation.test.js`
+
+**File sovrascritti:** 8
+
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/dependency-graph.md`
+- `~docs/repository-map/runtime-flows.md`
+- `~docs/repository-map/state-and-data-flow.md`
+- `~docs/repository-map/tests-and-qa.md`
+- `~features/darken-location/composer/components/LocationComponentPickerModal.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+
+
+---
+
+## 2026-07-11 18:22:14
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-composer-sidebar-blood-tint-mirrored.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-composer-sidebar-blood-tint-mirrored.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/monster-composer/components/monster-composer.anatomy.jsx`
+- `~shared/styles/composer-internals.css`
+
+
+---
+
+## 2026-07-11 19:29:08
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-room-metadata-engine-pass5-atomic-transactions-20260711.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-room-metadata-engine-pass5-atomic-transactions-20260711.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+features/darken-location/composer/model/location-room-assignment-transaction.js`
+- `+features/darken-location/composer/model/location-room-assignment-transaction.test.js`
+- `+features/darken-location/composer/model/location-room-constraint-state.js`
+
+**File sovrascritti:** 13
+
+- `~docs/repository-map/dependency-graph.md`
+- `~docs/repository-map/runtime-flows.md`
+- `~docs/repository-map/state-and-data-flow.md`
+- `~docs/repository-map/tests-and-qa.md`
+- `~features/darken-location/composer/components/LocationComponentPickerModal.jsx`
+- `~features/darken-location/composer/components/LocationComponentPickerModal.test.jsx`
+- `~features/darken-location/composer/components/LocationDraftControls.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/model/location-composer-draft.js`
+- `~features/darken-location/composer/model/location-composer-preview.js`
+- `~features/darken-location/composer/model/location-composer-state.js`
+- `~features/darken-location/dungeon/dungeon-brief-generator.js`
+- `~features/darken-location/room-constraint-evaluation.js`
+
+
+---
+
+## 2026-07-11 19:29:29
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-composer-collapsible-left-sections.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-composer-collapsible-left-sections.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 7
+
+- `~components/ui/composer-rail.jsx`
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/monster-composer/components/monster-composer.anatomy.jsx`
+- `~shared/styles/composer-internals.css`
+- `~shared/styles/composer-system.css`
+
+
+---
+
+## 2026-07-11 19:48:48
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-composer-collapsible-whole-block-hover.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-composer-collapsible-whole-block-hover.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~shared/styles/composer-internals.css`
+
+
+---
+
+## 2026-07-11 21:15:19
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-room-metadata-engine-pass6-semantic-shapes-20260711.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-room-metadata-engine-pass6-semantic-shapes-20260711.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+features/darken-location/map-generator/map-generator.room-shapes.test.js`
+- `+shared/content/contracts/room-shapes.js`
+- `+shared/content/contracts/room-shapes.test.js`
+
+**File sovrascritti:** 20
+
+- `~docs/repository-map/architecture.md`
+- `~docs/repository-map/areas/map-editor.md`
+- `~docs/repository-map/areas/map-generator.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/dependency-graph.md`
+- `~docs/repository-map/runtime-flows.md`
+- `~docs/repository-map/state-and-data-flow.md`
+- `~docs/repository-map/tests-and-qa.md`
+- `~features/darken-location/map-generator/map-generator.layout.js`
+- `~features/darken-location/map-generator/map-generator.mask.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.room-design.js`
+- `~features/darken-location/map-generator/MAP_GENERATOR_DATA_CONTRACT.md`
+- `~features/darken-location/room-constraint-evaluation.js`
+- `~scripts/run-room-design-gallery.mjs`
+- `~scripts/run-room-design-qa.mjs`
+- `~shared/content/content.index.js`
+- `~shared/content/contracts/room-compatibility.js`
+- `~shared/content/contracts/room-constraint-resolver.js`
+- `~shared/content/contracts/room-design.js`
+
+
+---
+
+## 2026-07-11 21:34:59
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-map-wide-details-custom-scrollbar.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-map-wide-details-custom-scrollbar.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-07-11 21:47:58
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-room-shape-menu-unlock-fix-20260711.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-room-shape-menu-unlock-fix-20260711.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~docs/repository-map/state-and-data-flow.md`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/room-constraint-evaluation.js`
+- `~features/darken-location/room-constraint-evaluation.test.js`
+
+
+---
+
+## 2026-07-11 21:55:39
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-map-wide-details-scrollbar-inheritance-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-map-wide-details-scrollbar-inheritance-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~components/ui/composer-rail.jsx`
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~shared/styles/composer-internals.css`
+- `~shared/styles/composer-system.css`
+
+
+---
+
+## 2026-07-11 22:04:37
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-room-cave-disable-context-menu-viewport-fix-20260711.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-room-cave-disable-context-menu-viewport-fix-20260711.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+features/darken-location/map-generator/map-generator.context-menu-position.js`
+- `+features/darken-location/map-generator/map-generator.context-menu-position.test.js`
+
+**File sovrascritti:** 6
+
+- `~docs/repository-map/runtime-flows.md`
+- `~docs/repository-map/tests-and-qa.md`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+- `~shared/content/contracts/room-shapes.js`
+- `~shared/content/contracts/room-shapes.test.js`
+
+
+---
+
+## 2026-07-11 22:46:49
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-immersive-mode-20260711.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-immersive-mode-20260711.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+features/darken-location/composer/components/LocationMapToolbar.test.jsx`
+
+**File sovrascritti:** 8
+
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/styles-and-design-system.md`
+- `~docs/repository-map/runtime-flows.md`
+- `~docs/repository-map/tests-and-qa.md`
+- `~features/darken-location/composer/components/LocationMapToolbar.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~tests/e2e/dark-places-pipeline.spec.js`
+

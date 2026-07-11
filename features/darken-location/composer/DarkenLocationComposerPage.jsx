@@ -3,7 +3,6 @@ import { ComposerRail } from "../../../components/ui/composer-rail.jsx";
 import "../map-generator/map-generator.styles.css";
 import {
   addScratchLocationRoom,
-  assignComponentToSlot,
   createInitialLocationComposerState,
   createLocationComposerSnapshot,
   createLocationMapSeed,
@@ -11,13 +10,13 @@ import {
   LOCATION_SLOT_SCOPE_REGION,
   normalizeLocationSlotScope,
   regenerateScratchLocationRoom,
-  removeComponentFromSlot,
   removeScratchLocationRoom,
   setScratchLocationRoomCount,
   toArray,
   updateScratchLocationRoom,
 } from "./model/location-composer-state.js";
 import {
+  getAssignedComponentsForRegion,
   getAssignedComponentsForSlotScope,
   getComponentsForSlot,
   getComposerDigest,
@@ -37,6 +36,15 @@ import {
   restoreLocationDraftState,
   saveLocationDraftWithStatus,
 } from "./model/location-composer-draft.js";
+import {
+  applyLocationComponentAssignmentTransaction,
+  LOCATION_COMPONENT_TRANSACTION_OPERATIONS,
+  recomputeLocationRoomConstraintState,
+} from "./model/location-room-assignment-transaction.js";
+import {
+  createLocationAssignmentHistorySnapshot,
+  restoreLocationAssignmentHistorySnapshot,
+} from "./model/location-room-constraint-state.js";
 import {
   createLocationPreviewModel,
 } from "./model/location-composer-preview.js";
@@ -96,6 +104,39 @@ function createMapInfluenceSourceKey(mapInfluence = null) {
   ].join("~");
 }
 
+function createRoomConstraintSourceKey(region = null) {
+  if (!region || typeof region !== "object") return "";
+  const metadata = region.metadata || {};
+  const design = region.effectiveRoomDesign
+    || metadata.effectiveRoomDesign
+    || region.roomDesign
+    || metadata.roomDesign
+    || null;
+  const resolution = region.roomConstraintResolution
+    || metadata.roomConstraintResolution
+    || null;
+  const assignedComponentIds = (metadata.assignedComponents || [])
+    .map((component) => component?.id || component?.componentId || "")
+    .filter(Boolean)
+    .sort();
+
+  return JSON.stringify({
+    assignedComponentIds,
+    design,
+    resolution: resolution
+      ? {
+          conflicts: (resolution.conflicts || []).map((conflict) => ({
+            code: conflict.code,
+            field: conflict.field,
+            sources: conflict.sources || [],
+          })),
+          schemaVersion: resolution.schemaVersion || "",
+          status: resolution.status || "",
+        }
+      : null,
+  });
+}
+
 function createLocationMapSourceKey(mapRequest) {
   const requiredRegions = Array.isArray(mapRequest?.requiredRegions)
     ? mapRequest.requiredRegions
@@ -122,6 +163,7 @@ function createLocationMapSourceKey(mapRequest) {
           region?.roomArchetype || "",
           region?.roomArchetypeSource || "",
           createMapInfluenceSourceKey(region?.mapInfluence || region?.metadata?.mapInfluence),
+          createRoomConstraintSourceKey(region),
           Array.isArray(region?.metadata?.assignedSlotIds) ? region.metadata.assignedSlotIds.join(",") : "",
           Array.isArray(region?.links) ? region.links.join(",") : "",
         ].join("@"),
@@ -335,9 +377,15 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   const [savedDraftFingerprint, setSavedDraftFingerprint] = useState("");
   const [builderMode, setBuilderMode] = useState("theme");
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [immersiveMode, setImmersiveMode] = useState(false);
   const [exportCopyStatus, setExportCopyStatus] = useState("");
   const draftStatusTimeoutRef = useRef(null);
   const exportCopyStatusTimeoutRef = useRef(null);
+  const assignmentHistoryRef = useRef({ past: [], future: [] });
+  const [assignmentHistoryStatus, setAssignmentHistoryStatus] = useState({
+    canRedo: false,
+    canUndo: false,
+  });
 
   const selectedComponents = useMemo(() => getSelectedComponents(state), [state]);
   const snapshot = useMemo(() => createLocationComposerSnapshot(state, selectedComponents), [state, selectedComponents]);
@@ -373,6 +421,49 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     window.clearTimeout(draftStatusTimeoutRef.current);
     draftStatusTimeoutRef.current = window.setTimeout(() => setDraftStatus(""), 2200);
   }, []);
+
+  const syncAssignmentHistoryStatus = useCallback(() => {
+    const history = assignmentHistoryRef.current;
+    setAssignmentHistoryStatus({
+      canRedo: history.future.length > 0,
+      canUndo: history.past.length > 0,
+    });
+  }, []);
+
+  const clearAssignmentHistory = useCallback(() => {
+    assignmentHistoryRef.current = { past: [], future: [] };
+    setAssignmentHistoryStatus({ canRedo: false, canUndo: false });
+  }, []);
+
+  const pushAssignmentHistory = useCallback((previousState) => {
+    const history = assignmentHistoryRef.current;
+    history.past = [
+      ...history.past,
+      createLocationAssignmentHistorySnapshot(previousState),
+    ].slice(-50);
+    history.future = [];
+    syncAssignmentHistoryStatus();
+  }, [syncAssignmentHistoryStatus]);
+
+  const undoAssignmentTransaction = useCallback(() => {
+    const history = assignmentHistoryRef.current;
+    const previous = history.past.pop();
+    if (!previous) return;
+    history.future.push(createLocationAssignmentHistorySnapshot(state));
+    setState((current) => restoreLocationAssignmentHistorySnapshot(current, previous));
+    syncAssignmentHistoryStatus();
+    setTransientDraftStatus("Assignment undone");
+  }, [setTransientDraftStatus, state, syncAssignmentHistoryStatus]);
+
+  const redoAssignmentTransaction = useCallback(() => {
+    const history = assignmentHistoryRef.current;
+    const next = history.future.pop();
+    if (!next) return;
+    history.past.push(createLocationAssignmentHistorySnapshot(state));
+    setState((current) => restoreLocationAssignmentHistorySnapshot(current, next));
+    syncAssignmentHistoryStatus();
+    setTransientDraftStatus("Assignment redone");
+  }, [setTransientDraftStatus, state, syncAssignmentHistoryStatus]);
 
   const copyExportText = useCallback(async (label, text) => {
     try {
@@ -424,10 +515,11 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     const fallbackState = createInitialLocationComposerState(getInitialLocationRegionTemplates());
     const restoredState = restoreLocationDraftState(storedDraft, fallbackState);
     setState(restoredState);
+    clearAssignmentHistory();
     setSavedDraftFingerprint(createDraftFingerprint(restoredState));
     setDraftSummary(getStoredDraftSummary());
     setTransientDraftStatus("Draft loaded");
-  }, [hasUnsavedChanges, setTransientDraftStatus]);
+  }, [clearAssignmentHistory, hasUnsavedChanges, setTransientDraftStatus]);
 
   const clearSavedDraft = useCallback(() => {
     if (!draftSummary) {
@@ -497,12 +589,14 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
         themeProgramCandidates: [],
         activeThemeProgramCandidateId: selectedCandidate?.id || "",
         mapManualOverrides: null,
+        roomConstraintStateByRegion: {},
       };
     });
+    clearAssignmentHistory();
     setBuilderMode("theme");
     setDrawerOpen(false);
     setTransientDraftStatus("Place generated");
-  }, [setTransientDraftStatus]);
+  }, [clearAssignmentHistory, setTransientDraftStatus]);
 
   const setScratchRoomCount = useCallback((roomCount) => {
     setState((current) => ({
@@ -511,8 +605,9 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       activeThemeProgramCandidateId: "",
       mapManualOverrides: null,
     }));
+    clearAssignmentHistory();
     setDrawerOpen(false);
-  }, []);
+  }, [clearAssignmentHistory]);
 
   const addScratchRoom = useCallback(() => {
     setState((current) => ({
@@ -521,10 +616,11 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       activeThemeProgramCandidateId: "",
       mapManualOverrides: null,
     }));
+    clearAssignmentHistory();
     setBuilderMode("scratch");
     setDrawerOpen(false);
     setTransientDraftStatus("Room added");
-  }, [setTransientDraftStatus]);
+  }, [clearAssignmentHistory, setTransientDraftStatus]);
 
   const removeScratchRoom = useCallback((regionId) => {
     setState((current) => ({
@@ -533,10 +629,11 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       activeThemeProgramCandidateId: "",
       mapManualOverrides: null,
     }));
+    clearAssignmentHistory();
     setBuilderMode("scratch");
     setDrawerOpen(false);
     setTransientDraftStatus("Room removed");
-  }, [setTransientDraftStatus]);
+  }, [clearAssignmentHistory, setTransientDraftStatus]);
 
   const regenerateScratchRoom = useCallback((regionId) => {
     setState((current) => ({
@@ -545,10 +642,11 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       activeThemeProgramCandidateId: "",
       mapManualOverrides: null,
     }));
+    clearAssignmentHistory();
     setBuilderMode("scratch");
     setDrawerOpen(false);
     setTransientDraftStatus("Room regenerated");
-  }, [setTransientDraftStatus]);
+  }, [clearAssignmentHistory, setTransientDraftStatus]);
 
   const selectScratchRoom = useCallback((regionId) => {
     setState((current) => ({
@@ -597,7 +695,8 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       activeThemeProgramCandidateId: "",
       mapManualOverrides: null,
     }));
-  }, []);
+    clearAssignmentHistory();
+  }, [clearAssignmentHistory]);
 
   const generateScratchMap = useCallback(() => {
     setState((current) => {
@@ -615,10 +714,11 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
         mapManualOverrides: null,
       };
     });
+    clearAssignmentHistory();
     setBuilderMode("scratch");
     setDrawerOpen(false);
     setTransientDraftStatus("Map generated");
-  }, [setTransientDraftStatus]);
+  }, [clearAssignmentHistory, setTransientDraftStatus]);
 
 
   const resetComposer = useCallback(() => {
@@ -627,11 +727,18 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
 
     const resetState = createInitialLocationComposerState(getInitialLocationRegionTemplates());
     setState(resetState);
+    clearAssignmentHistory();
     setSavedDraftFingerprint(createDraftFingerprint(resetState));
     setBuilderMode("theme");
     setDrawerOpen(false);
     setTransientDraftStatus("Composer reset");
-  }, [setTransientDraftStatus]);
+  }, [clearAssignmentHistory, setTransientDraftStatus]);
+
+  const toggleImmersiveMode = useCallback(() => {
+    const nextImmersiveMode = !immersiveMode;
+    if (nextImmersiveMode) setDrawerOpen(false);
+    setImmersiveMode(nextImmersiveMode);
+  }, [immersiveMode]);
 
   useEffect(() => {
     if (!savedDraftFingerprint) {
@@ -651,6 +758,26 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   }, [hasUnsavedChanges]);
 
   useEffect(() => {
+    const handleAssignmentHistoryKeyDown = (event) => {
+      if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "z") return;
+      const target = event.target;
+      if (
+        target instanceof HTMLElement
+        && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName))
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      if (event.shiftKey) redoAssignmentTransaction();
+      else undoAssignmentTransaction();
+    };
+
+    window.addEventListener("keydown", handleAssignmentHistoryKeyDown);
+    return () => window.removeEventListener("keydown", handleAssignmentHistoryKeyDown);
+  }, [redoAssignmentTransaction, undoAssignmentTransaction]);
+
+  useEffect(() => {
     return () => {
       window.clearTimeout(draftStatusTimeoutRef.current);
       window.clearTimeout(exportCopyStatusTimeoutRef.current);
@@ -664,14 +791,18 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   useEffect(() => {
     if (previousMapSourceKeyRef.current === mapSourceKey) return;
     previousMapSourceKeyRef.current = mapSourceKey;
-    setState((current) =>
-      current.mapManualOverrides
-        ? {
-            ...current,
-            mapManualOverrides: null,
-          }
-        : current,
-    );
+    setState((current) => {
+      if (!current.mapManualOverrides) return current;
+      const nextState = {
+        ...current,
+        mapManualOverrides: null,
+      };
+      return recomputeLocationRoomConstraintState({
+        state: nextState,
+        componentCatalog: getSelectedComponents(nextState),
+        manualOverrides: null,
+      });
+    });
   }, [mapSourceKey]);
 
   useEffect(() => {
@@ -708,6 +839,12 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
           )
         : [],
     [activeSlot, activeSlotScope, state],
+  );
+  const assignedComponentsForActiveRoom = useMemo(
+    () => activeSlotScope === LOCATION_SLOT_SCOPE_REGION
+      ? getAssignedComponentsForRegion(state, state.activeRegionId)
+      : [],
+    [activeSlotScope, state],
   );
   const activeRegionForPicker = useMemo(
     () => state.locationRegions?.find((region) => region.id === state.activeRegionId),
@@ -757,14 +894,18 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
 
 
   const refreshInlineMapWorkspace = useCallback(() => {
-    setState((current) =>
-      current.mapManualOverrides
-        ? {
-            ...current,
-            mapManualOverrides: null,
-          }
-        : current,
-    );
+    setState((current) => {
+      if (!current.mapManualOverrides) return current;
+      const nextState = {
+        ...current,
+        mapManualOverrides: null,
+      };
+      return recomputeLocationRoomConstraintState({
+        state: nextState,
+        componentCatalog: getSelectedComponents(nextState),
+        manualOverrides: null,
+      });
+    });
     setTransientDraftStatus("Map refreshed from Composer");
   }, [setTransientDraftStatus]);
 
@@ -773,10 +914,15 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     setState((current) => {
       const currentManualOverrides = normalizeManualOverrides(current.mapManualOverrides || {});
       if (areManualOverridesEqual(currentManualOverrides, nextManualOverrides)) return current;
-      return {
+      const nextState = {
         ...current,
         mapManualOverrides: nextManualOverrides,
       };
+      return recomputeLocationRoomConstraintState({
+        state: nextState,
+        componentCatalog: getSelectedComponents(nextState),
+        manualOverrides: nextManualOverrides,
+      });
     });
   }, []);
 
@@ -813,28 +959,97 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     }));
   }, []);
 
-  const addComponentToActiveSlot = useCallback((component) => {
-    if (!activeSlot) return;
-    const closesAfterRoomAssignment = activeSlotScope === LOCATION_SLOT_SCOPE_REGION;
-    setState((current) =>
-      assignComponentToSlot(current, component, activeSlot, {
+  const applyActiveSlotComponentTransaction = useCallback(({
+    component = null,
+    componentId = "",
+    operation,
+    replacementComponentIds = [],
+  }) => {
+    if (!activeSlot) return null;
+    const result = applyLocationComponentAssignmentTransaction({
+      state,
+      operation,
+      component,
+      componentId,
+      componentCatalog: selectedComponents,
+      slot: activeSlot,
+      target: {
         scope: activeSlotScope,
-        regionId: current.activeRegionId,
-      }),
-    );
+        regionId: state.activeRegionId,
+      },
+      replacementComponentIds,
+      manualOverrides: mapManualOverrides,
+    });
+
+    if (!result.ok) {
+      setTransientDraftStatus(result.reason || "Assignment blocked");
+      return result;
+    }
+
+    pushAssignmentHistory(state);
+    setState(result.state);
+    return result;
+  }, [
+    activeSlot,
+    activeSlotScope,
+    mapManualOverrides,
+    pushAssignmentHistory,
+    selectedComponents,
+    setTransientDraftStatus,
+    state,
+  ]);
+
+  const addComponentToActiveSlot = useCallback((component) => {
+    const result = applyActiveSlotComponentTransaction({
+      component,
+      operation: LOCATION_COMPONENT_TRANSACTION_OPERATIONS.ASSIGN,
+    });
+    if (!result?.ok) return;
+
+    const closesAfterRoomAssignment = activeSlotScope === LOCATION_SLOT_SCOPE_REGION;
     setDrawerOpen(false);
     setBuilderMode(activeSlotScope === LOCATION_SLOT_SCOPE_REGION ? "scratch" : builderMode);
     setTransientDraftStatus(
       closesAfterRoomAssignment
-        ? `${activeSlot.label || "Room slot"} assigned`
-        : `${activeSlot.label || "Map slot"} assigned`,
+        ? `${activeSlot?.label || "Room slot"} assigned`
+        : `${activeSlot?.label || "Map slot"} assigned`,
     );
-  }, [activeSlot, activeSlotScope, builderMode, setTransientDraftStatus]);
+  }, [
+    activeSlot?.label,
+    activeSlotScope,
+    applyActiveSlotComponentTransaction,
+    builderMode,
+    setTransientDraftStatus,
+  ]);
+
+  const replaceComponentInActiveSlot = useCallback((component, replacementComponentIds = []) => {
+    const result = applyActiveSlotComponentTransaction({
+      component,
+      operation: LOCATION_COMPONENT_TRANSACTION_OPERATIONS.REPLACE,
+      replacementComponentIds,
+    });
+    if (!result?.ok) return;
+
+    setDrawerOpen(false);
+    setBuilderMode(activeSlotScope === LOCATION_SLOT_SCOPE_REGION ? "scratch" : builderMode);
+    setTransientDraftStatus(
+      `${activeSlot?.label || (activeSlotScope === LOCATION_SLOT_SCOPE_REGION ? "Room slot" : "Map slot")} replaced`,
+    );
+  }, [
+    activeSlot?.label,
+    activeSlotScope,
+    applyActiveSlotComponentTransaction,
+    builderMode,
+    setTransientDraftStatus,
+  ]);
 
   const removeComponentFromActiveSlot = useCallback((componentId) => {
-    if (!activeSlot) return;
-    setState((current) => removeComponentFromSlot(current, componentId, activeSlot.id));
-  }, [activeSlot]);
+    const result = applyActiveSlotComponentTransaction({
+      componentId,
+      operation: LOCATION_COMPONENT_TRANSACTION_OPERATIONS.REMOVE,
+    });
+    if (result?.ok) setTransientDraftStatus("Component removed");
+  }, [applyActiveSlotComponentTransaction, setTransientDraftStatus]);
 
   const activeScratchRegion = useMemo(
     () => (Array.isArray(state.locationRegions) ? state.locationRegions : []).find((region) => region.id === state.activeRegionId)
@@ -948,6 +1163,8 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
         uiMode === "simple" ? null : (
           <LocationDraftControls
             canLoadDraft={Boolean(draftSummary)}
+            canRedo={assignmentHistoryStatus.canRedo}
+            canUndo={assignmentHistoryStatus.canUndo}
             draftStorageStatus={draftStorageStatus}
             draftSummary={draftSummary}
             draftStatus={draftStatus}
@@ -955,8 +1172,10 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
             uiMode={uiMode}
             onClearDraft={clearSavedDraft}
             onLoadDraft={loadDraft}
+            onRedo={redoAssignmentTransaction}
             onResetComposer={resetComposer}
             onSaveDraft={saveDraft}
+            onUndo={undoAssignmentTransaction}
           />
         )
       }
@@ -984,8 +1203,10 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       components={compatibleComponents}
       generatedRoom={activeGeneratedRoomForPicker}
       isSlotFull={activeSlotIsFull}
+      manualOverrides={mapManualOverrides}
       open={drawerOpen}
       regions={state.locationRegions || []}
+      roomAssignedComponents={assignedComponentsForActiveRoom}
       selectedComponents={selectedComponents}
       slot={activeSlot}
       slotScope={activeSlotScope}
@@ -993,6 +1214,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       onAddComponent={addComponentToActiveSlot}
       onClose={closeComponentNavigator}
       onRemoveComponent={removeComponentFromActiveSlot}
+      onReplaceComponent={replaceComponentInActiveSlot}
       onSelectRegion={(regionId) => setState((current) => ({ ...current, activeRegionId: regionId }))}
     />
   ) : null;
@@ -1045,6 +1267,8 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       onSelectPreviousRoom={() => selectRelativeRoom(-1)}
       onSelectRoom={selectRoomTarget}
       onSelectRooms={() => activateBuilderMode("scratch")}
+      immersiveMode={immersiveMode}
+      onToggleImmersiveMode={toggleImmersiveMode}
     />
   );
 
@@ -1053,6 +1277,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       className="cruor-composer-shell location-composer"
       data-cruor-ui-mode={uiMode}
       data-location-builder-mode={builderMode}
+      data-location-immersive={immersiveMode ? "true" : "false"}
       data-location-map-editing="inline"
       data-location-composer-ready="true"
       data-testid="dark-places-composer"
@@ -1070,13 +1295,13 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
           onManualWorkspaceChange={syncInlineMapWorkspace}
           onRefreshMapWorkspace={refreshInlineMapWorkspace}
           modeControls={null}
-          leftPanel={leftPanel}
-          rightPanel={rightPanel}
-          navigatorPanel={navigatorPanel}
-          contextPanel={exportContextPanel}
+          leftPanel={immersiveMode ? null : leftPanel}
+          rightPanel={immersiveMode ? null : rightPanel}
+          navigatorPanel={immersiveMode ? null : navigatorPanel}
+          contextPanel={immersiveMode ? null : exportContextPanel}
           toolbarPanel={centerToolbarPanel}
           onCloseNavigator={closeComponentNavigator}
-          bottomDockPanel={(
+          bottomDockPanel={immersiveMode ? null : (
             <LocationGuidedFlowPanel
               activeRegion={activeRegionForPicker}
               activeSlot={activeSlot}

@@ -289,6 +289,177 @@ export function buildHallMask(room, rng) {
   return cells;
 }
 
+export function buildGalleryMask(room, rng) {
+  const cells = new Set();
+  const { x, y, w, h } = room.cellRect;
+  const horizontal = w >= h;
+  if (horizontal) {
+    const coreH = clamp(Math.min(h, h >= 5 ? 3 : 2), 2, h);
+    const startY = y + Math.floor((h - coreH) / 2);
+    addRectCells(cells, x, startY, w, coreH);
+    const northY = startY - 1;
+    const southY = startY + coreH;
+    for (let offset = 1; offset < w - 1; offset += 2) {
+      const bayY = (offset + Math.floor(rng() * 2)) % 2 === 0 ? northY : southY;
+      if (bayY >= y && bayY < y + h) cells.add(cellKey(x + offset, bayY));
+    }
+  } else {
+    const coreW = clamp(Math.min(w, w >= 5 ? 3 : 2), 2, w);
+    const startX = x + Math.floor((w - coreW) / 2);
+    addRectCells(cells, startX, y, coreW, h);
+    const westX = startX - 1;
+    const eastX = startX + coreW;
+    for (let offset = 1; offset < h - 1; offset += 2) {
+      const bayX = (offset + Math.floor(rng() * 2)) % 2 === 0 ? westX : eastX;
+      if (bayX >= x && bayX < x + w) cells.add(cellKey(bayX, y + offset));
+    }
+  }
+  return cells;
+}
+
+export function buildTShapeMask(room, rng) {
+  const cells = new Set();
+  const { x, y, w, h } = room.cellRect;
+  if (w < 5 || h < 5) return buildLShapeMask(room, rng);
+  const orientation = pickOne(rng, ["north", "south", "east", "west"]);
+  const capDepth = Math.max(2, Math.round((orientation === "north" || orientation === "south" ? h : w) * 0.34));
+  const stemThickness = Math.max(2, Math.round((orientation === "north" || orientation === "south" ? w : h) * 0.34));
+  if (orientation === "north" || orientation === "south") {
+    const capY = orientation === "north" ? y : y + h - capDepth;
+    addRectCells(cells, x, capY, w, capDepth);
+    const stemX = x + Math.floor((w - stemThickness) / 2);
+    addRectCells(cells, stemX, y, stemThickness, h);
+  } else {
+    const capX = orientation === "west" ? x : x + w - capDepth;
+    addRectCells(cells, capX, y, capDepth, h);
+    const stemY = y + Math.floor((h - stemThickness) / 2);
+    addRectCells(cells, x, stemY, w, stemThickness);
+  }
+  return cells;
+}
+
+export function buildCrossMask(room) {
+  const cells = new Set();
+  const { x, y, w, h } = room.cellRect;
+  if (w < 5 || h < 5) return buildRectMask(room);
+  const verticalW = clamp(Math.round(w * 0.34), 2, Math.max(2, w - 2));
+  const horizontalH = clamp(Math.round(h * 0.34), 2, Math.max(2, h - 2));
+  const verticalX = x + Math.floor((w - verticalW) / 2);
+  const horizontalY = y + Math.floor((h - horizontalH) / 2);
+  addRectCells(cells, verticalX, y, verticalW, h);
+  addRectCells(cells, x, horizontalY, w, horizontalH);
+  return cells;
+}
+
+export function buildNicheMask(room, rng) {
+  const cells = new Set();
+  const { x, y, w, h } = room.cellRect;
+  if (w < 4 || h < 4) return buildRectMask(room);
+  const opening = pickOne(rng, ["north", "south", "east", "west"]);
+  if (opening === "north" || opening === "south") {
+    const bodyW = Math.max(3, w - 1);
+    const bodyH = h - 1;
+    const bodyX = x + Math.floor((w - bodyW) / 2);
+    const bodyY = opening === "north" ? y + 1 : y;
+    addRectCells(cells, bodyX, bodyY, bodyW, bodyH);
+    const neckW = Math.min(2, bodyW);
+    const neckX = x + Math.floor((w - neckW) / 2);
+    addRectCells(
+      cells,
+      neckX,
+      opening === "north" ? y : y + h - 1,
+      neckW,
+      1,
+    );
+  } else {
+    const bodyW = w - 1;
+    const bodyH = Math.max(3, h - 1);
+    const bodyX = opening === "west" ? x + 1 : x;
+    const bodyY = y + Math.floor((h - bodyH) / 2);
+    addRectCells(cells, bodyX, bodyY, bodyW, bodyH);
+    const neckH = Math.min(2, bodyH);
+    const neckY = y + Math.floor((h - neckH) / 2);
+    addRectCells(
+      cells,
+      opening === "west" ? x : x + w - 1,
+      neckY,
+      1,
+      neckH,
+    );
+  }
+  return cells;
+}
+
+export function buildRitualMask(room) {
+  const cells = buildRectMask(room);
+  const { x, y, w, h } = room.cellRect;
+  if (w < 5 || h < 5) return cells;
+  const cut = Math.max(1, Math.min(2, Math.floor(Math.min(w, h) / 4)));
+  carveCorner(cells, x, y, w, h, "nw", cut, cut);
+  carveCorner(cells, x, y, w, h, "ne", cut, cut);
+  carveCorner(cells, x, y, w, h, "sw", cut, cut);
+  carveCorner(cells, x, y, w, h, "se", cut, cut);
+  return cells;
+}
+
+export function buildShaftMask(room) {
+  const cells = new Set();
+  const { x, y, w, h } = room.cellRect;
+  const cx = x + w / 2;
+  const cy = y + h / 2;
+  const rx = Math.max(1.6, w * 0.43);
+  const ry = Math.max(1.6, h * 0.43);
+  for (let yy = y; yy < y + h; yy += 1) {
+    for (let xx = x; xx < x + w; xx += 1) {
+      const nx = (xx + 0.5 - cx) / rx;
+      const ny = (yy + 0.5 - cy) / ry;
+      if (nx * nx + ny * ny <= 1.0) cells.add(cellKey(xx, yy));
+    }
+  }
+  return cells;
+}
+
+export function buildIrregularMask(room, rng) {
+  const cells = new Set();
+  const { x, y, w, h } = room.cellRect;
+  if (w < 5 || h < 5) return buildNotchedMask(room, rng);
+
+  const coreW = clamp(Math.round(w * (0.58 + rng() * 0.14)), 3, w);
+  const coreH = clamp(Math.round(h * (0.58 + rng() * 0.14)), 3, h);
+  const coreX = x + randomInt(rng, 0, Math.max(0, w - coreW));
+  const coreY = y + randomInt(rng, 0, Math.max(0, h - coreH));
+  addRectCells(cells, coreX, coreY, coreW, coreH);
+
+  const wings = ["north", "south", "east", "west"]
+    .sort(() => rng() - 0.5)
+    .slice(0, randomInt(rng, 2, 4));
+  wings.forEach((side) => {
+    if (side === "north" || side === "south") {
+      const wingW = clamp(randomInt(rng, 2, Math.max(2, coreW - 1)), 2, w);
+      const wingH = clamp(randomInt(rng, 1, Math.max(1, Math.floor(h * 0.35))), 1, h);
+      const wingX = clamp(
+        coreX + randomInt(rng, -Math.floor(wingW / 2), Math.max(0, coreW - Math.ceil(wingW / 2))),
+        x,
+        x + w - wingW,
+      );
+      const wingY = side === "north" ? Math.max(y, coreY - wingH) : Math.min(y + h - wingH, coreY + coreH);
+      addRectCells(cells, wingX, wingY, wingW, wingH);
+    } else {
+      const wingW = clamp(randomInt(rng, 1, Math.max(1, Math.floor(w * 0.35))), 1, w);
+      const wingH = clamp(randomInt(rng, 2, Math.max(2, coreH - 1)), 2, h);
+      const wingX = side === "west" ? Math.max(x, coreX - wingW) : Math.min(x + w - wingW, coreX + coreW);
+      const wingY = clamp(
+        coreY + randomInt(rng, -Math.floor(wingH / 2), Math.max(0, coreH - Math.ceil(wingH / 2))),
+        y,
+        y + h - wingH,
+      );
+      addRectCells(cells, wingX, wingY, wingW, wingH);
+    }
+  });
+
+  return getLargestConnectedCellSet(cells);
+}
+
 export function buildOvalMask(room) {
   const cells = new Set();
   const { x, y, w, h } = room.cellRect;
@@ -325,10 +496,13 @@ export function buildCircleMask(room) {
 
 
 export function getRoomMaskProfile(room = {}) {
+  const explicitRoomDesignShape =
+    room.shapeOptions?.roomDesign?.shape?.kind || room.roomDesign?.shape?.kind;
   return String(
     room.shapeOptions?.maskProfile ||
-      room.shapeOptions?.archetypeId ||
-      room.roomArchetype ||
+      (!explicitRoomDesignShape
+        ? room.shapeOptions?.archetypeId || room.roomArchetype
+        : "") ||
       "",
   ).trim();
 }
@@ -701,23 +875,25 @@ export function buildMineCaveChamberMask(room, rng) {
 export function buildBaseRoomMask(room, rng) {
   if (isMineHybridCaveRoom(room) && room.shape === "cave")
     return buildMineCaveChamberMask(room, rng);
+  if (room.shape === "square") return buildRectMask(room);
   if (room.shape === "hall") return buildHallMask(room, rng);
+  if (room.shape === "gallery") return buildGalleryMask(room, rng);
   if (room.shape === "l-shape") return buildLShapeMask(room, rng);
+  if (room.shape === "t-shape") return buildTShapeMask(room, rng);
+  if (room.shape === "cross") return buildCrossMask(room);
   if (room.shape === "notched") return buildNotchedMask(room, rng);
   if (room.shape === "broken" || room.shape === "ruined-rect")
     return buildRuinedMask(room, rng);
   if (room.shape === "alcove") return buildAlcoveMask(room, rng);
+  if (room.shape === "niche") return buildNicheMask(room, rng);
   if (room.shape === "archive") return buildArchiveMask(room, rng);
   if (room.shape === "apse") return buildApseMask(room);
   if (room.shape === "circle") return buildCircleMask(room);
-  if (
-    room.shape === "oval" ||
-    room.shape === "shaft" ||
-    room.shape === "ritual"
-  )
-    return buildOvalMask(room);
-  if (room.shape === "irregular" || room.shape === "cave")
-    return buildCaveMask(room, rng);
+  if (room.shape === "oval") return buildOvalMask(room);
+  if (room.shape === "shaft") return buildShaftMask(room);
+  if (room.shape === "ritual") return buildRitualMask(room);
+  if (room.shape === "irregular") return buildIrregularMask(room, rng);
+  if (room.shape === "cave") return buildCaveMask(room, rng);
   return buildRectMask(room);
 }
 
@@ -792,8 +968,23 @@ function applyChamferedCornersModifier(baseCells, room) {
   return draft;
 }
 
+function applySymmetricalModifier(baseCells, room) {
+  const draft = new Set(baseCells);
+  const { x, y, w, h } = room.cellRect;
+  baseCells.forEach((key) => {
+    const cell = parseCellKey(key);
+    const mirrorX = x + w - 1 - (cell.x - x);
+    const mirrorY = y + h - 1 - (cell.y - y);
+    draft.add(cellKey(mirrorX, cell.y));
+    draft.add(cellKey(cell.x, mirrorY));
+    draft.add(cellKey(mirrorX, mirrorY));
+  });
+  return draft;
+}
+
 export function applyMaskModifier(baseCells, room, rng, modifier) {
   const proxyRoom = { ...room };
+  if (modifier === "symmetrical") return applySymmetricalModifier(baseCells, room);
   if (modifier === "notch" || modifier === "asymmetrical") {
     return intersectWithMask(baseCells, buildNotchedMask(proxyRoom, rng));
   }
@@ -874,7 +1065,17 @@ export function buildAllRoomMasks(
     return {
       ...room,
       floorCells,
-      labelPoint: ["cave", "broken", "ruined-rect"].includes(room.shape)
+      labelPoint: [
+        "cave",
+        "irregular",
+        "broken",
+        "ruined-rect",
+        "l-shape",
+        "t-shape",
+        "cross",
+        "gallery",
+        "niche",
+      ].includes(room.shape)
         ? getFloorCellCentroid(floorCells, gridSize, room.labelPoint)
         : room.labelPoint,
     };

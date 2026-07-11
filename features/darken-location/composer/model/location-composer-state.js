@@ -1,4 +1,10 @@
 import { createInitialCrucibleState } from "../../../crucible/crucible.state.js";
+import {
+  applyLocationRoomConstraintStateToRegions,
+  clearLocationRoomConstraintStateForRegion,
+  retainLocationRoomConstraintState,
+  sanitizeLocationRoomConstraintState,
+} from "./location-room-constraint-state.js";
 
 const DEFAULT_SELECTED_SOURCE = "Sedlec Ossuary";
 const DEFAULT_SELECTED_HORROR = "Religious Horror";
@@ -67,6 +73,7 @@ export function createInitialLocationComposerState(regionTemplates = []) {
     activeRegionId: initialRegions[0]?.id || "",
     selectedComponentIds: new Set(),
     slotAssignments: {},
+    roomConstraintStateByRegion: {},
     locationRegions: initialRegions,
   };
 }
@@ -232,6 +239,13 @@ export function moveAssignmentToRegion(state, componentId, regionId) {
 
 export function createLocationComposerSnapshot(state, selectedComponents = []) {
   const slotAssignments = normalizeSlotAssignments(state.slotAssignments);
+  const regions = Array.isArray(state.locationRegions) ? state.locationRegions : [];
+  const roomConstraintStateByRegion = sanitizeLocationRoomConstraintState({
+    regions,
+    roomConstraintStateByRegion: state.roomConstraintStateByRegion || {},
+    slotAssignments,
+    manualOverrides: state.mapManualOverrides || null,
+  });
 
   return {
     workflow: state.workflow || "darken-location",
@@ -254,7 +268,13 @@ export function createLocationComposerSnapshot(state, selectedComponents = []) {
     selectedComponentIds: Array.from(deriveSelectedComponentIds(slotAssignments)),
     slotAssignments,
     selectedComponents,
-    locationRegions: Array.isArray(state.locationRegions) ? state.locationRegions : [],
+    roomConstraintStateByRegion,
+    locationRegions: applyLocationRoomConstraintStateToRegions({
+      regions,
+      roomConstraintStateByRegion,
+      slotAssignments,
+      manualOverrides: state.mapManualOverrides || null,
+    }),
   };
 }
 
@@ -371,6 +391,10 @@ export function setScratchLocationRoomCount(state, roomCount) {
     ...state,
     dungeonMode: "scratch",
     locationRegions: nextRegions,
+    roomConstraintStateByRegion: retainLocationRoomConstraintState(
+      state.roomConstraintStateByRegion,
+      nextRegions.map((region) => region.id),
+    ),
     activeRegionId,
     activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
   };
@@ -409,6 +433,10 @@ export function removeScratchLocationRoom(state, regionId) {
     ...state,
     dungeonMode: "scratch",
     locationRegions: nextRegions,
+    roomConstraintStateByRegion: retainLocationRoomConstraintState(
+      state.roomConstraintStateByRegion,
+      nextRegions.map((region) => region.id),
+    ),
     activeRegionId,
     activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
   };
@@ -427,6 +455,10 @@ export function updateScratchLocationRoom(state, regionId, updates = {}) {
     ...state,
     dungeonMode: "scratch",
     locationRegions: nextRegions,
+    roomConstraintStateByRegion: clearLocationRoomConstraintStateForRegion(
+      state.roomConstraintStateByRegion,
+      targetId,
+    ),
     activeRegionId: targetId || state.activeRegionId,
     activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
   };
@@ -451,6 +483,10 @@ export function regenerateScratchLocationRoom(state, regionId) {
     ...state,
     dungeonMode: "scratch",
     locationRegions: nextRegions,
+    roomConstraintStateByRegion: clearLocationRoomConstraintStateForRegion(
+      state.roomConstraintStateByRegion,
+      targetId,
+    ),
     activeRegionId: targetId || state.activeRegionId,
     activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
   };

@@ -2445,7 +2445,8 @@
 }
 
 .room-style-context-menu .room-context-menu__item:hover > .room-context-submenu,
-.room-style-context-menu .room-context-menu__item:focus-within > .room-context-submenu {
+.room-style-context-menu .room-context-menu__item:focus-within > .room-context-submenu,
+.room-style-context-menu .room-context-menu__item.is-submenu-open > .room-context-submenu {
   display: grid;
 }
 

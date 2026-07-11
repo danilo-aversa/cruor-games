@@ -18,11 +18,11 @@ import { validateMonsterFrameFit } from "../../monster-composer/model/monster-fr
 import {
   ROOM_ARCHETYPES_BY_ID,
   normalizeRoomArchetypeId,
-} from "../../darken-location/map-generator/map-generator.profile.js";
+} from "../../../shared/content/contracts/room-archetypes.js";
 import {
   normalizeRoomDesignShapeKind,
   normalizeRoomDesignPropKind,
-} from "../../darken-location/map-generator/map-generator.room-design.js";
+} from "../../../shared/content/contracts/room-design.js";
 import {
   COMPONENT_TYPE_LABELS,
   STATUS_OPTIONS,

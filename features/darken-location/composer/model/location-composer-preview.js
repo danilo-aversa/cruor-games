@@ -110,6 +110,29 @@ function createMapInfluenceSignature(mapInfluence = null) {
   ].join("~");
 }
 
+function createRoomConstraintSignature(region = null) {
+  if (!region || typeof region !== "object") return "";
+  const metadata = region.metadata || {};
+  const design = region.effectiveRoomDesign
+    || metadata.effectiveRoomDesign
+    || region.roomDesign
+    || metadata.roomDesign
+    || null;
+  const resolution = region.roomConstraintResolution
+    || metadata.roomConstraintResolution
+    || null;
+  const componentIds = (metadata.assignedComponents || [])
+    .map((component) => component?.id || component?.componentId || "")
+    .filter(Boolean)
+    .sort();
+
+  return JSON.stringify({
+    componentIds,
+    design,
+    status: resolution?.status || "",
+  });
+}
+
 function createRegionSignature(regions = []) {
   if (!Array.isArray(regions) || !regions.length) return "no-regions";
 
@@ -122,6 +145,7 @@ function createRegionSignature(regions = []) {
     region.roomArchetype || "",
     region.roomArchetypeSource || "",
     createMapInfluenceSignature(region.mapInfluence || region.metadata?.mapInfluence),
+    createRoomConstraintSignature(region),
     (region.links || []).join(","),
     (region.metadata?.assignedSlotIds || []).join(","),
   ].join("@"))

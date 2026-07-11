@@ -35,7 +35,7 @@ flowchart TD
 
 ## Content Architecture
 
-The current shared content path starts with content-pack schemas and static packs, then builds `STATIC_CONTENT_REGISTRY` in `shared/content/static-registry.js`. `shared/content/registry.js` normalizes workflows, slots, components, source anchors, inspirations, and taxonomies into queryable collections. `shared/content/content-repository.adapter.js` exposes repository-style access and bridges registry data into inspiration modules.
+The current shared content path starts with content-pack schemas and static packs, then builds `STATIC_CONTENT_REGISTRY` in `shared/content/static-registry.js`. `shared/content/registry.js` normalizes workflows, slots, components, source anchors, inspirations, and taxonomies into queryable collections. `shared/content/content-repository.adapter.js` exposes repository-style access and bridges registry data into inspiration modules. Shared room metadata contracts live under `shared/content/contracts/`; `room-shapes.js` is the canonical semantic shape and capability registry, while `room-constraint-resolver.js` converts authored and legacy room contributions into deterministic compatibility reports without depending on React, SVG, or generator geometry. Darken Composer, Dungeon Brief, and Map Generator now consume the same contracts and resolver output.
 
 Monster Composer still also has native graft data in `features/monster-composer/data/monster-grafts.js`; `features/monster-composer/data/monster-content-pack-feed.js` adapts shared registry components into Monster Composer concepts. This is a confirmed transitional model overlap.
 
@@ -60,4 +60,3 @@ CI is defined in `.github/workflows/ci.yml`: install with `npm ci`, install Play
 - Several critical browser-side behaviors are only partially covered by automated checks, especially map editor pointer/keyboard interaction and popout export behavior.
 - Existing older documentation and report files are contextual reference only; the code and generated repository map are the current architecture source of truth.
 - Legacy duplicate tests under `tests/tests/` and `tests/tests/tests/` have unresolved imports and are excluded by current Vitest configuration.
-

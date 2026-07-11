@@ -18,6 +18,14 @@ flowchart TD
   SharedContent --> MonsterComposer
   SharedContent --> Inspirations
   SharedContent --> InspirationStudio
+  RoomContracts[shared room contracts] --> InspirationStudio
+  RoomContracts --> MapGenerator
+  RoomContracts --> RoomResolver[pure room constraint resolver]
+  RoomResolver --> DungeonBrief[Darken Dungeon Brief handoff]
+  RoomResolver --> RoomEvaluation[Dark Places candidate and override evaluation]
+  RoomEvaluation --> AssignmentTx[Atomic assignment transaction]
+  AssignmentTx --> Darken
+  RoomEvaluation --> MapGenerator
   SharedI18n --> App
   SharedStyles --> App
 ```
@@ -31,7 +39,14 @@ flowchart LR
   StaticRegistry --> Registry[registry.js]
   Registry --> Adapter[content-repository.adapter.js]
   Registry --> Modules[inspiration modules]
-  Adapter --> Features[feature consumers]
+  Contracts[room archetype/design/shape/compatibility contracts] --> Resolver[room-constraint-resolver.js]
+  Contracts --> Features[Studio and Map Generator]
+  Resolver --> DungeonBrief[Darken Dungeon Brief]
+  Resolver --> RoomEvaluation[room-constraint-evaluation.js]
+  RoomEvaluation --> AssignmentTx[location-room-assignment-transaction.js]
+  AssignmentTx --> ComposerState[Composer assignments and derived room state]
+  RoomEvaluation --> Features
+  Adapter --> Features
 ```
 
 ## Map Generator
@@ -85,5 +100,4 @@ High fan-out baseline includes:
 
 ## Cycles And Boundary Notes
 
-No static circular dependency candidates were detected in the generated baseline. Cross-feature imports are mainly intentional through app routing, shared content adapters, and the Darken-to-map bridge. New cross-feature imports should prefer `shared/` contracts or explicit bridge modules.
-
+No static circular dependency candidates were detected in the generated baseline. Cross-feature imports are mainly intentional through app routing, shared content adapters, and the Darken-to-map bridge. Room metadata now crosses Studio, Dungeon Brief, and Map Generator through `shared/content/contracts/`, while the former generator modules remain compatibility wrappers. The pure constraint resolver is invoked by the feature-local `dungeon-room-constraints.js` boundary; Composer candidate evaluation and Map Generator manual-override validation pass through `room-constraint-evaluation.js`. Region assignment commits pass through `composer/model/location-room-assignment-transaction.js`, while `location-room-constraint-state.js` owns signatures, sanitation, and atomic history snapshots. New cross-feature imports should prefer `shared/` contracts or explicit bridge modules.

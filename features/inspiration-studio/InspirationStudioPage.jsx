@@ -6,9 +6,14 @@ import {
   SHARED_MONSTER_SLOTS,
   SPELLS_5E24_LEVEL_OPTIONS,
   SPELLS_5E24_SCHOOL_OPTIONS,
+  ROOM_ARCHETYPE_OPTIONS,
+  ROOM_DESIGN_MODIFIER_OPTIONS,
+  ROOM_DESIGN_SHAPE_KIND_OPTIONS,
+  compileRoomArchetypeToRoomDesign,
   getSpell5e24Name,
   loadContentPackSummaries,
   loadInspirationModules,
+  normalizeRoomDesign,
   normalizeSpell5e24Ref,
 } from "../../shared/content/content.index.js";
 
@@ -96,14 +101,6 @@ import {
   MONSTER_FRAME_FIT_VALUES,
   normalizeMonsterFrameFit,
 } from "../monster-composer/model/monster-frame-fit.js";
-import {
-  ROOM_ARCHETYPE_OPTIONS,
-} from "../darken-location/map-generator/map-generator.profile.js";
-import {
-  ROOM_DESIGN_SHAPE_KIND_OPTIONS,
-  compileRoomArchetypeToRoomDesign,
-  normalizeRoomDesign,
-} from "../darken-location/map-generator/map-generator.room-design.js";
 
 
 const ROOM_DESIGN_SHAPE_LABELS = Object.freeze({
@@ -154,20 +151,6 @@ const ROOM_DESIGN_ASPECT_OPTIONS = [
   ["tall", "Tall"],
   ["long", "Long"],
 ];
-
-const ROOM_DESIGN_MODIFIER_OPTIONS = Object.freeze([
-  "notch",
-  "ruined",
-  "side-alcoves",
-  "central-void",
-  "secret-recess",
-  "symmetrical",
-  "asymmetrical",
-  "chamfered-corners",
-  "pillared",
-  "partitioned",
-  "collapsed-edge",
-]);
 
 const ROOM_DESIGN_PROP_KIND_OPTIONS = [
   ["", "No required prop"],

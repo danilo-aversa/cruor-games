@@ -1,6 +1,7 @@
+import { getEffectiveRoomDesign, resolveDungeonRoomConstraints } from "./dungeon-room-constraints.js";
 import { normalizeDungeonTheme } from "./dungeon-theme.js";
 
-export const DUNGEON_BRIEF_SCHEMA_VERSION = "0.3";
+export const DUNGEON_BRIEF_SCHEMA_VERSION = "0.4";
 
 export const DUNGEON_BRIEF_MODE_THEME = "theme";
 export const DUNGEON_BRIEF_MODE_SCRATCH = "scratch";
@@ -451,17 +452,17 @@ export function createRoomBrief(input = {}, index = 0, { theme = null } = {}) {
       getMapInfluenceSource(metadata)?.roomArchetype ||
       "",
   });
-  const componentRoomDesigns = hasMergedMapInfluence
-    ? []
-    : assignedComponents.map((component) => getRoomDesignSource(component)).filter(Boolean);
-  const roomDesign = cloneOptionalPlainObject(
-    getRoomDesignSource(input) || getRoomDesignSource(metadata),
-  ) || (componentRoomDesigns.length === 1 ? cloneOptionalPlainObject(componentRoomDesigns[0]) : componentRoomDesigns.length ? {
-    props: {
-      required: componentRoomDesigns.flatMap((design) => design.props?.required || []),
-      optional: componentRoomDesigns.flatMap((design) => design.props?.optional || []),
-    },
-  } : null);
+  const sourceRoomDesign = getRoomDesignSource(input) || getRoomDesignSource(metadata);
+  const existingRoomConstraintResolution =
+    input.roomConstraintResolution || metadata.roomConstraintResolution || null;
+  const roomConstraintResolution = resolveDungeonRoomConstraints({
+    baseRegion: input,
+    directRoomArchetype,
+    assignedComponents,
+    existingResolution: existingRoomConstraintResolution,
+    reuseExistingResolution: Boolean(existingRoomConstraintResolution),
+  });
+  const roomDesign = getEffectiveRoomDesign(roomConstraintResolution, sourceRoomDesign);
   const mapInfluence = mergeMapInfluences([regionInfluence, ...componentInfluences]);
   const influencedRoomArchetype = getRoomArchetypeFromMapInfluence(mapInfluence);
   const roomArchetype = normalizeString(directRoomArchetype || influencedRoomArchetype);
@@ -488,6 +489,8 @@ export function createRoomBrief(input = {}, index = 0, { theme = null } = {}) {
     roomArchetypeSource,
     mapInfluence,
     roomDesign,
+    effectiveRoomDesign: cloneOptionalPlainObject(roomDesign),
+    roomConstraintResolution,
     sourceRegionId,
     sourceAnchors: unique(input.sourceAnchors || metadata.sourceAnchors || normalizedTheme.sourceAnchorIds),
     horror: unique(input.horror || metadata.horror),
@@ -572,6 +575,8 @@ export function roomBriefToRequiredRegion(roomBrief, index = 0) {
     roomArchetypeSource: room.roomArchetypeSource,
     mapInfluence: room.mapInfluence,
     roomDesign: room.roomDesign,
+    effectiveRoomDesign: room.effectiveRoomDesign,
+    roomConstraintResolution: room.roomConstraintResolution,
     connectors: room.connectors,
     density: room.density,
     links: room.links,
@@ -584,6 +589,8 @@ export function roomBriefToRequiredRegion(roomBrief, index = 0) {
       roomArchetypeSource: room.roomArchetypeSource,
       mapInfluence: room.mapInfluence,
       roomDesign: room.roomDesign,
+      effectiveRoomDesign: room.effectiveRoomDesign,
+      roomConstraintResolution: room.roomConstraintResolution,
       level: room.level,
       contexts: room.contexts,
       horror: room.horror,
@@ -630,6 +637,12 @@ export function createMapRequestFromDungeonBrief(dungeonBrief = {}, { snapshot =
       slotAssignments: snapshot?.slotAssignments || {},
       selectedComponents: asArray(brief.metadata?.selectedComponents || snapshot?.selectedComponents),
       dungeonConnections: brief.connections,
+      roomConstraintResolutions: requiredRegions.map((region) => ({
+        regionId: region.id,
+        sourceRegionId: region.sourceRegionId,
+        roomBriefId: region.metadata?.roomBriefId,
+        resolution: region.roomConstraintResolution,
+      })),
       regionComponentLinks: asArray(brief.metadata?.selectedComponents || snapshot?.selectedComponents)
         .filter((component) => component?.regionId)
         .map((component) => ({

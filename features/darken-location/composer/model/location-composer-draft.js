@@ -1,4 +1,5 @@
 import { toArray } from "./location-composer-state.js";
+import { sanitizeLocationRoomConstraintState } from "./location-room-constraint-state.js";
 
 const LOCATION_DRAFT_STORAGE_KEY = "cruor:darken-location-composer:draft:v1";
 
@@ -27,6 +28,13 @@ function createDraftStorageResult(ok, draft = null, reason = "") {
 }
 
 function createDraftStatePayload(state) {
+  const roomConstraintStateByRegion = sanitizeLocationRoomConstraintState({
+    regions: state.locationRegions || [],
+    roomConstraintStateByRegion: state.roomConstraintStateByRegion || {},
+    slotAssignments: state.slotAssignments || {},
+    manualOverrides: state.mapManualOverrides || null,
+  });
+
   return {
     workflow: state.workflow,
     title: state.title,
@@ -41,6 +49,7 @@ function createDraftStatePayload(state) {
     activeRegionId: state.activeRegionId,
     selectedComponentIds: Array.from(state.selectedComponentIds || []),
     slotAssignments: state.slotAssignments || {},
+    roomConstraintStateByRegion,
     locationRegions: Array.isArray(state.locationRegions) ? state.locationRegions : [],
   };
 }
@@ -101,7 +110,7 @@ export function restoreLocationDraftState(draft, fallbackState) {
   const draftState = draft?.state;
   if (!draftState) return fallbackState;
 
-  return {
+  const restoredState = {
     ...fallbackState,
     ...draftState,
     sourceAnchors: new Set(draftState.sourceAnchors || []),
@@ -111,6 +120,16 @@ export function restoreLocationDraftState(draft, fallbackState) {
     locationRegions: Array.isArray(draftState.locationRegions) && draftState.locationRegions.length
       ? draftState.locationRegions
       : fallbackState.locationRegions,
+  };
+
+  return {
+    ...restoredState,
+    roomConstraintStateByRegion: sanitizeLocationRoomConstraintState({
+      regions: restoredState.locationRegions,
+      roomConstraintStateByRegion: draftState.roomConstraintStateByRegion || {},
+      slotAssignments: restoredState.slotAssignments,
+      manualOverrides: restoredState.mapManualOverrides || null,
+    }),
   };
 }
 

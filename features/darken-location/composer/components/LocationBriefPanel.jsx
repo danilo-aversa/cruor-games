@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ComposerRail } from "../../../../components/ui/composer-rail.jsx";
+import { ComposerCollapsibleSection, ComposerRail } from "../../../../components/ui/composer-rail.jsx";
 import { getDungeonThemes } from "../../dungeon/dungeon.index.js";
 import {
   SCRATCH_ROOM_ROLE_OPTIONS,
@@ -849,18 +849,20 @@ export function LocationBriefPanel({
       side="left"
       variant="controls"
       surface
-      scrollable
+      scrollable={dungeonMode !== "theme"}
       className="location-composer__rail location-composer__rail--left location-map-frame-rail"
       aria-label="Location frame"
     >
       {modeControls ? modeControls : null}
 
       {!forcedMode ? (
-        <section className="location-frame-control-block location-frame-control-block--mode" aria-label="Build mode">
-          <div className="location-frame-control-block__head">
-            <span>Mode</span>
-          </div>
-          <div className="location-frame-selector-stack">
+        <ComposerCollapsibleSection
+          className="location-frame-control-block location-frame-control-block--mode"
+          title="Mode"
+          headerClassName="location-frame-control-block__head"
+          bodyClassName="location-frame-selector-stack"
+          aria-label="Build mode"
+        >
             <LocationBuildModeField
               mode={dungeonMode}
               onChange={(dungeonMode) =>
@@ -870,39 +872,42 @@ export function LocationBriefPanel({
                 }))
               }
             />
-          </div>
-        </section>
+        </ComposerCollapsibleSection>
       ) : null}
 
       {draftControls ? (
-        <section className="location-frame-control-block location-frame-control-block--draft" aria-label="Draft controls">
-          <div className="location-frame-control-block__head">
-            <span>Draft</span>
-          </div>
-          <div className="location-frame-selector-stack">
+        <ComposerCollapsibleSection
+          className="location-frame-control-block location-frame-control-block--draft"
+          title="Draft"
+          headerClassName="location-frame-control-block__head"
+          bodyClassName="location-frame-selector-stack"
+          aria-label="Draft controls"
+        >
             {draftControls}
-          </div>
-        </section>
+        </ComposerCollapsibleSection>
       ) : null}
 
       {dungeonMode === "theme" ? (
         <>
-          <section className="location-frame-control-block" aria-label="Location theme controls">
-            <div className="location-frame-control-block__head">
-              <span>Theme</span>
-            </div>
-            <div className="location-frame-selector-stack">
+          <ComposerCollapsibleSection
+          className="location-frame-control-block"
+          title="Theme"
+          headerClassName="location-frame-control-block__head"
+          bodyClassName="location-frame-selector-stack"
+          aria-label="Location theme controls"
+        >
               {themeChoiceField}
               {contextChoiceField}
               {horrorChoiceField}
-            </div>
-          </section>
+        </ComposerCollapsibleSection>
 
-          <section className="location-frame-control-block" aria-label="Location map controls">
-            <div className="location-frame-control-block__head">
-              <span>Map Plan</span>
-            </div>
-            <div className="location-frame-selector-stack">
+          <ComposerCollapsibleSection
+          className="location-frame-control-block"
+          title="Map Plan"
+          headerClassName="location-frame-control-block__head"
+          bodyClassName="location-frame-selector-stack"
+          aria-label="Location map controls"
+        >
               <LocationIconToggleField
                 help={LOCATION_FIELD_HELP.scale}
                 label="Scale"
@@ -954,26 +959,31 @@ export function LocationBriefPanel({
                   Generate Map
                 </button>
               ) : null}
-            </div>
-          </section>
+        </ComposerCollapsibleSection>
 
           {mapPlanDetails}
 
           {uiMode === "debug" && Array.isArray(state.locationRegions) && state.locationRegions.length ? (
-            <section className="location-frame-control-block location-frame-control-block--debug" aria-label="Debug map program">
-              <div className="location-frame-selector-stack">
+            <ComposerCollapsibleSection
+              className="location-frame-control-block location-frame-control-block--debug"
+              title="Debug Program"
+              headerClassName="location-frame-control-block__head"
+              bodyClassName="location-frame-selector-stack"
+              aria-label="Debug map program"
+            >
                 <LocationThemeLoadedProgram regions={state.locationRegions} />
-              </div>
-            </section>
+            </ComposerCollapsibleSection>
           ) : null}
         </>
       ) : (
         <>
-          <section className="location-frame-control-block" aria-label="Scratch room controls">
-            <div className="location-frame-control-block__head">
-              <span>Rooms</span>
-            </div>
-            <div className="location-frame-selector-stack">
+          <ComposerCollapsibleSection
+          className="location-frame-control-block"
+          title="Rooms"
+          headerClassName="location-frame-control-block__head"
+          bodyClassName="location-frame-selector-stack"
+          aria-label="Scratch room controls"
+        >
               {themeChoiceField}
               {contextChoiceField}
               {horrorChoiceField}
@@ -985,14 +995,15 @@ export function LocationBriefPanel({
                 disabled={!regions.length}
                 onGenerateMap={onGenerateScratchMap}
               />
-            </div>
-          </section>
+        </ComposerCollapsibleSection>
 
-          <section className="location-frame-control-block location-frame-control-block--room-list" aria-label="Scratch room navigation">
-            <div className="location-frame-control-block__head">
-              <span>Room List</span>
-            </div>
-            <div className="location-frame-selector-stack">
+          <ComposerCollapsibleSection
+          className="location-frame-control-block location-frame-control-block--room-list"
+          title="Room List"
+          headerClassName="location-frame-control-block__head"
+          bodyClassName="location-frame-selector-stack"
+          aria-label="Scratch room navigation"
+        >
               <LocationScratchRoomList
                 activeRegionId={state.activeRegionId}
                 regions={regions}
@@ -1001,8 +1012,7 @@ export function LocationBriefPanel({
                 onRemoveRoom={onRemoveScratchRoom}
                 onSelectRoom={onSelectScratchRoom}
               />
-            </div>
-          </section>
+        </ComposerCollapsibleSection>
         </>
       )}
     </ComposerRail>

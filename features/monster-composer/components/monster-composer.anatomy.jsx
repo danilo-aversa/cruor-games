@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ComposerRail } from "../../../components/ui/composer-rail.jsx";
+import { ComposerCollapsibleSection, ComposerRail } from "../../../components/ui/composer-rail.jsx";
 import {
   SLOTS,
   SILHOUETTE_SLOT_CARDS,
@@ -1739,11 +1739,13 @@ function FrameControls({
       className="anatomy-stage__column anatomy-stage__column--left monster-frame-controls"
       aria-label="Monster Frame controls"
     >
-      <section className="monster-frame-control-block">
-        <div className="monster-frame-control-block__head">
-          <span>Chassis</span>
-        </div>
-        <div className="monster-frame-selector-stack">
+      <ComposerCollapsibleSection
+        className="monster-frame-control-block"
+        title="Chassis"
+        headerClassName="monster-frame-control-block__head"
+        bodyClassName="monster-frame-selector-stack"
+        aria-label="Chassis controls"
+      >
           <FrameSelectField
             label="Family"
             value={typeId}
@@ -1767,14 +1769,15 @@ function FrameControls({
             isDisabled={(item) => isCreatureCategoryUnavailable(typeId, item)}
             onChange={(nextCategory) => setFrameValue(setCategory, nextCategory)}
           />
-        </div>
-      </section>
+      </ComposerCollapsibleSection>
 
-      <section className="monster-frame-control-block">
-        <div className="monster-frame-control-block__head">
-          <span>Combat Identity</span>
-        </div>
-        <div className="monster-frame-selector-stack">
+      <ComposerCollapsibleSection
+        className="monster-frame-control-block"
+        title="Combat Identity"
+        headerClassName="monster-frame-control-block__head"
+        bodyClassName="monster-frame-selector-stack"
+        aria-label="Combat Identity controls"
+      >
           <FrameIconToggleGroup
             label="Encounter Footprint"
             value={roleId}
@@ -1796,14 +1799,15 @@ function FrameControls({
             getDescription={(item) => item.summary || "Primary tactical behavior."}
             onChange={(nextTacticalRoleId) => setFrameValue(setTacticalRoleId, nextTacticalRoleId)}
           />
-        </div>
-      </section>
+      </ComposerCollapsibleSection>
 
-      <section className="monster-frame-control-block">
-        <div className="monster-frame-control-block__head">
-          <span>Threat Profile</span>
-        </div>
-        <div className="monster-frame-selector-stack">
+      <ComposerCollapsibleSection
+        className="monster-frame-control-block"
+        title="Threat Profile"
+        headerClassName="monster-frame-control-block__head"
+        bodyClassName="monster-frame-selector-stack"
+        aria-label="Threat Profile controls"
+      >
           <FrameCrControl
             value={targetCr}
             setTargetCr={setTargetCr}
@@ -1839,8 +1843,7 @@ function FrameControls({
             getDescription={(item) => item.summary || "How punishing the final build should feel."}
             onChange={(nextDangerId) => setFrameValue(setDangerId, nextDangerId)}
           />
-        </div>
-      </section>
+      </ComposerCollapsibleSection>
 
     </ComposerRail>
   );

@@ -65,12 +65,8 @@ export {
   validateContentRegistryStrict,
   validateStaticContentRepository,
 } from "./content-validation.js";
-export {
-  DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK,
-} from "./content-packs/decomposition-inspiration-module-pack.js";
-export {
-  SEDLEC_OSSUARY_INSPIRATION_MODULE_CONTENT_PACK,
-} from "./content-packs/sedlec-ossuary-inspiration-module-pack.js";
+export { DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK } from "./content-packs/decomposition-inspiration-module-pack.js";
+export { SEDLEC_OSSUARY_INSPIRATION_MODULE_CONTENT_PACK } from "./content-packs/sedlec-ossuary-inspiration-module-pack.js";
 export {
   CORE_CRUOR_CONTENT_PACK,
   CORE_CRUOR_CONTENT_PACK_ID,
@@ -167,7 +163,11 @@ export {
   sharedLocationRegionToLegacyTemplate,
 } from "./adapters/location-regions.js";
 export { SHARED_TAXONOMIES } from "./taxonomies.js";
-export { SHARED_DARKEN_LOCATION_SLOTS, SHARED_MONSTER_SLOTS, SHARED_WORKFLOWS } from "./workflows.js";
+export {
+  SHARED_DARKEN_LOCATION_SLOTS,
+  SHARED_MONSTER_SLOTS,
+  SHARED_WORKFLOWS,
+} from "./workflows.js";
 
 export {
   SPELLS_5E24,
@@ -217,3 +217,60 @@ export {
   WAX_DEATH_MASKS_INSPIRATION_MODULE,
   WOLF_SPIDERS_INSPIRATION_MODULE,
 } from "./inspiration-modules.js";
+
+export {
+  CRYPT_ROOM_ARCHETYPES,
+  ROOM_ARCHETYPES_BY_ID,
+  ROOM_ARCHETYPE_OPTIONS,
+  ROOM_ARCHETYPE_SCHEMA_VERSION,
+  getRoomArchetypeDefinition,
+  normalizeRoomArchetypeId,
+} from "./contracts/room-archetypes.js";
+export {
+  ROOM_DESIGN_MODIFIER_OPTIONS,
+  ROOM_DESIGN_SCHEMA_VERSION,
+  ROOM_DESIGN_SHAPE_KIND_OPTIONS,
+  compileRoomArchetypeToRoomDesign,
+  mergeRoomDesigns,
+  normalizeRoomDesign,
+  normalizeRoomDesignPropKind,
+  normalizeRoomDesignShapeKind,
+} from "./contracts/room-design.js";
+export {
+  ROOM_SHAPE_CAPABILITIES_SCHEMA_VERSION,
+  ROOM_SHAPE_DEFINITIONS,
+  ROOM_SHAPE_DEFINITIONS_BY_ID,
+  ROOM_SHAPE_KIND_OPTIONS,
+  ROOM_SHAPE_SUPPORT_STATUSES,
+  getRoomShapeDefinition,
+  getRoomShapeSupport,
+  getSupportedRoomModifiersByShape,
+  getSupportedRoomShapeDefinitions,
+  getSupportedRoomShapeKinds,
+} from "./contracts/room-shapes.js";
+export {
+  ROOM_CAPABILITIES_SCHEMA_VERSION,
+  createRoomCapabilitySet,
+  hasRoomCapability,
+  normalizeRoomCapabilityId,
+  normalizeRoomCapabilityIds,
+} from "./contracts/room-capabilities.js";
+export {
+  ROOM_COMPATIBILITY_CONFLICT_POLICIES,
+  ROOM_COMPATIBILITY_SCHEMA_VERSION,
+  ROOM_COMPATIBILITY_STATUSES,
+  ROOM_CONFLICT_REASON_CODES,
+  normalizeRoomCompatibility,
+  normalizeRoomConflictPolicy,
+} from "./contracts/room-compatibility.js";
+export {
+  ROOM_CONSTRAINT_RESOLVER_SCHEMA_VERSION,
+  ROOM_CONTRIBUTION_SCHEMA_VERSION,
+  ROOM_SIZE_SCALE_OPTIONS,
+  collectRoomContributions,
+  evaluateRoomComponentCandidate,
+  formatRoomConflictReason,
+  normalizeRoomContribution,
+  resolveEffectiveRoomProgram,
+  resolveRoomConstraints,
+} from "./contracts/room-constraint-resolver.js";

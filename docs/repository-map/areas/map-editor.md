@@ -7,7 +7,7 @@ Map editor behavior is concentrated in `features/darken-location/map-generator/m
 ## Responsibilities
 
 - Own selected room/corridor/anchor state.
-- Apply manual room position, size, shape, style, and corridor overrides.
+- Apply manual room position, size, semantic shape, style, and corridor overrides.
 - Handle dragging, endpoint edits, drag-gated intermediate waypoint insertion, self-avoiding waypoint routing, folded-corridor internal wall separation, invalid-route rejection, snapping, circular room behavior, selectable, corridor-constrained, persistently positioned stair-marker dragging, stair-marker reset/removal, context menus, zoom, pan, reset, tests modal, and debug recording.
 - Own map appearance controls, including Precise/Drawn walls, aligned root/flyout style menus, and optional stair-direction arrows.
 - Serialize rendered SVG and debug payloads for copy/download.
@@ -18,7 +18,7 @@ The page registers document/window listeners for pointer, keyboard, wheel, resiz
 
 ## Source Of Truth
 
-Generated map data comes from the pipeline. Editor state overlays manual overrides and preview-only geometry. Final rendering depends on the reconciled model passed to `MapSvg`.
+Generated map data comes from the pipeline. Editor state overlays manual overrides and preview-only geometry. Final rendering depends on the reconciled model passed to `MapSvg`. The room style menu reads the canonical supported-shape registry, so every engine-supported semantic shape is available without a duplicate UI list; shape-specific modifier conflicts are disabled by the shared resolver.
 
 ## Tests
 

@@ -1,5 +1,6 @@
 import { getSourceAnchorId } from "../../../shared/content/source-anchors.js";
 import { createDungeonBrief } from "./dungeon-brief.js";
+import { getEffectiveRoomDesign, resolveDungeonRoomConstraints } from "./dungeon-room-constraints.js";
 import { resolveDungeonThemeForSourceAnchors } from "./dungeon-theme.js";
 
 const GLOBAL_SLOT_IDS = new Set(["horrorPremise", "sensoryLayer", "visibleAnomaly", "reward"]);
@@ -37,6 +38,19 @@ function getRoomDesignSource(source = {}) {
     source.map?.roomDesign ||
     source.metadata?.roomDesign ||
     source.requestMetadata?.roomDesign ||
+    null
+  );
+}
+
+function getRoomCompatibilitySource(source = {}) {
+  if (!isPlainObject(source)) return null;
+  return (
+    source.roomCompatibility ||
+    source.location?.roomCompatibility ||
+    source.locationRegion?.roomCompatibility ||
+    source.map?.roomCompatibility ||
+    source.metadata?.roomCompatibility ||
+    source.requestMetadata?.roomCompatibility ||
     null
   );
 }
@@ -221,6 +235,8 @@ function normalizeAssignedComponents(slotAssignments, selectedComponents = []) {
           tags: asArray(component.tags),
           mapInfluence,
           roomDesign: cloneOptionalPlainObject(getRoomDesignSource(component)),
+          roomCompatibility: cloneOptionalPlainObject(getRoomCompatibilitySource(component)),
+          location: clonePlainObject(component.location),
           locationRegion: clonePlainObject(component.locationRegion),
           map: clonePlainObject(component.map),
         };
@@ -243,6 +259,8 @@ function normalizeAssignedComponents(slotAssignments, selectedComponents = []) {
       tags: asArray(component?.tags),
       mapInfluence: buildComponentMapInfluence(component),
       roomDesign: cloneOptionalPlainObject(getRoomDesignSource(component)),
+      roomCompatibility: cloneOptionalPlainObject(getRoomCompatibilitySource(component)),
+      location: clonePlainObject(component?.location),
       locationRegion: clonePlainObject(component?.locationRegion),
       map: clonePlainObject(component?.map),
     }))
@@ -295,17 +313,23 @@ function normalizeRegionToRoomBrief(region, index, assignedComponents = [], them
     roomArchetype: rawDirectRoomArchetype,
   });
   const componentInfluences = regionComponents.map((component) => component.mapInfluence).filter(Boolean);
-  const componentRoomDesigns = regionComponents.map((component) => component.roomDesign).filter(Boolean);
-  const roomDesign = cloneOptionalPlainObject(
+  const sourceRoomDesign =
     getRoomDesignSource(region) ||
-      getRoomDesignSource(regionLocation) ||
-      getRoomDesignSource(regionMap),
-  ) || (componentRoomDesigns.length === 1 ? componentRoomDesigns[0] : componentRoomDesigns.length ? {
-    props: {
-      required: componentRoomDesigns.flatMap((design) => design.props?.required || []),
-      optional: componentRoomDesigns.flatMap((design) => design.props?.optional || []),
-    },
-  } : null);
+    getRoomDesignSource(regionLocation) ||
+    getRoomDesignSource(regionMap);
+  const existingRoomConstraintResolution =
+    region.roomConstraintResolution ||
+    region.metadata?.roomConstraintResolution ||
+    region.requestMetadata?.roomConstraintResolution ||
+    null;
+  const roomConstraintResolution = resolveDungeonRoomConstraints({
+    baseRegion: region,
+    directRoomArchetype,
+    assignedComponents: regionComponents,
+    existingResolution: existingRoomConstraintResolution,
+    reuseExistingResolution: Boolean(existingRoomConstraintResolution),
+  });
+  const roomDesign = getEffectiveRoomDesign(roomConstraintResolution, sourceRoomDesign);
   const mapInfluence = mergeMapInfluences([regionMapInfluence, ...componentInfluences]);
   const roomArchetype = normalizeString(directRoomArchetype || getRoomArchetypeFromMapInfluence(mapInfluence));
   const roomArchetypeSource = directRoomArchetype ? "explicit" : roomArchetype ? "map-influence" : "";
@@ -326,6 +350,8 @@ function normalizeRegionToRoomBrief(region, index, assignedComponents = [], them
     roomArchetypeSource,
     mapInfluence,
     roomDesign,
+    effectiveRoomDesign: cloneOptionalPlainObject(roomDesign),
+    roomConstraintResolution,
     size: normalizeString(region.size, "Medium"),
     connectors: region.connectors,
     density: normalizeString(region.density),
@@ -973,6 +999,9 @@ export function createLocationRegionsFromDungeonBrief(dungeonBrief = {}) {
     roomArchetype: room.roomArchetype,
     roomArchetypeSource: room.roomArchetypeSource,
     mapInfluence: room.mapInfluence,
+    roomDesign: room.roomDesign,
+    effectiveRoomDesign: room.effectiveRoomDesign,
+    roomConstraintResolution: room.roomConstraintResolution,
     shape: room.shape,
     preferredShape: room.shape,
     size: room.size,

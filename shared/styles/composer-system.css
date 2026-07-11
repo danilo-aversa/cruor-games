@@ -24,50 +24,70 @@
   --cruor-composer-panel-bg: var(--cruor-ui-panel-bg, var(--cruor-color-r12-g10-b12-a740));
   --cruor-composer-panel-image: var(--cruor-ui-panel-image, var(--cruor-gradient-linear-029-a37c5252));
   --cruor-composer-panel-shadow: var(--cruor-ui-panel-shadow, 0 18px 52px var(--cruor-color-black-a340));
-  --cruor-composer-card-border-color: var(--cruor-ui-card-border-color, var(--cruor-color-milk-a075));
-  --cruor-composer-card-border-color-active: var(--cruor-ui-card-border-color-active, var(--cruor-color-blood-glow-a420));
-  --cruor-composer-card-border: var(--cruor-ui-card-border, 1px solid var(--cruor-composer-card-border-color));
-  --cruor-composer-card-border-active: var(--cruor-ui-card-border-active, 1px solid var(--cruor-composer-card-border-color-active));
-  --cruor-composer-card-bg: var(--cruor-ui-card-bg, var(--cruor-color-surface-soft-a540));
-  --cruor-composer-card-bg-active: var(--cruor-ui-card-bg-active, var(--cruor-color-blood-strong-a220));
-  --cruor-composer-card-shadow: var(--cruor-ui-card-shadow, inset 0 1px 0 var(--cruor-color-milk-a035));
-  --cruor-composer-card-shadow-active: var(--cruor-ui-card-shadow-active, 0 0 24px var(--cruor-color-blood-bright-a200));
-  --cruor-composer-slot-border-color: var(--cruor-ui-card-border-color, var(--cruor-color-milk-a075));
-  --cruor-composer-slot-border-color-active: var(--cruor-ui-card-border-color-active, var(--cruor-color-blood-glow-a420));
+  --cruor-composer-sidebar-block-background:
+    linear-gradient(180deg, rgba(51, 3, 12, 0.28) 0%, rgba(18, 9, 12, 0.84) 42%, rgba(7, 6, 7, 0.94) 100%);
+  --cruor-composer-sidebar-block-background-hero:
+    radial-gradient(circle at 18% 0%, rgba(190, 64, 82, 0.16), transparent 48%),
+    linear-gradient(180deg, rgba(51, 3, 12, 0.34) 0%, rgba(18, 9, 12, 0.88) 46%, rgba(7, 6, 7, 0.96) 100%);
+  --cruor-composer-sidebar-block-border-color: rgba(190, 64, 82, 0.18);
+  --cruor-composer-sidebar-block-border: 1px solid var(--cruor-composer-sidebar-block-border-color);
+  --cruor-composer-sidebar-block-highlight: rgba(240, 185, 194, 0.055);
+  --cruor-composer-sidebar-block-edge: rgba(190, 64, 82, 0.20);
+  --cruor-composer-sidebar-block-shadow:
+    inset 0 1px 0 var(--cruor-composer-sidebar-block-highlight),
+    0 7px 18px rgba(0, 0, 0, 0.18);
+  --cruor-composer-sidebar-inset-background:
+    linear-gradient(180deg, rgba(51, 3, 12, 0.09), rgba(0, 0, 0, 0.30));
+  --cruor-composer-sidebar-inset-border-color: rgba(240, 215, 220, 0.07);
+  --cruor-composer-section-transition-duration: 240ms;
+  --cruor-composer-section-transition-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  --cruor-composer-section-header-hover-background:
+    linear-gradient(90deg, rgba(190, 64, 82, 0.16), rgba(51, 3, 12, 0.05) 72%, transparent);
+  --cruor-composer-section-header-hover-border: rgba(190, 64, 82, 0.28);
+  --cruor-composer-section-chevron-color: var(--cruor-color-hex-8f7278);
+  --cruor-composer-section-chevron-color-active: var(--cruor-color-hex-f0b9c2);
+  --cruor-composer-card-border-color: var(--cruor-composer-sidebar-block-border-color);
+  --cruor-composer-card-border-color-active: var(--cruor-color-blood-glow-a420);
+  --cruor-composer-card-border: var(--cruor-composer-sidebar-block-border);
+  --cruor-composer-card-border-active: 1px solid var(--cruor-composer-card-border-color-active);
+  --cruor-composer-card-bg: var(--cruor-composer-sidebar-block-background);
+  --cruor-composer-card-bg-active: var(--cruor-gradient-radial-010-2b54c7d1), var(--cruor-color-blood-strong-a220);
+  --cruor-composer-card-shadow: var(--cruor-composer-sidebar-block-shadow);
+  --cruor-composer-card-shadow-active: 0 0 24px var(--cruor-color-blood-bright-a200);
+  --cruor-composer-slot-border-color: var(--cruor-color-milk-a110);
+  --cruor-composer-slot-border-color-active: var(--cruor-color-blood-glow-a420);
   --cruor-composer-slot-border: 1px solid var(--cruor-composer-slot-border-color);
   --cruor-composer-slot-border-active: 1px solid var(--cruor-composer-slot-border-color-active);
-  --cruor-composer-slot-bg: var(--cruor-ui-card-bg, var(--cruor-color-surface-soft-a540));
-  --cruor-composer-slot-bg-active: var(--cruor-ui-card-bg-active, var(--cruor-color-blood-strong-a220));
-  --cruor-composer-control-border-color: var(--cruor-ui-control-border-color, var(--cruor-color-milk-a090));
-  --cruor-composer-control-border-color-active: var(--cruor-ui-control-border-color-active, var(--cruor-color-blood-glow-a550));
-  --cruor-composer-control-border: var(--cruor-ui-control-border, 1px solid var(--cruor-composer-control-border-color));
-  --cruor-composer-control-border-active: var(--cruor-ui-control-border-active, 1px solid var(--cruor-composer-control-border-color-active));
-  --cruor-composer-control-bg: var(--cruor-ui-control-bg, var(--cruor-color-black-a220));
-  --cruor-composer-control-bg-active: var(--cruor-ui-control-bg-active, var(--cruor-color-blood-strong-a200));
-  --cruor-composer-control-text: var(--cruor-ui-control-text, var(--cruor-color-text-a580));
-  --cruor-composer-control-text-active: var(--cruor-ui-control-text-active, var(--cruor-color-hex-fff0f2));
-  --cruor-composer-chip-border-color: var(--cruor-ui-chip-border-color, var(--cruor-color-milk-a075));
-  --cruor-composer-chip-border: var(--cruor-ui-chip-border, 1px solid var(--cruor-composer-chip-border-color));
-  --cruor-composer-chip-bg: var(--cruor-ui-chip-bg, var(--cruor-color-white-a025));
-  --cruor-composer-chip-text: var(--cruor-ui-chip-text, var(--cruor-color-text-a560));
+  --cruor-composer-slot-bg: var(--cruor-gradient-linear-019-fbb0759c), var(--cruor-color-surface-soft-a720);
+  --cruor-composer-slot-bg-active: var(--cruor-gradient-radial-010-2b54c7d1), var(--cruor-color-blood-strong-a220);
+  --cruor-composer-control-border-color: var(--cruor-color-milk-a130);
+  --cruor-composer-control-border-color-active: var(--cruor-color-blood-glow-a550);
+  --cruor-composer-control-border: 1px solid var(--cruor-composer-control-border-color);
+  --cruor-composer-control-border-active: 1px solid var(--cruor-composer-control-border-color-active);
+  --cruor-composer-control-bg: var(--cruor-gradient-linear-026-1ad4f65f), var(--cruor-color-surface-soft-a780);
+  --cruor-composer-control-bg-active: var(--cruor-gradient-radial-007-f9fedda9), var(--cruor-color-blood-strong-a200);
+  --cruor-composer-control-text: var(--cruor-color-text-a580);
+  --cruor-composer-control-text-active: var(--cruor-color-hex-fff0f2);
+  --cruor-composer-chip-border-color: var(--cruor-color-milk-a100);
+  --cruor-composer-chip-border: 1px solid var(--cruor-composer-chip-border-color);
+  --cruor-composer-chip-bg: var(--cruor-color-white-a035);
+  --cruor-composer-chip-text: var(--cruor-color-text-a560);
 
   /* Composer rails */
   --cruor-composer-rail-gap: 12px;
   --cruor-composer-info-rail-gap: 10px;
   --cruor-composer-rail-scrollbar-thumb: var(--cruor-color-blood-bright-a520);
-  --cruor-composer-rail-scrollbar-track: var(--cruor-surface-card);
+  --cruor-composer-rail-scrollbar-track: var(--cruor-color-black-a240);
   --cruor-composer-rail-scroll-padding-inline-end: 0;
-  --cruor-composer-rail-surface-background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-black-a280, rgba(0, 0, 0, 0.28));
-  --cruor-composer-rail-surface-filter: blur(16px) saturate(118%);
   --cruor-composer-rail-card-gap: 10px;
-  --cruor-composer-rail-card-border: 1px solid var(--cruor-color-milk-a070);
-  --cruor-composer-rail-card-background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
+  --cruor-composer-rail-card-border: var(--cruor-composer-sidebar-block-border);
+  --cruor-composer-rail-card-background: var(--cruor-composer-sidebar-block-background);
   --cruor-composer-rail-card-padding: 11px;
-  --cruor-composer-rail-card-shadow: var(--cruor-shadow-box-075);
+  --cruor-composer-rail-card-shadow: var(--cruor-composer-sidebar-block-shadow);
   --cruor-composer-rail-card-backdrop-filter: none;
   --cruor-composer-rail-card-hero-min-height: 92px;
   --cruor-composer-rail-card-hero-padding-block: 12px;
-  --cruor-composer-rail-card-hero-background: var(--cruor-gradient-radial-044-30b4806e), var(--cruor-surface-card);
+  --cruor-composer-rail-card-hero-background: var(--cruor-composer-sidebar-block-background-hero);
   --cruor-composer-rail-card-hero-gap: 7px;
   --cruor-composer-rail-label-color: var(--cruor-color-hex-8f7278);
   --cruor-composer-rail-label-size: var(--text-size-xxs);
@@ -78,11 +98,22 @@
   --cruor-composer-rail-hero-subtitle-size: var(--text-size-s);
   --cruor-composer-fact-grid-gap: 6px;
   --cruor-composer-fact-row-gap: 10px;
-  --cruor-composer-fact-row-border: 1px solid var(--cruor-color-milk-a055);
-  --cruor-composer-fact-row-background: var(--cruor-surface-card);
+  --cruor-composer-fact-row-border: 1px solid var(--cruor-composer-sidebar-inset-border-color);
+  --cruor-composer-fact-row-background: var(--cruor-composer-sidebar-inset-background);
   --cruor-composer-fact-row-padding: 7px 8px;
   --cruor-composer-fact-value-color: var(--cruor-color-hex-fff0f2);
   --cruor-composer-fact-value-size: var(--text-size-s);
+  --cruor-composer-divider-color: var(--cruor-color-milk-a110);
+  --cruor-composer-inset-surface: var(--cruor-composer-sidebar-inset-background);
+  --cruor-composer-compatibility-soft-border: var(--cruor-color-blood-glow-a420);
+  --cruor-composer-compatibility-soft-background: var(--cruor-color-blood-strong-a220);
+  --cruor-composer-compatibility-soft-text: var(--cruor-color-hex-d0a2aa);
+  --cruor-composer-compatibility-avoid-border: var(--cruor-color-blood-glow-a640);
+  --cruor-composer-compatibility-avoid-background: var(--cruor-color-blood-strong-a360);
+  --cruor-composer-compatibility-avoid-text: var(--cruor-color-hex-f0d7dc);
+  --cruor-composer-compatibility-error-border: var(--cruor-color-rose-a640);
+  --cruor-composer-compatibility-error-background: var(--cruor-color-blood-bright-a320);
+  --cruor-composer-compatibility-error-text: var(--cruor-color-hex-f0b9c2);
 }
 
 /* Layout */
@@ -135,14 +166,6 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   padding-inline-end: var(--cruor-composer-rail-scroll-padding-inline-end);
-  scrollbar-width: thin;
-  scrollbar-color: var(--cruor-composer-rail-scrollbar-thumb) var(--cruor-composer-rail-scrollbar-track);
-}
-
-.cruor-composer-rail--surface {
-  background: var(--cruor-composer-rail-surface-background);
-  -webkit-backdrop-filter: var(--cruor-composer-rail-surface-filter);
-  backdrop-filter: var(--cruor-composer-rail-surface-filter);
 }
 
 .cruor-composer-rail-card {
