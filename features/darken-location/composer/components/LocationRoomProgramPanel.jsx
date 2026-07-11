@@ -1,3 +1,4 @@
+import { ComposerRail } from "../../../../components/ui/composer-rail.jsx";
 import { getRoomProgramEntries, getRoomProgramMetrics } from "../model/location-room-program.js";
 
 function cx(...classes) {
@@ -52,8 +53,12 @@ export function LocationRoomProgramPanel({
   const sideClass = side === "left" ? "location-composer__rail--left" : "location-composer__rail--right";
 
   return (
-    <aside
-      className={`cruor-composer-rail location-composer__rail ${sideClass} location-room-program-rail`}
+    <ComposerRail
+      side={side}
+      variant="inspector"
+      surface
+      scrollable
+      className={`location-composer__rail ${sideClass} location-room-program-rail`}
       aria-label="Room program"
     >
       <section className="location-room-program-card" aria-label="Room program list">
@@ -169,6 +174,6 @@ export function LocationRoomProgramPanel({
           Edit Frame
         </button>
       </section>
-    </aside>
+    </ComposerRail>
   );
 }

@@ -471,26 +471,26 @@ function ImpactMetaRows({ impact }) {
   return (
     <>
       {hasDelta(impact?.pressureDelta) ? (
-        <div className="meta-row">
-          <span className="meta-label">Pressure</span>
-          <span className="meta-values">
-            <span className="meta-value strong-chip">{signedDelta(impact.pressureDelta)}</span>
+        <div className="meta-row cruor-composer-meta-row">
+          <span className="meta-label cruor-composer-meta-label">Pressure</span>
+          <span className="meta-values cruor-composer-meta-values">
+            <span className="meta-value cruor-composer-meta-chip strong-chip">{signedDelta(impact.pressureDelta)}</span>
           </span>
         </div>
       ) : null}
       {hasDelta(impact?.complexityDelta) ? (
-        <div className="meta-row">
-          <span className="meta-label">Complexity</span>
-          <span className="meta-values">
-            <span className="meta-value strong-chip">{signedDelta(impact.complexityDelta)}</span>
+        <div className="meta-row cruor-composer-meta-row">
+          <span className="meta-label cruor-composer-meta-label">Complexity</span>
+          <span className="meta-values cruor-composer-meta-values">
+            <span className="meta-value cruor-composer-meta-chip strong-chip">{signedDelta(impact.complexityDelta)}</span>
           </span>
         </div>
       ) : null}
       {impact?.warningsAdded > 0 ? (
-        <div className="meta-row">
-          <span className="meta-label">Warnings</span>
-          <span className="meta-values">
-            <span className="meta-value danger-chip">
+        <div className="meta-row cruor-composer-meta-row">
+          <span className="meta-label cruor-composer-meta-label">Warnings</span>
+          <span className="meta-values cruor-composer-meta-values">
+            <span className="meta-value cruor-composer-meta-chip danger-chip">
               Adds {impact.warningsAdded} warning{impact.warningsAdded === 1 ? "" : "s"}
             </span>
           </span>
@@ -504,9 +504,9 @@ function MetaValues({ values, chipClass = "", formatter = titleCaseLocation }) {
   const list = toArray(values).filter(Boolean);
   if (!list.length) return null;
   return (
-    <span className="meta-values">
+    <span className="meta-values cruor-composer-meta-values">
       {list.map((value, index) => (
-        <span className={cx("meta-value", chipClass)} key={`${String(value)}-${index}`}>
+        <span className={cx("meta-value cruor-composer-meta-chip", chipClass)} key={`${String(value)}-${index}`}>
           {formatter(value)}
         </span>
       ))}
@@ -553,7 +553,7 @@ function LocationComponentCard({
   return (
     <article
       className={cx(
-        "component-card",
+        "component-card cruor-composer-component-card",
         selected && "in-build",
         selected && "is-active",
         replaceAction && "slot-full",
@@ -569,7 +569,7 @@ function LocationComponentCard({
       key={getComponentKey(component)}
     >
       <button
-        className="component-toggle-btn"
+        className="component-toggle-btn cruor-composer-component-action"
         type="button"
         aria-label={selected ? `${getComponentTitle(component)} already assigned` : `${actionLabel} ${getComponentTitle(component)}`}
         data-testid={selected ? "dark-places-component-remove" : "dark-places-component-add"}
@@ -584,15 +584,15 @@ function LocationComponentCard({
         <div className="component-title-stack">
           <h3>{getComponentTitle(component)}</h3>
         </div>
-        {compatibility ? <span className={`compatibility-badge ${compatibility.kind}`}>{compatibility.label}</span> : null}
+        {compatibility ? <span className={`compatibility-badge cruor-composer-compatibility-badge ${compatibility.kind}`}>{compatibility.label}</span> : null}
       </div>
 
-      {getComponentSummary(component) ? <p className="summary">{getComponentSummary(component)}</p> : null}
-      {mapInfluencePreviewText ? <p className="compatibility-note" data-map-influence-preview="true">{mapInfluencePreviewText}</p> : null}
-      {replaceAction ? <p className="compatibility-note">This slot is full. Remove a component first.</p> : null}
+      {getComponentSummary(component) ? <p className="summary cruor-composer-component-summary">{getComponentSummary(component)}</p> : null}
+      {mapInfluencePreviewText ? <p className="compatibility-note cruor-composer-compatibility-note" data-map-influence-preview="true">{mapInfluencePreviewText}</p> : null}
+      {replaceAction ? <p className="compatibility-note cruor-composer-compatibility-note">This slot is full. Remove a component first.</p> : null}
 
       <div
-        className="component-details"
+        className="component-details cruor-composer-component-details"
         onPointerEnter={() => setDetailsOpen(true)}
         onPointerLeave={() => setDetailsOpen(false)}
         onFocus={() => setDetailsOpen(true)}
@@ -603,112 +603,112 @@ function LocationComponentCard({
         }}
       >
         <button
-          className="component-details__trigger"
+          className="component-details__trigger cruor-composer-component-details-trigger"
           type="button"
           aria-expanded={detailsOpen}
           aria-haspopup="dialog"
         >
           Details
         </button>
-        <div className="meta-list component-details__panel" aria-label="Component metadata">
-          <div className="meta-row">
-            <span className="meta-label">Inspiration</span>
-            <span className="meta-values">
-              <span className="meta-value source-chip">{getPrimarySourceLabel(component)}</span>
+        <div className="meta-list component-details__panel cruor-composer-meta-list cruor-composer-component-details-panel" aria-label="Component metadata">
+          <div className="meta-row cruor-composer-meta-row">
+            <span className="meta-label cruor-composer-meta-label">Inspiration</span>
+            <span className="meta-values cruor-composer-meta-values">
+              <span className="meta-value cruor-composer-meta-chip source-chip">{getPrimarySourceLabel(component)}</span>
             </span>
           </div>
-          <div className="meta-row">
-            <span className="meta-label">Content Pack</span>
-            <span className="meta-values">
-              <span className="meta-value pack-chip">{getContentPackTitle(component)}</span>
-              {component?.contentPack?.id ? <span className="meta-value">Source: {titleCaseLocation(component.contentPack.id)}</span> : null}
+          <div className="meta-row cruor-composer-meta-row">
+            <span className="meta-label cruor-composer-meta-label">Content Pack</span>
+            <span className="meta-values cruor-composer-meta-values">
+              <span className="meta-value cruor-composer-meta-chip pack-chip">{getContentPackTitle(component)}</span>
+              {component?.contentPack?.id ? <span className="meta-value cruor-composer-meta-chip">Source: {titleCaseLocation(component.contentPack.id)}</span> : null}
             </span>
           </div>
           <ImpactMetaRows impact={impact} />
           {mapInfluenceLabel || mapInfluenceArchetypes.length || forbiddenArchetypes.length ? (
-            <div className="meta-row">
-              <span className="meta-label">Map Influence</span>
-              <span className="meta-values">
-                {mapInfluenceLabel ? <span className="meta-value strong-chip">{mapInfluenceLabel}</span> : null}
-                {mapInfluence?.weight ? <span className="meta-value">Weight {mapInfluence.weight}</span> : null}
-                {forbiddenArchetypes.length ? <span className="meta-value danger-chip">Avoids {forbiddenArchetypes.map(formatLocationMetaToken).join(", ")}</span> : null}
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Map Influence</span>
+              <span className="meta-values cruor-composer-meta-values">
+                {mapInfluenceLabel ? <span className="meta-value cruor-composer-meta-chip strong-chip">{mapInfluenceLabel}</span> : null}
+                {mapInfluence?.weight ? <span className="meta-value cruor-composer-meta-chip">Weight {mapInfluence.weight}</span> : null}
+                {forbiddenArchetypes.length ? <span className="meta-value cruor-composer-meta-chip danger-chip">Avoids {forbiddenArchetypes.map(formatLocationMetaToken).join(", ")}</span> : null}
               </span>
             </div>
           ) : null}
           {compatibility || compatibilityReasons.length ? (
-            <div className="meta-row">
-              <span className="meta-label">Compatibility</span>
-              <span className="meta-values">
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Compatibility</span>
+              <span className="meta-values cruor-composer-meta-values">
                 {compatibility ? (
-                  <span className="meta-value danger-chip">
+                  <span className="meta-value cruor-composer-meta-chip danger-chip">
                     {compatibility.label}: {compatibility.message}
                   </span>
                 ) : null}
                 {compatibilityReasons.map((reason) => (
-                  <span className="meta-value" key={`reason-${reason}`}>{reason}</span>
+                  <span className="meta-value cruor-composer-meta-chip" key={`reason-${reason}`}>{reason}</span>
                 ))}
               </span>
             </div>
           ) : null}
-          <div className="meta-row">
-            <span className="meta-label">Slot</span>
-            <span className="meta-values">
-              <span className="meta-value strong-chip">{titleCaseLocation(component?.location?.slot || slot?.label || slot?.id)}</span>
-              {component?.location?.outputSection ? <span className="meta-value">{component.location.outputSection}</span> : null}
+          <div className="meta-row cruor-composer-meta-row">
+            <span className="meta-label cruor-composer-meta-label">Slot</span>
+            <span className="meta-values cruor-composer-meta-values">
+              <span className="meta-value cruor-composer-meta-chip strong-chip">{titleCaseLocation(component?.location?.slot || slot?.label || slot?.id)}</span>
+              {component?.location?.outputSection ? <span className="meta-value cruor-composer-meta-chip">{component.location.outputSection}</span> : null}
             </span>
           </div>
           {tagValues.length ? (
-            <div className="meta-row">
-              <span className="meta-label">Tags</span>
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Tags</span>
               <MetaValues values={tagValues} />
             </div>
           ) : null}
           {contextValues.length ? (
-            <div className="meta-row">
-              <span className="meta-label">Contexts</span>
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Contexts</span>
               <MetaValues values={contextValues} />
             </div>
           ) : null}
           {horrorValues.length ? (
-            <div className="meta-row">
-              <span className="meta-label">Horror</span>
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Horror</span>
               <MetaValues values={horrorValues} />
             </div>
           ) : null}
           {motifValues.length ? (
-            <div className="meta-row">
-              <span className="meta-label">Motifs</span>
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Motifs</span>
               <MetaValues values={motifValues} />
             </div>
           ) : null}
           {sourceTypeValues.length ? (
-            <div className="meta-row">
-              <span className="meta-label">Sources</span>
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Sources</span>
               <MetaValues values={sourceTypeValues} />
             </div>
           ) : null}
           {slotValues.length > 1 ? (
-            <div className="meta-row">
-              <span className="meta-label">Locks</span>
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Locks</span>
               <MetaValues values={slotValues.map((value) => `Wants ${titleCaseLocation(value)}`)} />
             </div>
           ) : null}
           {mechanicText ? (
-            <div className="meta-row">
-              <span className="meta-label">Rules</span>
-              <span className="meta-values"><span className="meta-value danger-chip">{mechanicText}</span></span>
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Rules</span>
+              <span className="meta-values cruor-composer-meta-values"><span className="meta-value cruor-composer-meta-chip danger-chip">{mechanicText}</span></span>
             </div>
           ) : null}
           {tableText ? (
-            <div className="meta-row">
-              <span className="meta-label">Table</span>
-              <span className="meta-values"><span className="meta-value">{tableText}</span></span>
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Table</span>
+              <span className="meta-values cruor-composer-meta-values"><span className="meta-value cruor-composer-meta-chip">{tableText}</span></span>
             </div>
           ) : null}
           {narrativeText ? (
-            <div className="meta-row">
-              <span className="meta-label">Notes</span>
-              <span className="meta-values"><span className="meta-value">{narrativeText}</span></span>
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Notes</span>
+              <span className="meta-values cruor-composer-meta-values"><span className="meta-value cruor-composer-meta-chip">{narrativeText}</span></span>
             </div>
           ) : null}
         </div>
@@ -1017,9 +1017,9 @@ export function LocationComponentPickerModal({
               {regionScoped ? <p>{slotContext.slotDescription}</p> : null}
               <p data-map-influence-target-preview="true">{targetPreviewText}</p>
             </div>
-            <div className="component-navigator-modal__head-actions">
+            <div className="component-navigator-modal__head-actions cruor-composer-navigator-head-actions">
               <button
-                className={cx("icon-btn navigator-filter-btn", filtersOpen && "active")}
+                className={cx("icon-btn navigator-filter-btn cruor-composer-icon-button cruor-composer-icon-button--filter", filtersOpen && "active")}
                 type="button"
                 aria-label="Filter components"
                 aria-expanded={filtersOpen}
@@ -1029,7 +1029,7 @@ export function LocationComponentPickerModal({
                 <SlidersHorizontal aria-hidden="true" />
               </button>
               <button
-                className="icon-btn"
+                className="icon-btn cruor-composer-icon-button"
                 type="button"
                 aria-label="Close Component Navigator"
                 onClick={onClose}
@@ -1046,6 +1046,7 @@ export function LocationComponentPickerModal({
                 <div className="search-wrap">
                   <input
                     type="search"
+                    className="cruor-composer-navigator-search-input"
                     value={search}
                     placeholder="Search components…"
                     aria-label="Search location components"
@@ -1053,7 +1054,7 @@ export function LocationComponentPickerModal({
                     onChange={(event) => setSearch(event.target.value)}
                   />
                 </div>
-                <div className="navigator-count" aria-label="Visible component count">
+                <div className="navigator-count cruor-composer-navigator-count" aria-label="Visible component count">
                   {displayedDecisionRows.length}
                 </div>
               </div>
@@ -1062,7 +1063,7 @@ export function LocationComponentPickerModal({
                 <div className="tag-filter-row__head">
                   <span>Component Filters</span>
                   <button
-                    className="tag-clear-btn"
+                    className="tag-clear-btn cruor-composer-filter-clear"
                     type="button"
                     disabled={!hasActiveFilters}
                     onClick={clearFilters}
@@ -1076,10 +1077,10 @@ export function LocationComponentPickerModal({
                       <div className="tag-filter-row__head">
                         <strong>Inspiration</strong>
                         <span>
-                          <button className="tag-clear-btn" type="button" onClick={selectAllSourceFilters}>
+                          <button className="tag-clear-btn cruor-composer-filter-clear" type="button" onClick={selectAllSourceFilters}>
                             All
                           </button>
-                          <button className="tag-clear-btn" type="button" onClick={clearSourceFilters}>
+                          <button className="tag-clear-btn cruor-composer-filter-clear" type="button" onClick={clearSourceFilters}>
                             None
                           </button>
                         </span>
@@ -1089,7 +1090,7 @@ export function LocationComponentPickerModal({
                           const isActive = !activeSourceFilterSet.size || activeSourceFilterSet.has(item.id);
                           return (
                             <button
-                              className={cx("navigator-filter-chip navigator-filter-chip--stacked", isActive && "active")}
+                              className={cx("navigator-filter-chip navigator-filter-chip--stacked cruor-composer-filter-chip", isActive && "active")}
                               key={item.id}
                               type="button"
                               aria-pressed={isActive}
@@ -1110,7 +1111,7 @@ export function LocationComponentPickerModal({
                       <div className="filter-chip-grid source-filter">
                         {packOptions.map((pack) => (
                           <button
-                            className={cx("navigator-filter-chip", packFilter === pack.id && "active")}
+                            className={cx("navigator-filter-chip cruor-composer-filter-chip", packFilter === pack.id && "active")}
                             key={pack.id}
                             type="button"
                             aria-pressed={packFilter === pack.id}
@@ -1135,7 +1136,7 @@ export function LocationComponentPickerModal({
                         ["spicy", "Spicy"],
                       ].map(([value, label]) => (
                         <button
-                          className={cx("navigator-filter-chip", pickFilter === value && "active")}
+                          className={cx("navigator-filter-chip cruor-composer-filter-chip", pickFilter === value && "active")}
                           key={value}
                           type="button"
                           aria-pressed={pickFilter === value}
@@ -1152,7 +1153,7 @@ export function LocationComponentPickerModal({
             </div>
           ) : null}
 
-          <div className="component-list component-navigator-modal__list cruor-scroll-surface">
+          <div className="component-list component-navigator-modal__list cruor-composer-component-list cruor-scroll-surface">
             {displayedDecisionRows.length ? (
               displayedDecisionRows.map(({ decision, key, tier }) => renderComponentCard(decision, tier, key))
             ) : (

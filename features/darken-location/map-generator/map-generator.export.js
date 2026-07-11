@@ -177,6 +177,7 @@ export function normalizeMapUiState(uiState = {}, generatedMap = null) {
   } else {
     normalized.fadeOtherLevels = Boolean(source.fadeOtherLevels);
   }
+  normalized.showStairArrows = source.showStairArrows === true;
   return normalized;
 }
 

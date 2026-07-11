@@ -1,5 +1,6 @@
 @import "../../../shared/styles/colors.css";
 
+
 .location-composer__intro p {
   margin: 0;
   color: var(--cruor-color-text-a520);
@@ -19,7 +20,7 @@
 
 .location-composer__rail {
   display: grid;
-  gap: 12px;
+  gap: var(--cruor-composer-rail-gap);
   min-height: var(--location-stage-min-height);
 }
 
@@ -1929,48 +1930,49 @@
   display: grid;
   align-content: start;
   grid-template-rows: none;
-  gap: 10px;
+  gap: var(--cruor-composer-info-rail-gap);
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
+  scrollbar-color: var(--cruor-composer-rail-scrollbar-thumb) var(--cruor-composer-rail-scrollbar-track);
 }
 
 .location-frame-info-card {
+  --cruor-composer-rail-card-backdrop-filter: blur(16px) saturate(118%);
   display: grid;
-  gap: 10px;
-  border: 1px solid var(--cruor-color-milk-a070);
-  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
-  padding: 11px;
-  box-shadow: var(--cruor-shadow-box-075);
-  -webkit-backdrop-filter: blur(16px) saturate(118%);
-  backdrop-filter: blur(16px) saturate(118%);
+  gap: var(--cruor-composer-rail-card-gap);
+  border: var(--cruor-composer-rail-card-border);
+  background: var(--cruor-composer-rail-card-background);
+  padding: var(--cruor-composer-rail-card-padding);
+  box-shadow: var(--cruor-composer-rail-card-shadow);
+  -webkit-backdrop-filter: var(--cruor-composer-rail-card-backdrop-filter);
+  backdrop-filter: var(--cruor-composer-rail-card-backdrop-filter);
 }
 
 .location-frame-info-card--hero {
   box-sizing: border-box;
-  min-height: 92px;
+  min-height: var(--cruor-composer-rail-card-hero-min-height);
   align-content: center;
   overflow: hidden;
-  padding-block: 12px;
-  background: var(--cruor-gradient-radial-044-30b4806e), var(--cruor-surface-card);
-  gap: 7px;
+  padding-block: var(--cruor-composer-rail-card-hero-padding-block);
+  background: var(--cruor-composer-rail-card-hero-background);
+  gap: var(--cruor-composer-rail-card-hero-gap);
 }
 
 .location-frame-info-card > span {
-  color: var(--cruor-color-hex-8f7278);
-  font-size: var(--text-size-xxs);
+  color: var(--cruor-composer-rail-label-color);
+  font-size: var(--cruor-composer-rail-label-size);
   font-weight: 950;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--cruor-composer-rail-label-tracking);
   line-height: 1;
   text-transform: uppercase;
 }
 
 .location-frame-info-row small {
   overflow: hidden;
-  color: var(--cruor-color-hex-8f7278);
+  color: var(--cruor-composer-rail-label-color);
   font-size: var(--text-size-xs);
   font-weight: 950;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--cruor-composer-rail-label-tracking);
   line-height: 1;
   text-overflow: ellipsis;
   text-transform: uppercase;
@@ -1987,17 +1989,17 @@
 }
 
 .location-frame-info-card--hero strong {
-  color: var(--cruor-color-hex-fff0f2);
+  color: var(--cruor-composer-rail-hero-title-color);
   font-family: var(--display);
-  font-size: var(--text-size-fluid-15);
+  font-size: var(--cruor-composer-rail-hero-title-size);
   font-weight: 950;
   letter-spacing: -0.055em;
   line-height: 0.92;
 }
 
 .location-frame-info-card--hero em {
-  color: var(--cruor-color-hex-d0a2aa);
-  font-size: var(--text-size-s);
+  color: var(--cruor-composer-rail-hero-subtitle-color);
+  font-size: var(--cruor-composer-rail-hero-subtitle-size);
   font-style: normal;
   font-weight: 950;
   letter-spacing: 0.08em;
@@ -2015,25 +2017,25 @@
 
 .location-frame-info-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 6px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--cruor-composer-fact-grid-gap);
 }
 
 .location-frame-info-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 10px;
+  gap: var(--cruor-composer-fact-row-gap);
   min-width: 0;
-  border: 1px solid var(--cruor-color-milk-a055);
-  background: var(--cruor-surface-card);
-  padding: 7px 8px;
+  border: var(--cruor-composer-fact-row-border);
+  background: var(--cruor-composer-fact-row-background);
+  padding: var(--cruor-composer-fact-row-padding);
 }
 
 .location-frame-info-row strong {
   overflow: hidden;
-  color: var(--cruor-color-hex-fff0f2);
-  font-size: var(--text-size-s);
+  color: var(--cruor-composer-fact-value-color);
+  font-size: var(--cruor-composer-fact-value-size);
   font-weight: 950;
   text-align: right;
   text-overflow: ellipsis;
@@ -3137,7 +3139,7 @@
   z-index: 12;
   align-self: auto;
   overflow: auto;
-  padding-right: 2px;
+  padding-inline-end: var(--cruor-composer-rail-scroll-padding-inline-end);
   scrollbar-width: thin;
   scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
   grid-area: left;
@@ -3149,7 +3151,7 @@
   z-index: 12;
   align-self: auto;
   overflow: auto;
-  padding-right: 2px;
+  padding-inline-end: var(--cruor-composer-rail-scroll-padding-inline-end);
   scrollbar-width: thin;
   scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
   grid-area: right;
@@ -5192,7 +5194,7 @@
   overflow-x: visible;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding-right: 4px;
+  padding-inline-end: var(--cruor-composer-rail-scroll-padding-inline-end);
 }
 
 .location-map-frame-rail .location-frame-control-block {
@@ -6490,16 +6492,16 @@
   display: grid;
   grid-auto-rows: max-content;
   grid-template-rows: none;
-  gap: 10px;
+  gap: var(--cruor-composer-info-rail-gap);
   height: auto;
   min-height: 0;
   max-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding-right: 2px;
+  padding-inline-end: var(--cruor-composer-rail-scroll-padding-inline-end);
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
+  scrollbar-color: var(--cruor-composer-rail-scrollbar-thumb) var(--cruor-composer-rail-scrollbar-track);
 }
 
 .location-map-stage > .location-map-frame-rail {
@@ -6512,14 +6514,14 @@
   display: grid;
   grid-auto-rows: max-content;
   grid-template-rows: none;
-  gap: 10px;
+  gap: var(--cruor-composer-info-rail-gap);
   height: auto;
   min-height: 0;
   max-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding-right: 2px;
+  padding-inline-end: var(--cruor-composer-rail-scroll-padding-inline-end);
 }
 
 .location-map-stage > .location-map-details-rail,
@@ -8013,7 +8015,7 @@
   min-height: 0;
   max-height: 100%;
   overflow: hidden;
-  padding-right: 0;
+  padding-inline-end: var(--cruor-composer-rail-scroll-padding-inline-end);
 }
 
 .location-composer[data-location-builder-mode="theme"] .location-map-stage > .location-map-frame-rail > .location-frame-control-block {
@@ -8071,9 +8073,9 @@
 .location-map-stage > .location-composer__rail,
 .cruor-composer-rail.location-frame-info,
 .location-map-frame-rail {
-  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-black-a280, rgba(0, 0, 0, 0.28));
-  -webkit-backdrop-filter: blur(16px) saturate(118%);
-  backdrop-filter: blur(16px) saturate(118%);
+  background: var(--cruor-composer-rail-surface-background);
+  -webkit-backdrop-filter: var(--cruor-composer-rail-surface-filter);
+  backdrop-filter: var(--cruor-composer-rail-surface-filter);
 }
 
 .location-brief-panel,

@@ -147,6 +147,7 @@ import {
   serializeManualAnchor,
   normalizeManualWaypoint,
   isValidPoint,
+  isSelfAvoidingPathThroughPoints,
   isOrganicCorridor,
   getCorridorTopologyCells,
   createDoorFromAnchor,
@@ -365,7 +366,7 @@ function MapDebugRecorderPanel({
 
   return (
     <section
-      className="map-debug-recorder location-frame-info-card"
+      className="map-debug-recorder cruor-composer-rail-card location-frame-info-card"
       data-debug-recorder-tools="coordinates-svg-v3"
       aria-label="Dark Places debug recorder"
     >
@@ -583,6 +584,8 @@ function pickOne(rng, values) {
   return values[Math.floor(rng() * values.length)];
 }
 
+const CORRIDOR_WAYPOINT_INSERT_DRAG_THRESHOLD_PX = 3;
+
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
@@ -635,6 +638,11 @@ const WALL_DRAWING_STYLE_OPTIONS = Object.freeze([
   Object.freeze({ value: "precise", label: "Precise", icon: "ruler-combined" }),
 ]);
 
+const STAIR_ARROW_VISIBILITY_OPTIONS = Object.freeze([
+  Object.freeze({ value: "hidden", label: "Hidden", icon: "eye-slash" }),
+  Object.freeze({ value: "visible", label: "Visible", icon: "arrow-up" }),
+]);
+
 const HATCH_SHADOW_COLOR_OPTIONS = Object.freeze([
   Object.freeze({ value: "default", label: "Default", icon: "circle-half-stroke" }),
   Object.freeze({ value: "black", label: "Black", icon: "circle" }),
@@ -644,7 +652,7 @@ const HATCH_SHADOW_COLOR_OPTIONS = Object.freeze([
 ]);
 
 function normalizeWallDrawingStyle(value) {
-  return value === "precise" ? "precise" : "drawn";
+  return value === "drawn" ? "drawn" : "precise";
 }
 
 function normalizeHatchShadowColor(value) {
@@ -751,7 +759,8 @@ export function MapViewport({
   gridWeight = DEFAULT_CONFIG.gridWeight,
   crosshatchStyle = "classic",
   crosshatchOpacity = 0.72,
-  wallDrawingStyle = "drawn",
+  wallDrawingStyle = "precise",
+  showStairArrows = false,
   hatchShadowColor = "default",
   selectedRegionId = "",
   onSelectedRegionChange = null,
@@ -2867,7 +2876,6 @@ export function MapViewport({
     event.preventDefault();
     event.stopPropagation();
     setSelectedStairMarker(null);
-    onEditStart?.();
     const id = `new-waypoint-${handle.corridor.id}-${handle.insertIndex}`;
     const startPoint = handle.point;
     const drag = {
@@ -2879,6 +2887,9 @@ export function MapViewport({
       insertIndex: handle.insertIndex,
       source: "manual",
       startPoint,
+      startClientPoint: { x: event.clientX, y: event.clientY },
+      hasMoved: false,
+      editStarted: false,
     };
     viewportDebugEvent("drag:start waypoint insert", {
       drag,
@@ -2886,7 +2897,7 @@ export function MapViewport({
       handleCell: summarizeViewportDebugCell(handle.cell),
     });
     corridorDragRef.current = drag;
-    setCorridorDragPreviewState(createCorridorDragPreview(drag, startPoint));
+    setCorridorDragPreviewState(null);
     try {
       event.currentTarget.setPointerCapture(event.pointerId);
     } catch (error) {
@@ -2934,6 +2945,22 @@ export function MapViewport({
     event.stopPropagation();
     const point = clientToMapPoint(event);
     if (!point) return true;
+    if (drag.type === "waypoint-insert" && !drag.hasMoved) {
+      const startClientPoint = drag.startClientPoint;
+      const clientDistance =
+        startClientPoint &&
+        Number.isFinite(event.clientX) &&
+        Number.isFinite(event.clientY)
+          ? Math.hypot(
+              event.clientX - startClientPoint.x,
+              event.clientY - startClientPoint.y,
+            )
+          : 0;
+      if (clientDistance <= CORRIDOR_WAYPOINT_INSERT_DRAG_THRESHOLD_PX) return true;
+      drag.hasMoved = true;
+      drag.editStarted = true;
+      onEditStart?.();
+    }
     scheduleCorridorDragPreview(drag, point);
     return true;
   }
@@ -2949,20 +2976,44 @@ export function MapViewport({
     }
     const pending = pendingCorridorMoveRef.current || corridorDragPreviewRef.current;
     pendingCorridorMoveRef.current = null;
-    const point = pending?.point || drag.startPoint;
-    const rawPoint = pending?.rawPoint || point;
+    const releaseMapPoint =
+      drag.type === "waypoint-insert" ? clientToMapPoint(event) : null;
+    const point = pending?.point || releaseMapPoint || drag.startPoint;
+    const rawPoint = pending?.rawPoint || releaseMapPoint || point;
     const snapAnchor = pending?.snapAnchor || null;
+    const cancelled = event.type === "pointercancel";
+    const releaseClientDistance =
+      drag.startClientPoint &&
+      Number.isFinite(event.clientX) &&
+      Number.isFinite(event.clientY)
+        ? Math.hypot(
+            event.clientX - drag.startClientPoint.x,
+            event.clientY - drag.startClientPoint.y,
+          )
+        : 0;
     const moved =
-      drag.type === "waypoint-insert" ||
-      (rawPoint &&
-        drag.startPoint &&
-        Math.hypot(rawPoint.x - drag.startPoint.x, rawPoint.y - drag.startPoint.y) > 0.5);
+      !cancelled &&
+      (drag.type === "waypoint-insert"
+        ? Boolean(
+            drag.hasMoved ||
+              releaseClientDistance > CORRIDOR_WAYPOINT_INSERT_DRAG_THRESHOLD_PX,
+          )
+        : Boolean(
+            rawPoint &&
+              drag.startPoint &&
+              Math.hypot(rawPoint.x - drag.startPoint.x, rawPoint.y - drag.startPoint.y) > 0.5,
+          ));
+    if (drag.type === "waypoint-insert" && moved && !drag.editStarted) {
+      drag.editStarted = true;
+      onEditStart?.();
+    }
     viewportDebugEvent("anchor trace: release", {
       kind: "existing-corridor-anchor",
       corridorId: drag.corridorId || null,
       endpoint: drag.endpoint || null,
       dragType: drag.type,
       moved,
+      cancelled,
       pointer: {
         point: roundViewportDebugPoint(rawPoint),
         cell: getViewportDebugPointCell(rawPoint),
@@ -3021,7 +3072,7 @@ export function MapViewport({
     setDraggingCorridorHandle(null);
     setHoverCorridorHandle(null);
     setHoveredCorridorId(null);
-    onEditCommit?.();
+    if (drag.type !== "waypoint-insert" || drag.editStarted) onEditCommit?.();
     return true;
   }
 
@@ -3226,6 +3277,7 @@ export function MapViewport({
             crosshatchStyle={crosshatchStyle}
             crosshatchOpacity={crosshatchOpacity}
             wallDrawingStyle={wallDrawingStyle}
+            showStairArrows={showStairArrows}
             hatchShadowColor={hatchShadowColor}
             showDebugCellCoordinates={showDebugCellCoordinates}
             showEditor={showEditor}
@@ -5143,8 +5195,8 @@ function getStyleMenuPortalPlacement(triggerNode) {
   const viewportWidth = window.innerWidth || 0;
   const viewportHeight = window.innerHeight || 0;
   const margin = 12;
-  const rootWidth = 190;
-  const flyoutWidth = 318;
+  const rootWidth = 210;
+  const flyoutWidth = 210;
   const gap = 6;
   const availableRight = viewportWidth - triggerRect.right - margin;
   const flyoutSide = availableRight >= flyoutWidth + gap ? "right" : "left";
@@ -5170,7 +5222,8 @@ function MapStyleDropdown({
   gridWeight = DEFAULT_CONFIG.gridWeight,
   crosshatchStyle = "classic",
   crosshatchOpacity = 0.72,
-  wallDrawingStyle = "drawn",
+  wallDrawingStyle = "precise",
+  showStairArrows = false,
   hatchShadowColor = "default",
   onToggle,
   onVisualStyleChange,
@@ -5181,6 +5234,7 @@ function MapStyleDropdown({
   onCrosshatchStyleChange,
   onCrosshatchOpacityChange,
   onWallDrawingStyleChange,
+  onShowStairArrowsChange,
   onHatchShadowColorChange,
 }) {
   const normalizedGridStyle = normalizeGridStyle(gridStyle);
@@ -5189,6 +5243,7 @@ function MapStyleDropdown({
   const normalizedVisualStyle = normalizeVisualStyle(visualStyle);
   const normalizedCrosshatchStyle = crosshatchStyle === "none" ? "none" : "classic";
   const normalizedWallDrawingStyle = normalizeWallDrawingStyle(wallDrawingStyle);
+  const normalizedStairArrowVisibility = showStairArrows ? "visible" : "hidden";
   const normalizedHatchShadowColor = normalizeHatchShadowColor(hatchShadowColor);
   const triggerRef = useRef(null);
   const [portalPlacement, setPortalPlacement] = useState(null);
@@ -5323,6 +5378,18 @@ function MapStyleDropdown({
               label={style.label}
               active={normalizedWallDrawingStyle === style.value}
               onClick={() => onWallDrawingStyleChange?.(style.value)}
+            />
+          ))}
+        </span>
+        <span className="location-map-toolbar__style-subtitle">Stair Arrows</span>
+        <span className="location-map-toolbar__style-options">
+          {STAIR_ARROW_VISIBILITY_OPTIONS.map((option) => (
+            <MapStyleOptionButton
+              key={option.value}
+              icon={option.icon}
+              label={option.label}
+              active={normalizedStairArrowVisibility === option.value}
+              onClick={() => onShowStairArrowsChange?.(option.value === "visible")}
             />
           ))}
         </span>
@@ -5549,7 +5616,8 @@ function InlineMapEditorToolbar({
   gridWeight = DEFAULT_CONFIG.gridWeight,
   crosshatchStyle = "classic",
   crosshatchOpacity = 0.72,
-  wallDrawingStyle = "drawn",
+  wallDrawingStyle = "precise",
+  showStairArrows = false,
   hatchShadowColor = "default",
   levelView = LEVEL_VIEW_ALL,
   availableLevels = [],
@@ -5571,6 +5639,7 @@ function InlineMapEditorToolbar({
   onCrosshatchStyleChange,
   onCrosshatchOpacityChange,
   onWallDrawingStyleChange,
+  onShowStairArrowsChange,
   onHatchShadowColorChange,
   onLevelViewChange,
   onToggleFadeOtherLevels,
@@ -5715,6 +5784,7 @@ function InlineMapEditorToolbar({
           crosshatchStyle={crosshatchStyle}
           crosshatchOpacity={crosshatchOpacity}
           wallDrawingStyle={wallDrawingStyle}
+          showStairArrows={showStairArrows}
           hatchShadowColor={hatchShadowColor}
           onToggle={() => {
             setStyleMenuOpen((open) => !open);
@@ -5729,6 +5799,7 @@ function InlineMapEditorToolbar({
           onCrosshatchStyleChange={onCrosshatchStyleChange}
           onCrosshatchOpacityChange={onCrosshatchOpacityChange}
           onWallDrawingStyleChange={onWallDrawingStyleChange}
+          onShowStairArrowsChange={onShowStairArrowsChange}
           onHatchShadowColorChange={onHatchShadowColorChange}
         />
         <LevelViewToolbarDropdown
@@ -6180,7 +6251,8 @@ export default function CruorMapGeneratorMvp({
   const [gridOpacity, setGridOpacity] = useState(0.72);
   const [crosshatchStyle, setCrosshatchStyle] = useState("classic");
   const [crosshatchOpacity, setCrosshatchOpacity] = useState(0.72);
-  const [wallDrawingStyle, setWallDrawingStyle] = useState("drawn");
+  const [wallDrawingStyle, setWallDrawingStyle] = useState("precise");
+  const [showStairArrows, setShowStairArrows] = useState(false);
   const [hatchShadowColor, setHatchShadowColor] = useState("default");
   const [selectedRegionId, setSelectedRegionId] = useState(composerSelectedRegionId || "");
   const [levelView, setLevelView] = useState(LEVEL_VIEW_ALL);
@@ -6992,6 +7064,7 @@ export default function CruorMapGeneratorMvp({
     crosshatchStyle,
     crosshatchOpacity,
     wallDrawingStyle,
+    showStairArrows,
     hatchShadowColor,
     visualStyle,
     showNames,
@@ -7812,6 +7885,7 @@ export default function CruorMapGeneratorMvp({
         gridWeight,
         visualStyle,
         wallDrawingStyle,
+        showStairArrows,
         hatchShadowColor,
         levelView,
         fadeOtherLevels,
@@ -7957,6 +8031,7 @@ export default function CruorMapGeneratorMvp({
         gridWeight,
         visualStyle,
         wallDrawingStyle,
+        showStairArrows,
         hatchShadowColor,
         levelView,
         fadeOtherLevels,
@@ -8013,6 +8088,7 @@ export default function CruorMapGeneratorMvp({
             setVisualStyle(normalizeVisualStyle(payload.uiState.visualStyle, visualStyle));
           if (typeof payload.uiState.wallDrawingStyle === "string")
             setWallDrawingStyle(normalizeWallDrawingStyle(payload.uiState.wallDrawingStyle));
+          setShowStairArrows(payload.uiState.showStairArrows === true);
           if (typeof payload.uiState.hatchShadowColor === "string")
             setHatchShadowColor(normalizeHatchShadowColor(payload.uiState.hatchShadowColor));
           if (typeof payload.uiState.fadeOtherLevels === "boolean")
@@ -8395,6 +8471,21 @@ export default function CruorMapGeneratorMvp({
       )
         return false;
     }
+    const nextOverrides = freezeCurrentRoomLayout({
+      ...current,
+      corridorWaypoints: {
+        ...currentWaypoints,
+        [corridorId]: nextWaypoints.filter(isValidPoint),
+      },
+    });
+    if (
+      !canCommitCorridorWaypointRoute(corridorId, nextWaypoints, nextOverrides)
+    ) {
+      setStateStatus(
+        "Waypoint rejected: the corridor cannot continue without crossing itself.",
+      );
+      return false;
+    }
     debugEvent("moveWaypoint: committing", {
       corridorId,
       waypointIndex,
@@ -8403,14 +8494,7 @@ export default function CruorMapGeneratorMvp({
       nextWaypoints,
     });
     return setManualOverridesFromCurrent(
-      (currentOverrides) =>
-        freezeCurrentRoomLayout({
-          ...currentOverrides,
-          corridorWaypoints: {
-            ...(currentOverrides.corridorWaypoints || {}),
-            [corridorId]: nextWaypoints.filter(isValidPoint),
-          },
-        }),
+      () => nextOverrides,
       `moveWaypoint:${corridorId}`
     );
   }
@@ -8436,6 +8520,21 @@ export default function CruorMapGeneratorMvp({
     );
     const nextWaypoints = [...currentManual];
     nextWaypoints.splice(safeIndex, 0, cell);
+    const nextOverrides = freezeCurrentRoomLayout({
+      ...current,
+      corridorWaypoints: {
+        ...currentWaypoints,
+        [corridorId]: nextWaypoints.filter(isValidPoint),
+      },
+    });
+    if (
+      !canCommitCorridorWaypointRoute(corridorId, nextWaypoints, nextOverrides)
+    ) {
+      setStateStatus(
+        "Waypoint rejected: the corridor cannot continue without crossing itself.",
+      );
+      return false;
+    }
     debugEvent("insertWaypoint: committing", {
       corridorId,
       insertIndex,
@@ -8443,14 +8542,7 @@ export default function CruorMapGeneratorMvp({
       nextWaypoints,
     });
     return setManualOverridesFromCurrent(
-      (currentOverrides) =>
-        freezeCurrentRoomLayout({
-          ...currentOverrides,
-          corridorWaypoints: {
-            ...(currentOverrides.corridorWaypoints || {}),
-            [corridorId]: nextWaypoints.filter(isValidPoint),
-          },
-        }),
+      () => nextOverrides,
       `insertWaypoint:${corridorId}`
     );
   }
@@ -8776,6 +8868,30 @@ export default function CruorMapGeneratorMvp({
     const previewRawMap = generateMap(previewGenerationConfig, previewRawOverrides);
     const baseGeometry = manualLayoutGeometryRef.current || cloneMapGeometry(generatedMap);
     return buildManualGeometryLockedMap(baseGeometry, previewRawMap, normalized);
+  }
+
+  function canCommitCorridorWaypointRoute(corridorId, nextWaypoints, nextOverrides) {
+    const previewMap = buildPreviewMapFromManualOverrides(nextOverrides);
+    const previewCorridor = previewMap?.corridors?.find(
+      (candidate) => candidate.id === corridorId,
+    );
+    const routePoints = [
+      previewCorridor?.fromAnchor?.outsideCell,
+      ...(Array.isArray(nextWaypoints) ? nextWaypoints : []),
+      previewCorridor?.toAnchor?.outsideCell,
+    ].filter(Boolean);
+    const valid = Boolean(
+      previewCorridor &&
+        isSelfAvoidingPathThroughPoints(previewCorridor.pathCells, routePoints),
+    );
+    if (!valid) {
+      debugEvent("corridor waypoint: rejected self-overlapping route", {
+        corridorId,
+        nextWaypoints,
+        previewCorridor: summarizeDebugCorridor(previewCorridor),
+      });
+    }
+    return valid;
   }
 
   function createRoomDragPreviewMap(regionId, position) {
@@ -11020,6 +11136,7 @@ export default function CruorMapGeneratorMvp({
       crosshatchStyle={crosshatchStyle}
       crosshatchOpacity={crosshatchOpacity}
       wallDrawingStyle={wallDrawingStyle}
+      showStairArrows={showStairArrows}
       hatchShadowColor={hatchShadowColor}
       selectedRegionId={selectedRegionId}
       onSelectedRegionChange={selectMapRegion}
@@ -11121,6 +11238,7 @@ export default function CruorMapGeneratorMvp({
           crosshatchStyle={crosshatchStyle}
           crosshatchOpacity={crosshatchOpacity}
           wallDrawingStyle={wallDrawingStyle}
+          showStairArrows={showStairArrows}
           hatchShadowColor={hatchShadowColor}
           levelView={levelView}
           availableLevels={availableLevels}
@@ -11145,6 +11263,7 @@ export default function CruorMapGeneratorMvp({
           onWallDrawingStyleChange={(value) =>
             setWallDrawingStyle(normalizeWallDrawingStyle(value))
           }
+          onShowStairArrowsChange={setShowStairArrows}
           onHatchShadowColorChange={(value) =>
             setHatchShadowColor(normalizeHatchShadowColor(value))
           }
@@ -11424,30 +11543,30 @@ export default function CruorMapGeneratorMvp({
                 return (
                   <div className="map-selected-area-card">
                     <strong>{metrics.label}</strong>
-                    <div className="location-frame-info-grid">
-                      <div className="location-frame-info-row">
+                    <div className="cruor-composer-fact-grid location-frame-info-grid">
+                      <div className="cruor-composer-fact-row location-frame-info-row">
                         <small>Room</small>
                         <strong>{metrics.number}</strong>
                       </div>
-                      <div className="location-frame-info-row">
+                      <div className="cruor-composer-fact-row location-frame-info-row">
                         <small>Squares</small>
                         <strong>{metrics.squares}</strong>
                       </div>
-                      <div className="location-frame-info-row">
+                      <div className="cruor-composer-fact-row location-frame-info-row">
                         <small>Size</small>
                         <strong>
                           {metrics.width} × {metrics.height}
                         </strong>
                       </div>
-                      <div className="location-frame-info-row">
+                      <div className="cruor-composer-fact-row location-frame-info-row">
                         <small>Type</small>
                         <strong>{metrics.shape}</strong>
                       </div>
-                      <div className="location-frame-info-row">
+                      <div className="cruor-composer-fact-row location-frame-info-row">
                         <small>Role</small>
                         <strong>{metrics.role}</strong>
                       </div>
-                      <div className="location-frame-info-row">
+                      <div className="cruor-composer-fact-row location-frame-info-row">
                         <small>Level</small>
                         <strong>{metrics.level}</strong>
                       </div>
@@ -11477,6 +11596,16 @@ export default function CruorMapGeneratorMvp({
                   label: style.label,
                 }))}
                 onChange={(value) => setWallDrawingStyle(normalizeWallDrawingStyle(value))}
+              />
+              <MapControlSelect
+                id="stair-arrow-visibility"
+                label="Stair Arrows"
+                value={showStairArrows ? "visible" : "hidden"}
+                options={STAIR_ARROW_VISIBILITY_OPTIONS.map((option) => ({
+                  value: option.value,
+                  label: option.label,
+                }))}
+                onChange={(value) => setShowStairArrows(value === "visible")}
               />
               <MapControlSelect
                 id="grid-style"

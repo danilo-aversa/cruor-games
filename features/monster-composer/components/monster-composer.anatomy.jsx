@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { ComposerRail } from "../../../components/ui/composer-rail.jsx";
 import {
   SLOTS,
   SILHOUETTE_SLOT_CARDS,
@@ -662,7 +663,7 @@ function FrameMeter({ label, value, max }) {
 
 function FrameSummaryRow({ label, value }) {
   return (
-    <span className="monster-frame-info-row">
+    <span className="cruor-composer-fact-row monster-frame-info-row">
       <small>{label}</small>
       <strong>{value}</strong>
     </span>
@@ -685,7 +686,7 @@ function MonsterNameEditor({ value, onChange }) {
 
 function GraftActionPanel({ composerStarted, onForgeMonster, onOpenExport, onStartOver }) {
   return (
-    <section className="monster-frame-info-card monster-graft-action-card" aria-label="Build actions">
+    <section className="cruor-composer-rail-card monster-frame-info-card monster-graft-action-card" aria-label="Build actions">
       <button
         className="monster-graft-action-btn is-primary tooltip-btn"
         type="button"
@@ -738,7 +739,7 @@ function GraftActionPanel({ composerStarted, onForgeMonster, onOpenExport, onSta
 
 function ChassisFlowActionPanel({ onPickTemplate, onSetStageMode }) {
   return (
-    <section className="monster-frame-info-card monster-graft-action-card" aria-label="Chassis flow actions">
+    <section className="cruor-composer-rail-card monster-frame-info-card monster-graft-action-card" aria-label="Chassis flow actions">
       <button
         className="monster-graft-action-btn tooltip-btn"
         type="button"
@@ -769,7 +770,7 @@ function ChassisFlowActionPanel({ onPickTemplate, onSetStageMode }) {
 
 function GraftFlowActionPanel({ onSetStageMode, onOpenExport }) {
   return (
-    <section className="monster-frame-info-card monster-graft-action-card" aria-label="Graft flow actions">
+    <section className="cruor-composer-rail-card monster-frame-info-card monster-graft-action-card" aria-label="Graft flow actions">
       <button
         className="monster-graft-action-btn tooltip-btn"
         type="button"
@@ -1731,7 +1732,13 @@ function FrameControls({
   };
 
   return (
-    <aside className="anatomy-stage__column anatomy-stage__column--left monster-frame-controls" aria-label="Monster Frame controls">
+    <ComposerRail
+      side="left"
+      variant="controls"
+      scrollable
+      className="anatomy-stage__column anatomy-stage__column--left monster-frame-controls"
+      aria-label="Monster Frame controls"
+    >
       <section className="monster-frame-control-block">
         <div className="monster-frame-control-block__head">
           <span>Chassis</span>
@@ -1835,7 +1842,7 @@ function FrameControls({
         </div>
       </section>
 
-    </aside>
+    </ComposerRail>
   );
 }
 
@@ -1853,14 +1860,20 @@ function FrameInfoPanel({
   danger,
 }) {
   return (
-    <aside className="anatomy-stage__column anatomy-stage__column--right monster-frame-info" aria-label="Current Monster Frame">
-      <section className="monster-frame-info-card monster-frame-info-card--hero">
+    <ComposerRail
+      side="right"
+      variant="info"
+      scrollable
+      className="anatomy-stage__column anatomy-stage__column--right monster-frame-info"
+      aria-label="Current Monster Frame"
+    >
+      <section className="cruor-composer-rail-card cruor-composer-rail-card--hero monster-frame-info-card monster-frame-info-card--hero">
         <span>Current Frame</span>
         <MonsterNameEditor value={monsterName || computed.name} onChange={onMonsterNameChange} />
         <em>{creatureType.label} · {category} · {role.label}</em>
       </section>
-      <section className="monster-frame-info-card">
-        <div className="monster-frame-info-grid">
+      <section className="cruor-composer-rail-card monster-frame-info-card">
+        <div className="cruor-composer-fact-grid monster-frame-info-grid">
           <FrameSummaryRow label="Family" value={creatureType.label} />
           <FrameSummaryRow label="Variant" value={category} />
           <FrameSummaryRow label="Footprint" value={role.label} />
@@ -1871,11 +1884,11 @@ function FrameInfoPanel({
           <FrameSummaryRow label="Danger" value={danger.label} />
         </div>
       </section>
-      <section className="monster-frame-info-card">
+      <section className="cruor-composer-rail-card monster-frame-info-card">
         <FrameMeter label="Pressure" value={computed.pressure} max={computed.budget} />
         <FrameMeter label="Complexity" value={computed.complexity} max={computed.complexityCap} />
       </section>
-    </aside>
+    </ComposerRail>
   );
 }
 
@@ -1911,15 +1924,21 @@ function GraftInfoPanel({
     : SLOTS.reduce((total, item) => total + availableFeatures.filter((feature) => feature.slot === item.id).length, 0);
 
   return (
-    <aside className="anatomy-stage__column anatomy-stage__column--right monster-frame-info monster-graft-info" aria-label="Current monster information">
-      <section className="monster-frame-info-card monster-frame-info-card--hero">
+    <ComposerRail
+      side="right"
+      variant="info"
+      scrollable
+      className="anatomy-stage__column anatomy-stage__column--right monster-frame-info monster-graft-info"
+      aria-label="Current monster information"
+    >
+      <section className="cruor-composer-rail-card cruor-composer-rail-card--hero monster-frame-info-card monster-frame-info-card--hero">
         <span>Info</span>
         <MonsterNameEditor value={monsterName || computed.name} onChange={onMonsterNameChange} />
         <em>{creatureType.label} · {category} · CR {targetCr}</em>
       </section>
 
-      <section className="monster-frame-info-card">
-        <div className="monster-frame-info-grid">
+      <section className="cruor-composer-rail-card monster-frame-info-card">
+        <div className="cruor-composer-fact-grid monster-frame-info-grid">
           <FrameSummaryRow label="Role" value={role.label} />
           <FrameSummaryRow label="Tactic" value={tacticalRole.label} />
           <FrameSummaryRow label="Tier" value={monsterTier.label} />
@@ -1929,7 +1948,7 @@ function GraftInfoPanel({
         </div>
       </section>
 
-      <section className="monster-frame-info-card">
+      <section className="cruor-composer-rail-card monster-frame-info-card">
         <div className="monster-graft-focus">
           <span>Focused Slot</span>
           <strong>{slot ? slot.label : "No Slot Selected"}</strong>
@@ -1938,7 +1957,7 @@ function GraftInfoPanel({
         </div>
       </section>
 
-      <section className="monster-frame-info-card">
+      <section className="cruor-composer-rail-card monster-frame-info-card">
         <FrameMeter label="Pressure" value={computed.pressure} max={computed.budget} />
         <FrameMeter label="Complexity" value={computed.complexity} max={computed.complexityCap} />
       </section>
@@ -1948,7 +1967,7 @@ function GraftInfoPanel({
         onOpenExport={onOpenExport}
         onStartOver={onStartOver}
       />
-    </aside>
+    </ComposerRail>
   );
 }
 
@@ -2221,14 +2240,17 @@ export function MonsterSilhouetteMap({
                   />
                 ) : null}
 
-                <aside
+                <ComposerRail
+                  side="left"
+                  variant="slots"
+                  scrollable
                   className="anatomy-stage__column anatomy-stage__column--left"
                   aria-label="Anatomy graft slots"
                 >
                   <div className="anatomy-stage__slot-stack">
                     {["body", "attack", "mind", "twist", "movement", "horror", "weakness", "death", ...ANATOMY_BOTTOM_SLOT_IDS].map(renderSlotCard)}
                   </div>
-                </aside>
+                </ComposerRail>
 
                 {hasComponentNavigator ? (
                   <div

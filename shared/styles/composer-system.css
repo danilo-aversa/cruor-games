@@ -50,6 +50,39 @@
   --cruor-composer-chip-border: var(--cruor-ui-chip-border, 1px solid var(--cruor-composer-chip-border-color));
   --cruor-composer-chip-bg: var(--cruor-ui-chip-bg, var(--cruor-color-white-a025));
   --cruor-composer-chip-text: var(--cruor-ui-chip-text, var(--cruor-color-text-a560));
+
+  /* Composer rails */
+  --cruor-composer-rail-gap: 12px;
+  --cruor-composer-info-rail-gap: 10px;
+  --cruor-composer-rail-scrollbar-thumb: var(--cruor-color-blood-bright-a520);
+  --cruor-composer-rail-scrollbar-track: var(--cruor-surface-card);
+  --cruor-composer-rail-scroll-padding-inline-end: 0;
+  --cruor-composer-rail-surface-background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-black-a280, rgba(0, 0, 0, 0.28));
+  --cruor-composer-rail-surface-filter: blur(16px) saturate(118%);
+  --cruor-composer-rail-card-gap: 10px;
+  --cruor-composer-rail-card-border: 1px solid var(--cruor-color-milk-a070);
+  --cruor-composer-rail-card-background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
+  --cruor-composer-rail-card-padding: 11px;
+  --cruor-composer-rail-card-shadow: var(--cruor-shadow-box-075);
+  --cruor-composer-rail-card-backdrop-filter: none;
+  --cruor-composer-rail-card-hero-min-height: 92px;
+  --cruor-composer-rail-card-hero-padding-block: 12px;
+  --cruor-composer-rail-card-hero-background: var(--cruor-gradient-radial-044-30b4806e), var(--cruor-surface-card);
+  --cruor-composer-rail-card-hero-gap: 7px;
+  --cruor-composer-rail-label-color: var(--cruor-color-hex-8f7278);
+  --cruor-composer-rail-label-size: var(--text-size-xxs);
+  --cruor-composer-rail-label-tracking: 0.12em;
+  --cruor-composer-rail-hero-title-color: var(--cruor-color-hex-fff0f2);
+  --cruor-composer-rail-hero-title-size: var(--text-size-fluid-15);
+  --cruor-composer-rail-hero-subtitle-color: var(--cruor-color-hex-d0a2aa);
+  --cruor-composer-rail-hero-subtitle-size: var(--text-size-s);
+  --cruor-composer-fact-grid-gap: 6px;
+  --cruor-composer-fact-row-gap: 10px;
+  --cruor-composer-fact-row-border: 1px solid var(--cruor-color-milk-a055);
+  --cruor-composer-fact-row-background: var(--cruor-surface-card);
+  --cruor-composer-fact-row-padding: 7px 8px;
+  --cruor-composer-fact-value-color: var(--cruor-color-hex-fff0f2);
+  --cruor-composer-fact-value-size: var(--text-size-s);
 }
 
 /* Layout */
@@ -78,7 +111,125 @@
 /* Components */
 
 .cruor-composer-rail {
+  display: grid;
+  align-content: start;
+  gap: var(--cruor-composer-rail-gap);
   min-width: 0;
+  min-height: 0;
+}
+
+.cruor-composer-rail--left {
+  grid-area: left;
+}
+
+.cruor-composer-rail--right {
+  grid-area: right;
+}
+
+.cruor-composer-rail--info {
+  gap: var(--cruor-composer-info-rail-gap);
+}
+
+.cruor-composer-rail--scroll {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-inline-end: var(--cruor-composer-rail-scroll-padding-inline-end);
+  scrollbar-width: thin;
+  scrollbar-color: var(--cruor-composer-rail-scrollbar-thumb) var(--cruor-composer-rail-scrollbar-track);
+}
+
+.cruor-composer-rail--surface {
+  background: var(--cruor-composer-rail-surface-background);
+  -webkit-backdrop-filter: var(--cruor-composer-rail-surface-filter);
+  backdrop-filter: var(--cruor-composer-rail-surface-filter);
+}
+
+.cruor-composer-rail-card {
+  display: grid;
+  gap: var(--cruor-composer-rail-card-gap);
+  min-width: 0;
+  border: var(--cruor-composer-rail-card-border);
+  background: var(--cruor-composer-rail-card-background);
+  padding: var(--cruor-composer-rail-card-padding);
+  box-shadow: var(--cruor-composer-rail-card-shadow);
+  -webkit-backdrop-filter: var(--cruor-composer-rail-card-backdrop-filter);
+  backdrop-filter: var(--cruor-composer-rail-card-backdrop-filter);
+}
+
+.cruor-composer-rail-card--hero {
+  box-sizing: border-box;
+  align-content: center;
+  gap: var(--cruor-composer-rail-card-hero-gap);
+  min-height: var(--cruor-composer-rail-card-hero-min-height);
+  overflow: hidden;
+  background: var(--cruor-composer-rail-card-hero-background);
+  padding-block: var(--cruor-composer-rail-card-hero-padding-block);
+}
+
+.cruor-composer-rail-card > span,
+.cruor-composer-fact-row small {
+  color: var(--cruor-composer-rail-label-color);
+  font-weight: 950;
+  letter-spacing: var(--cruor-composer-rail-label-tracking);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.cruor-composer-rail-card > span {
+  font-size: var(--cruor-composer-rail-label-size);
+}
+
+.cruor-composer-rail-card--hero strong {
+  color: var(--cruor-composer-rail-hero-title-color);
+  font-family: var(--display);
+  font-size: var(--cruor-composer-rail-hero-title-size);
+  font-weight: 950;
+  letter-spacing: -0.055em;
+  line-height: 0.92;
+}
+
+.cruor-composer-rail-card--hero em {
+  color: var(--cruor-composer-rail-hero-subtitle-color);
+  font-size: var(--cruor-composer-rail-hero-subtitle-size);
+  font-style: normal;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cruor-composer-fact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--cruor-composer-fact-grid-gap);
+}
+
+.cruor-composer-fact-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--cruor-composer-fact-row-gap);
+  min-width: 0;
+  border: var(--cruor-composer-fact-row-border);
+  background: var(--cruor-composer-fact-row-background);
+  padding: var(--cruor-composer-fact-row-padding);
+}
+
+.cruor-composer-fact-row small {
+  overflow: hidden;
+  font-size: var(--text-size-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cruor-composer-fact-row strong {
+  overflow: hidden;
+  color: var(--cruor-composer-fact-value-color);
+  font-size: var(--cruor-composer-fact-value-size);
+  font-weight: 950;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Layout */

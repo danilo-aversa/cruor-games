@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ComposerRail } from "../../../components/ui/composer-rail.jsx";
 import "../map-generator/map-generator.styles.css";
 import {
   addScratchLocationRoom,
@@ -68,7 +69,7 @@ import {
 
 function LocationFrameInfoRow({ label, value }) {
   return (
-    <span className="location-frame-info-row">
+    <span className="cruor-composer-fact-row location-frame-info-row">
       <small>{label}</small>
       <strong>{value}</strong>
     </span>
@@ -168,11 +169,15 @@ function LocationRecapPanel({
   const slotLabel = activeSlot?.label || "Component";
 
   return (
-    <aside
-      className="cruor-composer-rail location-composer__rail location-composer__rail--right location-map-recap-rail location-frame-info"
+    <ComposerRail
+      side="right"
+      variant="info"
+      surface
+      scrollable
+      className="location-composer__rail location-composer__rail--right location-map-recap-rail location-frame-info"
       aria-label="Current Location Frame"
     >
-      <section className="location-frame-info-card location-frame-info-card--hero">
+      <section className="cruor-composer-rail-card cruor-composer-rail-card--hero location-frame-info-card location-frame-info-card--hero">
         <span>Current Location</span>
         <label className="location-frame-name-editor">
           <span className="sr-only">Location name</span>
@@ -187,8 +192,8 @@ function LocationRecapPanel({
       </section>
 
 
-      <section className="location-frame-info-card">
-        <div className="location-frame-info-grid">
+      <section className="cruor-composer-rail-card location-frame-info-card">
+        <div className="cruor-composer-fact-grid location-frame-info-grid">
           <LocationFrameInfoRow label="Context" value={state.context || "Context"} />
           <LocationFrameInfoRow label="Horror" value={horrorLabel} />
           <LocationFrameInfoRow label="Source" value={sourceLabel} />
@@ -197,15 +202,15 @@ function LocationRecapPanel({
       </section>
 
 
-      <section className="location-frame-info-card">
-        <div className="location-frame-info-grid">
+      <section className="cruor-composer-rail-card location-frame-info-card">
+        <div className="cruor-composer-fact-grid location-frame-info-grid">
           <LocationFrameInfoRow label="Target" value={targetLabel} />
           <LocationFrameInfoRow label="Slot" value={slotLabel} />
         </div>
       </section>
 
 
-      <section className="location-frame-info-card location-location-action-card location-location-action-card--secondary" aria-label="Secondary location actions">
+      <section className="cruor-composer-rail-card location-frame-info-card location-location-action-card location-location-action-card--secondary" aria-label="Secondary location actions">
         <button
           className="cruor-composer-control location-primary-action"
           type="button"
@@ -238,23 +243,27 @@ function LocationRecapPanel({
           </button>
         </details>
       </section>
-    </aside>
+    </ComposerRail>
   );
 
 }
 
 function LocationExportToolsPanel({ onSelectFrame, onSelectScratch }) {
   return (
-    <aside
-      className="cruor-composer-rail location-composer__rail location-composer__rail--left location-map-frame-rail location-frame-info"
+    <ComposerRail
+      side="left"
+      variant="controls"
+      surface
+      scrollable
+      className="location-composer__rail location-composer__rail--left location-map-frame-rail location-frame-info"
       aria-label="Location export tools"
     >
-      <section className="location-frame-info-card location-frame-info-card--hero">
+      <section className="cruor-composer-rail-card cruor-composer-rail-card--hero location-frame-info-card location-frame-info-card--hero">
         <span>Export</span>
         <strong>Location Insert</strong>
         <em>Copy the session insert, table text, rooms, or map SVG.</em>
       </section>
-      <section className="location-frame-info-card location-location-action-card location-location-action-card--secondary" aria-label="Export navigation">
+      <section className="cruor-composer-rail-card location-frame-info-card location-location-action-card location-location-action-card--secondary" aria-label="Export navigation">
         <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectFrame}>
           Back to Frame
         </button>
@@ -262,14 +271,18 @@ function LocationExportToolsPanel({ onSelectFrame, onSelectScratch }) {
           Rooms
         </button>
       </section>
-    </aside>
+    </ComposerRail>
   );
 }
 
 function LocationExportPanel({ digest, generatedMapPreview, mapRequest, state, uiMode }) {
   return (
-    <aside
-      className="cruor-composer-rail location-composer__rail location-composer__rail--right location-map-recap-rail location-frame-info"
+    <ComposerRail
+      side="right"
+      variant="export"
+      surface
+      scrollable
+      className="location-composer__rail location-composer__rail--right location-map-recap-rail location-frame-info"
       aria-label="Location export"
     >
       <LocationCompilePreview
@@ -280,7 +293,7 @@ function LocationExportPanel({ digest, generatedMapPreview, mapRequest, state, u
         defaultOpen={true}
         uiMode={uiMode}
       />
-    </aside>
+    </ComposerRail>
   );
 }
 

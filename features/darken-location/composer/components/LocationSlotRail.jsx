@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { AlertTriangle, Eye, Gem, RotateCcw, Search, Skull, Sparkles } from "lucide-react";
+import { ComposerRail } from "../../../../components/ui/composer-rail.jsx";
 import {
   LOCATION_SLOT_SCOPE_DEFINITIONS,
   getAssignedComponentsForSlotScope,
@@ -83,8 +84,11 @@ export function LocationSlotRail({ state, setState, modeControls, onFocusSlot })
   }
 
   return (
-    <aside
-      className="cruor-composer-rail location-composer__rail location-composer__rail--left location-composer__rail--picker location-map-slot-rail"
+    <ComposerRail
+      side="left"
+      variant="slots"
+      surface
+      className="location-composer__rail location-composer__rail--left location-composer__rail--picker location-map-slot-rail"
       aria-label="Location regions"
     >
       {modeControls ? modeControls : null}
@@ -159,6 +163,6 @@ export function LocationSlotRail({ state, setState, modeControls, onFocusSlot })
           );
         })}
       </div>
-    </aside>
+    </ComposerRail>
   );
 }

@@ -1,8 +1,8 @@
 {
   "metadata": {
     "schemaVersion": "cruor-repository-map-v1",
-    "generatedAt": "2026-07-10T15:06:06.141Z",
-    "inspectedCommit": "aa7014e96393fbdf650fd9dc9af662a78d80ac73",
+    "generatedAt": "2026-07-11T12:25:28.128Z",
+    "inspectedCommit": "f59f4da6e544e81fb1506ffb4e58c3aa7cd00517",
     "branch": "main",
     "trackedFileCount": 565,
     "supplementalUntrackedFiles": [],
@@ -171,13 +171,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "54621d3e035d3351cafc15a7abe697ec827d8fe1c47fc7effa85c9bf4d66faa2",
-        "bytes": 920,
-        "lineCount": 46,
+        "hash": "732171eecc806f18b8589c6f440305fe1620f40159b62373afe4408bdc39530a",
+        "bytes": 1372,
+        "lineCount": 55,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -226,13 +226,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "c1616bc875e2989680c8b95babde0a42857ed86fddd3a254a05dbfc7fb552f18",
-        "bytes": 1124,
-        "lineCount": 56,
+        "hash": "8552f3300da85d4daeb0415ed7be9b77b01fddf0d96b1c2fc60ecf6e414fd606",
+        "bytes": 3371,
+        "lineCount": 115,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -289,7 +289,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -344,7 +344,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -401,7 +401,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -463,7 +463,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -609,7 +609,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -749,7 +749,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -826,7 +826,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -896,7 +896,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -953,7 +953,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -1017,7 +1017,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -1079,7 +1079,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -1141,7 +1141,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -1308,7 +1308,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -1396,7 +1396,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -1564,7 +1564,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -1628,7 +1628,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -1745,7 +1745,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -1986,7 +1986,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -2040,13 +2040,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "aae9c1a5cf71870b21657535aef89c391c4331e369a8157c0b29181cf677beb3",
-        "bytes": 262973,
-        "lineCount": 11033,
+        "hash": "f584c02e4e27f59571d5f49dc1ed9ed057e0e49acf8ca9263a2fcefd1c856094",
+        "bytes": 274310,
+        "lineCount": 11423,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -2097,6 +2097,10 @@
       "runtimeFlows": [],
       "relatedFiles": [],
       "tests": [
+        {
+          "path": "features/darken-location/map-generator/map-generator.pipeline.test.js",
+          "coverage": "Imports or references this file, adjacent basename, or related QA target."
+        },
         {
           "path": "features/inspiration-studio/qa/MapBatchQaModal.jsx",
           "coverage": "Imports or references this file, adjacent basename, or related QA target."
@@ -2161,7 +2165,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -2238,6 +2242,10 @@
           "coverage": "Imports or references this file, adjacent basename, or related QA target."
         },
         {
+          "path": "scripts/run-dark-places-acceptance-qa.mjs",
+          "coverage": "Imports or references this file, adjacent basename, or related QA target."
+        },
+        {
           "path": "scripts/run-map-archetype-gallery.mjs",
           "coverage": "Imports or references this file, adjacent basename, or related QA target."
         },
@@ -2273,7 +2281,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -2328,7 +2336,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -2383,7 +2391,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -2438,7 +2446,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -2493,7 +2501,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -2624,7 +2632,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -2679,7 +2687,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -2734,7 +2742,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -2789,7 +2797,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -2848,7 +2856,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -2907,7 +2915,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -2964,7 +2972,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -3041,7 +3049,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -3105,7 +3113,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -3177,7 +3185,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -3277,7 +3285,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -3357,7 +3365,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -3421,7 +3429,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -3489,7 +3497,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -3538,13 +3546,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "fb52cdc9eef9b6fd7592f8be6cc8f697ed1722f1e914345844ecfb4b64d45a71",
-        "bytes": 1670,
-        "lineCount": 32,
+        "hash": "75cb4b7e1483023442257efafeba0d1254c4457abcfaae0e10602d613f167619",
+        "bytes": 3171,
+        "lineCount": 33,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -3650,7 +3658,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -3758,7 +3766,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -3812,13 +3820,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "dc2e7785f841061fff78e0f64e8751f0cd5fb12cd38a78520e56990cfc96ae30",
-        "bytes": 938,
-        "lineCount": 24,
+        "hash": "65bfdc6db06c58e78d5e740646c9aa5c5e8d81c658e95c801175bdd41f160a9c",
+        "bytes": 1283,
+        "lineCount": 26,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -3873,7 +3881,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -3930,7 +3938,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -3987,7 +3995,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4036,13 +4044,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "decf5ed8bdfa497173a2faa12cac185cdbf11fddd1a6bf54f299a9c2127c7e96",
-        "bytes": 1328,
-        "lineCount": 28,
+        "hash": "df01647b02e26a6a131f57a039644916b25d8911a186e3ed99ade94e0f30fe49",
+        "bytes": 1741,
+        "lineCount": 30,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4097,7 +4105,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4154,7 +4162,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4209,7 +4217,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4266,7 +4274,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4298,6 +4306,10 @@
       "runtimeFlows": [],
       "relatedFiles": [],
       "tests": [
+        {
+          "path": "features/darken-location/map-generator/map-generator.pipeline.test.js",
+          "coverage": "Imports or references this file, adjacent basename, or related QA target."
+        },
         {
           "path": "features/darken-location/map-generator/qa/map-batch-qa.js",
           "coverage": "Imports or references this file, adjacent basename, or related QA target."
@@ -4341,10 +4353,6 @@
         {
           "path": "tests/e2e/dark-places.helpers.js",
           "coverage": "Imports or references this file, adjacent basename, or related QA target."
-        },
-        {
-          "path": "tests/tests/tests/unit/inspiration-modules.spec.js",
-          "coverage": "Imports or references this file, adjacent basename, or related QA target."
         }
       ],
       "changeRisk": "low",
@@ -4370,7 +4378,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4425,7 +4433,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4482,7 +4490,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4512,6 +4520,7 @@
         "Persisted browser storage values"
       ],
       "dataProduced": [
+        "Rendered HTML/SVG or React elements",
         "Map request payloads",
         "Generated map model data",
         "Export payloads or downloaded files",
@@ -4560,12 +4569,12 @@
       },
       "generatedFields": {
         "hash": null,
-        "bytes": 2132068,
-        "lineCount": 69586,
+        "bytes": 2135406,
+        "lineCount": 69681,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4620,7 +4629,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4675,7 +4684,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4736,7 +4745,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4793,7 +4802,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4857,7 +4866,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4920,7 +4929,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -4971,13 +4980,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "0ba33f4597a0a803b822442ce9fd04e35259be4b2c299d776bc11ce48245bf41",
-        "bytes": 3364,
-        "lineCount": 48,
+        "hash": "57625e96980adb162d60c43f65dda8ec2f1edcc36e0ad25ba0fc94bc7344e6e8",
+        "bytes": 3752,
+        "lineCount": 49,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -5046,7 +5055,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -5141,7 +5150,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -5196,7 +5205,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -5251,7 +5260,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -5306,7 +5315,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -5398,7 +5407,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -5596,7 +5605,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -5651,7 +5660,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -5706,7 +5715,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -5783,7 +5792,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -5838,7 +5847,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -5941,7 +5950,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -5996,7 +6005,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -6053,7 +6062,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -6110,7 +6119,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -6242,7 +6251,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -6319,7 +6328,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -6428,7 +6437,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -6485,7 +6494,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -6542,7 +6551,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -6618,7 +6627,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -6716,7 +6725,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -6796,6 +6805,10 @@
       ],
       "tests": [
         {
+          "path": "features/darken-location/map-generator/map-generator.pipeline.test.js",
+          "coverage": "Imports or references this file, adjacent basename, or related QA target."
+        },
+        {
           "path": "features/darken-location/map-generator/qa/map-batch-qa.js",
           "coverage": "Imports or references this file, adjacent basename, or related QA target."
         },
@@ -6838,10 +6851,6 @@
         {
           "path": "tests/e2e/dark-places.helpers.js",
           "coverage": "Imports or references this file, adjacent basename, or related QA target."
-        },
-        {
-          "path": "tests/tests/tests/unit/inspiration-modules.spec.js",
-          "coverage": "Imports or references this file, adjacent basename, or related QA target."
         }
       ],
       "changeRisk": "low",
@@ -6867,7 +6876,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -6922,7 +6931,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -6964,6 +6973,15 @@
           ],
           "external": true,
           "resolvedPath": null
+        },
+        {
+          "source": "../../../components/ui/composer-rail.jsx",
+          "kind": "static",
+          "symbols": [
+            "ComposerRail"
+          ],
+          "external": false,
+          "resolvedPath": "components/ui/composer-rail.jsx"
         },
         {
           "source": "./model/location-composer-state.js",
@@ -7216,6 +7234,10 @@
       ],
       "relatedFiles": [
         {
+          "path": "components/ui/composer-rail.jsx",
+          "relationship": "static import"
+        },
+        {
           "path": "features/darken-location/composer/model/location-composer-state.js",
           "relationship": "static import"
         },
@@ -7258,10 +7280,6 @@
         {
           "path": "features/darken-location/composer/components/LocationMapStage.jsx",
           "relationship": "static import"
-        },
-        {
-          "path": "features/darken-location/composer/components/LocationGuidedFlowPanel.jsx",
-          "relationship": "static import"
         }
       ],
       "tests": [],
@@ -7284,13 +7302,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "67ae0652f5ee0558c4226bf9f4dd53313ff30ca2aee1f9c3dc957d17ffe1e3f1",
-        "bytes": 40412,
-        "lineCount": 1098,
+        "hash": "ceb78c7c3b50e44abbc594d9baf2e0ba8ff282fc0e197870cce582add8629fa4",
+        "bytes": 40971,
+        "lineCount": 1111,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -7361,6 +7379,15 @@
           "resolvedPath": null
         },
         {
+          "source": "../../../../components/ui/composer-rail.jsx",
+          "kind": "static",
+          "symbols": [
+            "ComposerRail"
+          ],
+          "external": false,
+          "resolvedPath": "components/ui/composer-rail.jsx"
+        },
+        {
           "source": "../../dungeon/dungeon.index.js",
           "kind": "static",
           "symbols": [
@@ -7411,6 +7438,10 @@
       ],
       "relatedFiles": [
         {
+          "path": "components/ui/composer-rail.jsx",
+          "relationship": "static import"
+        },
+        {
           "path": "features/darken-location/dungeon/dungeon.index.js",
           "relationship": "static import"
         },
@@ -7437,13 +7468,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "d1c2e30ab5ba6307946399b0a44a25a16481ec87b6b51e4313d9e42d1e9085e9",
-        "bytes": 37647,
-        "lineCount": 1003,
+        "hash": "44788b061a974c1288e1e42ffd41420a32e1b48964b6bdcfad4228d638513ae6",
+        "bytes": 37808,
+        "lineCount": 1011,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -7562,7 +7593,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -7691,7 +7722,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -7764,7 +7795,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -7837,7 +7868,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -7948,7 +7979,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -7996,6 +8027,15 @@
           ],
           "external": true,
           "resolvedPath": null
+        },
+        {
+          "source": "../../../../components/ui/composer-rail.jsx",
+          "kind": "static",
+          "symbols": [
+            "ComposerRail"
+          ],
+          "external": false,
+          "resolvedPath": "components/ui/composer-rail.jsx"
         },
         {
           "source": "../model/location-composer-state.js",
@@ -8086,6 +8126,10 @@
       ],
       "relatedFiles": [
         {
+          "path": "components/ui/composer-rail.jsx",
+          "relationship": "static import"
+        },
+        {
           "path": "features/darken-location/composer/model/location-composer-state.js",
           "relationship": "static import"
         },
@@ -8131,13 +8175,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "e3e24b3042a056ecad1fe22273e6b722df41c4653bbeed721deb88670c515658",
-        "bytes": 31074,
-        "lineCount": 846,
+        "hash": "b3b8b5b74b11d366cfb985f4311398b1403c5c79d5724c1f606f64183194787c",
+        "bytes": 31394,
+        "lineCount": 851,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -8312,7 +8356,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -8406,7 +8450,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -8448,6 +8492,15 @@
           ],
           "external": true,
           "resolvedPath": null
+        },
+        {
+          "source": "../../../../components/ui/composer-rail.jsx",
+          "kind": "static",
+          "symbols": [
+            "ComposerRail"
+          ],
+          "external": false,
+          "resolvedPath": "components/ui/composer-rail.jsx"
         },
         {
           "source": "../model/location-composer-state.js",
@@ -8499,6 +8552,10 @@
       ],
       "relatedFiles": [
         {
+          "path": "components/ui/composer-rail.jsx",
+          "relationship": "static import"
+        },
+        {
           "path": "features/darken-location/composer/model/location-composer-state.js",
           "relationship": "static import"
         },
@@ -8529,13 +8586,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "3d13f2d5b49a2d9c24b2072e20ab03cbe60543e755220ae1b454882e948ed392",
-        "bytes": 9786,
-        "lineCount": 236,
+        "hash": "fa53e56c8432fd50311acd443d7f4b9a89bf67f0f0c2d6a9db1aea45ad982679",
+        "bytes": 10008,
+        "lineCount": 245,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -8566,6 +8623,15 @@
       },
       "imports": [
         {
+          "source": "../../../../components/ui/composer-rail.jsx",
+          "kind": "static",
+          "symbols": [
+            "ComposerRail"
+          ],
+          "external": false,
+          "resolvedPath": "components/ui/composer-rail.jsx"
+        },
+        {
           "source": "../model/location-room-program.js",
           "kind": "static",
           "symbols": [
@@ -8589,6 +8655,10 @@
       ],
       "relatedFiles": [
         {
+          "path": "components/ui/composer-rail.jsx",
+          "relationship": "static import"
+        },
+        {
           "path": "features/darken-location/composer/model/location-room-program.js",
           "relationship": "static import"
         }
@@ -8611,13 +8681,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "eea1a6a5a7ade6c2e29b3bb203474929882a0986ee38b6ec9c6c496d6ddff317",
-        "bytes": 6421,
-        "lineCount": 175,
+        "hash": "9037bb33997b4553cc44c7735dd8b21878873c04a8211214abf3e674e4a86320",
+        "bytes": 6566,
+        "lineCount": 180,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -8690,7 +8760,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -8746,6 +8816,15 @@
           "resolvedPath": null
         },
         {
+          "source": "../../../../components/ui/composer-rail.jsx",
+          "kind": "static",
+          "symbols": [
+            "ComposerRail"
+          ],
+          "external": false,
+          "resolvedPath": "components/ui/composer-rail.jsx"
+        },
+        {
           "source": "../model/location-composer-selectors.js",
           "kind": "static",
           "symbols": [
@@ -8784,6 +8863,10 @@
       ],
       "relatedFiles": [
         {
+          "path": "components/ui/composer-rail.jsx",
+          "relationship": "static import"
+        },
+        {
           "path": "features/darken-location/composer/model/location-composer-selectors.js",
           "relationship": "static import"
         },
@@ -8810,13 +8893,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "fe27e7a879990ece276a5522cd55bfc31c859b2cf48a5c8c3deae3fe9eeea5ec",
-        "bytes": 5942,
-        "lineCount": 165,
+        "hash": "bd4aa5c9d38aa729de259abc0499bd7ff96f6702a6da984d2efd67ec00d76b0d",
+        "bytes": 6066,
+        "lineCount": 169,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -8911,7 +8994,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -9025,7 +9108,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -9078,13 +9161,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "9b77ec10216709af3e692d9c9d6671c7b221f45d95db645d5b6d6f7291db78c7",
-        "bytes": 238068,
-        "lineCount": 8177,
+        "hash": "41cd08429edfe2a24fe0a9c53a4dadf28d86dac808249e87f3620531db479d42",
+        "bytes": 239133,
+        "lineCount": 8179,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -9235,7 +9318,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -9355,7 +9438,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -9550,7 +9633,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -9700,7 +9783,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -10033,7 +10116,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -10355,7 +10438,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -10549,7 +10632,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -10659,7 +10742,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -10792,7 +10875,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -10867,7 +10950,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -11012,7 +11095,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -11142,7 +11225,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -11243,7 +11326,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -11386,7 +11469,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -11597,7 +11680,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -11629,6 +11712,10 @@
       "runtimeFlows": [],
       "relatedFiles": [],
       "tests": [
+        {
+          "path": "features/darken-location/map-generator/map-generator.pipeline.test.js",
+          "coverage": "Imports or references this file, adjacent basename, or related QA target."
+        },
         {
           "path": "features/darken-location/map-generator/qa/map-batch-qa.js",
           "coverage": "Imports or references this file, adjacent basename, or related QA target."
@@ -11672,10 +11759,6 @@
         {
           "path": "tests/e2e/dark-places.helpers.js",
           "coverage": "Imports or references this file, adjacent basename, or related QA target."
-        },
-        {
-          "path": "tests/tests/tests/unit/inspiration-modules.spec.js",
-          "coverage": "Imports or references this file, adjacent basename, or related QA target."
         }
       ],
       "changeRisk": "low",
@@ -11701,7 +11784,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -11759,7 +11842,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -11785,6 +11868,7 @@
       "importedBy": [],
       "dataConsumed": [],
       "dataProduced": [
+        "Generated map model data",
         "Validation reports or issue lists"
       ],
       "sideEffects": [],
@@ -11813,13 +11897,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "86dcae50d98071bfadc577777ea021ffb94bd616d7ac0f8b322827467507c306",
-        "bytes": 21519,
-        "lineCount": 329,
+        "hash": "b9d864d9f33b193c75841c362ea81dad6c61fbd9806275840b1b54651ef5427b",
+        "bytes": 28821,
+        "lineCount": 407,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -11877,7 +11961,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -11935,7 +12019,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -11993,7 +12077,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -12051,7 +12135,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -12135,7 +12219,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -12353,7 +12437,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -12486,7 +12570,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -12653,7 +12737,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -13030,6 +13114,11 @@
             "role": "Exported function."
           },
           {
+            "name": "isSelfAvoidingPathThroughPoints",
+            "kind": "function",
+            "role": "Exported function."
+          },
+          {
             "name": "isUsableCorridorPath",
             "kind": "function",
             "role": "Exported function."
@@ -13216,7 +13305,8 @@
             "getCorridorPlanarLevel",
             "getCrossLevelCorridorIntersectionCells",
             "getPhysicalFloorConnectivityReport",
-            "isOrganicCorridor"
+            "isOrganicCorridor",
+            "isSelfAvoidingPathThroughPoints"
           ]
         },
         {
@@ -13256,6 +13346,7 @@
             "serializeManualAnchor",
             "normalizeManualWaypoint",
             "isValidPoint",
+            "isSelfAvoidingPathThroughPoints",
             "isOrganicCorridor",
             "getCorridorTopologyCells",
             "createDoorFromAnchor",
@@ -13284,6 +13375,14 @@
             "getRoomCellOwnershipMap",
             "getNonEndpointRoomTunnelHits",
             "getPhysicalFloorConnectivityReport"
+          ]
+        },
+        {
+          "path": "features/darken-location/map-generator/map-generator.pipeline.test.js",
+          "symbols": [
+            "findPathThroughCellSet",
+            "isSelfAvoidingPathThroughPoints",
+            "routePathThroughCells"
           ]
         },
         {
@@ -13379,6 +13478,10 @@
       ],
       "tests": [
         {
+          "path": "features/darken-location/map-generator/map-generator.pipeline.test.js",
+          "coverage": "Imports or references this file, adjacent basename, or related QA target."
+        },
+        {
           "path": "features/darken-location/map-generator/qa/map-batch-qa.js",
           "coverage": "Imports or references this file, adjacent basename, or related QA target."
         },
@@ -13414,13 +13517,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "59290561d57785e0737e3ad86d521d8f32077f7c959ad55a32d3abd5ed87f943",
-        "bytes": 186094,
-        "lineCount": 5824,
+        "hash": "20cc9da9a93c6e86495bf8320a51b6ec54d6ca6ee57532941c4ecae0ecdebecb",
+        "bytes": 188664,
+        "lineCount": 5901,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -13563,7 +13666,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -13766,7 +13869,8 @@
             "getCorridorPlanarLevel",
             "getCrossLevelCorridorIntersectionCells",
             "getPhysicalFloorConnectivityReport",
-            "isOrganicCorridor"
+            "isOrganicCorridor",
+            "isSelfAvoidingPathThroughPoints"
           ],
           "external": false,
           "resolvedPath": "features/darken-location/map-generator/map-generator.corridors.js"
@@ -13904,13 +14008,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "17c2f86cc2a67f8a57fc3d5c28673691b77f240f8ea83eecb59073ca9344dbea",
-        "bytes": 45993,
-        "lineCount": 1326,
+        "hash": "31ae48ee8cee8cf21301f4db29794924fc6e99659976c6ab4df2991359fbd55d",
+        "bytes": 46935,
+        "lineCount": 1353,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -14328,7 +14432,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -14549,13 +14653,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "76e45154b0bc01d76d62383c0721370cc9b0250ab4a78972cc8d914bec41de38",
-        "bytes": 10106,
-        "lineCount": 314,
+        "hash": "2f63d3cb51753f0b7ceb80e505f6204bfafd83982527ff7391471f87f2d874c4",
+        "bytes": 10966,
+        "lineCount": 340,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -15332,7 +15436,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -15579,7 +15683,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -15683,7 +15787,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -15934,7 +16038,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -16358,7 +16462,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -16521,6 +16625,11 @@
           },
           {
             "name": "computeBoundarySegments",
+            "kind": "function",
+            "role": "Exported function."
+          },
+          {
+            "name": "computeCorridorSelfSeparationWallSegments",
             "kind": "function",
             "role": "Exported function."
           },
@@ -16792,6 +16901,12 @@
           ]
         },
         {
+          "path": "features/darken-location/map-generator/map-generator.pipeline.test.js",
+          "symbols": [
+            "buildDungeonMask"
+          ]
+        },
+        {
           "path": "features/darken-location/map-generator/map-generator.render.jsx",
           "symbols": [
             "cellKey",
@@ -16848,11 +16963,19 @@
       ],
       "tests": [
         {
+          "path": "features/darken-location/map-generator/map-generator.pipeline.test.js",
+          "coverage": "Imports or references this file, adjacent basename, or related QA target."
+        },
+        {
           "path": "scripts/map-generator.circle-anchors.test.js",
           "coverage": "Imports or references this file, adjacent basename, or related QA target."
         },
         {
           "path": "scripts/run-circle-connector-diagnostics.test.js",
+          "coverage": "Imports or references this file, adjacent basename, or related QA target."
+        },
+        {
+          "path": "scripts/run-dark-places-acceptance-qa.mjs",
           "coverage": "Imports or references this file, adjacent basename, or related QA target."
         }
       ],
@@ -16875,13 +16998,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "4edcac2c723f79f2f2f3599209e848b3602886f037d6110a08e9e55c8531078c",
-        "bytes": 67953,
-        "lineCount": 2168,
+        "hash": "72c722c4ac2a9fe88310cf3b3a68cad3bd8c8d11ff1e54e51872dcd302bdeb74",
+        "bytes": 70959,
+        "lineCount": 2260,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -17000,6 +17123,8 @@
             "stairTransitionKey",
             "getManualStairTransition",
             "createEditorStairLevelOverrides",
+            "createStairMarkerPositionOverride",
+            "createStairMarkerRemovalOverride",
             "resolveStairTransition",
             "getManualJunctionOverride",
             "normalizeJunctionType",
@@ -17144,6 +17269,7 @@
             "serializeManualAnchor",
             "normalizeManualWaypoint",
             "isValidPoint",
+            "isSelfAvoidingPathThroughPoints",
             "isOrganicCorridor",
             "getCorridorTopologyCells",
             "createDoorFromAnchor",
@@ -17189,7 +17315,9 @@
           "symbols": [
             "MapSvg",
             "createLevelFilteredMap",
+            "getClosestCorridorStairMarkerDragTarget",
             "getCorridorStairMarkerVirtualDoors",
+            "getMapStairMarkerEditorHandles",
             "getStairMarkerId",
             "getMapSurface",
             "getRegionSurface",
@@ -17272,6 +17400,12 @@
           "path": "features/darken-location/map-generator/map-generator.index.js",
           "symbols": [
             "CruorMapGeneratorMvp",
+            "MapViewport"
+          ]
+        },
+        {
+          "path": "features/darken-location/map-generator/map-generator.pipeline.test.js",
+          "symbols": [
             "MapViewport"
           ]
         }
@@ -17395,13 +17529,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "a1cdeff1bd42ffd85b415977b0cdd526741cec1b0873c06f2a75dffc2541a188",
-        "bytes": 411319,
-        "lineCount": 11368,
+        "hash": "75e7376b7e37aa0ad76acd40106e83691ae5b2923326ae2c0a207f2a8e041d28",
+        "bytes": 428724,
+        "lineCount": 11873,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -17691,7 +17825,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -17734,6 +17868,25 @@
           "resolvedPath": null
         },
         {
+          "source": "react",
+          "kind": "static",
+          "symbols": [
+            "act",
+            "createElement"
+          ],
+          "external": true,
+          "resolvedPath": null
+        },
+        {
+          "source": "react-dom/client",
+          "kind": "static",
+          "symbols": [
+            "createRoot"
+          ],
+          "external": true,
+          "resolvedPath": null
+        },
+        {
           "source": "react-dom/server",
           "kind": "static",
           "symbols": [
@@ -17748,7 +17901,8 @@
           "symbols": [
             "describe",
             "expect",
-            "test"
+            "test",
+            "vi"
           ],
           "external": true,
           "resolvedPath": null
@@ -17763,6 +17917,15 @@
           "resolvedPath": "features/darken-location/map-generator/map-generator.input.js"
         },
         {
+          "source": "./map-generator.mask.js",
+          "kind": "static",
+          "symbols": [
+            "buildDungeonMask"
+          ],
+          "external": false,
+          "resolvedPath": "features/darken-location/map-generator/map-generator.mask.js"
+        },
+        {
           "source": "./map-generator.graph.js",
           "kind": "static",
           "symbols": [
@@ -17770,6 +17933,17 @@
           ],
           "external": false,
           "resolvedPath": "features/darken-location/map-generator/map-generator.graph.js"
+        },
+        {
+          "source": "./map-generator.corridors.js",
+          "kind": "static",
+          "symbols": [
+            "findPathThroughCellSet",
+            "isSelfAvoidingPathThroughPoints",
+            "routePathThroughCells"
+          ],
+          "external": false,
+          "resolvedPath": "features/darken-location/map-generator/map-generator.corridors.js"
         },
         {
           "source": "../darken-location.map-request.js",
@@ -17802,6 +17976,8 @@
             "getCorridorLevelShiftDescription",
             "getCorridorLevelShiftLabel",
             "getCorridorStairMarkerVirtualDoors",
+            "getCorridorStairMarkerDragTargets",
+            "getClosestCorridorStairMarkerDragTarget",
             "getMapStairMarkerEditorHandles",
             "getStairMarkerId",
             "getCorridorStairRenderInfo",
@@ -17810,6 +17986,7 @@
             "getRenderedCorridorStairMarkerCount",
             "getRoomLevelBadgeLabel",
             "renderCorridorTypeWallAccents",
+            "renderDoorSymbols",
             "renderEditorOverlays"
           ],
           "external": false,
@@ -17823,6 +18000,15 @@
           ],
           "external": false,
           "resolvedPath": "features/darken-location/map-generator/map-generator.pipeline.js"
+        },
+        {
+          "source": "./map-generator.page.jsx",
+          "kind": "static",
+          "symbols": [
+            "MapViewport"
+          ],
+          "external": false,
+          "resolvedPath": "features/darken-location/map-generator/map-generator.page.jsx"
         },
         {
           "source": "./map-generator.export.js",
@@ -17852,7 +18038,11 @@
           "source": "./map-generator.state.js",
           "kind": "static",
           "symbols": [
+            "MANUAL_OVERRIDE_SCHEMA_VERSION",
             "createEditorStairLevelOverrides",
+            "createStairMarkerPositionOverride",
+            "createStairMarkerRemovalOverride",
+            "normalizeManualOverrides",
             "stairTransitionKey"
           ],
           "external": false,
@@ -17892,7 +18082,9 @@
       "browserApis": [
         "DOM"
       ],
-      "stateOwnership": [],
+      "stateOwnership": [
+        "React local component state"
+      ],
       "runtimeFlows": [
         "composer-to-map",
         "map-generation"
@@ -17903,7 +18095,15 @@
           "relationship": "static import"
         },
         {
+          "path": "features/darken-location/map-generator/map-generator.mask.js",
+          "relationship": "static import"
+        },
+        {
           "path": "features/darken-location/map-generator/map-generator.graph.js",
+          "relationship": "static import"
+        },
+        {
+          "path": "features/darken-location/map-generator/map-generator.corridors.js",
           "relationship": "static import"
         },
         {
@@ -17923,6 +18123,10 @@
           "relationship": "static import"
         },
         {
+          "path": "features/darken-location/map-generator/map-generator.page.jsx",
+          "relationship": "static import"
+        },
+        {
           "path": "features/darken-location/map-generator/map-generator.export.js",
           "relationship": "static import"
         },
@@ -17932,10 +18136,6 @@
         },
         {
           "path": "features/darken-location/map-generator/map-generator.state.js",
-          "relationship": "static import"
-        },
-        {
-          "path": "features/darken-location/map-generator/map-generator.debug-options.js",
           "relationship": "static import"
         }
       ],
@@ -17964,13 +18164,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "7075a132efd72afed3a8124c89f723bc26743649f9f87567c52e0b0b24750302",
-        "bytes": 41645,
-        "lineCount": 1139,
+        "hash": "587d59139f4e6a10018e6a20366a45aed5b132171a81da67f3921b0ce63f7da7",
+        "bytes": 72719,
+        "lineCount": 2092,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -18278,7 +18478,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -18741,6 +18941,11 @@
             "role": "Exported function."
           },
           {
+            "name": "getClosestCorridorStairMarkerDragTarget",
+            "kind": "function",
+            "role": "Exported function."
+          },
+          {
             "name": "getCorridorInsertionZones",
             "kind": "function",
             "role": "Exported function."
@@ -18762,6 +18967,11 @@
           },
           {
             "name": "getCorridorLevelShiftLabelPoint",
+            "kind": "function",
+            "role": "Exported function."
+          },
+          {
+            "name": "getCorridorStairMarkerDragTargets",
             "kind": "function",
             "role": "Exported function."
           },
@@ -19667,7 +19877,9 @@
           "symbols": [
             "MapSvg",
             "createLevelFilteredMap",
+            "getClosestCorridorStairMarkerDragTarget",
             "getCorridorStairMarkerVirtualDoors",
+            "getMapStairMarkerEditorHandles",
             "getStairMarkerId",
             "getMapSurface",
             "getRegionSurface",
@@ -19686,6 +19898,8 @@
             "getCorridorLevelShiftDescription",
             "getCorridorLevelShiftLabel",
             "getCorridorStairMarkerVirtualDoors",
+            "getCorridorStairMarkerDragTargets",
+            "getClosestCorridorStairMarkerDragTarget",
             "getMapStairMarkerEditorHandles",
             "getStairMarkerId",
             "getCorridorStairRenderInfo",
@@ -19694,6 +19908,7 @@
             "getRenderedCorridorStairMarkerCount",
             "getRoomLevelBadgeLabel",
             "renderCorridorTypeWallAccents",
+            "renderDoorSymbols",
             "renderEditorOverlays"
           ]
         },
@@ -19804,13 +20019,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "9c7e5033e90298891014a7d3f033cef8bb4aef6c0ac605ae4aaea3d6552ebc5e",
-        "bytes": 382912,
-        "lineCount": 11669,
+        "hash": "53af68bcbe72ea236a1d5d77601e8df279ca9d4748b7565148ef85f5d1b38546",
+        "bytes": 393751,
+        "lineCount": 11955,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -20035,7 +20250,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -20098,6 +20313,16 @@
           },
           {
             "name": "createEmptyManualOverrides",
+            "kind": "function",
+            "role": "Exported function."
+          },
+          {
+            "name": "createStairMarkerPositionOverride",
+            "kind": "function",
+            "role": "Exported function."
+          },
+          {
+            "name": "createStairMarkerRemovalOverride",
             "kind": "function",
             "role": "Exported function."
           },
@@ -20277,6 +20502,16 @@
             "role": "Exported function."
           },
           {
+            "name": "normalizeStairMarkerOverride",
+            "kind": "function",
+            "role": "Exported function."
+          },
+          {
+            "name": "normalizeStairMarkerOverrides",
+            "kind": "function",
+            "role": "Exported function."
+          },
+          {
             "name": "normalizeStairTransition",
             "kind": "function",
             "role": "Exported function."
@@ -20403,6 +20638,8 @@
             "stairTransitionKey",
             "getManualStairTransition",
             "createEditorStairLevelOverrides",
+            "createStairMarkerPositionOverride",
+            "createStairMarkerRemovalOverride",
             "resolveStairTransition",
             "getManualJunctionOverride",
             "normalizeJunctionType",
@@ -20421,7 +20658,11 @@
         {
           "path": "features/darken-location/map-generator/map-generator.pipeline.test.js",
           "symbols": [
+            "MANUAL_OVERRIDE_SCHEMA_VERSION",
             "createEditorStairLevelOverrides",
+            "createStairMarkerPositionOverride",
+            "createStairMarkerRemovalOverride",
+            "normalizeManualOverrides",
             "stairTransitionKey"
           ]
         },
@@ -20480,13 +20721,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "0c8013c4dbaf2cbf1273abaf42e4565add6a9c2f3e859c9a02b08730b75c475c",
-        "bytes": 21771,
-        "lineCount": 770,
+        "hash": "233e09733a530304eb845781a7f2f225fb7b10dd57f28a9d5964d5b9a9b0a18b",
+        "bytes": 25114,
+        "lineCount": 886,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -20522,7 +20763,12 @@
         "map-generation"
       ],
       "relatedFiles": [],
-      "tests": [],
+      "tests": [
+        {
+          "path": "scripts/run-dark-places-acceptance-qa.mjs",
+          "coverage": "Imports or references this file, adjacent basename, or related QA target."
+        }
+      ],
       "changeRisk": "low",
       "changeRiskReasons": [],
       "generated": false,
@@ -20540,13 +20786,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "3e4af1fd0885bcda1f80f297263fe2d723eeb079339c69a8b95e2f5180bd1b12",
-        "bytes": 89447,
-        "lineCount": 3375,
+        "hash": "bd7b265c526e9a037d05f0da80a6e87787144f4f676ca9286b1c4e62b7131919",
+        "bytes": 83205,
+        "lineCount": 3208,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -20950,7 +21196,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -21070,7 +21316,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -21130,7 +21376,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -21604,7 +21850,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -21782,7 +22028,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -21947,7 +22193,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -22095,7 +22341,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -22203,7 +22449,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -22306,7 +22552,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -22409,7 +22655,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -22563,7 +22809,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -22698,7 +22944,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -22786,7 +23032,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -22903,7 +23149,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -23083,7 +23329,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -23171,7 +23417,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -23348,7 +23594,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -23443,7 +23689,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -23502,7 +23748,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -23615,7 +23861,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -23703,7 +23949,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -23823,7 +24069,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -23924,7 +24170,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -24026,7 +24272,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -24208,7 +24454,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -24427,7 +24673,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -24536,7 +24782,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -24861,7 +25107,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -25011,7 +25257,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -25232,7 +25478,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -25471,7 +25717,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -25644,7 +25890,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -25927,7 +26173,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -26136,7 +26382,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -26304,7 +26550,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -26458,7 +26704,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -26609,7 +26855,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -26767,7 +27013,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -26947,7 +27193,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -27069,7 +27315,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -27129,7 +27375,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -27189,7 +27435,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -27249,7 +27495,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -27309,7 +27555,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -27369,7 +27615,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -27429,7 +27675,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -27511,7 +27757,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -27623,7 +27869,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -27687,7 +27933,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -27744,7 +27990,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -27801,7 +28047,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -27858,7 +28104,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -27915,7 +28161,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -28079,7 +28325,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -28131,6 +28377,15 @@
           ],
           "external": true,
           "resolvedPath": null
+        },
+        {
+          "source": "../../../components/ui/composer-rail.jsx",
+          "kind": "static",
+          "symbols": [
+            "ComposerRail"
+          ],
+          "external": false,
+          "resolvedPath": "components/ui/composer-rail.jsx"
         },
         {
           "source": "../monster-composer.workflow.js",
@@ -28251,6 +28506,10 @@
       ],
       "relatedFiles": [
         {
+          "path": "components/ui/composer-rail.jsx",
+          "relationship": "static import"
+        },
+        {
           "path": "features/monster-composer/monster-composer.workflow.js",
           "relationship": "static import"
         },
@@ -28295,13 +28554,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "a810881815e1f54daabe4a8e04c8e72caa1c4d27e3068b69d4bbb09afb772a32",
-        "bytes": 78260,
-        "lineCount": 2283,
+        "hash": "7e95908df6884b6376fb863384415a1353155c151564b303df76757a672f8555",
+        "bytes": 79093,
+        "lineCount": 2305,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -28516,7 +28775,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -28634,7 +28893,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -28691,7 +28950,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -28755,7 +29014,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -28901,7 +29160,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -29216,7 +29475,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -29427,7 +29686,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -29553,7 +29812,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -29638,7 +29897,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -29711,7 +29970,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -29991,7 +30250,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -30188,7 +30447,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -30312,7 +30571,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -30480,7 +30739,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -30619,7 +30878,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -30727,7 +30986,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -31034,7 +31293,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -31395,7 +31654,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -31495,7 +31754,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -31873,7 +32132,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -31973,7 +32232,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -32093,7 +32352,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -32289,7 +32548,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -32392,7 +32651,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -32483,7 +32742,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -32573,7 +32832,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -32659,7 +32918,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -32927,7 +33186,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -33017,7 +33276,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -33116,7 +33375,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -33219,7 +33478,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -33399,7 +33658,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -33583,7 +33842,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -34053,7 +34312,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -34166,7 +34425,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -34284,7 +34543,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -34409,7 +34668,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -34499,7 +34758,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -34625,7 +34884,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -34709,7 +34968,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -35168,7 +35427,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -35227,7 +35486,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -35280,13 +35539,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "23c78815c557a9d064e94619a1d591f530d88dfba812b7f1cdf77d0d6e0c42f8",
-        "bytes": 340157,
+        "hash": "cdd47615972c0a8b31f2e662aa2682dc4c511771a84b1b3329bd26c298707720",
+        "bytes": 340706,
         "lineCount": 12274,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -35477,7 +35736,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -35650,7 +35909,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -35940,7 +36199,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -36120,7 +36379,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -36577,7 +36836,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -36752,7 +37011,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -37008,7 +37267,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -37209,7 +37468,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -37405,7 +37664,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -37769,7 +38028,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -37854,7 +38113,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -37914,7 +38173,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -37974,7 +38233,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38036,7 +38295,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38096,7 +38355,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38158,7 +38417,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38218,7 +38477,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38278,7 +38537,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38338,7 +38597,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38398,7 +38657,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38458,7 +38717,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38518,7 +38777,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38578,7 +38837,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38638,7 +38897,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38700,7 +38959,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38762,7 +39021,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38822,7 +39081,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38884,7 +39143,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -38946,7 +39205,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -39006,7 +39265,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -39066,7 +39325,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -39126,7 +39385,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -39236,7 +39495,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -39507,7 +39766,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -39638,7 +39897,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -39788,7 +40047,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -39925,7 +40184,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -40033,7 +40292,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -40157,7 +40416,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -40387,7 +40646,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -40473,7 +40732,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -40660,7 +40919,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -40770,7 +41029,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -40832,7 +41091,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -40892,7 +41151,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -40952,13 +41211,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "049e85ec550aa805a99afd71e65b85bc92cf73411ef4af6d8f7be3e156d06027",
+        "hash": "c2c47d9a5d77b36f1251f85bca8cb4a5e0bbde71bad3a4332e92d423029ca94a",
         "bytes": 3603,
         "lineCount": 71,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41033,7 +41292,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41088,7 +41347,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41143,7 +41402,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41198,7 +41457,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41253,7 +41512,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41308,7 +41567,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41363,7 +41622,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41418,7 +41677,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41473,7 +41732,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41528,7 +41787,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41583,7 +41842,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41638,7 +41897,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41693,7 +41952,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41748,7 +42007,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41803,7 +42062,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41858,7 +42117,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41913,7 +42172,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -41968,7 +42227,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42023,7 +42282,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42078,7 +42337,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42133,7 +42392,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42188,7 +42447,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42243,7 +42502,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42298,7 +42557,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42353,7 +42612,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42408,7 +42667,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42463,7 +42722,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42518,7 +42777,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42573,7 +42832,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42628,7 +42887,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42683,7 +42942,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42738,7 +42997,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42793,7 +43052,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42848,7 +43107,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42903,7 +43162,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -42958,7 +43217,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43013,7 +43272,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43068,7 +43327,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43123,7 +43382,7 @@
         "binary": true,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43186,7 +43445,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43249,7 +43508,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43307,7 +43566,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43365,7 +43624,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43423,7 +43682,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43481,7 +43740,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43538,13 +43797,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "e280e65dcb611dce885c411f054f7ffe218bd4612c1227b4d7ef2fe5f3ce0785",
-        "bytes": 3517,
-        "lineCount": 68,
+        "hash": "ba23788657fb553178d0666467555e2d1f09292798a5e67f640e43fcbad70ced",
+        "bytes": 3796,
+        "lineCount": 73,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43602,7 +43861,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43660,7 +43919,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43718,7 +43977,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43776,7 +44035,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43834,7 +44093,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43892,7 +44151,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -43950,7 +44209,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44019,7 +44278,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44088,7 +44347,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44148,7 +44407,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44208,7 +44467,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44266,7 +44525,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44324,7 +44583,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44386,7 +44645,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44448,7 +44707,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44506,7 +44765,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44564,7 +44823,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44622,7 +44881,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44680,7 +44939,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44738,7 +44997,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44796,7 +45055,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44854,7 +45113,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44921,7 +45180,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -44979,7 +45238,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45037,7 +45296,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45095,7 +45354,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45153,7 +45412,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45211,7 +45470,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45269,7 +45528,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45327,7 +45586,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45385,7 +45644,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45443,7 +45702,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45501,7 +45760,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45559,7 +45818,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45617,7 +45876,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45677,7 +45936,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45737,7 +45996,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45795,7 +46054,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45853,7 +46112,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45911,7 +46170,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -45969,7 +46228,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46027,7 +46286,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46085,7 +46344,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46143,7 +46402,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46201,7 +46460,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46261,7 +46520,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46321,7 +46580,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46379,7 +46638,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46437,7 +46696,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46495,7 +46754,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46553,7 +46812,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46611,7 +46870,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46669,7 +46928,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46727,7 +46986,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46785,7 +47044,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46846,7 +47105,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46907,7 +47166,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -46965,7 +47224,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47023,7 +47282,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47081,7 +47340,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47139,7 +47398,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47199,7 +47458,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47259,7 +47518,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47317,7 +47576,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47375,7 +47634,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47433,7 +47692,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47491,7 +47750,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47551,7 +47810,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47611,7 +47870,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47669,7 +47928,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47727,7 +47986,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47785,7 +48044,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47843,7 +48102,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47903,7 +48162,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -47963,7 +48222,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48021,7 +48280,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48079,7 +48338,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48137,7 +48396,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48195,7 +48454,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48253,7 +48512,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48311,7 +48570,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48369,7 +48628,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48427,7 +48686,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48485,7 +48744,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48543,7 +48802,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48601,7 +48860,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48659,7 +48918,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48717,7 +48976,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48775,7 +49034,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48833,7 +49092,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48891,7 +49150,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -48949,7 +49208,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49007,7 +49266,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49065,7 +49324,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49123,7 +49382,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49181,7 +49440,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49239,7 +49498,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49297,7 +49556,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49355,7 +49614,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49413,7 +49672,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49471,7 +49730,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49531,7 +49790,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49591,7 +49850,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49649,7 +49908,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49707,7 +49966,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49765,7 +50024,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49823,7 +50082,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49881,7 +50140,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -49939,7 +50198,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -50001,7 +50260,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -50063,7 +50322,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -50118,7 +50377,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -50219,7 +50478,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -50318,7 +50577,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -50418,7 +50677,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -50519,7 +50778,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -50588,7 +50847,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -50653,7 +50912,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -50808,7 +51067,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -50917,7 +51176,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -51085,7 +51344,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -51198,7 +51457,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -51261,7 +51520,9 @@
         "Writes files from Node tooling."
       ],
       "browserApis": [],
-      "stateOwnership": [],
+      "stateOwnership": [
+        "React local component state"
+      ],
       "runtimeFlows": [],
       "relatedFiles": [],
       "tests": [],
@@ -51282,13 +51543,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "80b3e92c8a368048eaa9bcebf4b8c6a255f6f05c2d8e8a55adfc3f5f2a23397e",
-        "bytes": 11311,
-        "lineCount": 326,
+        "hash": "b45e006a157f41ed18e4e333a1507b44d36b3cd67d9e91f53147214da6057429",
+        "bytes": 18381,
+        "lineCount": 502,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -51405,7 +51666,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -51528,7 +51789,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -51692,7 +51953,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -51784,7 +52045,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -51901,7 +52162,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -52040,7 +52301,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -52141,7 +52402,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -52238,7 +52499,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -52326,7 +52587,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -52436,7 +52697,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -52533,7 +52794,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -52644,7 +52905,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -52767,7 +53028,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -52924,7 +53185,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -53040,7 +53301,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -53179,7 +53440,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -53279,7 +53540,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -53360,7 +53621,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -53459,7 +53720,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -53595,7 +53856,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -53752,7 +54013,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -53921,7 +54182,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -54025,7 +54286,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -54277,7 +54538,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -54397,7 +54658,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -54570,7 +54831,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -54785,7 +55046,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -54927,7 +55188,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -55106,7 +55367,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -55290,7 +55551,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -55432,7 +55693,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -55571,7 +55832,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -55726,7 +55987,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -55829,7 +56090,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -56730,7 +56991,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -56860,7 +57121,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -56991,7 +57252,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -57839,7 +58100,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -57983,7 +58244,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -58413,7 +58674,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -58557,7 +58818,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -58734,7 +58995,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -58878,7 +59139,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -59022,7 +59283,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -59166,7 +59427,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -59480,7 +59741,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -59624,7 +59885,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -59768,7 +60029,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -59912,7 +60173,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -60089,7 +60350,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -60233,7 +60494,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -60377,7 +60638,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -60521,7 +60782,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -60665,7 +60926,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -60786,7 +61047,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -60963,7 +61224,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -61061,7 +61322,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -61211,7 +61472,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -61387,7 +61648,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -61515,7 +61776,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -61809,7 +62070,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -61888,7 +62149,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -62057,7 +62318,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -62202,7 +62463,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -62372,7 +62633,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -62591,7 +62852,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -62702,7 +62963,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -62813,7 +63074,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -62883,7 +63144,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -62940,7 +63201,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -63022,7 +63283,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -63079,7 +63340,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -63130,13 +63391,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "83063d9d98acb96681a8fb4f146ecb9e9b41d78941dfe2a019e6189114199a01",
-        "bytes": 6291,
-        "lineCount": 167,
+        "hash": "69ddd40ed45159e5066bf22f5cd76c2b913b2fc2c83b081968b9e4b2418b55ed",
+        "bytes": 11639,
+        "lineCount": 318,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -63206,7 +63467,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -63276,7 +63537,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -63333,7 +63594,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -63417,7 +63678,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -63493,7 +63754,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -63606,7 +63867,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -63664,7 +63925,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -63741,7 +64002,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -63816,7 +64077,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -63908,7 +64169,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -64058,7 +64319,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -64124,7 +64385,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -64191,7 +64452,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -64268,7 +64529,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -64343,7 +64604,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -64409,7 +64670,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -64476,7 +64737,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -64553,7 +64814,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -64628,7 +64889,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -64694,7 +64955,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -64761,7 +65022,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -64845,7 +65106,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -64987,7 +65248,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -65071,7 +65332,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -65213,7 +65474,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -65302,7 +65563,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -65473,7 +65734,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -65543,7 +65804,9 @@
       "dataProduced": [
         "ES module exports consumed by other files"
       ],
-      "sideEffects": [],
+      "sideEffects": [
+        "Reads process environment or command-line arguments."
+      ],
       "browserApis": [],
       "stateOwnership": [],
       "runtimeFlows": [],
@@ -65566,13 +65829,13 @@
         "findings": []
       },
       "generatedFields": {
-        "hash": "bf70af9b1200dd58e204864769865fb11d7a3dcd80c342a13e3c699eb72ad38d",
-        "bytes": 427,
-        "lineCount": 19,
+        "hash": "77bd9d28dda275bd6f881fd3d5eb99efe092e238a51e4a51eb5f3b751f158e1d",
+        "bytes": 483,
+        "lineCount": 21,
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     },
     {
@@ -65671,7 +65934,7 @@
         "binary": false,
         "tracked": true,
         "supplemental": false,
-        "generatedAt": "2026-07-10T15:06:06.141Z"
+        "generatedAt": "2026-07-11T12:25:28.128Z"
       }
     }
   ],
@@ -65874,6 +66137,11 @@
       },
       {
         "from": "features/darken-location/composer/DarkenLocationComposerPage.jsx",
+        "to": "components/ui/composer-rail.jsx",
+        "kind": "static"
+      },
+      {
+        "from": "features/darken-location/composer/DarkenLocationComposerPage.jsx",
         "to": "features/darken-location/composer/model/location-composer-state.js",
         "kind": "static"
       },
@@ -65969,6 +66237,11 @@
       },
       {
         "from": "features/darken-location/composer/components/LocationBriefPanel.jsx",
+        "to": "components/ui/composer-rail.jsx",
+        "kind": "static"
+      },
+      {
+        "from": "features/darken-location/composer/components/LocationBriefPanel.jsx",
         "to": "features/darken-location/dungeon/dungeon.index.js",
         "kind": "static"
       },
@@ -65990,6 +66263,11 @@
       {
         "from": "features/darken-location/composer/components/LocationComponentPickerModal.jsx",
         "to": "features/darken-location/composer/model/location-room-slot-matching.js",
+        "kind": "static"
+      },
+      {
+        "from": "features/darken-location/composer/components/LocationMapDetailsPanel.jsx",
+        "to": "components/ui/composer-rail.jsx",
         "kind": "static"
       },
       {
@@ -66044,6 +66322,11 @@
       },
       {
         "from": "features/darken-location/composer/components/LocationRoomInspector.jsx",
+        "to": "components/ui/composer-rail.jsx",
+        "kind": "static"
+      },
+      {
+        "from": "features/darken-location/composer/components/LocationRoomInspector.jsx",
         "to": "features/darken-location/composer/model/location-composer-state.js",
         "kind": "static"
       },
@@ -66059,7 +66342,17 @@
       },
       {
         "from": "features/darken-location/composer/components/LocationRoomProgramPanel.jsx",
+        "to": "components/ui/composer-rail.jsx",
+        "kind": "static"
+      },
+      {
+        "from": "features/darken-location/composer/components/LocationRoomProgramPanel.jsx",
         "to": "features/darken-location/composer/model/location-room-program.js",
+        "kind": "static"
+      },
+      {
+        "from": "features/darken-location/composer/components/LocationSlotRail.jsx",
+        "to": "components/ui/composer-rail.jsx",
         "kind": "static"
       },
       {
@@ -66574,7 +66867,17 @@
       },
       {
         "from": "features/darken-location/map-generator/map-generator.pipeline.test.js",
+        "to": "features/darken-location/map-generator/map-generator.mask.js",
+        "kind": "static"
+      },
+      {
+        "from": "features/darken-location/map-generator/map-generator.pipeline.test.js",
         "to": "features/darken-location/map-generator/map-generator.graph.js",
+        "kind": "static"
+      },
+      {
+        "from": "features/darken-location/map-generator/map-generator.pipeline.test.js",
+        "to": "features/darken-location/map-generator/map-generator.corridors.js",
         "kind": "static"
       },
       {
@@ -66595,6 +66898,11 @@
       {
         "from": "features/darken-location/map-generator/map-generator.pipeline.test.js",
         "to": "features/darken-location/map-generator/map-generator.pipeline.js",
+        "kind": "static"
+      },
+      {
+        "from": "features/darken-location/map-generator/map-generator.pipeline.test.js",
+        "to": "features/darken-location/map-generator/map-generator.page.jsx",
         "kind": "static"
       },
       {
@@ -67360,6 +67668,11 @@
       {
         "from": "features/monster-composer/components/frame.jsx",
         "to": "features/monster-composer/monster-composer.taxonomies.js",
+        "kind": "static"
+      },
+      {
+        "from": "features/monster-composer/components/monster-composer.anatomy.jsx",
+        "to": "components/ui/composer-rail.jsx",
         "kind": "static"
       },
       {
@@ -69508,16 +69821,16 @@
         "count": 12
       },
       {
-        "file": "features/monster-composer/model/monster-composer.selection.js",
+        "file": "features/darken-location/map-generator/map-generator.corridors.js",
         "count": 11
       },
       {
-        "file": "features/darken-location/map-generator/map-generator.corridors.js",
-        "count": 10
+        "file": "features/darken-location/map-generator/map-generator.mask.js",
+        "count": 11
       },
       {
-        "file": "features/darken-location/map-generator/map-generator.mask.js",
-        "count": 10
+        "file": "features/monster-composer/model/monster-composer.selection.js",
+        "count": 11
       },
       {
         "file": "features/darken-location/map-generator/map-generator.pipeline.js",
@@ -69555,7 +69868,7 @@
       },
       {
         "file": "features/darken-location/composer/DarkenLocationComposerPage.jsx",
-        "count": 19
+        "count": 20
       },
       {
         "file": "features/monster-composer/qa/monster-frame-builders.js",
@@ -69574,6 +69887,10 @@
         "count": 14
       },
       {
+        "file": "features/darken-location/map-generator/map-generator.pipeline.test.js",
+        "count": 13
+      },
+      {
         "file": "features/monster-composer/qa/monster-qa-suite.js",
         "count": 11
       },
@@ -69583,10 +69900,6 @@
       },
       {
         "file": "features/darken-location/map-generator/map-generator.debug.js",
-        "count": 10
-      },
-      {
-        "file": "features/darken-location/map-generator/map-generator.pipeline.test.js",
         "count": 10
       },
       {

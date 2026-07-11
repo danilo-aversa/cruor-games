@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { ComposerRail } from "../../../../components/ui/composer-rail.jsx";
 import { getDungeonThemes } from "../../dungeon/dungeon.index.js";
 import {
   SCRATCH_ROOM_ROLE_OPTIONS,
@@ -844,7 +845,14 @@ export function LocationBriefPanel({
   );
 
   return (
-    <aside className="cruor-composer-rail location-composer__rail location-composer__rail--left location-map-frame-rail" aria-label="Location frame">
+    <ComposerRail
+      side="left"
+      variant="controls"
+      surface
+      scrollable
+      className="location-composer__rail location-composer__rail--left location-map-frame-rail"
+      aria-label="Location frame"
+    >
       {modeControls ? modeControls : null}
 
       {!forcedMode ? (
@@ -997,6 +1005,6 @@ export function LocationBriefPanel({
           </section>
         </>
       )}
-    </aside>
+    </ComposerRail>
   );
 }

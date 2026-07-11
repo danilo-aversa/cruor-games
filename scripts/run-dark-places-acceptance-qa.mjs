@@ -56,6 +56,7 @@ const requiredFiles = [
   "features/darken-location/map-generator/map-generator.page.jsx",
   "features/darken-location/map-generator/map-generator.render.jsx",
   "features/darken-location/map-generator/map-generator.corridors.js",
+  "features/darken-location/map-generator/map-generator.mask.js",
   "features/darken-location/map-generator/map-generator.state.js",
   "features/darken-location/map-generator/map-generator.export.js",
   "features/darken-location/map-generator/map-generator.debug.js",
@@ -169,6 +170,51 @@ expectContains(
   "ROOM_LEVEL_MENU_OPTIONS",
   "Map editor exposes room level menu options",
 );
+expectContains(
+  "features/darken-location/map-generator/map-generator.page.jsx",
+  "CORRIDOR_WAYPOINT_INSERT_DRAG_THRESHOLD_PX",
+  "Corridor waypoint insertion uses an explicit drag threshold",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.pipeline.test.js",
+  "clicking a corridor insertion handle does not create a waypoint",
+  "Vitest covers click-safe corridor waypoint insertion",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.corridors.js",
+  "createSelfAvoidingSegmentBlockedSet",
+  "Waypoint routing blocks cells already traversed by the same corridor",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.corridors.js",
+  "isSelfAvoidingPathThroughPoints",
+  "Corridor routing exposes the self-avoiding continuity contract",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.page.jsx",
+  "canCommitCorridorWaypointRoute",
+  "Map editor rejects waypoint commits with invalid route continuity",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.debug.js",
+  '"corridor-paths-are-continuous"',
+  "Generated-map validation checks corridor continuity and self-overlap",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.pipeline.test.js",
+  "keeps the reported corridor anchor route continuous instead of creating a dead end",
+  "Vitest covers the reported waypoint dead-end regression",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.mask.js",
+  "computeCorridorSelfSeparationWallSegments",
+  "Dungeon mask preserves walls between adjacent non-consecutive corridor runs",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.pipeline.test.js",
+  "keeps an internal wall between adjacent non-consecutive S-corridor runs",
+  "Vitest covers folded S-corridor wall separation",
+);
 
 expectContains(
   "features/darken-location/map-generator/map-generator.corridors.js",
@@ -209,6 +255,41 @@ expectContains(
   "features/darken-location/map-generator/map-generator.render.jsx",
   "data-stair-marker-id",
   "Rendered stair markers expose stable editor identities",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.render.jsx",
+  "renderOptions.showStairArrows === true",
+  "Stair direction arrows are opt-in at render time",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.page.jsx",
+  'const [wallDrawingStyle, setWallDrawingStyle] = useState("precise")',
+  "Map editor defaults wall drawing to Precise",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.page.jsx",
+  "const rootWidth = 210",
+  "Map Style root menu uses the widened shared width",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.page.jsx",
+  "const flyoutWidth = 210",
+  "Map Style flyouts match the root menu width",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.styles.css",
+  '.location-map-toolbar__style-panel[data-style-floating="portal"]::before',
+  "Map Style root glass uses a pseudo-element so nested flyouts retain backdrop filtering",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.styles.css",
+  '-webkit-backdrop-filter: blur(18px) saturate(128%)',
+  "Map Style dropdown glass keeps the WebKit backdrop-filter fallback",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.export.js",
+  "normalized.showStairArrows = source.showStairArrows === true",
+  "Map state normalizes stair-arrow visibility",
 );
 expectContains(
   "features/darken-location/map-generator/map-generator.page.jsx",
@@ -307,13 +388,23 @@ expectContains(
 );
 expectContains(
   "features/darken-location/map-generator/map-generator.pipeline.test.js",
+  "defaults map walls to precise and keeps style menu widths aligned",
+  "Vitest covers map style defaults and aligned menu sizing",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.pipeline.test.js",
+  "hides stair direction arrows by default and renders them when enabled",
+  "Vitest covers opt-in stair direction arrows",
+);
+expectContains(
+  "features/darken-location/map-generator/map-generator.pipeline.test.js",
   "renders stair selection hit zones and a selected marker highlight",
   "Vitest covers stair selection overlay rendering",
 );
 expectContains(
   "features/darken-location/map-generator/map-generator.pipeline.test.js",
-  "snaps stair marker drags to free corridor cells without changing topology",
-  "Vitest covers constrained stair marker drag snapping",
+  "snaps stair marker drags to free corridor cells including door-adjacent endpoints without changing topology",
+  "Vitest covers constrained stair marker drag snapping at door-adjacent endpoints",
 );
 expectContains(
   "features/darken-location/map-generator/map-generator.pipeline.test.js",

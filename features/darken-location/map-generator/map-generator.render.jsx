@@ -2172,20 +2172,6 @@ function getCorridorStairMarkerIndexes(cells, markerCount) {
   });
 }
 
-function getCorridorStairDoorwayCellKeys(corridor = {}, generatedMap = null) {
-  const keys = new Set();
-  const addDoorCell = (door) => {
-    const cell = door?.outsideCell || door?.cell || door?.routingOutsideCell || null;
-    if (!Number.isFinite(cell?.x) || !Number.isFinite(cell?.y)) return;
-    keys.add(cellKey(cell.x, cell.y));
-  };
-  (corridor.doors || []).forEach(addDoorCell);
-  (generatedMap?.dungeonMask?.doorSegments || [])
-    .filter((door) => door?.corridorId === corridor.id)
-    .forEach(addDoorCell);
-  return keys;
-}
-
 function getMapRegionFloorCellKeys(generatedMap = null) {
   const keys = new Set();
   (generatedMap?.regions || []).forEach((region) => {
@@ -2205,7 +2191,6 @@ function getMapRegionFloorCellKeys(generatedMap = null) {
 export function getCorridorStairMarkerDragTargets(corridor, generatedMap) {
   if (!corridor || !generatedMap?.config || corridor.isRoomLink) return [];
   const gridSize = generatedMap.config.gridSize || DEFAULT_CONFIG.gridSize;
-  const doorwayCellKeys = getCorridorStairDoorwayCellKeys(corridor, generatedMap);
   const regionFloorCellKeys = getMapRegionFloorCellKeys(generatedMap);
   const cells = getVisibleCorridorTopologyCells(corridor, generatedMap);
   return cells
@@ -2221,7 +2206,7 @@ export function getCorridorStairMarkerDragTargets(corridor, generatedMap) {
     }))
     .filter((target) => {
       const key = cellKey(target.cell.x, target.cell.y);
-      return !doorwayCellKeys.has(key) && !regionFloorCellKeys.has(key);
+      return !regionFloorCellKeys.has(key);
     });
 }
 
@@ -2238,10 +2223,7 @@ export function getClosestCorridorStairMarkerDragTarget(
     y: Math.floor(point.y / gridSize),
   };
   const pointerCellKey = cellKey(pointerCell.x, pointerCell.y);
-  if (
-    getMapRegionFloorCellKeys(generatedMap).has(pointerCellKey) ||
-    getCorridorStairDoorwayCellKeys(corridor, generatedMap).has(pointerCellKey)
-  ) {
+  if (getMapRegionFloorCellKeys(generatedMap).has(pointerCellKey)) {
     return null;
   }
   const occupiedPathIndexes = new Set(
@@ -2527,11 +2509,21 @@ export function renderCorridorLevelShiftLabels(generatedMap) {
   return <g className="corridor-level-shift-labels">{rendered}</g>;
 }
 
-export function renderDerivedCorridorStairMarkers(generatedMap, markerPositions = null) {
+export function renderDerivedCorridorStairMarkers(
+  generatedMap,
+  markerPositions = null,
+  showStairArrows = false,
+) {
   const corridors = Array.isArray(generatedMap?.corridors) ? generatedMap.corridors : [];
   const rendered = corridors.flatMap((corridor) =>
     getCorridorStairMarkerVirtualDoors(corridor, generatedMap, markerPositions).map((door, index) =>
-      renderStairMark(door, door.stairTransition, `${corridor.id}-${index}`, generatedMap),
+      renderStairMark(
+        door,
+        door.stairTransition,
+        `${corridor.id}-${index}`,
+        generatedMap,
+        showStairArrows,
+      ),
     ),
   );
   if (rendered.length === 0) return null;
@@ -7226,7 +7218,13 @@ export function createStairDirectionArrowSegments(
   ];
 }
 
-export function renderStairMark(door, stairTransition, index, generatedMap) {
+export function renderStairMark(
+  door,
+  stairTransition,
+  index,
+  generatedMap,
+  showStairArrows = false,
+) {
   const transition = normalizeStairTransition(stairTransition, "none");
   if (transition === "none") return null;
   const markerId = getStairMarkerId(door);
@@ -7236,11 +7234,9 @@ export function renderStairMark(door, stairTransition, index, generatedMap) {
     transition,
     generatedMap.config.gridSize,
   );
-  const arrowSegments = createStairDirectionArrowSegments(
-    door,
-    generatedMap,
-    transition,
-  );
+  const arrowSegments = showStairArrows
+    ? createStairDirectionArrowSegments(door, generatedMap, transition)
+    : [];
   const markerTitle = door.derivedRoomLevelStair
     ? `${transition === "up" ? "Up" : "Down"} stair ${Number(door.markerIndex || 0) + 1} of ${door.markerCount || 1}`
     : `${transition === "up" ? "Up" : "Down"} stair`;
@@ -7282,19 +7278,21 @@ export function renderStairMark(door, stairTransition, index, generatedMap) {
           />
         ))}
       </g>
-      <g className="stair-mark__arrow">
-        {arrowSegments.map((segment, arrowIndex) => (
-          <path
-            key={`stair-arrow-${index}-${arrowIndex}`}
-            d={createRoughWallPath(
-              segment,
-              generatedMap.config,
-              `stair-arrow-${door.corridorId}-${door.endpoint}-${index}-${arrowIndex}`,
-              "door",
-            )}
-          />
-        ))}
-      </g>
+      {showStairArrows ? (
+        <g className="stair-mark__arrow">
+          {arrowSegments.map((segment, arrowIndex) => (
+            <path
+              key={`stair-arrow-${index}-${arrowIndex}`}
+              d={createRoughWallPath(
+                segment,
+                generatedMap.config,
+                `stair-arrow-${door.corridorId}-${door.endpoint}-${index}-${arrowIndex}`,
+                "door",
+              )}
+            />
+          ))}
+        </g>
+      ) : null}
     </g>
   );
 }
@@ -7356,11 +7354,21 @@ export function renderDoorSymbols(generatedMap, renderOptions = {}) {
                 {doorType === "locked" && renderLockedDoorMark(geometry, index)}
               </>
             )}
-            {renderStairMark(door, stairTransition, index, generatedMap)}
+            {renderStairMark(
+              door,
+              stairTransition,
+              index,
+              generatedMap,
+              renderOptions.showStairArrows === true,
+            )}
           </g>
         );
       })}
-      {renderDerivedCorridorStairMarkers(generatedMap, renderOptions.stairMarkerPositions)}
+      {renderDerivedCorridorStairMarkers(
+        generatedMap,
+        renderOptions.stairMarkerPositions,
+        renderOptions.showStairArrows === true,
+      )}
     </g>
   );
 }
@@ -10235,6 +10243,7 @@ function getCorridorRoomDragPreviewRouteCells(corridor, roomOffset, generatedMap
   };
   const routed = routePathThroughCells(routePoints, routingOptions);
   if (routed.length >= routePoints.length) return routed;
+  if (manualCells.length > 0) return [];
   const direct = routeDirectFallback(start, goal, routingOptions);
   return isUsableCorridorPath(direct, start, goal) ? direct : [];
 }
@@ -10323,6 +10332,7 @@ function getCorridorPreviewRouteCells(corridor, preview, generatedMap, gridSize)
   };
   const routed = routePathThroughCells(routePoints, routingOptions);
   if (routed.length >= routePoints.length) return routed;
+  if (manualCells.length > 0) return [];
   const direct = routeDirectFallback(start, goal, routingOptions);
   return isUsableCorridorPath(direct, start, goal) ? direct : [];
 }
@@ -11689,7 +11699,7 @@ const HATCH_SHADOW_STROKES = Object.freeze({
 });
 
 function normalizeWallDrawingStyle(value) {
-  return value === "precise" ? "precise" : "drawn";
+  return value === "drawn" ? "drawn" : "precise";
 }
 
 function normalizeHatchShadowColor(value) {
@@ -11736,7 +11746,8 @@ export function MapSvg({
   gridWeight = DEFAULT_CONFIG.gridWeight,
   crosshatchStyle = "classic",
   crosshatchOpacity = 1,
-  wallDrawingStyle = "drawn",
+  wallDrawingStyle = "precise",
+  showStairArrows = false,
   hatchShadowColor = "default",
   showDebugCellCoordinates = false,
 }) {
@@ -11844,7 +11855,15 @@ export function MapSvg({
         {showGrid && renderGrid(config, gridStyle, { gridColor, gridWeight })}
         {fadedMap && hasRenderableGeometry(fadedSurfaceMap) && (
           <g className="level-layer level-layer--faded">
-            {renderUnifiedDungeonSurface(fadedSurfaceMap, "none", { gridOpacity, gridColor, gridWeight, crosshatchStyle, crosshatchOpacity, stairMarkerPositions })}
+            {renderUnifiedDungeonSurface(fadedSurfaceMap, "none", {
+              gridOpacity,
+              gridColor,
+              gridWeight,
+              crosshatchStyle,
+              crosshatchOpacity,
+              stairMarkerPositions,
+              showStairArrows,
+            })}
             {showProps && renderProps(fadedSurfaceMap.props, fadedSurfaceMap)}
             {showEditor && showRoomBadges && renderCorridorLevelShiftLabels(fadedSurfaceMap)}
             {((showEditor && showRoomBadges) || showNames) &&
@@ -11856,7 +11875,15 @@ export function MapSvg({
           </g>
         )}
         <g className="level-layer level-layer--active">
-          {renderUnifiedDungeonSurface(activeSurfaceMap, layerGridStyle, { gridOpacity, gridColor, gridWeight, crosshatchStyle, crosshatchOpacity, stairMarkerPositions })}
+          {renderUnifiedDungeonSurface(activeSurfaceMap, layerGridStyle, {
+            gridOpacity,
+            gridColor,
+            gridWeight,
+            crosshatchStyle,
+            crosshatchOpacity,
+            stairMarkerPositions,
+            showStairArrows,
+          })}
           {showProps && renderProps(activeSurfaceMap.props, activeSurfaceMap)}
           {showEditor && showRoomBadges && renderCorridorLevelShiftLabels(activeSurfaceMap)}
           {((showEditor && showRoomBadges) || showNames) &&
@@ -11889,6 +11916,7 @@ export function MapSvg({
       showProps,
       showRoomBadges,
       showDebugCellCoordinates,
+      showStairArrows,
       stairMarkerPositions,
     ],
   );
@@ -11902,6 +11930,7 @@ export function MapSvg({
       data-level-filtered={normalizedSvgLevelView === LEVEL_VIEW_ALL ? "false" : "true"}
       data-active-level={normalizedSvgLevelView === LEVEL_VIEW_ALL ? "" : String(normalizedSvgLevelView)}
       data-wall-drawing={normalizedWallDrawingStyle}
+      data-stair-arrows={showStairArrows ? "visible" : "hidden"}
       viewBox={viewBox}
       role="img"
       aria-label="Generated Cruor location map"

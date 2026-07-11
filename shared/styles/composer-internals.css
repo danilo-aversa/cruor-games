@@ -1,0 +1,345 @@
+/*
+ * Cruor Games — Shared Composer Internals
+ * Canonical visual primitives for controls and content inside Composer rails.
+ * Import this file after each feature stylesheet so these semantic classes are
+ * the final source of truth for site-wide Composer styling.
+ */
+
+/* Navigator headers and icon controls */
+
+.cruor-composer-shell .cruor-composer-navigator-head-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
+.cruor-composer-shell .component-navigator-modal__panel .cruor-composer-icon-button {
+  position: relative;
+  width: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  border: var(--cruor-composer-control-border);
+  border-radius: var(--cruor-radius-none, 0);
+  background: var(--cruor-composer-control-bg);
+  color: var(--cruor-composer-control-text);
+  padding: 0;
+  box-shadow: var(--cruor-shadow-box-002);
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+}
+
+.cruor-composer-shell .cruor-composer-navigator-head-actions .cruor-composer-icon-button {
+  display: inline-grid;
+  place-items: center;
+}
+
+.cruor-composer-shell .component-navigator-modal__panel .cruor-composer-icon-button--filter {
+  width: 36px;
+  min-width: 36px;
+  min-height: 36px;
+}
+
+.cruor-composer-shell .component-navigator-modal__panel .cruor-composer-icon-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.cruor-composer-shell .component-navigator-modal__panel .cruor-composer-icon-button:is(:hover, :focus-visible, .active, .is-active) {
+  border-color: var(--cruor-composer-control-border-color-active);
+  background: var(--cruor-composer-control-bg-active);
+  color: var(--cruor-composer-control-text-active);
+  box-shadow: var(--cruor-shadow-box-001);
+  outline: none;
+}
+
+.cruor-composer-shell .component-navigator-modal__panel .cruor-composer-icon-button--filter[data-active-count="1"]::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 6px;
+  height: 6px;
+  background: var(--cruor-color-hex-be4052);
+  box-shadow: var(--cruor-shadow-box-044);
+  pointer-events: none;
+}
+
+/* Navigator search and filtering */
+
+.cruor-composer-shell .component-navigator-modal__rail .cruor-composer-navigator-search-input {
+  width: 100%;
+  min-height: 36px;
+  border: 1px solid var(--cruor-color-milk-a080);
+  background: var(--cruor-surface-card);
+  color: var(--cruor-color-text-a880);
+  padding-inline: 10px;
+  font-size: var(--text-size-l);
+  outline: none;
+}
+
+.cruor-composer-shell .component-navigator-modal__rail .cruor-composer-navigator-search-input::placeholder {
+  color: var(--cruor-color-text-a340);
+}
+
+.cruor-composer-shell .component-navigator-modal__rail .cruor-composer-navigator-count {
+  min-width: 38px;
+  min-height: 36px;
+  border: 1px solid var(--cruor-color-milk-a080);
+  background: var(--cruor-surface-card);
+  color: var(--cruor-color-hex-d0a2aa);
+  padding-inline: 9px;
+  font-size: var(--text-size-m);
+  font-weight: 950;
+  text-align: center;
+}
+
+.cruor-composer-shell .component-navigator-modal__panel .cruor-composer-filter-clear {
+  min-height: 24px;
+  border: var(--cruor-composer-control-border);
+  background: var(--cruor-composer-control-bg);
+  color: var(--cruor-composer-control-text);
+  padding: 0 8px;
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cruor-composer-shell .component-navigator-modal__panel .cruor-composer-filter-clear:hover:not(:disabled) {
+  border-color: var(--cruor-composer-control-border-color-active);
+  background: var(--cruor-composer-control-bg-active);
+  color: var(--cruor-composer-control-text-active);
+}
+
+.cruor-composer-shell .component-navigator-modal__panel .cruor-composer-filter-clear:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.cruor-composer-shell .component-navigator-modal__panel .cruor-composer-filter-chip {
+  min-height: 28px;
+  border: var(--cruor-composer-chip-border);
+  background: var(--cruor-composer-chip-bg);
+  color: var(--cruor-composer-chip-text);
+  padding: 0 9px;
+  font-size: var(--text-size-s);
+  font-weight: 900;
+  letter-spacing: 0.035em;
+  text-align: left;
+}
+
+.cruor-composer-shell .component-navigator-modal__panel .cruor-composer-filter-chip:is(:hover, .active, .is-active) {
+  border-color: var(--cruor-color-blood-bright-a820);
+  background: var(--cruor-color-blood-a460);
+  color: var(--cruor-color-hex-f0d7dc);
+}
+
+/* Component-list and card surfaces */
+
+.cruor-composer-shell .component-navigator-modal__panel .cruor-composer-component-list {
+  gap: 5px;
+  border: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-gradient-linear-060-e275339f), var(--cruor-surface-card);
+  padding: 6px;
+  scrollbar-width: auto;
+  scrollbar-color: auto;
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-card {
+  border: var(--cruor-composer-card-border);
+  background: var(--cruor-composer-card-bg);
+  color: var(--cruor-color-text-a660);
+  box-shadow: var(--cruor-composer-card-shadow);
+  opacity: 1;
+  filter: none;
+  transform: none;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-card:is(
+    :hover,
+    .in-build,
+    .details-open,
+    :has(.cruor-composer-component-details:focus-within),
+    :has(.cruor-composer-component-details:hover)
+  ) {
+  border: var(--cruor-composer-card-border-active);
+  background: var(--cruor-composer-card-bg-active);
+  box-shadow: var(--cruor-composer-card-shadow-active);
+  transform: none;
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-card:is(.slot-full, :has(.cruor-composer-component-action:disabled)):hover {
+  border: var(--cruor-composer-card-border);
+  background: var(--cruor-composer-card-bg);
+  box-shadow: var(--cruor-composer-card-shadow);
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-action {
+  border: 1px solid var(--cruor-color-blood-glow-a420);
+  border-radius: var(--cruor-radius-none, 0);
+  background: var(--cruor-color-blood-strong-a220);
+  color: var(--cruor-color-hex-c8a2a8);
+  font-size: var(--text-size-xxs);
+  font-weight: 950;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  box-shadow: none;
+  transition: opacity 0.12s ease, border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-card.in-build .cruor-composer-component-action,
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-action:hover:not(:disabled) {
+  border-color: var(--cruor-composer-control-border-color-active);
+  background: var(--cruor-composer-control-bg-active);
+  color: var(--cruor-composer-control-text-active);
+  box-shadow: var(--cruor-shadow-box-008);
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-action:disabled {
+  opacity: 0.48;
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-summary {
+  color: var(--cruor-color-text-a550);
+  font-size: var(--text-size-s-plus);
+  line-height: 1.21;
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-compatibility-note {
+  border-left: 1px solid var(--cruor-color-blood-glow-a640);
+  color: var(--cruor-color-hex-d0a2aa);
+  padding-left: 5px;
+  font-size: var(--text-size-xs-plus);
+  line-height: 1.2;
+}
+
+/* Compatibility badges */
+
+.cruor-composer-shell .cruor-composer-compatibility-badge {
+  flex: 0 0 auto;
+  border: var(--cruor-composer-chip-border);
+  background: var(--cruor-composer-chip-bg);
+  color: var(--cruor-composer-chip-text);
+  padding: 3px 6px;
+  font-size: var(--text-size-xxs);
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.cruor-composer-shell .cruor-composer-compatibility-badge:is(.soft, .avoid) {
+  border-color: var(--cruor-color-blood-glow-a540);
+  background: var(--cruor-color-blood-strong-a300);
+  color: var(--cruor-color-hex-f0d7dc);
+}
+
+.cruor-composer-shell .cruor-composer-compatibility-badge:is(.incompatible, .missing) {
+  border-color: var(--cruor-color-rose-a640);
+  background: var(--cruor-color-blood-bright-a320);
+  color: var(--cruor-color-hex-f0b9c2);
+}
+
+/* Details popover and metadata */
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-details-trigger {
+  border: 0;
+  border-bottom: 1px dotted var(--cruor-color-r208-g162-b170-a720);
+  background: var(--cruor-color-transparent);
+  color: var(--cruor-color-hex-8f7278);
+  padding: 0 0 1px;
+  font-size: var(--text-size-xxs);
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: help;
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-details:is(:hover, :focus-within) .cruor-composer-component-details-trigger,
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-card.details-open .cruor-composer-component-details-trigger {
+  border-bottom-color: var(--cruor-color-rose-a920);
+  color: var(--cruor-color-hex-d0a2aa);
+  outline: none;
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-component-details-panel {
+  border: 1px solid var(--cruor-color-blood-glow-a420);
+  background: var(--cruor-gradient-linear-003-33222bdf), var(--cruor-gradient-radial-004-b311c202), var(--cruor-color-r6-g5-b6-a990);
+  padding: 10px;
+  box-shadow: var(--cruor-shadow-box-024);
+  backdrop-filter: var(--cruor-filter-glass-16-122);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-16-122);
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-meta-list {
+  display: grid;
+  gap: 4px;
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-meta-row {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr);
+  align-items: start;
+  gap: 6px;
+  border-top: 1px solid var(--cruor-color-blood-bright-a120);
+  padding-top: 4px;
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-meta-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-meta-label {
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  letter-spacing: 0.085em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-meta-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  min-width: 0;
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-meta-chip {
+  border: var(--cruor-composer-chip-border);
+  background: var(--cruor-composer-chip-bg);
+  color: var(--cruor-composer-chip-text);
+  padding: 3px 6px;
+  font-size: var(--text-size-s);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-meta-chip.source-chip {
+  border-color: var(--cruor-color-blood-strong-a680);
+  background: var(--cruor-color-blood-a320);
+  color: var(--cruor-color-hex-d0a2aa);
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-meta-chip.pack-chip {
+  border-color: var(--cruor-color-blood-glow-a520);
+  background: var(--cruor-color-blood-strong-a240);
+  color: var(--cruor-color-hex-fff0f2);
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-meta-chip.strong-chip {
+  border-color: var(--cruor-color-blood-glow-a540);
+  background: var(--cruor-color-blood-strong-a300);
+  color: var(--cruor-color-hex-f0d7dc);
+}
+
+.cruor-composer-shell .cruor-composer-component-list .cruor-composer-meta-chip.danger-chip {
+  border-color: var(--cruor-color-rose-a640);
+  background: var(--cruor-color-blood-bright-a320);
+  color: var(--cruor-color-hex-f0b9c2);
+}

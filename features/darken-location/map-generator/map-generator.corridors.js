@@ -1899,6 +1899,38 @@ export function appendPathSegment(fullPath, segment) {
   return fullPath;
 }
 
+export function isSelfAvoidingPathThroughPoints(path, points = []) {
+  const cells = Array.isArray(path) ? path.filter(Boolean) : [];
+  const routePoints = Array.isArray(points) ? points.filter(isValidPoint) : [];
+  if (cells.length === 0 || routePoints.length < 2) return false;
+
+  const seen = new Set();
+  for (let index = 0; index < cells.length; index += 1) {
+    const cell = cells[index];
+    if (!isValidPoint(cell)) return false;
+    const key = cellKey(cell.x, cell.y);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    if (
+      index > 0 &&
+      getCellManhattanDistance(cells[index - 1], cell) !== 1
+    ) {
+      return false;
+    }
+  }
+
+  let cursor = -1;
+  for (const point of routePoints) {
+    const key = cellKey(point.x, point.y);
+    const nextIndex = cells.findIndex(
+      (cell, index) => index > cursor && cellKey(cell.x, cell.y) === key,
+    );
+    if (nextIndex < 0) return false;
+    cursor = nextIndex;
+  }
+  return true;
+}
+
 export function findPath(start, goal, options) {
   const {
     gridW,
@@ -2144,12 +2176,25 @@ export function normalizeCorridorCells(cells, corridors) {
 }
 
 export function findPathThroughCellSet(cells, points) {
-  if (points.length < 2) return [];
+  const validPoints = points.filter(isValidPoint);
+  if (validPoints.length < 2) return [];
   const fullPath = [];
-  for (let index = 0; index < points.length - 1; index += 1) {
-    const start = points[index];
-    const goal = points[index + 1];
-    const segment = findPathInCellSet(cells, start, goal);
+  for (let index = 0; index < validPoints.length - 1; index += 1) {
+    const start = validPoints[index];
+    const goal = validPoints[index + 1];
+    const segmentCells = new Set(cells || []);
+    const startKey = cellKey(start.x, start.y);
+    const goalKey = cellKey(goal.x, goal.y);
+
+    fullPath.forEach((cell) => segmentCells.delete(cellKey(cell.x, cell.y)));
+    validPoints.slice(index + 2).forEach((point) => {
+      const key = cellKey(point.x, point.y);
+      if (key !== startKey && key !== goalKey) segmentCells.delete(key);
+    });
+    if (cells?.has?.(startKey)) segmentCells.add(startKey);
+    if (cells?.has?.(goalKey)) segmentCells.add(goalKey);
+
+    const segment = findPathInCellSet(segmentCells, start, goal);
     if (!isUsableCorridorPath(segment, start, goal)) return [];
     appendPathSegment(fullPath, segment);
   }
@@ -2226,6 +2271,28 @@ export function normalizeCorridorNetwork(corridors, gridSize) {
   );
 }
 
+function createSelfAvoidingSegmentBlockedSet(
+  baseBlocked,
+  fullPath,
+  start,
+  goal,
+  futurePoints = [],
+) {
+  const blocked = new Set(baseBlocked || []);
+  const startKey = cellKey(start.x, start.y);
+  const goalKey = cellKey(goal.x, goal.y);
+
+  fullPath.forEach((cell) => blocked.add(cellKey(cell.x, cell.y)));
+  futurePoints.forEach((point) => {
+    const key = cellKey(point.x, point.y);
+    if (key !== startKey && key !== goalKey) blocked.add(key);
+  });
+
+  blocked.delete(startKey);
+  blocked.delete(goalKey);
+  return blocked;
+}
+
 export function routePathThroughCells(points, options) {
   const validPoints = points.filter(isValidPoint);
   if (validPoints.length < 2) return [];
@@ -2233,7 +2300,17 @@ export function routePathThroughCells(points, options) {
   for (let index = 0; index < validPoints.length - 1; index += 1) {
     const start = validPoints[index];
     const goal = validPoints[index + 1];
-    const segment = findPath(start, goal, options);
+    const segmentOptions = {
+      ...options,
+      blocked: createSelfAvoidingSegmentBlockedSet(
+        options?.blocked,
+        fullPath,
+        start,
+        goal,
+        validPoints.slice(index + 2),
+      ),
+    };
+    const segment = findPath(start, goal, segmentOptions);
     if (!isUsableCorridorPath(segment, start, goal)) return [];
     appendPathSegment(fullPath, segment);
   }
@@ -4495,6 +4572,15 @@ export function routeCorridors(config, regions, graph) {
       getCircleDoorReservedCells(to.id),
       config.gridSize,
     );
+    const manualWaypoints = Array.isArray(edge.manualWaypoints)
+      ? edge.manualWaypoints
+          .map((point) =>
+            normalizeManualWaypoint(point, config.gridSize, gridW, gridH),
+          )
+          .filter(
+            (cell) => cell && !dynamicRoomCells.has(cellKey(cell.x, cell.y)),
+          )
+      : [];
 
     const allowedApproachCells = [
       ...getAnchorApproachCells(fromAnchor),
@@ -4508,6 +4594,7 @@ export function routeCorridors(config, regions, graph) {
         new Set([from.id, to.id]),
       );
       unblockExistingCorridorCells(blocked);
+      manualWaypoints.forEach((cell) => blocked.delete(cellKey(cell.x, cell.y)));
       if (extraRelaxed) {
         blocked.delete(
           cellKey(fromAnchor.outsideCell.x, fromAnchor.outsideCell.y),
@@ -4531,12 +4618,15 @@ export function routeCorridors(config, regions, graph) {
       };
     };
 
+    const routePoints = [
+      fromAnchor.outsideCell,
+      ...manualWaypoints,
+      toAnchor.outsideCell,
+    ];
     let routingOptions = buildRoutingOptions(false);
-    let path = routePathThroughCells(
-      [fromAnchor.outsideCell, toAnchor.outsideCell],
-      routingOptions,
-    );
+    let path = routePathThroughCells(routePoints, routingOptions);
     if (
+      manualWaypoints.length === 0 &&
       !isUsableCorridorPath(
         path,
         fromAnchor.outsideCell,
@@ -4556,12 +4646,10 @@ export function routeCorridors(config, regions, graph) {
       )
     ) {
       routingOptions = buildRoutingOptions(true);
-      path = routePathThroughCells(
-        [fromAnchor.outsideCell, toAnchor.outsideCell],
-        routingOptions,
-      );
+      path = routePathThroughCells(routePoints, routingOptions);
     }
     if (
+      manualWaypoints.length === 0 &&
       !isUsableCorridorPath(
         path,
         fromAnchor.outsideCell,
@@ -4650,7 +4738,7 @@ export function routeCorridors(config, regions, graph) {
       floorCells,
       pathCells,
       centerline,
-      manualWaypoints: [],
+      manualWaypoints,
       waypoints: dedupePoints(extractWaypoints(centerline)),
       doors:
         pureCaveContext && organicTunnel
@@ -4788,18 +4876,7 @@ export function routeCorridors(config, regions, graph) {
     ];
     let path = routePathThroughCells(routePoints, routingOptions);
     if (
-      !isUsableCorridorPath(
-        path,
-        fromAnchor.outsideCell,
-        toAnchor.outsideCell,
-      ) && manualWaypoints.length > 0
-    ) {
-      path = routePathThroughCells(
-        [fromAnchor.outsideCell, toAnchor.outsideCell],
-        routingOptions,
-      );
-    }
-    if (
+      manualWaypoints.length === 0 &&
       !isUsableCorridorPath(
         path,
         fromAnchor.outsideCell,

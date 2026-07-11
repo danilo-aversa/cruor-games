@@ -103,6 +103,34 @@ Pass 2C adds editor controls for the same contract:
 - editor controls must only mutate `manualOverrides.corridorTypes`; they must not mutate corridor topology, doors, anchors, levels, or stairs.
 
 
+## Corridor waypoint gesture contract
+
+Intermediate corridor waypoints are authored by dragging the insertion handle exposed over a corridor cell.
+
+Rules:
+
+1. Pointer-down only arms a possible waypoint insertion; it must not create an override, freeze the current layout, or render a committed reroute.
+2. A waypoint insertion starts only after the pointer travels more than the shared three-pixel drag threshold.
+3. The manual edit transaction and live corridor preview start only after that threshold is crossed.
+4. Pointer-up without a qualifying drag leaves `manualOverrides.corridorWaypoints`, the generated corridor, and the viewport bounds unchanged.
+5. `pointercancel` never commits a waypoint insertion.
+6. Once a qualifying drag begins, the release point is normalized through the existing waypoint/grid validation before committing.
+7. Route points are ordered constraints: `from door → waypoint(s) → to door`.
+8. After reaching a waypoint, every previously traversed cell of the same corridor becomes blocked for the next segment, except the shared waypoint cell itself.
+9. Future waypoint and endpoint cells are reserved so an earlier segment cannot consume them before their turn.
+10. A committed corridor path must be orthogonally contiguous, visit every route point in order, and contain no repeated cell.
+11. If no self-avoiding continuation exists, the preview is suppressed and the waypoint move/insertion is rejected instead of falling back to a route that ignores the waypoint or creates an out-and-back dead end.
+
+### Folded-corridor wall continuity
+
+A self-avoiding corridor may legitimately fold back beside an earlier run, forming an S or U shape. Its floor cells remain one ordered path, but adjacent non-consecutive runs must not visually merge into a room-sized surface.
+
+- Cells that are consecutive in `pathCells` remain open across their shared edge, including the cell pair where the corridor turns.
+- Cells of the same structured corridor that share an edge but are not consecutive in `pathCells` receive an internal separation wall.
+- The separation wall is derived from corridor topology only; it does not change `floorCells`, `pathCells`, anchors, doors, waypoints, routing, or connectivity.
+- Organic tunnels and room links keep their existing surface rules.
+- Corridor cells overlapping room floor are excluded so the additional wall cannot be drawn through a room or circular raccordo.
+
 ## Level and stair transition contract
 
 Pass 2D promotes the existing level prototype into an explicit metadata contract while preserving the legacy `stairTransitions` API.
@@ -331,7 +359,8 @@ Pass 4F-A makes render-only stair markers selectable without turning selection i
 Pass 4F-B lets a selected render-only stair marker move along its owning corridor without turning the result into persisted map data yet.
 
 - Drag targets come only from the owning corridor's ordered visible topology cells.
-- Cells occupied by rooms or doorway transitions are excluded from the valid target set.
+- Cells occupied by room floor or circular raccordo floor are excluded from the valid target set.
+- A door is an edge between the room/raccordo cell and `outsideCell`; therefore the terminal `outsideCell` / `corridorStartCell` remains a valid stair-marker target.
 - A target already occupied by another stair marker on the same corridor is excluded.
 - The pointer snaps to the nearest remaining valid corridor-cell center and becomes invalid when it is inside a room or farther than the corridor snap threshold.
 - The live preview may move the rendered virtual marker, but an invalid release restores its previous position.

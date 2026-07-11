@@ -107,38 +107,38 @@ function ImpactMetaRows({ impact }) {
   return (
     <>
       {hasDelta(impact?.dprDelta) && (
-        <div className="meta-row">
-          <span className="meta-label">DPR</span>
-          <span className="meta-values">
-            <span className="meta-value strong-chip">{signedDelta(impact.dprDelta)}</span>
+        <div className="meta-row cruor-composer-meta-row">
+          <span className="meta-label cruor-composer-meta-label">DPR</span>
+          <span className="meta-values cruor-composer-meta-values">
+            <span className="meta-value cruor-composer-meta-chip strong-chip">{signedDelta(impact.dprDelta)}</span>
           </span>
         </div>
       )}
       {hasDelta(impact?.hpDelta) && (
-        <div className="meta-row">
-          <span className="meta-label">HP</span>
-          <span className="meta-values">
-            <span className="meta-value strong-chip">{signedDelta(impact.hpDelta)}</span>
+        <div className="meta-row cruor-composer-meta-row">
+          <span className="meta-label cruor-composer-meta-label">HP</span>
+          <span className="meta-values cruor-composer-meta-values">
+            <span className="meta-value cruor-composer-meta-chip strong-chip">{signedDelta(impact.hpDelta)}</span>
           </span>
         </div>
       )}
       {hasDelta(impact?.acDelta) && (
-        <div className="meta-row">
-          <span className="meta-label">AC</span>
-          <span className="meta-values">
-            <span className="meta-value strong-chip">{signedDelta(impact.acDelta)}</span>
+        <div className="meta-row cruor-composer-meta-row">
+          <span className="meta-label cruor-composer-meta-label">AC</span>
+          <span className="meta-values cruor-composer-meta-values">
+            <span className="meta-value cruor-composer-meta-chip strong-chip">{signedDelta(impact.acDelta)}</span>
           </span>
         </div>
       )}
       {(impact?.warningsCleared > 0 || impact?.warningsAdded > 0) && (
-        <div className="meta-row">
-          <span className="meta-label">Warnings</span>
-          <span className="meta-values">
+        <div className="meta-row cruor-composer-meta-row">
+          <span className="meta-label cruor-composer-meta-label">Warnings</span>
+          <span className="meta-values cruor-composer-meta-values">
             {impact.warningsCleared > 0 && (
-              <span className="meta-value strong-chip">Clears {impact.warningsCleared}</span>
+              <span className="meta-value cruor-composer-meta-chip strong-chip">Clears {impact.warningsCleared}</span>
             )}
             {impact.warningsAdded > 0 && (
-              <span className="meta-value danger-chip">
+              <span className="meta-value cruor-composer-meta-chip danger-chip">
                 Adds {impact.warningsAdded} warning{impact.warningsAdded === 1 ? "" : "s"}
               </span>
             )}
@@ -320,10 +320,10 @@ function ComponentNavigatorPanel({
           <div className="component-navigator-modal__head-copy">
             <h2>{modalTitle}</h2>
           </div>
-          <div className="component-navigator-modal__head-actions">
+          <div className="component-navigator-modal__head-actions cruor-composer-navigator-head-actions">
             {surface === "drawer" && (
               <button
-                className={`icon-btn navigator-filter-btn ${navigatorFiltersOpen ? "active" : ""}`}
+                className={`icon-btn navigator-filter-btn cruor-composer-icon-button cruor-composer-icon-button--filter ${navigatorFiltersOpen ? "active" : ""}`}
                 type="button"
                 aria-label="Filter components"
                 aria-expanded={navigatorFiltersOpen}
@@ -334,7 +334,7 @@ function ComponentNavigatorPanel({
               </button>
             )}
             <button
-              className="icon-btn"
+              className="icon-btn cruor-composer-icon-button"
               type="button"
               aria-label="Close Component Navigator"
               onClick={onClose}
@@ -350,6 +350,7 @@ function ComponentNavigatorPanel({
               <div className="search-wrap monster-search-wrap">
                 <input
                   type="search"
+                  className="cruor-composer-navigator-search-input"
                   value={navigatorSearch}
                   placeholder="Search components…"
                   aria-label="Search components"
@@ -358,7 +359,7 @@ function ComponentNavigatorPanel({
               </div>
               {surface === "modal" && (
                 <button
-                  className={`icon-btn navigator-filter-btn ${navigatorFiltersOpen ? "active" : ""}`}
+                  className={`icon-btn navigator-filter-btn cruor-composer-icon-button cruor-composer-icon-button--filter ${navigatorFiltersOpen ? "active" : ""}`}
                   type="button"
                   aria-label="Filter components"
                   aria-expanded={navigatorFiltersOpen}
@@ -368,7 +369,7 @@ function ComponentNavigatorPanel({
                   <SlidersHorizontal aria-hidden="true" />
                 </button>
               )}
-              <div className="navigator-count" aria-label="Visible component count">
+              <div className="navigator-count cruor-composer-navigator-count" aria-label="Visible component count">
                 {displayedFeatures.length}
               </div>
             </div>
@@ -378,7 +379,7 @@ function ComponentNavigatorPanel({
                 <div className="tag-filter-row__head">
                   <span>Component Filters</span>
                   <button
-                    className="tag-clear-btn"
+                    className="tag-clear-btn cruor-composer-filter-clear"
                     type="button"
                     onClick={() => {
                       setNavigatorSearch("");
@@ -396,10 +397,10 @@ function ComponentNavigatorPanel({
                     <div className="tag-filter-row__head">
                       <strong>Inspiration</strong>
                       <span>
-                        <button className="tag-clear-btn" type="button" onClick={selectAllSourceFilters}>
+                        <button className="tag-clear-btn cruor-composer-filter-clear" type="button" onClick={selectAllSourceFilters}>
                           All
                         </button>
-                        <button className="tag-clear-btn" type="button" onClick={clearSourceFilters}>
+                        <button className="tag-clear-btn cruor-composer-filter-clear" type="button" onClick={clearSourceFilters}>
                           None
                         </button>
                       </span>
@@ -411,7 +412,7 @@ function ComponentNavigatorPanel({
                           <button
                             key={item.id}
                             type="button"
-                            className={`navigator-filter-chip navigator-filter-chip--stacked ${isActive ? "active" : ""}`}
+                            className={`navigator-filter-chip navigator-filter-chip--stacked cruor-composer-filter-chip ${isActive ? "active" : ""}`}
                             aria-pressed={isActive}
                             onClick={() => toggleSourceFilter(item.id)}
                           >
@@ -429,7 +430,7 @@ function ComponentNavigatorPanel({
                         <button
                           key={pack.id}
                           type="button"
-                          className={`navigator-filter-chip ${pack.id === navigatorPackFilter ? "active" : ""}`}
+                          className={`navigator-filter-chip cruor-composer-filter-chip ${pack.id === navigatorPackFilter ? "active" : ""}`}
                           aria-pressed={pack.id === navigatorPackFilter}
                           onClick={() => selectContentPackFilter(pack.id)}
                         >
@@ -444,7 +445,7 @@ function ComponentNavigatorPanel({
                       <div className="filter-chip-grid source-filter">
                         <button
                           type="button"
-                          className={`navigator-filter-chip ${navigatorBestPickFilter === "all" ? "active" : ""}`}
+                          className={`navigator-filter-chip cruor-composer-filter-chip ${navigatorBestPickFilter === "all" ? "active" : ""}`}
                           aria-pressed={navigatorBestPickFilter === "all"}
                           onClick={() => setNavigatorBestPickFilter("all")}
                         >
@@ -452,7 +453,7 @@ function ComponentNavigatorPanel({
                         </button>
                         <button
                           type="button"
-                          className={`navigator-filter-chip ${navigatorBestPickFilter === "best" ? "active" : ""}`}
+                          className={`navigator-filter-chip cruor-composer-filter-chip ${navigatorBestPickFilter === "best" ? "active" : ""}`}
                           aria-pressed={navigatorBestPickFilter === "best"}
                           onClick={() => setNavigatorBestPickFilter("best")}
                         >
@@ -462,7 +463,7 @@ function ComponentNavigatorPanel({
                           <button
                             key={pick.id}
                             type="button"
-                            className={`navigator-filter-chip ${navigatorBestPickFilter === pick.id ? "active" : ""}`}
+                            className={`navigator-filter-chip cruor-composer-filter-chip ${navigatorBestPickFilter === pick.id ? "active" : ""}`}
                             aria-pressed={navigatorBestPickFilter === pick.id}
                             onClick={() => setNavigatorBestPickFilter(pick.id)}
                           >
@@ -482,7 +483,7 @@ function ComponentNavigatorPanel({
           <div className="source-modal__tools monster-slot-tabs component-navigator-modal__slot-tabs">
             <button
               type="button"
-              className={`navigator-filter-chip ${navigatorSlotFilter === "all" ? "active" : ""}`}
+              className={`navigator-filter-chip cruor-composer-filter-chip ${navigatorSlotFilter === "all" ? "active" : ""}`}
               onClick={() => setNavigatorSlotFilter("all")}
             >
               All
@@ -491,7 +492,7 @@ function ComponentNavigatorPanel({
               <button
                 key={slot.id}
                 type="button"
-                className={`navigator-filter-chip ${slot.id === navigatorSlotFilter ? "active" : ""}`}
+                className={`navigator-filter-chip cruor-composer-filter-chip ${slot.id === navigatorSlotFilter ? "active" : ""}`}
                 onClick={() => {
                   setNavigatorSlotFilter(slot.id);
                   setActiveSlot(slot.id);
@@ -503,7 +504,7 @@ function ComponentNavigatorPanel({
           </div>
         )}
 
-        <div className="component-list monster-component-list component-navigator-modal__list cruor-scroll-surface">
+        <div className="component-list monster-component-list component-navigator-modal__list cruor-composer-component-list cruor-scroll-surface">
           {displayedFeatures.length === 0 ? (
             <EmptyState text="No compatible components for this source/type/role/filter combination in the MVP dataset." />
           ) : (
@@ -589,7 +590,7 @@ export function ComponentNavigatorModal({ open, ...props }) {
 
   return createPortal(
     <div
-      className="monster-shell component-navigator-modal-portal"
+      className="cruor-composer-shell monster-shell component-navigator-modal-portal"
       data-component-navigator-portal=""
     >
       {modal}
@@ -647,11 +648,11 @@ function FeatureCard({
         onDragStart?.();
       }}
       onDragEnd={onDragEnd}
-      className={`component-card ${selected ? "in-build" : ""} ${slotFull ? "slot-full" : ""} ${detailsOpen ? "details-open" : ""} ${hasCompatibilityBadge ? `compatibility-${compatibility.kind}` : ""}`}
+      className={`component-card cruor-composer-component-card ${selected ? "in-build" : ""} ${slotFull ? "slot-full" : ""} ${detailsOpen ? "details-open" : ""} ${hasCompatibilityBadge ? `compatibility-${compatibility.kind}` : ""}`}
       data-decision-tier={profile.tier}
     >
       <button
-        className="component-toggle-btn"
+        className="component-toggle-btn cruor-composer-component-action"
         type="button"
         onClick={onAdd}
         aria-label={
@@ -672,20 +673,20 @@ function FeatureCard({
           <h3>{feature.title}</h3>
         </div>
         {hasCompatibilityBadge && (
-          <span className={`compatibility-badge ${compatibility.kind}`}>{compatibility.label}</span>
+          <span className={`compatibility-badge cruor-composer-compatibility-badge ${compatibility.kind}`}>{compatibility.label}</span>
         )}
       </div>
 
-      <p className="summary">{normalizeMonsterReferences(feature.summary, computed)}</p>
+      <p className="summary cruor-composer-component-summary">{normalizeMonsterReferences(feature.summary, computed)}</p>
       <ImpactMetricDock impact={impact} />
 
       {slotFull && (
-        <p className="compatibility-note">
+        <p className="compatibility-note cruor-composer-compatibility-note">
           This slot is full. Raise its cap or remove a graft first.
         </p>
       )}
       <div
-        className="component-details"
+        className="component-details cruor-composer-component-details"
         onPointerEnter={() => setDetailsOpen(true)}
         onPointerLeave={() => setDetailsOpen(false)}
         onFocus={() => setDetailsOpen(true)}
@@ -696,41 +697,41 @@ function FeatureCard({
         }}
       >
         <button
-          className="component-details__trigger"
+          className="component-details__trigger cruor-composer-component-details-trigger"
           type="button"
           aria-expanded={detailsOpen}
           aria-haspopup="dialog"
         >
           Details
         </button>
-        <div className="meta-list component-details__panel" aria-label="Component metadata">
-          <div className="meta-row">
-            <span className="meta-label">Inspiration</span>
-            <span className="meta-values">
-              <span className="meta-value source-chip">{source?.label}</span>
+        <div className="meta-list component-details__panel cruor-composer-meta-list cruor-composer-component-details-panel" aria-label="Component metadata">
+          <div className="meta-row cruor-composer-meta-row">
+            <span className="meta-label cruor-composer-meta-label">Inspiration</span>
+            <span className="meta-values cruor-composer-meta-values">
+              <span className="meta-value cruor-composer-meta-chip source-chip">{source?.label}</span>
             </span>
           </div>
-          <div className="meta-row">
-            <span className="meta-label">Content Pack</span>
-            <span className="meta-values">
-              <span className="meta-value pack-chip">{packTitle}</span>
+          <div className="meta-row cruor-composer-meta-row">
+            <span className="meta-label cruor-composer-meta-label">Content Pack</span>
+            <span className="meta-values cruor-composer-meta-values">
+              <span className="meta-value cruor-composer-meta-chip pack-chip">{packTitle}</span>
               {sourcePackTitle !== packTitle && (
-                <span className="meta-value">Source: {sourcePackTitle}</span>
+                <span className="meta-value cruor-composer-meta-chip">Source: {sourcePackTitle}</span>
               )}
             </span>
           </div>
           <ImpactMetaRows impact={impact} />
           {(hasCompatibilityBadge || profile.frameFit?.kind === "discouraged") && (
-            <div className="meta-row">
-              <span className="meta-label">Compatibility</span>
-              <span className="meta-values">
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Compatibility</span>
+              <span className="meta-values cruor-composer-meta-values">
                 {hasCompatibilityBadge && (
-                  <span className={`meta-value ${compatibility.kind === "compatible" ? "strong-chip" : "danger-chip"}`}>
+                  <span className={`meta-value cruor-composer-meta-chip ${compatibility.kind === "compatible" ? "strong-chip" : "danger-chip"}`}>
                     {compatibility.label}: {compatibility.message}
                   </span>
                 )}
                 {profile.frameFit?.kind === "discouraged" && (
-                  <span className="meta-value danger-chip">
+                  <span className="meta-value cruor-composer-meta-chip danger-chip">
                     {profile.frameFit.label}: {profile.frameFit.message}
                   </span>
                 )}
@@ -738,28 +739,28 @@ function FeatureCard({
             </div>
           )}
           {profile.frameFit && profile.frameFit.kind !== "neutral" && profile.frameFit.kind !== "discouraged" && (
-            <div className="meta-row">
-              <span className="meta-label">Frame Fit</span>
-              <span className="meta-values">
-                <span className={`meta-value ${profile.frameFit.kind === "recommended" ? "strong-chip" : "danger-chip"}`}>
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Frame Fit</span>
+              <span className="meta-values cruor-composer-meta-values">
+                <span className={`meta-value cruor-composer-meta-chip ${profile.frameFit.kind === "recommended" ? "strong-chip" : "danger-chip"}`}>
                   {profile.frameFit.label}: {profile.frameFit.message}
                 </span>
               </span>
             </div>
           )}
-          <div className="meta-row">
-            <span className="meta-label">Slot</span>
-            <span className="meta-values">
-              <span className="meta-value strong-chip">{titleCase(feature.slot)}</span>
-              <span className="meta-value">{getSectionLabel(getFeatureSection(feature))}</span>
+          <div className="meta-row cruor-composer-meta-row">
+            <span className="meta-label cruor-composer-meta-label">Slot</span>
+            <span className="meta-values cruor-composer-meta-values">
+              <span className="meta-value cruor-composer-meta-chip strong-chip">{titleCase(feature.slot)}</span>
+              <span className="meta-value cruor-composer-meta-chip">{getSectionLabel(getFeatureSection(feature))}</span>
             </span>
           </div>
           {mechanicProfile.mechanicTags.length > 0 && (
-            <div className="meta-row">
-              <span className="meta-label">Tags</span>
-              <span className="meta-values">
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Tags</span>
+              <span className="meta-values cruor-composer-meta-values">
                 {mechanicProfile.mechanicTags.slice(0, 5).map((tag) => (
-                  <span key={tag} className="meta-value">
+                  <span key={tag} className="meta-value cruor-composer-meta-chip">
                     {formatToken(tag)}
                   </span>
                 ))}
@@ -767,11 +768,11 @@ function FeatureCard({
             </div>
           )}
           {rules.grants.length > 0 && (
-            <div className="meta-row">
-              <span className="meta-label">Grants</span>
-              <span className="meta-values">
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Grants</span>
+              <span className="meta-values cruor-composer-meta-values">
                 {rules.grants.map((token) => (
-                  <span key={token} className="meta-value">
+                  <span key={token} className="meta-value cruor-composer-meta-chip">
                     {formatToken(token)}
                   </span>
                 ))}
@@ -781,21 +782,21 @@ function FeatureCard({
           {(rules.requires.length > 0 ||
             rules.softRequires.length > 0 ||
             rules.incompatibleWith.length > 0) && (
-            <div className="meta-row">
-              <span className="meta-label">Locks</span>
-              <span className="meta-values">
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Locks</span>
+              <span className="meta-values cruor-composer-meta-values">
                 {rules.requires.map((token) => (
-                  <span key={`requires-${token}`} className="meta-value strong-chip">
+                  <span key={`requires-${token}`} className="meta-value cruor-composer-meta-chip strong-chip">
                     Requires {formatToken(token)}
                   </span>
                 ))}
                 {rules.softRequires.map((token) => (
-                  <span key={`soft-${token}`} className="meta-value">
+                  <span key={`soft-${token}`} className="meta-value cruor-composer-meta-chip">
                     Wants {formatToken(token)}
                   </span>
                 ))}
                 {rules.incompatibleWith.map((token) => (
-                  <span key={`blocks-${token}`} className="meta-value danger-chip">
+                  <span key={`blocks-${token}`} className="meta-value cruor-composer-meta-chip danger-chip">
                     Blocks {formatToken(token)}
                   </span>
                 ))}
@@ -803,11 +804,11 @@ function FeatureCard({
             </div>
           )}
           {anatomyGrantSummary.length > 0 && (
-            <div className="meta-row">
-              <span className="meta-label">Grants Anatomy</span>
-              <span className="meta-values">
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Grants Anatomy</span>
+              <span className="meta-values cruor-composer-meta-values">
                 {anatomyGrantSummary.slice(0, 8).map((row) => (
-                  <span key={`${row.label}-${row.values.join("-")}`} className="meta-value strong-chip">
+                  <span key={`${row.label}-${row.values.join("-")}`} className="meta-value cruor-composer-meta-chip strong-chip">
                     {row.label}: {row.values.join(", ")}
                   </span>
                 ))}
@@ -815,11 +816,11 @@ function FeatureCard({
             </div>
           )}
           {anatomyConstraintSummary.length > 0 && (
-            <div className="meta-row">
-              <span className="meta-label">Requires Anatomy</span>
-              <span className="meta-values">
+            <div className="meta-row cruor-composer-meta-row">
+              <span className="meta-label cruor-composer-meta-label">Requires Anatomy</span>
+              <span className="meta-values cruor-composer-meta-values">
                 {anatomyConstraintSummary.slice(0, 8).map((row) => (
-                  <span key={`${row.label}-${row.values.join("-")}`} className="meta-value strong-chip">
+                  <span key={`${row.label}-${row.values.join("-")}`} className="meta-value cruor-composer-meta-chip strong-chip">
                     {row.label}: {row.values.join(", ")}
                   </span>
                 ))}

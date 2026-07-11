@@ -1,4 +1,5 @@
 import { AlertTriangle, Eye, Gem, RotateCcw, Search } from "lucide-react";
+import { ComposerRail } from "../../../../components/ui/composer-rail.jsx";
 import { LOCATION_SLOT_SCOPE_REGION } from "../model/location-composer-state.js";
 import {
   getDefaultSlotIdForScope,
@@ -149,8 +150,12 @@ export function LocationRoomInspector({
 
   if (!entry) {
     return (
-      <aside
-        className="cruor-composer-rail location-composer__rail location-composer__rail--left location-room-inspector-rail location-room-inspector-rail--rooms"
+      <ComposerRail
+        side="left"
+        variant="inspector"
+        surface
+        scrollable
+        className="location-composer__rail location-composer__rail--left location-room-inspector-rail location-room-inspector-rail--rooms"
         aria-label="Select room"
         data-testid="dark-places-room-inspector"
       >
@@ -158,13 +163,17 @@ export function LocationRoomInspector({
           <strong className="location-room-inspector-title">Select Room</strong>
           <div className="location-room-inspector-note">Click a room on the map to edit its slots.</div>
         </section>
-      </aside>
+      </ComposerRail>
     );
   }
 
   return (
-    <aside
-      className="cruor-composer-rail location-composer__rail location-composer__rail--left location-room-inspector-rail location-room-inspector-rail--rooms"
+    <ComposerRail
+      side="left"
+      variant="inspector"
+      surface
+      scrollable
+      className="location-composer__rail location-composer__rail--left location-room-inspector-rail location-room-inspector-rail--rooms"
       aria-label="Selected room"
       data-testid="dark-places-room-inspector"
     >
@@ -230,6 +239,6 @@ export function LocationRoomInspector({
             );
           })}
       </div>
-    </aside>
+    </ComposerRail>
   );
 }

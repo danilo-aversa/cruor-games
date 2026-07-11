@@ -2090,6 +2090,90 @@ export function computeRoomRoomWallSegments(regions, gridSize) {
   return segments;
 }
 
+function isOrganicCorridorForMask(corridor) {
+  return (
+    ["natural-tunnel", "collapsed-transition"].includes(
+      corridor?.surfaceKind,
+    ) || corridor?.corridorStyle === "natural-tunnel"
+  );
+}
+
+function getOrderedCorridorMaskCells(corridor) {
+  const source =
+    Array.isArray(corridor?.pathCells) && corridor.pathCells.length > 1
+      ? corridor.pathCells
+      : Array.isArray(corridor?.floorCells)
+        ? corridor.floorCells
+        : [];
+  return source.filter(
+    (cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y),
+  );
+}
+
+// A folded one-cell corridor can place distant path steps side by side. Those
+// cells share floor geometry, but their shared edge must stay walled unless the
+// two cells are consecutive steps of the same ordered route.
+export function computeCorridorSelfSeparationWallSegments(
+  corridors,
+  corridorFloorCells,
+  gridSize,
+) {
+  const visibleCorridorFloor = new Set(
+    (corridorFloorCells || []).map((cell) => cellKey(cell.x, cell.y)),
+  );
+  const seen = new Set();
+  const segments = [];
+
+  (corridors || []).forEach((corridor) => {
+    if (corridor?.isRoomLink || isOrganicCorridorForMask(corridor)) return;
+    const pathCells = getOrderedCorridorMaskCells(corridor);
+    if (pathCells.length < 3) return;
+
+    const indexesByCell = new Map();
+    pathCells.forEach((cell, index) => {
+      const key = cellKey(cell.x, cell.y);
+      if (!visibleCorridorFloor.has(key)) return;
+      if (!indexesByCell.has(key)) indexesByCell.set(key, []);
+      indexesByCell.get(key).push(index);
+    });
+
+    pathCells.forEach((cell) => {
+      const currentKey = cellKey(cell.x, cell.y);
+      const currentIndexes = indexesByCell.get(currentKey);
+      if (!currentIndexes) return;
+
+      [
+        { x: cell.x + 1, y: cell.y },
+        { x: cell.x, y: cell.y + 1 },
+      ].forEach((neighbor) => {
+        const neighborKey = cellKey(neighbor.x, neighbor.y);
+        const neighborIndexes = indexesByCell.get(neighborKey);
+        if (!neighborIndexes) return;
+
+        const orderedPair =
+          currentKey < neighborKey
+            ? `${currentKey}|${neighborKey}`
+            : `${neighborKey}|${currentKey}`;
+        const pairKey = `${corridor.id || "corridor"}|${orderedPair}`;
+        if (seen.has(pairKey)) return;
+        seen.add(pairKey);
+
+        const isContinuousStep = currentIndexes.some((currentIndex) =>
+          neighborIndexes.some(
+            (neighborIndex) => Math.abs(currentIndex - neighborIndex) === 1,
+          ),
+        );
+        if (isContinuousStep) return;
+
+        const segment = getSharedEdgeSegment(cell, neighbor, gridSize);
+        if (segment) segments.push(segment);
+      });
+    });
+  });
+
+  return mergeCollinearWallSegments(segments);
+}
+
 export function buildDungeonMask(regions, corridors, gridSize) {
   const dungeonMask = mergeDungeonSurfaces(regions, corridors);
   const doorSegments = dedupeDoorSegments(
@@ -2109,10 +2193,17 @@ export function buildDungeonMask(regions, corridors, gridSize) {
     regions,
     gridSize,
   );
+  const corridorSelfSeparationWallSegments =
+    computeCorridorSelfSeparationWallSegments(
+      corridors,
+      dungeonMask.corridorFloorCells,
+      gridSize,
+    );
   const wallSegments = mergeCollinearWallSegments([
     ...externalWallSegments,
     ...corridorSeparationWallSegments,
     ...roomSeparationWallSegments,
+    ...corridorSelfSeparationWallSegments,
   ]);
   return {
     surfaceKind: "dungeon",
@@ -2121,6 +2212,7 @@ export function buildDungeonMask(regions, corridors, gridSize) {
     internalWallSegments: mergeCollinearWallSegments([
       ...corridorSeparationWallSegments,
       ...roomSeparationWallSegments,
+      ...corridorSelfSeparationWallSegments,
     ]),
     wallSegments,
     doorSegments,

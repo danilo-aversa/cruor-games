@@ -1,9 +1,17 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { act, createElement } from "react";
+import { createRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { DEFAULT_CONFIG } from "./map-generator.input.js";
+import { buildDungeonMask } from "./map-generator.mask.js";
 import { applyManualConnectionsToGraph } from "./map-generator.graph.js";
+import {
+  findPathThroughCellSet,
+  isSelfAvoidingPathThroughPoints,
+  routePathThroughCells,
+} from "./map-generator.corridors.js";
 import { createMapRequestFromDarkenLocationState } from "../darken-location.map-request.js";
 import { getLocationPreviewResetKey } from "../composer/model/location-composer-preview.js";
 import {
@@ -26,9 +34,11 @@ import {
   getRenderedCorridorStairMarkerCount,
   getRoomLevelBadgeLabel,
   renderCorridorTypeWallAccents,
+  renderDoorSymbols,
   renderEditorOverlays,
 } from "./map-generator.render.jsx";
 import { generateMap } from "./map-generator.pipeline.js";
+import { MapViewport } from "./map-generator.page.jsx";
 import {
   buildMapStatePayload,
   createMapStateExportManifest,
@@ -97,6 +107,158 @@ describe("map generator pipeline", () => {
     expect(generatedMap.corridors.length).toBeGreaterThan(0);
     expect(generatedMap.dungeonMask.floorCells.length).toBeGreaterThan(0);
     expect(generatedMap.dungeonMask.wallSegments.length).toBeGreaterThan(0);
+  });
+
+  test("routes waypoint segments without retracing previously occupied cells", () => {
+    const points = [
+      { x: 1, y: 2 },
+      { x: 5, y: 2 },
+      { x: 1, y: 4 },
+    ];
+    const options = {
+      gridW: 9,
+      gridH: 8,
+      blocked: new Set(),
+      softBlocked: new Set(),
+      existingCorridors: new Set(),
+      adjacentToExistingCorridors: new Set(),
+      routingProfile: { turnCost: 0 },
+    };
+
+    const path = routePathThroughCells(points, options);
+    const keys = path.map((cell) => `${cell.x},${cell.y}`);
+
+    expect(path[0]).toEqual(points[0]);
+    expect(path.at(-1)).toEqual(points.at(-1));
+    expect(keys).toContain("5,2");
+    expect(new Set(keys).size).toBe(keys.length);
+    expect(isSelfAvoidingPathThroughPoints(path, points)).toBe(true);
+
+    const cellNetwork = new Set();
+    for (let x = 1; x <= 5; x += 1) {
+      cellNetwork.add(`${x},2`);
+      cellNetwork.add(`${x},3`);
+      cellNetwork.add(`${x},4`);
+    }
+    const rebuiltPath = findPathThroughCellSet(cellNetwork, points);
+    const rebuiltKeys = rebuiltPath.map((cell) => `${cell.x},${cell.y}`);
+    expect(new Set(rebuiltKeys).size).toBe(rebuiltKeys.length);
+  });
+
+  test("keeps the reported corridor anchor route continuous instead of creating a dead end", () => {
+    const points = [
+      { x: 34, y: 23 },
+      { x: 36, y: 26 },
+      { x: 40, y: 21 },
+    ];
+    const path = routePathThroughCells(points, {
+      gridW: 80,
+      gridH: 50,
+      blocked: new Set(),
+      softBlocked: new Set(),
+      existingCorridors: new Set(),
+      adjacentToExistingCorridors: new Set(),
+      routingProfile: { turnCost: 0 },
+    });
+    const keys = path.map((cell) => `${cell.x},${cell.y}`);
+
+    expect(keys).toContain("36,26");
+    expect(keys.at(0)).toBe("34,23");
+    expect(keys.at(-1)).toBe("40,21");
+    expect(new Set(keys).size).toBe(keys.length);
+  });
+
+  test("keeps an internal wall between adjacent non-consecutive S-corridor runs", () => {
+    const pathCells = [
+      { x: 3, y: 0 },
+      { x: 2, y: 0 },
+      { x: 1, y: 0 },
+      { x: 0, y: 0 },
+      { x: 0, y: 1 },
+      { x: 1, y: 1 },
+      { x: 2, y: 1 },
+      { x: 3, y: 1 },
+      { x: 4, y: 1 },
+    ];
+    const dungeonMask = buildDungeonMask(
+      [],
+      [
+        {
+          id: "corridor-s-fold",
+          floorCells: pathCells,
+          pathCells,
+          doors: [],
+        },
+      ],
+      20,
+    );
+
+    expect(dungeonMask.internalWallSegments).toContainEqual({
+      x1: 20,
+      y1: 20,
+      x2: 80,
+      y2: 20,
+    });
+    expect(dungeonMask.wallSegments).toContainEqual({
+      x1: 20,
+      y1: 20,
+      x2: 100,
+      y2: 20,
+    });
+    expect(dungeonMask.internalWallSegments).not.toContainEqual({
+      x1: 0,
+      y1: 20,
+      x2: 20,
+      y2: 20,
+    });
+  });
+
+  test("rejects a waypoint route when continuity would require backtracking", () => {
+    const openCells = new Set([
+      "1,2",
+      "2,2",
+      "3,2",
+      "1,3",
+      "1,4",
+    ]);
+    const blocked = new Set();
+    for (let y = 1; y <= 4; y += 1) {
+      for (let x = 1; x <= 4; x += 1) {
+        const key = `${x},${y}`;
+        if (!openCells.has(key)) blocked.add(key);
+      }
+    }
+    const points = [
+      { x: 1, y: 2 },
+      { x: 3, y: 2 },
+      { x: 1, y: 4 },
+    ];
+    const options = {
+      gridW: 6,
+      gridH: 6,
+      blocked,
+      softBlocked: new Set(),
+      existingCorridors: new Set(),
+      adjacentToExistingCorridors: new Set(),
+      routingProfile: { turnCost: 0 },
+    };
+
+    expect(routePathThroughCells(points, options)).toEqual([]);
+    expect(findPathThroughCellSet(openCells, points)).toEqual([]);
+    expect(
+      isSelfAvoidingPathThroughPoints(
+        [
+          { x: 1, y: 2 },
+          { x: 2, y: 2 },
+          { x: 3, y: 2 },
+          { x: 2, y: 2 },
+          { x: 1, y: 2 },
+          { x: 1, y: 3 },
+          { x: 1, y: 4 },
+        ],
+        points,
+      ),
+    ).toBe(false);
   });
 
   test("keeps map debug runner options centralized for editor and composer", () => {
@@ -309,6 +471,151 @@ describe("map generator pipeline", () => {
         corridorId: manualCorridorId,
       }),
     );
+  });
+
+
+  test("rejects waypoint commits when the preview route would cross itself", () => {
+    const pageSource = readFileSync(
+      repoPath(
+        "features",
+        "darken-location",
+        "map-generator",
+        "map-generator.page.jsx",
+      ),
+      "utf8",
+    );
+
+    expect(pageSource).toContain("function canCommitCorridorWaypointRoute");
+    expect(pageSource).toContain("isSelfAvoidingPathThroughPoints");
+    expect(pageSource.match(/canCommitCorridorWaypointRoute/g)).toHaveLength(3);
+    expect(pageSource).toContain(
+      "Waypoint rejected: the corridor cannot continue without crossing itself.",
+    );
+  });
+
+  test("clicking a corridor insertion handle does not create a waypoint", async () => {
+    const generatedMap = generateMap(
+      buildConfig({ seed: "click-safe-waypoint-insert", roomCount: 5 }),
+    );
+    const onWaypointInsert = vi.fn(() => true);
+    const onEditStart = vi.fn();
+    const onEditCommit = vi.fn();
+    const originalResizeObserver = globalThis.ResizeObserver;
+    const originalActEnvironment = globalThis.IS_REACT_ACT_ENVIRONMENT;
+    globalThis.ResizeObserver = class ResizeObserver {
+      observe() {}
+      disconnect() {}
+    };
+    globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const root = createRoot(container);
+    const dispatchPointer = (target, type, options = {}) => {
+      const EventConstructor = window.PointerEvent || window.MouseEvent;
+      const event = new EventConstructor(type, {
+        bubbles: true,
+        cancelable: true,
+        button: options.button ?? 0,
+        clientX: options.clientX ?? 0,
+        clientY: options.clientY ?? 0,
+      });
+      if (!("pointerId" in event)) {
+        Object.defineProperty(event, "pointerId", {
+          value: options.pointerId ?? 1,
+        });
+      }
+      target.dispatchEvent(event);
+    };
+
+    try {
+      await act(async () => {
+        root.render(
+          createElement(MapViewport, {
+            generatedMap,
+            showGrid: true,
+            showEditor: true,
+            showNames: false,
+            showProps: false,
+            manualOverrides: {},
+            onWaypointInsert,
+            onEditStart,
+            onEditCommit,
+            showViewportChrome: false,
+          }),
+        );
+      });
+
+      const corridorZone = container.querySelector(".corridor-hover-zone");
+      expect(corridorZone).toBeTruthy();
+      await act(async () => {
+        dispatchPointer(corridorZone, "pointermove", {
+          pointerId: 7,
+          clientX: 120,
+          clientY: 120,
+        });
+      });
+      const addHandle = container.querySelector(".corridor-add-handle");
+      const svg = container.querySelector("#cruor-map-svg");
+      expect(addHandle).toBeTruthy();
+      expect(svg).toBeTruthy();
+      const initialViewBox = svg.getAttribute("viewBox");
+
+      await act(async () => {
+        dispatchPointer(addHandle, "pointerdown", {
+          pointerId: 7,
+          clientX: 120,
+          clientY: 120,
+        });
+        dispatchPointer(svg, "pointerup", {
+          pointerId: 7,
+          clientX: 120,
+          clientY: 120,
+        });
+      });
+
+      expect(onWaypointInsert).not.toHaveBeenCalled();
+      expect(onEditStart).not.toHaveBeenCalled();
+      expect(onEditCommit).not.toHaveBeenCalled();
+      expect(svg.getAttribute("viewBox")).toBe(initialViewBox);
+
+      await act(async () => {
+        dispatchPointer(corridorZone, "pointermove", {
+          pointerId: 8,
+          clientX: 120,
+          clientY: 120,
+        });
+      });
+      const dragHandle = container.querySelector(".corridor-add-handle");
+      expect(dragHandle).toBeTruthy();
+      await act(async () => {
+        dispatchPointer(dragHandle, "pointerdown", {
+          pointerId: 8,
+          clientX: 120,
+          clientY: 120,
+        });
+        dispatchPointer(svg, "pointermove", {
+          pointerId: 8,
+          clientX: 132,
+          clientY: 120,
+        });
+        dispatchPointer(svg, "pointerup", {
+          pointerId: 8,
+          clientX: 132,
+          clientY: 120,
+        });
+      });
+
+      expect(onWaypointInsert).toHaveBeenCalledTimes(1);
+      expect(onEditStart).toHaveBeenCalledTimes(1);
+      expect(onEditCommit).toHaveBeenCalledTimes(1);
+    } finally {
+      await act(async () => root.unmount());
+      container.remove();
+      if (originalResizeObserver === undefined) delete globalThis.ResizeObserver;
+      else globalThis.ResizeObserver = originalResizeObserver;
+      if (originalActEnvironment === undefined) delete globalThis.IS_REACT_ACT_ENVIRONMENT;
+      else globalThis.IS_REACT_ACT_ENVIRONMENT = originalActEnvironment;
+    }
   });
 
 
@@ -551,7 +858,7 @@ describe("map generator pipeline", () => {
     expect(corridor.pathCells).toEqual(originalPathCells);
   });
 
-  test("snaps stair marker drags to free corridor cells without changing topology", () => {
+  test("snaps stair marker drags to free corridor cells including door-adjacent endpoints without changing topology", () => {
     const corridor = {
       id: "editor-stair-drag",
       from: "region-1",
@@ -597,10 +904,12 @@ describe("map generator pipeline", () => {
     const originalFloorCells = structuredClone(corridor.floorCells);
     const targets = getCorridorStairMarkerDragTargets(corridor, generatedMap);
 
-    expect(targets.map((target) => target.pathIndex)).toEqual([2, 3]);
+    expect(targets.map((target) => target.pathIndex)).toEqual([1, 2, 3, 4]);
     expect(targets.map((target) => target.cell)).toEqual([
+      { x: 1, y: 0 },
       { x: 2, y: 0 },
       { x: 3, y: 0 },
+      { x: 4, y: 0 },
     ]);
     expect(
       getClosestCorridorStairMarkerDragTarget(
@@ -623,7 +932,7 @@ describe("map generator pipeline", () => {
         { x: 30, y: 10 },
         { maxDistance: 30 },
       ),
-    ).toBeNull();
+    ).toEqual(expect.objectContaining({ pathIndex: 1, cell: { x: 1, y: 0 } }));
     expect(
       getClosestCorridorStairMarkerDragTarget(
         corridor,
@@ -746,7 +1055,15 @@ describe("map generator pipeline", () => {
         cell: sharedTarget,
       }),
     );
-    expect(handles.map((handle) => handle.pathIndex)).toEqual([2, 3]);
+    const resolvedPathIndexes = handles.map((handle) => handle.pathIndex);
+    const validPathIndexes = new Set(
+      getCorridorStairMarkerDragTargets(corridor, generatedMap).map(
+        (target) => target.pathIndex,
+      ),
+    );
+    expect(resolvedPathIndexes[0]).toBe(2);
+    expect(new Set(resolvedPathIndexes).size).toBe(2);
+    expect(resolvedPathIndexes.every((pathIndex) => validPathIndexes.has(pathIndex))).toBe(true);
     expect(handles.every((handle) => handle.positionSource === "manual-override")).toBe(true);
     expect(corridor.pathCells).toEqual(originalPathCells);
     expect(corridor.floorCells).toEqual(originalFloorCells);
@@ -1161,6 +1478,42 @@ describe("map generator pipeline", () => {
     expect(second).not.toBe(first);
   });
 
+  test("defaults map walls to precise and keeps style menu widths aligned", () => {
+    const page = readFileSync(
+      repoPath("features", "darken-location", "map-generator", "map-generator.page.jsx"),
+      "utf8",
+    );
+    const styles = readFileSync(
+      repoPath("features", "darken-location", "map-generator", "map-generator.styles.css"),
+      "utf8",
+    );
+
+    expect(page).toContain('const [wallDrawingStyle, setWallDrawingStyle] = useState("precise")');
+    expect(page).toContain("const rootWidth = 210");
+    expect(page).toContain("const flyoutWidth = 210");
+    expect(styles).toContain('width: min(210px, calc(100vw - 48px))');
+    expect(styles).toContain("box-sizing: border-box");
+    expect(styles).toContain('width: min(210px, calc(100vw - 230px))');
+    expect(styles).not.toContain('width: min(318px, calc(100vw - 230px))');
+
+    const portalPanelRule =
+      styles.match(
+        /\.location-map-toolbar__style-panel\[data-style-floating="portal"\] \{[\s\S]*?\n\}/,
+      )?.[0] || "";
+    const portalGlassRule =
+      styles.match(
+        /\.location-map-toolbar__style-panel\[data-style-floating="portal"\]::before \{[\s\S]*?\n\}/,
+      )?.[0] || "";
+    const portalFlyoutRule =
+      styles.match(
+        /\.location-map-toolbar__style-panel\[data-style-floating="portal"\] \.location-map-toolbar__style-panel\[data-style-menu="flyout"\] \{[\s\S]*?\n\}/,
+      )?.[0] || "";
+
+    expect(portalPanelRule).toContain("backdrop-filter: none");
+    expect(portalGlassRule).toContain("backdrop-filter: blur(18px) saturate(128%)");
+    expect(portalFlyoutRule).toContain("backdrop-filter: blur(18px) saturate(128%)");
+  });
+
   test("uses opaque floor fills in generated SVG styles", () => {
     expect(SVG_STYLE).toContain(".floor-fill{fill:#685D61;stroke:none}");
     expect(SVG_STYLE).toContain(".door-symbols .stair-mark__arrow path");
@@ -1199,6 +1552,41 @@ describe("map generator pipeline", () => {
     expect(down).toHaveLength(3);
     expect(up).toHaveLength(3);
     expect(down[0]).not.toEqual(up[0]);
+  });
+
+  test("hides stair direction arrows by default and renders them when enabled", () => {
+    const config = buildConfig({
+      seed: "stair-arrow-visibility",
+      roomCount: 5,
+      enableDerivedRoomLevelStairs: true,
+    });
+    const manualCorridorId = "manual-edge-region-1-region-2-stair-arrow-visibility";
+    const generatedMap = generateMap(config, {
+      customConnections: [
+        {
+          id: manualCorridorId,
+          from: "region-1",
+          to: "region-2",
+          kind: "manual",
+          locked: true,
+        },
+      ],
+      levels: {
+        regions: {
+          "region-1": 0,
+          "region-2": -1,
+        },
+      },
+    });
+
+    const hiddenMarkup = renderToStaticMarkup(renderDoorSymbols(generatedMap));
+    const visibleMarkup = renderToStaticMarkup(
+      renderDoorSymbols(generatedMap, { showStairArrows: true }),
+    );
+
+    expect(hiddenMarkup).toContain('class="stair-mark ');
+    expect(hiddenMarkup).not.toContain('class="stair-mark__arrow"');
+    expect(visibleMarkup).toContain('class="stair-mark__arrow"');
   });
 
   test("exposes visual SVG classes for advanced corridor types", () => {
@@ -1330,17 +1718,18 @@ describe("map generator pipeline", () => {
       config,
       manualOverrides,
       generatedMap,
-      { levelView: -2, fadeOtherLevels: false },
+      { levelView: -2, fadeOtherLevels: false, showStairArrows: true },
     );
     const payload = buildMapStatePayload(
       config,
       manualOverrides,
-      { levelView: -2, fadeOtherLevels: false },
+      { levelView: -2, fadeOtherLevels: false, showStairArrows: true },
       generatedMap,
     );
     const parsed = parseMapStatePayload(JSON.stringify(payload));
 
     expect(normalizeMapUiState({ levelView: 99 }, generatedMap).levelView).toBe("all");
+    expect(normalizeMapUiState({}, generatedMap).showStairArrows).toBe(false);
     expect(manifest.schema).toBe("cruor-map-generator-export-manifest");
     expect(manifest.levelView).toBe(-2);
     expect(manifest.fadeOtherLevels).toBe(false);
@@ -1360,6 +1749,7 @@ describe("map generator pipeline", () => {
     expect(payload.exportManifest).toEqual(manifest);
     expect(parsed.uiState.levelView).toBe(-2);
     expect(parsed.uiState.fadeOtherLevels).toBe(false);
+    expect(parsed.uiState.showStairArrows).toBe(true);
     expect(parsed.exportManifest.levelView).toBe(-2);
   });
 

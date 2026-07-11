@@ -5690,28 +5690,28 @@
 
 .monster-shell .monster-frame-info-card {
   display: grid;
-  gap: 10px;
-  border: 1px solid var(--cruor-color-milk-a070);
-  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
-  padding: 11px;
-  box-shadow: var(--cruor-shadow-box-075);
+  gap: var(--cruor-composer-rail-card-gap);
+  border: var(--cruor-composer-rail-card-border);
+  background: var(--cruor-composer-rail-card-background);
+  padding: var(--cruor-composer-rail-card-padding);
+  box-shadow: var(--cruor-composer-rail-card-shadow);
 }
 
 .monster-shell .monster-frame-info-card > span {
-  color: var(--cruor-color-hex-8f7278);
-  font-size: var(--text-size-xxs);
+  color: var(--cruor-composer-rail-label-color);
+  font-size: var(--cruor-composer-rail-label-size);
   font-weight: 950;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--cruor-composer-rail-label-tracking);
   line-height: 1;
   text-transform: uppercase;
 }
 
 .monster-shell .monster-frame-info-row small {
   overflow: hidden;
-  color: var(--cruor-color-hex-8f7278);
+  color: var(--cruor-composer-rail-label-color);
   font-size: var(--text-size-xs);
   font-weight: 950;
-  letter-spacing: 0.12em;
+  letter-spacing: var(--cruor-composer-rail-label-tracking);
   line-height: 1;
   text-overflow: ellipsis;
   text-transform: uppercase;
@@ -5931,25 +5931,25 @@
 
 .monster-shell .monster-frame-info {
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
+  scrollbar-color: var(--cruor-composer-rail-scrollbar-thumb) var(--cruor-composer-rail-scrollbar-track);
   display: grid;
   align-content: start;
   grid-template-rows: none;
-  gap: 10px;
+  gap: var(--cruor-composer-info-rail-gap);
 }
 
 .monster-shell .monster-frame-info-card--hero strong {
-  color: var(--cruor-color-hex-fff0f2);
+  color: var(--cruor-composer-rail-hero-title-color);
   font-family: var(--display);
-  font-size: var(--text-size-fluid-15);
+  font-size: var(--cruor-composer-rail-hero-title-size);
   font-weight: 950;
   letter-spacing: -0.055em;
   line-height: 0.92;
 }
 
 .monster-shell .monster-frame-info-card--hero em {
-  color: var(--cruor-color-hex-d0a2aa);
-  font-size: var(--text-size-s);
+  color: var(--cruor-composer-rail-hero-subtitle-color);
+  font-size: var(--cruor-composer-rail-hero-subtitle-size);
   font-style: normal;
   font-weight: 950;
   letter-spacing: 0.08em;
@@ -5967,24 +5967,24 @@
 
 .monster-shell .monster-frame-info-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 6px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--cruor-composer-fact-grid-gap);
 }
 
 .monster-shell .monster-frame-info-row {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  gap: var(--cruor-composer-fact-row-gap);
   min-width: 0;
-  border: 1px solid var(--cruor-color-milk-a055);
-  background: var(--cruor-surface-card);
-  padding: 7px 8px;
+  border: var(--cruor-composer-fact-row-border);
+  background: var(--cruor-composer-fact-row-background);
+  padding: var(--cruor-composer-fact-row-padding);
 }
 
 .monster-shell .monster-frame-info-row strong {
   overflow: hidden;
-  color: var(--cruor-color-hex-fff0f2);
-  font-size: var(--text-size-s);
+  color: var(--cruor-composer-fact-value-color);
+  font-size: var(--cruor-composer-fact-value-size);
   font-weight: 950;
   text-align: right;
   text-overflow: ellipsis;
@@ -6021,12 +6021,12 @@
 
 .monster-shell .monster-frame-info-card--hero {
   box-sizing: border-box;
-  min-height: 92px;
+  min-height: var(--cruor-composer-rail-card-hero-min-height);
   align-content: center;
   overflow: hidden;
-  padding-block: 12px;
-  background: var(--cruor-gradient-radial-044-30b4806e), var(--cruor-surface-card);
-  gap: 7px;
+  padding-block: var(--cruor-composer-rail-card-hero-padding-block);
+  background: var(--cruor-composer-rail-card-hero-background);
+  gap: var(--cruor-composer-rail-card-hero-gap);
 }
 
 .monster-shell .monster-frame-name-editor {
@@ -7190,7 +7190,7 @@
 
 .monster-shell .monster-frame-controls {
   scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
+  scrollbar-color: var(--cruor-composer-rail-scrollbar-thumb) var(--cruor-composer-rail-scrollbar-track);
   overflow: auto;
   display: flex;
   flex-direction: column;

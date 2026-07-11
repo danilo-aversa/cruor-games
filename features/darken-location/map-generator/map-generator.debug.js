@@ -29,6 +29,7 @@ import {
   getCrossLevelCorridorIntersectionCells,
   getPhysicalFloorConnectivityReport,
   isOrganicCorridor,
+  isSelfAvoidingPathThroughPoints,
 } from "./map-generator.corridors.js";
 import {
   cellRectToPath,
@@ -867,6 +868,32 @@ export function validateGeneratedMap(
       "Rooms do not overlap each other",
       overlappingRoomCells.length === 0,
       overlappingRoomCells.slice(0, 4).join("; "),
+    ),
+  );
+
+  const invalidCorridorContinuity = generatedMap.corridors
+    .filter((corridor) => !corridor.isRoomLink)
+    .filter((corridor) => {
+      const routePoints = [
+        corridor.fromAnchor?.outsideCell,
+        ...(Array.isArray(corridor.manualWaypoints)
+          ? corridor.manualWaypoints
+          : []),
+        corridor.toAnchor?.outsideCell,
+      ].filter(Boolean);
+      return !isSelfAvoidingPathThroughPoints(corridor.pathCells, routePoints);
+    });
+  tests.push(
+    makeTestResult(
+      "corridor-paths-are-continuous",
+      "Corridors pass through anchors without retracing their own cells",
+      invalidCorridorContinuity.length === 0,
+      invalidCorridorContinuity.length > 0
+        ? invalidCorridorContinuity
+            .slice(0, 4)
+            .map((corridor) => corridor.id)
+            .join(", ")
+        : "all corridor paths are continuous and self-avoiding",
     ),
   );
 

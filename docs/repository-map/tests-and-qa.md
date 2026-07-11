@@ -44,4 +44,5 @@ Commands are listed as package scripts. In PowerShell on this machine, `npm.cmd 
 - `scripts/map-generator.circle-anchors.test.js` is reference-only and has stale local imports.
 - `tests/tests/` and `tests/tests/tests/` are legacy duplicate paths and are excluded by current Vitest includes.
 - Many source files have no direct test/QA link in `repository-map.json`; validation reports these as warnings, not failures.
+- Map validation includes `corridor-paths-are-continuous`: every structured corridor path must remain orthogonally contiguous, visit manual waypoints in order, and avoid repeated cells. Pipeline tests include the reported out-and-back waypoint regression, the no-alternative rejection case, and folded-corridor wall separation so adjacent non-consecutive S-runs remain visually distinct.
 

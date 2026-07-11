@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import "./monster-composer.styles.css";
+import "../../shared/styles/composer-internals.css";
 import { getFeatureBalanceEntries, getFeatureBalanceStat, sumFeatureBalanceStats } from "./model/monster-graft-balance-profile.js";
 import {
   X,
