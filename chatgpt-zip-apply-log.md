@@ -12244,3 +12244,45 @@ _Nessun file aggiunto._
 
 - `~shared/styles/composer-internals.css`
 
+
+---
+
+## 2026-07-12 21:46:24
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-composer-rail-grid-auto-rows-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-composer-rail-grid-auto-rows-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~shared/styles/composer-internals.css`
+
+
+---
+
+## 2026-07-12 21:52:36
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-monster-column-custom-scroll-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-monster-column-custom-scroll-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/monster-composer/monster-composer.styles.css`
+

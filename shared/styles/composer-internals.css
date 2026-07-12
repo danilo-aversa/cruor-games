@@ -14,6 +14,7 @@
 }
 
 .cruor-composer-shell .cruor-composer-rail.cruor-composer-rail--scroll {
+  grid-auto-rows: max-content;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
