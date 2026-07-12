@@ -160,9 +160,8 @@ export function LocationRoomInspector({
         data-testid="dark-places-room-inspector"
       >
         <ComposerCollapsibleSection
-          className="location-room-inspector-card location-room-inspector-card--selected location-room-inspector-card--empty"
+          className="location-room-inspector-card--selected location-room-inspector-card--empty"
           title="Room Inspector"
-          headerClassName="location-room-inspector-card__head"
           bodyClassName="location-room-inspector-card__content"
           aria-label="Select room prompt"
         >
@@ -184,9 +183,8 @@ export function LocationRoomInspector({
       data-testid="dark-places-room-inspector"
     >
       <ComposerCollapsibleSection
-        className="location-room-inspector-card location-room-inspector-card--selected"
+        className="location-room-inspector-card--selected"
         title="Selected Room"
-        headerClassName="location-room-inspector-card__head"
         bodyClassName="location-room-inspector-card__content"
         aria-label="Selected room summary"
       >

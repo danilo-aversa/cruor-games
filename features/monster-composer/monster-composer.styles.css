@@ -6644,16 +6644,6 @@
   -webkit-line-clamp: 2;
 }
 
-.monster-shell .monster-frame-control-block {
-  display: grid;
-  gap: 9px;
-  border: 1px solid var(--cruor-color-milk-a070);
-  background: var(--cruor-gradient-linear-015-d1025658), var(--cruor-color-surface-soft-a540);
-  padding: 11px;
-  box-shadow: var(--cruor-shadow-box-075);
-  overflow: visible;
-}
-
 .monster-shell .monster-frame-selector-stack {
   display: grid;
   gap: 12px;
@@ -7020,29 +7010,6 @@
   text-align: center;
 }
 
-.monster-shell .monster-frame-control-block__head {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  min-width: 0;
-  border-bottom: 1px solid var(--cruor-color-milk-a055);
-  padding-bottom: 8px;
-}
-
-.monster-shell .monster-frame-control-block__head strong {
-  overflow: hidden;
-  color: var(--cruor-color-hex-d0a2aa);
-  font-size: var(--text-size-s);
-  font-weight: 950;
-  letter-spacing: 0.07em;
-  line-height: 1.1;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-  display: none;
-}
-
 .monster-shell .monster-frame-help em {
   position: absolute;
   top: calc(100% + 8px);
@@ -7075,15 +7042,6 @@
 
 .monster-shell .monster-frame-icon-toggle[data-key][data-tooltip] {
   position: relative;
-}
-
-.monster-shell .monster-frame-control-block__head span {
-  color: var(--cruor-color-hex-fff0f2);
-  font-size: var(--text-size-xs);
-  font-weight: 950;
-  letter-spacing: 0.12em;
-  line-height: 1;
-  text-transform: uppercase;
 }
 
 .monster-shell .monster-frame-field-head {
@@ -7186,15 +7144,6 @@
   overflow: hidden;
   display: grid;
   align-items: stretch;
-}
-
-.monster-shell .monster-frame-controls {
-  scrollbar-width: thin;
-  scrollbar-color: var(--cruor-composer-rail-scrollbar-thumb) var(--cruor-composer-rail-scrollbar-track);
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
 }
 
 .monster-shell .guided-flow-panel.is-wizard {
@@ -7537,13 +7486,6 @@
   padding-right: 0;
   max-height: 100%;
   height: 100%;
-}
-
-.monster-shell .anatomy-stage__column--left.monster-frame-controls {
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
 }
 
 .monster-shell .anatomy-stage__column--right.monster-frame-info {

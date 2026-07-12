@@ -12089,3 +12089,158 @@ _Nessun file aggiunto._
 
 - Percorso sospetto nello ZIP: AGENTS.md
 
+
+---
+
+## 2026-07-12 20:49:07
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-collapsible-header-polish-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-collapsible-header-polish-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/monster-composer/monster-composer.styles.css`
+- `~shared/styles/composer-internals.css`
+
+
+---
+
+## 2026-07-12 20:53:56
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-collapsible-header-polish-fix-v2.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-collapsible-header-polish-fix-v2.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/monster-composer.styles.css`
+- `~shared/styles/composer-internals.css`
+
+
+---
+
+## 2026-07-12 20:58:45
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-collapsible-section-state-gap-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-collapsible-section-state-gap-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~shared/styles/composer-internals.css`
+
+
+---
+
+## 2026-07-12 21:14:40
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-collapsible-unified-surface-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-collapsible-unified-surface-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/monster-composer/components/monster-composer.anatomy.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+- `~shared/styles/composer-internals.css`
+
+
+---
+
+## 2026-07-12 21:30:04
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-monster-controls-overflow-scrollbar-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-monster-controls-overflow-scrollbar-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/monster-composer/monster-composer.styles.css`
+- `~shared/styles/composer-internals.css`
+
+
+---
+
+## 2026-07-12 21:33:58
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-collapsible-expanded-overflow-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-collapsible-expanded-overflow-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~shared/styles/composer-internals.css`
+
+
+---
+
+## 2026-07-12 21:34:23
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-collapsible-expanded-overflow-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-collapsible-expanded-overflow-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~shared/styles/composer-internals.css`
+

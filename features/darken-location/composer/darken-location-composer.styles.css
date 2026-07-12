@@ -6085,7 +6085,7 @@
   gap: clamp(10px, 1vw, 14px);
 }
 
-.location-room-program-card, .location-room-program-actions, .location-room-inspector-card, .location-room-inspector-actions {
+.location-room-program-card, .location-room-program-actions, .location-room-inspector-actions {
   position: relative;
   display: grid;
   gap: 10px;
@@ -6098,7 +6098,7 @@
   min-width: 0;
 }
 
-.location-room-inspector-card > span, .location-room-program-card__head > span > strong, .location-room-inspector-card__head > span {
+.location-room-program-card__head > span > strong {
   display: block;
   font-size: 0.62rem;
   font-weight: 800;
@@ -6107,7 +6107,7 @@
   color: var(--cruor-color-r208-g162-b170-a760, rgba(208, 162, 170, 0.76));
 }
 
-.location-room-inspector-card--frame .location-frame-name-editor input, .location-room-inspector-card__head > strong {
+.location-room-inspector-card--frame .location-frame-name-editor input {
   width: 100%;
   min-width: 0;
   margin: 0;
@@ -6162,7 +6162,7 @@
   white-space: nowrap;
 }
 
-.location-room-program-card__head, .location-room-inspector-card__head {
+.location-room-program-card__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -6547,7 +6547,7 @@
   min-height: 0;
 }
 
-.location-map-stage .location-frame-info-card, .location-map-stage .location-map-details-card, .location-map-stage .location-room-inspector-card, .location-map-stage .location-room-program-card, .location-map-stage .location-room-inspector-actions, .location-map-stage .location-room-program-actions {
+.location-map-stage .location-frame-info-card, .location-map-stage .location-map-details-card, .location-map-stage .location-room-program-card, .location-map-stage .location-room-inspector-actions, .location-map-stage .location-room-program-actions {
   align-content: start;
   align-items: start;
   grid-auto-rows: max-content;

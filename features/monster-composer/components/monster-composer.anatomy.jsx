@@ -1741,9 +1741,7 @@ function FrameControls({
       aria-label="Monster Frame controls"
     >
       <ComposerCollapsibleSection
-        className="monster-frame-control-block"
         title="Chassis"
-        headerClassName="monster-frame-control-block__head"
         bodyClassName="monster-frame-selector-stack"
         aria-label="Chassis controls"
       >
@@ -1773,9 +1771,7 @@ function FrameControls({
       </ComposerCollapsibleSection>
 
       <ComposerCollapsibleSection
-        className="monster-frame-control-block"
         title="Combat Identity"
-        headerClassName="monster-frame-control-block__head"
         bodyClassName="monster-frame-selector-stack"
         aria-label="Combat Identity controls"
       >
@@ -1803,9 +1799,7 @@ function FrameControls({
       </ComposerCollapsibleSection>
 
       <ComposerCollapsibleSection
-        className="monster-frame-control-block"
         title="Threat Profile"
-        headerClassName="monster-frame-control-block__head"
         bodyClassName="monster-frame-selector-stack"
         aria-label="Threat Profile controls"
       >

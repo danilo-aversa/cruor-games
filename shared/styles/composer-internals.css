@@ -9,8 +9,14 @@
    This file is imported after feature styles, so legacy rail/list scrollbar
    declarations cannot replace the shared Cruor treatment. */
 .cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface {
-  scrollbar-width: auto;
-  scrollbar-color: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cruor-composer-rail-scrollbar-thumb, var(--cruor-color-r170-g48-b66-a760)) var(--cruor-color-transparent);
+}
+
+.cruor-composer-shell .cruor-composer-rail.cruor-composer-rail--scroll {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface::-webkit-scrollbar {
@@ -66,10 +72,21 @@
 }
 
 .cruor-composer-shell .cruor-composer-sidebar-block {
+  position: relative;
+  display: grid;
+  align-content: start;
+  align-items: start;
+  grid-auto-rows: max-content;
   min-width: 0;
+  min-height: 0;
+  height: auto;
+  overflow: visible;
   border: var(--cruor-composer-rail-card-border);
   background: var(--cruor-composer-rail-card-background);
+  padding: var(--cruor-composer-rail-card-padding);
   box-shadow: var(--cruor-composer-rail-card-shadow);
+  -webkit-backdrop-filter: var(--cruor-composer-rail-card-backdrop-filter);
+  backdrop-filter: var(--cruor-composer-rail-card-backdrop-filter);
 }
 
 .cruor-composer-shell .cruor-composer-rail--left .cruor-composer-sidebar-block {
@@ -89,10 +106,15 @@
 .cruor-composer-shell .cruor-composer-collapsible-section {
   position: relative;
   isolation: isolate;
-  gap: 0;
+  gap: 9px;
   transition:
+    gap var(--cruor-composer-section-transition-duration) var(--cruor-composer-section-transition-easing),
     border-color 150ms ease,
     box-shadow 150ms ease;
+}
+
+.cruor-composer-shell .cruor-composer-collapsible-section.is-collapsed {
+  gap: 0;
 }
 
 .cruor-composer-shell .cruor-composer-collapsible-section::before {
@@ -160,9 +182,9 @@
   width: calc(100% + 12px);
   min-width: 0;
   min-height: 30px;
-  margin: -5px -6px 0;
+  margin: -2px -6px -3px;
   border: 0;
-  border-bottom: 1px solid var(--cruor-composer-divider-color);
+  border-bottom: 0;
   border-radius: 0;
   background: transparent;
   color: inherit;
@@ -188,9 +210,17 @@
 }
 
 .cruor-composer-shell .cruor-composer-collapsible-section__title {
+  display: block;
+  flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
+  color: var(--cruor-color-r208-g162-b170-a760, rgba(208, 162, 170, 0.76));
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1;
   text-overflow: ellipsis;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
@@ -233,8 +263,14 @@
   overflow: hidden;
 }
 
+/* Clip content only while the section is collapsed. Expanded content must
+   contribute its full overflow area to the rail scroll range. */
+.cruor-composer-shell .cruor-composer-collapsible-section.is-expanded > .cruor-composer-collapsible-section__region,
+.cruor-composer-shell .cruor-composer-collapsible-section.is-expanded > .cruor-composer-collapsible-section__region > .cruor-composer-collapsible-section__body {
+  overflow: visible;
+}
+
 .cruor-composer-shell .cruor-composer-collapsible-section.is-collapsed .cruor-composer-collapsible-section__trigger {
-  border-bottom-color: transparent;
   padding-bottom: 5px;
 }
 
