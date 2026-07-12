@@ -1,0 +1,60 @@
+{
+  "migrated": [
+    {
+      "feature": "Dark Places",
+      "component": "Room style context menu and nested flyouts",
+      "sourceFiles": ["features/darken-location/map-generator/map-generator.page.jsx", "features/darken-location/map-generator/map-generator.styles.css"],
+      "semanticPattern": "menu with nested submenus",
+      "oldTriggerClasses": ["location-map-toolbar__style-section-title"],
+      "oldPanelClasses": ["location-map-toolbar__style-panel", "room-style-context-menu"],
+      "oldOptionClasses": ["location-map-toolbar__style-option"],
+      "sharedClasses": ["cruor-dropdown-menu", "cruor-dropdown-menu--context", "cruor-dropdown-menu--submenu", "cruor-dropdown-header", "cruor-dropdown-subtitle", "cruor-dropdown-section", "cruor-dropdown-options", "cruor-dropdown-option"],
+      "legacyClassesRetained": true,
+      "retentionReasons": ["portal placement", "submenu direction", "pointer corridor", "runtime selector", "responsive geometry"]
+    },
+    {
+      "feature": "Dark Places",
+      "component": "Map Style and Level View menus",
+      "sourceFiles": ["features/darken-location/map-generator/map-generator.page.jsx", "features/darken-location/map-generator/map-generator.styles.css"],
+      "semanticPattern": "menu with nested submenus",
+      "oldTriggerClasses": ["location-map-toolbar__style-section-title"],
+      "oldPanelClasses": ["location-map-toolbar__style-panel", "location-map-toolbar__level-view-panel"],
+      "oldOptionClasses": ["location-map-toolbar__style-option"],
+      "sharedClasses": ["cruor-dropdown-menu", "cruor-dropdown-menu--context", "cruor-dropdown-menu--submenu", "cruor-dropdown-section", "cruor-dropdown-option"],
+      "legacyClassesRetained": true,
+      "retentionReasons": ["toolbar anchoring", "range-control layout", "responsive geometry", "tests"]
+    },
+    {
+      "feature": "Dark Places",
+      "component": "Choice selector",
+      "sourceFiles": ["features/darken-location/composer/components/LocationBriefPanel.jsx", "features/darken-location/composer/darken-location-composer.styles.css"],
+      "semanticPattern": "listbox",
+      "oldTriggerClasses": ["location-choice-trigger", "cruor-frame-select-trigger"],
+      "oldPanelClasses": ["location-choice-menu", "location-choice-menu--portal", "cruor-frame-select-menu"],
+      "oldOptionClasses": ["location-choice-option", "cruor-frame-select-option"],
+      "sharedClasses": ["cruor-dropdown-trigger", "cruor-dropdown-menu", "cruor-dropdown-menu--listbox", "cruor-dropdown-option"],
+      "legacyClassesRetained": true,
+      "retentionReasons": ["field layout", "portal transform", "positioning", "feature identity"]
+    },
+    {
+      "feature": "Terrifying Monsters",
+      "component": "Frame select listboxes",
+      "sourceFiles": ["features/monster-composer/components/monster-composer.anatomy.jsx", "features/monster-composer/monster-composer.styles.css"],
+      "semanticPattern": "listbox",
+      "oldTriggerClasses": ["monster-frame-select-trigger"],
+      "oldPanelClasses": ["monster-frame-select-menu"],
+      "oldOptionClasses": ["monster-frame-select-option"],
+      "sharedClasses": ["cruor-dropdown-trigger", "cruor-dropdown-menu", "cruor-dropdown-menu--listbox", "cruor-dropdown-option"],
+      "legacyClassesRetained": true,
+      "retentionReasons": ["field layout", "portal target", "positioning", "feature identity"]
+    }
+  ],
+  "excluded": [
+    {"family": "Site navigation and mega menu", "reason": "navigation-specific hierarchy and visual language"},
+    {"family": "Crucible menus", "reason": "distinct legacy runtime and visual system"},
+    {"family": "Map entity action context menus", "reason": "compact action-menu structure differs from canonical selection rows"},
+    {"family": "Inspirations controls", "reason": "materially different selection and layout behavior"},
+    {"family": "Native selects and autocomplete", "reason": "outside the custom dropdown family"},
+    {"family": "Tooltips, modals, square icon buttons and ordinary actions", "reason": "outside task scope"}
+  ]
+}

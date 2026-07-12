@@ -1,0 +1,123 @@
+{
+  "canonicalVisualSource": "Terrifying Monsters Current Monster Frame",
+  "sharedStylesheet": "shared/styles/composer-system.css",
+  "migrated": [
+    {
+      "feature": "Terrifying Monsters",
+      "component": "Current Monster Frame",
+      "sourceFiles": [
+        "features/monster-composer/components/monster-composer.anatomy.jsx",
+        "features/monster-composer/monster-composer.styles.css"
+      ],
+      "sharedClasses": [
+        "cruor-composer-rail",
+        "cruor-composer-rail--right",
+        "cruor-composer-rail--info",
+        "cruor-composer-rail--scroll",
+        "cruor-composer-rail-card",
+        "cruor-composer-rail-card--hero",
+        "cruor-composer-fact-grid",
+        "cruor-composer-fact-row",
+        "cruor-composer-meter"
+      ],
+      "legacyClassesRetained": true,
+      "retentionReasons": ["layout", "stage transition", "feature identity", "test selector"],
+      "remainingFeatureSpecificDeclarations": [
+        "stage placement",
+        "responsive column geometry",
+        "tooltip button visuals"
+      ]
+    },
+    {
+      "feature": "Terrifying Monsters",
+      "component": "Current Graft information",
+      "sourceFiles": [
+        "features/monster-composer/components/monster-composer.anatomy.jsx",
+        "features/monster-composer/monster-composer.styles.css"
+      ],
+      "sharedClasses": [
+        "cruor-composer-rail",
+        "cruor-composer-rail--right",
+        "cruor-composer-rail--info",
+        "cruor-composer-rail-card",
+        "cruor-composer-fact-grid",
+        "cruor-composer-fact-row",
+        "cruor-composer-meter"
+      ],
+      "legacyClassesRetained": true,
+      "retentionReasons": ["graft-specific content", "actions", "layout", "test selector"],
+      "remainingFeatureSpecificDeclarations": [
+        "focused-slot content layout",
+        "action-card behavior"
+      ]
+    },
+    {
+      "feature": "Dark Places",
+      "component": "Current Place Frame",
+      "sourceFiles": [
+        "features/darken-location/composer/components/LocationMapDetailsPanel.jsx",
+        "features/darken-location/composer/darken-location-composer.styles.css"
+      ],
+      "sharedClasses": [
+        "cruor-composer-rail",
+        "cruor-composer-rail--right",
+        "cruor-composer-rail--info",
+        "cruor-composer-rail--scroll",
+        "cruor-composer-rail-card",
+        "cruor-composer-fact-grid",
+        "cruor-composer-fact-row",
+        "cruor-composer-meter"
+      ],
+      "legacyClassesRetained": true,
+      "retentionReasons": ["layout", "runtime selector", "test selector", "debug content"],
+      "remainingFeatureSpecificDeclarations": [
+        "stage placement",
+        "rail width",
+        "debug recorder layout",
+        "tooltip button visuals"
+      ]
+    },
+    {
+      "feature": "Dark Places",
+      "component": "Current Location recap",
+      "sourceFiles": [
+        "features/darken-location/composer/DarkenLocationComposerPage.jsx",
+        "features/darken-location/composer/darken-location-composer.styles.css"
+      ],
+      "sharedClasses": [
+        "cruor-composer-rail",
+        "cruor-composer-rail--right",
+        "cruor-composer-rail--info",
+        "cruor-composer-rail-card",
+        "cruor-composer-fact-grid",
+        "cruor-composer-fact-row"
+      ],
+      "legacyClassesRetained": true,
+      "retentionReasons": ["responsive placement", "minimal mode", "actions", "test selector"],
+      "remainingFeatureSpecificDeclarations": [
+        "responsive width",
+        "minimal-mode visibility",
+        "action-card layout"
+      ]
+    }
+  ],
+  "excluded": [
+    {
+      "surface": "Composer left control rails",
+      "reason": "control/navigation purpose, not entity summary"
+    },
+    { "surface": "Export rails", "reason": "export workflow and substantially different content" },
+    {
+      "surface": "Map inspectors and component pickers",
+      "reason": "interactive inspector/picker model"
+    },
+    {
+      "surface": "Debug recorder and action-only cards",
+      "reason": "tool/action surfaces rather than recurring info-rail internals"
+    },
+    {
+      "surface": "Toolbars, modals and ordinary panels",
+      "reason": "outside component-family semantics"
+    }
+  ]
+}

@@ -1487,6 +1487,10 @@ describe("map generator pipeline", () => {
       repoPath("features", "darken-location", "map-generator", "map-generator.styles.css"),
       "utf8",
     );
+    const dropdownStyles = readFileSync(
+      repoPath("shared", "styles", "dropdowns.css"),
+      "utf8",
+    );
 
     expect(page).toContain('const [wallDrawingStyle, setWallDrawingStyle] = useState("precise")');
     expect(page).toContain("const rootWidth = 210");
@@ -1501,12 +1505,12 @@ describe("map generator pipeline", () => {
         /\.location-map-toolbar__style-panel\[data-style-floating="portal"\] \{[\s\S]*?\n\}/,
       )?.[0] || "";
     const portalGlassRule =
-      styles.match(
-        /\.location-map-toolbar__style-panel\[data-style-floating="portal"\]::before \{[\s\S]*?\n\}/,
+      dropdownStyles.match(
+        /\.cruor-dropdown-menu--context\[data-style-floating="portal"\]::before \{[\s\S]*?\n\}/,
       )?.[0] || "";
     const portalFlyoutRule =
-      styles.match(
-        /\.location-map-toolbar__style-panel\[data-style-floating="portal"\] \.location-map-toolbar__style-panel\[data-style-menu="flyout"\] \{[\s\S]*?\n\}/,
+      dropdownStyles.match(
+        /\.cruor-dropdown-menu \{[\s\S]*?\n\}/,
       )?.[0] || "";
 
     expect(portalPanelRule).toContain("backdrop-filter: none");

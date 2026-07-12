@@ -33,6 +33,8 @@ function getIconToggleClass(active, extra = "") {
     "location-map-toolbar__button",
     "location-icon-toggle-button",
     "cruor-frame-icon-toggle",
+    "cruor-square-icon-button",
+    "cruor-square-icon-button--compact",
     "location-map-toolbar__button--secondary",
     "map-debug-recorder__icon-toggle",
     active && "is-active",
@@ -333,9 +335,9 @@ function getMapSlotIconClass(slotId) {
 
 function LocationFrameInfoRow({ label, value }) {
   return (
-    <span className="location-frame-info-row">
-      <small>{label}</small>
-      <strong>{value || "—"}</strong>
+    <span className="cruor-composer-fact-row location-frame-info-row">
+      <small className="cruor-composer-fact-label">{label}</small>
+      <strong className="cruor-composer-fact-value">{value || "—"}</strong>
     </span>
   );
 }
@@ -346,10 +348,10 @@ function LocationFrameMeter({ description, label, max, value }) {
   const percent = safeMax ? Math.round((safeValue / safeMax) * 100) : 0;
 
   return (
-    <div className="location-meter">
-      <div className="location-meter__head">
-        <span>{label}</span>
-        <span className="location-meter__value">
+    <div className="cruor-composer-meter location-meter">
+      <div className="cruor-composer-meter__head location-meter__head">
+        <span className="cruor-composer-meter__label">{label}</span>
+        <span className="cruor-composer-meter__value location-meter__value">
           <strong>{safeValue} / {safeMax}</strong>
           <button
             className="tooltip-btn"
@@ -363,8 +365,8 @@ function LocationFrameMeter({ description, label, max, value }) {
           </button>
         </span>
       </div>
-      <div className="location-meter__track">
-        <div style={{ width: `${percent}%` }} />
+      <div className="cruor-composer-meter__track location-meter__track">
+        <div className="cruor-composer-meter__fill" style={{ width: `${percent}%` }} />
       </div>
     </div>
   );
@@ -782,25 +784,28 @@ export function LocationMapDetailsPanel({
 
   return (
     <aside
-      className={`cruor-composer-rail location-composer__rail ${sideClass} location-map-details-rail location-frame-info`}
+      className={`cruor-composer-rail cruor-composer-rail--${side === "left" ? "left" : "right"} cruor-composer-rail--info cruor-composer-rail--scroll cruor-scroll-surface location-composer__rail ${sideClass} location-map-details-rail location-frame-info`}
+      data-composer-rail-side={side === "left" ? "left" : "right"}
+      data-composer-rail-variant="info"
       aria-label="Current Place Frame"
     >
-      <section className="location-frame-info-card location-frame-info-card--hero">
-        <span>Current Frame</span>
-        <label className="location-frame-name-editor location-map-details-name-editor">
+      <section className="cruor-composer-rail-card cruor-composer-rail-card--hero location-frame-info-card location-frame-info-card--hero">
+        <span className="cruor-composer-rail-card__eyebrow">Current Frame</span>
+        <label className="cruor-composer-rail-card__name-editor location-frame-name-editor location-map-details-name-editor">
           <span className="sr-only">Location name</span>
           <input
+            className="cruor-composer-rail-card__name-input"
             type="text"
             aria-label="Location name"
             value={state.title || ""}
             onChange={(event) => onRenameLocation?.(event.target.value)}
           />
         </label>
-        <em>{sourceLabel} · {horrorLabel}</em>
+        <em className="cruor-composer-rail-card__meta">{sourceLabel} · {horrorLabel}</em>
       </section>
 
-      <section className="location-frame-info-card" aria-label="Place frame summary">
-        <div className="location-frame-info-grid">
+      <section className="cruor-composer-rail-card location-frame-info-card" aria-label="Place frame summary">
+        <div className="cruor-composer-fact-grid location-frame-info-grid">
           <LocationFrameInfoRow label="Context" value={frame.context || state.context || "Context"} />
           <LocationFrameInfoRow label="Use" value={frame.use || "Ritual reveal"} />
           <LocationFrameInfoRow label="Route" value={frame.routePressure} />
@@ -811,7 +816,7 @@ export function LocationMapDetailsPanel({
         </div>
       </section>
 
-      <section className="location-frame-info-card" aria-label="Location readiness">
+      <section className="cruor-composer-rail-card location-frame-info-card" aria-label="Location readiness">
         <LocationFrameMeter
           label="Ready Rooms"
           value={readyRooms}

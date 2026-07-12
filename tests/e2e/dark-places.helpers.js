@@ -57,15 +57,23 @@ export async function openDarkPlaces(page) {
 }
 
 export async function generateDarkPlace(page) {
+  const mapStage = page.getByTestId("dark-places-map-stage");
+  const firstRoom = page.getByTestId("dark-places-room-node").first();
+
+  await expectVisible(mapStage);
+
+  // Dark Places can arrive with a deterministic preview already generated.
+  // Do not force a redundant pointer click through the overlaid Composer rails.
+  if (await isVisible(firstRoom, 2_000)) return firstRoom;
+
   const generate = page.getByTestId("dark-places-generate");
   await expectVisible(generate);
   await expect(generate).toBeEnabled();
-  await generate.click();
+  await generate.focus();
+  await generate.press("Enter");
 
-  await expectVisible(page.getByTestId("dark-places-map-stage"));
-  await expectVisible(page.getByTestId("dark-places-room-node").first(), {
-    timeout: 20_000,
-  });
+  await expectVisible(firstRoom, { timeout: 20_000 });
+  return firstRoom;
 }
 
 export async function openRoomsMode(page) {

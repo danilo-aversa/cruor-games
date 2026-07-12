@@ -1,0 +1,47 @@
+[
+  {
+    "feature": "Dark Places",
+    "component": "Location frame icon-toggle grids (Scale and Complexity)",
+    "sourceFile": "features/darken-location/composer/components/LocationBriefPanel.jsx",
+    "oldClasses": ["location-icon-toggle-button", "cruor-frame-icon-toggle"],
+    "sharedClass": "cruor-square-icon-button",
+    "legacyClassesRetained": true,
+    "retentionReasons": ["grid layout", "feature identity", "compatibility selectors"]
+  },
+  {
+    "feature": "Dark Places",
+    "component": "Composer map toolbar",
+    "sourceFile": "features/darken-location/composer/components/LocationMapToolbar.jsx",
+    "oldClasses": ["location-map-toolbar__button", "location-icon-toggle-button", "cruor-frame-icon-toggle"],
+    "sharedClass": "cruor-square-icon-button",
+    "legacyClassesRetained": true,
+    "retentionReasons": ["toolbar layout", "responsive behavior", "variant hook", "tests"]
+  },
+  {
+    "feature": "Dark Places",
+    "component": "Map editor toolbar and matching modal control",
+    "sourceFile": "features/darken-location/map-generator/map-generator.page.jsx",
+    "oldClasses": ["map-tool-button", "location-map-toolbar__button", "location-icon-toggle-button", "cruor-frame-icon-toggle", "location-map-toolbar__button--secondary"],
+    "sharedClass": "cruor-square-icon-button",
+    "legacyClassesRetained": true,
+    "retentionReasons": ["toolbar layout", "menu anchoring", "pointer-event behavior", "responsive behavior", "tests"]
+  },
+  {
+    "feature": "Dark Places",
+    "component": "Map debug recorder icon toggles",
+    "sourceFile": "features/darken-location/composer/components/LocationMapDetailsPanel.jsx",
+    "oldClasses": ["map-tool-button", "location-map-toolbar__button", "location-icon-toggle-button", "cruor-frame-icon-toggle", "map-debug-recorder__icon-toggle"],
+    "sharedClass": "cruor-square-icon-button cruor-square-icon-button--compact",
+    "legacyClassesRetained": true,
+    "retentionReasons": ["debug-recorder layout", "runtime state", "icon sizing"]
+  },
+  {
+    "feature": "Terrifying Monsters",
+    "component": "Frame selectors (Encounter Footprint, Role, Tier, Tempo, Danger)",
+    "sourceFile": "features/monster-composer/components/monster-composer.anatomy.jsx",
+    "oldClasses": ["monster-frame-icon-toggle"],
+    "sharedClass": "cruor-square-icon-button",
+    "legacyClassesRetained": true,
+    "retentionReasons": ["radiogroup layout", "feature identity", "tooltip anchoring", "compatibility selectors"]
+  }
+]

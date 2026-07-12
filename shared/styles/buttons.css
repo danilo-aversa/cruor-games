@@ -1,0 +1,118 @@
+/* Shared square icon buttons. The base values mirror the Dark Places map toolbar. */
+.cruor-square-icon-button {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  min-width: 38px;
+  max-width: 38px;
+  min-height: 38px;
+  padding: 0;
+  border: 1px solid var(--cruor-color-blood-strong-a560);
+  border-radius: 0;
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
+  color: var(--cruor-color-hex-c8a2a8);
+  box-shadow: none;
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+}
+
+.cruor-square-icon-button > :where(i, svg) {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  color: var(--cruor-color-hex-b33b4e);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.cruor-square-icon-button:hover,
+.cruor-square-icon-button:focus-visible {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
+  outline: none;
+}
+
+.cruor-square-icon-button:hover > :where(i, svg),
+.cruor-square-icon-button:focus-visible > :where(i, svg) {
+  color: var(--cruor-color-hex-f0b9c2);
+}
+
+.cruor-square-icon-button:is(.is-active, [aria-pressed="true"], [aria-checked="true"]) {
+  border-color: var(--cruor-color-blood-glow-a860);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
+  transform: translateY(-1px);
+}
+
+.cruor-square-icon-button:is(.is-active, [aria-pressed="true"], [aria-checked="true"]) > :where(i, svg) {
+  color: var(--cruor-color-hex-f0b9c2);
+}
+
+.cruor-square-icon-button--primary {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
+}
+
+.cruor-square-icon-button:is(:disabled, .is-disabled, [aria-disabled="true"]) {
+  cursor: not-allowed;
+  opacity: 0.36;
+}
+
+.cruor-square-icon-button--compact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  place-items: center;
+  width: 24px;
+  min-width: 24px;
+  max-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  max-height: 24px;
+  gap: 0;
+  line-height: 1;
+  transform: none;
+}
+
+.cruor-square-icon-button--compact:is(.is-active, [aria-pressed="true"], [aria-checked="true"]) {
+  transform: none;
+}
+
+/* The standalone map workspace already had a genuine 36px toolbar variation. */
+.cruor-map-workspace[data-map-context]:not([data-map-context="composer-workspace"]) .cruor-square-icon-button {
+  width: var(--cruor-control-height-sm, 36px);
+  height: var(--cruor-control-height-sm, 36px);
+  min-width: var(--cruor-control-height-sm, 36px);
+  min-height: var(--cruor-control-height-sm, 36px);
+  max-width: none;
+  border-color: var(--cruor-button-border, var(--cruor-color-blood-strong-a740));
+  background: var(--cruor-gradient-linear-168-68f86c33), var(--cruor-color-r8-g5-b6-a720);
+  color: var(--cruor-color-r244-g228-b232-a900);
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.cruor-map-workspace[data-map-context]:not([data-map-context="composer-workspace"]) .cruor-square-icon-button > :where(i, svg) {
+  color: inherit;
+}
+
+.cruor-map-workspace[data-map-context]:not([data-map-context="composer-workspace"]) .cruor-square-icon-button:is(:hover, :focus-visible, .is-active, [aria-pressed="true"], [aria-checked="true"]) {
+  border-color: var(--cruor-color-blood-glow-a820);
+  background: var(--cruor-gradient-radial-067-6a0a6f16), var(--cruor-gradient-linear-055-e92225c8), var(--cruor-color-r8-g5-b6-a860);
+  color: var(--cruor-color-hex-fff0f2);
+  outline: none;
+  box-shadow: var(--cruor-shadow-box-032);
+  transform: none;
+}
+
+.cruor-map-workspace[data-map-context]:not([data-map-context="composer-workspace"]) .cruor-square-icon-button:disabled {
+  opacity: 0.36;
+  cursor: not-allowed;
+  box-shadow: none;
+}

@@ -630,10 +630,10 @@ function AnatomyMeter({ label, value, max, percent }) {
         ? "Complexity measures how much the DM must track at the table: reactions, recharge effects, delayed triggers, and conditional rules."
         : "This meter summarizes the current monster build.";
   return (
-    <div className="monster-meter">
-      <div className="monster-meter__head">
-        <span>{label}</span>
-        <span className="monster-meter__value">
+    <div className="cruor-composer-meter monster-meter">
+      <div className="cruor-composer-meter__head monster-meter__head">
+        <span className="cruor-composer-meter__label">{label}</span>
+        <span className="cruor-composer-meter__value monster-meter__value">
           <strong className={over ? "is-over" : ""}>
             {value} / {max}
           </strong>
@@ -649,8 +649,8 @@ function AnatomyMeter({ label, value, max, percent }) {
           </button>
         </span>
       </div>
-      <div className="monster-meter__track">
-        <div className={over ? "is-over" : ""} style={{ width: `${Math.min(percent, 100)}%` }} />
+      <div className="cruor-composer-meter__track monster-meter__track">
+        <div className={`cruor-composer-meter__fill ${over ? "is-over" : ""}`.trim()} style={{ width: `${Math.min(percent, 100)}%` }} />
       </div>
     </div>
   );
@@ -664,17 +664,18 @@ function FrameMeter({ label, value, max }) {
 function FrameSummaryRow({ label, value }) {
   return (
     <span className="cruor-composer-fact-row monster-frame-info-row">
-      <small>{label}</small>
-      <strong>{value}</strong>
+      <small className="cruor-composer-fact-label">{label}</small>
+      <strong className="cruor-composer-fact-value">{value}</strong>
     </span>
   );
 }
 
 function MonsterNameEditor({ value, onChange }) {
   return (
-    <label className="monster-frame-name-editor">
+    <label className="cruor-composer-rail-card__name-editor monster-frame-name-editor">
       <span className="sr-only">Monster name</span>
       <input
+        className="cruor-composer-rail-card__name-input"
         type="text"
         value={value}
         aria-label="Monster name"
@@ -1593,21 +1594,21 @@ function FrameSelectField({ label, value, options, onChange, getValue, getLabel,
         <FrameTooltip title={label} text={tooltipText} items={tooltipItems} />
       </div>
       <button
-        className="monster-frame-select-trigger"
+        className="monster-frame-select-trigger cruor-dropdown-trigger"
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
         ref={triggerRef}
         onClick={() => setOpen((current) => !current)}
       >
-        {SelectedIcon ? <SelectedIcon aria-hidden="true" /> : null}
-        <strong>{selectedLabel}</strong>
-        {meta ? <small>{meta}</small> : null}
+        {SelectedIcon ? <SelectedIcon className="cruor-dropdown-trigger__icon" aria-hidden="true" /> : null}
+        <strong className="cruor-dropdown-trigger__label">{selectedLabel}</strong>
+        {meta ? <small className="cruor-dropdown-trigger__meta">{meta}</small> : null}
       </button>
       {open && menuPortalTarget
         ? createPortal(
             <div
-              className="monster-frame-select-menu"
+              className="monster-frame-select-menu cruor-dropdown-menu cruor-dropdown-menu--listbox"
               role="listbox"
               aria-label={label}
               ref={menuRef}
@@ -1625,17 +1626,17 @@ function FrameSelectField({ label, value, options, onChange, getValue, getLabel,
                     role="option"
                     aria-selected={active}
                     disabled={disabled}
-                    className={`monster-frame-select-option ${active ? "is-active" : ""} ${disabled ? "is-disabled" : ""}`.trim()}
+                    className={`monster-frame-select-option cruor-dropdown-option ${active ? "is-active" : ""} ${disabled ? "is-disabled" : ""}`.trim()}
                     onClick={() => {
                       if (disabled) return;
                       onChange(optionValue);
                       setOpen(false);
                     }}
                   >
-                    {OptionIcon ? <OptionIcon aria-hidden="true" /> : null}
+                    {OptionIcon ? <OptionIcon className="cruor-dropdown-option__icon" aria-hidden="true" /> : null}
                     <span>
-                      <strong>{getLabel(option)}</strong>
-                      {getDescription?.(option) ? <small>{getDescription(option)}</small> : null}
+                      <strong className="cruor-dropdown-option__label">{getLabel(option)}</strong>
+                      {getDescription?.(option) ? <small className="cruor-dropdown-option__meta">{getDescription(option)}</small> : null}
                     </span>
                   </button>
                 );
@@ -1679,7 +1680,7 @@ function FrameIconToggleGroup({ label, value, options, onChange, getValue, getLa
           return (
             <button
               key={optionValue}
-              className={`monster-frame-icon-toggle ${active ? "is-active" : ""} ${disabled ? "is-disabled" : ""}`.trim()}
+              className={`monster-frame-icon-toggle cruor-square-icon-button ${active ? "is-active" : ""} ${disabled ? "is-disabled" : ""}`.trim()}
               type="button"
               role="radio"
               aria-label={getLabel(option)}
@@ -1871,9 +1872,9 @@ function FrameInfoPanel({
       aria-label="Current Monster Frame"
     >
       <section className="cruor-composer-rail-card cruor-composer-rail-card--hero monster-frame-info-card monster-frame-info-card--hero">
-        <span>Current Frame</span>
+        <span className="cruor-composer-rail-card__eyebrow">Current Frame</span>
         <MonsterNameEditor value={monsterName || computed.name} onChange={onMonsterNameChange} />
-        <em>{creatureType.label} · {category} · {role.label}</em>
+        <em className="cruor-composer-rail-card__meta">{creatureType.label} · {category} · {role.label}</em>
       </section>
       <section className="cruor-composer-rail-card monster-frame-info-card">
         <div className="cruor-composer-fact-grid monster-frame-info-grid">
@@ -1935,9 +1936,9 @@ function GraftInfoPanel({
       aria-label="Current monster information"
     >
       <section className="cruor-composer-rail-card cruor-composer-rail-card--hero monster-frame-info-card monster-frame-info-card--hero">
-        <span>Info</span>
+        <span className="cruor-composer-rail-card__eyebrow">Info</span>
         <MonsterNameEditor value={monsterName || computed.name} onChange={onMonsterNameChange} />
-        <em>{creatureType.label} · {category} · CR {targetCr}</em>
+        <em className="cruor-composer-rail-card__meta">{creatureType.label} · {category} · CR {targetCr}</em>
       </section>
 
       <section className="cruor-composer-rail-card monster-frame-info-card">

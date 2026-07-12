@@ -214,7 +214,7 @@ function LocationChoiceField({ help, icon = "fa-circle-dot", label, meta, onChan
   const menu = open && menuPosition
     ? createPortal(
         <div
-          className="location-choice-menu location-choice-menu--portal cruor-frame-select-menu"
+          className="location-choice-menu location-choice-menu--portal cruor-frame-select-menu cruor-dropdown-menu cruor-dropdown-menu--listbox"
           ref={menuRef}
           role="listbox"
           aria-label={label}
@@ -230,7 +230,7 @@ function LocationChoiceField({ help, icon = "fa-circle-dot", label, meta, onChan
             const active = String(optionValue) === String(value);
             return (
               <button
-                className={cx("location-choice-option cruor-frame-select-option", active && "is-active")}
+                className={cx("location-choice-option cruor-frame-select-option cruor-dropdown-option", active && "is-active")}
                 key={optionValue}
                 type="button"
                 role="option"
@@ -240,9 +240,9 @@ function LocationChoiceField({ help, icon = "fa-circle-dot", label, meta, onChan
                   setOpen(false);
                 }}
               >
-                <i className={`fa-solid ${getOptionIcon(option, icon)}`} aria-hidden="true" />
+                <i className={`fa-solid ${getOptionIcon(option, icon)} cruor-dropdown-option__icon`} aria-hidden="true" />
                 <span>
-                  <strong>{optionLabel}</strong>
+                  <strong className="cruor-dropdown-option__label">{optionLabel}</strong>
                 </span>
               </button>
             );
@@ -256,16 +256,16 @@ function LocationChoiceField({ help, icon = "fa-circle-dot", label, meta, onChan
     <div className="location-field location-choice-field cruor-frame-select-field" ref={fieldRef}>
       <LocationFieldLabel label={label} help={help} />
       <button
-        className="cruor-composer-control location-choice-trigger cruor-frame-select-trigger"
+        className="cruor-composer-control location-choice-trigger cruor-frame-select-trigger cruor-dropdown-trigger"
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
         ref={triggerRef}
         onClick={() => setOpen((current) => !current)}
       >
-        <i className={`fa-solid ${icon}`} aria-hidden="true" />
-        <strong>{selectedLabel}</strong>
-        {meta ? <small>{meta}</small> : null}
+        <i className={`fa-solid ${icon} cruor-dropdown-trigger__icon`} aria-hidden="true" />
+        <strong className="cruor-dropdown-trigger__label">{selectedLabel}</strong>
+        {meta ? <small className="cruor-dropdown-trigger__meta">{meta}</small> : null}
       </button>
       {menu}
     </div>
@@ -285,7 +285,7 @@ function LocationIconToggleField({ help, label, onChange, options, value }) {
           const optionLabel = getOptionLabel(option);
           return (
             <button
-              className={cx("location-icon-toggle-button cruor-frame-icon-toggle", active && "is-active")}
+              className={cx("location-icon-toggle-button cruor-frame-icon-toggle cruor-square-icon-button", active && "is-active")}
               key={option.value}
               type="button"
               role="radio"

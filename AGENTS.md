@@ -74,6 +74,19 @@ Before editing:
 - Preserve existing file organization.
 - Preserve comments, version headers, exports, types, and public APIs unless the task explicitly requires changing them.
 
+## Shared Dropdown System
+
+Before creating or styling a dropdown, listbox, context menu, or submenu:
+
+1. Read `docs/design-system/README.md`, `docs/design-system/component-catalog.md`, and `docs/design-system/class-decision-tree.md`.
+2. Reuse the `.cruor-dropdown-*` component system.
+3. Do not create feature-specific visual implementations for panel surfaces, option rows, trigger appearance, or hover/focus/selected/disabled states.
+4. Feature-specific classes may control only layout, placement, portal behavior, required geometry, or feature mechanics unless an exception is documented under `docs/design-system/override-policy.md`.
+
+## Shared Composer Information Rails
+
+Before creating or styling a right-side Composer rail that summarizes the current entity, read `docs/design-system/component-catalog.md#composer-right-information-rails` and reuse the `.cruor-composer-rail-*`, `.cruor-composer-fact-*`, and `.cruor-composer-meter*` APIs. Feature classes may control placement, geometry, scroll ownership, behavior, and runtime/test hooks only; they must not recreate the shared card, name-editor, fact-row, meter, typography, spacing, or state visuals without a documented override.
+
 ## Verification
 
 After modifying code:

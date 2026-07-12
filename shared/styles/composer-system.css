@@ -103,6 +103,19 @@
   --cruor-composer-fact-row-padding: 7px 8px;
   --cruor-composer-fact-value-color: var(--cruor-color-hex-fff0f2);
   --cruor-composer-fact-value-size: var(--text-size-s);
+  --cruor-composer-meter-gap: 6px;
+  --cruor-composer-meter-stack-gap: 8px;
+  --cruor-composer-meter-head-gap: 8px;
+  --cruor-composer-meter-label-color: var(--muted);
+  --cruor-composer-meter-label-size: var(--text-size-m);
+  --cruor-composer-meter-value-color: var(--cruor-color-hex-d0a2aa);
+  --cruor-composer-meter-over-color: var(--cruor-color-hex-f0b9c2);
+  --cruor-composer-meter-track-height: 8px;
+  --cruor-composer-meter-track-border: 1px solid var(--cruor-color-blood-strong-a500);
+  --cruor-composer-meter-track-background: var(--cruor-surface-card);
+  --cruor-composer-meter-fill-background: var(--cruor-gradient-linear-115-7b4295c6);
+  --cruor-composer-meter-fill-background-over: var(--cruor-gradient-linear-108-092c83a2);
+  --cruor-composer-meter-fill-shadow: var(--cruor-shadow-box-051);
   --cruor-composer-divider-color: var(--cruor-color-milk-a110);
   --cruor-composer-inset-surface: var(--cruor-composer-sidebar-inset-background);
   --cruor-composer-compatibility-soft-border: var(--cruor-color-blood-glow-a420);
@@ -190,6 +203,68 @@
   padding-block: var(--cruor-composer-rail-card-hero-padding-block);
 }
 
+.cruor-composer-rail-card__eyebrow {
+  color: var(--cruor-composer-rail-label-color);
+  font-size: var(--cruor-composer-rail-label-size);
+  font-weight: 950;
+  letter-spacing: var(--cruor-composer-rail-label-tracking);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.cruor-composer-rail-card__name-editor {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.cruor-composer-shell .cruor-composer-rail-card__name-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 34px;
+  border: 0;
+  background: var(--cruor-color-transparent);
+  color: var(--cruor-color-hex-fff0f2);
+  padding: 0;
+  font-family: var(--font);
+  font-size: var(--text-size-fluid-07);
+  font-weight: 950;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  text-shadow: var(--cruor-shadow-text-006);
+}
+
+.cruor-composer-shell .cruor-composer-rail-card__name-input:hover {
+  border: 0;
+  background: var(--cruor-color-transparent);
+  box-shadow: none;
+  color: var(--cruor-color-white);
+  outline: none;
+}
+
+.cruor-composer-shell .cruor-composer-rail-card__name-input:focus {
+  border: 0;
+  background: var(--cruor-color-transparent);
+  box-shadow: none;
+  color: var(--cruor-color-white);
+  outline: none;
+  text-decoration: underline;
+  text-decoration-color: var(--cruor-color-blood-glow-a550);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+.cruor-composer-rail-card__meta {
+  color: var(--cruor-composer-rail-hero-subtitle-color);
+  font-size: var(--cruor-composer-rail-hero-subtitle-size);
+  font-style: normal;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .cruor-composer-rail-card > span,
 .cruor-composer-fact-row small {
   color: var(--cruor-composer-rail-label-color);
@@ -253,6 +328,102 @@
   text-align: right;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.cruor-composer-fact-label {
+  overflow: hidden;
+  color: var(--cruor-composer-rail-label-color);
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: var(--cruor-composer-rail-label-tracking);
+  line-height: 1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cruor-composer-fact-value {
+  overflow: hidden;
+  color: var(--cruor-composer-fact-value-color);
+  font-size: var(--cruor-composer-fact-value-size);
+  font-weight: 950;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cruor-composer-meter {
+  display: grid;
+  gap: var(--cruor-composer-meter-gap);
+  min-width: 0;
+}
+
+.cruor-composer-meter + .cruor-composer-meter {
+  margin-top: var(--cruor-composer-meter-stack-gap);
+}
+
+.cruor-composer-meter__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cruor-composer-meter-head-gap);
+  min-width: 0;
+  color: var(--cruor-composer-meter-label-color);
+  font-size: var(--cruor-composer-meter-label-size);
+  font-weight: 850;
+}
+
+.cruor-composer-meter__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cruor-composer-meter__value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  gap: 6px;
+  margin-left: auto;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cruor-composer-meter__value strong {
+  color: var(--cruor-composer-meter-value-color);
+  font-size: var(--cruor-composer-meter-label-size);
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.cruor-composer-meter__value strong.is-over {
+  color: var(--cruor-composer-meter-over-color);
+}
+
+.cruor-composer-meter__value .tooltip-btn {
+  flex: 0 0 auto;
+}
+
+.cruor-composer-meter__track {
+  height: var(--cruor-composer-meter-track-height);
+  overflow: hidden;
+  border: var(--cruor-composer-meter-track-border);
+  background: var(--cruor-composer-meter-track-background);
+}
+
+.cruor-composer-meter__fill {
+  height: 100%;
+  background: var(--cruor-composer-meter-fill-background);
+  box-shadow: var(--cruor-composer-meter-fill-shadow);
+}
+
+.cruor-composer-meter__fill.is-over {
+  background: var(--cruor-composer-meter-fill-background-over);
 }
 
 /* Layout */
@@ -336,5 +507,3 @@
 
 
 /* Layout */
-
-

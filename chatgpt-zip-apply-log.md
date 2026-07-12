@@ -11937,3 +11937,155 @@ _Nessun file aggiunto._
 - `~shared/content/contracts/room-shapes.js`
 - `~shared/content/contracts/room-shapes.test.js`
 
+
+---
+
+## 2026-07-12 15:12:40
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-design-system-phase0-1-test-fixes.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-design-system-phase0-1-test-fixes.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~tests/e2e/dark-places-pipeline.spec.js`
+- `~tests/e2e/dark-places.helpers.js`
+
+
+---
+
+## 2026-07-12 17:06:48
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-sitewide-design-system-refactor.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-sitewide-design-system-refactor.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 26
+
+- `+docs/design-system/class-decision-tree.md`
+- `+docs/design-system/class-migration-manifest.json`
+- `+docs/design-system/component-catalog.md`
+- `+docs/design-system/inferred-surface-migration.json`
+- `+docs/design-system/migration-summary.md`
+- `+docs/design-system/override-policy.md`
+- `+docs/design-system/README.md`
+- `+docs/design-system/scrollbar-policy.md`
+- `+docs/design-system/token-policy.md`
+- `+scripts/design-system/verify-design-system.mjs`
+- `+shared/styles/components/badges.css`
+- `+shared/styles/components/buttons.css`
+- `+shared/styles/components/dropdowns.css`
+- `+shared/styles/components/forms.css`
+- `+shared/styles/components/modals.css`
+- `+shared/styles/components/panels.css`
+- `+shared/styles/components/scrollbars.css`
+- `+shared/styles/components/text.css`
+- `+shared/styles/design-system.css`
+- `+shared/styles/tokens/borders.css`
+- `+shared/styles/tokens/components.css`
+- `+shared/styles/tokens/effects.css`
+- `+shared/styles/tokens/motion.css`
+- `+shared/styles/tokens/sizing.css`
+- `+shared/styles/tokens/spacing.css`
+- `+shared/styles/tokens/z-index.css`
+
+**File sovrascritti:** 81
+
+- `~AGENTS.md`
+- `~app/app-shell.css`
+- `~app/AppShell.jsx`
+- `~app/home-page-video.css`
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~app/main.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/SiteMegaMenu.jsx`
+- `~app/navigation/SiteTopbar.jsx`
+- `~components/ui/button.jsx`
+- `~components/ui/card.jsx`
+- `~components/ui/composer-rail.jsx`
+- `~docs/repository-map/areas/styles-and-design-system.md`
+- `~docs/repository-map/entry-points.md`
+- `~features/crucible/components/CrucibleTopbar.jsx`
+- `~features/crucible/crucible.events.js`
+- `~features/crucible/crucible.styles-old.css`
+- `~features/crucible/crucible.styles.css`
+- `~features/crucible/crucible.template.js`
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/composer/components/LocationCompilePreview.jsx`
+- `~features/darken-location/composer/components/LocationComponentPickerModal.jsx`
+- `~features/darken-location/composer/components/LocationDraftControls.jsx`
+- `~features/darken-location/composer/components/LocationExportRoomKeyPanel.jsx`
+- `~features/darken-location/composer/components/LocationGuidedFlowPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/components/LocationMapToolbar.jsx`
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `~features/darken-location/composer/components/LocationRoomProgramPanel.jsx`
+- `~features/darken-location/composer/components/LocationRoomRecapCard.jsx`
+- `~features/darken-location/composer/components/LocationSlotRail.jsx`
+- `~features/darken-location/composer/components/LocationWorkflowGuide.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+- `~features/inspiration-studio/components/StudioTestsMenu.jsx`
+- `~features/inspiration-studio/components/StudioToolModalShell.jsx`
+- `~features/inspiration-studio/components/StudioToolsMenu.jsx`
+- `~features/inspiration-studio/components/StudioWarningBadge.jsx`
+- `~features/inspiration-studio/components/StudioWarningList.jsx`
+- `~features/inspiration-studio/coverage/CoverageMatrixModal.jsx`
+- `~features/inspiration-studio/health/ContentHealthCoverage.jsx`
+- `~features/inspiration-studio/health/ContentHealthIssues.jsx`
+- `~features/inspiration-studio/health/ContentHealthModal.jsx`
+- `~features/inspiration-studio/health/ContentHealthSummary.jsx`
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/ledger/GraftLedgerAnalytics.jsx`
+- `~features/inspiration-studio/ledger/GraftLedgerGapPanel.jsx`
+- `~features/inspiration-studio/ledger/GraftLedgerInventory.jsx`
+- `~features/inspiration-studio/ledger/GraftLedgerToolbar.jsx`
+- `~features/inspiration-studio/ledger/GraftLedgerWorkspace.jsx`
+- `~features/inspiration-studio/qa/MapBatchQaModal.jsx`
+- `~features/inspiration-studio/qa/MonsterBatchQaModal.jsx`
+- `~features/inspiration-studio/qa/MonsterPerGraftQaModal.jsx`
+- `~features/inspirations/inspirations.page.jsx`
+- `~features/inspirations/inspirations.styles.css`
+- `~features/monster-composer/components/frame.jsx`
+- `~features/monster-composer/components/monster-composer.anatomy.jsx`
+- `~features/monster-composer/components/monster-composer.navigator.jsx`
+- `~features/monster-composer/components/monster-composer.panels.jsx`
+- `~features/monster-composer/components/monster-composer.start-flow.css`
+- `~features/monster-composer/components/monster-composer.start-flow.jsx`
+- `~features/monster-composer/monster-composer.page.jsx`
+- `~features/monster-composer/monster-composer.start-flow.css`
+- `~features/monster-composer/monster-composer.styles.css`
+- `~package.json`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+- `~shared/styles/accessibility.css`
+- `~shared/styles/colors.css`
+- `~shared/styles/components.css`
+- `~shared/styles/composer-internals.css`
+- `~shared/styles/composer-primitives.css`
+- `~shared/styles/composer-system.css`
+- `~shared/styles/theme.css`
+- `~shared/styles/tooltips.css`
+- `~shared/styles/typography.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: AGENTS.md
+

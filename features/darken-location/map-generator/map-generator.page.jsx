@@ -3875,17 +3875,17 @@ function RoomStyleMenuOption({
   return (
     <button
       type="button"
-      className={cx("location-map-toolbar__style-option", active && "is-active")}
+      className={cx("location-map-toolbar__style-option cruor-dropdown-option", active && "is-active")}
       role="menuitem"
       disabled={disabled}
       title={title}
       onMouseDown={suppressToolbarTextSelection}
       onClick={onClick}
     >
-      <i className={`fa-solid fa-${icon}`} aria-hidden="true" />
-      <span>{label}</span>
+      <i className={`fa-solid fa-${icon} cruor-dropdown-option__icon`} aria-hidden="true" />
+      <span className="cruor-dropdown-option__label">{label}</span>
       <i
-        className={active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"}
+        className={`${active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"} cruor-dropdown-option__chevron`}
         aria-hidden="true"
       />
     </button>
@@ -3916,7 +3916,7 @@ function RoomStyleMenuSection({
   return (
     <span
       className={cx(
-        "location-map-toolbar__style-section",
+        "location-map-toolbar__style-section cruor-dropdown-section",
         active && "is-submenu-open",
       )}
       role="none"
@@ -3927,7 +3927,7 @@ function RoomStyleMenuSection({
     >
       <button
         type="button"
-        className="location-map-toolbar__style-section-title"
+        className="location-map-toolbar__style-section-title cruor-dropdown-option"
         role="menuitem"
         aria-haspopup="menu"
         aria-expanded={active}
@@ -3935,17 +3935,17 @@ function RoomStyleMenuSection({
         onClick={(event) => event.preventDefault()}
       >
         <span>
-          <i className={`fa-solid fa-${icon}`} aria-hidden="true" />
+          <i className={`fa-solid fa-${icon} cruor-dropdown-option__icon`} aria-hidden="true" />
           {label}
         </span>
-        <span className="location-map-toolbar__style-subtitle">
+        <span className="location-map-toolbar__style-subtitle cruor-dropdown-option__meta">
           {valueLabel}
-          <i className="fa-solid fa-chevron-right" aria-hidden="true" />
+          <i className="fa-solid fa-chevron-right cruor-dropdown-option__chevron" aria-hidden="true" />
         </span>
       </button>
       {active ? (
         <span
-          className="location-map-toolbar__style-panel cruor-ui-panel-surface"
+          className="location-map-toolbar__style-panel cruor-ui-panel-surface cruor-dropdown-menu cruor-dropdown-menu--submenu"
           data-style-menu="flyout"
           role="menu"
           aria-label={ariaLabel || `${label} options`}
@@ -4191,7 +4191,7 @@ function RoomStyleContextMenu({
   return (
     <div
       ref={menuRef}
-      className="location-map-toolbar__style-panel cruor-ui-panel-surface room-style-context-menu"
+      className="location-map-toolbar__style-panel cruor-ui-panel-surface room-style-context-menu cruor-dropdown-menu cruor-dropdown-menu--context"
       data-style-menu="root"
       data-style-floating="portal"
       data-flyout-side={viewportLayout?.submenuSide || "right"}
@@ -4201,9 +4201,9 @@ function RoomStyleContextMenu({
       onPointerDown={(event) => event.stopPropagation()}
       onContextMenu={(event) => event.preventDefault()}
     >
-      <span className="room-style-context-menu__header" role="none">
-        <strong>{region.name}</strong>
-        <span>
+      <span className="room-style-context-menu__header cruor-dropdown-header" role="none">
+        <strong className="cruor-dropdown-header__title">{region.name}</strong>
+        <span className="cruor-dropdown-header__meta">
           {region.number} {"\u00B7"} {contextKey} {"\u00B7"} {region.cellRect.w}
           {"\u00D7"}
           {region.cellRect.h}
@@ -4211,7 +4211,7 @@ function RoomStyleContextMenu({
       </span>
       {requirementSummary ? (
         <span
-          className="location-map-toolbar__style-subtitle room-style-context-menu__requirements"
+          className="location-map-toolbar__style-subtitle room-style-context-menu__requirements cruor-dropdown-subtitle"
           title={`Content requirements: ${requirementSummary}`}
         >
           Content: {requirementSummary}
@@ -4228,10 +4228,10 @@ function RoomStyleContextMenu({
         submenuStyle={getSubmenuStyle("type")}
         ariaLabel="Room type options"
       >
-        <span className="location-map-toolbar__style-subtitle">
+        <span className="location-map-toolbar__style-subtitle cruor-dropdown-subtitle">
           Region Surface
         </span>
-        <span className="location-map-toolbar__style-options">
+        <span className="location-map-toolbar__style-options cruor-dropdown-options">
           <RoomStyleMenuOption
             icon="building"
             label="Building"
@@ -4270,7 +4270,7 @@ function RoomStyleContextMenu({
         ariaLabel="Room shape groups"
       >
         {roomKind === "cavern" ? (
-          <span className="location-map-toolbar__style-options">
+          <span className="location-map-toolbar__style-options cruor-dropdown-options">
             <RoomStyleMenuOption
               icon="ban"
               label="Not Available"
@@ -4297,10 +4297,10 @@ function RoomStyleContextMenu({
                 submenuStyle={getNestedShapeSubmenuStyle(group.id)}
                 ariaLabel={`${group.label} options`}
               >
-                <span className="location-map-toolbar__style-subtitle">
+                <span className="location-map-toolbar__style-subtitle cruor-dropdown-subtitle">
                   Base Footprint
                 </span>
-                <span className="location-map-toolbar__style-options">
+                <span className="location-map-toolbar__style-options cruor-dropdown-options">
                   {group.shapes.map((shape) => {
                     const optionState = getOptionState({ shape: shape.value });
                     const disabled =
@@ -4338,10 +4338,10 @@ function RoomStyleContextMenu({
         submenuStyle={getSubmenuStyle("size")}
         ariaLabel="Room size options"
       >
-        <span className="location-map-toolbar__style-subtitle">
+        <span className="location-map-toolbar__style-subtitle cruor-dropdown-subtitle">
           Room Bounding Box
         </span>
-        <span className="location-map-toolbar__style-options">
+        <span className="location-map-toolbar__style-options cruor-dropdown-options">
           {options.sizes.map((size) => {
             const patch = { sizePreset: size.value, customSize: null };
             const optionState = getOptionState(patch);
@@ -4376,10 +4376,10 @@ function RoomStyleContextMenu({
         submenuStyle={getSubmenuStyle("level")}
         ariaLabel="Room level options"
       >
-        <span className="location-map-toolbar__style-subtitle">
+        <span className="location-map-toolbar__style-subtitle cruor-dropdown-subtitle">
           Room Elevation
         </span>
-        <span className="location-map-toolbar__style-options">
+        <span className="location-map-toolbar__style-options cruor-dropdown-options">
           {ROOM_LEVEL_MENU_OPTIONS.map((level) => (
             <RoomStyleMenuOption
               key={`room-level-${level}`}
@@ -4414,11 +4414,11 @@ function RoomStyleContextMenu({
         submenuStyle={getSubmenuStyle("modifiers")}
         ariaLabel="Room modifier options"
       >
-        <span className="location-map-toolbar__style-subtitle">
+        <span className="location-map-toolbar__style-subtitle cruor-dropdown-subtitle">
           Room Structure
         </span>
         {roomKind === "cavern" ? (
-          <span className="location-map-toolbar__style-options">
+          <span className="location-map-toolbar__style-options cruor-dropdown-options">
             <RoomStyleMenuOption
               icon="ban"
               label="Not Available"
@@ -4427,7 +4427,7 @@ function RoomStyleContextMenu({
           </span>
         ) : (
           <>
-            <span className="location-map-toolbar__style-options">
+            <span className="location-map-toolbar__style-options cruor-dropdown-options">
               {options.types.map((type) => {
                 const patch = { roomType: type.value };
                 const optionState = getOptionState(patch);
@@ -4456,10 +4456,10 @@ function RoomStyleContextMenu({
                 );
               })}
             </span>
-            <span className="location-map-toolbar__style-subtitle">
+            <span className="location-map-toolbar__style-subtitle cruor-dropdown-subtitle">
               Structural Flags
             </span>
-            <span className="location-map-toolbar__style-options">
+            <span className="location-map-toolbar__style-options cruor-dropdown-options">
               {options.toggles.map((toggle) => {
                 const patch = { [toggle.key]: !style[toggle.key] };
                 const optionState = getOptionState(patch);
@@ -4482,8 +4482,8 @@ function RoomStyleContextMenu({
         )}
       </RoomStyleMenuSection>
 
-      <span className="location-map-toolbar__style-subtitle">Actions</span>
-      <span className="location-map-toolbar__style-options">
+      <span className="location-map-toolbar__style-subtitle cruor-dropdown-subtitle">Actions</span>
+      <span className="location-map-toolbar__style-options cruor-dropdown-options">
         <RoomStyleMenuOption
           icon="rotate-left"
           label="Reset to Content"
@@ -5490,7 +5490,7 @@ function MapToolButton({
     <button
       type="button"
       className={cx(
-        "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary",
+        "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle cruor-square-icon-button location-map-toolbar__button--secondary",
         active && "is-active",
         className
       )}
@@ -5545,14 +5545,14 @@ function MapStyleOptionButton({ icon, label, active = false, onClick }) {
   return (
     <button
       type="button"
-      className={cx("location-map-toolbar__style-option", active && "is-active")}
+      className={cx("location-map-toolbar__style-option cruor-dropdown-option", active && "is-active")}
       onMouseDown={suppressToolbarTextSelection}
       onClick={onClick}
     >
-      <i className={`fa-solid fa-${icon}`} aria-hidden="true" />
-      <span>{label}</span>
+      <i className={`fa-solid fa-${icon} cruor-dropdown-option__icon`} aria-hidden="true" />
+      <span className="cruor-dropdown-option__label">{label}</span>
       <i
-        className={active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"}
+        className={`${active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"} cruor-dropdown-option__chevron`}
         aria-hidden="true"
       />
     </button>
@@ -5583,26 +5583,26 @@ function MapStyleSlider({ id, label, value, onChange }) {
 
 function MapStyleMenuSection({ icon, label, valueLabel, children }) {
   return (
-    <span className="location-map-toolbar__style-section" role="none">
+    <span className="location-map-toolbar__style-section cruor-dropdown-section" role="none">
       <button
         type="button"
-        className="location-map-toolbar__style-section-title"
+        className="location-map-toolbar__style-section-title cruor-dropdown-option"
         role="menuitem"
         aria-haspopup="menu"
         onMouseDown={suppressToolbarTextSelection}
         onClick={(event) => event.preventDefault()}
       >
         <span>
-          <i className={`fa-solid fa-${icon}`} aria-hidden="true" />
+          <i className={`fa-solid fa-${icon} cruor-dropdown-option__icon`} aria-hidden="true" />
           {label}
         </span>
-        <span className="location-map-toolbar__style-subtitle">
+        <span className="location-map-toolbar__style-subtitle cruor-dropdown-option__meta">
           {valueLabel}
-          <i className="fa-solid fa-chevron-right" aria-hidden="true" />
+          <i className="fa-solid fa-chevron-right cruor-dropdown-option__chevron" aria-hidden="true" />
         </span>
       </button>
       <span
-        className="location-map-toolbar__style-panel cruor-ui-panel-surface"
+        className="location-map-toolbar__style-panel cruor-ui-panel-surface cruor-dropdown-menu cruor-dropdown-menu--submenu"
         data-style-menu="flyout"
         role="menu"
         aria-label={`${label} style options`}
@@ -5704,7 +5704,7 @@ function MapStyleDropdown({
 
   const stylePanel = open ? (
     <span
-      className="location-map-toolbar__style-panel cruor-ui-panel-surface"
+      className="location-map-toolbar__style-panel cruor-ui-panel-surface cruor-dropdown-menu cruor-dropdown-menu--context"
       data-style-menu="root"
       data-style-floating="portal"
       data-flyout-side={portalPlacement?.flyoutSide || "right"}
@@ -5867,7 +5867,7 @@ function MapStyleDropdown({
         ref={triggerRef}
         type="button"
         className={cx(
-          "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary location-map-toolbar__style-menu-trigger",
+          "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle cruor-square-icon-button location-map-toolbar__button--secondary location-map-toolbar__style-menu-trigger",
           open && "is-active"
         )}
         {...getGenericTooltipAttrs("Map Style", "Choose grid and map drawing styles.")}
@@ -5941,7 +5941,7 @@ function LevelViewToolbarDropdown({
 
   const levelPanel = open ? (
     <span
-      className="location-map-toolbar__style-panel location-map-toolbar__level-view-panel cruor-ui-panel-surface"
+      className="location-map-toolbar__style-panel location-map-toolbar__level-view-panel cruor-ui-panel-surface cruor-dropdown-menu cruor-dropdown-menu--context"
       data-style-menu="root"
       data-style-floating="portal"
       data-level-view-menu="toolbar"
@@ -6004,7 +6004,7 @@ function LevelViewToolbarDropdown({
         ref={triggerRef}
         type="button"
         className={cx(
-          "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary location-map-toolbar__level-view-trigger",
+          "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle cruor-square-icon-button location-map-toolbar__button--secondary location-map-toolbar__level-view-trigger",
           open && "is-active",
           normalizedLevelView !== LEVEL_VIEW_ALL && "has-active-level-view"
         )}
@@ -6246,7 +6246,7 @@ function InlineMapEditorToolbar({
       <button
         type="button"
         className={cx(
-          "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary location-map-toolbar__map-menu-trigger",
+          "map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle cruor-square-icon-button location-map-toolbar__button--secondary location-map-toolbar__map-menu-trigger",
           mapMenuOpen && "is-active"
         )}
         {...getGenericTooltipAttrs("More map tools", "Show secondary map editing tools.")}
@@ -6591,7 +6591,7 @@ function MapTestsModal({ open, testSuite, onClose }) {
           </div>
           <button
             type="button"
-            className="map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle location-map-toolbar__button--secondary"
+            className="map-tool-button location-map-toolbar__button location-icon-toggle-button cruor-frame-icon-toggle cruor-square-icon-button location-map-toolbar__button--secondary"
             {...getGenericTooltipAttrs("Close Tests", "Close the structural test suite.", "Esc")}
             aria-label="Close Tests"
             onClick={onClose}

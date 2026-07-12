@@ -78,8 +78,8 @@ import {
 function LocationFrameInfoRow({ label, value }) {
   return (
     <span className="cruor-composer-fact-row location-frame-info-row">
-      <small>{label}</small>
-      <strong>{value}</strong>
+      <small className="cruor-composer-fact-label">{label}</small>
+      <strong className="cruor-composer-fact-value">{value}</strong>
     </span>
   );
 }
@@ -220,17 +220,18 @@ function LocationRecapPanel({
       aria-label="Current Location Frame"
     >
       <section className="cruor-composer-rail-card cruor-composer-rail-card--hero location-frame-info-card location-frame-info-card--hero">
-        <span>Current Location</span>
-        <label className="location-frame-name-editor">
+        <span className="cruor-composer-rail-card__eyebrow">Current Location</span>
+        <label className="cruor-composer-rail-card__name-editor location-frame-name-editor">
           <span className="sr-only">Location name</span>
           <input
+            className="cruor-composer-rail-card__name-input"
             type="text"
             aria-label="Location name"
             value={state.title || ""}
             onChange={(event) => onRenameLocation(event.target.value)}
           />
         </label>
-        <em>{state.context || "Context"} · {horrorLabel} · {regions || 0} {regionWord}</em>
+        <em className="cruor-composer-rail-card__meta">{state.context || "Context"} · {horrorLabel} · {regions || 0} {regionWord}</em>
       </section>
 
 

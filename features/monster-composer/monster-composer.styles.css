@@ -1172,16 +1172,16 @@
   gap: 5px;
 }
 
-.monster-shell .monster-meter {
+.monster-shell .monster-meter:not(.cruor-composer-meter) {
   display: grid;
   gap: 6px;
 }
 
-.monster-shell .monster-meter + .monster-meter {
+.monster-shell .monster-meter:not(.cruor-composer-meter) + .monster-meter:not(.cruor-composer-meter) {
   margin-top: 8px;
 }
 
-.monster-shell .monster-meter__head {
+.monster-shell .monster-meter__head:not(.cruor-composer-meter__head) {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1191,33 +1191,33 @@
   font-weight: 850;
 }
 
-.monster-shell .monster-meter__head span {
+.monster-shell .monster-meter__head:not(.cruor-composer-meter__head) span {
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
-.monster-shell .monster-meter__head strong {
+.monster-shell .monster-meter__head:not(.cruor-composer-meter__head) strong {
   color: var(--cruor-color-hex-d0a2aa);
 }
 
-.monster-shell .monster-meter__head strong.is-over {
+.monster-shell .monster-meter__head:not(.cruor-composer-meter__head) strong.is-over {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.monster-shell .monster-meter__track {
+.monster-shell .monster-meter__track:not(.cruor-composer-meter__track) {
   height: 8px;
   overflow: hidden;
   border: 1px solid var(--cruor-color-blood-strong-a500);
   background: var(--cruor-surface-card);
 }
 
-.monster-shell .monster-meter__track > div {
+.monster-shell .monster-meter__track:not(.cruor-composer-meter__track) > div {
   height: 100%;
   background: var(--cruor-gradient-linear-115-7b4295c6);
   box-shadow: var(--cruor-shadow-box-051);
 }
 
-.monster-shell .monster-meter__track > div.is-over {
+.monster-shell .monster-meter__track:not(.cruor-composer-meter__track) > div.is-over {
   background: var(--cruor-gradient-linear-108-092c83a2);
 }
 
@@ -5688,7 +5688,7 @@
   width: 100%;
 }
 
-.monster-shell .monster-frame-info-card {
+.monster-shell .monster-frame-info-card:not(.cruor-composer-rail-card) {
   display: grid;
   gap: var(--cruor-composer-rail-card-gap);
   border: var(--cruor-composer-rail-card-border);
@@ -5697,7 +5697,7 @@
   box-shadow: var(--cruor-composer-rail-card-shadow);
 }
 
-.monster-shell .monster-frame-info-card > span {
+.monster-shell .monster-frame-info-card:not(.cruor-composer-rail-card) > span {
   color: var(--cruor-composer-rail-label-color);
   font-size: var(--cruor-composer-rail-label-size);
   font-weight: 950;
@@ -5706,7 +5706,7 @@
   text-transform: uppercase;
 }
 
-.monster-shell .monster-frame-info-row small {
+.monster-shell .monster-frame-info-row:not(.cruor-composer-fact-row) small {
   overflow: hidden;
   color: var(--cruor-composer-rail-label-color);
   font-size: var(--text-size-xs);
@@ -5938,7 +5938,7 @@
   gap: var(--cruor-composer-info-rail-gap);
 }
 
-.monster-shell .monster-frame-info-card--hero strong {
+.monster-shell .monster-frame-info-card--hero:not(.cruor-composer-rail-card--hero) strong {
   color: var(--cruor-composer-rail-hero-title-color);
   font-family: var(--display);
   font-size: var(--cruor-composer-rail-hero-title-size);
@@ -5947,7 +5947,7 @@
   line-height: 0.92;
 }
 
-.monster-shell .monster-frame-info-card--hero em {
+.monster-shell .monster-frame-info-card--hero:not(.cruor-composer-rail-card--hero) em {
   color: var(--cruor-composer-rail-hero-subtitle-color);
   font-size: var(--cruor-composer-rail-hero-subtitle-size);
   font-style: normal;
@@ -5965,13 +5965,13 @@
   text-transform: uppercase;
 }
 
-.monster-shell .monster-frame-info-grid {
+.monster-shell .monster-frame-info-grid:not(.cruor-composer-fact-grid) {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--cruor-composer-fact-grid-gap);
 }
 
-.monster-shell .monster-frame-info-row {
+.monster-shell .monster-frame-info-row:not(.cruor-composer-fact-row) {
   display: flex;
   justify-content: space-between;
   gap: var(--cruor-composer-fact-row-gap);
@@ -5981,7 +5981,7 @@
   padding: var(--cruor-composer-fact-row-padding);
 }
 
-.monster-shell .monster-frame-info-row strong {
+.monster-shell .monster-frame-info-row:not(.cruor-composer-fact-row) strong {
   overflow: hidden;
   color: var(--cruor-composer-fact-value-color);
   font-size: var(--cruor-composer-fact-value-size);
@@ -6019,7 +6019,7 @@
   cursor: default;
 }
 
-.monster-shell .monster-frame-info-card--hero {
+.monster-shell .monster-frame-info-card--hero:not(.cruor-composer-rail-card--hero) {
   box-sizing: border-box;
   min-height: var(--cruor-composer-rail-card-hero-min-height);
   align-content: center;
@@ -6029,14 +6029,14 @@
   gap: var(--cruor-composer-rail-card-hero-gap);
 }
 
-.monster-shell .monster-frame-name-editor {
+.monster-shell .monster-frame-name-editor:not(.cruor-composer-rail-card__name-editor) {
   display: block;
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
 }
 
-.monster-shell .monster-frame-name-editor input {
+.monster-shell .monster-frame-name-editor:not(.cruor-composer-rail-card__name-editor) input {
   box-sizing: border-box;
   width: 100%;
   min-height: 34px;
@@ -6053,7 +6053,7 @@
   text-shadow: var(--cruor-shadow-text-006);
 }
 
-.monster-shell .monster-frame-name-editor input:hover {
+.monster-shell .monster-frame-name-editor:not(.cruor-composer-rail-card__name-editor) input:hover {
   border: 0;
   background: var(--cruor-color-transparent);
   box-shadow: none;
@@ -6061,7 +6061,7 @@
   outline: none;
 }
 
-.monster-shell .monster-frame-name-editor input:focus {
+.monster-shell .monster-frame-name-editor:not(.cruor-composer-rail-card__name-editor) input:focus {
   border: 0;
   background: var(--cruor-color-transparent);
   box-shadow: none;
@@ -6706,7 +6706,7 @@
   transform: translateY(0);
 }
 
-.monster-shell .monster-frame-select-trigger {
+.monster-shell .monster-frame-select-trigger:not(.cruor-dropdown-trigger) {
   border: 1px solid var(--cruor-color-blood-strong-a560);
   background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
@@ -6720,30 +6720,30 @@
   text-align: left;
 }
 
-.monster-shell .monster-frame-icon-toggle svg,
-.monster-shell .monster-frame-icon-toggle i {
+.monster-shell .monster-frame-icon-toggle:not(.cruor-square-icon-button) svg,
+.monster-shell .monster-frame-icon-toggle:not(.cruor-square-icon-button) i {
   width: 16px;
   height: 16px;
   color: var(--cruor-color-hex-b33b4e);
 }
 
-.monster-shell .monster-frame-select-option svg,
-.monster-shell .monster-frame-select-option i {
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option) svg,
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option) i {
   width: 16px;
   height: 16px;
   color: var(--cruor-color-hex-b33b4e);
 }
 
-.monster-shell .monster-frame-select-trigger svg,
-.monster-shell .monster-frame-select-trigger i {
+.monster-shell .monster-frame-select-trigger:not(.cruor-dropdown-trigger) svg,
+.monster-shell .monster-frame-select-trigger:not(.cruor-dropdown-trigger) i {
   width: 16px;
   height: 16px;
   color: var(--cruor-color-hex-b33b4e);
 }
 
-.monster-shell .monster-frame-icon-toggle i,
-.monster-shell .monster-frame-select-option i,
-.monster-shell .monster-frame-select-trigger i,
+.monster-shell .monster-frame-icon-toggle:not(.cruor-square-icon-button) i,
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option) i,
+.monster-shell .monster-frame-select-trigger:not(.cruor-dropdown-trigger) i,
 .monster-shell .monster-chassis-family__trigger i {
   display: inline-grid;
   place-items: center;
@@ -6751,7 +6751,7 @@
   line-height: 1;
 }
 
-.monster-shell .monster-frame-select-trigger strong {
+.monster-shell .monster-frame-select-trigger:not(.cruor-dropdown-trigger) strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
   font-size: var(--text-size-l);
@@ -6761,7 +6761,7 @@
   white-space: nowrap;
 }
 
-.monster-shell .monster-frame-select-trigger small {
+.monster-shell .monster-frame-select-trigger:not(.cruor-dropdown-trigger) small {
   color: var(--cruor-color-hex-8f7278);
   font-size: var(--text-size-xs);
   font-weight: 950;
@@ -6769,72 +6769,72 @@
   text-transform: uppercase;
 }
 
-.monster-shell .monster-frame-icon-toggle:hover {
+.monster-shell .monster-frame-icon-toggle:not(.cruor-square-icon-button):hover {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.monster-shell .monster-frame-select-option.is-active {
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option).is-active {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.monster-shell .monster-frame-select-option:hover {
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option):hover {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.monster-shell .monster-frame-select-trigger:hover {
+.monster-shell .monster-frame-select-trigger:not(.cruor-dropdown-trigger):hover {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.monster-shell .monster-frame-select-trigger[aria-expanded="true"] {
+.monster-shell .monster-frame-select-trigger:not(.cruor-dropdown-trigger)[aria-expanded="true"] {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.monster-shell .monster-frame-icon-toggle.is-active svg,
-.monster-shell .monster-frame-icon-toggle.is-active i {
+.monster-shell .monster-frame-icon-toggle:not(.cruor-square-icon-button).is-active svg,
+.monster-shell .monster-frame-icon-toggle:not(.cruor-square-icon-button).is-active i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.monster-shell .monster-frame-icon-toggle:hover svg,
-.monster-shell .monster-frame-icon-toggle:hover i {
+.monster-shell .monster-frame-icon-toggle:not(.cruor-square-icon-button):hover svg,
+.monster-shell .monster-frame-icon-toggle:not(.cruor-square-icon-button):hover i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.monster-shell .monster-frame-select-option.is-active svg,
-.monster-shell .monster-frame-select-option.is-active i {
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option).is-active svg,
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option).is-active i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.monster-shell .monster-frame-select-option:hover svg,
-.monster-shell .monster-frame-select-option:hover i {
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option):hover svg,
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option):hover i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.monster-shell .monster-frame-select-trigger:hover svg,
-.monster-shell .monster-frame-select-trigger:hover i {
+.monster-shell .monster-frame-select-trigger:not(.cruor-dropdown-trigger):hover svg,
+.monster-shell .monster-frame-select-trigger:not(.cruor-dropdown-trigger):hover i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.monster-shell .monster-frame-select-trigger[aria-expanded="true"] svg,
-.monster-shell .monster-frame-select-trigger[aria-expanded="true"] i {
+.monster-shell .monster-frame-select-trigger:not(.cruor-dropdown-trigger)[aria-expanded="true"] svg,
+.monster-shell .monster-frame-select-trigger:not(.cruor-dropdown-trigger)[aria-expanded="true"] i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.monster-shell .monster-frame-select-menu {
+.monster-shell .monster-frame-select-menu:not(.cruor-dropdown-menu) {
   position: fixed;
   z-index: 9000;
   display: grid;
@@ -6847,7 +6847,7 @@
   box-shadow: var(--cruor-shadow-box-025);
 }
 
-.monster-shell .monster-frame-select-option {
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option) {
   border: 1px solid var(--cruor-color-blood-strong-a560);
   background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
@@ -6861,13 +6861,13 @@
   text-align: left;
 }
 
-.monster-shell .monster-frame-select-option span {
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option) span {
   display: grid;
   gap: 2px;
   min-width: 0;
 }
 
-.monster-shell .monster-frame-select-option strong {
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option) strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
   font-size: var(--text-size-l);
@@ -6877,7 +6877,7 @@
   white-space: nowrap;
 }
 
-.monster-shell .monster-frame-select-option small {
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option) small {
   display: block;
   overflow: hidden;
   color: var(--cruor-color-text-a500);
@@ -6887,31 +6887,31 @@
   white-space: nowrap;
 }
 
-.monster-shell .monster-frame-icon-toggle.is-disabled {
+.monster-shell .monster-frame-icon-toggle:not(.cruor-square-icon-button).is-disabled {
   cursor: not-allowed;
   opacity: 0.42;
   filter: var(--cruor-filter-grayscale-0d85);
 }
 
-.monster-shell .monster-frame-icon-toggle:disabled {
+.monster-shell .monster-frame-icon-toggle:not(.cruor-square-icon-button):disabled {
   cursor: not-allowed;
   opacity: 0.42;
   filter: var(--cruor-filter-grayscale-0d85);
 }
 
-.monster-shell .monster-frame-select-option.is-disabled {
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option).is-disabled {
   cursor: not-allowed;
   opacity: 0.42;
   filter: var(--cruor-filter-grayscale-0d85);
 }
 
-.monster-shell .monster-frame-select-option:disabled {
+.monster-shell .monster-frame-select-option:not(.cruor-dropdown-option):disabled {
   cursor: not-allowed;
   opacity: 0.42;
   filter: var(--cruor-filter-grayscale-0d85);
 }
 
-.monster-shell .monster-frame-icon-toggle {
+.monster-shell .monster-frame-icon-toggle:not(.cruor-square-icon-button) {
   border: 1px solid var(--cruor-color-blood-strong-a560);
   background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
   color: var(--cruor-color-hex-c8a2a8);
@@ -6924,7 +6924,7 @@
   padding: 0;
 }
 
-.monster-shell .monster-frame-icon-toggle.is-active {
+.monster-shell .monster-frame-icon-toggle:not(.cruor-square-icon-button).is-active {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
@@ -11798,12 +11798,12 @@
   max-width: 800px;
 }
 
-.monster-shell .monster-meter__head > span {
+.monster-shell .monster-meter__head:not(.cruor-composer-meter__head) > span {
   min-width: 0;
   justify-self: start;
 }
 
-.monster-shell .monster-meter__head strong {
+.monster-shell .monster-meter__head:not(.cruor-composer-meter__head) strong {
   justify-self: end;
 }
 
@@ -11826,7 +11826,7 @@
   margin-left: 0;
 }
 
-.monster-shell .monster-meter__head {
+.monster-shell .monster-meter__head:not(.cruor-composer-meter__head) {
   column-gap: 6px;
   grid-template-columns: max-content minmax(0, 1fr) max-content;
   align-items: center;
@@ -11835,12 +11835,12 @@
   justify-content: space-between;
 }
 
-.monster-shell .monster-meter__head > span:first-child {
+.monster-shell .monster-meter__head:not(.cruor-composer-meter__head) > span:first-child {
   flex: 1 1 auto;
   min-width: 0;
 }
 
-.monster-shell .monster-meter__value {
+.monster-shell .monster-meter__value:not(.cruor-composer-meter__value) {
   align-items: center;
   display: inline-flex;
   flex: 0 0 auto;
@@ -11849,7 +11849,7 @@
   margin-left: auto;
 }
 
-.monster-shell .monster-meter__value strong {
+.monster-shell .monster-meter__value:not(.cruor-composer-meter__value) strong {
   justify-self: auto;
 }
 
@@ -12270,4 +12270,3 @@
   font-size: var(--text-size-xs);
   font-weight: 850;
 }
-

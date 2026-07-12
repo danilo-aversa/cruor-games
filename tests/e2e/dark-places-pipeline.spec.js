@@ -14,10 +14,12 @@ import {
 test.describe("Dark Places user pipeline", () => {
   test.setTimeout(90_000);
 
-  test("runs the main Frame → Rooms → Slot Picker → Export journey", async ({ context, page }) => {
-    await context.grantPermissions(["clipboard-read", "clipboard-write"], {
-      origin: "http://127.0.0.1:4173",
-    });
+  test("runs the main Frame → Rooms → Slot Picker → Export journey", async ({ browserName, context, page }) => {
+    if (browserName === "chromium") {
+      await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+        origin: "http://127.0.0.1:4173",
+      });
+    }
 
     await openDarkPlaces(page);
     await generateDarkPlace(page);

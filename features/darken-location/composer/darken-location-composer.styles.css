@@ -40,17 +40,17 @@
   line-height: 1.42;
 }
 
-.location-frame-info .location-meter {
+.location-frame-info .location-meter:not(.cruor-composer-meter) {
   display: grid;
   gap: 6px;
   min-width: 0;
 }
 
-.location-frame-info .location-meter + .location-meter {
+.location-frame-info .location-meter:not(.cruor-composer-meter) + .location-meter:not(.cruor-composer-meter) {
   margin-top: 8px;
 }
 
-.location-frame-info .location-meter__head {
+.location-frame-info .location-meter__head:not(.cruor-composer-meter__head) {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -61,7 +61,7 @@
   font-weight: 850;
 }
 
-.location-frame-info .location-meter__head > span:first-child {
+.location-frame-info .location-meter__head:not(.cruor-composer-meter__head) > span:first-child {
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
@@ -71,7 +71,7 @@
   white-space: nowrap;
 }
 
-.location-frame-info .location-meter__value {
+.location-frame-info .location-meter__value:not(.cruor-composer-meter__value) {
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
@@ -80,7 +80,7 @@
   margin-left: auto;
 }
 
-.location-frame-info .location-meter__value strong {
+.location-frame-info .location-meter__value:not(.cruor-composer-meter__value) strong {
   color: var(--cruor-color-hex-d0a2aa);
   font-size: var(--text-size-m);
   font-weight: 950;
@@ -104,14 +104,14 @@
   padding: 0;
 }
 
-.location-frame-info .location-meter__track {
+.location-frame-info .location-meter__track:not(.cruor-composer-meter__track) {
   height: 8px;
   overflow: hidden;
   border: 1px solid var(--cruor-color-blood-strong-a500);
   background: var(--cruor-surface-card);
 }
 
-.location-frame-info .location-meter__track > div {
+.location-frame-info .location-meter__track:not(.cruor-composer-meter__track) > div {
   height: 100%;
   background: var(--cruor-gradient-linear-115-7b4295c6);
   box-shadow: var(--cruor-shadow-box-051);
@@ -1607,7 +1607,7 @@
   min-width: 0;
 }
 
-.location-icon-toggle-button {
+.location-icon-toggle-button:not(.cruor-square-icon-button) {
   display: grid;
   justify-items: center;
   align-content: center;
@@ -1622,7 +1622,7 @@
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
 }
 
-.location-icon-toggle-button i {
+.location-icon-toggle-button:not(.cruor-square-icon-button) i {
   color: var(--cruor-color-blood-glow-a680);
   font-size: var(--text-size-m);
 }
@@ -1640,7 +1640,7 @@
   white-space: nowrap;
 }
 
-.location-icon-toggle-button:hover, .location-icon-toggle-button:focus-visible, .location-icon-toggle-button.is-active {
+.location-icon-toggle-button:not(.cruor-square-icon-button):hover, .location-icon-toggle-button:not(.cruor-square-icon-button):focus-visible, .location-icon-toggle-button:not(.cruor-square-icon-button).is-active {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
@@ -1648,7 +1648,7 @@
   outline: none;
 }
 
-.location-icon-toggle-button:hover i, .location-icon-toggle-button:focus-visible i, .location-icon-toggle-button.is-active i {
+.location-icon-toggle-button:not(.cruor-square-icon-button):hover i, .location-icon-toggle-button:not(.cruor-square-icon-button):focus-visible i, .location-icon-toggle-button:not(.cruor-square-icon-button).is-active i {
   color: var(--cruor-color-hex-fff0f2);
 }
 
@@ -1936,7 +1936,7 @@
   scrollbar-color: var(--cruor-composer-rail-scrollbar-thumb) var(--cruor-composer-rail-scrollbar-track);
 }
 
-.location-frame-info-card {
+.location-frame-info-card:not(.cruor-composer-rail-card) {
   --cruor-composer-rail-card-backdrop-filter: blur(16px) saturate(118%);
   display: grid;
   gap: var(--cruor-composer-rail-card-gap);
@@ -1948,7 +1948,7 @@
   backdrop-filter: var(--cruor-composer-rail-card-backdrop-filter);
 }
 
-.location-frame-info-card--hero {
+.location-frame-info-card--hero:not(.cruor-composer-rail-card--hero) {
   box-sizing: border-box;
   min-height: var(--cruor-composer-rail-card-hero-min-height);
   align-content: center;
@@ -1958,7 +1958,7 @@
   gap: var(--cruor-composer-rail-card-hero-gap);
 }
 
-.location-frame-info-card > span {
+.location-frame-info-card:not(.cruor-composer-rail-card) > span {
   color: var(--cruor-composer-rail-label-color);
   font-size: var(--cruor-composer-rail-label-size);
   font-weight: 950;
@@ -1967,7 +1967,7 @@
   text-transform: uppercase;
 }
 
-.location-frame-info-row small {
+.location-frame-info-row:not(.cruor-composer-fact-row) small {
   overflow: hidden;
   color: var(--cruor-composer-rail-label-color);
   font-size: var(--text-size-xs);
@@ -1988,7 +1988,7 @@
   text-transform: uppercase;
 }
 
-.location-frame-info-card--hero strong {
+.location-frame-info-card--hero:not(.cruor-composer-rail-card--hero) strong {
   color: var(--cruor-composer-rail-hero-title-color);
   font-family: var(--display);
   font-size: var(--cruor-composer-rail-hero-title-size);
@@ -1997,7 +1997,7 @@
   line-height: 0.92;
 }
 
-.location-frame-info-card--hero em {
+.location-frame-info-card--hero:not(.cruor-composer-rail-card--hero) em {
   color: var(--cruor-composer-rail-hero-subtitle-color);
   font-size: var(--cruor-composer-rail-hero-subtitle-size);
   font-style: normal;
@@ -2015,13 +2015,13 @@
   text-transform: uppercase;
 }
 
-.location-frame-info-grid {
+.location-frame-info-grid:not(.cruor-composer-fact-grid) {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--cruor-composer-fact-grid-gap);
 }
 
-.location-frame-info-row {
+.location-frame-info-row:not(.cruor-composer-fact-row) {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -2032,7 +2032,7 @@
   padding: var(--cruor-composer-fact-row-padding);
 }
 
-.location-frame-info-row strong {
+.location-frame-info-row:not(.cruor-composer-fact-row) strong {
   overflow: hidden;
   color: var(--cruor-composer-fact-value-color);
   font-size: var(--cruor-composer-fact-value-size);
@@ -2596,7 +2596,7 @@
   display: none;
 }
 
-.location-map-recap-rail.location-frame-info .location-frame-info-card {
+.location-map-recap-rail.location-frame-info .location-frame-info-card:not(.cruor-composer-rail-card) {
   display: grid;
   gap: 10px;
   border: 1px solid var(--cruor-color-milk-a070);
@@ -2605,7 +2605,7 @@
   box-shadow: var(--cruor-shadow-box-075);
 }
 
-.location-map-recap-rail.location-frame-info .location-frame-info-card > span {
+.location-map-recap-rail.location-frame-info .location-frame-info-card:not(.cruor-composer-rail-card) > span {
   color: var(--cruor-color-hex-8f7278);
   font-size: var(--text-size-xxs);
   font-weight: 950;
@@ -2614,7 +2614,7 @@
   text-transform: uppercase;
 }
 
-.location-map-recap-rail.location-frame-info .location-frame-info-row small {
+.location-map-recap-rail.location-frame-info .location-frame-info-row:not(.cruor-composer-fact-row) small {
   overflow: hidden;
   color: var(--cruor-color-hex-8f7278);
   font-size: var(--text-size-xs);
@@ -2626,14 +2626,14 @@
   white-space: nowrap;
 }
 
-.location-frame-name-editor {
+.location-frame-name-editor:not(.cruor-composer-rail-card__name-editor) {
   display: block;
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
 }
 
-.location-map-recap-rail.location-frame-info .location-frame-info-card--hero em {
+.location-map-recap-rail.location-frame-info .location-frame-info-card--hero:not(.cruor-composer-rail-card--hero) em {
   color: var(--cruor-color-hex-d0a2aa);
   font-size: var(--text-size-s);
   font-style: normal;
@@ -2642,7 +2642,7 @@
   text-transform: uppercase;
 }
 
-.location-map-recap-rail.location-frame-info .location-frame-info-row {
+.location-map-recap-rail.location-frame-info .location-frame-info-row:not(.cruor-composer-fact-row) {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -2653,7 +2653,7 @@
   padding: 7px 8px;
 }
 
-.location-map-recap-rail.location-frame-info .location-frame-info-row strong {
+.location-map-recap-rail.location-frame-info .location-frame-info-row:not(.cruor-composer-fact-row) strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
   font-size: var(--text-size-s);
@@ -2679,7 +2679,7 @@
   margin-top: 6px;
 }
 
-.location-map-recap-rail.location-frame-info .location-frame-info-grid {
+.location-map-recap-rail.location-frame-info .location-frame-info-grid:not(.cruor-composer-fact-grid) {
   display: grid;
   grid-template-columns: 1fr;
   gap: 6px;
@@ -2715,7 +2715,7 @@
   scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-surface-card);
 }
 
-.location-map-recap-rail.location-frame-info .location-frame-info-card--hero {
+.location-map-recap-rail.location-frame-info .location-frame-info-card--hero:not(.cruor-composer-rail-card--hero) {
   box-sizing: border-box;
   min-height: 92px;
   align-content: center;
@@ -2725,7 +2725,7 @@
   gap: 7px;
 }
 
-.location-frame-name-editor input {
+.location-frame-name-editor:not(.cruor-composer-rail-card__name-editor) input {
   box-sizing: border-box;
   width: 100%;
   min-height: 34px;
@@ -2742,7 +2742,7 @@
   text-shadow: var(--cruor-shadow-text-006);
 }
 
-.location-frame-name-editor input:hover {
+.location-frame-name-editor:not(.cruor-composer-rail-card__name-editor) input:hover {
   border: 0;
   background: var(--cruor-color-transparent);
   box-shadow: none;
@@ -2750,7 +2750,7 @@
   outline: none;
 }
 
-.location-frame-name-editor input:focus {
+.location-frame-name-editor:not(.cruor-composer-rail-card__name-editor) input:focus {
   border: 0;
   background: var(--cruor-color-transparent);
   box-shadow: none;
@@ -3750,7 +3750,7 @@
   display: none;
 }
 
-.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button {
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:not(.cruor-square-icon-button) {
   width: 36px;
   height: 36px;
   min-width: 36px;
@@ -3761,7 +3761,7 @@
   box-shadow: none;
 }
 
-.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button i, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button svg {
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:not(.cruor-square-icon-button) i, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:not(.cruor-square-icon-button) svg {
   display: inline-grid;
   place-items: center;
   width: 16px;
@@ -3771,18 +3771,18 @@
   line-height: 1;
 }
 
-.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button.is-active, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:focus-visible, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:hover:not(:disabled) {
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:not(.cruor-square-icon-button).is-active, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:not(.cruor-square-icon-button):focus-visible, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:not(.cruor-square-icon-button):hover:not(:disabled) {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button.is-active i, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button.is-active svg, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:focus-visible i, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:focus-visible svg, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:hover:not(:disabled) i, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:hover:not(:disabled) svg {
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:not(.cruor-square-icon-button).is-active i, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:not(.cruor-square-icon-button).is-active svg, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:not(.cruor-square-icon-button):focus-visible i, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:not(.cruor-square-icon-button):focus-visible svg, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:not(.cruor-square-icon-button):hover:not(:disabled) i, .location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:not(.cruor-square-icon-button):hover:not(:disabled) svg {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:disabled {
+.location-composer .cruor-map-workspace[data-map-context="composer-workspace"] .map-tool-button:not(.cruor-square-icon-button):disabled {
   opacity: 0.36;
   box-shadow: none;
 }
@@ -4539,7 +4539,7 @@
   outline: none;
 }
 
-.location-composer .location-choice-trigger.cruor-frame-select-trigger {
+.location-composer .location-choice-trigger.cruor-frame-select-trigger:not(.cruor-dropdown-trigger) {
   display: grid;
   grid-template-columns: 18px minmax(0, 1fr) auto;
   align-items: center;
@@ -4553,14 +4553,14 @@
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
 }
 
-.location-composer .location-choice-trigger.cruor-frame-select-trigger:hover, .location-composer .location-choice-trigger.cruor-frame-select-trigger[aria-expanded="true"] {
+.location-composer .location-choice-trigger.cruor-frame-select-trigger:not(.cruor-dropdown-trigger):hover, .location-composer .location-choice-trigger.cruor-frame-select-trigger:not(.cruor-dropdown-trigger)[aria-expanded="true"] {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.location-composer .location-choice-trigger.cruor-frame-select-trigger i, .location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option i, .location-composer .location-icon-toggle-button.cruor-frame-icon-toggle i {
+.location-composer .location-choice-trigger.cruor-frame-select-trigger:not(.cruor-dropdown-trigger) i, .location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option:not(.cruor-dropdown-option) i, .location-composer .location-icon-toggle-button.cruor-frame-icon-toggle:not(.cruor-square-icon-button) i {
   display: inline-grid;
   place-items: center;
   width: 16px;
@@ -4570,7 +4570,7 @@
   line-height: 1;
 }
 
-.location-composer .location-choice-trigger.cruor-frame-select-trigger strong {
+.location-composer .location-choice-trigger.cruor-frame-select-trigger:not(.cruor-dropdown-trigger) strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
   font-size: var(--text-size-l);
@@ -4580,7 +4580,7 @@
   white-space: nowrap;
 }
 
-.location-composer .location-choice-trigger.cruor-frame-select-trigger small {
+.location-composer .location-choice-trigger.cruor-frame-select-trigger:not(.cruor-dropdown-trigger) small {
   color: var(--cruor-color-hex-8f7278);
   font-size: var(--text-size-xs);
   font-weight: 950;
@@ -4588,11 +4588,11 @@
   text-transform: uppercase;
 }
 
-.location-composer .location-choice-trigger.cruor-frame-select-trigger:hover i, .location-composer .location-choice-trigger.cruor-frame-select-trigger[aria-expanded="true"] i, .location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option:hover i, .location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option.is-active i, .location-composer .location-icon-toggle-button.cruor-frame-icon-toggle:hover i, .location-composer .location-icon-toggle-button.cruor-frame-icon-toggle.is-active i {
+.location-composer .location-choice-trigger.cruor-frame-select-trigger:not(.cruor-dropdown-trigger):hover i, .location-composer .location-choice-trigger.cruor-frame-select-trigger:not(.cruor-dropdown-trigger)[aria-expanded="true"] i, .location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option:not(.cruor-dropdown-option):hover i, .location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option:not(.cruor-dropdown-option).is-active i, .location-composer .location-icon-toggle-button.cruor-frame-icon-toggle:not(.cruor-square-icon-button):hover i, .location-composer .location-icon-toggle-button.cruor-frame-icon-toggle:not(.cruor-square-icon-button).is-active i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.location-choice-menu--portal.cruor-frame-select-menu {
+.location-choice-menu--portal.cruor-frame-select-menu:not(.cruor-dropdown-menu) {
   position: fixed;
   z-index: 9000;
   display: grid;
@@ -4605,7 +4605,7 @@
   box-shadow: var(--cruor-shadow-box-025);
 }
 
-.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option {
+.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option:not(.cruor-dropdown-option) {
   display: grid;
   grid-template-columns: 18px minmax(0, 1fr);
   align-items: center;
@@ -4619,20 +4619,20 @@
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
 }
 
-.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option:hover, .location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option.is-active {
+.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option:not(.cruor-dropdown-option):hover, .location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option:not(.cruor-dropdown-option).is-active {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option span {
+.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option:not(.cruor-dropdown-option) span {
   display: grid;
   gap: 2px;
   min-width: 0;
 }
 
-.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option strong {
+.location-choice-menu--portal.cruor-frame-select-menu .cruor-frame-select-option:not(.cruor-dropdown-option) strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
   font-size: var(--text-size-l);
@@ -4650,7 +4650,7 @@
   width: 100%;
 }
 
-.location-composer .location-icon-toggle-button.cruor-frame-icon-toggle {
+.location-composer .location-icon-toggle-button.cruor-frame-icon-toggle:not(.cruor-square-icon-button) {
   display: inline-grid;
   place-items: center;
   width: 38px;
@@ -4663,7 +4663,7 @@
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
 }
 
-.location-composer .location-icon-toggle-button.cruor-frame-icon-toggle:hover, .location-composer .location-icon-toggle-button.cruor-frame-icon-toggle:focus-visible {
+.location-composer .location-icon-toggle-button.cruor-frame-icon-toggle:not(.cruor-square-icon-button):hover, .location-composer .location-icon-toggle-button.cruor-frame-icon-toggle:not(.cruor-square-icon-button):focus-visible {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
@@ -4671,7 +4671,7 @@
   outline: none;
 }
 
-.location-composer .location-icon-toggle-button.cruor-frame-icon-toggle.is-active {
+.location-composer .location-icon-toggle-button.cruor-frame-icon-toggle:not(.cruor-square-icon-button).is-active {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
@@ -6820,7 +6820,7 @@
   max-width: 100%;
 }
 
-.location-map-toolbar__button {
+.location-map-toolbar__button:not(.cruor-square-icon-button) {
   position: relative;
   display: inline-grid;
   place-items: center;
@@ -6836,7 +6836,7 @@
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
 }
 
-.location-map-toolbar__button i {
+.location-map-toolbar__button:not(.cruor-square-icon-button) i {
   display: inline-grid;
   place-items: center;
   width: 16px;
@@ -6846,14 +6846,14 @@
   line-height: 1;
 }
 
-.location-map-toolbar__button--primary {
+.location-map-toolbar__button--primary:not(.cruor-square-icon-button) {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.location-map-toolbar__button:hover:not(:disabled), .location-map-toolbar__button:focus-visible:not(:disabled) {
+.location-map-toolbar__button:not(.cruor-square-icon-button):hover:not(:disabled), .location-map-toolbar__button:not(.cruor-square-icon-button):focus-visible:not(:disabled) {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);
@@ -6861,7 +6861,7 @@
   outline: none;
 }
 
-.location-map-toolbar__button:disabled {
+.location-map-toolbar__button:not(.cruor-square-icon-button):disabled {
   cursor: not-allowed;
   opacity: 0.42;
 }
@@ -8134,8 +8134,8 @@
 }
 
 /* Debug Recorder icon sizing overrides: keep recorder controls independent from map toolbar buttons. */
-.location-composer .map-debug-recorder .location-map-toolbar__button.map-debug-recorder__icon-toggle,
-.location-composer .map-debug-recorder .location-icon-toggle-button.cruor-frame-icon-toggle.map-debug-recorder__icon-toggle {
+.location-composer .map-debug-recorder .location-map-toolbar__button.map-debug-recorder__icon-toggle:not(.cruor-square-icon-button),
+.location-composer .map-debug-recorder .location-icon-toggle-button.cruor-frame-icon-toggle.map-debug-recorder__icon-toggle:not(.cruor-square-icon-button) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -8152,8 +8152,8 @@
   transform: none;
 }
 
-.location-composer .map-debug-recorder .location-map-toolbar__button.map-debug-recorder__icon-toggle.is-active,
-.location-composer .map-debug-recorder .location-icon-toggle-button.cruor-frame-icon-toggle.map-debug-recorder__icon-toggle.is-active {
+.location-composer .map-debug-recorder .location-map-toolbar__button.map-debug-recorder__icon-toggle:not(.cruor-square-icon-button).is-active,
+.location-composer .map-debug-recorder .location-icon-toggle-button.cruor-frame-icon-toggle.map-debug-recorder__icon-toggle:not(.cruor-square-icon-button).is-active {
   transform: none;
 }
 
@@ -8178,8 +8178,8 @@
 }
 
 /* Dark Places immersive mode: retain only the map toolbar and central editor. */
-.location-map-toolbar__button.is-active,
-.location-map-toolbar__button[aria-pressed="true"] {
+.location-map-toolbar__button:not(.cruor-square-icon-button).is-active,
+.location-map-toolbar__button:not(.cruor-square-icon-button)[aria-pressed="true"] {
   border-color: var(--cruor-color-blood-glow-a860);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
   color: var(--cruor-color-hex-fff0f2);

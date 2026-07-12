@@ -23,6 +23,8 @@ function LocationMapToolbarButton({
         "location-map-toolbar__button",
         "location-icon-toggle-button",
         "cruor-frame-icon-toggle",
+        "cruor-square-icon-button",
+        variant === "primary" && "cruor-square-icon-button--primary",
         `location-map-toolbar__button--${variant}`,
         active && "is-active",
       )}
