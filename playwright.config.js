@@ -12,7 +12,10 @@ export default defineConfig({
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
+    reducedMotion: "reduce",
   },
+  snapshotPathTemplate:
+    "{testDir}/design-system/__snapshots__/{platform}/{projectName}/{testFilePath}/{arg}{ext}",
   webServer: {
     command: "npm run build && npm run preview -- --host 127.0.0.1 --port 4173",
     url: "http://127.0.0.1:4173",
@@ -23,6 +26,11 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "firefox",
+      testMatch: /design-system\/.*\.spec\.js/,
+      use: { ...devices["Desktop Firefox"] },
     },
   ],
 });
