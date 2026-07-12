@@ -74,6 +74,22 @@ describe("context menu viewport positioning", () => {
     expect(layout.left).toBe(920);
   });
 
+
+  it("reserves horizontal space for two nested shape flyouts", () => {
+    const layout = resolveContextMenuViewportLayout({
+      anchorX: 740,
+      anchorY: 120,
+      menuWidth: 210,
+      menuHeight: 320,
+      submenuWidth: 428,
+      viewportWidth: 900,
+      viewportHeight: 800,
+    });
+
+    expect(layout.submenuSide).toBe("left");
+    expect(layout.left).toBe(530);
+  });
+
   it("shifts a tall submenu upward and enables internal scrolling", () => {
     const layout = resolveContextSubmenuViewportLayout({
       triggerTop: 720,

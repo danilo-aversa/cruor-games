@@ -3531,13 +3531,53 @@ export function MapViewport({
   );
 }
 
+const ROOM_SHAPE_MENU_GROUPS = Object.freeze([
+  Object.freeze({
+    id: "standard",
+    label: "Standard Shapes",
+    icon: "shapes",
+  }),
+  Object.freeze({
+    id: "special",
+    label: "Special Shapes",
+    icon: "landmark",
+  }),
+]);
+
+const ROOM_SHAPE_MENU_ICONS = Object.freeze({
+  rect: "vector-square",
+  square: "square",
+  circle: "circle",
+  oval: "egg",
+  "l-shape": "draw-polygon",
+  "t-shape": "t",
+  cross: "plus",
+  irregular: "draw-polygon",
+  hall: "grip-lines",
+  gallery: "images",
+  shaft: "circle-down",
+  alcove: "archway",
+  niche: "door-closed",
+  archive: "book",
+  apse: "place-of-worship",
+  ritual: "pentagram",
+  broken: "house-crack",
+  cave: "mountain",
+});
+
 function getRoomStyleMenuOptions(contextKey) {
   const shapes = getSupportedRoomShapeDefinitions().map((definition) => ({
-      value: definition.id,
-      label: definition.label,
-      family: definition.family,
-      editorSelectable: definition.editorSelectable !== false,
-    }));
+    value: definition.id,
+    label: definition.label,
+    family: definition.family,
+    menuGroup: definition.menuGroup === "special" ? "special" : "standard",
+    editorSelectable: definition.editorSelectable !== false,
+    icon: ROOM_SHAPE_MENU_ICONS[definition.id] || "draw-polygon",
+  }));
+  const shapeGroups = ROOM_SHAPE_MENU_GROUPS.map((group) => ({
+    ...group,
+    shapes: shapes.filter((shape) => shape.menuGroup === group.id),
+  }));
   const types = [
     { value: "none", label: "None" },
     { value: "archive", label: "Archive" },
@@ -3551,6 +3591,7 @@ function getRoomStyleMenuOptions(contextKey) {
   ];
   return {
     shapes,
+    shapeGroups,
     types,
     sizes: Object.keys(ROOM_SIZE_MENU_PRESETS).map((value) => ({
       value,
@@ -3680,7 +3721,7 @@ function RoomSizeCustomControls({ region, style, onApply, evaluatePatch = null }
 
   return (
     <div className="room-context-custom-size">
-      <div className="room-context-submenu__hint">Custom cells</div>
+      <span className="location-map-toolbar__style-subtitle">Custom Cells</span>
       {circular ? (
         <label>
           <span>Radius</span>
@@ -3725,16 +3766,14 @@ function RoomSizeCustomControls({ region, style, onApply, evaluatePatch = null }
           </label>
         </div>
       )}
-      <button
-        type="button"
-        className={style.sizePreset === "Custom" ? "is-active" : ""}
+      <RoomStyleMenuOption
+        icon="ruler-combined"
+        label="Apply Custom"
+        active={style.sizePreset === "Custom"}
         disabled={!draftEvaluation.allowed}
         title={!draftEvaluation.allowed ? draftEvaluation.reason : undefined}
         onClick={apply}
-      >
-        <span>Apply Custom</span>
-        <span>{style.sizePreset === "Custom" ? "Active" : ""}</span>
-      </button>
+      />
     </div>
   );
 }
@@ -3825,6 +3864,101 @@ function useContextMenuDismiss(isOpen, onClose) {
   return menuRef;
 }
 
+function RoomStyleMenuOption({
+  icon = "chevron-right",
+  label,
+  active = false,
+  disabled = false,
+  title,
+  onClick,
+}) {
+  return (
+    <button
+      type="button"
+      className={cx("location-map-toolbar__style-option", active && "is-active")}
+      role="menuitem"
+      disabled={disabled}
+      title={title}
+      onMouseDown={suppressToolbarTextSelection}
+      onClick={onClick}
+    >
+      <i className={`fa-solid fa-${icon}`} aria-hidden="true" />
+      <span>{label}</span>
+      <i
+        className={active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"}
+        aria-hidden="true"
+      />
+    </button>
+  );
+}
+
+function RoomStyleMenuSection({
+  id,
+  scope = "room",
+  icon,
+  label,
+  valueLabel,
+  active = false,
+  onActivate,
+  submenuStyle,
+  ariaLabel,
+  children,
+}) {
+  const dataAttributes =
+    scope === "shape"
+      ? { "data-room-shape-group": id }
+      : { "data-room-menu-group": id };
+  const flyoutAttributes =
+    scope === "shape"
+      ? { "data-room-shape-flyout": id }
+      : { "data-room-menu-flyout": id };
+
+  return (
+    <span
+      className={cx(
+        "location-map-toolbar__style-section",
+        active && "is-submenu-open",
+      )}
+      role="none"
+      {...dataAttributes}
+      onPointerEnter={() => onActivate?.(id)}
+      onPointerLeave={() => onActivate?.(null)}
+      onFocus={() => onActivate?.(id)}
+    >
+      <button
+        type="button"
+        className="location-map-toolbar__style-section-title"
+        role="menuitem"
+        aria-haspopup="menu"
+        aria-expanded={active}
+        onMouseDown={suppressToolbarTextSelection}
+        onClick={(event) => event.preventDefault()}
+      >
+        <span>
+          <i className={`fa-solid fa-${icon}`} aria-hidden="true" />
+          {label}
+        </span>
+        <span className="location-map-toolbar__style-subtitle">
+          {valueLabel}
+          <i className="fa-solid fa-chevron-right" aria-hidden="true" />
+        </span>
+      </button>
+      {active ? (
+        <span
+          className="location-map-toolbar__style-panel cruor-ui-panel-surface"
+          data-style-menu="flyout"
+          role="menu"
+          aria-label={ariaLabel || `${label} options`}
+          style={submenuStyle}
+          {...flyoutAttributes}
+        >
+          {children}
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
 function RoomStyleContextMenu({
   menu,
   generatedMap,
@@ -3836,12 +3970,18 @@ function RoomStyleContextMenu({
   onClose,
 }) {
   const [activeGroup, setActiveGroup] = useState(null);
+  const [activeShapeMenuGroup, setActiveShapeMenuGroup] = useState(null);
   const menuRef = useRef(null);
   const [viewportLayout, setViewportLayout] = useState(null);
 
   useEffect(() => {
     setActiveGroup(null);
+    setActiveShapeMenuGroup(null);
   }, [menu?.anchorX, menu?.anchorY, menu?.regionId]);
+
+  useEffect(() => {
+    if (activeGroup !== "shape") setActiveShapeMenuGroup(null);
+  }, [activeGroup]);
 
   useLayoutEffect(() => {
     if (!menu || typeof window === "undefined") return undefined;
@@ -3853,52 +3993,103 @@ function RoomStyleContextMenu({
       const activeItem = activeGroup
         ? menuNode.querySelector(`[data-room-menu-group="${activeGroup}"]`)
         : null;
-      const activeSubmenu = activeItem?.querySelector(":scope > .room-context-submenu") || null;
-      const menuPaddingBottom = Number.parseFloat(window.getComputedStyle(menuNode).paddingBottom) || 0;
-      const menuContentHeight = Array.from(menuNode.children).reduce(
-        (height, child) => Math.max(height, child.offsetTop + child.offsetHeight),
-        0,
-      ) + menuPaddingBottom;
+      const activeSubmenu = activeItem?.querySelector(
+        `:scope > [data-room-menu-flyout="${activeGroup}"]`,
+      );
+      const activeShapeItem =
+        activeGroup === "shape" && activeShapeMenuGroup
+          ? activeSubmenu?.querySelector(
+              `[data-room-shape-group="${activeShapeMenuGroup}"]`,
+            )
+          : null;
+      const activeShapeSubmenu = activeShapeItem?.querySelector(
+        `:scope > [data-room-shape-flyout="${activeShapeMenuGroup}"]`,
+      );
+      const menuPaddingBottom =
+        Number.parseFloat(window.getComputedStyle(menuNode).paddingBottom) || 0;
+      const menuContentHeight =
+        Array.from(menuNode.children).reduce(
+          (height, child) => Math.max(height, child.offsetTop + child.offsetHeight),
+          0,
+        ) + menuPaddingBottom;
+      const firstFlyoutWidth = activeSubmenu?.offsetWidth || 210;
+      const nestedFlyoutWidth = activeShapeSubmenu?.offsetWidth || 0;
+      const compoundFlyoutWidth =
+        firstFlyoutWidth + (nestedFlyoutWidth ? nestedFlyoutWidth + 8 : 0);
       const mainLayout = resolveContextMenuViewportLayout({
         anchorX: menu.anchorX ?? menu.x,
         anchorY: menu.anchorY ?? menu.y,
-        menuWidth: menuNode.offsetWidth || menuRect.width || 260,
-        menuHeight: menuContentHeight || menuRect.height || 420,
-        submenuWidth: activeSubmenu?.offsetWidth || 224,
+        menuWidth: menuNode.offsetWidth || menuRect.width || 210,
+        menuHeight: menuContentHeight || menuRect.height || 360,
+        submenuWidth: compoundFlyoutWidth,
         viewportWidth: window.innerWidth,
         viewportHeight: window.innerHeight,
       });
       let submenuLayout = null;
+      let nestedSubmenuLayout = null;
 
       if (activeItem && activeSubmenu) {
         const itemRect = activeItem.getBoundingClientRect();
         const relativeTriggerTop = itemRect.top - menuRect.top;
         submenuLayout = resolveContextSubmenuViewportLayout({
           triggerTop: mainLayout.top + relativeTriggerTop,
-          submenuHeight: activeSubmenu.scrollHeight || activeSubmenu.offsetHeight || 1,
+          submenuHeight:
+            activeSubmenu.scrollHeight || activeSubmenu.offsetHeight || 1,
           viewportHeight: window.innerHeight,
         });
+
+        if (activeShapeItem && activeShapeSubmenu) {
+          const activeSubmenuRect = activeSubmenu.getBoundingClientRect();
+          const activeShapeItemRect = activeShapeItem.getBoundingClientRect();
+          const firstFlyoutTop =
+            mainLayout.top +
+            relativeTriggerTop +
+            (submenuLayout?.topOffset || 0);
+          nestedSubmenuLayout = resolveContextSubmenuViewportLayout({
+            triggerTop:
+              firstFlyoutTop +
+              (activeShapeItemRect.top - activeSubmenuRect.top),
+            submenuHeight:
+              activeShapeSubmenu.scrollHeight ||
+              activeShapeSubmenu.offsetHeight ||
+              1,
+            viewportHeight: window.innerHeight,
+          });
+        }
       }
 
-      setViewportLayout({ ...mainLayout, submenu: submenuLayout });
+      setViewportLayout({
+        ...mainLayout,
+        submenu: submenuLayout,
+        nestedSubmenu: nestedSubmenuLayout,
+      });
     };
 
     updateLayout();
     window.addEventListener("resize", updateLayout);
-    return () => window.removeEventListener("resize", updateLayout);
-  }, [activeGroup, menu]);
+    window.addEventListener("scroll", updateLayout, true);
+    return () => {
+      window.removeEventListener("resize", updateLayout);
+      window.removeEventListener("scroll", updateLayout, true);
+    };
+  }, [activeGroup, activeShapeMenuGroup, menu]);
 
   if (!menu) return null;
   const region = generatedMap.regions.find((item) => item.id === menu.regionId);
   if (!region) return null;
-  const contextKey = getContextKey(generatedMap.config.context || generatedMap.config.biome);
+  const contextKey = getContextKey(
+    generatedMap.config.context || generatedMap.config.biome,
+  );
   const options = getRoomStyleMenuOptions(contextKey);
   const cavernSupported = contextKey === "cave" || contextKey === "mine";
-  const caveEditorEnabled = getRoomShapeDefinition("cave")?.editorSelectable !== false;
+  const caveEditorEnabled =
+    getRoomShapeDefinition("cave")?.editorSelectable !== false;
   let style = getRoomStyleForMenu(region, manualOverrides);
   if (
     !cavernSupported &&
-    (style.shape === "cave" || style.surfaceKind === "cave" || style.surfaceKind === "hybrid")
+    (style.shape === "cave" ||
+      style.surfaceKind === "cave" ||
+      style.surfaceKind === "hybrid")
   ) {
     style = {
       ...style,
@@ -3907,20 +4098,30 @@ function RoomStyleContextMenu({
     };
   }
   const roomKind =
-    style.shape === "cave" || style.surfaceKind === "cave" || style.surfaceKind === "hybrid"
+    style.shape === "cave" ||
+    style.surfaceKind === "cave" ||
+    style.surfaceKind === "hybrid"
       ? "cavern"
       : "building";
-  const activeShape =
-    options.shapes.find((shape) => shape.value === style.shape)?.label || style.shape;
+  const activeShapeDefinition = options.shapes.find(
+    (shape) => shape.value === style.shape,
+  );
+  const activeShape = activeShapeDefinition?.label || style.shape;
   const activeType = roomKind === "cavern" ? "Cavern" : "Building";
   const activeSize =
     style.sizePreset === "Custom"
       ? getCustomSizeLabel(style, region)
-      : options.sizes.find((size) => size.value === style.sizePreset)?.label || style.sizePreset;
+      : options.sizes.find((size) => size.value === style.sizePreset)?.label ||
+        style.sizePreset;
   const activeRoomType =
-    options.types.find((type) => type.value === style.roomType)?.label || style.roomType || "None";
+    options.types.find((type) => type.value === style.roomType)?.label ||
+    style.roomType ||
+    "None";
   const manualRegionLevels = manualOverrides?.levels?.regions || {};
-  const hasManualLevel = Object.prototype.hasOwnProperty.call(manualRegionLevels, region.id);
+  const hasManualLevel = Object.prototype.hasOwnProperty.call(
+    manualRegionLevels,
+    region.id,
+  );
   const currentLevel = normalizeLevelNumber(
     hasManualLevel ? manualRegionLevels[region.id] : region.level,
     0,
@@ -3928,7 +4129,9 @@ function RoomStyleContextMenu({
   const activeLevelLabel = `Level ${formatMapLevel(currentLevel)}`;
   const activeModifiers = [
     ...(style.roomType && style.roomType !== "none" ? [activeRoomType] : []),
-    ...options.toggles.filter((toggle) => style[toggle.key]).map((toggle) => toggle.label),
+    ...options.toggles
+      .filter((toggle) => style[toggle.key])
+      .map((toggle) => toggle.label),
   ];
   const assignedComponents = getDarkPlacesRoomAssignedComponents(region);
   const requirementSummary = getDarkPlacesRoomRequirementSummary(region);
@@ -3954,295 +4157,343 @@ function RoomStyleContextMenu({
   const buildingState = getOptionState(buildingPatch);
   const cavernState = getOptionState(cavernPatch);
   const menuStyle = {
+    position: "fixed",
+    right: "auto",
     left: viewportLayout?.left ?? menu.x,
     top: viewportLayout?.top ?? menu.y,
-    maxHeight: viewportLayout?.maxHeight ? `${viewportLayout.maxHeight}px` : undefined,
+    maxHeight: viewportLayout?.maxHeight
+      ? `${viewportLayout.maxHeight}px`
+      : undefined,
     overflowY: viewportLayout?.overflowY || "visible",
   };
   const getSubmenuStyle = (group) => {
     if (activeGroup !== group) return undefined;
     const submenu = viewportLayout?.submenu;
     return {
+      display: "grid",
+      top: `${submenu?.topOffset || 0}px`,
+      maxHeight: submenu?.maxHeight ? `${submenu.maxHeight}px` : undefined,
+      overflowY:
+        group === "shape" ? "visible" : submenu?.overflowY || "auto",
+    };
+  };
+  const getNestedShapeSubmenuStyle = (group) => {
+    if (activeShapeMenuGroup !== group) return undefined;
+    const submenu = viewportLayout?.nestedSubmenu;
+    return {
+      display: "grid",
       top: `${submenu?.topOffset || 0}px`,
       maxHeight: submenu?.maxHeight ? `${submenu.maxHeight}px` : undefined,
       overflowY: submenu?.overflowY || "auto",
-      ...(viewportLayout?.submenuSide === "left"
-        ? { right: "calc(100% + 8px)", left: "auto" }
-        : { right: "auto", left: "calc(100% + 8px)" }),
     };
   };
 
   return (
     <div
       ref={menuRef}
-      className="room-context-menu room-style-context-menu"
+      className="location-map-toolbar__style-panel cruor-ui-panel-surface room-style-context-menu"
+      data-style-menu="root"
+      data-style-floating="portal"
+      data-flyout-side={viewportLayout?.submenuSide || "right"}
+      role="menu"
+      aria-label={`${region.name} room controls`}
       style={menuStyle}
       onPointerDown={(event) => event.stopPropagation()}
       onContextMenu={(event) => event.preventDefault()}
     >
-      <div className="room-context-menu__header">
+      <span className="room-style-context-menu__header" role="none">
         <strong>{region.name}</strong>
         <span>
           {region.number} {"\u00B7"} {contextKey} {"\u00B7"} {region.cellRect.w}
           {"\u00D7"}
           {region.cellRect.h}
         </span>
-      </div>
-      <div className="room-context-menu__body">
-        {requirementSummary ? (
-          <div className="room-context-submenu__hint">
-            Content requirements: {requirementSummary}
-          </div>
-        ) : null}
-        <div
-          className={cx("room-context-menu__item", activeGroup === "type" && "is-submenu-open")}
-          data-room-menu-group="type"
-          onPointerEnter={() => setActiveGroup("type")}
-          onPointerLeave={() => setActiveGroup(null)}
+      </span>
+      {requirementSummary ? (
+        <span
+          className="location-map-toolbar__style-subtitle room-style-context-menu__requirements"
+          title={`Content requirements: ${requirementSummary}`}
         >
-          <button type="button" className="room-context-menu__trigger">
-            <span>Type</span>
-            <span>
-              {activeType} {"\u203A"}
-            </span>
-          </button>
-          {activeGroup === "type" && (
-            <div className="room-context-submenu" style={getSubmenuStyle("type")}>
-              <div className="room-context-submenu__hint">Region surface model</div>
-              <button
-                type="button"
-                className={roomKind === "building" ? "is-active" : ""}
-                disabled={buildingState.disabled}
-                title={buildingState.disabled ? buildingState.reason : undefined}
-                onClick={() => onChange(region.id, buildingPatch)}
-              >
-                <span>Building</span>
-                <span>{roomKind === "building" ? "Active" : ""}</span>
-              </button>
-              <button
-                type="button"
-                className={roomKind === "cavern" ? "is-active" : ""}
-                disabled={!cavernSupported || !caveEditorEnabled || cavernState.disabled}
-                title={
-                  !cavernSupported
-                    ? "Cavern rooms are only available in Cave and Mine contexts."
-                    : caveEditorEnabled && cavernState.disabled
-                      ? cavernState.reason
-                      : undefined
+          Content: {requirementSummary}
+        </span>
+      ) : null}
+
+      <RoomStyleMenuSection
+        id="type"
+        icon="building"
+        label="Type"
+        valueLabel={activeType}
+        active={activeGroup === "type"}
+        onActivate={setActiveGroup}
+        submenuStyle={getSubmenuStyle("type")}
+        ariaLabel="Room type options"
+      >
+        <span className="location-map-toolbar__style-subtitle">
+          Region Surface
+        </span>
+        <span className="location-map-toolbar__style-options">
+          <RoomStyleMenuOption
+            icon="building"
+            label="Building"
+            active={roomKind === "building"}
+            disabled={buildingState.disabled}
+            title={buildingState.disabled ? buildingState.reason : undefined}
+            onClick={() => onChange(region.id, buildingPatch)}
+          />
+          <RoomStyleMenuOption
+            icon="mountain"
+            label="Cavern"
+            active={roomKind === "cavern"}
+            disabled={
+              !cavernSupported || !caveEditorEnabled || cavernState.disabled
+            }
+            title={
+              !cavernSupported
+                ? "Cavern rooms are only available in Cave and Mine contexts."
+                : caveEditorEnabled && cavernState.disabled
+                  ? cavernState.reason
+                  : undefined
+            }
+            onClick={() => onChange(region.id, cavernPatch)}
+          />
+        </span>
+      </RoomStyleMenuSection>
+
+      <RoomStyleMenuSection
+        id="shape"
+        icon="draw-polygon"
+        label="Shape"
+        valueLabel={roomKind === "cavern" ? "Not available" : activeShape}
+        active={activeGroup === "shape"}
+        onActivate={setActiveGroup}
+        submenuStyle={getSubmenuStyle("shape")}
+        ariaLabel="Room shape groups"
+      >
+        {roomKind === "cavern" ? (
+          <span className="location-map-toolbar__style-options">
+            <RoomStyleMenuOption
+              icon="ban"
+              label="Not Available"
+              disabled
+            />
+          </span>
+        ) : (
+          options.shapeGroups.map((group) => {
+            const containsActiveShape = group.shapes.some(
+              (shape) => shape.value === style.shape,
+            );
+            return (
+              <RoomStyleMenuSection
+                key={group.id}
+                id={group.id}
+                scope="shape"
+                icon={group.icon}
+                label={group.label}
+                valueLabel={
+                  containsActiveShape ? activeShape : `${group.shapes.length} Shapes`
                 }
-                onClick={() => onChange(region.id, cavernPatch)}
+                active={activeShapeMenuGroup === group.id}
+                onActivate={setActiveShapeMenuGroup}
+                submenuStyle={getNestedShapeSubmenuStyle(group.id)}
+                ariaLabel={`${group.label} options`}
               >
-                <span>Cavern</span>
-                <span>{roomKind === "cavern" ? "Active" : ""}</span>
-              </button>
-            </div>
-          )}
-        </div>
-        <div
-          className={cx("room-context-menu__item", activeGroup === "shape" && "is-submenu-open")}
-          data-room-menu-group="shape"
-          onPointerEnter={() => setActiveGroup("shape")}
-          onPointerLeave={() => setActiveGroup(null)}
-        >
-          <button type="button" className="room-context-menu__trigger">
-            <span>Shape</span>
-            <span>
-              {roomKind === "cavern" ? "Not available" : activeShape} {"\u203A"}
-            </span>
-          </button>
-          {activeGroup === "shape" && (
-            <div className="room-context-submenu" style={getSubmenuStyle("shape")}>
-              <div className="room-context-submenu__hint">Base footprint</div>
-              {roomKind === "cavern" ? (
-                <button type="button" disabled>
-                  <span>Not available</span>
-                  <span />
-                </button>
-              ) : (
-                options.shapes.map((shape) => {
-                  const optionState = getOptionState({ shape: shape.value });
-                  const disabled = !shape.editorSelectable || optionState.disabled;
-                  return (
-                    <button
-                      key={shape.value}
-                      type="button"
-                      className={style.shape === shape.value ? "is-active" : ""}
-                      disabled={disabled}
-                      title={optionState.disabled ? optionState.reason : undefined}
-                      onClick={() => onChange(region.id, { shape: shape.value })}
-                    >
-                      <span>{shape.label}</span>
-                      <span>{style.shape === shape.value ? "Active" : ""}</span>
-                    </button>
-                  );
-                })
-              )}
-            </div>
-          )}
-        </div>
-        <div
-          className={cx("room-context-menu__item", activeGroup === "size" && "is-submenu-open")}
-          data-room-menu-group="size"
-          onPointerEnter={() => setActiveGroup("size")}
-          onPointerLeave={() => setActiveGroup(null)}
-        >
-          <button type="button" className="room-context-menu__trigger">
-            <span>Size</span>
-            <span>
-              {activeSize} {"\u203A"}
-            </span>
-          </button>
-          {activeGroup === "size" && (
-            <div className="room-context-submenu" style={getSubmenuStyle("size")}>
-              <div className="room-context-submenu__hint">Room bounding box</div>
-              {options.sizes.map((size) => {
-                const patch = { sizePreset: size.value, customSize: null };
+                <span className="location-map-toolbar__style-subtitle">
+                  Base Footprint
+                </span>
+                <span className="location-map-toolbar__style-options">
+                  {group.shapes.map((shape) => {
+                    const optionState = getOptionState({ shape: shape.value });
+                    const disabled =
+                      !shape.editorSelectable || optionState.disabled;
+                    return (
+                      <RoomStyleMenuOption
+                        key={shape.value}
+                        icon={shape.icon}
+                        label={shape.label}
+                        active={style.shape === shape.value}
+                        disabled={disabled}
+                        title={
+                          optionState.disabled ? optionState.reason : undefined
+                        }
+                        onClick={() =>
+                          onChange(region.id, { shape: shape.value })
+                        }
+                      />
+                    );
+                  })}
+                </span>
+              </RoomStyleMenuSection>
+            );
+          })
+        )}
+      </RoomStyleMenuSection>
+
+      <RoomStyleMenuSection
+        id="size"
+        icon="expand"
+        label="Size"
+        valueLabel={activeSize}
+        active={activeGroup === "size"}
+        onActivate={setActiveGroup}
+        submenuStyle={getSubmenuStyle("size")}
+        ariaLabel="Room size options"
+      >
+        <span className="location-map-toolbar__style-subtitle">
+          Room Bounding Box
+        </span>
+        <span className="location-map-toolbar__style-options">
+          {options.sizes.map((size) => {
+            const patch = { sizePreset: size.value, customSize: null };
+            const optionState = getOptionState(patch);
+            return (
+              <RoomStyleMenuOption
+                key={size.value}
+                icon="maximize"
+                label={`${size.label} · ${getRoomMenuPresetDimensions(size, style.shape)}`}
+                active={style.sizePreset === size.value}
+                disabled={optionState.disabled}
+                title={optionState.disabled ? optionState.reason : undefined}
+                onClick={() => onChange(region.id, patch)}
+              />
+            );
+          })}
+        </span>
+        <RoomSizeCustomControls
+          evaluatePatch={evaluateStylePatch}
+          region={region}
+          style={style}
+          onApply={(patch) => onChange(region.id, patch)}
+        />
+      </RoomStyleMenuSection>
+
+      <RoomStyleMenuSection
+        id="level"
+        icon="layer-group"
+        label="Level"
+        valueLabel={activeLevelLabel}
+        active={activeGroup === "level"}
+        onActivate={setActiveGroup}
+        submenuStyle={getSubmenuStyle("level")}
+        ariaLabel="Room level options"
+      >
+        <span className="location-map-toolbar__style-subtitle">
+          Room Elevation
+        </span>
+        <span className="location-map-toolbar__style-options">
+          {ROOM_LEVEL_MENU_OPTIONS.map((level) => (
+            <RoomStyleMenuOption
+              key={`room-level-${level}`}
+              icon="layer-group"
+              label={`Level ${formatMapLevel(level)}`}
+              active={currentLevel === level}
+              onClick={() => onLevelChange?.(region.id, level)}
+            />
+          ))}
+          <RoomStyleMenuOption
+            icon="rotate-left"
+            label={hasManualLevel ? "Reset Level" : "Level Is Derived"}
+            disabled={!hasManualLevel}
+            onClick={() => onLevelReset?.(region.id)}
+          />
+        </span>
+      </RoomStyleMenuSection>
+
+      <RoomStyleMenuSection
+        id="modifiers"
+        icon="wand-magic-sparkles"
+        label="Modifiers"
+        valueLabel={
+          roomKind === "cavern"
+            ? "Not available"
+            : activeModifiers.length > 0
+              ? `${activeModifiers.length} Active`
+              : "None"
+        }
+        active={activeGroup === "modifiers"}
+        onActivate={setActiveGroup}
+        submenuStyle={getSubmenuStyle("modifiers")}
+        ariaLabel="Room modifier options"
+      >
+        <span className="location-map-toolbar__style-subtitle">
+          Room Structure
+        </span>
+        {roomKind === "cavern" ? (
+          <span className="location-map-toolbar__style-options">
+            <RoomStyleMenuOption
+              icon="ban"
+              label="Not Available"
+              disabled
+            />
+          </span>
+        ) : (
+          <>
+            <span className="location-map-toolbar__style-options">
+              {options.types.map((type) => {
+                const patch = { roomType: type.value };
                 const optionState = getOptionState(patch);
+                const icon =
+                  type.value === "archive"
+                    ? "book"
+                    : type.value === "alcove"
+                      ? "archway"
+                      : type.value === "apse"
+                        ? "place-of-worship"
+                        : type.value === "ruined"
+                          ? "house-crack"
+                          : "ban";
                 return (
-                  <button
-                    key={size.value}
-                    type="button"
-                    className={style.sizePreset === size.value ? "is-active" : ""}
+                  <RoomStyleMenuOption
+                    key={type.value}
+                    icon={icon}
+                    label={type.label}
+                    active={style.roomType === type.value}
                     disabled={optionState.disabled}
-                    title={optionState.disabled ? optionState.reason : undefined}
+                    title={
+                      optionState.disabled ? optionState.reason : undefined
+                    }
                     onClick={() => onChange(region.id, patch)}
-                  >
-                    <span>{size.label}</span>
-                    <span>
-                      {`${getRoomMenuPresetDimensions(size, style.shape)}${
-                            style.sizePreset === size.value ? " Active" : ""
-                          }`}
-                    </span>
-                  </button>
+                  />
                 );
               })}
-              <RoomSizeCustomControls
-                evaluatePatch={evaluateStylePatch}
-                region={region}
-                style={style}
-                onApply={(patch) => onChange(region.id, patch)}
-              />
-            </div>
-          )}
-        </div>
-        <div
-          className={cx("room-context-menu__item", activeGroup === "level" && "is-submenu-open")}
-          data-room-menu-group="level"
-          onPointerEnter={() => setActiveGroup("level")}
-          onPointerLeave={() => setActiveGroup(null)}
-        >
-          <button type="button" className="room-context-menu__trigger">
-            <span>Level</span>
-            <span>
-              {activeLevelLabel} {"›"}
             </span>
-          </button>
-          {activeGroup === "level" && (
-            <div className="room-context-submenu" style={getSubmenuStyle("level")}>
-              <div className="room-context-submenu__hint">Room elevation drives connected stairs</div>
-              {ROOM_LEVEL_MENU_OPTIONS.map((level) => (
-                <button
-                  key={`room-level-${level}`}
-                  type="button"
-                  className={currentLevel === level ? "is-active" : ""}
-                  onClick={() => onLevelChange?.(region.id, level)}
-                >
-                  <span>Level {formatMapLevel(level)}</span>
-                  <span>{currentLevel === level ? "Active" : ""}</span>
-                </button>
-              ))}
-              <button
-                type="button"
-                disabled={!hasManualLevel}
-                onClick={() => onLevelReset?.(region.id)}
-              >
-                <span>Reset Level</span>
-                <span>{hasManualLevel ? "Manual" : "Derived"}</span>
-              </button>
-            </div>
-          )}
-        </div>
-        <div
-          className={cx("room-context-menu__item", activeGroup === "modifiers" && "is-submenu-open")}
-          data-room-menu-group="modifiers"
-          onPointerEnter={() => setActiveGroup("modifiers")}
-          onPointerLeave={() => setActiveGroup(null)}
-        >
-          <button type="button" className="room-context-menu__trigger">
-            <span>Modifiers</span>
-            <span>
-              {roomKind === "cavern"
-                ? "Not available"
-                : activeModifiers.length > 0
-                  ? activeModifiers.length
-                  : "None"}{" "}
-              {"\u203A"}
+            <span className="location-map-toolbar__style-subtitle">
+              Structural Flags
             </span>
-          </button>
-          {activeGroup === "modifiers" && (
-            <div className="room-context-submenu" style={getSubmenuStyle("modifiers")}>
-              <div className="room-context-submenu__hint">Room-specific structure</div>
-              {roomKind === "cavern" ? (
-                <button type="button" disabled>
-                  <span>Not available</span>
-                  <span />
-                </button>
-              ) : (
-                <>
-                  {options.types.map((type) => {
-                    const patch = { roomType: type.value };
-                    const optionState = getOptionState(patch);
-                    return (
-                      <button
-                        key={type.value}
-                        type="button"
-                        className={style.roomType === type.value ? "is-active" : ""}
-                        disabled={optionState.disabled}
-                        title={optionState.disabled ? optionState.reason : undefined}
-                        onClick={() => onChange(region.id, patch)}
-                      >
-                        <span>{type.label}</span>
-                        <span>{style.roomType === type.value ? "Active" : ""}</span>
-                      </button>
-                    );
-                  })}
-                  {options.toggles.map((toggle) => {
-                    const patch = { [toggle.key]: !style[toggle.key] };
-                    const optionState = getOptionState(patch);
-                    return (
-                      <button
-                        key={toggle.key}
-                        type="button"
-                        className={style[toggle.key] ? "is-active" : ""}
-                        disabled={optionState.disabled}
-                        title={optionState.disabled ? optionState.reason : undefined}
-                        onClick={() => onChange(region.id, patch)}
-                      >
-                        <span>{toggle.label}</span>
-                        <span>{style[toggle.key] ? "Active" : ""}</span>
-                      </button>
-                    );
-                  })}
-                </>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-      <div className="room-context-menu__actions">
-        <button
-          type="button"
+            <span className="location-map-toolbar__style-options">
+              {options.toggles.map((toggle) => {
+                const patch = { [toggle.key]: !style[toggle.key] };
+                const optionState = getOptionState(patch);
+                return (
+                  <RoomStyleMenuOption
+                    key={toggle.key}
+                    icon={toggle.key === "ruined" ? "house-crack" : "scissors"}
+                    label={toggle.label}
+                    active={style[toggle.key]}
+                    disabled={optionState.disabled}
+                    title={
+                      optionState.disabled ? optionState.reason : undefined
+                    }
+                    onClick={() => onChange(region.id, patch)}
+                  />
+                );
+              })}
+            </span>
+          </>
+        )}
+      </RoomStyleMenuSection>
+
+      <span className="location-map-toolbar__style-subtitle">Actions</span>
+      <span className="location-map-toolbar__style-options">
+        <RoomStyleMenuOption
+          icon="rotate-left"
+          label="Reset to Content"
           onClick={() => {
             onReset(region.id);
             onClose?.();
           }}
-        >
-          Reset to Content Requirements
-        </button>
-        <button type="button" onClick={onClose}>
-          Close
-        </button>
-      </div>
+        />
+        <RoomStyleMenuOption icon="xmark" label="Close" onClick={onClose} />
+      </span>
     </div>
   );
 }

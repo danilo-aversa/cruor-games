@@ -33,6 +33,41 @@ describe("room shape capabilities", () => {
     });
   });
 
+  it("groups room shapes into compact Standard and Special editor menus", () => {
+    const grouped = Object.fromEntries(
+      ["standard", "special"].map((group) => [
+        group,
+        ROOM_SHAPE_DEFINITIONS.filter(
+          (definition) => definition.menuGroup === group,
+        ).map((definition) => definition.id),
+      ]),
+    );
+
+    expect(grouped.standard).toEqual([
+      "rect",
+      "square",
+      "circle",
+      "oval",
+      "l-shape",
+      "t-shape",
+      "cross",
+      "irregular",
+    ]);
+    expect(grouped.special).toEqual([
+      "hall",
+      "gallery",
+      "shaft",
+      "alcove",
+      "niche",
+      "archive",
+      "apse",
+      "ritual",
+      "broken",
+      "cave",
+    ]);
+    expect(getRoomShapeDefinition("rect")?.label).toBe("Rectangle");
+  });
+
   it("keeps Cave as the only temporarily disabled editor shape", () => {
     expect(
       ROOM_SHAPE_DEFINITIONS.filter(

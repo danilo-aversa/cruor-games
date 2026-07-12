@@ -11910,3 +11910,30 @@ _Nessun file aggiunto._
 - `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
 - `~tests/e2e/dark-places-pipeline.spec.js`
 
+
+---
+
+## 2026-07-12 11:40:41
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-room-shape-grouped-style-menu-20260712.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-room-shape-grouped-style-menu-20260712.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 7
+
+- `~docs/repository-map/areas/styles-and-design-system.md`
+- `~docs/repository-map/runtime-flows.md`
+- `~features/darken-location/map-generator/map-generator.context-menu-position.test.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+- `~shared/content/contracts/room-shapes.js`
+- `~shared/content/contracts/room-shapes.test.js`
+

@@ -2427,46 +2427,106 @@
   }
 }
 
-/* Room style menu: keep flyout submenus selectable.
-   The base context menu is portaled to body and uses overflow for compact menus,
-   but absolute room-style flyouts are clipped by that overflow. */
+/* Room style context menu uses the same root/flyout language as Map Style. */
+.location-map-toolbar__style-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+}
+
+.location-map-toolbar__style-option:disabled:hover,
+.location-map-toolbar__style-option:disabled:focus-visible {
+  border-color: var(--cruor-color-blood-strong-a320);
+  background: var(--cruor-color-blood-a100, rgba(51, 3, 12, 0.1));
+  color: var(--cruor-color-hex-c8a2a8);
+  outline: none;
+}
+
 .room-style-context-menu {
-  max-height: none;
-  overflow: visible;
-  width: 260px;
+  isolation: isolate;
 }
 
-.room-style-context-menu .room-context-menu__body {
-  overflow: visible;
+.room-style-context-menu__header {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 2px 7px 8px;
+  border-bottom: 1px solid var(--cruor-color-blood-strong-a320);
 }
 
-.room-style-context-menu .room-context-menu__item {
-  position: relative;
+.room-style-context-menu__header strong,
+.room-style-context-menu__header span {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.room-style-context-menu .room-context-menu__item:hover > .room-context-submenu,
-.room-style-context-menu .room-context-menu__item:focus-within > .room-context-submenu,
-.room-style-context-menu .room-context-menu__item.is-submenu-open > .room-context-submenu {
+.room-style-context-menu__header strong {
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.room-style-context-menu__header span {
+  color: var(--cruor-color-text-a540, rgba(238, 238, 238, 0.54));
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.room-style-context-menu__requirements {
+  display: block;
+  overflow: hidden;
+  margin: 0 7px 2px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.room-style-context-menu .location-map-toolbar__style-section.is-submenu-open
+  > .location-map-toolbar__style-panel[data-style-menu="flyout"] {
   display: grid;
 }
 
-.room-style-context-menu .room-context-submenu {
-  max-height: min(460px, calc(100dvh - 24px));
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  border: 1px solid var(--cruor-color-rose-a220);
-  background: var(--cruor-gradient-radial-228-a687306d), var(--cruor-gradient-linear-148-c4bbe015);
-  box-shadow: var(--cruor-shadow-box-122);
-  scrollbar-color: var(--cruor-color-blood-bright-a620) var(--cruor-surface-card);
-  scrollbar-width: thin;
+.room-style-context-menu
+  .location-map-toolbar__style-panel[data-room-menu-flyout="shape"] {
+  max-height: none;
+  overflow: visible;
+}
+
+.room-style-context-menu
+  .location-map-toolbar__style-panel[data-room-shape-flyout] {
+  z-index: 24002;
+}
+
+.room-style-context-menu[data-flyout-side="left"]
+  .location-map-toolbar__style-section::after {
+  right: 100%;
+  left: auto;
+}
+
+.room-style-context-menu[data-flyout-side="right"]
+  .location-map-toolbar__style-section::after {
+  right: auto;
+  left: 100%;
+}
+
+.room-style-context-menu .location-map-toolbar__style-option:disabled i,
+.room-style-context-menu .location-map-toolbar__style-option:disabled span {
+  color: var(--cruor-color-text-a420, rgba(238, 238, 238, 0.42));
 }
 
 .room-context-custom-size {
   display: grid;
   gap: 7px;
-  margin-top: 7px;
-  padding-top: 7px;
-  border-top: 1px solid var(--cruor-color-milk-a080);
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.room-context-custom-size > .location-map-toolbar__style-subtitle {
+  margin: 2px 0 0;
 }
 
 .room-context-custom-size__grid {
@@ -2479,30 +2539,39 @@
   display: grid;
   gap: 4px;
   min-width: 0;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
+  color: var(--cruor-color-text-a620, rgba(238, 238, 238, 0.62));
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--cruor-color-muted, var(--muted));
 }
 
 .room-context-custom-size input {
   width: 100%;
   min-width: 0;
   height: 30px;
-  padding: 0 8px;
-  border: 1px solid var(--cruor-color-milk-a120);
+  box-sizing: border-box;
+  padding: 0 7px;
+  border: 1px solid var(--cruor-color-blood-strong-a320);
   border-radius: 0;
-  background: var(--cruor-color-black-a320);
-  color: var(--cruor-color-text, var(--text));
+  background: var(--cruor-color-blood-a100, rgba(51, 3, 12, 0.1));
+  color: var(--cruor-color-hex-fff0f2);
   font: inherit;
-  font-size: 0.78rem;
+  font-size: 0.66rem;
   outline: none;
 }
 
 .room-context-custom-size input:focus {
-  border-color: var(--cruor-color-blood-bright-a620);
+  border-color: var(--cruor-color-blood-glow-a780);
   box-shadow: 0 0 0 1px var(--cruor-color-blood-bright-a320);
+}
+
+@media (max-width: 760px) {
+  .room-style-context-menu
+    .location-map-toolbar__style-panel[data-room-menu-flyout="shape"] {
+    max-height: min(210px, calc(100dvh - 48px));
+    overflow-y: auto;
+  }
 }
 
 /* Debug recorder */
