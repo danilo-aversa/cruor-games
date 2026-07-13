@@ -124,31 +124,6 @@
   color: var(--cruor-ui-chip-text);
 }
 
-.cruor-scroll-surface {
-  scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-r170-g48-b66-a760) var(--cruor-color-transparent);
-}
-
-/* Layout */
-
-.cruor-scroll-surface::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-/* Components */
-
-.cruor-scroll-surface::-webkit-scrollbar-track {
-  background: var(--cruor-color-transparent);
-}
-
-.cruor-scroll-surface::-webkit-scrollbar-thumb {
-  border: 0;
-  border-radius: 0;
-  background: var(--cruor-gradient-linear-005-2d835da9);
-  box-shadow: var(--cruor-shadow-box-004);
-}
-
 /* Layout */
 
 .icon-btn {

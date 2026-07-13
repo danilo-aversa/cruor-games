@@ -78,8 +78,6 @@
   padding: 8px;
   overflow: auto;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: var(--cruor-color-blood-bright-a520) var(--cruor-color-black-a460, rgba(0, 0, 0, 0.46));
   border: 1px solid var(--cruor-color-blood-strong-a640);
   border-radius: 0;
   background: linear-gradient(180deg, rgba(18, 9, 12, 0.76), rgba(7, 5, 6, 0.58)), rgba(7, 5, 6, 0.56);
@@ -243,7 +241,3 @@
   border: 0;
   background: var(--cruor-color-blood-strong-a320);
 }
-
-.cruor-dropdown-menu::-webkit-scrollbar { width: 8px; }
-.cruor-dropdown-menu::-webkit-scrollbar-track { background: var(--cruor-color-black-a420, rgba(0, 0, 0, 0.42)); }
-.cruor-dropdown-menu::-webkit-scrollbar-thumb { border: 2px solid var(--cruor-color-black-a420, rgba(0, 0, 0, 0.42)); background: var(--cruor-color-blood-bright-a520, rgba(122, 26, 40, 0.52)); }

@@ -5,51 +5,13 @@
  * the final source of truth for site-wide Composer styling.
  */
 
-/* Canonical Composer internal scrollbar.
-   This file is imported after feature styles, so legacy rail/list scrollbar
-   declarations cannot replace the shared Cruor treatment. */
-.cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface {
-  scrollbar-width: thin;
-  scrollbar-color: var(--cruor-composer-rail-scrollbar-thumb, var(--cruor-color-r170-g48-b66-a760)) var(--cruor-color-transparent);
-}
-
+/* Composer rails own overflow and row sizing; shared/styles/scrollbars.css
+   owns the visual scrollbar treatment. */
 .cruor-composer-shell .cruor-composer-rail.cruor-composer-rail--scroll {
   grid-auto-rows: max-content;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-}
-
-.cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface::-webkit-scrollbar-button {
-  display: none;
-  width: 0;
-  height: 0;
-}
-
-.cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface::-webkit-scrollbar-track {
-  border: 0;
-  background: var(--cruor-color-transparent);
-  box-shadow: none;
-}
-
-.cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface::-webkit-scrollbar-thumb {
-  border: 0;
-  border-radius: 0;
-  background: var(--cruor-gradient-linear-005-2d835da9);
-  box-shadow: var(--cruor-shadow-box-004);
-}
-
-.cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface::-webkit-scrollbar-thumb:hover {
-  background: var(--cruor-gradient-linear-008-6f99f992);
-}
-
-.cruor-composer-shell .cruor-scroll-surface.cruor-scroll-surface::-webkit-scrollbar-corner {
-  background: var(--cruor-color-transparent);
 }
 
 /* Shared contrast applies only to content inside Composer rails. */

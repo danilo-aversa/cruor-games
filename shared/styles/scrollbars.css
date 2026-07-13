@@ -1,0 +1,123 @@
+/*
+ * Cruor Games — Native Scrollbar System
+ *
+ * Custom mode uses the same 6px transparent-track gradient thumb originally
+ * defined by the Inspirations dossier. Home's document scrollbar is excluded:
+ * its dedicated diamond scroll progress remains the only page-scroll UI there.
+ */
+
+:root {
+  --cruor-scrollbar-size: 6px;
+  --cruor-scrollbar-thumb: var(--cruor-gradient-linear-005-2d835da9);
+  --cruor-scrollbar-thumb-firefox: var(--cruor-color-r170-g48-b66-a760);
+  --cruor-scrollbar-track: var(--cruor-color-transparent);
+}
+
+/* Firefox cannot render gradients in scrollbar-color. Keep the nearest solid
+   fallback there, without affecting Chromium/WebKit's fully custom rendering. */
+@supports not selector(::-webkit-scrollbar) {
+  :root[data-a11y-scrollbar="custom"],
+  :root[data-a11y-scrollbar="custom"] * {
+    scrollbar-width: thin !important;
+    scrollbar-color: var(--cruor-scrollbar-thumb-firefox) var(--cruor-scrollbar-track) !important;
+  }
+
+  :root[data-a11y-scrollbar="custom"]:has(.cruor-home),
+  :root[data-a11y-scrollbar="custom"] body:has(.cruor-home) {
+    scrollbar-width: none !important;
+  }
+}
+
+/* Chromium/WebKit: standards scrollbar properties must stay auto. Setting
+   scrollbar-width or scrollbar-color to non-auto switches Chromium back to a
+   native-looking recolored scrollbar and suppresses the gradient pseudo style. */
+@supports selector(::-webkit-scrollbar) {
+  :root[data-a11y-scrollbar="custom"],
+  :root[data-a11y-scrollbar="custom"] * {
+    scrollbar-width: auto !important;
+    scrollbar-color: auto !important;
+  }
+
+  :root[data-a11y-scrollbar="custom"]::-webkit-scrollbar,
+  :root[data-a11y-scrollbar="custom"] *::-webkit-scrollbar {
+    width: var(--cruor-scrollbar-size) !important;
+    height: var(--cruor-scrollbar-size) !important;
+  }
+
+  :root[data-a11y-scrollbar="custom"]::-webkit-scrollbar-button,
+  :root[data-a11y-scrollbar="custom"] *::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  :root[data-a11y-scrollbar="custom"]::-webkit-scrollbar-track,
+  :root[data-a11y-scrollbar="custom"] *::-webkit-scrollbar-track {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: var(--cruor-scrollbar-track) !important;
+    box-shadow: none !important;
+  }
+
+  :root[data-a11y-scrollbar="custom"]::-webkit-scrollbar-thumb,
+  :root[data-a11y-scrollbar="custom"] *::-webkit-scrollbar-thumb,
+  :root[data-a11y-scrollbar="custom"]::-webkit-scrollbar-thumb:hover,
+  :root[data-a11y-scrollbar="custom"] *::-webkit-scrollbar-thumb:hover {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: var(--cruor-scrollbar-thumb) !important;
+    box-shadow: none !important;
+  }
+
+  :root[data-a11y-scrollbar="custom"]::-webkit-scrollbar-corner,
+  :root[data-a11y-scrollbar="custom"] *::-webkit-scrollbar-corner {
+    background: var(--cruor-scrollbar-track) !important;
+  }
+
+  /* Home owns page scrolling through the diamond spy-scroll. Preserve that
+     system by hiding only the document scrollbar, never nested scroll areas. */
+  :root[data-a11y-scrollbar="custom"]:has(.cruor-home),
+  :root[data-a11y-scrollbar="custom"] body:has(.cruor-home) {
+    scrollbar-width: none !important;
+  }
+
+  :root[data-a11y-scrollbar="custom"]:has(.cruor-home)::-webkit-scrollbar,
+  :root[data-a11y-scrollbar="custom"] body:has(.cruor-home)::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+}
+
+/* Browser mode is the sole opt-out: restore native scrollbar rendering and
+   neutralize feature-local author styling without changing overflow ownership. */
+:root[data-a11y-scrollbar="browser"],
+:root[data-a11y-scrollbar="browser"] * {
+  scrollbar-width: auto !important;
+  scrollbar-color: auto !important;
+}
+
+@supports selector(::-webkit-scrollbar) {
+  :root[data-a11y-scrollbar="browser"]::-webkit-scrollbar,
+  :root[data-a11y-scrollbar="browser"] *::-webkit-scrollbar,
+  :root[data-a11y-scrollbar="browser"]::-webkit-scrollbar-button,
+  :root[data-a11y-scrollbar="browser"] *::-webkit-scrollbar-button,
+  :root[data-a11y-scrollbar="browser"]::-webkit-scrollbar-track,
+  :root[data-a11y-scrollbar="browser"] *::-webkit-scrollbar-track,
+  :root[data-a11y-scrollbar="browser"]::-webkit-scrollbar-thumb,
+  :root[data-a11y-scrollbar="browser"] *::-webkit-scrollbar-thumb,
+  :root[data-a11y-scrollbar="browser"]::-webkit-scrollbar-corner,
+  :root[data-a11y-scrollbar="browser"] *::-webkit-scrollbar-corner {
+    all: revert !important;
+  }
+}
+
+html[data-scrollbar-mode="custom"]
+  *::-webkit-scrollbar-thumb {
+  cursor: grab;
+}
+
+html[data-scrollbar-mode="custom"]
+  *::-webkit-scrollbar-thumb:active {
+  cursor: grabbing;
+}

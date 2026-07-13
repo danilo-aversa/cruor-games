@@ -2251,21 +2251,6 @@
   border: 0;
 }
 
-.monster-shell ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.monster-shell ::-webkit-scrollbar-track {
-  background: var(--cruor-color-transparent);
-}
-
-.monster-shell ::-webkit-scrollbar-thumb {
-  border: 0;
-  border-radius: 0;
-  background: var(--cruor-gradient-linear-005-2d835da9);
-  box-shadow: var(--cruor-shadow-box-004);
-}
 
 .monster-shell .monster-current-frame {
   display: inline-flex;
@@ -7479,44 +7464,19 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   padding-right: 0;
-  scrollbar-width: thin;
-  scrollbar-color: var(--cruor-composer-rail-scrollbar-thumb) var(--cruor-color-transparent);
   display: grid;
   align-content: start;
   grid-template-rows: none;
   gap: 11px;
 }
 
-.monster-shell .anatomy-stage__grid--frame .anatomy-stage__column::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.monster-shell .anatomy-stage__grid--frame .anatomy-stage__column::-webkit-scrollbar-button {
-  display: none;
-  width: 0;
-  height: 0;
-}
-
-.monster-shell .anatomy-stage__grid--frame .anatomy-stage__column::-webkit-scrollbar-track {
-  border: 0;
-  background: var(--cruor-color-transparent);
-  box-shadow: none;
-}
-
-.monster-shell .anatomy-stage__grid--frame .anatomy-stage__column::-webkit-scrollbar-thumb {
-  border: 0;
-  border-radius: 0;
-  background: var(--cruor-gradient-linear-005-2d835da9);
-  box-shadow: var(--cruor-shadow-box-004);
-}
-
-.monster-shell .anatomy-stage__grid--frame .anatomy-stage__column::-webkit-scrollbar-thumb:hover {
-  background: var(--cruor-gradient-linear-008-6f99f992);
-}
-
-.monster-shell .anatomy-stage__grid--frame .anatomy-stage__column::-webkit-scrollbar-corner {
-  background: var(--cruor-color-transparent);
+.monster-shell
+  .anatomy-stage__grid--frame
+  .anatomy-stage__column--left {
+  width: calc(100% + 8px);
+  max-width: calc(100% + 8px);
+  margin-inline-end: -8px;
+  padding-inline-end: 2px;
 }
 
 .monster-shell .anatomy-stage__grid--grafts .anatomy-stage__column {
@@ -7531,7 +7491,6 @@
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
 }
 
 .monster-shell .anatomy-stage__grid--grafts .anatomy-stage__column--left {

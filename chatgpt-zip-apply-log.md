@@ -12286,3 +12286,77 @@ _Nessun file aggiunto._
 
 - `~features/monster-composer/monster-composer.styles.css`
 
+
+---
+
+## 2026-07-13 11:38:54
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-global-scrollbar-system-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-global-scrollbar-system-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+docs/design-system/scrollbar-system.md`
+- `+shared/styles/scrollbar-style-contract.test.js`
+- `+shared/styles/scrollbars.css`
+
+**File sovrascritti:** 21
+
+- `~AGENTS.md`
+- `~app/home-page.css`
+- `~app/main.jsx`
+- `~docs/design-system/audit/scrollbar-audit.md`
+- `~docs/design-system/override-policy.md`
+- `~docs/design-system/README.md`
+- `~features/crucible/crucible.events.js`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspirations/inspirations.styles.css`
+- `~features/monster-composer/monster-composer.styles.css`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+- `~shared/styles/accessibility.css`
+- `~shared/styles/components.css`
+- `~shared/styles/composer-internals.css`
+- `~shared/styles/composer-system.css`
+- `~shared/styles/dropdowns.css`
+- `~shared/styles/theme.css`
+- `~tests/e2e/design-system/scrollbars.spec.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: AGENTS.md
+
+
+---
+
+## 2026-07-13 12:11:11
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-scrollbar-system-corrected.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-scrollbar-system-corrected.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+shared/styles/scrollbars.css`
+- `+shared/styles/scrollbars.test.js`
+
+**File sovrascritti:** 6
+
+- `~app/main.jsx`
+- `~features/inspirations/inspirations.styles.css`
+- `~features/monster-composer/monster-composer.styles.css`
+- `~shared/styles/components.css`
+- `~shared/styles/composer-internals.css`
+- `~shared/styles/dropdowns.css`
+

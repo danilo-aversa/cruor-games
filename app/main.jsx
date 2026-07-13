@@ -10,6 +10,7 @@ import "../shared/styles/tooltips.css";
 import "../features/crucible/crucible.styles.css";
 import "./app-shell.css";
 import "../shared/styles/accessibility.css";
+import "../shared/styles/scrollbars.css";
 import { startTooltipRuntime } from "../shared/tooltips/tooltip.runtime.js";
 import { applyAccessibilitySettingsToDocument, readAccessibilitySettings } from "../shared/accessibility/accessibility.settings.js";
 
