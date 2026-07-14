@@ -12634,3 +12634,256 @@ _Nessun file aggiunto._
 - `~features/darken-location/map-generator/map-generator.room-resize.test.js`
 - `~features/darken-location/map-generator/map-generator.styles.css`
 
+
+---
+
+## 2026-07-14 16:20:09
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass-1-pipeline-integrity.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass-1-pipeline-integrity.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+features/darken-location/composer/model/location-composer-draft.test.js`
+- `+features/darken-location/dungeon/dungeon-brief-pipeline-integrity.test.js`
+
+**File sovrascritti:** 9
+
+- `~app/router.jsx`
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/composer/model/location-composer-draft.js`
+- `~features/darken-location/composer/model/location-composer-preview.js`
+- `~features/darken-location/composer/model/location-composer-state.js`
+- `~features/darken-location/darken-location.map-request.js`
+- `~features/darken-location/dungeon/dungeon-brief-generator.js`
+- `~features/darken-location/dungeon/dungeon-brief.js`
+- `~features/darken-location/map-generator/map-generator.input.js`
+
+
+---
+
+## 2026-07-14 16:51:25
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass-2-component-effects-plus-pass-1-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass-2-component-effects-plus-pass-1-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+shared/content/contracts/location-component-effect.js`
+- `+shared/content/contracts/location-component-effect.test.js`
+
+**File sovrascritti:** 9
+
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~features/darken-location/dungeon/dungeon-brief-generator.js`
+- `~features/darken-location/dungeon/dungeon-brief-room-constraints.test.js`
+- `~features/darken-location/dungeon/dungeon-brief.js`
+- `~features/darken-location/map-generator/map-generator.pipeline.test.js`
+- `~shared/content/adapters/darken-components.js`
+- `~shared/content/content-packs/dark-places-canonical-expansion-pack.js`
+- `~shared/content/content.index.js`
+
+
+---
+
+## 2026-07-14 17:12:43
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass-3-visible-anomaly-plus-acceptance-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass-3-visible-anomaly-plus-acceptance-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 10
+
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/model/location-composer-output.js`
+- `~features/darken-location/dungeon/dungeon-brief-generator.js`
+- `~features/darken-location/dungeon/dungeon-brief-pipeline-integrity.test.js`
+- `~features/darken-location/dungeon/dungeon-brief.js`
+- `~features/darken-location/map-generator/map-generator.details.js`
+- `~features/darken-location/map-generator/map-generator.input.js`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+- `~shared/content/contracts/location-component-effect.js`
+- `~shared/content/contracts/location-component-effect.test.js`
+
+
+---
+
+## 2026-07-14 17:32:02
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass-4-remaining-slot-effects.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass-4-remaining-slot-effects.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 7
+
+- `~features/darken-location/composer/model/location-composer-output.js`
+- `~features/darken-location/dungeon/dungeon-brief-generator.js`
+- `~features/darken-location/dungeon/dungeon-brief-pipeline-integrity.test.js`
+- `~features/darken-location/dungeon/dungeon-brief.js`
+- `~features/darken-location/map-generator/map-generator.details.js`
+- `~shared/content/contracts/location-component-effect.js`
+- `~shared/content/contracts/location-component-effect.test.js`
+
+
+---
+
+## 2026-07-14 17:44:02
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass-4-remaining-slot-effects.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass-4-remaining-slot-effects.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 7
+
+- `~features/darken-location/composer/model/location-composer-output.js`
+- `~features/darken-location/dungeon/dungeon-brief-generator.js`
+- `~features/darken-location/dungeon/dungeon-brief-pipeline-integrity.test.js`
+- `~features/darken-location/dungeon/dungeon-brief.js`
+- `~features/darken-location/map-generator/map-generator.details.js`
+- `~shared/content/contracts/location-component-effect.js`
+- `~shared/content/contracts/location-component-effect.test.js`
+
+
+---
+
+## 2026-07-14 17:44:06
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass-4-remaining-slot-effects.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass-4-remaining-slot-effects.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 7
+
+- `~features/darken-location/composer/model/location-composer-output.js`
+- `~features/darken-location/dungeon/dungeon-brief-generator.js`
+- `~features/darken-location/dungeon/dungeon-brief-pipeline-integrity.test.js`
+- `~features/darken-location/dungeon/dungeon-brief.js`
+- `~features/darken-location/map-generator/map-generator.details.js`
+- `~shared/content/contracts/location-component-effect.js`
+- `~shared/content/contracts/location-component-effect.test.js`
+
+
+---
+
+## 2026-07-14 17:44:15
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass-5-unified-export.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass-5-unified-export.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+features/darken-location/composer/model/location-composer-output.test.js`
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/composer/components/LocationExportRoomKeyPanel.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/model/location-composer-output.js`
+- `~tests/e2e/dark-places-pipeline.spec.js`
+
+
+---
+
+## 2026-07-14 18:18:37
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass-6-legacy-migration-provenance.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass-6-legacy-migration-provenance.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 4
+
+- `+shared/content/content-pack-provenance.test.js`
+- `+shared/content/legacy-content-migration.js`
+- `+shared/content/legacy-content-migration.test.js`
+- `+shared/content/static-registry-provenance.test.js`
+
+**File sovrascritti:** 10
+
+- `~features/darken-location/composer/components/LocationComponentPickerModal.jsx`
+- `~features/darken-location/composer/components/LocationComponentPickerModal.test.jsx`
+- `~scripts/export-content-registry.mjs`
+- `~shared/content/adapters/darken-components.js`
+- `~shared/content/adapters/location-regions.js`
+- `~shared/content/content-pack-provenance.js`
+- `~shared/content/content-repository.adapter.js`
+- `~shared/content/content-repository.js`
+- `~shared/content/content.index.js`
+- `~shared/content/static-registry.js`
+
+
+---
+
+## 2026-07-14 18:32:47
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-pass-6-e2e-room-node-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-pass-6-e2e-room-node-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.pipeline.test.js`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+

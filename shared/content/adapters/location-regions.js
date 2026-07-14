@@ -1,4 +1,5 @@
 import { LOCATION_REGION_TEMPLATES as LEGACY_LOCATION_REGION_TEMPLATES } from "../../../features/crucible/crucible.location-regions.js";
+import { createLegacyContentMigration, resolveLegacyFieldCandidates } from "../legacy-content-migration.js";
 import { normalizeSourceAnchorIds, SHARED_SOURCE_ANCHORS } from "../source-anchors.js";
 
 export const LOCATION_REGION_CONTENT_TYPE = "location-region";
@@ -83,6 +84,33 @@ export function legacyLocationRegionToSharedComponent(region) {
   const sourceMetadata = getSourceAnchorMetadata(sourceAnchors);
   const readAloud = normalizeReadAloud(region.readAloud);
   const summary = region.feature || readAloud.compact || region.role || "";
+  const roomArchetypeResolution = resolveLegacyFieldCandidates([
+    { path: "roomArchetype", value: region.roomArchetype },
+    { path: "roomArchetypeId", value: region.roomArchetypeId },
+  ]);
+  const mapInfluenceResolution = resolveLegacyFieldCandidates(
+    [
+      { path: "mapInfluence", value: region.mapInfluence },
+      { path: "influence", value: region.influence },
+    ],
+    { objectOnly: true },
+  );
+  const interactionResolution = resolveLegacyFieldCandidates([
+    { path: "interaction", value: region.interaction },
+    { path: "interact", value: region.interact },
+  ]);
+  const migration = createLegacyContentMigration({
+    sourceSchema: "crucible-location-region-v0",
+    targetSchema: "location-region-v1",
+    fieldResolutions: {
+      roomArchetype: roomArchetypeResolution,
+      mapInfluence: mapInfluenceResolution,
+      interaction: interactionResolution,
+    },
+  });
+  const roomArchetype = roomArchetypeResolution.value || "";
+  const mapInfluence = mapInfluenceResolution.value;
+  const interaction = interactionResolution.value || "";
 
   return {
     id: `location-region-${id}`,
@@ -103,13 +131,14 @@ export function legacyLocationRegionToSharedComponent(region) {
     summary,
     tableText: readAloud.compact,
     mechanics: region.danger || "",
-    narrative: region.interaction || region.interact || region.secret || "",
+    narrative: interaction || region.secret || "",
+    migration,
     locationRegion: {
       role: region.role || "Location Region",
       size: region.size || "Medium",
       shape: region.shape || "room",
-      roomArchetype: region.roomArchetype || region.roomArchetypeId || "",
-      mapInfluence: region.mapInfluence || region.influence || undefined,
+      roomArchetype,
+      mapInfluence,
       connectors: Number(region.connectors || 1),
       density: region.density || "interactive",
       readAloud,
@@ -119,8 +148,8 @@ export function legacyLocationRegionToSharedComponent(region) {
       role: region.role || "Location Region",
       shape: region.shape || "room",
       preferredShape: region.preferredShape || region.shape || "room",
-      roomArchetype: region.roomArchetype || region.roomArchetypeId || "",
-      mapInfluence: region.mapInfluence || region.influence || undefined,
+      roomArchetype,
+      mapInfluence,
       size: region.size || "Medium",
       connectors: Number(region.connectors || 1),
       density: region.density || "interactive",
@@ -129,7 +158,7 @@ export function legacyLocationRegionToSharedComponent(region) {
       sourceAnchors,
       readAloud,
       feature: region.feature || "",
-      interaction: region.interaction || region.interact || "",
+      interaction,
       danger: region.danger || "",
       secret: region.secret || "",
       reward: region.reward || "",

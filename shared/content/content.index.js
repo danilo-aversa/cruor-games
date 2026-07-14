@@ -51,9 +51,20 @@ export {
   validateContentPack,
 } from "./content-pack-schema.js";
 export {
+  CONTENT_ENTRY_PROVENANCE_SCHEMA_VERSION,
+  CONTENT_PACK_COLLISION_REPORT_SCHEMA_VERSION,
+  CONTENT_PACK_MERGE_POLICY,
+  LEGACY_CONTENT_MIGRATION_REPORT_SCHEMA_VERSION,
+  annotateRegistryDataWithContentPackProvenance,
   buildContentPackProvenance,
   getContentEntryId,
 } from "./content-pack-provenance.js";
+export {
+  LEGACY_CONTENT_MIGRATION_SCHEMA_VERSION,
+  createLegacyContentMigration,
+  resolveLegacyFieldCandidates,
+  resolveLegacyObjectField,
+} from "./legacy-content-migration.js";
 export {
   createContentRepositoryAdapter,
   createStaticContentRepository,
@@ -181,6 +192,7 @@ export {
   normalizeSpell5e24Ref,
 } from "./spells.5e24.js";
 export {
+  STATIC_CONTENT_COLLISION_REPORT,
   STATIC_CONTENT_PACK,
   STATIC_CONTENT_PACKS,
   STATIC_CONTENT_PACK_PROVENANCE,
@@ -188,17 +200,23 @@ export {
   STATIC_CONTENT_PACK_SUMMARY,
   STATIC_CONTENT_REGISTRY,
   STATIC_CONTENT_REGISTRY_DATA,
+  STATIC_LEGACY_MIGRATION_REPORT,
+  STATIC_RETIRED_CONTENT_PACKS,
 } from "./static-registry.js";
 
 export {
+  getStaticContentCollisionReport,
   getStaticContentPackIssues,
   getStaticInspirationModules,
+  getStaticLegacyMigrationReport,
   getStaticContentPackProvenance,
   getStaticContentPackSummaries,
   getStaticContentPackSummary,
   getStaticContentRegistry,
+  loadContentCollisionReport,
   loadContentPackProvenance,
   loadContentPackSummaries,
+  loadLegacyMigrationReport,
   loadContentRegistry,
   loadInspirationModules,
 } from "./content-repository.js";
@@ -263,6 +281,13 @@ export {
   normalizeRoomCompatibility,
   normalizeRoomConflictPolicy,
 } from "./contracts/room-compatibility.js";
+export {
+  LOCATION_COMPONENT_EFFECT_PLACEMENT_STRATEGIES,
+  LOCATION_COMPONENT_EFFECT_SCHEMA_VERSION,
+  LOCATION_COMPONENT_EFFECT_SCOPES,
+  LOCATION_COMPONENT_EFFECT_UNSUPPORTED_POLICIES,
+  normalizeLocationComponentEffect,
+} from "./contracts/location-component-effect.js";
 export {
   ROOM_CONSTRAINT_RESOLVER_SCHEMA_VERSION,
   ROOM_CONTRIBUTION_SCHEMA_VERSION,

@@ -1,0 +1,80 @@
+import { describe, expect, it } from "vitest";
+import {
+  createLocationExportBundle,
+  createLocationExportFilename,
+} from "./location-composer-output.js";
+
+function createCompilePreview() {
+  return {
+    title: "The Ossuary Below",
+    contextLine: "Crypt · Religious Horror · Sedlec Ossuary",
+    premiseSection: { premise: "The dead are arranged as a warning." },
+    mapSyncStatus: { mode: "synced" },
+    mapNotes: ["Map ready"],
+    sessionInsertText: "SESSION INSERT",
+    tableReadyText: "TABLE TEXT",
+    roomKeyMarkdown: "# The Ossuary Below\n\n## Room Key",
+    componentSections: [],
+    hazardSections: [],
+    clueSections: [],
+    twistSections: [],
+    atTheTableRows: [],
+    regionSections: [],
+  };
+}
+
+function createBundle(generatedMapPreview = null) {
+  return createLocationExportBundle(
+    {
+      context: "Crypt",
+      horrors: ["Religious Horror"],
+      sourceAnchors: ["Sedlec Ossuary"],
+      intrusion: "Medium",
+      activeSlot: "visibleAnomaly",
+      activeRegionId: "region-1",
+      slotAssignments: {},
+    },
+    { filledSlots: 4, totalSlots: 7 },
+    { componentPlacements: [], requiredRegions: [] },
+    generatedMapPreview,
+    createCompilePreview(),
+    { exportedAt: "2026-07-14T16:00:00.000Z" },
+  );
+}
+
+describe("location export bundle", () => {
+  it("creates one canonical manifest for text, markdown, JSON, and SVG exports", () => {
+    const bundle = createBundle({ seed: "export-seed", regions: [], corridors: [] });
+
+    expect(bundle.schemaVersion).toBe("dark-places-export-bundle-v1");
+    expect(bundle.baseFilename).toBe("the-ossuary-below");
+    expect(Object.keys(bundle.formats)).toEqual([
+      "roomKey",
+      "sessionInsert",
+      "tableText",
+      "markdown",
+      "json",
+      "svg",
+    ]);
+    expect(bundle.formats.roomKey.filename).toBe("the-ossuary-below-room-key.md");
+    expect(bundle.formats.sessionInsert.text).toBe("SESSION INSERT");
+    expect(bundle.formats.tableText.text).toBe("TABLE TEXT");
+    expect(bundle.formats.svg.available).toBe(true);
+    expect(bundle.formats.svg.dynamic).toBe(true);
+  });
+
+  it("uses the same export timestamp and schema in the JSON payload", () => {
+    const bundle = createBundle();
+    const payload = JSON.parse(bundle.formats.json.text);
+
+    expect(payload.schemaVersion).toBe("dark-places-export-v1");
+    expect(payload.exportedAt).toBe(bundle.exportedAt);
+    expect(payload.title).toBe("The Ossuary Below");
+    expect(bundle.formats.svg.available).toBe(false);
+  });
+
+  it("normalizes filenames without leaking punctuation or whitespace", () => {
+    expect(createLocationExportFilename("  Crypt: Blood & Bone!  ")).toBe("crypt-blood-bone");
+    expect(createLocationExportFilename("***")).toBe("cruor-location");
+  });
+});

@@ -1,9 +1,11 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import {
   CRUOR_INSPIRATION_MODULES,
+  STATIC_CONTENT_COLLISION_REPORT,
   STATIC_CONTENT_PACKS,
   STATIC_CONTENT_REGISTRY,
   STATIC_CONTENT_REGISTRY_DATA,
+  STATIC_LEGACY_MIGRATION_REPORT,
   getStaticContentPackIssues,
   getStaticContentPackSummaries,
   validateStaticContentRepository,
@@ -31,6 +33,8 @@ function buildExportManifest(validationReport) {
       "cruor-content-registry-data.json",
       "cruor-inspiration-modules.json",
       "cruor-content-pack-summaries.json",
+      "cruor-content-collision-report.json",
+      "cruor-legacy-migration-report.json",
       "cruor-content-validation-report.json",
     ],
     validation: validationReport.summary,
@@ -54,11 +58,17 @@ async function main() {
   await writeJson("cruor-content-registry-data.json", STATIC_CONTENT_REGISTRY_DATA);
   await writeJson("cruor-inspiration-modules.json", CRUOR_INSPIRATION_MODULES);
   await writeJson("cruor-content-pack-summaries.json", getStaticContentPackSummaries());
+  await writeJson("cruor-content-collision-report.json", STATIC_CONTENT_COLLISION_REPORT);
+  await writeJson("cruor-legacy-migration-report.json", STATIC_LEGACY_MIGRATION_REPORT);
   await writeJson("cruor-content-validation-report.json", validationReport);
   await writeJson("cruor-content-export-manifest.json", buildExportManifest(validationReport));
 
   const { total, error, warning } = validationReport.summary;
   console.log(`Content export complete: ${total} validation issues (${error} errors, ${warning} warnings).`);
+  console.log(
+    `Content provenance: ${STATIC_CONTENT_COLLISION_REPORT.summary.total} collisions, ` +
+      `${STATIC_LEGACY_MIGRATION_REPORT.summary.activeEntries} active legacy fallback entries.`,
+  );
 }
 
 main().catch((error) => {

@@ -15,6 +15,7 @@ import {
   getGeneratedRoomPositionStyle,
   getGeneratedRoomSurfaceLabel,
 } from "../model/location-composer-map-preview.js";
+import { getRoomProgramEntries } from "../model/location-room-program.js";
 import {
   getMapSyncStatus,
   getRegionPreviewMarkers,
@@ -30,6 +31,7 @@ function LocationMapPreview({
   initialManualOverrides = null,
   mapRequest,
   previewRegionMarkers = {},
+  previewRegionStatuses = {},
   onManualWorkspaceChange = null,
   onRefreshFromComposer = null,
   onViewportMetricsChange = null,
@@ -61,6 +63,7 @@ function LocationMapPreview({
         workspaceContext="composer-inline-editor"
         composerSelectedRegionId={selectedRegionId}
         previewRegionMarkers={previewRegionMarkers}
+        previewRegionStatuses={previewRegionStatuses}
         onComposerRegionHoverChange={onRegionHoverChange}
         onComposerSelectedRegionChange={onRegionSelect}
         onCommitWorkspace={onManualWorkspaceChange}
@@ -112,11 +115,20 @@ export function LocationMapStage({
     ? getGeneratedRoomSurfaceLabel(hoveredGeneratedRoom)
     : "";
   const mapSyncStatus = getMapSyncStatus(mapRequest, generatedMapPreview, regions);
+  const roomProgramEntries = useMemo(
+    () => getRoomProgramEntries(state, generatedMapPreview),
+    [generatedMapPreview, state],
+  );
   const previewRegionMarkers = useMemo(() => (
     Object.fromEntries(
       regions.map((region) => [region.id, getRegionPreviewMarkers(state, region.id)]),
     )
   ), [regions, state]);
+  const previewRegionStatuses = useMemo(() => (
+    Object.fromEntries(
+      roomProgramEntries.map((entry) => [entry.id, entry.status || "empty"]),
+    )
+  ), [roomProgramEntries]);
 
   function handlePreviewViewportMetricsChange(nextMetrics) {
     setPreviewViewportMetrics((currentMetrics) => {
@@ -258,6 +270,7 @@ export function LocationMapStage({
             initialManualOverrides={mapManualOverrides}
             selectedRegionId={state.activeRegionId}
             previewRegionMarkers={previewRegionMarkers}
+            previewRegionStatuses={previewRegionStatuses}
             onRegionHoverChange={setHoveredRegionId}
             onRegionSelect={selectRegionTarget}
             onManualWorkspaceChange={onManualWorkspaceChange}
@@ -298,6 +311,7 @@ export function LocationMapStage({
                 const regionComponents = getAssignedComponentsForRegion(state, region.id);
                 const regionMarkers = getRegionPreviewMarkers(state, region.id);
                 const generatedRoom = getGeneratedRoomForRegionIndex(generatedMapPreview, region.id, index);
+                const roomStatus = previewRegionStatuses[region.id] || "empty";
                 return (
                   <button
                     className={cx(
@@ -309,6 +323,9 @@ export function LocationMapStage({
                     )}
                     key={region.id}
                     type="button"
+                    data-testid="dark-places-room-node"
+                    data-room-id={region.id}
+                    data-room-status={roomStatus}
                     aria-label={`Select ${region.name} as the active region target`}
                     aria-pressed={active}
                     title={region.name}

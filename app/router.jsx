@@ -313,10 +313,14 @@ export default function AppRouter() {
 
   const initializeMapRequest = useCallback(
     (snapshot) => {
-      setMapRequest(
-        (currentRequest) =>
-          currentRequest || createMapRequestFromSnapshot(snapshot),
-      );
+      try {
+        const nextRequest = createMapRequestFromSnapshot(snapshot);
+        setMapRequest((currentRequest) => currentRequest || nextRequest);
+        return true;
+      } catch (error) {
+        window.alert(error instanceof Error ? error.message : String(error));
+        return false;
+      }
     },
     [createMapRequestFromSnapshot],
   );
@@ -330,7 +334,14 @@ export default function AppRouter() {
     }
 
     const snapshot = darkenSnapshotProviderRef.current?.();
-    setMapRequest(createMapRequestFromSnapshot(snapshot));
+    let nextRequest;
+    try {
+      nextRequest = createMapRequestFromSnapshot(snapshot);
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : String(error));
+      return;
+    }
+    setMapRequest(nextRequest);
     setMapRequestRevision((value) => value + 1);
     navigateToRoute({
       section: "crucible",
@@ -346,7 +357,7 @@ export default function AppRouter() {
 
   const openMapGenerator = useCallback(
     (snapshot) => {
-      initializeMapRequest(snapshot);
+      if (!initializeMapRequest(snapshot)) return;
       navigateToRoute({
         section: "crucible",
         crucibleGenerator: "darken",
@@ -364,7 +375,7 @@ export default function AppRouter() {
     (tabId) => {
       if (tabId === "map-generator" && !hasOpenedMapGenerator) {
         const snapshot = darkenSnapshotProviderRef.current?.();
-        initializeMapRequest(snapshot);
+        if (!initializeMapRequest(snapshot)) return;
         setHasOpenedMapGenerator(true);
       }
 
@@ -484,6 +495,7 @@ export default function AppRouter() {
                 <CruorMapGeneratorMvp
                   key={mapRequestRevision}
                   initialRequest={mapRequest}
+                  initialManualOverrides={mapRequest?.manualOverrides || null}
                   onRefreshFromComposer={refreshMapFromComposer}
                   debugMode={activeUiMode === "debug"}
                 />

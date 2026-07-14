@@ -82,6 +82,10 @@ function repoPath(...segments) {
   return resolve(process.cwd(), ...segments);
 }
 
+function readSourceText(path) {
+  return readFileSync(path, "utf8").replace(/\r\n?/g, "\n");
+}
+
 function getTaggedManualOverrideUpdateBody(source, label) {
   const labelToken = `"${label}"`;
   const labelIndex = source.indexOf(labelToken);
@@ -315,9 +319,9 @@ describe("map generator pipeline", () => {
     expect(existsSync(composerPanelPath)).toBe(true);
     expect(existsSync(phantomPanelPath)).toBe(false);
 
-    const registry = readFileSync(registryPath, "utf8");
-    const mapPage = readFileSync(mapPagePath, "utf8");
-    const composerPanel = readFileSync(composerPanelPath, "utf8");
+    const registry = readSourceText(registryPath);
+    const mapPage = readSourceText(mapPagePath);
+    const composerPanel = readSourceText(composerPanelPath);
 
     expect(registry).toContain('id: "levels"');
     expect(registry).toContain('id: "level-stairs"');
@@ -626,7 +630,7 @@ describe("map generator pipeline", () => {
       "map-generator",
       "map-generator.page.jsx",
     );
-    const mapPage = readFileSync(pagePath, "utf8");
+    const mapPage = readSourceText(pagePath);
     const updateRoomLevelBody = mapPage.match(/function updateRoomLevel\([\s\S]*?\n  }\n\n  function resetRoomLevel/)?.[0] || "";
     const resetRoomLevelBody = mapPage.match(/function resetRoomLevel\([\s\S]*?\n  }\n\n  function setGridRenderingStyle/)?.[0] || "";
     const qaRoomLevelSetBody = getTaggedManualOverrideUpdateBody(
@@ -1140,7 +1144,7 @@ describe("map generator pipeline", () => {
       "map-generator",
       "map-generator.page.jsx",
     );
-    const mapPage = readFileSync(pagePath, "utf8");
+    const mapPage = readSourceText(pagePath);
     const resetBody =
       mapPage.match(
         /function resetStairMarkerPosition\([\s\S]*?\n  }\n\n  function removeStairMarker/,
@@ -1169,7 +1173,7 @@ describe("map generator pipeline", () => {
       "map-generator",
       "map-generator.page.jsx",
     );
-    const mapPage = readFileSync(pagePath, "utf8");
+    const mapPage = readSourceText(pagePath);
     const generationOverrideBody =
       mapPage.match(
         /function createGenerationManualOverrides\([\s\S]*?\n}\n\nfunction createLockedGenerationManualSnapshot/,
@@ -1182,6 +1186,26 @@ describe("map generator pipeline", () => {
     expect(moveStairMarkerBody).toContain("stairMarkers");
     expect(moveStairMarkerBody).not.toContain("freezeCurrentRoomLayout");
     expect(moveStairMarkerBody).not.toContain("generateMap");
+  });
+
+  test("exposes live composer room hotspots with readiness instrumentation", () => {
+    const pageSource = readSourceText(
+      repoPath("features", "darken-location", "map-generator", "map-generator.page.jsx"),
+    );
+    const renderSource = readSourceText(
+      repoPath("features", "darken-location", "map-generator", "map-generator.render.jsx"),
+    );
+    const stageSource = readSourceText(
+      repoPath("features", "darken-location", "composer", "components", "LocationMapStage.jsx"),
+    );
+
+    expect(pageSource).toContain("enablePreviewRegionHotspots={inlineComposerEditor}");
+    expect(pageSource).toContain("previewRegionStatuses={previewRegionStatuses}");
+    expect(renderSource).toContain('data-testid="dark-places-room-node"');
+    expect(renderSource).toContain("data-room-status={roomStatus}");
+    expect(renderSource).toContain("data-room-status={getPreviewRegionStatus(editorOptions.previewRegionStatuses, region)}");
+    expect(renderSource).toContain("aria-pressed={isPreviewRegionTarget(region, editorOptions.selectedRegionId)}");
+    expect(stageSource).toContain("getRoomProgramEntries(state, generatedMapPreview)");
   });
 
   test("renders stair selection hit zones and a selected marker highlight", () => {

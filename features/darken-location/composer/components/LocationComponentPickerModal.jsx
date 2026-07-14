@@ -374,8 +374,29 @@ function formatLocationMetaToken(value) {
     .join(" ");
 }
 
+function getContentPackId(component) {
+  return (
+    component?.contentProvenance?.primaryPackId ||
+    component?.contentPack?.id ||
+    component?.registry?.packId ||
+    component?.packId ||
+    ""
+  );
+}
+
 function getContentPackTitle(component) {
-  return component?.contentPack?.title || component?.registry?.packTitle || "Location Content";
+  return (
+    component?.contentProvenance?.primaryPackTitle ||
+    component?.contentPack?.title ||
+    component?.registry?.packTitle ||
+    "Location Content"
+  );
+}
+
+function getLegacyContentLabel(component) {
+  if (component?.contentProvenance?.isLegacy) return "Legacy fallback";
+  if (component?.contentProvenance?.isLegacyDerived) return "Migrated legacy";
+  return "";
 }
 
 function getPrimarySourceId(component) {
@@ -611,6 +632,8 @@ function LocationComponentCard({
   const mapInfluencePreviewText = getMapInfluencePreviewText(mapInfluence, regionScoped);
   const mapInfluenceMode = mapInfluenceLabel ? (isForcedMapInfluence(mapInfluence) ? "forced" : "suggested") : "none";
   const compatibilityReasons = getDecisionReasonLabels(decision, slot, regionScoped);
+  const legacyContentLabel = getLegacyContentLabel(component);
+  const contentPackId = getContentPackId(component);
 
   return (
     <article
@@ -626,6 +649,13 @@ function LocationComponentCard({
       data-map-influence={mapInfluenceLabel ? "true" : "false"}
       data-map-influence-mode={mapInfluenceMode}
       data-map-influence-target={mapInfluencePrimaryArchetype}
+      data-content-origin={
+        legacyContentLabel === "Legacy fallback"
+          ? "legacy-fallback"
+          : legacyContentLabel
+            ? "legacy-migrated"
+            : "current"
+      }
       data-testid="dark-places-component-card"
       draggable={!selected}
       key={getComponentKey(component)}
@@ -657,6 +687,11 @@ function LocationComponentCard({
       <div className="card-top">
         <div className="component-title-stack">
           <h3>{getComponentTitle(component)}</h3>
+          {legacyContentLabel ? (
+            <span className="meta-value cruor-composer-meta-chip danger-chip" data-content-legacy-badge="true">
+              {legacyContentLabel}
+            </span>
+          ) : null}
         </div>
         {compatibility ? <span className={`compatibility-badge cruor-composer-compatibility-badge ${compatibility.kind}`}>{compatibility.label}</span> : null}
       </div>
@@ -709,7 +744,10 @@ function LocationComponentCard({
             <span className="meta-label cruor-composer-meta-label">Content Pack</span>
             <span className="meta-values cruor-composer-meta-values">
               <span className="meta-value cruor-composer-meta-chip pack-chip">{getContentPackTitle(component)}</span>
-              {component?.contentPack?.id ? <span className="meta-value cruor-composer-meta-chip">Source: {titleCaseLocation(component.contentPack.id)}</span> : null}
+              {contentPackId ? <span className="meta-value cruor-composer-meta-chip">Source: {titleCaseLocation(contentPackId)}</span> : null}
+              {component?.contentProvenance?.hasCollision ? (
+                <span className="meta-value cruor-composer-meta-chip">First pack wins</span>
+              ) : null}
             </span>
           </div>
           <ImpactMetaRows impact={impact} />
@@ -873,7 +911,7 @@ export function LocationComponentPickerModal({
   const packOptions = useMemo(() => {
     const options = new Map();
     components.forEach((component) => {
-      const id = component?.contentPack?.id || component?.registry?.packId || component?.packId || "";
+      const id = getContentPackId(component);
       if (!id || options.has(id)) return;
       options.set(id, { id, title: getContentPackTitle(component) });
     });
@@ -893,7 +931,7 @@ export function LocationComponentPickerModal({
 
     return components.filter((component) => {
       if (packFilter !== "all") {
-        const componentPackId = component?.contentPack?.id || component?.registry?.packId || component?.packId || "";
+        const componentPackId = getContentPackId(component);
         if (componentPackId !== packFilter) return false;
       }
 

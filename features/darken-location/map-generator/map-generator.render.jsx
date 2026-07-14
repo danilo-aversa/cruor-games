@@ -11277,6 +11277,9 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
           }
           d={buildRegionVisualFloorPath(region, config.gridSize, generatedMap)}
           fillRule="nonzero"
+          data-testid="dark-places-room-node"
+          data-room-id={getPreviewRegionTargetId(region) || undefined}
+          data-room-status={getPreviewRegionStatus(editorOptions.previewRegionStatuses, region)}
           style={{
             fill: "transparent",
             stroke: "transparent",
@@ -11297,6 +11300,7 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
           tabIndex={0}
           focusable="true"
           role="button"
+          aria-pressed={isPreviewRegionTarget(region, editorOptions.selectedRegionId)}
           aria-label={
             region.name
               ? `${region.name} region`
@@ -11590,6 +11594,17 @@ function getPreviewRegionMarkerList(regionMarkers = {}, region) {
   return [];
 }
 
+function getPreviewRegionStatus(regionStatuses = {}, region) {
+  if (!regionStatuses || !region) return "empty";
+  const ids = getPreviewRegionMatchIds(region);
+  for (const id of ids) {
+    const value = regionStatuses[id];
+    const status = typeof value === "string" ? value : value?.status;
+    if (["empty", "partial", "ready"].includes(status)) return status;
+  }
+  return "empty";
+}
+
 function getPreviewRegionMarkerAnchor(region, generatedMap) {
   if (!region) return null;
   const labelX = region.labelPoint?.x;
@@ -11689,6 +11704,7 @@ export function renderPreviewRoomHotspots(generatedMap, hotspotOptions = {}) {
     selectedRegionId = "",
     hoveredRegionId = "",
     regionMarkers = {},
+    regionStatuses = {},
     onSelect = null,
     onHoverChange = null,
     onContextMenu = null,
@@ -11735,6 +11751,8 @@ export function renderPreviewRoomHotspots(generatedMap, hotspotOptions = {}) {
       {regions.map((region) => {
         const active = isPreviewRegionTarget(region, selectedRegionId);
         const hovered = isPreviewRegionTarget(region, hoveredRegionId);
+        const roomStatus = getPreviewRegionStatus(regionStatuses, region);
+        const roomTargetId = getPreviewRegionTargetId(region);
         return (
           <path
             key={`preview-hotspot-${region.id}`}
@@ -11748,6 +11766,9 @@ export function renderPreviewRoomHotspots(generatedMap, hotspotOptions = {}) {
             tabIndex={0}
             focusable="true"
             role="button"
+            data-testid="dark-places-room-node"
+            data-room-id={roomTargetId || undefined}
+            data-room-status={roomStatus}
             aria-label={
               region.name
                 ? `Select ${region.name}`
@@ -11890,6 +11911,8 @@ export function MapSvg({
   const stairMarkerPositions = editorOptions.stairMarkerPositions || null;
   const previewRegionMarkers =
     previewRoomHotspots?.regionMarkers || EMPTY_REGION_MARKERS;
+  const previewRegionStatuses =
+    previewRoomHotspots?.regionStatuses || EMPTY_REGION_MARKERS;
   const staticMapContent = React.useMemo(
     () => (
       <>
@@ -12032,6 +12055,7 @@ export function MapSvg({
       {!showEditor && renderPreviewRoomHotspots(activeEditorSurfaceMap, previewRoomHotspots)}
       {showEditor && renderEditorOverlays(activeEditorSurfaceMap, {
         ...editorOptions,
+        previewRegionStatuses,
         showAccessDots: accessDotsVisible,
         showNames,
         showProps,

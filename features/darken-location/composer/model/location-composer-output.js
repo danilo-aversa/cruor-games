@@ -44,6 +44,41 @@ const ROOM_KEY_SLOT_DEFINITIONS = Object.freeze([
   Object.freeze({ slotId: "encounterTwist", label: "Encounter Twist", heading: "Encounter Twist" }),
 ]);
 
+const LOCATION_EFFECT_SLOT_LABELS = Object.freeze({
+  horrorPremise: "Location Premise",
+  sensoryLayer: "Sensory Layer",
+  visibleAnomaly: "Visible Anomaly",
+  hazard: "Environmental Hazard",
+  clue: "Disturbing Clue",
+  encounterTwist: "Encounter Twist",
+  reward: "Reward / Consequence",
+});
+
+function getLocationEffectSlotLabel(slotId = "") {
+  return LOCATION_EFFECT_SLOT_LABELS[slotId] || cleanText(slotId, "Component");
+}
+
+function mergeOutputText(currentValue, nextValue) {
+  const current = cleanText(currentValue, "");
+  const next = cleanText(nextValue, "");
+  if (!next) return current || "—";
+  if (!current) return next;
+  const currentLower = current.toLowerCase();
+  const nextLower = next.toLowerCase();
+  if (currentLower === nextLower || currentLower.includes(nextLower)) return current;
+  return `${current} · ${next}`;
+}
+
+function mergeComponentOutputs(components = []) {
+  const seen = new Set();
+  return components.filter((component) => {
+    const key = `${component.slotId || ""}:${component.id || component.placementId || component.title || ""}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 function getRoomKeySlotDefinition(slotId = "") {
   return ROOM_KEY_SLOT_DEFINITIONS.find((definition) => definition.slotId === slotId) || {
     slotId,
@@ -85,6 +120,33 @@ function getMissingRoomSlotLabels(missingSlotIds = []) {
 
 function getRowValue(detailRows, label) {
   return detailRows.find((row) => row.label === label)?.value || "";
+}
+
+function getPlacedComponentOutput(placement) {
+  const slotId = placement.slotId || "";
+  const slotLabel = getLocationEffectSlotLabel(slotId);
+  return {
+    id: placement.componentId || placement.id,
+    placementId: placement.id,
+    title: placement.componentTitle || slotLabel,
+    type: "location-effect",
+    slotId,
+    slotLabel,
+    regionId: placement.sourceRegionId || placement.regionId || "",
+    summary: placement.summary || "",
+    text: placement.text || placement.summary || placement.componentTitle || "No table text yet.",
+    strategy: placement.strategy || "none",
+    visualCue: placement.visualCue || "",
+    provenance: placement.provenance || {},
+  };
+}
+
+function getComponentPlacementsForRegion(mapRequest, regionId) {
+  return (Array.isArray(mapRequest?.componentPlacements) ? mapRequest.componentPlacements : [])
+    .filter((placement) =>
+      placement?.sourceRegionId === regionId || placement?.regionId === regionId,
+    )
+    .map(getPlacedComponentOutput);
 }
 
 function getComponentOutput(component) {
@@ -237,26 +299,53 @@ function getMapNotes(mapRequest, generatedMapPreview, regions = []) {
   return notes;
 }
 
-function createRoomSection(region, index, generatedMapPreview, state) {
+function createRoomSection(region, index, generatedMapPreview, state, mapRequest) {
   const room = getGeneratedRoomForRegionIndex(generatedMapPreview, region.id, index);
   const attached = getAssignedComponentsForRegion(state, region.id);
   const detailRows = getRegionDetailRows(region);
   const readAloud = getRegionReadAloud(region);
   const components = attached.map(getComponentOutput);
+  const placedComponents = getComponentPlacementsForRegion(mapRequest, region.id);
   const roomNumber = room?.number || index + 1;
   const roomRole = room?.graphRole || room?.role || region.role || "Room";
   const mapLabel = room
     ? `Map Room ${roomNumber}`
     : `Region ${index + 1}`;
   const heading = `Room ${roomNumber}: ${region.name}`;
-  const feature = region.feature || getRowValue(detailRows, "Feature");
-  const danger = region.danger || getRowValue(detailRows, "Danger");
+  const baseFeature = region.feature || getRowValue(detailRows, "Feature");
+  const anomalyFeature = placedComponents
+    .filter((component) => component.slotId === "visibleAnomaly")
+    .map((component) => `${component.slotLabel} — ${component.title}: ${component.text}`)
+    .join(" · ");
+  const feature = [baseFeature, anomalyFeature]
+    .filter((value) => value && value !== "—")
+    .join(" · ") || "—";
+  const placedPremise = placedComponents
+    .filter((component) => component.slotId === "horrorPremise")
+    .map((component) => component.text)
+    .join(" · ");
+  const placedSensory = placedComponents
+    .filter((component) => component.slotId === "sensoryLayer")
+    .map((component) => component.text)
+    .join(" · ");
+  const placedHazard = placedComponents
+    .filter((component) => component.slotId === "hazard")
+    .map((component) => component.text)
+    .join(" · ");
+  const placedReward = placedComponents
+    .filter((component) => component.slotId === "reward")
+    .map((component) => component.text)
+    .join(" · ");
+  const premise = mergeOutputText(region.premise, placedPremise);
+  const sensory = mergeOutputText(region.sensoryLayer, placedSensory);
+  const danger = mergeOutputText(region.danger || getRowValue(detailRows, "Danger"), placedHazard);
   const secret = region.secret || getRowValue(detailRows, "Secret");
-  const reward = region.reward || getRowValue(detailRows, "Reward");
-  const componentLine = components.length
-    ? components.map((component) => `${component.slotLabel}: ${component.title}`).join("; ")
+  const reward = mergeOutputText(region.reward || getRowValue(detailRows, "Reward"), placedReward);
+  const allComponents = mergeComponentOutputs([...components, ...placedComponents]);
+  const componentLine = allComponents.length
+    ? allComponents.map((component) => `${component.slotLabel}: ${component.title}`).join("; ")
     : "—";
-  const roomKeySlotRows = createRoomKeySlotRows(components);
+  const roomKeySlotRows = createRoomKeySlotRows(allComponents);
   const missingSlotIds = roomKeySlotRows.filter((slotRow) => !slotRow.filled).map((slotRow) => slotRow.slotId);
   const completedSlotIds = roomKeySlotRows.filter((slotRow) => slotRow.filled).map((slotRow) => slotRow.slotId);
   const readiness = getRoomStatusFromMissingSlots(missingSlotIds, components);
@@ -268,11 +357,14 @@ function createRoomSection(region, index, generatedMapPreview, state) {
     room,
     attached,
     components,
+    placedComponents,
     detailRows,
     readAloud,
     heading,
     roomNumber,
     role: roomRole,
+    premise,
+    sensory,
     feature,
     danger,
     secret,
@@ -290,21 +382,25 @@ function createRoomSection(region, index, generatedMapPreview, state) {
       `${mapLabel} — ${region.name}`,
       formatCompileLine("Role", roomRole),
       readAloud ? formatCompileLine("Read-Aloud", readAloud) : "",
+      premise && premise !== "—" ? formatCompileLine("Premise", premise) : "",
+      sensory && sensory !== "—" ? formatCompileLine("Sensory", sensory) : "",
       formatCompileLine("Feature", feature),
       danger && danger !== "—" ? formatCompileLine("Danger", danger) : "",
       secret && secret !== "—" ? formatCompileLine("Secret", secret) : "",
       reward && reward !== "—" ? formatCompileLine("Reward", reward) : "",
-      components.length ? formatCompileLine("Components", componentLine) : "",
+      allComponents.length ? formatCompileLine("Components", componentLine) : "",
     ].filter(Boolean).join(" | "),
     summaryText: [
       `${mapLabel} — ${region.name}`,
       formatCompileLine("Role", roomRole),
       readAloud ? formatCompileLine("Read-Aloud", readAloud) : "",
+      premise && premise !== "—" ? formatCompileLine("Premise", premise) : "",
+      sensory && sensory !== "—" ? formatCompileLine("Sensory", sensory) : "",
       formatCompileLine("Feature", feature),
       danger && danger !== "—" ? formatCompileLine("Danger", danger) : "",
       secret && secret !== "—" ? formatCompileLine("Secret", secret) : "",
       reward && reward !== "—" ? formatCompileLine("Reward", reward) : "",
-      components.length ? formatCompileLine("Components", componentLine) : "",
+      allComponents.length ? formatCompileLine("Components", componentLine) : "",
     ].filter(Boolean).join("\n"),
   };
 }
@@ -375,6 +471,12 @@ function createRoomKeyMarkdown({ title, context, horrorLine, sourceLine, regionS
     if (section.readAloud) {
       lines.push("", "#### Read-Aloud", section.readAloud);
     }
+    if (section.premise && section.premise !== "—") {
+      lines.push("", `**Premise:** ${section.premise}`);
+    }
+    if (section.sensory && section.sensory !== "—") {
+      lines.push("", `**Sensory:** ${section.sensory}`);
+    }
     if (section.feature && section.feature !== "—") {
       lines.push("", `**Feature:** ${section.feature}`);
     }
@@ -415,17 +517,27 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
   const context = state.context || "Location";
   const horrorLine = selectedHorrors.length ? selectedHorrors.join(", ") : "Unspecified horror";
   const sourceLine = selectedSources.length ? selectedSources.join(", ") : "No source anchor selected";
+  const premiseComponents = getAssignedComponentsForSlot(state, "horrorPremise");
+  const locationPremiseText =
+    mapRequest?.premise ||
+    premiseComponents
+      .map((component) => getComponentRulesText(component))
+      .filter(Boolean)
+      .join(" · ") ||
+    "No location premise assigned yet.";
   const premiseSection = {
     title,
     context,
     horrorLine,
     sourceLine,
+    premise: locationPremiseText,
     intrusion: state.intrusion || "Medium",
     text: [
       title,
       formatCompileLine("Context", context),
       formatCompileLine("Horror", horrorLine),
       formatCompileLine("Source", sourceLine),
+      formatCompileLine("Premise", locationPremiseText),
       formatCompileLine("Intrusion", state.intrusion || "Medium"),
     ].join("\n"),
   };
@@ -439,7 +551,7 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
   });
 
   const regionSections = (state.locationRegions || []).map((region, index) =>
-    createRoomSection(region, index, generatedMapPreview, state),
+    createRoomSection(region, index, generatedMapPreview, state, mapRequest),
   );
   const componentSections = createComponentSections(slotSections);
   const hazardSections = getComponentsForTableView(componentSections, "hazard");
@@ -499,6 +611,9 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
     formatCompileLine("Horror", horrorLine),
     formatCompileLine("Source", sourceLine),
     "",
+    "PREMISE",
+    locationPremiseText,
+    "",
     "READ-ALOUD",
     readAloudText,
     "",
@@ -524,6 +639,9 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
   const tableReadyText = [
     title.toUpperCase(),
     `${context} · ${horrorLine} · ${sourceLine}`,
+    "",
+    "PREMISE",
+    locationPremiseText,
     "",
     "READ-ALOUD",
     readAloudText,
@@ -554,6 +672,7 @@ export function getCompilePreview(state, digest, mapRequest, generatedMapPreview
     incompleteRoomCount,
     missingRoomSections,
     premiseSection,
+    locationPremiseText,
     slotSections,
     regionSections,
     roomSections: regionSections,
@@ -583,9 +702,17 @@ export function getRegionSummaryText(compilePreview) {
   ].join("\n\n");
 }
 
-export function createJsonExportPayload(state, digest, mapRequest, generatedMapPreview, compilePreview) {
+export function createJsonExportPayload(
+  state,
+  digest,
+  mapRequest,
+  generatedMapPreview,
+  compilePreview,
+  { exportedAt = new Date().toISOString() } = {},
+) {
   return {
-    exportedAt: new Date().toISOString(),
+    schemaVersion: "dark-places-export-v1",
+    exportedAt,
     title: compilePreview.title,
     premise: compilePreview.premiseSection,
     context: state.context,
@@ -597,6 +724,7 @@ export function createJsonExportPayload(state, digest, mapRequest, generatedMapP
     filledSlots: digest.filledSlots,
     totalSlots: digest.totalSlots,
     mapRequest,
+    componentPlacements: mapRequest?.componentPlacements || [],
     mapSyncStatus: compilePreview.mapSyncStatus,
     mapNotes: compilePreview.mapNotes,
     sessionInsertText: compilePreview.sessionInsertText,
@@ -619,12 +747,15 @@ export function createJsonExportPayload(state, digest, mapRequest, generatedMapP
       generatedRoomShape: section.room?.shape || null,
       mapLabel: section.mapLabel,
       readAloud: section.readAloud,
+      premise: section.premise,
+      sensory: section.sensory,
       feature: section.feature,
       danger: section.danger,
       secret: section.secret,
       reward: section.reward,
       details: Object.fromEntries(section.detailRows.map((row) => [row.label, row.value])),
       components: section.components,
+      placedComponents: section.placedComponents,
     })),
     generatedMap: generatedMapPreview
       ? {
@@ -636,6 +767,102 @@ export function createJsonExportPayload(state, digest, mapRequest, generatedMapP
         }
       : null,
   };
+}
+
+export function createLocationExportFilename(value) {
+  return String(value || "cruor-location")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "cruor-location";
+}
+
+function createExportFormat({ id, label, filename, mimeType, text, available = true, dynamic = false }) {
+  return Object.freeze({
+    id,
+    label,
+    filename,
+    mimeType,
+    text: String(text || ""),
+    available: Boolean(available),
+    dynamic: Boolean(dynamic),
+  });
+}
+
+export function createLocationExportBundle(
+  state,
+  digest,
+  mapRequest,
+  generatedMapPreview,
+  compilePreview,
+  { exportedAt = new Date().toISOString() } = {},
+) {
+  const baseFilename = createLocationExportFilename(compilePreview?.title);
+  const jsonPayload = createJsonExportPayload(
+    state,
+    digest,
+    mapRequest,
+    generatedMapPreview,
+    compilePreview,
+    { exportedAt },
+  );
+
+  const formats = Object.freeze({
+    roomKey: createExportFormat({
+      id: "roomKey",
+      label: "Room Key Markdown",
+      filename: `${baseFilename}-room-key.md`,
+      mimeType: "text/markdown;charset=utf-8",
+      text: compilePreview?.roomKeyMarkdown,
+    }),
+    sessionInsert: createExportFormat({
+      id: "sessionInsert",
+      label: "Session Insert",
+      filename: `${baseFilename}-session-insert.txt`,
+      mimeType: "text/plain;charset=utf-8",
+      text: compilePreview?.sessionInsertText,
+    }),
+    tableText: createExportFormat({
+      id: "tableText",
+      label: "Table Text",
+      filename: `${baseFilename}-table-text.txt`,
+      mimeType: "text/plain;charset=utf-8",
+      text: compilePreview?.tableReadyText,
+    }),
+    markdown: createExportFormat({
+      id: "markdown",
+      label: "Markdown",
+      filename: `${baseFilename}.md`,
+      mimeType: "text/markdown;charset=utf-8",
+      text: compilePreview?.roomKeyMarkdown,
+    }),
+    json: createExportFormat({
+      id: "json",
+      label: "JSON",
+      filename: `${baseFilename}.json`,
+      mimeType: "application/json;charset=utf-8",
+      text: JSON.stringify(jsonPayload, null, 2),
+    }),
+    svg: createExportFormat({
+      id: "svg",
+      label: "Map SVG",
+      filename: `${baseFilename}-map.svg`,
+      mimeType: "image/svg+xml;charset=utf-8",
+      text: "",
+      available: Boolean(generatedMapPreview),
+      dynamic: true,
+    }),
+  });
+
+  return Object.freeze({
+    schemaVersion: "dark-places-export-bundle-v1",
+    exportedAt,
+    title: compilePreview?.title || "Cursed Location Build",
+    contextLine: compilePreview?.contextLine || "Location export",
+    baseFilename,
+    jsonPayload,
+    formats,
+  });
 }
 
 export async function copyTextToClipboard(text) {

@@ -246,5 +246,55 @@ describe("Dungeon Brief room constraint handoff", () => {
     expect(adapted.location.roomCompatibility).toEqual(roomCompatibility);
     expect(adapted.location.roomDesign).not.toBe(roomDesign);
     expect(adapted.location.roomCompatibility).not.toBe(roomCompatibility);
+    expect(adapted.location.effect).toMatchObject({
+      schemaVersion: "location-component-effect-v0.1",
+      scope: "region",
+      placement: { strategy: "assigned-region" },
+      roomDesign: {
+        schemaVersion: "room-design-v0.1",
+        shape: { kind: "circle" },
+      },
+      roomCompatibility: {
+        schemaVersion: "room-compatibility-v1",
+        exclusiveGroups: ["central-hazard"],
+        conflictPolicy: "block",
+      },
+      diagnostics: {
+        mode: "procedural",
+        liftedContracts: ["roomDesign", "roomCompatibility"],
+      },
+    });
+  });
+
+  test("carries normalized component effects through Dungeon Brief and Map Request", () => {
+    const request = createMapRequestFromDarkenLocationState(
+      createSnapshot(createCompatibleComponents()),
+    );
+    const assignedComponents = request.requiredRegions[0].metadata.assignedComponents;
+
+    expect(assignedComponents).toHaveLength(2);
+    expect(assignedComponents.map((component) => component.effect)).toEqual([
+      expect.objectContaining({
+        schemaVersion: "location-component-effect-v0.1",
+        scope: "region",
+        placement: expect.objectContaining({ strategy: "assigned-region" }),
+        diagnostics: expect.objectContaining({ mode: "procedural" }),
+      }),
+      expect.objectContaining({
+        schemaVersion: "location-component-effect-v0.1",
+        scope: "region",
+        topology: expect.objectContaining({ isSecretRoom: true }),
+        diagnostics: expect.objectContaining({ mode: "procedural" }),
+      }),
+    ]);
+    expect(request.dungeonBrief.metadata.selectedComponents).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          effect: expect.objectContaining({
+            schemaVersion: "location-component-effect-v0.1",
+          }),
+        }),
+      ]),
+    );
   });
 });

@@ -30,7 +30,9 @@ flowchart LR
 
 `room-constraint-resolver.js` compiles base regions, templates, archetypes, assigned components, candidate components, and manual overrides into order-independent atomic constraints. It resolves hard intersections, soft scoring, compatibility policies, engine support, field-level provenance, changes, warnings, and structured conflicts without importing React, SVG, or generator geometry. The resolver is exported through `shared/content/content.index.js` and is used by the Darken Dungeon Brief handoff, Component Picker, manual room-style validation, and atomic assignment transactions. Shape capability validation now rejects unsupported shape/modifier combinations before commit rather than allowing a metadata-only result.
 
-`shared/content/adapters/darken-components.js` preserves `mapInfluence`, `roomDesign`, and `roomCompatibility` when legacy Darken components are converted into shared components, preventing metadata loss based on content origin.
+`shared/content/contracts/location-component-effect.js` defines the umbrella `location-component-effect-v0.1` contract. It classifies output, placement, topology, and renderer intent while lifting the existing `mapInfluence`, `roomDesign`, and `roomCompatibility` contracts with provenance and diagnostics. Components without procedural metadata normalize explicitly to `output-only`; text fields never become topology flags through truthiness.
+
+`shared/content/adapters/darken-components.js` preserves `mapInfluence`, `roomDesign`, `roomCompatibility`, and authored effect metadata when legacy Darken components are converted into shared components. The adapter attaches the normalized effect contract so content origin does not change handoff semantics.
 
 Map Generator keeps compatibility wrappers at `map-generator.profile.js` and `map-generator.room-design.js`; the latter exposes engine support from the shared shape registry without collapsing semantic shapes. Feature-agnostic consumers such as Inspiration Studio import shared contracts rather than generator implementation files.
 

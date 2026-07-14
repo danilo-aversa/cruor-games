@@ -17,7 +17,9 @@ Darken Location includes `features/darken-location/composer/`, `features/darken-
 
 Composer state is built from local model helpers and shared content. `dungeon-brief-generator.js` resolves each region through the shared Room Constraint Resolver before `dungeon-brief.js` serializes the result. `darken-location.map-request.js` remains the feature boundary to Map Generator. The router stores the resulting request and revision before rendering the map page.
 
-Each normalized room now carries both the generator-facing `roomDesign`/`effectiveRoomDesign` and a versioned `roomConstraintResolution` report with status, conflicts, warnings, changes, provenance, capabilities, and diagnostics. Hard conflicts remain explicit in the report instead of being hidden by sequential object overwrite. Composer assignment is not blocked yet; candidate-time compatibility belongs to the later picker integration.
+Each normalized assigned component now also carries a `location-component-effect-v0.1` record. The record preserves explicit effect metadata, lifts existing map/room contracts, and reaches the Dungeon Brief and Map Request without changing generation behavior in this pass. Map-scoped components remain explicitly `output-only` until a later vertical slice implements placement or rendering consumers.
+
+Each normalized room carries both the generator-facing `roomDesign`/`effectiveRoomDesign` and a versioned `roomConstraintResolution` report with status, conflicts, warnings, changes, provenance, capabilities, and diagnostics. Hard conflicts remain explicit in the report instead of being hidden by sequential object overwrite. Composer assignment is not blocked yet; candidate-time compatibility belongs to the later picker integration.
 
 Immersive mode is presentation-only state. It closes an open component drawer when entered, removes peripheral panels from the stage render, and expands the existing inline map editor without changing the composer draft, map request, manual overrides, assignments, or generated geometry.
 

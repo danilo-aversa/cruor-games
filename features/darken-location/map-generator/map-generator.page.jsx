@@ -793,6 +793,7 @@ export function MapViewport({
   onRegionContextMenu = null,
   enablePreviewRegionHotspots = false,
   previewRegionMarkers = {},
+  previewRegionStatuses = {},
   showEditor,
   showNames,
   showRoomBadges = true,
@@ -3457,6 +3458,7 @@ export function MapViewport({
               selectedRegionId,
               hoveredRegionId,
               regionMarkers: previewRegionMarkers,
+              regionStatuses: previewRegionStatuses,
               onSelect: (region) =>
                 onSelectedRegionChange?.(
                   region?.previewTargetId ||
@@ -6840,6 +6842,7 @@ export default function CruorMapGeneratorMvp({
   inlineComposerEditor = false,
   composerSelectedRegionId = "",
   previewRegionMarkers = {},
+  previewRegionStatuses = {},
   onComposerRegionHoverChange = null,
   onComposerSelectedRegionChange = null,
   onViewportMetricsChange = null,
@@ -11933,6 +11936,8 @@ export default function CruorMapGeneratorMvp({
       onSelectedRegionChange={selectMapRegion}
       onRegionHoverChange={onComposerRegionHoverChange}
       previewRegionMarkers={previewRegionMarkers}
+      previewRegionStatuses={previewRegionStatuses}
+      enablePreviewRegionHotspots={inlineComposerEditor}
       showEditor={showEditor}
       showNames={showNames}
       showRoomBadges={showRoomBadges}

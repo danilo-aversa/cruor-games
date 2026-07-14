@@ -1155,6 +1155,25 @@ export function makeProp(region, kind, cell, config, index, options = {}) {
     ...(options.roomDesignRequired ? { roomDesignRequired: true } : {}),
     ...(options.roomDesignModifier ? { roomDesignModifier: options.roomDesignModifier } : {}),
     ...(options.roomDesignPropKind ? { roomDesignPropKind: options.roomDesignPropKind } : {}),
+    ...(options.locationEffect ? { locationEffect: true } : {}),
+    ...(options.locationEffectPlacementId
+      ? { locationEffectPlacementId: options.locationEffectPlacementId }
+      : {}),
+    ...(options.locationEffectComponentId
+      ? { locationEffectComponentId: options.locationEffectComponentId }
+      : {}),
+    ...(options.locationEffectComponentTitle
+      ? { locationEffectComponentTitle: options.locationEffectComponentTitle }
+      : {}),
+    ...(options.locationEffectSlotId
+      ? { locationEffectSlotId: options.locationEffectSlotId }
+      : {}),
+    ...(options.locationEffectVisualCue
+      ? { locationEffectVisualCue: options.locationEffectVisualCue }
+      : {}),
+    ...(options.locationEffectProvenance
+      ? { locationEffectProvenance: options.locationEffectProvenance }
+      : {}),
   };
 }
 
@@ -1199,6 +1218,52 @@ function placementToRatio(placement = "center", index = 0) {
     ][index % 4];
   }
   return { rx: 0.5, ry: 0.5 };
+}
+
+function normalizeLocationEffectPropKind(value) {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (!normalized) return "";
+  if (normalized === "clue-marker" || normalized === "clue") return "clue-marker";
+  if (normalized === "anomaly" || normalized === "anomaly-marker" || normalized === "visible-anomaly") {
+    return "clue-marker";
+  }
+  if (normalized === "reward" || normalized === "reward-marker") return "chest";
+  return normalized;
+}
+
+function createLocationEffectPropPlan(region) {
+  const placements = Array.isArray(region.componentPlacements)
+    ? region.componentPlacements
+    : Array.isArray(region.requestMetadata?.componentPlacements)
+      ? region.requestMetadata.componentPlacements
+      : [];
+
+  return placements
+    .map((placement, index) => {
+      const kind = normalizeLocationEffectPropKind(
+        placement.propKind ||
+          placement.markerKind ||
+          placement.effect?.render?.propKind ||
+          placement.effect?.render?.markerKind,
+      );
+      if (!kind) return null;
+      const ratio = placementToRatio(placement.effect?.render?.placement || "center", index);
+      return {
+        kind,
+        rx: ratio.rx,
+        ry: ratio.ry,
+        rotation: 0,
+        sizeScale: kind === "chest" ? 0.86 : 0.72,
+        locationEffect: true,
+        locationEffectPlacementId: placement.id,
+        locationEffectComponentId: placement.componentId,
+        locationEffectComponentTitle: placement.componentTitle,
+        locationEffectSlotId: placement.slotId,
+        locationEffectVisualCue: placement.visualCue,
+        locationEffectProvenance: placement.provenance || {},
+      };
+    })
+    .filter(Boolean);
 }
 
 function createRoomDesignRequiredPropPlan(region) {
@@ -1871,9 +1936,13 @@ export function createProps(generatedMap) {
       getRoomDesignRequiredPropCount(region) + getRoomDesignModifierPropCount(region),
     );
     const reservedCells = new Set();
-    const plan = createPropLayoutPlan(region, flags, budget, rng, contextKey);
+    const locationEffectPlan = createLocationEffectPropPlan(region);
+    const plan = [
+      ...locationEffectPlan,
+      ...createPropLayoutPlan(region, flags, budget, rng, contextKey),
+    ];
     let index = 0;
-    plan.slice(0, budget).forEach((item) => {
+    plan.forEach((item) => {
       index = addPlannedProp(props, region, config, reservedCells, item, index);
     });
   });

@@ -8,6 +8,15 @@ export function getStaticContentPackProvenance() {
   return STATIC_CONTENT_REPOSITORY.getPackProvenance();
 }
 
+
+export function getStaticContentCollisionReport() {
+  return STATIC_CONTENT_REPOSITORY.getCollisionReport();
+}
+
+export function getStaticLegacyMigrationReport() {
+  return STATIC_CONTENT_REPOSITORY.getLegacyMigrationReport();
+}
+
 export function getStaticContentPackSummaries() {
   return STATIC_CONTENT_REPOSITORY.getPackSummaries();
 }
@@ -30,6 +39,15 @@ export async function loadContentRegistry(options = {}) {
 
 export async function loadContentPackProvenance() {
   return STATIC_CONTENT_REPOSITORY.loadPackProvenance();
+}
+
+
+export async function loadContentCollisionReport() {
+  return STATIC_CONTENT_REPOSITORY.loadCollisionReport();
+}
+
+export async function loadLegacyMigrationReport() {
+  return STATIC_CONTENT_REPOSITORY.loadLegacyMigrationReport();
 }
 
 export async function loadContentPackSummaries() {

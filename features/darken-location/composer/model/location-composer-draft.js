@@ -1,7 +1,10 @@
 import { toArray } from "./location-composer-state.js";
 import { sanitizeLocationRoomConstraintState } from "./location-room-constraint-state.js";
+import { normalizeManualOverrides } from "../../map-generator/map-generator.state.js";
 
-const LOCATION_DRAFT_STORAGE_KEY = "cruor:darken-location-composer:draft:v1";
+const LOCATION_DRAFT_VERSION = 2;
+const LOCATION_DRAFT_STORAGE_KEY = "cruor:darken-location-composer:draft:v2";
+const LEGACY_LOCATION_DRAFT_STORAGE_KEY = "cruor:darken-location-composer:draft:v1";
 
 function getLocalStorage() {
   if (typeof window === "undefined" || !window.localStorage) return null;
@@ -44,6 +47,16 @@ function createDraftStatePayload(state) {
     sourceAnchors: toArray(state.sourceAnchors),
     intrusion: state.intrusion,
     seed: state.seed || "",
+    dungeonMode: state.dungeonMode || "theme",
+    dungeonThemeId: state.dungeonThemeId || "",
+    dungeonScale: state.dungeonScale || "medium",
+    dungeonCustomRoomCount: state.dungeonCustomRoomCount || 8,
+    dungeonComplexity: state.dungeonComplexity || "standard",
+    themeProgramCandidates: Array.isArray(state.themeProgramCandidates)
+      ? state.themeProgramCandidates
+      : [],
+    activeThemeProgramCandidateId: state.activeThemeProgramCandidateId || "",
+    mapManualOverrides: state.mapManualOverrides || null,
     activeSlot: state.activeSlot,
     activeSlotScope: state.activeSlotScope,
     activeRegionId: state.activeRegionId,
@@ -56,7 +69,7 @@ function createDraftStatePayload(state) {
 
 function createSerializedDraft(state) {
   return {
-    version: 1,
+    version: LOCATION_DRAFT_VERSION,
     savedAt: new Date().toISOString(),
     state: createDraftStatePayload(state),
   };
@@ -71,11 +84,23 @@ export function readStoredLocationDraft() {
   if (!storage) return null;
 
   try {
-    const raw = storage.getItem(LOCATION_DRAFT_STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (!parsed || parsed.version !== 1 || !parsed.state) return null;
-    return parsed;
+    for (const storageKey of [LOCATION_DRAFT_STORAGE_KEY, LEGACY_LOCATION_DRAFT_STORAGE_KEY]) {
+      const raw = storage.getItem(storageKey);
+      if (!raw) continue;
+
+      const parsed = JSON.parse(raw);
+      if (!parsed?.state || ![1, LOCATION_DRAFT_VERSION].includes(parsed.version)) continue;
+
+      return parsed.version === LOCATION_DRAFT_VERSION
+        ? parsed
+        : {
+            ...parsed,
+            version: LOCATION_DRAFT_VERSION,
+            migratedFromVersion: 1,
+          };
+    }
+
+    return null;
   } catch (error) {
     return null;
   }
@@ -117,6 +142,9 @@ export function restoreLocationDraftState(draft, fallbackState) {
     horrors: new Set(draftState.horrors || []),
     selectedComponentIds: new Set(draftState.selectedComponentIds || []),
     slotAssignments: draftState.slotAssignments || {},
+    mapManualOverrides: draftState.mapManualOverrides
+      ? normalizeManualOverrides(draftState.mapManualOverrides)
+      : null,
     locationRegions: Array.isArray(draftState.locationRegions) && draftState.locationRegions.length
       ? draftState.locationRegions
       : fallbackState.locationRegions,
@@ -160,6 +188,7 @@ export function deleteStoredLocationDraft() {
   const storage = getLocalStorage();
   if (!storage) return false;
   storage.removeItem(LOCATION_DRAFT_STORAGE_KEY);
+  storage.removeItem(LEGACY_LOCATION_DRAFT_STORAGE_KEY);
   return true;
 }
 
@@ -171,6 +200,7 @@ export function deleteStoredLocationDraftWithStatus() {
 
   try {
     storage.removeItem(LOCATION_DRAFT_STORAGE_KEY);
+    storage.removeItem(LEGACY_LOCATION_DRAFT_STORAGE_KEY);
     return { ok: true, reason: "" };
   } catch (error) {
     return { ok: false, reason: "Unable to clear local draft" };

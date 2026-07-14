@@ -206,6 +206,12 @@ function clonePlainObject(value) {
   return isPlainObject(value) ? JSON.parse(JSON.stringify(value)) : null;
 }
 
+function normalizeComponentPlacements(value = []) {
+  return normalizeArray(value)
+    .filter((placement) => isPlainObject(placement))
+    .map((placement) => JSON.parse(JSON.stringify(placement)));
+}
+
 function getRoomDesignSource(source = {}) {
   if (!isPlainObject(source)) return null;
   return (
@@ -248,6 +254,12 @@ function normalizeRequestRegion(region, index) {
     "";
   const directRoomArchetype =
     declaredRoomArchetypeSource === "map-influence" ? "" : rawDirectRoomArchetype;
+  const explicitSecretRoom =
+    typeof region.isSecretRoom === "boolean"
+      ? region.isSecretRoom
+      : typeof metadata.isSecretRoom === "boolean"
+        ? metadata.isSecretRoom
+        : region.secret === true || metadata.secret === true;
   return {
     id: region.id || `region-${index + 1}`,
     name: region.label || region.name || `Location Region ${index + 1}`,
@@ -271,9 +283,11 @@ function normalizeRequestRegion(region, index) {
       index === 0 ||
       tags.some((tag) => tag.includes("entrance") || tag.includes("threshold")),
     isExit: tags.some((tag) => tag.includes("exit") || tag.includes("outcome")),
-    secret:
-      tags.some((tag) => tag.includes("secret")) || Boolean(metadata.secret),
+    secret: explicitSecretRoom || tags.some((tag) => tag.includes("secret")),
     sourceRegionId: region.sourceRegionId,
+    componentPlacements: normalizeComponentPlacements(
+      region.componentPlacements || metadata.componentPlacements,
+    ),
     requestMetadata: metadata,
   };
 }
@@ -315,6 +329,16 @@ export function createConfigFromNormalizedMapRequest(
       : baseConfig.sourceAnchors,
     regions: regions.length ? regions : baseConfig.regions,
     requiredRegions,
+    globalPalette:
+      clonePlainObject(
+        initialRequest.globalPalette ||
+          initialRequest.dungeonBrief?.globalPalette ||
+          initialRequest.metadata?.globalPalette ||
+          initialRequest.metadata?.dungeonBrief?.globalPalette,
+      ) || clonePlainObject(baseConfig.globalPalette) || {},
+    componentPlacements: normalizeComponentPlacements(
+      initialRequest.componentPlacements || initialRequest.metadata?.componentPlacements,
+    ),
     dungeonBrief: initialRequest.dungeonBrief || initialRequest.metadata?.dungeonBrief || null,
     normalizedMapRequest: initialRequest,
   };
@@ -377,8 +401,15 @@ export function normalizeInput(config) {
       links: Array.isArray(source.links) ? source.links : [],
       isEntrance: Boolean(source.isEntrance || index === 0),
       isExit: Boolean(source.isExit),
-      secret: Boolean(source.secret || tags.includes("secret")),
+      secret: Boolean(
+        source.isSecretRoom === true ||
+        source.secret === true ||
+        tags.includes("secret"),
+      ),
       sourceRegionId: source.sourceRegionId,
+      componentPlacements: normalizeComponentPlacements(
+        source.componentPlacements || source.requestMetadata?.componentPlacements,
+      ),
       requestMetadata: source.requestMetadata,
     };
   });
@@ -392,6 +423,8 @@ export function normalizeInput(config) {
     mapHeight: normalizeMapDimension(config.mapHeight, DEFAULT_CONFIG.mapHeight),
     visualStyle: normalizeVisualStyle(config.visualStyle),
     contextGraphAdapterMode: normalizeContextGraphAdapterMode(config.contextGraphAdapterMode),
+    globalPalette: clonePlainObject(config.globalPalette) || {},
+    componentPlacements: normalizeComponentPlacements(config.componentPlacements),
     regions,
     connections: Array.isArray(config.connections) ? config.connections : [],
   };

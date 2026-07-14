@@ -1,4 +1,5 @@
 import { CONTENT_PACK_STATUS, createContentPack } from "../content-pack-schema.js";
+import { normalizeLocationComponentEffect } from "../contracts/location-component-effect.js";
 import { SHARED_SOURCE_ANCHORS } from "../source-anchors.js";
 import { SHARED_DARKEN_LOCATION_SLOTS, SHARED_WORKFLOWS } from "../workflows.js";
 
@@ -133,6 +134,12 @@ function asArray(value) {
 
 function uniqueArray(values = []) {
   return [...new Set(asArray(values).map((value) => String(value).trim()).filter(Boolean))];
+}
+
+function cloneOptionalPlainObject(value) {
+  return value && typeof value === "object" && !Array.isArray(value)
+    ? JSON.parse(JSON.stringify(value))
+    : undefined;
 }
 
 function normalizeMapInfluenceDefinition(value, { source = "", title = "" } = {}) {
@@ -4456,6 +4463,48 @@ function createLocationComponent(blueprint) {
   const outputSection = OUTPUT_SECTION_BY_SLOT[slot] || COMPONENT_TYPE_BY_SLOT[slot] || "Location Component";
   const componentType = COMPONENT_TYPE_BY_SLOT[slot] || "Location Component";
   const mapInfluence = getLocationComponentMapInfluence(blueprint);
+  const roomDesign = cloneOptionalPlainObject(blueprint.roomDesign);
+  const roomCompatibility = cloneOptionalPlainObject(blueprint.roomCompatibility);
+  const authoredEffect = cloneOptionalPlainObject(blueprint.effect);
+  const location = {
+    schemaVersion: LOCATION_COMPONENT_SCHEMA_VERSION,
+    componentId: blueprint.id,
+    slot,
+    slots: [slot],
+    assignmentMode: REGION_SCOPED_SLOT_IDS.has(slot) ? "region" : "map",
+    outputSection,
+    componentType,
+    sensoryKind: blueprint.sensoryKind || "",
+    intrusion: blueprint.intrusion || "Medium",
+    prep: blueprint.prep || "Low",
+    gmFacingOnly: blueprint.tableRole === "gm-facing" || Boolean(blueprint.mechanics),
+    tableRole: blueprint.tableRole || (blueprint.mechanics ? "rules" : "read-aloud"),
+    rules: blueprint.mechanics ? { text: blueprint.mechanics } : null,
+    ...(mapInfluence ? { mapInfluence } : {}),
+    ...(roomDesign ? { roomDesign } : {}),
+    ...(roomCompatibility ? { roomCompatibility } : {}),
+    ...(authoredEffect ? { effect: authoredEffect } : {}),
+    migration: {
+      source: "shared/content/content-packs/dark-places-canonical-expansion-pack.js",
+      legacyId: "",
+      isCanonical: true,
+    },
+  };
+  const effect = normalizeLocationComponentEffect(
+    {
+      id: blueprint.id,
+      title: blueprint.title,
+      slots: [slot],
+      sourceAnchors,
+      location,
+    },
+    {
+      componentId: blueprint.id,
+      componentTitle: blueprint.title,
+      slotId: slot,
+      assignmentMode: location.assignmentMode,
+    },
+  );
 
   return Object.freeze({
     id: blueprint.id,
@@ -4480,25 +4529,8 @@ function createLocationComponent(blueprint) {
     mechanics: blueprint.mechanics || "",
     narrative: blueprint.narrative || "",
     location: {
-      schemaVersion: LOCATION_COMPONENT_SCHEMA_VERSION,
-      componentId: blueprint.id,
-      slot,
-      slots: [slot],
-      assignmentMode: REGION_SCOPED_SLOT_IDS.has(slot) ? "region" : "map",
-      outputSection,
-      componentType,
-      sensoryKind: blueprint.sensoryKind || "",
-      intrusion: blueprint.intrusion || "Medium",
-      prep: blueprint.prep || "Low",
-      gmFacingOnly: blueprint.tableRole === "gm-facing" || Boolean(blueprint.mechanics),
-      tableRole: blueprint.tableRole || (blueprint.mechanics ? "rules" : "read-aloud"),
-      rules: blueprint.mechanics ? { text: blueprint.mechanics } : null,
-      ...(mapInfluence ? { mapInfluence } : {}),
-      migration: {
-        source: "shared/content/content-packs/dark-places-canonical-expansion-pack.js",
-        legacyId: "",
-        isCanonical: true,
-      },
+      ...location,
+      effect,
     },
     registry: {
       componentId: blueprint.id,

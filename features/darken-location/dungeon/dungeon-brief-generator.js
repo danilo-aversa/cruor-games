@@ -1,3 +1,4 @@
+import { normalizeLocationComponentEffect } from "../../../shared/content/contracts/location-component-effect.js";
 import { getSourceAnchorId } from "../../../shared/content/source-anchors.js";
 import { createDungeonBrief } from "./dungeon-brief.js";
 import { getEffectiveRoomDesign, resolveDungeonRoomConstraints } from "./dungeon-room-constraints.js";
@@ -223,14 +224,26 @@ function normalizeAssignedComponents(slotAssignments, selectedComponents = []) {
       asArray(assignments).map((assignment) => {
         const component = componentIndex.get(assignment.componentId) || {};
         const mapInfluence = buildComponentMapInfluence(component);
+        const assignmentSlotId = normalizeString(assignment.slotId, slotId);
+        const effect = normalizeLocationComponentEffect(component, {
+          componentId: normalizeString(assignment.componentId || component.id),
+          componentTitle: normalizeString(component.title || component.label),
+          slotId: assignmentSlotId,
+          assignmentMode: assignment.regionId ? "region" : "map",
+        });
         return {
           id: normalizeString(assignment.componentId || component.id),
           title: normalizeString(component.title),
           type: normalizeString(component.type),
           contentType: normalizeString(component.contentType),
           summary: normalizeString(component.summary),
-          slotId: normalizeString(assignment.slotId, slotId),
+          tableText: normalizeString(
+            component.tableText || component.text || component.summary,
+          ),
+          narrative: normalizeString(component.narrative),
+          slotId: assignmentSlotId,
           regionId: normalizeString(assignment.regionId),
+          effect,
           sourceAnchors: normalizeSourceAnchorIds(component.sourceAnchors),
           tags: asArray(component.tags),
           mapInfluence,
@@ -247,23 +260,37 @@ function normalizeAssignedComponents(slotAssignments, selectedComponents = []) {
   if (assignedComponents.length) return assignedComponents;
 
   return asArray(selectedComponents)
-    .map((component) => ({
-      id: normalizeString(component?.id),
-      title: normalizeString(component?.title),
-      type: normalizeString(component?.type),
-      contentType: normalizeString(component?.contentType),
-      summary: normalizeString(component?.summary),
-      slotId: normalizeString(component?.slotId),
-      regionId: normalizeString(component?.regionId),
-      sourceAnchors: normalizeSourceAnchorIds(component?.sourceAnchors),
-      tags: asArray(component?.tags),
-      mapInfluence: buildComponentMapInfluence(component),
-      roomDesign: cloneOptionalPlainObject(getRoomDesignSource(component)),
-      roomCompatibility: cloneOptionalPlainObject(getRoomCompatibilitySource(component)),
-      location: clonePlainObject(component?.location),
-      locationRegion: clonePlainObject(component?.locationRegion),
-      map: clonePlainObject(component?.map),
-    }))
+    .map((component) => {
+      const slotId = normalizeString(component?.slotId || component?.slots?.[0]);
+      const regionId = normalizeString(component?.regionId);
+      return {
+        id: normalizeString(component?.id),
+        title: normalizeString(component?.title),
+        type: normalizeString(component?.type),
+        contentType: normalizeString(component?.contentType),
+        summary: normalizeString(component?.summary),
+        tableText: normalizeString(
+          component?.tableText || component?.text || component?.summary,
+        ),
+        narrative: normalizeString(component?.narrative),
+        slotId,
+        regionId,
+        effect: normalizeLocationComponentEffect(component, {
+          componentId: normalizeString(component?.id),
+          componentTitle: normalizeString(component?.title || component?.label),
+          slotId,
+          assignmentMode: regionId ? "region" : "map",
+        }),
+        sourceAnchors: normalizeSourceAnchorIds(component?.sourceAnchors),
+        tags: asArray(component?.tags),
+        mapInfluence: buildComponentMapInfluence(component),
+        roomDesign: cloneOptionalPlainObject(getRoomDesignSource(component)),
+        roomCompatibility: cloneOptionalPlainObject(getRoomCompatibilitySource(component)),
+        location: clonePlainObject(component?.location),
+        locationRegion: clonePlainObject(component?.locationRegion),
+        map: clonePlainObject(component?.map),
+      };
+    })
     .filter((component) => component.id || component.title || component.slotId);
 }
 
@@ -277,6 +304,232 @@ function getGlobalComponents(assignedComponents) {
   return asArray(assignedComponents).filter(
     (component) => !component.regionId && GLOBAL_SLOT_IDS.has(component.slotId),
   );
+}
+
+function normalizePlacementToken(value = "") {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function createStablePlacementHash(...parts) {
+  const text = parts.filter(Boolean).join("|");
+  let hash = 2166136261;
+  for (let index = 0; index < text.length; index += 1) {
+    hash ^= text.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function getRoomPlacementText(room = {}) {
+  return [
+    room.name,
+    room.role,
+    room.type,
+    room.shape,
+    ...(asArray(room.tags)),
+  ]
+    .map(normalizePlacementToken)
+    .filter(Boolean)
+    .join(" ");
+}
+
+function getComponentRoomScore(room, component, usedRoomIds, seed) {
+  const effect = component.effect || {};
+  const placement = effect.placement || {};
+  const roomText = getRoomPlacementText(room);
+  const forbiddenRoles = asArray(placement.forbiddenRoles)
+    .map(normalizePlacementToken)
+    .filter(Boolean);
+  if (forbiddenRoles.some((role) => roomText.includes(role))) {
+    return Number.NEGATIVE_INFINITY;
+  }
+
+  const preferredRoles = asArray(placement.preferredRoles)
+    .map(normalizePlacementToken)
+    .filter(Boolean);
+  let score = preferredRoles.reduce(
+    (total, role) => total + (roomText.includes(role) ? 90 : 0),
+    0,
+  );
+  const slotId = component.slotId;
+
+  if (slotId === "visibleAnomaly") {
+    if (/landmark|climax|final|outcome|reward|ritual/.test(roomText)) score += 45;
+    if (/discovery|clue|archive|reliquary|shrine/.test(roomText)) score += 28;
+    if (/entrance|threshold/.test(roomText)) score -= 18;
+  } else if (slotId === "reward") {
+    if (/outcome|reward|climax|final|secret|reliquary|treasury|vault/.test(roomText)) score += 55;
+    if (/entrance|threshold/.test(roomText)) score -= 45;
+  } else if (slotId === "horrorPremise") {
+    if (/entrance|threshold|arrival|foyer|gate/.test(roomText)) score += 65;
+    if (/landmark|ritual|chapel|nave/.test(roomText)) score += 20;
+    if (room.index === 1) score += 35;
+  }
+
+  if (/service|connector|utility|storage|passage/.test(roomText)) score -= 42;
+  if (room.isSecretRoom || room.secret === true) {
+    score += slotId === "reward" ? 20 : 6;
+  }
+  if (String(room.size || "").toLowerCase() === "large") score += 8;
+
+  const roomSourceAnchors = new Set(
+    normalizeSourceAnchorIds(room.sourceAnchors).map(normalizePlacementToken),
+  );
+  const matchingSourceAnchors = normalizeSourceAnchorIds(component.sourceAnchors)
+    .map(normalizePlacementToken)
+    .filter((sourceAnchor) => roomSourceAnchors.has(sourceAnchor));
+  score += matchingSourceAnchors.length * 14;
+
+  if (usedRoomIds.has(room.id)) score -= 70;
+
+  return score +
+    (createStablePlacementHash(seed, component.id, room.id, slotId) % 1000) /
+      100000;
+}
+
+function getComponentPlacementTargets({ component, rooms, usedRoomIds, seed }) {
+  const effect = component.effect || {};
+  const placement = effect.placement || {};
+  const strategy = placement.strategy || "none";
+  if (strategy === "none") return [];
+
+  if (strategy === "assigned-region" || effect.scope === "region") {
+    const target = rooms.find(
+      (room) => room.sourceRegionId && room.sourceRegionId === component.regionId,
+    );
+    return target ? [target] : [];
+  }
+
+  if (strategy === "every-room" || strategy === "map-wide") {
+    const requestedCardinality = Math.max(
+      1,
+      Math.min(rooms.length, Number(placement.cardinality || rooms.length)),
+    );
+    return rooms.slice(0, requestedCardinality);
+  }
+
+  const rankedRooms = rooms
+    .map((room) => ({
+      room,
+      score: getComponentRoomScore(room, component, usedRoomIds, seed),
+    }))
+    .filter((candidate) => Number.isFinite(candidate.score))
+    .sort((left, right) => right.score - left.score);
+  const requestedCardinality = Math.max(
+    1,
+    Math.min(rooms.length, Number(placement.cardinality || 1)),
+  );
+  return rankedRooms.slice(0, requestedCardinality).map(({ room }) => room);
+}
+
+function createComponentPlacements({ components = [], roomBriefs = [], seed = "" } = {}) {
+  const rooms = asArray(roomBriefs);
+  if (!rooms.length) return [];
+
+  const usedRoomIdsBySlot = new Map();
+  const placements = [];
+
+  asArray(components).forEach((component) => {
+    const effect = component.effect || {};
+    const placement = effect.placement || {};
+    if (!component.slotId || placement.strategy === "none") return;
+
+    const usedRoomIds = usedRoomIdsBySlot.get(component.slotId) || new Set();
+    const targets = getComponentPlacementTargets({
+      component,
+      rooms,
+      usedRoomIds,
+      seed,
+    });
+
+    targets.forEach((room, placementIndex) => {
+      usedRoomIds.add(room.id);
+      const render = effect.render || {};
+      placements.push({
+        id: `location-effect-${component.id || component.slotId}-${room.id}-${placementIndex + 1}`,
+        componentId: component.id,
+        componentTitle: component.title,
+        slotId: component.slotId,
+        roomBriefId: room.id,
+        sourceRegionId: room.sourceRegionId,
+        strategy: placement.strategy,
+        text: component.tableText || component.summary || component.title,
+        summary: component.summary || "",
+        markerKind: render.markerKind || "",
+        propKind: render.propKind || "",
+        visualCue:
+          render.visualCue || component.sourceAnchors?.[0] || component.title,
+        sourceAnchors: normalizeSourceAnchorIds(component.sourceAnchors),
+        effect,
+        provenance: {
+          ...(effect.provenance || {}),
+          placementIndex,
+          targetRoomBriefId: room.id,
+          targetSourceRegionId: room.sourceRegionId,
+        },
+      });
+    });
+
+    usedRoomIdsBySlot.set(component.slotId, usedRoomIds);
+  });
+
+  return placements;
+}
+
+function mergePlacementText(currentValue, nextValue) {
+  const current = normalizeString(currentValue);
+  const next = normalizeString(nextValue);
+  if (!next) return current;
+  if (!current) return next;
+  const normalizedCurrent = current.toLowerCase();
+  const normalizedNext = next.toLowerCase();
+  if (normalizedCurrent === normalizedNext || normalizedCurrent.includes(normalizedNext)) {
+    return current;
+  }
+  return `${current} · ${next}`;
+}
+
+function applyComponentPlacementsToRoomBriefs(roomBriefs = [], placements = []) {
+  const placementsByRoomId = new Map();
+  asArray(placements).forEach((placement) => {
+    if (!placement?.roomBriefId) return;
+    const roomPlacements = placementsByRoomId.get(placement.roomBriefId) || [];
+    roomPlacements.push(placement);
+    placementsByRoomId.set(placement.roomBriefId, roomPlacements);
+  });
+
+  return asArray(roomBriefs).map((room) => {
+    const roomPlacements = placementsByRoomId.get(room.id) || [];
+    return roomPlacements.reduce(
+      (nextRoom, placement) => {
+        const text = placement.text || placement.summary || placement.componentTitle;
+        if (placement.slotId === "horrorPremise") {
+          nextRoom.premise = mergePlacementText(nextRoom.premise, text);
+        } else if (placement.slotId === "sensoryLayer") {
+          nextRoom.sensoryLayer = mergePlacementText(nextRoom.sensoryLayer, text);
+        } else if (placement.slotId === "hazard") {
+          nextRoom.hazard = mergePlacementText(nextRoom.hazard, text);
+        } else if (placement.slotId === "clue") {
+          nextRoom.clueText = mergePlacementText(nextRoom.clueText || nextRoom.clue, text);
+          nextRoom.clue = nextRoom.clueText;
+        } else if (placement.slotId === "encounterTwist") {
+          nextRoom.encounter = mergePlacementText(nextRoom.encounter, text);
+        } else if (placement.slotId === "reward") {
+          nextRoom.reward = mergePlacementText(nextRoom.reward, text);
+        }
+        return nextRoom;
+      },
+      {
+        ...room,
+        componentPlacements: roomPlacements,
+      },
+    );
+  });
 }
 
 function getRoomSlotValue(regionComponents, slotId) {
@@ -339,6 +592,15 @@ function normalizeRegionToRoomBrief(region, index, assignedComponents = [], them
     region.density,
     ...asArray(region.links),
   ].filter(Boolean);
+  const legacySecretText = typeof region.secret === "string" ? region.secret : "";
+  const clueText =
+    getRoomSlotValue(roomSlotComponents, "clue") ||
+    normalizeString(region.clueText || region.clue || legacySecretText);
+  const isSecretRoom = Boolean(
+    region.isSecretRoom === true ||
+    region.secret === true ||
+    tags.some((tag) => String(tag).toLowerCase().includes("secret")),
+  );
 
   return {
     id: `room-${String(index + 1).padStart(2, "0")}`,
@@ -365,12 +627,15 @@ function normalizeRegionToRoomBrief(region, index, assignedComponents = [], them
     sensoryLayer: normalizeString(region.sensoryLayer),
     visualSigns: normalizeString(region.feature || region.visualSigns),
     hazard: getRoomSlotValue(roomSlotComponents, "hazard") || normalizeString(region.danger),
-    clue: getRoomSlotValue(roomSlotComponents, "clue") || normalizeString(region.secret),
+    clue: clueText,
+    clueText,
+    secretNarrative: normalizeString(region.secretNarrative),
     encounter: getRoomSlotValue(roomSlotComponents, "encounterTwist"),
     reward: normalizeString(region.reward),
     interaction: normalizeString(region.interaction || region.interact),
     readAloud: region.readAloud,
-    secret: Boolean(region.secret || tags.some((tag) => String(tag).toLowerCase().includes("secret"))),
+    isSecretRoom,
+    secret: isSecretRoom,
     links: asArray(region.links),
     assignedComponents: regionComponents,
     assignedSlotIds: [...new Set(regionComponents.map((component) => component.slotId).filter(Boolean))],
@@ -1017,6 +1282,11 @@ export function createLocationRegionsFromDungeonBrief(dungeonBrief = {}) {
     interaction: room.interaction,
     interact: room.interaction,
     danger: room.hazard,
+    clue: room.clue,
+    clueText: room.clueText || room.clue,
+    secretNarrative: room.secretNarrative || "",
+    isSecretRoom: Boolean(room.isSecretRoom || room.secret === true),
+    // Preserve the legacy field as clue copy for existing Composer views.
     secret: room.clue,
     reward: room.reward,
     encounter: room.encounter,
@@ -1034,10 +1304,19 @@ export function createDungeonBriefFromDarkenLocationSnapshot(snapshot = {}) {
     ? resolveDungeonThemeForSourceAnchors([snapshot.dungeonThemeId])
     : resolveDungeonThemeForSourceAnchors(sourceAnchors);
   const locationRegions = asArray(snapshot.locationRegions);
-  const roomBriefs = locationRegions
+  const normalizedRoomBriefs = locationRegions
     .map((region, index) => normalizeRegionToRoomBrief(region, index, assignedComponents, theme))
     .filter(Boolean);
   const globalComponents = getGlobalComponents(assignedComponents);
+  const componentPlacements = createComponentPlacements({
+    components: assignedComponents,
+    roomBriefs: normalizedRoomBriefs,
+    seed: normalizeString(snapshot.seed, "darken-location"),
+  });
+  const roomBriefs = applyComponentPlacementsToRoomBriefs(
+    normalizedRoomBriefs,
+    componentPlacements,
+  );
   const roomCount = roomBriefs.length || undefined;
 
   return createDungeonBrief({
@@ -1059,6 +1338,11 @@ export function createDungeonBriefFromDarkenLocationSnapshot(snapshot = {}) {
     verticality: normalizeString(snapshot.verticality, theme.layoutBias?.verticality || "flat"),
     sourceAnchors,
     horror: asArray(snapshot.horrors),
+    premise: globalComponents
+      .filter((component) => component.slotId === "horrorPremise")
+      .map((component) => component.tableText || component.summary || component.title)
+      .filter(Boolean)
+      .join(" · "),
     globalPalette: {
       sensory: [
         ...theme.sensoryPalette,
@@ -1072,7 +1356,12 @@ export function createDungeonBriefFromDarkenLocationSnapshot(snapshot = {}) {
           .filter((component) => component.slotId === "visibleAnomaly")
           .map((component) => component.summary || component.title),
       ],
-      hazards: theme.hazardBias,
+      hazards: [
+        ...theme.hazardBias,
+        ...assignedComponents
+          .filter((component) => component.slotId === "hazard")
+          .map((component) => component.summary || component.title),
+      ],
       rewards: [
         ...theme.rewardBias,
         ...globalComponents
@@ -1091,6 +1380,8 @@ export function createDungeonBriefFromDarkenLocationSnapshot(snapshot = {}) {
       activeRegionId: normalizeString(snapshot.activeRegionId),
       slotAssignments,
       selectedComponents: assignedComponents,
+      globalComponents,
+      componentPlacements,
     },
   });
 }

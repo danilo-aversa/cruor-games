@@ -1,3 +1,14 @@
+import { useMemo, useState } from "react";
+
+const EXPORT_VIEWS = Object.freeze([
+  Object.freeze({ id: "roomKey", label: "Room Key", icon: "fa-list", formatId: "roomKey" }),
+  Object.freeze({ id: "sessionInsert", label: "Session Insert", icon: "fa-scroll", formatId: "sessionInsert" }),
+  Object.freeze({ id: "tableText", label: "Table Text", icon: "fa-table-list", formatId: "tableText" }),
+  Object.freeze({ id: "markdown", label: "Markdown", icon: "fa-file-lines", formatId: "markdown" }),
+  Object.freeze({ id: "json", label: "JSON", icon: "fa-code", formatId: "json" }),
+  Object.freeze({ id: "svg", label: "SVG", icon: "fa-map", formatId: "svg" }),
+]);
+
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -90,14 +101,51 @@ function ExportRoomKeyCard({ section, onSelectRoom }) {
   );
 }
 
+function ExportTextPreview({ format }) {
+  return (
+    <div className="location-export-format-preview" data-testid={`dark-places-export-preview-${format?.id || "text"}`}>
+      <header>
+        <span>{format?.label || "Export"}</span>
+        <small>{format?.filename || ""}</small>
+      </header>
+      <pre>{format?.text || "Nothing to export yet."}</pre>
+    </div>
+  );
+}
+
+function ExportSvgPreview({ generatedMapPreview }) {
+  const regionCount = generatedMapPreview?.regions?.length || 0;
+  const corridorCount = generatedMapPreview?.corridors?.length || 0;
+  const seed = generatedMapPreview?.seed || "—";
+
+  return (
+    <div className="location-export-svg-preview" data-testid="dark-places-export-preview-svg">
+      <i className="fa-solid fa-map" aria-hidden="true" />
+      <strong>{generatedMapPreview ? "Current map SVG ready" : "Generate a map before exporting SVG"}</strong>
+      <p>
+        The SVG is serialized directly from the current Composer map, including its visible room layout,
+        corridors, doors, props, labels, and manual edits.
+      </p>
+      <div>
+        <span><small>Seed</small><b>{seed}</b></span>
+        <span><small>Rooms</small><b>{regionCount}</b></span>
+        <span><small>Corridors</small><b>{corridorCount}</b></span>
+      </div>
+    </div>
+  );
+}
+
 export function LocationExportRoomKeyPanel({
   compilePreview,
   copyStatus = "",
-  onCopyMarkdown,
-  onCopyTable,
+  exportBundle,
+  generatedMapPreview,
+  onCopyFormat,
+  onDownloadFormat,
   onReviewMissing,
   onSelectRoom,
 }) {
+  const [activeViewId, setActiveViewId] = useState("roomKey");
   const roomSections = Array.isArray(compilePreview?.roomSections) ? compilePreview.roomSections : [];
   const readyRoomCount = Number(compilePreview?.readyRoomCount || 0);
   const incompleteRoomCount = Number(compilePreview?.incompleteRoomCount || 0);
@@ -106,9 +154,16 @@ export function LocationExportRoomKeyPanel({
     : roomSections.length
       ? "Ready to Export"
       : "No rooms";
+  const activeView = useMemo(
+    () => EXPORT_VIEWS.find((view) => view.id === activeViewId) || EXPORT_VIEWS[0],
+    [activeViewId],
+  );
+  const activeFormat = exportBundle?.formats?.[activeView.formatId] || null;
+  const activeAvailable = activeView.id === "svg" ? Boolean(generatedMapPreview) : Boolean(activeFormat?.text?.trim());
+  const activeActionLabel = activeView.id === "roomKey" ? "Room Key" : activeView.label;
 
   return (
-    <section className="location-export-room-key-panel" aria-label="Export room key" data-testid="dark-places-room-key">
+    <section className="location-export-room-key-panel" aria-label="Unified location export" data-testid="dark-places-room-key">
       <header className="location-export-room-key-panel__head">
         <div className="location-export-room-key-panel__title">
           <p className="location-kicker">Export Room Key</p>
@@ -116,14 +171,26 @@ export function LocationExportRoomKeyPanel({
           <small>{compilePreview?.contextLine || "Location export"}</small>
         </div>
 
-        <div className="location-export-room-key-actions" aria-label="Room key export actions">
-          <button className="location-export-room-key-action" type="button" onClick={onCopyMarkdown} data-testid="dark-places-copy-markdown-panel">
+        <div className="location-export-room-key-actions" aria-label="Active export actions">
+          <button
+            className="location-export-room-key-action"
+            type="button"
+            disabled={!activeAvailable}
+            onClick={() => onCopyFormat?.(activeView.formatId)}
+            data-testid="dark-places-export-copy-active"
+          >
             <i className="fa-solid fa-copy" aria-hidden="true" />
-            <span>Copy Markdown</span>
+            <span>Copy {activeActionLabel}</span>
           </button>
-          <button className="location-export-room-key-action" type="button" onClick={onCopyTable} data-testid="dark-places-copy-table">
-            <i className="fa-solid fa-table-list" aria-hidden="true" />
-            <span>Copy Table</span>
+          <button
+            className="location-export-room-key-action"
+            type="button"
+            disabled={!activeAvailable}
+            onClick={() => onDownloadFormat?.(activeView.formatId)}
+            data-testid="dark-places-export-download-active"
+          >
+            <i className="fa-solid fa-download" aria-hidden="true" />
+            <span>Download</span>
           </button>
           <button
             className="location-export-room-key-action"
@@ -138,23 +205,48 @@ export function LocationExportRoomKeyPanel({
         </div>
       </header>
 
+      <nav className="location-export-format-tabs" aria-label="Export format" role="tablist">
+        {EXPORT_VIEWS.map((view) => (
+          <button
+            className={cx("location-export-format-tab", activeView.id === view.id && "is-active")}
+            type="button"
+            role="tab"
+            aria-selected={activeView.id === view.id}
+            key={view.id}
+            onClick={() => setActiveViewId(view.id)}
+            data-testid={`dark-places-export-tab-${view.id}`}
+          >
+            <i className={`fa-solid ${view.icon}`} aria-hidden="true" />
+            <span>{view.label}</span>
+          </button>
+        ))}
+      </nav>
+
       <div className="location-export-room-key-summary" aria-label="Export readiness summary">
         <ExportRoomKeyMetric label="Status" value={statusLabel} />
         <ExportRoomKeyMetric label="Ready Rooms" value={`${readyRoomCount}/${roomSections.length || 0}`} />
-        <ExportRoomKeyMetric label="Missing Rooms" value={String(incompleteRoomCount)} />
+        <ExportRoomKeyMetric label="Format" value={activeView.label} />
       </div>
 
       <span className={cx("location-export-room-key-copy-status", copyStatus && "is-visible")} aria-live="polite" data-testid="dark-places-copy-status">
-        {copyStatus || "Markdown export ready"}
+        {copyStatus || `${activeActionLabel} export ready`}
       </span>
 
-      <div className="location-export-room-key-list" data-testid="dark-places-room-key-list">
-        {roomSections.map((section) => (
-          <ExportRoomKeyCard key={section.region.id} section={section} onSelectRoom={onSelectRoom} />
-        ))}
-        {!roomSections.length ? (
-          <div className="location-export-room-key-empty">Generate a place map before exporting a room key.</div>
-        ) : null}
+      <div className="location-export-room-key-content" role="tabpanel" aria-label={`${activeView.label} preview`}>
+        {activeView.id === "roomKey" ? (
+          <div className="location-export-room-key-list" data-testid="dark-places-room-key-list">
+            {roomSections.map((section) => (
+              <ExportRoomKeyCard key={section.region.id} section={section} onSelectRoom={onSelectRoom} />
+            ))}
+            {!roomSections.length ? (
+              <div className="location-export-room-key-empty">Generate a place map before exporting a room key.</div>
+            ) : null}
+          </div>
+        ) : activeView.id === "svg" ? (
+          <ExportSvgPreview generatedMapPreview={generatedMapPreview} />
+        ) : (
+          <ExportTextPreview format={activeFormat} />
+        )}
       </div>
     </section>
   );

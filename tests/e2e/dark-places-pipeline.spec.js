@@ -40,7 +40,21 @@ test.describe("Dark Places user pipeline", () => {
     await expect(roomKey).toContainText(/Export Room Key/i);
     await expect(roomKey).toContainText(/Room 0?1|Room Key|Environmental Hazard|Disturbing Clue|Encounter Twist/i);
     await expect(page.getByTestId("dark-places-room-key-card").first()).toBeVisible();
+    await expect(page.getByTestId("dark-places-export-tab-sessionInsert")).toBeVisible();
+    await expect(page.getByTestId("dark-places-export-tab-tableText")).toBeVisible();
+    await expect(page.getByTestId("dark-places-export-tab-markdown")).toBeVisible();
+    await expect(page.getByTestId("dark-places-export-tab-json")).toBeVisible();
+    await expect(page.getByTestId("dark-places-export-tab-svg")).toBeVisible();
 
+    await page.getByTestId("dark-places-export-tab-json").click();
+    await expect(page.getByTestId("dark-places-export-preview-json")).toContainText(/dark-places-export-v1/i);
+
+    await page.getByTestId("dark-places-export-tab-svg").click();
+    await expect(page.getByTestId("dark-places-export-preview-svg")).toContainText(/Current map SVG ready/i);
+    await expect(page.getByTestId("dark-places-export-copy-active")).toBeEnabled();
+    await expect(page.getByTestId("dark-places-export-download-active")).toBeEnabled();
+
+    await page.getByTestId("dark-places-export-tab-roomKey").click();
     await page.getByTestId("dark-places-copy-markdown").click();
     await expect(page.getByTestId("dark-places-copy-status")).toContainText(/copied|fallback|unavailable/i);
   });

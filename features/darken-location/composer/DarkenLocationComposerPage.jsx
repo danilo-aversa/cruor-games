@@ -56,7 +56,6 @@ import {
 import { LocationBriefPanel } from "./components/LocationBriefPanel.jsx";
 import { LocationDraftControls } from "./components/LocationDraftControls.jsx";
 import { LocationComponentPickerModal } from "./components/LocationComponentPickerModal.jsx";
-import { LocationCompilePreview } from "./components/LocationCompilePreview.jsx";
 import { LocationMapStage } from "./components/LocationMapStage.jsx";
 import { LocationGuidedFlowPanel } from "./components/LocationGuidedFlowPanel.jsx";
 import { LocationRoomInspector } from "./components/LocationRoomInspector.jsx";
@@ -65,6 +64,7 @@ import { LocationMapToolbar } from "./components/LocationMapToolbar.jsx";
 import { LocationExportRoomKeyPanel } from "./components/LocationExportRoomKeyPanel.jsx";
 import {
   copyTextToClipboard,
+  createLocationExportBundle,
   getClipboardStatusMessage,
   getCompilePreview,
 } from "./model/location-composer-output.js";
@@ -90,6 +90,35 @@ function getSourceLabel(state) {
 
 function getHorrorLabel(state) {
   return toArray(state.horrors)[0] || state.horror || "Horror";
+}
+
+function getCurrentComposerMapSvgText() {
+  if (typeof document === "undefined" || typeof XMLSerializer === "undefined") return "";
+  const svg = document.querySelector('[data-map-viewport-mode="composer-preview"] #cruor-map-svg')
+    || document.querySelector("#cruor-map-svg");
+  return svg ? new XMLSerializer().serializeToString(svg) : "";
+}
+
+function downloadLocationExportFile(filename, text, mimeType = "text/plain;charset=utf-8") {
+  if (
+    typeof document === "undefined"
+    || typeof URL === "undefined"
+    || typeof Blob === "undefined"
+    || !String(text || "").trim()
+  ) {
+    return false;
+  }
+
+  const blob = new Blob([text], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+  return true;
 }
 
 function createMapInfluenceSourceKey(mapInfluence = null) {
@@ -181,6 +210,28 @@ function createLocationMapSourceKey(mapRequest) {
       )
       .sort()
       .join("|"),
+  ].join("::");
+}
+
+function createLocationMapRuntimeSourceKey(mapRequest) {
+  const placements = Array.isArray(mapRequest?.componentPlacements)
+    ? mapRequest.componentPlacements
+    : [];
+  return [
+    createLocationMapSourceKey(mapRequest),
+    placements
+      .map((placement) =>
+        [
+          placement?.id || "",
+          placement?.componentId || "",
+          placement?.sourceRegionId || placement?.regionId || "",
+          placement?.markerKind || "",
+          placement?.visualCue || "",
+        ].join("@"),
+      )
+      .sort()
+      .join("|"),
+    JSON.stringify(mapRequest?.globalPalette || {}),
   ].join("::");
 }
 
@@ -318,28 +369,6 @@ function LocationExportToolsPanel({ onSelectFrame, onSelectScratch }) {
   );
 }
 
-function LocationExportPanel({ digest, generatedMapPreview, mapRequest, state, uiMode }) {
-  return (
-    <ComposerRail
-      side="right"
-      variant="export"
-      surface
-      scrollable
-      className="location-composer__rail location-composer__rail--right location-map-recap-rail location-frame-info"
-      aria-label="Location export"
-    >
-      <LocationCompilePreview
-        state={state}
-        digest={digest}
-        mapRequest={mapRequest}
-        generatedMapPreview={generatedMapPreview}
-        defaultOpen={true}
-        uiMode={uiMode}
-      />
-    </ComposerRail>
-  );
-}
-
 function getThemeProgramCandidateScore(candidate = {}, index = 0) {
   const rawScore = Number(candidate?.review?.score);
   const score = Number.isFinite(rawScore) ? rawScore : 0;
@@ -405,10 +434,15 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     () => getCompilePreview(state, digest, mapRequest, generatedMapPreview),
     [state, digest, mapRequest, generatedMapPreview],
   );
+  const exportBundle = useMemo(
+    () => createLocationExportBundle(state, digest, mapRequest, generatedMapPreview, compilePreview),
+    [state, digest, mapRequest, generatedMapPreview, compilePreview],
+  );
   const draftFingerprint = useMemo(() => createDraftFingerprint(state), [state]);
   const hasUnsavedChanges = Boolean(savedDraftFingerprint) && draftFingerprint !== savedDraftFingerprint;
-  const mapSourceKey = useMemo(() => createLocationMapSourceKey(mapRequest), [mapRequest]);
-  const previousMapSourceKeyRef = useRef(mapSourceKey);
+  const mapStructureKey = useMemo(() => createLocationMapSourceKey(mapRequest), [mapRequest]);
+  const mapSourceKey = useMemo(() => createLocationMapRuntimeSourceKey(mapRequest), [mapRequest]);
+  const previousMapSourceKeyRef = useRef(mapStructureKey);
   const stableMapSourceKeyRef = useRef(mapSourceKey);
   const stableMapRequestRef = useRef(mapRequest);
   if (stableMapSourceKeyRef.current !== mapSourceKey) {
@@ -478,13 +512,36 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     exportCopyStatusTimeoutRef.current = window.setTimeout(() => setExportCopyStatus(""), 2400);
   }, []);
 
-  const copyRoomKeyMarkdown = useCallback(() => {
-    copyExportText("Room Key Markdown", compilePreview.roomKeyMarkdown);
-  }, [compilePreview.roomKeyMarkdown, copyExportText]);
+  const getExportFormatText = useCallback((formatId) => {
+    const format = exportBundle.formats?.[formatId];
+    if (!format) return "";
+    return format.dynamic && formatId === "svg"
+      ? getCurrentComposerMapSvgText()
+      : format.text;
+  }, [exportBundle]);
 
-  const copyTableReadyText = useCallback(() => {
-    copyExportText("Table Text", compilePreview.tableReadyText);
-  }, [compilePreview.tableReadyText, copyExportText]);
+  const copyExportFormat = useCallback((formatId) => {
+    const format = exportBundle.formats?.[formatId];
+    if (!format) return;
+    copyExportText(format.label, getExportFormatText(formatId));
+  }, [copyExportText, exportBundle, getExportFormatText]);
+
+  const downloadExportFormat = useCallback((formatId) => {
+    const format = exportBundle.formats?.[formatId];
+    if (!format) return;
+    const downloaded = downloadLocationExportFile(
+      format.filename,
+      getExportFormatText(formatId),
+      format.mimeType,
+    );
+    setExportCopyStatus(downloaded ? `${format.label} downloaded` : `${format.label}: export unavailable`);
+    window.clearTimeout(exportCopyStatusTimeoutRef.current);
+    exportCopyStatusTimeoutRef.current = window.setTimeout(() => setExportCopyStatus(""), 2400);
+  }, [exportBundle, getExportFormatText]);
+
+  const copyRoomKeyMarkdown = useCallback(() => {
+    copyExportFormat("roomKey");
+  }, [copyExportFormat]);
 
   const saveDraft = useCallback(() => {
     const result = saveLocationDraftWithStatus(state);
@@ -790,8 +847,8 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   }, []);
 
   useEffect(() => {
-    if (previousMapSourceKeyRef.current === mapSourceKey) return;
-    previousMapSourceKeyRef.current = mapSourceKey;
+    if (previousMapSourceKeyRef.current === mapStructureKey) return;
+    previousMapSourceKeyRef.current = mapStructureKey;
     setState((current) => {
       if (!current.mapManualOverrides) return current;
       const nextState = {
@@ -804,7 +861,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
         manualOverrides: null,
       });
     });
-  }, [mapSourceKey]);
+  }, [mapStructureKey]);
 
   useEffect(() => {
     if (!onSnapshotProviderReady) return undefined;
@@ -1237,8 +1294,10 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     <LocationExportRoomKeyPanel
       compilePreview={compilePreview}
       copyStatus={exportCopyStatus}
-      onCopyMarkdown={copyRoomKeyMarkdown}
-      onCopyTable={copyTableReadyText}
+      exportBundle={exportBundle}
+      generatedMapPreview={generatedMapPreview}
+      onCopyFormat={copyExportFormat}
+      onDownloadFormat={downloadExportFormat}
       onReviewMissing={openFirstMissingExportRoom}
       onSelectRoom={selectExportRoom}
     />

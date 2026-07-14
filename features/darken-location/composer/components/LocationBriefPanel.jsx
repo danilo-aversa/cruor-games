@@ -8,7 +8,7 @@ import {
   normalizeScratchRoomCount,
 } from "../model/location-composer-state.js";
 
-const CONTEXT_OPTIONS = ["Crypt", "Chapel", "Cave", "Mine", "Ruins", "Noble House", "Village", "Forest"];
+const CONTEXT_OPTIONS = ["Crypt", "Chapel", "Cave", "Mine", "Ruins", "Noble House"];
 const HORROR_OPTIONS = ["Religious Horror", "Body Horror", "Gothic", "Folk Horror", "Psychological Horror", "Cosmic Horror", "Disease Horror"];
 const DUNGEON_THEME_OPTIONS = getDungeonThemes()
   .map((theme) => ({

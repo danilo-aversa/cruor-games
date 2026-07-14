@@ -1,4 +1,6 @@
 import { COMPONENTS as LEGACY_DARKEN_COMPONENTS } from "../../../features/crucible/crucible.components-data.js";
+import { normalizeLocationComponentEffect } from "../contracts/location-component-effect.js";
+import { createLegacyContentMigration, resolveLegacyObjectField } from "../legacy-content-migration.js";
 import { normalizeSourceAnchorIds, SHARED_SOURCE_ANCHORS } from "../source-anchors.js";
 
 export const DARKEN_LOCATION_WORKFLOW_ID = "darken-location";
@@ -52,16 +54,6 @@ function isPlainObject(value) {
 
 function cloneOptionalPlainObject(value) {
   return isPlainObject(value) ? JSON.parse(JSON.stringify(value)) : undefined;
-}
-
-function getNestedLocationMetadata(component, field) {
-  return (
-    component?.location?.[field] ||
-    component?.locationRegion?.[field] ||
-    component?.map?.[field] ||
-    component?.[field] ||
-    undefined
-  );
 }
 
 function referencesKnownActiveSourceAnchor(sourceAnchors = []) {
@@ -130,6 +122,43 @@ export function legacyDarkenComponentToSharedComponent(component) {
   const sourceMetadata = getSourceAnchorMetadata(sourceAnchors);
   const contentSubtype = getLocationContentSubtype(component);
 
+  const effectResolution = resolveLegacyObjectField(component, "effect");
+  const mapInfluenceResolution = resolveLegacyObjectField(component, "mapInfluence");
+  const roomDesignResolution = resolveLegacyObjectField(component, "roomDesign");
+  const roomCompatibilityResolution = resolveLegacyObjectField(component, "roomCompatibility");
+  const authoredEffect = cloneOptionalPlainObject(effectResolution.value);
+  const migration = createLegacyContentMigration({
+    sourceSchema: "crucible-location-component-v0",
+    targetSchema: "location-component-v1",
+    fieldResolutions: {
+      effect: effectResolution,
+      mapInfluence: mapInfluenceResolution,
+      roomDesign: roomDesignResolution,
+      roomCompatibility: roomCompatibilityResolution,
+    },
+  });
+  const location = {
+    componentType: contentSubtype,
+    legacyType: component.type || "",
+    mapInfluence: cloneOptionalPlainObject(mapInfluenceResolution.value),
+    roomDesign: cloneOptionalPlainObject(roomDesignResolution.value),
+    roomCompatibility: cloneOptionalPlainObject(roomCompatibilityResolution.value),
+    ...(authoredEffect ? { effect: authoredEffect } : {}),
+    sensoryKind: component.sensoryKind || "",
+    intrusion: component.intrusion || "",
+    prep: component.prep || "",
+    outputSection: slots[0] || "",
+    gmFacingOnly: false,
+  };
+  const effect = normalizeLocationComponentEffect(
+    { ...component, slots, sourceAnchors, location },
+    {
+      componentId: component.id,
+      componentTitle: component.title || component.id,
+      slotId: slots[0] || "",
+    },
+  );
+
   return {
     id: component.id,
     legacyId: component.id,
@@ -157,17 +186,10 @@ export function legacyDarkenComponentToSharedComponent(component) {
     tableText: component.tableText || "",
     mechanics: component.mechanics || "",
     narrative: component.narrative || "",
+    migration,
     location: {
-      componentType: contentSubtype,
-      legacyType: component.type || "",
-      mapInfluence: cloneOptionalPlainObject(getNestedLocationMetadata(component, "mapInfluence")),
-      roomDesign: cloneOptionalPlainObject(getNestedLocationMetadata(component, "roomDesign")),
-      roomCompatibility: cloneOptionalPlainObject(getNestedLocationMetadata(component, "roomCompatibility")),
-      sensoryKind: component.sensoryKind || "",
-      intrusion: component.intrusion || "",
-      prep: component.prep || "",
-      outputSection: slots[0] || "",
-      gmFacingOnly: false,
+      ...location,
+      effect,
     },
     tags: buildLocationComponentTags(component, sourceAnchors),
   };

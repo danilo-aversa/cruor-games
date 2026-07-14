@@ -37,18 +37,20 @@ function createPreviewGenerationKey(previewConfig, previewManualOverrides) {
 }
 
 export function createLocationPreviewModel(snapshot, manualOverrides = createEmptyManualOverrides()) {
-  const mapRequest = createMapRequestFromDarkenLocationState(snapshot);
-  const previewConfig = applyMapRequestConnectionsToConfig(
-    createConfigFromNormalizedMapRequest(mapRequest, DEFAULT_CONFIG),
-    mapRequest,
-  );
-  const previewManualOverrides = normalizeManualOverrides(manualOverrides);
-  const previewGenerationKey = createPreviewGenerationKey(
-    previewConfig,
-    previewManualOverrides,
-  );
+  let mapRequest = null;
+  let previewConfig = null;
 
   try {
+    mapRequest = createMapRequestFromDarkenLocationState(snapshot);
+    previewConfig = applyMapRequestConnectionsToConfig(
+      createConfigFromNormalizedMapRequest(mapRequest, DEFAULT_CONFIG),
+      mapRequest,
+    );
+    const previewManualOverrides = normalizeManualOverrides(manualOverrides);
+    const previewGenerationKey = createPreviewGenerationKey(
+      previewConfig,
+      previewManualOverrides,
+    );
     const generatedMap =
       cachedPreviewGeneratedMap && cachedPreviewGenerationKey === previewGenerationKey
         ? cachedPreviewGeneratedMap
@@ -58,7 +60,15 @@ export function createLocationPreviewModel(snapshot, manualOverrides = createEmp
     cachedPreviewGeneratedMap = generatedMap;
 
     return {
-      mapRequest,
+      mapRequest: mapRequest || {
+        source: "darken-location",
+        title: snapshot?.title || "Cursed Location Build",
+        context: snapshot?.context || "",
+        mapType: "",
+        requiredRegions: [],
+        connections: [],
+        metadata: { generationBlocked: true },
+      },
       previewConfig,
       previewResult: {
         generatedMap,

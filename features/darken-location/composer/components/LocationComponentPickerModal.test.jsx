@@ -81,6 +81,26 @@ describe("LocationComponentPickerModal room compatibility", () => {
     expect(html).toContain("Will change this room:");
     expect(html).not.toMatch(/dark-places-component-add[^>]*disabled/);
   });
+
+  it("marks legacy fallback content with authoritative pack provenance", () => {
+    const candidate = {
+      ...component("legacy-hazard"),
+      contentProvenance: {
+        primaryPackId: "legacy-darken-location",
+        primaryPackTitle: "Legacy Darken Location Content",
+        hasCollision: true,
+        isLegacy: false,
+        isLegacyDerived: true,
+      },
+    };
+    const html = renderPicker({ candidate });
+
+    expect(html).toContain("Migrated legacy");
+    expect(html).toContain('data-content-origin="legacy-migrated"');
+    expect(html).toContain("Legacy Darken Location Content");
+    expect(html).toContain("First pack wins");
+  });
+
   it("exposes assigned components as an active Remove action", () => {
     const assigned = component("assigned-hazard");
     const html = renderPicker({

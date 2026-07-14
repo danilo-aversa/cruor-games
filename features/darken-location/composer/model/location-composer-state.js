@@ -65,9 +65,11 @@ export function createInitialLocationComposerState(regionTemplates = []) {
     dungeonMode: "theme",
     dungeonThemeId: "sedlec-ossuary",
     dungeonScale: "medium",
+    dungeonCustomRoomCount: 8,
     dungeonComplexity: "standard",
     themeProgramCandidates: [],
     activeThemeProgramCandidateId: "",
+    mapManualOverrides: null,
     activeSlot: "horrorPremise",
     activeSlotScope: LOCATION_SLOT_SCOPE_MAP,
     activeRegionId: initialRegions[0]?.id || "",
@@ -259,6 +261,10 @@ export function createLocationComposerSnapshot(state, selectedComponents = []) {
     dungeonMode: state.dungeonMode || "theme",
     dungeonThemeId: state.dungeonThemeId || "",
     dungeonScale: state.dungeonScale || "medium",
+    dungeonCustomRoomCount: normalizeScratchRoomCount(
+      state.dungeonCustomRoomCount,
+      regions.length || 8,
+    ),
     dungeonComplexity: state.dungeonComplexity || "standard",
     themeProgramCandidates: Array.isArray(state.themeProgramCandidates) ? state.themeProgramCandidates : [],
     activeThemeProgramCandidateId: state.activeThemeProgramCandidateId || "",
@@ -269,6 +275,7 @@ export function createLocationComposerSnapshot(state, selectedComponents = []) {
     slotAssignments,
     selectedComponents,
     roomConstraintStateByRegion,
+    mapManualOverrides: state.mapManualOverrides || null,
     locationRegions: applyLocationRoomConstraintStateToRegions({
       regions,
       roomConstraintStateByRegion,
@@ -340,6 +347,14 @@ export function createScratchLocationRegion(index = 0, overrides = {}) {
   const roomType = overrides.roomType || overrides.type || SCRATCH_ROOM_TYPE_OPTIONS[safeIndex % SCRATCH_ROOM_TYPE_OPTIONS.length] || "room";
   const name = overrides.name || `${String(safeIndex + 1).padStart(2, "0")} ${titleCaseScratchValue(roomType || role || "Room")}`;
   const id = overrides.id || overrides.templateId || createScratchRegionId(safeIndex);
+  const legacySecretText = typeof overrides.secret === "string" ? overrides.secret : "";
+  const clueText = overrides.clueText || overrides.clue || legacySecretText || "";
+  const isSecretRoom = Boolean(
+    overrides.isSecretRoom === true ||
+    overrides.secret === true ||
+    role === "secret" ||
+    toArray(overrides.tags).some((tag) => String(tag).toLowerCase().includes("secret")),
+  );
 
   return {
     id,
@@ -362,7 +377,13 @@ export function createScratchLocationRegion(index = 0, overrides = {}) {
     interaction: overrides.interaction || overrides.interact || "",
     interact: overrides.interact || overrides.interaction || "",
     danger: overrides.danger || overrides.hazard || "",
-    secret: overrides.secret || overrides.clue || "",
+    clue: clueText,
+    clueText,
+    secretNarrative: overrides.secretNarrative || "",
+    isSecretRoom,
+    // Legacy UI consumers still read the clue copy from `secret`.
+    // Topology must use `isSecretRoom` instead.
+    secret: clueText,
     reward: overrides.reward || "",
     encounter: overrides.encounter || overrides.encounterTwist || "",
     readAloud: overrides.readAloud || "",

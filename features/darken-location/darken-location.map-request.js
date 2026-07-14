@@ -3,14 +3,16 @@ import {
   createMapRequestFromDungeonBrief,
 } from "./dungeon/dungeon.index.js";
 
-const SUPPORTED_MAP_TYPES = new Set([
+export const SUPPORTED_DARK_PLACES_CONTEXTS = Object.freeze([
   "Crypt",
   "Chapel",
   "Cave",
   "Mine",
-  "Noble House",
   "Ruins",
+  "Noble House",
 ]);
+
+const SUPPORTED_MAP_TYPES = new Set(SUPPORTED_DARK_PLACES_CONTEXTS);
 
 function normalizeText(value, fallback = "") {
   return typeof value === "string" && value.trim() ? value.trim() : fallback;
@@ -23,6 +25,7 @@ function normalizeArray(value) {
 
 export function mapDarkenLocationContextToMapType(context) {
   const text = String(context || "").toLowerCase();
+  if (!text.trim()) return "Crypt";
   if (text.includes("cave") || text.includes("cavern")) return "Cave";
   if (text.includes("mine")) return "Mine";
   if (text.includes("crypt") || text.includes("catacomb")) return "Crypt";
@@ -39,7 +42,7 @@ export function mapDarkenLocationContextToMapType(context) {
     text.includes("manor")
   )
     return "Noble House";
-  return "Crypt";
+  return "";
 }
 
 function createStableSeedFromDungeonBrief(dungeonBrief) {
@@ -69,9 +72,16 @@ export function createMapRequestFromDarkenLocationState(crucibleSnapshot = {}) {
   const requestedMapType = normalizeText(
     dungeonBrief.mapType || crucibleSnapshot.mapType || mapDarkenLocationContextToMapType(context),
   );
+  const mappedContextType = mapDarkenLocationContextToMapType(context);
   const safeMapType = SUPPORTED_MAP_TYPES.has(requestedMapType)
     ? requestedMapType
-    : mapDarkenLocationContextToMapType(context);
+    : mappedContextType;
+
+  if (!safeMapType || !SUPPORTED_MAP_TYPES.has(safeMapType)) {
+    throw new Error(
+      `The Dark Places Map Generator does not support the "${context}" context yet. Choose Crypt, Chapel, Cave, Mine, Ruins, or Noble House.`,
+    );
+  }
   const seededDungeonBrief = {
     ...dungeonBrief,
     context,
