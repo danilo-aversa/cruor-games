@@ -6,6 +6,7 @@ import {
   getRegionDetailRows,
 } from "./location-composer-selectors.js";
 import { getGeneratedRoomForRegionIndex } from "./location-composer-map-preview.js";
+import { createLocationDocument } from "../../output/model/location-document.js";
 
 export function getComponentRulesText(component) {
   return (
@@ -137,6 +138,13 @@ function getPlacedComponentOutput(placement) {
     text: placement.text || placement.summary || placement.componentTitle || "No table text yet.",
     strategy: placement.strategy || "none",
     visualCue: placement.visualCue || "",
+    sourceAnchors: placement.sourceAnchors || placement.effect?.provenance?.sourceAnchors || [],
+    effect: placement.effect || null,
+    subtype: placement.subtype || placement.location?.subtype || placement.location?.hazardType || "",
+    tableRole: placement.tableRole || placement.location?.tableRole || placement.effect?.output?.tableRole || "",
+    mechanics: placement.mechanics || null,
+    counterplay: placement.counterplay || "",
+    narrative: placement.narrative || "",
     provenance: placement.provenance || {},
   };
 }
@@ -159,6 +167,14 @@ function getComponentOutput(component) {
     regionId: component.assignment?.regionId || "",
     summary: component.summary || "",
     text: getComponentRulesText(component),
+    sourceAnchors: component.sourceAnchors || [],
+    effect: component.effect || component.location?.effect || null,
+    subtype: component.subtype || component.location?.subtype || component.location?.hazardType || "",
+    tableRole: component.tableRole || component.location?.tableRole || "",
+    mechanics: component.mechanics || null,
+    counterplay: component.counterplay || "",
+    narrative: component.narrative || "",
+    provenance: component.provenance || {},
   };
 }
 
@@ -708,12 +724,21 @@ export function createJsonExportPayload(
   mapRequest,
   generatedMapPreview,
   compilePreview,
-  { exportedAt = new Date().toISOString() } = {},
+  { exportedAt = new Date().toISOString(), locationDocument = null } = {},
 ) {
+  const document = locationDocument || createLocationDocument({
+    state,
+    digest,
+    mapRequest,
+    generatedMapPreview,
+    compilePreview,
+  });
+
   return {
     schemaVersion: "dark-places-export-v1",
     exportedAt,
     title: compilePreview.title,
+    document,
     premise: compilePreview.premiseSection,
     context: state.context,
     horror: toArray(state.horrors),
@@ -798,13 +823,20 @@ export function createLocationExportBundle(
   { exportedAt = new Date().toISOString() } = {},
 ) {
   const baseFilename = createLocationExportFilename(compilePreview?.title);
+  const document = createLocationDocument({
+    state,
+    digest,
+    mapRequest,
+    generatedMapPreview,
+    compilePreview,
+  });
   const jsonPayload = createJsonExportPayload(
     state,
     digest,
     mapRequest,
     generatedMapPreview,
     compilePreview,
-    { exportedAt },
+    { exportedAt, locationDocument: document },
   );
 
   const formats = Object.freeze({
@@ -860,6 +892,7 @@ export function createLocationExportBundle(
     title: compilePreview?.title || "Cursed Location Build",
     contextLine: compilePreview?.contextLine || "Location export",
     baseFilename,
+    document,
     jsonPayload,
     formats,
   });

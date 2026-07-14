@@ -209,6 +209,46 @@ Exceptions require explicit review and documentation under the [override policy]
 
 This system does not automatically include native `select`, autocomplete, navigation or mega menus, modal dialogs, tooltips, ordinary buttons, square icon buttons, card action menus with a materially different interaction pattern, or unique feature controls that are not dropdowns, listboxes, or context menus.
 
+## Composer Control Rails and Collapsible Sections
+
+### Purpose and canonical source
+
+Use this family for left or right Composer rails that contain controls, navigation groups, export settings, filters, or other grouped actions. It preserves the same rail width, surface language, spacing, and collapsible-section behavior across Composer modes without forcing those rails into the information-rail pattern.
+
+- React primitives: `ComposerRail` and `ComposerCollapsibleSection`
+- Implementation: `components/ui/composer-rail.jsx`
+- Shared styling: `shared/styles/composer-system.css` and `shared/styles/composer-internals.css`
+
+### React API
+
+`ComposerRail` accepts `side="left|right"`, `variant`, `scrollable`, `surface`, `as`, and `className`. It owns the canonical rail classes and data attributes.
+
+`ComposerCollapsibleSection` accepts `title`, `defaultExpanded`, `as`, `className`, `headerClassName`, and `bodyClassName`. It owns expansion state, generated region IDs, ARIA state, trigger structure, chevron, and the shared sidebar-block surface.
+
+### Class API
+
+- `.cruor-composer-rail`, `--left`, `--right`, `--controls`, `--scroll`, `--surface` — rail structure and behavior.
+- `.cruor-composer-sidebar-block` — canonical grouped rail surface.
+- `.cruor-composer-collapsible-section`, `.is-expanded`, `.is-collapsed` — section state and surface.
+- `.cruor-composer-collapsible-section__trigger` — shared header button.
+- `.cruor-composer-collapsible-section__title` — shared section heading.
+- `.cruor-composer-collapsible-section__chevron` — shared expansion indicator.
+- `.cruor-composer-collapsible-section__region` and `__body` — collapsible content region.
+
+### Usage rules
+
+Use this family for control rails, output outlines, navigators, and export settings. Use the more specialized Composer Right Information Rail family only when the rail summarizes the current entity through hero identity, facts, or meters.
+
+Feature classes may control grid placement, rail height, responsive behavior, internal list geometry, scroll ownership, and runtime/test hooks. They must not recreate the sidebar-block surface, collapsible header, typography, chevron, expansion states, generic spacing, border, background, or shadow.
+
+```jsx
+<ComposerRail side="left" variant="controls" surface scrollable>
+  <ComposerCollapsibleSection title="Output">
+    {/* feature-specific navigation or controls */}
+  </ComposerCollapsibleSection>
+</ComposerRail>
+```
+
 ## Composer Slot Cards
 
 ### Purpose and canonical source

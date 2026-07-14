@@ -18,6 +18,60 @@ const SECRET_PLAYER_EXPORT_SELECTOR = [
   '[data-corridor-type="secret"]',
 ].join(", ");
 
+const MAP_EXPORT_LAYER_SELECTORS = Object.freeze({
+  grid: ".map-grid, .floor-grid",
+  texture: ".paper-texture",
+  props: ".props",
+  roomNumbers: ".room-number-badge, .room-number, .room-level-marker",
+  roomNames: ".room-name",
+  hatching: ".external-hatching, .external-hatching-underlay",
+  stairArrows: ".stair-mark__arrow",
+  transient: ".editor-overlays, .room-preview-hotspots, .debug-cell-coordinates",
+});
+
+function removeSvgMatches(root, selector) {
+  if (!selector) return;
+  root.querySelectorAll(selector).forEach((node) => node.remove());
+}
+
+
+function appendSvgPrintPalette(clone) {
+  const namespace = "http://www.w3.org/2000/svg";
+  const defs = clone.querySelector("defs") || clone.insertBefore(clone.ownerDocument.createElementNS(namespace, "defs"), clone.firstChild);
+  const style = clone.ownerDocument.createElementNS(namespace, "style");
+  style.setAttribute("data-export-print-palette", "true");
+  style.textContent = `
+    .paper{fill:#fff!important}.paper-texture{display:none!important}
+    .floor-fill,.room-floor-accent,.corridor-floor-accent{fill:#fff!important}
+    .wall-shadow{display:none!important}
+    .wall-main path,.door-symbols .door-wall-line,.corridor-junctions .junction-wall-line,.map-accesses .map-access-line,.map-accesses .map-access-head-line{stroke:#111!important}
+    .wall-sketch path,.door-symbols .door-wall-sketch,.corridor-junctions .junction-wall-sketch{stroke:#555!important}
+    .door-cuts .door-opening,.door-cuts .secret-door-opening{stroke:#fff!important}
+    .external-hatching path{stroke:#666!important}
+    .props rect,.props circle,.props path,.props line,.props polygon,.props ellipse{stroke:#111!important}
+    .labels .room-number-badge{fill:#fff!important;stroke:#111!important}.labels text{fill:#111!important}
+  `;
+  defs.appendChild(style);
+}
+
+function applySvgBackgroundMode(clone, mode) {
+  const backgroundMode = ["style", "white", "transparent"].includes(mode)
+    ? mode
+    : "style";
+  clone.setAttribute("data-export-background", backgroundMode);
+  const paper = clone.querySelector(".paper");
+  if (!paper) return;
+  if (backgroundMode === "transparent") {
+    paper.remove();
+    removeSvgMatches(clone, MAP_EXPORT_LAYER_SELECTORS.texture);
+    return;
+  }
+  if (backgroundMode === "white") {
+    paper.setAttribute("fill", "#ffffff");
+    paper.setAttribute("style", "fill:#ffffff");
+  }
+}
+
 export function serializeSvg(svgElement, options = {}) {
   if (!svgElement) return "";
   const clone = svgElement.cloneNode(true);
@@ -28,19 +82,85 @@ export function serializeSvg(svgElement, options = {}) {
     "data-export-player-safe",
     options.hideSecretDoors || options.hideSecretCorridorHints ? "true" : "false",
   );
-  clone.querySelectorAll(".editor-overlays").forEach((node) => node.remove());
-  if (options.removeLabels)
-    clone.querySelectorAll(".labels").forEach((node) => node.remove());
+  if (options.viewBox) clone.setAttribute("viewBox", String(options.viewBox));
+  clone.removeAttribute("tabindex");
+  removeSvgMatches(clone, MAP_EXPORT_LAYER_SELECTORS.transient);
+
+  const removeGrid = options.removeGrid || options.printSafe;
+  const removeTexture = options.removeTexture || options.printSafe;
+  if (removeGrid) removeSvgMatches(clone, MAP_EXPORT_LAYER_SELECTORS.grid);
+  if (removeTexture) removeSvgMatches(clone, MAP_EXPORT_LAYER_SELECTORS.texture);
+  if (options.removeProps) removeSvgMatches(clone, MAP_EXPORT_LAYER_SELECTORS.props);
+  if (options.removeHatching) removeSvgMatches(clone, MAP_EXPORT_LAYER_SELECTORS.hatching);
+  if (options.removeStairArrows) removeSvgMatches(clone, MAP_EXPORT_LAYER_SELECTORS.stairArrows);
+
+  if (options.removeLabels) {
+    removeSvgMatches(clone, ".labels");
+  } else {
+    if (options.removeRoomNumbers) removeSvgMatches(clone, MAP_EXPORT_LAYER_SELECTORS.roomNumbers);
+    if (options.removeRoomNames) removeSvgMatches(clone, MAP_EXPORT_LAYER_SELECTORS.roomNames);
+  }
+
   if (options.hideSecretDoors || options.hideSecretCorridorHints) {
-    clone
-      .querySelectorAll(SECRET_PLAYER_EXPORT_SELECTOR)
-      .forEach((node) => node.remove());
+    removeSvgMatches(clone, SECRET_PLAYER_EXPORT_SELECTOR);
   }
-  if (options.printSafe) {
-    clone.querySelectorAll(".paper-texture").forEach((node) => node.remove());
-    clone.querySelectorAll(".map-grid").forEach((node) => node.remove());
-  }
+  applySvgBackgroundMode(clone, options.backgroundMode || (options.printSafe ? "white" : "style"));
+  if (exportMode === "print" || options.printSafe || options.printPalette) appendSvgPrintPalette(clone);
   return new XMLSerializer().serializeToString(clone);
+}
+
+export function downloadBlobFile(filename, blob) {
+  if (!blob || typeof document === "undefined" || typeof URL === "undefined") return false;
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  return true;
+}
+
+export function createSvgBlob(svgText) {
+  const text = String(svgText || "");
+  return text.trim() ? new Blob([text], { type: "image/svg+xml;charset=utf-8" }) : null;
+}
+
+export async function rasterizeSvgToPngBlob(svgText, options = {}) {
+  const text = String(svgText || "");
+  if (!text.trim() || typeof document === "undefined" || typeof Image === "undefined") return null;
+  const viewBoxMatch = text.match(/viewBox=["']\s*([^"']+)["']/i);
+  const values = viewBoxMatch?.[1]?.trim().split(/[\s,]+/).map(Number) || [];
+  const width = Math.max(1, Number(options.width || values[2] || 1000));
+  const height = Math.max(1, Number(options.height || values[3] || 640));
+  const scale = [1, 2, 4].includes(Number(options.scale)) ? Number(options.scale) : 2;
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(width * scale));
+  canvas.height = Math.max(1, Math.round(height * scale));
+  const context = canvas.getContext("2d");
+  if (!context) return null;
+
+  const image = new Image();
+  const svgBlob = createSvgBlob(text);
+  if (!svgBlob) return null;
+  const url = URL.createObjectURL(svgBlob);
+  try {
+    await new Promise((resolve, reject) => {
+      image.onload = resolve;
+      image.onerror = () => reject(new Error("Unable to rasterize SVG"));
+      image.src = url;
+    });
+    context.setTransform(scale, 0, 0, scale, 0, 0);
+    if (options.background && options.background !== "transparent") {
+      context.fillStyle = options.background;
+      context.fillRect(0, 0, width, height);
+    }
+    context.drawImage(image, 0, 0, width, height);
+    return await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+  } finally {
+    URL.revokeObjectURL(url);
+  }
 }
 
 export function downloadSvgExport(mode = "current") {

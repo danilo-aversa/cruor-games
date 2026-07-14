@@ -1454,6 +1454,27 @@ export function createRenderableSubsetMap(
   };
 }
 
+function isExplicitSecretRegion(region = {}) {
+  return region.isSecretRoom === true || region.secret === true || region.metadata?.isSecretRoom === true;
+}
+
+function isExplicitSecretCorridor(corridor = {}) {
+  const type = corridor.corridorRenderProfile?.type || corridor.corridorType || corridor.type || corridor.kind;
+  return corridor.secret === true || type === "secret";
+}
+
+export function createPlayerSafeMap(generatedMap) {
+  if (!generatedMap) return generatedMap;
+  return createRenderableSubsetMap(
+    generatedMap,
+    (region) => !isExplicitSecretRegion(region),
+    (corridor, regionIds) =>
+      !isExplicitSecretCorridor(corridor) &&
+      regionIds.has(getCorridorFromRegionId(corridor)) &&
+      regionIds.has(getCorridorToRegionId(corridor)),
+  );
+}
+
 export function createLevelFilteredMap(
   generatedMap,
   levelView,
@@ -11844,7 +11865,9 @@ export function MapSvg({
   gridStyle,
   showEditor,
   showNames,
+  showRoomNumbers = false,
   showRoomBadges = true,
+  hideSecretRoutes = false,
   showProps,
   levelView = LEVEL_VIEW_ALL,
   fadeOtherLevels = true,
@@ -11867,26 +11890,28 @@ export function MapSvg({
   const normalizedHatchShadowColor = normalizeHatchShadowColor(hatchShadowColor);
   const viewBox =
     viewportViewBox || `0 0 ${config.mapWidth} ${config.mapHeight}`;
-  const { activeMap, fadedMap, layerGridStyle, activeEditorMap } = React.useMemo(() => {
-    const availableLevels = getAvailableMapLevels(generatedMap);
+  const { activeMap, fadedMap, layerGridStyle, activeEditorMap, sourceMap } = React.useMemo(() => {
+    const nextSourceMap = hideSecretRoutes ? createPlayerSafeMap(generatedMap) : generatedMap;
+    const availableLevels = getAvailableMapLevels(nextSourceMap);
     const normalizedLevelView = normalizeLevelView(levelView, availableLevels);
     const isLevelFiltered = normalizedLevelView !== LEVEL_VIEW_ALL;
     const nextActiveMap = isLevelFiltered
-      ? createLevelFilteredMap(generatedMap, normalizedLevelView, "active")
-      : generatedMap;
+      ? createLevelFilteredMap(nextSourceMap, normalizedLevelView, "active")
+      : nextSourceMap;
     const nextFadedMap =
       isLevelFiltered && fadeOtherLevels
-        ? createLevelFilteredMap(generatedMap, normalizedLevelView, "inactive")
+        ? createLevelFilteredMap(nextSourceMap, normalizedLevelView, "inactive")
         : null;
     return {
+      sourceMap: nextSourceMap,
       activeMap: nextActiveMap,
       fadedMap: nextFadedMap,
       layerGridStyle: isLevelFiltered ? "none" : showGrid ? gridStyle : "none",
       activeEditorMap: hasRenderableGeometry(nextActiveMap)
         ? nextActiveMap
-        : generatedMap,
+        : nextSourceMap,
     };
-  }, [generatedMap, levelView, fadeOtherLevels, showGrid, gridStyle]);
+  }, [generatedMap, hideSecretRoutes, levelView, fadeOtherLevels, showGrid, gridStyle]);
   const activeSurfaceMap = React.useMemo(
     () => withWallDrawingConfig(activeMap, normalizedWallDrawingStyle),
     [activeMap, normalizedWallDrawingStyle],
@@ -11905,7 +11930,7 @@ export function MapSvg({
   };
   const normalizedSvgLevelView = normalizeLevelView(
     levelView,
-    getAvailableMapLevels(generatedMap),
+    getAvailableMapLevels(sourceMap),
   );
   const accessDotsVisible = editorOptions.showAccessDots === true;
   const stairMarkerPositions = editorOptions.stairMarkerPositions || null;
@@ -11945,9 +11970,9 @@ export function MapSvg({
               <feFuncA type="table" tableValues="0 0.06" />
             </feComponentTransfer>
           </filter>
-          {renderRegionClipPaths(generatedMap)}
-          {renderDungeonFloorClipPath(generatedMap)}
-          {renderCaveWallAccessMask(generatedMap)}
+          {renderRegionClipPaths(sourceMap)}
+          {renderDungeonFloorClipPath(sourceMap)}
+          {renderCaveWallAccessMask(sourceMap)}
         </defs>
         <rect
           className="paper"
@@ -11978,9 +12003,9 @@ export function MapSvg({
             })}
             {showProps && renderProps(fadedSurfaceMap.props, fadedSurfaceMap)}
             {showEditor && showRoomBadges && renderCorridorLevelShiftLabels(fadedSurfaceMap)}
-            {((showEditor && showRoomBadges) || showNames) &&
+            {((showEditor && showRoomBadges) || showRoomNumbers || showNames) &&
               renderLabels(fadedSurfaceMap, {
-                showBadges: showEditor && showRoomBadges,
+                showBadges: showRoomNumbers || (showEditor && showRoomBadges),
                 showNames,
                 regionMarkers: previewRegionMarkers,
               })}
@@ -11998,9 +12023,9 @@ export function MapSvg({
           })}
           {showProps && renderProps(activeSurfaceMap.props, activeSurfaceMap)}
           {showEditor && showRoomBadges && renderCorridorLevelShiftLabels(activeSurfaceMap)}
-          {((showEditor && showRoomBadges) || showNames) &&
+          {((showEditor && showRoomBadges) || showRoomNumbers || showNames) &&
             renderLabels(activeSurfaceMap, {
-              showBadges: showEditor && showRoomBadges,
+              showBadges: showRoomNumbers || (showEditor && showRoomBadges),
               showNames,
               regionMarkers: previewRegionMarkers,
             })}
@@ -12014,6 +12039,7 @@ export function MapSvg({
       crosshatchStyle,
       fadedSurfaceMap,
       generatedMap,
+      sourceMap,
       gridColor,
       gridOpacity,
       gridStyle,
@@ -12027,6 +12053,7 @@ export function MapSvg({
       showNames,
       showProps,
       showRoomBadges,
+      showRoomNumbers,
       showDebugCellCoordinates,
       showStairArrows,
       stairMarkerPositions,

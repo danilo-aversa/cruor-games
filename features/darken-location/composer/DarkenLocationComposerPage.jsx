@@ -53,6 +53,7 @@ import {
   areManualOverridesEqual,
   normalizeManualOverrides,
 } from "../map-generator/map-generator.state.js";
+import { serializeSvg } from "../map-generator/map-generator.export.js";
 import { LocationBriefPanel } from "./components/LocationBriefPanel.jsx";
 import { LocationDraftControls } from "./components/LocationDraftControls.jsx";
 import { LocationComponentPickerModal } from "./components/LocationComponentPickerModal.jsx";
@@ -61,7 +62,7 @@ import { LocationGuidedFlowPanel } from "./components/LocationGuidedFlowPanel.js
 import { LocationRoomInspector } from "./components/LocationRoomInspector.jsx";
 import { LocationMapDetailsPanel, LocationMapWideDetailsBlock } from "./components/LocationMapDetailsPanel.jsx";
 import { LocationMapToolbar } from "./components/LocationMapToolbar.jsx";
-import { LocationExportRoomKeyPanel } from "./components/LocationExportRoomKeyPanel.jsx";
+import { LocationOutputWorkspace } from "../output/LocationOutputWorkspace.jsx";
 import {
   copyTextToClipboard,
   createLocationExportBundle,
@@ -96,7 +97,7 @@ function getCurrentComposerMapSvgText() {
   if (typeof document === "undefined" || typeof XMLSerializer === "undefined") return "";
   const svg = document.querySelector('[data-map-viewport-mode="composer-preview"] #cruor-map-svg')
     || document.querySelector("#cruor-map-svg");
-  return svg ? new XMLSerializer().serializeToString(svg) : "";
+  return svg ? serializeSvg(svg, { mode: "current" }) : "";
 }
 
 function downloadLocationExportFile(filename, text, mimeType = "text/plain;charset=utf-8") {
@@ -340,33 +341,6 @@ function LocationRecapPanel({
     </ComposerRail>
   );
 
-}
-
-function LocationExportToolsPanel({ onSelectFrame, onSelectScratch }) {
-  return (
-    <ComposerRail
-      side="left"
-      variant="controls"
-      surface
-      scrollable
-      className="location-composer__rail location-composer__rail--left location-map-frame-rail location-frame-info"
-      aria-label="Location export tools"
-    >
-      <section className="cruor-composer-rail-card cruor-composer-rail-card--hero location-frame-info-card location-frame-info-card--hero">
-        <span>Export</span>
-        <strong>Location Insert</strong>
-        <em>Copy the session insert, table text, rooms, or map SVG.</em>
-      </section>
-      <section className="cruor-composer-rail-card location-frame-info-card location-location-action-card location-location-action-card--secondary" aria-label="Export navigation">
-        <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectFrame}>
-          Back to Frame
-        </button>
-        <button className="cruor-composer-control location-primary-action" type="button" onClick={onSelectScratch}>
-          Rooms
-        </button>
-      </section>
-    </ComposerRail>
-  );
 }
 
 function getThemeProgramCandidateScore(candidate = {}, index = 0) {
@@ -1192,6 +1166,37 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     }
   }, []);
 
+  if (builderMode === "export") {
+    return (
+      <div
+        className="cruor-composer-shell location-composer location-composer--output"
+        data-cruor-ui-mode={uiMode}
+        data-location-builder-mode="export"
+        data-location-immersive="false"
+        data-location-map-editing="output-readonly"
+        data-location-composer-ready="true"
+        data-testid="dark-places-composer"
+      >
+        <div className="cruor-composer-workspace location-composer__workspace location-composer__workspace--output">
+          <LocationOutputWorkspace
+            copyStatus={exportCopyStatus}
+            documentModel={exportBundle.document}
+            exportBundle={exportBundle}
+            generatedMapPreview={generatedMapPreview}
+            uiMode={uiMode}
+            onBackToFrame={() => activateBuilderMode("theme")}
+            onBackToRooms={() => activateBuilderMode("scratch")}
+            onCopyFormat={copyExportFormat}
+            onCopyText={copyExportText}
+            onDownloadFormat={downloadExportFormat}
+            onEditRoom={selectExportRoom}
+            onReviewMissing={openFirstMissingExportRoom}
+          />
+        </div>
+      </div>
+    );
+  }
+
   const leftPanel = builderMode === "theme" ? (
     <LocationBriefPanel
       state={state}
@@ -1247,11 +1252,6 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       onFocusSlot={focusSlot}
       onSelectRoom={selectRoomTarget}
     />
-  ) : builderMode === "export" ? (
-    <LocationExportToolsPanel
-      onSelectFrame={() => activateBuilderMode("theme")}
-      onSelectScratch={() => activateBuilderMode("scratch")}
-    />
   ) : null;
 
   const navigatorPanel = (builderMode === "theme" || builderMode === "scratch") && drawerOpen && activeSlot ? (
@@ -1288,20 +1288,6 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       onRenameLocation={renameLocation}
     />
   );
-
-
-  const exportContextPanel = builderMode === "export" ? (
-    <LocationExportRoomKeyPanel
-      compilePreview={compilePreview}
-      copyStatus={exportCopyStatus}
-      exportBundle={exportBundle}
-      generatedMapPreview={generatedMapPreview}
-      onCopyFormat={copyExportFormat}
-      onDownloadFormat={downloadExportFormat}
-      onReviewMissing={openFirstMissingExportRoom}
-      onSelectRoom={selectExportRoom}
-    />
-  ) : null;
 
 
   const centerToolbarPanel = (
@@ -1358,7 +1344,6 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
           leftPanel={immersiveMode ? null : leftPanel}
           rightPanel={immersiveMode ? null : rightPanel}
           navigatorPanel={immersiveMode ? null : navigatorPanel}
-          contextPanel={immersiveMode ? null : exportContextPanel}
           toolbarPanel={centerToolbarPanel}
           onCloseNavigator={closeComponentNavigator}
           bottomDockPanel={immersiveMode ? null : (

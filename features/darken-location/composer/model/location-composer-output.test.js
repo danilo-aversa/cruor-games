@@ -47,6 +47,8 @@ describe("location export bundle", () => {
     const bundle = createBundle({ seed: "export-seed", regions: [], corridors: [] });
 
     expect(bundle.schemaVersion).toBe("dark-places-export-bundle-v1");
+    expect(bundle.document.schemaVersion).toBe("dark-places-document-v1");
+    expect(bundle.document.meta.title).toBe("The Ossuary Below");
     expect(bundle.baseFilename).toBe("the-ossuary-below");
     expect(Object.keys(bundle.formats)).toEqual([
       "roomKey",
@@ -68,6 +70,7 @@ describe("location export bundle", () => {
     const payload = JSON.parse(bundle.formats.json.text);
 
     expect(payload.schemaVersion).toBe("dark-places-export-v1");
+    expect(payload.document).toEqual(bundle.document);
     expect(payload.exportedAt).toBe(bundle.exportedAt);
     expect(payload.title).toBe("The Ossuary Below");
     expect(bundle.formats.svg.available).toBe(false);
