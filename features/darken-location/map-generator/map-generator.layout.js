@@ -2104,20 +2104,24 @@ export function resizeRoomAroundCenter(region, sizePreset, config, style = null)
   const gridH = Math.floor(config.mapHeight / config.gridSize);
   const centerX = region.cellRect.x + region.cellRect.w / 2;
   const centerY = region.cellRect.y + region.cellRect.h / 2;
+  const customSize =
+    effectiveStyle.customSize && typeof effectiveStyle.customSize === "object"
+      ? effectiveStyle.customSize
+      : null;
+  const anchoredTopLeft =
+    effectiveStyle.sizePreset === "Custom" && customSize?.layoutAnchor === "top-left";
+  const preferredX = anchoredTopLeft
+    ? Math.round(region.cellRect.x)
+    : Math.round(centerX - size.w / 2);
+  const preferredY = anchoredTopLeft
+    ? Math.round(region.cellRect.y)
+    : Math.round(centerY - size.h / 2);
   const cellRect = {
     ...region.cellRect,
     w: size.w,
     h: size.h,
-    x: clamp(
-      Math.round(centerX - size.w / 2),
-      1,
-      Math.max(1, gridW - size.w - 1),
-    ),
-    y: clamp(
-      Math.round(centerY - size.h / 2),
-      1,
-      Math.max(1, gridH - size.h - 1),
-    ),
+    x: clamp(preferredX, 1, Math.max(1, gridW - size.w - 1)),
+    y: clamp(preferredY, 1, Math.max(1, gridH - size.h - 1)),
   };
   return {
     ...region,

@@ -1,6 +1,10 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
+  resolveContextMenuCompoundSubmenuWidth,
   resolveContextMenuViewportLayout,
+  resolveContextSubmenuMeasuredHeight,
   resolveContextSubmenuViewportLayout,
 } from "./map-generator.context-menu-position.js";
 
@@ -90,6 +94,35 @@ describe("context menu viewport positioning", () => {
     expect(layout.left).toBe(530);
   });
 
+  it("reserves the nested shape column before the third flyout is mounted", () => {
+    expect(
+      resolveContextMenuCompoundSubmenuWidth({
+        firstFlyoutWidth: 210,
+        nestedFlyoutWidth: 0,
+        reserveNestedFlyout: true,
+      })
+    ).toBe(428);
+  });
+
+  it("ignores nested overflow when measuring the shape-group flyout", () => {
+    expect(
+      resolveContextSubmenuMeasuredHeight({
+        offsetHeight: 92,
+        scrollHeight: 548,
+        containsNestedFlyout: true,
+      })
+    ).toBe(92);
+  });
+
+  it("keeps scroll height for ordinary flyouts", () => {
+    expect(
+      resolveContextSubmenuMeasuredHeight({
+        offsetHeight: 220,
+        scrollHeight: 420,
+      })
+    ).toBe(420);
+  });
+
   it("shifts a tall submenu upward and enables internal scrolling", () => {
     const layout = resolveContextSubmenuViewportLayout({
       triggerTop: 720,
@@ -100,5 +133,40 @@ describe("context menu viewport positioning", () => {
     expect(layout.topOffset).toBe(-288);
     expect(layout.maxHeight).toBe(460);
     expect(layout.overflowY).toBe("auto");
+  });
+});
+
+describe("shared map dropdown migration", () => {
+  const root = process.cwd();
+  const pageSource = readFileSync(
+    resolve(root, "features/darken-location/map-generator/map-generator.page.jsx"),
+    "utf8",
+  );
+  const stylesSource = readFileSync(
+    resolve(root, "features/darken-location/map-generator/map-generator.styles.css"),
+    "utf8",
+  );
+
+  it("renders Map Actions through the canonical context-menu family", () => {
+    expect(pageSource).toContain(
+      'className="location-map-toolbar__style-panel cruor-ui-panel-surface map-action-menu cruor-dropdown-menu cruor-dropdown-menu--context"',
+    );
+    expect(pageSource).not.toContain('className="room-context-menu map-action-menu"');
+    expect(pageSource).toContain('aria-label="Map actions"');
+  });
+
+  it("renders More Map Tools through shared menu and option rows", () => {
+    expect(pageSource).toContain(
+      'className="location-map-toolbar__map-menu-panel cruor-ui-panel-surface cruor-dropdown-menu cruor-dropdown-menu--context"',
+    );
+    expect(pageSource).toContain(
+      '"location-map-toolbar__map-menu-action cruor-dropdown-option"',
+    );
+    expect(stylesSource).toContain(
+      ".location-map-toolbar__map-menu-panel:not(.cruor-dropdown-menu)",
+    );
+    expect(stylesSource).toContain(
+      ".location-map-toolbar__map-menu-action:not(.cruor-dropdown-option)",
+    );
   });
 });

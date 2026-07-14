@@ -406,17 +406,6 @@
 
 /* Layout */
 
-.map-action-menu {
-  width: 248px;
-}
-
-.map-action-menu .room-context-menu__trigger i {
-  width: 15px;
-  text-align: center;
-  margin-right: 7px;
-  opacity: 0.82;
-}
-
 .room-context-submenu button i {
   width: 15px;
   text-align: center;
@@ -448,14 +437,6 @@
 }
 
 /* Components */
-
-.map-action-menu .room-context-menu__body {
-  margin-bottom: 0;
-}
-
-.map-action-menu .room-context-submenu {
-  top: -8px;
-}
 
 /* Layout */
 
@@ -1115,16 +1096,12 @@
 
 /* Layout */
 
-.context-menu-toolbar button {
+.context-menu-toolbar .cruor-square-icon-button {
   width: 30px;
+  min-width: 30px;
   height: 30px;
-  display: grid;
-  place-items: center;
+  min-height: 30px;
   padding: 0;
-  text-align: center;
-  border-color: var(--cruor-ui-control-border);
-  background: var(--cruor-ui-control-bg);
-  color: var(--cruor-ui-control-text);
 }
 
 .cruor-map-mvp .control-input {
@@ -1228,7 +1205,7 @@
 
 /* States */
 
-.context-menu-toolbar button.is-active {
+.context-menu-toolbar button:not(.cruor-square-icon-button).is-active {
   border-color: var(--cruor-ui-control-border-active);
   background: var(--cruor-ui-control-bg-active);
   color: var(--cruor-ui-control-text-active);
@@ -1736,7 +1713,7 @@
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.location-map-toolbar__map-menu-panel {
+.location-map-toolbar__map-menu-panel:not(.cruor-dropdown-menu) {
   position: absolute;
   z-index: 90;
   top: calc(100% + 8px);
@@ -1755,7 +1732,7 @@
   user-select: none;
 }
 
-.location-map-toolbar__map-menu-action {
+.location-map-toolbar__map-menu-action:not(.cruor-dropdown-option) {
   display: grid;
   grid-template-columns: 24px minmax(0, 1fr);
   align-items: center;
@@ -1774,14 +1751,14 @@
   user-select: none;
 }
 
-.location-map-toolbar__map-menu-action i {
+.location-map-toolbar__map-menu-action:not(.cruor-dropdown-option) i {
   display: inline-grid;
   place-items: center;
   color: var(--cruor-color-hex-b33b4e);
   font-size: 13px;
 }
 
-.location-map-toolbar__map-menu-action span {
+.location-map-toolbar__map-menu-action:not(.cruor-dropdown-option) span {
   overflow: hidden;
   min-width: 0;
   color: inherit;
@@ -1794,28 +1771,28 @@
   white-space: nowrap;
 }
 
-.location-map-toolbar__map-menu-action:hover:not(:disabled),
-.location-map-toolbar__map-menu-action:focus-visible:not(:disabled),
-.location-map-toolbar__map-menu-action.is-active {
+.location-map-toolbar__map-menu-action:not(.cruor-dropdown-option):hover:not(:disabled),
+.location-map-toolbar__map-menu-action:not(.cruor-dropdown-option):focus-visible:not(:disabled),
+.location-map-toolbar__map-menu-action:not(.cruor-dropdown-option).is-active {
   border-color: var(--cruor-color-blood-glow-a780);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-color-blood-strong-a360);
   color: var(--cruor-color-hex-fff0f2);
   outline: none;
 }
 
-.location-map-toolbar__map-menu-action:hover:not(:disabled) i,
-.location-map-toolbar__map-menu-action:focus-visible:not(:disabled) i,
-.location-map-toolbar__map-menu-action.is-active i {
+.location-map-toolbar__map-menu-action:not(.cruor-dropdown-option):hover:not(:disabled) i,
+.location-map-toolbar__map-menu-action:not(.cruor-dropdown-option):focus-visible:not(:disabled) i,
+.location-map-toolbar__map-menu-action:not(.cruor-dropdown-option).is-active i {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.location-map-toolbar__map-menu-action.is-danger:hover:not(:disabled),
-.location-map-toolbar__map-menu-action.is-danger:focus-visible:not(:disabled) {
+.location-map-toolbar__map-menu-action:not(.cruor-dropdown-option).is-danger:hover:not(:disabled),
+.location-map-toolbar__map-menu-action:not(.cruor-dropdown-option).is-danger:focus-visible:not(:disabled) {
   border-color: var(--cruor-color-blood-bright-a780);
   background: var(--cruor-color-blood-strong-a520);
 }
 
-.location-map-toolbar__map-menu-action:disabled {
+.location-map-toolbar__map-menu-action:not(.cruor-dropdown-option):disabled {
   cursor: not-allowed;
   opacity: 0.42;
 }
@@ -2223,7 +2200,7 @@
   box-shadow: var(--cruor-shadow-box-003);
 }
 
-.location-map-toolbar__map-menu-panel,
+.location-map-toolbar__map-menu-panel:not(.cruor-dropdown-menu),
 .location-map-toolbar__style-panel:not(.cruor-dropdown-menu) {
   border-color: var(--cruor-color-blood-strong-a640);
   background: var(--cruor-gradient-linear-015-d1025658), rgba(7, 5, 6, 0.995);
@@ -2234,7 +2211,7 @@
   backdrop-filter: blur(14px) saturate(118%);
 }
 
-.location-map-toolbar__map-menu-action {
+.location-map-toolbar__map-menu-action:not(.cruor-dropdown-option) {
   background-color: rgba(12, 6, 8, 0.94);
 }
 
@@ -2399,34 +2376,6 @@
 .location-map-toolbar__style-panel[data-style-floating="portal"][data-flyout-side="right"] .location-map-toolbar__style-panel[data-style-menu="flyout"] {
   right: auto;
   left: calc(100% + 6px);
-}
-
-/* More Map Tools glass restoration. */
-.location-map-toolbar__map-menu-panel.cruor-ui-panel-surface {
-  z-index: 24000;
-  overflow-x: hidden;
-  border-color: var(--cruor-color-blood-strong-a640);
-  background:
-    linear-gradient(180deg, rgba(18, 9, 12, 0.76), rgba(7, 5, 6, 0.58)),
-    rgba(7, 5, 6, 0.56);
-  background-clip: padding-box;
-  box-shadow:
-    0 28px 72px var(--cruor-color-black-a760, rgba(0, 0, 0, 0.76)),
-    var(--cruor-shadow-box-075);
-  -webkit-backdrop-filter: blur(18px) saturate(128%);
-  backdrop-filter: blur(18px) saturate(128%);
-}
-
-.location-map-toolbar__map-menu-panel.cruor-ui-panel-surface .location-map-toolbar__map-menu-action {
-  background-color: rgba(12, 6, 8, 0.68);
-}
-
-.location-map-toolbar__map-menu-panel.cruor-ui-panel-surface .location-map-toolbar__map-menu-action:hover,
-.location-map-toolbar__map-menu-panel.cruor-ui-panel-surface .location-map-toolbar__map-menu-action:focus-visible,
-.location-map-toolbar__map-menu-panel.cruor-ui-panel-surface .location-map-toolbar__map-menu-action.is-active {
-  background:
-    var(--cruor-gradient-radial-001-2127711c),
-    rgba(82, 16, 28, 0.72);
 }
 
 @media (max-width: 760px) {
@@ -3292,3 +3241,113 @@
 .location-map-toolbar__level-view-panel .location-map-toolbar__style-option {
   min-height: 36px;
 }
+
+/* Shared dropdown geometry for Map Actions and More Map Tools. */
+.location-map-toolbar__map-menu-panel.cruor-dropdown-menu {
+  position: absolute;
+  z-index: 24000;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(210px, calc(100vw - 24px));
+  min-width: min(210px, calc(100vw - 24px));
+  max-height: min(560px, calc(100dvh - 24px));
+}
+
+.map-action-menu.cruor-dropdown-menu {
+  width: min(210px, calc(100vw - 24px));
+  min-width: min(210px, calc(100vw - 24px));
+  max-width: min(210px, calc(100vw - 24px));
+}
+
+.map-action-menu .context-menu-toolbar {
+  margin: 0;
+}
+
+/* Top-right room custom-size handle and non-committing drag preview. */
+.room-resize-handle {
+  cursor: nesw-resize;
+  pointer-events: all;
+}
+
+.room-resize-handle__hit-area {
+  fill: transparent;
+  stroke: none;
+  pointer-events: all;
+  cursor: nesw-resize;
+}
+
+.room-resize-handle__hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 22;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+  pointer-events: stroke;
+  cursor: nesw-resize;
+}
+
+.editor-overlays .room-resize-handle__backdrop {
+  display: inline;
+  visibility: visible;
+  opacity: 1;
+  fill: none;
+  stroke: rgba(7, 5, 6, 0.92);
+  stroke-width: 7;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.editor-overlays .room-resize-handle__glyph {
+  display: inline;
+  visibility: visible;
+  opacity: 1;
+  fill: none;
+  stroke: var(--cruor-color-hex-fff0f2, #fff0f2);
+  stroke-width: 3.5;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.62));
+  pointer-events: none;
+}
+
+.editor-overlays .room-resize-handle:hover .room-resize-handle__glyph,
+.editor-overlays .room-resize-handle.is-dragging .room-resize-handle__glyph {
+  stroke: var(--cruor-color-blood-bright, #b33b4e);
+}
+
+.room-resize-handle.is-dragging {
+  cursor: nesw-resize;
+}
+
+.room-resize-preview__area {
+  fill: rgba(179, 59, 78, 0.1);
+  stroke: rgba(255, 240, 242, 0.92);
+  stroke-width: 2;
+  stroke-dasharray: 7 5;
+  vector-effect: non-scaling-stroke;
+}
+
+.room-resize-preview__label rect {
+  fill: rgba(7, 5, 6, 0.9);
+  stroke: rgba(179, 59, 78, 0.82);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.room-resize-preview__label text {
+  fill: #fff0f2;
+  font-family: Inter, ui-sans-serif, system-ui;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+.room-resize-preview.is-invalid .room-resize-preview__area {
+  fill: rgba(176, 32, 51, 0.16);
+  stroke: rgba(255, 98, 121, 0.96);
+}
+

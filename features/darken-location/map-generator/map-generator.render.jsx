@@ -25,6 +25,10 @@ import {
   normalizeLevelView,
 } from "./map-generator.layout.js";
 import {
+  canResizeRoomFromCorner,
+  getRoomCornerResizeHandleGeometry,
+} from "./map-generator.room-resize.js";
+import {
   cellKey,
   parseCellKey,
   ORTHOGONAL_DIRECTIONS,
@@ -10824,12 +10828,84 @@ function renderCorridorDragPreviewSurface(generatedMap, corridorDragPreview) {
   );
 }
 
+function renderRoomResizePreview(roomResizePreview, gridSize) {
+  const rect = roomResizePreview?.cellRect;
+  if (!rect) return null;
+  const x = rect.x * gridSize;
+  const y = rect.y * gridSize;
+  const width = rect.w * gridSize;
+  const height = rect.h * gridSize;
+  const labelX = x + width - gridSize * 0.2;
+  const labelY = y - gridSize * 0.35;
+  return (
+    <g
+      className={roomResizePreview.allowed === false ? "room-resize-preview is-invalid" : "room-resize-preview"}
+      data-room-resize-preview={roomResizePreview.regionId || undefined}
+      data-room-resize-size={roomResizePreview.label || undefined}
+      pointerEvents="none"
+    >
+      <rect
+        className="room-resize-preview__area"
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+      />
+      <g className="room-resize-preview__label" transform={`translate(${labelX} ${labelY})`}>
+        <rect x={-gridSize * 1.45} y={-gridSize * 0.55} width={gridSize * 1.45} height={gridSize * 0.55} />
+        <text x={-gridSize * 0.12} y={-gridSize * 0.18} textAnchor="end">
+          {roomResizePreview.label}
+        </text>
+      </g>
+    </g>
+  );
+}
+
+function renderRoomResizeHandle(region, gridSize, editorOptions = {}) {
+  if (!region || !canResizeRoomFromCorner(region)) return null;
+  const geometry = getRoomCornerResizeHandleGeometry(region, gridSize);
+  if (!geometry) return null;
+  const { path, hitRect } = geometry;
+  const dragging = editorOptions.draggingRoomResizeRegionId === region.id;
+  return (
+    <g
+      className={dragging ? "room-resize-handle is-dragging" : "room-resize-handle"}
+      data-room-resize-handle={region.id}
+      data-room-resize-width={region.cellRect.w}
+      data-room-resize-height={region.cellRect.h}
+      data-room-resize-shape={region.shape || "rect"}
+      role="button"
+      aria-label={`Resize ${region.name || `room ${region.number || ""}`}`.trim()}
+      onPointerEnter={(event) => editorOptions.onRoomPointerEnter?.(event, region)}
+      onPointerLeave={(event) => editorOptions.onRoomPointerLeave?.(event, region)}
+      onPointerDown={(event) => {
+        editorOptions.onRoomSelect?.(region);
+        editorOptions.onRoomResizePointerDown?.(event, region);
+      }}
+    >
+      <rect
+        className="room-resize-handle__hit-area"
+        data-room-resize-hit-bridge="true"
+        x={hitRect.x}
+        y={hitRect.y}
+        width={hitRect.width}
+        height={hitRect.height}
+      />
+      <path className="room-resize-handle__hit" d={path} />
+      <path className="room-resize-handle__backdrop" d={path} />
+      <path className="room-resize-handle__glyph" d={path} />
+    </g>
+  );
+}
+
 export function renderEditorOverlays(generatedMap, editorOptions = {}) {
   const { regions, corridors, config } = generatedMap;
   const {
     draggingRegionId,
+    draggingRoomResizeRegionId,
     hoveredRegionId,
     roomDragPreview,
+    roomResizePreview,
     draggingCorridorHandle,
     corridorDragPreview,
     draggingMapAccessId,
@@ -10843,6 +10919,7 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
     onRoomPointerDown,
     onRoomPointerEnter,
     onRoomPointerLeave,
+    onRoomResizePointerDown,
     onRoomContextMenu,
     onDoorPointerDown,
     onWaypointPointerDown,
@@ -11012,7 +11089,7 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
     (handle) => handle.id === selectedStairMarkerId,
   );
   const highlightedRegion = regions.find(
-    (region) => region.id === (draggingRegionId || hoveredRegionId),
+    (region) => region.id === (draggingRegionId || draggingRoomResizeRegionId || hoveredRegionId),
   );
   const selectedRegion = regions.find(
     (region) => isPreviewRegionTarget(region, editorOptions.selectedRegionId),
@@ -11106,6 +11183,7 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
         roomDragPreviewOffset,
         editorOptions,
       )}
+      {renderRoomResizePreview(roomResizePreview, config.gridSize)}
       {renderRoomSelectionHighlight(
         selectedRegion?.id === roomDragPreview?.regionId ? null : selectedRegion,
         generatedMap,
@@ -11193,7 +11271,9 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
           className={
             draggingRegionId === region.id
               ? "room-drag-handle is-dragging"
-              : "room-drag-handle"
+              : draggingRoomResizeRegionId === region.id
+                ? "room-drag-handle is-resizing"
+                : "room-drag-handle"
           }
           d={buildRegionVisualFloorPath(region, config.gridSize, generatedMap)}
           fillRule="nonzero"
@@ -11451,6 +11531,15 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
           />
         ))}
       </g>
+      {renderRoomResizeHandle(
+        regions.find((region) => region.id === (draggingRoomResizeRegionId || hoveredRegionId)),
+        config.gridSize,
+        {
+          ...editorOptions,
+          draggingRoomResizeRegionId,
+          onRoomResizePointerDown,
+        },
+      )}
     </g>
   );
 }

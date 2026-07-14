@@ -12503,3 +12503,134 @@ _Nessun file aggiunto._
 - `~shared/i18n/locales/en.js`
 - `~shared/i18n/locales/it.js`
 
+
+---
+
+## 2026-07-14 11:38:38
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-special-shapes-hover-stability-fix-20260714.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-special-shapes-hover-stability-fix-20260714.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 6
+
+- `~docs/repository-map/areas/map-editor.md`
+- `~docs/repository-map/tests-and-qa.md`
+- `~features/darken-location/map-generator/map-generator.context-menu-position.js`
+- `~features/darken-location/map-generator/map-generator.context-menu-position.test.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~tests/e2e/dark-places-pipeline.spec.js`
+
+
+---
+
+## 2026-07-14 13:24:53
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-room-resize-shared-map-menus-20260714.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-room-resize-shared-map-menus-20260714.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+features/darken-location/map-generator/map-generator.room-resize.js`
+- `+features/darken-location/map-generator/map-generator.room-resize.test.js`
+
+**File sovrascritti:** 11
+
+- `~docs/design-system/dropdown-family-audit.md`
+- `~docs/design-system/dropdown-family-migration.json`
+- `~docs/repository-map/areas/map-editor.md`
+- `~docs/repository-map/areas/styles-and-design-system.md`
+- `~docs/repository-map/tests-and-qa.md`
+- `~features/darken-location/map-generator/map-generator.context-menu-position.test.js`
+- `~features/darken-location/map-generator/map-generator.layout.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+- `~tests/e2e/dark-places-pipeline.spec.js`
+
+
+---
+
+## 2026-07-14 13:38:23
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-room-resize-handle-hitbox-l-glyph-fix-20260714.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-room-resize-handle-hitbox-l-glyph-fix-20260714.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+- `~features/darken-location/map-generator/map-generator.room-resize.js`
+- `~features/darken-location/map-generator/map-generator.room-resize.test.js`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+- `~tests/e2e/dark-places-pipeline.spec.js`
+
+
+---
+
+## 2026-07-14 14:00:06
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-room-resize-handle-hitbox-l-glyph-fix-20260714.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-room-resize-handle-hitbox-l-glyph-fix-20260714.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+- `~features/darken-location/map-generator/map-generator.room-resize.js`
+- `~features/darken-location/map-generator/map-generator.room-resize.test.js`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+- `~tests/e2e/dark-places-pipeline.spec.js`
+
+
+---
+
+## 2026-07-14 14:06:53
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-room-resize-visible-l-handle-fix-20260714.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-room-resize-visible-l-handle-fix-20260714.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+- `~features/darken-location/map-generator/map-generator.room-resize.test.js`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+

@@ -124,3 +124,35 @@ export function resolveContextSubmenuViewportLayout({
     overflowY: safeSubmenuHeight > heightLimit ? "auto" : "visible",
   };
 }
+
+export function resolveContextSubmenuMeasuredHeight({
+  offsetHeight,
+  scrollHeight,
+  containsNestedFlyout = false,
+}) {
+  const safeOffsetHeight = normalizePositiveNumber(offsetHeight, 1);
+  const safeScrollHeight = normalizePositiveNumber(scrollHeight, safeOffsetHeight);
+
+  return containsNestedFlyout
+    ? safeOffsetHeight
+    : Math.max(safeOffsetHeight, safeScrollHeight);
+}
+
+export function resolveContextMenuCompoundSubmenuWidth({
+  firstFlyoutWidth,
+  nestedFlyoutWidth = 0,
+  reserveNestedFlyout = false,
+  gap = DEFAULT_SUBMENU_GAP,
+}) {
+  const safeFirstFlyoutWidth = normalizePositiveNumber(firstFlyoutWidth, 0);
+  const fallbackNestedWidth = safeFirstFlyoutWidth || 0;
+  const safeNestedFlyoutWidth = reserveNestedFlyout
+    ? normalizePositiveNumber(nestedFlyoutWidth, fallbackNestedWidth)
+    : Math.max(0, Number(nestedFlyoutWidth) || 0);
+  const safeGap = Math.max(0, Number(gap) || 0);
+
+  return (
+    safeFirstFlyoutWidth +
+    (safeNestedFlyoutWidth > 0 ? safeGap + safeNestedFlyoutWidth : 0)
+  );
+}

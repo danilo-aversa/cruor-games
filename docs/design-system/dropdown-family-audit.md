@@ -4,7 +4,7 @@
 
 The visual reference is `RoomStyleContextMenu` in `features/darken-location/map-generator/map-generator.page.jsx`, with reusable rows and flyouts produced by `RoomStyleMenuOption` and `RoomStyleMenuSection`. The root is portaled to `document.body` by `ContextMenuPortal` and positioned by `resolveContextMenuViewportLayout` from `map-generator.context-menu-position.js`.
 
-The root contains Type, Shape, Size, Level, and Modifiers flyouts. Shape contains the nested Building and Cavern shape-group flyouts. Reset to Content and Close are terminal rows; Reset does not open another level.
+The root contains Type, Shape, Size, Level, and Modifiers flyouts. Shape contains the nested Standard Shapes and Special Shapes flyouts. Reset to Content and Close are terminal rows; Reset does not open another level.
 
 ## Original selector provenance
 
@@ -43,6 +43,8 @@ The canonical system consumes `--cruor-color-blood-strong-a320`, `--cruor-color-
 
 - Dark Places room style context menu: root, header, requirements, all five first-level flyouts, nested Shape group flyouts, section triggers, options and terminal actions.
 - Dark Places Map Style and Level View menus, which already use the same panel/section/option implementation.
+- Dark Places Map Actions context menu, including Grid, Levels and Export flyouts; its quick icon toolbar remains an ordinary square-button toolbar inside the shared menu surface.
+- Dark Places More Map Tools toolbar action menu.
 - Dark Places custom choice trigger, portaled listbox and options.
 - Terrifying Monsters frame select trigger, portaled listbox and options.
 
@@ -51,7 +53,7 @@ The canonical system consumes `--cruor-color-blood-strong-a320`, `--cruor-color-
 - Site topbar and mega menu: navigation-specific hierarchy and surface.
 - Crucible dropdowns/context menus: legacy DOM/runtime engine and distinct styling.
 - Inspirations custom controls: materially different selection and layout language.
-- Map entity action context menus (`room-context-menu`, corridor/access/stair actions): compact action-menu system with different structure; retained as an explicit exclusion.
+- Corridor, access, stair and waypoint entity action menus: compact entity-specific structures retained as an explicit exclusion. The map-level Map Actions menu is no longer part of this exclusion.
 - Monster navigator/component menus and Dark Places room-target menu: workflow/menu-row controls rather than the canonical selection family.
 - Native `select`, autocomplete, modal, tooltip, square-icon, card and ordinary action controls: outside scope.
 

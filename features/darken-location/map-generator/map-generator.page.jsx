@@ -11,9 +11,16 @@ import {
   getSupportedRoomShapeDefinitions,
 } from "./map-generator.room-design.js";
 import {
+  resolveContextMenuCompoundSubmenuWidth,
   resolveContextMenuViewportLayout,
+  resolveContextSubmenuMeasuredHeight,
   resolveContextSubmenuViewportLayout,
 } from "./map-generator.context-menu-position.js";
+import {
+  applyRoomCornerResizeToManualOverrides,
+  canResizeRoomFromCorner,
+  createRoomCornerResizeDraft,
+} from "./map-generator.room-resize.js";
 import {
   DEFAULT_CONFIG,
   MAP_VISUAL_STYLES,
@@ -242,6 +249,13 @@ const ROOM_SIZE_MENU_PRESETS = {
 
 const ROOM_LEVEL_MENU_OPTIONS = [-3, -2, -1, 0, 1, 2, 3];
 const EDITOR_DISABLED_CORRIDOR_TYPES = new Set(["collapsed", "gallery"]);
+const ROOM_STYLE_SUBMENU_CLOSE_DELAY_MS = 160;
+
+function clearRoomStyleSubmenuCloseTimer(timerRef) {
+  if (!timerRef.current || typeof window === "undefined") return;
+  window.clearTimeout(timerRef.current);
+  timerRef.current = null;
+}
 
 const MAP_DEBUG_CATEGORY_OPTIONS = getEditorMapDebugCategories();
 const MAP_DEBUG_SCENARIO_OPTIONS = getEditorMapQaScenarios();
@@ -806,6 +820,7 @@ export function MapViewport({
   onConnectionDelete,
   onCreateConnection,
   onRoomStyleChange,
+  onRoomResizeCommit,
   onRoomStyleReset,
   onRoomLevelChange,
   onRoomLevelReset,
@@ -851,6 +866,9 @@ export function MapViewport({
   const roomMoveFrameRef = useRef(null);
   const pendingRoomMoveRef = useRef(null);
   const roomDragPreviewRef = useRef(null);
+  const roomResizeRef = useRef(null);
+  const roomResizeFrameRef = useRef(null);
+  const pendingRoomResizeRef = useRef(null);
   const corridorDragRef = useRef(null);
   const corridorMoveFrameRef = useRef(null);
   const pendingCorridorMoveRef = useRef(null);
@@ -871,8 +889,10 @@ export function MapViewport({
   const lastViewResetKeyRef = useRef(null);
   const [isPanning, setIsPanning] = useState(false);
   const [draggingRegionId, setDraggingRegionId] = useState(null);
+  const [draggingRoomResizeRegionId, setDraggingRoomResizeRegionId] = useState(null);
   const [hoveredRegionId, setHoveredRegionId] = useState(null);
   const [roomDragPreview, setRoomDragPreview] = useState(null);
+  const [roomResizePreview, setRoomResizePreview] = useState(null);
   const [draggingCorridorHandle, setDraggingCorridorHandle] = useState(null);
   const [corridorDragPreview, setCorridorDragPreview] = useState(null);
   const [draggingMapAccessId, setDraggingMapAccessId] = useState(null);
@@ -1091,6 +1111,7 @@ export function MapViewport({
     const refitAfterResize = () => {
       if (
         roomDragRef.current ||
+        roomResizeRef.current ||
         corridorDragRef.current ||
         accessDragRef.current ||
         stairMarkerDragRef.current ||
@@ -1321,6 +1342,14 @@ export function MapViewport({
 
   useEffect(() => {
     if (showEditor) return;
+    roomResizeRef.current = null;
+    pendingRoomResizeRef.current = null;
+    if (roomResizeFrameRef.current) {
+      window.cancelAnimationFrame(roomResizeFrameRef.current);
+      roomResizeFrameRef.current = null;
+    }
+    setDraggingRoomResizeRegionId(null);
+    setRoomResizePreview(null);
     stairMarkerDragRef.current = null;
     setStairMarkerDragPreviewState(null);
     setDraggingStairMarkerId(null);
@@ -1482,6 +1511,7 @@ export function MapViewport({
       event.stopPropagation();
       if (
         roomDragRef.current ||
+        roomResizeRef.current ||
         corridorDragRef.current ||
         accessDragRef.current ||
         stairMarkerDragRef.current ||
@@ -1504,6 +1534,7 @@ export function MapViewport({
   useEffect(
     () => () => {
       if (roomMoveFrameRef.current) window.cancelAnimationFrame(roomMoveFrameRef.current);
+      if (roomResizeFrameRef.current) window.cancelAnimationFrame(roomResizeFrameRef.current);
       if (corridorMoveFrameRef.current) window.cancelAnimationFrame(corridorMoveFrameRef.current);
       if (accessMoveFrameRef.current) window.cancelAnimationFrame(accessMoveFrameRef.current);
       if (panMoveFrameRef.current) window.cancelAnimationFrame(panMoveFrameRef.current);
@@ -1549,6 +1580,7 @@ export function MapViewport({
     if (
       !showEditor ||
       roomDragRef.current ||
+      roomResizeRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
       stairMarkerDragRef.current ||
@@ -1564,8 +1596,13 @@ export function MapViewport({
   }
 
   function handleRoomPointerLeave(event, region) {
-    if (!showEditor || roomDragRef.current) return;
+    if (!showEditor || roomDragRef.current || roomResizeRef.current) return;
     event.stopPropagation();
+    if (
+      eventRelatedTargetHasClass(event, "room-resize-handle") ||
+      eventRelatedTargetHasClass(event, "room-drag-handle")
+    )
+      return;
     setHoveredRegionId((current) => (current === region.id ? null : current));
     onRegionHoverChange?.("");
   }
@@ -1632,6 +1669,7 @@ export function MapViewport({
     if (
       !showEditor ||
       roomDragRef.current ||
+      roomResizeRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
       stairMarkerDragRef.current ||
@@ -1680,6 +1718,7 @@ export function MapViewport({
     if (
       !showEditor ||
       roomDragRef.current ||
+      roomResizeRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
       stairMarkerDragRef.current ||
@@ -1696,6 +1735,7 @@ export function MapViewport({
     if (
       !showEditor ||
       roomDragRef.current ||
+      roomResizeRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
       stairMarkerDragRef.current ||
@@ -1917,6 +1957,7 @@ export function MapViewport({
     if (
       !showEditor ||
       roomDragRef.current ||
+      roomResizeRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
       stairMarkerDragRef.current ||
@@ -1938,6 +1979,7 @@ export function MapViewport({
     if (
       !showEditor ||
       roomDragRef.current ||
+      roomResizeRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
       stairMarkerDragRef.current ||
@@ -1956,6 +1998,7 @@ export function MapViewport({
     if (
       !showEditor ||
       roomDragRef.current ||
+      roomResizeRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
       stairMarkerDragRef.current ||
@@ -1971,7 +2014,7 @@ export function MapViewport({
   }
 
   function handleCorridorHandlePointerEnter(event, handle) {
-    if (!showEditor || roomDragRef.current || accessDragRef.current || connectionDragRef.current)
+    if (!showEditor || roomDragRef.current || roomResizeRef.current || accessDragRef.current || connectionDragRef.current)
       return;
     event.stopPropagation();
     setHoveredCorridorId(handle.corridor.id);
@@ -1981,6 +2024,127 @@ export function MapViewport({
     if (!showEditor || corridorDragRef.current) return;
     event.stopPropagation();
     setHoveredCorridorId((current) => (current === handle.corridor.id ? null : current));
+  }
+
+  function createEvaluatedRoomResizeDraft(region, point) {
+    const draft = createRoomCornerResizeDraft({
+      region,
+      pointer: point,
+      gridSize: generatedMap.config.gridSize,
+      mapWidth: generatedMap.config.mapWidth,
+      mapHeight: generatedMap.config.mapHeight,
+    });
+    if (!draft) return null;
+    const evaluation = evaluateDarkPlacesRoomManualOverride({
+      region,
+      assignedComponents: getDarkPlacesRoomAssignedComponents(region),
+      manualOverrides,
+      proposedPatch: draft.patch,
+    });
+    return {
+      ...draft,
+      allowed: evaluation.allowed !== false,
+      reason: evaluation.reason || "",
+    };
+  }
+
+  function scheduleRoomResizePreview(drag, point) {
+    const region = generatedMap.regions.find((item) => item.id === drag.regionId);
+    if (!region) return;
+    pendingRoomResizeRef.current = createEvaluatedRoomResizeDraft(region, point);
+    if (roomResizeFrameRef.current) return;
+    roomResizeFrameRef.current = window.requestAnimationFrame(() => {
+      roomResizeFrameRef.current = null;
+      const pending = pendingRoomResizeRef.current;
+      pendingRoomResizeRef.current = null;
+      if (pending) setRoomResizePreview(pending);
+    });
+  }
+
+  function handleRoomResizePointerDown(event, region) {
+    if (!showEditor || event.button !== 0 || !canResizeRoomFromCorner(region)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    setSelectedStairMarker(null);
+    setRoomContextMenu(null);
+    setMapContextMenu(null);
+    setDoorContextMenu(null);
+    setStairMarkerContextMenu(null);
+    setJunctionContextMenu(null);
+    setWaypointContextMenu(null);
+    setAddWaypointContextMenu(null);
+    setHoveredRegionId(region.id);
+    onSelectedRegionChange?.(region.id);
+    onRegionHoverChange?.(region.id);
+    const point = clientToMapPoint(event);
+    if (!point) return;
+    const drag = {
+      pointerId: event.pointerId,
+      regionId: region.id,
+      startClientX: event.clientX,
+      startClientY: event.clientY,
+      moved: false,
+      captureNode: event.currentTarget,
+    };
+    roomResizeRef.current = drag;
+    setDraggingRoomResizeRegionId(region.id);
+    setRoomResizePreview(createEvaluatedRoomResizeDraft(region, point));
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch (error) {
+      void error;
+    }
+  }
+
+  function handleRoomResizePointerMove(event) {
+    const drag = roomResizeRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return false;
+    event.preventDefault();
+    event.stopPropagation();
+    if (
+      Math.hypot(event.clientX - drag.startClientX, event.clientY - drag.startClientY) > 3
+    ) {
+      drag.moved = true;
+    }
+    const point = clientToMapPoint(event);
+    if (point) scheduleRoomResizePreview(drag, point);
+    return true;
+  }
+
+  function endRoomResizeDrag(event) {
+    const drag = roomResizeRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return false;
+    event.preventDefault();
+    event.stopPropagation();
+    if (roomResizeFrameRef.current) {
+      window.cancelAnimationFrame(roomResizeFrameRef.current);
+      roomResizeFrameRef.current = null;
+    }
+    const point = clientToMapPoint(event);
+    const region = generatedMap.regions.find((item) => item.id === drag.regionId);
+    const pending =
+      pendingRoomResizeRef.current ||
+      (region && point ? createEvaluatedRoomResizeDraft(region, point) : roomResizePreview);
+    pendingRoomResizeRef.current = null;
+    const cancelled = event.type === "pointercancel";
+    if (!cancelled && drag.moved && pending?.allowed) {
+      if (typeof onRoomResizeCommit === "function") {
+        onRoomResizeCommit(drag.regionId, pending);
+      } else {
+        onRoomStyleChange?.(drag.regionId, pending.patch);
+      }
+    }
+    try {
+      drag.captureNode?.releasePointerCapture?.(event.pointerId);
+    } catch (error) {
+      void error;
+    }
+    roomResizeRef.current = null;
+    setDraggingRoomResizeRegionId(null);
+    setRoomResizePreview(null);
+    setHoveredRegionId(drag.regionId);
+    onRegionHoverChange?.(drag.regionId);
+    return true;
   }
 
   function createRoomDragPreview(drag, position, phase = "dragging") {
@@ -3072,6 +3236,7 @@ export function MapViewport({
   }
 
   function handleEditorPointerMove(event) {
+    if (handleRoomResizePointerMove(event)) return;
     if (handleStairMarkerPointerMove(event)) return;
     if (handleConnectionPointerMove(event)) return;
     if (handleMapAccessPointerMove(event)) return;
@@ -3080,6 +3245,7 @@ export function MapViewport({
   }
 
   function endEditorDrag(event) {
+    if (endRoomResizeDrag(event)) return;
     if (endStairMarkerDrag(event)) return;
     if (endConnectionDrag(event)) return;
     if (endMapAccessDrag(event)) return;
@@ -3090,6 +3256,7 @@ export function MapViewport({
   function handlePointerDown(event) {
     if (
       roomDragRef.current ||
+      roomResizeRef.current ||
       corridorDragRef.current ||
       accessDragRef.current ||
       stairMarkerDragRef.current ||
@@ -3145,6 +3312,7 @@ export function MapViewport({
   }
 
   function handlePointerMove(event) {
+    if (handleRoomResizePointerMove(event)) return;
     if (handleStairMarkerPointerMove(event)) return;
     if (handleConnectionPointerMove(event)) return;
     if (handleMapAccessPointerMove(event)) return;
@@ -3161,6 +3329,7 @@ export function MapViewport({
   }
 
   function endPan(event) {
+    if (endRoomResizeDrag(event)) return;
     if (endStairMarkerDrag(event)) return;
     if (endConnectionDrag(event)) return;
     if (endMapAccessDrag(event)) return;
@@ -3316,8 +3485,10 @@ export function MapViewport({
             }}
             editorOptions={{
               draggingRegionId,
+              draggingRoomResizeRegionId,
               hoveredRegionId,
               roomDragPreview,
+              roomResizePreview,
               draggingCorridorHandle,
               corridorDragPreview,
               draggingMapAccessId,
@@ -3347,6 +3518,7 @@ export function MapViewport({
               onRoomPointerDown: handleRoomPointerDown,
               onRoomPointerEnter: handleRoomPointerEnter,
               onRoomPointerLeave: handleRoomPointerLeave,
+              onRoomResizePointerDown: handleRoomResizePointerDown,
               onRoomContextMenu: handleRoomContextMenu,
               onEditorPointerMove: handleEditorPointerMove,
               onEditorPointerUp: endEditorDrag,
@@ -3670,19 +3842,27 @@ function RoomSizeCustomControls({ region, style, onApply, evaluatePatch = null }
   ]);
 
   const maxRadius = 16;
+  const retainedLayoutAnchor = customSize.layoutAnchor === "top-left" ? "top-left" : null;
   const getDraftPatch = () => {
     if (circular) {
       const radius = normalizeCustomSizeInput(draft.radius, fallbackRadius, 1.5, maxRadius, true);
       return {
         sizePreset: "Custom",
-        customSize: { radiusCells: radius },
+        customSize: {
+          radiusCells: radius,
+          ...(retainedLayoutAnchor ? { layoutAnchor: retainedLayoutAnchor } : {}),
+        },
       };
     }
     const width = normalizeCustomSizeInput(draft.width, region.cellRect.w, 2, 40);
     const height = normalizeCustomSizeInput(draft.height, region.cellRect.h, 2, 40);
     return {
       sizePreset: "Custom",
-      customSize: { widthCells: width, heightCells: height },
+      customSize: {
+        widthCells: width,
+        heightCells: height,
+        ...(retainedLayoutAnchor ? { layoutAnchor: retainedLayoutAnchor } : {}),
+      },
     };
   };
   const draftPatch = getDraftPatch();
@@ -3875,6 +4055,7 @@ function RoomStyleMenuSection({
   valueLabel,
   active = false,
   onActivate,
+  onDeactivate,
   submenuStyle,
   ariaLabel,
   children,
@@ -3893,7 +4074,7 @@ function RoomStyleMenuSection({
       role="none"
       {...dataAttributes}
       onPointerEnter={() => onActivate?.(id)}
-      onPointerLeave={() => onActivate?.(null)}
+      onPointerLeave={() => onDeactivate?.(id)}
       onFocus={() => onActivate?.(id)}
     >
       <button
@@ -3946,7 +4127,51 @@ function RoomStyleContextMenu({
   const [activeGroup, setActiveGroup] = useState(null);
   const [activeShapeMenuGroup, setActiveShapeMenuGroup] = useState(null);
   const menuRef = useRef(null);
+  const groupCloseTimerRef = useRef(null);
+  const shapeGroupCloseTimerRef = useRef(null);
   const [viewportLayout, setViewportLayout] = useState(null);
+
+  const activateGroup = (group) => {
+    clearRoomStyleSubmenuCloseTimer(groupCloseTimerRef);
+    setActiveGroup(group);
+  };
+
+  const deactivateGroup = (group) => {
+    if (typeof window === "undefined") {
+      setActiveGroup((current) => (current === group ? null : current));
+      return;
+    }
+    clearRoomStyleSubmenuCloseTimer(groupCloseTimerRef);
+    groupCloseTimerRef.current = window.setTimeout(() => {
+      groupCloseTimerRef.current = null;
+      setActiveGroup((current) => (current === group ? null : current));
+    }, ROOM_STYLE_SUBMENU_CLOSE_DELAY_MS);
+  };
+
+  const activateShapeGroup = (group) => {
+    clearRoomStyleSubmenuCloseTimer(shapeGroupCloseTimerRef);
+    setActiveShapeMenuGroup(group);
+  };
+
+  const deactivateShapeGroup = (group) => {
+    if (typeof window === "undefined") {
+      setActiveShapeMenuGroup((current) => (current === group ? null : current));
+      return;
+    }
+    clearRoomStyleSubmenuCloseTimer(shapeGroupCloseTimerRef);
+    shapeGroupCloseTimerRef.current = window.setTimeout(() => {
+      shapeGroupCloseTimerRef.current = null;
+      setActiveShapeMenuGroup((current) => (current === group ? null : current));
+    }, ROOM_STYLE_SUBMENU_CLOSE_DELAY_MS);
+  };
+
+  useEffect(
+    () => () => {
+      clearRoomStyleSubmenuCloseTimer(groupCloseTimerRef);
+      clearRoomStyleSubmenuCloseTimer(shapeGroupCloseTimerRef);
+    },
+    []
+  );
 
   useEffect(() => {
     setActiveGroup(null);
@@ -3986,8 +4211,11 @@ function RoomStyleContextMenu({
         ) + menuPaddingBottom;
       const firstFlyoutWidth = activeSubmenu?.offsetWidth || 210;
       const nestedFlyoutWidth = activeShapeSubmenu?.offsetWidth || 0;
-      const compoundFlyoutWidth =
-        firstFlyoutWidth + (nestedFlyoutWidth ? nestedFlyoutWidth + 8 : 0);
+      const compoundFlyoutWidth = resolveContextMenuCompoundSubmenuWidth({
+        firstFlyoutWidth,
+        nestedFlyoutWidth,
+        reserveNestedFlyout: activeGroup === "shape",
+      });
       const mainLayout = resolveContextMenuViewportLayout({
         anchorX: menu.anchorX ?? menu.x,
         anchorY: menu.anchorY ?? menu.y,
@@ -4003,9 +4231,14 @@ function RoomStyleContextMenu({
       if (activeItem && activeSubmenu) {
         const itemRect = activeItem.getBoundingClientRect();
         const relativeTriggerTop = itemRect.top - menuRect.top;
+        const activeSubmenuHeight = resolveContextSubmenuMeasuredHeight({
+          offsetHeight: activeSubmenu.offsetHeight,
+          scrollHeight: activeSubmenu.scrollHeight,
+          containsNestedFlyout: activeGroup === "shape",
+        });
         submenuLayout = resolveContextSubmenuViewportLayout({
           triggerTop: mainLayout.top + relativeTriggerTop,
-          submenuHeight: activeSubmenu.scrollHeight || activeSubmenu.offsetHeight || 1,
+          submenuHeight: activeSubmenuHeight,
           viewportHeight: window.innerHeight,
         });
 
@@ -4168,7 +4401,8 @@ function RoomStyleContextMenu({
         label="Type"
         valueLabel={activeType}
         active={activeGroup === "type"}
-        onActivate={setActiveGroup}
+        onActivate={activateGroup}
+        onDeactivate={deactivateGroup}
         submenuStyle={getSubmenuStyle("type")}
         ariaLabel="Room type options"
       >
@@ -4207,7 +4441,8 @@ function RoomStyleContextMenu({
         label="Shape"
         valueLabel={roomKind === "cavern" ? "Not available" : activeShape}
         active={activeGroup === "shape"}
-        onActivate={setActiveGroup}
+        onActivate={activateGroup}
+        onDeactivate={deactivateGroup}
         submenuStyle={getSubmenuStyle("shape")}
         ariaLabel="Room shape groups"
       >
@@ -4227,7 +4462,8 @@ function RoomStyleContextMenu({
                 label={group.label}
                 valueLabel={containsActiveShape ? activeShape : `${group.shapes.length} Shapes`}
                 active={activeShapeMenuGroup === group.id}
-                onActivate={setActiveShapeMenuGroup}
+                onActivate={activateShapeGroup}
+                onDeactivate={deactivateShapeGroup}
                 submenuStyle={getNestedShapeSubmenuStyle(group.id)}
                 ariaLabel={`${group.label} options`}
               >
@@ -4263,7 +4499,8 @@ function RoomStyleContextMenu({
         label="Size"
         valueLabel={activeSize}
         active={activeGroup === "size"}
-        onActivate={setActiveGroup}
+        onActivate={activateGroup}
+        onDeactivate={deactivateGroup}
         submenuStyle={getSubmenuStyle("size")}
         ariaLabel="Room size options"
       >
@@ -4301,7 +4538,8 @@ function RoomStyleContextMenu({
         label="Level"
         valueLabel={activeLevelLabel}
         active={activeGroup === "level"}
-        onActivate={setActiveGroup}
+        onActivate={activateGroup}
+        onDeactivate={deactivateGroup}
         submenuStyle={getSubmenuStyle("level")}
         ariaLabel="Room level options"
       >
@@ -4339,7 +4577,8 @@ function RoomStyleContextMenu({
               : "None"
         }
         active={activeGroup === "modifiers"}
-        onActivate={setActiveGroup}
+        onActivate={activateGroup}
+        onDeactivate={deactivateGroup}
         submenuStyle={getSubmenuStyle("modifiers")}
         ariaLabel="Room modifier options"
       >
@@ -4968,6 +5207,89 @@ function MapActionContextMenu({
   onRedo,
   onClose,
 }) {
+  const [activeGroup, setActiveGroup] = useState(null);
+  const groupCloseTimerRef = useRef(null);
+  const menuRef = useContextMenuDismiss(Boolean(menu), onClose);
+  const [viewportLayout, setViewportLayout] = useState(null);
+
+  const activateGroup = (group) => {
+    clearRoomStyleSubmenuCloseTimer(groupCloseTimerRef);
+    setActiveGroup(group);
+  };
+  const deactivateGroup = (group) => {
+    if (typeof window === "undefined") {
+      setActiveGroup((current) => (current === group ? null : current));
+      return;
+    }
+    clearRoomStyleSubmenuCloseTimer(groupCloseTimerRef);
+    groupCloseTimerRef.current = window.setTimeout(() => {
+      groupCloseTimerRef.current = null;
+      setActiveGroup((current) => (current === group ? null : current));
+    }, ROOM_STYLE_SUBMENU_CLOSE_DELAY_MS);
+  };
+
+  useEffect(
+    () => () => clearRoomStyleSubmenuCloseTimer(groupCloseTimerRef),
+    []
+  );
+
+  useEffect(() => {
+    setActiveGroup(null);
+  }, [menu?.x, menu?.y]);
+
+  useLayoutEffect(() => {
+    if (!menu || typeof window === "undefined") return undefined;
+    const menuNode = menuRef.current;
+    if (!menuNode) return undefined;
+
+    const updateLayout = () => {
+      const menuRect = menuNode.getBoundingClientRect();
+      const activeItem = activeGroup
+        ? menuNode.querySelector(`[data-room-menu-group="${activeGroup}"]`)
+        : null;
+      const activeSubmenu = activeItem?.querySelector(
+        `:scope > [data-room-menu-flyout="${activeGroup}"]`
+      );
+      const menuPaddingBottom =
+        Number.parseFloat(window.getComputedStyle(menuNode).paddingBottom) || 0;
+      const menuContentHeight =
+        Array.from(menuNode.children).reduce(
+          (height, child) => Math.max(height, child.offsetTop + child.offsetHeight),
+          0
+        ) + menuPaddingBottom;
+      const mainLayout = resolveContextMenuViewportLayout({
+        anchorX: menu.x,
+        anchorY: menu.y,
+        menuWidth: menuNode.offsetWidth || menuRect.width || 210,
+        menuHeight: menuContentHeight || menuRect.height || 360,
+        submenuWidth: activeSubmenu?.offsetWidth || 210,
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+      });
+      let submenuLayout = null;
+      if (activeItem && activeSubmenu) {
+        const itemRect = activeItem.getBoundingClientRect();
+        submenuLayout = resolveContextSubmenuViewportLayout({
+          triggerTop: mainLayout.top + (itemRect.top - menuRect.top),
+          submenuHeight: resolveContextSubmenuMeasuredHeight({
+            offsetHeight: activeSubmenu.offsetHeight,
+            scrollHeight: activeSubmenu.scrollHeight,
+          }),
+          viewportHeight: window.innerHeight,
+        });
+      }
+      setViewportLayout({ ...mainLayout, submenu: submenuLayout });
+    };
+
+    updateLayout();
+    window.addEventListener("resize", updateLayout);
+    window.addEventListener("scroll", updateLayout, true);
+    return () => {
+      window.removeEventListener("resize", updateLayout);
+      window.removeEventListener("scroll", updateLayout, true);
+    };
+  }, [activeGroup, menu, menuRef]);
+
   if (!menu) return null;
   const gridLabels = {
     solid: "Solid",
@@ -4975,212 +5297,161 @@ function MapActionContextMenu({
     dashed: "Dashed",
     none: "None",
   };
-  const run = (action) => {
-    action?.();
-  };
-  const runAndClose = (action) => {
-    action?.();
-    onClose?.();
-  };
+  const normalizedGridStyle = normalizeGridStyle(gridStyle);
   const normalizedLevelView = normalizeLevelView(levelView, availableLevels);
   const levelLabel =
     normalizedLevelView === LEVEL_VIEW_ALL
       ? "All Levels"
       : `Level ${formatMapLevel(normalizedLevelView)}`;
   const levelIconName = (level) => (level > 0 ? "arrow-up" : level < 0 ? "arrow-down" : "minus");
-  const setGridStyleOnly = (style) => {
-    onGridStyleChange?.(style);
+  const menuStyle = {
+    position: "fixed",
+    right: "auto",
+    left: viewportLayout?.left ?? menu.x,
+    top: viewportLayout?.top ?? menu.y,
+    maxHeight: viewportLayout?.maxHeight ? `${viewportLayout.maxHeight}px` : undefined,
+    overflowY: viewportLayout?.overflowY || "visible",
   };
-  const icon = (name) => <i className={`fa-solid fa-${name}`} aria-hidden="true" />;
+  const getSubmenuStyle = (group) => {
+    if (activeGroup !== group) return undefined;
+    const submenu = viewportLayout?.submenu;
+    return {
+      display: "grid",
+      top: `${submenu?.topOffset || 0}px`,
+      maxHeight: submenu?.maxHeight ? `${submenu.maxHeight}px` : undefined,
+      overflowY: submenu?.overflowY || "auto",
+    };
+  };
+  const closeAfter = (action) => {
+    action?.();
+    onClose?.();
+  };
 
   return (
     <div
-      className="room-context-menu map-action-menu"
-      style={{ left: menu.x, top: menu.y }}
+      ref={menuRef}
+      className="location-map-toolbar__style-panel cruor-ui-panel-surface map-action-menu cruor-dropdown-menu cruor-dropdown-menu--context"
+      data-style-menu="root"
+      data-style-floating="portal"
+      data-flyout-side={viewportLayout?.submenuSide || "right"}
+      role="menu"
+      aria-label="Map actions"
+      style={menuStyle}
       onPointerDown={(event) => event.stopPropagation()}
       onContextMenu={(event) => event.preventDefault()}
     >
       <div className="context-menu-toolbar" aria-label="Quick map actions">
-        <button
-          type="button"
-          {...getGenericTooltipAttrs("Undo")}
-          aria-label="Undo"
-          onClick={() => run(onUndo)}
-        >
-          {icon("rotate-left")}
-        </button>
-        <button
-          type="button"
-          {...getGenericTooltipAttrs("Redo")}
-          aria-label="Redo"
-          onClick={() => run(onRedo)}
-        >
-          {icon("rotate-right")}
-        </button>
-        <span className="context-menu-toolbar__divider" />
-        <button
-          type="button"
-          className={showGrid ? "is-active" : ""}
-          {...getGenericTooltipAttrs("Toggle Grid")}
-          aria-label="Toggle Grid"
-          onClick={() => run(onToggleGrid)}
-        >
-          {icon("border-all")}
-        </button>
-        <button
-          type="button"
-          className={showEditor ? "is-active" : ""}
-          {...getGenericTooltipAttrs("Toggle Editor View")}
-          aria-label="Toggle Editor View"
-          onClick={() => run(onToggleEditor)}
-        >
-          {icon("pen-ruler")}
-        </button>
+        <MapToolButton icon="rotate-left" label="Undo" onClick={onUndo} />
+        <MapToolButton icon="rotate-right" label="Redo" onClick={onRedo} />
+        <span className="context-menu-toolbar__divider" aria-hidden="true" />
+        <MapToolButton icon="border-all" label="Toggle Grid" active={showGrid} onClick={onToggleGrid} />
+        <MapToolButton
+          icon="pen-ruler"
+          label="Toggle Editor View"
+          active={showEditor}
+          onClick={onToggleEditor}
+        />
       </div>
-      <div className="room-context-menu__header">
-        <strong>Map Actions</strong>
-        <span>Generator controls</span>
+      <div className="cruor-dropdown-header" role="none">
+        <strong className="cruor-dropdown-header__title">Map Actions</strong>
+        <span className="cruor-dropdown-header__meta">Generator controls</span>
       </div>
-      <div className="room-context-menu__body">
-        <button
-          type="button"
-          className="room-context-menu__trigger"
-          onClick={() => runAndClose(onNewSeed)}
+      <span className="cruor-dropdown-options" role="none">
+        <RoomStyleMenuOption icon="shuffle" label="New Seed" onClick={() => closeAfter(onNewSeed)} />
+        <RoomStyleMenuSection
+          id="map-action-grid"
+          icon="border-all"
+          label="Grid"
+          valueLabel={gridLabels[normalizedGridStyle]}
+          active={activeGroup === "map-action-grid"}
+          onActivate={activateGroup}
+          onDeactivate={deactivateGroup}
+          submenuStyle={getSubmenuStyle("map-action-grid")}
+          ariaLabel="Grid rendering"
         >
-          <span>{icon("shuffle")} New Seed</span>
-          <span aria-hidden="true">{"\u203A"}</span>
-        </button>
-        <div className="room-context-menu__item">
-          <button type="button" className="room-context-menu__trigger">
-            <span>{icon("border-all")} Grid</span>
-            <span>
-              {gridLabels[normalizeGridStyle(gridStyle)]} {"\u203A"}
-            </span>
-          </button>
-          <div className="room-context-submenu">
-            <div className="room-context-submenu__hint">Grid rendering</div>
+          <span className="cruor-dropdown-subtitle">Grid rendering</span>
+          <span className="cruor-dropdown-options">
             {GRID_STYLE_OPTIONS.map((style) => (
-              <button
+              <RoomStyleMenuOption
                 key={style}
-                type="button"
-                className={normalizeGridStyle(gridStyle) === style ? "is-active" : ""}
-                onClick={() => setGridStyleOnly(style)}
-              >
-                <span>
-                  {icon(
-                    style === "solid"
-                      ? "table-cells"
-                      : style === "dotted"
-                        ? "braille"
-                        : style === "dashed"
-                          ? "grip-lines"
-                          : "eye-slash"
-                  )}{" "}
-                  {gridLabels[style]}
-                </span>
-                <span>{normalizeGridStyle(gridStyle) === style ? "\u2713" : ""}</span>
-              </button>
+                icon={MAP_GRID_STYLE_ICONS[style] || "border-all"}
+                label={gridLabels[style]}
+                active={normalizedGridStyle === style}
+                onClick={() => onGridStyleChange?.(style)}
+              />
             ))}
-          </div>
-        </div>
-        <button
-          type="button"
-          className={
-            showProps ? "room-context-menu__trigger is-active" : "room-context-menu__trigger"
-          }
-          onClick={() => run(onToggleProps)}
+          </span>
+        </RoomStyleMenuSection>
+        <RoomStyleMenuOption
+          icon="boxes-stacked"
+          label="Props"
+          active={showProps}
+          onClick={onToggleProps}
+        />
+        <RoomStyleMenuOption
+          icon="location-dot"
+          label="Access Dots"
+          active={showAccessDots}
+          onClick={onToggleAccessDots}
+        />
+        <RoomStyleMenuSection
+          id="map-action-levels"
+          icon="layer-group"
+          label="Levels"
+          valueLabel={levelLabel}
+          active={activeGroup === "map-action-levels"}
+          onActivate={activateGroup}
+          onDeactivate={deactivateGroup}
+          submenuStyle={getSubmenuStyle("map-action-levels")}
+          ariaLabel="Level visibility"
         >
-          <span>{icon("boxes-stacked")} Props</span>
-          <span>{showProps ? "On" : "Off"}</span>
-        </button>
-        <button
-          type="button"
-          className={
-            showAccessDots ? "room-context-menu__trigger is-active" : "room-context-menu__trigger"
-          }
-          onClick={() => run(onToggleAccessDots)}
-        >
-          <span>{icon("location-dot")} Access Dots</span>
-          <span>{showAccessDots ? "On" : "Off"}</span>
-        </button>
-        <div className="room-context-menu__item">
-          <button type="button" className="room-context-menu__trigger">
-            <span>{icon("layer-group")} Levels</span>
-            <span>
-              {levelLabel} {"\u203A"}
-            </span>
-          </button>
-          <div className="room-context-submenu">
-            <div className="room-context-submenu__hint">Level visibility</div>
-            <button
-              type="button"
-              className={normalizedLevelView === LEVEL_VIEW_ALL ? "is-active" : ""}
+          <span className="cruor-dropdown-subtitle">Level visibility</span>
+          <span className="cruor-dropdown-options">
+            <RoomStyleMenuOption
+              icon="layer-group"
+              label="All Levels"
+              active={normalizedLevelView === LEVEL_VIEW_ALL}
               onClick={() => onLevelViewChange?.(LEVEL_VIEW_ALL)}
-            >
-              <span>{icon("layer-group")} All Levels</span>
-              <span>{normalizedLevelView === LEVEL_VIEW_ALL ? "\u2713" : ""}</span>
-            </button>
+            />
             {availableLevels.map((level) => (
-              <button
+              <RoomStyleMenuOption
                 key={`level-${level}`}
-                type="button"
-                className={normalizedLevelView === level ? "is-active" : ""}
+                icon={levelIconName(level)}
+                label={`Level ${formatMapLevel(level)}`}
+                active={normalizedLevelView === level}
                 onClick={() => onLevelViewChange?.(level)}
-              >
-                <span>
-                  {icon(levelIconName(level))} Level {formatMapLevel(level)}
-                </span>
-                <span>{normalizedLevelView === level ? "\u2713" : ""}</span>
-              </button>
+              />
             ))}
-            <button
-              type="button"
-              className={fadeOtherLevels ? "is-active" : ""}
-              onClick={() => onToggleFadeOtherLevels?.()}
-            >
-              <span>{icon("circle-half-stroke")} Fade Other Levels</span>
-              <span>{fadeOtherLevels ? "On" : "Off"}</span>
-            </button>
-          </div>
-        </div>
-        <div className="room-context-menu__item">
-          <button type="button" className="room-context-menu__trigger">
-            <span>{icon("file-export")} Export</span>
-            <span aria-hidden="true">{"\u203A"}</span>
-          </button>
-          <div className="room-context-submenu">
-            <div className="room-context-submenu__hint">Output format</div>
-            <button type="button" onClick={() => run(onExportSvg)}>
-              <span>{icon("vector-square")} Current SVG</span>
-              <span aria-hidden="true">{"\u203A"}</span>
-            </button>
-            <button type="button" onClick={() => run(onExportGmSvg)}>
-              <span>{icon("user-secret")} GM SVG</span>
-              <span aria-hidden="true">{"\u203A"}</span>
-            </button>
-            <button type="button" onClick={() => run(onExportPlayerSvg)}>
-              <span>{icon("users")} Player SVG</span>
-              <span aria-hidden="true">{"\u203A"}</span>
-            </button>
-            <button type="button" onClick={() => run(onExportPrintSvg)}>
-              <span>{icon("print")} Print SVG</span>
-              <span aria-hidden="true">{"\u203A"}</span>
-            </button>
-            <button type="button" onClick={() => run(onExportState)}>
-              <span>{icon("floppy-disk")} State JSON</span>
-              <span aria-hidden="true">{"\u203A"}</span>
-            </button>
-          </div>
-        </div>
-        <button
-          type="button"
-          className="room-context-menu__trigger"
-          onClick={() => run(onImportState)}
+            <RoomStyleMenuOption
+              icon="circle-half-stroke"
+              label="Fade Other Levels"
+              active={fadeOtherLevels}
+              onClick={onToggleFadeOtherLevels}
+            />
+          </span>
+        </RoomStyleMenuSection>
+        <RoomStyleMenuSection
+          id="map-action-export"
+          icon="file-export"
+          label="Export"
+          valueLabel="Formats"
+          active={activeGroup === "map-action-export"}
+          onActivate={activateGroup}
+          onDeactivate={deactivateGroup}
+          submenuStyle={getSubmenuStyle("map-action-export")}
+          ariaLabel="Map export formats"
         >
-          <span>{icon("file-import")} Import State</span>
-          <span aria-hidden="true">{"\u203A"}</span>
-        </button>
-      </div>
+          <span className="cruor-dropdown-subtitle">Output format</span>
+          <span className="cruor-dropdown-options">
+            <RoomStyleMenuOption icon="vector-square" label="Current SVG" onClick={onExportSvg} />
+            <RoomStyleMenuOption icon="user-secret" label="GM SVG" onClick={onExportGmSvg} />
+            <RoomStyleMenuOption icon="users" label="Player SVG" onClick={onExportPlayerSvg} />
+            <RoomStyleMenuOption icon="print" label="Print SVG" onClick={onExportPrintSvg} />
+            <RoomStyleMenuOption icon="floppy-disk" label="State JSON" onClick={onExportState} />
+          </span>
+        </RoomStyleMenuSection>
+        <RoomStyleMenuOption icon="file-import" label="Import State" onClick={onImportState} />
+      </span>
     </div>
   );
 }
@@ -5434,16 +5705,14 @@ function MapToolMenuButton({
   description = "",
   active = false,
   disabled = false,
-  danger = false,
   onClick,
 }) {
   return (
     <button
       type="button"
       className={cx(
-        "location-map-toolbar__map-menu-action",
-        active && "is-active",
-        danger && "is-danger"
+        "location-map-toolbar__map-menu-action cruor-dropdown-option",
+        active && "is-active"
       )}
       {...getGenericTooltipAttrs(label, description || label)}
       aria-label={label}
@@ -5453,8 +5722,12 @@ function MapToolMenuButton({
       onClick={onClick}
       role="menuitem"
     >
-      <i className={`fa-solid fa-${icon}`} aria-hidden="true" />
-      <span>{label}</span>
+      <i className={`fa-solid fa-${icon} cruor-dropdown-option__icon`} aria-hidden="true" />
+      <span className="cruor-dropdown-option__label">{label}</span>
+      <i
+        className={`${active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"} cruor-dropdown-option__chevron`}
+        aria-hidden="true"
+      />
     </button>
   );
 }
@@ -6187,40 +6460,42 @@ function InlineMapEditorToolbar({
       </button>
       {mapMenuOpen ? (
         <span
-          className="location-map-toolbar__map-menu-panel cruor-ui-panel-surface"
+          className="location-map-toolbar__map-menu-panel cruor-ui-panel-surface cruor-dropdown-menu cruor-dropdown-menu--context"
+          data-style-menu="root"
           role="menu"
           aria-label="Secondary map tools"
           onMouseDown={suppressToolbarTextSelection}
         >
-          <MapToolMenuButton
-            icon="arrows-rotate"
-            label="Refresh from Composer"
-            description="Rebuild the map from the latest Composer regions."
-            disabled={!onRefreshFromComposer}
-            onClick={() => {
-              onRefreshFromComposer?.();
-              closeMapMenu();
-            }}
-          />
-          <MapToolMenuButton
-            icon="boxes-stacked"
-            label="Props"
-            active={showProps}
-            onClick={() => {
-              onToggleProps?.();
-              closeMapMenu();
-            }}
-          />
-          <MapToolMenuButton
-            icon="eraser"
-            label="Reset Edits"
-            description="Clear manual map edits."
-            danger
-            onClick={() => {
-              onResetEdits?.();
-              closeMapMenu();
-            }}
-          />
+          <span className="cruor-dropdown-options" role="none">
+            <MapToolMenuButton
+              icon="arrows-rotate"
+              label="Refresh from Composer"
+              description="Rebuild the map from the latest Composer regions."
+              disabled={!onRefreshFromComposer}
+              onClick={() => {
+                onRefreshFromComposer?.();
+                closeMapMenu();
+              }}
+            />
+            <MapToolMenuButton
+              icon="boxes-stacked"
+              label="Props"
+              active={showProps}
+              onClick={() => {
+                onToggleProps?.();
+                closeMapMenu();
+              }}
+            />
+            <MapToolMenuButton
+              icon="eraser"
+              label="Reset Edits"
+              description="Clear manual map edits."
+              onClick={() => {
+                onResetEdits?.();
+                closeMapMenu();
+              }}
+            />
+          </span>
         </span>
       ) : null}
     </span>,
@@ -9462,6 +9737,16 @@ export default function CruorMapGeneratorMvp({
     );
   }
 
+  function commitRoomCornerResize(regionId, draft) {
+    if (!draft?.patch || !draft?.position) return false;
+    releaseManualGeometryLockForRoomStyleEdit();
+    return updateManualOverridesWithHistory(
+      (current) => applyRoomCornerResizeToManualOverrides(current, regionId, draft),
+      "",
+      `commitRoomCornerResize:${regionId}`
+    );
+  }
+
   function resetRoomStyle(regionId) {
     releaseManualGeometryLockForRoomStyleEdit();
     updateManualOverridesWithHistory(
@@ -11675,6 +11960,7 @@ export default function CruorMapGeneratorMvp({
       onCreateConnection={createConnectionFromWallDrag}
       manualOverrides={manualOverrides}
       onRoomStyleChange={updateRoomStyle}
+      onRoomResizeCommit={commitRoomCornerResize}
       onRoomStyleReset={resetRoomStyle}
       onRoomLevelChange={updateRoomLevel}
       onRoomLevelReset={resetRoomLevel}

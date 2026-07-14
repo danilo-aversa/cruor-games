@@ -13,6 +13,7 @@ Styles include global CSS under `shared/styles/`, feature-specific CSS imported 
 - Style feature-specific surfaces for Darken, Map Generator, Monster Composer, Inspiration Studio, Inspirations, Home, and Crucible.
 - Keep Map Style root and flyout panels on the same sizing and button treatment by modifying the existing `location-map-toolbar__style-*` selectors rather than introducing parallel classes.
 - The room right-click style menu deliberately reuses those same `location-map-toolbar__style-*` root, section, flyout, subtitle, options, and option classes. Room-specific selectors should only handle identity metadata, nested shape flyout depth, custom-size inputs, and viewport bridges.
+- The map-level Map Actions context menu and More Map Tools toolbar menu use the canonical `.cruor-dropdown-*` surfaces, groups and option rows. Their feature selectors retain only fixed/toolbar placement, widths, quick-toolbar geometry, collision handling and runtime hooks.
 - Apply the portaled root panel glass through its existing selector's `::before` pseudo-element; a direct ancestor `backdrop-filter` creates a Backdrop Root that prevents nested flyouts from filtering the page behind them.
 - Scope Dark Places immersive-layout overrides to an active, visible `#darkenComposerPanel` containing `data-location-immersive="true"`; this prevents the hidden composer from suppressing the site topbar while another Crucible view is active.
 

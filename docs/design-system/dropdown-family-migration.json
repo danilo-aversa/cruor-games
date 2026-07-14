@@ -47,12 +47,36 @@
       "sharedClasses": ["cruor-dropdown-trigger", "cruor-dropdown-menu", "cruor-dropdown-menu--listbox", "cruor-dropdown-option"],
       "legacyClassesRetained": true,
       "retentionReasons": ["field layout", "portal target", "positioning", "feature identity"]
+    },
+    {
+      "feature": "Dark Places",
+      "component": "Map Actions context menu",
+      "sourceFiles": ["features/darken-location/map-generator/map-generator.page.jsx", "features/darken-location/map-generator/map-generator.styles.css"],
+      "semanticPattern": "action menu with nested submenus",
+      "oldTriggerClasses": ["room-context-menu__trigger"],
+      "oldPanelClasses": ["room-context-menu", "map-action-menu", "room-context-submenu"],
+      "oldOptionClasses": ["room-context-menu__trigger"],
+      "sharedClasses": ["cruor-dropdown-menu", "cruor-dropdown-menu--context", "cruor-dropdown-menu--submenu", "cruor-dropdown-header", "cruor-dropdown-subtitle", "cruor-dropdown-section", "cruor-dropdown-options", "cruor-dropdown-option"],
+      "legacyClassesRetained": true,
+      "retentionReasons": ["fixed viewport placement", "quick-action toolbar geometry", "runtime selector", "submenu collision handling"]
+    },
+    {
+      "feature": "Dark Places",
+      "component": "More Map Tools menu",
+      "sourceFiles": ["features/darken-location/map-generator/map-generator.page.jsx", "features/darken-location/map-generator/map-generator.styles.css"],
+      "semanticPattern": "toolbar action menu",
+      "oldTriggerClasses": ["location-map-toolbar__map-menu-trigger"],
+      "oldPanelClasses": ["location-map-toolbar__map-menu-panel"],
+      "oldOptionClasses": ["location-map-toolbar__map-menu-action"],
+      "sharedClasses": ["cruor-dropdown-menu", "cruor-dropdown-menu--context", "cruor-dropdown-options", "cruor-dropdown-option"],
+      "legacyClassesRetained": true,
+      "retentionReasons": ["toolbar anchoring", "feature action hooks", "responsive geometry", "tests"]
     }
   ],
   "excluded": [
     {"family": "Site navigation and mega menu", "reason": "navigation-specific hierarchy and visual language"},
     {"family": "Crucible menus", "reason": "distinct legacy runtime and visual system"},
-    {"family": "Map entity action context menus", "reason": "compact action-menu structure differs from canonical selection rows"},
+    {"family": "Map entity action context menus", "reason": "corridor, access, stair and waypoint menus remain entity-specific; the map-level Map Actions menu is migrated"},
     {"family": "Inspirations controls", "reason": "materially different selection and layout behavior"},
     {"family": "Native selects and autocomplete", "reason": "outside the custom dropdown family"},
     {"family": "Tooltips, modals, square icon buttons and ordinary actions", "reason": "outside task scope"}

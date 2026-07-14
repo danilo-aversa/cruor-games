@@ -102,4 +102,139 @@ test.describe("Dark Places user pipeline", () => {
     await expect(page.locator(".site-topbar")).toBeVisible();
     await expect(page.locator(".location-composer__rail").first()).toBeVisible();
   });
+
+  test("Special Shapes stays open while entering the repositioned nested flyout", async ({ page }) => {
+    await openDarkPlaces(page);
+    await generateDarkPlace(page);
+    await openRoomsMode(page);
+
+    const roomHotspot = page.locator(".room-preview-hotspot").first();
+    await expect(roomHotspot).toBeVisible();
+    await roomHotspot.click({ button: "right" });
+
+    const roomMenu = page.locator(".room-style-context-menu");
+    await expect(roomMenu).toBeVisible();
+
+    const shapeSection = roomMenu.locator('[data-room-menu-group="shape"]');
+    await shapeSection.hover();
+
+    const shapeFlyout = shapeSection.locator(':scope > [data-room-menu-flyout="shape"]');
+    await expect(shapeFlyout).toBeVisible();
+    const shapeFlyoutBefore = await shapeFlyout.boundingBox();
+
+    const specialSection = shapeFlyout.locator('[data-room-shape-group="special"]');
+    await specialSection.hover();
+
+    const specialFlyout = specialSection.locator(
+      ':scope > [data-room-shape-flyout="special"]'
+    );
+    await expect(specialFlyout).toBeVisible();
+    await page.waitForTimeout(240);
+    await expect(specialFlyout).toBeVisible();
+
+    const shapeFlyoutAfter = await shapeFlyout.boundingBox();
+    expect(Math.abs((shapeFlyoutAfter?.y || 0) - (shapeFlyoutBefore?.y || 0))).toBeLessThanOrEqual(
+      1
+    );
+
+    await specialFlyout.getByRole("menuitem", { name: /Hall/i }).hover();
+    await expect(specialFlyout).toBeVisible();
+  });
+  test("room corner handle commits one Custom resize from the map", async ({ page }) => {
+    await openDarkPlaces(page);
+    await generateDarkPlace(page);
+    await openRoomsMode(page);
+
+    const roomSurface = page.locator(".room-drag-handle").first();
+    await expect(roomSurface).toBeAttached();
+    await roomSurface.hover({ force: true });
+
+    const resizeHandle = page.locator("[data-room-resize-handle]").first();
+    await expect(resizeHandle).toBeVisible();
+    const hitBridge = resizeHandle.locator(
+      '[data-room-resize-hit-bridge="true"]',
+    );
+    await expect(hitBridge).toBeVisible();
+    await expect(
+      resizeHandle.locator(".room-resize-handle__glyph"),
+    ).toHaveCount(1);
+    await expect(
+      resizeHandle.locator(".room-resize-handle__corner"),
+    ).toHaveCount(0);
+    const beforeWidth = Number(await resizeHandle.getAttribute("data-room-resize-width"));
+    const beforeHeight = Number(await resizeHandle.getAttribute("data-room-resize-height"));
+    const bridgeBox = await hitBridge.boundingBox();
+    expect(bridgeBox).not.toBeNull();
+
+    const startX =
+      (bridgeBox?.x || 0) + Math.max(2, (bridgeBox?.width || 0) - 4);
+    const startY = (bridgeBox?.y || 0) + 4;
+    await page.mouse.move(startX, startY);
+    await page.waitForTimeout(120);
+    await expect(resizeHandle).toBeVisible();
+    await page.mouse.down();
+    await page.mouse.move(startX + 64, startY, { steps: 6 });
+
+    const preview = page.locator("[data-room-resize-preview]");
+    await expect(preview).toBeVisible();
+    await expect(preview).toHaveAttribute("data-room-resize-size", /\d+×\d+/);
+
+    await page.mouse.up();
+    await expect(preview).toHaveCount(0);
+
+    await roomSurface.hover({ force: true });
+    const committedHandle = page.locator("[data-room-resize-handle]").first();
+    await expect(committedHandle).toBeVisible();
+    const afterWidth = Number(await committedHandle.getAttribute("data-room-resize-width"));
+    const afterHeight = Number(await committedHandle.getAttribute("data-room-resize-height"));
+    expect(afterWidth !== beforeWidth || afterHeight !== beforeHeight).toBeTruthy();
+
+    await page.getByRole("button", { name: "Undo" }).first().click();
+    await roomSurface.hover({ force: true });
+    const restoredHandle = page.locator("[data-room-resize-handle]").first();
+    await expect(restoredHandle).toHaveAttribute("data-room-resize-width", String(beforeWidth));
+    await expect(restoredHandle).toHaveAttribute("data-room-resize-height", String(beforeHeight));
+  });
+
+  test("Map Actions and More Map Tools use the shared dropdown family", async ({ page }) => {
+    await openDarkPlaces(page);
+    await generateDarkPlace(page);
+    await openRoomsMode(page);
+
+    const viewport = page.locator(".map-viewport").first();
+    const viewportBox = await viewport.boundingBox();
+    expect(viewportBox).not.toBeNull();
+    await viewport.evaluate((node, point) => {
+      node.dispatchEvent(
+        new MouseEvent("contextmenu", {
+          bubbles: true,
+          cancelable: true,
+          clientX: point.x,
+          clientY: point.y,
+          button: 2,
+        })
+      );
+    }, {
+      x: (viewportBox?.x || 0) + 12,
+      y: (viewportBox?.y || 0) + 12,
+    });
+
+    const mapActions = page.getByRole("menu", { name: "Map actions" });
+    await expect(mapActions).toBeVisible();
+    await expect(mapActions).toHaveClass(/cruor-dropdown-menu--context/);
+    const gridSection = mapActions.locator('[data-room-menu-group="map-action-grid"]');
+    await gridSection.hover();
+    const gridFlyout = gridSection.locator(':scope > [data-room-menu-flyout="map-action-grid"]');
+    await expect(gridFlyout).toBeVisible();
+    await expect(gridFlyout).toHaveClass(/cruor-dropdown-menu--submenu/);
+
+    await page.keyboard.press("Escape");
+    const moreTools = page.getByRole("button", { name: "More map tools" });
+    await moreTools.click();
+    const moreToolsMenu = page.getByRole("menu", { name: "Secondary map tools" });
+    await expect(moreToolsMenu).toBeVisible();
+    await expect(moreToolsMenu).toHaveClass(/cruor-dropdown-menu--context/);
+    await expect(moreToolsMenu.locator(".cruor-dropdown-option")).toHaveCount(3);
+  });
+
 });
