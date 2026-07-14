@@ -52,6 +52,10 @@ flowchart LR
   Router --> Crucible[CruciblePage.jsx]
 ```
 
+## Localized Navigation Copy
+
+`app/navigation/site-navigation.data.js` contains only navigation structure and technical metadata. All user-facing Crucible menu copy, including labels, descriptions, catchphrases, feature lists, preview text, image alternatives, and menu ARIA labels, is resolved from `shared/i18n/locales/en.js` and `shared/i18n/locales/it.js` through `getSiteNavItems(locale)`.
+
 ## Navigation Risk
 
 `app/router.jsx` is critical risk: it owns browser URL state, app-level state, cross-feature callbacks, and recovery prompts. Changes should be tested with direct route loads and browser back/forward behavior.

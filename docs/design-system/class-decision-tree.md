@@ -45,10 +45,10 @@ Yes
 Positive:
 
 ```html
-<button class="monster-frame-select-trigger cruor-dropdown-trigger"></button>
+<button class="cruor-dropdown-trigger"></button>
 ```
 
-The legacy class remains a feature hook while the shared class owns the visual implementation.
+Add a feature-specific class only when code or CSS uses it for placement, geometry, portal behavior, mechanics, or a runtime/test hook. Do not retain unused visual aliases.
 
 Negative:
 
@@ -70,3 +70,13 @@ Does the new page need a right-side rail summarizing the current generated or co
 - Yes: use `.cruor-composer-rail`, `--right`, `--info`, `.cruor-composer-rail-card`, `.cruor-composer-fact-grid`, `.cruor-composer-fact-row`, and `.cruor-composer-meter`; add `--scroll` and `.cruor-scroll-surface` to the actual scroll owner.
 
 Do not create a new feature-specific visual sidebar implementation. A feature hook may supplement the shared system only for placement, layout, required geometry, scroll ownership, behavior, and runtime/test selectors. Any reusable missing element belongs in the shared API and must be added to the [component catalog](component-catalog.md#composer-right-information-rails).
+
+
+## Composer slot-card branch
+
+Does the new Composer surface represent an assignable slot with a label, count or value, title, and description?
+
+- No: continue through the normal component decision process.
+- Yes: render `ComposerSlotCard` and use its `.cruor-composer-slot-card*` structure.
+
+Use component props for empty, filled, and active states. Add feature classes only for layout or mechanics such as bottom placement, missing/suggested workflow status, linked-hover behavior, or runtime/test hooks. Do not create a parallel feature-specific visual card family.

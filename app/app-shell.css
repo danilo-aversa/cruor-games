@@ -39,7 +39,7 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(170px, auto) minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: clamp(12px, 2vw, 22px);
   width:100%;
@@ -49,24 +49,9 @@
 .app-shell__brand {
   display: inline-flex;
   align-items: center;
-  gap: 11px;
-  min-width: 0;
-}
-
-.app-shell__brand-copy {
-  display: block;
-  min-width: 0;
-  font-family: Inter, var(--body), sans-serif;
-}
-
-.app-shell__brand strong {
-  color: var(--cruor-color-text, var(--text));
-  font-family: inherit;
-  font-size: var(--text-size-fluid-04);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -0.035em;
-  white-space: nowrap;
+  justify-content: center;
+  width: 38px;
+  min-width: 38px;
 }
 
 .app-shell__logo-mark {
@@ -144,7 +129,7 @@
   background: var(--cruor-color-transparent);
   color: var(--cruor-color-r240-g215-b220-a620);
   padding: 0 13px;
-  font-size: var(--text-size-s);
+  font-size: var(--text-size-m);
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -176,6 +161,37 @@
 
 .app-shell__workspace {
   min-height: calc(100dvh - var(--app-shell-bar-height));
+}
+
+.app-shell[data-transient-navigation-open="true"] .cruor-home__scroll-progress {
+  z-index: calc(var(--cruor-z-shell, 80) - 2);
+}
+
+.app-shell__navigation-overlay {
+  position: fixed;
+  top: var(--app-shell-bar-height);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: calc(var(--cruor-z-shell, 80) - 1);
+  visibility: hidden;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.48);
+  opacity: 0;
+  backdrop-filter: blur(5px) saturate(82%);
+  -webkit-backdrop-filter: blur(5px) saturate(82%);
+  transition:
+    opacity 0.18s ease,
+    backdrop-filter 0.18s ease,
+    -webkit-backdrop-filter 0.18s ease,
+    visibility 0s linear 0.18s;
+}
+
+.app-shell__navigation-overlay.is-visible {
+  visibility: visible;
+  pointer-events: auto;
+  opacity: 1;
+  transition-delay: 0s;
 }
 
 .app-shell__workspace > section[hidden] {
@@ -1012,8 +1028,10 @@
 
 /* Components */
 
-.site-topbar__nav-button i {
-  font-size: var(--text-size-l);
+.site-topbar__nav-button i,
+.site-topbar__utility-button i,
+.site-topbar__login-placeholder i {
+  font-size: var(--text-size-xl);
   line-height: 1;
 }
 
@@ -1082,7 +1100,7 @@
   background: var(--cruor-color-transparent);
   color: var(--cruor-color-r240-g215-b220-a720);
   padding: 0 11px;
-  font-size: var(--text-size-s);
+  font-size: var(--text-size-m);
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1152,12 +1170,28 @@
   right: 0;
   z-index: var(--cruor-z-dropdown, 340);
   width: min(288px, calc(100vw - 24px));
+  visibility: hidden;
+  pointer-events: none;
   border: 1px solid var(--cruor-color-blood-glow-a240);
   background: var(--cruor-gradient-radial-221-c916ee33), var(--cruor-gradient-radial-260-ee55c2c3), var(--cruor-gradient-linear-199-c2b7262f);
   padding: 10px;
+  opacity: 0;
   box-shadow: var(--cruor-shadow-box-068);
+  transform: translateY(-4px);
   backdrop-filter: var(--cruor-effect-backdrop-019-98406d, var(--cruor-filter-glass-18-124));
   -webkit-backdrop-filter: var(--cruor-effect-backdrop-019-98406d, var(--cruor-filter-glass-18-124));
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    visibility 0s linear 0.18s;
+}
+
+.site-topbar__utility-menu[data-transition-state="open"] {
+  visibility: visible;
+  pointer-events: auto;
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0s;
 }
 
 .site-topbar__mobile-group-label {
@@ -1256,10 +1290,25 @@
   width: min(760px, calc(100vw - 32px));
   border: 1px solid var(--cruor-color-rose-a200);
   background: var(--cruor-gradient-radial-221-c916ee33), var(--cruor-gradient-radial-260-ee55c2c3), var(--cruor-gradient-linear-199-c2b7262f);
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
   box-shadow: var(--cruor-shadow-box-117);
-  transform: translateX(-50%);
+  transform: translate(-50%, -4px);
   backdrop-filter: var(--cruor-effect-backdrop-019-98406d, var(--cruor-filter-glass-18-124));
   -webkit-backdrop-filter: var(--cruor-effect-backdrop-019-98406d, var(--cruor-filter-glass-18-124));
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    visibility 0s linear 0.18s;
+}
+
+.site-mega-menu[data-transition-state="open"] {
+  visibility: visible;
+  pointer-events: auto;
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition-delay: 0s;
 }
 
 .site-mega-menu::before {
@@ -1283,7 +1332,7 @@
   grid-template-columns: minmax(278px, 0.95fr) minmax(320px, 1.05fr);
   align-items: start;
   gap: 12px;
-  padding: 12px;
+  padding: 12px 12px 20px;
 }
 
 .site-mega-menu__list {
@@ -1369,7 +1418,7 @@
   color: var(--cruor-color-text, var(--text));
   font-family: var(--font);
   font-size: var(--text-size-5xl);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
   text-transform: uppercase;
 }
@@ -1377,7 +1426,7 @@
 .site-mega-menu__item-copy span:last-child {
   color: var(--cruor-color-r240-g215-b220-a580);
   font-size: var(--text-size-l);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.35;
 }
 
@@ -1693,6 +1742,31 @@
   max-width: none;
 }
 
+@media (min-width: 981px) {
+  .app-shell__bar-inner {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+
+  .site-topbar__brand {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .site-topbar__bar-actions {
+    display: contents;
+  }
+
+  .site-topbar__nav {
+    grid-column: 2;
+    justify-self: center;
+  }
+
+  .site-topbar__right-rail {
+    grid-column: 3;
+    justify-self: end;
+  }
+}
+
 @media (max-width: 1100px) {
   .app-shell__home-actions {
     grid-template-columns: 1fr;
@@ -1819,7 +1893,8 @@
   }
 
   .app-shell__brand {
-    width: auto;
+    width: 32px;
+    min-width: 32px;
   }
 
   .app-shell__logo-mark {
@@ -1916,10 +1991,6 @@
 }
 
 @media (max-width: 420px) {
-  .site-topbar__brand .app-shell__brand-copy strong {
-    font-size: var(--text-size-5xl);
-  }
-
   .site-topbar__mobile-menu {
     left: 10px;
     right: 10px;

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import SiteTopbar from "./navigation/SiteTopbar.jsx";
 import { startTooltipRuntime } from "../shared/tooltips/tooltip.runtime.js";
 import { t } from "../shared/i18n/index.js";
@@ -10,6 +10,8 @@ import {
   saveAccessibilitySettings,
   updateAccessibilitySetting,
 } from "../shared/accessibility/accessibility.settings.js";
+
+const TRANSIENT_NAVIGATION_FADE_MS = 180;
 
 export default function AppShell({
   activeSection = "home",
@@ -26,6 +28,9 @@ export default function AppShell({
   inspirationStudioContent,
 }) {
   const [accessibilitySettings, setAccessibilitySettings] = useState(readAccessibilitySettings);
+  const [isTransientNavigationOpen, setIsTransientNavigationOpen] = useState(false);
+  const [isTransientNavigationPresent, setIsTransientNavigationPresent] = useState(false);
+  const transientNavigationCloseTimerRef = useRef(null);
 
   useEffect(() => {
     return startTooltipRuntime();
@@ -48,6 +53,35 @@ export default function AppShell({
     setAccessibilitySettings(nextSettings);
   }, []);
 
+  const handleTransientNavigationChange = useCallback((isOpen) => {
+    const nextIsOpen = Boolean(isOpen);
+
+    if (transientNavigationCloseTimerRef.current) {
+      window.clearTimeout(transientNavigationCloseTimerRef.current);
+      transientNavigationCloseTimerRef.current = null;
+    }
+
+    setIsTransientNavigationOpen(nextIsOpen);
+
+    if (nextIsOpen) {
+      setIsTransientNavigationPresent(true);
+      return;
+    }
+
+    transientNavigationCloseTimerRef.current = window.setTimeout(() => {
+      setIsTransientNavigationPresent(false);
+      transientNavigationCloseTimerRef.current = null;
+    }, TRANSIENT_NAVIGATION_FADE_MS);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (transientNavigationCloseTimerRef.current) {
+        window.clearTimeout(transientNavigationCloseTimerRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div
       className="app-shell"
@@ -60,6 +94,7 @@ export default function AppShell({
       data-a11y-text={accessibilitySettings.text}
       data-a11y-focus={accessibilitySettings.focus}
       data-a11y-tooltips={accessibilitySettings.tooltips}
+      data-transient-navigation-open={isTransientNavigationPresent ? "true" : "false"}
     >
       <SiteTopbar
         activeSection={activeSection}
@@ -73,6 +108,7 @@ export default function AppShell({
         accessibilitySettings={accessibilitySettings}
         onAccessibilitySettingChange={handleAccessibilitySettingChange}
         onAccessibilitySettingsReset={handleAccessibilitySettingsReset}
+        onTransientNavigationChange={handleTransientNavigationChange}
       />
 
       <main className="app-shell__workspace">
@@ -90,6 +126,11 @@ export default function AppShell({
           <section aria-label={t("app.aria.inspirationStudio", {}, activeLocale)}>{inspirationStudioContent}</section>
         ) : null}
       </main>
+
+      <div
+        className={`app-shell__navigation-overlay${isTransientNavigationOpen ? " is-visible" : ""}`}
+        aria-hidden="true"
+      />
     </div>
   );
 }

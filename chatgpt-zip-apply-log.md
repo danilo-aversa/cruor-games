@@ -12360,3 +12360,146 @@ _Nessun file aggiunto._
 - `~shared/styles/composer-internals.css`
 - `~shared/styles/dropdowns.css`
 
+
+---
+
+## 2026-07-13 16:44:56
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-composer-header-dropdown-unification-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-composer-header-dropdown-unification-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-07-13 18:35:10
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-composer-slot-card-unification.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-composer-slot-card-unification.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+components/ui/composer-slot-card.jsx`
+- `+shared/styles/composer-slot-card.test.jsx`
+
+**File sovrascritti:** 13
+
+- `~AGENTS.md`
+- `~docs/design-system/class-decision-tree.md`
+- `~docs/design-system/component-catalog.md`
+- `~docs/design-system/override-policy.md`
+- `~docs/design-system/README.md`
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/monster-composer.md`
+- `~docs/repository-map/areas/styles-and-design-system.md`
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/monster-composer/components/monster-composer.anatomy.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+- `~shared/styles/composer-system.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: AGENTS.md
+
+
+---
+
+## 2026-07-13 19:10:41
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dropdown-listbox-alias-cleanup.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dropdown-listbox-alias-cleanup.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 6
+
+- `~docs/design-system/class-decision-tree.md`
+- `~docs/design-system/component-catalog.md`
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/monster-composer/components/monster-composer.anatomy.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+
+
+---
+
+## 2026-07-13 20:08:20
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-topbar-refinement-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-topbar-refinement-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 10
+
+- `~app/app-shell.css`
+- `~app/AppShell.jsx`
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/SiteMegaMenu.jsx`
+- `~app/navigation/SiteTopbar.jsx`
+- `~docs/design-system/component-catalog.md`
+- `~docs/repository-map/areas/app-shell.md`
+- `~docs/repository-map/areas/styles-and-design-system.md`
+- `~tests/e2e/design-system/portals.visual.spec.js`
+- `~tests/e2e/design-system/routes.visual.spec.js`
+
+
+---
+
+## 2026-07-13 21:13:54
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-navigation-i18n-catchphrase-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-navigation-i18n-catchphrase-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+app/navigation/site-navigation.data.test.jsx`
+
+**File sovrascritti:** 7
+
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteMegaMenu.jsx`
+- `~app/navigation/SiteTopbar.jsx`
+- `~docs/repository-map/areas/app-shell.md`
+- `~docs/repository-map/routes-and-navigation.md`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+

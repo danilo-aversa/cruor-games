@@ -15,6 +15,7 @@
   grid-template-columns: minmax(260px, 0.78fr) minmax(440px, 1.22fr);
   gap: clamp(20px, 2.2vw, 32px);
   align-items: start;
+  padding: 12px 12px 20px;
 }
 
 .site-mega-menu__list {
@@ -132,8 +133,12 @@
 }
 
 
+.site-mega-menu__item-copy strong {
+  font-weight: 700;
+}
+
 .site-mega-menu__item-copy span:last-child {
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .site-mega-menu__item.is-active:not(.is-selected) {
@@ -149,11 +154,9 @@
 .site-navigation__list > li > a,
 .site-navigation__list > li > button,
 .site-navigation__items > a,
-.site-navigation__items > button,
-[aria-controls^="siteMegaMenu-"] {
+.site-navigation__items > button {
   font-size: clamp(0.9rem, 0.82vw, 1rem);
 }
-
 
 @media (max-width: 900px) {
   .site-mega-menu {

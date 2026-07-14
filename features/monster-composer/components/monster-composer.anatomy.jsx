@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ComposerCollapsibleSection, ComposerRail } from "../../../components/ui/composer-rail.jsx";
+import { ComposerSlotCard } from "../../../components/ui/composer-slot-card.jsx";
 import {
   SLOTS,
   SILHOUETTE_SLOT_CARDS,
@@ -1594,7 +1595,7 @@ function FrameSelectField({ label, value, options, onChange, getValue, getLabel,
         <FrameTooltip title={label} text={tooltipText} items={tooltipItems} />
       </div>
       <button
-        className="monster-frame-select-trigger cruor-dropdown-trigger"
+        className="cruor-dropdown-trigger"
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
@@ -1608,7 +1609,7 @@ function FrameSelectField({ label, value, options, onChange, getValue, getLabel,
       {open && menuPortalTarget
         ? createPortal(
             <div
-              className="monster-frame-select-menu cruor-dropdown-menu cruor-dropdown-menu--listbox"
+              className="cruor-dropdown-menu cruor-dropdown-menu--listbox"
               role="listbox"
               aria-label={label}
               ref={menuRef}
@@ -1626,7 +1627,7 @@ function FrameSelectField({ label, value, options, onChange, getValue, getLabel,
                     role="option"
                     aria-selected={active}
                     disabled={disabled}
-                    className={`monster-frame-select-option cruor-dropdown-option ${active ? "is-active" : ""} ${disabled ? "is-disabled" : ""}`.trim()}
+                    className={`cruor-dropdown-option ${active ? "is-active" : ""} ${disabled ? "is-disabled" : ""}`.trim()}
                     onClick={() => {
                       if (disabled) return;
                       onChange(optionValue);
@@ -2080,47 +2081,29 @@ export function MonsterSilhouetteMap({
       getSlotCardData(slotId);
 
     return (
-      <button
+      <ComposerSlotCard
         key={slot.id}
         ref={(element) => setRefMap(slotCardRefs, slot.id, element)}
-        type="button"
         className={classNames(
-          "monster-silhouette-slot-card",
           card.side === "bottom" && "is-bottom",
-          filled ? "is-filled" : "is-empty",
-          active && "is-active",
           guided && "is-guided",
           linkedHover && "is-linked-hover",
         )}
         aria-label={`Focus ${slot.label}`}
-        aria-pressed={active}
+        active={active}
+        filled={filled}
+        icon={Icon}
+        label={slot.label}
+        value={slotFeatures.length || "—"}
+        contentTitle={feature?.title || "Empty Slot"}
+        description={feature ? normalizeMonsterReferences(feature.summary, computed) : slot.hint}
         onClick={(event) => {
           event.stopPropagation();
           onFocusSlot(slot.id);
         }}
         onPointerEnter={() => setHoverSlotId(slot.id)}
         onPointerLeave={() => setHoverSlotId(null)}
-      >
-        <span className="monster-silhouette-slot-card__head">
-          <span>
-            <Icon aria-hidden="true" /> {slot.label}
-          </span>
-          <strong>{slotFeatures.length || "—"}</strong>
-        </span>
-        <span className="monster-silhouette-slot-card__body">
-          {feature ? (
-            <>
-              <strong>{feature.title}</strong>
-              <em>{normalizeMonsterReferences(feature.summary, computed)}</em>
-            </>
-          ) : (
-            <>
-              <strong>Empty Slot</strong>
-              <em>{slot.hint}</em>
-            </>
-          )}
-        </span>
-      </button>
+      />
     );
   }
 

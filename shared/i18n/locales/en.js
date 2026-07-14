@@ -184,6 +184,54 @@ export default {
     home: "Home",
     crucible: "Crucible",
     inspirations: "Inspirations",
+    crucibleMenu: {
+      aria: {
+        tools: "{label} tools",
+        options: "{label} options",
+        preview: "{label} preview",
+        engineFeatures: "{label} engine features",
+      },
+      items: {
+        locations: {
+          label: "Dark Places",
+          description:
+            "Build structured horror sites with regions, clues, hazards, atmosphere, and map intent.",
+          catchPhrase: "Generate playable maps.",
+          engineFeatures: {
+            sourceLogic: "Choose source logic and horror direction.",
+            structure: "Build regions, routes, clues, hazards.",
+            map: "Generate a procedural playable map.",
+            export: "Export notes for fast table use.",
+          },
+          mobileDescription:
+            "Create horror locations with regions, clues, hazards, and map-aware structure.",
+          previewTitle: "Dark Places",
+          previewText:
+            "Compose a horror site from context, source anchors, intrusion level, location regions, hazards, clues, atmosphere, and map-readable structure.",
+          previewImageAlt:
+            "Dark fantasy map crop generated from the Dark Places workbench.",
+        },
+        monsters: {
+          label: "Terrifying Monster",
+          description:
+            "Create rules-aware horror creatures with frames, grafts, pressure, weakness, and validation.",
+          catchPhrase: "Build playable monsters.",
+          engineFeatures: {
+            concept: "Choose concept, role, tier, danger.",
+            grafts: "Add grafts, attacks, defenses, weakness.",
+            validation: "Check pressure, complexity, counterplay.",
+            export: "Export a complete 5E stat block.",
+          },
+          mobileDescription:
+            "Build horror monsters with frames, grafts, pressure, weakness, and validation.",
+          previewTitle: "Terrifying Monster",
+          previewText:
+            "Build dark fantasy creatures through base frames, tactical roles, horror grafts, combat pressure, counterplay, readiness checks, and export-facing mechanics.",
+          previewImageAlt:
+            "Cruor workbench interface preview used for Terrifying Monster.",
+        },
+      },
+    },
     locations: {
       label: "Locations",
       description: "Regions, hazards, clues, atmosphere, and map flow.",

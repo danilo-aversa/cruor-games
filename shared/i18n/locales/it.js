@@ -184,6 +184,54 @@ export default {
     home: "Home",
     crucible: "Crucible",
     inspirations: "Ispirazioni",
+    crucibleMenu: {
+      aria: {
+        tools: "Strumenti di {label}",
+        options: "Opzioni di {label}",
+        preview: "Anteprima di {label}",
+        engineFeatures: "Funzioni del motore di {label}",
+      },
+      items: {
+        locations: {
+          label: "Dark Places",
+          description:
+            "Costruisci luoghi horror strutturati con regioni, indizi, pericoli, atmosfera e intento della mappa.",
+          catchPhrase: "Genera mappe giocabili.",
+          engineFeatures: {
+            sourceLogic: "Scegli la logica delle fonti e la direzione horror.",
+            structure: "Costruisci regioni, percorsi, indizi e pericoli.",
+            map: "Genera una mappa procedurale giocabile.",
+            export: "Esporta note per un uso rapido al tavolo.",
+          },
+          mobileDescription:
+            "Crea luoghi horror con regioni, indizi, pericoli e una struttura consapevole della mappa.",
+          previewTitle: "Dark Places",
+          previewText:
+            "Componi un luogo horror a partire da contesto, fonti d’ispirazione, livello d’intrusione, regioni, pericoli, indizi, atmosfera e una struttura leggibile sulla mappa.",
+          previewImageAlt:
+            "Ritaglio di una mappa dark fantasy generata dalla workbench Dark Places.",
+        },
+        monsters: {
+          label: "Terrifying Monster",
+          description:
+            "Crea creature horror consapevoli delle regole con frame, graft, pressione, debolezze e validazione.",
+          catchPhrase: "Costruisci mostri giocabili.",
+          engineFeatures: {
+            concept: "Scegli concetto, ruolo, tier e pericolosità.",
+            grafts: "Aggiungi graft, attacchi, difese e debolezze.",
+            validation: "Controlla pressione, complessità e contromisure.",
+            export: "Esporta uno stat block 5E completo.",
+          },
+          mobileDescription:
+            "Costruisci mostri horror con frame, graft, pressione, debolezze e validazione.",
+          previewTitle: "Terrifying Monster",
+          previewText:
+            "Costruisci creature dark fantasy attraverso frame di base, ruoli tattici, graft horror, pressione in combattimento, contromisure, controlli di prontezza e meccaniche pronte per l’esportazione.",
+          previewImageAlt:
+            "Anteprima della workbench Cruor usata per Terrifying Monster.",
+        },
+      },
+    },
     locations: {
       label: "Luoghi",
       description: "Regioni, pericoli, indizi, atmosfera e flusso della mappa.",

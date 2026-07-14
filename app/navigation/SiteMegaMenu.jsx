@@ -1,4 +1,5 @@
 import "./site-mega-menu.css";
+import { t } from "../../shared/i18n/index.js";
 
 function cx(...parts) {
   return parts.filter(Boolean).join(" ");
@@ -20,6 +21,8 @@ export default function SiteMegaMenu({
   selectedItemId,
   menuRef,
   style,
+  locale = "en",
+  transitionState = "open",
   onMouseEnter,
   onMouseLeave,
   onPreviewChange,
@@ -78,7 +81,13 @@ export default function SiteMegaMenu({
       className="site-mega-menu"
       id={`siteMegaMenu-${menu.id}`}
       role="menu"
-      aria-label={`${menu.label} tools`}
+      aria-label={t(
+        "navigation.crucibleMenu.aria.tools",
+        { label: menu.label },
+        locale,
+      )}
+      aria-hidden={transitionState !== "open"}
+      data-transition-state={transitionState}
       style={style}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -87,7 +96,11 @@ export default function SiteMegaMenu({
       <div className="site-mega-menu__grid">
         <div
           className="site-mega-menu__list"
-          aria-label={`${menu.label} options`}
+          aria-label={t(
+            "navigation.crucibleMenu.aria.options",
+            { label: menu.label },
+            locale,
+          )}
         >
           {menu.items.map((item) => {
             const isSelected = selectedItemId === item.id;
@@ -129,7 +142,11 @@ export default function SiteMegaMenu({
           <div className="site-mega-menu__preview-column" aria-live="polite">
             <aside
               className="site-mega-menu__preview"
-              aria-label={`${activeItem.label} preview`}
+              aria-label={t(
+                "navigation.crucibleMenu.aria.preview",
+                { label: activeItem.label },
+                locale,
+              )}
             >
               <div
                 className={cx(
@@ -164,7 +181,11 @@ export default function SiteMegaMenu({
             <div className="site-mega-menu__preview-features-panel">
               <ul
                 className="site-mega-menu__preview-features"
-                aria-label={`${activeItem.label} engine features`}
+                aria-label={t(
+                  "navigation.crucibleMenu.aria.engineFeatures",
+                  { label: activeItem.label },
+                  locale,
+                )}
               >
                 {(activeItem.engineFeatures || []).map((feature) => (
                   <li key={`${activeItem.id}-feature-${feature}`}>{feature}</li>

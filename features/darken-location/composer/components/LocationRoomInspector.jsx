@@ -1,5 +1,6 @@
 import { AlertTriangle, Eye, Gem, RotateCcw, Search } from "lucide-react";
 import { ComposerCollapsibleSection, ComposerRail } from "../../../../components/ui/composer-rail.jsx";
+import { ComposerSlotCard } from "../../../../components/ui/composer-slot-card.jsx";
 import { LOCATION_SLOT_SCOPE_REGION } from "../model/location-composer-state.js";
 import {
   getDefaultSlotIdForScope,
@@ -209,40 +210,30 @@ export function LocationRoomInspector({
             const mapInfluenceLabel = getRoomSlotMapInfluenceLabel(row);
             const mapInfluenceTarget = getRoomSlotMapInfluenceTarget(row);
             return (
-              <button
+              <ComposerSlotCard
                 data-testid="dark-places-room-slot"
                 data-room-slot-id={row.slot.id}
                 data-room-slot-status={row.filled ? "filled" : row.missing ? "missing" : "optional"}
                 data-map-influence={mapInfluenceLabel ? "true" : "false"}
                 data-map-influence-target={mapInfluenceTarget}
                 className={cx(
-                  "location-room-inspector-slot",
-                  row.filled ? "is-filled" : "is-empty",
                   row.missing && "is-missing",
                   row.suggested && "is-suggested",
-                  active && "is-active",
                 )}
                 key={row.slot.id}
-                type="button"
                 role="listitem"
-                aria-pressed={active}
+                active={active}
+                filled={row.filled}
+                icon={Icon}
+                label={row.slot.label}
+                value={row.filled ? row.statusLabel : "—"}
+                contentTitle={row.components[0]?.title || "Empty Slot"}
+                description={mapInfluenceLabel || row.components[0]?.description || row.slot.description || "Choose component"}
                 onClick={() => focusSlot(row.slot.id)}
                 data-key="tooltip-generic"
                 data-tooltip={row.slot.label}
                 data-tooltip-description={mapInfluenceLabel || (row.filled ? "Open this filled room slot." : "Open a filtered component picker for this room slot.")}
-              >
-                <span className="location-room-inspector-slot__head">
-                  <span>
-                    <Icon aria-hidden="true" />
-                    {row.slot.label}
-                  </span>
-                  <strong>{row.filled ? row.statusLabel : "—"}</strong>
-                </span>
-                <span className="location-room-inspector-slot__body">
-                  <strong>{row.components[0]?.title || "Empty Slot"}</strong>
-                  <em>{mapInfluenceLabel || row.components[0]?.description || row.slot.description || "Choose component"}</em>
-                </span>
-              </button>
+              />
             );
           })}
       </div>

@@ -31,3 +31,8 @@ Layout, placement, anchoring, collision handling, feature-required dimensions, a
 ## Composer information rail overrides
 
 Feature classes may adjust placement, parent-grid geometry, content-required width or height, responsive movement, scroll ownership, and feature mechanics. They must not replace shared card surfaces, borders, shadows, hero/name typography, fact-row visuals, meter track/fill visuals, or shared spacing. Any visual exception must target the shared class, change the smallest possible property set, document the confirmed requirement, and receive explicit design-system review.
+
+
+## Composer slot-card overrides
+
+Feature classes may adjust required height or width, placement in a feature grid, responsive visibility, connector interaction, and workflow mechanics. They must not replace the shared surface, empty/filled backgrounds, generic active/hover/focus treatment, header/body typography, icon sizing, or value badge. Reusable visual differences belong in the shared component API.

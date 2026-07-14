@@ -214,7 +214,7 @@ function LocationChoiceField({ help, icon = "fa-circle-dot", label, meta, onChan
   const menu = open && menuPosition
     ? createPortal(
         <div
-          className="location-choice-menu location-choice-menu--portal cruor-frame-select-menu cruor-dropdown-menu cruor-dropdown-menu--listbox"
+          className="location-choice-menu--portal cruor-dropdown-menu cruor-dropdown-menu--listbox"
           ref={menuRef}
           role="listbox"
           aria-label={label}
@@ -230,7 +230,7 @@ function LocationChoiceField({ help, icon = "fa-circle-dot", label, meta, onChan
             const active = String(optionValue) === String(value);
             return (
               <button
-                className={cx("location-choice-option cruor-frame-select-option cruor-dropdown-option", active && "is-active")}
+                className={cx("cruor-dropdown-option", active && "is-active")}
                 key={optionValue}
                 type="button"
                 role="option"
@@ -256,7 +256,7 @@ function LocationChoiceField({ help, icon = "fa-circle-dot", label, meta, onChan
     <div className="location-field location-choice-field cruor-frame-select-field" ref={fieldRef}>
       <LocationFieldLabel label={label} help={help} />
       <button
-        className="cruor-composer-control location-choice-trigger cruor-frame-select-trigger cruor-dropdown-trigger"
+        className="cruor-dropdown-trigger"
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
@@ -859,7 +859,6 @@ export function LocationBriefPanel({
         <ComposerCollapsibleSection
           className="location-frame-control-block location-frame-control-block--mode"
           title="Mode"
-          headerClassName="location-frame-control-block__head"
           bodyClassName="location-frame-selector-stack"
           aria-label="Build mode"
         >
@@ -879,7 +878,6 @@ export function LocationBriefPanel({
         <ComposerCollapsibleSection
           className="location-frame-control-block location-frame-control-block--draft"
           title="Draft"
-          headerClassName="location-frame-control-block__head"
           bodyClassName="location-frame-selector-stack"
           aria-label="Draft controls"
         >
@@ -892,7 +890,6 @@ export function LocationBriefPanel({
           <ComposerCollapsibleSection
           className="location-frame-control-block"
           title="Theme"
-          headerClassName="location-frame-control-block__head"
           bodyClassName="location-frame-selector-stack"
           aria-label="Location theme controls"
         >
@@ -904,7 +901,6 @@ export function LocationBriefPanel({
           <ComposerCollapsibleSection
           className="location-frame-control-block"
           title="Map Plan"
-          headerClassName="location-frame-control-block__head"
           bodyClassName="location-frame-selector-stack"
           aria-label="Location map controls"
         >
@@ -967,7 +963,6 @@ export function LocationBriefPanel({
             <ComposerCollapsibleSection
               className="location-frame-control-block location-frame-control-block--debug"
               title="Debug Program"
-              headerClassName="location-frame-control-block__head"
               bodyClassName="location-frame-selector-stack"
               aria-label="Debug map program"
             >
@@ -980,7 +975,6 @@ export function LocationBriefPanel({
           <ComposerCollapsibleSection
           className="location-frame-control-block"
           title="Rooms"
-          headerClassName="location-frame-control-block__head"
           bodyClassName="location-frame-selector-stack"
           aria-label="Scratch room controls"
         >
@@ -1000,7 +994,6 @@ export function LocationBriefPanel({
           <ComposerCollapsibleSection
           className="location-frame-control-block location-frame-control-block--room-list"
           title="Room List"
-          headerClassName="location-frame-control-block__head"
           bodyClassName="location-frame-selector-stack"
           aria-label="Scratch room navigation"
         >

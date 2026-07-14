@@ -9,6 +9,7 @@ Darken Location includes `features/darken-location/composer/`, `features/darken-
 - Own location frame and workflow state.
 - Manage active slot/scope, region selection, draft status, summary status, builder mode, drawer state, and export copy state.
 - Manage the local immersive-workspace toggle exposed by `LocationMapToolbar`.
+- Render room work slots through the shared `ComposerSlotCard` primitive while retaining Dark Places data attributes and missing/suggested workflow states.
 - Persist and recover drafts.
 - Convert completed location state into map request payloads.
 

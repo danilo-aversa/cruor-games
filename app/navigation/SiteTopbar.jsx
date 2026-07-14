@@ -9,8 +9,62 @@ import SiteMegaMenu from "./SiteMegaMenu.jsx";
 import { SUPPORTED_LOCALES, getLocaleDictionary, t } from "../../shared/i18n/index.js";
 import { ACCESSIBILITY_SETTING_GROUPS } from "../../shared/accessibility/accessibility.settings.js";
 
+const TRANSIENT_MENU_FADE_MS = 180;
+
 function cx(...parts) {
   return parts.filter(Boolean).join(" ");
+}
+
+function useAnimatedMenuPresence(value, duration = TRANSIENT_MENU_FADE_MS) {
+  const [renderedValue, setRenderedValue] = useState(value);
+  const [transitionState, setTransitionState] = useState(value ? "open" : "closed");
+  const closeTimerRef = useRef(null);
+  const openFrameRef = useRef(null);
+
+  useEffect(() => {
+    if (closeTimerRef.current) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+
+    if (openFrameRef.current) {
+      window.cancelAnimationFrame(openFrameRef.current);
+      openFrameRef.current = null;
+    }
+
+    if (value) {
+      setRenderedValue(value);
+      setTransitionState("opening");
+      openFrameRef.current = window.requestAnimationFrame(() => {
+        openFrameRef.current = window.requestAnimationFrame(() => {
+          setTransitionState("open");
+          openFrameRef.current = null;
+        });
+      });
+    } else if (renderedValue) {
+      setTransitionState("closing");
+      closeTimerRef.current = window.setTimeout(() => {
+        setRenderedValue(null);
+        setTransitionState("closed");
+        closeTimerRef.current = null;
+      }, duration);
+    } else {
+      setTransitionState("closed");
+    }
+
+    return () => {
+      if (closeTimerRef.current) {
+        window.clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+      if (openFrameRef.current) {
+        window.cancelAnimationFrame(openFrameRef.current);
+        openFrameRef.current = null;
+      }
+    };
+  }, [duration, renderedValue, value]);
+
+  return { renderedValue, transitionState };
 }
 
 export default function SiteTopbar({
@@ -25,6 +79,7 @@ export default function SiteTopbar({
   accessibilitySettings = {},
   onAccessibilitySettingChange,
   onAccessibilitySettingsReset,
+  onTransientNavigationChange,
 }) {
   const topbarRef = useRef(null);
   const megaMenuRef = useRef(null);
@@ -38,6 +93,8 @@ export default function SiteTopbar({
   );
   const [isUtilityOpen, setIsUtilityOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const megaMenuPresence = useAnimatedMenuPresence(openMenuId);
+  const utilityMenuPresence = useAnimatedMenuPresence(isUtilityOpen ? "utility" : null);
 
   const appModeOptions = useMemo(() => getAppModeOptions(activeLocale), [activeLocale]);
   const siteNavItems = useMemo(() => getSiteNavItems(activeLocale), [activeLocale]);
@@ -60,6 +117,14 @@ export default function SiteTopbar({
   useEffect(() => {
     setActivePreviewId(activeCrucibleMenuItemId);
   }, [activeCrucibleMenuItemId]);
+
+  useEffect(() => {
+    onTransientNavigationChange?.(Boolean(openMenuId || isUtilityOpen));
+  }, [isUtilityOpen, onTransientNavigationChange, openMenuId]);
+
+  useEffect(() => {
+    return () => onTransientNavigationChange?.(false);
+  }, [onTransientNavigationChange]);
 
   useEffect(() => {
     function handleDocumentPointerDown(event) {
@@ -335,7 +400,10 @@ export default function SiteTopbar({
   }
 
   const openMegaMenuItem =
-    openMenuId && siteNavItems.find((item) => item.id === openMenuId && item.type === "mega");
+    megaMenuPresence.renderedValue &&
+    siteNavItems.find(
+      (item) => item.id === megaMenuPresence.renderedValue && item.type === "mega",
+    );
 
   return (
     <header className="app-shell__bar site-topbar" ref={topbarRef}>
@@ -348,10 +416,6 @@ export default function SiteTopbar({
         >
           <span className="app-shell__logo-mark" aria-hidden="true">
             <img className="app-shell__logo-image" src="/assets/icons/cruor-logo-small.png" alt="" />
-          </span>
-
-          <span className="app-shell__brand-copy">
-            <strong>Cruor Games</strong>
           </span>
         </button>
 
@@ -377,12 +441,14 @@ export default function SiteTopbar({
               <span>{t("settings.label", {}, activeLocale)}</span>
             </button>
 
-            {isUtilityOpen ? (
+            {utilityMenuPresence.renderedValue ? (
               <div
                 className="site-topbar__utility-menu"
                 id="siteUtilityMenu"
                 role="menu"
                 aria-label={t("settings.aria.panel", {}, activeLocale)}
+                aria-hidden={utilityMenuPresence.transitionState !== "open"}
+                data-transition-state={utilityMenuPresence.transitionState}
                 onMouseEnter={clearUtilityCloseTimer}
                 onMouseLeave={scheduleUtilityClose}
               >
@@ -571,6 +637,8 @@ export default function SiteTopbar({
               activeItemId={activePreviewId}
               selectedItemId={activeSection === "crucible" ? activeCrucibleMenuItemId : null}
               menuRef={megaMenuRef}
+              locale={activeLocale}
+              transitionState={megaMenuPresence.transitionState}
               style={{
                 "--site-mega-menu-left": `${megaMenuPosition.left}px`,
                 "--site-mega-menu-top": `${megaMenuPosition.top}px`,

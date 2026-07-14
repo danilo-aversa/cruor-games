@@ -38,19 +38,44 @@ export function getSiteNavItems(locale) {
       items: [
         {
           id: "locations",
-          label: "Dark Places",
-          description:
-            "Build structured horror sites with regions, clues, hazards, atmosphere, and map intent.",
-          catchPhrase:
-            "Turn real sources into playable horror locations and procedural maps.",
+          label: t("navigation.crucibleMenu.items.locations.label", {}, locale),
+          description: t(
+            "navigation.crucibleMenu.items.locations.description",
+            {},
+            locale,
+          ),
+          catchPhrase: t(
+            "navigation.crucibleMenu.items.locations.catchPhrase",
+            {},
+            locale,
+          ),
           engineFeatures: [
-            "Choose source logic and horror direction.",
-            "Build regions, routes, clues, hazards.",
-            "Generate a procedural playable map.",
-            "Export notes for fast table use.",
+            t(
+              "navigation.crucibleMenu.items.locations.engineFeatures.sourceLogic",
+              {},
+              locale,
+            ),
+            t(
+              "navigation.crucibleMenu.items.locations.engineFeatures.structure",
+              {},
+              locale,
+            ),
+            t(
+              "navigation.crucibleMenu.items.locations.engineFeatures.map",
+              {},
+              locale,
+            ),
+            t(
+              "navigation.crucibleMenu.items.locations.engineFeatures.export",
+              {},
+              locale,
+            ),
           ],
-          mobileDescription:
-            "Create horror locations with regions, clues, hazards, and map-aware structure.",
+          mobileDescription: t(
+            "navigation.crucibleMenu.items.locations.mobileDescription",
+            {},
+            locale,
+          ),
           icon: "fa-solid fa-location-dot",
           action: {
             type: "crucible-tool",
@@ -59,29 +84,64 @@ export function getSiteNavItems(locale) {
             href: "/darkplaces",
           },
           href: "/darkplaces",
-          previewTitle: "Dark Places",
-          previewText:
-            "Compose a horror site from context, source anchors, intrusion level, location regions, hazards, clues, atmosphere, and map-readable structure.",
+          previewTitle: t(
+            "navigation.crucibleMenu.items.locations.previewTitle",
+            {},
+            locale,
+          ),
+          previewText: t(
+            "navigation.crucibleMenu.items.locations.previewText",
+            {},
+            locale,
+          ),
           previewVariant: "locations",
           previewImage: "/assets/landing-page/hero-mapcrop.webp",
-          previewImageAlt:
-            "Dark fantasy map crop generated from the Dark Places workbench.",
+          previewImageAlt: t(
+            "navigation.crucibleMenu.items.locations.previewImageAlt",
+            {},
+            locale,
+          ),
         },
         {
           id: "monsters",
-          label: "Terrifying Monster",
-          description:
-            "Create rules-aware horror creatures with frames, grafts, pressure, weakness, and validation.",
-          catchPhrase:
-            "Shape dark fantasy creatures into complete, table-ready 5E stat blocks.",
+          label: t("navigation.crucibleMenu.items.monsters.label", {}, locale),
+          description: t(
+            "navigation.crucibleMenu.items.monsters.description",
+            {},
+            locale,
+          ),
+          catchPhrase: t(
+            "navigation.crucibleMenu.items.monsters.catchPhrase",
+            {},
+            locale,
+          ),
           engineFeatures: [
-            "Choose concept, role, tier, danger.",
-            "Add grafts, attacks, defenses, weakness.",
-            "Check pressure, complexity, counterplay.",
-            "Export a complete 5E stat block.",
+            t(
+              "navigation.crucibleMenu.items.monsters.engineFeatures.concept",
+              {},
+              locale,
+            ),
+            t(
+              "navigation.crucibleMenu.items.monsters.engineFeatures.grafts",
+              {},
+              locale,
+            ),
+            t(
+              "navigation.crucibleMenu.items.monsters.engineFeatures.validation",
+              {},
+              locale,
+            ),
+            t(
+              "navigation.crucibleMenu.items.monsters.engineFeatures.export",
+              {},
+              locale,
+            ),
           ],
-          mobileDescription:
-            "Build horror monsters with frames, grafts, pressure, weakness, and validation.",
+          mobileDescription: t(
+            "navigation.crucibleMenu.items.monsters.mobileDescription",
+            {},
+            locale,
+          ),
           icon: "fa-solid fa-skull",
           action: {
             type: "crucible-tool",
@@ -90,13 +150,23 @@ export function getSiteNavItems(locale) {
             href: "/terrifyingmonsters",
           },
           href: "/terrifyingmonsters",
-          previewTitle: "Terrifying Monster",
-          previewText:
-            "Build dark fantasy creatures through base frames, tactical roles, horror grafts, combat pressure, counterplay, readiness checks, and export-facing mechanics.",
+          previewTitle: t(
+            "navigation.crucibleMenu.items.monsters.previewTitle",
+            {},
+            locale,
+          ),
+          previewText: t(
+            "navigation.crucibleMenu.items.monsters.previewText",
+            {},
+            locale,
+          ),
           previewVariant: "monsters",
           previewImage: "/assets/landing-page/hero-workbench.webp",
-          previewImageAlt:
-            "Cruor workbench interface preview used for Terrifying Monster.",
+          previewImageAlt: t(
+            "navigation.crucibleMenu.items.monsters.previewImageAlt",
+            {},
+            locale,
+          ),
         },
       ],
     },

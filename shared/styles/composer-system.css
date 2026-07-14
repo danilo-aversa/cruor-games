@@ -60,6 +60,18 @@
   --cruor-composer-slot-border-active: 1px solid var(--cruor-composer-slot-border-color-active);
   --cruor-composer-slot-bg: var(--cruor-gradient-linear-019-fbb0759c), var(--cruor-color-surface-soft-a720);
   --cruor-composer-slot-bg-active: var(--cruor-gradient-radial-010-2b54c7d1), var(--cruor-color-blood-strong-a220);
+  --cruor-composer-slot-card-height: 96px;
+  --cruor-composer-slot-card-empty-border: var(--cruor-color-milk-a115);
+  --cruor-composer-slot-card-empty-background: var(--cruor-gradient-linear-091-b7ddacfd), var(--cruor-color-surface-soft);
+  --cruor-composer-slot-card-empty-color: var(--cruor-color-text-a480);
+  --cruor-composer-slot-card-empty-shadow: 0 10px 24px var(--cruor-color-black-a280);
+  --cruor-composer-slot-card-filled-border: var(--cruor-color-rose-a620);
+  --cruor-composer-slot-card-filled-background: var(--cruor-gradient-radial-238-c690c792), var(--cruor-gradient-linear-200-ba867b8d), var(--cruor-color-surface-soft);
+  --cruor-composer-slot-card-filled-color: var(--cruor-color-r255-g240-b242-a900);
+  --cruor-composer-slot-card-filled-shadow: 0 0 0 1px var(--cruor-color-blood-glow-a110), 0 0 24px var(--cruor-color-blood-bright-a220), 0 12px 28px var(--cruor-color-black-a340);
+  --cruor-composer-slot-card-active-border: var(--cruor-color-rose-a720);
+  --cruor-composer-slot-card-active-color: var(--cruor-color-hex-fff0f2);
+  --cruor-composer-slot-card-active-shadow: var(--cruor-ui-card-shadow-active);
   --cruor-composer-control-border-color: var(--cruor-color-milk-a130);
   --cruor-composer-control-border-color-active: var(--cruor-color-blood-glow-a550);
   --cruor-composer-control-border: 1px solid var(--cruor-composer-control-border-color);
@@ -472,6 +484,141 @@
 .cruor-composer-slot:is(:hover, .is-active, .active) {
   border: var(--cruor-composer-slot-border-active);
   background: var(--cruor-composer-slot-bg-active);
+}
+
+/* Composer slot cards */
+
+.cruor-composer-slot-card {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--cruor-composer-slot-card-height);
+  height: var(--cruor-composer-slot-card-height);
+  overflow: hidden;
+  border: 1px solid var(--cruor-composer-slot-card-empty-border);
+  border-radius: 0;
+  appearance: none;
+  background: var(--cruor-composer-slot-card-empty-background);
+  background-color: var(--cruor-color-surface-soft);
+  color: var(--cruor-composer-slot-card-empty-color);
+  padding: 9px 10px;
+  text-align: left;
+  box-shadow: var(--cruor-composer-slot-card-empty-shadow);
+  cursor: pointer;
+  -webkit-backdrop-filter: var(--cruor-filter-blur-12);
+  backdrop-filter: var(--cruor-filter-blur-12);
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, width 0.14s ease;
+}
+
+.cruor-composer-slot-card.is-empty:not(.is-active):not(.is-linked-hover):not(:hover):not(:focus-visible) {
+  border-color: var(--cruor-composer-slot-card-empty-border);
+  background: var(--cruor-composer-slot-card-empty-background);
+  background-color: var(--cruor-color-surface-soft);
+  color: var(--cruor-composer-slot-card-empty-color);
+  box-shadow: var(--cruor-composer-slot-card-empty-shadow);
+}
+
+.cruor-composer-slot-card.is-filled:not(.is-active):not(.is-linked-hover):not(:hover):not(:focus-visible) {
+  border-color: var(--cruor-composer-slot-card-filled-border);
+  background: var(--cruor-composer-slot-card-filled-background);
+  background-color: var(--cruor-color-surface-soft);
+  color: var(--cruor-composer-slot-card-filled-color);
+  box-shadow: var(--cruor-composer-slot-card-filled-shadow);
+}
+
+.cruor-composer-slot-card:is(.is-active, .is-linked-hover, :hover, :focus-visible) {
+  border-color: var(--cruor-composer-slot-card-active-border);
+  color: var(--cruor-composer-slot-card-active-color);
+  box-shadow: var(--cruor-composer-slot-card-active-shadow);
+  outline: none;
+}
+
+.cruor-composer-slot-card.is-empty:is(.is-active, .is-linked-hover, :hover, :focus-visible) {
+  background: var(--cruor-gradient-linear-188-b079ccaf), var(--cruor-color-surface-soft);
+  background-color: var(--cruor-color-surface-soft);
+}
+
+.cruor-composer-slot-card.is-filled:is(.is-active, .is-linked-hover, :hover, :focus-visible) {
+  background: var(--cruor-gradient-radial-240-f49773b2), var(--cruor-gradient-linear-162-88b5a70e), var(--cruor-color-surface-soft);
+  background-color: var(--cruor-color-surface-soft);
+}
+
+.cruor-composer-slot-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cruor-composer-slot-card__head > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  overflow: hidden;
+  color: inherit;
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.cruor-composer-slot-card__head :is(svg, i) {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  color: currentColor;
+}
+
+.cruor-composer-slot-card__head i {
+  display: inline-grid;
+  place-items: center;
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+.cruor-composer-slot-card__head > strong {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  min-height: 20px;
+  border: 1px solid var(--cruor-color-milk-a080);
+  background: var(--cruor-surface-card);
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+}
+
+.cruor-composer-slot-card__body {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.cruor-composer-slot-card__body > strong {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--cruor-color-hex-f0d7dc);
+  font-size: var(--text-size-l);
+  font-weight: 900;
+  line-height: 1.16;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.cruor-composer-slot-card__body > em {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--cruor-color-text-a500);
+  font-size: var(--text-size-m);
+  font-style: normal;
+  line-height: 1.32;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 /* Components */

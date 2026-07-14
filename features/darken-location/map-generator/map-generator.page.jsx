@@ -393,9 +393,7 @@ function MapDebugRecorderPanel({
         {qaRunnerState?.state ? ` · QA ${qaRunnerState.state}` : ""}
       </p>
 
-      <div
-        className="map-debug-recorder__actions map-debug-recorder__icon-toggle-grid"
-      >
+      <div className="map-debug-recorder__actions map-debug-recorder__icon-toggle-grid">
         <button
           type="button"
           className={iconButtonClass(recording)}
@@ -476,9 +474,7 @@ function MapDebugRecorderPanel({
         </button>
       </div>
 
-      <div
-        className="map-debug-recorder__actions map-debug-recorder__scenario-actions"
-      >
+      <div className="map-debug-recorder__actions map-debug-recorder__scenario-actions">
         <select
           className="map-debug-recorder__speed-select"
           data-debug-control="qa-speed"
@@ -500,7 +496,9 @@ function MapDebugRecorderPanel({
           aria-pressed={Boolean(stopOnError)}
           {...getGenericTooltipAttrs(
             "Stop on Error",
-            stopOnError ? "QA runner stops after the first failure." : "QA runner records failures and continues when possible."
+            stopOnError
+              ? "QA runner stops after the first failure."
+              : "QA runner records failures and continues when possible."
           )}
           onClick={() => setQaSetting({ stopOnError: !stopOnError })}
         >
@@ -1311,11 +1309,11 @@ export function MapViewport({
     setSelectedStairMarker((current) => {
       if (!current) return current;
       const corridor = generatedMap.corridors?.find(
-        (candidate) => candidate.id === current.corridorId,
+        (candidate) => candidate.id === current.corridorId
       );
       if (!corridor) return null;
       const stillExists = getCorridorStairMarkerVirtualDoors(corridor, generatedMap).some(
-        (marker) => getStairMarkerId(marker) === current.id,
+        (marker) => getStairMarkerId(marker) === current.id
       );
       return stillExists ? current : null;
     });
@@ -2268,9 +2266,10 @@ export function MapViewport({
     return (
       candidates
         .map((anchor) => {
-          const handlePoint = region.shape === "circle"
-            ? getCircleAnchorEditorPoint(anchor, gridSize)
-            : getAnchorHandlePoint(anchor, gridSize);
+          const handlePoint =
+            region.shape === "circle"
+              ? getCircleAnchorEditorPoint(anchor, gridSize)
+              : getAnchorHandlePoint(anchor, gridSize);
           const dx = handlePoint.x - point.x;
           const dy = handlePoint.y - point.y;
           return { anchor, score: dx * dx + dy * dy };
@@ -2301,9 +2300,10 @@ export function MapViewport({
             : []
           : getEditorBoundaryAnchorCandidatesForRegion(region, point, gridSize);
       candidates.forEach((anchor) => {
-        const handlePoint = region.shape === "circle"
-          ? getCircleAnchorEditorPoint(anchor, gridSize)
-          : getAnchorHandlePoint(anchor, gridSize);
+        const handlePoint =
+          region.shape === "circle"
+            ? getCircleAnchorEditorPoint(anchor, gridSize)
+            : getAnchorHandlePoint(anchor, gridSize);
         if (!handlePoint) return;
         const dx = handlePoint.x - point.x;
         const dy = handlePoint.y - point.y;
@@ -2465,9 +2465,7 @@ export function MapViewport({
 
   function createStairMarkerDragPreview(drag, point) {
     if (!drag || !point) return null;
-    const corridor = generatedMap.corridors?.find(
-      (candidate) => candidate.id === drag.corridorId,
-    );
+    const corridor = generatedMap.corridors?.find((candidate) => candidate.id === drag.corridorId);
     if (!corridor) {
       return {
         id: drag.id,
@@ -2480,23 +2478,13 @@ export function MapViewport({
         target: null,
       };
     }
-    const occupiedPathIndexes = getMapStairMarkerEditorHandles(
-      generatedMap,
-      stairMarkerPositions,
-    )
-      .filter(
-        (handle) => handle.corridorId === drag.corridorId && handle.id !== drag.id,
-      )
+    const occupiedPathIndexes = getMapStairMarkerEditorHandles(generatedMap, stairMarkerPositions)
+      .filter((handle) => handle.corridorId === drag.corridorId && handle.id !== drag.id)
       .map((handle) => handle.pathIndex);
-    const target = getClosestCorridorStairMarkerDragTarget(
-      corridor,
-      generatedMap,
-      point,
-      {
-        occupiedPathIndexes,
-        maxDistance: generatedMap.config.gridSize * 0.82,
-      },
-    );
+    const target = getClosestCorridorStairMarkerDragTarget(corridor, generatedMap, point, {
+      occupiedPathIndexes,
+      maxDistance: generatedMap.config.gridSize * 0.82,
+    });
     return {
       id: drag.id,
       corridorId: drag.corridorId,
@@ -2585,7 +2573,7 @@ export function MapViewport({
         normalizedOffset: target.normalizedOffset,
         pathCellKey: target.pathCellKey,
         cell: target.cell,
-      }),
+      })
     );
     viewportDebugEvent("drag:end stair marker", {
       stairMarkerId: drag.id,
@@ -2802,9 +2790,10 @@ export function MapViewport({
           })
         : getDoorDragManualAnchor(region, point, gridSize);
     if (!anchor) return null;
-    const handlePoint = region.shape === "circle"
-      ? getCircleAnchorEditorPoint(anchor, gridSize)
-      : getAnchorHandlePoint(anchor, gridSize);
+    const handlePoint =
+      region.shape === "circle"
+        ? getCircleAnchorEditorPoint(anchor, gridSize)
+        : getAnchorHandlePoint(anchor, gridSize);
     return handlePoint ? { point: handlePoint, anchor } : null;
   }
 
@@ -2963,13 +2952,8 @@ export function MapViewport({
     if (drag.type === "waypoint-insert" && !drag.hasMoved) {
       const startClientPoint = drag.startClientPoint;
       const clientDistance =
-        startClientPoint &&
-        Number.isFinite(event.clientX) &&
-        Number.isFinite(event.clientY)
-          ? Math.hypot(
-              event.clientX - startClientPoint.x,
-              event.clientY - startClientPoint.y,
-            )
+        startClientPoint && Number.isFinite(event.clientX) && Number.isFinite(event.clientY)
+          ? Math.hypot(event.clientX - startClientPoint.x, event.clientY - startClientPoint.y)
           : 0;
       if (clientDistance <= CORRIDOR_WAYPOINT_INSERT_DRAG_THRESHOLD_PX) return true;
       drag.hasMoved = true;
@@ -2991,32 +2975,28 @@ export function MapViewport({
     }
     const pending = pendingCorridorMoveRef.current || corridorDragPreviewRef.current;
     pendingCorridorMoveRef.current = null;
-    const releaseMapPoint =
-      drag.type === "waypoint-insert" ? clientToMapPoint(event) : null;
+    const releaseMapPoint = drag.type === "waypoint-insert" ? clientToMapPoint(event) : null;
     const point = pending?.point || releaseMapPoint || drag.startPoint;
     const rawPoint = pending?.rawPoint || releaseMapPoint || point;
     const snapAnchor = pending?.snapAnchor || null;
     const cancelled = event.type === "pointercancel";
     const releaseClientDistance =
-      drag.startClientPoint &&
-      Number.isFinite(event.clientX) &&
-      Number.isFinite(event.clientY)
+      drag.startClientPoint && Number.isFinite(event.clientX) && Number.isFinite(event.clientY)
         ? Math.hypot(
             event.clientX - drag.startClientPoint.x,
-            event.clientY - drag.startClientPoint.y,
+            event.clientY - drag.startClientPoint.y
           )
         : 0;
     const moved =
       !cancelled &&
       (drag.type === "waypoint-insert"
         ? Boolean(
-            drag.hasMoved ||
-              releaseClientDistance > CORRIDOR_WAYPOINT_INSERT_DRAG_THRESHOLD_PX,
+            drag.hasMoved || releaseClientDistance > CORRIDOR_WAYPOINT_INSERT_DRAG_THRESHOLD_PX
           )
         : Boolean(
             rawPoint &&
-              drag.startPoint &&
-              Math.hypot(rawPoint.x - drag.startPoint.x, rawPoint.y - drag.startPoint.y) > 0.5,
+            drag.startPoint &&
+            Math.hypot(rawPoint.x - drag.startPoint.x, rawPoint.y - drag.startPoint.y) > 0.5
           ));
     if (drag.type === "waypoint-insert" && moved && !drag.editStarted) {
       drag.editStarted = true;
@@ -3534,12 +3514,12 @@ export function MapViewport({
 const ROOM_SHAPE_MENU_GROUPS = Object.freeze([
   Object.freeze({
     id: "standard",
-    label: "Standard Shapes",
+    label: "Standard",
     icon: "shapes",
   }),
   Object.freeze({
     id: "special",
-    label: "Special Shapes",
+    label: "Special",
     icon: "landmark",
   }),
 ]);
@@ -3581,13 +3561,9 @@ function getRoomStyleMenuOptions(contextKey) {
   const types = [
     { value: "none", label: "None" },
     { value: "archive", label: "Archive" },
-    ...(contextKey === "crypt"
-      ? [{ value: "alcove", label: "Crypt Alcoves" }]
-      : []),
+    ...(contextKey === "crypt" ? [{ value: "alcove", label: "Crypt Alcoves" }] : []),
     ...(contextKey === "chapel" ? [{ value: "apse", label: "Apse" }] : []),
-    ...(contextKey === "ruins"
-      ? [{ value: "ruined", label: "Ruined Room" }]
-      : []),
+    ...(contextKey === "ruins" ? [{ value: "ruined", label: "Ruined Room" }] : []),
   ];
   return {
     shapes,
@@ -3622,14 +3598,14 @@ function getRoomMenuPresetDimensions(size, shape) {
       ROOM_SIZE_MENU_PRESETS[size.value]?.circleD ||
       Math.max(
         ROOM_SIZE_MENU_PRESETS[size.value]?.w || 0,
-        ROOM_SIZE_MENU_PRESETS[size.value]?.h || 0,
+        ROOM_SIZE_MENU_PRESETS[size.value]?.h || 0
       );
     return `r ${diameter / 2} / \u00F8 ${diameter}`;
   }
   if (isEqualDimensionRoomMenuShape(shape)) {
     const diameter = Math.max(
       ROOM_SIZE_MENU_PRESETS[size.value]?.w || 0,
-      ROOM_SIZE_MENU_PRESETS[size.value]?.h || 0,
+      ROOM_SIZE_MENU_PRESETS[size.value]?.h || 0
     );
     return `${diameter}\u00D7${diameter}`;
   }
@@ -3641,10 +3617,7 @@ function getCustomSizeLabel(style, region) {
     style.customSize && typeof style.customSize === "object" ? style.customSize : null;
   if (style.sizePreset !== "Custom" || !customSize) return "Custom";
   if (isCircularRoomMenuShape(style.shape)) {
-    const fallbackRadius = Math.max(
-      1.5,
-      Math.min(region.cellRect.w, region.cellRect.h) / 2,
-    );
+    const fallbackRadius = Math.max(1.5, Math.min(region.cellRect.w, region.cellRect.h) / 2);
     const radius = Number(customSize.radiusCells ?? customSize.radius);
     const safeRadius = Number.isFinite(radius) ? radius : fallbackRadius;
     return `Custom r ${safeRadius}`;
@@ -3789,8 +3762,7 @@ function inferGeneratedRoomType(region) {
 
 function inferGeneratedRoomShape(region) {
   if (region.roomDesign?.shape?.kind) return region.shape || "rect";
-  if (["archive", "alcove", "apse", "ruined-rect", "broken"].includes(region.shape))
-    return "rect";
+  if (["archive", "alcove", "apse", "ruined-rect", "broken"].includes(region.shape)) return "rect";
   return region.shape || "rect";
 }
 
@@ -3875,7 +3847,10 @@ function RoomStyleMenuOption({
   return (
     <button
       type="button"
-      className={cx("location-map-toolbar__style-option cruor-dropdown-option", active && "is-active")}
+      className={cx(
+        "location-map-toolbar__style-option cruor-dropdown-option",
+        active && "is-active"
+      )}
       role="menuitem"
       disabled={disabled}
       title={title}
@@ -3905,19 +3880,15 @@ function RoomStyleMenuSection({
   children,
 }) {
   const dataAttributes =
-    scope === "shape"
-      ? { "data-room-shape-group": id }
-      : { "data-room-menu-group": id };
+    scope === "shape" ? { "data-room-shape-group": id } : { "data-room-menu-group": id };
   const flyoutAttributes =
-    scope === "shape"
-      ? { "data-room-shape-flyout": id }
-      : { "data-room-menu-flyout": id };
+    scope === "shape" ? { "data-room-shape-flyout": id } : { "data-room-menu-flyout": id };
 
   return (
     <span
       className={cx(
         "location-map-toolbar__style-section cruor-dropdown-section",
-        active && "is-submenu-open",
+        active && "is-submenu-open"
       )}
       role="none"
       {...dataAttributes}
@@ -3940,7 +3911,10 @@ function RoomStyleMenuSection({
         </span>
         <span className="location-map-toolbar__style-subtitle cruor-dropdown-option__meta">
           {valueLabel}
-          <i className="fa-solid fa-chevron-right cruor-dropdown-option__chevron" aria-hidden="true" />
+          <i
+            className="fa-solid fa-chevron-right cruor-dropdown-option__chevron"
+            aria-hidden="true"
+          />
         </span>
       </button>
       {active ? (
@@ -3994,23 +3968,21 @@ function RoomStyleContextMenu({
         ? menuNode.querySelector(`[data-room-menu-group="${activeGroup}"]`)
         : null;
       const activeSubmenu = activeItem?.querySelector(
-        `:scope > [data-room-menu-flyout="${activeGroup}"]`,
+        `:scope > [data-room-menu-flyout="${activeGroup}"]`
       );
       const activeShapeItem =
         activeGroup === "shape" && activeShapeMenuGroup
-          ? activeSubmenu?.querySelector(
-              `[data-room-shape-group="${activeShapeMenuGroup}"]`,
-            )
+          ? activeSubmenu?.querySelector(`[data-room-shape-group="${activeShapeMenuGroup}"]`)
           : null;
       const activeShapeSubmenu = activeShapeItem?.querySelector(
-        `:scope > [data-room-shape-flyout="${activeShapeMenuGroup}"]`,
+        `:scope > [data-room-shape-flyout="${activeShapeMenuGroup}"]`
       );
       const menuPaddingBottom =
         Number.parseFloat(window.getComputedStyle(menuNode).paddingBottom) || 0;
       const menuContentHeight =
         Array.from(menuNode.children).reduce(
           (height, child) => Math.max(height, child.offsetTop + child.offsetHeight),
-          0,
+          0
         ) + menuPaddingBottom;
       const firstFlyoutWidth = activeSubmenu?.offsetWidth || 210;
       const nestedFlyoutWidth = activeShapeSubmenu?.offsetWidth || 0;
@@ -4033,8 +4005,7 @@ function RoomStyleContextMenu({
         const relativeTriggerTop = itemRect.top - menuRect.top;
         submenuLayout = resolveContextSubmenuViewportLayout({
           triggerTop: mainLayout.top + relativeTriggerTop,
-          submenuHeight:
-            activeSubmenu.scrollHeight || activeSubmenu.offsetHeight || 1,
+          submenuHeight: activeSubmenu.scrollHeight || activeSubmenu.offsetHeight || 1,
           viewportHeight: window.innerHeight,
         });
 
@@ -4042,17 +4013,10 @@ function RoomStyleContextMenu({
           const activeSubmenuRect = activeSubmenu.getBoundingClientRect();
           const activeShapeItemRect = activeShapeItem.getBoundingClientRect();
           const firstFlyoutTop =
-            mainLayout.top +
-            relativeTriggerTop +
-            (submenuLayout?.topOffset || 0);
+            mainLayout.top + relativeTriggerTop + (submenuLayout?.topOffset || 0);
           nestedSubmenuLayout = resolveContextSubmenuViewportLayout({
-            triggerTop:
-              firstFlyoutTop +
-              (activeShapeItemRect.top - activeSubmenuRect.top),
-            submenuHeight:
-              activeShapeSubmenu.scrollHeight ||
-              activeShapeSubmenu.offsetHeight ||
-              1,
+            triggerTop: firstFlyoutTop + (activeShapeItemRect.top - activeSubmenuRect.top),
+            submenuHeight: activeShapeSubmenu.scrollHeight || activeShapeSubmenu.offsetHeight || 1,
             viewportHeight: window.innerHeight,
           });
         }
@@ -4077,19 +4041,14 @@ function RoomStyleContextMenu({
   if (!menu) return null;
   const region = generatedMap.regions.find((item) => item.id === menu.regionId);
   if (!region) return null;
-  const contextKey = getContextKey(
-    generatedMap.config.context || generatedMap.config.biome,
-  );
+  const contextKey = getContextKey(generatedMap.config.context || generatedMap.config.biome);
   const options = getRoomStyleMenuOptions(contextKey);
   const cavernSupported = contextKey === "cave" || contextKey === "mine";
-  const caveEditorEnabled =
-    getRoomShapeDefinition("cave")?.editorSelectable !== false;
+  const caveEditorEnabled = getRoomShapeDefinition("cave")?.editorSelectable !== false;
   let style = getRoomStyleForMenu(region, manualOverrides);
   if (
     !cavernSupported &&
-    (style.shape === "cave" ||
-      style.surfaceKind === "cave" ||
-      style.surfaceKind === "hybrid")
+    (style.shape === "cave" || style.surfaceKind === "cave" || style.surfaceKind === "hybrid")
   ) {
     style = {
       ...style,
@@ -4098,40 +4057,28 @@ function RoomStyleContextMenu({
     };
   }
   const roomKind =
-    style.shape === "cave" ||
-    style.surfaceKind === "cave" ||
-    style.surfaceKind === "hybrid"
+    style.shape === "cave" || style.surfaceKind === "cave" || style.surfaceKind === "hybrid"
       ? "cavern"
       : "building";
-  const activeShapeDefinition = options.shapes.find(
-    (shape) => shape.value === style.shape,
-  );
+  const activeShapeDefinition = options.shapes.find((shape) => shape.value === style.shape);
   const activeShape = activeShapeDefinition?.label || style.shape;
   const activeType = roomKind === "cavern" ? "Cavern" : "Building";
   const activeSize =
     style.sizePreset === "Custom"
       ? getCustomSizeLabel(style, region)
-      : options.sizes.find((size) => size.value === style.sizePreset)?.label ||
-        style.sizePreset;
+      : options.sizes.find((size) => size.value === style.sizePreset)?.label || style.sizePreset;
   const activeRoomType =
-    options.types.find((type) => type.value === style.roomType)?.label ||
-    style.roomType ||
-    "None";
+    options.types.find((type) => type.value === style.roomType)?.label || style.roomType || "None";
   const manualRegionLevels = manualOverrides?.levels?.regions || {};
-  const hasManualLevel = Object.prototype.hasOwnProperty.call(
-    manualRegionLevels,
-    region.id,
-  );
+  const hasManualLevel = Object.prototype.hasOwnProperty.call(manualRegionLevels, region.id);
   const currentLevel = normalizeLevelNumber(
     hasManualLevel ? manualRegionLevels[region.id] : region.level,
-    0,
+    0
   );
   const activeLevelLabel = `Level ${formatMapLevel(currentLevel)}`;
   const activeModifiers = [
     ...(style.roomType && style.roomType !== "none" ? [activeRoomType] : []),
-    ...options.toggles
-      .filter((toggle) => style[toggle.key])
-      .map((toggle) => toggle.label),
+    ...options.toggles.filter((toggle) => style[toggle.key]).map((toggle) => toggle.label),
   ];
   const assignedComponents = getDarkPlacesRoomAssignedComponents(region);
   const requirementSummary = getDarkPlacesRoomRequirementSummary(region);
@@ -4161,9 +4108,7 @@ function RoomStyleContextMenu({
     right: "auto",
     left: viewportLayout?.left ?? menu.x,
     top: viewportLayout?.top ?? menu.y,
-    maxHeight: viewportLayout?.maxHeight
-      ? `${viewportLayout.maxHeight}px`
-      : undefined,
+    maxHeight: viewportLayout?.maxHeight ? `${viewportLayout.maxHeight}px` : undefined,
     overflowY: viewportLayout?.overflowY || "visible",
   };
   const getSubmenuStyle = (group) => {
@@ -4173,8 +4118,7 @@ function RoomStyleContextMenu({
       display: "grid",
       top: `${submenu?.topOffset || 0}px`,
       maxHeight: submenu?.maxHeight ? `${submenu.maxHeight}px` : undefined,
-      overflowY:
-        group === "shape" ? "visible" : submenu?.overflowY || "auto",
+      overflowY: group === "shape" ? "visible" : submenu?.overflowY || "auto",
     };
   };
   const getNestedShapeSubmenuStyle = (group) => {
@@ -4244,9 +4188,7 @@ function RoomStyleContextMenu({
             icon="mountain"
             label="Cavern"
             active={roomKind === "cavern"}
-            disabled={
-              !cavernSupported || !caveEditorEnabled || cavernState.disabled
-            }
+            disabled={!cavernSupported || !caveEditorEnabled || cavernState.disabled}
             title={
               !cavernSupported
                 ? "Cavern rooms are only available in Cave and Mine contexts."
@@ -4271,17 +4213,11 @@ function RoomStyleContextMenu({
       >
         {roomKind === "cavern" ? (
           <span className="location-map-toolbar__style-options cruor-dropdown-options">
-            <RoomStyleMenuOption
-              icon="ban"
-              label="Not Available"
-              disabled
-            />
+            <RoomStyleMenuOption icon="ban" label="Not Available" disabled />
           </span>
         ) : (
           options.shapeGroups.map((group) => {
-            const containsActiveShape = group.shapes.some(
-              (shape) => shape.value === style.shape,
-            );
+            const containsActiveShape = group.shapes.some((shape) => shape.value === style.shape);
             return (
               <RoomStyleMenuSection
                 key={group.id}
@@ -4289,9 +4225,7 @@ function RoomStyleContextMenu({
                 scope="shape"
                 icon={group.icon}
                 label={group.label}
-                valueLabel={
-                  containsActiveShape ? activeShape : `${group.shapes.length} Shapes`
-                }
+                valueLabel={containsActiveShape ? activeShape : `${group.shapes.length} Shapes`}
                 active={activeShapeMenuGroup === group.id}
                 onActivate={setActiveShapeMenuGroup}
                 submenuStyle={getNestedShapeSubmenuStyle(group.id)}
@@ -4303,8 +4237,7 @@ function RoomStyleContextMenu({
                 <span className="location-map-toolbar__style-options cruor-dropdown-options">
                   {group.shapes.map((shape) => {
                     const optionState = getOptionState({ shape: shape.value });
-                    const disabled =
-                      !shape.editorSelectable || optionState.disabled;
+                    const disabled = !shape.editorSelectable || optionState.disabled;
                     return (
                       <RoomStyleMenuOption
                         key={shape.value}
@@ -4312,12 +4245,8 @@ function RoomStyleContextMenu({
                         label={shape.label}
                         active={style.shape === shape.value}
                         disabled={disabled}
-                        title={
-                          optionState.disabled ? optionState.reason : undefined
-                        }
-                        onClick={() =>
-                          onChange(region.id, { shape: shape.value })
-                        }
+                        title={optionState.disabled ? optionState.reason : undefined}
+                        onClick={() => onChange(region.id, { shape: shape.value })}
                       />
                     );
                   })}
@@ -4419,11 +4348,7 @@ function RoomStyleContextMenu({
         </span>
         {roomKind === "cavern" ? (
           <span className="location-map-toolbar__style-options cruor-dropdown-options">
-            <RoomStyleMenuOption
-              icon="ban"
-              label="Not Available"
-              disabled
-            />
+            <RoomStyleMenuOption icon="ban" label="Not Available" disabled />
           </span>
         ) : (
           <>
@@ -4448,9 +4373,7 @@ function RoomStyleContextMenu({
                     label={type.label}
                     active={style.roomType === type.value}
                     disabled={optionState.disabled}
-                    title={
-                      optionState.disabled ? optionState.reason : undefined
-                    }
+                    title={optionState.disabled ? optionState.reason : undefined}
                     onClick={() => onChange(region.id, patch)}
                   />
                 );
@@ -4470,9 +4393,7 @@ function RoomStyleContextMenu({
                     label={toggle.label}
                     active={style[toggle.key]}
                     disabled={optionState.disabled}
-                    title={
-                      optionState.disabled ? optionState.reason : undefined
-                    }
+                    title={optionState.disabled ? optionState.reason : undefined}
                     onClick={() => onChange(region.id, patch)}
                   />
                 );
@@ -4763,7 +4684,7 @@ function CorridorTypeMenuSection({
             className={cx(
               "room-context-menu__trigger",
               currentType === type && "is-active",
-              disabled && "is-disabled",
+              disabled && "is-disabled"
             )}
             disabled={disabled}
             aria-disabled={disabled}
@@ -4860,12 +4781,7 @@ function CorridorJunctionContextMenu({
   );
 }
 
-function StairMarkerContextMenu({
-  menu,
-  onReset,
-  onRemove,
-  onClose,
-}) {
+function StairMarkerContextMenu({ menu, onReset, onRemove, onClose }) {
   const menuRef = useContextMenuDismiss(Boolean(menu), onClose);
   if (!menu) return null;
   const directionLabel = menu.transition === "up" ? "Up" : "Down";
@@ -4899,11 +4815,13 @@ function StairMarkerContextMenu({
         <ConfirmingDeleteButton
           label="Remove Stair Marker"
           confirmLabel="Confirm Remove Stair"
-          onConfirm={() => onRemove?.({
-            id: menu.id,
-            corridorId: menu.corridorId,
-            markerIndex: menu.markerIndex,
-          })}
+          onConfirm={() =>
+            onRemove?.({
+              id: menu.id,
+              corridorId: menu.corridorId,
+              markerIndex: menu.markerIndex,
+            })
+          }
           onClose={onClose}
         />
       </div>
@@ -5545,7 +5463,10 @@ function MapStyleOptionButton({ icon, label, active = false, onClick }) {
   return (
     <button
       type="button"
-      className={cx("location-map-toolbar__style-option cruor-dropdown-option", active && "is-active")}
+      className={cx(
+        "location-map-toolbar__style-option cruor-dropdown-option",
+        active && "is-active"
+      )}
       onMouseDown={suppressToolbarTextSelection}
       onClick={onClick}
     >
@@ -5598,7 +5519,10 @@ function MapStyleMenuSection({ icon, label, valueLabel, children }) {
         </span>
         <span className="location-map-toolbar__style-subtitle cruor-dropdown-option__meta">
           {valueLabel}
-          <i className="fa-solid fa-chevron-right cruor-dropdown-option__chevron" aria-hidden="true" />
+          <i
+            className="fa-solid fa-chevron-right cruor-dropdown-option__chevron"
+            aria-hidden="true"
+          />
         </span>
       </button>
       <span
@@ -5885,7 +5809,6 @@ function MapStyleDropdown({
     </>
   );
 }
-
 
 function LevelViewToolbarDropdown({
   open = false,
@@ -6605,7 +6528,6 @@ function MapTestsModal({ open, testSuite, onClose }) {
   );
 }
 
-
 function readDebugUiModeFromDocument() {
   if (typeof document === "undefined") return false;
   return document.querySelector(".app-shell")?.dataset?.uiMode === "debug";
@@ -6615,7 +6537,8 @@ function useDocumentDebugUiMode() {
   const [isDebugUiMode, setIsDebugUiMode] = useState(readDebugUiModeFromDocument);
 
   useEffect(() => {
-    if (typeof document === "undefined" || typeof MutationObserver === "undefined") return undefined;
+    if (typeof document === "undefined" || typeof MutationObserver === "undefined")
+      return undefined;
 
     const readNextValue = () => setIsDebugUiMode(readDebugUiModeFromDocument());
     readNextValue();
@@ -6850,7 +6773,10 @@ export default function CruorMapGeneratorMvp({
     }
     window.addEventListener("cruor:map-debug-coordinates-change", handleDebugCoordinatesChange);
     return () => {
-      window.removeEventListener("cruor:map-debug-coordinates-change", handleDebugCoordinatesChange);
+      window.removeEventListener(
+        "cruor:map-debug-coordinates-change",
+        handleDebugCoordinatesChange
+      );
     };
   }, []);
 
@@ -7678,20 +7604,30 @@ export default function CruorMapGeneratorMvp({
       ...(anchor.cell ? { cell: translateCell(anchor.cell, dx, dy) } : {}),
       ...(anchor.insideCell ? { insideCell: translateCell(anchor.insideCell, dx, dy) } : {}),
       ...(anchor.outsideCell ? { outsideCell: translateCell(anchor.outsideCell, dx, dy) } : {}),
-      ...(anchor.routingOutsideCell ? { routingOutsideCell: translateCell(anchor.routingOutsideCell, dx, dy) } : {}),
-      ...(anchor.portalRoomCell ? { portalRoomCell: translateCell(anchor.portalRoomCell, dx, dy) } : {}),
+      ...(anchor.routingOutsideCell
+        ? { routingOutsideCell: translateCell(anchor.routingOutsideCell, dx, dy) }
+        : {}),
+      ...(anchor.portalRoomCell
+        ? { portalRoomCell: translateCell(anchor.portalRoomCell, dx, dy) }
+        : {}),
       ...(anchor.raccordoCell ? { raccordoCell: translateCell(anchor.raccordoCell, dx, dy) } : {}),
-      ...(anchor.corridorStartCell ? { corridorStartCell: translateCell(anchor.corridorStartCell, dx, dy) } : {}),
+      ...(anchor.corridorStartCell
+        ? { corridorStartCell: translateCell(anchor.corridorStartCell, dx, dy) }
+        : {}),
       ...(Array.isArray(anchor.raccordoCells)
         ? { raccordoCells: anchor.raccordoCells.map((cell) => translateCell(cell, dx, dy)) }
         : {}),
       ...(anchor.boundaryCell ? { boundaryCell: translateCell(anchor.boundaryCell, dx, dy) } : {}),
       ...(anchor.floorCell ? { floorCell: translateCell(anchor.floorCell, dx, dy) } : {}),
       ...(anchor.point ? { point: translatePoint(anchor.point, dxPx, dyPx) } : {}),
-      ...(anchor.displayPoint ? { displayPoint: translatePoint(anchor.displayPoint, dxPx, dyPx) } : {}),
+      ...(anchor.displayPoint
+        ? { displayPoint: translatePoint(anchor.displayPoint, dxPx, dyPx) }
+        : {}),
       ...(anchor.center ? { center: translatePoint(anchor.center, dxPx, dyPx) } : {}),
       ...(anchor.segment ? { segment: translateSegment(anchor.segment, dxPx, dyPx) } : {}),
-      ...(anchor.displaySegment ? { displaySegment: translateSegment(anchor.displaySegment, dxPx, dyPx) } : {}),
+      ...(anchor.displaySegment
+        ? { displaySegment: translateSegment(anchor.displaySegment, dxPx, dyPx) }
+        : {}),
       ...(Number.isFinite(Number(anchor.x)) ? { x: Number(anchor.x) + dxPx } : {}),
       ...(Number.isFinite(Number(anchor.y)) ? { y: Number(anchor.y) + dyPx } : {}),
     };
@@ -8565,7 +8501,7 @@ export default function CruorMapGeneratorMvp({
   function moveStairMarker(position) {
     if (!position?.id || !position?.corridorId) return false;
     const corridor = generatedMap.corridors.find(
-      (candidate) => candidate.id === position.corridorId,
+      (candidate) => candidate.id === position.corridorId
     );
     if (!corridor) return false;
     const override = createStairMarkerPositionOverride(position);
@@ -8578,7 +8514,7 @@ export default function CruorMapGeneratorMvp({
         },
       }),
       "Stair position saved.",
-      `moveStairMarker:${position.id}`,
+      `moveStairMarker:${position.id}`
     );
   }
 
@@ -8591,15 +8527,13 @@ export default function CruorMapGeneratorMvp({
         return { ...current, stairMarkers };
       },
       "Stair marker reset to its automatic position.",
-      `resetStairMarker:${markerId}`,
+      `resetStairMarker:${markerId}`
     );
   }
 
   function removeStairMarker(marker) {
     if (!marker?.id || !marker?.corridorId) return false;
-    const corridor = generatedMap.corridors.find(
-      (candidate) => candidate.id === marker.corridorId,
-    );
+    const corridor = generatedMap.corridors.find((candidate) => candidate.id === marker.corridorId);
     if (!corridor) return false;
     const override = createStairMarkerRemovalOverride(marker);
     return updateManualOverridesWithHistory(
@@ -8611,7 +8545,7 @@ export default function CruorMapGeneratorMvp({
         },
       }),
       "Stair marker removed.",
-      `removeStairMarker:${marker.id}`,
+      `removeStairMarker:${marker.id}`
     );
   }
 
@@ -8905,12 +8839,8 @@ export default function CruorMapGeneratorMvp({
         [corridorId]: nextWaypoints.filter(isValidPoint),
       },
     });
-    if (
-      !canCommitCorridorWaypointRoute(corridorId, nextWaypoints, nextOverrides)
-    ) {
-      setStateStatus(
-        "Waypoint rejected: the corridor cannot continue without crossing itself.",
-      );
+    if (!canCommitCorridorWaypointRoute(corridorId, nextWaypoints, nextOverrides)) {
+      setStateStatus("Waypoint rejected: the corridor cannot continue without crossing itself.");
       return false;
     }
     debugEvent("moveWaypoint: committing", {
@@ -8920,10 +8850,7 @@ export default function CruorMapGeneratorMvp({
       cell: summarizeDebugCell(cell),
       nextWaypoints,
     });
-    return setManualOverridesFromCurrent(
-      () => nextOverrides,
-      `moveWaypoint:${corridorId}`
-    );
+    return setManualOverridesFromCurrent(() => nextOverrides, `moveWaypoint:${corridorId}`);
   }
 
   function insertWaypoint(corridorId, insertIndex, point) {
@@ -8954,12 +8881,8 @@ export default function CruorMapGeneratorMvp({
         [corridorId]: nextWaypoints.filter(isValidPoint),
       },
     });
-    if (
-      !canCommitCorridorWaypointRoute(corridorId, nextWaypoints, nextOverrides)
-    ) {
-      setStateStatus(
-        "Waypoint rejected: the corridor cannot continue without crossing itself.",
-      );
+    if (!canCommitCorridorWaypointRoute(corridorId, nextWaypoints, nextOverrides)) {
+      setStateStatus("Waypoint rejected: the corridor cannot continue without crossing itself.");
       return false;
     }
     debugEvent("insertWaypoint: committing", {
@@ -8968,10 +8891,7 @@ export default function CruorMapGeneratorMvp({
       cell: summarizeDebugCell(cell),
       nextWaypoints,
     });
-    return setManualOverridesFromCurrent(
-      () => nextOverrides,
-      `insertWaypoint:${corridorId}`
-    );
+    return setManualOverridesFromCurrent(() => nextOverrides, `insertWaypoint:${corridorId}`);
   }
 
   function deleteWaypoint(corridorId, waypointIndex, source) {
@@ -9102,7 +9022,9 @@ export default function CruorMapGeneratorMvp({
           corridorTypes,
         };
       },
-      corridorType ? `Corridor type: ${normalizeCorridorType(corridorType, "normal")}.` : "Corridor type reset.",
+      corridorType
+        ? `Corridor type: ${normalizeCorridorType(corridorType, "normal")}.`
+        : "Corridor type reset.",
       `updateCorridorType:${corridorId}`
     );
   }
@@ -9299,17 +9221,14 @@ export default function CruorMapGeneratorMvp({
 
   function canCommitCorridorWaypointRoute(corridorId, nextWaypoints, nextOverrides) {
     const previewMap = buildPreviewMapFromManualOverrides(nextOverrides);
-    const previewCorridor = previewMap?.corridors?.find(
-      (candidate) => candidate.id === corridorId,
-    );
+    const previewCorridor = previewMap?.corridors?.find((candidate) => candidate.id === corridorId);
     const routePoints = [
       previewCorridor?.fromAnchor?.outsideCell,
       ...(Array.isArray(nextWaypoints) ? nextWaypoints : []),
       previewCorridor?.toAnchor?.outsideCell,
     ].filter(Boolean);
     const valid = Boolean(
-      previewCorridor &&
-        isSelfAvoidingPathThroughPoints(previewCorridor.pathCells, routePoints),
+      previewCorridor && isSelfAvoidingPathThroughPoints(previewCorridor.pathCells, routePoints)
     );
     if (!valid) {
       debugEvent("corridor waypoint: rejected self-overlapping route", {
@@ -9401,7 +9320,7 @@ export default function CruorMapGeneratorMvp({
     const edgeId = createManualConnectionEdgeId(
       connection.fromRegionId,
       connection.toRegionId,
-      nextSequence,
+      nextSequence
     );
     const fromEndpoint = "from";
     const toEndpoint = "to";
@@ -9562,10 +9481,10 @@ export default function CruorMapGeneratorMvp({
   function isEditorStairLevelOverrideValue(value, corridorId = null) {
     return Boolean(
       value &&
-        typeof value === "object" &&
-        !Array.isArray(value) &&
-        value.source === "editor-stair" &&
-        (!corridorId || !value.corridorId || value.corridorId === corridorId)
+      typeof value === "object" &&
+      !Array.isArray(value) &&
+      value.source === "editor-stair" &&
+      (!corridorId || !value.corridorId || value.corridorId === corridorId)
     );
   }
 
@@ -9575,7 +9494,7 @@ export default function CruorMapGeneratorMvp({
       (map?.corridors || [])
         .filter((corridor) => corridor?.from === regionId || corridor?.to === regionId)
         .map((corridor) => corridor.id)
-        .filter(Boolean),
+        .filter(Boolean)
     );
   }
 
@@ -9614,7 +9533,7 @@ export default function CruorMapGeneratorMvp({
             corridors: { ...(normalized.levels?.corridors || {}) },
             stairs: { ...(normalized.levels?.stairs || {}) },
           },
-          regionId,
+          regionId
         );
         levels.regions[regionId] = normalizeLevelNumber(level, 0);
         return {
@@ -9640,7 +9559,7 @@ export default function CruorMapGeneratorMvp({
             corridors: { ...(normalized.levels?.corridors || {}) },
             stairs: { ...(normalized.levels?.stairs || {}) },
           },
-          regionId,
+          regionId
         );
         delete levels.regions[regionId];
         return {
@@ -9829,7 +9748,7 @@ export default function CruorMapGeneratorMvp({
     for (let index = 0; index < count; index += 1) {
       const itemIndex = Math.min(
         safeItems.length - 1,
-        Math.floor((index * safeItems.length) / count),
+        Math.floor((index * safeItems.length) / count)
       );
       if (seen.has(itemIndex)) continue;
       seen.add(itemIndex);
@@ -9840,8 +9759,9 @@ export default function CruorMapGeneratorMvp({
 
   function getQaCellManhattanDistance(a, b) {
     if (!a || !b) return Number.POSITIVE_INFINITY;
-    return Math.abs(Number(a.x || 0) - Number(b.x || 0)) +
-      Math.abs(Number(a.y || 0) - Number(b.y || 0));
+    return (
+      Math.abs(Number(a.x || 0) - Number(b.x || 0)) + Math.abs(Number(a.y || 0) - Number(b.y || 0))
+    );
   }
 
   function getQaCellSquaredDistance(a, b) {
@@ -9863,7 +9783,6 @@ export default function CruorMapGeneratorMvp({
     if (settings.speed === "slow") return offsets;
     return offsets.slice(0, 3);
   }
-
 
   function getQaRegionRect(region) {
     const rect = region?.cellRect || {};
@@ -9911,7 +9830,10 @@ export default function CruorMapGeneratorMvp({
     const margin = 1;
     return {
       x: Math.max(margin, Math.min(gridWidth - rect.w - margin, Math.round(Number(target.x || 0)))),
-      y: Math.max(margin, Math.min(gridHeight - rect.h - margin, Math.round(Number(target.y || 0)))),
+      y: Math.max(
+        margin,
+        Math.min(gridHeight - rect.h - margin, Math.round(Number(target.y || 0)))
+      ),
     };
   }
 
@@ -9925,7 +9847,9 @@ export default function CruorMapGeneratorMvp({
   function getQaCompactRoomTargets(region, map = getQaGeneratedMap(), settings = {}) {
     const rect = getQaRegionRect(region);
     const connectedRegions = getQaConnectedRegions(region?.id, map);
-    const allOtherRegions = (map?.regions || []).filter((item) => item?.id && item.id !== region?.id);
+    const allOtherRegions = (map?.regions || []).filter(
+      (item) => item?.id && item.id !== region?.id
+    );
     const neighbors = allOtherRegions.length ? allOtherRegions : connectedRegions;
     const cluster = getQaClusterBounds(neighbors);
     const connectedCluster = getQaClusterBounds(connectedRegions);
@@ -9970,12 +9894,14 @@ export default function CruorMapGeneratorMvp({
         const clusterDistance = getQaCellSquaredDistance(targetCenter, clusterCenter);
         const connectedDistance = getQaCellSquaredDistance(targetCenter, connectedCenter);
         const currentDistance = getQaCellSquaredDistance(target, current);
-        const detachedPenalty = target.x > cluster.maxX + looseGap || target.y < cluster.minY - rect.h - looseGap
-          ? 24
-          : 0;
+        const detachedPenalty =
+          target.x > cluster.maxX + looseGap || target.y < cluster.minY - rect.h - looseGap
+            ? 24
+            : 0;
         return {
           ...target,
-          score: clusterDistance + connectedDistance * 0.35 + currentDistance * 0.08 + detachedPenalty,
+          score:
+            clusterDistance + connectedDistance * 0.35 + currentDistance * 0.08 + detachedPenalty,
           connectedRegionIds: connectedRegions.map((item) => item.id),
           neighborRegionIds: neighbors.map((item) => item.id),
         };
@@ -9983,37 +9909,49 @@ export default function CruorMapGeneratorMvp({
       .sort((a, b) => a.score - b.score);
   }
 
-
   function getQaClosestConnectedRegionDistance(region, map = getQaGeneratedMap()) {
     const rect = getQaRegionRect(region);
     const regionCenter = getQaRectCenterCellFromRect(rect);
     const connectedRegions = getQaConnectedRegions(region?.id, map);
     if (!connectedRegions.length) return null;
-    return connectedRegions
-      .map((connectedRegion) => {
-        const connectedRect = getQaRegionRect(connectedRegion);
-        const connectedCenter = getQaRectCenterCellFromRect(connectedRect);
-        return {
-          regionId: connectedRegion.id,
-          distance: Math.abs(regionCenter.x - connectedCenter.x) + Math.abs(regionCenter.y - connectedCenter.y),
-          region: summarizeDebugRegion(connectedRegion),
-        };
-      })
-      .sort((a, b) => a.distance - b.distance)[0] || null;
+    return (
+      connectedRegions
+        .map((connectedRegion) => {
+          const connectedRect = getQaRegionRect(connectedRegion);
+          const connectedCenter = getQaRectCenterCellFromRect(connectedRect);
+          return {
+            regionId: connectedRegion.id,
+            distance:
+              Math.abs(regionCenter.x - connectedCenter.x) +
+              Math.abs(regionCenter.y - connectedCenter.y),
+            region: summarizeDebugRegion(connectedRegion),
+          };
+        })
+        .sort((a, b) => a.distance - b.distance)[0] || null
+    );
   }
 
-  function assertQaRegionNearConnectedCluster(region, map = getQaGeneratedMap(), settings = {}, context = {}) {
+  function assertQaRegionNearConnectedCluster(
+    region,
+    map = getQaGeneratedMap(),
+    settings = {},
+    context = {}
+  ) {
     const nearest = getQaClosestConnectedRegionDistance(region, map);
     if (!nearest) return;
     const maxDistance = settings.speed === "slow" ? 30 : settings.speed === "fast" ? 22 : 24;
     if (nearest.distance > maxDistance) {
-      recordQaDiagnostic("smoke layout became too sparse", {
-        context,
-        maxDistance,
-        nearest,
-        region: summarizeDebugRegion(region),
-        topology: summarizeQaCorridorTopology(map),
-      }, "room-move");
+      recordQaDiagnostic(
+        "smoke layout became too sparse",
+        {
+          context,
+          maxDistance,
+          nearest,
+          region: summarizeDebugRegion(region),
+          topology: summarizeQaCorridorTopology(map),
+        },
+        "room-move"
+      );
     }
     assertQa(
       nearest.distance <= maxDistance,
@@ -10046,9 +9984,10 @@ export default function CruorMapGeneratorMvp({
     endpoint,
     map = getQaGeneratedMap(),
     settings = {},
-    preferredSideOverride = null,
+    preferredSideOverride = null
   ) {
-    const currentAnchor = getDebugCorridorAnchor(corridor, endpoint) || getQaCorridorDoor(corridor, endpoint);
+    const currentAnchor =
+      getDebugCorridorAnchor(corridor, endpoint) || getQaCorridorDoor(corridor, endpoint);
     const preferredSide = preferredSideOverride || currentAnchor?.side || null;
     const candidates = getQaCircleAnchorSweepAnchors(region, map, preferredSide);
     if (!candidates.length) return [];
@@ -10063,27 +10002,32 @@ export default function CruorMapGeneratorMvp({
       candidateEntries.some(
         (entry) =>
           getQaCellManhattanDistance(entry.cell, identityCell) > 0 &&
-          getQaCellManhattanDistance(entry.cell, identityCell) <= maxDistance,
+          getQaCellManhattanDistance(entry.cell, identityCell) <= maxDistance
       );
     const currentCell = hasNearbyIdentityCandidate ? identityCell : physicalCell || identityCell;
     if (!currentCell) return [];
     const otherRegionId = endpoint === "from" ? corridor?.to : corridor?.from;
     const otherRegion = (map?.regions || []).find((item) => item?.id === otherRegionId) || null;
-    const otherCenter = otherRegion ? getQaRectCenterCellFromRect(getQaRegionRect(otherRegion)) : null;
+    const otherCenter = otherRegion
+      ? getQaRectCenterCellFromRect(getQaRegionRect(otherRegion))
+      : null;
     const scoreNearbyAnchor = (entry, allowSideFallback = false) => {
       const sideMismatch = preferredSide && entry.anchor?.side !== preferredSide;
       const sameSidePenalty = sideMismatch ? (allowSideFallback ? 180 : 1000) : 0;
       const currentDistance = getQaCellSquaredDistance(entry.cell, currentCell);
       const otherDistance = otherCenter ? getQaCellSquaredDistance(entry.cell, otherCenter) : 0;
-      const verticalUpPenalty = (preferredSide === "west" || preferredSide === "east") && entry.cell.y < currentCell.y
-        ? 8
-        : 0;
-      const horizontalAwayPenalty = preferredSide === "north" || preferredSide === "south"
-        ? Math.max(0, Math.abs(entry.cell.x - currentCell.x) - 1) * 3
-        : 0;
-      const staleIdentityPenalty = !hasNearbyIdentityCandidate && identityCell
-        ? getQaCellSquaredDistance(entry.cell, identityCell) * 0.03
-        : 0;
+      const verticalUpPenalty =
+        (preferredSide === "west" || preferredSide === "east") && entry.cell.y < currentCell.y
+          ? 8
+          : 0;
+      const horizontalAwayPenalty =
+        preferredSide === "north" || preferredSide === "south"
+          ? Math.max(0, Math.abs(entry.cell.x - currentCell.x) - 1) * 3
+          : 0;
+      const staleIdentityPenalty =
+        !hasNearbyIdentityCandidate && identityCell
+          ? getQaCellSquaredDistance(entry.cell, identityCell) * 0.03
+          : 0;
       return (
         sameSidePenalty +
         currentDistance +
@@ -10093,8 +10037,9 @@ export default function CruorMapGeneratorMvp({
         staleIdentityPenalty
       );
     };
-    const movableEntries = candidateEntries
-      .filter((entry) => getQaCellManhattanDistance(entry.cell, currentCell) > 0);
+    const movableEntries = candidateEntries.filter(
+      (entry) => getQaCellManhattanDistance(entry.cell, currentCell) > 0
+    );
     const ranked = movableEntries
       .filter((entry) => getQaCellManhattanDistance(entry.cell, currentCell) <= maxDistance)
       .filter((entry) => !preferredSide || entry.anchor?.side === preferredSide)
@@ -10105,14 +10050,16 @@ export default function CruorMapGeneratorMvp({
         if (a.cell.y !== b.cell.y) return b.cell.y - a.cell.y;
         return Math.abs(a.cell.x - currentCell.x) - Math.abs(b.cell.x - currentCell.x);
       });
-    const fallbackRanked = ranked.length >= 2
-      ? ranked
-      : movableEntries
-          .filter((entry) => getQaCellManhattanDistance(entry.cell, currentCell) <= maxDistance)
-          .sort((a, b) => scoreNearbyAnchor(a, true) - scoreNearbyAnchor(b, true));
-    const recoveryRanked = fallbackRanked.length > 0
-      ? fallbackRanked
-      : movableEntries.sort((a, b) => scoreNearbyAnchor(a, true) - scoreNearbyAnchor(b, true));
+    const fallbackRanked =
+      ranked.length >= 2
+        ? ranked
+        : movableEntries
+            .filter((entry) => getQaCellManhattanDistance(entry.cell, currentCell) <= maxDistance)
+            .sort((a, b) => scoreNearbyAnchor(a, true) - scoreNearbyAnchor(b, true));
+    const recoveryRanked =
+      fallbackRanked.length > 0
+        ? fallbackRanked
+        : movableEntries.sort((a, b) => scoreNearbyAnchor(a, true) - scoreNearbyAnchor(b, true));
     const selected = [];
     const seen = new Set();
     for (const entry of recoveryRanked) {
@@ -10157,7 +10104,7 @@ export default function CruorMapGeneratorMvp({
     ];
     return getQaEvenlySpacedItems(
       baseOffsets,
-      getQaScenarioIterationBudget(settings, settings.speed === "fast" ? 7 : 13),
+      getQaScenarioIterationBudget(settings, settings.speed === "fast" ? 7 : 13)
     );
   }
 
@@ -10192,7 +10139,7 @@ export default function CruorMapGeneratorMvp({
         warnings: validation?.warnings || [],
         metrics: validation?.metrics || null,
         ...summarizeQaCorridorTopology(map),
-      },
+      }
     );
   }
 
@@ -10273,19 +10220,25 @@ export default function CruorMapGeneratorMvp({
     return [...pool].sort((a, b) => {
       const cellA = getQaCircleAnchorSortCell(a) || { x: 0, y: 0 };
       const cellB = getQaCircleAnchorSortCell(b) || { x: 0, y: 0 };
-      if ((a.side || "") !== (b.side || "")) return String(a.side || "").localeCompare(String(b.side || ""));
+      if ((a.side || "") !== (b.side || ""))
+        return String(a.side || "").localeCompare(String(b.side || ""));
       if (cellA.y !== cellB.y) return cellA.y - cellB.y;
       if (cellA.x !== cellB.x) return cellA.x - cellB.x;
       return (a.finalBoundaryIndex || 0) - (b.finalBoundaryIndex || 0);
     });
   }
 
-  function summarizeQaCircleAnchorAvailability(region, map = getQaGeneratedMap(), preferredSide = null) {
+  function summarizeQaCircleAnchorAvailability(
+    region,
+    map = getQaGeneratedMap(),
+    preferredSide = null
+  ) {
     const gridSize = map?.config?.gridSize || config.gridSize || 20;
     const circle = region ? getCircleGeometryFromRegion(region, gridSize) : null;
-    const candidates = region?.shape === "circle" && circle
-      ? createCircleConnectionAnchorCandidates(region, circle, gridSize)
-      : [];
+    const candidates =
+      region?.shape === "circle" && circle
+        ? createCircleConnectionAnchorCandidates(region, circle, gridSize)
+        : [];
     const bySide = candidates.reduce((acc, anchor) => {
       const side = anchor?.side || "unknown";
       acc[side] = (acc[side] || 0) + 1;
@@ -10335,7 +10288,9 @@ export default function CruorMapGeneratorMvp({
     });
     return [...seen.entries()]
       .map(([pair, corridors]) => {
-        const generatedCorridors = corridors.filter((corridor) => !isManualConnectionLike(corridor));
+        const generatedCorridors = corridors.filter(
+          (corridor) => !isManualConnectionLike(corridor)
+        );
         return [pair, generatedCorridors];
       })
       .filter(([, corridors]) => corridors.length > 1)
@@ -10343,10 +10298,11 @@ export default function CruorMapGeneratorMvp({
   }
 
   function getQaRepairCorridors(map = getQaGeneratedMap()) {
-    return (map?.corridors || []).filter((corridor) =>
-      String(corridor?.id || "").startsWith("physical-repair-") ||
-      String(corridor?.id || "").startsWith("physical-force-repair-") ||
-      String(corridor?.reason || "").includes("physical-connectivity")
+    return (map?.corridors || []).filter(
+      (corridor) =>
+        String(corridor?.id || "").startsWith("physical-repair-") ||
+        String(corridor?.id || "").startsWith("physical-force-repair-") ||
+        String(corridor?.reason || "").includes("physical-connectivity")
     );
   }
 
@@ -10354,20 +10310,20 @@ export default function CruorMapGeneratorMvp({
     return new Set(
       (Array.isArray(corridor?.floorCells) ? corridor.floorCells : [])
         .filter((cell) => Number.isFinite(cell?.x) && Number.isFinite(cell?.y))
-        .map((cell) => cellKey(cell.x, cell.y)),
+        .map((cell) => cellKey(cell.x, cell.y))
     );
   }
 
   function getQaCorridorCellDegree(cell, cellSet) {
-    return getCellNeighbors(cell).filter((neighbor) =>
-      cellSet.has(cellKey(neighbor.x, neighbor.y)),
-    ).length;
+    return getCellNeighbors(cell).filter((neighbor) => cellSet.has(cellKey(neighbor.x, neighbor.y)))
+      .length;
   }
 
   function getQaCorridorPathContinuityIssues(corridor) {
-    const cells = Array.isArray(corridor?.pathCells) && corridor.pathCells.length > 0
-      ? corridor.pathCells
-      : corridor?.floorCells || [];
+    const cells =
+      Array.isArray(corridor?.pathCells) && corridor.pathCells.length > 0
+        ? corridor.pathCells
+        : corridor?.floorCells || [];
     const issues = [];
     for (let index = 1; index < cells.length; index += 1) {
       const previous = cells[index - 1];
@@ -10417,13 +10373,15 @@ export default function CruorMapGeneratorMvp({
         ...getQaCorridorBranchIssues(corridor),
       ];
       if (issues.length === 0) return [];
-      return [{
-        corridorId: corridor.id,
-        from: corridor.from,
-        to: corridor.to,
-        issues,
-        corridor: summarizeDebugCorridor(corridor),
-      }];
+      return [
+        {
+          corridorId: corridor.id,
+          from: corridor.from,
+          to: corridor.to,
+          issues,
+          corridor: summarizeDebugCorridor(corridor),
+        },
+      ];
     });
   }
 
@@ -10478,7 +10436,7 @@ export default function CruorMapGeneratorMvp({
     signal,
     settings = {},
     scenarioLabel = "Circle Anchor Test",
-    options = {},
+    options = {}
   ) {
     let map = getQaGeneratedMap();
     let region = options.regionId
@@ -10525,30 +10483,37 @@ export default function CruorMapGeneratorMvp({
       : initialDoor?.side || null;
     const anchorStrategy = options.anchorStrategy || "distributed";
     const fixedNearbyPreferredSide = anchorStrategy === "nearby" ? preferredSide : null;
-    const initialAnchors = anchorStrategy === "nearby"
-      ? getQaRealisticNearbyCircleAnchors(
-          region,
-          corridor,
-          initialEndpoint,
-          map,
-          settings,
-          fixedNearbyPreferredSide,
-        )
-      : getQaCircleAnchorSweepAnchors(region, map, preferredSide);
-    const requestedStepCount = options.stepCount || (anchorStrategy === "nearby"
-      ? getQaCircleSmokeAnchorSteps(settings)
-      : getQaCircleSweepAnchorSteps(settings));
+    const initialAnchors =
+      anchorStrategy === "nearby"
+        ? getQaRealisticNearbyCircleAnchors(
+            region,
+            corridor,
+            initialEndpoint,
+            map,
+            settings,
+            fixedNearbyPreferredSide
+          )
+        : getQaCircleAnchorSweepAnchors(region, map, preferredSide);
+    const requestedStepCount =
+      options.stepCount ||
+      (anchorStrategy === "nearby"
+        ? getQaCircleSmokeAnchorSteps(settings)
+        : getQaCircleSweepAnchorSteps(settings));
     const stepCount = Math.min(initialAnchors.length, requestedStepCount);
-    recordQaDiagnostic("circle anchor availability", {
-      phase: "before-sweep",
-      corridor: summarizeDebugCorridor(corridor),
-      endpoint: initialEndpoint,
-      preferredSide,
-      anchorStrategy,
-      requestedStepCount,
-      stepCount,
-      availability: summarizeQaCircleAnchorAvailability(region, map, preferredSide),
-    }, "anchor-trace");
+    recordQaDiagnostic(
+      "circle anchor availability",
+      {
+        phase: "before-sweep",
+        corridor: summarizeDebugCorridor(corridor),
+        endpoint: initialEndpoint,
+        preferredSide,
+        anchorStrategy,
+        requestedStepCount,
+        stepCount,
+        availability: summarizeQaCircleAnchorAvailability(region, map, preferredSide),
+      },
+      "anchor-trace"
+    );
     assertQa(stepCount >= 2, "Not enough reachable circle anchors for sweep.", {
       preferredSide,
       availability: summarizeQaCircleAnchorAvailability(region, map, preferredSide),
@@ -10562,32 +10527,38 @@ export default function CruorMapGeneratorMvp({
         getQaCorridorForPair(corridor.from, corridor.to, map) ||
         corridor;
       const endpoint = getQaEndpointForRegion(currentCorridor, region.id);
-      const anchors = anchorStrategy === "nearby"
-        ? getQaRealisticNearbyCircleAnchors(
-            region,
-            currentCorridor,
-            endpoint,
-            map,
-            settings,
-            fixedNearbyPreferredSide,
-          )
-        : getQaCircleAnchorSweepAnchors(region, map, preferredSide);
-      const anchorIndex = anchorStrategy === "nearby"
-        ? 0
-        : Math.min(
-            Math.max(0, anchors.length - 1),
-            Math.floor((index * Math.max(1, anchors.length)) / Math.max(1, stepCount)),
-          );
+      const anchors =
+        anchorStrategy === "nearby"
+          ? getQaRealisticNearbyCircleAnchors(
+              region,
+              currentCorridor,
+              endpoint,
+              map,
+              settings,
+              fixedNearbyPreferredSide
+            )
+          : getQaCircleAnchorSweepAnchors(region, map, preferredSide);
+      const anchorIndex =
+        anchorStrategy === "nearby"
+          ? 0
+          : Math.min(
+              Math.max(0, anchors.length - 1),
+              Math.floor((index * Math.max(1, anchors.length)) / Math.max(1, stepCount))
+            );
       const anchor = anchors[anchorIndex] || null;
       const cell = getQaCircleAnchorSortCell(anchor);
       if (!anchor) {
-        recordQaDiagnostic("circle anchor build failed", {
-          stepIndex: index,
-          preferredSide,
-          availability: summarizeQaCircleAnchorAvailability(region, map, preferredSide),
-          corridor: summarizeDebugCorridor(currentCorridor),
-          topology: summarizeQaCorridorTopology(map),
-        }, "anchor-trace");
+        recordQaDiagnostic(
+          "circle anchor build failed",
+          {
+            stepIndex: index,
+            preferredSide,
+            availability: summarizeQaCircleAnchorAvailability(region, map, preferredSide),
+            corridor: summarizeDebugCorridor(currentCorridor),
+            topology: summarizeQaCorridorTopology(map),
+          },
+          "anchor-trace"
+        );
       }
       assertQa(anchor, "Could not build circle anchor for target cell.", {
         preferredSide,
@@ -10607,15 +10578,19 @@ export default function CruorMapGeneratorMvp({
         targetPoint: roundDebugPoint(point),
         category: "anchor-trace",
       });
-      recordQaDiagnostic("before anchor move", {
-        stepIndex: index,
-        corridorId: currentCorridor.id,
-        endpoint,
-        targetCell: summarizeDebugCell(cell),
-        targetAnchor: summarizeDebugAnchor(anchor),
-        corridor: summarizeDebugCorridor(currentCorridor),
-        topology: summarizeQaCorridorTopology(map),
-      }, "anchor-trace");
+      recordQaDiagnostic(
+        "before anchor move",
+        {
+          stepIndex: index,
+          corridorId: currentCorridor.id,
+          endpoint,
+          targetCell: summarizeDebugCell(cell),
+          targetAnchor: summarizeDebugAnchor(anchor),
+          corridor: summarizeDebugCorridor(currentCorridor),
+          topology: summarizeQaCorridorTopology(map),
+        },
+        "anchor-trace"
+      );
       const committed = moveDoor(currentCorridor.id, endpoint, point, anchor, {
         releasePoint: point,
         releaseCell: cell,
@@ -10639,34 +10614,43 @@ export default function CruorMapGeneratorMvp({
       const updatedDoor = getQaCorridorDoor(updatedCorridor, updatedEndpoint);
       const updatedEndpointAnchor = getDebugCorridorAnchor(updatedCorridor, updatedEndpoint);
       const renderedLogicalAnchor = updatedEndpointAnchor || updatedDoor;
-      recordQaDiagnostic("after anchor move", {
-        stepIndex: index,
-        corridorId: updatedCorridor?.id || currentCorridor.id,
-        endpoint: updatedEndpoint,
-        requestedAnchor: summarizeDebugAnchor(anchor),
-        renderedEndpointAnchor: summarizeDebugAnchor(updatedEndpointAnchor),
-        renderedDoor: summarizeDebugAnchor(updatedDoor),
-        renderedCorridor: summarizeDebugCorridor(updatedCorridor),
-        topology: summarizeQaCorridorTopology(map),
-        duplicates: getQaCorridorPairDuplicates(map),
-      }, "anchor-trace");
+      recordQaDiagnostic(
+        "after anchor move",
+        {
+          stepIndex: index,
+          corridorId: updatedCorridor?.id || currentCorridor.id,
+          endpoint: updatedEndpoint,
+          requestedAnchor: summarizeDebugAnchor(anchor),
+          renderedEndpointAnchor: summarizeDebugAnchor(updatedEndpointAnchor),
+          renderedDoor: summarizeDebugAnchor(updatedDoor),
+          renderedCorridor: summarizeDebugCorridor(updatedCorridor),
+          topology: summarizeQaCorridorTopology(map),
+          duplicates: getQaCorridorPairDuplicates(map),
+        },
+        "anchor-trace"
+      );
       const requestedIdentityCell = getQaCircleAnchorSortCell(anchor);
       const renderedIdentityCell = getQaCircleAnchorSortCell(renderedLogicalAnchor);
       const logicalSnapRetained =
         renderedIdentityCell?.x === requestedIdentityCell?.x &&
         renderedIdentityCell?.y === requestedIdentityCell?.y;
-      const physicalSideChanged =
-        Boolean(anchor?.side && renderedLogicalAnchor?.side && renderedLogicalAnchor.side !== anchor.side);
+      const physicalSideChanged = Boolean(
+        anchor?.side && renderedLogicalAnchor?.side && renderedLogicalAnchor.side !== anchor.side
+      );
       if (logicalSnapRetained && physicalSideChanged) {
-        recordQaDiagnostic("circle anchor physical side adjusted", {
-          corridorId: updatedCorridor?.id || currentCorridor.id,
-          endpoint: updatedEndpoint,
-          requestedSide: anchor?.side || null,
-          renderedSide: renderedLogicalAnchor?.side || null,
-          requestedAnchor: summarizeDebugAnchor(anchor),
-          renderedEndpointAnchor: summarizeDebugAnchor(updatedEndpointAnchor),
-          renderedDoor: summarizeDebugAnchor(updatedDoor),
-        }, "anchor-trace");
+        recordQaDiagnostic(
+          "circle anchor physical side adjusted",
+          {
+            corridorId: updatedCorridor?.id || currentCorridor.id,
+            endpoint: updatedEndpoint,
+            requestedSide: anchor?.side || null,
+            renderedSide: renderedLogicalAnchor?.side || null,
+            requestedAnchor: summarizeDebugAnchor(anchor),
+            renderedEndpointAnchor: summarizeDebugAnchor(updatedEndpointAnchor),
+            renderedDoor: summarizeDebugAnchor(updatedDoor),
+          },
+          "anchor-trace"
+        );
       }
       assertQa(
         logicalSnapRetained,
@@ -10700,7 +10684,7 @@ export default function CruorMapGeneratorMvp({
     signal,
     settings = {},
     scenarioLabel = "Circle Room Move Matrix",
-    regionId = "",
+    regionId = ""
   ) {
     let map = getQaGeneratedMap();
     let region = map?.regions?.find((item) => item.id === regionId) || null;
@@ -10734,13 +10718,17 @@ export default function CruorMapGeneratorMvp({
       const moved = moveRoom(region.id, target);
       attempts.push({ label: offset.label, target, moved: moved !== null });
       if (moved === null) {
-        recordQaDiagnostic("circle room move skipped", {
-          region: summarizeDebugRegion(region),
-          offset,
-          target,
-          reason: "moveRoom returned null",
-          attempts,
-        }, "room-move");
+        recordQaDiagnostic(
+          "circle room move skipped",
+          {
+            region: summarizeDebugRegion(region),
+            offset,
+            target,
+            reason: "moveRoom returned null",
+            attempts,
+          },
+          "room-move"
+        );
         continue;
       }
       successfulMoves += 1;
@@ -10764,10 +10752,14 @@ export default function CruorMapGeneratorMvp({
       regionId: region.id,
       attempts,
     });
-    assertQa(successfulDownMoves > 0, "Circle room move matrix did not execute any downward move.", {
-      regionId: region.id,
-      attempts,
-    });
+    assertQa(
+      successfulDownMoves > 0,
+      "Circle room move matrix did not execute any downward move.",
+      {
+        regionId: region.id,
+        attempts,
+      }
+    );
   }
 
   async function runQaRealisticRoomStyleStep(
@@ -10777,7 +10769,7 @@ export default function CruorMapGeneratorMvp({
     scenarioLabel = "Smoke Test",
     regionId = "",
     patch = {},
-    label = "Update room style",
+    label = "Update room style"
   ) {
     let map = getQaGeneratedMap();
     let region = map?.regions?.find((item) => item.id === regionId) || null;
@@ -10812,7 +10804,7 @@ export default function CruorMapGeneratorMvp({
     settings = {},
     scenarioLabel = "Smoke Test",
     regionId = "",
-    offset = { x: 1, y: 0, label: "right-1" },
+    offset = { x: 1, y: 0, label: "right-1" }
   ) {
     let map = getQaGeneratedMap();
     const region = map?.regions?.find((item) => item.id === regionId) || null;
@@ -10830,12 +10822,16 @@ export default function CruorMapGeneratorMvp({
     });
     const moved = moveRoom(region.id, target);
     if (moved === null) {
-      recordQaDiagnostic("realistic room move skipped", {
-        region: summarizeDebugRegion(region),
-        offset,
-        target,
-        reason: "moveRoom returned null",
-      }, "room-move");
+      recordQaDiagnostic(
+        "realistic room move skipped",
+        {
+          region: summarizeDebugRegion(region),
+          offset,
+          target,
+          reason: "moveRoom returned null",
+        },
+        "room-move"
+      );
       return false;
     }
     await waitForQaRender(signal, settings);
@@ -10853,25 +10849,28 @@ export default function CruorMapGeneratorMvp({
     return true;
   }
 
-
   async function runQaCompactRoomNearClusterStep(
     runId,
     signal,
     settings = {},
     scenarioLabel = "Smoke Test",
     regionId = "",
-    label = "Keep room near connected cluster",
+    label = "Keep room near connected cluster"
   ) {
     let map = getQaGeneratedMap();
     let region = map?.regions?.find((item) => item.id === regionId) || null;
     assertQa(region, "No room available for compact layout step.", { regionId });
     const targets = getQaCompactRoomTargets(region, map, settings);
     if (!targets.length) {
-      recordQaDiagnostic("compact room move skipped", {
-        region: summarizeDebugRegion(region),
-        reason: "no compact targets",
-        topology: summarizeQaCorridorTopology(map),
-      }, "room-move");
+      recordQaDiagnostic(
+        "compact room move skipped",
+        {
+          region: summarizeDebugRegion(region),
+          reason: "no compact targets",
+          topology: summarizeQaCorridorTopology(map),
+        },
+        "room-move"
+      );
       return false;
     }
 
@@ -10913,28 +10912,31 @@ export default function CruorMapGeneratorMvp({
       return true;
     }
 
-    recordQaDiagnostic("compact room move skipped", {
-      region: summarizeDebugRegion(region),
-      reason: "all compact targets rejected by moveRoom",
-      attempts,
-      topology: summarizeQaCorridorTopology(map),
-    }, "room-move");
+    recordQaDiagnostic(
+      "compact room move skipped",
+      {
+        region: summarizeDebugRegion(region),
+        reason: "all compact targets rejected by moveRoom",
+        attempts,
+        topology: summarizeQaCorridorTopology(map),
+      },
+      "room-move"
+    );
     return false;
   }
 
-  async function runQaSmokeScenario(
-    runId,
-    signal,
-    settings = {},
-    scenarioLabel = "Smoke Test"
-  ) {
+  async function runQaSmokeScenario(runId, signal, settings = {}, scenarioLabel = "Smoke Test") {
     let map = getQaGeneratedMap();
     assertQaMapValidationPasses(map, { scenarioLabel, phase: "initial" });
     const candidateRegions = getQaCircleSmokeCandidateRegions(map, settings);
-    assertQa(candidateRegions.length > 0, "No connected room available for realistic smoke scenario.", {
-      regionCount: map?.regions?.length || 0,
-      corridors: (map?.corridors || []).map(summarizeDebugCorridor),
-    });
+    assertQa(
+      candidateRegions.length > 0,
+      "No connected room available for realistic smoke scenario.",
+      {
+        regionCount: map?.regions?.length || 0,
+        corridors: (map?.corridors || []).map(summarizeDebugCorridor),
+      }
+    );
 
     let circleRegion = candidateRegions[0];
     await runQaRealisticRoomStyleStep(
@@ -10944,7 +10946,7 @@ export default function CruorMapGeneratorMvp({
       scenarioLabel,
       circleRegion.id,
       { shape: "circle", sizePreset: "Medium", customSize: null },
-      "Make room circular medium",
+      "Make room circular medium"
     );
     await runQaCompactRoomNearClusterStep(
       runId,
@@ -10952,7 +10954,7 @@ export default function CruorMapGeneratorMvp({
       settings,
       scenarioLabel,
       circleRegion.id,
-      "Keep circular room near connected rooms",
+      "Keep circular room near connected rooms"
     );
 
     if (settings.speed !== "fast") {
@@ -10963,7 +10965,7 @@ export default function CruorMapGeneratorMvp({
         scenarioLabel,
         circleRegion.id,
         { shape: "circle", sizePreset: "Large", customSize: null },
-        "Resize circular room",
+        "Resize circular room"
       );
       await runQaCompactRoomNearClusterStep(
         runId,
@@ -10971,7 +10973,7 @@ export default function CruorMapGeneratorMvp({
         settings,
         scenarioLabel,
         circleRegion.id,
-        "Recompact resized circular room",
+        "Recompact resized circular room"
       );
     }
 
@@ -10996,7 +10998,7 @@ export default function CruorMapGeneratorMvp({
       settings,
       scenarioLabel,
       circleRegion.id,
-      "Recompact after nearby anchor edits",
+      "Recompact after nearby anchor edits"
     );
 
     map = getQaGeneratedMap();
@@ -11013,7 +11015,7 @@ export default function CruorMapGeneratorMvp({
       settings,
       scenarioLabel,
       circleRegion.id,
-      realisticOffsets[1] || { x: 0, y: 1, label: "down-1" },
+      realisticOffsets[1] || { x: 0, y: 1, label: "down-1" }
     );
     await runQaCompactRoomNearClusterStep(
       runId,
@@ -11021,12 +11023,12 @@ export default function CruorMapGeneratorMvp({
       settings,
       scenarioLabel,
       circleRegion.id,
-      "Recompact after user room nudge",
+      "Recompact after user room nudge"
     );
 
     map = getQaGeneratedMap();
     const secondaryRegion = (map?.regions || []).find(
-      (region) => region?.id && region.id !== circleRegion.id,
+      (region) => region?.id && region.id !== circleRegion.id
     );
     if (secondaryRegion) {
       await runQaRealisticRoomStyleStep(
@@ -11036,7 +11038,7 @@ export default function CruorMapGeneratorMvp({
         scenarioLabel,
         secondaryRegion.id,
         { shape: "hall", sizePreset: "Small", customSize: null },
-        "Change adjacent room type",
+        "Change adjacent room type"
       );
       if (settings.speed !== "fast") {
         await runQaRealisticRoomMoveStep(
@@ -11045,7 +11047,7 @@ export default function CruorMapGeneratorMvp({
           settings,
           scenarioLabel,
           secondaryRegion.id,
-          realisticOffsets[2] || { x: -1, y: 0, label: "left-1" },
+          realisticOffsets[2] || { x: -1, y: 0, label: "left-1" }
         );
         await runQaCompactRoomNearClusterStep(
           runId,
@@ -11053,7 +11055,7 @@ export default function CruorMapGeneratorMvp({
           settings,
           scenarioLabel,
           circleRegion.id,
-          "Keep circular room near moved neighbor",
+          "Keep circular room near moved neighbor"
         );
       }
     }
@@ -11066,7 +11068,7 @@ export default function CruorMapGeneratorMvp({
         settings,
         scenarioLabel,
         circleRegion.id,
-        "Final compactness pass",
+        "Final compactness pass"
       );
     }
 
@@ -11093,7 +11095,7 @@ export default function CruorMapGeneratorMvp({
         candidate.from &&
         candidate.to &&
         (map.regions || []).some((region) => region.id === candidate.from) &&
-        (map.regions || []).some((region) => region.id === candidate.to),
+        (map.regions || []).some((region) => region.id === candidate.to)
     );
     assertQa(corridor, "Need a room-to-room corridor for the level/stair test.", {
       corridorCount: map?.corridors?.length || 0,
@@ -11142,44 +11144,84 @@ export default function CruorMapGeneratorMvp({
       region: nextFromRegion,
       expected: fromLevel,
     });
-    assertQa(nextToRegion?.level === toLevel, "Target room level was not scoped to the edited room.", {
-      region: nextToRegion,
-      expected: toLevel,
-    });
-    assertQa(nextCorridor.fromLevel === fromLevel, "Room level scope should not mutate corridor fromLevel before stair placement is enabled.", {
-      corridor: summarizeDebugCorridor(nextCorridor),
-      expected: fromLevel,
-    });
-    assertQa(nextCorridor.toLevel === fromLevel, "Room level scope should not turn the corridor into a cross-level route yet.", {
-      corridor: summarizeDebugCorridor(nextCorridor),
-      expected: fromLevel,
-    });
-    assertQa(nextCorridor.levelDelta === 0, "Room level scope should keep the corridor levelDelta neutral before stair placement is enabled.", {
-      corridor: summarizeDebugCorridor(nextCorridor),
-      expected: 0,
-    });
-    assertQa(!nextCorridor.crossLevel && !nextCorridor.verticalTransition, "Room level scope should not create a vertical corridor transition yet.", {
-      corridor: summarizeDebugCorridor(nextCorridor),
-    });
-    assertQa(nextCorridor.stairTransition === "none", "Room level scope should not derive stair direction until stair placement is enabled.", {
-      corridor: summarizeDebugCorridor(nextCorridor),
-    });
-    assertQa(nextCorridor.stairCount === 0, "Room level scope should not derive stair marker metadata until stair placement is enabled.", {
-      corridor: summarizeDebugCorridor(nextCorridor),
-      expected: 0,
-    });
-    assertQa(nextCorridor.levelTransition?.derivedFromRoomLevels !== true, "Room level scope should not enable room-derived stair metadata yet.", {
-      corridor: summarizeDebugCorridor(nextCorridor),
-    });
+    assertQa(
+      nextToRegion?.level === toLevel,
+      "Target room level was not scoped to the edited room.",
+      {
+        region: nextToRegion,
+        expected: toLevel,
+      }
+    );
+    assertQa(
+      nextCorridor.fromLevel === fromLevel,
+      "Room level scope should not mutate corridor fromLevel before stair placement is enabled.",
+      {
+        corridor: summarizeDebugCorridor(nextCorridor),
+        expected: fromLevel,
+      }
+    );
+    assertQa(
+      nextCorridor.toLevel === fromLevel,
+      "Room level scope should not turn the corridor into a cross-level route yet.",
+      {
+        corridor: summarizeDebugCorridor(nextCorridor),
+        expected: fromLevel,
+      }
+    );
+    assertQa(
+      nextCorridor.levelDelta === 0,
+      "Room level scope should keep the corridor levelDelta neutral before stair placement is enabled.",
+      {
+        corridor: summarizeDebugCorridor(nextCorridor),
+        expected: 0,
+      }
+    );
+    assertQa(
+      !nextCorridor.crossLevel && !nextCorridor.verticalTransition,
+      "Room level scope should not create a vertical corridor transition yet.",
+      {
+        corridor: summarizeDebugCorridor(nextCorridor),
+      }
+    );
+    assertQa(
+      nextCorridor.stairTransition === "none",
+      "Room level scope should not derive stair direction until stair placement is enabled.",
+      {
+        corridor: summarizeDebugCorridor(nextCorridor),
+      }
+    );
+    assertQa(
+      nextCorridor.stairCount === 0,
+      "Room level scope should not derive stair marker metadata until stair placement is enabled.",
+      {
+        corridor: summarizeDebugCorridor(nextCorridor),
+        expected: 0,
+      }
+    );
+    assertQa(
+      nextCorridor.levelTransition?.derivedFromRoomLevels !== true,
+      "Room level scope should not enable room-derived stair metadata yet.",
+      {
+        corridor: summarizeDebugCorridor(nextCorridor),
+      }
+    );
     const renderOnlyStairMarkers = getCorridorStairMarkerVirtualDoors(nextCorridor, nextMap);
-    assertQa(renderOnlyStairMarkers.length === Math.min(Math.abs(toLevel - fromLevel), 8), "Room level scope should render visual stair markers without mutating corridor metadata.", {
-      corridor: summarizeDebugCorridor(nextCorridor),
-      expected: Math.min(Math.abs(toLevel - fromLevel), 8),
-      actual: renderOnlyStairMarkers.length,
-    });
-    assertQa(renderOnlyStairMarkers.every((marker) => marker.renderOnlyRoomLevelStair === true), "Room-level visual stair markers must be render-only.", {
-      markers: renderOnlyStairMarkers,
-    });
+    assertQa(
+      renderOnlyStairMarkers.length === Math.min(Math.abs(toLevel - fromLevel), 8),
+      "Room level scope should render visual stair markers without mutating corridor metadata.",
+      {
+        corridor: summarizeDebugCorridor(nextCorridor),
+        expected: Math.min(Math.abs(toLevel - fromLevel), 8),
+        actual: renderOnlyStairMarkers.length,
+      }
+    );
+    assertQa(
+      renderOnlyStairMarkers.every((marker) => marker.renderOnlyRoomLevelStair === true),
+      "Room-level visual stair markers must be render-only.",
+      {
+        markers: renderOnlyStairMarkers,
+      }
+    );
     assertQaMapValidationPasses(nextMap, {
       scenarioLabel,
       phase: "room-level-derived-stairs",
@@ -11187,18 +11229,22 @@ export default function CruorMapGeneratorMvp({
       toRegionId: toRegion.id,
       corridorId: nextCorridor.id,
     });
-    recordQaDiagnostic("room levels scoped with render-only stair markers", {
-      scenarioLabel,
-      fromRegionId: fromRegion.id,
-      toRegionId: toRegion.id,
-      corridorId: nextCorridor.id,
-      fromLevel,
-      toLevel,
-      corridorLevelDelta: nextCorridor.levelDelta,
-      stairCount: nextCorridor.stairCount,
-      renderedStairCount: renderOnlyStairMarkers.length,
-      direction: nextCorridor.stairTransition,
-    }, "levels");
+    recordQaDiagnostic(
+      "room levels scoped with render-only stair markers",
+      {
+        scenarioLabel,
+        fromRegionId: fromRegion.id,
+        toRegionId: toRegion.id,
+        corridorId: nextCorridor.id,
+        fromLevel,
+        toLevel,
+        corridorLevelDelta: nextCorridor.levelDelta,
+        stairCount: nextCorridor.stairCount,
+        renderedStairCount: renderOnlyStairMarkers.length,
+        direction: nextCorridor.stairTransition,
+      },
+      "levels"
+    );
     setQaRunnerStep(runId, {
       scenarioLabel,
       stepLabel: "Restore previous room levels",
@@ -11209,12 +11255,7 @@ export default function CruorMapGeneratorMvp({
     await waitForQaRender(signal, settings);
   }
 
-  async function runQaLevelView(
-    runId,
-    signal,
-    settings = {},
-    scenarioLabel = "Level View Test"
-  ) {
+  async function runQaLevelView(runId, signal, settings = {}, scenarioLabel = "Level View Test") {
     const originalOverrides = cloneManualOverrides(manualOverridesRef.current);
     const originalLevelView = levelView;
     const originalFadeOtherLevels = fadeOtherLevels;
@@ -11226,7 +11267,7 @@ export default function CruorMapGeneratorMvp({
         candidate.from &&
         candidate.to &&
         (map.regions || []).some((region) => region.id === candidate.from) &&
-        (map.regions || []).some((region) => region.id === candidate.to),
+        (map.regions || []).some((region) => region.id === candidate.to)
     );
     assertQa(corridor, "Need a room-to-room corridor for the level view test.", {
       corridorCount: map?.corridors?.length || 0,
@@ -11272,44 +11313,74 @@ export default function CruorMapGeneratorMvp({
     const activeRegionIds = new Set((activeMap.regions || []).map((region) => region.id));
     const inactiveRegionIds = new Set((inactiveMap.regions || []).map((region) => region.id));
     const visibleCorridor = (activeMap.corridors || []).find(
-      (candidate) => candidate.id === corridor.id || (candidate.from === fromRegion.id && candidate.to === toRegion.id),
+      (candidate) =>
+        candidate.id === corridor.id ||
+        (candidate.from === fromRegion.id && candidate.to === toRegion.id)
     );
 
-    assertQa(normalizedView === toLevel, "Level View did not normalize to the requested target level.", {
-      requested: toLevel,
-      availableLevels: available,
-      normalizedView,
-    });
-    assertQa(activeRegionIds.has(toRegion.id), "Active Level View does not include the target-level room.", {
-      targetRegionId: toRegion.id,
-      activeRegionIds: Array.from(activeRegionIds),
-    });
-    assertQa(!activeRegionIds.has(fromRegion.id), "Active Level View includes a room from another level.", {
-      fromRegionId: fromRegion.id,
-      activeRegionIds: Array.from(activeRegionIds),
-    });
-    assertQa(inactiveRegionIds.has(fromRegion.id), "Faded Level View does not include the other-level room.", {
-      fromRegionId: fromRegion.id,
-      inactiveRegionIds: Array.from(inactiveRegionIds),
-    });
-    assertQa(visibleCorridor?.crossLevel, "Cross-level corridor should stay visible as a stair connector on the active level.", {
-      corridor: summarizeDebugCorridor(visibleCorridor),
-      normalizedView,
-    });
-    assertQa(visibleCorridor?.stairCount === Math.abs(toLevel - fromLevel), "Level View stair connector has the wrong stair marker count.", {
-      corridor: summarizeDebugCorridor(visibleCorridor),
-      expected: Math.abs(toLevel - fromLevel),
-    });
-    recordQaDiagnostic("level view isolates active room level", {
-      scenarioLabel,
-      fromRegionId: fromRegion.id,
-      toRegionId: toRegion.id,
-      levelView: normalizedView,
-      activeRegionIds: Array.from(activeRegionIds),
-      inactiveRegionIds: Array.from(inactiveRegionIds),
-      corridorId: visibleCorridor?.id || corridor.id,
-      stairCount: visibleCorridor?.stairCount || 0,
-    }, "levels");
+    assertQa(
+      normalizedView === toLevel,
+      "Level View did not normalize to the requested target level.",
+      {
+        requested: toLevel,
+        availableLevels: available,
+        normalizedView,
+      }
+    );
+    assertQa(
+      activeRegionIds.has(toRegion.id),
+      "Active Level View does not include the target-level room.",
+      {
+        targetRegionId: toRegion.id,
+        activeRegionIds: Array.from(activeRegionIds),
+      }
+    );
+    assertQa(
+      !activeRegionIds.has(fromRegion.id),
+      "Active Level View includes a room from another level.",
+      {
+        fromRegionId: fromRegion.id,
+        activeRegionIds: Array.from(activeRegionIds),
+      }
+    );
+    assertQa(
+      inactiveRegionIds.has(fromRegion.id),
+      "Faded Level View does not include the other-level room.",
+      {
+        fromRegionId: fromRegion.id,
+        inactiveRegionIds: Array.from(inactiveRegionIds),
+      }
+    );
+    assertQa(
+      visibleCorridor?.crossLevel,
+      "Cross-level corridor should stay visible as a stair connector on the active level.",
+      {
+        corridor: summarizeDebugCorridor(visibleCorridor),
+        normalizedView,
+      }
+    );
+    assertQa(
+      visibleCorridor?.stairCount === Math.abs(toLevel - fromLevel),
+      "Level View stair connector has the wrong stair marker count.",
+      {
+        corridor: summarizeDebugCorridor(visibleCorridor),
+        expected: Math.abs(toLevel - fromLevel),
+      }
+    );
+    recordQaDiagnostic(
+      "level view isolates active room level",
+      {
+        scenarioLabel,
+        fromRegionId: fromRegion.id,
+        toRegionId: toRegion.id,
+        levelView: normalizedView,
+        activeRegionIds: Array.from(activeRegionIds),
+        inactiveRegionIds: Array.from(inactiveRegionIds),
+        corridorId: visibleCorridor?.id || corridor.id,
+        stairCount: visibleCorridor?.stairCount || 0,
+      },
+      "levels"
+    );
 
     setQaRunnerStep(runId, {
       scenarioLabel,
@@ -11372,27 +11443,35 @@ export default function CruorMapGeneratorMvp({
     const preview = createConnectionDraftPreviewMap(connectionPayload);
     const previewCorridor = preview?.map?.corridors?.find((item) => item.id === preview.corridorId);
     const previewCells = previewCorridor ? getCorridorTopologyCells(previewCorridor) : [];
-    assertQa(preview?.map && previewCorridor && previewCells.length >= 2, "Corridor creation routed preview is unavailable.", {
-      phase: "corridor-create-preview",
-      fromRegionId: fromRegion.id,
-      toRegionId: toRegion.id,
-      previewCorridorId: preview?.corridorId || null,
-      previewCells: previewCells.map(summarizeDebugCell),
-    });
+    assertQa(
+      preview?.map && previewCorridor && previewCells.length >= 2,
+      "Corridor creation routed preview is unavailable.",
+      {
+        phase: "corridor-create-preview",
+        fromRegionId: fromRegion.id,
+        toRegionId: toRegion.id,
+        previewCorridorId: preview?.corridorId || null,
+        previewCells: previewCells.map(summarizeDebugCell),
+      }
+    );
     assertQaNoVisualCorridorTopologyIssues(preview.map, {
       scenarioLabel,
       phase: "corridor-create-preview",
       fromRegionId: fromRegion.id,
       toRegionId: toRegion.id,
     });
-    recordQaDiagnostic("corridor create routed preview built", {
-      scenarioLabel,
-      phase: "corridor-create-preview",
-      fromRegionId: fromRegion.id,
-      toRegionId: toRegion.id,
-      previewCorridorId: preview.corridorId,
-      previewCellCount: previewCells.length,
-    }, "corridor-create");
+    recordQaDiagnostic(
+      "corridor create routed preview built",
+      {
+        scenarioLabel,
+        phase: "corridor-create-preview",
+        fromRegionId: fromRegion.id,
+        toRegionId: toRegion.id,
+        previewCorridorId: preview.corridorId,
+        previewCellCount: previewCells.length,
+      },
+      "corridor-create"
+    );
     createConnectionFromWallDrag(connectionPayload);
     await waitForQaRender(signal, settings);
     const nextMap = getQaGeneratedMap();
@@ -11901,7 +11980,9 @@ export default function CruorMapGeneratorMvp({
                 onClick={() => setFadeOtherLevels((value) => !value)}
               >
                 <i
-                  className={fadeOtherLevels ? "fa-solid fa-circle-half-stroke" : "fa-solid fa-eye-slash"}
+                  className={
+                    fadeOtherLevels ? "fa-solid fa-circle-half-stroke" : "fa-solid fa-eye-slash"
+                  }
                   aria-hidden="true"
                 />
               </button>
@@ -11950,7 +12031,11 @@ export default function CruorMapGeneratorMvp({
                 onToggleDebugCoordinates={setShowDebugCoordinates}
                 onQaSettingsChange={setQaRunnerSettings}
                 onRunQaScenario={(scenarioId, settings) =>
-                  runMapQaScenario({ scenarioId, settings, scenarioLabel: getQaRunnerScenarioLabel(scenarioId) })
+                  runMapQaScenario({
+                    scenarioId,
+                    settings,
+                    scenarioLabel: getQaRunnerScenarioLabel(scenarioId),
+                  })
                 }
                 onStopQaScenario={stopMapQaScenario}
                 onClear={clearDebugEntries}

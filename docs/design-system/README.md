@@ -31,3 +31,13 @@ Right-side Composer rails that summarize the current generated or configured ent
 - Migration inventory: [composer-info-rail-migration.json](composer-info-rail-migration.json)
 
 New equivalent right information rails must reuse the shared rail, card, fact, name-editor, and meter classes. Feature hooks may supplement them only for placement, layout, required geometry, scroll ownership, behavior, and runtime/test selectors; they must not recreate card surfaces, typography, fact rows, name editors, meters, shared spacing, or generic states.
+
+
+## Official Composer slot cards
+
+Reusable Composer assignment slots use `ComposerSlotCard` from `components/ui/composer-slot-card.jsx` and the `.cruor-composer-slot-card*` classes in `shared/styles/composer-system.css`.
+
+- Canonical visual reference: Terrifying Monsters silhouette slot cards.
+- Shared states: `is-empty`, `is-filled`, `is-active`, and `is-linked-hover`.
+- Feature code may retain data attributes, ARIA roles, refs, handlers, layout modifiers, and feature-specific mechanical states such as `is-missing` or `is-suggested`.
+- Feature styles must not recreate the card surface, header/body typography, badge, or generic interaction states.

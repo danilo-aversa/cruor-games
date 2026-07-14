@@ -11,6 +11,7 @@ Monster Composer is centered on `features/monster-composer/monster-composer.page
 - Merge native graft data with registry-fed content-pack components.
 - Compile public and debug export payloads.
 - Support clipboard copy and live stat-block popout.
+- Provide the canonical visual reference for shared `ComposerSlotCard` assignment slots while retaining silhouette connector and linked-hover mechanics.
 
 ## Content Models
 

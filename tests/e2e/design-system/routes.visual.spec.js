@@ -44,11 +44,15 @@ test.describe("@visual shared shell states", () => {
 
   test("topbar settings open, focus-visible, disabled and selected states", async ({ page }) => {
     const { menu, trigger } = await openSettings(page);
+    const overlay = page.locator(".app-shell__navigation-overlay");
+    await expect(menu).toHaveAttribute("data-transition-state", "open");
     await expect(menu.getByRole("menuitemradio", { checked: true }).first()).toBeVisible();
     await expect(menu.locator("button[disabled]").first()).toBeDisabled();
+    await expect(overlay).toHaveClass(/is-visible/);
     await expectPageScreenshot(page, "shell-settings-open.png", { fullPage: false });
     await page.keyboard.press("Escape");
     await expect(menu).toBeHidden();
+    await expect(overlay).not.toHaveClass(/is-visible/);
     await expect(trigger).toBeFocused();
   });
 

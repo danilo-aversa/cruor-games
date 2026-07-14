@@ -11,10 +11,12 @@ The app shell includes `index.html`, `app/main.jsx`, `app/router.jsx`, `app/AppS
 - Own route parsing, history mutation, and top-level page selection.
 - Pass UI mode, locale, route callbacks, and map request state into active features.
 - Render global navigation/topbar and accessibility controls.
+- Resolve all visible Crucible navigation and megamenu accessibility copy from the active locale dictionaries through `getSiteNavItems(locale)` and `SiteMegaMenu`.
+- Coordinate the shared darkened and blurred workspace overlay while Crucible or Settings transient navigation is open, including the short closing-presence interval used to keep the Home spy-scroll beneath the fading overlay.
 
 ## State And Side Effects
 
-`app/router.jsx` owns the highest-risk app-level state: active section, active UI mode, active locale, Crucible generator, Darken tab, map request, map request revision, Monster inspiration seed, and history state. `shared/accessibility/accessibility.settings.js` persists settings to `localStorage` key `cruor.accessibility` and writes document dataset attributes.
+`app/router.jsx` owns the highest-risk app-level state: active section, active UI mode, active locale, Crucible generator, Darken tab, map request, map request revision, Monster inspiration seed, and history state. `AppShell.jsx` owns the transient navigation overlay visibility and short closing-presence state reported by `SiteTopbar.jsx`. `shared/accessibility/accessibility.settings.js` persists settings to `localStorage` key `cruor.accessibility` and writes document dataset attributes.
 
 ## Tests
 
