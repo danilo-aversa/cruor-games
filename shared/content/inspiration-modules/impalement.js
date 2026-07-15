@@ -1,18 +1,30 @@
-import { buildCoreInspirationModuleFromCard, buildModuleExports } from "./inspiration-module.factory.js";
+import {
+  buildCoreInspirationModuleFromCard,
+  buildModuleExports,
+} from "./inspiration-module.factory.js";
 
 export const IMPALEMENT_SOURCE_ANCHOR_ID = "impalement";
 export const IMPALEMENT_INSPIRATION_CARD_DEFINITION = Object.freeze({
-    sourceAnchorId: "impalement",
-    title: "Impalement",
-    icon: "fa-thumbtack",
-    sourceType: "Punitive Practice",
-    caption:
-      "Stakes, warning displays, border terror, tyrant justice, crows, and bodies made into signs.",
-    logic:
-      "Impalement becomes a landscape of warnings: authority, cruelty, borders, and bodies turned into signs.",
-    imageNote: "Impalement inspiration image.",
-    imageKey: "card-impalement.webp",
-  });
+  sourceAnchorId: "impalement",
+  title: "Impalement",
+  icon: "fa-thumbtack",
+  sourceType: "Punitive Practice",
+  caption:
+    "Stakes, warning displays, border terror, tyrant justice, crows, and bodies made into signs.",
+  logic:
+    "Impalement becomes a landscape of warnings: authority, cruelty, borders, and bodies turned into signs.",
+  card: Object.freeze({
+    domain: "violence",
+    obscurity: "familiar",
+    collectionId: "existing-inspirations",
+    collectionLabel: "Existing Inspirations",
+    number: 9,
+    description:
+      "A body fixed upon a stake becomes punishment, boundary marker, and announcement of power at the same time. The violence is not confined to death; display is part of the sentence, allowing weather, animals, and witnesses to continue it. Its horror comes from verticality, duration, and the deliberate conversion of a person into a sign. It suggests roads lined with warnings, rulers who write laws in bodies, and landscapes where authority is read before it is spoken.",
+  }),
+  imageNote: "Impalement inspiration image.",
+  imageKey: "card-impalement.webp",
+});
 
 export const IMPALEMENT_INSPIRATION_MODULE = buildCoreInspirationModuleFromCard(
   IMPALEMENT_INSPIRATION_CARD_DEFINITION,
@@ -23,11 +35,17 @@ export const IMPALEMENT_INSPIRATION_MODULE = buildCoreInspirationModuleFromCard(
   },
 );
 
-const IMPALEMENT_MODULE_EXPORTS = buildModuleExports(IMPALEMENT_INSPIRATION_MODULE);
+const IMPALEMENT_MODULE_EXPORTS = buildModuleExports(
+  IMPALEMENT_INSPIRATION_MODULE,
+);
 
 export const IMPALEMENT_SOURCE_ANCHOR = IMPALEMENT_MODULE_EXPORTS.sourceAnchor;
 export const IMPALEMENT_INSPIRATION = IMPALEMENT_MODULE_EXPORTS.inspiration;
-export const IMPALEMENT_MONSTER_GRAFT_COMPONENTS = IMPALEMENT_MODULE_EXPORTS.monsterGrafts;
-export const IMPALEMENT_LOCATION_COMPONENTS = IMPALEMENT_MODULE_EXPORTS.locationComponents;
-export const IMPALEMENT_LOCATION_REGION_COMPONENTS = IMPALEMENT_MODULE_EXPORTS.locationRegions;
-export const IMPALEMENT_REFERENCED_SOURCE_ANCHORS = IMPALEMENT_MODULE_EXPORTS.referencedSourceAnchors;
+export const IMPALEMENT_MONSTER_GRAFT_COMPONENTS =
+  IMPALEMENT_MODULE_EXPORTS.monsterGrafts;
+export const IMPALEMENT_LOCATION_COMPONENTS =
+  IMPALEMENT_MODULE_EXPORTS.locationComponents;
+export const IMPALEMENT_LOCATION_REGION_COMPONENTS =
+  IMPALEMENT_MODULE_EXPORTS.locationRegions;
+export const IMPALEMENT_REFERENCED_SOURCE_ANCHORS =
+  IMPALEMENT_MODULE_EXPORTS.referencedSourceAnchors;

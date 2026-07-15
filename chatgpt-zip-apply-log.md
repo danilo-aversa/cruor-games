@@ -13378,3 +13378,179 @@ _Nessun file aggiunto._
 - `~features/darken-location/output/LocationOutputWorkspace.jsx`
 - `~features/darken-location/output/LocationOutputWorkspace.test.jsx`
 
+
+---
+
+## 2026-07-15 19:39:08
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-inspirations-refactor-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-refactor-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 12
+
+- `+features/inspirations/components/InspirationCard.jsx`
+- `+features/inspirations/components/InspirationCardFrame.jsx`
+- `+features/inspirations/components/InspirationCardGrid.jsx`
+- `+features/inspirations/components/InspirationDossierModal.jsx`
+- `+features/inspirations/components/InspirationFilters.jsx`
+- `+features/inspirations/inspirations.card-config.js`
+- `+features/inspirations/inspirations.card-config.test.js`
+- `+features/inspirations/inspirations.interactions.test.jsx`
+- `+features/inspirations/inspirations.page.test.jsx`
+- `+INSPIRATIONS_REFACTOR_MANIFEST.txt`
+- `+INSPIRATIONS_REFACTOR_README.md`
+- `+tests/e2e/inspirations.spec.js`
+
+**File sovrascritti:** 21
+
+- `~app/router.jsx`
+- `~features/inspirations/inspirations.page.jsx`
+- `~features/inspirations/inspirations.styles.css`
+- `~shared/content/inspiration-modules/anthropodermic-bibliopegy.js`
+- `~shared/content/inspiration-modules/crucifixion.js`
+- `~shared/content/inspiration-modules/decomposition.js`
+- `~shared/content/inspiration-modules/endocannibalism.js`
+- `~shared/content/inspiration-modules/genetic-mutations.js`
+- `~shared/content/inspiration-modules/impalement.js`
+- `~shared/content/inspiration-modules/inspiration-module.factory.js`
+- `~shared/content/inspiration-modules/jikininki.js`
+- `~shared/content/inspiration-modules/mortuary-totems.js`
+- `~shared/content/inspiration-modules/mustard-gas.js`
+- `~shared/content/inspiration-modules/sedlec-ossuary.js`
+- `~shared/content/inspiration-modules/the-mist.js`
+- `~shared/content/inspiration-modules/towers-of-silence.js`
+- `~shared/content/inspiration-modules/wax-death-masks.js`
+- `~shared/content/inspiration-modules/wolf-spiders.js`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+- `~shared/styles/colors.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_REFACTOR_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_REFACTOR_README.md
+
+
+---
+
+## 2026-07-15 20:42:04
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-inspirations-refactor-v2-fixes.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-refactor-v2-fixes.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+INSPIRATIONS_REFACTOR_V2_MANIFEST.txt`
+- `+INSPIRATIONS_REFACTOR_V2_README.md`
+
+**File sovrascritti:** 5
+
+- `~features/inspirations/components/InspirationCard.jsx`
+- `~features/inspirations/components/InspirationFilters.jsx`
+- `~features/inspirations/inspirations.interactions.test.jsx`
+- `~features/inspirations/inspirations.page.test.jsx`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_REFACTOR_V2_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_REFACTOR_V2_README.md
+
+
+---
+
+## 2026-07-15 21:32:31
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-inspirations-card-texture-design-v3.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-card-texture-design-v3.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+INSPIRATIONS_CARD_TEXTURE_MANIFEST.txt`
+- `+INSPIRATIONS_CARD_TEXTURE_README.md`
+
+**File sovrascritti:** 4
+
+- `~features/inspirations/components/InspirationCard.jsx`
+- `~features/inspirations/inspirations.page.test.jsx`
+- `~features/inspirations/inspirations.styles.css`
+- `~shared/styles/colors.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_CARD_TEXTURE_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_CARD_TEXTURE_README.md
+
+
+---
+
+## 2026-07-15 21:37:16
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-inspirations-five-cards-per-row-v4.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-five-cards-per-row-v4.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+INSPIRATIONS_FIVE_COLUMN_GRID_MANIFEST.txt`
+- `+INSPIRATIONS_FIVE_COLUMN_GRID_README.md`
+
+**File sovrascritti:** 1
+
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_FIVE_COLUMN_GRID_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_FIVE_COLUMN_GRID_README.md
+
+
+---
+
+## 2026-07-15 22:25:33
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-inspirations-card-back-refactor-v5.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-card-back-refactor-v5.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+INSPIRATIONS_CARD_BACK_REFACTOR_MANIFEST.txt`
+- `+INSPIRATIONS_CARD_BACK_REFACTOR_README.md`
+
+**File sovrascritti:** 5
+
+- `~features/inspirations/components/InspirationCard.jsx`
+- `~features/inspirations/inspirations.interactions.test.jsx`
+- `~features/inspirations/inspirations.page.test.jsx`
+- `~features/inspirations/inspirations.styles.css`
+- `~shared/styles/colors.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_CARD_BACK_REFACTOR_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_CARD_BACK_REFACTOR_README.md
+

@@ -262,7 +262,10 @@
   --cruor-color-glass-a760: rgba(var(--cruor-rgb-glass), 0.76);
   --cruor-color-glass-line-a380: rgba(var(--cruor-rgb-glass-line), 0.38);
   --cruor-color-glass-satin-a680: rgba(var(--cruor-rgb-glass-satin), 0.68);
-  --cruor-color-glass-satin-strong-a840: rgba(var(--cruor-rgb-glass-satin-strong), 0.84);
+  --cruor-color-glass-satin-strong-a840: rgba(
+    var(--cruor-rgb-glass-satin-strong),
+    0.84
+  );
   --cruor-color-good-a035: rgba(var(--cruor-rgb-good), 0.035);
   --cruor-color-good-a055: rgba(var(--cruor-rgb-good), 0.055);
   --cruor-color-good-a060: rgba(var(--cruor-rgb-good), 0.06);
@@ -406,7 +409,7 @@
   --cruor-color-r14-g11-b13-a680: rgba(14, 11, 13, 0.68);
   --cruor-color-r14-g5-b8-a960: rgba(14, 5, 8, 0.96);
   --cruor-color-r143-g38-b53-a180: rgba(143, 38, 53, 0.18);
-  --cruor-color-r15-g5-b7-a960: rgba(15, 5, 7, .96);
+  --cruor-color-r15-g5-b7-a960: rgba(15, 5, 7, 0.96);
   --cruor-color-r150-g142-b146-a060: rgba(150, 142, 146, 0.06);
   --cruor-color-r151-g34-b51-a620: rgba(151, 34, 51, 0.62);
   --cruor-color-r151-g34-b51-a680: rgba(151, 34, 51, 0.68);
@@ -702,329 +705,1519 @@
   --cruor-color-white-a900: rgba(var(--cruor-rgb-white), 0.9);
 
   /* Gradient aliases */
-  --cruor-gradient-conic-070-e3c77f3d: conic-gradient(from var(--empty-slot-border-angle, 0deg), var(--cruor-color-blood-bright-a200) 0deg, var(--cruor-color-blood-bright-a200) 222deg, var(--cruor-color-r222-g146-b159-a400) 246deg, var(--cruor-color-r174-g50-b68-a620) 263deg, var(--cruor-color-r222-g146-b159-a320) 281deg, var(--cruor-color-blood-bright-a200) 308deg, var(--cruor-color-blood-bright-a200) 360deg);
-  --cruor-gradient-conic-071-b9a9bd8b: conic-gradient(var(--cruor-color-blood-glow-a780) var(--progress), var(--cruor-color-black-a320) 0);
-  --cruor-gradient-linear-002-09673f8e: linear-gradient(180deg, var(--cruor-color-r30-g7-b11-a920), var(--cruor-color-r9-g5-b7-a900));
-  --cruor-gradient-linear-003-33222bdf: linear-gradient(180deg, var(--cruor-color-milk-a055), var(--cruor-color-transparent) 72%);
-  --cruor-gradient-linear-005-2d835da9: linear-gradient(180deg, var(--cruor-color-r170-g48-b66-a760), var(--cruor-color-r70-g8-b20-a780));
-  --cruor-gradient-linear-006-1c0ba33e: linear-gradient(180deg, var(--cruor-color-r30-g7-b11-a940), var(--cruor-color-r10-g5-b7-a880));
-  --cruor-gradient-linear-008-6f99f992: linear-gradient(180deg, var(--cruor-color-r198-g68-b84-a860), var(--cruor-color-blood-strong-a900));
-  --cruor-gradient-linear-009-2802abdc: linear-gradient(180deg, var(--cruor-color-blood-bright-a070), var(--cruor-color-transparent) 68%);
-  --cruor-gradient-linear-011-25d82b21: linear-gradient(180deg, var(--cruor-color-blood-bright-a080), var(--cruor-color-transparent) 64%);
-  --cruor-gradient-linear-012-c39edb21: linear-gradient(180deg, var(--cruor-color-milk-a045), var(--cruor-color-transparent) 70%);
-  --cruor-gradient-linear-013-deebd0e2: linear-gradient(180deg, var(--cruor-color-milk-a050), var(--cruor-color-transparent) 9rem);
-  --cruor-gradient-linear-014-13668961: linear-gradient(180deg, var(--cruor-color-blood-glow-a720), var(--cruor-color-blood-strong-a720));
-  --cruor-gradient-linear-015-d1025658: linear-gradient(180deg, var(--cruor-color-milk-a030), var(--cruor-color-transparent) 70%);
-  --cruor-gradient-linear-017-c1cb33c1: linear-gradient(180deg, var(--cruor-color-blood-bright-a040), var(--cruor-color-transparent) 64%);
-  --cruor-gradient-linear-018-ba88b005: linear-gradient(180deg, var(--cruor-color-r224-g82-b101-a860), var(--cruor-color-blood-bright-a820));
-  --cruor-gradient-linear-019-fbb0759c: linear-gradient(180deg, var(--cruor-color-milk-a032), var(--cruor-color-transparent) 68%);
-  --cruor-gradient-linear-020-984b6edd: linear-gradient(180deg, var(--cruor-color-milk-a045), var(--cruor-color-transparent) 12rem);
-  --cruor-gradient-linear-022-79a987a1: linear-gradient(180deg, var(--cruor-color-white-a022) 1px, var(--cruor-color-transparent) 1px);
-  --cruor-gradient-linear-023-5d537681: linear-gradient(90deg, var(--cruor-color-white-a028) 1px, var(--cruor-color-transparent) 1px);
-  --cruor-gradient-linear-024-0332568e: linear-gradient(180deg, var(--cruor-color-blood-bright-a045), var(--cruor-color-transparent) 48%);
-  --cruor-gradient-linear-025-2ead26dd: linear-gradient(180deg, var(--cruor-color-blood-bright-a540), var(--cruor-color-r28-g5-b9-a960));
-  --cruor-gradient-linear-026-1ad4f65f: linear-gradient(180deg, var(--cruor-color-milk-a025), var(--cruor-color-transparent));
-  --cruor-gradient-linear-028-9f35eafb: linear-gradient(180deg, var(--cruor-color-r12-g6-b8-a900), var(--cruor-color-r5-g4-b5-a820));
-  --cruor-gradient-linear-029-a37c5252: linear-gradient(180deg, var(--cruor-color-milk-a035), var(--cruor-color-transparent) 160px);
-  --cruor-gradient-linear-030-454f26b3: linear-gradient(180deg, var(--cruor-color-milk-a035), var(--cruor-color-transparent) 70%);
-  --cruor-gradient-linear-031-12bc71a1: linear-gradient(180deg, var(--cruor-color-milk-a035), var(--cruor-color-transparent));
-  --cruor-gradient-linear-032-ef2ac9cc: linear-gradient(90deg, var(--cruor-color-transparent), var(--cruor-color-blood-glow-a720), var(--cruor-color-transparent));
-  --cruor-gradient-linear-036-c4870607: linear-gradient(180deg, var(--cruor-color-blood-bright-a240), var(--cruor-color-surface-soft-a640));
-  --cruor-gradient-linear-037-28ffd373: linear-gradient(180deg, var(--cruor-color-r18-g12-b14-a990), var(--cruor-color-r7-g5-b6-a980));
-  --cruor-gradient-linear-038-459fda6b: linear-gradient(180deg, var(--cruor-color-milk-a026), var(--cruor-color-black-a200));
-  --cruor-gradient-linear-039-556dffa7: linear-gradient(180deg, var(--cruor-color-milk-a055), var(--cruor-color-r8-g5-b6-a900));
-  --cruor-gradient-linear-040-d74d092e: linear-gradient(90deg, var(--cruor-color-blood-a240), var(--cruor-color-transparent) 52%);
-  --cruor-gradient-linear-051-81c43428: linear-gradient(135deg, var(--cruor-color-blood-a960) 0%, var(--cruor-color-r18-g1-b5-a920) 34%, var(--cruor-color-black-a980) 74%, var(--cruor-color-black) 100%);
-  --cruor-gradient-linear-052-97c6692c: linear-gradient(180deg, var(--cruor-color-black-a020), var(--cruor-color-black-a340));
-  --cruor-gradient-linear-053-3098d334: linear-gradient(180deg, var(--cruor-color-r10-g5-b7-a920), var(--cruor-color-r10-g5-b7-a740) 72%, var(--cruor-color-r10-g5-b7-a000));
-  --cruor-gradient-linear-054-2211c986: linear-gradient(180deg, var(--cruor-color-blood-bright-a060), var(--cruor-color-transparent) 64%);
-  --cruor-gradient-linear-055-e92225c8: linear-gradient(180deg, var(--cruor-color-blood-bright-a460), var(--cruor-color-r20-g5-b8-a900));
-  --cruor-gradient-linear-056-9da5c296: linear-gradient(180deg, var(--cruor-color-blood-bright-a540), var(--cruor-color-r28-g5-b9-a900));
-  --cruor-gradient-linear-057-7894e977: linear-gradient(180deg, var(--cruor-color-r18-g5-b8-a985), var(--cruor-color-r8-g5-b6-a960));
-  --cruor-gradient-linear-058-9369db17: linear-gradient(180deg, var(--cruor-color-r22-g6-b9-a920), var(--cruor-color-r8-g5-b6-a860));
-  --cruor-gradient-linear-059-8e6bc32f: linear-gradient(180deg, var(--cruor-color-milk-a018), var(--cruor-color-transparent) 18rem);
-  --cruor-gradient-linear-060-e275339f: linear-gradient(180deg, var(--cruor-color-milk-a026), var(--cruor-color-transparent) 14rem);
-  --cruor-gradient-linear-061-19d3fe75: linear-gradient(180deg, var(--cruor-color-milk-a035), var(--cruor-color-black-a180));
-  --cruor-gradient-linear-062-37518de5: linear-gradient(180deg, var(--cruor-color-milk-a035), var(--cruor-color-transparent) 9rem);
-  --cruor-gradient-linear-063-940bd872: linear-gradient(180deg, var(--cruor-color-white-a012) 1px, var(--cruor-color-transparent) 1px);
-  --cruor-gradient-linear-064-45f69597: linear-gradient(90deg, var(--cruor-color-blood-bright-a160), var(--cruor-color-transparent) 66%);
-  --cruor-gradient-linear-065-00d91395: linear-gradient(90deg, var(--cruor-color-white-a018) 1px, var(--cruor-color-transparent) 1px);
-  --cruor-gradient-linear-072-3663dc3d: linear-gradient(135deg, var(--cruor-color-hex-f4e8cc) 0%, var(--cruor-color-hex-ead6aa) 54%, var(--cruor-color-hex-dec293) 100%);
-  --cruor-gradient-linear-073-b0809407: linear-gradient(135deg, var(--cruor-color-r13-g10-b12-a980), var(--cruor-color-r7-g5-b6-a940));
-  --cruor-gradient-linear-074-414a4d78: linear-gradient(135deg, var(--cruor-color-r42-g39-b41-a140), var(--cruor-color-transparent) 70%);
-  --cruor-gradient-linear-075-39a51d50: linear-gradient(135deg, var(--cruor-color-blood-a960), var(--cruor-color-black-a980));
-  --cruor-gradient-linear-076-6c168a20: linear-gradient(135deg, var(--studio-success-soft), var(--cruor-color-black-a180));
-  --cruor-gradient-linear-077-e311a6df: linear-gradient(180deg, var(--cruor-color-black), var(--cruor-color-transparent) 92%);
-  --cruor-gradient-linear-078-e313bc1b: linear-gradient(180deg, var(--cruor-color-blood-bright-a070), var(--cruor-color-transparent) 70%);
-  --cruor-gradient-linear-079-18ee8d35: linear-gradient(180deg, var(--cruor-color-blood-bright-a200), var(--cruor-color-transparent) 72%);
-  --cruor-gradient-linear-080-191c9c00: linear-gradient(180deg, var(--cruor-color-blood-bright-a280), var(--cruor-color-surface-soft-a720));
-  --cruor-gradient-linear-081-54b771f0: linear-gradient(180deg, var(--cruor-color-blood-bright-a900), var(--cruor-color-blood-a950));
-  --cruor-gradient-linear-082-dd90e61f: linear-gradient(180deg, var(--cruor-color-good-a035), var(--cruor-color-transparent) 12rem);
-  --cruor-gradient-linear-083-82c6da0f: linear-gradient(180deg, var(--cruor-color-good-a080), var(--cruor-color-transparent));
-  --cruor-gradient-linear-084-a57fb44d: linear-gradient(180deg, var(--cruor-color-good-a160), var(--cruor-color-r10-g12-b12-a940));
-  --cruor-gradient-linear-085-9406f826: linear-gradient(180deg, var(--cruor-color-r180-g174-b176-a045), var(--cruor-color-transparent) 62%);
-  --cruor-gradient-linear-086-4c860aaa: linear-gradient(180deg, var(--cruor-color-blood-glow-a160), var(--cruor-color-transparent) 76%);
-  --cruor-gradient-linear-087-77ac247e: linear-gradient(180deg, var(--cruor-color-blood-glow-a240), var(--cruor-color-transparent) 72%);
-  --cruor-gradient-linear-088-bf911062: linear-gradient(180deg, var(--cruor-color-blood-glow-a950), var(--cruor-color-blood-strong-a980));
-  --cruor-gradient-linear-089-5122796f: linear-gradient(180deg, var(--cruor-color-r2-g2-b3-a985), var(--cruor-color-r10-g4-b6-a960));
-  --cruor-gradient-linear-090-f965cd31: linear-gradient(180deg, var(--cruor-color-milk-a040), var(--cruor-color-transparent) 62%);
-  --cruor-gradient-linear-091-b7ddacfd: linear-gradient(180deg, var(--cruor-color-milk-a026), var(--cruor-color-transparent) 70%);
-  --cruor-gradient-linear-092-5039d6d3: linear-gradient(180deg, var(--cruor-color-milk-a028), var(--cruor-color-transparent) 10rem);
-  --cruor-gradient-linear-093-2e8c671d: linear-gradient(180deg, var(--cruor-color-milk-a030), var(--cruor-color-black-a180));
-  --cruor-gradient-linear-094-26e867cb: linear-gradient(180deg, var(--cruor-color-milk-a030), var(--cruor-color-transparent) 10rem);
-  --cruor-gradient-linear-095-1213124c: linear-gradient(180deg, var(--cruor-color-milk-a032), var(--cruor-color-black-a180));
-  --cruor-gradient-linear-096-77144794: linear-gradient(180deg, var(--cruor-color-milk-a034), var(--cruor-color-transparent) 60%);
-  --cruor-gradient-linear-097-26db0bfc: linear-gradient(180deg, var(--cruor-color-milk-a038), var(--cruor-color-transparent) 8rem);
-  --cruor-gradient-linear-098-7469c6ff: linear-gradient(180deg, var(--cruor-color-milk-a040), var(--cruor-color-transparent));
-  --cruor-gradient-linear-099-fcbfebbd: linear-gradient(180deg, var(--cruor-color-milk-a045), var(--cruor-color-transparent) 10rem);
-  --cruor-gradient-linear-100-31b68659: linear-gradient(180deg, var(--cruor-color-milk-a050), var(--cruor-color-transparent) 58%);
-  --cruor-gradient-linear-101-60a8a5a5: linear-gradient(180deg, var(--cruor-color-milk-a052), var(--cruor-color-transparent) 68%);
-  --cruor-gradient-linear-102-b2158888: linear-gradient(180deg, var(--cruor-color-milk-a070), var(--cruor-color-transparent) 8rem);
-  --cruor-gradient-linear-103-4f46f041: linear-gradient(180deg, var(--cruor-color-r255-g250-b239-a760), var(--cruor-color-r230-g205-b162-a700));
-  --cruor-gradient-linear-104-ef3bd0c7: linear-gradient(180deg, var(--cruor-color-white-a035) 1px, var(--cruor-color-transparent) 1px);
-  --cruor-gradient-linear-105-9a47a1b4: linear-gradient(180deg, var(--cruor-color-blood-a200), var(--cruor-color-transparent) 76%);
-  --cruor-gradient-linear-106-9419e658: linear-gradient(180deg, var(--cruor-color-blood-a220), var(--cruor-color-transparent) 7rem);
-  --cruor-gradient-linear-107-9e0d4ab7: linear-gradient(180deg, var(--cruor-color-r6-g5-b6-a980), var(--cruor-color-r4-g3-b4-a960));
-  --cruor-gradient-linear-108-092c83a2: linear-gradient(90deg, var(--cruor-color-blood-bright-a900), var(--cruor-color-rose-a720));
-  --cruor-gradient-linear-109-dfb67e17: linear-gradient(90deg, var(--cruor-color-good-a070), var(--cruor-color-transparent) 70%);
-  --cruor-gradient-linear-110-77754975: linear-gradient(90deg, var(--cruor-color-good-a720), var(--cruor-color-blood-glow-a820));
-  --cruor-gradient-linear-111-06d54cf8: linear-gradient(90deg, var(--cruor-color-blood-glow-a950), var(--cruor-color-rose-a760));
-  --cruor-gradient-linear-112-68a38d8c: linear-gradient(90deg, var(--cruor-color-white-a045) 1px, var(--cruor-color-transparent) 1px);
-  --cruor-gradient-linear-113-6f59454c: linear-gradient(90deg, var(--cruor-color-blood-strong-a180), var(--cruor-color-transparent) 64%);
-  --cruor-gradient-linear-114-da70a976: linear-gradient(90deg, var(--cruor-color-blood-strong-a840), var(--cruor-color-blood-glow-a780));
-  --cruor-gradient-linear-115-7b4295c6: linear-gradient(90deg, var(--cruor-color-blood-strong-a860), var(--cruor-color-blood-glow-a700));
-  --cruor-gradient-linear-116-9e700692: linear-gradient(90deg, var(--cruor-color-blood-strong-a900), var(--cruor-color-blood-glow-a720));
-  --cruor-gradient-linear-117-8cc0f9d4: linear-gradient(90deg, var(--cruor-color-blood-strong-a920), var(--cruor-color-blood-glow-a760));
-  --cruor-gradient-linear-118-d4915879: linear-gradient(90deg, var(--cruor-color-transparent), var(--cruor-color-r208-g162-b170-a280), var(--cruor-color-transparent));
-  --cruor-gradient-linear-139-44facd54: linear-gradient(135deg, var(--cruor-color-blood-bright-a100), var(--cruor-color-black-a080) 48%, var(--cruor-color-black-a200));
-  --cruor-gradient-linear-140-6d487b8b: linear-gradient(135deg, var(--cruor-color-milk-a034), var(--cruor-color-transparent) 34%);
-  --cruor-gradient-linear-141-2b1915cc: linear-gradient(135deg, var(--cruor-color-milk-a040), var(--cruor-color-transparent) 42%);
-  --cruor-gradient-linear-142-f956a2f0: linear-gradient(135deg, var(--cruor-color-blood-a240), var(--cruor-color-transparent) 70%);
-  --cruor-gradient-linear-143-846d5af5: linear-gradient(135deg, var(--cruor-color-blood-a260), var(--cruor-color-black-a040) 48%, var(--cruor-color-black-a140));
-  --cruor-gradient-linear-144-fc78ef02: linear-gradient(135deg, var(--cruor-color-blood-a920) 0%, var(--cruor-color-r18-g1-b5-a900) 34%, var(--cruor-color-black-a980) 74%, var(--cruor-color-black) 100%);
-  --cruor-gradient-linear-145-00f6af39: linear-gradient(135deg, var(--cruor-color-transparent) 0 46%, var(--cruor-color-r208-g162-b170-a080) 46% 54%, var(--cruor-color-transparent) 54% 100%);
-  --cruor-gradient-linear-146-6ebb467d: linear-gradient(180deg,
-      var(--cruor-color-blood-glow-a000) 0%,
-      var(--cruor-color-blood-glow-a050) 10%,
-      var(--cruor-color-rose-a160) 24%,
-      var(--cruor-color-milk-a420) 38%,
-      var(--cruor-color-r255-g248-b250-a780) 50%,
-      var(--cruor-color-milk-a420) 62%,
-      var(--cruor-color-rose-a160) 76%,
-      var(--cruor-color-blood-glow-a050) 90%,
-      var(--cruor-color-blood-glow-a000) 100%);
-  --cruor-gradient-linear-147-e08f093b: linear-gradient(180deg, var(--cruor-color-black-a020), var(--cruor-color-black-a580));
-  --cruor-gradient-linear-148-c4bbe015: linear-gradient(180deg, var(--cruor-color-r10-g5-b7-a980), var(--cruor-color-r5-g4-b5-a960));
-  --cruor-gradient-linear-149-7bd7b318: linear-gradient(180deg, var(--cruor-color-r12-g9-b10-a980), var(--cruor-color-surface-a980));
-  --cruor-gradient-linear-150-348bda76: linear-gradient(180deg, var(--cruor-color-blood-bright-a140), var(--cruor-color-transparent) 68%);
-  --cruor-gradient-linear-151-18366710: linear-gradient(180deg, var(--cruor-color-blood-bright-a045), var(--cruor-color-transparent));
-  --cruor-gradient-linear-152-14e15c5e: linear-gradient(180deg, var(--cruor-color-blood-bright-a050), var(--cruor-color-transparent) 62%);
-  --cruor-gradient-linear-153-f6e2064e: linear-gradient(180deg, var(--cruor-color-blood-bright-a055), var(--cruor-color-transparent));
-  --cruor-gradient-linear-154-34fe6b84: linear-gradient(180deg, var(--cruor-color-blood-bright-a080), var(--cruor-color-transparent) 68%);
-  --cruor-gradient-linear-155-aa3bc08c: linear-gradient(180deg, var(--cruor-color-blood-bright-a090), var(--cruor-color-black-a180) 62%);
-  --cruor-gradient-linear-156-5a9dd1db: linear-gradient(180deg, var(--cruor-color-blood-bright-a140), var(--cruor-color-black-a160) 58%);
-  --cruor-gradient-linear-157-94ddb68f: linear-gradient(180deg, var(--cruor-color-blood-bright-a160), var(--cruor-color-black-a180) 58%);
-  --cruor-gradient-linear-158-faff4523: linear-gradient(180deg, var(--cruor-color-blood-bright-a180), var(--cruor-color-black-a240));
-  --cruor-gradient-linear-159-cbc8ae86: linear-gradient(180deg, var(--cruor-color-blood-bright-a220), var(--cruor-color-black-a160) 62%);
-  --cruor-gradient-linear-160-b8299e9c: linear-gradient(180deg, var(--cruor-color-blood-bright-a220), var(--cruor-color-surface-soft-a620));
-  --cruor-gradient-linear-161-18758606: linear-gradient(180deg, var(--cruor-color-blood-bright-a320), var(--cruor-color-surface-soft-a680));
-  --cruor-gradient-linear-162-88b5a70e: linear-gradient(180deg, var(--cruor-color-blood-bright-a580), var(--cruor-color-surface-soft-a1000));
-  --cruor-gradient-linear-163-3f5e7ee3: linear-gradient(180deg, var(--cruor-color-r14-g5-b8-a960), var(--cruor-color-r5-g4-b5-a900));
-  --cruor-gradient-linear-164-8054613d: linear-gradient(180deg, var(--cruor-color-good-a140), var(--cruor-color-r10-g12-b12-a940));
-  --cruor-gradient-linear-165-016c880b: linear-gradient(180deg, var(--cruor-color-good-a160), var(--cruor-color-r10-g12-b12-a940));
-  --cruor-gradient-linear-166-d42a1dfb: linear-gradient(180deg, var(--cruor-color-good-a180), var(--cruor-color-r12-g16-b15-a920));
-  --cruor-gradient-linear-167-3d20bfc1: linear-gradient(180deg, var(--cruor-color-good-a180), var(--cruor-color-r8-g12-b11-a960));
-  --cruor-gradient-linear-168-68f86c33: linear-gradient(180deg, var(--cruor-color-r18-g7-b9-a880), var(--cruor-color-r7-g4-b5-a820));
-  --cruor-gradient-linear-169-bacbf071: linear-gradient(180deg, var(--cruor-color-rose-a000), var(--cruor-color-milk-a980) 42%, var(--cruor-color-white) 50%, var(--cruor-color-milk-a980) 58%, var(--cruor-color-rose-a000));
-  --cruor-gradient-linear-170-f87e6acf: linear-gradient(180deg, var(--cruor-color-milk-a055), var(--cruor-color-transparent) 72%);
-  --cruor-gradient-linear-171-3149f474: linear-gradient(180deg, var(--cruor-color-milk-a012), var(--cruor-color-transparent) 13rem);
-  --cruor-gradient-linear-172-b8110c14: linear-gradient(180deg, var(--cruor-color-milk-a018), var(--cruor-color-transparent) 15rem);
-  --cruor-gradient-linear-173-9f5b0f05: linear-gradient(180deg, var(--cruor-color-milk-a024) 1px, var(--cruor-color-transparent) 1px);
-  --cruor-gradient-linear-174-41eae6a7: linear-gradient(180deg, var(--cruor-color-milk-a024), var(--cruor-color-transparent) 7rem);
-  --cruor-gradient-linear-175-dbcf7905: linear-gradient(180deg, var(--cruor-color-milk-a025), var(--cruor-color-transparent) 70%);
-  --cruor-gradient-linear-176-f71f8049: linear-gradient(180deg, var(--cruor-color-milk-a026), var(--cruor-color-transparent) 16rem);
-  --cruor-gradient-linear-177-61b81df2: linear-gradient(180deg, var(--cruor-color-milk-a028), var(--cruor-color-transparent) 160px);
-  --cruor-gradient-linear-178-b4c96049: linear-gradient(180deg, var(--cruor-color-milk-a030), var(--cruor-color-black-a120) 58%);
-  --cruor-gradient-linear-179-dd6f32cc: linear-gradient(180deg, var(--cruor-color-milk-a030), var(--cruor-color-transparent) 62%);
-  --cruor-gradient-linear-180-6c9dd1c2: linear-gradient(180deg, var(--cruor-color-milk-a030), var(--cruor-color-transparent) 72%);
-  --cruor-gradient-linear-181-94667f6b: linear-gradient(180deg, var(--cruor-color-milk-a032) 1px, var(--cruor-color-transparent) 1px);
-  --cruor-gradient-linear-182-e901e5e1: linear-gradient(180deg, var(--cruor-color-milk-a032), var(--cruor-color-transparent) 12rem);
-  --cruor-gradient-linear-183-7ea12ee4: linear-gradient(180deg, var(--cruor-color-milk-a034), var(--cruor-color-transparent) 12rem);
-  --cruor-gradient-linear-184-6e14bdc2: linear-gradient(180deg, var(--cruor-color-milk-a035), var(--cruor-color-transparent) 58%);
-  --cruor-gradient-linear-185-e698a6b5: linear-gradient(180deg, var(--cruor-color-milk-a035), var(--cruor-color-transparent) 7rem);
-  --cruor-gradient-linear-186-028d4a21: linear-gradient(180deg, var(--cruor-color-milk-a038), var(--cruor-color-transparent) 10rem);
-  --cruor-gradient-linear-187-01f1779b: linear-gradient(180deg, var(--cruor-color-milk-a040), var(--cruor-color-black-a180));
-  --cruor-gradient-linear-188-b079ccaf: linear-gradient(180deg, var(--cruor-color-milk-a040), var(--cruor-color-transparent) 70%);
-  --cruor-gradient-linear-189-3f0ef895: linear-gradient(180deg, var(--cruor-color-milk-a045), var(--cruor-color-black-a200));
-  --cruor-gradient-linear-190-9068d247: linear-gradient(180deg, var(--cruor-color-milk-a045), var(--cruor-color-transparent) 15rem);
-  --cruor-gradient-linear-191-64ae9c1c: linear-gradient(180deg, var(--cruor-color-milk-a045), var(--cruor-color-transparent) 68%);
-  --cruor-gradient-linear-192-394792e7: linear-gradient(180deg, var(--cruor-color-white-a018) 1px, var(--cruor-color-transparent) 1px);
-  --cruor-gradient-linear-193-f2121c9d: linear-gradient(180deg, var(--cruor-color-r30-g7-b11-a880), var(--cruor-color-r10-g5-b7-a820));
-  --cruor-gradient-linear-194-025bbc9f: linear-gradient(180deg, var(--cruor-color-r30-g7-b11-a940), var(--cruor-color-r10-g5-b7-a900));
-  --cruor-gradient-linear-195-9041551e: linear-gradient(180deg, var(--cruor-color-r32-g10-b14-a780), var(--cruor-color-r8-g5-b6-a880));
-  --cruor-gradient-linear-196-c7f65a74: linear-gradient(180deg, var(--cruor-color-r32-g18-b21-a560), var(--cruor-color-black-a180) 62%);
-  --cruor-gradient-linear-197-1936cd25: linear-gradient(180deg, var(--cruor-color-r7-g5-b6-a1000), var(--cruor-color-r3-g3-b4-a1000));
-  --cruor-gradient-linear-198-7d9b772c: linear-gradient(180deg, var(--cruor-color-r74-g15-b26-a240), var(--cruor-color-black-a200) 62%);
-  --cruor-gradient-linear-199-c2b7262f: linear-gradient(180deg, var(--cruor-color-r76-g25-b32-a540), var(--cruor-color-r28-g9-b13-a460));
-  --cruor-gradient-linear-200-ba867b8d: linear-gradient(180deg, var(--cruor-color-blood-strong-a520), var(--cruor-color-surface-soft-a1000));
-  --cruor-gradient-linear-201-9d442530: linear-gradient(180deg, var(--cruor-color-blood-strong-a920), var(--cruor-color-r8-g5-b6-a980));
-  --cruor-gradient-linear-202-202e8d1d: linear-gradient(180deg, var(--cruor-color-transparent) 35%, var(--cruor-color-black-a880));
-  --cruor-gradient-linear-203-feb70442: linear-gradient(180deg, var(--cruor-color-transparent) 42%, var(--cruor-color-black-a280));
-  --cruor-gradient-linear-204-5851f085: linear-gradient(180deg, var(--panel-milk), var(--cruor-color-transparent) 56%);
-  --cruor-gradient-linear-205-2de003af: linear-gradient(90deg, var(--cruor-color-blood-bright-a080), var(--cruor-color-blood-bright-a340), var(--cruor-color-blood-bright-a080));
-  --cruor-gradient-linear-206-39d3cb60: linear-gradient(90deg, var(--cruor-color-blood-bright-a120), var(--cruor-color-r208-g162-b170-a340), var(--cruor-color-blood-bright-a120));
-  --cruor-gradient-linear-207-407ee320: linear-gradient(90deg, var(--cruor-color-blood-bright-a180), var(--cruor-color-r208-g162-b170-a380), var(--cruor-color-blood-bright-a180));
-  --cruor-gradient-linear-208-c4ff9ace: linear-gradient(90deg, var(--cruor-color-blood-bright-a240), var(--cruor-color-transparent) 66%);
-  --cruor-gradient-linear-209-319ba0aa: linear-gradient(90deg, var(--cruor-color-blood-bright-a840), var(--cruor-color-rose-a580));
-  --cruor-gradient-linear-210-07eada53: linear-gradient(90deg, var(--cruor-color-good-a680), var(--cruor-color-blood-glow-a780));
-  --cruor-gradient-linear-211-15591d76: linear-gradient(90deg, var(--cruor-color-good-a720), var(--cruor-color-blood-glow-a820));
-  --cruor-gradient-linear-212-814b1c54: linear-gradient(90deg, var(--cruor-color-r208-g162-b170-a080), var(--cruor-color-r208-g162-b170-a240), var(--cruor-color-r208-g162-b170-a080));
-  --cruor-gradient-linear-213-fa647723: linear-gradient(90deg, var(--cruor-color-r232-g167-b69-a100), var(--cruor-color-transparent) 72%);
-  --cruor-gradient-linear-214-aa28d504: linear-gradient(90deg, var(--cruor-color-milk-a034) 1px, var(--cruor-color-transparent) 1px);
-  --cruor-gradient-linear-215-59e013b7: linear-gradient(90deg, var(--cruor-color-milk-a040) 1px, var(--cruor-color-transparent) 1px);
-  --cruor-gradient-linear-216-41f72fb3: linear-gradient(90deg, var(--cruor-color-white-a026) 1px, var(--cruor-color-transparent) 1px);
-  --cruor-gradient-linear-217-87c6c251: linear-gradient(90deg, var(--cruor-color-transparent), var(--cruor-color-blood-glow-a420), var(--cruor-color-transparent));
-  --cruor-gradient-radial-001-2127711c: radial-gradient(circle at 50% 18%, var(--cruor-color-blood-glow-a180), var(--cruor-color-transparent) 72%);
-  --cruor-gradient-radial-004-b311c202: radial-gradient(circle at 0% 0%, var(--cruor-color-blood-bright-a160), var(--cruor-color-transparent) 16rem);
-  --cruor-gradient-radial-007-f9fedda9: radial-gradient(circle at 50% 24%, var(--cruor-color-blood-glow-a180), var(--cruor-color-transparent) 68%);
-  --cruor-gradient-radial-010-2b54c7d1: radial-gradient(circle at 0% 0%, var(--cruor-color-blood-glow-a160), var(--cruor-color-transparent) 12rem);
-  --cruor-gradient-radial-016-d749bd9c: radial-gradient(circle at 50% 20%, var(--cruor-color-blood-glow-a240), var(--cruor-color-transparent) 62%);
-  --cruor-gradient-radial-021-910b9ce8: radial-gradient(circle at 0% 0%, var(--cruor-color-blood-bright-a180), var(--cruor-color-transparent) 18rem);
-  --cruor-gradient-radial-027-87ef1a92: radial-gradient(circle at 0% 0%, var(--cruor-color-blood-bright-a120), var(--cruor-color-transparent) 16rem);
-  --cruor-gradient-radial-033-e7630799: radial-gradient(circle at 0% 0%, var(--cruor-color-blood-glow-a140), var(--cruor-color-transparent) 10rem);
-  --cruor-gradient-radial-034-45004f0b: radial-gradient(circle at 18% 0%, var(--cruor-color-blood-bright-a180), var(--cruor-color-transparent) 36%);
-  --cruor-gradient-radial-035-d7408e11: radial-gradient(circle at 50% 36%, var(--cruor-color-blood-strong-a280), var(--cruor-color-transparent) 16rem);
-  --cruor-gradient-radial-041-b86de5c8: radial-gradient(circle at 0% 0%, var(--cruor-color-blood-bright-a140), var(--cruor-color-transparent) 16rem);
-  --cruor-gradient-radial-042-8daaf455: radial-gradient(circle at 0% 0%, var(--cruor-color-blood-glow-a150), var(--cruor-color-transparent) 11rem);
-  --cruor-gradient-radial-043-da107eb1: radial-gradient(circle at 18% 0%, var(--cruor-color-blood-glow-a140), var(--cruor-color-transparent) 26rem);
-  --cruor-gradient-radial-044-30b4806e: radial-gradient(circle at 20% 0%, var(--cruor-color-blood-glow-a180), var(--cruor-color-transparent) 14rem);
-  --cruor-gradient-radial-045-cf3244f2: radial-gradient(circle at 50% 10%, var(--cruor-color-blood-glow-a180), var(--cruor-color-transparent) 64%);
-  --cruor-gradient-radial-046-8c126818: radial-gradient(circle at 50% 24%, var(--cruor-color-blood-glow-a200), var(--cruor-color-transparent) 68%);
-  --cruor-gradient-radial-047-4ac41150: radial-gradient(circle at 50% 26%, var(--cruor-color-blood-bright-a220), var(--cruor-color-black-a960));
-  --cruor-gradient-radial-048-c75ad843: radial-gradient(circle at 50% 50%, var(--cruor-color-blood-glow-a200), var(--cruor-color-blood-bright-a100) 36%, var(--cruor-color-transparent) 74%);
-  --cruor-gradient-radial-049-2bd5bf03: radial-gradient(circle at 82% 100%, var(--cruor-color-blood-strong-a200), var(--cruor-color-transparent) 30rem);
-  --cruor-gradient-radial-050-1c37bf3c: radial-gradient(circle at 82% 18%, var(--cruor-color-blood-strong-a220), var(--cruor-color-transparent) 28rem);
-  --cruor-gradient-radial-066-8391d276: radial-gradient(circle at 18% 0%, var(--cruor-color-blood-bright-a380), var(--cruor-color-transparent) 30rem);
-  --cruor-gradient-radial-067-6a0a6f16: radial-gradient(circle at 50% 20%, var(--cruor-color-blood-glow-a220), var(--cruor-color-transparent) 62%);
-  --cruor-gradient-radial-068-e609778e: radial-gradient(circle at 50% 50%, var(--cruor-color-blood-glow-a230), var(--cruor-color-blood-bright-a120) 36%, var(--cruor-color-transparent) 74%);
-  --cruor-gradient-radial-069-ecbcc56b: radial-gradient(circle at 54% 92%, var(--cruor-color-blood-a340), var(--cruor-color-transparent) 34rem);
-  --cruor-gradient-radial-119-e7dbfec5: radial-gradient(circle at 0% 0%, var(--cruor-color-blood-bright-a160), var(--cruor-color-transparent) 18rem);
-  --cruor-gradient-radial-120-b510b862: radial-gradient(circle at 0% 0%, var(--cruor-color-blood-glow-a120), var(--cruor-color-transparent) 18rem);
-  --cruor-gradient-radial-121-98f9e585: radial-gradient(circle at 0% 0%, var(--cruor-color-blood-glow-a140), var(--cruor-color-transparent) 8rem);
-  --cruor-gradient-radial-122-0b6febf4: radial-gradient(circle at 0% 0%, var(--cruor-color-blood-glow-a200), var(--cruor-color-transparent) 14rem);
-  --cruor-gradient-radial-123-e737eaad: radial-gradient(circle at 10% 0%, var(--cruor-color-blood-bright-a080), var(--cruor-color-transparent) 34%);
-  --cruor-gradient-radial-124-edf5e737: radial-gradient(circle at 12% 0%, var(--cruor-color-blood-bright-a160), var(--cruor-color-transparent) 18rem);
-  --cruor-gradient-radial-125-85c2d6f0: radial-gradient(circle at 12% 0%, var(--cruor-color-r132-g72-b43-a260), var(--cruor-color-transparent) 28rem);
-  --cruor-gradient-radial-126-b620ddfb: radial-gradient(circle at 12% 0%, var(--cruor-color-blood-glow-a140), var(--cruor-color-transparent) 15rem);
-  --cruor-gradient-radial-127-35646a8f: radial-gradient(circle at 12% 0%, var(--cruor-color-blood-glow-a200), var(--cruor-color-transparent) 42%);
-  --cruor-gradient-radial-128-a105fb60: radial-gradient(circle at 16% 0%, var(--cruor-color-blood-glow-a220), var(--cruor-color-transparent) 13rem);
-  --cruor-gradient-radial-129-27e9a44d: radial-gradient(circle at 18% 0%, var(--cruor-color-blood-bright-a340), var(--cruor-color-transparent) 38%);
-  --cruor-gradient-radial-130-c05fc538: radial-gradient(circle at 18% 0%, var(--cruor-color-blood-glow-a080), var(--cruor-color-transparent) 24rem);
-  --cruor-gradient-radial-131-a8cd8b60: radial-gradient(circle at 24px 22px, var(--cruor-color-r150-g142-b146-a060), var(--cruor-color-transparent) 130px);
-  --cruor-gradient-radial-132-4c5c78f5: radial-gradient(circle at 50% 18%, var(--cruor-color-blood-bright-a260), var(--cruor-color-transparent) 30rem);
-  --cruor-gradient-radial-133-da8e421f: radial-gradient(circle at 50% 18%, var(--cruor-color-blood-glow-a180), var(--cruor-color-transparent) 22rem);
-  --cruor-gradient-radial-134-20afbf1f: radial-gradient(circle at 50% 24%, var(--cruor-color-blood-glow-a160), var(--cruor-color-transparent) 68%);
-  --cruor-gradient-radial-135-65f9021f: radial-gradient(circle at 50% 45%, var(--cruor-color-blood-bright-a340), var(--cruor-color-transparent) 68%);
-  --cruor-gradient-radial-136-7dccbf2a: radial-gradient(circle at 50% 84%, var(--cruor-color-blood-strong-a220), var(--cruor-color-transparent) 20rem);
-  --cruor-gradient-radial-137-0a5a4dcd: radial-gradient(circle at 84% 14%, var(--cruor-color-rose-a120), var(--cruor-color-transparent) 10rem);
-  --cruor-gradient-radial-138-c77e878e: radial-gradient(circle at 86% 18%, var(--cruor-color-r91-g20-b24-a120), var(--cruor-color-transparent) 28rem);
-  --cruor-gradient-radial-218-978d4e82: radial-gradient(circle at 0% 0%, var(--cruor-color-blood-bright-a120), var(--cruor-color-transparent) 18rem);
-  --cruor-gradient-radial-219-20501210: radial-gradient(circle at 0% 0%, var(--cruor-color-blood-glow-a140), var(--cruor-color-transparent) 14rem);
-  --cruor-gradient-radial-220-0937fc0f: radial-gradient(circle at 10% 0%, var(--cruor-color-blood-glow-a110), var(--cruor-color-transparent) 9rem);
-  --cruor-gradient-radial-221-c916ee33: radial-gradient(circle at 10% 0%, var(--cruor-color-rose-a140), var(--cruor-color-transparent) 42%);
-  --cruor-gradient-radial-222-f31c15d2: radial-gradient(circle at 12% -8%, var(--cruor-color-blood-bright-a200), var(--cruor-color-transparent) 34%);
-  --cruor-gradient-radial-223-dfaae82c: radial-gradient(circle at 12% 0%, var(--cruor-color-blood-bright-a180), var(--cruor-color-transparent) 18rem);
-  --cruor-gradient-radial-224-4c7e707e: radial-gradient(circle at 12% 0%, var(--cruor-color-blood-bright-a160), var(--cruor-color-transparent) 42%);
-  --cruor-gradient-radial-225-870fca15: radial-gradient(circle at 12% 0%, var(--cruor-color-blood-bright-a180), var(--cruor-color-transparent) 34%);
-  --cruor-gradient-radial-226-47db204b: radial-gradient(circle at 12% 0%, var(--cruor-color-blood-bright-a180), var(--cruor-color-transparent) 42%);
-  --cruor-gradient-radial-227-5576a880: radial-gradient(circle at 12% 0%, var(--cruor-color-blood-bright-a280), var(--cruor-color-transparent) 38%);
-  --cruor-gradient-radial-228-a687306d: radial-gradient(circle at 12% 0%, var(--cruor-color-blood-glow-a180), var(--cruor-color-transparent) 16rem);
-  --cruor-gradient-radial-229-d7e3eae6: radial-gradient(circle at 12% 0%, var(--cruor-color-blood-glow-a180), var(--cruor-color-transparent) 42%);
-  --cruor-gradient-radial-230-4b421825: radial-gradient(circle at 12% 0%, var(--cruor-color-blood-strong-a240), var(--cruor-color-transparent) 32rem);
-  --cruor-gradient-radial-231-78348717: radial-gradient(circle at 14% 0%, var(--cruor-color-blood-bright-a200), var(--cruor-color-transparent) 42%);
-  --cruor-gradient-radial-232-b26d1513: radial-gradient(circle at 14% 0%, var(--cruor-color-blood-glow-a140), var(--cruor-color-transparent) 42%);
-  --cruor-gradient-radial-233-5992dede: radial-gradient(circle at 14% 0%, var(--cruor-color-blood-glow-a160), var(--cruor-color-transparent) 24rem);
-  --cruor-gradient-radial-234-37bbf480: radial-gradient(circle at 16% 0%, var(--cruor-color-blood-bright-a120), var(--cruor-color-transparent) 34%);
-  --cruor-gradient-radial-235-073737b4: radial-gradient(circle at 16% 0%, var(--cruor-color-blood-glow-a120), var(--cruor-color-transparent) 11rem);
-  --cruor-gradient-radial-236-38a87dd1: radial-gradient(circle at 16% 76%, var(--cruor-color-blood-strong-a180), var(--cruor-color-transparent) 28rem);
-  --cruor-gradient-radial-237-09710719: radial-gradient(circle at 18% 0%, var(--cruor-color-blood-bright-a340), var(--cruor-color-transparent) 30rem);
-  --cruor-gradient-radial-238-c690c792: radial-gradient(circle at 18% 0%, var(--cruor-color-blood-glow-a200), var(--cruor-color-transparent) 9rem);
-  --cruor-gradient-radial-239-83344c81: radial-gradient(circle at 18% 0%, var(--cruor-color-blood-glow-a220), var(--cruor-color-transparent) 12rem);
-  --cruor-gradient-radial-240-f49773b2: radial-gradient(circle at 18% 0%, var(--cruor-color-blood-glow-a260), var(--cruor-color-transparent) 9rem);
-  --cruor-gradient-radial-241-3f8c84dc: radial-gradient(circle at 18% 72%, var(--cruor-color-blood-strong-a200), var(--cruor-color-transparent) 30rem);
-  --cruor-gradient-radial-242-44f2454b: radial-gradient(circle at 24px 22px, var(--cruor-color-blood-bright-a080), var(--cruor-color-transparent) 130px);
-  --cruor-gradient-radial-243-bc28c973: radial-gradient(circle at 34% 0%, var(--cruor-color-blood-glow-a200), var(--cruor-color-transparent) 18rem);
-  --cruor-gradient-radial-244-a137a977: radial-gradient(circle at 50% 0%, var(--cruor-color-blood-bright-a120), var(--cruor-color-transparent) 60%);
-  --cruor-gradient-radial-245-c554cd44: radial-gradient(circle at 50% 12%, var(--cruor-color-blood-glow-a180), var(--cruor-color-transparent) 34rem);
-  --cruor-gradient-radial-246-4c8845b1: radial-gradient(circle at 50% 18%, var(--cruor-color-blood-glow-a120), var(--cruor-color-transparent) 16rem);
-  --cruor-gradient-radial-247-17bdc499: radial-gradient(circle at 50% 18%, var(--cruor-color-blood-glow-a180), var(--cruor-color-transparent) 34rem);
-  --cruor-gradient-radial-248-71a2744a: radial-gradient(circle at 50% 18%, var(--cruor-color-rose-a140), var(--cruor-color-transparent) 30%);
-  --cruor-gradient-radial-249-09db86d6: radial-gradient(circle at 50% 20%, var(--cruor-color-blood-bright-a240), var(--cruor-color-transparent) 36%);
-  --cruor-gradient-radial-250-78c8cd74: radial-gradient(circle at 50% 20%, var(--cruor-color-blood-bright-a360), var(--cruor-color-transparent) 44%);
-  --cruor-gradient-radial-251-f75b2bcc: radial-gradient(circle at 50% 24%, var(--cruor-color-blood-bright-a220), var(--cruor-color-transparent) 28rem);
-  --cruor-gradient-radial-252-aa0542d8: radial-gradient(circle at 50% 24%, var(--cruor-color-blood-glow-a220), var(--cruor-color-transparent) 68%);
-  --cruor-gradient-radial-253-0a832415: radial-gradient(circle at 50% 26%, var(--cruor-color-blood-glow-a130), var(--cruor-color-transparent) 20rem);
-  --cruor-gradient-radial-254-41a0625a: radial-gradient(circle at 50% 28%, var(--cruor-color-blood-glow-a180), var(--cruor-color-transparent) 72%);
-  --cruor-gradient-radial-255-cb1a837f: radial-gradient(circle at 50% 36%, var(--cruor-color-rose-a120), var(--cruor-color-transparent) 18%);
-  --cruor-gradient-radial-256-77da7619: radial-gradient(circle at 50% 50%, var(--cruor-color-black), var(--cruor-color-transparent) 72%);
-  --cruor-gradient-radial-257-a1833ae7: radial-gradient(circle at 50% 62%, var(--cruor-color-blood-bright-a340), var(--cruor-color-transparent) 46%);
-  --cruor-gradient-radial-258-ea7258ab: radial-gradient(circle at 50% 68%, var(--cruor-color-blood-glow-a220), var(--cruor-color-transparent) 58%);
-  --cruor-gradient-radial-259-0f8e2504: radial-gradient(circle at 50% 86%, var(--cruor-color-blood-strong-a180), var(--cruor-color-transparent) 22rem);
-  --cruor-gradient-radial-260-ee55c2c3: radial-gradient(circle at 78% 18%, var(--cruor-color-blood-glow-a120), var(--cruor-color-transparent) 36%);
-  --cruor-gradient-radial-261-df58552f: radial-gradient(circle at 8% 0%, var(--cruor-color-blood-glow-a200), var(--cruor-color-transparent) 72%);
-  --cruor-gradient-radial-262-81e4e47e: radial-gradient(circle at 82% 14%, var(--cruor-color-blood-bright-a160), var(--cruor-color-transparent) 30rem);
-  --cruor-gradient-radial-263-7b647368: radial-gradient(circle at 92% 2%, var(--cruor-color-blood-strong-a130), var(--cruor-color-transparent) 32%);
-  --cruor-gradient-radial-264-01b17bc5: radial-gradient(circle at 92% 4%, var(--cruor-color-blood-strong-a080), var(--cruor-color-transparent) 32%);
-  --cruor-gradient-radial-265-8a95accf: radial-gradient(circle at center, var(--cruor-color-blood-bright-a120), var(--cruor-color-transparent) 70%);
-  --cruor-gradient-radial-266-9d3fe8c7: radial-gradient(circle at top, var(--cruor-color-blood-bright-a100), var(--cruor-color-transparent) 42%);
-  --cruor-gradient-radial-267-e22961ef: radial-gradient(circle at top, var(--cruor-color-blood-bright-a100), var(--cruor-color-transparent) 44%);
-  --cruor-gradient-repeating-linear-268-bfba7128: repeating-linear-gradient(180deg, var(--cruor-color-milk-a420) 0 1px, var(--cruor-color-blood-glow-a100) 1px 2px, var(--cruor-color-transparent) 2px 18px);
-  --cruor-gradient-repeating-linear-269-573cc485: repeating-linear-gradient(90deg, var(--cruor-color-milk-a500) 0 1px, var(--cruor-color-blood-glow-a120) 1px 2px, var(--cruor-color-transparent) 2px 18px);
+  --cruor-gradient-conic-070-e3c77f3d: conic-gradient(
+    from var(--empty-slot-border-angle, 0deg),
+    var(--cruor-color-blood-bright-a200) 0deg,
+    var(--cruor-color-blood-bright-a200) 222deg,
+    var(--cruor-color-r222-g146-b159-a400) 246deg,
+    var(--cruor-color-r174-g50-b68-a620) 263deg,
+    var(--cruor-color-r222-g146-b159-a320) 281deg,
+    var(--cruor-color-blood-bright-a200) 308deg,
+    var(--cruor-color-blood-bright-a200) 360deg
+  );
+  --cruor-gradient-conic-071-b9a9bd8b: conic-gradient(
+    var(--cruor-color-blood-glow-a780) var(--progress),
+    var(--cruor-color-black-a320) 0
+  );
+  --cruor-gradient-linear-002-09673f8e: linear-gradient(
+    180deg,
+    var(--cruor-color-r30-g7-b11-a920),
+    var(--cruor-color-r9-g5-b7-a900)
+  );
+  --cruor-gradient-linear-003-33222bdf: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a055),
+    var(--cruor-color-transparent) 72%
+  );
+  --cruor-gradient-linear-005-2d835da9: linear-gradient(
+    180deg,
+    var(--cruor-color-r170-g48-b66-a760),
+    var(--cruor-color-r70-g8-b20-a780)
+  );
+  --cruor-gradient-linear-006-1c0ba33e: linear-gradient(
+    180deg,
+    var(--cruor-color-r30-g7-b11-a940),
+    var(--cruor-color-r10-g5-b7-a880)
+  );
+  --cruor-gradient-linear-008-6f99f992: linear-gradient(
+    180deg,
+    var(--cruor-color-r198-g68-b84-a860),
+    var(--cruor-color-blood-strong-a900)
+  );
+  --cruor-gradient-linear-009-2802abdc: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a070),
+    var(--cruor-color-transparent) 68%
+  );
+  --cruor-gradient-linear-011-25d82b21: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a080),
+    var(--cruor-color-transparent) 64%
+  );
+  --cruor-gradient-linear-012-c39edb21: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a045),
+    var(--cruor-color-transparent) 70%
+  );
+  --cruor-gradient-linear-013-deebd0e2: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a050),
+    var(--cruor-color-transparent) 9rem
+  );
+  --cruor-gradient-linear-014-13668961: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-glow-a720),
+    var(--cruor-color-blood-strong-a720)
+  );
+  --cruor-gradient-linear-015-d1025658: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a030),
+    var(--cruor-color-transparent) 70%
+  );
+  --cruor-gradient-linear-017-c1cb33c1: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a040),
+    var(--cruor-color-transparent) 64%
+  );
+  --cruor-gradient-linear-018-ba88b005: linear-gradient(
+    180deg,
+    var(--cruor-color-r224-g82-b101-a860),
+    var(--cruor-color-blood-bright-a820)
+  );
+  --cruor-gradient-linear-019-fbb0759c: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a032),
+    var(--cruor-color-transparent) 68%
+  );
+  --cruor-gradient-linear-020-984b6edd: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a045),
+    var(--cruor-color-transparent) 12rem
+  );
+  --cruor-gradient-linear-022-79a987a1: linear-gradient(
+    180deg,
+    var(--cruor-color-white-a022) 1px,
+    var(--cruor-color-transparent) 1px
+  );
+  --cruor-gradient-linear-023-5d537681: linear-gradient(
+    90deg,
+    var(--cruor-color-white-a028) 1px,
+    var(--cruor-color-transparent) 1px
+  );
+  --cruor-gradient-linear-024-0332568e: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a045),
+    var(--cruor-color-transparent) 48%
+  );
+  --cruor-gradient-linear-025-2ead26dd: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a540),
+    var(--cruor-color-r28-g5-b9-a960)
+  );
+  --cruor-gradient-linear-026-1ad4f65f: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a025),
+    var(--cruor-color-transparent)
+  );
+  --cruor-gradient-linear-028-9f35eafb: linear-gradient(
+    180deg,
+    var(--cruor-color-r12-g6-b8-a900),
+    var(--cruor-color-r5-g4-b5-a820)
+  );
+  --cruor-gradient-linear-029-a37c5252: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a035),
+    var(--cruor-color-transparent) 160px
+  );
+  --cruor-gradient-linear-030-454f26b3: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a035),
+    var(--cruor-color-transparent) 70%
+  );
+  --cruor-gradient-linear-031-12bc71a1: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a035),
+    var(--cruor-color-transparent)
+  );
+  --cruor-gradient-linear-032-ef2ac9cc: linear-gradient(
+    90deg,
+    var(--cruor-color-transparent),
+    var(--cruor-color-blood-glow-a720),
+    var(--cruor-color-transparent)
+  );
+  --cruor-gradient-linear-036-c4870607: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a240),
+    var(--cruor-color-surface-soft-a640)
+  );
+  --cruor-gradient-linear-037-28ffd373: linear-gradient(
+    180deg,
+    var(--cruor-color-r18-g12-b14-a990),
+    var(--cruor-color-r7-g5-b6-a980)
+  );
+  --cruor-gradient-linear-038-459fda6b: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a026),
+    var(--cruor-color-black-a200)
+  );
+  --cruor-gradient-linear-039-556dffa7: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a055),
+    var(--cruor-color-r8-g5-b6-a900)
+  );
+  --cruor-gradient-linear-040-d74d092e: linear-gradient(
+    90deg,
+    var(--cruor-color-blood-a240),
+    var(--cruor-color-transparent) 52%
+  );
+  --cruor-gradient-linear-051-81c43428: linear-gradient(
+    135deg,
+    var(--cruor-color-blood-a960) 0%,
+    var(--cruor-color-r18-g1-b5-a920) 34%,
+    var(--cruor-color-black-a980) 74%,
+    var(--cruor-color-black) 100%
+  );
+  --cruor-gradient-linear-052-97c6692c: linear-gradient(
+    180deg,
+    var(--cruor-color-black-a020),
+    var(--cruor-color-black-a340)
+  );
+  --cruor-gradient-linear-053-3098d334: linear-gradient(
+    180deg,
+    var(--cruor-color-r10-g5-b7-a920),
+    var(--cruor-color-r10-g5-b7-a740) 72%,
+    var(--cruor-color-r10-g5-b7-a000)
+  );
+  --cruor-gradient-linear-054-2211c986: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a060),
+    var(--cruor-color-transparent) 64%
+  );
+  --cruor-gradient-linear-055-e92225c8: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a460),
+    var(--cruor-color-r20-g5-b8-a900)
+  );
+  --cruor-gradient-linear-056-9da5c296: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a540),
+    var(--cruor-color-r28-g5-b9-a900)
+  );
+  --cruor-gradient-linear-057-7894e977: linear-gradient(
+    180deg,
+    var(--cruor-color-r18-g5-b8-a985),
+    var(--cruor-color-r8-g5-b6-a960)
+  );
+  --cruor-gradient-linear-058-9369db17: linear-gradient(
+    180deg,
+    var(--cruor-color-r22-g6-b9-a920),
+    var(--cruor-color-r8-g5-b6-a860)
+  );
+  --cruor-gradient-linear-059-8e6bc32f: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a018),
+    var(--cruor-color-transparent) 18rem
+  );
+  --cruor-gradient-linear-060-e275339f: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a026),
+    var(--cruor-color-transparent) 14rem
+  );
+  --cruor-gradient-linear-061-19d3fe75: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a035),
+    var(--cruor-color-black-a180)
+  );
+  --cruor-gradient-linear-062-37518de5: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a035),
+    var(--cruor-color-transparent) 9rem
+  );
+  --cruor-gradient-linear-063-940bd872: linear-gradient(
+    180deg,
+    var(--cruor-color-white-a012) 1px,
+    var(--cruor-color-transparent) 1px
+  );
+  --cruor-gradient-linear-064-45f69597: linear-gradient(
+    90deg,
+    var(--cruor-color-blood-bright-a160),
+    var(--cruor-color-transparent) 66%
+  );
+  --cruor-gradient-linear-065-00d91395: linear-gradient(
+    90deg,
+    var(--cruor-color-white-a018) 1px,
+    var(--cruor-color-transparent) 1px
+  );
+  --cruor-gradient-linear-072-3663dc3d: linear-gradient(
+    135deg,
+    var(--cruor-color-hex-f4e8cc) 0%,
+    var(--cruor-color-hex-ead6aa) 54%,
+    var(--cruor-color-hex-dec293) 100%
+  );
+  --cruor-gradient-linear-073-b0809407: linear-gradient(
+    135deg,
+    var(--cruor-color-r13-g10-b12-a980),
+    var(--cruor-color-r7-g5-b6-a940)
+  );
+  --cruor-gradient-linear-074-414a4d78: linear-gradient(
+    135deg,
+    var(--cruor-color-r42-g39-b41-a140),
+    var(--cruor-color-transparent) 70%
+  );
+  --cruor-gradient-linear-075-39a51d50: linear-gradient(
+    135deg,
+    var(--cruor-color-blood-a960),
+    var(--cruor-color-black-a980)
+  );
+  --cruor-gradient-linear-076-6c168a20: linear-gradient(
+    135deg,
+    var(--studio-success-soft),
+    var(--cruor-color-black-a180)
+  );
+  --cruor-gradient-linear-077-e311a6df: linear-gradient(
+    180deg,
+    var(--cruor-color-black),
+    var(--cruor-color-transparent) 92%
+  );
+  --cruor-gradient-linear-078-e313bc1b: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a070),
+    var(--cruor-color-transparent) 70%
+  );
+  --cruor-gradient-linear-079-18ee8d35: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a200),
+    var(--cruor-color-transparent) 72%
+  );
+  --cruor-gradient-linear-080-191c9c00: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a280),
+    var(--cruor-color-surface-soft-a720)
+  );
+  --cruor-gradient-linear-081-54b771f0: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a900),
+    var(--cruor-color-blood-a950)
+  );
+  --cruor-gradient-linear-082-dd90e61f: linear-gradient(
+    180deg,
+    var(--cruor-color-good-a035),
+    var(--cruor-color-transparent) 12rem
+  );
+  --cruor-gradient-linear-083-82c6da0f: linear-gradient(
+    180deg,
+    var(--cruor-color-good-a080),
+    var(--cruor-color-transparent)
+  );
+  --cruor-gradient-linear-084-a57fb44d: linear-gradient(
+    180deg,
+    var(--cruor-color-good-a160),
+    var(--cruor-color-r10-g12-b12-a940)
+  );
+  --cruor-gradient-linear-085-9406f826: linear-gradient(
+    180deg,
+    var(--cruor-color-r180-g174-b176-a045),
+    var(--cruor-color-transparent) 62%
+  );
+  --cruor-gradient-linear-086-4c860aaa: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-glow-a160),
+    var(--cruor-color-transparent) 76%
+  );
+  --cruor-gradient-linear-087-77ac247e: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-glow-a240),
+    var(--cruor-color-transparent) 72%
+  );
+  --cruor-gradient-linear-088-bf911062: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-glow-a950),
+    var(--cruor-color-blood-strong-a980)
+  );
+  --cruor-gradient-linear-089-5122796f: linear-gradient(
+    180deg,
+    var(--cruor-color-r2-g2-b3-a985),
+    var(--cruor-color-r10-g4-b6-a960)
+  );
+  --cruor-gradient-linear-090-f965cd31: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a040),
+    var(--cruor-color-transparent) 62%
+  );
+  --cruor-gradient-linear-091-b7ddacfd: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a026),
+    var(--cruor-color-transparent) 70%
+  );
+  --cruor-gradient-linear-092-5039d6d3: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a028),
+    var(--cruor-color-transparent) 10rem
+  );
+  --cruor-gradient-linear-093-2e8c671d: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a030),
+    var(--cruor-color-black-a180)
+  );
+  --cruor-gradient-linear-094-26e867cb: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a030),
+    var(--cruor-color-transparent) 10rem
+  );
+  --cruor-gradient-linear-095-1213124c: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a032),
+    var(--cruor-color-black-a180)
+  );
+  --cruor-gradient-linear-096-77144794: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a034),
+    var(--cruor-color-transparent) 60%
+  );
+  --cruor-gradient-linear-097-26db0bfc: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a038),
+    var(--cruor-color-transparent) 8rem
+  );
+  --cruor-gradient-linear-098-7469c6ff: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a040),
+    var(--cruor-color-transparent)
+  );
+  --cruor-gradient-linear-099-fcbfebbd: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a045),
+    var(--cruor-color-transparent) 10rem
+  );
+  --cruor-gradient-linear-100-31b68659: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a050),
+    var(--cruor-color-transparent) 58%
+  );
+  --cruor-gradient-linear-101-60a8a5a5: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a052),
+    var(--cruor-color-transparent) 68%
+  );
+  --cruor-gradient-linear-102-b2158888: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a070),
+    var(--cruor-color-transparent) 8rem
+  );
+  --cruor-gradient-linear-103-4f46f041: linear-gradient(
+    180deg,
+    var(--cruor-color-r255-g250-b239-a760),
+    var(--cruor-color-r230-g205-b162-a700)
+  );
+  --cruor-gradient-linear-104-ef3bd0c7: linear-gradient(
+    180deg,
+    var(--cruor-color-white-a035) 1px,
+    var(--cruor-color-transparent) 1px
+  );
+  --cruor-gradient-linear-105-9a47a1b4: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-a200),
+    var(--cruor-color-transparent) 76%
+  );
+  --cruor-gradient-linear-106-9419e658: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-a220),
+    var(--cruor-color-transparent) 7rem
+  );
+  --cruor-gradient-linear-107-9e0d4ab7: linear-gradient(
+    180deg,
+    var(--cruor-color-r6-g5-b6-a980),
+    var(--cruor-color-r4-g3-b4-a960)
+  );
+  --cruor-gradient-linear-108-092c83a2: linear-gradient(
+    90deg,
+    var(--cruor-color-blood-bright-a900),
+    var(--cruor-color-rose-a720)
+  );
+  --cruor-gradient-linear-109-dfb67e17: linear-gradient(
+    90deg,
+    var(--cruor-color-good-a070),
+    var(--cruor-color-transparent) 70%
+  );
+  --cruor-gradient-linear-110-77754975: linear-gradient(
+    90deg,
+    var(--cruor-color-good-a720),
+    var(--cruor-color-blood-glow-a820)
+  );
+  --cruor-gradient-linear-111-06d54cf8: linear-gradient(
+    90deg,
+    var(--cruor-color-blood-glow-a950),
+    var(--cruor-color-rose-a760)
+  );
+  --cruor-gradient-linear-112-68a38d8c: linear-gradient(
+    90deg,
+    var(--cruor-color-white-a045) 1px,
+    var(--cruor-color-transparent) 1px
+  );
+  --cruor-gradient-linear-113-6f59454c: linear-gradient(
+    90deg,
+    var(--cruor-color-blood-strong-a180),
+    var(--cruor-color-transparent) 64%
+  );
+  --cruor-gradient-linear-114-da70a976: linear-gradient(
+    90deg,
+    var(--cruor-color-blood-strong-a840),
+    var(--cruor-color-blood-glow-a780)
+  );
+  --cruor-gradient-linear-115-7b4295c6: linear-gradient(
+    90deg,
+    var(--cruor-color-blood-strong-a860),
+    var(--cruor-color-blood-glow-a700)
+  );
+  --cruor-gradient-linear-116-9e700692: linear-gradient(
+    90deg,
+    var(--cruor-color-blood-strong-a900),
+    var(--cruor-color-blood-glow-a720)
+  );
+  --cruor-gradient-linear-117-8cc0f9d4: linear-gradient(
+    90deg,
+    var(--cruor-color-blood-strong-a920),
+    var(--cruor-color-blood-glow-a760)
+  );
+  --cruor-gradient-linear-118-d4915879: linear-gradient(
+    90deg,
+    var(--cruor-color-transparent),
+    var(--cruor-color-r208-g162-b170-a280),
+    var(--cruor-color-transparent)
+  );
+  --cruor-gradient-linear-139-44facd54: linear-gradient(
+    135deg,
+    var(--cruor-color-blood-bright-a100),
+    var(--cruor-color-black-a080) 48%,
+    var(--cruor-color-black-a200)
+  );
+  --cruor-gradient-linear-140-6d487b8b: linear-gradient(
+    135deg,
+    var(--cruor-color-milk-a034),
+    var(--cruor-color-transparent) 34%
+  );
+  --cruor-gradient-linear-141-2b1915cc: linear-gradient(
+    135deg,
+    var(--cruor-color-milk-a040),
+    var(--cruor-color-transparent) 42%
+  );
+  --cruor-gradient-linear-142-f956a2f0: linear-gradient(
+    135deg,
+    var(--cruor-color-blood-a240),
+    var(--cruor-color-transparent) 70%
+  );
+  --cruor-gradient-linear-143-846d5af5: linear-gradient(
+    135deg,
+    var(--cruor-color-blood-a260),
+    var(--cruor-color-black-a040) 48%,
+    var(--cruor-color-black-a140)
+  );
+  --cruor-gradient-linear-144-fc78ef02: linear-gradient(
+    135deg,
+    var(--cruor-color-blood-a920) 0%,
+    var(--cruor-color-r18-g1-b5-a900) 34%,
+    var(--cruor-color-black-a980) 74%,
+    var(--cruor-color-black) 100%
+  );
+  --cruor-gradient-linear-145-00f6af39: linear-gradient(
+    135deg,
+    var(--cruor-color-transparent) 0 46%,
+    var(--cruor-color-r208-g162-b170-a080) 46% 54%,
+    var(--cruor-color-transparent) 54% 100%
+  );
+  --cruor-gradient-linear-146-6ebb467d: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-glow-a000) 0%,
+    var(--cruor-color-blood-glow-a050) 10%,
+    var(--cruor-color-rose-a160) 24%,
+    var(--cruor-color-milk-a420) 38%,
+    var(--cruor-color-r255-g248-b250-a780) 50%,
+    var(--cruor-color-milk-a420) 62%,
+    var(--cruor-color-rose-a160) 76%,
+    var(--cruor-color-blood-glow-a050) 90%,
+    var(--cruor-color-blood-glow-a000) 100%
+  );
+  --cruor-gradient-linear-147-e08f093b: linear-gradient(
+    180deg,
+    var(--cruor-color-black-a020),
+    var(--cruor-color-black-a580)
+  );
+  --cruor-gradient-linear-148-c4bbe015: linear-gradient(
+    180deg,
+    var(--cruor-color-r10-g5-b7-a980),
+    var(--cruor-color-r5-g4-b5-a960)
+  );
+  --cruor-gradient-linear-149-7bd7b318: linear-gradient(
+    180deg,
+    var(--cruor-color-r12-g9-b10-a980),
+    var(--cruor-color-surface-a980)
+  );
+  --cruor-gradient-linear-150-348bda76: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a140),
+    var(--cruor-color-transparent) 68%
+  );
+  --cruor-gradient-linear-151-18366710: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a045),
+    var(--cruor-color-transparent)
+  );
+  --cruor-gradient-linear-152-14e15c5e: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a050),
+    var(--cruor-color-transparent) 62%
+  );
+  --cruor-gradient-linear-153-f6e2064e: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a055),
+    var(--cruor-color-transparent)
+  );
+  --cruor-gradient-linear-154-34fe6b84: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a080),
+    var(--cruor-color-transparent) 68%
+  );
+  --cruor-gradient-linear-155-aa3bc08c: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a090),
+    var(--cruor-color-black-a180) 62%
+  );
+  --cruor-gradient-linear-156-5a9dd1db: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a140),
+    var(--cruor-color-black-a160) 58%
+  );
+  --cruor-gradient-linear-157-94ddb68f: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a160),
+    var(--cruor-color-black-a180) 58%
+  );
+  --cruor-gradient-linear-158-faff4523: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a180),
+    var(--cruor-color-black-a240)
+  );
+  --cruor-gradient-linear-159-cbc8ae86: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a220),
+    var(--cruor-color-black-a160) 62%
+  );
+  --cruor-gradient-linear-160-b8299e9c: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a220),
+    var(--cruor-color-surface-soft-a620)
+  );
+  --cruor-gradient-linear-161-18758606: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a320),
+    var(--cruor-color-surface-soft-a680)
+  );
+  --cruor-gradient-linear-162-88b5a70e: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-bright-a580),
+    var(--cruor-color-surface-soft-a1000)
+  );
+  --cruor-gradient-linear-163-3f5e7ee3: linear-gradient(
+    180deg,
+    var(--cruor-color-r14-g5-b8-a960),
+    var(--cruor-color-r5-g4-b5-a900)
+  );
+  --cruor-gradient-linear-164-8054613d: linear-gradient(
+    180deg,
+    var(--cruor-color-good-a140),
+    var(--cruor-color-r10-g12-b12-a940)
+  );
+  --cruor-gradient-linear-165-016c880b: linear-gradient(
+    180deg,
+    var(--cruor-color-good-a160),
+    var(--cruor-color-r10-g12-b12-a940)
+  );
+  --cruor-gradient-linear-166-d42a1dfb: linear-gradient(
+    180deg,
+    var(--cruor-color-good-a180),
+    var(--cruor-color-r12-g16-b15-a920)
+  );
+  --cruor-gradient-linear-167-3d20bfc1: linear-gradient(
+    180deg,
+    var(--cruor-color-good-a180),
+    var(--cruor-color-r8-g12-b11-a960)
+  );
+  --cruor-gradient-linear-168-68f86c33: linear-gradient(
+    180deg,
+    var(--cruor-color-r18-g7-b9-a880),
+    var(--cruor-color-r7-g4-b5-a820)
+  );
+  --cruor-gradient-linear-169-bacbf071: linear-gradient(
+    180deg,
+    var(--cruor-color-rose-a000),
+    var(--cruor-color-milk-a980) 42%,
+    var(--cruor-color-white) 50%,
+    var(--cruor-color-milk-a980) 58%,
+    var(--cruor-color-rose-a000)
+  );
+  --cruor-gradient-linear-170-f87e6acf: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a055),
+    var(--cruor-color-transparent) 72%
+  );
+  --cruor-gradient-linear-171-3149f474: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a012),
+    var(--cruor-color-transparent) 13rem
+  );
+  --cruor-gradient-linear-172-b8110c14: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a018),
+    var(--cruor-color-transparent) 15rem
+  );
+  --cruor-gradient-linear-173-9f5b0f05: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a024) 1px,
+    var(--cruor-color-transparent) 1px
+  );
+  --cruor-gradient-linear-174-41eae6a7: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a024),
+    var(--cruor-color-transparent) 7rem
+  );
+  --cruor-gradient-linear-175-dbcf7905: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a025),
+    var(--cruor-color-transparent) 70%
+  );
+  --cruor-gradient-linear-176-f71f8049: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a026),
+    var(--cruor-color-transparent) 16rem
+  );
+  --cruor-gradient-linear-177-61b81df2: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a028),
+    var(--cruor-color-transparent) 160px
+  );
+  --cruor-gradient-linear-178-b4c96049: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a030),
+    var(--cruor-color-black-a120) 58%
+  );
+  --cruor-gradient-linear-179-dd6f32cc: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a030),
+    var(--cruor-color-transparent) 62%
+  );
+  --cruor-gradient-linear-180-6c9dd1c2: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a030),
+    var(--cruor-color-transparent) 72%
+  );
+  --cruor-gradient-linear-181-94667f6b: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a032) 1px,
+    var(--cruor-color-transparent) 1px
+  );
+  --cruor-gradient-linear-182-e901e5e1: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a032),
+    var(--cruor-color-transparent) 12rem
+  );
+  --cruor-gradient-linear-183-7ea12ee4: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a034),
+    var(--cruor-color-transparent) 12rem
+  );
+  --cruor-gradient-linear-184-6e14bdc2: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a035),
+    var(--cruor-color-transparent) 58%
+  );
+  --cruor-gradient-linear-185-e698a6b5: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a035),
+    var(--cruor-color-transparent) 7rem
+  );
+  --cruor-gradient-linear-186-028d4a21: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a038),
+    var(--cruor-color-transparent) 10rem
+  );
+  --cruor-gradient-linear-187-01f1779b: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a040),
+    var(--cruor-color-black-a180)
+  );
+  --cruor-gradient-linear-188-b079ccaf: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a040),
+    var(--cruor-color-transparent) 70%
+  );
+  --cruor-gradient-linear-189-3f0ef895: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a045),
+    var(--cruor-color-black-a200)
+  );
+  --cruor-gradient-linear-190-9068d247: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a045),
+    var(--cruor-color-transparent) 15rem
+  );
+  --cruor-gradient-linear-191-64ae9c1c: linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a045),
+    var(--cruor-color-transparent) 68%
+  );
+  --cruor-gradient-linear-192-394792e7: linear-gradient(
+    180deg,
+    var(--cruor-color-white-a018) 1px,
+    var(--cruor-color-transparent) 1px
+  );
+  --cruor-gradient-linear-193-f2121c9d: linear-gradient(
+    180deg,
+    var(--cruor-color-r30-g7-b11-a880),
+    var(--cruor-color-r10-g5-b7-a820)
+  );
+  --cruor-gradient-linear-194-025bbc9f: linear-gradient(
+    180deg,
+    var(--cruor-color-r30-g7-b11-a940),
+    var(--cruor-color-r10-g5-b7-a900)
+  );
+  --cruor-gradient-linear-195-9041551e: linear-gradient(
+    180deg,
+    var(--cruor-color-r32-g10-b14-a780),
+    var(--cruor-color-r8-g5-b6-a880)
+  );
+  --cruor-gradient-linear-196-c7f65a74: linear-gradient(
+    180deg,
+    var(--cruor-color-r32-g18-b21-a560),
+    var(--cruor-color-black-a180) 62%
+  );
+  --cruor-gradient-linear-197-1936cd25: linear-gradient(
+    180deg,
+    var(--cruor-color-r7-g5-b6-a1000),
+    var(--cruor-color-r3-g3-b4-a1000)
+  );
+  --cruor-gradient-linear-198-7d9b772c: linear-gradient(
+    180deg,
+    var(--cruor-color-r74-g15-b26-a240),
+    var(--cruor-color-black-a200) 62%
+  );
+  --cruor-gradient-linear-199-c2b7262f: linear-gradient(
+    180deg,
+    var(--cruor-color-r76-g25-b32-a540),
+    var(--cruor-color-r28-g9-b13-a460)
+  );
+  --cruor-gradient-linear-200-ba867b8d: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-strong-a520),
+    var(--cruor-color-surface-soft-a1000)
+  );
+  --cruor-gradient-linear-201-9d442530: linear-gradient(
+    180deg,
+    var(--cruor-color-blood-strong-a920),
+    var(--cruor-color-r8-g5-b6-a980)
+  );
+  --cruor-gradient-linear-202-202e8d1d: linear-gradient(
+    180deg,
+    var(--cruor-color-transparent) 35%,
+    var(--cruor-color-black-a880)
+  );
+  --cruor-gradient-linear-203-feb70442: linear-gradient(
+    180deg,
+    var(--cruor-color-transparent) 42%,
+    var(--cruor-color-black-a280)
+  );
+  --cruor-gradient-linear-204-5851f085: linear-gradient(
+    180deg,
+    var(--panel-milk),
+    var(--cruor-color-transparent) 56%
+  );
+  --cruor-gradient-linear-205-2de003af: linear-gradient(
+    90deg,
+    var(--cruor-color-blood-bright-a080),
+    var(--cruor-color-blood-bright-a340),
+    var(--cruor-color-blood-bright-a080)
+  );
+  --cruor-gradient-linear-206-39d3cb60: linear-gradient(
+    90deg,
+    var(--cruor-color-blood-bright-a120),
+    var(--cruor-color-r208-g162-b170-a340),
+    var(--cruor-color-blood-bright-a120)
+  );
+  --cruor-gradient-linear-207-407ee320: linear-gradient(
+    90deg,
+    var(--cruor-color-blood-bright-a180),
+    var(--cruor-color-r208-g162-b170-a380),
+    var(--cruor-color-blood-bright-a180)
+  );
+  --cruor-gradient-linear-208-c4ff9ace: linear-gradient(
+    90deg,
+    var(--cruor-color-blood-bright-a240),
+    var(--cruor-color-transparent) 66%
+  );
+  --cruor-gradient-linear-209-319ba0aa: linear-gradient(
+    90deg,
+    var(--cruor-color-blood-bright-a840),
+    var(--cruor-color-rose-a580)
+  );
+  --cruor-gradient-linear-210-07eada53: linear-gradient(
+    90deg,
+    var(--cruor-color-good-a680),
+    var(--cruor-color-blood-glow-a780)
+  );
+  --cruor-gradient-linear-211-15591d76: linear-gradient(
+    90deg,
+    var(--cruor-color-good-a720),
+    var(--cruor-color-blood-glow-a820)
+  );
+  --cruor-gradient-linear-212-814b1c54: linear-gradient(
+    90deg,
+    var(--cruor-color-r208-g162-b170-a080),
+    var(--cruor-color-r208-g162-b170-a240),
+    var(--cruor-color-r208-g162-b170-a080)
+  );
+  --cruor-gradient-linear-213-fa647723: linear-gradient(
+    90deg,
+    var(--cruor-color-r232-g167-b69-a100),
+    var(--cruor-color-transparent) 72%
+  );
+  --cruor-gradient-linear-214-aa28d504: linear-gradient(
+    90deg,
+    var(--cruor-color-milk-a034) 1px,
+    var(--cruor-color-transparent) 1px
+  );
+  --cruor-gradient-linear-215-59e013b7: linear-gradient(
+    90deg,
+    var(--cruor-color-milk-a040) 1px,
+    var(--cruor-color-transparent) 1px
+  );
+  --cruor-gradient-linear-216-41f72fb3: linear-gradient(
+    90deg,
+    var(--cruor-color-white-a026) 1px,
+    var(--cruor-color-transparent) 1px
+  );
+  --cruor-gradient-linear-217-87c6c251: linear-gradient(
+    90deg,
+    var(--cruor-color-transparent),
+    var(--cruor-color-blood-glow-a420),
+    var(--cruor-color-transparent)
+  );
+  --cruor-gradient-radial-001-2127711c: radial-gradient(
+    circle at 50% 18%,
+    var(--cruor-color-blood-glow-a180),
+    var(--cruor-color-transparent) 72%
+  );
+  --cruor-gradient-radial-004-b311c202: radial-gradient(
+    circle at 0% 0%,
+    var(--cruor-color-blood-bright-a160),
+    var(--cruor-color-transparent) 16rem
+  );
+  --cruor-gradient-radial-007-f9fedda9: radial-gradient(
+    circle at 50% 24%,
+    var(--cruor-color-blood-glow-a180),
+    var(--cruor-color-transparent) 68%
+  );
+  --cruor-gradient-radial-010-2b54c7d1: radial-gradient(
+    circle at 0% 0%,
+    var(--cruor-color-blood-glow-a160),
+    var(--cruor-color-transparent) 12rem
+  );
+  --cruor-gradient-radial-016-d749bd9c: radial-gradient(
+    circle at 50% 20%,
+    var(--cruor-color-blood-glow-a240),
+    var(--cruor-color-transparent) 62%
+  );
+  --cruor-gradient-radial-021-910b9ce8: radial-gradient(
+    circle at 0% 0%,
+    var(--cruor-color-blood-bright-a180),
+    var(--cruor-color-transparent) 18rem
+  );
+  --cruor-gradient-radial-027-87ef1a92: radial-gradient(
+    circle at 0% 0%,
+    var(--cruor-color-blood-bright-a120),
+    var(--cruor-color-transparent) 16rem
+  );
+  --cruor-gradient-radial-033-e7630799: radial-gradient(
+    circle at 0% 0%,
+    var(--cruor-color-blood-glow-a140),
+    var(--cruor-color-transparent) 10rem
+  );
+  --cruor-gradient-radial-034-45004f0b: radial-gradient(
+    circle at 18% 0%,
+    var(--cruor-color-blood-bright-a180),
+    var(--cruor-color-transparent) 36%
+  );
+  --cruor-gradient-radial-035-d7408e11: radial-gradient(
+    circle at 50% 36%,
+    var(--cruor-color-blood-strong-a280),
+    var(--cruor-color-transparent) 16rem
+  );
+  --cruor-gradient-radial-041-b86de5c8: radial-gradient(
+    circle at 0% 0%,
+    var(--cruor-color-blood-bright-a140),
+    var(--cruor-color-transparent) 16rem
+  );
+  --cruor-gradient-radial-042-8daaf455: radial-gradient(
+    circle at 0% 0%,
+    var(--cruor-color-blood-glow-a150),
+    var(--cruor-color-transparent) 11rem
+  );
+  --cruor-gradient-radial-043-da107eb1: radial-gradient(
+    circle at 18% 0%,
+    var(--cruor-color-blood-glow-a140),
+    var(--cruor-color-transparent) 26rem
+  );
+  --cruor-gradient-radial-044-30b4806e: radial-gradient(
+    circle at 20% 0%,
+    var(--cruor-color-blood-glow-a180),
+    var(--cruor-color-transparent) 14rem
+  );
+  --cruor-gradient-radial-045-cf3244f2: radial-gradient(
+    circle at 50% 10%,
+    var(--cruor-color-blood-glow-a180),
+    var(--cruor-color-transparent) 64%
+  );
+  --cruor-gradient-radial-046-8c126818: radial-gradient(
+    circle at 50% 24%,
+    var(--cruor-color-blood-glow-a200),
+    var(--cruor-color-transparent) 68%
+  );
+  --cruor-gradient-radial-047-4ac41150: radial-gradient(
+    circle at 50% 26%,
+    var(--cruor-color-blood-bright-a220),
+    var(--cruor-color-black-a960)
+  );
+  --cruor-gradient-radial-048-c75ad843: radial-gradient(
+    circle at 50% 50%,
+    var(--cruor-color-blood-glow-a200),
+    var(--cruor-color-blood-bright-a100) 36%,
+    var(--cruor-color-transparent) 74%
+  );
+  --cruor-gradient-radial-049-2bd5bf03: radial-gradient(
+    circle at 82% 100%,
+    var(--cruor-color-blood-strong-a200),
+    var(--cruor-color-transparent) 30rem
+  );
+  --cruor-gradient-radial-050-1c37bf3c: radial-gradient(
+    circle at 82% 18%,
+    var(--cruor-color-blood-strong-a220),
+    var(--cruor-color-transparent) 28rem
+  );
+  --cruor-gradient-radial-066-8391d276: radial-gradient(
+    circle at 18% 0%,
+    var(--cruor-color-blood-bright-a380),
+    var(--cruor-color-transparent) 30rem
+  );
+  --cruor-gradient-radial-067-6a0a6f16: radial-gradient(
+    circle at 50% 20%,
+    var(--cruor-color-blood-glow-a220),
+    var(--cruor-color-transparent) 62%
+  );
+  --cruor-gradient-radial-068-e609778e: radial-gradient(
+    circle at 50% 50%,
+    var(--cruor-color-blood-glow-a230),
+    var(--cruor-color-blood-bright-a120) 36%,
+    var(--cruor-color-transparent) 74%
+  );
+  --cruor-gradient-radial-069-ecbcc56b: radial-gradient(
+    circle at 54% 92%,
+    var(--cruor-color-blood-a340),
+    var(--cruor-color-transparent) 34rem
+  );
+  --cruor-gradient-radial-119-e7dbfec5: radial-gradient(
+    circle at 0% 0%,
+    var(--cruor-color-blood-bright-a160),
+    var(--cruor-color-transparent) 18rem
+  );
+  --cruor-gradient-radial-120-b510b862: radial-gradient(
+    circle at 0% 0%,
+    var(--cruor-color-blood-glow-a120),
+    var(--cruor-color-transparent) 18rem
+  );
+  --cruor-gradient-radial-121-98f9e585: radial-gradient(
+    circle at 0% 0%,
+    var(--cruor-color-blood-glow-a140),
+    var(--cruor-color-transparent) 8rem
+  );
+  --cruor-gradient-radial-122-0b6febf4: radial-gradient(
+    circle at 0% 0%,
+    var(--cruor-color-blood-glow-a200),
+    var(--cruor-color-transparent) 14rem
+  );
+  --cruor-gradient-radial-123-e737eaad: radial-gradient(
+    circle at 10% 0%,
+    var(--cruor-color-blood-bright-a080),
+    var(--cruor-color-transparent) 34%
+  );
+  --cruor-gradient-radial-124-edf5e737: radial-gradient(
+    circle at 12% 0%,
+    var(--cruor-color-blood-bright-a160),
+    var(--cruor-color-transparent) 18rem
+  );
+  --cruor-gradient-radial-125-85c2d6f0: radial-gradient(
+    circle at 12% 0%,
+    var(--cruor-color-r132-g72-b43-a260),
+    var(--cruor-color-transparent) 28rem
+  );
+  --cruor-gradient-radial-126-b620ddfb: radial-gradient(
+    circle at 12% 0%,
+    var(--cruor-color-blood-glow-a140),
+    var(--cruor-color-transparent) 15rem
+  );
+  --cruor-gradient-radial-127-35646a8f: radial-gradient(
+    circle at 12% 0%,
+    var(--cruor-color-blood-glow-a200),
+    var(--cruor-color-transparent) 42%
+  );
+  --cruor-gradient-radial-128-a105fb60: radial-gradient(
+    circle at 16% 0%,
+    var(--cruor-color-blood-glow-a220),
+    var(--cruor-color-transparent) 13rem
+  );
+  --cruor-gradient-radial-129-27e9a44d: radial-gradient(
+    circle at 18% 0%,
+    var(--cruor-color-blood-bright-a340),
+    var(--cruor-color-transparent) 38%
+  );
+  --cruor-gradient-radial-130-c05fc538: radial-gradient(
+    circle at 18% 0%,
+    var(--cruor-color-blood-glow-a080),
+    var(--cruor-color-transparent) 24rem
+  );
+  --cruor-gradient-radial-131-a8cd8b60: radial-gradient(
+    circle at 24px 22px,
+    var(--cruor-color-r150-g142-b146-a060),
+    var(--cruor-color-transparent) 130px
+  );
+  --cruor-gradient-radial-132-4c5c78f5: radial-gradient(
+    circle at 50% 18%,
+    var(--cruor-color-blood-bright-a260),
+    var(--cruor-color-transparent) 30rem
+  );
+  --cruor-gradient-radial-133-da8e421f: radial-gradient(
+    circle at 50% 18%,
+    var(--cruor-color-blood-glow-a180),
+    var(--cruor-color-transparent) 22rem
+  );
+  --cruor-gradient-radial-134-20afbf1f: radial-gradient(
+    circle at 50% 24%,
+    var(--cruor-color-blood-glow-a160),
+    var(--cruor-color-transparent) 68%
+  );
+  --cruor-gradient-radial-135-65f9021f: radial-gradient(
+    circle at 50% 45%,
+    var(--cruor-color-blood-bright-a340),
+    var(--cruor-color-transparent) 68%
+  );
+  --cruor-gradient-radial-136-7dccbf2a: radial-gradient(
+    circle at 50% 84%,
+    var(--cruor-color-blood-strong-a220),
+    var(--cruor-color-transparent) 20rem
+  );
+  --cruor-gradient-radial-137-0a5a4dcd: radial-gradient(
+    circle at 84% 14%,
+    var(--cruor-color-rose-a120),
+    var(--cruor-color-transparent) 10rem
+  );
+  --cruor-gradient-radial-138-c77e878e: radial-gradient(
+    circle at 86% 18%,
+    var(--cruor-color-r91-g20-b24-a120),
+    var(--cruor-color-transparent) 28rem
+  );
+  --cruor-gradient-radial-218-978d4e82: radial-gradient(
+    circle at 0% 0%,
+    var(--cruor-color-blood-bright-a120),
+    var(--cruor-color-transparent) 18rem
+  );
+  --cruor-gradient-radial-219-20501210: radial-gradient(
+    circle at 0% 0%,
+    var(--cruor-color-blood-glow-a140),
+    var(--cruor-color-transparent) 14rem
+  );
+  --cruor-gradient-radial-220-0937fc0f: radial-gradient(
+    circle at 10% 0%,
+    var(--cruor-color-blood-glow-a110),
+    var(--cruor-color-transparent) 9rem
+  );
+  --cruor-gradient-radial-221-c916ee33: radial-gradient(
+    circle at 10% 0%,
+    var(--cruor-color-rose-a140),
+    var(--cruor-color-transparent) 42%
+  );
+  --cruor-gradient-radial-222-f31c15d2: radial-gradient(
+    circle at 12% -8%,
+    var(--cruor-color-blood-bright-a200),
+    var(--cruor-color-transparent) 34%
+  );
+  --cruor-gradient-radial-223-dfaae82c: radial-gradient(
+    circle at 12% 0%,
+    var(--cruor-color-blood-bright-a180),
+    var(--cruor-color-transparent) 18rem
+  );
+  --cruor-gradient-radial-224-4c7e707e: radial-gradient(
+    circle at 12% 0%,
+    var(--cruor-color-blood-bright-a160),
+    var(--cruor-color-transparent) 42%
+  );
+  --cruor-gradient-radial-225-870fca15: radial-gradient(
+    circle at 12% 0%,
+    var(--cruor-color-blood-bright-a180),
+    var(--cruor-color-transparent) 34%
+  );
+  --cruor-gradient-radial-226-47db204b: radial-gradient(
+    circle at 12% 0%,
+    var(--cruor-color-blood-bright-a180),
+    var(--cruor-color-transparent) 42%
+  );
+  --cruor-gradient-radial-227-5576a880: radial-gradient(
+    circle at 12% 0%,
+    var(--cruor-color-blood-bright-a280),
+    var(--cruor-color-transparent) 38%
+  );
+  --cruor-gradient-radial-228-a687306d: radial-gradient(
+    circle at 12% 0%,
+    var(--cruor-color-blood-glow-a180),
+    var(--cruor-color-transparent) 16rem
+  );
+  --cruor-gradient-radial-229-d7e3eae6: radial-gradient(
+    circle at 12% 0%,
+    var(--cruor-color-blood-glow-a180),
+    var(--cruor-color-transparent) 42%
+  );
+  --cruor-gradient-radial-230-4b421825: radial-gradient(
+    circle at 12% 0%,
+    var(--cruor-color-blood-strong-a240),
+    var(--cruor-color-transparent) 32rem
+  );
+  --cruor-gradient-radial-231-78348717: radial-gradient(
+    circle at 14% 0%,
+    var(--cruor-color-blood-bright-a200),
+    var(--cruor-color-transparent) 42%
+  );
+  --cruor-gradient-radial-232-b26d1513: radial-gradient(
+    circle at 14% 0%,
+    var(--cruor-color-blood-glow-a140),
+    var(--cruor-color-transparent) 42%
+  );
+  --cruor-gradient-radial-233-5992dede: radial-gradient(
+    circle at 14% 0%,
+    var(--cruor-color-blood-glow-a160),
+    var(--cruor-color-transparent) 24rem
+  );
+  --cruor-gradient-radial-234-37bbf480: radial-gradient(
+    circle at 16% 0%,
+    var(--cruor-color-blood-bright-a120),
+    var(--cruor-color-transparent) 34%
+  );
+  --cruor-gradient-radial-235-073737b4: radial-gradient(
+    circle at 16% 0%,
+    var(--cruor-color-blood-glow-a120),
+    var(--cruor-color-transparent) 11rem
+  );
+  --cruor-gradient-radial-236-38a87dd1: radial-gradient(
+    circle at 16% 76%,
+    var(--cruor-color-blood-strong-a180),
+    var(--cruor-color-transparent) 28rem
+  );
+  --cruor-gradient-radial-237-09710719: radial-gradient(
+    circle at 18% 0%,
+    var(--cruor-color-blood-bright-a340),
+    var(--cruor-color-transparent) 30rem
+  );
+  --cruor-gradient-radial-238-c690c792: radial-gradient(
+    circle at 18% 0%,
+    var(--cruor-color-blood-glow-a200),
+    var(--cruor-color-transparent) 9rem
+  );
+  --cruor-gradient-radial-239-83344c81: radial-gradient(
+    circle at 18% 0%,
+    var(--cruor-color-blood-glow-a220),
+    var(--cruor-color-transparent) 12rem
+  );
+  --cruor-gradient-radial-240-f49773b2: radial-gradient(
+    circle at 18% 0%,
+    var(--cruor-color-blood-glow-a260),
+    var(--cruor-color-transparent) 9rem
+  );
+  --cruor-gradient-radial-241-3f8c84dc: radial-gradient(
+    circle at 18% 72%,
+    var(--cruor-color-blood-strong-a200),
+    var(--cruor-color-transparent) 30rem
+  );
+  --cruor-gradient-radial-242-44f2454b: radial-gradient(
+    circle at 24px 22px,
+    var(--cruor-color-blood-bright-a080),
+    var(--cruor-color-transparent) 130px
+  );
+  --cruor-gradient-radial-243-bc28c973: radial-gradient(
+    circle at 34% 0%,
+    var(--cruor-color-blood-glow-a200),
+    var(--cruor-color-transparent) 18rem
+  );
+  --cruor-gradient-radial-244-a137a977: radial-gradient(
+    circle at 50% 0%,
+    var(--cruor-color-blood-bright-a120),
+    var(--cruor-color-transparent) 60%
+  );
+  --cruor-gradient-radial-245-c554cd44: radial-gradient(
+    circle at 50% 12%,
+    var(--cruor-color-blood-glow-a180),
+    var(--cruor-color-transparent) 34rem
+  );
+  --cruor-gradient-radial-246-4c8845b1: radial-gradient(
+    circle at 50% 18%,
+    var(--cruor-color-blood-glow-a120),
+    var(--cruor-color-transparent) 16rem
+  );
+  --cruor-gradient-radial-247-17bdc499: radial-gradient(
+    circle at 50% 18%,
+    var(--cruor-color-blood-glow-a180),
+    var(--cruor-color-transparent) 34rem
+  );
+  --cruor-gradient-radial-248-71a2744a: radial-gradient(
+    circle at 50% 18%,
+    var(--cruor-color-rose-a140),
+    var(--cruor-color-transparent) 30%
+  );
+  --cruor-gradient-radial-249-09db86d6: radial-gradient(
+    circle at 50% 20%,
+    var(--cruor-color-blood-bright-a240),
+    var(--cruor-color-transparent) 36%
+  );
+  --cruor-gradient-radial-250-78c8cd74: radial-gradient(
+    circle at 50% 20%,
+    var(--cruor-color-blood-bright-a360),
+    var(--cruor-color-transparent) 44%
+  );
+  --cruor-gradient-radial-251-f75b2bcc: radial-gradient(
+    circle at 50% 24%,
+    var(--cruor-color-blood-bright-a220),
+    var(--cruor-color-transparent) 28rem
+  );
+  --cruor-gradient-radial-252-aa0542d8: radial-gradient(
+    circle at 50% 24%,
+    var(--cruor-color-blood-glow-a220),
+    var(--cruor-color-transparent) 68%
+  );
+  --cruor-gradient-radial-253-0a832415: radial-gradient(
+    circle at 50% 26%,
+    var(--cruor-color-blood-glow-a130),
+    var(--cruor-color-transparent) 20rem
+  );
+  --cruor-gradient-radial-254-41a0625a: radial-gradient(
+    circle at 50% 28%,
+    var(--cruor-color-blood-glow-a180),
+    var(--cruor-color-transparent) 72%
+  );
+  --cruor-gradient-radial-255-cb1a837f: radial-gradient(
+    circle at 50% 36%,
+    var(--cruor-color-rose-a120),
+    var(--cruor-color-transparent) 18%
+  );
+  --cruor-gradient-radial-256-77da7619: radial-gradient(
+    circle at 50% 50%,
+    var(--cruor-color-black),
+    var(--cruor-color-transparent) 72%
+  );
+  --cruor-gradient-radial-257-a1833ae7: radial-gradient(
+    circle at 50% 62%,
+    var(--cruor-color-blood-bright-a340),
+    var(--cruor-color-transparent) 46%
+  );
+  --cruor-gradient-radial-258-ea7258ab: radial-gradient(
+    circle at 50% 68%,
+    var(--cruor-color-blood-glow-a220),
+    var(--cruor-color-transparent) 58%
+  );
+  --cruor-gradient-radial-259-0f8e2504: radial-gradient(
+    circle at 50% 86%,
+    var(--cruor-color-blood-strong-a180),
+    var(--cruor-color-transparent) 22rem
+  );
+  --cruor-gradient-radial-260-ee55c2c3: radial-gradient(
+    circle at 78% 18%,
+    var(--cruor-color-blood-glow-a120),
+    var(--cruor-color-transparent) 36%
+  );
+  --cruor-gradient-radial-261-df58552f: radial-gradient(
+    circle at 8% 0%,
+    var(--cruor-color-blood-glow-a200),
+    var(--cruor-color-transparent) 72%
+  );
+  --cruor-gradient-radial-262-81e4e47e: radial-gradient(
+    circle at 82% 14%,
+    var(--cruor-color-blood-bright-a160),
+    var(--cruor-color-transparent) 30rem
+  );
+  --cruor-gradient-radial-263-7b647368: radial-gradient(
+    circle at 92% 2%,
+    var(--cruor-color-blood-strong-a130),
+    var(--cruor-color-transparent) 32%
+  );
+  --cruor-gradient-radial-264-01b17bc5: radial-gradient(
+    circle at 92% 4%,
+    var(--cruor-color-blood-strong-a080),
+    var(--cruor-color-transparent) 32%
+  );
+  --cruor-gradient-radial-265-8a95accf: radial-gradient(
+    circle at center,
+    var(--cruor-color-blood-bright-a120),
+    var(--cruor-color-transparent) 70%
+  );
+  --cruor-gradient-radial-266-9d3fe8c7: radial-gradient(
+    circle at top,
+    var(--cruor-color-blood-bright-a100),
+    var(--cruor-color-transparent) 42%
+  );
+  --cruor-gradient-radial-267-e22961ef: radial-gradient(
+    circle at top,
+    var(--cruor-color-blood-bright-a100),
+    var(--cruor-color-transparent) 44%
+  );
+  --cruor-gradient-repeating-linear-268-bfba7128: repeating-linear-gradient(
+    180deg,
+    var(--cruor-color-milk-a420) 0 1px,
+    var(--cruor-color-blood-glow-a100) 1px 2px,
+    var(--cruor-color-transparent) 2px 18px
+  );
+  --cruor-gradient-repeating-linear-269-573cc485: repeating-linear-gradient(
+    90deg,
+    var(--cruor-color-milk-a500) 0 1px,
+    var(--cruor-color-blood-glow-a120) 1px 2px,
+    var(--cruor-color-transparent) 2px 18px
+  );
 
   /* Shadow aliases */
-  --cruor-shadow-box-001: 0 0 0 1px var(--cruor-color-blood-glow-a120), 0 0 20px var(--cruor-color-blood-bright-a220), inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-001:
+    0 0 0 1px var(--cruor-color-blood-glow-a120),
+    0 0 20px var(--cruor-color-blood-bright-a220),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
   --cruor-shadow-box-002: inset 0 1px 0 var(--cruor-color-milk-a035);
-  --cruor-shadow-box-003: 0 0 0 1px var(--cruor-color-blood-glow-a130), 0 0 20px var(--cruor-color-blood-bright-a220), inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-003:
+    0 0 0 1px var(--cruor-color-blood-glow-a130),
+    0 0 20px var(--cruor-color-blood-bright-a220),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
   --cruor-shadow-box-004: inset 0 0 0 1px var(--cruor-color-milk-a055);
   --cruor-shadow-box-005: inset 0 0 0 1px var(--cruor-color-blood-glow-a080);
-  --cruor-shadow-box-006: 0 0 0 1px var(--cruor-color-blood-glow-a100), 0 0 24px var(--cruor-color-blood-bright-a200), inset 0 1px 0 var(--cruor-color-milk-a045);
-  --cruor-shadow-box-007: 0 0 0 1px var(--cruor-color-blood-glow-a120), 0 0 24px var(--cruor-color-blood-bright-a300);
+  --cruor-shadow-box-006:
+    0 0 0 1px var(--cruor-color-blood-glow-a100),
+    0 0 24px var(--cruor-color-blood-bright-a200),
+    inset 0 1px 0 var(--cruor-color-milk-a045);
+  --cruor-shadow-box-007:
+    0 0 0 1px var(--cruor-color-blood-glow-a120),
+    0 0 24px var(--cruor-color-blood-bright-a300);
   --cruor-shadow-box-008: 0 0 18px var(--cruor-color-blood-bright-a180);
-  --cruor-shadow-box-009: 0 28px 74px var(--cruor-color-black-a720), 0 0 0 1px var(--cruor-color-milk-a045), inset 0 1px 0 var(--cruor-color-milk-a060);
-  --cruor-shadow-box-010: 0 0 0 1px var(--cruor-color-blood-glow-a120), 0 0 24px var(--cruor-color-blood-bright-a260), inset 0 1px 0 var(--cruor-color-milk-a050);
-  --cruor-shadow-box-011: 0 0 18px var(--cruor-color-blood-bright-a220), inset 0 1px 0 var(--cruor-color-milk-a040);
-  --cruor-shadow-box-012: 0 0 22px var(--cruor-color-blood-bright-a180), inset 0 1px 0 var(--cruor-color-milk-a050);
+  --cruor-shadow-box-009:
+    0 28px 74px var(--cruor-color-black-a720),
+    0 0 0 1px var(--cruor-color-milk-a045),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-010:
+    0 0 0 1px var(--cruor-color-blood-glow-a120),
+    0 0 24px var(--cruor-color-blood-bright-a260),
+    inset 0 1px 0 var(--cruor-color-milk-a050);
+  --cruor-shadow-box-011:
+    0 0 18px var(--cruor-color-blood-bright-a220),
+    inset 0 1px 0 var(--cruor-color-milk-a040);
+  --cruor-shadow-box-012:
+    0 0 22px var(--cruor-color-blood-bright-a180),
+    inset 0 1px 0 var(--cruor-color-milk-a050);
   --cruor-shadow-box-013: inset 1px 0 0 var(--cruor-color-milk-a040);
-  --cruor-shadow-box-014: 0 0 0 1px var(--cruor-color-blood-glow-a180), 0 0 24px var(--cruor-color-blood-bright-a340), 0 14px 26px var(--cruor-color-black-a420), inset 0 1px 0 var(--cruor-color-milk-a080);
+  --cruor-shadow-box-014:
+    0 0 0 1px var(--cruor-color-blood-glow-a180),
+    0 0 24px var(--cruor-color-blood-bright-a340),
+    0 14px 26px var(--cruor-color-black-a420),
+    inset 0 1px 0 var(--cruor-color-milk-a080);
   --cruor-shadow-box-015: inset 0 1px 0 var(--cruor-color-milk-a060);
-  --cruor-shadow-box-016: 0 0 0 1px var(--cruor-color-blood-glow-a100), 0 0 22px var(--cruor-color-blood-bright-a220);
-  --cruor-shadow-box-017: 0 0 0 1px var(--cruor-color-blood-glow-a120), 0 0 18px var(--cruor-color-blood-bright-a200);
-  --cruor-shadow-box-018: 0 0 0 1px var(--cruor-color-blood-glow-a120), 0 0 26px var(--cruor-color-blood-bright-a360), inset 0 1px 0 var(--cruor-color-milk-a060);
-  --cruor-shadow-box-019: 0 0 0 1px var(--cruor-color-r240-g215-b220-a080), inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-016:
+    0 0 0 1px var(--cruor-color-blood-glow-a100),
+    0 0 22px var(--cruor-color-blood-bright-a220);
+  --cruor-shadow-box-017:
+    0 0 0 1px var(--cruor-color-blood-glow-a120),
+    0 0 18px var(--cruor-color-blood-bright-a200);
+  --cruor-shadow-box-018:
+    0 0 0 1px var(--cruor-color-blood-glow-a120),
+    0 0 26px var(--cruor-color-blood-bright-a360),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-019:
+    0 0 0 1px var(--cruor-color-r240-g215-b220-a080),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
   --cruor-shadow-box-020: 0 0 10px var(--cruor-color-r208-g162-b170-a820);
   --cruor-shadow-box-021: 0 0 10px var(--cruor-color-rose-a720);
-  --cruor-shadow-box-022: 0 0 18px var(--cruor-color-blood-bright-a180), inset 0 1px 0 var(--cruor-color-milk-a050);
-  --cruor-shadow-box-023: 0 0 20px var(--cruor-color-blood-bright-a220), inset 0 1px 0 var(--cruor-color-milk-a045);
-  --cruor-shadow-box-024: 0 24px 56px var(--cruor-color-black-a720), 0 0 0 1px var(--cruor-color-milk-a045), 0 0 32px var(--cruor-color-blood-bright-a280), inset 0 1px 0 var(--cruor-color-milk-a060);
-  --cruor-shadow-box-025: 0 24px 60px var(--cruor-color-black-a720), 0 0 28px var(--cruor-color-blood-bright-a220), inset 0 1px 0 var(--cruor-color-milk-a055);
-  --cruor-shadow-box-026: 0 54px 150px var(--cruor-color-black-a920), 0 0 0 1px var(--cruor-color-milk-a060), 0 0 96px var(--cruor-color-blood-bright-a260), inset 0 1px 0 var(--cruor-color-milk-a070);
-  --cruor-shadow-box-027: inset 0 0 0 1px var(--cruor-color-blood-glow-a080), 0 0 20px var(--cruor-color-blood-bright-a140);
-  --cruor-shadow-box-028: inset 0 1px 0 var(--cruor-color-milk-a035), 0 10px 24px var(--cruor-color-black-a240);
-  --cruor-shadow-box-029: 0 0 0 1px var(--cruor-color-blood-glow-a180), 0 0 24px var(--cruor-color-blood-bright-a340), inset 0 1px 0 var(--cruor-color-milk-a080);
-  --cruor-shadow-box-030: 0 0 0 1px var(--cruor-color-blood-glow-a220), 0 0 24px var(--cruor-color-blood-bright-a180), inset 0 1px 0 var(--cruor-color-milk-a055);
-  --cruor-shadow-box-031: 0 0 0 1px var(--cruor-color-blood-glow-a260), 0 0 30px var(--cruor-color-blood-bright-a620), inset 0 0 28px var(--cruor-color-blood-bright-a180);
-  --cruor-shadow-box-032: inset 0 0 0 1px var(--cruor-color-milk-a060), 0 0 0 1px var(--cruor-color-blood-glow-a200);
-  --cruor-shadow-box-033: inset 0 1px 0 var(--cruor-color-milk-a040), 0 0 0 1px var(--cruor-color-black-a320);
-  --cruor-shadow-box-034: inset 0 1px 0 var(--cruor-color-milk-a045), 0 8px 18px var(--cruor-color-black-a160);
-  --cruor-shadow-box-035: inset 0 1px 0 var(--cruor-color-milk-a045), 0 8px 18px var(--cruor-color-black-a180);
-  --cruor-shadow-box-036: 0 0 0 1px var(--cruor-color-blood-bright-a180), 0 0 20px var(--cruor-color-blood-a320);
-  --cruor-shadow-box-037: 0 0 0 1px var(--cruor-color-blood-bright-a240), 0 0 20px var(--cruor-color-blood-a420);
-  --cruor-shadow-box-038: 0 0 0 1px var(--cruor-color-good-a160), 0 0 18px var(--cruor-color-good-a180), inset 0 1px 0 var(--cruor-color-milk-a060);
-  --cruor-shadow-box-039: 0 0 0 1px var(--cruor-color-blood-glow-a080), 0 0 12px var(--cruor-color-blood-bright-a160);
-  --cruor-shadow-box-040: 0 0 0 1px var(--cruor-color-blood-glow-a140), 0 0 20px var(--cruor-color-blood-bright-a240), inset 0 1px 0 var(--cruor-color-milk-a060);
-  --cruor-shadow-box-041: 0 0 0 1px var(--cruor-color-blood-glow-a140), 0 0 28px var(--cruor-color-blood-bright-a260), inset 0 1px 0 var(--cruor-color-milk-a060);
-  --cruor-shadow-box-042: 0 0 0 1px var(--cruor-color-blood-glow-a200), 0 0 26px var(--cruor-color-blood-glow-a320);
-  --cruor-shadow-box-043: 0 0 0 6px var(--cruor-color-r255-g246-b225-a920), 0 0 0 9px var(--cruor-color-r91-g20-b24-a820) !important;
+  --cruor-shadow-box-022:
+    0 0 18px var(--cruor-color-blood-bright-a180),
+    inset 0 1px 0 var(--cruor-color-milk-a050);
+  --cruor-shadow-box-023:
+    0 0 20px var(--cruor-color-blood-bright-a220),
+    inset 0 1px 0 var(--cruor-color-milk-a045);
+  --cruor-shadow-box-024:
+    0 24px 56px var(--cruor-color-black-a720),
+    0 0 0 1px var(--cruor-color-milk-a045),
+    0 0 32px var(--cruor-color-blood-bright-a280),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-025:
+    0 24px 60px var(--cruor-color-black-a720),
+    0 0 28px var(--cruor-color-blood-bright-a220),
+    inset 0 1px 0 var(--cruor-color-milk-a055);
+  --cruor-shadow-box-026:
+    0 54px 150px var(--cruor-color-black-a920),
+    0 0 0 1px var(--cruor-color-milk-a060),
+    0 0 96px var(--cruor-color-blood-bright-a260),
+    inset 0 1px 0 var(--cruor-color-milk-a070);
+  --cruor-shadow-box-027:
+    inset 0 0 0 1px var(--cruor-color-blood-glow-a080),
+    0 0 20px var(--cruor-color-blood-bright-a140);
+  --cruor-shadow-box-028:
+    inset 0 1px 0 var(--cruor-color-milk-a035),
+    0 10px 24px var(--cruor-color-black-a240);
+  --cruor-shadow-box-029:
+    0 0 0 1px var(--cruor-color-blood-glow-a180),
+    0 0 24px var(--cruor-color-blood-bright-a340),
+    inset 0 1px 0 var(--cruor-color-milk-a080);
+  --cruor-shadow-box-030:
+    0 0 0 1px var(--cruor-color-blood-glow-a220),
+    0 0 24px var(--cruor-color-blood-bright-a180),
+    inset 0 1px 0 var(--cruor-color-milk-a055);
+  --cruor-shadow-box-031:
+    0 0 0 1px var(--cruor-color-blood-glow-a260),
+    0 0 30px var(--cruor-color-blood-bright-a620),
+    inset 0 0 28px var(--cruor-color-blood-bright-a180);
+  --cruor-shadow-box-032:
+    inset 0 0 0 1px var(--cruor-color-milk-a060),
+    0 0 0 1px var(--cruor-color-blood-glow-a200);
+  --cruor-shadow-box-033:
+    inset 0 1px 0 var(--cruor-color-milk-a040),
+    0 0 0 1px var(--cruor-color-black-a320);
+  --cruor-shadow-box-034:
+    inset 0 1px 0 var(--cruor-color-milk-a045),
+    0 8px 18px var(--cruor-color-black-a160);
+  --cruor-shadow-box-035:
+    inset 0 1px 0 var(--cruor-color-milk-a045),
+    0 8px 18px var(--cruor-color-black-a180);
+  --cruor-shadow-box-036:
+    0 0 0 1px var(--cruor-color-blood-bright-a180),
+    0 0 20px var(--cruor-color-blood-a320);
+  --cruor-shadow-box-037:
+    0 0 0 1px var(--cruor-color-blood-bright-a240),
+    0 0 20px var(--cruor-color-blood-a420);
+  --cruor-shadow-box-038:
+    0 0 0 1px var(--cruor-color-good-a160),
+    0 0 18px var(--cruor-color-good-a180),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-039:
+    0 0 0 1px var(--cruor-color-blood-glow-a080),
+    0 0 12px var(--cruor-color-blood-bright-a160);
+  --cruor-shadow-box-040:
+    0 0 0 1px var(--cruor-color-blood-glow-a140),
+    0 0 20px var(--cruor-color-blood-bright-a240),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-041:
+    0 0 0 1px var(--cruor-color-blood-glow-a140),
+    0 0 28px var(--cruor-color-blood-bright-a260),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-042:
+    0 0 0 1px var(--cruor-color-blood-glow-a200),
+    0 0 26px var(--cruor-color-blood-glow-a320);
+  --cruor-shadow-box-043:
+    0 0 0 6px var(--cruor-color-r255-g246-b225-a920),
+    0 0 0 9px var(--cruor-color-r91-g20-b24-a820) !important;
   --cruor-shadow-box-044: 0 0 10px var(--cruor-color-blood-glow-a750);
   --cruor-shadow-box-045: 0 0 12px var(--cruor-color-blood-glow-a900);
   --cruor-shadow-box-046: 0 0 14px var(--cruor-color-blood-bright-a280);
@@ -1034,100 +2227,258 @@
   --cruor-shadow-box-050: 0 0 18px var(--cruor-color-blood-bright-a300);
   --cruor-shadow-box-051: 0 0 18px var(--cruor-color-blood-bright-a380);
   --cruor-shadow-box-052: 0 0 18px var(--cruor-color-blood-bright-a450);
-  --cruor-shadow-box-053: 0 0 22px var(--cruor-color-blood-bright-a240), inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-053:
+    0 0 22px var(--cruor-color-blood-bright-a240),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
   --cruor-shadow-box-054: 0 0 24px var(--cruor-color-blood-bright-a240);
   --cruor-shadow-box-055: 0 0 26px var(--cruor-color-blood-bright-a200);
   --cruor-shadow-box-056: 0 0 30px var(--cruor-color-blood-bright-a180);
-  --cruor-shadow-box-057: 0 10px 22px var(--cruor-color-black-a460), 0 0 0 1px var(--cruor-color-black-a720), inset 0 1px 0 var(--cruor-color-milk-a040);
-  --cruor-shadow-box-058: 0 10px 24px var(--cruor-color-black-a340), inset 0 1px 0 var(--cruor-color-milk-a045);
+  --cruor-shadow-box-057:
+    0 10px 22px var(--cruor-color-black-a460),
+    0 0 0 1px var(--cruor-color-black-a720),
+    inset 0 1px 0 var(--cruor-color-milk-a040);
+  --cruor-shadow-box-058:
+    0 10px 24px var(--cruor-color-black-a340),
+    inset 0 1px 0 var(--cruor-color-milk-a045);
   --cruor-shadow-box-059: 0 10px 24px var(--cruor-color-black-a360);
-  --cruor-shadow-box-060: 0 12px 26px var(--cruor-color-black-a320), inset 0 1px 0 var(--cruor-color-milk-a040);
+  --cruor-shadow-box-060:
+    0 12px 26px var(--cruor-color-black-a320),
+    inset 0 1px 0 var(--cruor-color-milk-a040);
   --cruor-shadow-box-061: 0 12px 30px var(--cruor-color-black-a340);
-  --cruor-shadow-box-062: 0 14px 34px var(--cruor-color-black-a420), 0 0 20px var(--cruor-color-blood-bright-a160);
-  --cruor-shadow-box-063: 0 18px 48px var(--cruor-color-black-a480), inset 0 1px 0 var(--cruor-color-milk-a040);
-  --cruor-shadow-box-064: 0 18px 48px var(--cruor-color-black-a480), inset 0 1px 0 var(--cruor-color-milk-a045);
-  --cruor-shadow-box-065: 0 18px 50px var(--cruor-color-r74-g46-b24-a180), inset 0 1px 0 var(--cruor-color-white-a450);
-  --cruor-shadow-box-066: 0 20px 44px var(--cruor-color-black-a620), 0 0 24px var(--cruor-color-blood-bright-a220), inset 0 1px 0 var(--cruor-color-milk-a055);
-  --cruor-shadow-box-067: 0 24px 60px var(--cruor-color-black-a380), inset 0 1px 0 var(--cruor-color-milk-a080);
-  --cruor-shadow-box-068: 0 24px 70px var(--cruor-color-black-a620), inset 0 1px 0 var(--cruor-color-milk-a045);
-  --cruor-shadow-box-069: 0 24px 72px var(--cruor-color-black-a420), inset 0 1px 0 var(--cruor-color-milk-a050);
-  --cruor-shadow-box-070: 0 26px 70px var(--cruor-color-black-a500), 0 0 0 1px var(--cruor-color-blood-glow-a120), 0 0 42px var(--cruor-color-blood-bright-a220);
-  --cruor-shadow-box-071: inset 0 0 0 1px var(--cruor-color-blood-glow-a080), 0 0 20px var(--cruor-color-blood-bright-a160);
+  --cruor-shadow-box-062:
+    0 14px 34px var(--cruor-color-black-a420),
+    0 0 20px var(--cruor-color-blood-bright-a160);
+  --cruor-shadow-box-063:
+    0 18px 48px var(--cruor-color-black-a480),
+    inset 0 1px 0 var(--cruor-color-milk-a040);
+  --cruor-shadow-box-064:
+    0 18px 48px var(--cruor-color-black-a480),
+    inset 0 1px 0 var(--cruor-color-milk-a045);
+  --cruor-shadow-box-065:
+    0 18px 50px var(--cruor-color-r74-g46-b24-a180),
+    inset 0 1px 0 var(--cruor-color-white-a450);
+  --cruor-shadow-box-066:
+    0 20px 44px var(--cruor-color-black-a620),
+    0 0 24px var(--cruor-color-blood-bright-a220),
+    inset 0 1px 0 var(--cruor-color-milk-a055);
+  --cruor-shadow-box-067:
+    0 24px 60px var(--cruor-color-black-a380),
+    inset 0 1px 0 var(--cruor-color-milk-a080);
+  --cruor-shadow-box-068:
+    0 24px 70px var(--cruor-color-black-a620),
+    inset 0 1px 0 var(--cruor-color-milk-a045);
+  --cruor-shadow-box-069:
+    0 24px 72px var(--cruor-color-black-a420),
+    inset 0 1px 0 var(--cruor-color-milk-a050);
+  --cruor-shadow-box-070:
+    0 26px 70px var(--cruor-color-black-a500),
+    0 0 0 1px var(--cruor-color-blood-glow-a120),
+    0 0 42px var(--cruor-color-blood-bright-a220);
+  --cruor-shadow-box-071:
+    inset 0 0 0 1px var(--cruor-color-blood-glow-a080),
+    0 0 20px var(--cruor-color-blood-bright-a160);
   --cruor-shadow-box-072: inset 0 0 0 1px var(--cruor-color-r220-g175-b184-a080);
   --cruor-shadow-box-073: inset 0 0 24px var(--cruor-color-blood-bright-a160);
-  --cruor-shadow-box-074: inset 0 1px 0 var(--cruor-color-milk-a026), 0 18px 44px var(--cruor-color-black-a180);
-  --cruor-shadow-box-075: inset 0 1px 0 var(--cruor-color-milk-a035), 0 0 18px var(--cruor-color-blood-bright-a100);
+  --cruor-shadow-box-074:
+    inset 0 1px 0 var(--cruor-color-milk-a026),
+    0 18px 44px var(--cruor-color-black-a180);
+  --cruor-shadow-box-075:
+    inset 0 1px 0 var(--cruor-color-milk-a035),
+    0 0 18px var(--cruor-color-blood-bright-a100);
   --cruor-shadow-box-076: inset 0 1px 0 var(--cruor-color-milk-a040);
-  --cruor-shadow-box-077: inset 0 1px 0 var(--cruor-color-milk-a040), 0 0 18px var(--cruor-color-black-a280);
+  --cruor-shadow-box-077:
+    inset 0 1px 0 var(--cruor-color-milk-a040),
+    0 0 18px var(--cruor-color-black-a280);
   --cruor-shadow-box-078: inset 0 1px 0 var(--cruor-color-milk-a045);
-  --cruor-shadow-box-079: 0 0 0 1px var(--cruor-color-blood-bright-a240), 0 0 24px var(--cruor-color-blood-a480);
-  --cruor-shadow-box-080: 0 0 0 1px var(--cruor-color-good-a130), 0 0 18px var(--cruor-color-good-a160), inset 0 1px 0 var(--cruor-color-milk-a060);
-  --cruor-shadow-box-081: 0 0 0 1px var(--cruor-color-good-a160), 0 0 18px var(--cruor-color-good-a180), inset 0 1px 0 var(--cruor-color-milk-a060);
-  --cruor-shadow-box-082: 0 0 0 1px var(--cruor-color-good-a120), 0 0 18px var(--cruor-color-good-a180);
-  --cruor-shadow-box-083: 0 0 0 1px var(--cruor-color-good-a160), 0 0 18px var(--cruor-color-good-a200), inset 0 1px 0 var(--cruor-color-milk-a060);
-  --cruor-shadow-box-084: 0 0 0 1px var(--cruor-color-blood-glow-a120), 0 0 24px var(--cruor-color-blood-bright-a240), inset 0 1px 0 var(--cruor-color-milk-a060);
-  --cruor-shadow-box-085: 0 0 0 1px var(--cruor-color-blood-glow-a080), 0 0 24px var(--cruor-color-blood-bright-a200), inset 0 1px 0 var(--cruor-color-milk-a040);
-  --cruor-shadow-box-086: 0 0 0 1px var(--cruor-color-blood-glow-a100), 0 0 18px var(--cruor-color-blood-bright-a220);
-  --cruor-shadow-box-087: 0 0 0 1px var(--cruor-color-blood-glow-a120), 0 0 18px var(--cruor-color-blood-bright-a200), inset 0 1px 0 var(--cruor-color-milk-a050);
-  --cruor-shadow-box-088: 0 0 0 1px var(--cruor-color-blood-glow-a120), 0 0 20px var(--cruor-color-blood-bright-a220);
-  --cruor-shadow-box-089: 0 0 0 1px var(--cruor-color-blood-glow-a160), 0 0 24px var(--cruor-color-blood-bright-a280), inset 3px 0 0 var(--cruor-color-blood-glow-a780);
-  --cruor-shadow-box-090: 0 0 0 1px var(--cruor-color-blood-glow-a160), 0 0 28px var(--cruor-color-blood-bright-a360), inset 0 1px 0 var(--cruor-color-milk-a080);
+  --cruor-shadow-box-079:
+    0 0 0 1px var(--cruor-color-blood-bright-a240),
+    0 0 24px var(--cruor-color-blood-a480);
+  --cruor-shadow-box-080:
+    0 0 0 1px var(--cruor-color-good-a130),
+    0 0 18px var(--cruor-color-good-a160),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-081:
+    0 0 0 1px var(--cruor-color-good-a160),
+    0 0 18px var(--cruor-color-good-a180),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-082:
+    0 0 0 1px var(--cruor-color-good-a120),
+    0 0 18px var(--cruor-color-good-a180);
+  --cruor-shadow-box-083:
+    0 0 0 1px var(--cruor-color-good-a160),
+    0 0 18px var(--cruor-color-good-a200),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-084:
+    0 0 0 1px var(--cruor-color-blood-glow-a120),
+    0 0 24px var(--cruor-color-blood-bright-a240),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-085:
+    0 0 0 1px var(--cruor-color-blood-glow-a080),
+    0 0 24px var(--cruor-color-blood-bright-a200),
+    inset 0 1px 0 var(--cruor-color-milk-a040);
+  --cruor-shadow-box-086:
+    0 0 0 1px var(--cruor-color-blood-glow-a100),
+    0 0 18px var(--cruor-color-blood-bright-a220);
+  --cruor-shadow-box-087:
+    0 0 0 1px var(--cruor-color-blood-glow-a120),
+    0 0 18px var(--cruor-color-blood-bright-a200),
+    inset 0 1px 0 var(--cruor-color-milk-a050);
+  --cruor-shadow-box-088:
+    0 0 0 1px var(--cruor-color-blood-glow-a120),
+    0 0 20px var(--cruor-color-blood-bright-a220);
+  --cruor-shadow-box-089:
+    0 0 0 1px var(--cruor-color-blood-glow-a160),
+    0 0 24px var(--cruor-color-blood-bright-a280),
+    inset 3px 0 0 var(--cruor-color-blood-glow-a780);
+  --cruor-shadow-box-090:
+    0 0 0 1px var(--cruor-color-blood-glow-a160),
+    0 0 28px var(--cruor-color-blood-bright-a360),
+    inset 0 1px 0 var(--cruor-color-milk-a080);
   --cruor-shadow-box-091: 0 0 0 1px var(--cruor-color-rose-a080);
-  --cruor-shadow-box-092: 0 0 0 1px var(--cruor-color-rose-a140), 0 0 34px var(--cruor-color-blood-glow-a340), var(--cruor-ui-card-shadow-active);
+  --cruor-shadow-box-092:
+    0 0 0 1px var(--cruor-color-rose-a140),
+    0 0 34px var(--cruor-color-blood-glow-a340),
+    var(--cruor-ui-card-shadow-active);
   --cruor-shadow-box-093: 0 0 0 3px var(--cruor-color-blood-a220);
-  --cruor-shadow-box-094: 0 0 0 6px var(--cruor-color-black-a860), 0 0 0 9px var(--cruor-color-blood-glow-a720) !important;
+  --cruor-shadow-box-094:
+    0 0 0 6px var(--cruor-color-black-a860),
+    0 0 0 9px var(--cruor-color-blood-glow-a720) !important;
   --cruor-shadow-box-095: 0 0 12px var(--cruor-color-blood-bright-a350);
-  --cruor-shadow-box-096: 0 0 18px var(--cruor-color-blood-bright-a180), inset 0 1px 0 var(--cruor-color-milk-a050);
-  --cruor-shadow-box-097: 0 0 18px var(--cruor-color-blood-bright-a100), inset 0 1px 0 var(--cruor-color-milk-a035);
+  --cruor-shadow-box-096:
+    0 0 18px var(--cruor-color-blood-bright-a180),
+    inset 0 1px 0 var(--cruor-color-milk-a050);
+  --cruor-shadow-box-097:
+    0 0 18px var(--cruor-color-blood-bright-a100),
+    inset 0 1px 0 var(--cruor-color-milk-a035);
   --cruor-shadow-box-098: 0 0 24px var(--cruor-color-blood-a420);
-  --cruor-shadow-box-099: 0 0 36px var(--cruor-color-blood-bright-a340), inset 0 0 26px var(--cruor-color-blood-bright-a180);
-  --cruor-shadow-box-100: 0 14px 34px var(--cruor-color-black-a420), inset 0 -1px 0 var(--cruor-color-milk-a040);
-  --cruor-shadow-box-101: 0 16px 38px var(--cruor-color-black-a420), 0 0 0 1px var(--cruor-color-milk-a035), inset 0 1px 0 var(--cruor-color-milk-a055);
-  --cruor-shadow-box-102: 0 16px 38px var(--cruor-color-black-a520), 0 0 0 1px var(--cruor-color-milk-a035), inset 0 1px 0 var(--cruor-color-milk-a055);
-  --cruor-shadow-box-103: 0 18px 42px var(--cruor-color-black-a560), 0 0 24px var(--cruor-color-blood-bright-a200), inset 0 1px 0 var(--cruor-color-milk-a050);
+  --cruor-shadow-box-099:
+    0 0 36px var(--cruor-color-blood-bright-a340),
+    inset 0 0 26px var(--cruor-color-blood-bright-a180);
+  --cruor-shadow-box-100:
+    0 14px 34px var(--cruor-color-black-a420),
+    inset 0 -1px 0 var(--cruor-color-milk-a040);
+  --cruor-shadow-box-101:
+    0 16px 38px var(--cruor-color-black-a420),
+    0 0 0 1px var(--cruor-color-milk-a035),
+    inset 0 1px 0 var(--cruor-color-milk-a055);
+  --cruor-shadow-box-102:
+    0 16px 38px var(--cruor-color-black-a520),
+    0 0 0 1px var(--cruor-color-milk-a035),
+    inset 0 1px 0 var(--cruor-color-milk-a055);
+  --cruor-shadow-box-103:
+    0 18px 42px var(--cruor-color-black-a560),
+    0 0 24px var(--cruor-color-blood-bright-a200),
+    inset 0 1px 0 var(--cruor-color-milk-a050);
   --cruor-shadow-box-104: 0 18px 44px var(--cruor-color-black-a280);
-  --cruor-shadow-box-105: 0 18px 44px var(--cruor-color-black-a340), inset 0 1px 0 var(--cruor-color-milk-a040);
+  --cruor-shadow-box-105:
+    0 18px 44px var(--cruor-color-black-a340),
+    inset 0 1px 0 var(--cruor-color-milk-a040);
   --cruor-shadow-box-106: 0 18px 48px var(--cruor-color-black-a240);
-  --cruor-shadow-box-107: 0 18px 48px var(--cruor-color-black-a620), inset 0 1px 0 var(--cruor-color-blood-bright-a055);
-  --cruor-shadow-box-108: 0 18px 52px var(--cruor-color-black-a340), inset 0 1px 0 var(--cruor-color-white-a035);
-  --cruor-shadow-box-109: 0 18px 58px var(--cruor-color-black-a340), inset 0 1px 0 var(--cruor-color-milk-a040);
-  --cruor-shadow-box-110: 0 20px 52px var(--cruor-color-black-a340), inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-107:
+    0 18px 48px var(--cruor-color-black-a620),
+    inset 0 1px 0 var(--cruor-color-blood-bright-a055);
+  --cruor-shadow-box-108:
+    0 18px 52px var(--cruor-color-black-a340),
+    inset 0 1px 0 var(--cruor-color-white-a035);
+  --cruor-shadow-box-109:
+    0 18px 58px var(--cruor-color-black-a340),
+    inset 0 1px 0 var(--cruor-color-milk-a040);
+  --cruor-shadow-box-110:
+    0 20px 52px var(--cruor-color-black-a340),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
   --cruor-shadow-box-111: 0 20px 52px var(--cruor-color-black-a640);
-  --cruor-shadow-box-112: 0 22px 56px var(--cruor-color-black-a420), 0 0 0 1px var(--cruor-color-blood-bright-a180), inset 0 1px 0 var(--cruor-color-milk-a080);
-  --cruor-shadow-box-113: 0 22px 60px var(--cruor-color-black-a420), inset 0 1px 0 var(--cruor-color-milk-a060);
-  --cruor-shadow-box-114: 0 22px 74px var(--cruor-color-black-a740), 0 0 0 1px var(--cruor-color-black-a720), 0 0 38px var(--cruor-color-blood-bright-a280), inset 0 1px 0 var(--cruor-color-milk-a060);
-  --cruor-shadow-box-115: 0 24px 64px var(--cruor-color-black-a280), 0 0 0 1px var(--cruor-color-blood-bright-a120), inset 0 1px 0 var(--cruor-color-milk-a050);
-  --cruor-shadow-box-116: 0 26px 72px var(--cruor-color-black-a720), 0 0 0 1px var(--cruor-color-milk-a045), 0 0 42px var(--cruor-color-blood-bright-a240), inset 0 1px 0 var(--cruor-color-milk-a060);
-  --cruor-shadow-box-117: 0 26px 80px var(--cruor-color-black-a720), 0 0 0 1px var(--cruor-color-milk-a045), inset 0 1px 0 var(--cruor-color-milk-a070);
+  --cruor-shadow-box-112:
+    0 22px 56px var(--cruor-color-black-a420),
+    0 0 0 1px var(--cruor-color-blood-bright-a180),
+    inset 0 1px 0 var(--cruor-color-milk-a080);
+  --cruor-shadow-box-113:
+    0 22px 60px var(--cruor-color-black-a420),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-114:
+    0 22px 74px var(--cruor-color-black-a740),
+    0 0 0 1px var(--cruor-color-black-a720),
+    0 0 38px var(--cruor-color-blood-bright-a280),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-115:
+    0 24px 64px var(--cruor-color-black-a280),
+    0 0 0 1px var(--cruor-color-blood-bright-a120),
+    inset 0 1px 0 var(--cruor-color-milk-a050);
+  --cruor-shadow-box-116:
+    0 26px 72px var(--cruor-color-black-a720),
+    0 0 0 1px var(--cruor-color-milk-a045),
+    0 0 42px var(--cruor-color-blood-bright-a240),
+    inset 0 1px 0 var(--cruor-color-milk-a060);
+  --cruor-shadow-box-117:
+    0 26px 80px var(--cruor-color-black-a720),
+    0 0 0 1px var(--cruor-color-milk-a045),
+    inset 0 1px 0 var(--cruor-color-milk-a070);
   --cruor-shadow-box-118: 0 28px 88px var(--cruor-color-black-a640);
-  --cruor-shadow-box-119: 0 28px 90px var(--cruor-color-black-a620), 0 0 0 1px var(--cruor-color-milk-a045), 0 0 48px var(--cruor-color-milk-a034), inset 0 1px 0 var(--panel-white-line), inset 0 -1px 0 var(--cruor-color-black-a420);
-  --cruor-shadow-box-120: 0 30px 40px var(--cruor-color-black-a1000), inset 0 1px 0 var(--cruor-color-milk-a045), inset 0 -1px 0 var(--cruor-color-milk-a026);
-  --cruor-shadow-box-121: 0 30px 90px var(--cruor-color-black-a740), 0 0 0 1px var(--cruor-color-milk-a040), 0 0 42px var(--cruor-color-blood-bright-a200), inset 0 1px 0 var(--cruor-color-milk-a055);
-  --cruor-shadow-box-122: 0 32px 88px var(--cruor-color-black-a820), 0 0 0 1px var(--cruor-color-milk-a045), 0 0 42px var(--cruor-color-blood-bright-a240), inset 0 1px 0 var(--cruor-color-milk-a055);
+  --cruor-shadow-box-119:
+    0 28px 90px var(--cruor-color-black-a620),
+    0 0 0 1px var(--cruor-color-milk-a045),
+    0 0 48px var(--cruor-color-milk-a034),
+    inset 0 1px 0 var(--panel-white-line),
+    inset 0 -1px 0 var(--cruor-color-black-a420);
+  --cruor-shadow-box-120:
+    0 30px 40px var(--cruor-color-black-a1000),
+    inset 0 1px 0 var(--cruor-color-milk-a045),
+    inset 0 -1px 0 var(--cruor-color-milk-a026);
+  --cruor-shadow-box-121:
+    0 30px 90px var(--cruor-color-black-a740),
+    0 0 0 1px var(--cruor-color-milk-a040),
+    0 0 42px var(--cruor-color-blood-bright-a200),
+    inset 0 1px 0 var(--cruor-color-milk-a055);
+  --cruor-shadow-box-122:
+    0 32px 88px var(--cruor-color-black-a820),
+    0 0 0 1px var(--cruor-color-milk-a045),
+    0 0 42px var(--cruor-color-blood-bright-a240),
+    inset 0 1px 0 var(--cruor-color-milk-a055);
   --cruor-shadow-box-123: inset 0 -1px 0 var(--cruor-color-rose-a340);
-  --cruor-shadow-box-124: inset 0 0 0 1px var(--cruor-color-milk-a035), 0 24px 80px var(--cruor-color-black-a350);
+  --cruor-shadow-box-124:
+    inset 0 0 0 1px var(--cruor-color-milk-a035),
+    0 24px 80px var(--cruor-color-black-a350);
   --cruor-shadow-box-125: inset 0 0 0 1px var(--cruor-color-r29-g25-b21-a250);
-  --cruor-shadow-box-126: inset 0 0 0 2px var(--cruor-color-blood-bright-a680), inset 0 0 0 1px var(--cruor-color-r29-g25-b21-a250);
+  --cruor-shadow-box-126:
+    inset 0 0 0 2px var(--cruor-color-blood-bright-a680),
+    inset 0 0 0 1px var(--cruor-color-r29-g25-b21-a250);
   --cruor-shadow-box-127: inset 0 0 120px var(--cruor-color-black-a580);
   --cruor-shadow-box-128: inset 0 0 180px var(--cruor-color-black-a560);
   --cruor-shadow-box-129: inset 0 0 80px var(--cruor-color-black-a520);
-  --cruor-shadow-box-130: inset 0 1px 0 var(--cruor-color-milk-a035), 0 0 0 1px var(--cruor-color-black-a260);
-  --cruor-shadow-box-131: inset 0 1px 0 var(--cruor-color-milk-a045), 0 18px 42px var(--cruor-color-black-a240);
+  --cruor-shadow-box-130:
+    inset 0 1px 0 var(--cruor-color-milk-a035),
+    0 0 0 1px var(--cruor-color-black-a260);
+  --cruor-shadow-box-131:
+    inset 0 1px 0 var(--cruor-color-milk-a045),
+    0 18px 42px var(--cruor-color-black-a240);
   --cruor-shadow-text-001: 0 0 12px var(--cruor-color-blood-bright-a420);
-  --cruor-shadow-text-002: 0 0 20px var(--cruor-color-blood-bright-a300), 0 2px 0 var(--cruor-color-black-a260);
+  --cruor-shadow-text-002:
+    0 0 20px var(--cruor-color-blood-bright-a300),
+    0 2px 0 var(--cruor-color-black-a260);
   --cruor-shadow-text-003: 0 0 14px var(--cruor-color-rose-a240);
-  --cruor-shadow-text-004: 0 0 13px var(--cruor-color-blood-bright-a580), 0 0 2px var(--cruor-color-white-a140);
+  --cruor-shadow-text-004:
+    0 0 13px var(--cruor-color-blood-bright-a580),
+    0 0 2px var(--cruor-color-white-a140);
   --cruor-shadow-text-005: 0 0 28px var(--cruor-color-blood-bright-a440);
   --cruor-shadow-text-006: 0 0 18px var(--cruor-color-blood-bright-a340);
-  --cruor-shadow-text-007: 0 0 22px var(--cruor-color-blood-bright-a340), 0 2px 0 var(--cruor-color-black-a300);
+  --cruor-shadow-text-007:
+    0 0 22px var(--cruor-color-blood-bright-a340),
+    0 2px 0 var(--cruor-color-black-a300);
   --cruor-shadow-text-008: 0 0 10px var(--cruor-color-blood-bright-a420);
   --cruor-shadow-text-009: 0 0 20px var(--cruor-color-blood-bright-a360);
   --cruor-shadow-text-010: 0 0 24px var(--cruor-color-blood-bright-a460);
-  --cruor-shadow-text-011: 0 0 18px var(--cruor-color-blood-bright-a500), 0 0 2px var(--cruor-color-white-a160);
-  --cruor-shadow-text-012: 0 0 22px var(--cruor-color-blood-bright-a280), 0 2px 0 var(--cruor-color-black-a340);
+  --cruor-shadow-text-011:
+    0 0 18px var(--cruor-color-blood-bright-a500),
+    0 0 2px var(--cruor-color-white-a160);
+  --cruor-shadow-text-012:
+    0 0 22px var(--cruor-color-blood-bright-a280),
+    0 2px 0 var(--cruor-color-black-a340);
   --cruor-shadow-text-013: 0 0 22px var(--cruor-color-blood-bright-a340);
-  --cruor-shadow-text-014: 0 0 24px var(--cruor-color-blood-glow-a340), 0 2px 0 var(--cruor-color-black-a340);
-  --cruor-shadow-text-015: 0 0 26px var(--cruor-color-blood-bright-a280), 0 2px 0 var(--cruor-color-black-a340);
+  --cruor-shadow-text-014:
+    0 0 24px var(--cruor-color-blood-glow-a340),
+    0 2px 0 var(--cruor-color-black-a340);
+  --cruor-shadow-text-015:
+    0 0 26px var(--cruor-color-blood-bright-a280),
+    0 2px 0 var(--cruor-color-black-a340);
   --cruor-shadow-text-016: 0 0 28px var(--cruor-color-blood-bright-a420);
   --cruor-shadow-text-017: 0 0 30px var(--cruor-color-blood-bright-a420);
   --cruor-shadow-text-018: 0 0 30px var(--cruor-color-blood-bright-a480);
@@ -1138,36 +2489,93 @@
   --cruor-effect-filter-032-aeb726: grayscale(0.45) saturate(0.72);
   --cruor-effect-filter-033-3318cd: grayscale(0.72) saturate(0.54);
   --cruor-effect-filter-034-c84f5f: saturate(0.62) brightness(0.72);
-  --cruor-effect-filter-035-56915c: saturate(0.88) contrast(1.08) brightness(0.82);
+  --cruor-effect-filter-035-56915c: saturate(0.88) contrast(1.08)
+    brightness(0.82);
   --cruor-filter-blur-10: blur(10px);
   --cruor-filter-blur-12: blur(12px);
   --cruor-filter-blur-2: blur(2px);
   --cruor-filter-blur-6: blur(6px);
   --cruor-filter-blur-8: blur(8px);
-  --cruor-filter-drop-shadow-004: drop-shadow(0 0 6px var(--cruor-color-blood-glow-a140));
-  --cruor-filter-drop-shadow-005: drop-shadow(0 0 8px var(--cruor-color-blood-glow-a180));
-  --cruor-filter-drop-shadow-006: drop-shadow(0 0 8px var(--cruor-color-blood-glow-a340));
-  --cruor-filter-drop-shadow-007: drop-shadow(0 24px 42px var(--cruor-color-black-a720)) drop-shadow(0 0 18px var(--cruor-color-blood-glow-a280));
-  --cruor-filter-drop-shadow-008: drop-shadow(0 28px 70px var(--cruor-color-black-a680));
-  --cruor-filter-drop-shadow-011: drop-shadow(0 0 10px var(--cruor-color-blood-glow-a440));
-  --cruor-filter-drop-shadow-012: drop-shadow(0 0 10px var(--cruor-color-rose-a220));
-  --cruor-filter-drop-shadow-013: drop-shadow(0 0 14px var(--cruor-color-rose-a260)) drop-shadow(0 0 20px var(--cruor-color-blood-bright-a420));
-  --cruor-filter-drop-shadow-014: drop-shadow(0 0 18px var(--cruor-color-blood-bright-a140));
-  --cruor-filter-drop-shadow-015: drop-shadow(0 0 2px var(--cruor-color-blood-bright-a280));
-  --cruor-filter-drop-shadow-016: drop-shadow(0 0 5px var(--cruor-color-blood-bright-a240));
-  --cruor-filter-drop-shadow-017: drop-shadow(0 0 5px var(--cruor-color-blood-glow-a550));
-  --cruor-filter-drop-shadow-018: drop-shadow(0 0 6px var(--cruor-color-blood-bright-a320));
-  --cruor-filter-drop-shadow-019: drop-shadow(0 22px 38px var(--cruor-color-black-a660));
-  --cruor-filter-drop-shadow-022: drop-shadow(0 0 10px var(--cruor-color-blood-bright-a420)) drop-shadow(0 1px 0 var(--cruor-color-black-a350));
-  --cruor-filter-drop-shadow-023: drop-shadow(0 0 14px var(--cruor-color-r120-g0-b20-a050));
-  --cruor-filter-drop-shadow-024: drop-shadow(0 0 1px var(--cruor-color-milk-a580)) drop-shadow(0 0 4px var(--cruor-color-blood-glow-a280));
-  --cruor-filter-drop-shadow-025: drop-shadow(0 0 1px var(--cruor-color-white-a900)) drop-shadow(0 0 5px var(--cruor-color-rose-a520));
-  --cruor-filter-drop-shadow-026: drop-shadow(0 0 24px var(--cruor-color-blood-bright-a220)) drop-shadow(0 2px 0 var(--cruor-color-black-a220));
-  --cruor-filter-drop-shadow-027: drop-shadow(0 0 4px var(--cruor-color-blood-glow-a220));
-  --cruor-filter-drop-shadow-028: drop-shadow(0 0 4px var(--cruor-color-milk-a500)) drop-shadow(0 0 10px var(--cruor-color-blood-glow-a320));
-  --cruor-filter-drop-shadow-029: drop-shadow(0 0 5px var(--cruor-color-blood-glow-a460));
-  --cruor-filter-drop-shadow-030: drop-shadow(0 18px 42px var(--cruor-color-black-a550));
-  --cruor-filter-drop-shadow-031: drop-shadow(0 24px 42px var(--cruor-color-black-a720)) drop-shadow(0 0 18px var(--cruor-color-blood-glow-a340));
+  --cruor-filter-drop-shadow-004: drop-shadow(
+    0 0 6px var(--cruor-color-blood-glow-a140)
+  );
+  --cruor-filter-drop-shadow-005: drop-shadow(
+    0 0 8px var(--cruor-color-blood-glow-a180)
+  );
+  --cruor-filter-drop-shadow-006: drop-shadow(
+    0 0 8px var(--cruor-color-blood-glow-a340)
+  );
+  --cruor-filter-drop-shadow-007: drop-shadow(
+      0 24px 42px var(--cruor-color-black-a720)
+    )
+    drop-shadow(0 0 18px var(--cruor-color-blood-glow-a280));
+  --cruor-filter-drop-shadow-008: drop-shadow(
+    0 28px 70px var(--cruor-color-black-a680)
+  );
+  --cruor-filter-drop-shadow-011: drop-shadow(
+    0 0 10px var(--cruor-color-blood-glow-a440)
+  );
+  --cruor-filter-drop-shadow-012: drop-shadow(
+    0 0 10px var(--cruor-color-rose-a220)
+  );
+  --cruor-filter-drop-shadow-013: drop-shadow(
+      0 0 14px var(--cruor-color-rose-a260)
+    )
+    drop-shadow(0 0 20px var(--cruor-color-blood-bright-a420));
+  --cruor-filter-drop-shadow-014: drop-shadow(
+    0 0 18px var(--cruor-color-blood-bright-a140)
+  );
+  --cruor-filter-drop-shadow-015: drop-shadow(
+    0 0 2px var(--cruor-color-blood-bright-a280)
+  );
+  --cruor-filter-drop-shadow-016: drop-shadow(
+    0 0 5px var(--cruor-color-blood-bright-a240)
+  );
+  --cruor-filter-drop-shadow-017: drop-shadow(
+    0 0 5px var(--cruor-color-blood-glow-a550)
+  );
+  --cruor-filter-drop-shadow-018: drop-shadow(
+    0 0 6px var(--cruor-color-blood-bright-a320)
+  );
+  --cruor-filter-drop-shadow-019: drop-shadow(
+    0 22px 38px var(--cruor-color-black-a660)
+  );
+  --cruor-filter-drop-shadow-022: drop-shadow(
+      0 0 10px var(--cruor-color-blood-bright-a420)
+    )
+    drop-shadow(0 1px 0 var(--cruor-color-black-a350));
+  --cruor-filter-drop-shadow-023: drop-shadow(
+    0 0 14px var(--cruor-color-r120-g0-b20-a050)
+  );
+  --cruor-filter-drop-shadow-024: drop-shadow(
+      0 0 1px var(--cruor-color-milk-a580)
+    )
+    drop-shadow(0 0 4px var(--cruor-color-blood-glow-a280));
+  --cruor-filter-drop-shadow-025: drop-shadow(
+      0 0 1px var(--cruor-color-white-a900)
+    )
+    drop-shadow(0 0 5px var(--cruor-color-rose-a520));
+  --cruor-filter-drop-shadow-026: drop-shadow(
+      0 0 24px var(--cruor-color-blood-bright-a220)
+    )
+    drop-shadow(0 2px 0 var(--cruor-color-black-a220));
+  --cruor-filter-drop-shadow-027: drop-shadow(
+    0 0 4px var(--cruor-color-blood-glow-a220)
+  );
+  --cruor-filter-drop-shadow-028: drop-shadow(
+      0 0 4px var(--cruor-color-milk-a500)
+    )
+    drop-shadow(0 0 10px var(--cruor-color-blood-glow-a320));
+  --cruor-filter-drop-shadow-029: drop-shadow(
+    0 0 5px var(--cruor-color-blood-glow-a460)
+  );
+  --cruor-filter-drop-shadow-030: drop-shadow(
+    0 18px 42px var(--cruor-color-black-a550)
+  );
+  --cruor-filter-drop-shadow-031: drop-shadow(
+      0 24px 42px var(--cruor-color-black-a720)
+    )
+    drop-shadow(0 0 18px var(--cruor-color-blood-glow-a340));
   --cruor-filter-glass-10-112: blur(10px) saturate(112%);
   --cruor-filter-glass-10-115: blur(10px) saturate(115%);
   --cruor-filter-glass-10-118: blur(10px) saturate(118%);
@@ -1193,14 +2601,25 @@
   --cruor-filter-saturate-0d72: saturate(0.72);
 
   /* Missing token aliases used by feature styles */
-  --cruor-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --cruor-font-body:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
   --cruor-font-display: "Lovato-Black", Georgia, "Times New Roman", serif;
   --body: var(--cruor-font-body);
   --cruor-color-surface-2: var(--cruor-theme-surface-2);
   --cruor-color-surface-3: var(--cruor-theme-surface-3);
-  --cruor-color-glass-satin-strong-a940: rgba(var(--cruor-rgb-glass-satin-strong), 0.94);
-  --cruor-color-surface-raised-a760: rgba(var(--cruor-rgb-surface-raised), 0.76);
-  --cruor-color-surface-raised-a860: rgba(var(--cruor-rgb-surface-raised), 0.86);
+  --cruor-color-glass-satin-strong-a940: rgba(
+    var(--cruor-rgb-glass-satin-strong),
+    0.94
+  );
+  --cruor-color-surface-raised-a760: rgba(
+    var(--cruor-rgb-surface-raised),
+    0.76
+  );
+  --cruor-color-surface-raised-a860: rgba(
+    var(--cruor-rgb-surface-raised),
+    0.86
+  );
   --cruor-color-surface-soft-a780: rgba(var(--cruor-rgb-surface-soft), 0.78);
   --cruor-color-r180-g38-b54-a520: rgba(180, 38, 54, 0.52);
   --cruor-color-r75-g6-b16-a220: rgba(75, 6, 16, 0.22);
@@ -1249,13 +2668,57 @@
   --cruor-accent-secondary: var(--cruor-theme-accent-2);
   --cruor-accent-bright: var(--cruor-theme-accent-3);
 
+  /* Inspiration card system */
+  --cruor-inspiration-card-outer-border: rgba(var(--cruor-rgb-milk), 0.3);
+  --cruor-inspiration-card-line: rgba(var(--cruor-rgb-milk), 0.96);
+  --cruor-inspiration-card-line-soft: rgba(var(--cruor-rgb-milk), 0.14);
+  --cruor-inspiration-card-frame-band:
+    radial-gradient(
+      circle at 50% 8%,
+      rgba(var(--cruor-rgb-blood-strong), 0.72),
+      transparent 34%
+    ),
+    linear-gradient(
+      145deg,
+      rgb(var(--cruor-rgb-ink-deep)) 0%,
+      rgb(24, 7, 12) 22%,
+      rgb(var(--cruor-rgb-blood)) 48%,
+      rgb(22, 6, 10) 72%,
+      rgb(3, 3, 3) 100%
+    );
+  --cruor-inspiration-card-glass: linear-gradient(
+    180deg,
+    rgba(var(--cruor-rgb-ink-raised), 0.82),
+    rgba(var(--cruor-rgb-ink-raised), 0.58)
+  );
+  --cruor-inspiration-card-front-texture-opacity: 0.5;
+  --cruor-inspiration-card-front-texture-filter: blur(1px) saturate(0.68)
+    contrast(0.88);
+  --cruor-inspiration-card-front-texture-overlay:
+    linear-gradient(
+      145deg,
+      rgba(var(--cruor-rgb-black), 0.56),
+      rgba(var(--cruor-rgb-blood), 0.38) 48%,
+      rgba(var(--cruor-rgb-black), 0.68)
+    ),
+    radial-gradient(
+      circle at 50% 18%,
+      transparent,
+      rgba(var(--cruor-rgb-black), 0.25) 76%
+    );
+  --cruor-inspiration-card-back-image-opacity: 0.28;
+  --cruor-inspiration-card-back-image-filter: blur(1px) saturate(0.72)
+    contrast(0.9);
+  --cruor-inspiration-card-shadow: 0 24px 32px
+    rgba(var(--cruor-rgb-black), 0.48);
+  --cruor-inspiration-card-shadow-hover: 0 30px 42px
+    rgba(var(--cruor-rgb-black), 0.62);
+  --cruor-inspiration-modal-overlay: rgba(var(--cruor-rgb-black), 0.76);
 }
-
 
 :root[data-a11y-theme="parchment"],
 html[data-a11y-theme="parchment"],
 .app-shell[data-a11y-theme="parchment"] {
-
   /* Cruor parchment theme palette */
   --cruor-rgb-surface: 239, 226, 194;
   --cruor-rgb-surface-soft: 245, 235, 212;
@@ -1396,7 +2859,7 @@ html[data-a11y-theme="parchment"],
   --cruor-color-r14-g11-b13-a680: rgba(245, 232, 203, 0.68);
   --cruor-color-r14-g5-b8-a960: rgba(245, 232, 203, 0.96);
   --cruor-color-r143-g38-b53-a180: rgba(122, 26, 40, 0.18);
-  --cruor-color-r15-g5-b7-a960: rgba(245, 232, 203, .96);
+  --cruor-color-r15-g5-b7-a960: rgba(245, 232, 203, 0.96);
   --cruor-color-r150-g142-b146-a060: rgba(126, 63, 45, 0.06);
   --cruor-color-r151-g34-b51-a620: rgba(122, 26, 40, 0.62);
   --cruor-color-r151-g34-b51-a680: rgba(122, 26, 40, 0.68);
@@ -1581,331 +3044,327 @@ html[data-a11y-theme="parchment"],
   :root[data-a11y-theme="system"],
   html[data-a11y-theme="system"],
   .app-shell[data-a11y-theme="system"] {
+    /* Cruor parchment theme palette */
+    --cruor-rgb-surface: 239, 226, 194;
+    --cruor-rgb-surface-soft: 245, 235, 212;
+    --cruor-rgb-surface-raised: 234, 217, 182;
+    --cruor-rgb-surface-blood: 221, 196, 151;
+    --cruor-rgb-glass: 249, 239, 218;
+    --cruor-rgb-glass-satin: 245, 232, 203;
+    --cruor-rgb-glass-satin-strong: 239, 221, 184;
+    --cruor-rgb-ink: 245, 232, 203;
+    --cruor-rgb-ink-soft: 249, 240, 218;
+    --cruor-rgb-ink-raised: 245, 232, 203;
+    --cruor-rgb-ink-muted: 239, 221, 184;
+    --cruor-rgb-ink-deep: 234, 217, 182;
+    --cruor-rgb-line: 194, 167, 122;
+    --cruor-rgb-line-strong: 126, 63, 45;
+    --cruor-rgb-glass-line: 126, 63, 45;
+    --cruor-rgb-text: 36, 23, 17;
+    --cruor-rgb-muted: 94, 69, 55;
+    --cruor-rgb-faint: 130, 107, 88;
+    --cruor-rgb-milk: 36, 23, 17;
+    --cruor-rgb-blood: 91, 20, 24;
+    --cruor-rgb-blood-strong: 132, 35, 43;
+    --cruor-rgb-blood-bright: 154, 59, 54;
+    --cruor-rgb-blood-glow: 122, 26, 40;
+    --cruor-rgb-rose: 126, 63, 45;
+    --cruor-rgb-good: 72, 98, 84;
 
-  /* Cruor parchment theme palette */
-  --cruor-rgb-surface: 239, 226, 194;
-  --cruor-rgb-surface-soft: 245, 235, 212;
-  --cruor-rgb-surface-raised: 234, 217, 182;
-  --cruor-rgb-surface-blood: 221, 196, 151;
-  --cruor-rgb-glass: 249, 239, 218;
-  --cruor-rgb-glass-satin: 245, 232, 203;
-  --cruor-rgb-glass-satin-strong: 239, 221, 184;
-  --cruor-rgb-ink: 245, 232, 203;
-  --cruor-rgb-ink-soft: 249, 240, 218;
-  --cruor-rgb-ink-raised: 245, 232, 203;
-  --cruor-rgb-ink-muted: 239, 221, 184;
-  --cruor-rgb-ink-deep: 234, 217, 182;
-  --cruor-rgb-line: 194, 167, 122;
-  --cruor-rgb-line-strong: 126, 63, 45;
-  --cruor-rgb-glass-line: 126, 63, 45;
-  --cruor-rgb-text: 36, 23, 17;
-  --cruor-rgb-muted: 94, 69, 55;
-  --cruor-rgb-faint: 130, 107, 88;
-  --cruor-rgb-milk: 36, 23, 17;
-  --cruor-rgb-blood: 91, 20, 24;
-  --cruor-rgb-blood-strong: 132, 35, 43;
-  --cruor-rgb-blood-bright: 154, 59, 54;
-  --cruor-rgb-blood-glow: 122, 26, 40;
-  --cruor-rgb-rose: 126, 63, 45;
-  --cruor-rgb-good: 72, 98, 84;
+    --cruor-theme-bg: var(--cruor-color-hex-efe2c2);
+    --cruor-theme-surface: var(--cruor-color-hex-f5ebd4);
+    --cruor-theme-surface-2: var(--cruor-color-hex-ead9b6);
+    --cruor-theme-surface-3: var(--cruor-color-hex-ddc497);
+    --cruor-theme-surface-glass: var(--cruor-color-r249-g239-b218-a880);
+    --cruor-theme-glass-satin: var(--cruor-color-r245-g232-b203-a840);
+    --cruor-theme-glass-satin-strong: var(--cruor-color-r239-g221-b184-a940);
+    --cruor-theme-glass-line: var(--cruor-color-r91-g39-b24-a340);
+    --cruor-theme-panel-white-line: var(--cruor-color-r44-g20-b14-a140);
+    --cruor-theme-panel-white-glow: var(--cruor-color-r91-g39-b24-a080);
+    --cruor-theme-panel-milk: var(--cruor-color-text-a045);
+    --cruor-theme-panel-milk-strong: var(--cruor-color-text-a070);
+    --cruor-theme-text: var(--cruor-color-text);
+    --cruor-theme-muted: var(--cruor-color-muted);
+    --cruor-theme-faint: var(--cruor-color-faint);
+    --cruor-theme-line: var(--cruor-color-hex-c2a77a);
+    --cruor-theme-line-strong: var(--cruor-color-hex-7e3f2d);
+    --cruor-theme-accent: var(--cruor-color-hex-5b1418);
+    --cruor-theme-accent-2: var(--cruor-color-hex-84232b);
+    --cruor-theme-accent-3: var(--cruor-color-hex-9a3b36);
+    --cruor-theme-shadow: 0 18px 48px var(--cruor-color-r74-g46-b24-a280);
 
-  --cruor-theme-bg: var(--cruor-color-hex-efe2c2);
-  --cruor-theme-surface: var(--cruor-color-hex-f5ebd4);
-  --cruor-theme-surface-2: var(--cruor-color-hex-ead9b6);
-  --cruor-theme-surface-3: var(--cruor-color-hex-ddc497);
-  --cruor-theme-surface-glass: var(--cruor-color-r249-g239-b218-a880);
-  --cruor-theme-glass-satin: var(--cruor-color-r245-g232-b203-a840);
-  --cruor-theme-glass-satin-strong: var(--cruor-color-r239-g221-b184-a940);
-  --cruor-theme-glass-line: var(--cruor-color-r91-g39-b24-a340);
-  --cruor-theme-panel-white-line: var(--cruor-color-r44-g20-b14-a140);
-  --cruor-theme-panel-white-glow: var(--cruor-color-r91-g39-b24-a080);
-  --cruor-theme-panel-milk: var(--cruor-color-text-a045);
-  --cruor-theme-panel-milk-strong: var(--cruor-color-text-a070);
-  --cruor-theme-text: var(--cruor-color-text);
-  --cruor-theme-muted: var(--cruor-color-muted);
-  --cruor-theme-faint: var(--cruor-color-faint);
-  --cruor-theme-line: var(--cruor-color-hex-c2a77a);
-  --cruor-theme-line-strong: var(--cruor-color-hex-7e3f2d);
-  --cruor-theme-accent: var(--cruor-color-hex-5b1418);
-  --cruor-theme-accent-2: var(--cruor-color-hex-84232b);
-  --cruor-theme-accent-3: var(--cruor-color-hex-9a3b36);
-  --cruor-theme-shadow: 0 18px 48px var(--cruor-color-r74-g46-b24-a280);
+    --cruor-surface-panel: var(--cruor-theme-glass-satin);
+    --cruor-surface-panel-strong: var(--cruor-theme-glass-satin-strong);
+    --cruor-surface-card: var(--cruor-color-surface-soft-a780);
+    --cruor-surface-card-hover: var(--cruor-color-surface-raised-a860);
+    --cruor-surface-control: var(--cruor-color-ink-raised-a960);
+    --cruor-surface-control-hover: var(--cruor-color-glass-satin-strong-a940);
+    --cruor-surface-tooltip: var(--cruor-surface-panel-strong);
+    --cruor-border-subtle: var(--cruor-color-text-a120);
+    --cruor-border-medium: var(--cruor-color-r91-g39-b24-a300);
+    --cruor-border-strong-token: var(--cruor-color-r91-g39-b24-a340);
+    --cruor-text-primary: var(--cruor-color-text);
+    --cruor-text-muted: var(--cruor-color-muted);
+    --cruor-text-faint: var(--cruor-color-faint);
 
-  --cruor-surface-panel: var(--cruor-theme-glass-satin);
-  --cruor-surface-panel-strong: var(--cruor-theme-glass-satin-strong);
-  --cruor-surface-card: var(--cruor-color-surface-soft-a780);
-  --cruor-surface-card-hover: var(--cruor-color-surface-raised-a860);
-  --cruor-surface-control: var(--cruor-color-ink-raised-a960);
-  --cruor-surface-control-hover: var(--cruor-color-glass-satin-strong-a940);
-  --cruor-surface-tooltip: var(--cruor-surface-panel-strong);
-  --cruor-border-subtle: var(--cruor-color-text-a120);
-  --cruor-border-medium: var(--cruor-color-r91-g39-b24-a300);
-  --cruor-border-strong-token: var(--cruor-color-r91-g39-b24-a340);
-  --cruor-text-primary: var(--cruor-color-text);
-  --cruor-text-muted: var(--cruor-color-muted);
-  --cruor-text-faint: var(--cruor-color-faint);
-
-  /* Literal aliases retargeted for parchment */
-  --cruor-color-hex-070506: var(--cruor-surface-panel);
-  --cruor-color-hex-09090a: var(--cruor-surface-panel);
-  --cruor-color-hex-1d050a: var(--cruor-surface-panel);
-  --cruor-color-hex-241711: var(--cruor-color-text);
-  --cruor-color-hex-5b1418: var(--cruor-accent-bright);
-  --cruor-color-hex-5e4537: var(--cruor-color-faint);
-  --cruor-color-hex-76b7ff: #76b7ff;
-  --cruor-color-hex-7e3f2d: var(--cruor-color-muted);
-  --cruor-color-hex-7ecb8f: #7ecb8f;
-  --cruor-color-hex-826b58: var(--cruor-color-faint);
-  --cruor-color-hex-84232b: var(--cruor-accent-bright);
-  --cruor-color-hex-8f7278: var(--cruor-color-faint);
-  --cruor-color-hex-9a3b36: var(--cruor-accent-bright);
-  --cruor-color-hex-9d626a: var(--cruor-accent-bright);
-  --cruor-color-hex-aeb6b3: var(--cruor-color-text);
-  --cruor-color-hex-b33b4e: var(--cruor-accent-bright);
-  --cruor-color-hex-be4052: var(--cruor-accent-bright);
-  --cruor-color-hex-bec8c5: var(--cruor-color-muted);
-  --cruor-color-hex-c2a77a: var(--cruor-color-muted);
-  --cruor-color-hex-c3a1a8: var(--cruor-color-muted);
-  --cruor-color-hex-c8a2a8: var(--cruor-color-muted);
-  --cruor-color-hex-d0a2aa: var(--cruor-color-muted);
-  --cruor-color-hex-d58a94: var(--cruor-accent-bright);
-  --cruor-color-hex-ddc497: #ddc497;
-  --cruor-color-hex-dec293: #dec293;
-  --cruor-color-hex-e1cbd0: var(--cruor-color-text);
-  --cruor-color-hex-e3b1ba: var(--cruor-color-muted);
-  --cruor-color-hex-e8b451: #e8b451;
-  --cruor-color-hex-ead6aa: #ead6aa;
-  --cruor-color-hex-ead9b6: #ead9b6;
-  --cruor-color-hex-ecfff0: #ecfff0;
-  --cruor-color-hex-efe2c2: #efe2c2;
-  --cruor-color-hex-f0b9c2: var(--cruor-color-muted);
-  --cruor-color-hex-f0d7dc: var(--cruor-color-muted);
-  --cruor-color-hex-f4d9df: var(--cruor-color-text);
-  --cruor-color-hex-f4e8cc: #f4e8cc;
-  --cruor-color-hex-f5ebd4: #f5ebd4;
-  --cruor-color-hex-ff5c72: #ff5c72;
-  --cruor-color-hex-ffccd2: var(--cruor-color-text);
-  --cruor-color-hex-ffd7dc: var(--cruor-color-text);
-  --cruor-color-hex-ffeef2: var(--cruor-color-text);
-  --cruor-color-hex-fff0f2: var(--cruor-color-text);
-  --cruor-color-hex-fff7f8: var(--cruor-color-text);
-  --cruor-color-r10-g12-b12-a940: rgba(245, 232, 203, 0.94);
-  --cruor-color-r10-g4-b6-a960: rgba(245, 232, 203, 0.96);
-  --cruor-color-r10-g5-b7-a000: rgba(245, 232, 203, 0);
-  --cruor-color-r10-g5-b7-a740: rgba(245, 232, 203, 0.74);
-  --cruor-color-r10-g5-b7-a820: rgba(245, 232, 203, 0.82);
-  --cruor-color-r10-g5-b7-a880: rgba(245, 232, 203, 0.88);
-  --cruor-color-r10-g5-b7-a900: rgba(245, 232, 203, 0.9);
-  --cruor-color-r10-g5-b7-a920: rgba(245, 232, 203, 0.92);
-  --cruor-color-r10-g5-b7-a980: rgba(245, 232, 203, 0.98);
-  --cruor-color-r100-g92-b96-a260: rgba(122, 26, 40, 0.26);
-  --cruor-color-r11-g10-b12-a420: rgba(245, 232, 203, 0.42);
-  --cruor-color-r11-g8-b10-a880: rgba(245, 232, 203, 0.88);
-  --cruor-color-r118-g183-b255-a130: rgba(118, 183, 255, 0.13);
-  --cruor-color-r118-g183-b255-a360: rgba(118, 183, 255, 0.36);
-  --cruor-color-r12-g10-b12-a740: rgba(245, 232, 203, 0.74);
-  --cruor-color-r12-g10-b12-a760: rgba(245, 232, 203, 0.76);
-  --cruor-color-r12-g10-b12-a780: rgba(245, 232, 203, 0.78);
-  --cruor-color-r12-g12-b12-a340: rgba(245, 232, 203, 0.34);
-  --cruor-color-r12-g16-b15-a920: rgba(245, 232, 203, 0.92);
-  --cruor-color-r12-g6-b8-a900: rgba(245, 232, 203, 0.9);
-  --cruor-color-r12-g7-b9-a860: rgba(245, 232, 203, 0.86);
-  --cruor-color-r12-g7-b9-a940: rgba(245, 232, 203, 0.94);
-  --cruor-color-r12-g9-b10-a920: rgba(245, 232, 203, 0.92);
-  --cruor-color-r12-g9-b10-a980: rgba(245, 232, 203, 0.98);
-  --cruor-color-r120-g0-b20-a050: rgba(122, 26, 40, 0.05);
-  --cruor-color-r120-g112-b116-a240: rgba(94, 69, 55, 0.24);
-  --cruor-color-r126-g203-b143-a160: rgba(126, 203, 143, 0.16);
-  --cruor-color-r126-g203-b143-a340: rgba(126, 203, 143, 0.34);
-  --cruor-color-r13-g10-b12-a980: rgba(245, 232, 203, 0.98);
-  --cruor-color-r132-g72-b43-a260: rgba(122, 26, 40, 0.26);
-  --cruor-color-r14-g11-b13-a680: rgba(245, 232, 203, 0.68);
-  --cruor-color-r14-g5-b8-a960: rgba(245, 232, 203, 0.96);
-  --cruor-color-r143-g38-b53-a180: rgba(122, 26, 40, 0.18);
-  --cruor-color-r15-g5-b7-a960: rgba(245, 232, 203, .96);
-  --cruor-color-r150-g142-b146-a060: rgba(126, 63, 45, 0.06);
-  --cruor-color-r151-g34-b51-a620: rgba(122, 26, 40, 0.62);
-  --cruor-color-r151-g34-b51-a680: rgba(122, 26, 40, 0.68);
-  --cruor-color-r16-g12-b14-a500: rgba(245, 232, 203, 0.5);
-  --cruor-color-r160-g148-b152-a460: rgba(126, 63, 45, 0.46);
-  --cruor-color-r170-g190-b220-a340: rgba(170, 190, 220, 0.34);
-  --cruor-color-r170-g214-b174-a180: rgba(170, 214, 174, 0.18);
-  --cruor-color-r170-g48-b66-a760: rgba(122, 26, 40, 0.76);
-  --cruor-color-r174-g50-b68-a620: rgba(122, 26, 40, 0.62);
-  --cruor-color-r178-g166-b170-a500: rgba(126, 63, 45, 0.5);
-  --cruor-color-r18-g1-b5-a900: rgba(245, 232, 203, 0.9);
-  --cruor-color-r18-g1-b5-a920: rgba(245, 232, 203, 0.92);
-  --cruor-color-r18-g12-b14-a990: rgba(245, 232, 203, 0.99);
-  --cruor-color-r18-g17-b18-a420: rgba(245, 232, 203, 0.42);
-  --cruor-color-r18-g5-b8-a985: rgba(245, 232, 203, 0.985);
-  --cruor-color-r18-g7-b9-a880: rgba(245, 232, 203, 0.88);
-  --cruor-color-r180-g170-b174-a380: rgba(126, 63, 45, 0.38);
-  --cruor-color-r180-g174-b176-a045: rgba(94, 69, 55, 0.045);
-  --cruor-color-r180-g38-b54-a520: rgba(122, 26, 40, 0.52);
-  --cruor-color-r75-g6-b16-a220: rgba(245, 232, 203, 0.22);
-  --cruor-color-r180-g38-b54-a400: rgba(122, 26, 40, 0.4);
-  --cruor-color-r180-g38-b54-a420: rgba(122, 26, 40, 0.42);
-  --cruor-color-r190-g220-b180-a860: rgba(190, 220, 180, 0.86);
-  --cruor-color-r198-g68-b84-a860: rgba(122, 26, 40, 0.86);
-  --cruor-color-r2-g2-b3-a985: rgba(245, 232, 203, 0.985);
-  --cruor-color-r20-g5-b8-a900: rgba(245, 232, 203, 0.9);
-  --cruor-color-r208-g162-b170-a080: rgba(126, 63, 45, 0.08);
-  --cruor-color-r208-g162-b170-a085: rgba(126, 63, 45, 0.085);
-  --cruor-color-r208-g162-b170-a100: rgba(126, 63, 45, 0.1);
-  --cruor-color-r208-g162-b170-a120: rgba(126, 63, 45, 0.12);
-  --cruor-color-r208-g162-b170-a140: rgba(126, 63, 45, 0.14);
-  --cruor-color-r208-g162-b170-a160: rgba(126, 63, 45, 0.16);
-  --cruor-color-r208-g162-b170-a180: rgba(126, 63, 45, 0.18);
-  --cruor-color-r208-g162-b170-a220: rgba(126, 63, 45, 0.22);
-  --cruor-color-r208-g162-b170-a240: rgba(126, 63, 45, 0.24);
-  --cruor-color-r208-g162-b170-a280: rgba(126, 63, 45, 0.28);
-  --cruor-color-r208-g162-b170-a320: rgba(126, 63, 45, 0.32);
-  --cruor-color-r208-g162-b170-a340: rgba(126, 63, 45, 0.34);
-  --cruor-color-r208-g162-b170-a380: rgba(126, 63, 45, 0.38);
-  --cruor-color-r208-g162-b170-a500: rgba(126, 63, 45, 0.5);
-  --cruor-color-r208-g162-b170-a520: rgba(126, 63, 45, 0.52);
-  --cruor-color-r208-g162-b170-a580: rgba(126, 63, 45, 0.58);
-  --cruor-color-r208-g162-b170-a620: rgba(126, 63, 45, 0.62);
-  --cruor-color-r208-g162-b170-a680: rgba(126, 63, 45, 0.68);
-  --cruor-color-r208-g162-b170-a720: rgba(126, 63, 45, 0.72);
-  --cruor-color-r208-g162-b170-a760: rgba(126, 63, 45, 0.76);
-  --cruor-color-r208-g162-b170-a780: rgba(126, 63, 45, 0.78);
-  --cruor-color-r208-g162-b170-a820: rgba(126, 63, 45, 0.82);
-  --cruor-color-r208-g162-b170-a840: rgba(126, 63, 45, 0.84);
-  --cruor-color-r208-g162-b170-a860: rgba(126, 63, 45, 0.86);
-  --cruor-color-r208-g162-b170-a880: rgba(126, 63, 45, 0.88);
-  --cruor-color-r208-g162-b170-a900: rgba(126, 63, 45, 0.9);
-  --cruor-color-r21-g16-b18-a840: rgba(245, 232, 203, 0.84);
-  --cruor-color-r214-g184-b98-a400: rgba(132, 72, 43, 0.4);
-  --cruor-color-r214-g228-b255-a900: rgba(214, 228, 255, 0.9);
-  --cruor-color-r22-g6-b9-a920: rgba(245, 232, 203, 0.92);
-  --cruor-color-r220-g175-b184-a080: rgba(94, 69, 55, 0.08);
-  --cruor-color-r222-g146-b159-a320: rgba(126, 63, 45, 0.32);
-  --cruor-color-r222-g146-b159-a400: rgba(126, 63, 45, 0.4);
-  --cruor-color-r223-g245-b226-a720: rgba(223, 245, 226, 0.72);
-  --cruor-color-r224-g82-b101-a860: rgba(122, 26, 40, 0.86);
-  --cruor-color-r230-g205-b162-a700: rgba(94, 69, 55, 0.7);
-  --cruor-color-r232-g167-b69-a080: rgba(232, 167, 69, 0.08);
-  --cruor-color-r232-g167-b69-a100: rgba(232, 167, 69, 0.1);
-  --cruor-color-r232-g167-b69-a220: rgba(232, 167, 69, 0.22);
-  --cruor-color-r232-g167-b69-a320: rgba(232, 167, 69, 0.32);
-  --cruor-color-r232-g167-b69-a580: rgba(232, 167, 69, 0.58);
-  --cruor-color-r232-g167-b69-a620: rgba(232, 167, 69, 0.62);
-  --cruor-color-r232-g167-b69-a840: rgba(232, 167, 69, 0.84);
-  --cruor-color-r232-g180-b81-a140: rgba(232, 180, 81, 0.14);
-  --cruor-color-r232-g180-b81-a420: rgba(232, 180, 81, 0.42);
-  --cruor-color-r237-g255-b240-a900: rgba(237, 255, 240, 0.9);
-  --cruor-color-r238-g238-b23-a040: rgba(36, 23, 17, 0.04);
-  --cruor-color-r239-g221-b184-a940: rgba(36, 23, 17, 0.94);
-  --cruor-color-r24-g17-b20-a580: rgba(245, 232, 203, 0.58);
-  --cruor-color-r240-g215-b220-a080: rgba(36, 23, 17, 0.08);
-  --cruor-color-r240-g215-b220-a120: rgba(36, 23, 17, 0.12);
-  --cruor-color-r240-g215-b220-a130: rgba(36, 23, 17, 0.13);
-  --cruor-color-r240-g215-b220-a140: rgba(36, 23, 17, 0.14);
-  --cruor-color-r240-g215-b220-a160: rgba(36, 23, 17, 0.16);
-  --cruor-color-r240-g215-b220-a200: rgba(36, 23, 17, 0.2);
-  --cruor-color-r240-g215-b220-a220: rgba(36, 23, 17, 0.22);
-  --cruor-color-r240-g215-b220-a240: rgba(36, 23, 17, 0.24);
-  --cruor-color-r240-g215-b220-a260: rgba(36, 23, 17, 0.26);
-  --cruor-color-r240-g215-b220-a280: rgba(36, 23, 17, 0.28);
-  --cruor-color-r240-g215-b220-a300: rgba(36, 23, 17, 0.3);
-  --cruor-color-r240-g215-b220-a340: rgba(36, 23, 17, 0.34);
-  --cruor-color-r240-g215-b220-a420: rgba(36, 23, 17, 0.42);
-  --cruor-color-r240-g215-b220-a460: rgba(36, 23, 17, 0.46);
-  --cruor-color-r240-g215-b220-a480: rgba(36, 23, 17, 0.48);
-  --cruor-color-r240-g215-b220-a520: rgba(36, 23, 17, 0.52);
-  --cruor-color-r240-g215-b220-a540: rgba(36, 23, 17, 0.54);
-  --cruor-color-r240-g215-b220-a560: rgba(36, 23, 17, 0.56);
-  --cruor-color-r240-g215-b220-a580: rgba(36, 23, 17, 0.58);
-  --cruor-color-r240-g215-b220-a600: rgba(36, 23, 17, 0.6);
-  --cruor-color-r240-g215-b220-a620: rgba(36, 23, 17, 0.62);
-  --cruor-color-r240-g215-b220-a660: rgba(36, 23, 17, 0.66);
-  --cruor-color-r240-g215-b220-a680: rgba(36, 23, 17, 0.68);
-  --cruor-color-r240-g215-b220-a720: rgba(36, 23, 17, 0.72);
-  --cruor-color-r240-g215-b220-a740: rgba(36, 23, 17, 0.74);
-  --cruor-color-r240-g215-b220-a760: rgba(36, 23, 17, 0.76);
-  --cruor-color-r240-g215-b220-a780: rgba(36, 23, 17, 0.78);
-  --cruor-color-r240-g215-b220-a800: rgba(36, 23, 17, 0.8);
-  --cruor-color-r240-g215-b220-a840: rgba(36, 23, 17, 0.84);
-  --cruor-color-r240-g215-b220-a860: rgba(36, 23, 17, 0.86);
-  --cruor-color-r244-g228-b232-a900: rgba(36, 23, 17, 0.9);
-  --cruor-color-r245-g232-b203-a840: rgba(36, 23, 17, 0.84);
-  --cruor-color-r249-g239-b218-a880: rgba(36, 23, 17, 0.88);
-  --cruor-color-r255-g196-b207-a920: rgba(94, 69, 55, 0.92);
-  --cruor-color-r255-g212-b220-a700: rgba(36, 23, 17, 0.7);
-  --cruor-color-r255-g232-b158-a940: rgba(255, 232, 158, 0.94);
-  --cruor-color-r255-g232-b236-a900: rgba(36, 23, 17, 0.9);
-  --cruor-color-r255-g238-b202-a820: rgba(255, 238, 202, 0.82);
-  --cruor-color-r255-g240-b242-a580: rgba(36, 23, 17, 0.58);
-  --cruor-color-r255-g240-b242-a860: rgba(36, 23, 17, 0.86);
-  --cruor-color-r255-g240-b242-a900: rgba(36, 23, 17, 0.9);
-  --cruor-color-r255-g246-b225-a920: rgba(36, 23, 17, 0.92);
-  --cruor-color-r255-g248-b250-a780: rgba(36, 23, 17, 0.78);
-  --cruor-color-r255-g250-b239-a760: rgba(36, 23, 17, 0.76);
-  --cruor-color-r255-g92-b114-a160: rgba(255, 92, 114, 0.16);
-  --cruor-color-r255-g92-b114-a480: rgba(255, 92, 114, 0.48);
-  --cruor-color-r28-g18-b21-a960: rgba(245, 232, 203, 0.96);
-  --cruor-color-r28-g5-b9-a900: rgba(245, 232, 203, 0.9);
-  --cruor-color-r28-g5-b9-a960: rgba(245, 232, 203, 0.96);
-  --cruor-color-r28-g9-b13-a460: rgba(245, 232, 203, 0.46);
-  --cruor-color-r29-g25-b21-a250: rgba(245, 232, 203, 0.25);
-  --cruor-color-r3-g3-b4-a1000: rgba(245, 232, 203, 1);
-  --cruor-color-r30-g7-b11-a880: rgba(245, 232, 203, 0.88);
-  --cruor-color-r30-g7-b11-a920: rgba(245, 232, 203, 0.92);
-  --cruor-color-r30-g7-b11-a940: rgba(245, 232, 203, 0.94);
-  --cruor-color-r32-g10-b14-a780: rgba(245, 232, 203, 0.78);
-  --cruor-color-r32-g18-b21-a560: rgba(245, 232, 203, 0.56);
-  --cruor-color-r35-g35-b36-a580: rgba(245, 232, 203, 0.58);
-  --cruor-color-r4-g3-b4-a960: rgba(245, 232, 203, 0.96);
-  --cruor-color-r42-g39-b41-a140: rgba(245, 232, 203, 0.14);
-  --cruor-color-r44-g20-b14-a140: rgba(245, 232, 203, 0.14);
-  --cruor-color-r5-g4-b5-a720: rgba(245, 232, 203, 0.72);
-  --cruor-color-r5-g4-b5-a820: rgba(245, 232, 203, 0.82);
-  --cruor-color-r5-g4-b5-a900: rgba(245, 232, 203, 0.9);
-  --cruor-color-r5-g4-b5-a960: rgba(245, 232, 203, 0.96);
-  --cruor-color-r6-g5-b6-a920: rgba(245, 232, 203, 0.92);
-  --cruor-color-r6-g5-b6-a980: rgba(245, 232, 203, 0.98);
-  --cruor-color-r6-g5-b6-a990: rgba(245, 232, 203, 0.99);
-  --cruor-color-r7-g4-b5-a820: rgba(245, 232, 203, 0.82);
-  --cruor-color-r7-g5-b6-a1000: rgba(245, 232, 203, 1);
-  --cruor-color-r7-g5-b6-a880: rgba(245, 232, 203, 0.88);
-  --cruor-color-r7-g5-b6-a940: rgba(245, 232, 203, 0.94);
-  --cruor-color-r7-g5-b6-a980: rgba(245, 232, 203, 0.98);
-  --cruor-color-r7-g6-b7-a760: rgba(245, 232, 203, 0.76);
-  --cruor-color-r70-g44-b52-a320: rgba(239, 221, 184, 0.32);
-  --cruor-color-r70-g8-b20-a780: rgba(245, 232, 203, 0.78);
-  --cruor-color-r74-g15-b26-a240: rgba(245, 232, 203, 0.24);
-  --cruor-color-r74-g46-b24-a180: rgba(239, 221, 184, 0.18);
-  --cruor-color-r74-g46-b24-a280: rgba(239, 221, 184, 0.28);
-  --cruor-color-r75-g6-b16-a180: rgba(245, 232, 203, 0.18);
-  --cruor-color-r75-g6-b16-a240: rgba(245, 232, 203, 0.24);
-  --cruor-color-r76-g25-b32-a540: rgba(245, 232, 203, 0.54);
-  --cruor-color-r8-g12-b11-a960: rgba(245, 232, 203, 0.96);
-  --cruor-color-r8-g5-b6-a720: rgba(245, 232, 203, 0.72);
-  --cruor-color-r8-g5-b6-a840: rgba(245, 232, 203, 0.84);
-  --cruor-color-r8-g5-b6-a860: rgba(245, 232, 203, 0.86);
-  --cruor-color-r8-g5-b6-a880: rgba(245, 232, 203, 0.88);
-  --cruor-color-r8-g5-b6-a900: rgba(245, 232, 203, 0.9);
-  --cruor-color-r8-g5-b6-a960: rgba(245, 232, 203, 0.96);
-  --cruor-color-r8-g5-b6-a980: rgba(245, 232, 203, 0.98);
-  --cruor-color-r8-g6-b7-a460: rgba(245, 232, 203, 0.46);
-  --cruor-color-r8-g6-b7-a960: rgba(245, 232, 203, 0.96);
-  --cruor-color-r9-g5-b7-a900: rgba(245, 232, 203, 0.9);
-  --cruor-color-r9-g6-b8-a560: rgba(245, 232, 203, 0.56);
-  --cruor-color-r9-g7-b8-a420: rgba(245, 232, 203, 0.42);
-  --cruor-color-r9-g8-b9-a680: rgba(245, 232, 203, 0.68);
-  --cruor-color-r91-g20-b24-a120: rgba(122, 26, 40, 0.12);
-  --cruor-color-r91-g20-b24-a820: rgba(122, 26, 40, 0.82);
-  --cruor-color-r91-g39-b24-a080: rgba(122, 26, 40, 0.08);
-  --cruor-color-r91-g39-b24-a300: rgba(122, 26, 40, 0.3);
-  --cruor-color-r91-g39-b24-a340: rgba(122, 26, 40, 0.34);
-  --cruor-color-r95-g38-b46-a220: rgba(122, 26, 40, 0.22);
-  --cruor-color-r95-g38-b46-a280: rgba(122, 26, 40, 0.28);
+    /* Literal aliases retargeted for parchment */
+    --cruor-color-hex-070506: var(--cruor-surface-panel);
+    --cruor-color-hex-09090a: var(--cruor-surface-panel);
+    --cruor-color-hex-1d050a: var(--cruor-surface-panel);
+    --cruor-color-hex-241711: var(--cruor-color-text);
+    --cruor-color-hex-5b1418: var(--cruor-accent-bright);
+    --cruor-color-hex-5e4537: var(--cruor-color-faint);
+    --cruor-color-hex-76b7ff: #76b7ff;
+    --cruor-color-hex-7e3f2d: var(--cruor-color-muted);
+    --cruor-color-hex-7ecb8f: #7ecb8f;
+    --cruor-color-hex-826b58: var(--cruor-color-faint);
+    --cruor-color-hex-84232b: var(--cruor-accent-bright);
+    --cruor-color-hex-8f7278: var(--cruor-color-faint);
+    --cruor-color-hex-9a3b36: var(--cruor-accent-bright);
+    --cruor-color-hex-9d626a: var(--cruor-accent-bright);
+    --cruor-color-hex-aeb6b3: var(--cruor-color-text);
+    --cruor-color-hex-b33b4e: var(--cruor-accent-bright);
+    --cruor-color-hex-be4052: var(--cruor-accent-bright);
+    --cruor-color-hex-bec8c5: var(--cruor-color-muted);
+    --cruor-color-hex-c2a77a: var(--cruor-color-muted);
+    --cruor-color-hex-c3a1a8: var(--cruor-color-muted);
+    --cruor-color-hex-c8a2a8: var(--cruor-color-muted);
+    --cruor-color-hex-d0a2aa: var(--cruor-color-muted);
+    --cruor-color-hex-d58a94: var(--cruor-accent-bright);
+    --cruor-color-hex-ddc497: #ddc497;
+    --cruor-color-hex-dec293: #dec293;
+    --cruor-color-hex-e1cbd0: var(--cruor-color-text);
+    --cruor-color-hex-e3b1ba: var(--cruor-color-muted);
+    --cruor-color-hex-e8b451: #e8b451;
+    --cruor-color-hex-ead6aa: #ead6aa;
+    --cruor-color-hex-ead9b6: #ead9b6;
+    --cruor-color-hex-ecfff0: #ecfff0;
+    --cruor-color-hex-efe2c2: #efe2c2;
+    --cruor-color-hex-f0b9c2: var(--cruor-color-muted);
+    --cruor-color-hex-f0d7dc: var(--cruor-color-muted);
+    --cruor-color-hex-f4d9df: var(--cruor-color-text);
+    --cruor-color-hex-f4e8cc: #f4e8cc;
+    --cruor-color-hex-f5ebd4: #f5ebd4;
+    --cruor-color-hex-ff5c72: #ff5c72;
+    --cruor-color-hex-ffccd2: var(--cruor-color-text);
+    --cruor-color-hex-ffd7dc: var(--cruor-color-text);
+    --cruor-color-hex-ffeef2: var(--cruor-color-text);
+    --cruor-color-hex-fff0f2: var(--cruor-color-text);
+    --cruor-color-hex-fff7f8: var(--cruor-color-text);
+    --cruor-color-r10-g12-b12-a940: rgba(245, 232, 203, 0.94);
+    --cruor-color-r10-g4-b6-a960: rgba(245, 232, 203, 0.96);
+    --cruor-color-r10-g5-b7-a000: rgba(245, 232, 203, 0);
+    --cruor-color-r10-g5-b7-a740: rgba(245, 232, 203, 0.74);
+    --cruor-color-r10-g5-b7-a820: rgba(245, 232, 203, 0.82);
+    --cruor-color-r10-g5-b7-a880: rgba(245, 232, 203, 0.88);
+    --cruor-color-r10-g5-b7-a900: rgba(245, 232, 203, 0.9);
+    --cruor-color-r10-g5-b7-a920: rgba(245, 232, 203, 0.92);
+    --cruor-color-r10-g5-b7-a980: rgba(245, 232, 203, 0.98);
+    --cruor-color-r100-g92-b96-a260: rgba(122, 26, 40, 0.26);
+    --cruor-color-r11-g10-b12-a420: rgba(245, 232, 203, 0.42);
+    --cruor-color-r11-g8-b10-a880: rgba(245, 232, 203, 0.88);
+    --cruor-color-r118-g183-b255-a130: rgba(118, 183, 255, 0.13);
+    --cruor-color-r118-g183-b255-a360: rgba(118, 183, 255, 0.36);
+    --cruor-color-r12-g10-b12-a740: rgba(245, 232, 203, 0.74);
+    --cruor-color-r12-g10-b12-a760: rgba(245, 232, 203, 0.76);
+    --cruor-color-r12-g10-b12-a780: rgba(245, 232, 203, 0.78);
+    --cruor-color-r12-g12-b12-a340: rgba(245, 232, 203, 0.34);
+    --cruor-color-r12-g16-b15-a920: rgba(245, 232, 203, 0.92);
+    --cruor-color-r12-g6-b8-a900: rgba(245, 232, 203, 0.9);
+    --cruor-color-r12-g7-b9-a860: rgba(245, 232, 203, 0.86);
+    --cruor-color-r12-g7-b9-a940: rgba(245, 232, 203, 0.94);
+    --cruor-color-r12-g9-b10-a920: rgba(245, 232, 203, 0.92);
+    --cruor-color-r12-g9-b10-a980: rgba(245, 232, 203, 0.98);
+    --cruor-color-r120-g0-b20-a050: rgba(122, 26, 40, 0.05);
+    --cruor-color-r120-g112-b116-a240: rgba(94, 69, 55, 0.24);
+    --cruor-color-r126-g203-b143-a160: rgba(126, 203, 143, 0.16);
+    --cruor-color-r126-g203-b143-a340: rgba(126, 203, 143, 0.34);
+    --cruor-color-r13-g10-b12-a980: rgba(245, 232, 203, 0.98);
+    --cruor-color-r132-g72-b43-a260: rgba(122, 26, 40, 0.26);
+    --cruor-color-r14-g11-b13-a680: rgba(245, 232, 203, 0.68);
+    --cruor-color-r14-g5-b8-a960: rgba(245, 232, 203, 0.96);
+    --cruor-color-r143-g38-b53-a180: rgba(122, 26, 40, 0.18);
+    --cruor-color-r15-g5-b7-a960: rgba(245, 232, 203, 0.96);
+    --cruor-color-r150-g142-b146-a060: rgba(126, 63, 45, 0.06);
+    --cruor-color-r151-g34-b51-a620: rgba(122, 26, 40, 0.62);
+    --cruor-color-r151-g34-b51-a680: rgba(122, 26, 40, 0.68);
+    --cruor-color-r16-g12-b14-a500: rgba(245, 232, 203, 0.5);
+    --cruor-color-r160-g148-b152-a460: rgba(126, 63, 45, 0.46);
+    --cruor-color-r170-g190-b220-a340: rgba(170, 190, 220, 0.34);
+    --cruor-color-r170-g214-b174-a180: rgba(170, 214, 174, 0.18);
+    --cruor-color-r170-g48-b66-a760: rgba(122, 26, 40, 0.76);
+    --cruor-color-r174-g50-b68-a620: rgba(122, 26, 40, 0.62);
+    --cruor-color-r178-g166-b170-a500: rgba(126, 63, 45, 0.5);
+    --cruor-color-r18-g1-b5-a900: rgba(245, 232, 203, 0.9);
+    --cruor-color-r18-g1-b5-a920: rgba(245, 232, 203, 0.92);
+    --cruor-color-r18-g12-b14-a990: rgba(245, 232, 203, 0.99);
+    --cruor-color-r18-g17-b18-a420: rgba(245, 232, 203, 0.42);
+    --cruor-color-r18-g5-b8-a985: rgba(245, 232, 203, 0.985);
+    --cruor-color-r18-g7-b9-a880: rgba(245, 232, 203, 0.88);
+    --cruor-color-r180-g170-b174-a380: rgba(126, 63, 45, 0.38);
+    --cruor-color-r180-g174-b176-a045: rgba(94, 69, 55, 0.045);
+    --cruor-color-r180-g38-b54-a520: rgba(122, 26, 40, 0.52);
+    --cruor-color-r75-g6-b16-a220: rgba(245, 232, 203, 0.22);
+    --cruor-color-r180-g38-b54-a400: rgba(122, 26, 40, 0.4);
+    --cruor-color-r180-g38-b54-a420: rgba(122, 26, 40, 0.42);
+    --cruor-color-r190-g220-b180-a860: rgba(190, 220, 180, 0.86);
+    --cruor-color-r198-g68-b84-a860: rgba(122, 26, 40, 0.86);
+    --cruor-color-r2-g2-b3-a985: rgba(245, 232, 203, 0.985);
+    --cruor-color-r20-g5-b8-a900: rgba(245, 232, 203, 0.9);
+    --cruor-color-r208-g162-b170-a080: rgba(126, 63, 45, 0.08);
+    --cruor-color-r208-g162-b170-a085: rgba(126, 63, 45, 0.085);
+    --cruor-color-r208-g162-b170-a100: rgba(126, 63, 45, 0.1);
+    --cruor-color-r208-g162-b170-a120: rgba(126, 63, 45, 0.12);
+    --cruor-color-r208-g162-b170-a140: rgba(126, 63, 45, 0.14);
+    --cruor-color-r208-g162-b170-a160: rgba(126, 63, 45, 0.16);
+    --cruor-color-r208-g162-b170-a180: rgba(126, 63, 45, 0.18);
+    --cruor-color-r208-g162-b170-a220: rgba(126, 63, 45, 0.22);
+    --cruor-color-r208-g162-b170-a240: rgba(126, 63, 45, 0.24);
+    --cruor-color-r208-g162-b170-a280: rgba(126, 63, 45, 0.28);
+    --cruor-color-r208-g162-b170-a320: rgba(126, 63, 45, 0.32);
+    --cruor-color-r208-g162-b170-a340: rgba(126, 63, 45, 0.34);
+    --cruor-color-r208-g162-b170-a380: rgba(126, 63, 45, 0.38);
+    --cruor-color-r208-g162-b170-a500: rgba(126, 63, 45, 0.5);
+    --cruor-color-r208-g162-b170-a520: rgba(126, 63, 45, 0.52);
+    --cruor-color-r208-g162-b170-a580: rgba(126, 63, 45, 0.58);
+    --cruor-color-r208-g162-b170-a620: rgba(126, 63, 45, 0.62);
+    --cruor-color-r208-g162-b170-a680: rgba(126, 63, 45, 0.68);
+    --cruor-color-r208-g162-b170-a720: rgba(126, 63, 45, 0.72);
+    --cruor-color-r208-g162-b170-a760: rgba(126, 63, 45, 0.76);
+    --cruor-color-r208-g162-b170-a780: rgba(126, 63, 45, 0.78);
+    --cruor-color-r208-g162-b170-a820: rgba(126, 63, 45, 0.82);
+    --cruor-color-r208-g162-b170-a840: rgba(126, 63, 45, 0.84);
+    --cruor-color-r208-g162-b170-a860: rgba(126, 63, 45, 0.86);
+    --cruor-color-r208-g162-b170-a880: rgba(126, 63, 45, 0.88);
+    --cruor-color-r208-g162-b170-a900: rgba(126, 63, 45, 0.9);
+    --cruor-color-r21-g16-b18-a840: rgba(245, 232, 203, 0.84);
+    --cruor-color-r214-g184-b98-a400: rgba(132, 72, 43, 0.4);
+    --cruor-color-r214-g228-b255-a900: rgba(214, 228, 255, 0.9);
+    --cruor-color-r22-g6-b9-a920: rgba(245, 232, 203, 0.92);
+    --cruor-color-r220-g175-b184-a080: rgba(94, 69, 55, 0.08);
+    --cruor-color-r222-g146-b159-a320: rgba(126, 63, 45, 0.32);
+    --cruor-color-r222-g146-b159-a400: rgba(126, 63, 45, 0.4);
+    --cruor-color-r223-g245-b226-a720: rgba(223, 245, 226, 0.72);
+    --cruor-color-r224-g82-b101-a860: rgba(122, 26, 40, 0.86);
+    --cruor-color-r230-g205-b162-a700: rgba(94, 69, 55, 0.7);
+    --cruor-color-r232-g167-b69-a080: rgba(232, 167, 69, 0.08);
+    --cruor-color-r232-g167-b69-a100: rgba(232, 167, 69, 0.1);
+    --cruor-color-r232-g167-b69-a220: rgba(232, 167, 69, 0.22);
+    --cruor-color-r232-g167-b69-a320: rgba(232, 167, 69, 0.32);
+    --cruor-color-r232-g167-b69-a580: rgba(232, 167, 69, 0.58);
+    --cruor-color-r232-g167-b69-a620: rgba(232, 167, 69, 0.62);
+    --cruor-color-r232-g167-b69-a840: rgba(232, 167, 69, 0.84);
+    --cruor-color-r232-g180-b81-a140: rgba(232, 180, 81, 0.14);
+    --cruor-color-r232-g180-b81-a420: rgba(232, 180, 81, 0.42);
+    --cruor-color-r237-g255-b240-a900: rgba(237, 255, 240, 0.9);
+    --cruor-color-r238-g238-b23-a040: rgba(36, 23, 17, 0.04);
+    --cruor-color-r239-g221-b184-a940: rgba(36, 23, 17, 0.94);
+    --cruor-color-r24-g17-b20-a580: rgba(245, 232, 203, 0.58);
+    --cruor-color-r240-g215-b220-a080: rgba(36, 23, 17, 0.08);
+    --cruor-color-r240-g215-b220-a120: rgba(36, 23, 17, 0.12);
+    --cruor-color-r240-g215-b220-a130: rgba(36, 23, 17, 0.13);
+    --cruor-color-r240-g215-b220-a140: rgba(36, 23, 17, 0.14);
+    --cruor-color-r240-g215-b220-a160: rgba(36, 23, 17, 0.16);
+    --cruor-color-r240-g215-b220-a200: rgba(36, 23, 17, 0.2);
+    --cruor-color-r240-g215-b220-a220: rgba(36, 23, 17, 0.22);
+    --cruor-color-r240-g215-b220-a240: rgba(36, 23, 17, 0.24);
+    --cruor-color-r240-g215-b220-a260: rgba(36, 23, 17, 0.26);
+    --cruor-color-r240-g215-b220-a280: rgba(36, 23, 17, 0.28);
+    --cruor-color-r240-g215-b220-a300: rgba(36, 23, 17, 0.3);
+    --cruor-color-r240-g215-b220-a340: rgba(36, 23, 17, 0.34);
+    --cruor-color-r240-g215-b220-a420: rgba(36, 23, 17, 0.42);
+    --cruor-color-r240-g215-b220-a460: rgba(36, 23, 17, 0.46);
+    --cruor-color-r240-g215-b220-a480: rgba(36, 23, 17, 0.48);
+    --cruor-color-r240-g215-b220-a520: rgba(36, 23, 17, 0.52);
+    --cruor-color-r240-g215-b220-a540: rgba(36, 23, 17, 0.54);
+    --cruor-color-r240-g215-b220-a560: rgba(36, 23, 17, 0.56);
+    --cruor-color-r240-g215-b220-a580: rgba(36, 23, 17, 0.58);
+    --cruor-color-r240-g215-b220-a600: rgba(36, 23, 17, 0.6);
+    --cruor-color-r240-g215-b220-a620: rgba(36, 23, 17, 0.62);
+    --cruor-color-r240-g215-b220-a660: rgba(36, 23, 17, 0.66);
+    --cruor-color-r240-g215-b220-a680: rgba(36, 23, 17, 0.68);
+    --cruor-color-r240-g215-b220-a720: rgba(36, 23, 17, 0.72);
+    --cruor-color-r240-g215-b220-a740: rgba(36, 23, 17, 0.74);
+    --cruor-color-r240-g215-b220-a760: rgba(36, 23, 17, 0.76);
+    --cruor-color-r240-g215-b220-a780: rgba(36, 23, 17, 0.78);
+    --cruor-color-r240-g215-b220-a800: rgba(36, 23, 17, 0.8);
+    --cruor-color-r240-g215-b220-a840: rgba(36, 23, 17, 0.84);
+    --cruor-color-r240-g215-b220-a860: rgba(36, 23, 17, 0.86);
+    --cruor-color-r244-g228-b232-a900: rgba(36, 23, 17, 0.9);
+    --cruor-color-r245-g232-b203-a840: rgba(36, 23, 17, 0.84);
+    --cruor-color-r249-g239-b218-a880: rgba(36, 23, 17, 0.88);
+    --cruor-color-r255-g196-b207-a920: rgba(94, 69, 55, 0.92);
+    --cruor-color-r255-g212-b220-a700: rgba(36, 23, 17, 0.7);
+    --cruor-color-r255-g232-b158-a940: rgba(255, 232, 158, 0.94);
+    --cruor-color-r255-g232-b236-a900: rgba(36, 23, 17, 0.9);
+    --cruor-color-r255-g238-b202-a820: rgba(255, 238, 202, 0.82);
+    --cruor-color-r255-g240-b242-a580: rgba(36, 23, 17, 0.58);
+    --cruor-color-r255-g240-b242-a860: rgba(36, 23, 17, 0.86);
+    --cruor-color-r255-g240-b242-a900: rgba(36, 23, 17, 0.9);
+    --cruor-color-r255-g246-b225-a920: rgba(36, 23, 17, 0.92);
+    --cruor-color-r255-g248-b250-a780: rgba(36, 23, 17, 0.78);
+    --cruor-color-r255-g250-b239-a760: rgba(36, 23, 17, 0.76);
+    --cruor-color-r255-g92-b114-a160: rgba(255, 92, 114, 0.16);
+    --cruor-color-r255-g92-b114-a480: rgba(255, 92, 114, 0.48);
+    --cruor-color-r28-g18-b21-a960: rgba(245, 232, 203, 0.96);
+    --cruor-color-r28-g5-b9-a900: rgba(245, 232, 203, 0.9);
+    --cruor-color-r28-g5-b9-a960: rgba(245, 232, 203, 0.96);
+    --cruor-color-r28-g9-b13-a460: rgba(245, 232, 203, 0.46);
+    --cruor-color-r29-g25-b21-a250: rgba(245, 232, 203, 0.25);
+    --cruor-color-r3-g3-b4-a1000: rgba(245, 232, 203, 1);
+    --cruor-color-r30-g7-b11-a880: rgba(245, 232, 203, 0.88);
+    --cruor-color-r30-g7-b11-a920: rgba(245, 232, 203, 0.92);
+    --cruor-color-r30-g7-b11-a940: rgba(245, 232, 203, 0.94);
+    --cruor-color-r32-g10-b14-a780: rgba(245, 232, 203, 0.78);
+    --cruor-color-r32-g18-b21-a560: rgba(245, 232, 203, 0.56);
+    --cruor-color-r35-g35-b36-a580: rgba(245, 232, 203, 0.58);
+    --cruor-color-r4-g3-b4-a960: rgba(245, 232, 203, 0.96);
+    --cruor-color-r42-g39-b41-a140: rgba(245, 232, 203, 0.14);
+    --cruor-color-r44-g20-b14-a140: rgba(245, 232, 203, 0.14);
+    --cruor-color-r5-g4-b5-a720: rgba(245, 232, 203, 0.72);
+    --cruor-color-r5-g4-b5-a820: rgba(245, 232, 203, 0.82);
+    --cruor-color-r5-g4-b5-a900: rgba(245, 232, 203, 0.9);
+    --cruor-color-r5-g4-b5-a960: rgba(245, 232, 203, 0.96);
+    --cruor-color-r6-g5-b6-a920: rgba(245, 232, 203, 0.92);
+    --cruor-color-r6-g5-b6-a980: rgba(245, 232, 203, 0.98);
+    --cruor-color-r6-g5-b6-a990: rgba(245, 232, 203, 0.99);
+    --cruor-color-r7-g4-b5-a820: rgba(245, 232, 203, 0.82);
+    --cruor-color-r7-g5-b6-a1000: rgba(245, 232, 203, 1);
+    --cruor-color-r7-g5-b6-a880: rgba(245, 232, 203, 0.88);
+    --cruor-color-r7-g5-b6-a940: rgba(245, 232, 203, 0.94);
+    --cruor-color-r7-g5-b6-a980: rgba(245, 232, 203, 0.98);
+    --cruor-color-r7-g6-b7-a760: rgba(245, 232, 203, 0.76);
+    --cruor-color-r70-g44-b52-a320: rgba(239, 221, 184, 0.32);
+    --cruor-color-r70-g8-b20-a780: rgba(245, 232, 203, 0.78);
+    --cruor-color-r74-g15-b26-a240: rgba(245, 232, 203, 0.24);
+    --cruor-color-r74-g46-b24-a180: rgba(239, 221, 184, 0.18);
+    --cruor-color-r74-g46-b24-a280: rgba(239, 221, 184, 0.28);
+    --cruor-color-r75-g6-b16-a180: rgba(245, 232, 203, 0.18);
+    --cruor-color-r75-g6-b16-a240: rgba(245, 232, 203, 0.24);
+    --cruor-color-r76-g25-b32-a540: rgba(245, 232, 203, 0.54);
+    --cruor-color-r8-g12-b11-a960: rgba(245, 232, 203, 0.96);
+    --cruor-color-r8-g5-b6-a720: rgba(245, 232, 203, 0.72);
+    --cruor-color-r8-g5-b6-a840: rgba(245, 232, 203, 0.84);
+    --cruor-color-r8-g5-b6-a860: rgba(245, 232, 203, 0.86);
+    --cruor-color-r8-g5-b6-a880: rgba(245, 232, 203, 0.88);
+    --cruor-color-r8-g5-b6-a900: rgba(245, 232, 203, 0.9);
+    --cruor-color-r8-g5-b6-a960: rgba(245, 232, 203, 0.96);
+    --cruor-color-r8-g5-b6-a980: rgba(245, 232, 203, 0.98);
+    --cruor-color-r8-g6-b7-a460: rgba(245, 232, 203, 0.46);
+    --cruor-color-r8-g6-b7-a960: rgba(245, 232, 203, 0.96);
+    --cruor-color-r9-g5-b7-a900: rgba(245, 232, 203, 0.9);
+    --cruor-color-r9-g6-b8-a560: rgba(245, 232, 203, 0.56);
+    --cruor-color-r9-g7-b8-a420: rgba(245, 232, 203, 0.42);
+    --cruor-color-r9-g8-b9-a680: rgba(245, 232, 203, 0.68);
+    --cruor-color-r91-g20-b24-a120: rgba(122, 26, 40, 0.12);
+    --cruor-color-r91-g20-b24-a820: rgba(122, 26, 40, 0.82);
+    --cruor-color-r91-g39-b24-a080: rgba(122, 26, 40, 0.08);
+    --cruor-color-r91-g39-b24-a300: rgba(122, 26, 40, 0.3);
+    --cruor-color-r91-g39-b24-a340: rgba(122, 26, 40, 0.34);
+    --cruor-color-r95-g38-b46-a220: rgba(122, 26, 40, 0.22);
+    --cruor-color-r95-g38-b46-a280: rgba(122, 26, 40, 0.28);
   }
 }
-
-
-
 
 /* Shared light-surface aliases.
  * In dark mode they map to existing Cruor gradients; Parchment retargets them above.
@@ -1914,7 +3373,9 @@ html[data-a11y-theme="parchment"],
   --cruor-gradient-parchment-flat: var(--cruor-gradient-linear-057-7894e977);
   --cruor-gradient-parchment-soft: var(--cruor-gradient-linear-059-8e6bc32f);
   --cruor-gradient-parchment-accent: var(--cruor-gradient-radial-230-4b421825);
-  --cruor-gradient-parchment-accent-right: var(--cruor-gradient-radial-262-81e4e47e);
+  --cruor-gradient-parchment-accent-right: var(
+    --cruor-gradient-radial-262-81e4e47e
+  );
   --cruor-gradient-parchment-control: var(--cruor-gradient-linear-026-1ad4f65f);
 }
 
@@ -1943,23 +3404,48 @@ html[data-a11y-theme="parchment"],
   --cruor-surface-tooltip: rgba(var(--cruor-rgb-parchment-panel), 0.98);
 
   --cruor-border-subtle: rgba(var(--cruor-rgb-parchment-border), 0.18);
-  --cruor-border-medium: rgba(var(--cruor-rgb-parchment-border), 0.30);
+  --cruor-border-medium: rgba(var(--cruor-rgb-parchment-border), 0.3);
   --cruor-border-strong-token: rgba(var(--cruor-rgb-parchment-border), 0.46);
 
-  --cruor-shadow-soft-parchment: 0 18px 42px rgba(var(--cruor-rgb-parchment-shadow), 0.16);
+  --cruor-shadow-soft-parchment: 0 18px 42px
+    rgba(var(--cruor-rgb-parchment-shadow), 0.16);
   --cruor-shadow-panel: var(--cruor-shadow-soft-parchment);
   --cruor-shadow-box-065: var(--cruor-shadow-soft-parchment);
   --cruor-shadow-box-068: var(--cruor-shadow-soft-parchment);
-  --cruor-shadow-box-078: 0 12px 30px rgba(var(--cruor-rgb-parchment-shadow), 0.12);
-  --cruor-shadow-box-100: 0 16px 38px rgba(var(--cruor-rgb-parchment-shadow), 0.16);
-  --cruor-shadow-box-109: 0 16px 40px rgba(var(--cruor-rgb-parchment-shadow), 0.16);
-  --cruor-shadow-box-117: 0 18px 48px rgba(var(--cruor-rgb-parchment-shadow), 0.18);
+  --cruor-shadow-box-078: 0 12px 30px
+    rgba(var(--cruor-rgb-parchment-shadow), 0.12);
+  --cruor-shadow-box-100: 0 16px 38px
+    rgba(var(--cruor-rgb-parchment-shadow), 0.16);
+  --cruor-shadow-box-109: 0 16px 40px
+    rgba(var(--cruor-rgb-parchment-shadow), 0.16);
+  --cruor-shadow-box-117: 0 18px 48px
+    rgba(var(--cruor-rgb-parchment-shadow), 0.18);
 
-  --cruor-gradient-parchment-flat: linear-gradient(180deg, rgba(var(--cruor-rgb-parchment-panel), 0.98), rgba(var(--cruor-rgb-parchment-panel-2), 0.94));
-  --cruor-gradient-parchment-soft: linear-gradient(180deg, rgba(var(--cruor-rgb-white), 0.22), rgba(var(--cruor-rgb-parchment-panel-3), 0.28));
-  --cruor-gradient-parchment-accent: radial-gradient(circle at 16% 0%, rgba(var(--cruor-rgb-blood-bright), 0.08), transparent 44%);
-  --cruor-gradient-parchment-accent-right: radial-gradient(circle at 84% 12%, rgba(var(--cruor-rgb-blood-bright), 0.07), transparent 46%);
-  --cruor-gradient-parchment-control: linear-gradient(180deg, rgba(var(--cruor-rgb-white), 0.18), transparent);
+  --cruor-gradient-parchment-flat: linear-gradient(
+    180deg,
+    rgba(var(--cruor-rgb-parchment-panel), 0.98),
+    rgba(var(--cruor-rgb-parchment-panel-2), 0.94)
+  );
+  --cruor-gradient-parchment-soft: linear-gradient(
+    180deg,
+    rgba(var(--cruor-rgb-white), 0.22),
+    rgba(var(--cruor-rgb-parchment-panel-3), 0.28)
+  );
+  --cruor-gradient-parchment-accent: radial-gradient(
+    circle at 16% 0%,
+    rgba(var(--cruor-rgb-blood-bright), 0.08),
+    transparent 44%
+  );
+  --cruor-gradient-parchment-accent-right: radial-gradient(
+    circle at 84% 12%,
+    rgba(var(--cruor-rgb-blood-bright), 0.07),
+    transparent 46%
+  );
+  --cruor-gradient-parchment-control: linear-gradient(
+    180deg,
+    rgba(var(--cruor-rgb-white), 0.18),
+    transparent
+  );
 
   --cruor-gradient-linear-026-1ad4f65f: var(--cruor-gradient-parchment-control);
   --cruor-gradient-linear-038-459fda6b: var(--cruor-gradient-parchment-control);
@@ -1977,8 +3463,12 @@ html[data-a11y-theme="parchment"],
   --cruor-gradient-radial-226-47db204b: var(--cruor-gradient-parchment-accent);
   --cruor-gradient-radial-230-4b421825: var(--cruor-gradient-parchment-accent);
   --cruor-gradient-radial-231-78348717: var(--cruor-gradient-parchment-accent);
-  --cruor-gradient-radial-260-ee55c2c3: var(--cruor-gradient-parchment-accent-right);
-  --cruor-gradient-radial-262-81e4e47e: var(--cruor-gradient-parchment-accent-right);
+  --cruor-gradient-radial-260-ee55c2c3: var(
+    --cruor-gradient-parchment-accent-right
+  );
+  --cruor-gradient-radial-262-81e4e47e: var(
+    --cruor-gradient-parchment-accent-right
+  );
 
   /* Black aliases are unsafe in light surfaces. Keep them as ink shadows, never black veils. */
   --cruor-color-black-a020: rgba(var(--cruor-rgb-parchment-ink), 0.01);
@@ -2041,34 +3531,69 @@ html[data-a11y-theme="parchment"],
 
     --cruor-surface-page: rgb(var(--cruor-rgb-parchment));
     --cruor-surface-panel: rgba(var(--cruor-rgb-parchment-panel), 0.96);
-    --cruor-surface-panel-strong: rgba(var(--cruor-rgb-parchment-panel-2), 0.98);
+    --cruor-surface-panel-strong: rgba(
+      var(--cruor-rgb-parchment-panel-2),
+      0.98
+    );
     --cruor-surface-card: rgba(var(--cruor-rgb-parchment-panel), 0.74);
     --cruor-surface-card-hover: rgba(var(--cruor-rgb-parchment-panel-2), 0.88);
     --cruor-surface-control: rgba(var(--cruor-rgb-parchment-panel), 0.82);
-    --cruor-surface-control-hover: rgba(var(--cruor-rgb-parchment-panel-2), 0.94);
+    --cruor-surface-control-hover: rgba(
+      var(--cruor-rgb-parchment-panel-2),
+      0.94
+    );
     --cruor-surface-tooltip: rgba(var(--cruor-rgb-parchment-panel), 0.98);
 
     --cruor-border-subtle: rgba(var(--cruor-rgb-parchment-border), 0.18);
-    --cruor-border-medium: rgba(var(--cruor-rgb-parchment-border), 0.30);
+    --cruor-border-medium: rgba(var(--cruor-rgb-parchment-border), 0.3);
     --cruor-border-strong-token: rgba(var(--cruor-rgb-parchment-border), 0.46);
 
-    --cruor-shadow-soft-parchment: 0 18px 42px rgba(var(--cruor-rgb-parchment-shadow), 0.16);
+    --cruor-shadow-soft-parchment: 0 18px 42px
+      rgba(var(--cruor-rgb-parchment-shadow), 0.16);
     --cruor-shadow-panel: var(--cruor-shadow-soft-parchment);
     --cruor-shadow-box-065: var(--cruor-shadow-soft-parchment);
     --cruor-shadow-box-068: var(--cruor-shadow-soft-parchment);
-    --cruor-shadow-box-078: 0 12px 30px rgba(var(--cruor-rgb-parchment-shadow), 0.12);
-    --cruor-shadow-box-100: 0 16px 38px rgba(var(--cruor-rgb-parchment-shadow), 0.16);
-    --cruor-shadow-box-109: 0 16px 40px rgba(var(--cruor-rgb-parchment-shadow), 0.16);
-    --cruor-shadow-box-117: 0 18px 48px rgba(var(--cruor-rgb-parchment-shadow), 0.18);
+    --cruor-shadow-box-078: 0 12px 30px
+      rgba(var(--cruor-rgb-parchment-shadow), 0.12);
+    --cruor-shadow-box-100: 0 16px 38px
+      rgba(var(--cruor-rgb-parchment-shadow), 0.16);
+    --cruor-shadow-box-109: 0 16px 40px
+      rgba(var(--cruor-rgb-parchment-shadow), 0.16);
+    --cruor-shadow-box-117: 0 18px 48px
+      rgba(var(--cruor-rgb-parchment-shadow), 0.18);
 
-    --cruor-gradient-parchment-flat: linear-gradient(180deg, rgba(var(--cruor-rgb-parchment-panel), 0.98), rgba(var(--cruor-rgb-parchment-panel-2), 0.94));
-    --cruor-gradient-parchment-soft: linear-gradient(180deg, rgba(var(--cruor-rgb-white), 0.22), rgba(var(--cruor-rgb-parchment-panel-3), 0.28));
-    --cruor-gradient-parchment-accent: radial-gradient(circle at 16% 0%, rgba(var(--cruor-rgb-blood-bright), 0.08), transparent 44%);
-    --cruor-gradient-parchment-accent-right: radial-gradient(circle at 84% 12%, rgba(var(--cruor-rgb-blood-bright), 0.07), transparent 46%);
-    --cruor-gradient-parchment-control: linear-gradient(180deg, rgba(var(--cruor-rgb-white), 0.18), transparent);
+    --cruor-gradient-parchment-flat: linear-gradient(
+      180deg,
+      rgba(var(--cruor-rgb-parchment-panel), 0.98),
+      rgba(var(--cruor-rgb-parchment-panel-2), 0.94)
+    );
+    --cruor-gradient-parchment-soft: linear-gradient(
+      180deg,
+      rgba(var(--cruor-rgb-white), 0.22),
+      rgba(var(--cruor-rgb-parchment-panel-3), 0.28)
+    );
+    --cruor-gradient-parchment-accent: radial-gradient(
+      circle at 16% 0%,
+      rgba(var(--cruor-rgb-blood-bright), 0.08),
+      transparent 44%
+    );
+    --cruor-gradient-parchment-accent-right: radial-gradient(
+      circle at 84% 12%,
+      rgba(var(--cruor-rgb-blood-bright), 0.07),
+      transparent 46%
+    );
+    --cruor-gradient-parchment-control: linear-gradient(
+      180deg,
+      rgba(var(--cruor-rgb-white), 0.18),
+      transparent
+    );
 
-    --cruor-gradient-linear-026-1ad4f65f: var(--cruor-gradient-parchment-control);
-    --cruor-gradient-linear-038-459fda6b: var(--cruor-gradient-parchment-control);
+    --cruor-gradient-linear-026-1ad4f65f: var(
+      --cruor-gradient-parchment-control
+    );
+    --cruor-gradient-linear-038-459fda6b: var(
+      --cruor-gradient-parchment-control
+    );
     --cruor-gradient-linear-057-7894e977: var(--cruor-gradient-parchment-flat);
     --cruor-gradient-linear-059-8e6bc32f: var(--cruor-gradient-parchment-soft);
     --cruor-gradient-linear-103-4f46f041: var(--cruor-gradient-parchment-flat);
@@ -2077,14 +3602,30 @@ html[data-a11y-theme="parchment"],
     --cruor-gradient-linear-191-64ae9c1c: var(--cruor-gradient-parchment-flat);
     --cruor-gradient-linear-199-c2b7262f: var(--cruor-gradient-parchment-flat);
 
-    --cruor-gradient-radial-218-978d4e82: var(--cruor-gradient-parchment-accent);
-    --cruor-gradient-radial-221-c916ee33: var(--cruor-gradient-parchment-accent);
-    --cruor-gradient-radial-225-870fca15: var(--cruor-gradient-parchment-accent);
-    --cruor-gradient-radial-226-47db204b: var(--cruor-gradient-parchment-accent);
-    --cruor-gradient-radial-230-4b421825: var(--cruor-gradient-parchment-accent);
-    --cruor-gradient-radial-231-78348717: var(--cruor-gradient-parchment-accent);
-    --cruor-gradient-radial-260-ee55c2c3: var(--cruor-gradient-parchment-accent-right);
-    --cruor-gradient-radial-262-81e4e47e: var(--cruor-gradient-parchment-accent-right);
+    --cruor-gradient-radial-218-978d4e82: var(
+      --cruor-gradient-parchment-accent
+    );
+    --cruor-gradient-radial-221-c916ee33: var(
+      --cruor-gradient-parchment-accent
+    );
+    --cruor-gradient-radial-225-870fca15: var(
+      --cruor-gradient-parchment-accent
+    );
+    --cruor-gradient-radial-226-47db204b: var(
+      --cruor-gradient-parchment-accent
+    );
+    --cruor-gradient-radial-230-4b421825: var(
+      --cruor-gradient-parchment-accent
+    );
+    --cruor-gradient-radial-231-78348717: var(
+      --cruor-gradient-parchment-accent
+    );
+    --cruor-gradient-radial-260-ee55c2c3: var(
+      --cruor-gradient-parchment-accent-right
+    );
+    --cruor-gradient-radial-262-81e4e47e: var(
+      --cruor-gradient-parchment-accent-right
+    );
 
     --cruor-color-black-a020: rgba(var(--cruor-rgb-parchment-ink), 0.01);
     --cruor-color-black-a040: rgba(var(--cruor-rgb-parchment-ink), 0.02);
@@ -2132,4 +3673,3 @@ html[data-a11y-theme="parchment"],
     --cruor-color-black-a980: rgba(var(--cruor-rgb-parchment-ink), 0.18);
   }
 }
-

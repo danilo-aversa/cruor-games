@@ -1,54 +1,37 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   getSourceAnchorId,
   getStaticContentPackProvenance,
   getStaticContentRegistry,
 } from "../../shared/content/content.index.js";
+import { t } from "../../shared/i18n/index.js";
+import InspirationCardGrid from "./components/InspirationCardGrid.jsx";
+import InspirationDossierModal from "./components/InspirationDossierModal.jsx";
+import InspirationFilters from "./components/InspirationFilters.jsx";
+import {
+  INSPIRATION_DOMAIN_ORDER,
+  INSPIRATION_OBSCURITY_ORDER,
+  INSPIRATION_OBSCURITY,
+  getInspirationCardMeta,
+} from "./inspirations.card-config.js";
 import "./inspirations.styles.css";
 
-const ANY_PACK = "Any Pack";
-const MONSTER_COMPONENT_DISPLAY_LIMIT = 18;
+const ANY_VALUE = "all";
 const INSPIRATION_WORKFLOW_ID = "inspiration-archive";
 const MONSTER_WORKFLOW_ID = "monster-composer";
 const STATIC_CONTENT_REGISTRY = getStaticContentRegistry();
 const STATIC_CONTENT_PACK_PROVENANCE = getStaticContentPackProvenance();
 
-
-const SORT_OPTIONS = [
-  { value: "az", label: "A-Z" },
-  { value: "za", label: "Z-A" },
-  { value: "chronology-asc", label: "Chronology ↑" },
-  { value: "chronology-desc", label: "Chronology ↓" },
-  { value: "components-desc", label: "Most Components" },
-  { value: "components-asc", label: "Fewest Components" },
-];
-
-const SLOT_LABELS = {
-  body: "Body",
-  mind: "Mind",
-  movement: "Movement",
-  attack: "Attack",
-  horror: "Horror",
-  twist: "Twist",
-  weakness: "Weakness / Tell",
-  death: "Death",
-  lair: "Lair / Scene",
-};
-
 function uniqueArray(values) {
   return [...new Set((values || []).filter(Boolean))];
 }
 
-function titleCase(value) {
-  return String(value || "")
-    .split(/[\s_-]+/g)
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
-}
-
 function getPrimarySourceAnchorId(inspiration) {
-  return getSourceAnchorId(inspiration?.sourceAnchors?.[0] || inspiration?.inspiration?.anchor || inspiration?.title);
+  return getSourceAnchorId(
+    inspiration?.sourceAnchors?.[0] ||
+      inspiration?.inspiration?.anchor ||
+      inspiration?.title,
+  );
 }
 
 function getSourceAnchorMeta(inspiration) {
@@ -67,181 +50,58 @@ function getSourceType(inspiration, sourceAnchor = null) {
 }
 
 function getInspirationTitle(inspiration) {
-  return inspiration?.title || inspiration?.label || inspiration?.legacyId || "Untitled Inspiration";
-}
-
-function getInspirationCaption(inspiration) {
-  return inspiration?.caption || inspiration?.summary || inspiration?.narrative || "";
-}
-
-function getInspirationLogic(inspiration, sourceAnchor = null) {
   return (
-    inspiration?.inspiration?.logic ||
-    inspiration?.narrative ||
-    sourceAnchor?.summary ||
-    "This inspiration provides concrete images and pressures that can become playable horror components."
+    inspiration?.title ||
+    inspiration?.label ||
+    inspiration?.legacyId ||
+    "Untitled Inspiration"
   );
 }
 
-function coerceChronologyValue(value) {
-  if (value == null || value === "") return null;
-
-  if (typeof value === "number") {
-    return Number.isFinite(value) ? value : null;
-  }
-
-  if (typeof value === "string") {
-    const trimmed = value.trim();
-    if (!trimmed) return null;
-
-    const directNumber = Number(trimmed);
-    if (Number.isFinite(directNumber)) return directNumber;
-
-    const yearMatch = trimmed.match(/-?\d{1,4}/);
-    if (yearMatch) return Number(yearMatch[0]);
-
-    const timestamp = Date.parse(trimmed);
-    return Number.isNaN(timestamp) ? null : timestamp;
-  }
-
-  if (typeof value === "object") {
-    return coerceChronologyValue(
-      value.sort ??
-        value.order ??
-        value.year ??
-        value.startYear ??
-        value.date ??
-        value.label ??
-        value.value,
-    );
-  }
-
-  return null;
-}
-
-function getChronologyValue(inspiration, sourceAnchor = null) {
-  return coerceChronologyValue(
-    inspiration?.chronology ??
-      inspiration?.timeline ??
-      inspiration?.year ??
-      inspiration?.date ??
-      inspiration?.metadata?.chronology ??
-      inspiration?.metadata?.year ??
-      inspiration?.metadata?.date ??
-      inspiration?.inspiration?.chronology ??
-      inspiration?.inspiration?.year ??
-      inspiration?.inspiration?.date ??
-      sourceAnchor?.chronology ??
-      sourceAnchor?.timeline ??
-      sourceAnchor?.year ??
-      sourceAnchor?.date ??
-      sourceAnchor?.metadata?.chronology ??
-      sourceAnchor?.metadata?.year ??
-      sourceAnchor?.metadata?.date,
+function getContentPackLabel(inspiration) {
+  return STATIC_CONTENT_PACK_PROVENANCE.getPackLabelForEntry(
+    "inspirations",
+    inspiration,
   );
-}
-
-function compareByTitle(left, right, direction = 1) {
-  return direction * getInspirationTitle(left).localeCompare(getInspirationTitle(right));
-}
-
-function compareByChronology(left, right, direction, sourceOrderById) {
-  const leftChronology = getChronologyValue(left, getSourceAnchorMeta(left));
-  const rightChronology = getChronologyValue(right, getSourceAnchorMeta(right));
-  const leftFallback = sourceOrderById.get(left.id) ?? 0;
-  const rightFallback = sourceOrderById.get(right.id) ?? 0;
-  const leftValue = leftChronology ?? leftFallback;
-  const rightValue = rightChronology ?? rightFallback;
-
-  return direction * (leftValue - rightValue) || compareByTitle(left, right);
-}
-
-function compareByLinkedComponents(left, right, direction) {
-  const leftCount = getLinkedSystemComponents(left).length;
-  const rightCount = getLinkedSystemComponents(right).length;
-
-  return direction * (leftCount - rightCount) || compareByTitle(left, right);
-}
-
-function compareInspirationCards(left, right, sortMode, sourceOrderById) {
-  switch (sortMode) {
-    case "za":
-      return compareByTitle(left, right, -1);
-    case "chronology-asc":
-      return compareByChronology(left, right, 1, sourceOrderById);
-    case "chronology-desc":
-      return compareByChronology(left, right, -1, sourceOrderById);
-    case "components-desc":
-      return compareByLinkedComponents(left, right, -1);
-    case "components-asc":
-      return compareByLinkedComponents(left, right, 1);
-    case "az":
-    default:
-      return compareByTitle(left, right);
-  }
 }
 
 function getLinkedSystemComponents(inspiration) {
   const sourceAnchorId = getPrimarySourceAnchorId(inspiration);
   if (!sourceAnchorId) return [];
-
-  return STATIC_CONTENT_REGISTRY.getLinkedComponents(sourceAnchorId).sort((a, b) =>
-    a.title.localeCompare(b.title),
+  return STATIC_CONTENT_REGISTRY.getLinkedComponents(sourceAnchorId).sort(
+    (left, right) => left.title.localeCompare(right.title),
   );
 }
 
-function getLinkedRegistryComponents(inspiration) {
+function getLinkedMonsterComponents(inspiration, locale) {
   const sourceAnchorId = getPrimarySourceAnchorId(inspiration);
   if (!sourceAnchorId) return [];
 
   return STATIC_CONTENT_REGISTRY.getLinkedComponents(sourceAnchorId, {
     workflow: MONSTER_WORKFLOW_ID,
+    locale,
   })
     .filter((component) => component.contentType === "monster-graft")
-    .sort((a, b) => {
-      const leftSlot = a.monster?.slot || a.slots?.[0] || "";
-      const rightSlot = b.monster?.slot || b.slots?.[0] || "";
+    .sort((left, right) => {
+      const leftSlot = left.monster?.slot || left.slots?.[0] || "";
+      const rightSlot = right.monster?.slot || right.slots?.[0] || "";
       return (
         leftSlot.localeCompare(rightSlot) ||
-        Number(a.monster?.cost || 0) - Number(b.monster?.cost || 0) ||
-        a.title.localeCompare(b.title)
+        Number(left.monster?.cost || 0) - Number(right.monster?.cost || 0) ||
+        left.title.localeCompare(right.title)
       );
     });
 }
 
-function groupComponentsBySlot(components) {
-  return components.reduce((groups, component) => {
-    const slotId = component.monster?.slot || component.slots?.[0] || "other";
-    if (!groups[slotId]) groups[slotId] = [];
-    groups[slotId].push(component);
-    return groups;
-  }, {});
-}
-
-function getContentPack(collectionName, entry) {
-  return STATIC_CONTENT_PACK_PROVENANCE.getPrimaryPackForEntry(collectionName, entry);
-}
-
-function getContentPacks(collectionName, entry) {
-  return STATIC_CONTENT_PACK_PROVENANCE.getPacksForEntry(collectionName, entry);
-}
-
-function getContentPackIds(collectionName, entry) {
-  return STATIC_CONTENT_PACK_PROVENANCE.getPackIdsForEntry(collectionName, entry);
-}
-
-function getContentPackLabel(collectionName, entry) {
-  return STATIC_CONTENT_PACK_PROVENANCE.getPackLabelForEntry(collectionName, entry);
-}
-
-function formatComponentMeta(component) {
-  const cost = Number(component.monster?.cost || 0);
-  const costText = cost > 0 ? `+${cost}` : String(cost);
-  const packLabel = getContentPackLabel("components", component);
-  return `Pressure ${costText} · Complexity ${component.monster?.complexity ?? 0} · ${packLabel}`;
-}
-
-function buildRegistryHaystack(inspiration, sourceAnchor, linkedComponents) {
+function buildSearchText(card) {
+  const {
+    inspiration,
+    sourceAnchor,
+    sourceType,
+    meta,
+    linkedComponents,
+    horror,
+  } = card;
   return [
     inspiration.id,
     inspiration.legacyId,
@@ -253,415 +113,397 @@ function buildRegistryHaystack(inspiration, sourceAnchor, linkedComponents) {
     inspiration.inspiration?.logic,
     sourceAnchor?.label,
     sourceAnchor?.summary,
-    sourceAnchor?.type,
-    ...getContentPacks("inspirations", inspiration).map((pack) => pack.title),
+    sourceType,
+    meta.domainId,
+    meta.obscurityId,
+    meta.collectionLabel,
+    meta.description,
     ...(inspiration.sourceTypes || []),
-    ...(inspiration.horror || []),
-    ...(sourceAnchor?.sourceTypes || []),
-    ...(sourceAnchor?.horror || []),
+    ...(inspiration.themes || []),
+    ...(inspiration.motifs || []),
+    ...horror,
     ...linkedComponents.map((component) => component.title),
     ...linkedComponents.map((component) => component.summary),
-    ...linkedComponents.flatMap((component) => getContentPacks("components", component).map((pack) => pack.title)),
   ]
     .filter(Boolean)
     .join(" ")
     .toLowerCase();
 }
 
-function InspirationImage({ inspiration }) {
-  const [failed, setFailed] = useState(false);
-  const icon = inspiration?.media?.icon || "fa-book-open";
-  const imageUrl = inspiration?.media?.imageUrl || "";
+function compareCards(left, right, sortMode) {
+  const titleOrder = getInspirationTitle(left.inspiration).localeCompare(
+    getInspirationTitle(right.inspiration),
+  );
 
-  if (!imageUrl || failed) {
-    return <i className={`fa-solid ${icon}`} aria-hidden="true" />;
+  switch (sortMode) {
+    case "az":
+      return titleOrder;
+    case "za":
+      return -titleOrder;
+    case "source-type":
+      return left.sourceType.localeCompare(right.sourceType) || titleOrder;
+    case "components-desc":
+      return (
+        right.linkedComponents.length - left.linkedComponents.length ||
+        titleOrder
+      );
+    case "collection":
+    default:
+      return left.meta.number - right.meta.number || titleOrder;
   }
-
-  return (
-    <img
-      src={imageUrl}
-      alt=""
-      loading="lazy"
-      decoding="async"
-      onError={() => setFailed(true)}
-    />
-  );
 }
 
-function ComponentGroup({ slotId, components }) {
-  return (
-    <article className="inspirations-page__component-group">
-      <h4>
-        <span>{SLOT_LABELS[slotId] || titleCase(slotId)}</span>
-        <em>{components.length}</em>
-      </h4>
-      <div className="inspirations-page__linked">
-        {components.slice(0, 6).map((component) => (
-          <span key={component.id} title={component.summary}>
-            <strong>{component.title}</strong>
-            <small>{formatComponentMeta(component)}</small>
-          </span>
-        ))}
-      </div>
-    </article>
-  );
-}
-
-function InspirationFilterSelect({ id, label, value, options, onChange, openSelectKey, setOpenSelectKey }) {
-  const normalizedOptions = options.map((option) =>
-    typeof option === "string" ? { value: option, label: option } : option,
-  );
-  const selectedOption = normalizedOptions.find((option) => option.value === value) || normalizedOptions[0];
-  const isOpen = openSelectKey === id;
-
-  return (
-    <label className="inspirations-page__filter-select">
-      <span>{label}</span>
-      <div
-        className="inspirations-page__select"
-        data-open={isOpen ? "true" : "false"}
-        onBlur={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget)) {
-            setOpenSelectKey((current) => (current === id ? "" : current));
-          }
-        }}
-      >
-        <button
-          className="inspirations-page__select-trigger"
-          type="button"
-          aria-haspopup="listbox"
-          aria-expanded={isOpen}
-          onClick={() => setOpenSelectKey(isOpen ? "" : id)}
-        >
-          <strong>{selectedOption?.label || "Select"}</strong>
-          <i className="fa-solid fa-chevron-down" aria-hidden="true" />
-        </button>
-        {isOpen && (
-          <div className="inspirations-page__select-menu" role="listbox" aria-label={label}>
-            {normalizedOptions.map((option) => {
-              const isActive = option.value === value;
-              return (
-                <button
-                  key={option.value}
-                  className={`inspirations-page__select-option ${isActive ? "is-active" : ""}`}
-                  type="button"
-                  role="option"
-                  aria-selected={isActive}
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => {
-                    onChange(option.value);
-                    setOpenSelectKey("");
-                  }}
-                >
-                  <span>
-                    <strong>{option.label}</strong>
-                    {option.description ? <small>{option.description}</small> : null}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </label>
-  );
-}
-
-export default function InspirationsPage({ onOpenMonsterComposer } = {}) {
+export default function InspirationsPage({
+  onOpenMonsterComposer,
+  locale = "en",
+} = {}) {
   const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState("Any Type");
-  const [packFilter, setPackFilter] = useState(ANY_PACK);
-  const [sortMode, setSortMode] = useState("az");
-  const [openSelectKey, setOpenSelectKey] = useState("");
-  const [activeInspirationId, setActiveInspirationId] = useState("");
+  const [domainFilter, setDomainFilter] = useState(ANY_VALUE);
+  const [sourceTypeFilter, setSourceTypeFilter] = useState(ANY_VALUE);
+  const [obscurityFilter, setObscurityFilter] = useState(ANY_VALUE);
+  const [collectionFilter, setCollectionFilter] = useState(ANY_VALUE);
+  const [sortMode, setSortMode] = useState("collection");
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [flippedCardId, setFlippedCardId] = useState("");
+  const [dossierCardId, setDossierCardId] = useState("");
 
-  const allInspirations = useMemo(() => {
-    return STATIC_CONTENT_REGISTRY.getInspirations({ workflow: INSPIRATION_WORKFLOW_ID });
-  }, []);
-
-  const sourceOrderById = useMemo(() => {
-    return new Map(allInspirations.map((inspiration, index) => [inspiration.id, index]));
-  }, [allInspirations]);
-
-  const packOptions = useMemo(() => {
-    const inspirationPackIds = new Set(
-      allInspirations.flatMap((inspiration) => getContentPackIds("inspirations", inspiration)),
-    );
-
-    return [
-      { id: ANY_PACK, title: ANY_PACK },
-      ...STATIC_CONTENT_PACK_PROVENANCE.packs
-        .filter((pack) => inspirationPackIds.has(pack.id))
-        .sort((a, b) => a.title.localeCompare(b.title)),
-    ];
-  }, [allInspirations]);
-
-  const sourceTypes = useMemo(() => {
-    return [
-      "Any Type",
-      ...uniqueArray(
-        allInspirations.flatMap((inspiration) => {
-          const sourceAnchor = getSourceAnchorMeta(inspiration);
-          return [getSourceType(inspiration, sourceAnchor), ...(inspiration.sourceTypes || [])];
-        }),
-      ).sort((a, b) => a.localeCompare(b)),
-    ];
-  }, [allInspirations]);
-
-  const cards = useMemo(() => {
-    const query = search.trim().toLowerCase();
-
-    return allInspirations
-      .filter((inspiration) => {
-        const sourceAnchor = getSourceAnchorMeta(inspiration);
-        const linkedComponents = getLinkedSystemComponents(inspiration);
-        const sourceType = getSourceType(inspiration, sourceAnchor);
-        const packIds = getContentPackIds("inspirations", inspiration);
-
-        if (packFilter !== ANY_PACK && !packIds.includes(packFilter)) {
-          return false;
-        }
-
-        if (typeFilter !== "Any Type" && sourceType !== typeFilter && !inspiration.sourceTypes?.includes(typeFilter)) {
-          return false;
-        }
-
-        if (!query) return true;
-
-        return buildRegistryHaystack(inspiration, sourceAnchor, linkedComponents).includes(query);
-      })
-      .sort((left, right) => compareInspirationCards(left, right, sortMode, sourceOrderById));
-  }, [allInspirations, search, typeFilter, packFilter, sortMode, sourceOrderById]);
-
-  const activeInspiration =
-    cards.find((item) => item.id === activeInspirationId) ||
-    allInspirations.find((item) => item.id === activeInspirationId) ||
-    cards[0] ||
-    null;
-  const activeSourceAnchor = activeInspiration ? getSourceAnchorMeta(activeInspiration) : null;
-  const linkedComponents = activeInspiration ? getLinkedRegistryComponents(activeInspiration) : [];
-  const groupedComponents = groupComponentsBySlot(linkedComponents);
-  const displayedComponentCount = Math.min(linkedComponents.length, MONSTER_COMPONENT_DISPLAY_LIMIT);
-  const activeHorror = activeInspiration
-    ? uniqueArray([...(activeInspiration.horror || []), ...(activeSourceAnchor?.horror || [])])
-    : [];
-  const activeContentPack = activeInspiration ? getContentPack("inspirations", activeInspiration) : null;
-  const activeFilterCount = [
-    search.trim(),
-    packFilter !== ANY_PACK,
-    typeFilter !== "Any Type",
-  ].filter(Boolean).length;
-  const canOpenMonsterComposer = Boolean(
-    activeInspiration && activeSourceAnchor && typeof onOpenMonsterComposer === "function",
+  const allInspirations = useMemo(
+    () =>
+      STATIC_CONTENT_REGISTRY.getInspirations({
+        workflow: INSPIRATION_WORKFLOW_ID,
+        locale,
+      }),
+    [locale],
   );
 
-  function openActiveMonsterComposer() {
-    if (!canOpenMonsterComposer) return;
+  const allCards = useMemo(
+    () =>
+      allInspirations.map((inspiration, index) => {
+        const sourceAnchor = getSourceAnchorMeta(inspiration);
+        const sourceType = getSourceType(inspiration, sourceAnchor);
+        const linkedComponents = getLinkedSystemComponents(inspiration);
+        const horror = uniqueArray([
+          ...(inspiration.horror || []),
+          ...(sourceAnchor?.horror || []),
+        ]);
+        const collectionLabel = getContentPackLabel(inspiration);
+        const meta = getInspirationCardMeta(inspiration, {
+          fallbackNumber: index + 1,
+          collectionLabel,
+        });
+        const card = {
+          inspiration,
+          sourceAnchor,
+          sourceType,
+          linkedComponents,
+          horror,
+          meta,
+        };
 
-    const sourceAnchorId = getPrimarySourceAnchorId(activeInspiration);
+        return {
+          ...card,
+          searchText: buildSearchText(card),
+        };
+      }),
+    [allInspirations],
+  );
+
+  const domainCounts = useMemo(() => {
+    const counts = Object.fromEntries(
+      INSPIRATION_DOMAIN_ORDER.map((id) => [id, 0]),
+    );
+    allCards.forEach((card) => {
+      counts[card.meta.domainId] = (counts[card.meta.domainId] || 0) + 1;
+    });
+    return { ...counts, all: allCards.length };
+  }, [allCards]);
+
+  const sourceTypeOptions = useMemo(
+    () => [
+      {
+        value: ANY_VALUE,
+        label: t("inspirations.filters.anySourceType", {}, locale),
+      },
+      ...uniqueArray(allCards.map((card) => card.sourceType))
+        .sort((left, right) => left.localeCompare(right))
+        .map((sourceType) => ({ value: sourceType, label: sourceType })),
+    ],
+    [allCards, locale],
+  );
+
+  const obscurityOptions = useMemo(
+    () => [
+      {
+        value: ANY_VALUE,
+        label: t("inspirations.filters.anyObscurity", {}, locale),
+      },
+      ...INSPIRATION_OBSCURITY_ORDER.map((obscurityId) => ({
+        value: obscurityId,
+        label: `${INSPIRATION_OBSCURITY[obscurityId].symbol} ${t(
+          INSPIRATION_OBSCURITY[obscurityId].labelKey,
+          {},
+          locale,
+        )}`,
+      })),
+    ],
+    [locale],
+  );
+
+  const collectionOptions = useMemo(() => {
+    const collections = new Map();
+    allCards.forEach((card) => {
+      collections.set(card.meta.collectionId, card.meta.collectionLabel);
+    });
+    return [
+      {
+        value: ANY_VALUE,
+        label: t("inspirations.filters.anyCollection", {}, locale),
+      },
+      ...[...collections.entries()]
+        .sort((left, right) => left[1].localeCompare(right[1]))
+        .map(([value, label]) => ({ value, label })),
+    ];
+  }, [allCards, locale]);
+
+  const sortOptions = useMemo(
+    () => [
+      {
+        value: "collection",
+        label: t("inspirations.sort.collection", {}, locale),
+      },
+      { value: "az", label: t("inspirations.sort.az", {}, locale) },
+      { value: "za", label: t("inspirations.sort.za", {}, locale) },
+      {
+        value: "source-type",
+        label: t("inspirations.sort.sourceType", {}, locale),
+      },
+      {
+        value: "components-desc",
+        label: t("inspirations.sort.components", {}, locale),
+      },
+    ],
+    [locale],
+  );
+
+  const filteredCards = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return allCards
+      .filter((card) => {
+        if (domainFilter !== ANY_VALUE && card.meta.domainId !== domainFilter)
+          return false;
+        if (
+          sourceTypeFilter !== ANY_VALUE &&
+          card.sourceType !== sourceTypeFilter
+        )
+          return false;
+        if (
+          obscurityFilter !== ANY_VALUE &&
+          card.meta.obscurityId !== obscurityFilter
+        )
+          return false;
+        if (
+          collectionFilter !== ANY_VALUE &&
+          card.meta.collectionId !== collectionFilter
+        )
+          return false;
+        return !query || card.searchText.includes(query);
+      })
+      .sort((left, right) => compareCards(left, right, sortMode));
+  }, [
+    allCards,
+    collectionFilter,
+    domainFilter,
+    obscurityFilter,
+    search,
+    sortMode,
+    sourceTypeFilter,
+  ]);
+
+  useEffect(() => {
+    if (
+      flippedCardId &&
+      !filteredCards.some((card) => card.inspiration.id === flippedCardId)
+    ) {
+      setFlippedCardId("");
+    }
+  }, [filteredCards, flippedCardId]);
+
+  useEffect(() => {
+    if (dossierCardId) return undefined;
+
+    function handleEscape(event) {
+      if (event.key === "Escape") setFlippedCardId("");
+    }
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [dossierCardId]);
+
+  const dossierCard = useMemo(
+    () =>
+      allCards.find((card) => card.inspiration.id === dossierCardId) || null,
+    [allCards, dossierCardId],
+  );
+  const dossierComponents = useMemo(
+    () =>
+      dossierCard
+        ? getLinkedMonsterComponents(dossierCard.inspiration, locale)
+        : [],
+    [dossierCard, locale],
+  );
+  const canOpenMonsterComposer = Boolean(
+    dossierCard?.sourceAnchor && typeof onOpenMonsterComposer === "function",
+  );
+
+  const activeFilterCount = [
+    domainFilter !== ANY_VALUE,
+    sourceTypeFilter !== ANY_VALUE,
+    obscurityFilter !== ANY_VALUE,
+    collectionFilter !== ANY_VALUE,
+  ].filter(Boolean).length;
+
+  const closeDossier = useCallback(() => setDossierCardId(""), []);
+
+  const useInMonsterComposer = useCallback(() => {
+    if (!canOpenMonsterComposer || !dossierCard) return;
+    const sourceAnchorId = getPrimarySourceAnchorId(dossierCard.inspiration);
     onOpenMonsterComposer({
       sourceAnchorId,
-      sourceAnchorIds: uniqueArray([sourceAnchorId, ...(activeInspiration.sourceAnchors || [])]),
-      sourceAnchorLabel: activeSourceAnchor?.label || getInspirationTitle(activeInspiration),
-      inspirationId: activeInspiration.id,
-      inspirationTitle: getInspirationTitle(activeInspiration),
+      sourceAnchorIds: uniqueArray([
+        sourceAnchorId,
+        ...(dossierCard.inspiration.sourceAnchors || []),
+      ]),
+      sourceAnchorLabel:
+        dossierCard.sourceAnchor?.label ||
+        getInspirationTitle(dossierCard.inspiration),
+      inspirationId: dossierCard.inspiration.id,
+      inspirationTitle: getInspirationTitle(dossierCard.inspiration),
     });
-  }
+  }, [canOpenMonsterComposer, dossierCard, onOpenMonsterComposer]);
 
   function clearFilters() {
     setSearch("");
-    setPackFilter(ANY_PACK);
-    setTypeFilter("Any Type");
+    setDomainFilter(ANY_VALUE);
+    setSourceTypeFilter(ANY_VALUE);
+    setObscurityFilter(ANY_VALUE);
+    setCollectionFilter(ANY_VALUE);
+    setFlippedCardId("");
   }
 
   return (
-    <section className="inspirations-page" aria-label="Inspirations archive">
-      <div className="inspirations-page__workspace">
-        <section className="inspirations-page__library" aria-label="Inspiration cards">
-          <header className="inspirations-page__hero inspirations-panel">
-            <div className="inspirations-page__hero-copy">
-              <h1>Choose the Horror Source</h1>
-              <p>
-                Browse real images, rituals, places, and cultural fears as playable seeds for Cruor tools.
-                Each source card works like a visual prompt, a lore dossier, and a bridge toward the wider Cruor system.
-              </p>
-            </div>
-          </header>
+    <section
+      className="inspirations-page"
+      aria-label={t("inspirations.aria", {}, locale)}
+    >
+      <header className="inspirations-page__masthead">
+        <div>
+          <p className="inspirations-page__eyebrow">
+            {t("inspirations.hero.eyebrow", {}, locale)}
+          </p>
+          <h1>{t("inspirations.hero.title", {}, locale)}</h1>
+          <p className="inspirations-page__intro">
+            {t("inspirations.hero.body", {}, locale)}
+          </p>
+        </div>
+        <p className="inspirations-page__archive-summary">
+          <strong>{allCards.length}</strong>
+          <span>{t("inspirations.hero.cards", {}, locale)}</span>
+          <i aria-hidden="true" />
+          <strong>{INSPIRATION_DOMAIN_ORDER.length}</strong>
+          <span>{t("inspirations.hero.domains", {}, locale)}</span>
+        </p>
+      </header>
 
-          <div className="inspirations-page__tools inspirations-panel" aria-label="Inspiration filters">
-            <label className="inspirations-page__search">
-              <span>Search the archive</span>
-              <input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                type="search"
-                placeholder="Search inspirations, source types, components..."
-                aria-label="Search inspirations"
-              />
-            </label>
-            <InspirationFilterSelect
-              id="pack"
-              label="Content Pack"
-              value={packFilter}
-              options={packOptions.map((pack) => ({ value: pack.id, label: pack.title }))}
-              onChange={setPackFilter}
-              openSelectKey={openSelectKey}
-              setOpenSelectKey={setOpenSelectKey}
-            />
-            <InspirationFilterSelect
-              id="source-type"
-              label="Source Type"
-              value={typeFilter}
-              options={sourceTypes}
-              onChange={setTypeFilter}
-              openSelectKey={openSelectKey}
-              setOpenSelectKey={setOpenSelectKey}
-            />
-            <InspirationFilterSelect
-              id="sort"
-              label="Sort"
-              value={sortMode}
-              options={SORT_OPTIONS}
-              onChange={setSortMode}
-              openSelectKey={openSelectKey}
-              setOpenSelectKey={setOpenSelectKey}
-            />
-            <button
-              className="inspirations-page__clear-btn"
-              type="button"
-              onClick={clearFilters}
-              disabled={!activeFilterCount}
-            >
-              Clear {activeFilterCount ? `(${activeFilterCount})` : ""}
-            </button>
-          </div>
-          <div className="inspirations-page__library-head">
-            <div>
-              <p className="eyebrow">Visual Source Cards</p>
-              <h2>{cards.length ? `${cards.length} usable source${cards.length === 1 ? "" : "s"}` : "No matching sources"}</h2>
-            </div>
-            <span>{activeFilterCount ? `${activeFilterCount} active filter${activeFilterCount === 1 ? "" : "s"}` : "All sources"}</span>
-          </div>
+      <InspirationFilters
+        locale={locale}
+        search={search}
+        onSearchChange={setSearch}
+        domainFilter={domainFilter}
+        onDomainChange={setDomainFilter}
+        domainCounts={domainCounts}
+        sortMode={sortMode}
+        onSortChange={setSortMode}
+        sortOptions={sortOptions}
+        sourceTypeFilter={sourceTypeFilter}
+        onSourceTypeChange={setSourceTypeFilter}
+        sourceTypeOptions={sourceTypeOptions}
+        obscurityFilter={obscurityFilter}
+        onObscurityChange={setObscurityFilter}
+        obscurityOptions={obscurityOptions}
+        collectionFilter={collectionFilter}
+        onCollectionChange={setCollectionFilter}
+        collectionOptions={collectionOptions}
+        filtersOpen={filtersOpen}
+        onToggleFilters={() => setFiltersOpen((current) => !current)}
+        activeFilterCount={activeFilterCount}
+        onClearFilters={clearFilters}
+      />
 
-          <div className="inspirations-page__grid">
-            {cards.map((inspiration) => {
-              const packLabel = getContentPackLabel("inspirations", inspiration);
-              const isActive = activeInspiration?.id === inspiration.id;
-
-              return (
-                <article
-                  key={inspiration.id}
-                  className={`inspirations-page__card ${isActive ? "is-active" : ""}`}
-                >
-                  <button
-                    className="inspirations-page__card-image"
-                    type="button"
-                    onClick={() => setActiveInspirationId(inspiration.id)}
-                    aria-label={`Open ${getInspirationTitle(inspiration)} dossier`}
-                  >
-                    <span
-                      className="inspirations-page__visual"
-                      role="img"
-                      aria-label={inspiration.media?.imageNote || getInspirationTitle(inspiration)}
-                    >
-                      <InspirationImage inspiration={inspiration} />
-                    </span>
-                    <span className="inspirations-page__card-type">{packLabel}</span>
-                  </button>
-
-                  <div className="inspirations-page__body">
-                    <strong>{getInspirationTitle(inspiration)}</strong>
-                    <span>{getInspirationCaption(inspiration)}</span>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-
-          {!cards.length && <div className="empty">No inspirations match these filters.</div>}
-        </section>
-
-        <aside className="inspirations-page__dossier inspirations-panel" aria-label="Selected inspiration dossier">
-          {activeInspiration ? (
-            <div key={activeInspiration.id} className="inspirations-page__dossier-content">
-              <div
-                className="inspirations-page__detail-visual"
-                role="img"
-                aria-label={activeInspiration.media?.imageNote || getInspirationTitle(activeInspiration)}
-              >
-                <InspirationImage inspiration={activeInspiration} />
-              </div>
-
-              <div className="inspirations-page__dossier-head">
-                <div>
-                  <h2>{getInspirationTitle(activeInspiration)}</h2>
-                  {activeContentPack && (
-                    <span className="inspirations-page__pack-badge">
-                      Content Pack · {activeContentPack.title}
-                    </span>
-                  )}
-                </div>
-                {canOpenMonsterComposer ? (
-                  <button
-                    className="inspirations-page__composer-cta"
-                    type="button"
-                    onClick={openActiveMonsterComposer}
-                  >
-                    <i className="fa-solid fa-skull" aria-hidden="true" />
-                    <span>Use in Monster Composer</span>
-                  </button>
-                ) : null}
-              </div>
-
-              <div className="inspirations-page__detail-main">
-                <section>
-                  <h3>What It Is</h3>
-                  <p>{getInspirationCaption(activeInspiration)}</p>
-                </section>
-                <section>
-                  <h3>Why It Disturbs</h3>
-                  <p>{getInspirationLogic(activeInspiration, activeSourceAnchor)}</p>
-                </section>
-                {activeHorror.length ? (
-                  <section>
-                    <h3>Horror Texture</h3>
-                    <div className="inspirations-page__chips">
-                      {activeHorror.map((texture) => (
-                        <span key={texture}>{texture}</span>
-                      ))}
-                    </div>
-                  </section>
-                ) : null}
-                <section>
-                  <div className="inspirations-page__section-head">
-                    <h3>Linked Monster Components</h3>
-                    <strong>
-                      {linkedComponents.length
-                        ? `${displayedComponentCount}/${linkedComponents.length}`
-                        : "0"}
-                    </strong>
-                  </div>
-                  {linkedComponents.length ? (
-                    <div className="inspirations-page__component-groups">
-                      {Object.entries(groupedComponents).map(([slotId, components]) => (
-                        <ComponentGroup key={slotId} slotId={slotId} components={components} />
-                      ))}
-                    </div>
-                  ) : (
-                    <p>No shared Monster Components are linked to this Source Anchor yet.</p>
-                  )}
-                </section>
-              </div>
-            </div>
-          ) : (
-            <div className="inspirations-page__empty-dossier">
-              <p className="eyebrow">No Source Selected</p>
-              <h2>Choose a card to open its dossier.</h2>
-              <p>Each source can become a monster seed, scene pressure, motif cluster, or reusable horror reference.</p>
-            </div>
-          )}
-        </aside>
+      <div className="inspirations-page__collection-head">
+        <div>
+          <p>{t("inspirations.collection.eyebrow", {}, locale)}</p>
+          <h2>
+            {filteredCards.length
+              ? t(
+                  filteredCards.length === 1
+                    ? "inspirations.collection.resultSingle"
+                    : "inspirations.collection.resultPlural",
+                  { count: filteredCards.length },
+                  locale,
+                )
+              : t("inspirations.collection.noResults", {}, locale)}
+          </h2>
+        </div>
+        <span aria-live="polite">
+          {search.trim()
+            ? t(
+                "inspirations.collection.searchingFor",
+                { query: search.trim() },
+                locale,
+              )
+            : activeFilterCount
+              ? t(
+                  activeFilterCount === 1
+                    ? "inspirations.collection.activeFilterSingle"
+                    : "inspirations.collection.activeFilterPlural",
+                  { count: activeFilterCount },
+                  locale,
+                )
+              : t("inspirations.collection.allSources", {}, locale)}
+        </span>
       </div>
+
+      {filteredCards.length ? (
+        <InspirationCardGrid
+          cards={filteredCards}
+          flippedCardId={flippedCardId}
+          onToggleCard={(cardId) =>
+            setFlippedCardId((current) => (current === cardId ? "" : cardId))
+          }
+          onOpenDossier={setDossierCardId}
+          locale={locale}
+        />
+      ) : (
+        <div className="inspirations-page__empty">
+          <i className="fa-solid fa-layer-group" aria-hidden="true" />
+          <h2>{t("inspirations.empty.title", {}, locale)}</h2>
+          <p>{t("inspirations.empty.body", {}, locale)}</p>
+          <button type="button" onClick={clearFilters}>
+            {t("inspirations.filters.clear", {}, locale)}
+          </button>
+        </div>
+      )}
+
+      {dossierCard ? (
+        <InspirationDossierModal
+          card={dossierCard}
+          linkedComponents={dossierComponents}
+          canOpenMonsterComposer={canOpenMonsterComposer}
+          onUseMonsterComposer={useInMonsterComposer}
+          onClose={closeDossier}
+          locale={locale}
+        />
+      ) : null}
     </section>
   );
 }

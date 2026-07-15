@@ -124,11 +124,13 @@ export default {
       },
       scrollbar: {
         label: "Scrollbar",
-        description: "Choose between Cruor's custom page progress and the native browser scrollbar.",
+        description:
+          "Choose between Cruor's custom page progress and the native browser scrollbar.",
         options: {
           custom: {
             label: "Custom",
-            description: "Use Cruor's custom scroll progress and hide the browser scrollbar.",
+            description:
+              "Use Cruor's custom scroll progress and hide the browser scrollbar.",
           },
           browser: {
             label: "Browser",
@@ -235,7 +237,8 @@ export default {
     locations: {
       label: "Locations",
       description: "Regions, hazards, clues, atmosphere, and map flow.",
-      mobileDescription: "Darken places with regions, hazards, clues, and maps.",
+      mobileDescription:
+        "Darken places with regions, hazards, clues, and maps.",
       previewTitle: "Darken a Location",
       previewText:
         "Turn an existing dungeon, chapel, cave, ruin, or village into playable horror with regions, hazards, clues, atmosphere, and a generated map.",
@@ -243,7 +246,8 @@ export default {
     monsters: {
       label: "Monsters",
       description: "Body, pressure, weakness, grafts, and 5E-ready output.",
-      mobileDescription: "Forge horror threats with grafts and table-ready mechanics.",
+      mobileDescription:
+        "Forge horror threats with grafts and table-ready mechanics.",
       previewTitle: "Build a Monster",
       previewText:
         "Forge a dark fantasy threat through anatomy, pressure, complexity, weaknesses, lair effects, and table-ready mechanics.",
@@ -264,49 +268,135 @@ export default {
         "Refresh the map from the current Composer regions? This will replace the current generated map.",
     },
   },
+  inspirations: {
+    aria: "Inspirations archive",
+    hero: {
+      eyebrow: "Source Archive",
+      title: "Inspirations",
+      body: "Explore real places, practices, objects, bodies, violence, and stories as collectible source cards for the Cruor workbench.",
+      cards: "Cards",
+      domains: "Domains",
+    },
+    domains: {
+      all: "All",
+      tale: "Tale",
+      place: "Place",
+      body: "Body",
+      relic: "Relic",
+      violence: "Violence",
+      rite: "Rite",
+    },
+    obscurity: {
+      familiar: "Familiar",
+      uncommon: "Uncommon",
+      esoteric: "Esoteric",
+    },
+    card: {
+      aria: "{title} inspiration card",
+      turnBack: "Turn {title} card over",
+      turnFront: "Turn {title} card to the front",
+      openDossier: "Open dossier",
+      number: "Card {number}",
+    },
+    filters: {
+      aria: "Inspiration filters",
+      searchLabel: "Search the archive",
+      searchPlaceholder: "Search sources, themes, components...",
+      sort: "Sort",
+      more: "Filters",
+      clear: "Clear",
+      domain: "Domain",
+      sourceType: "Source Type",
+      obscurity: "Obscurity",
+      collection: "Collection",
+      anySourceType: "Any Source Type",
+      anyObscurity: "Any Obscurity",
+      anyCollection: "Any Collection",
+    },
+    sort: {
+      collection: "Collection Order",
+      az: "A–Z",
+      za: "Z–A",
+      sourceType: "Source Type",
+      components: "Most Components",
+    },
+    collection: {
+      eyebrow: "Inspiration Cards",
+      resultSingle: "{count} source",
+      resultPlural: "{count} sources",
+      noResults: "No matching sources",
+      searchingFor: "Searching for “{query}”",
+      activeFilterSingle: "{count} active filter",
+      activeFilterPlural: "{count} active filters",
+      allSources: "Complete collection",
+    },
+    empty: {
+      title: "No cards match this search.",
+      body: "Clear the current filters or try a broader term to return to the complete Inspiration collection.",
+    },
+    dossier: {
+      close: "Close inspiration dossier",
+      eyebrow: "Inspiration Dossier",
+      domain: "Domain",
+      sourceType: "Source",
+      obscurity: "Obscurity",
+      collection: "Collection",
+      whatItIs: "What It Is",
+      whyItDisturbs: "Why It Disturbs",
+      horrorTexture: "Horror Texture",
+      linkedComponents: "Linked Monster Components",
+      noLinkedComponents:
+        "No Monster Components are linked to this source yet.",
+      sourceAnchor: "Source Anchor",
+      useMonsterComposer: "Use in Monster Composer",
+    },
+  },
   home: {
     hero: {
       aria: "Cruor Games homepage hero",
       titleBefore: "Build",
       titleHighlight: "Horror",
       titleAfter: "for Your 5E Sessions",
-      body:
-        "Cruor turns real sources of dread into playable horror content — haunted places, disturbing monsters, and dark fantasy flavour you can actually use at the table.",
+      body: "Cruor turns real sources of dread into playable horror content — haunted places, disturbing monsters, and dark fantasy flavour you can actually use at the table.",
       actionsAria: "Primary home actions",
       openWorkbench: "Open the Workbench",
       browseInspirations: "Browse Inspirations",
       visualAria: "Cruor workbench preview",
       workbenchAlt:
         "Cruor workbench interface preview with dark fantasy tools and source-inspired horror material.",
-      mapAlt: "Dark fantasy dungeon map crop from the Cruor location workbench.",
+      mapAlt:
+        "Dark fantasy dungeon map crop from the Cruor location workbench.",
       inspirationAlt:
         "Cruor inspiration card crop showing real sources transformed into playable horror.",
     },
     statement: {
       aria: "Project statement",
       title: "Built for the Session You Already Have.",
-      body:
-        "Cruor does not ask you to start over. It helps you turn an existing location, threat, or inspiration into horror material you can actually use at the table.",
+      body: "Cruor does not ask you to start over. It helps you turn an existing location, threat, or inspiration into horror material you can actually use at the table.",
     },
     tools: {
       ariaTitle: "Featured Creation Tools",
-      intro: "The current tools are only the first surfaces of the workbench — not the whole idea.",
+      intro:
+        "The current tools are only the first surfaces of the workbench — not the whole idea.",
       imagePlaceholder: "Image Placeholder",
       dungeonVisual: "Dungeon Generator Visual",
-      dungeonVisualNote: "Use a strong map preview or UI crop from Darken a Location.",
+      dungeonVisualNote:
+        "Use a strong map preview or UI crop from Darken a Location.",
       dungeonTitle: "Darken a Dungeon",
-      dungeonBody: "Build a haunted location around the session you already have.",
+      dungeonBody:
+        "Build a haunted location around the session you already have.",
       dungeonAction: "Explore the Dungeon Generator",
       monsterVisual: "Monster Generator Visual",
-      monsterVisualNote: "Use a monster silhouette, Crucible slot view, or composer crop.",
+      monsterVisualNote:
+        "Use a monster silhouette, Crucible slot view, or composer crop.",
       monsterTitle: "Forge a Monster",
-      monsterBody: "Create a disturbing creature with pressure, weakness, and table-ready flavour.",
+      monsterBody:
+        "Create a disturbing creature with pressure, weakness, and table-ready flavour.",
       monsterAction: "Explore the Monster Generator",
     },
     sources: {
       title: "Real Sources, Playable Horror.",
-      body:
-        "Cruor draws from things that really exist — folklore, history, ritual practice, architecture, biology, and material culture — then transforms them into playable content and dark fantasy flavour for your sessions.",
+      body: "Cruor draws from things that really exist — folklore, history, ritual practice, architecture, biology, and material culture — then transforms them into playable content and dark fantasy flavour for your sessions.",
       action: "Browse Our Inspirations",
       stackAria: "Inspiration cards placeholder",
       inspiration: "Inspiration",
@@ -323,11 +413,11 @@ export default {
     },
     support: {
       title: "Support the Workbench",
-      body:
-        "Patreon helps Cruor grow through new content, sharper tools, and a deeper library of dark fantasy material for 5E.",
+      body: "Patreon helps Cruor grow through new content, sharper tools, and a deeper library of dark fantasy material for 5E.",
       action: "Join the Patreon",
       visual: "Support Visual",
-      visualNote: "Use a soft collage of map crop, monster crop, and inspiration cards.",
+      visualNote:
+        "Use a soft collage of map crop, monster crop, and inspiration cards.",
     },
   },
 };

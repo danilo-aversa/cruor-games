@@ -532,7 +532,10 @@ export default function AppRouter() {
       homeContent={homeContent}
       crucibleContent={crucibleContent}
       inspirationsContent={
-        <InspirationsPage onOpenMonsterComposer={openMonsterFromInspiration} />
+        <InspirationsPage
+          locale={activeLocale}
+          onOpenMonsterComposer={openMonsterFromInspiration}
+        />
       }
       inspirationStudioContent={<InspirationStudioPage />}
     />

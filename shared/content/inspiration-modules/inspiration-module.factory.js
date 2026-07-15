@@ -1,9 +1,15 @@
 import { SHARED_DARKEN_LOCATION_COMPONENTS } from "../adapters/darken-components.js";
 import { SHARED_LOCATION_REGION_COMPONENTS } from "../adapters/location-regions.js";
 import { DARK_PLACES_CANONICAL_EXPANSION_COMPONENTS } from "../content-packs/dark-places-canonical-expansion-pack.js";
-import { defineInspirationModule, uniqueById } from "../inspiration-module-schema.js";
+import {
+  defineInspirationModule,
+  uniqueById,
+} from "../inspiration-module-schema.js";
 import { SHARED_MONSTER_COMPONENTS } from "../monster-components.js";
-import { normalizeSourceAnchorIds, SHARED_SOURCE_ANCHORS } from "../source-anchors.js";
+import {
+  normalizeSourceAnchorIds,
+  SHARED_SOURCE_ANCHORS,
+} from "../source-anchors.js";
 
 export const CORE_INSPIRATION_MODULE_PACK_ID = "existing-inspirations";
 export const INSPIRATION_ASSET_PROVIDER = "local";
@@ -47,7 +53,33 @@ function uniqueArray(values) {
   return [...new Set(normalizeStringArray(values))];
 }
 
-const SOURCE_ANCHOR_BY_ID = new Map(SHARED_SOURCE_ANCHORS.map((sourceAnchor) => [sourceAnchor.id, sourceAnchor]));
+function normalizeCardNumber(value) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? Math.trunc(parsed) : null;
+}
+
+function normalizeInspirationCardMetadata(card = {}) {
+  const metadata = card.card || {};
+
+  return Object.freeze({
+    domain: String(metadata.domain || "")
+      .trim()
+      .toLowerCase(),
+    obscurity: String(metadata.obscurity || "uncommon")
+      .trim()
+      .toLowerCase(),
+    collectionId: String(
+      metadata.collectionId || CORE_INSPIRATION_MODULE_PACK_ID,
+    ).trim(),
+    collectionLabel: String(metadata.collectionLabel || "").trim(),
+    number: normalizeCardNumber(metadata.number),
+    description: String(metadata.description || card.caption || "").trim(),
+  });
+}
+
+const SOURCE_ANCHOR_BY_ID = new Map(
+  SHARED_SOURCE_ANCHORS.map((sourceAnchor) => [sourceAnchor.id, sourceAnchor]),
+);
 const COMPONENT_SOURCES = [
   ...SHARED_MONSTER_COMPONENTS,
   ...SHARED_DARKEN_LOCATION_COMPONENTS,
@@ -55,7 +87,10 @@ const COMPONENT_SOURCES = [
   ...DARK_PLACES_CANONICAL_EXPANSION_COMPONENTS,
 ];
 
-export function buildInspirationAssetUrl(imageKey, basePath = INSPIRATION_ASSET_BASE_PATH) {
+export function buildInspirationAssetUrl(
+  imageKey,
+  basePath = INSPIRATION_ASSET_BASE_PATH,
+) {
   if (!imageKey) return "";
 
   const cleanBasePath = String(basePath || "").replace(/\/+$/, "");
@@ -64,7 +99,10 @@ export function buildInspirationAssetUrl(imageKey, basePath = INSPIRATION_ASSET_
   return `${cleanBasePath}/${cleanImageKey}`;
 }
 
-export function resolveInspirationCardAsset(card, basePath = INSPIRATION_ASSET_BASE_PATH) {
+export function resolveInspirationCardAsset(
+  card,
+  basePath = INSPIRATION_ASSET_BASE_PATH,
+) {
   return {
     ...card,
     imageProvider: card.imageProvider || INSPIRATION_ASSET_PROVIDER,
@@ -77,11 +115,21 @@ export function buildCoreInspirationFromCard(card) {
   const sourceAnchorId = card.sourceAnchorId;
   const sourceAnchor = SOURCE_ANCHOR_BY_ID.get(sourceAnchorId) || null;
   const sourceAnchors = normalizeSourceAnchorIds(sourceAnchorId);
-  const sourceTypes = uniqueArray([card.sourceType, ...(sourceAnchor?.sourceTypes || [])]);
-  const themes = uniqueArray([...(card.themes || []), ...(sourceAnchor?.themes || [])]);
-  const motifs = uniqueArray([...(card.motifs || []), ...(sourceAnchor?.motifs || [])]);
+  const sourceTypes = uniqueArray([
+    card.sourceType,
+    ...(sourceAnchor?.sourceTypes || []),
+  ]);
+  const themes = uniqueArray([
+    ...(card.themes || []),
+    ...(sourceAnchor?.themes || []),
+  ]);
+  const motifs = uniqueArray([
+    ...(card.motifs || []),
+    ...(sourceAnchor?.motifs || []),
+  ]);
   const horror = uniqueArray(sourceAnchor?.horror || []);
   const summary = card.caption || sourceAnchor?.summary || "";
+  const cardMetadata = normalizeInspirationCardMetadata(card);
 
   return {
     id: `inspiration-${sourceAnchorId}`,
@@ -101,6 +149,7 @@ export function buildCoreInspirationFromCard(card) {
     summary,
     narrative: card.logic || sourceAnchor?.summary || summary,
     caption: card.caption || "",
+    card: cardMetadata,
     media: {
       icon: card.icon || "fa-book-open",
       imageKey: card.imageKey || "",
@@ -124,11 +173,17 @@ export function buildCoreInspirationFromCard(card) {
 }
 
 export function entryReferencesSourceAnchor(entry, sourceAnchorId) {
-  return normalizeSourceAnchorIds(entry?.sourceAnchors).includes(sourceAnchorId);
+  return normalizeSourceAnchorIds(entry?.sourceAnchors).includes(
+    sourceAnchorId,
+  );
 }
 
 export function getComponentsForSourceAnchor(sourceAnchorId) {
-  return uniqueById(COMPONENT_SOURCES.filter((component) => entryReferencesSourceAnchor(component, sourceAnchorId)));
+  return uniqueById(
+    COMPONENT_SOURCES.filter((component) =>
+      entryReferencesSourceAnchor(component, sourceAnchorId),
+    ),
+  );
 }
 
 export function getReferencedSourceAnchorsForModule(module) {
@@ -136,13 +191,18 @@ export function getReferencedSourceAnchorsForModule(module) {
     [
       module.sourceAnchor,
       ...module.components
-        .flatMap((component) => normalizeSourceAnchorIds(component.sourceAnchors))
+        .flatMap((component) =>
+          normalizeSourceAnchorIds(component.sourceAnchors),
+        )
         .map((sourceAnchorId) => SOURCE_ANCHOR_BY_ID.get(sourceAnchorId)),
     ].filter(Boolean),
   );
 }
 
-export function buildCoreInspirationModuleFromCard(card, { metadata = {}, packId = CORE_INSPIRATION_MODULE_PACK_ID } = {}) {
+export function buildCoreInspirationModuleFromCard(
+  card,
+  { metadata = {}, packId = CORE_INSPIRATION_MODULE_PACK_ID } = {},
+) {
   const sourceAnchor = SOURCE_ANCHOR_BY_ID.get(card.sourceAnchorId) || null;
   const inspiration = buildCoreInspirationFromCard(card);
 
@@ -173,8 +233,14 @@ export function buildModuleExports(module) {
     sourceAnchor: module?.sourceAnchor || null,
     inspiration: module?.inspiration || null,
     monsterGrafts: Object.freeze((module?.monsterGrafts || []).filter(Boolean)),
-    locationComponents: Object.freeze((module?.locationComponents || []).filter(Boolean)),
-    locationRegions: Object.freeze((module?.locationRegions || []).filter(Boolean)),
-    referencedSourceAnchors: Object.freeze(module ? getReferencedSourceAnchorsForModule(module) : []),
+    locationComponents: Object.freeze(
+      (module?.locationComponents || []).filter(Boolean),
+    ),
+    locationRegions: Object.freeze(
+      (module?.locationRegions || []).filter(Boolean),
+    ),
+    referencedSourceAnchors: Object.freeze(
+      module ? getReferencedSourceAnchorsForModule(module) : [],
+    ),
   };
 }

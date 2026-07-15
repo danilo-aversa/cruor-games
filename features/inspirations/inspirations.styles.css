@@ -1,1108 +1,1310 @@
-/*
- * Cruor Games — Aggressive CSS Refactor
- * File: features/inspirations/inspirations.styles.css
- * Canonicalized selectors, variables, and cascade order.
- */
-
-/* At-Rules */
-
 @import "../../shared/styles/colors.css";
 
-@keyframes inspirations-dossier-fade {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Tokens */
-
 .inspirations-page {
-  --inspirations-bg: var(--cruor-color-bg, var(--cruor-color-black));
-  --inspirations-surface: var(--cruor-color-surface, var(--cruor-color-surface-soft));
-  --inspirations-surface-soft: var(--cruor-color-r12-g10-b12-a740);
-  --inspirations-line: var(--cruor-color-milk-a080);
-  --inspirations-line-strong: var(--cruor-color-blood-glow-a420);
-  --inspirations-accent: var(--cruor-color-accent-3, var(--cruor-color-blood-bright));
-  --inspirations-accent-hot: var(--cruor-color-hex-be4052);
-  --inspirations-text: var(--cruor-color-text, var(--cruor-color-text));
-  --inspirations-muted: var(--cruor-color-muted, var(--cruor-color-muted));
-  --inspirations-faint: var(--cruor-color-faint, var(--cruor-color-faint));
-  --inspirations-chip: var(--cruor-color-hex-d0a2aa);
-  --inspirations-font: var(--cruor-font-body, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
-  --inspirations-display: var(--cruor-font-display, "Lovato-Black", Georgia, "Times New Roman", serif);
-  --inspirations-workspace-max: var(--cruor-workspace-max, 1540px);
-  --inspirations-page-pad-y: clamp(18px, 3vw, 30px);
-  --inspirations-dossier-sticky-top: calc(var(--app-shell-bar-height, 62px) + var(--inspirations-page-pad-y));
-  --inspirations-dossier-sticky-bottom: var(--inspirations-page-pad-y);
-  box-sizing: border-box;
-  min-height: calc(100dvh - 52px);
-  padding: var(--inspirations-page-pad-y) clamp(16px, 3vw, 30px) 42px;
-  background-color: var(--inspirations-bg);
-  background-image: var(--paper-texture, url("https://www.transparenttextures.com/patterns/black-paper.png")), var(--cruor-gradient-radial-237-09710719), var(--cruor-gradient-radial-050-1c37bf3c), var(--cruor-gradient-linear-144-fc78ef02);
+  --inspiration-card-shape-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-8%20-8%20556%20697%22%3E%3Cpath%20fill%3D%22white%22%20d%3D%22M509.5.5v20h20v-10h-10v20h20v620h-20v20h10v-10h-20v20H30.5v-20H10.5v10h10v-20H.5V30.5h20V10.5h-10v10h20V.5H509.5Z%22/%3E%3C/svg%3E");
+  --inspirations-max-width: var(--cruor-workspace-max, 1540px);
+  min-height: calc(100dvh - var(--app-shell-bar-height, 62px));
+  padding: clamp(18px, 2.5vw, 34px) clamp(14px, 3vw, 34px) 56px;
+  background-color: var(--cruor-color-black);
+  background-image:
+    var(--paper-texture), var(--cruor-gradient-radial-237-09710719),
+    var(--cruor-gradient-radial-050-1c37bf3c),
+    var(--cruor-gradient-linear-144-fc78ef02);
   background-blend-mode: multiply, screen, screen, normal;
-  color: var(--inspirations-text);
-  font-family: var(--inspirations-font);
+  color: var(--cruor-text-primary);
+  font-family: var(
+    --cruor-font-body,
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif
+  );
 }
 
-/* Components */
-
-.inspirations-page * {
+.inspirations-page *,
+.inspirations-page *::before,
+.inspirations-page *::after {
   box-sizing: border-box;
 }
 
+.inspirations-page button,
 .inspirations-page input {
   font: inherit;
 }
 
-.inspirations-page select {
-  font: inherit;
-}
-
 .inspirations-page button {
-  font: inherit;
   border-radius: 0;
-  cursor: pointer;
 }
 
-/* States */
-
-.inspirations-page button:disabled {
-  cursor: not-allowed;
-  opacity: 0.46;
+.inspirations-page__masthead,
+.inspirations-filters,
+.inspirations-page__collection-head,
+.inspirations-page__grid,
+.inspirations-page__empty {
+  width: min(var(--inspirations-max-width), 100%);
+  margin-right: auto;
+  margin-left: auto;
 }
 
-/* Layout */
-
-.inspirations-panel {
-  border: 1px solid var(--inspirations-line);
-  background: var(--cruor-gradient-linear-177-61b81df2), var(--inspirations-surface-soft);
-  box-shadow: var(--cruor-shadow-box-108);
+.inspirations-page__masthead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(20px, 4vw, 64px);
+  padding: 4px 0 clamp(18px, 2.4vw, 28px);
+  border-bottom: 1px solid var(--cruor-border-subtle);
 }
 
-/* Components */
+.inspirations-page__masthead > div {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
 
-.inspirations-page .eyebrow {
+.inspirations-page__eyebrow,
+.inspirations-page__collection-head p,
+.inspiration-dossier__header > p {
   margin: 0;
-  color: var(--inspirations-chip);
-  font-size: var(--text-size-s);
-  font-weight: 950;
-  letter-spacing: 0.16em;
+  color: var(--cruor-color-rose);
+  font-size: var(--text-size-xs, 0.68rem);
+  font-weight: 900;
+  letter-spacing: 0.17em;
   line-height: 1;
   text-transform: uppercase;
 }
 
-/* Layout */
-
-.inspirations-page__hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-items: end;
-  gap: clamp(18px, 4vw, 44px);
-  width: 100%;
-  margin: 0 0 18px;
-  padding: clamp(18px, 3vw, 30px);
-  overflow: hidden;
-  background: var(--cruor-gradient-radial-233-5992dede), var(--cruor-gradient-linear-180-6c9dd1c2), var(--cruor-color-r12-g10-b12-a780);
-}
-
-.inspirations-page__hero-copy {
-  display: grid;
-  gap: 9px;
-  min-width: 0;
-}
-
-/* Components */
-
-.inspirations-page__hero h1 {
-  max-width: 900px;
+.inspirations-page__masthead h1 {
   margin: 0;
-  color: var(--cruor-color-hex-fff0f2);
-  font-family: var(--inspirations-display);
-  font-size: var(--display-size-fluid-17);
-  line-height: 0.88;
+  color: var(--cruor-color-milk);
+  font-family: var(--cruor-font-display, "Lovato-Black", Georgia, serif);
+  font-size: clamp(2.5rem, 5.4vw, 5.2rem);
+  font-weight: 950;
   letter-spacing: -0.055em;
+  line-height: 0.88;
   text-shadow: var(--cruor-shadow-text-016);
 }
 
-.inspirations-page__hero p:not(.eyebrow) {
+.inspirations-page__intro {
   max-width: 780px;
-  margin: 0;
-  color: var(--cruor-color-text-a560);
-  font-size: var(--text-size-2xl);
-  line-height: 1.5;
+  margin: 2px 0 0;
+  color: var(--cruor-color-text-a620);
+  font-size: clamp(0.94rem, 1.25vw, 1.12rem);
+  line-height: 1.52;
 }
 
-/* Layout */
-
-.inspirations-page__stats {
+.inspirations-page__archive-summary {
   display: grid;
-  grid-template-columns: repeat(3, minmax(86px, 1fr));
-  gap: 8px;
-  min-width: min(360px, 100%);
+  grid-template-columns: auto auto 1px auto auto;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 2px;
+  color: var(--cruor-color-text-a500);
+  font-size: var(--text-size-xs, 0.68rem);
+  font-weight: 850;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.inspirations-page__stats span {
+.inspirations-page__archive-summary strong {
+  color: var(--cruor-color-milk);
+  font-size: 1rem;
+  letter-spacing: 0;
+}
+
+.inspirations-page__archive-summary i {
+  width: 1px;
+  height: 24px;
+  background: var(--cruor-border-subtle);
+}
+
+.inspirations-filters {
+  position: sticky;
+  top: calc(var(--app-shell-bar-height, 62px) + 10px);
+  z-index: 34;
+  display: grid;
+  gap: 9px;
+  margin-top: 14px;
+  padding: 10px;
+  border: 1px solid var(--cruor-color-blood-strong-a420);
+  background:
+    var(--cruor-gradient-linear-012-c39edb21),
+    var(--cruor-color-ink-raised-a960);
+  box-shadow: var(--cruor-shadow-box-025);
+  backdrop-filter: var(--cruor-filter-glass-16-128);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-16-128);
+}
+
+.inspirations-filters__primary {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(150px, 190px) auto auto;
+  align-items: end;
+  gap: 8px;
+}
+
+.inspirations-filters__search,
+.inspirations-filters__listbox {
   display: grid;
   gap: 5px;
-  min-height: 74px;
-  align-content: center;
-  border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-surface-card);
-  padding: 10px;
-  text-align: center;
-}
-
-/* Components */
-
-.inspirations-page__stats strong {
-  color: var(--cruor-color-hex-fff0f2);
-  font-size: var(--display-size-m);
-  font-weight: 950;
-  line-height: 1;
-}
-
-.inspirations-page__stats small {
-  color: var(--inspirations-faint);
-  font-size: var(--text-size-xs);
-  font-weight: 950;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-/* Layout */
-
-.inspirations-page__tools {
-  display: grid;
-  grid-template-columns: minmax(190px, 1fr) repeat(3, minmax(132px, 0.52fr)) auto;
-  align-items: end;
-  gap: 9px;
-  width: 100%;
-  margin: 0 0 18px;
-  padding: 10px;
-}
-
-.inspirations-page__tools label {
-  display: grid;
-  gap: 6px;
   min-width: 0;
 }
 
-/* Components */
-
-.inspirations-page__tools label > span {
-  color: var(--inspirations-faint);
-  font-size: var(--text-size-xs);
-  font-weight: 950;
-  letter-spacing: 0.1em;
+.inspirations-filters__search > span:first-child,
+.inspirations-filters__listbox > span {
+  color: var(--cruor-color-text-a420);
+  font-size: var(--text-size-xxs, 0.61rem);
+  font-weight: 900;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
 }
 
-/* Layout */
-
-.inspirations-page__tools input {
-  width: 100%;
-  min-height: var(--cruor-control-height-inspirations, 40px);
-  border: 1px solid var(--cruor-color-milk-a080);
-  border-radius: 0;
-  background: var(--cruor-gradient-linear-017-c1cb33c1), var(--cruor-surface-card);
-  color: var(--inspirations-text);
-  padding: 0 11px;
-  outline: none;
-  transition: border-color 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+.inspirations-filters__search-field {
+  position: relative;
+  display: grid;
+  min-width: 0;
 }
 
-/* Components */
+.inspirations-filters__search-field i {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  color: var(--cruor-color-blood-glow-a620);
+  font-size: 0.82rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
 
-.inspirations-page__tools input::placeholder {
+.inspirations-filters input {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid var(--cruor-color-milk-a090);
+  border-radius: 0;
+  background:
+    var(--cruor-gradient-linear-017-c1cb33c1), var(--cruor-surface-card);
+  color: var(--cruor-color-milk);
+  padding: 0 12px 0 34px;
+  outline: none;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.inspirations-filters input::placeholder {
   color: var(--cruor-color-text-a340);
 }
 
-/* States */
-
-.inspirations-page__tools input:focus {
+.inspirations-filters input:focus {
   border-color: var(--cruor-color-blood-glow-a620);
-  background: var(--cruor-gradient-linear-011-25d82b21), var(--cruor-color-surface-soft-a820);
+  background:
+    var(--cruor-gradient-linear-011-25d82b21),
+    var(--cruor-color-surface-soft-a820);
   box-shadow: var(--cruor-shadow-box-088);
 }
 
-/* Layout */
-
-.inspirations-page__filter-select {
-  position: relative;
-  min-width: 0;
-}
-
-.inspirations-page__select {
-  position: relative;
-  z-index: 1;
-  min-width: 0;
-}
-
-/* States */
-
-.inspirations-page__select[data-open="true"] {
-  z-index: 40;
-}
-
-/* Layout */
-
-.inspirations-page__select-trigger {
-  border: 1px solid var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
-  color: var(--cruor-color-hex-c8a2a8);
-  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 8px;
+.inspirations-filters__listbox-trigger {
   width: 100%;
-  min-height: var(--cruor-control-height-inspirations, 40px);
-  padding: 0 10px;
-  text-align: left;
+  min-width: 0;
 }
 
-.inspirations-page__select-trigger strong {
-  overflow: hidden;
-  color: var(--cruor-color-hex-fff0f2);
-  font-size: var(--text-size-l);
-  font-weight: 900;
-  line-height: 1.1;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Components */
-
-.inspirations-page__select-trigger i {
-  color: var(--cruor-color-hex-b33b4e);
-  font-size: var(--text-size-l);
-  transition: color 0.12s ease, transform 0.12s ease;
-}
-
-/* States */
-
-.inspirations-page__select-option.is-active {
-  border-color: var(--cruor-color-blood-glow-a780);
-  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
-  color: var(--cruor-color-hex-fff0f2);
-  box-shadow: var(--cruor-shadow-box-003);
-}
-
-.inspirations-page__select-option:hover {
-  border-color: var(--cruor-color-blood-glow-a780);
-  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
-  color: var(--cruor-color-hex-fff0f2);
-  box-shadow: var(--cruor-shadow-box-003);
-}
-
-.inspirations-page__select-trigger:hover {
-  border-color: var(--cruor-color-blood-glow-a780);
-  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
-  color: var(--cruor-color-hex-fff0f2);
-  box-shadow: var(--cruor-shadow-box-003);
-}
-
-.inspirations-page__select-trigger[aria-expanded="true"] {
-  border-color: var(--cruor-color-blood-glow-a780);
-  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
-  color: var(--cruor-color-hex-fff0f2);
-  box-shadow: var(--cruor-shadow-box-003);
-}
-
-.inspirations-page__select-trigger:hover i {
-  color: var(--cruor-color-hex-f0b9c2);
-}
-
-.inspirations-page__select-trigger[aria-expanded="true"] i {
-  color: var(--cruor-color-hex-f0b9c2);
+.inspirations-filters__listbox-trigger[aria-expanded="true"]
+  .cruor-dropdown-trigger__chevron {
   transform: rotate(180deg);
 }
 
-/* Layout */
+.inspirations-filters__listbox-menu {
+  min-width: 220px;
+  max-width: min(340px, calc(100vw - 16px));
+}
 
-.inspirations-page__select-menu {
+.inspirations-filters__utility {
+  align-self: end;
+}
+
+.inspirations-filters__active-count {
   position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: 0;
-  z-index: 80;
+  top: -5px;
+  right: -5px;
   display: grid;
-  gap: 5px;
-  max-height: min(320px, 58vh);
-  overflow: auto;
-  border: 1px solid var(--cruor-color-blood-glow-a500);
-  background: var(--cruor-gradient-linear-012-c39edb21), var(--cruor-color-surface-soft-a970);
-  padding: 6px;
-  box-shadow: var(--cruor-shadow-box-025);
-}
-
-.inspirations-page__select-option {
-  border: 1px solid var(--cruor-color-blood-strong-a560);
-  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
-  color: var(--cruor-color-hex-c8a2a8);
-  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-items: center;
-  gap: 8px;
-  min-height: 42px;
-  padding: 7px 8px;
-  text-align: left;
-}
-
-.inspirations-page__select-option span {
-  display: grid;
-  gap: 2px;
-  min-width: 0;
-}
-
-.inspirations-page__select-option strong {
-  overflow: hidden;
-  color: var(--cruor-color-hex-fff0f2);
-  font-size: var(--text-size-l);
+  min-width: 17px;
+  height: 17px;
+  place-items: center;
+  border: 1px solid var(--cruor-color-black-a720);
+  background: var(--cruor-color-blood-strong);
+  color: var(--cruor-color-milk);
+  font-size: 0.56rem;
   font-weight: 900;
-  line-height: 1.1;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1;
+  pointer-events: none;
 }
 
-.inspirations-page__select-option small {
-  display: block;
-  overflow: hidden;
-  color: var(--cruor-color-text-a500);
-  font-size: var(--text-size-s);
-  line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.inspirations-page__clear-btn {
-  min-height: 40px;
-  border: 1px solid var(--cruor-color-milk-a090);
-  background: var(--cruor-color-white-a022);
-  color: var(--cruor-color-hex-c8a2a8);
-  padding: 0 11px;
-  font-size: var(--text-size-s);
-  font-weight: 950;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
-}
-
-/* States */
-
-.inspirations-page__clear-btn:hover:not(:disabled) {
-  border-color: var(--cruor-color-blood-glow-a620);
-  background: var(--cruor-color-blood-strong-a280);
-  color: var(--cruor-color-hex-fff0f2);
-  box-shadow: var(--cruor-shadow-box-071);
-}
-
-.inspirations-page__primary-action:hover:not(:disabled) {
-  border-color: var(--cruor-color-blood-glow-a620);
-  background: var(--cruor-color-blood-strong-a280);
-  color: var(--cruor-color-hex-fff0f2);
-  box-shadow: var(--cruor-shadow-box-071);
-}
-
-/* Layout */
-
-.inspirations-page__workspace {
+.inspirations-filters__domains {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 430px);
-  gap: clamp(22px, 2.4vw, 34px);
-  align-items: start;
-  width: min(var(--inspirations-workspace-max), 100%);
-  margin: 0 auto;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
 }
 
-/* Components */
-
-.inspirations-page__library {
+.inspirations-filters__domains button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
   min-width: 0;
+  min-height: 38px;
+  border: 1px solid var(--cruor-color-milk-a060);
+  background: var(--cruor-color-white-a018);
+  color: var(--cruor-color-text-a560);
+  padding: 0 9px;
+  text-align: left;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
 }
 
-/* Layout */
+.inspirations-filters__domains button:hover,
+.inspirations-filters__domains button.is-active {
+  border-color: var(--cruor-color-milk-a200);
+  background:
+    var(--cruor-gradient-radial-068-e609778e), var(--cruor-color-blood-a240);
+  color: var(--cruor-color-milk);
+}
 
-.inspirations-page__library-head {
+.inspirations-filters__domains button:focus-visible {
+  outline: 2px solid var(--cruor-color-blood-glow-a720);
+  outline-offset: 2px;
+}
+
+.inspirations-filters__domains button > span:nth-child(2) {
+  overflow: hidden;
+  font-size: var(--text-size-xs, 0.68rem);
+  font-weight: 850;
+  letter-spacing: 0.055em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.inspirations-filters__domain-symbol {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  color: var(--cruor-color-milk);
+  font-size: 0.86rem;
+}
+
+.inspirations-filters__domains small {
+  color: var(--cruor-color-text-a360);
+  font-size: 0.62rem;
+  font-weight: 850;
+}
+
+.inspirations-filters__domains button.is-active small {
+  color: var(--cruor-color-rose);
+}
+
+.inspirations-filters__secondary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding-top: 9px;
+  border-top: 1px solid var(--cruor-color-milk-a060);
+}
+
+.inspirations-filters__secondary[hidden] {
+  display: none;
+}
+
+.inspirations-page__collection-head {
   display: flex;
   align-items: end;
   justify-content: space-between;
-  gap: 14px;
-  margin: 0 0 12px;
+  gap: 18px;
+  padding: clamp(22px, 2.4vw, 30px) 0 14px;
 }
 
-/* Components */
+.inspirations-page__collection-head > div {
+  display: grid;
+  gap: 5px;
+}
 
-.inspirations-page__library-head h2 {
-  margin: 5px 0 0;
-  color: var(--cruor-color-hex-fff0f2);
-  font-size: var(--text-size-fluid-12);
-  font-weight: 950;
+.inspirations-page__collection-head h2 {
+  margin: 0;
+  color: var(--cruor-color-milk);
+  font-size: clamp(1.18rem, 1.8vw, 1.65rem);
+  font-weight: 900;
+  letter-spacing: -0.035em;
   line-height: 1;
-  letter-spacing: -0.045em;
 }
 
-/* Layout */
-
-.inspirations-page__library-head > span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 30px;
-  border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-surface-card);
-  color: var(--cruor-color-hex-d0a2aa);
-  padding: 0 9px;
-  font-size: var(--text-size-xs);
-  font-weight: 950;
-  letter-spacing: 0.1em;
+.inspirations-page__collection-head > span {
+  color: var(--cruor-color-text-a420);
+  font-size: var(--text-size-xs, 0.68rem);
+  font-weight: 850;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .inspirations-page__grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(16px, 1.8vw, 24px);
 }
 
-.inspirations-page__card {
+.inspiration-card {
   position: relative;
+  aspect-ratio: 4 / 5;
+  min-width: 0;
+  container-type: inline-size;
+  perspective: 1600px;
+  transform: translateZ(0);
+  transition:
+    transform 160ms ease,
+    filter 160ms ease;
+}
+
+.inspiration-card:hover {
+  transform: translateY(-4px);
+  filter: drop-shadow(var(--cruor-inspiration-card-shadow-hover));
+}
+
+.inspiration-card__scene {
+  position: absolute;
+  inset: 0;
+  filter: drop-shadow(var(--cruor-inspiration-card-shadow));
+  transform-style: preserve-3d;
+}
+
+.inspiration-card__face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 2px solid var(--cruor-inspiration-card-outer-border);
+  border-radius: 15px;
+  background: var(--cruor-inspiration-card-frame-band);
+  box-shadow: inset 0 0 0 1px var(--cruor-color-black-a720);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.inspiration-card__front {
+  z-index: 2;
+  isolation: isolate;
+  opacity: 1;
+  transform: rotateY(0deg);
+  transition:
+    transform 720ms cubic-bezier(0.22, 0.76, 0.2, 1),
+    opacity 180ms linear 180ms;
+}
+
+.inspiration-card__back {
+  z-index: 3;
+  opacity: 0;
+  transform: rotateY(-180deg);
+  transition:
+    transform 720ms cubic-bezier(0.22, 0.76, 0.2, 1),
+    opacity 180ms linear 180ms;
+}
+
+.inspiration-card.is-flipped .inspiration-card__front {
+  opacity: 0;
+  transform: rotateY(180deg);
+}
+
+.inspiration-card.is-flipped .inspiration-card__back {
+  opacity: 1;
+  transform: rotateY(0deg);
+}
+
+.inspiration-card__front-paper-texture {
+  z-index: 0;
+  overflow: hidden;
+  opacity: var(--cruor-inspiration-card-front-texture-opacity);
+  filter: var(--cruor-inspiration-card-front-texture-filter);
+  transform: scale(1.018);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.inspiration-card__front-paper-texture::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  background: var(--cruor-inspiration-card-front-texture-overlay);
+  pointer-events: none;
+}
+
+.inspiration-card__window {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  bottom: 18px;
+  left: 15px;
+  overflow: hidden;
+  background: var(--cruor-color-ink-deep);
+  -webkit-mask: var(--inspiration-card-shape-mask) center / 100% 100% no-repeat;
+  mask: var(--inspiration-card-shape-mask) center / 100% 100% no-repeat;
+}
+
+.inspiration-card__artwork,
+.inspiration-card__front-fade {
+  position: absolute;
+  inset: 0;
+}
+
+.inspiration-card__artwork {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  place-items: center;
+  color: var(--cruor-color-blood-glow-a420);
+  background: var(--cruor-gradient-radial-047-4ac41150);
+}
+
+.inspiration-card__artwork img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.inspiration-card__artwork i {
+  font-size: clamp(3rem, 16cqw, 5.6rem);
+}
+
+.inspiration-card__front-fade {
+  pointer-events: none;
+}
+
+.inspiration-card__front-fade--bottom {
+  top: auto;
+  height: 42%;
+  background: var(--cruor-gradient-linear-147-e08f093b);
+}
+
+.inspiration-card__frame {
+  position: absolute;
+  inset: 15px;
+  z-index: 3;
+  display: block;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.inspiration-card__frame path {
+  fill: none;
+  stroke: var(--cruor-inspiration-card-line);
+  stroke-width: 2.45;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+  shape-rendering: geometricPrecision;
+}
+
+.inspiration-card__domain-sigil {
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  z-index: 5;
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 2.45px solid var(--cruor-inspiration-card-line);
+  background: var(--cruor-inspiration-card-glass);
+  box-shadow:
+    0 6px 14px var(--cruor-color-black-a240),
+    inset 0 0 0 1px var(--cruor-color-black-a460);
+  transform: translateX(-50%) rotate(45deg);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.inspiration-card__domain-sigil > span {
+  color: var(--cruor-inspiration-card-line);
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1;
+  transform: rotate(-45deg);
+}
+
+.inspiration-card__title-box {
+  position: absolute;
+  bottom: 11px;
+  left: 50%;
+  z-index: 5;
+  display: inline-flex;
+  width: max-content;
+  max-width: calc(100% - 58px);
+  min-height: 35px;
+  align-items: center;
+  justify-content: center;
+  border: 2.45px solid var(--cruor-inspiration-card-line);
+  background: var(--cruor-inspiration-card-glass);
+  padding: 6px 14px 5px;
+  text-align: center;
+  box-shadow:
+    0 8px 18px var(--cruor-color-black-a240),
+    inset 0 0 0 1px var(--cruor-color-black-a420);
+  transform: translateX(-50%);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.inspiration-card__title {
   min-width: 0;
   overflow: hidden;
-  border: 1px solid var(--cruor-color-milk-a090);
-  background: var(--cruor-gradient-linear-019-fbb0759c), var(--cruor-gradient-radial-235-073737b4), var(--cruor-color-surface-soft-a640);
-  box-shadow: var(--cruor-shadow-box-105);
-  transition: border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease, transform 0.14s ease;
-}
-
-/* States */
-
-.inspirations-page__card.is-active {
-  transform: translateY(-2px);
-  border-color: var(--cruor-color-blood-glow-a680);
-  background: var(--cruor-gradient-linear-101-60a8a5a5), var(--cruor-gradient-radial-128-a105fb60), var(--cruor-color-r12-g7-b9-a860);
-  box-shadow: var(--cruor-shadow-box-070);
-}
-
-.inspirations-page__card:hover {
-  transform: translateY(-2px);
-  border-color: var(--cruor-color-blood-glow-a680);
-  background: var(--cruor-gradient-linear-101-60a8a5a5), var(--cruor-gradient-radial-128-a105fb60), var(--cruor-color-r12-g7-b9-a860);
-  box-shadow: var(--cruor-shadow-box-070);
-}
-
-/* Layout */
-
-.inspirations-page__card-image {
-  position: relative;
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-  border: 0;
-  border-bottom: 1px solid var(--cruor-color-milk-a070);
-  background: var(--cruor-color-transparent);
-  color: var(--cruor-color-blood-glow-a440);
-  padding: 0;
-  text-align: left;
-}
-
-.inspirations-page__visual {
-  position: absolute;
-  inset: 0;
-  isolation: isolate;
-  display: grid;
-  place-items: center;
-  background: var(--cruor-gradient-radial-047-4ac41150);
-  color: var(--cruor-color-blood-glow-a420);
-}
-
-.inspirations-page__detail-visual {
-  position: relative;
-  z-index: 0;
-  display: grid;
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  min-height: 0;
-  overflow: hidden;
-  isolation: isolate;
-  contain: paint;
-  place-items: center;
-  border: 1px solid var(--cruor-color-milk-a090);
-  background: var(--cruor-gradient-radial-047-4ac41150);
-  color: var(--cruor-color-blood-glow-a420);
-}
-
-.inspirations-page__visual::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: var(--cruor-gradient-linear-147-e08f093b), var(--cruor-gradient-linear-216-41f72fb3), var(--cruor-gradient-linear-192-394792e7);
-  background-size: auto, 34px 34px, 34px 34px;
-  pointer-events: none;
-}
-
-.inspirations-page__detail-visual img {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  pointer-events: none;
-}
-
-.inspirations-page__visual img {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  pointer-events: none;
-}
-
-.inspirations-page__detail-visual i {
-  position: relative;
-  z-index: 0;
-  font-size: var(--display-size-giant);
-}
-
-.inspirations-page__visual i {
-  position: relative;
-  z-index: 0;
-  font-size: var(--display-size-giant);
-}
-
-.inspirations-page__detail-visual::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: var(--cruor-gradient-linear-052-97c6692c), var(--cruor-gradient-linear-065-00d91395), var(--cruor-gradient-linear-063-940bd872);
-  background-size: auto, 34px 34px, 34px 34px;
-  pointer-events: none;
-}
-
-.inspirations-page__card-type {
-  position: absolute;
-  left: 10px;
-  right: 10px;
-  bottom: 10px;
-  z-index: 1;
-  display: inline-flex;
-  width: fit-content;
-  max-width: calc(100% - 20px);
-  min-height: 25px;
-  align-items: center;
-  border: 1px solid var(--cruor-color-milk-a080);
-  background: var(--cruor-surface-card);
-  color: var(--cruor-color-hex-f0d7dc);
-  padding: 0 8px;
-  font-size: var(--text-size-xs);
-  font-weight: 950;
-  letter-spacing: 0.1em;
-  overflow: hidden;
+  color: var(--cruor-color-milk);
+  font-size: clamp(0.8125rem, 3.7cqw, 1.0625rem);
+  font-weight: 600;
+  letter-spacing: 0.075em;
+  line-height: 1.04;
   text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-  backdrop-filter: var(--cruor-filter-blur-8);
-}
-
-.inspirations-page__body {
-  display: grid;
-  gap: 7px;
-  padding: 12px;
-}
-
-/* Components */
-
-.inspirations-page__body strong {
-  color: var(--cruor-color-hex-fff0f2);
-  font-size: var(--text-size-4xl);
-  font-weight: 950;
-  line-height: 1.08;
-  letter-spacing: -0.025em;
-}
-
-/* Layout */
-
-.inspirations-page__body > span {
-  display: -webkit-box;
-  overflow: hidden;
-  color: var(--cruor-color-text-a580);
-  font-size: var(--text-size-l);
-  line-height: 1.38;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-}
-
-.inspirations-page__body em {
-  display: block;
-  overflow: hidden;
-  color: var(--cruor-color-hex-8f7278);
-  font-size: var(--text-size-xs);
-  font-style: normal;
-  font-weight: 950;
-  letter-spacing: 0.08em;
-  line-height: 1.35;
-  text-overflow: ellipsis;
+  text-shadow: var(--cruor-shadow-text-003);
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.inspirations-page__body small {
-  display: block;
-  overflow: hidden;
-  color: var(--cruor-color-hex-d0a2aa);
-  font-size: var(--text-size-xs);
-  font-style: normal;
-  font-weight: 950;
-  letter-spacing: 0.08em;
-  line-height: 1.35;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
+.inspiration-card.has-long-title .inspiration-card__title {
+  font-size: clamp(0.68rem, 4.15cqw, 0.92rem);
+  letter-spacing: 0.052em;
 }
 
-.inspirations-page__primary-action {
-  min-height: 40px;
-  border: 1px solid var(--cruor-color-milk-a090);
-  background: var(--cruor-gradient-radial-134-20afbf1f), var(--cruor-gradient-linear-193-f2121c9d);
-  color: var(--cruor-color-hex-fff0f2);
-  padding: 0 11px;
-  font-size: var(--text-size-s);
-  font-weight: 950;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
-  border-color: var(--cruor-color-blood-glow-a500);
+.inspiration-card.has-long-title .inspiration-card__title-box {
+  max-width: calc(100% - 42px);
+  padding-right: 12px;
+  padding-left: 12px;
 }
 
-.inspirations-page__dossier {
-  position: sticky;
-  top: var(--inspirations-dossier-sticky-top);
-  display: block;
-  max-height: calc(100dvh - var(--inspirations-dossier-sticky-top) - var(--inspirations-dossier-sticky-bottom));
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding: 12px;
+.inspiration-card__back {
+  background: var(--cruor-color-ink-deep);
 }
 
-.inspirations-page__dossier-content {
-  position: relative;
+.inspiration-card__back-art {
   z-index: 0;
-  display: grid;
-  gap: 13px;
-  animation: inspirations-dossier-fade 180ms ease-out both;
+  opacity: var(--cruor-inspiration-card-back-image-opacity);
+  filter: var(--cruor-inspiration-card-back-image-filter);
+  transform: scale(1.018);
 }
 
-.inspirations-page__dossier-content > :not(.inspirations-page__detail-visual) {
+.inspiration-card__back-content {
   position: relative;
   z-index: 2;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  padding: clamp(24px, 8cqw, 32px) clamp(22px, 7.5cqw, 30px)
+    clamp(22px, 7cqw, 28px);
+  text-shadow: var(--cruor-shadow-text-003);
 }
 
-.inspirations-page__dossier-head {
-  display: grid;
-  gap: 7px;
-  border-bottom: 1px solid var(--cruor-color-milk-a070);
-  padding-bottom: 12px;
-}
-
-.inspirations-page__dossier-head > div {
-  display: grid;
-  gap: 7px;
-}
-
-/* Components */
-
-.inspirations-page__dossier-head h2 {
-  margin: 0;
-  color: var(--cruor-color-hex-fff0f2);
-  font-size: var(--text-size-fluid-16);
-  font-weight: 950;
-  line-height: 0.95;
-  letter-spacing: -0.05em;
-}
-
-.inspirations-page__empty-dossier h2 {
-  margin: 0;
-  color: var(--cruor-color-hex-fff0f2);
-  font-size: var(--text-size-fluid-16);
-  font-weight: 950;
-  line-height: 0.95;
-  letter-spacing: -0.05em;
-}
-
-.inspirations-page__dossier-head p:not(.eyebrow) {
-  margin: 0;
-  color: var(--cruor-color-text-a540);
-  font-size: var(--text-size-xl);
-  line-height: 1.4;
-}
-
-.inspirations-page__empty-dossier p:not(.eyebrow) {
-  margin: 0;
-  color: var(--cruor-color-text-a540);
-  font-size: var(--text-size-xl);
-  line-height: 1.4;
-}
-
-/* Layout */
-
-.inspirations-page__pack-badge {
-  display: inline-flex;
-  width: fit-content;
-  min-height: 26px;
-  align-items: center;
-  border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-surface-card);
-  color: var(--cruor-color-hex-d0a2aa);
-  padding: 0 8px;
-  font-size: var(--text-size-xs);
-  font-weight: 950;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-
-.inspirations-page__composer-cta {
-  display: inline-flex;
-  width: fit-content;
-  min-height: 36px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border: 1px solid var(--cruor-color-blood-glow-a500);
-  background: var(--cruor-gradient-linear-079-18ee8d35), var(--cruor-surface-card);
-  color: var(--cruor-color-hex-fff0f2);
-  padding: 0 11px;
-  font-size: var(--text-size-xs);
-  font-weight: 950;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
-}
-
-.inspirations-page__composer-cta:hover {
-  border-color: var(--cruor-color-milk-a200);
-  background: var(--cruor-gradient-linear-087-77ac247e), var(--cruor-color-blood-a540);
-  box-shadow: var(--cruor-shadow-box-054);
-}
-
-.inspirations-page__use-actions {
+.inspiration-card__back-head {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 8px;
-  align-items: center;
+  align-items: start;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
-.inspirations-page__use-actions > span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
-  border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-surface-card);
-  color: var(--cruor-color-hex-d0a2aa);
-  padding: 0 9px;
-  font-size: var(--text-size-xs);
-  font-weight: 950;
-  letter-spacing: 0.08em;
+.inspiration-card__back-head h2 {
+  margin: 0;
+  overflow: hidden;
+  color: var(--cruor-color-milk);
+  font-size: clamp(0.74rem, 4.3cqw, 0.96rem);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.08;
+  text-overflow: ellipsis;
   text-transform: uppercase;
   white-space: nowrap;
 }
 
-.inspirations-page__detail-main {
-  display: grid;
-  gap: 10px;
+.inspiration-card__back-head > div > span {
+  display: block;
+  margin-top: 5px;
+  overflow: hidden;
+  color: var(--cruor-color-text-a500);
+  font-size: clamp(0.52rem, 2.6cqw, 0.62rem);
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.inspirations-page__detail-main section {
+.inspiration-card__obscurity {
+  display: grid;
+  min-width: 24px;
+  min-height: 24px;
+  place-items: center;
+  border: 1px solid var(--cruor-inspiration-card-line-soft);
+  background: var(--cruor-color-white-a022);
+  color: var(--cruor-color-milk);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.inspiration-card__description {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  padding: 4px 0 34px;
+}
+
+.inspiration-card__description p {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--cruor-color-text-a900);
+  font-size: clamp(0.78rem, 4cqw, 1rem);
+  line-height: 1.56;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 9;
+}
+
+.inspiration-card__footer {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 32px 0 0;
+  color: var(--cruor-color-text-a420);
+  font-size: clamp(0.42rem, 1.8cqw, 0.5rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.inspiration-card__flip-control {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  border: 0;
+  border-radius: 15px;
+  background: var(--cruor-color-transparent);
+  cursor: pointer;
+}
+
+.inspiration-card__flip-control:focus-visible {
+  outline: 2px solid var(--cruor-color-milk-a420);
+  outline-offset: 4px;
+}
+
+.inspiration-card__dossier-button {
+  position: absolute;
+  right: clamp(20px, 6cqw, 24px);
+  bottom: clamp(20px, 6cqw, 24px);
+  z-index: 9;
+}
+
+.inspirations-page__empty {
+  display: grid;
+  min-height: 360px;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  border: 1px dashed var(--cruor-color-milk-a090);
+  background: var(--cruor-color-white-a018);
+  padding: 24px;
+  text-align: center;
+}
+
+.inspirations-page__empty i {
+  color: var(--cruor-color-blood-glow-a420);
+  font-size: 2rem;
+}
+
+.inspirations-page__empty h2,
+.inspirations-page__empty p {
+  margin: 0;
+}
+
+.inspirations-page__empty h2 {
+  color: var(--cruor-color-milk);
+}
+
+.inspirations-page__empty p {
+  max-width: 520px;
+  color: var(--cruor-color-text-a500);
+  line-height: 1.5;
+}
+
+.inspirations-page__empty button {
+  min-height: 36px;
+  border: 1px solid var(--cruor-color-blood-glow-a500);
+  background: var(--cruor-color-blood-a420);
+  color: var(--cruor-color-milk);
+  padding: 0 12px;
+  font-size: var(--text-size-xs, 0.68rem);
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.inspiration-dossier {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--cruor-z-shell, 80) + 40);
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  background: var(--cruor-inspiration-modal-overlay);
+  padding: clamp(14px, 3vw, 34px);
+  backdrop-filter: blur(8px) saturate(82%);
+  -webkit-backdrop-filter: blur(8px) saturate(82%);
+}
+
+.inspiration-dossier__panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(290px, 0.7fr) minmax(0, 1.3fr);
+  width: min(1220px, 100%);
+  max-height: calc(100dvh - clamp(28px, 6vw, 68px));
+  overflow: hidden;
+  border: 1px solid var(--cruor-color-blood-glow-a420);
+  background:
+    var(--cruor-gradient-radial-233-5992dede),
+    var(--cruor-gradient-linear-180-6c9dd1c2),
+    var(--cruor-color-ink-raised-a960);
+  box-shadow: var(--cruor-shadow-box-117);
+}
+
+.inspiration-dossier__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 12;
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid var(--cruor-color-milk-a100);
+  background: var(--cruor-color-black-a560);
+  color: var(--cruor-color-milk);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.inspiration-dossier__close:hover,
+.inspiration-dossier__close:focus-visible {
+  border-color: var(--cruor-color-blood-glow-a720);
+  background: var(--cruor-color-blood-strong-a720);
+  outline: none;
+}
+
+.inspiration-dossier__visual {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-inspiration-card-frame-band);
+}
+
+.inspiration-dossier__visual-window {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  bottom: 18px;
+  left: 15px;
+  overflow: hidden;
+  background: var(--cruor-color-ink-deep);
+  -webkit-mask: var(--inspiration-card-shape-mask) center / 100% 100% no-repeat;
+  mask: var(--inspiration-card-shape-mask) center / 100% 100% no-repeat;
+}
+
+.inspiration-dossier__visual-window img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.inspiration-dossier__visual-window > i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: var(--cruor-color-blood-glow-a420);
+  font-size: 5rem;
+  transform: translate(-50%, -50%);
+}
+
+.inspiration-dossier__visual-window > span {
+  position: absolute;
+  inset: 0;
+  background:
+    var(--cruor-gradient-linear-053-3098d334),
+    var(--cruor-gradient-linear-147-e08f093b);
+  pointer-events: none;
+}
+
+.inspiration-dossier__frame {
+  inset: 15px;
+}
+
+.inspiration-dossier__domain-sigil {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  z-index: 5;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 2.45px solid var(--cruor-inspiration-card-line);
+  background: var(--cruor-inspiration-card-glass);
+  transform: translateX(-50%) rotate(45deg);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.inspiration-dossier__domain-sigil span {
+  color: var(--cruor-inspiration-card-line);
+  font-size: 18px;
+  transform: rotate(-45deg);
+}
+
+.inspiration-dossier__visual-title {
+  position: absolute;
+  right: 34px;
+  bottom: 16px;
+  left: 34px;
+  z-index: 5;
+  display: block;
+  overflow: hidden;
+  border: 2.45px solid var(--cruor-inspiration-card-line);
+  background: var(--cruor-inspiration-card-glass);
+  color: var(--cruor-color-milk);
+  padding: 10px 14px;
+  font-size: clamp(0.78rem, 1.2vw, 1rem);
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-align: center;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.inspiration-dossier__content {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+}
+
+.inspiration-dossier__header {
+  display: grid;
+  gap: 10px;
+  padding: clamp(24px, 3vw, 38px) clamp(22px, 3vw, 40px) 20px;
+  border-bottom: 1px solid var(--cruor-color-milk-a070);
+}
+
+.inspiration-dossier__header h2 {
+  max-width: calc(100% - 46px);
+  margin: 0;
+  color: var(--cruor-color-milk);
+  font-family: var(--cruor-font-display, "Lovato-Black", Georgia, serif);
+  font-size: clamp(2rem, 4.2vw, 4.5rem);
+  font-weight: 950;
+  letter-spacing: -0.055em;
+  line-height: 0.9;
+}
+
+.inspiration-dossier__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.inspiration-dossier__meta > span {
+  display: inline-flex;
+  min-height: 29px;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-white-a022);
+  color: var(--cruor-color-text-a620);
+  padding: 0 8px;
+  font-size: var(--text-size-xs, 0.68rem);
+}
+
+.inspiration-dossier__meta strong {
+  color: var(--cruor-color-rose);
+  font-size: var(--text-size-xxs, 0.61rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.inspiration-dossier__body {
+  display: grid;
+  gap: 12px;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px clamp(22px, 3vw, 40px) 24px;
+  overscroll-behavior: contain;
+}
+
+.inspiration-dossier__section {
   display: grid;
   gap: 8px;
   border: 1px solid var(--cruor-color-milk-a065);
   background: var(--cruor-color-white-a018);
-  padding: 11px;
+  padding: 13px;
 }
 
-/* Components */
+.inspiration-dossier__section--lead {
+  border-left-color: var(--cruor-color-blood-glow-a500);
+  background:
+    var(--cruor-gradient-linear-019-fbb0759c), var(--cruor-color-white-a018);
+}
 
-.inspirations-page__detail-main h3 {
+.inspiration-dossier__section h3 {
   margin: 0;
-  color: var(--cruor-color-hex-b33b4e);
-  font-size: var(--text-size-s);
-  font-weight: 950;
-  letter-spacing: 0.1em;
+  color: var(--cruor-color-blood-glow);
+  font-size: var(--text-size-xs, 0.68rem);
+  font-weight: 900;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
 }
 
-.inspirations-page__detail-main p {
+.inspiration-dossier__section p {
   margin: 0;
-  color: var(--cruor-color-text-a580);
-  font-size: var(--text-size-l-plus);
-  line-height: 1.5;
+  color: var(--cruor-color-text-a680);
+  font-size: clamp(0.88rem, 1.15vw, 1rem);
+  line-height: 1.58;
 }
 
-/* Layout */
+.inspiration-dossier__section--lead p {
+  color: var(--cruor-color-text-a820);
+  font-size: clamp(0.94rem, 1.25vw, 1.08rem);
+  line-height: 1.66;
+}
 
-.inspirations-page__section-head {
+.inspiration-dossier__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.inspiration-dossier__chips span {
+  border: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-white-a024);
+  color: var(--cruor-color-hex-c8a2a8);
+  padding: 5px 8px;
+  font-size: var(--text-size-xs, 0.68rem);
+  font-weight: 800;
+}
+
+.inspiration-dossier__section-head,
+.inspiration-dossier__component-group > header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
 
-/* Components */
-
-.inspirations-page__section-head h3 {
-  margin: 0;
+.inspiration-dossier__section-head > span,
+.inspiration-dossier__component-group > header span {
+  color: var(--cruor-color-rose);
+  font-size: var(--text-size-xs, 0.68rem);
+  font-weight: 900;
 }
 
-.inspirations-page__section-head strong {
-  color: var(--cruor-color-hex-d0a2aa);
-  font-size: var(--text-size-s);
-  font-weight: 950;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-/* Layout */
-
-.inspirations-page__chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.inspirations-page__linked {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-/* Components */
-
-.inspirations-page__chips span {
-  border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-white-a024);
-  color: var(--cruor-color-hex-c8a2a8);
-  padding: 5px 8px;
-  font-size: var(--text-size-s);
-  font-weight: 850;
-}
-
-/* Layout */
-
-.inspirations-page__component-groups {
+.inspiration-dossier__component-groups {
   display: grid;
   gap: 8px;
 }
 
-.inspirations-page__component-group {
+.inspiration-dossier__component-group {
   display: grid;
-  gap: 8px;
-  border: 1px solid var(--cruor-color-milk-a065);
+  gap: 7px;
+  border: 1px solid var(--cruor-color-milk-a060);
   background: var(--cruor-surface-card);
   padding: 9px;
 }
 
-.inspirations-page__component-group h4 {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 0;
+.inspiration-dossier__component-group > header strong {
   color: var(--cruor-color-text-a820);
-  font-size: var(--text-size-s);
-  font-weight: 950;
+  font-size: var(--text-size-xs, 0.68rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-/* Components */
-
-.inspirations-page__component-group h4 em {
-  color: var(--cruor-color-hex-d0a2aa);
-  font-style: normal;
+.inspiration-dossier__component-group > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-/* Layout */
-
-.inspirations-page__linked > span {
-  border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-white-a024);
-  color: var(--cruor-color-hex-c8a2a8);
-  padding: 5px 8px;
-  font-size: var(--text-size-s);
-  font-weight: 850;
+.inspiration-dossier__component-group > div > span {
   display: grid;
-  gap: 3px;
+  gap: 2px;
   max-width: 100%;
+  border: 1px solid var(--cruor-color-milk-a060);
+  background: var(--cruor-color-white-a022);
+  padding: 6px 8px;
 }
 
-/* Components */
-
-.inspirations-page__linked > span strong {
+.inspiration-dossier__component-group > div strong {
   color: var(--cruor-color-text-a900);
-  font-size: var(--text-size-m);
-  line-height: 1.25;
+  font-size: var(--text-size-s, 0.74rem);
 }
 
-.inspirations-page__linked > span small {
+.inspiration-dossier__component-group > div small {
   color: var(--cruor-color-r208-g162-b170-a840);
-  font-size: var(--text-size-xxs);
-  font-weight: 850;
+  font-size: var(--text-size-xxs, 0.61rem);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-/* Layout */
-
-.inspirations-page__empty-dossier {
-  display: grid;
-  align-content: center;
-  gap: 10px;
-  min-height: 440px;
-  border: 1px dashed var(--cruor-color-milk-a090);
-  background: var(--cruor-gradient-radial-246-4c8845b1), var(--cruor-surface-card);
-  padding: 18px;
-  text-align: center;
+.inspiration-dossier__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-top: 1px solid var(--cruor-color-milk-a070);
+  background: var(--cruor-color-black-a240);
+  padding: 12px clamp(22px, 3vw, 40px);
 }
 
-/* Components */
-
-.inspirations-page .empty {
-  margin-top: 12px;
-  border: 1px dashed var(--cruor-color-milk-a090);
-  background: var(--cruor-color-white-a022);
-  color: var(--cruor-color-text-a500);
-  padding: 18px;
-  font-size: var(--text-size-xl);
-  line-height: 1.45;
+.inspiration-dossier__actions > span {
+  overflow: hidden;
+  color: var(--cruor-color-text-a360);
+  font-size: var(--text-size-xxs, 0.61rem);
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-@media (max-width: 1320px) {
-  .inspirations-page__workspace {
-    grid-template-columns: minmax(0, 1fr) minmax(320px, 390px);
+.inspiration-dossier__actions button {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--cruor-color-blood-glow-a500);
+  background:
+    var(--cruor-gradient-linear-079-18ee8d35), var(--cruor-surface-card);
+  color: var(--cruor-color-milk);
+  padding: 0 12px;
+  font-size: var(--text-size-xs, 0.68rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.inspiration-dossier__actions button:hover,
+.inspiration-dossier__actions button:focus-visible {
+  border-color: var(--cruor-color-milk-a200);
+  background:
+    var(--cruor-gradient-linear-087-77ac247e), var(--cruor-color-blood-a540);
+  box-shadow: var(--cruor-shadow-box-054);
+  outline: none;
+}
+
+@container (max-width: 310px) {
+  .inspiration-card__back-content {
+    padding-right: 20px;
+    padding-left: 20px;
   }
 
+  .inspiration-card__description p {
+    font-size: 0.78rem;
+    line-height: 1.5;
+    -webkit-line-clamp: 8;
+  }
+
+  .inspiration-card__title-box {
+    max-width: calc(100% - 48px);
+  }
+}
+
+@media (max-width: 1480px) {
+  .inspirations-page__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1240px) {
   .inspirations-page__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
+  .inspirations-filters__domains {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
-@media (max-width: 1080px) {
-  .inspirations-page__hero {
+@media (max-width: 960px) {
+  .inspirations-page__masthead {
     grid-template-columns: 1fr;
-  }
-
-  .inspirations-page__workspace {
-    grid-template-columns: 1fr;
-  }
-
-  .inspirations-page__dossier {
-    position: static;
-    max-height: none;
-  }
-
-  .inspirations-page__dossier-content {
-    grid-template-columns: minmax(220px, 0.46fr) minmax(0, 1fr);
     align-items: start;
   }
 
-  .inspirations-page__dossier-content > .inspirations-page__detail-visual {
-    grid-row: span 4;
+  .inspirations-page__archive-summary {
+    justify-self: start;
   }
 
-  .inspirations-page__detail-main {
+  .inspirations-filters {
+    position: relative;
+    top: auto;
+  }
+
+  .inspirations-filters__primary {
+    grid-template-columns: minmax(0, 1fr) minmax(150px, 190px) auto;
+  }
+
+  .inspirations-filters__search {
     grid-column: 1 / -1;
   }
 
-  .inspirations-page__tools {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .inspirations-page__search {
-    grid-column: 1 / -1;
+  .inspiration-dossier__panel {
+    grid-template-columns: minmax(240px, 0.58fr) minmax(0, 1.42fr);
   }
 }
 
 @media (max-width: 760px) {
   .inspirations-page {
-    --inspirations-page-pad-y: 14px;
-    padding: var(--inspirations-page-pad-y);
+    padding: 14px 12px 36px;
   }
 
-  .inspirations-page__dossier {
-    padding: 12px;
+  .inspirations-page__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
 
-  .inspirations-page__hero {
-    padding: 12px;
+  .inspirations-page__collection-head {
+    align-items: start;
+    flex-direction: column;
   }
 
-  .inspirations-page__dossier-content {
-    grid-template-columns: 1fr;
+  .inspirations-filters__primary,
+  .inspirations-filters__secondary {
+    grid-template-columns: 1fr 1fr;
   }
 
-  .inspirations-page__stats {
-    grid-template-columns: 1fr;
+  .inspirations-filters__search {
+    grid-column: 1 / -1;
   }
 
-  .inspirations-page__tools {
-    padding: 12px;
-    grid-template-columns: 1fr;
+  .inspirations-filters__domains {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  
-.inspirations-page__composer-cta {
-  display: inline-flex;
-  width: fit-content;
-  min-height: 36px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border: 1px solid var(--cruor-color-blood-glow-a500);
-  background: var(--cruor-gradient-linear-079-18ee8d35), var(--cruor-surface-card);
-  color: var(--cruor-color-hex-fff0f2);
-  padding: 0 11px;
-  font-size: var(--text-size-xs);
-  font-weight: 950;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+  .inspiration-card__face {
+    border-radius: 15px;
+  }
+
+  .inspiration-card__window {
+    top: 11px;
+    right: 14px;
+    bottom: 17px;
+    left: 14px;
+  }
+
+  .inspiration-card__frame {
+    inset: 14px;
+  }
+
+  .inspiration-card__domain-sigil {
+    top: 7px;
+  }
+
+  .inspiration-card__title-box {
+    bottom: 11px;
+    min-height: 35px;
+    padding: 6px 14px 5px;
+  }
+
+  .inspiration-card__flip-control {
+    border-radius: 15px;
+  }
+
+  .inspiration-dossier {
+    padding: 0;
+  }
+
+  .inspiration-dossier__panel {
+    display: block;
+    width: 100%;
+    max-height: 100dvh;
+    min-height: 100dvh;
+    overflow-y: auto;
+    border: 0;
+  }
+
+  .inspiration-dossier__visual {
+    width: min(420px, 100%);
+    aspect-ratio: 4 / 5;
+    margin: 0 auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--cruor-color-milk-a075);
+  }
+
+  .inspiration-dossier__content {
+    overflow: visible;
+  }
+
+  .inspiration-dossier__body {
+    overflow: visible;
+  }
+
+  .inspiration-dossier__actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 4;
+    background: var(--cruor-color-ink-raised-a960);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
 }
 
-.inspirations-page__composer-cta:hover {
-  border-color: var(--cruor-color-milk-a200);
-  background: var(--cruor-gradient-linear-087-77ac247e), var(--cruor-color-blood-a540);
-  box-shadow: var(--cruor-shadow-box-054);
-}
-
-.inspirations-page__use-actions {
-    grid-template-columns: 1fr;
-  }
-
+@media (max-width: 480px) {
   .inspirations-page__grid {
     grid-template-columns: 1fr;
   }
 
-  .inspirations-page__library-head {
-    display: grid;
+  .inspirations-filters__primary,
+  .inspirations-filters__secondary {
+    grid-template-columns: 1fr;
   }
 
-  .inspirations-page__dossier-content > .inspirations-page__detail-visual {
-    grid-row: auto;
+  .inspirations-filters__domains {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .inspiration-card {
+    width: min(360px, 100%);
+    justify-self: center;
+  }
+
+  .inspiration-dossier__actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .inspiration-dossier__actions > span {
+    text-align: center;
+  }
+}
+
+html[data-a11y-motion="reduced"] .inspiration-card,
+html[data-a11y-motion="reduced"] .inspiration-card__front,
+html[data-a11y-motion="reduced"] .inspiration-card__back {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-a11y-motion="full"]) .inspiration-card,
+  html:not([data-a11y-motion="full"]) .inspiration-card__front,
+  html:not([data-a11y-motion="full"]) .inspiration-card__back {
+    transition: none;
   }
 }
