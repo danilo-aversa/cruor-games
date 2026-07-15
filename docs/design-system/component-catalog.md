@@ -249,6 +249,70 @@ Feature classes may control grid placement, rail height, responsive behavior, in
 </ComposerRail>
 ```
 
+
+## Shared Tool Content Panels
+
+### Purpose and visual source
+
+Use this family when a tool surface needs the same hierarchy used by the Home tool overview cards: eyebrow, large tool title, descriptive copy, separated feature groups, icon-led option rows, and paired actions. It is suitable for export settings, setup summaries, compact onboarding panels, and other narrow tool surfaces that should remain visually connected to the Home experience.
+
+- React primitives: `components/ui/tool-content-panel.jsx`
+- Shared stylesheet: `shared/styles/composer-system.css`
+- Visual provenance: `.cruor-home__tool-content-inner`, `.cruor-home__tool-copy`, `.cruor-home__tool-feature-block`, `.cruor-home__tool-features`, `.cruor-home__tool-actions`, and `.cruor-home__button`.
+
+The shared family copies the Home typography, spacing, accent colors, feature-icon treatment, and action hierarchy without requiring feature code to import or depend on Home-specific class names.
+
+### React API
+
+- `ToolContentPanel` — eyebrow, title, summary, content groups, and optional actions.
+- `ToolFeatureBlock` — separated section with an uppercase group label.
+- `ToolOptionList` — one- or two-column option/feature stack.
+- `ToolOption` — icon-led selectable row with label, optional description, active state, and trailing state icon.
+- `ToolButton` — ordinary or primary action using the Home tool-action treatment.
+- `ToolActions` — action-grid primitive when actions are composed separately.
+
+### Class API
+
+- `.cruor-tool-content-inner` — overall vertical rhythm.
+- `.cruor-tool-copy`, `__eyebrow`, `__title`, `.cruor-tool-summary` — heading and descriptive copy.
+- `.cruor-tool-feature-block`, `__label` — divided content group.
+- `.cruor-tool-option-list` — feature or option stack.
+- `.cruor-tool-option`, `__icon`, `__copy`, `__label`, `__description`, `__state` — icon-led row and interaction states.
+- `.cruor-tool-actions` — paired action area.
+- `.cruor-tool-button`, `--primary` — Home-derived secondary and primary actions.
+
+### Usage rules
+
+Use these primitives as a complete hierarchy rather than copying `.cruor-home__*` classes into feature code. Feature classes may control rail placement, width, sticky behavior, conditional groups, select geometry, and runtime/test hooks. They must not redefine the shared type scale, colors, font weights, feature-icon surface, group dividers, option interaction states, or action-button visuals.
+
+```jsx
+<ToolContentPanel
+  eyebrow="Map Export"
+  title="Download Map"
+  summary="Prepare a player-safe or print-ready file."
+  actions={(
+    <>
+      <ToolButton primary icon="fa-download">Download</ToolButton>
+      <ToolButton icon="fa-xmark">Close</ToolButton>
+    </>
+  )}
+>
+  <ToolFeatureBlock label="Export Profile">
+    <ToolOptionList role="radiogroup" aria-label="Export profile">
+      <ToolOption
+        active
+        icon="fa-user-shield"
+        label="GM"
+        description="Full authored map with secrets."
+        role="radio"
+        aria-checked="true"
+      />
+    </ToolOptionList>
+  </ToolFeatureBlock>
+</ToolContentPanel>
+```
+
+
 ## Composer Slot Cards
 
 ### Purpose and canonical source

@@ -1,3 +1,5 @@
+import { ToolButton, ToolContentPanel, ToolFeatureBlock } from "../../../../components/ui/tool-content-panel.jsx";
+
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -271,17 +273,17 @@ function SemanticBlockSection({ blocks, kind }) {
   const config = SECTION_CONFIG[kind];
 
   return (
-    <section className={cx("location-output-section", `location-output-section--${kind}`, config?.className)}>
-      <header className="location-output-section__head">
-        <i className={`fa-solid ${config?.icon || "fa-diamond"}`} aria-hidden="true" />
-        <h3 className="cruor-composer-collapsible-section__title">{config?.title || formatFieldKey(kind)}</h3>
-      </header>
+    <ToolFeatureBlock
+      label={config?.title || formatFieldKey(kind)}
+      className={cx("location-output-section", `location-output-section--${kind}`, config?.className)}
+      data-section-icon={config?.icon || "fa-diamond"}
+    >
       <div className="location-output-semantic-list">
         {entries.map((block) => (
           <SemanticBlockCard block={block} kind={kind} key={block.id} />
         ))}
       </div>
-    </section>
+    </ToolFeatureBlock>
   );
 }
 
@@ -310,17 +312,13 @@ function ImmediateImpressions({ room }) {
   if (!groups.length) return null;
 
   return (
-    <section className="location-output-section location-output-section--impressions">
-      <header className="location-output-section__head">
-        <i className="fa-solid fa-location-dot" aria-hidden="true" />
-        <h3 className="cruor-composer-collapsible-section__title">Immediate Impressions</h3>
-      </header>
+    <ToolFeatureBlock label="Immediate Impressions" className="location-output-section location-output-section--impressions">
       <div className="location-output-impression-grid">
         {groups.map((group) => (
           <section className="location-output-impression-group" key={group.id}>
             <header>
               <i className={`fa-solid ${group.icon}`} aria-hidden="true" />
-              <h4 className="cruor-composer-collapsible-section__title">{group.title}</h4>
+              <h4>{group.title}</h4>
             </header>
             {asArray(group.blocks).map((block) => (
               <SemanticBlockCard block={block} kind={group.id} compact key={block.id} />
@@ -328,7 +326,7 @@ function ImmediateImpressions({ room }) {
           </section>
         ))}
       </div>
-    </section>
+    </ToolFeatureBlock>
   );
 }
 
@@ -337,12 +335,8 @@ function ReadAloudSection({ room, onCopyText }) {
   if (!entries.length) return null;
 
   return (
-    <blockquote className="location-output-readaloud">
-      <header>
-        <div>
-          <i className="fa-solid fa-quote-left" aria-hidden="true" />
-          <h3 className="cruor-composer-collapsible-section__title">Read Aloud</h3>
-        </div>
+    <ToolFeatureBlock label="Read Aloud" className="location-output-section location-output-section--readaloud">
+      <blockquote className="location-output-readaloud">
         <button
           className="location-output-icon-action cruor-square-icon-button cruor-square-icon-button--compact"
           type="button"
@@ -354,9 +348,9 @@ function ReadAloudSection({ room, onCopyText }) {
         >
           <i className="fa-solid fa-copy" aria-hidden="true" />
         </button>
-      </header>
-      {entries.map((block) => <p key={block.id}>{block.text}</p>)}
-    </blockquote>
+        {entries.map((block) => <p key={block.id}>{block.text}</p>)}
+      </blockquote>
+    </ToolFeatureBlock>
   );
 }
 
@@ -373,11 +367,7 @@ function RoomConnectionList({ connections, onSelectRoom }) {
   if (!entries.length) return null;
 
   return (
-    <section className="location-output-section location-output-section--connections">
-      <header className="location-output-section__head">
-        <i className="fa-solid fa-route" aria-hidden="true" />
-        <h3 className="cruor-composer-collapsible-section__title">Exits</h3>
-      </header>
+    <ToolFeatureBlock label="Exits" className="location-output-section location-output-section--connections">
       <div className="location-output-connection-list">
         {entries.map((connection) => {
           const transition = getConnectionTransition(connection);
@@ -410,7 +400,7 @@ function RoomConnectionList({ connections, onSelectRoom }) {
           );
         })}
       </div>
-    </section>
+    </ToolFeatureBlock>
   );
 }
 
@@ -423,24 +413,19 @@ export function LocationRoomOutput({
   if (!room) return null;
 
   return (
-    <article className="location-output-room" data-testid="dark-places-output-room">
-      <header className="location-output-room__head">
-        <div className="location-output-room__number">{formatRoomNumber(room.number)}</div>
-        <div>
-          <span className="cruor-composer-collapsible-section__title">Room {formatRoomNumber(room.number)}</span>
-          <h2>{room.name}</h2>
-          <p>{[room.role, formatLevel(room.level), room.shape].filter(Boolean).join(" · ")}</p>
-        </div>
-        <button
-          className="location-output-quiet-action cruor-composer-control"
-          type="button"
-          onClick={() => onEditRoom?.(room.id)}
-        >
-          <i className="fa-solid fa-pen" aria-hidden="true" />
-          <span>Edit Room</span>
-        </button>
-      </header>
-
+    <ToolContentPanel
+      className="location-output-room"
+      data-testid="dark-places-output-room"
+      eyebrow={`Room ${formatRoomNumber(room.number)}`}
+      title={room.name}
+      summary={[room.role, formatLevel(room.level), room.shape].filter(Boolean).join(" · ")}
+      actionsLabel={`${room.name} actions`}
+      actions={(
+        <ToolButton icon="fa-pen" onClick={() => onEditRoom?.(room.id)}>
+          Edit Room
+        </ToolButton>
+      )}
+    >
       {room.readiness?.missingSlotLabels?.length ? (
         <button
           className="location-output-room__missing cruor-composer-control"
@@ -460,6 +445,6 @@ export function LocationRoomOutput({
       <SemanticBlockSection blocks={room.secrets} kind="secret" />
       <SemanticBlockSection blocks={room.rewards} kind="reward" />
       <RoomConnectionList connections={room.connections} onSelectRoom={onSelectRoom} />
-    </article>
+    </ToolContentPanel>
   );
 }

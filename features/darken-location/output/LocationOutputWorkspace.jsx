@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ComposerCollapsibleSection, ComposerRail } from "../../../components/ui/composer-rail.jsx";
+import { ToolButton, ToolContentPanel, ToolFeatureBlock } from "../../../components/ui/tool-content-panel.jsx";
 import { MapSvg } from "../map-generator/map-generator.render.jsx";
 import { LocationRoomOutput } from "./components/LocationRoomOutput.jsx";
 import { LocationMapExportStudio } from "./components/LocationMapExportStudio.jsx";
@@ -109,21 +110,22 @@ function OutputBlockSection({ blocks, title, icon = "fa-diamond", className = ""
   if (!entries.length) return null;
 
   return (
-    <section className={cx("location-output-section", className)}>
-      <header className="location-output-section__head">
-        <i className={`fa-solid ${icon}`} aria-hidden="true" />
-        <h3 className="cruor-composer-collapsible-section__title">{title}</h3>
-      </header>
+    <ToolFeatureBlock
+      label={title}
+      className={cx("location-output-section", className)}
+      data-section-icon={icon}
+    >
       <div className="location-output-prose-list">
         {entries.map((block) => (
           <OutputBlock block={block} key={block.id} />
         ))}
       </div>
-    </section>
+    </ToolFeatureBlock>
   );
 }
 
 function LocationOutputMap({
+  className = "",
   documentModel,
   exportSettings,
   generatedMapPreview,
@@ -170,7 +172,7 @@ function LocationOutputMap({
 
   return (
     <div
-      className="location-output-map cruor-composer-panel"
+      className={cx("location-output-map", "cruor-composer-panel", className)}
       data-testid="dark-places-output-map"
       data-export-hide-secrets={mapOptions.hideSecrets ? "true" : "false"}
       data-export-texture={mapOptions.showTexture ? "visible" : "hidden"}
@@ -217,6 +219,351 @@ function LocationOutputMap({
   );
 }
 
+function LocationOutputMapPreview({
+  activeRoom,
+  busy,
+  documentModel,
+  exportSettings,
+  generatedMapPreview,
+  mapContainerRef,
+  onDownload,
+  onOpen,
+  status,
+  triggerRef,
+}) {
+  const format = EXPORT_FORMAT_LABELS[exportSettings?.format] || "SVG";
+
+  return (
+    <section
+      className="cruor-composer-rail-card location-frame-info-card location-output-map-preview"
+      aria-label="Location map preview"
+    >
+      <span>Map Preview</span>
+      <div className="location-output-map-preview__frame">
+        <div className="location-output-map-preview__canvas" aria-hidden="true">
+          <LocationOutputMap
+            className="location-output-map--preview"
+            documentModel={documentModel}
+            exportSettings={exportSettings}
+            generatedMapPreview={generatedMapPreview}
+            interactive={false}
+            mapContainerRef={mapContainerRef}
+            selectedRoomId={activeRoom?.id || ""}
+          />
+        </div>
+        <button
+          ref={triggerRef}
+          className="location-output-map-preview__open cruor-composer-control"
+          type="button"
+          onClick={onOpen}
+          disabled={!generatedMapPreview}
+          aria-label="Open enlarged location map"
+          data-testid="dark-places-open-map-preview"
+        >
+          <i className="fa-solid fa-expand" aria-hidden="true" />
+          <span>{generatedMapPreview ? "Open full map" : "Map unavailable"}</span>
+        </button>
+      </div>
+      <ToolButton
+        primary
+        icon={busy ? "fa-spinner fa-spin" : "fa-download"}
+        iconPosition="start"
+        className="location-output-map-preview__download"
+        disabled={busy || !generatedMapPreview}
+        onClick={onDownload}
+        data-testid="dark-places-map-export-download"
+      >
+        {busy ? "Preparing" : `Download ${format}`}
+      </ToolButton>
+      <p
+        className={cx("location-map-export-status", status && "is-visible")}
+        aria-live="polite"
+      >
+        {status}
+      </p>
+      {activeRoom ? (
+        <p className="location-output-map-preview__selection">
+          <strong>{formatRoomNumber(activeRoom.number)}.</strong>
+          <span>{activeRoom.name}</span>
+        </p>
+      ) : (
+        <p className="location-output-map-preview__hint">
+          Select a room from the outline or open the enlarged map to inspect the site.
+        </p>
+      )}
+    </section>
+  );
+}
+
+const EXPORT_PRESET_LABELS = Object.freeze({
+  gm: "GM",
+  player: "Player",
+  print: "Print",
+  custom: "Custom",
+});
+
+const EXPORT_FORMAT_LABELS = Object.freeze({
+  svg: "SVG",
+  png: "PNG",
+});
+
+const EXPORT_CROP_LABELS = Object.freeze({
+  content: "Content Bounds",
+  canvas: "Full Canvas",
+});
+
+const EXPORT_PADDING_LABELS = Object.freeze({
+  0: "None",
+  24: "Tight",
+  48: "Standard",
+  96: "Wide",
+});
+
+const EXPORT_BACKGROUND_LABELS = Object.freeze({
+  style: "Map Style",
+  white: "White",
+  transparent: "Transparent",
+});
+
+const EXPORT_PALETTE_LABELS = Object.freeze({
+  style: "Map Style",
+  print: "Print",
+});
+
+function formatExportLevel(value) {
+  if (value === null || value === undefined || value === "all") return "All Levels";
+  const level = Number(value);
+  if (!Number.isFinite(level)) return "All Levels";
+  if (level === 0) return "Ground · 0";
+  return level > 0 ? `Above · +${level}` : `Below · ${level}`;
+}
+
+function formatExportToken(value, fallback = "Default") {
+  const text = cleanText(value, fallback);
+  return text
+    .replace(/[-_]+/g, " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function ExportFactRow({ className = "", label, value }) {
+  return (
+    <span className={cx("cruor-composer-fact-row", "location-frame-info-row", className)}>
+      <small className="cruor-composer-fact-label">{label}</small>
+      <strong className="cruor-composer-fact-value">{value}</strong>
+    </span>
+  );
+}
+
+function LocationOutputExportSummary({
+  exportTitle,
+  generatedMapPreview,
+  settings,
+}) {
+  const normalizedSettings = useMemo(
+    () => normalizeLocationMapExportSettings(settings, generatedMapPreview),
+    [generatedMapPreview, settings],
+  );
+  const renderOptions = useMemo(
+    () => getLocationMapExportRenderOptions(generatedMapPreview, normalizedSettings),
+    [generatedMapPreview, normalizedSettings],
+  );
+  const format = EXPORT_FORMAT_LABELS[normalizedSettings.format] || "SVG";
+  const profile = EXPORT_PRESET_LABELS[normalizedSettings.preset] || "Custom";
+  const fileName = createLocationMapExportFilename(exportTitle, normalizedSettings);
+  const roomLabels = normalizedSettings.showRoomNumbers && normalizedSettings.showRoomNames
+    ? "Numbers + Names"
+    : normalizedSettings.showRoomNumbers
+      ? "Numbers"
+      : normalizedSettings.showRoomNames
+        ? "Names"
+        : "Hidden";
+
+  return (
+    <>
+      <section
+        className="cruor-composer-rail-card location-frame-info-card"
+        aria-label="Export file and framing summary"
+      >
+        <span>File &amp; Framing</span>
+        <div className="cruor-composer-fact-grid location-frame-info-grid">
+          <ExportFactRow
+            className="location-output-export-filename-row"
+            label="File Name"
+            value={fileName}
+          />
+          <ExportFactRow label="Profile" value={profile} />
+          <ExportFactRow label="Format" value={format} />
+          {normalizedSettings.format === "png" ? (
+            <ExportFactRow label="Resolution" value={`${normalizedSettings.pngScale || 2}×`} />
+          ) : null}
+          <ExportFactRow
+            label="Crop"
+            value={EXPORT_CROP_LABELS[normalizedSettings.crop] || "Content Bounds"}
+          />
+          {normalizedSettings.crop !== "canvas" ? (
+            <ExportFactRow
+              label="Padding"
+              value={EXPORT_PADDING_LABELS[normalizedSettings.padding] || "Standard"}
+            />
+          ) : null}
+          <ExportFactRow label="Level" value={formatExportLevel(normalizedSettings.levelView)} />
+          <ExportFactRow
+            label="Bounds"
+            value={`${Math.round(renderOptions.viewBoxBounds.width)} × ${Math.round(renderOptions.viewBoxBounds.height)}`}
+          />
+        </div>
+      </section>
+
+      <section
+        className="cruor-composer-rail-card location-frame-info-card"
+        aria-label="Export map style summary"
+      >
+        <span>Map Style</span>
+        <div className="cruor-composer-fact-grid location-frame-info-grid">
+          <ExportFactRow
+            label="Background"
+            value={EXPORT_BACKGROUND_LABELS[normalizedSettings.background] || "Map Style"}
+          />
+          <ExportFactRow
+            label="Palette"
+            value={EXPORT_PALETTE_LABELS[normalizedSettings.palette] || "Map Style"}
+          />
+          <ExportFactRow
+            label="Grid Style"
+            value={normalizedSettings.showGrid ? formatExportToken(renderOptions.gridStyle) : "Hidden"}
+          />
+          <ExportFactRow
+            label="Grid Color"
+            value={normalizedSettings.showGrid ? formatExportToken(renderOptions.gridColor) : "—"}
+          />
+          <ExportFactRow
+            label="Grid Weight"
+            value={normalizedSettings.showGrid ? formatExportToken(renderOptions.gridWeight) : "—"}
+          />
+          <ExportFactRow
+            label="Grid Opacity"
+            value={normalizedSettings.showGrid ? `${Math.round(renderOptions.gridOpacity * 100)}%` : "—"}
+          />
+          <ExportFactRow
+            label="Walls"
+            value={formatExportToken(renderOptions.wallDrawingStyle)}
+          />
+          <ExportFactRow
+            label="Hatching Style"
+            value={normalizedSettings.showHatching ? formatExportToken(renderOptions.crosshatchStyle) : "Hidden"}
+          />
+          <ExportFactRow
+            label="Hatching Opacity"
+            value={normalizedSettings.showHatching ? `${Math.round(renderOptions.crosshatchOpacity * 100)}%` : "—"}
+          />
+          <ExportFactRow
+            label="Hatch Shadow"
+            value={normalizedSettings.showHatching ? formatExportToken(renderOptions.hatchShadowColor) : "—"}
+          />
+        </div>
+      </section>
+
+      <section
+        className="cruor-composer-rail-card location-frame-info-card"
+        aria-label="Export layer summary"
+      >
+        <span>Layers</span>
+        <div className="cruor-composer-fact-grid location-frame-info-grid">
+          <ExportFactRow label="Room Labels" value={roomLabels} />
+          <ExportFactRow label="Props" value={normalizedSettings.showProps ? "Visible" : "Hidden"} />
+          <ExportFactRow label="Stair Arrows" value={normalizedSettings.showStairArrows ? "Visible" : "Hidden"} />
+          <ExportFactRow label="Hatching" value={normalizedSettings.showHatching ? "Visible" : "Hidden"} />
+          <ExportFactRow label="Texture" value={normalizedSettings.showTexture ? "Visible" : "Hidden"} />
+          <ExportFactRow label="Secret Routes" value={normalizedSettings.hideSecrets ? "Hidden" : "Included"} />
+        </div>
+      </section>
+
+    </>
+  );
+}
+
+function LocationOutputMapModal({
+  documentModel,
+  exportSettings,
+  generatedMapPreview,
+  onClose,
+  onSelectRoom,
+  open,
+  selectedRoomId,
+}) {
+  const closeButtonRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    closeButtonRef.current?.focus();
+    function handleKeyDown(event) {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      onClose?.();
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [onClose, open]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="location-output-map-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dark-places-map-preview-title"
+      data-testid="dark-places-map-preview-modal"
+    >
+      <button
+        className="location-output-map-modal__backdrop"
+        type="button"
+        aria-label="Close enlarged location map"
+        onClick={onClose}
+      />
+      <figure className="location-output-map-modal__frame">
+        <header className="location-output-map-modal__header">
+          <div>
+            <span>Location Map</span>
+            <h2 id="dark-places-map-preview-title">{documentModel?.meta?.title || "Cursed Location"}</h2>
+          </div>
+          <button
+            ref={closeButtonRef}
+            className="cruor-square-icon-button"
+            type="button"
+            aria-label="Close enlarged location map"
+            onClick={onClose}
+          >
+            <i className="fa-solid fa-xmark" aria-hidden="true" />
+          </button>
+        </header>
+        <div className="location-output-map-modal__canvas">
+          <LocationOutputMap
+            className="location-output-map--modal"
+            documentModel={documentModel}
+            exportSettings={exportSettings}
+            generatedMapPreview={generatedMapPreview}
+            interactive
+            selectedRoomId={selectedRoomId}
+            onSelectRoom={(roomId) => {
+              onSelectRoom?.(roomId);
+              onClose?.();
+            }}
+          />
+        </div>
+        <figcaption>Click a mapped room to open its table-ready entry.</figcaption>
+      </figure>
+    </div>
+  );
+}
+
+function getLocationMetaSummary(documentModel) {
+  const meta = documentModel?.meta || {};
+  return [meta.context, ...asArray(meta.horror), ...asArray(meta.sourceAnchors)]
+    .filter(Boolean)
+    .join(" · ");
+}
+
 function LocationOutputOverview({ documentModel }) {
   const overview = documentModel?.overview || {};
   const meta = documentModel?.meta || {};
@@ -227,17 +574,13 @@ function LocationOutputOverview({ documentModel }) {
   ];
 
   return (
-    <div className="location-output-document-view" data-testid="dark-places-output-overview">
-      <header className="location-output-document-hero">
-        <span className="cruor-composer-collapsible-section__title">Final Output</span>
-        <h2>{meta.title || "Cursed Location"}</h2>
-        <p>
-          {[meta.context, ...asArray(meta.horror), ...asArray(meta.sourceAnchors)]
-            .filter(Boolean)
-            .join(" · ")}
-        </p>
-      </header>
-
+    <ToolContentPanel
+      className="location-output-document-view"
+      data-testid="dark-places-output-overview"
+      eyebrow="Final Output"
+      title={meta.title || "Cursed Location"}
+      summary={getLocationMetaSummary(documentModel)}
+    >
       <OutputBlockSection
         blocks={overview.premise}
         title="Location Premise"
@@ -254,51 +597,54 @@ function LocationOutputOverview({ documentModel }) {
         title="At the Table"
         icon="fa-dice-d20"
       />
-    </div>
+    </ToolContentPanel>
   );
 }
 
 function LocationOutputAtTheTable({ documentModel }) {
   return (
-    <div className="location-output-document-view" data-testid="dark-places-output-table">
-      <header className="location-output-document-heading">
-        <span className="cruor-composer-collapsible-section__title">Operational Summary</span>
-        <h2>At the Table</h2>
-      </header>
+    <ToolContentPanel
+      className="location-output-document-view"
+      data-testid="dark-places-output-table"
+      eyebrow="Final Output"
+      title="At the Table"
+      summary="Run order, pressure, clues, and encounter guidance for the current location."
+    >
       <OutputBlockSection
         blocks={documentModel?.overview?.atTheTable}
         title="Run This Location"
         icon="fa-dice-d20"
       />
-    </div>
+    </ToolContentPanel>
   );
 }
 
 function LocationOutputMapSummary({ documentModel }) {
   const map = documentModel?.map || {};
+  const counts = map.counts || {};
+  const summaryEntries = [
+    { id: "rooms", title: "Rooms", text: String(counts.rooms || 0), kind: "note" },
+    { id: "connections", title: "Connections", text: String(counts.connections || 0), kind: "note" },
+    { id: "levels", title: "Levels", text: String(counts.levels || 0), kind: "note" },
+  ];
+
   return (
-    <div className="location-output-document-view" data-testid="dark-places-output-map-summary">
-      <header className="location-output-document-heading">
-        <span className="cruor-composer-collapsible-section__title">Map</span>
-        <h2>{documentModel?.meta?.title || "Location Map"}</h2>
-      </header>
-      <dl className="location-output-map-summary">
-        <div><dt>Rooms</dt><dd>{map.counts?.rooms || 0}</dd></div>
-        <div><dt>Connections</dt><dd>{map.counts?.connections || 0}</dd></div>
-        <div><dt>Levels</dt><dd>{map.counts?.levels || 0}</dd></div>
-      </dl>
+    <ToolContentPanel
+      className="location-output-document-view"
+      data-testid="dark-places-output-map-summary"
+      eyebrow="Final Output"
+      title="Map"
+      summary={documentModel?.meta?.title || "Location Map"}
+    >
+      <OutputBlockSection blocks={summaryEntries} title="Map Structure" icon="fa-map" />
       {asArray(map.legend).length ? (
-        <section className="location-output-section">
-          <header className="location-output-section__head">
-            <i className="fa-solid fa-map-signs" aria-hidden="true" />
-            <h3 className="cruor-composer-collapsible-section__title">Legend</h3>
-          </header>
+        <ToolFeatureBlock label="Legend" className="location-output-section">
           <ul className="location-output-plain-list">
             {map.legend.map((entry) => <li key={entry}>{entry}</li>)}
           </ul>
-        </section>
+        </ToolFeatureBlock>
       ) : null}
-    </div>
+    </ToolContentPanel>
   );
 }
 
@@ -358,6 +704,7 @@ function LocationOutputOutline({
           {renderOutlineItem({ id: "overview", icon: "fa-scroll", label: "Overview" })}
           {renderOutlineItem({ id: "map", icon: "fa-map", label: "Map" })}
           {renderOutlineItem({ id: "table", icon: "fa-dice-d20", label: "At the Table" })}
+          {renderOutlineItem({ id: "export", icon: "fa-download", label: "Export Settings" })}
         </nav>
       </ComposerCollapsibleSection>
 
@@ -393,229 +740,36 @@ function LocationOutputOutline({
   );
 }
 
-function LocationOutputActions({
-  copyStatus,
-  documentModel,
-  mapExportOpen,
-  onCopyFormat,
-  onDownloadFormat,
-  onOpenMapExport,
-  onReviewMissing,
-  uiMode,
-}) {
-  const incompleteCount = asArray(documentModel?.readiness?.incompleteRooms).length;
-  const showAdvancedFormats = uiMode !== "simple";
-  const [moreOpen, setMoreOpen] = useState(false);
-  const menuRootRef = useRef(null);
-  const menuTriggerRef = useRef(null);
-
-  useEffect(() => {
-    if (!moreOpen) return undefined;
-
-    function handlePointerDown(event) {
-      if (!menuRootRef.current?.contains(event.target)) setMoreOpen(false);
-    }
-
-    function handleKeyDown(event) {
-      if (event.key !== "Escape") return;
-      event.preventDefault();
-      setMoreOpen(false);
-      menuTriggerRef.current?.focus();
-    }
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [moreOpen]);
-
-  function focusMenuItem(position = "first") {
-    requestAnimationFrame(() => {
-      const items = Array.from(menuRootRef.current?.querySelectorAll('[role="menuitem"]') || []);
-      const target = position === "last" ? items.at(-1) : items[0];
-      target?.focus();
-    });
-  }
-
-  function openMoreMenu(position = "first") {
-    setMoreOpen(true);
-    focusMenuItem(position);
-  }
-
-  function runMenuAction(action) {
-    setMoreOpen(false);
-    action?.();
-    menuTriggerRef.current?.focus();
-  }
-
-  function handleTriggerKeyDown(event) {
-    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
-    event.preventDefault();
-    openMoreMenu(event.key === "ArrowUp" ? "last" : "first");
-  }
-
-  function handleMenuKeyDown(event) {
-    const items = Array.from(menuRootRef.current?.querySelectorAll('[role="menuitem"]') || []);
-    const currentIndex = items.indexOf(document.activeElement);
-    if (!items.length) return;
-
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-      event.preventDefault();
-      const delta = event.key === "ArrowDown" ? 1 : -1;
-      const nextIndex = currentIndex < 0
-        ? 0
-        : (currentIndex + delta + items.length) % items.length;
-      items[nextIndex]?.focus();
-    } else if (event.key === "Home" || event.key === "End") {
-      event.preventDefault();
-      items[event.key === "Home" ? 0 : items.length - 1]?.focus();
-    } else if (event.key === "Tab") {
-      setMoreOpen(false);
-    }
-  }
-
-  return (
-    <div className="location-output-actions">
-      {incompleteCount ? (
-        <button
-          className="location-output-review-action cruor-composer-control"
-          type="button"
-          onClick={onReviewMissing}
-        >
-          <i className="fa-solid fa-circle-exclamation" aria-hidden="true" />
-          <span>Review Missing</span>
-        </button>
-      ) : null}
-      <button
-        className={cx("location-output-download-trigger", "cruor-composer-control", mapExportOpen && "is-active")}
-        type="button"
-        aria-pressed={mapExportOpen}
-        onClick={onOpenMapExport}
-        data-testid="dark-places-open-map-export"
-      >
-        <i className="fa-solid fa-download" aria-hidden="true" />
-        <span>Download Map</span>
-      </button>
-      <div className="location-output-more-menu" ref={menuRootRef}>
-        <button
-          ref={menuTriggerRef}
-          className="location-output-more-menu__trigger cruor-dropdown-trigger"
-          type="button"
-          aria-label="More export formats"
-          aria-haspopup="menu"
-          aria-expanded={moreOpen}
-          aria-controls="dark-places-output-more-menu"
-          onClick={() => setMoreOpen((current) => !current)}
-          onKeyDown={handleTriggerKeyDown}
-        >
-          <i className="fa-solid fa-ellipsis cruor-dropdown-trigger__icon" aria-hidden="true" />
-          <span className="cruor-dropdown-trigger__label">More</span>
-          <i className="fa-solid fa-chevron-down cruor-dropdown-trigger__chevron" aria-hidden="true" />
-        </button>
-        <div
-          id="dark-places-output-more-menu"
-          className="location-output-more-menu__panel cruor-dropdown-menu cruor-dropdown-menu--context"
-          role="menu"
-          aria-label="More export formats"
-          hidden={!moreOpen}
-          onKeyDown={handleMenuKeyDown}
-        >
-            <div className="cruor-dropdown-options" role="none">
-              <button
-                className="cruor-dropdown-option"
-                type="button"
-                role="menuitem"
-                onClick={() => runMenuAction(() => onDownloadFormat?.("roomKey"))}
-              >
-                <i className="fa-solid fa-file-lines cruor-dropdown-option__icon" aria-hidden="true" />
-                <span className="cruor-dropdown-option__label">Room Key</span>
-                <span className="cruor-dropdown-option__meta">.md</span>
-              </button>
-              <button
-                className="cruor-dropdown-option"
-                type="button"
-                role="menuitem"
-                onClick={() => runMenuAction(() => onCopyFormat?.("tableText"))}
-              >
-                <i className="fa-solid fa-copy cruor-dropdown-option__icon" aria-hidden="true" />
-                <span className="cruor-dropdown-option__label">Copy Table Text</span>
-              </button>
-              {showAdvancedFormats ? (
-                <>
-                  <div className="cruor-dropdown-separator" role="separator" />
-                  <button
-                    className="cruor-dropdown-option"
-                    type="button"
-                    role="menuitem"
-                    onClick={() => runMenuAction(() => onDownloadFormat?.("sessionInsert"))}
-                  >
-                    <i className="fa-solid fa-file-arrow-down cruor-dropdown-option__icon" aria-hidden="true" />
-                    <span className="cruor-dropdown-option__label">Session Insert</span>
-                    <span className="cruor-dropdown-option__meta">.txt</span>
-                  </button>
-                  <button
-                    className="cruor-dropdown-option"
-                    type="button"
-                    role="menuitem"
-                    onClick={() => runMenuAction(() => onDownloadFormat?.("json"))}
-                  >
-                    <i className="fa-solid fa-code cruor-dropdown-option__icon" aria-hidden="true" />
-                    <span className="cruor-dropdown-option__label">Data</span>
-                    <span className="cruor-dropdown-option__meta">.json</span>
-                  </button>
-                </>
-              ) : null}
-            </div>
-          </div>
-        </div>
-      <span className={cx("location-output-copy-status", copyStatus && "is-visible")} aria-live="polite">
-        {copyStatus}
-      </span>
-    </div>
-  );
-}
-
 export function LocationOutputWorkspace({
-  copyStatus = "",
   documentModel,
   exportBundle,
   generatedMapPreview,
-  initialMapExportOpen = false,
+  initialMapPreviewOpen = false,
   initialSectionId = "overview",
   onBackToFrame,
   onBackToRooms,
-  onCopyFormat,
   onCopyText,
-  onDownloadFormat,
   onEditRoom,
-  onReviewMissing,
-  uiMode = "simple",
 }) {
   const rooms = asArray(documentModel?.rooms);
   const validRoomIds = useMemo(() => new Set(rooms.map((room) => room.id)), [rooms]);
-  const [activeSectionId, setActiveSectionId] = useState(initialMapExportOpen ? "map" : initialSectionId);
-  const [mapExportOpen, setMapExportOpen] = useState(Boolean(initialMapExportOpen));
+  const [activeSectionId, setActiveSectionId] = useState(initialSectionId);
+  const [mapPreviewOpen, setMapPreviewOpen] = useState(initialMapPreviewOpen);
+  const mapExportOpen = activeSectionId === "export";
+  const contentSectionId = activeSectionId;
   const [mapExportSettings, setMapExportSettings] = useState(() =>
     createDefaultLocationMapExportSettings(generatedMapPreview),
   );
   const [mapExportBusy, setMapExportBusy] = useState(false);
   const [mapExportStatus, setMapExportStatus] = useState("");
   const mapContainerRef = useRef(null);
-  const runMapSettings = useMemo(() => {
-    const defaults = createDefaultLocationMapExportSettings(generatedMapPreview);
-    return normalizeLocationMapExportSettings(
-      { ...defaults, showStairArrows: false },
-      generatedMapPreview,
-    );
-  }, [generatedMapPreview]);
-  const displayedMapSettings = mapExportOpen ? mapExportSettings : runMapSettings;
+  const mapPreviewTriggerRef = useRef(null);
 
   useEffect(() => {
     if (!activeSectionId.startsWith("room:")) return;
     const roomId = activeSectionId.slice(5);
-    if (!validRoomIds.has(roomId)) setActiveSectionId("overview");
+    if (validRoomIds.has(roomId)) return;
+    setActiveSectionId("overview");
   }, [activeSectionId, validRoomIds]);
 
   useEffect(() => {
@@ -624,20 +778,28 @@ export function LocationOutputWorkspace({
     );
   }, [generatedMapPreview]);
 
-  const activeRoomId = activeSectionId.startsWith("room:")
-    ? activeSectionId.slice(5)
+  const activeRoomId = contentSectionId.startsWith("room:")
+    ? contentSectionId.slice(5)
     : "";
   const activeRoom = rooms.find((room) => room.id === activeRoomId) || null;
+
+  function selectSection(sectionId) {
+    setActiveSectionId(sectionId);
+  }
 
   function selectRoom(roomId) {
     if (!roomId || !validRoomIds.has(roomId)) return;
     setActiveSectionId(`room:${roomId}`);
   }
 
-  function openMapExport() {
-    setActiveSectionId("map");
-    setMapExportOpen(true);
-    setMapExportStatus("");
+  function openMapPreview() {
+    if (!generatedMapPreview) return;
+    setMapPreviewOpen(true);
+  }
+
+  function closeMapPreview() {
+    setMapPreviewOpen(false);
+    requestAnimationFrame(() => mapPreviewTriggerRef.current?.focus());
   }
 
   function updateMapExportSettings(patch) {
@@ -706,93 +868,104 @@ export function LocationOutputWorkspace({
     }
   }
 
-  return (
-    <main
-      className="location-output-workspace cruor-composer-frame"
-      aria-label="Final location output"
-      data-map-export-open={mapExportOpen ? "true" : "false"}
-      data-testid="dark-places-final-output"
-    >
-      <LocationOutputOutline
-        activeSectionId={activeSectionId}
-        documentModel={documentModel}
-        onBackToFrame={onBackToFrame}
-        onBackToRooms={onBackToRooms}
-        onSelectSection={setActiveSectionId}
-      />
-
-      <section className="location-output-main cruor-composer-stage">
-        <header className="location-output-main__toolbar cruor-composer-panel">
-          <div>
-            <span>{mapExportOpen ? "Map Export" : "Run at Table"}</span>
-            <strong>{documentModel?.meta?.title || exportBundle?.title || "Cursed Location"}</strong>
-          </div>
-          <LocationOutputActions
-            copyStatus={copyStatus}
-            documentModel={documentModel}
-            mapExportOpen={mapExportOpen}
-            onCopyFormat={onCopyFormat}
-            onDownloadFormat={onDownloadFormat}
-            onOpenMapExport={openMapExport}
-            onReviewMissing={onReviewMissing}
-            uiMode={uiMode}
-          />
-        </header>
-
-        <div className="location-output-run-grid">
-          <section className="location-output-map-panel" aria-label="Location map">
-            <LocationOutputMap
-              documentModel={documentModel}
-              exportSettings={displayedMapSettings}
-              generatedMapPreview={generatedMapPreview}
-              interactive={!mapExportOpen}
-              mapContainerRef={mapContainerRef}
-              selectedRoomId={activeRoomId}
-              onSelectRoom={selectRoom}
-            />
-            {activeRoom && !mapExportOpen ? (
-              <button
-                className="location-output-map-selection cruor-composer-control"
-                type="button"
-                onClick={() => setActiveSectionId(`room:${activeRoom.id}`)}
-              >
-                <b>{formatRoomNumber(activeRoom.number)}</b>
-                <span>{activeRoom.name}</span>
-              </button>
-            ) : null}
-          </section>
-
-          <section className="location-output-content cruor-composer-panel cruor-scroll-surface" aria-live="polite">
-            {activeSectionId === "overview" ? (
-              <LocationOutputOverview documentModel={documentModel} />
-            ) : activeSectionId === "map" ? (
-              <LocationOutputMapSummary documentModel={documentModel} />
-            ) : activeSectionId === "table" ? (
-              <LocationOutputAtTheTable documentModel={documentModel} />
-            ) : (
-              <LocationRoomOutput
-                room={activeRoom}
-                onCopyText={onCopyText}
-                onEditRoom={onEditRoom}
-                onSelectRoom={selectRoom}
-              />
-            )}
-          </section>
-        </div>
-      </section>
-
-      {mapExportOpen ? (
+  function renderContent() {
+    if (contentSectionId === "export") {
+      return (
         <LocationMapExportStudio
-          busy={mapExportBusy}
           generatedMap={generatedMapPreview}
           settings={mapExportSettings}
-          status={mapExportStatus}
           onChange={updateMapExportSettings}
-          onClose={() => setMapExportOpen(false)}
-          onDownload={downloadMapExport}
           onPreset={selectMapExportPreset}
         />
-      ) : null}
+      );
+    }
+    if (contentSectionId === "map") {
+      return <LocationOutputMapSummary documentModel={documentModel} />;
+    }
+    if (contentSectionId === "table") {
+      return <LocationOutputAtTheTable documentModel={documentModel} />;
+    }
+    if (contentSectionId.startsWith("room:")) {
+      return (
+        <LocationRoomOutput
+          room={activeRoom}
+          onCopyText={onCopyText}
+          onEditRoom={onEditRoom}
+          onSelectRoom={selectRoom}
+        />
+      );
+    }
+    return <LocationOutputOverview documentModel={documentModel} />;
+  }
+
+  return (
+    <main
+      className="cruor-composer-stage location-composer__stage location-output-stage"
+      aria-label="Final location output"
+    >
+      <section
+        className="location-map-stage has-live-preview is-simple-surface is-map-synced location-map-stage--preview location-output-workspace"
+        data-location-map-surface="preview"
+        data-map-grid-visible="true"
+        data-map-export-open={mapExportOpen ? "true" : "false"}
+        data-testid="dark-places-final-output"
+      >
+        <LocationOutputOutline
+          activeSectionId={activeSectionId}
+          documentModel={documentModel}
+          onBackToFrame={onBackToFrame}
+          onBackToRooms={onBackToRooms}
+          onSelectSection={selectSection}
+        />
+
+        <section className="location-output-main location-map-stage__center">
+          <section
+            className="location-output-document-stage cruor-composer-panel cruor-scroll-surface"
+            aria-live="polite"
+            aria-label="Final output document"
+          >
+            <div className="location-output-document-stage__inner">
+              {renderContent()}
+            </div>
+          </section>
+        </section>
+
+        <ComposerRail
+          side="right"
+          variant="info"
+          scrollable
+          className="location-output-details-rail location-composer__rail location-composer__rail--right location-frame-info"
+          aria-label="Map preview and export summary"
+        >
+          <LocationOutputMapPreview
+            activeRoom={activeRoom}
+            busy={mapExportBusy}
+            documentModel={documentModel}
+            exportSettings={mapExportSettings}
+            generatedMapPreview={generatedMapPreview}
+            mapContainerRef={mapContainerRef}
+            onDownload={downloadMapExport}
+            onOpen={openMapPreview}
+            status={mapExportStatus}
+            triggerRef={mapPreviewTriggerRef}
+          />
+          <LocationOutputExportSummary
+            exportTitle={documentModel?.meta?.title || exportBundle?.title}
+            generatedMapPreview={generatedMapPreview}
+            settings={mapExportSettings}
+          />
+        </ComposerRail>
+      </section>
+
+      <LocationOutputMapModal
+        documentModel={documentModel}
+        exportSettings={mapExportSettings}
+        generatedMapPreview={generatedMapPreview}
+        onClose={closeMapPreview}
+        onSelectRoom={selectRoom}
+        open={mapPreviewOpen}
+        selectedRoomId={activeRoomId}
+      />
     </main>
   );
 }

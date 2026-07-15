@@ -4,9 +4,9 @@ test("home, crucible, and inspirations sections mount", async ({ page }) => {
   await page.goto("/");
 
   await expect(page.getByRole("banner").getByText("Cruor Games")).toBeVisible();
-  await expect(page.getByRole("heading", { name: /build horror for your 5e sessions/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /the dark fantasy workbench for 5e/i })).toBeVisible();
 
-  await page.getByRole("button", { name: /open the workbench/i }).click();
+  await page.getByRole("button", { name: /open dark places generator/i }).click();
   await expect(page.locator("[data-location-composer-ready='true']")).toBeVisible();
   await expect(page.getByRole("main", { name: /location map stage/i })).toBeVisible();
 
@@ -17,13 +17,13 @@ test("home, crucible, and inspirations sections mount", async ({ page }) => {
     .getByRole("navigation", { name: /primary sections/i })
     .getByRole("button", { name: "Home", exact: true })
     .click();
-  await expect(page.getByRole("heading", { name: /build horror for your 5e sessions/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /the dark fantasy workbench for 5e/i })).toBeVisible();
 });
 
 test("Darken a Location composer and map view mount", async ({ page }) => {
   await page.goto("/");
 
-  await page.getByRole("button", { name: /open the workbench/i }).click();
+  await page.getByRole("button", { name: /open dark places generator/i }).click();
 
   await expect(page.locator("[data-location-composer-ready='true']")).toBeVisible();
   await expect(page.getByRole("main", { name: /location map stage/i })).toBeVisible();
@@ -43,7 +43,7 @@ test("Build a Monster can start from scratch and open the graft navigator", asyn
 
   await page.goto("/");
 
-  await page.getByRole("button", { name: /explore the monster generator/i }).click();
+  await page.getByRole("button", { name: /open terrifying monster generator/i }).click();
   await expect(page.locator(".monster-shell")).toBeVisible();
 
   await page.getByRole("button", { name: /build from scratch/i }).click();

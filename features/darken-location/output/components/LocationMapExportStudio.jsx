@@ -1,4 +1,9 @@
-import { ComposerCollapsibleSection, ComposerRail } from "../../../../components/ui/composer-rail.jsx";
+import {
+  ToolContentPanel,
+  ToolFeatureBlock,
+  ToolOption,
+  ToolOptionList,
+} from "../../../../components/ui/tool-content-panel.jsx";
 import { LEVEL_VIEW_ALL } from "../../map-generator/map-generator.state.js";
 import {
   LOCATION_MAP_EXPORT_CROPS,
@@ -8,10 +13,6 @@ import {
   LOCATION_MAP_EXPORT_PRESETS,
   getAvailableLocationMapExportLevels,
 } from "../model/location-map-export.js";
-
-function cx(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 function formatLevel(value) {
   const level = Number(value);
@@ -30,15 +31,53 @@ const FORMAT_ICONS = {
   png: "fa-image",
 };
 
+const FORMAT_DESCRIPTIONS = {
+  svg: "Editable vector artwork with no fixed resolution.",
+  png: "Raster image for sharing, printing, or VTT preparation.",
+};
+
 const CROP_ICONS = {
   content: "fa-crop-simple",
   canvas: "fa-expand",
 };
 
+const CROP_DESCRIPTIONS = {
+  content: "Trim the file to the visible map and its selected padding.",
+  canvas: "Keep the complete authored map canvas.",
+};
+
+const SCALE_DESCRIPTIONS = {
+  1: "Fast export for screens and lightweight sharing.",
+  2: "Balanced resolution for ordinary printing.",
+  4: "Large raster for detailed print or VTT preparation.",
+};
+
+const PADDING_DESCRIPTIONS = {
+  0: "No extra space around the content bounds.",
+  24: "A narrow margin around the map.",
+  48: "The standard breathing room for export.",
+  96: "A broad margin for notes or page layout.",
+};
+
 const BACKGROUND_OPTIONS = [
-  { id: "style", label: "Map Style", icon: "fa-scroll" },
-  { id: "white", label: "White", icon: "fa-file" },
-  { id: "transparent", label: "Transparent", icon: "fa-chess-board" },
+  {
+    id: "style",
+    label: "Map Style",
+    icon: "fa-scroll",
+    description: "Keep the authored paper and map treatment.",
+  },
+  {
+    id: "white",
+    label: "White",
+    icon: "fa-file",
+    description: "Use a clean white surface for print and documents.",
+  },
+  {
+    id: "transparent",
+    label: "Transparent",
+    icon: "fa-chess-board",
+    description: "Remove the page background from the exported image.",
+  },
 ];
 
 const LAYER_OPTIONS = [
@@ -52,22 +91,16 @@ const LAYER_OPTIONS = [
   { key: "hideSecrets", label: "Hide secret routes", icon: "fa-eye-slash" },
 ];
 
-function getOptionLabel(options, value, fallback = "") {
-  return options.find((option) => String(option.id) === String(value))?.label || fallback;
-}
 
 function OptionGroup({
   ariaLabel,
-  columns = 2,
   disabled = false,
   onChange,
   options,
   value,
 }) {
   return (
-    <div
-      className="location-map-export-option-grid"
-      data-columns={columns}
+    <ToolOptionList
       role="radiogroup"
       aria-label={ariaLabel}
       aria-disabled={disabled || undefined}
@@ -75,96 +108,73 @@ function OptionGroup({
       {options.map((option) => {
         const active = String(value) === String(option.id);
         return (
-          <button
-            className={cx(
-              "location-map-export-option",
-              "cruor-composer-control",
-              active && "is-active",
-            )}
-            type="button"
-            role="radio"
+          <ToolOption
             key={option.id}
+            active={active}
+            icon={option.icon}
+            label={option.label}
+            description={option.description}
+            stateIcon={active ? "fa-check" : ""}
+            role="radio"
             aria-checked={active}
             disabled={disabled}
             onClick={() => onChange(option.id)}
-          >
-            {option.icon ? <i className={`fa-solid ${option.icon}`} aria-hidden="true" /> : null}
-            <span>{option.label}</span>
-          </button>
+          />
         );
       })}
-    </div>
-  );
-}
-
-function FieldGroup({ label, valueLabel, children }) {
-  return (
-    <div className="location-field cruor-frame-select-field location-map-export-field">
-      <div className="cruor-frame-field-head location-frame-field-head location-map-export-field__head">
-        <span>{label}</span>
-        {valueLabel ? <strong>{valueLabel}</strong> : null}
-      </div>
-      {children}
-    </div>
+    </ToolOptionList>
   );
 }
 
 function LevelSelect({ levels, value, onChange }) {
   return (
-    <label className="location-field location-choice-field cruor-frame-select-field location-map-export-field">
-      <span className="cruor-frame-field-head location-frame-field-head location-map-export-field__head">
-        <span>Level</span>
+    <div className="location-map-export-select-row">
+      <span className="cruor-tool-option__icon" aria-hidden="true">
+        <i className="fa-solid fa-layer-group" />
       </span>
-      <select
-        className="cruor-composer-control location-map-export-select"
-        value={String(value ?? LEVEL_VIEW_ALL)}
-        onChange={(event) => {
-          const nextValue = event.target.value;
-          onChange(nextValue === LEVEL_VIEW_ALL ? LEVEL_VIEW_ALL : Number(nextValue));
-        }}
-      >
-        <option value={LEVEL_VIEW_ALL}>All Levels</option>
-        {levels.map((level) => (
-          <option value={String(level)} key={level}>{formatLevel(level)}</option>
-        ))}
-      </select>
-    </label>
+      <label className="location-map-export-select-row__copy">
+        <strong>Map Level</strong>
+        <small>Export every floor together or isolate one level.</small>
+        <select
+          className="cruor-composer-control location-map-export-select"
+          value={String(value ?? LEVEL_VIEW_ALL)}
+          onChange={(event) => {
+            const nextValue = event.target.value;
+            onChange(nextValue === LEVEL_VIEW_ALL ? LEVEL_VIEW_ALL : Number(nextValue));
+          }}
+        >
+          <option value={LEVEL_VIEW_ALL}>All Levels</option>
+          {levels.map((level) => (
+            <option value={String(level)} key={level}>{formatLevel(level)}</option>
+          ))}
+        </select>
+      </label>
+    </div>
   );
 }
 
 function LayerToggle({ checked, icon, label, onChange }) {
   return (
-    <button
-      className={cx(
-        "location-map-export-layer",
-        "cruor-composer-control",
-        checked && "is-active",
-      )}
-      type="button"
+    <ToolOption
+      active={Boolean(checked)}
+      icon={icon}
+      label={label}
+      stateIcon={checked ? "fa-check" : "fa-minus"}
       role="checkbox"
       aria-checked={Boolean(checked)}
       onClick={() => onChange(!checked)}
-    >
-      <i className={`fa-solid ${icon}`} aria-hidden="true" />
-      <span>{label}</span>
-      <i className={`fa-solid ${checked ? "fa-check" : "fa-minus"}`} aria-hidden="true" />
-    </button>
+    />
   );
 }
 
 export function LocationMapExportStudio({
-  busy = false,
   generatedMap,
   onChange,
-  onClose,
-  onDownload,
   onPreset,
   settings,
-  status = "",
 }) {
   const levels = getAvailableLocationMapExportLevels(generatedMap);
   const format = settings?.format || "svg";
-  const activePreset = LOCATION_MAP_EXPORT_PRESETS.find((preset) => preset.id === settings?.preset);
   const presetOptions = LOCATION_MAP_EXPORT_PRESETS.map((preset) => ({
     ...preset,
     icon: PRESET_ICONS[preset.id] || "fa-map",
@@ -172,176 +182,109 @@ export function LocationMapExportStudio({
   const formatOptions = LOCATION_MAP_EXPORT_FORMATS.map((option) => ({
     ...option,
     icon: FORMAT_ICONS[option.id] || "fa-file",
+    description: FORMAT_DESCRIPTIONS[option.id],
   }));
   const cropOptions = LOCATION_MAP_EXPORT_CROPS.map((option) => ({
     ...option,
     icon: CROP_ICONS[option.id] || "fa-crop-simple",
+    description: CROP_DESCRIPTIONS[option.id],
   }));
   const scaleOptions = LOCATION_MAP_EXPORT_PNG_SCALES.map((option) => ({
     ...option,
-    label: option.label.replace(" · ", " "),
+    icon: option.id === 4 ? "fa-maximize" : option.id === 2 ? "fa-print" : "fa-display",
+    description: SCALE_DESCRIPTIONS[option.id],
+  }));
+  const paddingOptions = LOCATION_MAP_EXPORT_PADDING.map((option) => ({
+    ...option,
+    icon: option.id === 0 ? "fa-compress" : option.id >= 96 ? "fa-expand" : "fa-border-none",
+    description: PADDING_DESCRIPTIONS[option.id],
   }));
 
   return (
-    <ComposerRail
-      side="right"
-      variant="controls"
-      surface
-      scrollable
-      className="location-map-export-studio location-composer__rail location-composer__rail--right location-map-frame-rail"
-      aria-label="Map export settings"
+    <ToolContentPanel
+      className="location-map-export-studio location-map-export-studio__content"
+      data-testid="dark-places-map-export-studio"
+      eyebrow="Map Export"
+      title="Export Settings"
+      summary="Choose the file, framing, visible layers, and visual treatment. The current export is summarized in the right rail."
     >
-      <section className="location-map-export-studio__header cruor-composer-sidebar-block" aria-label="Map export">
-        <span className="cruor-composer-collapsible-section__title">Map Export</span>
-        <button
-          className="location-output-icon-action cruor-square-icon-button cruor-square-icon-button--compact"
-          type="button"
-          aria-label="Close map export settings"
-          onClick={onClose}
-        >
-          <i className="fa-solid fa-xmark" aria-hidden="true" />
-        </button>
-      </section>
-
-      <ComposerCollapsibleSection
-        title="Profile"
-        className="location-map-export-section location-frame-control-block"
-        bodyClassName="location-map-export-section__body location-frame-selector-stack"
-        aria-label="Map export profile"
-      >
-        <FieldGroup label="Audience" valueLabel={activePreset?.label || "Custom"}>
+        <ToolFeatureBlock label="Export Profile" aria-label="Map export profile">
           <OptionGroup
             ariaLabel="Map export profile"
-            columns={3}
             options={presetOptions}
             value={settings?.preset}
             onChange={(value) => onPreset?.(value)}
           />
-        </FieldGroup>
-      </ComposerCollapsibleSection>
+        </ToolFeatureBlock>
 
-      <ComposerCollapsibleSection
-        title="File"
-        className="location-map-export-section location-frame-control-block"
-        bodyClassName="location-map-export-section__body location-frame-selector-stack"
-        aria-label="Map export file settings"
-      >
-        <FieldGroup label="Format" valueLabel={format.toUpperCase()}>
+        <ToolFeatureBlock label="File Format" aria-label="Map export file settings">
           <OptionGroup
             ariaLabel="File format"
             options={formatOptions}
             value={format}
             onChange={(value) => onChange?.({ format: value })}
           />
-        </FieldGroup>
-        {format === "png" ? (
-          <FieldGroup
-            label="Resolution"
-            valueLabel={getOptionLabel(LOCATION_MAP_EXPORT_PNG_SCALES, settings?.pngScale, "Print · 2×")}
-          >
-            <OptionGroup
-              ariaLabel="PNG resolution"
-              columns={3}
-              options={scaleOptions}
-              value={settings?.pngScale || 2}
-              onChange={(value) => onChange?.({ pngScale: Number(value) })}
-            />
-          </FieldGroup>
-        ) : null}
-      </ComposerCollapsibleSection>
+          {format === "png" ? (
+            <div className="location-map-export-subgroup">
+              <span>Resolution</span>
+              <OptionGroup
+                ariaLabel="PNG resolution"
+                options={scaleOptions}
+                value={settings?.pngScale || 2}
+                onChange={(value) => onChange?.({ pngScale: Number(value) })}
+              />
+            </div>
+          ) : null}
+        </ToolFeatureBlock>
 
-      <ComposerCollapsibleSection
-        title="Framing"
-        className="location-map-export-section location-frame-control-block"
-        bodyClassName="location-map-export-section__body location-frame-selector-stack"
-        aria-label="Map export framing"
-      >
-        <FieldGroup
-          label="Crop"
-          valueLabel={getOptionLabel(LOCATION_MAP_EXPORT_CROPS, settings?.crop, "Content Bounds")}
-        >
+        <ToolFeatureBlock label="Framing" aria-label="Map export framing">
           <OptionGroup
             ariaLabel="Crop area"
             options={cropOptions}
             value={settings?.crop || "content"}
             onChange={(value) => onChange?.({ crop: value })}
           />
-        </FieldGroup>
-        {settings?.crop !== "canvas" ? (
-          <FieldGroup
-            label="Padding"
-            valueLabel={getOptionLabel(LOCATION_MAP_EXPORT_PADDING, settings?.padding, "Standard")}
-          >
-            <OptionGroup
-              ariaLabel="Crop padding"
-              columns={4}
-              options={LOCATION_MAP_EXPORT_PADDING}
-              value={settings?.padding ?? 48}
-              onChange={(value) => onChange?.({ padding: Number(value) })}
-            />
-          </FieldGroup>
-        ) : null}
-        <LevelSelect
-          levels={levels}
-          value={settings?.levelView}
-          onChange={(value) => onChange?.({ levelView: value })}
-        />
-      </ComposerCollapsibleSection>
+          {settings?.crop !== "canvas" ? (
+            <div className="location-map-export-subgroup">
+              <span>Padding</span>
+              <OptionGroup
+                ariaLabel="Crop padding"
+                options={paddingOptions}
+                value={settings?.padding ?? 48}
+                onChange={(value) => onChange?.({ padding: Number(value) })}
+              />
+            </div>
+          ) : null}
+          <LevelSelect
+            levels={levels}
+            value={settings?.levelView}
+            onChange={(value) => onChange?.({ levelView: value })}
+          />
+        </ToolFeatureBlock>
 
-      <ComposerCollapsibleSection
-        title="Layers"
-        className="location-map-export-section location-frame-control-block"
-        bodyClassName="location-map-export-section__body location-frame-selector-stack"
-        aria-label="Map export layers"
-      >
-        <div className="location-map-export-layer-list" role="group" aria-label="Map layers">
-          {LAYER_OPTIONS.map((option) => (
-            <LayerToggle
-              key={option.key}
-              checked={settings?.[option.key]}
-              icon={option.icon}
-              label={option.label}
-              onChange={(value) => onChange?.({ [option.key]: value })}
-            />
-          ))}
-        </div>
-      </ComposerCollapsibleSection>
+        <ToolFeatureBlock label="Map Layers" aria-label="Map export layers">
+          <ToolOptionList role="group" aria-label="Map layers">
+            {LAYER_OPTIONS.map((option) => (
+              <LayerToggle
+                key={option.key}
+                checked={settings?.[option.key]}
+                icon={option.icon}
+                label={option.label}
+                onChange={(value) => onChange?.({ [option.key]: value })}
+              />
+            ))}
+          </ToolOptionList>
+        </ToolFeatureBlock>
 
-      <ComposerCollapsibleSection
-        title="Background"
-        className="location-map-export-section location-frame-control-block"
-        bodyClassName="location-map-export-section__body location-frame-selector-stack"
-        aria-label="Map export background"
-      >
-        <FieldGroup
-          label="Surface"
-          valueLabel={getOptionLabel(BACKGROUND_OPTIONS, settings?.background, "Map Style")}
-        >
+        <ToolFeatureBlock label="Background" aria-label="Map export background">
           <OptionGroup
             ariaLabel="Map background"
-            columns={3}
             options={BACKGROUND_OPTIONS}
             value={settings?.background || "style"}
             onChange={(value) => onChange?.({ background: value })}
           />
-        </FieldGroup>
-      </ComposerCollapsibleSection>
+        </ToolFeatureBlock>
 
-      <section className="location-map-export-studio__footer cruor-composer-sidebar-block">
-        <button
-          className="cruor-composer-control location-map-export-download"
-          type="button"
-          disabled={busy || !generatedMap}
-          onClick={onDownload}
-          data-testid="dark-places-map-export-download"
-        >
-          <i className={`fa-solid ${busy ? "fa-spinner fa-spin" : "fa-download"}`} aria-hidden="true" />
-          <span>{busy ? "Preparing" : `Download ${format.toUpperCase()}`}</span>
-        </button>
-        <span className={cx("location-map-export-status", status && "is-visible")} aria-live="polite">
-          {status}
-        </span>
-      </section>
-    </ComposerRail>
+    </ToolContentPanel>
   );
 }

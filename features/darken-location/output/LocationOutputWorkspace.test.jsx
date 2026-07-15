@@ -157,28 +157,50 @@ const BASE_PROPS = {
 
 describe("LocationOutputWorkspace", () => {
   it("renders the final-output outline and overview as the primary surface", () => {
-    const html = renderToStaticMarkup(<LocationOutputWorkspace {...BASE_PROPS} />);
+    const html = renderToStaticMarkup(
+      <LocationOutputWorkspace {...BASE_PROPS} />,
+    );
 
     expect(html).toContain('data-testid="dark-places-final-output"');
-    expect(html).toContain("cruor-composer-frame");
     expect(html).toContain("cruor-composer-stage");
+    expect(html).toContain("location-composer__stage");
+    expect(html).toContain("location-map-stage has-live-preview is-simple-surface is-map-synced location-map-stage--preview");
+    expect(html).toContain('data-location-map-surface="preview"');
+    expect(html).toContain('data-map-grid-visible="true"');
+    expect(html).toContain("location-map-stage__center");
     expect(html).toContain("cruor-composer-control");
-    expect(html).toContain("cruor-composer-rail--controls");
+    expect(html).toContain("cruor-composer-rail--info");
     expect(html).toContain("cruor-composer-collapsible-section");
     expect(html).toContain("cruor-composer-sidebar-block");
-    expect(html).toContain("location-output-content cruor-composer-panel cruor-scroll-surface");
-    expect(html).toContain("location-output-document-hero");
+    expect(html).toContain("location-output-details-rail");
+    expect(html).toContain("location-output-document-stage");
+    expect(html).toContain("location-output-map-preview");
+    expect(html).not.toContain("location-output-map-panel");
+    expect((html.match(/cruor-composer-rail--right/g) || []).length).toBe(1);
+    expect(html).toContain("location-output-details-rail location-composer__rail location-composer__rail--right");
+    expect(html).toContain("cruor-tool-content-inner");
+    expect(html).toContain("cruor-tool-copy__title");
+    expect(html).not.toContain("location-output-document-hero");
     expect(html).toContain("location-output-entry__line");
     expect(html).toContain("Location Premise.");
     expect(html).toContain("Pressure.");
     expect(html).not.toContain("location-output-block cruor-composer-sidebar-block");
-    expect(html).toContain("cruor-dropdown-trigger");
-    expect(html).toContain("cruor-dropdown-menu--context");
-    expect(html).toContain('role="menu"');
+    expect(html).not.toContain("location-output-main__toolbar");
+    expect(html).not.toContain("location-output-actions");
+    expect(html).not.toContain("cruor-dropdown-menu--context");
     expect(html).not.toContain("<details");
+    expect(html).not.toContain("Current Export");
+    expect(html).toContain("File &amp; Framing");
+    expect(html).toContain("File Name");
+    expect(html).toContain("the-breathing-ossuary-gm-map.svg");
+    expect(html).toContain("Map Style");
+    expect(html).toContain("Layers");
+    expect(html).toContain('data-testid="dark-places-map-export-download"');
     expect(html).toContain("Final Output");
     expect(html).toContain("Overview");
     expect(html).toContain("At the Table");
+    expect(html).toContain("Export Settings");
+    expect(html).toContain('data-map-export-open="false"');
     expect(html).toContain("Bone-Lit Vestibule");
     expect(html).toContain("The crypt continues a prayer");
     expect(html).not.toContain("Data (.json)");
@@ -217,44 +239,85 @@ describe("LocationOutputWorkspace", () => {
     expect(html).not.toContain("What Is Here");
   });
 
-  it("keeps JSON and session insert behind advanced mode", () => {
+  it("removes the redundant output toolbar and its legacy format actions", () => {
     const html = renderToStaticMarkup(
-      <LocationOutputWorkspace {...BASE_PROPS} uiMode="advanced" />,
+      <LocationOutputWorkspace {...BASE_PROPS} />,
     );
 
-    expect(html).toContain("Session Insert (.txt)");
-    expect(html).toContain("Data (.json)");
+    expect(html).not.toContain("location-output-main__toolbar");
+    expect(html).not.toContain("Review Missing");
+    expect(html).not.toContain("More export formats");
+    expect(html).not.toContain("Room Key</span>");
+    expect(html).not.toContain("Copy Table Text");
   });
 
   it("opens the Map Export Studio with presets, file settings, and layer controls", () => {
     const html = renderToStaticMarkup(
-      <LocationOutputWorkspace
-        {...BASE_PROPS}
-        initialMapExportOpen
-      />,
+      <LocationOutputWorkspace {...BASE_PROPS} initialSectionId="export" />,
     );
 
     expect(html).toContain('data-map-export-open="true"');
+    expect((html.match(/cruor-composer-rail--right/g) || []).length).toBe(1);
+    expect(html).toContain("location-map-export-studio");
+    expect(html).toContain("Export Settings");
     expect(html).toContain("Map Export");
     expect(html).toContain("GM");
     expect(html).toContain("Player");
     expect(html).toContain("Print");
-    expect(html).toContain("Format");
+    expect(html).toContain("Export Profile");
+    expect(html).toContain("File Format");
     expect(html).not.toContain("PNG resolution");
     expect(html).toContain("Content Bounds");
     expect(html).toContain("Room numbers");
     expect(html).toContain("Hide secret routes");
-    expect(html).toContain("location-map-export-option");
-    expect(html).toContain("location-map-export-layer");
-    expect(html).toContain("cruor-square-icon-button");
-    expect(html).toContain("cruor-composer-collapsible-section");
-    expect(html).toContain("location-map-frame-rail");
-    expect(html).toContain("location-frame-control-block");
-    expect(html).toContain("location-frame-selector-stack");
-    expect(html).toContain("location-frame-field-head");
-    expect(html).toContain("location-map-export-studio__header cruor-composer-sidebar-block");
-    expect(html).not.toContain("location-map-export-studio__header-copy");
+    expect(html).toContain("cruor-tool-content-inner");
+    expect(html).toContain("cruor-tool-copy");
+    expect(html).toContain("cruor-tool-summary");
+    expect(html).toContain("cruor-tool-feature-block");
+    expect(html).toContain("cruor-tool-option");
+    expect(html).not.toContain("cruor-tool-actions");
+    expect(html).toContain("cruor-tool-button--primary");
+    expect(html).not.toContain("location-map-frame-rail");
+    expect(html).toContain('data-testid="dark-places-map-export-studio"');
+    expect(html).not.toContain('data-testid="dark-places-output-overview"');
+    expect(html).toContain("location-output-document-stage");
+    expect(html).toContain("location-output-map-preview");
+    expect(html).not.toContain("cruor-composer-rail-card--hero");
+    expect(html).toContain("cruor-composer-fact-grid");
+    expect(html).toContain("Profile");
+    expect(html).toContain("Format");
+    expect(html).toContain("Grid Style");
+    expect(html).toContain("Secret Routes");
+    expect(html.indexOf('data-testid="dark-places-map-export-studio"')).toBeLessThan(
+      html.indexOf("location-output-details-rail"),
+    );
+    expect(html).not.toContain("location-map-export-option");
+    expect(html).not.toContain("location-map-export-layer");
+    expect(html).not.toContain("location-map-export-studio__header");
     expect(html).not.toContain("location-map-export-card cruor-composer-panel");
     expect(html).toContain('data-testid="dark-places-map-export-download"');
+    expect(html.indexOf('data-testid="dark-places-map-export-download"')).toBeGreaterThan(
+      html.indexOf("location-output-map-preview__frame"),
+    );
+    expect(html.indexOf('data-testid="dark-places-map-export-download"')).toBeLessThan(
+      html.indexOf("File &amp; Framing"),
+    );
+    expect(html).toContain("File Name");
+    expect(html).toContain("the-breathing-ossuary-gm-map.svg");
   });
+  it("renders the enlarged map in a modal without adding another rail", () => {
+    const html = renderToStaticMarkup(
+      <LocationOutputWorkspace
+        {...BASE_PROPS}
+        initialMapPreviewOpen
+      />,
+    );
+
+    expect(html).toContain('data-testid="dark-places-map-preview-modal"');
+    expect(html).toContain('role="dialog"');
+    expect(html).toContain('aria-modal="true"');
+    expect(html).toContain("Open enlarged location map");
+    expect((html.match(/cruor-composer-rail--right/g) || []).length).toBe(1);
+  });
+
 });
