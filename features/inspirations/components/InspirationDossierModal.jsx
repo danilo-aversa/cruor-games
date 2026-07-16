@@ -140,7 +140,7 @@ export default function InspirationDossierModal({
           </div>
           <InspirationCardFrame className="inspiration-dossier__frame" />
           <span className="inspiration-dossier__domain-sigil">
-            <span>{meta.domain.symbol}</span>
+            <i className={`fa-solid ${meta.domain.icon}`} aria-hidden="true" />
           </span>
           <span className="inspiration-dossier__visual-title">{title}</span>
         </div>
@@ -152,7 +152,11 @@ export default function InspirationDossierModal({
             <div className="inspiration-dossier__meta">
               <span>
                 <strong>{t("inspirations.dossier.domain", {}, locale)}</strong>
-                {meta.domain.symbol} {domainLabel}
+                <i
+                  className={`fa-solid ${meta.domain.icon}`}
+                  aria-hidden="true"
+                />
+                {domainLabel}
               </span>
               <span>
                 <strong>

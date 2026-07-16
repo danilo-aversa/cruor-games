@@ -10,32 +10,32 @@ export const INSPIRATION_DOMAIN_ORDER = Object.freeze([
 export const INSPIRATION_DOMAINS = Object.freeze({
   tale: Object.freeze({
     id: "tale",
-    symbol: "✦",
+    icon: "fa-book-open",
     labelKey: "inspirations.domains.tale",
   }),
   place: Object.freeze({
     id: "place",
-    symbol: "◇",
+    icon: "fa-location-dot",
     labelKey: "inspirations.domains.place",
   }),
   body: Object.freeze({
     id: "body",
-    symbol: "◈",
+    icon: "fa-dna",
     labelKey: "inspirations.domains.body",
   }),
   relic: Object.freeze({
     id: "relic",
-    symbol: "⬢",
+    icon: "fa-gem",
     labelKey: "inspirations.domains.relic",
   }),
   violence: Object.freeze({
     id: "violence",
-    symbol: "✢",
+    icon: "fa-skull-crossbones",
     labelKey: "inspirations.domains.violence",
   }),
   rite: Object.freeze({
     id: "rite",
-    symbol: "☉",
+    icon: "fa-fire-flame-curved",
     labelKey: "inspirations.domains.rite",
   }),
 });

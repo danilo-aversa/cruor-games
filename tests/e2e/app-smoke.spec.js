@@ -6,16 +6,16 @@ test("home, crucible, and inspirations sections mount", async ({ page }) => {
   await expect(page.getByRole("banner").getByText("Cruor Games")).toBeVisible();
   await expect(page.getByRole("heading", { name: /the dark fantasy workbench for 5e/i })).toBeVisible();
 
-  await page.getByRole("button", { name: /open dark places generator/i }).click();
+  await page.getByRole("link", { name: /open dark places generator/i }).click();
   await expect(page.locator("[data-location-composer-ready='true']")).toBeVisible();
   await expect(page.getByRole("main", { name: /location map stage/i })).toBeVisible();
 
-  await page.getByRole("button", { name: "Inspirations" }).click();
+  await page.getByRole("link", { name: "Inspirations" }).click();
   await expect(page.getByRole("main")).toContainText(/Inspirations|Source|Anchor/i);
 
   await page
     .getByRole("navigation", { name: /primary sections/i })
-    .getByRole("button", { name: "Home", exact: true })
+    .getByRole("link", { name: "Home", exact: true })
     .click();
   await expect(page.getByRole("heading", { name: /the dark fantasy workbench for 5e/i })).toBeVisible();
 });
@@ -23,7 +23,7 @@ test("home, crucible, and inspirations sections mount", async ({ page }) => {
 test("Darken a Location composer and map view mount", async ({ page }) => {
   await page.goto("/");
 
-  await page.getByRole("button", { name: /open dark places generator/i }).click();
+  await page.getByRole("link", { name: /open dark places generator/i }).click();
 
   await expect(page.locator("[data-location-composer-ready='true']")).toBeVisible();
   await expect(page.getByRole("main", { name: /location map stage/i })).toBeVisible();
@@ -43,7 +43,7 @@ test("Build a Monster can start from scratch and open the graft navigator", asyn
 
   await page.goto("/");
 
-  await page.getByRole("button", { name: /open terrifying monster generator/i }).click();
+  await page.getByRole("link", { name: /open terrifying monster generator/i }).click();
   await expect(page.locator(".monster-shell")).toBeVisible();
 
   await page.getByRole("button", { name: /build from scratch/i }).click();
@@ -61,4 +61,30 @@ test("Build a Monster can start from scratch and open the graft navigator", asyn
   await firstAddButton.click();
 
   await expect(page.getByLabel("Selected graft inspector")).toContainText(/Installed/i);
+});
+
+test("site navigation exposes real internal links", async ({ page }) => {
+  await page.goto("/");
+
+  const primaryNavigation = page.getByRole("navigation", {
+    name: /primary sections/i,
+  });
+
+  await expect(
+    primaryNavigation.getByRole("link", { name: "Home", exact: true }),
+  ).toHaveAttribute("href", "/");
+  await expect(
+    primaryNavigation.getByRole("link", { name: "Inspirations", exact: true }),
+  ).toHaveAttribute("href", "/inspirations");
+
+  await primaryNavigation
+    .getByRole("button", { name: /crucible/i })
+    .hover();
+
+  await expect(
+    page.locator('[data-site-mega-item-id="locations"]'),
+  ).toHaveAttribute("href", "/darkplaces");
+  await expect(
+    page.locator('[data-site-mega-item-id="monsters"]'),
+  ).toHaveAttribute("href", "/terrifyingmonsters");
 });

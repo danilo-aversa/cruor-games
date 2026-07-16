@@ -39,7 +39,6 @@ export default function InspirationCard({
   const title =
     inspiration?.title || inspiration?.label || "Untitled Inspiration";
   const isLongTitle = title.length > 20;
-  const domainLabel = t(meta.domain.labelKey, {}, locale);
   const obscurityLabel = t(meta.obscurity.labelKey, {}, locale);
   const sideLabel = isFlipped
     ? t("inspirations.card.turnFront", { title }, locale)
@@ -65,22 +64,23 @@ export default function InspirationCard({
             className="inspiration-card__front-paper-texture"
           />
 
-          <div className="inspiration-card__window inspiration-card__front-window">
-            <InspirationArtwork inspiration={inspiration} />
-            <span className="inspiration-card__front-fade inspiration-card__front-fade--bottom" />
+          <div className="inspiration-card__front-visual">
+            <div className="inspiration-card__window inspiration-card__front-window">
+              <InspirationArtwork inspiration={inspiration} />
+              <span className="inspiration-card__front-fade inspiration-card__front-fade--bottom" />
+            </div>
+
+            <InspirationCardFrame />
+
+            <span className="inspiration-card__domain-sigil" aria-hidden="true">
+              <i
+                className={`fa-solid ${meta.domain.icon}`}
+                aria-hidden="true"
+              />
+            </span>
           </div>
 
-          <InspirationCardFrame />
-
-          <span
-            className="inspiration-card__domain-sigil"
-            title={domainLabel}
-            aria-hidden="true"
-          >
-            <span>{meta.domain.symbol}</span>
-          </span>
-
-          <span className="inspiration-card__title-box">
+          <span className="inspiration-card__title-rail">
             <strong className="inspiration-card__title">{title}</strong>
           </span>
         </section>
@@ -102,7 +102,6 @@ export default function InspirationCard({
               </div>
               <span
                 className={`inspiration-card__obscurity is-${meta.obscurityId}`}
-                title={obscurityLabel}
                 aria-label={obscurityLabel}
               >
                 {meta.obscurity.symbol}
@@ -112,6 +111,20 @@ export default function InspirationCard({
             <div className="inspiration-card__description">
               <p>{meta.description}</p>
             </div>
+
+            {isFlipped ? (
+              <button
+                className="inspiration-card__dossier-button cruor-square-icon-button"
+                type="button"
+                aria-label={t("inspirations.card.openDossier", {}, locale)}
+                onClick={onOpenDossier}
+              >
+                <i className="fa-solid fa-book-open" aria-hidden="true" />
+                <span className="sr-only">
+                  {t("inspirations.card.openDossier", {}, locale)}
+                </span>
+              </button>
+            ) : null}
 
             <footer className="inspiration-card__footer">
               <span>{meta.collectionLabel}</span>
@@ -132,26 +145,8 @@ export default function InspirationCard({
         type="button"
         aria-pressed={isFlipped}
         aria-label={sideLabel}
-        title={sideLabel}
         onClick={onToggle}
       />
-
-      {isFlipped ? (
-        <button
-          className="inspiration-card__dossier-button cruor-square-icon-button cruor-square-icon-button--compact"
-          type="button"
-          aria-label={t("inspirations.card.openDossier", {}, locale)}
-          title={t("inspirations.card.openDossier", {}, locale)}
-          data-key="tooltip-generic"
-          data-tooltip={t("inspirations.card.openDossier", {}, locale)}
-          onClick={onOpenDossier}
-        >
-          <i className="fa-solid fa-book-open" aria-hidden="true" />
-          <span className="sr-only">
-            {t("inspirations.card.openDossier", {}, locale)}
-          </span>
-        </button>
-      ) : null}
     </article>
   );
 }

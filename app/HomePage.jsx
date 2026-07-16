@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Accordion, AccordionItem } from "../components/ui/accordion.jsx";
 import { INSPIRATION_CARDS } from "../features/crucible/crucible.sources-data.js";
+import SiteLink from "./navigation/SiteLink.jsx";
 import "./home-page.css";
 import "./home-page-video.css";
 
@@ -61,6 +62,7 @@ const TOOL_CARDS = [
       "A procedural playable map with keyed regions, routes, hazards, clues, read-aloud text, and table-ready notes.",
     actionLabel: "Open Generator",
     actionArgs: ["darken", "composer"],
+    href: "/darkplaces",
     art: LANDING_IMAGES.map.src,
     previews: [
       LANDING_IMAGES.map,
@@ -196,6 +198,7 @@ const TOOL_CARDS = [
       "A complete 5E monster stat block with combat actions, traits, tactics, counterplay, and table-ready support notes.",
     actionLabel: "Open Generator",
     actionArgs: ["monster"],
+    href: "/terrifyingmonsters",
     art: LANDING_IMAGES.workbench.src,
     previews: [
       LANDING_IMAGES.workbench,
@@ -703,15 +706,15 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
             className="cruor-home__tool-actions"
             aria-label={`${tool.title} actions`}
           >
-            <button
+            <SiteLink
               className="cruor-home__button cruor-home__button--primary"
-              type="button"
-              onClick={() => onOpenCrucibleTool?.(...tool.actionArgs)}
+              href={tool.href}
+              onNavigate={() => onOpenCrucibleTool?.(...tool.actionArgs)}
               aria-label={`Open ${tool.title} generator`}
             >
               {tool.openLabel}
               <i className="fa-solid fa-arrow-right" aria-hidden="true" />
-            </button>
+            </SiteLink>
             <button
               className="cruor-home__button"
               type="button"
@@ -1370,14 +1373,14 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
               Explore the Workbench
               <i className="fa-solid fa-arrow-down" aria-hidden="true" />
             </a>
-            <button
+            <SiteLink
               className="cruor-home__text-link"
-              type="button"
-              onClick={onOpenInspirations}
+              href="/inspirations"
+              onNavigate={onOpenInspirations}
             >
               Browse Inspirations
               <i className="fa-solid fa-book-skull" aria-hidden="true" />
-            </button>
+            </SiteLink>
           </div>
         </div>
       </section>
@@ -1569,13 +1572,13 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
             </p>
           </div>
 
-          <button
+          <SiteLink
             className="cruor-home__button cruor-home__button--primary"
-            type="button"
-            onClick={onOpenInspirations}
+            href="/inspirations"
+            onNavigate={onOpenInspirations}
           >
             Browse Our Inspirations
-          </button>
+          </SiteLink>
         </div>
 
         <InspirationSourceCarousel />
@@ -1690,9 +1693,9 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           >
             <a href="#homeHero">Home</a>
             <a href="#featuredTools">Tools</a>
-            <button type="button" onClick={onOpenInspirations}>
+            <SiteLink href="/inspirations" onNavigate={onOpenInspirations}>
               Inspirations
-            </button>
+            </SiteLink>
             <a href="#faq">FAQ</a>
             <a href={CRUOR_PATREON_URL} target="_blank" rel="noreferrer">
               Patreon

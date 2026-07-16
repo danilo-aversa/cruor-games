@@ -437,6 +437,51 @@
   gap: clamp(1.25rem, 2vw, 2rem);
 }
 
+.location-output-room__header {
+  display: grid;
+  grid-template-columns: minmax(15rem, 22rem) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(1rem, 2vw, 1.6rem);
+}
+
+.location-output-room .cruor-tool-header__supplement {
+  min-width: 0;
+}
+
+.location-output-room-preview {
+  display: block;
+  min-width: 0;
+}
+
+.location-output-room-preview__frame {
+  position: relative;
+  width: 100%;
+  height: 17rem;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--cruor-surface-panel-strong);
+}
+
+.location-output-room-preview__frame > .cruor-map-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 980px) {
+  .location-output-room__header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .location-output-room-preview {
+    order: -1;
+  }
+
+  .location-output-room-preview__frame {
+    height: 14rem;
+  }
+}
+
 .location-output-document-view .cruor-tool-summary,
 .location-output-room .cruor-tool-summary,
 .location-output-entry__line,
@@ -485,18 +530,6 @@
   min-height: 2.15rem;
   padding: 0.45rem 0.6rem;
   font-size: var(--text-size-s, 0.72rem);
-  cursor: pointer;
-}
-
-.location-output-room__missing {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  width: 100%;
-  min-height: 2.4rem;
-  margin: 0 0 0.85rem;
-  padding: 0.6rem 0.75rem;
-  text-align: left;
   cursor: pointer;
 }
 

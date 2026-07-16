@@ -12,15 +12,26 @@ export function ToolContentPanel({
   actions,
   actionsLabel,
   className = "",
+  headerSupplement = null,
+  headerClassName = "",
   ...props
 }) {
+  const copy = (
+    <div className="cruor-tool-copy">
+      {eyebrow ? <span className="cruor-tool-copy__eyebrow">{eyebrow}</span> : null}
+      {title ? <h3 className="cruor-tool-copy__title">{title}</h3> : null}
+      {summary ? <p className="cruor-tool-summary">{summary}</p> : null}
+    </div>
+  );
+
   return (
     <div className={joinClassNames("cruor-tool-content-inner", className)} {...props}>
-      <div className="cruor-tool-copy">
-        {eyebrow ? <span className="cruor-tool-copy__eyebrow">{eyebrow}</span> : null}
-        {title ? <h3 className="cruor-tool-copy__title">{title}</h3> : null}
-        {summary ? <p className="cruor-tool-summary">{summary}</p> : null}
-      </div>
+      {headerSupplement ? (
+        <div className={joinClassNames("cruor-tool-header", headerClassName)}>
+          <div className="cruor-tool-header__supplement">{headerSupplement}</div>
+          {copy}
+        </div>
+      ) : copy}
       {children}
       {actions ? (
         <div className="cruor-tool-actions" aria-label={actionsLabel || undefined}>

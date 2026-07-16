@@ -23,12 +23,17 @@ describe("InspirationsPage", () => {
     expect(markup).toContain("cruor-dropdown-trigger");
     expect(markup).toContain("cruor-square-icon-button");
     expect(markup).toContain("inspiration-card__front-paper-texture");
+    expect(markup).toContain("inspiration-card__front-visual");
+    expect(markup).toContain("inspiration-card__title-rail");
     expect(markup).toContain("inspiration-card__back-art");
     expect(markup).not.toContain("inspiration-card__back-window");
     expect(markup).not.toContain("inspiration-card__back-overlay");
     expect(markup).not.toContain("inspiration-card__back-texture");
     expect(markup).not.toContain("inspiration-card__front-fade--top");
     expect(markup).not.toContain("inspiration-card__flip-hint");
+    expect(markup).not.toContain("inspiration-card__title-box");
+    expect(markup).not.toContain("cruor-square-icon-button--compact");
+    expect(markup).toContain("fa-skull-crossbones");
     expect(markup).not.toContain("<select");
   });
 });

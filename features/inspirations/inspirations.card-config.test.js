@@ -24,6 +24,7 @@ describe("Inspiration card metadata", () => {
       });
 
       expect(INSPIRATION_DOMAINS[meta.domainId]).toBeDefined();
+      expect(meta.domain.icon).toMatch(/^fa-/);
       expect(INSPIRATION_OBSCURITY[meta.obscurityId]).toBeDefined();
       expect(meta.collectionId).toBe("existing-inspirations");
       expect(meta.collectionLabel).toBe("Existing Inspirations");

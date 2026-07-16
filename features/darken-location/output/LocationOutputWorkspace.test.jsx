@@ -232,7 +232,8 @@ describe("LocationOutputWorkspace", () => {
     expect(html).toContain("Sealed Reliquary");
     expect(html).toContain("Locked");
     expect(html).toContain("Down 1 level");
-    expect(html).toContain("Missing Disturbing Clue");
+    expect(html).not.toContain("Missing Disturbing Clue");
+    expect(html).not.toContain("Room Render");
     expect(html).toContain("Edit Room");
     expect(html).toContain("cruor-square-icon-button");
     expect(html).toContain("cruor-composer-control");

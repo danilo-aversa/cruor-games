@@ -60,3 +60,28 @@ flowchart LR
 
 `app/router.jsx` is critical risk: it owns browser URL state, app-level state, cross-feature callbacks, and recovery prompts. Changes should be tested with direct route loads and browser back/forward behavior.
 
+## Internal Link Contract
+
+Site-level destinations are rendered through `app/navigation/SiteLink.jsx` as real `<a href>` elements. The component intercepts only an unmodified primary-button click and delegates that navigation to the custom router. Modified clicks, middle clicks, context-menu actions, copied addresses, and explicit new-tab navigation retain native browser behavior.
+
+Major navigation surfaces using this contract include:
+
+- the topbar logo;
+- Home and Inspirations in desktop and mobile navigation;
+- Dark Places and Terrifying Monsters in the Crucible mega menu;
+- generator and Inspirations calls to action on the homepage.
+
+Menu triggers, settings, tabs, modal controls, and other actions without a standalone URL remain buttons.
+
+## Site-Wide Page Transitions
+
+`app/site-page-transition.js` is the centralized transition runtime. `app/router.jsx` invokes it from `navigateToRoute` and from the `popstate` handler, so every route registered through the existing router receives the same page transition automatically.
+
+The runtime:
+
+- uses the browser View Transitions API when available;
+- falls back to a CSS entry animation on `.app-shell__workspace`;
+- leaves the persistent site topbar outside the animated workspace;
+- respects the Cruor motion preference and the operating-system `prefers-reduced-motion` setting.
+
+New public pages do not need page-specific animation code. They only need a route mapping and navigation metadata that uses the normal router path.

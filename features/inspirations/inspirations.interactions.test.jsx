@@ -58,8 +58,11 @@ describe("InspirationsPage interactions", () => {
     );
     expect(
       dossierButton.classList.contains("cruor-square-icon-button--compact"),
-    ).toBe(true);
+    ).toBe(false);
     expect(dossierButton.getAttribute("aria-label")).toBe("Open dossier");
+    expect(dossierButton.hasAttribute("title")).toBe(false);
+    expect(dossierButton.hasAttribute("data-tooltip")).toBe(false);
+    expect(flipButton.hasAttribute("title")).toBe(false);
     await act(async () => dossierButton.click());
 
     expect(container.querySelector('[role="dialog"]')).not.toBeNull();

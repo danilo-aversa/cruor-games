@@ -16,6 +16,7 @@ import InspirationStudioPage from "../features/inspiration-studio/inspiration-st
 import MonsterComposerPage from "../features/monster-composer/monster-composer.index.js";
 import { createMapRequestFromDarkenLocationState } from "../features/darken-location/darken-location.map-request.js";
 import { getCurrentLocale, setCurrentLocale, t } from "../shared/i18n/index.js";
+import { runSitePageTransition } from "./site-page-transition.js";
 
 const CruorMapGeneratorMvp = lazy(
   () =>
@@ -272,8 +273,18 @@ export default function AppRouter() {
 
   const navigateToRoute = useCallback(
     (route, options = {}) => {
-      writeRouteToHistory(route, options);
-      syncStateFromRoute(route);
+      const nextPath = getRoutePath(route);
+      const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+      if (currentPath === nextPath) {
+        syncStateFromRoute(route);
+        return;
+      }
+
+      runSitePageTransition(() => {
+        writeRouteToHistory(route, options);
+        syncStateFromRoute(route);
+      });
     },
     [syncStateFromRoute],
   );
@@ -296,7 +307,8 @@ export default function AppRouter() {
 
   useEffect(() => {
     function handlePopState() {
-      syncStateFromRoute(getCruorRouteFromLocation());
+      const route = getCruorRouteFromLocation();
+      runSitePageTransition(() => syncStateFromRoute(route));
     }
 
     window.addEventListener("popstate", handlePopState);

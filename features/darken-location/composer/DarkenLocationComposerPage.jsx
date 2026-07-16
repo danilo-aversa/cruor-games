@@ -71,6 +71,10 @@ import {
 } from "./model/location-composer-output.js";
 import { getNextMissingRoomSlot, getRoomProgramEntries, getSelectedRoomProgramEntry } from "./model/location-room-program.js";
 import {
+  LOCATION_MAP_SELECTION_ACTION,
+  resolveLocationMapSelectionAction,
+} from "./model/location-composer-map-interaction.js";
+import {
   createLocationRegionsFromDungeonBrief,
   createThemeDungeonBriefCandidatesFromDarkenLocationSnapshot,
   createThemeDungeonBriefFromDarkenLocationSnapshot,
@@ -1150,21 +1154,26 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   }, [selectRoomTarget]);
 
   const activateRoomWorkFromMap = useCallback((regionId = "") => {
-    const nextRegionId = String(regionId || "").trim();
-    setBuilderMode("scratch");
+    const selectionAction = resolveLocationMapSelectionAction(builderMode, regionId);
+
+    if (selectionAction.type === LOCATION_MAP_SELECTION_ACTION.IGNORE) return;
+
     setDrawerOpen(false);
 
-    if (!nextRegionId) {
-      setState((current) => ({
-        ...current,
-        activeRegionId: "",
-        activeSlotScope: LOCATION_SLOT_SCOPE_MAP,
-        activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_MAP)
-          ? current.activeSlot
-          : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_MAP),
-      }));
+    if (selectionAction.type === LOCATION_MAP_SELECTION_ACTION.OPEN_ROOM) {
+      setBuilderMode("scratch");
+      return;
     }
-  }, []);
+
+    setState((current) => ({
+      ...current,
+      activeRegionId: "",
+      activeSlotScope: LOCATION_SLOT_SCOPE_MAP,
+      activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_MAP)
+        ? current.activeSlot
+        : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_MAP),
+    }));
+  }, [builderMode]);
 
   if (builderMode === "export") {
     return (
@@ -1373,6 +1382,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
             />
           )}
           onComposerRegionSelect={activateRoomWorkFromMap}
+          allowEmptyRegionClear={builderMode === "scratch"}
         />
       </div>
     </div>

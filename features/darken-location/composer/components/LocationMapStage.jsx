@@ -95,6 +95,7 @@ export function LocationMapStage({
   bottomDockPanel = null,
   onCloseNavigator = null,
   onComposerRegionSelect = null,
+  allowEmptyRegionClear = true,
 }) {
   const isSimpleMode = uiMode === "simple";
   const showStageDetails = !isSimpleMode;
@@ -150,6 +151,7 @@ export function LocationMapStage({
 
 
   function clearRegionTarget() {
+    if (!allowEmptyRegionClear) return;
     onCloseNavigator?.();
     setState((current) => ({
       ...current,

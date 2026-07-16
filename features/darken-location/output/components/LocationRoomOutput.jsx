@@ -1,4 +1,6 @@
 import { ToolButton, ToolContentPanel, ToolFeatureBlock } from "../../../../components/ui/tool-content-panel.jsx";
+import { MapSvg } from "../../map-generator/map-generator.render.jsx";
+import { getLocationMapExportRenderOptions } from "../model/location-map-export.js";
 
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -362,6 +364,101 @@ function getConnectionTransition(connection) {
   return `${direction} ${distance} level${distance === 1 ? "" : "s"}`;
 }
 
+
+function getRoomMapIdentitySet(room = {}) {
+  return new Set(
+    [room.id, room.sourceRegionId, room.generatedRoomId]
+      .map((value) => cleanText(value))
+      .filter(Boolean),
+  );
+}
+
+function getRegionPreviewCells(region = {}) {
+  if (Array.isArray(region.floorCells) && region.floorCells.length) return region.floorCells;
+  if (Array.isArray(region.cells) && region.cells.length) return region.cells;
+  return [];
+}
+
+function findGeneratedRoomRegion(generatedMap, room) {
+  if (!generatedMap || !room) return null;
+  const identities = getRoomMapIdentitySet(room);
+  return asArray(generatedMap.regions).find((region) => {
+    const candidates = [
+      region?.id,
+      region?.sourceRegionId,
+      region?.previewTargetId,
+      region?.requestMetadata?.sourceRegionId,
+      region?.metadata?.sourceRegionId,
+    ]
+      .map((value) => cleanText(value))
+      .filter(Boolean);
+    return candidates.some((candidate) => identities.has(candidate));
+  }) || null;
+}
+
+function createRoomPreviewViewBox(region, generatedMap) {
+  const cells = getRegionPreviewCells(region);
+  const gridSize = Number(generatedMap?.config?.gridSize) || 34;
+  if (!cells.length) return null;
+  const minX = Math.min(...cells.map((cell) => Number(cell?.x) || 0));
+  const minY = Math.min(...cells.map((cell) => Number(cell?.y) || 0));
+  const maxX = Math.max(...cells.map((cell) => (Number(cell?.x) || 0) + 1));
+  const maxY = Math.max(...cells.map((cell) => (Number(cell?.y) || 0) + 1));
+  const padding = Math.max(12, Math.round(gridSize * 0.9));
+  const x = (minX * gridSize) - padding;
+  const y = (minY * gridSize) - padding;
+  const width = Math.max(gridSize * 2, ((maxX - minX) * gridSize) + (padding * 2));
+  const height = Math.max(gridSize * 2, ((maxY - minY) * gridSize) + (padding * 2));
+  return { x, y, width, height, value: `${x} ${y} ${width} ${height}` };
+}
+
+function createRoomPreviewMap(generatedMap, region) {
+  if (!generatedMap || !region) return null;
+  return {
+    ...generatedMap,
+    regions: [region],
+    corridors: [],
+    manualCorridors: [],
+    manualCorridorTypes: {},
+    roomLinks: [],
+    mapAccesses: [],
+    connections: [],
+  };
+}
+
+function LocationRoomPreview({ room, region, generatedMap, exportSettings }) {
+  const previewMap = createRoomPreviewMap(generatedMap, region);
+  const viewBox = createRoomPreviewViewBox(region, generatedMap);
+  const renderOptions = getLocationMapExportRenderOptions(generatedMap, exportSettings || {});
+
+  if (!previewMap || !viewBox) return null;
+
+  return (
+    <section className="location-output-room-preview" aria-label={`${room?.name || "Selected room"} render`}>
+      <div className="location-output-room-preview__frame">
+        <MapSvg
+          generatedMap={previewMap}
+          showGrid={false}
+          crosshatchStyle={renderOptions.crosshatchStyle}
+          crosshatchOpacity={renderOptions.crosshatchOpacity}
+          wallDrawingStyle={renderOptions.wallDrawingStyle}
+          hatchShadowColor={renderOptions.hatchShadowColor}
+          showEditor={false}
+          showNames={false}
+          showRoomNumbers={false}
+          showRoomBadges={false}
+          hideSecretRoutes
+          showProps={false}
+          showStairArrows={false}
+          fadeOtherLevels={false}
+          levelView="all"
+          viewportViewBox={viewBox.value}
+        />
+      </div>
+    </section>
+  );
+}
+
 function RoomConnectionList({ connections, onSelectRoom }) {
   const entries = asArray(connections);
   if (!entries.length) return null;
@@ -406,11 +503,14 @@ function RoomConnectionList({ connections, onSelectRoom }) {
 
 export function LocationRoomOutput({
   room,
+  generatedMap,
+  exportSettings,
   onCopyText,
   onEditRoom,
   onSelectRoom,
 }) {
   if (!room) return null;
+  const roomPreviewRegion = findGeneratedRoomRegion(generatedMap, room);
 
   return (
     <ToolContentPanel
@@ -419,6 +519,15 @@ export function LocationRoomOutput({
       eyebrow={`Room ${formatRoomNumber(room.number)}`}
       title={room.name}
       summary={[room.role, formatLevel(room.level), room.shape].filter(Boolean).join(" · ")}
+      headerClassName="location-output-room__header"
+      headerSupplement={roomPreviewRegion ? (
+        <LocationRoomPreview
+          room={room}
+          region={roomPreviewRegion}
+          generatedMap={generatedMap}
+          exportSettings={exportSettings}
+        />
+      ) : null}
       actionsLabel={`${room.name} actions`}
       actions={(
         <ToolButton icon="fa-pen" onClick={() => onEditRoom?.(room.id)}>
@@ -426,17 +535,6 @@ export function LocationRoomOutput({
         </ToolButton>
       )}
     >
-      {room.readiness?.missingSlotLabels?.length ? (
-        <button
-          className="location-output-room__missing cruor-composer-control"
-          type="button"
-          onClick={() => onEditRoom?.(room.id)}
-        >
-          <i className="fa-solid fa-circle-exclamation" aria-hidden="true" />
-          <span>Missing {room.readiness.missingSlotLabels.join(", ")}</span>
-        </button>
-      ) : null}
-
       <ReadAloudSection room={room} onCopyText={onCopyText} />
       <ImmediateImpressions room={room} />
       <SemanticBlockSection blocks={room.hazards} kind="hazard" />

@@ -1,5 +1,6 @@
 import "./site-mega-menu.css";
 import { t } from "../../shared/i18n/index.js";
+import SiteLink from "./SiteLink.jsx";
 
 function cx(...parts) {
   return parts.filter(Boolean).join(" ");
@@ -7,7 +8,9 @@ function cx(...parts) {
 
 function focusMenuItem(menuElement, nextIndex) {
   const items = Array.from(
-    menuElement.querySelectorAll("[data-site-mega-item]:not(:disabled)"),
+    menuElement.querySelectorAll(
+      '[data-site-mega-item]:not([aria-disabled="true"])',
+    ),
   );
   if (!items.length) return;
 
@@ -39,7 +42,7 @@ export default function SiteMegaMenu({
   function handleMenuKeyDown(event) {
     const itemButtons = Array.from(
       event.currentTarget.querySelectorAll(
-        "[data-site-mega-item]:not(:disabled)",
+        '[data-site-mega-item]:not([aria-disabled="true"])',
       ),
     );
     const currentIndex = itemButtons.indexOf(document.activeElement);
@@ -106,14 +109,14 @@ export default function SiteMegaMenu({
             const isSelected = selectedItemId === item.id;
 
             return (
-              <button
+              <SiteLink
                 key={item.id}
                 className={cx(
                   "site-mega-menu__item",
                   isSelected && "is-selected",
                   item.disabled && "is-disabled",
                 )}
-                type="button"
+                href={item.href || item.action?.href}
                 role="menuitem"
                 disabled={item.disabled}
                 aria-current={isSelected ? "page" : undefined}
@@ -121,7 +124,7 @@ export default function SiteMegaMenu({
                 data-site-mega-item-id={item.id}
                 onMouseEnter={() => onPreviewChange?.(item.id)}
                 onFocus={() => onPreviewChange?.(item.id)}
-                onClick={() => handleAction(item)}
+                onNavigate={() => handleAction(item)}
               >
                 <span className="site-mega-menu__item-icon" aria-hidden="true">
                   <i className={item.icon || "fa-solid fa-diamond"} />
@@ -133,7 +136,7 @@ export default function SiteMegaMenu({
                     {item.catchPhrase || item.previewText || item.description}
                   </span>
                 </span>
-              </button>
+              </SiteLink>
             );
           })}
         </div>

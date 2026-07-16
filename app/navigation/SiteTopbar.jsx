@@ -6,6 +6,7 @@ import {
   getCrucibleMenuItemId,
 } from "./site-navigation.data.js";
 import SiteMegaMenu from "./SiteMegaMenu.jsx";
+import SiteLink from "./SiteLink.jsx";
 import { SUPPORTED_LOCALES, getLocaleDictionary, t } from "../../shared/i18n/index.js";
 import { ACCESSIBILITY_SETTING_GROUPS } from "../../shared/accessibility/accessibility.settings.js";
 
@@ -109,6 +110,14 @@ export default function SiteTopbar({
 
   const crucibleMenu = useMemo(
     () => siteNavItems.find((item) => item.id === "crucible"),
+    [siteNavItems],
+  );
+  const homeNavItem = useMemo(
+    () => siteNavItems.find((item) => item.id === "home"),
+    [siteNavItems],
+  );
+  const inspirationsNavItem = useMemo(
+    () => siteNavItems.find((item) => item.id === "inspirations"),
     [siteNavItems],
   );
 
@@ -386,16 +395,18 @@ export default function SiteTopbar({
     }
 
     return (
-      <button
+      <SiteLink
         key={item.id}
         className={cx("app-shell__nav-item site-topbar__nav-button", isActive && "is-active")}
-        type="button"
+        href={item.href}
         aria-current={isActive ? "page" : undefined}
-        onClick={() => handleNavItemClick(item)}
+        onNavigate={() =>
+          handleAction({ type: "section", sectionId: item.sectionId })
+        }
       >
         <i className={item.icon} aria-hidden="true" />
         <span>{item.label}</span>
-      </button>
+      </SiteLink>
     );
   }
 
@@ -408,16 +419,18 @@ export default function SiteTopbar({
   return (
     <header className="app-shell__bar site-topbar" ref={topbarRef}>
       <div className="app-shell__bar-inner site-topbar__inner">
-        <button
+        <SiteLink
           className="app-shell__brand site-topbar__brand"
-          type="button"
+          href={homeNavItem?.href || "/"}
           aria-label={t("app.aria.goHome", {}, activeLocale)}
-          onClick={() => handleAction({ type: "section", sectionId: "home" })}
+          onNavigate={() =>
+            handleAction({ type: "section", sectionId: "home" })
+          }
         >
           <span className="app-shell__logo-mark" aria-hidden="true">
             <img className="app-shell__logo-image" src="/assets/icons/cruor-logo-small.png" alt="" />
           </span>
-        </button>
+        </SiteLink>
 
         <div className="app-shell__bar-actions site-topbar__bar-actions">
           <nav className="app-shell__nav site-topbar__nav" aria-label={t("app.aria.primarySections", {}, activeLocale)}>
@@ -539,47 +552,58 @@ export default function SiteTopbar({
 
       {isMobileOpen ? (
         <nav className="site-topbar__mobile-menu" id="siteMobileMenu" aria-label={t("app.aria.mobileNavigation", {}, activeLocale)}>
-          <button
+          <SiteLink
             className={cx("site-topbar__mobile-link", activeSection === "home" && "is-active")}
-            type="button"
-            onClick={() => handleAction({ type: "section", sectionId: "home" })}
+            href={homeNavItem?.href || "/"}
+            aria-current={activeSection === "home" ? "page" : undefined}
+            onNavigate={() =>
+              handleAction({ type: "section", sectionId: "home" })
+            }
           >
             <i className="fa-solid fa-house-chimney" aria-hidden="true" />
             <span>{t("navigation.home", {}, activeLocale)}</span>
-          </button>
+          </SiteLink>
 
           <div className="site-topbar__mobile-group">
             <span className="site-topbar__mobile-group-label">{t("navigation.crucible", {}, activeLocale)}</span>
             {crucibleMenu?.items?.map((item) => (
-              <button
+              <SiteLink
                 key={item.id}
                 className={cx(
                   "site-topbar__mobile-link site-topbar__mobile-link--nested",
                   activeSection === "crucible" && activeCrucibleMenuItemId === item.id && "is-active",
                 )}
-                type="button"
-                onClick={() => handleAction(item.action)}
+                href={item.href || item.action?.href}
+                aria-current={
+                  activeSection === "crucible" && activeCrucibleMenuItemId === item.id
+                    ? "page"
+                    : undefined
+                }
+                onNavigate={() => handleAction(item.action)}
               >
                 <i className={item.icon} aria-hidden="true" />
                 <span>
                   <strong>{item.label}</strong>
                   <small>{item.mobileDescription || item.description}</small>
                 </span>
-              </button>
+              </SiteLink>
             ))}
           </div>
 
-          <button
+          <SiteLink
             className={cx(
               "site-topbar__mobile-link",
               activeSection === "inspirations" && "is-active",
             )}
-            type="button"
-            onClick={() => handleAction({ type: "section", sectionId: "inspirations" })}
+            href={inspirationsNavItem?.href || "/inspirations"}
+            aria-current={activeSection === "inspirations" ? "page" : undefined}
+            onNavigate={() =>
+              handleAction({ type: "section", sectionId: "inspirations" })
+            }
           >
             <i className="fa-solid fa-book-skull" aria-hidden="true" />
             <span>{t("navigation.inspirations", {}, activeLocale)}</span>
-          </button>
+          </SiteLink>
 
           <div className="site-topbar__mobile-mode">
             <span className="site-topbar__mobile-group-label">{t("settings.sections.mode", {}, activeLocale)}</span>

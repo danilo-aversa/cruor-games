@@ -889,6 +889,8 @@ export function LocationOutputWorkspace({
       return (
         <LocationRoomOutput
           room={activeRoom}
+          generatedMap={generatedMapPreview}
+          exportSettings={mapExportSettings}
           onCopyText={onCopyText}
           onEditRoom={onEditRoom}
           onSelectRoom={selectRoom}

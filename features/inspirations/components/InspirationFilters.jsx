@@ -385,7 +385,12 @@ export default function InspirationFilters({
           aria-pressed={domainFilter === "all"}
           onClick={() => onDomainChange("all")}
         >
-          <span className="inspirations-filters__domain-symbol">✣</span>
+          <span
+            className="inspirations-filters__domain-symbol"
+            aria-hidden="true"
+          >
+            <i className="fa-solid fa-layer-group" />
+          </span>
           <span>{t("inspirations.domains.all", {}, locale)}</span>
           <small>{domainCounts.all || 0}</small>
         </button>
@@ -401,8 +406,11 @@ export default function InspirationFilters({
               aria-pressed={active}
               onClick={() => onDomainChange(domainId)}
             >
-              <span className="inspirations-filters__domain-symbol">
-                {domain.symbol}
+              <span
+                className="inspirations-filters__domain-symbol"
+                aria-hidden="true"
+              >
+                <i className={`fa-solid ${domain.icon}`} />
               </span>
               <span>{t(domain.labelKey, {}, locale)}</span>
               <small>{domainCounts[domainId] || 0}</small>

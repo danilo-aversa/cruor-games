@@ -58,3 +58,10 @@ Commands are listed as package scripts. In PowerShell on this machine, `npm.cmd 
 
 - `features/darken-location/map-generator/map-generator.room-resize.test.js` covers grid snapping, bottom-left anchoring, equal-dimension shapes, circular radius serialization, shape minimums, final layout anchoring, and Cave exclusion.
 - `tests/e2e/dark-places-pipeline.spec.js` covers the visible top-right handle, non-committing drag preview, one atomic Custom-size/position commit with Undo, and shared dropdown classes for Map Actions and More Map Tools.
+
+### Site navigation and page transitions
+
+- `tests/e2e/app-smoke.spec.js` verifies that primary site destinations are exposed as links with stable `href` values.
+- Existing smoke journeys click those links through the client-side router and continue to verify that Home, Inspirations, Dark Places, the map workspace, and Terrifying Monsters mount correctly.
+- Playwright runs with reduced motion, so route tests exercise the no-animation accessibility path rather than waiting for visual transitions.
+- Manual browser QA should additionally cover right-click/open-in-new-tab, middle-click, Ctrl/Cmd-click, browser Back/Forward, and both full and reduced motion settings.

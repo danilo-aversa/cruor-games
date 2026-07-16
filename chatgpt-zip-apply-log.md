@@ -13554,3 +13554,165 @@ _Nessun file aggiunto._
 - Percorso sospetto nello ZIP: INSPIRATIONS_CARD_BACK_REFACTOR_MANIFEST.txt
 - Percorso sospetto nello ZIP: INSPIRATIONS_CARD_BACK_REFACTOR_README.md
 
+
+---
+
+## 2026-07-16 10:59:54
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-site-navigation-transitions-patch.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-site-navigation-transitions-patch.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+app/navigation/SiteLink.jsx`
+- `+app/site-page-transition.js`
+
+**File sovrascritti:** 8
+
+- `~app/app-shell.css`
+- `~app/HomePage.jsx`
+- `~app/navigation/SiteMegaMenu.jsx`
+- `~app/navigation/SiteTopbar.jsx`
+- `~app/router.jsx`
+- `~docs/repository-map/routes-and-navigation.md`
+- `~docs/repository-map/tests-and-qa.md`
+- `~tests/e2e/app-smoke.spec.js`
+
+
+---
+
+## 2026-07-16 11:15:14
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-output-room-render-preview.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-output-room-render-preview.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~components/ui/tool-content-panel.jsx`
+- `~features/darken-location/output/components/LocationRoomOutput.jsx`
+- `~features/darken-location/output/location-output.styles.css`
+- `~features/darken-location/output/LocationOutputWorkspace.jsx`
+
+
+---
+
+## 2026-07-16 11:24:21
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-room-preview-stable-size.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-room-preview-stable-size.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/output/components/LocationRoomOutput.jsx`
+- `~features/darken-location/output/location-output.styles.css`
+- `~features/darken-location/output/LocationOutputWorkspace.test.jsx`
+
+
+---
+
+## 2026-07-16 11:36:51
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-inspirations-final-card-design-v6.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-final-card-design-v6.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+INSPIRATIONS_FINAL_CARD_DESIGN_MANIFEST.txt`
+- `+INSPIRATIONS_FINAL_CARD_DESIGN_README.md`
+
+**File sovrascritti:** 7
+
+- `~features/inspirations/components/InspirationCard.jsx`
+- `~features/inspirations/components/InspirationDossierModal.jsx`
+- `~features/inspirations/components/InspirationFilters.jsx`
+- `~features/inspirations/inspirations.card-config.js`
+- `~features/inspirations/inspirations.card-config.test.js`
+- `~features/inspirations/inspirations.page.test.jsx`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_FINAL_CARD_DESIGN_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_FINAL_CARD_DESIGN_README.md
+
+
+---
+
+## 2026-07-16 12:01:04
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-frame-empty-click-guard.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-frame-empty-click-guard.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+features/darken-location/composer/model/location-composer-map-interaction.js`
+- `+features/darken-location/composer/model/location-composer-map-interaction.test.js`
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+
+
+---
+
+## 2026-07-16 12:01:17
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-inspirations-card-layout-fixes-v7.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-card-layout-fixes-v7.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+INSPIRATIONS_CARD_LAYOUT_FIXES_MANIFEST.txt`
+- `+INSPIRATIONS_CARD_LAYOUT_FIXES_README.md`
+
+**File sovrascritti:** 4
+
+- `~features/inspirations/components/InspirationCard.jsx`
+- `~features/inspirations/inspirations.interactions.test.jsx`
+- `~features/inspirations/inspirations.page.test.jsx`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_CARD_LAYOUT_FIXES_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_CARD_LAYOUT_FIXES_README.md
+
