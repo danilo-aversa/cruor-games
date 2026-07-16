@@ -1,0 +1,4211 @@
+{
+  "id": "sedlec-ossuary-phase3",
+  "locationSeed": {
+    "coverage": {
+      "filledSlots": 7,
+      "incompleteRooms": [],
+      "readyRooms": 5,
+      "totalSlots": 7
+    },
+    "identity": {
+      "currentSituationParagraph": "",
+      "historyParagraph": "",
+      "playerEntryPoint": "",
+      "provenance": {
+        "legacyIds": [
+          "sedlec-ossuary-phase3"
+        ],
+        "migration": {
+          "editorialDecision": "needs-revision",
+          "fromSchema": "dark-places-document-v1",
+          "method": "compatibility-normalized",
+          "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+          "reviewVersion": "phase2-document-compatibility-v1"
+        },
+        "schemaVersion": "cruor-semantic-provenance-v1",
+        "sources": [
+          {
+            "note": "Read through the v1 compatibility boundary.",
+            "relation": "derived",
+            "sourceAnchorId": "sedlec-ossuary"
+          }
+        ]
+      },
+      "stakes": []
+    },
+    "map": {
+      "connections": [
+        {
+          "crossLevel": false,
+          "fromLevel": 0,
+          "fromRoomId": "location-region-1",
+          "id": "connection-01-main-room-01-room-02",
+          "kind": "main",
+          "levelDelta": 0,
+          "locked": false,
+          "secret": false,
+          "stairTransition": "",
+          "toLevel": 0,
+          "toRoomId": "location-region-2"
+        },
+        {
+          "crossLevel": false,
+          "fromLevel": 0,
+          "fromRoomId": "location-region-2",
+          "id": "connection-02-main-room-02-room-04",
+          "kind": "main",
+          "levelDelta": 0,
+          "locked": false,
+          "secret": false,
+          "stairTransition": "",
+          "toLevel": 0,
+          "toRoomId": "location-region-4"
+        },
+        {
+          "crossLevel": false,
+          "fromLevel": 0,
+          "fromRoomId": "location-region-4",
+          "id": "connection-03-main-room-04-room-05",
+          "kind": "main",
+          "levelDelta": 0,
+          "locked": false,
+          "secret": false,
+          "stairTransition": "",
+          "toLevel": 0,
+          "toRoomId": "location-region-5"
+        },
+        {
+          "crossLevel": false,
+          "fromLevel": 0,
+          "fromRoomId": "location-region-2",
+          "id": "connection-04-secondary-room-02-room-03",
+          "kind": "secondary",
+          "levelDelta": 0,
+          "locked": false,
+          "secret": false,
+          "stairTransition": "",
+          "toLevel": 0,
+          "toRoomId": "location-region-3"
+        },
+        {
+          "crossLevel": false,
+          "fromLevel": 0,
+          "fromRoomId": "location-region-1",
+          "id": "edge-map-region-1-map-region-3-crypt-spine-0",
+          "kind": "normal",
+          "levelDelta": 0,
+          "locked": false,
+          "secret": false,
+          "stairTransition": "none",
+          "toLevel": 0,
+          "toRoomId": "location-region-3"
+        },
+        {
+          "crossLevel": false,
+          "fromLevel": 0,
+          "fromRoomId": "location-region-2",
+          "id": "edge-map-region-2-map-region-5-crypt-spine-3",
+          "kind": "normal",
+          "levelDelta": 0,
+          "locked": false,
+          "secret": false,
+          "stairTransition": "none",
+          "toLevel": 0,
+          "toRoomId": "location-region-5"
+        },
+        {
+          "crossLevel": false,
+          "fromLevel": 0,
+          "fromRoomId": "location-region-3",
+          "id": "edge-map-region-3-map-region-4-crypt-spine-1",
+          "kind": "normal",
+          "levelDelta": 0,
+          "locked": false,
+          "secret": false,
+          "stairTransition": "none",
+          "toLevel": 0,
+          "toRoomId": "location-region-4"
+        },
+        {
+          "crossLevel": false,
+          "fromLevel": 0,
+          "fromRoomId": "location-region-4",
+          "id": "edge-map-region-4-map-region-2-crypt-spine-2",
+          "kind": "normal",
+          "levelDelta": 0,
+          "locked": false,
+          "secret": false,
+          "stairTransition": "none",
+          "toLevel": 0,
+          "toRoomId": "location-region-2"
+        }
+      ],
+      "counts": {
+        "connections": 8,
+        "crossLevelConnections": 0,
+        "levels": 1,
+        "rooms": 5,
+        "secretConnections": 0
+      },
+      "legend": [
+        "normal",
+        "secondary"
+      ],
+      "levels": [],
+      "mapType": "Crypt",
+      "provenance": {
+        "legacyIds": [
+          "sedlec-ossuary-phase3"
+        ],
+        "migration": {
+          "editorialDecision": "needs-revision",
+          "fromSchema": "dark-places-document-v1",
+          "method": "compatibility-normalized",
+          "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+          "reviewVersion": "phase2-document-compatibility-v1"
+        },
+        "schemaVersion": "cruor-semantic-provenance-v1",
+        "sources": [
+          {
+            "note": "Read through the v1 compatibility boundary.",
+            "relation": "derived",
+            "sourceAnchorId": "sedlec-ossuary"
+          }
+        ]
+      },
+      "rooms": [
+        {
+          "id": "location-region-1",
+          "level": 0,
+          "name": "01 Skull Lined Corridor",
+          "number": 1,
+          "role": "entrance",
+          "shape": "alcove",
+          "sourceComponentIds": [
+            "places-clue-miscounted-skull-row",
+            "places-hazard-weight-sermon-slab",
+            "places-premise-ossuary-litany-engine",
+            "places-sense-bone-dust-breath",
+            "places-sense-clicking-skull-seams",
+            "places-twist-bonework-cover-lines"
+          ],
+          "sourceRegionId": "location-region-1"
+        },
+        {
+          "id": "location-region-3",
+          "level": 0,
+          "name": "03 Crypt Chapel",
+          "number": 2,
+          "role": "connector",
+          "shape": "alcove",
+          "sourceComponentIds": [
+            "places-clue-miscounted-skull-row",
+            "places-hazard-weight-sermon-slab",
+            "places-sense-bone-dust-breath",
+            "places-sense-clicking-skull-seams",
+            "places-twist-bonework-cover-lines"
+          ],
+          "sourceRegionId": "location-region-3"
+        },
+        {
+          "id": "location-region-4",
+          "level": 0,
+          "name": "04 Reliquary Niche",
+          "number": 3,
+          "role": "clue",
+          "shape": "alcove",
+          "sourceComponentIds": [
+            "places-clue-bone-chandelier-map",
+            "places-hazard-reliquary-tripwire",
+            "places-sense-bone-dust-breath",
+            "places-sense-clicking-skull-seams",
+            "places-twist-reliquary-alarm-choir"
+          ],
+          "sourceRegionId": "location-region-4"
+        },
+        {
+          "id": "location-region-2",
+          "level": 0,
+          "name": "02 Ossuary Gallery",
+          "number": 4,
+          "role": "clue",
+          "shape": "alcove",
+          "sourceComponentIds": [
+            "places-clue-bone-chandelier-map",
+            "places-hazard-reliquary-tripwire",
+            "places-sense-bone-dust-breath",
+            "places-sense-clicking-skull-seams",
+            "places-twist-reliquary-alarm-choir"
+          ],
+          "sourceRegionId": "location-region-2"
+        },
+        {
+          "id": "location-region-5",
+          "level": 0,
+          "name": "05 Sealed Catacomb",
+          "number": 5,
+          "role": "final",
+          "shape": "alcove",
+          "sourceComponentIds": [
+            "places-anomaly-prayer-slip-mortar",
+            "places-clue-miscounted-skull-row",
+            "places-hazard-weight-sermon-slab",
+            "places-reward-reliquary-fragment-key",
+            "places-sense-bone-dust-breath",
+            "places-sense-clicking-skull-seams",
+            "places-twist-bonework-cover-lines"
+          ],
+          "sourceRegionId": "location-region-5"
+        }
+      ]
+    },
+    "meta": {
+      "context": "Crypt",
+      "horror": [
+        "Gothic",
+        "Religious Horror"
+      ],
+      "intrusion": "Medium",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "title": "The Litany Engine"
+    },
+    "rooms": [
+      {
+        "clues": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "observation",
+                "items": [],
+                "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match."
+              }
+            ],
+            "id": "location-effect-places-clue-miscounted-skull-row-room-01-1",
+            "kind": "clue",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "clue",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "clue",
+              "slotLabel": "Disturbing Clue",
+              "strategy": "assigned-region",
+              "subtype": "clue",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-clue-miscounted-skull-row-room-01-1",
+                "places-clue-miscounted-skull-row"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-clue-miscounted-skull-row",
+            "subtype": "clue",
+            "summary": "A skull row reveals that one skull has been replaced recently.",
+            "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+            "title": "Miscounted Skull Row"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "observation",
+                "items": [],
+                "text": "A skull row reveals that one skull has been replaced recently."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "revelation",
+                "items": [],
+                "text": "Investigation reveals the replacement is fresh and deliberately placed."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "Use to point toward a recent intruder, victim, or cult act."
+              }
+            ],
+            "id": "places-clue-miscounted-skull-row",
+            "kind": "clue",
+            "mechanics": "Investigation reveals the replacement is fresh and deliberately placed.",
+            "metadata": {
+              "compatibilitySourceKind": "clue",
+              "componentType": "Disturbing Clue",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "clue",
+              "slotLabel": "Disturbing Clue",
+              "strategy": "",
+              "subtype": "clue",
+              "tableRole": "gm-facing",
+              "visualCue": ""
+            },
+            "narrative": "Use to point toward a recent intruder, victim, or cult act.",
+            "provenance": {
+              "legacyIds": [
+                "places-clue-miscounted-skull-row"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-clue-miscounted-skull-row",
+            "subtype": "clue",
+            "summary": "A skull row reveals that one skull has been replaced recently.",
+            "text": "A skull row reveals that one skull has been replaced recently.",
+            "title": "Miscounted Skull Row"
+          }
+        ],
+        "connections": [
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-1",
+            "id": "connection-01-main-room-01-room-02",
+            "kind": "main",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "",
+            "toLevel": 0,
+            "toRoomId": "location-region-2"
+          },
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-1",
+            "id": "edge-map-region-1-map-region-3-crypt-spine-0",
+            "kind": "normal",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "none",
+            "toLevel": 0,
+            "toRoomId": "location-region-3"
+          }
+        ],
+        "encounterTwists": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "openingSign",
+                "items": [],
+                "text": "Skull shelves and femur screens divide the room into narrow devotional lanes."
+              }
+            ],
+            "id": "location-effect-places-twist-bonework-cover-lines-room-01-1",
+            "kind": "encounter-twist",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "encounterTwist",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "encounterTwist",
+              "slotLabel": "Encounter Twist",
+              "strategy": "assigned-region",
+              "subtype": "encounterTwist",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-twist-bonework-cover-lines-room-01-1",
+                "places-twist-bonework-cover-lines"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-twist-bonework-cover-lines",
+            "subtype": "encounterTwist",
+            "summary": "Bone ornaments create brittle cover and collapsing lines of sight.",
+            "text": "Skull shelves and femur screens divide the room into narrow devotional lanes.",
+            "title": "Bonework Cover Lines"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "openingSign",
+                "items": [],
+                "text": "Bone ornaments create brittle cover and collapsing lines of sight."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "change",
+                "items": [],
+                "text": "Creatures can use bonework as half cover, but missed ranged attacks or area damage may collapse it into difficult terrain."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "Adds tactical texture to ossuary fights."
+              }
+            ],
+            "id": "places-twist-bonework-cover-lines",
+            "kind": "encounter-twist",
+            "mechanics": "Creatures can use bonework as half cover, but missed ranged attacks or area damage may collapse it into difficult terrain.",
+            "metadata": {
+              "compatibilitySourceKind": "encounterTwist",
+              "componentType": "Encounter Twist",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "encounterTwist",
+              "slotLabel": "Encounter Twist",
+              "strategy": "",
+              "subtype": "encounterTwist",
+              "tableRole": "rules",
+              "visualCue": ""
+            },
+            "narrative": "Adds tactical texture to ossuary fights.",
+            "provenance": {
+              "legacyIds": [
+                "places-twist-bonework-cover-lines"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-twist-bonework-cover-lines",
+            "subtype": "encounterTwist",
+            "summary": "Bone ornaments create brittle cover and collapsing lines of sight.",
+            "text": "Bone ornaments create brittle cover and collapsing lines of sight.",
+            "title": "Bonework Cover Lines"
+          }
+        ],
+        "hazards": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "A sermon text is carved into a floor slab polished by knees and footsteps."
+              }
+            ],
+            "id": "location-effect-places-hazard-weight-sermon-slab-room-01-1",
+            "kind": "hazard",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "hazard",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "hazard",
+              "slotLabel": "Environmental Hazard",
+              "strategy": "assigned-region",
+              "subtype": "hazard",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-hazard-weight-sermon-slab-room-01-1",
+                "places-hazard-weight-sermon-slab"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-hazard-weight-sermon-slab",
+            "subtype": "hazard",
+            "summary": "A pressure slab releases hanging bonework when crossed carelessly.",
+            "text": "A sermon text is carved into a floor slab polished by knees and footsteps.",
+            "title": "Weight-Sermon Slab"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "A pressure slab releases hanging bonework when crossed carelessly."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "resolution",
+                "items": [],
+                "text": "A creature that crosses the slab without moving carefully triggers a fall of bonework; it must make a Dexterity saving throw or take bludgeoning damage and be knocked Prone."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "Telegraph with dustless edges, hanging cords, and a carved warning about kneeling."
+              }
+            ],
+            "id": "places-hazard-weight-sermon-slab",
+            "kind": "hazard",
+            "mechanics": "A creature that crosses the slab without moving carefully triggers a fall of bonework; it must make a Dexterity saving throw or take bludgeoning damage and be knocked Prone.",
+            "metadata": {
+              "compatibilitySourceKind": "hazard",
+              "componentType": "Environmental Hazard",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "hazard",
+              "slotLabel": "Environmental Hazard",
+              "strategy": "",
+              "subtype": "hazard",
+              "tableRole": "rules",
+              "visualCue": ""
+            },
+            "narrative": "Telegraph with dustless edges, hanging cords, and a carved warning about kneeling.",
+            "provenance": {
+              "legacyIds": [
+                "places-hazard-weight-sermon-slab"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-hazard-weight-sermon-slab",
+            "subtype": "hazard",
+            "summary": "A pressure slab releases hanging bonework when crossed carelessly.",
+            "text": "A pressure slab releases hanging bonework when crossed carelessly.",
+            "title": "Weight-Sermon Slab"
+          }
+        ],
+        "id": "location-region-1",
+        "immediateImpressions": [
+          {
+            "audience": "both",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "both",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust."
+              }
+            ],
+            "id": "location-effect-places-sense-bone-dust-breath-room-01-1",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "sensoryLayer",
+              "slotLabel": "Sensory Layer",
+              "strategy": "every-room",
+              "subtype": "sensory",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-sense-bone-dust-breath-room-01-1",
+                "places-sense-bone-dust-breath"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-sense-bone-dust-breath",
+            "subtype": "sensory",
+            "summary": "The air carries a dry mineral taste of powdered bone.",
+            "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+            "title": "Bone-Dust Breath"
+          },
+          {
+            "audience": "both",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "both",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "Small clicks travel through the bonework, like teeth settling after speech."
+              }
+            ],
+            "id": "location-effect-places-sense-clicking-skull-seams-room-01-1",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "sensoryLayer",
+              "slotLabel": "Sensory Layer",
+              "strategy": "every-room",
+              "subtype": "sensory",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-sense-clicking-skull-seams-room-01-1",
+                "places-sense-clicking-skull-seams"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-sense-clicking-skull-seams",
+            "subtype": "sensory",
+            "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+            "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+            "title": "Clicking Skull Seams"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "cold incense · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech."
+              }
+            ],
+            "id": "location-region-1-sensory",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-region-1-sensory"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "",
+            "subtype": "sensory",
+            "summary": "",
+            "text": "cold incense · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+            "title": "Sensory"
+          }
+        ],
+        "interactions": [],
+        "level": 0,
+        "name": "01 Skull Lined Corridor",
+        "number": 1,
+        "provenance": {
+          "legacyIds": [
+            "location-region-1"
+          ],
+          "migration": {
+            "editorialDecision": "needs-revision",
+            "fromSchema": "dark-places-document-v1",
+            "method": "compatibility-normalized",
+            "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+            "reviewVersion": "phase2-document-compatibility-v1"
+          },
+          "schemaVersion": "cruor-semantic-provenance-v1",
+          "sources": [
+            {
+              "note": "Read through the v1 compatibility boundary.",
+              "relation": "derived",
+              "sourceAnchorId": "sedlec-ossuary"
+            }
+          ]
+        },
+        "readAloud": {
+          "compact": "",
+          "extended": "",
+          "fragments": [],
+          "provenance": {
+            "legacyIds": [
+              "location-region-1"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "dark-places-document-v1",
+              "method": "compatibility-normalized",
+              "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+              "reviewVersion": "phase2-document-compatibility-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Read through the v1 compatibility boundary.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "standard": ""
+        },
+        "readiness": {
+          "completedSlotIds": [
+            "clue",
+            "encounter-twist",
+            "hazard"
+          ],
+          "label": "Ready",
+          "missingSlotIds": [],
+          "missingSlotLabels": [],
+          "readyCount": 3,
+          "status": "ready",
+          "totalCount": 3
+        },
+        "recurringSigns": [],
+        "rewards": [],
+        "role": "entrance",
+        "secrets": [],
+        "shape": "alcove",
+        "sourceAnchorIds": [
+          "sedlec-ossuary"
+        ],
+        "sourceComponentIds": [
+          "places-clue-miscounted-skull-row",
+          "places-hazard-weight-sermon-slab",
+          "places-premise-ossuary-litany-engine",
+          "places-sense-bone-dust-breath",
+          "places-sense-clicking-skull-seams",
+          "places-twist-bonework-cover-lines"
+        ],
+        "sourceRegionId": "location-region-1",
+        "visibleFeatures": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "bone chandeliers"
+              }
+            ],
+            "id": "location-region-1-feature",
+            "kind": "visible-feature",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "feature"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-region-1-feature"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "",
+            "subtype": "feature",
+            "summary": "",
+            "text": "bone chandeliers",
+            "title": "Feature"
+          }
+        ]
+      },
+      {
+        "clues": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "observation",
+                "items": [],
+                "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match."
+              }
+            ],
+            "id": "location-effect-places-clue-miscounted-skull-row-room-03-1",
+            "kind": "clue",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "clue",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "clue",
+              "slotLabel": "Disturbing Clue",
+              "strategy": "assigned-region",
+              "subtype": "clue",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-clue-miscounted-skull-row-room-03-1",
+                "places-clue-miscounted-skull-row"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-clue-miscounted-skull-row",
+            "subtype": "clue",
+            "summary": "A skull row reveals that one skull has been replaced recently.",
+            "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+            "title": "Miscounted Skull Row"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "observation",
+                "items": [],
+                "text": "A skull row reveals that one skull has been replaced recently."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "revelation",
+                "items": [],
+                "text": "Investigation reveals the replacement is fresh and deliberately placed."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "Use to point toward a recent intruder, victim, or cult act."
+              }
+            ],
+            "id": "places-clue-miscounted-skull-row",
+            "kind": "clue",
+            "mechanics": "Investigation reveals the replacement is fresh and deliberately placed.",
+            "metadata": {
+              "compatibilitySourceKind": "clue",
+              "componentType": "Disturbing Clue",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "clue",
+              "slotLabel": "Disturbing Clue",
+              "strategy": "",
+              "subtype": "clue",
+              "tableRole": "gm-facing",
+              "visualCue": ""
+            },
+            "narrative": "Use to point toward a recent intruder, victim, or cult act.",
+            "provenance": {
+              "legacyIds": [
+                "places-clue-miscounted-skull-row"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-clue-miscounted-skull-row",
+            "subtype": "clue",
+            "summary": "A skull row reveals that one skull has been replaced recently.",
+            "text": "A skull row reveals that one skull has been replaced recently.",
+            "title": "Miscounted Skull Row"
+          }
+        ],
+        "connections": [
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-3",
+            "id": "connection-04-secondary-room-02-room-03",
+            "kind": "secondary",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "",
+            "toLevel": 0,
+            "toRoomId": "location-region-2"
+          },
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-3",
+            "id": "edge-map-region-1-map-region-3-crypt-spine-0",
+            "kind": "normal",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "none",
+            "toLevel": 0,
+            "toRoomId": "location-region-1"
+          },
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-3",
+            "id": "edge-map-region-3-map-region-4-crypt-spine-1",
+            "kind": "normal",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "none",
+            "toLevel": 0,
+            "toRoomId": "location-region-4"
+          }
+        ],
+        "encounterTwists": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "openingSign",
+                "items": [],
+                "text": "Skull shelves and femur screens divide the room into narrow devotional lanes."
+              }
+            ],
+            "id": "location-effect-places-twist-bonework-cover-lines-room-03-1",
+            "kind": "encounter-twist",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "encounterTwist",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "encounterTwist",
+              "slotLabel": "Encounter Twist",
+              "strategy": "assigned-region",
+              "subtype": "encounterTwist",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-twist-bonework-cover-lines-room-03-1",
+                "places-twist-bonework-cover-lines"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-twist-bonework-cover-lines",
+            "subtype": "encounterTwist",
+            "summary": "Bone ornaments create brittle cover and collapsing lines of sight.",
+            "text": "Skull shelves and femur screens divide the room into narrow devotional lanes.",
+            "title": "Bonework Cover Lines"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "openingSign",
+                "items": [],
+                "text": "Bone ornaments create brittle cover and collapsing lines of sight."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "change",
+                "items": [],
+                "text": "Creatures can use bonework as half cover, but missed ranged attacks or area damage may collapse it into difficult terrain."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "Adds tactical texture to ossuary fights."
+              }
+            ],
+            "id": "places-twist-bonework-cover-lines",
+            "kind": "encounter-twist",
+            "mechanics": "Creatures can use bonework as half cover, but missed ranged attacks or area damage may collapse it into difficult terrain.",
+            "metadata": {
+              "compatibilitySourceKind": "encounterTwist",
+              "componentType": "Encounter Twist",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "encounterTwist",
+              "slotLabel": "Encounter Twist",
+              "strategy": "",
+              "subtype": "encounterTwist",
+              "tableRole": "rules",
+              "visualCue": ""
+            },
+            "narrative": "Adds tactical texture to ossuary fights.",
+            "provenance": {
+              "legacyIds": [
+                "places-twist-bonework-cover-lines"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-twist-bonework-cover-lines",
+            "subtype": "encounterTwist",
+            "summary": "Bone ornaments create brittle cover and collapsing lines of sight.",
+            "text": "Bone ornaments create brittle cover and collapsing lines of sight.",
+            "title": "Bonework Cover Lines"
+          }
+        ],
+        "hazards": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "A sermon text is carved into a floor slab polished by knees and footsteps."
+              }
+            ],
+            "id": "location-effect-places-hazard-weight-sermon-slab-room-03-1",
+            "kind": "hazard",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "hazard",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "hazard",
+              "slotLabel": "Environmental Hazard",
+              "strategy": "assigned-region",
+              "subtype": "hazard",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-hazard-weight-sermon-slab-room-03-1",
+                "places-hazard-weight-sermon-slab"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-hazard-weight-sermon-slab",
+            "subtype": "hazard",
+            "summary": "A pressure slab releases hanging bonework when crossed carelessly.",
+            "text": "A sermon text is carved into a floor slab polished by knees and footsteps.",
+            "title": "Weight-Sermon Slab"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "A pressure slab releases hanging bonework when crossed carelessly."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "resolution",
+                "items": [],
+                "text": "A creature that crosses the slab without moving carefully triggers a fall of bonework; it must make a Dexterity saving throw or take bludgeoning damage and be knocked Prone."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "Telegraph with dustless edges, hanging cords, and a carved warning about kneeling."
+              }
+            ],
+            "id": "places-hazard-weight-sermon-slab",
+            "kind": "hazard",
+            "mechanics": "A creature that crosses the slab without moving carefully triggers a fall of bonework; it must make a Dexterity saving throw or take bludgeoning damage and be knocked Prone.",
+            "metadata": {
+              "compatibilitySourceKind": "hazard",
+              "componentType": "Environmental Hazard",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "hazard",
+              "slotLabel": "Environmental Hazard",
+              "strategy": "",
+              "subtype": "hazard",
+              "tableRole": "rules",
+              "visualCue": ""
+            },
+            "narrative": "Telegraph with dustless edges, hanging cords, and a carved warning about kneeling.",
+            "provenance": {
+              "legacyIds": [
+                "places-hazard-weight-sermon-slab"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-hazard-weight-sermon-slab",
+            "subtype": "hazard",
+            "summary": "A pressure slab releases hanging bonework when crossed carelessly.",
+            "text": "A pressure slab releases hanging bonework when crossed carelessly.",
+            "title": "Weight-Sermon Slab"
+          }
+        ],
+        "id": "location-region-3",
+        "immediateImpressions": [
+          {
+            "audience": "both",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "both",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust."
+              }
+            ],
+            "id": "location-effect-places-sense-bone-dust-breath-room-03-3",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "sensoryLayer",
+              "slotLabel": "Sensory Layer",
+              "strategy": "every-room",
+              "subtype": "sensory",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-sense-bone-dust-breath-room-03-3",
+                "places-sense-bone-dust-breath"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-sense-bone-dust-breath",
+            "subtype": "sensory",
+            "summary": "The air carries a dry mineral taste of powdered bone.",
+            "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+            "title": "Bone-Dust Breath"
+          },
+          {
+            "audience": "both",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "both",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "Small clicks travel through the bonework, like teeth settling after speech."
+              }
+            ],
+            "id": "location-effect-places-sense-clicking-skull-seams-room-03-3",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "sensoryLayer",
+              "slotLabel": "Sensory Layer",
+              "strategy": "every-room",
+              "subtype": "sensory",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-sense-clicking-skull-seams-room-03-3",
+                "places-sense-clicking-skull-seams"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-sense-clicking-skull-seams",
+            "subtype": "sensory",
+            "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+            "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+            "title": "Clicking Skull Seams"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "damp limestone · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech."
+              }
+            ],
+            "id": "location-region-3-sensory",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-region-3-sensory"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "",
+            "subtype": "sensory",
+            "summary": "",
+            "text": "damp limestone · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+            "title": "Sensory"
+          }
+        ],
+        "interactions": [],
+        "level": 0,
+        "name": "03 Crypt Chapel",
+        "number": 2,
+        "provenance": {
+          "legacyIds": [
+            "location-region-3"
+          ],
+          "migration": {
+            "editorialDecision": "needs-revision",
+            "fromSchema": "dark-places-document-v1",
+            "method": "compatibility-normalized",
+            "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+            "reviewVersion": "phase2-document-compatibility-v1"
+          },
+          "schemaVersion": "cruor-semantic-provenance-v1",
+          "sources": [
+            {
+              "note": "Read through the v1 compatibility boundary.",
+              "relation": "derived",
+              "sourceAnchorId": "sedlec-ossuary"
+            }
+          ]
+        },
+        "readAloud": {
+          "compact": "",
+          "extended": "",
+          "fragments": [],
+          "provenance": {
+            "legacyIds": [
+              "location-region-3"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "dark-places-document-v1",
+              "method": "compatibility-normalized",
+              "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+              "reviewVersion": "phase2-document-compatibility-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Read through the v1 compatibility boundary.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "standard": ""
+        },
+        "readiness": {
+          "completedSlotIds": [
+            "clue",
+            "encounter-twist",
+            "hazard"
+          ],
+          "label": "Ready",
+          "missingSlotIds": [],
+          "missingSlotLabels": [],
+          "readyCount": 3,
+          "status": "ready",
+          "totalCount": 3
+        },
+        "recurringSigns": [],
+        "rewards": [],
+        "role": "connector",
+        "secrets": [],
+        "shape": "alcove",
+        "sourceAnchorIds": [
+          "sedlec-ossuary"
+        ],
+        "sourceComponentIds": [
+          "places-clue-miscounted-skull-row",
+          "places-hazard-weight-sermon-slab",
+          "places-sense-bone-dust-breath",
+          "places-sense-clicking-skull-seams",
+          "places-twist-bonework-cover-lines"
+        ],
+        "sourceRegionId": "location-region-3",
+        "visibleFeatures": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "devotional remains"
+              }
+            ],
+            "id": "location-region-3-feature",
+            "kind": "visible-feature",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "feature"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-region-3-feature"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "",
+            "subtype": "feature",
+            "summary": "",
+            "text": "devotional remains",
+            "title": "Feature"
+          }
+        ]
+      },
+      {
+        "clues": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "observation",
+                "items": [],
+                "text": "The bone chandelier repeats the map below in miniature, including one room no door reaches."
+              }
+            ],
+            "id": "location-effect-places-clue-bone-chandelier-map-room-04-1",
+            "kind": "clue",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "clue",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "clue",
+              "slotLabel": "Disturbing Clue",
+              "strategy": "assigned-region",
+              "subtype": "clue",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-clue-bone-chandelier-map-room-04-1",
+                "places-clue-bone-chandelier-map"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-clue-bone-chandelier-map",
+            "subtype": "clue",
+            "summary": "The chandelier’s bone pattern mirrors the room layout.",
+            "text": "The bone chandelier repeats the map below in miniature, including one room no door reaches.",
+            "title": "Bone Chandelier Map"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "observation",
+                "items": [],
+                "text": "The chandelier’s bone pattern mirrors the room layout."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "revelation",
+                "items": [],
+                "text": "Studying the pattern reveals a hidden chamber or alternate route."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "Strong clue for secret rooms."
+              }
+            ],
+            "id": "places-clue-bone-chandelier-map",
+            "kind": "clue",
+            "mechanics": "Studying the pattern reveals a hidden chamber or alternate route.",
+            "metadata": {
+              "compatibilitySourceKind": "clue",
+              "componentType": "Disturbing Clue",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "clue",
+              "slotLabel": "Disturbing Clue",
+              "strategy": "",
+              "subtype": "clue",
+              "tableRole": "gm-facing",
+              "visualCue": ""
+            },
+            "narrative": "Strong clue for secret rooms.",
+            "provenance": {
+              "legacyIds": [
+                "places-clue-bone-chandelier-map"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-clue-bone-chandelier-map",
+            "subtype": "clue",
+            "summary": "The chandelier’s bone pattern mirrors the room layout.",
+            "text": "The chandelier’s bone pattern mirrors the room layout.",
+            "title": "Bone Chandelier Map"
+          }
+        ],
+        "connections": [
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-4",
+            "id": "connection-02-main-room-02-room-04",
+            "kind": "main",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "",
+            "toLevel": 0,
+            "toRoomId": "location-region-2"
+          },
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-4",
+            "id": "connection-03-main-room-04-room-05",
+            "kind": "main",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "",
+            "toLevel": 0,
+            "toRoomId": "location-region-5"
+          },
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-4",
+            "id": "edge-map-region-3-map-region-4-crypt-spine-1",
+            "kind": "normal",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "none",
+            "toLevel": 0,
+            "toRoomId": "location-region-3"
+          },
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-4",
+            "id": "edge-map-region-4-map-region-2-crypt-spine-2",
+            "kind": "normal",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "none",
+            "toLevel": 0,
+            "toRoomId": "location-region-2"
+          }
+        ],
+        "encounterTwists": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "openingSign",
+                "items": [],
+                "text": "When the reliquary opens, every skull niche begins clicking like a dry choir."
+              }
+            ],
+            "id": "location-effect-places-twist-reliquary-alarm-choir-room-04-1",
+            "kind": "encounter-twist",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "encounterTwist",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "encounterTwist",
+              "slotLabel": "Encounter Twist",
+              "strategy": "assigned-region",
+              "subtype": "encounterTwist",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-twist-reliquary-alarm-choir-room-04-1",
+                "places-twist-reliquary-alarm-choir"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-twist-reliquary-alarm-choir",
+            "subtype": "encounterTwist",
+            "summary": "Opening a reliquary causes the room to answer in bone clicks.",
+            "text": "When the reliquary opens, every skull niche begins clicking like a dry choir.",
+            "title": "Reliquary Alarm Choir"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "openingSign",
+                "items": [],
+                "text": "Opening a reliquary causes the room to answer in bone clicks."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "change",
+                "items": [],
+                "text": "After a reliquary is disturbed, stealth becomes harder and nearby enemies are alerted unless the sound is muffled."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "Good twist for loot-first players."
+              }
+            ],
+            "id": "places-twist-reliquary-alarm-choir",
+            "kind": "encounter-twist",
+            "mechanics": "After a reliquary is disturbed, stealth becomes harder and nearby enemies are alerted unless the sound is muffled.",
+            "metadata": {
+              "compatibilitySourceKind": "encounterTwist",
+              "componentType": "Encounter Twist",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "encounterTwist",
+              "slotLabel": "Encounter Twist",
+              "strategy": "",
+              "subtype": "encounterTwist",
+              "tableRole": "rules",
+              "visualCue": ""
+            },
+            "narrative": "Good twist for loot-first players.",
+            "provenance": {
+              "legacyIds": [
+                "places-twist-reliquary-alarm-choir"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-twist-reliquary-alarm-choir",
+            "subtype": "encounterTwist",
+            "summary": "Opening a reliquary causes the room to answer in bone clicks.",
+            "text": "Opening a reliquary causes the room to answer in bone clicks.",
+            "title": "Reliquary Alarm Choir"
+          }
+        ],
+        "hazards": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "A strand of beads runs ankle-high between two reliquary niches."
+              }
+            ],
+            "id": "location-effect-places-hazard-reliquary-tripwire-room-04-1",
+            "kind": "hazard",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "hazard",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "hazard",
+              "slotLabel": "Environmental Hazard",
+              "strategy": "assigned-region",
+              "subtype": "hazard",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-hazard-reliquary-tripwire-room-04-1",
+                "places-hazard-reliquary-tripwire"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-hazard-reliquary-tripwire",
+            "subtype": "hazard",
+            "summary": "A thread of rosary beads pulls open a reliquary of sharp fragments.",
+            "text": "A strand of beads runs ankle-high between two reliquary niches.",
+            "title": "Reliquary Tripwire"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "desecrated relic · A strand of beads runs ankle-high between two reliquary niches."
+              }
+            ],
+            "id": "location-region-4-hazard",
+            "kind": "hazard",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "hazard"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-region-4-hazard"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "",
+            "subtype": "hazard",
+            "summary": "",
+            "text": "desecrated relic · A strand of beads runs ankle-high between two reliquary niches.",
+            "title": "Danger"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "A thread of rosary beads pulls open a reliquary of sharp fragments."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "resolution",
+                "items": [],
+                "text": "A creature that breaks the bead-line scatters sharp relic fragments in a short line; the area becomes difficult terrain until cleared."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "This is a trap that feels devotional rather than mechanical."
+              }
+            ],
+            "id": "places-hazard-reliquary-tripwire",
+            "kind": "hazard",
+            "mechanics": "A creature that breaks the bead-line scatters sharp relic fragments in a short line; the area becomes difficult terrain until cleared.",
+            "metadata": {
+              "compatibilitySourceKind": "hazard",
+              "componentType": "Environmental Hazard",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "hazard",
+              "slotLabel": "Environmental Hazard",
+              "strategy": "",
+              "subtype": "hazard",
+              "tableRole": "rules",
+              "visualCue": ""
+            },
+            "narrative": "This is a trap that feels devotional rather than mechanical.",
+            "provenance": {
+              "legacyIds": [
+                "places-hazard-reliquary-tripwire"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-hazard-reliquary-tripwire",
+            "subtype": "hazard",
+            "summary": "A thread of rosary beads pulls open a reliquary of sharp fragments.",
+            "text": "A thread of rosary beads pulls open a reliquary of sharp fragments.",
+            "title": "Reliquary Tripwire"
+          }
+        ],
+        "id": "location-region-4",
+        "immediateImpressions": [
+          {
+            "audience": "both",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "both",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust."
+              }
+            ],
+            "id": "location-effect-places-sense-bone-dust-breath-room-04-4",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "sensoryLayer",
+              "slotLabel": "Sensory Layer",
+              "strategy": "every-room",
+              "subtype": "sensory",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-sense-bone-dust-breath-room-04-4",
+                "places-sense-bone-dust-breath"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-sense-bone-dust-breath",
+            "subtype": "sensory",
+            "summary": "The air carries a dry mineral taste of powdered bone.",
+            "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+            "title": "Bone-Dust Breath"
+          },
+          {
+            "audience": "both",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "both",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "Small clicks travel through the bonework, like teeth settling after speech."
+              }
+            ],
+            "id": "location-effect-places-sense-clicking-skull-seams-room-04-4",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "sensoryLayer",
+              "slotLabel": "Sensory Layer",
+              "strategy": "every-room",
+              "subtype": "sensory",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-sense-clicking-skull-seams-room-04-4",
+                "places-sense-clicking-skull-seams"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-sense-clicking-skull-seams",
+            "subtype": "sensory",
+            "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+            "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+            "title": "Clicking Skull Seams"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "old wax · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech."
+              }
+            ],
+            "id": "location-region-4-sensory",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-region-4-sensory"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "",
+            "subtype": "sensory",
+            "summary": "",
+            "text": "old wax · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+            "title": "Sensory"
+          }
+        ],
+        "interactions": [],
+        "level": 0,
+        "name": "04 Reliquary Niche",
+        "number": 3,
+        "provenance": {
+          "legacyIds": [
+            "location-region-4"
+          ],
+          "migration": {
+            "editorialDecision": "needs-revision",
+            "fromSchema": "dark-places-document-v1",
+            "method": "compatibility-normalized",
+            "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+            "reviewVersion": "phase2-document-compatibility-v1"
+          },
+          "schemaVersion": "cruor-semantic-provenance-v1",
+          "sources": [
+            {
+              "note": "Read through the v1 compatibility boundary.",
+              "relation": "derived",
+              "sourceAnchorId": "sedlec-ossuary"
+            }
+          ]
+        },
+        "readAloud": {
+          "compact": "",
+          "extended": "",
+          "fragments": [],
+          "provenance": {
+            "legacyIds": [
+              "location-region-4"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "dark-places-document-v1",
+              "method": "compatibility-normalized",
+              "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+              "reviewVersion": "phase2-document-compatibility-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Read through the v1 compatibility boundary.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "standard": ""
+        },
+        "readiness": {
+          "completedSlotIds": [
+            "clue",
+            "encounter-twist",
+            "hazard"
+          ],
+          "label": "Ready",
+          "missingSlotIds": [],
+          "missingSlotLabels": [],
+          "readyCount": 3,
+          "status": "ready",
+          "totalCount": 3
+        },
+        "recurringSigns": [],
+        "rewards": [],
+        "role": "clue",
+        "secrets": [],
+        "shape": "alcove",
+        "sourceAnchorIds": [
+          "sedlec-ossuary"
+        ],
+        "sourceComponentIds": [
+          "places-clue-bone-chandelier-map",
+          "places-hazard-reliquary-tripwire",
+          "places-sense-bone-dust-breath",
+          "places-sense-clicking-skull-seams",
+          "places-twist-reliquary-alarm-choir"
+        ],
+        "sourceRegionId": "location-region-4",
+        "visibleFeatures": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "candle niches"
+              }
+            ],
+            "id": "location-region-4-feature",
+            "kind": "visible-feature",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "feature"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-region-4-feature"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "",
+            "subtype": "feature",
+            "summary": "",
+            "text": "candle niches",
+            "title": "Feature"
+          }
+        ]
+      },
+      {
+        "clues": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "observation",
+                "items": [],
+                "text": "The bone chandelier repeats the map below in miniature, including one room no door reaches."
+              }
+            ],
+            "id": "location-effect-places-clue-bone-chandelier-map-room-02-1",
+            "kind": "clue",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "clue",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "clue",
+              "slotLabel": "Disturbing Clue",
+              "strategy": "assigned-region",
+              "subtype": "clue",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-clue-bone-chandelier-map-room-02-1",
+                "places-clue-bone-chandelier-map"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-clue-bone-chandelier-map",
+            "subtype": "clue",
+            "summary": "The chandelier’s bone pattern mirrors the room layout.",
+            "text": "The bone chandelier repeats the map below in miniature, including one room no door reaches.",
+            "title": "Bone Chandelier Map"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "observation",
+                "items": [],
+                "text": "The chandelier’s bone pattern mirrors the room layout."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "revelation",
+                "items": [],
+                "text": "Studying the pattern reveals a hidden chamber or alternate route."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "Strong clue for secret rooms."
+              }
+            ],
+            "id": "places-clue-bone-chandelier-map",
+            "kind": "clue",
+            "mechanics": "Studying the pattern reveals a hidden chamber or alternate route.",
+            "metadata": {
+              "compatibilitySourceKind": "clue",
+              "componentType": "Disturbing Clue",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "clue",
+              "slotLabel": "Disturbing Clue",
+              "strategy": "",
+              "subtype": "clue",
+              "tableRole": "gm-facing",
+              "visualCue": ""
+            },
+            "narrative": "Strong clue for secret rooms.",
+            "provenance": {
+              "legacyIds": [
+                "places-clue-bone-chandelier-map"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-clue-bone-chandelier-map",
+            "subtype": "clue",
+            "summary": "The chandelier’s bone pattern mirrors the room layout.",
+            "text": "The chandelier’s bone pattern mirrors the room layout.",
+            "title": "Bone Chandelier Map"
+          }
+        ],
+        "connections": [
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-2",
+            "id": "connection-01-main-room-01-room-02",
+            "kind": "main",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "",
+            "toLevel": 0,
+            "toRoomId": "location-region-1"
+          },
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-2",
+            "id": "connection-02-main-room-02-room-04",
+            "kind": "main",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "",
+            "toLevel": 0,
+            "toRoomId": "location-region-4"
+          },
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-2",
+            "id": "connection-04-secondary-room-02-room-03",
+            "kind": "secondary",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "",
+            "toLevel": 0,
+            "toRoomId": "location-region-3"
+          },
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-2",
+            "id": "edge-map-region-2-map-region-5-crypt-spine-3",
+            "kind": "normal",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "none",
+            "toLevel": 0,
+            "toRoomId": "location-region-5"
+          },
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-2",
+            "id": "edge-map-region-4-map-region-2-crypt-spine-2",
+            "kind": "normal",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "none",
+            "toLevel": 0,
+            "toRoomId": "location-region-4"
+          }
+        ],
+        "encounterTwists": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "openingSign",
+                "items": [],
+                "text": "When the reliquary opens, every skull niche begins clicking like a dry choir."
+              }
+            ],
+            "id": "location-effect-places-twist-reliquary-alarm-choir-room-02-1",
+            "kind": "encounter-twist",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "encounterTwist",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "encounterTwist",
+              "slotLabel": "Encounter Twist",
+              "strategy": "assigned-region",
+              "subtype": "encounterTwist",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-twist-reliquary-alarm-choir-room-02-1",
+                "places-twist-reliquary-alarm-choir"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-twist-reliquary-alarm-choir",
+            "subtype": "encounterTwist",
+            "summary": "Opening a reliquary causes the room to answer in bone clicks.",
+            "text": "When the reliquary opens, every skull niche begins clicking like a dry choir.",
+            "title": "Reliquary Alarm Choir"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "openingSign",
+                "items": [],
+                "text": "Opening a reliquary causes the room to answer in bone clicks."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "change",
+                "items": [],
+                "text": "After a reliquary is disturbed, stealth becomes harder and nearby enemies are alerted unless the sound is muffled."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "Good twist for loot-first players."
+              }
+            ],
+            "id": "places-twist-reliquary-alarm-choir",
+            "kind": "encounter-twist",
+            "mechanics": "After a reliquary is disturbed, stealth becomes harder and nearby enemies are alerted unless the sound is muffled.",
+            "metadata": {
+              "compatibilitySourceKind": "encounterTwist",
+              "componentType": "Encounter Twist",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "encounterTwist",
+              "slotLabel": "Encounter Twist",
+              "strategy": "",
+              "subtype": "encounterTwist",
+              "tableRole": "rules",
+              "visualCue": ""
+            },
+            "narrative": "Good twist for loot-first players.",
+            "provenance": {
+              "legacyIds": [
+                "places-twist-reliquary-alarm-choir"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-twist-reliquary-alarm-choir",
+            "subtype": "encounterTwist",
+            "summary": "Opening a reliquary causes the room to answer in bone clicks.",
+            "text": "Opening a reliquary causes the room to answer in bone clicks.",
+            "title": "Reliquary Alarm Choir"
+          }
+        ],
+        "hazards": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "A strand of beads runs ankle-high between two reliquary niches."
+              }
+            ],
+            "id": "location-effect-places-hazard-reliquary-tripwire-room-02-1",
+            "kind": "hazard",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "hazard",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "hazard",
+              "slotLabel": "Environmental Hazard",
+              "strategy": "assigned-region",
+              "subtype": "hazard",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-hazard-reliquary-tripwire-room-02-1",
+                "places-hazard-reliquary-tripwire"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-hazard-reliquary-tripwire",
+            "subtype": "hazard",
+            "summary": "A thread of rosary beads pulls open a reliquary of sharp fragments.",
+            "text": "A strand of beads runs ankle-high between two reliquary niches.",
+            "title": "Reliquary Tripwire"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "A thread of rosary beads pulls open a reliquary of sharp fragments."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "resolution",
+                "items": [],
+                "text": "A creature that breaks the bead-line scatters sharp relic fragments in a short line; the area becomes difficult terrain until cleared."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "This is a trap that feels devotional rather than mechanical."
+              }
+            ],
+            "id": "places-hazard-reliquary-tripwire",
+            "kind": "hazard",
+            "mechanics": "A creature that breaks the bead-line scatters sharp relic fragments in a short line; the area becomes difficult terrain until cleared.",
+            "metadata": {
+              "compatibilitySourceKind": "hazard",
+              "componentType": "Environmental Hazard",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "hazard",
+              "slotLabel": "Environmental Hazard",
+              "strategy": "",
+              "subtype": "hazard",
+              "tableRole": "rules",
+              "visualCue": ""
+            },
+            "narrative": "This is a trap that feels devotional rather than mechanical.",
+            "provenance": {
+              "legacyIds": [
+                "places-hazard-reliquary-tripwire"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-hazard-reliquary-tripwire",
+            "subtype": "hazard",
+            "summary": "A thread of rosary beads pulls open a reliquary of sharp fragments.",
+            "text": "A thread of rosary beads pulls open a reliquary of sharp fragments.",
+            "title": "Reliquary Tripwire"
+          }
+        ],
+        "id": "location-region-2",
+        "immediateImpressions": [
+          {
+            "audience": "both",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "both",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust."
+              }
+            ],
+            "id": "location-effect-places-sense-bone-dust-breath-room-02-2",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "sensoryLayer",
+              "slotLabel": "Sensory Layer",
+              "strategy": "every-room",
+              "subtype": "sensory",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-sense-bone-dust-breath-room-02-2",
+                "places-sense-bone-dust-breath"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-sense-bone-dust-breath",
+            "subtype": "sensory",
+            "summary": "The air carries a dry mineral taste of powdered bone.",
+            "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+            "title": "Bone-Dust Breath"
+          },
+          {
+            "audience": "both",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "both",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "Small clicks travel through the bonework, like teeth settling after speech."
+              }
+            ],
+            "id": "location-effect-places-sense-clicking-skull-seams-room-02-2",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "sensoryLayer",
+              "slotLabel": "Sensory Layer",
+              "strategy": "every-room",
+              "subtype": "sensory",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-sense-clicking-skull-seams-room-02-2",
+                "places-sense-clicking-skull-seams"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-sense-clicking-skull-seams",
+            "subtype": "sensory",
+            "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+            "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+            "title": "Clicking Skull Seams"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "bone dust · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech."
+              }
+            ],
+            "id": "location-region-2-sensory",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-region-2-sensory"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "",
+            "subtype": "sensory",
+            "summary": "",
+            "text": "bone dust · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+            "title": "Sensory"
+          }
+        ],
+        "interactions": [],
+        "level": 0,
+        "name": "02 Ossuary Gallery",
+        "number": 4,
+        "provenance": {
+          "legacyIds": [
+            "location-region-2"
+          ],
+          "migration": {
+            "editorialDecision": "needs-revision",
+            "fromSchema": "dark-places-document-v1",
+            "method": "compatibility-normalized",
+            "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+            "reviewVersion": "phase2-document-compatibility-v1"
+          },
+          "schemaVersion": "cruor-semantic-provenance-v1",
+          "sources": [
+            {
+              "note": "Read through the v1 compatibility boundary.",
+              "relation": "derived",
+              "sourceAnchorId": "sedlec-ossuary"
+            }
+          ]
+        },
+        "readAloud": {
+          "compact": "",
+          "extended": "",
+          "fragments": [],
+          "provenance": {
+            "legacyIds": [
+              "location-region-2"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "dark-places-document-v1",
+              "method": "compatibility-normalized",
+              "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+              "reviewVersion": "phase2-document-compatibility-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Read through the v1 compatibility boundary.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "standard": ""
+        },
+        "readiness": {
+          "completedSlotIds": [
+            "clue",
+            "encounter-twist",
+            "hazard"
+          ],
+          "label": "Ready",
+          "missingSlotIds": [],
+          "missingSlotLabels": [],
+          "readyCount": 3,
+          "status": "ready",
+          "totalCount": 3
+        },
+        "recurringSigns": [],
+        "rewards": [],
+        "role": "clue",
+        "secrets": [],
+        "shape": "alcove",
+        "sourceAnchorIds": [
+          "sedlec-ossuary"
+        ],
+        "sourceComponentIds": [
+          "places-clue-bone-chandelier-map",
+          "places-hazard-reliquary-tripwire",
+          "places-sense-bone-dust-breath",
+          "places-sense-clicking-skull-seams",
+          "places-twist-reliquary-alarm-choir"
+        ],
+        "sourceRegionId": "location-region-2",
+        "visibleFeatures": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "counted dead"
+              }
+            ],
+            "id": "location-region-2-feature",
+            "kind": "visible-feature",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "feature"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-region-2-feature"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "",
+            "subtype": "feature",
+            "summary": "",
+            "text": "counted dead",
+            "title": "Feature"
+          }
+        ]
+      },
+      {
+        "clues": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "observation",
+                "items": [],
+                "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match."
+              }
+            ],
+            "id": "location-effect-places-clue-miscounted-skull-row-room-05-1",
+            "kind": "clue",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "clue",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "clue",
+              "slotLabel": "Disturbing Clue",
+              "strategy": "assigned-region",
+              "subtype": "clue",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-clue-miscounted-skull-row-room-05-1",
+                "places-clue-miscounted-skull-row"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-clue-miscounted-skull-row",
+            "subtype": "clue",
+            "summary": "A skull row reveals that one skull has been replaced recently.",
+            "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+            "title": "Miscounted Skull Row"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "observation",
+                "items": [],
+                "text": "A skull row reveals that one skull has been replaced recently."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "revelation",
+                "items": [],
+                "text": "Investigation reveals the replacement is fresh and deliberately placed."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "Use to point toward a recent intruder, victim, or cult act."
+              }
+            ],
+            "id": "places-clue-miscounted-skull-row",
+            "kind": "clue",
+            "mechanics": "Investigation reveals the replacement is fresh and deliberately placed.",
+            "metadata": {
+              "compatibilitySourceKind": "clue",
+              "componentType": "Disturbing Clue",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "clue",
+              "slotLabel": "Disturbing Clue",
+              "strategy": "",
+              "subtype": "clue",
+              "tableRole": "gm-facing",
+              "visualCue": ""
+            },
+            "narrative": "Use to point toward a recent intruder, victim, or cult act.",
+            "provenance": {
+              "legacyIds": [
+                "places-clue-miscounted-skull-row"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-clue-miscounted-skull-row",
+            "subtype": "clue",
+            "summary": "A skull row reveals that one skull has been replaced recently.",
+            "text": "A skull row reveals that one skull has been replaced recently.",
+            "title": "Miscounted Skull Row"
+          }
+        ],
+        "connections": [
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-5",
+            "id": "connection-03-main-room-04-room-05",
+            "kind": "main",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "",
+            "toLevel": 0,
+            "toRoomId": "location-region-4"
+          },
+          {
+            "crossLevel": false,
+            "fromLevel": 0,
+            "fromRoomId": "location-region-5",
+            "id": "edge-map-region-2-map-region-5-crypt-spine-3",
+            "kind": "normal",
+            "levelDelta": 0,
+            "locked": false,
+            "secret": false,
+            "stairTransition": "none",
+            "toLevel": 0,
+            "toRoomId": "location-region-2"
+          }
+        ],
+        "encounterTwists": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "openingSign",
+                "items": [],
+                "text": "Skull shelves and femur screens divide the room into narrow devotional lanes."
+              }
+            ],
+            "id": "location-effect-places-twist-bonework-cover-lines-room-05-1",
+            "kind": "encounter-twist",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "encounterTwist",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "encounterTwist",
+              "slotLabel": "Encounter Twist",
+              "strategy": "assigned-region",
+              "subtype": "encounterTwist",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-twist-bonework-cover-lines-room-05-1",
+                "places-twist-bonework-cover-lines"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-twist-bonework-cover-lines",
+            "subtype": "encounterTwist",
+            "summary": "Bone ornaments create brittle cover and collapsing lines of sight.",
+            "text": "Skull shelves and femur screens divide the room into narrow devotional lanes.",
+            "title": "Bonework Cover Lines"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "openingSign",
+                "items": [],
+                "text": "Bone ornaments create brittle cover and collapsing lines of sight."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "change",
+                "items": [],
+                "text": "Creatures can use bonework as half cover, but missed ranged attacks or area damage may collapse it into difficult terrain."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "Adds tactical texture to ossuary fights."
+              }
+            ],
+            "id": "places-twist-bonework-cover-lines",
+            "kind": "encounter-twist",
+            "mechanics": "Creatures can use bonework as half cover, but missed ranged attacks or area damage may collapse it into difficult terrain.",
+            "metadata": {
+              "compatibilitySourceKind": "encounterTwist",
+              "componentType": "Encounter Twist",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "encounterTwist",
+              "slotLabel": "Encounter Twist",
+              "strategy": "",
+              "subtype": "encounterTwist",
+              "tableRole": "rules",
+              "visualCue": ""
+            },
+            "narrative": "Adds tactical texture to ossuary fights.",
+            "provenance": {
+              "legacyIds": [
+                "places-twist-bonework-cover-lines"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-twist-bonework-cover-lines",
+            "subtype": "encounterTwist",
+            "summary": "Bone ornaments create brittle cover and collapsing lines of sight.",
+            "text": "Bone ornaments create brittle cover and collapsing lines of sight.",
+            "title": "Bonework Cover Lines"
+          }
+        ],
+        "hazards": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "A sermon text is carved into a floor slab polished by knees and footsteps."
+              }
+            ],
+            "id": "location-effect-places-hazard-weight-sermon-slab-room-05-1",
+            "kind": "hazard",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "hazard",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "hazard",
+              "slotLabel": "Environmental Hazard",
+              "strategy": "assigned-region",
+              "subtype": "hazard",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-hazard-weight-sermon-slab-room-05-1",
+                "places-hazard-weight-sermon-slab"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-hazard-weight-sermon-slab",
+            "subtype": "hazard",
+            "summary": "A pressure slab releases hanging bonework when crossed carelessly.",
+            "text": "A sermon text is carved into a floor slab polished by knees and footsteps.",
+            "title": "Weight-Sermon Slab"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "A pressure slab releases hanging bonework when crossed carelessly."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "resolution",
+                "items": [],
+                "text": "A creature that crosses the slab without moving carefully triggers a fall of bonework; it must make a Dexterity saving throw or take bludgeoning damage and be knocked Prone."
+              },
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "guidance",
+                "items": [],
+                "text": "Telegraph with dustless edges, hanging cords, and a carved warning about kneeling."
+              }
+            ],
+            "id": "places-hazard-weight-sermon-slab",
+            "kind": "hazard",
+            "mechanics": "A creature that crosses the slab without moving carefully triggers a fall of bonework; it must make a Dexterity saving throw or take bludgeoning damage and be knocked Prone.",
+            "metadata": {
+              "compatibilitySourceKind": "hazard",
+              "componentType": "Environmental Hazard",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "hazard",
+              "slotLabel": "Environmental Hazard",
+              "strategy": "",
+              "subtype": "hazard",
+              "tableRole": "rules",
+              "visualCue": ""
+            },
+            "narrative": "Telegraph with dustless edges, hanging cords, and a carved warning about kneeling.",
+            "provenance": {
+              "legacyIds": [
+                "places-hazard-weight-sermon-slab"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-hazard-weight-sermon-slab",
+            "subtype": "hazard",
+            "summary": "A pressure slab releases hanging bonework when crossed carelessly.",
+            "text": "A pressure slab releases hanging bonework when crossed carelessly.",
+            "title": "Weight-Sermon Slab"
+          }
+        ],
+        "id": "location-region-5",
+        "immediateImpressions": [
+          {
+            "audience": "both",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "both",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust."
+              }
+            ],
+            "id": "location-effect-places-sense-bone-dust-breath-room-05-5",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "sensoryLayer",
+              "slotLabel": "Sensory Layer",
+              "strategy": "every-room",
+              "subtype": "sensory",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-sense-bone-dust-breath-room-05-5",
+                "places-sense-bone-dust-breath"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-sense-bone-dust-breath",
+            "subtype": "sensory",
+            "summary": "The air carries a dry mineral taste of powdered bone.",
+            "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+            "title": "Bone-Dust Breath"
+          },
+          {
+            "audience": "both",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "both",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "Small clicks travel through the bonework, like teeth settling after speech."
+              }
+            ],
+            "id": "location-effect-places-sense-clicking-skull-seams-room-05-5",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "sensoryLayer",
+              "slotLabel": "Sensory Layer",
+              "strategy": "every-room",
+              "subtype": "sensory",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-sense-clicking-skull-seams-room-05-5",
+                "places-sense-clicking-skull-seams"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-sense-clicking-skull-seams",
+            "subtype": "sensory",
+            "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+            "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+            "title": "Clicking Skull Seams"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "impression",
+                "items": [],
+                "text": "muffled hymns · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech."
+              }
+            ],
+            "id": "location-region-5-sensory",
+            "kind": "sensory",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "sensory"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-region-5-sensory"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "",
+            "subtype": "sensory",
+            "summary": "",
+            "text": "muffled hymns · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+            "title": "Sensory"
+          }
+        ],
+        "interactions": [],
+        "level": 0,
+        "name": "05 Sealed Catacomb",
+        "number": 5,
+        "provenance": {
+          "legacyIds": [
+            "location-region-5"
+          ],
+          "migration": {
+            "editorialDecision": "needs-revision",
+            "fromSchema": "dark-places-document-v1",
+            "method": "compatibility-normalized",
+            "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+            "reviewVersion": "phase2-document-compatibility-v1"
+          },
+          "schemaVersion": "cruor-semantic-provenance-v1",
+          "sources": [
+            {
+              "note": "Read through the v1 compatibility boundary.",
+              "relation": "derived",
+              "sourceAnchorId": "sedlec-ossuary"
+            }
+          ]
+        },
+        "readAloud": {
+          "compact": "",
+          "extended": "",
+          "fragments": [],
+          "provenance": {
+            "legacyIds": [
+              "location-region-5"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "dark-places-document-v1",
+              "method": "compatibility-normalized",
+              "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+              "reviewVersion": "phase2-document-compatibility-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Read through the v1 compatibility boundary.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "standard": ""
+        },
+        "readiness": {
+          "completedSlotIds": [
+            "clue",
+            "encounter-twist",
+            "hazard"
+          ],
+          "label": "Ready",
+          "missingSlotIds": [],
+          "missingSlotLabels": [],
+          "readyCount": 3,
+          "status": "ready",
+          "totalCount": 3
+        },
+        "recurringSigns": [],
+        "rewards": [
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "discovery",
+                "items": [],
+                "text": "A labeled finger bone rests in a small silver tube, warm only near locked reliquaries."
+              }
+            ],
+            "id": "location-effect-places-reward-reliquary-fragment-key-room-05-1",
+            "kind": "reward",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "reward",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "reward",
+              "slotLabel": "Reward / Consequence",
+              "strategy": "best-fit-room",
+              "subtype": "reward",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-reward-reliquary-fragment-key-room-05-1",
+                "places-reward-reliquary-fragment-key"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-reward-reliquary-fragment-key",
+            "subtype": "reward",
+            "summary": "A bone fragment acts as a key to sacred locks.",
+            "text": "A labeled finger bone rests in a small silver tube, warm only near locked reliquaries.",
+            "title": "Reliquary Fragment Key"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "discovery",
+                "items": [],
+                "text": "bone icon · A labeled finger bone rests in a small silver tube, warm only near locked reliquaries."
+              }
+            ],
+            "id": "location-region-5-reward",
+            "kind": "reward",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "reward"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-region-5-reward"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "",
+            "subtype": "reward",
+            "summary": "",
+            "text": "bone icon · A labeled finger bone rests in a small silver tube, warm only near locked reliquaries.",
+            "title": "Reward / Consequence"
+          }
+        ],
+        "role": "final",
+        "secrets": [],
+        "shape": "alcove",
+        "sourceAnchorIds": [
+          "sedlec-ossuary"
+        ],
+        "sourceComponentIds": [
+          "places-anomaly-prayer-slip-mortar",
+          "places-clue-miscounted-skull-row",
+          "places-hazard-weight-sermon-slab",
+          "places-reward-reliquary-fragment-key",
+          "places-sense-bone-dust-breath",
+          "places-sense-clicking-skull-seams",
+          "places-twist-bonework-cover-lines"
+        ],
+        "sourceRegionId": "location-region-5",
+        "visibleFeatures": [
+          {
+            "audience": "both",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "both",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "The mortar between the stones has been packed with hair, ash, and old prayer slips."
+              }
+            ],
+            "id": "location-effect-places-anomaly-prayer-slip-mortar-room-05-1",
+            "kind": "visible-feature",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "feature",
+              "componentType": "location-effect",
+              "effectSchemaVersion": "location-component-effect-v0.1",
+              "slotId": "visibleAnomaly",
+              "slotLabel": "Visible Anomaly",
+              "strategy": "best-fit-room",
+              "subtype": "feature",
+              "tableRole": "",
+              "visualCue": "sedlec-ossuary"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-effect-places-anomaly-prayer-slip-mortar-room-05-1",
+                "places-anomaly-prayer-slip-mortar"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "places-anomaly-prayer-slip-mortar",
+            "subtype": "feature",
+            "summary": "The mortar is packed with folded prayer slips and pale hair.",
+            "text": "The mortar between the stones has been packed with hair, ash, and old prayer slips.",
+            "title": "Prayer-Slip Mortar"
+          },
+          {
+            "audience": "gm",
+            "counterplay": "",
+            "facets": [
+              {
+                "audience": "gm",
+                "entries": [],
+                "id": "description",
+                "items": [],
+                "text": "skull garlands · Visible Anomaly — Prayer-Slip Mortar: The mortar between the stones has been packed with hair, ash, and old prayer slips."
+              }
+            ],
+            "id": "location-region-5-feature",
+            "kind": "visible-feature",
+            "mechanics": null,
+            "metadata": {
+              "compatibilitySourceKind": "feature"
+            },
+            "narrative": "",
+            "provenance": {
+              "legacyIds": [
+                "location-region-5-feature"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "dark-places-document-v1",
+                "method": "compatibility-normalized",
+                "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+                "reviewVersion": "phase2-document-compatibility-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Read through the v1 compatibility boundary.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "sourceAnchorIds": [
+              "sedlec-ossuary"
+            ],
+            "sourceComponentId": "",
+            "subtype": "feature",
+            "summary": "",
+            "text": "skull garlands · Visible Anomaly — Prayer-Slip Mortar: The mortar between the stones has been packed with hair, ash, and old prayer slips.",
+            "title": "Feature"
+          }
+        ]
+      }
+    ],
+    "sessionGuide": {
+      "alwaysOnRules": [],
+      "clueFlow": {},
+      "objectives": [],
+      "openingBeat": {},
+      "pressureTracks": [],
+      "provenance": {
+        "legacyIds": [
+          "sedlec-ossuary-phase3"
+        ],
+        "migration": {
+          "editorialDecision": "needs-revision",
+          "fromSchema": "dark-places-document-v1",
+          "method": "compatibility-normalized",
+          "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+          "reviewVersion": "phase2-document-compatibility-v1"
+        },
+        "schemaVersion": "cruor-semantic-provenance-v1",
+        "sources": [
+          {
+            "note": "Read through the v1 compatibility boundary.",
+            "relation": "derived",
+            "sourceAnchorId": "sedlec-ossuary"
+          }
+        ]
+      },
+      "roomShortcuts": [],
+      "stallMoves": []
+    },
+    "siteWide": {
+      "atmosphere": [],
+      "globalRules": [],
+      "provenance": {
+        "legacyIds": [
+          "sedlec-ossuary-phase3"
+        ],
+        "migration": {
+          "editorialDecision": "needs-revision",
+          "fromSchema": "dark-places-document-v1",
+          "method": "compatibility-normalized",
+          "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+          "reviewVersion": "phase2-document-compatibility-v1"
+        },
+        "schemaVersion": "cruor-semantic-provenance-v1",
+        "sources": [
+          {
+            "note": "Read through the v1 compatibility boundary.",
+            "relation": "derived",
+            "sourceAnchorId": "sedlec-ossuary"
+          }
+        ]
+      },
+      "recurringSigns": [],
+      "stakesAndConsequences": []
+    }
+  },
+  "moduleId": "sedlec-ossuary",
+  "provenance": {
+    "legacyIds": [
+      "sedlec-ossuary-phase3"
+    ],
+    "migration": {
+      "editorialDecision": "needs-revision",
+      "fromSchema": "dark-places-document-v1",
+      "method": "compatibility-normalized",
+      "note": "Location output compatibility-normalized for the Phase 2 compiler; editorial review is still required.",
+      "reviewVersion": "phase2-document-compatibility-v1"
+    },
+    "schemaVersion": "cruor-semantic-provenance-v1",
+    "sources": [
+      {
+        "note": "Read through the v1 compatibility boundary.",
+        "relation": "derived",
+        "sourceAnchorId": "sedlec-ossuary"
+      }
+    ]
+  },
+  "schemaVersion": "cruor-session-state-v1",
+  "seed": "semantic-v2-sedlec-phase3-001",
+  "selectedComponentIds": [
+    "ossuary-litany",
+    "sedlec-place-identity",
+    "sedlec-sign-candlewax-tears",
+    "sedlec-sign-fresh-bone-count",
+    "sedlec-sign-prayer-slip-mortar",
+    "sedlec-sign-turning-skull-garlands",
+    "sedlec-site-atmosphere"
+  ]
+}

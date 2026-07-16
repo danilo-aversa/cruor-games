@@ -27,7 +27,11 @@ export function StudioWarningList({ draft = {}, emptyLabel = "No Studio warnings
           <header className="studio-warning-group__header">
             <span>{group.area}</span>
             <strong>{group.title}</strong>
-            <em>{group.summary.blocking} blocking · {group.summary.editorial} editorial · {group.summary.suggestion} suggestions</em>
+            <em>
+              {group.summary.blocking} blocking · {group.summary.editorial}{" "}
+              editorial · {group.summary.suggestion} suggestions ·{" "}
+              {group.summary.legacy || 0} legacy
+            </em>
           </header>
           <div className="studio-warning-group__items">
             {group.warnings.map((warning) => {
@@ -41,7 +45,17 @@ export function StudioWarningList({ draft = {}, emptyLabel = "No Studio warnings
                   <div>
                     <strong>{warning.message}</strong>
                     <p>{warning.suggestedFix}</p>
-                    <em>{warning.path}</em>
+                    {warning.fieldId ? (
+                      <a
+                        className="studio-warning-item__field-link"
+                        href={`#${warning.fieldId}`}
+                      >
+                        <StudioIcon name="fa-arrow-up-right-from-square" />{" "}
+                        {warning.path}
+                      </a>
+                    ) : (
+                      <em>{warning.path}</em>
+                    )}
                   </div>
                 </div>
               );

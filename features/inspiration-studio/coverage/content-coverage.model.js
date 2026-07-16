@@ -1,6 +1,11 @@
 import { SHARED_DARKEN_LOCATION_SLOTS, SHARED_MONSTER_SLOTS } from "../../../shared/content/workflows.js";
 import { STATIC_CONTENT_REGISTRY_DATA } from "../../../shared/content/static-registry.js";
 import { normalizeModuleForDraft } from "../model/studio-draft.js";
+import { buildStudioSemanticCoverageMatrix } from "../model/studio-semantic-coverage.js";
+import {
+  isStudioSpecializedSemanticType,
+  listStudioSemanticEditorDefinitions,
+} from "../schema/studio-semantic-editor-registry.js";
 
 function asArray(value) {
   if (!value) return [];
@@ -181,19 +186,67 @@ function getWeakBuckets(buckets = [], { threshold = 2, ignore = ["unassigned"] }
 
 function buildCoverageGaps(report = {}) {
   const gaps = [];
-  getWeakBuckets(report.monster.bySlot, { threshold: 4 }).slice(0, 6).forEach((bucket) => {
-    gaps.push({ id: `monster-slot-${bucket.id}`, severity: bucket.count === 0 ? "error" : "warning", area: "Monster", title: `${bucket.label} monster slot is undercovered`, detail: `${bucket.count} entries. Add at least four to keep generated monsters varied.` });
+  asArray(report.semantic?.rows).forEach((row) => {
+    Object.entries(row.semanticTypes || {}).forEach(
+      ([semanticType, coverage]) => {
+        if (!coverage.required || coverage.status === "covered") return;
+        const label = formatLabel(semanticType);
+        gaps.push({
+          id: `semantic-${row.moduleId}-${semanticType}`,
+          severity: coverage.status === "missing" ? "error" : "warning",
+          area: "Semantic",
+          title: `${row.title}: ${label} is ${coverage.status}`,
+          detail: `${coverage.authored}/${coverage.count} authored components; complete the linked semantic editor coverage.`,
+        });
+      },
+    );
   });
-  getWeakBuckets(report.monster.byActionEconomy, { threshold: 1 }).slice(0, 4).forEach((bucket) => {
-    gaps.push({ id: `monster-action-${bucket.id}`, severity: "warning", area: "Monster", title: `${bucket.label} action economy is missing`, detail: "No monster graft currently supports this action economy." });
-  });
-  getWeakBuckets(report.location.bySlot, { threshold: 3 }).slice(0, 6).forEach((bucket) => {
-    gaps.push({ id: `location-slot-${bucket.id}`, severity: bucket.count === 0 ? "error" : "warning", area: "Location", title: `${bucket.label} location slot is undercovered`, detail: `${bucket.count} entries. Add more content to keep Darken a Location outputs varied.` });
-  });
-  getWeakBuckets(report.location.byRegionRole, { threshold: 2 }).slice(0, 4).forEach((bucket) => {
-    gaps.push({ id: `region-role-${bucket.id}`, severity: "info", area: "Map", title: `${bucket.label} region role has low coverage`, detail: "Add more Location Region templates if this role should appear often in generated maps." });
-  });
-  return gaps.slice(0, 18);
+  getWeakBuckets(report.monster.bySlot, { threshold: 4 })
+    .slice(0, 6)
+    .forEach((bucket) => {
+      gaps.push({
+        id: `monster-slot-${bucket.id}`,
+        severity: bucket.count === 0 ? "error" : "warning",
+        area: "Monster",
+        title: `${bucket.label} monster slot is undercovered`,
+        detail: `${bucket.count} entries. Add at least four to keep generated monsters varied.`,
+      });
+    });
+  getWeakBuckets(report.monster.byActionEconomy, { threshold: 1 })
+    .slice(0, 4)
+    .forEach((bucket) => {
+      gaps.push({
+        id: `monster-action-${bucket.id}`,
+        severity: "warning",
+        area: "Monster",
+        title: `${bucket.label} action economy is missing`,
+        detail: "No monster graft currently supports this action economy.",
+      });
+    });
+  getWeakBuckets(report.location.bySlot, { threshold: 3 })
+    .slice(0, 6)
+    .forEach((bucket) => {
+      gaps.push({
+        id: `location-slot-${bucket.id}`,
+        severity: bucket.count === 0 ? "error" : "warning",
+        area: "Location",
+        title: `${bucket.label} location slot is undercovered`,
+        detail: `${bucket.count} entries. Add more content to keep Darken a Location outputs varied.`,
+      });
+    });
+  getWeakBuckets(report.location.byRegionRole, { threshold: 2 })
+    .slice(0, 4)
+    .forEach((bucket) => {
+      gaps.push({
+        id: `region-role-${bucket.id}`,
+        severity: "info",
+        area: "Map",
+        title: `${bucket.label} region role has low coverage`,
+        detail:
+          "Add more Location Region templates if this role should appear often in generated maps.",
+      });
+    });
+  return gaps.slice(0, 30);
 }
 
 export function buildContentCoverageReport({
@@ -201,13 +254,48 @@ export function buildContentCoverageReport({
   modules = [],
   nativeMonsterGrafts = [],
 } = {}) {
-  const components = collectComponents(registryData, modules, nativeMonsterGrafts);
-  const monsterComponents = components.filter((component) => component.contentType === "monster-graft" || component.monster || component.slot);
-  const locationComponents = components.filter((component) => component.contentType === "location-component" || component.contentType === "location-region" || component.location || component.locationRegion || component.map);
+  const components = collectComponents(
+    registryData,
+    modules,
+    nativeMonsterGrafts,
+  );
+  const monsterComponents = components.filter(
+    (component) =>
+      component.contentType === "monster-graft" ||
+      component.monster ||
+      component.slot,
+  );
+  const locationComponents = components.filter(
+    (component) =>
+      component.contentType === "location-component" ||
+      component.contentType === "location-region" ||
+      component.location ||
+      component.locationRegion ||
+      component.map ||
+      isStudioSpecializedSemanticType(component.semanticType),
+  );
   const monsterSlotOrder = SHARED_MONSTER_SLOTS.map((slot) => slot.id);
   const locationSlotOrder = SHARED_DARKEN_LOCATION_SLOTS.map((slot) => slot.id);
-  const actionOrder = ["passive", "freeTrigger", "action", "bonusAction", "reaction", "legendaryAction", "lairAction", "deathEffect"];
-  const resolutionOrder = ["attackRoll", "savingThrow", "automatic", "contest", "choice", "none"];
+  const actionOrder = [
+    "passive",
+    "freeTrigger",
+    "action",
+    "bonusAction",
+    "reaction",
+    "legendaryAction",
+    "lairAction",
+    "deathEffect",
+  ];
+  const resolutionOrder = [
+    "attackRoll",
+    "savingThrow",
+    "automatic",
+    "contest",
+    "choice",
+    "none",
+  ];
+  const semanticDefinitions = listStudioSemanticEditorDefinitions();
+  const semanticRows = buildStudioSemanticCoverageMatrix(modules);
 
   const report = {
     reportType: "cruor-studio-content-coverage-report",
@@ -218,6 +306,11 @@ export function buildContentCoverageReport({
       monsterComponents: monsterComponents.length,
       locationComponents: locationComponents.length,
       moduleCount: asArray(modules).length,
+      semanticModules: semanticRows.length,
+      semanticGaps: semanticRows.reduce(
+        (total, row) => total + row.summary.missing + row.summary.partial,
+        0,
+      ),
     },
     monster: {
       bySlot: countBuckets(monsterComponents, getMonsterSlot, monsterSlotOrder),
@@ -238,6 +331,26 @@ export function buildContentCoverageReport({
       byRegionSize: countBuckets(locationComponents.filter((item) => item.contentType === "location-region" || item.locationRegion || item.map), (item) => getLocationRegion(item).size || "unassigned"),
       bySourceAnchor: countBuckets(locationComponents, "sourceAnchors"),
       slotBySourceMatrix: buildMatrix(locationComponents, (item) => asArray(item.slots), (item) => asArray(item.sourceAnchors), locationSlotOrder),
+    },
+    semantic: {
+      columns: semanticDefinitions.map((definition) => ({
+        id: definition.semanticType,
+        label: definition.label,
+        icon: definition.icon,
+      })),
+      rows: semanticRows,
+      byType: countBuckets(
+        locationComponents.filter((component) =>
+          isStudioSpecializedSemanticType(component.semanticType),
+        ),
+        "semanticType",
+        semanticDefinitions.map((definition) => definition.semanticType),
+      ),
+      byCapability: countBuckets(
+        asArray(modules).map(normalizeModuleForDraft),
+        "capabilities",
+        ["inspiration-archive", "dark-places", "monster-composer"],
+      ),
     },
   };
 

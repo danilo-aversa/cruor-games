@@ -1,0 +1,201 @@
+{
+  "rooms": [
+    {
+      "id": "location-region-1",
+      "impressions": [
+        {
+          "contextKind": "",
+          "contextMatch": "",
+          "id": "sensory-location-region-1-1-sedlec-sensory-profile-temperature-1",
+          "intensity": "low",
+          "sense": "temperature",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-temperature-1",
+          "text": "One empty niche holds the warmth of a recently departed body."
+        },
+        {
+          "contextKind": "",
+          "contextMatch": "",
+          "id": "sensory-location-region-1-2-sedlec-sensory-profile-sound-4",
+          "intensity": "low",
+          "sense": "sound",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-sound-4",
+          "text": "Four dry taps answer a careless footstep."
+        },
+        {
+          "contextKind": "geometry",
+          "contextMatch": "narrow",
+          "id": "sensory-location-region-1-3-sedlec-sensory-profile-geometry-narrow-1",
+          "intensity": "low",
+          "sense": "",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-geometry-narrow-1",
+          "text": "In the Skull Lined Corridor, dry powder brushes both shoulders."
+        }
+      ],
+      "name": "01 Skull Lined Corridor",
+      "number": 1,
+      "role": "entrance",
+      "shape": "alcove"
+    },
+    {
+      "id": "location-region-3",
+      "impressions": [
+        {
+          "contextKind": "",
+          "contextMatch": "",
+          "id": "sensory-location-region-3-1-sedlec-sensory-profile-sound-2",
+          "intensity": "low",
+          "sense": "sound",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-sound-2",
+          "text": "A prayer returns a heartbeat late from behind the wall."
+        },
+        {
+          "contextKind": "",
+          "contextMatch": "",
+          "id": "sensory-location-region-3-2-sedlec-sensory-profile-touch-2",
+          "intensity": "low",
+          "sense": "touch",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-touch-2",
+          "text": "Polished bone leaves a film of dry powder on the fingertips."
+        },
+        {
+          "contextKind": "role",
+          "contextMatch": "connector",
+          "id": "sensory-location-region-3-3-sedlec-sensory-profile-role-connector-1",
+          "intensity": "low",
+          "sense": "",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-role-connector-1",
+          "text": "In the Crypt Chapel, clicks travel ahead along the route."
+        }
+      ],
+      "name": "03 Crypt Chapel",
+      "number": 2,
+      "role": "connector",
+      "shape": "alcove"
+    },
+    {
+      "id": "location-region-4",
+      "impressions": [
+        {
+          "contextKind": "",
+          "contextMatch": "",
+          "id": "sensory-location-region-4-1-sedlec-sensory-profile-touch-1",
+          "intensity": "medium",
+          "sense": "touch",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-touch-1",
+          "text": "The reliquary wire is warmer than the surrounding stone."
+        },
+        {
+          "contextKind": "",
+          "contextMatch": "",
+          "id": "sensory-location-region-4-2-sedlec-sensory-profile-taste-2",
+          "intensity": "medium",
+          "sense": "taste",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-taste-2",
+          "text": "The air leaves a faint copper trace that vanishes outside the chapel."
+        },
+        {
+          "contextKind": "role",
+          "contextMatch": "threshold",
+          "id": "sensory-location-region-4-3-sedlec-sensory-profile-role-threshold-1",
+          "intensity": "medium",
+          "sense": "",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-role-threshold-1",
+          "text": "In the Reliquary Niche, the bone count changes across the doorway."
+        }
+      ],
+      "name": "04 Reliquary Niche",
+      "number": 3,
+      "role": "clue",
+      "shape": "alcove"
+    },
+    {
+      "id": "location-region-2",
+      "impressions": [
+        {
+          "contextKind": "",
+          "contextMatch": "",
+          "id": "sensory-location-region-2-1-sedlec-sensory-profile-smell-2",
+          "intensity": "medium",
+          "sense": "smell",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-smell-2",
+          "text": "Warm wax carries the faint smell of singed hair."
+        },
+        {
+          "contextKind": "",
+          "contextMatch": "",
+          "id": "sensory-location-region-2-2-sedlec-sensory-profile-sound-1",
+          "intensity": "medium",
+          "sense": "sound",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-sound-1",
+          "text": "Teeth settle one by one after the room becomes quiet."
+        },
+        {
+          "contextKind": "geometry",
+          "contextMatch": "large",
+          "id": "sensory-location-region-2-3-sedlec-sensory-profile-geometry-large-1",
+          "intensity": "medium",
+          "sense": "",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-geometry-large-1",
+          "text": "In the Ossuary Gallery, the delayed prayer returns from several distances."
+        }
+      ],
+      "name": "02 Ossuary Gallery",
+      "number": 4,
+      "role": "clue",
+      "shape": "alcove"
+    },
+    {
+      "id": "location-region-5",
+      "impressions": [
+        {
+          "contextKind": "",
+          "contextMatch": "",
+          "id": "sensory-location-region-5-1-sedlec-sensory-profile-sight-1",
+          "intensity": "high",
+          "sense": "sight",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-sight-1",
+          "text": "Powder gathers in crescents beneath every speaking mouth."
+        },
+        {
+          "contextKind": "",
+          "contextMatch": "",
+          "id": "sensory-location-region-5-2-sedlec-sensory-profile-smell-1",
+          "intensity": "high",
+          "sense": "smell",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-smell-1",
+          "text": "Spent incense hangs beneath a mineral sweetness."
+        },
+        {
+          "contextKind": "role",
+          "contextMatch": "climax",
+          "id": "sensory-location-region-5-3-sedlec-sensory-profile-role-climax-1",
+          "intensity": "high",
+          "sense": "",
+          "sourceComponentId": "sedlec-sensory-profile",
+          "sourceFragmentId": "sedlec-sensory-profile-role-climax-1",
+          "text": "In the Sealed Catacomb, every garland faces the same empty niche."
+        }
+      ],
+      "name": "05 Sealed Catacomb",
+      "number": 5,
+      "role": "final",
+      "shape": "alcove"
+    }
+  ],
+  "schemaVersion": "cruor-dark-places-phase4-sensory-snapshot-v1",
+  "seed": "semantic-v2-sedlec-phase4-001"
+}

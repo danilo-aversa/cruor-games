@@ -1,0 +1,28 @@
+/*
+ * Decorative full-bleed band.
+ *
+ * The host deliberately remains overflow-visible. Content that needs clipping
+ * must own that behavior in a nested element instead of clipping this host.
+ */
+.cruor-ambient-band {
+  position: relative;
+  display: block;
+  overflow: visible;
+}
+
+.cruor-ambient-band__backdrop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  width: var(--cruor-ambient-band-width, 100vw);
+  height: var(--cruor-ambient-band-height, calc(100% + 80px));
+  min-height: var(--cruor-ambient-band-min-height, 0);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.cruor-ambient-band__content {
+  position: relative;
+  z-index: 1;
+}

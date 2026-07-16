@@ -2,6 +2,8 @@ import "./site-mega-menu.css";
 import { t } from "../../shared/i18n/index.js";
 import SiteLink from "./SiteLink.jsx";
 
+const RENDER_ENGINE_FEATURES_PANEL = false;
+
 function cx(...parts) {
   return parts.filter(Boolean).join(" ");
 }
@@ -181,20 +183,22 @@ export default function SiteMegaMenu({
               </div>
             </aside>
 
-            <div className="site-mega-menu__preview-features-panel">
-              <ul
-                className="site-mega-menu__preview-features"
-                aria-label={t(
-                  "navigation.crucibleMenu.aria.engineFeatures",
-                  { label: activeItem.label },
-                  locale,
-                )}
-              >
-                {(activeItem.engineFeatures || []).map((feature) => (
-                  <li key={`${activeItem.id}-feature-${feature}`}>{feature}</li>
-                ))}
-              </ul>
-            </div>
+            {RENDER_ENGINE_FEATURES_PANEL ? (
+              <div className="site-mega-menu__preview-features-panel">
+                <ul
+                  className="site-mega-menu__preview-features"
+                  aria-label={t(
+                    "navigation.crucibleMenu.aria.engineFeatures",
+                    { label: activeItem.label },
+                    locale,
+                  )}
+                >
+                  {(activeItem.engineFeatures || []).map((feature) => (
+                    <li key={`${activeItem.id}-feature-${feature}`}>{feature}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
           </div>
         ) : null}
       </div>

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "cruor-dark-places-phase0-baseline-input-v1",
+  "baselineCommit": "c02465815b68db3651a90c809d81a90b1d03189c",
+  "moduleId": "sedlec-ossuary",
+  "seed": "semantic-v2-sedlec-baseline-001",
+  "roomCount": 5,
+  "composer": {
+    "title": "The Litany Engine",
+    "context": "Crypt",
+    "horrors": [
+      "Religious Horror",
+      "Gothic"
+    ],
+    "sourceAnchors": [
+      "sedlec-ossuary"
+    ],
+    "intrusion": "Medium",
+    "dungeonScale": "small",
+    "dungeonComplexity": "standard"
+  },
+  "components": {
+    "premise": "places-premise-ossuary-litany-engine",
+    "sensory": [
+      "places-sense-bone-dust-breath",
+      "places-sense-clicking-skull-seams"
+    ],
+    "visibleAnomaly": "places-anomaly-prayer-slip-mortar",
+    "reward": "places-reward-reliquary-fragment-key",
+    "hazards": [
+      "places-hazard-weight-sermon-slab",
+      "places-hazard-reliquary-tripwire"
+    ],
+    "clues": [
+      "places-clue-miscounted-skull-row",
+      "places-clue-bone-chandelier-map"
+    ],
+    "encounterTwists": [
+      "places-twist-bonework-cover-lines",
+      "places-twist-reliquary-alarm-choir"
+    ]
+  }
+}

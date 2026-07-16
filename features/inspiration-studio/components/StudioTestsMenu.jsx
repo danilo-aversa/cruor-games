@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { MONSTER_BATCH_QA_VERSION } from "../../monster-composer/qa/monster-batch-qa.js";
 import { MONSTER_PER_GRAFT_QA_VERSION } from "../../monster-composer/qa/monster-per-graft-qa.js";
 import { MAP_BATCH_QA_VERSION } from "../../darken-location/map-generator/qa/map-batch-qa.js";
+import { DARK_PLACES_SEMANTIC_SAMPLE_QA_VERSION } from "../qa/dark-places-semantic-sample-qa.js";
 import {
   getStudioTestIcon,
   getStudioTestLabel,
@@ -17,10 +18,12 @@ export function StudioTestsMenu({
   batchQaOpen = false,
   perGraftQaOpen = false,
   mapBatchQaOpen = false,
+  semanticQaOpen = false,
   presets = [],
   onOpenMonsterBatchQa,
   onOpenMonsterPerGraftQa,
   onOpenMapBatchQa,
+  onOpenSemanticQa,
   onRunPreset,
   onDeletePreset,
 }) {
@@ -82,6 +85,26 @@ export function StudioTestsMenu({
       {isOpen ? (
         <div className="studio-tests-menu__popover" role="menu">
           <div className="studio-tests-menu__section" role="group" aria-label="Studio tests">
+            <button
+              type="button"
+              role="menuitem"
+              aria-haspopup="dialog"
+              aria-expanded={semanticQaOpen}
+              aria-controls="studio-dark-places-semantic-qa-modal"
+              onClick={() => runAction(onOpenSemanticQa)}
+            >
+              <StudioIcon name="fa-wand-magic-sparkles" />
+              <span>
+                <strong>Dark Places Semantic QA</strong>
+                <small>Compile deterministic v2 sample builds</small>
+              </span>
+              <em
+                className="studio-tests-menu__version"
+                aria-label={`Dark Places Semantic QA ${formatQaVersionLabel(DARK_PLACES_SEMANTIC_SAMPLE_QA_VERSION)}`}
+              >
+                {formatQaVersionLabel(DARK_PLACES_SEMANTIC_SAMPLE_QA_VERSION)}
+              </em>
+            </button>
             <button
               type="button"
               role="menuitem"

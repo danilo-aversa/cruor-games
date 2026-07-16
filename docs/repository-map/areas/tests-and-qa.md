@@ -10,6 +10,9 @@ The test area includes `tests/e2e/`, active `.test.*` files under configured inc
 - Vitest tests included by `vitest.config.js`: `app/**/*.test`, `features/**/*.test`, and `shared/**/*.test`.
 - Circle connector diagnostics through `scripts/vitest.circle-connectors.config.mjs`.
 - Script-backed QA for content, maps, Monster Composer, room design, and assignments.
+- Phase 8 Inspiration migration audit, canonical candidate validation, semantic
+  coverage, deterministic sample quality, migration-state tests, and active
+  registry preservation checks.
 - Focused Dungeon Brief room-constraint tests cover multi-component handoff, blocking conflict reports, stale-report invalidation, required map props, and legacy Darken adapter metadata.
 
 ## Legacy Coverage
@@ -20,3 +23,7 @@ The test area includes `tests/e2e/`, active `.test.*` files under configured inc
 
 Do not assume a file has automated coverage just because a similarly named legacy test exists. Check `repository-map.json` and the active package scripts.
 
+For the first Phase 8 batch, run
+`npm run qa:dark-places:semantic-phase8`. It requires canonical Sedlec v2,
+tracks all 14 modules, treats sample warnings as failures, and verifies that
+technical readiness does not grant editorial approval.

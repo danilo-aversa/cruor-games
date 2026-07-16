@@ -1,0 +1,924 @@
+{
+  "buildId": "sedlec-ossuary-phase5",
+  "documentVersion": "cruor-location-document-v2",
+  "guide": {
+    "alwaysOnRules": [
+      {
+        "audience": "gm",
+        "counterplay": "action with Intelligence (Investigation or Religion) DC 14: Restore a displaced name or bone to its recorded place and reduce Litany by 1. one minute activity: If every creature remains silent and no remains are disturbed for one minute, reduce Litany by 1.",
+        "facets": [],
+        "id": "ossuary-litany",
+        "kind": "global-rule",
+        "mechanics": {
+          "check": "",
+          "duration": "until start of next turn",
+          "effect": "1d6 psychic damage; On a failed save, the creature cannot take reactions until the start of its next turn; on a success, it takes half damage and keeps its reactions.",
+          "escalation": "2: Skulls turn toward the last triggering creature and the end-of-round save begins | 4: Every empty niche opens; the first failed save each round also knocks the creature Prone",
+          "frequency": "once per round at litany 2 or higher",
+          "reset": "The chapel remains silent for ten minutes and at least one displaced remain has been restored. Set Litany to 0.",
+          "savingThrow": "Wisdom DC 14",
+          "state": "Litany 0–4; starts at 0",
+          "threshold": "2",
+          "timing": "end of round",
+          "trigger": "disturb remains, loud noise, speak a false name; immediately after event; once per turn"
+        },
+        "metadata": {
+          "contentType": "semantic-location-component",
+          "dashboard": {
+            "initial": 0,
+            "label": "Litany",
+            "maximum": 4,
+            "minimum": 0,
+            "reset": {
+              "condition": "The chapel remains silent for ten minutes and at least one displaced remain has been restored.",
+              "value": 0
+            },
+            "resolution": {
+              "actionEconomy": "automatic",
+              "area": "every-creature-that-triggered-the-litany-this-round",
+              "attackRoll": null,
+              "check": null,
+              "duration": "until-start-of-next-turn",
+              "effect": {
+                "additionalText": "On a failed save, the creature cannot take reactions until the start of its next turn; on a success, it takes half damage and keeps its reactions.",
+                "conditions": [],
+                "damage": "1d6",
+                "damageType": "psychic",
+                "healing": ""
+              },
+              "frequency": "once-per-round-at-litany-2-or-higher",
+              "range": "location",
+              "savingThrow": {
+                "ability": "Wisdom",
+                "dc": 14,
+                "scaling": {
+                  "damage": "1d6",
+                  "dc": 14,
+                  "profileId": "intrusion",
+                  "schemaVersion": "cruor-mechanical-scaling-v1",
+                  "tier": "medium"
+                },
+                "scalingKey": "intrusion",
+                "skills": []
+              },
+              "threshold": 2,
+              "timing": "end-of-round"
+            },
+            "thresholds": [
+              {
+                "at": 2,
+                "effect": "Skulls turn toward the last triggering creature and the end-of-round save begins."
+              },
+              {
+                "at": 4,
+                "effect": "Every empty niche opens; the first failed save each round also knocks the creature Prone."
+              }
+            ],
+            "trigger": {
+              "events": [
+                "disturb-remains",
+                "loud-noise",
+                "speak-a-false-name"
+              ],
+              "frequencyLimit": "once-per-turn",
+              "timing": "immediately-after-event"
+            }
+          },
+          "resolvedRule": {
+            "category": "pressure-track",
+            "counterplay": [
+              {
+                "actionCost": "action",
+                "check": {
+                  "ability": "Intelligence",
+                  "dc": 14,
+                  "scaling": {
+                    "damage": "1d6",
+                    "dc": 14,
+                    "profileId": "intrusion",
+                    "schemaVersion": "cruor-mechanical-scaling-v1",
+                    "tier": "medium"
+                  },
+                  "scalingKey": "intrusion",
+                  "skills": [
+                    "Investigation",
+                    "Religion"
+                  ]
+                },
+                "id": "restore-a-name",
+                "success": "Restore a displaced name or bone to its recorded place and reduce Litany by 1."
+              },
+              {
+                "actionCost": "one-minute-activity",
+                "check": null,
+                "id": "keep-reverent-silence",
+                "success": "If every creature remains silent and no remains are disturbed for one minute, reduce Litany by 1."
+              }
+            ],
+            "escalation": [
+              {
+                "at": 2,
+                "effect": "Skulls turn toward the last triggering creature and the end-of-round save begins."
+              },
+              {
+                "at": 4,
+                "effect": "Every empty niche opens; the first failed save each round also knocks the creature Prone."
+              }
+            ],
+            "gmSummary": "Disturbance raises Litany; at 2+, triggering creatures save at round end, while restored names and sustained silence lower the track.",
+            "id": "ossuary-litany",
+            "playerFacingSigns": [
+              "Skulls turn toward the last disturbance.",
+              "Bone dust rises in four measured pulses.",
+              "Empty niches sound like held breath."
+            ],
+            "reset": {
+              "condition": "The chapel remains silent for ten minutes and at least one displaced remain has been restored.",
+              "value": 0
+            },
+            "resolution": {
+              "actionEconomy": "automatic",
+              "area": "every-creature-that-triggered-the-litany-this-round",
+              "attackRoll": null,
+              "check": null,
+              "duration": "until-start-of-next-turn",
+              "effect": {
+                "additionalText": "On a failed save, the creature cannot take reactions until the start of its next turn; on a success, it takes half damage and keeps its reactions.",
+                "conditions": [],
+                "damage": "1d6",
+                "damageType": "psychic",
+                "healing": ""
+              },
+              "frequency": "once-per-round-at-litany-2-or-higher",
+              "range": "location",
+              "savingThrow": {
+                "ability": "Wisdom",
+                "dc": 14,
+                "scaling": {
+                  "damage": "1d6",
+                  "dc": 14,
+                  "profileId": "intrusion",
+                  "schemaVersion": "cruor-mechanical-scaling-v1",
+                  "tier": "medium"
+                },
+                "scalingKey": "intrusion",
+                "skills": []
+              },
+              "threshold": 2,
+              "timing": "end-of-round"
+            },
+            "scaling": {
+              "damage": "1d6",
+              "dc": 14,
+              "profileId": "intrusion",
+              "schemaVersion": "cruor-mechanical-scaling-v1",
+              "tier": "medium"
+            },
+            "scope": "location",
+            "state": {
+              "initial": 0,
+              "label": "Litany",
+              "maximum": 4,
+              "minimum": 0
+            },
+            "title": "The Ossuary Litany",
+            "trigger": {
+              "events": [
+                "disturb-remains",
+                "loud-noise",
+                "speak-a-false-name"
+              ],
+              "frequencyLimit": "once-per-turn",
+              "timing": "immediately-after-event"
+            }
+          },
+          "semanticType": "global-rule"
+        },
+        "narrative": "Skulls turn toward the last disturbance. Bone dust rises in four measured pulses. Empty niches sound like held breath.",
+        "provenance": {
+          "legacyIds": [
+            "bone-chapel-counts-the-dead",
+            "chapel-hungry"
+          ],
+          "migration": {
+            "editorialDecision": "needs-revision",
+            "fromSchema": "legacy-inspiration-module-v1",
+            "method": "editorially-migrated",
+            "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+            "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+          },
+          "schemaVersion": "cruor-semantic-provenance-v1",
+          "sources": [
+            {
+              "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+              "relation": "derived",
+              "sourceAnchorId": "sedlec-ossuary"
+            }
+          ]
+        },
+        "sourceAnchorIds": [
+          "sedlec-ossuary"
+        ],
+        "sourceComponentId": "ossuary-litany",
+        "subtype": "global-rule",
+        "summary": "",
+        "text": "Disturbance raises Litany; at 2+, triggering creatures save at round end, while restored names and sustained silence lower the track.",
+        "title": "The Ossuary Litany"
+      }
+    ],
+    "clueFlow": {
+      "entryNodeIds": [
+        "litany-source-revelation",
+        "named-bone-revelation"
+      ],
+      "fallbackClues": [
+        {
+          "id": "fallback-clue-1",
+          "supportsRevelationId": "named-bone-revelation",
+          "text": "A prayer slip repeats the hidden name."
+        },
+        {
+          "id": "fallback-clue-2",
+          "supportsRevelationId": "litany-count-revelation",
+          "text": "A turning garland points toward the fresh remain."
+        }
+      ],
+      "links": [
+        {
+          "condition": "The characters inspect a fresh remain or the chandelier map.",
+          "from": "litany-count-revelation",
+          "id": "litany-count-revelation--recent-collection-revelation",
+          "to": "recent-collection-revelation"
+        },
+        {
+          "condition": "The characters compare the hidden name with an empty niche.",
+          "from": "named-bone-revelation",
+          "id": "named-bone-revelation--litany-count-revelation",
+          "to": "litany-count-revelation"
+        }
+      ],
+      "nodes": [
+        {
+          "available": true,
+          "evidence": [
+            {
+              "id": "location-effect-places-clue-miscounted-skull-row-room-03-1",
+              "kind": "clue",
+              "roomId": "location-region-3",
+              "roomName": "03 Crypt Chapel",
+              "roomNumber": 2,
+              "sourceComponentId": "places-clue-miscounted-skull-row",
+              "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+              "title": "Miscounted Skull Row"
+            },
+            {
+              "id": "places-clue-miscounted-skull-row",
+              "kind": "clue",
+              "roomId": "location-region-3",
+              "roomName": "03 Crypt Chapel",
+              "roomNumber": 2,
+              "sourceComponentId": "places-clue-miscounted-skull-row",
+              "text": "A skull row reveals that one skull has been replaced recently.",
+              "title": "Miscounted Skull Row"
+            },
+            {
+              "id": "sedlec-sign-turning-skull-garlands-location-region-3",
+              "kind": "recurring-sign",
+              "roomId": "location-region-3",
+              "roomName": "03 Crypt Chapel",
+              "roomNumber": 2,
+              "sourceComponentId": "sedlec-sign-turning-skull-garlands",
+              "text": "Only the skull above the correct route refuses to turn toward the confession.",
+              "title": "Turning Skull Garlands"
+            },
+            {
+              "id": "location-effect-places-clue-bone-chandelier-map-room-04-1",
+              "kind": "clue",
+              "roomId": "location-region-4",
+              "roomName": "04 Reliquary Niche",
+              "roomNumber": 3,
+              "sourceComponentId": "places-clue-bone-chandelier-map",
+              "text": "The bone chandelier repeats the map below in miniature, including one room no door reaches.",
+              "title": "Bone Chandelier Map"
+            },
+            {
+              "id": "places-clue-bone-chandelier-map",
+              "kind": "clue",
+              "roomId": "location-region-4",
+              "roomName": "04 Reliquary Niche",
+              "roomNumber": 3,
+              "sourceComponentId": "places-clue-bone-chandelier-map",
+              "text": "The chandelier’s bone pattern mirrors the room layout.",
+              "title": "Bone Chandelier Map"
+            },
+            {
+              "id": "sedlec-sign-turning-skull-garlands-location-region-4",
+              "kind": "recurring-sign",
+              "roomId": "location-region-4",
+              "roomName": "04 Reliquary Niche",
+              "roomNumber": 3,
+              "sourceComponentId": "sedlec-sign-turning-skull-garlands",
+              "text": "A mouth-shaped gap travels one place along the garland when nobody watches.",
+              "title": "Turning Skull Garlands"
+            },
+            {
+              "id": "location-effect-places-clue-bone-chandelier-map-room-02-1",
+              "kind": "clue",
+              "roomId": "location-region-2",
+              "roomName": "02 Ossuary Gallery",
+              "roomNumber": 4,
+              "sourceComponentId": "places-clue-bone-chandelier-map",
+              "text": "The bone chandelier repeats the map below in miniature, including one room no door reaches.",
+              "title": "Bone Chandelier Map"
+            },
+            {
+              "id": "places-clue-bone-chandelier-map",
+              "kind": "clue",
+              "roomId": "location-region-2",
+              "roomName": "02 Ossuary Gallery",
+              "roomNumber": 4,
+              "sourceComponentId": "places-clue-bone-chandelier-map",
+              "text": "The chandelier’s bone pattern mirrors the room layout.",
+              "title": "Bone Chandelier Map"
+            },
+            {
+              "id": "sedlec-sign-turning-skull-garlands-location-region-2",
+              "kind": "recurring-sign",
+              "roomId": "location-region-2",
+              "roomName": "02 Ossuary Gallery",
+              "roomNumber": 4,
+              "sourceComponentId": "sedlec-sign-turning-skull-garlands",
+              "text": "A mouth-shaped gap travels one place along the garland when nobody watches.",
+              "title": "Turning Skull Garlands"
+            }
+          ],
+          "id": "litany-count-revelation",
+          "required": true,
+          "roomIds": [
+            "location-region-3",
+            "location-region-4",
+            "location-region-2"
+          ],
+          "sourceBlockIds": [
+            "location-effect-places-clue-miscounted-skull-row-room-03-1",
+            "places-clue-miscounted-skull-row",
+            "sedlec-sign-turning-skull-garlands-location-region-3",
+            "location-effect-places-clue-bone-chandelier-map-room-04-1",
+            "places-clue-bone-chandelier-map",
+            "sedlec-sign-turning-skull-garlands-location-region-4",
+            "location-effect-places-clue-bone-chandelier-map-room-02-1",
+            "sedlec-sign-turning-skull-garlands-location-region-2"
+          ],
+          "summary": "Only the skull above the correct route refuses to turn toward the confession.",
+          "title": "Turning Skull Garlands"
+        },
+        {
+          "available": true,
+          "evidence": [
+            {
+              "id": "location-effect-places-clue-miscounted-skull-row-room-05-1",
+              "kind": "clue",
+              "roomId": "location-region-5",
+              "roomName": "05 Sealed Catacomb",
+              "roomNumber": 5,
+              "sourceComponentId": "places-clue-miscounted-skull-row",
+              "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+              "title": "Miscounted Skull Row"
+            },
+            {
+              "id": "places-clue-miscounted-skull-row",
+              "kind": "clue",
+              "roomId": "location-region-5",
+              "roomName": "05 Sealed Catacomb",
+              "roomNumber": 5,
+              "sourceComponentId": "places-clue-miscounted-skull-row",
+              "text": "A skull row reveals that one skull has been replaced recently.",
+              "title": "Miscounted Skull Row"
+            },
+            {
+              "id": "sedlec-sign-candlewax-tears-location-region-5",
+              "kind": "recurring-sign",
+              "roomId": "location-region-5",
+              "roomName": "05 Sealed Catacomb",
+              "roomNumber": 5,
+              "sourceComponentId": "sedlec-sign-candlewax-tears",
+              "text": "Four wax drops descend in sequence and stop before striking the floor.",
+              "title": "Candlewax Tears"
+            }
+          ],
+          "id": "litany-source-revelation",
+          "required": false,
+          "roomIds": [
+            "location-region-5"
+          ],
+          "sourceBlockIds": [
+            "location-effect-places-clue-miscounted-skull-row-room-05-1",
+            "places-clue-miscounted-skull-row",
+            "sedlec-sign-candlewax-tears-location-region-5"
+          ],
+          "summary": "Four wax drops descend in sequence and stop before striking the floor.",
+          "title": "Candlewax Tears"
+        },
+        {
+          "available": true,
+          "evidence": [
+            {
+              "id": "location-effect-places-clue-miscounted-skull-row-room-01-1",
+              "kind": "clue",
+              "roomId": "location-region-1",
+              "roomName": "01 Skull Lined Corridor",
+              "roomNumber": 1,
+              "sourceComponentId": "places-clue-miscounted-skull-row",
+              "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+              "title": "Miscounted Skull Row"
+            },
+            {
+              "id": "places-clue-miscounted-skull-row",
+              "kind": "clue",
+              "roomId": "location-region-1",
+              "roomName": "01 Skull Lined Corridor",
+              "roomNumber": 1,
+              "sourceComponentId": "places-clue-miscounted-skull-row",
+              "text": "A skull row reveals that one skull has been replaced recently.",
+              "title": "Miscounted Skull Row"
+            },
+            {
+              "id": "sedlec-sign-prayer-slip-mortar-location-region-1",
+              "kind": "recurring-sign",
+              "roomId": "location-region-1",
+              "roomName": "01 Skull Lined Corridor",
+              "roomNumber": 1,
+              "sourceComponentId": "sedlec-sign-prayer-slip-mortar",
+              "text": "Fresh wax seals a prayer slip into the wall where no candle can reach.",
+              "title": "Prayer-Slip Mortar"
+            },
+            {
+              "id": "location-effect-places-clue-miscounted-skull-row-room-03-1",
+              "kind": "clue",
+              "roomId": "location-region-3",
+              "roomName": "03 Crypt Chapel",
+              "roomNumber": 2,
+              "sourceComponentId": "places-clue-miscounted-skull-row",
+              "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+              "title": "Miscounted Skull Row"
+            },
+            {
+              "id": "places-clue-miscounted-skull-row",
+              "kind": "clue",
+              "roomId": "location-region-3",
+              "roomName": "03 Crypt Chapel",
+              "roomNumber": 2,
+              "sourceComponentId": "places-clue-miscounted-skull-row",
+              "text": "A skull row reveals that one skull has been replaced recently.",
+              "title": "Miscounted Skull Row"
+            },
+            {
+              "id": "sedlec-sign-prayer-slip-mortar-location-region-3",
+              "kind": "recurring-sign",
+              "roomId": "location-region-3",
+              "roomName": "03 Crypt Chapel",
+              "roomNumber": 2,
+              "sourceComponentId": "sedlec-sign-prayer-slip-mortar",
+              "text": "A folded prayer slip protrudes from the mortar beside a strand of pale hair.",
+              "title": "Prayer-Slip Mortar"
+            }
+          ],
+          "id": "named-bone-revelation",
+          "required": true,
+          "roomIds": [
+            "location-region-1",
+            "location-region-3"
+          ],
+          "sourceBlockIds": [
+            "location-effect-places-clue-miscounted-skull-row-room-01-1",
+            "places-clue-miscounted-skull-row",
+            "sedlec-sign-prayer-slip-mortar-location-region-1",
+            "location-effect-places-clue-miscounted-skull-row-room-03-1",
+            "sedlec-sign-prayer-slip-mortar-location-region-3"
+          ],
+          "summary": "Fresh wax seals a prayer slip into the wall where no candle can reach.",
+          "title": "Prayer-Slip Mortar"
+        },
+        {
+          "available": true,
+          "evidence": [
+            {
+              "id": "location-effect-places-clue-bone-chandelier-map-room-02-1",
+              "kind": "clue",
+              "roomId": "location-region-2",
+              "roomName": "02 Ossuary Gallery",
+              "roomNumber": 4,
+              "sourceComponentId": "places-clue-bone-chandelier-map",
+              "text": "The bone chandelier repeats the map below in miniature, including one room no door reaches.",
+              "title": "Bone Chandelier Map"
+            },
+            {
+              "id": "places-clue-bone-chandelier-map",
+              "kind": "clue",
+              "roomId": "location-region-2",
+              "roomName": "02 Ossuary Gallery",
+              "roomNumber": 4,
+              "sourceComponentId": "places-clue-bone-chandelier-map",
+              "text": "The chandelier’s bone pattern mirrors the room layout.",
+              "title": "Bone Chandelier Map"
+            },
+            {
+              "id": "sedlec-sign-fresh-bone-count-location-region-2",
+              "kind": "recurring-sign",
+              "roomId": "location-region-2",
+              "roomName": "02 Ossuary Gallery",
+              "roomNumber": 4,
+              "sourceComponentId": "sedlec-sign-fresh-bone-count",
+              "text": "A polished finger bone still carries the indentation of a recently removed ring.",
+              "title": "Fresh Bone in the Count"
+            }
+          ],
+          "id": "recent-collection-revelation",
+          "required": true,
+          "roomIds": [
+            "location-region-2"
+          ],
+          "sourceBlockIds": [
+            "location-effect-places-clue-bone-chandelier-map-room-02-1",
+            "places-clue-bone-chandelier-map",
+            "sedlec-sign-fresh-bone-count-location-region-2"
+          ],
+          "summary": "A polished finger bone still carries the indentation of a recently removed ring.",
+          "title": "Fresh Bone in the Count"
+        }
+      ],
+      "requiredRevelations": [
+        "named-bone-revelation",
+        "litany-count-revelation",
+        "recent-collection-revelation"
+      ]
+    },
+    "objectives": [
+      "Identify the named bone and the person it belonged to.",
+      "Prevent the Litany from completing its fourth measure.",
+      "Choose whether to restore, expose, or dismantle the devotional count."
+    ],
+    "openingBeat": {
+      "entranceRoomId": "location-region-1",
+      "entranceRoomName": "01 Skull Lined Corridor",
+      "entranceRoomNumber": 1,
+      "immediateSignal": "Four dry clicks answer the first voice, and every candle leans toward the sealed catacomb.",
+      "playerDecision": "Enter quietly to preserve the count, confront the custodian, or follow the name before it is erased.",
+      "situation": "A custodian bars the chapel doors after discovering a fresh rib in the chandelier and a living pilgrim's name inside the bonework."
+    },
+    "pressureTracks": [
+      {
+        "audience": "gm",
+        "counterplay": "action with Intelligence (Investigation or Religion) DC 14: Restore a displaced name or bone to its recorded place and reduce Litany by 1. one minute activity: If every creature remains silent and no remains are disturbed for one minute, reduce Litany by 1.",
+        "facets": [],
+        "id": "ossuary-litany",
+        "kind": "global-rule",
+        "mechanics": {
+          "check": "",
+          "duration": "until start of next turn",
+          "effect": "1d6 psychic damage; On a failed save, the creature cannot take reactions until the start of its next turn; on a success, it takes half damage and keeps its reactions.",
+          "escalation": "2: Skulls turn toward the last triggering creature and the end-of-round save begins | 4: Every empty niche opens; the first failed save each round also knocks the creature Prone",
+          "frequency": "once per round at litany 2 or higher",
+          "reset": "The chapel remains silent for ten minutes and at least one displaced remain has been restored. Set Litany to 0.",
+          "savingThrow": "Wisdom DC 14",
+          "state": "Litany 0–4; starts at 0",
+          "threshold": "2",
+          "timing": "end of round",
+          "trigger": "disturb remains, loud noise, speak a false name; immediately after event; once per turn"
+        },
+        "metadata": {
+          "contentType": "semantic-location-component",
+          "dashboard": {
+            "initial": 0,
+            "label": "Litany",
+            "maximum": 4,
+            "minimum": 0,
+            "reset": {
+              "condition": "The chapel remains silent for ten minutes and at least one displaced remain has been restored.",
+              "value": 0
+            },
+            "resolution": {
+              "actionEconomy": "automatic",
+              "area": "every-creature-that-triggered-the-litany-this-round",
+              "attackRoll": null,
+              "check": null,
+              "duration": "until-start-of-next-turn",
+              "effect": {
+                "additionalText": "On a failed save, the creature cannot take reactions until the start of its next turn; on a success, it takes half damage and keeps its reactions.",
+                "conditions": [],
+                "damage": "1d6",
+                "damageType": "psychic",
+                "healing": ""
+              },
+              "frequency": "once-per-round-at-litany-2-or-higher",
+              "range": "location",
+              "savingThrow": {
+                "ability": "Wisdom",
+                "dc": 14,
+                "scaling": {
+                  "damage": "1d6",
+                  "dc": 14,
+                  "profileId": "intrusion",
+                  "schemaVersion": "cruor-mechanical-scaling-v1",
+                  "tier": "medium"
+                },
+                "scalingKey": "intrusion",
+                "skills": []
+              },
+              "threshold": 2,
+              "timing": "end-of-round"
+            },
+            "thresholds": [
+              {
+                "at": 2,
+                "effect": "Skulls turn toward the last triggering creature and the end-of-round save begins."
+              },
+              {
+                "at": 4,
+                "effect": "Every empty niche opens; the first failed save each round also knocks the creature Prone."
+              }
+            ],
+            "trigger": {
+              "events": [
+                "disturb-remains",
+                "loud-noise",
+                "speak-a-false-name"
+              ],
+              "frequencyLimit": "once-per-turn",
+              "timing": "immediately-after-event"
+            }
+          },
+          "resolvedRule": {
+            "category": "pressure-track",
+            "counterplay": [
+              {
+                "actionCost": "action",
+                "check": {
+                  "ability": "Intelligence",
+                  "dc": 14,
+                  "scaling": {
+                    "damage": "1d6",
+                    "dc": 14,
+                    "profileId": "intrusion",
+                    "schemaVersion": "cruor-mechanical-scaling-v1",
+                    "tier": "medium"
+                  },
+                  "scalingKey": "intrusion",
+                  "skills": [
+                    "Investigation",
+                    "Religion"
+                  ]
+                },
+                "id": "restore-a-name",
+                "success": "Restore a displaced name or bone to its recorded place and reduce Litany by 1."
+              },
+              {
+                "actionCost": "one-minute-activity",
+                "check": null,
+                "id": "keep-reverent-silence",
+                "success": "If every creature remains silent and no remains are disturbed for one minute, reduce Litany by 1."
+              }
+            ],
+            "escalation": [
+              {
+                "at": 2,
+                "effect": "Skulls turn toward the last triggering creature and the end-of-round save begins."
+              },
+              {
+                "at": 4,
+                "effect": "Every empty niche opens; the first failed save each round also knocks the creature Prone."
+              }
+            ],
+            "gmSummary": "Disturbance raises Litany; at 2+, triggering creatures save at round end, while restored names and sustained silence lower the track.",
+            "id": "ossuary-litany",
+            "playerFacingSigns": [
+              "Skulls turn toward the last disturbance.",
+              "Bone dust rises in four measured pulses.",
+              "Empty niches sound like held breath."
+            ],
+            "reset": {
+              "condition": "The chapel remains silent for ten minutes and at least one displaced remain has been restored.",
+              "value": 0
+            },
+            "resolution": {
+              "actionEconomy": "automatic",
+              "area": "every-creature-that-triggered-the-litany-this-round",
+              "attackRoll": null,
+              "check": null,
+              "duration": "until-start-of-next-turn",
+              "effect": {
+                "additionalText": "On a failed save, the creature cannot take reactions until the start of its next turn; on a success, it takes half damage and keeps its reactions.",
+                "conditions": [],
+                "damage": "1d6",
+                "damageType": "psychic",
+                "healing": ""
+              },
+              "frequency": "once-per-round-at-litany-2-or-higher",
+              "range": "location",
+              "savingThrow": {
+                "ability": "Wisdom",
+                "dc": 14,
+                "scaling": {
+                  "damage": "1d6",
+                  "dc": 14,
+                  "profileId": "intrusion",
+                  "schemaVersion": "cruor-mechanical-scaling-v1",
+                  "tier": "medium"
+                },
+                "scalingKey": "intrusion",
+                "skills": []
+              },
+              "threshold": 2,
+              "timing": "end-of-round"
+            },
+            "scaling": {
+              "damage": "1d6",
+              "dc": 14,
+              "profileId": "intrusion",
+              "schemaVersion": "cruor-mechanical-scaling-v1",
+              "tier": "medium"
+            },
+            "scope": "location",
+            "state": {
+              "initial": 0,
+              "label": "Litany",
+              "maximum": 4,
+              "minimum": 0
+            },
+            "title": "The Ossuary Litany",
+            "trigger": {
+              "events": [
+                "disturb-remains",
+                "loud-noise",
+                "speak-a-false-name"
+              ],
+              "frequencyLimit": "once-per-turn",
+              "timing": "immediately-after-event"
+            }
+          },
+          "semanticType": "global-rule"
+        },
+        "narrative": "Skulls turn toward the last disturbance. Bone dust rises in four measured pulses. Empty niches sound like held breath.",
+        "provenance": {
+          "legacyIds": [
+            "bone-chapel-counts-the-dead",
+            "chapel-hungry"
+          ],
+          "migration": {
+            "editorialDecision": "needs-revision",
+            "fromSchema": "legacy-inspiration-module-v1",
+            "method": "editorially-migrated",
+            "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+            "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+          },
+          "schemaVersion": "cruor-semantic-provenance-v1",
+          "sources": [
+            {
+              "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+              "relation": "derived",
+              "sourceAnchorId": "sedlec-ossuary"
+            }
+          ]
+        },
+        "sourceAnchorIds": [
+          "sedlec-ossuary"
+        ],
+        "sourceComponentId": "ossuary-litany",
+        "subtype": "global-rule",
+        "summary": "",
+        "text": "Disturbance raises Litany; at 2+, triggering creatures save at round end, while restored names and sustained silence lower the track.",
+        "title": "The Ossuary Litany"
+      }
+    ],
+    "provenance": {
+      "legacyIds": [
+        "sedlec-bone-has-a-name"
+      ],
+      "migration": {
+        "editorialDecision": "needs-revision",
+        "fromSchema": "legacy-inspiration-module-v1",
+        "method": "editorially-migrated",
+        "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+        "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+      },
+      "schemaVersion": "cruor-semantic-provenance-v1",
+      "sources": [
+        {
+          "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+          "relation": "derived",
+          "sourceAnchorId": "sedlec-ossuary"
+        }
+      ]
+    },
+    "roomShortcuts": [
+      {
+        "clueNodeIds": [
+          "named-bone-revelation"
+        ],
+        "danger": "Weight-Sermon Slab",
+        "escalation": false,
+        "guidance": "",
+        "id": "shortcut-location-region-1",
+        "level": 0,
+        "name": "01 Skull Lined Corridor",
+        "number": 1,
+        "role": "entrance",
+        "roomId": "location-region-1",
+        "routeIndex": 0,
+        "shape": "alcove",
+        "signal": "One empty niche holds the warmth of a recently departed body."
+      },
+      {
+        "clueNodeIds": [
+          "litany-count-revelation",
+          "named-bone-revelation"
+        ],
+        "danger": "Weight-Sermon Slab",
+        "escalation": false,
+        "guidance": "",
+        "id": "shortcut-location-region-3",
+        "level": 0,
+        "name": "03 Crypt Chapel",
+        "number": 2,
+        "role": "connector",
+        "roomId": "location-region-3",
+        "routeIndex": 1,
+        "shape": "alcove",
+        "signal": "A prayer returns a heartbeat late from behind the wall."
+      },
+      {
+        "clueNodeIds": [
+          "litany-count-revelation"
+        ],
+        "danger": "Reliquary Tripwire",
+        "escalation": false,
+        "guidance": "",
+        "id": "shortcut-location-region-4",
+        "level": 0,
+        "name": "04 Reliquary Niche",
+        "number": 3,
+        "role": "clue",
+        "roomId": "location-region-4",
+        "routeIndex": 2,
+        "shape": "alcove",
+        "signal": "The reliquary wire is warmer than the surrounding stone."
+      },
+      {
+        "clueNodeIds": [
+          "litany-count-revelation",
+          "recent-collection-revelation"
+        ],
+        "danger": "Reliquary Tripwire",
+        "escalation": true,
+        "guidance": "At Litany 4, make the choice about the named bone more urgent rather than adding unrelated enemies.",
+        "id": "shortcut-location-region-2",
+        "level": 0,
+        "name": "02 Ossuary Gallery",
+        "number": 4,
+        "role": "clue",
+        "roomId": "location-region-2",
+        "routeIndex": 3,
+        "shape": "alcove",
+        "signal": "Warm wax carries the faint smell of singed hair."
+      },
+      {
+        "clueNodeIds": [
+          "litany-source-revelation"
+        ],
+        "danger": "Weight-Sermon Slab",
+        "escalation": true,
+        "guidance": "At Litany 4, make the choice about the named bone more urgent rather than adding unrelated enemies.",
+        "id": "shortcut-location-region-5",
+        "level": 0,
+        "name": "05 Sealed Catacomb",
+        "number": 5,
+        "role": "final",
+        "roomId": "location-region-5",
+        "routeIndex": 4,
+        "shape": "alcove",
+        "signal": "Powder gathers in crescents beneath every speaking mouth."
+      }
+    ],
+    "stallMoves": [
+      {
+        "action": "Advance Litany by 1 and turn the nearest skulls toward the named bone.",
+        "id": "advance-the-litany",
+        "source": "authored-session-guide",
+        "trigger": "The table debates without acting after a clear sign."
+      },
+      {
+        "action": "The custodian offers the register, but demands a true name as security.",
+        "id": "custodian-intervenes",
+        "source": "authored-session-guide",
+        "trigger": "The characters prepare to damage the memorial without a plan."
+      },
+      {
+        "action": "Fresh wire tightens audibly around the relevant bone and exposes its inscription.",
+        "id": "fresh-wire-tightens",
+        "source": "authored-session-guide",
+        "trigger": "A clue has been missed twice."
+      }
+    ]
+  },
+  "schemaVersion": "cruor-dark-places-phase5-session-guide-snapshot-v1"
+}

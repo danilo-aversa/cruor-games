@@ -15,8 +15,7 @@ export default {
       accessibility: "Accessibilità",
     },
     languageLocked: "Il cambio lingua è bloccato per ora.",
-    accessibilityPlaceholder:
-      "Qui aggiungeremo le impostazioni di accessibilità.",
+    accessibilityPlaceholder: "Qui aggiungeremo le impostazioni di accessibilità.",
     accessibility: {
       reset: "Ripristina impostazioni accessibilità",
       theme: {
@@ -61,8 +60,7 @@ export default {
         options: {
           system: {
             label: "Sistema",
-            description:
-              "Segue la preferenza di movimento ridotto del sistema.",
+            description: "Segue la preferenza di movimento ridotto del sistema.",
           },
           reduced: {
             label: "Ridotto",
@@ -126,13 +124,11 @@ export default {
       },
       scrollbar: {
         label: "Scrollbar",
-        description:
-          "Scegli tra progress Cruor personalizzato e scrollbar nativa del browser.",
+        description: "Scegli tra progress Cruor personalizzato e scrollbar nativa del browser.",
         options: {
           custom: {
             label: "Custom",
-            description:
-              "Usa il progress Cruor e nasconde la scrollbar del browser.",
+            description: "Usa il progress Cruor e nasconde la scrollbar del browser.",
           },
           browser: {
             label: "Browser",
@@ -216,7 +212,7 @@ export default {
             "Ritaglio di una mappa dark fantasy generata dalla workbench Dark Places.",
         },
         monsters: {
-          label: "Terrifying Monster",
+          label: "Terrifying Monsters",
           description:
             "Crea creature horror consapevoli delle regole con frame, graft, pressione, debolezze e validazione.",
           catchPhrase: "Costruisci mostri giocabili.",
@@ -228,29 +224,25 @@ export default {
           },
           mobileDescription:
             "Costruisci mostri horror con frame, graft, pressione, debolezze e validazione.",
-          previewTitle: "Terrifying Monster",
+          previewTitle: "Terrifying Monsters",
           previewText:
             "Costruisci creature dark fantasy attraverso frame di base, ruoli tattici, graft horror, pressione in combattimento, contromisure, controlli di prontezza e meccaniche pronte per l’esportazione.",
-          previewImageAlt:
-            "Anteprima della workbench Cruor usata per Terrifying Monster.",
+          previewImageAlt: "Anteprima della workbench Cruor usata per Terrifying Monsters.",
         },
       },
     },
     locations: {
       label: "Luoghi",
       description: "Regioni, pericoli, indizi, atmosfera e flusso della mappa.",
-      mobileDescription:
-        "Oscurisce luoghi con regioni, pericoli, indizi e mappe.",
+      mobileDescription: "Oscurisce luoghi con regioni, pericoli, indizi e mappe.",
       previewTitle: "Oscurisci un Luogo",
       previewText:
         "Trasforma un dungeon, una cappella, una caverna, una rovina o un villaggio esistente in horror giocabile con regioni, pericoli, indizi, atmosfera e una mappa generata.",
     },
     monsters: {
       label: "Mostri",
-      description:
-        "Corpo, pressione, debolezza, graft e output pronto per la 5E.",
-      mobileDescription:
-        "Crea minacce horror con graft e meccaniche pronte al tavolo.",
+      description: "Corpo, pressione, debolezza, graft e output pronto per la 5E.",
+      mobileDescription: "Crea minacce horror con graft e meccaniche pronte al tavolo.",
       previewTitle: "Crea un Mostro",
       previewText:
         "Forgia una minaccia dark fantasy attraverso anatomia, pressione, complessità, debolezze, effetti di tana e meccaniche pronte al tavolo.",
@@ -348,8 +340,7 @@ export default {
       whyItDisturbs: "Perché Disturba",
       horrorTexture: "Trama Horror",
       linkedComponents: "Componenti Mostro Collegati",
-      noLinkedComponents:
-        "Nessun Componente Mostro è ancora collegato a questa fonte.",
+      noLinkedComponents: "Nessun Componente Mostro è ancora collegato a questa fonte.",
       sourceAnchor: "Source Anchor",
       useMonsterComposer: "Usa nel Monster Composer",
     },
@@ -367,8 +358,7 @@ export default {
       visualAria: "Anteprima della workbench Cruor",
       workbenchAlt:
         "Anteprima dell’interfaccia Cruor con strumenti dark fantasy e materiale horror ispirato a fonti reali.",
-      mapAlt:
-        "Ritaglio di una mappa dungeon dark fantasy dalla workbench dei luoghi Cruor.",
+      mapAlt: "Ritaglio di una mappa dungeon dark fantasy dalla workbench dei luoghi Cruor.",
       inspirationAlt:
         "Ritaglio di una card ispirazione Cruor che mostra fonti reali trasformate in horror giocabile.",
     },
@@ -383,15 +373,12 @@ export default {
         "Gli strumenti attuali sono solo le prime superfici della workbench, non l’intera idea.",
       imagePlaceholder: "Placeholder Immagine",
       dungeonVisual: "Visual Dungeon Generator",
-      dungeonVisualNote:
-        "Usa una preview forte della mappa o un crop UI da Darken a Location.",
+      dungeonVisualNote: "Usa una preview forte della mappa o un crop UI da Darken a Location.",
       dungeonTitle: "Oscurisci un Dungeon",
-      dungeonBody:
-        "Costruisci un luogo infestato attorno alla sessione che hai già preparato.",
+      dungeonBody: "Costruisci un luogo infestato attorno alla sessione che hai già preparato.",
       dungeonAction: "Esplora il Dungeon Generator",
       monsterVisual: "Visual Monster Generator",
-      monsterVisualNote:
-        "Usa una silhouette mostro, vista slot Crucible o crop del composer.",
+      monsterVisualNote: "Usa una silhouette mostro, vista slot Crucible o crop del composer.",
       monsterTitle: "Forgia un Mostro",
       monsterBody:
         "Crea una creatura disturbante con pressione, debolezza e flavour pronto al tavolo.",
@@ -419,8 +406,7 @@ export default {
       body: "Patreon aiuta Cruor a crescere con nuovi contenuti, strumenti più rifiniti e una libreria più profonda di materiale dark fantasy per la 5E.",
       action: "Unisciti al Patreon",
       visual: "Visual Supporto",
-      visualNote:
-        "Usa un collage soft di crop mappa, crop mostro e card ispirazioni.",
+      visualNote: "Usa un collage soft di crop mappa, crop mostro e card ispirazioni.",
     },
   },
 };

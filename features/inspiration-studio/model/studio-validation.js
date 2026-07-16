@@ -1,4 +1,7 @@
-import { validateContentPack } from "../../../shared/content/content-pack-schema.js";
+import {
+  COMPONENT_SEMANTIC_TYPES,
+  validateContentPackV0_2,
+} from "../../../shared/content/contracts/semantic/index.js";
 import {
   SHARED_DARKEN_LOCATION_SLOTS,
   SHARED_MONSTER_SLOTS,
@@ -24,7 +27,6 @@ import {
   normalizeRoomDesignPropKind,
 } from "../../../shared/content/contracts/room-design.js";
 import {
-  COMPONENT_TYPE_LABELS,
   STATUS_OPTIONS,
   asArray,
   getDuplicateIds,
@@ -36,6 +38,8 @@ import {
   isPlainObject,
 } from "./studio-component-normalizers.js";
 import { normalizeModuleForDraft } from "./studio-draft.js";
+import { getStudioComponentFamily } from "./studio-editor-registry.js";
+import { buildStudioSemanticCoverage } from "./studio-semantic-coverage.js";
 
 const CANONICAL_WORKFLOW_MAP = new Map(SHARED_WORKFLOWS.map((workflow) => [workflow.id, workflow]));
 const CANONICAL_MONSTER_SLOT_MAP = new Map(SHARED_MONSTER_SLOTS.map((slot) => [slot.id, slot]));
@@ -306,30 +310,27 @@ export function validateStudioDraft(draft, contentPackExport) {
   }
 
   if (!hasText(normalized.sourceAnchor?.id)) issues.push(makeIssue("error", "sourceAnchor.id", "Source Anchor is missing an id."));
-  if (!hasText(normalized.sourceAnchor?.label)) issues.push(makeIssue("error", "sourceAnchor.label", "Source Anchor is missing a label."));
-  if (!asArray(normalized.sourceAnchor?.sourceTypes).length) {
-    issues.push(makeIssue("warning", "sourceAnchor.sourceTypes", "Source Anchor has no source type tags."));
+  if (!hasText(normalized.sourceAnchor?.title)) issues.push(makeIssue("error", "sourceAnchor.title", "Source Anchor is missing a title."));
+  if (!hasText(normalized.sourceAnchor?.citation?.label)) {
+    issues.push(makeIssue("warning", "sourceAnchor.citation.label", "Source Anchor has no citation label."));
   }
-  if (!asArray(normalized.sourceAnchor?.themes).length && !asArray(normalized.sourceAnchor?.horror).length) {
-    issues.push(makeIssue("warning", "sourceAnchor.taxonomy", "Source Anchor has no theme or horror tags."));
+  if (!asArray(inspiration.sourceTypes).length) {
+    issues.push(makeIssue("warning", "inspiration.sourceTypes", "Inspiration has no source type tags."));
+  }
+  if (!asArray(inspiration.themes).length && !asArray(inspiration.horror).length) {
+    issues.push(makeIssue("warning", "inspiration.taxonomy", "Inspiration has no theme or horror tags."));
   }
 
   if (!hasText(inspiration.id)) issues.push(makeIssue("error", "inspiration.id", "Public Inspiration card is missing an id."));
   if (!hasText(inspiration.title)) issues.push(makeIssue("error", "inspiration.title", "Public Inspiration card is missing a title."));
-  if (inspiration.contentType !== "source-inspiration-card") {
-    issues.push(makeIssue("warning", "inspiration.contentType", "Public Inspiration card should use contentType source-inspiration-card."));
-  }
   if (!asArray(inspiration.sourceAnchors).includes(sourceAnchorId)) {
     issues.push(makeIssue("error", "inspiration.sourceAnchors", `Public Inspiration card does not reference Source Anchor ${sourceAnchorId}.`, inspiration.id));
   }
-  if (!asArray(inspiration.workflows).includes("inspiration-archive")) {
-    issues.push(makeIssue("warning", "inspiration.workflows", "Public Inspiration card is not linked to inspiration-archive.", inspiration.id));
+  if (!hasText(inspiration.editorial?.deck) && !hasText(inspiration.editorial?.whatItIs)) {
+    issues.push(makeIssue("warning", "inspiration.editorial", "Public Inspiration has no editorial deck or factual framing.", inspiration.id));
   }
-  if (!hasText(inspiration.summary) && !hasText(inspiration.narrative)) {
-    issues.push(makeIssue("warning", "inspiration.copy", "Public Inspiration card has no summary or narrative copy.", inspiration.id));
-  }
-  if (!hasText(inspiration.media?.imageKey) && !hasText(inspiration.media?.imageUrl)) {
-    issues.push(makeIssue("warning", "inspiration.media", "Public Inspiration card has no imageKey or imageUrl.", inspiration.id));
+  if (!hasText(inspiration.media?.imageKey)) {
+    issues.push(makeIssue("warning", "inspiration.media.imageKey", "Public Inspiration has no imageKey.", inspiration.id));
   }
 
   getDuplicateIds(components).forEach((id) => {
@@ -338,13 +339,13 @@ export function validateStudioDraft(draft, contentPackExport) {
 
   components.forEach((component, index) => {
     const id = component.id || `component-${index + 1}`;
-    const type = component.contentType;
+    const family = getStudioComponentFamily(component);
     const workflows = asArray(component.workflows);
     const slots = asArray(component.slots);
 
     if (!hasText(component.id)) issues.push(makeIssue("error", `components[${index}].id`, "Component is missing an id.", id));
     if (!hasText(component.title || component.label)) issues.push(makeIssue("error", `components[${index}].title`, "Component is missing a title or label.", id));
-    if (!COMPONENT_TYPE_LABELS[type]) issues.push(makeIssue("error", `components[${index}].contentType`, `Unknown component contentType: ${type || "empty"}.`, id));
+    if (!COMPONENT_SEMANTIC_TYPES.includes(component.semanticType)) issues.push(makeIssue("error", `components[${index}].semanticType`, `Unknown component semanticType: ${component.semanticType || "empty"}.`, id));
     if (!asArray(component.sourceAnchors).length) {
       issues.push(makeIssue("warning", `components[${index}].sourceAnchors`, "Component has no Source Anchor; export will attach the current one.", id));
     } else if (!asArray(component.sourceAnchors).includes(sourceAnchorId)) {
@@ -356,14 +357,13 @@ export function validateStudioDraft(draft, contentPackExport) {
         issues.push(makeIssue("error", `components[${index}].workflows`, `Unknown workflow: ${workflowId}.`, id));
       }
     });
-    if (!slots.length) issues.push(makeIssue("error", `components[${index}].slots`, "Component has no slot.", id));
     slots.forEach((slotId) => {
       if (!CANONICAL_SLOT_MAP.has(slotId)) {
         issues.push(makeIssue("error", `components[${index}].slots`, `Unknown slot: ${slotId}.`, id));
       }
     });
 
-    if (type === "monster-graft") {
+    if (family === "monster-graft") {
       const monsterRules = getExplicitMonsterRules(component);
       const monsterSlot = component.monster?.slot || slots[0];
       if (!workflows.includes("monster-composer")) {
@@ -404,7 +404,7 @@ export function validateStudioDraft(draft, contentPackExport) {
       validateMonsterFrameFitForStudio(component, index, issues);
     }
 
-    if (type === "location-component") {
+    if (family === "location-component") {
       if (!workflows.includes("darken-location")) {
         issues.push(makeIssue("error", `components[${index}].workflows`, "Location component must include darken-location workflow.", id));
       }
@@ -413,24 +413,24 @@ export function validateStudioDraft(draft, contentPackExport) {
           issues.push(makeIssue("error", `components[${index}].slots`, `Location component uses an invalid Darken slot: ${slotId}.`, id));
         }
       });
-      if (!hasText(component.summary) && !hasText(component.tableText) && !hasText(component.mechanics)) {
+      if (!hasText(component.summary) && !hasText(component.tableText) && !hasText(component.mechanics) && !hasText(component.semantic?.signature)) {
         issues.push(makeIssue("warning", `components[${index}].playableText`, "Location component has no summary, table text, or mechanics.", id));
       }
       validateMapInfluenceForStudio(
-        component.location?.mapInfluence || component.mapInfluence,
+        component.location?.mapInfluence || component.generation?.mapInfluence || component.mapInfluence,
         `components[${index}].location.mapInfluence`,
         issues,
         id,
       );
       validateRoomDesignForStudio(
-        component.location?.roomDesign || component.map?.roomDesign || component.roomDesign,
+        component.location?.roomDesign || component.generation?.roomDesign || component.map?.roomDesign || component.roomDesign,
         `components[${index}].location.roomDesign`,
         issues,
         id,
       );
     }
 
-    if (type === "location-region") {
+    if (family === "location-region") {
       if (!slots.includes("locationRegion")) {
         issues.push(makeIssue("error", `components[${index}].slots`, "Location region must use the locationRegion slot.", id));
       }
@@ -465,10 +465,23 @@ export function validateStudioDraft(draft, contentPackExport) {
     }
   });
 
-  validateContentPack(contentPackExport).forEach((issue) => {
+  const semanticCoverage = buildStudioSemanticCoverage(normalized);
+  issues.push(...semanticCoverage.issues);
+
+  validateContentPackV0_2(contentPackExport).forEach((issue) => {
+    const componentMatch = String(issue.path || "").match(
+      /modules\[\d+\]\.components\[(\d+)\](?:\.(.+))?$/,
+    );
+    const componentIndex = componentMatch ? Number(componentMatch[1]) : -1;
+    const componentId = components[componentIndex]?.id || issue.id || "";
+    const localPath = componentMatch
+      ? `components[${componentIndex}]${componentMatch[2] ? `.${componentMatch[2]}` : ""}`
+      : `contentPack.${issue.path || "pack"}`;
     issues.push({
       ...issue,
-      path: `contentPack.${issue.path || "pack"}`,
+      id: componentId,
+      componentId,
+      path: localPath,
       severity: issue.severity || "warning",
     });
   });

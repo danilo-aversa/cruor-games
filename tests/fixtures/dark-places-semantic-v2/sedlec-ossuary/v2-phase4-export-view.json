@@ -1,0 +1,313 @@
+{
+  "rooms": [
+    {
+      "id": "location-region-1",
+      "name": "01 Skull Lined Corridor",
+      "readAloud": [
+        {
+          "audience": "both",
+          "counterplay": "",
+          "facets": [],
+          "id": "location-region-1-read-aloud-standard",
+          "kind": "readAloud",
+          "mapReference": null,
+          "mechanics": null,
+          "metadata": {
+            "compilerStage": "compose-read-aloud",
+            "exportVariant": "standard",
+            "sourceFragmentIds": [
+              "bone-lined-chapel",
+              "chandelier-room-plan",
+              "four-pulses-of-dust",
+              "four-wax-drops",
+              "prayer-beyond-rib-arch",
+              "sedlec-sensory-profile-temperature-1"
+            ],
+            "variants": {
+              "compact": "Bone-lined walls narrow toward a chapel arranged around a single empty niche. One empty niche holds the warmth of a recently departed body.",
+              "extended": "Bone-lined walls narrow toward a chapel arranged around a single empty niche. One empty niche holds the warmth of a recently departed body. A chandelier repeats the room plan in ribs and finger bones. Four drops of wax hang beneath a skull untouched by flame. Bone dust rises in four measured pulses, circles the nearest empty niche, and settles in neat lines along the floor. Beyond the rib arch, the delayed prayer returns from a lower chamber, then repeats from a second depth where no stair is visible.",
+              "standard": "Bone-lined walls narrow toward a chapel arranged around a single empty niche. One empty niche holds the warmth of a recently departed body. A chandelier repeats the room plan in ribs and finger bones. Four drops of wax hang beneath a skull untouched by flame."
+            }
+          },
+          "narrative": "",
+          "provenance": {
+            "legacyIds": [
+              "places-premise-ossuary-litany-engine"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "sourceAnchorIds": [
+            "sedlec-ossuary"
+          ],
+          "sourceComponentId": "sedlec-read-aloud-profile",
+          "subtype": "standard",
+          "summary": "Bone-lined walls narrow toward a chapel arranged around a single empty niche. One empty niche holds the warmth of a recently departed body.",
+          "text": "Bone-lined walls narrow toward a chapel arranged around a single empty niche. One empty niche holds the warmth of a recently departed body. A chandelier repeats the room plan in ribs and finger bones. Four drops of wax hang beneath a skull untouched by flame.",
+          "title": "Read-Aloud"
+        }
+      ]
+    },
+    {
+      "id": "location-region-3",
+      "name": "03 Crypt Chapel",
+      "readAloud": [
+        {
+          "audience": "both",
+          "counterplay": "",
+          "facets": [],
+          "id": "location-region-3-read-aloud-standard",
+          "kind": "readAloud",
+          "mapReference": null,
+          "mechanics": null,
+          "metadata": {
+            "compilerStage": "compose-read-aloud",
+            "exportVariant": "standard",
+            "sourceFragmentIds": [
+              "moving-mouth-gap",
+              "prayer-beyond-rib-arch",
+              "rib-arch-threshold",
+              "sedlec-sensory-profile-sound-2",
+              "skull-garland-gap",
+              "teeth-follow-speaker"
+            ],
+            "variants": {
+              "compact": "A low arch of wired ribs separates the public memorial from the deeper reliquary. A prayer returns a heartbeat late from behind the wall.",
+              "extended": "A low arch of wired ribs separates the public memorial from the deeper reliquary. A prayer returns a heartbeat late from behind the wall. Skull garlands circle the room with one deliberate gap that remains level with the doorway. Several teeth turn toward the last person who spoke. A mouth-shaped gap shifts one place along the garland, leaving the surrounding skulls angled toward the newly opened space. Beyond the rib arch, the delayed prayer returns from a lower chamber, then repeats from a second depth where no stair is visible.",
+              "standard": "A low arch of wired ribs separates the public memorial from the deeper reliquary. A prayer returns a heartbeat late from behind the wall. Skull garlands circle the room with one deliberate gap that remains level with the doorway. Several teeth turn toward the last person who spoke."
+            }
+          },
+          "narrative": "",
+          "provenance": {
+            "legacyIds": [
+              "places-premise-ossuary-litany-engine"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "sourceAnchorIds": [
+            "sedlec-ossuary"
+          ],
+          "sourceComponentId": "sedlec-read-aloud-profile",
+          "subtype": "standard",
+          "summary": "A low arch of wired ribs separates the public memorial from the deeper reliquary. A prayer returns a heartbeat late from behind the wall.",
+          "text": "A low arch of wired ribs separates the public memorial from the deeper reliquary. A prayer returns a heartbeat late from behind the wall. Skull garlands circle the room with one deliberate gap that remains level with the doorway. Several teeth turn toward the last person who spoke.",
+          "title": "Read-Aloud"
+        }
+      ]
+    },
+    {
+      "id": "location-region-4",
+      "name": "04 Reliquary Niche",
+      "readAloud": [
+        {
+          "audience": "both",
+          "counterplay": "",
+          "facets": [],
+          "id": "location-region-4-read-aloud-standard",
+          "kind": "readAloud",
+          "mapReference": null,
+          "mechanics": null,
+          "metadata": {
+            "compilerStage": "compose-read-aloud",
+            "exportVariant": "standard",
+            "sourceFragmentIds": [
+              "moving-mouth-gap",
+              "prayer-beyond-rib-arch",
+              "rib-arch-threshold",
+              "sedlec-sensory-profile-touch-1",
+              "skull-garland-gap",
+              "teeth-follow-speaker"
+            ],
+            "variants": {
+              "compact": "A low arch of wired ribs separates the public memorial from the deeper reliquary. The reliquary wire is warmer than the surrounding stone.",
+              "extended": "A low arch of wired ribs separates the public memorial from the deeper reliquary. The reliquary wire is warmer than the surrounding stone. Skull garlands circle the room with one deliberate gap that remains level with the doorway. Several teeth turn toward the last person who spoke. A mouth-shaped gap shifts one place along the garland, leaving the surrounding skulls angled toward the newly opened space. Beyond the rib arch, the delayed prayer returns from a lower chamber, then repeats from a second depth where no stair is visible.",
+              "standard": "A low arch of wired ribs separates the public memorial from the deeper reliquary. The reliquary wire is warmer than the surrounding stone. Skull garlands circle the room with one deliberate gap that remains level with the doorway. Several teeth turn toward the last person who spoke."
+            }
+          },
+          "narrative": "",
+          "provenance": {
+            "legacyIds": [
+              "places-premise-ossuary-litany-engine"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "sourceAnchorIds": [
+            "sedlec-ossuary"
+          ],
+          "sourceComponentId": "sedlec-read-aloud-profile",
+          "subtype": "standard",
+          "summary": "A low arch of wired ribs separates the public memorial from the deeper reliquary. The reliquary wire is warmer than the surrounding stone.",
+          "text": "A low arch of wired ribs separates the public memorial from the deeper reliquary. The reliquary wire is warmer than the surrounding stone. Skull garlands circle the room with one deliberate gap that remains level with the doorway. Several teeth turn toward the last person who spoke.",
+          "title": "Read-Aloud"
+        }
+      ]
+    },
+    {
+      "id": "location-region-2",
+      "name": "02 Ossuary Gallery",
+      "readAloud": [
+        {
+          "audience": "both",
+          "counterplay": "",
+          "facets": [],
+          "id": "location-region-2-read-aloud-standard",
+          "kind": "readAloud",
+          "mapReference": null,
+          "mechanics": null,
+          "metadata": {
+            "compilerStage": "compose-read-aloud",
+            "exportVariant": "standard",
+            "sourceFragmentIds": [
+              "four-wax-drops",
+              "fresh-bone-row",
+              "moving-mouth-gap",
+              "prayer-beyond-rib-arch",
+              "rib-arch-threshold",
+              "sedlec-sensory-profile-smell-2",
+              "skull-garland-gap"
+            ],
+            "variants": {
+              "compact": "A low arch of wired ribs separates the public memorial from the deeper reliquary. Warm wax carries the faint smell of singed hair.",
+              "extended": "A low arch of wired ribs separates the public memorial from the deeper reliquary. Warm wax carries the faint smell of singed hair. A fresh bone interrupts one row of yellowed remains. Four drops of wax hang beneath a skull untouched by flame. A mouth-shaped gap shifts one place along the garland, leaving the surrounding skulls angled toward the newly opened space. Beyond the rib arch, the delayed prayer returns from a lower chamber, then repeats from a second depth where no stair is visible.",
+              "standard": "A low arch of wired ribs separates the public memorial from the deeper reliquary. Warm wax carries the faint smell of singed hair. Skull garlands circle the room with one deliberate gap that remains level with the doorway. Four drops of wax hang beneath a skull untouched by flame."
+            }
+          },
+          "narrative": "",
+          "provenance": {
+            "legacyIds": [
+              "places-premise-ossuary-litany-engine"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "sourceAnchorIds": [
+            "sedlec-ossuary"
+          ],
+          "sourceComponentId": "sedlec-read-aloud-profile",
+          "subtype": "standard",
+          "summary": "A low arch of wired ribs separates the public memorial from the deeper reliquary. Warm wax carries the faint smell of singed hair.",
+          "text": "A low arch of wired ribs separates the public memorial from the deeper reliquary. Warm wax carries the faint smell of singed hair. Skull garlands circle the room with one deliberate gap that remains level with the doorway. Four drops of wax hang beneath a skull untouched by flame.",
+          "title": "Read-Aloud"
+        }
+      ]
+    },
+    {
+      "id": "location-region-5",
+      "name": "05 Sealed Catacomb",
+      "readAloud": [
+        {
+          "audience": "both",
+          "counterplay": "",
+          "facets": [],
+          "id": "location-region-5-read-aloud-standard",
+          "kind": "readAloud",
+          "mapReference": null,
+          "mechanics": null,
+          "metadata": {
+            "compilerStage": "compose-read-aloud",
+            "exportVariant": "standard",
+            "sourceFragmentIds": [
+              "four-pulses-of-dust",
+              "living-body-niche",
+              "prayer-beyond-rib-arch",
+              "prayer-slip-seams",
+              "rib-arch-threshold",
+              "sedlec-sensory-profile-sight-1",
+              "skull-garland-gap"
+            ],
+            "variants": {
+              "compact": "A low arch of wired ribs separates the public memorial from the deeper reliquary. Powder gathers in crescents beneath every speaking mouth.",
+              "extended": "A low arch of wired ribs separates the public memorial from the deeper reliquary. Powder gathers in crescents beneath every speaking mouth. Prayer slips and pale hair protrude from selected mortar seams. The empty niche is proportioned for a living body. Bone dust rises in four measured pulses, circles the nearest empty niche, and settles in neat lines along the floor. Beyond the rib arch, the delayed prayer returns from a lower chamber, then repeats from a second depth where no stair is visible.",
+              "standard": "A low arch of wired ribs separates the public memorial from the deeper reliquary. Powder gathers in crescents beneath every speaking mouth. Skull garlands circle the room with one deliberate gap that remains level with the doorway. The empty niche is proportioned for a living body."
+            }
+          },
+          "narrative": "",
+          "provenance": {
+            "legacyIds": [
+              "places-premise-ossuary-litany-engine"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "sourceAnchorIds": [
+            "sedlec-ossuary"
+          ],
+          "sourceComponentId": "sedlec-read-aloud-profile",
+          "subtype": "standard",
+          "summary": "A low arch of wired ribs separates the public memorial from the deeper reliquary. Powder gathers in crescents beneath every speaking mouth.",
+          "text": "A low arch of wired ribs separates the public memorial from the deeper reliquary. Powder gathers in crescents beneath every speaking mouth. Skull garlands circle the room with one deliberate gap that remains level with the doorway. The empty niche is proportioned for a living body.",
+          "title": "Read-Aloud"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": "cruor-dark-places-phase4-export-snapshot-v1",
+  "title": "The Litany Engine"
+}

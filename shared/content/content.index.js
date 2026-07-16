@@ -288,6 +288,29 @@ export {
   LOCATION_COMPONENT_EFFECT_UNSUPPORTED_POLICIES,
   normalizeLocationComponentEffect,
 } from "./contracts/location-component-effect.js";
+export * from "./contracts/semantic/index.js";
+export {
+  DECOMPOSITION_SEMANTIC_V2_MODULE,
+  DECOMPOSITION_SEMANTIC_V2_MODULE_ID,
+  DECOMPOSITION_SEMANTIC_V2_PACK,
+  DECOMPOSITION_SEMANTIC_V2_PACK_ID,
+  DECOMPOSITION_SEMANTIC_V2_SOURCE_ANCHOR_ID,
+} from "./content-packs/decomposition-semantic-v2-pack.js";
+export {
+  SEDLEC_OSSUARY_SEMANTIC_V2_MODULE,
+  SEDLEC_OSSUARY_SEMANTIC_V2_MODULE_ID,
+  SEDLEC_OSSUARY_SEMANTIC_V2_PACK,
+  SEDLEC_OSSUARY_SEMANTIC_V2_PACK_ID,
+} from "./content-packs/sedlec-ossuary-semantic-v2-pack.js";
+export { STATIC_SEMANTIC_CONTENT_PACKS } from "./static-semantic-content-packs.js";
+export {
+  INSPIRATION_V2_MIGRATION_ORDER,
+  INSPIRATION_V2_MIGRATION_RECORDS,
+  buildInspirationV2MigrationAudit,
+  getInspirationV2MigrationRecord,
+  isInspirationV2EditoriallyApproved,
+  listInspirationV2MigrationRecords,
+} from "./migrations/inspiration-v2-migration-registry.js";
 export {
   ROOM_CONSTRAINT_RESOLVER_SCHEMA_VERSION,
   ROOM_CONTRIBUTION_SCHEMA_VERSION,

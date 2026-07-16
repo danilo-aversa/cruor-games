@@ -129,8 +129,7 @@ export default {
         options: {
           custom: {
             label: "Custom",
-            description:
-              "Use Cruor's custom scroll progress and hide the browser scrollbar.",
+            description: "Use Cruor's custom scroll progress and hide the browser scrollbar.",
           },
           browser: {
             label: "Browser",
@@ -210,11 +209,10 @@ export default {
           previewTitle: "Dark Places",
           previewText:
             "Compose a horror site from context, source anchors, intrusion level, location regions, hazards, clues, atmosphere, and map-readable structure.",
-          previewImageAlt:
-            "Dark fantasy map crop generated from the Dark Places workbench.",
+          previewImageAlt: "Dark fantasy map crop generated from the Dark Places workbench.",
         },
         monsters: {
-          label: "Terrifying Monster",
+          label: "Terrifying Monsters",
           description:
             "Create rules-aware horror creatures with frames, grafts, pressure, weakness, and validation.",
           catchPhrase: "Build playable monsters.",
@@ -226,19 +224,17 @@ export default {
           },
           mobileDescription:
             "Build horror monsters with frames, grafts, pressure, weakness, and validation.",
-          previewTitle: "Terrifying Monster",
+          previewTitle: "Terrifying Monsters",
           previewText:
             "Build dark fantasy creatures through base frames, tactical roles, horror grafts, combat pressure, counterplay, readiness checks, and export-facing mechanics.",
-          previewImageAlt:
-            "Cruor workbench interface preview used for Terrifying Monster.",
+          previewImageAlt: "Cruor workbench interface preview used for Terrifying Monsters.",
         },
       },
     },
     locations: {
       label: "Locations",
       description: "Regions, hazards, clues, atmosphere, and map flow.",
-      mobileDescription:
-        "Darken places with regions, hazards, clues, and maps.",
+      mobileDescription: "Darken places with regions, hazards, clues, and maps.",
       previewTitle: "Darken a Location",
       previewText:
         "Turn an existing dungeon, chapel, cave, ruin, or village into playable horror with regions, hazards, clues, atmosphere, and a generated map.",
@@ -246,8 +242,7 @@ export default {
     monsters: {
       label: "Monsters",
       description: "Body, pressure, weakness, grafts, and 5E-ready output.",
-      mobileDescription:
-        "Forge horror threats with grafts and table-ready mechanics.",
+      mobileDescription: "Forge horror threats with grafts and table-ready mechanics.",
       previewTitle: "Build a Monster",
       previewText:
         "Forge a dark fantasy threat through anatomy, pressure, complexity, weaknesses, lair effects, and table-ready mechanics.",
@@ -345,8 +340,7 @@ export default {
       whyItDisturbs: "Why It Disturbs",
       horrorTexture: "Horror Texture",
       linkedComponents: "Linked Monster Components",
-      noLinkedComponents:
-        "No Monster Components are linked to this source yet.",
+      noLinkedComponents: "No Monster Components are linked to this source yet.",
       sourceAnchor: "Source Anchor",
       useMonsterComposer: "Use in Monster Composer",
     },
@@ -364,8 +358,7 @@ export default {
       visualAria: "Cruor workbench preview",
       workbenchAlt:
         "Cruor workbench interface preview with dark fantasy tools and source-inspired horror material.",
-      mapAlt:
-        "Dark fantasy dungeon map crop from the Cruor location workbench.",
+      mapAlt: "Dark fantasy dungeon map crop from the Cruor location workbench.",
       inspirationAlt:
         "Cruor inspiration card crop showing real sources transformed into playable horror.",
     },
@@ -376,22 +369,17 @@ export default {
     },
     tools: {
       ariaTitle: "Featured Creation Tools",
-      intro:
-        "The current tools are only the first surfaces of the workbench — not the whole idea.",
+      intro: "The current tools are only the first surfaces of the workbench — not the whole idea.",
       imagePlaceholder: "Image Placeholder",
       dungeonVisual: "Dungeon Generator Visual",
-      dungeonVisualNote:
-        "Use a strong map preview or UI crop from Darken a Location.",
+      dungeonVisualNote: "Use a strong map preview or UI crop from Darken a Location.",
       dungeonTitle: "Darken a Dungeon",
-      dungeonBody:
-        "Build a haunted location around the session you already have.",
+      dungeonBody: "Build a haunted location around the session you already have.",
       dungeonAction: "Explore the Dungeon Generator",
       monsterVisual: "Monster Generator Visual",
-      monsterVisualNote:
-        "Use a monster silhouette, Crucible slot view, or composer crop.",
+      monsterVisualNote: "Use a monster silhouette, Crucible slot view, or composer crop.",
       monsterTitle: "Forge a Monster",
-      monsterBody:
-        "Create a disturbing creature with pressure, weakness, and table-ready flavour.",
+      monsterBody: "Create a disturbing creature with pressure, weakness, and table-ready flavour.",
       monsterAction: "Explore the Monster Generator",
     },
     sources: {
@@ -416,8 +404,7 @@ export default {
       body: "Patreon helps Cruor grow through new content, sharper tools, and a deeper library of dark fantasy material for 5E.",
       action: "Join the Patreon",
       visual: "Support Visual",
-      visualNote:
-        "Use a soft collage of map crop, monster crop, and inspiration cards.",
+      visualNote: "Use a soft collage of map crop, monster crop, and inspiration cards.",
     },
   },
 };

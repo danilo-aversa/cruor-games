@@ -4,6 +4,7 @@ import {
   clone,
   slugify,
 } from "./studio-component-normalizers.js";
+import { listStudioSemanticEditorDefinitions } from "../schema/studio-semantic-editor-registry.js";
 
 
 const CRYPT_ROOM_ARCHETYPE_TEMPLATE_IDS = Object.freeze([
@@ -213,6 +214,28 @@ const CRYPT_ROOM_ARCHETYPE_STUDIO_TEMPLATES = Object.freeze(
   }, {}),
 );
 
+const SEMANTIC_COMPONENT_TEMPLATES = Object.freeze(
+  Object.fromEntries(
+    listStudioSemanticEditorDefinitions().map((definition) => [
+      definition.templateId,
+      {
+        id: definition.templateId,
+        label: definition.label,
+        shortLabel: definition.label,
+        icon: definition.icon,
+        contentType: definition.contentType,
+        semanticType: definition.semanticType,
+        title: `New ${definition.label}`,
+        slot: "",
+        summary: "",
+        tableText: "",
+        mechanics: "",
+        semantic: clone(definition.defaultValue),
+      },
+    ]),
+  ),
+);
+
 export const STUDIO_COMPONENT_TEMPLATE_GROUPS = Object.freeze([
   {
     id: "monster",
@@ -233,6 +256,7 @@ export const STUDIO_COMPONENT_TEMPLATE_GROUPS = Object.freeze([
     label: "Location Content",
     icon: "fa-map-location-dot",
     templates: [
+      ...Object.keys(SEMANTIC_COMPONENT_TEMPLATES),
       "location-description",
       "location-hazard",
       "location-region",
@@ -245,6 +269,7 @@ export const STUDIO_COMPONENT_TEMPLATE_GROUPS = Object.freeze([
 ]);
 
 export const STUDIO_COMPONENT_TEMPLATES = Object.freeze({
+  ...SEMANTIC_COMPONENT_TEMPLATES,
   "monster-trait": {
     id: "monster-trait",
     label: "Monster Trait",
@@ -691,6 +716,8 @@ function buildBaseComponent(template, draft = {}) {
     label: template.title,
     type: COMPONENT_TYPE_LABELS[contentType] || "Component",
     contentType,
+    semanticType: template.semanticType || "",
+    semantic: template.semantic ? clone(template.semantic) : undefined,
     status: "draft",
     workflows: contentType === "monster-graft" ? ["monster-composer"] : ["darken-location"],
     slots: [slot],

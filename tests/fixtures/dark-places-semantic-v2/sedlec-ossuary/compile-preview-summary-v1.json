@@ -1,0 +1,427 @@
+{
+  "schemaVersion": "dark-places-compile-preview-v1-fixture",
+  "title": "The Litany Engine",
+  "contextLine": "Crypt · Religious Horror, Gothic · sedlec-ossuary",
+  "filledSlots": 7,
+  "totalSlots": 7,
+  "regionCount": 5,
+  "readyRoomCount": 5,
+  "incompleteRoomCount": 0,
+  "premiseSection": {
+    "title": "The Litany Engine",
+    "context": "Crypt",
+    "horrorLine": "Religious Horror, Gothic",
+    "sourceLine": "sedlec-ossuary",
+    "premise": "Every chamber seems arranged to continue a prayer that no living voice remembers.",
+    "intrusion": "Medium",
+    "text": "The Litany Engine\nContext: Crypt\nHorror: Religious Horror, Gothic\nSource: sedlec-ossuary\nPremise: Every chamber seems arranged to continue a prayer that no living voice remembers.\nIntrusion: Medium"
+  },
+  "locationPremiseText": "Every chamber seems arranged to continue a prayer that no living voice remembers.",
+  "components": [
+    {
+      "id": "places-premise-ossuary-litany-engine",
+      "title": "Litany Engine Ossuary",
+      "slotId": "horrorPremise",
+      "regionId": "",
+      "text": "The location behaves like a devotional machine built from arranged remains.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-sense-bone-dust-breath",
+      "title": "Bone-Dust Breath",
+      "slotId": "sensoryLayer",
+      "regionId": "",
+      "text": "The air carries a dry mineral taste of powdered bone.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-sense-clicking-skull-seams",
+      "title": "Clicking Skull Seams",
+      "slotId": "sensoryLayer",
+      "regionId": "",
+      "text": "Tiny clicks move through the walls whenever the room goes quiet.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-anomaly-prayer-slip-mortar",
+      "title": "Prayer-Slip Mortar",
+      "slotId": "visibleAnomaly",
+      "regionId": "",
+      "text": "The mortar is packed with folded prayer slips and pale hair.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-hazard-weight-sermon-slab",
+      "title": "Weight-Sermon Slab",
+      "slotId": "hazard",
+      "regionId": "location-region-1",
+      "text": "A pressure slab releases hanging bonework when crossed carelessly.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-hazard-reliquary-tripwire",
+      "title": "Reliquary Tripwire",
+      "slotId": "hazard",
+      "regionId": "location-region-2",
+      "text": "A thread of rosary beads pulls open a reliquary of sharp fragments.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-hazard-weight-sermon-slab",
+      "title": "Weight-Sermon Slab",
+      "slotId": "hazard",
+      "regionId": "location-region-3",
+      "text": "A pressure slab releases hanging bonework when crossed carelessly.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-hazard-reliquary-tripwire",
+      "title": "Reliquary Tripwire",
+      "slotId": "hazard",
+      "regionId": "location-region-4",
+      "text": "A thread of rosary beads pulls open a reliquary of sharp fragments.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-hazard-weight-sermon-slab",
+      "title": "Weight-Sermon Slab",
+      "slotId": "hazard",
+      "regionId": "location-region-5",
+      "text": "A pressure slab releases hanging bonework when crossed carelessly.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-clue-miscounted-skull-row",
+      "title": "Miscounted Skull Row",
+      "slotId": "clue",
+      "regionId": "location-region-1",
+      "text": "A skull row reveals that one skull has been replaced recently.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-clue-bone-chandelier-map",
+      "title": "Bone Chandelier Map",
+      "slotId": "clue",
+      "regionId": "location-region-2",
+      "text": "The chandelier’s bone pattern mirrors the room layout.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-clue-miscounted-skull-row",
+      "title": "Miscounted Skull Row",
+      "slotId": "clue",
+      "regionId": "location-region-3",
+      "text": "A skull row reveals that one skull has been replaced recently.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-clue-bone-chandelier-map",
+      "title": "Bone Chandelier Map",
+      "slotId": "clue",
+      "regionId": "location-region-4",
+      "text": "The chandelier’s bone pattern mirrors the room layout.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-clue-miscounted-skull-row",
+      "title": "Miscounted Skull Row",
+      "slotId": "clue",
+      "regionId": "location-region-5",
+      "text": "A skull row reveals that one skull has been replaced recently.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-twist-bonework-cover-lines",
+      "title": "Bonework Cover Lines",
+      "slotId": "encounterTwist",
+      "regionId": "location-region-1",
+      "text": "Bone ornaments create brittle cover and collapsing lines of sight.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-twist-reliquary-alarm-choir",
+      "title": "Reliquary Alarm Choir",
+      "slotId": "encounterTwist",
+      "regionId": "location-region-2",
+      "text": "Opening a reliquary causes the room to answer in bone clicks.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-twist-bonework-cover-lines",
+      "title": "Bonework Cover Lines",
+      "slotId": "encounterTwist",
+      "regionId": "location-region-3",
+      "text": "Bone ornaments create brittle cover and collapsing lines of sight.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-twist-reliquary-alarm-choir",
+      "title": "Reliquary Alarm Choir",
+      "slotId": "encounterTwist",
+      "regionId": "location-region-4",
+      "text": "Opening a reliquary causes the room to answer in bone clicks.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-twist-bonework-cover-lines",
+      "title": "Bonework Cover Lines",
+      "slotId": "encounterTwist",
+      "regionId": "location-region-5",
+      "text": "Bone ornaments create brittle cover and collapsing lines of sight.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    },
+    {
+      "id": "places-reward-reliquary-fragment-key",
+      "title": "Reliquary Fragment Key",
+      "slotId": "reward",
+      "regionId": "",
+      "text": "A bone fragment acts as a key to sacred locks.",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ]
+    }
+  ],
+  "rooms": [
+    {
+      "id": "location-region-1",
+      "heading": "Room 1: 01 Skull Lined Corridor",
+      "roomNumber": 1,
+      "role": "entrance",
+      "readAloud": "",
+      "premise": "Every chamber seems arranged to continue a prayer that no living voice remembers.",
+      "sensory": "cold incense · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+      "feature": "bone chandeliers",
+      "danger": "A sermon text is carved into a floor slab polished by knees and footsteps.",
+      "secret": "",
+      "reward": "—",
+      "componentIds": [
+        "places-hazard-weight-sermon-slab",
+        "places-clue-miscounted-skull-row",
+        "places-twist-bonework-cover-lines"
+      ],
+      "placedComponentIds": [
+        "places-premise-ossuary-litany-engine",
+        "places-sense-bone-dust-breath",
+        "places-sense-clicking-skull-seams",
+        "places-hazard-weight-sermon-slab",
+        "places-clue-miscounted-skull-row",
+        "places-twist-bonework-cover-lines"
+      ],
+      "completedSlotIds": [
+        "hazard",
+        "clue",
+        "encounterTwist"
+      ],
+      "missingSlotIds": [],
+      "readinessStatus": "ready"
+    },
+    {
+      "id": "location-region-2",
+      "heading": "Room 4: 02 Ossuary Gallery",
+      "roomNumber": 4,
+      "role": "clue",
+      "readAloud": "",
+      "premise": "—",
+      "sensory": "bone dust · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+      "feature": "counted dead",
+      "danger": "A strand of beads runs ankle-high between two reliquary niches.",
+      "secret": "",
+      "reward": "—",
+      "componentIds": [
+        "places-hazard-reliquary-tripwire",
+        "places-clue-bone-chandelier-map",
+        "places-twist-reliquary-alarm-choir"
+      ],
+      "placedComponentIds": [
+        "places-sense-bone-dust-breath",
+        "places-sense-clicking-skull-seams",
+        "places-hazard-reliquary-tripwire",
+        "places-clue-bone-chandelier-map",
+        "places-twist-reliquary-alarm-choir"
+      ],
+      "completedSlotIds": [
+        "hazard",
+        "clue",
+        "encounterTwist"
+      ],
+      "missingSlotIds": [],
+      "readinessStatus": "ready"
+    },
+    {
+      "id": "location-region-3",
+      "heading": "Room 2: 03 Crypt Chapel",
+      "roomNumber": 2,
+      "role": "connector",
+      "readAloud": "",
+      "premise": "—",
+      "sensory": "damp limestone · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+      "feature": "devotional remains",
+      "danger": "A sermon text is carved into a floor slab polished by knees and footsteps.",
+      "secret": "",
+      "reward": "—",
+      "componentIds": [
+        "places-hazard-weight-sermon-slab",
+        "places-clue-miscounted-skull-row",
+        "places-twist-bonework-cover-lines"
+      ],
+      "placedComponentIds": [
+        "places-sense-bone-dust-breath",
+        "places-sense-clicking-skull-seams",
+        "places-hazard-weight-sermon-slab",
+        "places-clue-miscounted-skull-row",
+        "places-twist-bonework-cover-lines"
+      ],
+      "completedSlotIds": [
+        "hazard",
+        "clue",
+        "encounterTwist"
+      ],
+      "missingSlotIds": [],
+      "readinessStatus": "ready"
+    },
+    {
+      "id": "location-region-4",
+      "heading": "Room 3: 04 Reliquary Niche",
+      "roomNumber": 3,
+      "role": "clue",
+      "readAloud": "",
+      "premise": "—",
+      "sensory": "old wax · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+      "feature": "candle niches",
+      "danger": "desecrated relic · A strand of beads runs ankle-high between two reliquary niches.",
+      "secret": "",
+      "reward": "—",
+      "componentIds": [
+        "places-hazard-reliquary-tripwire",
+        "places-clue-bone-chandelier-map",
+        "places-twist-reliquary-alarm-choir"
+      ],
+      "placedComponentIds": [
+        "places-sense-bone-dust-breath",
+        "places-sense-clicking-skull-seams",
+        "places-hazard-reliquary-tripwire",
+        "places-clue-bone-chandelier-map",
+        "places-twist-reliquary-alarm-choir"
+      ],
+      "completedSlotIds": [
+        "hazard",
+        "clue",
+        "encounterTwist"
+      ],
+      "missingSlotIds": [],
+      "readinessStatus": "ready"
+    },
+    {
+      "id": "location-region-5",
+      "heading": "Room 5: 05 Sealed Catacomb",
+      "roomNumber": 5,
+      "role": "final",
+      "readAloud": "",
+      "premise": "—",
+      "sensory": "muffled hymns · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+      "feature": "skull garlands · Visible Anomaly — Prayer-Slip Mortar: The mortar between the stones has been packed with hair, ash, and old prayer slips.",
+      "danger": "A sermon text is carved into a floor slab polished by knees and footsteps.",
+      "secret": "",
+      "reward": "bone icon · A labeled finger bone rests in a small silver tube, warm only near locked reliquaries.",
+      "componentIds": [
+        "places-hazard-weight-sermon-slab",
+        "places-clue-miscounted-skull-row",
+        "places-twist-bonework-cover-lines"
+      ],
+      "placedComponentIds": [
+        "places-sense-bone-dust-breath",
+        "places-sense-clicking-skull-seams",
+        "places-anomaly-prayer-slip-mortar",
+        "places-reward-reliquary-fragment-key",
+        "places-hazard-weight-sermon-slab",
+        "places-clue-miscounted-skull-row",
+        "places-twist-bonework-cover-lines"
+      ],
+      "completedSlotIds": [
+        "hazard",
+        "clue",
+        "encounterTwist"
+      ],
+      "missingSlotIds": [],
+      "readinessStatus": "ready"
+    }
+  ],
+  "atTheTableRows": [
+    {
+      "label": "Use This When",
+      "value": "You need a Crypt horror insert shaped by Religious Horror, Gothic."
+    },
+    {
+      "label": "Primary Source",
+      "value": "sedlec-ossuary"
+    },
+    {
+      "label": "Run Order",
+      "value": "5 mapped regions. Follow the room numbers unless the table needs a faster route."
+    },
+    {
+      "label": "Pressure",
+      "value": "5 hazard hooks ready."
+    },
+    {
+      "label": "Clue Flow",
+      "value": "5 clue hooks ready."
+    },
+    {
+      "label": "Encounter Twist",
+      "value": "5 twist hooks ready."
+    }
+  ],
+  "mapSyncStatus": {
+    "mode": "synced",
+    "label": "Generated Map Synced",
+    "requested": 5,
+    "generated": 5,
+    "synced": 5,
+    "corridors": 4,
+    "description": "5/5 requested rooms synced · 5 generated rooms · 4 corridors"
+  },
+  "mapNotes": [
+    "Use the numbered map as the running order for 5 rooms.",
+    "4 corridors connect the main route and side areas.",
+    "Map tone: Crypt."
+  ]
+}

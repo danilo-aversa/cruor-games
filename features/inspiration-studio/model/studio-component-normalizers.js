@@ -15,6 +15,8 @@ export const COMPONENT_TYPE_LABELS = Object.freeze({
   "monster-graft": "Monster Graft",
   "location-component": "Location Component",
   "location-region": "Location Region",
+  "semantic-location-component": "Semantic Location Component",
+  "semantic-component": "Semantic Component",
 });
 
 export const COMPONENT_TYPE_ICONS = Object.freeze({
@@ -31,14 +33,20 @@ export const STATUS_OPTIONS = Object.freeze([
     description: "Use while the module is being structured, reviewed, or playtested.",
   },
   {
+    id: "in-review",
+    label: "In Review",
+    icon: "fa-magnifying-glass",
+    description: "Use while the v2 module is undergoing editorial and semantic review.",
+  },
+  {
     id: "published",
     label: "Published",
     icon: "fa-circle-check",
     description: "Use when the module is approved for the public archive and live generators.",
   },
   {
-    id: "archived",
-    label: "Archived",
+    id: "retired",
+    label: "Retired",
     icon: "fa-box-archive",
     description: "Use when the module should remain available for reference but no longer be treated as active content.",
   },
@@ -93,7 +101,10 @@ export function getDuplicateIds(items = []) {
 }
 
 export function normalizeStatus(value) {
-  return STATUS_OPTIONS.some((option) => option.id === value) ? value : "draft";
+  const normalizedValue = value === "archived" ? "retired" : value;
+  return STATUS_OPTIONS.some((option) => option.id === normalizedValue)
+    ? normalizedValue
+    : "draft";
 }
 
 export function formatPlainLabel(value) {

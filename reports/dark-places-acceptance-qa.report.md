@@ -1,6 +1,6 @@
 # Dark Places Acceptance QA
 
-Generated: 2026-07-14T16:18:52.179Z
+Generated: 2026-07-16T17:30:59.881Z
 Working directory: H:\Users\avers\Documenti\GitHub\cruor-games
 
 ## Summary

@@ -49,7 +49,16 @@ import {
   buildContentPackExport,
   buildModuleExport,
   downloadJsonFile,
+  downloadSemanticJsonFile,
+  serializeStudioExport,
 } from "./model/studio-export.js";
+import {
+  getStudioComponentFamily,
+  getStudioEditorDefinition,
+} from "./model/studio-editor-registry.js";
+import { isStudioSpecializedSemanticType } from "./schema/studio-semantic-editor-registry.js";
+import { StudioSemanticComponentEditor } from "./editors/StudioSemanticComponentEditor.jsx";
+import { importStudioSemanticContent } from "./model/studio-v2-io.js";
 import {
   getEntryIssueState,
   getGroupedValidationIssues,
@@ -81,6 +90,8 @@ import { CoverageMatrixModal } from "./coverage/CoverageMatrixModal.jsx";
 import { MonsterBatchQaModal } from "./qa/MonsterBatchQaModal.jsx";
 import { MonsterPerGraftQaModal } from "./qa/MonsterPerGraftQaModal.jsx";
 import { MapBatchQaModal } from "./qa/MapBatchQaModal.jsx";
+import { StudioDarkPlacesPreview } from "./preview/StudioDarkPlacesPreview.jsx";
+import { DarkPlacesSemanticQaModal } from "./qa/DarkPlacesSemanticQaModal.jsx";
 import {
   STUDIO_TEST_IDS,
   deleteStudioTestPreset,
@@ -242,6 +253,12 @@ const STUDIO_SECTIONS = [
     hint: "Monster grafts, location content, and map regions linked to this source.",
   },
   {
+    id: "preview",
+    label: "Preview",
+    icon: "fa-eye",
+    hint: "Deterministic compiled Dark Places Overview, At the Table, and room output.",
+  },
+  {
     id: "review",
     label: "Review",
     icon: "fa-shield-halved",
@@ -252,15 +269,15 @@ const STUDIO_SECTIONS = [
 const EXPORT_MODE_OPTIONS = [
   {
     id: "contentPack",
-    label: "Content Pack",
+    label: "Content Pack v0.2",
     icon: "fa-box-open",
-    description: "Registry-ready pack with source anchor, public inspiration, linked components, workflows, and slots.",
+    description: "Canonical semantic v2 pack. Studio never emits the legacy collections shape.",
   },
   {
     id: "module",
-    label: "Module Draft",
+    label: "Inspiration Module v2",
     icon: "fa-file-code",
-    description: "Raw Inspiration Module draft used by the Studio editor.",
+    description: "Canonical v2 module with schema discriminants and semantic payloads.",
   },
 ];
 
@@ -325,7 +342,8 @@ const LIBRARY_STATUS_FILTERS = [
   ["all", "All"],
   ["published", "Published"],
   ["draft", "Draft"],
-  ["archived", "Archived"],
+  ["in-review", "In Review"],
+  ["retired", "Retired"],
   ["needs-review", "Needs Review"],
 ];
 
@@ -1007,7 +1025,7 @@ function getMapInfluenceSourceFallback(component = {}) {
 }
 
 function getComponentEditorTabs(component = {}) {
-  if (component.contentType === "monster-graft") return COMPONENT_EDITOR_TABS;
+  if (getStudioComponentFamily(component) === "monster-graft") return COMPONENT_EDITOR_TABS;
   return BASIC_COMPONENT_EDITOR_TABS;
 }
 
@@ -1025,16 +1043,24 @@ function getStatusClassName(status = "draft") {
   return `is-status-${normalizeStatus(status)}`;
 }
 
+function getInspirationStatusForModuleStatus(status = "draft") {
+  if (status === "published") return "approved";
+  if (status === "retired") return "rejected";
+  return status === "in-review" ? "in-review" : "draft";
+}
+
 function getStatusIconName(status = "draft") {
   if (status === "published") return "fa-circle-check";
-  if (status === "archived") return "fa-box-archive";
+  if (status === "in-review") return "fa-magnifying-glass";
+  if (status === "retired") return "fa-box-archive";
   return "fa-pen-ruler";
 }
 
 function getLibraryStatusFilterIcon(filterId = "all") {
   if (filterId === "published") return "fa-circle-check";
   if (filterId === "draft") return "fa-pen-ruler";
-  if (filterId === "archived") return "fa-box-archive";
+  if (filterId === "in-review") return "fa-magnifying-glass";
+  if (filterId === "retired") return "fa-box-archive";
   if (filterId === "needs-review") return "fa-triangle-exclamation";
   return "fa-layer-group";
 }
@@ -1412,6 +1438,11 @@ function StatPill({ icon, label, value }) {
 
 function getSectionCount(sectionId, draft, componentGroups, validationReport) {
   if (sectionId === "components") return asArray(draft.components).length;
+  if (sectionId === "preview") {
+    return asArray(draft.components).filter((component) =>
+      asArray(component.workflows).includes("darken-location"),
+    ).length;
+  }
   if (sectionId === "review") {
     const summary = validationReport?.summary || getIssueSummary(validationReport?.issues);
     return (summary.error || 0) + (summary.warning || 0);
@@ -1430,7 +1461,7 @@ function StudioRightRail({ collapsed = false, componentGroups, draft, imageSourc
   const locationCount = componentGroups["location-component"].length;
   const regionCount = componentGroups["location-region"].length;
   const linkedTotal = graftCount + locationCount + regionCount;
-  const sourceType = draft.sourceAnchor.sourceTypes?.[0] || "Source Anchor";
+  const sourceType = draft.inspiration.sourceTypes?.[0] || "Source Anchor";
 
   if (collapsed) {
     return (
@@ -1480,7 +1511,7 @@ function StudioRightRail({ collapsed = false, componentGroups, draft, imageSourc
         <span className="studio-rail-card__eyebrow"><Icon name="fa-book-skull" /> Public Preview</span>
         <div className="studio-card-preview studio-card-preview--rail" aria-label="Public 4:5 inspiration card preview">
           {imageSource ? (
-            <img src={imageSource} alt={draft.inspiration.media?.alt || `${draft.title} preview`} title={draft.inspiration.media?.title || undefined} />
+            <img src={imageSource} alt={draft.inspiration.media?.imageAlt || `${draft.title} preview`} />
           ) : (
             <div className="studio-card-preview__empty">
               <Icon name="fa-image" />
@@ -1492,7 +1523,7 @@ function StudioRightRail({ collapsed = false, componentGroups, draft, imageSourc
             <em>{sourceType}</em>
           </div>
         </div>
-        <p>{draft.inspiration.summary || draft.sourceAnchor.summary || "No public summary yet."}</p>
+        <p>{draft.inspiration.editorial?.deck || draft.sourceAnchor.summary || "No public summary yet."}</p>
       </section>
 
       <section className="studio-rail-card studio-rail-card--status" data-readiness-state={readinessState}>
@@ -1655,6 +1686,7 @@ export default function InspirationStudioPage() {
   const [selectedComponentId, setSelectedComponentId] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState("");
   const [copyState, setCopyState] = useState("idle");
+  const [importState, setImportState] = useState({ state: "idle", message: "" });
   const [exportMode, setExportMode] = useState("contentPack");
   const [libraryCollapsed, setLibraryCollapsed] = useState(true);
   const [rightRailCollapsed, setRightRailCollapsed] = useState(true);
@@ -1666,6 +1698,7 @@ export default function InspirationStudioPage() {
   const [isMonsterBatchQaOpen, setMonsterBatchQaOpen] = useState(false);
   const [isMonsterPerGraftQaOpen, setMonsterPerGraftQaOpen] = useState(false);
   const [isMapBatchQaOpen, setMapBatchQaOpen] = useState(false);
+  const [isSemanticQaOpen, setSemanticQaOpen] = useState(false);
   const [testPresets, setTestPresets] = useState(() => readStudioTestPresets());
   const [pendingTestPresetRun, setPendingTestPresetRun] = useState(null);
   const [identityIdsUnlocked, setIdentityIdsUnlocked] = useState(false);
@@ -1713,8 +1746,8 @@ export default function InspirationStudioPage() {
       ...(componentGroups["location-component"] || []),
       ...(componentGroups["location-region"] || []),
     ];
-    if (locationFilter === "location-component") return items.filter((component) => component.contentType === "location-component");
-    if (locationFilter === "location-region") return items.filter((component) => component.contentType === "location-region");
+    if (locationFilter === "location-component") return items.filter((component) => getStudioComponentFamily(component) === "location-component");
+    if (locationFilter === "location-region") return items.filter((component) => getStudioComponentFamily(component) === "location-region");
     return items;
   }, [componentGroups, locationFilter]);
   const activeComponentPool = componentMode === "monsters" ? monsterComponents : locationComponents;
@@ -1725,8 +1758,8 @@ export default function InspirationStudioPage() {
   const validationReport = useMemo(() => validateStudioDraft(draft, contentPackExportObject), [draft, contentPackExportObject]);
   const studioWarnings = useMemo(() => buildStudioWarningsFromValidation(validationReport, draft), [validationReport, draft]);
   const monsterQaReport = useMemo(() => runMonsterQaSuite({ mode: "admin-studio" }), []);
-  const moduleExportJson = useMemo(() => JSON.stringify(moduleExportObject, null, 2), [moduleExportObject]);
-  const contentPackExportJson = useMemo(() => JSON.stringify(contentPackExportObject, null, 2), [contentPackExportObject]);
+  const moduleExportJson = useMemo(() => serializeStudioExport(moduleExportObject), [moduleExportObject]);
+  const contentPackExportJson = useMemo(() => serializeStudioExport(contentPackExportObject), [contentPackExportObject]);
   const exportJson = exportMode === "module" ? moduleExportJson : contentPackExportJson;
   const readinessReportObject = useMemo(
     () => buildPublishReadinessReport(draft, validationReport, contentPackExportObject, moduleExportObject),
@@ -1756,9 +1789,9 @@ export default function InspirationStudioPage() {
     setDraft((currentDraft) => {
       const nextDraft = clone(currentDraft);
       updater(nextDraft);
-      nextDraft.monsterGrafts = nextDraft.components.filter((component) => component.contentType === "monster-graft");
-      nextDraft.locationComponents = nextDraft.components.filter((component) => component.contentType === "location-component");
-      nextDraft.locationRegions = nextDraft.components.filter((component) => component.contentType === "location-region");
+      nextDraft.monsterGrafts = nextDraft.components.filter((component) => getStudioComponentFamily(component) === "monster-graft");
+      nextDraft.locationComponents = nextDraft.components.filter((component) => getStudioComponentFamily(component) === "location-component");
+      nextDraft.locationRegions = nextDraft.components.filter((component) => getStudioComponentFamily(component) === "location-region");
       return nextDraft;
     });
   }
@@ -1802,9 +1835,10 @@ export default function InspirationStudioPage() {
   function handleTitleChange(value) {
     updateDraft((nextDraft) => {
       nextDraft.title = value;
-      nextDraft.sourceAnchor.label = value;
+      nextDraft.sourceAnchor.title = value;
+      nextDraft.sourceAnchor.citation = nextDraft.sourceAnchor.citation || {};
+      nextDraft.sourceAnchor.citation.label = value;
       nextDraft.inspiration.title = value;
-      nextDraft.inspiration.label = value;
       if (!identityIdsUnlocked) {
         syncDraftIdentityIds(nextDraft, value);
       } else if (!nextDraft.id || nextDraft.id === selectedModuleId) {
@@ -1827,7 +1861,7 @@ export default function InspirationStudioPage() {
     updateDraft((nextDraft) => {
       nextDraft.inspiration.media = nextDraft.inspiration.media || {};
       nextDraft.inspiration.media.imageKey = file.name;
-      nextDraft.inspiration.media.imageNote = nextDraft.inspiration.media.imageNote || `${nextDraft.title} inspiration image.`;
+      nextDraft.inspiration.media.imageAlt = nextDraft.inspiration.media.imageAlt || `${nextDraft.title} inspiration image.`;
     });
   }
 
@@ -1835,16 +1869,16 @@ export default function InspirationStudioPage() {
     const componentsToAdd = buildComponentTemplates(templateId, draft);
     const primaryComponent = componentsToAdd[0];
     if (!primaryComponent) return;
-    const contentType = primaryComponent.contentType;
-    const addedContentTypes = new Set(componentsToAdd.map((component) => component.contentType));
+    const componentFamily = getStudioComponentFamily(primaryComponent);
+    const addedComponentFamilies = new Set(componentsToAdd.map(getStudioComponentFamily));
     setActiveSection("components");
-    setComponentMode(contentType === "monster-graft" ? "monsters" : "locations");
+    setComponentMode(componentFamily === "monster-graft" ? "monsters" : "locations");
     setLocationFilter(
-      addedContentTypes.has("location-region") && addedContentTypes.has("location-component")
+      addedComponentFamilies.has("location-region") && addedComponentFamilies.has("location-component")
         ? "all"
-        : contentType === "location-region"
+        : componentFamily === "location-region"
           ? "location-region"
-          : contentType === "location-component"
+          : componentFamily === "location-component"
             ? "location-component"
             : "all",
     );
@@ -1882,6 +1916,54 @@ export default function InspirationStudioPage() {
       setCopyState("failed");
       window.setTimeout(() => setCopyState("idle"), 1400);
     }
+  }
+
+  async function importStudioJson(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    const result = importStudioSemanticContent(await file.text());
+    if (!result.selectedModule) {
+      setImportState({
+        state: "error",
+        message: result.diagnostics[0]?.message || "The selected file is not a supported Studio module or pack.",
+      });
+      return;
+    }
+
+    const importedModules = result.modules.map((module) =>
+      normalizeModuleForDraft(module, {
+        importResult: { ...result, selectedModule: module },
+      }),
+    );
+    const selectedDraft = importedModules.find(
+      (module) => module.id === result.selectedModule.id,
+    ) || importedModules[0];
+    setModules((currentModules) => {
+      const importedIds = new Set(importedModules.map((module) => module.id));
+      return [
+        ...importedModules,
+        ...currentModules.filter((module) => !importedIds.has(module.id)),
+      ];
+    });
+    setSelectedModuleId(selectedDraft.id);
+    setDraft(selectedDraft);
+    setSelectedComponentId(selectedDraft.components[0]?.id || null);
+    setImportState({
+      state: result.mode === "v1-compatibility" ? "transitional" : "success",
+      message: result.mode === "v1-compatibility"
+        ? "Legacy module loaded as a v2 transitional draft. Export remains v2-only."
+        : `${result.kind === "content-pack" ? "Content Pack" : "Inspiration Module"} v2 imported.`,
+    });
+  }
+
+  function downloadCurrentSemanticExport() {
+    const payload = exportMode === "module"
+      ? moduleExportObject
+      : contentPackExportObject;
+    const suffix = exportMode === "module" ? "module-v2" : "content-pack-v0.2";
+    downloadSemanticJsonFile(`${slugify(draft.title)}-${suffix}.json`, payload);
   }
 
   function downloadReadinessReport() {
@@ -1932,7 +2014,7 @@ export default function InspirationStudioPage() {
   }
 
   const packTitle = packSummaries.find((pack) => pack.id === draft.packId)?.title || draft.packId;
-  const imageSource = imagePreviewUrl || draft.inspiration?.media?.imageUrl || "";
+  const imageSource = imagePreviewUrl || "";
 
   function handleSaveTestPreset(presetDefinition) {
     const savedPreset = saveStudioTestPreset(presetDefinition);
@@ -1995,10 +2077,12 @@ export default function InspirationStudioPage() {
             batchQaOpen={isMonsterBatchQaOpen}
             perGraftQaOpen={isMonsterPerGraftQaOpen}
             mapBatchQaOpen={isMapBatchQaOpen}
+            semanticQaOpen={isSemanticQaOpen}
             presets={testPresets}
             onOpenMonsterBatchQa={() => setMonsterBatchQaOpen(true)}
             onOpenMonsterPerGraftQa={() => setMonsterPerGraftQaOpen(true)}
             onOpenMapBatchQa={() => setMapBatchQaOpen(true)}
+            onOpenSemanticQa={() => setSemanticQaOpen(true)}
             onRunPreset={handleRunTestPreset}
             onDeletePreset={handleDeleteTestPreset}
           />
@@ -2217,6 +2301,26 @@ export default function InspirationStudioPage() {
               />
             ) : null}
 
+            {activeSection === "preview" ? (
+              <div className="inspiration-studio__workspace inspiration-studio__workspace--preview">
+                <section
+                  className="studio-panel studio-panel--semantic-preview"
+                  aria-label="Compiled Dark Places preview"
+                >
+                  <PanelTitle
+                    eyebrow="Compiler Preview"
+                    icon="fa-wand-magic-sparkles"
+                    title="Deterministic Dark Places Sample"
+                    help="Compiles the current canonical v2 Studio export through the real Dark Places compiler using a deterministic sample room program."
+                  />
+                  <StudioDarkPlacesPreview
+                    module={moduleExportObject}
+                    pack={contentPackExportObject}
+                  />
+                </section>
+              </div>
+            ) : null}
+
             {activeSection === "review" ? (
               <ExportWorkspace
                 contentPackExportJson={contentPackExportJson}
@@ -2225,8 +2329,11 @@ export default function InspirationStudioPage() {
                 exportMode={exportMode}
                 moduleExportJson={moduleExportJson}
                 onCopy={copyExportJson}
+                onDownloadExport={downloadCurrentSemanticExport}
                 onDownloadReadinessReport={downloadReadinessReport}
+                onImport={importStudioJson}
                 onExportModeChange={setExportMode}
+                importState={importState}
                 draft={draft}
                 studioWarnings={studioWarnings}
                 validationReport={validationReport}
@@ -2286,6 +2393,12 @@ export default function InspirationStudioPage() {
         onPresetRunConsumed={handlePresetRunConsumed}
         onSavePreset={handleSaveTestPreset}
       />
+      <DarkPlacesSemanticQaModal
+        isOpen={isSemanticQaOpen}
+        module={moduleExportObject}
+        pack={contentPackExportObject}
+        onClose={() => setSemanticQaOpen(false)}
+      />
     </section>
   );
 }
@@ -2295,7 +2408,6 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
 
   function updateTaxonomyField(field, values) {
     updateDraft((nextDraft) => {
-      nextDraft.sourceAnchor[field] = values;
       nextDraft.inspiration[field] = values;
     });
   }
@@ -2314,9 +2426,10 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
 
   function appendPublicSummaryMarkdown(token) {
     updateDraft((nextDraft) => {
-      const currentValue = nextDraft.inspiration.summary || nextDraft.sourceAnchor.summary || "";
+      nextDraft.inspiration.editorial = nextDraft.inspiration.editorial || {};
+      const currentValue = nextDraft.inspiration.editorial.deck || nextDraft.sourceAnchor.summary || "";
       const nextValue = `${currentValue}${currentValue ? "\n" : ""}${token}`;
-      nextDraft.inspiration.summary = nextValue;
+      nextDraft.inspiration.editorial.deck = nextValue;
       nextDraft.sourceAnchor.summary = nextValue;
     });
   }
@@ -2356,7 +2469,7 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
                 updateDraft((nextDraft) => {
                   nextDraft.status = value;
                   nextDraft.sourceAnchor.status = value;
-                  nextDraft.inspiration.status = value;
+                  nextDraft.inspiration.status = getInspirationStatusForModuleStatus(value);
                 });
               }}>
                 {STATUS_OPTIONS.map((option) => (
@@ -2407,12 +2520,13 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
           <FormRow label="Public Summary" icon="fa-quote-left" hint={FIELD_HELP.publicSummary}>
             <EditableTextBox
               rows={5}
-              value={draft.inspiration.summary || draft.sourceAnchor.summary}
+              value={draft.inspiration.editorial?.deck || draft.sourceAnchor.summary}
               placeholder="No public summary set."
               onApplyToken={appendPublicSummaryMarkdown}
               onChange={(value) => {
                 updateDraft((nextDraft) => {
-                  nextDraft.inspiration.summary = value;
+                  nextDraft.inspiration.editorial = nextDraft.inspiration.editorial || {};
+                  nextDraft.inspiration.editorial.deck = value;
                   nextDraft.sourceAnchor.summary = value;
                 });
               }}
@@ -2422,10 +2536,10 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
           <FormRow label="Why It Disturbs / Narrative" icon="fa-book-skull" hint={FIELD_HELP.narrative}>
             <EditableTextBox
               rows={7}
-              value={draft.inspiration.narrative}
+              value={draft.inspiration.editorial?.whyItDisturbs}
               placeholder="No narrative text set."
-              onApplyToken={(token) => appendMarkdown(["inspiration", "narrative"], token)}
-              onChange={(value) => updateDraftField(["inspiration", "narrative"], value)}
+              onApplyToken={(token) => appendMarkdown(["inspiration", "editorial", "whyItDisturbs"], token)}
+              onChange={(value) => updateDraftField(["inspiration", "editorial", "whyItDisturbs"], value)}
             />
           </FormRow>
         </section>
@@ -2435,7 +2549,7 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
 
           <div className="studio-card-preview">
             {imageSource ? (
-              <img src={imageSource} alt={draft.inspiration.media?.alt || `${draft.title} preview`} title={draft.inspiration.media?.title || undefined} />
+              <img src={imageSource} alt={draft.inspiration.media?.imageAlt || `${draft.title} preview`} />
             ) : (
               <div className="studio-card-preview__empty">
                 <Icon name="fa-image" />
@@ -2444,7 +2558,7 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
             )}
             <div>
               <strong>{draft.title}</strong>
-              <span>{draft.sourceAnchor.sourceTypes?.[0] || "Source Anchor"}</span>
+              <span>{draft.inspiration.sourceTypes?.[0] || "Source Anchor"}</span>
             </div>
           </div>
 
@@ -2457,17 +2571,17 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
             <FormRow label="Image Key / Filename" icon="fa-file-image" hint={FIELD_HELP.imageKey}>
               <TextInput value={draft.inspiration.media?.imageKey} onChange={(value) => updateDraftField(["inspiration", "media", "imageKey"], value)} />
             </FormRow>
-            <FormRow label="Image URL" icon="fa-link" hint={FIELD_HELP.imageUrl}>
-              <TextInput value={draft.inspiration.media?.imageUrl} onChange={(value) => updateDraftField(["inspiration", "media", "imageUrl"], value)} />
+            <FormRow label="Image Provider" icon="fa-link" hint="Stable provider or asset-library identifier; preview URLs are never serialized.">
+              <TextInput value={draft.inspiration.media?.imageProvider} onChange={(value) => updateDraftField(["inspiration", "media", "imageProvider"], value)} />
             </FormRow>
-            <FormRow label="Image Title" icon="fa-heading" hint="Optional image title metadata for the archive card asset.">
-              <TextInput value={draft.inspiration.media?.title} onChange={(value) => updateDraftField(["inspiration", "media", "title"], value)} />
+            <FormRow label="Image Credit" icon="fa-heading" hint="Required editorial credit or rights attribution when applicable.">
+              <TextInput value={draft.inspiration.media?.imageCredit} onChange={(value) => updateDraftField(["inspiration", "media", "imageCredit"], value)} />
             </FormRow>
             <FormRow label="Image Alt" icon="fa-closed-captioning" hint="Accessible alt text for the archive image preview and published card.">
-              <TextInput value={draft.inspiration.media?.alt} onChange={(value) => updateDraftField(["inspiration", "media", "alt"], value)} />
+              <TextInput value={draft.inspiration.media?.imageAlt} onChange={(value) => updateDraftField(["inspiration", "media", "imageAlt"], value)} />
             </FormRow>
-            <FormRow label="Image Note" icon="fa-note-sticky" hint={FIELD_HELP.imageNote}>
-              <TextArea rows={3} value={draft.inspiration.media?.imageNote} onChange={(value) => updateDraftField(["inspiration", "media", "imageNote"], value)} />
+            <FormRow label="Icon" icon="fa-icons" hint="Optional semantic icon identifier used by Archive views.">
+              <TextInput value={draft.inspiration.media?.icon} onChange={(value) => updateDraftField(["inspiration", "media", "icon"], value)} />
             </FormRow>
           </details>
         </section>
@@ -2488,7 +2602,7 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
               fieldId="source-types"
               icon={TAXONOMY_PILL_ICONS.sourceTypes}
               suggestions={taxonomyOptions.sourceTypes}
-              value={draft.sourceAnchor.sourceTypes}
+              value={draft.inspiration.sourceTypes}
               onChange={(values) => updateTaxonomyField("sourceTypes", values)}
               placeholder="Add allowed source type…"
             />
@@ -2498,7 +2612,7 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
               fieldId="themes"
               icon={TAXONOMY_PILL_ICONS.themes}
               suggestions={taxonomyOptions.themes}
-              value={draft.sourceAnchor.themes}
+              value={draft.inspiration.themes}
               onChange={(values) => updateTaxonomyField("themes", values)}
               placeholder="Add theme…"
             />
@@ -2508,7 +2622,7 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
               fieldId="motifs"
               icon={TAXONOMY_PILL_ICONS.motifs}
               suggestions={taxonomyOptions.motifs}
-              value={draft.sourceAnchor.motifs}
+              value={draft.inspiration.motifs}
               onChange={(values) => updateTaxonomyField("motifs", values)}
               placeholder="Add motif…"
             />
@@ -2519,7 +2633,7 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
               fieldId="horror-tags"
               icon={TAXONOMY_PILL_ICONS.horror}
               suggestions={taxonomyOptions.horror}
-              value={draft.sourceAnchor.horror}
+              value={draft.inspiration.horror}
               onChange={(values) => updateTaxonomyField("horror", values)}
               placeholder="Add allowed horror tag…"
             />
@@ -2531,7 +2645,7 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
 }
 
 function getComponentGroupMeta(component = {}) {
-  const type = component.contentType;
+  const type = getStudioComponentFamily(component);
   const slots = asArray(component.slots);
   const primarySlot = type === "monster-graft" ? (component.monster?.slot || slots[0] || "unslotted") : (slots[0] || "unslotted");
   const canonicalSlot = CANONICAL_SLOT_MAP.get(primarySlot) || CANONICAL_MONSTER_SLOT_MAP.get(primarySlot) || CANONICAL_DARKEN_SLOT_MAP.get(primarySlot);
@@ -2684,7 +2798,8 @@ function ComponentsWorkspace({
               </summary>
               <div className="studio-component-group__items">
                 {group.items.map((component) => {
-                  const typeLabel = COMPONENT_TYPE_LABELS[component.contentType] || component.contentType;
+                  const editorDefinition = getStudioEditorDefinition(component);
+                  const typeLabel = COMPONENT_TYPE_LABELS[component.contentType] || editorDefinition.label;
                   const slotLabel = joinList(component.slots);
                   const status = normalizeStatus(component.status);
                   const componentIssues = getIssuesForEntry(validationIssues, component.id);
@@ -2727,6 +2842,7 @@ function ComponentsWorkspace({
         {selectedComponent ? (
           <ComponentEditor
             component={selectedComponent}
+            editorDefinition={getStudioEditorDefinition(selectedComponent)}
             warnings={getStudioWarningsForEntry(studioWarnings, selectedComponent.id)}
             onChange={(updater) => onUpdateComponent(selectedComponent.id, updater)}
             onRemove={() => onRemoveComponent(selectedComponent.id)}
@@ -2766,8 +2882,11 @@ function ExportWorkspace({
   exportMode,
   moduleExportJson,
   onCopy,
+  onDownloadExport,
   onDownloadReadinessReport,
+  onImport,
   onExportModeChange,
+  importState,
   draft,
   studioWarnings,
   validationReport,
@@ -2799,7 +2918,21 @@ function ExportWorkspace({
             <Icon name={copyState === "copied" ? "fa-check" : copyState === "failed" ? "fa-triangle-exclamation" : "fa-copy"} />
             {copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy Failed" : "Copy JSON"}
           </button>
+          <button type="button" onClick={onDownloadExport}>
+            <Icon name="fa-file-arrow-down" /> Download v2
+          </button>
         </PanelTitle>
+
+        <div className="studio-v2-transfer" data-import-state={importState?.state || "idle"}>
+          <label className="studio-v2-transfer__import">
+            <Icon name="fa-file-import" /> Import v1/v2 JSON
+            <input type="file" accept="application/json,.json" onChange={onImport} />
+          </label>
+          <span>
+            <Icon name={importState?.state === "error" ? "fa-circle-xmark" : "fa-code-branch"} />
+            {importState?.message || "v1 is read transitionally; every Studio download and copy is canonical v2."}
+          </span>
+        </div>
 
         <div className="studio-export-mode" role="tablist" aria-label="Export format">
           {EXPORT_MODE_OPTIONS.map((option) => (
@@ -2817,8 +2950,8 @@ function ExportWorkspace({
 
         <p className="studio-export-note">
           {exportMode === "contentPack"
-            ? "Copy this JSON into a content pack file when validation is clean enough for the registry."
-            : "Use the raw module draft only for Studio/import debugging; the registry should consume the Content Pack export."}
+            ? "Canonical cruor-content-pack-v0.2 output for registry integration."
+            : "Canonical cruor-inspiration-module-v2 output; no v1 serializer is available."}
         </p>
         <textarea
           className="studio-export-textarea"
@@ -2916,56 +3049,43 @@ function ValidationPanel({ draft = {}, report, studioWarnings = [] }) {
   );
 }
 
-function ComponentEditor({ component, onChange, onRemove, warnings = [] }) {
-  const isMonsterGraft = component.contentType === "monster-graft";
-  const isLocationRegion = component.contentType === "location-region";
-
-  function setField(path, value) {
-    onChange((nextComponent) => {
-      let target = nextComponent;
-      for (const key of path.slice(0, -1)) {
-        target[key] = target[key] || {};
-        target = target[key];
-      }
-      target[path[path.length - 1]] = value;
-    });
-  }
-
-  function setArray(path, value) {
-    setField(path, splitList(value));
-  }
-
-  function setComponentTitle(value) {
-    onChange((nextComponent) => {
-      nextComponent.title = value;
-      nextComponent.label = value;
-    });
-  }
-
-  function setMonsterSlot(value) {
-    setField(["monster", "slot"], value);
-    setArray(["slots"], value);
-  }
-
-  const typeLabel = COMPONENT_TYPE_LABELS[component.contentType] || component.contentType || "Component";
-  const slotValue = isMonsterGraft ? (component.monster?.slot || asArray(component.slots)[0] || "body") : joinList(component.slots);
+function ComponentEditor({
+  component,
+  editorDefinition,
+  onChange,
+  onRemove,
+  warnings = [],
+}) {
+  const isSpecialized = isStudioSpecializedSemanticType(component.semanticType);
 
   return (
-    <div className="studio-component-editor-shell" aria-label="Selected component workspace">
+    <div className="studio-component-editor-shell" aria-label="Selected component workspace" data-studio-editor={editorDefinition?.editorId || "location-component"}>
       {warnings.length ? (
         <div className="studio-component-editor-warning-panel">
           <StudioWarningList grouped={false} warnings={warnings} />
         </div>
       ) : null}
-      <ComponentAdvancedEditor component={component} onChange={onChange} onRemove={onRemove} />
+      {isSpecialized ? (
+        <StudioSemanticComponentEditor
+          component={component}
+          onChange={onChange}
+          onRemove={onRemove}
+        />
+      ) : (
+        <ComponentAdvancedEditor
+          component={component}
+          onChange={onChange}
+          onRemove={onRemove}
+        />
+      )}
     </div>
   );
 
 }
 
 function ComponentAdvancedEditor({ component, onChange, onRemove }) {
-  const isMonsterGraft = component.contentType === "monster-graft";
-  const isLocationRegion = component.contentType === "location-region";
+  const isMonsterGraft = getStudioComponentFamily(component) === "monster-graft";
+  const isLocationRegion = getStudioComponentFamily(component) === "location-region";
   const [spellPickerQuery, setSpellPickerQuery] = useState("");
   const [spellPickerLevel, setSpellPickerLevel] = useState("all");
   const [spellPickerSchool, setSpellPickerSchool] = useState("all");
@@ -3745,7 +3865,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
   const hasProcedureBlock = Boolean(activeRulesBlocks.procedure) || procedureEnabled;
   const hasOutputTextBlock = Boolean(activeRulesBlocks.outputText) || Boolean(outputTextValue || hasAttackEventText || hasSaveOutcomeText || monsterRules.text?.response || monsterRules.text?.effect);
   const hasCounterplayBlock = Boolean(activeRulesBlocks.counterplay) || Boolean(component.counterplay);
-  const isLocationComponent = component.contentType === "location-component";
+  const isLocationComponent = getStudioComponentFamily(component) === "location-component";
   const editableMapInfluence = isLocationRegion
     ? (component.locationRegion?.mapInfluence || {})
     : (component.location?.mapInfluence || component.mapInfluence || {});

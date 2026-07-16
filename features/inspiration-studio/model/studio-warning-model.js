@@ -1,5 +1,6 @@
 import { asArray, hasText, isPlainObject } from "./studio-component-normalizers.js";
 import { normalizeModuleForDraft } from "./studio-draft.js";
+import { getStudioIssueFieldLink } from "./studio-field-links.js";
 
 export const STUDIO_WARNING_SEVERITIES = Object.freeze({
   blocking: {
@@ -19,6 +20,12 @@ export const STUDIO_WARNING_SEVERITIES = Object.freeze({
     label: "Suggestion",
     icon: "fa-circle-info",
     validationSeverity: "info",
+  },
+  legacy: {
+    id: "legacy",
+    label: "Legacy",
+    icon: "fa-code-branch",
+    validationSeverity: "warning",
   },
 });
 
@@ -81,7 +88,15 @@ export function normalizeStudioWarning(issue = {}, { draft, index = 0 } = {}) {
   const componentLookup = buildComponentLookup(draft);
   const componentId = issue.id && componentLookup.has(issue.id) ? issue.id : "";
   const component = componentId ? componentLookup.get(componentId) : null;
-  const severity = issue.studioSeverity || mapValidationSeverityToStudioWarningSeverity(issue.severity);
+  const severity =
+    issue.studioSeverity ||
+    (String(issue.code || "").startsWith("compatibility.")
+      ? "legacy"
+      : mapValidationSeverityToStudioWarningSeverity(issue.severity));
+  const fieldLink = getStudioIssueFieldLink({
+    ...issue,
+    componentId: componentId || issue.componentId,
+  });
 
   return {
     id: issue.warningId || `${severity}-${issue.id || "draft"}-${index}`,
@@ -91,6 +106,8 @@ export function normalizeStudioWarning(issue = {}, { draft, index = 0 } = {}) {
     componentId,
     componentTitle: component?.title || component?.label || "",
     path: issue.path || "",
+    fieldPath: fieldLink.fieldPath,
+    fieldId: fieldLink.fieldId,
     message: issue.message || "Studio warning.",
     whyItMatters: issue.whyItMatters || getWhyItMatters(issue),
     suggestedFix: issue.suggestedFix || getSuggestedFix(issue),
@@ -99,17 +116,39 @@ export function normalizeStudioWarning(issue = {}, { draft, index = 0 } = {}) {
   };
 }
 
-export function buildStudioWarningsFromValidation(validationReport = {}, draft = {}) {
-  return asArray(validationReport?.issues).map((issue, index) => normalizeStudioWarning(issue, { draft, index }));
+export function buildStudioWarningsFromValidation(
+  validationReport = {},
+  draft = {},
+) {
+  const normalized = normalizeModuleForDraft(draft);
+  const issues = [...asArray(validationReport?.issues)];
+  if (normalized.__studio?.sourceMode === "v1-compatibility") {
+    issues.push({
+      code: "compatibility.studio-transitional-draft",
+      severity: "warning",
+      studioSeverity: "legacy",
+      path: "module.schemaVersion",
+      message:
+        "This draft was imported from v1 and remains transitional until editorial review.",
+      suggestedFix:
+        "Review every normalized semantic field and export canonical v2 before publication.",
+    });
+  }
+  return issues.map((issue, index) =>
+    normalizeStudioWarning(issue, { draft: normalized, index }),
+  );
 }
 
 export function summarizeStudioWarnings(warnings = []) {
-  return asArray(warnings).reduce((summary, warning) => {
-    const severity = warning?.severity || "editorial";
-    summary.total += 1;
-    summary[severity] = (summary[severity] || 0) + 1;
-    return summary;
-  }, { total: 0, blocking: 0, editorial: 0, suggestion: 0 });
+  return asArray(warnings).reduce(
+    (summary, warning) => {
+      const severity = warning?.severity || "editorial";
+      summary.total += 1;
+      summary[severity] = (summary[severity] || 0) + 1;
+      return summary;
+    },
+    { total: 0, blocking: 0, editorial: 0, suggestion: 0, legacy: 0 },
+  );
 }
 
 export function getStudioWarningsForEntry(warnings = [], entryId = "") {
@@ -120,6 +159,7 @@ export function getStudioWarningsForEntry(warnings = [], entryId = "") {
 export function getStudioWarningState(warnings = []) {
   const summary = summarizeStudioWarnings(warnings);
   if (summary.blocking) return "blocking";
+  if (summary.legacy) return "legacy";
   if (summary.editorial) return "editorial";
   if (summary.suggestion) return "suggestion";
   return "clean";
@@ -139,7 +179,13 @@ export function groupStudioWarningsByComponent(warnings = [], draft = {}) {
       title: component?.title || component?.label || warning.area || "Current Draft",
       area: warning.area || "Studio",
       warnings: [],
-      summary: { total: 0, blocking: 0, editorial: 0, suggestion: 0 },
+      summary: {
+        total: 0,
+        blocking: 0,
+        editorial: 0,
+        suggestion: 0,
+        legacy: 0,
+      },
     };
 
     current.warnings.push(warning);
@@ -148,8 +194,12 @@ export function groupStudioWarningsByComponent(warnings = [], draft = {}) {
   });
 
   return [...groups.values()].sort((a, b) => {
-    if (b.summary.blocking !== a.summary.blocking) return b.summary.blocking - a.summary.blocking;
-    if (b.summary.editorial !== a.summary.editorial) return b.summary.editorial - a.summary.editorial;
+    if (b.summary.blocking !== a.summary.blocking)
+      return b.summary.blocking - a.summary.blocking;
+    if (b.summary.legacy !== a.summary.legacy)
+      return b.summary.legacy - a.summary.legacy;
+    if (b.summary.editorial !== a.summary.editorial)
+      return b.summary.editorial - a.summary.editorial;
     return b.summary.total - a.summary.total;
   });
 }

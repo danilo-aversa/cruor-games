@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ComposerCollapsibleSection, ComposerRail } from "../../../components/ui/composer-rail.jsx";
 import { ToolButton, ToolContentPanel, ToolFeatureBlock } from "../../../components/ui/tool-content-panel.jsx";
 import { MapSvg } from "../map-generator/map-generator.render.jsx";
+import { normalizeLocationDocumentForOutput } from "../compiler/index.js";
+import { LocationAtTheTableDashboard } from "./components/LocationAtTheTableDashboard.jsx";
 import { LocationRoomOutput } from "./components/LocationRoomOutput.jsx";
 import { LocationMapExportStudio } from "./components/LocationMapExportStudio.jsx";
 import {
@@ -19,6 +21,15 @@ import {
   rasterizeSvgToPngBlob,
   serializeSvg,
 } from "../map-generator/map-generator.export.js";
+import {
+  clearLocationSessionDashboardState,
+  createLocationSessionDashboardState,
+  loadLocationSessionDashboardState,
+  resetLocationSessionDashboardState,
+  saveLocationSessionDashboardState,
+  toggleLocationSessionClue,
+  updateLocationSessionPressure,
+} from "./model/location-session-dashboard-state.js";
 import "./location-output.styles.css";
 
 function cx(...classes) {
@@ -33,6 +44,16 @@ function cleanText(value, fallback = "") {
   if (value === null || value === undefined) return fallback;
   const text = String(value).trim();
   return text || fallback;
+}
+
+function resolveSessionStateStorage(explicitStorage) {
+  if (explicitStorage) return explicitStorage;
+  if (typeof window === "undefined") return null;
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
 }
 
 function formatRoomNumber(value) {
@@ -567,11 +588,12 @@ function getLocationMetaSummary(documentModel) {
 function LocationOutputOverview({ documentModel }) {
   const overview = documentModel?.overview || {};
   const meta = documentModel?.meta || {};
-  const globalEffects = [
-    ...asArray(overview.sensory),
-    ...asArray(overview.visibleAnomalies),
-    ...asArray(overview.rewardConsequences),
-  ];
+  const recurringSigns = asArray(overview.recurringSigns).length
+    ? overview.recurringSigns
+    : overview.visibleAnomalies;
+  const stakesAndConsequences = asArray(overview.stakesAndConsequences).length
+    ? overview.stakesAndConsequences
+    : overview.rewardConsequences;
 
   return (
     <ToolContentPanel
@@ -588,20 +610,60 @@ function LocationOutputOverview({ documentModel }) {
         className="location-output-section--premise"
       />
       <OutputBlockSection
-        blocks={globalEffects}
-        title="Global Effects"
+        blocks={overview.sensory}
+        title="Site Atmosphere"
         icon="fa-eye"
       />
       <OutputBlockSection
-        blocks={overview.atTheTable}
-        title="At the Table"
+        blocks={overview.globalRules}
+        title="Global Rules"
         icon="fa-dice-d20"
+      />
+      <OutputBlockSection
+        blocks={recurringSigns}
+        title="Recurring Signs"
+        icon="fa-repeat"
+      />
+      <OutputBlockSection
+        blocks={stakesAndConsequences}
+        title="Stakes & Consequences"
+        icon="fa-scale-balanced"
       />
     </ToolContentPanel>
   );
 }
 
-function LocationOutputAtTheTable({ documentModel }) {
+function LocationOutputAtTheTable({
+  documentModel,
+  persistenceEnabled,
+  sessionState,
+  onChangePressure,
+  onResetSession,
+  onSelectRoom,
+  onToggleClue,
+  onTogglePersistence,
+}) {
+  const guide = documentModel?.sessionGuide || {};
+  const operational =
+    cleanText(guide.openingBeat?.situation) &&
+    (asArray(guide.pressureTracks).length ||
+      asArray(guide.clueFlow?.nodes).length ||
+      asArray(guide.stallMoves).length ||
+      asArray(guide.roomShortcuts).length);
+  if (operational) {
+    return (
+      <LocationAtTheTableDashboard
+        guide={guide}
+        sessionState={sessionState}
+        persistenceEnabled={persistenceEnabled}
+        onChangePressure={onChangePressure}
+        onResetSession={onResetSession}
+        onSelectRoom={onSelectRoom}
+        onToggleClue={onToggleClue}
+        onTogglePersistence={onTogglePersistence}
+      />
+    );
+  }
   return (
     <ToolContentPanel
       className="location-output-document-view"
@@ -741,17 +803,60 @@ function LocationOutputOutline({
 }
 
 export function LocationOutputWorkspace({
-  documentModel,
+  documentModel: sourceDocumentModel,
   exportBundle,
   generatedMapPreview,
   initialMapPreviewOpen = false,
   initialSectionId = "overview",
+  initialSessionPersistence = false,
   onBackToFrame,
   onBackToRooms,
   onCopyText,
   onEditRoom,
+  sessionStateStorage = null,
 }) {
+  const documentModel = useMemo(
+    () => normalizeLocationDocumentForOutput(sourceDocumentModel),
+    [sourceDocumentModel],
+  );
   const rooms = asArray(documentModel?.rooms);
+  const sessionGuide = documentModel?.sessionGuide || {};
+  const sessionIdentity = useMemo(
+    () => ({
+      buildId: cleanText(
+        sourceDocumentModel?.id ||
+          documentModel?.source?.documentId ||
+          exportBundle?.id ||
+          documentModel?.meta?.title,
+        "unknown-build",
+      ),
+      documentVersion: cleanText(
+        documentModel?.source?.documentSchemaVersion ||
+          sourceDocumentModel?.schemaVersion,
+        "unknown-document",
+      ),
+    }),
+    [
+      documentModel?.meta?.title,
+      documentModel?.source?.documentId,
+      documentModel?.source?.documentSchemaVersion,
+      exportBundle?.id,
+      sourceDocumentModel?.id,
+      sourceDocumentModel?.schemaVersion,
+    ],
+  );
+  const [sessionPersistenceEnabled, setSessionPersistenceEnabled] = useState(
+    Boolean(initialSessionPersistence),
+  );
+  const [locationSessionState, setLocationSessionState] = useState(() => {
+    const storage = resolveSessionStateStorage(sessionStateStorage);
+    return initialSessionPersistence
+      ? loadLocationSessionDashboardState(storage, sessionIdentity, sessionGuide)
+      : createLocationSessionDashboardState({
+          ...sessionIdentity,
+          guide: sessionGuide,
+        });
+  });
   const validRoomIds = useMemo(() => new Set(rooms.map((room) => room.id)), [rooms]);
   const [activeSectionId, setActiveSectionId] = useState(initialSectionId);
   const [mapPreviewOpen, setMapPreviewOpen] = useState(initialMapPreviewOpen);
@@ -778,6 +883,26 @@ export function LocationOutputWorkspace({
     );
   }, [generatedMapPreview]);
 
+  useEffect(() => {
+    const storage = resolveSessionStateStorage(sessionStateStorage);
+    setLocationSessionState(
+      sessionPersistenceEnabled
+        ? loadLocationSessionDashboardState(storage, sessionIdentity, sessionGuide)
+        : createLocationSessionDashboardState({
+            ...sessionIdentity,
+            guide: sessionGuide,
+          }),
+    );
+  }, [sessionGuide, sessionIdentity, sessionStateStorage]);
+
+  useEffect(() => {
+    if (!sessionPersistenceEnabled) return;
+    saveLocationSessionDashboardState(
+      resolveSessionStateStorage(sessionStateStorage),
+      locationSessionState,
+    );
+  }, [locationSessionState, sessionPersistenceEnabled, sessionStateStorage]);
+
   const activeRoomId = contentSectionId.startsWith("room:")
     ? contentSectionId.slice(5)
     : "";
@@ -790,6 +915,34 @@ export function LocationOutputWorkspace({
   function selectRoom(roomId) {
     if (!roomId || !validRoomIds.has(roomId)) return;
     setActiveSectionId(`room:${roomId}`);
+  }
+
+  function changeSessionPressure(trackId, delta) {
+    setLocationSessionState((current) =>
+      updateLocationSessionPressure(current, sessionGuide, trackId, delta),
+    );
+  }
+
+  function toggleSessionClue(clueId) {
+    setLocationSessionState((current) =>
+      toggleLocationSessionClue(current, sessionGuide, clueId),
+    );
+  }
+
+  function resetSession() {
+    setLocationSessionState((current) =>
+      resetLocationSessionDashboardState(current, sessionGuide),
+    );
+  }
+
+  function toggleSessionPersistence(enabled) {
+    const storage = resolveSessionStateStorage(sessionStateStorage);
+    if (enabled) {
+      saveLocationSessionDashboardState(storage, locationSessionState);
+    } else {
+      clearLocationSessionDashboardState(storage, sessionIdentity);
+    }
+    setSessionPersistenceEnabled(Boolean(enabled));
   }
 
   function openMapPreview() {
@@ -883,7 +1036,18 @@ export function LocationOutputWorkspace({
       return <LocationOutputMapSummary documentModel={documentModel} />;
     }
     if (contentSectionId === "table") {
-      return <LocationOutputAtTheTable documentModel={documentModel} />;
+      return (
+        <LocationOutputAtTheTable
+          documentModel={documentModel}
+          persistenceEnabled={sessionPersistenceEnabled}
+          sessionState={locationSessionState}
+          onChangePressure={changeSessionPressure}
+          onResetSession={resetSession}
+          onSelectRoom={selectRoom}
+          onToggleClue={toggleSessionClue}
+          onTogglePersistence={toggleSessionPersistence}
+        />
+      );
     }
     if (contentSectionId.startsWith("room:")) {
       return (

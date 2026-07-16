@@ -13716,3 +13716,814 @@ _Nessun file aggiunto._
 - Percorso sospetto nello ZIP: INSPIRATIONS_CARD_LAYOUT_FIXES_MANIFEST.txt
 - Percorso sospetto nello ZIP: INSPIRATIONS_CARD_LAYOUT_FIXES_README.md
 
+
+---
+
+## 2026-07-16 14:58:15
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-semantic-v2-phase0-patch-c0246581.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-semantic-v2-phase0-patch-c0246581.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 22
+
+- `+dark-places-semantic-content-pipeline-v2-project.md`
+- `+docs/projects/dark-places-semantic-v2/contracts-v2.md`
+- `+docs/projects/dark-places-semantic-v2/current-state-audit.md`
+- `+docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `+docs/projects/dark-places-semantic-v2/legacy-field-inventory.md`
+- `+docs/projects/dark-places-semantic-v2/README.md`
+- `+docs/projects/dark-places-semantic-v2/sedlec-ossuary-vertical-slice.md`
+- `+scripts/content/snapshot-dark-places-semantic-v2-baseline.mjs`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/baseline-input-v1.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/compile-preview-summary-v1.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/compiler-map-request-v1.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/composer-snapshot-v1.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/current-content-pack-v1.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/current-inspiration-module-v1.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/dungeon-brief-summary-v1.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/fixture-files.sha256`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/generated-map-preview-v1.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/location-document-v1.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/room-key-v1.md`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/table-ready-v1.txt`
+- `+_patch-manifest/files.sha256`
+- `+_patch-manifest/manifest.json`
+
+**File sovrascritti:** 3
+
+- `~.gitignore`
+- `~docs/repository-map/repository-map.json`
+- `~package.json`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: dark-places-semantic-content-pipeline-v2-project.md
+- Percorso sospetto nello ZIP: _patch-manifest/files.sha256
+- Percorso sospetto nello ZIP: _patch-manifest/manifest.json
+
+
+---
+
+## 2026-07-16 15:35:32
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-final-cleanup.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-final-cleanup.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~tests/e2e/home-faq.spec.js`
+
+
+---
+
+## 2026-07-16 15:39:56
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-semantic-v2-phase1-patch-after-phase0.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-semantic-v2-phase1-patch-after-phase0.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 23
+
+- `+shared/content/contracts/semantic/component-v2.js`
+- `+shared/content/contracts/semantic/content-pack-v0.2.js`
+- `+shared/content/contracts/semantic/contract-utils.js`
+- `+shared/content/contracts/semantic/global-rule-v1.js`
+- `+shared/content/contracts/semantic/index.js`
+- `+shared/content/contracts/semantic/inspiration-module-v2.js`
+- `+shared/content/contracts/semantic/inspiration-v2.js`
+- `+shared/content/contracts/semantic/mechanical-scaling.js`
+- `+shared/content/contracts/semantic/normalize-semantic-content.js`
+- `+shared/content/contracts/semantic/place-identity-v1.js`
+- `+shared/content/contracts/semantic/provenance-v1.js`
+- `+shared/content/contracts/semantic/read-aloud-profile-v1.js`
+- `+shared/content/contracts/semantic/recurring-sign-v1.js`
+- `+shared/content/contracts/semantic/schema-versions.js`
+- `+shared/content/contracts/semantic/semantic-compatibility.test.js`
+- `+shared/content/contracts/semantic/semantic-contracts.test.js`
+- `+shared/content/contracts/semantic/semantic-dependency-boundary.test.js`
+- `+shared/content/contracts/semantic/sensory-profile-v1.js`
+- `+shared/content/contracts/semantic/session-guide-v1.js`
+- `+shared/content/contracts/semantic/site-atmosphere-v1.js`
+- `+shared/content/contracts/semantic/source-anchor-v1.js`
+- `+_patch-manifest/files.sha256`
+- `+_patch-manifest/manifest.json`
+
+**File sovrascritti:** 6
+
+- `~docs/projects/dark-places-semantic-v2/contracts-v2.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~package.json`
+- `~shared/content/content.index.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _patch-manifest/files.sha256
+- Percorso sospetto nello ZIP: _patch-manifest/manifest.json
+
+
+---
+
+## 2026-07-16 15:48:50
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-css-cleanup.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-css-cleanup.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~app/home-page.css`
+
+
+---
+
+## 2026-07-16 15:58:43
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-tool-card-inner-width-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-tool-card-inner-width-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~app/home-page.css`
+
+
+---
+
+## 2026-07-16 16:05:21
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-tool-card-surface.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-tool-card-surface.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~app/home-page.css`
+
+
+---
+
+## 2026-07-16 16:15:47
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase2-compiler-20260716-231150.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase2-compiler-20260716-231150.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 14
+
+- `+docs/projects/dark-places-semantic-v2/phase2-location-document-compiler.md`
+- `+features/darken-location/compiler/dark-places-compiler-boundary.test.js`
+- `+features/darken-location/compiler/dark-places-map-intent.adapter.js`
+- `+features/darken-location/compiler/dark-places-map-intent.adapter.test.js`
+- `+features/darken-location/compiler/dark-places-semantic-compiler.js`
+- `+features/darken-location/compiler/dark-places-semantic-compiler.test.js`
+- `+features/darken-location/compiler/dark-places-v1-compatibility.adapter.js`
+- `+features/darken-location/compiler/index.js`
+- `+shared/content/contracts/semantic/location-document-v2.js`
+- `+shared/content/contracts/semantic/location-document-v2.test.js`
+- `+shared/content/contracts/semantic/session-state-v1.js`
+- `+_phase2/MANIFEST.json`
+- `+_phase2/QA.md`
+- `+_phase2/SHA256SUMS.txt`
+
+**File sovrascritti:** 13
+
+- `~docs/projects/dark-places-semantic-v2/contracts-v2.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/repository-map/architecture.md`
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/output-and-export.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~docs/repository-map/runtime-flows.md`
+- `~features/darken-location/output/LocationOutputWorkspace.jsx`
+- `~features/darken-location/output/LocationOutputWorkspace.test.jsx`
+- `~package.json`
+- `~shared/content/contracts/semantic/index.js`
+- `~shared/content/contracts/semantic/semantic-dependency-boundary.test.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _phase2/MANIFEST.json
+- Percorso sospetto nello ZIP: _phase2/QA.md
+- Percorso sospetto nello ZIP: _phase2/SHA256SUMS.txt
+
+
+---
+
+## 2026-07-16 16:24:52
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-tool-gradient-strips.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-tool-gradient-strips.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~app/home-page.css`
+
+
+---
+
+## 2026-07-16 17:06:10
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-ambient-band.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-ambient-band.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+components/ui/ambient-band.css`
+- `+components/ui/ambient-band.jsx`
+- `+tests/e2e/home-ambient-bands.spec.js`
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+
+---
+
+## 2026-07-16 17:07:11
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase3-site-wide-20260716-234041.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase3-site-wide-20260716-234041.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 19
+
+- `+docs/projects/dark-places-semantic-v2/phase3-place-identity-site-wide.md`
+- `+features/darken-location/compiler/dark-places-phase3-sedlec.test.js`
+- `+features/darken-location/compiler/location-identity.compiler.js`
+- `+features/darken-location/compiler/location-recurring-signs.compiler.js`
+- `+features/darken-location/compiler/location-site-wide.compiler.js`
+- `+scripts/content/snapshot-dark-places-semantic-v2-phase3.mjs`
+- `+shared/content/content-packs/sedlec-ossuary-semantic-v2-pack.js`
+- `+shared/content/content-packs/sedlec-ossuary-semantic-v2-pack.test.js`
+- `+shared/content/static-semantic-content-packs.js`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-content-pack.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-fixture-files.sha256`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-location-document.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-map-intent.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-overview.md`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-quick-reference.txt`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-session-state.json`
+- `+_phase3/MANIFEST.json`
+- `+_phase3/QA.md`
+- `+_phase3/SHA256SUMS.txt`
+
+**File sovrascritti:** 17
+
+- `~docs/projects/dark-places-semantic-v2/contracts-v2.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/projects/dark-places-semantic-v2/sedlec-ossuary-vertical-slice.md`
+- `~docs/repository-map/architecture.md`
+- `~docs/repository-map/areas/content-packs.md`
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/output-and-export.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~docs/repository-map/runtime-flows.md`
+- `~features/darken-location/compiler/dark-places-semantic-compiler.js`
+- `~features/darken-location/compiler/dark-places-v1-compatibility.adapter.js`
+- `~features/darken-location/compiler/index.js`
+- `~features/darken-location/output/LocationOutputWorkspace.jsx`
+- `~features/darken-location/output/LocationOutputWorkspace.test.jsx`
+- `~package.json`
+- `~shared/content/content.index.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _phase3/MANIFEST.json
+- Percorso sospetto nello ZIP: _phase3/QA.md
+- Percorso sospetto nello ZIP: _phase3/SHA256SUMS.txt
+
+
+---
+
+## 2026-07-16 17:15:16
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-alternating-gradient-focus.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-alternating-gradient-focus.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~tests/e2e/home-ambient-bands.spec.js`
+
+
+---
+
+## 2026-07-16 17:29:29
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-inspiration-front-carousel.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-inspiration-front-carousel.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+features/inspirations/components/InspirationCardFront.jsx`
+- `+tests/e2e/home-inspiration-carousel.spec.js`
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+
+---
+
+## 2026-07-16 19:29:51
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-shared-inspiration-card-front-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-shared-inspiration-card-front-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/inspirations/components/InspirationCard.jsx`
+- `~features/inspirations/components/InspirationCardFront.jsx`
+- `~tests/e2e/home-inspiration-carousel.spec.js`
+
+
+---
+
+## 2026-07-16 19:30:23
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase4-sensory-read-aloud-20260717-004327.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase4-sensory-read-aloud-20260717-004327.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 17
+
+- `+docs/projects/dark-places-semantic-v2/phase4-sensory-read-aloud.md`
+- `+features/darken-location/compiler/dark-places-phase4-sedlec.test.js`
+- `+features/darken-location/compiler/location-compiler-rng.js`
+- `+features/darken-location/compiler/location-compiler-rng.test.js`
+- `+features/darken-location/compiler/location-read-aloud.compiler.js`
+- `+features/darken-location/compiler/location-read-aloud.compiler.test.js`
+- `+features/darken-location/compiler/location-sensory.compiler.js`
+- `+features/darken-location/compiler/location-sensory.compiler.test.js`
+- `+scripts/content/snapshot-dark-places-semantic-v2-phase4.mjs`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase4-export-view.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase4-fixture-files.sha256`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase4-location-document.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase4-rooms.md`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase4-sensory-allocation.json`
+- `+_phase4/MANIFEST.json`
+- `+_phase4/QA.md`
+- `+_phase4/SHA256SUMS.txt`
+
+**File sovrascritti:** 23
+
+- `~docs/projects/dark-places-semantic-v2/contracts-v2.md`
+- `~docs/projects/dark-places-semantic-v2/phase3-place-identity-site-wide.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/projects/dark-places-semantic-v2/sedlec-ossuary-vertical-slice.md`
+- `~docs/repository-map/architecture.md`
+- `~docs/repository-map/areas/content-packs.md`
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/output-and-export.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~docs/repository-map/runtime-flows.md`
+- `~features/darken-location/compiler/dark-places-semantic-compiler.js`
+- `~features/darken-location/compiler/dark-places-v1-compatibility.adapter.js`
+- `~features/darken-location/compiler/index.js`
+- `~features/darken-location/compiler/location-recurring-signs.compiler.js`
+- `~features/darken-location/output/LocationOutputWorkspace.test.jsx`
+- `~package.json`
+- `~scripts/content/snapshot-dark-places-semantic-v2-phase3.mjs`
+- `~shared/content/content-packs/sedlec-ossuary-semantic-v2-pack.js`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-content-pack.json`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-fixture-files.sha256`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-map-intent.json`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-session-state.json`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _phase4/MANIFEST.json
+- Percorso sospetto nello ZIP: _phase4/QA.md
+- Percorso sospetto nello ZIP: _phase4/SHA256SUMS.txt
+
+
+---
+
+## 2026-07-16 20:24:57
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase5-session-guide-at-the-table-20260716-200142.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase5-session-guide-at-the-table-20260716-200142.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 18
+
+- `+docs/projects/dark-places-semantic-v2/phase5-session-guide-at-the-table.md`
+- `+features/darken-location/compiler/dark-places-phase5-sedlec.test.js`
+- `+features/darken-location/compiler/location-session-guide.compiler.js`
+- `+features/darken-location/compiler/location-session-guide.compiler.test.js`
+- `+features/darken-location/output/components/LocationAtTheTableDashboard.jsx`
+- `+features/darken-location/output/components/LocationAtTheTableDashboard.test.jsx`
+- `+features/darken-location/output/model/location-session-dashboard-state.js`
+- `+features/darken-location/output/model/location-session-dashboard-state.test.js`
+- `+scripts/content/snapshot-dark-places-semantic-v2-phase5.mjs`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase5-at-the-table.md`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase5-fixture-files.sha256`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase5-location-document.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase5-output-view.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase5-session-guide.json`
+- `+tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase5-table-session-state.json`
+- `+_phase5/MANIFEST.json`
+- `+_phase5/QA.md`
+- `+_phase5/SHA256SUMS.txt`
+
+**File sovrascritti:** 27
+
+- `~docs/projects/dark-places-semantic-v2/contracts-v2.md`
+- `~docs/projects/dark-places-semantic-v2/phase3-place-identity-site-wide.md`
+- `~docs/projects/dark-places-semantic-v2/phase4-sensory-read-aloud.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/projects/dark-places-semantic-v2/sedlec-ossuary-vertical-slice.md`
+- `~docs/repository-map/architecture.md`
+- `~docs/repository-map/areas/content-packs.md`
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/output-and-export.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~docs/repository-map/runtime-flows.md`
+- `~features/darken-location/compiler/dark-places-semantic-compiler.js`
+- `~features/darken-location/compiler/dark-places-v1-compatibility.adapter.js`
+- `~features/darken-location/compiler/index.js`
+- `~features/darken-location/output/location-output.styles.css`
+- `~features/darken-location/output/LocationOutputWorkspace.jsx`
+- `~features/darken-location/output/LocationOutputWorkspace.test.jsx`
+- `~package.json`
+- `~scripts/content/snapshot-dark-places-semantic-v2-phase3.mjs`
+- `~scripts/content/snapshot-dark-places-semantic-v2-phase4.mjs`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-fixture-files.sha256`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-location-document.json`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-map-intent.json`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase4-fixture-files.sha256`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase4-location-document.json`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-session-state.json`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _phase5/MANIFEST.json
+- Percorso sospetto nello ZIP: _phase5/QA.md
+- Percorso sospetto nello ZIP: _phase5/SHA256SUMS.txt
+
+
+---
+
+## 2026-07-16 21:00:58
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase6-studio-v2-foundation-20260716-205554.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase6-studio-v2-foundation-20260716-205554.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 9
+
+- `+docs/projects/dark-places-semantic-v2/phase6-studio-v2-foundation.md`
+- `+features/inspiration-studio/model/studio-editor-registry.js`
+- `+features/inspiration-studio/model/studio-editor-registry.test.js`
+- `+features/inspiration-studio/model/studio-export-v2.test.js`
+- `+features/inspiration-studio/model/studio-v2-io.js`
+- `+features/inspiration-studio/model/studio-v2-io.test.js`
+- `+_phase6/MANIFEST.json`
+- `+_phase6/QA.md`
+- `+_phase6/SHA256SUMS.txt`
+
+**File sovrascritti:** 20
+
+- `~docs/projects/dark-places-semantic-v2/contracts-v2.md`
+- `~docs/projects/dark-places-semantic-v2/phase3-place-identity-site-wide.md`
+- `~docs/projects/dark-places-semantic-v2/phase4-sensory-read-aloud.md`
+- `~docs/projects/dark-places-semantic-v2/phase5-session-guide-at-the-table.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/projects/dark-places-semantic-v2/sedlec-ossuary-vertical-slice.md`
+- `~docs/repository-map/architecture.md`
+- `~docs/repository-map/areas/content-packs.md`
+- `~docs/repository-map/areas/inspiration-studio.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~docs/repository-map/runtime-flows.md`
+- `~features/inspiration-studio/health/content-health.model.js`
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/model/studio-component-normalizers.js`
+- `~features/inspiration-studio/model/studio-draft.js`
+- `~features/inspiration-studio/model/studio-export.js`
+- `~features/inspiration-studio/model/studio-validation.js`
+- `~package.json`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _phase6/MANIFEST.json
+- Percorso sospetto nello ZIP: _phase6/QA.md
+- Percorso sospetto nello ZIP: _phase6/SHA256SUMS.txt
+
+
+---
+
+## 2026-07-16 21:18:10
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-megamenu-compact-preview.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-megamenu-compact-preview.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~app/navigation/site-mega-menu.css`
+- `~app/navigation/SiteMegaMenu.jsx`
+
+
+---
+
+## 2026-07-16 22:00:57
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase7-20260716-214146.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase7-20260716-214146.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 23
+
+- `+docs/projects/dark-places-semantic-v2/phase7-specialized-studio-editors-preview.md`
+- `+features/inspiration-studio/editors/StudioFragmentPoolEditor.jsx`
+- `+features/inspiration-studio/editors/StudioPlacementPolicyEditor.jsx`
+- `+features/inspiration-studio/editors/StudioSemanticComponentEditor.jsx`
+- `+features/inspiration-studio/editors/StudioSemanticComponentEditor.test.jsx`
+- `+features/inspiration-studio/editors/StudioSensoryPoolEditor.jsx`
+- `+features/inspiration-studio/editors/StudioSessionGuideEditor.jsx`
+- `+features/inspiration-studio/editors/StudioStructuredFields.jsx`
+- `+features/inspiration-studio/editors/StudioStructuredRuleEditor.jsx`
+- `+features/inspiration-studio/health/content-health-semantic.test.js`
+- `+features/inspiration-studio/model/studio-dark-places-preview.js`
+- `+features/inspiration-studio/model/studio-dark-places-preview.test.js`
+- `+features/inspiration-studio/model/studio-field-links.js`
+- `+features/inspiration-studio/model/studio-semantic-coverage.js`
+- `+features/inspiration-studio/model/studio-semantic-coverage.test.js`
+- `+features/inspiration-studio/preview/StudioDarkPlacesPreview.jsx`
+- `+features/inspiration-studio/qa/dark-places-semantic-sample-qa.js`
+- `+features/inspiration-studio/qa/DarkPlacesSemanticQaModal.jsx`
+- `+features/inspiration-studio/schema/studio-semantic-editor-registry.js`
+- `+features/inspiration-studio/schema/studio-semantic-editor-registry.test.js`
+- `+_phase7/MANIFEST.json`
+- `+_phase7/QA.md`
+- `+_phase7/SHA256SUMS.txt`
+
+**File sovrascritti:** 27
+
+- `~docs/projects/dark-places-semantic-v2/phase6-studio-v2-foundation.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/projects/dark-places-semantic-v2/sedlec-ossuary-vertical-slice.md`
+- `~docs/repository-map/architecture.md`
+- `~docs/repository-map/areas/content-packs.md`
+- `~docs/repository-map/areas/inspiration-studio.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~docs/repository-map/runtime-flows.md`
+- `~docs/repository-map/tests-and-qa.md`
+- `~features/inspiration-studio/components/StudioTestsMenu.jsx`
+- `~features/inspiration-studio/components/StudioWarningList.jsx`
+- `~features/inspiration-studio/coverage/content-coverage.model.js`
+- `~features/inspiration-studio/coverage/CoverageMatrixModal.jsx`
+- `~features/inspiration-studio/health/content-health.model.js`
+- `~features/inspiration-studio/health/ContentHealthCoverage.jsx`
+- `~features/inspiration-studio/health/ContentHealthSummary.jsx`
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/model/studio-component-templates.js`
+- `~features/inspiration-studio/model/studio-draft.js`
+- `~features/inspiration-studio/model/studio-editor-registry.js`
+- `~features/inspiration-studio/model/studio-editor-registry.test.js`
+- `~features/inspiration-studio/model/studio-readiness.js`
+- `~features/inspiration-studio/model/studio-validation.js`
+- `~features/inspiration-studio/model/studio-warning-model.js`
+- `~package.json`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _phase7/MANIFEST.json
+- Percorso sospetto nello ZIP: _phase7/QA.md
+- Percorso sospetto nello ZIP: _phase7/SHA256SUMS.txt
+
+
+---
+
+## 2026-07-16 22:41:54
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-batch1-sedlec-7546ec2.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-batch1-sedlec-7546ec2.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 13
+
+- `+docs/projects/dark-places-semantic-v2/phase8-batch1-sedlec-editorial-review.md`
+- `+scripts/content/audit-legacy-inspirations.mjs`
+- `+scripts/content/inspiration-v2-script-utils.mjs`
+- `+scripts/content/migrate-inspiration-module-v2.mjs`
+- `+scripts/content/report-dark-places-sample-quality.mjs`
+- `+scripts/content/report-semantic-coverage.mjs`
+- `+scripts/content/validate-inspiration-modules-v2.mjs`
+- `+shared/content/content-packs/sedlec-ossuary-semantic-v2-phase8.test.js`
+- `+shared/content/migrations/inspiration-v2-migration-registry.js`
+- `+shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `+_phase8-batch1/MANIFEST.json`
+- `+_phase8-batch1/QA.md`
+- `+_phase8-batch1/SHA256SUMS.txt`
+
+**File sovrascritti:** 29
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/projects/dark-places-semantic-v2/sedlec-ossuary-vertical-slice.md`
+- `~docs/repository-map/architecture.md`
+- `~docs/repository-map/areas/content-packs.md`
+- `~docs/repository-map/areas/inspiration-studio.md`
+- `~docs/repository-map/areas/inspirations.md`
+- `~docs/repository-map/areas/scripts-and-tooling.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/areas/tests-and-qa.md`
+- `~docs/repository-map/repository-map.json`
+- `~docs/repository-map/runtime-flows.md`
+- `~package.json`
+- `~scripts/content/snapshot-dark-places-semantic-v2-baseline.mjs`
+- `~shared/content/content-packs/sedlec-ossuary-semantic-v2-pack.js`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-modules.js`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-content-pack.json`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-fixture-files.sha256`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase4-export-view.json`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase4-fixture-files.sha256`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase4-location-document.json`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase4-rooms.md`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase4-sensory-allocation.json`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase5-at-the-table.md`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase5-fixture-files.sha256`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase5-location-document.json`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase5-output-view.json`
+- `~tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/v2-phase5-session-guide.json`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _phase8-batch1/MANIFEST.json
+- Percorso sospetto nello ZIP: _phase8-batch1/QA.md
+- Percorso sospetto nello ZIP: _phase8-batch1/SHA256SUMS.txt
+
+
+---
+
+## 2026-07-16 23:19:33
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-decomposition-candidate-20260716.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-decomposition-candidate-20260716.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 5
+
+- `+docs/projects/dark-places-semantic-v2/phase8-batch2-decomposition-editorial-review.md`
+- `+PATCH-MANIFEST.md`
+- `+shared/content/content-packs/decomposition-monster-grafts-v2.js`
+- `+shared/content/content-packs/decomposition-semantic-v2-pack.js`
+- `+shared/content/content-packs/decomposition-semantic-v2-phase8.test.js`
+
+**File sovrascritti:** 15
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/projects/dark-places-semantic-v2/sedlec-ossuary-vertical-slice.md`
+- `~docs/repository-map/architecture.md`
+- `~docs/repository-map/areas/content-packs.md`
+- `~docs/repository-map/areas/inspiration-studio.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~docs/repository-map/runtime-flows.md`
+- `~package.json`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+

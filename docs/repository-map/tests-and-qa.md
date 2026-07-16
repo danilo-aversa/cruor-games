@@ -26,16 +26,16 @@ Commands are listed as package scripts. In PowerShell on this machine, `npm.cmd 
 
 ## Coverage Matrix
 
-| Area                    | Build | Lint | Structural QA                 | Visual QA            | Manual Browser                        |
-| ----------------------- | ----- | ---- | ----------------------------- | -------------------- | ------------------------------------- |
-| Routing/App shell       | Yes   | Yes  | Limited                       | No                   | Recommended                           |
-| Shared content registry | Yes   | Yes  | `content:validate`            | No                   | Optional                              |
-| Darken composer         | Yes   | Yes  | Acceptance and assignment QA  | Partial E2E          | Recommended                           |
-| Map generation          | Yes   | Yes  | Extensive map QA              | Gallery/debug checks | Recommended                           |
-| Map editor interaction  | Yes   | Yes  | Partial                       | Partial              | Required for pointer/keyboard changes |
-| Monster Composer        | Yes   | Yes  | `monster:qa`                  | Limited              | Recommended                           |
-| Inspiration Studio      | Yes   | Yes  | Content validation indirectly | No                   | Recommended                           |
-| Exports/downloads       | Yes   | Yes  | Partial                       | No                   | Recommended                           |
+| Area                    | Build | Lint | Structural QA                | Visual QA            | Manual Browser                        |
+| ----------------------- | ----- | ---- | ---------------------------- | -------------------- | ------------------------------------- |
+| Routing/App shell       | Yes   | Yes  | Limited                      | No                   | Recommended                           |
+| Shared content registry | Yes   | Yes  | `content:validate`           | No                   | Optional                              |
+| Darken composer         | Yes   | Yes  | Acceptance and assignment QA | Partial E2E          | Recommended                           |
+| Map generation          | Yes   | Yes  | Extensive map QA             | Gallery/debug checks | Recommended                           |
+| Map editor interaction  | Yes   | Yes  | Partial                      | Partial              | Required for pointer/keyboard changes |
+| Monster Composer        | Yes   | Yes  | `monster:qa`                 | Limited              | Recommended                           |
+| Inspiration Studio      | Yes   | Yes  | Phase 6/7 semantic QA        | No                   | Recommended                           |
+| Exports/downloads       | Yes   | Yes  | Partial                      | No                   | Recommended                           |
 
 ## Known Test Caveats
 
@@ -58,6 +58,9 @@ Commands are listed as package scripts. In PowerShell on this machine, `npm.cmd 
 
 - `features/darken-location/map-generator/map-generator.room-resize.test.js` covers grid snapping, bottom-left anchoring, equal-dimension shapes, circular radius serialization, shape minimums, final layout anchoring, and Cave exclusion.
 - `tests/e2e/dark-places-pipeline.spec.js` covers the visible top-right handle, non-committing drag preview, one atomic Custom-size/position commit with Undo, and shared dropdown classes for Map Actions and More Map Tools.
+- `npm run qa:dark-places:semantic-phase7` covers specialized semantic editor
+  rendering, semantic coverage and field links, deterministic real-compiler
+  preview, semantic sample QA, and migration-aware Health reporting.
 
 ### Site navigation and page transitions
 

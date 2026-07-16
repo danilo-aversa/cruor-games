@@ -1,0 +1,71 @@
+THE LITANY ENGINE
+Crypt · Religious Horror, Gothic · sedlec-ossuary
+
+PREMISE
+Every chamber seems arranged to continue a prayer that no living voice remembers.
+
+READ-ALOUD
+No read-aloud text assigned yet.
+
+ROOM KEY
+Map Room 1 — 01 Skull Lined Corridor | Role: entrance | Premise: Every chamber seems arranged to continue a prayer that no living voice remembers. | Sensory: cold incense · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech. | Feature: bone chandeliers | Danger: A sermon text is carved into a floor slab polished by knees and footsteps. | Components: Environmental Hazard: Weight-Sermon Slab; Disturbing Clue: Miscounted Skull Row; Encounter Twist: Bonework Cover Lines; Location Premise: Litany Engine Ossuary; Sensory Layer: Bone-Dust Breath; Sensory Layer: Clicking Skull Seams
+Map Room 4 — 02 Ossuary Gallery | Role: clue | Sensory: bone dust · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech. | Feature: counted dead | Danger: A strand of beads runs ankle-high between two reliquary niches. | Components: Environmental Hazard: Reliquary Tripwire; Disturbing Clue: Bone Chandelier Map; Encounter Twist: Reliquary Alarm Choir; Sensory Layer: Bone-Dust Breath; Sensory Layer: Clicking Skull Seams
+Map Room 2 — 03 Crypt Chapel | Role: connector | Sensory: damp limestone · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech. | Feature: devotional remains | Danger: A sermon text is carved into a floor slab polished by knees and footsteps. | Components: Environmental Hazard: Weight-Sermon Slab; Disturbing Clue: Miscounted Skull Row; Encounter Twist: Bonework Cover Lines; Sensory Layer: Bone-Dust Breath; Sensory Layer: Clicking Skull Seams
+Map Room 3 — 04 Reliquary Niche | Role: clue | Sensory: old wax · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech. | Feature: candle niches | Danger: desecrated relic · A strand of beads runs ankle-high between two reliquary niches. | Components: Environmental Hazard: Reliquary Tripwire; Disturbing Clue: Bone Chandelier Map; Encounter Twist: Reliquary Alarm Choir; Sensory Layer: Bone-Dust Breath; Sensory Layer: Clicking Skull Seams
+Map Room 5 — 05 Sealed Catacomb | Role: final | Sensory: muffled hymns · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech. | Feature: skull garlands · Visible Anomaly — Prayer-Slip Mortar: The mortar between the stones has been packed with hair, ash, and old prayer slips. | Danger: A sermon text is carved into a floor slab polished by knees and footsteps. | Reward: bone icon · A labeled finger bone rests in a small silver tube, warm only near locked reliquaries. | Components: Environmental Hazard: Weight-Sermon Slab; Disturbing Clue: Miscounted Skull Row; Encounter Twist: Bonework Cover Lines; Sensory Layer: Bone-Dust Breath; Sensory Layer: Clicking Skull Seams; Visible Anomaly: Prayer-Slip Mortar; Reward / Consequence: Reliquary Fragment Key
+
+HAZARDS
+hazard: Weight-Sermon Slab
+A pressure slab releases hanging bonework when crossed carelessly.
+
+hazard: Reliquary Tripwire
+A thread of rosary beads pulls open a reliquary of sharp fragments.
+
+hazard: Weight-Sermon Slab
+A pressure slab releases hanging bonework when crossed carelessly.
+
+hazard: Reliquary Tripwire
+A thread of rosary beads pulls open a reliquary of sharp fragments.
+
+hazard: Weight-Sermon Slab
+A pressure slab releases hanging bonework when crossed carelessly.
+
+CLUES
+clue: Miscounted Skull Row
+A skull row reveals that one skull has been replaced recently.
+
+clue: Bone Chandelier Map
+The chandelier’s bone pattern mirrors the room layout.
+
+clue: Miscounted Skull Row
+A skull row reveals that one skull has been replaced recently.
+
+clue: Bone Chandelier Map
+The chandelier’s bone pattern mirrors the room layout.
+
+clue: Miscounted Skull Row
+A skull row reveals that one skull has been replaced recently.
+
+TWISTS
+encounterTwist: Bonework Cover Lines
+Bone ornaments create brittle cover and collapsing lines of sight.
+
+encounterTwist: Reliquary Alarm Choir
+Opening a reliquary causes the room to answer in bone clicks.
+
+encounterTwist: Bonework Cover Lines
+Bone ornaments create brittle cover and collapsing lines of sight.
+
+encounterTwist: Reliquary Alarm Choir
+Opening a reliquary causes the room to answer in bone clicks.
+
+encounterTwist: Bonework Cover Lines
+Bone ornaments create brittle cover and collapsing lines of sight.
+
+AT THE TABLE
+Use This When: You need a Crypt horror insert shaped by Religious Horror, Gothic.
+Primary Source: sedlec-ossuary
+Run Order: 5 mapped regions. Follow the room numbers unless the table needs a faster route.
+Pressure: 5 hazard hooks ready.
+Clue Flow: 5 clue hooks ready.
+Encounter Twist: 5 twist hooks ready.

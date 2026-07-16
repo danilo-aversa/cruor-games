@@ -604,6 +604,370 @@
   line-height: 1.5;
 }
 
+/* Operational At the Table dashboard */
+.location-session-dashboard {
+  --location-session-active: var(--cruor-accent-bright);
+}
+
+.location-session-start,
+.location-session-panel {
+  min-width: 0;
+}
+
+.location-session-opening {
+  display: grid;
+  gap: 0.48rem;
+}
+
+.location-session-opening p,
+.location-session-objectives,
+.location-session-rule-list p,
+.location-session-pressure p,
+.location-session-fallback-clues,
+.location-session-stall-moves,
+.location-session-clue-flow ul {
+  margin: 0;
+  color: var(--cruor-text-muted);
+  font-size: var(--text-size-3xl);
+  line-height: 1.5;
+}
+
+.location-session-opening strong,
+.location-session-objectives > strong,
+.location-session-rule-list strong,
+.location-session-pressure strong,
+.location-session-fallback-clues > strong {
+  color: var(--cruor-text-primary);
+}
+
+.location-session-objectives {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.8rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--location-output-rule);
+}
+
+.location-session-objectives ol,
+.location-session-fallback-clues ul {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.location-session-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.8rem, 1.6vw, 1.25rem);
+  align-items: start;
+}
+
+.location-session-panel {
+  height: 100%;
+}
+
+.location-session-panel--wide {
+  grid-column: 1 / -1;
+}
+
+.location-session-pressure-list,
+.location-session-rule-list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.location-session-pressure > header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.location-session-pressure > header > div {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.location-session-pressure h4,
+.location-session-rule-list h4 {
+  margin: 0;
+  color: var(--cruor-text-primary);
+  font-family: var(--cruor-font-body);
+  font-size: var(--text-size-l, 0.9rem);
+  font-weight: 900;
+}
+
+.location-session-pressure output {
+  flex: 0 0 auto;
+  color: var(--cruor-text-primary);
+  font-family: var(--cruor-font-body);
+  font-size: var(--text-size-xl, 1.1rem);
+  font-weight: 900;
+}
+
+.location-session-pressure output small {
+  color: var(--cruor-text-muted);
+  font-size: var(--text-size-xs, 0.68rem);
+}
+
+.location-session-pressure__controls {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0.75rem 0;
+}
+
+.location-session-pressure__controls meter {
+  width: 100%;
+  height: 0.7rem;
+  accent-color: var(--location-session-active);
+}
+
+.location-session-pressure__consequence,
+.location-session-pressure__counterplay {
+  padding-left: 0.7rem;
+  border-left: 2px solid var(--location-output-rule);
+}
+
+.location-session-thresholds {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.65rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.location-session-thresholds li {
+  display: grid;
+  grid-template-columns: 1.8rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--location-output-rule);
+  color: var(--cruor-text-faint);
+  font-size: var(--text-size-l);
+}
+
+.location-session-thresholds li.is-active {
+  color: var(--cruor-text-primary);
+}
+
+.location-session-thresholds b {
+  color: var(--cruor-text-primary);
+  font-weight: 900;
+}
+
+.location-session-thresholds i {
+  color: var(--cruor-text-muted);
+}
+
+.location-session-thresholds li.is-active i {
+  color: var(--location-session-active);
+}
+
+.location-session-rule-list article {
+  display: grid;
+  gap: 0.3rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--location-output-rule);
+}
+
+.location-session-rule-list article:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.location-session-clue-flow {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.location-session-clue-flow article {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.location-session-clue-toggle {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.55rem;
+  width: 100%;
+  min-width: 0;
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+}
+
+.location-session-clue-toggle > i {
+  margin-top: 0.18rem;
+  color: var(--cruor-text-muted);
+}
+
+.location-session-clue-flow article.is-discovered .location-session-clue-toggle > i {
+  color: var(--location-session-active);
+}
+
+.location-session-clue-toggle > span {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.location-session-clue-toggle strong {
+  color: var(--cruor-text-primary);
+  font-size: var(--text-size-m, 0.78rem);
+}
+
+.location-session-clue-toggle small {
+  color: var(--cruor-text-muted);
+  line-height: 1.4;
+}
+
+.location-session-clue-flow ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.8rem;
+  padding-left: 1.75rem;
+  list-style: none;
+}
+
+.location-session-clue-links {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.75rem 0 0;
+  padding: 0.75rem 0 0;
+  border-top: 1px solid var(--location-output-rule);
+  list-style: none;
+}
+
+.location-session-clue-links li {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  justify-content: start;
+  gap: 0.45rem;
+  color: var(--cruor-text-muted);
+  font-size: var(--text-size-l);
+}
+
+.location-session-clue-links b {
+  color: var(--cruor-text-primary);
+  font-weight: 850;
+}
+
+.location-session-clue-links span {
+  grid-column: 1 / -1;
+  padding-left: 0.2rem;
+  color: var(--cruor-text-faint);
+}
+
+.location-session-fallback-clues {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+
+.location-session-stall-moves {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0;
+  list-style: none;
+}
+
+.location-session-stall-moves li {
+  display: grid;
+  gap: 0.2rem;
+  padding-left: 0.7rem;
+  border-left: 2px solid var(--location-output-rule);
+}
+
+.location-session-stall-moves span {
+  color: var(--cruor-text-faint);
+}
+
+.location-session-stall-moves strong {
+  color: var(--cruor-text-primary);
+  font-weight: 750;
+}
+
+.location-session-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.location-session-shortcut {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0.6rem 0.7rem;
+  text-align: left;
+}
+
+.location-session-shortcut > b {
+  color: var(--cruor-text-muted);
+  font-size: var(--text-size-xs, 0.68rem);
+  letter-spacing: 0.08em;
+}
+
+.location-session-shortcut > span {
+  display: grid;
+  gap: 0.16rem;
+  min-width: 0;
+}
+
+.location-session-shortcut strong,
+.location-session-shortcut small,
+.location-session-shortcut em {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-session-shortcut strong {
+  color: var(--cruor-text-primary);
+  font-size: var(--text-size-m, 0.78rem);
+}
+
+.location-session-shortcut small,
+.location-session-shortcut em {
+  color: var(--cruor-text-muted);
+  font-size: var(--text-size-xs, 0.68rem);
+}
+
+.location-session-shortcut em {
+  color: var(--cruor-text-faint);
+  font-style: normal;
+}
+
+.location-session-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--location-output-rule);
+}
+
+.location-session-actions label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--cruor-text-muted);
+  font-size: var(--text-size-l);
+  cursor: pointer;
+}
+
+.location-session-actions input {
+  accent-color: var(--location-session-active);
+}
+
 /* Semantic room layout */
 .location-output-impression-grid {
   display: grid;
@@ -1006,6 +1370,18 @@
 }
 
 @media (max-width: 760px) {
+  .location-session-grid,
+  .location-session-shortcuts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .location-session-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 760px) {
   .location-composer .location-map-stage.location-output-workspace {
     grid-template-areas:
       "left"
@@ -1039,4 +1415,3 @@
     justify-content: flex-start;
   }
 }
-

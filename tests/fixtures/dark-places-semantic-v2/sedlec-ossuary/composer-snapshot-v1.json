@@ -1,0 +1,3108 @@
+{
+  "schemaVersion": "dark-places-composer-snapshot-v1-fixture",
+  "baselineCommit": "c02465815b68db3651a90c809d81a90b1d03189c",
+  "workflow": "darken-location",
+  "title": "The Litany Engine",
+  "context": "Crypt",
+  "horrors": [
+    "Religious Horror",
+    "Gothic"
+  ],
+  "sourceAnchors": [
+    "sedlec-ossuary"
+  ],
+  "intrusion": "Medium",
+  "seed": "semantic-v2-sedlec-baseline-001",
+  "dungeonMode": "theme",
+  "dungeonThemeId": "sedlec-ossuary",
+  "dungeonScale": "small",
+  "dungeonCustomRoomCount": 5,
+  "dungeonComplexity": "standard",
+  "activeSlot": "horrorPremise",
+  "activeSlotScope": "map",
+  "activeRegionId": "location-region-1",
+  "locationRegions": [
+    {
+      "id": "location-region-1",
+      "templateId": "location-region-1",
+      "name": "01 Skull Lined Corridor",
+      "role": "entrance",
+      "roomType": "skull-lined corridor",
+      "roomArchetype": "",
+      "roomArchetypeSource": "",
+      "mapInfluence": null,
+      "roomDesign": {
+        "schemaVersion": "room-design-v0.1",
+        "size": {
+          "scale": "Small"
+        },
+        "source": "room-constraint-resolver"
+      },
+      "effectiveRoomDesign": {
+        "schemaVersion": "room-design-v0.1",
+        "size": {
+          "scale": "Small"
+        },
+        "source": "room-constraint-resolver"
+      },
+      "roomConstraintResolution": {
+        "schemaVersion": "room-constraint-resolution-v1",
+        "status": "unsupported",
+        "effectiveRoomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Small"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "conflicts": [
+          {
+            "code": "ROOM_SHAPE_UNREGISTERED",
+            "field": "shape.kind",
+            "sources": [
+              "room-01"
+            ],
+            "message": "The requested room shape is not registered by the shared shape contract.",
+            "blocking": true,
+            "severity": "error",
+            "shape": "skull-lined-corridor",
+            "capability": "supports-shape-skull-lined-corridor",
+            "unsupported": true
+          }
+        ],
+        "warnings": [],
+        "changes": [],
+        "provenance": {
+          "size.scale": [
+            {
+              "authoredPath": "",
+              "priority": 10,
+              "sourceId": "room-01",
+              "sourceType": "base-region",
+              "strength": "soft",
+              "value": "Small"
+            }
+          ]
+        },
+        "capabilities": [],
+        "diagnostics": {
+          "contributionCount": 1,
+          "sourceIds": [
+            "room-01"
+          ],
+          "tags": [
+            "entrance",
+            "sedlec-ossuary",
+            "skull-lined-corridor"
+          ],
+          "selectedArchetype": ""
+        }
+      },
+      "shape": "skull-lined corridor",
+      "preferredShape": "skull-lined corridor",
+      "size": "Small",
+      "connectors": 2,
+      "density": "compact",
+      "level": 0,
+      "contexts": [
+        "Crypt"
+      ],
+      "horror": [],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "tags": [
+        "entrance",
+        "skull-lined corridor",
+        "sedlec-ossuary"
+      ],
+      "sensoryLayer": "cold incense",
+      "feature": "bone chandeliers",
+      "interaction": "",
+      "interact": "",
+      "danger": "",
+      "clue": "",
+      "clueText": "",
+      "secretNarrative": "",
+      "isSecretRoom": false,
+      "secret": "",
+      "reward": "",
+      "encounter": "",
+      "readAloud": "",
+      "links": [
+        "main"
+      ],
+      "dungeonRoomBrief": {
+        "schemaVersion": "0.4",
+        "id": "room-01",
+        "index": 1,
+        "name": "01 Skull Lined Corridor",
+        "role": "entrance",
+        "type": "skull-lined corridor",
+        "size": "Small",
+        "level": 0,
+        "connectors": 2,
+        "density": "compact",
+        "shape": "skull-lined corridor",
+        "roomArchetype": "",
+        "roomArchetypeSource": "",
+        "mapInfluence": null,
+        "roomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Small"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "effectiveRoomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Small"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "roomConstraintResolution": {
+          "schemaVersion": "room-constraint-resolution-v1",
+          "status": "unsupported",
+          "effectiveRoomDesign": {
+            "schemaVersion": "room-design-v0.1",
+            "size": {
+              "scale": "Small"
+            },
+            "source": "room-constraint-resolver"
+          },
+          "conflicts": [
+            {
+              "code": "ROOM_SHAPE_UNREGISTERED",
+              "field": "shape.kind",
+              "sources": [
+                "room-01"
+              ],
+              "message": "The requested room shape is not registered by the shared shape contract.",
+              "blocking": true,
+              "severity": "error",
+              "shape": "skull-lined-corridor",
+              "capability": "supports-shape-skull-lined-corridor",
+              "unsupported": true
+            }
+          ],
+          "warnings": [],
+          "changes": [],
+          "provenance": {
+            "size.scale": [
+              {
+                "authoredPath": "",
+                "priority": 10,
+                "sourceId": "room-01",
+                "sourceType": "base-region",
+                "strength": "soft",
+                "value": "Small"
+              }
+            ]
+          },
+          "capabilities": [],
+          "diagnostics": {
+            "contributionCount": 1,
+            "sourceIds": [
+              "room-01"
+            ],
+            "tags": [
+              "entrance",
+              "sedlec-ossuary",
+              "skull-lined-corridor"
+            ],
+            "selectedArchetype": ""
+          }
+        },
+        "sourceRegionId": "location-region-1",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "horror": [],
+        "contexts": [
+          "Crypt"
+        ],
+        "tags": [
+          "entrance",
+          "skull-lined corridor",
+          "sedlec-ossuary"
+        ],
+        "premise": "",
+        "sensoryLayer": "cold incense",
+        "visualSigns": "bone chandeliers",
+        "hazard": "",
+        "reward": "",
+        "encounter": "",
+        "clue": "",
+        "clueText": "",
+        "secretNarrative": "",
+        "interaction": "",
+        "readAloud": "",
+        "isSecretRoom": false,
+        "secret": false,
+        "locked": false,
+        "links": [
+          "main"
+        ],
+        "notes": "",
+        "assignedComponents": [],
+        "componentPlacements": [],
+        "assignedSlotIds": []
+      }
+    },
+    {
+      "id": "location-region-2",
+      "templateId": "location-region-2",
+      "name": "02 Ossuary Gallery",
+      "role": "transition",
+      "roomType": "ossuary gallery",
+      "roomArchetype": "",
+      "roomArchetypeSource": "",
+      "mapInfluence": null,
+      "roomDesign": {
+        "schemaVersion": "room-design-v0.1",
+        "size": {
+          "scale": "Medium"
+        },
+        "source": "room-constraint-resolver"
+      },
+      "effectiveRoomDesign": {
+        "schemaVersion": "room-design-v0.1",
+        "size": {
+          "scale": "Medium"
+        },
+        "source": "room-constraint-resolver"
+      },
+      "roomConstraintResolution": {
+        "schemaVersion": "room-constraint-resolution-v1",
+        "status": "unsupported",
+        "effectiveRoomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Medium"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "conflicts": [
+          {
+            "code": "ROOM_SHAPE_UNREGISTERED",
+            "field": "shape.kind",
+            "sources": [
+              "room-02"
+            ],
+            "message": "The requested room shape is not registered by the shared shape contract.",
+            "blocking": true,
+            "severity": "error",
+            "shape": "ossuary-gallery",
+            "capability": "supports-shape-ossuary-gallery",
+            "unsupported": true
+          }
+        ],
+        "warnings": [],
+        "changes": [],
+        "provenance": {
+          "size.scale": [
+            {
+              "authoredPath": "",
+              "priority": 10,
+              "sourceId": "room-02",
+              "sourceType": "base-region",
+              "strength": "soft",
+              "value": "Medium"
+            }
+          ]
+        },
+        "capabilities": [],
+        "diagnostics": {
+          "contributionCount": 1,
+          "sourceIds": [
+            "room-02"
+          ],
+          "tags": [
+            "ossuary-gallery",
+            "sedlec-ossuary",
+            "transition"
+          ],
+          "selectedArchetype": ""
+        }
+      },
+      "shape": "ossuary gallery",
+      "preferredShape": "ossuary gallery",
+      "size": "Medium",
+      "connectors": 2,
+      "density": "compact",
+      "level": 0,
+      "contexts": [
+        "Crypt"
+      ],
+      "horror": [],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "tags": [
+        "transition",
+        "ossuary gallery",
+        "sedlec-ossuary"
+      ],
+      "sensoryLayer": "bone dust",
+      "feature": "counted dead",
+      "interaction": "",
+      "interact": "",
+      "danger": "",
+      "clue": "",
+      "clueText": "",
+      "secretNarrative": "",
+      "isSecretRoom": false,
+      "secret": "",
+      "reward": "",
+      "encounter": "",
+      "readAloud": "",
+      "links": [
+        "main"
+      ],
+      "dungeonRoomBrief": {
+        "schemaVersion": "0.4",
+        "id": "room-02",
+        "index": 2,
+        "name": "02 Ossuary Gallery",
+        "role": "transition",
+        "type": "ossuary gallery",
+        "size": "Medium",
+        "level": 0,
+        "connectors": 2,
+        "density": "compact",
+        "shape": "ossuary gallery",
+        "roomArchetype": "",
+        "roomArchetypeSource": "",
+        "mapInfluence": null,
+        "roomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Medium"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "effectiveRoomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Medium"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "roomConstraintResolution": {
+          "schemaVersion": "room-constraint-resolution-v1",
+          "status": "unsupported",
+          "effectiveRoomDesign": {
+            "schemaVersion": "room-design-v0.1",
+            "size": {
+              "scale": "Medium"
+            },
+            "source": "room-constraint-resolver"
+          },
+          "conflicts": [
+            {
+              "code": "ROOM_SHAPE_UNREGISTERED",
+              "field": "shape.kind",
+              "sources": [
+                "room-02"
+              ],
+              "message": "The requested room shape is not registered by the shared shape contract.",
+              "blocking": true,
+              "severity": "error",
+              "shape": "ossuary-gallery",
+              "capability": "supports-shape-ossuary-gallery",
+              "unsupported": true
+            }
+          ],
+          "warnings": [],
+          "changes": [],
+          "provenance": {
+            "size.scale": [
+              {
+                "authoredPath": "",
+                "priority": 10,
+                "sourceId": "room-02",
+                "sourceType": "base-region",
+                "strength": "soft",
+                "value": "Medium"
+              }
+            ]
+          },
+          "capabilities": [],
+          "diagnostics": {
+            "contributionCount": 1,
+            "sourceIds": [
+              "room-02"
+            ],
+            "tags": [
+              "ossuary-gallery",
+              "sedlec-ossuary",
+              "transition"
+            ],
+            "selectedArchetype": ""
+          }
+        },
+        "sourceRegionId": "location-region-2",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "horror": [],
+        "contexts": [
+          "Crypt"
+        ],
+        "tags": [
+          "transition",
+          "ossuary gallery",
+          "sedlec-ossuary"
+        ],
+        "premise": "",
+        "sensoryLayer": "bone dust",
+        "visualSigns": "counted dead",
+        "hazard": "",
+        "reward": "",
+        "encounter": "",
+        "clue": "",
+        "clueText": "",
+        "secretNarrative": "",
+        "interaction": "",
+        "readAloud": "",
+        "isSecretRoom": false,
+        "secret": false,
+        "locked": false,
+        "links": [
+          "main"
+        ],
+        "notes": "",
+        "assignedComponents": [],
+        "componentPlacements": [],
+        "assignedSlotIds": []
+      }
+    },
+    {
+      "id": "location-region-3",
+      "templateId": "location-region-3",
+      "name": "03 Crypt Chapel",
+      "role": "discovery",
+      "roomType": "crypt chapel",
+      "roomArchetype": "",
+      "roomArchetypeSource": "",
+      "mapInfluence": null,
+      "roomDesign": {
+        "schemaVersion": "room-design-v0.1",
+        "size": {
+          "scale": "Medium"
+        },
+        "source": "room-constraint-resolver"
+      },
+      "effectiveRoomDesign": {
+        "schemaVersion": "room-design-v0.1",
+        "size": {
+          "scale": "Medium"
+        },
+        "source": "room-constraint-resolver"
+      },
+      "roomConstraintResolution": {
+        "schemaVersion": "room-constraint-resolution-v1",
+        "status": "unsupported",
+        "effectiveRoomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Medium"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "conflicts": [
+          {
+            "code": "ROOM_SHAPE_UNREGISTERED",
+            "field": "shape.kind",
+            "sources": [
+              "room-03"
+            ],
+            "message": "The requested room shape is not registered by the shared shape contract.",
+            "blocking": true,
+            "severity": "error",
+            "shape": "crypt-chapel",
+            "capability": "supports-shape-crypt-chapel",
+            "unsupported": true
+          }
+        ],
+        "warnings": [],
+        "changes": [],
+        "provenance": {
+          "size.scale": [
+            {
+              "authoredPath": "",
+              "priority": 10,
+              "sourceId": "room-03",
+              "sourceType": "base-region",
+              "strength": "soft",
+              "value": "Medium"
+            }
+          ]
+        },
+        "capabilities": [],
+        "diagnostics": {
+          "contributionCount": 1,
+          "sourceIds": [
+            "room-03"
+          ],
+          "tags": [
+            "crypt-chapel",
+            "discovery",
+            "sedlec-ossuary"
+          ],
+          "selectedArchetype": ""
+        }
+      },
+      "shape": "crypt chapel",
+      "preferredShape": "crypt chapel",
+      "size": "Medium",
+      "connectors": 2,
+      "density": "compact",
+      "level": 0,
+      "contexts": [
+        "Crypt"
+      ],
+      "horror": [],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "tags": [
+        "discovery",
+        "crypt chapel",
+        "sedlec-ossuary"
+      ],
+      "sensoryLayer": "damp limestone",
+      "feature": "devotional remains",
+      "interaction": "",
+      "interact": "",
+      "danger": "",
+      "clue": "",
+      "clueText": "",
+      "secretNarrative": "",
+      "isSecretRoom": false,
+      "secret": "",
+      "reward": "",
+      "encounter": "",
+      "readAloud": "",
+      "links": [
+        "main"
+      ],
+      "dungeonRoomBrief": {
+        "schemaVersion": "0.4",
+        "id": "room-03",
+        "index": 3,
+        "name": "03 Crypt Chapel",
+        "role": "discovery",
+        "type": "crypt chapel",
+        "size": "Medium",
+        "level": 0,
+        "connectors": 2,
+        "density": "compact",
+        "shape": "crypt chapel",
+        "roomArchetype": "",
+        "roomArchetypeSource": "",
+        "mapInfluence": null,
+        "roomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Medium"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "effectiveRoomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Medium"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "roomConstraintResolution": {
+          "schemaVersion": "room-constraint-resolution-v1",
+          "status": "unsupported",
+          "effectiveRoomDesign": {
+            "schemaVersion": "room-design-v0.1",
+            "size": {
+              "scale": "Medium"
+            },
+            "source": "room-constraint-resolver"
+          },
+          "conflicts": [
+            {
+              "code": "ROOM_SHAPE_UNREGISTERED",
+              "field": "shape.kind",
+              "sources": [
+                "room-03"
+              ],
+              "message": "The requested room shape is not registered by the shared shape contract.",
+              "blocking": true,
+              "severity": "error",
+              "shape": "crypt-chapel",
+              "capability": "supports-shape-crypt-chapel",
+              "unsupported": true
+            }
+          ],
+          "warnings": [],
+          "changes": [],
+          "provenance": {
+            "size.scale": [
+              {
+                "authoredPath": "",
+                "priority": 10,
+                "sourceId": "room-03",
+                "sourceType": "base-region",
+                "strength": "soft",
+                "value": "Medium"
+              }
+            ]
+          },
+          "capabilities": [],
+          "diagnostics": {
+            "contributionCount": 1,
+            "sourceIds": [
+              "room-03"
+            ],
+            "tags": [
+              "crypt-chapel",
+              "discovery",
+              "sedlec-ossuary"
+            ],
+            "selectedArchetype": ""
+          }
+        },
+        "sourceRegionId": "location-region-3",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "horror": [],
+        "contexts": [
+          "Crypt"
+        ],
+        "tags": [
+          "discovery",
+          "crypt chapel",
+          "sedlec-ossuary"
+        ],
+        "premise": "",
+        "sensoryLayer": "damp limestone",
+        "visualSigns": "devotional remains",
+        "hazard": "",
+        "reward": "",
+        "encounter": "",
+        "clue": "",
+        "clueText": "",
+        "secretNarrative": "",
+        "interaction": "",
+        "readAloud": "",
+        "isSecretRoom": false,
+        "secret": false,
+        "locked": false,
+        "links": [
+          "main"
+        ],
+        "notes": "",
+        "assignedComponents": [],
+        "componentPlacements": [],
+        "assignedSlotIds": []
+      }
+    },
+    {
+      "id": "location-region-4",
+      "templateId": "location-region-4",
+      "name": "04 Reliquary Niche",
+      "role": "hazard",
+      "roomType": "reliquary niche",
+      "roomArchetype": "",
+      "roomArchetypeSource": "",
+      "mapInfluence": null,
+      "roomDesign": {
+        "schemaVersion": "room-design-v0.1",
+        "size": {
+          "scale": "Medium"
+        },
+        "source": "room-constraint-resolver"
+      },
+      "effectiveRoomDesign": {
+        "schemaVersion": "room-design-v0.1",
+        "size": {
+          "scale": "Medium"
+        },
+        "source": "room-constraint-resolver"
+      },
+      "roomConstraintResolution": {
+        "schemaVersion": "room-constraint-resolution-v1",
+        "status": "unsupported",
+        "effectiveRoomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Medium"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "conflicts": [
+          {
+            "code": "ROOM_SHAPE_UNREGISTERED",
+            "field": "shape.kind",
+            "sources": [
+              "room-04"
+            ],
+            "message": "The requested room shape is not registered by the shared shape contract.",
+            "blocking": true,
+            "severity": "error",
+            "shape": "reliquary-niche",
+            "capability": "supports-shape-reliquary-niche",
+            "unsupported": true
+          }
+        ],
+        "warnings": [],
+        "changes": [],
+        "provenance": {
+          "size.scale": [
+            {
+              "authoredPath": "",
+              "priority": 10,
+              "sourceId": "room-04",
+              "sourceType": "base-region",
+              "strength": "soft",
+              "value": "Medium"
+            }
+          ]
+        },
+        "capabilities": [],
+        "diagnostics": {
+          "contributionCount": 1,
+          "sourceIds": [
+            "room-04"
+          ],
+          "tags": [
+            "hazard",
+            "reliquary-niche",
+            "sedlec-ossuary"
+          ],
+          "selectedArchetype": ""
+        }
+      },
+      "shape": "reliquary niche",
+      "preferredShape": "reliquary niche",
+      "size": "Medium",
+      "connectors": 2,
+      "density": "compact",
+      "level": -1,
+      "contexts": [
+        "Crypt"
+      ],
+      "horror": [],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "tags": [
+        "hazard",
+        "reliquary niche",
+        "sedlec-ossuary"
+      ],
+      "sensoryLayer": "old wax",
+      "feature": "candle niches",
+      "interaction": "",
+      "interact": "",
+      "danger": "desecrated relic",
+      "clue": "",
+      "clueText": "",
+      "secretNarrative": "",
+      "isSecretRoom": false,
+      "secret": "",
+      "reward": "",
+      "encounter": "",
+      "readAloud": "",
+      "links": [
+        "main"
+      ],
+      "dungeonRoomBrief": {
+        "schemaVersion": "0.4",
+        "id": "room-04",
+        "index": 4,
+        "name": "04 Reliquary Niche",
+        "role": "hazard",
+        "type": "reliquary niche",
+        "size": "Medium",
+        "level": -1,
+        "connectors": 2,
+        "density": "compact",
+        "shape": "reliquary niche",
+        "roomArchetype": "",
+        "roomArchetypeSource": "",
+        "mapInfluence": null,
+        "roomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Medium"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "effectiveRoomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Medium"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "roomConstraintResolution": {
+          "schemaVersion": "room-constraint-resolution-v1",
+          "status": "unsupported",
+          "effectiveRoomDesign": {
+            "schemaVersion": "room-design-v0.1",
+            "size": {
+              "scale": "Medium"
+            },
+            "source": "room-constraint-resolver"
+          },
+          "conflicts": [
+            {
+              "code": "ROOM_SHAPE_UNREGISTERED",
+              "field": "shape.kind",
+              "sources": [
+                "room-04"
+              ],
+              "message": "The requested room shape is not registered by the shared shape contract.",
+              "blocking": true,
+              "severity": "error",
+              "shape": "reliquary-niche",
+              "capability": "supports-shape-reliquary-niche",
+              "unsupported": true
+            }
+          ],
+          "warnings": [],
+          "changes": [],
+          "provenance": {
+            "size.scale": [
+              {
+                "authoredPath": "",
+                "priority": 10,
+                "sourceId": "room-04",
+                "sourceType": "base-region",
+                "strength": "soft",
+                "value": "Medium"
+              }
+            ]
+          },
+          "capabilities": [],
+          "diagnostics": {
+            "contributionCount": 1,
+            "sourceIds": [
+              "room-04"
+            ],
+            "tags": [
+              "hazard",
+              "reliquary-niche",
+              "sedlec-ossuary"
+            ],
+            "selectedArchetype": ""
+          }
+        },
+        "sourceRegionId": "location-region-4",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "horror": [],
+        "contexts": [
+          "Crypt"
+        ],
+        "tags": [
+          "hazard",
+          "reliquary niche",
+          "sedlec-ossuary"
+        ],
+        "premise": "",
+        "sensoryLayer": "old wax",
+        "visualSigns": "candle niches",
+        "hazard": "desecrated relic",
+        "reward": "",
+        "encounter": "",
+        "clue": "",
+        "clueText": "",
+        "secretNarrative": "",
+        "interaction": "",
+        "readAloud": "",
+        "isSecretRoom": false,
+        "secret": false,
+        "locked": false,
+        "links": [
+          "main"
+        ],
+        "notes": "",
+        "assignedComponents": [],
+        "componentPlacements": [],
+        "assignedSlotIds": []
+      }
+    },
+    {
+      "id": "location-region-5",
+      "templateId": "location-region-5",
+      "name": "05 Sealed Catacomb",
+      "role": "climax",
+      "roomType": "sealed catacomb",
+      "roomArchetype": "",
+      "roomArchetypeSource": "",
+      "mapInfluence": null,
+      "roomDesign": {
+        "schemaVersion": "room-design-v0.1",
+        "size": {
+          "scale": "Large"
+        },
+        "source": "room-constraint-resolver"
+      },
+      "effectiveRoomDesign": {
+        "schemaVersion": "room-design-v0.1",
+        "size": {
+          "scale": "Large"
+        },
+        "source": "room-constraint-resolver"
+      },
+      "roomConstraintResolution": {
+        "schemaVersion": "room-constraint-resolution-v1",
+        "status": "unsupported",
+        "effectiveRoomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Large"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "conflicts": [
+          {
+            "code": "ROOM_SHAPE_UNREGISTERED",
+            "field": "shape.kind",
+            "sources": [
+              "room-05"
+            ],
+            "message": "The requested room shape is not registered by the shared shape contract.",
+            "blocking": true,
+            "severity": "error",
+            "shape": "sealed-catacomb",
+            "capability": "supports-shape-sealed-catacomb",
+            "unsupported": true
+          }
+        ],
+        "warnings": [],
+        "changes": [],
+        "provenance": {
+          "size.scale": [
+            {
+              "authoredPath": "",
+              "priority": 10,
+              "sourceId": "room-05",
+              "sourceType": "base-region",
+              "strength": "soft",
+              "value": "Large"
+            }
+          ]
+        },
+        "capabilities": [],
+        "diagnostics": {
+          "contributionCount": 1,
+          "sourceIds": [
+            "room-05"
+          ],
+          "tags": [
+            "climax",
+            "sealed-catacomb",
+            "sedlec-ossuary"
+          ],
+          "selectedArchetype": ""
+        }
+      },
+      "shape": "sealed catacomb",
+      "preferredShape": "sealed catacomb",
+      "size": "Large",
+      "connectors": 1,
+      "density": "compact",
+      "level": -1,
+      "contexts": [
+        "Crypt"
+      ],
+      "horror": [],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "tags": [
+        "climax",
+        "sealed catacomb",
+        "sedlec-ossuary"
+      ],
+      "sensoryLayer": "muffled hymns",
+      "feature": "skull garlands",
+      "interaction": "",
+      "interact": "",
+      "danger": "",
+      "clue": "",
+      "clueText": "",
+      "secretNarrative": "",
+      "isSecretRoom": false,
+      "secret": "",
+      "reward": "bone icon",
+      "encounter": "Sedlec Ossuary climax pressure",
+      "readAloud": "",
+      "links": [
+        "main"
+      ],
+      "dungeonRoomBrief": {
+        "schemaVersion": "0.4",
+        "id": "room-05",
+        "index": 5,
+        "name": "05 Sealed Catacomb",
+        "role": "climax",
+        "type": "sealed catacomb",
+        "size": "Large",
+        "level": -1,
+        "connectors": 1,
+        "density": "compact",
+        "shape": "sealed catacomb",
+        "roomArchetype": "",
+        "roomArchetypeSource": "",
+        "mapInfluence": null,
+        "roomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Large"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "effectiveRoomDesign": {
+          "schemaVersion": "room-design-v0.1",
+          "size": {
+            "scale": "Large"
+          },
+          "source": "room-constraint-resolver"
+        },
+        "roomConstraintResolution": {
+          "schemaVersion": "room-constraint-resolution-v1",
+          "status": "unsupported",
+          "effectiveRoomDesign": {
+            "schemaVersion": "room-design-v0.1",
+            "size": {
+              "scale": "Large"
+            },
+            "source": "room-constraint-resolver"
+          },
+          "conflicts": [
+            {
+              "code": "ROOM_SHAPE_UNREGISTERED",
+              "field": "shape.kind",
+              "sources": [
+                "room-05"
+              ],
+              "message": "The requested room shape is not registered by the shared shape contract.",
+              "blocking": true,
+              "severity": "error",
+              "shape": "sealed-catacomb",
+              "capability": "supports-shape-sealed-catacomb",
+              "unsupported": true
+            }
+          ],
+          "warnings": [],
+          "changes": [],
+          "provenance": {
+            "size.scale": [
+              {
+                "authoredPath": "",
+                "priority": 10,
+                "sourceId": "room-05",
+                "sourceType": "base-region",
+                "strength": "soft",
+                "value": "Large"
+              }
+            ]
+          },
+          "capabilities": [],
+          "diagnostics": {
+            "contributionCount": 1,
+            "sourceIds": [
+              "room-05"
+            ],
+            "tags": [
+              "climax",
+              "sealed-catacomb",
+              "sedlec-ossuary"
+            ],
+            "selectedArchetype": ""
+          }
+        },
+        "sourceRegionId": "location-region-5",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "horror": [],
+        "contexts": [
+          "Crypt"
+        ],
+        "tags": [
+          "climax",
+          "sealed catacomb",
+          "sedlec-ossuary"
+        ],
+        "premise": "",
+        "sensoryLayer": "muffled hymns",
+        "visualSigns": "skull garlands",
+        "hazard": "",
+        "reward": "bone icon",
+        "encounter": "Sedlec Ossuary climax pressure",
+        "clue": "",
+        "clueText": "",
+        "secretNarrative": "",
+        "interaction": "",
+        "readAloud": "",
+        "isSecretRoom": false,
+        "secret": false,
+        "locked": false,
+        "links": [
+          "main"
+        ],
+        "notes": "",
+        "assignedComponents": [],
+        "componentPlacements": [],
+        "assignedSlotIds": []
+      }
+    }
+  ],
+  "slotAssignments": {
+    "horrorPremise": [
+      {
+        "componentId": "places-premise-ossuary-litany-engine",
+        "slotId": "horrorPremise",
+        "regionId": "",
+        "addedAt": 0
+      }
+    ],
+    "sensoryLayer": [
+      {
+        "componentId": "places-sense-bone-dust-breath",
+        "slotId": "sensoryLayer",
+        "regionId": "",
+        "addedAt": 0
+      },
+      {
+        "componentId": "places-sense-clicking-skull-seams",
+        "slotId": "sensoryLayer",
+        "regionId": "",
+        "addedAt": 0
+      }
+    ],
+    "visibleAnomaly": [
+      {
+        "componentId": "places-anomaly-prayer-slip-mortar",
+        "slotId": "visibleAnomaly",
+        "regionId": "",
+        "addedAt": 0
+      }
+    ],
+    "reward": [
+      {
+        "componentId": "places-reward-reliquary-fragment-key",
+        "slotId": "reward",
+        "regionId": "",
+        "addedAt": 0
+      }
+    ],
+    "hazard": [
+      {
+        "componentId": "places-hazard-weight-sermon-slab",
+        "slotId": "hazard",
+        "regionId": "location-region-1",
+        "addedAt": 0
+      },
+      {
+        "componentId": "places-hazard-reliquary-tripwire",
+        "slotId": "hazard",
+        "regionId": "location-region-2",
+        "addedAt": 0
+      },
+      {
+        "componentId": "places-hazard-weight-sermon-slab",
+        "slotId": "hazard",
+        "regionId": "location-region-3",
+        "addedAt": 0
+      },
+      {
+        "componentId": "places-hazard-reliquary-tripwire",
+        "slotId": "hazard",
+        "regionId": "location-region-4",
+        "addedAt": 0
+      },
+      {
+        "componentId": "places-hazard-weight-sermon-slab",
+        "slotId": "hazard",
+        "regionId": "location-region-5",
+        "addedAt": 0
+      }
+    ],
+    "clue": [
+      {
+        "componentId": "places-clue-miscounted-skull-row",
+        "slotId": "clue",
+        "regionId": "location-region-1",
+        "addedAt": 0
+      },
+      {
+        "componentId": "places-clue-bone-chandelier-map",
+        "slotId": "clue",
+        "regionId": "location-region-2",
+        "addedAt": 0
+      },
+      {
+        "componentId": "places-clue-miscounted-skull-row",
+        "slotId": "clue",
+        "regionId": "location-region-3",
+        "addedAt": 0
+      },
+      {
+        "componentId": "places-clue-bone-chandelier-map",
+        "slotId": "clue",
+        "regionId": "location-region-4",
+        "addedAt": 0
+      },
+      {
+        "componentId": "places-clue-miscounted-skull-row",
+        "slotId": "clue",
+        "regionId": "location-region-5",
+        "addedAt": 0
+      }
+    ],
+    "encounterTwist": [
+      {
+        "componentId": "places-twist-bonework-cover-lines",
+        "slotId": "encounterTwist",
+        "regionId": "location-region-1",
+        "addedAt": 0
+      },
+      {
+        "componentId": "places-twist-reliquary-alarm-choir",
+        "slotId": "encounterTwist",
+        "regionId": "location-region-2",
+        "addedAt": 0
+      },
+      {
+        "componentId": "places-twist-bonework-cover-lines",
+        "slotId": "encounterTwist",
+        "regionId": "location-region-3",
+        "addedAt": 0
+      },
+      {
+        "componentId": "places-twist-reliquary-alarm-choir",
+        "slotId": "encounterTwist",
+        "regionId": "location-region-4",
+        "addedAt": 0
+      },
+      {
+        "componentId": "places-twist-bonework-cover-lines",
+        "slotId": "encounterTwist",
+        "regionId": "location-region-5",
+        "addedAt": 0
+      }
+    ]
+  },
+  "selectedComponents": [
+    {
+      "id": "places-premise-ossuary-litany-engine",
+      "title": "Litany Engine Ossuary",
+      "label": "Litany Engine Ossuary",
+      "type": "Location Premise",
+      "contentType": "location-component",
+      "status": "published",
+      "workflows": [
+        "darken-location"
+      ],
+      "slots": [
+        "horrorPremise"
+      ],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "sourceTypes": [
+        "Architecture",
+        "Sacred Site",
+        "Material Culture"
+      ],
+      "themes": [
+        "devotional bonework",
+        "holy display",
+        "mass remains",
+        "ornamental death",
+        "devotional architecture",
+        "ritual display"
+      ],
+      "motifs": [
+        "bone chandelier",
+        "skull garlands",
+        "arranged remains",
+        "chapel dust",
+        "bonework",
+        "forgotten litany",
+        "chapel pressure"
+      ],
+      "contexts": [
+        "Crypt",
+        "Chapel",
+        "Ruins"
+      ],
+      "horror": [
+        "Religious Horror",
+        "Gothic"
+      ],
+      "sensoryKind": "",
+      "intrusion": "Medium",
+      "prep": "Medium",
+      "summary": "The location behaves like a devotional machine built from arranged remains.",
+      "tableText": "Every chamber seems arranged to continue a prayer that no living voice remembers.",
+      "mechanics": "",
+      "narrative": "Use this as the main premise when bone ornament, worship, and architecture should feel like one system.",
+      "location": {
+        "schemaVersion": "location-component-v0.2",
+        "componentId": "places-premise-ossuary-litany-engine",
+        "slot": "horrorPremise",
+        "slots": [
+          "horrorPremise"
+        ],
+        "assignmentMode": "map",
+        "outputSection": "Location Premise",
+        "componentType": "Location Premise",
+        "sensoryKind": "",
+        "intrusion": "Medium",
+        "prep": "Medium",
+        "gmFacingOnly": false,
+        "tableRole": "read-aloud",
+        "rules": null,
+        "migration": {
+          "source": "shared/content/content-packs/dark-places-canonical-expansion-pack.js",
+          "legacyId": "",
+          "isCanonical": true
+        },
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Location Premise",
+              "horrorPremise"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "best-fit-room",
+            "cardinality": 1,
+            "preferredRoles": [
+              "entrance",
+              "threshold",
+              "landmark",
+              "ritual"
+            ],
+            "forbiddenRoles": [
+              "service",
+              "connector"
+            ],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-premise-ossuary-litany-engine",
+            "componentTitle": "Litany Engine Ossuary",
+            "slotId": "horrorPremise",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        }
+      },
+      "registry": {
+        "componentId": "places-premise-ossuary-litany-engine",
+        "contentType": "location-component",
+        "schemaVersion": "location-component-v0.2"
+      },
+      "contentPack": {
+        "id": "dark-places-canonical-expansion",
+        "title": "Dark Places Canonical Expansion"
+      },
+      "tags": [
+        "slot:horrorPremise",
+        "source:sedlec-ossuary",
+        "context:crypt",
+        "context:chapel",
+        "context:ruins",
+        "horror:religious-horror",
+        "horror:gothic",
+        "motif:bone-chandelier",
+        "motif:skull-garlands",
+        "motif:arranged-remains",
+        "motif:chapel-dust",
+        "motif:bonework",
+        "motif:forgotten-litany",
+        "motif:chapel-pressure",
+        "intrusion:medium",
+        "authored",
+        "canonical"
+      ]
+    },
+    {
+      "id": "places-sense-bone-dust-breath",
+      "title": "Bone-Dust Breath",
+      "label": "Bone-Dust Breath",
+      "type": "Sensory Layer",
+      "contentType": "location-component",
+      "status": "published",
+      "workflows": [
+        "darken-location"
+      ],
+      "slots": [
+        "sensoryLayer"
+      ],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "sourceTypes": [
+        "Architecture",
+        "Sacred Site",
+        "Material Culture"
+      ],
+      "themes": [
+        "devotional bonework",
+        "holy display",
+        "mass remains",
+        "ornamental death"
+      ],
+      "motifs": [
+        "bone chandelier",
+        "skull garlands",
+        "arranged remains",
+        "chapel dust",
+        "powdered relics"
+      ],
+      "contexts": [
+        "Crypt",
+        "Chapel"
+      ],
+      "horror": [
+        "Religious Horror",
+        "Gothic"
+      ],
+      "sensoryKind": "smell",
+      "intrusion": "Medium",
+      "prep": "None",
+      "summary": "The air carries a dry mineral taste of powdered bone.",
+      "tableText": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+      "mechanics": "",
+      "narrative": "Use as a low-pressure read-aloud layer for ossuary rooms.",
+      "location": {
+        "schemaVersion": "location-component-v0.2",
+        "componentId": "places-sense-bone-dust-breath",
+        "slot": "sensoryLayer",
+        "slots": [
+          "sensoryLayer"
+        ],
+        "assignmentMode": "map",
+        "outputSection": "Sensory Layer",
+        "componentType": "Sensory Layer",
+        "sensoryKind": "smell",
+        "intrusion": "Medium",
+        "prep": "None",
+        "gmFacingOnly": false,
+        "tableRole": "read-aloud",
+        "rules": null,
+        "migration": {
+          "source": "shared/content/content-packs/dark-places-canonical-expansion-pack.js",
+          "legacyId": "",
+          "isCanonical": true
+        },
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Sensory Layer",
+              "sensoryLayer"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "every-room",
+            "cardinality": 99,
+            "preferredRoles": [],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "every-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-sense-bone-dust-breath",
+            "componentTitle": "Bone-Dust Breath",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        }
+      },
+      "registry": {
+        "componentId": "places-sense-bone-dust-breath",
+        "contentType": "location-component",
+        "schemaVersion": "location-component-v0.2"
+      },
+      "contentPack": {
+        "id": "dark-places-canonical-expansion",
+        "title": "Dark Places Canonical Expansion"
+      },
+      "tags": [
+        "slot:sensoryLayer",
+        "source:sedlec-ossuary",
+        "context:crypt",
+        "context:chapel",
+        "horror:religious-horror",
+        "horror:gothic",
+        "motif:bone-chandelier",
+        "motif:skull-garlands",
+        "motif:arranged-remains",
+        "motif:chapel-dust",
+        "motif:powdered-relics",
+        "intrusion:medium",
+        "authored",
+        "canonical"
+      ]
+    },
+    {
+      "id": "places-sense-clicking-skull-seams",
+      "title": "Clicking Skull Seams",
+      "label": "Clicking Skull Seams",
+      "type": "Sensory Layer",
+      "contentType": "location-component",
+      "status": "published",
+      "workflows": [
+        "darken-location"
+      ],
+      "slots": [
+        "sensoryLayer"
+      ],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "sourceTypes": [
+        "Architecture",
+        "Sacred Site",
+        "Material Culture"
+      ],
+      "themes": [
+        "devotional bonework",
+        "holy display",
+        "mass remains",
+        "ornamental death"
+      ],
+      "motifs": [
+        "bone chandelier",
+        "skull garlands",
+        "arranged remains",
+        "chapel dust",
+        "settling bone"
+      ],
+      "contexts": [
+        "Crypt",
+        "Chapel"
+      ],
+      "horror": [
+        "Religious Horror",
+        "Gothic"
+      ],
+      "sensoryKind": "sound",
+      "intrusion": "Medium",
+      "prep": "None",
+      "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+      "tableText": "Small clicks travel through the bonework, like teeth settling after speech.",
+      "mechanics": "",
+      "narrative": "Use to make silence feel responsive.",
+      "location": {
+        "schemaVersion": "location-component-v0.2",
+        "componentId": "places-sense-clicking-skull-seams",
+        "slot": "sensoryLayer",
+        "slots": [
+          "sensoryLayer"
+        ],
+        "assignmentMode": "map",
+        "outputSection": "Sensory Layer",
+        "componentType": "Sensory Layer",
+        "sensoryKind": "sound",
+        "intrusion": "Medium",
+        "prep": "None",
+        "gmFacingOnly": false,
+        "tableRole": "read-aloud",
+        "rules": null,
+        "migration": {
+          "source": "shared/content/content-packs/dark-places-canonical-expansion-pack.js",
+          "legacyId": "",
+          "isCanonical": true
+        },
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Sensory Layer",
+              "sensoryLayer"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "every-room",
+            "cardinality": 99,
+            "preferredRoles": [],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "every-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-sense-clicking-skull-seams",
+            "componentTitle": "Clicking Skull Seams",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        }
+      },
+      "registry": {
+        "componentId": "places-sense-clicking-skull-seams",
+        "contentType": "location-component",
+        "schemaVersion": "location-component-v0.2"
+      },
+      "contentPack": {
+        "id": "dark-places-canonical-expansion",
+        "title": "Dark Places Canonical Expansion"
+      },
+      "tags": [
+        "slot:sensoryLayer",
+        "source:sedlec-ossuary",
+        "context:crypt",
+        "context:chapel",
+        "horror:religious-horror",
+        "horror:gothic",
+        "motif:bone-chandelier",
+        "motif:skull-garlands",
+        "motif:arranged-remains",
+        "motif:chapel-dust",
+        "motif:settling-bone",
+        "intrusion:medium",
+        "authored",
+        "canonical"
+      ]
+    },
+    {
+      "id": "places-anomaly-prayer-slip-mortar",
+      "title": "Prayer-Slip Mortar",
+      "label": "Prayer-Slip Mortar",
+      "type": "Visible Anomaly",
+      "contentType": "location-component",
+      "status": "published",
+      "workflows": [
+        "darken-location"
+      ],
+      "slots": [
+        "visibleAnomaly"
+      ],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "sourceTypes": [
+        "Architecture",
+        "Sacred Site",
+        "Material Culture"
+      ],
+      "themes": [
+        "devotional bonework",
+        "holy display",
+        "mass remains",
+        "ornamental death"
+      ],
+      "motifs": [
+        "bone chandelier",
+        "skull garlands",
+        "arranged remains",
+        "chapel dust",
+        "prayer slips",
+        "hair mortar"
+      ],
+      "contexts": [
+        "Crypt",
+        "Chapel"
+      ],
+      "horror": [
+        "Religious Horror",
+        "Gothic"
+      ],
+      "sensoryKind": "",
+      "intrusion": "Medium",
+      "prep": "Low",
+      "summary": "The mortar is packed with folded prayer slips and pale hair.",
+      "tableText": "The mortar between the stones has been packed with hair, ash, and old prayer slips.",
+      "mechanics": "",
+      "narrative": "Use as an immediate visible sign that points to the source theme.",
+      "location": {
+        "schemaVersion": "location-component-v0.2",
+        "componentId": "places-anomaly-prayer-slip-mortar",
+        "slot": "visibleAnomaly",
+        "slots": [
+          "visibleAnomaly"
+        ],
+        "assignmentMode": "map",
+        "outputSection": "Visible Anomaly",
+        "componentType": "Visible Anomaly",
+        "sensoryKind": "",
+        "intrusion": "Medium",
+        "prep": "Low",
+        "gmFacingOnly": false,
+        "tableRole": "read-aloud",
+        "rules": null,
+        "migration": {
+          "source": "shared/content/content-packs/dark-places-canonical-expansion-pack.js",
+          "legacyId": "",
+          "isCanonical": true
+        },
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Visible Anomaly",
+              "visibleAnomaly"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "best-fit-room",
+            "cardinality": 1,
+            "preferredRoles": [
+              "landmark",
+              "climax",
+              "discovery",
+              "outcome",
+              "reward",
+              "ritual"
+            ],
+            "forbiddenRoles": [
+              "service",
+              "connector"
+            ],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "clue-marker",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-anomaly-prayer-slip-mortar",
+            "componentTitle": "Prayer-Slip Mortar",
+            "slotId": "visibleAnomaly",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        }
+      },
+      "registry": {
+        "componentId": "places-anomaly-prayer-slip-mortar",
+        "contentType": "location-component",
+        "schemaVersion": "location-component-v0.2"
+      },
+      "contentPack": {
+        "id": "dark-places-canonical-expansion",
+        "title": "Dark Places Canonical Expansion"
+      },
+      "tags": [
+        "slot:visibleAnomaly",
+        "source:sedlec-ossuary",
+        "context:crypt",
+        "context:chapel",
+        "horror:religious-horror",
+        "horror:gothic",
+        "motif:bone-chandelier",
+        "motif:skull-garlands",
+        "motif:arranged-remains",
+        "motif:chapel-dust",
+        "motif:prayer-slips",
+        "motif:hair-mortar",
+        "intrusion:medium",
+        "authored",
+        "canonical"
+      ]
+    },
+    {
+      "id": "places-reward-reliquary-fragment-key",
+      "title": "Reliquary Fragment Key",
+      "label": "Reliquary Fragment Key",
+      "type": "Reward / Consequence",
+      "contentType": "location-component",
+      "status": "published",
+      "workflows": [
+        "darken-location"
+      ],
+      "slots": [
+        "reward"
+      ],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "sourceTypes": [
+        "Architecture",
+        "Sacred Site",
+        "Material Culture"
+      ],
+      "themes": [
+        "devotional bonework",
+        "holy display",
+        "mass remains",
+        "ornamental death"
+      ],
+      "motifs": [
+        "bone chandelier",
+        "skull garlands",
+        "arranged remains",
+        "chapel dust",
+        "finger bone key",
+        "reliquary lock"
+      ],
+      "contexts": [
+        "Crypt",
+        "Chapel"
+      ],
+      "horror": [
+        "Religious Horror",
+        "Gothic"
+      ],
+      "sensoryKind": "",
+      "intrusion": "Medium",
+      "prep": "Low",
+      "summary": "A bone fragment acts as a key to sacred locks.",
+      "tableText": "A labeled finger bone rests in a small silver tube, warm only near locked reliquaries.",
+      "mechanics": "The fragment opens one reliquary lock or reveals one hidden chapel mechanism.",
+      "narrative": "Keep it small, useful, and morally uncomfortable.",
+      "location": {
+        "schemaVersion": "location-component-v0.2",
+        "componentId": "places-reward-reliquary-fragment-key",
+        "slot": "reward",
+        "slots": [
+          "reward"
+        ],
+        "assignmentMode": "map",
+        "outputSection": "Reward / Consequence",
+        "componentType": "Reward / Consequence",
+        "sensoryKind": "",
+        "intrusion": "Medium",
+        "prep": "Low",
+        "gmFacingOnly": true,
+        "tableRole": "gm-facing",
+        "rules": {
+          "text": "The fragment opens one reliquary lock or reveals one hidden chapel mechanism."
+        },
+        "migration": {
+          "source": "shared/content/content-packs/dark-places-canonical-expansion-pack.js",
+          "legacyId": "",
+          "isCanonical": true
+        },
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Reward / Consequence",
+              "reward"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "best-fit-room",
+            "cardinality": 1,
+            "preferredRoles": [
+              "outcome",
+              "reward",
+              "climax",
+              "secret",
+              "reliquary",
+              "treasury"
+            ],
+            "forbiddenRoles": [
+              "entrance",
+              "service",
+              "connector"
+            ],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "chest",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-reward-reliquary-fragment-key",
+            "componentTitle": "Reliquary Fragment Key",
+            "slotId": "reward",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        }
+      },
+      "registry": {
+        "componentId": "places-reward-reliquary-fragment-key",
+        "contentType": "location-component",
+        "schemaVersion": "location-component-v0.2"
+      },
+      "contentPack": {
+        "id": "dark-places-canonical-expansion",
+        "title": "Dark Places Canonical Expansion"
+      },
+      "tags": [
+        "slot:reward",
+        "source:sedlec-ossuary",
+        "context:crypt",
+        "context:chapel",
+        "horror:religious-horror",
+        "horror:gothic",
+        "motif:bone-chandelier",
+        "motif:skull-garlands",
+        "motif:arranged-remains",
+        "motif:chapel-dust",
+        "motif:finger-bone-key",
+        "motif:reliquary-lock",
+        "intrusion:medium",
+        "authored",
+        "canonical"
+      ]
+    },
+    {
+      "id": "places-hazard-weight-sermon-slab",
+      "title": "Weight-Sermon Slab",
+      "label": "Weight-Sermon Slab",
+      "type": "Environmental Hazard",
+      "contentType": "location-component",
+      "status": "published",
+      "workflows": [
+        "darken-location"
+      ],
+      "slots": [
+        "hazard"
+      ],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "sourceTypes": [
+        "Architecture",
+        "Sacred Site",
+        "Material Culture"
+      ],
+      "themes": [
+        "devotional bonework",
+        "holy display",
+        "mass remains",
+        "ornamental death"
+      ],
+      "motifs": [
+        "bone chandelier",
+        "skull garlands",
+        "arranged remains",
+        "chapel dust",
+        "pressure slab",
+        "falling bonework"
+      ],
+      "contexts": [
+        "Crypt",
+        "Chapel"
+      ],
+      "horror": [
+        "Religious Horror",
+        "Gothic"
+      ],
+      "sensoryKind": "",
+      "intrusion": "Medium",
+      "prep": "Medium",
+      "summary": "A pressure slab releases hanging bonework when crossed carelessly.",
+      "tableText": "A sermon text is carved into a floor slab polished by knees and footsteps.",
+      "mechanics": "A creature that crosses the slab without moving carefully triggers a fall of bonework; it must make a Dexterity saving throw or take bludgeoning damage and be knocked Prone.",
+      "narrative": "Telegraph with dustless edges, hanging cords, and a carved warning about kneeling.",
+      "location": {
+        "schemaVersion": "location-component-v0.2",
+        "componentId": "places-hazard-weight-sermon-slab",
+        "slot": "hazard",
+        "slots": [
+          "hazard"
+        ],
+        "assignmentMode": "region",
+        "outputSection": "Environmental Hazard",
+        "componentType": "Environmental Hazard",
+        "sensoryKind": "",
+        "intrusion": "Medium",
+        "prep": "Medium",
+        "gmFacingOnly": true,
+        "tableRole": "rules",
+        "rules": {
+          "text": "A creature that crosses the slab without moving carefully triggers a fall of bonework; it must make a Dexterity saving throw or take bludgeoning damage and be knocked Prone."
+        },
+        "mapInfluence": {
+          "preferredRoomArchetypes": [
+            "processional-crypt-hall"
+          ],
+          "forceRoomArchetype": false,
+          "weight": 2,
+          "source": "places-hazard-weight-sermon-slab",
+          "sources": [
+            "places-hazard-weight-sermon-slab",
+            "Weight-Sermon Slab"
+          ]
+        },
+        "migration": {
+          "source": "shared/content/content-packs/dark-places-canonical-expansion-pack.js",
+          "legacyId": "",
+          "isCanonical": true
+        },
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Environmental Hazard",
+              "hazard"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "hazard",
+              "ambush",
+              "ritual"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "mapInfluence": {
+            "preferredRoomArchetypes": [
+              "processional-crypt-hall"
+            ],
+            "forceRoomArchetype": false,
+            "weight": 2,
+            "source": "places-hazard-weight-sermon-slab",
+            "sources": [
+              "places-hazard-weight-sermon-slab",
+              "Weight-Sermon Slab"
+            ]
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-hazard-weight-sermon-slab",
+            "componentTitle": "Weight-Sermon Slab",
+            "slotId": "hazard",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ]
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [
+              "mapInfluence"
+            ],
+            "warnings": []
+          }
+        }
+      },
+      "registry": {
+        "componentId": "places-hazard-weight-sermon-slab",
+        "contentType": "location-component",
+        "schemaVersion": "location-component-v0.2"
+      },
+      "contentPack": {
+        "id": "dark-places-canonical-expansion",
+        "title": "Dark Places Canonical Expansion"
+      },
+      "tags": [
+        "slot:hazard",
+        "source:sedlec-ossuary",
+        "context:crypt",
+        "context:chapel",
+        "horror:religious-horror",
+        "horror:gothic",
+        "motif:bone-chandelier",
+        "motif:skull-garlands",
+        "motif:arranged-remains",
+        "motif:chapel-dust",
+        "motif:pressure-slab",
+        "motif:falling-bonework",
+        "intrusion:medium",
+        "authored",
+        "canonical"
+      ]
+    },
+    {
+      "id": "places-hazard-reliquary-tripwire",
+      "title": "Reliquary Tripwire",
+      "label": "Reliquary Tripwire",
+      "type": "Environmental Hazard",
+      "contentType": "location-component",
+      "status": "published",
+      "workflows": [
+        "darken-location"
+      ],
+      "slots": [
+        "hazard"
+      ],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "sourceTypes": [
+        "Architecture",
+        "Sacred Site",
+        "Material Culture"
+      ],
+      "themes": [
+        "devotional bonework",
+        "holy display",
+        "mass remains",
+        "ornamental death"
+      ],
+      "motifs": [
+        "bone chandelier",
+        "skull garlands",
+        "arranged remains",
+        "chapel dust",
+        "rosary tripwire",
+        "relic fragments"
+      ],
+      "contexts": [
+        "Crypt",
+        "Chapel"
+      ],
+      "horror": [
+        "Religious Horror",
+        "Gothic"
+      ],
+      "sensoryKind": "",
+      "intrusion": "Medium",
+      "prep": "Medium",
+      "summary": "A thread of rosary beads pulls open a reliquary of sharp fragments.",
+      "tableText": "A strand of beads runs ankle-high between two reliquary niches.",
+      "mechanics": "A creature that breaks the bead-line scatters sharp relic fragments in a short line; the area becomes difficult terrain until cleared.",
+      "narrative": "This is a trap that feels devotional rather than mechanical.",
+      "location": {
+        "schemaVersion": "location-component-v0.2",
+        "componentId": "places-hazard-reliquary-tripwire",
+        "slot": "hazard",
+        "slots": [
+          "hazard"
+        ],
+        "assignmentMode": "region",
+        "outputSection": "Environmental Hazard",
+        "componentType": "Environmental Hazard",
+        "sensoryKind": "",
+        "intrusion": "Medium",
+        "prep": "Medium",
+        "gmFacingOnly": true,
+        "tableRole": "rules",
+        "rules": {
+          "text": "A creature that breaks the bead-line scatters sharp relic fragments in a short line; the area becomes difficult terrain until cleared."
+        },
+        "mapInfluence": {
+          "preferredRoomArchetypes": [
+            "reliquary-niche"
+          ],
+          "forceRoomArchetype": false,
+          "weight": 3,
+          "source": "places-hazard-reliquary-tripwire",
+          "sources": [
+            "places-hazard-reliquary-tripwire",
+            "Reliquary Tripwire"
+          ]
+        },
+        "migration": {
+          "source": "shared/content/content-packs/dark-places-canonical-expansion-pack.js",
+          "legacyId": "",
+          "isCanonical": true
+        },
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Environmental Hazard",
+              "hazard"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "hazard",
+              "ambush",
+              "ritual"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "mapInfluence": {
+            "preferredRoomArchetypes": [
+              "reliquary-niche"
+            ],
+            "forceRoomArchetype": false,
+            "weight": 3,
+            "source": "places-hazard-reliquary-tripwire",
+            "sources": [
+              "places-hazard-reliquary-tripwire",
+              "Reliquary Tripwire"
+            ]
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-hazard-reliquary-tripwire",
+            "componentTitle": "Reliquary Tripwire",
+            "slotId": "hazard",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ]
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [
+              "mapInfluence"
+            ],
+            "warnings": []
+          }
+        }
+      },
+      "registry": {
+        "componentId": "places-hazard-reliquary-tripwire",
+        "contentType": "location-component",
+        "schemaVersion": "location-component-v0.2"
+      },
+      "contentPack": {
+        "id": "dark-places-canonical-expansion",
+        "title": "Dark Places Canonical Expansion"
+      },
+      "tags": [
+        "slot:hazard",
+        "source:sedlec-ossuary",
+        "context:crypt",
+        "context:chapel",
+        "horror:religious-horror",
+        "horror:gothic",
+        "motif:bone-chandelier",
+        "motif:skull-garlands",
+        "motif:arranged-remains",
+        "motif:chapel-dust",
+        "motif:rosary-tripwire",
+        "motif:relic-fragments",
+        "intrusion:medium",
+        "authored",
+        "canonical"
+      ]
+    },
+    {
+      "id": "places-clue-miscounted-skull-row",
+      "title": "Miscounted Skull Row",
+      "label": "Miscounted Skull Row",
+      "type": "Disturbing Clue",
+      "contentType": "location-component",
+      "status": "published",
+      "workflows": [
+        "darken-location"
+      ],
+      "slots": [
+        "clue"
+      ],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "sourceTypes": [
+        "Architecture",
+        "Sacred Site",
+        "Material Culture"
+      ],
+      "themes": [
+        "devotional bonework",
+        "holy display",
+        "mass remains",
+        "ornamental death"
+      ],
+      "motifs": [
+        "bone chandelier",
+        "skull garlands",
+        "arranged remains",
+        "chapel dust",
+        "skull row",
+        "fresh replacement"
+      ],
+      "contexts": [
+        "Crypt",
+        "Chapel"
+      ],
+      "horror": [
+        "Religious Horror",
+        "Gothic"
+      ],
+      "sensoryKind": "",
+      "intrusion": "Medium",
+      "prep": "Low",
+      "summary": "A skull row reveals that one skull has been replaced recently.",
+      "tableText": "One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+      "mechanics": "Investigation reveals the replacement is fresh and deliberately placed.",
+      "narrative": "Use to point toward a recent intruder, victim, or cult act.",
+      "location": {
+        "schemaVersion": "location-component-v0.2",
+        "componentId": "places-clue-miscounted-skull-row",
+        "slot": "clue",
+        "slots": [
+          "clue"
+        ],
+        "assignmentMode": "region",
+        "outputSection": "Disturbing Clue",
+        "componentType": "Disturbing Clue",
+        "sensoryKind": "",
+        "intrusion": "Medium",
+        "prep": "Low",
+        "gmFacingOnly": true,
+        "tableRole": "gm-facing",
+        "rules": {
+          "text": "Investigation reveals the replacement is fresh and deliberately placed."
+        },
+        "mapInfluence": {
+          "preferredRoomArchetypes": [
+            "ossuary-gallery"
+          ],
+          "forceRoomArchetype": false,
+          "weight": 3,
+          "source": "places-clue-miscounted-skull-row",
+          "sources": [
+            "places-clue-miscounted-skull-row",
+            "Miscounted Skull Row"
+          ]
+        },
+        "migration": {
+          "source": "shared/content/content-packs/dark-places-canonical-expansion-pack.js",
+          "legacyId": "",
+          "isCanonical": true
+        },
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Disturbing Clue",
+              "clue"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "clue",
+              "discovery",
+              "archive",
+              "secret"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "clue-marker",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "mapInfluence": {
+            "preferredRoomArchetypes": [
+              "ossuary-gallery"
+            ],
+            "forceRoomArchetype": false,
+            "weight": 3,
+            "source": "places-clue-miscounted-skull-row",
+            "sources": [
+              "places-clue-miscounted-skull-row",
+              "Miscounted Skull Row"
+            ]
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-clue-miscounted-skull-row",
+            "componentTitle": "Miscounted Skull Row",
+            "slotId": "clue",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ]
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [
+              "mapInfluence"
+            ],
+            "warnings": []
+          }
+        }
+      },
+      "registry": {
+        "componentId": "places-clue-miscounted-skull-row",
+        "contentType": "location-component",
+        "schemaVersion": "location-component-v0.2"
+      },
+      "contentPack": {
+        "id": "dark-places-canonical-expansion",
+        "title": "Dark Places Canonical Expansion"
+      },
+      "tags": [
+        "slot:clue",
+        "source:sedlec-ossuary",
+        "context:crypt",
+        "context:chapel",
+        "horror:religious-horror",
+        "horror:gothic",
+        "motif:bone-chandelier",
+        "motif:skull-garlands",
+        "motif:arranged-remains",
+        "motif:chapel-dust",
+        "motif:skull-row",
+        "motif:fresh-replacement",
+        "intrusion:medium",
+        "authored",
+        "canonical"
+      ]
+    },
+    {
+      "id": "places-clue-bone-chandelier-map",
+      "title": "Bone Chandelier Map",
+      "label": "Bone Chandelier Map",
+      "type": "Disturbing Clue",
+      "contentType": "location-component",
+      "status": "published",
+      "workflows": [
+        "darken-location"
+      ],
+      "slots": [
+        "clue"
+      ],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "sourceTypes": [
+        "Architecture",
+        "Sacred Site",
+        "Material Culture"
+      ],
+      "themes": [
+        "devotional bonework",
+        "holy display",
+        "mass remains",
+        "ornamental death"
+      ],
+      "motifs": [
+        "bone chandelier",
+        "skull garlands",
+        "arranged remains",
+        "chapel dust",
+        "hidden map"
+      ],
+      "contexts": [
+        "Crypt",
+        "Chapel"
+      ],
+      "horror": [
+        "Religious Horror",
+        "Gothic"
+      ],
+      "sensoryKind": "",
+      "intrusion": "Medium",
+      "prep": "Low",
+      "summary": "The chandelier’s bone pattern mirrors the room layout.",
+      "tableText": "The bone chandelier repeats the map below in miniature, including one room no door reaches.",
+      "mechanics": "Studying the pattern reveals a hidden chamber or alternate route.",
+      "narrative": "Strong clue for secret rooms.",
+      "location": {
+        "schemaVersion": "location-component-v0.2",
+        "componentId": "places-clue-bone-chandelier-map",
+        "slot": "clue",
+        "slots": [
+          "clue"
+        ],
+        "assignmentMode": "region",
+        "outputSection": "Disturbing Clue",
+        "componentType": "Disturbing Clue",
+        "sensoryKind": "",
+        "intrusion": "Medium",
+        "prep": "Low",
+        "gmFacingOnly": true,
+        "tableRole": "gm-facing",
+        "rules": {
+          "text": "Studying the pattern reveals a hidden chamber or alternate route."
+        },
+        "mapInfluence": {
+          "preferredRoomArchetypes": [
+            "processional-crypt-hall",
+            "hidden-reliquary"
+          ],
+          "forceRoomArchetype": false,
+          "weight": 2,
+          "source": "places-clue-bone-chandelier-map",
+          "sources": [
+            "places-clue-bone-chandelier-map",
+            "Bone Chandelier Map"
+          ]
+        },
+        "migration": {
+          "source": "shared/content/content-packs/dark-places-canonical-expansion-pack.js",
+          "legacyId": "",
+          "isCanonical": true
+        },
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Disturbing Clue",
+              "clue"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "clue",
+              "discovery",
+              "archive",
+              "secret"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "clue-marker",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "mapInfluence": {
+            "preferredRoomArchetypes": [
+              "processional-crypt-hall",
+              "hidden-reliquary"
+            ],
+            "forceRoomArchetype": false,
+            "weight": 2,
+            "source": "places-clue-bone-chandelier-map",
+            "sources": [
+              "places-clue-bone-chandelier-map",
+              "Bone Chandelier Map"
+            ]
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-clue-bone-chandelier-map",
+            "componentTitle": "Bone Chandelier Map",
+            "slotId": "clue",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ]
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [
+              "mapInfluence"
+            ],
+            "warnings": []
+          }
+        }
+      },
+      "registry": {
+        "componentId": "places-clue-bone-chandelier-map",
+        "contentType": "location-component",
+        "schemaVersion": "location-component-v0.2"
+      },
+      "contentPack": {
+        "id": "dark-places-canonical-expansion",
+        "title": "Dark Places Canonical Expansion"
+      },
+      "tags": [
+        "slot:clue",
+        "source:sedlec-ossuary",
+        "context:crypt",
+        "context:chapel",
+        "horror:religious-horror",
+        "horror:gothic",
+        "motif:bone-chandelier",
+        "motif:skull-garlands",
+        "motif:arranged-remains",
+        "motif:chapel-dust",
+        "motif:hidden-map",
+        "intrusion:medium",
+        "authored",
+        "canonical"
+      ]
+    },
+    {
+      "id": "places-twist-bonework-cover-lines",
+      "title": "Bonework Cover Lines",
+      "label": "Bonework Cover Lines",
+      "type": "Encounter Twist",
+      "contentType": "location-component",
+      "status": "published",
+      "workflows": [
+        "darken-location"
+      ],
+      "slots": [
+        "encounterTwist"
+      ],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "sourceTypes": [
+        "Architecture",
+        "Sacred Site",
+        "Material Culture"
+      ],
+      "themes": [
+        "devotional bonework",
+        "holy display",
+        "mass remains",
+        "ornamental death"
+      ],
+      "motifs": [
+        "bone chandelier",
+        "skull garlands",
+        "arranged remains",
+        "chapel dust",
+        "bone cover",
+        "collapsing screen"
+      ],
+      "contexts": [
+        "Crypt",
+        "Chapel",
+        "Boss Fight"
+      ],
+      "horror": [
+        "Religious Horror",
+        "Gothic"
+      ],
+      "sensoryKind": "",
+      "intrusion": "Medium",
+      "prep": "Medium",
+      "summary": "Bone ornaments create brittle cover and collapsing lines of sight.",
+      "tableText": "Skull shelves and femur screens divide the room into narrow devotional lanes.",
+      "mechanics": "Creatures can use bonework as half cover, but missed ranged attacks or area damage may collapse it into difficult terrain.",
+      "narrative": "Adds tactical texture to ossuary fights.",
+      "location": {
+        "schemaVersion": "location-component-v0.2",
+        "componentId": "places-twist-bonework-cover-lines",
+        "slot": "encounterTwist",
+        "slots": [
+          "encounterTwist"
+        ],
+        "assignmentMode": "region",
+        "outputSection": "Encounter Twist",
+        "componentType": "Encounter Twist",
+        "sensoryKind": "",
+        "intrusion": "Medium",
+        "prep": "Medium",
+        "gmFacingOnly": true,
+        "tableRole": "rules",
+        "rules": {
+          "text": "Creatures can use bonework as half cover, but missed ranged attacks or area damage may collapse it into difficult terrain."
+        },
+        "migration": {
+          "source": "shared/content/content-packs/dark-places-canonical-expansion-pack.js",
+          "legacyId": "",
+          "isCanonical": true
+        },
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Encounter Twist",
+              "encounterTwist"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "ambush",
+              "climax",
+              "hazard",
+              "ritual"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-twist-bonework-cover-lines",
+            "componentTitle": "Bonework Cover Lines",
+            "slotId": "encounterTwist",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        }
+      },
+      "registry": {
+        "componentId": "places-twist-bonework-cover-lines",
+        "contentType": "location-component",
+        "schemaVersion": "location-component-v0.2"
+      },
+      "contentPack": {
+        "id": "dark-places-canonical-expansion",
+        "title": "Dark Places Canonical Expansion"
+      },
+      "tags": [
+        "slot:encounterTwist",
+        "source:sedlec-ossuary",
+        "context:crypt",
+        "context:chapel",
+        "context:boss-fight",
+        "horror:religious-horror",
+        "horror:gothic",
+        "motif:bone-chandelier",
+        "motif:skull-garlands",
+        "motif:arranged-remains",
+        "motif:chapel-dust",
+        "motif:bone-cover",
+        "motif:collapsing-screen",
+        "intrusion:medium",
+        "authored",
+        "canonical"
+      ]
+    },
+    {
+      "id": "places-twist-reliquary-alarm-choir",
+      "title": "Reliquary Alarm Choir",
+      "label": "Reliquary Alarm Choir",
+      "type": "Encounter Twist",
+      "contentType": "location-component",
+      "status": "published",
+      "workflows": [
+        "darken-location"
+      ],
+      "slots": [
+        "encounterTwist"
+      ],
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "sourceTypes": [
+        "Architecture",
+        "Sacred Site",
+        "Material Culture"
+      ],
+      "themes": [
+        "devotional bonework",
+        "holy display",
+        "mass remains",
+        "ornamental death"
+      ],
+      "motifs": [
+        "bone chandelier",
+        "skull garlands",
+        "arranged remains",
+        "chapel dust",
+        "alarm choir",
+        "reliquary"
+      ],
+      "contexts": [
+        "Crypt",
+        "Chapel"
+      ],
+      "horror": [
+        "Religious Horror",
+        "Gothic"
+      ],
+      "sensoryKind": "",
+      "intrusion": "Medium",
+      "prep": "Medium",
+      "summary": "Opening a reliquary causes the room to answer in bone clicks.",
+      "tableText": "When the reliquary opens, every skull niche begins clicking like a dry choir.",
+      "mechanics": "After a reliquary is disturbed, stealth becomes harder and nearby enemies are alerted unless the sound is muffled.",
+      "narrative": "Good twist for loot-first players.",
+      "location": {
+        "schemaVersion": "location-component-v0.2",
+        "componentId": "places-twist-reliquary-alarm-choir",
+        "slot": "encounterTwist",
+        "slots": [
+          "encounterTwist"
+        ],
+        "assignmentMode": "region",
+        "outputSection": "Encounter Twist",
+        "componentType": "Encounter Twist",
+        "sensoryKind": "",
+        "intrusion": "Medium",
+        "prep": "Medium",
+        "gmFacingOnly": true,
+        "tableRole": "rules",
+        "rules": {
+          "text": "After a reliquary is disturbed, stealth becomes harder and nearby enemies are alerted unless the sound is muffled."
+        },
+        "migration": {
+          "source": "shared/content/content-packs/dark-places-canonical-expansion-pack.js",
+          "legacyId": "",
+          "isCanonical": true
+        },
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Encounter Twist",
+              "encounterTwist"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "ambush",
+              "climax",
+              "hazard",
+              "ritual"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-twist-reliquary-alarm-choir",
+            "componentTitle": "Reliquary Alarm Choir",
+            "slotId": "encounterTwist",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        }
+      },
+      "registry": {
+        "componentId": "places-twist-reliquary-alarm-choir",
+        "contentType": "location-component",
+        "schemaVersion": "location-component-v0.2"
+      },
+      "contentPack": {
+        "id": "dark-places-canonical-expansion",
+        "title": "Dark Places Canonical Expansion"
+      },
+      "tags": [
+        "slot:encounterTwist",
+        "source:sedlec-ossuary",
+        "context:crypt",
+        "context:chapel",
+        "horror:religious-horror",
+        "horror:gothic",
+        "motif:bone-chandelier",
+        "motif:skull-garlands",
+        "motif:arranged-remains",
+        "motif:chapel-dust",
+        "motif:alarm-choir",
+        "motif:reliquary",
+        "intrusion:medium",
+        "authored",
+        "canonical"
+      ]
+    }
+  ]
+}

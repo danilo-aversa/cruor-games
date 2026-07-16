@@ -13,12 +13,8 @@ function getCrucibleItem(locale, itemId) {
 
 describe("localized Crucible navigation", () => {
   it("uses the concise English catchphrases", () => {
-    expect(getCrucibleItem("en", "locations")?.catchPhrase).toBe(
-      "Generate playable maps.",
-    );
-    expect(getCrucibleItem("en", "monsters")?.catchPhrase).toBe(
-      "Build playable monsters.",
-    );
+    expect(getCrucibleItem("en", "locations")?.catchPhrase).toBe("Generate playable maps.");
+    expect(getCrucibleItem("en", "monsters")?.catchPhrase).toBe("Build playable monsters.");
   });
 
   it("resolves all user-facing item copy from the Italian dictionary", () => {
@@ -42,13 +38,13 @@ describe("localized Crucible navigation", () => {
     ]);
 
     expect(monsters).toMatchObject({
-      label: "Terrifying Monster",
+      label: "Terrifying Monsters",
       description:
         "Crea creature horror consapevoli delle regole con frame, graft, pressione, debolezze e validazione.",
       catchPhrase: "Costruisci mostri giocabili.",
       mobileDescription:
         "Costruisci mostri horror con frame, graft, pressione, debolezze e validazione.",
-      previewTitle: "Terrifying Monster",
+      previewTitle: "Terrifying Monsters",
     });
     expect(monsters?.engineFeatures).toEqual([
       "Scegli concetto, ruolo, tier e pericolosità.",
@@ -61,19 +57,12 @@ describe("localized Crucible navigation", () => {
   it("localizes the megamenu accessible labels", () => {
     const menu = getCrucibleMenu("it");
     const markup = renderToStaticMarkup(
-      <SiteMegaMenu
-        menu={menu}
-        activeItemId="locations"
-        selectedItemId="locations"
-        locale="it"
-      />,
+      <SiteMegaMenu menu={menu} activeItemId="locations" selectedItemId="locations" locale="it" />
     );
 
     expect(markup).toContain('aria-label="Strumenti di Crucible"');
     expect(markup).toContain('aria-label="Opzioni di Crucible"');
     expect(markup).toContain('aria-label="Anteprima di Dark Places"');
-    expect(markup).toContain(
-      'aria-label="Funzioni del motore di Dark Places"',
-    );
+    expect(markup).toContain('aria-label="Funzioni del motore di Dark Places"');
   });
 });

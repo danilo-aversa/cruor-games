@@ -8,21 +8,31 @@ import {
   getGroupedValidationIssues,
   getIssueSummary,
 } from "./studio-validation.js";
+import { buildStudioSemanticCoverage } from "./studio-semantic-coverage.js";
 
-export function getReadinessStateFromSummary(summary = {}) {
+export function getReadinessStateFromSummary(
+  summary = {},
+  warningSummary = {},
+) {
   if (summary.error) return "error";
+  if (warningSummary.legacy) return "legacy";
   if (summary.warning) return "warning";
   return "clean";
 }
 
-export function getReadinessLabelFromSummary(summary = {}) {
+export function getReadinessLabelFromSummary(
+  summary = {},
+  warningSummary = {},
+) {
   if (summary.error) return "Needs Fixes";
+  if (warningSummary.legacy) return "Legacy Review";
   if (summary.warning) return "Needs Review";
   return "Ready";
 }
 
-export function getReadinessIconFromSummary(summary = {}) {
+export function getReadinessIconFromSummary(summary = {}, warningSummary = {}) {
   if (summary.error) return "fa-circle-xmark";
+  if (warningSummary.legacy) return "fa-code-branch";
   if (summary.warning) return "fa-triangle-exclamation";
   return "fa-circle-check";
 }
@@ -34,6 +44,7 @@ export function buildPublishReadinessReport(draft, validationReport, contentPack
   const summary = validationReport?.summary || getIssueSummary(issues);
   const studioWarnings = buildStudioWarningsFromValidation(validationReport, normalized);
   const warningSummary = summarizeStudioWarnings(studioWarnings);
+  const semanticCoverage = buildStudioSemanticCoverage(normalized);
 
   return {
     reportType: "cruor-inspiration-studio-publish-readiness",
@@ -47,10 +58,11 @@ export function buildPublishReadinessReport(draft, validationReport, contentPack
       componentCount: asArray(normalized.components).length,
     },
     readiness: {
-      state: getReadinessStateFromSummary(summary),
-      label: getReadinessLabelFromSummary(summary),
+      state: getReadinessStateFromSummary(summary, warningSummary),
+      label: getReadinessLabelFromSummary(summary, warningSummary),
       summary,
       warningSummary,
+      semanticCoverage: semanticCoverage.summary,
     },
     groupedIssues: groupedIssues.map((group) => ({
       severity: group.severity,
@@ -73,6 +85,8 @@ export function buildPublishReadinessReport(draft, validationReport, contentPack
       componentId: warning.componentId,
       componentTitle: warning.componentTitle,
       path: warning.path,
+      fieldPath: warning.fieldPath,
+      fieldId: warning.fieldId,
       message: warning.message,
       whyItMatters: warning.whyItMatters,
       suggestedFix: warning.suggestedFix,
@@ -82,5 +96,6 @@ export function buildPublishReadinessReport(draft, validationReport, contentPack
       contentPackId: contentPackExport?.id,
       moduleId: moduleExport?.id,
     },
+    semanticCoverage: semanticCoverage.rows,
   };
 }

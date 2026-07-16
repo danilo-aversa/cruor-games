@@ -35,7 +35,30 @@ flowchart TD
 
 ## Content Architecture
 
-The current shared content path starts with content-pack schemas and static packs, then builds `STATIC_CONTENT_REGISTRY` in `shared/content/static-registry.js`. `shared/content/registry.js` normalizes workflows, slots, components, source anchors, inspirations, and taxonomies into queryable collections. `shared/content/content-repository.adapter.js` exposes repository-style access and bridges registry data into inspiration modules. Shared room metadata contracts live under `shared/content/contracts/`; `room-shapes.js` is the canonical semantic shape and capability registry, while `room-constraint-resolver.js` converts authored and legacy room contributions into deterministic compatibility reports without depending on React, SVG, or generator geometry. Darken Composer, Dungeon Brief, and Map Generator now consume the same contracts and resolver output.
+The current shared content path starts with content-pack schemas and static packs, then builds `STATIC_CONTENT_REGISTRY` in `shared/content/static-registry.js`. `shared/content/registry.js` normalizes workflows, slots, components, source anchors, inspirations, and taxonomies into queryable collections. `shared/content/content-repository.adapter.js` exposes repository-style access and bridges registry data into inspiration modules. Shared room metadata contracts live under `shared/content/contracts/`; `room-shapes.js` is the canonical semantic shape and capability registry, while `room-constraint-resolver.js` converts authored and legacy room contributions into deterministic compatibility reports without depending on React, SVG, or generator geometry. `shared/content/contracts/semantic/` owns the additive semantic v2 content, Location Document, and compiler Session State contracts. `static-semantic-content-packs.js` keeps v2 editorial candidates separate from the active v0.1 registry. Darken's staged compiler imports those contracts and emits renderer-independent identity, scaled site-wide systems, room sign allocations, exact-unique sensory impressions, spoiler-filtered Read-Aloud variants, an operational Session Guide and clue graph, document, and map-intent data without creating a reverse feature dependency. The output feature owns separate mutable At the Table state scoped by build id and document version; it never writes into compiled or authored content. Darken Composer, Dungeon Brief, and Map Generator continue consuming the existing production contracts during the staged migration.
+
+Phase 6 moves Inspiration Studio's authoring boundary onto those shared semantic
+contracts. Studio reads canonical v2 packs/modules and transitional v1 modules,
+uses a feature-local editor registry keyed by `semanticType`, and emits only
+canonical Content Pack v0.2 or Inspiration Module v2 JSON. The mutable editor
+projection preserves existing Monster graft workflows, but legacy-shaped fields
+are translated into `semantic` and `generation` once and never serialized
+alongside v2. The production registry and active Composer remain unchanged.
+
+Phase 7 activates the semantic editor ids through a schema-driven, feature-local
+registry and specialized form components. Studio preview passes canonical v2
+content to the pure Dark Places compiler; Health, Coverage, Readiness, and
+Warnings consume dependency-free model reports with exact field paths. Shared
+contracts still have no React, SVG, Map Generator UI, browser, or compiler
+dependency.
+
+Phase 8 uses a per-module migration boundary. The shared module catalog uses the
+authored Sedlec and Decomposition v2 modules while the active v0.1 static
+registry and all legacy files remain available; the other 12 catalog modules
+still use legacy v1. A separate migration registry tracks every module's schema,
+coverage, sample QA, reviewer, review date, and blockers without polluting
+published semantics. Node scripts audit and validate this state and invoke the
+same pure compiler used by Studio preview.
 
 Monster Composer still also has native graft data in `features/monster-composer/data/monster-grafts.js`; `features/monster-composer/data/monster-content-pack-feed.js` adapts shared registry components into Monster Composer concepts. This is a confirmed transitional model overlap.
 

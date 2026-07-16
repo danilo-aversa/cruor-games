@@ -22,11 +22,35 @@ function BucketList({ title, icon, rows = [] }) {
 export function ContentHealthCoverage({ report }) {
   const coverage = report?.coverage || {};
   return (
-    <section className="studio-tool-grid studio-tool-grid--two" aria-label="Content health coverage">
-      <BucketList title="Components by Type" icon="fa-layer-group" rows={coverage.componentsByType} />
-      <BucketList title="Components by Workflow" icon="fa-route" rows={coverage.componentsByWorkflow} />
-      <BucketList title="Components by Slot" icon="fa-table-cells-large" rows={coverage.componentsBySlot} />
-      <BucketList title="Components by Source" icon="fa-link" rows={coverage.componentsBySourceAnchor} />
+    <section
+      className="studio-tool-grid studio-tool-grid--two"
+      aria-label="Content health coverage"
+    >
+      <BucketList
+        title="Components by Type"
+        icon="fa-layer-group"
+        rows={coverage.componentsByType}
+      />
+      <BucketList
+        title="Components by Workflow"
+        icon="fa-route"
+        rows={coverage.componentsByWorkflow}
+      />
+      <BucketList
+        title="Components by Slot"
+        icon="fa-table-cells-large"
+        rows={coverage.componentsBySlot}
+      />
+      <BucketList
+        title="Components by Source"
+        icon="fa-link"
+        rows={coverage.componentsBySourceAnchor}
+      />
+      <BucketList
+        title="Semantic Components"
+        icon="fa-diagram-project"
+        rows={coverage.semanticComponentsByType}
+      />
     </section>
   );
 }

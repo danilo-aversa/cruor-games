@@ -6,7 +6,12 @@ import {
 import { normalizeModuleForDraft } from "../model/studio-draft.js";
 import { validateStudioDraft } from "../model/studio-validation.js";
 import { buildContentPackExport } from "../model/studio-export.js";
-import { buildStudioWarningsFromValidation, summarizeStudioWarnings } from "../model/studio-warning-model.js";
+import {
+  buildStudioWarningsFromValidation,
+  summarizeStudioWarnings,
+} from "../model/studio-warning-model.js";
+import { buildStudioSemanticCoverage } from "../model/studio-semantic-coverage.js";
+import { isStudioSpecializedSemanticType } from "../schema/studio-semantic-editor-registry.js";
 
 function asArray(value) {
   if (!value) return [];
@@ -44,7 +49,7 @@ function summarizeStatus(entries = []) {
     summary.total += 1;
     summary[status] = (summary[status] || 0) + 1;
     return summary;
-  }, { total: 0, draft: 0, published: 0, archived: 0 });
+  }, { total: 0, draft: 0, "in-review": 0, published: 0, retired: 0 });
 }
 
 function summarizeIssues(issues = []) {
@@ -74,13 +79,18 @@ function collectModuleReports(modules = []) {
     const contentPack = buildContentPackExport(draft, "");
     const validation = validateStudioDraft(draft, contentPack);
     const warnings = buildStudioWarningsFromValidation(validation, draft);
+    const semanticCoverage = buildStudioSemanticCoverage(draft);
     return {
       id: draft.id,
       title: draft.title,
       status: draft.status,
       packId: draft.packId,
       componentCount: asArray(draft.components).length,
-      validationSummary: validation.summary || summarizeIssues(validation.issues),
+      sourceMode: draft.__studio?.sourceMode || "v2",
+      sourceSchema: draft.__studio?.sourceSchema || draft.schemaVersion,
+      semanticCoverage: semanticCoverage.summary,
+      validationSummary:
+        validation.summary || summarizeIssues(validation.issues),
       warningSummary: summarizeStudioWarnings(warnings),
       issues: asArray(validation.issues),
       warnings,
@@ -192,7 +202,140 @@ function buildContentHealthIssues(entries, staticIssues = STATIC_CONTENT_PACK_IS
     }
   });
 
+  asArray(entries.modules).forEach((module) => {
+    const capabilities = new Set(asArray(module.capabilities));
+    const semanticCoverage = buildStudioSemanticCoverage(module);
+    const sourceMode = module.__studio?.sourceMode || "v2";
+    const serializedMetadata = JSON.stringify(
+      module.metadata || {},
+    ).toLowerCase();
+
+    if (sourceMode === "v1-compatibility") {
+      issues.push(
+        createIssue({
+          severity: "warning",
+          area: "Migration",
+          id: module.id,
+          title: module.title,
+          path: "module.schemaVersion",
+          message: "Module is still a transitional v1 compatibility draft.",
+          suggestedFix:
+            "Editorially review every semantic payload and export canonical v2.",
+          source: "semantic-health",
+        }),
+      );
+    }
+    if (
+      /fallback|converted-inspiration|static-content-registry-fallback/.test(
+        serializedMetadata,
+      )
+    ) {
+      issues.push(
+        createIssue({
+          severity: "warning",
+          area: "Migration",
+          id: module.id,
+          title: module.title,
+          path: "module.metadata",
+          message: "Module relies on fallback or conversion metadata.",
+          suggestedFix:
+            "Replace runtime fallback generation with explicitly authored v2 content during Phase 8.",
+          source: "semantic-health",
+        }),
+      );
+    }
+    if (module.inspiration?.status !== "approved") {
+      issues.push(
+        createIssue({
+          severity: "warning",
+          area: "Editorial",
+          id: module.inspiration?.id || module.id,
+          title: module.title,
+          path: "inspiration.status",
+          message: "Inspiration has not received editorial approval.",
+          suggestedFix: "Complete human editorial review before publication.",
+          source: "semantic-health",
+        }),
+      );
+    }
+
+    const hasDarkPlacesComponents = asArray(module.components).some(
+      (component) => isStudioSpecializedSemanticType(component.semanticType),
+    );
+    if (hasDarkPlacesComponents && !capabilities.has("dark-places")) {
+      issues.push(
+        createIssue({
+          severity: "error",
+          area: "Capability",
+          id: module.id,
+          title: module.title,
+          path: "module.capabilities",
+          message:
+            "Module contains specialized Dark Places components without the dark-places capability.",
+          suggestedFix:
+            "Declare dark-places or remove the unused semantic components.",
+          source: "semantic-health",
+        }),
+      );
+    }
+
+    semanticCoverage.issues.forEach((issue) => {
+      issues.push(
+        createIssue({
+          severity: issue.severity,
+          area:
+            issue.semanticType === "global-rule"
+              ? "Global Mechanics"
+              : "Semantic Coverage",
+          id: issue.componentId || module.id,
+          title: module.title,
+          path: issue.path,
+          message: issue.message,
+          suggestedFix:
+            "Open the linked specialized editor field and complete the authored semantic payload.",
+          source: "semantic-health",
+        }),
+      );
+    });
+
+    asArray(module.components).forEach((component, componentIndex) => {
+      if (
+        isStudioSpecializedSemanticType(component.semanticType) &&
+        (!asArray(component.workflows).includes("darken-location") ||
+          !capabilities.has("dark-places"))
+      ) {
+        issues.push(
+          createIssue({
+            severity: "warning",
+            area: "Unused Semantic Content",
+            id: component.id,
+            title: component.title,
+            path: `components[${componentIndex}].workflows`,
+            message:
+              "Specialized semantic component is not reachable by the Dark Places capability.",
+            suggestedFix:
+              "Link it to darken-location and declare the capability, or retire the component intentionally.",
+            source: "semantic-health",
+          }),
+        );
+      }
+    });
+  });
+
   return issues;
+}
+
+function summarizeSchemaModes(modules = []) {
+  return asArray(modules).reduce(
+    (summary, module) => {
+      const mode =
+        module.__studio?.sourceMode === "v1-compatibility" ? "v1" : "v2";
+      summary.total += 1;
+      summary[mode] += 1;
+      return summary;
+    },
+    { total: 0, v1: 0, v2: 0 },
+  );
 }
 
 export function buildContentHealthReport({
@@ -205,6 +348,12 @@ export function buildContentHealthReport({
   const issues = buildContentHealthIssues(entries, staticIssues);
   const moduleReports = collectModuleReports(modules);
   const issueSummary = summarizeIssues(issues);
+  const schemaModes = summarizeSchemaModes(entries.modules);
+  const semanticComponents = asArray(entries.modules).flatMap((module) =>
+    asArray(module.components).filter((component) =>
+      isStudioSpecializedSemanticType(component.semanticType),
+    ),
+  );
 
   return {
     reportType: "cruor-studio-content-health-report",
@@ -219,6 +368,7 @@ export function buildContentHealthReport({
       workflows: asArray(entries.workflows).length,
       slots: asArray(entries.slots).length,
       issues: issueSummary,
+      schemas: schemaModes,
     },
     status: {
       contentPacks: summarizeStatus(contentPacks),
@@ -231,8 +381,15 @@ export function buildContentHealthReport({
       componentsByType: summarizeBy(entries.components, "contentType"),
       componentsByWorkflow: summarizeBy(entries.components, "workflows"),
       componentsBySlot: summarizeBy(entries.components, "slots"),
-      componentsBySourceAnchor: summarizeBy(entries.components, "sourceAnchors"),
-      inspirationsBySourceAnchor: summarizeBy(entries.inspirations, "sourceAnchors"),
+      componentsBySourceAnchor: summarizeBy(
+        entries.components,
+        "sourceAnchors",
+      ),
+      inspirationsBySourceAnchor: summarizeBy(
+        entries.inspirations,
+        "sourceAnchors",
+      ),
+      semanticComponentsByType: summarizeBy(semanticComponents, "semanticType"),
     },
     moduleReports,
     issues: issues.sort((a, b) => {

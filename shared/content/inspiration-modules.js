@@ -10,7 +10,11 @@ import {
 import {
   CORE_INSPIRATION_MODULES,
 } from "./inspiration-modules/core-inspiration-modules.js";
-import { DECOMPOSITION_INSPIRATION_MODULE, DECOMPOSITION_SOURCE_ANCHOR_ID } from "./inspiration-modules/decomposition.js";
+import {
+  DECOMPOSITION_SEMANTIC_V2_MODULE,
+} from "./content-packs/decomposition-semantic-v2-pack.js";
+import { SEDLEC_OSSUARY_SEMANTIC_V2_MODULE } from "./content-packs/sedlec-ossuary-semantic-v2-pack.js";
+import { DECOMPOSITION_SOURCE_ANCHOR_ID } from "./inspiration-modules/decomposition.js";
 import {
   SEDLEC_OSSUARY_INSPIRATION_MODULE,
   SEDLEC_OSSUARY_SOURCE_ANCHOR_ID,
@@ -34,8 +38,8 @@ function getPrimaryInspirationForSourceAnchor(sourceAnchorId, inspirations = SHA
 }
 
 export const EXPLICIT_INSPIRATION_MODULES = Object.freeze([
-  DECOMPOSITION_INSPIRATION_MODULE,
-  SEDLEC_OSSUARY_INSPIRATION_MODULE,
+  DECOMPOSITION_SEMANTIC_V2_MODULE,
+  SEDLEC_OSSUARY_SEMANTIC_V2_MODULE,
 ].filter(Boolean));
 
 export const EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS = Object.freeze([

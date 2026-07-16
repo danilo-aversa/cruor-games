@@ -54,6 +54,58 @@ function MatrixTable({ title, rows = [] }) {
   );
 }
 
+function SemanticMatrixTable({ columns = [], rows = [] }) {
+  return (
+    <section
+      className="studio-tool-matrix studio-tool-matrix--semantic"
+      aria-label="Inspiration capability semantic coverage matrix"
+    >
+      <header className="studio-tool-section-header">
+        <div>
+          <span>Inspiration × Capability × Semantic Type</span>
+          <h3>Semantic Coverage</h3>
+        </div>
+      </header>
+      <div className="studio-tool-table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Inspiration</th>
+              <th>Capabilities</th>
+              {columns.map((column) => (
+                <th key={column.id}>{column.label}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.moduleId}>
+                <th>{row.title}</th>
+                <td>{row.capabilities.join(", ")}</td>
+                {columns.map((column) => {
+                  const cell = row.semanticTypes[column.id] || {
+                    status: "not-applicable",
+                    count: 0,
+                  };
+                  return (
+                    <td
+                      key={column.id}
+                      data-coverage-status={cell.status}
+                      title={`${cell.count} component(s)`}
+                    >
+                      {cell.status}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 function GapList({ gaps = [] }) {
   return (
     <section className="studio-tool-issues" aria-label="Coverage gaps">
@@ -102,22 +154,62 @@ export function CoverageMatrixModal({ isOpen, onClose, modules = [] }) {
       actions={<button className="studio-tool-action" type="button" onClick={downloadReport}>Download Report</button>}
     >
       <div className="studio-tool-workspace">
-        <section className="studio-tool-summary-grid" aria-label="Coverage summary">
-          <article className="studio-tool-summary-card"><strong>{report.summary.components}</strong><em>Total Components</em></article>
-          <article className="studio-tool-summary-card"><strong>{report.summary.monsterComponents}</strong><em>Monster Entries</em></article>
-          <article className="studio-tool-summary-card"><strong>{report.summary.locationComponents}</strong><em>Location Entries</em></article>
-          <article className="studio-tool-summary-card"><strong>{report.gaps.length}</strong><em>Coverage Gaps</em></article>
+        <section
+          className="studio-tool-summary-grid"
+          aria-label="Coverage summary"
+        >
+          <article className="studio-tool-summary-card">
+            <strong>{report.summary.components}</strong>
+            <em>Total Components</em>
+          </article>
+          <article className="studio-tool-summary-card">
+            <strong>{report.summary.monsterComponents}</strong>
+            <em>Monster Entries</em>
+          </article>
+          <article className="studio-tool-summary-card">
+            <strong>{report.summary.locationComponents}</strong>
+            <em>Location Entries</em>
+          </article>
+          <article className="studio-tool-summary-card">
+            <strong>{report.summary.semanticGaps}</strong>
+            <em>Semantic Gaps</em>
+          </article>
+          <article className="studio-tool-summary-card">
+            <strong>{report.gaps.length}</strong>
+            <em>Coverage Gaps</em>
+          </article>
         </section>
         <section className="studio-tool-grid studio-tool-grid--two">
           <BucketPanel title="Monster Slots" rows={report.monster.bySlot} />
           <BucketPanel title="Action Economy" rows={report.monster.byActionEconomy} />
           <BucketPanel title="Damage Types" rows={report.monster.byDamageType} />
           <BucketPanel title="Location Slots" rows={report.location.bySlot} />
-          <BucketPanel title="Region Roles" rows={report.location.byRegionRole} />
-          <BucketPanel title="Location Sources" rows={report.location.bySourceAnchor} />
+          <BucketPanel
+            title="Region Roles"
+            rows={report.location.byRegionRole}
+          />
+          <BucketPanel
+            title="Location Sources"
+            rows={report.location.bySourceAnchor}
+          />
+          <BucketPanel title="Semantic Types" rows={report.semantic.byType} />
+          <BucketPanel
+            title="Module Capabilities"
+            rows={report.semantic.byCapability}
+          />
         </section>
-        <MatrixTable title="Monster Slot × Action Economy" rows={report.monster.slotByActionMatrix} />
-        <MatrixTable title="Location Slot × Source Anchor" rows={report.location.slotBySourceMatrix} />
+        <SemanticMatrixTable
+          columns={report.semantic.columns}
+          rows={report.semantic.rows}
+        />
+        <MatrixTable
+          title="Monster Slot × Action Economy"
+          rows={report.monster.slotByActionMatrix}
+        />
+        <MatrixTable
+          title="Location Slot × Source Anchor"
+          rows={report.location.slotBySourceMatrix}
+        />
         <GapList gaps={report.gaps} />
       </div>
     </StudioToolModalShell>

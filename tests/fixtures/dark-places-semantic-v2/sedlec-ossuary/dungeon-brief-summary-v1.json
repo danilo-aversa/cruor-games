@@ -1,0 +1,5359 @@
+{
+  "schemaVersion": "0.4",
+  "id": "dungeon-brief-semantic-v2-sedlec-baseline-001",
+  "mode": "theme",
+  "title": "The Litany Engine",
+  "seed": "semantic-v2-sedlec-baseline-001",
+  "workflow": "darken-location",
+  "themeId": "sedlec-ossuary",
+  "themeName": "Sedlec Ossuary",
+  "archetype": "ossuary_chapel_with_crypt",
+  "context": "Crypt",
+  "mapType": "Crypt",
+  "roomCount": 5,
+  "levelCount": 1,
+  "density": "compact",
+  "connectionStyle": "ritual_path",
+  "verticality": "crypt_below_chapel",
+  "sourceAnchors": [
+    "sedlec-ossuary"
+  ],
+  "horror": [
+    "Religious Horror",
+    "Gothic"
+  ],
+  "premise": "Every chamber seems arranged to continue a prayer that no living voice remembers.",
+  "globalPalette": {
+    "sensory": [
+      "cold incense",
+      "bone dust",
+      "damp limestone",
+      "old wax",
+      "muffled hymns",
+      "The air carries a dry mineral taste of powdered bone.",
+      "Tiny clicks move through the walls whenever the room goes quiet."
+    ],
+    "visual": [
+      "skull garlands",
+      "bone chandeliers",
+      "counted dead",
+      "devotional remains",
+      "candle niches",
+      "The mortar is packed with folded prayer slips and pale hair."
+    ],
+    "hazards": [
+      "collapsing bone wall",
+      "desecrated relic",
+      "suffocating dust",
+      "unstable ossuary shelf",
+      "A pressure slab releases hanging bonework when crossed carelessly.",
+      "A thread of rosary beads pulls open a reliquary of sharp fragments."
+    ],
+    "rewards": [
+      "saint relic",
+      "ossuary key",
+      "forbidden prayer",
+      "bone icon",
+      "A bone fragment acts as a key to sacred locks."
+    ]
+  },
+  "roomBriefs": [
+    {
+      "id": "room-01",
+      "index": 1,
+      "name": "01 Skull Lined Corridor",
+      "role": "entrance",
+      "type": "skull-lined corridor",
+      "size": "Small",
+      "level": 0,
+      "connectors": 2,
+      "density": "compact",
+      "shape": "skull-lined corridor",
+      "roomArchetype": "ossuary-gallery",
+      "sourceRegionId": "location-region-1",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "premise": "Every chamber seems arranged to continue a prayer that no living voice remembers.",
+      "sensoryLayer": "cold incense · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+      "visualSigns": "bone chandeliers",
+      "hazard": "A pressure slab releases hanging bonework when crossed carelessly. · A sermon text is carved into a floor slab polished by knees and footsteps.",
+      "reward": "",
+      "encounter": "Bone ornaments create brittle cover and collapsing lines of sight. · Skull shelves and femur screens divide the room into narrow devotional lanes.",
+      "clue": "A skull row reveals that one skull has been replaced recently. · One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+      "interaction": "",
+      "readAloud": "",
+      "isSecretRoom": false,
+      "assignedSlotIds": [
+        "hazard",
+        "clue",
+        "encounterTwist"
+      ],
+      "assignedComponentIds": [
+        "places-hazard-weight-sermon-slab",
+        "places-clue-miscounted-skull-row",
+        "places-twist-bonework-cover-lines"
+      ],
+      "componentPlacements": [
+        {
+          "id": "location-effect-places-premise-ossuary-litany-engine-room-01-1",
+          "componentId": "places-premise-ossuary-litany-engine",
+          "componentTitle": "Litany Engine Ossuary",
+          "slotId": "horrorPremise",
+          "sourceRegionId": "location-region-1",
+          "regionId": "",
+          "summary": "The location behaves like a devotional machine built from arranged remains.",
+          "text": "Every chamber seems arranged to continue a prayer that no living voice remembers.",
+          "strategy": "best-fit-room",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "map",
+            "output": {
+              "sections": [
+                "Location Premise",
+                "horrorPremise"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": false,
+              "readAloud": true
+            },
+            "placement": {
+              "strategy": "best-fit-room",
+              "cardinality": 1,
+              "preferredRoles": [
+                "entrance",
+                "threshold",
+                "landmark",
+                "ritual"
+              ],
+              "forbiddenRoles": [
+                "service",
+                "connector"
+              ],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-premise-ossuary-litany-engine",
+              "componentTitle": "Litany Engine Ossuary",
+              "slotId": "horrorPremise",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-premise-ossuary-litany-engine",
+            "componentTitle": "Litany Engine Ossuary",
+            "slotId": "horrorPremise",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-01",
+            "targetSourceRegionId": "location-region-1"
+          }
+        },
+        {
+          "id": "location-effect-places-sense-bone-dust-breath-room-01-1",
+          "componentId": "places-sense-bone-dust-breath",
+          "componentTitle": "Bone-Dust Breath",
+          "slotId": "sensoryLayer",
+          "sourceRegionId": "location-region-1",
+          "regionId": "",
+          "summary": "The air carries a dry mineral taste of powdered bone.",
+          "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+          "strategy": "every-room",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "map",
+            "output": {
+              "sections": [
+                "Sensory Layer",
+                "sensoryLayer"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": false,
+              "readAloud": true
+            },
+            "placement": {
+              "strategy": "every-room",
+              "cardinality": 99,
+              "preferredRoles": [],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "every-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-sense-bone-dust-breath",
+              "componentTitle": "Bone-Dust Breath",
+              "slotId": "sensoryLayer",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-sense-bone-dust-breath",
+            "componentTitle": "Bone-Dust Breath",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-01",
+            "targetSourceRegionId": "location-region-1"
+          }
+        },
+        {
+          "id": "location-effect-places-sense-clicking-skull-seams-room-01-1",
+          "componentId": "places-sense-clicking-skull-seams",
+          "componentTitle": "Clicking Skull Seams",
+          "slotId": "sensoryLayer",
+          "sourceRegionId": "location-region-1",
+          "regionId": "",
+          "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+          "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+          "strategy": "every-room",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "map",
+            "output": {
+              "sections": [
+                "Sensory Layer",
+                "sensoryLayer"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": false,
+              "readAloud": true
+            },
+            "placement": {
+              "strategy": "every-room",
+              "cardinality": 99,
+              "preferredRoles": [],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "every-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-sense-clicking-skull-seams",
+              "componentTitle": "Clicking Skull Seams",
+              "slotId": "sensoryLayer",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-sense-clicking-skull-seams",
+            "componentTitle": "Clicking Skull Seams",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-01",
+            "targetSourceRegionId": "location-region-1"
+          }
+        },
+        {
+          "id": "location-effect-places-hazard-weight-sermon-slab-room-01-1",
+          "componentId": "places-hazard-weight-sermon-slab",
+          "componentTitle": "Weight-Sermon Slab",
+          "slotId": "hazard",
+          "sourceRegionId": "location-region-1",
+          "regionId": "",
+          "summary": "A pressure slab releases hanging bonework when crossed carelessly.",
+          "text": "A sermon text is carved into a floor slab polished by knees and footsteps.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Environmental Hazard",
+                "hazard"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "hazard",
+                "ambush",
+                "ritual"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "mapInfluence": {
+              "preferredRoomArchetypes": [
+                "processional-crypt-hall"
+              ],
+              "forceRoomArchetype": false,
+              "weight": 2,
+              "source": "places-hazard-weight-sermon-slab",
+              "sources": [
+                "places-hazard-weight-sermon-slab",
+                "Weight-Sermon Slab"
+              ]
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-hazard-weight-sermon-slab",
+              "componentTitle": "Weight-Sermon Slab",
+              "slotId": "hazard",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": [
+                "location.mapInfluence"
+              ]
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [
+                "mapInfluence"
+              ],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-hazard-weight-sermon-slab",
+            "componentTitle": "Weight-Sermon Slab",
+            "slotId": "hazard",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-01",
+            "targetSourceRegionId": "location-region-1"
+          }
+        },
+        {
+          "id": "location-effect-places-clue-miscounted-skull-row-room-01-1",
+          "componentId": "places-clue-miscounted-skull-row",
+          "componentTitle": "Miscounted Skull Row",
+          "slotId": "clue",
+          "sourceRegionId": "location-region-1",
+          "regionId": "",
+          "summary": "A skull row reveals that one skull has been replaced recently.",
+          "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "clue-marker",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Disturbing Clue",
+                "clue"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "clue",
+                "discovery",
+                "archive",
+                "secret"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "clue-marker",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "mapInfluence": {
+              "preferredRoomArchetypes": [
+                "ossuary-gallery"
+              ],
+              "forceRoomArchetype": false,
+              "weight": 3,
+              "source": "places-clue-miscounted-skull-row",
+              "sources": [
+                "places-clue-miscounted-skull-row",
+                "Miscounted Skull Row"
+              ]
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-clue-miscounted-skull-row",
+              "componentTitle": "Miscounted Skull Row",
+              "slotId": "clue",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": [
+                "location.mapInfluence"
+              ]
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [
+                "mapInfluence"
+              ],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-clue-miscounted-skull-row",
+            "componentTitle": "Miscounted Skull Row",
+            "slotId": "clue",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-01",
+            "targetSourceRegionId": "location-region-1"
+          }
+        },
+        {
+          "id": "location-effect-places-twist-bonework-cover-lines-room-01-1",
+          "componentId": "places-twist-bonework-cover-lines",
+          "componentTitle": "Bonework Cover Lines",
+          "slotId": "encounterTwist",
+          "sourceRegionId": "location-region-1",
+          "regionId": "",
+          "summary": "Bone ornaments create brittle cover and collapsing lines of sight.",
+          "text": "Skull shelves and femur screens divide the room into narrow devotional lanes.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Encounter Twist",
+                "encounterTwist"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "ambush",
+                "climax",
+                "hazard",
+                "ritual"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-twist-bonework-cover-lines",
+              "componentTitle": "Bonework Cover Lines",
+              "slotId": "encounterTwist",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-twist-bonework-cover-lines",
+            "componentTitle": "Bonework Cover Lines",
+            "slotId": "encounterTwist",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-01",
+            "targetSourceRegionId": "location-region-1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "room-02",
+      "index": 2,
+      "name": "02 Ossuary Gallery",
+      "role": "transition",
+      "type": "ossuary gallery",
+      "size": "Medium",
+      "level": 0,
+      "connectors": 2,
+      "density": "compact",
+      "shape": "ossuary gallery",
+      "roomArchetype": "reliquary-niche",
+      "sourceRegionId": "location-region-2",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "premise": "",
+      "sensoryLayer": "bone dust · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+      "visualSigns": "counted dead",
+      "hazard": "A thread of rosary beads pulls open a reliquary of sharp fragments. · A strand of beads runs ankle-high between two reliquary niches.",
+      "reward": "",
+      "encounter": "Opening a reliquary causes the room to answer in bone clicks. · When the reliquary opens, every skull niche begins clicking like a dry choir.",
+      "clue": "The chandelier’s bone pattern mirrors the room layout. · The bone chandelier repeats the map below in miniature, including one room no door reaches.",
+      "interaction": "",
+      "readAloud": "",
+      "isSecretRoom": false,
+      "assignedSlotIds": [
+        "hazard",
+        "clue",
+        "encounterTwist"
+      ],
+      "assignedComponentIds": [
+        "places-hazard-reliquary-tripwire",
+        "places-clue-bone-chandelier-map",
+        "places-twist-reliquary-alarm-choir"
+      ],
+      "componentPlacements": [
+        {
+          "id": "location-effect-places-sense-bone-dust-breath-room-02-2",
+          "componentId": "places-sense-bone-dust-breath",
+          "componentTitle": "Bone-Dust Breath",
+          "slotId": "sensoryLayer",
+          "sourceRegionId": "location-region-2",
+          "regionId": "",
+          "summary": "The air carries a dry mineral taste of powdered bone.",
+          "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+          "strategy": "every-room",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "map",
+            "output": {
+              "sections": [
+                "Sensory Layer",
+                "sensoryLayer"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": false,
+              "readAloud": true
+            },
+            "placement": {
+              "strategy": "every-room",
+              "cardinality": 99,
+              "preferredRoles": [],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "every-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-sense-bone-dust-breath",
+              "componentTitle": "Bone-Dust Breath",
+              "slotId": "sensoryLayer",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-sense-bone-dust-breath",
+            "componentTitle": "Bone-Dust Breath",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 1,
+            "targetRoomBriefId": "room-02",
+            "targetSourceRegionId": "location-region-2"
+          }
+        },
+        {
+          "id": "location-effect-places-sense-clicking-skull-seams-room-02-2",
+          "componentId": "places-sense-clicking-skull-seams",
+          "componentTitle": "Clicking Skull Seams",
+          "slotId": "sensoryLayer",
+          "sourceRegionId": "location-region-2",
+          "regionId": "",
+          "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+          "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+          "strategy": "every-room",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "map",
+            "output": {
+              "sections": [
+                "Sensory Layer",
+                "sensoryLayer"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": false,
+              "readAloud": true
+            },
+            "placement": {
+              "strategy": "every-room",
+              "cardinality": 99,
+              "preferredRoles": [],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "every-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-sense-clicking-skull-seams",
+              "componentTitle": "Clicking Skull Seams",
+              "slotId": "sensoryLayer",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-sense-clicking-skull-seams",
+            "componentTitle": "Clicking Skull Seams",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 1,
+            "targetRoomBriefId": "room-02",
+            "targetSourceRegionId": "location-region-2"
+          }
+        },
+        {
+          "id": "location-effect-places-hazard-reliquary-tripwire-room-02-1",
+          "componentId": "places-hazard-reliquary-tripwire",
+          "componentTitle": "Reliquary Tripwire",
+          "slotId": "hazard",
+          "sourceRegionId": "location-region-2",
+          "regionId": "",
+          "summary": "A thread of rosary beads pulls open a reliquary of sharp fragments.",
+          "text": "A strand of beads runs ankle-high between two reliquary niches.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Environmental Hazard",
+                "hazard"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "hazard",
+                "ambush",
+                "ritual"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "mapInfluence": {
+              "preferredRoomArchetypes": [
+                "reliquary-niche"
+              ],
+              "forceRoomArchetype": false,
+              "weight": 3,
+              "source": "places-hazard-reliquary-tripwire",
+              "sources": [
+                "places-hazard-reliquary-tripwire",
+                "Reliquary Tripwire"
+              ]
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-hazard-reliquary-tripwire",
+              "componentTitle": "Reliquary Tripwire",
+              "slotId": "hazard",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": [
+                "location.mapInfluence"
+              ]
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [
+                "mapInfluence"
+              ],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-hazard-reliquary-tripwire",
+            "componentTitle": "Reliquary Tripwire",
+            "slotId": "hazard",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-02",
+            "targetSourceRegionId": "location-region-2"
+          }
+        },
+        {
+          "id": "location-effect-places-clue-bone-chandelier-map-room-02-1",
+          "componentId": "places-clue-bone-chandelier-map",
+          "componentTitle": "Bone Chandelier Map",
+          "slotId": "clue",
+          "sourceRegionId": "location-region-2",
+          "regionId": "",
+          "summary": "The chandelier’s bone pattern mirrors the room layout.",
+          "text": "The bone chandelier repeats the map below in miniature, including one room no door reaches.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "clue-marker",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Disturbing Clue",
+                "clue"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "clue",
+                "discovery",
+                "archive",
+                "secret"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "clue-marker",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "mapInfluence": {
+              "preferredRoomArchetypes": [
+                "processional-crypt-hall",
+                "hidden-reliquary"
+              ],
+              "forceRoomArchetype": false,
+              "weight": 2,
+              "source": "places-clue-bone-chandelier-map",
+              "sources": [
+                "places-clue-bone-chandelier-map",
+                "Bone Chandelier Map"
+              ]
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-clue-bone-chandelier-map",
+              "componentTitle": "Bone Chandelier Map",
+              "slotId": "clue",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": [
+                "location.mapInfluence"
+              ]
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [
+                "mapInfluence"
+              ],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-clue-bone-chandelier-map",
+            "componentTitle": "Bone Chandelier Map",
+            "slotId": "clue",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-02",
+            "targetSourceRegionId": "location-region-2"
+          }
+        },
+        {
+          "id": "location-effect-places-twist-reliquary-alarm-choir-room-02-1",
+          "componentId": "places-twist-reliquary-alarm-choir",
+          "componentTitle": "Reliquary Alarm Choir",
+          "slotId": "encounterTwist",
+          "sourceRegionId": "location-region-2",
+          "regionId": "",
+          "summary": "Opening a reliquary causes the room to answer in bone clicks.",
+          "text": "When the reliquary opens, every skull niche begins clicking like a dry choir.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Encounter Twist",
+                "encounterTwist"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "ambush",
+                "climax",
+                "hazard",
+                "ritual"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-twist-reliquary-alarm-choir",
+              "componentTitle": "Reliquary Alarm Choir",
+              "slotId": "encounterTwist",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-twist-reliquary-alarm-choir",
+            "componentTitle": "Reliquary Alarm Choir",
+            "slotId": "encounterTwist",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-02",
+            "targetSourceRegionId": "location-region-2"
+          }
+        }
+      ]
+    },
+    {
+      "id": "room-03",
+      "index": 3,
+      "name": "03 Crypt Chapel",
+      "role": "discovery",
+      "type": "crypt chapel",
+      "size": "Medium",
+      "level": 0,
+      "connectors": 2,
+      "density": "compact",
+      "shape": "crypt chapel",
+      "roomArchetype": "ossuary-gallery",
+      "sourceRegionId": "location-region-3",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "premise": "",
+      "sensoryLayer": "damp limestone · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+      "visualSigns": "devotional remains",
+      "hazard": "A pressure slab releases hanging bonework when crossed carelessly. · A sermon text is carved into a floor slab polished by knees and footsteps.",
+      "reward": "",
+      "encounter": "Bone ornaments create brittle cover and collapsing lines of sight. · Skull shelves and femur screens divide the room into narrow devotional lanes.",
+      "clue": "A skull row reveals that one skull has been replaced recently. · One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+      "interaction": "",
+      "readAloud": "",
+      "isSecretRoom": false,
+      "assignedSlotIds": [
+        "hazard",
+        "clue",
+        "encounterTwist"
+      ],
+      "assignedComponentIds": [
+        "places-hazard-weight-sermon-slab",
+        "places-clue-miscounted-skull-row",
+        "places-twist-bonework-cover-lines"
+      ],
+      "componentPlacements": [
+        {
+          "id": "location-effect-places-sense-bone-dust-breath-room-03-3",
+          "componentId": "places-sense-bone-dust-breath",
+          "componentTitle": "Bone-Dust Breath",
+          "slotId": "sensoryLayer",
+          "sourceRegionId": "location-region-3",
+          "regionId": "",
+          "summary": "The air carries a dry mineral taste of powdered bone.",
+          "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+          "strategy": "every-room",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "map",
+            "output": {
+              "sections": [
+                "Sensory Layer",
+                "sensoryLayer"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": false,
+              "readAloud": true
+            },
+            "placement": {
+              "strategy": "every-room",
+              "cardinality": 99,
+              "preferredRoles": [],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "every-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-sense-bone-dust-breath",
+              "componentTitle": "Bone-Dust Breath",
+              "slotId": "sensoryLayer",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-sense-bone-dust-breath",
+            "componentTitle": "Bone-Dust Breath",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 2,
+            "targetRoomBriefId": "room-03",
+            "targetSourceRegionId": "location-region-3"
+          }
+        },
+        {
+          "id": "location-effect-places-sense-clicking-skull-seams-room-03-3",
+          "componentId": "places-sense-clicking-skull-seams",
+          "componentTitle": "Clicking Skull Seams",
+          "slotId": "sensoryLayer",
+          "sourceRegionId": "location-region-3",
+          "regionId": "",
+          "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+          "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+          "strategy": "every-room",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "map",
+            "output": {
+              "sections": [
+                "Sensory Layer",
+                "sensoryLayer"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": false,
+              "readAloud": true
+            },
+            "placement": {
+              "strategy": "every-room",
+              "cardinality": 99,
+              "preferredRoles": [],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "every-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-sense-clicking-skull-seams",
+              "componentTitle": "Clicking Skull Seams",
+              "slotId": "sensoryLayer",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-sense-clicking-skull-seams",
+            "componentTitle": "Clicking Skull Seams",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 2,
+            "targetRoomBriefId": "room-03",
+            "targetSourceRegionId": "location-region-3"
+          }
+        },
+        {
+          "id": "location-effect-places-hazard-weight-sermon-slab-room-03-1",
+          "componentId": "places-hazard-weight-sermon-slab",
+          "componentTitle": "Weight-Sermon Slab",
+          "slotId": "hazard",
+          "sourceRegionId": "location-region-3",
+          "regionId": "",
+          "summary": "A pressure slab releases hanging bonework when crossed carelessly.",
+          "text": "A sermon text is carved into a floor slab polished by knees and footsteps.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Environmental Hazard",
+                "hazard"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "hazard",
+                "ambush",
+                "ritual"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "mapInfluence": {
+              "preferredRoomArchetypes": [
+                "processional-crypt-hall"
+              ],
+              "forceRoomArchetype": false,
+              "weight": 2,
+              "source": "places-hazard-weight-sermon-slab",
+              "sources": [
+                "places-hazard-weight-sermon-slab",
+                "Weight-Sermon Slab"
+              ]
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-hazard-weight-sermon-slab",
+              "componentTitle": "Weight-Sermon Slab",
+              "slotId": "hazard",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": [
+                "location.mapInfluence"
+              ]
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [
+                "mapInfluence"
+              ],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-hazard-weight-sermon-slab",
+            "componentTitle": "Weight-Sermon Slab",
+            "slotId": "hazard",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-03",
+            "targetSourceRegionId": "location-region-3"
+          }
+        },
+        {
+          "id": "location-effect-places-clue-miscounted-skull-row-room-03-1",
+          "componentId": "places-clue-miscounted-skull-row",
+          "componentTitle": "Miscounted Skull Row",
+          "slotId": "clue",
+          "sourceRegionId": "location-region-3",
+          "regionId": "",
+          "summary": "A skull row reveals that one skull has been replaced recently.",
+          "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "clue-marker",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Disturbing Clue",
+                "clue"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "clue",
+                "discovery",
+                "archive",
+                "secret"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "clue-marker",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "mapInfluence": {
+              "preferredRoomArchetypes": [
+                "ossuary-gallery"
+              ],
+              "forceRoomArchetype": false,
+              "weight": 3,
+              "source": "places-clue-miscounted-skull-row",
+              "sources": [
+                "places-clue-miscounted-skull-row",
+                "Miscounted Skull Row"
+              ]
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-clue-miscounted-skull-row",
+              "componentTitle": "Miscounted Skull Row",
+              "slotId": "clue",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": [
+                "location.mapInfluence"
+              ]
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [
+                "mapInfluence"
+              ],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-clue-miscounted-skull-row",
+            "componentTitle": "Miscounted Skull Row",
+            "slotId": "clue",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-03",
+            "targetSourceRegionId": "location-region-3"
+          }
+        },
+        {
+          "id": "location-effect-places-twist-bonework-cover-lines-room-03-1",
+          "componentId": "places-twist-bonework-cover-lines",
+          "componentTitle": "Bonework Cover Lines",
+          "slotId": "encounterTwist",
+          "sourceRegionId": "location-region-3",
+          "regionId": "",
+          "summary": "Bone ornaments create brittle cover and collapsing lines of sight.",
+          "text": "Skull shelves and femur screens divide the room into narrow devotional lanes.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Encounter Twist",
+                "encounterTwist"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "ambush",
+                "climax",
+                "hazard",
+                "ritual"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-twist-bonework-cover-lines",
+              "componentTitle": "Bonework Cover Lines",
+              "slotId": "encounterTwist",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-twist-bonework-cover-lines",
+            "componentTitle": "Bonework Cover Lines",
+            "slotId": "encounterTwist",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-03",
+            "targetSourceRegionId": "location-region-3"
+          }
+        }
+      ]
+    },
+    {
+      "id": "room-04",
+      "index": 4,
+      "name": "04 Reliquary Niche",
+      "role": "hazard",
+      "type": "reliquary niche",
+      "size": "Medium",
+      "level": -1,
+      "connectors": 2,
+      "density": "compact",
+      "shape": "reliquary niche",
+      "roomArchetype": "reliquary-niche",
+      "sourceRegionId": "location-region-4",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "premise": "",
+      "sensoryLayer": "old wax · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+      "visualSigns": "candle niches",
+      "hazard": "A thread of rosary beads pulls open a reliquary of sharp fragments. · A strand of beads runs ankle-high between two reliquary niches.",
+      "reward": "",
+      "encounter": "Opening a reliquary causes the room to answer in bone clicks. · When the reliquary opens, every skull niche begins clicking like a dry choir.",
+      "clue": "The chandelier’s bone pattern mirrors the room layout. · The bone chandelier repeats the map below in miniature, including one room no door reaches.",
+      "interaction": "",
+      "readAloud": "",
+      "isSecretRoom": false,
+      "assignedSlotIds": [
+        "hazard",
+        "clue",
+        "encounterTwist"
+      ],
+      "assignedComponentIds": [
+        "places-hazard-reliquary-tripwire",
+        "places-clue-bone-chandelier-map",
+        "places-twist-reliquary-alarm-choir"
+      ],
+      "componentPlacements": [
+        {
+          "id": "location-effect-places-sense-bone-dust-breath-room-04-4",
+          "componentId": "places-sense-bone-dust-breath",
+          "componentTitle": "Bone-Dust Breath",
+          "slotId": "sensoryLayer",
+          "sourceRegionId": "location-region-4",
+          "regionId": "",
+          "summary": "The air carries a dry mineral taste of powdered bone.",
+          "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+          "strategy": "every-room",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "map",
+            "output": {
+              "sections": [
+                "Sensory Layer",
+                "sensoryLayer"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": false,
+              "readAloud": true
+            },
+            "placement": {
+              "strategy": "every-room",
+              "cardinality": 99,
+              "preferredRoles": [],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "every-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-sense-bone-dust-breath",
+              "componentTitle": "Bone-Dust Breath",
+              "slotId": "sensoryLayer",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-sense-bone-dust-breath",
+            "componentTitle": "Bone-Dust Breath",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 3,
+            "targetRoomBriefId": "room-04",
+            "targetSourceRegionId": "location-region-4"
+          }
+        },
+        {
+          "id": "location-effect-places-sense-clicking-skull-seams-room-04-4",
+          "componentId": "places-sense-clicking-skull-seams",
+          "componentTitle": "Clicking Skull Seams",
+          "slotId": "sensoryLayer",
+          "sourceRegionId": "location-region-4",
+          "regionId": "",
+          "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+          "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+          "strategy": "every-room",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "map",
+            "output": {
+              "sections": [
+                "Sensory Layer",
+                "sensoryLayer"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": false,
+              "readAloud": true
+            },
+            "placement": {
+              "strategy": "every-room",
+              "cardinality": 99,
+              "preferredRoles": [],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "every-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-sense-clicking-skull-seams",
+              "componentTitle": "Clicking Skull Seams",
+              "slotId": "sensoryLayer",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-sense-clicking-skull-seams",
+            "componentTitle": "Clicking Skull Seams",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 3,
+            "targetRoomBriefId": "room-04",
+            "targetSourceRegionId": "location-region-4"
+          }
+        },
+        {
+          "id": "location-effect-places-hazard-reliquary-tripwire-room-04-1",
+          "componentId": "places-hazard-reliquary-tripwire",
+          "componentTitle": "Reliquary Tripwire",
+          "slotId": "hazard",
+          "sourceRegionId": "location-region-4",
+          "regionId": "",
+          "summary": "A thread of rosary beads pulls open a reliquary of sharp fragments.",
+          "text": "A strand of beads runs ankle-high between two reliquary niches.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Environmental Hazard",
+                "hazard"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "hazard",
+                "ambush",
+                "ritual"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "mapInfluence": {
+              "preferredRoomArchetypes": [
+                "reliquary-niche"
+              ],
+              "forceRoomArchetype": false,
+              "weight": 3,
+              "source": "places-hazard-reliquary-tripwire",
+              "sources": [
+                "places-hazard-reliquary-tripwire",
+                "Reliquary Tripwire"
+              ]
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-hazard-reliquary-tripwire",
+              "componentTitle": "Reliquary Tripwire",
+              "slotId": "hazard",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": [
+                "location.mapInfluence"
+              ]
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [
+                "mapInfluence"
+              ],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-hazard-reliquary-tripwire",
+            "componentTitle": "Reliquary Tripwire",
+            "slotId": "hazard",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-04",
+            "targetSourceRegionId": "location-region-4"
+          }
+        },
+        {
+          "id": "location-effect-places-clue-bone-chandelier-map-room-04-1",
+          "componentId": "places-clue-bone-chandelier-map",
+          "componentTitle": "Bone Chandelier Map",
+          "slotId": "clue",
+          "sourceRegionId": "location-region-4",
+          "regionId": "",
+          "summary": "The chandelier’s bone pattern mirrors the room layout.",
+          "text": "The bone chandelier repeats the map below in miniature, including one room no door reaches.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "clue-marker",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Disturbing Clue",
+                "clue"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "clue",
+                "discovery",
+                "archive",
+                "secret"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "clue-marker",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "mapInfluence": {
+              "preferredRoomArchetypes": [
+                "processional-crypt-hall",
+                "hidden-reliquary"
+              ],
+              "forceRoomArchetype": false,
+              "weight": 2,
+              "source": "places-clue-bone-chandelier-map",
+              "sources": [
+                "places-clue-bone-chandelier-map",
+                "Bone Chandelier Map"
+              ]
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-clue-bone-chandelier-map",
+              "componentTitle": "Bone Chandelier Map",
+              "slotId": "clue",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": [
+                "location.mapInfluence"
+              ]
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [
+                "mapInfluence"
+              ],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-clue-bone-chandelier-map",
+            "componentTitle": "Bone Chandelier Map",
+            "slotId": "clue",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-04",
+            "targetSourceRegionId": "location-region-4"
+          }
+        },
+        {
+          "id": "location-effect-places-twist-reliquary-alarm-choir-room-04-1",
+          "componentId": "places-twist-reliquary-alarm-choir",
+          "componentTitle": "Reliquary Alarm Choir",
+          "slotId": "encounterTwist",
+          "sourceRegionId": "location-region-4",
+          "regionId": "",
+          "summary": "Opening a reliquary causes the room to answer in bone clicks.",
+          "text": "When the reliquary opens, every skull niche begins clicking like a dry choir.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Encounter Twist",
+                "encounterTwist"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "ambush",
+                "climax",
+                "hazard",
+                "ritual"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-twist-reliquary-alarm-choir",
+              "componentTitle": "Reliquary Alarm Choir",
+              "slotId": "encounterTwist",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-twist-reliquary-alarm-choir",
+            "componentTitle": "Reliquary Alarm Choir",
+            "slotId": "encounterTwist",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-04",
+            "targetSourceRegionId": "location-region-4"
+          }
+        }
+      ]
+    },
+    {
+      "id": "room-05",
+      "index": 5,
+      "name": "05 Sealed Catacomb",
+      "role": "climax",
+      "type": "sealed catacomb",
+      "size": "Large",
+      "level": -1,
+      "connectors": 1,
+      "density": "compact",
+      "shape": "sealed catacomb",
+      "roomArchetype": "ossuary-gallery",
+      "sourceRegionId": "location-region-5",
+      "sourceAnchors": [
+        "sedlec-ossuary"
+      ],
+      "premise": "",
+      "sensoryLayer": "muffled hymns · The room tastes dry and mineral, as if each breath scrapes through old bone dust. · Small clicks travel through the bonework, like teeth settling after speech.",
+      "visualSigns": "skull garlands",
+      "hazard": "A pressure slab releases hanging bonework when crossed carelessly. · A sermon text is carved into a floor slab polished by knees and footsteps.",
+      "reward": "bone icon · A labeled finger bone rests in a small silver tube, warm only near locked reliquaries.",
+      "encounter": "Bone ornaments create brittle cover and collapsing lines of sight. · Skull shelves and femur screens divide the room into narrow devotional lanes.",
+      "clue": "A skull row reveals that one skull has been replaced recently. · One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+      "interaction": "",
+      "readAloud": "",
+      "isSecretRoom": false,
+      "assignedSlotIds": [
+        "hazard",
+        "clue",
+        "encounterTwist"
+      ],
+      "assignedComponentIds": [
+        "places-hazard-weight-sermon-slab",
+        "places-clue-miscounted-skull-row",
+        "places-twist-bonework-cover-lines"
+      ],
+      "componentPlacements": [
+        {
+          "id": "location-effect-places-sense-bone-dust-breath-room-05-5",
+          "componentId": "places-sense-bone-dust-breath",
+          "componentTitle": "Bone-Dust Breath",
+          "slotId": "sensoryLayer",
+          "sourceRegionId": "location-region-5",
+          "regionId": "",
+          "summary": "The air carries a dry mineral taste of powdered bone.",
+          "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+          "strategy": "every-room",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "map",
+            "output": {
+              "sections": [
+                "Sensory Layer",
+                "sensoryLayer"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": false,
+              "readAloud": true
+            },
+            "placement": {
+              "strategy": "every-room",
+              "cardinality": 99,
+              "preferredRoles": [],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "every-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-sense-bone-dust-breath",
+              "componentTitle": "Bone-Dust Breath",
+              "slotId": "sensoryLayer",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-sense-bone-dust-breath",
+            "componentTitle": "Bone-Dust Breath",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 4,
+            "targetRoomBriefId": "room-05",
+            "targetSourceRegionId": "location-region-5"
+          }
+        },
+        {
+          "id": "location-effect-places-sense-clicking-skull-seams-room-05-5",
+          "componentId": "places-sense-clicking-skull-seams",
+          "componentTitle": "Clicking Skull Seams",
+          "slotId": "sensoryLayer",
+          "sourceRegionId": "location-region-5",
+          "regionId": "",
+          "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+          "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+          "strategy": "every-room",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "map",
+            "output": {
+              "sections": [
+                "Sensory Layer",
+                "sensoryLayer"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": false,
+              "readAloud": true
+            },
+            "placement": {
+              "strategy": "every-room",
+              "cardinality": 99,
+              "preferredRoles": [],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "every-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-sense-clicking-skull-seams",
+              "componentTitle": "Clicking Skull Seams",
+              "slotId": "sensoryLayer",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-sense-clicking-skull-seams",
+            "componentTitle": "Clicking Skull Seams",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 4,
+            "targetRoomBriefId": "room-05",
+            "targetSourceRegionId": "location-region-5"
+          }
+        },
+        {
+          "id": "location-effect-places-anomaly-prayer-slip-mortar-room-05-1",
+          "componentId": "places-anomaly-prayer-slip-mortar",
+          "componentTitle": "Prayer-Slip Mortar",
+          "slotId": "visibleAnomaly",
+          "sourceRegionId": "location-region-5",
+          "regionId": "",
+          "summary": "The mortar is packed with folded prayer slips and pale hair.",
+          "text": "The mortar between the stones has been packed with hair, ash, and old prayer slips.",
+          "strategy": "best-fit-room",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "clue-marker",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "map",
+            "output": {
+              "sections": [
+                "Visible Anomaly",
+                "visibleAnomaly"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": false,
+              "readAloud": true
+            },
+            "placement": {
+              "strategy": "best-fit-room",
+              "cardinality": 1,
+              "preferredRoles": [
+                "landmark",
+                "climax",
+                "discovery",
+                "outcome",
+                "reward",
+                "ritual"
+              ],
+              "forbiddenRoles": [
+                "service",
+                "connector"
+              ],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "clue-marker",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-anomaly-prayer-slip-mortar",
+              "componentTitle": "Prayer-Slip Mortar",
+              "slotId": "visibleAnomaly",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-anomaly-prayer-slip-mortar",
+            "componentTitle": "Prayer-Slip Mortar",
+            "slotId": "visibleAnomaly",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-05",
+            "targetSourceRegionId": "location-region-5"
+          }
+        },
+        {
+          "id": "location-effect-places-reward-reliquary-fragment-key-room-05-1",
+          "componentId": "places-reward-reliquary-fragment-key",
+          "componentTitle": "Reliquary Fragment Key",
+          "slotId": "reward",
+          "sourceRegionId": "location-region-5",
+          "regionId": "",
+          "summary": "A bone fragment acts as a key to sacred locks.",
+          "text": "A labeled finger bone rests in a small silver tube, warm only near locked reliquaries.",
+          "strategy": "best-fit-room",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "chest",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "map",
+            "output": {
+              "sections": [
+                "Reward / Consequence",
+                "reward"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "best-fit-room",
+              "cardinality": 1,
+              "preferredRoles": [
+                "outcome",
+                "reward",
+                "climax",
+                "secret",
+                "reliquary",
+                "treasury"
+              ],
+              "forbiddenRoles": [
+                "entrance",
+                "service",
+                "connector"
+              ],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "chest",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-reward-reliquary-fragment-key",
+              "componentTitle": "Reliquary Fragment Key",
+              "slotId": "reward",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-reward-reliquary-fragment-key",
+            "componentTitle": "Reliquary Fragment Key",
+            "slotId": "reward",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-05",
+            "targetSourceRegionId": "location-region-5"
+          }
+        },
+        {
+          "id": "location-effect-places-hazard-weight-sermon-slab-room-05-1",
+          "componentId": "places-hazard-weight-sermon-slab",
+          "componentTitle": "Weight-Sermon Slab",
+          "slotId": "hazard",
+          "sourceRegionId": "location-region-5",
+          "regionId": "",
+          "summary": "A pressure slab releases hanging bonework when crossed carelessly.",
+          "text": "A sermon text is carved into a floor slab polished by knees and footsteps.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Environmental Hazard",
+                "hazard"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "hazard",
+                "ambush",
+                "ritual"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "mapInfluence": {
+              "preferredRoomArchetypes": [
+                "processional-crypt-hall"
+              ],
+              "forceRoomArchetype": false,
+              "weight": 2,
+              "source": "places-hazard-weight-sermon-slab",
+              "sources": [
+                "places-hazard-weight-sermon-slab",
+                "Weight-Sermon Slab"
+              ]
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-hazard-weight-sermon-slab",
+              "componentTitle": "Weight-Sermon Slab",
+              "slotId": "hazard",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": [
+                "location.mapInfluence"
+              ]
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [
+                "mapInfluence"
+              ],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-hazard-weight-sermon-slab",
+            "componentTitle": "Weight-Sermon Slab",
+            "slotId": "hazard",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-05",
+            "targetSourceRegionId": "location-region-5"
+          }
+        },
+        {
+          "id": "location-effect-places-clue-miscounted-skull-row-room-05-1",
+          "componentId": "places-clue-miscounted-skull-row",
+          "componentTitle": "Miscounted Skull Row",
+          "slotId": "clue",
+          "sourceRegionId": "location-region-5",
+          "regionId": "",
+          "summary": "A skull row reveals that one skull has been replaced recently.",
+          "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "clue-marker",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Disturbing Clue",
+                "clue"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "clue",
+                "discovery",
+                "archive",
+                "secret"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "clue-marker",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "mapInfluence": {
+              "preferredRoomArchetypes": [
+                "ossuary-gallery"
+              ],
+              "forceRoomArchetype": false,
+              "weight": 3,
+              "source": "places-clue-miscounted-skull-row",
+              "sources": [
+                "places-clue-miscounted-skull-row",
+                "Miscounted Skull Row"
+              ]
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-clue-miscounted-skull-row",
+              "componentTitle": "Miscounted Skull Row",
+              "slotId": "clue",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": [
+                "location.mapInfluence"
+              ]
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [
+                "mapInfluence"
+              ],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-clue-miscounted-skull-row",
+            "componentTitle": "Miscounted Skull Row",
+            "slotId": "clue",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-05",
+            "targetSourceRegionId": "location-region-5"
+          }
+        },
+        {
+          "id": "location-effect-places-twist-bonework-cover-lines-room-05-1",
+          "componentId": "places-twist-bonework-cover-lines",
+          "componentTitle": "Bonework Cover Lines",
+          "slotId": "encounterTwist",
+          "sourceRegionId": "location-region-5",
+          "regionId": "",
+          "summary": "Bone ornaments create brittle cover and collapsing lines of sight.",
+          "text": "Skull shelves and femur screens divide the room into narrow devotional lanes.",
+          "strategy": "assigned-region",
+          "visualCue": "sedlec-ossuary",
+          "markerKind": "",
+          "propKind": "",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "effect": {
+            "schemaVersion": "location-component-effect-v0.1",
+            "scope": "region",
+            "output": {
+              "sections": [
+                "Encounter Twist",
+                "encounterTwist"
+              ],
+              "playerFacing": false,
+              "gmFacingOnly": true,
+              "readAloud": false
+            },
+            "placement": {
+              "strategy": "assigned-region",
+              "cardinality": 1,
+              "preferredRoles": [
+                "ambush",
+                "climax",
+                "hazard",
+                "ritual"
+              ],
+              "forbiddenRoles": [],
+              "fallback": "output-only"
+            },
+            "topology": {
+              "isSecretRoom": false,
+              "branchBias": "",
+              "depthBias": "",
+              "connectionKind": ""
+            },
+            "render": {
+              "markerKind": "",
+              "propKind": "",
+              "visualCue": "sedlec-ossuary",
+              "distribution": "single-room"
+            },
+            "unsupportedPolicy": "output-only",
+            "provenance": {
+              "componentId": "places-twist-bonework-cover-lines",
+              "componentTitle": "Bonework Cover Lines",
+              "slotId": "encounterTwist",
+              "sourceAnchors": [
+                "sedlec-ossuary"
+              ],
+              "authoredPaths": []
+            },
+            "diagnostics": {
+              "mode": "procedural",
+              "authoredEffect": false,
+              "liftedContracts": [],
+              "warnings": []
+            }
+          },
+          "provenance": {
+            "componentId": "places-twist-bonework-cover-lines",
+            "componentTitle": "Bonework Cover Lines",
+            "slotId": "encounterTwist",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [],
+            "placementIndex": 0,
+            "targetRoomBriefId": "room-05",
+            "targetSourceRegionId": "location-region-5"
+          }
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "connection-01-main-room-01-room-02",
+      "from": "room-01",
+      "to": "room-02",
+      "kind": "main",
+      "locked": false,
+      "secret": false,
+      "tags": [
+        "inferred",
+        "critical-path"
+      ],
+      "source": "inferred",
+      "reason": "inferred-compact-main-path"
+    },
+    {
+      "id": "connection-02-main-room-02-room-04",
+      "from": "room-02",
+      "to": "room-04",
+      "kind": "main",
+      "locked": false,
+      "secret": false,
+      "tags": [
+        "inferred",
+        "critical-path"
+      ],
+      "source": "inferred",
+      "reason": "inferred-compact-main-path"
+    },
+    {
+      "id": "connection-03-main-room-04-room-05",
+      "from": "room-04",
+      "to": "room-05",
+      "kind": "main",
+      "locked": false,
+      "secret": false,
+      "tags": [
+        "inferred",
+        "critical-path"
+      ],
+      "source": "inferred",
+      "reason": "inferred-compact-main-path"
+    },
+    {
+      "id": "connection-04-secondary-room-02-room-03",
+      "from": "room-02",
+      "to": "room-03",
+      "kind": "secondary",
+      "locked": false,
+      "secret": false,
+      "tags": [
+        "inferred",
+        "secondary",
+        "branch"
+      ],
+      "source": "inferred",
+      "reason": "inferred-secondary-branch"
+    }
+  ],
+  "metadata": {
+    "createdFrom": "darken-location-composer",
+    "scale": "small",
+    "complexity": "standard",
+    "activeSlot": "horrorPremise",
+    "activeSlotScope": "map",
+    "activeRegionId": "location-region-1",
+    "slotAssignments": {
+      "horrorPremise": [
+        {
+          "componentId": "places-premise-ossuary-litany-engine",
+          "slotId": "horrorPremise",
+          "regionId": "",
+          "addedAt": 0
+        }
+      ],
+      "sensoryLayer": [
+        {
+          "componentId": "places-sense-bone-dust-breath",
+          "slotId": "sensoryLayer",
+          "regionId": "",
+          "addedAt": 0
+        },
+        {
+          "componentId": "places-sense-clicking-skull-seams",
+          "slotId": "sensoryLayer",
+          "regionId": "",
+          "addedAt": 0
+        }
+      ],
+      "visibleAnomaly": [
+        {
+          "componentId": "places-anomaly-prayer-slip-mortar",
+          "slotId": "visibleAnomaly",
+          "regionId": "",
+          "addedAt": 0
+        }
+      ],
+      "reward": [
+        {
+          "componentId": "places-reward-reliquary-fragment-key",
+          "slotId": "reward",
+          "regionId": "",
+          "addedAt": 0
+        }
+      ],
+      "hazard": [
+        {
+          "componentId": "places-hazard-weight-sermon-slab",
+          "slotId": "hazard",
+          "regionId": "location-region-1",
+          "addedAt": 0
+        },
+        {
+          "componentId": "places-hazard-reliquary-tripwire",
+          "slotId": "hazard",
+          "regionId": "location-region-2",
+          "addedAt": 0
+        },
+        {
+          "componentId": "places-hazard-weight-sermon-slab",
+          "slotId": "hazard",
+          "regionId": "location-region-3",
+          "addedAt": 0
+        },
+        {
+          "componentId": "places-hazard-reliquary-tripwire",
+          "slotId": "hazard",
+          "regionId": "location-region-4",
+          "addedAt": 0
+        },
+        {
+          "componentId": "places-hazard-weight-sermon-slab",
+          "slotId": "hazard",
+          "regionId": "location-region-5",
+          "addedAt": 0
+        }
+      ],
+      "clue": [
+        {
+          "componentId": "places-clue-miscounted-skull-row",
+          "slotId": "clue",
+          "regionId": "location-region-1",
+          "addedAt": 0
+        },
+        {
+          "componentId": "places-clue-bone-chandelier-map",
+          "slotId": "clue",
+          "regionId": "location-region-2",
+          "addedAt": 0
+        },
+        {
+          "componentId": "places-clue-miscounted-skull-row",
+          "slotId": "clue",
+          "regionId": "location-region-3",
+          "addedAt": 0
+        },
+        {
+          "componentId": "places-clue-bone-chandelier-map",
+          "slotId": "clue",
+          "regionId": "location-region-4",
+          "addedAt": 0
+        },
+        {
+          "componentId": "places-clue-miscounted-skull-row",
+          "slotId": "clue",
+          "regionId": "location-region-5",
+          "addedAt": 0
+        }
+      ],
+      "encounterTwist": [
+        {
+          "componentId": "places-twist-bonework-cover-lines",
+          "slotId": "encounterTwist",
+          "regionId": "location-region-1",
+          "addedAt": 0
+        },
+        {
+          "componentId": "places-twist-reliquary-alarm-choir",
+          "slotId": "encounterTwist",
+          "regionId": "location-region-2",
+          "addedAt": 0
+        },
+        {
+          "componentId": "places-twist-bonework-cover-lines",
+          "slotId": "encounterTwist",
+          "regionId": "location-region-3",
+          "addedAt": 0
+        },
+        {
+          "componentId": "places-twist-reliquary-alarm-choir",
+          "slotId": "encounterTwist",
+          "regionId": "location-region-4",
+          "addedAt": 0
+        },
+        {
+          "componentId": "places-twist-bonework-cover-lines",
+          "slotId": "encounterTwist",
+          "regionId": "location-region-5",
+          "addedAt": 0
+        }
+      ]
+    },
+    "selectedComponentIds": [
+      "places-premise-ossuary-litany-engine",
+      "places-sense-bone-dust-breath",
+      "places-sense-clicking-skull-seams",
+      "places-anomaly-prayer-slip-mortar",
+      "places-reward-reliquary-fragment-key",
+      "places-hazard-weight-sermon-slab",
+      "places-hazard-reliquary-tripwire",
+      "places-hazard-weight-sermon-slab",
+      "places-hazard-reliquary-tripwire",
+      "places-hazard-weight-sermon-slab",
+      "places-clue-miscounted-skull-row",
+      "places-clue-bone-chandelier-map",
+      "places-clue-miscounted-skull-row",
+      "places-clue-bone-chandelier-map",
+      "places-clue-miscounted-skull-row",
+      "places-twist-bonework-cover-lines",
+      "places-twist-reliquary-alarm-choir",
+      "places-twist-bonework-cover-lines",
+      "places-twist-reliquary-alarm-choir",
+      "places-twist-bonework-cover-lines"
+    ],
+    "componentPlacements": [
+      {
+        "id": "location-effect-places-premise-ossuary-litany-engine-room-01-1",
+        "componentId": "places-premise-ossuary-litany-engine",
+        "componentTitle": "Litany Engine Ossuary",
+        "slotId": "horrorPremise",
+        "sourceRegionId": "location-region-1",
+        "regionId": "",
+        "summary": "The location behaves like a devotional machine built from arranged remains.",
+        "text": "Every chamber seems arranged to continue a prayer that no living voice remembers.",
+        "strategy": "best-fit-room",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Location Premise",
+              "horrorPremise"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "best-fit-room",
+            "cardinality": 1,
+            "preferredRoles": [
+              "entrance",
+              "threshold",
+              "landmark",
+              "ritual"
+            ],
+            "forbiddenRoles": [
+              "service",
+              "connector"
+            ],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-premise-ossuary-litany-engine",
+            "componentTitle": "Litany Engine Ossuary",
+            "slotId": "horrorPremise",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-premise-ossuary-litany-engine",
+          "componentTitle": "Litany Engine Ossuary",
+          "slotId": "horrorPremise",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-01",
+          "targetSourceRegionId": "location-region-1"
+        }
+      },
+      {
+        "id": "location-effect-places-sense-bone-dust-breath-room-01-1",
+        "componentId": "places-sense-bone-dust-breath",
+        "componentTitle": "Bone-Dust Breath",
+        "slotId": "sensoryLayer",
+        "sourceRegionId": "location-region-1",
+        "regionId": "",
+        "summary": "The air carries a dry mineral taste of powdered bone.",
+        "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+        "strategy": "every-room",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Sensory Layer",
+              "sensoryLayer"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "every-room",
+            "cardinality": 99,
+            "preferredRoles": [],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "every-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-sense-bone-dust-breath",
+            "componentTitle": "Bone-Dust Breath",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-sense-bone-dust-breath",
+          "componentTitle": "Bone-Dust Breath",
+          "slotId": "sensoryLayer",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-01",
+          "targetSourceRegionId": "location-region-1"
+        }
+      },
+      {
+        "id": "location-effect-places-sense-bone-dust-breath-room-02-2",
+        "componentId": "places-sense-bone-dust-breath",
+        "componentTitle": "Bone-Dust Breath",
+        "slotId": "sensoryLayer",
+        "sourceRegionId": "location-region-2",
+        "regionId": "",
+        "summary": "The air carries a dry mineral taste of powdered bone.",
+        "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+        "strategy": "every-room",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Sensory Layer",
+              "sensoryLayer"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "every-room",
+            "cardinality": 99,
+            "preferredRoles": [],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "every-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-sense-bone-dust-breath",
+            "componentTitle": "Bone-Dust Breath",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-sense-bone-dust-breath",
+          "componentTitle": "Bone-Dust Breath",
+          "slotId": "sensoryLayer",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 1,
+          "targetRoomBriefId": "room-02",
+          "targetSourceRegionId": "location-region-2"
+        }
+      },
+      {
+        "id": "location-effect-places-sense-bone-dust-breath-room-03-3",
+        "componentId": "places-sense-bone-dust-breath",
+        "componentTitle": "Bone-Dust Breath",
+        "slotId": "sensoryLayer",
+        "sourceRegionId": "location-region-3",
+        "regionId": "",
+        "summary": "The air carries a dry mineral taste of powdered bone.",
+        "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+        "strategy": "every-room",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Sensory Layer",
+              "sensoryLayer"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "every-room",
+            "cardinality": 99,
+            "preferredRoles": [],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "every-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-sense-bone-dust-breath",
+            "componentTitle": "Bone-Dust Breath",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-sense-bone-dust-breath",
+          "componentTitle": "Bone-Dust Breath",
+          "slotId": "sensoryLayer",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 2,
+          "targetRoomBriefId": "room-03",
+          "targetSourceRegionId": "location-region-3"
+        }
+      },
+      {
+        "id": "location-effect-places-sense-bone-dust-breath-room-04-4",
+        "componentId": "places-sense-bone-dust-breath",
+        "componentTitle": "Bone-Dust Breath",
+        "slotId": "sensoryLayer",
+        "sourceRegionId": "location-region-4",
+        "regionId": "",
+        "summary": "The air carries a dry mineral taste of powdered bone.",
+        "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+        "strategy": "every-room",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Sensory Layer",
+              "sensoryLayer"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "every-room",
+            "cardinality": 99,
+            "preferredRoles": [],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "every-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-sense-bone-dust-breath",
+            "componentTitle": "Bone-Dust Breath",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-sense-bone-dust-breath",
+          "componentTitle": "Bone-Dust Breath",
+          "slotId": "sensoryLayer",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 3,
+          "targetRoomBriefId": "room-04",
+          "targetSourceRegionId": "location-region-4"
+        }
+      },
+      {
+        "id": "location-effect-places-sense-bone-dust-breath-room-05-5",
+        "componentId": "places-sense-bone-dust-breath",
+        "componentTitle": "Bone-Dust Breath",
+        "slotId": "sensoryLayer",
+        "sourceRegionId": "location-region-5",
+        "regionId": "",
+        "summary": "The air carries a dry mineral taste of powdered bone.",
+        "text": "The room tastes dry and mineral, as if each breath scrapes through old bone dust.",
+        "strategy": "every-room",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Sensory Layer",
+              "sensoryLayer"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "every-room",
+            "cardinality": 99,
+            "preferredRoles": [],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "every-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-sense-bone-dust-breath",
+            "componentTitle": "Bone-Dust Breath",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-sense-bone-dust-breath",
+          "componentTitle": "Bone-Dust Breath",
+          "slotId": "sensoryLayer",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 4,
+          "targetRoomBriefId": "room-05",
+          "targetSourceRegionId": "location-region-5"
+        }
+      },
+      {
+        "id": "location-effect-places-sense-clicking-skull-seams-room-01-1",
+        "componentId": "places-sense-clicking-skull-seams",
+        "componentTitle": "Clicking Skull Seams",
+        "slotId": "sensoryLayer",
+        "sourceRegionId": "location-region-1",
+        "regionId": "",
+        "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+        "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+        "strategy": "every-room",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Sensory Layer",
+              "sensoryLayer"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "every-room",
+            "cardinality": 99,
+            "preferredRoles": [],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "every-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-sense-clicking-skull-seams",
+            "componentTitle": "Clicking Skull Seams",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-sense-clicking-skull-seams",
+          "componentTitle": "Clicking Skull Seams",
+          "slotId": "sensoryLayer",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-01",
+          "targetSourceRegionId": "location-region-1"
+        }
+      },
+      {
+        "id": "location-effect-places-sense-clicking-skull-seams-room-02-2",
+        "componentId": "places-sense-clicking-skull-seams",
+        "componentTitle": "Clicking Skull Seams",
+        "slotId": "sensoryLayer",
+        "sourceRegionId": "location-region-2",
+        "regionId": "",
+        "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+        "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+        "strategy": "every-room",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Sensory Layer",
+              "sensoryLayer"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "every-room",
+            "cardinality": 99,
+            "preferredRoles": [],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "every-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-sense-clicking-skull-seams",
+            "componentTitle": "Clicking Skull Seams",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-sense-clicking-skull-seams",
+          "componentTitle": "Clicking Skull Seams",
+          "slotId": "sensoryLayer",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 1,
+          "targetRoomBriefId": "room-02",
+          "targetSourceRegionId": "location-region-2"
+        }
+      },
+      {
+        "id": "location-effect-places-sense-clicking-skull-seams-room-03-3",
+        "componentId": "places-sense-clicking-skull-seams",
+        "componentTitle": "Clicking Skull Seams",
+        "slotId": "sensoryLayer",
+        "sourceRegionId": "location-region-3",
+        "regionId": "",
+        "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+        "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+        "strategy": "every-room",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Sensory Layer",
+              "sensoryLayer"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "every-room",
+            "cardinality": 99,
+            "preferredRoles": [],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "every-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-sense-clicking-skull-seams",
+            "componentTitle": "Clicking Skull Seams",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-sense-clicking-skull-seams",
+          "componentTitle": "Clicking Skull Seams",
+          "slotId": "sensoryLayer",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 2,
+          "targetRoomBriefId": "room-03",
+          "targetSourceRegionId": "location-region-3"
+        }
+      },
+      {
+        "id": "location-effect-places-sense-clicking-skull-seams-room-04-4",
+        "componentId": "places-sense-clicking-skull-seams",
+        "componentTitle": "Clicking Skull Seams",
+        "slotId": "sensoryLayer",
+        "sourceRegionId": "location-region-4",
+        "regionId": "",
+        "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+        "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+        "strategy": "every-room",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Sensory Layer",
+              "sensoryLayer"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "every-room",
+            "cardinality": 99,
+            "preferredRoles": [],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "every-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-sense-clicking-skull-seams",
+            "componentTitle": "Clicking Skull Seams",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-sense-clicking-skull-seams",
+          "componentTitle": "Clicking Skull Seams",
+          "slotId": "sensoryLayer",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 3,
+          "targetRoomBriefId": "room-04",
+          "targetSourceRegionId": "location-region-4"
+        }
+      },
+      {
+        "id": "location-effect-places-sense-clicking-skull-seams-room-05-5",
+        "componentId": "places-sense-clicking-skull-seams",
+        "componentTitle": "Clicking Skull Seams",
+        "slotId": "sensoryLayer",
+        "sourceRegionId": "location-region-5",
+        "regionId": "",
+        "summary": "Tiny clicks move through the walls whenever the room goes quiet.",
+        "text": "Small clicks travel through the bonework, like teeth settling after speech.",
+        "strategy": "every-room",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Sensory Layer",
+              "sensoryLayer"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "every-room",
+            "cardinality": 99,
+            "preferredRoles": [],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "every-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-sense-clicking-skull-seams",
+            "componentTitle": "Clicking Skull Seams",
+            "slotId": "sensoryLayer",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-sense-clicking-skull-seams",
+          "componentTitle": "Clicking Skull Seams",
+          "slotId": "sensoryLayer",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 4,
+          "targetRoomBriefId": "room-05",
+          "targetSourceRegionId": "location-region-5"
+        }
+      },
+      {
+        "id": "location-effect-places-anomaly-prayer-slip-mortar-room-05-1",
+        "componentId": "places-anomaly-prayer-slip-mortar",
+        "componentTitle": "Prayer-Slip Mortar",
+        "slotId": "visibleAnomaly",
+        "sourceRegionId": "location-region-5",
+        "regionId": "",
+        "summary": "The mortar is packed with folded prayer slips and pale hair.",
+        "text": "The mortar between the stones has been packed with hair, ash, and old prayer slips.",
+        "strategy": "best-fit-room",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "clue-marker",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Visible Anomaly",
+              "visibleAnomaly"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": false,
+            "readAloud": true
+          },
+          "placement": {
+            "strategy": "best-fit-room",
+            "cardinality": 1,
+            "preferredRoles": [
+              "landmark",
+              "climax",
+              "discovery",
+              "outcome",
+              "reward",
+              "ritual"
+            ],
+            "forbiddenRoles": [
+              "service",
+              "connector"
+            ],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "clue-marker",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-anomaly-prayer-slip-mortar",
+            "componentTitle": "Prayer-Slip Mortar",
+            "slotId": "visibleAnomaly",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-anomaly-prayer-slip-mortar",
+          "componentTitle": "Prayer-Slip Mortar",
+          "slotId": "visibleAnomaly",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-05",
+          "targetSourceRegionId": "location-region-5"
+        }
+      },
+      {
+        "id": "location-effect-places-reward-reliquary-fragment-key-room-05-1",
+        "componentId": "places-reward-reliquary-fragment-key",
+        "componentTitle": "Reliquary Fragment Key",
+        "slotId": "reward",
+        "sourceRegionId": "location-region-5",
+        "regionId": "",
+        "summary": "A bone fragment acts as a key to sacred locks.",
+        "text": "A labeled finger bone rests in a small silver tube, warm only near locked reliquaries.",
+        "strategy": "best-fit-room",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "chest",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "map",
+          "output": {
+            "sections": [
+              "Reward / Consequence",
+              "reward"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "best-fit-room",
+            "cardinality": 1,
+            "preferredRoles": [
+              "outcome",
+              "reward",
+              "climax",
+              "secret",
+              "reliquary",
+              "treasury"
+            ],
+            "forbiddenRoles": [
+              "entrance",
+              "service",
+              "connector"
+            ],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "chest",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-reward-reliquary-fragment-key",
+            "componentTitle": "Reliquary Fragment Key",
+            "slotId": "reward",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-reward-reliquary-fragment-key",
+          "componentTitle": "Reliquary Fragment Key",
+          "slotId": "reward",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-05",
+          "targetSourceRegionId": "location-region-5"
+        }
+      },
+      {
+        "id": "location-effect-places-hazard-weight-sermon-slab-room-01-1",
+        "componentId": "places-hazard-weight-sermon-slab",
+        "componentTitle": "Weight-Sermon Slab",
+        "slotId": "hazard",
+        "sourceRegionId": "location-region-1",
+        "regionId": "",
+        "summary": "A pressure slab releases hanging bonework when crossed carelessly.",
+        "text": "A sermon text is carved into a floor slab polished by knees and footsteps.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Environmental Hazard",
+              "hazard"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "hazard",
+              "ambush",
+              "ritual"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "mapInfluence": {
+            "preferredRoomArchetypes": [
+              "processional-crypt-hall"
+            ],
+            "forceRoomArchetype": false,
+            "weight": 2,
+            "source": "places-hazard-weight-sermon-slab",
+            "sources": [
+              "places-hazard-weight-sermon-slab",
+              "Weight-Sermon Slab"
+            ]
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-hazard-weight-sermon-slab",
+            "componentTitle": "Weight-Sermon Slab",
+            "slotId": "hazard",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ]
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [
+              "mapInfluence"
+            ],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-hazard-weight-sermon-slab",
+          "componentTitle": "Weight-Sermon Slab",
+          "slotId": "hazard",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [
+            "location.mapInfluence"
+          ],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-01",
+          "targetSourceRegionId": "location-region-1"
+        }
+      },
+      {
+        "id": "location-effect-places-hazard-reliquary-tripwire-room-02-1",
+        "componentId": "places-hazard-reliquary-tripwire",
+        "componentTitle": "Reliquary Tripwire",
+        "slotId": "hazard",
+        "sourceRegionId": "location-region-2",
+        "regionId": "",
+        "summary": "A thread of rosary beads pulls open a reliquary of sharp fragments.",
+        "text": "A strand of beads runs ankle-high between two reliquary niches.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Environmental Hazard",
+              "hazard"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "hazard",
+              "ambush",
+              "ritual"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "mapInfluence": {
+            "preferredRoomArchetypes": [
+              "reliquary-niche"
+            ],
+            "forceRoomArchetype": false,
+            "weight": 3,
+            "source": "places-hazard-reliquary-tripwire",
+            "sources": [
+              "places-hazard-reliquary-tripwire",
+              "Reliquary Tripwire"
+            ]
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-hazard-reliquary-tripwire",
+            "componentTitle": "Reliquary Tripwire",
+            "slotId": "hazard",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ]
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [
+              "mapInfluence"
+            ],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-hazard-reliquary-tripwire",
+          "componentTitle": "Reliquary Tripwire",
+          "slotId": "hazard",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [
+            "location.mapInfluence"
+          ],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-02",
+          "targetSourceRegionId": "location-region-2"
+        }
+      },
+      {
+        "id": "location-effect-places-hazard-weight-sermon-slab-room-03-1",
+        "componentId": "places-hazard-weight-sermon-slab",
+        "componentTitle": "Weight-Sermon Slab",
+        "slotId": "hazard",
+        "sourceRegionId": "location-region-3",
+        "regionId": "",
+        "summary": "A pressure slab releases hanging bonework when crossed carelessly.",
+        "text": "A sermon text is carved into a floor slab polished by knees and footsteps.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Environmental Hazard",
+              "hazard"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "hazard",
+              "ambush",
+              "ritual"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "mapInfluence": {
+            "preferredRoomArchetypes": [
+              "processional-crypt-hall"
+            ],
+            "forceRoomArchetype": false,
+            "weight": 2,
+            "source": "places-hazard-weight-sermon-slab",
+            "sources": [
+              "places-hazard-weight-sermon-slab",
+              "Weight-Sermon Slab"
+            ]
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-hazard-weight-sermon-slab",
+            "componentTitle": "Weight-Sermon Slab",
+            "slotId": "hazard",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ]
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [
+              "mapInfluence"
+            ],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-hazard-weight-sermon-slab",
+          "componentTitle": "Weight-Sermon Slab",
+          "slotId": "hazard",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [
+            "location.mapInfluence"
+          ],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-03",
+          "targetSourceRegionId": "location-region-3"
+        }
+      },
+      {
+        "id": "location-effect-places-hazard-reliquary-tripwire-room-04-1",
+        "componentId": "places-hazard-reliquary-tripwire",
+        "componentTitle": "Reliquary Tripwire",
+        "slotId": "hazard",
+        "sourceRegionId": "location-region-4",
+        "regionId": "",
+        "summary": "A thread of rosary beads pulls open a reliquary of sharp fragments.",
+        "text": "A strand of beads runs ankle-high between two reliquary niches.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Environmental Hazard",
+              "hazard"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "hazard",
+              "ambush",
+              "ritual"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "mapInfluence": {
+            "preferredRoomArchetypes": [
+              "reliquary-niche"
+            ],
+            "forceRoomArchetype": false,
+            "weight": 3,
+            "source": "places-hazard-reliquary-tripwire",
+            "sources": [
+              "places-hazard-reliquary-tripwire",
+              "Reliquary Tripwire"
+            ]
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-hazard-reliquary-tripwire",
+            "componentTitle": "Reliquary Tripwire",
+            "slotId": "hazard",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ]
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [
+              "mapInfluence"
+            ],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-hazard-reliquary-tripwire",
+          "componentTitle": "Reliquary Tripwire",
+          "slotId": "hazard",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [
+            "location.mapInfluence"
+          ],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-04",
+          "targetSourceRegionId": "location-region-4"
+        }
+      },
+      {
+        "id": "location-effect-places-hazard-weight-sermon-slab-room-05-1",
+        "componentId": "places-hazard-weight-sermon-slab",
+        "componentTitle": "Weight-Sermon Slab",
+        "slotId": "hazard",
+        "sourceRegionId": "location-region-5",
+        "regionId": "",
+        "summary": "A pressure slab releases hanging bonework when crossed carelessly.",
+        "text": "A sermon text is carved into a floor slab polished by knees and footsteps.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Environmental Hazard",
+              "hazard"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "hazard",
+              "ambush",
+              "ritual"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "mapInfluence": {
+            "preferredRoomArchetypes": [
+              "processional-crypt-hall"
+            ],
+            "forceRoomArchetype": false,
+            "weight": 2,
+            "source": "places-hazard-weight-sermon-slab",
+            "sources": [
+              "places-hazard-weight-sermon-slab",
+              "Weight-Sermon Slab"
+            ]
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-hazard-weight-sermon-slab",
+            "componentTitle": "Weight-Sermon Slab",
+            "slotId": "hazard",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ]
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [
+              "mapInfluence"
+            ],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-hazard-weight-sermon-slab",
+          "componentTitle": "Weight-Sermon Slab",
+          "slotId": "hazard",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [
+            "location.mapInfluence"
+          ],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-05",
+          "targetSourceRegionId": "location-region-5"
+        }
+      },
+      {
+        "id": "location-effect-places-clue-miscounted-skull-row-room-01-1",
+        "componentId": "places-clue-miscounted-skull-row",
+        "componentTitle": "Miscounted Skull Row",
+        "slotId": "clue",
+        "sourceRegionId": "location-region-1",
+        "regionId": "",
+        "summary": "A skull row reveals that one skull has been replaced recently.",
+        "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "clue-marker",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Disturbing Clue",
+              "clue"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "clue",
+              "discovery",
+              "archive",
+              "secret"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "clue-marker",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "mapInfluence": {
+            "preferredRoomArchetypes": [
+              "ossuary-gallery"
+            ],
+            "forceRoomArchetype": false,
+            "weight": 3,
+            "source": "places-clue-miscounted-skull-row",
+            "sources": [
+              "places-clue-miscounted-skull-row",
+              "Miscounted Skull Row"
+            ]
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-clue-miscounted-skull-row",
+            "componentTitle": "Miscounted Skull Row",
+            "slotId": "clue",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ]
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [
+              "mapInfluence"
+            ],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-clue-miscounted-skull-row",
+          "componentTitle": "Miscounted Skull Row",
+          "slotId": "clue",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [
+            "location.mapInfluence"
+          ],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-01",
+          "targetSourceRegionId": "location-region-1"
+        }
+      },
+      {
+        "id": "location-effect-places-clue-bone-chandelier-map-room-02-1",
+        "componentId": "places-clue-bone-chandelier-map",
+        "componentTitle": "Bone Chandelier Map",
+        "slotId": "clue",
+        "sourceRegionId": "location-region-2",
+        "regionId": "",
+        "summary": "The chandelier’s bone pattern mirrors the room layout.",
+        "text": "The bone chandelier repeats the map below in miniature, including one room no door reaches.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "clue-marker",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Disturbing Clue",
+              "clue"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "clue",
+              "discovery",
+              "archive",
+              "secret"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "clue-marker",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "mapInfluence": {
+            "preferredRoomArchetypes": [
+              "processional-crypt-hall",
+              "hidden-reliquary"
+            ],
+            "forceRoomArchetype": false,
+            "weight": 2,
+            "source": "places-clue-bone-chandelier-map",
+            "sources": [
+              "places-clue-bone-chandelier-map",
+              "Bone Chandelier Map"
+            ]
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-clue-bone-chandelier-map",
+            "componentTitle": "Bone Chandelier Map",
+            "slotId": "clue",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ]
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [
+              "mapInfluence"
+            ],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-clue-bone-chandelier-map",
+          "componentTitle": "Bone Chandelier Map",
+          "slotId": "clue",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [
+            "location.mapInfluence"
+          ],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-02",
+          "targetSourceRegionId": "location-region-2"
+        }
+      },
+      {
+        "id": "location-effect-places-clue-miscounted-skull-row-room-03-1",
+        "componentId": "places-clue-miscounted-skull-row",
+        "componentTitle": "Miscounted Skull Row",
+        "slotId": "clue",
+        "sourceRegionId": "location-region-3",
+        "regionId": "",
+        "summary": "A skull row reveals that one skull has been replaced recently.",
+        "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "clue-marker",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Disturbing Clue",
+              "clue"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "clue",
+              "discovery",
+              "archive",
+              "secret"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "clue-marker",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "mapInfluence": {
+            "preferredRoomArchetypes": [
+              "ossuary-gallery"
+            ],
+            "forceRoomArchetype": false,
+            "weight": 3,
+            "source": "places-clue-miscounted-skull-row",
+            "sources": [
+              "places-clue-miscounted-skull-row",
+              "Miscounted Skull Row"
+            ]
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-clue-miscounted-skull-row",
+            "componentTitle": "Miscounted Skull Row",
+            "slotId": "clue",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ]
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [
+              "mapInfluence"
+            ],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-clue-miscounted-skull-row",
+          "componentTitle": "Miscounted Skull Row",
+          "slotId": "clue",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [
+            "location.mapInfluence"
+          ],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-03",
+          "targetSourceRegionId": "location-region-3"
+        }
+      },
+      {
+        "id": "location-effect-places-clue-bone-chandelier-map-room-04-1",
+        "componentId": "places-clue-bone-chandelier-map",
+        "componentTitle": "Bone Chandelier Map",
+        "slotId": "clue",
+        "sourceRegionId": "location-region-4",
+        "regionId": "",
+        "summary": "The chandelier’s bone pattern mirrors the room layout.",
+        "text": "The bone chandelier repeats the map below in miniature, including one room no door reaches.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "clue-marker",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Disturbing Clue",
+              "clue"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "clue",
+              "discovery",
+              "archive",
+              "secret"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "clue-marker",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "mapInfluence": {
+            "preferredRoomArchetypes": [
+              "processional-crypt-hall",
+              "hidden-reliquary"
+            ],
+            "forceRoomArchetype": false,
+            "weight": 2,
+            "source": "places-clue-bone-chandelier-map",
+            "sources": [
+              "places-clue-bone-chandelier-map",
+              "Bone Chandelier Map"
+            ]
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-clue-bone-chandelier-map",
+            "componentTitle": "Bone Chandelier Map",
+            "slotId": "clue",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ]
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [
+              "mapInfluence"
+            ],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-clue-bone-chandelier-map",
+          "componentTitle": "Bone Chandelier Map",
+          "slotId": "clue",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [
+            "location.mapInfluence"
+          ],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-04",
+          "targetSourceRegionId": "location-region-4"
+        }
+      },
+      {
+        "id": "location-effect-places-clue-miscounted-skull-row-room-05-1",
+        "componentId": "places-clue-miscounted-skull-row",
+        "componentTitle": "Miscounted Skull Row",
+        "slotId": "clue",
+        "sourceRegionId": "location-region-5",
+        "regionId": "",
+        "summary": "A skull row reveals that one skull has been replaced recently.",
+        "text": "One skull in the row is cleaner than the others, and the dust line behind it does not match.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "clue-marker",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Disturbing Clue",
+              "clue"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "clue",
+              "discovery",
+              "archive",
+              "secret"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "clue-marker",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "mapInfluence": {
+            "preferredRoomArchetypes": [
+              "ossuary-gallery"
+            ],
+            "forceRoomArchetype": false,
+            "weight": 3,
+            "source": "places-clue-miscounted-skull-row",
+            "sources": [
+              "places-clue-miscounted-skull-row",
+              "Miscounted Skull Row"
+            ]
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-clue-miscounted-skull-row",
+            "componentTitle": "Miscounted Skull Row",
+            "slotId": "clue",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": [
+              "location.mapInfluence"
+            ]
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [
+              "mapInfluence"
+            ],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-clue-miscounted-skull-row",
+          "componentTitle": "Miscounted Skull Row",
+          "slotId": "clue",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [
+            "location.mapInfluence"
+          ],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-05",
+          "targetSourceRegionId": "location-region-5"
+        }
+      },
+      {
+        "id": "location-effect-places-twist-bonework-cover-lines-room-01-1",
+        "componentId": "places-twist-bonework-cover-lines",
+        "componentTitle": "Bonework Cover Lines",
+        "slotId": "encounterTwist",
+        "sourceRegionId": "location-region-1",
+        "regionId": "",
+        "summary": "Bone ornaments create brittle cover and collapsing lines of sight.",
+        "text": "Skull shelves and femur screens divide the room into narrow devotional lanes.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Encounter Twist",
+              "encounterTwist"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "ambush",
+              "climax",
+              "hazard",
+              "ritual"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-twist-bonework-cover-lines",
+            "componentTitle": "Bonework Cover Lines",
+            "slotId": "encounterTwist",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-twist-bonework-cover-lines",
+          "componentTitle": "Bonework Cover Lines",
+          "slotId": "encounterTwist",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-01",
+          "targetSourceRegionId": "location-region-1"
+        }
+      },
+      {
+        "id": "location-effect-places-twist-reliquary-alarm-choir-room-02-1",
+        "componentId": "places-twist-reliquary-alarm-choir",
+        "componentTitle": "Reliquary Alarm Choir",
+        "slotId": "encounterTwist",
+        "sourceRegionId": "location-region-2",
+        "regionId": "",
+        "summary": "Opening a reliquary causes the room to answer in bone clicks.",
+        "text": "When the reliquary opens, every skull niche begins clicking like a dry choir.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Encounter Twist",
+              "encounterTwist"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "ambush",
+              "climax",
+              "hazard",
+              "ritual"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-twist-reliquary-alarm-choir",
+            "componentTitle": "Reliquary Alarm Choir",
+            "slotId": "encounterTwist",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-twist-reliquary-alarm-choir",
+          "componentTitle": "Reliquary Alarm Choir",
+          "slotId": "encounterTwist",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-02",
+          "targetSourceRegionId": "location-region-2"
+        }
+      },
+      {
+        "id": "location-effect-places-twist-bonework-cover-lines-room-03-1",
+        "componentId": "places-twist-bonework-cover-lines",
+        "componentTitle": "Bonework Cover Lines",
+        "slotId": "encounterTwist",
+        "sourceRegionId": "location-region-3",
+        "regionId": "",
+        "summary": "Bone ornaments create brittle cover and collapsing lines of sight.",
+        "text": "Skull shelves and femur screens divide the room into narrow devotional lanes.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Encounter Twist",
+              "encounterTwist"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "ambush",
+              "climax",
+              "hazard",
+              "ritual"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-twist-bonework-cover-lines",
+            "componentTitle": "Bonework Cover Lines",
+            "slotId": "encounterTwist",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-twist-bonework-cover-lines",
+          "componentTitle": "Bonework Cover Lines",
+          "slotId": "encounterTwist",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-03",
+          "targetSourceRegionId": "location-region-3"
+        }
+      },
+      {
+        "id": "location-effect-places-twist-reliquary-alarm-choir-room-04-1",
+        "componentId": "places-twist-reliquary-alarm-choir",
+        "componentTitle": "Reliquary Alarm Choir",
+        "slotId": "encounterTwist",
+        "sourceRegionId": "location-region-4",
+        "regionId": "",
+        "summary": "Opening a reliquary causes the room to answer in bone clicks.",
+        "text": "When the reliquary opens, every skull niche begins clicking like a dry choir.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Encounter Twist",
+              "encounterTwist"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "ambush",
+              "climax",
+              "hazard",
+              "ritual"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-twist-reliquary-alarm-choir",
+            "componentTitle": "Reliquary Alarm Choir",
+            "slotId": "encounterTwist",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-twist-reliquary-alarm-choir",
+          "componentTitle": "Reliquary Alarm Choir",
+          "slotId": "encounterTwist",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-04",
+          "targetSourceRegionId": "location-region-4"
+        }
+      },
+      {
+        "id": "location-effect-places-twist-bonework-cover-lines-room-05-1",
+        "componentId": "places-twist-bonework-cover-lines",
+        "componentTitle": "Bonework Cover Lines",
+        "slotId": "encounterTwist",
+        "sourceRegionId": "location-region-5",
+        "regionId": "",
+        "summary": "Bone ornaments create brittle cover and collapsing lines of sight.",
+        "text": "Skull shelves and femur screens divide the room into narrow devotional lanes.",
+        "strategy": "assigned-region",
+        "visualCue": "sedlec-ossuary",
+        "markerKind": "",
+        "propKind": "",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "effect": {
+          "schemaVersion": "location-component-effect-v0.1",
+          "scope": "region",
+          "output": {
+            "sections": [
+              "Encounter Twist",
+              "encounterTwist"
+            ],
+            "playerFacing": false,
+            "gmFacingOnly": true,
+            "readAloud": false
+          },
+          "placement": {
+            "strategy": "assigned-region",
+            "cardinality": 1,
+            "preferredRoles": [
+              "ambush",
+              "climax",
+              "hazard",
+              "ritual"
+            ],
+            "forbiddenRoles": [],
+            "fallback": "output-only"
+          },
+          "topology": {
+            "isSecretRoom": false,
+            "branchBias": "",
+            "depthBias": "",
+            "connectionKind": ""
+          },
+          "render": {
+            "markerKind": "",
+            "propKind": "",
+            "visualCue": "sedlec-ossuary",
+            "distribution": "single-room"
+          },
+          "unsupportedPolicy": "output-only",
+          "provenance": {
+            "componentId": "places-twist-bonework-cover-lines",
+            "componentTitle": "Bonework Cover Lines",
+            "slotId": "encounterTwist",
+            "sourceAnchors": [
+              "sedlec-ossuary"
+            ],
+            "authoredPaths": []
+          },
+          "diagnostics": {
+            "mode": "procedural",
+            "authoredEffect": false,
+            "liftedContracts": [],
+            "warnings": []
+          }
+        },
+        "provenance": {
+          "componentId": "places-twist-bonework-cover-lines",
+          "componentTitle": "Bonework Cover Lines",
+          "slotId": "encounterTwist",
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "authoredPaths": [],
+          "placementIndex": 0,
+          "targetRoomBriefId": "room-05",
+          "targetSourceRegionId": "location-region-5"
+        }
+      }
+    ],
+    "connectionCount": 4
+  }
+}

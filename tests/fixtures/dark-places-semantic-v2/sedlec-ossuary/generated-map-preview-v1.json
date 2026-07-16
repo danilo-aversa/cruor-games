@@ -1,0 +1,240 @@
+{
+  "schemaVersion": "dark-places-generated-map-preview-v1-fixture",
+  "seed": "semantic-v2-sedlec-baseline-001",
+  "bounds": {
+    "x": 0,
+    "y": 0,
+    "width": 1600,
+    "height": 1000
+  },
+  "contentBounds": {
+    "x": 460,
+    "y": 340,
+    "width": 700,
+    "height": 340
+  },
+  "regions": [
+    {
+      "id": "map-region-1",
+      "sourceRegionId": "location-region-1",
+      "name": "01 Skull Lined Corridor",
+      "number": 1,
+      "level": 0,
+      "role": "entrance",
+      "graphRole": "entrance",
+      "shape": "alcove",
+      "cellRect": {
+        "id": "map-region-1",
+        "x": 23,
+        "y": 30,
+        "w": 5,
+        "h": 4
+      },
+      "labelPoint": {
+        "x": 510,
+        "y": 640
+      }
+    },
+    {
+      "id": "map-region-2",
+      "sourceRegionId": "location-region-2",
+      "name": "02 Ossuary Gallery",
+      "number": 4,
+      "level": 0,
+      "role": "transition",
+      "graphRole": "clue",
+      "shape": "alcove",
+      "cellRect": {
+        "id": "map-region-2",
+        "x": 45,
+        "y": 17,
+        "w": 7,
+        "h": 5
+      },
+      "labelPoint": {
+        "x": 970,
+        "y": 390
+      }
+    },
+    {
+      "id": "map-region-3",
+      "sourceRegionId": "location-region-3",
+      "name": "03 Crypt Chapel",
+      "number": 2,
+      "level": 0,
+      "role": "discovery",
+      "graphRole": "connector",
+      "shape": "alcove",
+      "cellRect": {
+        "id": "map-region-3",
+        "x": 25,
+        "y": 23,
+        "w": 7,
+        "h": 5
+      },
+      "labelPoint": {
+        "x": 570,
+        "y": 510
+      }
+    },
+    {
+      "id": "map-region-4",
+      "sourceRegionId": "location-region-4",
+      "name": "04 Reliquary Niche",
+      "number": 3,
+      "level": 0,
+      "role": "hazard",
+      "graphRole": "clue",
+      "shape": "alcove",
+      "cellRect": {
+        "id": "map-region-4",
+        "x": 36,
+        "y": 21,
+        "w": 7,
+        "h": 5
+      },
+      "labelPoint": {
+        "x": 790,
+        "y": 470
+      }
+    },
+    {
+      "id": "map-region-5",
+      "sourceRegionId": "location-region-5",
+      "name": "05 Sealed Catacomb",
+      "number": 5,
+      "level": 0,
+      "role": "climax",
+      "graphRole": "final",
+      "shape": "alcove",
+      "cellRect": {
+        "id": "map-region-5",
+        "x": 49,
+        "y": 24,
+        "w": 9,
+        "h": 7
+      },
+      "labelPoint": {
+        "x": 1070,
+        "y": 550
+      }
+    }
+  ],
+  "corridors": [
+    {
+      "id": "edge-map-region-1-map-region-3-crypt-spine-0",
+      "from": "map-region-1",
+      "to": "map-region-3",
+      "kind": "critical",
+      "corridorType": "normal",
+      "secret": false,
+      "locked": false,
+      "fromLevel": 0,
+      "toLevel": 0,
+      "levelDelta": 0,
+      "crossLevel": false,
+      "stairTransition": "none"
+    },
+    {
+      "id": "edge-map-region-3-map-region-4-crypt-spine-1",
+      "from": "map-region-3",
+      "to": "map-region-4",
+      "kind": "critical",
+      "corridorType": "normal",
+      "secret": false,
+      "locked": false,
+      "fromLevel": 0,
+      "toLevel": 0,
+      "levelDelta": 0,
+      "crossLevel": false,
+      "stairTransition": "none"
+    },
+    {
+      "id": "edge-map-region-4-map-region-2-crypt-spine-2",
+      "from": "map-region-4",
+      "to": "map-region-2",
+      "kind": "critical",
+      "corridorType": "normal",
+      "secret": false,
+      "locked": false,
+      "fromLevel": 0,
+      "toLevel": 0,
+      "levelDelta": 0,
+      "crossLevel": false,
+      "stairTransition": "none"
+    },
+    {
+      "id": "edge-map-region-2-map-region-5-crypt-spine-3",
+      "from": "map-region-2",
+      "to": "map-region-5",
+      "kind": "critical",
+      "corridorType": "normal",
+      "secret": false,
+      "locked": false,
+      "fromLevel": 0,
+      "toLevel": 0,
+      "levelDelta": 0,
+      "crossLevel": false,
+      "stairTransition": "none"
+    }
+  ],
+  "accesses": [],
+  "locationEffectProps": [
+    {
+      "id": "map-region-1-prop-0-clue-marker",
+      "kind": "clue-marker",
+      "regionId": "map-region-1",
+      "locationEffectComponentId": "places-clue-miscounted-skull-row",
+      "locationEffectSlotId": "clue"
+    },
+    {
+      "id": "map-region-2-prop-0-clue-marker",
+      "kind": "clue-marker",
+      "regionId": "map-region-2",
+      "locationEffectComponentId": "places-clue-bone-chandelier-map",
+      "locationEffectSlotId": "clue"
+    },
+    {
+      "id": "map-region-3-prop-0-clue-marker",
+      "kind": "clue-marker",
+      "regionId": "map-region-3",
+      "locationEffectComponentId": "places-clue-miscounted-skull-row",
+      "locationEffectSlotId": "clue"
+    },
+    {
+      "id": "map-region-4-prop-0-clue-marker",
+      "kind": "clue-marker",
+      "regionId": "map-region-4",
+      "locationEffectComponentId": "places-clue-bone-chandelier-map",
+      "locationEffectSlotId": "clue"
+    },
+    {
+      "id": "map-region-5-prop-0-clue-marker",
+      "kind": "clue-marker",
+      "regionId": "map-region-5",
+      "locationEffectComponentId": "places-anomaly-prayer-slip-mortar",
+      "locationEffectSlotId": "visibleAnomaly"
+    },
+    {
+      "id": "map-region-5-prop-1-chest",
+      "kind": "chest",
+      "regionId": "map-region-5",
+      "locationEffectComponentId": "places-reward-reliquary-fragment-key",
+      "locationEffectSlotId": "reward"
+    },
+    {
+      "id": "map-region-5-prop-2-clue-marker",
+      "kind": "clue-marker",
+      "regionId": "map-region-5",
+      "locationEffectComponentId": "places-clue-miscounted-skull-row",
+      "locationEffectSlotId": "clue"
+    }
+  ],
+  "summary": {
+    "regionCount": 5,
+    "corridorCount": 4,
+    "accessCount": 0,
+    "propCount": 43,
+    "locationEffectPropCount": 7
+  }
+}

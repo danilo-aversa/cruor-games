@@ -1,0 +1,2302 @@
+{
+  "author": "Cruor Games",
+  "id": "sedlec-ossuary-semantic-v2",
+  "license": "internal-prototype",
+  "locale": "en",
+  "metadata": {
+    "bundled": true,
+    "historicalSourceBoundary": "Historical ossuary architecture and devotional bonework are source context; the Litany Engine and all mechanics are fictional.",
+    "humanApprovalRequired": true,
+    "registryRole": "semantic-v2-editorial-candidate"
+  },
+  "modules": [
+    {
+      "capabilities": [
+        "dark-places",
+        "inspiration-archive"
+      ],
+      "components": [
+        {
+          "compatibility": {
+            "capabilities": [
+              "dark-places"
+            ],
+            "excludedCapabilities": [
+              "monster-composer"
+            ]
+          },
+          "contentType": "semantic-location-component",
+          "contexts": [
+            "chapel",
+            "crypt",
+            "ossuary"
+          ],
+          "generation": {
+            "phase": 3
+          },
+          "horror": [
+            "Gothic",
+            "Religious Horror"
+          ],
+          "id": "ossuary-litany",
+          "motifs": [
+            "counted prayers",
+            "empty niches",
+            "turning skulls"
+          ],
+          "provenance": {
+            "legacyIds": [
+              "bone-chapel-counts-the-dead",
+              "chapel-hungry"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "schemaVersion": "cruor-component-v2",
+          "semantic": {
+            "category": "pressure-track",
+            "counterplay": [
+              {
+                "actionCost": "action",
+                "check": {
+                  "ability": "Intelligence",
+                  "dc": null,
+                  "scalingKey": "intrusion",
+                  "skills": [
+                    "Investigation",
+                    "Religion"
+                  ]
+                },
+                "id": "restore-a-name",
+                "success": "Restore a displaced name or bone to its recorded place and reduce Litany by 1."
+              },
+              {
+                "actionCost": "one-minute-activity",
+                "check": null,
+                "id": "keep-reverent-silence",
+                "success": "If every creature remains silent and no remains are disturbed for one minute, reduce Litany by 1."
+              }
+            ],
+            "escalation": [
+              {
+                "at": 2,
+                "effect": "Skulls turn toward the last triggering creature and the end-of-round save begins."
+              },
+              {
+                "at": 4,
+                "effect": "Every empty niche opens; the first failed save each round also knocks the creature Prone."
+              }
+            ],
+            "gmSummary": "Disturbance raises Litany; at 2+, triggering creatures save at round end, while restored names and sustained silence lower the track.",
+            "id": "ossuary-litany",
+            "playerFacingSigns": [
+              "Skulls turn toward the last disturbance.",
+              "Bone dust rises in four measured pulses.",
+              "Empty niches sound like held breath."
+            ],
+            "provenance": {
+              "legacyIds": [
+                "bone-chapel-counts-the-dead",
+                "chapel-hungry"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "legacy-inspiration-module-v1",
+                "method": "editorially-migrated",
+                "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "reset": {
+              "condition": "The chapel remains silent for ten minutes and at least one displaced remain has been restored.",
+              "value": 0
+            },
+            "resolution": {
+              "actionEconomy": "automatic",
+              "area": "every-creature-that-triggered-the-litany-this-round",
+              "attackRoll": null,
+              "check": null,
+              "duration": "until-start-of-next-turn",
+              "effect": {
+                "additionalText": "On a failed save, the creature cannot take reactions until the start of its next turn; on a success, it takes half damage and keeps its reactions.",
+                "conditions": [],
+                "damage": "",
+                "damageType": "psychic",
+                "healing": ""
+              },
+              "frequency": "once-per-round-at-litany-2-or-higher",
+              "range": "location",
+              "savingThrow": {
+                "ability": "Wisdom",
+                "dc": null,
+                "scalingKey": "intrusion",
+                "skills": []
+              },
+              "threshold": 2,
+              "timing": "end-of-round"
+            },
+            "schemaVersion": "cruor-global-rule-v1",
+            "scope": "location",
+            "state": {
+              "initial": 0,
+              "label": "Litany",
+              "maximum": 4,
+              "minimum": 0
+            },
+            "title": "The Ossuary Litany",
+            "trigger": {
+              "events": [
+                "disturb-remains",
+                "loud-noise",
+                "speak-a-false-name"
+              ],
+              "frequencyLimit": "once-per-turn",
+              "timing": "immediately-after-event"
+            }
+          },
+          "semanticType": "global-rule",
+          "slots": [],
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "sourceTypes": [
+            "Architecture",
+            "Material Culture",
+            "Sacred Site"
+          ],
+          "status": "in-review",
+          "themes": [
+            "devotional bonework",
+            "erased identity",
+            "sacred display"
+          ],
+          "title": "The Ossuary Litany",
+          "workflows": [
+            "darken-location"
+          ]
+        },
+        {
+          "compatibility": {
+            "capabilities": [
+              "dark-places"
+            ],
+            "excludedCapabilities": [
+              "monster-composer"
+            ]
+          },
+          "contentType": "semantic-location-component",
+          "contexts": [
+            "chapel",
+            "crypt",
+            "ossuary"
+          ],
+          "generation": {
+            "phase": 3,
+            "primary": true
+          },
+          "horror": [
+            "Gothic",
+            "Religious Horror"
+          ],
+          "id": "sedlec-place-identity",
+          "motifs": [
+            "anonymous dead",
+            "arranged remains",
+            "measured niches"
+          ],
+          "provenance": {
+            "legacyIds": [
+              "bone-chapel-counts-the-dead",
+              "places-premise-ossuary-litany-engine"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "schemaVersion": "cruor-component-v2",
+          "semantic": {
+            "currentConflict": "A recently placed named bone interrupts the pattern, while the chapel's keepers try to complete the count before the contradiction wakes every anonymous dead at once.",
+            "currentFunction": "The ossuary measures disturbance, confession, and blood, then rearranges signs and relics to pressure intruders into surrendering a true name or a body.",
+            "historicalChange": "Successive custodians stopped treating the arrangements as memorial records and rebuilt them as a devotional counting machine, removing names so every skull and rib could occupy a perfect place in its prayer geometry.",
+            "horrorTruth": "The completed patterns now continue the litany without a priest and count each living visitor as unfinished material for an empty niche.",
+            "originalPurpose": "The underground chapel was built to gather displaced human remains into a consecrated memorial where ordered bonework made the anonymous dead visible to the living.",
+            "originalUsers": [
+              "chapel custodians",
+              "pilgrims seeking intercession",
+              "families of the unclaimed dead"
+            ],
+            "playerEntryPoints": [
+              "Recover the named bone of a missing pilgrim before the keepers erase its inscription.",
+              "Find why the chapel has begun adding fresh remains although no burial has been authorized."
+            ],
+            "provenance": {
+              "legacyIds": [
+                "bone-chapel-counts-the-dead",
+                "places-premise-ossuary-litany-engine"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "legacy-inspiration-module-v1",
+                "method": "editorially-migrated",
+                "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "schemaVersion": "cruor-place-identity-v1",
+            "stakes": [
+              "If the name is erased, the missing pilgrim becomes part of the engine and the chapel gains a new completed verse.",
+              "If the count reaches its final measure, every living creature inside is assigned an empty niche and marked for collection."
+            ],
+            "toneKeywords": [
+              "reverent",
+              "dry",
+              "measured",
+              "accusatory"
+            ]
+          },
+          "semanticType": "place-identity",
+          "slots": [],
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "sourceTypes": [
+            "Architecture",
+            "Material Culture",
+            "Sacred Site"
+          ],
+          "status": "in-review",
+          "themes": [
+            "devotional bonework",
+            "erased identity",
+            "sacred display"
+          ],
+          "title": "The Litany Engine",
+          "workflows": [
+            "darken-location"
+          ]
+        },
+        {
+          "compatibility": {
+            "capabilities": [
+              "dark-places"
+            ],
+            "excludedCapabilities": [
+              "monster-composer"
+            ]
+          },
+          "contentType": "semantic-location-component",
+          "contexts": [
+            "chapel",
+            "crypt",
+            "ossuary"
+          ],
+          "generation": {
+            "phase": 3
+          },
+          "horror": [
+            "Gothic",
+            "Religious Horror"
+          ],
+          "id": "sedlec-read-aloud-profile",
+          "motifs": [
+            "bone architecture",
+            "devotional geometry",
+            "empty niches"
+          ],
+          "provenance": {
+            "legacyIds": [
+              "places-premise-ossuary-litany-engine"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "schemaVersion": "cruor-component-v2",
+          "semantic": {
+            "constraints": {
+              "forbiddenSpoilerTags": [
+                "secret",
+                "solution",
+                "true-name"
+              ],
+              "maximumSentences": {
+                "compact": 2,
+                "extended": 6,
+                "standard": 4
+              },
+              "wordRanges": {
+                "compact": [
+                  20,
+                  35
+                ],
+                "extended": [
+                  80,
+                  120
+                ],
+                "standard": [
+                  45,
+                  75
+                ]
+              }
+            },
+            "fragments": {
+              "exitsAndDepth": [
+                {
+                  "geometry": [],
+                  "id": "prayer-beyond-rib-arch",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "Beyond the rib arch, the delayed prayer returns from a lower chamber, then repeats from a second depth where no stair is visible.",
+                  "visibleFeatures": []
+                },
+                {
+                  "geometry": [],
+                  "id": "unmapped-chandelier-room",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [
+                    "future-reveal"
+                  ],
+                  "text": "The chandelier pattern includes a room that has no visible door.",
+                  "visibleFeatures": []
+                }
+              ],
+              "motionOrChange": [
+                {
+                  "geometry": [],
+                  "id": "moving-mouth-gap",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [
+                    "connector",
+                    "clue"
+                  ],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "A mouth-shaped gap shifts one place along the garland, leaving the surrounding skulls angled toward the newly opened space.",
+                  "visibleFeatures": [
+                    "skull-garland"
+                  ]
+                },
+                {
+                  "geometry": [],
+                  "id": "four-pulses-of-dust",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "Bone dust rises in four measured pulses, circles the nearest empty niche, and settles in neat lines along the floor.",
+                  "visibleFeatures": []
+                }
+              ],
+              "sensoryBeats": [
+                {
+                  "geometry": [],
+                  "id": "sweet-mineral-air",
+                  "intensity": "low",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "The air tastes faintly sweet and mineral.",
+                  "visibleFeatures": []
+                },
+                {
+                  "geometry": [],
+                  "id": "clicks-after-voices",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [
+                    "connector",
+                    "clue"
+                  ],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "Small clicks move through the walls after each voice stops.",
+                  "visibleFeatures": []
+                },
+                {
+                  "geometry": [],
+                  "id": "incense-and-polished-bone",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [
+                    "ritual",
+                    "final"
+                  ],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "Spent incense clings beneath the dry smell of polished bone.",
+                  "visibleFeatures": []
+                },
+                {
+                  "geometry": [],
+                  "id": "warm-ornament-wire",
+                  "intensity": "medium",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "The wire in the nearest ornament radiates a trace of warmth.",
+                  "visibleFeatures": [
+                    "wire"
+                  ]
+                }
+              ],
+              "spatialAnchors": [
+                {
+                  "geometry": [
+                    "narrow"
+                  ],
+                  "id": "bone-lined-chapel",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [
+                    "entrance",
+                    "connector"
+                  ],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "Bone-lined walls narrow toward a chapel arranged around a single empty niche.",
+                  "visibleFeatures": []
+                },
+                {
+                  "geometry": [
+                    "narrow"
+                  ],
+                  "id": "inscribed-skull-alcoves",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [
+                    "clue",
+                    "threshold",
+                    "secret"
+                  ],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "Alcoves cut into the stone hold skulls in rows precise enough to resemble writing.",
+                  "visibleFeatures": [
+                    "alcove"
+                  ]
+                },
+                {
+                  "geometry": [],
+                  "id": "rib-arch-threshold",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "A low arch of wired ribs separates the public memorial from the deeper reliquary.",
+                  "visibleFeatures": []
+                }
+              ],
+              "unsettlingDetails": [
+                {
+                  "geometry": [],
+                  "id": "living-body-niche",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [
+                    "final",
+                    "climax"
+                  ],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "The empty niche is proportioned for a living body.",
+                  "visibleFeatures": []
+                },
+                {
+                  "geometry": [],
+                  "id": "teeth-follow-speaker",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [
+                    "connector",
+                    "clue",
+                    "ritual"
+                  ],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "Several teeth turn toward the last person who spoke.",
+                  "visibleFeatures": []
+                },
+                {
+                  "geometry": [],
+                  "id": "hidden-rib-initial",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [
+                    "gm-only"
+                  ],
+                  "text": "A hidden initial has been scratched inside a polished rib.",
+                  "visibleFeatures": []
+                },
+                {
+                  "geometry": [],
+                  "id": "four-wax-drops",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [
+                    "entrance",
+                    "clue"
+                  ],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "Four drops of wax hang beneath a skull untouched by flame.",
+                  "visibleFeatures": []
+                },
+                {
+                  "geometry": [],
+                  "id": "erased-name-scrape",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "A name has been scraped away so recently that pale dust still rests inside the letters.",
+                  "visibleFeatures": []
+                }
+              ],
+              "visibleFeatures": [
+                {
+                  "geometry": [],
+                  "id": "skull-garland-gap",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "Skull garlands circle the room with one deliberate gap that remains level with the doorway.",
+                  "visibleFeatures": [
+                    "skull-garland"
+                  ]
+                },
+                {
+                  "geometry": [],
+                  "id": "prayer-slip-seams",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [
+                    "clue",
+                    "final"
+                  ],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "Prayer slips and pale hair protrude from selected mortar seams.",
+                  "visibleFeatures": [
+                    "prayer-slip"
+                  ]
+                },
+                {
+                  "geometry": [],
+                  "id": "chandelier-room-plan",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [
+                    "entrance",
+                    "connector"
+                  ],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "A chandelier repeats the room plan in ribs and finger bones.",
+                  "visibleFeatures": [
+                    "chandelier"
+                  ]
+                },
+                {
+                  "geometry": [],
+                  "id": "fresh-bone-row",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [
+                    "clue",
+                    "final"
+                  ],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "A fresh bone interrupts one row of yellowed remains.",
+                  "visibleFeatures": [
+                    "fresh-bone"
+                  ]
+                },
+                {
+                  "geometry": [],
+                  "id": "rib-rosette-count",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "Ribs form a numbered rosette around a dark iron pin, with each arc aligned to a different doorway.",
+                  "visibleFeatures": []
+                },
+                {
+                  "geometry": [],
+                  "id": "wire-counting-marks",
+                  "intensity": "",
+                  "provenance": {
+                    "legacyIds": [
+                      "places-premise-ossuary-litany-engine"
+                    ],
+                    "migration": {
+                      "editorialDecision": "needs-revision",
+                      "fromSchema": "legacy-inspiration-module-v1",
+                      "method": "editorially-migrated",
+                      "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                      "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+                    },
+                    "schemaVersion": "cruor-semantic-provenance-v1",
+                    "sources": [
+                      {
+                        "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                        "relation": "derived",
+                        "sourceAnchorId": "sedlec-ossuary"
+                      }
+                    ]
+                  },
+                  "roomRoles": [],
+                  "sourceComponentId": "sedlec-read-aloud-profile",
+                  "tags": [],
+                  "text": "Short counting marks score the wire between each carefully separated cluster of remains.",
+                  "visibleFeatures": []
+                }
+              ]
+            },
+            "grammar": {
+              "allowSecondPerson": false,
+              "openingOrder": [
+                "spatial-anchors",
+                "sensory-beats"
+              ],
+              "tense": "present"
+            },
+            "provenance": {
+              "legacyIds": [
+                "places-premise-ossuary-litany-engine"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "legacy-inspiration-module-v1",
+                "method": "editorially-migrated",
+                "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "schemaVersion": "cruor-read-aloud-profile-v1"
+          },
+          "semanticType": "read-aloud-profile",
+          "slots": [],
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "sourceTypes": [
+            "Architecture",
+            "Material Culture",
+            "Sacred Site"
+          ],
+          "status": "in-review",
+          "themes": [
+            "devotional bonework",
+            "erased identity",
+            "sacred display"
+          ],
+          "title": "Ossuary Read-Aloud Profile",
+          "workflows": [
+            "darken-location"
+          ]
+        },
+        {
+          "compatibility": {
+            "capabilities": [
+              "dark-places"
+            ],
+            "excludedCapabilities": [
+              "monster-composer"
+            ]
+          },
+          "contentType": "semantic-location-component",
+          "contexts": [
+            "chapel",
+            "crypt",
+            "ossuary"
+          ],
+          "generation": {
+            "phase": 3
+          },
+          "horror": [
+            "Gothic",
+            "Religious Horror"
+          ],
+          "id": "sedlec-sensory-profile",
+          "motifs": [
+            "bone clicks",
+            "dry sweetness",
+            "warm wire"
+          ],
+          "provenance": {
+            "legacyIds": [
+              "dust-of-polished-bone",
+              "places-sense-bone-dust-breath",
+              "places-sense-clicking-skull-seams",
+              "prayer-underwater"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "schemaVersion": "cruor-component-v2",
+          "semantic": {
+            "exclusions": [
+              "putrefaction",
+              "generic grave cold"
+            ],
+            "geometryBias": {
+              "circular": [
+                "The answering clicks complete a full circuit."
+              ],
+              "large": [
+                "The delayed prayer returns from several distances."
+              ],
+              "narrow": [
+                "Dry powder brushes both shoulders."
+              ],
+              "ruined": [
+                "Broken patterns attempt to continue across the gap."
+              ],
+              "vertical": [
+                "Bone dust descends before any step above is heard."
+              ]
+            },
+            "intensityTiers": {
+              "high": [
+                "Every empty niche exhales bone dust in the same four-beat rhythm."
+              ],
+              "low": [
+                "One seam clicks after the last word.",
+                "A trace of mineral sweetness lingers on the tongue."
+              ],
+              "medium": [
+                "Several garlands turn by the width of a tooth.",
+                "Warm wire hums through the nearest wall."
+              ]
+            },
+            "provenance": {
+              "legacyIds": [
+                "dust-of-polished-bone",
+                "places-sense-bone-dust-breath",
+                "places-sense-clicking-skull-seams",
+                "prayer-underwater"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "legacy-inspiration-module-v1",
+                "method": "editorially-migrated",
+                "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "repetitionPolicy": {
+              "allowSignatureRepeat": false,
+              "exactTextCooldown": "all-rooms",
+              "senseCooldown": 1
+            },
+            "roomRoleBias": {
+              "climax": [
+                "Every garland faces the same empty niche."
+              ],
+              "connector": [
+                "Clicks travel ahead along the route."
+              ],
+              "entrance": [
+                "Candle flames lean deeper into the site."
+              ],
+              "ritual": [
+                "Prayer echoes return in strict sequence."
+              ],
+              "secret": [
+                "Named fragments interrupt the anonymous pattern."
+              ],
+              "threshold": [
+                "The bone count changes across the doorway."
+              ]
+            },
+            "schemaVersion": "cruor-sensory-profile-v1",
+            "signature": "Dry bone dust and the quiet movement of teeth make the chapel feel attentive rather than abandoned.",
+            "variants": {
+              "proprioception": [],
+              "sight": [
+                "Powder gathers in crescents beneath every speaking mouth.",
+                "Fine cracks divide the bonework into measured groups of four.",
+                "Candle flames lean toward the nearest empty niche.",
+                "A clean wire glints among fittings blackened by age."
+              ],
+              "smell": [
+                "Spent incense hangs beneath a mineral sweetness.",
+                "Warm wax carries the faint smell of singed hair."
+              ],
+              "sound": [
+                "Teeth settle one by one after the room becomes quiet.",
+                "A prayer returns a heartbeat late from behind the wall.",
+                "Thin wire hums at the edge of hearing when a name is spoken.",
+                "Four dry taps answer a careless footstep."
+              ],
+              "taste": [
+                "A chalky sweetness settles behind the teeth after a name is spoken.",
+                "The air leaves a faint copper trace that vanishes outside the chapel."
+              ],
+              "temperature": [
+                "One empty niche holds the warmth of a recently departed body.",
+                "A measured draft cools each row of skulls from left to right."
+              ],
+              "touch": [
+                "The reliquary wire is warmer than the surrounding stone.",
+                "Polished bone leaves a film of dry powder on the fingertips."
+              ]
+            }
+          },
+          "semanticType": "sensory-profile",
+          "slots": [],
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "sourceTypes": [
+            "Architecture",
+            "Material Culture",
+            "Sacred Site"
+          ],
+          "status": "in-review",
+          "themes": [
+            "devotional bonework",
+            "erased identity",
+            "sacred display"
+          ],
+          "title": "Ossuary Sensory Profile",
+          "workflows": [
+            "darken-location"
+          ]
+        },
+        {
+          "compatibility": {
+            "capabilities": [
+              "dark-places"
+            ],
+            "excludedCapabilities": [
+              "monster-composer"
+            ]
+          },
+          "contentType": "semantic-location-component",
+          "contexts": [
+            "chapel",
+            "crypt",
+            "ossuary"
+          ],
+          "generation": {
+            "phase": 3
+          },
+          "horror": [
+            "Gothic",
+            "Religious Horror"
+          ],
+          "id": "sedlec-session-guide",
+          "motifs": [
+            "named bone",
+            "restored memorial",
+            "rising litany"
+          ],
+          "provenance": {
+            "legacyIds": [
+              "sedlec-bone-has-a-name"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "schemaVersion": "cruor-component-v2",
+          "semantic": {
+            "alwaysOnRuleIds": [
+              "ossuary-litany"
+            ],
+            "clueFlow": {
+              "fallbackClues": [
+                "A prayer slip repeats the hidden name.",
+                "A turning garland points toward the fresh remain."
+              ],
+              "links": [
+                {
+                  "condition": "The characters compare the hidden name with an empty niche.",
+                  "from": "named-bone-revelation",
+                  "to": "litany-count-revelation"
+                },
+                {
+                  "condition": "The characters inspect a fresh remain or the chandelier map.",
+                  "from": "litany-count-revelation",
+                  "to": "recent-collection-revelation"
+                }
+              ],
+              "requiredRevelations": [
+                "named-bone-revelation",
+                "litany-count-revelation",
+                "recent-collection-revelation"
+              ]
+            },
+            "objectives": [
+              "Identify the named bone and the person it belonged to.",
+              "Prevent the Litany from completing its fourth measure.",
+              "Choose whether to restore, expose, or dismantle the devotional count."
+            ],
+            "openingBeat": {
+              "immediateSignal": "Four dry clicks answer the first voice, and every candle leans toward the sealed catacomb.",
+              "playerDecision": "Enter quietly to preserve the count, confront the custodian, or follow the name before it is erased.",
+              "situation": "A custodian bars the chapel doors after discovering a fresh rib in the chandelier and a living pilgrim's name inside the bonework."
+            },
+            "pacing": {
+              "climaxGuidance": "At Litany 4, make the choice about the named bone more urgent rather than adding unrelated enemies.",
+              "defaultRoute": [
+                "location-region-1",
+                "location-region-3",
+                "location-region-4",
+                "location-region-2",
+                "location-region-5"
+              ],
+              "escalationRooms": [
+                "location-region-2",
+                "location-region-5"
+              ]
+            },
+            "pressureTrackId": "ossuary-litany",
+            "provenance": {
+              "legacyIds": [
+                "sedlec-bone-has-a-name"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "legacy-inspiration-module-v1",
+                "method": "editorially-migrated",
+                "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "schemaVersion": "cruor-session-guide-v1",
+            "stallMoves": [
+              {
+                "action": "Advance Litany by 1 and turn the nearest skulls toward the named bone.",
+                "id": "advance-the-litany",
+                "trigger": "The table debates without acting after a clear sign."
+              },
+              {
+                "action": "The custodian offers the register, but demands a true name as security.",
+                "id": "custodian-intervenes",
+                "trigger": "The characters prepare to damage the memorial without a plan."
+              },
+              {
+                "action": "Fresh wire tightens audibly around the relevant bone and exposes its inscription.",
+                "id": "fresh-wire-tightens",
+                "trigger": "A clue has been missed twice."
+              }
+            ]
+          },
+          "semanticType": "session-guide",
+          "slots": [],
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "sourceTypes": [
+            "Architecture",
+            "Material Culture",
+            "Sacred Site"
+          ],
+          "status": "in-review",
+          "themes": [
+            "devotional bonework",
+            "erased identity",
+            "sacred display"
+          ],
+          "title": "Running the Litany Engine",
+          "workflows": [
+            "darken-location"
+          ]
+        },
+        {
+          "compatibility": {
+            "capabilities": [
+              "dark-places"
+            ],
+            "excludedCapabilities": [
+              "monster-composer"
+            ]
+          },
+          "contentType": "semantic-location-component",
+          "contexts": [
+            "chapel",
+            "crypt",
+            "ossuary"
+          ],
+          "generation": {
+            "phase": 3
+          },
+          "horror": [
+            "Gothic",
+            "Religious Horror"
+          ],
+          "id": "sedlec-sign-candlewax-tears",
+          "motifs": [
+            "handled relics",
+            "skull sockets",
+            "warm wax"
+          ],
+          "provenance": {
+            "legacyIds": [
+              "bones-sweat-candlewax"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "schemaVersion": "cruor-component-v2",
+          "semantic": {
+            "description": "Bone ornaments sweat warm candlewax where recent acts have advanced the Litany.",
+            "id": "sedlec-sign-candlewax-tears",
+            "interaction": {
+              "counterplay": "Cooling the ornament with holy water suppresses this sign until Litany next increases.",
+              "effect": "The wax points toward the most recent room in which the Litany increased.",
+              "trigger": "A creature traces the still-warm wax to its source."
+            },
+            "placement": {
+              "allowedRoomRoles": [
+                "entrance",
+                "clue",
+                "final"
+              ],
+              "forbiddenRoomRoles": [],
+              "frequency": "recurring",
+              "maximumRooms": 2,
+              "minimumRooms": 1,
+              "preferredFeatures": [
+                "alcove",
+                "reliquary"
+              ]
+            },
+            "provenance": {
+              "legacyIds": [
+                "bones-sweat-candlewax"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "legacy-inspiration-module-v1",
+                "method": "editorially-migrated",
+                "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "revelationLink": "litany-source-revelation",
+            "schemaVersion": "cruor-recurring-sign-v1",
+            "variations": [
+              "Warm wax gathers in the eye sockets of a skull untouched by candlelight.",
+              "A handled rib leaves a clean wax print shaped like a small open hand.",
+              "Four wax drops descend in sequence and stop before striking the floor."
+            ]
+          },
+          "semanticType": "recurring-sign",
+          "slots": [],
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "sourceTypes": [
+            "Architecture",
+            "Material Culture",
+            "Sacred Site"
+          ],
+          "status": "in-review",
+          "themes": [
+            "devotional bonework",
+            "erased identity",
+            "sacred display"
+          ],
+          "title": "Candlewax Tears",
+          "workflows": [
+            "darken-location"
+          ]
+        },
+        {
+          "compatibility": {
+            "capabilities": [
+              "dark-places"
+            ],
+            "excludedCapabilities": [
+              "monster-composer"
+            ]
+          },
+          "contentType": "semantic-location-component",
+          "contexts": [
+            "chapel",
+            "crypt",
+            "ossuary"
+          ],
+          "generation": {
+            "phase": 3
+          },
+          "horror": [
+            "Gothic",
+            "Religious Horror"
+          ],
+          "id": "sedlec-sign-fresh-bone-count",
+          "motifs": [
+            "fresh rib",
+            "recent replacement",
+            "red marrow"
+          ],
+          "provenance": {
+            "legacyIds": [
+              "chandelier-has-one-new-rib"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "schemaVersion": "cruor-component-v2",
+          "semantic": {
+            "description": "Fresh remains have been inserted into old devotional patterns, proving that the ossuary is still collecting material.",
+            "id": "sedlec-sign-fresh-bone-count",
+            "interaction": {
+              "counterplay": "Removing it carelessly raises Litany by 1; recording its name before removal prevents that increase.",
+              "effect": "A successful Medicine or Investigation check establishes that it was placed within the last day.",
+              "trigger": "A creature examines the fresh remain without moving it."
+            },
+            "placement": {
+              "allowedRoomRoles": [
+                "clue",
+                "final"
+              ],
+              "forbiddenRoomRoles": [
+                "entrance"
+              ],
+              "frequency": "recurring",
+              "maximumRooms": 2,
+              "minimumRooms": 1,
+              "preferredFeatures": [
+                "chandelier",
+                "reliquary",
+                "alcove"
+              ]
+            },
+            "provenance": {
+              "legacyIds": [
+                "chandelier-has-one-new-rib"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "legacy-inspiration-module-v1",
+                "method": "editorially-migrated",
+                "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "revelationLink": "recent-collection-revelation",
+            "schemaVersion": "cruor-recurring-sign-v1",
+            "variations": [
+              "One rib in the yellowed arrangement is fresh enough for red marrow to shine at the cut.",
+              "A polished finger bone still carries the indentation of a recently removed ring.",
+              "A clean skull has been wired into a dusty row, but the empty wire beside it is still warm."
+            ]
+          },
+          "semanticType": "recurring-sign",
+          "slots": [],
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "sourceTypes": [
+            "Architecture",
+            "Material Culture",
+            "Sacred Site"
+          ],
+          "status": "in-review",
+          "themes": [
+            "devotional bonework",
+            "erased identity",
+            "sacred display"
+          ],
+          "title": "Fresh Bone in the Count",
+          "workflows": [
+            "darken-location"
+          ]
+        },
+        {
+          "compatibility": {
+            "capabilities": [
+              "dark-places"
+            ],
+            "excludedCapabilities": [
+              "monster-composer"
+            ]
+          },
+          "contentType": "semantic-location-component",
+          "contexts": [
+            "chapel",
+            "crypt",
+            "ossuary"
+          ],
+          "generation": {
+            "phase": 3
+          },
+          "horror": [
+            "Gothic",
+            "Religious Horror"
+          ],
+          "id": "sedlec-sign-prayer-slip-mortar",
+          "motifs": [
+            "mortar seams",
+            "pale hair",
+            "prayer slips"
+          ],
+          "provenance": {
+            "legacyIds": [
+              "places-anomaly-prayer-slip-mortar"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "schemaVersion": "cruor-component-v2",
+          "semantic": {
+            "description": "Folded prayer slips, ash, and pale hair have been pressed into selected mortar seams as private memorials the official arrangement tried to erase.",
+            "id": "sedlec-sign-prayer-slip-mortar",
+            "interaction": {
+              "counterplay": "Return the slip to its seam to avoid disturbing the Litany; tearing or burning it raises Litany by 1.",
+              "effect": "The slip supplies a forgotten name connected to this room or its nearest clue.",
+              "trigger": "A creature carefully opens a prayer slip."
+            },
+            "placement": {
+              "allowedRoomRoles": [
+                "entrance",
+                "connector",
+                "clue"
+              ],
+              "forbiddenRoomRoles": [
+                "final"
+              ],
+              "frequency": "recurring",
+              "maximumRooms": 2,
+              "minimumRooms": 1,
+              "preferredFeatures": [
+                "alcove",
+                "threshold"
+              ]
+            },
+            "provenance": {
+              "legacyIds": [
+                "places-anomaly-prayer-slip-mortar"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "legacy-inspiration-module-v1",
+                "method": "editorially-migrated",
+                "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "revelationLink": "named-bone-revelation",
+            "schemaVersion": "cruor-recurring-sign-v1",
+            "variations": [
+              "A folded prayer slip protrudes from the mortar beside a strand of pale hair.",
+              "Someone has picked ash and hair from one seam, exposing a hidden initial.",
+              "Fresh wax seals a prayer slip into the wall where no candle can reach."
+            ]
+          },
+          "semanticType": "recurring-sign",
+          "slots": [],
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "sourceTypes": [
+            "Architecture",
+            "Material Culture",
+            "Sacred Site"
+          ],
+          "status": "in-review",
+          "themes": [
+            "devotional bonework",
+            "erased identity",
+            "sacred display"
+          ],
+          "title": "Prayer-Slip Mortar",
+          "workflows": [
+            "darken-location"
+          ]
+        },
+        {
+          "compatibility": {
+            "capabilities": [
+              "dark-places"
+            ],
+            "excludedCapabilities": [
+              "monster-composer"
+            ]
+          },
+          "contentType": "semantic-location-component",
+          "contexts": [
+            "chapel",
+            "crypt",
+            "ossuary"
+          ],
+          "generation": {
+            "phase": 3
+          },
+          "horror": [
+            "Gothic",
+            "Religious Horror"
+          ],
+          "id": "sedlec-sign-turning-skull-garlands",
+          "motifs": [
+            "confession",
+            "measured gaps",
+            "skull garlands"
+          ],
+          "provenance": {
+            "legacyIds": [
+              "places-anomaly-skull-garland-gap",
+              "skulls-turn-toward-confession"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "schemaVersion": "cruor-component-v2",
+          "semantic": {
+            "description": "Selected skull garlands reorient toward confession, false names, and gaps in the chapel's count.",
+            "id": "sedlec-sign-turning-skull-garlands",
+            "interaction": null,
+            "placement": {
+              "allowedRoomRoles": [
+                "connector",
+                "clue",
+                "final"
+              ],
+              "forbiddenRoomRoles": [],
+              "frequency": "recurring",
+              "maximumRooms": 3,
+              "minimumRooms": 2,
+              "preferredFeatures": [
+                "alcove",
+                "wall"
+              ]
+            },
+            "provenance": {
+              "legacyIds": [
+                "places-anomaly-skull-garland-gap",
+                "skulls-turn-toward-confession"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "legacy-inspiration-module-v1",
+                "method": "editorially-migrated",
+                "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "revelationLink": "litany-count-revelation",
+            "schemaVersion": "cruor-recurring-sign-v1",
+            "variations": [
+              "Every skull in one garland faces the last creature to speak a secret.",
+              "A mouth-shaped gap travels one place along the garland when nobody watches.",
+              "Only the skull above the correct route refuses to turn toward the confession."
+            ]
+          },
+          "semanticType": "recurring-sign",
+          "slots": [],
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "sourceTypes": [
+            "Architecture",
+            "Material Culture",
+            "Sacred Site"
+          ],
+          "status": "in-review",
+          "themes": [
+            "devotional bonework",
+            "erased identity",
+            "sacred display"
+          ],
+          "title": "Turning Skull Garlands",
+          "workflows": [
+            "darken-location"
+          ]
+        },
+        {
+          "compatibility": {
+            "capabilities": [
+              "dark-places"
+            ],
+            "excludedCapabilities": [
+              "monster-composer"
+            ]
+          },
+          "contentType": "semantic-location-component",
+          "contexts": [
+            "chapel",
+            "crypt",
+            "ossuary"
+          ],
+          "generation": {
+            "phase": 3
+          },
+          "horror": [
+            "Gothic",
+            "Religious Horror"
+          ],
+          "id": "sedlec-site-atmosphere",
+          "motifs": [
+            "bone dust",
+            "settling teeth",
+            "spent incense"
+          ],
+          "provenance": {
+            "legacyIds": [
+              "dust-of-polished-bone",
+              "places-sense-bone-dust-breath",
+              "places-sense-clicking-skull-seams"
+            ],
+            "migration": {
+              "editorialDecision": "needs-revision",
+              "fromSchema": "legacy-inspiration-module-v1",
+              "method": "editorially-migrated",
+              "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+              "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+            },
+            "schemaVersion": "cruor-semantic-provenance-v1",
+            "sources": [
+              {
+                "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                "relation": "derived",
+                "sourceAnchorId": "sedlec-ossuary"
+              }
+            ]
+          },
+          "schemaVersion": "cruor-component-v2",
+          "semantic": {
+            "escalationLinks": [
+              "ossuary-litany"
+            ],
+            "exclusions": [
+              "ordinary crypt rot",
+              "constant screaming",
+              "generic supernatural cold"
+            ],
+            "manifestations": [
+              {
+                "frequency": "pervasive",
+                "id": "bone-dust-aftertaste",
+                "intensity": "low",
+                "senses": [
+                  "taste",
+                  "smell"
+                ],
+                "text": "A mineral sweetness gathers on the tongue after every spoken name."
+              },
+              {
+                "frequency": "recurring",
+                "id": "answering-skull-seams",
+                "intensity": "medium",
+                "senses": [
+                  "sound"
+                ],
+                "text": "Small clicks travel through skull seams a heartbeat after a voice stops."
+              },
+              {
+                "frequency": "recurring",
+                "id": "warm-reliquary-wire",
+                "intensity": "medium",
+                "senses": [
+                  "touch",
+                  "temperature"
+                ],
+                "text": "The wire holding the bonework is warm wherever the Litany has advanced."
+              }
+            ],
+            "provenance": {
+              "legacyIds": [
+                "dust-of-polished-bone",
+                "places-sense-bone-dust-breath",
+                "places-sense-clicking-skull-seams"
+              ],
+              "migration": {
+                "editorialDecision": "needs-revision",
+                "fromSchema": "legacy-inspiration-module-v1",
+                "method": "editorially-migrated",
+                "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+                "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+              },
+              "schemaVersion": "cruor-semantic-provenance-v1",
+              "sources": [
+                {
+                  "note": "Editorially re-authored from the Sedlec Ossuary project source dossier and the frozen v1 module.",
+                  "relation": "derived",
+                  "sourceAnchorId": "sedlec-ossuary"
+                }
+              ]
+            },
+            "schemaVersion": "cruor-site-atmosphere-v1",
+            "signature": "The chapel is dry, meticulously ordered, and never silent enough to feel empty; every pause is answered by the minute settling of teeth and wire."
+          },
+          "semanticType": "site-atmosphere",
+          "slots": [],
+          "sourceAnchors": [
+            "sedlec-ossuary"
+          ],
+          "sourceTypes": [
+            "Architecture",
+            "Material Culture",
+            "Sacred Site"
+          ],
+          "status": "in-review",
+          "themes": [
+            "devotional bonework",
+            "erased identity",
+            "sacred display"
+          ],
+          "title": "Dry Devotional Pressure",
+          "workflows": [
+            "darken-location"
+          ]
+        }
+      ],
+      "id": "sedlec-ossuary",
+      "inspiration": {
+        "contexts": [
+          "chapel",
+          "crypt",
+          "ossuary"
+        ],
+        "editorial": {
+          "cautions": [
+            "Keep historical description separate from supernatural fiction.",
+            "Treat human remains as people and memorial material, not disposable gore dressing."
+          ],
+          "creativeUses": [
+            "Build a location where architecture functions as a record of the dead.",
+            "Turn missing names and altered arrangements into actionable clues.",
+            "Use disturbance of remains as a visible pressure system with concrete counterplay."
+          ],
+          "deck": "Devotional architecture made from human remains becomes a study in memorial order, erased identity, and the unease of bodies transformed into ornament.",
+          "whatItIs": "Sedlec Ossuary is used here as a historical and material-culture reference for a chapel whose arranged remains remain visibly human even when they become architecture.",
+          "whyItDisturbs": "The source holds reverence and display together: the dead are preserved and given sacred order, yet their individual identities can disappear inside a beautiful collective design."
+        },
+        "horror": [
+          "Gothic",
+          "Religious Horror"
+        ],
+        "id": "inspiration-sedlec-ossuary-v2",
+        "media": {
+          "icon": "fa-church",
+          "imageAlt": "Interior devotional bonework associated with the Sedlec Ossuary inspiration card.",
+          "imageCredit": "Cruor Games local archive asset; original historical-site credit pending human editorial verification.",
+          "imageKey": "card-sedlec-ossuary.webp",
+          "imageProvider": "local"
+        },
+        "motifs": [
+          "arranged remains",
+          "bone chandelier",
+          "chapel dust",
+          "skull garlands"
+        ],
+        "provenance": {
+          "legacyIds": [
+            "inspiration-sedlec-ossuary",
+            "sedlec-ossuary"
+          ],
+          "migration": {
+            "editorialDecision": "needs-revision",
+            "fromSchema": "legacy-inspiration-module-v1",
+            "method": "editorially-migrated",
+            "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+            "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+          },
+          "schemaVersion": "cruor-semantic-provenance-v1",
+          "sources": [
+            {
+              "note": "Phase 3 separates historical source context from the fictional Litany Engine location model.",
+              "relation": "editorial-constraint",
+              "sourceAnchorId": "sedlec-ossuary"
+            }
+          ]
+        },
+        "schemaVersion": "cruor-inspiration-v2",
+        "slug": "sedlec-ossuary",
+        "sourceAnchors": [
+          "sedlec-ossuary"
+        ],
+        "sourceTypes": [
+          "Architecture",
+          "Historical Site",
+          "Material Culture"
+        ],
+        "status": "in-review",
+        "tags": [
+          "capability-dark-places",
+          "source-sedlec-ossuary"
+        ],
+        "themes": [
+          "anonymous remains",
+          "devotional bonework",
+          "memorial versus ornament"
+        ],
+        "title": "Sedlec Ossuary"
+      },
+      "locale": "en",
+      "metadata": {
+        "author": "Cruor Games",
+        "capabilityWaivers": [],
+        "reviewedAt": "",
+        "revision": 1,
+        "sourceFile": "shared/content/content-packs/sedlec-ossuary-semantic-v2-pack.js"
+      },
+      "packId": "sedlec-ossuary-semantic-v2",
+      "provenance": {
+        "legacyIds": [
+          "inspiration-sedlec-ossuary",
+          "sedlec-ossuary"
+        ],
+        "migration": {
+          "editorialDecision": "needs-revision",
+          "fromSchema": "legacy-inspiration-module-v1",
+          "method": "editorially-migrated",
+          "note": "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+          "reviewVersion": "phase3-sedlec-editorial-draft-v1"
+        },
+        "schemaVersion": "cruor-semantic-provenance-v1",
+        "sources": [
+          {
+            "note": "Phase 3 separates historical source context from the fictional Litany Engine location model.",
+            "relation": "editorial-constraint",
+            "sourceAnchorId": "sedlec-ossuary"
+          }
+        ]
+      },
+      "schemaVersion": "cruor-inspiration-module-v2",
+      "sourceAnchor": {
+        "citation": {
+          "accessedVersion": "phase3-editorial-draft-v1",
+          "label": "Sedlec Ossuary, Kutná Hora — Phase 3 project source dossier"
+        },
+        "editorialNotes": [
+          "Historical source: arranged human remains, chapel architecture, devotional display, and the tension between memorial and ornament.",
+          "Fictional transformation: the self-operating Litany, fresh collection, hostile counting, named-bone contradiction, pressure track, and all supernatural mechanics are original game content.",
+          "Human review must verify the source framing and media credit before this module can be published."
+        ],
+        "id": "sedlec-ossuary",
+        "kind": "place",
+        "reliability": "secondary",
+        "schemaVersion": "cruor-source-anchor-v1",
+        "status": "in-review",
+        "summary": "A historical ossuary chapel in which human remains form devotional ornament and architectural patterns; Phase 3 uses that material culture as a source boundary, not as proof of the fictional Litany Engine.",
+        "tags": [
+          "architecture",
+          "material-culture",
+          "sacred-site"
+        ],
+        "title": "Sedlec Ossuary"
+      },
+      "status": "in-review",
+      "title": "Sedlec Ossuary"
+    }
+  ],
+  "schemaVersion": "cruor-content-pack-v0.2",
+  "status": "draft",
+  "tags": [
+    "dark-places",
+    "inspiration-archive",
+    "phase3",
+    "sedlec-ossuary"
+  ],
+  "title": "Sedlec Ossuary Semantic Content Pack",
+  "version": "0.2.0-phase3"
+}

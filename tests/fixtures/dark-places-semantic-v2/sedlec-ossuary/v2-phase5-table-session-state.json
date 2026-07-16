@@ -1,0 +1,9 @@
+{
+  "buildId": "sedlec-ossuary-phase5",
+  "discoveredClueIds": [],
+  "documentVersion": "cruor-location-document-v2",
+  "pressureValues": {
+    "ossuary-litany": 0
+  },
+  "schemaVersion": "cruor-location-session-dashboard-state-v1"
+}
