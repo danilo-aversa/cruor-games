@@ -14766,3 +14766,371 @@ _Nessun file aggiunto._
 - `~shared/content/static-registry.js`
 - `~shared/content/static-semantic-content-packs.js`
 
+
+---
+
+## 2026-07-17 14:39:56
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-update-depth-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-update-depth-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+src/features/darken-location/output/LocationOutputWorkspace.jsx`
+
+**File sovrascritti:** 0
+
+_Nessun file sovrascritto._
+
+
+---
+
+## 2026-07-17 15:10:40
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-monster-export-centered-shared-rail.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-monster-export-centered-shared-rail.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 11
+
+- `~AGENTS.md`
+- `~components/ui/composer-rail.jsx`
+- `~docs/design-system/class-decision-tree.md`
+- `~docs/design-system/component-catalog.md`
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/monster-composer.md`
+- `~docs/repository-map/areas/styles-and-design-system.md`
+- `~features/darken-location/output/LocationOutputWorkspace.jsx`
+- `~features/monster-composer/components/monster-composer.panels.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+- `~tests/e2e/design-system/composers.visual.spec.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: AGENTS.md
+
+
+---
+
+## 2026-07-17 15:24:28
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-monster-export-remove-handoff-card.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-monster-export-remove-handoff-card.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/monster-composer/components/monster-composer.panels.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+- `~tests/e2e/design-system/composers.visual.spec.js`
+
+
+---
+
+## 2026-07-17 15:34:16
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-location-output-maximum-depth-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-location-output-maximum-depth-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/output/LocationOutputWorkspace.jsx`
+
+
+---
+
+## 2026-07-17 15:36:50
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-recovery-ad-patch-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-recovery-ad-patch-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+shared/content/inspiration-catalog-boundary.test.js`
+- `+shared/content/production-inspiration-modules.js`
+
+**File sovrascritti:** 30
+
+- `~docs/projects/dark-places-semantic-v2/contracts-v2.md`
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch1-sedlec-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch2-decomposition-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch3-the-mist-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch4-wolf-spiders-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~package.json`
+- `~shared/content/content-packs/decomposition-inspiration-module-pack.js`
+- `~shared/content/content-packs/decomposition-monster-grafts-v2.js`
+- `~shared/content/content-packs/decomposition-semantic-v2-pack.js`
+- `~shared/content/content-packs/decomposition-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/existing-inspirations-pack.js`
+- `~shared/content/content-packs/sedlec-ossuary-inspiration-module-pack.js`
+- `~shared/content/content-packs/sedlec-ossuary-semantic-v2-pack.js`
+- `~shared/content/content-packs/sedlec-ossuary-semantic-v2-pack.test.js`
+- `~shared/content/content-packs/sedlec-ossuary-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/the-mist-inspiration-module-pack.js`
+- `~shared/content/content-packs/the-mist-semantic-v2-pack.js`
+- `~shared/content/content-packs/the-mist-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/wolf-spiders-inspiration-module-pack.js`
+- `~shared/content/content-packs/wolf-spiders-monster-grafts-v2.js`
+- `~shared/content/content-packs/wolf-spiders-semantic-v2-pack.js`
+- `~shared/content/content-packs/wolf-spiders-semantic-v2-phase8.test.js`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-registry.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+
+---
+
+## 2026-07-17 15:43:12
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-recovery-ad-health-test-hotfix-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-recovery-ad-health-test-hotfix-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 1
+
+- `~features/inspiration-studio/health/content-health-semantic.test.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 15:56:38
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-export-collapsible-right-rails.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-export-collapsible-right-rails.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 9
+
+- `~docs/design-system/class-decision-tree.md`
+- `~docs/design-system/component-catalog.md`
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/monster-composer.md`
+- `~features/darken-location/output/location-output.styles.css`
+- `~features/darken-location/output/LocationOutputWorkspace.jsx`
+- `~features/monster-composer/components/monster-composer.panels.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+- `~tests/e2e/design-system/composers.visual.spec.js`
+
+
+---
+
+## 2026-07-17 16:19:11
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-export-collapsed-defaults.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-export-collapsed-defaults.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/output/LocationOutputWorkspace.jsx`
+- `~features/monster-composer/components/monster-composer.panels.jsx`
+- `~tests/e2e/design-system/composers.visual.spec.js`
+
+
+---
+
+## 2026-07-17 16:19:19
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-recovery-e-patch-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-recovery-e-patch-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 4
+
+- `+docs/projects/dark-places-semantic-v2/recovery-e-repository-map-ci.md`
+- `+PATCH-MANIFEST.md`
+- `+scripts/repository-map/check-repository-fingerprint.mjs`
+- `+scripts/repository-map/repository-fingerprint.mjs`
+
+**File sovrascritti:** 11
+
+- `~.github/workflows/ci.yml`
+- `~.gitignore`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/repository-map/architecture.md`
+- `~docs/repository-map/index.md`
+- `~docs/repository-map/maintenance.md`
+- `~docs/repository-map/repository-map.schema.json`
+- `~docs/repository-map/tests-and-qa.md`
+- `~package.json`
+- `~scripts/repository-map/generate-repository-map.mjs`
+- `~scripts/repository-map/validate-repository-map.mjs`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 17:01:28
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-export-collapsed-defaults.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-export-collapsed-defaults.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/output/LocationOutputWorkspace.jsx`
+- `~features/monster-composer/components/monster-composer.panels.jsx`
+- `~tests/e2e/design-system/composers.visual.spec.js`
+
+
+---
+
+## 2026-07-17 17:01:36
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-recovery-f-patch-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-recovery-f-patch-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 7
+
+- `~app/navigation/site-navigation.data.test.jsx`
+- `~docs/repository-map/tests-and-qa.md`
+- `~features/darken-location/map-generator/map-generator.pipeline.test.js`
+- `~features/darken-location/map-generator/map-generator.room-resize.test.js`
+- `~features/monster-composer/data/monster-grafts.js`
+- `~features/monster-composer/qa/monster-generation-qa.js`
+- `~features/monster-composer/qa/monster-qa-suite.test.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 17:20:25
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-boot-screen.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-boot-screen.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+app/boot-screen.js`
+- `+public/assets/video/hero-video-poster.webp`
+- `+tests/e2e/home-boot-screen.spec.js`
+
+**File sovrascritti:** 4
+
+- `~app/home-page-video.css`
+- `~app/HomePage.jsx`
+- `~app/main.jsx`
+- `~index.html`
+
+
+---
+
+## 2026-07-17 17:31:14
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-boot-screen-logo-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-boot-screen-logo-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~index.html`
+- `~tests/e2e/home-boot-screen.spec.js`
+

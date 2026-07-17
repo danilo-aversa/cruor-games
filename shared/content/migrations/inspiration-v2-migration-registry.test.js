@@ -31,13 +31,13 @@ describe("Phase 8 Inspiration v2 migration registry", () => {
     ]);
   });
 
-  it("classifies the first four Phase 8 modules as canonical v2", () => {
+  it("classifies only the three approved Phase 8 modules as canonical v2", () => {
     const report = buildInspirationV2MigrationAudit(CRUOR_INSPIRATION_MODULES);
 
     expect(report.summary).toEqual({
       total: 14,
-      canonicalV2: 4,
-      legacyV1: 10,
+      canonicalV2: 3,
+      legacyV1: 11,
       registryFallback: 0,
       missing: 0,
       approved: 3,
@@ -74,9 +74,9 @@ describe("Phase 8 Inspiration v2 migration registry", () => {
       report.rows.find((row) => row.moduleId === "wolf-spiders"),
     ).toMatchObject({
       found: true,
-      observedSchema: "cruor-inspiration-module-v2",
-      observedSourceMode: "canonical-v2",
-      canonical: true,
+      observedSchema: "legacy-inspiration-module-v1",
+      observedSourceMode: "legacy-v1",
+      canonical: false,
       fallback: false,
     });
   });
@@ -91,7 +91,7 @@ describe("Phase 8 Inspiration v2 migration registry", () => {
       sampleQaStatus: "passed-zero-diagnostics",
       reviewer: "Danilo",
       reviewedAt: "2026-07-16",
-      blockingIssues: [],
+      blockingIssues: ["image-provenance-required"],
     });
     expect(isInspirationV2EditoriallyApproved(sedlec)).toBe(true);
 
@@ -103,6 +103,14 @@ describe("Phase 8 Inspiration v2 migration registry", () => {
       sampleQaStatus: "passed-zero-diagnostics",
       reviewer: "Danilo",
       reviewedAt: "2026-07-17",
+      ownedSemanticCapabilities: ["inspiration-archive", "dark-places"],
+      modernCapabilityLinks: [
+        {
+          capability: "monster-composer",
+          ownership: "external-modern-source",
+          expectedEntries: 26,
+        },
+      ],
       blockingIssues: ["image-provenance-required"],
     });
     expect(isInspirationV2EditoriallyApproved(decomposition)).toBe(true);
@@ -121,18 +129,23 @@ describe("Phase 8 Inspiration v2 migration registry", () => {
 
     const wolfSpiders = getInspirationV2MigrationRecord("wolf-spiders");
     expect(wolfSpiders).toMatchObject({
-      migrationStatus: "candidate-ready",
-      editorialStatus: "awaiting-human-signoff",
-      semanticCoverageStatus: "complete",
-      sampleQaStatus: "pending-local-verification",
+      migrationStatus: "pending",
+      editorialStatus: "not-started",
+      semanticCoverageStatus: "not-evaluated",
+      sampleQaStatus: "not-run",
       reviewer: "",
       reviewedAt: "",
-      blockingIssues: [
-        "human-editorial-signoff-required",
-        "biological-source-review-required",
-        "monster-graft-snapshot-required",
-        "image-provenance-required",
+      modernCapabilityLinks: [
+        {
+          capability: "monster-composer",
+          ownership: "external-modern-source",
+          expectedEntries: 32,
+        },
       ],
+      withdrawnCandidate: {
+        reviewVersion: "phase8-wolf-spiders-editorial-candidate-v1",
+        reason: "duplicated-modern-monster-ownership",
+      },
     });
     expect(isInspirationV2EditoriallyApproved(wolfSpiders)).toBe(false);
   });

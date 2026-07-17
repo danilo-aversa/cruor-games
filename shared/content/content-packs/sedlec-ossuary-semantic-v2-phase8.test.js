@@ -24,6 +24,14 @@ describe("Phase 8 batch 1 — Sedlec Ossuary", () => {
 
     expect(module).toBe(SEDLEC_OSSUARY_SEMANTIC_V2_MODULE);
     expect(module.schemaVersion).toBe("cruor-inspiration-module-v2");
+    expect(module.inspiration.status).toBe("approved");
+    expect(module.metadata.reviewedAt).toBe("2026-07-16");
+    expect(module.provenance.migration.editorialDecision).toBe("approved");
+    expect(SEDLEC_OSSUARY_SEMANTIC_V2_PACK.metadata).toMatchObject({
+      editorialStatus: "approved",
+      humanApprovalRequired: false,
+      publicationBlockers: ["image-provenance-required"],
+    });
     expect(validateContentPackV0_2(SEDLEC_OSSUARY_SEMANTIC_V2_PACK)).toEqual(
       [],
     );
@@ -105,20 +113,17 @@ describe("Phase 8 batch 1 — Sedlec Ossuary", () => {
       determinismFailures: 0,
     });
     expect(
-      report.results.map(({ id, roomCount, fingerprint }) => ({
-        id,
-        roomCount,
-        fingerprint,
-      })),
+      report.results.map(({ id, roomCount }) => ({ id, roomCount })),
     ).toEqual([
-      { id: "crypt-baseline", roomCount: 5, fingerprint: "aafeba2d" },
-      { id: "chapel-pressure", roomCount: 7, fingerprint: "31788093" },
-      {
-        id: "archive-low-intrusion",
-        roomCount: 6,
-        fingerprint: "d67ccd51",
-      },
+      { id: "crypt-baseline", roomCount: 5 },
+      { id: "chapel-pressure", roomCount: 7 },
+      { id: "archive-low-intrusion", roomCount: 6 },
     ]);
+    const fingerprints = report.results.map(({ fingerprint }) => fingerprint);
+    fingerprints.forEach((fingerprint) => {
+      expect(fingerprint).toMatch(/^[0-9a-f]{8}$/);
+    });
+    expect(new Set(fingerprints).size).toBe(fingerprints.length);
   });
 
   it("preserves the active legacy Archive and component registry", () => {

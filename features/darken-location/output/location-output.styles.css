@@ -234,6 +234,12 @@
   font-size: 1.65rem;
 }
 
+.location-output-export-section__body {
+  display: grid;
+  gap: var(--cruor-composer-rail-card-gap);
+  min-width: 0;
+}
+
 .location-output-map-preview {
   margin: 0;
 }

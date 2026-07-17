@@ -15,15 +15,11 @@ import { DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK } from "./content-packs/d
 import { EXISTING_INSPIRATIONS_CONTENT_PACK } from "./content-packs/existing-inspirations-pack.js";
 import { DARK_PLACES_CANONICAL_EXPANSION_CONTENT_PACK } from "./content-packs/dark-places-canonical-expansion-pack.js";
 import { SEDLEC_OSSUARY_INSPIRATION_MODULE_CONTENT_PACK } from "./content-packs/sedlec-ossuary-inspiration-module-pack.js";
-import { THE_MIST_INSPIRATION_MODULE_CONTENT_PACK } from "./content-packs/the-mist-inspiration-module-pack.js";
-import { WOLF_SPIDERS_INSPIRATION_MODULE_CONTENT_PACK } from "./content-packs/wolf-spiders-inspiration-module-pack.js";
 import { LEGACY_DARKEN_LOCATION_CONTENT_PACK } from "./content-packs/legacy-darken-location-pack.js";
 
 export const STATIC_CONTENT_PACKS = Object.freeze([
   DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK,
   SEDLEC_OSSUARY_INSPIRATION_MODULE_CONTENT_PACK,
-  THE_MIST_INSPIRATION_MODULE_CONTENT_PACK,
-  WOLF_SPIDERS_INSPIRATION_MODULE_CONTENT_PACK,
   EXISTING_INSPIRATIONS_CONTENT_PACK,
   DARK_PLACES_CANONICAL_EXPANSION_CONTENT_PACK,
   CORE_CRUOR_CONTENT_PACK,

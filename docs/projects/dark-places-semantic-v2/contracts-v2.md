@@ -111,7 +111,10 @@ Every module declares `inspiration-archive`. Capability validation is conditiona
 
 - `dark-places` checks for Place Identity, Site Atmosphere, Global Rule,
   Recurring Sign, Sensory Profile, Read-Aloud Profile, and Session Guide;
-- `monster-composer` checks for at least one monster graft;
+- `monster-composer` checks for at least one monster graft **owned by that module**;
+- a Phase 8 source that already has modern Monster Composer grafts may omit that
+  owned capability and record an external modern capability link in the migration
+  registry instead; the grafts are parity-checked, never copied or snapshotted;
 - undeclared capabilities impose no unrelated coverage requirements.
 
 Missing coverage is a warning for compatibility/draft modules and an error for

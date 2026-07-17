@@ -4,7 +4,7 @@ import {
   SEDLEC_OSSUARY_INSPIRATION_MODULE,
   SEDLEC_OSSUARY_INSPIRATION_MODULE_PACK_ID,
   SEDLEC_OSSUARY_REFERENCED_SOURCE_ANCHORS,
-} from "../inspiration-modules.js";
+} from "../inspiration-modules/sedlec-ossuary.js";
 import { SHARED_DARKEN_LOCATION_SLOTS, SHARED_MONSTER_SLOTS, SHARED_WORKFLOWS } from "../workflows.js";
 
 function uniqueArray(values = []) {

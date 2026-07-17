@@ -3,7 +3,11 @@
   "$id": "https://cruor.games/schemas/repository-map.schema.json",
   "title": "Cruor Games Repository Map",
   "type": "object",
-  "required": ["metadata", "files", "dependencyGraph"],
+  "required": [
+    "metadata",
+    "files",
+    "dependencyGraph"
+  ],
   "additionalProperties": false,
   "properties": {
     "metadata": {
@@ -15,24 +19,47 @@
         "branch",
         "trackedFileCount",
         "generator",
-        "counts"
+        "counts",
+        "inventoryMode",
+        "repositoryFingerprint",
+        "fingerprintAlgorithm",
+        "fingerprintExcludedPaths"
       ],
       "additionalProperties": true,
       "properties": {
-        "schemaVersion": { "type": "string" },
-        "generatedAt": { "type": "string" },
-        "inspectedCommit": { "type": "string" },
-        "branch": { "type": "string" },
-        "trackedFileCount": { "type": "integer", "minimum": 0 },
+        "schemaVersion": {
+          "type": "string"
+        },
+        "generatedAt": {
+          "type": "string"
+        },
+        "inspectedCommit": {
+          "type": "string"
+        },
+        "branch": {
+          "type": "string"
+        },
+        "trackedFileCount": {
+          "type": "integer",
+          "minimum": 0
+        },
         "supplementalUntrackedFiles": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
-        "generator": { "type": "string" },
-        "schemaPath": { "type": "string" },
+        "generator": {
+          "type": "string"
+        },
+        "schemaPath": {
+          "type": "string"
+        },
         "packageScripts": {
           "type": "object",
-          "additionalProperties": { "type": "string" }
+          "additionalProperties": {
+            "type": "string"
+          }
         },
         "counts": {
           "type": "object",
@@ -40,28 +67,71 @@
         },
         "notes": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
+        },
+        "inspectedCommitRole": {
+          "type": "string"
+        },
+        "inventoryMode": {
+          "type": "string",
+          "const": "working-tree-content"
+        },
+        "repositoryFingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "fingerprintAlgorithm": {
+          "type": "string",
+          "const": "sha256-path-content-v1"
+        },
+        "fingerprintExcludedPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "const": [
+            "docs/repository-map/repository-map.json"
+          ]
         }
       }
     },
     "files": {
       "type": "array",
-      "items": { "$ref": "#/$defs/fileRecord" }
+      "items": {
+        "$ref": "#/$defs/fileRecord"
+      }
     },
     "dependencyGraph": {
       "type": "object",
-      "required": ["edges", "cycles", "highFanIn", "highFanOut"],
+      "required": [
+        "edges",
+        "cycles",
+        "highFanIn",
+        "highFanOut"
+      ],
       "additionalProperties": true,
       "properties": {
         "edges": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["from", "to", "kind"],
+            "required": [
+              "from",
+              "to",
+              "kind"
+            ],
             "properties": {
-              "from": { "type": "string" },
-              "to": { "type": "string" },
-              "kind": { "type": "string" }
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              }
             },
             "additionalProperties": true
           }
@@ -70,16 +140,22 @@
           "type": "array",
           "items": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           }
         },
         "highFanIn": {
           "type": "array",
-          "items": { "$ref": "#/$defs/fanMetric" }
+          "items": {
+            "$ref": "#/$defs/fanMetric"
+          }
         },
         "highFanOut": {
           "type": "array",
-          "items": { "$ref": "#/$defs/fanMetric" }
+          "items": {
+            "$ref": "#/$defs/fanMetric"
+          }
         }
       }
     }
@@ -87,10 +163,18 @@
   "$defs": {
     "fanMetric": {
       "type": "object",
-      "required": ["file", "count"],
+      "required": [
+        "file",
+        "count"
+      ],
       "properties": {
-        "file": { "type": "string" },
-        "count": { "type": "integer", "minimum": 0 }
+        "file": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0
+        }
       },
       "additionalProperties": false
     },
@@ -133,39 +217,74 @@
       ],
       "additionalProperties": true,
       "properties": {
-        "path": { "type": "string" },
-        "name": { "type": "string" },
-        "extension": { "type": "string" },
-        "language": { "type": "string" },
-        "category": { "type": "string" },
-        "area": { "type": "string" },
-        "status": { "type": "string" },
-        "role": { "type": "string" },
+        "path": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "extension": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "area": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
         "responsibilities": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
-        "architecturalLayer": { "type": "string" },
-        "entryPoint": { "type": "boolean" },
+        "architecturalLayer": {
+          "type": "string"
+        },
+        "entryPoint": {
+          "type": "boolean"
+        },
         "publicApi": {
           "type": "object",
-          "required": ["defaultExport", "namedExports", "reExports"],
+          "required": [
+            "defaultExport",
+            "namedExports",
+            "reExports"
+          ],
           "additionalProperties": true
         },
         "imports": {
           "type": "array",
-          "items": { "$ref": "#/$defs/importRecord" }
+          "items": {
+            "$ref": "#/$defs/importRecord"
+          }
         },
         "importedBy": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["path", "symbols"],
+            "required": [
+              "path",
+              "symbols"
+            ],
             "properties": {
-              "path": { "type": "string" },
+              "path": {
+                "type": "string"
+              },
               "symbols": {
                 "type": "array",
-                "items": { "type": "string" }
+                "items": {
+                  "type": "string"
+                }
               }
             },
             "additionalProperties": true
@@ -173,36 +292,55 @@
         },
         "dataConsumed": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "dataProduced": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "sideEffects": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "browserApis": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "stateOwnership": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "runtimeFlows": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "relatedFiles": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["path", "relationship"],
+            "required": [
+              "path",
+              "relationship"
+            ],
             "properties": {
-              "path": { "type": "string" },
-              "relationship": { "type": "string" }
+              "path": {
+                "type": "string"
+              },
+              "relationship": {
+                "type": "string"
+              }
             },
             "additionalProperties": true
           }
@@ -211,41 +349,76 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["path", "coverage"],
+            "required": [
+              "path",
+              "coverage"
+            ],
             "properties": {
-              "path": { "type": "string" },
-              "coverage": { "type": "string" }
+              "path": {
+                "type": "string"
+              },
+              "coverage": {
+                "type": "string"
+              }
             },
             "additionalProperties": true
           }
         },
         "changeRisk": {
           "type": "string",
-          "enum": ["low", "medium", "high", "critical"]
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
         },
         "changeRiskReasons": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
-        "generated": { "type": "boolean" },
-        "vendored": { "type": "boolean" },
-        "referenceOnly": { "type": "boolean" },
-        "legacy": { "type": "boolean" },
-        "deprecated": { "type": "boolean" },
+        "generated": {
+          "type": "boolean"
+        },
+        "vendored": {
+          "type": "boolean"
+        },
+        "referenceOnly": {
+          "type": "boolean"
+        },
+        "legacy": {
+          "type": "boolean"
+        },
+        "deprecated": {
+          "type": "boolean"
+        },
         "confidence": {
           "type": "string",
-          "enum": ["high", "medium", "low"]
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
         },
         "notes": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "findings": {
           "type": "array",
-          "items": { "type": "object" }
+          "items": {
+            "type": "object"
+          }
         },
         "generatedInfo": {
-          "type": ["object", "null"]
+          "type": [
+            "object",
+            "null"
+          ]
         },
         "documentation": {
           "type": "object",
@@ -253,33 +426,82 @@
         },
         "generatedFields": {
           "type": "object",
-          "required": ["hash", "bytes", "lineCount", "binary", "tracked", "supplemental", "generatedAt"],
+          "required": [
+            "hash",
+            "bytes",
+            "lineCount",
+            "binary",
+            "tracked",
+            "supplemental",
+            "generatedAt"
+          ],
           "additionalProperties": true,
           "properties": {
-            "hash": { "type": ["string", "null"] },
-            "bytes": { "type": "integer", "minimum": 0 },
-            "lineCount": { "type": ["integer", "null"], "minimum": 0 },
-            "binary": { "type": "boolean" },
-            "tracked": { "type": "boolean" },
-            "supplemental": { "type": "boolean" },
-            "generatedAt": { "type": "string" }
+            "hash": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "lineCount": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "binary": {
+              "type": "boolean"
+            },
+            "tracked": {
+              "type": "boolean"
+            },
+            "supplemental": {
+              "type": "boolean"
+            },
+            "generatedAt": {
+              "type": "string"
+            }
           }
         }
       }
     },
     "importRecord": {
       "type": "object",
-      "required": ["source", "kind", "symbols", "external", "resolvedPath"],
+      "required": [
+        "source",
+        "kind",
+        "symbols",
+        "external",
+        "resolvedPath"
+      ],
       "additionalProperties": true,
       "properties": {
-        "source": { "type": "string" },
-        "kind": { "type": "string" },
+        "source": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
         "symbols": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
-        "external": { "type": "boolean" },
-        "resolvedPath": { "type": ["string", "null"] }
+        "external": {
+          "type": "boolean"
+        },
+        "resolvedPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
       }
     }
   }

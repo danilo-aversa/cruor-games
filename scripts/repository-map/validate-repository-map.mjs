@@ -5,10 +5,14 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 
+import {
+  REPOSITORY_FINGERPRINT_ALGORITHM,
+  createRepositoryFingerprint,
+} from "./repository-fingerprint.mjs";
+
 const rootDir = process.cwd();
 const mapPath = "docs/repository-map/repository-map.json";
 const schemaPath = "docs/repository-map/repository-map.schema.json";
-const selfHashExemptPath = mapPath;
 
 function runGit(args, { nullSeparated = false } = {}) {
   const output = execFileSync("git", args, {
@@ -42,6 +46,20 @@ function readJson(relativePath) {
   return JSON.parse(readFileSync(absolutePath(relativePath), "utf8"));
 }
 
+function getCurrentInventory() {
+  const tracked = runGit(["ls-files", "-z"], { nullSeparated: true }).filter(
+    (relativePath) => relativePath !== mapPath,
+  );
+  const supplemental = runGit(
+    ["ls-files", "-z", "--others", "--exclude-standard"],
+    { nullSeparated: true },
+  ).filter((relativePath) => relativePath !== mapPath);
+  const all = [...new Set([...tracked, ...supplemental])]
+    .filter((relativePath) => existsSync(absolutePath(relativePath)))
+    .sort();
+  return { tracked, supplemental, all };
+}
+
 function addIssue(list, severity, message, data = {}) {
   list.push({ severity, message, ...data });
 }
@@ -60,6 +78,17 @@ function validateSchemaShape(map, schema, issues) {
   }
   if (!map.metadata || typeof map.metadata !== "object") {
     addIssue(issues.errors, "error", "repository-map.json is missing metadata.");
+  } else {
+    [
+      "repositoryFingerprint",
+      "fingerprintAlgorithm",
+      "fingerprintExcludedPaths",
+      "inventoryMode",
+    ].forEach((field) => {
+      if (!hasRequiredField(map.metadata, field)) {
+        addIssue(issues.errors, "error", `Repository map metadata is missing ${field}.`);
+      }
+    });
   }
   if (!Array.isArray(map.files)) {
     addIssue(issues.errors, "error", "repository-map.json files field must be an array.");
@@ -135,8 +164,8 @@ function validate() {
   validateSchemaShape(map, schema, issues);
   if (!Array.isArray(map.files)) return issues;
 
-  const trackedFiles = runGit(["ls-files", "-z"], { nullSeparated: true });
-  const trackedSet = new Set(trackedFiles);
+  const { all: currentFiles } = getCurrentInventory();
+  const currentFileSet = new Set(currentFiles);
   const recordsByPath = new Map();
   const requiredFields = [
     "path",
@@ -174,6 +203,14 @@ function validate() {
       addIssue(issues.errors, "error", "File record is missing path.", { index });
       return;
     }
+    if (record.path === mapPath) {
+      addIssue(
+        issues.errors,
+        "error",
+        "repository-map.json must not contain a record for itself.",
+        { path: record.path },
+      );
+    }
     if (recordsByPath.has(record.path)) {
       addIssue(issues.errors, "error", "Duplicate file record.", { path: record.path });
     }
@@ -200,7 +237,7 @@ function validate() {
       });
     }
 
-    if (record.path !== selfHashExemptPath && record.generatedFields?.hash) {
+    if (record.generatedFields?.hash) {
       const actualHash = hashFile(record.path);
       if (actualHash !== record.generatedFields.hash) {
         addIssue(issues.errors, "error", "Generated structural data is stale relative to file hash.", {
@@ -256,30 +293,85 @@ function validate() {
     }
   });
 
-  trackedFiles.forEach((file) => {
+  currentFiles.forEach((file) => {
     if (!recordsByPath.has(file)) {
-      addIssue(issues.errors, "error", "Git-tracked file is missing from repository map.", {
-        path: file,
-      });
+      addIssue(
+        issues.errors,
+        "error",
+        "Current working-tree file is missing from repository map.",
+        { path: file },
+      );
     }
   });
 
   recordsByPath.forEach((record) => {
-    if (record.generatedFields?.tracked && !trackedSet.has(record.path)) {
-      addIssue(issues.errors, "error", "Record is marked tracked but Git does not track it.", {
-        path: record.path,
-      });
+    if (!currentFileSet.has(record.path)) {
+      addIssue(
+        issues.errors,
+        "error",
+        "Repository map record is not part of the current Git or untracked inventory.",
+        { path: record.path },
+      );
     }
   });
 
-  const currentCommit = runGit(["rev-parse", "HEAD"]);
-  if (map.metadata?.inspectedCommit !== currentCommit) {
-    addIssue(issues.errors, "error", "Repository map was produced from a different commit.", {
-      expected: currentCommit,
-      actual: map.metadata?.inspectedCommit,
+  const expectedExcludedPaths = [mapPath];
+  if (map.metadata?.fingerprintAlgorithm !== REPOSITORY_FINGERPRINT_ALGORITHM) {
+    addIssue(issues.errors, "error", "Repository fingerprint algorithm is unsupported.", {
+      expected: REPOSITORY_FINGERPRINT_ALGORITHM,
+      actual: map.metadata?.fingerprintAlgorithm,
+    });
+  }
+  if (
+    JSON.stringify(map.metadata?.fingerprintExcludedPaths || []) !==
+    JSON.stringify(expectedExcludedPaths)
+  ) {
+    addIssue(issues.errors, "error", "Repository fingerprint exclusions are invalid.", {
+      expected: expectedExcludedPaths,
+      actual: map.metadata?.fingerprintExcludedPaths,
+    });
+  }
+  if (map.metadata?.inventoryMode !== "working-tree-content") {
+    addIssue(issues.errors, "error", "Repository map inventory mode is invalid.", {
+      expected: "working-tree-content",
+      actual: map.metadata?.inventoryMode,
     });
   }
 
+  const currentFingerprint = createRepositoryFingerprint(
+    currentFiles.map((relativePath) => ({
+      path: relativePath,
+      hash: hashFile(relativePath),
+    })),
+    { excludedPaths: expectedExcludedPaths },
+  );
+  if (map.metadata?.repositoryFingerprint !== currentFingerprint) {
+    addIssue(
+      issues.errors,
+      "error",
+      "Repository map fingerprint is stale relative to the current working tree.",
+      {
+        expected: currentFingerprint,
+        actual: map.metadata?.repositoryFingerprint,
+      },
+    );
+  }
+
+  if (!Array.isArray(map.metadata?.supplementalUntrackedFiles)) {
+    addIssue(
+      issues.errors,
+      "error",
+      "Repository map metadata must record supplemental untracked files.",
+    );
+  }
+
+  if (!Number.isInteger(map.metadata?.trackedFileCount)) {
+    addIssue(
+      issues.errors,
+      "error",
+      "Repository map metadata must record a tracked file count.",
+    );
+  }
   if (Array.isArray(map.dependencyGraph?.cycles) && map.dependencyGraph.cycles.length) {
     addIssue(issues.warnings, "warning", "Circular dependency candidates detected.", {
       count: map.dependencyGraph.cycles.length,

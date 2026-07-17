@@ -78,6 +78,9 @@ function buildConfig(overrides = {}) {
   };
 }
 
+// Five full map generations take about 8 seconds during the parallel full suite.
+const GOLDEN_SEED_TEST_TIMEOUT_MS = 15_000;
+
 function repoPath(...segments) {
   return resolve(process.cwd(), ...segments);
 }
@@ -1432,11 +1435,21 @@ describe("map generator pipeline", () => {
     expect(createMapSignature(first)).toBe(createMapSignature(second));
   });
 
-  test("changes topology when seed, room count, or context changes", () => {
-    const checks = runGoldenSeedChecks(buildConfig());
+  test(
+    "changes topology when seed, room count, or context changes",
+    () => {
+      const checks = runGoldenSeedChecks(buildConfig());
 
-    expect(checks.passed, checks.tests.filter((item) => !item.passed).map((item) => item.label).join("\n")).toBe(true);
-  });
+      expect(
+        checks.passed,
+        checks.tests
+          .filter((item) => !item.passed)
+          .map((item) => item.label)
+          .join("\n"),
+      ).toBe(true);
+    },
+    GOLDEN_SEED_TEST_TIMEOUT_MS,
+  );
 
   test("normalizes requested room count into rendered region count", () => {
     const config = buildConfig({ seed: "room-count-check", roomCount: 5 });

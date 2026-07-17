@@ -27,9 +27,9 @@ function createProvenance({
     migration: {
       fromSchema: "legacy-inspiration-module-v1",
       method: "editorially-migrated",
-      editorialDecision: "needs-revision",
+      editorialDecision: "approved",
       reviewVersion: REVIEW_VERSION,
-      note: "AI-assisted editorial draft. A person must review and approve the historical framing, fictional transformation, and table mechanics before publication.",
+      note: "Historical framing, fictional transformation, and table mechanics approved by Danilo on 2026-07-16. Image provenance remains a separate publication blocker.",
     },
   });
 }
@@ -726,7 +726,7 @@ export const SEDLEC_OSSUARY_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
   schemaVersion: SEMANTIC_SCHEMA_VERSIONS.CONTENT_PACK,
   id: SEDLEC_OSSUARY_SEMANTIC_V2_PACK_ID,
   title: "Sedlec Ossuary Semantic Content Pack",
-  version: "0.2.0-phase3",
+  version: "0.2.0-phase8-approved1",
   status: "draft",
   locale: "en",
   author: "Cruor Games",
@@ -757,7 +757,7 @@ export const SEDLEC_OSSUARY_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
         editorialNotes: [
           "Historical source: arranged human remains, chapel architecture, devotional display, and the tension between memorial and ornament.",
           "Fictional transformation: the self-operating Litany, fresh collection, hostile counting, named-bone contradiction, pressure track, and all supernatural mechanics are original game content.",
-          "Human review must verify the source framing and media credit before this module can be published.",
+          "The source framing was approved by Danilo on 2026-07-16; media credit and image provenance remain open before publication.",
         ],
         tags: ["architecture", "material-culture", "sacred-site"],
       },
@@ -766,7 +766,7 @@ export const SEDLEC_OSSUARY_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
         id: "inspiration-sedlec-ossuary-v2",
         slug: "sedlec-ossuary",
         title: "Sedlec Ossuary",
-        status: "in-review",
+        status: "approved",
         sourceAnchors: [SEDLEC_OSSUARY_SOURCE_ANCHOR_ID],
         sourceTypes: ["Historical Site", "Architecture", "Material Culture"],
         themes: [
@@ -814,7 +814,7 @@ export const SEDLEC_OSSUARY_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
       metadata: {
         author: "Cruor Games",
         revision: 1,
-        reviewedAt: "",
+        reviewedAt: "2026-07-16",
         sourceFile:
           "shared/content/content-packs/sedlec-ossuary-semantic-v2-pack.js",
         capabilityWaivers: [],
@@ -824,8 +824,10 @@ export const SEDLEC_OSSUARY_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
   ],
   metadata: {
     bundled: true,
-    registryRole: "semantic-v2-editorial-candidate",
-    humanApprovalRequired: true,
+    registryRole: "semantic-v2-editorial-approved",
+    humanApprovalRequired: false,
+    editorialStatus: "approved",
+    publicationBlockers: ["image-provenance-required"],
     historicalSourceBoundary:
       "Historical ossuary architecture and devotional bonework are source context; the Litany Engine and all mechanics are fictional.",
   },

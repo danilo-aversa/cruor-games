@@ -8,11 +8,14 @@ import {
 import InspirationCardFront from "../features/inspirations/components/InspirationCardFront.jsx";
 import { getInspirationCardMeta } from "../features/inspirations/inspirations.card-config.js";
 import SiteLink from "./navigation/SiteLink.jsx";
+import { notifyHomeMounted } from "./boot-screen.js";
 import "./home-page.css";
 import "./home-page-video.css";
 
 const CRUOR_CONTACT_EMAIL = "info@cruorgames.com";
 const CRUOR_PATREON_URL = "https://www.patreon.com/c/CruorGames";
+const HOME_HERO_VIDEO_SRC = `${import.meta.env.BASE_URL || "/"}assets/video/hero-video.mp4`;
+const HOME_HERO_POSTER_SRC = `${import.meta.env.BASE_URL || "/"}assets/video/hero-video-poster.webp`;
 
 const LANDING_IMAGES = {
   workbench: {
@@ -990,7 +993,12 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
   const [revealedWorkbenchStep, setRevealedWorkbenchStep] = useState(0);
   const [workbenchCompleted, setWorkbenchCompleted] = useState(false);
   const [workbenchGateActive, setWorkbenchGateActive] = useState(false);
+  const [isHeroVideoReady, setIsHeroVideoReady] = useState(false);
   const tools = useMemo(() => TOOL_CARDS, []);
+
+  useLayoutEffect(() => {
+    notifyHomeMounted();
+  }, []);
 
   useEffect(() => {
     let animationFrame = null;
@@ -1283,16 +1291,29 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
         className="cruor-home__hero cruor-home__hero--video"
         aria-label="Cruor Games homepage hero"
       >
-        <div className="cruor-home__hero-media" aria-hidden="true">
+        <div
+          className={`cruor-home__hero-media${isHeroVideoReady ? " is-video-ready" : ""}`}
+          aria-hidden="true"
+        >
+          <img
+            className="cruor-home__hero-poster"
+            src={HOME_HERO_POSTER_SRC}
+            alt=""
+            decoding="async"
+            fetchPriority="high"
+          />
           <video
             className="cruor-home__hero-video"
             autoPlay
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="auto"
+            poster={HOME_HERO_POSTER_SRC}
+            onLoadedData={() => setIsHeroVideoReady(true)}
+            onCanPlay={() => setIsHeroVideoReady(true)}
           >
-            <source src="/assets/video/hero-video.mp4" type="video/mp4" />
+            <source src={HOME_HERO_VIDEO_SRC} type="video/mp4" />
           </video>
         </div>
 

@@ -3,13 +3,14 @@ import { modulesToRegistryCollections, uniqueById } from "../inspiration-module-
 import {
   CORE_INSPIRATION_MODULE_PACK_ID,
 } from "../inspiration-modules/core-inspiration-modules.js";
-import { CONVERTED_CORE_INSPIRATION_MODULES } from "../inspiration-modules.js";
+import { PRODUCTION_CONVERTED_CORE_INSPIRATION_MODULES } from "../production-inspiration-modules.js";
 import { normalizeSourceAnchorIds, SHARED_SOURCE_ANCHORS } from "../source-anchors.js";
 import { SHARED_DARKEN_LOCATION_SLOTS, SHARED_MONSTER_SLOTS, SHARED_WORKFLOWS } from "../workflows.js";
 
 export const EXISTING_INSPIRATIONS_CONTENT_PACK_ID = CORE_INSPIRATION_MODULE_PACK_ID;
 
-export const EXISTING_INSPIRATION_MODULES = CONVERTED_CORE_INSPIRATION_MODULES;
+export const EXISTING_INSPIRATION_MODULES =
+  PRODUCTION_CONVERTED_CORE_INSPIRATION_MODULES;
 
 function uniqueArray(values = []) {
   return [...new Set(values.filter(Boolean))];
@@ -50,7 +51,7 @@ export const EXISTING_INSPIRATIONS_CONTENT_PACK = createContentPack({
   id: EXISTING_INSPIRATIONS_CONTENT_PACK_ID,
   title: "Existing Inspiration Modules",
   summary:
-    "Converted Inspiration Modules for the existing Cruor source archive. Each module owns its Source Anchor, public Inspiration card, and linked reusable components.",
+    "Production Inspiration Modules for the existing Cruor source archive. This pack is isolated from the semantic migration catalog and preserves public Archive ownership while candidates are reviewed.",
   version: "0.2.0",
   status: CONTENT_PACK_STATUS.PUBLISHED,
   locale: "en",
@@ -60,7 +61,7 @@ export const EXISTING_INSPIRATIONS_CONTENT_PACK = createContentPack({
   updatedAt: "2026-06-07",
   metadata: {
     bundled: true,
-    registryRole: "converted-inspiration-modules",
+    registryRole: "production-inspiration-modules",
     source: "shared/content/inspiration-modules/*.js",
     migratedFrom: "legacy-inspirations-archive",
   },

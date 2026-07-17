@@ -4,9 +4,212 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cruor Games</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://db.onlinewebfonts.com" />
+    <link
+      id="cruor-hero-poster-preload"
+      rel="preload"
+      as="image"
+      href="%BASE_URL%assets/video/hero-video-poster.webp"
+      fetchpriority="high"
+    />
+
+    <script>
+      (() => {
+        const pathname = (window.location.pathname.replace(/\/+$/, "") || "/").toLowerCase();
+        const params = new URLSearchParams(window.location.search);
+        const nonHomePaths = new Set([
+          "/darkplaces",
+          "/darkplaces/map",
+          "/terrifyingmonsters",
+          "/inspirations",
+          "/inspiration-studio",
+        ]);
+        const opensNonHomeQuery =
+          params.get("studio") === "1" ||
+          params.get("admin") === "studio" ||
+          params.get("section") === "inspirations" ||
+          params.get("section") === "crucible" ||
+          Boolean(params.get("tool")) ||
+          Boolean(params.get("generator")) ||
+          params.get("cruorTest") === "dark-places" ||
+          params.get("testHarness") === "dark-places";
+        const isInitialHome = !nonHomePaths.has(pathname) && !opensNonHomeQuery;
+
+        document.documentElement.dataset.cruorInitialRoute = isInitialHome
+          ? "home"
+          : "other";
+
+        if (isInitialHome) {
+          document.documentElement.classList.add("cruor-is-booting");
+        }
+      })();
+    </script>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: #030203;
+      }
+
+      html.cruor-is-booting,
+      html.cruor-is-booting body {
+        overflow: hidden;
+      }
+
+      #cruor-boot-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 100000;
+        display: none;
+        place-content: center;
+        justify-items: center;
+        gap: 16px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 50% 46%, rgba(95, 7, 22, 0.48), transparent 34rem),
+          linear-gradient(180deg, #050405, #020102);
+        color: #d0a2aa;
+        opacity: 1;
+        visibility: visible;
+        transition:
+          opacity 360ms ease,
+          visibility 0s linear 360ms;
+      }
+
+      html.cruor-is-booting #cruor-boot-screen,
+      html.cruor-boot-revealing #cruor-boot-screen {
+        display: grid;
+      }
+
+      html.cruor-boot-revealing #cruor-boot-screen {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .cruor-boot-screen__mark {
+        position: relative;
+        width: 34px;
+        height: 34px;
+        border: 1px solid rgba(208, 162, 170, 0.72);
+        background:
+          linear-gradient(135deg, rgba(208, 162, 170, 0.18), transparent 52%),
+          rgba(51, 3, 12, 0.76);
+        box-shadow:
+          0 0 0 1px rgba(0, 0, 0, 0.74),
+          0 0 34px rgba(122, 26, 40, 0.42);
+        transform: rotate(45deg);
+        animation: cruorBootPulse 1.45s ease-in-out infinite;
+      }
+
+      .cruor-boot-screen__mark::before,
+      .cruor-boot-screen__mark::after {
+        content: "";
+        position: absolute;
+        background: rgba(208, 162, 170, 0.4);
+      }
+
+      .cruor-boot-screen__mark::before {
+        top: 50%;
+        right: 5px;
+        left: 5px;
+        height: 1px;
+      }
+
+      .cruor-boot-screen__mark::after {
+        top: 5px;
+        bottom: 5px;
+        left: 50%;
+        width: 1px;
+      }
+
+      .cruor-boot-screen__label {
+        margin-top: 5px;
+        color: #f0d7dc;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .cruor-boot-screen__line {
+        position: relative;
+        width: 112px;
+        height: 1px;
+        overflow: hidden;
+        background: rgba(208, 162, 170, 0.12);
+      }
+
+      .cruor-boot-screen__line::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, #a51e30, transparent);
+        transform: translateX(-100%);
+        animation: cruorBootLine 1.2s ease-in-out infinite;
+      }
+
+      @keyframes cruorBootPulse {
+        0%,
+        100% {
+          opacity: 0.62;
+          transform: rotate(45deg) scale(0.94);
+        }
+        50% {
+          opacity: 1;
+          transform: rotate(45deg) scale(1);
+        }
+      }
+
+      @keyframes cruorBootLine {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        #cruor-boot-screen,
+        .cruor-boot-screen__mark,
+        .cruor-boot-screen__line::after {
+          animation: none;
+          transition: none;
+        }
+      }
+    </style>
   </head>
   <body>
+    <div id="cruor-boot-screen" role="status" aria-live="polite" aria-atomic="true">
+      <span class="cruor-boot-screen__mark" aria-hidden="true"></span>
+      <span class="cruor-boot-screen__label">Cruor Games</span>
+      <span class="cruor-boot-screen__line" aria-hidden="true"></span>
+      <span style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">
+        Loading the dark fantasy workbench
+      </span>
+    </div>
+
     <div id="root"></div>
+
+    <script>
+      if (document.documentElement.dataset.cruorInitialRoute === "home") {
+        window.__cruorBootFallbackTimer = window.setTimeout(() => {
+          const root = document.documentElement;
+          const bootScreen = document.getElementById("cruor-boot-screen");
+          root.classList.remove("cruor-is-booting", "cruor-boot-revealing");
+          root.classList.add("cruor-boot-complete");
+          bootScreen?.remove();
+        }, 5000);
+      }
+    </script>
     <script type="module" src="/app/main.jsx"></script>
   </body>
 </html>

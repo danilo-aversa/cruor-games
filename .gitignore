@@ -72,3 +72,6 @@ tests/fixtures/*
 !tests/fixtures/dark-places-semantic-v2/
 !tests/fixtures/dark-places-semantic-v2/**
 test-results/
+
+# Local patch and transfer archives
+*.zip

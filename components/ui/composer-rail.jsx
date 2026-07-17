@@ -37,6 +37,67 @@ export const ComposerRail = React.forwardRef(function ComposerRail(
   );
 });
 
+export function ComposerRailCard({
+  as: Element = "section",
+  title = "",
+  hero = false,
+  className = "",
+  children,
+  ...props
+}) {
+  return (
+    <Element
+      className={joinClassNames(
+        "cruor-composer-rail-card",
+        hero ? "cruor-composer-rail-card--hero" : "",
+        className,
+      )}
+      {...props}
+    >
+      {title ? (
+        <span className={hero ? "cruor-composer-rail-card__eyebrow" : undefined}>
+          {title}
+        </span>
+      ) : null}
+      {children}
+    </Element>
+  );
+}
+
+export function ComposerFactRow({
+  as: Element = "span",
+  label,
+  value,
+  className = "",
+  labelClassName = "",
+  valueClassName = "",
+  ...props
+}) {
+  return (
+    <Element
+      className={joinClassNames("cruor-composer-fact-row", className)}
+      {...props}
+    >
+      <small
+        className={joinClassNames(
+          "cruor-composer-fact-label",
+          labelClassName,
+        )}
+      >
+        {label}
+      </small>
+      <strong
+        className={joinClassNames(
+          "cruor-composer-fact-value",
+          valueClassName,
+        )}
+      >
+        {value}
+      </strong>
+    </Element>
+  );
+}
+
 export function ComposerCollapsibleSection({
   as: Element = "section",
   title,

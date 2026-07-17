@@ -2,12 +2,21 @@ name: Full QA
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: full-qa-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test:
-    name: Build and test
+  architecture:
+    name: Content and architecture gates
     runs-on: ubuntu-latest
 
     steps:
@@ -23,26 +32,72 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright browsers
+      - name: Repository map, content, and semantic ownership
+        run: npm run ci:architecture
+
+  quality:
+    name: Lint, Monster QA, unit tests, and build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Monster QA
+        if: ${{ !cancelled() }}
+        run: npm run monster:qa
+
+      - name: Unit tests
+        if: ${{ !cancelled() }}
+        run: npm run test:run
+
+      - name: Production build
+        if: ${{ !cancelled() }}
+        run: npm run build
+
+  browser:
+    name: Browser tests
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
         id: playwright-install
         continue-on-error: true
         run: npx playwright install --with-deps chromium
 
-      - name: Build
-        run: npm run build
-
-      - name: Unit tests
-        run: npm run test:run
-
-      - name: End-to-end tests
+      - name: Run end-to-end tests
         id: e2e
         if: steps.playwright-install.outcome == 'success'
-        continue-on-error: true
         run: npm run test:e2e
 
-      - name: Report non-blocking E2E failure
+      - name: Report browser-test failure
         if: always() && (steps.playwright-install.outcome == 'failure' || steps.e2e.outcome == 'failure')
-        run: echo "::warning::End-to-end tests failed or Playwright could not be installed. Build and unit tests remain the blocking checks."
+        run: echo "::warning::Browser tests failed or Playwright could not be installed. Architecture and quality jobs remain the blocking checks."
 
       - name: Upload Playwright report
         if: always()

@@ -54,7 +54,7 @@ describe("localized Crucible navigation", () => {
     ]);
   });
 
-  it("localizes the megamenu accessible labels", () => {
+  it("localizes the rendered megamenu accessible labels", () => {
     const menu = getCrucibleMenu("it");
     const markup = renderToStaticMarkup(
       <SiteMegaMenu menu={menu} activeItemId="locations" selectedItemId="locations" locale="it" />
@@ -63,6 +63,6 @@ describe("localized Crucible navigation", () => {
     expect(markup).toContain('aria-label="Strumenti di Crucible"');
     expect(markup).toContain('aria-label="Opzioni di Crucible"');
     expect(markup).toContain('aria-label="Anteprima di Dark Places"');
-    expect(markup).toContain('aria-label="Funzioni del motore di Dark Places"');
+    expect(markup).not.toContain('aria-label="Funzioni del motore di Dark Places"');
   });
 });

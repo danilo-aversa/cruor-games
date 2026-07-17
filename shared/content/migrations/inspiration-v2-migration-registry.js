@@ -32,6 +32,46 @@ const TITLES = Object.freeze({
   jikininki: "Jikininki",
 });
 
+const MODERN_MONSTER_CAPABILITY_LINKS = Object.freeze({
+  decomposition: Object.freeze({
+    capability: "monster-composer",
+    ownership: "external-modern-source",
+    sourceFile: "features/monster-composer/data/monster-grafts.js",
+    sourceAnchorId: "decomposition",
+    expectedEntries: 26,
+    verification: "source-anchor-parity",
+  }),
+  "wolf-spiders": Object.freeze({
+    capability: "monster-composer",
+    ownership: "external-modern-source",
+    sourceFile: "features/monster-composer/data/monster-grafts.js",
+    sourceAnchorId: "wolf-spiders",
+    expectedEntries: 32,
+    verification: "source-anchor-parity",
+  }),
+  "wax-death-masks": Object.freeze({
+    capability: "monster-composer",
+    ownership: "external-modern-source",
+    sourceFile: "features/monster-composer/data/monster-grafts.js",
+    sourceAnchorId: "wax-death-masks",
+    expectedEntries: 7,
+    verification: "source-anchor-parity",
+  }),
+  jikininki: Object.freeze({
+    capability: "monster-composer",
+    ownership: "external-modern-source",
+    sourceFile: "features/monster-composer/data/monster-grafts.js",
+    sourceAnchorId: "jikininki",
+    expectedEntries: 25,
+    verification: "source-anchor-parity",
+  }),
+});
+
+function getModernCapabilityLinks(moduleId) {
+  const link = MODERN_MONSTER_CAPABILITY_LINKS[moduleId];
+  return Object.freeze(link ? [link] : []);
+}
+
 function createPendingRecord(moduleId) {
   return Object.freeze({
     moduleId,
@@ -45,6 +85,11 @@ function createPendingRecord(moduleId) {
     editorialStatus: "not-started",
     semanticCoverageStatus: "not-evaluated",
     sampleQaStatus: "not-run",
+    ownedSemanticCapabilities: Object.freeze([
+      "inspiration-archive",
+      "dark-places",
+    ]),
+    modernCapabilityLinks: getModernCapabilityLinks(moduleId),
     reviewer: "",
     reviewedAt: "",
     blockingIssues: Object.freeze([
@@ -76,9 +121,14 @@ RECORDS["sedlec-ossuary"] = Object.freeze({
   editorialStatus: "approved",
   semanticCoverageStatus: "complete",
   sampleQaStatus: "passed-zero-diagnostics",
+  ownedSemanticCapabilities: Object.freeze([
+    "inspiration-archive",
+    "dark-places",
+  ]),
+  modernCapabilityLinks: Object.freeze([]),
   reviewer: "Danilo",
   reviewedAt: "2026-07-16",
-  blockingIssues: Object.freeze([]),
+  blockingIssues: Object.freeze(["image-provenance-required"]),
 });
 
 RECORDS.decomposition = Object.freeze({
@@ -86,7 +136,6 @@ RECORDS.decomposition = Object.freeze({
   title: "Decomposition",
   sourceFiles: Object.freeze([
     "shared/content/content-packs/decomposition-semantic-v2-pack.js",
-    "shared/content/content-packs/decomposition-monster-grafts-v2.js",
     "shared/content/inspiration-modules/decomposition.js",
   ]),
   previousSchema: "legacy-inspiration-module-v1",
@@ -95,6 +144,11 @@ RECORDS.decomposition = Object.freeze({
   editorialStatus: "approved",
   semanticCoverageStatus: "complete",
   sampleQaStatus: "passed-zero-diagnostics",
+  ownedSemanticCapabilities: Object.freeze([
+    "inspiration-archive",
+    "dark-places",
+  ]),
+  modernCapabilityLinks: getModernCapabilityLinks("decomposition"),
   reviewer: "Danilo",
   reviewedAt: "2026-07-17",
   blockingIssues: Object.freeze(["image-provenance-required"]),
@@ -113,33 +167,29 @@ RECORDS["the-mist"] = Object.freeze({
   editorialStatus: "approved",
   semanticCoverageStatus: "complete",
   sampleQaStatus: "passed-zero-diagnostics",
+  ownedSemanticCapabilities: Object.freeze([
+    "inspiration-archive",
+    "dark-places",
+  ]),
+  modernCapabilityLinks: Object.freeze([]),
   reviewer: "Danilo",
   reviewedAt: "2026-07-17",
   blockingIssues: Object.freeze(["image-provenance-required"]),
 });
 
 RECORDS["wolf-spiders"] = Object.freeze({
-  moduleId: "wolf-spiders",
-  title: "Wolf Spiders",
-  sourceFiles: Object.freeze([
-    "shared/content/content-packs/wolf-spiders-semantic-v2-pack.js",
-    "shared/content/content-packs/wolf-spiders-monster-grafts-v2.js",
-    "shared/content/inspiration-modules/wolf-spiders.js",
-  ]),
-  previousSchema: "legacy-inspiration-module-v1",
-  targetSchema: "cruor-inspiration-module-v2",
-  migrationStatus: "candidate-ready",
-  editorialStatus: "awaiting-human-signoff",
-  semanticCoverageStatus: "complete",
-  sampleQaStatus: "pending-local-verification",
-  reviewer: "",
-  reviewedAt: "",
-  blockingIssues: Object.freeze([
-    "human-editorial-signoff-required",
-    "biological-source-review-required",
-    "monster-graft-snapshot-required",
-    "image-provenance-required",
-  ]),
+  ...createPendingRecord("wolf-spiders"),
+  modernCapabilityLinks: getModernCapabilityLinks("wolf-spiders"),
+  withdrawnCandidate: Object.freeze({
+    reviewVersion: "phase8-wolf-spiders-editorial-candidate-v1",
+    withdrawnAt: "2026-07-17",
+    reason: "duplicated-modern-monster-ownership",
+    reusableScope: Object.freeze([
+      "source-research",
+      "archive-editorial-draft",
+      "dark-places-editorial-draft",
+    ]),
+  }),
 });
 
 export const INSPIRATION_V2_MIGRATION_RECORDS = Object.freeze(RECORDS);

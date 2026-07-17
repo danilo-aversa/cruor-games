@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ComposerCollapsibleSection, ComposerRail } from "../../../components/ui/composer-rail.jsx";
+import {
+  ComposerCollapsibleSection,
+  ComposerFactRow,
+  ComposerRail,
+} from "../../../components/ui/composer-rail.jsx";
 import { ToolButton, ToolContentPanel, ToolFeatureBlock } from "../../../components/ui/tool-content-panel.jsx";
 import { MapSvg } from "../map-generator/map-generator.render.jsx";
 import { normalizeLocationDocumentForOutput } from "../compiler/index.js";
@@ -31,6 +35,8 @@ import {
   updateLocationSessionPressure,
 } from "./model/location-session-dashboard-state.js";
 import "./location-output.styles.css";
+
+const EMPTY_SESSION_GUIDE = Object.freeze({});
 
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -255,11 +261,13 @@ function LocationOutputMapPreview({
   const format = EXPORT_FORMAT_LABELS[exportSettings?.format] || "SVG";
 
   return (
-    <section
-      className="cruor-composer-rail-card location-frame-info-card location-output-map-preview"
+    <ComposerCollapsibleSection
+      title="Map Preview"
+      defaultExpanded
+      className="location-output-export-section location-output-map-preview"
+      bodyClassName="location-output-export-section__body"
       aria-label="Location map preview"
     >
-      <span>Map Preview</span>
       <div className="location-output-map-preview__frame">
         <div className="location-output-map-preview__canvas" aria-hidden="true">
           <LocationOutputMap
@@ -312,7 +320,7 @@ function LocationOutputMapPreview({
           Select a room from the outline or open the enlarged map to inspect the site.
         </p>
       )}
-    </section>
+    </ComposerCollapsibleSection>
   );
 }
 
@@ -366,15 +374,6 @@ function formatExportToken(value, fallback = "Default") {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-function ExportFactRow({ className = "", label, value }) {
-  return (
-    <span className={cx("cruor-composer-fact-row", "location-frame-info-row", className)}>
-      <small className="cruor-composer-fact-label">{label}</small>
-      <strong className="cruor-composer-fact-value">{value}</strong>
-    </span>
-  );
-}
-
 function LocationOutputExportSummary({
   exportTitle,
   generatedMapPreview,
@@ -401,103 +400,122 @@ function LocationOutputExportSummary({
 
   return (
     <>
-      <section
-        className="cruor-composer-rail-card location-frame-info-card"
+      <ComposerCollapsibleSection
+        title="File & Framing"
+        defaultExpanded={false}
+        className="location-output-export-section"
+        bodyClassName="location-output-export-section__body"
         aria-label="Export file and framing summary"
       >
-        <span>File &amp; Framing</span>
         <div className="cruor-composer-fact-grid location-frame-info-grid">
-          <ExportFactRow
-            className="location-output-export-filename-row"
+          <ComposerFactRow
+            className="location-frame-info-row location-output-export-filename-row"
             label="File Name"
             value={fileName}
           />
-          <ExportFactRow label="Profile" value={profile} />
-          <ExportFactRow label="Format" value={format} />
+          <ComposerFactRow className="location-frame-info-row" label="Profile" value={profile} />
+          <ComposerFactRow className="location-frame-info-row" label="Format" value={format} />
           {normalizedSettings.format === "png" ? (
-            <ExportFactRow label="Resolution" value={`${normalizedSettings.pngScale || 2}×`} />
+            <ComposerFactRow className="location-frame-info-row" label="Resolution" value={`${normalizedSettings.pngScale || 2}×`} />
           ) : null}
-          <ExportFactRow
+          <ComposerFactRow
+            className="location-frame-info-row"
             label="Crop"
             value={EXPORT_CROP_LABELS[normalizedSettings.crop] || "Content Bounds"}
           />
           {normalizedSettings.crop !== "canvas" ? (
-            <ExportFactRow
+            <ComposerFactRow
+              className="location-frame-info-row"
               label="Padding"
               value={EXPORT_PADDING_LABELS[normalizedSettings.padding] || "Standard"}
             />
           ) : null}
-          <ExportFactRow label="Level" value={formatExportLevel(normalizedSettings.levelView)} />
-          <ExportFactRow
+          <ComposerFactRow className="location-frame-info-row" label="Level" value={formatExportLevel(normalizedSettings.levelView)} />
+          <ComposerFactRow
+            className="location-frame-info-row"
             label="Bounds"
             value={`${Math.round(renderOptions.viewBoxBounds.width)} × ${Math.round(renderOptions.viewBoxBounds.height)}`}
           />
         </div>
-      </section>
+      </ComposerCollapsibleSection>
 
-      <section
-        className="cruor-composer-rail-card location-frame-info-card"
+      <ComposerCollapsibleSection
+        title="Map Style"
+        defaultExpanded={false}
+        className="location-output-export-section"
+        bodyClassName="location-output-export-section__body"
         aria-label="Export map style summary"
       >
-        <span>Map Style</span>
         <div className="cruor-composer-fact-grid location-frame-info-grid">
-          <ExportFactRow
+          <ComposerFactRow
+            className="location-frame-info-row"
             label="Background"
             value={EXPORT_BACKGROUND_LABELS[normalizedSettings.background] || "Map Style"}
           />
-          <ExportFactRow
+          <ComposerFactRow
+            className="location-frame-info-row"
             label="Palette"
             value={EXPORT_PALETTE_LABELS[normalizedSettings.palette] || "Map Style"}
           />
-          <ExportFactRow
+          <ComposerFactRow
+            className="location-frame-info-row"
             label="Grid Style"
             value={normalizedSettings.showGrid ? formatExportToken(renderOptions.gridStyle) : "Hidden"}
           />
-          <ExportFactRow
+          <ComposerFactRow
+            className="location-frame-info-row"
             label="Grid Color"
             value={normalizedSettings.showGrid ? formatExportToken(renderOptions.gridColor) : "—"}
           />
-          <ExportFactRow
+          <ComposerFactRow
+            className="location-frame-info-row"
             label="Grid Weight"
             value={normalizedSettings.showGrid ? formatExportToken(renderOptions.gridWeight) : "—"}
           />
-          <ExportFactRow
+          <ComposerFactRow
+            className="location-frame-info-row"
             label="Grid Opacity"
             value={normalizedSettings.showGrid ? `${Math.round(renderOptions.gridOpacity * 100)}%` : "—"}
           />
-          <ExportFactRow
+          <ComposerFactRow
+            className="location-frame-info-row"
             label="Walls"
             value={formatExportToken(renderOptions.wallDrawingStyle)}
           />
-          <ExportFactRow
+          <ComposerFactRow
+            className="location-frame-info-row"
             label="Hatching Style"
             value={normalizedSettings.showHatching ? formatExportToken(renderOptions.crosshatchStyle) : "Hidden"}
           />
-          <ExportFactRow
+          <ComposerFactRow
+            className="location-frame-info-row"
             label="Hatching Opacity"
             value={normalizedSettings.showHatching ? `${Math.round(renderOptions.crosshatchOpacity * 100)}%` : "—"}
           />
-          <ExportFactRow
+          <ComposerFactRow
+            className="location-frame-info-row"
             label="Hatch Shadow"
             value={normalizedSettings.showHatching ? formatExportToken(renderOptions.hatchShadowColor) : "—"}
           />
         </div>
-      </section>
+      </ComposerCollapsibleSection>
 
-      <section
-        className="cruor-composer-rail-card location-frame-info-card"
+      <ComposerCollapsibleSection
+        title="Layers"
+        defaultExpanded={false}
+        className="location-output-export-section"
+        bodyClassName="location-output-export-section__body"
         aria-label="Export layer summary"
       >
-        <span>Layers</span>
         <div className="cruor-composer-fact-grid location-frame-info-grid">
-          <ExportFactRow label="Room Labels" value={roomLabels} />
-          <ExportFactRow label="Props" value={normalizedSettings.showProps ? "Visible" : "Hidden"} />
-          <ExportFactRow label="Stair Arrows" value={normalizedSettings.showStairArrows ? "Visible" : "Hidden"} />
-          <ExportFactRow label="Hatching" value={normalizedSettings.showHatching ? "Visible" : "Hidden"} />
-          <ExportFactRow label="Texture" value={normalizedSettings.showTexture ? "Visible" : "Hidden"} />
-          <ExportFactRow label="Secret Routes" value={normalizedSettings.hideSecrets ? "Hidden" : "Included"} />
+          <ComposerFactRow className="location-frame-info-row" label="Room Labels" value={roomLabels} />
+          <ComposerFactRow className="location-frame-info-row" label="Props" value={normalizedSettings.showProps ? "Visible" : "Hidden"} />
+          <ComposerFactRow className="location-frame-info-row" label="Stair Arrows" value={normalizedSettings.showStairArrows ? "Visible" : "Hidden"} />
+          <ComposerFactRow className="location-frame-info-row" label="Hatching" value={normalizedSettings.showHatching ? "Visible" : "Hidden"} />
+          <ComposerFactRow className="location-frame-info-row" label="Texture" value={normalizedSettings.showTexture ? "Visible" : "Hidden"} />
+          <ComposerFactRow className="location-frame-info-row" label="Secret Routes" value={normalizedSettings.hideSecrets ? "Hidden" : "Included"} />
         </div>
-      </section>
+      </ComposerCollapsibleSection>
 
     </>
   );
@@ -820,7 +838,7 @@ export function LocationOutputWorkspace({
     [sourceDocumentModel],
   );
   const rooms = asArray(documentModel?.rooms);
-  const sessionGuide = documentModel?.sessionGuide || {};
+  const sessionGuide = documentModel?.sessionGuide ?? EMPTY_SESSION_GUIDE;
   const sessionIdentity = useMemo(
     () => ({
       buildId: cleanText(

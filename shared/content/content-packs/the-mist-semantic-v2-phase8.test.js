@@ -49,7 +49,7 @@ describe("Phase 8 batch 3 — The Mist", () => {
     expect(module).toBe(THE_MIST_SEMANTIC_V2_MODULE);
     expect(module.schemaVersion).toBe("cruor-inspiration-module-v2");
     expect(module.status).toBe("in-review");
-    expect(module.inspiration.status).toBe("in-review");
+    expect(module.inspiration.status).toBe("approved");
     expect(module.capabilities).toEqual([
       "dark-places",
       "inspiration-archive",
@@ -61,14 +61,19 @@ describe("Phase 8 batch 3 — The Mist", () => {
     ).toEqual([]);
     expect(validateContentPackV0_2(THE_MIST_SEMANTIC_V2_PACK)).toEqual([]);
     expect(THE_MIST_SEMANTIC_V2_PACK).toMatchObject({
-      version: "0.2.0-phase8-candidate1",
+      version: "0.2.0-phase8-approved1",
       metadata: {
-        registryRole: "semantic-v2-editorial-candidate",
-        humanApprovalRequired: true,
+        registryRole: "semantic-v2-editorial-approved",
+        humanApprovalRequired: false,
+        editorialStatus: "approved",
+        publicationBlockers: ["image-provenance-required"],
         retainedLegacyPublicBehavior: true,
       },
     });
-    expect(module.metadata.revision).toBe(1);
+    expect(module.metadata).toMatchObject({
+      revision: 1,
+      reviewedAt: "2026-07-17",
+    });
   });
 
   it("carries explicit editorial provenance without compatibility normalization", () => {
@@ -81,7 +86,7 @@ describe("Phase 8 batch 3 — The Mist", () => {
     records.forEach((record) => {
       expect(record.provenance.migration).toMatchObject({
         method: "editorially-migrated",
-        editorialDecision: "needs-revision",
+        editorialDecision: "approved",
         reviewVersion: "phase8-the-mist-editorial-candidate-v1",
       });
       expect(record.provenance.migration.method).not.toBe(

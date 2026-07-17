@@ -22,7 +22,10 @@ Commands are listed as package scripts. In PowerShell on this machine, `npm.cmd 
 | `npm run qa:map-archetype-gallery` | Archetype gallery generation                                   | generated gallery/report                  | Not always needed                         |
 | `npm run qa:circle-connectors`     | Circle connector Vitest diagnostics                            | console report                            | Yes                                       |
 | `npm run docs:repo-map`            | Regenerates repository map JSON                                | `docs/repository-map/repository-map.json` | Yes                                       |
-| `npm run docs:repo-map:check`      | Validates repository map freshness, imports, hashes, docs refs | console report                            | Yes                                       |
+| `npm run docs:repo-map:fingerprint-check` | Verifies the order-independent, commit-stable fingerprint contract | console report | Yes |
+| `npm run docs:repo-map:check`      | Validates working-tree inventory, fingerprint, imports, hashes, and docs refs | console report | Yes |
+| `npm run qa:recovery-e`            | Runs repository-map, content-registry, and A–D ownership gates | console report | Yes |
+| `npm run ci:quality`               | Runs lint, Monster QA, Vitest, and production build            | console/build output | Yes |
 
 ## Coverage Matrix
 
@@ -53,6 +56,8 @@ Commands are listed as package scripts. In PowerShell on this machine, `npm.cmd 
 - `tests/tests/` and `tests/tests/tests/` are legacy duplicate paths and are excluded by current Vitest includes.
 - Many source files have no direct test/QA link in `repository-map.json`; validation reports these as warnings, not failures.
 - Map validation includes `corridor-paths-are-continuous`: every structured corridor path must remain orthogonally contiguous, visit manual waypoints in order, and avoid repeated cells. Pipeline tests include the reported out-and-back waypoint regression, the no-alternative rejection case, and folded-corridor wall separation so adjacent non-consecutive S-runs remain visually distinct.
+- The golden-seed topology test and the combined Monster QA report test use explicit 15-second budgets because each performs several complete generation/validation passes and measured about 8 seconds under the parallel full suite.
+- Monster frame-axis QA validates role, tier, tactical-role, tempo, and danger intent against `computed.framePowerProfile`; final printed HP/DPR remain governed by the closed-loop CR fitter and are not required to preserve strict axis ordering at an equal target CR.
 
 ### Room corner resize and shared map menus
 
@@ -68,3 +73,13 @@ Commands are listed as package scripts. In PowerShell on this machine, `npm.cmd 
 - Existing smoke journeys click those links through the client-side router and continue to verify that Home, Inspirations, Dark Places, the map workspace, and Terrifying Monsters mount correctly.
 - Playwright runs with reduced motion, so route tests exercise the no-animation accessibility path rather than waiting for visual transitions.
 - Manual browser QA should additionally cover right-click/open-in-new-tab, middle-click, Ctrl/Cmd-click, browser Back/Forward, and both full and reduced motion settings.
+
+## CI Gate Structure
+
+`.github/workflows/ci.yml` runs on `push` to `main`, pull requests targeting `main`, and manual dispatch.
+
+- **Content and architecture gates** are blocking: fingerprint self-check, repository-map freshness, content validation, and Recovery A–D ownership QA.
+- **Lint, Monster QA, unit tests, and build** are blocking; Recovery F aligns these gates with the current runtime and QA contracts.
+- **Browser tests** remain non-blocking but visible, with the Playwright report uploaded on every run.
+
+The repository map no longer compares `metadata.inspectedCommit` with `HEAD`. Exact commit equality was self-invalidating when the generated map was committed. Freshness is now based on file paths and bytes, excluding the generated map itself.

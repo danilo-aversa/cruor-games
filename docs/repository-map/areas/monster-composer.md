@@ -11,6 +11,7 @@ Monster Composer is centered on `features/monster-composer/monster-composer.page
 - Merge native graft data with registry-fed content-pack components.
 - Compile public and debug export payloads.
 - Support clipboard copy and live stat-block popout.
+- Render Export with a viewport-centered stat-block column and a right-edge summary rail built from `ComposerRail`, Export-only `ComposerCollapsibleSection` containers, `ComposerFactRow`, and shared meters. Persistent non-Export Monster information rails continue to use `ComposerRailCard`.
 - Provide the canonical visual reference for shared `ComposerSlotCard` assignment slots while retaining silhouette connector and linked-hover mechanics.
 
 ## Content Models
@@ -31,5 +32,5 @@ Run `npm run monster:qa` for targeted QA. Build, lint, and content validation pr
 
 - Confirmed: `monster-composer.page.jsx` is a high-risk orchestrator with browser side effects.
 - Confirmed: live export uses `window.open` and writes to a popout document.
-- Risk: high for content-model, export, balancing, and popout changes.
+- Risk: high for content-model, export, balancing, and popout changes. Export layout changes must preserve geometric centering at wide viewports, right-edge rail placement, stacked narrow layouts, copy actions, mode switching, and debug-only raw data.
 

@@ -1,133 +1,79 @@
-# Phase 8 batch 4 — Wolf Spiders editorial review
+# Phase 8 batch 4 — Wolf Spiders Candidate 1 withdrawal
 
-## Decision requested
+## Decision
 
-Review `wolf-spiders-semantic-v2` as the fourth canonical Inspiration v2
-candidate and the second A + D + M migration. This batch does **not** request
-publication. The candidate remains `in-review`, sample QA requires local
-verification, the card image has no verified provenance, and the 32 Monster
-grafts still use an explicit parity bridge pending an independent frozen v2
-snapshot.
+Wolf Spiders Candidate 1 is **withdrawn**. It is not a canonical Phase 8 module
+and receives no editorial approval.
 
-## Naming correction
+The recovery audit found that the candidate copied or bridged 32 already-modern
+Monster Composer grafts into a second semantic owner. That architecture was
+incorrect: Monster Composer had already completed its content modernization
+before the Dark Places semantic project.
 
-The audited migration matrix previously called this source **Wolves in
-Folklore** and asked for pack behavior, social folklore, and transformation.
-That label was incorrect. The real module id, Source Anchor, Archive card, image,
-and component vocabulary all concern **Wolf Spiders** (`Lycosidae`) and animal
-behavior. This revision removes lupine folklore and social-pack framing from the
-editorial target.
+| Tracking field | Value |
+| --- | --- |
+| Module | `wolf-spiders` |
+| Candidate | `phase8-wolf-spiders-editorial-candidate-v1` |
+| Candidate status | Withdrawn |
+| Migration status | `pending` |
+| Editorial status | `not-started` |
+| Semantic coverage | `not-evaluated` |
+| Sample QA | `not-run` |
+| Reviewer | None |
+| Reviewed at | None |
 
-## Source boundary
+## Invalidated work
 
-The biological dossier is intentionally narrow:
+The following Candidate 1 decisions are invalid and must not be reused:
 
-- wolf spiders are robust ground hunters; species may wander, use burrows, or
-  make temporary retreats;
-- angled light can reveal eye shine close to the ground;
-- females carry a silk egg sac attached to the spinnerets;
-- hatchlings ride on the female's back before gradual dispersal;
-- maternal duration, habitat, hunting style, and defensive response vary among
-  species and conditions.
+- ownership of Monster grafts inside the semantic pack;
+- `wolf-spiders-monster-grafts-v2.js` as an active bridge or snapshot source;
+- a `monster-composer` capability declared only to embed existing grafts;
+- any future “standalone snapshot” requirement;
+- the Candidate 1 approval and completion tests.
 
-Primary editorial reference:
+The retired files remain as inert tombstones so ZIP application does not depend
+on deleting stale files. No active catalog imports them.
 
-- Australian Museum, *Wolf Spiders* and *Egg sacs, spiderlings and dispersal*.
+## Reusable work
 
-Supporting research boundary:
+A future clean Wolf Spiders candidate may reuse, after fresh review:
 
-- Bonte et al. (2007), *Maternal care and reproductive state-dependent mobility
-  determine natal dispersal in a wolf spider*, documents gradual dismounting and
-  maternally influenced dispersal in `Pardosa monticola`;
-- Trabalon et al. (2016), *Physiological costs during the first maternal care in
-  the wolf spider Pardosa saltans*, documents egg-sac transport, brood transport,
-  and substantial maternal energetic cost in that species.
+- source research on active ground hunting, burrows/retreats, eye shine, egg-sac
+  transport, spiderlings carried on the female, and dispersal;
+- the distinction from wolf folklore, social pack behavior, and generic
+  prey-capture-web stereotypes;
+- Archive editorial framing;
+- the Broodward Dark Places premise, Tremor Pressure, signs, sensory material,
+  Read-Aloud fragments, and Session Guide, provided they are revalidated against
+  the corrected ownership boundary.
 
-These observations are source context, not universal claims for every wolf
-spider. Giant brood warrens, supernatural carrier swarms, engineered alarm
-networks, corrosive silk, and the Monster graft procedures are Cruor fantasy.
+Reuse does not confer approval.
 
-## Canonical capability decision
+## Modern Monster boundary
 
-| Capability | Decision | Rationale |
-| --- | --- | --- |
-| Inspiration Archive | Included | Replaces the incorrect folklore framing with an evidence-bounded animal-behavior dossier. |
-| Dark Places | Included | Converts hunting lanes, nursery routes, eye shine, molts, and transmitted vibration into deterministic site procedures. |
-| Monster Composer | Included | Preserves all 32 existing graft identities, slots, frame-fit data, structured rules, mechanics, and counterplay. |
+The 32 Wolf Spiders grafts remain solely in
+`features/monster-composer/data/monster-grafts.js`. A future Phase 8 batch may
+verify:
 
-## Dark Places editorial model
+- exact source-anchor association;
+- expected count;
+- adapter parity;
+- absence of any copied payload.
 
-The candidate contains the seven required semantic profiles:
+It must not revise, snapshot, or re-own those grafts.
 
-1. **Place Identity — The Broodward:** a cellar and service complex converted
-   into a mobile nursery and low hunting territory;
-2. **Site Atmosphere — Low Light, Listening Ground:** eye shine, dry skitter,
-   floor tension, dust lanes, molts, and localized nursery warmth;
-3. **Global Rule — Tremor Pressure:** a visible 0–4 track with separate combat
-   and ten-minute exploration cadence;
-4. **Recurring Signs:** eye-shine lanes, oriented molts, carried brood, and
-   non-sticky listening silk;
-5. **Sensory Profile:** all seven sensory channels with no generic-web default;
-6. **Read-Aloud Profile:** 29 bounded fragments with general editorial fallbacks
-   in every required group;
-7. **Session Guide:** three required revelations, three stall moves, a route,
-   and an announced Maternal Intercept climax.
+## Replacement acceptance rules
 
-Tremor Pressure advances only from named disturbances and at most once per
-combat round or ten-minute exploration turn. At Pressure 4 the GM names the
-threatened route and gives one full step of counterplay. A padded retreat remains
-available. The procedure cannot create unseen creatures, silently close exits,
-or rewrite the real map.
+A replacement Wolf Spiders migration must:
 
-## Legacy coverage
+1. own only Archive and Dark Places semantic content;
+2. contain zero Monster graft components;
+3. keep the production Archive catalog independent from the semantic frontier;
+4. verify the 32 existing modern grafts externally;
+5. pass fresh source, editorial, deterministic sample, Studio round-trip, and
+   human approval gates;
+6. retain image provenance as a separate publication blocker.
 
-The candidate accounts for:
-
-- 14 authored location components;
-- 3 location-region components;
-- 32 Monster grafts;
-- 49 total legacy components.
-
-Every non-Monster legacy id is mapped exactly once through editorial provenance.
-The Monster bridge preserves exact payload parity rather than recreating rules
-from prose.
-
-## Temporary Monster bridge
-
-`wolf-spiders-monster-grafts-v2.js` filters the existing normalized shared
-Monster components and freezes an exact v2-facing definition set. This keeps
-Studio behavior and table rules lossless while the independent snapshot is not
-available in this patch environment.
-
-This is a deliberate, machine-visible migration blocker:
-
-- `monster-graft-snapshot-required`
-
-The bridge must be replaced by a standalone frozen snapshot before the legacy
-Monster source can be removed. Human editorial approval may accept the content
-and source boundary, but it must not clear this technical blocker.
-
-## Publication gates
-
-The migration record remains blocked by:
-
-1. `human-editorial-signoff-required`;
-2. `biological-source-review-required`;
-3. `monster-graft-snapshot-required`;
-4. `image-provenance-required`.
-
-The local `card-wolf-spider.webp` asset has no recorded creator, license, or
-source URL. It must remain unpublished until provenance is verified or the image
-is replaced and final alt text is written after visual review.
-
-## Reviewer checklist
-
-- [ ] Confirm the source is Wolf Spiders, not wolves in folklore.
-- [ ] Confirm biological claims stay within the cited evidence boundary.
-- [ ] Confirm fantasy extrapolations are clearly labeled.
-- [ ] Confirm Tremor Pressure is fair in combat and exploration.
-- [ ] Confirm the four recurring signs reveal actionable information.
-- [ ] Confirm all 17 Dark Places/region ids and 32 Monster ids are preserved.
-- [ ] Confirm the temporary Monster bridge remains an explicit technical blocker.
-- [ ] Confirm the image remains unpublished pending provenance.
-- [ ] Record `approved`, `needs-revision`, or `rejected`, reviewer, and date.
+Until then Wolf Spiders remains a production/legacy catalog entry and a pending
+Phase 8 migration.

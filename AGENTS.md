@@ -85,7 +85,7 @@ Before creating or styling a dropdown, listbox, context menu, or submenu:
 
 ## Shared Composer Information Rails
 
-Before creating or styling a right-side Composer rail that summarizes the current entity, read `docs/design-system/component-catalog.md#composer-right-information-rails` and reuse the `.cruor-composer-rail-*`, `.cruor-composer-fact-*`, and `.cruor-composer-meter*` APIs. Feature classes may control placement, geometry, scroll ownership, behavior, and runtime/test hooks only; they must not recreate the shared card, name-editor, fact-row, meter, typography, spacing, or state visuals without a documented override.
+Before creating or styling a right-side Composer rail that summarizes the current or final-output entity, read `docs/design-system/component-catalog.md#composer-right-information-rails` and reuse `ComposerRail`, `ComposerRailCard`, `ComposerFactRow`, the `.cruor-composer-rail-*`, `.cruor-composer-fact-*`, and `.cruor-composer-meter*` APIs. Feature classes may control placement, geometry, scroll ownership, behavior, and runtime/test hooks only; they must not recreate the shared card, name-editor, fact-row, meter, typography, spacing, or state visuals without a documented override.
 
 ## Shared Composer Slot Cards
 

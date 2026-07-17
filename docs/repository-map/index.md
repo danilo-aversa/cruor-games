@@ -2,7 +2,7 @@
 
 This repository map is the current developer-facing architecture guide for Cruor Games. It combines narrative docs with the generated file inventory in [repository-map.json](repository-map.json) and the validation contract in [repository-map.schema.json](repository-map.schema.json).
 
-Current baseline: branch `main`, commit `2155e52e79bcbf6aa46a21371d1e5f4b5f618498`, inspected on 2026-07-10. The first generated baseline covered 532 Git-tracked files, including 229 source files, 41 assets, 64 test or QA entries, and 15 documentation files. Regenerate the map after documentation changes for exact current counts.
+The generated inventory records the branch and inspected commit for audit context, but freshness is enforced by a deterministic working-tree path/content fingerprint. Read `repository-map.json` for current counts and regenerate it whenever repository files or their contents change.
 
 ## Project Summary
 
@@ -68,7 +68,7 @@ To change browser storage or exports:
 
 ## Warnings
 
-- `docs/repository-map/repository-map.json` is generated; do not hand-edit generated structural fields.
+- `docs/repository-map/repository-map.json` is generated, omits its own file record, and must not be hand-edited.
 - `reports/`, nested report folders, and `test-results/.last-run.json` are reference or generated artifacts, not primary runtime code.
 - `tests/tests/` and `tests/tests/tests/` contain legacy duplicate test paths with stale imports and are not part of the current Vitest include set.
 - `scripts/map-generator.circle-anchors.test.js` is retained as reference-only; active circle connector QA uses `scripts/run-circle-connector-diagnostics.test.js` through the configured Vitest script.

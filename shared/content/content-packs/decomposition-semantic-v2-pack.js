@@ -3,7 +3,6 @@ import {
   normalizeContentPackV0_2,
   normalizeSemanticProvenance,
 } from "../contracts/semantic/index.js";
-import { DECOMPOSITION_MONSTER_GRAFT_V2_DEFINITIONS } from "./decomposition-monster-grafts-v2.js";
 
 export const DECOMPOSITION_SEMANTIC_V2_PACK_ID = "decomposition-semantic-v2";
 export const DECOMPOSITION_SEMANTIC_V2_MODULE_ID = "decomposition";
@@ -15,7 +14,7 @@ function createProvenance({
   legacyIds = [],
   relation = "derived",
   note = "Editorially re-authored from the frozen Decomposition module and its structured forensic-decay design vocabulary.",
-  migrationNote = "AI-assisted editorial revision. The source dossier, fantasy-facing terminology, exploration/combat cadence, and Stage 4 countdown require explicit human approval before publication.",
+  migrationNote = "Editorial revision approved by Danilo on 2026-07-17. Image provenance remains a separate publication blocker and does not reopen the approved Dark Places content.",
 } = {}) {
   return normalizeSemanticProvenance({
     sources: [
@@ -29,7 +28,7 @@ function createProvenance({
     migration: {
       fromSchema: "legacy-inspiration-module-v1",
       method: "editorially-migrated",
-      editorialDecision: "needs-revision",
+      editorialDecision: "approved",
       reviewVersion: REVIEW_VERSION,
       note: migrationNote,
     },
@@ -77,60 +76,6 @@ function createDarkPlacesComponent({
     },
     generation: { phase: 8, ...generation },
     semantic: { ...semantic, provenance },
-    provenance,
-  };
-}
-
-const MONSTER_RULE_CONVENTION_NOTES = Object.freeze({
-  "dangerously-unstable":
-    "Retained as a Cruor-specific setpiece convention: the 5-in-6 self-detonation and nested 40/80-foot blast radii are intentionally exceptional and do not define the default death-burst template.",
-  "head-weak-spot":
-    "Retained as a Cruor-specific called-shot exception for this graft. The -5 attack penalty and automatic critical hit do not establish a general called-shot subsystem for other creatures.",
-});
-
-function createMonsterComponent(definition) {
-  const ruleConventionNote =
-    MONSTER_RULE_CONVENTION_NOTES[definition.id] ||
-    "The canonical v2 component preserves the authored Monster graft identity, slot, frame fit, structured rules, mechanics text, and counterplay without silently generalizing it into a site-wide rule convention.";
-  const provenance = createProvenance({
-    legacyIds: [definition.id],
-    relation: "editorial-constraint",
-    note: ruleConventionNote,
-    migrationNote: `${ruleConventionNote} Human publication approval remains required.`,
-  });
-  return {
-    schemaVersion: SEMANTIC_SCHEMA_VERSIONS.COMPONENT,
-    id: definition.id,
-    title: definition.title,
-    status: "in-review",
-    contentType: "monster-graft",
-    semanticType: "monster-graft",
-    workflows: ["monster-composer"],
-    slots: [definition.slot],
-    sourceAnchors: [DECOMPOSITION_SEMANTIC_V2_SOURCE_ANCHOR_ID],
-    sourceTypes: ["Biological Process", "Forensic Science"],
-    themes: ["corpse transformation", "physical decay"],
-    motifs: ["bloating", "softening", "rupture", "grave wax"],
-    horror: ["Body Horror", "Disease Horror"],
-    contexts: ["undead", "aberration", "decay"],
-    compatibility: {
-      capabilities: ["monster-composer"],
-      excludedCapabilities: [],
-    },
-    generation: {
-      phase: 8,
-      monster: { graftId: definition.id, slot: definition.slot },
-    },
-    semantic: {
-      summary: definition.summary,
-      tableText: definition.mechanics,
-      mechanics: { text: definition.mechanics },
-      narrative: "",
-      details: {
-        monster: definition.monster,
-        counterplay: definition.counterplay,
-      },
-    },
     provenance,
   };
 }
@@ -831,15 +776,12 @@ const DARK_PLACES_COMPONENTS = [
   }),
 ];
 
-const MONSTER_COMPONENTS = DECOMPOSITION_MONSTER_GRAFT_V2_DEFINITIONS.map(
-  createMonsterComponent,
-);
 
 export const DECOMPOSITION_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
   schemaVersion: SEMANTIC_SCHEMA_VERSIONS.CONTENT_PACK,
   id: DECOMPOSITION_SEMANTIC_V2_PACK_ID,
   title: "Decomposition Semantic Content Pack",
-  version: "0.2.0-phase8-revision2",
+  version: "0.2.0-phase8-recovery1",
   status: "draft",
   locale: "en",
   author: "Cruor Games",
@@ -847,9 +789,9 @@ export const DECOMPOSITION_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
   tags: [
     "dark-places",
     "inspiration-archive",
-    "monster-composer",
     "decomposition",
     "phase8",
+    "recovery-ad",
   ],
   modules: [
     {
@@ -859,7 +801,7 @@ export const DECOMPOSITION_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
       packId: DECOMPOSITION_SEMANTIC_V2_PACK_ID,
       status: "in-review",
       locale: "en",
-      capabilities: ["inspiration-archive", "dark-places", "monster-composer"],
+      capabilities: ["inspiration-archive", "dark-places"],
       sourceAnchor: {
         schemaVersion: SEMANTIC_SCHEMA_VERSIONS.SOURCE_ANCHOR,
         id: DECOMPOSITION_SEMANTIC_V2_SOURCE_ANCHOR_ID,
@@ -879,8 +821,8 @@ export const DECOMPOSITION_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
           "Evidence boundary: Iancu, Dean, and Purcarea (2018; doi:10.1093/jme/tjy136) summarize how temperature, humidity, precipitation, geography, injury, insects, and bacteria affect decomposition; the module therefore avoids treating one timeline as universal.",
           "Human-donor caution: Owings et al. (2022; doi:10.3390/insects13100879) document delayed and repeated blow-fly colonization, supporting the module's non-linear framing rather than a fixed biological clock.",
           "Fictional transformation: the self-operating mortuary, synchronized vents, four-stage pressure track, backward corpse, identity exchange, and accelerated effects are original game content.",
-          "Rules convention: Dangerously Unstable and Head Weak Spot remain scoped Cruor exceptions, not general death-burst or called-shot rules.",
-          "Publication gate: human sign-off and verifiable image provenance are still required.",
+          "Monster ownership boundary: existing Decomposition grafts remain canonical in features/monster-composer/data/monster-grafts.js and are verified by source-anchor parity; this semantic pack does not copy or own them.",
+          "Publication gate: editorial approval is complete; verifiable image provenance and final visual review remain required.",
         ],
         tags: ["biological-process", "forensic-science", "postmortem-change"],
       },
@@ -889,7 +831,7 @@ export const DECOMPOSITION_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
         id: "inspiration-decomposition-v2",
         slug: "decomposition",
         title: "Decomposition",
-        status: "in-review",
+        status: "approved",
         sourceAnchors: [DECOMPOSITION_SEMANTIC_V2_SOURCE_ANCHOR_ID],
         sourceTypes: ["Biological Process", "Forensic Science"],
         themes: [
@@ -916,7 +858,7 @@ export const DECOMPOSITION_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
           creativeUses: [
             "Make sequence and contradiction into clues rather than using decay only as decoration.",
             "Use visible stages and environmental controls as a pressure system with concrete counterplay.",
-            "Translate swelling, softening, insects, and grave wax into distinct Monster and location behaviors.",
+            "Translate swelling, softening, insects, and grave wax into distinct creature and location behaviors without duplicating Monster Composer data.",
           ],
           cautions: [
             "Do not present a single postmortem timeline as universal forensic fact.",
@@ -933,18 +875,14 @@ export const DECOMPOSITION_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
             "Cruor Games local archive asset. Original creator, license, and source URL are not recorded; keep the asset unpublished until provenance is verified or the image is replaced.",
           icon: "fa-biohazard",
         },
-        tags: [
-          "source:decomposition",
-          "capability:dark-places",
-          "capability:monster-composer",
-        ],
+        tags: ["source:decomposition", "capability:dark-places"],
         provenance: MODULE_PROVENANCE,
       },
-      components: [...DARK_PLACES_COMPONENTS, ...MONSTER_COMPONENTS],
+      components: DARK_PLACES_COMPONENTS,
       metadata: {
         author: "Cruor Games",
         revision: 2,
-        reviewedAt: "",
+        reviewedAt: "2026-07-17",
         sourceFile:
           "shared/content/content-packs/decomposition-semantic-v2-pack.js",
         capabilityWaivers: [],
@@ -954,9 +892,11 @@ export const DECOMPOSITION_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
   ],
   metadata: {
     bundled: true,
-    registryRole: "semantic-v2-editorial-revision",
-    humanApprovalRequired: true,
+    registryRole: "semantic-v2-editorial-approved",
+    humanApprovalRequired: false,
     retainedLegacyPublicBehavior: true,
+    editorialStatus: "approved",
+    publicationBlockers: ["image-provenance-required"],
     biologicalSourceBoundary:
       "Variable postmortem biology is source context; accelerated stages, the Second Autopsy, and identity exchange are fictional.",
   },

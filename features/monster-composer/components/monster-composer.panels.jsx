@@ -1,5 +1,10 @@
 import { AlertTriangle, Shield } from "lucide-react";
 
+import {
+  ComposerCollapsibleSection,
+  ComposerFactRow,
+  ComposerRail,
+} from "../../../components/ui/composer-rail.jsx";
 import { formatCounterplayIssues } from "../model/monster-composer.balance.js";
 
 function modText(value) {
@@ -435,14 +440,18 @@ function DesignerNotesPanel({ notes }) {
   if (!notes?.length) return null;
 
   return (
-    <details className="cruor-stat-block__designer-notes" open>
-      <summary>Designer Notes</summary>
-      <div>
+    <ComposerCollapsibleSection
+      title="Designer Notes"
+      defaultExpanded={false}
+      className="monster-export-section monster-export-designer-notes"
+      bodyClassName="monster-export-section__body"
+    >
+      <div className="monster-export-designer-notes__body">
         {notes.map((note) => (
           <p key={note}>{note}</p>
         ))}
       </div>
-    </details>
+    </ComposerCollapsibleSection>
   );
 }
 
@@ -453,7 +462,7 @@ function StatBlockModeSwitch({ mode = "standard", onSetMode }) {
     <div className="export-stat-mode-control" aria-label="Stat block mode">
       <span>Stat Block</span>
       <button
-        className={`export-stat-mode-switch ${isCustom ? "is-custom" : "is-standard"}`}
+        className={`cruor-composer-control export-stat-mode-switch ${isCustom ? "is-custom" : "is-standard"}`}
         type="button"
         role="switch"
         aria-checked={isCustom}
@@ -489,47 +498,63 @@ export function ExportWorkbench({
         <section className="panel table-view export-stat-preview">
           <RenderedStatBlock statBlock={statBlock} liveExportButton={liveExportButton} />
         </section>
-        <aside className="panel export-console" aria-label="Export console">
-          {viewToolbar}
-          <div className="export-console__head">
-            <h2>Table Handoff</h2>
-          </div>
 
-          <StatBlockModeSwitch mode={statBlockMode} onSetMode={onSetStatBlockMode} />
+        <ComposerRail
+          side="right"
+          variant="info"
+          scrollable
+          className="monster-export-details-rail"
+          aria-label="Monster export summary"
+        >
+          {viewToolbar}
+
+
+          <ComposerCollapsibleSection
+            title="Stat Block"
+            defaultExpanded
+            className="monster-export-section monster-export-actions-section"
+            bodyClassName="monster-export-section__body"
+            aria-label="Stat block export controls"
+          >
+            <StatBlockModeSwitch mode={statBlockMode} onSetMode={onSetStatBlockMode} />
+            <div className="export-action-grid" aria-label="Export actions">
+              <button
+                className={`export-copy-btn ${exportCopyStatus === "text-copied" ? "copied" : exportCopyStatus === "text-failed" ? "failed" : ""}`}
+                type="button"
+                onClick={() => onCopyExportPayload("text", exportText)}
+              >
+                {exportCopyStatus === "text-copied"
+                  ? "Copied Stat Block"
+                  : exportCopyStatus === "text-failed"
+                    ? "Copy Failed"
+                    : "Copy Stat Block"}
+              </button>
+              <button
+                className={`export-copy-btn ${exportCopyStatus === "json-copied" ? "copied" : exportCopyStatus === "json-failed" ? "failed" : ""}`}
+                type="button"
+                onClick={() => onCopyExportPayload("json", exportJson)}
+              >
+                {exportCopyStatus === "json-copied"
+                  ? "Copied JSON"
+                  : exportCopyStatus === "json-failed"
+                    ? "Copy Failed"
+                    : "Copy JSON"}
+              </button>
+            </div>
+          </ComposerCollapsibleSection>
 
           <ExportReadinessPanel readiness={exportReadiness} onOpenBalance={onOpenBalance} />
 
-          {uiMode === "debug" && <DesignerNotesPanel notes={statBlock.debug?.designerNotes} />}
-
-          <div className="export-action-grid" aria-label="Export actions">
-            <button
-              className={`export-copy-btn ${exportCopyStatus === "text-copied" ? "copied" : exportCopyStatus === "text-failed" ? "failed" : ""}`}
-              type="button"
-              onClick={() => onCopyExportPayload("text", exportText)}
-            >
-              {exportCopyStatus === "text-copied"
-                ? "Copied Stat Block"
-                : exportCopyStatus === "text-failed"
-                  ? "Copy Failed"
-                  : "Copy Stat Block"}
-            </button>
-            <button
-              className={`export-copy-btn ${exportCopyStatus === "json-copied" ? "copied" : exportCopyStatus === "json-failed" ? "failed" : ""}`}
-              type="button"
-              onClick={() => onCopyExportPayload("json", exportJson)}
-            >
-              {exportCopyStatus === "json-copied"
-                ? "Copied JSON"
-                : exportCopyStatus === "json-failed"
-                  ? "Copy Failed"
-                  : "Copy JSON"}
-            </button>
-          </div>
-
           <ExportRunSheet items={exportRunSheet} />
 
-          <details className="export-raw-panel">
-            <summary>Raw Export</summary>
+          {uiMode === "debug" && <DesignerNotesPanel notes={statBlock.debug?.designerNotes} />}
+
+          <ComposerCollapsibleSection
+            title="Raw Export"
+            defaultExpanded={false}
+            className="monster-export-section monster-export-raw-section"
+            bodyClassName="monster-export-section__body"
+          >
             <div className="export-raw-panel__body">
               <div className="export-textarea-shell">
                 <span>Stat Block Text</span>
@@ -546,8 +571,8 @@ export function ExportWorkbench({
                 </div>
               )}
             </div>
-          </details>
-        </aside>
+          </ComposerCollapsibleSection>
+        </ComposerRail>
       </div>
     </section>
   );
@@ -618,59 +643,69 @@ function RenderedStatBlockSection({ title, items, highlight }) {
 }
 
 function ExportReadinessPanel({ readiness, onOpenBalance }) {
+  const passedChecks = readiness.checks.filter((check) => check.ready).length;
+
   return (
-    <section
-      className={`export-readiness-card ${readiness.ready ? "is-ready" : readiness.blockers.length ? "is-blocked" : "needs-review"}`}
+    <ComposerCollapsibleSection
+      title="Export Readiness"
+      defaultExpanded={false}
+      className={`monster-export-section monster-export-readiness-section ${readiness.ready ? "is-ready" : readiness.blockers.length ? "is-blocked" : "needs-review"}`}
+      bodyClassName="monster-export-section__body"
       aria-label="Export readiness"
     >
-      <div className="export-readiness-card__head">
-        <div>
-          <span>Export Readiness</span>
-          <strong>{readiness.label}</strong>
+      <div className="cruor-composer-meter">
+        <div className="cruor-composer-meter__head">
+          <span className="cruor-composer-meter__label">{readiness.label}</span>
+          <span className="cruor-composer-meter__value">
+            <strong>{readiness.percent}%</strong>
+          </span>
         </div>
-        <em>{readiness.percent}%</em>
+        <div className="cruor-composer-meter__track" aria-hidden="true">
+          <div
+            className="cruor-composer-meter__fill"
+            style={{ width: `${readiness.percent}%` }}
+          />
+        </div>
       </div>
-      <div className="export-readiness-meter" aria-hidden="true">
-        <span style={{ width: `${readiness.percent}%` }} />
-      </div>
-      <div className="export-check-grid">
+
+      <div className="cruor-composer-fact-grid monster-export-check-grid">
+        <ComposerFactRow
+          label="Checks Passed"
+          value={`${passedChecks} / ${readiness.checks.length}`}
+        />
         {readiness.checks.map((check) => (
-          <article
+          <ComposerFactRow
             key={check.id}
-            className={`export-check ${check.ready ? "is-ready" : check.severity === "required" ? "is-blocked" : "needs-review"}`}
-          >
-            {check.ready ? <Shield aria-hidden="true" /> : <AlertTriangle aria-hidden="true" />}
-            <div>
-              <strong>{check.label}</strong>
-              <span>{check.detail}</span>
-            </div>
-          </article>
+            className={`monster-export-check-row ${check.ready ? "is-ready" : check.severity === "required" ? "is-blocked" : "needs-review"}`}
+            label={check.label}
+            value={check.detail}
+          />
         ))}
       </div>
+
       {!readiness.ready && onOpenBalance && (
         <button className="export-review-btn" type="button" onClick={onOpenBalance}>
           Review Balance Recommendations
         </button>
       )}
-    </section>
+    </ComposerCollapsibleSection>
   );
 }
 
 function ExportRunSheet({ items }) {
   return (
-    <section className="export-run-sheet" aria-label="DM run sheet">
-      <div className="export-run-sheet__head">
-        <span>DM Run Sheet</span>
-        <strong>Fast Reference</strong>
-      </div>
-      <div className="export-run-sheet__grid">
+    <ComposerCollapsibleSection
+      title="DM Run Sheet"
+      defaultExpanded={false}
+      className="monster-export-section monster-export-run-sheet"
+      bodyClassName="monster-export-section__body"
+      aria-label="DM run sheet"
+    >
+      <div className="cruor-composer-fact-grid monster-export-run-sheet__grid">
         {items.map((item) => (
-          <article key={item.label}>
-            <span>{item.label}</span>
-            <strong>{item.value}</strong>
-          </article>
+          <ComposerFactRow key={item.label} label={item.label} value={item.value} />
         ))}
       </div>
-    </section>
+    </ComposerCollapsibleSection>
   );
 }

@@ -13,9 +13,11 @@ import "../shared/styles/accessibility.css";
 import "../shared/styles/scrollbars.css";
 import { startTooltipRuntime } from "../shared/tooltips/tooltip.runtime.js";
 import { applyAccessibilitySettingsToDocument, readAccessibilitySettings } from "../shared/accessibility/accessibility.settings.js";
+import { initializeHomeBootScreen } from "./boot-screen.js";
 
 applyAccessibilitySettingsToDocument(readAccessibilitySettings());
 startTooltipRuntime();
+initializeHomeBootScreen();
 
 const rootElement = document.getElementById("root");
 

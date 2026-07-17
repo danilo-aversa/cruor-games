@@ -30,7 +30,7 @@ function addBadOutputIssues(frame, text, issues, path) {
 }
 
 
-function addScalingIssue(issues, { id, leftLabel, rightLabel, metric, left, right, relation = ">" }) {
+function addScalingIssue(issues, { id, leftLabel, rightLabel, metric, left, right, relation = ">", path = `computed.${metric}` }) {
   const passed = relation === ">=" ? left >= right : left > right;
   if (passed) return;
   issues.push(makeQaIssue({
@@ -39,7 +39,7 @@ function addScalingIssue(issues, { id, leftLabel, rightLabel, metric, left, righ
     check: metric,
     id,
     title: id,
-    path: `computed.${metric}`,
+    path,
     message: `${leftLabel} ${metric} should be ${relation} ${rightLabel} ${metric}, but got ${left} vs ${right}.`,
     recommendation: "Check Monster Frame multipliers, baseline scaling, or selector wiring.",
     details: { leftLabel, rightLabel, metric, left, right, relation },
@@ -139,10 +139,10 @@ export function runMonsterFrameScalingQa() {
   const roleStandard = buildScalingContext({ roleId: "standard" });
   const roleBoss = buildScalingContext({ roleId: "boss" });
 
-  addScalingIssue(issues, { id: "encounter-footprint-scaling", leftLabel: "Standard", rightLabel: "Minion", metric: "hp", left: roleStandard.computed.hp, right: roleMinion.computed.hp });
-  addScalingIssue(issues, { id: "encounter-footprint-scaling", leftLabel: "Boss", rightLabel: "Standard", metric: "hp", left: roleBoss.computed.hp, right: roleStandard.computed.hp });
-  addScalingIssue(issues, { id: "encounter-footprint-scaling", leftLabel: "Standard", rightLabel: "Minion", metric: "dpr", left: roleStandard.computed.dpr, right: roleMinion.computed.dpr });
-  addScalingIssue(issues, { id: "encounter-footprint-scaling", leftLabel: "Boss", rightLabel: "Standard", metric: "dpr", left: roleBoss.computed.dpr, right: roleStandard.computed.dpr });
+  addScalingIssue(issues, { id: "encounter-footprint-scaling", leftLabel: "Standard", rightLabel: "Minion", metric: "hpMult", left: roleStandard.computed.framePowerProfile.hpMult, right: roleMinion.computed.framePowerProfile.hpMult, path: "computed.framePowerProfile.hpMult" });
+  addScalingIssue(issues, { id: "encounter-footprint-scaling", leftLabel: "Boss", rightLabel: "Standard", metric: "hpMult", left: roleBoss.computed.framePowerProfile.hpMult, right: roleStandard.computed.framePowerProfile.hpMult, path: "computed.framePowerProfile.hpMult" });
+  addScalingIssue(issues, { id: "encounter-footprint-scaling", leftLabel: "Standard", rightLabel: "Minion", metric: "dprMult", left: roleStandard.computed.framePowerProfile.dprMult, right: roleMinion.computed.framePowerProfile.dprMult, path: "computed.framePowerProfile.dprMult" });
+  addScalingIssue(issues, { id: "encounter-footprint-scaling", leftLabel: "Boss", rightLabel: "Standard", metric: "dprMult", left: roleBoss.computed.framePowerProfile.dprMult, right: roleStandard.computed.framePowerProfile.dprMult, path: "computed.framePowerProfile.dprMult" });
   addScalingIssue(issues, { id: "encounter-footprint-scaling", leftLabel: "Boss", rightLabel: "Standard", metric: "budget", left: roleBoss.computed.budget, right: roleStandard.computed.budget });
 
   const cr3 = buildScalingContext({ targetCr: 3 });
@@ -157,26 +157,26 @@ export function runMonsterFrameScalingQa() {
   const support = buildScalingContext({ tacticalRoleId: "support" });
   const artillery = buildScalingContext({ tacticalRoleId: "artillery" });
   const lurker = buildScalingContext({ tacticalRoleId: "lurker" });
-  addScalingIssue(issues, { id: "tactical-role-scaling", leftLabel: "Brute", rightLabel: "Lurker", metric: "hp", left: brute.computed.hp, right: lurker.computed.hp });
-  addScalingIssue(issues, { id: "tactical-role-scaling", leftLabel: "Controller", rightLabel: "Brute", metric: "dc", left: controller.computed.dc, right: brute.computed.dc });
-  addScalingIssue(issues, { id: "tactical-role-scaling", leftLabel: "Artillery", rightLabel: "Support", metric: "dpr", left: artillery.computed.dpr, right: support.computed.dpr });
+  addScalingIssue(issues, { id: "tactical-role-scaling", leftLabel: "Brute", rightLabel: "Lurker", metric: "hpMult", left: brute.computed.framePowerProfile.hpMult, right: lurker.computed.framePowerProfile.hpMult, path: "computed.framePowerProfile.hpMult" });
+  addScalingIssue(issues, { id: "tactical-role-scaling", leftLabel: "Controller", rightLabel: "Brute", metric: "dcMod", left: controller.computed.framePowerProfile.dcMod, right: brute.computed.framePowerProfile.dcMod, path: "computed.framePowerProfile.dcMod" });
+  addScalingIssue(issues, { id: "tactical-role-scaling", leftLabel: "Artillery", rightLabel: "Support", metric: "dprMult", left: artillery.computed.framePowerProfile.dprMult, right: support.computed.framePowerProfile.dprMult, path: "computed.framePowerProfile.dprMult" });
 
   const normalTier = buildScalingContext({ monsterTierId: "normal" });
   const bossTier = buildScalingContext({ monsterTierId: "boss" });
-  addScalingIssue(issues, { id: "monster-tier-scaling", leftLabel: "Boss Tier", rightLabel: "Normal Tier", metric: "hp", left: bossTier.computed.hp, right: normalTier.computed.hp });
+  addScalingIssue(issues, { id: "monster-tier-scaling", leftLabel: "Boss Tier", rightLabel: "Normal Tier", metric: "hpMult", left: bossTier.computed.framePowerProfile.hpMult, right: normalTier.computed.framePowerProfile.hpMult, path: "computed.framePowerProfile.hpMult" });
   addScalingIssue(issues, { id: "monster-tier-scaling", leftLabel: "Boss Tier", rightLabel: "Normal Tier", metric: "budget", left: bossTier.computed.budget, right: normalTier.computed.budget });
   addScalingIssue(issues, { id: "monster-tier-scaling", leftLabel: "Boss Tier", rightLabel: "Normal Tier", metric: "complexityCap", left: bossTier.computed.complexityCap, right: normalTier.computed.complexityCap });
 
   const slow = buildScalingContext({ tempoProfileId: "slow" });
   const ambusher = buildScalingContext({ tempoProfileId: "ambusher" });
-  addScalingIssue(issues, { id: "tempo-scaling", leftLabel: "Ambusher", rightLabel: "Slow", metric: "dpr", left: ambusher.computed.dpr, right: slow.computed.dpr });
-  addScalingIssue(issues, { id: "tempo-scaling", leftLabel: "Ambusher", rightLabel: "Slow", metric: "attack", left: ambusher.computed.attack, right: slow.computed.attack });
+  addScalingIssue(issues, { id: "tempo-scaling", leftLabel: "Ambusher", rightLabel: "Slow", metric: "dprMult", left: ambusher.computed.framePowerProfile.dprMult, right: slow.computed.framePowerProfile.dprMult, path: "computed.framePowerProfile.dprMult" });
+  addScalingIssue(issues, { id: "tempo-scaling", leftLabel: "Ambusher", rightLabel: "Slow", metric: "attackMod", left: ambusher.computed.framePowerProfile.attackMod, right: slow.computed.framePowerProfile.attackMod, path: "computed.framePowerProfile.attackMod" });
   addScalingIssue(issues, { id: "tempo-scaling", leftLabel: "Ambusher", rightLabel: "Slow", metric: "budget", left: ambusher.computed.budget, right: slow.computed.budget });
   addScalingIssue(issues, { id: "tempo-scaling", leftLabel: "Ambusher", rightLabel: "Slow", metric: "initiativeMod", left: ambusher.computed.printedStats.initiativeMod, right: slow.computed.printedStats.initiativeMod });
 
   const standardDanger = buildScalingContext({ dangerId: "standard" });
   const horrorDanger = buildScalingContext({ dangerId: "horror" });
-  addScalingIssue(issues, { id: "danger-scaling", leftLabel: "Horror", rightLabel: "Standard Danger", metric: "dpr", left: horrorDanger.computed.dpr, right: standardDanger.computed.dpr });
+  addScalingIssue(issues, { id: "danger-scaling", leftLabel: "Horror", rightLabel: "Standard Danger", metric: "dprMult", left: horrorDanger.computed.framePowerProfile.dprMult, right: standardDanger.computed.framePowerProfile.dprMult, path: "computed.framePowerProfile.dprMult" });
   addScalingIssue(issues, { id: "danger-scaling", leftLabel: "Horror", rightLabel: "Standard Danger", metric: "budget", left: horrorDanger.computed.budget, right: standardDanger.computed.budget });
 
   return {
@@ -185,7 +185,7 @@ export function runMonsterFrameScalingQa() {
     summary: summarizeQaIssues(issues),
     issues,
     metrics: {
-      checks: 22,
+      checks: 21,
       sampleFrames: {
         minion: roleMinion.computed.printedStats,
         standard: roleStandard.computed.printedStats,

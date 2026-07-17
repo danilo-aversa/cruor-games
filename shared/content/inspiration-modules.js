@@ -15,14 +15,9 @@ import {
 } from "./content-packs/decomposition-semantic-v2-pack.js";
 import { SEDLEC_OSSUARY_SEMANTIC_V2_MODULE } from "./content-packs/sedlec-ossuary-semantic-v2-pack.js";
 import { THE_MIST_SEMANTIC_V2_MODULE } from "./content-packs/the-mist-semantic-v2-pack.js";
-import { WOLF_SPIDERS_SEMANTIC_V2_MODULE } from "./content-packs/wolf-spiders-semantic-v2-pack.js";
 import { DECOMPOSITION_SOURCE_ANCHOR_ID } from "./inspiration-modules/decomposition.js";
 import { THE_MIST_SOURCE_ANCHOR_ID } from "./inspiration-modules/the-mist.js";
-import { WOLF_SPIDERS_SOURCE_ANCHOR_ID } from "./inspiration-modules/wolf-spiders.js";
-import {
-  SEDLEC_OSSUARY_INSPIRATION_MODULE,
-  SEDLEC_OSSUARY_SOURCE_ANCHOR_ID,
-} from "./inspiration-modules/sedlec-ossuary.js";
+import { SEDLEC_OSSUARY_SOURCE_ANCHOR_ID } from "./inspiration-modules/sedlec-ossuary.js";
 import { SHARED_INSPIRATIONS } from "./inspirations.js";
 import { SHARED_MONSTER_COMPONENTS } from "./monster-components.js";
 import { normalizeSourceAnchorIds, SHARED_SOURCE_ANCHORS } from "./source-anchors.js";
@@ -41,35 +36,45 @@ function getPrimaryInspirationForSourceAnchor(sourceAnchorId, inspirations = SHA
   return asArray(inspirations).find((inspiration) => entryReferencesSourceAnchor(inspiration, sourceAnchorId)) || null;
 }
 
-export const EXPLICIT_INSPIRATION_MODULES = Object.freeze([
+export const SEMANTIC_MIGRATION_MODULES = Object.freeze([
   DECOMPOSITION_SEMANTIC_V2_MODULE,
   SEDLEC_OSSUARY_SEMANTIC_V2_MODULE,
   THE_MIST_SEMANTIC_V2_MODULE,
-  WOLF_SPIDERS_SEMANTIC_V2_MODULE,
 ].filter(Boolean));
 
-export const EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS = Object.freeze([
+export const SEMANTIC_MIGRATION_MODULE_SOURCE_ANCHOR_IDS = Object.freeze([
   DECOMPOSITION_SOURCE_ANCHOR_ID,
   SEDLEC_OSSUARY_SOURCE_ANCHOR_ID,
   THE_MIST_SOURCE_ANCHOR_ID,
-  WOLF_SPIDERS_SOURCE_ANCHOR_ID,
 ]);
 
-export const EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET = new Set(
-  EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS,
+export const SEMANTIC_MIGRATION_MODULE_SOURCE_ANCHOR_ID_SET = new Set(
+  SEMANTIC_MIGRATION_MODULE_SOURCE_ANCHOR_IDS,
 );
 
+// Backward-compatible names for module-catalog consumers. These aliases refer
+// only to the semantic migration catalog and are never used to assemble the
+// production v0.1 registry.
+export const EXPLICIT_INSPIRATION_MODULES = SEMANTIC_MIGRATION_MODULES;
+export const EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS =
+  SEMANTIC_MIGRATION_MODULE_SOURCE_ANCHOR_IDS;
+export const EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET =
+  SEMANTIC_MIGRATION_MODULE_SOURCE_ANCHOR_ID_SET;
+
 export const CONVERTED_CORE_INSPIRATION_MODULES = Object.freeze(
-  CORE_INSPIRATION_MODULES.filter((module) => !EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET.has(module.id)),
+  CORE_INSPIRATION_MODULES.filter(
+    (module) =>
+      !SEMANTIC_MIGRATION_MODULE_SOURCE_ANCHOR_ID_SET.has(module.id),
+  ),
 );
 
 /**
  * Canonical static Inspiration Module collection.
  *
- * This is the source consumed by Inspiration Studio. It keeps the explicit/standalone
- * modules first, then appends the converted archive modules. Registry-based module
- * generation remains available below only as a compatibility fallback for source
- * anchors that do not yet have an authored module.
+ * This is the source consumed by Inspiration Studio. It keeps canonical semantic
+ * migration modules first, then appends compatibility-normalized archive modules.
+ * Production registry assembly uses the separate PRODUCTION_* catalog above, so
+ * selecting a semantic candidate can never remove a public Archive entry.
  */
 export const CRUOR_INSPIRATION_MODULES = Object.freeze(
   uniqueById([
@@ -134,6 +139,14 @@ export function buildInspirationModulesFromRegistry(registry, { packId = "static
     ...generatedFallbackModules,
   ]);
 }
+
+export {
+  PRODUCTION_CONVERTED_CORE_INSPIRATION_MODULES,
+  PRODUCTION_EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET,
+  PRODUCTION_EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS,
+  PRODUCTION_EXPLICIT_INSPIRATION_MODULES,
+  PRODUCTION_INSPIRATION_MODULES,
+} from "./production-inspiration-modules.js";
 
 export {
   defineInspirationModule,

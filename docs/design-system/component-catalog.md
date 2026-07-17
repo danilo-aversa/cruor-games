@@ -237,7 +237,7 @@ Use this family for left or right Composer rails that contain controls, navigati
 
 ### Usage rules
 
-Use this family for control rails, output outlines, navigators, and export settings. Use the more specialized Composer Right Information Rail family only when the rail summarizes the current entity through hero identity, facts, or meters.
+Use this family for control rails, output outlines, navigators, export settings, and grouped sections inside Final Output right rails. Export summary sections should use `ComposerCollapsibleSection` around their existing fact rows, meters, preview frames, and actions so their outer surface matches the left outline. Use persistent `ComposerRailCard` surfaces only when the rail summarizes the current entity outside an Export view and the information should remain continuously visible.
 
 Feature classes may control grid placement, rail height, responsive behavior, internal list geometry, scroll ownership, and runtime/test hooks. They must not recreate the sidebar-block surface, collapsible header, typography, chevron, expansion states, generic spacing, border, background, or shadow.
 
@@ -358,7 +358,14 @@ Feature code may supply layout modifiers such as `is-bottom`, workflow states su
 
 ### Purpose and canonical source
 
-Use this family for a right-side Composer rail that summarizes the current generated or configured entity through hero identity, editable name, metadata, fact rows, and meters. Terrifying Monsters Current Monster Frame is the canonical visual source. The shared stylesheet is `shared/styles/composer-system.css`; see [composer-info-rail-audit.md](composer-info-rail-audit.md) and [composer-info-rail-migration.json](composer-info-rail-migration.json).
+Use this family for a right-side Composer rail that summarizes the current generated or configured entity through hero identity, metadata, fact rows, and meters. Terrifying Monsters Current Monster Frame remains the canonical persistent information-card source. Final Output right rails retain the shared `ComposerRail`, facts, and meters, but group their sections with `ComposerCollapsibleSection` so the outer containers match the left output outline without changing non-Export information rails. The shared React primitives live in `components/ui/composer-rail.jsx`; shared styling lives in `shared/styles/composer-system.css` and `shared/styles/composer-internals.css`. See [composer-info-rail-audit.md](composer-info-rail-audit.md) and [composer-info-rail-migration.json](composer-info-rail-migration.json).
+
+### React API
+
+- `ComposerRail` owns side, variant, scroll and surface classes plus rail data attributes.
+- `ComposerRailCard` owns the canonical card surface, optional hero modifier, title/eyebrow structure, element type, and forwarded ARIA/data attributes.
+- `ComposerFactRow` owns the canonical label/value row structure and forwards element, class, ARIA, and data attributes.
+- `ComposerCollapsibleSection` is the canonical outer container for grouped right-rail sections in Export views; it leaves fact rows, meters, controls, and feature content unchanged inside its body.
 
 ### Class API
 
@@ -406,4 +413,4 @@ The rail modifier is the single vertical scroll owner. Preserve responsive paren
 
 Feature hooks may control grid placement, width/min/max height required by the parent layout, responsive stage placement, overlay z-index, scroll ownership, behavior, and runtime/test identity. They must not independently redefine rail/card surfaces, borders, backgrounds, shadows, typography, shared spacing, name-editor states, fact rows, or meter visuals. Visual exceptions follow the [override policy](override-policy.md).
 
-Excluded surfaces include left control rails, export rails, navigators, component pickers, map inspectors, debug/action-only cards, toolbars, modals, and ordinary cards.
+Excluded surfaces include left control rails, navigators, component pickers, map inspectors, toolbars, modals, ordinary cards, and export-setting drawers that are primarily interactive controls. A final-output or export-summary rail may use this family when its main purpose is to present identity, readiness, file facts, layers, or table-use facts; feature classes may then control only placement, geometry, responsive behavior, and status semantics.

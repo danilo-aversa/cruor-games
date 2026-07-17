@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   applyRoomCornerResizeToManualOverrides,
@@ -27,7 +28,10 @@ function createDraft(region, pointerCell) {
 describe("room corner resize", () => {
   it("keeps the visible L above the generic SVG overlay path reset", () => {
     const styles = readFileSync(
-      new URL("./map-generator.styles.css", import.meta.url),
+      resolve(
+        process.cwd(),
+        "features/darken-location/map-generator/map-generator.styles.css",
+      ),
       "utf8",
     );
 

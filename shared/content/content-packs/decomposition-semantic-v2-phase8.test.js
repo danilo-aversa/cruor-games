@@ -8,12 +8,15 @@ import { buildModuleExport } from "../../../features/inspiration-studio/model/st
 import { normalizeModuleForDraft } from "../../../features/inspiration-studio/model/studio-draft.js";
 import { runDarkPlacesSemanticSampleQa } from "../../../features/inspiration-studio/qa/dark-places-semantic-sample-qa.js";
 import { validateContentPackV0_2 } from "../contracts/semantic/index.js";
-import {
-  DECOMPOSITION_INSPIRATION_MODULE,
-  DECOMPOSITION_MONSTER_GRAFT_COMPONENTS,
-} from "../inspiration-modules/decomposition.js";
+import { MONSTER_GRAFTS } from "../../../features/monster-composer/data/monster-grafts.js";
+import { DECOMPOSITION_INSPIRATION_MODULE } from "../inspiration-modules/decomposition.js";
+import { SHARED_MONSTER_COMPONENTS } from "../monster-components.js";
 import { CRUOR_INSPIRATION_MODULES } from "../inspiration-modules.js";
 import { STATIC_CONTENT_REGISTRY } from "../static-registry.js";
+import {
+  DECOMPOSITION_MONSTER_GRAFT_V2_DEFINITIONS,
+  DECOMPOSITION_MONSTER_GRAFT_V2_SOURCE_MODE,
+} from "./decomposition-monster-grafts-v2.js";
 import {
   DECOMPOSITION_SEMANTIC_V2_MODULE,
   DECOMPOSITION_SEMANTIC_V2_PACK,
@@ -30,30 +33,30 @@ function semanticOfType(type) {
 }
 
 describe("Phase 8 batch 2 — Decomposition", () => {
-  it("has no runtime dependency on legacy, feature, UI, React, or SVG sources", () => {
-    const sources = [
-      readFileSync(
-        resolve(
-          process.cwd(),
-          "shared/content/content-packs/decomposition-semantic-v2-pack.js",
-        ),
-        "utf8",
+  it("keeps the semantic pack dependency-free and free of Monster ownership", () => {
+    const source = readFileSync(
+      resolve(
+        process.cwd(),
+        "shared/content/content-packs/decomposition-semantic-v2-pack.js",
       ),
-      readFileSync(
-        resolve(
-          process.cwd(),
-          "shared/content/content-packs/decomposition-monster-grafts-v2.js",
-        ),
-        "utf8",
-      ),
-    ].join("\n");
+      "utf8",
+    );
 
-    expect(sources).not.toMatch(/inspiration-modules\/decomposition/);
-    expect(sources).not.toMatch(/features\/monster-composer/);
-    expect(sources).not.toMatch(/(?:from|import\s*)["'][^"']*(?:react|svg)/i);
+    expect(source).not.toMatch(/decomposition-monster-grafts-v2/);
+    expect(source).not.toMatch(/(?:from|import\s*)["'][^"']*features\/monster-composer/);
+    expect(source).not.toMatch(/(?:from|import\s*)["'][^"']*(?:react|svg)/i);
+    expect(
+      DECOMPOSITION_SEMANTIC_V2_MODULE.components.filter(
+        (component) => component.semanticType === "monster-graft",
+      ),
+    ).toEqual([]);
+    expect(DECOMPOSITION_MONSTER_GRAFT_V2_SOURCE_MODE).toBe(
+      "retired-duplicate-source",
+    );
+    expect(DECOMPOSITION_MONSTER_GRAFT_V2_DEFINITIONS).toEqual([]);
   });
 
-  it("uses the canonical revised A + D + M candidate in the Studio module catalog", () => {
+  it("uses the approved canonical A + D module in the Studio catalog", () => {
     const module = CRUOR_INSPIRATION_MODULES.find(
       (entry) => entry.id === "decomposition",
     );
@@ -61,22 +64,26 @@ describe("Phase 8 batch 2 — Decomposition", () => {
     expect(module).toBe(DECOMPOSITION_SEMANTIC_V2_MODULE);
     expect(module.schemaVersion).toBe("cruor-inspiration-module-v2");
     expect(module.status).toBe("in-review");
-    expect(module.inspiration.status).toBe("in-review");
+    expect(module.inspiration.status).toBe("approved");
     expect(module.capabilities).toEqual([
       "dark-places",
       "inspiration-archive",
-      "monster-composer",
     ]);
     expect(validateContentPackV0_2(DECOMPOSITION_SEMANTIC_V2_PACK)).toEqual([]);
     expect(DECOMPOSITION_SEMANTIC_V2_PACK).toMatchObject({
-      version: "0.2.0-phase8-revision2",
+      version: "0.2.0-phase8-recovery1",
       metadata: {
-        registryRole: "semantic-v2-editorial-revision",
-        humanApprovalRequired: true,
+        registryRole: "semantic-v2-editorial-approved",
+        humanApprovalRequired: false,
         retainedLegacyPublicBehavior: true,
+        editorialStatus: "approved",
+        publicationBlockers: ["image-provenance-required"],
       },
     });
-    expect(module.metadata.revision).toBe(2);
+    expect(module.metadata).toMatchObject({
+      revision: 2,
+      reviewedAt: "2026-07-17",
+    });
   });
 
   it("carries explicit editorial provenance without compatibility normalization", () => {
@@ -89,7 +96,7 @@ describe("Phase 8 batch 2 — Decomposition", () => {
     records.forEach((record) => {
       expect(record.provenance.migration).toMatchObject({
         method: "editorially-migrated",
-        editorialDecision: "needs-revision",
+        editorialDecision: "approved",
         reviewVersion: "phase8-decomposition-editorial-revision-v2",
       });
       expect(record.provenance.migration.method).not.toBe(
@@ -113,7 +120,7 @@ describe("Phase 8 batch 2 — Decomposition", () => {
       "doi:10.3390/insects13100879",
     );
     expect(sourceAnchor.editorialNotes.join(" ")).toContain(
-      "not general death-burst or called-shot rules",
+      "does not copy or own them",
     );
     expect(inspiration.media.imageAlt).toContain("requires visual review");
     expect(inspiration.media.imageCredit).toContain("keep the asset unpublished");
@@ -134,73 +141,64 @@ describe("Phase 8 batch 2 — Decomposition", () => {
     expect(mappedLegacyIds).toEqual(legacyLocationIds);
   });
 
-  it("preserves all 26 structured Monster grafts and their table behavior", () => {
-    const candidateGrafts = componentsOfType("monster-graft");
-    const candidateById = new Map(
-      candidateGrafts.map((component) => [component.id, component]),
+  it("verifies the existing 26 modern Monster grafts without copying them", () => {
+    const modernGrafts = MONSTER_GRAFTS.filter((graft) =>
+      (graft.sourceAnchors?.length ? graft.sourceAnchors : [graft.source])
+        .filter(Boolean)
+        .includes("decomposition"),
+    );
+    const sharedGrafts = SHARED_MONSTER_COMPONENTS.filter((component) =>
+      component.sourceAnchors.includes("decomposition"),
     );
 
-    expect(candidateGrafts).toHaveLength(26);
-    expect(candidateGrafts.map((component) => component.id).sort()).toEqual(
-      DECOMPOSITION_MONSTER_GRAFT_COMPONENTS.map(
-        (component) => component.id,
-      ).sort(),
+    expect(modernGrafts).toHaveLength(26);
+    expect(sharedGrafts).toHaveLength(26);
+    expect(sharedGrafts.map(({ id }) => id).sort()).toEqual(
+      modernGrafts.map(({ id }) => id).sort(),
     );
-
-    DECOMPOSITION_MONSTER_GRAFT_COMPONENTS.forEach((legacy) => {
-      const candidate = candidateById.get(legacy.id);
-      expect(candidate, legacy.id).toBeDefined();
-      expect(candidate.slots, legacy.id).toEqual(legacy.slots);
-      expect(candidate.semantic.summary, legacy.id).toBe(legacy.summary);
-      expect(candidate.semantic.tableText, legacy.id).toBe(legacy.mechanics);
-      expect(candidate.semantic.mechanics.text, legacy.id).toBe(
-        legacy.mechanics,
-      );
-      expect(candidate.semantic.details.counterplay, legacy.id).toBe(
-        legacy.counterplay,
-      );
-      expect(candidate.semantic.details.monster, legacy.id).toEqual(
-        legacy.monster,
+    modernGrafts.forEach((graft) => {
+      const shared = sharedGrafts.find((component) => component.id === graft.id);
+      expect(shared, graft.id).toBeDefined();
+      expect(shared.monster.graftId, graft.id).toBe(graft.id);
+      expect(shared.monster.slot, graft.id).toBe(graft.slot);
+      expect(shared.monster.rules.schemaVersion, graft.id).toBe(
+        "monster-graft-rules-v1.12",
       );
     });
-
-    const dangerouslyUnstable = candidateById.get("dangerously-unstable");
-    const headWeakSpot = candidateById.get("head-weak-spot");
-    expect(dangerouslyUnstable.provenance.sources[0]).toMatchObject({
-      relation: "editorial-constraint",
-    });
-    expect(dangerouslyUnstable.provenance.sources[0].note).toContain(
-      "Cruor-specific setpiece convention",
-    );
-    expect(headWeakSpot.provenance.sources[0].note).toContain(
-      "Cruor-specific called-shot exception",
-    );
   });
 
-  it("round-trips the canonical Monster payload through Studio v2-only export", () => {
+  it("round-trips only the owned Archive + Dark Places payload through Studio", () => {
     const exported = buildModuleExport(
       normalizeModuleForDraft(DECOMPOSITION_SEMANTIC_V2_MODULE),
     );
-    const before = componentsOfType("monster-graft").map((component) => ({
-      id: component.id,
-      monster: component.semantic.details.monster,
-      counterplay: component.semantic.details.counterplay,
-    }));
-    const after = exported.components
-      .filter((component) => component.semanticType === "monster-graft")
-      .map((component) => ({
-        id: component.id,
-        monster: component.semantic.details.monster,
-        counterplay: component.semantic.details.counterplay,
-      }));
 
-    expect(after).toEqual(before);
     expect(exported.schemaVersion).toBe("cruor-inspiration-module-v2");
     expect(exported.capabilities).toEqual([
       "dark-places",
       "inspiration-archive",
-      "monster-composer",
     ]);
+    expect(
+      exported.components.filter(
+        (component) => component.semanticType === "monster-graft",
+      ),
+    ).toEqual([]);
+    const before = DECOMPOSITION_SEMANTIC_V2_MODULE.components.map(
+      ({ id, semanticType, semantic, provenance }) => ({
+        id,
+        semanticType,
+        semantic,
+        provenance,
+      }),
+    );
+    const after = exported.components.map(
+      ({ id, semanticType, semantic, provenance }) => ({
+        id,
+        semanticType,
+        semantic,
+        provenance,
+      }),
+    );
+    expect(after).toEqual(before);
   });
 
   it("meets the Dark Places semantic coverage and editorial depth targets", () => {

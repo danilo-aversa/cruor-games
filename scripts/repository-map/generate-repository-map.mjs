@@ -5,6 +5,11 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 
+import {
+  REPOSITORY_FINGERPRINT_ALGORITHM,
+  createRepositoryFingerprint,
+} from "./repository-fingerprint.mjs";
+
 const rootDir = process.cwd();
 const outputPath = "docs/repository-map/repository-map.json";
 const schemaPath = "docs/repository-map/repository-map.schema.json";
@@ -83,7 +88,6 @@ function fileExists(relativePath) {
 }
 
 function getHash(relativePath) {
-  if (relativePath === outputPath) return null;
   return createHash("sha256").update(readFileSync(absolutePath(relativePath))).digest("hex");
 }
 
@@ -699,11 +703,14 @@ function buildDependencyGraph(records) {
 }
 
 function getIncludedFiles() {
-  const tracked = runGit(["ls-files", "-z"], { nullSeparated: true });
-  const supplemental = runGit(
-    ["ls-files", "-z", "--others", "--exclude-standard", "docs/repository-map", "scripts/repository-map"],
-    { nullSeparated: true, optional: true },
-  ) || [];
+  const tracked = runGit(["ls-files", "-z"], { nullSeparated: true }).filter(
+    (relativePath) => relativePath !== outputPath,
+  );
+  const supplemental =
+    runGit(["ls-files", "-z", "--others", "--exclude-standard"], {
+      nullSeparated: true,
+      optional: true,
+    })?.filter((relativePath) => relativePath !== outputPath) || [];
   return {
     tracked,
     supplemental,
@@ -865,23 +872,37 @@ function buildMap() {
   const commit = runGit(["rev-parse", "HEAD"]);
   const branch = runGit(["rev-parse", "--abbrev-ref", "HEAD"]);
   const counts = getCounts(initialRecords, tracked.length);
+  const fingerprintExcludedPaths = [outputPath];
+  const repositoryFingerprint = createRepositoryFingerprint(
+    initialRecords.map((record) => ({
+      path: record.path,
+      hash: record.generatedFields.hash,
+    })),
+    { excludedPaths: fingerprintExcludedPaths },
+  );
 
   return {
     metadata: {
       schemaVersion: "cruor-repository-map-v1",
       generatedAt,
       inspectedCommit: commit,
+      inspectedCommitRole: "informational",
       branch,
       trackedFileCount: tracked.length,
       supplementalUntrackedFiles: supplemental,
+      inventoryMode: "working-tree-content",
+      repositoryFingerprint,
+      fingerprintAlgorithm: REPOSITORY_FINGERPRINT_ALGORITHM,
+      fingerprintExcludedPaths,
       generator: "scripts/repository-map/generate-repository-map.mjs",
       schemaPath,
       packageScripts: packageScripts(),
       counts,
       notes: [
-        "Structural fields are generated from Git inventory and file contents.",
+        "Structural fields are generated from the current working-tree inventory and file contents.",
+        "The inspected commit is informational; freshness is enforced by path and content fingerprint rather than commit identity.",
         "Semantic fields are generated as a maintainable baseline and can be manually refined; the generator preserves manual documentation notes/findings.",
-        "docs/repository-map/repository-map.json is self-referential, so its own hash is intentionally null.",
+        "docs/repository-map/repository-map.json is intentionally omitted from its own file inventory and fingerprint.",
       ],
     },
     files: initialRecords,

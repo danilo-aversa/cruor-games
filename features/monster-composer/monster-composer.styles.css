@@ -1550,22 +1550,38 @@
 }
 
 .monster-shell .export-workbench {
-  width: min(var(--monster-workspace-max), 100%);
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
 }
 
 .monster-shell .export-layout {
   display: grid;
-  grid-template-columns: minmax(540px, 1fr) minmax(320px, 420px);
+  grid-template-columns: minmax(0, 1fr) minmax(540px, 800px) minmax(0, 1fr);
   gap: 14px;
   align-items: start;
+  width: 100%;
+  min-width: 0;
 }
 
-.monster-shell .export-console__head p:not(.eyebrow) {
+.monster-shell .monster-export-details-rail {
+  grid-area: auto;
+  grid-column: 3;
+  justify-self: end;
+  width: min(var(--cruor-composer-rail-width), 100%);
+  max-height: calc(100dvh - var(--monster-shell-bar-height) - 20px);
+  position: sticky;
+  top: 10px;
+}
+
+
+.monster-shell .monster-export-section__body {
+  display: grid;
+  gap: var(--cruor-composer-rail-card-gap);
+  min-width: 0;
+}
+
+.monster-shell .monster-export-actions-section .export-stat-mode-control {
   margin: 0;
-  color: var(--muted);
-  font-size: var(--text-size-l);
-  line-height: 1.45;
 }
 
 
@@ -1611,192 +1627,73 @@
   gap: 8px;
 }
 
-.monster-shell .export-readiness-card.is-ready {
-  border-color: var(--cruor-color-good-a360);
-  background: var(--cruor-color-good-a055);
-}
 
-.monster-shell .export-readiness-card.is-blocked {
-  border-color: var(--cruor-color-rose-a560);
-  background: var(--cruor-color-blood-bright-a160);
-}
-
-.monster-shell .export-readiness-card__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  border-bottom: 1px solid var(--cruor-color-milk-a060);
-  padding-bottom: 8px;
-}
-
-.monster-shell .export-run-sheet__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  border-bottom: 1px solid var(--cruor-color-milk-a060);
-  padding-bottom: 8px;
-}
-
-.monster-shell .export-readiness-card__head div {
+.monster-shell .export-stat-mode-switch {
   display: grid;
-  gap: 3px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+  min-width: 154px;
+  min-height: 34px;
+  padding: 3px;
 }
 
-.monster-shell .export-check span {
-  color: var(--cruor-color-hex-8f7278);
-  font-size: var(--text-size-xxs);
-  font-weight: 950;
-  letter-spacing: 0.1em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.monster-shell .export-readiness-card__head span {
-  color: var(--cruor-color-hex-8f7278);
-  font-size: var(--text-size-xxs);
-  font-weight: 950;
-  letter-spacing: 0.1em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.monster-shell .export-run-sheet__grid span {
-  color: var(--cruor-color-hex-8f7278);
-  font-size: var(--text-size-xxs);
-  font-weight: 950;
-  letter-spacing: 0.1em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.monster-shell .export-run-sheet__head span {
-  color: var(--cruor-color-hex-8f7278);
-  font-size: var(--text-size-xxs);
-  font-weight: 950;
-  letter-spacing: 0.1em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.monster-shell .export-readiness-card__head strong {
-  color: var(--cruor-color-hex-fff0f2);
-  font-size: var(--text-size-xl);
-  font-weight: 950;
-  line-height: 1.1;
-}
-
-.monster-shell .export-run-sheet__head strong {
-  color: var(--cruor-color-hex-fff0f2);
-  font-size: var(--text-size-xl);
-  font-weight: 950;
-  line-height: 1.1;
-}
-
-.monster-shell .export-readiness-card__head em {
-  display: inline-grid;
+.monster-shell .export-stat-mode-switch > span {
+  display: grid;
   place-items: center;
-  min-width: 42px;
-  min-height: 30px;
-  border: 1px solid var(--cruor-color-milk-a080);
-  background: var(--cruor-surface-card);
-  color: var(--cruor-color-hex-d0a2aa);
-  font-size: var(--text-size-m);
-  font-style: normal;
-  font-weight: 950;
+  min-height: 26px;
+  padding-inline: 8px;
+  color: var(--cruor-composer-control-text);
+  font-size: var(--text-size-xs);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.monster-shell .export-readiness-meter {
-  height: 6px;
-  overflow: hidden;
-  border: 1px solid var(--cruor-color-milk-a070);
-  background: var(--cruor-surface-card);
+.monster-shell .export-stat-mode-switch > span.is-active {
+  background: var(--cruor-composer-control-bg-active);
+  color: var(--cruor-composer-control-text-active);
 }
 
-.monster-shell .export-readiness-meter span {
-  display: block;
-  height: 100%;
-  background: var(--cruor-gradient-linear-117-8cc0f9d4);
-  box-shadow: var(--cruor-shadow-box-048);
+.monster-shell .export-stat-mode-switch > i {
+  display: none;
 }
 
-.monster-shell .export-check-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 7px;
+.monster-shell .monster-export-check-row .cruor-composer-fact-label,
+.monster-shell .monster-export-check-row .cruor-composer-fact-value,
+.monster-shell .monster-export-run-sheet__grid .cruor-composer-fact-value {
+  white-space: normal;
 }
 
-.monster-shell .export-check {
-  display: grid;
-  gap: 7px;
-  align-items: start;
-  border: 1px solid var(--cruor-color-milk-a060);
-  background: var(--cruor-surface-card);
-  padding: 8px;
+.monster-shell .monster-export-check-row .cruor-composer-fact-value,
+.monster-shell .monster-export-run-sheet__grid .cruor-composer-fact-value {
+  overflow: visible;
+  line-height: 1.25;
+  text-overflow: clip;
 }
 
-.monster-shell .export-check svg {
-  width: 14px;
-  height: 14px;
-  color: var(--cruor-color-hex-b33b4e);
-}
-
-.monster-shell .export-check.is-ready svg {
+.monster-shell .monster-export-check-row.is-ready .cruor-composer-fact-value {
   color: var(--cruor-color-hex-bec8c5);
 }
 
-.monster-shell .export-check div {
-  display: grid;
-  gap: 3px;
-  min-width: 0;
-}
-
-.monster-shell .export-check strong {
-  overflow: hidden;
-  color: var(--cruor-color-text-a740);
-  font-size: var(--text-size-m);
-  font-weight: 900;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.monster-shell .export-run-sheet__grid strong {
-  overflow: hidden;
-  color: var(--cruor-color-text-a740);
-  font-size: var(--text-size-m);
-  font-weight: 900;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.monster-shell .export-check.is-ready strong {
-  color: var(--cruor-color-hex-bec8c5);
-}
-
-.monster-shell .export-check.is-blocked strong {
+.monster-shell .monster-export-check-row:is(.is-blocked, .needs-review) .cruor-composer-fact-value {
   color: var(--cruor-color-hex-f0b9c2);
 }
 
-.monster-shell .export-check.needs-review strong {
-  color: var(--cruor-color-hex-f0b9c2);
+.monster-shell .monster-export-designer-notes__body {
+  display: grid;
+  gap: 6px;
 }
 
-.monster-shell .export-run-sheet__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 7px;
+.monster-shell .monster-export-designer-notes__body p {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--text-size-l);
+  line-height: 1.45;
 }
 
-.monster-shell .export-run-sheet__grid article {
-  display: grid;
-  gap: 4px;
-  min-width: 0;
-  border: 1px solid var(--cruor-color-milk-a060);
-  background: var(--cruor-surface-card);
-  padding: 8px;
+.monster-shell .monster-export-raw-section .export-textarea-shell textarea {
+  min-height: 220px;
+  max-height: 360px;
 }
 
 .monster-shell .compiled-sheet {
@@ -2046,76 +1943,9 @@
   color: var(--cruor-color-hex-bec8c5);
 }
 
-.monster-shell .cruor-stat-block__designer-notes {
-  margin-top: 14px;
-  border-top: 1px solid var(--cruor-color-blood-strong-a440);
-  padding-top: 10px;
-}
-
-.monster-shell .cruor-stat-block__designer-notes > summary {
-  cursor: pointer;
-  color: var(--cruor-color-hex-8f7278);
-  font-size: var(--text-size-s);
-  font-weight: 950;
-  letter-spacing: 0.1em;
-  list-style: none;
-  text-transform: uppercase;
-}
-
-.monster-shell .cruor-stat-block__designer-notes > summary::-webkit-details-marker {
-  display: none;
-}
-
-.monster-shell .cruor-stat-block__designer-notes[open] > summary {
-  color: var(--cruor-color-hex-d0a2aa);
-  margin-bottom: 8px;
-}
-
-.monster-shell .cruor-stat-block__designer-notes div {
-  display: grid;
-  gap: 6px;
-}
-
-.monster-shell .cruor-stat-block__designer-notes p {
-  margin: 0;
-  color: var(--muted);
-  font-size: var(--text-size-l);
-  line-height: 1.45;
-}
-
-.monster-shell .export-raw-panel {
-  border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-white-a018);
-  padding: 10px;
-}
-
-.monster-shell .export-raw-panel > summary {
-  cursor: pointer;
-  color: var(--cruor-color-hex-8f7278);
-  font-size: var(--text-size-s);
-  font-weight: 950;
-  letter-spacing: 0.1em;
-  list-style: none;
-  text-transform: uppercase;
-}
-
-.monster-shell .export-raw-panel > summary::-webkit-details-marker {
-  display: none;
-}
-
-.monster-shell .export-raw-panel[open] > summary {
-  color: var(--cruor-color-hex-d0a2aa);
-  margin-bottom: 10px;
-}
-
 .monster-shell .export-raw-panel__body {
   display: grid;
   gap: 10px;
-}
-
-.monster-shell .export-raw-panel .export-textarea-shell textarea {
-  min-height: 220px;
-  max-height: 360px;
 }
 
 .monster-shell .compiled-trigger {
@@ -3564,12 +3394,6 @@
   border-bottom-color: var(--cruor-color-blood-strong-a420);
 }
 
-.monster-shell .export-console__head {
-  border-bottom: 1px solid var(--cruor-color-blood-strong-a340);
-  padding-bottom: 11px;
-  border-bottom-color: var(--cruor-color-blood-strong-a420);
-}
-
 .monster-shell .game-frame__hero {
   position: relative;
   overflow: hidden;
@@ -3603,17 +3427,6 @@
   font-size: var(--display-size-fluid-14);
   line-height: 0.9;
   letter-spacing: -0.055em;
-  text-shadow: var(--cruor-shadow-text-002);
-}
-
-.monster-shell .export-console__head h2 {
-  margin: 5px 0 5px;
-  color: var(--cruor-color-hex-fff0f2);
-  font-family: var(--font);
-  font-size: var(--display-size-s);
-  font-weight: 850;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
   text-shadow: var(--cruor-shadow-text-002);
 }
 
@@ -4153,29 +3966,11 @@
   -webkit-backdrop-filter: var(--cruor-filter-glass-20-128);
 }
 
-
-.monster-shell .export-console {
-  display: grid;
-  gap: 13px;
-  padding: 14px;
-  position: sticky;
-  top: var(--monster-command-bar-height);
-  border-width: 1px;
-  border-color: var(--cruor-color-milk-a080);
-  background-color: var(--cruor-ui-panel-bg);
-  background-image: var(--cruor-ui-panel-image);
-  box-shadow: var(--cruor-ui-panel-shadow);
-  border: var(--cruor-ui-panel-border);
-  border-top-color: var(--cruor-ui-panel-border-top);
-  background-blend-mode: overlay, overlay, normal;
-  backdrop-filter: var(--cruor-filter-glass-20-128);
-  -webkit-backdrop-filter: var(--cruor-filter-glass-20-128);
-  scrollbar-width: auto;
-  scrollbar-color: auto;
-}
-
 .monster-shell .export-stat-preview {
+  grid-column: 2;
+  justify-self: center;
   width: 100%;
+  max-width: 800px;
   border: var(--cruor-ui-panel-border);
   border-top-color: var(--cruor-ui-panel-border-top);
   background-color: var(--cruor-ui-panel-bg);
@@ -4352,36 +4147,6 @@
   border-width: 2px;
   background: var(--cruor-ui-card-bg);
   padding: 12px;
-}
-
-.monster-shell .export-readiness-card {
-  display: grid;
-  gap: 10px;
-  border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-ui-card-bg);
-  padding: 12px;
-  border-color: var(--cruor-ui-card-border);
-  background-color: var(--monster-shared-card-bg);
-  background-image: var(--monster-shared-card-image);
-  background-blend-mode: overlay, normal;
-  backdrop-filter: var(--cruor-filter-glass-10-115);
-  -webkit-backdrop-filter: var(--cruor-filter-glass-10-115);
-  box-shadow: var(--cruor-ui-card-shadow);
-}
-
-.monster-shell .export-run-sheet {
-  display: grid;
-  gap: 10px;
-  border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-ui-card-bg);
-  padding: 12px;
-  border-color: var(--cruor-ui-card-border);
-  background-color: var(--monster-shared-card-bg);
-  background-image: var(--monster-shared-card-image);
-  background-blend-mode: overlay, normal;
-  backdrop-filter: var(--cruor-filter-glass-10-115);
-  -webkit-backdrop-filter: var(--cruor-filter-glass-10-115);
-  box-shadow: var(--cruor-ui-card-shadow);
 }
 
 .monster-shell .game-role-card {
@@ -9147,7 +8912,19 @@
   }
 
   .monster-shell .export-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .monster-shell .export-stat-preview,
+  .monster-shell .monster-export-details-rail {
+    grid-column: 1;
+  }
+
+  .monster-shell .monster-export-details-rail {
+    justify-self: center;
+    width: min(800px, 100%);
+    max-height: none;
+    position: static;
   }
 
   .monster-shell .run-mode-grid {
@@ -9161,10 +8938,6 @@
 
   .monster-shell .run-panel--wide {
     grid-column: auto;
-  }
-
-  .monster-shell .export-console {
-    position: static;
   }
 
   .monster-shell .monster-navigator {
@@ -9373,14 +9146,6 @@
 
 
   .monster-shell .export-action-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .monster-shell .export-check-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .monster-shell .export-run-sheet__grid {
     grid-template-columns: 1fr;
   }
 
@@ -11253,35 +11018,6 @@
   font-weight: 450;
 }
 
-.monster-shell .cruor-stat-block__designer-notes {
-  background: var(--cruor-gradient-radial-220-0937fc0f), var(--cruor-surface-card);
-  border: 1px solid var(--cruor-color-rose-a130);
-  box-shadow: var(--cruor-shadow-box-002);
-  display: grid;
-  gap: 10px;
-  margin: 0;
-  padding: 12px;
-}
-
-.monster-shell .cruor-stat-block__designer-notes > summary {
-  align-items: center;
-  color: var(--cruor-color-hex-d0a2aa);
-  display: flex;
-  gap: 8px;
-  justify-content: space-between;
-}
-
-.monster-shell .cruor-stat-block__designer-notes div {
-  display: grid;
-  gap: 8px;
-}
-
-.monster-shell .cruor-stat-block__designer-notes p {
-  color: var(--cruor-color-text-a760);
-  font-size: var(--text-size-l);
-  line-height: 1.45;
-}
-
 .monster-shell .cruor-stat-block__section p > em {
   color: inherit;
   font-weight: inherit;
@@ -11397,7 +11133,7 @@
   gap: 6px;
 }
 
-.monster-shell .export-console > .monster-persistent-view-toolbar {
+.monster-shell .monster-export-details-rail > .monster-persistent-view-toolbar {
   margin: 0 0 14px;
   padding: 8px;
   position: relative;
@@ -11406,19 +11142,19 @@
   z-index: auto;
 }
 
-.monster-shell .export-console .monster-persistent-view-toolbar,
-.monster-shell .export-console .monster-persistent-view-toolbar__left,
-.monster-shell .export-console .monster-persistent-view-toolbar__tabs {
+.monster-shell .monster-export-details-rail .monster-persistent-view-toolbar,
+.monster-shell .monster-export-details-rail .monster-persistent-view-toolbar__left,
+.monster-shell .monster-export-details-rail .monster-persistent-view-toolbar__tabs {
   min-width: 0;
 }
 
-.monster-shell .export-console .monster-persistent-view-toolbar__left,
-.monster-shell .export-console .monster-persistent-view-toolbar__tabs {
+.monster-shell .monster-export-details-rail .monster-persistent-view-toolbar__left,
+.monster-shell .monster-export-details-rail .monster-persistent-view-toolbar__tabs {
   width: 100%;
 }
 
-.monster-shell .export-console .monster-persistent-view-toolbar__tab,
-.monster-shell .export-console .monster-persistent-view-toolbar__debug {
+.monster-shell .monster-export-details-rail .monster-persistent-view-toolbar__tab,
+.monster-shell .monster-export-details-rail .monster-persistent-view-toolbar__debug {
   flex: 1 1 auto;
   min-width: 0;
   padding-inline: 8px;

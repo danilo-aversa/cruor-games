@@ -59,20 +59,25 @@ describe("Sedlec Ossuary semantic v2 editorial pack", () => {
     ).toBe(false);
   });
 
-  it("keeps human approval explicit instead of inferring publication", () => {
+  it("records human approval without inferring publication", () => {
     expect(SEDLEC_OSSUARY_SEMANTIC_V2_MODULE.status).toBe("in-review");
     expect(SEDLEC_OSSUARY_SEMANTIC_V2_MODULE.inspiration.status).toBe(
-      "in-review",
+      "approved",
     );
     expect(
       SEDLEC_OSSUARY_SEMANTIC_V2_MODULE.provenance.migration.editorialDecision,
-    ).toBe("needs-revision");
-    expect(SEDLEC_OSSUARY_SEMANTIC_V2_PACK.metadata.humanApprovalRequired).toBe(
-      true,
+    ).toBe("approved");
+    expect(SEDLEC_OSSUARY_SEMANTIC_V2_MODULE.metadata.reviewedAt).toBe(
+      "2026-07-16",
     );
+    expect(SEDLEC_OSSUARY_SEMANTIC_V2_PACK.metadata).toMatchObject({
+      humanApprovalRequired: false,
+      editorialStatus: "approved",
+      publicationBlockers: ["image-provenance-required"],
+    });
     expect(
       SEDLEC_OSSUARY_SEMANTIC_V2_MODULE.sourceAnchor.editorialNotes.join(" "),
-    ).toMatch(/historical source|fictional transformation|human review/i);
+    ).toMatch(/historical source|fictional transformation|approved by Danilo/i);
   });
 
   it("carries normalized non-compatibility provenance on every semantic object", () => {
@@ -97,7 +102,7 @@ describe("Sedlec Ossuary semantic v2 editorial pack", () => {
     });
   });
 
-  it("is structurally publication-ready pending the human editorial decision", () => {
+  it("is structurally ready while publication remains separately gated", () => {
     SEDLEC_OSSUARY_SEMANTIC_V2_MODULE.components.forEach((component) => {
       const validate = SPECIALIZED_VALIDATORS[component.semanticType];
       expect(validate, component.semanticType).toBeTypeOf("function");

@@ -10,6 +10,7 @@ Styles include global CSS under `shared/styles/`, feature-specific CSS imported 
 - Keep the site topbar above the shared transient-navigation overlay, and temporarily lower the Home fixed section-progress controls beneath that overlay without isolating the entire workspace.
 - Provide app-wide accessibility variants through document dataset attributes.
 - Provide the canonical `ComposerSlotCard` structure and `.cruor-composer-slot-card*` visual system for reusable generator assignment slots.
+- Provide `ComposerRail`, `ComposerRailCard`, `ComposerFactRow`, and `ComposerCollapsibleSection` as the shared React structure for Composer rails, export summaries, fact rows, and collapsible rail content.
 - Style feature-specific surfaces for Darken, Map Generator, Monster Composer, Inspiration Studio, Inspirations, Home, and Crucible.
 - Keep Map Style root and flyout panels on the same sizing and button treatment by modifying the existing `location-map-toolbar__style-*` selectors rather than introducing parallel classes.
 - The room right-click style menu deliberately reuses those same `location-map-toolbar__style-*` root, section, flyout, subtitle, options, and option classes. Room-specific selectors should only handle identity metadata, nested shape flyout depth, custom-size inputs, and viewport bridges.

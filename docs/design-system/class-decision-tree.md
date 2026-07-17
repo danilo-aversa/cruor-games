@@ -64,10 +64,10 @@ Do not let a retained legacy class independently own generic dropdown visuals.
 
 ## Composer right information rail branch
 
-Does the new page need a right-side rail summarizing the current generated or configured entity?
+Does the new page need a right-side rail summarizing the current generated, configured, or final-output entity?
 
 - No: continue through the normal component decision process.
-- Yes: use `.cruor-composer-rail`, `--right`, `--info`, `.cruor-composer-rail-card`, `.cruor-composer-fact-grid`, `.cruor-composer-fact-row`, and `.cruor-composer-meter`; add `--scroll` and `.cruor-scroll-surface` to the actual scroll owner.
+- Yes: use `ComposerRail`, `ComposerRailCard`, and `ComposerFactRow` with `.cruor-composer-rail`, `--right`, `--info`, `.cruor-composer-fact-grid`, and `.cruor-composer-meter`; add `--scroll` and `.cruor-scroll-surface` to the actual scroll owner.
 
 Do not create a new feature-specific visual sidebar implementation. A feature hook may supplement the shared system only for placement, layout, required geometry, scroll ownership, behavior, and runtime/test selectors. Any reusable missing element belongs in the shared API and must be added to the [component catalog](component-catalog.md#composer-right-information-rails).
 
@@ -80,3 +80,8 @@ Does the new Composer surface represent an assignable slot with a label, count o
 - Yes: render `ComposerSlotCard` and use its `.cruor-composer-slot-card*` structure.
 
 Use component props for empty, filled, and active states. Add feature classes only for layout or mechanics such as bottom placement, missing/suggested workflow status, linked-hover behavior, or runtime/test hooks. Do not create a parallel feature-specific visual card family.
+
+## Export right-rail sections
+
+- Use `ComposerCollapsibleSection` for grouped sections in Final Output right rails.
+- Keep `ComposerRailCard` for persistent non-Export information rails.

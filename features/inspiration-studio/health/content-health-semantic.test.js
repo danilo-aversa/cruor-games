@@ -31,14 +31,14 @@ describe("Phase 7 semantic Health, Coverage and Readiness", () => {
         expect.objectContaining({ id: "recurring-sign", count: 4 }),
       ]),
     );
-    expect(report.issues).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          area: "Editorial",
-          path: "inspiration.status",
-        }),
-      ]),
-    );
+    expect(module.inspiration.status).toBe("approved");
+    expect(
+      report.issues.some(
+        (issue) =>
+          issue.area === "Editorial" &&
+          issue.path === "inspiration.status",
+      ),
+    ).toBe(false);
   });
 
   it("builds semantic matrix rows and publishes them through readiness", () => {

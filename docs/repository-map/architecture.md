@@ -76,7 +76,7 @@ The map subsystem separates data generation from visual rendering:
 
 ## Testing And Deployment
 
-CI is defined in `.github/workflows/ci.yml`: install with `npm ci`, install Playwright Chromium, run build, Vitest, and Playwright. GitHub Pages deployment is defined in `.github/workflows/deploy-pages.yml`, which builds Vite output and copies `dist/index.html` to `dist/404.html`.
+CI is defined in `.github/workflows/ci.yml` and runs on pushes to `main`, pull requests targeting `main`, and manual dispatch. The blocking architecture job validates the repository-map fingerprint, map freshness, shared content registry, and Recovery A–D semantic ownership. The blocking quality job runs lint, Monster QA, Vitest, and the production build. Browser tests run separately as a visible non-blocking job until Recovery F closes the existing browser and regression backlog. GitHub Pages deployment remains defined in `.github/workflows/deploy-pages.yml`, which builds Vite output and copies `dist/index.html` to `dist/404.html`.
 
 ## Consolidated Findings
 

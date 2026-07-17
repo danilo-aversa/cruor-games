@@ -14,7 +14,7 @@ function createProvenance({
   legacyIds = [],
   relation = "derived",
   note = "Editorially re-authored from the frozen The Mist module and its visibility, enclosure, threshold, and social-pressure vocabulary.",
-  migrationNote = "AI-assisted editorial candidate. Transformative source framing, fair navigation cues, recurring-sign variation, image provenance, and final human approval remain explicit publication gates.",
+  migrationNote = "Transformative source framing, fair navigation, and recurring-sign policy approved by Danilo on 2026-07-17. Image provenance remains a separate publication blocker.",
 } = {}) {
   return normalizeSemanticProvenance({
     sources: [
@@ -28,7 +28,7 @@ function createProvenance({
     migration: {
       fromSchema: "legacy-inspiration-module-v1",
       method: "editorially-migrated",
-      editorialDecision: "needs-revision",
+      editorialDecision: "approved",
       reviewVersion: REVIEW_VERSION,
       note: migrationNote,
     },
@@ -818,7 +818,7 @@ export const THE_MIST_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
   schemaVersion: SEMANTIC_SCHEMA_VERSIONS.CONTENT_PACK,
   id: THE_MIST_SEMANTIC_V2_PACK_ID,
   title: "The Mist Semantic Content Pack",
-  version: "0.2.0-phase8-candidate1",
+  version: "0.2.0-phase8-approved1",
   status: "draft",
   locale: "en",
   author: "Cruor Games",
@@ -858,7 +858,7 @@ export const THE_MIST_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
           "Transformative use: the White Refuge, Orientation Drift, route anchors, paired observation, copied landmarks, borrowed memories, safe protocol, and announced breach are original game structures rather than retellings.",
           "Copyright boundary: do not use source character names, town or shop names, quoted prose, distinctive scene order, adaptation-specific imagery, or recognizable creature designs.",
           "Fair-play boundary: the mist may distort perception and expectation, but the GM must preserve real map topology, state discrepancies, maintain an anchored retreat, and announce every final breach.",
-          "Publication gate: human transformative-use review and verifiable image provenance are still required.",
+          "Transformative-use and editorial review were approved by Danilo on 2026-07-17; verifiable image provenance and final visual review remain required.",
         ],
         tags: ["literary-work", "horror-fiction", "obscured-threat"],
       },
@@ -867,7 +867,7 @@ export const THE_MIST_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
         id: "inspiration-the-mist-v2",
         slug: "the-mist",
         title: "The Mist",
-        status: "in-review",
+        status: "approved",
         sourceAnchors: [THE_MIST_SEMANTIC_V2_SOURCE_ANCHOR_ID],
         sourceTypes: ["Literary Work", "Horror Fiction"],
         themes: [
@@ -925,7 +925,7 @@ export const THE_MIST_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
       metadata: {
         author: "Cruor Games",
         revision: 1,
-        reviewedAt: "",
+        reviewedAt: "2026-07-17",
         sourceFile:
           "shared/content/content-packs/the-mist-semantic-v2-pack.js",
         capabilityWaivers: [],
@@ -935,9 +935,11 @@ export const THE_MIST_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
   ],
   metadata: {
     bundled: true,
-    registryRole: "semantic-v2-editorial-candidate",
-    humanApprovalRequired: true,
+    registryRole: "semantic-v2-editorial-approved",
+    humanApprovalRequired: false,
     retainedLegacyPublicBehavior: true,
+    editorialStatus: "approved",
+    publicationBlockers: ["image-provenance-required"],
     transformativeSourceBoundary:
       "Enclosure, obscured threat, threshold pressure, and social fracture are source context; the White Refuge, Orientation Drift, copied routes, and all mechanics are original Cruor content.",
   },

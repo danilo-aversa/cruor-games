@@ -3,7 +3,7 @@ import {
   DECOMPOSITION_INSPIRATION_MODULE,
   DECOMPOSITION_INSPIRATION_MODULE_PACK_ID,
   DECOMPOSITION_REFERENCED_SOURCE_ANCHORS,
-} from "../inspiration-modules.js";
+} from "../inspiration-modules/decomposition.js";
 import { modulesToRegistryCollections } from "../inspiration-module-schema.js";
 import { SHARED_DARKEN_LOCATION_SLOTS, SHARED_MONSTER_SLOTS, SHARED_WORKFLOWS } from "../workflows.js";
 
@@ -31,7 +31,7 @@ export const DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK = createContentPack({
   id: DECOMPOSITION_INSPIRATION_MODULE_PACK_ID,
   title: "Decomposition Inspiration Module",
   summary:
-    "Pilot Inspiration Module that owns the Decomposition source anchor, public inspiration card, monster grafts, Darken components, and map region templates.",
+    "Production Inspiration Module that owns the Decomposition source anchor and public card, exposes linked modern Monster grafts, and preserves current Darken and map-region data.",
   version: "0.1.0",
   status: CONTENT_PACK_STATUS.PUBLISHED,
   locale: "en",
@@ -41,7 +41,7 @@ export const DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK = createContentPack({
   updatedAt: "2026-06-07",
   metadata: {
     bundled: true,
-    registryRole: "inspiration-module-pilot",
+    registryRole: "production-inspiration-module",
     source: "shared/content/inspiration-modules/decomposition.js",
     primarySourceAnchorId: DECOMPOSITION_INSPIRATION_MODULE.id,
   },
