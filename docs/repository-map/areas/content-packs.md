@@ -32,8 +32,19 @@ approved the pack/module on 2026-07-16; the active v0.1 registry is unchanged.
 Phase 8 batch 2 adds `decomposition-semantic-v2-pack.js` and an explicit static
 `decomposition-monster-grafts-v2.js` data source. The pack supplies Archive,
 Dark Places, and Monster capabilities without importing the legacy module at
-runtime. It remains draft/in-review pending human sign-off; the active v0.1
-Decomposition pack and public registry behavior are unchanged.
+runtime. Danilo approved revision 2 on 2026-07-17 after local QA passed. Its
+local card image remains blocked pending provenance and final alt text; the
+active v0.1 Decomposition pack and public registry behavior are unchanged.
+
+Phase 8 batch 3 adds `the-mist-semantic-v2-pack.js` as an Archive + Dark Places
+module. It converts 24 legacy location/region entries into a dependency-free
+semantic identity, Orientation Drift rule, four recurring signs, sensory and
+Read-Aloud profiles, and Session Guide. It preserves physical map topology and
+requires visible discrepancies, an anchored retreat, and an announced final
+breach. Danilo approved candidate 1 and its transformative-use boundary on
+2026-07-17 after local QA passed. Its local card image remains blocked pending
+provenance and final alt text; the active v0.1 The Mist module and public registry
+remain unchanged.
 
 ## Tests
 
@@ -41,7 +52,8 @@ Run `npm run content:validate` after legacy pack changes. For semantic v2 packs 
 
 The current Phase 8 catalog uses `npm run qa:dark-places:semantic-phase8`.
 Decomposition's isolated batch uses
-`npm run qa:dark-places:semantic-phase8-batch2`.
+`npm run qa:dark-places:semantic-phase8-batch2`; The Mist uses
+`npm run qa:dark-places:semantic-phase8-batch3`.
 
 ## Findings
 

@@ -53,7 +53,7 @@ describe("Phase 8 batch 2 — Decomposition", () => {
     expect(sources).not.toMatch(/(?:from|import\s*)["'][^"']*(?:react|svg)/i);
   });
 
-  it("uses the canonical A + D + M candidate in the Studio module catalog", () => {
+  it("uses the canonical revised A + D + M candidate in the Studio module catalog", () => {
     const module = CRUOR_INSPIRATION_MODULES.find(
       (entry) => entry.id === "decomposition",
     );
@@ -68,10 +68,15 @@ describe("Phase 8 batch 2 — Decomposition", () => {
       "monster-composer",
     ]);
     expect(validateContentPackV0_2(DECOMPOSITION_SEMANTIC_V2_PACK)).toEqual([]);
-    expect(DECOMPOSITION_SEMANTIC_V2_PACK.metadata).toMatchObject({
-      humanApprovalRequired: true,
-      retainedLegacyPublicBehavior: true,
+    expect(DECOMPOSITION_SEMANTIC_V2_PACK).toMatchObject({
+      version: "0.2.0-phase8-revision2",
+      metadata: {
+        registryRole: "semantic-v2-editorial-revision",
+        humanApprovalRequired: true,
+        retainedLegacyPublicBehavior: true,
+      },
     });
+    expect(module.metadata.revision).toBe(2);
   });
 
   it("carries explicit editorial provenance without compatibility normalization", () => {
@@ -85,12 +90,33 @@ describe("Phase 8 batch 2 — Decomposition", () => {
       expect(record.provenance.migration).toMatchObject({
         method: "editorially-migrated",
         editorialDecision: "needs-revision",
-        reviewVersion: "phase8-decomposition-editorial-candidate-v1",
+        reviewVersion: "phase8-decomposition-editorial-revision-v2",
       });
       expect(record.provenance.migration.method).not.toBe(
         "compatibility-normalized",
       );
     });
+  });
+
+  it("records the revised biological evidence boundary and image publication gate", () => {
+    const { sourceAnchor, inspiration } = DECOMPOSITION_SEMANTIC_V2_MODULE;
+
+    expect(sourceAnchor).toMatchObject({
+      kind: "other",
+      reliability: "secondary",
+      citation: {
+        url: "https://pubmed.ncbi.nlm.nih.gov/30124880/",
+      },
+    });
+    expect(sourceAnchor.citation.label).toContain("doi:10.1093/jme/tjy136");
+    expect(sourceAnchor.editorialNotes.join(" ")).toContain(
+      "doi:10.3390/insects13100879",
+    );
+    expect(sourceAnchor.editorialNotes.join(" ")).toContain(
+      "not general death-burst or called-shot rules",
+    );
+    expect(inspiration.media.imageAlt).toContain("requires visual review");
+    expect(inspiration.media.imageCredit).toContain("keep the asset unpublished");
   });
 
   it("semantically accounts for every legacy Dark Places and region component", () => {
@@ -137,6 +163,18 @@ describe("Phase 8 batch 2 — Decomposition", () => {
         legacy.monster,
       );
     });
+
+    const dangerouslyUnstable = candidateById.get("dangerously-unstable");
+    const headWeakSpot = candidateById.get("head-weak-spot");
+    expect(dangerouslyUnstable.provenance.sources[0]).toMatchObject({
+      relation: "editorial-constraint",
+    });
+    expect(dangerouslyUnstable.provenance.sources[0].note).toContain(
+      "Cruor-specific setpiece convention",
+    );
+    expect(headWeakSpot.provenance.sources[0].note).toContain(
+      "Cruor-specific called-shot exception",
+    );
   });
 
   it("round-trips the canonical Monster payload through Studio v2-only export", () => {
@@ -186,6 +224,24 @@ describe("Phase 8 batch 2 — Decomposition", () => {
     expect(atmosphere.manifestations.length).toBeGreaterThanOrEqual(3);
     expect(rules).toHaveLength(1);
     expect(rules[0].semantic.counterplay.length).toBeGreaterThan(0);
+    expect(rules[0].semantic.trigger.frequencyLimit).toContain(
+      "combat round",
+    );
+    expect(rules[0].semantic.trigger.frequencyLimit).toContain(
+      "exploration turn",
+    );
+    expect(rules[0].semantic.resolution.timing).toContain(
+      "ten-minute exploration turn",
+    );
+    expect(rules[0].semantic.reset.condition).toContain(
+      "cannot fully reset",
+    );
+    expect(rules[0].semantic.escalation.at(-1).effect).toContain(
+      "one-step countdown",
+    );
+    expect(rules[0].semantic.escalation.at(-1).effect).toContain(
+      "end of the next combat round or ten-minute exploration turn",
+    );
     expect(signs).toHaveLength(4);
     expect(sensoryVariants.length).toBeGreaterThanOrEqual(12);
     expect(representedSenses.length).toBeGreaterThanOrEqual(3);
@@ -199,6 +255,11 @@ describe("Phase 8 batch 2 — Decomposition", () => {
       4,
     );
     expect(sessionGuide.stallMoves.length).toBeGreaterThanOrEqual(3);
+    expect(
+      JSON.stringify({ identity, atmosphere, readAloud, sessionGuide }),
+    ).not.toMatch(
+      /mortuary station|case number|forensic examiners|mass-fatality emergency|controlled-decay program/i,
+    );
 
     const coverage = buildStudioSemanticCoverage(
       DECOMPOSITION_SEMANTIC_V2_MODULE,
@@ -231,20 +292,19 @@ describe("Phase 8 batch 2 — Decomposition", () => {
       determinismFailures: 0,
     });
     expect(
-      report.results.map(({ id, roomCount, fingerprint }) => ({
-        id,
-        roomCount,
-        fingerprint,
-      })),
+      report.results.map(({ id, roomCount }) => ({ id, roomCount })),
     ).toEqual([
-      { id: "crypt-baseline", roomCount: 5, fingerprint: "9e8c4247" },
-      { id: "chapel-pressure", roomCount: 7, fingerprint: "70983abe" },
-      {
-        id: "archive-low-intrusion",
-        roomCount: 6,
-        fingerprint: "4eb0bda7",
-      },
+      { id: "crypt-baseline", roomCount: 5 },
+      { id: "chapel-pressure", roomCount: 7 },
+      { id: "archive-low-intrusion", roomCount: 6 },
     ]);
+
+    const fingerprints = report.results.map(({ fingerprint }) => fingerprint);
+    fingerprints.forEach((fingerprint) => {
+      expect(fingerprint).toMatch(/^[0-9a-f]{8}$/);
+    });
+    expect(new Set(fingerprints).size).toBe(fingerprints.length);
+    expect(fingerprints).not.toEqual(["9e8c4247", "70983abe", "4eb0bda7"]);
   });
 
   it("preserves the active legacy public registry", () => {

@@ -31,17 +31,17 @@ describe("Phase 8 Inspiration v2 migration registry", () => {
     ]);
   });
 
-  it("classifies Sedlec and Decomposition as canonical v2", () => {
+  it("classifies the first four Phase 8 modules as canonical v2", () => {
     const report = buildInspirationV2MigrationAudit(CRUOR_INSPIRATION_MODULES);
 
     expect(report.summary).toEqual({
       total: 14,
-      canonicalV2: 2,
-      legacyV1: 12,
+      canonicalV2: 4,
+      legacyV1: 10,
       registryFallback: 0,
       missing: 0,
-      approved: 1,
-      awaitingEditorialApproval: 13,
+      approved: 3,
+      awaitingEditorialApproval: 11,
     });
     expect(
       report.rows.find((row) => row.moduleId === "sedlec-ossuary"),
@@ -61,9 +61,27 @@ describe("Phase 8 Inspiration v2 migration registry", () => {
       canonical: true,
       fallback: false,
     });
+    expect(
+      report.rows.find((row) => row.moduleId === "the-mist"),
+    ).toMatchObject({
+      found: true,
+      observedSchema: "cruor-inspiration-module-v2",
+      observedSourceMode: "canonical-v2",
+      canonical: true,
+      fallback: false,
+    });
+    expect(
+      report.rows.find((row) => row.moduleId === "wolf-spiders"),
+    ).toMatchObject({
+      found: true,
+      observedSchema: "cruor-inspiration-module-v2",
+      observedSourceMode: "canonical-v2",
+      canonical: true,
+      fallback: false,
+    });
   });
 
-  it("requires and records explicit human approval", () => {
+  it("records explicit human approval separately from publication blockers", () => {
     const sedlec = getInspirationV2MigrationRecord("sedlec-ossuary");
 
     expect(sedlec).toMatchObject({
@@ -79,14 +97,43 @@ describe("Phase 8 Inspiration v2 migration registry", () => {
 
     const decomposition = getInspirationV2MigrationRecord("decomposition");
     expect(decomposition).toMatchObject({
+      migrationStatus: "complete",
+      editorialStatus: "approved",
+      semanticCoverageStatus: "complete",
+      sampleQaStatus: "passed-zero-diagnostics",
+      reviewer: "Danilo",
+      reviewedAt: "2026-07-17",
+      blockingIssues: ["image-provenance-required"],
+    });
+    expect(isInspirationV2EditoriallyApproved(decomposition)).toBe(true);
+
+    const theMist = getInspirationV2MigrationRecord("the-mist");
+    expect(theMist).toMatchObject({
+      migrationStatus: "complete",
+      editorialStatus: "approved",
+      semanticCoverageStatus: "complete",
+      sampleQaStatus: "passed-zero-diagnostics",
+      reviewer: "Danilo",
+      reviewedAt: "2026-07-17",
+      blockingIssues: ["image-provenance-required"],
+    });
+    expect(isInspirationV2EditoriallyApproved(theMist)).toBe(true);
+
+    const wolfSpiders = getInspirationV2MigrationRecord("wolf-spiders");
+    expect(wolfSpiders).toMatchObject({
       migrationStatus: "candidate-ready",
       editorialStatus: "awaiting-human-signoff",
       semanticCoverageStatus: "complete",
-      sampleQaStatus: "passed-zero-diagnostics",
+      sampleQaStatus: "pending-local-verification",
       reviewer: "",
       reviewedAt: "",
-      blockingIssues: ["human-editorial-signoff-required"],
+      blockingIssues: [
+        "human-editorial-signoff-required",
+        "biological-source-review-required",
+        "monster-graft-snapshot-required",
+        "image-provenance-required",
+      ],
     });
-    expect(isInspirationV2EditoriallyApproved(decomposition)).toBe(false);
+    expect(isInspirationV2EditoriallyApproved(wolfSpiders)).toBe(false);
   });
 });

@@ -91,13 +91,55 @@ RECORDS.decomposition = Object.freeze({
   ]),
   previousSchema: "legacy-inspiration-module-v1",
   targetSchema: "cruor-inspiration-module-v2",
+  migrationStatus: "complete",
+  editorialStatus: "approved",
+  semanticCoverageStatus: "complete",
+  sampleQaStatus: "passed-zero-diagnostics",
+  reviewer: "Danilo",
+  reviewedAt: "2026-07-17",
+  blockingIssues: Object.freeze(["image-provenance-required"]),
+});
+
+RECORDS["the-mist"] = Object.freeze({
+  moduleId: "the-mist",
+  title: "The Mist",
+  sourceFiles: Object.freeze([
+    "shared/content/content-packs/the-mist-semantic-v2-pack.js",
+    "shared/content/inspiration-modules/the-mist.js",
+  ]),
+  previousSchema: "legacy-inspiration-module-v1",
+  targetSchema: "cruor-inspiration-module-v2",
+  migrationStatus: "complete",
+  editorialStatus: "approved",
+  semanticCoverageStatus: "complete",
+  sampleQaStatus: "passed-zero-diagnostics",
+  reviewer: "Danilo",
+  reviewedAt: "2026-07-17",
+  blockingIssues: Object.freeze(["image-provenance-required"]),
+});
+
+RECORDS["wolf-spiders"] = Object.freeze({
+  moduleId: "wolf-spiders",
+  title: "Wolf Spiders",
+  sourceFiles: Object.freeze([
+    "shared/content/content-packs/wolf-spiders-semantic-v2-pack.js",
+    "shared/content/content-packs/wolf-spiders-monster-grafts-v2.js",
+    "shared/content/inspiration-modules/wolf-spiders.js",
+  ]),
+  previousSchema: "legacy-inspiration-module-v1",
+  targetSchema: "cruor-inspiration-module-v2",
   migrationStatus: "candidate-ready",
   editorialStatus: "awaiting-human-signoff",
   semanticCoverageStatus: "complete",
-  sampleQaStatus: "passed-zero-diagnostics",
+  sampleQaStatus: "pending-local-verification",
   reviewer: "",
   reviewedAt: "",
-  blockingIssues: Object.freeze(["human-editorial-signoff-required"]),
+  blockingIssues: Object.freeze([
+    "human-editorial-signoff-required",
+    "biological-source-review-required",
+    "monster-graft-snapshot-required",
+    "image-provenance-required",
+  ]),
 });
 
 export const INSPIRATION_V2_MIGRATION_RECORDS = Object.freeze(RECORDS);
@@ -116,8 +158,7 @@ export function isInspirationV2EditoriallyApproved(record = {}) {
   return Boolean(
     record.editorialStatus === "approved" &&
     record.reviewer &&
-    record.reviewedAt &&
-    !record.blockingIssues?.length,
+    record.reviewedAt,
   );
 }
 

@@ -76,9 +76,21 @@ no legacy producer or consumer is removed in this batch.
 
 Phase 8 batch 2 selects the canonical Decomposition v2 module for Studio and
 module-repository consumers. Its canonical source owns 10 editorial Dark Places
-components and 26 explicit Monster graft components. The active v0.1 static
-registry still owns the public Archive and its 53 Decomposition component links;
-the legacy module and pack remain present for dual-read and regression checks.
+components and 26 explicit Monster graft components. Danilo approved revision 2
+on 2026-07-17 after sample QA passed; image provenance remains a separate
+publication blocker. The active v0.1 static registry still owns the public
+Archive and its 53 Decomposition component links; the legacy module and pack
+remain present for dual-read and regression checks.
+
+
+Phase 8 batch 3 selects the canonical The Mist v2 module for Studio and
+module-repository consumers. Its canonical source owns 10 editorial semantic
+Dark Places components that account exactly once for all 24 legacy location and
+region ids. Danilo approved candidate 1 and its transformative-use boundary on
+2026-07-17 after sample QA passed; image provenance remains a separate
+publication blocker. `static-semantic-content-packs.js` lists the pack separately
+from the active v0.1 registry. The legacy module remains available for dual-read,
+component-parity, and public-registry regression checks.
 
 ## Tests
 
@@ -99,7 +111,10 @@ warning-free semantic sample QA, and migration-state tests through
 - Confirmed: compatibility normalization is read-only and cannot produce approved editorial content.
 - Confirmed: Sedlec is the first approved canonical v2 module in the shared
   module catalog; the active legacy registry is still preserved.
-- Confirmed: Decomposition is the second canonical module and first A + D + M
-  candidate; approval remains blocked on explicit human sign-off.
+- Confirmed: Decomposition is the second approved canonical module and first
+  complete A + D + M migration; image provenance remains a publication blocker.
+- Confirmed: The Mist is the third approved canonical module and a complete A + D
+  migration; its stable-topology and transformative-use review passed, while
+  image provenance remains a publication blocker.
 - Confirmed: adapters are transitional boundaries and should be changed carefully.
 - Risk: high for schema/normalization changes because multiple features consume the output.

@@ -14527,3 +14527,242 @@ _Nessun file aggiunto._
 
 - Percorso sospetto nello ZIP: PATCH-MANIFEST.md
 
+
+---
+
+## 2026-07-17 11:51:25
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-decomposition-revision2-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-decomposition-revision2-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 8
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch2-decomposition-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/repository-map/repository-map.json`
+- `~shared/content/content-packs/decomposition-semantic-v2-pack.js`
+- `~shared/content/content-packs/decomposition-semantic-v2-phase8.test.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+
+
+---
+
+## 2026-07-17 11:51:48
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-batch3-the-mist-candidate1-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-batch3-the-mist-candidate1-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+docs/projects/dark-places-semantic-v2/phase8-batch3-the-mist-editorial-review.md`
+- `+shared/content/content-packs/the-mist-semantic-v2-pack.js`
+- `+shared/content/content-packs/the-mist-semantic-v2-phase8.test.js`
+
+**File sovrascritti:** 14
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/repository-map/architecture.md`
+- `~docs/repository-map/areas/content-packs.md`
+- `~docs/repository-map/areas/inspiration-studio.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~docs/repository-map/runtime-flows.md`
+- `~package.json`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+
+---
+
+## 2026-07-17 12:08:41
+
+**Operazione:** Apply Custom ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-decomposition-revision2-20260717.zip`
+
+**Percorso ZIP:** `h:\Users\avers\Download\cruor-games-dark-places-v2-phase8-decomposition-revision2-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+shared/content/content-packs/decomposition-semantic-v2-phase8.test.js`
+
+**File sovrascritti:** 7
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch2-decomposition-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/repository-map/repository-map.json`
+- `~shared/content/content-packs/decomposition-semantic-v2-pack.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+
+
+---
+
+## 2026-07-17 12:08:56
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-batch3-the-mist-candidate1-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-batch3-the-mist-candidate1-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+shared/content/content-packs/the-mist-semantic-v2-pack.js`
+- `+shared/content/content-packs/the-mist-semantic-v2-phase8.test.js`
+
+**File sovrascritti:** 15
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch3-the-mist-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/repository-map/architecture.md`
+- `~docs/repository-map/areas/content-packs.md`
+- `~docs/repository-map/areas/inspiration-studio.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~docs/repository-map/runtime-flows.md`
+- `~package.json`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+
+---
+
+## 2026-07-17 12:40:54
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-decomposition-the-mist-approval-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-decomposition-the-mist-approval-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 11
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch2-decomposition-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch3-the-mist-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/repository-map/areas/content-packs.md`
+- `~docs/repository-map/areas/inspiration-studio.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~docs/repository-map/runtime-flows.md`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+
+
+---
+
+## 2026-07-17 13:26:34
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-decomposition-the-mist-hotfix1-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-decomposition-the-mist-hotfix1-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~shared/content/content-packs/decomposition-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/the-mist-semantic-v2-pack.js`
+- `~shared/content/content-packs/the-mist-semantic-v2-phase8.test.js`
+
+
+---
+
+## 2026-07-17 13:35:31
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-registry-sedlec-hotfix2-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-registry-sedlec-hotfix2-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+shared/content/content-packs/sedlec-ossuary-semantic-v2-pack.test.js`
+- `+shared/content/content-packs/sedlec-ossuary-semantic-v2-phase8.test.js`
+- `+shared/content/content-packs/the-mist-inspiration-module-pack.js`
+
+**File sovrascritti:** 3
+
+- `~shared/content/content-packs/decomposition-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/the-mist-semantic-v2-phase8.test.js`
+- `~shared/content/static-registry.js`
+
+
+---
+
+## 2026-07-17 14:06:59
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-batch4-wolf-spiders-candidate1-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-batch4-wolf-spiders-candidate1-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 5
+
+- `+docs/projects/dark-places-semantic-v2/phase8-batch4-wolf-spiders-editorial-review.md`
+- `+shared/content/content-packs/wolf-spiders-inspiration-module-pack.js`
+- `+shared/content/content-packs/wolf-spiders-monster-grafts-v2.js`
+- `+shared/content/content-packs/wolf-spiders-semantic-v2-pack.js`
+- `+shared/content/content-packs/wolf-spiders-semantic-v2-phase8.test.js`
+
+**File sovrascritti:** 9
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~package.json`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-registry.js`
+- `~shared/content/static-semantic-content-packs.js`
+

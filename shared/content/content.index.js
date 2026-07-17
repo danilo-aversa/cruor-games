@@ -302,6 +302,24 @@ export {
   SEDLEC_OSSUARY_SEMANTIC_V2_PACK,
   SEDLEC_OSSUARY_SEMANTIC_V2_PACK_ID,
 } from "./content-packs/sedlec-ossuary-semantic-v2-pack.js";
+export {
+  THE_MIST_SEMANTIC_V2_MODULE,
+  THE_MIST_SEMANTIC_V2_MODULE_ID,
+  THE_MIST_SEMANTIC_V2_PACK,
+  THE_MIST_SEMANTIC_V2_PACK_ID,
+  THE_MIST_SEMANTIC_V2_SOURCE_ANCHOR_ID,
+} from "./content-packs/the-mist-semantic-v2-pack.js";
+export {
+  WOLF_SPIDERS_SEMANTIC_V2_MODULE,
+  WOLF_SPIDERS_SEMANTIC_V2_MODULE_ID,
+  WOLF_SPIDERS_SEMANTIC_V2_PACK,
+  WOLF_SPIDERS_SEMANTIC_V2_PACK_ID,
+  WOLF_SPIDERS_SEMANTIC_V2_SOURCE_ANCHOR_ID,
+} from "./content-packs/wolf-spiders-semantic-v2-pack.js";
+export {
+  WOLF_SPIDERS_MONSTER_GRAFT_V2_DEFINITIONS,
+  WOLF_SPIDERS_MONSTER_GRAFT_V2_SOURCE_MODE,
+} from "./content-packs/wolf-spiders-monster-grafts-v2.js";
 export { STATIC_SEMANTIC_CONTENT_PACKS } from "./static-semantic-content-packs.js";
 export {
   INSPIRATION_V2_MIGRATION_ORDER,

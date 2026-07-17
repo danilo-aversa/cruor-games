@@ -9,12 +9,13 @@ export const DECOMPOSITION_SEMANTIC_V2_PACK_ID = "decomposition-semantic-v2";
 export const DECOMPOSITION_SEMANTIC_V2_MODULE_ID = "decomposition";
 export const DECOMPOSITION_SEMANTIC_V2_SOURCE_ANCHOR_ID = "decomposition";
 
-const REVIEW_VERSION = "phase8-decomposition-editorial-candidate-v1";
+const REVIEW_VERSION = "phase8-decomposition-editorial-revision-v2";
 
 function createProvenance({
   legacyIds = [],
   relation = "derived",
   note = "Editorially re-authored from the frozen Decomposition module and its structured forensic-decay design vocabulary.",
+  migrationNote = "AI-assisted editorial revision. The source dossier, fantasy-facing terminology, exploration/combat cadence, and Stage 4 countdown require explicit human approval before publication.",
 } = {}) {
   return normalizeSemanticProvenance({
     sources: [
@@ -30,7 +31,7 @@ function createProvenance({
       method: "editorially-migrated",
       editorialDecision: "needs-revision",
       reviewVersion: REVIEW_VERSION,
-      note: "AI-assisted editorial candidate. A human reviewer must approve the biological framing, fictional transformation, Dark Places output, and retained Monster graft mechanics before publication.",
+      note: migrationNote,
     },
   });
 }
@@ -80,11 +81,22 @@ function createDarkPlacesComponent({
   };
 }
 
+const MONSTER_RULE_CONVENTION_NOTES = Object.freeze({
+  "dangerously-unstable":
+    "Retained as a Cruor-specific setpiece convention: the 5-in-6 self-detonation and nested 40/80-foot blast radii are intentionally exceptional and do not define the default death-burst template.",
+  "head-weak-spot":
+    "Retained as a Cruor-specific called-shot exception for this graft. The -5 attack penalty and automatic critical hit do not establish a general called-shot subsystem for other creatures.",
+});
+
 function createMonsterComponent(definition) {
+  const ruleConventionNote =
+    MONSTER_RULE_CONVENTION_NOTES[definition.id] ||
+    "The canonical v2 component preserves the authored Monster graft identity, slot, frame fit, structured rules, mechanics text, and counterplay without silently generalizing it into a site-wide rule convention.";
   const provenance = createProvenance({
     legacyIds: [definition.id],
-    relation: "mechanical-source",
-    note: "The canonical v2 component preserves the authored Monster graft identity, slot, frame fit, structured rules, mechanics text, and counterplay while moving Studio ownership to the shared v2 schema.",
+    relation: "editorial-constraint",
+    note: ruleConventionNote,
+    migrationNote: `${ruleConventionNote} Human publication approval remains required.`,
   });
   return {
     schemaVersion: SEMANTIC_SCHEMA_VERSIONS.COMPONENT,
@@ -133,26 +145,26 @@ const DARK_PLACES_COMPONENTS = [
     generation: { primary: true },
     semantic: {
       originalPurpose:
-        "A subterranean mortuary station received unidentified dead, documented ordinary postmortem change, and used lime rooms, drainage tables, and sealed ledgers to return evidence to families and magistrates.",
+        "A subterranean mortuary archive received unidentified dead, documented ordinary postmortem change, and used lime rooms, drainage tables, and sealed ledgers to return evidence to families and magistrates.",
       originalUsers: [
-        "forensic examiners",
+        "death examiners and anatomists",
         "mortuary attendants",
         "gravediggers and court clerks",
       ],
       historicalChange:
-        "During a mass-fatality emergency, officials demanded faster answers. The staff divided the station into timed chambers and began forcing bodies through controlled stages of decay, then concealed contradictory results inside a second set of ledgers.",
+        "During a season of mass death, officials demanded faster answers. The staff divided the mortuary into timed chambers and began forcing bodies through controlled stages of decay, then concealed contradictory results inside a second set of ledgers.",
       horrorTruth:
-        "The abandoned station now treats decay as a schedule rather than a consequence: every sealed chamber advances matter toward its assigned stage, including living tissue, while one impossible corpse moves backward through the record.",
+        "The abandoned mortuary now treats decay as a schedule rather than a consequence: every sealed chamber advances matter toward its assigned stage, including living tissue, while one impossible corpse moves backward through the record.",
       currentFunction:
-        "The site sorts intruders, evidence, food, wood, and flesh into a four-stage decay clock, using vents, warm walls, insects, and soft floors to announce each transition.",
+        "The mortuary sorts intruders, evidence, food, wood, and flesh into a four-stage decay clock, using vents, warm walls, insects, and soft floors to announce each transition.",
       currentConflict:
-        "A body tagged as the station's final examiner has become fresher each night, while a present-day survivor bears the same case number and is being drawn toward the sealed autopsy room.",
+        "A body tagged as the mortuary's chief death examiner has become fresher each night, while a living survivor bears the same registry number and is being drawn toward the sealed autopsy chamber.",
       playerEntryPoints: [
-        "Recover the second ledger before a patron destroys proof of the controlled-decay program.",
-        "Find the living person whose case number appears on the corpse that is decomposing backward.",
+        "Recover the second ledger before a patron destroys proof of the forced-decay practice.",
+        "Find the living person whose registry number appears on the corpse that is decomposing backward.",
       ],
       stakes: [
-        "If the fourth stage completes, the station records every living visitor as processed evidence and seals the exits.",
+        "If Final Processing completes, the mortuary records every living visitor as processed evidence and seals the exits.",
         "If the backward corpse reaches apparent life, it takes the survivor's identity while the survivor assumes the corpse's decay.",
       ],
       toneKeywords: ["clinical", "humid", "incremental", "inevitable"],
@@ -166,7 +178,7 @@ const DARK_PLACES_COMPONENTS = [
     motifs: ["sweet wet lime", "warm iron", "pressure behind stone"],
     semantic: {
       signature:
-        "The station is warm, damp, and methodical; every room smells like a different hour after death, yet the air never moves in the direction of the vents.",
+        "The mortuary is warm, damp, and methodical; every room smells like a different hour after death, yet the air never moves in the direction of the vents.",
       manifestations: [
         {
           id: "sweet-lime-breath",
@@ -219,12 +231,15 @@ const DARK_PLACES_COMPONENTS = [
           "damage-a-vent-or-warm-wall",
           "remain-in-one-room-for-ten-minutes",
         ],
-        timing: "immediately-after-event",
-        frequencyLimit: "once-per-turn",
+        timing:
+          "Immediately after a listed disturbance; outside combat, also check delay at the end of each ten-minute exploration turn.",
+        frequencyLimit:
+          "Once per combat round, or once per ten-minute exploration turn.",
       },
       state: { label: "Decay Stage", minimum: 0, maximum: 4, initial: 0 },
       resolution: {
-        timing: "end-of-round",
+        timing:
+          "At the end of each combat round; outside combat, at the end of each ten-minute exploration turn.",
         threshold: 2,
         savingThrow: {
           ability: "Constitution",
@@ -240,18 +255,19 @@ const DARK_PLACES_COMPONENTS = [
           healing: "",
           conditions: ["poisoned"],
           additionalText:
-            "On a failed save, the creature is Poisoned until the end of its next turn; at Decay Stage 4 its Speed is also reduced by 10 feet for that duration. On a success, it suffers no condition.",
+            "On a failed save, the creature is Poisoned until the end of its next turn; while Final Processing is active at Decay Stage 4, its Speed is also reduced by 10 feet for that duration. On a success, it suffers no condition.",
         },
         duration: "until-end-of-next-turn",
         range: "location",
         area: "every-living-creature-in-a-room-with-an-open-vent-or-disturbed-body",
-        frequency: "once-per-round-at-decay-stage-2-or-higher",
+        frequency:
+          "Once per combat round, or once per ten-minute exploration turn, at Decay Stage 2 or higher.",
         actionEconomy: "automatic",
       },
       counterplay: [
         {
           id: "restore-case-order",
-          actionCost: "action",
+          actionCost: "One action in combat, or one minute during exploration.",
           check: {
             ability: "Intelligence",
             skills: ["Investigation", "Medicine"],
@@ -263,7 +279,8 @@ const DARK_PLACES_COMPONENTS = [
         },
         {
           id: "cross-ventilate",
-          actionCost: "one-minute-activity",
+          actionCost:
+            "One minute during exploration, or one action from two creatures at opposed vents in the same combat round.",
           check: null,
           success:
             "Open two opposed vents without rupturing either seal and reduce Decay Stage by 1.",
@@ -271,23 +288,23 @@ const DARK_PLACES_COMPONENTS = [
       ],
       reset: {
         condition:
-          "All disturbed compartments are resealed and two opposed vents remain open for ten minutes.",
+          "Outside combat, all disturbed compartments are resealed and two opposed vents remain open for one full ten-minute exploration turn. During combat, the track can only be reduced through counterplay; it cannot fully reset.",
         value: 0,
       },
       escalation: [
         {
           at: 2,
           effect:
-            "The vents exhale sweet gas and the end-of-round Constitution save begins.",
+            "The vents exhale sweet gas. The Constitution save begins at the end of each combat round, or at the end of each ten-minute exploration turn outside combat.",
         },
         {
           at: 4,
           effect:
-            "Floors soften, exits constrict, and failed saves also reduce Speed by 10 feet.",
+            "Final Processing begins. Announce a one-step countdown: exits seal and the identity exchange completes at the end of the next combat round or ten-minute exploration turn unless Decay Stage is reduced below 4 or the ledger decision resolves the process. Until then, floors soften, exits constrict, and failed saves also reduce Speed by 10 feet.",
         },
       ],
       gmSummary:
-        "Disturbance and delay advance Decay Stage; at 2+, exposed living creatures save each round, while corrected case order and cross-ventilation lower the track.",
+        "Disturbance and delay advance Decay Stage at most once per combat round or exploration turn. At 2+, exposed living creatures save on that cadence; at 4, announce Final Processing and one full round or exploration turn of counterplay before exits seal and the identity exchange completes.",
       playerFacingSigns: [
         "Date stamps darken one stage at a time.",
         "Warm walls pulse toward the nearest open compartment.",
@@ -304,7 +321,7 @@ const DARK_PLACES_COMPONENTS = [
     semantic: {
       id: "decomposition-sign-living-veins",
       description:
-        "Branching blue lines beneath lime plaster fill and empty in time with the station's pressure system.",
+        "Branching blue lines beneath lime plaster fill and empty in time with the mortuary's pressure system.",
       placement: {
         frequency: "recurring",
         minimumRooms: 2,
@@ -315,7 +332,7 @@ const DARK_PLACES_COMPONENTS = [
       },
       variations: [
         "Blue veins rise beneath the plaster and pulse once toward the deeper rooms.",
-        "A warm line in the wall branches around a sealed case number.",
+        "A warm line in the wall branches around a sealed registry number.",
         "The vein collapses under a hand, then refills on the far side of the door.",
       ],
       interaction: {
@@ -353,9 +370,9 @@ const DARK_PLACES_COMPONENTS = [
       ],
       interaction: {
         trigger:
-          "A creature compares two appearances or records the case number.",
+          "A creature compares two appearances or records the registry number.",
         effect:
-          "The repeated scar proves the station is moving one identity through several decay stages.",
+          "The repeated scar proves the mortuary is moving one identity through several decay stages.",
         counterplay:
           "Covering the body and leaving its tag attached prevents this sign from advancing Decay Stage.",
       },
@@ -393,7 +410,7 @@ const DARK_PLACES_COMPONENTS = [
         trigger:
           "A creature reconstructs the dates with Medicine or Investigation.",
         effect:
-          "The sequence identifies the final examiner's body as the one moving backward through decay.",
+          "The sequence identifies the chief death examiner's body as the one moving backward through decay.",
         counterplay:
           "Correcting a false date in both ledgers prevents the next automatic stage advance.",
       },
@@ -554,7 +571,7 @@ const DARK_PLACES_COMPONENTS = [
           },
           {
             id: "swollen-ledger-archive",
-            text: "Shelves divide the room into narrow aisles of swollen ledgers and hanging case tags.",
+            text: "Shelves divide the room into narrow aisles of swollen ledgers and hanging registry tags.",
             roomRoles: ["clue", "secret", "final"],
             visibleFeatures: ["ledger"],
             sourceComponentId: "decomposition-read-aloud-profile",
@@ -581,7 +598,7 @@ const DARK_PLACES_COMPONENTS = [
           },
           {
             id: "case-tag-rail",
-            text: "A brass rail carries paper case tags from the entrance toward a closed examination chamber.",
+            text: "A brass rail carries paper registry tags from the entrance toward a closed autopsy chamber.",
             sourceComponentId: "decomposition-read-aloud-profile",
           },
           {
@@ -643,7 +660,7 @@ const DARK_PLACES_COMPONENTS = [
           },
           {
             id: "case-tag-hooks",
-            text: "Brass hooks hold case tags in neat columns from fresh white to dark purple.",
+            text: "Brass hooks hold registry tags in neat columns from fresh white to dark purple.",
             sourceComponentId: "decomposition-read-aloud-profile",
           },
           {
@@ -662,7 +679,7 @@ const DARK_PLACES_COMPONENTS = [
           },
           {
             id: "living-case-number",
-            text: "A new tag bears the same case number as one member of the group.",
+            text: "A new tag bears the same registry number as one member of the group.",
             tags: ["gm-only"],
             sourceComponentId: "decomposition-read-aloud-profile",
           },
@@ -739,16 +756,16 @@ const DARK_PLACES_COMPONENTS = [
     semantic: {
       openingBeat: {
         situation:
-          "A survivor arrives with a mortuary case number branded into an old scar just as the abandoned station's vents begin operating again.",
+          "A survivor arrives with a mortuary registry number cut into an old scar just as the abandoned complex's vents begin operating again.",
         immediateSignal:
           "Flies leave a shrouded corpse and settle on the survivor while a wall chart darkens from Stage 0 to Stage 1.",
         playerDecision:
-          "Follow the survivor toward the final examination room, secure the second ledger, or stop to reseal the first opened compartment.",
+          "Follow the survivor toward the sealed autopsy chamber, secure the second ledger, or stop to reseal the first opened compartment.",
       },
       objectives: [
-        "Identify why the survivor and the backward corpse share a case number.",
+        "Identify why the survivor and the backward corpse share a registry number.",
         "Keep the Accelerated Decay Clock below its fourth stage.",
-        "Recover the second ledger and decide whether to restore, expose, or destroy the station's process.",
+        "Recover the second ledger and decide whether to restore, expose, or destroy the mortuary's process.",
       ],
       alwaysOnRuleIds: ["accelerated-decay-clock"],
       pressureTrackId: "accelerated-decay-clock",
@@ -773,7 +790,7 @@ const DARK_PLACES_COMPONENTS = [
           },
         ],
         fallbackClues: [
-          "The same case number appears on two bodies at different stages.",
+          "The same registry number appears on two bodies at different stages.",
           "A warm wall pulse travels directly to the corrected ledger date.",
         ],
       },
@@ -781,7 +798,7 @@ const DARK_PLACES_COMPONENTS = [
         {
           id: "advance-decay-stage",
           trigger:
-            "The table debates after the site presents a clear route or case number.",
+            "The table debates after the site presents a clear route or registry number.",
           action:
             "Advance Decay Stage by 1 and move the wall pulse toward the survivor.",
         },
@@ -789,7 +806,7 @@ const DARK_PLACES_COMPONENTS = [
           id: "flies-choose-a-living-host",
           trigger: "The characters ignore the survivor or repeated body.",
           action:
-            "The flies form the shared case number on one living character's skin.",
+            "The flies form the shared registry number on one living character's skin.",
         },
         {
           id: "second-ledger-page",
@@ -808,7 +825,7 @@ const DARK_PLACES_COMPONENTS = [
         ],
         escalationRooms: ["location-region-2", "location-region-5"],
         climaxGuidance:
-          "At Decay Stage 4, force the identity exchange and ledger decision into the foreground instead of adding an unrelated combat.",
+          "At Decay Stage 4, announce Final Processing. The identity exchange and sealed exits resolve at the end of the next combat round or ten-minute exploration turn unless the characters reduce the track below 4 or settle the ledger decision; keep this countdown in the foreground instead of adding an unrelated combat.",
       },
     },
   }),
@@ -822,7 +839,7 @@ export const DECOMPOSITION_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
   schemaVersion: SEMANTIC_SCHEMA_VERSIONS.CONTENT_PACK,
   id: DECOMPOSITION_SEMANTIC_V2_PACK_ID,
   title: "Decomposition Semantic Content Pack",
-  version: "0.2.0-phase8-candidate",
+  version: "0.2.0-phase8-revision2",
   status: "draft",
   locale: "en",
   author: "Cruor Games",
@@ -847,20 +864,23 @@ export const DECOMPOSITION_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
         schemaVersion: SEMANTIC_SCHEMA_VERSIONS.SOURCE_ANCHOR,
         id: DECOMPOSITION_SEMANTIC_V2_SOURCE_ANCHOR_ID,
         title: "Decomposition",
-        kind: "object",
+        kind: "other",
         status: "in-review",
         citation: {
           label:
-            "Forensic decomposition — Cruor Games editorial synthesis for the Phase 8 biological-process reference",
-          accessedVersion: REVIEW_VERSION,
+            "Iancu, Dean, and Purcarea (2018), Temperature Influence on Prevailing Necrophagous Diptera and Bacterial Taxa, Journal of Medical Entomology 55(6), doi:10.1093/jme/tjy136",
+          url: "https://pubmed.ncbi.nlm.nih.gov/30124880/",
+          accessedVersion: `Accessed 2026-07-17; ${REVIEW_VERSION}`,
         },
         summary:
           "A biological-process reference focused on ordinary postmortem stages, including autolysis, putrefaction, bloating, insect activity, tissue softening, drying, and grave wax; it does not present the fictional Second Autopsy as factual forensic science.",
         reliability: "secondary",
         editorialNotes: [
-          "Source boundary: decomposition is a variable biological process shaped by temperature, moisture, access, burial, insects, and other conditions; the module avoids treating one timeline as universal.",
+          "Evidence boundary: Iancu, Dean, and Purcarea (2018; doi:10.1093/jme/tjy136) summarize how temperature, humidity, precipitation, geography, injury, insects, and bacteria affect decomposition; the module therefore avoids treating one timeline as universal.",
+          "Human-donor caution: Owings et al. (2022; doi:10.3390/insects13100879) document delayed and repeated blow-fly colonization, supporting the module's non-linear framing rather than a fixed biological clock.",
           "Fictional transformation: the self-operating mortuary, synchronized vents, four-stage pressure track, backward corpse, identity exchange, and accelerated effects are original game content.",
-          "Human review must verify biological framing, sensitivity, retained Monster mechanics, and deterministic sample output before publication.",
+          "Rules convention: Dangerously Unstable and Head Weak Spot remain scoped Cruor exceptions, not general death-burst or called-shot rules.",
+          "Publication gate: human sign-off and verifiable image provenance are still required.",
         ],
         tags: ["biological-process", "forensic-science", "postmortem-change"],
       },
@@ -886,13 +906,13 @@ export const DECOMPOSITION_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
           "gas and seepage",
         ],
         horror: ["Body Horror", "Disease Horror"],
-        contexts: ["mortuary", "crypt", "archive", "underground station"],
+        contexts: ["mortuary", "crypt", "archive", "underground complex"],
         editorial: {
           deck: "Postmortem change becomes a language of pressure, evidence, contamination, and irreversible time, with the physical process kept distinct from the module's supernatural fiction.",
           whatItIs:
             "Decomposition is the set of biological and chemical changes that alter remains after death. Rate and appearance vary with environment, access, treatment, and many other conditions, so the source is used as a vocabulary rather than a universal clock.",
           whyItDisturbs:
-            "The process makes mortality gradual and material: familiar human form becomes an environment for pressure, microbes, insects, fluids, drying, and transformation, while identity persists uneasily in records and recognisable details.",
+            "The process makes mortality gradual and material: familiar human form becomes an environment for pressure, microbes, insects, fluids, drying, and transformation, while identity persists uneasily in records and recognizable details.",
           creativeUses: [
             "Make sequence and contradiction into clues rather than using decay only as decoration.",
             "Use visible stages and environmental controls as a pressure system with concrete counterplay.",
@@ -908,9 +928,9 @@ export const DECOMPOSITION_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
           imageKey: "card-decomposition.webp",
           imageProvider: "local",
           imageAlt:
-            "Cruor Games Decomposition inspiration card using forensic-decay imagery.",
+            "Decomposition inspiration artwork from the Cruor Games local archive; descriptive alt text requires visual review before publication.",
           imageCredit:
-            "Cruor Games local archive asset; underlying image credit requires human verification before approval.",
+            "Cruor Games local archive asset. Original creator, license, and source URL are not recorded; keep the asset unpublished until provenance is verified or the image is replaced.",
           icon: "fa-biohazard",
         },
         tags: [
@@ -923,7 +943,7 @@ export const DECOMPOSITION_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
       components: [...DARK_PLACES_COMPONENTS, ...MONSTER_COMPONENTS],
       metadata: {
         author: "Cruor Games",
-        revision: 1,
+        revision: 2,
         reviewedAt: "",
         sourceFile:
           "shared/content/content-packs/decomposition-semantic-v2-pack.js",
@@ -934,7 +954,7 @@ export const DECOMPOSITION_SEMANTIC_V2_PACK = normalizeContentPackV0_2({
   ],
   metadata: {
     bundled: true,
-    registryRole: "semantic-v2-editorial-candidate",
+    registryRole: "semantic-v2-editorial-revision",
     humanApprovalRequired: true,
     retainedLegacyPublicBehavior: true,
     biologicalSourceBoundary:

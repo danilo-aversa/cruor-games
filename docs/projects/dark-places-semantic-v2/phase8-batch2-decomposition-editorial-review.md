@@ -1,41 +1,68 @@
-# Phase 8 batch 2 — Decomposition editorial review candidate
+# Phase 8 batch 2 — Decomposition editorial revision 2
 
 ## Decision
 
-Decomposition is technically complete as the second Phase 8 canonical v2
-candidate and the first module with Archive, Dark Places, and Monster Composer
-capabilities. The shared module catalog now supplies this candidate to
-Inspiration Studio. The pack, module, components, Source Anchor, and Inspiration
-remain draft/in-review. Automated QA cannot approve them.
+Decomposition revision 2 is the approved canonical v2 migration for Archive,
+Dark Places, and Monster Composer. Danilo recorded the explicit Phase 8
+editorial decision on 2026-07-17 after the repeatable local QA passed.
 
-| Tracking field    | Value                              |
-| ----------------- | ---------------------------------- |
-| Module            | `decomposition`                    |
-| Migration status  | `candidate-ready`                  |
-| Editorial status  | `awaiting-human-signoff`           |
-| Semantic coverage | `complete`                         |
-| Sample QA         | `passed-zero-diagnostics`          |
-| Reviewer          | _not assigned_                     |
-| Reviewed at       | _not recorded_                     |
-| Blocking issue    | `human-editorial-signoff-required` |
+Review state is intentionally stored in the migration registry rather than
+rewriting the canonical payload, so the module, Source Anchor, Inspiration,
+components, and pack retain their draft or `in-review` content status. The
+current local card image must not be published until its creator, license, source
+URL, and final alt text are verified or the asset is replaced.
 
-An approval must record a reviewer, date, and explicit decision. Migration
-tooling never infers those fields from passing tests.
+| Tracking field    | Value                                                       |
+| ----------------- | ----------------------------------------------------------- |
+| Module            | `decomposition`                                             |
+| Review version    | `phase8-decomposition-editorial-revision-v2`                |
+| Migration status  | `complete`                                                  |
+| Editorial status  | `approved`                                                  |
+| Semantic coverage | `complete`                                                  |
+| Sample QA         | `passed-zero-diagnostics`                                   |
+| Reviewer          | Danilo                                                      |
+| Reviewed at       | 2026-07-17                                                  |
+| Blocking issues   | image provenance                                            |
+
+The approval closes the human editorial gate. It does not infer or waive image
+rights, source attribution, licensing, or final accessibility review.
+
+## Revision scope
+
+Revision 2 changes only the canonical Decomposition v2 candidate, its Phase 8
+checks, migration state, and project documentation. It does not delete or alter
+legacy consumers, the active v0.1 Archive registry, or the retained legacy
+Monster module.
+
+The revision makes five editorial interventions:
+
+1. replaces the generic internal source label with a published forensic source;
+2. records a second human-donor study as an uncertainty check;
+3. separates exploration-turn timing from combat-round timing;
+4. gives Decay Stage 4 an announced counterplay window before resolution;
+5. identifies two exceptional Monster grafts as scoped Cruor conventions.
 
 ## Editorial source boundary
 
-The Archive candidate treats decomposition as a variable biological process,
-not a universal clock. Temperature, moisture, access, burial, insects,
-treatment, and other conditions change rate and appearance. The authored source
-framing names ordinary postmortem change—autolysis, putrefaction, bloating,
-insect activity, tissue softening, drying, and grave wax—without presenting the
-fictional scenario as forensic fact.
+The Source Anchor now cites:
 
-The Second Autopsy is original game content. Its self-operating mortuary,
-synchronized vents, four-stage pressure track, backward corpse, identity
-exchange, and accelerated effects are explicitly fictional. Human review must
-confirm the biological framing, the boundary between source and invention, the
-handling of human remains, and the local image credit.
+- Iancu, Dean, and Purcarea, “Temperature Influence on Prevailing
+  Necrophagous Diptera and Bacterial Taxa With Forensic Implications for
+  Postmortem Interval Estimation: A Review,” *Journal of Medical Entomology*
+  55(6), 2018, doi:10.1093/jme/tjy136;
+- Owings et al., “Not by the Book: Observations of Delayed Oviposition and
+  Re-Colonization of Human Remains by Blow Flies,” *Insects* 13(10), 2022,
+  doi:10.3390/insects13100879.
+
+The first source supports the statement that temperature, humidity,
+precipitation, geography, injury, insects, and microbial activity affect rate
+and appearance. The second documents delayed and repeated blow-fly colonization
+in human donors and supports the warning that decomposition is not a universal
+linear clock.
+
+The Second Autopsy remains explicit fictional game content. Its self-operating
+mortuary, synchronized vents, four-stage pressure track, backward corpse,
+identity exchange, and accelerated effects are not presented as forensic fact.
 
 ## Archive review candidate
 
@@ -50,60 +77,72 @@ handling of human remains, and the local image credit.
 - **Cautions:** avoid universal forensic claims, separate factual framing from
   supernatural acceleration, and retain evidence of personhood rather than
   using remains as anonymous decoration.
+- **Asset gate:** the current local image has no recorded original creator,
+  license, or source URL. It must remain unpublished until verified or replaced.
+  Descriptive alt text also requires visual review of the final approved asset.
 
-## Dark Places candidate
+## Dark Places revision
 
-The authored location is **The Second Autopsy**, a sealed mortuary station that
-assigns matter and living intruders to a four-stage decay schedule. It contains:
+The authored location remains **The Second Autopsy**, now described with a more
+setting-flexible mortuary vocabulary. Modern-sounding phrases such as “mortuary
+station,” “forensic examiners,” “mass-fatality emergency,” and “case number”
+have been replaced with mortuary archive, death examiners and anatomists,
+season of mass death, and registry number.
 
-- one complete Place Identity and Site Atmosphere;
-- one Accelerated Decay Clock with explicit triggers, scaling, save, duration,
-  escalation, reset, and two counterplay procedures;
-- four bounded Recurring Signs linked to actionable revelations;
-- a multi-sense profile with low, medium, and high intensity pools;
-- a Read-Aloud pool with stable unique ids and sufficient unrestricted spatial
-  anchors for seven-room builds;
-- an operational Session Guide with opening choice, objectives, rule references,
-  clue graph, fallback clues, stall moves, and route guidance.
+The Accelerated Decay Clock now has two explicit cadences:
 
-The 27 v1 location and region ids are each assigned exactly once to the
-provenance of a reviewed semantic component. The test compares the complete set
-against the retained v1 module, so no component can disappear silently.
+- **Combat:** triggers and exposure resolve at most once per combat round.
+- **Exploration:** triggers and exposure resolve at most once per ten-minute
+  exploration turn.
 
-## Monster Composer preservation
+Correcting a registry entry takes one action in combat or one minute during
+exploration. Cross-ventilation takes one minute during exploration, or two
+creatures using one action each at opposed vents in the same combat round. A
+full reset is available only outside combat after one uninterrupted ten-minute
+exploration turn with compartments resealed and opposed vents open.
 
-The candidate contains 26 explicit v2 Monster graft components. It does not
-import or assemble them from the legacy module at runtime. The retained behavior
-is distributed as follows:
+At Stage 4, **Final Processing** begins rather than resolving immediately. The GM
+announces one full combat round or ten-minute exploration turn of counterplay.
+At the end of that window, exits seal and the identity exchange completes unless
+the track has been reduced below 4 or the ledger decision has resolved the
+process.
 
-| Slot      | Grafts |
-| --------- | -----: |
-| Attack    |      4 |
-| Body      |      4 |
-| Death     |      3 |
-| Lair      |      2 |
-| Mind      |      2 |
-| Movement  |      3 |
-| Twist     |      5 |
-| Weakness  |      3 |
-| **Total** | **26** |
+## Monster Composer preservation and scoped conventions
 
-For every graft, automated parity checks compare id, slot, summary, table
-mechanics, counterplay, complete structured Monster payload, frame fit, and
-rules against the retained v1 component. A second check round-trips all 26
-through Studio draft hydration and canonical v2-only export.
+All 26 Monster grafts remain explicit canonical v2 components and preserve their
+legacy slot, summary, mechanics, counterplay, structured Monster payload, frame
+fit, and rules.
+
+Two rules receive explicit editorial classification without changing their
+mechanics:
+
+- **Dangerously Unstable** is a Cruor-specific setpiece convention. Its 5-in-6
+  self-detonation and nested 40/80-foot radii do not define the default
+  death-burst template.
+- **Head Weak Spot** is a Cruor-specific called-shot exception. Its -5 attack
+  penalty and automatic critical hit do not establish a general called-shot
+  subsystem.
+
+The approval confirms that these two exceptions are intentionally retained as
+scoped Cruor conventions.
 
 ## Deterministic sample review
 
-Each case compiles twice from the same canonical pack/module and explicit
-controls. A failure, warning, fallback, room count below five, or byte mismatch
-fails the batch.
+Revision 2 changes compiled Dark Places bytes. The three previous candidate
+fingerprints are therefore obsolete and must not be treated as approved
+snapshots.
 
-| Case                    | Context | Intrusion | Rooms | Fingerprint | Diagnostics |
-| ----------------------- | ------- | --------- | ----: | ----------- | ----------: |
-| `crypt-baseline`        | Crypt   | Medium    |     5 | `9e8c4247`  |           0 |
-| `chapel-pressure`       | Chapel  | High      |     7 | `70983abe`  |           0 |
-| `archive-low-intrusion` | Archive | Low       |     6 | `4eb0bda7`  |           0 |
+The Phase 8 test still requires:
+
+- three successful samples;
+- zero errors and zero warnings;
+- identical bytes across two compiles with the same controls;
+- the expected room counts of 5, 7, and 6;
+- valid, unique eight-character fingerprints;
+- fingerprints different from the first candidate values.
+
+The repeatable local QA passed before the approval was recorded. Fingerprints
+remain runtime-derived checks rather than publication snapshots in this batch.
 
 ## Preserved legacy behavior
 
@@ -121,18 +160,21 @@ legacy registry during staged migration.
 
 ## Batch acceptance
 
-| Requirement                                      | Status                      |
-| ------------------------------------------------ | --------------------------- |
-| Canonical A + D + M module                       | Complete                    |
-| No compatibility-normalized candidate provenance | Complete                    |
-| All 27 legacy location/region ids accounted for  | Complete                    |
-| All 26 Monster grafts preserved                  | Complete                    |
-| Studio v2-only Monster round-trip                | Complete                    |
-| Required semantic coverage                       | Complete                    |
-| Deterministic Dark Places samples                | Complete, zero diagnostics  |
-| Existing public behavior preserved               | Complete                    |
-| Human editorial sign-off                         | **Open publication gate**   |
-| Legacy deletion                                  | Not permitted in this batch |
+| Requirement                                       | Status                                      |
+| ------------------------------------------------- | ------------------------------------------- |
+| Canonical A + D + M module                        | Complete                                    |
+| Published biological source recorded              | Complete                                    |
+| Non-linear human-donor caution recorded           | Complete                                    |
+| Fantasy-facing terminology revision               | Complete                                    |
+| Exploration/combat clock cadence                  | Complete                                    |
+| Stage 4 counterplay window                        | Complete                                    |
+| All 27 legacy location/region ids accounted for   | Complete                                    |
+| All 26 Monster grafts preserved                   | Complete                                    |
+| Exceptional graft conventions identified         | Complete                                    |
+| Existing public behavior preserved                | Complete                                    |
+| Human editorial sign-off                          | Approved by Danilo on 2026-07-17             |
+| Image creator, license, source, and final alt text | **Open publication gate**                   |
+| Legacy deletion                                   | Not permitted in this batch                 |
 
 ## Repeatable QA
 
@@ -143,6 +185,8 @@ npm run qa:dark-places:semantic-phase6
 npm run qa:dark-places:semantic-phase7
 npm run content:validate
 npm run qa:dark-places:semantic-baseline
+npm run qa:dark-places:acceptance
+npm run test:run
 npm run build
 npm run docs:repo-map:check
 git diff --check

@@ -14,7 +14,11 @@ import {
   DECOMPOSITION_SEMANTIC_V2_MODULE,
 } from "./content-packs/decomposition-semantic-v2-pack.js";
 import { SEDLEC_OSSUARY_SEMANTIC_V2_MODULE } from "./content-packs/sedlec-ossuary-semantic-v2-pack.js";
+import { THE_MIST_SEMANTIC_V2_MODULE } from "./content-packs/the-mist-semantic-v2-pack.js";
+import { WOLF_SPIDERS_SEMANTIC_V2_MODULE } from "./content-packs/wolf-spiders-semantic-v2-pack.js";
 import { DECOMPOSITION_SOURCE_ANCHOR_ID } from "./inspiration-modules/decomposition.js";
+import { THE_MIST_SOURCE_ANCHOR_ID } from "./inspiration-modules/the-mist.js";
+import { WOLF_SPIDERS_SOURCE_ANCHOR_ID } from "./inspiration-modules/wolf-spiders.js";
 import {
   SEDLEC_OSSUARY_INSPIRATION_MODULE,
   SEDLEC_OSSUARY_SOURCE_ANCHOR_ID,
@@ -40,11 +44,15 @@ function getPrimaryInspirationForSourceAnchor(sourceAnchorId, inspirations = SHA
 export const EXPLICIT_INSPIRATION_MODULES = Object.freeze([
   DECOMPOSITION_SEMANTIC_V2_MODULE,
   SEDLEC_OSSUARY_SEMANTIC_V2_MODULE,
+  THE_MIST_SEMANTIC_V2_MODULE,
+  WOLF_SPIDERS_SEMANTIC_V2_MODULE,
 ].filter(Boolean));
 
 export const EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS = Object.freeze([
   DECOMPOSITION_SOURCE_ANCHOR_ID,
   SEDLEC_OSSUARY_SOURCE_ANCHOR_ID,
+  THE_MIST_SOURCE_ANCHOR_ID,
+  WOLF_SPIDERS_SOURCE_ANCHOR_ID,
 ]);
 
 export const EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET = new Set(

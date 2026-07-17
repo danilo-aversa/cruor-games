@@ -33,12 +33,14 @@ real pure compiler. Room archetype and room-design authoring consume
 validation imports those contracts directly. Studio must not depend on Map
 Generator implementation files for these schemas.
 
-Phase 8 changes the shared module catalog, not Studio's write boundary: Sedlec
-and Decomposition now enter Studio as canonical v2 modules while the remaining
-12 modules still cross the compatibility reader. Decomposition's 26 Monster
-grafts round-trip through the existing Studio editor family without a v1 write.
-The migration registry keeps technical readiness and human editorial approval
-separate.
+Phase 8 changes the shared module catalog, not Studio's write boundary: Sedlec,
+Decomposition, and The Mist now enter Studio as canonical v2 modules while the
+remaining 11 modules still cross the compatibility reader. Decomposition's 26
+Monster grafts round-trip through the existing Studio editor family without a
+v1 write. The Mist has Archive + Dark Places capability only and round-trips its
+semantic location payload without placeholder Monster data. All three canonical
+modules have explicit human approval records; the migration registry keeps those
+decisions separate from remaining image-publication blockers.
 
 ## Tests
 
@@ -50,10 +52,12 @@ semantic coverage, exact field links, compiled preview determinism, semantic
 sample QA, and migration-aware Health. Build and content validation provide
 broader integration coverage. Full pointer/keyboard browser coverage remains a
 later hardening task.
-`npm run qa:dark-places:semantic-phase8` additionally proves that Sedlec and
-Decomposition are canonical catalog entries with complete warning-free sample
-coverage. `npm run qa:dark-places:semantic-phase8-batch2` proves exact
-Decomposition graft parity and Studio v2-only round-trip behavior.
+`npm run qa:dark-places:semantic-phase8` additionally proves that Sedlec,
+Decomposition, and The Mist are canonical catalog entries with complete
+semantic coverage. `npm run qa:dark-places:semantic-phase8-batch2` proves exact
+Decomposition graft parity and Studio v2-only round-trip behavior;
+`npm run qa:dark-places:semantic-phase8-batch3` verifies The Mist provenance,
+fair-navigation constraints, A + D round trip, and deterministic sample QA.
 
 ## Findings
 

@@ -30,8 +30,8 @@ Static content packs feed `shared/content/static-registry.js`; `shared/content/r
 ## Inspiration Studio v2 Flow
 
 Inspiration Studio loads the shared module catalog for editing. In Phase 8,
-Sedlec and Decomposition are canonical v2, while the other 12 entries cross
-`normalizeSemanticContent()` before entering the v2-aware draft. A JSON file
+Sedlec, Decomposition, and The Mist are canonical v2, while the other 11 entries
+cross `normalizeSemanticContent()` before entering the v2-aware draft. A JSON file
 import may contain a canonical Content Pack v0.2,
 Inspiration Module v2, or a transitional v1 module. The Studio import adapter
 retains structured Monster graft data inside the bounded semantic details
@@ -53,12 +53,15 @@ Warnings report v1/v2 migration and semantic gaps without changing content.
 This flow does not write to the production registry or switch active Composer
 consumers.
 
-The separate Phase 8 migration registry records candidate, coverage, sample-QA,
-and human-review state. It is not serialized into authored module semantics.
-Sedlec records Danilo's approval on 2026-07-16 and is published in the separate
-semantic catalog. Decomposition is a separate in-review A + D + M candidate;
-its 26 Monster grafts use explicit v2 semantic details in Studio. The active
-v0.1 Archive registry remains unchanged.
+The separate Phase 8 migration registry records migration, coverage, sample-QA,
+human-review, and publication-blocker state. It is not serialized into authored
+module semantics. Sedlec records Danilo's approval on 2026-07-16;
+Decomposition revision 2 and The Mist candidate 1 record his approvals on
+2026-07-17 after local QA passed. Decomposition's 26 Monster grafts use explicit
+v2 semantic details in Studio. The Mist's Orientation Drift track exposes route
+evidence, discrepancies, counterplay, and the final breach without changing real
+topology. Both local card images remain blocked pending provenance and final alt
+text. The active v0.1 Archive registry remains unchanged.
 
 ## Darken A Location Flow
 

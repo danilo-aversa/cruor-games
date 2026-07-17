@@ -15,11 +15,15 @@ import { DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK } from "./content-packs/d
 import { EXISTING_INSPIRATIONS_CONTENT_PACK } from "./content-packs/existing-inspirations-pack.js";
 import { DARK_PLACES_CANONICAL_EXPANSION_CONTENT_PACK } from "./content-packs/dark-places-canonical-expansion-pack.js";
 import { SEDLEC_OSSUARY_INSPIRATION_MODULE_CONTENT_PACK } from "./content-packs/sedlec-ossuary-inspiration-module-pack.js";
+import { THE_MIST_INSPIRATION_MODULE_CONTENT_PACK } from "./content-packs/the-mist-inspiration-module-pack.js";
+import { WOLF_SPIDERS_INSPIRATION_MODULE_CONTENT_PACK } from "./content-packs/wolf-spiders-inspiration-module-pack.js";
 import { LEGACY_DARKEN_LOCATION_CONTENT_PACK } from "./content-packs/legacy-darken-location-pack.js";
 
 export const STATIC_CONTENT_PACKS = Object.freeze([
   DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK,
   SEDLEC_OSSUARY_INSPIRATION_MODULE_CONTENT_PACK,
+  THE_MIST_INSPIRATION_MODULE_CONTENT_PACK,
+  WOLF_SPIDERS_INSPIRATION_MODULE_CONTENT_PACK,
   EXISTING_INSPIRATIONS_CONTENT_PACK,
   DARK_PLACES_CANONICAL_EXPANSION_CONTENT_PACK,
   CORE_CRUOR_CONTENT_PACK,
@@ -29,13 +33,15 @@ export const STATIC_RETIRED_CONTENT_PACKS = Object.freeze([
   LEGACY_DARKEN_LOCATION_CONTENT_PACK,
 ]);
 
-export const STATIC_CONTENT_PACK_PROVENANCE = buildContentPackProvenance(STATIC_CONTENT_PACKS);
+export const STATIC_CONTENT_PACK_PROVENANCE =
+  buildContentPackProvenance(STATIC_CONTENT_PACKS);
 const STATIC_CONTENT_MIGRATION_AUDIT_PROVENANCE = buildContentPackProvenance([
   ...STATIC_CONTENT_PACKS,
   ...STATIC_RETIRED_CONTENT_PACKS,
 ]);
 
-export const STATIC_CONTENT_COLLISION_REPORT = STATIC_CONTENT_PACK_PROVENANCE.getCollisionReport();
+export const STATIC_CONTENT_COLLISION_REPORT =
+  STATIC_CONTENT_PACK_PROVENANCE.getCollisionReport();
 export const STATIC_LEGACY_MIGRATION_REPORT =
   STATIC_CONTENT_MIGRATION_AUDIT_PROVENANCE.getLegacyMigrationReport();
 
@@ -55,7 +61,8 @@ export const STATIC_CONTENT_PACK = mergeContentPacks(STATIC_CONTENT_PACKS, {
   },
 });
 
-export const STATIC_CONTENT_PACK_SUMMARY = summarizeContentPack(STATIC_CONTENT_PACK);
+export const STATIC_CONTENT_PACK_SUMMARY =
+  summarizeContentPack(STATIC_CONTENT_PACK);
 
 const STATIC_CONTENT_MIGRATION_ISSUES = [
   ...(STATIC_LEGACY_MIGRATION_REPORT.summary.activeEntries
@@ -82,7 +89,7 @@ const STATIC_CONTENT_MIGRATION_ISSUES = [
 
 export const STATIC_CONTENT_PACK_ISSUES = [
   ...STATIC_CONTENT_PACKS.flatMap((pack) =>
-    validateContentPack(pack).map((issue) => ({ ...issue, packId: pack.id }))
+    validateContentPack(pack).map((issue) => ({ ...issue, packId: pack.id })),
   ),
   ...validateContentPack(STATIC_CONTENT_PACK).map((issue) => ({
     ...issue,
@@ -91,12 +98,14 @@ export const STATIC_CONTENT_PACK_ISSUES = [
   ...STATIC_CONTENT_MIGRATION_ISSUES,
 ];
 
-const STATIC_CONTENT_REGISTRY_DATA_RAW = contentPackToRegistryData(STATIC_CONTENT_PACK);
+const STATIC_CONTENT_REGISTRY_DATA_RAW =
+  contentPackToRegistryData(STATIC_CONTENT_PACK);
 
-export const STATIC_CONTENT_REGISTRY_DATA = annotateRegistryDataWithContentPackProvenance(
-  STATIC_CONTENT_REGISTRY_DATA_RAW,
-  STATIC_CONTENT_PACK_PROVENANCE,
-);
+export const STATIC_CONTENT_REGISTRY_DATA =
+  annotateRegistryDataWithContentPackProvenance(
+    STATIC_CONTENT_REGISTRY_DATA_RAW,
+    STATIC_CONTENT_PACK_PROVENANCE,
+  );
 export const STATIC_CONTENT_REGISTRY = createRegistryFromContentPack({
   ...STATIC_CONTENT_PACK,
   collections: STATIC_CONTENT_REGISTRY_DATA,

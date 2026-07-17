@@ -4647,7 +4647,7 @@
 
 .monster-shell .monster-start-card:hover {
   transform: translateY(-2px);
-  border-color: var(--cruor-ui-card-border-active);
+  border: var(--cruor-ui-card-border-active);
   background: var(--cruor-ui-card-bg-active);
   color: var(--cruor-color-hex-fff0f2);
   box-shadow: var(--cruor-ui-card-shadow-active);

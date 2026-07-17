@@ -1,7 +1,7 @@
 {
   "name": "cruor-games",
   "private": true,
-  "version": "21.0.0a",
+  "version": "22.0.0a",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -48,8 +48,9 @@
     "content:validate:v2": "node scripts/content/validate-inspiration-modules-v2.mjs",
     "content:coverage:v2": "node scripts/content/report-semantic-coverage.mjs",
     "qa:dark-places:semantic": "node scripts/content/report-dark-places-sample-quality.mjs",
-    "qa:dark-places:semantic-phase8": "node scripts/content/audit-legacy-inspirations.mjs --expect-v2=sedlec-ossuary,decomposition && node scripts/content/migrate-inspiration-module-v2.mjs --module=sedlec-ossuary --check && node scripts/content/migrate-inspiration-module-v2.mjs --module=decomposition --check && node scripts/content/validate-inspiration-modules-v2.mjs && node scripts/content/report-semantic-coverage.mjs && node scripts/content/report-dark-places-sample-quality.mjs --fail-on-warnings && vitest run shared/content/migrations/inspiration-v2-migration-registry.test.js shared/content/content-packs/sedlec-ossuary-semantic-v2-phase8.test.js shared/content/content-packs/decomposition-semantic-v2-phase8.test.js",
-    "qa:dark-places:semantic-phase8-batch2": "node scripts/content/audit-legacy-inspirations.mjs --expect-v2=sedlec-ossuary,decomposition && node scripts/content/migrate-inspiration-module-v2.mjs --module=decomposition --check && node scripts/content/validate-inspiration-modules-v2.mjs && node scripts/content/report-semantic-coverage.mjs --module=decomposition && node scripts/content/report-dark-places-sample-quality.mjs --module=decomposition --fail-on-warnings && vitest run shared/content/migrations/inspiration-v2-migration-registry.test.js shared/content/content-packs/decomposition-semantic-v2-phase8.test.js",
+    "qa:dark-places:semantic-phase8": "node scripts/content/audit-legacy-inspirations.mjs --expect-v2=sedlec-ossuary,decomposition,the-mist,wolf-spiders && node scripts/content/migrate-inspiration-module-v2.mjs --module=sedlec-ossuary --check && node scripts/content/migrate-inspiration-module-v2.mjs --module=decomposition --check && node scripts/content/migrate-inspiration-module-v2.mjs --module=the-mist --check && node scripts/content/migrate-inspiration-module-v2.mjs --module=wolf-spiders --check && node scripts/content/validate-inspiration-modules-v2.mjs && node scripts/content/report-semantic-coverage.mjs && node scripts/content/report-dark-places-sample-quality.mjs --fail-on-warnings && vitest run shared/content/migrations/inspiration-v2-migration-registry.test.js shared/content/content-packs/sedlec-ossuary-semantic-v2-phase8.test.js shared/content/content-packs/decomposition-semantic-v2-phase8.test.js shared/content/content-packs/the-mist-semantic-v2-phase8.test.js shared/content/content-packs/wolf-spiders-semantic-v2-phase8.test.js",
+    "qa:dark-places:semantic-phase8-batch2": "node scripts/content/audit-legacy-inspirations.mjs --expect-v2=sedlec-ossuary,decomposition,the-mist,wolf-spiders && node scripts/content/migrate-inspiration-module-v2.mjs --module=decomposition --check && node scripts/content/validate-inspiration-modules-v2.mjs && node scripts/content/report-semantic-coverage.mjs --module=decomposition && node scripts/content/report-dark-places-sample-quality.mjs --module=decomposition --fail-on-warnings && vitest run shared/content/migrations/inspiration-v2-migration-registry.test.js shared/content/content-packs/decomposition-semantic-v2-phase8.test.js",
+    "qa:dark-places:semantic-phase8-batch3": "node scripts/content/audit-legacy-inspirations.mjs --expect-v2=sedlec-ossuary,decomposition,the-mist,wolf-spiders && node scripts/content/migrate-inspiration-module-v2.mjs --module=the-mist --check && node scripts/content/validate-inspiration-modules-v2.mjs && node scripts/content/report-semantic-coverage.mjs --module=the-mist && node scripts/content/report-dark-places-sample-quality.mjs --module=the-mist --fail-on-warnings && vitest run shared/content/migrations/inspiration-v2-migration-registry.test.js shared/content/content-packs/the-mist-semantic-v2-phase8.test.js",
     "vscode:clutter": "node .vscode/dev/toggle-vscode-clutter.mjs",
     "git:auto-update": "node .vscode/dev/git-auto-update.mjs",
     "git:main": "node .vscode/dev/git-auto-update.mjs main",
@@ -70,7 +71,8 @@
     "qa:room-design-gallery": "node scripts/run-room-design-gallery.mjs",
     "qa:circle-connectors": "vitest run --config scripts/vitest.circle-connectors.config.mjs --reporter=default",
     "docs:repo-map": "node scripts/repository-map/generate-repository-map.mjs",
-    "docs:repo-map:check": "node scripts/repository-map/validate-repository-map.mjs"
+    "docs:repo-map:check": "node scripts/repository-map/validate-repository-map.mjs",
+    "qa:dark-places:semantic-phase8-batch4": "node scripts/content/audit-legacy-inspirations.mjs --expect-v2=sedlec-ossuary,decomposition,the-mist,wolf-spiders && node scripts/content/migrate-inspiration-module-v2.mjs --module=wolf-spiders --check && node scripts/content/validate-inspiration-modules-v2.mjs && node scripts/content/report-semantic-coverage.mjs --module=wolf-spiders && node scripts/content/report-dark-places-sample-quality.mjs --module=wolf-spiders --fail-on-warnings && vitest run shared/content/migrations/inspiration-v2-migration-registry.test.js shared/content/content-packs/wolf-spiders-semantic-v2-phase8.test.js"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",

@@ -16,16 +16,33 @@ registry, and canonical v2-only module/pack export while preserving Monster
 graft editing. Phase 7 adds specialized schema-driven semantic editors, exact
 field-linked diagnostics, compiled deterministic Dark Places preview, and
 semantic Health/Coverage/Readiness tooling. Phase 8 uses one independently
-reviewable batch per Inspiration. Danilo approved Sedlec on 2026-07-16.
-Decomposition is the second canonical v2 catalog entry and the first A + D + M
-candidate: all 27 legacy location/region components are editorially accounted
-for, all 26 structured Monster grafts are preserved, and three deterministic
-Dark Places samples pass with zero diagnostics. Its human editorial sign-off
-remains open.
+reviewable batch per Inspiration. Danilo approved Sedlec on 2026-07-16, then
+approved Decomposition revision 2 and The Mist candidate 1 on 2026-07-17. Wolf Spiders is the fourth canonical candidate.
+Decomposition is the second complete canonical v2 catalog entry and the first
+A + D + M migration. Editorial revision 2 adds a published biological source
+dossier, non-linear human-donor caution, fantasy-facing terminology, distinct
+exploration and combat cadence, a Stage 4 counterplay window, and scoped notes
+for two exceptional Monster rules. All 27 legacy location/region components and
+all 26 structured Monster grafts remain accounted for.
+The Mist is the third complete canonical v2 catalog entry and an A + D
+migration. Its White Refuge identity, Orientation Drift procedure, four
+progressive recurring signs, and session guide preserve real map topology,
+expose discrepancies, keep an anchored retreat, and announce the final breach.
+All 24 legacy location and region components remain accounted for, and the
+transformative-use review and repeatable local QA are complete. Both modules
+remain blocked from image publication until creator, license, source URL, and
+final alt text are verified or the local assets are replaced.
+Wolf Spiders corrects the stale “Wolves in Folklore” matrix label and supplies the
+second A + D + M candidate. Its Broodward identity, Tremor Pressure, four
+progressive ecological signs, and session guide distinguish active ground
+hunting, eye shine, egg-sac and spiderling transport from supernatural Cruor
+content. All 17 Dark Places/region components and 32 Monster grafts remain
+accounted for. Monster parity currently uses an explicit shared-component bridge;
+a standalone frozen snapshot remains required before legacy removal.
 The active legacy Archive registry is preserved. The
 audited GitHub
-baseline is `main` at `c02465815b68db3651a90c809d81a90b1d03189c`
-(`20.0.0a`). The Sedlec v2 pack is editorially approved and published in the
+baseline is `main` at `952430351033b7db385cf0ef6958a9e54f50107e`
+(`21.0.0a`). The Sedlec v2 pack is editorially approved and published in the
 separate semantic catalog, but it is not added to the active legacy registry.
 The active Composer export continues to use its current v1 document.
 
@@ -45,6 +62,8 @@ The active Composer export continues to use its current v1 document.
 - [Phase 7 specialized Studio editors and compiled preview](./phase7-specialized-studio-editors-preview.md)
 - [Phase 8 batch 1 Sedlec editorial review](./phase8-batch1-sedlec-editorial-review.md)
 - [Phase 8 batch 2 Decomposition editorial review](./phase8-batch2-decomposition-editorial-review.md)
+- [Phase 8 batch 3 The Mist editorial review](./phase8-batch3-the-mist-editorial-review.md)
+- [Phase 8 batch 4 Wolf Spiders editorial review](./phase8-batch4-wolf-spiders-editorial-review.md)
 
 The deterministic Sedlec baseline is stored under
 `tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/`. The snapshot utility
@@ -80,6 +99,7 @@ npm run qa:dark-places:semantic-phase6
 npm run qa:dark-places:semantic-phase7
 npm run qa:dark-places:semantic-phase8
 npm run qa:dark-places:semantic-phase8-batch2
+npm run qa:dark-places:semantic-phase8-batch3
 ```
 
 `content:snapshot:dark-places-v2` deliberately rewrites the checked-in baseline
@@ -109,13 +129,24 @@ invalid-input diagnostics, and lossless Monster graft editing.
 coverage and exact field links, the real deterministic compiler preview,
 semantic sample QA, and migration-aware Health reporting.
 `qa:dark-places:semantic-phase8` audits all 14 migration records, verifies the
-canonical Sedlec and Decomposition bytes without writing, validates the v2
-catalog, requires full Studio semantic coverage, compiles warning-free
+canonical Sedlec, Decomposition, The Mist, and Wolf Spiders bytes without
+writing, validates the v2 catalog, requires full Studio semantic coverage,
+compiles warning-free
 deterministic samples, and protects the unchanged active Archive registry.
 `qa:dark-places:semantic-phase8-batch2` isolates the Decomposition migration,
-including exact Monster graft parity and Studio round-trip coverage. Phase 8
-remains open until each Inspiration receives its own editorial batch and human
-sign-off.
+including exact Monster graft parity, scoped rule-convention notes, revised
+clock cadence, source framing, and Studio round-trip coverage.
+`qa:dark-places:semantic-phase8-batch3` isolates The Mist, verifies exact
+24-component provenance coverage, the literary and copyright boundary, fair
+Orientation Drift cadence, stated discrepancies, stable topology, recurring-sign
+progression, Studio round trip, and warning-free deterministic samples.
+`qa:dark-places:semantic-phase8-batch4` isolates Wolf Spiders, verifies the
+correct animal-behavior source boundary, exact 49-component coverage, exact 32
+Monster-graft parity through the declared bridge, fair Tremor Pressure cadence,
+progressive ecological signs, Studio round trip, and warning-free deterministic
+samples. Phase 8 remains open until each Inspiration receives its own editorial
+batch and human sign-off; the Wolf Spiders bridge must also become an independent
+snapshot before legacy removal.
 
 ## Required QA before a phase ZIP
 

@@ -53,12 +53,14 @@ contracts still have no React, SVG, Map Generator UI, browser, or compiler
 dependency.
 
 Phase 8 uses a per-module migration boundary. The shared module catalog uses the
-authored Sedlec and Decomposition v2 modules while the active v0.1 static
-registry and all legacy files remain available; the other 12 catalog modules
-still use legacy v1. A separate migration registry tracks every module's schema,
-coverage, sample QA, reviewer, review date, and blockers without polluting
-published semantics. Node scripts audit and validate this state and invoke the
-same pure compiler used by Studio preview.
+authored Sedlec, Decomposition, and The Mist v2 modules while the active v0.1
+static registry and all legacy files remain available; the other 11 catalog
+modules still use legacy v1. A separate migration registry tracks every module's
+schema, coverage, sample QA, reviewer, review date, and blockers without
+polluting published semantics. The Mist adds a fair-navigation invariant:
+perception may drift, but authored topology remains stable, discrepancies are
+player-facing, and final breaches retain an anchored retreat. Node scripts audit
+and validate this state and invoke the same pure compiler used by Studio preview.
 
 Monster Composer still also has native graft data in `features/monster-composer/data/monster-grafts.js`; `features/monster-composer/data/monster-content-pack-feed.js` adapts shared registry components into Monster Composer concepts. This is a confirmed transitional model overlap.
 
