@@ -16,17 +16,17 @@ completion score.
 |     1 | Sedlec Ossuary            | v2 approved  |         28 |       0 |       25 |       3 |    12 |     1 | A + D           | Approved by Danilo on 2026-07-16; semantic catalog only during staged migration                           |
 |     2 | Decomposition and Decay   | v2 approved  |         53 |      26 |       24 |       3 |    12 |     1 | A + D + M       | Archive + Dark Places revision 2 approved by Danilo on 2026-07-17; 26 Monster grafts remain in the existing modern Monster catalog and are parity-checked, not copied; image publication remains blocked |
 |     3 | The Mist                  | v2 approved  |         24 |       0 |       22 |       2 |    10 |     1 | A + D           | Candidate 1 and its transformative-use boundary approved by Danilo on 2026-07-17; local image publication remains blocked pending provenance and final alt text |
-|     4 | Wolf Spiders              | pending      |         49 |      32 |       14 |       3 |     0 |     1 | A + D + M       | Candidate 1 withdrawn on 2026-07-17 because it duplicated already-modern Monster ownership; research and Dark Places draft may be reused in a clean A + D candidate |
-|     5 | Towers of Silence         | draft        |         24 |       0 |       22 |       2 |    10 |     1 | A + D           | Cultural specificity, exposure ecology, access rules, and non-exoticizing language                        |
-|     6 | Mortuary Totems           | draft        |         11 |       0 |       10 |       1 |     1 |     0 | A + D           | Material vocabulary, memorial function, taboo, and site-scale recurrence                                  |
-|     7 | Mustard Gas               | draft        |         15 |       0 |       13 |       2 |     1 |     1 | A + D           | Historical sensitivity, delayed harm, contamination pressure, and playable countermeasures                |
-|     8 | Endocannibalism           | draft        |         11 |       0 |        9 |       2 |     0 |     1 | A + D           | Anthropological care, avoid sensationalism, social meaning, and consent/context notes                     |
-|     9 | Genetic Mutations         | draft        |         15 |       0 |       14 |       1 |     5 |     0 | A + D           | Avoid disability coding, define environmental transformation, and foreground agency                       |
-|    10 | Crucifixion               | draft        |          9 |       0 |        8 |       1 |     1 |     0 | A + D           | Historical/religious context, vertical composition, restraint, and purposeful symbolism                   |
-|    11 | Impalement                | draft        |          6 |       0 |        5 |       1 |     1 |     0 | A + D           | Historical context, aftermath rather than spectacle, terrain logic, and calibrated intensity              |
-|    12 | Wax Museums               | published    |         20 |       7 |       11 |       2 |     0 |     1 | A + D + M       | Identity, likeness, heat, preservation, and performer/effigy ambiguity                                    |
-|    13 | Anthropodermic Bibliopegy | draft        |         14 |       0 |       12 |       2 |     0 |     1 | A + D           | Provenance uncertainty, museum ethics, material evidence, and non-exploitative tone                       |
-|    14 | Jikininki                 | published    |         36 |      25 |       10 |       1 |    10 |     1 | A + D + M       | Cultural specificity, hunger logic, funerary obligation, and respectful source framing                    |
+|     4 | Wolf Spiders              | v2 approved  |         49 |      32 |       14 |       3 |     0 |     1 | A + D; M ext.   | Candidate 2 approved 2026-07-17; Archive + Dark Places owned, 32 native Monster grafts externally parity-checked; image provenance remains open |
+|     5 | Towers of Silence         | v2 approved  |         24 |       0 |       22 |       2 |    10 |     1 | A + D           | Approved: bounded Zoroastrian source context, Open Reliquary, Sky Measure, zero Monster content; image provenance remains open |
+|     6 | Mortuary Totems           | v2 approved |         11 |       0 |       11 |       0 |    10 |     1 | A + D           | Approved Candidate 1: bounded source context, fair semantic system, zero Monster content; image provenance remains open |
+|     7 | Mustard Gas               | v2 approved |         15 |       0 |       15 |       0 |    10 |     1 | A + D           | Approved Candidate 1: bounded source context, fair semantic system, zero Monster content; image provenance remains open |
+|     8 | Endocannibalism           | v2 approved |         12 |       0 |       12 |       0 |    10 |     1 | A + D           | Approved Candidate 1: bounded source context, fair semantic system, zero Monster content; image provenance remains open |
+|     9 | Genetic Mutations         | v2 approved  |         15 |       0 |       14 |       1 |     5 |     0 | A + D           | Approved Candidate 1: bounded source context, fair semantic system, zero Monster content; image provenance remains open |
+|    10 | Crucifixion               | v2 approved  |          9 |       0 |        8 |       1 |     1 |     0 | A + D           | Approved Candidate 1: bounded source context, fair semantic system, zero Monster content; image provenance remains open |
+|    11 | Impalement                | v2 approved  |          6 |       0 |        5 |       1 |     1 |     0 | A + D           | Approved Candidate 1: bounded source context, fair semantic system, zero Monster content; image provenance remains open |
+|    12 | Wax Death Masks           | v2 candidate |         20 |       7 |       11 |       2 |     0 |     1 | A + D; M ext.   | Candidate 1: museum-object boundary, contested likeness, external parity to 7 native Monster grafts; review, local QA, and image provenance open |
+|    13 | Anthropodermic Bibliopegy | v2 candidate |         14 |       0 |       12 |       2 |     0 |     1 | A + D           | Candidate 1: consent, human-remains stewardship, provenance, and respectful disposition; review, local QA, and image provenance open |
+|    14 | Jikininki                 | v2 candidate |         36 |      25 |       10 |       1 |    10 |     1 | A + D; M ext.   | Candidate 1: bounded Hearn 1904 literary source, funerary duty, external parity to 25 native Monster grafts; review, local QA, and image provenance open |
 
 ## Capability decisions
 
@@ -60,48 +60,52 @@ editorial decision to `approved`.
 
 ## Phase 8 live status
 
-The machine-readable migration registry lives at
-`shared/content/migrations/inspiration-v2-migration-registry.js`. It follows the
-Phase 8 batch order in the project specification and deliberately stores review
-state outside published component data.
+The machine-readable registry now exposes all 14 Inspirations as canonical v2 modules. Eleven have an explicit human `approved` decision and three final candidates await sign-off:
 
-Sedlec is the first approved canonical v2 module in the shared module catalog.
-Its technical migration, coverage, and sample QA are complete, and Danilo
-recorded the explicit `approved` decision on 2026-07-16. Decomposition is the second approved canonical module and an Archive + Dark
-Places migration with an external link to 26 already-modern Monster grafts.
-Revision 2 records a published biological source, non-linear human-donor
-caution, distinct combat and exploration cadence, and a Stage 4 counterplay
-window without taking ownership of Monster content. The Mist is the third approved canonical
-module and a complete A + D migration. Candidate 1 records a primary literary
-source, an approved transformative-use boundary, stable real topology, paired
-route verification, visible discrepancies, four progressive recurring signs,
-and an announced Drift 4 breach with an anchored retreat. Danilo recorded both
-approvals on 2026-07-17 after repeatable local QA passed. Wolf Spiders Candidate 1 was withdrawn on 2026-07-17 after the recovery audit
-found that it bridged already-modern Monster grafts into a second semantic owner.
-Wolf Spiders is again a legacy catalog entry and a pending Phase 8 migration. Its
-32 Monster grafts remain canonical in Monster Composer; the biological research
-and Dark Places editorial draft may be reused only after removing all duplicate
-Monster ownership. Eleven modules remain `pending`; none has been silently
-normalized or approved.
+- Wax Death Masks Candidate 1;
+- Anthropodermic Bibliopegy Candidate 1;
+- Jikininki Candidate 1.
+
+Production registry behavior remains unchanged. Decomposition, Wolf Spiders, Wax Death Masks, and Jikininki keep Monster Composer data in the existing modern Monster catalog; semantic packs verify source-anchor parity but do not copy, snapshot, or re-own those grafts. Every current module owns only Inspiration Archive and Dark Places semantic content. Image provenance remains an independent publication blocker for every approved or candidate module.
 
 ## Migration sequence
 
 1. **Sedlec Ossuary:** reference implementation.
 2. **Decomposition and Decay:** biological/process A + D reference with external modern Monster parity.
 3. **The Mist:** environmental reference.
-4. **Wolf Spiders:** pending replacement A + D migration with external modern Monster parity.
-5. **Towers of Silence.**
+4. **Wolf Spiders:** approved Candidate 2 A + D migration with external modern Monster parity.
+5. **Towers of Silence:** Candidate 1 A + D migration; approved; image provenance remains open.
 6. **Mortuary Totems.**
 7. **Mustard Gas.**
 8. **Endocannibalism.**
 9. **Genetic Mutations.**
 10. **Crucifixion.**
 11. **Impalement.**
-12. **Wax Museums.**
-13. **Anthropodermic Bibliopegy.**
-14. **Jikininki.**
+12. **Wax Death Masks:** Candidate 1 A + D migration with external modern Monster parity.
+13. **Anthropodermic Bibliopegy:** Candidate 1 A + D migration with no Monster capability.
+14. **Jikininki:** Candidate 1 A + D migration with external modern Monster parity.
 15. **Legacy removal:** a separate phase after every matrix row and consumer gate
     is complete.
 
 Each numbered migration is one independently reviewable ZIP. No ZIP combines a
 content migration with legacy deletion.
+
+
+### Approval checkpoint after batch 11
+
+Genetic Mutations, Crucifixion, and Impalement were approved by Danilo on 2026-07-17 after local zero-diagnostic QA. Eleven modules are now canonical v2 and approved; Wax Death Masks, Anthropodermic Bibliopegy, and Jikininki remain pending until their final candidate patches are applied and reviewed.
+
+
+### Final-candidate checkpoint after batch 12
+
+12 of 14 modules are canonical v2. Eleven are approved and 1 final candidate(s) await sign-off. Production registry behavior remains unchanged, while Monster data for Wax Death Masks and Jikininki remains externally owned and parity-checked.
+
+
+### Final-candidate checkpoint after batch 13
+
+13 of 14 modules are canonical v2. Eleven are approved and 2 final candidate(s) await sign-off. Production registry behavior remains unchanged, while Monster data for Wax Death Masks and Jikininki remains externally owned and parity-checked.
+
+
+### Final-candidate checkpoint after batch 14
+
+14 of 14 modules are canonical v2. Eleven are approved and 3 final candidate(s) await sign-off. Production registry behavior remains unchanged, while Monster data for Wax Death Masks and Jikininki remains externally owned and parity-checked.

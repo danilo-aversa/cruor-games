@@ -63,7 +63,31 @@ const METADATA_FIELDS = Object.freeze([
   "reviewedAt",
   "sourceFile",
   "capabilityWaivers",
+  "modernCapabilityLinks",
 ]);
+
+const MODERN_CAPABILITY_LINK_FIELDS = Object.freeze([
+  "capability",
+  "expectedEntries",
+  "ownership",
+  "sourceAnchorId",
+  "sourceFile",
+  "verification",
+]);
+
+function normalizeModernCapabilityLink(value = {}) {
+  return {
+    capability: normalizeId(value.capability),
+    expectedEntries: normalizeInteger(value.expectedEntries, 0, {
+      min: 0,
+      max: 999999,
+    }),
+    ownership: cleanText(value.ownership),
+    sourceAnchorId: normalizeId(value.sourceAnchorId),
+    sourceFile: cleanText(value.sourceFile),
+    verification: cleanText(value.verification),
+  };
+}
 
 const DARK_PLACES_REQUIRED_SEMANTIC_TYPES = Object.freeze([
   "place-identity",
@@ -96,6 +120,17 @@ export function normalizeInspirationModuleV2(value = {}) {
       reviewedAt: cleanText(metadata.reviewedAt),
       sourceFile: cleanText(metadata.sourceFile),
       capabilityWaivers: normalizeStringSet(metadata.capabilityWaivers),
+      ...(Array.isArray(metadata.modernCapabilityLinks)
+        ? {
+            modernCapabilityLinks: metadata.modernCapabilityLinks
+              .map(normalizeModernCapabilityLink)
+              .sort((left, right) =>
+                `${left.capability}:${left.sourceAnchorId}:${left.sourceFile}`.localeCompare(
+                  `${right.capability}:${right.sourceAnchorId}:${right.sourceFile}`,
+                ),
+              ),
+          }
+        : {}),
     },
     provenance: normalizeSemanticProvenance(value.provenance),
   });
@@ -267,6 +302,41 @@ export function validateInspirationModuleV2(
       `${path}.metadata.capabilityWaivers`,
       issues,
     );
+    if (
+      value.metadata.modernCapabilityLinks !== undefined &&
+      requireArray(
+        value.metadata.modernCapabilityLinks,
+        `${path}.metadata.modernCapabilityLinks`,
+        issues,
+      )
+    ) {
+      value.metadata.modernCapabilityLinks.forEach((link, index) => {
+        const linkPath = `${path}.metadata.modernCapabilityLinks[${index}]`;
+        if (!requirePlainObject(link, linkPath, issues)) return;
+        collectUnknownFields(
+          link,
+          MODERN_CAPABILITY_LINK_FIELDS,
+          linkPath,
+          issues,
+        );
+        requireId(link.capability, `${linkPath}.capability`, issues);
+        requireId(link.sourceAnchorId, `${linkPath}.sourceAnchorId`, issues);
+        requireText(link.ownership, `${linkPath}.ownership`, issues);
+        requireText(link.sourceFile, `${linkPath}.sourceFile`, issues);
+        requireText(link.verification, `${linkPath}.verification`, issues);
+        if (
+          !Number.isInteger(link.expectedEntries) ||
+          link.expectedEntries < 0
+        ) {
+          pushIssue(
+            issues,
+            "module.invalid-modern-capability-count",
+            `${linkPath}.expectedEntries`,
+            "Modern capability expectedEntries must be a non-negative integer.",
+          );
+        }
+      });
+    }
   }
 
   issues.push(

@@ -663,13 +663,13 @@ function inferCondition(text) {
 
 function inferTrigger(text, section) {
   const source = cleanString(text);
-  const triggerMatch = source.match(/Trigger:\s*([^\.]+\.)/i);
+  const triggerMatch = source.match(/Trigger:\s*([^.]+\.)/i);
   if (triggerMatch) return triggerMatch[1].trim();
   if (section === "reaction") return "Unspecified reaction trigger.";
   if (section === "death") return "The creature dies or drops to 0 hit points.";
   const whenClauseMatch = source.match(/When\s+([^,.]+)(?:,|\.)/);
   if (whenClauseMatch) return `When ${whenClauseMatch[1].trim()}.`;
-  const whenMatch = source.match(/When\s+([^\.]+\.)/);
+  const whenMatch = source.match(/When\s+([^.]+\.)/);
   return whenMatch?.[0] || null;
 }
 
@@ -685,7 +685,7 @@ function inferOutcomeText(text, { resolution, damage, condition, ongoing } = {})
 
   const explicitFailure = source.match(/Failure:\s*([^]+?)(?:\s+Success:|$)/i)?.[1]?.trim();
   const explicitSuccess = source.match(/Success:\s*([^]+)$/i)?.[1]?.trim();
-  const onFailure = source.match(/On a failure,?\s*([^\.]+(?:\.[^\.]+)?)/i)?.[1]?.trim();
+  const onFailure = source.match(/On a failure,?\s*([^.]+(?:\.[^.]+)?)/i)?.[1]?.trim();
   const failure = explicitFailure || (onFailure ? onFailure.replace(/^the target/i, "The target") : null);
 
   if (failure) {

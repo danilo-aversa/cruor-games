@@ -1,4 +1,4 @@
-import { CRUOR_INSPIRATION_MODULES, buildInspirationModulesFromRegistry } from "./inspiration-modules.js";
+import { buildStudioInspirationModulesFromRegistry } from "./inspiration-modules.js";
 import {
   STATIC_CONTENT_COLLISION_REPORT,
   STATIC_CONTENT_PACK_PROVENANCE,
@@ -73,9 +73,9 @@ export function createStaticContentRepository() {
     getPackIssues: () => STATIC_CONTENT_PACK_ISSUES,
     getPackSummary: () => STATIC_CONTENT_PACK_SUMMARY,
     getInspirationModules: ({ includeRegistryFallback = true, locale } = {}) => {
-      if (!includeRegistryFallback) return CRUOR_INSPIRATION_MODULES;
       const registry = resolveRegistryLocale(STATIC_CONTENT_REGISTRY, { locale });
-      return buildInspirationModulesFromRegistry(registry, {
+      return buildStudioInspirationModulesFromRegistry(registry, {
+        includeRegistryFallback,
         packId: "static-cruor-registry",
       });
     },

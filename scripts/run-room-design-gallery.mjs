@@ -473,7 +473,7 @@ function renderProp(prop) {
     `data-room-design-required="${prop.roomDesignRequired ? "true" : "false"}"`,
     `data-room-design-modifier="${escapeHtml(prop.roomDesignModifier || "")}"`,
   ].join(" ");
-  let shape = "";
+  let shape;
   switch (prop.kind) {
     case "pit":
       shape = `<circle class="prop-ring" cx="${x}" cy="${y}" r="${half}" /><circle class="prop-inner" cx="${x}" cy="${y}" r="${q}" />`;

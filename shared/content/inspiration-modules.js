@@ -15,12 +15,40 @@ import {
 } from "./content-packs/decomposition-semantic-v2-pack.js";
 import { SEDLEC_OSSUARY_SEMANTIC_V2_MODULE } from "./content-packs/sedlec-ossuary-semantic-v2-pack.js";
 import { THE_MIST_SEMANTIC_V2_MODULE } from "./content-packs/the-mist-semantic-v2-pack.js";
+import { TOWERS_OF_SILENCE_SEMANTIC_V2_MODULE } from "./content-packs/towers-of-silence-semantic-v2-pack.js";
+import { WOLF_SPIDERS_SEMANTIC_V2_MODULE } from "./content-packs/wolf-spiders-semantic-v2-pack.js";
 import { DECOMPOSITION_SOURCE_ANCHOR_ID } from "./inspiration-modules/decomposition.js";
 import { THE_MIST_SOURCE_ANCHOR_ID } from "./inspiration-modules/the-mist.js";
+import { TOWERS_OF_SILENCE_SOURCE_ANCHOR_ID } from "./inspiration-modules/towers-of-silence.js";
 import { SEDLEC_OSSUARY_SOURCE_ANCHOR_ID } from "./inspiration-modules/sedlec-ossuary.js";
+import { WOLF_SPIDERS_SOURCE_ANCHOR_ID } from "./inspiration-modules/wolf-spiders.js";
 import { SHARED_INSPIRATIONS } from "./inspirations.js";
 import { SHARED_MONSTER_COMPONENTS } from "./monster-components.js";
 import { normalizeSourceAnchorIds, SHARED_SOURCE_ANCHORS } from "./source-anchors.js";
+import { MORTUARY_TOTEMS_SEMANTIC_V2_MODULE } from "./content-packs/mortuary-totems-semantic-v2-pack.js";
+import { MORTUARY_TOTEMS_SOURCE_ANCHOR_ID } from "./inspiration-modules/mortuary-totems.js";
+import { MUSTARD_GAS_SEMANTIC_V2_MODULE } from "./content-packs/mustard-gas-semantic-v2-pack.js";
+import { MUSTARD_GAS_SOURCE_ANCHOR_ID } from "./inspiration-modules/mustard-gas.js";
+import { ENDOCANNIBALISM_SEMANTIC_V2_MODULE } from "./content-packs/endocannibalism-semantic-v2-pack.js";
+import { ENDOCANNIBALISM_SOURCE_ANCHOR_ID } from "./inspiration-modules/endocannibalism.js";
+
+import { GENETIC_MUTATIONS_SEMANTIC_V2_MODULE } from "./content-packs/genetic-mutations-semantic-v2-pack.js";
+import { GENETIC_MUTATIONS_SOURCE_ANCHOR_ID } from "./inspiration-modules/genetic-mutations.js";
+
+import { CRUCIFIXION_SEMANTIC_V2_MODULE } from "./content-packs/crucifixion-semantic-v2-pack.js";
+import { CRUCIFIXION_SOURCE_ANCHOR_ID } from "./inspiration-modules/crucifixion.js";
+
+import { IMPALEMENT_SEMANTIC_V2_MODULE } from "./content-packs/impalement-semantic-v2-pack.js";
+import { IMPALEMENT_SOURCE_ANCHOR_ID } from "./inspiration-modules/impalement.js";
+
+import { WAX_DEATH_MASKS_SEMANTIC_V2_MODULE } from "./content-packs/wax-death-masks-semantic-v2-pack.js";
+import { WAX_DEATH_MASKS_SOURCE_ANCHOR_ID } from "./inspiration-modules/wax-death-masks.js";
+
+import { ANTHROPODERMIC_BIBLIOPEGY_SEMANTIC_V2_MODULE } from "./content-packs/anthropodermic-bibliopegy-semantic-v2-pack.js";
+import { ANTHROPODERMIC_BIBLIOPEGY_SOURCE_ANCHOR_ID } from "./inspiration-modules/anthropodermic-bibliopegy.js";
+
+import { JIKININKI_SEMANTIC_V2_MODULE } from "./content-packs/jikininki-semantic-v2-pack.js";
+import { JIKININKI_SOURCE_ANCHOR_ID } from "./inspiration-modules/jikininki.js";
 
 function asArray(value) {
   if (!value) return [];
@@ -40,12 +68,34 @@ export const SEMANTIC_MIGRATION_MODULES = Object.freeze([
   DECOMPOSITION_SEMANTIC_V2_MODULE,
   SEDLEC_OSSUARY_SEMANTIC_V2_MODULE,
   THE_MIST_SEMANTIC_V2_MODULE,
+  WOLF_SPIDERS_SEMANTIC_V2_MODULE,
+  TOWERS_OF_SILENCE_SEMANTIC_V2_MODULE,
+  MORTUARY_TOTEMS_SEMANTIC_V2_MODULE,
+  MUSTARD_GAS_SEMANTIC_V2_MODULE,
+  ENDOCANNIBALISM_SEMANTIC_V2_MODULE,
+  GENETIC_MUTATIONS_SEMANTIC_V2_MODULE,
+  CRUCIFIXION_SEMANTIC_V2_MODULE,
+  IMPALEMENT_SEMANTIC_V2_MODULE,
+  WAX_DEATH_MASKS_SEMANTIC_V2_MODULE,
+  ANTHROPODERMIC_BIBLIOPEGY_SEMANTIC_V2_MODULE,
+  JIKININKI_SEMANTIC_V2_MODULE,
 ].filter(Boolean));
 
 export const SEMANTIC_MIGRATION_MODULE_SOURCE_ANCHOR_IDS = Object.freeze([
   DECOMPOSITION_SOURCE_ANCHOR_ID,
   SEDLEC_OSSUARY_SOURCE_ANCHOR_ID,
   THE_MIST_SOURCE_ANCHOR_ID,
+  WOLF_SPIDERS_SOURCE_ANCHOR_ID,
+  TOWERS_OF_SILENCE_SOURCE_ANCHOR_ID,
+  MORTUARY_TOTEMS_SOURCE_ANCHOR_ID,
+  MUSTARD_GAS_SOURCE_ANCHOR_ID,
+  ENDOCANNIBALISM_SOURCE_ANCHOR_ID,
+  GENETIC_MUTATIONS_SOURCE_ANCHOR_ID,
+  CRUCIFIXION_SOURCE_ANCHOR_ID,
+  IMPALEMENT_SOURCE_ANCHOR_ID,
+  WAX_DEATH_MASKS_SOURCE_ANCHOR_ID,
+  ANTHROPODERMIC_BIBLIOPEGY_SOURCE_ANCHOR_ID,
+  JIKININKI_SOURCE_ANCHOR_ID,
 ]);
 
 export const SEMANTIC_MIGRATION_MODULE_SOURCE_ANCHOR_ID_SET = new Set(
@@ -121,6 +171,55 @@ export function buildInspirationModules({
         },
       }),
     );
+}
+
+function createStudioInspirationModuleView(module, registryComponents = []) {
+  const sourceAnchorId = module.sourceAnchor?.id || module.id;
+  const externalComponents = asArray(registryComponents).filter((component) =>
+    entryReferencesSourceAnchor(component, sourceAnchorId),
+  );
+  const components = uniqueById([
+    ...asArray(module.components),
+    ...externalComponents,
+  ]);
+
+  return Object.freeze({
+    ...module,
+    components: Object.freeze(components),
+    monsterGrafts: Object.freeze(
+      components.filter((component) => component.contentType === "monster-graft"),
+    ),
+    locationComponents: Object.freeze(
+      components.filter(
+        (component) => component.contentType === "location-component",
+      ),
+    ),
+    locationRegions: Object.freeze(
+      components.filter((component) => component.contentType === "location-region"),
+    ),
+  });
+}
+
+export function buildStudioInspirationModulesFromRegistry(
+  registry,
+  { includeRegistryFallback = true, packId = "static-registry" } = {},
+) {
+  if (!registry) return CRUOR_INSPIRATION_MODULES;
+
+  const canonicalViews = CRUOR_INSPIRATION_MODULES.map((module) =>
+    createStudioInspirationModuleView(module, registry.components || []),
+  );
+  if (!includeRegistryFallback) return canonicalViews;
+
+  const generatedFallbackModules = buildInspirationModules({
+    sourceAnchors: registry.sourceAnchors || [],
+    inspirations: registry.inspirations || [],
+    components: registry.components || [],
+    packId,
+    excludedSourceAnchorIds: CRUOR_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET,
+  });
+
+  return uniqueById([...canonicalViews, ...generatedFallbackModules]);
 }
 
 export function buildInspirationModulesFromRegistry(registry, { packId = "static-registry" } = {}) {

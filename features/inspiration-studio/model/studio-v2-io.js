@@ -1,6 +1,7 @@
 import {
   SEMANTIC_SCHEMA_VERSIONS,
   normalizeComponentV2,
+  normalizeLegacyComponentV2,
   normalizeContentPackV0_2,
   normalizeInspirationModuleV2,
   normalizeSemanticContent,
@@ -142,6 +143,41 @@ function getLegacyComponentsForModule(input, module) {
   });
 }
 
+function prepareMixedV2Module(module = {}) {
+  const {
+    monsterGrafts: _monsterGrafts,
+    locationComponents: _locationComponents,
+    locationRegions: _locationRegions,
+    ...canonicalModule
+  } = module;
+  const sourceAnchorId = normalizeLookupId(
+    canonicalModule.sourceAnchor?.id || canonicalModule.id,
+  );
+  return {
+    ...canonicalModule,
+    components: asArray(canonicalModule.components).map((component) => {
+      if (component?.schemaVersion === SEMANTIC_SCHEMA_VERSIONS.COMPONENT) {
+        return component;
+      }
+      const normalized = normalizeLegacyComponentV2(component, [sourceAnchorId]);
+      return enrichCompatibilityComponent(normalized, component);
+    }),
+  };
+}
+
+function prepareMixedV2Input(value) {
+  if (value?.schemaVersion === SEMANTIC_SCHEMA_VERSIONS.INSPIRATION_MODULE) {
+    return prepareMixedV2Module(value);
+  }
+  if (value?.schemaVersion === SEMANTIC_SCHEMA_VERSIONS.CONTENT_PACK) {
+    return {
+      ...value,
+      modules: asArray(value.modules).map(prepareMixedV2Module),
+    };
+  }
+  return value;
+}
+
 function createImportFailure(message, code = "studio.import-invalid-json") {
   return {
     ok: false,
@@ -182,7 +218,8 @@ export function importStudioSemanticContent(input, { moduleId = "" } = {}) {
   const parsed = parseInput(input);
   if (parsed.error) return parsed.error;
 
-  const normalized = normalizeSemanticContent(parsed.value);
+  const preparedValue = prepareMixedV2Input(parsed.value);
+  const normalized = normalizeSemanticContent(preparedValue);
   if (!normalized.value) {
     return {
       ok: false,

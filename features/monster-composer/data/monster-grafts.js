@@ -10387,12 +10387,6 @@ const DAMAGE_RULES_CONTENT_CLEANUP_OVERRIDES = {
       condition: { names: [], severity: "minor", duration: "", special: [] },
     },
   },
-  "corrosive-web": {
-    rules: {
-      areaEffect: { enabled: false },
-      condition: { names: [], severity: "minor", duration: "", special: [] },
-    },
-  },
   "face-curse": {
     rules: {
       text: {
@@ -10932,58 +10926,6 @@ export const FEATURE_ANATOMY_CONSTRAINT_OVERRIDES = {
   "shadow-web": {
     requiredAnatomy: ["web_glands", "spinnerets"],
     allowedBodyPlans: ["arachnid"],
-  },
-  "flesh-harvest": {
-    rules: {
-      resolution: { type: "none" },
-      text: {
-        effect:
-          "The creature can consume a Medium or smaller corpse using an action. For each corpse consumed this way, it gains a +1 bonus to attack rolls, damage rolls, and AC until dawn, to a maximum bonus equal to its Proficiency Bonus.",
-      },
-    },
-  },
-  "enrage-broodmother": {
-    rules: {
-      resolution: { type: "none" },
-      text: {
-        response:
-          "Roll a d6. On a 4 or higher, the monster enrages until the combat ends, gaining a bonus to attack rolls, damage rolls, speed, and jump distance.",
-      },
-    },
-  },
-  "ethereal-sight": {
-    rules: {
-      condition: { names: [], severity: "minor", duration: "", special: [] },
-    },
-  },
-  "collapsed-crawler": {
-    rules: {
-      condition: { names: [], severity: "minor", duration: "", special: [] },
-    },
-  },
-  "underbelly-weak-spot": {
-    rules: {
-      condition: { names: [], severity: "minor", duration: "", special: [] },
-    },
-  },
-  "empowered-slam": {
-    rules: {
-      condition: { names: [], severity: "minor", duration: "", special: [] },
-    },
-  },
-  "corrosive-web": {
-    rules: {
-      areaEffect: { enabled: false },
-      condition: { names: [], severity: "minor", duration: "", special: [] },
-    },
-  },
-  "face-curse": {
-    rules: {
-      text: {
-        failure: "The target has the Frightened condition until the end of its next turn. If the mask was broken before death, this does not trigger.",
-        success: "No effect.",
-      },
-    },
   },
   "venomous-spit": {
     requiredAnatomy: ["venom_glands"],

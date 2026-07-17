@@ -888,7 +888,8 @@ async function ensureServerReachable(url) {
     }
   } catch (error) {
     throw new Error(
-      `Cannot reach ${url}. Start the dev server first with: npm run dev -- --host 127.0.0.1\nOriginal error: ${error.message}`
+      `Cannot reach ${url}. Start the dev server first with: npm run dev -- --host 127.0.0.1\nOriginal error: ${error.message}`,
+      { cause: error },
     );
   }
 }

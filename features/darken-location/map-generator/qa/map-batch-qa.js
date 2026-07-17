@@ -299,7 +299,7 @@ function escapeAttribute(value = "") {
 
 function getVisualQaGalleryPreviewPath(preview = {}) {
   const rawPath = String(preview.svgPath || preview.filename || "");
-  const filename = rawPath.split(/[\/]/).pop();
+  const filename = rawPath.split(/[/]/).pop();
   return filename || "";
 }
 
@@ -1262,12 +1262,12 @@ function analyzeCueSvgByClass(svg = "", {
   const cueTagPattern = new RegExp(`<g\\b[^>]*class="[^"]*\\b${className}\\b[^"]*"[^>]*>`, "g");
   const attributePattern = /\s(data-(?:context-key|theme-key|prop-kind))="([^"]*)"/g;
   const normalizedKeyValue = normalizeVisualCueKind(keyValue);
-  let cueMatch = null;
+  let cueMatch;
   let renderedCount = 0;
 
   while ((cueMatch = cueTagPattern.exec(source))) {
     const attributes = {};
-    let attributeMatch = null;
+    let attributeMatch;
     while ((attributeMatch = attributePattern.exec(cueMatch[0]))) {
       attributes[attributeMatch[1]] = attributeMatch[2];
     }

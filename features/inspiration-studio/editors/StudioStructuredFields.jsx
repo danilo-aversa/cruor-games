@@ -50,7 +50,7 @@ export function StudioStructuredField({
   value = "",
 }) {
   const id = getStudioFieldDomId(componentId, path);
-  let control = null;
+  let control;
 
   if (type === "checkbox") {
     control = (

@@ -825,7 +825,7 @@ function renderMultiattackRules(feature, rules, computed, options = {}) {
   const attacks = Array.isArray(multiattack.attacks) ? multiattack.attacks : [];
   const total = Number(multiattack.count || attacks.reduce((sum, attack) => sum + Number(attack.count || 0), 0) || 2);
   const firstAttack = attacks[0] || {};
-  let base = "";
+  let base;
 
   if (multiattack.mode === "choice" && attacks.length > 1) {
     base = `The monster makes ${numberWord(total)} attacks, using ${formatAttackList(attacks)} in any combination.`;

@@ -1907,7 +1907,7 @@ export function createPropLayoutPlan(region, flags, budget, rng, contextKey) {
   if (budget <= 0) return [];
   const required = createRoomDesignRequiredPropPlan(region);
   const modifierProps = createRoomDesignModifierPropPlan(region);
-  let base = [];
+  let base;
   if (contextKey === "chapel")
     base = createChapelPropPlan(region, flags, budget, rng);
   else if (contextKey === "noble-house")

@@ -170,12 +170,12 @@ for (const path of files) {
     if (!argument) continue;
     let selector = argument.value;
     let evidence = "static-literal";
-    let confidence = selector.includes("\${") ? "medium" : "high";
+    let confidence = selector.includes("${") ? "medium" : "high";
     if (!argument.literal) {
       if (constants.has(selector)) {
         selector = constants.get(selector);
         evidence = "resolved-local-constant";
-        confidence = selector.includes("\${") ? "medium" : "high";
+        confidence = selector.includes("${") ? "medium" : "high";
       } else {
         dynamicSelectors.push({
           path,
@@ -202,7 +202,7 @@ for (const path of files) {
         argument.value,
         "matches",
         "static-literal",
-        argument.value.includes("\${") ? "medium" : "high",
+        argument.value.includes("${") ? "medium" : "high",
       );
     } else if (argument) {
       dynamicSelectors.push({
@@ -227,7 +227,7 @@ for (const path of files) {
         argument.value,
         "locator",
         "static-literal",
-        argument.value.includes("\${") ? "medium" : "high",
+        argument.value.includes("${") ? "medium" : "high",
       );
     } else if (argument) {
       dynamicSelectors.push({
@@ -252,7 +252,7 @@ for (const path of files) {
         "#" + argument.value,
         "getElementById",
         "static-literal",
-        argument.value.includes("\${") ? "medium" : "high",
+        argument.value.includes("${") ? "medium" : "high",
       );
     }
   }
@@ -317,7 +317,7 @@ for (const path of files) {
 
   for (const match of text.matchAll(/\.className\s*=\s*/g)) {
     const argument = readArg(text, match.index + match[0].length);
-    if (!argument || !argument.literal || argument.value.includes("\${")) continue;
+    if (!argument || !argument.literal || argument.value.includes("${")) continue;
     for (const className of argument.value
       .split(/\s+/)
       .filter((value) => /^-?[_a-zA-Z][\w-]*$/.test(value))) {
@@ -360,7 +360,7 @@ for (const path of files) {
       while (/\s/.test(text[cursor] || "")) cursor += 1;
       if (text[cursor] === ",") cursor += 1;
       const classArgument = readArg(text, cursor);
-      if (classArgument && classArgument.literal && !classArgument.value.includes("\${")) {
+      if (classArgument && classArgument.literal && !classArgument.value.includes("${")) {
         for (const className of classArgument.value
           .split(/\s+/)
           .filter((value) => /^-?[_a-zA-Z][\w-]*$/.test(value))) {
@@ -394,7 +394,7 @@ for (const path of files) {
     /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*Selectors)\s*=\s*\[([\s\S]*?)\]\s*;/g,
   )) {
     for (const stringMatch of match[2].matchAll(/(["'])(.*?)\1/g)) {
-      if (/^[.#\[]/.test(stringMatch[2].trim())) {
+      if (/^[.#[]/.test(stringMatch[2].trim())) {
         addOccurrence(
           path,
           text,

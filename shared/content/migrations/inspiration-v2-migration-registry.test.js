@@ -8,145 +8,120 @@ import {
   listInspirationV2MigrationRecords,
 } from "../content.index.js";
 
+const ORDER = [
+  "sedlec-ossuary",
+  "decomposition",
+  "the-mist",
+  "wolf-spiders",
+  "towers-of-silence",
+  "mortuary-totems",
+  "mustard-gas",
+  "endocannibalism",
+  "genetic-mutations",
+  "crucifixion",
+  "impalement",
+  "wax-death-masks",
+  "anthropodermic-bibliopegy",
+  "jikininki"
+];
+const APPROVED = ORDER.slice(0, 11);
+const CANDIDATES = [
+  "wax-death-masks",
+  "anthropodermic-bibliopegy",
+  "jikininki"
+];
+
 describe("Phase 8 Inspiration v2 migration registry", () => {
   it("tracks all 14 Inspirations in the approved batch order", () => {
-    const records = listInspirationV2MigrationRecords();
-
-    expect(records).toHaveLength(14);
-    expect(records.map((record) => record.moduleId)).toEqual([
-      "sedlec-ossuary",
-      "decomposition",
-      "the-mist",
-      "wolf-spiders",
-      "towers-of-silence",
-      "mortuary-totems",
-      "mustard-gas",
-      "endocannibalism",
-      "genetic-mutations",
-      "crucifixion",
-      "impalement",
-      "wax-death-masks",
-      "anthropodermic-bibliopegy",
-      "jikininki",
-    ]);
+    expect(listInspirationV2MigrationRecords().map((record) => record.moduleId)).toEqual(ORDER);
   });
 
-  it("classifies only the three approved Phase 8 modules as canonical v2", () => {
+  it("classifies 14 canonical v2 modules", () => {
     const report = buildInspirationV2MigrationAudit(CRUOR_INSPIRATION_MODULES);
-
     expect(report.summary).toEqual({
       total: 14,
-      canonicalV2: 3,
-      legacyV1: 11,
+      canonicalV2: 14,
+      legacyV1: 0,
       registryFallback: 0,
       missing: 0,
-      approved: 3,
-      awaitingEditorialApproval: 11,
+      approved: 11,
+      awaitingEditorialApproval: 3,
     });
-    expect(
-      report.rows.find((row) => row.moduleId === "sedlec-ossuary"),
-    ).toMatchObject({
-      found: true,
-      observedSchema: "cruor-inspiration-module-v2",
-      observedSourceMode: "canonical-v2",
-      canonical: true,
-      fallback: false,
-    });
-    expect(
-      report.rows.find((row) => row.moduleId === "decomposition"),
-    ).toMatchObject({
-      found: true,
-      observedSchema: "cruor-inspiration-module-v2",
-      observedSourceMode: "canonical-v2",
-      canonical: true,
-      fallback: false,
-    });
-    expect(
-      report.rows.find((row) => row.moduleId === "the-mist"),
-    ).toMatchObject({
-      found: true,
-      observedSchema: "cruor-inspiration-module-v2",
-      observedSourceMode: "canonical-v2",
-      canonical: true,
-      fallback: false,
-    });
-    expect(
-      report.rows.find((row) => row.moduleId === "wolf-spiders"),
-    ).toMatchObject({
-      found: true,
-      observedSchema: "legacy-inspiration-module-v1",
-      observedSourceMode: "legacy-v1",
-      canonical: false,
-      fallback: false,
+    [...APPROVED, ...CANDIDATES].forEach((moduleId) => {
+      expect(report.rows.find((row) => row.moduleId === moduleId)).toMatchObject({
+        found: true,
+        observedSchema: "cruor-inspiration-module-v2",
+        observedSourceMode: "canonical-v2",
+        canonical: true,
+        fallback: false,
+      });
     });
   });
 
-  it("records explicit human approval separately from publication blockers", () => {
-    const sedlec = getInspirationV2MigrationRecord("sedlec-ossuary");
-
-    expect(sedlec).toMatchObject({
-      migrationStatus: "complete",
-      editorialStatus: "approved",
-      semanticCoverageStatus: "complete",
-      sampleQaStatus: "passed-zero-diagnostics",
-      reviewer: "Danilo",
-      reviewedAt: "2026-07-16",
-      blockingIssues: ["image-provenance-required"],
+  it("records 11 approvals and the current final candidates", () => {
+    APPROVED.forEach((moduleId) => {
+      const record = getInspirationV2MigrationRecord(moduleId);
+      expect(record).toMatchObject({
+        migrationStatus: "complete",
+        editorialStatus: "approved",
+        semanticCoverageStatus: "complete",
+        sampleQaStatus: "passed-zero-diagnostics",
+        reviewer: "Danilo",
+        blockingIssues: ["image-provenance-required"],
+      });
+      expect(isInspirationV2EditoriallyApproved(record)).toBe(true);
     });
-    expect(isInspirationV2EditoriallyApproved(sedlec)).toBe(true);
+    {
+      const record = getInspirationV2MigrationRecord("wax-death-masks");
+      expect(record).toMatchObject({
+        migrationStatus: "candidate-ready",
+        editorialStatus: "awaiting-human-signoff",
+        semanticCoverageStatus: "complete",
+        sampleQaStatus: "pending-local-verification",
+        reviewer: "",
+        candidate: { reviewVersion: "phase8-wax-death-masks-editorial-candidate-v1" },
+      });
+      expect(isInspirationV2EditoriallyApproved(record)).toBe(false);
+    }
+    {
+      const record = getInspirationV2MigrationRecord("anthropodermic-bibliopegy");
+      expect(record).toMatchObject({
+        migrationStatus: "candidate-ready",
+        editorialStatus: "awaiting-human-signoff",
+        semanticCoverageStatus: "complete",
+        sampleQaStatus: "pending-local-verification",
+        reviewer: "",
+        candidate: { reviewVersion: "phase8-anthropodermic-bibliopegy-editorial-candidate-v1" },
+      });
+      expect(isInspirationV2EditoriallyApproved(record)).toBe(false);
+    }
+    {
+      const record = getInspirationV2MigrationRecord("jikininki");
+      expect(record).toMatchObject({
+        migrationStatus: "candidate-ready",
+        editorialStatus: "awaiting-human-signoff",
+        semanticCoverageStatus: "complete",
+        sampleQaStatus: "pending-local-verification",
+        reviewer: "",
+        candidate: { reviewVersion: "phase8-jikininki-editorial-candidate-v1" },
+      });
+      expect(isInspirationV2EditoriallyApproved(record)).toBe(false);
+    }
 
-    const decomposition = getInspirationV2MigrationRecord("decomposition");
-    expect(decomposition).toMatchObject({
-      migrationStatus: "complete",
-      editorialStatus: "approved",
-      semanticCoverageStatus: "complete",
-      sampleQaStatus: "passed-zero-diagnostics",
-      reviewer: "Danilo",
-      reviewedAt: "2026-07-17",
-      ownedSemanticCapabilities: ["inspiration-archive", "dark-places"],
-      modernCapabilityLinks: [
-        {
-          capability: "monster-composer",
-          ownership: "external-modern-source",
-          expectedEntries: 26,
-        },
-      ],
-      blockingIssues: ["image-provenance-required"],
-    });
-    expect(isInspirationV2EditoriallyApproved(decomposition)).toBe(true);
+  });
 
-    const theMist = getInspirationV2MigrationRecord("the-mist");
-    expect(theMist).toMatchObject({
-      migrationStatus: "complete",
-      editorialStatus: "approved",
-      semanticCoverageStatus: "complete",
-      sampleQaStatus: "passed-zero-diagnostics",
-      reviewer: "Danilo",
-      reviewedAt: "2026-07-17",
-      blockingIssues: ["image-provenance-required"],
-    });
-    expect(isInspirationV2EditoriallyApproved(theMist)).toBe(true);
-
-    const wolfSpiders = getInspirationV2MigrationRecord("wolf-spiders");
-    expect(wolfSpiders).toMatchObject({
-      migrationStatus: "pending",
-      editorialStatus: "not-started",
-      semanticCoverageStatus: "not-evaluated",
-      sampleQaStatus: "not-run",
-      reviewer: "",
-      reviewedAt: "",
-      modernCapabilityLinks: [
-        {
-          capability: "monster-composer",
-          ownership: "external-modern-source",
-          expectedEntries: 32,
-        },
-      ],
-      withdrawnCandidate: {
-        reviewVersion: "phase8-wolf-spiders-editorial-candidate-v1",
-        reason: "duplicated-modern-monster-ownership",
-      },
-    });
-    expect(isInspirationV2EditoriallyApproved(wolfSpiders)).toBe(false);
+  it("tracks modern Monster ownership externally", () => {
+    expect(getInspirationV2MigrationRecord("decomposition").modernCapabilityLinks).toEqual([
+      expect.objectContaining({ sourceAnchorId: "decomposition", expectedEntries: 26 }),
+    ]);
+    expect(getInspirationV2MigrationRecord("wolf-spiders").modernCapabilityLinks).toEqual([
+      expect.objectContaining({ sourceAnchorId: "wolf-spiders", expectedEntries: 32 }),
+    ]);
+    expect(getInspirationV2MigrationRecord("wax-death-masks").modernCapabilityLinks).toEqual([
+      expect.objectContaining({ sourceAnchorId: "wax-death-masks", expectedEntries: 7 }),
+    ]);
+    expect(getInspirationV2MigrationRecord("jikininki").modernCapabilityLinks).toEqual([
+      expect.objectContaining({ sourceAnchorId: "jikininki", expectedEntries: 25 }),
+    ]);
   });
 });

@@ -17,7 +17,11 @@ graft editing. Phase 7 adds specialized schema-driven semantic editors, exact
 field-linked diagnostics, compiled deterministic Dark Places preview, and
 semantic Health/Coverage/Readiness tooling. Phase 8 uses one independently
 reviewable batch per Inspiration. Danilo approved Sedlec on 2026-07-16, then
-approved Decomposition revision 2 and The Mist candidate 1 on 2026-07-17. Wolf Spiders Candidate 1 was withdrawn; the canonical frontier remains three approved modules.
+approved Decomposition revision 2, The Mist candidate 1, and Wolf Spiders
+Candidate 2 on 2026-07-17. Wolf Spiders Candidate 1 remains recorded as
+withdrawn; Candidate 2 is the fourth approved canonical v2 catalog entry.
+Towers of Silence v2 is now the fifth canonical v2 catalog entry and
+remains `in-review`.
 Decomposition is the second complete canonical v2 catalog entry. Its semantic
 pack owns Archive + Dark Places content; the existing 26 modern Monster grafts
 remain externally owned and are verified by source-anchor parity. Editorial revision 2 adds a published biological source
@@ -30,13 +34,21 @@ migration. Its White Refuge identity, Orientation Drift procedure, four
 progressive recurring signs, and session guide preserve real map topology,
 expose discrepancies, keep an anchored retreat, and announce the final breach.
 All 24 legacy location and region components remain accounted for, and the
-transformative-use review and repeatable local QA are complete. All three approved modules remain blocked from image publication until creator,
+transformative-use review and repeatable local QA are complete. All four approved modules remain blocked from image publication until creator,
 license, source URL, and final alt text are verified or the local assets are
 replaced.
 Wolf Spiders Candidate 1 was withdrawn on 2026-07-17 because it copied or
-bridged already-modern Monster Composer data into a second semantic owner. Wolf
-Spiders is again pending; its source research and Dark Places draft may be reused,
-while its 32 Monster grafts remain solely in the modern Monster catalog.
+bridged already-modern Monster Composer data into a second semantic owner.
+Candidate 2 reuses the evidence-bounded biological dossier and Dark Places draft but
+owns only Archive + Dark Places. It contains zero Monster components; its 32
+Monster grafts remain solely in the modern Monster catalog and are verified by
+external source-anchor parity. Human biological-source review and repeatable
+local sample QA are complete; image provenance remains the independent gate.
+Towers of Silence v2 owns Archive + Dark Places only. It converts a
+bounded Zoroastrian funerary and architectural source dossier into the Open
+Reliquary, Sky Measure, four recurring signs, and a session guide without
+creating Monster placeholders or requiring ritual imitation. Its cultural-source
+review, repeatable local QA, human signoff, and image provenance remain open.
 The active production Archive registry is preserved. Recovery A–D uses the fresh
 local `main` input at `6e458a4089d96eda1153ba64b9bb1e0d890bdace`
 (`22.0.0a`). The Sedlec v2 pack is editorially approved and available in the
@@ -62,6 +74,11 @@ The active Composer export continues to use its current v1 document.
 - [Phase 8 batch 2 Decomposition editorial review](./phase8-batch2-decomposition-editorial-review.md)
 - [Phase 8 batch 3 The Mist editorial review](./phase8-batch3-the-mist-editorial-review.md)
 - [Phase 8 batch 4 Wolf Spiders editorial review](./phase8-batch4-wolf-spiders-editorial-review.md)
+- [Phase 8 batch 5 Towers of Silence editorial review](./phase8-batch5-towers-of-silence-editorial-review.md)
+- [Phase 8 batch 8 Endocannibalism editorial review](./phase8-batch8-endocannibalism-editorial-review.md)
+- [Phase 8 batch 9 Genetic Mutations editorial review](./phase8-batch9-genetic-mutations-editorial-review.md)
+- [Phase 8 batch 7 Mustard Gas editorial review](./phase8-batch7-mustard-gas-editorial-review.md)
+- [Phase 8 batch 6 Mortuary Totems editorial review](./phase8-batch6-mortuary-totems-editorial-review.md)
 - [Recovery E repository map and CI gates](./recovery-e-repository-map-ci.md)
 
 The deterministic Sedlec baseline is stored under
@@ -99,6 +116,8 @@ npm run qa:dark-places:semantic-phase7
 npm run qa:dark-places:semantic-phase8
 npm run qa:dark-places:semantic-phase8-batch2
 npm run qa:dark-places:semantic-phase8-batch3
+npm run qa:dark-places:semantic-phase8-batch4
+npm run qa:dark-places:semantic-phase8-batch5
 ```
 
 `content:snapshot:dark-places-v2` deliberately rewrites the checked-in baseline
@@ -128,10 +147,9 @@ invalid-input diagnostics, and lossless Monster graft editing.
 coverage and exact field links, the real deterministic compiler preview,
 semantic sample QA, and migration-aware Health reporting.
 `qa:dark-places:semantic-phase8` audits all 14 migration records, verifies the
-canonical Sedlec, Decomposition, and The Mist bytes without
-writing, validates the v2 catalog, requires full Studio semantic coverage,
-compiles warning-free
-deterministic samples, and protects the unchanged active Archive registry.
+canonical Sedlec, Decomposition, The Mist, Wolf Spiders, and Towers of Silence
+bytes without writing, validates the v2 catalog, requires full Studio semantic coverage,
+compiles warning-free deterministic samples, and protects the unchanged active Archive registry.
 `qa:dark-places:semantic-phase8-batch2` isolates the Decomposition migration,
 including the absence of owned Monster components, parity against the external
 modern Monster catalog, revised clock cadence, source framing, and Archive + Dark
@@ -140,6 +158,8 @@ Places Studio round-trip coverage.
 24-component provenance coverage, the literary and copyright boundary, fair
 Orientation Drift cadence, stated discrepancies, stable topology, recurring-sign
 progression, Studio round trip, and warning-free deterministic samples.
+`qa:dark-places:semantic-phase8-batch4` isolates the approved Wolf Spiders Candidate 2, verifies its A + D ownership, 17-id legacy coverage, 32-graft external Monster parity, biological boundary, and warning-free deterministic samples.
+`qa:dark-places:semantic-phase8-batch5` isolates Towers of Silence v2, verifies its 24-id legacy mapping, cultural source/fiction boundary, A + D ownership, zero Monster linkage, semantic coverage, and warning-free deterministic samples.
 
 ## Required QA before a phase ZIP
 
@@ -332,3 +352,45 @@ finally {
     }
 }
 ```
+
+Mortuary Totems Candidate 1 is approved as canonical v2 with Archive + Dark Places ownership only, zero Monster linkage, 11 legacy ids mapped exactly once, and independent human/source/QA/image publication gates.
+
+Mustard Gas Candidate 1 is approved as canonical v2 with Archive + Dark Places ownership only, zero Monster linkage, 15 legacy ids mapped exactly once, and independent human/source/QA/image publication gates.
+
+Endocannibalism Candidate 1 is approved as canonical v2 with Archive + Dark Places ownership only, zero Monster linkage, 12 legacy ids mapped exactly once, and independent human/source/QA/image publication gates.
+
+### Phase 8 approvals recorded — 2026-07-17
+
+Mortuary Totems Candidate 1, Mustard Gas Candidate 1, and Endocannibalism Candidate 1 were approved by Danilo after local zero-diagnostic QA. Their only remaining publication blocker is image provenance.
+
+Genetic Mutations Candidate 1 is included as canonical v2 with Archive + Dark Places ownership only, zero Monster linkage, 15 legacy ids mapped exactly once, and independent human/source/QA/image publication gates.
+
+- [Phase 8 batch 10 Crucifixion editorial review](./phase8-batch10-crucifixion-editorial-review.md)
+
+Crucifixion Candidate 1 is included as canonical v2 with Archive + Dark Places ownership only, zero Monster linkage, 9 legacy ids mapped exactly once, and independent human/source/QA/image publication gates.
+
+- [Phase 8 batch 11 Impalement editorial review](./phase8-batch11-impalement-editorial-review.md)
+
+Impalement Candidate 1 is included as canonical v2 with Archive + Dark Places ownership only, zero Monster linkage, 6 legacy ids mapped exactly once, and independent human/source/QA/image publication gates.
+
+
+### Phase 8 approvals recorded — batches 9–11 — 2026-07-17
+
+Genetic Mutations Candidate 1, Crucifixion Candidate 1, and Impalement Candidate 1 were approved by Danilo after local zero-diagnostic QA. Each owns Inspiration Archive + Dark Places only, contains zero Monster payload, and retains only `image-provenance-required` as a publication blocker.
+
+- [Phase 8 batch 12 Wax Death Masks editorial review](./phase8-batch12-wax-death-masks-editorial-review.md)
+
+Wax Death Masks Candidate 1 is included as canonical v2 with Archive + Dark Places ownership only, zero embedded Monster payload, and independent human/source/QA/image publication gates.
+
+- [Phase 8 batch 13 Anthropodermic Bibliopegy editorial review](./phase8-batch13-anthropodermic-bibliopegy-editorial-review.md)
+
+Anthropodermic Bibliopegy Candidate 1 is included as canonical v2 with Archive + Dark Places ownership only, zero embedded Monster payload, and independent human/source/QA/image publication gates.
+
+- [Phase 8 batch 14 Jikininki editorial review](./phase8-batch14-jikininki-editorial-review.md)
+
+Jikininki Candidate 1 is included as canonical v2 with Archive + Dark Places ownership only, zero embedded Monster payload, and independent human/source/QA/image publication gates.
+
+
+### Phase 8 final candidate frontier — 2026-07-17
+
+All 14 Inspirations are now represented by canonical v2 modules. Eleven are approved and the final three—Wax Death Masks, Anthropodermic Bibliopegy, and Jikininki—are Candidate 1 modules awaiting the final combined local QA and human sign-off. Production behavior remains unchanged; Wax Death Masks and Jikininki verify their native Monster catalogs externally rather than copying grafts into Dark Places packs.

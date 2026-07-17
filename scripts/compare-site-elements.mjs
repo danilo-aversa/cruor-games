@@ -194,7 +194,7 @@ async function readJsonIfExists(filePath) {
     return JSON.parse(await fs.readFile(filePath, 'utf8'));
   } catch (error) {
     if (error.code === 'ENOENT') return null;
-    throw new Error(`Could not read JSON file ${filePath}: ${error.message}`);
+    throw new Error(`Could not read JSON file ${filePath}: ${error.message}`, { cause: error });
   }
 }
 
@@ -846,7 +846,7 @@ async function importPlaywright() {
   try {
     return await import('playwright');
   } catch (error) {
-    throw new Error(`Playwright is required for element comparison. Install it once with:\n\n  npm i -D playwright\n  npx playwright install chromium\n\nOriginal import error: ${error.message}`);
+    throw new Error(`Playwright is required for element comparison. Install it once with:\n\n  npm i -D playwright\n  npx playwright install chromium\n\nOriginal import error: ${error.message}`, { cause: error });
   }
 }
 

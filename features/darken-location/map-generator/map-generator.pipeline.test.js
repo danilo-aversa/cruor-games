@@ -634,8 +634,8 @@ describe("map generator pipeline", () => {
       "map-generator.page.jsx",
     );
     const mapPage = readSourceText(pagePath);
-    const updateRoomLevelBody = mapPage.match(/function updateRoomLevel\([\s\S]*?\n  }\n\n  function resetRoomLevel/)?.[0] || "";
-    const resetRoomLevelBody = mapPage.match(/function resetRoomLevel\([\s\S]*?\n  }\n\n  function setGridRenderingStyle/)?.[0] || "";
+    const updateRoomLevelBody = mapPage.match(/function updateRoomLevel\([\s\S]*?\n {2}}\n\n {2}function resetRoomLevel/)?.[0] || "";
+    const resetRoomLevelBody = mapPage.match(/function resetRoomLevel\([\s\S]*?\n {2}}\n\n {2}function setGridRenderingStyle/)?.[0] || "";
     const qaRoomLevelSetBody = getTaggedManualOverrideUpdateBody(
       mapPage,
       "qaRoomLevelStairs:setLevels",
@@ -1150,11 +1150,11 @@ describe("map generator pipeline", () => {
     const mapPage = readSourceText(pagePath);
     const resetBody =
       mapPage.match(
-        /function resetStairMarkerPosition\([\s\S]*?\n  }\n\n  function removeStairMarker/,
+        /function resetStairMarkerPosition\([\s\S]*?\n {2}}\n\n {2}function removeStairMarker/,
       )?.[0] || "";
     const removeBody =
       mapPage.match(
-        /function removeStairMarker\([\s\S]*?\n  }\n\n  function moveRoom/,
+        /function removeStairMarker\([\s\S]*?\n {2}}\n\n {2}function moveRoom/,
       )?.[0] || "";
 
     expect(mapPage).toContain("onStairMarkerContextMenu");
@@ -1182,7 +1182,7 @@ describe("map generator pipeline", () => {
         /function createGenerationManualOverrides\([\s\S]*?\n}\n\nfunction createLockedGenerationManualSnapshot/,
       )?.[0] || "";
     const moveStairMarkerBody =
-      mapPage.match(/function moveStairMarker\([\s\S]*?\n  }\n\n  function moveRoom/)?.[0] || "";
+      mapPage.match(/function moveStairMarker\([\s\S]*?\n {2}}\n\n {2}function moveRoom/)?.[0] || "";
 
     expect(generationOverrideBody).toContain("delete generationOverrides.stairMarkers");
     expect(moveStairMarkerBody).toContain("updateManualOverridesWithHistory");

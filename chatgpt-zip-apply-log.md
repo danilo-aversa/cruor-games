@@ -15134,3 +15134,667 @@ _Nessun file aggiunto._
 - `~index.html`
 - `~tests/e2e/home-boot-screen.spec.js`
 
+
+---
+
+## 2026-07-17 18:20:45
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-recovery-f-eslint-hotfix-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-recovery-f-eslint-hotfix-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 14
+
+- `~docs/design-system/audit/.selector-audit-generator.cjs`
+- `~eslint.config.js`
+- `~features/darken-location/map-generator/map-generator.details.js`
+- `~features/darken-location/map-generator/map-generator.pipeline.test.js`
+- `~features/darken-location/map-generator/qa/map-batch-qa.js`
+- `~features/inspiration-studio/editors/StudioStructuredFields.jsx`
+- `~features/monster-composer/data/monster-grafts.js`
+- `~features/monster-composer/model/monster-graft-rules.render.js`
+- `~features/monster-composer/model/monster-graft-rules.schema.js`
+- `~features/monster-composer/qa/monster-batch-qa.js`
+- `~features/monster-composer/qa/monster-generation-qa.js`
+- `~scripts/compare-site-elements.mjs`
+- `~scripts/diagnose-workbench-scroll.mjs`
+- `~scripts/run-room-design-gallery.mjs`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: eslint.config.js
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 19:07:06
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-wolf-spiders-candidate2-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-wolf-spiders-candidate2-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 12
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch4-wolf-spiders-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~package.json`
+- `~shared/content/content-packs/wolf-spiders-semantic-v2-pack.js`
+- `~shared/content/content-packs/wolf-spiders-semantic-v2-phase8.test.js`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-catalog-boundary.test.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 19:34:45
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-wolf-spiders-approval-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-wolf-spiders-approval-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 7
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch4-wolf-spiders-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~shared/content/content-packs/wolf-spiders-semantic-v2-pack.js`
+- `~shared/content/content-packs/wolf-spiders-semantic-v2-phase8.test.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 19:34:49
+
+**Operazione:** Apply Custom ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-towers-of-silence-candidate1-20260717.zip`
+
+**Percorso ZIP:** `h:\Users\avers\Download\cruor-games-dark-places-v2-phase8-towers-of-silence-candidate1-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+docs/projects/dark-places-semantic-v2/phase8-batch5-towers-of-silence-editorial-review.md`
+- `+shared/content/content-packs/towers-of-silence-semantic-v2-pack.js`
+- `+shared/content/content-packs/towers-of-silence-semantic-v2-phase8.test.js`
+
+**File sovrascritti:** 10
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~package.json`
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-catalog-boundary.test.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 20:42:43
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-towers-of-silence-approval-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-towers-of-silence-approval-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 6
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch5-towers-of-silence-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~shared/content/content-packs/towers-of-silence-semantic-v2-pack.js`
+- `~shared/content/content-packs/towers-of-silence-semantic-v2-phase8.test.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 20:42:57
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-mortuary-totems-candidate1-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-mortuary-totems-candidate1-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+docs/projects/dark-places-semantic-v2/phase8-batch6-mortuary-totems-editorial-review.md`
+- `+shared/content/content-packs/mortuary-totems-semantic-v2-pack.js`
+- `+shared/content/content-packs/mortuary-totems-semantic-v2-phase8.test.js`
+
+**File sovrascritti:** 10
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~package.json`
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-catalog-boundary.test.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 20:43:07
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-mustard-gas-candidate1-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-mustard-gas-candidate1-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+docs/projects/dark-places-semantic-v2/phase8-batch7-mustard-gas-editorial-review.md`
+- `+shared/content/content-packs/mustard-gas-semantic-v2-pack.js`
+- `+shared/content/content-packs/mustard-gas-semantic-v2-phase8.test.js`
+
+**File sovrascritti:** 10
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~package.json`
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-catalog-boundary.test.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 20:43:17
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-endocannibalism-candidate1-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-endocannibalism-candidate1-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+docs/projects/dark-places-semantic-v2/phase8-batch8-endocannibalism-editorial-review.md`
+- `+shared/content/content-packs/endocannibalism-semantic-v2-pack.js`
+- `+shared/content/content-packs/endocannibalism-semantic-v2-phase8.test.js`
+
+**File sovrascritti:** 10
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~package.json`
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-catalog-boundary.test.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 21:56:24
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-batch6-8-approval-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-batch6-8-approval-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 13
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch6-mortuary-totems-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch7-mustard-gas-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch8-endocannibalism-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~shared/content/content-packs/endocannibalism-semantic-v2-pack.js`
+- `~shared/content/content-packs/endocannibalism-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/mortuary-totems-semantic-v2-pack.js`
+- `~shared/content/content-packs/mortuary-totems-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/mustard-gas-semantic-v2-pack.js`
+- `~shared/content/content-packs/mustard-gas-semantic-v2-phase8.test.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 21:56:34
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-genetic-mutations-candidate1-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-genetic-mutations-candidate1-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 4
+
+- `+docs/projects/dark-places-semantic-v2/phase8-batch9-genetic-mutations-editorial-review.md`
+- `+shared/content/content-packs/genetic-mutations-semantic-v2-pack.js`
+- `+shared/content/content-packs/genetic-mutations-semantic-v2-phase8.test.js`
+- `+shared/content/content-packs/phase8-semantic-candidate.factory.js`
+
+**File sovrascritti:** 10
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~package.json`
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-catalog-boundary.test.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 21:56:45
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-crucifixion-candidate1-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-crucifixion-candidate1-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+docs/projects/dark-places-semantic-v2/phase8-batch10-crucifixion-editorial-review.md`
+- `+shared/content/content-packs/crucifixion-semantic-v2-pack.js`
+- `+shared/content/content-packs/crucifixion-semantic-v2-phase8.test.js`
+
+**File sovrascritti:** 10
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~package.json`
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-catalog-boundary.test.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 21:56:56
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-impalement-candidate1-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-impalement-candidate1-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+docs/projects/dark-places-semantic-v2/phase8-batch11-impalement-editorial-review.md`
+- `+shared/content/content-packs/impalement-semantic-v2-pack.js`
+- `+shared/content/content-packs/impalement-semantic-v2-phase8.test.js`
+
+**File sovrascritti:** 10
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~package.json`
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-catalog-boundary.test.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 22:31:59
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-batch9-11-approval-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-batch9-11-approval-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 14
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch10-crucifixion-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch11-impalement-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch9-genetic-mutations-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~shared/content/content-packs/crucifixion-semantic-v2-pack.js`
+- `~shared/content/content-packs/crucifixion-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/genetic-mutations-semantic-v2-pack.js`
+- `~shared/content/content-packs/genetic-mutations-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/impalement-semantic-v2-pack.js`
+- `~shared/content/content-packs/impalement-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/phase8-semantic-candidate.factory.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 22:35:31
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-wax-death-masks-candidate1-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-wax-death-masks-candidate1-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 4
+
+- `+docs/projects/dark-places-semantic-v2/phase8-batch12-wax-death-masks-editorial-review.md`
+- `+PATCH-MANIFEST.md`
+- `+shared/content/content-packs/wax-death-masks-semantic-v2-pack.js`
+- `+shared/content/content-packs/wax-death-masks-semantic-v2-phase8.test.js`
+
+**File sovrascritti:** 9
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~package.json`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-catalog-boundary.test.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 22:35:42
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-anthropodermic-bibliopegy-candidate1-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-anthropodermic-bibliopegy-candidate1-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+docs/projects/dark-places-semantic-v2/phase8-batch13-anthropodermic-bibliopegy-editorial-review.md`
+- `+shared/content/content-packs/anthropodermic-bibliopegy-semantic-v2-pack.js`
+- `+shared/content/content-packs/anthropodermic-bibliopegy-semantic-v2-phase8.test.js`
+
+**File sovrascritti:** 10
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~package.json`
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-catalog-boundary.test.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 22:35:53
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-jikininki-candidate1-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-jikininki-candidate1-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+docs/projects/dark-places-semantic-v2/phase8-batch14-jikininki-editorial-review.md`
+- `+shared/content/content-packs/jikininki-semantic-v2-pack.js`
+- `+shared/content/content-packs/jikininki-semantic-v2-phase8.test.js`
+
+**File sovrascritti:** 10
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~package.json`
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content.index.js`
+- `~shared/content/inspiration-catalog-boundary.test.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 22:48:40
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-semantic-coverage-hotfix-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-semantic-coverage-hotfix-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content-packs/anthropodermic-bibliopegy-semantic-v2-pack.js`
+- `~shared/content/content-packs/jikininki-semantic-v2-pack.js`
+- `~shared/content/content-packs/phase8-semantic-candidate.factory.js`
+- `~shared/content/content-packs/wax-death-masks-semantic-v2-pack.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 23:28:40
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-final-qa-hotfix-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-final-qa-hotfix-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 13
+
+- `~features/inspiration-studio/model/studio-v2-io.js`
+- `~shared/content/content-packs/anthropodermic-bibliopegy-semantic-v2-pack.js`
+- `~shared/content/content-packs/endocannibalism-semantic-v2-pack.js`
+- `~shared/content/content-packs/endocannibalism-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/jikininki-semantic-v2-pack.js`
+- `~shared/content/content-packs/mortuary-totems-semantic-v2-pack.js`
+- `~shared/content/content-packs/mustard-gas-semantic-v2-pack.js`
+- `~shared/content/content-packs/phase8-semantic-candidate.factory.js`
+- `~shared/content/content-packs/wax-death-masks-semantic-v2-pack.js`
+- `~shared/content/content-repository.adapter.js`
+- `~shared/content/contracts/semantic/inspiration-module-v2.js`
+- `~shared/content/inspiration-catalog-boundary.test.js`
+- `~shared/content/inspiration-modules.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-17 23:37:42
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-endocannibalism-legacy-id-hotfix-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-endocannibalism-legacy-id-hotfix-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content-packs/endocannibalism-semantic-v2-pack.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+

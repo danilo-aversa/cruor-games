@@ -631,7 +631,7 @@ function addForgeIssues({ frame, context, issues }) {
 }
 
 function addExportIssues({ frame, context, issues }) {
-  let artifacts = null;
+  let artifacts;
   try {
     artifacts = buildExportArtifacts(context);
   } catch (error) {
@@ -997,9 +997,9 @@ export function runMonsterBatchQa(options = {}) {
   const generated = [];
 
   frames.forEach((frame) => {
-    let context = null;
-    let artifacts = null;
-    let forgeStatus = { status: "unknown", missingRequiredSlots: [] };
+    let context;
+    let artifacts;
+    let forgeStatus;
     let balanceStatus = "analyzed";
     let exportStatus = "analyzed";
     const frameIssueStart = issues.length;

@@ -241,7 +241,7 @@ export function runMonsterGenerationQa({ frames = buildCoreScratchFrames() } = {
       }
     });
 
-    let artifacts = null;
+    let artifacts;
     try {
       artifacts = buildExportArtifacts(context);
     } catch (error) {
