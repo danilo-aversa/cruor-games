@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   getSourceAnchorId,
   getStaticContentPackProvenance,
@@ -19,6 +19,7 @@ import "./inspirations.styles.css";
 const ANY_VALUE = "all";
 const INSPIRATION_WORKFLOW_ID = "inspiration-archive";
 const MONSTER_WORKFLOW_ID = "monster-composer";
+const FILTER_PANEL_TRANSITION_MS = 220;
 const STATIC_CONTENT_REGISTRY = getStaticContentRegistry();
 const STATIC_CONTENT_PACK_PROVENANCE = getStaticContentPackProvenance();
 
@@ -164,6 +165,9 @@ export default function InspirationsPage({
   const [collectionFilter, setCollectionFilter] = useState(ANY_VALUE);
   const [sortMode, setSortMode] = useState("collection");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filtersMounted, setFiltersMounted] = useState(false);
+  const [filtersVisible, setFiltersVisible] = useState(false);
+  const filterTriggerRef = useRef(null);
   const [flippedCardId, setFlippedCardId] = useState("");
   const [dossierCardId, setDossierCardId] = useState("");
 
@@ -329,6 +333,32 @@ export default function InspirationsPage({
   }, [filteredCards, flippedCardId]);
 
   useEffect(() => {
+    let firstFrameId;
+    let secondFrameId;
+
+    if (filtersOpen) {
+      setFiltersMounted(true);
+      firstFrameId = window.requestAnimationFrame(() => {
+        secondFrameId = window.requestAnimationFrame(() => {
+          setFiltersVisible(true);
+        });
+      });
+
+      return () => {
+        window.cancelAnimationFrame(firstFrameId);
+        window.cancelAnimationFrame(secondFrameId);
+      };
+    }
+
+    setFiltersVisible(false);
+    const timeoutId = window.setTimeout(() => {
+      setFiltersMounted(false);
+    }, FILTER_PANEL_TRANSITION_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [filtersOpen]);
+
+  useEffect(() => {
     if (dossierCardId) return undefined;
 
     function handleEscape(event) {
@@ -361,7 +391,13 @@ export default function InspirationsPage({
     obscurityFilter !== ANY_VALUE,
     collectionFilter !== ANY_VALUE,
   ].filter(Boolean).length;
+  const activeConstraintCount = activeFilterCount + (search.trim() ? 1 : 0);
+  const filterPanelLabel = t("inspirations.filters.more", {}, locale);
 
+  const closeFilters = useCallback(() => {
+    setFiltersOpen(false);
+    filterTriggerRef.current?.focus();
+  }, []);
   const closeDossier = useCallback(() => setDossierCardId(""), []);
 
   const useInMonsterComposer = useCallback(() => {
@@ -405,73 +441,85 @@ export default function InspirationsPage({
             {t("inspirations.hero.body", {}, locale)}
           </p>
         </div>
-        <p className="inspirations-page__archive-summary">
+        <div className="inspirations-page__archive-summary">
           <strong>{allCards.length}</strong>
           <span>{t("inspirations.hero.cards", {}, locale)}</span>
           <i aria-hidden="true" />
           <strong>{INSPIRATION_DOMAIN_ORDER.length}</strong>
           <span>{t("inspirations.hero.domains", {}, locale)}</span>
-        </p>
+          <button
+            ref={filterTriggerRef}
+            className="inspirations-page__filter-trigger cruor-square-icon-button"
+            type="button"
+            aria-pressed={filtersOpen}
+            aria-expanded={filtersOpen}
+            aria-controls="inspirations-filter-panel"
+            aria-label={
+              activeConstraintCount
+                ? `${filterPanelLabel} (${activeConstraintCount})`
+                : filterPanelLabel
+            }
+            title={filterPanelLabel}
+            data-key="tooltip-generic"
+            data-tooltip={filterPanelLabel}
+            onClick={() => {
+              if (filtersOpen) {
+                closeFilters();
+              } else {
+                setFiltersOpen(true);
+              }
+            }}
+          >
+            <i className="fa-solid fa-sliders" aria-hidden="true" />
+            <span className="sr-only">{filterPanelLabel}</span>
+            {activeConstraintCount ? (
+              <small
+                className="inspirations-page__filter-count"
+                aria-hidden="true"
+              >
+                {activeConstraintCount}
+              </small>
+            ) : null}
+          </button>
+        </div>
       </header>
 
-      <InspirationFilters
-        locale={locale}
-        search={search}
-        onSearchChange={setSearch}
-        domainFilter={domainFilter}
-        onDomainChange={setDomainFilter}
-        domainCounts={domainCounts}
-        sortMode={sortMode}
-        onSortChange={setSortMode}
-        sortOptions={sortOptions}
-        sourceTypeFilter={sourceTypeFilter}
-        onSourceTypeChange={setSourceTypeFilter}
-        sourceTypeOptions={sourceTypeOptions}
-        obscurityFilter={obscurityFilter}
-        onObscurityChange={setObscurityFilter}
-        obscurityOptions={obscurityOptions}
-        collectionFilter={collectionFilter}
-        onCollectionChange={setCollectionFilter}
-        collectionOptions={collectionOptions}
-        filtersOpen={filtersOpen}
-        onToggleFilters={() => setFiltersOpen((current) => !current)}
-        activeFilterCount={activeFilterCount}
-        onClearFilters={clearFilters}
-      />
-
-      <div className="inspirations-page__collection-head">
-        <div>
-          <p>{t("inspirations.collection.eyebrow", {}, locale)}</p>
-          <h2>
-            {filteredCards.length
-              ? t(
-                  filteredCards.length === 1
-                    ? "inspirations.collection.resultSingle"
-                    : "inspirations.collection.resultPlural",
-                  { count: filteredCards.length },
-                  locale,
-                )
-              : t("inspirations.collection.noResults", {}, locale)}
-          </h2>
+      {filtersMounted ? (
+        <div
+          className={`inspirations-page__filter-disclosure${
+            filtersVisible ? " is-visible" : ""
+          }`}
+          aria-hidden={filtersVisible ? undefined : true}
+          inert={filtersVisible ? undefined : ""}
+        >
+          <div className="inspirations-page__filter-disclosure-inner">
+            <InspirationFilters
+              active={filtersVisible}
+              locale={locale}
+              search={search}
+              onSearchChange={setSearch}
+              domainFilter={domainFilter}
+              onDomainChange={setDomainFilter}
+              domainCounts={domainCounts}
+              sortMode={sortMode}
+              onSortChange={setSortMode}
+              sortOptions={sortOptions}
+              sourceTypeFilter={sourceTypeFilter}
+              onSourceTypeChange={setSourceTypeFilter}
+              sourceTypeOptions={sourceTypeOptions}
+              obscurityFilter={obscurityFilter}
+              onObscurityChange={setObscurityFilter}
+              obscurityOptions={obscurityOptions}
+              collectionFilter={collectionFilter}
+              onCollectionChange={setCollectionFilter}
+              collectionOptions={collectionOptions}
+              activeFilterCount={activeFilterCount}
+              onClearFilters={clearFilters}
+              onClose={closeFilters}
+            />
+          </div>
         </div>
-        <span aria-live="polite">
-          {search.trim()
-            ? t(
-                "inspirations.collection.searchingFor",
-                { query: search.trim() },
-                locale,
-              )
-            : activeFilterCount
-              ? t(
-                  activeFilterCount === 1
-                    ? "inspirations.collection.activeFilterSingle"
-                    : "inspirations.collection.activeFilterPlural",
-                  { count: activeFilterCount },
-                  locale,
-                )
-              : t("inspirations.collection.allSources", {}, locale)}
-        </span>
-      </div>
+      ) : null}
 
       {filteredCards.length ? (
         <InspirationCardGrid

@@ -31,6 +31,7 @@ export default function AppShell({
   const [isTransientNavigationOpen, setIsTransientNavigationOpen] = useState(false);
   const [isTransientNavigationPresent, setIsTransientNavigationPresent] = useState(false);
   const transientNavigationCloseTimerRef = useRef(null);
+  const isCreatorShell = activeSection === "inspiration-studio";
 
   useEffect(() => {
     return startTooltipRuntime();
@@ -75,6 +76,18 @@ export default function AppShell({
   }, []);
 
   useEffect(() => {
+    if (!isCreatorShell) return;
+
+    if (transientNavigationCloseTimerRef.current) {
+      window.clearTimeout(transientNavigationCloseTimerRef.current);
+      transientNavigationCloseTimerRef.current = null;
+    }
+
+    setIsTransientNavigationOpen(false);
+    setIsTransientNavigationPresent(false);
+  }, [isCreatorShell]);
+
+  useEffect(() => {
     return () => {
       if (transientNavigationCloseTimerRef.current) {
         window.clearTimeout(transientNavigationCloseTimerRef.current);
@@ -87,6 +100,7 @@ export default function AppShell({
       className="app-shell"
       data-ui-mode={activeUiMode}
       data-active-section={activeSection}
+      data-shell-mode={isCreatorShell ? "creator" : "site"}
       data-locale={activeLocale}
       data-a11y-theme={accessibilitySettings.theme}
       data-a11y-contrast={accessibilitySettings.contrast}
@@ -94,22 +108,24 @@ export default function AppShell({
       data-a11y-text={accessibilitySettings.text}
       data-a11y-focus={accessibilitySettings.focus}
       data-a11y-tooltips={accessibilitySettings.tooltips}
-      data-transient-navigation-open={isTransientNavigationPresent ? "true" : "false"}
+      data-transient-navigation-open={!isCreatorShell && isTransientNavigationPresent ? "true" : "false"}
     >
-      <SiteTopbar
-        activeSection={activeSection}
-        activeUiMode={activeUiMode}
-        activeCrucibleGenerator={activeCrucibleGenerator}
-        activeLocale={activeLocale}
-        onLocaleChange={onLocaleChange}
-        onSectionChange={onSectionChange}
-        onUiModeChange={onUiModeChange}
-        onOpenCrucibleTool={onOpenCrucibleTool}
-        accessibilitySettings={accessibilitySettings}
-        onAccessibilitySettingChange={handleAccessibilitySettingChange}
-        onAccessibilitySettingsReset={handleAccessibilitySettingsReset}
-        onTransientNavigationChange={handleTransientNavigationChange}
-      />
+      {!isCreatorShell ? (
+        <SiteTopbar
+          activeSection={activeSection}
+          activeUiMode={activeUiMode}
+          activeCrucibleGenerator={activeCrucibleGenerator}
+          activeLocale={activeLocale}
+          onLocaleChange={onLocaleChange}
+          onSectionChange={onSectionChange}
+          onUiModeChange={onUiModeChange}
+          onOpenCrucibleTool={onOpenCrucibleTool}
+          accessibilitySettings={accessibilitySettings}
+          onAccessibilitySettingChange={handleAccessibilitySettingChange}
+          onAccessibilitySettingsReset={handleAccessibilitySettingsReset}
+          onTransientNavigationChange={handleTransientNavigationChange}
+        />
+      ) : null}
 
       <main className="app-shell__workspace">
         {activeSection === "home" ? <section aria-label={t("app.aria.home", {}, activeLocale)}>{homeContent}</section> : null}
@@ -127,10 +143,12 @@ export default function AppShell({
         ) : null}
       </main>
 
-      <div
-        className={`app-shell__navigation-overlay${isTransientNavigationOpen ? " is-visible" : ""}`}
-        aria-hidden="true"
-      />
+      {!isCreatorShell ? (
+        <div
+          className={`app-shell__navigation-overlay${isTransientNavigationOpen ? " is-visible" : ""}`}
+          aria-hidden="true"
+        />
+      ) : null}
     </div>
   );
 }

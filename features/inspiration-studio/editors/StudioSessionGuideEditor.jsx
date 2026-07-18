@@ -3,7 +3,7 @@ import {
   StudioEditorSection,
   StudioListField,
   StudioStructuredField,
-} from "./StudioStructuredFields.jsx";
+} from "../ui/index.js";
 
 export function StudioSessionGuideEditor({ componentId, onChange, semantic }) {
   const openingBeat = semantic.openingBeat || {};

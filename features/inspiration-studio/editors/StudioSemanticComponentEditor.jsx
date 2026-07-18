@@ -1,4 +1,3 @@
-import { StudioIcon } from "../components/StudioIcon.jsx";
 import { getStudioSemanticEditorDefinition } from "../schema/studio-semantic-editor-registry.js";
 import { StudioFragmentPoolEditor } from "./StudioFragmentPoolEditor.jsx";
 import { StudioPlacementPolicyEditor } from "./StudioPlacementPolicyEditor.jsx";
@@ -6,10 +5,15 @@ import { StudioSensoryPoolEditor } from "./StudioSensoryPoolEditor.jsx";
 import { StudioSessionGuideEditor } from "./StudioSessionGuideEditor.jsx";
 import {
   StudioArrayEditor,
+  StudioArmedDeleteButton,
+  StudioButton,
+  StudioDangerZone,
+  StudioEditorHeader,
   StudioEditorSection,
   StudioListField,
+  StudioPreviewSection,
   StudioStructuredField,
-} from "./StudioStructuredFields.jsx";
+} from "../ui/index.js";
 import { StudioStructuredRuleEditor } from "./StudioStructuredRuleEditor.jsx";
 
 const STATUS_OPTIONS = [
@@ -315,18 +319,17 @@ function RecurringSignEditor({ componentId, onChange, semantic }) {
                 onChange(["interaction", "counterplay"], value)
               }
             />
-            <button
-              className="studio-semantic-array__remove studio-semantic-array__remove--text"
-              type="button"
+            <StudioButton
+              danger
+              icon="fa-trash"
               onClick={() => onChange(["interaction"], null)}
             >
               Remove Interaction
-            </button>
+            </StudioButton>
           </>
         ) : (
-          <button
-            className="studio-semantic-array__add"
-            type="button"
+          <StudioButton
+            icon="fa-plus"
             onClick={() =>
               onChange(["interaction"], {
                 trigger: "",
@@ -336,7 +339,7 @@ function RecurringSignEditor({ componentId, onChange, semantic }) {
             }
           >
             Add Interaction
-          </button>
+          </StudioButton>
         )}
       </StudioEditorSection>
     </>
@@ -390,28 +393,25 @@ export function StudioSemanticComponentEditor({
     });
   }
 
+  const coverageDescription = coverage.complete
+    ? "Required authoring coverage is complete."
+    : `${coverage.missingPaths.length} required fields and ${Math.max(0, coverage.targetCount - coverage.itemCount)} target entries remain.`;
+
   return (
     <div
-      className="studio-semantic-editor"
+      className="studio-component-editor studio-editor-stack"
       data-semantic-type={component.semanticType}
     >
-      <header className="studio-semantic-editor__header">
-        <span>
-          <StudioIcon name={definition.icon} />
-        </span>
-        <div>
-          <em>{definition.navigationGroup}</em>
-          <h2>{definition.label}</h2>
-          <p>
-            {coverage.complete
-              ? "Required authoring coverage is complete."
-              : `${coverage.missingPaths.length} required fields and ${Math.max(0, coverage.targetCount - coverage.itemCount)} target entries remain.`}
-          </p>
-        </div>
-        <strong data-coverage-state={coverage.complete ? "covered" : "partial"}>
-          {coverage.complete ? "Covered" : "Needs Work"}
-        </strong>
-      </header>
+      <StudioEditorHeader
+        compact
+        coverageLabel={coverage.complete ? "Covered" : "Needs Work"}
+        coverageStatus={coverage.complete ? "covered" : "partial"}
+        description={coverageDescription}
+        icon={definition.icon}
+        status={component.status || "draft"}
+        title={component.title || definition.label}
+        typeLabel={`${definition.navigationGroup} · ${definition.label}`}
+      />
 
       <StudioEditorSection icon="fa-fingerprint" title="Component Identity">
         <StudioStructuredField
@@ -464,30 +464,23 @@ export function StudioSemanticComponentEditor({
         onSemanticChange={setSemanticField}
       />
 
-      <aside
-        className="studio-semantic-editor__sample"
-        aria-label={`${definition.label} sample`}
-      >
-        <span>
-          <StudioIcon name="fa-eye" /> Deterministic Component Sample
-        </span>
-        <strong>
-          {preview.headline ||
-            "Complete the structured fields to generate a sample."}
-        </strong>
-        {preview.detail ? <p>{preview.detail}</p> : null}
-        <em>{preview.metrics.join(" / ")} authored coverage signals</em>
-      </aside>
-
-      <footer className="studio-semantic-editor__footer">
-        <button
-          className="studio-inline-action studio-inline-action--danger"
-          type="button"
-          onClick={onRemove}
+      <StudioPreviewSection title="Deterministic Component Sample">
+        <div
+          className="studio-component-sample"
+          aria-label={`${definition.label} sample`}
         >
-          <StudioIcon name="fa-trash" /> Remove Component
-        </button>
-      </footer>
+          <strong>
+            {preview.headline ||
+              "Complete the structured fields to generate a sample."}
+          </strong>
+          {preview.detail ? <p>{preview.detail}</p> : null}
+          <em>{preview.metrics.join(" / ")} authored coverage signals</em>
+        </div>
+      </StudioPreviewSection>
+
+      <StudioDangerZone>
+        <StudioArmedDeleteButton onConfirm={onRemove} />
+      </StudioDangerZone>
     </div>
   );
 }

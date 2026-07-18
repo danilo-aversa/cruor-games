@@ -2,9 +2,10 @@ import { READ_ALOUD_FRAGMENT_GROUPS } from "../../../shared/content/contracts/se
 import {
   StudioArrayEditor,
   StudioEditorSection,
+  StudioFieldset,
   StudioListField,
   StudioStructuredField,
-} from "./StudioStructuredFields.jsx";
+} from "../ui/index.js";
 
 const LENGTHS = ["compact", "standard", "extended"];
 
@@ -162,8 +163,7 @@ export function StudioFragmentPoolEditor({ componentId, onChange, semantic }) {
           }
         />
         {LENGTHS.map((length) => (
-          <fieldset className="studio-semantic-fieldset" key={length}>
-            <legend>{formatLabel(length)}</legend>
+          <StudioFieldset key={length} legend={formatLabel(length)}>
             <StudioStructuredField
               componentId={componentId}
               label="Maximum Sentences"
@@ -200,7 +200,7 @@ export function StudioFragmentPoolEditor({ componentId, onChange, semantic }) {
                 onChange(["constraints", "wordRanges", length, 1], value)
               }
             />
-          </fieldset>
+          </StudioFieldset>
         ))}
       </StudioEditorSection>
 

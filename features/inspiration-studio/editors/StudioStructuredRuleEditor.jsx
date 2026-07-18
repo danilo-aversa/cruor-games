@@ -1,17 +1,18 @@
 import {
   StudioArrayEditor,
+  StudioButton,
   StudioEditorSection,
+  StudioFieldset,
   StudioListField,
   StudioStructuredField,
-} from "./StudioStructuredFields.jsx";
+} from "../ui/index.js";
 
 function CheckEditor({ componentId, kind, label, onChange, value }) {
   const basePath = `semantic.resolution.${kind}`;
   if (!value) {
     return (
-      <button
-        className="studio-semantic-array__add"
-        type="button"
+      <StudioButton
+        icon="fa-plus"
         onClick={() =>
           onChange(["resolution", kind], {
             ability: "",
@@ -22,13 +23,12 @@ function CheckEditor({ componentId, kind, label, onChange, value }) {
         }
       >
         Add {label}
-      </button>
+      </StudioButton>
     );
   }
 
   return (
-    <fieldset className="studio-semantic-fieldset">
-      <legend>{label}</legend>
+    <StudioFieldset legend={label}>
       <StudioStructuredField
         componentId={componentId}
         label="Ability"
@@ -63,14 +63,14 @@ function CheckEditor({ componentId, kind, label, onChange, value }) {
         value={value.scalingKey || ""}
         onChange={(next) => onChange(["resolution", kind, "scalingKey"], next)}
       />
-      <button
-        className="studio-semantic-array__remove studio-semantic-array__remove--text"
-        type="button"
+      <StudioButton
+        danger
+        icon="fa-trash"
         onClick={() => onChange(["resolution", kind], null)}
       >
         Remove {label}
-      </button>
-    </fieldset>
+      </StudioButton>
+    </StudioFieldset>
   );
 }
 
@@ -78,9 +78,8 @@ function AttackEditor({ componentId, onChange, value }) {
   const basePath = "semantic.resolution.attackRoll";
   if (!value) {
     return (
-      <button
-        className="studio-semantic-array__add"
-        type="button"
+      <StudioButton
+        icon="fa-plus"
         onClick={() =>
           onChange(["resolution", "attackRoll"], {
             bonus: null,
@@ -90,12 +89,11 @@ function AttackEditor({ componentId, onChange, value }) {
         }
       >
         Add Attack Roll
-      </button>
+      </StudioButton>
     );
   }
   return (
-    <fieldset className="studio-semantic-fieldset">
-      <legend>Attack Roll</legend>
+    <StudioFieldset legend="Attack Roll">
       <StudioStructuredField
         componentId={componentId}
         label="Fixed Bonus"
@@ -129,14 +127,14 @@ function AttackEditor({ componentId, onChange, value }) {
           onChange(["resolution", "attackRoll", "target"], next)
         }
       />
-      <button
-        className="studio-semantic-array__remove studio-semantic-array__remove--text"
-        type="button"
+      <StudioButton
+        danger
+        icon="fa-trash"
         onClick={() => onChange(["resolution", "attackRoll"], null)}
       >
         Remove Attack Roll
-      </button>
-    </fieldset>
+      </StudioButton>
+    </StudioFieldset>
   );
 }
 
@@ -425,8 +423,7 @@ export function StudioStructuredRuleEditor({
                 }
               />
               {item.check ? (
-                <fieldset className="studio-semantic-fieldset">
-                  <legend>Counterplay Check</legend>
+                <StudioFieldset legend="Counterplay Check">
                   <StudioStructuredField
                     componentId={componentId}
                     label="Ability"
@@ -475,20 +472,19 @@ export function StudioStructuredRuleEditor({
                       )
                     }
                   />
-                  <button
-                    className="studio-semantic-array__remove studio-semantic-array__remove--text"
-                    type="button"
+                  <StudioButton
+                    danger
+                    icon="fa-trash"
                     onClick={() =>
                       onChange(["counterplay", index, "check"], null)
                     }
                   >
                     Remove Counterplay Check
-                  </button>
-                </fieldset>
+                  </StudioButton>
+                </StudioFieldset>
               ) : (
-                <button
-                  className="studio-semantic-array__add"
-                  type="button"
+                <StudioButton
+                  icon="fa-plus"
                   onClick={() =>
                     onChange(["counterplay", index, "check"], {
                       ability: "",
@@ -499,7 +495,7 @@ export function StudioStructuredRuleEditor({
                   }
                 >
                   Add Counterplay Check
-                </button>
+                </StudioButton>
               )}
               <StudioStructuredField
                 componentId={componentId}

@@ -2,7 +2,7 @@ import {
   StudioEditorSection,
   StudioListField,
   StudioStructuredField,
-} from "./StudioStructuredFields.jsx";
+} from "../ui/index.js";
 
 export function StudioPlacementPolicyEditor({
   componentId,

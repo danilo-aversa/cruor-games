@@ -288,17 +288,43 @@ export default function InspirationFilters({
   collectionFilter,
   onCollectionChange,
   collectionOptions,
-  filtersOpen,
-  onToggleFilters,
   activeFilterCount,
   onClearFilters,
+  onClose,
+  active = false,
 }) {
-  const moreLabel = t("inspirations.filters.more", {}, locale);
+  const searchInputRef = useRef(null);
   const clearLabel = t("inspirations.filters.clear", {}, locale);
+
+  useEffect(() => {
+    if (!active) return undefined;
+
+    const frameId = window.requestAnimationFrame(() => {
+      searchInputRef.current?.focus();
+    });
+
+    function handleEscape(event) {
+      if (
+        event.key !== "Escape" ||
+        document.querySelector(".inspirations-filters__listbox-menu")
+      ) {
+        return;
+      }
+      event.preventDefault();
+      onClose?.();
+    }
+
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [active, onClose]);
 
   return (
     <section
-      className="inspirations-filters"
+      id="inspirations-filter-panel"
+      className="inspirations-filters cruor-ui-panel-surface"
       aria-label={t("inspirations.filters.aria", {}, locale)}
     >
       <div className="inspirations-filters__primary">
@@ -307,6 +333,7 @@ export default function InspirationFilters({
           <span className="inspirations-filters__search-field">
             <i className="fa-solid fa-magnifying-glass" aria-hidden="true" />
             <input
+              ref={searchInputRef}
               type="search"
               value={search}
               onChange={(event) => onSearchChange(event.target.value)}
@@ -328,36 +355,6 @@ export default function InspirationFilters({
           onChange={onSortChange}
           icon="fa-arrow-down-wide-short"
         />
-
-        <button
-          className={`inspirations-filters__utility cruor-square-icon-button${
-            filtersOpen ? " is-active" : ""
-          }`}
-          type="button"
-          aria-pressed={filtersOpen}
-          aria-expanded={filtersOpen}
-          aria-controls="inspirations-secondary-filters"
-          aria-label={
-            activeFilterCount
-              ? `${moreLabel} (${activeFilterCount})`
-              : moreLabel
-          }
-          title={moreLabel}
-          data-key="tooltip-generic"
-          data-tooltip={moreLabel}
-          onClick={onToggleFilters}
-        >
-          <i className="fa-solid fa-sliders" aria-hidden="true" />
-          <span className="sr-only">{moreLabel}</span>
-          {activeFilterCount ? (
-            <small
-              className="inspirations-filters__active-count"
-              aria-hidden="true"
-            >
-              {activeFilterCount}
-            </small>
-          ) : null}
-        </button>
 
         <button
           className="inspirations-filters__utility cruor-square-icon-button"
@@ -419,11 +416,7 @@ export default function InspirationFilters({
         })}
       </div>
 
-      <div
-        id="inspirations-secondary-filters"
-        className="inspirations-filters__secondary"
-        hidden={!filtersOpen}
-      >
+      <div className="inspirations-filters__secondary">
         <FilterListbox
           id="inspirations-source-type"
           label={t("inspirations.filters.sourceType", {}, locale)}

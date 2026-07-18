@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   SPELLS_5E24,
   SHARED_TAXONOMIES,
@@ -9,6 +9,7 @@ import {
   ROOM_ARCHETYPE_OPTIONS,
   ROOM_DESIGN_MODIFIER_OPTIONS,
   ROOM_DESIGN_SHAPE_KIND_OPTIONS,
+  buildInspirationAssetUrl,
   compileRoomArchetypeToRoomDesign,
   getSpell5e24Name,
   loadContentPackSummaries,
@@ -25,6 +26,7 @@ import {
   buildMonsterRulesFeature,
   buildStudioCompatibilityMatrix,
   clone,
+  formatPlainLabel,
   getExplicitMonsterRules,
   getMonsterConstraintSource,
   getMonsterConstraintSummary,
@@ -58,6 +60,24 @@ import {
 } from "./model/studio-editor-registry.js";
 import { isStudioSpecializedSemanticType } from "./schema/studio-semantic-editor-registry.js";
 import { StudioSemanticComponentEditor } from "./editors/StudioSemanticComponentEditor.jsx";
+import InspirationCardFront from "../inspirations/components/InspirationCardFront.jsx";
+import { getInspirationCardMeta } from "../inspirations/inspirations.card-config.js";
+import {
+  StudioArmedDeleteButton,
+  StudioCollapsibleSection,
+  StudioDividerLabel,
+  StudioField,
+  StudioHelp,
+  StudioIcon,
+  StudioIconButton,
+  StudioInput,
+  StudioPanelTitle,
+  StudioSelect,
+  StudioTab,
+  StudioTextarea,
+  StudioWarningSummary,
+  openStudioDisclosuresForField,
+} from "./ui/index.js";
 import { importStudioSemanticContent } from "./model/studio-v2-io.js";
 import {
   getEntryIssueState,
@@ -113,6 +133,25 @@ import {
   normalizeMonsterFrameFit,
 } from "../monster-composer/model/monster-frame-fit.js";
 
+
+function resolveStudioInspirationImageSource(media = {}) {
+  const directUrl = String(media?.imageUrl || "").trim();
+  if (directUrl) return directUrl;
+
+  const imageKey = String(media?.imageKey || "").trim();
+  if (!imageKey) return "";
+
+  if (/^(?:[a-z][a-z0-9+.-]*:|\/\/|\/)/i.test(imageKey)) {
+    return imageKey;
+  }
+
+  const provider = String(media?.imageProvider || "local")
+    .trim()
+    .toLowerCase();
+  if (provider && provider !== "local") return "";
+
+  return buildInspirationAssetUrl(imageKey);
+}
 
 const ROOM_DESIGN_SHAPE_LABELS = Object.freeze({
   rect: "Rectangular Room",
@@ -1188,30 +1227,6 @@ function spellListLabelForUsage(usage) {
   return labels[usage] || "Spells";
 }
 
-function normalizeTooltipLine(value) {
-  return String(value || "").replace(/\s+/g, " ").trim();
-}
-
-function HelpTooltip({ title = "Info", text, items = "" }) {
-  const tooltipText = [text, items].filter(Boolean).join("\n");
-  if (!tooltipText) return null;
-  const ariaText = normalizeTooltipLine(tooltipText);
-
-  return (
-    <span
-      className="studio-help"
-      tabIndex="0"
-      role="button"
-      aria-label={`${title}: ${ariaText}`}
-      data-key="tooltip-generic"
-      data-tooltip={title}
-      data-tooltip-description={tooltipText}
-    >
-      <span aria-hidden="true">?</span>
-    </span>
-  );
-}
-
 function matchesComponentSearch(component, query) {
   if (!query) return true;
   const haystack = [
@@ -1227,25 +1242,6 @@ function matchesComponentSearch(component, query) {
     .join(" ")
     .toLowerCase();
   return haystack.includes(query.toLowerCase());
-}
-
-function Icon({ name }) {
-  return <i className={`fa-solid ${name}`} aria-hidden="true" />;
-}
-
-function FormRow({ children, className = "", label, icon, hint, helpItems }) {
-  return (
-    <div className={`studio-form-row ${className}`.trim()}>
-      <span className="studio-field-head">
-        <span className="studio-field-label">
-          {icon ? <Icon name={icon} /> : null}
-          {label}
-        </span>
-        <HelpTooltip title={label} text={hint} items={helpItems} />
-      </span>
-      {children}
-    </div>
-  );
 }
 
 function TagPillInput({ allowCustom = true, fieldId, icon = "fa-tag", onChange, placeholder = "Add tag…", suggestions = [], value = [] }) {
@@ -1289,10 +1285,10 @@ function TagPillInput({ allowCustom = true, fieldId, icon = "fa-tag", onChange, 
       <div className="studio-tag-input__pills" aria-label={`${fieldId} tags`}>
         {values.map((tag) => (
           <span className="studio-tag-pill" key={tag}>
-            <Icon name={icon} />
+            <StudioIcon name={icon} />
             <span>{tag}</span>
             <button type="button" aria-label={`Remove ${tag}`} onClick={() => removeTag(tag)}>
-              <Icon name="fa-xmark" />
+              <StudioIcon name="fa-xmark" />
             </button>
           </span>
         ))}
@@ -1345,28 +1341,10 @@ function MarkdownToolbar({ onApply }) {
     <div className="studio-markdown-toolbar" aria-label="Markdown formatting toolbar">
       {tools.map(([icon, label, token]) => (
         <button key={label} type="button" title={label} aria-label={label} onClick={() => onApply(token)}>
-          <Icon name={icon} />
+          <StudioIcon name={icon} />
         </button>
       ))}
     </div>
-  );
-}
-
-function TextInput({ value, onChange, ...props }) {
-  return <input {...props} value={value || ""} onChange={(event) => onChange(event.target.value)} />;
-}
-
-function TextArea({ value, onChange, ...props }) {
-  return <textarea {...props} value={value || ""} onChange={(event) => onChange?.(event.target.value)} />;
-}
-
-function SelectInput({ options, value, onChange }) {
-  return (
-    <select value={value || ""} onChange={(event) => onChange(event.target.value)}>
-      {options.map(([optionValue, label]) => (
-        <option key={optionValue} value={optionValue}>{label}</option>
-      ))}
-    </select>
   );
 }
 
@@ -1382,7 +1360,7 @@ function EditableTextBox({ value, placeholder = "No text set.", rows = 4, onChan
           {displayValue || placeholder}
         </div>
         <button type="button" className="studio-inline-action studio-inline-action--compact" onClick={() => setIsEditing(true)}>
-          <Icon name="fa-pen" /> Edit
+          <StudioIcon name="fa-pen" /> Edit
         </button>
       </div>
     );
@@ -1392,44 +1370,23 @@ function EditableTextBox({ value, placeholder = "No text set.", rows = 4, onChan
     <div className="studio-editable-textbox is-editing">
       {onApplyToken ? <MarkdownToolbar onApply={onApplyToken} /> : null}
       {isMultiline ? (
-        <TextArea rows={rows} value={displayValue} onChange={onChange} />
+        <StudioTextarea rows={rows} value={displayValue} onChange={onChange} />
       ) : (
-        <TextInput value={displayValue} onChange={onChange} />
+        <StudioInput value={displayValue} onChange={onChange} />
       )}
       <div className="studio-editable-textbox__actions">
         <button type="button" className="studio-inline-action studio-inline-action--compact" onClick={() => setIsEditing(false)}>
-          <Icon name="fa-check" /> Done
+          <StudioIcon name="fa-check" /> Done
         </button>
       </div>
     </div>
   );
 }
 
-function StudioTabButton({ icon, isActive, label, count, hint, onClick }) {
-  const tooltip = hint ? `${label}: ${hint}` : label;
-
-  return (
-    <button
-      className={`studio-tab-button ${isActive ? "is-active" : ""}`.trim()}
-      type="button"
-      aria-label={tooltip}
-      aria-pressed={isActive}
-      title={tooltip}
-      onClick={onClick}
-    >
-      <span className="studio-tab-button__label">
-        <Icon name={icon} />
-        <span>{label}</span>
-        {typeof count === "number" ? <strong>{count}</strong> : null}
-      </span>
-    </button>
-  );
-}
-
 function StatPill({ icon, label, value }) {
   return (
     <span className="studio-stat-pill">
-      <Icon name={icon} />
+      <StudioIcon name={icon} />
       <em>{label}</em>
       <strong>{value}</strong>
     </span>
@@ -1483,7 +1440,7 @@ function StudioRightRail({ collapsed = false, componentGroups, draft, imageSourc
           aria-hidden="true"
           title={`Publish Readiness: ${readinessLabel}`}
         >
-          <Icon name={readinessIcon} />
+          <StudioIcon name={readinessIcon} />
           <span>{(summary.error || 0) + (summary.warning || 0)}</span>
         </div>
         <span className="studio-collapsed-rail-label" aria-hidden="true">Inspiration Preview</span>
@@ -1494,7 +1451,7 @@ function StudioRightRail({ collapsed = false, componentGroups, draft, imageSourc
   return (
     <aside className="studio-right-rail" aria-label="Inspiration preview and readiness">
       <div className="studio-right-rail__topline">
-        <span><Icon name="fa-eye" /> Preview Rail</span>
+        <span><StudioIcon name="fa-eye" /> Preview Rail</span>
         <button
           className="studio-right-rail__collapse"
           type="button"
@@ -1503,18 +1460,18 @@ function StudioRightRail({ collapsed = false, componentGroups, draft, imageSourc
           aria-pressed="false"
           onClick={onToggleCollapsed}
         >
-          <Icon name="fa-chevron-right" />
+          <StudioIcon name="fa-chevron-right" />
         </button>
       </div>
 
       <section className="studio-rail-card studio-rail-card--preview">
-        <span className="studio-rail-card__eyebrow"><Icon name="fa-book-skull" /> Public Preview</span>
+        <span className="studio-rail-card__eyebrow"><StudioIcon name="fa-book-skull" /> Public Preview</span>
         <div className="studio-card-preview studio-card-preview--rail" aria-label="Public 4:5 inspiration card preview">
           {imageSource ? (
             <img src={imageSource} alt={draft.inspiration.media?.imageAlt || `${draft.title} preview`} />
           ) : (
             <div className="studio-card-preview__empty">
-              <Icon name="fa-image" />
+              <StudioIcon name="fa-image" />
               <span>No Image Preview</span>
             </div>
           )}
@@ -1527,14 +1484,14 @@ function StudioRightRail({ collapsed = false, componentGroups, draft, imageSourc
       </section>
 
       <section className="studio-rail-card studio-rail-card--status" data-readiness-state={readinessState}>
-        <span className="studio-rail-card__eyebrow"><Icon name="fa-shield-halved" /> Publish Readiness</span>
+        <span className="studio-rail-card__eyebrow"><StudioIcon name="fa-shield-halved" /> Publish Readiness</span>
         <div className="studio-rail-readiness-line">
-          <Icon name={readinessIcon} />
+          <StudioIcon name={readinessIcon} />
           <strong>{readinessLabel}</strong>
           <span>{summary.error || 0} errors · {summary.warning || 0} warnings</span>
         </div>
         <button className="studio-rail-download-report" type="button" onClick={onDownloadReadinessReport}>
-          <Icon name="fa-file-arrow-down" /> Download Readiness JSON
+          <StudioIcon name="fa-file-arrow-down" /> Download Readiness JSON
         </button>
         {groupedIssues.length ? (
           <div className="studio-rail-issues studio-rail-issues--grouped">
@@ -1542,7 +1499,7 @@ function StudioRightRail({ collapsed = false, componentGroups, draft, imageSourc
               const meta = VALIDATION_SEVERITY_META[group.severity] || VALIDATION_SEVERITY_META.warning;
               return (
                 <span className={`studio-rail-issue-group studio-rail-issue-group--${group.severity}`} key={group.key}>
-                  <em><Icon name={meta.icon} /> {group.count > 1 ? `${group.count}×` : meta.label}</em>
+                  <em><StudioIcon name={meta.icon} /> {group.count > 1 ? `${group.count}×` : meta.label}</em>
                   <strong>{group.message}</strong>
                   <small>{getIssueGroupMeta(group)}</small>
                 </span>
@@ -1555,7 +1512,7 @@ function StudioRightRail({ collapsed = false, componentGroups, draft, imageSourc
       </section>
 
       <section className="studio-rail-card studio-rail-card--counts">
-        <span className="studio-rail-card__eyebrow"><Icon name="fa-diagram-project" /> Linked Content</span>
+        <span className="studio-rail-card__eyebrow"><StudioIcon name="fa-diagram-project" /> Linked Content</span>
         <div className="studio-rail-content-line">
           <strong>{linkedTotal}</strong>
           <span>{graftCount} grafts · {locationCount} locations · {regionCount} regions</span>
@@ -1573,105 +1530,36 @@ function StudioRightRail({ collapsed = false, componentGroups, draft, imageSourc
   );
 }
 
-function PanelTitle({ eyebrow, title, icon, help, children }) {
-  return (
-    <div className="studio-panel__heading">
-      <div className="studio-panel__title">
-        <span>
-          {icon ? <Icon name={icon} /> : null}
-          {eyebrow}
-        </span>
-        <h3>{title}</h3>
-      </div>
-      <div className="studio-panel__actions">
-        <HelpTooltip title={title} text={help} />
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function DividerLabel({ icon, title, help, zone = null }) {
-  return (
-    <div className="studio-divider-label" data-editor-zone={zone || undefined}>
-      <span className="studio-divider-label__title">
-        {icon ? <Icon name={icon} /> : null}
-        {title}
-      </span>
-      <HelpTooltip title={title} text={help} />
-    </div>
-  );
-}
-
-function RulesGroup({ actions = null, icon, title, help, children, zone = null, defaultOpen = false }) {
-  return (
-    <details
-      className="studio-rules-group studio-rules-group--collapsible"
-      data-editor-zone={zone || undefined}
-      defaultOpen={defaultOpen}
-    >
-      <summary className="studio-collapsible-group__heading">
-        <span className="studio-rules-group__title">
-          {icon ? <Icon name={icon} /> : null}
-          {title}
-        </span>
-        <span className="studio-rules-group__tools">
-          <HelpTooltip title={title} text={help} />
-          {actions}
-          <Icon name="fa-chevron-down" />
-        </span>
-      </summary>
-      <div className="studio-rules-group__body">{children}</div>
-    </details>
-  );
-}
-
-function ArmedDeleteButton({ onConfirm }) {
-  const [armedAt, setArmedAt] = useState(0);
-  const isArmed = Boolean(armedAt);
-
-  function handleClick() {
-    const now = Date.now();
-    if (!isArmed) {
-      setArmedAt(now);
-      window.setTimeout(() => setArmedAt((current) => current === now ? 0 : current), 5000);
-      return;
-    }
-    if (now - armedAt < 800) return;
-    setArmedAt(0);
-    onConfirm?.();
-  }
-
-  return (
-    <button
-      className={`studio-inline-action studio-inline-action--danger ${isArmed ? "is-armed" : ""}`.trim()}
-      type="button"
-      onClick={handleClick}
-      aria-live="polite"
-    >
-      <Icon name={isArmed ? "fa-triangle-exclamation" : "fa-trash"} />
-      {isArmed ? "Confirm Delete?" : "Remove Component"}
-    </button>
-  );
-}
-
 function IconOnlyRemoveButton({ label, onClick, disabled = false }) {
   return (
-    <button
-      className="studio-icon-button studio-rules-block-remove"
-      type="button"
-      onClick={onClick}
+    <StudioIconButton
+      className="studio-rules-block-remove"
       disabled={disabled}
-      aria-label={`Remove ${label}`}
-      title={`Remove ${label}`}
-    >
-      <Icon name="fa-trash" />
-    </button>
+      icon="fa-trash"
+      label={`Remove ${label}`}
+      onClick={onClick}
+    />
   );
 }
 
 function RemoveRulesBlockButton({ label, onClick }) {
   return <IconOnlyRemoveButton label={label} onClick={onClick} />;
+}
+
+function getInitialComponentWorkspaceState(draft = {}) {
+  const groups = getModuleComponentGroups(draft);
+  const monsterComponents = groups["monster-graft"] || [];
+  const locationComponents = [
+    ...(groups["location-component"] || []),
+    ...(groups["location-region"] || []),
+  ];
+  const mode = monsterComponents.length ? "monsters" : "locations";
+  const components = mode === "monsters" ? monsterComponents : locationComponents;
+
+  return {
+    mode,
+    selectedComponentId: components[0]?.id || null,
+  };
 }
 
 export default function InspirationStudioPage() {
@@ -1721,9 +1609,11 @@ export default function InspirationStudioPage() {
       setPackSummaries(asArray(loadedPacks));
 
       const firstModule = normalizedModules[0] || normalizeModuleForDraft(EMPTY_DRAFT);
+      const initialWorkspace = getInitialComponentWorkspaceState(firstModule);
       setSelectedModuleId(firstModule.id);
       setDraft(firstModule);
-      setSelectedComponentId(firstModule.components[0]?.id || null);
+      setComponentMode(initialWorkspace.mode);
+      setSelectedComponentId(initialWorkspace.selectedComponentId);
     }
 
     loadStudioData();
@@ -1752,7 +1642,10 @@ export default function InspirationStudioPage() {
   }, [componentGroups, locationFilter]);
   const activeComponentPool = componentMode === "monsters" ? monsterComponents : locationComponents;
   const visibleComponents = activeComponentPool.filter((component) => matchesComponentSearch(component, componentSearch));
-  const selectedComponent = draft.components.find((component) => component.id === selectedComponentId) || visibleComponents[0] || null;
+  const selectedComponent =
+    activeComponentPool.find((component) => component.id === selectedComponentId) ||
+    visibleComponents[0] ||
+    null;
   const moduleExportObject = useMemo(() => buildModuleExport(draft, imagePreviewUrl), [draft, imagePreviewUrl]);
   const contentPackExportObject = useMemo(() => buildContentPackExport(draft, imagePreviewUrl), [draft, imagePreviewUrl]);
   const validationReport = useMemo(() => validateStudioDraft(draft, contentPackExportObject), [draft, contentPackExportObject]);
@@ -1822,12 +1715,13 @@ export default function InspirationStudioPage() {
     const module = modules.find((item) => item.id === moduleId);
     if (!module) return;
     const nextDraft = normalizeModuleForDraft(module);
+    const initialWorkspace = getInitialComponentWorkspaceState(nextDraft);
     setSelectedModuleId(moduleId);
     setDraft(nextDraft);
-    setComponentMode("monsters");
+    setComponentMode(initialWorkspace.mode);
     setLocationFilter("all");
     setComponentSearch("");
-    setSelectedComponentId(nextDraft.components[0]?.id || null);
+    setSelectedComponentId(initialWorkspace.selectedComponentId);
     if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
     setImagePreviewUrl("");
   }
@@ -1947,9 +1841,13 @@ export default function InspirationStudioPage() {
         ...currentModules.filter((module) => !importedIds.has(module.id)),
       ];
     });
+    const initialWorkspace = getInitialComponentWorkspaceState(selectedDraft);
     setSelectedModuleId(selectedDraft.id);
     setDraft(selectedDraft);
-    setSelectedComponentId(selectedDraft.components[0]?.id || null);
+    setComponentMode(initialWorkspace.mode);
+    setLocationFilter("all");
+    setComponentSearch("");
+    setSelectedComponentId(initialWorkspace.selectedComponentId);
     setImportState({
       state: result.mode === "v1-compatibility" ? "transitional" : "success",
       message: result.mode === "v1-compatibility"
@@ -2014,7 +1912,9 @@ export default function InspirationStudioPage() {
   }
 
   const packTitle = packSummaries.find((pack) => pack.id === draft.packId)?.title || draft.packId;
-  const imageSource = imagePreviewUrl || "";
+  const imageSource =
+    imagePreviewUrl ||
+    resolveStudioInspirationImageSource(draft.inspiration?.media);
 
   function handleSaveTestPreset(presetDefinition) {
     const savedPreset = saveStudioTestPreset(presetDefinition);
@@ -2055,14 +1955,14 @@ export default function InspirationStudioPage() {
       <header className="inspiration-studio__header inspiration-studio__header--compact inspiration-studio__header--editing">
         <div className="inspiration-studio__headline">
           <span className="inspiration-studio__eyebrow">
-            <Icon name="fa-screwdriver-wrench" /> Admin Content Studio
+            <StudioIcon name="fa-screwdriver-wrench" /> Admin Content Studio
           </span>
           <h1>Editing: {draft.title}</h1>
         </div>
         <div className="inspiration-studio__quick-meta inspiration-studio__quick-meta--header" aria-label="Current module status and studio tools">
-          <span><Icon name="fa-box-open" /> {packTitle}</span>
-          <span><Icon name="fa-circle-check" /> {draft.status || "draft"}</span>
-          <span><Icon name="fa-diagram-project" /> {asArray(draft.components).length} components</span>
+          <span><StudioIcon name="fa-box-open" /> {packTitle}</span>
+          <span><StudioIcon name="fa-circle-check" /> {draft.status || "draft"}</span>
+          <span><StudioIcon name="fa-diagram-project" /> {asArray(draft.components).length} components</span>
           <StudioToolsMenu
             coverageOpen={isCoverageMatrixOpen}
             graftCount={ALL_MONSTER_GRAFTS.length + monsterComponents.length}
@@ -2116,7 +2016,7 @@ export default function InspirationStudioPage() {
         >
           <div className="studio-library-panel__topline">
             <span className="studio-library-panel__title">
-              <Icon name="fa-book-open" />
+              <StudioIcon name="fa-book-open" />
               <span>Inspiration Library</span>
             </span>
             {!libraryCollapsed ? (
@@ -2128,7 +2028,7 @@ export default function InspirationStudioPage() {
                 aria-pressed="false"
                 onClick={() => setLibraryCollapsed(true)}
               >
-                <Icon name="fa-chevron-left" />
+                <StudioIcon name="fa-chevron-left" />
               </button>
             ) : null}
           </div>
@@ -2137,7 +2037,7 @@ export default function InspirationStudioPage() {
             <>
               <div className="studio-library-controls" aria-label="Library filters">
                 <label className="studio-search-field studio-search-field--library">
-                  <Icon name="fa-magnifying-glass" />
+                  <StudioIcon name="fa-magnifying-glass" />
                   <input value={librarySearch} onChange={(event) => setLibrarySearch(event.target.value)} placeholder="Search inspirations…" />
                 </label>
                 <div className="studio-library-filter-row" role="tablist" aria-label="Library status filters">
@@ -2150,7 +2050,7 @@ export default function InspirationStudioPage() {
                       title={label}
                       onClick={() => setLibraryStatusFilter(filterId)}
                     >
-                      <Icon name={getLibraryStatusFilterIcon(filterId)} />
+                      <StudioIcon name={getLibraryStatusFilterIcon(filterId)} />
                     </button>
                   ))}
                 </div>
@@ -2178,7 +2078,7 @@ export default function InspirationStudioPage() {
                       <span className="studio-list-button__topline">
                         <strong>{module.title}</strong>
                         <em aria-label={`${getReadinessLabelFromSummary(summary)} readiness`}>
-                          <Icon name={hasReviewIssue ? getReadinessIconFromSummary(summary) : getStatusIconName(status)} />
+                          <StudioIcon name={hasReviewIssue ? getReadinessIconFromSummary(summary) : getStatusIconName(status)} />
                         </em>
                       </span>
                       <span>{module.packId || "core-cruor"} · {status}</span>
@@ -2190,7 +2090,7 @@ export default function InspirationStudioPage() {
             </>
           ) : (
             <div className="studio-library-panel__collapsed" aria-hidden="true">
-              <Icon name="fa-book-skull" />
+              <StudioIcon name="fa-book-skull" />
               <span>{modules.length}</span>
             </div>
           )}
@@ -2211,10 +2111,10 @@ export default function InspirationStudioPage() {
         <div className="inspiration-studio__sheet">
           <nav className="inspiration-studio__section-tabs" aria-label="Studio editor steps">
             {STUDIO_SECTIONS.map((section, index) => (
-              <StudioTabButton
+              <StudioTab
                 key={section.id}
                 icon={section.icon}
-                isActive={activeSection === section.id}
+                active={activeSection === section.id}
                 label={`${index + 1}. ${section.label}`}
                 count={getSectionCount(section.id, draft, componentGroups, validationReport)}
                 hint={section.hint}
@@ -2307,7 +2207,7 @@ export default function InspirationStudioPage() {
                   className="studio-panel studio-panel--semantic-preview"
                   aria-label="Compiled Dark Places preview"
                 >
-                  <PanelTitle
+                  <StudioPanelTitle
                     eyebrow="Compiler Preview"
                     icon="fa-wand-magic-sparkles"
                     title="Deterministic Dark Places Sample"
@@ -2404,6 +2304,29 @@ export default function InspirationStudioPage() {
 }
 
 function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mode = "source", modules = [], onIdentityIdsRelock, onIdentityIdsUnlock, onImageUpload, onTitleChange, updateArrayField, updateDraft, updateDraftField }) {
+  const [mediaPreviewMode, setMediaPreviewMode] = useState("card");
+  const previewInspiration = useMemo(
+    () => ({
+      ...draft.inspiration,
+      title: draft.title || draft.inspiration?.title,
+      label: draft.title || draft.inspiration?.label,
+      media: {
+        ...draft.inspiration?.media,
+        imageUrl: imageSource,
+      },
+    }),
+    [draft.inspiration, draft.title, imageSource],
+  );
+  const previewCardMeta = useMemo(
+    () =>
+      getInspirationCardMeta(previewInspiration, {
+        collectionLabel:
+          previewInspiration.card?.collectionLabel ||
+          draft.packId ||
+          "Existing Inspirations",
+      }),
+    [draft.packId, previewInspiration],
+  );
   const taxonomyOptions = buildTaxonomyOptions(modules);
 
   function updateTaxonomyField(field, values) {
@@ -2454,16 +2377,16 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
     return (
       <div className="inspiration-studio__workspace inspiration-studio__workspace--source">
         <section className="studio-panel studio-panel--identity" aria-label="Source setup">
-          <PanelTitle eyebrow="Step 1" icon="fa-id-card-clip" title="Source Setup" help="Set the editorial identity first: name, pack, and publication status. Technical IDs stay under Advanced unless you need them." />
+          <StudioPanelTitle eyebrow="Step 1" icon="fa-id-card-clip" title="Source Setup" help="Set the editorial identity first: name, pack, and publication status. Technical IDs stay under Advanced unless you need them." />
 
           <div className="studio-form-grid studio-form-grid--primary">
-            <FormRow label="Inspiration Name" icon="fa-signature" hint={FIELD_HELP.inspirationName}>
+            <StudioField label="Inspiration Name" icon="fa-signature" hint={FIELD_HELP.inspirationName}>
               <EditableTextBox value={draft.title} placeholder="Untitled inspiration" onChange={onTitleChange} />
-            </FormRow>
-            <FormRow label="Collection / Pack" icon="fa-layer-group" hint={FIELD_HELP.packId}>
-              <TextInput list="studio-pack-options" value={draft.packId} onChange={(value) => updateDraftField(["packId"], value)} />
-            </FormRow>
-            <FormRow label="Status" icon="fa-circle-check" hint={FIELD_HELP.status} helpItems={STATUS_TOOLTIP_ITEMS}>
+            </StudioField>
+            <StudioField label="Collection / Pack" icon="fa-layer-group" hint={FIELD_HELP.packId}>
+              <StudioInput list="studio-pack-options" value={draft.packId} onChange={(value) => updateDraftField(["packId"], value)} />
+            </StudioField>
+            <StudioField label="Status" icon="fa-circle-check" hint={FIELD_HELP.status} helpItems={STATUS_TOOLTIP_ITEMS}>
               <select value={draft.status} onChange={(event) => {
                 const value = event.target.value;
                 updateDraft((nextDraft) => {
@@ -2476,7 +2399,7 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
                   <option key={option.id} value={option.id}>{option.label}</option>
                 ))}
               </select>
-            </FormRow>
+            </StudioField>
           </div>
 
           <datalist id="studio-pack-options">
@@ -2487,22 +2410,22 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
           </datalist>
 
           <details className="studio-advanced-details">
-            <summary><Icon name="fa-gear" /> Advanced identity fields</summary>
+            <summary><StudioIcon name="fa-gear" /> Advanced identity fields</summary>
             <div className="studio-lockable-fields">
               <div className="studio-lockable-fields__status">
-                <span><Icon name={identityIdsUnlocked ? "fa-lock-open" : "fa-lock"} /> {identityIdsUnlocked ? "Manual ID override enabled" : "IDs generated from Inspiration Name"}</span>
+                <span><StudioIcon name={identityIdsUnlocked ? "fa-lock-open" : "fa-lock"} /> {identityIdsUnlocked ? "Manual ID override enabled" : "IDs generated from Inspiration Name"}</span>
                 <button type="button" onClick={identityIdsUnlocked ? onIdentityIdsRelock : onIdentityIdsUnlock}>
-                  <Icon name={identityIdsUnlocked ? "fa-wand-magic-sparkles" : "fa-lock-open"} />
+                  <StudioIcon name={identityIdsUnlocked ? "fa-wand-magic-sparkles" : "fa-lock-open"} />
                   {identityIdsUnlocked ? "Regenerate & Lock" : "Unlock Override"}
                 </button>
               </div>
               <div className="studio-form-grid studio-form-grid--compact">
-                <FormRow label="Source Anchor ID" icon="fa-fingerprint" hint={FIELD_HELP.sourceAnchorId}>
-                  <TextInput readOnly={!identityIdsUnlocked} value={draft.sourceAnchor.id} onChange={updateManualSourceAnchorId} />
-                </FormRow>
-                <FormRow label="Inspiration Card ID" icon="fa-fingerprint" hint="Stable ID for the public inspiration card object.">
-                  <TextInput readOnly={!identityIdsUnlocked} value={draft.inspiration.id} onChange={(value) => updateDraftField(["inspiration", "id"], value)} />
-                </FormRow>
+                <StudioField label="Source Anchor ID" icon="fa-fingerprint" hint={FIELD_HELP.sourceAnchorId}>
+                  <StudioInput readOnly={!identityIdsUnlocked} value={draft.sourceAnchor.id} onChange={updateManualSourceAnchorId} />
+                </StudioField>
+                <StudioField label="Inspiration Card ID" icon="fa-fingerprint" hint="Stable ID for the public inspiration card object.">
+                  <StudioInput readOnly={!identityIdsUnlocked} value={draft.inspiration.id} onChange={(value) => updateDraftField(["inspiration", "id"], value)} />
+                </StudioField>
               </div>
             </div>
           </details>
@@ -2515,9 +2438,9 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
     return (
       <div className="inspiration-studio__workspace inspiration-studio__workspace--card">
         <section className="studio-panel studio-panel--identity" aria-label="Public inspiration card copy">
-          <PanelTitle eyebrow="Step 2" icon="fa-align-left" title="Public Card" help={SECTION_HELP.publicCopy} />
+          <StudioPanelTitle eyebrow="Step 2" icon="fa-align-left" title="Public Card" help={SECTION_HELP.publicCopy} />
 
-          <FormRow label="Public Summary" icon="fa-quote-left" hint={FIELD_HELP.publicSummary}>
+          <StudioField label="Public Summary" icon="fa-quote-left" hint={FIELD_HELP.publicSummary}>
             <EditableTextBox
               rows={5}
               value={draft.inspiration.editorial?.deck || draft.sourceAnchor.summary}
@@ -2531,9 +2454,9 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
                 });
               }}
             />
-          </FormRow>
+          </StudioField>
 
-          <FormRow label="Why It Disturbs / Narrative" icon="fa-book-skull" hint={FIELD_HELP.narrative}>
+          <StudioField label="Why It Disturbs / Narrative" icon="fa-book-skull" hint={FIELD_HELP.narrative}>
             <EditableTextBox
               rows={7}
               value={draft.inspiration.editorial?.whyItDisturbs}
@@ -2541,48 +2464,92 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
               onApplyToken={(token) => appendMarkdown(["inspiration", "editorial", "whyItDisturbs"], token)}
               onChange={(value) => updateDraftField(["inspiration", "editorial", "whyItDisturbs"], value)}
             />
-          </FormRow>
+          </StudioField>
         </section>
 
         <section className="studio-panel studio-panel--media" aria-label="Card image">
-          <PanelTitle eyebrow="Archive Image" icon="fa-image" title="Preview & Asset" help={SECTION_HELP.media} />
+          <StudioPanelTitle eyebrow="Archive Image" icon="fa-image" title="Preview & Asset" help={SECTION_HELP.media} />
 
-          <div className="studio-card-preview">
-            {imageSource ? (
-              <img src={imageSource} alt={draft.inspiration.media?.imageAlt || `${draft.title} preview`} />
-            ) : (
-              <div className="studio-card-preview__empty">
-                <Icon name="fa-image" />
-                <span>No Image Preview</span>
-              </div>
-            )}
-            <div>
-              <strong>{draft.title}</strong>
-              <span>{draft.inspiration.sourceTypes?.[0] || "Source Anchor"}</span>
+          <div className="studio-media-preview">
+            <div
+              className="studio-media-preview__tabs"
+              role="tablist"
+              aria-label="Archive image preview mode"
+            >
+              <StudioTab
+                icon="fa-image"
+                active={mediaPreviewMode === "image"}
+                label="Original Image"
+                hint="Inspect the resolved 4:5 image without card framing."
+                onClick={() => setMediaPreviewMode("image")}
+              />
+              <StudioTab
+                icon="fa-id-card"
+                active={mediaPreviewMode === "card"}
+                label="Card Preview"
+                hint="Inspect the exact public Inspirations card front."
+                onClick={() => setMediaPreviewMode("card")}
+              />
+            </div>
+
+            <div
+              className="studio-media-preview__stage"
+              data-preview-mode={mediaPreviewMode}
+              role="tabpanel"
+              aria-label={
+                mediaPreviewMode === "card"
+                  ? "Public inspiration card preview"
+                  : "Original inspiration image preview"
+              }
+            >
+              {mediaPreviewMode === "card" ? (
+                <InspirationCardFront
+                  inspiration={previewInspiration}
+                  meta={previewCardMeta}
+                  className="studio-media-preview__public-card"
+                />
+              ) : (
+                <div className="studio-media-preview__image">
+                  {imageSource ? (
+                    <img
+                      src={imageSource}
+                      alt={
+                        draft.inspiration.media?.imageAlt ||
+                        `${draft.title} preview`
+                      }
+                    />
+                  ) : (
+                    <div className="studio-card-preview__empty">
+                      <StudioIcon name="fa-image" />
+                      <span>No Image Preview</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
-          <FormRow label="Upload Preview Image" icon="fa-upload" hint={FIELD_HELP.uploadPreview}>
+          <StudioField label="Upload Preview Image" icon="fa-upload" hint={FIELD_HELP.uploadPreview}>
             <input type="file" accept="image/*" onChange={onImageUpload} />
-          </FormRow>
+          </StudioField>
 
           <details className="studio-advanced-details">
-            <summary><Icon name="fa-gear" /> Advanced asset fields</summary>
-            <FormRow label="Image Key / Filename" icon="fa-file-image" hint={FIELD_HELP.imageKey}>
-              <TextInput value={draft.inspiration.media?.imageKey} onChange={(value) => updateDraftField(["inspiration", "media", "imageKey"], value)} />
-            </FormRow>
-            <FormRow label="Image Provider" icon="fa-link" hint="Stable provider or asset-library identifier; preview URLs are never serialized.">
-              <TextInput value={draft.inspiration.media?.imageProvider} onChange={(value) => updateDraftField(["inspiration", "media", "imageProvider"], value)} />
-            </FormRow>
-            <FormRow label="Image Credit" icon="fa-heading" hint="Required editorial credit or rights attribution when applicable.">
-              <TextInput value={draft.inspiration.media?.imageCredit} onChange={(value) => updateDraftField(["inspiration", "media", "imageCredit"], value)} />
-            </FormRow>
-            <FormRow label="Image Alt" icon="fa-closed-captioning" hint="Accessible alt text for the archive image preview and published card.">
-              <TextInput value={draft.inspiration.media?.imageAlt} onChange={(value) => updateDraftField(["inspiration", "media", "imageAlt"], value)} />
-            </FormRow>
-            <FormRow label="Icon" icon="fa-icons" hint="Optional semantic icon identifier used by Archive views.">
-              <TextInput value={draft.inspiration.media?.icon} onChange={(value) => updateDraftField(["inspiration", "media", "icon"], value)} />
-            </FormRow>
+            <summary><StudioIcon name="fa-gear" /> Advanced asset fields</summary>
+            <StudioField label="Image Key / Filename" icon="fa-file-image" hint={FIELD_HELP.imageKey}>
+              <StudioInput value={draft.inspiration.media?.imageKey} onChange={(value) => updateDraftField(["inspiration", "media", "imageKey"], value)} />
+            </StudioField>
+            <StudioField label="Image Provider" icon="fa-link" hint="Stable provider or asset-library identifier; preview URLs are never serialized.">
+              <StudioInput value={draft.inspiration.media?.imageProvider} onChange={(value) => updateDraftField(["inspiration", "media", "imageProvider"], value)} />
+            </StudioField>
+            <StudioField label="Image Credit" icon="fa-heading" hint="Required editorial credit or rights attribution when applicable.">
+              <StudioInput value={draft.inspiration.media?.imageCredit} onChange={(value) => updateDraftField(["inspiration", "media", "imageCredit"], value)} />
+            </StudioField>
+            <StudioField label="Image Alt" icon="fa-closed-captioning" hint="Accessible alt text for the archive image preview and published card.">
+              <StudioInput value={draft.inspiration.media?.imageAlt} onChange={(value) => updateDraftField(["inspiration", "media", "imageAlt"], value)} />
+            </StudioField>
+            <StudioField label="Icon" icon="fa-icons" hint="Optional semantic icon identifier used by Archive views.">
+              <StudioInput value={draft.inspiration.media?.icon} onChange={(value) => updateDraftField(["inspiration", "media", "icon"], value)} />
+            </StudioField>
           </details>
         </section>
       </div>
@@ -2592,11 +2559,11 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
   return (
     <div className="inspiration-studio__workspace inspiration-studio__workspace--taxonomy">
       <section className="studio-panel studio-panel--identity" aria-label="Taxonomy">
-        <PanelTitle eyebrow="Step 3" icon="fa-tags" title="Taxonomy" help={SECTION_HELP.taxonomy} />
+        <StudioPanelTitle eyebrow="Step 3" icon="fa-tags" title="Taxonomy" help={SECTION_HELP.taxonomy} />
         <p className="studio-panel-note">Use comma-separated chips. These drive filtering, inspiration discovery, and default component inheritance.</p>
 
         <div className="studio-form-grid studio-form-grid--taxonomy">
-          <FormRow label="Source Types" icon="fa-folder-tree" hint={FIELD_HELP.sourceTypes}>
+          <StudioField label="Source Types" icon="fa-folder-tree" hint={FIELD_HELP.sourceTypes}>
             <TagPillInput
               allowCustom={false}
               fieldId="source-types"
@@ -2606,8 +2573,8 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
               onChange={(values) => updateTaxonomyField("sourceTypes", values)}
               placeholder="Add allowed source type…"
             />
-          </FormRow>
-          <FormRow label="Themes" icon="fa-moon" hint={FIELD_HELP.themes}>
+          </StudioField>
+          <StudioField label="Themes" icon="fa-moon" hint={FIELD_HELP.themes}>
             <TagPillInput
               fieldId="themes"
               icon={TAXONOMY_PILL_ICONS.themes}
@@ -2616,8 +2583,8 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
               onChange={(values) => updateTaxonomyField("themes", values)}
               placeholder="Add theme…"
             />
-          </FormRow>
-          <FormRow label="Motifs" icon="fa-eye" hint={FIELD_HELP.motifs}>
+          </StudioField>
+          <StudioField label="Motifs" icon="fa-eye" hint={FIELD_HELP.motifs}>
             <TagPillInput
               fieldId="motifs"
               icon={TAXONOMY_PILL_ICONS.motifs}
@@ -2626,8 +2593,8 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
               onChange={(values) => updateTaxonomyField("motifs", values)}
               placeholder="Add motif…"
             />
-          </FormRow>
-          <FormRow label="Horror Tags" icon="fa-droplet" hint={FIELD_HELP.horrorTags}>
+          </StudioField>
+          <StudioField label="Horror Tags" icon="fa-droplet" hint={FIELD_HELP.horrorTags}>
             <TagPillInput
               allowCustom={false}
               fieldId="horror-tags"
@@ -2637,7 +2604,7 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
               onChange={(values) => updateTaxonomyField("horror", values)}
               placeholder="Add allowed horror tag…"
             />
-          </FormRow>
+          </StudioField>
         </div>
       </section>
     </div>
@@ -2725,7 +2692,7 @@ function ComponentsWorkspace({
 
   return (
     <section className="studio-panel studio-panel--components" aria-label="Linked components">
-      <PanelTitle eyebrow="Linked Components" icon="fa-diagram-project" title="Generator Content" help={SECTION_HELP.components} />
+      <StudioPanelTitle eyebrow="Linked Components" icon="fa-diagram-project" title="Generator Content" help={SECTION_HELP.components} />
 
       <div className={`studio-component-workspace ${componentListCollapsed ? "is-component-list-collapsed" : ""}`.trim()}>
         <div className="studio-component-list studio-component-list--grouped" aria-label="Component list">
@@ -2738,14 +2705,14 @@ function ComponentsWorkspace({
                 aria-label="Expand component list"
                 title="Expand component list"
               >
-                <Icon name="fa-diagram-project" />
+                <StudioIcon name="fa-diagram-project" />
                 <span>{visibleComponents.length}</span>
                 <em>Component Index</em>
               </button>
             ) : (
               <>
                 <div className="studio-component-list__topline-main">
-                  <span><Icon name="fa-list" /> Component Index</span>
+                  <span><StudioIcon name="fa-list" /> Component Index</span>
                   <button
                     type="button"
                     aria-label="Collapse component list"
@@ -2753,15 +2720,15 @@ function ComponentsWorkspace({
                     aria-pressed={componentListCollapsed}
                     onClick={() => setComponentListCollapsed(true)}
                   >
-                    <Icon name="fa-chevron-left" />
+                    <StudioIcon name="fa-chevron-left" />
                   </button>
                 </div>
 
                 <div className="studio-component-toolbar">
                   <label className="studio-search-field">
-                    <Icon name="fa-magnifying-glass" />
+                    <StudioIcon name="fa-magnifying-glass" />
                     <input value={componentSearch} onChange={(event) => onComponentSearchChange(event.target.value)} placeholder="Search components…" />
-                    <HelpTooltip title="Search Components" text={FIELD_HELP.componentSearch} />
+                    <StudioHelp title="Search Components" text={FIELD_HELP.componentSearch} />
                   </label>
 
                   {componentMode === "locations" ? (
@@ -2775,11 +2742,11 @@ function ComponentsWorkspace({
 
                 {activeTemplateGroup ? (
                   <details className="studio-component-template-group" key={activeTemplateGroup.id}>
-                    <summary><Icon name={activeTemplateGroup.icon} /> Create {activeTemplateGroup.label}</summary>
+                    <summary><StudioIcon name={activeTemplateGroup.icon} /> Create {activeTemplateGroup.label}</summary>
                     <div className="studio-component-template-group__items">
                       {activeTemplateGroup.templates.map((template) => (
                         <button key={template.id} type="button" onClick={() => confirmAddComponent(template)} title={`Create ${template.label}`}>
-                          <Icon name={template.icon} />
+                          <StudioIcon name={template.icon} />
                           <span>{template.shortLabel || template.label}</span>
                         </button>
                       ))}
@@ -2792,7 +2759,7 @@ function ComponentsWorkspace({
           {!componentListCollapsed ? groupedComponents.map((group) => (
             <details className="studio-component-group" key={group.key}>
               <summary>
-                <span><Icon name={group.icon} /> {group.eyebrow}</span>
+                <span><StudioIcon name={group.icon} /> {group.eyebrow}</span>
                 <strong>{group.label}</strong>
                 <em>{group.items.length}</em>
               </summary>
@@ -2818,7 +2785,7 @@ function ComponentsWorkspace({
                       onClick={() => onSelectComponent(component.id)}
                     >
                       <span className="studio-component-list__meta">
-                        <Icon name={COMPONENT_TYPE_ICONS[component.contentType] || "fa-puzzle-piece"} />
+                        <StudioIcon name={COMPONENT_TYPE_ICONS[component.contentType] || "fa-puzzle-piece"} />
                         {typeLabel}{slotLabel ? ` • ${slotLabel}` : ""}
                       </span>
                       <span className="studio-list-button__topline">
@@ -2826,7 +2793,7 @@ function ComponentsWorkspace({
                         <span className="studio-list-button__review-tools">
                           <StudioWarningBadge compact warnings={getStudioWarningsForEntry(studioWarnings, component.id)} />
                           <em aria-label={hasReviewIssue ? `${getReadinessLabelFromSummary(getIssueSummary(componentIssues))} review issue` : `${status} status`}>
-                            <Icon name={hasReviewIssue ? getReadinessIconFromSummary(getIssueSummary(componentIssues)) : getStatusIconName(status)} />
+                            <StudioIcon name={hasReviewIssue ? getReadinessIconFromSummary(getIssueSummary(componentIssues)) : getStatusIconName(status)} />
                           </em>
                         </span>
                       </span>
@@ -2843,6 +2810,7 @@ function ComponentsWorkspace({
           <ComponentEditor
             component={selectedComponent}
             editorDefinition={getStudioEditorDefinition(selectedComponent)}
+            selectionKey={`${componentMode}:${visibleComponents.indexOf(selectedComponent)}`}
             warnings={getStudioWarningsForEntry(studioWarnings, selectedComponent.id)}
             onChange={(updater) => onUpdateComponent(selectedComponent.id, updater)}
             onRemove={() => onRemoveComponent(selectedComponent.id)}
@@ -2852,17 +2820,17 @@ function ComponentsWorkspace({
         )}
 
         <div className="studio-component-tabs studio-component-tabs--vertical" role="tablist" aria-label="Component families">
-          <StudioTabButton
+          <StudioTab
             icon="fa-skull"
-            isActive={componentMode === "monsters"}
+            active={componentMode === "monsters"}
             label="Monsters"
             count={monsterComponentsCount}
             hint="Grafts consumed by Monster Composer."
             onClick={() => onComponentModeChange("monsters")}
           />
-          <StudioTabButton
+          <StudioTab
             icon="fa-map-location-dot"
-            isActive={componentMode === "locations"}
+            active={componentMode === "locations"}
             label="Locations"
             count={locationComponentsCount + locationRegionsCount}
             hint="Components and regions consumed by Darken/Map."
@@ -2897,39 +2865,39 @@ function ExportWorkspace({
   return (
     <div className="inspiration-studio__workspace inspiration-studio__workspace--export">
       <section className="studio-panel studio-panel--validation" aria-label="Validation report">
-        <PanelTitle eyebrow="Validation" icon="fa-shield-halved" title="Module Readiness" help="Checks whether the current Inspiration Module can safely become a registry-ready content pack.">
+        <StudioPanelTitle eyebrow="Validation" icon="fa-shield-halved" title="Module Readiness" help="Checks whether the current Inspiration Module can safely become a registry-ready content pack.">
           <button type="button" onClick={onDownloadReadinessReport}>
-            <Icon name="fa-file-arrow-down" /> Report JSON
+            <StudioIcon name="fa-file-arrow-down" /> Report JSON
           </button>
-        </PanelTitle>
+        </StudioPanelTitle>
         <ValidationPanel draft={draft} report={validationReport} studioWarnings={studioWarnings} />
       </section>
 
       <section className="studio-panel studio-panel--validation" aria-label="Monster QA report">
-        <PanelTitle eyebrow="Monster QA" icon="fa-vial-circle-check" title="Generator Readiness" help="Runs the shared Monster Composer QA suite used by npm run monster:qa. This checks content, templates, forge generation, run mode, and export output.">
+        <StudioPanelTitle eyebrow="Monster QA" icon="fa-vial-circle-check" title="Generator Readiness" help="Runs the shared Monster Composer QA suite used by npm run monster:qa. This checks content, templates, forge generation, run mode, and export output.">
           <span>{monsterQaReport?.summary?.error || 0} errors · {monsterQaReport?.summary?.warning || 0} warnings</span>
-        </PanelTitle>
+        </StudioPanelTitle>
         <MonsterQaPanel report={monsterQaReport} />
       </section>
 
       <section className="studio-panel studio-panel--export" aria-label="Export content pack">
-        <PanelTitle eyebrow="Export" icon="fa-code" title={selectedOption.label} help={SECTION_HELP.export}>
+        <StudioPanelTitle eyebrow="Export" icon="fa-code" title={selectedOption.label} help={SECTION_HELP.export}>
           <button type="button" onClick={onCopy}>
-            <Icon name={copyState === "copied" ? "fa-check" : copyState === "failed" ? "fa-triangle-exclamation" : "fa-copy"} />
+            <StudioIcon name={copyState === "copied" ? "fa-check" : copyState === "failed" ? "fa-triangle-exclamation" : "fa-copy"} />
             {copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy Failed" : "Copy JSON"}
           </button>
           <button type="button" onClick={onDownloadExport}>
-            <Icon name="fa-file-arrow-down" /> Download v2
+            <StudioIcon name="fa-file-arrow-down" /> Download v2
           </button>
-        </PanelTitle>
+        </StudioPanelTitle>
 
         <div className="studio-v2-transfer" data-import-state={importState?.state || "idle"}>
           <label className="studio-v2-transfer__import">
-            <Icon name="fa-file-import" /> Import v1/v2 JSON
+            <StudioIcon name="fa-file-import" /> Import v1/v2 JSON
             <input type="file" accept="application/json,.json" onChange={onImport} />
           </label>
           <span>
-            <Icon name={importState?.state === "error" ? "fa-circle-xmark" : "fa-code-branch"} />
+            <StudioIcon name={importState?.state === "error" ? "fa-circle-xmark" : "fa-code-branch"} />
             {importState?.message || "v1 is read transitionally; every Studio download and copy is canonical v2."}
           </span>
         </div>
@@ -2942,7 +2910,7 @@ function ExportWorkspace({
               aria-pressed={exportMode === option.id}
               onClick={() => onExportModeChange(option.id)}
             >
-              <span><Icon name={option.icon} /> {option.label}</span>
+              <span><StudioIcon name={option.icon} /> {option.label}</span>
               <em>{option.description}</em>
             </button>
           ))}
@@ -2961,7 +2929,7 @@ function ExportWorkspace({
         />
 
         <details className="studio-export-compare">
-          <summary><Icon name="fa-code-compare" /> Inspect both export payloads</summary>
+          <summary><StudioIcon name="fa-code-compare" /> Inspect both export payloads</summary>
           <div className="studio-export-compare__grid">
             <label>
               <span>Content Pack</span>
@@ -2994,7 +2962,7 @@ function MonsterQaPanel({ report }) {
 
       {isClean ? (
         <div className="studio-validation-clean">
-          <Icon name="fa-circle-check" />
+          <StudioIcon name="fa-circle-check" />
           <strong>Monster QA is clean.</strong>
           <span>Templates, core forge frames, run mode, and export output passed the shared QA suite.</span>
         </div>
@@ -3006,7 +2974,7 @@ function MonsterQaPanel({ report }) {
             return (
               <article className={`studio-validation-issue studio-validation-issue--${severity}`} key={group.key} role="listitem">
                 <span className="studio-validation-issue__badge">
-                  <Icon name={meta.icon} />
+                  <StudioIcon name={meta.icon} />
                   {group.count > 1 ? `${group.count}×` : severity}
                 </span>
                 <div>
@@ -3038,7 +3006,7 @@ function ValidationPanel({ draft = {}, report, studioWarnings = [] }) {
 
       {isClean ? (
         <div className="studio-validation-clean">
-          <Icon name="fa-circle-check" />
+          <StudioIcon name="fa-circle-check" />
           <strong>Ready for Content Pack export.</strong>
           <span>No validation issues detected for the current module.</span>
         </div>
@@ -3054,25 +3022,49 @@ function ComponentEditor({
   editorDefinition,
   onChange,
   onRemove,
+  selectionKey,
   warnings = [],
 }) {
+  const editorRootRef = useRef(null);
   const isSpecialized = isStudioSpecializedSemanticType(component.semanticType);
+  const warningFieldIds = warnings
+    .map((warning) => warning.fieldId)
+    .filter(Boolean)
+    .sort()
+    .join("|");
+
+  useEffect(() => {
+    if (!editorRootRef.current || !warningFieldIds) return;
+    warningFieldIds
+      .split("|")
+      .forEach((fieldId) =>
+        openStudioDisclosuresForField(editorRootRef.current, fieldId),
+      );
+  }, [selectionKey, warningFieldIds]);
 
   return (
-    <div className="studio-component-editor-shell" aria-label="Selected component workspace" data-studio-editor={editorDefinition?.editorId || "location-component"}>
-      {warnings.length ? (
-        <div className="studio-component-editor-warning-panel">
-          <StudioWarningList grouped={false} warnings={warnings} />
-        </div>
-      ) : null}
+    <div
+      ref={editorRootRef}
+      className="studio-component-editor-shell"
+      aria-label="Selected component workspace"
+      data-studio-editor={
+        editorDefinition?.editorId || "location-component"
+      }
+    >
+      <StudioWarningSummary
+        key={`warnings-${selectionKey}`}
+        warnings={warnings}
+      />
       {isSpecialized ? (
         <StudioSemanticComponentEditor
+          key={`semantic-${selectionKey}`}
           component={component}
           onChange={onChange}
           onRemove={onRemove}
         />
       ) : (
         <ComponentAdvancedEditor
+          key={`advanced-${selectionKey}`}
           component={component}
           onChange={onChange}
           onRemove={onRemove}
@@ -3080,7 +3072,6 @@ function ComponentEditor({
       )}
     </div>
   );
-
 }
 
 function ComponentAdvancedEditor({ component, onChange, onRemove }) {
@@ -3921,21 +3912,21 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
     <div className="studio-component-editor studio-component-editor--tabbed" data-active-zone={activeComponentEditorTab} aria-label="Selected component editor">
       <div className="studio-component-editor__topline studio-component-editor__topline--sticky">
         <div>
-          <span><Icon name={COMPONENT_TYPE_ICONS[component.contentType] || "fa-puzzle-piece"} /> {COMPONENT_TYPE_LABELS[component.contentType] || component.contentType}</span>
+          <span><StudioIcon name={COMPONENT_TYPE_ICONS[component.contentType] || "fa-puzzle-piece"} /> {COMPONENT_TYPE_LABELS[component.contentType] || component.contentType}</span>
           <strong>{component.title}</strong>
         </div>
       </div>
 
-      <nav className="studio-component-editor-tabs" aria-label="Component editor sections">
+      <nav className="studio-component-editor-tabs" role="tablist" aria-label="Component editor sections">
         {componentEditorTabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
-            className={tab.id === activeComponentEditorTab ? "is-active" : ""}
-            aria-pressed={tab.id === activeComponentEditorTab}
+            role="tab"
+            aria-selected={tab.id === activeComponentEditorTab}
             onClick={() => setActiveEditorTab(tab.id)}
           >
-            <Icon name={tab.icon} />
+            <StudioIcon name={tab.icon} />
             <span>{tab.label}</span>
           </button>
         ))}
@@ -3944,79 +3935,79 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
 
       {activeComponentEditorTab === "overview" ? (
         <div className="studio-component-zone" data-editor-zone="overview">
-          <RulesGroup icon="fa-id-card" title="Identity" help="Core component identity, source links, workflows, and implementation tags.">
+          <StudioCollapsibleSection icon="fa-id-card" title="Identity" help="Core component identity, source links, workflows, and implementation tags.">
             <div className="studio-form-grid studio-form-grid--compact">
-              <FormRow label="Component Title" icon="fa-heading" hint={FIELD_HELP.componentTitle}>
-                <TextInput value={component.title} onChange={(value) => {
+              <StudioField label="Component Title" icon="fa-heading" hint={FIELD_HELP.componentTitle}>
+                <StudioInput value={component.title} onChange={(value) => {
                   setField(["title"], value);
                   setField(["label"], value);
                 }} />
-              </FormRow>
-              <FormRow label="Content Type" icon="fa-shapes" hint={FIELD_HELP.contentType}>
+              </StudioField>
+              <StudioField label="Content Type" icon="fa-shapes" hint={FIELD_HELP.contentType}>
                 <select value={component.contentType} onChange={(event) => setField(["contentType"], event.target.value)}>
                   <option value="monster-graft">Monster Graft</option>
                   <option value="location-component">Location Component</option>
                   <option value="location-region">Location Region</option>
                 </select>
-              </FormRow>
+              </StudioField>
               {!isMonsterGraft ? (
-                <FormRow label="Slots" icon="fa-table-cells-large" hint={FIELD_HELP.slots}>
+                <StudioField label="Slots" icon="fa-table-cells-large" hint={FIELD_HELP.slots}>
                   <KeywordPillInput fieldId={`${component.id}-slots`} icon="fa-table-cells-large" value={component.slots} onChange={(value) => setField(["slots"], value)} placeholder="body, attack, region" />
-                </FormRow>
+                </StudioField>
               ) : null}
-              <FormRow label="Workflows" icon="fa-route" hint={FIELD_HELP.workflows}>
+              <StudioField label="Workflows" icon="fa-route" hint={FIELD_HELP.workflows}>
                 <KeywordPillInput fieldId={`${component.id}-workflows`} icon="fa-route" value={component.workflows} onChange={(value) => setField(["workflows"], value)} placeholder="monster-composer" />
-              </FormRow>
-              <FormRow label="Source Anchors" icon="fa-anchor" hint={FIELD_HELP.sourceAnchors}>
+              </StudioField>
+              <StudioField label="Source Anchors" icon="fa-anchor" hint={FIELD_HELP.sourceAnchors}>
                 <KeywordPillInput fieldId={`${component.id}-source-anchors`} icon="fa-anchor" value={component.sourceAnchors} onChange={(value) => setField(["sourceAnchors"], value)} placeholder="decomposition" />
-              </FormRow>
-              <FormRow label="Tags" icon="fa-tags" hint={FIELD_HELP.tags}>
+              </StudioField>
+              <StudioField label="Tags" icon="fa-tags" hint={FIELD_HELP.tags}>
                 <KeywordPillInput fieldId={`${component.id}-tags`} icon="fa-tag" value={component.tags} onChange={(value) => setField(["tags"], value)} placeholder="slot:body, role:boss" />
-              </FormRow>
+              </StudioField>
             </div>
-          </RulesGroup>
+          </StudioCollapsibleSection>
 
-          <RulesGroup icon="fa-pen-nib" title="Playable Text" help={SECTION_HELP.playableText}>
-            <FormRow label="Summary" icon="fa-align-left" hint={FIELD_HELP.componentSummary}>
-              <TextArea rows={4} value={component.summary} onChange={(value) => setField(["summary"], value)} />
-            </FormRow>
+          <StudioCollapsibleSection icon="fa-pen-nib" title="Playable Text" help={SECTION_HELP.playableText}>
+            <StudioField label="Summary" icon="fa-align-left" hint={FIELD_HELP.componentSummary}>
+              <StudioTextarea rows={4} value={component.summary} onChange={(value) => setField(["summary"], value)} />
+            </StudioField>
             {!isMonsterGraft ? (
               <>
-                <FormRow label="Table Text" icon="fa-dice-d20" hint={FIELD_HELP.tableText}>
-                  <TextArea rows={4} value={component.tableText} onChange={(value) => setField(["tableText"], value)} />
-                </FormRow>
-                <FormRow label="Mechanics" icon="fa-gears" hint={FIELD_HELP.mechanics}>
-                  <TextArea rows={5} value={component.mechanics} onChange={(value) => setField(["mechanics"], value)} />
-                </FormRow>
+                <StudioField label="Table Text" icon="fa-dice-d20" hint={FIELD_HELP.tableText}>
+                  <StudioTextarea rows={4} value={component.tableText} onChange={(value) => setField(["tableText"], value)} />
+                </StudioField>
+                <StudioField label="Mechanics" icon="fa-gears" hint={FIELD_HELP.mechanics}>
+                  <StudioTextarea rows={5} value={component.mechanics} onChange={(value) => setField(["mechanics"], value)} />
+                </StudioField>
               </>
             ) : null}
-          </RulesGroup>
+          </StudioCollapsibleSection>
         </div>
       ) : null}
 
       {isMonsterGraft ? (
         <div className="studio-component-editor__subpanel studio-component-editor__subpanel--monster" hidden={activeComponentEditorTab === "overview"}>
-          <RulesGroup zone="fit" defaultOpen icon="fa-id-card" title="Frame" help="Frame fields define where the graft belongs in the Monster Composer, where it prints in the stat block, and how much budget it consumes.">
+          <StudioCollapsibleSection zone="fit" defaultOpen icon="fa-id-card" title="Frame" help="Frame fields define where the graft belongs in the Monster Composer, where it prints in the stat block, and how much budget it consumes.">
             <div className="studio-form-grid studio-form-grid--compact">
-              <FormRow label="Monster Slot" icon="fa-table-cells-large" hint={FIELD_HELP.monsterSlot}>
-                <TextInput value={component.monster?.slot || joinList(component.slots)} onChange={setMonsterSlot} />
-              </FormRow>
-              <FormRow label="Rules Section" icon="fa-file-lines" hint={FIELD_HELP.rulesSection}>
-                <SelectInput options={MONSTER_RULE_SECTION_OPTIONS} value={ruleSection} onChange={(value) => {
+              <StudioField label="Monster Slot" icon="fa-table-cells-large" hint={FIELD_HELP.monsterSlot}>
+                <StudioInput value={component.monster?.slot || joinList(component.slots)} onChange={setMonsterSlot} />
+              </StudioField>
+              <StudioField label="Rules Section" icon="fa-file-lines" hint={FIELD_HELP.rulesSection}>
+                <StudioSelect options={MONSTER_RULE_SECTION_OPTIONS} value={ruleSection} onChange={(value) => {
                   setField(["monster", "section"], value);
                   setRulesField(["section"], value);
                 }} />
-              </FormRow>
-              <FormRow label="Cost" icon="fa-gauge-high" hint={FIELD_HELP.monsterCost}>
+              </StudioField>
+              <StudioField label="Cost" icon="fa-gauge-high" hint={FIELD_HELP.monsterCost}>
                 <input type="number" value={component.monster?.cost ?? 0} onChange={(event) => setField(["monster", "cost"], Number(event.target.value))} />
-              </FormRow>
-              <FormRow label="Complexity" icon="fa-layer-group" hint={FIELD_HELP.monsterComplexity}>
+              </StudioField>
+              <StudioField label="Complexity" icon="fa-layer-group" hint={FIELD_HELP.monsterComplexity}>
                 <input type="number" value={component.monster?.complexity ?? 0} onChange={(event) => setField(["monster", "complexity"], Number(event.target.value))} />
-              </FormRow>
+              </StudioField>
             </div>
-          </RulesGroup>
+          </StudioCollapsibleSection>
 
-          <RulesGroup
+          <StudioCollapsibleSection
             zone="anatomy"
             icon="fa-seedling"
             title="Effective Anatomy Grants"
@@ -4024,22 +4015,22 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
             actions={monsterGrantSummary.length ? <RemoveRulesBlockButton label="Effective Anatomy Grants" onClick={clearMonsterGrants} /> : null}
           >
             <div className="studio-form-grid studio-form-grid--compact">
-              <FormRow label={ANATOMY_GRANT_FIELD_LABELS.grantsBodyPlans} icon="fa-person-rays" hint={ANATOMY_GRANT_FIELD_HINTS.grantsBodyPlans}>
+              <StudioField label={ANATOMY_GRANT_FIELD_LABELS.grantsBodyPlans} icon="fa-person-rays" hint={ANATOMY_GRANT_FIELD_HINTS.grantsBodyPlans}>
                 <KeywordPillInput fieldId={`${component.id}-grants-body-plans`} icon="fa-person-rays" value={monsterAnatomyGrants.grantsBodyPlans} onChange={(value) => setMonsterGrantArray("grantsBodyPlans", value)} placeholder="arachnid, incorporeal" />
-              </FormRow>
-              <FormRow label={ANATOMY_GRANT_FIELD_LABELS.grantsAnatomy} icon="fa-dna" hint={ANATOMY_GRANT_FIELD_HINTS.grantsAnatomy}>
+              </StudioField>
+              <StudioField label={ANATOMY_GRANT_FIELD_LABELS.grantsAnatomy} icon="fa-dna" hint={ANATOMY_GRANT_FIELD_HINTS.grantsAnatomy}>
                 <KeywordPillInput fieldId={`${component.id}-grants-anatomy`} icon="fa-dna" value={monsterAnatomyGrants.grantsAnatomy} onChange={(value) => setMonsterGrantArray("grantsAnatomy", value)} placeholder="web_glands, spinnerets, tendrils" />
-              </FormRow>
-              <FormRow label={ANATOMY_GRANT_FIELD_LABELS.grantsTags} icon="fa-tags" hint={ANATOMY_GRANT_FIELD_HINTS.grantsTags}>
+              </StudioField>
+              <StudioField label={ANATOMY_GRANT_FIELD_LABELS.grantsTags} icon="fa-tags" hint={ANATOMY_GRANT_FIELD_HINTS.grantsTags}>
                 <KeywordPillInput fieldId={`${component.id}-grants-tags`} icon="fa-tags" value={monsterAnatomyGrants.grantsTags} onChange={(value) => setMonsterGrantArray("grantsTags", value)} placeholder="web_bearing, spider_infested" />
-              </FormRow>
-              <FormRow label={ANATOMY_GRANT_FIELD_LABELS.grantsTokens} icon="fa-link" hint={ANATOMY_GRANT_FIELD_HINTS.grantsTokens}>
+              </StudioField>
+              <StudioField label={ANATOMY_GRANT_FIELD_LABELS.grantsTokens} icon="fa-link" hint={ANATOMY_GRANT_FIELD_HINTS.grantsTokens}>
                 <KeywordPillInput fieldId={`${component.id}-grants-tokens`} icon="fa-link" value={monsterAnatomyGrants.grantsTokens} onChange={(value) => setMonsterGrantArray("grantsTokens", value)} placeholder="web_maker, egg_carrier" />
-              </FormRow>
+              </StudioField>
             </div>
-            <FormRow label="Grant Note" icon="fa-note-sticky" hint="Optional internal note explaining what anatomy or build state this graft unlocks.">
-              <TextArea rows={2} value={monsterAnatomyGrants.note || ""} onChange={setMonsterGrantNote} placeholder="Example: this body graft grows spinnerets, so later web attacks become legal." />
-            </FormRow>
+            <StudioField label="Grant Note" icon="fa-note-sticky" hint="Optional internal note explaining what anatomy or build state this graft unlocks.">
+              <StudioTextarea rows={2} value={monsterAnatomyGrants.note || ""} onChange={setMonsterGrantNote} placeholder="Example: this body graft grows spinnerets, so later web attacks become legal." />
+            </StudioField>
             {monsterGrantSummary.length ? (
               <div className="studio-constraint-summary" aria-label="Current anatomy grants">
                 {monsterGrantSummary.map((row) => (
@@ -4051,9 +4042,9 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
             ) : (
               <div className="studio-empty-state studio-empty-state--inline">No anatomy grants. This graft does not change the effective body/anatomy of the build.</div>
             )}
-          </RulesGroup>
+          </StudioCollapsibleSection>
 
-          <RulesGroup
+          <StudioCollapsibleSection
             zone="anatomy"
             icon="fa-dna"
             title="Anatomy Constraints"
@@ -4071,46 +4062,46 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
               </div>
             </div>
             <div className="studio-form-grid studio-form-grid--compact">
-              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.allowedFamilies} icon="fa-skull" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.allowedFamilies}>
+              <StudioField label={ANATOMY_CONSTRAINT_FIELD_LABELS.allowedFamilies} icon="fa-skull" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.allowedFamilies}>
                 <KeywordPillInput fieldId={`${component.id}-allowed-families`} icon="fa-skull" value={asArray(monsterConstraints.allowedFamilies).length ? monsterConstraints.allowedFamilies : monsterConstraints.exclusiveToFamilies} onChange={(value) => setMonsterConstraintArray("allowedFamilies", value)} placeholder="spider, skeleton" />
-              </FormRow>
-              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenFamilies} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenFamilies}>
+              </StudioField>
+              <StudioField label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenFamilies} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenFamilies}>
                 <KeywordPillInput fieldId={`${component.id}-forbidden-families`} icon="fa-ban" value={monsterConstraints.forbiddenFamilies} onChange={(value) => setMonsterConstraintArray("forbiddenFamilies", value)} placeholder="spider, spirit" />
-              </FormRow>
-              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.allowedBodyPlans} icon="fa-person" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.allowedBodyPlans}>
+              </StudioField>
+              <StudioField label={ANATOMY_CONSTRAINT_FIELD_LABELS.allowedBodyPlans} icon="fa-person" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.allowedBodyPlans}>
                 <KeywordPillInput fieldId={`${component.id}-allowed-body-plans`} icon="fa-person" value={monsterConstraints.allowedBodyPlans} onChange={(value) => setMonsterConstraintArray("allowedBodyPlans", value)} placeholder="humanoid, arachnid" />
-              </FormRow>
-              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenBodyPlans} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenBodyPlans}>
+              </StudioField>
+              <StudioField label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenBodyPlans} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenBodyPlans}>
                 <KeywordPillInput fieldId={`${component.id}-forbidden-body-plans`} icon="fa-ban" value={monsterConstraints.forbiddenBodyPlans} onChange={(value) => setMonsterConstraintArray("forbiddenBodyPlans", value)} placeholder="incorporeal" />
-              </FormRow>
-              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiredAnatomy} icon="fa-hand" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiredAnatomy}>
+              </StudioField>
+              <StudioField label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiredAnatomy} icon="fa-hand" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiredAnatomy}>
                 <KeywordPillInput fieldId={`${component.id}-required-anatomy`} icon="fa-hand" value={monsterConstraints.requiredAnatomy} onChange={(value) => setMonsterConstraintArray("requiredAnatomy", value)} placeholder="hands, fangs, web_glands" />
-              </FormRow>
-              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiresAnyAnatomy} icon="fa-code-branch" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiresAnyAnatomy}>
+              </StudioField>
+              <StudioField label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiresAnyAnatomy} icon="fa-code-branch" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiresAnyAnatomy}>
                 <KeywordPillInput fieldId={`${component.id}-requires-any-anatomy`} icon="fa-code-branch" value={monsterConstraints.requiresAnyAnatomy} onChange={(value) => setMonsterConstraintArray("requiresAnyAnatomy", value)} placeholder="hands, tendrils" />
-              </FormRow>
-              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenAnatomy} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenAnatomy}>
+              </StudioField>
+              <StudioField label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenAnatomy} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenAnatomy}>
                 <KeywordPillInput fieldId={`${component.id}-forbidden-anatomy`} icon="fa-ban" value={monsterConstraints.forbiddenAnatomy} onChange={(value) => setMonsterConstraintArray("forbiddenAnatomy", value)} placeholder="beak, no_stable_limbs" />
-              </FormRow>
-              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiredTags} icon="fa-tags" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiredTags}>
+              </StudioField>
+              <StudioField label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiredTags} icon="fa-tags" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiredTags}>
                 <KeywordPillInput fieldId={`${component.id}-required-tags`} icon="fa-tags" value={monsterConstraints.requiredTags} onChange={(value) => setMonsterConstraintArray("requiredTags", value)} placeholder="corpse, physical" />
-              </FormRow>
-              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenTags} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenTags}>
+              </StudioField>
+              <StudioField label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenTags} icon="fa-ban" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenTags}>
                 <KeywordPillInput fieldId={`${component.id}-forbidden-tags`} icon="fa-ban" value={monsterConstraints.forbiddenTags} onChange={(value) => setMonsterConstraintArray("forbiddenTags", value)} placeholder="no_flesh, no_hands" />
-              </FormRow>
-              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiredTokens} icon="fa-link" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiredTokens}>
+              </StudioField>
+              <StudioField label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiredTokens} icon="fa-link" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiredTokens}>
                 <KeywordPillInput fieldId={`${component.id}-required-tokens`} icon="fa-link" value={monsterConstraints.requiredTokens} onChange={(value) => setMonsterConstraintArray("requiredTokens", value)} placeholder="web_maker, bone_body" />
-              </FormRow>
-              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiresAnyTokens} icon="fa-link" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiresAnyTokens}>
+              </StudioField>
+              <StudioField label={ANATOMY_CONSTRAINT_FIELD_LABELS.requiresAnyTokens} icon="fa-link" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.requiresAnyTokens}>
                 <KeywordPillInput fieldId={`${component.id}-requires-any-tokens`} icon="fa-link" value={monsterConstraints.requiresAnyTokens} onChange={(value) => setMonsterConstraintArray("requiresAnyTokens", value)} placeholder="spider_body, web_maker" />
-              </FormRow>
-              <FormRow label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenTokens} icon="fa-link-slash" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenTokens}>
+              </StudioField>
+              <StudioField label={ANATOMY_CONSTRAINT_FIELD_LABELS.forbiddenTokens} icon="fa-link-slash" hint={ANATOMY_CONSTRAINT_FIELD_HINTS.forbiddenTokens}>
                 <KeywordPillInput fieldId={`${component.id}-forbidden-tokens`} icon="fa-link-slash" value={monsterConstraints.forbiddenTokens} onChange={(value) => setMonsterConstraintArray("forbiddenTokens", value)} placeholder="spirit_body, no_body" />
-              </FormRow>
+              </StudioField>
             </div>
-            <FormRow label="Constraint Note" icon="fa-note-sticky" hint="Optional internal note explaining why the constraint exists. This is useful for review and future content authors.">
-              <TextArea rows={2} value={monsterConstraints.note || ""} onChange={setMonsterConstraintNote} placeholder="Example: requires spinnerets because the graft creates web terrain directly." />
-            </FormRow>
+            <StudioField label="Constraint Note" icon="fa-note-sticky" hint="Optional internal note explaining why the constraint exists. This is useful for review and future content authors.">
+              <StudioTextarea rows={2} value={monsterConstraints.note || ""} onChange={setMonsterConstraintNote} placeholder="Example: requires spinnerets because the graft creates web terrain directly." />
+            </StudioField>
             {monsterConstraintSummary.length ? (
               <div className="studio-constraint-summary" aria-label="Current anatomy constraints">
                 {monsterConstraintSummary.map((row) => (
@@ -4122,9 +4113,9 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
             ) : (
               <div className="studio-empty-state studio-empty-state--inline">No anatomy constraints. This graft remains generic and can be used by any compatible monster frame.</div>
             )}
-          </RulesGroup>
+          </StudioCollapsibleSection>
 
-          <RulesGroup
+          <StudioCollapsibleSection
             zone="fit"
             defaultOpen
             icon="fa-sliders"
@@ -4156,70 +4147,70 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
             </div>
 
             <div className="studio-form-grid studio-form-grid--compact">
-              <FormRow label="Encounter Allowed" icon="fa-user-group" hint={MONSTER_FRAME_FIT_FIELD_HELP.allowed}>
+              <StudioField label="Encounter Allowed" icon="fa-user-group" hint={MONSTER_FRAME_FIT_FIELD_HELP.allowed}>
                 <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-encounter-allowed`} icon="fa-user-group" value={monsterFrameFit.encounterRoles?.allowed} onChange={(value) => setMonsterFrameFitArray("encounterRoles", "allowed", value)} placeholder="standard, boss" suggestions={MONSTER_FRAME_FIT_VALUES.encounterRoles} />
-              </FormRow>
-              <FormRow label="Encounter Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
+              </StudioField>
+              <StudioField label="Encounter Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
                 <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-encounter-recommended`} icon="fa-star" value={monsterFrameFit.encounterRoles?.recommended} onChange={(value) => setMonsterFrameFitArray("encounterRoles", "recommended", value)} placeholder="boss" suggestions={MONSTER_FRAME_FIT_VALUES.encounterRoles} />
-              </FormRow>
-              <FormRow label="Encounter Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
+              </StudioField>
+              <StudioField label="Encounter Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
                 <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-encounter-forbidden`} icon="fa-ban" value={monsterFrameFit.encounterRoles?.forbidden} onChange={(value) => setMonsterFrameFitArray("encounterRoles", "forbidden", value)} placeholder="minion" suggestions={MONSTER_FRAME_FIT_VALUES.encounterRoles} />
-              </FormRow>
+              </StudioField>
 
-              <FormRow label="Tactical Allowed" icon="fa-chess-knight" hint={MONSTER_FRAME_FIT_FIELD_HELP.allowed}>
+              <StudioField label="Tactical Allowed" icon="fa-chess-knight" hint={MONSTER_FRAME_FIT_FIELD_HELP.allowed}>
                 <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tactical-allowed`} icon="fa-chess-knight" value={monsterFrameFit.tacticalRoles?.allowed} onChange={(value) => setMonsterFrameFitArray("tacticalRoles", "allowed", value)} placeholder="controller, support" suggestions={MONSTER_FRAME_FIT_VALUES.tacticalRoles} />
-              </FormRow>
-              <FormRow label="Tactical Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
+              </StudioField>
+              <StudioField label="Tactical Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
                 <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tactical-recommended`} icon="fa-star" value={monsterFrameFit.tacticalRoles?.recommended} onChange={(value) => setMonsterFrameFitArray("tacticalRoles", "recommended", value)} placeholder="controller" suggestions={MONSTER_FRAME_FIT_VALUES.tacticalRoles} />
-              </FormRow>
-              <FormRow label="Tactical Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
+              </StudioField>
+              <StudioField label="Tactical Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
                 <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tactical-forbidden`} icon="fa-ban" value={monsterFrameFit.tacticalRoles?.forbidden} onChange={(value) => setMonsterFrameFitArray("tacticalRoles", "forbidden", value)} placeholder="brute" suggestions={MONSTER_FRAME_FIT_VALUES.tacticalRoles} />
-              </FormRow>
+              </StudioField>
 
-              <FormRow label="Tier Min" icon="fa-layer-group" hint="Hard minimum tier. Leave empty for no hard gate.">
-                <SelectInput options={[["", "No minimum"], ...MONSTER_FRAME_FIT_VALUES.tiers.map((id) => [id, MONSTER_FRAME_FIT_OPTION_LABELS.tiers[id] || id])]} value={monsterFrameFit.tiers?.min || ""} onChange={(value) => setMonsterFrameFitField(["tiers", "min"], value)} />
-              </FormRow>
-              <FormRow label="Tier Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
+              <StudioField label="Tier Min" icon="fa-layer-group" hint="Hard minimum tier. Leave empty for no hard gate.">
+                <StudioSelect options={[["", "No minimum"], ...MONSTER_FRAME_FIT_VALUES.tiers.map((id) => [id, MONSTER_FRAME_FIT_OPTION_LABELS.tiers[id] || id])]} value={monsterFrameFit.tiers?.min || ""} onChange={(value) => setMonsterFrameFitField(["tiers", "min"], value)} />
+              </StudioField>
+              <StudioField label="Tier Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
                 <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tier-recommended`} icon="fa-star" value={monsterFrameFit.tiers?.recommended} onChange={(value) => setMonsterFrameFitArray("tiers", "recommended", value)} placeholder="elite, boss, setpiece" suggestions={MONSTER_FRAME_FIT_VALUES.tiers} />
-              </FormRow>
-              <FormRow label="Tier Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
+              </StudioField>
+              <StudioField label="Tier Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
                 <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tier-forbidden`} icon="fa-ban" value={monsterFrameFit.tiers?.forbidden} onChange={(value) => setMonsterFrameFitArray("tiers", "forbidden", value)} placeholder="normal" suggestions={MONSTER_FRAME_FIT_VALUES.tiers} />
-              </FormRow>
+              </StudioField>
 
-              <FormRow label="CR Min" icon="fa-signal" hint={MONSTER_FRAME_FIT_FIELD_HELP.cr}>
+              <StudioField label="CR Min" icon="fa-signal" hint={MONSTER_FRAME_FIT_FIELD_HELP.cr}>
                 <input type="number" min="0" max="30" value={monsterFrameFit.cr?.min ?? ""} onChange={(event) => setMonsterFrameFitField(["cr", "min"], event.target.value === "" ? "" : Number(event.target.value))} placeholder="5" />
-              </FormRow>
-              <FormRow label="CR Max" icon="fa-signal" hint={MONSTER_FRAME_FIT_FIELD_HELP.cr}>
+              </StudioField>
+              <StudioField label="CR Max" icon="fa-signal" hint={MONSTER_FRAME_FIT_FIELD_HELP.cr}>
                 <input type="number" min="0" max="30" value={monsterFrameFit.cr?.max ?? ""} onChange={(event) => setMonsterFrameFitField(["cr", "max"], event.target.value === "" ? "" : Number(event.target.value))} placeholder="20" />
-              </FormRow>
-              <FormRow label="Recommended CR Min" icon="fa-star" hint="Soft minimum CR used for QA and ranking, but not as a hard block.">
+              </StudioField>
+              <StudioField label="Recommended CR Min" icon="fa-star" hint="Soft minimum CR used for QA and ranking, but not as a hard block.">
                 <input type="number" min="0" max="30" value={monsterFrameFit.cr?.recommendedMin ?? ""} onChange={(event) => setMonsterFrameFitField(["cr", "recommendedMin"], event.target.value === "" ? "" : Number(event.target.value))} placeholder="8" />
-              </FormRow>
+              </StudioField>
 
-              <FormRow label="Tempo Allowed" icon="fa-forward-fast" hint={MONSTER_FRAME_FIT_FIELD_HELP.allowed}>
+              <StudioField label="Tempo Allowed" icon="fa-forward-fast" hint={MONSTER_FRAME_FIT_FIELD_HELP.allowed}>
                 <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tempo-allowed`} icon="fa-forward-fast" value={monsterFrameFit.tempo?.allowed} onChange={(value) => setMonsterFrameFitArray("tempo", "allowed", value)} placeholder="slow, standard" suggestions={MONSTER_FRAME_FIT_VALUES.tempo} />
-              </FormRow>
-              <FormRow label="Tempo Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
+              </StudioField>
+              <StudioField label="Tempo Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
                 <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tempo-recommended`} icon="fa-star" value={monsterFrameFit.tempo?.recommended} onChange={(value) => setMonsterFrameFitArray("tempo", "recommended", value)} placeholder="fast, ambusher" suggestions={MONSTER_FRAME_FIT_VALUES.tempo} />
-              </FormRow>
-              <FormRow label="Tempo Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
+              </StudioField>
+              <StudioField label="Tempo Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
                 <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-tempo-forbidden`} icon="fa-ban" value={monsterFrameFit.tempo?.forbidden} onChange={(value) => setMonsterFrameFitArray("tempo", "forbidden", value)} placeholder="ambusher" suggestions={MONSTER_FRAME_FIT_VALUES.tempo} />
-              </FormRow>
+              </StudioField>
 
-              <FormRow label="Danger Min" icon="fa-skull-crossbones" hint="Hard minimum danger profile. Leave empty for no hard gate.">
-                <SelectInput options={[["", "No minimum"], ...MONSTER_FRAME_FIT_VALUES.danger.map((id) => [id, MONSTER_FRAME_FIT_OPTION_LABELS.danger[id] || id])]} value={monsterFrameFit.danger?.min || ""} onChange={(value) => setMonsterFrameFitField(["danger", "min"], value)} />
-              </FormRow>
-              <FormRow label="Danger Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
+              <StudioField label="Danger Min" icon="fa-skull-crossbones" hint="Hard minimum danger profile. Leave empty for no hard gate.">
+                <StudioSelect options={[["", "No minimum"], ...MONSTER_FRAME_FIT_VALUES.danger.map((id) => [id, MONSTER_FRAME_FIT_OPTION_LABELS.danger[id] || id])]} value={monsterFrameFit.danger?.min || ""} onChange={(value) => setMonsterFrameFitField(["danger", "min"], value)} />
+              </StudioField>
+              <StudioField label="Danger Recommended" icon="fa-star" hint={MONSTER_FRAME_FIT_FIELD_HELP.recommended}>
                 <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-danger-recommended`} icon="fa-star" value={monsterFrameFit.danger?.recommended} onChange={(value) => setMonsterFrameFitArray("danger", "recommended", value)} placeholder="hard, horror" suggestions={MONSTER_FRAME_FIT_VALUES.danger} />
-              </FormRow>
-              <FormRow label="Danger Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
+              </StudioField>
+              <StudioField label="Danger Forbidden" icon="fa-ban" hint={MONSTER_FRAME_FIT_FIELD_HELP.forbidden}>
                 <KeywordPillInput allowCustom={false} fieldId={`${component.id}-fit-danger-forbidden`} icon="fa-ban" value={monsterFrameFit.danger?.forbidden} onChange={(value) => setMonsterFrameFitArray("danger", "forbidden", value)} placeholder="standard" suggestions={MONSTER_FRAME_FIT_VALUES.danger} />
-              </FormRow>
+              </StudioField>
             </div>
 
-            <FormRow label="Fit Note" icon="fa-note-sticky" hint="Optional internal note explaining why this graft fits or does not fit certain monster frames.">
-              <TextArea rows={2} value={monsterFrameFit.note || ""} onChange={(value) => setMonsterFrameFitField(["note"], value)} placeholder="Example: intended for elite controller spiders; too much tracking for minions." />
-            </FormRow>
+            <StudioField label="Fit Note" icon="fa-note-sticky" hint="Optional internal note explaining why this graft fits or does not fit certain monster frames.">
+              <StudioTextarea rows={2} value={monsterFrameFit.note || ""} onChange={(value) => setMonsterFrameFitField(["note"], value)} placeholder="Example: intended for elite controller spiders; too much tracking for minions." />
+            </StudioField>
 
             {monsterFrameFitSummary.length ? (
               <div className="studio-constraint-summary" aria-label="Current frame fit">
@@ -4232,9 +4223,9 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
             ) : (
               <div className="studio-empty-state studio-empty-state--inline">No explicit Frame Fit. The Composer will infer soft recommendations from stats, rules, pressure, and anatomy, but this graft has no hard frame gates.</div>
             )}
-          </RulesGroup>
+          </StudioCollapsibleSection>
 
-          <RulesGroup
+          <StudioCollapsibleSection
             zone="qa"
             icon="fa-table-cells"
             title="Compatibility Matrix"
@@ -4254,52 +4245,52 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                 </div>
               ))}
             </div>
-          </RulesGroup>
+          </StudioCollapsibleSection>
 
-          <RulesGroup zone="qa" icon="fa-code" title="Raw Component JSON" help="Read-only component payload for debugging saved data and future Supabase migration checks.">
-            <FormRow label="Raw JSON" icon="fa-code" hint="Read-only JSON for the selected component. Use this only for debugging.">
-              <TextArea className="studio-generated-preview studio-raw-json-preview" rows={16} readOnly value={JSON.stringify(component, null, 2)} />
-            </FormRow>
-          </RulesGroup>
+          <StudioCollapsibleSection zone="qa" icon="fa-code" title="Raw Component JSON" help="Read-only component payload for debugging saved data and future Supabase migration checks.">
+            <StudioField label="Raw JSON" icon="fa-code" hint="Read-only JSON for the selected component. Use this only for debugging.">
+              <StudioTextarea className="studio-generated-preview studio-raw-json-preview" rows={16} readOnly value={JSON.stringify(component, null, 2)} />
+            </StudioField>
+          </StudioCollapsibleSection>
 
-          <RulesGroup zone="qa" icon="fa-trash" title="Danger Zone" help="Remove this component from the current Inspiration Module.">
-            <ArmedDeleteButton onConfirm={onRemove} />
-          </RulesGroup>
+          <StudioCollapsibleSection zone="qa" icon="fa-trash" title="Danger Zone" help="Remove this component from the current Inspiration Module.">
+            <StudioArmedDeleteButton onConfirm={onRemove} />
+          </StudioCollapsibleSection>
 
           {usesInferredRules ? (
             <div className="studio-inferred-rules-note" data-editor-zone="rules">
-              <Icon name="fa-wand-magic-sparkles" />
+              <StudioIcon name="fa-wand-magic-sparkles" />
               <span>Inferred from legacy Mechanics. Editing any rule field will convert this graft to explicit structured rules.</span>
             </div>
           ) : null}
 
           <div className="studio-rules-layout" data-editor-zone="rules">
-            <RulesGroup defaultOpen icon="fa-bolt" title="Use" help="Use fields define when the ability exists and how often it can be used.">
+            <StudioCollapsibleSection defaultOpen icon="fa-bolt" title="Use" help="Use fields define when the ability exists and how often it can be used.">
               <div className="studio-form-grid studio-form-grid--compact">
-                <FormRow label="Action Economy" icon="fa-bolt" hint={FIELD_HELP.actionEconomy}>
-                  <SelectInput options={MONSTER_ACTION_ECONOMY_OPTIONS} value={actionEconomy} onChange={(value) => setRulesField(["actionEconomy"], value)} />
-                </FormRow>
-                <FormRow label="Usage" icon="fa-repeat" hint={FIELD_HELP.usageType}>
-                  <SelectInput options={MONSTER_USAGE_OPTIONS} value={usageType} onChange={(value) => setRulesField(["usage", "type"], value)} />
-                </FormRow>
+                <StudioField label="Action Economy" icon="fa-bolt" hint={FIELD_HELP.actionEconomy}>
+                  <StudioSelect options={MONSTER_ACTION_ECONOMY_OPTIONS} value={actionEconomy} onChange={(value) => setRulesField(["actionEconomy"], value)} />
+                </StudioField>
+                <StudioField label="Usage" icon="fa-repeat" hint={FIELD_HELP.usageType}>
+                  <StudioSelect options={MONSTER_USAGE_OPTIONS} value={usageType} onChange={(value) => setRulesField(["usage", "type"], value)} />
+                </StudioField>
                 {showUsageValue ? (
-                  <FormRow label="Usage Value" icon="fa-dice-six" hint={FIELD_HELP.usageValue}>
-                    <TextInput value={monsterRules.usage?.value} onChange={(value) => setRulesField(["usage", "value"], value)} placeholder="5-6, 1/Day, 3 uses..." />
-                  </FormRow>
+                  <StudioField label="Usage Value" icon="fa-dice-six" hint={FIELD_HELP.usageValue}>
+                    <StudioInput value={monsterRules.usage?.value} onChange={(value) => setRulesField(["usage", "value"], value)} placeholder="5-6, 1/Day, 3 uses..." />
+                  </StudioField>
                 ) : null}
-                <FormRow label="Resolution" icon="fa-dice-d20" hint={FIELD_HELP.resolutionType}>
-                  <SelectInput options={MONSTER_RESOLUTION_OPTIONS} value={resolutionChoice} onChange={setResolutionChoice} />
-                </FormRow>
+                <StudioField label="Resolution" icon="fa-dice-d20" hint={FIELD_HELP.resolutionType}>
+                  <StudioSelect options={MONSTER_RESOLUTION_OPTIONS} value={resolutionChoice} onChange={setResolutionChoice} />
+                </StudioField>
               </div>
-            </RulesGroup>
+            </StudioCollapsibleSection>
 
 
-            <RulesGroup defaultOpen icon="fa-plus" title="Add Rule Block" help="Add only the optional rule blocks this graft actually needs. Blocks already containing data stay visible until removed.">
+            <StudioCollapsibleSection defaultOpen icon="fa-plus" title="Add Rule Block" help="Add only the optional rule blocks this graft actually needs. Blocks already containing data stay visible until removed.">
               {visibleAddableRulesBlocks.length ? (
                 <div className="studio-rules-add-menu" aria-label="Add optional monster rule block">
                   {visibleAddableRulesBlocks.map((block) => (
                     <button key={block.id} type="button" onClick={() => addRulesBlock(block.id)}>
-                      <Icon name={block.icon} />
+                      <StudioIcon name={block.icon} />
                       Add {block.label}
                     </button>
                   ))}
@@ -4307,10 +4298,10 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
               ) : (
                 <p className="studio-rules-add-menu__empty">All optional rule blocks are active.</p>
               )}
-            </RulesGroup>
+            </StudioCollapsibleSection>
 
             {hasMultiattackBlock ? (
-              <RulesGroup icon="fa-clone" title="Multiattack" help={FIELD_HELP.multiattack} actions={<RemoveRulesBlockButton label="Multiattack" onClick={() => removeRulesBlock("multiattack")} />}>
+              <StudioCollapsibleSection icon="fa-clone" title="Multiattack" help={FIELD_HELP.multiattack} actions={<RemoveRulesBlockButton label="Multiattack" onClick={() => removeRulesBlock("multiattack")} />}>
                 <div className="studio-text-source-toggle studio-text-source-toggle--compact" role="group" aria-label="Multiattack enabled">
                   <button type="button" aria-pressed={!multiattackEnabled} onClick={() => setRulesField(["multiattack", "enabled"], false)}>Off</button>
                   <button type="button" aria-pressed={multiattackEnabled} onClick={() => {
@@ -4325,74 +4316,74 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                 {multiattackEnabled ? (
                   <>
                     <div className="studio-form-grid studio-form-grid--compact">
-                      <FormRow label="Pattern" icon="fa-diagram-project" hint={FIELD_HELP.multiattackMode}>
-                        <SelectInput options={MONSTER_MULTIATTACK_MODE_OPTIONS} value={monsterRules.multiattack?.mode || "fixed"} onChange={(value) => setRulesField(["multiattack", "mode"], value)} />
-                      </FormRow>
-                      <FormRow label="Attack Count" icon="fa-hashtag" hint={FIELD_HELP.multiattackCount}>
+                      <StudioField label="Pattern" icon="fa-diagram-project" hint={FIELD_HELP.multiattackMode}>
+                        <StudioSelect options={MONSTER_MULTIATTACK_MODE_OPTIONS} value={monsterRules.multiattack?.mode || "fixed"} onChange={(value) => setRulesField(["multiattack", "mode"], value)} />
+                      </StudioField>
+                      <StudioField label="Attack Count" icon="fa-hashtag" hint={FIELD_HELP.multiattackCount}>
                         <input type="number" min="1" step="1" value={monsterRules.multiattack?.count ?? 2} onChange={(event) => setRulesField(["multiattack", "count"], Number(event.target.value))} />
-                      </FormRow>
+                      </StudioField>
                     </div>
                     <div className="studio-damage-parts studio-multiattack-attacks" aria-label="Multiattack attacks editor">
                       {visibleMultiattackAttacks.map((attack, index) => (
                         <div className="studio-damage-part studio-multiattack-attack" key={attack.ref || index}>
                           <div className="studio-damage-part__head">
-                            <strong><Icon name="fa-hand-fist" /> Attack Reference {index + 1}</strong>
+                            <strong><StudioIcon name="fa-hand-fist" /> Attack Reference {index + 1}</strong>
                             <IconOnlyRemoveButton label={`Attack Reference ${index + 1}`} onClick={() => removeMultiattackAttack(index)} disabled={!multiattackAttacks.length} />
                           </div>
                           <div className="studio-form-grid studio-form-grid--compact">
-                            <FormRow label="Ref" icon="fa-fingerprint" hint="Stable internal id for this referenced attack, such as slam, claw, bite, or primary.">
-                              <TextInput value={attack.ref} onChange={(value) => setMultiattackAttackField(index, ["ref"], value)} placeholder={`attack-${index + 1}`} />
-                            </FormRow>
-                            <FormRow label="Label" icon="fa-tag" hint="Printed attack name used in the generated Multiattack sentence.">
-                              <TextInput value={attack.label} onChange={(value) => setMultiattackAttackField(index, ["label"], value)} placeholder="Slam" />
-                            </FormRow>
-                            <FormRow label="Count" icon="fa-hashtag" hint="How many times this referenced attack is made.">
+                            <StudioField label="Ref" icon="fa-fingerprint" hint="Stable internal id for this referenced attack, such as slam, claw, bite, or primary.">
+                              <StudioInput value={attack.ref} onChange={(value) => setMultiattackAttackField(index, ["ref"], value)} placeholder={`attack-${index + 1}`} />
+                            </StudioField>
+                            <StudioField label="Label" icon="fa-tag" hint="Printed attack name used in the generated Multiattack sentence.">
+                              <StudioInput value={attack.label} onChange={(value) => setMultiattackAttackField(index, ["label"], value)} placeholder="Slam" />
+                            </StudioField>
+                            <StudioField label="Count" icon="fa-hashtag" hint="How many times this referenced attack is made.">
                               <input type="number" min="1" step="1" value={attack.count ?? 1} onChange={(event) => setMultiattackAttackField(index, ["count"], Number(event.target.value))} />
-                            </FormRow>
-                            <FormRow label="Template Token" icon="fa-code" hint="Use this token inside the custom Multiattack template.">
+                            </StudioField>
+                            <StudioField label="Template Token" icon="fa-code" hint="Use this token inside the custom Multiattack template.">
                               <input readOnly value={`{attack:${attack.label || attack.ref || `Attack ${index + 1}`}}`} />
-                            </FormRow>
+                            </StudioField>
                           </div>
                         </div>
                       ))}
                       <button className="studio-inline-action" type="button" onClick={addMultiattackAttack}>
-                        <Icon name="fa-plus" /> Add Attack Reference
+                        <StudioIcon name="fa-plus" /> Add Attack Reference
                       </button>
                     </div>
                     <div className="studio-damage-parts studio-multiattack-replacements" aria-label="Multiattack replacements editor">
                       {multiattackReplacements.map((replacement, index) => (
                         <div className="studio-damage-part studio-multiattack-replacement" key={`${replacement.replace || "replacement"}-${index}`}>
                           <div className="studio-damage-part__head">
-                            <strong><Icon name="fa-repeat" /> Replacement {index + 1}</strong>
+                            <strong><StudioIcon name="fa-repeat" /> Replacement {index + 1}</strong>
                             <IconOnlyRemoveButton label={`Replacement ${index + 1}`} onClick={() => removeMultiattackReplacement(index)} />
                           </div>
                           <div className="studio-form-grid studio-form-grid--compact">
-                            <FormRow label="Replace" icon="fa-repeat" hint={FIELD_HELP.multiattackReplacement}>
-                              <SelectInput options={MONSTER_MULTIATTACK_REPLACEMENT_OPTIONS} value={replacement.replace || "oneAttack"} onChange={(value) => setMultiattackReplacementField(index, ["replace"], value)} />
-                            </FormRow>
-                            <FormRow label="Ability Label" icon="fa-wand-magic-sparkles" hint="Printed label for the replacing ability, such as Spellcasting, Chilling Gaze, or Web Burst.">
-                              <TextInput value={replacement.label || replacement.with} onChange={(value) => {
+                            <StudioField label="Replace" icon="fa-repeat" hint={FIELD_HELP.multiattackReplacement}>
+                              <StudioSelect options={MONSTER_MULTIATTACK_REPLACEMENT_OPTIONS} value={replacement.replace || "oneAttack"} onChange={(value) => setMultiattackReplacementField(index, ["replace"], value)} />
+                            </StudioField>
+                            <StudioField label="Ability Label" icon="fa-wand-magic-sparkles" hint="Printed label for the replacing ability, such as Spellcasting, Chilling Gaze, or Web Burst.">
+                              <StudioInput value={replacement.label || replacement.with} onChange={(value) => {
                                 setMultiattackReplacementField(index, ["label"], value);
                                 setMultiattackReplacementField(index, ["with"], value);
                               }} placeholder="Spellcasting" />
-                            </FormRow>
+                            </StudioField>
                           </div>
                         </div>
                       ))}
                       <button className="studio-inline-action" type="button" onClick={addMultiattackReplacement}>
-                        <Icon name="fa-plus" /> Add Replacement
+                        <StudioIcon name="fa-plus" /> Add Replacement
                       </button>
                     </div>
-                    <FormRow label="Multiattack Template" icon="fa-code" hint={FIELD_HELP.multiattackTemplate}>
-                      <TextArea rows={3} value={monsterRules.multiattack?.template} onChange={(value) => setRulesField(["multiattack", "template"], value)} placeholder="The monster makes two {attack:Slam} attacks. It can replace one attack with Spellcasting." />
-                    </FormRow>
+                    <StudioField label="Multiattack Template" icon="fa-code" hint={FIELD_HELP.multiattackTemplate}>
+                      <StudioTextarea rows={3} value={monsterRules.multiattack?.template} onChange={(value) => setRulesField(["multiattack", "template"], value)} placeholder="The monster makes two {attack:Slam} attacks. It can replace one attack with Spellcasting." />
+                    </StudioField>
                   </>
                 ) : null}
-              </RulesGroup>
+              </StudioCollapsibleSection>
             ) : null}
 
             {hasSpellcastingBlock ? (
-              <RulesGroup icon="fa-book-open" title="Spellcasting" help={FIELD_HELP.spellcasting} actions={<RemoveRulesBlockButton label="Spellcasting" onClick={() => removeRulesBlock("spellcasting")} />}>
+              <StudioCollapsibleSection icon="fa-book-open" title="Spellcasting" help={FIELD_HELP.spellcasting} actions={<RemoveRulesBlockButton label="Spellcasting" onClick={() => removeRulesBlock("spellcasting")} />}>
                 <div className="studio-text-source-toggle studio-text-source-toggle--compact" role="group" aria-label="Spellcasting enabled">
                   <button type="button" aria-pressed={!spellcastingEnabled} onClick={() => setRulesField(["spellcasting", "enabled"], false)}>Off</button>
                   <button type="button" aria-pressed={spellcastingEnabled} onClick={() => {
@@ -4405,37 +4396,37 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                 {spellcastingEnabled ? (
                   <>
                     <div className="studio-form-grid studio-form-grid--compact">
-                      <FormRow label="Spellcasting Ability" icon="fa-hat-wizard" hint={FIELD_HELP.spellcastingAbility}>
-                        <SelectInput options={MONSTER_SAVE_OPTIONS} value={monsterRules.spellcasting?.ability || "wisdom"} onChange={(value) => setRulesField(["spellcasting", "ability"], value)} />
-                      </FormRow>
-                      <FormRow label="Spell Save DC" icon="fa-shield" hint={FIELD_HELP.spellcastingSource}>
-                        <SelectInput options={MONSTER_SPELLCASTING_SOURCE_OPTIONS} value={monsterRules.spellcasting?.saveDc || "monster"} onChange={(value) => setRulesField(["spellcasting", "saveDc"], value)} />
-                      </FormRow>
-                      <FormRow label="Spell Attack Bonus" icon="fa-wand-magic-sparkles" hint={FIELD_HELP.spellcastingSource}>
-                        <SelectInput options={MONSTER_SPELLCASTING_SOURCE_OPTIONS} value={monsterRules.spellcasting?.attackBonus || "monster"} onChange={(value) => setRulesField(["spellcasting", "attackBonus"], value)} />
-                      </FormRow>
-                      <FormRow label="Material Components" icon="fa-gem" hint={FIELD_HELP.spellcastingMaterials}>
+                      <StudioField label="Spellcasting Ability" icon="fa-hat-wizard" hint={FIELD_HELP.spellcastingAbility}>
+                        <StudioSelect options={MONSTER_SAVE_OPTIONS} value={monsterRules.spellcasting?.ability || "wisdom"} onChange={(value) => setRulesField(["spellcasting", "ability"], value)} />
+                      </StudioField>
+                      <StudioField label="Spell Save DC" icon="fa-shield" hint={FIELD_HELP.spellcastingSource}>
+                        <StudioSelect options={MONSTER_SPELLCASTING_SOURCE_OPTIONS} value={monsterRules.spellcasting?.saveDc || "monster"} onChange={(value) => setRulesField(["spellcasting", "saveDc"], value)} />
+                      </StudioField>
+                      <StudioField label="Spell Attack Bonus" icon="fa-wand-magic-sparkles" hint={FIELD_HELP.spellcastingSource}>
+                        <StudioSelect options={MONSTER_SPELLCASTING_SOURCE_OPTIONS} value={monsterRules.spellcasting?.attackBonus || "monster"} onChange={(value) => setRulesField(["spellcasting", "attackBonus"], value)} />
+                      </StudioField>
+                      <StudioField label="Material Components" icon="fa-gem" hint={FIELD_HELP.spellcastingMaterials}>
                         <select value={monsterRules.spellcasting?.requiresMaterialComponents ? "true" : "false"} onChange={(event) => setRulesField(["spellcasting", "requiresMaterialComponents"], event.target.value === "true")}>
                           <option value="false">Requires no Material components</option>
                           <option value="true">Requires Material components</option>
                         </select>
-                      </FormRow>
+                      </StudioField>
                     </div>
 
                     <div className="studio-spell-picker" aria-label="Spell picker">
                       <div className="studio-form-grid studio-form-grid--compact">
-                        <FormRow label="Find Spell" icon="fa-magnifying-glass" hint={FIELD_HELP.spellPicker}>
-                          <TextInput value={spellPickerQuery} onChange={setSpellPickerQuery} placeholder="Search by name, class, school..." />
-                        </FormRow>
-                        <FormRow label="Level" icon="fa-signal" hint="Filter the spell database by spell level.">
-                          <SelectInput options={[["all", "All Levels"], ...SPELLS_5E24_LEVEL_OPTIONS.map((option) => [String(option.value), option.label])]} value={spellPickerLevel} onChange={setSpellPickerLevel} />
-                        </FormRow>
-                        <FormRow label="School" icon="fa-graduation-cap" hint="Filter the spell database by school.">
-                          <SelectInput options={[["all", "All Schools"], ...SPELLS_5E24_SCHOOL_OPTIONS.map((school) => [school, school])]} value={spellPickerSchool} onChange={setSpellPickerSchool} />
-                        </FormRow>
-                        <FormRow label="Add To" icon="fa-list" hint="Choose which spellcasting list receives selected spells.">
-                          <SelectInput options={MONSTER_SPELLCASTING_LIST_OPTIONS} value={spellPickerListId} onChange={setSpellPickerListId} />
-                        </FormRow>
+                        <StudioField label="Find Spell" icon="fa-magnifying-glass" hint={FIELD_HELP.spellPicker}>
+                          <StudioInput value={spellPickerQuery} onChange={setSpellPickerQuery} placeholder="Search by name, class, school..." />
+                        </StudioField>
+                        <StudioField label="Level" icon="fa-signal" hint="Filter the spell database by spell level.">
+                          <StudioSelect options={[["all", "All Levels"], ...SPELLS_5E24_LEVEL_OPTIONS.map((option) => [String(option.value), option.label])]} value={spellPickerLevel} onChange={setSpellPickerLevel} />
+                        </StudioField>
+                        <StudioField label="School" icon="fa-graduation-cap" hint="Filter the spell database by school.">
+                          <StudioSelect options={[["all", "All Schools"], ...SPELLS_5E24_SCHOOL_OPTIONS.map((school) => [school, school])]} value={spellPickerSchool} onChange={setSpellPickerSchool} />
+                        </StudioField>
+                        <StudioField label="Add To" icon="fa-list" hint="Choose which spellcasting list receives selected spells.">
+                          <StudioSelect options={MONSTER_SPELLCASTING_LIST_OPTIONS} value={spellPickerListId} onChange={setSpellPickerListId} />
+                        </StudioField>
                       </div>
                       <div className="studio-spell-picker__results" aria-label="Filtered spells">
                         {filteredSpellOptions.slice(0, 12).map((spell) => (
@@ -4452,73 +4443,73 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                       {spellcastingLists.map((list) => (
                         <div className="studio-damage-part studio-spellcasting-list" key={list.id}>
                           <div className="studio-damage-part__head">
-                            <strong><Icon name="fa-scroll" /> {list.label || spellListLabelForUsage(list.usage)}</strong>
+                            <strong><StudioIcon name="fa-scroll" /> {list.label || spellListLabelForUsage(list.usage)}</strong>
                             <span>{asArray(list.spellRefs).length + asArray(list.spells).length} spells</span>
                           </div>
                           <div className="studio-form-grid studio-form-grid--compact">
-                            <FormRow label="Label" icon="fa-tag" hint="Printed label for this list, such as At will or 1/day each.">
-                              <TextInput value={list.label} onChange={(value) => setSpellcastingListById(list.id, { label: value })} />
-                            </FormRow>
-                            <FormRow label="Usage" icon="fa-repeat" hint="Internal usage bucket for this spell list.">
-                              <SelectInput options={MONSTER_SPELLCASTING_LIST_OPTIONS} value={list.usage || list.id} onChange={(value) => setSpellcastingListById(list.id, { usage: value, label: list.label || spellListLabelForUsage(value) })} />
-                            </FormRow>
+                            <StudioField label="Label" icon="fa-tag" hint="Printed label for this list, such as At will or 1/day each.">
+                              <StudioInput value={list.label} onChange={(value) => setSpellcastingListById(list.id, { label: value })} />
+                            </StudioField>
+                            <StudioField label="Usage" icon="fa-repeat" hint="Internal usage bucket for this spell list.">
+                              <StudioSelect options={MONSTER_SPELLCASTING_LIST_OPTIONS} value={list.usage || list.id} onChange={(value) => setSpellcastingListById(list.id, { usage: value, label: list.label || spellListLabelForUsage(value) })} />
+                            </StudioField>
                           </div>
-                          <FormRow label="Spells" icon="fa-wand-magic-sparkles" hint={FIELD_HELP.spellList}>
-                            <TextArea rows={3} value={formatSpellListInput(list)} onChange={(value) => setSpellcastingListInput(list.id, value)} placeholder="Detect Magic, Minor Illusion" />
-                          </FormRow>
+                          <StudioField label="Spells" icon="fa-wand-magic-sparkles" hint={FIELD_HELP.spellList}>
+                            <StudioTextarea rows={3} value={formatSpellListInput(list)} onChange={(value) => setSpellcastingListInput(list.id, value)} placeholder="Detect Magic, Minor Illusion" />
+                          </StudioField>
                         </div>
                       ))}
                     </div>
                   </>
                 ) : null}
-              </RulesGroup>
+              </StudioCollapsibleSection>
             ) : null}
 
             {showTrigger ? (
-              <RulesGroup icon="fa-code-branch" title="Trigger" help="Trigger fields are only needed for reactions, death triggers, free triggers, or conditional abilities.">
-                <FormRow label="Trigger" icon="fa-code-branch" hint={FIELD_HELP.trigger}>
-                  <TextArea rows={2} value={monsterRules.trigger} onChange={(value) => setRulesField(["trigger"], value)} />
-                </FormRow>
-              </RulesGroup>
+              <StudioCollapsibleSection icon="fa-code-branch" title="Trigger" help="Trigger fields are only needed for reactions, death triggers, free triggers, or conditional abilities.">
+                <StudioField label="Trigger" icon="fa-code-branch" hint={FIELD_HELP.trigger}>
+                  <StudioTextarea rows={2} value={monsterRules.trigger} onChange={(value) => setRulesField(["trigger"], value)} />
+                </StudioField>
+              </StudioCollapsibleSection>
             ) : null}
 
             {hasTargetingBlock ? (
-              <RulesGroup icon="fa-crosshairs" title="Targeting" help={FIELD_HELP.targetingType} actions={<RemoveRulesBlockButton label="Targeting" onClick={() => removeRulesBlock("targeting")} />}>
+              <StudioCollapsibleSection icon="fa-crosshairs" title="Targeting" help={FIELD_HELP.targetingType} actions={<RemoveRulesBlockButton label="Targeting" onClick={() => removeRulesBlock("targeting")} />}>
                 <div className="studio-form-grid studio-form-grid--compact">
-                  <FormRow label="Targeting Type" icon="fa-crosshairs" hint={FIELD_HELP.targetingType}>
-                    <SelectInput options={MONSTER_TARGETING_TYPE_OPTIONS} value={targeting.type || "area"} onChange={(value) => setRulesField(["targeting", "type"], value)} />
-                  </FormRow>
+                  <StudioField label="Targeting Type" icon="fa-crosshairs" hint={FIELD_HELP.targetingType}>
+                    <StudioSelect options={MONSTER_TARGETING_TYPE_OPTIONS} value={targeting.type || "area"} onChange={(value) => setRulesField(["targeting", "type"], value)} />
+                  </StudioField>
                   {targeting.type === "area" || !targeting.type ? (
                     <>
-                      <FormRow label="Shape" icon="fa-draw-polygon" hint={FIELD_HELP.targetingShape}>
-                        <SelectInput options={MONSTER_TARGETING_SHAPE_OPTIONS} value={targeting.shape || "radius"} onChange={(value) => setRulesField(["targeting", "shape"], value)} />
-                      </FormRow>
-                      <FormRow label="Size" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.targetingSize}>
+                      <StudioField label="Shape" icon="fa-draw-polygon" hint={FIELD_HELP.targetingShape}>
+                        <StudioSelect options={MONSTER_TARGETING_SHAPE_OPTIONS} value={targeting.shape || "radius"} onChange={(value) => setRulesField(["targeting", "shape"], value)} />
+                      </StudioField>
+                      <StudioField label="Size" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.targetingSize}>
                         <input type="number" min="0" step="5" value={targeting.size ?? ""} onChange={(event) => setRulesField(["targeting", "size"], event.target.value === "" ? undefined : Number(event.target.value))} placeholder="5" />
-                      </FormRow>
-                      <FormRow label="Unit" icon="fa-ruler" hint="Usually ft for 5E stat block targeting.">
-                        <TextInput value={targeting.unit || "ft"} onChange={(value) => setRulesField(["targeting", "unit"], value)} placeholder="ft" />
-                      </FormRow>
-                      <FormRow label="Origin" icon="fa-location-crosshairs" hint={FIELD_HELP.targetingOrigin}>
-                        <SelectInput options={MONSTER_TARGETING_ORIGIN_OPTIONS} value={targeting.origin || ""} onChange={(value) => setRulesField(["targeting", "origin"], value || undefined)} />
-                      </FormRow>
-                      <FormRow label="Origin Text" icon="fa-quote-left" hint={FIELD_HELP.targetingOriginText}>
-                        <TextInput value={targeting.originText} onChange={(value) => setRulesField(["targeting", "originText"], value)} placeholder="centered on the corpse" />
-                      </FormRow>
+                      </StudioField>
+                      <StudioField label="Unit" icon="fa-ruler" hint="Usually ft for 5E stat block targeting.">
+                        <StudioInput value={targeting.unit || "ft"} onChange={(value) => setRulesField(["targeting", "unit"], value)} placeholder="ft" />
+                      </StudioField>
+                      <StudioField label="Origin" icon="fa-location-crosshairs" hint={FIELD_HELP.targetingOrigin}>
+                        <StudioSelect options={MONSTER_TARGETING_ORIGIN_OPTIONS} value={targeting.origin || ""} onChange={(value) => setRulesField(["targeting", "origin"], value || undefined)} />
+                      </StudioField>
+                      <StudioField label="Origin Text" icon="fa-quote-left" hint={FIELD_HELP.targetingOriginText}>
+                        <StudioInput value={targeting.originText} onChange={(value) => setRulesField(["targeting", "originText"], value)} placeholder="centered on the corpse" />
+                      </StudioField>
                     </>
                   ) : null}
-                  <FormRow label="Targets" icon="fa-users" hint={FIELD_HELP.targetingTargets}>
-                    <TextInput value={targeting.targets} onChange={(value) => setRulesField(["targeting", "targets"], value)} placeholder="creatures" />
-                  </FormRow>
+                  <StudioField label="Targets" icon="fa-users" hint={FIELD_HELP.targetingTargets}>
+                    <StudioInput value={targeting.targets} onChange={(value) => setRulesField(["targeting", "targets"], value)} placeholder="creatures" />
+                  </StudioField>
                 </div>
-                <FormRow label="Targeting Text" icon="fa-quote-left" hint={FIELD_HELP.targetingText}>
-                  <TextArea rows={2} value={targeting.text} onChange={(value) => setRulesField(["targeting", "text"], value)} placeholder="Optional exact targeting phrase." />
-                </FormRow>
-              </RulesGroup>
+                <StudioField label="Targeting Text" icon="fa-quote-left" hint={FIELD_HELP.targetingText}>
+                  <StudioTextarea rows={2} value={targeting.text} onChange={(value) => setRulesField(["targeting", "text"], value)} placeholder="Optional exact targeting phrase." />
+                </StudioField>
+              </StudioCollapsibleSection>
             ) : null}
 
             {hasAreaEffectBlock ? (
-              <RulesGroup icon="fa-circle-nodes" title="Area Timing" help={FIELD_HELP.areaEffect} actions={<RemoveRulesBlockButton label="Area Timing" onClick={() => removeRulesBlock("areaEffect")} />}>
+              <StudioCollapsibleSection icon="fa-circle-nodes" title="Area Timing" help={FIELD_HELP.areaEffect} actions={<RemoveRulesBlockButton label="Area Timing" onClick={() => removeRulesBlock("areaEffect")} />}>
                 <div className="studio-text-source-toggle studio-text-source-toggle--compact" role="group" aria-label="Area effect enabled">
                   <button type="button" aria-pressed={!areaEffectEnabled} onClick={() => setRulesField(["areaEffect", "enabled"], false)}>Off</button>
                   <button type="button" aria-pressed={areaEffectEnabled} onClick={() => {
@@ -4534,91 +4525,91 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                 {areaEffectEnabled ? (
                   <>
                     <div className="studio-form-grid studio-form-grid--compact">
-                      <FormRow label="Area Type" icon="fa-circle-nodes" hint={FIELD_HELP.areaEffectType}>
-                        <SelectInput options={MONSTER_AREA_EFFECT_TYPE_OPTIONS} value={areaEffect.type || "aura"} onChange={(value) => setRulesField(["areaEffect", "type"], value)} />
-                      </FormRow>
-                      <FormRow label="Shape" icon="fa-draw-polygon" hint={FIELD_HELP.targetingShape}>
-                        <SelectInput options={MONSTER_TARGETING_SHAPE_OPTIONS} value={areaEffect.shape || "emanation"} onChange={(value) => setRulesField(["areaEffect", "shape"], value)} />
-                      </FormRow>
-                      <FormRow label="Size" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.targetingSize}>
+                      <StudioField label="Area Type" icon="fa-circle-nodes" hint={FIELD_HELP.areaEffectType}>
+                        <StudioSelect options={MONSTER_AREA_EFFECT_TYPE_OPTIONS} value={areaEffect.type || "aura"} onChange={(value) => setRulesField(["areaEffect", "type"], value)} />
+                      </StudioField>
+                      <StudioField label="Shape" icon="fa-draw-polygon" hint={FIELD_HELP.targetingShape}>
+                        <StudioSelect options={MONSTER_TARGETING_SHAPE_OPTIONS} value={areaEffect.shape || "emanation"} onChange={(value) => setRulesField(["areaEffect", "shape"], value)} />
+                      </StudioField>
+                      <StudioField label="Size" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.targetingSize}>
                         <input type="number" min="0" step="5" value={areaEffect.size ?? ""} onChange={(event) => setRulesField(["areaEffect", "size"], event.target.value === "" ? undefined : Number(event.target.value))} placeholder="10" />
-                      </FormRow>
-                      <FormRow label="Unit" icon="fa-ruler" hint="Usually ft for 5E stat block area effects.">
-                        <TextInput value={areaEffect.unit || "ft"} onChange={(value) => setRulesField(["areaEffect", "unit"], value)} placeholder="ft" />
-                      </FormRow>
-                      <FormRow label="Origin" icon="fa-location-crosshairs" hint={FIELD_HELP.areaEffectOrigin}>
-                        <SelectInput options={MONSTER_AREA_EFFECT_ORIGIN_OPTIONS} value={areaEffect.origin || "self"} onChange={(value) => setRulesField(["areaEffect", "origin"], value)} />
-                      </FormRow>
-                      <FormRow label="Timing" icon="fa-hourglass-half" hint={FIELD_HELP.areaEffectTiming}>
-                        <SelectInput options={MONSTER_AREA_EFFECT_TIMING_OPTIONS} value={areaEffect.timing || "passive"} onChange={(value) => setRulesField(["areaEffect", "timing"], value)} />
-                      </FormRow>
-                      <FormRow label="Targets" icon="fa-users" hint={FIELD_HELP.targetingTargets}>
-                        <TextInput value={areaEffect.targets} onChange={(value) => setRulesField(["areaEffect", "targets"], value)} placeholder="creatures" />
-                      </FormRow>
-                      <FormRow label="Excludes" icon="fa-user-slash" hint={FIELD_HELP.areaEffectExcludes}>
+                      </StudioField>
+                      <StudioField label="Unit" icon="fa-ruler" hint="Usually ft for 5E stat block area effects.">
+                        <StudioInput value={areaEffect.unit || "ft"} onChange={(value) => setRulesField(["areaEffect", "unit"], value)} placeholder="ft" />
+                      </StudioField>
+                      <StudioField label="Origin" icon="fa-location-crosshairs" hint={FIELD_HELP.areaEffectOrigin}>
+                        <StudioSelect options={MONSTER_AREA_EFFECT_ORIGIN_OPTIONS} value={areaEffect.origin || "self"} onChange={(value) => setRulesField(["areaEffect", "origin"], value)} />
+                      </StudioField>
+                      <StudioField label="Timing" icon="fa-hourglass-half" hint={FIELD_HELP.areaEffectTiming}>
+                        <StudioSelect options={MONSTER_AREA_EFFECT_TIMING_OPTIONS} value={areaEffect.timing || "passive"} onChange={(value) => setRulesField(["areaEffect", "timing"], value)} />
+                      </StudioField>
+                      <StudioField label="Targets" icon="fa-users" hint={FIELD_HELP.targetingTargets}>
+                        <StudioInput value={areaEffect.targets} onChange={(value) => setRulesField(["areaEffect", "targets"], value)} placeholder="creatures" />
+                      </StudioField>
+                      <StudioField label="Excludes" icon="fa-user-slash" hint={FIELD_HELP.areaEffectExcludes}>
                         <KeywordPillInput fieldId={`${component.id}-area-excludes`} icon="fa-ban" value={areaEffect.excludes} onChange={(value) => setRulesArray(["areaEffect", "excludes"], value)} placeholder="self, allies" />
-                      </FormRow>
+                      </StudioField>
                     </div>
-                    <FormRow label="Area Effect Text" icon="fa-quote-left" hint={FIELD_HELP.areaEffectText}>
-                      <TextArea rows={3} value={areaEffect.text} onChange={(value) => setRulesField(["areaEffect", "text"], value)} placeholder="Optional exact area effect text. Supports tokens like {area-size}, {area-shape}, {save-dc}, {damage}." />
-                    </FormRow>
+                    <StudioField label="Area Effect Text" icon="fa-quote-left" hint={FIELD_HELP.areaEffectText}>
+                      <StudioTextarea rows={3} value={areaEffect.text} onChange={(value) => setRulesField(["areaEffect", "text"], value)} placeholder="Optional exact area effect text. Supports tokens like {area-size}, {area-shape}, {save-dc}, {damage}." />
+                    </StudioField>
                   </>
                 ) : null}
-              </RulesGroup>
+              </StudioCollapsibleSection>
             ) : null}
 
             {hasAttackResolution ? (
-              <RulesGroup icon="fa-hand-fist" title="Attack Roll" help="Attack fields appear only when Resolution is Attack Roll.">
+              <StudioCollapsibleSection icon="fa-hand-fist" title="Attack Roll" help="Attack fields appear only when Resolution is Attack Roll.">
                 <div className="studio-form-grid studio-form-grid--compact">
-                  <FormRow label="Attack Type" icon="fa-hand-fist" hint={FIELD_HELP.attackType}>
-                    <SelectInput options={MONSTER_ATTACK_OPTIONS} value={monsterRules.resolution?.attackType || "melee"} onChange={(value) => setRulesField(["resolution", "attackType"], value)} />
-                  </FormRow>
-                  <FormRow label="Attack Basis" icon="fa-dumbbell" hint={FIELD_HELP.attackBasis}>
-                    <SelectInput options={MONSTER_ATTACK_BASIS_OPTIONS} value={monsterRules.resolution?.abilityBasis || "monster"} onChange={(value) => setRulesField(["resolution", "abilityBasis"], value)} />
-                  </FormRow>
-                  <FormRow label="Reach" icon="fa-ruler-horizontal" hint="Attack reach printed after the attack bonus, such as 5 ft. or 10 ft.">
-                    <TextInput value={monsterRules.resolution?.reach} onChange={(value) => setRulesField(["resolution", "reach"], value)} placeholder="5 ft." />
-                  </FormRow>
-                  <FormRow label="Range" icon="fa-bullseye" hint="Attack range printed after the attack bonus, such as 30/120 ft. Leave empty for melee-only attacks.">
-                    <TextInput value={monsterRules.resolution?.range} onChange={(value) => setRulesField(["resolution", "range"], value)} placeholder="30/120 ft." />
-                  </FormRow>
+                  <StudioField label="Attack Type" icon="fa-hand-fist" hint={FIELD_HELP.attackType}>
+                    <StudioSelect options={MONSTER_ATTACK_OPTIONS} value={monsterRules.resolution?.attackType || "melee"} onChange={(value) => setRulesField(["resolution", "attackType"], value)} />
+                  </StudioField>
+                  <StudioField label="Attack Basis" icon="fa-dumbbell" hint={FIELD_HELP.attackBasis}>
+                    <StudioSelect options={MONSTER_ATTACK_BASIS_OPTIONS} value={monsterRules.resolution?.abilityBasis || "monster"} onChange={(value) => setRulesField(["resolution", "abilityBasis"], value)} />
+                  </StudioField>
+                  <StudioField label="Reach" icon="fa-ruler-horizontal" hint="Attack reach printed after the attack bonus, such as 5 ft. or 10 ft.">
+                    <StudioInput value={monsterRules.resolution?.reach} onChange={(value) => setRulesField(["resolution", "reach"], value)} placeholder="5 ft." />
+                  </StudioField>
+                  <StudioField label="Range" icon="fa-bullseye" hint="Attack range printed after the attack bonus, such as 30/120 ft. Leave empty for melee-only attacks.">
+                    <StudioInput value={monsterRules.resolution?.range} onChange={(value) => setRulesField(["resolution", "range"], value)} placeholder="30/120 ft." />
+                  </StudioField>
                 </div>
-              </RulesGroup>
+              </StudioCollapsibleSection>
             ) : null}
 
             {showSaveOutcome ? (
-              <RulesGroup icon="fa-shield" title="Save & Outcome" help="Save fields appear only when the ability has a primary saving throw, a secondary save rider, or saved Failure/Success text.">
+              <StudioCollapsibleSection icon="fa-shield" title="Save & Outcome" help="Save fields appear only when the ability has a primary saving throw, a secondary save rider, or saved Failure/Success text.">
                 <div className="studio-form-grid studio-form-grid--compact">
-                  <FormRow label={hasPrimarySave ? "Save Ability" : "Rider Save Ability"} icon="fa-shield" hint={FIELD_HELP.saveAbility}>
-                    <SelectInput options={MONSTER_SAVE_OPTIONS} value={saveAbilityValue || "dexterity"} onChange={(value) => {
+                  <StudioField label={hasPrimarySave ? "Save Ability" : "Rider Save Ability"} icon="fa-shield" hint={FIELD_HELP.saveAbility}>
+                    <StudioSelect options={MONSTER_SAVE_OPTIONS} value={saveAbilityValue || "dexterity"} onChange={(value) => {
                       setRulesField([saveFieldRoot, "type"], "savingThrow");
                       setRulesField([saveFieldRoot, "ability"], value);
                       setRulesField([saveFieldRoot, "dc"], hasPrimarySave ? monsterRules.resolution?.dc || "monster" : monsterRules.secondaryResolution?.dc || "monster");
                     }} />
-                  </FormRow>
+                  </StudioField>
                 </div>
                 <div className="studio-form-grid">
-                  <FormRow label="Failure Text" icon="fa-circle-xmark" hint={FIELD_HELP.failureText}>
-                    <TextArea rows={3} value={monsterRules.text?.failure} onChange={(value) => setRulesField(["text", "failure"], value)} />
+                  <StudioField label="Failure Text" icon="fa-circle-xmark" hint={FIELD_HELP.failureText}>
+                    <StudioTextarea rows={3} value={monsterRules.text?.failure} onChange={(value) => setRulesField(["text", "failure"], value)} />
                     {generatedFailureDefault ? <p className="studio-generated-field-note">Generated default from: {generatedFailureDefault}.</p> : null}
-                  </FormRow>
-                  <FormRow label="Success Text" icon="fa-circle-check" hint={FIELD_HELP.successText}>
-                    <TextArea rows={3} value={monsterRules.text?.success} onChange={(value) => setRulesField(["text", "success"], value)} />
+                  </StudioField>
+                  <StudioField label="Success Text" icon="fa-circle-check" hint={FIELD_HELP.successText}>
+                    <StudioTextarea rows={3} value={monsterRules.text?.success} onChange={(value) => setRulesField(["text", "success"], value)} />
                     {generatedSuccessDefault ? <p className="studio-generated-field-note">{generatedSuccessDefault}</p> : null}
-                  </FormRow>
-                  <FormRow label="Failure or Success Text" icon="fa-circle-dot" hint={FIELD_HELP.failureOrSuccessText}>
-                    <TextArea rows={3} value={monsterRules.text?.failureOrSuccess} onChange={(value) => setRulesField(["text", "failureOrSuccess"], value)} />
-                  </FormRow>
+                  </StudioField>
+                  <StudioField label="Failure or Success Text" icon="fa-circle-dot" hint={FIELD_HELP.failureOrSuccessText}>
+                    <StudioTextarea rows={3} value={monsterRules.text?.failureOrSuccess} onChange={(value) => setRulesField(["text", "failureOrSuccess"], value)} />
+                  </StudioField>
                 </div>
-              </RulesGroup>
+              </StudioCollapsibleSection>
             ) : null}
 
             {hasDamageBlock ? (
-              <RulesGroup icon="fa-burst" title="Damage" help="Damage fields define whether the ability deals damage and how that damage consumes the monster DPR budget." actions={<RemoveRulesBlockButton label="Damage" onClick={() => removeRulesBlock("damage")} />}>
+              <StudioCollapsibleSection icon="fa-burst" title="Damage" help="Damage fields define whether the ability deals damage and how that damage consumes the monster DPR budget." actions={<RemoveRulesBlockButton label="Damage" onClick={() => removeRulesBlock("damage")} />}>
               <div className="studio-form-grid studio-form-grid--compact">
-                <FormRow label="Damage Mode" icon="fa-burst" hint={FIELD_HELP.damageMode}>
-                  <SelectInput options={MONSTER_DAMAGE_MODE_OPTIONS} value={damageMode} onChange={(value) => setRulesField(["damage", "mode"], value)} />
-                </FormRow>
+                <StudioField label="Damage Mode" icon="fa-burst" hint={FIELD_HELP.damageMode}>
+                  <StudioSelect options={MONSTER_DAMAGE_MODE_OPTIONS} value={damageMode} onChange={(value) => setRulesField(["damage", "mode"], value)} />
+                </StudioField>
               </div>
 
               {damageMode === "parts" ? (
@@ -4626,80 +4617,80 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                   {visibleDamageParts.map((part, index) => (
                     <div className="studio-damage-part" key={part.id || index}>
                       <div className="studio-damage-part__head">
-                        <strong><Icon name="fa-droplet" /> Damage Part {index + 1}</strong>
+                        <strong><StudioIcon name="fa-droplet" /> Damage Part {index + 1}</strong>
                         <IconOnlyRemoveButton label={`Damage Part ${index + 1}`} onClick={() => removeDamagePart(index)} disabled={!damageParts.length} />
                       </div>
                       <div className="studio-form-grid studio-form-grid--compact">
-                        <FormRow label="Part ID" icon="fa-fingerprint" hint="Stable token id used by templates, for example weapon, venom, fire-rider, or necrotic-rider.">
-                          <TextInput value={part.id} onChange={(value) => setDamagePartField(index, ["id"], value)} placeholder={`part-${index + 1}`} />
-                        </FormRow>
-                        <FormRow label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.damageTypes}>
+                        <StudioField label="Part ID" icon="fa-fingerprint" hint="Stable token id used by templates, for example weapon, venom, fire-rider, or necrotic-rider.">
+                          <StudioInput value={part.id} onChange={(value) => setDamagePartField(index, ["id"], value)} placeholder={`part-${index + 1}`} />
+                        </StudioField>
+                        <StudioField label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.damageTypes}>
                           <KeywordPillInput fieldId={`${component.id}-damage-part-${index}-types`} icon="fa-burst" value={part.types} onChange={(value) => setDamagePartField(index, ["types"], value)} placeholder="bludgeoning, lightning" />
-                        </FormRow>
-                        <FormRow label="Budget Role" icon="fa-chart-pie" hint={FIELD_HELP.damageBudgetRole}>
-                          <SelectInput options={MONSTER_DAMAGE_BUDGET_ROLE_OPTIONS} value={part.budgetRole || "secondaryAttack"} onChange={(value) => setDamagePartField(index, ["budgetRole"], value)} />
-                        </FormRow>
-                        <FormRow label="Budget Share" icon="fa-percent" hint={FIELD_HELP.damageBudgetShare}>
+                        </StudioField>
+                        <StudioField label="Budget Role" icon="fa-chart-pie" hint={FIELD_HELP.damageBudgetRole}>
+                          <StudioSelect options={MONSTER_DAMAGE_BUDGET_ROLE_OPTIONS} value={part.budgetRole || "secondaryAttack"} onChange={(value) => setDamagePartField(index, ["budgetRole"], value)} />
+                        </StudioField>
+                        <StudioField label="Budget Share" icon="fa-percent" hint={FIELD_HELP.damageBudgetShare}>
                           <input type="number" step="0.05" min="0" value={part.budgetShare ?? ""} onChange={(event) => setDamagePartField(index, ["budgetShare"], event.target.value === "" ? undefined : Number(event.target.value))} placeholder="0.35" />
-                        </FormRow>
-                        <FormRow label="Damage Scale" icon="fa-chart-simple" hint={FIELD_HELP.damageScale}>
-                          <SelectInput options={MONSTER_DAMAGE_SCALE_OPTIONS} value={part.scale || "standard"} onChange={(value) => setDamagePartField(index, ["scale"], value)} />
-                        </FormRow>
-                        <FormRow label="Template Token" icon="fa-code" hint="Use this token in generated or manual text to place this part's calculated damage.">
+                        </StudioField>
+                        <StudioField label="Damage Scale" icon="fa-chart-simple" hint={FIELD_HELP.damageScale}>
+                          <StudioSelect options={MONSTER_DAMAGE_SCALE_OPTIONS} value={part.scale || "standard"} onChange={(value) => setDamagePartField(index, ["scale"], value)} />
+                        </StudioField>
+                        <StudioField label="Template Token" icon="fa-code" hint="Use this token in generated or manual text to place this part's calculated damage.">
                           <input readOnly value={`{damage-part:${part.id || `part-${index + 1}`}}`} />
-                        </FormRow>
+                        </StudioField>
                       </div>
                     </div>
                   ))}
                   <button className="studio-inline-action" type="button" onClick={addDamagePart}>
-                    <Icon name="fa-plus" /> Add Damage Part
+                    <StudioIcon name="fa-plus" /> Add Damage Part
                   </button>
                 </div>
               ) : showDamageDetails ? (
                 <div className="studio-form-grid studio-form-grid--compact">
-                  <FormRow label="Budget Role" icon="fa-chart-pie" hint={FIELD_HELP.damageBudgetRole}>
-                    <SelectInput options={MONSTER_DAMAGE_BUDGET_ROLE_OPTIONS} value={monsterRules.damage?.budgetRole || "none"} onChange={(value) => setRulesField(["damage", "budgetRole"], value)} />
-                  </FormRow>
-                  <FormRow label="Budget Share" icon="fa-percent" hint={FIELD_HELP.damageBudgetShare}>
+                  <StudioField label="Budget Role" icon="fa-chart-pie" hint={FIELD_HELP.damageBudgetRole}>
+                    <StudioSelect options={MONSTER_DAMAGE_BUDGET_ROLE_OPTIONS} value={monsterRules.damage?.budgetRole || "none"} onChange={(value) => setRulesField(["damage", "budgetRole"], value)} />
+                  </StudioField>
+                  <StudioField label="Budget Share" icon="fa-percent" hint={FIELD_HELP.damageBudgetShare}>
                     <input type="number" step="0.05" min="0" value={monsterRules.damage?.budgetShare ?? ""} onChange={(event) => setRulesField(["damage", "budgetShare"], event.target.value === "" ? undefined : Number(event.target.value))} placeholder="0.85" />
-                  </FormRow>
-                  <FormRow label="Damage Scale" icon="fa-chart-simple" hint={FIELD_HELP.damageScale}>
-                    <SelectInput options={MONSTER_DAMAGE_SCALE_OPTIONS} value={monsterRules.damage?.scale || "standard"} onChange={(value) => setRulesField(["damage", "scale"], value)} />
-                  </FormRow>
-                  <FormRow label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.damageTypes}>
+                  </StudioField>
+                  <StudioField label="Damage Scale" icon="fa-chart-simple" hint={FIELD_HELP.damageScale}>
+                    <StudioSelect options={MONSTER_DAMAGE_SCALE_OPTIONS} value={monsterRules.damage?.scale || "standard"} onChange={(value) => setRulesField(["damage", "scale"], value)} />
+                  </StudioField>
+                  <StudioField label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.damageTypes}>
                     <KeywordPillInput fieldId={`${component.id}-damage-types`} icon="fa-burst" value={monsterRules.damage?.types} onChange={(value) => setRulesArray(["damage", "types"], value)} placeholder="bludgeoning, poison" />
-                  </FormRow>
-                  <FormRow label="Expected Targets" icon="fa-users" hint={FIELD_HELP.damageExpectedTargets}>
+                  </StudioField>
+                  <StudioField label="Expected Targets" icon="fa-users" hint={FIELD_HELP.damageExpectedTargets}>
                     <input type="number" step="0.25" min="0" value={monsterRules.damage?.expectedTargets ?? ""} onChange={(event) => setRulesField(["damage", "expectedTargets"], event.target.value === "" ? undefined : Number(event.target.value))} placeholder="1" />
-                  </FormRow>
-                  <FormRow label="Round Weight" icon="fa-timeline" hint={FIELD_HELP.damageRoundWeight}>
-                    <TextInput value={joinList(monsterRules.damage?.roundWeight)} onChange={(value) => setRulesArray(["damage", "roundWeight"], value)} placeholder="1, 0.35, 0.35" />
-                  </FormRow>
+                  </StudioField>
+                  <StudioField label="Round Weight" icon="fa-timeline" hint={FIELD_HELP.damageRoundWeight}>
+                    <StudioInput value={joinList(monsterRules.damage?.roundWeight)} onChange={(value) => setRulesArray(["damage", "roundWeight"], value)} placeholder="1, 0.35, 0.35" />
+                  </StudioField>
                 </div>
               ) : null}
-              </RulesGroup>
+              </StudioCollapsibleSection>
             ) : null}
 
             {hasConditionBlock ? (
-              <RulesGroup icon="fa-person-rays" title="Conditions" help="Condition fields define ongoing, disabling, or special condition-like effects caused by the ability." actions={<RemoveRulesBlockButton label="Conditions" onClick={() => removeRulesBlock("condition")} />}>
+              <StudioCollapsibleSection icon="fa-person-rays" title="Conditions" help="Condition fields define ongoing, disabling, or special condition-like effects caused by the ability." actions={<RemoveRulesBlockButton label="Conditions" onClick={() => removeRulesBlock("condition")} />}>
               <div className="studio-form-grid studio-form-grid--compact">
-                <FormRow label="Condition Names" icon="fa-person-rays" hint={FIELD_HELP.conditionNames}>
-                  <TextInput value={conditionNames} onChange={(value) => setRulesArray(["condition", "names"], value)} placeholder="grappled, restrained" />
-                </FormRow>
+                <StudioField label="Condition Names" icon="fa-person-rays" hint={FIELD_HELP.conditionNames}>
+                  <StudioInput value={conditionNames} onChange={(value) => setRulesArray(["condition", "names"], value)} placeholder="grappled, restrained" />
+                </StudioField>
                 {showConditionDetails ? (
                   <>
-                    <FormRow label="Condition Severity" icon="fa-triangle-exclamation" hint={FIELD_HELP.conditionSeverity}>
-                      <SelectInput options={MONSTER_CONDITION_SEVERITY_OPTIONS} value={monsterRules.condition?.severity || "moderate"} onChange={(value) => setRulesField(["condition", "severity"], value)} />
-                    </FormRow>
-                    <FormRow label="Condition Direction" icon="fa-arrows-turn-to-dots" hint={FIELD_HELP.conditionDirection}>
-                      <SelectInput options={MONSTER_CONDITION_DIRECTION_OPTIONS} value={monsterRules.condition?.direction || "enemy"} onChange={(value) => setRulesField(["condition", "direction"], value)} />
-                    </FormRow>
-                    <FormRow label="Condition Duration" icon="fa-hourglass-half" hint={FIELD_HELP.conditionDuration}>
-                      <TextInput value={monsterRules.condition?.duration} onChange={(value) => setRulesField(["condition", "duration"], value)} placeholder="until the grapple ends" />
-                    </FormRow>
-                    <FormRow label="Size Limit" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.conditionSizeLimit}>
-                      <TextInput value={monsterRules.condition?.sizeLimit} onChange={(value) => setRulesField(["condition", "sizeLimit"], value)} placeholder="Large or smaller" />
-                    </FormRow>
+                    <StudioField label="Condition Severity" icon="fa-triangle-exclamation" hint={FIELD_HELP.conditionSeverity}>
+                      <StudioSelect options={MONSTER_CONDITION_SEVERITY_OPTIONS} value={monsterRules.condition?.severity || "moderate"} onChange={(value) => setRulesField(["condition", "severity"], value)} />
+                    </StudioField>
+                    <StudioField label="Condition Direction" icon="fa-arrows-turn-to-dots" hint={FIELD_HELP.conditionDirection}>
+                      <StudioSelect options={MONSTER_CONDITION_DIRECTION_OPTIONS} value={monsterRules.condition?.direction || "enemy"} onChange={(value) => setRulesField(["condition", "direction"], value)} />
+                    </StudioField>
+                    <StudioField label="Condition Duration" icon="fa-hourglass-half" hint={FIELD_HELP.conditionDuration}>
+                      <StudioInput value={monsterRules.condition?.duration} onChange={(value) => setRulesField(["condition", "duration"], value)} placeholder="until the grapple ends" />
+                    </StudioField>
+                    <StudioField label="Size Limit" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.conditionSizeLimit}>
+                      <StudioInput value={monsterRules.condition?.sizeLimit} onChange={(value) => setRulesField(["condition", "sizeLimit"], value)} placeholder="Large or smaller" />
+                    </StudioField>
                   </>
                 ) : null}
               </div>
@@ -4716,12 +4707,12 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                   </div>
                   {conditionEscapeEnabled ? (
                     <div className="studio-form-grid studio-form-grid--compact">
-                      <FormRow label="Escape Ability" icon="fa-person-running" hint={FIELD_HELP.conditionEscapeAbility}>
-                        <SelectInput options={MONSTER_SAVE_OPTIONS} value={monsterRules.condition?.escape?.ability || "strength"} onChange={(value) => setRulesField(["condition", "escape", "ability"], value)} />
-                      </FormRow>
-                      <FormRow label="Escape DC Source" icon="fa-shield" hint={FIELD_HELP.conditionEscape}>
-                        <TextInput value={monsterRules.condition?.escape?.dc || "monster"} onChange={(value) => setRulesField(["condition", "escape", "dc"], value)} placeholder="monster" />
-                      </FormRow>
+                      <StudioField label="Escape Ability" icon="fa-person-running" hint={FIELD_HELP.conditionEscapeAbility}>
+                        <StudioSelect options={MONSTER_SAVE_OPTIONS} value={monsterRules.condition?.escape?.ability || "strength"} onChange={(value) => setRulesField(["condition", "escape", "ability"], value)} />
+                      </StudioField>
+                      <StudioField label="Escape DC Source" icon="fa-shield" hint={FIELD_HELP.conditionEscape}>
+                        <StudioInput value={monsterRules.condition?.escape?.dc || "monster"} onChange={(value) => setRulesField(["condition", "escape", "dc"], value)} placeholder="monster" />
+                      </StudioField>
                     </div>
                   ) : null}
                   <div className="studio-text-source-toggle studio-text-source-toggle--compact" role="group" aria-label="Repeat save enabled">
@@ -4736,27 +4727,27 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                   </div>
                   {conditionRepeatSaveEnabled ? (
                     <div className="studio-form-grid studio-form-grid--compact">
-                      <FormRow label="Repeat Save Ability" icon="fa-shield" hint={FIELD_HELP.conditionRepeatSave}>
-                        <SelectInput options={MONSTER_SAVE_OPTIONS} value={monsterRules.condition?.repeatSave?.ability || "constitution"} onChange={(value) => setRulesField(["condition", "repeatSave", "ability"], value)} />
-                      </FormRow>
-                      <FormRow label="Repeat Timing" icon="fa-hourglass-half" hint={FIELD_HELP.conditionRepeatTiming}>
-                        <SelectInput options={MONSTER_CONDITION_REPEAT_TIMING_OPTIONS} value={monsterRules.condition?.repeatSave?.timing || "endOfTurn"} onChange={(value) => setRulesField(["condition", "repeatSave", "timing"], value)} />
-                      </FormRow>
-                      <FormRow label="Ends on Success" icon="fa-circle-check" hint="Whether a successful repeat save ends the condition or effect on the target.">
+                      <StudioField label="Repeat Save Ability" icon="fa-shield" hint={FIELD_HELP.conditionRepeatSave}>
+                        <StudioSelect options={MONSTER_SAVE_OPTIONS} value={monsterRules.condition?.repeatSave?.ability || "constitution"} onChange={(value) => setRulesField(["condition", "repeatSave", "ability"], value)} />
+                      </StudioField>
+                      <StudioField label="Repeat Timing" icon="fa-hourglass-half" hint={FIELD_HELP.conditionRepeatTiming}>
+                        <StudioSelect options={MONSTER_CONDITION_REPEAT_TIMING_OPTIONS} value={monsterRules.condition?.repeatSave?.timing || "endOfTurn"} onChange={(value) => setRulesField(["condition", "repeatSave", "timing"], value)} />
+                      </StudioField>
+                      <StudioField label="Ends on Success" icon="fa-circle-check" hint="Whether a successful repeat save ends the condition or effect on the target.">
                         <select value={monsterRules.condition?.repeatSave?.endsOnSuccess === false ? "false" : "true"} onChange={(event) => setRulesField(["condition", "repeatSave", "endsOnSuccess"], event.target.value === "true")}>
                           <option value="true">Yes</option>
                           <option value="false">No</option>
                         </select>
-                      </FormRow>
+                      </StudioField>
                     </div>
                   ) : null}
                 </>
               ) : null}
-              </RulesGroup>
+              </StudioCollapsibleSection>
             ) : null}
 
             {hasOngoingBlock ? (
-              <RulesGroup icon="fa-clock-rotate-left" title="Ongoing Effect" help={FIELD_HELP.ongoingEffect} actions={<RemoveRulesBlockButton label="Ongoing" onClick={() => removeRulesBlock("ongoing")} />}>
+              <StudioCollapsibleSection icon="fa-clock-rotate-left" title="Ongoing Effect" help={FIELD_HELP.ongoingEffect} actions={<RemoveRulesBlockButton label="Ongoing" onClick={() => removeRulesBlock("ongoing")} />}>
               <div className="studio-text-source-toggle studio-text-source-toggle--compact" role="group" aria-label="Ongoing effect enabled">
                 <button type="button" aria-pressed={!ongoingEnabled} onClick={() => setRulesField(["ongoing", "enabled"], false)}>Off</button>
                 <button type="button" aria-pressed={ongoingEnabled} onClick={() => {
@@ -4769,39 +4760,39 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
               {ongoingEnabled ? (
                 <>
                   <div className="studio-form-grid studio-form-grid--compact">
-                    <FormRow label="Timing" icon="fa-hourglass-half" hint={FIELD_HELP.ongoingTiming}>
-                      <SelectInput options={MONSTER_ONGOING_TIMING_OPTIONS} value={monsterRules.ongoing?.timing || "startOfTargetTurn"} onChange={(value) => setRulesField(["ongoing", "timing"], value)} />
-                    </FormRow>
-                    <FormRow label="End Condition" icon="fa-flag-checkered" hint={FIELD_HELP.ongoingEndCondition}>
-                      <TextInput value={monsterRules.ongoing?.endCondition} onChange={(value) => setRulesField(["ongoing", "endCondition"], value)} placeholder="until the grapple ends" />
-                    </FormRow>
-                    <FormRow label="Ongoing Damage Mode" icon="fa-burst" hint={FIELD_HELP.damageMode}>
-                      <SelectInput options={MONSTER_DAMAGE_MODE_OPTIONS.filter(([value]) => value !== "parts")} value={ongoingDamageMode} onChange={(value) => setRulesField(["ongoing", "damage", "mode"], value)} />
-                    </FormRow>
+                    <StudioField label="Timing" icon="fa-hourglass-half" hint={FIELD_HELP.ongoingTiming}>
+                      <StudioSelect options={MONSTER_ONGOING_TIMING_OPTIONS} value={monsterRules.ongoing?.timing || "startOfTargetTurn"} onChange={(value) => setRulesField(["ongoing", "timing"], value)} />
+                    </StudioField>
+                    <StudioField label="End Condition" icon="fa-flag-checkered" hint={FIELD_HELP.ongoingEndCondition}>
+                      <StudioInput value={monsterRules.ongoing?.endCondition} onChange={(value) => setRulesField(["ongoing", "endCondition"], value)} placeholder="until the grapple ends" />
+                    </StudioField>
+                    <StudioField label="Ongoing Damage Mode" icon="fa-burst" hint={FIELD_HELP.damageMode}>
+                      <StudioSelect options={MONSTER_DAMAGE_MODE_OPTIONS.filter(([value]) => value !== "parts")} value={ongoingDamageMode} onChange={(value) => setRulesField(["ongoing", "damage", "mode"], value)} />
+                    </StudioField>
                   </div>
                   {showOngoingDamageDetails ? (
                     <div className="studio-form-grid studio-form-grid--compact">
-                      <FormRow label="Budget Role" icon="fa-chart-pie" hint={FIELD_HELP.damageBudgetRole}>
-                        <SelectInput options={MONSTER_DAMAGE_BUDGET_ROLE_OPTIONS} value={monsterRules.ongoing?.damage?.budgetRole || "ongoing"} onChange={(value) => setRulesField(["ongoing", "damage", "budgetRole"], value)} />
-                      </FormRow>
-                      <FormRow label="Budget Share" icon="fa-percent" hint={FIELD_HELP.damageBudgetShare}>
+                      <StudioField label="Budget Role" icon="fa-chart-pie" hint={FIELD_HELP.damageBudgetRole}>
+                        <StudioSelect options={MONSTER_DAMAGE_BUDGET_ROLE_OPTIONS} value={monsterRules.ongoing?.damage?.budgetRole || "ongoing"} onChange={(value) => setRulesField(["ongoing", "damage", "budgetRole"], value)} />
+                      </StudioField>
+                      <StudioField label="Budget Share" icon="fa-percent" hint={FIELD_HELP.damageBudgetShare}>
                         <input type="number" step="0.05" min="0" value={monsterRules.ongoing?.damage?.budgetShare ?? ""} onChange={(event) => setRulesField(["ongoing", "damage", "budgetShare"], event.target.value === "" ? undefined : Number(event.target.value))} placeholder="0.2" />
-                      </FormRow>
-                      <FormRow label="Damage Scale" icon="fa-chart-simple" hint={FIELD_HELP.damageScale}>
-                        <SelectInput options={MONSTER_DAMAGE_SCALE_OPTIONS} value={monsterRules.ongoing?.damage?.scale || "minor"} onChange={(value) => setRulesField(["ongoing", "damage", "scale"], value)} />
-                      </FormRow>
-                      <FormRow label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.damageTypes}>
+                      </StudioField>
+                      <StudioField label="Damage Scale" icon="fa-chart-simple" hint={FIELD_HELP.damageScale}>
+                        <StudioSelect options={MONSTER_DAMAGE_SCALE_OPTIONS} value={monsterRules.ongoing?.damage?.scale || "minor"} onChange={(value) => setRulesField(["ongoing", "damage", "scale"], value)} />
+                      </StudioField>
+                      <StudioField label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.damageTypes}>
                         <KeywordPillInput fieldId={`${component.id}-ongoing-damage-types`} icon="fa-burst" value={monsterRules.ongoing?.damage?.types} onChange={(value) => setRulesArray(["ongoing", "damage", "types"], value)} placeholder="acid" />
-                      </FormRow>
+                      </StudioField>
                     </div>
                   ) : null}
                 </>
               ) : null}
-              </RulesGroup>
+              </StudioCollapsibleSection>
             ) : null}
 
             {hasSummonBlock ? (
-              <RulesGroup icon="fa-people-pulling" title="Summon / Create" help={FIELD_HELP.summon} actions={<RemoveRulesBlockButton label="Summon / Create" onClick={() => removeRulesBlock("summon")} />}>
+              <StudioCollapsibleSection icon="fa-people-pulling" title="Summon / Create" help={FIELD_HELP.summon} actions={<RemoveRulesBlockButton label="Summon / Create" onClick={() => removeRulesBlock("summon")} />}>
                 <div className="studio-text-source-toggle studio-text-source-toggle--compact" role="group" aria-label="Summon enabled">
                   <button type="button" aria-pressed={!summonEnabled} onClick={() => setRulesField(["summon", "enabled"], false)}>Off</button>
                   <button type="button" aria-pressed={summonEnabled} onClick={() => {
@@ -4815,47 +4806,47 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                 {summonEnabled ? (
                   <>
                     <div className="studio-form-grid studio-form-grid--compact">
-                      <FormRow label="Summon Type" icon="fa-people-pulling" hint={FIELD_HELP.summonType}>
-                        <SelectInput options={MONSTER_SUMMON_TYPE_OPTIONS} value={summonType} onChange={(value) => setRulesField(["summon", "type"], value)} />
-                      </FormRow>
-                      <FormRow label="Creature Name" icon="fa-skull" hint={FIELD_HELP.summonCreature}>
-                        <TextInput value={monsterRules.summon?.creatureName} onChange={(value) => setRulesField(["summon", "creatureName"], value)} placeholder="Shadow" />
-                      </FormRow>
-                      <FormRow label="Creature Ref" icon="fa-link" hint="Optional stable creature id/reference for future monster database lookup.">
-                        <TextInput value={monsterRules.summon?.creatureRef} onChange={(value) => setRulesField(["summon", "creatureRef"], value)} placeholder="shadow" />
-                      </FormRow>
-                      <FormRow label="Count" icon="fa-dice" hint={FIELD_HELP.summonCount}>
-                        <TextInput value={monsterRules.summon?.count} onChange={(value) => setRulesField(["summon", "count"], value)} placeholder="1d4" />
-                      </FormRow>
-                      <FormRow label="Placement" icon="fa-location-dot" hint={FIELD_HELP.summonPlacement}>
-                        <TextInput value={monsterRules.summon?.placement} onChange={(value) => setRulesField(["summon", "placement"], value)} placeholder="unoccupied spaces within 30 feet" />
-                      </FormRow>
-                      <FormRow label="Duration" icon="fa-hourglass-half" hint={FIELD_HELP.summonDuration}>
-                        <TextInput value={monsterRules.summon?.duration} onChange={(value) => setRulesField(["summon", "duration"], value)} placeholder="until destroyed" />
-                      </FormRow>
-                      <FormRow label="Initiative" icon="fa-timeline" hint={FIELD_HELP.summonInitiative}>
-                        <SelectInput options={MONSTER_SUMMON_INITIATIVE_OPTIONS} value={monsterRules.summon?.initiative || "immediatelyAfterSummoner"} onChange={(value) => setRulesField(["summon", "initiative"], value)} />
-                      </FormRow>
-                      <FormRow label="Control" icon="fa-hand" hint={FIELD_HELP.summonControl}>
-                        <SelectInput options={MONSTER_SUMMON_CONTROL_OPTIONS} value={monsterRules.summon?.control || "underSummonerControl"} onChange={(value) => setRulesField(["summon", "control"], value)} />
-                      </FormRow>
-                      <FormRow label="Limit" icon="fa-gauge-high" hint={FIELD_HELP.summonLimit}>
-                        <TextInput value={monsterRules.summon?.limit} onChange={(value) => setRulesField(["summon", "limit"], value)} placeholder="1/Day or maximum three at a time" />
-                      </FormRow>
-                      <FormRow label="Summon Trigger" icon="fa-code-branch" hint="Optional event that causes this summon, if different from the main Trigger block.">
-                        <TextInput value={monsterRules.summon?.trigger} onChange={(value) => setRulesField(["summon", "trigger"], value)} placeholder="When a humanoid dies within 30 feet" />
-                      </FormRow>
+                      <StudioField label="Summon Type" icon="fa-people-pulling" hint={FIELD_HELP.summonType}>
+                        <StudioSelect options={MONSTER_SUMMON_TYPE_OPTIONS} value={summonType} onChange={(value) => setRulesField(["summon", "type"], value)} />
+                      </StudioField>
+                      <StudioField label="Creature Name" icon="fa-skull" hint={FIELD_HELP.summonCreature}>
+                        <StudioInput value={monsterRules.summon?.creatureName} onChange={(value) => setRulesField(["summon", "creatureName"], value)} placeholder="Shadow" />
+                      </StudioField>
+                      <StudioField label="Creature Ref" icon="fa-link" hint="Optional stable creature id/reference for future monster database lookup.">
+                        <StudioInput value={monsterRules.summon?.creatureRef} onChange={(value) => setRulesField(["summon", "creatureRef"], value)} placeholder="shadow" />
+                      </StudioField>
+                      <StudioField label="Count" icon="fa-dice" hint={FIELD_HELP.summonCount}>
+                        <StudioInput value={monsterRules.summon?.count} onChange={(value) => setRulesField(["summon", "count"], value)} placeholder="1d4" />
+                      </StudioField>
+                      <StudioField label="Placement" icon="fa-location-dot" hint={FIELD_HELP.summonPlacement}>
+                        <StudioInput value={monsterRules.summon?.placement} onChange={(value) => setRulesField(["summon", "placement"], value)} placeholder="unoccupied spaces within 30 feet" />
+                      </StudioField>
+                      <StudioField label="Duration" icon="fa-hourglass-half" hint={FIELD_HELP.summonDuration}>
+                        <StudioInput value={monsterRules.summon?.duration} onChange={(value) => setRulesField(["summon", "duration"], value)} placeholder="until destroyed" />
+                      </StudioField>
+                      <StudioField label="Initiative" icon="fa-timeline" hint={FIELD_HELP.summonInitiative}>
+                        <StudioSelect options={MONSTER_SUMMON_INITIATIVE_OPTIONS} value={monsterRules.summon?.initiative || "immediatelyAfterSummoner"} onChange={(value) => setRulesField(["summon", "initiative"], value)} />
+                      </StudioField>
+                      <StudioField label="Control" icon="fa-hand" hint={FIELD_HELP.summonControl}>
+                        <StudioSelect options={MONSTER_SUMMON_CONTROL_OPTIONS} value={monsterRules.summon?.control || "underSummonerControl"} onChange={(value) => setRulesField(["summon", "control"], value)} />
+                      </StudioField>
+                      <StudioField label="Limit" icon="fa-gauge-high" hint={FIELD_HELP.summonLimit}>
+                        <StudioInput value={monsterRules.summon?.limit} onChange={(value) => setRulesField(["summon", "limit"], value)} placeholder="1/Day or maximum three at a time" />
+                      </StudioField>
+                      <StudioField label="Summon Trigger" icon="fa-code-branch" hint="Optional event that causes this summon, if different from the main Trigger block.">
+                        <StudioInput value={monsterRules.summon?.trigger} onChange={(value) => setRulesField(["summon", "trigger"], value)} placeholder="When a humanoid dies within 30 feet" />
+                      </StudioField>
                     </div>
-                    <FormRow label="Summon Text" icon="fa-pen-to-square" hint={FIELD_HELP.summonText}>
-                      <TextArea rows={3} value={monsterRules.summon?.text} onChange={(value) => setRulesField(["summon", "text"], value)} placeholder="Leave empty to use generated wording. Tokens: {summon-creature}, {summon-placement}, {summon-duration}." />
-                    </FormRow>
+                    <StudioField label="Summon Text" icon="fa-pen-to-square" hint={FIELD_HELP.summonText}>
+                      <StudioTextarea rows={3} value={monsterRules.summon?.text} onChange={(value) => setRulesField(["summon", "text"], value)} placeholder="Leave empty to use generated wording. Tokens: {summon-creature}, {summon-placement}, {summon-duration}." />
+                    </StudioField>
                   </>
                 ) : null}
-              </RulesGroup>
+              </StudioCollapsibleSection>
             ) : null}
 
             {hasProcedureBlock ? (
-              <RulesGroup icon="fa-diagram-project" title="Special Procedure" help={FIELD_HELP.procedure} actions={<RemoveRulesBlockButton label="Special Procedure" onClick={() => removeRulesBlock("procedure")} />}>
+              <StudioCollapsibleSection icon="fa-diagram-project" title="Special Procedure" help={FIELD_HELP.procedure} actions={<RemoveRulesBlockButton label="Special Procedure" onClick={() => removeRulesBlock("procedure")} />}>
                 <div className="studio-text-source-toggle studio-text-source-toggle--compact" role="group" aria-label="Special procedure enabled">
                   <button type="button" aria-pressed={!procedureEnabled} onClick={() => setRulesField(["procedure", "enabled"], false)}>Off</button>
                   <button type="button" aria-pressed={procedureEnabled} onClick={() => {
@@ -4866,23 +4857,23 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                 {procedureEnabled ? (
                   <>
                     <div className="studio-form-grid studio-form-grid--compact">
-                      <FormRow label="Procedure Type" icon="fa-diagram-project" hint={FIELD_HELP.procedureType}>
-                        <SelectInput options={MONSTER_PROCEDURE_TYPE_OPTIONS} value={procedureType} onChange={(value) => setRulesField(["procedure", "type"], value)} />
-                      </FormRow>
-                      <FormRow label="Target Limit" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.procedureTargetLimit}>
-                        <TextInput value={monsterRules.procedure?.targetLimit} onChange={(value) => setRulesField(["procedure", "targetLimit"], value)} placeholder="Large or smaller" />
-                      </FormRow>
+                      <StudioField label="Procedure Type" icon="fa-diagram-project" hint={FIELD_HELP.procedureType}>
+                        <StudioSelect options={MONSTER_PROCEDURE_TYPE_OPTIONS} value={procedureType} onChange={(value) => setRulesField(["procedure", "type"], value)} />
+                      </StudioField>
+                      <StudioField label="Target Limit" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.procedureTargetLimit}>
+                        <StudioInput value={monsterRules.procedure?.targetLimit} onChange={(value) => setRulesField(["procedure", "targetLimit"], value)} placeholder="Large or smaller" />
+                      </StudioField>
                     </div>
                     <div className="studio-form-grid">
-                      <FormRow label="Prerequisite" icon="fa-list-check" hint={FIELD_HELP.procedurePrerequisite}>
-                        <TextArea rows={2} value={monsterRules.procedure?.prerequisite} onChange={(value) => setRulesField(["procedure", "prerequisite"], value)} placeholder="The target must be Grappled." />
-                      </FormRow>
-                      <FormRow label="Entry Effect" icon="fa-door-open" hint={FIELD_HELP.procedureEntryEffect}>
-                        <TextArea rows={2} value={monsterRules.procedure?.entryEffect} onChange={(value) => setRulesField(["procedure", "entryEffect"], value)} placeholder="The target is swallowed." />
-                      </FormRow>
-                      <FormRow label="Internal State" icon="fa-circle-nodes" hint={FIELD_HELP.procedureInternalState}>
-                        <TextArea rows={2} value={monsterRules.procedure?.internalState} onChange={(value) => setRulesField(["procedure", "internalState"], value)} placeholder="The swallowed target has Total Cover and the Blinded and Restrained conditions." />
-                      </FormRow>
+                      <StudioField label="Prerequisite" icon="fa-list-check" hint={FIELD_HELP.procedurePrerequisite}>
+                        <StudioTextarea rows={2} value={monsterRules.procedure?.prerequisite} onChange={(value) => setRulesField(["procedure", "prerequisite"], value)} placeholder="The target must be Grappled." />
+                      </StudioField>
+                      <StudioField label="Entry Effect" icon="fa-door-open" hint={FIELD_HELP.procedureEntryEffect}>
+                        <StudioTextarea rows={2} value={monsterRules.procedure?.entryEffect} onChange={(value) => setRulesField(["procedure", "entryEffect"], value)} placeholder="The target is swallowed." />
+                      </StudioField>
+                      <StudioField label="Internal State" icon="fa-circle-nodes" hint={FIELD_HELP.procedureInternalState}>
+                        <StudioTextarea rows={2} value={monsterRules.procedure?.internalState} onChange={(value) => setRulesField(["procedure", "internalState"], value)} placeholder="The swallowed target has Total Cover and the Blinded and Restrained conditions." />
+                      </StudioField>
                     </div>
                     <div className="studio-text-source-toggle studio-text-source-toggle--compact" role="group" aria-label="Procedure ongoing damage enabled">
                       <span>Ongoing Damage</span>
@@ -4897,49 +4888,49 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                     {procedureOngoingEnabled ? (
                       <>
                         <div className="studio-form-grid studio-form-grid--compact">
-                          <FormRow label="Timing" icon="fa-hourglass-half" hint={FIELD_HELP.ongoingTiming}>
-                            <SelectInput options={MONSTER_PROCEDURE_TIMING_OPTIONS} value={monsterRules.procedure?.ongoingDamage?.timing || "startOfMonsterTurn"} onChange={(value) => setRulesField(["procedure", "ongoingDamage", "timing"], value)} />
-                          </FormRow>
-                          <FormRow label="Damage Mode" icon="fa-burst" hint={FIELD_HELP.procedureOngoingDamage}>
-                            <SelectInput options={MONSTER_DAMAGE_MODE_OPTIONS.filter(([value]) => value !== "parts")} value={procedureOngoingDamageMode} onChange={(value) => setRulesField(["procedure", "ongoingDamage", "damage", "mode"], value)} />
-                          </FormRow>
+                          <StudioField label="Timing" icon="fa-hourglass-half" hint={FIELD_HELP.ongoingTiming}>
+                            <StudioSelect options={MONSTER_PROCEDURE_TIMING_OPTIONS} value={monsterRules.procedure?.ongoingDamage?.timing || "startOfMonsterTurn"} onChange={(value) => setRulesField(["procedure", "ongoingDamage", "timing"], value)} />
+                          </StudioField>
+                          <StudioField label="Damage Mode" icon="fa-burst" hint={FIELD_HELP.procedureOngoingDamage}>
+                            <StudioSelect options={MONSTER_DAMAGE_MODE_OPTIONS.filter(([value]) => value !== "parts")} value={procedureOngoingDamageMode} onChange={(value) => setRulesField(["procedure", "ongoingDamage", "damage", "mode"], value)} />
+                          </StudioField>
                           {showProcedureOngoingDamageDetails ? (
                             <>
-                              <FormRow label="Budget Role" icon="fa-chart-pie" hint={FIELD_HELP.damageBudgetRole}>
-                                <SelectInput options={MONSTER_DAMAGE_BUDGET_ROLE_OPTIONS} value={monsterRules.procedure?.ongoingDamage?.damage?.budgetRole || "ongoing"} onChange={(value) => setRulesField(["procedure", "ongoingDamage", "damage", "budgetRole"], value)} />
-                              </FormRow>
-                              <FormRow label="Budget Share" icon="fa-percent" hint={FIELD_HELP.damageBudgetShare}>
+                              <StudioField label="Budget Role" icon="fa-chart-pie" hint={FIELD_HELP.damageBudgetRole}>
+                                <StudioSelect options={MONSTER_DAMAGE_BUDGET_ROLE_OPTIONS} value={monsterRules.procedure?.ongoingDamage?.damage?.budgetRole || "ongoing"} onChange={(value) => setRulesField(["procedure", "ongoingDamage", "damage", "budgetRole"], value)} />
+                              </StudioField>
+                              <StudioField label="Budget Share" icon="fa-percent" hint={FIELD_HELP.damageBudgetShare}>
                                 <input type="number" step="0.05" min="0" value={monsterRules.procedure?.ongoingDamage?.damage?.budgetShare ?? ""} onChange={(event) => setRulesField(["procedure", "ongoingDamage", "damage", "budgetShare"], event.target.value === "" ? undefined : Number(event.target.value))} placeholder="0.25" />
-                              </FormRow>
-                              <FormRow label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.damageTypes}>
+                              </StudioField>
+                              <StudioField label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.damageTypes}>
                                 <KeywordPillInput fieldId={`${component.id}-procedure-ongoing-damage-types`} icon="fa-burst" value={monsterRules.procedure?.ongoingDamage?.damage?.types} onChange={(value) => setRulesArray(["procedure", "ongoingDamage", "damage", "types"], value)} placeholder="acid" />
-                              </FormRow>
+                              </StudioField>
                             </>
                           ) : null}
                         </div>
-                        <FormRow label="Ongoing End Condition" icon="fa-hourglass-end" hint={FIELD_HELP.ongoingEndCondition}>
-                          <TextInput value={monsterRules.procedure?.ongoingDamage?.endCondition} onChange={(value) => setRulesField(["procedure", "ongoingDamage", "endCondition"], value)} placeholder="until the target escapes" />
-                        </FormRow>
+                        <StudioField label="Ongoing End Condition" icon="fa-hourglass-end" hint={FIELD_HELP.ongoingEndCondition}>
+                          <StudioInput value={monsterRules.procedure?.ongoingDamage?.endCondition} onChange={(value) => setRulesField(["procedure", "ongoingDamage", "endCondition"], value)} placeholder="until the target escapes" />
+                        </StudioField>
                       </>
                     ) : null}
                     <div className="studio-form-grid">
-                      <FormRow label="Escape Condition" icon="fa-person-running" hint={FIELD_HELP.procedureEscapeCondition}>
-                        <TextArea rows={2} value={monsterRules.procedure?.escapeCondition} onChange={(value) => setRulesField(["procedure", "escapeCondition"], value)} placeholder="If the monster takes 20 damage or more on a single turn from inside it..." />
-                      </FormRow>
-                      <FormRow label="Release Condition" icon="fa-door-open" hint={FIELD_HELP.procedureReleaseCondition}>
-                        <TextArea rows={2} value={monsterRules.procedure?.releaseCondition} onChange={(value) => setRulesField(["procedure", "releaseCondition"], value)} placeholder="If the monster dies, the target is no longer Restrained and can escape." />
-                      </FormRow>
+                      <StudioField label="Escape Condition" icon="fa-person-running" hint={FIELD_HELP.procedureEscapeCondition}>
+                        <StudioTextarea rows={2} value={monsterRules.procedure?.escapeCondition} onChange={(value) => setRulesField(["procedure", "escapeCondition"], value)} placeholder="If the monster takes 20 damage or more on a single turn from inside it..." />
+                      </StudioField>
+                      <StudioField label="Release Condition" icon="fa-door-open" hint={FIELD_HELP.procedureReleaseCondition}>
+                        <StudioTextarea rows={2} value={monsterRules.procedure?.releaseCondition} onChange={(value) => setRulesField(["procedure", "releaseCondition"], value)} placeholder="If the monster dies, the target is no longer Restrained and can escape." />
+                      </StudioField>
                     </div>
-                    <FormRow label="Procedure Text" icon="fa-pen-to-square" hint={FIELD_HELP.procedureText}>
-                      <TextArea rows={3} value={monsterRules.procedure?.text} onChange={(value) => setRulesField(["procedure", "text"], value)} placeholder="Leave empty to use generated wording. Tokens: {procedure-ongoing-damage}, {procedure-release-condition}." />
-                    </FormRow>
+                    <StudioField label="Procedure Text" icon="fa-pen-to-square" hint={FIELD_HELP.procedureText}>
+                      <StudioTextarea rows={3} value={monsterRules.procedure?.text} onChange={(value) => setRulesField(["procedure", "text"], value)} placeholder="Leave empty to use generated wording. Tokens: {procedure-ongoing-damage}, {procedure-release-condition}." />
+                    </StudioField>
                   </>
                 ) : null}
-              </RulesGroup>
+              </StudioCollapsibleSection>
             ) : null}
 
             {hasDefenseBlock ? (
-              <RulesGroup icon="fa-shield-halved" title="Defense" help={FIELD_HELP.defenseFeature} actions={<RemoveRulesBlockButton label="Defense" onClick={() => removeRulesBlock("defense")} />}>
+              <StudioCollapsibleSection icon="fa-shield-halved" title="Defense" help={FIELD_HELP.defenseFeature} actions={<RemoveRulesBlockButton label="Defense" onClick={() => removeRulesBlock("defense")} />}>
                 <div className="studio-text-source-toggle studio-text-source-toggle--compact" role="group" aria-label="Defense feature enabled">
                   <button type="button" aria-pressed={!defenseEnabled} onClick={() => setRulesField(["defense", "enabled"], false)}>Off</button>
                   <button type="button" aria-pressed={defenseEnabled} onClick={() => {
@@ -4951,126 +4942,126 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                 {defenseEnabled ? (
                   <>
                     <div className="studio-form-grid studio-form-grid--compact">
-                      <FormRow label="Defense Type" icon="fa-shield-halved" hint={FIELD_HELP.defenseType}>
-                        <SelectInput options={MONSTER_DEFENSE_TYPE_OPTIONS} value={defenseType} onChange={(value) => setRulesField(["defense", "type"], value)} />
-                      </FormRow>
-                      <FormRow label="Timing" icon="fa-hourglass-half" hint={FIELD_HELP.defenseTiming}>
-                        <SelectInput options={MONSTER_DEFENSE_TIMING_OPTIONS} value={monsterRules.defense?.timing || "passive"} onChange={(value) => setRulesField(["defense", "timing"], value)} />
-                      </FormRow>
+                      <StudioField label="Defense Type" icon="fa-shield-halved" hint={FIELD_HELP.defenseType}>
+                        <StudioSelect options={MONSTER_DEFENSE_TYPE_OPTIONS} value={defenseType} onChange={(value) => setRulesField(["defense", "type"], value)} />
+                      </StudioField>
+                      <StudioField label="Timing" icon="fa-hourglass-half" hint={FIELD_HELP.defenseTiming}>
+                        <StudioSelect options={MONSTER_DEFENSE_TIMING_OPTIONS} value={monsterRules.defense?.timing || "passive"} onChange={(value) => setRulesField(["defense", "timing"], value)} />
+                      </StudioField>
                       {showDefenseUses ? (
-                        <FormRow label="Uses" icon="fa-dice-six" hint={FIELD_HELP.defenseUses}>
+                        <StudioField label="Uses" icon="fa-dice-six" hint={FIELD_HELP.defenseUses}>
                           <input type="number" min="0" step="1" value={monsterRules.defense?.uses ?? ""} onChange={(event) => setRulesField(["defense", "uses"], event.target.value === "" ? undefined : Number(event.target.value))} placeholder="3" />
-                        </FormRow>
+                        </StudioField>
                       ) : null}
                       {showDefenseValue ? (
-                        <FormRow label="Value" icon="fa-plus" hint={FIELD_HELP.defenseValue}>
+                        <StudioField label="Value" icon="fa-plus" hint={FIELD_HELP.defenseValue}>
                           <input type="number" min="0" step="1" value={monsterRules.defense?.value ?? ""} onChange={(event) => setRulesField(["defense", "value"], event.target.value === "" ? undefined : Number(event.target.value))} placeholder="10" />
-                        </FormRow>
+                        </StudioField>
                       ) : null}
                       {showDefenseDamageTypes ? (
-                        <FormRow label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.defenseDamageTypes}>
+                        <StudioField label="Damage Types" icon="fa-droplet" hint={FIELD_HELP.defenseDamageTypes}>
                           <KeywordPillInput fieldId={`${component.id}-defense-damage-types`} icon="fa-shield-halved" value={monsterRules.defense?.damageTypes} onChange={(value) => setRulesArray(["defense", "damageTypes"], value)} placeholder="fire, necrotic" />
-                        </FormRow>
+                        </StudioField>
                       ) : null}
                       {showDefenseBreakCondition ? (
-                        <FormRow label="Break Condition" icon="fa-ban" hint={FIELD_HELP.defenseBreakCondition}>
-                          <TextInput value={monsterRules.defense?.breakCondition} onChange={(value) => setRulesField(["defense", "breakCondition"], value)} placeholder="takes Fire damage" />
-                        </FormRow>
+                        <StudioField label="Break Condition" icon="fa-ban" hint={FIELD_HELP.defenseBreakCondition}>
+                          <StudioInput value={monsterRules.defense?.breakCondition} onChange={(value) => setRulesField(["defense", "breakCondition"], value)} placeholder="takes Fire damage" />
+                        </StudioField>
                       ) : null}
                     </div>
-                    <FormRow label="Defense Text" icon="fa-pen-to-square" hint={FIELD_HELP.defenseText}>
-                      <TextArea rows={3} value={monsterRules.defense?.text} onChange={(value) => setRulesField(["defense", "text"], value)} placeholder="Leave empty to use standard generated wording." />
-                    </FormRow>
+                    <StudioField label="Defense Text" icon="fa-pen-to-square" hint={FIELD_HELP.defenseText}>
+                      <StudioTextarea rows={3} value={monsterRules.defense?.text} onChange={(value) => setRulesField(["defense", "text"], value)} placeholder="Leave empty to use standard generated wording." />
+                    </StudioField>
                   </>
                 ) : null}
-              </RulesGroup>
+              </StudioCollapsibleSection>
             ) : null}
 
 
 
             {hasReferencesBlock ? (
-              <RulesGroup icon="fa-link" title="Ability Links" help={FIELD_HELP.references} actions={<RemoveRulesBlockButton label="Ability Links" onClick={() => removeRulesBlock("references")} />}>
+              <StudioCollapsibleSection icon="fa-link" title="Ability Links" help={FIELD_HELP.references} actions={<RemoveRulesBlockButton label="Ability Links" onClick={() => removeRulesBlock("references")} />}>
                 <div className="studio-damage-parts" aria-label="Ability links editor">
                   {visibleAbilityReferences.map((reference, index) => (
                     <div className="studio-damage-part" key={reference.id || reference.ref || index}>
                       <div className="studio-damage-part__head">
-                        <strong><Icon name="fa-link" /> Ability Link {index + 1}</strong>
+                        <strong><StudioIcon name="fa-link" /> Ability Link {index + 1}</strong>
                         <IconOnlyRemoveButton label={`Ability Link ${index + 1}`} onClick={() => removeAbilityReference(index)} disabled={!abilityReferences.length} />
                       </div>
                       <div className="studio-form-grid studio-form-grid--compact">
-                        <FormRow label="Reference Type" icon="fa-diagram-project" hint={FIELD_HELP.referenceType}>
-                          <SelectInput options={MONSTER_REFERENCE_TYPE_OPTIONS} value={reference.type || "action"} onChange={(value) => setAbilityReferenceField(index, ["type"], value)} />
-                        </FormRow>
-                        <FormRow label="Relationship" icon="fa-code-branch" hint={FIELD_HELP.referenceRelationship}>
-                          <SelectInput options={MONSTER_REFERENCE_RELATIONSHIP_OPTIONS} value={reference.relationship || "uses"} onChange={(value) => setAbilityReferenceField(index, ["relationship"], value)} />
-                        </FormRow>
-                        <FormRow label="Reference ID" icon="fa-fingerprint" hint={FIELD_HELP.referenceRef}>
-                          <TextInput value={reference.ref} onChange={(value) => setAbilityReferenceField(index, ["ref"], value)} placeholder="bite" />
-                        </FormRow>
-                        <FormRow label="Label" icon="fa-tag" hint={FIELD_HELP.referenceLabel}>
-                          <TextInput value={reference.label} onChange={(value) => setAbilityReferenceField(index, ["label"], value)} placeholder="Bite" />
-                        </FormRow>
-                        <FormRow label="Count" icon="fa-hashtag" hint={FIELD_HELP.referenceCount}>
-                          <TextInput value={reference.count ?? ""} onChange={(value) => setAbilityReferenceField(index, ["count"], value)} placeholder="1, 2, one, any" />
-                        </FormRow>
-                        <FormRow label="Template Token" icon="fa-code" hint="Use this token in generated or manual text to place this reference sentence.">
+                        <StudioField label="Reference Type" icon="fa-diagram-project" hint={FIELD_HELP.referenceType}>
+                          <StudioSelect options={MONSTER_REFERENCE_TYPE_OPTIONS} value={reference.type || "action"} onChange={(value) => setAbilityReferenceField(index, ["type"], value)} />
+                        </StudioField>
+                        <StudioField label="Relationship" icon="fa-code-branch" hint={FIELD_HELP.referenceRelationship}>
+                          <StudioSelect options={MONSTER_REFERENCE_RELATIONSHIP_OPTIONS} value={reference.relationship || "uses"} onChange={(value) => setAbilityReferenceField(index, ["relationship"], value)} />
+                        </StudioField>
+                        <StudioField label="Reference ID" icon="fa-fingerprint" hint={FIELD_HELP.referenceRef}>
+                          <StudioInput value={reference.ref} onChange={(value) => setAbilityReferenceField(index, ["ref"], value)} placeholder="bite" />
+                        </StudioField>
+                        <StudioField label="Label" icon="fa-tag" hint={FIELD_HELP.referenceLabel}>
+                          <StudioInput value={reference.label} onChange={(value) => setAbilityReferenceField(index, ["label"], value)} placeholder="Bite" />
+                        </StudioField>
+                        <StudioField label="Count" icon="fa-hashtag" hint={FIELD_HELP.referenceCount}>
+                          <StudioInput value={reference.count ?? ""} onChange={(value) => setAbilityReferenceField(index, ["count"], value)} placeholder="1, 2, one, any" />
+                        </StudioField>
+                        <StudioField label="Template Token" icon="fa-code" hint="Use this token in generated or manual text to place this reference sentence.">
                           <input readOnly value={`{reference:${reference.ref || reference.label || `ability-${index + 1}`}}`} />
-                        </FormRow>
+                        </StudioField>
                       </div>
-                      <FormRow label="Custom Reference Text" icon="fa-quote-left" hint={FIELD_HELP.referenceText}>
-                        <TextArea rows={2} value={reference.text} onChange={(value) => setAbilityReferenceField(index, ["text"], value)} placeholder="Optional exact sentence for this linked ability." />
-                      </FormRow>
+                      <StudioField label="Custom Reference Text" icon="fa-quote-left" hint={FIELD_HELP.referenceText}>
+                        <StudioTextarea rows={2} value={reference.text} onChange={(value) => setAbilityReferenceField(index, ["text"], value)} placeholder="Optional exact sentence for this linked ability." />
+                      </StudioField>
                     </div>
                   ))}
                   <button className="studio-inline-action" type="button" onClick={addAbilityReference}>
-                    <Icon name="fa-plus" /> Add Ability Link
+                    <StudioIcon name="fa-plus" /> Add Ability Link
                   </button>
                 </div>
-              </RulesGroup>
+              </StudioCollapsibleSection>
             ) : null}
 
             {hasOutputTextBlock ? (
-              <RulesGroup icon={outputTextIcon} title="Output Text" help="Output text is the generated rules prose attached to the selected resolution type." actions={<RemoveRulesBlockButton label="Output Text" onClick={() => removeRulesBlock("outputText")} />}>
-                <FormRow label={outputTextLabel} icon={outputTextIcon} hint={outputTextHelp}>
-                  <TextArea rows={3} value={outputTextValue} onChange={(value) => setRulesField(outputTextPath, value)} />
-                </FormRow>
+              <StudioCollapsibleSection icon={outputTextIcon} title="Output Text" help="Output text is the generated rules prose attached to the selected resolution type." actions={<RemoveRulesBlockButton label="Output Text" onClick={() => removeRulesBlock("outputText")} />}>
+                <StudioField label={outputTextLabel} icon={outputTextIcon} hint={outputTextHelp}>
+                  <StudioTextarea rows={3} value={outputTextValue} onChange={(value) => setRulesField(outputTextPath, value)} />
+                </StudioField>
                 {hasAttackResolution ? (
                   <div className="studio-form-grid">
-                    <FormRow label="Miss Text" icon="fa-circle-xmark" hint={FIELD_HELP.missText}>
-                      <TextArea rows={3} value={monsterRules.text?.miss} onChange={(value) => setRulesField(["text", "miss"], value)} />
-                    </FormRow>
-                    <FormRow label="Hit or Miss Text" icon="fa-circle-dot" hint={FIELD_HELP.hitOrMissText}>
-                      <TextArea rows={3} value={monsterRules.text?.hitOrMiss} onChange={(value) => setRulesField(["text", "hitOrMiss"], value)} />
-                    </FormRow>
+                    <StudioField label="Miss Text" icon="fa-circle-xmark" hint={FIELD_HELP.missText}>
+                      <StudioTextarea rows={3} value={monsterRules.text?.miss} onChange={(value) => setRulesField(["text", "miss"], value)} />
+                    </StudioField>
+                    <StudioField label="Hit or Miss Text" icon="fa-circle-dot" hint={FIELD_HELP.hitOrMissText}>
+                      <StudioTextarea rows={3} value={monsterRules.text?.hitOrMiss} onChange={(value) => setRulesField(["text", "hitOrMiss"], value)} />
+                    </StudioField>
                   </div>
                 ) : null}
-              </RulesGroup>
+              </StudioCollapsibleSection>
             ) : null}
           </div>
 
           {hasCounterplayBlock ? (
-            <RulesGroup zone="output" icon="fa-shield-halved" title="Counterplay" help="Counterplay explains what players can notice, prevent, avoid, exploit, or clean up." actions={<RemoveRulesBlockButton label="Counterplay" onClick={() => removeRulesBlock("counterplay")} />}>
-              <FormRow label="Counterplay" icon="fa-shield-halved" hint={FIELD_HELP.counterplay}>
-                <TextArea rows={3} value={component.counterplay} onChange={(value) => setField(["counterplay"], value)} />
-              </FormRow>
-            </RulesGroup>
+            <StudioCollapsibleSection zone="output" icon="fa-shield-halved" title="Counterplay" help="Counterplay explains what players can notice, prevent, avoid, exploit, or clean up." actions={<RemoveRulesBlockButton label="Counterplay" onClick={() => removeRulesBlock("counterplay")} />}>
+              <StudioField label="Counterplay" icon="fa-shield-halved" hint={FIELD_HELP.counterplay}>
+                <StudioTextarea rows={3} value={component.counterplay} onChange={(value) => setField(["counterplay"], value)} />
+              </StudioField>
+            </StudioCollapsibleSection>
           ) : null}
 
-          <DividerLabel zone="output" icon="fa-scroll" title="Stat Block Text" help="This final text is what the Monster Composer exports for this graft. Generated mode is built from the fields above; Manual Override can still use formula tokens." />
-          <RulesGroup zone="output" defaultOpen icon="fa-scroll" title="Text Source" help="Choose whether this graft exports generated text or a manual override.">
+          <StudioDividerLabel zone="output" icon="fa-scroll" title="Stat Block Text" help="This final text is what the Monster Composer exports for this graft. Generated mode is built from the fields above; Manual Override can still use formula tokens." />
+          <StudioCollapsibleSection zone="output" defaultOpen icon="fa-scroll" title="Text Source" help="Choose whether this graft exports generated text or a manual override.">
             <div className="studio-text-source-toggle" role="group" aria-label="Stat block text source">
               <button type="button" aria-pressed={textSource !== "manual"} onClick={() => setRulesField(["text", "source"], "generated")}>Generated</button>
               <button type="button" aria-pressed={textSource === "manual"} onClick={() => setRulesField(["text", "source"], "manual")}>Manual Override</button>
             </div>
             {textSource === "manual" ? (
-              <FormRow label="Manual Stat Block Text" icon="fa-pen-to-square" hint={FIELD_HELP.manualRulesText}>
-                <TextArea rows={5} value={monsterRules.text?.manual} onChange={(value) => setRulesField(["text", "manual"], value)} placeholder="Use tokens like {attack-bonus}, {save-dc}, {damage:standard}, {damage-part:venom}." />
-              </FormRow>
+              <StudioField label="Manual Stat Block Text" icon="fa-pen-to-square" hint={FIELD_HELP.manualRulesText}>
+                <StudioTextarea rows={5} value={monsterRules.text?.manual} onChange={(value) => setRulesField(["text", "manual"], value)} placeholder="Use tokens like {attack-bonus}, {save-dc}, {damage:standard}, {damage-part:venom}." />
+              </StudioField>
             ) : null}
-            <FormRow label="Generated Stat Block Preview" icon="fa-eye" hint={FIELD_HELP.generatedRulesPreview}>
-              <TextArea className="studio-generated-preview" rows={6} readOnly value={finalRulesPreview || "No generated rules text yet."} />
-            </FormRow>
-          </RulesGroup>
+            <StudioField label="Generated Stat Block Preview" icon="fa-eye" hint={FIELD_HELP.generatedRulesPreview}>
+              <StudioTextarea className="studio-generated-preview" rows={6} readOnly value={finalRulesPreview || "No generated rules text yet."} />
+            </StudioField>
+          </StudioCollapsibleSection>
         </div>
       ) : null}
 
@@ -5078,29 +5069,29 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
       {!isMonsterGraft && activeComponentEditorTab === "output" ? (
         <div className="studio-component-editor__subpanel" data-editor-zone="output">
           {isLocationRegion ? (
-            <RulesGroup defaultOpen icon="fa-dungeon" title="Location Region Data" help="Map-region fields consumed by Dark Places and the Map Generator.">
+            <StudioCollapsibleSection defaultOpen icon="fa-dungeon" title="Location Region Data" help="Map-region fields consumed by Dark Places and the Map Generator.">
               <div className="studio-form-grid studio-form-grid--compact">
-                <FormRow label="Role" icon="fa-compass" hint={FIELD_HELP.regionRole}>
-                  <TextInput value={component.locationRegion?.role} onChange={(value) => setField(["locationRegion", "role"], value)} />
-                </FormRow>
-                <FormRow label="Size" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.regionSize}>
-                  <SelectInput options={[["Small", "Small"], ["Medium", "Medium"], ["Large", "Large"]]} value={component.locationRegion?.size || "Medium"} onChange={setLocationRegionSize} />
-                </FormRow>
-                <FormRow label="Shape" icon="fa-draw-polygon" hint={FIELD_HELP.regionShape}>
-                  <TextInput value={component.locationRegion?.shape} onChange={setLocationRegionShape} />
-                </FormRow>
-                <FormRow label="Connectors" icon="fa-code-branch" hint={FIELD_HELP.regionConnectors}>
+                <StudioField label="Role" icon="fa-compass" hint={FIELD_HELP.regionRole}>
+                  <StudioInput value={component.locationRegion?.role} onChange={(value) => setField(["locationRegion", "role"], value)} />
+                </StudioField>
+                <StudioField label="Size" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.regionSize}>
+                  <StudioSelect options={[["Small", "Small"], ["Medium", "Medium"], ["Large", "Large"]]} value={component.locationRegion?.size || "Medium"} onChange={setLocationRegionSize} />
+                </StudioField>
+                <StudioField label="Shape" icon="fa-draw-polygon" hint={FIELD_HELP.regionShape}>
+                  <StudioInput value={component.locationRegion?.shape} onChange={setLocationRegionShape} />
+                </StudioField>
+                <StudioField label="Connectors" icon="fa-code-branch" hint={FIELD_HELP.regionConnectors}>
                   <input type="number" min="0" max="8" value={component.locationRegion?.connectors ?? 0} onChange={(event) => setField(["locationRegion", "connectors"], Number(event.target.value))} />
-                </FormRow>
-                <FormRow label="Room Archetype" icon="fa-dungeon" hint={FIELD_HELP.regionRoomArchetype}>
-                  <SelectInput options={ROOM_ARCHETYPE_SELECT_OPTIONS} value={regionRoomArchetype} onChange={setLocationRegionRoomArchetype} />
-                </FormRow>
+                </StudioField>
+                <StudioField label="Room Archetype" icon="fa-dungeon" hint={FIELD_HELP.regionRoomArchetype}>
+                  <StudioSelect options={ROOM_ARCHETYPE_SELECT_OPTIONS} value={regionRoomArchetype} onChange={setLocationRegionRoomArchetype} />
+                </StudioField>
               </div>
-            </RulesGroup>
+            </StudioCollapsibleSection>
           ) : null}
 
           {(isLocationRegion || isLocationComponent) ? (
-            <RulesGroup
+            <StudioCollapsibleSection
               defaultOpen={hasRoomDesignData}
               icon="fa-shapes"
               title="Room Design"
@@ -5108,7 +5099,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
               actions={hasRoomDesignData ? <RemoveRulesBlockButton label="Room Design" onClick={clearLocationRegionRoomDesign} /> : null}
             >
               <div className="studio-inferred-rules-note" data-room-design-active={hasRoomDesignData ? "true" : "false"}>
-                <Icon name={hasRoomDesignData ? "fa-shapes" : "fa-circle-info"} />
+                <StudioIcon name={hasRoomDesignData ? "fa-shapes" : "fa-circle-info"} />
                 <span>
                   <strong>{hasRoomDesignData ? "Room Design" : "No Room Design"}</strong>
                   {` ${roomDesignEditorModel.summary}`}
@@ -5116,92 +5107,92 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
               </div>
 
               <div className="studio-form-grid studio-form-grid--compact">
-                <FormRow label="Apply Preset" icon="fa-wand-magic-sparkles" hint="Optional shortcut. Applying a preset fills modular roomDesign fields; every field remains editable afterward.">
-                  <SelectInput options={ROOM_DESIGN_PRESET_SELECT_OPTIONS} value={regionRoomDesign.presetId || ""} onChange={applyRoomDesignPreset} />
-                </FormRow>
-                <FormRow label="Shape Kind" icon="fa-draw-polygon" hint={FIELD_HELP.roomDesignShape}>
-                  <SelectInput options={ROOM_DESIGN_SHAPE_SELECT_OPTIONS} value={regionRoomDesignShape.kind || ""} onChange={(value) => setLocationRegionRoomDesignField(["shape", "kind"], value)} />
-                </FormRow>
-                <FormRow label="Size Scale" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.roomDesignSize}>
-                  <SelectInput options={ROOM_DESIGN_SIZE_SCALE_OPTIONS} value={regionRoomDesignSize.scale || ""} onChange={(value) => setLocationRegionRoomDesignField(["size", "scale"], value)} />
-                </FormRow>
-                <FormRow label="Proportion" icon="fa-expand" hint={FIELD_HELP.roomDesignSize}>
-                  <SelectInput options={ROOM_DESIGN_ASPECT_OPTIONS} value={regionRoomDesignSize.aspectRatio || ""} onChange={(value) => setLocationRegionRoomDesignField(["size", "aspectRatio"], value)} />
-                </FormRow>
-                <FormRow label="Min Diameter" icon="fa-circle" hint={FIELD_HELP.roomDesignSize}>
+                <StudioField label="Apply Preset" icon="fa-wand-magic-sparkles" hint="Optional shortcut. Applying a preset fills modular roomDesign fields; every field remains editable afterward.">
+                  <StudioSelect options={ROOM_DESIGN_PRESET_SELECT_OPTIONS} value={regionRoomDesign.presetId || ""} onChange={applyRoomDesignPreset} />
+                </StudioField>
+                <StudioField label="Shape Kind" icon="fa-draw-polygon" hint={FIELD_HELP.roomDesignShape}>
+                  <StudioSelect options={ROOM_DESIGN_SHAPE_SELECT_OPTIONS} value={regionRoomDesignShape.kind || ""} onChange={(value) => setLocationRegionRoomDesignField(["shape", "kind"], value)} />
+                </StudioField>
+                <StudioField label="Size Scale" icon="fa-up-right-and-down-left-from-center" hint={FIELD_HELP.roomDesignSize}>
+                  <StudioSelect options={ROOM_DESIGN_SIZE_SCALE_OPTIONS} value={regionRoomDesignSize.scale || ""} onChange={(value) => setLocationRegionRoomDesignField(["size", "scale"], value)} />
+                </StudioField>
+                <StudioField label="Proportion" icon="fa-expand" hint={FIELD_HELP.roomDesignSize}>
+                  <StudioSelect options={ROOM_DESIGN_ASPECT_OPTIONS} value={regionRoomDesignSize.aspectRatio || ""} onChange={(value) => setLocationRegionRoomDesignField(["size", "aspectRatio"], value)} />
+                </StudioField>
+                <StudioField label="Min Diameter" icon="fa-circle" hint={FIELD_HELP.roomDesignSize}>
                   <input type="number" min="1" max="40" value={formatRoomDesignNumber(regionRoomDesignSize.minDiameterCells)} onChange={(event) => setLocationRegionRoomDesignNumber(["size", "minDiameterCells"], event.target.value)} />
-                </FormRow>
-                <FormRow label="Min Width" icon="fa-arrows-left-right" hint={FIELD_HELP.roomDesignSize}>
+                </StudioField>
+                <StudioField label="Min Width" icon="fa-arrows-left-right" hint={FIELD_HELP.roomDesignSize}>
                   <input type="number" min="1" max="40" value={formatRoomDesignNumber(regionRoomDesignSize.minWidthCells)} onChange={(event) => setLocationRegionRoomDesignNumber(["size", "minWidthCells"], event.target.value)} />
-                </FormRow>
-                <FormRow label="Min Height" icon="fa-arrows-up-down" hint={FIELD_HELP.roomDesignSize}>
+                </StudioField>
+                <StudioField label="Min Height" icon="fa-arrows-up-down" hint={FIELD_HELP.roomDesignSize}>
                   <input type="number" min="1" max="40" value={formatRoomDesignNumber(regionRoomDesignSize.minHeightCells)} onChange={(event) => setLocationRegionRoomDesignNumber(["size", "minHeightCells"], event.target.value)} />
-                </FormRow>
-                <FormRow label="Max Width" icon="fa-compress" hint={FIELD_HELP.roomDesignSize}>
+                </StudioField>
+                <StudioField label="Max Width" icon="fa-compress" hint={FIELD_HELP.roomDesignSize}>
                   <input type="number" min="1" max="40" value={formatRoomDesignNumber(regionRoomDesignSize.maxWidthCells)} onChange={(event) => setLocationRegionRoomDesignNumber(["size", "maxWidthCells"], event.target.value)} />
-                </FormRow>
-                <FormRow label="Max Height" icon="fa-compress" hint={FIELD_HELP.roomDesignSize}>
+                </StudioField>
+                <StudioField label="Max Height" icon="fa-compress" hint={FIELD_HELP.roomDesignSize}>
                   <input type="number" min="1" max="40" value={formatRoomDesignNumber(regionRoomDesignSize.maxHeightCells)} onChange={(event) => setLocationRegionRoomDesignNumber(["size", "maxHeightCells"], event.target.value)} />
-                </FormRow>
-                <FormRow label="Min Area" icon="fa-border-all" hint={FIELD_HELP.roomDesignSize}>
+                </StudioField>
+                <StudioField label="Min Area" icon="fa-border-all" hint={FIELD_HELP.roomDesignSize}>
                   <input type="number" min="1" max="400" value={formatRoomDesignNumber(regionRoomDesignSize.minAreaCells)} onChange={(event) => setLocationRegionRoomDesignNumber(["size", "minAreaCells"], event.target.value)} />
-                </FormRow>
-                <FormRow label="Max Area" icon="fa-border-none" hint={FIELD_HELP.roomDesignSize}>
+                </StudioField>
+                <StudioField label="Max Area" icon="fa-border-none" hint={FIELD_HELP.roomDesignSize}>
                   <input type="number" min="1" max="400" value={formatRoomDesignNumber(regionRoomDesignSize.maxAreaCells)} onChange={(event) => setLocationRegionRoomDesignNumber(["size", "maxAreaCells"], event.target.value)} />
-                </FormRow>
+                </StudioField>
               </div>
 
-              <FormRow label="Shape Modifiers" icon="fa-sliders" hint="Optional geometry modifiers that the engine can progressively support without creating one-off archetypes.">
+              <StudioField label="Shape Modifiers" icon="fa-sliders" hint="Optional geometry modifiers that the engine can progressively support without creating one-off archetypes.">
                 <KeywordPillInput allowCustom={false} fieldId={`${component.id}-room-design-modifiers`} icon="fa-sliders" value={roomDesignEditorModel.modifiers} onChange={(value) => setLocationRegionRoomDesignArray(["shape", "modifiers"], value)} placeholder="notch, ruined, side-alcoves" suggestions={ROOM_DESIGN_MODIFIER_OPTIONS} />
-              </FormRow>
+              </StudioField>
 
-              <DividerLabel zone="output" icon="fa-location-dot" title="Required Props" help="Props listed here should always be placed when possible. Use them to build presets like a circular room with a center well without hardcoding a one-off archetype." />
+              <StudioDividerLabel zone="output" icon="fa-location-dot" title="Required Props" help="Props listed here should always be placed when possible. Use them to build presets like a circular room with a center well without hardcoding a one-off archetype." />
               <div className="studio-rules-list" data-room-design-props={regionRoomDesignRequiredProps.length}>
                 {regionRoomDesignRequiredProps.map((prop, propIndex) => (
                   <div className="studio-form-grid studio-form-grid--compact" key={`room-design-prop-${propIndex}`}>
-                    <FormRow label={`Prop ${propIndex + 1}`} icon="fa-location-dot" hint={FIELD_HELP.roomDesignProps}>
-                      <SelectInput options={ROOM_DESIGN_PROP_KIND_OPTIONS} value={prop.kind || ""} onChange={(value) => setLocationRegionRequiredPropField(propIndex, ["kind"], value)} />
-                    </FormRow>
-                    <FormRow label="Placement" icon="fa-crosshairs" hint={FIELD_HELP.roomDesignProps}>
-                      <SelectInput options={ROOM_DESIGN_PLACEMENT_OPTIONS} value={prop.placement || "center"} onChange={(value) => setLocationRegionRequiredPropField(propIndex, ["placement"], value)} />
-                    </FormRow>
-                    <FormRow label="Radius" icon="fa-circle-dot" hint="Optional minimum radius in cells for circular props such as wells, pits, or voids.">
+                    <StudioField label={`Prop ${propIndex + 1}`} icon="fa-location-dot" hint={FIELD_HELP.roomDesignProps}>
+                      <StudioSelect options={ROOM_DESIGN_PROP_KIND_OPTIONS} value={prop.kind || ""} onChange={(value) => setLocationRegionRequiredPropField(propIndex, ["kind"], value)} />
+                    </StudioField>
+                    <StudioField label="Placement" icon="fa-crosshairs" hint={FIELD_HELP.roomDesignProps}>
+                      <StudioSelect options={ROOM_DESIGN_PLACEMENT_OPTIONS} value={prop.placement || "center"} onChange={(value) => setLocationRegionRequiredPropField(propIndex, ["placement"], value)} />
+                    </StudioField>
+                    <StudioField label="Radius" icon="fa-circle-dot" hint="Optional minimum radius in cells for circular props such as wells, pits, or voids.">
                       <input type="number" min="0" max="12" step="0.25" value={formatRoomDesignNumber(prop.minRadiusCells)} onChange={(event) => setLocationRegionRequiredPropField(propIndex, ["minRadiusCells"], event.target.value === "" ? "" : Number(event.target.value))} />
-                    </FormRow>
-                    <FormRow label="Scale" icon="fa-up-right-and-down-left-from-center" hint="Optional visual scale multiplier for this required prop.">
+                    </StudioField>
+                    <StudioField label="Scale" icon="fa-up-right-and-down-left-from-center" hint="Optional visual scale multiplier for this required prop.">
                       <input type="number" min="0.25" max="3" step="0.05" value={formatRoomDesignNumber(prop.sizeScale)} onChange={(event) => setLocationRegionRequiredPropField(propIndex, ["sizeScale"], event.target.value === "" ? "" : Number(event.target.value))} />
-                    </FormRow>
+                    </StudioField>
                     {regionRoomDesignRequiredProps.length > 1 || prop.kind ? (
-                      <FormRow label="Remove Prop" icon="fa-trash" hint="Remove this required prop from the roomDesign payload.">
+                      <StudioField label="Remove Prop" icon="fa-trash" hint="Remove this required prop from the roomDesign payload.">
                         <button type="button" className="studio-inline-action studio-inline-action--compact" onClick={() => removeLocationRegionRequiredProp(propIndex)}>
-                          <Icon name="fa-trash" /> Remove Prop
+                          <StudioIcon name="fa-trash" /> Remove Prop
                         </button>
-                      </FormRow>
+                      </StudioField>
                     ) : null}
                   </div>
                 ))}
               </div>
               <button type="button" className="studio-inline-action studio-inline-action--compact" onClick={addLocationRegionRequiredProp}>
-                <Icon name="fa-plus" /> Add Required Prop
+                <StudioIcon name="fa-plus" /> Add Required Prop
               </button>
 
-              <DividerLabel zone="output" icon="fa-diagram-project" title="Topology Hints" help="Optional placement hints. These should guide the graph without replacing mapInfluence or manual map editing." />
+              <StudioDividerLabel zone="output" icon="fa-diagram-project" title="Topology Hints" help="Optional placement hints. These should guide the graph without replacing mapInfluence or manual map editing." />
               <div className="studio-form-grid studio-form-grid--compact">
-                <FormRow label="Branch Bias" icon="fa-code-branch" hint="Optional graph preference for where this room should sit in the generated map.">
-                  <SelectInput options={ROOM_DESIGN_BRANCH_BIAS_OPTIONS} value={regionRoomDesignTopology.branchBias || ""} onChange={(value) => setLocationRegionRoomDesignField(["topology", "branchBias"], value)} />
-                </FormRow>
-                <FormRow label="Depth Bias" icon="fa-route" hint="Optional preference for early, middle, or deep placement.">
-                  <SelectInput options={ROOM_DESIGN_DEPTH_BIAS_OPTIONS} value={regionRoomDesignTopology.depthBias || ""} onChange={(value) => setLocationRegionRoomDesignField(["topology", "depthBias"], value)} />
-                </FormRow>
-                <FormRow label="Secret" icon="fa-user-secret" hint="Optional secret-room hint. Leave automatic unless the room must be treated as hidden.">
-                  <SelectInput options={ROOM_DESIGN_SECRET_OPTIONS} value={regionRoomDesignTopology.secret === true ? "true" : regionRoomDesignTopology.secret === false ? "false" : ""} onChange={(value) => setLocationRegionRoomDesignField(["topology", "secret"], value === "" ? "" : value === "true")} />
-                </FormRow>
+                <StudioField label="Branch Bias" icon="fa-code-branch" hint="Optional graph preference for where this room should sit in the generated map.">
+                  <StudioSelect options={ROOM_DESIGN_BRANCH_BIAS_OPTIONS} value={regionRoomDesignTopology.branchBias || ""} onChange={(value) => setLocationRegionRoomDesignField(["topology", "branchBias"], value)} />
+                </StudioField>
+                <StudioField label="Depth Bias" icon="fa-route" hint="Optional preference for early, middle, or deep placement.">
+                  <StudioSelect options={ROOM_DESIGN_DEPTH_BIAS_OPTIONS} value={regionRoomDesignTopology.depthBias || ""} onChange={(value) => setLocationRegionRoomDesignField(["topology", "depthBias"], value)} />
+                </StudioField>
+                <StudioField label="Secret" icon="fa-user-secret" hint="Optional secret-room hint. Leave automatic unless the room must be treated as hidden.">
+                  <StudioSelect options={ROOM_DESIGN_SECRET_OPTIONS} value={regionRoomDesignTopology.secret === true ? "true" : regionRoomDesignTopology.secret === false ? "false" : ""} onChange={(value) => setLocationRegionRoomDesignField(["topology", "secret"], value === "" ? "" : value === "true")} />
+                </StudioField>
               </div>
-            </RulesGroup>
+            </StudioCollapsibleSection>
           ) : null}
 
           {(isLocationRegion || isLocationComponent) ? (
-            <RulesGroup
+            <StudioCollapsibleSection
               defaultOpen
               icon="fa-map-location-dot"
               title="Map Influence"
@@ -5209,7 +5200,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
               actions={hasMapInfluenceData ? <RemoveRulesBlockButton label="Map Influence" onClick={clearMapInfluence} /> : null}
             >
               <div className="studio-inferred-rules-note" data-map-influence-mode={mapInfluenceEditorModel.mode.toLowerCase().replaceAll(" ", "-")}>
-                <Icon name={mapInfluenceEditorModel.mode === "Forced" ? "fa-lock" : mapInfluenceEditorModel.mode === "Forbid only" ? "fa-ban" : mapInfluenceEditorModel.mode === "Suggested" ? "fa-map-location-dot" : "fa-circle-info"} />
+                <StudioIcon name={mapInfluenceEditorModel.mode === "Forced" ? "fa-lock" : mapInfluenceEditorModel.mode === "Forbid only" ? "fa-ban" : mapInfluenceEditorModel.mode === "Suggested" ? "fa-map-location-dot" : "fa-circle-info"} />
                 <span>
                   <strong>{mapInfluenceEditorModel.mode === "Inactive" ? "No map influence" : `Map Influence · ${mapInfluenceEditorModel.mode}`}</strong>
                   {` ${mapInfluenceEditorModel.summary}`}
@@ -5217,51 +5208,51 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
                 </span>
                 {canSyncRegionArchetypeInfluence ? (
                   <button type="button" className="studio-icon-button" onClick={syncRegionArchetypeToMapInfluence} title="Use this region archetype as forced map influence">
-                    <Icon name="fa-link" />
+                    <StudioIcon name="fa-link" />
                   </button>
                 ) : null}
               </div>
               <div className="studio-form-grid studio-form-grid--compact">
-                <FormRow label="Influence Archetype" icon="fa-dungeon" hint="Optional direct archetype target used when Force is enabled, or as a strong preference when combined with preferred archetypes.">
-                  <SelectInput options={ROOM_ARCHETYPE_SELECT_OPTIONS} value={mapInfluenceRoomArchetype} onChange={(value) => setMapInfluenceField(["roomArchetype"], value)} />
-                </FormRow>
-                <FormRow label="Preferred Archetypes" icon="fa-star" hint={FIELD_HELP.mapInfluencePreferredArchetypes}>
+                <StudioField label="Influence Archetype" icon="fa-dungeon" hint="Optional direct archetype target used when Force is enabled, or as a strong preference when combined with preferred archetypes.">
+                  <StudioSelect options={ROOM_ARCHETYPE_SELECT_OPTIONS} value={mapInfluenceRoomArchetype} onChange={(value) => setMapInfluenceField(["roomArchetype"], value)} />
+                </StudioField>
+                <StudioField label="Preferred Archetypes" icon="fa-star" hint={FIELD_HELP.mapInfluencePreferredArchetypes}>
                   <KeywordPillInput allowCustom={false} fieldId={`${component.id}-preferred-room-archetypes`} icon="fa-star" value={editableMapInfluence.preferredRoomArchetypes} onChange={(value) => setMapInfluenceArray("preferredRoomArchetypes", value)} placeholder="bone-well, reliquary-niche" suggestions={ROOM_ARCHETYPE_SUGGESTIONS} />
-                </FormRow>
-                <FormRow label="Forbidden Archetypes" icon="fa-ban" hint={FIELD_HELP.mapInfluenceForbiddenArchetypes}>
+                </StudioField>
+                <StudioField label="Forbidden Archetypes" icon="fa-ban" hint={FIELD_HELP.mapInfluenceForbiddenArchetypes}>
                   <KeywordPillInput allowCustom={false} fieldId={`${component.id}-forbidden-room-archetypes`} icon="fa-ban" value={editableMapInfluence.forbiddenRoomArchetypes} onChange={(value) => setMapInfluenceArray("forbiddenRoomArchetypes", value)} placeholder="bone-well" suggestions={ROOM_ARCHETYPE_SUGGESTIONS} />
-                </FormRow>
-                <FormRow label="Force Archetype" icon="fa-lock" hint={FIELD_HELP.mapInfluenceForce}>
+                </StudioField>
+                <StudioField label="Force Archetype" icon="fa-lock" hint={FIELD_HELP.mapInfluenceForce}>
                   <select value={editableMapInfluence.forceRoomArchetype ? "true" : "false"} onChange={(event) => setMapInfluenceField(["forceRoomArchetype"], event.target.value === "true")}>
                     <option value="false">Recommend only</option>
                     <option value="true">Force selected archetype</option>
                   </select>
-                </FormRow>
-                <FormRow label="Weight" icon="fa-scale-balanced" hint={FIELD_HELP.mapInfluenceWeight}>
+                </StudioField>
+                <StudioField label="Weight" icon="fa-scale-balanced" hint={FIELD_HELP.mapInfluenceWeight}>
                   <input type="number" min="0" step="0.25" value={editableMapInfluence.weight ?? ""} onChange={(event) => setMapInfluenceField(["weight"], event.target.value === "" ? "" : Number(event.target.value))} placeholder="2" />
-                </FormRow>
-                <FormRow label="Influence Source" icon="fa-fingerprint" hint={FIELD_HELP.mapInfluenceSource}>
-                  <TextInput value={editableMapInfluence.source} onChange={(value) => setMapInfluenceField(["source"], value)} placeholder={getMapInfluenceSourceFallback(component)} />
-                </FormRow>
+                </StudioField>
+                <StudioField label="Influence Source" icon="fa-fingerprint" hint={FIELD_HELP.mapInfluenceSource}>
+                  <StudioInput value={editableMapInfluence.source} onChange={(value) => setMapInfluenceField(["source"], value)} placeholder={getMapInfluenceSourceFallback(component)} />
+                </StudioField>
               </div>
-              <FormRow label="Influence Note" icon="fa-note-sticky" hint={FIELD_HELP.mapInfluenceNote}>
-                <TextArea rows={2} value={editableMapInfluence.note} onChange={(value) => setMapInfluenceField(["note"], value)} placeholder="Explain why this component should change the generated room archetype." />
-              </FormRow>
-            </RulesGroup>
+              <StudioField label="Influence Note" icon="fa-note-sticky" hint={FIELD_HELP.mapInfluenceNote}>
+                <StudioTextarea rows={2} value={editableMapInfluence.note} onChange={(value) => setMapInfluenceField(["note"], value)} placeholder="Explain why this component should change the generated room archetype." />
+              </StudioField>
+            </StudioCollapsibleSection>
           ) : null}
         </div>
       ) : null}
 
       {!isMonsterGraft ? (
         <>
-          <RulesGroup zone="qa" icon="fa-code" title="Raw Component JSON" help="Read-only component payload for debugging saved data and future Supabase migration checks.">
-            <FormRow label="Raw JSON" icon="fa-code" hint="Read-only JSON for the selected component. Use this only for debugging.">
-              <TextArea className="studio-generated-preview studio-raw-json-preview" rows={16} readOnly value={JSON.stringify(component, null, 2)} />
-            </FormRow>
-          </RulesGroup>
-          <RulesGroup zone="qa" icon="fa-trash" title="Danger Zone" help="Remove this component from the current Inspiration Module.">
-            <ArmedDeleteButton onConfirm={onRemove} />
-          </RulesGroup>
+          <StudioCollapsibleSection zone="qa" icon="fa-code" title="Raw Component JSON" help="Read-only component payload for debugging saved data and future Supabase migration checks.">
+            <StudioField label="Raw JSON" icon="fa-code" hint="Read-only JSON for the selected component. Use this only for debugging.">
+              <StudioTextarea className="studio-generated-preview studio-raw-json-preview" rows={16} readOnly value={JSON.stringify(component, null, 2)} />
+            </StudioField>
+          </StudioCollapsibleSection>
+          <StudioCollapsibleSection zone="qa" icon="fa-trash" title="Danger Zone" help="Remove this component from the current Inspiration Module.">
+            <StudioArmedDeleteButton onConfirm={onRemove} />
+          </StudioCollapsibleSection>
         </>
       ) : null}
     </div>

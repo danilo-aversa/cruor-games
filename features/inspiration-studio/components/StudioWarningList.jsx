@@ -3,6 +3,7 @@ import {
   groupStudioWarningsByComponent,
   summarizeStudioWarnings,
 } from "../model/studio-warning-model.js";
+import { openStudioDisclosuresForField } from "../ui/StudioSection.jsx";
 import { StudioIcon } from "./StudioIcon.jsx";
 
 export function StudioWarningList({ draft = {}, emptyLabel = "No Studio warnings.", grouped = true, maxGroups = 0, warnings = [] }) {
@@ -49,6 +50,25 @@ export function StudioWarningList({ draft = {}, emptyLabel = "No Studio warnings
                       <a
                         className="studio-warning-item__field-link"
                         href={`#${warning.fieldId}`}
+                        onClick={(event) => {
+                          const field = document.getElementById(warning.fieldId);
+                          const editorRoot = field?.closest(
+                            ".studio-component-editor-shell",
+                          );
+                          if (!field || !editorRoot) return;
+                          event.preventDefault();
+                          openStudioDisclosuresForField(
+                            editorRoot,
+                            warning.fieldId,
+                          );
+                          window.requestAnimationFrame(() => {
+                            field.focus?.({ preventScroll: true });
+                            field.scrollIntoView?.({
+                              behavior: "smooth",
+                              block: "center",
+                            });
+                          });
+                        }}
                       >
                         <StudioIcon name="fa-arrow-up-right-from-square" />{" "}
                         {warning.path}

@@ -15962,3 +15962,506 @@ _Nessun file aggiunto._
 
 - Percorso sospetto nello ZIP: PATCH-MANIFEST.md
 
+
+---
+
+## 2026-07-18 10:47:04
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-inspiration-studio-locations-crash-hotfix-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-inspiration-studio-locations-crash-hotfix-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 1
+
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-18 11:00:29
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-inspiration-studio-component-mode-sync-hotfix-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-inspiration-studio-component-mode-sync-hotfix-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 1
+
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-18 12:05:08
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-content-studio-phase1-primitives-20260718-114931.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-content-studio-phase1-primitives-20260718-114931.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 11
+
+- `+features/inspiration-studio/ui/index.js`
+- `+features/inspiration-studio/ui/STUDIO-PRIMITIVES-CONTRACT.md`
+- `+features/inspiration-studio/ui/studio-primitives.css`
+- `+features/inspiration-studio/ui/StudioCollectionEditor.jsx`
+- `+features/inspiration-studio/ui/StudioControls.jsx`
+- `+features/inspiration-studio/ui/StudioEditorChrome.jsx`
+- `+features/inspiration-studio/ui/StudioField.jsx`
+- `+features/inspiration-studio/ui/StudioPrimitives.test.jsx`
+- `+features/inspiration-studio/ui/StudioSection.jsx`
+- `+PATCH-MANIFEST.md`
+- `+SHA256SUMS.txt`
+
+**File sovrascritti:** 1
+
+- `~package.json`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+- Percorso sospetto nello ZIP: SHA256SUMS.txt
+
+
+---
+
+## 2026-07-18 12:14:31
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-content-studio-phase1-disclosure-hotfix-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-content-studio-phase1-disclosure-hotfix-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+PATCH-MANIFEST.md`
+- `+SHA256SUMS.txt`
+
+**File sovrascritti:** 4
+
+- `~features/inspiration-studio/ui/StudioCollectionEditor.jsx`
+- `~features/inspiration-studio/ui/StudioEditorChrome.jsx`
+- `~features/inspiration-studio/ui/StudioPrimitives.test.jsx`
+- `~features/inspiration-studio/ui/StudioSection.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+- Percorso sospetto nello ZIP: SHA256SUMS.txt
+
+
+---
+
+## 2026-07-18 12:38:12
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-content-studio-phase2-monsters-primitives-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-content-studio-phase2-monsters-primitives-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 9
+
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/ui/index.js`
+- `~features/inspiration-studio/ui/STUDIO-PRIMITIVES-CONTRACT.md`
+- `~features/inspiration-studio/ui/StudioControls.jsx`
+- `~features/inspiration-studio/ui/StudioEditorChrome.jsx`
+- `~features/inspiration-studio/ui/StudioPrimitives.test.jsx`
+- `~features/inspiration-studio/ui/StudioSection.jsx`
+- `~PATCH-MANIFEST.md`
+- `~SHA256SUMS.txt`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+- Percorso sospetto nello ZIP: SHA256SUMS.txt
+
+
+---
+
+## 2026-07-18 12:57:19
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-content-studio-phase2-windows-test-hotfix-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-content-studio-phase2-windows-test-hotfix-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/inspiration-studio/ui/StudioPrimitives.test.jsx`
+- `~PATCH-MANIFEST.md`
+- `~SHA256SUMS.txt`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+- Percorso sospetto nello ZIP: SHA256SUMS.txt
+
+
+---
+
+## 2026-07-18 13:13:06
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-content-studio-phase3-location-primitives-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-content-studio-phase3-location-primitives-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 19
+
+- `~features/inspiration-studio/editors/StudioFragmentPoolEditor.jsx`
+- `~features/inspiration-studio/editors/StudioPlacementPolicyEditor.jsx`
+- `~features/inspiration-studio/editors/StudioSemanticComponentEditor.jsx`
+- `~features/inspiration-studio/editors/StudioSemanticComponentEditor.test.jsx`
+- `~features/inspiration-studio/editors/StudioSensoryPoolEditor.jsx`
+- `~features/inspiration-studio/editors/StudioSessionGuideEditor.jsx`
+- `~features/inspiration-studio/editors/StudioStructuredFields.jsx`
+- `~features/inspiration-studio/editors/StudioStructuredRuleEditor.jsx`
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/ui/index.js`
+- `~features/inspiration-studio/ui/STUDIO-PRIMITIVES-CONTRACT.md`
+- `~features/inspiration-studio/ui/studio-primitives.css`
+- `~features/inspiration-studio/ui/StudioCollectionEditor.jsx`
+- `~features/inspiration-studio/ui/StudioEditorChrome.jsx`
+- `~features/inspiration-studio/ui/StudioField.jsx`
+- `~features/inspiration-studio/ui/StudioSection.jsx`
+- `~package.json`
+- `~PATCH-MANIFEST.md`
+- `~SHA256SUMS.txt`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+- Percorso sospetto nello ZIP: SHA256SUMS.txt
+
+
+---
+
+## 2026-07-18 13:31:03
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-content-studio-phase4-progressive-disclosure-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-content-studio-phase4-progressive-disclosure-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 13
+
+- `~features/inspiration-studio/components/StudioWarningList.jsx`
+- `~features/inspiration-studio/editors/StudioSemanticComponentEditor.jsx`
+- `~features/inspiration-studio/editors/StudioSemanticComponentEditor.test.jsx`
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/ui/index.js`
+- `~features/inspiration-studio/ui/STUDIO-PRIMITIVES-CONTRACT.md`
+- `~features/inspiration-studio/ui/studio-primitives.css`
+- `~features/inspiration-studio/ui/StudioEditorChrome.jsx`
+- `~features/inspiration-studio/ui/StudioPrimitives.test.jsx`
+- `~features/inspiration-studio/ui/StudioSection.jsx`
+- `~PATCH-MANIFEST.md`
+- `~SHA256SUMS.txt`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+- Percorso sospetto nello ZIP: SHA256SUMS.txt
+
+
+---
+
+## 2026-07-18 14:30:14
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-content-studio-phase5-creator-shell-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-content-studio-phase5-creator-shell-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+app/AppShell.creator-shell.test.jsx`
+- `+PATCH-MANIFEST.md`
+- `+SHA256SUMS.txt`
+
+**File sovrascritti:** 5
+
+- `~app/app-shell.css`
+- `~app/AppShell.jsx`
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/ui/STUDIO-PRIMITIVES-CONTRACT.md`
+- `~package.json`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+- Percorso sospetto nello ZIP: SHA256SUMS.txt
+
+
+---
+
+## 2026-07-18 14:48:36
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-inspirations-gallery-first-filters-v8.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-gallery-first-filters-v8.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+INSPIRATIONS_GALLERY_FIRST_FILTERS_MANIFEST.txt`
+- `+INSPIRATIONS_GALLERY_FIRST_FILTERS_README.md`
+
+**File sovrascritti:** 5
+
+- `~features/inspirations/components/InspirationFilters.jsx`
+- `~features/inspirations/inspirations.interactions.test.jsx`
+- `~features/inspirations/inspirations.page.jsx`
+- `~features/inspirations/inspirations.page.test.jsx`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_GALLERY_FIRST_FILTERS_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_GALLERY_FIRST_FILTERS_README.md
+
+
+---
+
+## 2026-07-18 15:05:06
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-inspirations-gallery-header-cleanup-v9.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-gallery-header-cleanup-v9.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+INSPIRATIONS_GALLERY_HEADER_CLEANUP_MANIFEST.txt`
+- `+INSPIRATIONS_GALLERY_HEADER_CLEANUP_README.md`
+
+**File sovrascritti:** 3
+
+- `~features/inspirations/inspirations.page.jsx`
+- `~features/inspirations/inspirations.page.test.jsx`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_GALLERY_HEADER_CLEANUP_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_GALLERY_HEADER_CLEANUP_README.md
+
+
+---
+
+## 2026-07-18 15:05:40
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-content-studio-phase6-cleanup-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-content-studio-phase6-cleanup-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+PATCH-MANIFEST.md`
+- `+SHA256SUMS.txt`
+
+**File sovrascritti:** 8
+
+- `~features/inspiration-studio/editors/StudioSemanticComponentEditor.test.jsx`
+- `~features/inspiration-studio/inspiration-studio.index.js`
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/ui/STUDIO-PRIMITIVES-CONTRACT.md`
+- `~features/inspiration-studio/ui/studio-primitives.css`
+- `~features/inspiration-studio/ui/StudioControls.jsx`
+- `~features/inspiration-studio/ui/StudioPrimitives.test.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+- Percorso sospetto nello ZIP: SHA256SUMS.txt
+
+
+---
+
+## 2026-07-18 15:43:34
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-inspirations-filter-trigger-header-v10.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-filter-trigger-header-v10.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+INSPIRATIONS_FILTER_TRIGGER_HEADER_MANIFEST.txt`
+- `+INSPIRATIONS_FILTER_TRIGGER_HEADER_README.md`
+
+**File sovrascritti:** 4
+
+- `~features/inspirations/inspirations.interactions.test.jsx`
+- `~features/inspirations/inspirations.page.jsx`
+- `~features/inspirations/inspirations.page.test.jsx`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_FILTER_TRIGGER_HEADER_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_FILTER_TRIGGER_HEADER_README.md
+
+
+---
+
+## 2026-07-18 16:10:31
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-inspirations-filters-animation-v11.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-filters-animation-v11.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+INSPIRATIONS_FILTERS_ANIMATION_MANIFEST.txt`
+- `+INSPIRATIONS_FILTERS_ANIMATION_README.md`
+
+**File sovrascritti:** 5
+
+- `~features/inspirations/components/InspirationFilters.jsx`
+- `~features/inspirations/inspirations.interactions.test.jsx`
+- `~features/inspirations/inspirations.page.jsx`
+- `~features/inspirations/inspirations.page.test.jsx`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_FILTERS_ANIMATION_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_FILTERS_ANIMATION_README.md
+
+
+---
+
+## 2026-07-18 16:16:17
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-content-studio-layout-stability-hotfix-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-content-studio-layout-stability-hotfix-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+PATCH-MANIFEST.md`
+- `+SHA256SUMS.txt`
+
+**File sovrascritti:** 1
+
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+- Percorso sospetto nello ZIP: SHA256SUMS.txt
+
+
+---
+
+## 2026-07-18 16:34:06
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-content-studio-linked-image-card-preview-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-content-studio-linked-image-card-preview-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+PATCH-MANIFEST.md`
+- `+SHA256SUMS.txt`
+
+**File sovrascritti:** 3
+
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+- Percorso sospetto nello ZIP: SHA256SUMS.txt
+

@@ -8,7 +8,7 @@ import {
   StudioEditorSection,
   StudioListField,
   StudioStructuredField,
-} from "./StudioStructuredFields.jsx";
+} from "../ui/index.js";
 
 function formatLabel(value = "") {
   return value

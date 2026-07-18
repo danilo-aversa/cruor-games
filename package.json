@@ -1,7 +1,7 @@
 {
   "name": "cruor-games",
   "private": true,
-  "version": "24.1.0a",
+  "version": "25.0.0a",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,6 +14,8 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:ui": "vitest --ui",
+    "test:studio-primitives": "vitest run features/inspiration-studio/ui/StudioPrimitives.test.jsx features/inspiration-studio/editors/StudioSemanticComponentEditor.test.jsx",
+    "test:studio-shell": "vitest run app/AppShell.creator-shell.test.jsx",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
