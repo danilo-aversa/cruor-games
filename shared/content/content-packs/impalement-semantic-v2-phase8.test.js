@@ -27,14 +27,14 @@ describe("Phase 8 batch 11 — Impalement approved", () => {
     expect(MONSTER_GRAFTS.filter(referencesSource)).toEqual([]);
   });
 
-  it("keeps the approved module in the semantic catalog without changing production", () => {
+  it("keeps the approved module separate from the complete production granular pool", () => {
     const module = CRUOR_INSPIRATION_MODULES.find((entry) => entry.id === "impalement");
     expect(module).toBe(IMPALEMENT_SEMANTIC_V2_MODULE);
     expect(module.schemaVersion).toBe("cruor-inspiration-module-v2");
     expect(module.status).toBe("in-review");
     expect(validateContentPackV0_2(IMPALEMENT_SEMANTIC_V2_PACK)).toEqual([]);
     expect(STATIC_CONTENT_REGISTRY.getInspirations({ workflow: "inspiration-archive" })).toHaveLength(14);
-    expect(STATIC_CONTENT_REGISTRY.getComponents({ sourceAnchor: "impalement" })).toHaveLength(6);
+    expect(STATIC_CONTENT_REGISTRY.getComponents({ sourceAnchor: "impalement" })).toHaveLength(8);
   });
 
   it("records approved provenance and the remaining publication gate", () => {
@@ -58,14 +58,20 @@ describe("Phase 8 batch 11 — Impalement approved", () => {
     expect(cautions.length).toBeGreaterThan(120);
   });
 
-  it("accounts for all 6 legacy location and region ids exactly once", () => {
-    const legacyIds = IMPALEMENT_INSPIRATION_MODULE.components.map((component) => component.id);
+  it("accounts for all eight production location and region ids exactly once", () => {
+    const productionIds = IMPALEMENT_INSPIRATION_MODULE.components.map((component) => component.id);
     const migratedIds = IMPALEMENT_SEMANTIC_V2_MODULE.components.flatMap((component) => component.provenance.legacyIds);
-    expect(legacyIds).toHaveLength(6);
-    expect(new Set(legacyIds).size).toBe(6);
-    expect(migratedIds).toHaveLength(6);
-    expect(new Set(migratedIds).size).toBe(6);
-    expect([...migratedIds].sort()).toEqual([...legacyIds].sort());
+    const granularOnlyIds = [
+      "places-clue-nameless-iron-ring",
+      "places-twist-stake-line-chokepoint",
+    ];
+    expect(productionIds).toHaveLength(8);
+    expect(new Set(productionIds).size).toBe(8);
+    expect(migratedIds).toHaveLength(8);
+    expect(new Set(migratedIds).size).toBe(8);
+    expect([...migratedIds].sort()).toEqual([...productionIds].sort());
+    expect(productionIds).toEqual(expect.arrayContaining(granularOnlyIds));
+    expect(migratedIds).toEqual(expect.arrayContaining(granularOnlyIds));
   });
 
   it("provides complete Dark Places semantic coverage", () => {

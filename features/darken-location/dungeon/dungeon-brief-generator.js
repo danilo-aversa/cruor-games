@@ -997,11 +997,10 @@ function getRoomRoleForThemeProgram(roles, index, count, variant = null) {
   return rotatedRoles[(index - 1) % Math.max(1, rotatedRoles.length)] || "transition";
 }
 
-function createThemeRoomName(theme, roomType, index, variant = null) {
-  const prefix = String(index + 1).padStart(2, "0");
-  const name = titleCase(roomType || theme?.roomTypeBias?.[index] || "Location Region");
-  if (!variant || variant.id === "signature-path") return `${prefix} ${name}`;
-  return `${prefix} ${name}`;
+function createThemeRoomName(theme, roomType, index) {
+  return titleCase(
+    roomType || theme?.roomTypeBias?.[index] || "Location Region",
+  );
 }
 
 function createThemeProgramId({ theme, scale, complexity, context, seed, variant, roomCount }) {
@@ -1036,24 +1035,17 @@ export function createThemeRoomBriefs({
   const signatureRoomTypes = getThemeSignatureRoomTypes(safeTheme);
   const roomTypes = rotateArray(signatureRoomTypes.length ? signatureRoomTypes : safeTheme.roomTypeBias, (variant?.roomTypeShift || 0) + Math.floor(random() * 2));
   const roles = asArray(safeTheme.roomRoleSequence);
-  const sensoryPalette = rotateArray(safeTheme.sensoryPalette, variantIndex);
-  const visualPalette = rotateArray(safeTheme.visualPalette, variantIndex + 1);
-  const hazardBias = rotateArray(safeTheme.hazardBias, variantIndex + 2);
-  const rewardBias = rotateArray(safeTheme.rewardBias, variantIndex + 3);
 
   return Array.from({ length: count }, (_, index) => {
     const role = getRoomRoleForThemeProgram(roles, index, count, variant);
     const roomType = roomTypes[index % Math.max(1, roomTypes.length)] || "room";
     const lowerRole = normalizeString(role).toLowerCase();
-    const isHazard = lowerRole.includes("hazard") || lowerRole.includes("ambush") || lowerRole.includes("loop");
-    const isReward = lowerRole.includes("reward");
     const isSecret = lowerRole.includes("secret");
-    const isClimax = lowerRole.includes("climax") || index === count - 1;
 
     return {
       id: `room-${String(index + 1).padStart(2, "0")}`,
       index: index + 1,
-      name: createThemeRoomName(safeTheme, roomType, index, variant),
+      name: createThemeRoomName(safeTheme, roomType, index),
       role,
       type: roomType,
       size: getThemeRoomSize(role, index, count, scale, variant),
@@ -1066,12 +1058,12 @@ export function createThemeRoomBriefs({
       horror: [],
       contexts: [context || safeTheme.mapTypeBias?.[0] || "Crypt"],
       tags: [role, roomType, safeTheme.id, variant?.id, isSecret ? "secret" : ""].filter(Boolean),
-      sensoryLayer: sensoryPalette[index % Math.max(1, sensoryPalette.length)] || "",
-      visualSigns: visualPalette[index % Math.max(1, visualPalette.length)] || "",
-      hazard: isHazard ? hazardBias[index % Math.max(1, hazardBias.length)] || "" : "",
-      reward: isReward || isClimax ? rewardBias[index % Math.max(1, rewardBias.length)] || "" : "",
-      clue: lowerRole.includes("clue") || isSecret ? visualPalette[(index + 1) % Math.max(1, visualPalette.length)] || "" : "",
-      encounter: isClimax ? `${titleCase(safeTheme.name)} climax pressure` : "",
+      sensoryLayer: "",
+      visualSigns: "",
+      hazard: "",
+      reward: "",
+      clue: "",
+      encounter: "",
       interaction: "",
       secret: isSecret,
       links: [isSecret ? "secret" : variant?.id || "main"],

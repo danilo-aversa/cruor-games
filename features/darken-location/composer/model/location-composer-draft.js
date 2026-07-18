@@ -61,6 +61,7 @@ function createDraftStatePayload(state) {
     activeSlotScope: state.activeSlotScope,
     activeRegionId: state.activeRegionId,
     selectedComponentIds: Array.from(state.selectedComponentIds || []),
+    lockedSlots: toArray(state.lockedSlots),
     slotAssignments: state.slotAssignments || {},
     roomConstraintStateByRegion,
     locationRegions: Array.isArray(state.locationRegions) ? state.locationRegions : [],
@@ -141,6 +142,7 @@ export function restoreLocationDraftState(draft, fallbackState) {
     sourceAnchors: new Set(draftState.sourceAnchors || []),
     horrors: new Set(draftState.horrors || []),
     selectedComponentIds: new Set(draftState.selectedComponentIds || []),
+    lockedSlots: new Set(draftState.lockedSlots || []),
     slotAssignments: draftState.slotAssignments || {},
     mapManualOverrides: draftState.mapManualOverrides
       ? normalizeManualOverrides(draftState.mapManualOverrides)

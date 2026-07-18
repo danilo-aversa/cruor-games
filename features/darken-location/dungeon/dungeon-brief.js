@@ -276,7 +276,7 @@ function createRoomId(index) {
 function createRoomNameFallback(index, theme) {
   const themeRoomTypes = asArray(theme?.roomTypeBias);
   const roomType = themeRoomTypes[index % Math.max(1, themeRoomTypes.length)] || "Location Region";
-  return `${String(index + 1).padStart(2, "0")} ${roomType.replace(/^./, (letter) => letter.toUpperCase())}`;
+  return roomType.replace(/^./, (letter) => letter.toUpperCase());
 }
 
 function normalizeConnectionKind(value, fallback = "main") {
@@ -581,8 +581,8 @@ export function createRoomBrief(input = {}, index = 0, { theme = null } = {}) {
   const sourceRegionId = normalizeString(input.sourceRegionId || input.id || metadata.sourceRegionId, createRoomId(index));
   const role = normalizeString(input.role, normalizedTheme.roomRoleSequence[index % Math.max(1, normalizedTheme.roomRoleSequence.length)] || "location region");
   const type = normalizeString(input.type || input.roomType || input.shape || input.preferredShape, normalizedTheme.roomTypeBias[index % Math.max(1, normalizedTheme.roomTypeBias.length)] || "room");
-  const sensoryLayer = normalizeString(input.sensoryLayer || metadata.sensoryLayer, normalizedTheme.sensoryPalette[index % Math.max(1, normalizedTheme.sensoryPalette.length)] || "");
-  const visualSigns = normalizeString(input.visualSigns || input.feature || metadata.feature, normalizedTheme.visualPalette[index % Math.max(1, normalizedTheme.visualPalette.length)] || "");
+  const sensoryLayer = normalizeString(input.sensoryLayer || metadata.sensoryLayer);
+  const visualSigns = normalizeString(input.visualSigns || input.feature || metadata.feature);
   const tags = unique(input.tags || metadata.tags);
   const clueText = resolveRoomClueText(input, metadata);
   const isSecretRoom = resolveIsSecretRoom(input, metadata, tags);

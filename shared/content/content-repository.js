@@ -33,6 +33,16 @@ export function getStaticContentPackSummary() {
   return STATIC_CONTENT_REPOSITORY.getPackSummary();
 }
 
+export function getDarkPlacesSemanticModuleReference(selection = {}) {
+  return STATIC_CONTENT_REPOSITORY.getDarkPlacesSemanticModuleReference(
+    selection,
+  );
+}
+
+export function resolveDarkPlacesRuntimeContent(input = {}) {
+  return STATIC_CONTENT_REPOSITORY.resolveDarkPlacesRuntimeContent(input);
+}
+
 export async function loadContentRegistry(options = {}) {
   return STATIC_CONTENT_REPOSITORY.loadRegistry(options);
 }

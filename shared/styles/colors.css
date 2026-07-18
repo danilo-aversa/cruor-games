@@ -2670,7 +2670,7 @@
 
   /* Inspiration card system */
   --cruor-inspiration-card-outer-border: rgba(var(--cruor-rgb-milk), 0.3);
-  --cruor-inspiration-card-line: rgba(var(--cruor-rgb-milk), 0.96);
+  --cruor-inspiration-card-line: rgb(163 126 126 / 96%);
   --cruor-inspiration-card-line-soft: rgba(var(--cruor-rgb-milk), 0.14);
   --cruor-inspiration-card-frame-band:
     radial-gradient(

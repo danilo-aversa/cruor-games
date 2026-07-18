@@ -54,7 +54,12 @@ local `main` input at `6e458a4089d96eda1153ba64b9bb1e0d890bdace`
 (`22.0.0a`). The Sedlec v2 pack is editorially approved and available in the
 separate semantic migration catalog, but it is not published into the active
 production registry.
-The active Composer export continues to use its current v1 document.
+The live Composer and Final Output now use `cruor-location-document-v2`
+directly. Live-integration Phase 7 removes the legacy compile-preview and v1
+document-writer path while retaining explicit historical import compatibility.
+Live-integration Phase 8 closes the migration with one repeatable final gate,
+live deterministic compilation for all 14 Inspirations, complete seven-slot
+picker coverage, state-transition and override QA, and direct v2 output/export.
 
 ## Deliverables
 
@@ -70,6 +75,8 @@ The active Composer export continues to use its current v1 document.
 - [Phase 5 Session Guide and At the Table dashboard](./phase5-session-guide-at-the-table.md)
 - [Phase 6 Inspiration Studio v2 foundation](./phase6-studio-v2-foundation.md)
 - [Phase 7 specialized Studio editors and compiled preview](./phase7-specialized-studio-editors-preview.md)
+- [Live integration Phase 7 cleanup and ownership](./live-phase7-cleanup.md)
+- [Live integration Phase 8 final QA and closure](./live-phase8-final-qa.md)
 - [Phase 8 batch 1 Sedlec editorial review](./phase8-batch1-sedlec-editorial-review.md)
 - [Phase 8 batch 2 Decomposition editorial review](./phase8-batch2-decomposition-editorial-review.md)
 - [Phase 8 batch 3 The Mist editorial review](./phase8-batch3-the-mist-editorial-review.md)
@@ -81,10 +88,11 @@ The active Composer export continues to use its current v1 document.
 - [Phase 8 batch 6 Mortuary Totems editorial review](./phase8-batch6-mortuary-totems-editorial-review.md)
 - [Recovery E repository map and CI gates](./recovery-e-repository-map-ci.md)
 
-The deterministic Sedlec baseline is stored under
-`tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/`. The snapshot utility
-invokes the real v1 module, content pack, composer, dungeon brief, map pipeline,
-compile preview, and location-document adapter.
+The deterministic Sedlec fixtures are stored under
+`tests/fixtures/dark-places-semantic-v2/sedlec-ossuary/`. Phase-specific tests
+validate the current semantic compiler directly. Historical snapshot scripts
+remain migration records and are no longer active package gates; the retired
+Phase 0 compile-preview snapshot has been removed.
 
 ## Frozen migration rules
 
@@ -104,8 +112,6 @@ compile preview, and location-document adapter.
 ## Baseline commands
 
 ```powershell
-npm run content:snapshot:dark-places-v2
-npm run qa:dark-places:semantic-baseline
 npm run qa:dark-places:semantic-contracts
 npm run qa:dark-places:semantic-compiler
 npm run qa:dark-places:semantic-phase3
@@ -114,16 +120,14 @@ npm run qa:dark-places:semantic-phase5
 npm run qa:dark-places:semantic-phase6
 npm run qa:dark-places:semantic-phase7
 npm run qa:dark-places:semantic-phase8
+npm run qa:dark-places:live-phase8
+npm run qa:dark-places:phase8-final
 npm run qa:dark-places:semantic-phase8-batch2
 npm run qa:dark-places:semantic-phase8-batch3
 npm run qa:dark-places:semantic-phase8-batch4
 npm run qa:dark-places:semantic-phase8-batch5
 ```
 
-`content:snapshot:dark-places-v2` deliberately rewrites the checked-in baseline
-and is an explicit maintainer action. `qa:dark-places:semantic-baseline` performs
-two independent in-memory builds, proves byte-for-byte determinism, and compares
-the result with every checked-in fixture and its SHA-256 manifest.
 `qa:dark-places:semantic-contracts` runs the Phase 1 valid, invalid, edge-case,
 compatibility, canonicalization, and dependency-boundary tests.
 `qa:dark-places:semantic-compiler` runs the Phase 2 document/session contracts,
@@ -150,6 +154,12 @@ semantic sample QA, and migration-aware Health reporting.
 canonical Sedlec, Decomposition, The Mist, Wolf Spiders, and Towers of Silence
 bytes without writing, validates the v2 catalog, requires full Studio semantic coverage,
 compiles warning-free deterministic samples, and protects the unchanged active Archive registry.
+`qa:dark-places:live-phase8` covers the production registry and picker, all
+seven slot assignments, room assignment, granular override lifecycle, compiler,
+map handoff, manual override preservation, v2/v1 output boundaries, draft
+recovery, Final Output, and deterministic live compilation for all 14 modules.
+`qa:dark-places:phase8-final` combines the editorial and live gates with static
+content validation and is the closure command for this migration.
 `qa:dark-places:semantic-phase8-batch2` isolates the Decomposition migration,
 including the absence of owned Monster components, parity against the external
 modern Monster catalog, revised clock cadence, source framing, and Archive + Dark

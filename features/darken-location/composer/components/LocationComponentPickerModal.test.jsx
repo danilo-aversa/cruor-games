@@ -2,6 +2,8 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { LocationComponentPickerModal } from "./LocationComponentPickerModal.jsx";
+import { createInitialLocationComposerState } from "../model/location-composer-state.js";
+import { getComponentsForSlot } from "../model/location-composer-selectors.js";
 
 function component(id, roomDesign = null) {
   return {
@@ -50,6 +52,39 @@ function renderPicker({
 }
 
 describe("LocationComponentPickerModal room compatibility", () => {
+  it("renders the Sedlec hazard pool supplied by the final production registry", () => {
+    const state = createInitialLocationComposerState([]);
+    const components = getComponentsForSlot("hazard", state);
+    const html = renderToStaticMarkup(
+      <LocationComponentPickerModal
+        activeRegion={{ id: "room-1", name: "Test Crypt", shape: "rect", size: "Medium" }}
+        assignedComponents={[]}
+        components={components}
+        generatedRoom={{ id: "room-1", sourceRegionId: "room-1", shape: "rect", size: "Medium" }}
+        isSlotFull={false}
+        onAddComponent={() => {}}
+        onClose={() => {}}
+        onRemoveComponent={() => {}}
+        onReplaceComponent={() => {}}
+        open
+        roomAssignedComponents={[]}
+        selectedComponents={[]}
+        slot={{ id: "hazard", label: "Environmental Hazard", max: 2, scope: "region" }}
+        slotScope="region"
+        state={state}
+      />,
+    );
+
+    expect(components.map((candidate) => candidate.id)).toEqual(expect.arrayContaining([
+      "altar-drinks",
+      "places-hazard-weight-sermon-slab",
+      "places-hazard-reliquary-tripwire",
+    ]));
+    expect(html).toContain("The Altar Drinks First");
+    expect(html).toContain("Weight-Sermon Slab");
+    expect(html).not.toContain("No compatible options.");
+  });
+
   it("disables an incompatible candidate and renders the concrete reason", () => {
     const html = renderPicker({
       roomAssignedComponents: [

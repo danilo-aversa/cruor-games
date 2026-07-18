@@ -2635,6 +2635,35 @@ export const DARK_PLACES_LOCATION_COMPONENT_BLUEPRINTS = Object.freeze([
     "tableRole": "gm-facing"
   },
   {
+    "id": "places-clue-nameless-iron-ring",
+    "title": "Nameless Iron Ring",
+    "slot": "clue",
+    "source": "impalement",
+    "contexts": [
+      "Forest",
+      "Ruins",
+      "Village"
+    ],
+    "horror": [
+      "Gothic",
+      "War Horror"
+    ],
+    "intrusion": "Medium",
+    "summary": "An iron naming ring has been scrubbed clean while the older rings still bear condemned names.",
+    "tableText": "The newest iron ring is blank and bright; every older ring is dark with a name cut deep into it.",
+    "mechanics": "Comparing the rings reveals that the empty stake is reserved for a living target whose name has not yet been publicly declared.",
+    "narrative": "Use this clue to connect the warning boundary to an imminent sentence, political threat, or protected witness.",
+    "sensoryKind": "",
+    "prep": "Low",
+    "themes": [],
+    "motifs": [
+      "blank name ring",
+      "reserved sentence"
+    ],
+    "sourceTypes": [],
+    "tableRole": "gm-facing"
+  },
+  {
     "id": "places-twist-bonework-cover-lines",
     "title": "Bonework Cover Lines",
     "slot": "encounterTwist",
@@ -3073,6 +3102,36 @@ export const DARK_PLACES_LOCATION_COMPONENT_BLUEPRINTS = Object.freeze([
     "motifs": [
       "witness benches",
       "raised platform"
+    ],
+    "sourceTypes": [],
+    "tableRole": "rules"
+  },
+  {
+    "id": "places-twist-stake-line-chokepoint",
+    "title": "Stake-Line Chokepoint",
+    "slot": "encounterTwist",
+    "source": "impalement",
+    "contexts": [
+      "Forest",
+      "Ruins",
+      "Village",
+      "Boss Fight"
+    ],
+    "horror": [
+      "Gothic",
+      "War Horror"
+    ],
+    "intrusion": "High",
+    "summary": "The warning line divides movement into exposed lanes while enemies try to drive intruders toward the empty position.",
+    "tableText": "The stakes leave only two clear lanes, and both converge on the single pale point that has not yet been named.",
+    "mechanics": "Treat the stake line as dangerous terrain: forced movement toward it creates a clear telegraphed hazard, while breaking a stake opens a safer route at the cost of escalating the site.",
+    "narrative": "Use the geometry as readable pressure and counterplay; the threat comes from control of the boundary, not graphic injury.",
+    "sensoryKind": "",
+    "prep": "Medium",
+    "themes": [],
+    "motifs": [
+      "converging lanes",
+      "empty position"
     ],
     "sourceTypes": [],
     "tableRole": "rules"
@@ -4655,13 +4714,13 @@ export const DARK_PLACES_CANONICAL_EXPANSION_CONTENT_PACK = createContentPack({
   title: "Dark Places Canonical Expansion",
   summary:
     "Authored Supabase-ready Dark Places components and map regions for sensory layers, anomalies, hazards, clues, encounter twists, rewards, and room templates.",
-  version: "0.1.0",
+  version: "0.1.1",
   status: CONTENT_PACK_STATUS.PUBLISHED,
   locale: "en",
   author: "Cruor Games",
   license: "internal-prototype",
   tags: ["dark-places", "canonical", "authored", "darken-location", "map-generator", "static"],
-  updatedAt: "2026-06-27",
+  updatedAt: "2026-07-18",
   metadata: {
     bundled: true,
     registryRole: "dark-places-content-expansion",

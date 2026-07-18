@@ -6,7 +6,6 @@ import {
 } from "../../../components/ui/composer-rail.jsx";
 import { ToolButton, ToolContentPanel, ToolFeatureBlock } from "../../../components/ui/tool-content-panel.jsx";
 import { MapSvg } from "../map-generator/map-generator.render.jsx";
-import { normalizeLocationDocumentForOutput } from "../compiler/index.js";
 import { LocationAtTheTableDashboard } from "./components/LocationAtTheTableDashboard.jsx";
 import { LocationRoomOutput } from "./components/LocationRoomOutput.jsx";
 import { LocationMapExportStudio } from "./components/LocationMapExportStudio.jsx";
@@ -34,6 +33,7 @@ import {
   toggleLocationSessionClue,
   updateLocationSessionPressure,
 } from "./model/location-session-dashboard-state.js";
+import { createLocationOutputProjection } from "./model/location-document-output-v2.js";
 import "./location-output.styles.css";
 
 const EMPTY_SESSION_GUIDE = Object.freeze({});
@@ -603,15 +603,9 @@ function getLocationMetaSummary(documentModel) {
     .join(" · ");
 }
 
-function LocationOutputOverview({ documentModel }) {
-  const overview = documentModel?.overview || {};
+function LocationOutputOverview({ documentModel, outputProjection }) {
+  const overview = outputProjection?.overview || {};
   const meta = documentModel?.meta || {};
-  const recurringSigns = asArray(overview.recurringSigns).length
-    ? overview.recurringSigns
-    : overview.visibleAnomalies;
-  const stakesAndConsequences = asArray(overview.stakesAndConsequences).length
-    ? overview.stakesAndConsequences
-    : overview.rewardConsequences;
 
   return (
     <ToolContentPanel
@@ -628,7 +622,7 @@ function LocationOutputOverview({ documentModel }) {
         className="location-output-section--premise"
       />
       <OutputBlockSection
-        blocks={overview.sensory}
+        blocks={overview.atmosphere}
         title="Site Atmosphere"
         icon="fa-eye"
       />
@@ -638,12 +632,12 @@ function LocationOutputOverview({ documentModel }) {
         icon="fa-dice-d20"
       />
       <OutputBlockSection
-        blocks={recurringSigns}
+        blocks={overview.recurringSigns}
         title="Recurring Signs"
         icon="fa-repeat"
       />
       <OutputBlockSection
-        blocks={stakesAndConsequences}
+        blocks={overview.stakesAndConsequences}
         title="Stakes & Consequences"
         icon="fa-scale-balanced"
       />
@@ -691,7 +685,7 @@ function LocationOutputAtTheTable({
       summary="Run order, pressure, clues, and encounter guidance for the current location."
     >
       <OutputBlockSection
-        blocks={documentModel?.overview?.atTheTable}
+        blocks={guide.alwaysOnRules}
         title="Run This Location"
         icon="fa-dice-d20"
       />
@@ -833,34 +827,26 @@ export function LocationOutputWorkspace({
   onEditRoom,
   sessionStateStorage = null,
 }) {
-  const documentModel = useMemo(
-    () => normalizeLocationDocumentForOutput(sourceDocumentModel),
+  const outputProjection = useMemo(
+    () => createLocationOutputProjection(sourceDocumentModel),
     [sourceDocumentModel],
   );
+  const documentModel = outputProjection.document;
   const rooms = asArray(documentModel?.rooms);
   const sessionGuide = documentModel?.sessionGuide ?? EMPTY_SESSION_GUIDE;
   const sessionIdentity = useMemo(
     () => ({
       buildId: cleanText(
-        sourceDocumentModel?.id ||
-          documentModel?.source?.documentId ||
-          exportBundle?.id ||
-          documentModel?.meta?.title,
+        documentModel?.id || exportBundle?.id || documentModel?.meta?.title,
         "unknown-build",
       ),
-      documentVersion: cleanText(
-        documentModel?.source?.documentSchemaVersion ||
-          sourceDocumentModel?.schemaVersion,
-        "unknown-document",
-      ),
+      documentVersion: cleanText(documentModel?.schemaVersion, "unknown-document"),
     }),
     [
       documentModel?.meta?.title,
-      documentModel?.source?.documentId,
-      documentModel?.source?.documentSchemaVersion,
+      documentModel?.id,
+      documentModel?.schemaVersion,
       exportBundle?.id,
-      sourceDocumentModel?.id,
-      sourceDocumentModel?.schemaVersion,
     ],
   );
   const [sessionPersistenceEnabled, setSessionPersistenceEnabled] = useState(
@@ -1070,6 +1056,7 @@ export function LocationOutputWorkspace({
     if (contentSectionId.startsWith("room:")) {
       return (
         <LocationRoomOutput
+          documentModel={documentModel}
           room={activeRoom}
           generatedMap={generatedMapPreview}
           exportSettings={mapExportSettings}
@@ -1079,7 +1066,12 @@ export function LocationOutputWorkspace({
         />
       );
     }
-    return <LocationOutputOverview documentModel={documentModel} />;
+    return (
+      <LocationOutputOverview
+        documentModel={documentModel}
+        outputProjection={outputProjection}
+      />
+    );
   }
 
   return (
@@ -1090,6 +1082,8 @@ export function LocationOutputWorkspace({
       <section
         className="location-map-stage has-live-preview is-simple-surface is-map-synced location-map-stage--preview location-output-workspace"
         data-location-map-surface="preview"
+        data-location-document-schema={documentModel.schemaVersion}
+        data-location-output-schema={outputProjection.schemaVersion}
         data-map-grid-visible="true"
         data-map-export-open={mapExportOpen ? "true" : "false"}
         data-testid="dark-places-final-output"

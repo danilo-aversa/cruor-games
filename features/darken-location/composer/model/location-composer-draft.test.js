@@ -47,6 +47,7 @@ describe("Dark Places Composer draft v2", () => {
           "region-a": { x: 15, y: 9 },
         },
       },
+      lockedSlots: new Set(["horrorPremise"]),
     });
 
     const saveResult = saveLocationDraftWithStatus(state);
@@ -67,6 +68,7 @@ describe("Dark Places Composer draft v2", () => {
       activeThemeProgramCandidateId: "candidate-a",
     });
     expect(restored.themeProgramCandidates).toEqual(state.themeProgramCandidates);
+    expect([...restored.lockedSlots]).toEqual(["horrorPremise"]);
     expect(restored.mapManualOverrides.roomPositions["region-a"]).toEqual({
       x: 15,
       y: 9,

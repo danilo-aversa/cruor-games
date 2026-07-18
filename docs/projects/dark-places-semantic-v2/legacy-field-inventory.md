@@ -91,17 +91,19 @@ Primary component producers are
 canonical expansion pack. Primary component consumers are the shared repository,
 Studio normalizers/templates/validation, Dark Places composer selectors and slot
 matching, dungeon-brief generation, map request/profile/detail builders, compile
-preview, and location-document output.
+preview, and location-document output. Live-integration Phase 7 removes the
+compile-preview and v1 document-writer consumers; granular registry consumption
+remains intentional.
 
 ## Document and compiler transitional fields
 
 | Current shape                                       | Location                                                     | v2 decision                                                                              |
 | --------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| `dark-places-document-v1`                           | `features/darken-location/output/model/location-document.js` | Dual-read at import only; canonical compiler returns `cruor-location-document-v2`        |
-| `dark-places-export-v1`                             | `location-composer-output.js`                                | Renderer/export envelope, not a shared authored contract                                 |
-| `dark-places-export-bundle-v1`                      | `location-composer-output.js`                                | May wrap the v2 document during UI migration                                             |
+| `dark-places-document-v1`                           | historical fixtures + compatibility adapter                  | Read only through the explicit adapter; the live writer was removed in Phase 7           |
+| `cruor-dark-places-export-v2`                       | `location-composer-output.js`                                | Canonical export envelope that declares and embeds Location Document v2                   |
+| `cruor-dark-places-export-bundle-v2`                | `location-composer-output.js`                                | UI bundle whose text and JSON formats derive from one v2 document                         |
 | `dungeon-brief-v1` and map request                  | dungeon and map helpers                                      | Compiler adapter inputs/outputs, not Inspiration storage                                 |
-| `compilePreview.*Text`                              | composer output                                              | Deterministic render projection derived from v2 document                                 |
+| `compilePreview.*Text`                              | removed                                                      | Replaced by pure Location Document v2 serializers                                         |
 | `createdAt`, `updatedAt`, or clock-derived metadata | output/session concerns                                      | Forbidden in compiler output; allowed only in mutable `SessionStateV1` supplied as input |
 | map SVG/render state                                | map renderer                                                 | Explicitly outside shared semantic contracts                                             |
 

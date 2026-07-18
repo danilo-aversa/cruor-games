@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { LocationRoomRecapCard } from "./LocationRoomRecapCard.jsx";
 import { CruorMapGeneratorMvp } from "../../map-generator/map-generator.page.jsx";
 import {
@@ -24,6 +24,8 @@ import {
 function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
+
+export const LOCATION_ROOM_TOOLTIP_DELAY_MS = 500;
 
 function LocationMapPreview({
   debugMode = false,
@@ -102,6 +104,7 @@ export function LocationMapStage({
   const showInteractiveOverlay = true;
   const regions = state.locationRegions || [];
   const [hoveredRegionId, setHoveredRegionId] = useState("");
+  const roomTooltipTimerRef = useRef(null);
   const [previewViewportMetrics, setPreviewViewportMetrics] = useState(null);
   const activeRegionComponents = getAssignedComponentsForRegion(state, state.activeRegionId);
   const hoveredRegionIndex = regions.findIndex((region) => region.id === hoveredRegionId);
@@ -130,6 +133,31 @@ export function LocationMapStage({
       roomProgramEntries.map((entry) => [entry.id, entry.status || "empty"]),
     )
   ), [roomProgramEntries]);
+
+  const changeHoveredRegion = useCallback((regionId = "") => {
+    if (roomTooltipTimerRef.current) {
+      clearTimeout(roomTooltipTimerRef.current);
+      roomTooltipTimerRef.current = null;
+    }
+
+    const nextRegionId = String(regionId || "").trim();
+    if (!nextRegionId) {
+      setHoveredRegionId("");
+      return;
+    }
+
+    setHoveredRegionId("");
+    roomTooltipTimerRef.current = setTimeout(() => {
+      roomTooltipTimerRef.current = null;
+      setHoveredRegionId(nextRegionId);
+    }, LOCATION_ROOM_TOOLTIP_DELAY_MS);
+  }, []);
+
+  useEffect(() => () => {
+    if (roomTooltipTimerRef.current) {
+      clearTimeout(roomTooltipTimerRef.current);
+    }
+  }, []);
 
   function handlePreviewViewportMetricsChange(nextMetrics) {
     setPreviewViewportMetrics((currentMetrics) => {
@@ -273,7 +301,7 @@ export function LocationMapStage({
             selectedRegionId={state.activeRegionId}
             previewRegionMarkers={previewRegionMarkers}
             previewRegionStatuses={previewRegionStatuses}
-            onRegionHoverChange={setHoveredRegionId}
+            onRegionHoverChange={changeHoveredRegion}
             onRegionSelect={selectRegionTarget}
             onManualWorkspaceChange={onManualWorkspaceChange}
             onRefreshFromComposer={onRefreshMapWorkspace}
@@ -330,19 +358,14 @@ export function LocationMapStage({
                     data-room-status={roomStatus}
                     aria-label={`Select ${region.name} as the active region target`}
                     aria-pressed={active}
-                    title={region.name}
                     style={getGeneratedRoomPositionStyle(generatedMapPreview, generatedRoom, index, previewViewportMetrics)}
-                    onMouseEnter={() => setHoveredRegionId(region.id)}
+                    onMouseEnter={() => changeHoveredRegion(region.id)}
                     onMouseLeave={() =>
-                      setHoveredRegionId((current) =>
-                        current === region.id ? "" : current,
-                      )
+                      changeHoveredRegion("")
                     }
-                    onFocus={() => setHoveredRegionId(region.id)}
+                    onFocus={() => changeHoveredRegion(region.id)}
                     onBlur={() =>
-                      setHoveredRegionId((current) =>
-                        current === region.id ? "" : current,
-                      )
+                      changeHoveredRegion("")
                     }
                     onClick={(event) => {
                       event.stopPropagation();

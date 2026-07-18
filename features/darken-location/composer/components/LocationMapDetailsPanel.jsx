@@ -399,6 +399,126 @@ function getAssignedMapInfluenceLabel(components = []) {
   return `${influenced.length} map-shaping component${influenced.length === 1 ? "" : "s"}`;
 }
 
+function LocationSemanticRuntimePanel({
+  handoff = null,
+  preview,
+  showPayload = false,
+}) {
+  if (!preview) return null;
+  const baseline = preview.baseline;
+  const diagnostics = Array.isArray(preview.diagnostics)
+    ? preview.diagnostics
+    : [];
+  const errorCount = diagnostics.filter(
+    (issue) => issue.severity === "error",
+  ).length;
+  const warningCount = diagnostics.filter(
+    (issue) => issue.severity === "warning",
+  ).length;
+  const provenanceSourceCount =
+    preview.provenance?.document?.sources?.length ||
+    preview.provenance?.runtime?.semanticModule?.sources?.length ||
+    0;
+  const overrideOperations = Array.isArray(preview.overrides?.operations)
+    ? preview.overrides.operations
+    : [];
+  const mapOverrideCount = overrideOperations.filter(
+    (operation) => operation.scope === "map",
+  ).length;
+  const regionOverrideCount = overrideOperations.filter(
+    (operation) => operation.scope === "region",
+  ).length;
+
+  return (
+    <section
+      className="cruor-composer-rail-card location-frame-info-card"
+      aria-label="Semantic runtime preview"
+      data-testid="dark-places-semantic-preview"
+      data-semantic-valid={preview.valid ? "true" : "false"}
+    >
+      <div className="cruor-composer-rail-card__head">
+        <span>Semantic Runtime</span>
+        <strong>{preview.valid ? "Valid" : "Needs Review"}</strong>
+      </div>
+      <div className="cruor-composer-fact-grid location-frame-info-grid">
+        <LocationFrameInfoRow
+          label="Module"
+          value={baseline?.module?.title || preview.input?.moduleId}
+        />
+        <LocationFrameInfoRow
+          label="Version"
+          value={preview.input?.moduleVersion}
+        />
+        <LocationFrameInfoRow
+          label="Baseline"
+          value={`${baseline?.components?.length || 0} Components`}
+        />
+        <LocationFrameInfoRow
+          label="Overrides"
+          value={`${overrideOperations.length} Applied · ${mapOverrideCount} Map · ${regionOverrideCount} Region`}
+        />
+        <LocationFrameInfoRow
+          label="Document"
+          value={preview.document?.schemaVersion || "Unavailable"}
+        />
+        <LocationFrameInfoRow
+          label="Map Request"
+          value={preview.mapRequest?.source || "Unavailable"}
+        />
+        <LocationFrameInfoRow
+          label="Live Map"
+          value={
+            handoff?.mode === "semantic"
+              ? "Semantic Handoff"
+              : handoff
+                ? "Legacy Fallback"
+                : "Preview Only"
+          }
+        />
+        <LocationFrameInfoRow
+          label="Diagnostics"
+          value={`${errorCount} Errors · ${warningCount} Warnings`}
+        />
+        <LocationFrameInfoRow
+          label="Provenance"
+          value={`${provenanceSourceCount} Sources`}
+        />
+      </div>
+      {diagnostics.length ? (
+        <details className="location-secondary-actions">
+          <summary>Diagnostics</summary>
+          <ul>
+            {diagnostics.map((issue, index) => (
+              <li key={`${issue.code}-${issue.path}-${index}`}>
+                <strong>{issue.severity}</strong> · {issue.message}
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
+      {showPayload ? (
+        <details className="location-secondary-actions">
+          <summary>Semantic Payload</summary>
+          <pre>
+            {JSON.stringify(
+              {
+                document: preview.document,
+                mapRequest: preview.mapRequest,
+                baseline: preview.baseline,
+                overrides: preview.overrides,
+                mapHandoff: handoff,
+                provenance: preview.provenance,
+              },
+              null,
+              2,
+            )}
+          </pre>
+        </details>
+      ) : null}
+    </section>
+  );
+}
+
 export function LocationMapWideDetailsBlock({
   activeSlot,
   activeSlotScope,
@@ -455,6 +575,8 @@ export function LocationMapDetailsPanel({
   generatedMapPreview = null,
   mapRequest = null,
   onRenameLocation,
+  semanticMapHandoff = null,
+  semanticPreview = null,
   side = "right",
   state,
   uiMode = "simple",
@@ -824,6 +946,12 @@ export function LocationMapDetailsPanel({
           description="Ready Rooms measures how many rooms have enough table-facing content to be used in the generated location."
         />
       </section>
+
+      <LocationSemanticRuntimePanel
+        handoff={semanticMapHandoff}
+        preview={semanticPreview}
+        showPayload={debugModeActive}
+      />
 
       {debugModeActive ? (
         <MapDebugRecorderPanel

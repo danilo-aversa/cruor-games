@@ -17,12 +17,185 @@ const DARKEN_LOCATION_WORKFLOW_ID = "darken-location";
 const LOCATION_COMPONENT_CONTENT_TYPE = "location-component";
 const LOCATION_REGION_CONTENT_TYPE = "location-region";
 const ANY_SOURCE_LABEL = "Any Source";
+const MAX_LOCATION_COMPONENT_CANDIDATES = 16;
+
+function toFilterArray(value) {
+  if (value instanceof Set) return Array.from(value);
+  if (Array.isArray(value)) return value;
+  return value === undefined || value === null || value === "" ? [] : [value];
+}
+
+function getFilterValue(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return value;
+  return (
+    value.sourceAnchorId ||
+    value.id ||
+    value.value ||
+    value.slug ||
+    value.label ||
+    value.name ||
+    value.title ||
+    ""
+  );
+}
+
+function normalizeCategoryToken(value) {
+  return String(getFilterValue(value) || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function normalizeCategorySelection(values) {
+  return [...new Set(toFilterArray(values).map(normalizeCategoryToken).filter(Boolean))];
+}
+
+function isAnyCategoryToken(value) {
+  return value === "any" || value === "any-source";
+}
+
+function matchesCategorySelection(componentValues, selectedValues) {
+  const selected = normalizeCategorySelection(selectedValues);
+  if (!selected.length || selected.some(isAnyCategoryToken)) return true;
+
+  const available = normalizeCategorySelection(componentValues);
+  if (available.some(isAnyCategoryToken)) return true;
+  return selected.some((value) => available.includes(value));
+}
 
 function normalizeSourceSelection(values = []) {
-  return toArray(values)
-    .filter((source) => source !== ANY_SOURCE_LABEL)
+  return toFilterArray(values)
+    .filter((source) => {
+      const token = normalizeCategoryToken(source);
+      return source !== ANY_SOURCE_LABEL && !isAnyCategoryToken(token);
+    })
+    .map(getFilterValue)
     .map(getSourceAnchorId)
     .filter(Boolean);
+}
+
+function matchesSourceSelection(componentValues, selectedValues) {
+  const selected = normalizeSourceSelection(selectedValues);
+  if (!selected.length) return true;
+  const available = normalizeSourceSelection(componentValues);
+  return selected.some((value) => available.includes(value));
+}
+
+function filterLocationComponents(components, {
+  actualValues,
+  expectedValues,
+  reason,
+  predicate,
+}) {
+  const included = [];
+  const excluded = [];
+
+  components.forEach((component) => {
+    if (predicate(component)) {
+      included.push(component);
+      return;
+    }
+
+    excluded.push({
+      componentId: component.id,
+      expected: expectedValues,
+      received: actualValues(component),
+      reason,
+    });
+  });
+
+  return { excluded, included };
+}
+
+function createLocationComponentFilterTrace(slotId, state = {}) {
+  const sourceAnchors = normalizeSourceSelection(state.sourceAnchors);
+  const contexts = normalizeCategorySelection(state.context);
+  const intrusions = normalizeCategorySelection(state.intrusion);
+  const horrors = normalizeCategorySelection(state.horrors ?? state.horror);
+  const registryComponents = CONTENT_REGISTRY.getComponents({
+    workflow: DARKEN_LOCATION_WORKFLOW_ID,
+    contentType: LOCATION_COMPONENT_CONTENT_TYPE,
+    slot: slotId,
+  });
+  const stages = [{
+    componentIds: registryComponents.map((component) => component.id),
+    count: registryComponents.length,
+    id: "registry",
+  }];
+  const exclusions = {};
+
+  const contextResult = filterLocationComponents(registryComponents, {
+    actualValues: (component) => normalizeCategorySelection(component.contexts),
+    expectedValues: contexts,
+    reason: "context-mismatch",
+    predicate: (component) => matchesCategorySelection(component.contexts, contexts),
+  });
+  exclusions.context = contextResult.excluded;
+  stages.push({
+    componentIds: contextResult.included.map((component) => component.id),
+    count: contextResult.included.length,
+    id: "context",
+  });
+
+  const intrusionResult = filterLocationComponents(contextResult.included, {
+    actualValues: (component) => normalizeCategorySelection(component.intrusion),
+    expectedValues: intrusions,
+    reason: "intrusion-mismatch",
+    predicate: (component) => matchesCategorySelection(component.intrusion, intrusions),
+  });
+  exclusions.intrusion = intrusionResult.excluded;
+  stages.push({
+    componentIds: intrusionResult.included.map((component) => component.id),
+    count: intrusionResult.included.length,
+    id: "intrusion",
+  });
+
+  const sourceResult = filterLocationComponents(intrusionResult.included, {
+    actualValues: (component) => normalizeSourceSelection(component.sourceAnchors),
+    expectedValues: sourceAnchors,
+    reason: "source-mismatch",
+    predicate: (component) => matchesSourceSelection(component.sourceAnchors, sourceAnchors),
+  });
+  exclusions.source = sourceResult.excluded;
+  stages.push({
+    componentIds: sourceResult.included.map((component) => component.id),
+    count: sourceResult.included.length,
+    id: "source",
+  });
+
+  const horrorResult = filterLocationComponents(sourceResult.included, {
+    actualValues: (component) => normalizeCategorySelection(component.horror),
+    expectedValues: horrors,
+    reason: "horror-mismatch",
+    predicate: (component) => matchesCategorySelection(component.horror, horrors),
+  });
+  exclusions.horror = horrorResult.excluded;
+  stages.push({
+    componentIds: horrorResult.included.map((component) => component.id),
+    count: horrorResult.included.length,
+    id: "horror",
+  });
+
+  const candidates = horrorResult.included.slice(0, MAX_LOCATION_COMPONENT_CANDIDATES);
+  stages.push({
+    componentIds: candidates.map((component) => component.id),
+    count: candidates.length,
+    id: "limit",
+  });
+
+  return {
+    candidates,
+    criteria: {
+      contexts,
+      horrors,
+      intrusions,
+      sourceAnchors,
+    },
+    exclusions,
+    slotId,
+    stages,
+  };
 }
 
 export const LOCATION_SLOT_SCOPE_DEFINITIONS = {
@@ -211,36 +384,26 @@ export function getSlotStatusForScope(state, slot, scope, regionId = "") {
 }
 
 export function getComponentsForSlot(slotId, state) {
-  const sourceAnchors = normalizeSourceSelection(state?.sourceAnchors);
-  const horrors = toArray(state?.horrors);
-  const context = state?.context;
-  const intrusion = state?.intrusion;
+  return createLocationComponentFilterTrace(slotId, state).candidates;
+}
 
-  return CONTENT_REGISTRY.getComponents({
-    workflow: DARKEN_LOCATION_WORKFLOW_ID,
-    contentType: LOCATION_COMPONENT_CONTENT_TYPE,
-    slot: slotId,
-  })
-    .filter((component) => !context || context === "Any" || component.contexts?.includes("Any") || component.contexts?.includes(context))
-    .filter((component) => !intrusion || intrusion === "Any" || component.intrusion === intrusion || component.intrusion === "Any")
-    .filter((component) => !sourceAnchors.length || sourceAnchors.some((anchor) => component.sourceAnchors?.includes(anchor)))
-    .filter((component) => !horrors.length || horrors.some((horror) => component.horror?.includes(horror)))
-    .slice(0, 16);
+export function traceLocationComponentsForSlot(slotId, state) {
+  return createLocationComponentFilterTrace(slotId, state);
 }
 
 export function getRegionTemplatesForState(state) {
-  const sourceAnchors = normalizeSourceSelection(state?.sourceAnchors);
-  const context = state?.context;
-  const horrors = toArray(state?.horrors);
+  const sourceAnchors = state?.sourceAnchors;
+  const contexts = state?.context;
+  const horrors = state?.horrors ?? state?.horror;
 
   return CONTENT_REGISTRY.getComponents({
     workflow: DARKEN_LOCATION_WORKFLOW_ID,
     contentType: LOCATION_REGION_CONTENT_TYPE,
   })
     .filter((region) => {
-      const matchesContext = !context || context === "Any" || region.contexts?.includes("Any") || region.contexts?.includes(context);
-      const matchesSource = !sourceAnchors.length || sourceAnchors.some((anchor) => region.sourceAnchors?.includes(anchor));
-      const matchesHorror = !horrors.length || horrors.some((horror) => region.horror?.includes(horror));
+      const matchesContext = matchesCategorySelection(region.contexts, contexts);
+      const matchesSource = matchesSourceSelection(region.sourceAnchors, sourceAnchors);
+      const matchesHorror = matchesCategorySelection(region.horror, horrors);
       return matchesContext && matchesSource && matchesHorror;
     })
     .map(sharedLocationRegionToLegacyTemplate)
@@ -248,7 +411,7 @@ export function getRegionTemplatesForState(state) {
 }
 
 export function describeSourceAnchor(anchor) {
-  const sourceAnchorId = getSourceAnchorId(anchor);
+  const sourceAnchorId = normalizeSourceSelection([anchor])[0] || "";
   const sourceAnchor = CONTENT_REGISTRY.getSourceAnchor(sourceAnchorId);
   const inspiration = CONTENT_REGISTRY.getLinkedInspirations(sourceAnchorId)[0];
   return inspiration?.inspiration?.logic || inspiration?.narrative || sourceAnchor?.summary || "";

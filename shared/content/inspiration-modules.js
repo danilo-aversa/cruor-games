@@ -202,41 +202,12 @@ function createStudioInspirationModuleView(module, registryComponents = []) {
 
 export function buildStudioInspirationModulesFromRegistry(
   registry,
-  { includeRegistryFallback = true, packId = "static-registry" } = {},
 ) {
   if (!registry) return CRUOR_INSPIRATION_MODULES;
 
-  const canonicalViews = CRUOR_INSPIRATION_MODULES.map((module) =>
+  return CRUOR_INSPIRATION_MODULES.map((module) =>
     createStudioInspirationModuleView(module, registry.components || []),
   );
-  if (!includeRegistryFallback) return canonicalViews;
-
-  const generatedFallbackModules = buildInspirationModules({
-    sourceAnchors: registry.sourceAnchors || [],
-    inspirations: registry.inspirations || [],
-    components: registry.components || [],
-    packId,
-    excludedSourceAnchorIds: CRUOR_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET,
-  });
-
-  return uniqueById([...canonicalViews, ...generatedFallbackModules]);
-}
-
-export function buildInspirationModulesFromRegistry(registry, { packId = "static-registry" } = {}) {
-  if (!registry) return CRUOR_INSPIRATION_MODULES;
-
-  const generatedFallbackModules = buildInspirationModules({
-    sourceAnchors: registry.sourceAnchors || [],
-    inspirations: registry.inspirations || [],
-    components: registry.components || [],
-    packId,
-    excludedSourceAnchorIds: CRUOR_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET,
-  });
-
-  return uniqueById([
-    ...CRUOR_INSPIRATION_MODULES,
-    ...generatedFallbackModules,
-  ]);
 }
 
 export {

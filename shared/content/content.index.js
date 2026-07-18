@@ -71,6 +71,29 @@ export {
   STATIC_CONTENT_REPOSITORY,
 } from "./content-repository.adapter.js";
 export {
+  DARK_PLACES_RUNTIME_CONTENT_SCHEMA_VERSION,
+  createDarkPlacesRuntimeContentResolver,
+  createDarkPlacesSemanticModuleReferenceResolver,
+} from "./dark-places-runtime-content.js";
+export {
+  DARK_PLACES_COMPOSER_INPUT_SCHEMA_VERSION,
+  DARK_PLACES_GRANULAR_SLOT_IDS,
+  normalizeDarkPlacesComposerInput,
+  parseDarkPlacesComposerInput,
+  validateDarkPlacesComposerInput,
+} from "./contracts/dark-places-composer-input.js";
+export {
+  DARK_PLACES_HYBRID_OVERRIDE_SCHEMA_VERSION,
+  DARK_PLACES_HYBRID_OVERRIDE_SCOPES,
+  DARK_PLACES_HYBRID_OVERRIDE_STRATEGIES,
+  DARK_PLACES_MAP_OVERRIDE_SLOT_IDS,
+  DARK_PLACES_REGION_OVERRIDE_SLOT_IDS,
+  createDarkPlacesHybridOverrideId,
+  normalizeDarkPlacesHybridOverride,
+  parseDarkPlacesHybridOverride,
+  validateDarkPlacesHybridOverride,
+} from "./contracts/dark-places-hybrid-override.js";
+export {
   validateContentComponentStrict,
   validateContentPackStrict,
   validateContentRegistryStrict,
@@ -156,7 +179,6 @@ export {
   SEMANTIC_MIGRATION_MODULE_SOURCE_ANCHOR_IDS,
   SEMANTIC_MIGRATION_MODULES,
   buildInspirationModules,
-  buildInspirationModulesFromRegistry,
   defineInspirationModule,
   flattenInspirationModuleCollection,
   modulesToRegistryCollections,
@@ -221,12 +243,14 @@ export {
   getStaticContentPackSummaries,
   getStaticContentPackSummary,
   getStaticContentRegistry,
+  getDarkPlacesSemanticModuleReference,
   loadContentCollisionReport,
   loadContentPackProvenance,
   loadContentPackSummaries,
   loadLegacyMigrationReport,
   loadContentRegistry,
   loadInspirationModules,
+  resolveDarkPlacesRuntimeContent,
 } from "./content-repository.js";
 
 export {

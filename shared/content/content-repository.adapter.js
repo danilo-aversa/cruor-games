@@ -9,6 +9,11 @@ import {
   STATIC_LEGACY_MIGRATION_REPORT,
 } from "./static-registry.js";
 import { normalizeLocale } from "../i18n/index.js";
+import {
+  createDarkPlacesRuntimeContentResolver,
+  createDarkPlacesSemanticModuleReferenceResolver,
+} from "./dark-places-runtime-content.js";
+import { STATIC_SEMANTIC_CONTENT_PACKS } from "./static-semantic-content-packs.js";
 
 function summarizePacks(packs = []) {
   return packs.map((pack) => ({
@@ -43,6 +48,8 @@ export function createContentRepositoryAdapter({
   getPackIssues,
   getPackSummary,
   getInspirationModules,
+  getDarkPlacesSemanticModuleReference,
+  resolveDarkPlacesRuntimeContent,
 }) {
   return Object.freeze({
     getRegistry: (options = {}) => resolveRegistryLocale(getRegistry(), options),
@@ -54,6 +61,8 @@ export function createContentRepositoryAdapter({
     getPackSummary,
     getPackSummaries: () => summarizePacks(getPacks()),
     getInspirationModules,
+    getDarkPlacesSemanticModuleReference,
+    resolveDarkPlacesRuntimeContent,
     loadRegistry: async (options = {}) => resolveRegistryLocale(getRegistry(), options),
     loadPackProvenance: async () => getPackProvenance(),
     loadCollisionReport: async () => getCollisionReport(),
@@ -64,6 +73,14 @@ export function createContentRepositoryAdapter({
 }
 
 export function createStaticContentRepository() {
+  const getDarkPlacesSemanticModuleReference =
+    createDarkPlacesSemanticModuleReferenceResolver({
+      getSemanticPacks: () => STATIC_SEMANTIC_CONTENT_PACKS,
+    });
+  const resolveDarkPlacesRuntimeContent = createDarkPlacesRuntimeContentResolver({
+    getRegistry: () => STATIC_CONTENT_REGISTRY,
+    getSemanticPacks: () => STATIC_SEMANTIC_CONTENT_PACKS,
+  });
   return createContentRepositoryAdapter({
     getRegistry: () => STATIC_CONTENT_REGISTRY,
     getPackProvenance: () => STATIC_CONTENT_PACK_PROVENANCE,
@@ -72,13 +89,12 @@ export function createStaticContentRepository() {
     getPacks: () => STATIC_CONTENT_PACKS,
     getPackIssues: () => STATIC_CONTENT_PACK_ISSUES,
     getPackSummary: () => STATIC_CONTENT_PACK_SUMMARY,
-    getInspirationModules: ({ includeRegistryFallback = true, locale } = {}) => {
+    getInspirationModules: ({ locale } = {}) => {
       const registry = resolveRegistryLocale(STATIC_CONTENT_REGISTRY, { locale });
-      return buildStudioInspirationModulesFromRegistry(registry, {
-        includeRegistryFallback,
-        packId: "static-cruor-registry",
-      });
+      return buildStudioInspirationModulesFromRegistry(registry);
     },
+    getDarkPlacesSemanticModuleReference,
+    resolveDarkPlacesRuntimeContent,
   });
 }
 

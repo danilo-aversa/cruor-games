@@ -57,7 +57,6 @@ postcss.config.js
 asset-files/
 reference/
 .prettierignore
-eslint.config.js
 playwright.config.js
 prettier.config.cjs
 vite.config.js

@@ -35,8 +35,10 @@ function pickText(...values) {
   return values.map(normalizeText).find(Boolean) || "";
 }
 
-function getAssignedText(components, matcher) {
-  const component = components.find((item) => matcher([item.type, item.title, item.name, item.summary, item.description].filter(Boolean).join(" ").toLowerCase()));
+function getAssignedSlotText(components, slotId) {
+  const component = components.find(
+    (item) => item.assignment?.slotId === slotId,
+  );
   return pickText(component?.summary, component?.description, component?.text, component?.effect, component?.title, component?.name);
 }
 
@@ -90,27 +92,11 @@ export function LocationRoomRecapCard({ activeRegion, assignedComponents = [], g
     "Select a slot option to define what the party notices here.",
   );
 
-  const feature = pickText(
-    generatedRoom?.feature,
-    activeRegion?.feature,
-    getAssignedText(assignedComponents, (text) => text.includes("premise") || text.includes("feature") || text.includes("anomaly")),
-  );
-  const interact = pickText(
-    generatedRoom?.interaction,
-    generatedRoom?.interact,
-    activeRegion?.interaction,
-    activeRegion?.interact,
-    getAssignedText(assignedComponents, (text) => text.includes("sensory") || text.includes("interactive") || text.includes("detail")),
-  );
-  const danger = pickText(
-    generatedRoom?.danger,
-    activeRegion?.danger,
-    getAssignedText(assignedComponents, (text) => text.includes("danger") || text.includes("hazard") || text.includes("pressure")),
-  );
-  const secret = pickText(
-    generatedRoom?.secret,
-    activeRegion?.secret,
-    getAssignedText(assignedComponents, (text) => text.includes("secret") || text.includes("hidden") || text.includes("reveal")),
+  const hazard = getAssignedSlotText(assignedComponents, "hazard");
+  const clue = getAssignedSlotText(assignedComponents, "clue");
+  const encounterTwist = getAssignedSlotText(
+    assignedComponents,
+    "encounterTwist",
   );
 
   return (
@@ -127,12 +113,11 @@ export function LocationRoomRecapCard({ activeRegion, assignedComponents = [], g
 
       {read ? <p className="region-card__read">{read}</p> : null}
 
-      {(feature || interact || danger || secret) ? (
+      {(hazard || clue || encounterTwist) ? (
         <dl className="region-fact-list">
-          <Fact label="Feature" value={feature} />
-          <Fact label="Interact" value={interact} />
-          <Fact label="Danger" value={danger} />
-          <Fact label="Secret" value={secret} />
+          <Fact label="Environmental Hazard" value={hazard} />
+          <Fact label="Disturbing Clue" value={clue} />
+          <Fact label="Encounter Twist" value={encounterTwist} />
         </dl>
       ) : null}
     </article>

@@ -1,3 +1,4 @@
+export * from "./dark-places-hybrid-overrides.js";
 export * from "./dark-places-map-intent.adapter.js";
 export * from "./dark-places-semantic-compiler.js";
 export * from "./dark-places-v1-compatibility.adapter.js";

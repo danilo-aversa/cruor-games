@@ -39,7 +39,7 @@ describe("Phase 8 batch 13 — Anthropodermic Bibliopegy approved Candidate 1", 
     const module = CRUOR_INSPIRATION_MODULES.find((entry) => entry.id === "anthropodermic-bibliopegy");
     expect(module).toBe(ANTHROPODERMIC_BIBLIOPEGY_SEMANTIC_V2_MODULE);
     expect(module.schemaVersion).toBe("cruor-inspiration-module-v2");
-    expect(module.status).toBe("approved");
+    expect(module.status).toBe("in-review");
     expect(validateContentPackV0_2(ANTHROPODERMIC_BIBLIOPEGY_SEMANTIC_V2_PACK)).toEqual([]);
     expect(STATIC_CONTENT_REGISTRY.getInspirations({ workflow: "inspiration-archive" })).toHaveLength(14);
     expect(STATIC_CONTENT_REGISTRY.getComponents({ sourceAnchor: "anthropodermic-bibliopegy" })).toHaveLength(14);

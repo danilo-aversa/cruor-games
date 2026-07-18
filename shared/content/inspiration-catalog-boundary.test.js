@@ -95,7 +95,7 @@ describe("production and semantic Inspiration catalog boundary", () => {
     ).toHaveLength(9);
     expect(
       STATIC_CONTENT_REGISTRY.getComponents({ sourceAnchor: "impalement" }),
-    ).toHaveLength(6);
+    ).toHaveLength(8);
     expect(
       STATIC_CONTENT_REGISTRY.getComponents({ sourceAnchor: "wax-death-masks" }),
     ).toHaveLength(20);

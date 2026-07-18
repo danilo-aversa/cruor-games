@@ -201,8 +201,11 @@ function getFallbackFacets(block, kind) {
 }
 
 function getSemanticFacets(block, kind) {
-  const source = asArray(block?.facets).length
-    ? asArray(block.facets)
+  const structuredFacets = asArray(block?.facets).filter(
+    (facet) => facet && typeof facet === "object" && facet.id,
+  );
+  const source = structuredFacets.length
+    ? structuredFacets
     : getFallbackFacets(block, kind);
   const order = FACET_ORDER_BY_KIND[kind] || [];
   return source
@@ -295,19 +298,22 @@ function ImmediateImpressions({ room }) {
       id: "sensory",
       title: "Sensory",
       icon: "fa-ear-listen",
-      blocks: room?.immediateImpressions?.sensory,
+      blocks: room?.immediateImpressions,
     },
     {
       id: "feature",
       title: "Feature",
       icon: "fa-eye",
-      blocks: room?.immediateImpressions?.features,
+      blocks: [
+        ...asArray(room?.visibleFeatures),
+        ...asArray(room?.recurringSigns),
+      ],
     },
     {
       id: "interaction",
       title: "Interaction",
       icon: "fa-hand",
-      blocks: room?.immediateImpressions?.interactions,
+      blocks: room?.interactions,
     },
   ].filter((group) => asArray(group.blocks).length);
 
@@ -333,8 +339,8 @@ function ImmediateImpressions({ room }) {
 }
 
 function ReadAloudSection({ room, onCopyText }) {
-  const entries = asArray(room?.readAloud);
-  if (!entries.length) return null;
+  const standard = cleanText(room?.readAloud?.standard);
+  if (!standard) return null;
 
   return (
     <ToolFeatureBlock label="Read Aloud" className="location-output-section location-output-section--readaloud">
@@ -345,12 +351,12 @@ function ReadAloudSection({ room, onCopyText }) {
           aria-label={`Copy read-aloud for ${room.name}`}
           onClick={() => onCopyText?.(
             `${room.name} read-aloud`,
-            entries.map((block) => block.text).join("\n\n"),
+            standard,
           )}
         >
           <i className="fa-solid fa-copy" aria-hidden="true" />
         </button>
-        {entries.map((block) => <p key={block.id}>{block.text}</p>)}
+        <p>{standard}</p>
       </blockquote>
     </ToolFeatureBlock>
   );
@@ -459,8 +465,31 @@ function LocationRoomPreview({ room, region, generatedMap, exportSettings }) {
   );
 }
 
-function RoomConnectionList({ connections, onSelectRoom }) {
-  const entries = asArray(connections);
+function resolveRoomConnections(documentModel, room) {
+  const roomById = new Map(
+    asArray(documentModel?.rooms).map((candidate) => [candidate.id, candidate]),
+  );
+  return asArray(room?.connections).map((connection) => {
+    const fromCurrentRoom = connection.fromRoomId === room.id;
+    const targetRoomId = fromCurrentRoom
+      ? connection.toRoomId
+      : connection.fromRoomId;
+    const targetRoom = roomById.get(targetRoomId);
+    return {
+      ...connection,
+      connectionId: connection.id,
+      targetRoomId,
+      targetRoomNumber: targetRoom?.number || null,
+      targetRoomName: targetRoom?.name || "",
+      levelDelta: fromCurrentRoom
+        ? connection.levelDelta
+        : -Number(connection.levelDelta || 0),
+    };
+  });
+}
+
+function RoomConnectionList({ documentModel, room, onSelectRoom }) {
+  const entries = resolveRoomConnections(documentModel, room);
   if (!entries.length) return null;
 
   return (
@@ -502,6 +531,7 @@ function RoomConnectionList({ connections, onSelectRoom }) {
 }
 
 export function LocationRoomOutput({
+  documentModel,
   room,
   generatedMap,
   exportSettings,
@@ -542,7 +572,11 @@ export function LocationRoomOutput({
       <SemanticBlockSection blocks={room.encounterTwists} kind="encounterTwist" />
       <SemanticBlockSection blocks={room.secrets} kind="secret" />
       <SemanticBlockSection blocks={room.rewards} kind="reward" />
-      <RoomConnectionList connections={room.connections} onSelectRoom={onSelectRoom} />
+      <RoomConnectionList
+        documentModel={documentModel}
+        room={room}
+        onSelectRoom={onSelectRoom}
+      />
     </ToolContentPanel>
   );
 }

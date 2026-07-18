@@ -752,6 +752,7 @@ export function LocationBriefPanel({
   showGenerateAction = true,
   uiMode = "simple",
   onAddScratchRoom,
+  onChangeThemeFrame,
   onGenerateScratchMap,
   onGenerateThemeRooms,
   onRegenerateScratchRoom,
@@ -766,6 +767,19 @@ export function LocationBriefPanel({
   const selectedThemeId = state.dungeonThemeId || "generic-dark-location";
   const regions = Array.isArray(state.locationRegions) ? state.locationRegions : [];
 
+  function updateThemeFrame(frameUpdates) {
+    if (dungeonMode === "theme" && typeof onChangeThemeFrame === "function") {
+      onChangeThemeFrame(frameUpdates);
+      return;
+    }
+    setState((current) => ({
+      ...current,
+      ...frameUpdates,
+      themeProgramCandidates: [],
+      activeThemeProgramCandidateId: "",
+    }));
+  }
+
   const themeChoiceField = dungeonMode === "theme" ? (
     <LocationChoiceField
       help={LOCATION_FIELD_HELP.theme}
@@ -776,14 +790,11 @@ export function LocationBriefPanel({
       options={DUNGEON_THEME_OPTIONS}
       onChange={(themeId) => {
         const selectedTheme = DUNGEON_THEME_OPTIONS.find((option) => option.value === themeId)?.theme;
-        setState((current) => ({
-          ...current,
+        updateThemeFrame({
           dungeonThemeId: themeId,
-          sourceAnchors: selectedTheme?.sourceAnchorIds?.length && selectedTheme?.name ? [selectedTheme.name] : current.sourceAnchors,
-          context: selectedTheme?.mapTypeBias?.[0] || current.context,
-          themeProgramCandidates: [],
-          activeThemeProgramCandidateId: "",
-        }));
+          sourceAnchors: selectedTheme?.sourceAnchorIds?.length && selectedTheme?.name ? [selectedTheme.name] : state.sourceAnchors,
+          context: selectedTheme?.mapTypeBias?.[0] || state.context,
+        });
       }}
     />
   ) : (
@@ -815,12 +826,7 @@ export function LocationBriefPanel({
       label="Context"
       value={state.context || ""}
       options={CONTEXT_OPTIONS}
-      onChange={(context) => setState((current) => ({
-        ...current,
-        context,
-        themeProgramCandidates: [],
-        activeThemeProgramCandidateId: "",
-      }))}
+      onChange={(context) => updateThemeFrame({ context })}
     />
   );
 
@@ -833,13 +839,10 @@ export function LocationBriefPanel({
       placeholder="Choose horror direction"
       options={HORROR_OPTIONS}
       onChange={(horror) =>
-        setState((current) => ({
-          ...current,
+        updateThemeFrame({
           horror,
           horrors: horror ? [horror] : [],
-          themeProgramCandidates: [],
-          activeThemeProgramCandidateId: "",
-        }))
+        })
       }
     />
   );

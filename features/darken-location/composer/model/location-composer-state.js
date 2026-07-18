@@ -95,10 +95,15 @@ export function normalizeSlotAssignments(assignments = {}) {
             .filter((item) => item && item.componentId)
             .map((item) => {
               const normalizedSlotId = item.slotId || slotId;
+              const mapScoped = MAP_SCOPED_SLOT_IDS.has(normalizedSlotId);
               return {
                 componentId: item.componentId,
                 slotId: normalizedSlotId,
-                regionId: MAP_SCOPED_SLOT_IDS.has(normalizedSlotId) ? "" : item.regionId || "",
+                strategy: item.strategy || "append",
+                scope: mapScoped ? LOCATION_SLOT_SCOPE_MAP : LOCATION_SLOT_SCOPE_REGION,
+                regionId: mapScoped ? "" : item.regionId || "",
+                targetComponentIds: toArray(item.targetComponentIds),
+                targetBlockIds: toArray(item.targetBlockIds),
                 addedAt: item.addedAt || 0,
               };
             })
@@ -159,7 +164,11 @@ export function assignComponentToSlot(state, component, slot, target = {}) {
   const nextAssignment = {
     componentId: component.id,
     slotId,
+    strategy: target.strategy || "append",
+    scope,
     regionId,
+    targetComponentIds: toArray(target.targetComponentIds),
+    targetBlockIds: toArray(target.targetBlockIds),
     addedAt: Date.now(),
   };
   const nextScopedAssignments = [...sameScopeAssignments, nextAssignment].slice(-max);
@@ -224,7 +233,17 @@ export function moveAssignmentToRegion(state, componentId, regionId) {
       slotId,
       assignments.map((assignment) =>
         assignment.componentId === componentId
-          ? { ...assignment, regionId: regionId || "" }
+          ? MAP_SCOPED_SLOT_IDS.has(assignment.slotId || slotId)
+            ? {
+                ...assignment,
+                scope: LOCATION_SLOT_SCOPE_MAP,
+                regionId: "",
+              }
+            : {
+                ...assignment,
+                scope: LOCATION_SLOT_SCOPE_REGION,
+                regionId: regionId || "",
+              }
           : assignment,
       ),
     ]),
@@ -272,6 +291,7 @@ export function createLocationComposerSnapshot(state, selectedComponents = []) {
     activeSlotScope: normalizeLocationSlotScope(state.activeSlotScope),
     activeRegionId: state.activeRegionId || "",
     selectedComponentIds: Array.from(deriveSelectedComponentIds(slotAssignments)),
+    lockedSlots: toArray(state.lockedSlots),
     slotAssignments,
     selectedComponents,
     roomConstraintStateByRegion,
@@ -345,7 +365,7 @@ export function createScratchLocationRegion(index = 0, overrides = {}) {
   const safeIndex = Math.max(0, Number.isFinite(Number(index)) ? Math.round(Number(index)) : 0);
   const role = overrides.role || SCRATCH_ROOM_ROLE_OPTIONS[safeIndex % SCRATCH_ROOM_ROLE_OPTIONS.length] || "location region";
   const roomType = overrides.roomType || overrides.type || SCRATCH_ROOM_TYPE_OPTIONS[safeIndex % SCRATCH_ROOM_TYPE_OPTIONS.length] || "room";
-  const name = overrides.name || `${String(safeIndex + 1).padStart(2, "0")} ${titleCaseScratchValue(roomType || role || "Room")}`;
+  const name = overrides.name || titleCaseScratchValue(roomType || role || "Room");
   const id = overrides.id || overrides.templateId || createScratchRegionId(safeIndex);
   const legacySecretText = typeof overrides.secret === "string" ? overrides.secret : "";
   const clueText = overrides.clueText || overrides.clue || legacySecretText || "";

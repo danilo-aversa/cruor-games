@@ -16465,3 +16465,398 @@ _Nessun file aggiunto._
 - Percorso sospetto nello ZIP: PATCH-MANIFEST.md
 - Percorso sospetto nello ZIP: SHA256SUMS.txt
 
+
+---
+
+## 2026-07-18 18:13:22
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase1-feed-hotfix-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase1-feed-hotfix-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+features/darken-location/composer/model/location-composer-selectors.test.js`
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 4
+
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/repository-map.json`
+- `~features/darken-location/composer/components/LocationComponentPickerModal.test.jsx`
+- `~features/darken-location/composer/model/location-composer-selectors.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-18 18:32:17
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase2-runtime-content-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase2-runtime-content-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+shared/content/contracts/dark-places-composer-input.js`
+- `+shared/content/dark-places-runtime-content.js`
+- `+shared/content/dark-places-runtime-content.test.js`
+
+**File sovrascritti:** 7
+
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content-repository.adapter.js`
+- `~shared/content/content-repository.js`
+- `~shared/content/content.index.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-18 18:58:36
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase3-live-semantic-compiler-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase3-live-semantic-compiler-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+features/darken-location/composer/components/LocationMapDetailsPanel.test.jsx`
+- `+features/darken-location/composer/model/location-composer-semantic-preview.js`
+- `+features/darken-location/composer/model/location-composer-semantic-preview.test.js`
+
+**File sovrascritti:** 12
+
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/darken-location-composer.index.js`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content-repository.adapter.js`
+- `~shared/content/content-repository.js`
+- `~shared/content/content.index.js`
+- `~shared/content/dark-places-runtime-content.js`
+- `~shared/content/dark-places-runtime-content.test.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-18 19:06:23
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase3-dom-guard-hotfix-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase3-dom-guard-hotfix-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/model/location-composer-semantic-preview.test.js`
+- `~PATCH-MANIFEST.md`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-18 19:42:05
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase4-hybrid-overrides-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase4-hybrid-overrides-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 4
+
+- `+features/darken-location/compiler/dark-places-hybrid-overrides.js`
+- `+features/darken-location/compiler/dark-places-hybrid-overrides.test.js`
+- `+shared/content/contracts/dark-places-hybrid-override.js`
+- `+shared/content/contracts/dark-places-hybrid-override.test.js`
+
+**File sovrascritti:** 17
+
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~features/darken-location/compiler/index.js`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.test.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/model/location-composer-draft.js`
+- `~features/darken-location/composer/model/location-composer-draft.test.js`
+- `~features/darken-location/composer/model/location-composer-semantic-preview.js`
+- `~features/darken-location/composer/model/location-composer-semantic-preview.test.js`
+- `~features/darken-location/composer/model/location-composer-state.js`
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content.index.js`
+- `~shared/content/contracts/dark-places-composer-input.js`
+- `~shared/content/dark-places-runtime-content.js`
+- `~shared/content/dark-places-runtime-content.test.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-18 20:31:56
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase5-semantic-map-handoff-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase5-semantic-map-handoff-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 3
+
+- `+features/darken-location/composer/DarkenLocationComposerPage.test.jsx`
+- `+features/darken-location/composer/model/location-composer-semantic-map-handoff.js`
+- `+features/darken-location/composer/model/location-composer-semantic-map-handoff.test.js`
+
+**File sovrascritti:** 9
+
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/repository-map.json`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.test.jsx`
+- `~features/darken-location/composer/darken-location-composer.index.js`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/model/location-composer-preview.js`
+- `~features/darken-location/composer/model/location-composer-semantic-preview.js`
+- `~PATCH-MANIFEST.md`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-18 20:52:07
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase6-location-document-v2-output-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase6-location-document-v2-output-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+features/darken-location/output/model/location-document-output-v2.js`
+- `+features/darken-location/output/model/location-document-output-v2.test.js`
+
+**File sovrascritti:** 9
+
+- `~docs/repository-map/repository-map.json`
+- `~features/darken-location/compiler/dark-places-v1-compatibility.adapter.js`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/model/location-composer-output.js`
+- `~features/darken-location/composer/model/location-composer-output.test.js`
+- `~features/darken-location/output/components/LocationRoomOutput.jsx`
+- `~features/darken-location/output/LocationOutputWorkspace.jsx`
+- `~features/darken-location/output/LocationOutputWorkspace.test.jsx`
+- `~PATCH-MANIFEST.md`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-18 21:17:32
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase7-live-cleanup-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase7-live-cleanup-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+APPLY-PHASE7-DELETIONS.ps1`
+- `+docs/projects/dark-places-semantic-v2/live-phase7-cleanup.md`
+
+**File sovrascritti:** 18
+
+- `~docs/projects/dark-places-semantic-v2/legacy-field-inventory.md`
+- `~docs/projects/dark-places-semantic-v2/phase2-location-document-compiler.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/output-and-export.md`
+- `~docs/repository-map/repository-map.json`
+- `~features/darken-location/compiler/dark-places-v1-compatibility.adapter.js`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/model/location-composer-output.js`
+- `~features/darken-location/composer/model/location-composer-output.test.js`
+- `~features/darken-location/composer/model/location-composer-semantic-preview.js`
+- `~features/darken-location/composer/model/location-composer-semantic-preview.test.js`
+- `~package.json`
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content-repository.adapter.js`
+- `~shared/content/content.index.js`
+- `~shared/content/dark-places-canonical-expansion-pack.test.js`
+- `~shared/content/inspiration-modules.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: APPLY-PHASE7-DELETIONS.ps1
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-18 21:55:36
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-phase8-final-closure-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-phase8-final-closure-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+docs/projects/dark-places-semantic-v2/live-phase8-final-qa.md`
+- `+features/darken-location/composer/model/dark-places-phase8-live-acceptance.test.js`
+
+**File sovrascritti:** 18
+
+- `~.gitignore`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/output-and-export.md`
+- `~docs/repository-map/areas/shared-content.md`
+- `~docs/repository-map/repository-map.json`
+- `~eslint.config.js`
+- `~features/darken-location/composer/DarkenLocationComposerPage.test.jsx`
+- `~features/darken-location/composer/model/location-composer-preview.js`
+- `~features/darken-location/composer/model/location-composer-selectors.test.js`
+- `~package.json`
+- `~PATCH-MANIFEST.md`
+- `~shared/content/content-packs/anthropodermic-bibliopegy-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/dark-places-canonical-expansion-pack.js`
+- `~shared/content/content-packs/impalement-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/jikininki-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/wax-death-masks-semantic-v2-phase8.test.js`
+- `~shared/content/inspiration-catalog-boundary.test.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: eslint.config.js
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-18 22:36:23
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-theme-clue-hotfix-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-theme-clue-hotfix-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 10
+
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/areas/output-and-export.md`
+- `~docs/repository-map/repository-map.json`
+- `~features/darken-location/compiler/dark-places-hybrid-overrides.js`
+- `~features/darken-location/compiler/dark-places-hybrid-overrides.test.js`
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.test.jsx`
+- `~features/darken-location/output/components/LocationRoomOutput.jsx`
+- `~features/darken-location/output/LocationOutputWorkspace.test.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-18 22:58:29
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-room-authoring-hotfix-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-room-authoring-hotfix-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+features/darken-location/composer/components/LocationMapStage.test.jsx`
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 9
+
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/repository-map.json`
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/components/LocationRoomRecapCard.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.test.jsx`
+- `~features/darken-location/composer/model/location-composer-state.js`
+- `~features/darken-location/dungeon/dungeon-brief-generator.js`
+- `~features/darken-location/dungeon/dungeon-brief.js`
+- `~package.json`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+

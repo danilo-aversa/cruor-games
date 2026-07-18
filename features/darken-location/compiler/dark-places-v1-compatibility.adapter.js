@@ -422,6 +422,44 @@ export function createSessionStateFromLocationDocumentV1(
   });
 }
 
+export function adaptLocationDocumentV1ToV2(
+  value = {},
+  {
+    id = "",
+    seed = "",
+    moduleId = "legacy-location-output",
+  } = {},
+) {
+  if (value.schemaVersion !== LEGACY_LOCATION_DOCUMENT_SCHEMA_VERSION) {
+    throw new Error(
+      `Expected ${LEGACY_LOCATION_DOCUMENT_SCHEMA_VERSION}; received ${cleanText(value.schemaVersion, "unversioned")}.`,
+    );
+  }
+  const titleId = slugify(value.meta?.title, "legacy-location");
+  const session = createSessionStateFromLocationDocumentV1(value, {
+    id: id || `${titleId}-output-v2`,
+    seed: seed || `${titleId}-compatibility`,
+    moduleId,
+  });
+
+  return normalizeLocationDocumentV2({
+    id: session.id,
+    seed: session.seed,
+    meta: session.locationSeed.meta,
+    identity: session.locationSeed.identity,
+    siteWide: session.locationSeed.siteWide,
+    sessionGuide: session.locationSeed.sessionGuide,
+    map: session.locationSeed.map,
+    rooms: session.locationSeed.rooms,
+    validation: {
+      status: value.readiness?.complete ? "valid" : "draft",
+      issues: [],
+      coverage: session.locationSeed.coverage,
+    },
+    provenance: session.provenance,
+  });
+}
+
 function toLegacyBlock(value = {}, kind = "note") {
   return {
     id: value.id,
@@ -684,22 +722,9 @@ export function adaptLocationDocumentV2ToV1(value = {}) {
       adapter: "location-document-v2-output-view",
       documentId: document.id,
       documentSchemaVersion: document.schemaVersion,
-      compilePreviewSchemaVersion: "",
       mapRequestSource: "semantic-map-intent",
     },
   };
-}
-
-export function normalizeLocationDocumentForOutput(value = {}) {
-  if (value.schemaVersion === LEGACY_LOCATION_DOCUMENT_SCHEMA_VERSION) {
-    return cloneJson(value, {});
-  }
-  if (value.schemaVersion === SEMANTIC_SCHEMA_VERSIONS.LOCATION_DOCUMENT) {
-    return adaptLocationDocumentV2ToV1(value);
-  }
-  throw new Error(
-    `Unsupported Location Document schema for output: ${cleanText(value.schemaVersion, "unversioned")}.`,
-  );
 }
 
 function blockTexts(values) {

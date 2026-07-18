@@ -47,7 +47,15 @@ import {
 } from "./model/location-room-constraint-state.js";
 import {
   createLocationPreviewModel,
+  createLocationPreviewModelFromMapRequest,
 } from "./model/location-composer-preview.js";
+import {
+  createDarkPlacesComposerSemanticPreparation,
+  createDarkPlacesComposerSemanticPreviewMemoizer,
+} from "./model/location-composer-semantic-preview.js";
+import {
+  createDarkPlacesSemanticMapHandoff,
+} from "./model/location-composer-semantic-map-handoff.js";
 import { getGeneratedRoomForRegion } from "./model/location-composer-map-preview.js";
 import {
   areManualOverridesEqual,
@@ -67,7 +75,6 @@ import {
   copyTextToClipboard,
   createLocationExportBundle,
   getClipboardStatusMessage,
-  getCompilePreview,
 } from "./model/location-composer-output.js";
 import { getNextMissingRoomSlot, getRoomProgramEntries, getSelectedRoomProgramEntry } from "./model/location-room-program.js";
 import {
@@ -124,120 +131,6 @@ function downloadLocationExportFile(filename, text, mimeType = "text/plain;chars
   anchor.remove();
   URL.revokeObjectURL(url);
   return true;
-}
-
-function createMapInfluenceSourceKey(mapInfluence = null) {
-  if (!mapInfluence || typeof mapInfluence !== "object") return "";
-  return [
-    mapInfluence.roomArchetype || mapInfluence.roomArchetypeId || "",
-    mapInfluence.forcedRoomArchetype || mapInfluence.forcedRoomArchetypeId || "",
-    Array.isArray(mapInfluence.preferredRoomArchetypes) ? mapInfluence.preferredRoomArchetypes.join(",") : "",
-    Array.isArray(mapInfluence.forbiddenRoomArchetypes) ? mapInfluence.forbiddenRoomArchetypes.join(",") : "",
-    mapInfluence.forceRoomArchetype ? "force" : "soft",
-    mapInfluence.weight ?? "",
-  ].join("~");
-}
-
-function createRoomConstraintSourceKey(region = null) {
-  if (!region || typeof region !== "object") return "";
-  const metadata = region.metadata || {};
-  const design = region.effectiveRoomDesign
-    || metadata.effectiveRoomDesign
-    || region.roomDesign
-    || metadata.roomDesign
-    || null;
-  const resolution = region.roomConstraintResolution
-    || metadata.roomConstraintResolution
-    || null;
-  const assignedComponentIds = (metadata.assignedComponents || [])
-    .map((component) => component?.id || component?.componentId || "")
-    .filter(Boolean)
-    .sort();
-
-  return JSON.stringify({
-    assignedComponentIds,
-    design,
-    resolution: resolution
-      ? {
-          conflicts: (resolution.conflicts || []).map((conflict) => ({
-            code: conflict.code,
-            field: conflict.field,
-            sources: conflict.sources || [],
-          })),
-          schemaVersion: resolution.schemaVersion || "",
-          status: resolution.status || "",
-        }
-      : null,
-  });
-}
-
-function createLocationMapSourceKey(mapRequest) {
-  const requiredRegions = Array.isArray(mapRequest?.requiredRegions)
-    ? mapRequest.requiredRegions
-    : [];
-  const connections = Array.isArray(mapRequest?.connections)
-    ? mapRequest.connections
-    : [];
-
-  return [
-    mapRequest?.seed || "no-seed",
-    mapRequest?.context || "no-context",
-    mapRequest?.mapType || "no-map-type",
-    mapRequest?.visualStyle || "no-style",
-    mapRequest?.mapWidth || "no-width",
-    mapRequest?.mapHeight || "no-height",
-    requiredRegions
-      .map((region) =>
-        [
-          region?.sourceRegionId || region?.id || "region",
-          region?.label || region?.name || "",
-          region?.role || "",
-          region?.size || "",
-          region?.shape || "",
-          region?.roomArchetype || "",
-          region?.roomArchetypeSource || "",
-          createMapInfluenceSourceKey(region?.mapInfluence || region?.metadata?.mapInfluence),
-          createRoomConstraintSourceKey(region),
-          Array.isArray(region?.metadata?.assignedSlotIds) ? region.metadata.assignedSlotIds.join(",") : "",
-          Array.isArray(region?.links) ? region.links.join(",") : "",
-        ].join("@"),
-      )
-      .join("|"),
-    connections
-      .map((connection) =>
-        [
-          connection?.from || "",
-          connection?.to || "",
-          connection?.kind || "main",
-          connection?.locked ? "locked" : "open",
-          connection?.secret ? "secret" : "visible",
-        ].join("@"),
-      )
-      .sort()
-      .join("|"),
-  ].join("::");
-}
-
-function createLocationMapRuntimeSourceKey(mapRequest) {
-  const placements = Array.isArray(mapRequest?.componentPlacements)
-    ? mapRequest.componentPlacements
-    : [];
-  return [
-    createLocationMapSourceKey(mapRequest),
-    placements
-      .map((placement) =>
-        [
-          placement?.id || "",
-          placement?.componentId || "",
-          placement?.sourceRegionId || placement?.regionId || "",
-          placement?.markerKind || "",
-          placement?.visualCue || "",
-        ].join("@"),
-      )
-      .sort()
-      .join("|"),
-    JSON.stringify(mapRequest?.globalPalette || {}),
-  ].join("::");
 }
 
 const LOCATION_WORKFLOW_MODES = [
@@ -369,6 +262,61 @@ function selectBestThemeProgramCandidate(candidates = []) {
   }, { candidate: list[0], index: 0 }).candidate;
 }
 
+export function createGeneratedThemeProgramState(current, frameUpdates = {}) {
+  const clearedState = {
+    ...current,
+    ...frameUpdates,
+    selectedComponentIds: new Set(),
+    slotAssignments: {},
+    lockedSlots: new Set(),
+  };
+  const currentSnapshot = createLocationComposerSnapshot(clearedState, []);
+  const requestedRoomCount = clearedState.dungeonScale === "custom"
+    ? Math.max(
+        1,
+        Math.min(
+          16,
+          Number.parseInt(clearedState.dungeonCustomRoomCount || 8, 10) || 8,
+        ),
+      )
+    : undefined;
+  const themeSnapshot = {
+    ...currentSnapshot,
+    dungeonScale:
+      clearedState.dungeonScale || currentSnapshot.dungeonScale,
+    dungeonCustomRoomCount: requestedRoomCount,
+    roomCount: requestedRoomCount,
+  };
+  const candidates = createThemeDungeonBriefCandidatesFromDarkenLocationSnapshot(
+    themeSnapshot,
+    { count: 3 },
+  );
+  const selectedCandidate = selectBestThemeProgramCandidate(candidates);
+  const dungeonBrief =
+    selectedCandidate?.dungeonBrief ||
+    createThemeDungeonBriefFromDarkenLocationSnapshot(themeSnapshot);
+  const locationRegions = createLocationRegionsFromDungeonBrief(dungeonBrief);
+
+  return {
+    ...clearedState,
+    dungeonMode: "theme",
+    dungeonBriefId: dungeonBrief.id,
+    dungeonThemeId: dungeonBrief.themeId,
+    context: dungeonBrief.context || clearedState.context,
+    sourceAnchors:
+      dungeonBrief.theme?.sourceAnchorIds?.length && dungeonBrief.themeName
+        ? [dungeonBrief.themeName]
+        : clearedState.sourceAnchors,
+    locationRegions,
+    activeRegionId: locationRegions[0]?.id || "",
+    activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+    themeProgramCandidates: [],
+    activeThemeProgramCandidateId: selectedCandidate?.id || "",
+    mapManualOverrides: null,
+    roomConstraintStateByRegion: {},
+  };
+}
+
 function getInitialLocationRegionTemplates() {
   return getRegionTemplatesForState({
     context: "Crypt",
@@ -401,26 +349,88 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     () => normalizeManualOverrides(state.mapManualOverrides || {}),
     [state.mapManualOverrides],
   );
-  const previewModel = useMemo(
-    () => createLocationPreviewModel(snapshot, mapManualOverrides),
-    [snapshot, mapManualOverrides],
+  const structuralMapPreviewModel = useMemo(
+    () => createLocationPreviewModel(snapshot),
+    [snapshot],
   );
-  const { mapRequest, previewResult } = previewModel;
-  const generatedMapPreview = previewResult.generatedMap;
+  const structuralMapRequest = structuralMapPreviewModel.mapRequest;
+  const structuralGeneratedMapPreview =
+    structuralMapPreviewModel.previewResult.generatedMap;
   const digest = useMemo(() => getComposerDigest(state), [state]);
-  const compilePreview = useMemo(
-    () => getCompilePreview(state, digest, mapRequest, generatedMapPreview),
-    [state, digest, mapRequest, generatedMapPreview],
+  const semanticPreviewMemoizerRef = useRef(null);
+  if (!semanticPreviewMemoizerRef.current) {
+    semanticPreviewMemoizerRef.current =
+      createDarkPlacesComposerSemanticPreviewMemoizer();
+  }
+  const semanticPreparation = useMemo(
+    () =>
+      createDarkPlacesComposerSemanticPreparation({
+        state,
+        digest,
+        mapRequest: structuralMapRequest,
+        generatedMapPreview: structuralGeneratedMapPreview,
+        selectedComponents,
+      }),
+    [
+      digest,
+      selectedComponents,
+      state,
+      structuralGeneratedMapPreview,
+      structuralMapRequest,
+    ],
+  );
+  const semanticPreview = semanticPreviewMemoizerRef.current(
+    semanticPreparation,
+  );
+  const semanticMapHandoff = useMemo(
+    () =>
+      createDarkPlacesSemanticMapHandoff({
+        semanticPreview,
+        fallbackMapRequest: structuralMapRequest,
+        manualOverrides: mapManualOverrides,
+      }),
+    [mapManualOverrides, semanticPreview, structuralMapRequest],
+  );
+  const mapPreviewModel = useMemo(
+    () =>
+      createLocationPreviewModelFromMapRequest(
+        semanticMapHandoff.mapRequest,
+        semanticMapHandoff.manualOverrides,
+      ),
+    [semanticMapHandoff],
+  );
+  const { mapRequest, previewResult } = mapPreviewModel;
+  const generatedMapPreview = previewResult.generatedMap;
+  const previewModel = useMemo(
+    () => ({
+      ...mapPreviewModel,
+      semanticRuntime: semanticPreview,
+      semanticMapHandoff,
+    }),
+    [mapPreviewModel, semanticMapHandoff, semanticPreview],
   );
   const exportBundle = useMemo(
-    () => createLocationExportBundle(state, digest, mapRequest, generatedMapPreview, compilePreview),
-    [state, digest, mapRequest, generatedMapPreview, compilePreview],
+    () =>
+      semanticPreview.document
+        ? createLocationExportBundle({
+            locationDocument: semanticPreview.document,
+            generatedMapPreview,
+          })
+        : null,
+    [
+      generatedMapPreview,
+      semanticPreview.document,
+    ],
   );
+  const exportIncompleteCount =
+    semanticPreview.document?.validation?.coverage?.incompleteRooms?.length || 0;
   const draftFingerprint = useMemo(() => createDraftFingerprint(state), [state]);
   const hasUnsavedChanges = Boolean(savedDraftFingerprint) && draftFingerprint !== savedDraftFingerprint;
-  const mapStructureKey = useMemo(() => createLocationMapSourceKey(mapRequest), [mapRequest]);
-  const mapSourceKey = useMemo(() => createLocationMapRuntimeSourceKey(mapRequest), [mapRequest]);
-  const previousMapSourceKeyRef = useRef(mapStructureKey);
+  const mapStructureKey = semanticMapHandoff.topologyFingerprint;
+  const mapSourceKey = semanticMapHandoff.requestFingerprint;
+  const previousRoomConstraintKeyRef = useRef(
+    semanticMapHandoff.roomConstraintFingerprint,
+  );
   const stableMapSourceKeyRef = useRef(mapSourceKey);
   const stableMapRequestRef = useRef(mapRequest);
   if (stableMapSourceKeyRef.current !== mapSourceKey) {
@@ -491,7 +501,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   }, []);
 
   const getExportFormatText = useCallback((formatId) => {
-    const format = exportBundle.formats?.[formatId];
+    const format = exportBundle?.formats?.[formatId];
     if (!format) return "";
     return format.dynamic && formatId === "svg"
       ? getCurrentComposerMapSvgText()
@@ -499,13 +509,13 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   }, [exportBundle]);
 
   const copyExportFormat = useCallback((formatId) => {
-    const format = exportBundle.formats?.[formatId];
+    const format = exportBundle?.formats?.[formatId];
     if (!format) return;
     copyExportText(format.label, getExportFormatText(formatId));
   }, [copyExportText, exportBundle, getExportFormatText]);
 
   const downloadExportFormat = useCallback((formatId) => {
-    const format = exportBundle.formats?.[formatId];
+    const format = exportBundle?.formats?.[formatId];
     if (!format) return;
     const downloaded = downloadLocationExportFile(
       format.filename,
@@ -595,43 +605,21 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   }, []);
 
   const generateThemeRooms = useCallback(() => {
-    setState((current) => {
-      const currentSelectedComponents = getSelectedComponents(current);
-      const currentSnapshot = createLocationComposerSnapshot(current, currentSelectedComponents);
-      const requestedRoomCount = current.dungeonScale === "custom"
-        ? Math.max(1, Math.min(16, Number.parseInt(current.dungeonCustomRoomCount || 8, 10) || 8))
-        : undefined;
-      const themeSnapshot = {
-        ...currentSnapshot,
-        dungeonScale: current.dungeonScale || currentSnapshot.dungeonScale,
-        dungeonCustomRoomCount: requestedRoomCount,
-        roomCount: requestedRoomCount,
-      };
-      const candidates = createThemeDungeonBriefCandidatesFromDarkenLocationSnapshot(themeSnapshot, { count: 3 });
-      const selectedCandidate = selectBestThemeProgramCandidate(candidates);
-      const dungeonBrief = selectedCandidate?.dungeonBrief || createThemeDungeonBriefFromDarkenLocationSnapshot(themeSnapshot);
-      const locationRegions = createLocationRegionsFromDungeonBrief(dungeonBrief);
-
-      return {
-        ...current,
-        dungeonMode: "theme",
-        dungeonBriefId: dungeonBrief.id,
-        dungeonThemeId: dungeonBrief.themeId,
-        context: dungeonBrief.context || current.context,
-        sourceAnchors: dungeonBrief.theme?.sourceAnchorIds?.length && dungeonBrief.themeName ? [dungeonBrief.themeName] : current.sourceAnchors,
-        locationRegions,
-        activeRegionId: locationRegions[0]?.id || "",
-        activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
-        themeProgramCandidates: [],
-        activeThemeProgramCandidateId: selectedCandidate?.id || "",
-        mapManualOverrides: null,
-        roomConstraintStateByRegion: {},
-      };
-    });
+    setState((current) => createGeneratedThemeProgramState(current));
     clearAssignmentHistory();
     setBuilderMode("theme");
     setDrawerOpen(false);
     setTransientDraftStatus("Place generated");
+  }, [clearAssignmentHistory, setTransientDraftStatus]);
+
+  const changeThemeFrame = useCallback((frameUpdates = {}) => {
+    setState((current) =>
+      createGeneratedThemeProgramState(current, frameUpdates),
+    );
+    clearAssignmentHistory();
+    setBuilderMode("theme");
+    setDrawerOpen(false);
+    setTransientDraftStatus("Place regenerated for the updated frame");
   }, [clearAssignmentHistory, setTransientDraftStatus]);
 
   const setScratchRoomCount = useCallback((roomCount) => {
@@ -825,21 +813,22 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   }, []);
 
   useEffect(() => {
-    if (previousMapSourceKeyRef.current === mapStructureKey) return;
-    previousMapSourceKeyRef.current = mapStructureKey;
+    if (
+      previousRoomConstraintKeyRef.current ===
+      semanticMapHandoff.roomConstraintFingerprint
+    ) {
+      return;
+    }
+    previousRoomConstraintKeyRef.current =
+      semanticMapHandoff.roomConstraintFingerprint;
     setState((current) => {
-      if (!current.mapManualOverrides) return current;
-      const nextState = {
-        ...current,
-        mapManualOverrides: null,
-      };
       return recomputeLocationRoomConstraintState({
-        state: nextState,
-        componentCatalog: getSelectedComponents(nextState),
-        manualOverrides: null,
+        state: current,
+        componentCatalog: getSelectedComponents(current),
+        manualOverrides: current.mapManualOverrides || null,
       });
     });
-  }, [mapStructureKey]);
+  }, [semanticMapHandoff.roomConstraintFingerprint]);
 
   useEffect(() => {
     if (!onSnapshotProviderReady) return undefined;
@@ -1141,11 +1130,18 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   }, [activeRoomProgramEntry?.id, activeScratchRegion?.id, focusSlot, nextMissingRoomSlot, openRoomComponents]);
 
   const openFirstMissingExportRoom = useCallback(() => {
-    const firstMissingRegionId = compilePreview.missingRoomSections?.[0]?.region?.id || state.locationRegions?.[0]?.id || "";
+    const firstMissingRegionId =
+      semanticPreview.document?.validation?.coverage?.incompleteRooms?.[0]?.id ||
+      state.locationRegions?.[0]?.id ||
+      "";
     if (!firstMissingRegionId) return;
     setBuilderMode("scratch");
     selectRoomTarget(firstMissingRegionId);
-  }, [compilePreview.missingRoomSections, selectRoomTarget, state.locationRegions]);
+  }, [
+    semanticPreview.document?.validation?.coverage?.incompleteRooms,
+    selectRoomTarget,
+    state.locationRegions,
+  ]);
 
   const selectExportRoom = useCallback((regionId) => {
     if (!regionId) return;
@@ -1176,6 +1172,21 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   }, [builderMode]);
 
   if (builderMode === "export") {
+    if (!exportBundle) {
+      return (
+        <div
+          className="cruor-composer-shell location-composer location-composer--output"
+          data-location-builder-mode="export"
+          data-location-composer-ready="false"
+          data-testid="dark-places-composer"
+        >
+          <div className="cruor-composer-panel location-panel">
+            <h2>Final Output unavailable</h2>
+            <p>The semantic compiler must produce a valid Location Document v2 before export.</p>
+          </div>
+        </div>
+      );
+    }
     return (
       <div
         className="cruor-composer-shell location-composer location-composer--output"
@@ -1226,6 +1237,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       uiMode={uiMode}
       onAddScratchRoom={addScratchRoom}
       onGenerateThemeRooms={generateThemeRooms}
+      onChangeThemeFrame={changeThemeFrame}
       onRegenerateScratchRoom={regenerateScratchRoom}
       onRemoveScratchRoom={removeScratchRoom}
       onSelectScratchRoom={selectScratchRoom}
@@ -1291,6 +1303,8 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       debugMode={debugMode || uiMode === "debug"}
       generatedMapPreview={generatedMapPreview}
       mapRequest={mapRequest}
+      semanticMapHandoff={previewModel.semanticMapHandoff}
+      semanticPreview={previewModel.semanticRuntime}
       side="right"
       state={state}
       uiMode={uiMode}
@@ -1309,7 +1323,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       hasRooms={Boolean(state.locationRegions?.length)}
       roomEntries={roomToolbarEntries}
       nextRoomSlot={nextMissingRoomSlot}
-      exportIncompleteCount={compilePreview.incompleteRoomCount}
+      exportIncompleteCount={exportIncompleteCount}
       onAddMissingRoomSlot={openNextMissingRoomSlot}
       onCopyMarkdown={copyRoomKeyMarkdown}
       onGenerateThemeRooms={generateThemeRooms}
@@ -1334,6 +1348,20 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       data-location-builder-mode={builderMode}
       data-location-immersive={immersiveMode ? "true" : "false"}
       data-location-map-editing="inline"
+      data-location-semantic-valid={semanticPreview.valid ? "true" : "false"}
+      data-location-semantic-fingerprint={semanticPreview.compilerFingerprint}
+      data-location-hybrid-override-fingerprint={
+        semanticPreview.hybridOverrideFingerprint
+      }
+      data-location-hybrid-override-count={
+        semanticPreview.overrides?.operations?.length || 0
+      }
+      data-location-map-handoff={semanticMapHandoff.mode}
+      data-location-map-handoff-schema={semanticMapHandoff.schemaVersion}
+      data-location-map-request-fingerprint={
+        semanticMapHandoff.requestFingerprint
+      }
+      data-location-map-topology-fingerprint={mapStructureKey}
       data-location-composer-ready="true"
       data-testid="dark-places-composer"
     >
@@ -1364,7 +1392,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
               hasMapManualOverrides={Boolean(state.mapManualOverrides)}
               regions={state.locationRegions || []}
               selectedComponents={selectedComponents}
-              exportIncompleteCount={compilePreview.incompleteRoomCount}
+              exportIncompleteCount={exportIncompleteCount}
               onCopyMarkdown={copyRoomKeyMarkdown}
               onGenerateScratchMap={generateScratchMap}
               onGenerateThemeRooms={generateThemeRooms}

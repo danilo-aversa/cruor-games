@@ -12,6 +12,7 @@ flowchart LR
   Schema --> Static[static-registry.js]
   Static --> Registry[registry.js]
   Registry --> Adapter[content-repository.adapter.js]
+  Adapter --> Runtime[dark-places-runtime-content.js]
   Registry --> Features[Inspirations, Studio, Darken, Monster]
 ```
 
@@ -24,6 +25,7 @@ flowchart LR
 - Track provenance and issues.
 - Expose lookup/filter APIs.
 - Bridge registry data into feature-facing repository or module shapes.
+- Resolve version-pinned Dark Places runtime content without creating a second registry.
 
 ## Room Contracts
 
@@ -92,6 +94,36 @@ publication blocker. `static-semantic-content-packs.js` lists the pack separatel
 from the active v0.1 registry. The legacy module remains available for dual-read,
 component-parity, and public-registry regression checks.
 
+## Dark Places Runtime Content Boundary
+
+`contracts/dark-places-composer-input.js` defines the immutable
+`cruor-dark-places-composer-input-v1` handoff. It version-pins the selected
+semantic module pack and preserves normalized Source Anchors, context, horror,
+intrusion, seed, rooms, map state, granular selections, slot assignments, locks,
+user overrides, and caller provenance. Assignment clocks are deliberately not
+part of the contract.
+
+`contracts/dark-places-hybrid-override.js` owns the versioned live Phase 4
+directive grammar. It defines the seven allowed strategies, the map/region scope
+split, deterministic directive ids, target component/block ids, normalization,
+and structured validation. Canonical slot assignments always carry an explicit
+strategy and scope; transient assignment clocks remain excluded.
+
+`dark-places-runtime-content.js` is the only composite resolver for that input.
+The static Content Repository exposes it as `resolveDarkPlacesRuntimeContent()`.
+It reads the separate semantic v2 pack catalog for the macro baseline and the
+production registry for granular location components and regions, then returns
+stable id-sorted pools, resolved selection references, provenance, and structured
+diagnostics. Phase 4 also emits a deterministic `hybridOverridePlan` with
+separate `mapScoped` and `regionScoped` collections. Existing Composer locks are
+promoted to explicit `lock` directives, and legacy ids declared by the semantic
+module become target component ids without copying granular data into that
+module. Modern Monster capabilities remain external ownership links from
+pack metadata; the resolver never imports or copies Monster graft data. This
+boundary is pure and renderer-independent. Phase 3 adds a version-pinned module
+reference lookup on the same repository so the live Composer never imports the
+semantic pack catalog directly.
+
 ## Tests
 
 `npm run content:validate` is the primary legacy registry check. `npm run qa:dark-places:semantic-contracts` covers semantic v2 valid, invalid, edge, compatibility, immutability, canonicalization, and dependency-boundary behavior against the real Sedlec v1 fixtures. `npm run qa:dark-places:semantic-compiler` adds Location Document/Session State contract and compiler coverage; `npm run qa:dark-places:semantic-phase3` validates the editorial pack, deterministic v2 fixtures, scaling, placement, output separation, and v1 preservation; `npm run qa:dark-places:semantic-phase4` validates profile consumption, sensory uniqueness, Read-Aloud composition, spoiler filtering, and standard output projection; `npm run qa:dark-places:semantic-phase5` validates Session Guide derivation, clue availability, pressure metadata, dashboard state, accessibility, and persistence isolation; `npm run qa:dark-places:semantic-phase6` validates Studio v1 import, v2-only canonical round trips, editor registry coverage, and Monster graft preservation. `shared/content/contracts/room-contracts.test.js` protects compatibility exports and legacy normalization. `room-constraint-resolver.test.js` covers deterministic resolution, conflict classes, manual override precedence, capabilities, provenance, and input immutability. The Dungeon Brief handoff test verifies that adapter output reaches the resolver and Map Generator without losing room metadata. `room-constraint-evaluation.test.js` covers candidate attribution, transformations, explicit replacement, manual override blocking, and order independence; the picker rendering test verifies disabled reasons and transform previews. Build and feature QA provide indirect coverage.
@@ -103,6 +135,20 @@ Health reporting.
 Phase 8 adds catalog audit, canonical candidate validation, Studio coverage,
 warning-free semantic sample QA, and migration-state tests through
 `npm run qa:dark-places:semantic-phase8`.
+
+Final live Phase 8 completes the production granular pool for Impalement with
+one canonical clue and one canonical encounter twist. The semantic baseline and
+production granular registry remain separate owners, while migration provenance
+accounts for both ids exactly once. `npm run qa:dark-places:phase8-final`
+combines all 14 editorial checks, live Composer/compiler/output QA, and static
+content validation.
+
+`shared/content/dark-places-runtime-content.test.js` covers canonical input
+normalization, all 14 migrated modules, exact Sedlec production pools, registry
+and pack iteration-order independence, deep immutability, version drift,
+selection diagnostics, typed hybrid plans, scope separation, lock promotion,
+module-reference resolution, provenance, and the external
+Monster ownership boundary.
 
 ## Findings
 

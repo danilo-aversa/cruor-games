@@ -385,7 +385,7 @@
   inset: 0;
   overflow: hidden;
   border: 2px solid var(--cruor-inspiration-card-outer-border);
-  border-radius: 15px;
+  border-radius: 10px;
   background: var(--cruor-inspiration-card-frame-band);
   box-shadow: inset 0 0 0 1px var(--cruor-color-black-a720);
   backface-visibility: hidden;
@@ -504,7 +504,7 @@
 .inspiration-card__frame path {
   fill: none;
   stroke: var(--cruor-inspiration-card-line);
-  stroke-width: 2;
+  stroke-width: 1;
   stroke-linecap: square;
   stroke-linejoin: miter;
   vector-effect: non-scaling-stroke;
@@ -1202,7 +1202,7 @@
 
   .inspiration-card__face,
   .inspiration-card__flip-control {
-    border-radius: 15px;
+    border-radius: 10px;
   }
 
   .inspiration-dossier {

@@ -54,7 +54,7 @@ describe("Dark Places canonical expansion pack", () => {
   });
 
   it("surfaces authored canonical components in Inspiration Studio modules", () => {
-    const modules = getStaticInspirationModules({ includeRegistryFallback: false });
+    const modules = getStaticInspirationModules();
     const moduleById = new Map(modules.map((module) => [module.id, module]));
     const waxDeathMasks = moduleById.get("wax-death-masks");
     const wolfSpiders = moduleById.get("wolf-spiders");
@@ -62,6 +62,13 @@ describe("Dark Places canonical expansion pack", () => {
     expect(waxDeathMasks?.locationComponents?.length || 0).toBeGreaterThan(1);
     expect(wolfSpiders?.locationComponents?.length || 0).toBeGreaterThan(1);
     expect(wolfSpiders?.locationRegions?.length || 0).toBeGreaterThanOrEqual(2);
+    expect(modules).toHaveLength(14);
+    expect(
+      modules.some(
+        (module) =>
+          module.metadata?.generatedFrom === "static-content-registry-fallback",
+      ),
+    ).toBe(false);
   });
 
   it("passes content pack validation", () => {

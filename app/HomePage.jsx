@@ -1,10 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Accordion, AccordionItem } from "../components/ui/accordion.jsx";
 import AmbientBand from "../components/ui/ambient-band.jsx";
-import {
-  INSPIRATION_CARDS,
-  SOURCE_DETAILS,
-} from "../features/crucible/crucible.sources-data.js";
+import { INSPIRATION_CARDS, SOURCE_DETAILS } from "../features/crucible/crucible.sources-data.js";
 import InspirationCardFront from "../features/inspirations/components/InspirationCardFront.jsx";
 import { getInspirationCardMeta } from "../features/inspirations/inspirations.card-config.js";
 import SiteLink from "./navigation/SiteLink.jsx";
@@ -1300,7 +1297,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
             src={HOME_HERO_POSTER_SRC}
             alt=""
             decoding="async"
-            fetchPriority="high"
+            fetchpriority="high"
           />
           <video
             className="cruor-home__hero-video"

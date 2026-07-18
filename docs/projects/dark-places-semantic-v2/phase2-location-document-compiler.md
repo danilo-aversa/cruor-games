@@ -1,5 +1,9 @@
 # Phase 2 — Location Document v2 and compiler skeleton
 
+> Historical phase record. Live-integration Phase 7 supersedes the temporary
+> v1 renderer and compile-preview boundaries described below. See
+> [Live integration Phase 7 cleanup and ownership](./live-phase7-cleanup.md).
+
 ## Outcome
 
 Phase 2 adds a pure deterministic compiler path without replacing the active
@@ -76,12 +80,12 @@ does not fabricate those editorial structures from generic legacy text.
 documents. It does not read or write content packs, modules, Inspirations, or
 Studio drafts.
 
-It exposes:
+The historical Phase 2 boundary exposed:
 
 - `createSessionStateFromLocationDocumentV1()` for current builds;
 - `compareLocationDocumentsV1V2()` for structural and content parity;
 - `adaptLocationDocumentV2ToV1()` for current renderers;
-- `normalizeLocationDocumentForOutput()` as the renderer-facing v1/v2 switch.
+- a renderer-facing v1/v2 switch, removed after native v2 Final Output adoption.
 
 Compatibility provenance is always `needs-revision`. Empty legacy provenance is
 replaced by explicit source-aware compatibility provenance. No compatibility

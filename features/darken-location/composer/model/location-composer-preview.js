@@ -13,8 +13,8 @@ function applyMapRequestConnectionsToConfig(config, mapRequest) {
   };
 }
 
-let cachedPreviewGenerationKey = "";
-let cachedPreviewGeneratedMap = null;
+const previewGenerationCache = new Map();
+const PREVIEW_GENERATION_CACHE_LIMIT = 4;
 
 function stripPreviewOnlyConfigFields(config = {}) {
   const {
@@ -36,12 +36,27 @@ function createPreviewGenerationKey(previewConfig, previewManualOverrides) {
   });
 }
 
-export function createLocationPreviewModel(snapshot, manualOverrides = createEmptyManualOverrides()) {
-  let mapRequest = null;
-  let previewConfig = null;
+function readCachedGeneratedMap(key) {
+  const cached = previewGenerationCache.get(key);
+  if (!cached) return null;
+  previewGenerationCache.delete(key);
+  previewGenerationCache.set(key, cached);
+  return cached;
+}
 
+function writeCachedGeneratedMap(key, generatedMap) {
+  previewGenerationCache.set(key, generatedMap);
+  while (previewGenerationCache.size > PREVIEW_GENERATION_CACHE_LIMIT) {
+    previewGenerationCache.delete(previewGenerationCache.keys().next().value);
+  }
+}
+
+export function createLocationPreviewModelFromMapRequest(
+  mapRequest,
+  manualOverrides = createEmptyManualOverrides(),
+) {
+  let previewConfig = null;
   try {
-    mapRequest = createMapRequestFromDarkenLocationState(snapshot);
     previewConfig = applyMapRequestConnectionsToConfig(
       createConfigFromNormalizedMapRequest(mapRequest, DEFAULT_CONFIG),
       mapRequest,
@@ -51,24 +66,15 @@ export function createLocationPreviewModel(snapshot, manualOverrides = createEmp
       previewConfig,
       previewManualOverrides,
     );
+    const cachedGeneratedMap = readCachedGeneratedMap(previewGenerationKey);
     const generatedMap =
-      cachedPreviewGeneratedMap && cachedPreviewGenerationKey === previewGenerationKey
-        ? cachedPreviewGeneratedMap
-        : generateMap(previewConfig, previewManualOverrides);
-
-    cachedPreviewGenerationKey = previewGenerationKey;
-    cachedPreviewGeneratedMap = generatedMap;
+      cachedGeneratedMap || generateMap(previewConfig, previewManualOverrides);
+    if (!cachedGeneratedMap) {
+      writeCachedGeneratedMap(previewGenerationKey, generatedMap);
+    }
 
     return {
-      mapRequest: mapRequest || {
-        source: "darken-location",
-        title: snapshot?.title || "Cursed Location Build",
-        context: snapshot?.context || "",
-        mapType: "",
-        requiredRegions: [],
-        connections: [],
-        metadata: { generationBlocked: true },
-      },
+      mapRequest,
       previewConfig,
       previewResult: {
         generatedMap,
@@ -76,9 +82,6 @@ export function createLocationPreviewModel(snapshot, manualOverrides = createEmp
       },
     };
   } catch (error) {
-    cachedPreviewGenerationKey = "";
-    cachedPreviewGeneratedMap = null;
-
     return {
       mapRequest,
       previewConfig,
@@ -88,6 +91,23 @@ export function createLocationPreviewModel(snapshot, manualOverrides = createEmp
       },
     };
   }
+}
+
+export function createLocationPreviewModel(snapshot, manualOverrides = createEmptyManualOverrides()) {
+  let mapRequest;
+  try {
+    mapRequest = createMapRequestFromDarkenLocationState(snapshot);
+  } catch (error) {
+    return {
+      mapRequest: null,
+      previewConfig: null,
+      previewResult: {
+        generatedMap: null,
+        error: error instanceof Error ? error.message : String(error),
+      },
+    };
+  }
+  return createLocationPreviewModelFromMapRequest(mapRequest, manualOverrides);
 }
 
 function createAssignmentSignature(assignments = {}) {

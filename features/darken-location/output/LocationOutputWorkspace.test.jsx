@@ -225,6 +225,16 @@ function createPhase3Document() {
 }
 
 describe("LocationOutputWorkspace", () => {
+  it("keeps the live Final Output boundary on the canonical v2 document", () => {
+    const source = readFileSync(
+      "features/darken-location/output/LocationOutputWorkspace.jsx",
+      "utf8",
+    );
+
+    expect(source).not.toContain("normalizeLocationDocumentForOutput");
+    expect(source).not.toContain("adaptLocationDocumentV2ToV1");
+  });
+
   it("renders the Phase 3 semantic Overview without duplicating At the Table", () => {
     const html = renderToStaticMarkup(
       <LocationOutputWorkspace
@@ -305,7 +315,7 @@ describe("LocationOutputWorkspace", () => {
     expect(html).not.toContain("Run This Location");
   });
 
-  it("accepts Location Document v2 through the pure output compatibility view", () => {
+  it("renders Location Document v2 natively", () => {
     const html = renderToStaticMarkup(
       <LocationOutputWorkspace
         {...BASE_PROPS}
@@ -315,11 +325,55 @@ describe("LocationOutputWorkspace", () => {
     );
 
     expect(html).toContain('data-testid="dark-places-output-room"');
+    expect(html).toContain(
+      'data-location-document-schema="cruor-location-document-v2"',
+    );
     expect(html).toContain("Bone-Lit Vestibule");
     expect(html).toContain(
       "Candlelight catches on hundreds of polished teeth.",
     );
     expect(html).toContain("Weight of the Dead");
+  });
+
+  it("renders granular clues whose facets contain only override metadata", () => {
+    const baseDocument = createV2Document();
+    const document = {
+      ...baseDocument,
+      rooms: baseDocument.rooms.map((room, index) =>
+        index === 0
+          ? {
+              ...room,
+              clues: [
+                {
+                  id: "hybrid-clue-miscounted-skull-row",
+                  kind: "clue",
+                  subtype: "clue",
+                  title: "Miscounted Skull Row",
+                  text: "One skull is cleaner than the others, and its dust line does not match.",
+                  narrative: "Point this toward the recent disturbance.",
+                  audience: "gm",
+                  facets: ["slot:clue", "strategy:append", "scope:region"],
+                  sourceComponentId: "places-clue-miscounted-skull-row",
+                },
+              ],
+            }
+          : room,
+      ),
+    };
+    const html = renderToStaticMarkup(
+      <LocationOutputWorkspace
+        {...BASE_PROPS}
+        documentModel={document}
+        initialSectionId="room:room-a"
+      />,
+    );
+
+    expect(html).toContain("Disturbing Clues");
+    expect(html).toContain("Miscounted Skull Row");
+    expect(html).toContain(
+      "One skull is cleaner than the others, and its dust line does not match.",
+    );
+    expect(html).toContain("location-output-semantic-card--clue");
   });
 
   it("renders the final-output outline and overview as the primary surface", () => {
@@ -352,7 +406,7 @@ describe("LocationOutputWorkspace", () => {
     expect(html).toContain("cruor-tool-copy__title");
     expect(html).not.toContain("location-output-document-hero");
     expect(html).toContain("location-output-entry__line");
-    expect(html).toContain("Location Premise.");
+    expect(html).toContain("Location History.");
     expect(html).not.toContain("Pressure.");
     expect(html).not.toContain(
       "location-output-block cruor-composer-sidebar-block",
@@ -403,7 +457,7 @@ describe("LocationOutputWorkspace", () => {
     expect(html).toContain("Secrets — GM Only");
     expect(html).toContain("Reward / Consequence");
     expect(html).toContain("GM Guidance");
-    expect(html).toContain("Sealed Reliquary");
+    expect(html).toContain("Connected room");
     expect(html).toContain("Locked");
     expect(html).toContain("Down 1 level");
     expect(html).not.toContain("Missing Disturbing Clue");
