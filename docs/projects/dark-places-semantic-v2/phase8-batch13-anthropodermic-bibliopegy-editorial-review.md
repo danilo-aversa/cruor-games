@@ -1,20 +1,21 @@
 # Phase 8 batch 13 — Anthropodermic Bibliopegy Candidate 1 editorial review
 
-## Decision requested
+## Decision recorded
 
-Review `anthropodermic-bibliopegy-semantic-v2` as a canonical Inspiration v2 candidate. Candidate 1 owns **Inspiration Archive + Dark Places only**, contains zero Monster Composer components, and never copies modern Monster data.
+`anthropodermic-bibliopegy-semantic-v2` is approved as a canonical Inspiration v2 module. Candidate 1 owns **Inspiration Archive + Dark Places only** and contains zero embedded Monster Composer components.
 
 | Tracking field | Value |
 | --- | --- |
 | Module | `anthropodermic-bibliopegy` |
-| Candidate | `phase8-anthropodermic-bibliopegy-editorial-candidate-v1` |
-| Migration status | `candidate-ready` |
-| Editorial status | `awaiting-human-signoff` |
+| Candidate | `phase8-anthropodermic-bibliopegy-editorial-approved-v1` |
+| Migration status | `complete` |
+| Editorial status | `approved` |
 | Semantic coverage | `complete` |
-| Sample QA | `pending-local-verification` |
+| Sample QA | `passed-zero-diagnostics` |
 | Owned capabilities | Inspiration Archive + Dark Places |
-| Reviewer | None |
-| Reviewed at | None |
+| Ownership model | `archive-dark-places-only` |
+| Reviewer | Danilo |
+| Reviewed at | 2026-07-17 |
 
 ## Ownership boundary
 
@@ -22,23 +23,25 @@ No Monster capability is associated with this module.
 
 ## Source boundary
 
-The pack source anchor and editorial notes define the historical or literary evidence separately from Cruor supernatural procedures. The candidate does not treat the source object, human remains, or cultural narrative as Monster payload.
+Danilo approved Candidate 1 with its consent, provenance, human-remains stewardship, and respectful disposition boundary. Historical, material, religious, or literary context remains separate from Cruor supernatural fiction and gameplay procedures.
 
 ## Dark Places model
 
-Candidate 1 contains Place Identity, Site Atmosphere, one visible 0–4 Global Rule, four Recurring Signs, Sensory Profile, Read-Aloud Profile, and Session Guide. The global rule advances only from named triggers and at most once per combat round or ten-minute exploration turn. Its final target is announced one full step before resolution and preserves withdrawal and material counterplay.
+Candidate 1 contains Place Identity, Site Atmosphere, one visible 0–4 Global Rule, four Recurring Signs, Sensory Profile, Read-Aloud Profile, and Session Guide. Its escalation is announced before resolution and preserves withdrawal, evidence, and material counterplay.
 
 ## Legacy coverage
 
-All Archive and Dark Places legacy ids exported by the frozen source module are mapped exactly once through provenance. Monster ids are excluded from pack ownership.
+All Archive and Dark Places legacy ids exported by the frozen source module are mapped exactly once through provenance. Monster ids are excluded from semantic-pack ownership.
 
-## Publication gates
+## Remaining publication gate
 
-1. `human-editorial-signoff-required`;
-2. `human-remains-ethics-review-required`;
-3. `sample-qa-local-verification-required`;
-4. `image-provenance-required`.
+Only `image-provenance-required` remains open.
 
-## Approval wording
+## Approval record
 
 > Approvo Anthropodermic Bibliopegy Candidate 1 per la Fase 8. Reviewer: Danilo.
+
+
+## Technical closure
+
+The closing Phase 8 QA rerun compiled all three deterministic samples with zero diagnostics. The aggregate Phase 8 suite passed 118 tests across 16 test files; the sample-QA verification blocker is closed.

@@ -15798,3 +15798,167 @@ _Nessun file aggiunto._
 
 - Percorso sospetto nello ZIP: PATCH-MANIFEST.md
 
+
+---
+
+## 2026-07-18 09:48:17
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-endocannibalism-legacy-id-hotfix-20260717.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-endocannibalism-legacy-id-hotfix-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 1
+
+- `~shared/content/content-packs/endocannibalism-semantic-v2-pack.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-18 09:50:02
+
+**Operazione:** Apply Custom ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-boot-screen-logo-fix.zip`
+
+**Percorso ZIP:** `h:\Users\avers\Download\cruor-home-boot-screen-logo-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~index.html`
+- `~tests/e2e/home-boot-screen.spec.js`
+
+
+---
+
+## 2026-07-18 09:52:26
+
+**Operazione:** Apply Custom ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-final-editorial-approval-20260717.zip`
+
+**Percorso ZIP:** `h:\Users\avers\Download\cruor-games-dark-places-v2-phase8-final-editorial-approval-20260717.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 13
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch12-wax-death-masks-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch13-anthropodermic-bibliopegy-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch14-jikininki-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~shared/content/content-packs/anthropodermic-bibliopegy-semantic-v2-pack.js`
+- `~shared/content/content-packs/anthropodermic-bibliopegy-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/jikininki-semantic-v2-pack.js`
+- `~shared/content/content-packs/jikininki-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/wax-death-masks-semantic-v2-pack.js`
+- `~shared/content/content-packs/wax-death-masks-semantic-v2-phase8.test.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+
+
+---
+
+## 2026-07-18 09:53:30
+
+**Operazione:** Apply Custom ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-boot-screen-logo-fix.zip`
+
+**Percorso ZIP:** `h:\Users\avers\Download\cruor-home-boot-screen-logo-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~index.html`
+- `~tests/e2e/home-boot-screen.spec.js`
+
+
+---
+
+## 2026-07-18 10:01:36
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-boot-screen-logo-fix-v2.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-boot-screen-logo-fix-v2.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~index.html`
+
+
+---
+
+## 2026-07-18 10:11:55
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-games-dark-places-v2-phase8-technical-closure-20260718.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-v2-phase8-technical-closure-20260718.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+PATCH-MANIFEST.md`
+
+**File sovrascritti:** 13
+
+- `~docs/projects/dark-places-semantic-v2/inspiration-migration-matrix.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch12-wax-death-masks-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch13-anthropodermic-bibliopegy-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/phase8-batch14-jikininki-editorial-review.md`
+- `~docs/projects/dark-places-semantic-v2/README.md`
+- `~shared/content/content-packs/anthropodermic-bibliopegy-semantic-v2-pack.js`
+- `~shared/content/content-packs/anthropodermic-bibliopegy-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/jikininki-semantic-v2-pack.js`
+- `~shared/content/content-packs/jikininki-semantic-v2-phase8.test.js`
+- `~shared/content/content-packs/wax-death-masks-semantic-v2-pack.js`
+- `~shared/content/content-packs/wax-death-masks-semantic-v2-phase8.test.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.js`
+- `~shared/content/migrations/inspiration-v2-migration-registry.test.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: PATCH-MANIFEST.md
+

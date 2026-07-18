@@ -298,7 +298,7 @@
 .inspiration-studio__section-tabs {
   display: grid;
   gap: 0;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   align-items: stretch;
   margin: 0 0 -1px;
   min-width: 0;

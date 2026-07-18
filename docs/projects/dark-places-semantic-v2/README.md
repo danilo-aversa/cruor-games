@@ -357,7 +357,7 @@ Mortuary Totems Candidate 1 is approved as canonical v2 with Archive + Dark Plac
 
 Mustard Gas Candidate 1 is approved as canonical v2 with Archive + Dark Places ownership only, zero Monster linkage, 15 legacy ids mapped exactly once, and independent human/source/QA/image publication gates.
 
-Endocannibalism Candidate 1 is approved as canonical v2 with Archive + Dark Places ownership only, zero Monster linkage, 12 legacy ids mapped exactly once, and independent human/source/QA/image publication gates.
+Endocannibalism Candidate 1 is approved as canonical v2 with Archive + Dark Places ownership only, zero Monster linkage, 11 legacy ids mapped exactly once, and independent human/source/QA/image publication gates.
 
 ### Phase 8 approvals recorded — 2026-07-17
 
@@ -380,17 +380,22 @@ Genetic Mutations Candidate 1, Crucifixion Candidate 1, and Impalement Candidate
 
 - [Phase 8 batch 12 Wax Death Masks editorial review](./phase8-batch12-wax-death-masks-editorial-review.md)
 
-Wax Death Masks Candidate 1 is included as canonical v2 with Archive + Dark Places ownership only, zero embedded Monster payload, and independent human/source/QA/image publication gates.
+Wax Death Masks Candidate 1 is approved as canonical v2 with Archive + Dark Places ownership only and external parity to 7 native Monster grafts. Its deterministic sample QA passes with zero diagnostics; only image provenance remains open.
 
 - [Phase 8 batch 13 Anthropodermic Bibliopegy editorial review](./phase8-batch13-anthropodermic-bibliopegy-editorial-review.md)
 
-Anthropodermic Bibliopegy Candidate 1 is included as canonical v2 with Archive + Dark Places ownership only, zero embedded Monster payload, and independent human/source/QA/image publication gates.
+Anthropodermic Bibliopegy Candidate 1 is approved as canonical v2 with Archive + Dark Places ownership only and zero Monster capability. Its deterministic sample QA passes with zero diagnostics; only image provenance remains open.
 
 - [Phase 8 batch 14 Jikininki editorial review](./phase8-batch14-jikininki-editorial-review.md)
 
-Jikininki Candidate 1 is included as canonical v2 with Archive + Dark Places ownership only, zero embedded Monster payload, and independent human/source/QA/image publication gates.
+Jikininki Candidate 1 is approved as canonical v2 with Archive + Dark Places ownership only and external parity to 25 native Monster grafts. Its deterministic sample QA passes with zero diagnostics; only image provenance remains open.
 
 
-### Phase 8 final candidate frontier — 2026-07-17
+### Phase 8 final editorial approvals — 2026-07-17
 
-All 14 Inspirations are now represented by canonical v2 modules. Eleven are approved and the final three—Wax Death Masks, Anthropodermic Bibliopegy, and Jikininki—are Candidate 1 modules awaiting the final combined local QA and human sign-off. Production behavior remains unchanged; Wax Death Masks and Jikininki verify their native Monster catalogs externally rather than copying grafts into Dark Places packs.
+All 14 Inspirations are represented by canonical v2 modules, have an explicit approval from Danilo, and pass deterministic sample QA with zero diagnostics. Phase 8 is technically complete. Production behavior remains unchanged; Wax Death Masks and Jikininki verify their native Monster catalogs externally rather than copying grafts into Dark Places packs.
+
+
+### Phase 8 technical closure — 2026-07-18
+
+The closing rerun passed the batch 8–14 checks and the aggregate Phase 8 suite. All 14 canonical v2 modules report complete semantic coverage; every deterministic sample completed with zero errors, zero warnings, and zero determinism failures. The aggregate Vitest run passed 118 tests across 16 files. `sample-qa-local-verification-required` is closed for Wax Death Masks, Anthropodermic Bibliopegy, and Jikininki. Only `image-provenance-required` remains open for publication.

@@ -10,6 +10,11 @@ export const ANTHROPODERMIC_BIBLIOPEGY_SEMANTIC_V2_MODULE_ID = "anthropodermic-b
 export const ANTHROPODERMIC_BIBLIOPEGY_SEMANTIC_V2_SOURCE_ANCHOR_ID = "anthropodermic-bibliopegy";
 
 const RESULT = createPhase8SemanticCandidate({
+  approval: {
+    reviewer: "Danilo",
+    reviewedAt: "2026-07-17",
+    publicationBlockers: ["image-provenance-required"],
+  },
   legacyModule: ANTHROPODERMIC_BIBLIOPEGY_INSPIRATION_MODULE,
   legacyComponents: [
     ...ANTHROPODERMIC_BIBLIOPEGY_LOCATION_COMPONENTS,

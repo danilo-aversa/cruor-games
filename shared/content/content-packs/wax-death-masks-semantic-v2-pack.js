@@ -10,6 +10,11 @@ export const WAX_DEATH_MASKS_SEMANTIC_V2_MODULE_ID = "wax-death-masks";
 export const WAX_DEATH_MASKS_SEMANTIC_V2_SOURCE_ANCHOR_ID = "wax-death-masks";
 
 const RESULT = createPhase8SemanticCandidate({
+  approval: {
+    reviewer: "Danilo",
+    reviewedAt: "2026-07-17",
+    publicationBlockers: ["image-provenance-required"],
+  },
   legacyModule: WAX_DEATH_MASKS_INSPIRATION_MODULE,
   legacyComponents: [
     ...WAX_DEATH_MASKS_LOCATION_COMPONENTS,

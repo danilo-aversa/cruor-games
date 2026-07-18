@@ -24,12 +24,6 @@ const ORDER = [
   "anthropodermic-bibliopegy",
   "jikininki"
 ];
-const APPROVED = ORDER.slice(0, 11);
-const CANDIDATES = [
-  "wax-death-masks",
-  "anthropodermic-bibliopegy",
-  "jikininki"
-];
 
 describe("Phase 8 Inspiration v2 migration registry", () => {
   it("tracks all 14 Inspirations in the approved batch order", () => {
@@ -44,10 +38,10 @@ describe("Phase 8 Inspiration v2 migration registry", () => {
       legacyV1: 0,
       registryFallback: 0,
       missing: 0,
-      approved: 11,
-      awaitingEditorialApproval: 3,
+      approved: 14,
+      awaitingEditorialApproval: 0,
     });
-    [...APPROVED, ...CANDIDATES].forEach((moduleId) => {
+    ORDER.forEach((moduleId) => {
       expect(report.rows.find((row) => row.moduleId === moduleId)).toMatchObject({
         found: true,
         observedSchema: "cruor-inspiration-module-v2",
@@ -58,8 +52,8 @@ describe("Phase 8 Inspiration v2 migration registry", () => {
     });
   });
 
-  it("records 11 approvals and the current final candidates", () => {
-    APPROVED.forEach((moduleId) => {
+  it("records all 14 editorial approvals with zero-diagnostic sample QA", () => {
+    ORDER.forEach((moduleId) => {
       const record = getInspirationV2MigrationRecord(moduleId);
       expect(record).toMatchObject({
         migrationStatus: "complete",
@@ -71,43 +65,6 @@ describe("Phase 8 Inspiration v2 migration registry", () => {
       });
       expect(isInspirationV2EditoriallyApproved(record)).toBe(true);
     });
-    {
-      const record = getInspirationV2MigrationRecord("wax-death-masks");
-      expect(record).toMatchObject({
-        migrationStatus: "candidate-ready",
-        editorialStatus: "awaiting-human-signoff",
-        semanticCoverageStatus: "complete",
-        sampleQaStatus: "pending-local-verification",
-        reviewer: "",
-        candidate: { reviewVersion: "phase8-wax-death-masks-editorial-candidate-v1" },
-      });
-      expect(isInspirationV2EditoriallyApproved(record)).toBe(false);
-    }
-    {
-      const record = getInspirationV2MigrationRecord("anthropodermic-bibliopegy");
-      expect(record).toMatchObject({
-        migrationStatus: "candidate-ready",
-        editorialStatus: "awaiting-human-signoff",
-        semanticCoverageStatus: "complete",
-        sampleQaStatus: "pending-local-verification",
-        reviewer: "",
-        candidate: { reviewVersion: "phase8-anthropodermic-bibliopegy-editorial-candidate-v1" },
-      });
-      expect(isInspirationV2EditoriallyApproved(record)).toBe(false);
-    }
-    {
-      const record = getInspirationV2MigrationRecord("jikininki");
-      expect(record).toMatchObject({
-        migrationStatus: "candidate-ready",
-        editorialStatus: "awaiting-human-signoff",
-        semanticCoverageStatus: "complete",
-        sampleQaStatus: "pending-local-verification",
-        reviewer: "",
-        candidate: { reviewVersion: "phase8-jikininki-editorial-candidate-v1" },
-      });
-      expect(isInspirationV2EditoriallyApproved(record)).toBe(false);
-    }
-
   });
 
   it("tracks modern Monster ownership externally", () => {

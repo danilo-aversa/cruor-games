@@ -22,7 +22,7 @@ function referencesSource(graft = {}) {
     .includes("wax-death-masks");
 }
 
-describe("Phase 8 batch 12 — Wax Death Masks Candidate 1", () => {
+describe("Phase 8 batch 12 — Wax Death Masks approved Candidate 1", () => {
   it("owns only Archive and Dark Places while Monster parity remains external", () => {
     const source = readFileSync(
       resolve(process.cwd(), "shared/content/content-packs/wax-death-masks-semantic-v2-pack.js"),
@@ -35,17 +35,17 @@ describe("Phase 8 batch 12 — Wax Death Masks Candidate 1", () => {
     expect(MONSTER_GRAFTS.filter(referencesSource)).toHaveLength(7);
   });
 
-  it("adds Candidate 1 to the semantic catalog without changing production", () => {
+  it("keeps approved Candidate 1 in the semantic catalog without changing production", () => {
     const module = CRUOR_INSPIRATION_MODULES.find((entry) => entry.id === "wax-death-masks");
     expect(module).toBe(WAX_DEATH_MASKS_SEMANTIC_V2_MODULE);
     expect(module.schemaVersion).toBe("cruor-inspiration-module-v2");
-    expect(module.status).toBe("in-review");
+    expect(module.status).toBe("approved");
     expect(validateContentPackV0_2(WAX_DEATH_MASKS_SEMANTIC_V2_PACK)).toEqual([]);
     expect(STATIC_CONTENT_REGISTRY.getInspirations({ workflow: "inspiration-archive" })).toHaveLength(14);
     expect(STATIC_CONTENT_REGISTRY.getComponents({ sourceAnchor: "wax-death-masks" })).toHaveLength(20);
   });
 
-  it("records candidate provenance and explicit review gates", () => {
+  it("records editorial approval and zero-diagnostic sample QA", () => {
     const records = [
       WAX_DEATH_MASKS_SEMANTIC_V2_MODULE,
       WAX_DEATH_MASKS_SEMANTIC_V2_MODULE.inspiration,
@@ -54,27 +54,22 @@ describe("Phase 8 batch 12 — Wax Death Masks Candidate 1", () => {
     records.forEach((record) =>
       expect(record.provenance.migration).toMatchObject({
         method: "editorially-migrated",
-        editorialDecision: "needs-revision",
-        reviewVersion: "phase8-wax-death-masks-editorial-candidate-v1",
+        editorialDecision: "approved",
+        reviewVersion: "phase8-wax-death-masks-editorial-approved-v1",
       }),
     );
     expect(getInspirationV2MigrationRecord("wax-death-masks")).toMatchObject({
-      migrationStatus: "candidate-ready",
-      editorialStatus: "awaiting-human-signoff",
+      migrationStatus: "complete",
+      editorialStatus: "approved",
       semanticCoverageStatus: "complete",
-      sampleQaStatus: "pending-local-verification",
+      sampleQaStatus: "passed-zero-diagnostics",
       ownedSemanticCapabilities: ["inspiration-archive", "dark-places"],
       modernCapabilityLinks: [
         expect.objectContaining({ sourceAnchorId: "wax-death-masks", expectedEntries: 7, ownership: "external-modern-source" }),
       ],
-      blockingIssues: [
-        "human-editorial-signoff-required",
-        "museum-ethics-review-required",
-        "sample-qa-local-verification-required",
-        "image-provenance-required",
-      ],
+      blockingIssues: ["image-provenance-required"],
       candidate: {
-        reviewVersion: "phase8-wax-death-masks-editorial-candidate-v1",
+        reviewVersion: "phase8-wax-death-masks-editorial-approved-v1",
         ownershipModel: "archive-dark-places-with-external-monster-parity",
       },
     });

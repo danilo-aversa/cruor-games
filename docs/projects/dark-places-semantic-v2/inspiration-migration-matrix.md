@@ -24,9 +24,9 @@ completion score.
 |     9 | Genetic Mutations         | v2 approved  |         15 |       0 |       14 |       1 |     5 |     0 | A + D           | Approved Candidate 1: bounded source context, fair semantic system, zero Monster content; image provenance remains open |
 |    10 | Crucifixion               | v2 approved  |          9 |       0 |        8 |       1 |     1 |     0 | A + D           | Approved Candidate 1: bounded source context, fair semantic system, zero Monster content; image provenance remains open |
 |    11 | Impalement                | v2 approved  |          6 |       0 |        5 |       1 |     1 |     0 | A + D           | Approved Candidate 1: bounded source context, fair semantic system, zero Monster content; image provenance remains open |
-|    12 | Wax Death Masks           | v2 candidate |         20 |       7 |       11 |       2 |     0 |     1 | A + D; M ext.   | Candidate 1: museum-object boundary, contested likeness, external parity to 7 native Monster grafts; review, local QA, and image provenance open |
-|    13 | Anthropodermic Bibliopegy | v2 candidate |         14 |       0 |       12 |       2 |     0 |     1 | A + D           | Candidate 1: consent, human-remains stewardship, provenance, and respectful disposition; review, local QA, and image provenance open |
-|    14 | Jikininki                 | v2 candidate |         36 |      25 |       10 |       1 |    10 |     1 | A + D; M ext.   | Candidate 1: bounded Hearn 1904 literary source, funerary duty, external parity to 25 native Monster grafts; review, local QA, and image provenance open |
+|    12 | Wax Death Masks           | v2 approved  |         20 |       7 |       11 |       2 |     0 |     1 | A + D; M ext.   | Approved Candidate 1: museum-object boundary and external parity to 7 native Monster grafts; zero-diagnostic sample QA passed; image provenance remains open |
+|    13 | Anthropodermic Bibliopegy | v2 approved  |         14 |       0 |       12 |       2 |     0 |     1 | A + D           | Approved Candidate 1: consent, human-remains stewardship, provenance, and respectful disposition; zero-diagnostic sample QA passed; image provenance remains open |
+|    14 | Jikininki                 | v2 approved  |         36 |      25 |       10 |       1 |    10 |     1 | A + D; M ext.   | Approved Candidate 1: bounded Hearn 1904 literary source, funerary duty, and external parity to 25 native Monster grafts; zero-diagnostic sample QA passed; image provenance remains open |
 
 ## Capability decisions
 
@@ -60,11 +60,7 @@ editorial decision to `approved`.
 
 ## Phase 8 live status
 
-The machine-readable registry now exposes all 14 Inspirations as canonical v2 modules. Eleven have an explicit human `approved` decision and three final candidates await sign-off:
-
-- Wax Death Masks Candidate 1;
-- Anthropodermic Bibliopegy Candidate 1;
-- Jikininki Candidate 1.
+The machine-readable registry exposes all 14 Inspirations as canonical v2 modules. All 14 have an explicit human `approved` decision from Danilo and a `passed-zero-diagnostics` sample-QA status.
 
 Production registry behavior remains unchanged. Decomposition, Wolf Spiders, Wax Death Masks, and Jikininki keep Monster Composer data in the existing modern Monster catalog; semantic packs verify source-anchor parity but do not copy, snapshot, or re-own those grafts. Every current module owns only Inspiration Archive and Dark Places semantic content. Image provenance remains an independent publication blocker for every approved or candidate module.
 
@@ -109,3 +105,13 @@ Genetic Mutations, Crucifixion, and Impalement were approved by Danilo on 2026-0
 ### Final-candidate checkpoint after batch 14
 
 14 of 14 modules are canonical v2. Eleven are approved and 3 final candidate(s) await sign-off. Production registry behavior remains unchanged, while Monster data for Wax Death Masks and Jikininki remains externally owned and parity-checked.
+
+
+### Final editorial approval checkpoint — 2026-07-17
+
+Wax Death Masks Candidate 1, Anthropodermic Bibliopegy Candidate 1, and Jikininki Candidate 1 were approved by Danilo. The closing rerun passed with zero sample diagnostics, so all 14 modules are editorially approved and technically verified. Image provenance remains the only independent publication blocker.
+
+
+### Phase 8 technical closure — 2026-07-18
+
+All 14 rows are canonical v2, editorially approved, semantically complete, and `passed-zero-diagnostics`. The aggregate Phase 8 run passed 118 tests in 16 files. No legacy v1 or registry-fallback module remains. Only image provenance remains open before publication.

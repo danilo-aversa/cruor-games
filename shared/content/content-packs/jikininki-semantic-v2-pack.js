@@ -10,6 +10,11 @@ export const JIKININKI_SEMANTIC_V2_MODULE_ID = "jikininki";
 export const JIKININKI_SEMANTIC_V2_SOURCE_ANCHOR_ID = "jikininki";
 
 const RESULT = createPhase8SemanticCandidate({
+  approval: {
+    reviewer: "Danilo",
+    reviewedAt: "2026-07-17",
+    publicationBlockers: ["image-provenance-required"],
+  },
   legacyModule: JIKININKI_INSPIRATION_MODULE,
   legacyComponents: [
     ...JIKININKI_LOCATION_COMPONENTS,
