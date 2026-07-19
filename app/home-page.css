@@ -17,6 +17,8 @@
   padding: 0;
   position: relative;
   isolation: isolate;
+  overflow-x: visible;
+  overflow-y: clip;
 }
 
 main.cruor-home::before {
@@ -629,7 +631,7 @@ main.cruor-home::before {
 }
 
 .cruor-home__section--tools .cruor-home__section-head {
-  margin-bottom: 48px;
+  margin-bottom: 80px;
 }
 
 .cruor-home__section--tools .cruor-home__section-head[hidden] {
@@ -689,8 +691,7 @@ main.cruor-home::before {
 }
 
 .cruor-home__tool-band {
-  --cruor-ambient-band-height: calc(100% + clamp(72px, 7vw, 112px));
-  --cruor-ambient-band-min-height: clamp(500px, 48vw, 700px);
+  --cruor-ambient-band-bleed: clamp(144px, 15vw, 300px);
   --cruor-home-tool-band-focus-x: 18%;
   --cruor-home-tool-band-counter-x: 82%;
 }
@@ -1420,14 +1421,20 @@ main.cruor-home::before {
   padding-bottom: clamp(18px, 2vw, 24px);
   text-align: center;
   max-width: 980px;
-  margin: 0 auto clamp(34px, 4vw, 54px);
+  margin: 0 auto clamp(64px, 5vw, 84px);
   padding: 0;
 }
 
 .cruor-home__section-head--tools p,
 .cruor-home__section-head--workbench p {
   max-width: 820px;
-  margin: 0 auto;
+  margin: 1rem auto 0;
+}
+
+.cruor-home__section-head--tools {
+  position: relative;
+  z-index: 2;
+  margin-bottom: clamp(96px, 8vw, 144px);
 }
 
 .cruor-home__section--sources {
@@ -1490,6 +1497,281 @@ main.cruor-home::before {
   }
 }
 
+/* Complete full-bleed gradients
+ *
+ * The burgundy backgrounds live on decorative layers that extend beyond the
+ * content boxes. Their transparent endpoints therefore finish outside each
+ * section instead of being clipped exactly where the section ends.
+ */
+:where(
+    #workbenchFlow.cruor-home__statement--sticky,
+    .cruor-home__section--sources,
+    .cruor-home__section--faq,
+    .cruor-home__section--support
+  ) {
+  --cruor-home-band-bleed: clamp(112px, 12vw, 240px);
+  isolation: isolate;
+  overflow: visible;
+}
+
+.cruor-home__section--sources,
+.cruor-home__section--support,
+.cruor-home__section--faq {
+  background: none !important;
+  animation: none;
+}
+
+.cruor-home__section--sources::before,
+.cruor-home__section--support::before,
+.cruor-home__section--faq::before {
+  content: "" !important;
+  position: absolute;
+  top: calc(0px - var(--cruor-home-band-bleed));
+  right: 0;
+  bottom: calc(0px - var(--cruor-home-band-bleed));
+  left: 0;
+  z-index: 0;
+  display: block !important;
+  pointer-events: none;
+  background-repeat: no-repeat;
+}
+
+.cruor-home__section--sources::before,
+.cruor-home__section--support::before {
+  --cruor-band-shadow: 0.72;
+  --cruor-band-shadow-low: 0.68;
+  --cruor-band-core: 0.46;
+  --cruor-band-glow: 0.36;
+  --cruor-band-glow-soft: 0.2;
+  --cruor-band-side: 0.42;
+  --cruor-band-side-soft: 0.16;
+  --cruor-band-highlight: 0.11;
+  --cruor-band-highlight-soft: 0.045;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5, 4, 5, 0) 0%,
+      rgba(5, 4, 5, 0) 12%,
+      rgba(18, 6, 10, var(--cruor-band-shadow)) 24%,
+      rgba(51, 3, 12, var(--cruor-band-core)) 50%,
+      rgba(18, 6, 10, var(--cruor-band-shadow-low)) 76%,
+      rgba(5, 4, 5, 0) 88%,
+      rgba(5, 4, 5, 0) 100%
+    ),
+    radial-gradient(
+      ellipse 80% 62% at 50% 50%,
+      rgba(122, 26, 40, var(--cruor-band-glow)) 0%,
+      rgba(122, 26, 40, var(--cruor-band-glow-soft)) 42%,
+      rgba(122, 26, 40, 0) 82%
+    ),
+    radial-gradient(
+      ellipse 44% 52% at 14% 48%,
+      rgba(208, 162, 170, var(--cruor-band-highlight)) 0%,
+      rgba(208, 162, 170, var(--cruor-band-highlight-soft)) 34%,
+      rgba(208, 162, 170, 0) 72%
+    ),
+    radial-gradient(
+      ellipse 46% 54% at 86% 52%,
+      rgba(94, 8, 22, var(--cruor-band-side)) 0%,
+      rgba(94, 8, 22, var(--cruor-band-side-soft)) 40%,
+      rgba(94, 8, 22, 0) 80%
+    );
+  animation: cruor-editorial-red-breath 7s ease-in-out infinite;
+}
+
+.cruor-home__section--faq::before {
+  background:
+    radial-gradient(
+      circle at 18% 40%,
+      rgba(122, 26, 40, 0.24),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 82% 62%,
+      rgba(208, 162, 170, 0.07),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(5, 4, 5, 0) 0%,
+      rgba(18, 6, 10, 0.68) 22%,
+      rgba(51, 3, 12, 0.4) 50%,
+      rgba(18, 6, 10, 0.64) 78%,
+      rgba(5, 4, 5, 0) 100%
+    );
+}
+
+.cruor-home__section--sources::after,
+.cruor-home__section--support::after,
+.cruor-home__section--faq::after {
+  content: none !important;
+  display: none !important;
+}
+
+#workbenchFlow.cruor-home__statement--sticky
+  > .cruor-home__statement-sticky {
+  overflow: visible;
+  background: none !important;
+  animation: none;
+}
+
+#workbenchFlow.cruor-home__statement--sticky
+  > .cruor-home__statement-sticky::before {
+  content: "" !important;
+  position: absolute;
+  top: calc(0px - var(--cruor-home-band-bleed));
+  right: 0;
+  bottom: calc(0px - var(--cruor-home-band-bleed));
+  left: 0;
+  z-index: 0;
+  display: block !important;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5, 4, 5, 0) 0%,
+      rgba(18, 6, 10, var(--cruor-band-shadow)) 19%,
+      rgba(51, 3, 12, var(--cruor-band-core)) 50%,
+      rgba(18, 6, 10, var(--cruor-band-shadow-low)) 81%,
+      rgba(5, 4, 5, 0) 100%
+    ),
+    radial-gradient(
+      ellipse 78% 58% at 50% 51%,
+      rgba(122, 26, 40, var(--cruor-band-glow)),
+      rgba(122, 26, 40, var(--cruor-band-glow-soft)) 42%,
+      rgba(122, 26, 40, 0) 76%
+    );
+  background-repeat: no-repeat;
+  animation: cruor-editorial-red-breath 7s ease-in-out infinite;
+}
+
+#workbenchFlow.cruor-home__statement--sticky
+  > .cruor-home__statement-sticky::after {
+  content: none !important;
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cruor-home__section--sources::before,
+  .cruor-home__section--support::before,
+  #workbenchFlow.cruor-home__statement--sticky
+    > .cruor-home__statement-sticky::before {
+    animation: none;
+  }
+}
+
+/* Final pseudo reset: the real backdrop spans above are the sole renderers. */
+.cruor-home__section--sources::before,
+.cruor-home__section--support::before,
+.cruor-home__section--faq::before,
+#workbenchFlow.cruor-home__statement--sticky
+  > .cruor-home__statement-sticky::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* Real backdrop elements avoid the legacy pseudo-element reset rules above. */
+.cruor-home__editorial-band-backdrop {
+  position: absolute !important;
+  top: calc(0px - var(--cruor-home-band-bleed)) !important;
+  right: 0 !important;
+  bottom: calc(0px - var(--cruor-home-band-bleed)) !important;
+  left: 0 !important;
+  z-index: 0 !important;
+  display: block !important;
+  pointer-events: none;
+  background-repeat: no-repeat;
+}
+
+.cruor-home__editorial-band-backdrop--editorial {
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 12%,
+      rgba(18, 6, 10, var(--cruor-band-shadow)) 24%,
+      rgba(51, 3, 12, var(--cruor-band-core)) 50%,
+      rgba(18, 6, 10, var(--cruor-band-shadow-low)) 76%,
+      transparent 88%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 80% 62% at 50% 50%,
+      rgba(122, 26, 40, var(--cruor-band-glow)) 0%,
+      rgba(122, 26, 40, var(--cruor-band-glow-soft)) 42%,
+      transparent 82%
+    ),
+    radial-gradient(
+      ellipse 44% 52% at 14% 48%,
+      rgba(208, 162, 170, var(--cruor-band-highlight)) 0%,
+      rgba(208, 162, 170, var(--cruor-band-highlight-soft)) 34%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 46% 54% at 86% 52%,
+      rgba(94, 8, 22, var(--cruor-band-side)) 0%,
+      rgba(94, 8, 22, var(--cruor-band-side-soft)) 40%,
+      transparent 80%
+    );
+  animation: cruor-editorial-red-breath 7s ease-in-out infinite;
+}
+
+.cruor-home__editorial-band-backdrop--faq {
+  background:
+    radial-gradient(
+      circle at 18% 40%,
+      rgba(122, 26, 40, 0.24),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 82% 62%,
+      rgba(208, 162, 170, 0.07),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(18, 6, 10, 0.68) 22%,
+      rgba(51, 3, 12, 0.4) 50%,
+      rgba(18, 6, 10, 0.64) 78%,
+      transparent 100%
+    );
+}
+
+.cruor-home__editorial-band-backdrop--workbench {
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(18, 6, 10, var(--cruor-band-shadow)) 19%,
+      rgba(51, 3, 12, var(--cruor-band-core)) 50%,
+      rgba(18, 6, 10, var(--cruor-band-shadow-low)) 81%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 78% 58% at 50% 51%,
+      rgba(122, 26, 40, var(--cruor-band-glow)),
+      rgba(122, 26, 40, var(--cruor-band-glow-soft)) 42%,
+      transparent 76%
+    );
+  animation: cruor-editorial-red-breath 7s ease-in-out infinite;
+}
+
+.cruor-home__section--sources::before,
+.cruor-home__section--support::before,
+.cruor-home__section--faq::before,
+#workbenchFlow.cruor-home__statement--sticky
+  > .cruor-home__statement-sticky::before {
+  content: none !important;
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cruor-home__editorial-band-backdrop {
+    animation: none;
+  }
+}
+
 @keyframes cruorHomeTabPanelIn {
   from {
     opacity: 0;
@@ -1529,6 +1811,11 @@ main.cruor-home::before {
   justify-items: center;
   max-width: 940px;
   margin: 0 auto;
+}
+
+.cruor-home__sources-button {
+  justify-self: center;
+  margin-top: clamp(4px, 1vw, 12px);
 }
 
 .cruor-home__sources-copy .cruor-home__section-head p {
@@ -2610,7 +2897,7 @@ main.cruor-home::before {
   display: block;
   width: 100vw;
   max-width: none;
-  min-height: var(--workbench-sticky-height);
+  min-height: calc(var(--workbench-sticky-height) + 1875px);
   margin-right: calc(50% - 50vw);
   margin-left: calc(50% - 50vw);
   padding: 0 !important;
@@ -2621,6 +2908,12 @@ main.cruor-home::before {
   perspective: none;
   contain: none;
   animation: none;
+}
+
+@media (min-width: 901px) {
+  #workbenchFlow.cruor-home__statement--sticky.is-released {
+    min-height: var(--workbench-sticky-height);
+  }
 }
 
 #workbenchFlow,
@@ -2702,13 +2995,19 @@ main.cruor-home::before {
   position: relative;
   isolation: isolate;
   width: 100%;
-  height: clamp(420px, 54vh, 560px);
+  height: clamp(600px, 60vh, 560px);
   margin: 0 auto;
+}
+
+@media (min-width: 901px) {
+  #workbenchFlow .cruor-home__workbench-process {
+    margin-top: clamp(42px, 5vh, 68px);
+  }
 }
 
 #workbenchFlow .cruor-home__workbench-rail {
   position: absolute;
-  top: 48%;
+  top: 50%;
   left: 16.6667%;
   right: 16.6667%;
   z-index: 0;
@@ -2783,14 +3082,14 @@ main.cruor-home::before {
   top: 0;
   left: 50%;
   width: 100%;
-  height: calc(48% - 54px);
+  height: calc(48% - 90px);
   transform: translateX(-50%);
   pointer-events: none;
 }
 
 #workbenchFlow .cruor-home__workbench-marker {
   position: absolute;
-  top: calc(48% - 35px);
+  top: calc(50% - 35px);
   left: 50%;
   z-index: 5;
   display: grid;
@@ -2859,7 +3158,7 @@ main.cruor-home::before {
 
 #workbenchFlow .cruor-home__workbench-stage-copy {
   position: absolute;
-  top: calc(48% + 65px);
+  top: calc(50% + 65px);
   left: 50%;
   width: min(calc(100% - 40px), 360px);
   transform: translateX(-50%);
@@ -2932,8 +3231,8 @@ main.cruor-home::before {
   position: absolute;
   top: 48%;
   left: 50%;
-  width: 318px;
-  height: 190px;
+  width: 212px;
+  height: 180px;
   transform: translate(-50%, -50%);
 }
 
@@ -2941,8 +3240,8 @@ main.cruor-home::before {
   position: absolute;
   top: 5px;
   left: 0;
-  width: 106px;
-  height: 140px;
+  width: 96px;
+  height: 126px;
   overflow: visible;
   opacity: 0;
   pointer-events: none;
@@ -2954,8 +3253,116 @@ main.cruor-home::before {
   min-width: 240px;
   max-width: none;
   flex: 0 0 240px;
-  transform: scale(0.44);
+  transform: scale(0.4);
   transform-origin: top left;
+}
+
+#workbenchFlow .cruor-home__workbench-inspiration-back-slot {
+  position: absolute;
+  top: 5px;
+  left: 116px;
+  width: 96px;
+  height: 126px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(28px, 14px) rotate(3deg) scale(0.9);
+}
+
+#workbenchFlow .cruor-home__workbench-inspiration-back-slot > .inspiration-card {
+  width: 240px;
+  min-width: 240px;
+  max-width: none;
+  transform: scale(0.4);
+  transform-origin: top left;
+}
+
+#workbenchFlow
+  .cruor-home__workbench-inspiration-back-slot
+  .inspiration-card__back {
+  background: #050405;
+}
+
+#workbenchFlow
+  .cruor-home__workbench-inspiration-back-slot
+  .inspiration-card__back-art {
+  display: none;
+}
+
+#workbenchFlow
+  .cruor-home__workbench-inspiration-back-slot
+  .inspiration-card__description
+  p {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 9;
+}
+
+#workbenchFlow .cruor-home__workbench-inspiration-back-slot button {
+  pointer-events: none;
+}
+
+#workbenchFlow
+  .cruor-home__workbench-inspiration-back-slot
+  .inspiration-card__back-head
+  h2 {
+  margin: 0;
+  color: var(--cruor-color-milk, #f0d7dc);
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.08;
+  text-transform: uppercase;
+}
+
+#workbenchFlow
+  .cruor-home__workbench-inspiration-back-slot
+  .inspiration-card__back-head
+  > div
+  > span {
+  margin-top: 5px;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+#workbenchFlow
+  .cruor-home__workbench-inspiration-back-slot
+  .inspiration-card__description
+  p {
+  margin: 0;
+  color: var(--cruor-color-text-a900, rgba(238, 238, 238, 0.9));
+  font-size: 15px;
+  line-height: 1.48;
+}
+
+#workbenchFlow
+  .cruor-home__workbench-inspiration-back-slot
+  .inspiration-card__obscurity {
+  min-width: 24px;
+  min-height: 24px;
+  font-size: 11px;
+}
+
+#workbenchFlow
+  .cruor-home__workbench-inspiration-back-slot
+  .inspiration-card__footer {
+  font-size: 8px;
+  line-height: 1.2;
+}
+
+#workbenchFlow
+  .cruor-home__workbench-inspiration-slot
+  > .cruor-home__source-card
+  .inspiration-card__face {
+  background: #050405;
+}
+
+#workbenchFlow
+  .cruor-home__workbench-inspiration-slot
+  > .cruor-home__source-card
+  .inspiration-card__front-paper-texture {
+  display: none;
 }
 
 #workbenchFlow .cruor-home__workbench-input-pills {
@@ -2996,9 +3403,11 @@ main.cruor-home::before {
 
 #workbenchFlow .cruor-home__workbench-input-prompt {
   position: absolute;
-  right: 20px;
-  bottom: 12px;
-  width: 184px;
+  top: 145px;
+  right: auto;
+  bottom: auto;
+  left: 0;
+  width: 212px;
   margin: 0;
   padding: 0;
   border: 0;
@@ -3010,6 +3419,7 @@ main.cruor-home::before {
   font-style: italic;
   font-weight: 500;
   line-height: 1.4;
+  text-align: center;
   opacity: 0;
   transform: translate(20px, 10px);
 }
@@ -3020,6 +3430,14 @@ main.cruor-home::before {
   animation:
     cruor-workbench-inspiration-enter 760ms cubic-bezier(0.22, 1, 0.36, 1) both,
     cruor-workbench-inspiration-float 4.5s ease-in-out 1100ms infinite alternate;
+}
+
+#workbenchFlow.is-step-1 .cruor-home__workbench-inspiration-back-slot,
+#workbenchFlow.is-step-2 .cruor-home__workbench-inspiration-back-slot,
+#workbenchFlow.is-step-3 .cruor-home__workbench-inspiration-back-slot {
+  animation:
+    cruor-workbench-inspiration-back-enter 760ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both,
+    cruor-workbench-inspiration-back-float 4.8s ease-in-out 1220ms infinite alternate;
 }
 
 #workbenchFlow.is-step-1 .cruor-home__workbench-input-pill,
@@ -3051,6 +3469,22 @@ main.cruor-home::before {
   }
 }
 
+@keyframes cruor-workbench-inspiration-back-enter {
+  to {
+    opacity: 1;
+    transform: translate(0, 0) rotate(1.4deg) scale(1);
+  }
+}
+
+@keyframes cruor-workbench-inspiration-back-float {
+  from {
+    transform: translateY(0) rotate(1.4deg);
+  }
+  to {
+    transform: translateY(-5px) rotate(0.6deg);
+  }
+}
+
 @keyframes cruor-workbench-pill-enter {
   to {
     opacity: 1;
@@ -3071,7 +3505,7 @@ main.cruor-home::before {
   position: absolute;
   top: 49%;
   left: 50%;
-  width: 270px;
+  width: 330px;
   height: 176px;
   transform: translate(-50%, -50%);
 }
@@ -3096,7 +3530,7 @@ main.cruor-home::before {
 
 #workbenchFlow .cruor-home__workbench-flowchart-packet {
   fill: #d0a2aa;
-  filter: drop-shadow(0 0 4px rgba(208, 162, 170, 0.95));
+  filter: drop-shadow(0 0 2px rgba(208, 162, 170, 0.62));
   opacity: 0;
 }
 
@@ -3113,13 +3547,14 @@ main.cruor-home::before {
 
 #workbenchFlow.is-step-2 .cruor-home__workbench-flowchart-packet,
 #workbenchFlow.is-step-3 .cruor-home__workbench-flowchart-packet {
-  opacity: 1;
+  opacity: 0.58;
 }
 
 #workbenchFlow .cruor-home__workbench-flowchart-node {
   position: absolute;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
   min-height: 36px;
   padding: 0 10px;
@@ -3133,6 +3568,7 @@ main.cruor-home::before {
   font-weight: 900;
   letter-spacing: 0.065em;
   line-height: 1;
+  text-align: center;
   text-transform: uppercase;
   opacity: 0;
   transform: translateY(10px) scale(0.88);
@@ -3146,19 +3582,24 @@ main.cruor-home::before {
 #workbenchFlow .cruor-home__workbench-flowchart-node--source {
   top: 0;
   left: 0;
-  width: 108px;
+  width: 96px;
+}
+
+#workbenchFlow .cruor-home__workbench-flowchart-node--conditions {
+  top: 0;
+  left: 117px;
+  width: 96px;
 }
 
 #workbenchFlow .cruor-home__workbench-flowchart-node--rules {
   top: 0;
   right: 0;
-  width: 108px;
+  width: 96px;
 }
 
 #workbenchFlow .cruor-home__workbench-flowchart-node--compiler {
   top: 68px;
-  left: 76px;
-  justify-content: center;
+  left: 106px;
   width: 118px;
   min-height: 42px;
   border-color: rgba(208, 162, 170, 0.52);
@@ -3191,9 +3632,8 @@ main.cruor-home::before {
 
 #workbenchFlow.is-step-2 .cruor-home__workbench-flowchart-node--compiler,
 #workbenchFlow.is-step-3 .cruor-home__workbench-flowchart-node--compiler {
-  animation:
-    cruor-workbench-flow-node-enter 520ms cubic-bezier(0.22, 1, 0.36, 1) 320ms both,
-    cruor-workbench-compiler-border-flash 1.65s steps(1, end) 960ms infinite;
+  animation: cruor-workbench-flow-node-enter 520ms cubic-bezier(0.22, 1, 0.36, 1)
+    320ms both;
 }
 
 @keyframes cruor-workbench-flow-wires-enter {
@@ -3247,21 +3687,21 @@ main.cruor-home::before {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 190px;
-  height: 154px;
+  width: 208px;
+  height: 200px;
   transform: translate(-50%, -50%);
 }
 
 #workbenchFlow .cruor-home__workbench-output-shadow,
 #workbenchFlow .cruor-home__workbench-output-page {
   position: absolute;
-  width: 150px;
-  height: 112px;
+  width: 192px;
+  height: 200px;
 }
 
 #workbenchFlow .cruor-home__workbench-output-shadow {
-  top: 27px;
-  left: 29px;
+  top: 18px;
+  left: 28px;
   border: 1px solid rgba(112, 16, 32, 0.34);
   background: rgba(51, 3, 12, 0.27);
   opacity: 0;
@@ -3269,8 +3709,9 @@ main.cruor-home::before {
 }
 
 #workbenchFlow .cruor-home__workbench-output-page {
-  top: 12px;
-  left: 12px;
+  top: 0;
+  left: 8px;
+  overflow: hidden;
   border: 1px solid rgba(208, 162, 170, 0.5);
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.055), transparent 30%),
@@ -3289,99 +3730,251 @@ main.cruor-home::before {
     180ms both;
 }
 
-#workbenchFlow .cruor-home__workbench-output-title-line,
-#workbenchFlow .cruor-home__workbench-output-text-line {
+#workbenchFlow .cruor-home__workbench-mini-stat {
   position: absolute;
-  left: 15px;
-  height: 1px;
-  background: rgba(208, 162, 170, 0.36);
-  transform: scaleX(0);
-  transform-origin: left center;
-}
-
-#workbenchFlow .cruor-home__workbench-output-title-line {
-  top: 16px;
-  width: 74px;
-  background: rgba(208, 162, 170, 0.62);
-}
-
-#workbenchFlow .cruor-home__workbench-output-text-line:nth-of-type(2) {
-  top: 34px;
-  width: 96px;
-}
-
-#workbenchFlow .cruor-home__workbench-output-text-line:nth-of-type(3) {
-  top: 46px;
-  width: 78px;
-}
-
-#workbenchFlow .cruor-home__workbench-output-text-line:nth-of-type(4) {
-  top: 58px;
-  width: 88px;
-}
-
-#workbenchFlow .cruor-home__workbench-output-text-line:nth-of-type(5) {
-  bottom: 17px;
-  width: 108px;
-}
-
-#workbenchFlow.is-step-3 .cruor-home__workbench-output-title-line,
-#workbenchFlow.is-step-3 .cruor-home__workbench-output-text-line {
-  animation: cruor-workbench-output-write-line 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-#workbenchFlow.is-step-3 .cruor-home__workbench-output-title-line {
-  animation-delay: 620ms;
-}
-
-#workbenchFlow.is-step-3
-  .cruor-home__workbench-output-text-line:nth-of-type(2) {
-  animation-delay: 740ms;
-}
-
-#workbenchFlow.is-step-3
-  .cruor-home__workbench-output-text-line:nth-of-type(3) {
-  animation-delay: 830ms;
-}
-
-#workbenchFlow.is-step-3
-  .cruor-home__workbench-output-text-line:nth-of-type(4) {
-  animation-delay: 920ms;
-}
-
-#workbenchFlow.is-step-3
-  .cruor-home__workbench-output-text-line:nth-of-type(5) {
-  animation-delay: 1120ms;
-}
-
-#workbenchFlow .cruor-home__workbench-output-map {
-  position: absolute;
-  right: 13px;
-  bottom: 25px;
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 34px;
-  border: 1px solid rgba(208, 162, 170, 0.3);
-  color: rgba(208, 162, 170, 0.78);
-  background: rgba(51, 3, 12, 0.25);
+  top: 5px;
+  left: 8px;
+  box-sizing: border-box;
+  width: 860px;
+  max-width: none;
+  margin: 0;
+  padding: 18px 20px 20px;
+  border: 1px solid var(--cruor-color-blood-bright-a620, rgba(162, 17, 42, 0.62));
+  color: var(--cruor-color-text-a900, rgba(238, 238, 238, 0.9));
+  text-align: left;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.035), transparent 32%),
+    radial-gradient(circle at 18% 6%, rgba(122, 26, 40, 0.18), transparent 42%),
+    var(--cruor-color-surface-soft-a720, rgba(10, 7, 8, 0.96));
+  box-shadow: var(--cruor-shadow-box-069, 0 18px 46px rgba(0, 0, 0, 0.4));
   opacity: 0;
-  transform: scale(0.45);
+  transform: scale(0.18);
+  transform-origin: top left;
 }
 
-#workbenchFlow .cruor-home__workbench-output-map > i {
-  font-size: 0.92rem;
+#workbenchFlow.is-step-3 .cruor-home__workbench-mini-stat {
+  animation: cruor-workbench-mini-stat-enter 760ms cubic-bezier(0.22, 1, 0.36, 1)
+    520ms both;
 }
 
-#workbenchFlow.is-step-3 .cruor-home__workbench-output-map {
-  animation: cruor-workbench-output-map-enter 520ms cubic-bezier(0.22, 1, 0.36, 1)
-    960ms both;
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-block__head {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--cruor-color-blood-bright-a680, rgba(162, 17, 42, 0.68));
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-block__head h3 {
+  margin: 0 0 4px;
+  color: var(--cruor-color-hex-fff0f2, #fff0f2);
+  font-family: var(--display);
+  font-size: 38px;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  text-shadow: var(--cruor-shadow-text-009, 0 2px 14px rgba(162, 17, 42, 0.24));
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat p {
+  margin: 0;
+  color: var(--cruor-color-text-a900, rgba(238, 238, 238, 0.9));
+  font-size: 14px;
+  line-height: 1.52;
+  text-align: left;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat strong {
+  color: var(--cruor-color-hex-9d626a, #9d626a);
+  font-weight: 900;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat em {
+  color: inherit;
+  font-style: italic;
+  font-weight: inherit;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-block__core {
+  display: grid;
+  grid-auto-rows: min-content;
+  grid-template-columns: max-content max-content;
+  justify-content: start;
+  column-gap: 72px;
+  row-gap: 1px;
+  width: 100%;
+  padding: 8px 0 10px;
+  border-bottom: 1px solid var(--cruor-color-blood-strong-a440, rgba(112, 16, 32, 0.44));
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-core-card {
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  justify-content: start;
+  gap: 5px;
+  min-width: 0;
+  padding-right: 8px;
+  color: var(--cruor-color-text-a900, rgba(238, 238, 238, 0.9));
+  font-size: 14px;
+  line-height: 1.52;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-core-card span {
+  color: var(--cruor-color-hex-fff0f2, #fff0f2);
+  font-weight: 900;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-core-card strong {
+  color: inherit;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-core-card--ac,
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-core-card--initiative {
+  grid-row: 1;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-core-card--ac,
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-core-card--hp,
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-core-card--speed {
+  grid-column: 1;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-core-card--initiative {
+  grid-column: 2;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-core-card--hp {
+  grid-row: 2;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-core-card--speed {
+  grid-row: 3;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-block__abilities {
+  display: block;
+  width: 100%;
+  padding: 11px 0 12px;
+  border-bottom: 1px solid var(--cruor-color-blood-strong-a440, rgba(112, 16, 32, 0.44));
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  width: 100%;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-header-row,
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  width: 100%;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-header-group,
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-group {
+  display: grid;
+  grid-template-columns: minmax(34px, 0.78fr) minmax(34px, 0.62fr) minmax(40px, 0.72fr) minmax(40px, 0.72fr);
+  min-width: 0;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-header-group span {
+  display: grid;
+  min-height: 18px;
+  place-items: center;
+  color: var(--cruor-color-text-a420, rgba(238, 238, 238, 0.42));
+  font-size: 9px;
+  font-weight: 450;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-group {
+  overflow: hidden;
+  border: 1px solid var(--cruor-color-blood-strong-a380, rgba(112, 16, 32, 0.38));
+  background: var(--cruor-surface-card, rgba(13, 9, 11, 0.92));
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-cell {
+  display: grid;
+  min-height: 34px;
+  padding: 5px 4px;
+  place-items: center;
+  border-left: 1px solid var(--cruor-color-surface-soft-a380, rgba(255, 255, 255, 0.06));
+  color: var(--cruor-color-hex-fff0f2, #fff0f2);
+  font-size: 12px;
+  line-height: 1;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-cell:first-child {
+  border-left: 0;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-cell--label {
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-group--physical .cruor-ability-cell--label,
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-group--physical .cruor-ability-cell--score {
+  background: var(--cruor-color-blood-strong-a340, rgba(112, 16, 32, 0.34));
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-group--physical .cruor-ability-cell--mod,
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-group--physical .cruor-ability-cell--save {
+  background: var(--cruor-color-blood-a460, rgba(51, 3, 12, 0.46));
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-group--mental .cruor-ability-cell--label,
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-group--mental .cruor-ability-cell--score {
+  background: var(--cruor-color-r70-g44-b52-a320, rgba(70, 44, 52, 0.32));
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-group--mental .cruor-ability-cell--mod,
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-ability-group--mental .cruor-ability-cell--save {
+  background: var(--cruor-color-r24-g17-b20-a580, rgba(24, 17, 20, 0.58));
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-block__facts {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--cruor-color-blood-strong-a440, rgba(112, 16, 32, 0.44));
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-block__section {
+  display: grid;
+  gap: 8px;
+  padding-top: 13px;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-block__section h2 {
+  margin: 0 0 9px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--cruor-color-blood-strong-a540, rgba(112, 16, 32, 0.54));
+  color: var(--cruor-color-hex-b33b4e, #b33b4e);
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+#workbenchFlow .cruor-home__workbench-mini-stat .cruor-stat-block__section p > strong:first-child {
+  color: var(--cruor-color-white, #fff);
+  font-weight: 700;
 }
 
 #workbenchFlow .cruor-home__workbench-output-stamp {
   position: absolute;
-  right: 0;
-  bottom: 0;
+  right: -4px;
+  bottom: -18px;
   display: grid;
   place-items: center;
   width: 76px;
@@ -3416,16 +4009,10 @@ main.cruor-home::before {
   }
 }
 
-@keyframes cruor-workbench-output-write-line {
-  to {
-    transform: scaleX(1);
-  }
-}
-
-@keyframes cruor-workbench-output-map-enter {
+@keyframes cruor-workbench-mini-stat-enter {
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(0.205);
   }
 }
 
@@ -3473,27 +4060,6 @@ main.cruor-home::before {
   opacity: 0;
 }
 
-#workbenchFlow.cruor-home__statement--sticky.is-gating
-  > .cruor-home__statement-sticky {
-  position: fixed;
-  inset: 0;
-  z-index: 30;
-  width: 100vw;
-  max-width: none;
-  margin: 0;
-}
-
-#workbenchFlow.cruor-home__statement--sticky.is-completed {
-  min-height: var(--workbench-sticky-height);
-}
-
-#workbenchFlow.cruor-home__statement--sticky.is-completed
-  > .cruor-home__statement-sticky {
-  position: relative;
-  top: auto;
-  min-height: var(--workbench-sticky-height);
-}
-
 @media (max-width: 1100px) and (min-width: 901px) {
   #workbenchFlow .cruor-home__workbench-input-composition {
     transform: translate(-50%, -50%) scale(0.86);
@@ -3505,16 +4071,11 @@ main.cruor-home::before {
 }
 
 @media (max-width: 900px) {
-  #workbenchFlow.cruor-home__statement--sticky,
-  #workbenchFlow.cruor-home__statement--sticky.is-completed {
+  #workbenchFlow.cruor-home__statement--sticky {
     min-height: auto;
   }
 
-  #workbenchFlow.cruor-home__statement--sticky > .cruor-home__statement-sticky,
-  #workbenchFlow.cruor-home__statement--sticky.is-gating
-    > .cruor-home__statement-sticky,
-  #workbenchFlow.cruor-home__statement--sticky.is-completed
-    > .cruor-home__statement-sticky {
+  #workbenchFlow.cruor-home__statement--sticky > .cruor-home__statement-sticky {
     position: relative;
     inset: auto;
     min-height: auto;
@@ -3632,16 +4193,11 @@ main.cruor-home::before {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #workbenchFlow.cruor-home__statement--sticky,
-  #workbenchFlow.cruor-home__statement--sticky.is-completed {
+  #workbenchFlow.cruor-home__statement--sticky {
     min-height: auto;
   }
 
-  #workbenchFlow.cruor-home__statement--sticky > .cruor-home__statement-sticky,
-  #workbenchFlow.cruor-home__statement--sticky.is-gating
-    > .cruor-home__statement-sticky,
-  #workbenchFlow.cruor-home__statement--sticky.is-completed
-    > .cruor-home__statement-sticky {
+  #workbenchFlow.cruor-home__statement--sticky > .cruor-home__statement-sticky {
     position: relative;
     inset: auto;
     min-height: auto;
@@ -3659,13 +4215,14 @@ main.cruor-home::before {
   #workbenchFlow .cruor-home__workbench-stage,
   #workbenchFlow .cruor-home__workbench-stage-copy p,
   #workbenchFlow .cruor-home__workbench-inspiration-slot,
+  #workbenchFlow .cruor-home__workbench-inspiration-back-slot,
   #workbenchFlow .cruor-home__workbench-input-pill,
   #workbenchFlow .cruor-home__workbench-input-prompt,
   #workbenchFlow .cruor-home__workbench-flowchart-wires,
   #workbenchFlow .cruor-home__workbench-flowchart-packet,
   #workbenchFlow .cruor-home__workbench-flowchart-node,
   #workbenchFlow .cruor-home__workbench-output-shadow,
-  #workbenchFlow .cruor-home__workbench-output-map,
+  #workbenchFlow .cruor-home__workbench-mini-stat,
   #workbenchFlow .cruor-home__workbench-output-stamp {
     opacity: 1;
     filter: none;
@@ -3677,7 +4234,6 @@ main.cruor-home::before {
   #workbenchFlow .cruor-home__workbench-input-prompt,
   #workbenchFlow .cruor-home__workbench-flowchart-node,
   #workbenchFlow .cruor-home__workbench-output-shadow,
-  #workbenchFlow .cruor-home__workbench-output-map,
   #workbenchFlow .cruor-home__workbench-output-stamp {
     transform: none;
   }
@@ -3694,9 +4250,8 @@ main.cruor-home::before {
     clip-path: inset(0 0 0 0);
   }
 
-  #workbenchFlow .cruor-home__workbench-output-title-line,
-  #workbenchFlow .cruor-home__workbench-output-text-line {
-    transform: scaleX(1);
+  #workbenchFlow .cruor-home__workbench-mini-stat {
+    transform: scale(0.205);
   }
 }
 
@@ -3761,8 +4316,8 @@ main.cruor-home::before {
 
 .cruor-home__faq-intro p {
   max-width: 48ch;
-  color: rgba(238, 238, 238, 0.7);
-  font-size: var(--text-size-xl);
+  color: var(--cruor-color-muted, var(--muted));
+  font-size: var(--text-size-3xl);
   line-height: 1.58;
 }
 
@@ -3936,7 +4491,7 @@ main.cruor-home::before {
   padding: 0 clamp(48px, 6vw, 84px) clamp(24px, 2.8vw, 36px)
     clamp(66px, 6.4vw, 92px);
   color: rgba(238, 238, 238, 0.7);
-  font-size: var(--text-size-xl);
+  font-size: var(--text-size-3xl);
   line-height: 1.62;
 }
 
@@ -3986,5 +4541,144 @@ main.cruor-home::before {
   .cruor-home__faq-accordion .cruor-accordion__icon,
   .cruor-home__faq-accordion .cruor-accordion__panel {
     transition: none;
+  }
+}
+
+/* Keep these final in the cascade: legacy Home rules above intentionally
+ * retain their original order, while these declarations own the backdrop. */
+.cruor-home__section--sources,
+.cruor-home__section--support,
+.cruor-home__section--faq {
+  background: none !important;
+  animation: none;
+}
+
+.cruor-home__section--sources::before,
+.cruor-home__section--support::before,
+.cruor-home__section--faq::before {
+  content: none !important;
+  position: absolute;
+  top: calc(0px - var(--cruor-home-band-bleed));
+  right: 0;
+  bottom: calc(0px - var(--cruor-home-band-bleed));
+  left: 0;
+  z-index: 0;
+  display: none !important;
+  pointer-events: none;
+  background-repeat: no-repeat;
+}
+
+.cruor-home__section--sources::before,
+.cruor-home__section--support::before {
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      transparent 12%,
+      rgba(18, 6, 10, var(--cruor-band-shadow)) 24%,
+      rgba(51, 3, 12, var(--cruor-band-core)) 50%,
+      rgba(18, 6, 10, var(--cruor-band-shadow-low)) 76%,
+      transparent 88%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 80% 62% at 50% 50%,
+      rgba(122, 26, 40, var(--cruor-band-glow)) 0%,
+      rgba(122, 26, 40, var(--cruor-band-glow-soft)) 42%,
+      transparent 82%
+    ),
+    radial-gradient(
+      ellipse 44% 52% at 14% 48%,
+      rgba(208, 162, 170, var(--cruor-band-highlight)) 0%,
+      rgba(208, 162, 170, var(--cruor-band-highlight-soft)) 34%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 46% 54% at 86% 52%,
+      rgba(94, 8, 22, var(--cruor-band-side)) 0%,
+      rgba(94, 8, 22, var(--cruor-band-side-soft)) 40%,
+      transparent 80%
+    );
+  animation: cruor-editorial-red-breath 7s ease-in-out infinite;
+}
+
+.cruor-home__section--faq::before {
+  background:
+    radial-gradient(
+      circle at 18% 40%,
+      rgba(122, 26, 40, 0.24),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 82% 62%,
+      rgba(208, 162, 170, 0.07),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(18, 6, 10, 0.68) 22%,
+      rgba(51, 3, 12, 0.4) 50%,
+      rgba(18, 6, 10, 0.64) 78%,
+      transparent 100%
+    );
+}
+
+.cruor-home__section--sources::after,
+.cruor-home__section--support::after,
+.cruor-home__section--faq::after {
+  content: none !important;
+  display: none !important;
+}
+
+#workbenchFlow.cruor-home__statement--sticky
+  > .cruor-home__statement-sticky {
+  overflow: visible;
+  background: none !important;
+  animation: none;
+}
+
+#workbenchFlow.cruor-home__statement--sticky
+  > .cruor-home__statement-sticky::before {
+  content: none !important;
+  position: absolute;
+  top: calc(0px - var(--cruor-home-band-bleed));
+  right: 0;
+  bottom: calc(0px - var(--cruor-home-band-bleed));
+  left: 0;
+  z-index: 0;
+  display: none !important;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(18, 6, 10, var(--cruor-band-shadow)) 19%,
+      rgba(51, 3, 12, var(--cruor-band-core)) 50%,
+      rgba(18, 6, 10, var(--cruor-band-shadow-low)) 81%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 78% 58% at 50% 51%,
+      rgba(122, 26, 40, var(--cruor-band-glow)),
+      rgba(122, 26, 40, var(--cruor-band-glow-soft)) 42%,
+      transparent 76%
+    );
+  background-repeat: no-repeat;
+  animation: cruor-editorial-red-breath 7s ease-in-out infinite;
+}
+
+#workbenchFlow.cruor-home__statement--sticky
+  > .cruor-home__statement-sticky::after {
+  content: none !important;
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cruor-home__section--sources::before,
+  .cruor-home__section--support::before,
+  #workbenchFlow.cruor-home__statement--sticky
+    > .cruor-home__statement-sticky::before {
+    animation: none;
   }
 }

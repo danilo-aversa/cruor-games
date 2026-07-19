@@ -17240,3 +17240,478 @@ _Nessun file sovrascritto._
 - Percorso sospetto nello ZIP: apply-cruor-home-workbench-scroll-buffer.mjs
 - Percorso sospetto nello ZIP: APPLY-HOME-SCROLL-FIX.cmd
 
+
+---
+
+## 2026-07-19 16:41:43
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-native-scroll-buffer-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-native-scroll-buffer-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 16:54:29
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-one-way-150-percent-buffer-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-one-way-150-percent-buffer-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 17:08:03
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-one-way-buffer-activation-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-one-way-buffer-activation-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 17:29:00
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-smooth-entry-engine-conditions-stat-block-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-smooth-entry-engine-conditions-stat-block-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~_implementation-note.txt`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 17:38:30
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-latched-scroll-spacing-stat-alignment-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-latched-scroll-spacing-stat-alignment-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 18:29:51
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-native-sticky-track-final-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-native-sticky-track-final-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 18:32:45
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-one-time-release-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-one-time-release-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 18:42:16
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-125-percent-release-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-125-percent-release-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 19:13:51
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-complete-responsive-gradients-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-complete-responsive-gradients-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 4
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~components/ui/ambient-band.css`
+- `~components/ui/ambient-band.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 19:23:43
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-gradient-real-backdrops-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-gradient-real-backdrops-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~components/ui/ambient-band.css`
+- `~components/ui/ambient-band.jsx`
+- `~_implementation-note.txt`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 20:29:04
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-content-layout-footer-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-content-layout-footer-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~_implementation-note.txt`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 20:38:23
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-card-pair-clean-output-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-card-pair-clean-output-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 20:51:06
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-back-card-typography-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-back-card-typography-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 21:16:06
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-decomposition-back-tools-gradient-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-decomposition-back-tools-gradient-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~components/ui/ambient-band.css`
+- `~_implementation-note.txt`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 21:29:45
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-decomposition-back-visibility-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-decomposition-back-visibility-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 1
+
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 21:32:19
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-decomposition-back-dark-background-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-decomposition-back-dark-background-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 1
+
+- `~app/home-page.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 21:35:03
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-engine-sparse-slow-flow-packets-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-engine-sparse-slow-flow-packets-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~_implementation-note.txt`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 21:39:57
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-engine-five-slow-packets-wire-overlap-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-engine-five-slow-packets-wire-overlap-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 1
+
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
