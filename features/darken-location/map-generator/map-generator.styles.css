@@ -274,7 +274,7 @@
 
 /* Layout */
 
-.room-context-menu__header {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__header {
   display: grid;
   gap: 2px;
   padding: 4px 4px 8px;
@@ -284,18 +284,18 @@
 
 /* Components */
 
-.room-context-menu__header strong {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__header strong {
   font-size: var(--text-size-xl);
   line-height: 1.2;
 }
 
-.room-context-menu__header span {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__header span {
   color: var(--cruor-color-muted, var(--muted));
 }
 
 /* Layout */
 
-.room-context-menu__section {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__section {
   display: grid;
   gap: 6px;
   margin-bottom: 10px;
@@ -303,7 +303,7 @@
 
 /* Components */
 
-.room-context-menu__label {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__label {
   color: var(--cruor-color-muted, var(--muted));
   font-size: var(--text-size-s);
   font-weight: 900;
@@ -313,7 +313,7 @@
 
 /* Layout */
 
-.room-context-menu__grid {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6px;
@@ -321,13 +321,13 @@
 
 /* States */
 
-.room-context-menu button:disabled {
+.room-context-menu:not(.cruor-dropdown-menu) button:disabled {
   opacity: 0.48;
   cursor: not-allowed;
   background: var(--cruor-surface-card);
 }
 
-.room-context-menu button.is-armed {
+.room-context-menu:not(.cruor-dropdown-menu) button.is-armed {
   border-color: var(--cruor-color-blood-glow-a950);
   background: var(--cruor-color-blood-bright-a580);
   color: var(--cruor-color-hex-ffeef2);
@@ -335,7 +335,7 @@
 
 /* Layout */
 
-.room-context-menu__actions {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6px;
@@ -343,17 +343,17 @@
   padding-top: 8px;
 }
 
-.room-context-menu__body {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__body {
   display: grid;
   gap: 4px;
   margin: 8px 0;
 }
 
-.room-context-menu__item {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__item {
   position: relative;
 }
 
-.room-context-menu__item::after {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__item::after {
   content: "";
   position: absolute;
   left: 100%;
@@ -363,7 +363,7 @@
   pointer-events: auto;
 }
 
-.room-context-menu__trigger {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__trigger {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -373,13 +373,13 @@
 
 /* Components */
 
-.room-context-menu__trigger span:last-child {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__trigger span:last-child {
   opacity: 0.72;
 }
 
 /* Layout */
 
-.room-context-menu__item:hover > .room-context-submenu {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__item:hover > .room-context-submenu {
   display: grid;
 }
 
@@ -398,7 +398,7 @@
   padding: 3px 5px 6px;
 }
 
-.room-context-menu__active-value {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__active-value {
   color: var(--cruor-color-muted, var(--muted));
   font-size: var(--text-size-s);
   font-weight: 850;
@@ -918,7 +918,7 @@
   overflow: auto;
 }
 
-.room-context-menu {
+.room-context-menu:not(.cruor-dropdown-menu) {
   position: fixed;
   z-index: var(--cruor-z-context-menu, 10000);
   width: 238px;
@@ -1188,7 +1188,7 @@
 
 
 
-.room-context-menu button {
+.room-context-menu:not(.cruor-dropdown-menu) button {
   border: 1px solid var(--cruor-color-blood-strong-a680);
   border-radius: 0;
   background: var(--cruor-ui-control-bg);
@@ -1254,21 +1254,21 @@
 
 
 
-.room-context-menu button.is-active {
+.room-context-menu:not(.cruor-dropdown-menu) button.is-active {
   border-color: var(--cruor-ui-control-border-active);
   background: var(--cruor-ui-control-bg-active);
   color: var(--cruor-ui-control-text-active);
   box-shadow: var(--cruor-shadow-box-037);
 }
 
-.room-context-menu button:focus-visible {
+.room-context-menu:not(.cruor-dropdown-menu) button:focus-visible {
   border-color: var(--cruor-ui-control-border-active);
   background: var(--cruor-ui-control-bg-active);
   color: var(--cruor-ui-control-text-active);
   outline: none;
 }
 
-.room-context-menu button:hover {
+.room-context-menu:not(.cruor-dropdown-menu) button:hover {
   border-color: var(--cruor-ui-control-border-active);
   background: var(--cruor-ui-control-bg-active);
   color: var(--cruor-ui-control-text-active);
@@ -1514,7 +1514,7 @@
 
 
 /* Step 11 — context menus are portaled to body, so parity styles must not depend on workspace ancestry. */
-.room-context-menu {
+.room-context-menu:not(.cruor-dropdown-menu) {
   -webkit-backdrop-filter: var(--cruor-filter-glass-18-125);
   backdrop-filter: var(--cruor-filter-glass-18-125);
   display: grid;
@@ -1530,7 +1530,7 @@
   scrollbar-width: thin;
 }
 
-.room-context-menu__header {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1539,8 +1539,8 @@
   padding-bottom: 9px;
 }
 
-.room-context-menu__header span,
-.room-context-menu__label {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__header span,
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__label {
   color: var(--cruor-color-hex-8f7278);
   font-size: var(--text-size-xs);
   font-weight: 950;
@@ -1548,7 +1548,7 @@
   text-transform: uppercase;
 }
 
-.room-context-menu__header strong {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__header strong {
   overflow: hidden;
   color: var(--cruor-color-hex-fff0f2);
   font-size: var(--text-size-xl);
@@ -1557,14 +1557,14 @@
   white-space: nowrap;
 }
 
-.room-context-menu__body,
-.room-context-menu__actions {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__body,
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__actions {
   display: grid;
   gap: 8px;
 }
 
-.room-context-menu__trigger,
-.room-context-menu button {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__trigger,
+.room-context-menu:not(.cruor-dropdown-menu) button {
   min-height: 30px;
   border: 1px solid var(--cruor-color-blood-strong-a560);
   background: var(--cruor-color-blood-a220);
@@ -1573,10 +1573,10 @@
   font-weight: 850;
 }
 
-.room-context-menu__trigger:hover,
-.room-context-menu__trigger.is-active,
-.room-context-menu button:hover,
-.room-context-menu button.is-active {
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__trigger:hover,
+.room-context-menu:not(.cruor-dropdown-menu) .room-context-menu__trigger.is-active,
+.room-context-menu:not(.cruor-dropdown-menu) button:hover,
+.room-context-menu:not(.cruor-dropdown-menu) button.is-active {
   border-color: var(--cruor-color-blood-glow-a720);
   background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-color-blood-strong-a420);
   color: var(--cruor-color-hex-fff0f2);
@@ -2409,46 +2409,6 @@
 
 .room-style-context-menu {
   isolation: isolate;
-}
-
-.room-style-context-menu__header {
-  display: grid;
-  gap: 3px;
-  min-width: 0;
-  padding: 2px 7px 8px;
-  border-bottom: 1px solid var(--cruor-color-blood-strong-a320);
-}
-
-.room-style-context-menu__header strong,
-.room-style-context-menu__header span {
-  overflow: hidden;
-  min-width: 0;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.room-style-context-menu__header strong {
-  color: var(--cruor-color-hex-fff0f2);
-  font-size: 0.72rem;
-  font-weight: 950;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
-
-.room-style-context-menu__header span {
-  color: var(--cruor-color-text-a540, rgba(238, 238, 238, 0.54));
-  font-size: 0.58rem;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.room-style-context-menu__requirements {
-  display: block;
-  overflow: hidden;
-  margin: 0 7px 2px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .room-style-context-menu .location-map-toolbar__style-section.is-submenu-open
@@ -3351,3 +3311,56 @@
   stroke: rgba(255, 98, 121, 0.96);
 }
 
+
+/* Portaled map-editor menus use the site-wide dropdown surface and option language. */
+.room-context-menu.cruor-dropdown-menu {
+  position: fixed;
+  box-sizing: border-box;
+  width: min(210px, calc(100vw - 24px));
+  min-width: min(210px, calc(100vw - 24px));
+  max-width: min(210px, calc(100vw - 24px));
+  max-height: min(520px, calc(100dvh - 24px));
+}
+
+.room-context-menu.cruor-dropdown-menu .room-context-menu__body,
+.room-context-menu.cruor-dropdown-menu .room-context-menu__actions {
+  margin: 0;
+}
+
+.room-context-menu.cruor-dropdown-menu .room-context-menu__actions {
+  padding-top: 4px;
+  border-top: 1px solid var(--cruor-color-blood-strong-a320);
+}
+
+.room-context-menu.cruor-dropdown-menu .room-context-menu__trigger {
+  width: 100%;
+}
+
+.add-waypoint-context-menu .room-context-menu__body > .room-context-menu__trigger:first-child {
+  margin-bottom: 7px;
+}
+
+.room-context-menu.cruor-dropdown-menu .room-context-menu__trigger > span:first-child {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.room-context-menu.cruor-dropdown-menu .room-context-menu__trigger > span:last-child:not(:first-child) {
+  justify-self: end;
+}
+
+.room-context-menu.cruor-dropdown-menu .cruor-dropdown-option.is-armed {
+  border-color: var(--cruor-color-blood-glow-a950);
+  background: var(--cruor-color-blood-bright-a580);
+  color: var(--cruor-color-hex-ffeef2);
+}
+
+body[data-cruor-room-dragging="true"] #cruorTooltipPortal {
+  display: none !important;
+}
+
+.map-viewport.is-room-dragging {
+  cursor: grabbing;
+}

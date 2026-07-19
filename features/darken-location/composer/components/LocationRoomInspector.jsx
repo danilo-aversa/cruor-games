@@ -15,6 +15,8 @@ function cx(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+const INLINE_EXPLAINED_SLOT_IDS = new Set(["hazard", "clue", "encounterTwist"]);
+
 function getSlotIcon(slotId) {
   if (slotId === "sensoryLayer") return Eye;
   if (slotId === "hazard") return AlertTriangle;
@@ -209,6 +211,7 @@ export function LocationRoomInspector({
             const active = activeSlotId === row.slot.id;
             const mapInfluenceLabel = getRoomSlotMapInfluenceLabel(row);
             const mapInfluenceTarget = getRoomSlotMapInfluenceTarget(row);
+            const showTooltip = !INLINE_EXPLAINED_SLOT_IDS.has(row.slot.id);
             return (
               <ComposerSlotCard
                 data-testid="dark-places-room-slot"
@@ -230,9 +233,13 @@ export function LocationRoomInspector({
                 contentTitle={row.components[0]?.title || "Empty Slot"}
                 description={mapInfluenceLabel || row.components[0]?.description || row.slot.description || "Choose component"}
                 onClick={() => focusSlot(row.slot.id)}
-                data-key="tooltip-generic"
-                data-tooltip={row.slot.label}
-                data-tooltip-description={mapInfluenceLabel || (row.filled ? "Open this filled room slot." : "Open a filtered component picker for this room slot.")}
+                data-key={showTooltip ? "tooltip-generic" : undefined}
+                data-tooltip={showTooltip ? row.slot.label : undefined}
+                data-tooltip-description={
+                  showTooltip
+                    ? mapInfluenceLabel || (row.filled ? "Open this filled room slot." : "Open a filtered component picker for this room slot.")
+                    : undefined
+                }
               />
             );
           })}

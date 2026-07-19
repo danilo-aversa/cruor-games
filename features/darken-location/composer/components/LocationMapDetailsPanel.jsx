@@ -436,9 +436,16 @@ function LocationSemanticRuntimePanel({
       data-testid="dark-places-semantic-preview"
       data-semantic-valid={preview.valid ? "true" : "false"}
     >
-      <div className="cruor-composer-rail-card__head">
-        <span>Semantic Runtime</span>
-        <strong>{preview.valid ? "Valid" : "Needs Review"}</strong>
+      <div className="cruor-composer-rail-card__head location-semantic-runtime__head">
+        <span className="location-semantic-runtime__title">Semantic Runtime</span>
+        <strong
+          className={cx(
+            "location-semantic-runtime__status",
+            preview.valid ? "is-valid" : "is-review",
+          )}
+        >
+          {preview.valid ? "Valid" : "Needs Review"}
+        </strong>
       </div>
       <div className="cruor-composer-fact-grid location-frame-info-grid">
         <LocationFrameInfoRow
@@ -614,6 +621,7 @@ export function LocationMapDetailsPanel({
   const debugEntriesRef = useRef([]);
   const debugSequenceRef = useRef(0);
   const debugModeActive = Boolean(debugMode || uiMode === "debug" || storedDebugModeActive);
+  const showSemanticRuntime = uiMode === "debug";
 
   useEffect(() => {
     function handleDebugModeChange(event) {
@@ -947,11 +955,13 @@ export function LocationMapDetailsPanel({
         />
       </section>
 
-      <LocationSemanticRuntimePanel
-        handoff={semanticMapHandoff}
-        preview={semanticPreview}
-        showPayload={debugModeActive}
-      />
+      {showSemanticRuntime ? (
+        <LocationSemanticRuntimePanel
+          handoff={semanticMapHandoff}
+          preview={semanticPreview}
+          showPayload
+        />
+      ) : null}
 
       {debugModeActive ? (
         <MapDebugRecorderPanel

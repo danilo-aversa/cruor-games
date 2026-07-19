@@ -45,6 +45,68 @@ describe("room corner resize", () => {
     expect(styles).toContain("stroke-width: 3.5");
   });
 
+  it("shows the resize handle only for the selected room while no editor grab is active", () => {
+    const renderSource = readFileSync(
+      resolve(
+        process.cwd(),
+        "features/darken-location/map-generator/map-generator.render.jsx",
+      ),
+      "utf8",
+    );
+
+    expect(renderSource).toContain("const anyEditorGrabActive = Boolean(");
+    expect(renderSource).toContain("!anyEditorGrabActive");
+    expect(renderSource).toContain("renderRoomResizeHandle(\n            selectedRegion,");
+    expect(renderSource).not.toContain(
+      "regions.find((region) => region.id === (draggingRoomResizeRegionId || hoveredRegionId))",
+    );
+  });
+
+  it("replaces the opaque source room and its connected corridors with a barely perceptible drag ghost", () => {
+    const renderSource = readFileSync(
+      resolve(
+        process.cwd(),
+        "features/darken-location/map-generator/map-generator.render.jsx",
+      ),
+      "utf8",
+    );
+
+    expect(renderSource).toContain("room-drag-origin-ghost__veil");
+    expect(renderSource).toContain("room-drag-origin-ghost__corridor-veil");
+    expect(renderSource).toContain("room-drag-origin-ghost__corridor-floor");
+    expect(renderSource).toContain("room-drag-origin-ghost__corridor-wall");
+    expect(renderSource).toContain("doesCorridorTouchRegion(corridor, roomDragPreviewOffset.regionId)");
+    expect(renderSource).toMatch(/room-drag-origin-ghost__veil[\s\S]*opacity:\s*0\.96/);
+    expect(renderSource).toMatch(/room-drag-origin-ghost__floor[\s\S]*opacity:\s*0\.06/);
+    expect(renderSource).toMatch(/room-drag-origin-ghost__wall[\s\S]*getPreviewWallStyle\(tokens,\s*0\.08\)/);
+    expect(renderSource).toMatch(/room-drag-origin-ghost__corridor-veil[\s\S]*opacity:\s*0\.96/);
+    expect(renderSource).toMatch(/room-drag-origin-ghost__corridor-floor[\s\S]*opacity:\s*0\.06/);
+    expect(renderSource).toMatch(/room-drag-origin-ghost__corridor-wall[\s\S]*getPreviewWallStyle\(tokens,\s*0\.08\)/);
+    expect(renderSource).not.toContain("room-drag-placeholder-fade");
+  });
+
+  it("suppresses room tooltips for the full room-drag lifecycle", () => {
+    const pageSource = readFileSync(
+      resolve(
+        process.cwd(),
+        "features/darken-location/map-generator/map-generator.page.jsx",
+      ),
+      "utf8",
+    );
+    const stylesSource = readFileSync(
+      resolve(
+        process.cwd(),
+        "features/darken-location/map-generator/map-generator.styles.css",
+      ),
+      "utf8",
+    );
+
+    expect(pageSource).toContain("setRoomDragTooltipSuppressed(true)");
+    expect(pageSource).toContain("setRoomDragTooltipSuppressed(false)");
+    expect(pageSource).toContain('draggingRegionId && "is-room-dragging"');
+    expect(stylesSource).toContain('body[data-cruor-room-dragging="true"] #cruorTooltipPortal');
+  });
+
   it("renders an offset L glyph outside the top-right wall", () => {
     const geometry = getRoomCornerResizeHandleGeometry(baseRegion, 20);
 

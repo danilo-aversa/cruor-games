@@ -320,6 +320,10 @@ const SOURCE_CAROUSEL_CARDS = INSPIRATION_CARDS.map((card, index) => {
   };
 });
 
+const WORKBENCH_INPUT_INSPIRATION =
+  SOURCE_CAROUSEL_CARDS.find((card) => card.inspiration.title === "Decomposition") ??
+  SOURCE_CAROUSEL_CARDS[0];
+
 const FAQ_ITEMS = [
   {
     id: "cruor-games",
@@ -977,17 +981,17 @@ function InspirationSourceCarousel() {
 
 export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
   const workbenchFlowRef = useRef(null);
-  const revealedWorkbenchStepRef = useRef(0);
+  const revealedWorkbenchStepRef = useRef(1);
+  const workbenchProgressRef = useRef(0);
   const workbenchCompletedRef = useRef(false);
-  const workbenchWheelAccumulatorRef = useRef(0);
-  const workbenchRevealLockUntilRef = useRef(0);
   const workbenchGateActiveRef = useRef(false);
   const [zoomPreview, setZoomPreview] = useState(null);
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const [contactFormStatus, setContactFormStatus] = useState("");
   const [activeSectionId, setActiveSectionId] = useState(HOME_SECTIONS[0].id);
   const [sectionProgress, setSectionProgress] = useState(0);
-  const [revealedWorkbenchStep, setRevealedWorkbenchStep] = useState(0);
+  const [revealedWorkbenchStep, setRevealedWorkbenchStep] = useState(1);
+  const [workbenchProgress, setWorkbenchProgress] = useState(0);
   const [workbenchCompleted, setWorkbenchCompleted] = useState(false);
   const [workbenchGateActive, setWorkbenchGateActive] = useState(false);
   const [isHeroVideoReady, setIsHeroVideoReady] = useState(false);
@@ -1047,39 +1051,68 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
   useEffect(() => {
     const reduceMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const staticLayoutQuery = window.matchMedia("(max-width: 900px)");
-    const wheelStepThreshold = 120;
-    const flipLockMs = 880;
+    const virtualScrollDistance = 1500;
+    const completionDelayMs = 500;
     let completionTimer = null;
+    let progressFrame = null;
+    let pendingProgress = workbenchProgressRef.current;
     let lastGateScrollY = window.scrollY;
+
+    const clampProgress = (value) => Math.max(0, Math.min(1, value));
+
+    const getStepForProgress = (progress) => {
+      if (progress >= 0.98) return 3;
+      if (progress >= 0.48) return 2;
+      return 1;
+    };
+
+    const commitWorkbenchProgress = () => {
+      progressFrame = null;
+      const boundedProgress = clampProgress(pendingProgress);
+      workbenchProgressRef.current = boundedProgress;
+      setWorkbenchProgress(boundedProgress);
+
+      const nextStep = getStepForProgress(boundedProgress);
+      if (nextStep !== revealedWorkbenchStepRef.current) {
+        revealedWorkbenchStepRef.current = nextStep;
+        setRevealedWorkbenchStep(nextStep);
+      }
+    };
+
+    const setWorkbenchProgressValue = (nextProgress, { immediate = false } = {}) => {
+      pendingProgress = clampProgress(nextProgress);
+
+      if (immediate) {
+        if (progressFrame !== null) window.cancelAnimationFrame(progressFrame);
+        progressFrame = null;
+        commitWorkbenchProgress();
+        return;
+      }
+
+      if (progressFrame === null) {
+        progressFrame = window.requestAnimationFrame(commitWorkbenchProgress);
+      }
+    };
+
+    const cancelWorkbenchCompletion = () => {
+      if (completionTimer === null) return;
+      window.clearTimeout(completionTimer);
+      completionTimer = null;
+    };
 
     const markWorkbenchCompleted = () => {
       if (workbenchCompletedRef.current) return;
+
+      cancelWorkbenchCompletion();
+      setWorkbenchProgressValue(1, { immediate: true });
       workbenchCompletedRef.current = true;
       setWorkbenchCompleted(true);
-      workbenchWheelAccumulatorRef.current = 0;
-      workbenchRevealLockUntilRef.current = 0;
       workbenchGateActiveRef.current = false;
       setWorkbenchGateActive(false);
     };
 
-    const setWorkbenchStep = (nextStep) => {
-      const boundedStep = Math.max(0, Math.min(3, nextStep));
-      if (boundedStep <= revealedWorkbenchStepRef.current) return;
-
-      revealedWorkbenchStepRef.current = boundedStep;
-      setRevealedWorkbenchStep(boundedStep);
-      workbenchWheelAccumulatorRef.current = 0;
-      workbenchRevealLockUntilRef.current = performance.now() + flipLockMs;
-
-      if (boundedStep >= 3) {
-        window.clearTimeout(completionTimer);
-        completionTimer = window.setTimeout(markWorkbenchCompleted, flipLockMs);
-      }
-    };
-
     const revealAllSteps = () => {
-      revealedWorkbenchStepRef.current = 3;
-      setRevealedWorkbenchStep(3);
+      setWorkbenchProgressValue(1, { immediate: true });
       markWorkbenchCompleted();
     };
 
@@ -1117,10 +1150,20 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
       setWorkbenchGateActive(false);
     };
 
-    const shouldCaptureWorkbenchDownScroll = (event) => {
-      if (workbenchCompletedRef.current) return false;
+    const scheduleWorkbenchCompletion = () => {
+      if (completionTimer !== null) return;
+
+      completionTimer = window.setTimeout(() => {
+        completionTimer = null;
+        if (workbenchProgressRef.current >= 0.999) markWorkbenchCompleted();
+      }, completionDelayMs);
+    };
+
+    const shouldCaptureWorkbenchScroll = (event) => {
       if (reduceMotionQuery.matches || staticLayoutQuery.matches) return false;
+      if (workbenchCompletedRef.current) return false;
       if (workbenchGateActiveRef.current) return true;
+      if (event.deltaY <= 0) return false;
 
       const section = workbenchFlowRef.current;
       if (!section) return false;
@@ -1135,13 +1178,25 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
     };
 
     const handleWorkbenchWheel = (event) => {
-      if (event.deltaY <= 0) {
-        releaseWorkbenchGate();
+      const direction = Math.sign(event.deltaY);
+      const normalizedDelta = Math.min(180, normalizeWheelDelta(event));
+      const effectiveProgress = Math.max(pendingProgress, workbenchProgressRef.current);
+
+      // Keep the page pinned for a short reading pause after the rail reaches 100%.
+      // Forward wheel events are consumed during this hold instead of scrolling the site.
+      if (direction > 0 && effectiveProgress >= 0.999) {
+        event.preventDefault();
+        event.stopPropagation();
+        pinWorkbenchGate();
+        setWorkbenchProgressValue(1, { immediate: true });
+        scheduleWorkbenchCompletion();
         return;
       }
 
-      if (!shouldCaptureWorkbenchDownScroll(event)) {
-        releaseWorkbenchGate();
+      if (!shouldCaptureWorkbenchScroll(event)) {
+        if (direction <= 0 && workbenchProgressRef.current <= 0.001) {
+          releaseWorkbenchGate();
+        }
         return;
       }
 
@@ -1150,17 +1205,24 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
       pinWorkbenchGate();
       lastGateScrollY = window.scrollY;
 
-      if (revealedWorkbenchStepRef.current >= 3) return;
+      const nextProgress = pendingProgress + (direction * normalizedDelta) / virtualScrollDistance;
+      setWorkbenchProgressValue(nextProgress);
 
-      const now = performance.now();
-      if (now < workbenchRevealLockUntilRef.current) return;
+      if (nextProgress <= 0 && direction < 0) {
+        cancelWorkbenchCompletion();
+        setWorkbenchProgressValue(0, { immediate: true });
+        releaseWorkbenchGate();
+        return;
+      }
 
-      const normalizedDelta = Math.min(120, normalizeWheelDelta(event));
-      workbenchWheelAccumulatorRef.current += normalizedDelta;
+      if (nextProgress < 1 || direction < 0) {
+        cancelWorkbenchCompletion();
+      }
 
-      if (workbenchWheelAccumulatorRef.current < wheelStepThreshold) return;
-
-      setWorkbenchStep(revealedWorkbenchStepRef.current + 1);
+      if (nextProgress >= 1 && direction > 0) {
+        setWorkbenchProgressValue(1);
+        scheduleWorkbenchCompletion();
+      }
     };
 
     const handleWorkbenchScrollRescue = () => {
@@ -1179,14 +1241,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
       const rect = section.getBoundingClientRect();
       const hasPassedNaturalPinPoint = rect.top < -2 && rect.bottom >= viewportHeight * 0.62;
 
-      if (hasPassedNaturalPinPoint) {
-        pinWorkbenchGate();
-
-        const now = performance.now();
-        if (revealedWorkbenchStepRef.current < 3 && now >= workbenchRevealLockUntilRef.current) {
-          setWorkbenchStep(revealedWorkbenchStepRef.current + 1);
-        }
-      }
+      if (hasPassedNaturalPinPoint) pinWorkbenchGate();
     };
 
     const handleWorkbenchStaticLayout = () => {
@@ -1205,7 +1260,8 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
     staticLayoutQuery.addEventListener?.("change", handleWorkbenchStaticLayout);
 
     return () => {
-      window.clearTimeout(completionTimer);
+      cancelWorkbenchCompletion();
+      if (progressFrame !== null) window.cancelAnimationFrame(progressFrame);
       window.removeEventListener("wheel", handleWorkbenchWheel, {
         capture: true,
       });
@@ -1278,7 +1334,8 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
   };
 
   const workbenchFlowStyle = {
-    "--workbench-collapse-progress": "0",
+    "--workbench-progress": String(workbenchProgress),
+    "--workbench-progress-percent": `${(workbenchProgress * 100).toFixed(3)}%`,
   };
 
   return (
@@ -1353,6 +1410,7 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           .join(" ")}
         aria-labelledby="workbenchStepsTitle"
         data-revealed-step={revealedWorkbenchStep}
+        data-workbench-progress={workbenchProgress.toFixed(3)}
         data-workbench-released={workbenchCompleted ? "true" : "false"}
         data-workbench-completed={workbenchCompleted ? "true" : "false"}
         data-workbench-gating={workbenchGateActive ? "true" : "false"}
@@ -1360,79 +1418,223 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
       >
         <div className="cruor-home__statement-sticky">
           <div className="cruor-home__statement-inner">
-            <div className="cruor-home__statement-head">
-              <span>How the Workbench Works</span>
+            <div className="cruor-home__section-head cruor-home__section-head--workbench">
+              <span className="cruor-home__section-kicker">How the Workbench Works</span>
               <h2 id="workbenchStepsTitle">From Source to Table Output</h2>
               <p>
                 Pick a generator, define the creative logic, and turn it into playable 5E material.
               </p>
             </div>
 
-            <ol className="cruor-home__process-strip" aria-label="Cruor workbench process">
-              <li className="cruor-home__process-step" tabIndex={0} data-step="1">
-                <div className="cruor-home__process-card">
-                  <div className="cruor-home__process-card-inner">
-                    <div className="cruor-home__process-card-face cruor-home__process-card-face--back">
-                      <i className="fa-solid fa-inbox" aria-hidden="true"></i>
-                    </div>
-                    <div className="cruor-home__process-card-face cruor-home__process-card-face--front">
-                      <i className="fa-solid fa-inbox" aria-hidden="true"></i>
-                      <strong>Input</strong>
-                      <span className="cruor-home__process-subtitle">Define the Need</span>
-                      <div className="cruor-home__process-lines">
-                        <span>Choose the generator you want to use.</span>
-                        <span>Select the sources that inspire the result.</span>
-                        <span>Set tone, scope, and creative limits.</span>
+            <div className="cruor-home__workbench-process">
+              <div className="cruor-home__workbench-rail" aria-hidden="true">
+                <span className="cruor-home__workbench-rail-fill" />
+                <span className="cruor-home__workbench-rail-head" />
+              </div>
+
+              <ol className="cruor-home__workbench-stages" aria-label="Cruor workbench process">
+                <li className="cruor-home__workbench-stage cruor-home__workbench-stage--input">
+                  <div className="cruor-home__workbench-stage-visual" aria-hidden="true">
+                    <div className="cruor-home__workbench-input-composition">
+                      <div className="cruor-home__workbench-inspiration-slot">
+                        <InspirationCardFront
+                          className="cruor-home__source-card"
+                          inspiration={WORKBENCH_INPUT_INSPIRATION.inspiration}
+                          meta={WORKBENCH_INPUT_INSPIRATION.meta}
+                          ariaHidden
+                        />
                       </div>
+
+                      <div className="cruor-home__workbench-input-pills">
+                        <span className="cruor-home__workbench-input-pill" style={{ "--pill-delay": "0ms" }}>
+                          <i className="fa-solid fa-masks-theater" aria-hidden="true" />
+                          Tone
+                        </span>
+                        <span className="cruor-home__workbench-input-pill" style={{ "--pill-delay": "120ms" }}>
+                          <i className="fa-solid fa-ghost" aria-hidden="true" />
+                          Horror
+                        </span>
+                        <span className="cruor-home__workbench-input-pill" style={{ "--pill-delay": "240ms" }}>
+                          <i className="fa-solid fa-location-dot" aria-hidden="true" />
+                          Context
+                        </span>
+                      </div>
+
+                      <p className="cruor-home__workbench-input-prompt">
+                        “I need a zombie for tonight’s game…”
+                      </p>
                     </div>
                   </div>
-                </div>
-              </li>
-              <li className="cruor-home__process-connector" aria-hidden="true" data-connector="1">
-                <i className="fa-solid fa-chevron-right" aria-hidden="true"></i>
-              </li>
-              <li className="cruor-home__process-step" tabIndex={0} data-step="2">
-                <div className="cruor-home__process-card">
-                  <div className="cruor-home__process-card-inner">
-                    <div className="cruor-home__process-card-face cruor-home__process-card-face--back">
-                      <i className="fa-solid fa-gears" aria-hidden="true"></i>
-                    </div>
-                    <div className="cruor-home__process-card-face cruor-home__process-card-face--front">
-                      <i className="fa-solid fa-gears" aria-hidden="true"></i>
-                      <strong>Engine</strong>
-                      <span className="cruor-home__process-subtitle">Shape the Result</span>
-                      <div className="cruor-home__process-lines">
-                        <span>Choose how the material should behave.</span>
-                        <span>Anchor each choice to 5E structure.</span>
-                        <span>Translate loose inspiration into playable design.</span>
-                      </div>
+
+                  <div className="cruor-home__workbench-marker" aria-hidden="true">
+                    <i className="fa-solid fa-inbox" />
+                  </div>
+
+                  <div className="cruor-home__workbench-stage-copy">
+                    <span className="cruor-home__workbench-stage-index">01</span>
+                    <h3>Input</h3>
+                    <span className="cruor-home__workbench-stage-subtitle">Define the Need</span>
+                    <p>
+                      Choose a generator, select the sources, and establish tone, scope, and
+                      creative constraints.
+                    </p>
+                  </div>
+                </li>
+
+                <li className="cruor-home__workbench-stage cruor-home__workbench-stage--engine">
+                  <div className="cruor-home__workbench-stage-visual" aria-hidden="true">
+                    <div className="cruor-home__workbench-flowchart">
+                      <svg
+                        className="cruor-home__workbench-flowchart-wires"
+                        viewBox="0 0 270 176"
+                        aria-hidden="true"
+                      >
+                        <path
+                          className="cruor-home__workbench-flowchart-wire"
+                          style={{ "--wire-delay": "0ms" }}
+                          d="M54 36 V52 H135 V68"
+                        />
+                        <path
+                          className="cruor-home__workbench-flowchart-wire"
+                          style={{ "--wire-delay": "90ms" }}
+                          d="M216 36 V52 H135 V68"
+                        />
+                        <path
+                          className="cruor-home__workbench-flowchart-wire"
+                          style={{ "--wire-delay": "180ms" }}
+                          d="M135 110 V126 H54 V140"
+                        />
+                        <path
+                          className="cruor-home__workbench-flowchart-wire"
+                          style={{ "--wire-delay": "270ms" }}
+                          d="M108 158 H162"
+                        />
+
+                        <circle className="cruor-home__workbench-flowchart-packet" r="2.5">
+                          <animateMotion
+                            dur="1.55s"
+                            repeatCount="indefinite"
+                            path="M54 36 V52 H135 V68"
+                          />
+                        </circle>
+                        <circle className="cruor-home__workbench-flowchart-packet" r="2.5">
+                          <animateMotion
+                            begin=".45s"
+                            dur="1.55s"
+                            repeatCount="indefinite"
+                            path="M216 36 V52 H135 V68"
+                          />
+                        </circle>
+                        <circle className="cruor-home__workbench-flowchart-packet" r="2.5">
+                          <animateMotion
+                            begin=".85s"
+                            dur="1.65s"
+                            repeatCount="indefinite"
+                            path="M135 110 V126 H54 V140"
+                          />
+                        </circle>
+                        <circle className="cruor-home__workbench-flowchart-packet" r="2.5">
+                          <animateMotion
+                            begin="1.25s"
+                            dur="1.35s"
+                            repeatCount="indefinite"
+                            path="M108 158 H162"
+                          />
+                        </circle>
+                      </svg>
+
+                      <span
+                        className="cruor-home__workbench-flowchart-node cruor-home__workbench-flowchart-node--source"
+                        style={{ "--node-delay": "0ms" }}
+                      >
+                        <i className="fa-solid fa-book-open" aria-hidden="true" />
+                        Source
+                      </span>
+                      <span
+                        className="cruor-home__workbench-flowchart-node cruor-home__workbench-flowchart-node--rules"
+                        style={{ "--node-delay": "105ms" }}
+                      >
+                        <i className="fa-solid fa-code-branch" aria-hidden="true" />
+                        Rules
+                      </span>
+                      <span
+                        className="cruor-home__workbench-flowchart-node cruor-home__workbench-flowchart-node--compiler"
+                        style={{ "--node-delay": "210ms" }}
+                      >
+                        <i className="fa-solid fa-microchip" aria-hidden="true" />
+                        Compiler
+                      </span>
+                      <span
+                        className="cruor-home__workbench-flowchart-node cruor-home__workbench-flowchart-node--validate"
+                        style={{ "--node-delay": "315ms" }}
+                      >
+                        <i className="fa-solid fa-check-double" aria-hidden="true" />
+                        Validate
+                      </span>
+                      <span
+                        className="cruor-home__workbench-flowchart-node cruor-home__workbench-flowchart-node--assemble"
+                        style={{ "--node-delay": "420ms" }}
+                      >
+                        <i className="fa-solid fa-file-code" aria-hidden="true" />
+                        Assemble
+                      </span>
                     </div>
                   </div>
-                </div>
-              </li>
-              <li className="cruor-home__process-connector" aria-hidden="true" data-connector="2">
-                <i className="fa-solid fa-chevron-right" aria-hidden="true"></i>
-              </li>
-              <li className="cruor-home__process-step" tabIndex={0} data-step="3">
-                <div className="cruor-home__process-card">
-                  <div className="cruor-home__process-card-inner">
-                    <div className="cruor-home__process-card-face cruor-home__process-card-face--back">
-                      <i className="fa-solid fa-scroll" aria-hidden="true"></i>
-                    </div>
-                    <div className="cruor-home__process-card-face cruor-home__process-card-face--front">
-                      <i className="fa-solid fa-scroll" aria-hidden="true"></i>
-                      <strong>Output</strong>
-                      <span className="cruor-home__process-subtitle">Use It at the Table</span>
-                      <div className="cruor-home__process-lines">
-                        <span>Review the generated material.</span>
-                        <span>Adjust details without starting over.</span>
-                        <span>Export or copy it into your session.</span>
+
+                  <div className="cruor-home__workbench-marker" aria-hidden="true">
+                    <i className="fa-solid fa-microchip" />
+                  </div>
+
+                  <div className="cruor-home__workbench-stage-copy">
+                    <span className="cruor-home__workbench-stage-index">02</span>
+                    <h3>Engine</h3>
+                    <span className="cruor-home__workbench-stage-subtitle">Shape the Result</span>
+                    <p>
+                      The Workbench connects inspiration, 5E structure, tone, and playable behavior
+                      into one coherent result.
+                    </p>
+                  </div>
+                </li>
+
+                <li className="cruor-home__workbench-stage cruor-home__workbench-stage--output">
+                  <div className="cruor-home__workbench-stage-visual" aria-hidden="true">
+                    <div className="cruor-home__workbench-output-build">
+                      <span className="cruor-home__workbench-output-shadow" />
+                      <div className="cruor-home__workbench-output-page">
+                        <span className="cruor-home__workbench-output-title-line" />
+                        <span className="cruor-home__workbench-output-text-line" />
+                        <span className="cruor-home__workbench-output-text-line" />
+                        <span className="cruor-home__workbench-output-text-line" />
+                        <span className="cruor-home__workbench-output-text-line" />
+                        <span className="cruor-home__workbench-output-map">
+                          <i className="fa-solid fa-map" aria-hidden="true" />
+                        </span>
                       </div>
+                      <span className="cruor-home__workbench-output-stamp">Table Ready</span>
                     </div>
                   </div>
-                </div>
-              </li>
-            </ol>
+
+                  <div className="cruor-home__workbench-marker" aria-hidden="true">
+                    <i className="fa-solid fa-file-export" />
+                  </div>
+
+                  <div className="cruor-home__workbench-stage-copy">
+                    <span className="cruor-home__workbench-stage-index">03</span>
+                    <h3>Output</h3>
+                    <span className="cruor-home__workbench-stage-subtitle">Use It at the Table</span>
+                    <p>
+                      Review the generated material, refine details without starting over, then
+                      export or use it immediately.
+                    </p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+
+            <div className="cruor-home__workbench-scroll-hint" aria-hidden="true">
+              <i className="fa-solid fa-arrow-down" />
+              Continue scrolling
+            </div>
           </div>
         </div>
       </section>

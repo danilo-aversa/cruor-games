@@ -34,9 +34,11 @@ function createSemanticPreview(overrides = {}) {
   };
 }
 
-function renderPanel(semanticPreview) {
+function renderPanel(semanticPreview, uiMode = "debug", debugMode = false) {
   return renderToStaticMarkup(
     <LocationMapDetailsPanel
+      uiMode={uiMode}
+      debugMode={debugMode}
       generatedMapPreview={null}
       mapRequest={{ requiredRegions: [] }}
       semanticMapHandoff={{
@@ -64,6 +66,8 @@ describe("Location semantic runtime rail", () => {
     expect(html).toContain('data-testid="dark-places-semantic-preview"');
     expect(html).toContain('data-semantic-valid="true"');
     expect(html).toContain("Semantic Runtime");
+    expect(html).toContain("location-semantic-runtime__title");
+    expect(html).toContain("location-semantic-runtime__status is-valid");
     expect(html).toContain("Sedlec Ossuary");
     expect(html).toContain("0.2.0-phase8-approved1");
     expect(html).toContain("10 Components");
@@ -72,6 +76,16 @@ describe("Location semantic runtime rail", () => {
     expect(html).toContain("semantic-map-intent");
     expect(html).toContain("Semantic Handoff");
     expect(html).toContain("1 Sources");
+  });
+
+  it("hides semantic runtime outside the site Debug mode", () => {
+    const simpleHtml = renderPanel(createSemanticPreview(), "simple");
+    const advancedHtml = renderPanel(createSemanticPreview(), "advanced");
+    const localDebugHtml = renderPanel(createSemanticPreview(), "simple", true);
+
+    expect(simpleHtml).not.toContain('data-testid="dark-places-semantic-preview"');
+    expect(advancedHtml).not.toContain('data-testid="dark-places-semantic-preview"');
+    expect(localDebugHtml).not.toContain('data-testid="dark-places-semantic-preview"');
   });
 
   it("shows structured compiler diagnostics without hiding invalid state", () => {
@@ -92,6 +106,7 @@ describe("Location semantic runtime rail", () => {
 
     expect(html).toContain('data-semantic-valid="false"');
     expect(html).toContain("Needs Review");
+    expect(html).toContain("location-semantic-runtime__status is-review");
     expect(html).toContain("1 Errors");
     expect(html).toContain("Compiler input rejected.");
   });

@@ -241,3 +241,32 @@
   border: 0;
   background: var(--cruor-color-blood-strong-a320);
 }
+
+/* Semantic trailing indicators: chevrons belong only to submenu triggers. */
+.cruor-dropdown-option:not([aria-haspopup="menu"]) > .cruor-dropdown-option__chevron.fa-chevron-right {
+  display: none;
+}
+
+.cruor-dropdown-option--no-trailing {
+  grid-template-columns: 22px minmax(0, 1fr);
+}
+
+.cruor-dropdown-option--legacy-text {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.cruor-dropdown-option--legacy-text > :first-child {
+  min-width: 0;
+}
+
+.cruor-dropdown-option--legacy-text > :last-child:not(:first-child) {
+  justify-self: end;
+  color: var(--cruor-color-text-a540, rgba(238, 238, 238, 0.54));
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.cruor-dropdown-option:not([aria-haspopup="menu"]):has(> .cruor-dropdown-option__chevron.fa-chevron-right) {
+  grid-template-columns: 22px minmax(0, 1fr);
+}

@@ -16860,3 +16860,383 @@ _Nessun file aggiunto._
 
 - Percorso sospetto nello ZIP: PATCH-MANIFEST.md
 
+
+---
+
+## 2026-07-19 12:07:05
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-v26-map-editor-polish-fresh.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-v26-map-editor-polish-fresh.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 9
+
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.test.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/map-generator/map-generator.context-menu-position.test.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+- `~features/darken-location/map-generator/map-generator.room-resize.test.js`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+- `~shared/styles/dropdowns.css`
+
+
+---
+
+## 2026-07-19 12:27:20
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-v26-context-menu-drag-ghost-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-v26-context-menu-drag-ghost-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/map-generator/map-generator.context-menu-position.test.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+- `~features/darken-location/map-generator/map-generator.room-resize.test.js`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+
+---
+
+## 2026-07-19 12:38:28
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-v26-drag-corridor-ghost-handle-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-v26-drag-corridor-ghost-handle-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/map-generator/map-generator.render.jsx`
+- `~features/darken-location/map-generator/map-generator.room-resize.test.js`
+
+
+---
+
+## 2026-07-19 14:06:14
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-v26-waypoint-history-room-toolbar-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-v26-waypoint-history-room-toolbar-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+features/darken-location/map-generator/map-generator.editor-regressions.test.js`
+
+**File sovrascritti:** 4
+
+- `~features/darken-location/composer/components/LocationMapToolbar.jsx`
+- `~features/darken-location/composer/components/LocationMapToolbar.test.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+
+
+---
+
+## 2026-07-19 14:44:32
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-v26-context-inspector-map-plan-polish.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-v26-context-inspector-map-plan-polish.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+features/darken-location/composer/components/LocationRoomInspector.polish.test.jsx`
+- `+features/darken-location/composer/model/location-composer-defaults.test.js`
+
+**File sovrascritti:** 5
+
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/model/location-composer-state.js`
+- `~features/darken-location/map-generator/map-generator.editor-regressions.test.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+
+
+---
+
+## 2026-07-19 15:00:44
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-flow-animated-v4-implementation-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-flow-animated-v4-implementation-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~scripts/diagnose-workbench-scroll.mjs`
+
+
+---
+
+## 2026-07-19 15:07:11
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-v26-room-menu-cascade-header-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-v26-room-menu-cascade-header-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 6
+
+- `~features/darken-location/composer/components/LocationMapToolbar.jsx`
+- `~features/darken-location/composer/components/LocationMapToolbar.test.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/map-generator/map-generator.editor-regressions.test.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+
+---
+
+## 2026-07-19 15:12:08
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-flow-layout-header-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-flow-layout-header-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 15:18:54
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-v26-room-dropdown-portal-blur-cleanup.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-v26-room-dropdown-portal-blur-cleanup.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/composer/components/LocationMapToolbar.jsx`
+- `~features/darken-location/composer/components/LocationMapToolbar.test.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-07-19 15:21:06
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-flow-final-layout-scroll-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-flow-final-layout-scroll-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 15:28:19
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-dark-places-v26-room-menu-three-column-layout-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-v26-room-menu-three-column-layout-fix.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/composer/components/LocationMapToolbar.jsx`
+- `~features/darken-location/composer/components/LocationMapToolbar.test.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+
+
+---
+
+## 2026-07-19 15:36:53
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-flow-step-card-alignment-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-flow-step-card-alignment-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 15:58:48
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-flow-threshold-hold-mini-card-fix-20260719.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-flow-threshold-hold-mini-card-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~_implementation-note.txt`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-19 16:30:11
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-scroll-buffer-restoration.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-scroll-buffer-restoration.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+apply-cruor-home-workbench-scroll-buffer.mjs`
+- `+APPLY-HOME-SCROLL-FIX.cmd`
+
+**File sovrascritti:** 0
+
+_Nessun file sovrascritto._
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: apply-cruor-home-workbench-scroll-buffer.mjs
+- Percorso sospetto nello ZIP: APPLY-HOME-SCROLL-FIX.cmd
+
+
+---
+
+## 2026-07-19 16:31:01
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-workbench-scroll-buffer-restoration.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-workbench-scroll-buffer-restoration.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 2
+
+- `+apply-cruor-home-workbench-scroll-buffer.mjs`
+- `+APPLY-HOME-SCROLL-FIX.cmd`
+
+**File sovrascritti:** 0
+
+_Nessun file sovrascritto._
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: apply-cruor-home-workbench-scroll-buffer.mjs
+- Percorso sospetto nello ZIP: APPLY-HOME-SCROLL-FIX.cmd
+

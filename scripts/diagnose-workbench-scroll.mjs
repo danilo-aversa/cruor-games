@@ -87,13 +87,11 @@ function summarizeNumbers(values) {
 
 function getPhase(sample) {
   if (sample.released) return "released";
-  if (sample.collapseProgress > 0.01) return "collapse";
-  if (sample.revealedStep >= 3) return "output";
-  if (sample.revealedStep >= 2) return "logic";
-  if (sample.revealedStep >= 1) return "input";
-  return "covered";
+  if (sample.workbenchProgress >= 0.74) return "output";
+  if (sample.workbenchProgress >= 0.38) return "engine";
+  if (sample.workbenchProgress >= 0.025) return "input";
+  return "waiting";
 }
-
 
 function getDirection(previous, current) {
   if (!previous || !current) return "none";
@@ -120,11 +118,11 @@ function getVisualDelta(previous, current) {
     return {
       scrollDelta: 0,
       direction: "none",
-      collapseDelta: 0,
+      progressDelta: 0,
       stateChanged: false,
       maxLayoutDelta: 0,
-      maxCardTopDelta: 0,
-      maxCardHeightDelta: 0,
+      maxStageTopDelta: 0,
+      maxStageHeightDelta: 0,
       transformsChanged: false,
       visualIdle: false,
     };
@@ -132,7 +130,7 @@ function getVisualDelta(previous, current) {
 
   const scrollDelta = current.scrollY - previous.scrollY;
   const direction = getDirection(previous, current);
-  const collapseDelta = Math.abs(current.collapseProgress - previous.collapseProgress);
+  const progressDelta = Math.abs(current.workbenchProgress - previous.workbenchProgress);
   const stateChanged =
     current.revealedStep !== previous.revealedStep ||
     current.released !== previous.released ||
@@ -143,40 +141,54 @@ function getVisualDelta(previous, current) {
     Math.abs((current.section?.rect?.height ?? 0) - (previous.section?.rect?.height ?? 0)),
     Math.abs((current.sticky?.rect?.top ?? 0) - (previous.sticky?.rect?.top ?? 0)),
     Math.abs((current.sticky?.rect?.height ?? 0) - (previous.sticky?.rect?.height ?? 0)),
-    Math.abs((current.strip?.rect?.top ?? 0) - (previous.strip?.rect?.top ?? 0)),
-    Math.abs((current.strip?.rect?.height ?? 0) - (previous.strip?.rect?.height ?? 0)),
+    Math.abs((current.process?.rect?.top ?? 0) - (previous.process?.rect?.top ?? 0)),
+    Math.abs((current.process?.rect?.height ?? 0) - (previous.process?.rect?.height ?? 0)),
   ];
 
-  let maxCardTopDelta = 0;
-  let maxCardHeightDelta = 0;
+  let maxStageTopDelta = 0;
+  let maxStageHeightDelta = 0;
   let transformsChanged = false;
-  current.cards.forEach((card, index) => {
-    const previousCard = previous.cards[index];
-    if (!previousCard) return;
-    maxCardTopDelta = Math.max(maxCardTopDelta, Math.abs((card.rect?.top ?? 0) - (previousCard.rect?.top ?? 0)));
-    maxCardHeightDelta = Math.max(maxCardHeightDelta, Math.abs((card.rect?.height ?? 0) - (previousCard.rect?.height ?? 0)));
-    transformsChanged = transformsChanged || card.transform !== previousCard.transform || card.innerTransform !== previousCard.innerTransform;
+  current.stages.forEach((stage, index) => {
+    const previousStage = previous.stages[index];
+    if (!previousStage) return;
+    maxStageTopDelta = Math.max(
+      maxStageTopDelta,
+      Math.abs((stage.rect?.top ?? 0) - (previousStage.rect?.top ?? 0))
+    );
+    maxStageHeightDelta = Math.max(
+      maxStageHeightDelta,
+      Math.abs((stage.rect?.height ?? 0) - (previousStage.rect?.height ?? 0))
+    );
+    transformsChanged =
+      transformsChanged ||
+      stage.transform !== previousStage.transform ||
+      stage.markerTransform !== previousStage.markerTransform;
   });
 
-  const maxLayoutDelta = Math.max(0, ...layoutDeltas, maxCardTopDelta, maxCardHeightDelta);
+  const maxLayoutDelta = Math.max(
+    0,
+    ...layoutDeltas,
+    maxStageTopDelta,
+    maxStageHeightDelta
+  );
   const sectionState = getSectionViewportState(current);
   const sectionRelevant = !["missing", "above", "below"].includes(sectionState);
   const visualIdle =
     sectionRelevant &&
     Math.abs(scrollDelta) >= 36 &&
     !stateChanged &&
-    collapseDelta < 0.012 &&
+    progressDelta < 0.004 &&
     maxLayoutDelta < 6 &&
     !transformsChanged;
 
   return {
     scrollDelta,
     direction,
-    collapseDelta,
+    progressDelta,
     stateChanged,
     maxLayoutDelta,
-    maxCardTopDelta,
-    maxCardHeightDelta,
+    maxStageTopDelta,
+    maxStageHeightDelta,
     transformsChanged,
     visualIdle,
     sectionState,
@@ -195,10 +207,10 @@ function addDerivedMetrics(samples) {
       sectionViewportState: getSectionViewportState(sample),
       visualIdle: visual.visualIdle,
       visualDelta: {
-        collapseDelta: round(visual.collapseDelta, 4),
+        progressDelta: round(visual.progressDelta, 4),
         maxLayoutDelta: round(visual.maxLayoutDelta, 2),
-        maxCardTopDelta: round(visual.maxCardTopDelta, 2),
-        maxCardHeightDelta: round(visual.maxCardHeightDelta, 2),
+        maxStageTopDelta: round(visual.maxStageTopDelta, 2),
+        maxStageHeightDelta: round(visual.maxStageHeightDelta, 2),
         transformsChanged: visual.transformsChanged,
         stateChanged: visual.stateChanged,
       },
@@ -287,7 +299,7 @@ function compareSamples(previous, current) {
 
   const issues = [];
   const phase = getPhase(current);
-  const collapseJump = Math.abs(current.collapseProgress - previous.collapseProgress);
+  const progressJump = Math.abs(current.workbenchProgress - previous.workbenchProgress);
   const sectionHeightJump = Math.abs(current.section.height - previous.section.height);
   const sectionRectHeightJump = Math.abs(current.section.rect.height - previous.section.rect.height);
   const stickyTopJump = Math.abs(current.sticky.rect.top - previous.sticky.rect.top);
@@ -295,13 +307,12 @@ function compareSamples(previous, current) {
   const scrollDelta = Math.abs(current.scrollY - previous.scrollY);
   const sectionShrank = current.section.rect.height < previous.section.rect.height - 8;
   const stickyShrank = current.sticky.rect.height < previous.sticky.rect.height - 8;
-  const collapseChangedWithoutScroll = Math.abs(current.scrollY - previous.scrollY) < 4 && collapseJump > 0.025;
 
-  if (collapseJump > 0.12) {
+  if (progressJump > 0.2) {
     issues.push({
-      type: "collapse-progress-jump",
-      severity: collapseJump > 0.22 ? "high" : "medium",
-      detail: `Collapse progress changed by ${round(collapseJump)} in one sample.`,
+      type: "workbench-progress-jump",
+      severity: progressJump > 0.34 ? "high" : "medium",
+      detail: `Workbench progress changed by ${round(progressJump)} in one sample.`,
     });
   }
 
@@ -345,14 +356,6 @@ function compareSamples(previous, current) {
     });
   }
 
-  if (collapseChangedWithoutScroll) {
-    issues.push({
-      type: "collapse-while-scroll-stationary",
-      severity: collapseJump > 0.08 ? "high" : "medium",
-      detail: `Collapse progress changed by ${round(collapseJump)} while scrollY changed by only ${round(Math.abs(current.scrollY - previous.scrollY), 1)}px.`,
-    });
-  }
-
   if (!current.released && current.revealedStep >= 3 && sectionShrank) {
     issues.push({
       type: "post-output-section-shrink",
@@ -369,35 +372,26 @@ function compareSamples(previous, current) {
     });
   }
 
-  current.cards.forEach((card, index) => {
-    const previousCard = previous.cards[index];
-    if (!previousCard) return;
+  current.stages.forEach((stage, index) => {
+    const previousStage = previous.stages[index];
+    if (!previousStage) return;
 
-    const cardTopJump = Math.abs(card.rect.top - previousCard.rect.top);
-    const cardHeightJump = Math.abs(card.rect.height - previousCard.rect.height);
-    const cardTransformChanged = card.innerTransform !== previousCard.innerTransform;
+    const stageTopJump = Math.abs(stage.rect.top - previousStage.rect.top);
+    const stageHeightJump = Math.abs(stage.rect.height - previousStage.rect.height);
 
-    if (!current.released && cardTopJump > 130 && scrollDelta < 260) {
+    if (!current.released && stageTopJump > 130 && scrollDelta < 260) {
       issues.push({
-        type: "card-position-jump",
-        severity: cardTopJump > 220 ? "high" : "medium",
-        detail: `Card ${index + 1} top changed by ${round(cardTopJump, 1)}px during ${phase}.`,
+        type: "stage-position-jump",
+        severity: stageTopJump > 220 ? "high" : "medium",
+        detail: `Stage ${index + 1} top changed by ${round(stageTopJump, 1)}px during ${phase}.`,
       });
     }
 
-    if (!current.released && cardHeightJump > 80) {
+    if (!current.released && stageHeightJump > 80) {
       issues.push({
-        type: "card-size-jump",
-        severity: cardHeightJump > 150 ? "high" : "medium",
-        detail: `Card ${index + 1} height changed by ${round(cardHeightJump, 1)}px during ${phase}.`,
-      });
-    }
-
-    if (cardTransformChanged && current.revealedStep < Number(card.step)) {
-      issues.push({
-        type: "unexpected-card-transform",
-        severity: "medium",
-        detail: `Card ${index + 1} transform changed before its reveal step.`,
+        type: "stage-size-jump",
+        severity: stageHeightJump > 150 ? "high" : "medium",
+        detail: `Stage ${index + 1} height changed by ${round(stageHeightJump, 1)}px during ${phase}.`,
       });
     }
   });
@@ -427,31 +421,36 @@ async function captureMetrics(page, scenarioName, index, label) {
       const section = document.querySelector("#workbenchFlow");
       const sticky = section?.querySelector(".cruor-home__statement-sticky") ?? null;
       const inner = section?.querySelector(".cruor-home__statement-inner") ?? null;
-      const strip = section?.querySelector(".cruor-home__process-strip") ?? null;
+      const process = section?.querySelector(".cruor-home__workbench-process") ?? null;
+      const railFill = section?.querySelector(".cruor-home__workbench-rail-fill") ?? null;
       const sectionStyles = section ? window.getComputedStyle(section) : null;
       const stickyStyles = sticky ? window.getComputedStyle(sticky) : null;
+      const railFillStyles = railFill ? window.getComputedStyle(railFill) : null;
 
-      const cards = Array.from(section?.querySelectorAll(".cruor-home__process-step") ?? []).map((card) => {
-        const cardStyles = window.getComputedStyle(card);
-        const innerCard = card.querySelector(".cruor-home__process-card-inner");
-        const innerStyles = innerCard ? window.getComputedStyle(innerCard) : null;
-        const front = card.querySelector(".cruor-home__process-card-face--front");
-        const back = card.querySelector(".cruor-home__process-card-face--back");
-        const frontStyles = front ? window.getComputedStyle(front) : null;
-        const backStyles = back ? window.getComputedStyle(back) : null;
+      const stages = Array.from(
+        section?.querySelectorAll(".cruor-home__workbench-stage") ?? []
+      ).map((stage, stageIndex) => {
+        const stageStyles = window.getComputedStyle(stage);
+        const marker = stage.querySelector(".cruor-home__workbench-marker");
+        const markerStyles = marker ? window.getComputedStyle(marker) : null;
 
         return {
-          step: card.getAttribute("data-step"),
-          rect: serializeRect(card.getBoundingClientRect()),
-          filter: cardStyles.filter,
-          opacity: cardStyles.opacity,
-          transform: cardStyles.transform,
-          innerTransform: innerStyles?.transform ?? "",
-          innerTransition: innerStyles?.transition ?? "",
-          frontVisibility: frontStyles?.visibility ?? "",
-          backVisibility: backStyles?.visibility ?? "",
+          step: stageIndex + 1,
+          rect: serializeRect(stage.getBoundingClientRect()),
+          filter: stageStyles.filter,
+          opacity: stageStyles.opacity,
+          transform: stageStyles.transform,
+          markerTransform: markerStyles?.transform ?? "",
+          markerBorderColor: markerStyles?.borderColor ?? "",
         };
       });
+
+      const progressAttribute = Number.parseFloat(
+        section?.getAttribute("data-workbench-progress") ?? "0"
+      );
+      const workbenchProgress = Number.isFinite(progressAttribute)
+        ? progressAttribute
+        : readCssNumber(section, "--workbench-progress");
 
       return {
         scenarioName,
@@ -468,21 +467,25 @@ async function captureMetrics(page, scenarioName, index, label) {
           clientHeight: document.documentElement.clientHeight,
         },
         revealedStep: Number(section?.getAttribute("data-revealed-step") ?? 0),
+        workbenchProgress,
         released: section?.getAttribute("data-workbench-released") === "true",
         className: section?.className ?? "",
-        collapseProgress: readCssNumber(section, "--workbench-collapse-progress"),
-        sectionHeightVar: sectionStyles?.getPropertyValue("--workbench-section-height").trim() ?? "",
         stickyHeightVar: sectionStyles?.getPropertyValue("--workbench-sticky-height").trim() ?? "",
+        railFillTransform: railFillStyles?.transform ?? "",
         section: {
           offsetTop: section?.offsetTop ?? 0,
           offsetHeight: section?.offsetHeight ?? 0,
-          height: section ? readCssNumber(section, "height") || section.getBoundingClientRect().height : 0,
+          height: section
+            ? readCssNumber(section, "height") || section.getBoundingClientRect().height
+            : 0,
           minHeight: sectionStyles?.minHeight ?? "",
           rect: section ? serializeRect(section.getBoundingClientRect()) : null,
         },
         sticky: {
           position: stickyStyles?.position ?? "",
-          height: sticky ? readCssNumber(sticky, "height") || sticky.getBoundingClientRect().height : 0,
+          height: sticky
+            ? readCssNumber(sticky, "height") || sticky.getBoundingClientRect().height
+            : 0,
           minHeight: stickyStyles?.minHeight ?? "",
           transform: stickyStyles?.transform ?? "",
           rect: sticky ? serializeRect(sticky.getBoundingClientRect()) : null,
@@ -490,10 +493,10 @@ async function captureMetrics(page, scenarioName, index, label) {
         inner: {
           rect: inner ? serializeRect(inner.getBoundingClientRect()) : null,
         },
-        strip: {
-          rect: strip ? serializeRect(strip.getBoundingClientRect()) : null,
+        process: {
+          rect: process ? serializeRect(process.getBoundingClientRect()) : null,
         },
-        cards,
+        stages,
       };
     },
     { scenarioName, index, label }
@@ -551,9 +554,9 @@ async function maybeCaptureMilestone(page, outputDir, scenarioName, sample, capt
     ["step-1", sample.revealedStep >= 1],
     ["step-2", sample.revealedStep >= 2],
     ["step-3", sample.revealedStep >= 3],
-    ["collapse-25", sample.collapseProgress >= 0.25],
-    ["collapse-50", sample.collapseProgress >= 0.5],
-    ["collapse-75", sample.collapseProgress >= 0.75],
+    ["progress-25", sample.workbenchProgress >= 0.25],
+    ["progress-50", sample.workbenchProgress >= 0.5],
+    ["progress-75", sample.workbenchProgress >= 0.75],
     ["released", sample.released],
     ["visual-idle", sample.visualIdle === true],
     ["post-output-idle", sample.visualIdle === true && sample.revealedStep >= 3],
@@ -693,28 +696,29 @@ function flattenCsvRows(results) {
         scrollDelta: sample.scrollDelta ?? 0,
         visualIdle: sample.visualIdle ?? false,
         visualLayoutDelta: sample.visualDelta?.maxLayoutDelta ?? 0,
-        visualCollapseDelta: sample.visualDelta?.collapseDelta ?? 0,
+        visualProgressDelta: sample.visualDelta?.progressDelta ?? 0,
         visualTransformsChanged: sample.visualDelta?.transformsChanged ?? false,
         revealedStep: sample.revealedStep,
+        workbenchProgress: sample.workbenchProgress,
         released: sample.released,
-        collapseProgress: sample.collapseProgress,
         sectionTop: sample.section.rect?.top ?? 0,
         sectionBottom: sample.section.rect?.bottom ?? 0,
         sectionHeight: sample.section.rect?.height ?? 0,
         sectionOffsetHeight: sample.section.offsetHeight,
         stickyTop: sample.sticky.rect?.top ?? 0,
         stickyHeight: sample.sticky.rect?.height ?? 0,
-        stripTop: sample.strip.rect?.top ?? 0,
-        stripHeight: sample.strip.rect?.height ?? 0,
-        card1Top: sample.cards[0]?.rect.top ?? 0,
-        card1Height: sample.cards[0]?.rect.height ?? 0,
-        card1Transform: sample.cards[0]?.innerTransform ?? "",
-        card2Top: sample.cards[1]?.rect.top ?? 0,
-        card2Height: sample.cards[1]?.rect.height ?? 0,
-        card2Transform: sample.cards[1]?.innerTransform ?? "",
-        card3Top: sample.cards[2]?.rect.top ?? 0,
-        card3Height: sample.cards[2]?.rect.height ?? 0,
-        card3Transform: sample.cards[2]?.innerTransform ?? "",
+        processTop: sample.process.rect?.top ?? 0,
+        processHeight: sample.process.rect?.height ?? 0,
+        stage1Top: sample.stages[0]?.rect.top ?? 0,
+        stage1Height: sample.stages[0]?.rect.height ?? 0,
+        stage1Transform: sample.stages[0]?.transform ?? "",
+        stage2Top: sample.stages[1]?.rect.top ?? 0,
+        stage2Height: sample.stages[1]?.rect.height ?? 0,
+        stage2Transform: sample.stages[1]?.transform ?? "",
+        stage3Top: sample.stages[2]?.rect.top ?? 0,
+        stage3Height: sample.stages[2]?.rect.height ?? 0,
+        stage3Transform: sample.stages[2]?.transform ?? "",
+        railFillTransform: sample.railFillTransform ?? "",
       });
     }
   }
@@ -745,9 +749,9 @@ function createMarkdownReport({ url, viewport, outputDir, results, consoleMessag
   const scenarioSummary = results.map((result) => {
     const first = result.samples[0];
     const last = result.samples.at(-1);
-    const maxCollapseJump = Math.max(
+    const maxProgressJump = Math.max(
       0,
-      ...result.samples.slice(1).map((sample, index) => Math.abs(sample.collapseProgress - result.samples[index].collapseProgress))
+      ...result.samples.slice(1).map((sample, index) => Math.abs(sample.workbenchProgress - result.samples[index].workbenchProgress))
     );
     const maxSectionHeightJump = Math.max(
       0,
@@ -767,7 +771,7 @@ function createMarkdownReport({ url, viewport, outputDir, results, consoleMessag
       endScroll: last?.scrollY ?? 0,
       finalStep: last?.revealedStep ?? 0,
       released: last?.released ?? false,
-      maxCollapseJump: round(maxCollapseJump),
+      maxProgressJump: round(maxProgressJump),
       maxSectionHeightJump: round(maxSectionHeightJump, 1),
       maxStickyTopJump: round(maxStickyTopJump, 1),
       idleIssues: idleIssues.length,
@@ -798,10 +802,10 @@ function createMarkdownReport({ url, viewport, outputDir, results, consoleMessag
 
   lines.push("## Scenario Timeline Summary");
   lines.push("");
-  lines.push("| Scenario | Samples | Scroll Y | Final Step | Released | Max Collapse Jump | Max Section Height Jump | Max Sticky Top Jump | Idle Runs | Shrink | p95 Frame | Slow Frames | Issues |");
+  lines.push("| Scenario | Samples | Scroll Y | Final Step | Released | Max Progress Jump | Max Section Height Jump | Max Sticky Top Jump | Idle Runs | Shrink | p95 Frame | Slow Frames | Issues |");
   lines.push("|---|---:|---:|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|");
   for (const item of scenarioSummary) {
-    lines.push(`| ${item.name} | ${item.samples} | ${round(item.startScroll, 1)} → ${round(item.endScroll, 1)} | ${item.finalStep} | ${item.released ? "yes" : "no"} | ${item.maxCollapseJump} | ${item.maxSectionHeightJump}px | ${item.maxStickyTopJump}px | ${item.idleIssues} | ${item.shrinkIssues} | ${item.frameP95}ms | ${item.slowFrames} | ${item.issues} |`);
+    lines.push(`| ${item.name} | ${item.samples} | ${round(item.startScroll, 1)} → ${round(item.endScroll, 1)} | ${item.finalStep} | ${item.released ? "yes" : "no"} | ${item.maxProgressJump} | ${item.maxSectionHeightJump}px | ${item.maxStickyTopJump}px | ${item.idleIssues} | ${item.shrinkIssues} | ${item.frameP95}ms | ${item.slowFrames} | ${item.issues} |`);
   }
   lines.push("");
 
@@ -871,11 +875,11 @@ function createMarkdownReport({ url, viewport, outputDir, results, consoleMessag
   lines.push("");
   lines.push("## What to Look For");
   lines.push("");
-  lines.push("- `collapse-progress-jump`: collapse is still too aggressive or raw wheel deltas are leaking through.");
+  lines.push("- `workbench-progress-jump`: the continuous rail is advancing too abruptly or raw wheel deltas are leaking through.");
   lines.push("- `sticky-position-jump`: sticky layer is changing position while it should remain pinned.");
-  lines.push("- `card-position-jump`: cards are flickering or jumping during reveal/collapse.");
+  lines.push("- `stage-position-jump`: pipeline stages are flickering or jumping during reveal.");
   lines.push("- `release-height-jump`: release still changes layout too abruptly.");
-  lines.push("- High `p95 Frame` or many `Slow Frames`: animation is visually heavy, usually due to filters, shadows, 3D transforms, or layout properties changing every frame.");
+  lines.push("- High `p95 Frame` or many `Slow Frames`: animation is visually heavy, usually due to filters, shadows, SVG effects, or layout properties changing every frame.");
 
   return lines.join("\n");
 }

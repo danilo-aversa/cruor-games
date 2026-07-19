@@ -4,7 +4,6 @@ import { registerTooltipProvider } from "../../../shared/tooltips/tooltip.regist
 import {
   evaluateDarkPlacesRoomManualOverride,
   getDarkPlacesRoomAssignedComponents,
-  getDarkPlacesRoomRequirementSummary,
 } from "../room-constraint-evaluation.js";
 import {
   getRoomShapeDefinition,
@@ -625,6 +624,20 @@ function getFixedContextMenuPosition(event, width = 250, height = 280) {
   };
 }
 
+function setRoomDragTooltipSuppressed(active) {
+  if (typeof document === "undefined") return;
+  const body = document.body;
+  if (body) {
+    if (active) body.setAttribute("data-cruor-room-dragging", "true");
+    else body.removeAttribute("data-cruor-room-dragging");
+  }
+  if (!active) return;
+  const portal = document.getElementById("cruorTooltipPortal");
+  if (!portal) return;
+  portal.replaceChildren();
+  portal.hidden = true;
+}
+
 function roundTo(value, decimals = 2) {
   const factor = 10 ** decimals;
   return Math.round(value * factor) / factor;
@@ -977,6 +990,8 @@ export function MapViewport({
     connectionDraftRef.current = nextDraft;
     setConnectionDraft(nextDraft);
   }
+
+  useEffect(() => () => setRoomDragTooltipSuppressed(false), []);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -1554,7 +1569,7 @@ export function MapViewport({
     setWaypointContextMenu(null);
     setAddWaypointContextMenu(null);
     setMapContextMenu({
-      ...getFixedContextMenuPosition(event, 270, 420),
+      ...getFixedContextMenuPosition(event, 210, 420),
     });
   }
 
@@ -1613,11 +1628,12 @@ export function MapViewport({
     event.preventDefault();
     event.stopPropagation();
     setSelectedStairMarker(null);
-    setHoveredRegionId(region.id);
-    onRegionHoverChange?.(region.id);
+    setHoveredRegionId(null);
+    onRegionHoverChange?.("");
     onEditStart?.();
     const point = clientToMapPoint(event);
     if (!point) return;
+    setRoomDragTooltipSuppressed(true);
     roomDragRef.current = {
       pointerId: event.pointerId,
       regionId: region.id,
@@ -1795,7 +1811,7 @@ export function MapViewport({
       hasRegionAccess: Boolean(regionAccess),
       hasAccessAtAnchor: mapAccessMatchesAnchor(regionAccess, anchor),
       accessType: regionAccess?.type || "passage",
-      ...getFixedContextMenuPosition(event, 270, 390),
+      ...getFixedContextMenuPosition(event, 210, 390),
     });
     return true;
   }
@@ -2218,6 +2234,7 @@ export function MapViewport({
     roomDragRef.current = null;
     setDraggingRegionId(null);
     setHoveredRegionId(null);
+    setRoomDragTooltipSuppressed(false);
     onEditCommit?.();
     return true;
   }
@@ -2774,7 +2791,7 @@ export function MapViewport({
       markerCount: handle.markerCount,
       transition: handle.transition,
       hasManualPosition: Boolean(override && override.removed !== true),
-      ...getFixedContextMenuPosition(event, 270, 250),
+      ...getFixedContextMenuPosition(event, 210, 250),
     });
   }
 
@@ -2799,7 +2816,7 @@ export function MapViewport({
       endpoint: handle.endpoint,
       fallbackType: handle.corridor.secret ? "secret" : "default",
       fallbackCorridorType: handle.corridor.corridorType || "normal",
-      ...getFixedContextMenuPosition(event, 270, 340),
+      ...getFixedContextMenuPosition(event, 210, 340),
     });
     setHoverCorridorHandle(null);
     setHoverWallHandle(null);
@@ -2820,7 +2837,7 @@ export function MapViewport({
       key: junction.key,
       cell: junction.cell,
       corridorIds: junction.corridors.map((corridor) => corridor.id),
-      ...getFixedContextMenuPosition(event, 250, 250),
+      ...getFixedContextMenuPosition(event, 210, 250),
     });
     setHoverCorridorHandle(null);
     setHoverWallHandle(null);
@@ -2848,7 +2865,7 @@ export function MapViewport({
       cell: handle.cell,
       junctionKey: junction?.key || null,
       junctionCorridorIds: junction?.corridors?.map((corridor) => corridor.id) || [],
-      ...getFixedContextMenuPosition(event, 270, 390),
+      ...getFixedContextMenuPosition(event, 210, 390),
     });
     setHoveredCorridorId(handle.corridor.id);
   }
@@ -2878,7 +2895,7 @@ export function MapViewport({
       cell,
       junctionKey: junction?.key || null,
       junctionCorridorIds: junction?.corridors?.map((corridor) => corridor.id) || [],
-      ...getFixedContextMenuPosition(event, 270, 420),
+      ...getFixedContextMenuPosition(event, 210, 420),
     });
     setHoverCorridorHandle(null);
     setHoveredCorridorId(handle.corridor.id);
@@ -3411,6 +3428,7 @@ export function MapViewport({
           `map-viewport--${viewportMode}`,
           viewportInteractive && "is-pannable",
           isPanning && "is-panning",
+          draggingRegionId && "is-room-dragging",
           embeddedPreview && "is-embedded-preview",
           viewportClassName
         )}
@@ -3971,7 +3989,11 @@ function ConfirmingDeleteButton({
   return (
     <button
       type="button"
-      className={armed ? "is-armed" : ""}
+      className={cx(
+        "room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text",
+        armed && "is-armed",
+      )}
+      role="menuitem"
       onClick={() => {
         if (!armed) {
           setArmed(true);
@@ -4019,7 +4041,7 @@ function useContextMenuDismiss(isOpen, onClose) {
 }
 
 function RoomStyleMenuOption({
-  icon = "chevron-right",
+  icon = "circle",
   label,
   active = false,
   disabled = false,
@@ -4031,6 +4053,7 @@ function RoomStyleMenuOption({
       type="button"
       className={cx(
         "location-map-toolbar__style-option cruor-dropdown-option",
+        !active && "cruor-dropdown-option--no-trailing",
         active && "is-active"
       )}
       role="menuitem"
@@ -4041,10 +4064,9 @@ function RoomStyleMenuOption({
     >
       <i className={`fa-solid fa-${icon} cruor-dropdown-option__icon`} aria-hidden="true" />
       <span className="cruor-dropdown-option__label">{label}</span>
-      <i
-        className={`${active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"} cruor-dropdown-option__chevron`}
-        aria-hidden="true"
-      />
+      {active ? (
+        <i className="fa-solid fa-check cruor-dropdown-option__chevron" aria-hidden="true" />
+      ) : null}
     </button>
   );
 }
@@ -4316,7 +4338,6 @@ function RoomStyleContextMenu({
     ...options.toggles.filter((toggle) => style[toggle.key]).map((toggle) => toggle.label),
   ];
   const assignedComponents = getDarkPlacesRoomAssignedComponents(region);
-  const requirementSummary = getDarkPlacesRoomRequirementSummary(region);
   const evaluateStylePatch = (patch) =>
     evaluateDarkPlacesRoomManualOverride({
       region,
@@ -4380,22 +4401,9 @@ function RoomStyleContextMenu({
       onPointerDown={(event) => event.stopPropagation()}
       onContextMenu={(event) => event.preventDefault()}
     >
-      <span className="room-style-context-menu__header cruor-dropdown-header" role="none">
+      <span className="cruor-dropdown-header" role="none">
         <strong className="cruor-dropdown-header__title">{region.name}</strong>
-        <span className="cruor-dropdown-header__meta">
-          {region.number} {"\u00B7"} {contextKey} {"\u00B7"} {region.cellRect.w}
-          {"\u00D7"}
-          {region.cellRect.h}
-        </span>
       </span>
-      {requirementSummary ? (
-        <span
-          className="location-map-toolbar__style-subtitle room-style-context-menu__requirements cruor-dropdown-subtitle"
-          title={`Content requirements: ${requirementSummary}`}
-        >
-          Content: {requirementSummary}
-        </span>
-      ) : null}
 
       <RoomStyleMenuSection
         id="type"
@@ -4654,7 +4662,6 @@ function RoomStyleContextMenu({
             onClose?.();
           }}
         />
-        <RoomStyleMenuOption icon="xmark" label="Close" onClick={onClose} />
       </span>
     </div>
   );
@@ -4671,21 +4678,22 @@ function WallAccessContextMenu({ menu, onSet, onRemove, onClose }) {
   return (
     <div
       ref={menuRef}
-      className="room-context-menu wall-access-context-menu"
+      className="room-context-menu wall-access-context-menu cruor-dropdown-menu cruor-dropdown-menu--context"
+      data-style-floating="portal"
+      role="menu"
+      aria-label="Map passage controls"
       style={{ left: menu.x, top: menu.y }}
       onPointerDown={(event) => event.stopPropagation()}
       onContextMenu={(event) => event.preventDefault()}
     >
-      <div className="room-context-menu__header">
-        <strong>Map Passage</strong>
-        <span>
-          {menu.regionId} {"\u00B7"} {menu.anchor?.side || "wall"}
-        </span>
+      <div className="room-context-menu__header cruor-dropdown-header" role="none">
+        <strong className="cruor-dropdown-header__title">Map Passage</strong>
       </div>
-      <div className="room-context-menu__body">
+      <div className="room-context-menu__body cruor-dropdown-options" role="none">
         <button
           type="button"
-          className="room-context-menu__trigger"
+          className="room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text"
+          role="menuitem"
           onClick={() => {
             if (menu.hasAccessAtAnchor) {
               onRemove?.(menu.regionId);
@@ -4699,12 +4707,7 @@ function WallAccessContextMenu({ menu, onSet, onRemove, onClose }) {
           <span>
             <i className="fa-solid fa-route" aria-hidden="true" /> {actionLabel}
           </span>
-          <span aria-hidden="true">{"\u203A"}</span>
-        </button>
-      </div>
-      <div className="room-context-menu__actions">
-        <button type="button" onClick={onClose}>
-          Close
+          <span aria-hidden="true" />
         </button>
       </div>
     </div>
@@ -4736,28 +4739,29 @@ function AddWaypointContextMenu({
   const junctionLabel = isPureCave ? "Connection" : "Junction";
   return (
     <div
-      className="room-context-menu add-waypoint-context-menu"
+      className="room-context-menu add-waypoint-context-menu cruor-dropdown-menu cruor-dropdown-menu--context"
+      data-style-floating="portal"
+      role="menu"
+      aria-label={`${hasJunction ? junctionPointLabel : pointLabel} controls`}
       style={{ left: menu.x, top: menu.y }}
       onPointerDown={(event) => event.stopPropagation()}
       onContextMenu={(event) => event.preventDefault()}
     >
-      <div className="room-context-menu__header">
-        <strong>{hasJunction ? junctionPointLabel : pointLabel}</strong>
-        <span>
-          {menu.corridorId} {"\u00B7"} Cell {menu.cell.x},{menu.cell.y}
-        </span>
+      <div className="room-context-menu__header cruor-dropdown-header" role="none">
+        <strong className="cruor-dropdown-header__title">{hasJunction ? junctionPointLabel : pointLabel}</strong>
       </div>
-      <div className="room-context-menu__body">
+      <div className="room-context-menu__body cruor-dropdown-options" role="none">
         <button
           type="button"
-          className="room-context-menu__trigger"
+          className="room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text"
+          role="menuitem"
           onClick={() => {
             onAddWaypoint?.(menu.corridorId, menu.insertIndex, menu.point);
             onClose?.();
           }}
         >
           <span>{addLabel}</span>
-          <span aria-hidden="true">{"\u203A"}</span>
+          <span aria-hidden="true" />
         </button>
         <CorridorTypeMenuSection
           corridorId={menu.corridorId}
@@ -4768,15 +4772,15 @@ function AddWaypointContextMenu({
         />
         {hasJunction && (
           <>
-            <div className="room-context-menu__label">{junctionLabel}</div>
+            <div className="room-context-menu__label cruor-dropdown-subtitle" role="none">{junctionLabel}</div>
             {JUNCTION_TYPE_OPTIONS.map((type) => (
               <button
                 key={type}
                 type="button"
                 className={
                   currentJunctionType === type
-                    ? "room-context-menu__trigger is-active"
-                    : "room-context-menu__trigger"
+                    ? "room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text is-active"
+                    : "room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text"
                 }
                 onClick={() => {
                   onJunctionChange?.(menu.junctionKey, type);
@@ -4788,11 +4792,6 @@ function AddWaypointContextMenu({
             ))}
           </>
         )}
-      </div>
-      <div className="room-context-menu__actions">
-        <button type="button" onClick={onClose}>
-          Close
-        </button>
       </div>
     </div>
   );
@@ -4800,83 +4799,34 @@ function AddWaypointContextMenu({
 
 function WaypointContextMenu({
   menu,
-  manualOverrides,
   isPureCave = false,
   onDeleteWaypoint,
-  onDeleteConnection,
-  onJunctionChange,
-  onCorridorTypeChange,
   onClose,
 }) {
   if (!menu) return null;
-  const hasJunction = Boolean(menu.junctionKey);
-  const currentJunctionType = hasJunction
-    ? getManualJunctionType(manualOverrides.corridorJunctions || {}, menu.junctionKey, "merge")
-    : null;
-  const junctionLabels = {
-    merge: isPureCave ? "Natural Merge" : "Normal Merge",
-    wall: isPureCave ? "Blocked Passage" : "Wall",
-    door: isPureCave ? "Passage" : "Door",
-  };
   const waypointLabel = isPureCave ? "Tunnel Point" : "Corridor Waypoint";
-  const junctionWaypointLabel = isPureCave ? "Tunnel Junction Point" : "Corridor Junction Waypoint";
   const deleteLabel = isPureCave ? "Delete Tunnel Point" : "Delete Waypoint";
   const confirmDeleteLabel = isPureCave ? "Confirm Delete Tunnel Point" : "Confirm Delete Waypoint";
-  const junctionLabel = isPureCave ? "Connection" : "Junction";
   return (
     <div
-      className="room-context-menu waypoint-context-menu"
+      className="room-context-menu waypoint-context-menu cruor-dropdown-menu cruor-dropdown-menu--context"
+      data-style-floating="portal"
+      role="menu"
+      aria-label={`${waypointLabel} controls`}
       style={{ left: menu.x, top: menu.y }}
       onPointerDown={(event) => event.stopPropagation()}
       onContextMenu={(event) => event.preventDefault()}
     >
-      <div className="room-context-menu__header">
-        <strong>{hasJunction ? junctionWaypointLabel : waypointLabel}</strong>
-        <span>
-          {menu.corridorId} {"\u00B7"} Cell {menu.cell.x},{menu.cell.y}
-        </span>
+      <div className="room-context-menu__header cruor-dropdown-header" role="none">
+        <strong className="cruor-dropdown-header__title">{waypointLabel}</strong>
       </div>
-      <div className="room-context-menu__body">
+      <div className="room-context-menu__body cruor-dropdown-options" role="none">
         <ConfirmingDeleteButton
           label={deleteLabel}
           confirmLabel={confirmDeleteLabel}
           onConfirm={() => onDeleteWaypoint?.(menu.corridorId, menu.waypointIndex, menu.source)}
           onClose={onClose}
         />
-        <CorridorTypeMenuSection
-          corridorId={menu.corridorId}
-          manualOverrides={manualOverrides}
-          fallbackType={menu.fallbackCorridorType}
-          isPureCave={isPureCave}
-          onChange={onCorridorTypeChange}
-        />
-        {hasJunction && (
-          <>
-            <div className="room-context-menu__label">{junctionLabel}</div>
-            {JUNCTION_TYPE_OPTIONS.map((type) => (
-              <button
-                key={type}
-                type="button"
-                className={
-                  currentJunctionType === type
-                    ? "room-context-menu__trigger is-active"
-                    : "room-context-menu__trigger"
-                }
-                onClick={() => {
-                  onJunctionChange?.(menu.junctionKey, type);
-                }}
-              >
-                <span>{junctionLabels[type]}</span>
-                <span>{currentJunctionType === type ? "\u2713" : ""}</span>
-              </button>
-            ))}
-          </>
-        )}
-      </div>
-      <div className="room-context-menu__actions">
-        <button type="button" onClick={onClose}>
-          Close
-        </button>
       </div>
     </div>
   );
@@ -4915,7 +4865,7 @@ function CorridorTypeMenuSection({
       };
   return (
     <>
-      <div className="room-context-menu__label">Corridor Type</div>
+      <div className="room-context-menu__label cruor-dropdown-subtitle" role="none">Corridor Type</div>
       {CORRIDOR_TYPE_OPTIONS.map((type) => {
         const disabled = EDITOR_DISABLED_CORRIDOR_TYPES.has(type);
         return (
@@ -4923,7 +4873,7 @@ function CorridorTypeMenuSection({
             key={type}
             type="button"
             className={cx(
-              "room-context-menu__trigger",
+              "room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text",
               currentType === type && "is-active",
               disabled && "is-disabled"
             )}
@@ -4941,7 +4891,7 @@ function CorridorTypeMenuSection({
       })}
       <button
         type="button"
-        className="room-context-menu__trigger"
+        className="room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text"
         disabled={!hasManualType}
         onClick={() => {
           onChange?.(corridorId, null);
@@ -4974,27 +4924,31 @@ function CorridorJunctionContextMenu({
   };
   return (
     <div
-      className="room-context-menu corridor-junction-context-menu"
+      className="room-context-menu corridor-junction-context-menu cruor-dropdown-menu cruor-dropdown-menu--context"
+      data-style-floating="portal"
+      role="menu"
+      aria-label={`${isPureCave ? "Tunnel connection" : "Corridor junction"} controls`}
       style={{ left: menu.x, top: menu.y }}
       onPointerDown={(event) => event.stopPropagation()}
       onContextMenu={(event) => event.preventDefault()}
     >
-      <div className="room-context-menu__header">
-        <strong>{isPureCave ? "Tunnel Connection" : "Corridor Junction"}</strong>
-        <span>
+      <div className="room-context-menu__header cruor-dropdown-header" role="none">
+        <strong className="cruor-dropdown-header__title">{isPureCave ? "Tunnel Connection" : "Corridor Junction"}</strong>
+        <span className="cruor-dropdown-header__meta">
           Cell {menu.cell.x},{menu.cell.y} {"\u00B7"} {menu.corridorIds.length}{" "}
           {isPureCave ? "passages" : "corridors"}
         </span>
       </div>
-      <div className="room-context-menu__body">
+      <div className="room-context-menu__body cruor-dropdown-options" role="none">
         {JUNCTION_TYPE_OPTIONS.map((type) => (
           <button
             key={type}
             type="button"
+            role="menuitem"
             className={
               currentType === type
-                ? "room-context-menu__trigger is-active"
-                : "room-context-menu__trigger"
+                ? "room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text is-active"
+                : "room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text"
             }
             onClick={() => {
               onChange?.(menu.key, type);
@@ -5005,17 +4959,16 @@ function CorridorJunctionContextMenu({
           </button>
         ))}
       </div>
-      <div className="room-context-menu__actions">
+      <div className="room-context-menu__actions cruor-dropdown-options" role="none">
         <button
           type="button"
+          className="cruor-dropdown-option cruor-dropdown-option--legacy-text"
+          role="menuitem"
           onClick={() => {
             onChange?.(menu.key, "merge");
           }}
         >
           Reset
-        </button>
-        <button type="button" onClick={onClose}>
-          Close
         </button>
       </div>
     </div>
@@ -5029,21 +4982,24 @@ function StairMarkerContextMenu({ menu, onReset, onRemove, onClose }) {
   return (
     <div
       ref={menuRef}
-      className="room-context-menu stair-marker-context-menu"
+      className="room-context-menu stair-marker-context-menu cruor-dropdown-menu cruor-dropdown-menu--context"
+      data-style-floating="portal"
+      role="menu"
+      aria-label="Stair marker controls"
       style={{ left: menu.x, top: menu.y }}
       onPointerDown={(event) => event.stopPropagation()}
       onContextMenu={(event) => event.preventDefault()}
     >
-      <div className="room-context-menu__header">
-        <strong>Stair Marker</strong>
-        <span>
+      <div className="room-context-menu__header cruor-dropdown-header" role="none">
+        <strong className="cruor-dropdown-header__title">Stair Marker</strong>
+        <span className="cruor-dropdown-header__meta">
           {menu.corridorId} {"\u00B7"} {directionLabel} {menu.markerIndex + 1}/{menu.markerCount}
         </span>
       </div>
-      <div className="room-context-menu__body">
+      <div className="room-context-menu__body cruor-dropdown-options" role="none">
         <button
           type="button"
-          className="room-context-menu__trigger"
+          className="room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text"
           disabled={!menu.hasManualPosition}
           onClick={() => {
             onReset?.(menu.id);
@@ -5051,7 +5007,7 @@ function StairMarkerContextMenu({ menu, onReset, onRemove, onClose }) {
           }}
         >
           <span>Reset Position</span>
-          <span aria-hidden="true">{menu.hasManualPosition ? "\u21BA" : ""}</span>
+          <span aria-hidden="true" />
         </button>
         <ConfirmingDeleteButton
           label="Remove Stair Marker"
@@ -5065,11 +5021,6 @@ function StairMarkerContextMenu({ menu, onReset, onRemove, onClose }) {
           }
           onClose={onClose}
         />
-      </div>
-      <div className="room-context-menu__actions">
-        <button type="button" onClick={onClose}>
-          Close
-        </button>
       </div>
     </div>
   );
@@ -5111,26 +5062,30 @@ function DoorContextMenu({
   };
   return (
     <div
-      className="room-context-menu door-context-menu"
+      className="room-context-menu door-context-menu cruor-dropdown-menu cruor-dropdown-menu--context"
+      data-style-floating="portal"
+      role="menu"
+      aria-label={`${isPureCave ? "Passage" : "Door"} controls`}
       style={{ left: menu.x, top: menu.y }}
       onPointerDown={(event) => event.stopPropagation()}
       onContextMenu={(event) => event.preventDefault()}
     >
-      <div className="room-context-menu__header">
-        <strong>{isPureCave ? "Passage" : "Door"}</strong>
-        <span>
+      <div className="room-context-menu__header cruor-dropdown-header" role="none">
+        <strong className="cruor-dropdown-header__title">{isPureCave ? "Passage" : "Door"}</strong>
+        <span className="cruor-dropdown-header__meta">
           {menu.corridorId} {"\u00B7"} {menu.endpoint}
         </span>
       </div>
-      <div className="room-context-menu__body">
+      <div className="room-context-menu__body cruor-dropdown-options" role="none">
         {DOOR_TYPE_OPTIONS.map((type) => (
           <button
             key={type}
             type="button"
+            role="menuitem"
             className={
               currentType === type
-                ? "room-context-menu__trigger is-active"
-                : "room-context-menu__trigger"
+                ? "room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text is-active"
+                : "room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text"
             }
             onClick={() => {
               onTypeChange?.(menu.corridorId, menu.endpoint, type);
@@ -5140,15 +5095,16 @@ function DoorContextMenu({
             <span>{currentType === type ? "\u2713" : ""}</span>
           </button>
         ))}
-        <div className="room-context-menu__label">Stair</div>
+        <div className="room-context-menu__label cruor-dropdown-subtitle" role="none">Stair</div>
         {STAIR_TRANSITION_OPTIONS.map((type) => (
           <button
             key={type}
             type="button"
+            role="menuitem"
             className={
               currentStair === type
-                ? "room-context-menu__trigger is-active"
-                : "room-context-menu__trigger"
+                ? "room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text is-active"
+                : "room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text"
             }
             onClick={() => {
               onStairChange?.(menu.corridorId, menu.endpoint, type);
@@ -5166,16 +5122,13 @@ function DoorContextMenu({
           onChange={onCorridorTypeChange}
         />
       </div>
-      <div className="room-context-menu__actions">
+      <div className="room-context-menu__actions cruor-dropdown-options" role="none">
         <ConfirmingDeleteButton
           label="Delete"
           confirmLabel="Confirm Delete"
           onConfirm={() => onDelete?.(menu.corridorId)}
           onClose={onClose}
         />
-        <button type="button" onClick={onClose}>
-          Close
-        </button>
       </div>
     </div>
   );
@@ -5714,6 +5667,7 @@ function MapToolMenuButton({
       type="button"
       className={cx(
         "location-map-toolbar__map-menu-action cruor-dropdown-option",
+        !active && "cruor-dropdown-option--no-trailing",
         active && "is-active"
       )}
       {...getGenericTooltipAttrs(label, description || label)}
@@ -5726,10 +5680,9 @@ function MapToolMenuButton({
     >
       <i className={`fa-solid fa-${icon} cruor-dropdown-option__icon`} aria-hidden="true" />
       <span className="cruor-dropdown-option__label">{label}</span>
-      <i
-        className={`${active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"} cruor-dropdown-option__chevron`}
-        aria-hidden="true"
-      />
+      {active ? (
+        <i className="fa-solid fa-check cruor-dropdown-option__chevron" aria-hidden="true" />
+      ) : null}
     </button>
   );
 }
@@ -5740,6 +5693,7 @@ function MapStyleOptionButton({ icon, label, active = false, onClick }) {
       type="button"
       className={cx(
         "location-map-toolbar__style-option cruor-dropdown-option",
+        !active && "cruor-dropdown-option--no-trailing",
         active && "is-active"
       )}
       onMouseDown={suppressToolbarTextSelection}
@@ -5747,10 +5701,9 @@ function MapStyleOptionButton({ icon, label, active = false, onClick }) {
     >
       <i className={`fa-solid fa-${icon} cruor-dropdown-option__icon`} aria-hidden="true" />
       <span className="cruor-dropdown-option__label">{label}</span>
-      <i
-        className={`${active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"} cruor-dropdown-option__chevron`}
-        aria-hidden="true"
-      />
+      {active ? (
+        <i className="fa-solid fa-check cruor-dropdown-option__chevron" aria-hidden="true" />
+      ) : null}
     </button>
   );
 }
@@ -6644,10 +6597,7 @@ function MapControlSelect({ id, label, value, options, onChange }) {
                       <strong>{option.label}</strong>
                       {option.description ? <small>{option.description}</small> : null}
                     </span>
-                    <i
-                      className={active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"}
-                      aria-hidden="true"
-                    />
+                    {active ? <i className="fa-solid fa-check" aria-hidden="true" /> : null}
                   </button>
                 );
               })}
@@ -6898,6 +6848,8 @@ export default function CruorMapGeneratorMvp({
   const manualOverridesRef = useRef(manualOverrides);
   manualOverridesRef.current = manualOverrides;
   const [manualHistory, setManualHistory] = useState({ past: [], future: [] });
+  const manualHistoryRef = useRef(manualHistory);
+  manualHistoryRef.current = manualHistory;
   const [isManualEditActive, setIsManualEditActive] = useState(false);
   const [inspectorCollapsed, setInspectorCollapsed] = useState(false);
   const [testsModalOpen, setTestsModalOpen] = useState(false);
@@ -7762,15 +7714,20 @@ export default function CruorMapGeneratorMvp({
 
   function clearManualHistory() {
     manualEditSnapshotRef.current = null;
-    setManualHistory({ past: [], future: [] });
+    const nextHistory = { past: [], future: [] };
+    manualHistoryRef.current = nextHistory;
+    setManualHistory(nextHistory);
   }
 
   function pushManualHistorySnapshot(snapshot) {
     if (!snapshot) return;
-    setManualHistory((history) => ({
+    const history = manualHistoryRef.current || { past: [], future: [] };
+    const nextHistory = {
       past: [...history.past.slice(-49), cloneManualOverrides(snapshot)],
       future: [],
-    }));
+    };
+    manualHistoryRef.current = nextHistory;
+    setManualHistory(nextHistory);
   }
 
   function markPendingInlineManualCommit(nextManualOverrides) {
@@ -8548,31 +8505,41 @@ export default function CruorMapGeneratorMvp({
   }
 
   function undoManualEdit() {
-    setManualHistory((history) => {
-      if (history.past.length === 0) return history;
-      const previous = cloneManualOverrides(history.past[history.past.length - 1]);
-      const current = cloneManualOverrides(manualOverrides);
-      setManualOverrides(previous);
-      setStateStatus("Undone.");
-      return {
-        past: history.past.slice(0, -1),
-        future: [current, ...history.future.slice(0, 49)],
-      };
-    });
+    const history = manualHistoryRef.current || { past: [], future: [] };
+    if (history.past.length === 0) return;
+
+    const previous = cloneManualOverrides(history.past[history.past.length - 1]);
+    const current = cloneManualOverrides(manualOverridesRef.current);
+    const nextHistory = {
+      past: history.past.slice(0, -1),
+      future: [current, ...history.future.slice(0, 49)],
+    };
+
+    manualHistoryRef.current = nextHistory;
+    manualOverridesRef.current = previous;
+    pendingInlineManualCommitRef.current = cloneManualOverrides(previous);
+    setManualHistory(nextHistory);
+    setManualOverrides(previous);
+    setStateStatus("Undone.");
   }
 
   function redoManualEdit() {
-    setManualHistory((history) => {
-      if (history.future.length === 0) return history;
-      const next = cloneManualOverrides(history.future[0]);
-      const current = cloneManualOverrides(manualOverrides);
-      setManualOverrides(next);
-      setStateStatus("Redone.");
-      return {
-        past: [...history.past.slice(-49), current],
-        future: history.future.slice(1),
-      };
-    });
+    const history = manualHistoryRef.current || { past: [], future: [] };
+    if (history.future.length === 0) return;
+
+    const next = cloneManualOverrides(history.future[0]);
+    const current = cloneManualOverrides(manualOverridesRef.current);
+    const nextHistory = {
+      past: [...history.past.slice(-49), current],
+      future: history.future.slice(1),
+    };
+
+    manualHistoryRef.current = nextHistory;
+    manualOverridesRef.current = next;
+    pendingInlineManualCommitRef.current = cloneManualOverrides(next);
+    setManualHistory(nextHistory);
+    setManualOverrides(next);
+    setStateStatus("Redone.");
   }
 
   function randomizeSeed() {

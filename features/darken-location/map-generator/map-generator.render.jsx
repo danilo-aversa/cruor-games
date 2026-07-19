@@ -10020,6 +10020,7 @@ function getDragPreviewStyleTokens(generatedMap) {
   const style = generatedMap?.config?.visualStyle || generatedMap?.config?.style || "ink";
   if (style === "cruor") {
     return {
+      paper: "#050506",
       floor: "#21191d",
       wall: "var(--cruor-map-wall-main-stroke,#806b72)",
       wallWidth: "var(--cruor-map-wall-main-width,3.8)",
@@ -10031,6 +10032,7 @@ function getDragPreviewStyleTokens(generatedMap) {
   }
   if (style === "cartographic") {
     return {
+      paper: "#f4efe4",
       floor: "#fff9eb",
       wall: "var(--cruor-map-wall-main-stroke,#1d1915)",
       wallWidth: "var(--cruor-map-wall-main-width,2.2)",
@@ -10042,6 +10044,7 @@ function getDragPreviewStyleTokens(generatedMap) {
   }
   if (style === "blood") {
     return {
+      paper: "#d8c2ad",
       floor: "#e8d2be",
       wall: "var(--cruor-map-wall-main-stroke,#33030c)",
       wallWidth: "var(--cruor-map-wall-main-width,5.15)",
@@ -10053,6 +10056,7 @@ function getDragPreviewStyleTokens(generatedMap) {
   }
   if (style === "bone") {
     return {
+      paper: "#e8dfcf",
       floor: "#f7efd8",
       wall: "var(--cruor-map-wall-main-stroke,#493523)",
       wallWidth: "var(--cruor-map-wall-main-width,3.15)",
@@ -10064,6 +10068,7 @@ function getDragPreviewStyleTokens(generatedMap) {
   }
   if (style === "print") {
     return {
+      paper: "#fff",
       floor: "#fff",
       wall: "var(--cruor-map-wall-main-stroke,#000)",
       wallWidth: "var(--cruor-map-wall-main-width,2.8)",
@@ -10074,6 +10079,7 @@ function getDragPreviewStyleTokens(generatedMap) {
     };
   }
   return {
+    paper: "#dccaa6",
     floor: "#efe4ca",
     wall: "var(--cruor-map-wall-main-stroke,#1d1915)",
     wallWidth: "var(--cruor-map-wall-main-width,4.05)",
@@ -10681,40 +10687,116 @@ function renderRoomDragPreviewSurface(generatedMap, region, roomOffset, editorOp
   );
 }
 
-function getRoomDragPlaceholderPath(generatedMap, roomDragPreviewOffset) {
-  if (!roomDragPreviewOffset?.active) return "";
+function renderRoomDragOriginGhost(generatedMap, roomDragPreviewOffset) {
+  if (!roomDragPreviewOffset?.active) return null;
   const region = (generatedMap.regions || []).find(
     (item) => item.id === roomDragPreviewOffset.regionId,
   );
-  const roomPath = region
-    ? buildRegionVisualFloorPath(region, generatedMap.config.gridSize, generatedMap)
-    : "";
-  const corridorPath = buildCorridorsVisualFloorPath(
-    (generatedMap.corridors || []).filter((corridor) =>
-      doesCorridorTouchRegion(corridor, roomDragPreviewOffset.regionId),
-    ),
-    generatedMap,
-    generatedMap.config.gridSize,
-  );
-  return [roomPath, corridorPath].filter(Boolean).join(" ");
-}
-
-function renderRoomDragPlaceholderFade(generatedMap, roomDragPreviewOffset) {
-  if (!roomDragPreviewOffset?.active) return null;
-  const placeholderPath = getRoomDragPlaceholderPath(generatedMap, roomDragPreviewOffset);
-  if (!placeholderPath) return null;
+  if (!region) return null;
+  const gridSize = generatedMap.config.gridSize;
   const tokens = getDragPreviewStyleTokens(generatedMap);
+  const regionSurface = getRegionSurface(region, generatedMap, gridSize);
+  const roomPath = regionSurface.visualFloorPath;
+  const wallPath =
+    regionSurface.wallArcPath ||
+    buildSegmentsPath(regionSurface.wallSegments || regionSurface.boundarySegments || []);
+  const corridorGhosts = (generatedMap.corridors || [])
+    .filter((corridor) => doesCorridorTouchRegion(corridor, roomDragPreviewOffset.regionId))
+    .map((corridor) => {
+      const surface = createCorridorSurface(corridor, generatedMap, gridSize);
+      const corridorWallPath =
+        surface.wallPath || buildSegmentsPath(surface.boundarySegments || []);
+      return {
+        id: corridor.id,
+        floorPath: surface.visualFloorPath,
+        wallPath: corridorWallPath,
+      };
+    })
+    .filter((corridor) => corridor.floorPath);
+  if (!roomPath) return null;
+  const veilStrokeWidth = Math.max(8, gridSize * 0.24);
+  const wallVeilStrokeWidth = Math.max(10, gridSize * 0.34);
   return (
-    <g className="room-drag-placeholder-fade" pointerEvents="none">
+    <g className="room-drag-origin-ghost" pointerEvents="none">
+      <g className="room-drag-origin-ghost__corridors">
+        {corridorGhosts.map((corridor) => (
+          <g key={`room-drag-origin-corridor-${corridor.id}`}>
+            <path
+              className="room-drag-origin-ghost__corridor-veil"
+              d={corridor.floorPath}
+              fillRule="nonzero"
+              style={{
+                fill: tokens.paper,
+                opacity: 0.96,
+                stroke: tokens.paper,
+                strokeWidth: veilStrokeWidth,
+                strokeLinejoin: "round",
+              }}
+            />
+            {corridor.wallPath ? (
+              <path
+                className="room-drag-origin-ghost__corridor-wall-veil"
+                d={corridor.wallPath}
+                style={{
+                  fill: "none",
+                  opacity: 0.96,
+                  stroke: tokens.paper,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeWidth: wallVeilStrokeWidth,
+                  vectorEffect: "non-scaling-stroke",
+                }}
+              />
+            ) : null}
+            <path
+              className="room-drag-origin-ghost__corridor-floor"
+              d={corridor.floorPath}
+              fillRule="nonzero"
+              style={{
+                fill: tokens.floor,
+                opacity: 0.06,
+                stroke: "none",
+              }}
+            />
+            {corridor.wallPath ? (
+              <path
+                className="room-drag-origin-ghost__corridor-wall"
+                d={corridor.wallPath}
+                style={getPreviewWallStyle(tokens, 0.08)}
+              />
+            ) : null}
+          </g>
+        ))}
+      </g>
       <path
-        d={placeholderPath}
+        className="room-drag-origin-ghost__veil"
+        d={roomPath}
+        fillRule="nonzero"
+        style={{
+          fill: tokens.paper,
+          opacity: 0.96,
+          stroke: tokens.paper,
+          strokeWidth: veilStrokeWidth,
+          strokeLinejoin: "round",
+        }}
+      />
+      <path
+        className="room-drag-origin-ghost__floor"
+        d={roomPath}
         fillRule="nonzero"
         style={{
           fill: tokens.floor,
-          opacity: 0.68,
+          opacity: 0.06,
           stroke: "none",
         }}
       />
+      {wallPath ? (
+        <path
+          className="room-drag-origin-ghost__wall"
+          d={wallPath}
+          style={getPreviewWallStyle(tokens, 0.08)}
+        />
+      ) : null}
     </g>
   );
 }
@@ -11122,6 +11204,19 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
   const highlightedCorridor = corridors.find(
     (corridor) => corridor.id === activeCorridorId,
   );
+  const anyEditorGrabActive = Boolean(
+    draggingRegionId ||
+      draggingRoomResizeRegionId ||
+      draggingCorridorHandle ||
+      draggingMapAccessId ||
+      draggingStairMarkerId ||
+      roomDragPreview ||
+      roomResizePreview ||
+      corridorDragPreview ||
+      mapAccessDragPreview ||
+      stairMarkerDragPreview ||
+      connectionDraft,
+  );
   const cavePassageHandles = getCavePassageHandles(generatedMap).map((handle) => {
     const basePoint = { x: handle.x, y: handle.y };
     const preview =
@@ -11141,7 +11236,7 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
         hoveredRegionId,
       })}
       {renderCaveTunnelTraces(generatedMap, activeCorridorId)}
-      {renderRoomDragPlaceholderFade(generatedMap, roomDragPreviewOffset)}
+      {renderRoomDragOriginGhost(generatedMap, roomDragPreviewOffset)}
       {renderCorridorDragPreviewSurface(generatedMap, corridorDragPreview)}
       {renderRoomDragCorridorPreviewSurface(
         generatedMap,
@@ -11556,15 +11651,17 @@ export function renderEditorOverlays(generatedMap, editorOptions = {}) {
           />
         ))}
       </g>
-      {renderRoomResizeHandle(
-        regions.find((region) => region.id === (draggingRoomResizeRegionId || hoveredRegionId)),
-        config.gridSize,
-        {
-          ...editorOptions,
-          draggingRoomResizeRegionId,
-          onRoomResizePointerDown,
-        },
-      )}
+      {!anyEditorGrabActive
+        ? renderRoomResizeHandle(
+            selectedRegion,
+            config.gridSize,
+            {
+              ...editorOptions,
+              draggingRoomResizeRegionId,
+              onRoomResizePointerDown,
+            },
+          )
+        : null}
     </g>
   );
 }

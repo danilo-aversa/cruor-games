@@ -64,7 +64,7 @@ export function createInitialLocationComposerState(regionTemplates = []) {
     seed: "",
     dungeonMode: "theme",
     dungeonThemeId: "sedlec-ossuary",
-    dungeonScale: "medium",
+    dungeonScale: "small",
     dungeonCustomRoomCount: 8,
     dungeonComplexity: "standard",
     themeProgramCandidates: [],
@@ -279,7 +279,7 @@ export function createLocationComposerSnapshot(state, selectedComponents = []) {
     seed: state.seed || "",
     dungeonMode: state.dungeonMode || "theme",
     dungeonThemeId: state.dungeonThemeId || "",
-    dungeonScale: state.dungeonScale || "medium",
+    dungeonScale: state.dungeonScale || "small",
     dungeonCustomRoomCount: normalizeScratchRoomCount(
       state.dungeonCustomRoomCount,
       regions.length || 8,

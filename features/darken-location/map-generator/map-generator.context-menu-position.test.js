@@ -146,6 +146,10 @@ describe("shared map dropdown migration", () => {
     resolve(root, "features/darken-location/map-generator/map-generator.styles.css"),
     "utf8",
   );
+  const dropdownSource = readFileSync(
+    resolve(root, "shared/styles/dropdowns.css"),
+    "utf8",
+  );
 
   it("renders Map Actions through the canonical context-menu family", () => {
     expect(pageSource).toContain(
@@ -153,6 +157,54 @@ describe("shared map dropdown migration", () => {
     );
     expect(pageSource).not.toContain('className="room-context-menu map-action-menu"');
     expect(pageSource).toContain('aria-label="Map actions"');
+  });
+
+  it("uses the canonical dropdown family for room, wall, corridor, stair, and door menus", () => {
+    [
+      "wall-access-context-menu",
+      "add-waypoint-context-menu",
+      "waypoint-context-menu",
+      "corridor-junction-context-menu",
+      "stair-marker-context-menu",
+      "door-context-menu",
+    ].forEach((featureClass) => {
+      expect(pageSource).toContain(
+        `${featureClass} cruor-dropdown-menu cruor-dropdown-menu--context`,
+      );
+    });
+    expect(pageSource).toContain('data-style-floating="portal"');
+    expect(pageSource).toContain(
+      "room-context-menu__trigger cruor-dropdown-option cruor-dropdown-option--legacy-text",
+    );
+    expect(stylesSource).toContain(
+      ".room-context-menu:not(.cruor-dropdown-menu) button",
+    );
+    expect(stylesSource).toContain(
+      ".room-context-menu.cruor-dropdown-menu",
+    );
+  });
+
+  it("keeps generic portaled context menus at the canonical 210px root width", () => {
+    expect(stylesSource).toContain("width: min(210px, calc(100vw - 24px))");
+    expect(stylesSource).toContain("min-width: min(210px, calc(100vw - 24px))");
+    expect(stylesSource).toContain("max-width: min(210px, calc(100vw - 24px))");
+    expect(pageSource).not.toContain("getFixedContextMenuPosition(event, 270");
+    expect(pageSource).not.toContain("getFixedContextMenuPosition(event, 250");
+  });
+
+  it("reserves chevrons for submenu triggers and checks for active selections", () => {
+    expect(pageSource).toContain(
+      '!active && "cruor-dropdown-option--no-trailing"',
+    );
+    expect(pageSource).toContain(
+      '<i className="fa-solid fa-check cruor-dropdown-option__chevron" aria-hidden="true" />',
+    );
+    expect(pageSource).not.toContain(
+      'active ? "fa-solid fa-check" : "fa-solid fa-chevron-right"',
+    );
+    expect(dropdownSource).toContain(
+      '.cruor-dropdown-option:not([aria-haspopup="menu"]) > .cruor-dropdown-option__chevron.fa-chevron-right',
+    );
   });
 
   it("renders More Map Tools through shared menu and option rows", () => {
