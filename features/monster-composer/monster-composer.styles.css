@@ -2530,9 +2530,9 @@
 }
 
 .monster-shell .monster-anatomy-decoration__body path {
-  fill: var(--cruor-color-r238-g238-b23-a040);
+  fill: var(--cruor-color-r238-g238-b23-a020);
   stroke: var(--cruor-color-r240-g215-b220-a080);
-  stroke-width: 2;
+  stroke-width: 1;
   vector-effect: non-scaling-stroke;
   pointer-events: visiblePainted;
   transition: fill 180ms ease, stroke 180ms ease, filter 180ms ease;
@@ -11637,4 +11637,50 @@
   padding: 3px 6px;
   font-size: var(--text-size-xs);
   font-weight: 850;
+}
+
+/* Shared workflow footer integration -------------------------------------- */
+
+.monster-shell .monster-balance-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--cruor-composer-rail-width);
+  gap: var(--cruor-composer-gap);
+  min-width: 0;
+  min-height: calc(100vh - var(--cruor-site-topbar-height, 64px) - 32px);
+  padding: clamp(14px, 2vw, 22px);
+}
+
+.monster-shell .monster-balance-layout > .balance-workbench {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.monster-shell .monster-balance-details-rail,
+.monster-shell .monster-export-details-rail,
+.monster-shell .anatomy-stage__column--right.cruor-composer-rail--with-footer {
+  height: 100%;
+  max-height: 100%;
+}
+
+@media (max-width: 1080px) {
+  .monster-shell .monster-balance-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 34vw);
+  }
+}
+
+@media (max-width: 860px) {
+  .monster-shell .monster-balance-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .monster-shell .monster-balance-details-rail {
+    min-height: 460px;
+  }
+}
+
+.monster-shell .anatomy-stage__column--right.monster-frame-info.cruor-composer-rail--with-footer,
+.monster-shell .monster-export-details-rail.cruor-composer-rail--with-footer,
+.monster-shell .monster-balance-details-rail.cruor-composer-rail--with-footer {
+  overflow: hidden;
 }

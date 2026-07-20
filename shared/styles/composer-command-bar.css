@@ -1,0 +1,926 @@
+/* Shared Composer Build Guide and detached stage navigation ---------------- */
+
+.cruor-composer-fixed-dock {
+  position: fixed;
+  left: var(--cruor-fixed-dock-left, 50%);
+  bottom: 12px;
+  z-index: 76;
+  width: var(--cruor-fixed-dock-width, min(980px, calc(100vw - 24px)));
+  min-width: 0;
+  pointer-events: none;
+}
+
+.cruor-composer-fixed-dock--center[data-composer-dock-measured="false"] {
+  transform: translateX(-50%);
+}
+
+.cruor-composer-fixed-dock--navigation {
+  z-index: 78;
+}
+
+.cruor-composer-fixed-dock > * {
+  pointer-events: auto;
+}
+
+/* Central optional Build Guide */
+
+.cruor-composer-command-bar {
+  width: 100%;
+  min-width: 0;
+  border: var(--cruor-composer-rail-card-border);
+  background: var(--cruor-composer-rail-card-background);
+  box-shadow: var(--cruor-shadow-box-116);
+  -webkit-backdrop-filter: var(--cruor-filter-glass-18-128);
+  backdrop-filter: var(--cruor-filter-glass-18-128);
+}
+
+.cruor-composer-command-bar__drawer {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.88fr) minmax(300px, 1.35fr);
+  grid-template-areas: "objective tasks";
+  gap: 10px;
+  max-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  padding: 0 12px;
+  transform: translateY(12px);
+  transition:
+    max-height 180ms ease,
+    opacity 140ms ease,
+    padding 180ms ease,
+    transform 180ms ease,
+    visibility 0s linear 180ms;
+}
+
+.cruor-composer-command-bar.is-open .cruor-composer-command-bar__drawer {
+  max-height: min(390px, 58vh);
+  overflow: auto;
+  visibility: visible;
+  opacity: 1;
+  padding: 12px;
+  transform: translateY(0);
+  transition-delay: 0s;
+}
+
+.cruor-composer-command-bar__objective,
+.cruor-composer-command-bar__tasks {
+  min-width: 0;
+  border: var(--cruor-composer-rail-card-border);
+  background: var(--cruor-composer-rail-card-background);
+  padding: var(--cruor-composer-rail-card-padding);
+  box-shadow: var(--cruor-composer-rail-card-shadow);
+}
+
+.cruor-composer-command-bar__objective {
+  grid-area: objective;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.cruor-composer-command-bar__objective > span,
+.cruor-composer-command-bar__tasks-head > span,
+.cruor-composer-command-bar__blocker > div > span {
+  color: var(--cruor-composer-rail-label-color);
+  font-size: var(--cruor-composer-rail-label-size);
+  font-weight: 950;
+  letter-spacing: var(--cruor-composer-rail-label-tracking);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.cruor-composer-command-bar__objective h2 {
+  margin: 0;
+  color: var(--cruor-color-hex-fff0f2);
+  font-family: var(--font);
+  font-size: var(--text-size-m);
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+}
+
+.cruor-composer-command-bar__objective p {
+  min-height: 2.84em;
+  margin: 0;
+  color: var(--cruor-color-text-a580);
+  font-size: var(--text-size-s);
+  line-height: 1.42;
+  text-wrap: pretty;
+}
+
+.cruor-composer-command-bar__context {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: auto;
+}
+
+.cruor-composer-command-bar__context > span {
+  min-height: 24px;
+  border: var(--cruor-composer-chip-border);
+  background: var(--cruor-composer-chip-bg);
+  color: var(--cruor-composer-chip-text);
+  padding: 5px 7px;
+  font-size: var(--text-size-xxs);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cruor-composer-command-bar__tasks {
+  grid-area: tasks;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.cruor-composer-command-bar__tasks-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cruor-composer-command-bar__tasks-head > strong {
+  color: var(--cruor-color-text-a580);
+  font-size: var(--text-size-xs);
+}
+
+.cruor-composer-command-bar__task-list {
+  display: grid;
+  gap: 5px;
+  max-height: 172px;
+  overflow: auto;
+  scrollbar-color: var(--cruor-composer-rail-scrollbar-thumb) var(--cruor-composer-rail-scrollbar-track);
+}
+
+.cruor-composer-command-bar__task {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  border: 1px solid var(--cruor-composer-sidebar-inset-border-color);
+  background: var(--cruor-composer-sidebar-inset-background);
+  color: inherit;
+  padding: 7px 8px;
+  text-align: left;
+}
+
+button.cruor-composer-command-bar__task.is-actionable:hover,
+button.cruor-composer-command-bar__task.is-actionable:focus-visible {
+  border-color: var(--cruor-color-blood-glow-a520);
+  background: var(--cruor-composer-control-bg-active);
+  outline: none;
+}
+
+.cruor-composer-command-bar__task.is-current {
+  border-color: var(--cruor-color-blood-glow-a520);
+  background: var(--cruor-color-blood-strong-a180);
+}
+
+.cruor-composer-command-bar__task.is-complete {
+  border-color: var(--cruor-color-good-a280);
+}
+
+.cruor-composer-command-bar__task-mark {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--cruor-color-milk-a130);
+  color: var(--cruor-color-hex-8f7278);
+}
+
+.cruor-composer-command-bar__task-mark svg {
+  width: 12px;
+  height: 12px;
+}
+
+.cruor-composer-command-bar__task.is-complete .cruor-composer-command-bar__task-mark {
+  border-color: var(--cruor-color-good-a420);
+  background: var(--cruor-color-good-a080);
+  color: var(--cruor-color-hex-bec8c5);
+}
+
+.cruor-composer-command-bar__task-copy {
+  min-width: 0;
+}
+
+.cruor-composer-command-bar__task-copy > strong,
+.cruor-composer-command-bar__task-copy > small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cruor-composer-command-bar__task-copy > strong {
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-s);
+}
+
+.cruor-composer-command-bar__task-copy > small {
+  margin-top: 2px;
+  color: var(--cruor-color-text-a480);
+  font-size: var(--text-size-xs);
+}
+
+.cruor-composer-command-bar__task-kind {
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xxs);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cruor-composer-command-bar__empty {
+  margin: 0;
+  color: var(--cruor-color-text-a480);
+  font-size: var(--text-size-s);
+}
+
+.cruor-composer-command-bar__blocker {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--cruor-color-blood-glow-a460);
+  background: var(--cruor-color-blood-strong-a200);
+  padding: 9px;
+}
+
+.cruor-composer-command-bar__blocker > div {
+  min-width: 0;
+}
+
+.cruor-composer-command-bar__blocker strong,
+.cruor-composer-command-bar__blocker small {
+  display: block;
+}
+
+.cruor-composer-command-bar__blocker strong {
+  margin-top: 3px;
+  color: var(--cruor-color-hex-f0d7dc);
+  font-size: var(--text-size-s);
+}
+
+.cruor-composer-command-bar__blocker small {
+  margin-top: 2px;
+  color: var(--cruor-color-text-a520);
+  font-size: var(--text-size-xs);
+  line-height: 1.35;
+}
+
+.cruor-composer-command-bar__blocker > button,
+.cruor-composer-command-bar__primary {
+  min-height: var(--cruor-control-height-md);
+  border: 1px solid var(--cruor-color-blood-glow-a620);
+  border-radius: 0;
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  padding-inline: 14px;
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cruor-composer-command-bar__blocker > button:hover,
+.cruor-composer-command-bar__primary:hover:not(:disabled),
+.cruor-composer-command-bar__primary:focus-visible:not(:disabled) {
+  border-color: var(--cruor-color-rose-a820);
+  background: var(--cruor-gradient-radial-007-f9fedda9), var(--cruor-color-blood-strong-a420);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.cruor-composer-command-bar__primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.36;
+  transform: none;
+}
+
+.cruor-composer-command-bar__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 42px 42px;
+  align-items: stretch;
+  min-width: 0;
+  min-height: 64px;
+  background: var(--cruor-composer-rail-card-background);
+}
+
+.cruor-composer-command-bar.is-open .cruor-composer-command-bar__row {
+  border-top: 1px solid var(--cruor-color-milk-a075);
+}
+
+.cruor-composer-command-bar__summary {
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  min-width: 0;
+  padding: 9px 12px;
+}
+
+.cruor-composer-command-bar__summary > span,
+.cruor-composer-command-bar__summary > strong,
+.cruor-composer-command-bar__summary > small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cruor-composer-command-bar__summary > span {
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xxs);
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cruor-composer-command-bar__summary > strong {
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-m);
+  font-weight: 950;
+}
+
+.cruor-composer-command-bar__summary > small {
+  color: var(--cruor-color-text-a480);
+  font-size: var(--text-size-xs);
+}
+
+.cruor-composer-command-bar__primary {
+  align-self: center;
+  min-width: 152px;
+  margin: 8px;
+  box-shadow: var(--cruor-shadow-box-003);
+}
+
+.cruor-composer-command-bar__hide,
+.cruor-composer-command-bar__expand {
+  width: 42px;
+  min-width: 42px;
+  min-height: 100%;
+  border: 0;
+  border-left: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-composer-control-bg);
+  color: var(--cruor-composer-control-text);
+}
+
+.cruor-composer-command-bar__hide:hover,
+.cruor-composer-command-bar__hide:focus-visible,
+.cruor-composer-command-bar__expand:hover,
+.cruor-composer-command-bar__expand:focus-visible {
+  background: var(--cruor-composer-control-bg-active);
+  color: var(--cruor-composer-control-text-active);
+  outline: none;
+}
+
+.cruor-composer-command-bar__hide svg,
+.cruor-composer-command-bar__expand svg {
+  width: 17px;
+  height: 17px;
+}
+
+.cruor-composer-build-guide-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  margin-inline: auto;
+  border: var(--cruor-composer-rail-card-border);
+  background: var(--cruor-composer-rail-card-background);
+  color: var(--cruor-composer-control-text);
+  padding: 0 14px;
+  box-shadow: var(--cruor-composer-rail-card-shadow);
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cruor-composer-build-guide-trigger:hover,
+.cruor-composer-build-guide-trigger:focus-visible {
+  border-color: var(--cruor-composer-control-border-color-active);
+  background: var(--cruor-composer-control-bg-active);
+  color: var(--cruor-composer-control-text-active);
+  outline: none;
+}
+
+.cruor-composer-build-guide-trigger svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Detached Previous / Next navigation */
+
+.cruor-composer-stage-navigation {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  background: transparent;
+}
+
+.cruor-composer-stage-navigation.has-next:not(.has-previous) .cruor-composer-stage-navigation__button--next {
+  grid-column: 2;
+}
+
+.cruor-composer-stage-navigation.has-previous:not(.has-next) .cruor-composer-stage-navigation__button--previous {
+  grid-column: 1;
+}
+
+.cruor-composer-stage-navigation__button {
+  display: grid;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+  min-height: 64px;
+  border: var(--cruor-composer-rail-card-border);
+  background: var(--cruor-composer-rail-card-background);
+  color: var(--cruor-composer-control-text);
+  padding: 8px 10px;
+  box-shadow: var(--cruor-composer-rail-card-shadow);
+}
+
+.cruor-composer-stage-navigation__button--previous {
+  grid-template-columns: auto minmax(0, 1fr);
+  justify-content: start;
+  text-align: left;
+}
+
+.cruor-composer-stage-navigation__button--next {
+  grid-template-columns: minmax(0, 1fr) auto;
+  justify-content: end;
+  text-align: right;
+}
+
+.cruor-composer-stage-navigation__button:hover:not(:disabled),
+.cruor-composer-stage-navigation__button:focus-visible:not(:disabled) {
+  border-color: var(--cruor-composer-control-border-color-active);
+  background: var(--cruor-composer-control-bg-active);
+  color: var(--cruor-composer-control-text-active);
+  outline: none;
+}
+
+.cruor-composer-stage-navigation__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.34;
+}
+
+.cruor-composer-stage-navigation__button > svg {
+  width: 17px;
+  height: 17px;
+}
+
+.cruor-composer-stage-navigation__button > span {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.cruor-composer-stage-navigation__button--previous > span {
+  justify-items: start;
+}
+
+.cruor-composer-stage-navigation__button--next > span {
+  justify-items: end;
+}
+
+.cruor-composer-stage-navigation__button small,
+.cruor-composer-stage-navigation__button strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cruor-composer-stage-navigation__button small {
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xxs);
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cruor-composer-stage-navigation__button strong {
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-xs);
+  font-weight: 950;
+  letter-spacing: 0.045em;
+}
+
+@media (max-width: 760px) {
+  .cruor-composer-fixed-dock {
+    bottom: 8px;
+  }
+
+  .cruor-composer-fixed-dock--center {
+    bottom: 82px;
+  }
+
+  .cruor-composer-command-bar__drawer {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "objective"
+      "tasks";
+  }
+
+  .cruor-composer-command-bar.is-open .cruor-composer-command-bar__drawer {
+    max-height: min(60vh, 540px);
+  }
+
+  .cruor-composer-command-bar__row {
+    position: relative;
+    grid-template-columns: minmax(0, 1fr) 42px 42px;
+  }
+
+  .cruor-composer-command-bar__summary {
+    min-height: 58px;
+  }
+
+  .cruor-composer-command-bar__primary {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: calc(100% - 16px);
+    margin: 0 8px 8px;
+  }
+
+  .cruor-composer-command-bar__hide {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .cruor-composer-command-bar__expand {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .cruor-composer-stage-navigation__button {
+    min-height: 58px;
+    padding-inline: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cruor-composer-command-bar__drawer {
+    transition: none;
+  }
+
+  .cruor-composer-command-bar__primary {
+    transition: none;
+  }
+}
+
+/* Shared start screen */
+
+.cruor-composer-start-screen {
+  display: grid;
+  gap: 24px;
+  width: min(920px, calc(100% - 40px));
+  margin-inline: auto;
+  border: 0;
+  background: transparent;
+  padding: clamp(22px, 4vw, 48px);
+  box-shadow: none;
+}
+
+.cruor-composer-start-screen__intro {
+  display: grid;
+  gap: 10px;
+  max-width: 720px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.cruor-composer-start-screen__intro > span {
+  color: var(--cruor-composer-rail-label-color);
+  font-size: var(--text-size-xl);
+  font-weight: 950;
+  letter-spacing: var(--cruor-composer-rail-label-tracking);
+  text-transform: uppercase;
+}
+
+.cruor-composer-start-screen__intro h2 {
+  margin: 0;
+  color: var(--cruor-color-hex-fff0f2);
+  font-family: var(--font);
+  font-size: var(--text-size-3xl);
+  font-weight: 900;
+  letter-spacing: 0.055em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.cruor-composer-start-screen__intro p {
+  margin: 0;
+  color: var(--cruor-color-text-a580);
+  font-size: var(--text-size-xl);
+  line-height: 1.5;
+}
+
+.cruor-composer-start-screen__choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.cruor-composer-start-screen__choice {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  min-height: 132px;
+  border: var(--cruor-composer-control-border);
+  background: var(--cruor-composer-control-bg);
+  color: var(--cruor-composer-control-text);
+  padding: 20px;
+  text-align: left;
+}
+
+.cruor-composer-start-screen__choice:hover,
+.cruor-composer-start-screen__choice:focus-visible {
+  border-color: var(--cruor-composer-control-border-color-active);
+  background: var(--cruor-composer-control-bg-active);
+  color: var(--cruor-composer-control-text-active);
+  outline: none;
+}
+
+.cruor-composer-start-screen__choice-icon {
+  pointer-events: none;
+}
+
+.cruor-composer-start-screen__choice-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.cruor-composer-start-screen__choice:hover .cruor-composer-start-screen__choice-icon,
+.cruor-composer-start-screen__choice:focus-visible .cruor-composer-start-screen__choice-icon {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
+}
+
+.cruor-composer-start-screen__choice:hover .cruor-composer-start-screen__choice-icon > :where(i, svg),
+.cruor-composer-start-screen__choice:focus-visible .cruor-composer-start-screen__choice-icon > :where(i, svg) {
+  color: var(--cruor-color-hex-f0b9c2);
+}
+
+.cruor-composer-start-screen__choice > span:last-child {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cruor-composer-start-screen__choice strong {
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-3xl);
+  font-weight: 900;
+  letter-spacing: 0.045em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.cruor-composer-start-screen__choice em {
+  color: var(--cruor-color-text-a520);
+  font-size: var(--text-size-xl);
+  font-style: normal;
+  line-height: 1.5;
+}
+
+.cruor-composer-start-screen__guide-toggle {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  justify-self: center;
+  min-width: min(100%, 420px);
+  border: 0;
+  background: transparent;
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+.cruor-composer-start-screen__guide-toggle input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--cruor-color-blood-glow-a720);
+}
+
+.cruor-composer-start-screen__guide-toggle > span {
+  display: grid;
+  gap: 2px;
+}
+
+.cruor-composer-start-screen__guide-toggle strong {
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-xl);
+}
+
+.cruor-composer-start-screen__guide-toggle small {
+  color: var(--cruor-color-text-a480);
+  font-size: var(--text-size-xl);
+  line-height: 1.4;
+}
+
+/* Shared template picker */
+
+.cruor-composer-template-picker {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.cruor-composer-template-picker__scrim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: var(--cruor-color-black-a760);
+  cursor: default;
+  -webkit-backdrop-filter: var(--cruor-filter-blur-2);
+  backdrop-filter: var(--cruor-filter-blur-2);
+}
+
+.cruor-composer-template-picker__panel {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 12px;
+  width: min(780px, 100%);
+  max-height: min(720px, calc(100vh - 40px));
+  overflow: hidden;
+  border: var(--cruor-composer-rail-card-border);
+  background: var(--cruor-composer-rail-card-background);
+  padding: 14px;
+  box-shadow: var(--cruor-shadow-box-116);
+}
+
+.cruor-composer-template-picker__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cruor-composer-template-picker__header > div {
+  display: grid;
+  gap: 4px;
+}
+
+.cruor-composer-template-picker__header span {
+  color: var(--cruor-composer-rail-label-color);
+  font-size: var(--cruor-composer-rail-label-size);
+  font-weight: 950;
+  letter-spacing: var(--cruor-composer-rail-label-tracking);
+  text-transform: uppercase;
+}
+
+.cruor-composer-template-picker__header h2 {
+  margin: 0;
+  color: var(--cruor-color-hex-fff0f2);
+  font-family: var(--font);
+  font-size: var(--text-size-fluid-18);
+  font-weight: 700;
+}
+
+.cruor-composer-template-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.cruor-composer-template-picker__option {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  min-height: 126px;
+  border: var(--cruor-composer-control-border);
+  background: var(--cruor-composer-control-bg);
+  color: var(--cruor-composer-control-text);
+  padding: 13px;
+  text-align: left;
+}
+
+.cruor-composer-template-picker__option:hover,
+.cruor-composer-template-picker__option:focus-visible,
+.cruor-composer-template-picker__option.is-active {
+  border-color: var(--cruor-composer-control-border-color-active);
+  background: var(--cruor-composer-control-bg-active);
+  color: var(--cruor-composer-control-text-active);
+  outline: none;
+}
+
+.cruor-composer-template-picker__option > span {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cruor-composer-template-picker__option strong {
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-m);
+}
+
+.cruor-composer-template-picker__option em,
+.cruor-composer-template-picker__option small {
+  color: var(--cruor-color-hex-8f7278);
+  font-size: var(--text-size-xxs);
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.cruor-composer-template-picker__option p {
+  margin: 0;
+  color: var(--cruor-color-text-a520);
+  font-size: var(--text-size-s);
+  line-height: 1.4;
+}
+
+/* Dark Places keeps its initial Composer mounted for deterministic state and
+   test boundaries, while this overlay owns interaction until a start mode is chosen. */
+.location-composer-start-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  background:
+    var(--cruor-gradient-linear-023-5d537681),
+    var(--cruor-gradient-linear-022-79a987a1),
+    var(--cruor-gradient-radial-133-da8e421f),
+    var(--cruor-gradient-radial-136-7dccbf2a),
+    var(--cruor-surface-card);
+  background-size: 34px 34px, 34px 34px, auto, auto, auto;
+  padding: 24px;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.monster-shell .monster-start-screen-transition {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  background:
+    var(--cruor-gradient-linear-023-5d537681),
+    var(--cruor-gradient-linear-022-79a987a1),
+    var(--cruor-gradient-radial-133-da8e421f),
+    var(--cruor-gradient-radial-136-7dccbf2a),
+    var(--cruor-surface-card);
+  background-size: 34px 34px, 34px 34px, auto, auto, auto;
+}
+
+.location-composer[data-location-composer-started="false"] .location-composer__workspace {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  .cruor-composer-start-screen__choices,
+  .cruor-composer-template-picker__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cruor-composer-start-screen {
+    width: min(100%, 620px);
+    gap: 18px;
+    padding: 20px 10px;
+  }
+
+  .cruor-composer-start-screen__choice {
+    min-height: 112px;
+    padding: 16px;
+  }
+
+  .location-composer-start-overlay {
+    padding: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cruor-composer-start-screen__choice,
+  .cruor-composer-command-bar__primary {
+    transition: none;
+  }
+}

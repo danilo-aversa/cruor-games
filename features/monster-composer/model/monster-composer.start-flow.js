@@ -1,310 +1,472 @@
 import { SLOTS } from "../monster-composer.workflow.js";
 import { hasSelectedSlot } from "./monster-composer.selection.js";
 
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value));
+const CORE_SLOT_IDS = ["body", "attack", "weakness"];
+const OPTIONAL_SLOT_PRIORITY = ["movement", "mind", "horror", "twist", "death", "lair"];
+
+const SLOT_COPY = {
+  body: {
+    title: "Body",
+    actionTitle: "Add Body",
+    detail: "Define what the creature physically is before choosing attacks.",
+    cta: "Add Body",
+  },
+  attack: {
+    title: "Attack Pattern",
+    actionTitle: "Add Attack Pattern",
+    detail: "Give the monster a main offensive loop the DM can run every round.",
+    cta: "Add Attack",
+  },
+  weakness: {
+    title: "Weakness / Tell",
+    actionTitle: "Add Weakness / Tell",
+    detail: "Give the players visible, actionable counterplay.",
+    cta: "Add Weakness",
+  },
+  movement: {
+    title: "Movement",
+    actionTitle: "Add Movement",
+    detail: "Decide how the monster reaches or pressures the characters.",
+    cta: "Add Movement",
+  },
+  mind: {
+    title: "Mind",
+    actionTitle: "Add Mind",
+    detail: "Give the DM a clear behavior rule to follow.",
+    cta: "Add Mind",
+  },
+  horror: {
+    title: "Horror Feature",
+    actionTitle: "Add Horror Feature",
+    detail: "Install the disturbing element players will remember.",
+    cta: "Add Horror",
+  },
+  twist: {
+    title: "Combat Twist",
+    actionTitle: "Add Combat Twist",
+    detail: "Add one fight-changing rule for a stronger table presence.",
+    cta: "Add Twist",
+  },
+  death: {
+    title: "Death Effect",
+    actionTitle: "Add Death Effect",
+    detail: "Decide what changes when the creature dies.",
+    cta: "Add Death Effect",
+  },
+  lair: {
+    title: "Lair / Scene Effect",
+    actionTitle: "Add Lair / Scene Effect",
+    detail: "Add scene pressure when the battlefield should matter.",
+    cta: "Add Lair Effect",
+  },
+};
+
+function slotLabel(slotId) {
+  return SLOTS.find((slot) => slot.id === slotId)?.label || SLOT_COPY[slotId]?.title || slotId;
 }
 
-function classifyWarning(warning) {
-  const text = String(warning || "").toLowerCase();
-  if (
-    text.includes("no weakness") ||
-    text.includes("missing") ||
-    text.includes("critical") ||
-    text.includes("unsafe") ||
-    text.includes("counterplay audit")
-  )
-    return "critical";
-  if (
-    text.includes("above") ||
-    text.includes("over") ||
-    text.includes("too many") ||
-    text.includes("high")
-  )
-    return "major";
-  return "minor";
-}
+function createSlotTask(slotId, selected, { required = false, current = false } = {}) {
+  const complete = hasSelectedSlot(selected, slotId);
+  const copy = SLOT_COPY[slotId] || {};
 
-const GUIDED_SLOT_PRIORITY = [
-  "body",
-  "attack",
-  "weakness",
-  "movement",
-  "mind",
-  "horror",
-  "twist",
-  "death",
-  "lair",
-];
-
-export function buildGuidedFlow({ composerStarted, startMode, selected, computed, activePreset }) {
-  const slotDetails = {
-    body: {
-      title: "Add Body",
-      detail: "Define what the creature physically is before choosing attacks.",
-      cta: "Open Body Slot",
-    },
-    attack: {
-      title: "Add Attack Pattern",
-      detail: "Give the monster a main offensive loop the DM can run every round.",
-      cta: "Open Attack Slot",
-    },
-    weakness: {
-      title: "Add Weakness / Tell",
-      detail: "Add visible counterplay so the horror feels fair instead of arbitrary.",
-      cta: "Open Weakness Slot",
-    },
-    movement: {
-      title: "Add Movement",
-      detail: "Decide how the monster reaches, pressures, or fails to reach the characters.",
-      cta: "Open Movement Slot",
-    },
-    mind: {
-      title: "Add Mind",
-      detail: "Give the creature a behavior rule the DM can follow without guessing.",
-      cta: "Open Mind Slot",
-    },
-    horror: {
-      title: "Add Horror Feature",
-      detail: "Install the memorable disturbing element that players will remember.",
-      cta: "Open Horror Slot",
-    },
-    twist: {
-      title: "Add Combat Twist",
-      detail: "Add one fight-changing rule if this monster needs a stronger table presence.",
-      cta: "Open Twist Slot",
-    },
-    death: {
-      title: "Add Death Effect",
-      detail: "Decide whether death creates a clue, risk, terrain change, or final beat.",
-      cta: "Open Death Slot",
-    },
-    lair: {
-      title: "Add Lair / Scene Effect",
-      detail: "Use scene pressure only when the battlefield should matter as much as the body.",
-      cta: "Open Lair Slot",
-    },
+  return {
+    id: slotId,
+    title: copy.title || slotLabel(slotId),
+    detail: complete ? `${slotLabel(slotId)} graft installed.` : copy.detail || "Install this graft.",
+    required,
+    status: complete ? "complete" : current ? "current" : "open",
+    action: complete ? null : { kind: "slot", slotId },
   };
+}
 
-  const slotRoadmap = GUIDED_SLOT_PRIORITY.map((slotId, index) => {
-    const slot = SLOTS.find((item) => item.id === slotId) || SLOTS[0];
-    const filled = hasSelectedSlot(selected, slotId);
+function buildReviewChecks(computed) {
+  const pressureReady = Number(computed.pressure || 0) <= Number(computed.budget || 0);
+  const complexityReady = Number(computed.complexity || 0) <= Number(computed.complexityCap || 0);
+  const counterplayReady = ["Strong", "Playable"].includes(computed.counterplayAudit?.rating);
+
+  return {
+    pressureReady,
+    complexityReady,
+    counterplayReady,
+    balanceReady: pressureReady && complexityReady && counterplayReady,
+    tasks: [
+      {
+        id: "pressure",
+        title: "Pressure",
+        detail: `${computed.pressure || 0} of ${computed.budget || 0} target pressure`,
+        required: true,
+        status: pressureReady ? "complete" : "current",
+        action: pressureReady ? null : { kind: "review" },
+      },
+      {
+        id: "complexity",
+        title: "Complexity",
+        detail: `${computed.complexity || 0} of ${computed.complexityCap || 0} complexity`,
+        required: true,
+        status: complexityReady ? "complete" : "current",
+        action: complexityReady ? null : { kind: "review" },
+      },
+      {
+        id: "counterplay",
+        title: "Counterplay",
+        detail: computed.counterplayAudit?.rating || "Not evaluated",
+        required: true,
+        status: counterplayReady ? "complete" : "current",
+        action: counterplayReady ? null : { kind: "review" },
+      },
+    ],
+  };
+}
+
+function getStructuredBlocker({ coreReady, missingCoreSlotId, review }) {
+  if (!coreReady && missingCoreSlotId) {
     return {
-      id: slotId,
-      label: slot.label,
-      number: index + 1,
-      filled,
-      detail: slotDetails[slotId]?.detail || slot.hint,
-    };
-  });
-
-  const bodyReady = hasSelectedSlot(selected, "body");
-  const attackReady = hasSelectedSlot(selected, "attack");
-  const weaknessReady = hasSelectedSlot(selected, "weakness");
-  const coreReady = bodyReady && attackReady && weaknessReady;
-  const completedSlots = SLOTS.filter((slot) => hasSelectedSlot(selected, slot.id)).length;
-  const filledRecommendedCount = slotRoadmap.filter((step) => step.filled).length;
-  const hasSetpieceSlot = ["twist", "death", "lair"].some((slotId) =>
-    hasSelectedSlot(selected, slotId)
-  );
-  const pressureOk = computed.pressure <= computed.budget;
-  const complexityOk = computed.complexity <= computed.complexityCap;
-  const counterplayOk = ["Strong", "Playable"].includes(computed.counterplayAudit.rating);
-  const balanceReady = pressureOk && complexityOk && counterplayOk;
-  const exportReady = composerStarted && coreReady && balanceReady && !computed.warnings.length;
-  const prioritizedWarnings = [...computed.warnings]
-    .sort((a, b) => {
-      const rank = { critical: 0, major: 1, minor: 2 };
-      return rank[classifyWarning(a)] - rank[classifyWarning(b)];
-    })
-    .slice(0, 3);
-
-  const recommendedSlotId = composerStarted
-    ? GUIDED_SLOT_PRIORITY.find((slotId) => !hasSelectedSlot(selected, slotId)) || null
-    : null;
-  const recommendedSlot = recommendedSlotId
-    ? SLOTS.find((slot) => slot.id === recommendedSlotId)
-    : null;
-  const recommendedDetail = recommendedSlotId ? slotDetails[recommendedSlotId] : null;
-  const activePresetText = activePreset
-    ? `${activePreset.label} loaded.`
-    : startMode === "scratch"
-      ? "Scratch build selected."
-      : "Choose Template or Scratch.";
-
-  let nextAction = {
-    kind: "start",
-    label: "Choose Start",
-    title: "Start a Monster",
-    detail: activePresetText,
-    cta: "Pick Template",
-  };
-
-  if (composerStarted && recommendedSlotId) {
-    nextAction = {
-      kind: "slot",
-      slotId: recommendedSlotId,
-      label: recommendedSlot?.label || "Next Slot",
-      title: recommendedDetail?.title || `Add ${recommendedSlot?.label || "Slot"}`,
-      detail:
-        recommendedDetail?.detail || recommendedSlot?.hint || "Install the next useful graft.",
-      cta: recommendedDetail?.cta || "Open Slot",
-    };
-  } else if (composerStarted && !balanceReady) {
-    nextAction = {
-      kind: "review",
-      label: "Review Balance",
-      title: "Review Balance",
-      detail: "Pressure, Complexity, or Counterplay still need attention before export.",
-      cta: "Open Balance",
-    };
-  } else if (composerStarted) {
-    nextAction = {
-      kind: "export",
-      label: "Export Ready",
-      title: exportReady ? "Ready to Export" : "Export Draft",
-      detail: exportReady
-        ? "The monster has core anatomy, counterplay, and clean balance checks."
-        : "The monster is usable, but warnings remain in the balance review.",
-      cta: "Open Export",
+      id: `missing-${missingCoreSlotId}`,
+      title: `${slotLabel(missingCoreSlotId)} is still missing`,
+      detail: "The monster needs Body, Attack, and Weakness / Tell for a readable combat loop.",
+      action: { kind: "slot", slotId: missingCoreSlotId, label: SLOT_COPY[missingCoreSlotId]?.cta || "Add Graft" },
     };
   }
 
-  const readiness = [
+  if (!review.pressureReady) {
+    return {
+      id: "pressure-over-budget",
+      title: "Pressure exceeds the target",
+      detail: `Current pressure is ${computedNumber(review, "pressure")} and needs review before a clean handoff.`,
+      action: { kind: "review", label: "Review Pressure" },
+    };
+  }
+
+  if (!review.complexityReady) {
+    return {
+      id: "complexity-over-cap",
+      title: "Complexity exceeds the current cap",
+      detail: "Reduce overlapping mechanics or increase the advanced complexity cap.",
+      action: { kind: "review", label: "Review Complexity" },
+    };
+  }
+
+  if (!review.counterplayReady) {
+    return {
+      id: "counterplay-needs-review",
+      title: "Counterplay is not yet reliable",
+      detail: "The build needs a visible tell, break condition, or repeatable player response.",
+      action: { kind: "review", label: "Review Counterplay" },
+    };
+  }
+
+  return null;
+}
+
+function computedNumber(review, key) {
+  return review?.values?.[key] ?? "above budget";
+}
+
+export function buildGuidedFlow({
+  activePreset,
+  composerStarted,
+  computed,
+  context = {},
+  selected,
+  stageMode = "frame",
+  startMode,
+  viewMode = "composer",
+}) {
+  const safeSelected = selected || {};
+  const safeComputed = computed || {};
+  const review = buildReviewChecks(safeComputed);
+  review.values = {
+    pressure: `${safeComputed.pressure || 0}/${safeComputed.budget || 0}`,
+    complexity: `${safeComputed.complexity || 0}/${safeComputed.complexityCap || 0}`,
+  };
+
+  const missingCoreSlotId = CORE_SLOT_IDS.find((slotId) => !hasSelectedSlot(safeSelected, slotId)) || "";
+  const recommendedOptionalSlotId = OPTIONAL_SLOT_PRIORITY.find((slotId) => !hasSelectedSlot(safeSelected, slotId)) || "";
+  const recommendedSlotId = missingCoreSlotId || recommendedOptionalSlotId || null;
+  const coreReady = !missingCoreSlotId;
+  const completedSlots = SLOTS.filter((slot) => hasSelectedSlot(safeSelected, slot.id)).length;
+  const hasSetpieceSlot = ["twist", "death", "lair"].some((slotId) => hasSelectedSlot(safeSelected, slotId));
+  const exportReady = Boolean(composerStarted && coreReady && review.balanceReady && !(safeComputed.warnings || []).length);
+  const activeStageId = !composerStarted
+    ? "chassis"
+    : viewMode === "balance"
+      ? "review"
+      : viewMode === "export"
+        ? "stat-block"
+        : stageMode === "grafts"
+          ? "grafts"
+          : "chassis";
+
+  const frameTasks = [
     {
-      id: "playable",
-      label: "Playable Draft",
-      reached: composerStarted && coreReady,
-      detail: "Body + Attack + Weakness",
+      id: "family",
+      title: "Creature Family",
+      detail: context.category || "Choose the creature family and anatomy.",
+      required: true,
+      status: composerStarted ? "complete" : "current",
+      action: composerStarted ? null : { kind: "start" },
     },
     {
-      id: "complete",
-      label: "Complete Monster",
-      reached: composerStarted && completedSlots >= 6,
-      detail: "At least 6 anatomy slots",
+      id: "role",
+      title: "Combat Footprint",
+      detail: context.role || "Set the encounter footprint.",
+      required: true,
+      status: composerStarted ? "complete" : "open",
+      action: composerStarted ? null : { kind: "start" },
     },
     {
-      id: "setpiece",
-      label: "Setpiece Ready",
-      reached: composerStarted && coreReady && hasSetpieceSlot,
-      detail: "Twist, Death, or Lair present",
-    },
-    {
-      id: "export",
-      label: "Export Ready",
-      reached: exportReady,
-      detail: "Balance and counterplay passed",
+      id: "challenge",
+      title: "Challenge",
+      detail: context.targetCr ? `CR ${context.targetCr}` : "Set the target CR.",
+      required: true,
+      status: composerStarted ? "complete" : "open",
+      action: composerStarted ? null : { kind: "start" },
     },
   ];
 
-  const activeStepId = !composerStarted
-    ? "start"
-    : !bodyReady
-      ? "body"
-      : !attackReady
-        ? "attack"
-        : !weaknessReady
-          ? "weakness"
-          : filledRecommendedCount < 6
-            ? "complete"
-            : !balanceReady || prioritizedWarnings.length
-              ? "review"
-              : "export";
+  const graftTasks = [
+    ...CORE_SLOT_IDS.map((slotId) => createSlotTask(slotId, safeSelected, {
+      required: true,
+      current: slotId === missingCoreSlotId,
+    })),
+  ];
 
-  const steps = [
+  if (recommendedOptionalSlotId) {
+    graftTasks.push(createSlotTask(recommendedOptionalSlotId, safeSelected, {
+      required: false,
+      current: coreReady,
+    }));
+  }
+
+  const blocker = activeStageId === "grafts" || activeStageId === "review"
+    ? getStructuredBlocker({ coreReady, missingCoreSlotId, review })
+    : null;
+  const stages = [
     {
-      id: "start",
-      label: "Start",
-      action: "start",
-      reached: composerStarted,
-      active: activeStepId === "start",
-      disabled: false,
-      detail: activePresetText,
+      id: "chassis",
+      label: "Chassis",
+      detail: "Creature family, role, challenge, and threat profile.",
+      status: composerStarted ? "complete" : activeStageId === "chassis" ? "current" : "open",
+      action: { kind: "chassis" },
     },
     {
-      id: "body",
-      label: "Body",
-      action: "slot",
-      slotId: "body",
-      reached: bodyReady,
-      active: activeStepId === "body",
+      id: "grafts",
+      label: "Grafts",
+      detail: "Build the playable anatomy and core combat loop.",
+      status: coreReady ? "complete" : activeStageId === "grafts" ? "current" : "open",
       disabled: !composerStarted,
-      detail: bodyReady ? "Body graft installed." : slotDetails.body.detail,
-    },
-    {
-      id: "attack",
-      label: "Attack",
-      action: "slot",
-      slotId: "attack",
-      reached: attackReady,
-      active: activeStepId === "attack",
-      disabled: !composerStarted,
-      detail: attackReady ? "Attack pattern installed." : slotDetails.attack.detail,
-    },
-    {
-      id: "weakness",
-      label: "Tell",
-      action: "slot",
-      slotId: "weakness",
-      reached: weaknessReady,
-      active: activeStepId === "weakness",
-      disabled: !composerStarted,
-      detail: weaknessReady ? "Counterplay installed." : slotDetails.weakness.detail,
-    },
-    {
-      id: "complete",
-      label: "Complete",
-      action: recommendedSlotId ? "slot" : "review",
-      slotId: recommendedSlotId,
-      reached: composerStarted && completedSlots >= 6,
-      active: activeStepId === "complete",
-      disabled: !composerStarted,
-      detail: recommendedSlotId
-        ? `Next useful slot: ${recommendedSlot?.label || "slot"}.`
-        : "The anatomy has enough installed grafts for a complete monster.",
+      action: { kind: "grafts" },
     },
     {
       id: "review",
       label: "Review",
-      action: "review",
-      reached: composerStarted && balanceReady,
-      active: activeStepId === "review",
+      detail: "Check pressure, complexity, and counterplay.",
+      status: review.balanceReady ? "complete" : coreReady ? "open" : "blocked",
       disabled: !composerStarted,
-      detail: balanceReady
-        ? "Balance and counterplay look playable."
-        : "Review pressure, complexity, warnings, and counterplay.",
+      action: { kind: "review" },
     },
     {
-      id: "export",
-      label: "Export",
-      action: "export",
-      reached: exportReady,
-      active: activeStepId === "export",
+      id: "stat-block",
+      label: "Stat Block",
+      detail: "Review and copy the final monster output.",
+      status: exportReady ? "complete" : "open",
       disabled: !composerStarted,
-      detail: exportReady ? "Ready for handoff." : "Export after balance review.",
+      action: { kind: "export" },
     },
-  ].map((step, index) => ({ ...step, number: index + 1 }));
+  ];
 
-  const activeIndex = Math.max(
-    0,
-    steps.findIndex((step) => step.active)
-  );
-  const highestReachedIndex = steps.reduce(
-    (highest, step, index) => (step.reached ? Math.max(highest, index) : highest),
-    0
-  );
-  const progressIndex = exportReady ? steps.length - 1 : Math.max(activeIndex, highestReachedIndex);
+  const activePresetText = activePreset
+    ? `${activePreset.label} loaded.`
+    : startMode === "scratch"
+      ? "Scratch build selected."
+      : "Choose a template or start from scratch.";
+
+  let objective;
+  let tasks;
+  let primaryAction;
+  let previousAction = null;
+  let nextAction;
+
+  if (!composerStarted) {
+    objective = {
+      title: "Choose how to begin",
+      detail: activePresetText,
+    };
+    tasks = frameTasks;
+    primaryAction = {
+      kind: "start",
+      label: "Pick Template",
+      title: "Start a Monster",
+      detail: activePresetText,
+    };
+    nextAction = {
+      kind: "grafts",
+      label: "Grafts",
+      detail: "Start the Composer before entering graft work.",
+      disabled: true,
+    };
+  } else if (activeStageId === "chassis") {
+    objective = {
+      title: "Confirm the combat frame",
+      detail: "The frame is live. Continue to Grafts when the family, role, challenge, and threat profile are correct.",
+    };
+    tasks = frameTasks;
+    primaryAction = {
+      kind: "grafts",
+      label: "Continue to Grafts",
+      title: "Chassis ready",
+      detail: "Move to the anatomy slots without clearing the current frame.",
+    };
+    previousAction = {
+      kind: "start",
+      label: "Templates",
+      detail: "Choose another ready-made monster frame.",
+    };
+    nextAction = {
+      kind: "grafts",
+      label: "Grafts",
+      detail: "Build the monster anatomy.",
+    };
+  } else if (activeStageId === "grafts") {
+    objective = {
+      title: missingCoreSlotId ? `Complete the ${slotLabel(missingCoreSlotId)} slot` : "Review the playable anatomy",
+      detail: missingCoreSlotId
+        ? "Install the next required graft. The guide opens the correct component pipeline directly."
+        : "The core combat loop is present. Add an optional signature graft or continue to Review.",
+    };
+    tasks = graftTasks;
+
+    if (missingCoreSlotId) {
+      primaryAction = {
+        kind: "slot",
+        slotId: missingCoreSlotId,
+        label: SLOT_COPY[missingCoreSlotId]?.cta || "Add Graft",
+        title: SLOT_COPY[missingCoreSlotId]?.actionTitle || `Add ${slotLabel(missingCoreSlotId)}`,
+        detail: SLOT_COPY[missingCoreSlotId]?.detail || "Install the next required graft.",
+      };
+    } else if (!review.balanceReady) {
+      primaryAction = {
+        kind: "review",
+        label: "Review Build",
+        title: blocker?.title || "Review balance",
+        detail: blocker?.detail || "Review pressure, complexity, and counterplay.",
+      };
+    } else {
+      primaryAction = {
+        kind: "export",
+        label: "Open Stat Block",
+        title: exportReady ? "Monster ready" : "Review the draft stat block",
+        detail: exportReady
+          ? "The core anatomy and build checks are ready for handoff."
+          : "The monster is usable, but non-blocking warnings remain.",
+      };
+    }
+
+    previousAction = {
+      kind: "chassis",
+      label: "Chassis",
+      detail: "Return to the combat frame without clearing grafts.",
+    };
+    nextAction = {
+      kind: "review",
+      label: "Review",
+      detail: coreReady
+        ? "Review pressure, complexity, and counterplay."
+        : "Core grafts are still missing, but the draft can still be reviewed.",
+    };
+  } else if (activeStageId === "review") {
+    objective = {
+      title: review.balanceReady ? "Confirm the playable profile" : "Resolve the build checks",
+      detail: review.balanceReady
+        ? "Pressure, complexity, and counterplay are within the selected frame."
+        : "Use the review recommendations to resolve the remaining blocking checks.",
+    };
+    tasks = review.tasks;
+    primaryAction = review.balanceReady
+      ? {
+          kind: "export",
+          label: "Open Stat Block",
+          title: "Review complete",
+          detail: "Move to the final stat block without changing the current build.",
+        }
+      : {
+          kind: "review",
+          label: blocker?.action?.label || "Review Build",
+          title: blocker?.title || "Review the build",
+          detail: blocker?.detail || "Resolve pressure, complexity, or counterplay.",
+        };
+    previousAction = {
+      kind: "grafts",
+      label: "Grafts",
+      detail: "Return to anatomy authoring.",
+    };
+    nextAction = {
+      kind: "export",
+      label: "Stat Block",
+      detail: "Open the current final output.",
+    };
+  } else {
+    objective = {
+      title: exportReady ? "Use the finished monster" : "Review the draft stat block",
+      detail: exportReady
+        ? "The stat block is ready to copy or export."
+        : "The current stat block remains usable while non-blocking warnings are reviewed.",
+    };
+    tasks = [
+      {
+        id: "core-anatomy",
+        title: "Core Anatomy",
+        detail: coreReady ? "Body, Attack, and Weakness / Tell are present." : "A core graft is missing.",
+        required: true,
+        status: coreReady ? "complete" : "current",
+        action: coreReady ? null : { kind: "grafts" },
+      },
+      ...review.tasks,
+    ];
+    primaryAction = exportReady
+      ? {
+          kind: "export",
+          label: "Stat Block Ready",
+          title: "Monster ready",
+          detail: "The final output is already open.",
+        }
+      : {
+          kind: "review",
+          label: "Review Build",
+          title: "Review remaining warnings",
+          detail: "Return to Review without changing the current stat block.",
+        };
+    previousAction = {
+      kind: "review",
+      label: "Review",
+      detail: "Return to pressure, complexity, and counterplay checks.",
+    };
+    nextAction = null;
+  }
+
+  const contextItems = [
+    context.name,
+    context.category,
+    context.role,
+    context.targetCr ? `CR ${context.targetCr}` : "",
+    ["grafts", "review", "stat-block"].includes(activeStageId) ? `${completedSlots} graft${completedSlots === 1 ? "" : "s"}` : "",
+    ["grafts", "review", "stat-block"].includes(activeStageId) && context.source ? context.source : "",
+  ].filter(Boolean).slice(0, 4);
 
   return {
-    steps,
-    slotRoadmap,
-    readiness,
-    nextSlot: recommendedSlot,
-    recommendedSlotId,
-    nextAction,
+    activeStageId,
+    blocker,
+    context: contextItems,
+    coreReady,
     exportReady,
-    prioritizedWarnings,
-    progress: clamp(progressIndex / Math.max(1, steps.length - 1), 0, 1),
-    activeStep: steps.find((step) => step.active) || steps[0],
+    hasSetpieceSlot,
+    objective,
+    primaryAction,
+    previousAction,
+    nextAction,
+    recommendedSlotId,
+    review,
+    stages,
+    tasks,
   };
 }

@@ -2,8 +2,9 @@ import { getAssignedComponentsForRegion, getLocationSlotsForScope } from "./loca
 import { LOCATION_SLOT_SCOPE_REGION, toArray } from "./location-composer-state.js";
 import { getGeneratedRoomForRegionIndex } from "./location-composer-map-preview.js";
 import { getRegionPreviewMarkers } from "./location-composer-output.js";
+import { REGION_READY_SLOT_IDS } from "./location-workflow.constants.js";
 
-export const REGION_READY_SLOT_IDS = ["hazard", "clue", "encounterTwist"];
+export { REGION_READY_SLOT_IDS } from "./location-workflow.constants.js";
 
 function cleanLabel(value, fallback = "—") {
   const text = String(value || "").trim();

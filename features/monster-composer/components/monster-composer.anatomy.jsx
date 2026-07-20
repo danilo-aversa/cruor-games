@@ -1857,6 +1857,7 @@ function FrameInfoPanel({
   monsterTier,
   tempoProfile,
   danger,
+  workflowFooter = null,
 }) {
   return (
     <ComposerRail
@@ -1865,6 +1866,7 @@ function FrameInfoPanel({
       scrollable
       className="anatomy-stage__column anatomy-stage__column--right monster-frame-info"
       aria-label="Current Monster Frame"
+      footer={workflowFooter}
     >
       <section className="cruor-composer-rail-card cruor-composer-rail-card--hero monster-frame-info-card monster-frame-info-card--hero">
         <span className="cruor-composer-rail-card__eyebrow">Current Frame</span>
@@ -1910,6 +1912,7 @@ function GraftInfoPanel({
   selected,
   activeSlot,
   features = [],
+  workflowFooter = null,
 }) {
   const slot = SLOTS.find((item) => item.id === activeSlot) || null;
   const availableFeatures = Array.isArray(features) ? features : [];
@@ -1929,6 +1932,7 @@ function GraftInfoPanel({
       scrollable
       className="anatomy-stage__column anatomy-stage__column--right monster-frame-info monster-graft-info"
       aria-label="Current monster information"
+      footer={workflowFooter}
     >
       <section className="cruor-composer-rail-card cruor-composer-rail-card--hero monster-frame-info-card monster-frame-info-card--hero">
         <span className="cruor-composer-rail-card__eyebrow">Info</span>
@@ -2005,6 +2009,8 @@ export function MonsterSilhouetteMap({
   dangerId,
   onPickTemplate,
   onBuildFromScratch,
+  showBuildGuide = true,
+  onShowBuildGuideChange,
   onOpenFrame,
   onFocusSlot,
   selectType,
@@ -2017,7 +2023,7 @@ export function MonsterSilhouetteMap({
   setTempoProfileId,
   setDangerId,
   componentNavigatorPanel,
-  guidedFlowPanel,
+  workflowFooter,
   features = [],
 }) {
   const silhouetteId = getSilhouetteId(typeId, category, activePreset);
@@ -2144,6 +2150,8 @@ export function MonsterSilhouetteMap({
             onPickTemplate={onPickTemplate}
             onBuildFromScratch={onBuildFromScratch}
             presetsCount={presetsCount}
+            showBuildGuide={showBuildGuide}
+            onShowBuildGuideChange={onShowBuildGuideChange}
           />
         </div>
       ) : (
@@ -2195,6 +2203,7 @@ export function MonsterSilhouetteMap({
                   danger={safeDanger}
                   onPickTemplate={onPickTemplate}
                   onSetStageMode={onSetStageMode}
+                  workflowFooter={workflowFooter}
                 />
               </div>
             ) : (
@@ -2264,19 +2273,10 @@ export function MonsterSilhouetteMap({
                   selected={selected}
                   activeSlot={activeSlot}
                   features={availableFeatures}
+                  workflowFooter={workflowFooter}
                 />
               </div>
             )}
-            {guidedFlowPanel ? (
-              <div
-                className={`monster-stage-progress-dock ${isFrameMode ? "monster-stage-progress-dock--frame" : "monster-stage-progress-dock--grafts"} ${hasComponentNavigator ? "is-under-navigator-focus" : ""}`}
-              >
-                {guidedFlowPanel}
-                {hasComponentNavigator ? (
-                  <div className="monster-stage-progress-focus-overlay" aria-hidden="true" />
-                ) : null}
-              </div>
-            ) : null}
           </div>
         </>
       )}

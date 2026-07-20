@@ -11,7 +11,9 @@ export const ComposerRail = React.forwardRef(function ComposerRail(
     variant,
     scrollable = false,
     surface = false,
+    footer = null,
     className = "",
+    children,
     ...props
   },
   ref,
@@ -28,12 +30,20 @@ export const ComposerRail = React.forwardRef(function ComposerRail(
         scrollable ? "cruor-composer-rail--scroll" : "",
         scrollable ? "cruor-scroll-surface" : "",
         surface ? "cruor-composer-rail--surface" : "",
+        footer ? "cruor-composer-rail--with-footer" : "",
         className,
       )}
       data-composer-rail-side={normalizedSide}
       data-composer-rail-variant={variant || undefined}
       {...props}
-    />
+    >
+      {footer ? (
+        <>
+          <div className="cruor-composer-rail__body">{children}</div>
+          <div className="cruor-composer-rail__footer">{footer}</div>
+        </>
+      ) : children}
+    </Element>
   );
 });
 

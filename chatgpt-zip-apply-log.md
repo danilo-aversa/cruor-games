@@ -18970,3 +18970,293 @@ _Nessun file aggiunto._
 - `~features/monster-composer/monster-composer.page.jsx`
 - `~features/monster-composer/rulesets/dnd-5e-2024/monster-dpr-simulator.js`
 
+
+---
+
+## 2026-07-20 19:18:32
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-dark-places-notched-fix-output.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-notched-fix-output.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-aiZzvQ`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 8
+
+- `~features/darken-location/map-generator/map-generator.layout.js`
+- `~features/darken-location/map-generator/map-generator.mask.js`
+- `~features/darken-location/map-generator/map-generator.page.jsx`
+- `~features/darken-location/map-generator/map-generator.room-shapes.test.js`
+- `~features/darken-location/map-generator/map-generator.state.js`
+- `~features/darken-location/room-constraint-evaluation.js`
+- `~shared/content/contracts/room-design.js`
+- `~shared/content/contracts/room-shapes.test.js`
+
+
+---
+
+## 2026-07-20 19:39:25
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-dark-places-map-transition-fix-output.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-map-transition-fix-output.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-OeZ1iQ`
+
+**Decisione struttura:** `Cartella top-level preservata: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/darken-location/composer/components/LocationMapStage.test.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.test.jsx`
+
+
+---
+
+## 2026-07-20 21:18:58
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-command-bar-implementation-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-command-bar-implementation-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-Jelmx0`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 9
+
+- `+components/ui/composer-command-bar.jsx`
+- `+components/ui/composer-command-bar.test.jsx`
+- `+features/darken-location/composer/components/LocationGuidedFlowPanel.test.jsx`
+- `+features/darken-location/composer/model/location-command-flow.js`
+- `+features/darken-location/composer/model/location-command-flow.test.js`
+- `+features/darken-location/composer/model/location-workflow.constants.js`
+- `+features/monster-composer/components/monster-composer.start-flow.test.jsx`
+- `+features/monster-composer/model/monster-composer.start-flow.test.js`
+- `+shared/styles/composer-command-bar.css`
+
+**File sovrascritti:** 9
+
+- `~app/main.jsx`
+- `~features/darken-location/composer/components/LocationGuidedFlowPanel.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/model/location-room-program.js`
+- `~features/monster-composer/components/monster-composer.anatomy.jsx`
+- `~features/monster-composer/components/monster-composer.panels.jsx`
+- `~features/monster-composer/components/monster-composer.start-flow.jsx`
+- `~features/monster-composer/model/monster-composer.start-flow.js`
+- `~features/monster-composer/monster-composer.page.jsx`
+
+
+---
+
+## 2026-07-20 21:40:26
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-command-bar-adjustments-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-command-bar-adjustments-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-8vkXX3`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~components/ui/composer-command-bar.jsx`
+- `~components/ui/composer-command-bar.test.jsx`
+- `~shared/styles/composer-command-bar.css`
+
+
+---
+
+## 2026-07-20 21:56:02
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-command-bar-layout-stability-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-command-bar-layout-stability-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-AzbIFy`
+
+**Decisione struttura:** `Cartella top-level preservata: shared`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~shared/styles/composer-command-bar.css`
+
+
+---
+
+## 2026-07-20 22:33:07
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-sidebar-workflow-navigation-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-sidebar-workflow-navigation-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-3MqfXh`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 19
+
+- `~components/ui/composer-command-bar.jsx`
+- `~components/ui/composer-command-bar.test.jsx`
+- `~components/ui/composer-rail.jsx`
+- `~features/darken-location/composer/components/LocationGuidedFlowPanel.jsx`
+- `~features/darken-location/composer/components/LocationGuidedFlowPanel.test.jsx`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+- `~features/darken-location/output/LocationOutputWorkspace.jsx`
+- `~features/monster-composer/components/monster-composer.anatomy.jsx`
+- `~features/monster-composer/components/monster-composer.panels.jsx`
+- `~features/monster-composer/components/monster-composer.start-flow.jsx`
+- `~features/monster-composer/components/monster-composer.start-flow.test.jsx`
+- `~features/monster-composer/model/monster-composer.start-flow.js`
+- `~features/monster-composer/model/monster-composer.start-flow.test.js`
+- `~features/monster-composer/monster-composer.page.jsx`
+- `~features/monster-composer/monster-composer.styles.css`
+- `~shared/styles/composer-command-bar.css`
+- `~shared/styles/composer-system.css`
+
+
+---
+
+## 2026-07-20 22:41:08
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-start-screen-visual-adjustments-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-start-screen-visual-adjustments-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-ZFrrqQ`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~components/ui/composer-command-bar.jsx`
+- `~components/ui/composer-command-bar.test.jsx`
+- `~shared/styles/composer-command-bar.css`
+
+
+---
+
+## 2026-07-20 23:00:08
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-detached-navigation-central-guide-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-detached-navigation-central-guide-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-1txtgP`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 1
+
+- `+ZIP-MANIFEST.txt`
+
+**File sovrascritti:** 8
+
+- `~components/ui/composer-command-bar.jsx`
+- `~components/ui/composer-command-bar.test.jsx`
+- `~features/darken-location/composer/components/LocationGuidedFlowPanel.jsx`
+- `~features/darken-location/composer/components/LocationGuidedFlowPanel.test.jsx`
+- `~features/monster-composer/components/monster-composer.start-flow.jsx`
+- `~features/monster-composer/components/monster-composer.start-flow.test.jsx`
+- `~shared/styles/composer-command-bar.css`
+- `~shared/styles/composer-system.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: ZIP-MANIFEST.txt
+

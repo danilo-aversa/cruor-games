@@ -164,9 +164,12 @@ export function BalanceWorkbench({
   pressurePercent,
   complexityPercent,
   onRecommendationAction,
+  showDiagnostics = false,
+  workflowFooter = null,
 }) {
   return (
-    <section className="panel balance-workbench" aria-label="Monster balance review">
+    <section className="monster-balance-layout">
+      <section className="panel balance-workbench" aria-label="Monster balance review">
       <div className="balance-hero">
         <div>
           <h2>Balance Review</h2>
@@ -231,48 +234,73 @@ export function BalanceWorkbench({
             {formatCounterplayIssues(computed.counterplayAudit.issues)}
           </p>
         </article>
-        <details className="balance-diagnostics balance-wide-card">
-          <summary>Raw Diagnostics</summary>
-          <div className="balance-diagnostics__grid">
-            <article className="balance-card">
-              <div className="balance-card__head">
-                <span>Warnings</span>
-                <strong>{computed.warnings.length}</strong>
-              </div>
-              <WarningList warnings={computed.warnings} />
-            </article>
-            <article className="balance-card">
-              <div className="balance-card__head">
-                <span>Baseline</span>
-                <strong>CR {computed.targetCr}</strong>
-              </div>
-              <div className="compiled-meta-grid balance-meta-grid">
-                <CompiledMeta label="Ruleset" value={computed.ruleset?.label || computed.rulesetId || "D&D 5E 2024"} />
-                <CompiledMeta label="Abilities" value={`${computed.abilityModel?.total ?? 0} / ${computed.abilityModel?.damaging ?? 0} dmg`} />
-                <CompiledMeta label="AC" value={`${computed.ac} / ${computed.baseline.ac}`} />
-                <CompiledMeta label="HP" value={`${computed.hp} / ${computed.baseline.hp}`} />
-                <CompiledMeta label="Eff. HP" value={computed.effectiveProfile?.effectiveHp ?? computed.hp} />
-                <CompiledMeta
-                  label="DPR"
-                  value={`${computed.effectiveProfile.effectiveDpr3Round} / ${computed.baseline.dpr}`}
-                />
-                <CompiledMeta
-                  label="Attack"
-                  value={`${modText(computed.attack)} / ${modText(computed.baseline.attackBonus)}`}
-                />
-                <CompiledMeta label="DC" value={`${computed.dc} / ${computed.baseline.saveDc}`} />
-                <CompiledMeta label="Burst" value={computed.effectiveProfile.burstDpr} />
-                <CompiledMeta label="Control" value={`+${computed.effectiveProfile?.conditionProfile?.crAdjustment ?? 0} CR`} />
-                <CompiledMeta
-                  label="CR Split"
-                  value={`${computed.crValidation?.defensive?.cr ?? "—"} / ${computed.crValidation?.offensive?.cr ?? "—"}`}
-                />
-                <CompiledMeta label="Est. CR" value={computed.crValidation?.estimatedCr ?? computed.estimatedCr} />
-              </div>
-            </article>
-          </div>
-        </details>
+        {showDiagnostics && (
+          <details className="balance-diagnostics balance-wide-card">
+            <summary>Raw Diagnostics</summary>
+            <div className="balance-diagnostics__grid">
+              <article className="balance-card">
+                <div className="balance-card__head">
+                  <span>Warnings</span>
+                  <strong>{computed.warnings.length}</strong>
+                </div>
+                <WarningList warnings={computed.warnings} />
+              </article>
+              <article className="balance-card">
+                <div className="balance-card__head">
+                  <span>Baseline</span>
+                  <strong>CR {computed.targetCr}</strong>
+                </div>
+                <div className="compiled-meta-grid balance-meta-grid">
+                  <CompiledMeta label="Ruleset" value={computed.ruleset?.label || computed.rulesetId || "D&D 5E 2024"} />
+                  <CompiledMeta label="Abilities" value={`${computed.abilityModel?.total ?? 0} / ${computed.abilityModel?.damaging ?? 0} dmg`} />
+                  <CompiledMeta label="AC" value={`${computed.ac} / ${computed.baseline.ac}`} />
+                  <CompiledMeta label="HP" value={`${computed.hp} / ${computed.baseline.hp}`} />
+                  <CompiledMeta label="Eff. HP" value={computed.effectiveProfile?.effectiveHp ?? computed.hp} />
+                  <CompiledMeta
+                    label="DPR"
+                    value={`${computed.effectiveProfile.effectiveDpr3Round} / ${computed.baseline.dpr}`}
+                  />
+                  <CompiledMeta
+                    label="Attack"
+                    value={`${modText(computed.attack)} / ${modText(computed.baseline.attackBonus)}`}
+                  />
+                  <CompiledMeta label="DC" value={`${computed.dc} / ${computed.baseline.saveDc}`} />
+                  <CompiledMeta label="Burst" value={computed.effectiveProfile.burstDpr} />
+                  <CompiledMeta label="Control" value={`+${computed.effectiveProfile?.conditionProfile?.crAdjustment ?? 0} CR`} />
+                  <CompiledMeta
+                    label="CR Split"
+                    value={`${computed.crValidation?.defensive?.cr ?? "—"} / ${computed.crValidation?.offensive?.cr ?? "—"}`}
+                  />
+                  <CompiledMeta label="Est. CR" value={computed.crValidation?.estimatedCr ?? computed.estimatedCr} />
+                </div>
+              </article>
+            </div>
+          </details>
+        )}
       </div>
+      </section>
+
+      <ComposerRail
+        side="right"
+        variant="info"
+        scrollable
+        footer={workflowFooter}
+        className="monster-balance-details-rail"
+        aria-label="Monster review summary"
+      >
+        <section className="cruor-composer-rail-card cruor-composer-rail-card--hero">
+          <span className="cruor-composer-rail-card__eyebrow">Review</span>
+          <strong>{computed.warnings.length ? "Needs Review" : "Ready"}</strong>
+          <em className="cruor-composer-rail-card__meta">Pressure · Complexity · Counterplay</em>
+        </section>
+        <section className="cruor-composer-rail-card">
+          <div className="cruor-composer-fact-grid">
+            <span className="cruor-composer-fact-row"><small className="cruor-composer-fact-label">Pressure</small><strong className="cruor-composer-fact-value">{computed.pressure}/{computed.budget}</strong></span>
+            <span className="cruor-composer-fact-row"><small className="cruor-composer-fact-label">Complexity</small><strong className="cruor-composer-fact-value">{computed.complexity}/{computed.complexityCap}</strong></span>
+            <span className="cruor-composer-fact-row"><small className="cruor-composer-fact-label">Counterplay</small><strong className="cruor-composer-fact-value">{computed.counterplayAudit.rating}</strong></span>
+          </div>
+        </section>
+      </ComposerRail>
     </section>
   );
 }
@@ -491,6 +519,7 @@ export function ExportWorkbench({
   onOpenBalance,
   viewToolbar,
   liveExportButton,
+  workflowFooter = null,
 }) {
   return (
     <section className="export-workbench" aria-label="Monster export">
@@ -505,6 +534,7 @@ export function ExportWorkbench({
           scrollable
           className="monster-export-details-rail"
           aria-label="Monster export summary"
+          footer={workflowFooter}
         >
           {viewToolbar}
 

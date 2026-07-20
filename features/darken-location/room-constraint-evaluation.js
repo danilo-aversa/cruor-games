@@ -104,7 +104,9 @@ function normalizeEngineShape(value = "") {
   const normalized = normalizeRoomDesignShapeKind(value);
   if (normalized) return normalized;
   const aliases = {
-    notched: "broken",
+    notched: "rect",
+    notch: "rect",
+    cutout: "rect",
     "ruined-rect": "broken",
     ellipse: "oval",
   };
@@ -155,16 +157,29 @@ export function createDarkPlacesRoomBaseRegion({
     clonePlainObject(
       getRoomDesignSource(generated) || getRoomDesignSource(authored),
     ) || {};
-  const shape = normalizeEngineShape(
+  const rawShape =
     generated.shape ||
-      generated.preferredShape ||
-      authored.shape ||
-      authored.preferredShape,
+    generated.preferredShape ||
+    authored.shape ||
+    authored.preferredShape;
+  const shape = normalizeEngineShape(rawShape);
+  const legacyNotchedShape = ["notched", "notch", "cutout"].includes(
+    String(rawShape || "").trim().toLowerCase(),
   );
   const scale = normalizeScale(generated.size || authored.size);
   const existingShape = isPlainObject(explicitDesign.shape)
     ? explicitDesign.shape
     : {};
+  const shapeModifiers = unique([
+    ...asArray(existingShape.modifiers),
+    ...asArray(generated.shapeOptions?.roomDesignModifiers),
+    ...(generated.shapeOptions?.notch === true || legacyNotchedShape
+      ? ["notch"]
+      : []),
+    ...(generated.shapeOptions?.ruined === true ? ["ruined"] : []),
+  ])
+    .map(normalizeRoomDesignModifier)
+    .filter(Boolean);
   const existingSize = isPlainObject(explicitDesign.size)
     ? explicitDesign.size
     : {};
@@ -175,6 +190,7 @@ export function createDarkPlacesRoomBaseRegion({
           shape: {
             ...existingShape,
             ...(shape ? { kind: shape } : {}),
+            ...(shapeModifiers.length ? { modifiers: shapeModifiers } : {}),
           },
         }
       : {}),

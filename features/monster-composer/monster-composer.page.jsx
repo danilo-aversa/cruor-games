@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useComposerBuildGuidePreference } from "../../components/ui/composer-command-bar.jsx";
 import "./monster-composer.styles.css";
 import "../../shared/styles/composer-internals.css";
 import { getFeatureBalanceEntries, getFeatureBalanceStat, sumFeatureBalanceStats } from "./model/monster-graft-balance-profile.js";
@@ -1353,6 +1354,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
   const [exportCopyStatus, setExportCopyStatus] = useState("");
   const [statBlockMode, setStatBlockMode] = useState("standard");
   const [liveExportPopoutOpen, setLiveExportPopoutOpen] = useState(false);
+  const [showBuildGuide, setShowBuildGuide] = useComposerBuildGuidePreference(true);
 
   const creatureType = CREATURE_TYPES.find((type) => type.id === typeId) || CREATURE_TYPES[0];
   const role = ROLES.find((item) => item.id === roleId) || ROLES[1];
@@ -1390,7 +1392,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
 
   useEffect(() => {
     if (uiMode === "debug") return;
-    if (viewMode === "balance" || viewMode === "run") {
+    if (viewMode === "run") {
       setViewMode("export");
     }
   }, [uiMode, viewMode]);
@@ -2244,6 +2246,15 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     selected,
     computed,
     activePreset,
+    stageMode: composerStageMode,
+    viewMode,
+    context: {
+      name: computed.name,
+      category,
+      role: role.label,
+      targetCr,
+      source: source.label,
+    },
   });
 
   const exportPayload = useMemo(() => {
@@ -2397,6 +2408,27 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
 
   const persistentViewToolbar = viewMode !== "composer" && viewMode !== "export" ? monsterViewToolbar : null;
 
+  const monsterWorkflowFooter = composerStarted ? (
+    <GuidedFlowPanel
+      guidedFlow={guidedFlow}
+      onOpenStart={openTemplatePicker}
+      onFocusSlot={openSlotNavigator}
+      onOpenBalance={() => setViewMode("balance")}
+      onOpenExport={() => setViewMode("export")}
+      onOpenTemplates={openTemplatePicker}
+      onOpenChassis={() => {
+        setViewMode("composer");
+        setComposerStageModeFromNavigation("frame");
+      }}
+      onOpenGrafts={() => {
+        setViewMode("composer");
+        setComposerStageModeFromNavigation("grafts");
+      }}
+      showBuildGuide={showBuildGuide}
+      onShowBuildGuideChange={setShowBuildGuide}
+    />
+  ) : null;
+
   const renderExportWorkbench = ({ includeViewToolbar = viewMode === "export" } = {}) => (
     <ExportWorkbench
       exportText={exportPayload.exportText}
@@ -2410,9 +2442,10 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       uiMode={uiMode}
       onSetStatBlockMode={setStatBlockMode}
       onCopyExportPayload={copyExportPayload}
-      onOpenBalance={uiMode === "debug" ? () => setViewMode("balance") : null}
+      onOpenBalance={() => setViewMode("balance")}
       viewToolbar={includeViewToolbar ? monsterViewToolbar : null}
       liveExportButton={includeViewToolbar ? liveExportButton : null}
+      workflowFooter={monsterWorkflowFooter}
     />
   );
 
@@ -2501,13 +2534,6 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     setComponentNavigatorOpen(true);
   }
 
-  function focusSlotWithoutNavigator(slotId) {
-    if (!slotId) return;
-    setComposerStageModeImmediately("grafts", { clearSlot: false });
-    setActiveSlot(slotId);
-    setNavigatorSlotFilter(slotId);
-    setComponentNavigatorOpen(false);
-  }
 
   function closeComponentNavigator() {
     setComponentNavigatorOpen(false);
@@ -2740,6 +2766,8 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
                 composerStarted={composerStarted}
                 onPickTemplate={openTemplatePicker}
                 onBuildFromScratch={startFromScratch}
+                showBuildGuide={showBuildGuide}
+                onShowBuildGuideChange={setShowBuildGuide}
                 onOpenFrame={() => setComposerStageModeFromNavigation("frame")}
                 onFocusSlot={openSlotNavigator}
                 selectType={selectType}
@@ -2752,20 +2780,7 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
                 setTempoProfileId={setTempoProfileId}
                 setDangerId={setDangerId}
                 componentNavigatorPanel={componentNavigatorOpen && viewMode === "composer" && composerStarted && composerStageMode === "grafts" ? componentNavigatorDrawer : null}
-                guidedFlowPanel={(
-                  <GuidedFlowPanel
-                    guidedFlow={guidedFlow}
-                    stageMode={composerStageMode}
-                    onOpenStart={openTemplatePicker}
-                    onFocusSlot={focusSlotWithoutNavigator}
-                    onOpenBalance={() => setViewMode(uiMode === "debug" ? "balance" : "export")}
-                    onOpenExport={() => setViewMode("export")}
-                    onOpenTemplates={openTemplatePicker}
-                    onOpenChassis={() => setComposerStageModeFromNavigation("frame")}
-                    onOpenGrafts={() => setComposerStageModeFromNavigation("grafts")}
-                    onOpenStageExport={() => setViewMode("export")}
-                  />
-                )}
+                workflowFooter={monsterWorkflowFooter}
               />
 
               {composerStarted && composerStageMode === "grafts" && activeSlotData && (
@@ -2784,12 +2799,14 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
 
         {persistentViewToolbar}
 
-        {uiMode === "debug" && viewMode === "balance" && (
+        {viewMode === "balance" && (
           <BalanceWorkbench
             computed={computed}
             pressurePercent={pressurePercent}
             complexityPercent={complexityPercent}
+            showDiagnostics={uiMode === "debug"}
             onRecommendationAction={handleBalanceRecommendationAction}
+            workflowFooter={monsterWorkflowFooter}
           />
         )}
 
@@ -2856,7 +2873,8 @@ function MonsterPersistentViewToolbar({
 }) {
   const views = [
     ["composer", "Composer"],
-    ...(uiMode === "debug" ? [["balance", "Balance"], ["run", "Run"]] : []),
+    ["balance", "Review"],
+    ...(uiMode === "debug" ? [["run", "Run"]] : []),
     ["export", "Stat Block"],
   ];
 

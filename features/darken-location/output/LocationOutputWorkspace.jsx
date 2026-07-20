@@ -725,8 +725,6 @@ function LocationOutputMapSummary({ documentModel }) {
 function LocationOutputOutline({
   activeSectionId,
   documentModel,
-  onBackToFrame,
-  onBackToRooms,
   onSelectSection,
 }) {
   const rooms = asArray(documentModel?.rooms);
@@ -800,16 +798,6 @@ function LocationOutputOutline({
         </ComposerCollapsibleSection>
       ) : null}
 
-      <section className="location-output-outline__actions cruor-composer-sidebar-block" aria-label="Output navigation">
-        <button className="cruor-composer-control" type="button" onClick={onBackToRooms}>
-          <i className="fa-solid fa-arrow-left" aria-hidden="true" />
-          <span>Rooms</span>
-        </button>
-        <button className="cruor-composer-control" type="button" onClick={onBackToFrame}>
-          <i className="fa-solid fa-sliders" aria-hidden="true" />
-          <span>Frame</span>
-        </button>
-      </section>
     </ComposerRail>
   );
 }
@@ -821,11 +809,10 @@ export function LocationOutputWorkspace({
   initialMapPreviewOpen = false,
   initialSectionId = "overview",
   initialSessionPersistence = false,
-  onBackToFrame,
-  onBackToRooms,
   onCopyText,
   onEditRoom,
   sessionStateStorage = null,
+  workflowFooter = null,
 }) {
   const outputProjection = useMemo(
     () => createLocationOutputProjection(sourceDocumentModel),
@@ -1091,8 +1078,6 @@ export function LocationOutputWorkspace({
         <LocationOutputOutline
           activeSectionId={activeSectionId}
           documentModel={documentModel}
-          onBackToFrame={onBackToFrame}
-          onBackToRooms={onBackToRooms}
           onSelectSection={selectSection}
         />
 
@@ -1114,6 +1099,7 @@ export function LocationOutputWorkspace({
           scrollable
           className="location-output-details-rail location-composer__rail location-composer__rail--right location-frame-info"
           aria-label="Map preview and export summary"
+          footer={workflowFooter}
         >
           <LocationOutputMapPreview
             activeRoom={activeRoom}

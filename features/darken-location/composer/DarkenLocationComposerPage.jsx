@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ComposerRail } from "../../../components/ui/composer-rail.jsx";
+import { ComposerStartScreen, ComposerTemplatePicker, useComposerBuildGuidePreference } from "../../../components/ui/composer-command-bar.jsx";
 import "../map-generator/map-generator.styles.css";
 import {
   addScratchLocationRoom,
@@ -86,6 +87,24 @@ import {
   createThemeDungeonBriefCandidatesFromDarkenLocationSnapshot,
   createThemeDungeonBriefFromDarkenLocationSnapshot,
 } from "../dungeon/dungeon.index.js";
+
+
+const LOCATION_START_TEMPLATES = [
+  {
+    id: "sedlec-ossuary-crypt",
+    label: "Sedlec Ossuary Crypt",
+    description: "A generated ossuary room program with religious horror and a crypt frame.",
+    meta: "Sedlec Ossuary · Crypt",
+    frame: { dungeonThemeId: "sedlec-ossuary", sourceAnchors: new Set(["Sedlec Ossuary"]), context: "Crypt", horror: "Religious Horror", horrors: new Set(["Religious Horror"]) },
+  },
+  {
+    id: "decomposition-crypt",
+    label: "Decomposition Crypt",
+    description: "A wet, collapsing crypt generated from the Decomposition semantic module.",
+    meta: "Decomposition · Crypt",
+    frame: { dungeonThemeId: "decomposition", sourceAnchors: new Set(["Decomposition"]), context: "Crypt" },
+  },
+];
 
 function LocationFrameInfoRow({ label, value }) {
   return (
@@ -365,6 +384,12 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [immersiveMode, setImmersiveMode] = useState(false);
   const [exportCopyStatus, setExportCopyStatus] = useState("");
+  const [mapRegenerationRevision, setMapRegenerationRevision] = useState(0);
+  const [composerStarted, setComposerStarted] = useState(false);
+  const [startMode, setStartMode] = useState("");
+  const [templatePickerOpen, setTemplatePickerOpen] = useState(false);
+  const [activeStartTemplateId, setActiveStartTemplateId] = useState("sedlec-ossuary-crypt");
+  const [showBuildGuide, setShowBuildGuide] = useComposerBuildGuidePreference(true);
   const draftStatusTimeoutRef = useRef(null);
   const exportCopyStatusTimeoutRef = useRef(null);
   const assignmentHistoryRef = useRef({ past: [], future: [] });
@@ -457,6 +482,8 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   const draftFingerprint = useMemo(() => createDraftFingerprint(state), [state]);
   const hasUnsavedChanges = Boolean(savedDraftFingerprint) && draftFingerprint !== savedDraftFingerprint;
   const mapStructureKey = semanticMapHandoff.topologyFingerprint;
+  // Local map edits may change topology; only explicit full regeneration actions advance this key.
+  const mapTransitionKey = `full-map-regeneration-${mapRegenerationRevision}`;
   const mapSourceKey = semanticMapHandoff.requestFingerprint;
   const previousRoomConstraintKeyRef = useRef(
     semanticMapHandoff.roomConstraintFingerprint,
@@ -473,6 +500,10 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     setDraftStatus(message);
     window.clearTimeout(draftStatusTimeoutRef.current);
     draftStatusTimeoutRef.current = window.setTimeout(() => setDraftStatus(""), 2200);
+  }, []);
+
+  const requestFullMapTransition = useCallback(() => {
+    setMapRegenerationRevision((current) => current + 1);
   }, []);
 
   const syncAssignmentHistoryStatus = useCallback(() => {
@@ -591,11 +622,12 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     const fallbackState = createInitialGeneratedLocationComposerState();
     const restoredState = restoreLocationDraftState(storedDraft, fallbackState);
     setState(restoredState);
+    requestFullMapTransition();
     clearAssignmentHistory();
     setSavedDraftFingerprint(createDraftFingerprint(restoredState));
     setDraftSummary(getStoredDraftSummary());
     setTransientDraftStatus("Draft loaded");
-  }, [clearAssignmentHistory, hasUnsavedChanges, setTransientDraftStatus]);
+  }, [clearAssignmentHistory, hasUnsavedChanges, requestFullMapTransition, setTransientDraftStatus]);
 
   const clearSavedDraft = useCallback(() => {
     if (!draftSummary) {
@@ -623,11 +655,12 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     setState((current) => createGeneratedThemeProgramState(current, {
       seed: createLocationMapSeed(),
     }));
+    requestFullMapTransition();
     clearAssignmentHistory();
     setBuilderMode("theme");
     setDrawerOpen(false);
     setTransientDraftStatus("Map seed refreshed");
-  }, [clearAssignmentHistory, setTransientDraftStatus]);
+  }, [clearAssignmentHistory, requestFullMapTransition, setTransientDraftStatus]);
 
   const renameLocation = useCallback((title) => {
     setState((current) => ({
@@ -638,21 +671,23 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
 
   const generateThemeRooms = useCallback(() => {
     setState((current) => createGeneratedThemeProgramState(current));
+    requestFullMapTransition();
     clearAssignmentHistory();
     setBuilderMode("theme");
     setDrawerOpen(false);
     setTransientDraftStatus("Place generated");
-  }, [clearAssignmentHistory, setTransientDraftStatus]);
+  }, [clearAssignmentHistory, requestFullMapTransition, setTransientDraftStatus]);
 
   const changeThemeFrame = useCallback((frameUpdates = {}) => {
     setState((current) =>
       createGeneratedThemeProgramState(current, frameUpdates),
     );
+    requestFullMapTransition();
     clearAssignmentHistory();
     setBuilderMode("theme");
     setDrawerOpen(false);
     setTransientDraftStatus("Place regenerated for the updated frame");
-  }, [clearAssignmentHistory, setTransientDraftStatus]);
+  }, [clearAssignmentHistory, requestFullMapTransition, setTransientDraftStatus]);
 
   const setScratchRoomCount = useCallback((roomCount) => {
     setState((current) => ({
@@ -770,11 +805,12 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
         mapManualOverrides: null,
       };
     });
+    requestFullMapTransition();
     clearAssignmentHistory();
     setBuilderMode("scratch");
     setDrawerOpen(false);
     setTransientDraftStatus("Map generated");
-  }, [clearAssignmentHistory, setTransientDraftStatus]);
+  }, [clearAssignmentHistory, requestFullMapTransition, setTransientDraftStatus]);
 
 
   const resetComposer = useCallback(() => {
@@ -783,12 +819,44 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
 
     const resetState = createInitialGeneratedLocationComposerState();
     setState(resetState);
+    requestFullMapTransition();
     clearAssignmentHistory();
     setSavedDraftFingerprint(createDraftFingerprint(resetState));
     setBuilderMode("theme");
     setDrawerOpen(false);
+    setComposerStarted(false);
+    setStartMode("");
+    setTemplatePickerOpen(false);
     setTransientDraftStatus("Composer reset");
-  }, [clearAssignmentHistory, setTransientDraftStatus]);
+  }, [clearAssignmentHistory, requestFullMapTransition, setTransientDraftStatus]);
+
+  const startFromLocationTemplate = useCallback((template) => {
+    const baseState = createInitialLocationComposerState([]);
+    const nextState = createGeneratedThemeProgramState(baseState, template?.frame || {});
+    setState(nextState);
+    requestFullMapTransition();
+    clearAssignmentHistory();
+    setActiveStartTemplateId(template?.id || "");
+    setBuilderMode("theme");
+    setDrawerOpen(false);
+    setTemplatePickerOpen(false);
+    setStartMode("template");
+    setComposerStarted(true);
+    setTransientDraftStatus("Location template loaded");
+  }, [clearAssignmentHistory, requestFullMapTransition, setTransientDraftStatus]);
+
+  const startLocationFromScratch = useCallback(() => {
+    const nextState = createInitialLocationComposerState([]);
+    setState(nextState);
+    requestFullMapTransition();
+    clearAssignmentHistory();
+    setBuilderMode("theme");
+    setDrawerOpen(false);
+    setTemplatePickerOpen(false);
+    setStartMode("scratch");
+    setComposerStarted(true);
+    setTransientDraftStatus("Scratch location started");
+  }, [clearAssignmentHistory, requestFullMapTransition, setTransientDraftStatus]);
 
   const toggleImmersiveMode = useCallback(() => {
     const nextImmersiveMode = !immersiveMode;
@@ -1180,6 +1248,44 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     }));
   }, [builderMode]);
 
+  const locationWorkflowFooter = composerStarted ? (
+    <LocationGuidedFlowPanel
+      activeRegion={activeRegionForPicker}
+      builderMode={builderMode}
+      exportIncompleteCount={exportIncompleteCount}
+      frameContext={{
+        title: state.title,
+        context: state.context,
+        horror: getHorrorLabel(state),
+        source: getSourceLabel(state),
+      }}
+      generatedMapPreview={generatedMapPreview}
+      hasMapManualOverrides={Boolean(state.mapManualOverrides)}
+      roomEntries={roomToolbarEntries}
+      selectedComponents={selectedComponents}
+      showBuildGuide={showBuildGuide}
+      onShowBuildGuideChange={setShowBuildGuide}
+      onCopyMarkdown={copyRoomKeyMarkdown}
+      onGenerateScratchMap={generateScratchMap}
+      onGenerateThemeRooms={generateThemeRooms}
+      onOpenComponents={() => {
+        if (builderMode === "scratch" && nextMissingRoomSlot?.slot?.id) {
+          openNextMissingRoomSlot();
+          return;
+        }
+        setBuilderMode(builderMode === "scratch" ? "scratch" : "theme");
+        setDrawerOpen(true);
+      }}
+      onOpenRoomSlot={(slotId) => {
+        focusSlot(slotId, LOCATION_SLOT_SCOPE_REGION, activeRoomProgramEntry?.id || activeScratchRegion?.id || "");
+        setBuilderMode("scratch");
+      }}
+      onReviewMissing={openFirstMissingExportRoom}
+      onSelectMode={activateBuilderMode}
+      onSelectRoom={selectRoomTarget}
+    />
+  ) : null;
+
   if (builderMode === "export") {
     if (!exportBundle) {
       return (
@@ -1220,6 +1326,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
             onDownloadFormat={downloadExportFormat}
             onEditRoom={selectExportRoom}
             onReviewMissing={openFirstMissingExportRoom}
+            workflowFooter={locationWorkflowFooter}
           />
         </div>
       </div>
@@ -1320,6 +1427,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       onRegenerateMap={generateThemeRooms}
       onRefreshSeed={refreshMapSeed}
       onRenameLocation={renameLocation}
+      workflowFooter={locationWorkflowFooter}
     />
   );
 
@@ -1370,15 +1478,39 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
         semanticMapHandoff.requestFingerprint
       }
       data-location-map-topology-fingerprint={mapStructureKey}
+      data-location-map-regeneration-revision={mapRegenerationRevision}
       data-location-composer-ready="true"
+      data-location-composer-started={composerStarted ? "true" : "false"}
+      data-location-start-mode={startMode || "unselected"}
       data-testid="dark-places-composer"
     >
+      {!composerStarted ? (
+        <div className="location-composer-start-overlay">
+          <ComposerStartScreen
+            description="Load a prepared location frame or define the place structure yourself."
+            onPickTemplate={() => setTemplatePickerOpen(true)}
+            onBuildFromScratch={startLocationFromScratch}
+            showBuildGuide={showBuildGuide}
+            onShowBuildGuideChange={setShowBuildGuide}
+            templateDescription="Choose a prepared semantic location frame, then customize rooms and table-facing details."
+            scratchDescription="Start with an empty room program and build the location frame yourself."
+          />
+        </div>
+      ) : null}
+      <ComposerTemplatePicker
+        open={templatePickerOpen}
+        title="Pick a Location Template"
+        templates={LOCATION_START_TEMPLATES}
+        activeTemplateId={activeStartTemplateId}
+        onApply={startFromLocationTemplate}
+        onClose={() => setTemplatePickerOpen(false)}
+      />
       <div className="cruor-composer-workspace location-composer__workspace">
         <LocationMapStage
           state={state}
           setState={setState}
           mapRequest={stableMapRequest}
-          mapTransitionKey={mapStructureKey}
+          mapTransitionKey={mapTransitionKey}
           digest={digest}
           generatedMapPreview={generatedMapPreview}
           previewError={previewResult.error}
@@ -1392,32 +1524,6 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
           navigatorPanel={immersiveMode ? null : navigatorPanel}
           toolbarPanel={centerToolbarPanel}
           onCloseNavigator={closeComponentNavigator}
-          bottomDockPanel={immersiveMode ? null : (
-            <LocationGuidedFlowPanel
-              activeRegion={activeRegionForPicker}
-              activeSlot={activeSlot}
-              builderMode={builderMode}
-              generatedMapPreview={generatedMapPreview}
-              hasMapManualOverrides={Boolean(state.mapManualOverrides)}
-              regions={state.locationRegions || []}
-              selectedComponents={selectedComponents}
-              exportIncompleteCount={exportIncompleteCount}
-              onCopyMarkdown={copyRoomKeyMarkdown}
-              onGenerateScratchMap={generateScratchMap}
-              onGenerateThemeRooms={generateThemeRooms}
-              nextRoomSlot={nextMissingRoomSlot}
-              onOpenComponents={() => {
-                if (builderMode === "scratch" && nextMissingRoomSlot?.slot?.id) {
-                  openNextMissingRoomSlot();
-                  return;
-                }
-                setBuilderMode(builderMode === "scratch" ? "scratch" : "theme");
-                setDrawerOpen(true);
-              }}
-              onReviewMissing={openFirstMissingExportRoom}
-              onSelectMode={activateBuilderMode}
-            />
-          )}
           onComposerRegionSelect={activateRoomWorkFromMap}
           allowEmptyRegionClear={builderMode === "scratch"}
         />

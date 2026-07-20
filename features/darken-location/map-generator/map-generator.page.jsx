@@ -99,7 +99,6 @@ import {
 } from "./map-generator.graph.js";
 import {
   resolveRoomSize,
-  chooseRoomShape,
   getPlacementLane,
   getPlacementDepth,
   getPlacedNeighborCentroid,
@@ -3960,22 +3959,77 @@ function inferGeneratedRoomType(region) {
   return "none";
 }
 
+function normalizeRoomShapeForMenu(shape = "") {
+  const normalized = String(shape || "").trim().toLowerCase();
+  return ["notched", "notch", "cutout"].includes(normalized)
+    ? "rect"
+    : normalized || "rect";
+}
+
+function getGeneratedRoomModifiers(region = {}) {
+  return new Set([
+    ...(Array.isArray(region.shapeOptions?.roomDesignModifiers)
+      ? region.shapeOptions.roomDesignModifiers
+      : []),
+    ...(Array.isArray(region.roomDesign?.modifiers)
+      ? region.roomDesign.modifiers
+      : []),
+    ...(Array.isArray(region.roomDesign?.shape?.modifiers)
+      ? region.roomDesign.shape.modifiers
+      : []),
+  ]);
+}
+
+function hasGeneratedRoomModifier(region = {}, modifier = "") {
+  const modifiers = getGeneratedRoomModifiers(region);
+  if (modifiers.has(modifier)) return true;
+  if (modifier === "notch") {
+    return (
+      region.shapeOptions?.notch === true ||
+      ["notched", "notch", "cutout"].includes(
+        String(region.shape || "").trim().toLowerCase(),
+      )
+    );
+  }
+  if (modifier === "ruined") {
+    return (
+      region.shapeOptions?.ruined === true ||
+      ["broken", "ruined-rect"].includes(region.shape)
+    );
+  }
+  return false;
+}
+
 function inferGeneratedRoomShape(region) {
-  if (region.roomDesign?.shape?.kind) return region.shape || "rect";
-  if (["archive", "alcove", "apse", "ruined-rect", "broken"].includes(region.shape)) return "rect";
-  return region.shape || "rect";
+  const shape = normalizeRoomShapeForMenu(region.shape || "rect");
+  if (region.roomDesign?.shape?.kind) return shape;
+  if (["archive", "alcove", "apse", "ruined-rect", "broken"].includes(shape))
+    return "rect";
+  return shape;
 }
 
 function getRoomStyleForMenu(region, manualOverrides) {
   const manual = manualOverrides.roomStyles?.[region.id] || {};
+  const manualShape = normalizeRoomShapeForMenu(manual.shape || "");
+  const legacyManualNotch = ["notched", "notch", "cutout"].includes(
+    String(manual.shape || "").trim().toLowerCase(),
+  );
+  const hasManualNotch = Object.prototype.hasOwnProperty.call(manual, "notch");
+  const hasManualRuined = Object.prototype.hasOwnProperty.call(manual, "ruined");
   return {
     surfaceKind: manual.surfaceKind || region.surfaceKind || "structure",
-    shape: manual.shape || inferGeneratedRoomShape(region),
+    shape: manual.shape ? manualShape : inferGeneratedRoomShape(region),
     roomType: manual.roomType || inferGeneratedRoomType(region),
     sizePreset: manual.sizePreset || region.size || "Medium",
     customSize: manual.customSize || null,
-    notch: Boolean(manual.notch),
-    ruined: Boolean(manual.ruined),
+    notch: legacyManualNotch
+      ? true
+      : hasManualNotch
+        ? Boolean(manual.notch)
+        : hasGeneratedRoomModifier(region, "notch"),
+    ruined: hasManualRuined
+      ? Boolean(manual.ruined)
+      : hasGeneratedRoomModifier(region, "ruined"),
   };
 }
 
@@ -8405,12 +8459,15 @@ export default function CruorMapGeneratorMvp({
     (activeMap.regions || []).forEach((region) => {
       if (!region?.id) return;
       const currentStyle = frozenStyles[region.id] || {};
+      const resolvedStyle = getRoomStyleForMenu(region, {
+        roomStyles: { [region.id]: currentStyle },
+      });
       frozenStyles[region.id] = {
-        surfaceKind: currentStyle.surfaceKind || region.surfaceKind || "structure",
-        shape: currentStyle.shape || inferGeneratedRoomShape(region),
-        roomType: currentStyle.roomType || inferGeneratedRoomType(region),
-        notch: Boolean(currentStyle.notch),
-        ruined: Boolean(currentStyle.ruined),
+        surfaceKind: resolvedStyle.surfaceKind,
+        shape: resolvedStyle.shape,
+        roomType: resolvedStyle.roomType,
+        notch: resolvedStyle.notch,
+        ruined: resolvedStyle.ruined,
         ...(currentStyle.sizePreset ? { sizePreset: currentStyle.sizePreset } : {}),
         ...(currentStyle.customSize ? { customSize: currentStyle.customSize } : {}),
       };

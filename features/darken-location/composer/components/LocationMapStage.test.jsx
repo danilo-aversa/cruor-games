@@ -6,10 +6,11 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("../../map-generator/map-generator.page.jsx", () => ({
-  CruorMapGeneratorMvp: ({ initialRequest, onComposerRegionHoverChange }) => (
+  CruorMapGeneratorMvp: ({ initialManualOverrides, initialRequest, onComposerRegionHoverChange }) => (
     <button
       data-testid="mock-map-room"
       data-map-seed={initialRequest?.seed || ""}
+      data-manual-revision={initialManualOverrides?.revision || ""}
       type="button"
       onMouseEnter={() => onComposerRegionHoverChange?.("room-1")}
       onMouseLeave={() => onComposerRegionHoverChange?.("")}
@@ -125,6 +126,50 @@ describe("LocationMapStage room tooltip", () => {
     expect(html).not.toContain("<dt>Danger</dt>");
   });
 
+  it("applies local request and override changes immediately without showing the regeneration overlay", () => {
+    const state = {
+      activeRegionId: "",
+      activeSlot: "horrorPremise",
+      activeSlotScope: "map",
+      locationRegions: [],
+      slotAssignments: {},
+    };
+
+    act(() => {
+      root.render(
+        <LocationMapStage
+          state={state}
+          setState={() => {}}
+          mapRequest={{ seed: "old-seed", requiredRegions: [], connections: [] }}
+          mapManualOverrides={{ revision: "old-local-edit" }}
+          mapTransitionKey="full-map-regeneration-0"
+          generatedMapPreview={null}
+        />,
+      );
+    });
+
+    act(() => {
+      root.render(
+        <LocationMapStage
+          state={state}
+          setState={() => {}}
+          mapRequest={{ seed: "locally-updated-seed", requiredRegions: [], connections: [] }}
+          mapManualOverrides={{ revision: "new-local-edit" }}
+          mapTransitionKey="full-map-regeneration-0"
+          generatedMapPreview={null}
+        />,
+      );
+    });
+
+    expect(container.querySelector(".location-map-stage__center").dataset.mapTransitionPhase)
+      .toBe("idle");
+    expect(container.querySelector(".location-map-loading-screen")).toBeNull();
+    expect(container.querySelector('[data-testid="mock-map-room"]').dataset.mapSeed)
+      .toBe("locally-updated-seed");
+    expect(container.querySelector('[data-testid="mock-map-room"]').dataset.manualRevision)
+      .toBe("new-local-edit");
+  });
+
   it("keeps the previous map through fade-out, then loads and fades in the replacement", () => {
     expect(LOCATION_MAP_LOADING_HOLD_MS).toBeGreaterThanOrEqual(1000);
 
@@ -142,7 +187,7 @@ describe("LocationMapStage room tooltip", () => {
           state={state}
           setState={() => {}}
           mapRequest={{ seed: "old-seed", requiredRegions: [], connections: [] }}
-          mapTransitionKey="topology-old"
+          mapTransitionKey="full-map-regeneration-0"
           generatedMapPreview={null}
         />,
       );
@@ -154,7 +199,7 @@ describe("LocationMapStage room tooltip", () => {
           state={state}
           setState={() => {}}
           mapRequest={{ seed: "new-seed", requiredRegions: [], connections: [] }}
-          mapTransitionKey="topology-new"
+          mapTransitionKey="full-map-regeneration-1"
           generatedMapPreview={null}
         />,
       );

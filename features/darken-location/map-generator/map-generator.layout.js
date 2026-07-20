@@ -327,7 +327,19 @@ function inferExplicitRoomShape(value = "") {
   return "";
 }
 
-export function chooseRoomShape(region, contextKey = "") {
+function createRoomShapeSelection(shape = "rect", modifiers = []) {
+  return {
+    shape,
+    modifiers: [...new Set(modifiers.filter(Boolean))],
+  };
+}
+
+function hasNotchedShapeIntent(value = "") {
+  const normalized = String(value || "").trim().toLowerCase();
+  return normalized.includes("notch") || normalized.includes("cutout");
+}
+
+export function resolveRoomShapeSelection(region, contextKey = "") {
   const shape = String(region.preferredShape || "").toLowerCase();
   const role = getPlacementRole(region);
   const text = getRegionText(region);
@@ -335,21 +347,26 @@ export function chooseRoomShape(region, contextKey = "") {
   const roomDesignShape = getRoomDesignShape(
     resolveRoomDesign(region, contextKey, { archetype }),
   );
-  if (roomDesignShape) return roomDesignShape;
-  const explicitShape = inferExplicitRoomShape(region.preferredShape || region.shape);
-  if (explicitShape) return explicitShape;
-  if (archetype?.shape) return archetype.shape;
+  if (roomDesignShape) return createRoomShapeSelection(roomDesignShape);
+
+  const explicitShapeSource = region.preferredShape || region.shape;
+  if (hasNotchedShapeIntent(explicitShapeSource))
+    return createRoomShapeSelection("rect", ["notch"]);
+
+  const explicitShape = inferExplicitRoomShape(explicitShapeSource);
+  if (explicitShape) return createRoomShapeSelection(explicitShape);
+  if (archetype?.shape) return createRoomShapeSelection(archetype.shape);
 
   if (contextKey === "chapel") {
-    if (role === "final") return "apse";
-    if (role === "connector") return "hall";
+    if (role === "final") return createRoomShapeSelection("apse");
+    if (role === "connector") return createRoomShapeSelection("hall");
     if (
       role === "secret" ||
       text.includes("archive") ||
       text.includes("library")
     )
-      return "archive";
-    return "rect";
+      return createRoomShapeSelection("archive");
+    return createRoomShapeSelection("rect");
   }
 
   if (contextKey === "noble-house") {
@@ -358,11 +375,12 @@ export function chooseRoomShape(region, contextKey = "") {
       text.includes("archive") ||
       text.includes("library")
     )
-      return "archive";
-    if (role === "connector" || role === "entrance") return "rect";
+      return createRoomShapeSelection("archive");
+    if (role === "connector" || role === "entrance")
+      return createRoomShapeSelection("rect");
     if (shape.includes("l-shape") || shape.includes("l shape"))
-      return "l-shape";
-    return "rect";
+      return createRoomShapeSelection("l-shape");
+    return createRoomShapeSelection("rect");
   }
 
   if (contextKey === "cave") {
@@ -371,37 +389,39 @@ export function chooseRoomShape(region, contextKey = "") {
       text.includes("well") ||
       text.includes("vertical")
     )
-      return "shaft";
-    return "cave";
+      return createRoomShapeSelection("shaft");
+    return createRoomShapeSelection("cave");
   }
 
   if (contextKey === "mine") {
-    if (isMineCaveLikeRegion(region, contextKey)) return "cave";
+    if (isMineCaveLikeRegion(region, contextKey))
+      return createRoomShapeSelection("cave");
     if (
       role === "connector" ||
       shape.includes("hall") ||
       shape.includes("corridor")
     )
-      return "hall";
+      return createRoomShapeSelection("hall");
     if (
       shape.includes("shaft") ||
       text.includes("well") ||
       text.includes("vertical")
     )
-      return "shaft";
-    if (role === "hazard" || text.includes("collapse")) return "broken";
-    return "notched";
+      return createRoomShapeSelection("shaft");
+    if (role === "hazard" || text.includes("collapse"))
+      return createRoomShapeSelection("broken");
+    return createRoomShapeSelection("rect", ["notch"]);
   }
 
   if (contextKey === "ruins") {
-    if (role === "connector") return "hall";
+    if (role === "connector") return createRoomShapeSelection("hall");
     if (
       role === "secret" ||
       text.includes("archive") ||
       text.includes("library")
     )
-      return "archive";
-    return role === "final" ? "broken" : "ruined-rect";
+      return createRoomShapeSelection("archive");
+    return createRoomShapeSelection(role === "final" ? "broken" : "ruined-rect");
   }
 
   if (contextKey === "crypt") {
@@ -410,7 +430,7 @@ export function chooseRoomShape(region, contextKey = "") {
       text.includes("archive") ||
       text.includes("library")
     )
-      return "archive";
+      return createRoomShapeSelection("archive");
     if (
       shape.includes("shaft") ||
       shape.includes("oval") ||
@@ -418,34 +438,42 @@ export function chooseRoomShape(region, contextKey = "") {
       text.includes("well") ||
       text.includes("vertical")
     )
-      return "shaft";
+      return createRoomShapeSelection("shaft");
     if (role === "final" || text.includes("ossuary") || text.includes("crypt"))
-      return "alcove";
+      return createRoomShapeSelection("alcove");
     if (
       role === "connector" ||
       shape.includes("hall") ||
       shape.includes("corridor")
     )
-      return "hall";
-    if (role === "hazard") return "notched";
+      return createRoomShapeSelection("hall");
+    if (role === "hazard")
+      return createRoomShapeSelection("rect", ["notch"]);
   }
 
-  if (shape.includes("l-shape") || shape.includes("l shape")) return "l-shape";
-  if (shape.includes("notch") || shape.includes("cutout")) return "notched";
+  if (shape.includes("l-shape") || shape.includes("l shape"))
+    return createRoomShapeSelection("l-shape");
   if (
     shape.includes("circular") ||
     shape.includes("circle") ||
     shape.includes("round")
   )
-    return "circle";
-  if (shape.includes("shaft") || shape.includes("oval")) return "shaft";
-  if (shape.includes("irregular")) return "irregular";
-  if (shape.includes("cave")) return "cave";
-  if (shape.includes("gallery")) return "gallery";
-  if (shape.includes("hall") || shape.includes("corridor")) return "hall";
-  if (shape.includes("ritual")) return "ritual";
-  if (shape.includes("archive") || shape.includes("library")) return "archive";
-  return "rect";
+    return createRoomShapeSelection("circle");
+  if (shape.includes("shaft") || shape.includes("oval"))
+    return createRoomShapeSelection("shaft");
+  if (shape.includes("irregular")) return createRoomShapeSelection("irregular");
+  if (shape.includes("cave")) return createRoomShapeSelection("cave");
+  if (shape.includes("gallery")) return createRoomShapeSelection("gallery");
+  if (shape.includes("hall") || shape.includes("corridor"))
+    return createRoomShapeSelection("hall");
+  if (shape.includes("ritual")) return createRoomShapeSelection("ritual");
+  if (shape.includes("archive") || shape.includes("library"))
+    return createRoomShapeSelection("archive");
+  return createRoomShapeSelection("rect");
+}
+
+export function chooseRoomShape(region, contextKey = "") {
+  return resolveRoomShapeSelection(region, contextKey).shape;
 }
 
 
@@ -697,12 +725,29 @@ export function createPlacedRegion(
   config,
   profileKey,
   number,
+  generatedModifiers = [],
 ) {
   const surfaceKind = getRegionSurfaceProfile(region, profileKey);
   const archetype = resolveRoomArchetype(region, profileKey);
   const roomDesign = resolveRoomDesign(region, profileKey, { archetype });
   const roomArchetypeResolution = getRoomArchetypeResolutionSummary(region, profileKey, archetype);
   const roomShapeOptions = getRoomShapeOptions(region, profileKey, archetype, roomDesign);
+  const normalizedGeneratedModifiers = [
+    ...new Set(generatedModifiers.filter(Boolean)),
+  ];
+  const mergedRoomShapeOptions = normalizedGeneratedModifiers.length
+    ? {
+        ...(roomShapeOptions || {}),
+        roomDesignModifiers: [
+          ...new Set([
+            ...(roomShapeOptions?.roomDesignModifiers || []),
+            ...normalizedGeneratedModifiers,
+          ]),
+        ],
+        ...(normalizedGeneratedModifiers.includes("notch") ? { notch: true } : {}),
+        ...(normalizedGeneratedModifiers.includes("ruined") ? { ruined: true } : {}),
+      }
+    : roomShapeOptions;
   const caveChamberProfile =
     profileKey === "mine" &&
     (surfaceKind === "cave" || surfaceKind === "hybrid")
@@ -722,10 +767,10 @@ export function createPlacedRegion(
           roomArchetypeSource: archetype.source,
           roomArchetypeResolution,
           roomType: archetype.roomType || region.roomType || "none",
-          shapeOptions: roomShapeOptions,
+          shapeOptions: mergedRoomShapeOptions,
         }
-      : roomShapeOptions
-        ? { roomArchetypeResolution, shapeOptions: roomShapeOptions }
+      : mergedRoomShapeOptions
+        ? { roomArchetypeResolution, shapeOptions: mergedRoomShapeOptions }
         : { roomArchetypeResolution }),
     ...(roomDesign ? { roomDesign } : {}),
     ...(caveChamberProfile ? { caveChamberProfile } : {}),
@@ -1729,7 +1774,8 @@ export function placeCaveRegions(config, graph, rng, profile) {
 
   ordered.forEach((region, index) => {
     const size = resolveCaveRoomSize(region, rng, config);
-    const shape = chooseRoomShape(region, profile.key);
+    const shapeSelection = resolveRoomShapeSelection(region, profile.key);
+    const shape = shapeSelection.shape;
     const target = getContextualTarget(
       region,
       size,
@@ -1791,6 +1837,7 @@ export function placeCaveRegions(config, graph, rng, profile) {
         config,
         profile.key,
         placed.length + 1,
+        shapeSelection.modifiers,
       ),
     );
   });
@@ -1843,7 +1890,8 @@ export function placeRegions(config, graph, rng) {
 
   orderedRegions.forEach((region, index) => {
     const size = resolveRoomSize(region, rng, config);
-    const shape = chooseRoomShape(region, profile.key);
+    const shapeSelection = resolveRoomShapeSelection(region, profile.key);
+    const shape = shapeSelection.shape;
     const maxX = Math.max(margin, gridW - size.w - margin);
     const maxY = Math.max(margin, gridH - size.h - margin);
     const target = getContextualTarget(
@@ -1906,6 +1954,7 @@ export function placeRegions(config, graph, rng) {
         config,
         profile.key,
         index + 1,
+        shapeSelection.modifiers,
       ),
     );
   });

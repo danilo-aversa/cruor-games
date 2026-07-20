@@ -4,11 +4,17 @@ import {
   applyRoomDesignSizeConstraints,
   getEngineShapeFromRoomDesignKind,
 } from "./map-generator.room-design.js";
+import {
+  createPlacedRegion,
+  resolveRoomShapeSelection,
+} from "./map-generator.layout.js";
+import { normalizeManualOverrides } from "./map-generator.state.js";
 import { generateMap } from "./map-generator.pipeline.js";
 import {
   buildRoomMask,
   cellKey,
   getCellNeighbors,
+  normalizeLegacyRoomShapeForMask,
   parseCellKey,
 } from "./map-generator.mask.js";
 
@@ -214,5 +220,97 @@ describe("semantic room shape geometry", () => {
         true,
       );
     });
+  });
+  it("uses Rectangle plus Notch for generated Mine structural rooms", () => {
+    const region = {
+      id: "mine-office",
+      name: "Mine office",
+      role: "Side Room",
+      tags: [],
+      sourceAnchors: [],
+    };
+    const selection = resolveRoomShapeSelection(region, "mine");
+    const placed = createPlacedRegion(
+      region,
+      selection.shape,
+      { x: 3, y: 4, w: 7, h: 6 },
+      { gridSize: 20 },
+      "mine",
+      1,
+      selection.modifiers,
+    );
+
+    expect(selection).toEqual({ shape: "rect", modifiers: ["notch"] });
+    expect(placed.shape).toBe("rect");
+    expect(placed.shapeOptions?.notch).toBe(true);
+    expect(placed.shapeOptions?.roomDesignModifiers).toContain("notch");
+  });
+
+  it("stores legacy notched intent as Rectangle plus the Notch modifier", () => {
+    const region = {
+      id: "legacy-notched-room",
+      name: "Legacy notched room",
+      role: "Side Room",
+      preferredShape: "notched",
+      roomDesign: { shape: { kind: "notched" } },
+    };
+    const selection = resolveRoomShapeSelection(region, "crypt");
+    const placed = createPlacedRegion(
+      region,
+      selection.shape,
+      { x: 3, y: 4, w: 7, h: 6 },
+      { gridSize: 20 },
+      "crypt",
+      1,
+      selection.modifiers,
+    );
+
+    expect(selection.shape).toBe("rect");
+    expect(placed.shape).toBe("rect");
+    expect(placed.shapeOptions?.notch).toBe(true);
+    expect(placed.shapeOptions?.roomDesignModifiers).toContain("notch");
+  });
+
+  it("migrates saved manual Notched shapes into Rectangle plus Notch", () => {
+    const normalized = normalizeManualOverrides({
+      schemaVersion: 4,
+      roomStyles: {
+        legacy: { shape: "notched", sizePreset: "Large" },
+      },
+    });
+
+    expect(normalized.schemaVersion).toBe(5);
+    expect(normalized.roomStyles.legacy).toMatchObject({
+      shape: "rect",
+      notch: true,
+      sizePreset: "Large",
+    });
+  });
+
+  it("renders legacy Notched masks through the canonical modifier path", () => {
+    const legacyRoom = {
+      id: "legacy-mask",
+      shape: "notched",
+      cellRect: { x: 3, y: 4, w: 9, h: 9 },
+    };
+    const canonicalRoom = {
+      ...legacyRoom,
+      shape: "rect",
+      shapeOptions: {
+        notch: true,
+        roomDesignModifiers: ["notch"],
+      },
+    };
+
+    expect(normalizeLegacyRoomShapeForMask(legacyRoom)).toMatchObject({
+      shape: "rect",
+      shapeOptions: {
+        notch: true,
+        roomDesignModifiers: ["notch"],
+      },
+    });
+    expect(sortedCells(buildRoomMask(legacyRoom, createRng(23)))).toEqual(
+      sortedCells(buildRoomMask(canonicalRoom, createRng(23))),
+    );
   });
 });

@@ -2,7 +2,7 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
-export const MANUAL_OVERRIDE_SCHEMA_VERSION = 4;
+export const MANUAL_OVERRIDE_SCHEMA_VERSION = 5;
 
 export function createEmptyLevelOverrides() {
   return {
@@ -169,6 +169,25 @@ export function createEmptyManualOverrides() {
   };
 }
 
+export function normalizeRoomStyleOverride(style = {}) {
+  if (!style || typeof style !== "object" || Array.isArray(style)) return {};
+  const rawShape = String(style.shape || "").trim().toLowerCase();
+  const legacyNotchedShape = ["notched", "notch", "cutout"].includes(rawShape);
+  return {
+    ...style,
+    ...(legacyNotchedShape ? { shape: "rect", notch: true } : {}),
+  };
+}
+
+export function normalizeRoomStyleOverrides(styles = {}) {
+  if (!styles || typeof styles !== "object" || Array.isArray(styles)) return {};
+  return Object.fromEntries(
+    Object.entries(styles)
+      .filter(([regionId, style]) => regionId && style && typeof style === "object")
+      .map(([regionId, style]) => [regionId, normalizeRoomStyleOverride(style)]),
+  );
+}
+
 export function normalizeManualOverrides(overrides = {}) {
   const sequence = Number(
     overrides.manualConnectionSequence ?? overrides.connectionSequence ?? 0,
@@ -200,7 +219,9 @@ export function normalizeManualOverrides(overrides = {}) {
     )
       ? overrides.customConnections || overrides.manualCustomConnections
       : [],
-    roomStyles: overrides.roomStyles || overrides.manualRoomStyles || {},
+    roomStyles: normalizeRoomStyleOverrides(
+      overrides.roomStyles || overrides.manualRoomStyles || {},
+    ),
     deletedConnections: Array.isArray(
       overrides.deletedConnections || overrides.manualDeletedConnections,
     )
@@ -317,7 +338,7 @@ export function applyManualOverridesToConfig(config, manualOverrides = {}) {
     ),
     manualRoomStyles: preferObjectOverride(
       normalizedOverrides.roomStyles,
-      config.manualRoomStyles,
+      normalizeRoomStyleOverrides(config.manualRoomStyles),
     ),
     manualDeletedConnections: preferArrayOverride(
       normalizedOverrides.deletedConnections,

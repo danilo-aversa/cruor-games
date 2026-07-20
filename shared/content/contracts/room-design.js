@@ -21,6 +21,7 @@ export const ROOM_DESIGN_MODIFIER_OPTIONS = Object.freeze([
 
 const ROOM_DESIGN_SHAPE_KINDS = new Set(ROOM_DESIGN_SHAPE_KIND_OPTIONS);
 const ROOM_DESIGN_MODIFIERS = new Set(ROOM_DESIGN_MODIFIER_OPTIONS);
+const LEGACY_NOTCHED_SHAPE_TOKENS = new Set(["notched", "notch", "cutout"]);
 
 const ROOM_DESIGN_SHAPE_ALIASES = Object.freeze({
   rectangle: "rect",
@@ -52,7 +53,9 @@ const ROOM_DESIGN_SHAPE_ALIASES = Object.freeze({
   library: "archive",
   ruined: "broken",
   ruin: "broken",
-  notched: "broken",
+  notched: "rect",
+  notch: "rect",
+  cutout: "rect",
   jagged: "irregular",
   organic: "irregular",
   blob: "cave",
@@ -61,6 +64,7 @@ const ROOM_DESIGN_SHAPE_ALIASES = Object.freeze({
 const ROOM_DESIGN_MODIFIER_ALIASES = Object.freeze({
   notched: "notch",
   notch: "notch",
+  cutout: "notch",
   broken: "ruined",
   ruin: "ruined",
   collapsed: "collapsed-edge",
@@ -189,6 +193,10 @@ function normalizeString(value, fallback = "") {
   return typeof value === "string" && value.trim() ? value.trim() : fallback;
 }
 
+export function isLegacyNotchedRoomShape(value = "") {
+  return LEGACY_NOTCHED_SHAPE_TOKENS.has(normalizeToken(value));
+}
+
 export function normalizeRoomDesignShapeKind(value = "") {
   const raw = String(value || "").trim();
   if (!raw) return "";
@@ -207,12 +215,15 @@ export function normalizeRoomDesignPropKind(value = "") {
 
 function normalizeRoomDesignShape(value = {}) {
   const shape = isPlainObject(value) ? value : { kind: value };
-  const kind = normalizeRoomDesignShapeKind(
-    shape.kind || shape.type || shape.shape || shape.value || "",
-  );
+  const rawKind = shape.kind || shape.type || shape.shape || shape.value || "";
+  const legacyNotchedShape = isLegacyNotchedRoomShape(rawKind);
+  const kind = legacyNotchedShape
+    ? "rect"
+    : normalizeRoomDesignShapeKind(rawKind);
   const modifiers = unique([
     ...asArray(shape.modifiers),
     ...asArray(shape.modifier),
+    ...(legacyNotchedShape ? ["notch"] : []),
     ...(shape.notch || shape.notched ? ["notch"] : []),
     ...(shape.ruined || shape.broken ? ["ruined"] : []),
     ...(shape.alcoves || shape.sideAlcoves ? ["side-alcoves"] : []),

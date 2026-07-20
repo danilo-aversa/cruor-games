@@ -3364,3 +3364,20 @@ body[data-cruor-room-dragging="true"] #cruorTooltipPortal {
 .map-viewport.is-room-dragging {
   cursor: grabbing;
 }
+
+/* Shared workflow footer integration -------------------------------------- */
+
+.location-composer {
+  position: relative;
+}
+
+.location-composer .location-map-details-rail.cruor-composer-rail--with-footer,
+.location-composer .location-output-details-rail.cruor-composer-rail--with-footer {
+  height: 100%;
+  max-height: 100%;
+}
+
+.location-composer .location-map-details-rail.cruor-composer-rail--with-footer,
+.location-composer .location-output-details-rail.cruor-composer-rail--with-footer {
+  overflow: hidden;
+}

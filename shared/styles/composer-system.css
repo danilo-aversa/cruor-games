@@ -193,6 +193,49 @@
   padding-inline-end: var(--cruor-composer-rail-scroll-padding-inline-end);
 }
 
+.cruor-composer-rail--with-footer {
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-content: stretch;
+  overflow: hidden;
+  padding-inline-end: 0;
+}
+
+.cruor-composer-rail--with-footer.cruor-composer-rail--scroll {
+  overflow: hidden;
+}
+
+.cruor-composer-rail__body {
+  display: grid;
+  align-content: start;
+  gap: var(--cruor-composer-rail-gap);
+  min-width: 0;
+  min-height: 0;
+}
+
+.cruor-composer-rail--with-footer.cruor-composer-rail--scroll > .cruor-composer-rail__body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-inline-end: var(--cruor-composer-rail-scroll-padding-inline-end);
+  scrollbar-color: var(--cruor-composer-rail-scrollbar-thumb) var(--cruor-composer-rail-scrollbar-track);
+}
+
+.cruor-composer-rail__footer {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  border-top: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-composer-rail-card-background);
+}
+
+.cruor-composer-rail__footer:empty {
+  display: none;
+}
+
+.cruor-composer-rail.has-detached-stage-navigation {
+  margin-block-end: var(--cruor-detached-stage-navigation-reserve, 84px);
+}
+
 .cruor-composer-rail-card {
   display: grid;
   gap: var(--cruor-composer-rail-card-gap);

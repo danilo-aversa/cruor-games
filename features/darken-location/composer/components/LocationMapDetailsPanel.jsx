@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { ComposerRail } from "../../../../components/ui/composer-rail.jsx";
 import { LOCATION_SLOT_SCOPE_MAP } from "../model/location-composer-state.js";
 import {
   getAssignedComponentsForSlotScope,
@@ -663,6 +664,7 @@ export function LocationMapDetailsPanel({
   side = "right",
   state,
   uiMode = "simple",
+  workflowFooter = null,
 }) {
   const frame = getLocationPlaceFrame(state, mapRequest);
   const metrics = getRoomProgramMetrics(state, generatedMapPreview);
@@ -989,10 +991,12 @@ export function LocationMapDetailsPanel({
   }
 
   return (
-    <aside
-      className={`cruor-composer-rail cruor-composer-rail--${side === "left" ? "left" : "right"} cruor-composer-rail--info cruor-composer-rail--scroll cruor-scroll-surface location-composer__rail ${sideClass} location-map-details-rail location-frame-info`}
-      data-composer-rail-side={side === "left" ? "left" : "right"}
-      data-composer-rail-variant="info"
+    <ComposerRail
+      side={side === "left" ? "left" : "right"}
+      variant="info"
+      scrollable
+      footer={workflowFooter}
+      className={`location-composer__rail ${sideClass} location-map-details-rail location-frame-info`}
       aria-label="Current Place Frame"
     >
       <section className="cruor-composer-rail-card cruor-composer-rail-card--hero location-frame-info-card location-frame-info-card--hero">
@@ -1064,6 +1068,6 @@ export function LocationMapDetailsPanel({
           onDownloadTxt={() => downloadDebugEntries("txt")}
         />
       ) : null}
-    </aside>
+    </ComposerRail>
   );
 }

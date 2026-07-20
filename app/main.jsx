@@ -6,6 +6,7 @@ import "../shared/styles/components.css";
 import "../shared/styles/buttons.css";
 import "../shared/styles/dropdowns.css";
 import "../shared/styles/composer-system.css";
+import "../shared/styles/composer-command-bar.css";
 import "../shared/styles/tooltips.css";
 import "../features/crucible/crucible.styles.css";
 import "./app-shell.css";

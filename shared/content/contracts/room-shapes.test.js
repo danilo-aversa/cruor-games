@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { resolveRoomConstraints } from "./room-constraint-resolver.js";
 import {
+  normalizeRoomDesign,
+  normalizeRoomDesignShapeKind,
+} from "./room-design.js";
+import {
   ROOM_SHAPE_DEFINITIONS,
   ROOM_SHAPE_KIND_OPTIONS,
   getRoomShapeDefinition,
@@ -160,4 +164,17 @@ describe("room shape capabilities", () => {
       modifiers: ["chamfered-corners"],
     });
   });
+  it("migrates Notched shape aliases into Rectangle plus the Notch modifier", () => {
+    expect(normalizeRoomDesignShapeKind("notched")).toBe("rect");
+    expect(normalizeRoomDesignShapeKind("cutout")).toBe("rect");
+    expect(normalizeRoomDesign({ shape: { kind: "notched" } })?.shape).toEqual({
+      kind: "rect",
+      modifiers: ["notch"],
+    });
+    expect(normalizeRoomDesign({ shape: "cutout" })?.shape).toEqual({
+      kind: "rect",
+      modifiers: ["notch"],
+    });
+  });
+
 });

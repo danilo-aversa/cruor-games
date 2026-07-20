@@ -169,6 +169,9 @@ describe("Dark Places live semantic map integration", () => {
     expect(initialRoomNames.length).toBeGreaterThan(0);
     expect(initialRoomNames).not.toContain("Bone-Lit Vestibule");
 
+    expect(container.querySelector('[data-testid="dark-places-composer"]')?.dataset.locationMapRegenerationRevision)
+      .toBe("0");
+
     const themeField = [...container.querySelectorAll(".location-choice-field")]
       .find((field) => field.textContent.includes("Theme"));
     const themeTrigger = themeField?.querySelector(".cruor-dropdown-trigger");
@@ -176,6 +179,11 @@ describe("Dark Places live semantic map integration", () => {
     const decompositionOption = [...document.body.querySelectorAll('[role="option"]')]
       .find((option) => option.textContent.includes("Decomposition"));
     await act(async () => decompositionOption.click());
+
+    expect(container.querySelector('[data-testid="dark-places-composer"]')?.dataset.locationMapRegenerationRevision)
+      .toBe("1");
+    expect(container.querySelector(".location-map-stage__center")?.dataset.mapTransitionPhase)
+      .toBe("fade-out");
 
     const roomNames = getSnapshot().locationRegions.map((region) => region.name);
     expect(roomNames).not.toEqual(initialRoomNames);

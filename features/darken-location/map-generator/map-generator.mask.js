@@ -881,7 +881,6 @@ export function buildBaseRoomMask(room, rng) {
   if (room.shape === "l-shape") return buildLShapeMask(room, rng);
   if (room.shape === "t-shape") return buildTShapeMask(room, rng);
   if (room.shape === "cross") return buildCrossMask(room);
-  if (room.shape === "notched") return buildNotchedMask(room, rng);
   if (room.shape === "broken" || room.shape === "ruined-rect")
     return buildRuinedMask(room, rng);
   if (room.shape === "alcove") return buildAlcoveMask(room, rng);
@@ -895,6 +894,27 @@ export function buildBaseRoomMask(room, rng) {
   if (room.shape === "irregular") return buildIrregularMask(room, rng);
   if (room.shape === "cave") return buildCaveMask(room, rng);
   return buildRectMask(room);
+}
+
+export function normalizeLegacyRoomShapeForMask(room = {}) {
+  if (!room || !["notched", "cutout"].includes(room.shape)) return room;
+  const roomDesignModifiers = [
+    ...new Set([
+      ...(Array.isArray(room.shapeOptions?.roomDesignModifiers)
+        ? room.shapeOptions.roomDesignModifiers
+        : []),
+      "notch",
+    ]),
+  ];
+  return {
+    ...room,
+    shape: "rect",
+    shapeOptions: {
+      ...(room.shapeOptions || {}),
+      notch: true,
+      roomDesignModifiers,
+    },
+  };
 }
 
 export function getRoomDesignMaskModifiers(room = {}) {
@@ -1008,35 +1028,44 @@ export function applyMaskModifier(baseCells, room, rng, modifier) {
 }
 
 export function buildRoomMask(room, rng) {
-  const type = room.shapeOptions?.roomType || "none";
-  const archetypeCells = buildArchetypeRoomMask(room, rng);
+  const normalizedRoom = normalizeLegacyRoomShapeForMask(room);
+  const type = normalizedRoom.shapeOptions?.roomType || "none";
+  const archetypeCells = buildArchetypeRoomMask(normalizedRoom, rng);
   let cells =
     archetypeCells ||
     (type === "apse"
-      ? buildApseMask(room)
+      ? buildApseMask(normalizedRoom)
       : type === "ruined"
-        ? buildRuinedMask(room, rng)
-        : buildBaseRoomMask(room, rng));
-  if (!archetypeCells && type === "alcove" && room.shape !== "alcove")
-    cells = applyMaskModifier(cells, room, rng, "alcove");
-  if (!archetypeCells && type === "archive" && room.shape !== "archive")
-    cells = applyMaskModifier(cells, room, rng, "archive");
+        ? buildRuinedMask(normalizedRoom, rng)
+        : buildBaseRoomMask(normalizedRoom, rng));
   if (
-    room.shapeOptions?.notch &&
-    !["notched", "ruined-rect", "broken"].includes(room.shape)
+    !archetypeCells &&
+    type === "alcove" &&
+    normalizedRoom.shape !== "alcove"
   )
-    cells = applyMaskModifier(cells, room, rng, "notch");
+    cells = applyMaskModifier(cells, normalizedRoom, rng, "alcove");
   if (
-    room.shapeOptions?.ruined &&
+    !archetypeCells &&
+    type === "archive" &&
+    normalizedRoom.shape !== "archive"
+  )
+    cells = applyMaskModifier(cells, normalizedRoom, rng, "archive");
+  if (
+    normalizedRoom.shapeOptions?.notch &&
+    !["ruined-rect", "broken"].includes(normalizedRoom.shape)
+  )
+    cells = applyMaskModifier(cells, normalizedRoom, rng, "notch");
+  if (
+    normalizedRoom.shapeOptions?.ruined &&
     type !== "ruined" &&
-    !["ruined-rect", "broken"].includes(room.shape)
+    !["ruined-rect", "broken"].includes(normalizedRoom.shape)
   )
-    cells = applyMaskModifier(cells, room, rng, "ruined");
-  getRoomDesignMaskModifiers(room).forEach((modifier) => {
+    cells = applyMaskModifier(cells, normalizedRoom, rng, "ruined");
+  getRoomDesignMaskModifiers(normalizedRoom).forEach((modifier) => {
     if (["notch", "ruined"].includes(modifier)) return;
-    cells = applyMaskModifier(cells, room, rng, modifier);
+    cells = applyMaskModifier(cells, normalizedRoom, rng, modifier);
   });
-  return ensureRoomMaskViable(cells, room);
+  return ensureRoomMaskViable(cells, normalizedRoom);
 }
 
 export function getFloorCellCentroid(floorCells, gridSize, fallbackPoint) {
