@@ -1,5 +1,5 @@
 import { AlertTriangle, Eye, Gem, RotateCcw, Search } from "lucide-react";
-import { ComposerCollapsibleSection, ComposerRail } from "../../../../components/ui/composer-rail.jsx";
+import { ComposerRail } from "../../../../components/ui/composer-rail.jsx";
 import { ComposerSlotCard } from "../../../../components/ui/composer-slot-card.jsx";
 import { LOCATION_SLOT_SCOPE_REGION } from "../model/location-composer-state.js";
 import {
@@ -28,9 +28,9 @@ function getSlotIcon(slotId) {
 
 function LocationInspectorFact({ label, value }) {
   return (
-    <span className="location-room-inspector-fact">
-      <small>{label}</small>
-      <strong>{value || "—"}</strong>
+    <span className="cruor-composer-fact-row location-frame-info-row location-room-inspector-fact">
+      <small className="cruor-composer-fact-label">{label}</small>
+      <strong className="cruor-composer-fact-value">{value || "—"}</strong>
     </span>
   );
 }
@@ -155,22 +155,18 @@ export function LocationRoomInspector({
     return (
       <ComposerRail
         side="left"
-        variant="inspector"
+        variant="info"
         surface
         scrollable
         className="location-composer__rail location-composer__rail--left location-room-inspector-rail location-room-inspector-rail--rooms"
         aria-label="Select room"
         data-testid="dark-places-room-inspector"
       >
-        <ComposerCollapsibleSection
-          className="location-room-inspector-card--selected location-room-inspector-card--empty"
-          title="Room Inspector"
-          bodyClassName="location-room-inspector-card__content"
-          aria-label="Select room prompt"
-        >
+        <section className="cruor-composer-rail-card cruor-composer-rail-card--hero location-frame-info-card location-frame-info-card--hero location-room-inspector-card--empty" aria-label="Select room prompt">
+          <span className="cruor-composer-rail-card__eyebrow">Room Inspector</span>
           <strong className="location-room-inspector-title">Select Room</strong>
-          <div className="location-room-inspector-note">Click a room on the map to edit its slots.</div>
-        </ComposerCollapsibleSection>
+          <em className="cruor-composer-rail-card__meta">Click a room on the map to edit its slots.</em>
+        </section>
       </ComposerRail>
     );
   }
@@ -178,21 +174,21 @@ export function LocationRoomInspector({
   return (
     <ComposerRail
       side="left"
-      variant="inspector"
+      variant="info"
       surface
       scrollable
       className="location-composer__rail location-composer__rail--left location-room-inspector-rail location-room-inspector-rail--rooms"
       aria-label="Selected room"
       data-testid="dark-places-room-inspector"
     >
-      <ComposerCollapsibleSection
-        className="location-room-inspector-card--selected"
-        title="Selected Room"
-        bodyClassName="location-room-inspector-card__content"
-        aria-label="Selected room summary"
-      >
+      <section className="cruor-composer-rail-card cruor-composer-rail-card--hero location-frame-info-card location-frame-info-card--hero location-room-inspector-card--selected" aria-label="Selected room summary">
+        <span className="cruor-composer-rail-card__eyebrow">Selected Room</span>
         <strong className="location-room-inspector-title">{entry.name}</strong>
-        <div className="location-room-inspector-facts">
+        <em className="cruor-composer-rail-card__meta">{entry.mapLabel} · {entry.roleLabel}</em>
+      </section>
+
+      <section className="cruor-composer-rail-card location-frame-info-card" aria-label="Selected room facts">
+        <div className="cruor-composer-fact-grid location-frame-info-grid location-room-inspector-facts">
           <LocationInspectorFact label="Map" value={entry.mapLabel} />
           <LocationInspectorFact label="Role" value={entry.roleLabel} />
           <LocationInspectorFact label="Type" value={entry.roomTypeLabel} />
@@ -203,7 +199,7 @@ export function LocationRoomInspector({
           <LocationInspectorFact label="Level" value={String(entry.level)} />
         </div>
         {mapInfluenceNote ? <div className="location-room-inspector-note">{mapInfluenceNote}</div> : null}
-      </ComposerCollapsibleSection>
+      </section>
 
       <div className="location-room-inspector-slot-stack" role="list" aria-label="Room work slots">
           {roomRows.map((row) => {

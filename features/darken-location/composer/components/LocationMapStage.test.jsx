@@ -6,9 +6,10 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("../../map-generator/map-generator.page.jsx", () => ({
-  CruorMapGeneratorMvp: ({ onComposerRegionHoverChange }) => (
+  CruorMapGeneratorMvp: ({ initialRequest, onComposerRegionHoverChange }) => (
     <button
       data-testid="mock-map-room"
+      data-map-seed={initialRequest?.seed || ""}
       type="button"
       onMouseEnter={() => onComposerRegionHoverChange?.("room-1")}
       onMouseLeave={() => onComposerRegionHoverChange?.("")}
@@ -19,6 +20,9 @@ vi.mock("../../map-generator/map-generator.page.jsx", () => ({
 }));
 
 import {
+  LOCATION_MAP_FADE_IN_MS,
+  LOCATION_MAP_FADE_OUT_MS,
+  LOCATION_MAP_LOADING_HOLD_MS,
   LOCATION_ROOM_TOOLTIP_DELAY_MS,
   LocationMapStage,
 } from "./LocationMapStage.jsx";
@@ -119,5 +123,71 @@ describe("LocationMapStage room tooltip", () => {
     expect(html).not.toContain("Random theme danger");
     expect(html).not.toContain("<dt>Feature</dt>");
     expect(html).not.toContain("<dt>Danger</dt>");
+  });
+
+  it("keeps the previous map through fade-out, then loads and fades in the replacement", () => {
+    expect(LOCATION_MAP_LOADING_HOLD_MS).toBeGreaterThanOrEqual(1000);
+
+    const state = {
+      activeRegionId: "",
+      activeSlot: "horrorPremise",
+      activeSlotScope: "map",
+      locationRegions: [],
+      slotAssignments: {},
+    };
+
+    act(() => {
+      root.render(
+        <LocationMapStage
+          state={state}
+          setState={() => {}}
+          mapRequest={{ seed: "old-seed", requiredRegions: [], connections: [] }}
+          mapTransitionKey="topology-old"
+          generatedMapPreview={null}
+        />,
+      );
+    });
+
+    act(() => {
+      root.render(
+        <LocationMapStage
+          state={state}
+          setState={() => {}}
+          mapRequest={{ seed: "new-seed", requiredRegions: [], connections: [] }}
+          mapTransitionKey="topology-new"
+          generatedMapPreview={null}
+        />,
+      );
+    });
+
+    expect(container.querySelector(".location-map-stage__center").dataset.mapTransitionPhase)
+      .toBe("fade-out");
+    expect(container.querySelector('[data-testid="mock-map-room"]').dataset.mapSeed)
+      .toBe("old-seed");
+
+    act(() => {
+      vi.advanceTimersByTime(LOCATION_MAP_FADE_OUT_MS);
+    });
+    expect(container.querySelector(".location-map-stage__center").dataset.mapTransitionPhase)
+      .toBe("loading");
+    expect(container.querySelector(".location-map-loading-screen.is-visible"))
+      .not.toBeNull();
+    expect(container.querySelector('[data-testid="mock-map-room"]').dataset.mapSeed)
+      .toBe("old-seed");
+
+    act(() => {
+      vi.advanceTimersByTime(LOCATION_MAP_LOADING_HOLD_MS);
+    });
+    expect(container.querySelector(".location-map-stage__center").dataset.mapTransitionPhase)
+      .toBe("fade-in");
+    expect(container.querySelector('[data-testid="mock-map-room"]').dataset.mapSeed)
+      .toBe("new-seed");
+
+    act(() => {
+      vi.advanceTimersByTime(LOCATION_MAP_FADE_IN_MS);
+    });
+    expect(container.querySelector(".location-map-stage__center").dataset.mapTransitionPhase)
+      .toBe("idle");
+    expect(container.querySelector(".location-map-loading-screen")).toBeNull();
   });
 });

@@ -3005,6 +3005,105 @@
   height: 100%;
 }
 
+.location-map-transition {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 1;
+}
+
+.location-map-transition.is-fade-out {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease-in;
+}
+
+.location-map-transition.is-loading {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.location-map-transition.is-fade-in {
+  pointer-events: none;
+  animation: location-map-fade-in 220ms ease-out both;
+}
+
+.location-map-loading-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
+  background: var(--cruor-color-black-a240);
+  opacity: 0;
+}
+
+.location-map-loading-screen.is-visible {
+  opacity: 1;
+  transition: opacity 100ms ease-out;
+}
+
+.location-map-loading-screen.is-leaving {
+  animation: location-map-loading-leave 160ms ease-in both;
+}
+
+.location-map-loading-screen__card {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.location-map-loading-screen__card strong {
+  color: var(--cruor-color-hex-fff0f2);
+  font-size: var(--text-size-l);
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.location-map-loading-screen__card small {
+  color: var(--cruor-color-text-a520);
+  font-size: var(--text-size-s);
+}
+
+.location-map-loading-screen__spinner {
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--cruor-color-milk-a090);
+  border-top-color: var(--cruor-color-blood-glow-a860);
+  border-radius: 50%;
+  animation: location-map-loading-spin 720ms linear infinite;
+}
+
+@keyframes location-map-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes location-map-loading-leave {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes location-map-loading-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .location-map-transition.is-fade-out,
+  .location-map-transition.is-fade-in,
+  .location-map-loading-screen.is-visible,
+  .location-map-loading-screen.is-leaving {
+    animation-duration: 1ms;
+    transition-duration: 1ms;
+  }
+
+  .location-map-loading-screen__spinner {
+    animation: none;
+  }
+}
+
 .location-composer .location-map-stage__backdrop {
   content: none;
   display: none;
@@ -5842,39 +5941,6 @@
   color: var(--cruor-color-text-a620, rgba(238, 238, 238, 0.62));
 }
 
-.location-room-inspector-facts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  min-width: 0;
-}
-
-.location-room-inspector-fact {
-  display: grid;
-  gap: 2px;
-  min-width: 0;
-  padding: 8px;
-  border: 1px solid var(--cruor-color-r208-g162-b170-a100, rgba(208, 162, 170, 0.1));
-  background: var(--cruor-color-black-a240, rgba(0, 0, 0, 0.24));
-}
-
-.location-room-inspector-fact small {
-  font-size: 0.58rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--cruor-color-text-a420, rgba(238, 238, 238, 0.42));
-}
-
-.location-room-inspector-fact strong {
-  overflow: hidden;
-  font-size: 0.78rem;
-  font-weight: 750;
-  color: var(--cruor-color-text-a820, rgba(238, 238, 238, 0.82));
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .location-room-program-card__head {
   display: flex;
   align-items: center;
@@ -6060,6 +6126,80 @@
 .location-map-details-rail {
   min-width: 0;
   gap: clamp(10px, 1vw, 14px);
+}
+
+.location-map-build-action-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  padding: 10px;
+}
+
+.location-map-build-action-btn {
+  appearance: none;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  border: 1px solid var(--cruor-color-blood-strong-a560);
+  background: var(--cruor-gradient-linear-009-2802abdc), var(--cruor-surface-card);
+  color: var(--cruor-color-hex-c8a2a8);
+  padding: 0 12px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: none;
+  transform: none;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+}
+
+.location-map-build-action-btn i {
+  flex: 0 0 auto;
+  width: 16px;
+  color: var(--cruor-color-hex-b33b4e);
+  font-size: 16px;
+}
+
+.location-map-build-action-btn span {
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--text-size-s);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.location-map-build-action-btn:hover,
+.location-map-build-action-btn:focus-visible,
+.location-map-build-action-btn.is-primary {
+  border-color: var(--cruor-color-blood-glow-a780);
+  background: var(--cruor-gradient-radial-001-2127711c), var(--cruor-gradient-linear-002-09673f8e);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: var(--cruor-shadow-box-003);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.location-map-build-action-btn:hover i,
+.location-map-build-action-btn:focus-visible i,
+.location-map-build-action-btn.is-primary i {
+  color: var(--cruor-color-hex-f0b9c2);
+}
+
+.location-map-build-action-btn.is-armed {
+  border-color: var(--cruor-color-blood-glow-a860);
+  background: var(--cruor-color-blood-strong-a520);
+  color: var(--cruor-color-hex-fff0f2);
+  box-shadow: inset 0 0 0 1px var(--cruor-color-rose-a180);
+}
+
+.location-map-build-action-btn.is-armed i {
+  color: var(--cruor-color-hex-f0b9c2);
 }
 
 .location-map-details-card {
@@ -6864,7 +7004,7 @@
     grid-template-areas: "left" "center" "right" "flow";
   }
 
-  .location-room-inspector-facts, .location-room-program-actions, .location-room-inspector-actions {
+  .location-room-program-actions, .location-room-inspector-actions {
     grid-template-columns: 1fr;
   }
 
@@ -6891,26 +7031,6 @@
   .location-map-toolbar__divider {
     display: none;
   }
-}
-
-.location-room-inspector-title {
-  display: block;
-  min-width: 0;
-  margin: 0;
-  padding-bottom: 2px;
-  overflow: hidden;
-  color: var(--cruor-color-milk-a980, rgba(255, 238, 242, 0.98));
-  font-family: var(--font-heading, var(--font));
-  font-size: clamp(1.08rem, 1.4vw, 1.42rem);
-  font-weight: 850;
-  letter-spacing: 0.01em;
-  line-height: 1.15;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.location-room-inspector-title + .location-room-inspector-facts {
-  margin-top: 14px;
 }
 
 .location-room-inspector-card--selected {

@@ -5,9 +5,10 @@ import {
   getDamageRoundWeight,
 } from "../../model/monster-graft-rules.schema.js";
 import { buildMonsterAbilitiesFromFeatures } from "../../model/monster-ability-model.js";
+import { buildMonsterAttackRoutine } from "../../model/monster-attack-routine.js";
 import { getLegalDamageRollForRules } from "./monster-rules-engine.js";
 
-export const MONSTER_DPR_SIMULATOR_VERSION = "three-round-dpr-v0.4-action-economy";
+export const MONSTER_DPR_SIMULATOR_VERSION = "three-round-dpr-v0.5-attack-routine";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -214,6 +215,53 @@ function collectAbilitySources({ abilities = [], computed }) {
   });
 }
 
+function buildAttackRoutineSource({ routine, computed }) {
+  if (!routine?.enabled) return null;
+  const average = Math.max(1, Number(routine.expectedDpr || computed?.dpr || 1));
+  const rounds = [average, average, average];
+  return {
+    featureId: "generated-multiattack",
+    abilityId: "generated-multiattack",
+    title: "Multiattack",
+    section: "action",
+    actionEconomy: "action",
+    usageType: "atWill",
+    usageValue: null,
+    kind: "attack_routine",
+    damageMode: "routine",
+    budgetRole: "mainAttack",
+    damageTypes: [],
+    roll: {
+      average: round(average),
+      formula: "attack routine",
+      text: `${round(average)} total routine damage`,
+      legal: true,
+      routine: true,
+    },
+    averagePerTarget: round(average),
+    expectedTargets: 1,
+    actionMultiplier: Number(routine.count || 1),
+    roundWeights: [1, 1, 1],
+    rounds: rounds.map(round),
+    totalThreeRound: round(sumRoundArray(rounds)),
+    averageDpr: round(average),
+    attackRoutine: routine,
+  };
+}
+
+function applyAttackRoutineToSources(sources = [], routine = null, computed = {}) {
+  if (!routine?.enabled) return sources;
+  const routineFeatureIds = new Set(
+    (routine.attacks || []).map((attack) => cleanString(attack.featureId)).filter(Boolean),
+  );
+  const retained = sources.filter((source) => {
+    if (!routineFeatureIds.has(cleanString(source.featureId))) return true;
+    return !["damage", "damage_part"].includes(source.kind);
+  });
+  const routineSource = buildAttackRoutineSource({ routine, computed });
+  return routineSource ? [...retained, routineSource] : retained;
+}
+
 function isMainActionSource(source = {}) {
   return source.actionEconomy === "action";
 }
@@ -382,7 +430,7 @@ function getRoundDetail(sources, roundIndex) {
     .sort((a, b) => b.value - a.value || a.title.localeCompare(b.title));
 }
 
-function getAssumptions({ fallbackUsed, sources, actionEconomy }) {
+function getAssumptions({ fallbackUsed, sources, actionEconomy, attackRoutine }) {
   const assumptions = [
     "Damage is averaged over rounds 1–3.",
     "Main action damage uses one best action option per round; alternative melee, ranged, spell, and save actions are not summed together.",
@@ -392,6 +440,9 @@ function getAssumptions({ fallbackUsed, sources, actionEconomy }) {
     "Recharge damage is weighted as round 1 plus expected later use.",
   ];
   if (fallbackUsed) assumptions.push("No structured damaging graft was found, so the legal fallback Strike is used.");
+  if (attackRoutine?.enabled) {
+    assumptions.push(`Main attack damage is allocated across one ${attackRoutine.count}-attack routine instead of being printed on every attack.`);
+  }
   if (Number(actionEconomy?.mainActionOptionCount || 0) > 1) {
     assumptions.push("Multiple main actions were available; DPR selected the best option for each round instead of adding all alternatives.");
   }
@@ -418,7 +469,15 @@ export function buildThreeRoundDprProfile({
   const abilityList = Array.isArray(abilities)
     ? abilities
     : buildMonsterAbilitiesFromFeatures(selectedFeatures).abilities;
+  const attackRoutine = buildMonsterAttackRoutine({
+    abilities: abilityList,
+    targetDpr: scopedComputed.dpr,
+    targetCr: scopedComputed.targetCr,
+    monsterTier: scopedComputed.monsterTier,
+    computed: scopedComputed,
+  });
   let sources = collectAbilitySources({ abilities: abilityList, computed: scopedComputed });
+  sources = applyAttackRoutineToSources(sources, attackRoutine, scopedComputed);
   const fallbackUsed = includeFallback && sources.length === 0;
   if (fallbackUsed) sources = [buildFallbackSource({ computed: scopedComputed })];
 
@@ -456,6 +515,7 @@ export function buildThreeRoundDprProfile({
     allSources: economyProfile.allSources,
     alternativeSources: economyProfile.alternativeSources,
     actionEconomy: economyProfile.actionEconomy,
-    assumptions: getAssumptions({ fallbackUsed, sources: economyProfile.sources, actionEconomy: economyProfile.actionEconomy }),
+    attackRoutine,
+    assumptions: getAssumptions({ fallbackUsed, sources: economyProfile.sources, actionEconomy: economyProfile.actionEconomy, attackRoutine }),
   };
 }

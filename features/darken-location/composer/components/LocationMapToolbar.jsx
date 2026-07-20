@@ -239,9 +239,6 @@ export function LocationMapToolbar({
   builderMode = "theme",
   canGoNextRoom = false,
   canGoPreviousRoom = false,
-  generatedMapPreview = null,
-  onGenerateThemeRooms,
-  onNewMapSeed,
   onSelectNextRoom,
   onSelectPreviousRoom,
   onSelectRoom,
@@ -250,7 +247,6 @@ export function LocationMapToolbar({
   immersiveMode = false,
 }) {
   const mode = builderMode === "map" ? "theme" : builderMode;
-  const hasMap = Boolean(generatedMapPreview);
   const hasActiveRoom = Boolean(activeRegion?.id) && (
     roomEntries.length <= 1 || canGoPreviousRoom || canGoNextRoom
   );
@@ -322,18 +318,6 @@ export function LocationMapToolbar({
   return (
     <nav className="location-map-toolbar location-map-toolbar--frame" aria-label="Map workbench toolbar" data-testid="dark-places-toolbar-frame">
       <div className="location-map-toolbar__group location-map-toolbar__group--actions">
-        <LocationMapToolbarButton
-          icon="fa-wand-magic-sparkles"
-          onClick={onGenerateThemeRooms}
-          title={hasMap ? "Regenerate the place map" : "Generate the place map"}
-          variant="primary"
-          testId="dark-places-generate"
-        >
-          {hasMap ? "Regenerate Place" : "Generate Place"}
-        </LocationMapToolbarButton>
-        <LocationMapToolbarButton icon="fa-dice" onClick={onNewMapSeed} title="Refresh the map seed" testId="dark-places-new-seed">
-          New Seed
-        </LocationMapToolbarButton>
         <LocationMapInlineEditorToolsHost />
       </div>
       {immersiveControl}

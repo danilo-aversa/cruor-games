@@ -513,6 +513,24 @@ const MONSTER_MULTIATTACK_REPLACEMENT_OPTIONS = [
   ["oneOrMoreAttacks", "One or More Attacks"],
 ];
 
+const MONSTER_MULTIATTACK_PARTICIPATION_ROLE_OPTIONS = [
+  ["primary", "Primary Attack"],
+  ["choice", "Any-Combination Choice"],
+  ["replacement", "Replacement Ability"],
+  ["additionalAbility", "Additional Ability"],
+  ["excluded", "Excluded"],
+];
+
+const MONSTER_MULTIATTACK_PARTICIPATION_AVAILABILITY_OPTIONS = [
+  ["always", "Always"],
+  ["ifAvailable", "If Available"],
+];
+
+const MONSTER_MULTIATTACK_PARTICIPATION_TIMING_OPTIONS = [
+  ["beforeAttacks", "Before Attacks"],
+  ["afterAttacks", "After Attacks"],
+];
+
 const MONSTER_SAVE_OPTIONS = [
   ["strength", "Strength"],
   ["dexterity", "Dexterity"],
@@ -834,7 +852,11 @@ const FIELD_HELP = {
   manualRulesText: "Manual override for this graft's final stat block text. Token formulas such as {attack-bonus}, {save-dc}, {damage:standard}, and {damage-part:venom} are resolved during export.",
   generatedRulesPreview: "Read-only generated stat block text preview. This is built from the structured Monster Graft Data fields.",
   damageParts: "Structured damage parts. Use separate parts for mixed damage such as weapon damage plus poison, lightning, necrotic, or another rider.",
-  multiattack: "Structured Multiattack text for action entries that combine several attacks or allow replacements.",
+  multiattack: "Advanced manual override for exceptional Multiattack routines. Normal attack actions should use Automatic Multiattack Participation instead, so the composer can assemble the final routine across different grafts.",
+  multiattackParticipation: "Controls whether this individual action can be selected by the automatic build-level Multiattack planner.",
+  multiattackParticipationRole: "Primary attacks are assigned fixed uses; Choice attacks can be used in any combination; Replacement and Additional abilities are referenced without being repeated as ordinary attacks.",
+  multiattackParticipationMaxUses: "Maximum times this action can appear in one routine. Use 1 for attacks with major or severe riders.",
+  multiattackParticipationGroup: "Stable semantic group used when several grafts form one choice or attack family.",
   multiattackMode: "How the Multiattack line is built: fixed attacks, attack choice, attack plus ability, replacement, or custom template.",
   multiattackCount: "Total expected number of attacks made by this Multiattack. Used by future DPR allocation and complexity checks.",
   multiattackTemplate: "Optional custom generated template. It can use tokens such as {attack:Slam}, {multiattack-count}, or normal stat block tokens.",
@@ -3782,6 +3804,22 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
   const visibleDamageParts = damageMode === "parts" ? (damageParts.length ? damageParts : [{ id: "part-1", mode: "budget", scale: "standard", budgetRole: "mainAttack", types: [] }]) : [];
   const conditionNames = joinList(monsterRules.condition?.names);
   const hasAttackResolution = resolutionType === "attackRoll" || resolutionChoice === "attackRollSavingThrow";
+  const hasScalableMultiattackDamage = ["budget", "computed"].includes(damageMode) || Boolean(
+    damageMode === "parts" &&
+      visibleDamageParts.length &&
+      visibleDamageParts.every((part) => ["budget", "computed"].includes(part.mode || "budget")),
+  );
+  const inferredMultiattackParticipation = Boolean(
+    actionEconomy === "action" &&
+      usageType === "atWill" &&
+      hasAttackResolution &&
+      hasScalableMultiattackDamage,
+  );
+  const multiattackParticipation = monsterRules.multiattackParticipation || {};
+  const multiattackParticipationEnabled = Object.prototype.hasOwnProperty.call(multiattackParticipation, "enabled")
+    ? Boolean(multiattackParticipation.enabled)
+    : inferredMultiattackParticipation;
+  const multiattackParticipationRole = multiattackParticipation.role || "primary";
   const hasPrimarySave = resolutionType === "savingThrow";
   const hasAnySaveResolution = hasPrimarySave || hasSecondarySave || resolutionChoice === "attackRollSavingThrow";
   const hasSaveOutcomeText = Boolean(monsterRules.text?.failure || monsterRules.text?.success || monsterRules.text?.failureOrSuccess);
@@ -3895,7 +3933,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
     { id: "damage", label: "Damage", icon: "fa-burst", active: hasDamageBlock },
     { id: "condition", label: "Condition", icon: "fa-person-rays", active: hasConditionBlock },
     { id: "ongoing", label: "Ongoing Effect", icon: "fa-clock-rotate-left", active: hasOngoingBlock },
-    { id: "multiattack", label: "Multiattack", icon: "fa-clone", active: hasMultiattackBlock },
+    { id: "multiattack", label: "Manual Multiattack Override", icon: "fa-clone", active: hasMultiattackBlock },
     { id: "spellcasting", label: "Spellcasting", icon: "fa-book-open", active: hasSpellcastingBlock },
     { id: "summon", label: "Summon / Create", icon: "fa-people-pulling", active: hasSummonBlock },
     { id: "procedure", label: "Special Procedure", icon: "fa-diagram-project", active: hasProcedureBlock },
@@ -4284,6 +4322,83 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
               </div>
             </StudioCollapsibleSection>
 
+            {actionEconomy === "action" ? (
+              <StudioCollapsibleSection icon="fa-layer-group" title="Automatic Multiattack Participation" help={FIELD_HELP.multiattackParticipation}>
+                <StudioField label="Multiattack Action" icon="fa-check-double" hint={FIELD_HELP.multiattackParticipation}>
+                  <label className="studio-multiattack-participation-toggle">
+                    <input
+                      type="checkbox"
+                      checked={multiattackParticipationEnabled}
+                      onChange={(event) => {
+                        const enabled = event.target.checked;
+                        setRulesField(["multiattackParticipation", "enabled"], enabled);
+                        if (enabled) {
+                          setRulesField(["multiattackParticipation", "role"], multiattackParticipation.role || "primary");
+                          setRulesField(["multiattackParticipation", "maxUses"], multiattackParticipation.maxUses || 4);
+                          setRulesField(["multiattackParticipation", "group"], multiattackParticipation.group || "primary");
+                        }
+                      }}
+                    />
+                    <span>Allow the build-level planner to include this action in Multiattack.</span>
+                  </label>
+                </StudioField>
+                {multiattackParticipationEnabled ? (
+                  <>
+                    <div className="studio-form-grid studio-form-grid--compact">
+                      <StudioField label="Routine Role" icon="fa-diagram-project" hint={FIELD_HELP.multiattackParticipationRole}>
+                        <StudioSelect
+                          options={MONSTER_MULTIATTACK_PARTICIPATION_ROLE_OPTIONS}
+                          value={multiattackParticipationRole}
+                          onChange={(value) => setRulesField(["multiattackParticipation", "role"], value)}
+                        />
+                      </StudioField>
+                      <StudioField label="Maximum Uses" icon="fa-hashtag" hint={FIELD_HELP.multiattackParticipationMaxUses}>
+                        <input
+                          type="number"
+                          min="1"
+                          max="12"
+                          step="1"
+                          value={multiattackParticipation.maxUses ?? 4}
+                          onChange={(event) => setRulesField(["multiattackParticipation", "maxUses"], Number(event.target.value))}
+                        />
+                      </StudioField>
+                      <StudioField label="Combination Group" icon="fa-object-group" hint={FIELD_HELP.multiattackParticipationGroup}>
+                        <StudioInput
+                          value={multiattackParticipation.group || "primary"}
+                          onChange={(value) => setRulesField(["multiattackParticipation", "group"], value)}
+                          placeholder="primary"
+                        />
+                      </StudioField>
+                      <StudioField label="Availability" icon="fa-clock" hint="Use If Available for recharge, limited-use, or mutually exclusive additions and replacements.">
+                        <StudioSelect
+                          options={MONSTER_MULTIATTACK_PARTICIPATION_AVAILABILITY_OPTIONS}
+                          value={multiattackParticipation.availability || "always"}
+                          onChange={(value) => setRulesField(["multiattackParticipation", "availability"], value)}
+                        />
+                      </StudioField>
+                    </div>
+                    {multiattackParticipationRole === "replacement" ? (
+                      <StudioField label="Replacement Scope" icon="fa-repeat" hint={FIELD_HELP.multiattackReplacement}>
+                        <StudioSelect
+                          options={MONSTER_MULTIATTACK_REPLACEMENT_OPTIONS}
+                          value={multiattackParticipation.replacementScope || "oneAttack"}
+                          onChange={(value) => setRulesField(["multiattackParticipation", "replacementScope"], value)}
+                        />
+                      </StudioField>
+                    ) : null}
+                    {multiattackParticipationRole === "additionalAbility" ? (
+                      <StudioField label="Timing" icon="fa-arrow-right-arrow-left" hint="Whether the additional ability is used before or after the routine's attacks.">
+                        <StudioSelect
+                          options={MONSTER_MULTIATTACK_PARTICIPATION_TIMING_OPTIONS}
+                          value={multiattackParticipation.timing || "beforeAttacks"}
+                          onChange={(value) => setRulesField(["multiattackParticipation", "timing"], value)}
+                        />
+                      </StudioField>
+                    ) : null}
+                  </>
+                ) : null}
+              </StudioCollapsibleSection>
+            ) : null}
 
             <StudioCollapsibleSection defaultOpen icon="fa-plus" title="Add Rule Block" help="Add only the optional rule blocks this graft actually needs. Blocks already containing data stay visible until removed.">
               {visibleAddableRulesBlocks.length ? (
@@ -4301,7 +4416,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
             </StudioCollapsibleSection>
 
             {hasMultiattackBlock ? (
-              <StudioCollapsibleSection icon="fa-clone" title="Multiattack" help={FIELD_HELP.multiattack} actions={<RemoveRulesBlockButton label="Multiattack" onClick={() => removeRulesBlock("multiattack")} />}>
+              <StudioCollapsibleSection icon="fa-clone" title="Manual Multiattack Override" help={FIELD_HELP.multiattack} actions={<RemoveRulesBlockButton label="Multiattack" onClick={() => removeRulesBlock("multiattack")} />}>
                 <div className="studio-text-source-toggle studio-text-source-toggle--compact" role="group" aria-label="Multiattack enabled">
                   <button type="button" aria-pressed={!multiattackEnabled} onClick={() => setRulesField(["multiattack", "enabled"], false)}>Off</button>
                   <button type="button" aria-pressed={multiattackEnabled} onClick={() => {

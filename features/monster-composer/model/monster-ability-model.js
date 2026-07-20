@@ -8,7 +8,7 @@ import {
   validateMonsterGraftRules,
 } from "./monster-graft-rules.schema.js";
 
-export const MONSTER_ABILITY_MODEL_VERSION = "monster-ability-model-v0.2";
+export const MONSTER_ABILITY_MODEL_VERSION = "monster-ability-model-v0.3";
 
 function asArray(value) {
   if (!value) return [];
@@ -171,6 +171,10 @@ function buildAbilityTags({ rules, damageEntries, conditions, resolution }) {
   if (rules.usage?.type) tags.push(`usage:${rules.usage.type}`);
   if (rules.actionEconomy) tags.push(`action_economy:${rules.actionEconomy}`);
   if (rules.multiattack?.enabled) tags.push("multiattack");
+  if (rules.multiattackParticipation?.enabled) {
+    tags.push("multiattack_participant");
+    tags.push(`multiattack_role:${rules.multiattackParticipation.role || "primary"}`);
+  }
   if (rules.spellcasting?.enabled) tags.push("spellcasting");
   if (rules.defense?.enabled) tags.push(`defense:${rules.defense.type || "custom"}`);
   if (rules.summon?.enabled) tags.push("summon");
@@ -215,6 +219,7 @@ export function buildMonsterAbilityFromGraft(feature = {}, { index = 0 } = {}) {
     conditions,
     counterplay: rules.counterplay || {},
     multiattack: rules.multiattack || null,
+    multiattackParticipation: rules.multiattackParticipation || null,
     spellcasting: rules.spellcasting || null,
     defense: rules.defense || null,
     summon: rules.summon || null,

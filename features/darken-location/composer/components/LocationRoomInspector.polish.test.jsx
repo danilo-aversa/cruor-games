@@ -27,6 +27,23 @@ function createState() {
 }
 
 describe("LocationRoomInspector polish", () => {
+  it("uses the same hero and fact-card layout as the right information rail", () => {
+    const container = document.createElement("div");
+    const root = createRoot(container);
+
+    act(() => {
+      root.render(<LocationRoomInspector state={createState()} />);
+    });
+
+    expect(container.querySelector('[data-composer-rail-variant="info"]')).toBeTruthy();
+    expect(container.querySelector(".cruor-composer-rail-card--hero")?.textContent)
+      .toContain("Selected Room");
+    expect(container.querySelector('[aria-label="Selected room facts"] .cruor-composer-fact-grid'))
+      .toBeTruthy();
+
+    act(() => root.unmount());
+  });
+
   it("does not attach redundant tooltips to the three self-explanatory room slots", () => {
     const container = document.createElement("div");
     const root = createRoot(container);
@@ -46,9 +63,6 @@ describe("LocationRoomInspector polish", () => {
       expect(slot?.hasAttribute("data-tooltip")).toBe(false);
       expect(slot?.hasAttribute("data-key")).toBe(false);
     }
-
-    const sensory = container.querySelector('[data-room-slot-id="sensoryLayer"]');
-    expect(sensory?.getAttribute("data-key")).toBe("tooltip-generic");
 
     act(() => root.unmount());
   });

@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
 
-import React from "react";
+import React, { act } from "react";
+import { createRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { LocationMapDetailsPanel } from "./LocationMapDetailsPanel.jsx";
 
 function createSemanticPreview(overrides = {}) {
@@ -109,5 +110,53 @@ describe("Location semantic runtime rail", () => {
     expect(html).toContain("location-semantic-runtime__status is-review");
     expect(html).toContain("1 Errors");
     expect(html).toContain("Compiler input rejected.");
+  });
+});
+
+describe("Location map build actions", () => {
+  it("arms each destructive action on the first click and confirms on the second", () => {
+    globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+    const container = document.createElement("div");
+    const root = createRoot(container);
+    const onRegenerateMap = vi.fn();
+    const onRefreshSeed = vi.fn();
+
+    act(() => {
+      root.render(
+        <LocationMapDetailsPanel
+          mapRequest={{ requiredRegions: [] }}
+          onRegenerateMap={onRegenerateMap}
+          onRefreshSeed={onRefreshSeed}
+          state={{
+            title: "The Ossuary Below",
+            context: "Crypt",
+            horrors: ["Religious Horror"],
+            sourceAnchors: ["Sedlec Ossuary"],
+            locationRegions: [],
+            slotAssignments: {},
+          }}
+        />,
+      );
+    });
+
+    const regenerate = container.querySelector('[data-testid="dark-places-generate"]');
+    act(() => regenerate.click());
+    expect(onRegenerateMap).not.toHaveBeenCalled();
+    expect(regenerate.classList.contains("is-armed")).toBe(true);
+    expect(regenerate.textContent).toContain("Confirm Regenerate");
+
+    act(() => regenerate.click());
+    expect(onRegenerateMap).toHaveBeenCalledTimes(1);
+
+    const refresh = container.querySelector('[data-testid="dark-places-new-seed"]');
+    act(() => refresh.click());
+    expect(onRefreshSeed).not.toHaveBeenCalled();
+    expect(refresh.classList.contains("is-armed")).toBe(true);
+
+    act(() => refresh.click());
+    expect(onRefreshSeed).toHaveBeenCalledTimes(1);
+
+    act(() => root.unmount());
+    globalThis.IS_REACT_ACT_ENVIRONMENT = false;
   });
 });

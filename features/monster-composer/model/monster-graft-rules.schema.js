@@ -1,5 +1,5 @@
 import { getFeatureBalanceStat } from "./monster-graft-balance-profile.js";
-export const MONSTER_GRAFT_RULES_SCHEMA_VERSION = "monster-graft-rules-v1.14";
+export const MONSTER_GRAFT_RULES_SCHEMA_VERSION = "monster-graft-rules-v1.15";
 
 export const RULES_SECTIONS = Object.freeze([
   "trait",
@@ -160,6 +160,24 @@ export const MULTIATTACK_REPLACEMENT_SCOPES = Object.freeze([
   "oneAttack",
   "anyAttack",
   "oneOrMoreAttacks",
+]);
+
+export const MULTIATTACK_PARTICIPATION_ROLES = Object.freeze([
+  "primary",
+  "choice",
+  "replacement",
+  "additionalAbility",
+  "excluded",
+]);
+
+export const MULTIATTACK_PARTICIPATION_TIMINGS = Object.freeze([
+  "beforeAttacks",
+  "afterAttacks",
+]);
+
+export const MULTIATTACK_PARTICIPATION_AVAILABILITY = Object.freeze([
+  "always",
+  "ifAvailable",
 ]);
 
 export const SPELLCASTING_ABILITY_OPTIONS = Object.freeze([
@@ -503,6 +521,29 @@ function normalizeMultiattackReplacement(entry, index = 0) {
   };
 }
 
+function normalizeMultiattackParticipation(participation) {
+  if (!isPlainObject(participation)) return null;
+  const hasExplicitEnabled = Object.prototype.hasOwnProperty.call(participation, "enabled");
+  return {
+    ...participation,
+    enabled: hasExplicitEnabled ? Boolean(participation.enabled) : true,
+    role: normalizeEnum(participation.role, MULTIATTACK_PARTICIPATION_ROLES, "primary"),
+    maxUses: normalizePositiveNumber(participation.maxUses, 4),
+    replacementScope: normalizeEnum(
+      participation.replacementScope,
+      MULTIATTACK_REPLACEMENT_SCOPES,
+      "oneAttack",
+    ),
+    timing: normalizeEnum(participation.timing, MULTIATTACK_PARTICIPATION_TIMINGS, "beforeAttacks"),
+    availability: normalizeEnum(
+      participation.availability,
+      MULTIATTACK_PARTICIPATION_AVAILABILITY,
+      "always",
+    ),
+    group: cleanString(participation.group) || "primary",
+  };
+}
+
 function normalizeAbilityReference(entry, index = 0) {
   if (!isPlainObject(entry)) return null;
   const type = normalizeEnum(entry.type, ABILITY_REFERENCE_TYPES, "action");
@@ -831,6 +872,7 @@ function inferRulesFromLegacy(feature = {}) {
     },
     text: outcomeText,
     multiattack: null,
+    multiattackParticipation: null,
     spellcasting: null,
     defense: null,
     summon: null,
@@ -1191,6 +1233,7 @@ function mergeExplicitRules(feature = {}) {
       ...(explicit.text || {}),
     },
     multiattack: normalizeMultiattack(explicit.multiattack) || inferred.multiattack || null,
+    multiattackParticipation: normalizeMultiattackParticipation(explicit.multiattackParticipation) || inferred.multiattackParticipation || null,
     spellcasting: normalizeSpellcasting(explicit.spellcasting) || inferred.spellcasting || null,
     defense: normalizeDefense(explicit.defense) || inferred.defense || null,
     summon: normalizeSummon(explicit.summon) || inferred.summon || null,
@@ -1346,6 +1389,19 @@ export function validateMonsterGraftRules(feature = {}) {
 
   if (budgetDamageEntries.length && successMentionsHalfDamage && !textHasAmount) {
     pushIssue(issues, "error", "damage-half-success-without-failure-amount", "Success text says half damage, but the failure/hit/response text has no explicit damage amount.", "rules.text.success");
+  }
+
+  if (rules.multiattackParticipation?.enabled) {
+    const participation = rules.multiattackParticipation;
+    if (participation.role !== "excluded" && rules.actionEconomy !== "action") {
+      pushIssue(issues, "warning", "multiattack-participation-non-action", "Automatic Multiattack participation should normally be limited to Actions.", "rules.multiattackParticipation");
+    }
+    if (["primary", "choice"].includes(participation.role) && !["attackRoll", "attackRollSavingThrow"].includes(resolutionType)) {
+      pushIssue(issues, "warning", "multiattack-participation-non-attack", "Primary and choice Multiattack entries should resolve as attack rolls.", "rules.multiattackParticipation.role");
+    }
+    if (["primary", "choice"].includes(participation.role) && rules.usage?.type !== "atWill") {
+      pushIssue(issues, "warning", "multiattack-participation-limited-use", "Recharge and limited-use actions should normally be replacements or additional abilities, not repeatable Multiattack attacks.", "rules.multiattackParticipation.role");
+    }
   }
 
   if (rules.multiattack?.enabled) {

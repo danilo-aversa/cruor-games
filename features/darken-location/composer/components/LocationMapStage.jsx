@@ -26,6 +26,16 @@ function cx(...classes) {
 }
 
 export const LOCATION_ROOM_TOOLTIP_DELAY_MS = 500;
+export const LOCATION_MAP_FADE_OUT_MS = 180;
+export const LOCATION_MAP_LOADING_HOLD_MS = 1000;
+export const LOCATION_MAP_FADE_IN_MS = 220;
+
+function getTransitionDelay(duration) {
+  if (globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+    return duration === LOCATION_MAP_LOADING_HOLD_MS ? duration : 0;
+  }
+  return duration;
+}
 
 function LocationMapPreview({
   debugMode = false,
@@ -80,6 +90,7 @@ export function LocationMapStage({
   state,
   setState,
   mapRequest,
+  mapTransitionKey = "",
   digest,
   generatedMapPreview,
   previewError,
@@ -105,6 +116,13 @@ export function LocationMapStage({
   const regions = state.locationRegions || [];
   const [hoveredRegionId, setHoveredRegionId] = useState("");
   const roomTooltipTimerRef = useRef(null);
+  const pendingMapRef = useRef(null);
+  const [mapTransitionPhase, setMapTransitionPhase] = useState("idle");
+  const [displayedMap, setDisplayedMap] = useState(() => ({
+    key: mapTransitionKey,
+    request: mapRequest,
+    manualOverrides: mapManualOverrides,
+  }));
   const [previewViewportMetrics, setPreviewViewportMetrics] = useState(null);
   const activeRegionComponents = getAssignedComponentsForRegion(state, state.activeRegionId);
   const hoveredRegionIndex = regions.findIndex((region) => region.id === hoveredRegionId);
@@ -133,6 +151,68 @@ export function LocationMapStage({
       roomProgramEntries.map((entry) => [entry.id, entry.status || "empty"]),
     )
   ), [roomProgramEntries]);
+
+  pendingMapRef.current = {
+    key: mapTransitionKey,
+    request: mapRequest,
+    manualOverrides: mapManualOverrides,
+  };
+
+  useEffect(() => {
+    if (mapTransitionPhase !== "idle") return;
+
+    if (displayedMap.key !== mapTransitionKey) {
+      setHoveredRegionId("");
+      setMapTransitionPhase("fade-out");
+      return;
+    }
+
+    if (
+      displayedMap.request !== mapRequest ||
+      displayedMap.manualOverrides !== mapManualOverrides
+    ) {
+      setDisplayedMap((current) => ({
+        ...current,
+        request: mapRequest,
+        manualOverrides: mapManualOverrides,
+      }));
+    }
+  }, [
+    displayedMap.key,
+    displayedMap.manualOverrides,
+    displayedMap.request,
+    mapManualOverrides,
+    mapRequest,
+    mapTransitionKey,
+    mapTransitionPhase,
+  ]);
+
+  useEffect(() => {
+    if (mapTransitionPhase !== "fade-out") return undefined;
+    const timer = setTimeout(
+      () => setMapTransitionPhase("loading"),
+      getTransitionDelay(LOCATION_MAP_FADE_OUT_MS),
+    );
+    return () => clearTimeout(timer);
+  }, [mapTransitionPhase]);
+
+  useEffect(() => {
+    if (mapTransitionPhase !== "loading") return undefined;
+    const timer = setTimeout(() => {
+      setDisplayedMap(pendingMapRef.current);
+      setMapTransitionPhase("fade-in");
+    }, getTransitionDelay(LOCATION_MAP_LOADING_HOLD_MS));
+    return () => clearTimeout(timer);
+  }, [mapTransitionPhase]);
+
+  useEffect(() => {
+    if (mapTransitionPhase !== "fade-in") return undefined;
+    const timer = setTimeout(
+      () => setMapTransitionPhase("idle"),
+      getTransitionDelay(LOCATION_MAP_FADE_IN_MS),
+    );
+    return () => clearTimeout(timer);
+  }, [mapTransitionPhase]);
 
   const changeHoveredRegion = useCallback((regionId = "") => {
     if (roomTooltipTimerRef.current) {
@@ -284,7 +364,12 @@ export function LocationMapStage({
               </div>
             ) : null}
 
-            <div className="location-map-stage__center" onClick={selectWholeMapTarget}>
+            <div
+              className="location-map-stage__center"
+              data-map-transition-phase={mapTransitionPhase}
+              aria-busy={mapTransitionPhase !== "idle"}
+              onClick={selectWholeMapTarget}
+            >
               {modeControls}
 
               {toolbarPanel ? (
@@ -293,20 +378,47 @@ export function LocationMapStage({
                 </div>
               ) : null}
 
-          <LocationMapPreview
-            debugMode={uiMode === "debug"}
-            error={previewError}
-            mapRequest={mapRequest}
-            initialManualOverrides={mapManualOverrides}
-            selectedRegionId={state.activeRegionId}
-            previewRegionMarkers={previewRegionMarkers}
-            previewRegionStatuses={previewRegionStatuses}
-            onRegionHoverChange={changeHoveredRegion}
-            onRegionSelect={selectRegionTarget}
-            onManualWorkspaceChange={onManualWorkspaceChange}
-            onRefreshFromComposer={onRefreshMapWorkspace}
-            onViewportMetricsChange={handlePreviewViewportMetricsChange}
-          />
+          <div
+            className={cx(
+              "location-map-transition",
+              `is-${mapTransitionPhase}`,
+            )}
+          >
+            <LocationMapPreview
+              key={displayedMap.key || "location-map"}
+              debugMode={uiMode === "debug"}
+              error={previewError}
+              mapRequest={displayedMap.request}
+              initialManualOverrides={displayedMap.manualOverrides}
+              selectedRegionId={state.activeRegionId}
+              previewRegionMarkers={previewRegionMarkers}
+              previewRegionStatuses={previewRegionStatuses}
+              onRegionHoverChange={changeHoveredRegion}
+              onRegionSelect={selectRegionTarget}
+              onManualWorkspaceChange={onManualWorkspaceChange}
+              onRefreshFromComposer={onRefreshMapWorkspace}
+              onViewportMetricsChange={handlePreviewViewportMetricsChange}
+            />
+          </div>
+
+          {mapTransitionPhase !== "idle" ? (
+            <div
+              className={cx(
+                "location-map-loading-screen",
+                mapTransitionPhase === "loading" && "is-visible",
+                mapTransitionPhase === "fade-in" && "is-leaving",
+              )}
+              role="status"
+              aria-live="polite"
+              aria-label="Regenerating map"
+            >
+              <div className="location-map-loading-screen__card">
+                <span className="location-map-loading-screen__spinner" aria-hidden="true" />
+                <strong>Regenerating map</strong>
+                <small>Rebuilding the location layout…</small>
+              </div>
+            </div>
+          ) : null}
 
           {showInteractiveOverlay && hoveredRegion ? (
             <div

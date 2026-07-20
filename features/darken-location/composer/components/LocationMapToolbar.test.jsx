@@ -31,6 +31,13 @@ function renderToolbar(props = {}) {
 }
 
 describe("LocationMapToolbar immersive mode", () => {
+  it("keeps destructive map actions out of the frame toolbar", () => {
+    const html = renderToolbar({ builderMode: "theme" });
+
+    expect(html).not.toContain('data-testid="dark-places-generate"');
+    expect(html).not.toContain('data-testid="dark-places-new-seed"');
+  });
+
   it.each(["theme", "scratch", "export"])(
     "renders the immersive toggle in %s mode",
     (builderMode) => {

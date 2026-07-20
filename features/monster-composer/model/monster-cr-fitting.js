@@ -214,6 +214,8 @@ function buildSingleCrProfile({
       attack,
       dc,
       targetCr,
+      category,
+      categoryNoun: String(category || "monster").toLowerCase(),
       rulesProfile: dndRules.rulesProfile,
       tempoProfile,
       monsterTier,

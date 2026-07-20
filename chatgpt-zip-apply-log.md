@@ -18824,3 +18824,149 @@ _Nessun file aggiunto._
 - `~promo-studio/scenarios/terrifying-monsters.mjs`
 - `~promo-studio/setup.ps1`
 
+
+---
+
+## 2026-07-20 15:57:14
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-dark-places-map-loading-transition-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-map-loading-transition-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-qwBR7H`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 6
+
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/repository-map.json`
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/components/LocationMapStage.test.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+
+
+---
+
+## 2026-07-20 16:00:03
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-dark-places-map-loading-transition-20260720 (1).zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-map-loading-transition-20260720 (1).zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-57z5G1`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 6
+
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/repository-map.json`
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/components/LocationMapStage.test.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+
+
+---
+
+## 2026-07-20 16:20:10
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-dark-places-rail-actions-initial-map-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-dark-places-rail-actions-initial-map-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-lsEE4V`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 13
+
+- `~docs/repository-map/areas/darken-location.md`
+- `~docs/repository-map/repository-map.json`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.test.jsx`
+- `~features/darken-location/composer/components/LocationMapStage.jsx`
+- `~features/darken-location/composer/components/LocationMapStage.test.jsx`
+- `~features/darken-location/composer/components/LocationMapToolbar.jsx`
+- `~features/darken-location/composer/components/LocationMapToolbar.test.jsx`
+- `~features/darken-location/composer/components/LocationRoomInspector.jsx`
+- `~features/darken-location/composer/components/LocationRoomInspector.polish.test.jsx`
+- `~features/darken-location/composer/darken-location-composer.styles.css`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.test.jsx`
+
+
+---
+
+## 2026-07-20 18:03:00
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-monster-multiattack-patched-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-monster-multiattack-patched-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-O7Hrrf`
+
+**Decisione struttura:** `Cartella top-level preservata: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 2
+
+- `+features/monster-composer/model/monster-attack-routine.js`
+- `+features/monster-composer/model/monster-attack-routine.test.js`
+
+**File sovrascritti:** 8
+
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/monster-composer/model/monster-ability-model.js`
+- `~features/monster-composer/model/monster-composer.export.js`
+- `~features/monster-composer/model/monster-cr-fitting.js`
+- `~features/monster-composer/model/monster-graft-rules.render.js`
+- `~features/monster-composer/model/monster-graft-rules.schema.js`
+- `~features/monster-composer/monster-composer.page.jsx`
+- `~features/monster-composer/rulesets/dnd-5e-2024/monster-dpr-simulator.js`
+

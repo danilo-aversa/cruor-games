@@ -1,5 +1,6 @@
 import { findSpell5e24, getSpell5e24Name } from "../../../shared/content/spells.5e24.js";
 import { getMonsterRuleset } from "../rulesets/index.js";
+import { getAttackRoutineAllocation } from "./monster-attack-routine.js";
 import {
   getDamageBudgetShare,
   getDamagePartById,
@@ -104,6 +105,10 @@ function formatDamagePartToken(part) {
 }
 
 function getDamageBudgetAverage(damage, rules, computed) {
+  const routineAverage = Number(computed?.attackRoutineAllocation?.averagePerUse || 0);
+  if (routineAverage > 0 && ["mainAttack", "secondaryAttack", "minorAttack"].includes(damage?.budgetRole)) {
+    return Math.max(1, routineAverage);
+  }
   const base = getComputedDamageAverage(computed);
   const budgetShare = getDamageBudgetShare(damage, rules);
   if (budgetShare > 0) return Math.max(1, Math.round(base * budgetShare));
@@ -124,9 +129,20 @@ function formatSingleDamage(damage, computed, rules = {}, options = {}) {
 function formatDamageParts(damage, computed, rules = {}, options = {}) {
   const parts = getDamageParts(damage);
   if (!parts.length) return "";
+  const totalShare = getDamageTotalBudgetShare(damage, rules);
   return parts
     .map((part, index) => {
-      const amount = options.template ? formatDamagePartToken(part) : formatSingleDamage(part, computed, rules, options);
+      const partShare = totalShare > 0 ? getDamageBudgetShare(part, rules) / totalShare : 1 / parts.length;
+      const partComputed = computed?.attackRoutineAllocation
+        ? {
+            ...computed,
+            attackRoutineAllocation: {
+              ...computed.attackRoutineAllocation,
+              averagePerUse: Math.max(1, Number(computed.attackRoutineAllocation.averagePerUse || 1) * partShare),
+            },
+          }
+        : computed;
+      const amount = options.template ? formatDamagePartToken(part) : formatSingleDamage(part, partComputed, rules, options);
       const type = formatDamageType(part);
       return `${index > 0 ? "plus " : ""}${amount} ${type}`.trim();
     })
@@ -804,6 +820,10 @@ function formatAttackList(attacks = []) {
   return `${labels.slice(0, -1).join(", ")}, or ${labels[labels.length - 1]}`;
 }
 
+function getMonsterSubject(computed = {}) {
+  return cleanString(computed?.rulesContext?.categoryNoun || computed?.categoryNoun || "monster").toLowerCase() || "monster";
+}
+
 function formatReplacementText(replacement) {
   if (!replacement || replacement.replace === "none") return "";
   const label = cleanString(replacement.label || replacement.with);
@@ -813,7 +833,7 @@ function formatReplacementText(replacement) {
     : replacement.replace === "oneOrMoreAttacks"
       ? "one or more attacks"
       : "one attack";
-  return `It can replace ${scope} with ${label}.`;
+  return `It can replace ${scope} with a use of ${label}.`;
 }
 
 function renderMultiattackRules(feature, rules, computed, options = {}) {
@@ -825,34 +845,35 @@ function renderMultiattackRules(feature, rules, computed, options = {}) {
   const attacks = Array.isArray(multiattack.attacks) ? multiattack.attacks : [];
   const total = Number(multiattack.count || attacks.reduce((sum, attack) => sum + Number(attack.count || 0), 0) || 2);
   const firstAttack = attacks[0] || {};
+  const subject = getMonsterSubject(computed);
   let base;
 
   if (multiattack.mode === "choice" && attacks.length > 1) {
-    base = `The monster makes ${numberWord(total)} attacks, using ${formatAttackList(attacks)} in any combination.`;
+    base = `The ${subject} makes ${numberWord(total)} attacks, using ${formatAttackList(attacks)} in any combination.`;
   } else if (multiattack.mode === "attackPlusAbility") {
     const ability = cleanString(multiattack.abilityLabel || multiattack.extraAbility || multiattack.label);
     const attackLabel = cleanString(firstAttack.label || firstAttack.ref || "attack");
     const attackCount = Number(firstAttack.count || total || 1);
     base = ability
-      ? `The monster uses ${ability} and makes ${attackPhrase(attackLabel, attackCount)}.`
-      : `The monster makes ${numberWord(total)} attacks.`;
+      ? `The ${subject} uses ${ability} and makes ${attackPhrase(attackLabel, attackCount)}.`
+      : `The ${subject} makes ${numberWord(total)} attacks.`;
   } else if ((multiattack.mode === "replaceOne" || multiattack.mode === "replaceAny") && attacks.length) {
     const attackLabel = cleanString(firstAttack.label || firstAttack.ref || "attack");
     const attackCount = Number(firstAttack.count || total || 1);
-    base = `The monster makes ${attackPhrase(attackLabel, attackCount)}.`;
+    base = `The ${subject} makes ${attackPhrase(attackLabel, attackCount)}.`;
   } else if (attacks.length === 1) {
     const attackLabel = cleanString(firstAttack.label || firstAttack.ref || "attack");
     const attackCount = Number(firstAttack.count || total || 1);
-    base = `The monster makes ${attackPhrase(attackLabel, attackCount)}.`;
+    base = `The ${subject} makes ${attackPhrase(attackLabel, attackCount)}.`;
   } else if (attacks.length > 1) {
     const clauses = attacks.map((attack) => {
       const count = Number(attack.count || 1);
       const label = cleanString(attack.label || attack.ref || "attack");
       return attackPhrase(label, count);
     });
-    base = `The monster makes ${clauses.join(" and ")}.`;
+    base = `The ${subject} makes ${clauses.join(" and ")}.`;
   } else {
-    base = `The monster makes ${numberWord(total)} attacks.`;
+    base = `The ${subject} makes ${numberWord(total)} attacks.`;
   }
 
   const replacements = (multiattack.replacements || [])
@@ -1137,30 +1158,34 @@ function renderSpellcastingRules(feature, rules, computed, options = {}) {
 function renderStructuredRules(feature, computed = null, options = {}) {
   const rules = normalizeMonsterGraftRules(feature);
   if (!rules.migration?.isStructured) return null;
+  const routineAllocation = getAttackRoutineAllocation(computed, feature?.id);
+  const scopedComputed = routineAllocation?.scalable
+    ? { ...computed, dpr: routineAllocation.averagePerUse, damageText: null, attackRoutineAllocation: routineAllocation }
+    : computed;
 
   const manualText = rules.text?.manual || rules.text?.override;
   if (!options.ignoreManual && rules.text?.source === "manual" && manualText) {
-    return applyTokens(manualText, { feature, rules, computed }, options);
+    return applyTokens(manualText, { feature, rules, computed: scopedComputed }, options);
   }
 
-  if (rules.multiattack?.enabled) return renderMultiattackRules(feature, rules, computed, options);
-  if (rules.spellcasting?.enabled) return renderSpellcastingRules(feature, rules, computed, options);
-  if (rules.summon?.enabled) return renderSummonRules(feature, rules, computed, options);
-  if (rules.procedure?.enabled) return renderProcedureRules(feature, rules, computed, options);
-  if (rules.defense?.enabled) return renderDefenseRules(feature, rules, computed, options);
-  if (rules.areaEffect?.enabled && !hasAttackResolution(rules) && !hasSaveResolution(rules)) return renderAreaEffectRules(feature, rules, computed, options);
-  if (rules.references?.length && !hasAttackResolution(rules) && !hasSaveResolution(rules) && !rules.text?.effect) return renderAbilityReferencesRules(feature, rules, computed, options);
-  if (rules.actionEconomy === "reaction") return renderReactionRules(feature, rules, computed, options);
+  if (rules.multiattack?.enabled) return renderMultiattackRules(feature, rules, scopedComputed, options);
+  if (rules.spellcasting?.enabled) return renderSpellcastingRules(feature, rules, scopedComputed, options);
+  if (rules.summon?.enabled) return renderSummonRules(feature, rules, scopedComputed, options);
+  if (rules.procedure?.enabled) return renderProcedureRules(feature, rules, scopedComputed, options);
+  if (rules.defense?.enabled) return renderDefenseRules(feature, rules, scopedComputed, options);
+  if (rules.areaEffect?.enabled && !hasAttackResolution(rules) && !hasSaveResolution(rules)) return renderAreaEffectRules(feature, rules, scopedComputed, options);
+  if (rules.references?.length && !hasAttackResolution(rules) && !hasSaveResolution(rules) && !rules.text?.effect) return renderAbilityReferencesRules(feature, rules, scopedComputed, options);
+  if (rules.actionEconomy === "reaction") return renderReactionRules(feature, rules, scopedComputed, options);
   if (rules.text?.effect && ["trait", "death"].includes(rules.section)) {
-    return applyTokens(rules.text.effect, { feature, rules, computed }, options);
+    return applyTokens(rules.text.effect, { feature, rules, computed: scopedComputed }, options);
   }
   if (!hasAttackResolution(rules) && !hasSaveResolution(rules) && rules.condition?.names?.length) {
-    const passiveCondition = renderPassiveConditionRules(feature, rules, computed, options);
+    const passiveCondition = renderPassiveConditionRules(feature, rules, scopedComputed, options);
     if (passiveCondition) return passiveCondition;
   }
-  if (hasAttackResolution(rules)) return renderAttackRules(feature, rules, computed, options);
-  if (hasSaveResolution(rules)) return renderSaveRules(feature, rules, computed, options);
-  if (rules.text?.effect) return applyTokens(rules.text.effect, { feature, rules, computed }, options);
+  if (hasAttackResolution(rules)) return renderAttackRules(feature, rules, scopedComputed, options);
+  if (hasSaveResolution(rules)) return renderSaveRules(feature, rules, scopedComputed, options);
+  if (rules.text?.effect) return applyTokens(rules.text.effect, { feature, rules, computed: scopedComputed }, options);
   return null;
 }
 

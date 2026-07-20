@@ -30,6 +30,14 @@ the replacement can change every region id, the transition clears component
 assignments, slot locks, room-constraint state, and manual map overrides rather
 than retaining directives that target removed rooms.
 
+The first Composer render also uses that generated Theme pipeline, so its map is
+the same deterministic baseline that an immediate regeneration produces. Frame
+mode owns no room selection; entering Rooms selects the first room by default.
+Regenerate Map and Refresh Seed live in the right information rail rather than
+the map toolbar. Both require a second confirming click, clear incompatible
+assignments and manual edits, and return to the unselected Frame view; Refresh
+Seed additionally creates a new seed before rebuilding.
+
 Generated room names contain only the thematic room-type label; ordinal room
 numbers remain a separate topology/display field so map ordering cannot become
 stale text inside a name. Theme generation owns structural choices such as room
@@ -73,6 +81,17 @@ before opening and closes immediately when the room is left. It no longer reads
 legacy procedural `feature` or `danger` fields. Its fact rows are derived only
 from explicitly assigned regional `hazard`, `clue`, and `encounterTwist` slots,
 using their user-facing labels.
+
+The Rooms left rail uses the same shared hero-card and fact-row composition as
+the right information rail. Room assignment slots remain shared
+`ComposerSlotCard` instances below that summary.
+
+The Composer map stage uses the semantic topology fingerprint to identify full
+map replacements. It keeps the previous map mounted during fade-out, shows a
+centered, unboxed busy state for at least one second while swapping the request,
+and fades the replacement in.
+Non-structural edits continue without triggering this transition, and reduced
+motion preferences skip the fades while retaining a brief loading announcement.
 
 Each normalized room carries both the generator-facing `roomDesign`/`effectiveRoomDesign` and a versioned `roomConstraintResolution` report with status, conflicts, warnings, changes, provenance, capabilities, and diagnostics. Hard conflicts remain explicit in the report instead of being hidden by sequential object overwrite. Composer assignment is not blocked yet; candidate-time compatibility belongs to the later picker integration.
 

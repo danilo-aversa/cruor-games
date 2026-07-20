@@ -308,9 +308,9 @@ function buildFallbackMainActionFeature({ category = "Monster", sourceId = "fram
     complexity: 0,
     stats: { dpr: 0 },
     synthetic: true,
-    generatedBy: "scalable-main-action-gate-v1.30",
+    generatedBy: "scalable-main-action-gate-v1.31",
     rules: {
-      schemaVersion: "monster-graft-rules-v1.12",
+      schemaVersion: "monster-graft-rules-v1.15",
       section: "action",
       actionEconomy: "action",
       usage: { type: "atWill" },
@@ -1716,6 +1716,22 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
     dprProfile.assumptions.forEach((assumption) => {
       if (dprProfile.fallbackUsed && assumption.includes("fallback")) warnings.push(`DPR Simulator: ${assumption}`);
     });
+    const attackRoutine = dprProfile.attackRoutine;
+    if (Number(targetCr || 0) >= 5 && !attackRoutine?.enabled && selectedFeatures.some(isScalableMainActionFeature)) {
+      warnings.push("Multiattack Planner: no attack routine was generated for a high-CR scalable action. Confirm that this is an intentional single heavy attack or enable Multiattack participation in Content Studio.");
+    }
+    if (attackRoutine?.enabled) {
+      const largestPerUseAverage = Math.max(
+        0,
+        ...Object.values(attackRoutine.allocations || {}).map((allocation) => Number(allocation.averagePerUse || 0)),
+      );
+      if (largestPerUseAverage > Number(attackRoutine.preferredSingleHitCap || largestPerUseAverage) * 1.25) {
+        warnings.push("Multiattack Planner: one routine attack remains substantially above the bestiary-derived per-hit range. Increase the attack count or review its maximum-use and rider constraints.");
+      }
+      (attackRoutine.diagnostics || [])
+        .filter((diagnostic) => diagnostic.severity !== "info")
+        .forEach((diagnostic) => warnings.push(`Multiattack Planner: ${diagnostic.message}`));
+    }
     // Multiple main-action alternatives are expected on many D&D monsters. The DPR simulator
     // records this as informational diagnostics instead of surfacing it as a publish warning.
     crValidation.issues.forEach((issue) => {
@@ -1815,17 +1831,18 @@ export default function CruorMonsterComposerMvp({ uiMode = "simple", inspiration
       bestiaryBaselineAudit,
       framePowerProfile,
       scalableMainActionGateProfile: {
-        version: "scalable-main-action-gate-v1.30",
+        version: "scalable-main-action-gate-v1.31",
         targetCr,
         highCr: Number(targetCr || 0) >= 5,
         scalableActionCount: selectedFeatures.filter(isScalableMainActionFeature).length,
-        status: selectedFeatures.some((feature) => feature.generatedBy === "scalable-main-action-gate-v1.30") ? "fallback-added" : "pass",
-        fallbackFeature: selectedFeatures.find((feature) => feature.generatedBy === "scalable-main-action-gate-v1.30")
-          ? { id: selectedFeatures.find((feature) => feature.generatedBy === "scalable-main-action-gate-v1.30").id, title: selectedFeatures.find((feature) => feature.generatedBy === "scalable-main-action-gate-v1.30").title }
+        status: selectedFeatures.some((feature) => feature.generatedBy === "scalable-main-action-gate-v1.31") ? "fallback-added" : "pass",
+        fallbackFeature: selectedFeatures.find((feature) => feature.generatedBy === "scalable-main-action-gate-v1.31")
+          ? { id: selectedFeatures.find((feature) => feature.generatedBy === "scalable-main-action-gate-v1.31").id, title: selectedFeatures.find((feature) => feature.generatedBy === "scalable-main-action-gate-v1.31").title }
           : null,
       },
       crFitProfile,
       dprProfile,
+      attackRoutine: dprProfile?.attackRoutine || null,
       crValidation,
       pressureProfile,
       complexityProfile,

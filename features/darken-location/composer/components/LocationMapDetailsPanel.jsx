@@ -342,6 +342,80 @@ function LocationFrameInfoRow({ label, value }) {
   );
 }
 
+export const LOCATION_MAP_ACTION_ARM_WINDOW_MS = 5000;
+
+function LocationMapBuildActions({ onRegenerateMap, onRefreshSeed }) {
+  const [armedAction, setArmedAction] = useState("");
+
+  useEffect(() => {
+    if (!armedAction) return undefined;
+    const timer = window.setTimeout(
+      () => setArmedAction(""),
+      LOCATION_MAP_ACTION_ARM_WINDOW_MS,
+    );
+    return () => window.clearTimeout(timer);
+  }, [armedAction]);
+
+  function runOrArm(actionId, callback) {
+    if (armedAction !== actionId) {
+      setArmedAction(actionId);
+      return;
+    }
+    setArmedAction("");
+    callback?.();
+  }
+
+  const regenerateArmed = armedAction === "regenerate";
+  const seedArmed = armedAction === "seed";
+
+  return (
+    <section className="cruor-composer-rail-card location-frame-info-card location-map-build-action-card" aria-label="Map build actions">
+      <button
+        className={cx(
+          "location-map-build-action-btn",
+          "tooltip-btn",
+          !regenerateArmed && "is-primary",
+          regenerateArmed && "is-armed",
+        )}
+        type="button"
+        aria-label={regenerateArmed ? "Confirm Regenerate Map" : "Regenerate Map"}
+        aria-pressed={regenerateArmed}
+        data-key="tooltip-generic"
+        data-tooltip={regenerateArmed ? "Confirm Regenerate Map" : "Regenerate Map"}
+        data-tooltip-description={regenerateArmed
+          ? "Click again to discard current room assignments and manual map edits."
+          : "Arm a rebuild from the current frame and seed. This discards current room assignments and manual map edits."}
+        data-testid="dark-places-generate"
+        onClick={() => runOrArm("regenerate", onRegenerateMap)}
+      >
+        <i className={`fa-solid ${regenerateArmed ? "fa-triangle-exclamation" : "fa-wand-magic-sparkles"}`} aria-hidden="true" />
+        <span>{regenerateArmed ? "Confirm Regenerate" : "Regenerate Map"}</span>
+      </button>
+
+      <button
+        className={cx(
+          "location-map-build-action-btn",
+          "tooltip-btn",
+          seedArmed && "is-armed",
+        )}
+        type="button"
+        aria-label={seedArmed ? "Confirm Refresh Seed" : "Refresh Seed"}
+        aria-pressed={seedArmed}
+        data-key="tooltip-generic"
+        data-tooltip={seedArmed ? "Confirm Refresh Seed" : "Refresh Seed"}
+        data-tooltip-description={seedArmed
+          ? "Click again to create a new seed and discard current room assignments and manual map edits."
+          : "Arm a complete map replacement with a new seed. This discards current room assignments and manual map edits."}
+        data-testid="dark-places-new-seed"
+        onClick={() => runOrArm("seed", onRefreshSeed)}
+      >
+        <i className={`fa-solid ${seedArmed ? "fa-triangle-exclamation" : "fa-dice"}`} aria-hidden="true" />
+        <span>{seedArmed ? "Confirm Refresh" : "Refresh Seed"}</span>
+      </button>
+    </section>
+  );
+}
+
 function LocationFrameMeter({ description, label, max, value }) {
   const safeMax = Math.max(0, Number(max) || 0);
   const safeValue = Math.max(0, Math.min(Number(value) || 0, safeMax || 0));
@@ -581,6 +655,8 @@ export function LocationMapDetailsPanel({
   debugMode = false,
   generatedMapPreview = null,
   mapRequest = null,
+  onRegenerateMap,
+  onRefreshSeed,
   onRenameLocation,
   semanticMapHandoff = null,
   semanticPreview = null,
@@ -954,6 +1030,11 @@ export function LocationMapDetailsPanel({
           description="Ready Rooms measures how many rooms have enough table-facing content to be used in the generated location."
         />
       </section>
+
+      <LocationMapBuildActions
+        onRegenerateMap={onRegenerateMap}
+        onRefreshSeed={onRefreshSeed}
+      />
 
       {showSemanticRuntime ? (
         <LocationSemanticRuntimePanel

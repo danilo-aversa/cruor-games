@@ -4,6 +4,7 @@ import { renderStructuredRulesText } from "./monster-graft-rules.render.js";
 import { normalizeBestiaryFeatureWording, normalizeBestiaryRulesText } from "./monster-bestiary-wording.js";
 import { normalizeMonsterGraftRules, validateMonsterGraftRules } from "./monster-graft-rules.schema.js";
 import { buildMonsterAbilityFromGraft } from "./monster-ability-model.js";
+import { buildGeneratedMultiattackFeature } from "./monster-attack-routine.js";
 import { SLOTS } from "../monster-composer.workflow.js";
 import { asArray, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
 import { getFeatureCompatibility, hasFeatureCompatibilityOverride } from "./monster-composer.compatibility.js";
@@ -30,8 +31,8 @@ const FEATURE_SCHEMA_VERSION = "monster-graft-v1.0";
 const EXPORT_SCHEMA_VERSION = "monster-crucible-export-v1.0";
 const DATA_MODEL_MIGRATION_STAGE = "rules-v1.15-legacy-stats-adapter";
 const OUTPUT_PAYLOAD_SEPARATION_STAGE = "rules-v1.16-public-debug-payload-separation";
-const PUBLIC_EXPORT_PAYLOAD_VERSION = "monster-public-payload-v1.36";
-const DEBUG_EXPORT_PAYLOAD_VERSION = "monster-debug-payload-v1.36";
+const PUBLIC_EXPORT_PAYLOAD_VERSION = "monster-public-payload-v1.37";
+const DEBUG_EXPORT_PAYLOAD_VERSION = "monster-debug-payload-v1.37";
 
 const STAT_BLOCK_SECTION_LABELS = {
   trait: "Traits",
@@ -185,6 +186,16 @@ function getExportItem(item, computed) {
     title: item.title,
     text: getRawExportItemText(item, computed),
   });
+}
+
+function getActionsForOutput(actions = [], fallback = [], computed = null) {
+  const baseActions = actions.length ? actions : fallback;
+  const generatedMultiattack = buildGeneratedMultiattackFeature(computed?.attackRoutine, computed);
+  if (!generatedMultiattack) return baseActions;
+  const alreadyHasMultiattack = baseActions.some((action) =>
+    String(action?.title || "").trim().toLowerCase() === "multiattack" || action?.rules?.multiattack?.enabled,
+  );
+  return alreadyHasMultiattack ? baseActions : [generatedMultiattack, ...baseActions];
 }
 
 function exportItems(items, fallback, computed) {
@@ -566,7 +577,7 @@ function buildNormalizedSections({
       normalizedStatBlockMode === STAT_BLOCK_MODE_CUSTOM
         ? normalizeSectionItems(weaknessItems, computed)
         : [],
-    actions: normalizeSectionItems(actions, computed),
+    actions: normalizeSectionItems(getActionsForOutput(actions, [], computed), computed),
     bonusActions: normalizeSectionItems(bonusActions, computed),
     reactions: normalizeSectionItems(reactions, computed),
     legendaryActions: normalizeSectionItems(legendaryActions, computed),
@@ -755,7 +766,7 @@ export function buildExportText({
   sections.push(
     "",
     "Actions",
-    exportItems(actions, fallbackActions, computed)
+    exportItems(getActionsForOutput(actions, fallbackActions, computed), [], computed)
   );
 
   if (bonusActions.length)
@@ -899,7 +910,7 @@ export function buildRenderableStatBlock({
       {
         id: "actions",
         title: "Actions",
-        items: buildStatBlockItems(actions.length ? actions : fallbackActions, computed),
+        items: buildStatBlockItems(getActionsForOutput(actions, fallbackActions, computed), computed),
       },
       {
         id: "bonus-actions",
@@ -1150,6 +1161,7 @@ function buildDebugExportPayload({
     abilityModel: computed.abilityModel,
     effectiveProfile: computed.effectiveProfile,
     dprProfile: computed.dprProfile,
+    attackRoutine: computed.attackRoutine,
     crValidation: computed.crValidation,
     profileDeltas: computed.profileDeltas,
     bestiaryBaselineAudit: computed.bestiaryBaselineAudit,

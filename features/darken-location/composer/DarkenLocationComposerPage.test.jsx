@@ -5,6 +5,8 @@ import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import DarkenLocationComposerPage, {
   createGeneratedThemeProgramState,
+  createInitialGeneratedLocationComposerState,
+  createLocationWorkflowModeState,
 } from "./DarkenLocationComposerPage.jsx";
 import { createInitialLocationComposerState } from "./model/location-composer-state.js";
 import { getRegionTemplatesForState } from "./model/location-composer-selectors.js";
@@ -44,7 +46,7 @@ describe("Dark Places live semantic map integration", () => {
       expect(html).toContain(
         'data-location-map-handoff-schema="cruor-dark-places-semantic-map-handoff-v1"',
       );
-      expect(html).toContain("Semantic Handoff");
+      expect(html).not.toContain("Semantic Handoff");
       expect(errorSpy).not.toHaveBeenCalled();
       expect(warningSpy).not.toHaveBeenCalled();
     } finally {
@@ -52,6 +54,40 @@ describe("Dark Places live semantic map integration", () => {
       warningSpy.mockRestore();
     }
   }, 10000);
+
+  it("uses the generated default frame for the first visible map", () => {
+    const initial = createInitialGeneratedLocationComposerState();
+    const regenerated = createGeneratedThemeProgramState(initial);
+    const projectRooms = (value) => value.locationRegions.map((region) => ({
+      id: region.id,
+      name: region.name,
+      role: region.role,
+      roomType: region.roomType,
+      level: region.level,
+    }));
+
+    expect(projectRooms(initial)).toEqual(projectRooms(regenerated));
+    expect(initial.activeRegionId).toBe("");
+    expect(initial.activeSlotScope).toBe("map");
+  });
+
+  it("clears room selection in Frame and selects room 1 when entering Rooms", () => {
+    const generated = createInitialGeneratedLocationComposerState();
+    const selected = {
+      ...generated,
+      activeRegionId: generated.locationRegions[1]?.id || generated.locationRegions[0]?.id,
+      activeSlotScope: "region",
+      activeSlot: "hazard",
+    };
+
+    const frame = createLocationWorkflowModeState(selected, "theme");
+    expect(frame.activeRegionId).toBe("");
+    expect(frame.activeSlotScope).toBe("map");
+
+    const rooms = createLocationWorkflowModeState(frame, "scratch");
+    expect(rooms.activeRegionId).toBe(generated.locationRegions[0]?.id);
+    expect(rooms.activeSlotScope).toBe("region");
+  });
 
   it("regenerates the room program and clears stale assignments when the theme changes", () => {
     const initialRegions = getRegionTemplatesForState({
@@ -105,6 +141,8 @@ describe("Dark Places live semantic map integration", () => {
     expect(next.slotAssignments).toEqual({});
     expect([...next.selectedComponentIds]).toEqual([]);
     expect([...next.lockedSlots]).toEqual([]);
+    expect(next.activeRegionId).toBe("");
+    expect(next.activeSlotScope).toBe("map");
     next.locationRegions.forEach((region) => {
       expect(region.sensoryLayer).toBe("");
       expect(region.feature).toBe("");
@@ -127,9 +165,9 @@ describe("Dark Places live semantic map integration", () => {
         />,
       );
     });
-    expect(getSnapshot().locationRegions.map((region) => region.name)).toContain(
-      "Bone-Lit Vestibule",
-    );
+    const initialRoomNames = getSnapshot().locationRegions.map((region) => region.name);
+    expect(initialRoomNames.length).toBeGreaterThan(0);
+    expect(initialRoomNames).not.toContain("Bone-Lit Vestibule");
 
     const themeField = [...container.querySelectorAll(".location-choice-field")]
       .find((field) => field.textContent.includes("Theme"));
@@ -140,7 +178,7 @@ describe("Dark Places live semantic map integration", () => {
     await act(async () => decompositionOption.click());
 
     const roomNames = getSnapshot().locationRegions.map((region) => region.name);
-    expect(roomNames).not.toContain("Bone-Lit Vestibule");
+    expect(roomNames).not.toEqual(initialRoomNames);
     expect(roomNames.every((name) => !/^\d+\s/.test(name))).toBe(true);
     expect(
       [

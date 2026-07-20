@@ -297,7 +297,7 @@ export function createGeneratedThemeProgramState(current, frameUpdates = {}) {
     createThemeDungeonBriefFromDarkenLocationSnapshot(themeSnapshot);
   const locationRegions = createLocationRegionsFromDungeonBrief(dungeonBrief);
 
-  return {
+  return createLocationWorkflowModeState({
     ...clearedState,
     dungeonMode: "theme",
     dungeonBriefId: dungeonBrief.id,
@@ -308,13 +308,37 @@ export function createGeneratedThemeProgramState(current, frameUpdates = {}) {
         ? [dungeonBrief.themeName]
         : clearedState.sourceAnchors,
     locationRegions,
-    activeRegionId: locationRegions[0]?.id || "",
-    activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
     themeProgramCandidates: [],
     activeThemeProgramCandidateId: selectedCandidate?.id || "",
     mapManualOverrides: null,
     roomConstraintStateByRegion: {},
-  };
+  }, "theme");
+}
+
+export function createLocationWorkflowModeState(current, mode) {
+  if (mode === "theme") {
+    return {
+      ...current,
+      activeRegionId: "",
+      activeSlotScope: LOCATION_SLOT_SCOPE_MAP,
+      activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_MAP)
+        ? current.activeSlot
+        : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_MAP),
+    };
+  }
+
+  if (mode === "scratch") {
+    return {
+      ...current,
+      activeRegionId: current.activeRegionId || current.locationRegions?.[0]?.id || "",
+      activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
+      activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
+        ? current.activeSlot
+        : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
+    };
+  }
+
+  return current;
 }
 
 function getInitialLocationRegionTemplates() {
@@ -325,8 +349,14 @@ function getInitialLocationRegionTemplates() {
   });
 }
 
+export function createInitialGeneratedLocationComposerState() {
+  return createGeneratedThemeProgramState(
+    createInitialLocationComposerState(getInitialLocationRegionTemplates()),
+  );
+}
+
 export default function DarkenLocationComposerPage({ debugMode = false, onOpenMapGenerator, onSnapshotProviderReady, uiMode = "simple" } = {}) {
-  const [state, setState] = useState(() => createInitialLocationComposerState(getInitialLocationRegionTemplates()));
+  const [state, setState] = useState(createInitialGeneratedLocationComposerState);
   const [draftStatus, setDraftStatus] = useState("");
   const [draftSummary, setDraftSummary] = useState(() => getStoredDraftSummary());
   const [draftStorageStatus, setDraftStorageStatus] = useState(() => getLocalDraftStorageStatus());
@@ -558,7 +588,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       if (!confirmed) return;
     }
 
-    const fallbackState = createInitialLocationComposerState(getInitialLocationRegionTemplates());
+    const fallbackState = createInitialGeneratedLocationComposerState();
     const restoredState = restoreLocationDraftState(storedDraft, fallbackState);
     setState(restoredState);
     clearAssignmentHistory();
@@ -590,12 +620,14 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   }, [draftSummary, setTransientDraftStatus, state]);
 
   const refreshMapSeed = useCallback(() => {
-    setState((current) => ({
-      ...current,
+    setState((current) => createGeneratedThemeProgramState(current, {
       seed: createLocationMapSeed(),
     }));
+    clearAssignmentHistory();
+    setBuilderMode("theme");
+    setDrawerOpen(false);
     setTransientDraftStatus("Map seed refreshed");
-  }, [setTransientDraftStatus]);
+  }, [clearAssignmentHistory, setTransientDraftStatus]);
 
   const renameLocation = useCallback((title) => {
     setState((current) => ({
@@ -749,7 +781,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     const confirmed = window.confirm("Reset current composer?");
     if (!confirmed) return;
 
-    const resetState = createInitialLocationComposerState(getInitialLocationRegionTemplates());
+    const resetState = createInitialGeneratedLocationComposerState();
     setState(resetState);
     clearAssignmentHistory();
     setSavedDraftFingerprint(createDraftFingerprint(resetState));
@@ -891,30 +923,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     setBuilderMode(nextMode);
     setDrawerOpen(false);
 
-    setState((current) => {
-      if (nextMode === "theme") {
-        return {
-          ...current,
-          activeSlotScope: LOCATION_SLOT_SCOPE_MAP,
-          activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_MAP)
-            ? current.activeSlot
-            : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_MAP),
-        };
-      }
-
-      if (nextMode === "scratch") {
-        return {
-          ...current,
-          activeRegionId: current.activeRegionId || current.locationRegions?.[0]?.id || "",
-          activeSlotScope: LOCATION_SLOT_SCOPE_REGION,
-          activeSlot: isSlotInScope(current.activeSlot, LOCATION_SLOT_SCOPE_REGION)
-            ? current.activeSlot
-            : getDefaultSlotIdForScope(LOCATION_SLOT_SCOPE_REGION),
-        };
-      }
-
-      return current;
-    });
+    setState((current) => createLocationWorkflowModeState(current, nextMode));
   }, []);
 
 
@@ -1308,6 +1317,8 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       side="right"
       state={state}
       uiMode={uiMode}
+      onRegenerateMap={generateThemeRooms}
+      onRefreshSeed={refreshMapSeed}
       onRenameLocation={renameLocation}
     />
   );
@@ -1319,15 +1330,12 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       builderMode={builderMode}
       canGoNextRoom={activeRegionIndex >= 0 && activeRegionIndex < (state.locationRegions?.length || 0) - 1}
       canGoPreviousRoom={activeRegionIndex > 0}
-      generatedMapPreview={generatedMapPreview}
       hasRooms={Boolean(state.locationRegions?.length)}
       roomEntries={roomToolbarEntries}
       nextRoomSlot={nextMissingRoomSlot}
       exportIncompleteCount={exportIncompleteCount}
       onAddMissingRoomSlot={openNextMissingRoomSlot}
       onCopyMarkdown={copyRoomKeyMarkdown}
-      onGenerateThemeRooms={generateThemeRooms}
-      onNewMapSeed={refreshMapSeed}
       onOpenComponents={openRoomComponents}
       onSelectExport={() => activateBuilderMode("export")}
       onSelectFrame={() => activateBuilderMode("theme")}
@@ -1370,6 +1378,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
           state={state}
           setState={setState}
           mapRequest={stableMapRequest}
+          mapTransitionKey={mapStructureKey}
           digest={digest}
           generatedMapPreview={generatedMapPreview}
           previewError={previewResult.error}
