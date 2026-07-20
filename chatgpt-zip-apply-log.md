@@ -17715,3 +17715,1112 @@ _Nessun file aggiunto._
 
 - Percorso sospetto nello ZIP: _implementation-note.txt
 
+
+---
+
+## 2026-07-20 09:08:36
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-promo-studio-v1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 17
+
+- `+AUDIT.md`
+- `+config/default.config.mjs`
+- `+config/local.config.example.mjs`
+- `+FILE_MANIFEST.txt`
+- `+lib/browser-harness.mjs`
+- `+lib/cli.mjs`
+- `+lib/config.mjs`
+- `+lib/director.mjs`
+- `+lib/logger.mjs`
+- `+lib/run-scenario.mjs`
+- `+lib/scenario-helpers.mjs`
+- `+lib/server.mjs`
+- `+run.mjs`
+- `+scenarios/dark-places.mjs`
+- `+scenarios/index.mjs`
+- `+scenarios/terrifying-monsters.mjs`
+- `+setup.ps1`
+
+**File sovrascritti:** 3
+
+- `~.gitignore`
+- `~package.json`
+- `~README.md`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: AUDIT.md
+- Percorso sospetto nello ZIP: config/default.config.mjs
+- Percorso sospetto nello ZIP: config/local.config.example.mjs
+- Percorso sospetto nello ZIP: FILE_MANIFEST.txt
+- Percorso sospetto nello ZIP: lib/browser-harness.mjs
+- Percorso sospetto nello ZIP: lib/cli.mjs
+- Percorso sospetto nello ZIP: lib/config.mjs
+- Percorso sospetto nello ZIP: lib/director.mjs
+- Percorso sospetto nello ZIP: lib/logger.mjs
+- Percorso sospetto nello ZIP: lib/run-scenario.mjs
+- Percorso sospetto nello ZIP: lib/scenario-helpers.mjs
+- Percorso sospetto nello ZIP: lib/server.mjs
+- Percorso sospetto nello ZIP: run.mjs
+- Percorso sospetto nello ZIP: scenarios/dark-places.mjs
+- Percorso sospetto nello ZIP: scenarios/index.mjs
+- Percorso sospetto nello ZIP: scenarios/terrifying-monsters.mjs
+- Percorso sospetto nello ZIP: setup.ps1
+
+
+---
+
+## 2026-07-20 10:04:54
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-promo-studio-v1.1.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.1.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 17
+
+- `+AUDIT.md`
+- `+config/default.config.mjs`
+- `+config/local.config.example.mjs`
+- `+FILE_MANIFEST.txt`
+- `+lib/browser-harness.mjs`
+- `+lib/cli.mjs`
+- `+lib/config.mjs`
+- `+lib/director.mjs`
+- `+lib/logger.mjs`
+- `+lib/run-scenario.mjs`
+- `+lib/scenario-helpers.mjs`
+- `+lib/server.mjs`
+- `+run.mjs`
+- `+scenarios/dark-places.mjs`
+- `+scenarios/index.mjs`
+- `+scenarios/terrifying-monsters.mjs`
+- `+setup.ps1`
+
+**File sovrascritti:** 3
+
+- `~.gitignore`
+- `~package.json`
+- `~README.md`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: AUDIT.md
+- Percorso sospetto nello ZIP: config/default.config.mjs
+- Percorso sospetto nello ZIP: config/local.config.example.mjs
+- Percorso sospetto nello ZIP: FILE_MANIFEST.txt
+- Percorso sospetto nello ZIP: lib/browser-harness.mjs
+- Percorso sospetto nello ZIP: lib/cli.mjs
+- Percorso sospetto nello ZIP: lib/config.mjs
+- Percorso sospetto nello ZIP: lib/director.mjs
+- Percorso sospetto nello ZIP: lib/logger.mjs
+- Percorso sospetto nello ZIP: lib/run-scenario.mjs
+- Percorso sospetto nello ZIP: lib/scenario-helpers.mjs
+- Percorso sospetto nello ZIP: lib/server.mjs
+- Percorso sospetto nello ZIP: run.mjs
+- Percorso sospetto nello ZIP: scenarios/dark-places.mjs
+- Percorso sospetto nello ZIP: scenarios/index.mjs
+- Percorso sospetto nello ZIP: scenarios/terrifying-monsters.mjs
+- Percorso sospetto nello ZIP: setup.ps1
+
+
+---
+
+## 2026-07-20 10:39:22
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-promo-studio-v1.3.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.3.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 17
+
+- `+AUDIT.md`
+- `+config/default.config.mjs`
+- `+config/local.config.example.mjs`
+- `+FILE_MANIFEST.txt`
+- `+lib/browser-harness.mjs`
+- `+lib/cli.mjs`
+- `+lib/config.mjs`
+- `+lib/director.mjs`
+- `+lib/logger.mjs`
+- `+lib/run-scenario.mjs`
+- `+lib/scenario-helpers.mjs`
+- `+lib/server.mjs`
+- `+run.mjs`
+- `+scenarios/dark-places.mjs`
+- `+scenarios/index.mjs`
+- `+scenarios/terrifying-monsters.mjs`
+- `+setup.ps1`
+
+**File sovrascritti:** 3
+
+- `~.gitignore`
+- `~package.json`
+- `~README.md`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: AUDIT.md
+- Percorso sospetto nello ZIP: config/default.config.mjs
+- Percorso sospetto nello ZIP: config/local.config.example.mjs
+- Percorso sospetto nello ZIP: FILE_MANIFEST.txt
+- Percorso sospetto nello ZIP: lib/browser-harness.mjs
+- Percorso sospetto nello ZIP: lib/cli.mjs
+- Percorso sospetto nello ZIP: lib/config.mjs
+- Percorso sospetto nello ZIP: lib/director.mjs
+- Percorso sospetto nello ZIP: lib/logger.mjs
+- Percorso sospetto nello ZIP: lib/run-scenario.mjs
+- Percorso sospetto nello ZIP: lib/scenario-helpers.mjs
+- Percorso sospetto nello ZIP: lib/server.mjs
+- Percorso sospetto nello ZIP: run.mjs
+- Percorso sospetto nello ZIP: scenarios/dark-places.mjs
+- Percorso sospetto nello ZIP: scenarios/index.mjs
+- Percorso sospetto nello ZIP: scenarios/terrifying-monsters.mjs
+- Percorso sospetto nello ZIP: setup.ps1
+
+
+---
+
+## 2026-07-20 10:43:08
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-promo-studio-v1.3.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.3.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 17
+
+- `+AUDIT.md`
+- `+config/default.config.mjs`
+- `+config/local.config.example.mjs`
+- `+FILE_MANIFEST.txt`
+- `+lib/browser-harness.mjs`
+- `+lib/cli.mjs`
+- `+lib/config.mjs`
+- `+lib/director.mjs`
+- `+lib/logger.mjs`
+- `+lib/run-scenario.mjs`
+- `+lib/scenario-helpers.mjs`
+- `+lib/server.mjs`
+- `+run.mjs`
+- `+scenarios/dark-places.mjs`
+- `+scenarios/index.mjs`
+- `+scenarios/terrifying-monsters.mjs`
+- `+setup.ps1`
+
+**File sovrascritti:** 3
+
+- `~.gitignore`
+- `~package.json`
+- `~README.md`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: AUDIT.md
+- Percorso sospetto nello ZIP: config/default.config.mjs
+- Percorso sospetto nello ZIP: config/local.config.example.mjs
+- Percorso sospetto nello ZIP: FILE_MANIFEST.txt
+- Percorso sospetto nello ZIP: lib/browser-harness.mjs
+- Percorso sospetto nello ZIP: lib/cli.mjs
+- Percorso sospetto nello ZIP: lib/config.mjs
+- Percorso sospetto nello ZIP: lib/director.mjs
+- Percorso sospetto nello ZIP: lib/logger.mjs
+- Percorso sospetto nello ZIP: lib/run-scenario.mjs
+- Percorso sospetto nello ZIP: lib/scenario-helpers.mjs
+- Percorso sospetto nello ZIP: lib/server.mjs
+- Percorso sospetto nello ZIP: run.mjs
+- Percorso sospetto nello ZIP: scenarios/dark-places.mjs
+- Percorso sospetto nello ZIP: scenarios/index.mjs
+- Percorso sospetto nello ZIP: scenarios/terrifying-monsters.mjs
+- Percorso sospetto nello ZIP: setup.ps1
+
+
+---
+
+## 2026-07-20 10:50:13
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-promo-studio-v1.3.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.3.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 17
+
+- `+AUDIT.md`
+- `+config/default.config.mjs`
+- `+config/local.config.example.mjs`
+- `+FILE_MANIFEST.txt`
+- `+lib/browser-harness.mjs`
+- `+lib/cli.mjs`
+- `+lib/config.mjs`
+- `+lib/director.mjs`
+- `+lib/logger.mjs`
+- `+lib/run-scenario.mjs`
+- `+lib/scenario-helpers.mjs`
+- `+lib/server.mjs`
+- `+run.mjs`
+- `+scenarios/dark-places.mjs`
+- `+scenarios/index.mjs`
+- `+scenarios/terrifying-monsters.mjs`
+- `+setup.ps1`
+
+**File sovrascritti:** 3
+
+- `~.gitignore`
+- `~package.json`
+- `~README.md`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: AUDIT.md
+- Percorso sospetto nello ZIP: config/default.config.mjs
+- Percorso sospetto nello ZIP: config/local.config.example.mjs
+- Percorso sospetto nello ZIP: FILE_MANIFEST.txt
+- Percorso sospetto nello ZIP: lib/browser-harness.mjs
+- Percorso sospetto nello ZIP: lib/cli.mjs
+- Percorso sospetto nello ZIP: lib/config.mjs
+- Percorso sospetto nello ZIP: lib/director.mjs
+- Percorso sospetto nello ZIP: lib/logger.mjs
+- Percorso sospetto nello ZIP: lib/run-scenario.mjs
+- Percorso sospetto nello ZIP: lib/scenario-helpers.mjs
+- Percorso sospetto nello ZIP: lib/server.mjs
+- Percorso sospetto nello ZIP: run.mjs
+- Percorso sospetto nello ZIP: scenarios/dark-places.mjs
+- Percorso sospetto nello ZIP: scenarios/index.mjs
+- Percorso sospetto nello ZIP: scenarios/terrifying-monsters.mjs
+- Percorso sospetto nello ZIP: setup.ps1
+
+
+---
+
+## 2026-07-20 10:55:20
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-promo-studio-v1.3.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.3.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 17
+
+- `+AUDIT.md`
+- `+config/default.config.mjs`
+- `+config/local.config.example.mjs`
+- `+FILE_MANIFEST.txt`
+- `+lib/browser-harness.mjs`
+- `+lib/cli.mjs`
+- `+lib/config.mjs`
+- `+lib/director.mjs`
+- `+lib/logger.mjs`
+- `+lib/run-scenario.mjs`
+- `+lib/scenario-helpers.mjs`
+- `+lib/server.mjs`
+- `+run.mjs`
+- `+scenarios/dark-places.mjs`
+- `+scenarios/index.mjs`
+- `+scenarios/terrifying-monsters.mjs`
+- `+setup.ps1`
+
+**File sovrascritti:** 3
+
+- `~.gitignore`
+- `~package.json`
+- `~README.md`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: AUDIT.md
+- Percorso sospetto nello ZIP: config/default.config.mjs
+- Percorso sospetto nello ZIP: config/local.config.example.mjs
+- Percorso sospetto nello ZIP: FILE_MANIFEST.txt
+- Percorso sospetto nello ZIP: lib/browser-harness.mjs
+- Percorso sospetto nello ZIP: lib/cli.mjs
+- Percorso sospetto nello ZIP: lib/config.mjs
+- Percorso sospetto nello ZIP: lib/director.mjs
+- Percorso sospetto nello ZIP: lib/logger.mjs
+- Percorso sospetto nello ZIP: lib/run-scenario.mjs
+- Percorso sospetto nello ZIP: lib/scenario-helpers.mjs
+- Percorso sospetto nello ZIP: lib/server.mjs
+- Percorso sospetto nello ZIP: run.mjs
+- Percorso sospetto nello ZIP: scenarios/dark-places.mjs
+- Percorso sospetto nello ZIP: scenarios/index.mjs
+- Percorso sospetto nello ZIP: scenarios/terrifying-monsters.mjs
+- Percorso sospetto nello ZIP: setup.ps1
+
+
+---
+
+## 2026-07-20 10:56:16
+
+**Operazione:** Apply Custom ChatGPT ZIP
+
+**ZIP applicato:** `cruor-home-engine-five-slow-packets-wire-overlap-fix-20260719.zip`
+
+**Percorso ZIP:** `h:\Users\avers\Download\cruor-home-engine-five-slow-packets-wire-overlap-fix-20260719.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 1
+
+- `~app/HomePage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-20 11:11:05
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**ZIP applicato:** `cruor-mega-menu-composer-theme-match-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-mega-menu-composer-theme-match-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/app-shell.css`
+- `~app/navigation/site-mega-menu.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-20 11:23:55
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-mega-menu-icon-type-refinement-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-mega-menu-icon-type-refinement-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-oj4g1F`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/app-shell.css`
+- `~app/navigation/site-mega-menu.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-20 11:26:29
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-promo-studio-v1.4.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.4.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-3icYcu`
+
+**Decisione struttura:** `Cartella top-level preservata: promo-studio`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 20
+
+- `~promo-studio/.gitignore`
+- `~promo-studio/AUDIT.md`
+- `~promo-studio/config/default.config.mjs`
+- `~promo-studio/config/local.config.example.mjs`
+- `~promo-studio/FILE_MANIFEST.txt`
+- `~promo-studio/lib/browser-harness.mjs`
+- `~promo-studio/lib/cli.mjs`
+- `~promo-studio/lib/config.mjs`
+- `~promo-studio/lib/director.mjs`
+- `~promo-studio/lib/logger.mjs`
+- `~promo-studio/lib/run-scenario.mjs`
+- `~promo-studio/lib/scenario-helpers.mjs`
+- `~promo-studio/lib/server.mjs`
+- `~promo-studio/package.json`
+- `~promo-studio/README.md`
+- `~promo-studio/run.mjs`
+- `~promo-studio/scenarios/dark-places.mjs`
+- `~promo-studio/scenarios/index.mjs`
+- `~promo-studio/scenarios/terrifying-monsters.mjs`
+- `~promo-studio/setup.ps1`
+
+
+---
+
+## 2026-07-20 11:31:02
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-navigation-surfaces-settings-scrim-refinement-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-navigation-surfaces-settings-scrim-refinement-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-jMFed1`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 2
+
+- `~app/app-shell.css`
+- `~app/navigation/site-mega-menu.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-20 12:16:11
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-promo-studio-v1.5.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.5.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-WfBNP0`
+
+**Decisione struttura:** `Cartella top-level preservata: promo-studio`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 20
+
+- `~promo-studio/.gitignore`
+- `~promo-studio/AUDIT.md`
+- `~promo-studio/config/default.config.mjs`
+- `~promo-studio/config/local.config.example.mjs`
+- `~promo-studio/FILE_MANIFEST.txt`
+- `~promo-studio/lib/browser-harness.mjs`
+- `~promo-studio/lib/cli.mjs`
+- `~promo-studio/lib/config.mjs`
+- `~promo-studio/lib/director.mjs`
+- `~promo-studio/lib/logger.mjs`
+- `~promo-studio/lib/run-scenario.mjs`
+- `~promo-studio/lib/scenario-helpers.mjs`
+- `~promo-studio/lib/server.mjs`
+- `~promo-studio/package.json`
+- `~promo-studio/README.md`
+- `~promo-studio/run.mjs`
+- `~promo-studio/scenarios/dark-places.mjs`
+- `~promo-studio/scenarios/index.mjs`
+- `~promo-studio/scenarios/terrifying-monsters.mjs`
+- `~promo-studio/setup.ps1`
+
+
+---
+
+## 2026-07-20 12:22:01
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-navigation-button-hierarchy-utility-spacing-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-navigation-button-hierarchy-utility-spacing-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-WJg9kr`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 3
+
+- `~app/app-shell.css`
+- `~app/navigation/site-mega-menu.css`
+- `~shared/styles/accessibility.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-20 12:36:58
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-navigation-button-contrast-state-icons-fix-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-navigation-button-contrast-state-icons-fix-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-fDpPja`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 1
+
+- `+_implementation-note.txt`
+
+**File sovrascritti:** 3
+
+- `~app/app-shell.css`
+- `~app/navigation/site-mega-menu.css`
+- `~shared/styles/accessibility.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-20 13:30:07
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-navigation-dark-button-palette-rollback-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-navigation-dark-button-palette-rollback-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-64GEkH`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~app/app-shell.css`
+- `~app/navigation/site-mega-menu.css`
+- `~shared/styles/accessibility.css`
+- `~_implementation-note.txt`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: _implementation-note.txt
+
+
+---
+
+## 2026-07-20 13:30:25
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-promo-studio-v1.6.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.6.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-cTtL8h`
+
+**Decisione struttura:** `Cartella top-level preservata: promo-studio`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 20
+
+- `~promo-studio/.gitignore`
+- `~promo-studio/AUDIT.md`
+- `~promo-studio/config/default.config.mjs`
+- `~promo-studio/config/local.config.example.mjs`
+- `~promo-studio/FILE_MANIFEST.txt`
+- `~promo-studio/lib/browser-harness.mjs`
+- `~promo-studio/lib/cli.mjs`
+- `~promo-studio/lib/config.mjs`
+- `~promo-studio/lib/director.mjs`
+- `~promo-studio/lib/logger.mjs`
+- `~promo-studio/lib/run-scenario.mjs`
+- `~promo-studio/lib/scenario-helpers.mjs`
+- `~promo-studio/lib/server.mjs`
+- `~promo-studio/package.json`
+- `~promo-studio/README.md`
+- `~promo-studio/run.mjs`
+- `~promo-studio/scenarios/dark-places.mjs`
+- `~promo-studio/scenarios/index.mjs`
+- `~promo-studio/scenarios/terrifying-monsters.mjs`
+- `~promo-studio/setup.ps1`
+
+
+---
+
+## 2026-07-20 13:59:13
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-promo-studio-v1.7.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.7.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-pxxPvW`
+
+**Decisione struttura:** `Cartella top-level preservata: promo-studio`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 20
+
+- `~promo-studio/.gitignore`
+- `~promo-studio/AUDIT.md`
+- `~promo-studio/config/default.config.mjs`
+- `~promo-studio/config/local.config.example.mjs`
+- `~promo-studio/FILE_MANIFEST.txt`
+- `~promo-studio/lib/browser-harness.mjs`
+- `~promo-studio/lib/cli.mjs`
+- `~promo-studio/lib/config.mjs`
+- `~promo-studio/lib/director.mjs`
+- `~promo-studio/lib/logger.mjs`
+- `~promo-studio/lib/run-scenario.mjs`
+- `~promo-studio/lib/scenario-helpers.mjs`
+- `~promo-studio/lib/server.mjs`
+- `~promo-studio/package.json`
+- `~promo-studio/README.md`
+- `~promo-studio/run.mjs`
+- `~promo-studio/scenarios/dark-places.mjs`
+- `~promo-studio/scenarios/index.mjs`
+- `~promo-studio/scenarios/terrifying-monsters.mjs`
+- `~promo-studio/setup.ps1`
+
+
+---
+
+## 2026-07-20 14:14:15
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-promo-studio-v1.8.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.8.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-aMmZPe`
+
+**Decisione struttura:** `Cartella top-level preservata: promo-studio`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 20
+
+- `~promo-studio/.gitignore`
+- `~promo-studio/AUDIT.md`
+- `~promo-studio/config/default.config.mjs`
+- `~promo-studio/config/local.config.example.mjs`
+- `~promo-studio/FILE_MANIFEST.txt`
+- `~promo-studio/lib/browser-harness.mjs`
+- `~promo-studio/lib/cli.mjs`
+- `~promo-studio/lib/config.mjs`
+- `~promo-studio/lib/director.mjs`
+- `~promo-studio/lib/logger.mjs`
+- `~promo-studio/lib/run-scenario.mjs`
+- `~promo-studio/lib/scenario-helpers.mjs`
+- `~promo-studio/lib/server.mjs`
+- `~promo-studio/package.json`
+- `~promo-studio/README.md`
+- `~promo-studio/run.mjs`
+- `~promo-studio/scenarios/dark-places.mjs`
+- `~promo-studio/scenarios/index.mjs`
+- `~promo-studio/scenarios/terrifying-monsters.mjs`
+- `~promo-studio/setup.ps1`
+
+
+---
+
+## 2026-07-20 14:28:21
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-promo-studio-v1.9.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.9.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-yxKuYw`
+
+**Decisione struttura:** `Cartella top-level preservata: promo-studio`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 20
+
+- `~promo-studio/.gitignore`
+- `~promo-studio/AUDIT.md`
+- `~promo-studio/config/default.config.mjs`
+- `~promo-studio/config/local.config.example.mjs`
+- `~promo-studio/FILE_MANIFEST.txt`
+- `~promo-studio/lib/browser-harness.mjs`
+- `~promo-studio/lib/cli.mjs`
+- `~promo-studio/lib/config.mjs`
+- `~promo-studio/lib/director.mjs`
+- `~promo-studio/lib/logger.mjs`
+- `~promo-studio/lib/run-scenario.mjs`
+- `~promo-studio/lib/scenario-helpers.mjs`
+- `~promo-studio/lib/server.mjs`
+- `~promo-studio/package.json`
+- `~promo-studio/README.md`
+- `~promo-studio/run.mjs`
+- `~promo-studio/scenarios/dark-places.mjs`
+- `~promo-studio/scenarios/index.mjs`
+- `~promo-studio/scenarios/terrifying-monsters.mjs`
+- `~promo-studio/setup.ps1`
+
+
+---
+
+## 2026-07-20 14:36:43
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-promo-studio-v1.10.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.10.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-Px0z3q`
+
+**Decisione struttura:** `Cartella top-level preservata: promo-studio`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 20
+
+- `~promo-studio/.gitignore`
+- `~promo-studio/AUDIT.md`
+- `~promo-studio/config/default.config.mjs`
+- `~promo-studio/config/local.config.example.mjs`
+- `~promo-studio/FILE_MANIFEST.txt`
+- `~promo-studio/lib/browser-harness.mjs`
+- `~promo-studio/lib/cli.mjs`
+- `~promo-studio/lib/config.mjs`
+- `~promo-studio/lib/director.mjs`
+- `~promo-studio/lib/logger.mjs`
+- `~promo-studio/lib/run-scenario.mjs`
+- `~promo-studio/lib/scenario-helpers.mjs`
+- `~promo-studio/lib/server.mjs`
+- `~promo-studio/package.json`
+- `~promo-studio/README.md`
+- `~promo-studio/run.mjs`
+- `~promo-studio/scenarios/dark-places.mjs`
+- `~promo-studio/scenarios/index.mjs`
+- `~promo-studio/scenarios/terrifying-monsters.mjs`
+- `~promo-studio/setup.ps1`
+
+
+---
+
+## 2026-07-20 14:47:03
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-promo-studio-v1.11.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.11.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-WyB0ok`
+
+**Decisione struttura:** `Cartella top-level preservata: promo-studio`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 20
+
+- `~promo-studio/.gitignore`
+- `~promo-studio/AUDIT.md`
+- `~promo-studio/config/default.config.mjs`
+- `~promo-studio/config/local.config.example.mjs`
+- `~promo-studio/FILE_MANIFEST.txt`
+- `~promo-studio/lib/browser-harness.mjs`
+- `~promo-studio/lib/cli.mjs`
+- `~promo-studio/lib/config.mjs`
+- `~promo-studio/lib/director.mjs`
+- `~promo-studio/lib/logger.mjs`
+- `~promo-studio/lib/run-scenario.mjs`
+- `~promo-studio/lib/scenario-helpers.mjs`
+- `~promo-studio/lib/server.mjs`
+- `~promo-studio/package.json`
+- `~promo-studio/README.md`
+- `~promo-studio/run.mjs`
+- `~promo-studio/scenarios/dark-places.mjs`
+- `~promo-studio/scenarios/index.mjs`
+- `~promo-studio/scenarios/terrifying-monsters.mjs`
+- `~promo-studio/setup.ps1`
+
+
+---
+
+## 2026-07-20 15:06:05
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-promo-studio-v1.12.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.12.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-WNCTtk`
+
+**Decisione struttura:** `Cartella top-level preservata: promo-studio`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 1
+
+- `+promo-studio/lib/video-normalizer.mjs`
+
+**File sovrascritti:** 20
+
+- `~promo-studio/.gitignore`
+- `~promo-studio/AUDIT.md`
+- `~promo-studio/config/default.config.mjs`
+- `~promo-studio/config/local.config.example.mjs`
+- `~promo-studio/FILE_MANIFEST.txt`
+- `~promo-studio/lib/browser-harness.mjs`
+- `~promo-studio/lib/cli.mjs`
+- `~promo-studio/lib/config.mjs`
+- `~promo-studio/lib/director.mjs`
+- `~promo-studio/lib/logger.mjs`
+- `~promo-studio/lib/run-scenario.mjs`
+- `~promo-studio/lib/scenario-helpers.mjs`
+- `~promo-studio/lib/server.mjs`
+- `~promo-studio/package.json`
+- `~promo-studio/README.md`
+- `~promo-studio/run.mjs`
+- `~promo-studio/scenarios/dark-places.mjs`
+- `~promo-studio/scenarios/index.mjs`
+- `~promo-studio/scenarios/terrifying-monsters.mjs`
+- `~promo-studio/setup.ps1`
+
+
+---
+
+## 2026-07-20 15:19:04
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-promo-studio-v1.13.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.13.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-vzDoIr`
+
+**Decisione struttura:** `Cartella top-level preservata: promo-studio`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 21
+
+- `~promo-studio/.gitignore`
+- `~promo-studio/AUDIT.md`
+- `~promo-studio/config/default.config.mjs`
+- `~promo-studio/config/local.config.example.mjs`
+- `~promo-studio/FILE_MANIFEST.txt`
+- `~promo-studio/lib/browser-harness.mjs`
+- `~promo-studio/lib/cli.mjs`
+- `~promo-studio/lib/config.mjs`
+- `~promo-studio/lib/director.mjs`
+- `~promo-studio/lib/logger.mjs`
+- `~promo-studio/lib/run-scenario.mjs`
+- `~promo-studio/lib/scenario-helpers.mjs`
+- `~promo-studio/lib/server.mjs`
+- `~promo-studio/lib/video-normalizer.mjs`
+- `~promo-studio/package.json`
+- `~promo-studio/README.md`
+- `~promo-studio/run.mjs`
+- `~promo-studio/scenarios/dark-places.mjs`
+- `~promo-studio/scenarios/index.mjs`
+- `~promo-studio/scenarios/terrifying-monsters.mjs`
+- `~promo-studio/setup.ps1`
+
+
+---
+
+## 2026-07-20 15:38:35
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-promo-studio-v1.14.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-promo-studio-v1.14.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-WWLtCU`
+
+**Decisione struttura:** `Cartella top-level preservata: promo-studio`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 21
+
+- `~promo-studio/.gitignore`
+- `~promo-studio/AUDIT.md`
+- `~promo-studio/config/default.config.mjs`
+- `~promo-studio/config/local.config.example.mjs`
+- `~promo-studio/FILE_MANIFEST.txt`
+- `~promo-studio/lib/browser-harness.mjs`
+- `~promo-studio/lib/cli.mjs`
+- `~promo-studio/lib/config.mjs`
+- `~promo-studio/lib/director.mjs`
+- `~promo-studio/lib/logger.mjs`
+- `~promo-studio/lib/run-scenario.mjs`
+- `~promo-studio/lib/scenario-helpers.mjs`
+- `~promo-studio/lib/server.mjs`
+- `~promo-studio/lib/video-normalizer.mjs`
+- `~promo-studio/package.json`
+- `~promo-studio/README.md`
+- `~promo-studio/run.mjs`
+- `~promo-studio/scenarios/dark-places.mjs`
+- `~promo-studio/scenarios/index.mjs`
+- `~promo-studio/scenarios/terrifying-monsters.mjs`
+- `~promo-studio/setup.ps1`
+
