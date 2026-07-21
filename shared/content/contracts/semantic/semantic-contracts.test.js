@@ -132,12 +132,47 @@ function createInspiration() {
     contexts: [],
     editorial: {
       deck: "A compact archive summary.",
+      thesis: "The opening thesis.",
       whatItIs: "A factual description for the test fixture.",
-      whyItDisturbs: "It exposes deterministic validation boundaries.",
-      creativeUses: ["Exercise shared contracts"],
+      cruorLensThesis: "The compact Cruor reading.",
+      cruorLens: "The full Cruor editorial interpretation.",
+      facts: [{ label: "Place", value: "Test Place" }],
+      horrorStructures: [
+        {
+          id: "ritual-order",
+          title: "Ritual Order",
+          description: "A reusable horror mechanism.",
+          feeds: "Feeds ritual components.",
+          keywords: ["ritual"],
+          componentIds: [],
+        },
+      ],
+      triggerWarnings: ["Human remains"],
+      tableSafety: ["Discuss visual boundaries before play."],
+      lowIntensityAlternative: "Replace remains with carved stone.",
+      sources: [
+        {
+          title: "Test Source",
+          url: "https://example.com/source",
+          description: "A source description.",
+          meta: "Official source",
+        },
+      ],
+      furtherReading: [],
+      relatedDossiers: [
+        {
+          sourceAnchorId: "related-source",
+          title: "Related Source",
+          relationship: "Shared motif",
+          description: "A related dossier.",
+        },
+      ],
+      whyItDisturbs: "",
+      creativeUses: [],
       cautions: [],
     },
     media: {
+      imageTitle: "Test archive image",
       imageKey: "",
       imageProvider: "local",
       imageAlt: "",
@@ -489,6 +524,18 @@ describe("semantic v2 contracts", () => {
       metadata: {},
     });
 
+    expect(module.inspiration.media.imageTitle).toBe("Test archive image");
+    expect(module.inspiration.editorial.cruorLens).toBe(
+      "The full Cruor editorial interpretation.",
+    );
+    expect(module.inspiration.editorial.horrorStructures[0]).toMatchObject({
+      id: "ritual-order",
+      title: "Ritual Order",
+      keywords: ["ritual"],
+    });
+    expect(module.inspiration.editorial.sources[0].url).toBe(
+      "https://example.com/source",
+    );
     expect(validateInspirationModuleV2(module)).toEqual([]);
     expect(validateContentPackV0_2(pack)).toEqual([]);
   });

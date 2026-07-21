@@ -1624,6 +1624,10 @@
   pointer-events: none;
 }
 
+.location-map-toolbar__map-tools > .location-map-toolbar__divider:first-child {
+  display: none;
+}
+
 .cruor-map-inline-editor .location-map-inline-editor-viewport,
 .cruor-map-inline-editor .map-viewport {
   width: 100%;
@@ -1859,7 +1863,9 @@
   display: inline-grid;
   place-items: center;
   min-width: 42px;
-  height: 28px;
+  height: 38px;
+  min-height: 38px;
+  box-sizing: border-box;
   padding: 0 8px;
   border: 1px solid var(--cruor-color-r208-g162-b170-a140, rgba(208, 162, 170, 0.14));
   background: var(--cruor-color-black-a220, rgba(0, 0, 0, 0.22));
@@ -3185,20 +3191,29 @@
 }
 
 .location-map-toolbar__level-view-panel[data-style-floating="portal"] {
-  width: min(258px, calc(100vw - 48px));
-  min-width: 224px;
-  max-width: min(258px, calc(100vw - 24px));
-  max-height: min(520px, calc(100dvh - 24px));
-  overflow: auto;
+  grid-template-columns: minmax(0, 1fr);
+  width: min(210px, calc(100vw - 48px));
+  min-width: min(210px, calc(100vw - 48px));
+  max-width: min(210px, calc(100vw - 24px));
+  max-height: min(560px, calc(100dvh - 24px));
+  padding: 8px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
-.location-map-toolbar__level-view-panel > .location-map-toolbar__style-subtitle,
+.location-map-toolbar__level-view-panel > .location-map-toolbar__style-subtitle {
+  margin: 2px 0 0;
+}
+
 .location-map-toolbar__level-view-panel > .location-map-toolbar__style-options {
-  margin-right: 8px;
-  margin-left: 8px;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  margin: 0;
 }
 
 .location-map-toolbar__level-view-panel .location-map-toolbar__style-option {
+  width: 100%;
   min-height: 36px;
 }
 
@@ -3381,3 +3396,79 @@ body[data-cruor-room-dragging="true"] #cruorTooltipPortal {
 .location-composer .location-output-details-rail.cruor-composer-rail--with-footer {
   overflow: hidden;
 }
+
+/* Keep the Composer map toolbar on the same surface as Theme and Map Plan. */
+.location-composer .location-map-toolbar {
+  background: var(--cruor-composer-rail-card-background);
+}
+
+/* Keep each toolbar group on the same surface as the Composer rail sections. */
+.location-composer .location-map-toolbar__group {
+  background: var(--cruor-composer-rail-card-background);
+}
+
+/* Deterministic Map Plan seed control. */
+.location-seed-field {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.location-seed-field__control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
+  gap: 6px;
+  min-width: 0;
+}
+
+.location-seed-field__input {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--cruor-control-height-sm);
+  font-family: var(--font-mono, ui-monospace, monospace);
+}
+
+.location-seed-field__input[readonly] {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--cruor-color-text-a580);
+  padding-inline: 0;
+  cursor: default;
+}
+
+.location-seed-field__lock {
+  appearance: none;
+  display: inline-grid;
+  place-items: center;
+  align-self: center;
+  width: var(--cruor-control-height-sm);
+  height: var(--cruor-control-height-sm);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.location-seed-field__lock:is(:hover, :focus-visible) {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.location-seed-field__lock:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+}
+
+.location-seed-field__lock.is-locked > i {
+  color: var(--cruor-color-hex-b33b4e);
+}
+
+.location-seed-field__lock.is-unlocked > i {
+  color: var(--cruor-color-hex-fff0f2);
+}
+

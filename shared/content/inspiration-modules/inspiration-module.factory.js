@@ -53,6 +53,12 @@ function uniqueArray(values) {
   return [...new Set(normalizeStringArray(values))];
 }
 
+function normalizeObjectArray(value) {
+  return asArray(value)
+    .filter((item) => item && typeof item === "object" && !Array.isArray(item))
+    .map((item) => ({ ...item }));
+}
+
 function normalizeCardNumber(value) {
   const parsed = Number(value);
   return Number.isFinite(parsed) && parsed > 0 ? Math.trunc(parsed) : null;
@@ -130,6 +136,8 @@ export function buildCoreInspirationFromCard(card) {
   const horror = uniqueArray(sourceAnchor?.horror || []);
   const summary = card.caption || sourceAnchor?.summary || "";
   const cardMetadata = normalizeInspirationCardMetadata(card);
+  const editorial = card.editorial || {};
+  const media = card.media || {};
 
   return {
     id: `inspiration-${sourceAnchorId}`,
@@ -150,12 +158,39 @@ export function buildCoreInspirationFromCard(card) {
     narrative: card.logic || sourceAnchor?.summary || summary,
     caption: card.caption || "",
     card: cardMetadata,
+    editorial: {
+      deck: String(editorial.deck || summary).trim(),
+      thesis: String(editorial.thesis || "").trim(),
+      whatItIs: String(
+        editorial.whatItIs || cardMetadata.description || "",
+      ).trim(),
+      cruorLensThesis: String(editorial.cruorLensThesis || "").trim(),
+      cruorLens: String(editorial.cruorLens || card.logic || "").trim(),
+      facts: normalizeObjectArray(editorial.facts),
+      horrorStructures: normalizeObjectArray(editorial.horrorStructures),
+      triggerWarnings: normalizeStringArray(editorial.triggerWarnings),
+      tableSafety: normalizeStringArray(editorial.tableSafety),
+      lowIntensityAlternative: String(
+        editorial.lowIntensityAlternative || "",
+      ).trim(),
+      sources: normalizeObjectArray(editorial.sources),
+      furtherReading: normalizeObjectArray(editorial.furtherReading),
+      relatedDossiers: normalizeObjectArray(editorial.relatedDossiers),
+      whyItDisturbs: String(editorial.whyItDisturbs || "").trim(),
+      creativeUses: normalizeStringArray(editorial.creativeUses),
+      cautions: normalizeStringArray(editorial.cautions),
+    },
     media: {
-      icon: card.icon || "fa-book-open",
-      imageKey: card.imageKey || "",
-      imageNote: card.imageNote || "",
-      imageProvider: resolvedCard.imageProvider || "",
-      imageUrl: resolvedCard.imageUrl || "",
+      icon: media.icon || card.icon || "fa-book-open",
+      imageTitle: String(media.imageTitle || card.title || "").trim(),
+      imageKey: media.imageKey || card.imageKey || "",
+      imageNote: media.imageNote || card.imageNote || "",
+      imageProvider: media.imageProvider || resolvedCard.imageProvider || "",
+      imageUrl: media.imageUrl || resolvedCard.imageUrl || "",
+      imageAlt: String(
+        media.imageAlt || card.imageNote || `${card.title} reference image.`,
+      ).trim(),
+      imageCredit: String(media.imageCredit || "").trim(),
     },
     inspiration: {
       anchor: card.title,

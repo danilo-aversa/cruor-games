@@ -71,6 +71,14 @@ describe("Dark Places live semantic map integration", () => {
     expect(initial.activeSlotScope).toBe("map");
   });
 
+  it("regenerates a deterministic room program from a manually entered seed", () => {
+    const initial = createInitialGeneratedLocationComposerState();
+    const next = createGeneratedThemeProgramState(initial, { seed: "manual-map-seed" });
+
+    expect(next.seed).toBe("manual-map-seed");
+    expect(next.locationRegions.length).toBeGreaterThan(1);
+  });
+
   it("clears room selection in Frame and selects room 1 when entering Rooms", () => {
     const generated = createInitialGeneratedLocationComposerState();
     const selected = {
@@ -88,6 +96,38 @@ describe("Dark Places live semantic map integration", () => {
     expect(rooms.activeRegionId).toBe(generated.locationRegions[0]?.id);
     expect(rooms.activeSlotScope).toBe("region");
   });
+
+
+  it("generates the default room program immediately when starting from scratch", async () => {
+    let getSnapshot = null;
+    await act(async () => {
+      root.render(
+        <DarkenLocationComposerPage
+          uiMode="simple"
+          onSnapshotProviderReady={(provider) => {
+            getSnapshot = provider;
+          }}
+        />,
+      );
+    });
+
+    const guideToggle = container.querySelector('.cruor-composer-start-screen__guide-toggle input');
+    await act(async () => guideToggle.click());
+
+    const scratchButton = [...container.querySelectorAll('.cruor-composer-start-screen__choice')]
+      .find((button) => button.textContent.includes("Build from Scratch"));
+    await act(async () => scratchButton.click());
+
+    const snapshot = getSnapshot();
+    expect(snapshot.locationRegions.length).toBeGreaterThan(1);
+    expect(snapshot.activeRegionId).toBe("");
+    expect(snapshot.activeSlotScope).toBe("map");
+    expect(container.querySelector('[data-testid="dark-places-composer"]')?.dataset.locationStartMode)
+      .toBe("scratch");
+    expect(container.querySelector('.location-map-build-action-card')?.textContent)
+      .toContain("Show Build Guide");
+    expect(document.body.querySelector('.cruor-composer-build-guide-trigger')).toBeNull();
+  }, 10000);
 
   it("regenerates the room program and clears stale assignments when the theme changes", () => {
     const initialRegions = getRegionTemplatesForState({

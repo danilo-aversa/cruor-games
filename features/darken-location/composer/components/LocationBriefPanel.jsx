@@ -63,6 +63,10 @@ const LOCATION_FIELD_HELP = {
     title: "Complexity",
     description: "Simple keeps the route cleaner. Standard balances branches. Complex creates more branching and loops.",
   },
+  seed: {
+    title: "Map Seed",
+    description: "Unlock the seed to enter a deterministic value manually. Locking it commits the new seed and regenerates the place.",
+  },
   roomCount: {
     title: "Room Count",
     description: "Sets the exact number of rooms when Scale is Custom.",
@@ -145,6 +149,91 @@ function LocationFieldLabel({ help, label, value = "" }) {
           <span aria-hidden="true">?</span>
         </span>
       ) : null}
+    </div>
+  );
+}
+
+function LocationSeedField({ onCommit, value = "" }) {
+  const [locked, setLocked] = useState(true);
+  const [draftSeed, setDraftSeed] = useState(String(value || ""));
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    setDraftSeed(String(value || ""));
+  }, [value]);
+
+  useEffect(() => {
+    if (locked) return;
+    inputRef.current?.focus();
+    inputRef.current?.select();
+  }, [locked]);
+
+  function commitSeed({ lockAfter = false } = {}) {
+    const normalizedSeed = String(draftSeed || "").trim();
+    const currentSeed = String(value || "").trim();
+    if (!normalizedSeed) {
+      setDraftSeed(currentSeed);
+    } else if (normalizedSeed !== currentSeed) {
+      onCommit?.(normalizedSeed);
+    }
+    if (lockAfter) setLocked(true);
+  }
+
+  function toggleLock() {
+    if (locked) {
+      setLocked(false);
+      return;
+    }
+    commitSeed({ lockAfter: true });
+  }
+
+  return (
+    <div className="location-seed-field">
+      <LocationFieldLabel
+        help={LOCATION_FIELD_HELP.seed}
+        label="Seed"
+        value={locked ? "Locked" : "Editable"}
+      />
+      <div className="location-seed-field__control">
+        <input
+          ref={inputRef}
+          className="cruor-input location-seed-field__input"
+          type="text"
+          value={draftSeed}
+          readOnly={locked}
+          aria-readonly={locked}
+          aria-label="Map seed"
+          spellCheck="false"
+          onChange={(event) => setDraftSeed(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              commitSeed({ lockAfter: true });
+            } else if (event.key === "Escape") {
+              setDraftSeed(String(value || ""));
+              setLocked(true);
+            }
+          }}
+        />
+        <button
+          className={cx(
+            "location-seed-field__lock",
+            locked ? "is-locked" : "is-unlocked",
+          )}
+          type="button"
+          aria-label={locked ? "Unlock map seed" : "Lock and apply map seed"}
+          data-key="tooltip-generic"
+          data-tooltip={locked ? "Unlock Seed" : "Apply and Lock Seed"}
+          data-tooltip-description={
+            locked
+              ? "Allow manual editing of the deterministic map seed."
+              : "Apply the entered seed, regenerate the place, and lock the field."
+          }
+          onClick={toggleLock}
+        >
+          <i className={`fa-solid ${locked ? "fa-lock" : "fa-lock-open"}`} aria-hidden="true" />
+        </button>
+      </div>
     </div>
   );
 }
@@ -755,6 +844,7 @@ export function LocationBriefPanel({
   onChangeThemeFrame,
   onGenerateScratchMap,
   onGenerateThemeRooms,
+  onChangeMapSeed,
   onRegenerateScratchRoom,
   onRemoveScratchRoom,
   onSelectScratchRoom,
@@ -852,7 +942,7 @@ export function LocationBriefPanel({
       side="left"
       variant="controls"
       surface
-      scrollable={dungeonMode !== "theme"}
+      scrollable
       className="location-composer__rail location-composer__rail--left location-map-frame-rail"
       aria-label="Location frame"
     >
@@ -907,7 +997,7 @@ export function LocationBriefPanel({
           bodyClassName="location-frame-selector-stack"
           aria-label="Location map controls"
         >
-              <LocationIconToggleField
+          <LocationIconToggleField
                 help={LOCATION_FIELD_HELP.scale}
                 label="Scale"
                 value={state.dungeonScale || "medium"}
@@ -948,6 +1038,8 @@ export function LocationBriefPanel({
                   activeThemeProgramCandidateId: "",
                 }))}
               />
+
+              <LocationSeedField value={state.seed || ""} onCommit={onChangeMapSeed} />
 
               {showGenerateAction ? (
                 <button

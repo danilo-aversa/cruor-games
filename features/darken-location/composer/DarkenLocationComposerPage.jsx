@@ -282,9 +282,11 @@ function selectBestThemeProgramCandidate(candidates = []) {
 }
 
 export function createGeneratedThemeProgramState(current, frameUpdates = {}) {
+  const requestedSeed = String(frameUpdates.seed ?? current.seed ?? "").trim();
   const clearedState = {
     ...current,
     ...frameUpdates,
+    seed: requestedSeed || createLocationMapSeed(),
     selectedComponentIds: new Set(),
     slotAssignments: {},
     lockedSlots: new Set(),
@@ -662,6 +664,24 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
     setTransientDraftStatus("Map seed refreshed");
   }, [clearAssignmentHistory, requestFullMapTransition, setTransientDraftStatus]);
 
+  const changeMapSeed = useCallback(
+    (seed) => {
+      const normalizedSeed = String(seed || "").trim();
+      if (!normalizedSeed) return;
+
+      setState((current) => {
+        if (String(current.seed || "").trim() === normalizedSeed) return current;
+        return createGeneratedThemeProgramState(current, { seed: normalizedSeed });
+      });
+      requestFullMapTransition();
+      clearAssignmentHistory();
+      setBuilderMode("theme");
+      setDrawerOpen(false);
+      setTransientDraftStatus("Map seed applied");
+    },
+    [clearAssignmentHistory, requestFullMapTransition, setTransientDraftStatus],
+  );
+
   const renameLocation = useCallback((title) => {
     setState((current) => ({
       ...current,
@@ -846,7 +866,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
   }, [clearAssignmentHistory, requestFullMapTransition, setTransientDraftStatus]);
 
   const startLocationFromScratch = useCallback(() => {
-    const nextState = createInitialLocationComposerState([]);
+    const nextState = createInitialGeneratedLocationComposerState();
     setState(nextState);
     requestFullMapTransition();
     clearAssignmentHistory();
@@ -1353,6 +1373,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       uiMode={uiMode}
       onAddScratchRoom={addScratchRoom}
       onGenerateThemeRooms={generateThemeRooms}
+      onChangeMapSeed={changeMapSeed}
       onChangeThemeFrame={changeThemeFrame}
       onRegenerateScratchRoom={regenerateScratchRoom}
       onRemoveScratchRoom={removeScratchRoom}
@@ -1427,6 +1448,8 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
       onRegenerateMap={generateThemeRooms}
       onRefreshSeed={refreshMapSeed}
       onRenameLocation={renameLocation}
+      showBuildGuide={showBuildGuide}
+      onShowBuildGuideChange={setShowBuildGuide}
       workflowFooter={locationWorkflowFooter}
     />
   );
@@ -1519,7 +1542,7 @@ export default function DarkenLocationComposerPage({ debugMode = false, onOpenMa
           onManualWorkspaceChange={syncInlineMapWorkspace}
           onRefreshMapWorkspace={refreshInlineMapWorkspace}
           modeControls={null}
-          leftPanel={immersiveMode ? null : leftPanel}
+          leftPanel={!composerStarted || immersiveMode ? null : leftPanel}
           rightPanel={immersiveMode ? null : rightPanel}
           navigatorPanel={immersiveMode ? null : navigatorPanel}
           toolbarPanel={centerToolbarPanel}

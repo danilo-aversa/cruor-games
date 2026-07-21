@@ -8,14 +8,21 @@ import {
 import { createPortal } from "react-dom";
 import {
   BookOpen,
+  Box,
   Check,
+  ClipboardCheck,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronUp,
   Circle,
   EyeOff,
+  FileText,
+  LayoutTemplate,
+  Map,
   Plus,
+  Puzzle,
+  ScrollText,
   X,
 } from "lucide-react";
 
@@ -261,6 +268,18 @@ function TaskStatusIcon({ status }) {
   return <Circle aria-hidden="true" />;
 }
 
+function getStageIcon(stageId = "") {
+  const normalizedId = String(stageId || "").toLowerCase();
+  if (normalizedId === "frame") return LayoutTemplate;
+  if (normalizedId === "rooms") return Map;
+  if (normalizedId === "output") return FileText;
+  if (normalizedId === "chassis") return Box;
+  if (normalizedId === "grafts") return Puzzle;
+  if (normalizedId === "review") return ClipboardCheck;
+  if (normalizedId === "stat-block" || normalizedId === "statblock") return ScrollText;
+  return Circle;
+}
+
 export function ComposerStartScreen({
   description = "Choose a starting point for this Composer workflow.",
   onBuildFromScratch,
@@ -401,6 +420,7 @@ export function ComposerBuildGuide({
   onHide,
   primaryAction = null,
   productLabel = "Composer",
+  stages = [],
   storageKey = "",
   tasks = [],
 }) {
@@ -410,6 +430,9 @@ export function ComposerBuildGuide({
   const primary = normalizeAction(primaryAction);
   const completedRequired = tasks.filter((task) => task.required && task.status === "complete").length;
   const requiredCount = tasks.filter((task) => task.required).length;
+  const objectiveComplete = !blocker && requiredCount > 0 && completedRequired === requiredCount;
+  const currentStageIndex = stages.findIndex((stage) => stage.id === currentStage?.id);
+  const visibleStages = currentStageIndex >= 0 ? stages.slice(currentStageIndex) : stages;
 
   useEffect(() => {
     writeStoredOpenState(storageKey, open);
@@ -425,7 +448,12 @@ export function ComposerBuildGuide({
         className="cruor-composer-command-bar__drawer"
         aria-hidden={!open}
       >
-        <article className="cruor-composer-command-bar__objective">
+        <article
+          className={cx(
+            "cruor-composer-command-bar__objective",
+            objectiveComplete && "is-complete",
+          )}
+        >
           <span>{objective?.eyebrow || "Current Objective"}</span>
           <h2>{objective?.title || primary?.title || "Continue the build"}</h2>
           {objective?.detail ? <p>{objective.detail}</p> : null}
@@ -441,7 +469,7 @@ export function ComposerBuildGuide({
         <section className="cruor-composer-command-bar__tasks" aria-label="Current tasks">
           <div className="cruor-composer-command-bar__tasks-head">
             <span>Current Tasks</span>
-            <strong>
+            <strong className={objectiveComplete ? "is-complete" : ""}>
               {requiredCount ? `${completedRequired} of ${requiredCount} required` : "No required tasks"}
             </strong>
           </div>
@@ -458,9 +486,11 @@ export function ComposerBuildGuide({
                     <strong>{task.title}</strong>
                     {task.detail ? <small>{task.detail}</small> : null}
                   </span>
-                  <span className="cruor-composer-command-bar__task-kind">
-                    {task.required ? "Required" : "Optional"}
-                  </span>
+                  {task.required && objectiveComplete ? null : (
+                    <span className="cruor-composer-command-bar__task-kind">
+                      {task.required ? "Required" : "Optional"}
+                    </span>
+                  )}
                 </>
               );
 
@@ -514,20 +544,60 @@ export function ComposerBuildGuide({
       </div>
 
       <div className="cruor-composer-command-bar__row">
-        <div className="cruor-composer-command-bar__summary">
-          <span>Build Guide · {currentStage?.label || productLabel}</span>
-          <strong>{objective?.title || primary?.title || "Continue the build"}</strong>
-          <small>{objective?.detail || primary?.detail || "Open the guide for contextual tasks."}</small>
-        </div>
+        {open ? (
+          <div
+            className="cruor-composer-command-bar__stepper"
+            aria-label="Current and upcoming build stages"
+            role="list"
+          >
+            {visibleStages.map((stage, index) => {
+              const isCurrent = stage.id === currentStage?.id;
+              const isComplete = stage.status === "complete";
+              const StageIcon = getStageIcon(stage.id);
+              const stageNumber = (currentStageIndex >= 0 ? currentStageIndex : 0) + index + 1;
+              return (
+                <span
+                  className={cx(
+                    "cruor-composer-command-bar__step",
+                    isCurrent && "is-current",
+                    isComplete && "is-complete",
+                    (stage.disabled || stage.status === "blocked") && "is-disabled",
+                  )}
+                  key={stage.id}
+                  role="listitem"
+                >
+                  <span className="cruor-composer-command-bar__step-node" aria-hidden="true">
+                    {isComplete ? <Check /> : <strong>{stageNumber}</strong>}
+                  </span>
+                  <span className="cruor-composer-command-bar__step-copy">
+                    <small>
+                      <StageIcon aria-hidden="true" />
+                      {isCurrent ? "Current" : index === 1 ? "Next" : "Later"}
+                    </small>
+                    <strong>{stage.label}</strong>
+                  </span>
+                </span>
+              );
+            })}
+          </div>
+        ) : (
+          <div className={cx("cruor-composer-command-bar__summary", objectiveComplete && "is-complete")}>
+            <span>Build Guide · {currentStage?.label || productLabel}</span>
+            <strong>{objective?.title || primary?.title || "Continue the build"}</strong>
+            <small>{objective?.detail || primary?.detail || "Open the guide for contextual tasks."}</small>
+          </div>
+        )}
 
-        <button
-          className="cruor-composer-command-bar__primary cruor-composer-build-guide__primary"
-          type="button"
-          disabled={!primary?.onClick || primary.disabled}
-          onClick={primary?.onClick || undefined}
-        >
-          {primary?.label || "Continue"}
-        </button>
+        {open ? (
+          <button
+            className="cruor-composer-command-bar__primary cruor-composer-build-guide__primary"
+            type="button"
+            disabled={!primary?.onClick || primary.disabled}
+            onClick={primary?.onClick || undefined}
+          >
+            {primary?.label || "Continue"}
+          </button>
+        ) : null}
 
         <button
           className="cruor-composer-command-bar__hide cruor-square-icon-button"
@@ -592,6 +662,7 @@ export function ComposerWorkflowFooter({
   primaryAction = null,
   productLabel = "Composer",
   showBuildGuide = true,
+  showHiddenTrigger = true,
   stages = [],
   tasks = [],
 }) {
@@ -600,35 +671,38 @@ export function ComposerWorkflowFooter({
 
   return (
     <>
-      <ComposerPortalDock
-        anchorSelector={centerAnchorSelector}
-        className="cruor-composer-command-dock"
-        geometryKey={`${currentStageId}-${showBuildGuide ? "visible" : "hidden"}`}
-        mode="center"
-      >
-        {showBuildGuide ? (
-          <ComposerBuildGuide
-            blocker={blocker}
-            context={context}
-            currentStage={currentStage}
-            objective={objective}
-            primaryAction={primaryAction}
-            productLabel={productLabel}
-            storageKey={storageKey}
-            tasks={tasks}
-            onHide={() => onShowBuildGuideChange?.(false)}
-          />
-        ) : (
-          <button
-            className="cruor-composer-build-guide-trigger"
-            type="button"
-            onClick={() => onShowBuildGuideChange?.(true)}
-          >
-            <BookOpen aria-hidden="true" />
-            <span>Show Build Guide</span>
-          </button>
-        )}
-      </ComposerPortalDock>
+      {showBuildGuide || showHiddenTrigger ? (
+        <ComposerPortalDock
+          anchorSelector={centerAnchorSelector}
+          className="cruor-composer-command-dock"
+          geometryKey={`${currentStageId}-${showBuildGuide ? "visible" : "hidden"}`}
+          mode="center"
+        >
+          {showBuildGuide ? (
+            <ComposerBuildGuide
+              blocker={blocker}
+              context={context}
+              currentStage={currentStage}
+              objective={objective}
+              primaryAction={primaryAction}
+              productLabel={productLabel}
+              stages={stages}
+              storageKey={storageKey}
+              tasks={tasks}
+              onHide={() => onShowBuildGuideChange?.(false)}
+            />
+          ) : (
+            <button
+              className="cruor-composer-build-guide-trigger"
+              type="button"
+              onClick={() => onShowBuildGuideChange?.(true)}
+            >
+              <BookOpen aria-hidden="true" />
+              <span>Show Build Guide</span>
+            </button>
+          )}
+        </ComposerPortalDock>
+      ) : null}
 
       <ComposerPortalDock
         anchorSelector={navigationAnchorSelector}

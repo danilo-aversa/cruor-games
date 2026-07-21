@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ComposerRail } from "../../../../components/ui/composer-rail.jsx";
+import { ComposerCollapsibleSection, ComposerRail } from "../../../../components/ui/composer-rail.jsx";
 import { LOCATION_SLOT_SCOPE_MAP } from "../model/location-composer-state.js";
 import {
   getAssignedComponentsForSlotScope,
@@ -345,7 +345,12 @@ function LocationFrameInfoRow({ label, value }) {
 
 export const LOCATION_MAP_ACTION_ARM_WINDOW_MS = 5000;
 
-function LocationMapBuildActions({ onRegenerateMap, onRefreshSeed }) {
+function LocationMapBuildActions({
+  onRegenerateMap,
+  onRefreshSeed,
+  onShowBuildGuide,
+  showBuildGuide = true,
+}) {
   const [armedAction, setArmedAction] = useState("");
 
   useEffect(() => {
@@ -413,6 +418,21 @@ function LocationMapBuildActions({ onRegenerateMap, onRefreshSeed }) {
         <i className={`fa-solid ${seedArmed ? "fa-triangle-exclamation" : "fa-dice"}`} aria-hidden="true" />
         <span>{seedArmed ? "Confirm Refresh" : "Refresh Seed"}</span>
       </button>
+
+      {!showBuildGuide ? (
+        <button
+          className="location-map-build-action-btn tooltip-btn"
+          type="button"
+          aria-label="Show Build Guide"
+          data-key="tooltip-generic"
+          data-tooltip="Show Build Guide"
+          data-tooltip-description="Restore the optional contextual guide in the center of the Composer."
+          onClick={onShowBuildGuide}
+        >
+          <i className="fa-solid fa-book-open" aria-hidden="true" />
+          <span>Show Build Guide</span>
+        </button>
+      ) : null}
     </section>
   );
 }
@@ -619,8 +639,13 @@ export function LocationMapWideDetailsBlock({
   }
 
   return (
-    <div className="location-map-wide-details-block cruor-scroll-surface" aria-label="Map-wide details">
-      <div className="location-map-details-slot-stack">
+    <ComposerCollapsibleSection
+      className="location-frame-control-block"
+      title="Location Components"
+      bodyClassName="location-map-details-slot-stack"
+      scrollBody
+      aria-label="Map-wide details"
+    >
         {mapSlots.map((slot) => {
           const assigned = getAssignedComponentsForSlotScope(state, slot.id, LOCATION_SLOT_SCOPE_MAP);
           const active = mapScopeActive && activeSlotId === slot.id;
@@ -647,8 +672,7 @@ export function LocationMapWideDetailsBlock({
             </button>
           );
         })}
-      </div>
-    </div>
+    </ComposerCollapsibleSection>
   );
 }
 
@@ -659,11 +683,13 @@ export function LocationMapDetailsPanel({
   onRegenerateMap,
   onRefreshSeed,
   onRenameLocation,
+  onShowBuildGuideChange,
   semanticMapHandoff = null,
   semanticPreview = null,
   side = "right",
   state,
   uiMode = "simple",
+  showBuildGuide = true,
   workflowFooter = null,
 }) {
   const frame = getLocationPlaceFrame(state, mapRequest);
@@ -1038,6 +1064,8 @@ export function LocationMapDetailsPanel({
       <LocationMapBuildActions
         onRegenerateMap={onRegenerateMap}
         onRefreshSeed={onRefreshSeed}
+        showBuildGuide={showBuildGuide}
+        onShowBuildGuide={() => onShowBuildGuideChange?.(true)}
       />
 
       {showSemanticRuntime ? (

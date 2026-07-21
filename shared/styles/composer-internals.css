@@ -226,11 +226,39 @@
   overflow: hidden;
 }
 
+.cruor-composer-shell .cruor-composer-collapsible-section__region[hidden] {
+  display: none;
+}
+
 /* Clip content only while the section is collapsed. Expanded content must
    contribute its full overflow area to the rail scroll range. */
 .cruor-composer-shell .cruor-composer-collapsible-section.is-expanded > .cruor-composer-collapsible-section__region,
 .cruor-composer-shell .cruor-composer-collapsible-section.is-expanded > .cruor-composer-collapsible-section__region > .cruor-composer-collapsible-section__body {
   overflow: visible;
+}
+
+/* Optional body scroll for content that must remain below a fixed accordion
+   trigger. The component measures the actual space left inside its rail and
+   publishes it through --cruor-composer-scroll-body-max-height. */
+.cruor-composer-shell
+  .cruor-composer-collapsible-section.has-scrollable-body.is-expanded
+  > .cruor-composer-collapsible-section__region {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.cruor-composer-shell
+  .cruor-composer-collapsible-section.has-scrollable-body.is-expanded
+  > .cruor-composer-collapsible-section__region
+  > .cruor-composer-collapsible-section__body {
+  min-height: 0;
+  max-height: var(--cruor-composer-scroll-body-max-height, none);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 .cruor-composer-shell .cruor-composer-collapsible-section.is-collapsed .cruor-composer-collapsible-section__trigger {

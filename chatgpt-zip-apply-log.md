@@ -19260,3 +19260,820 @@ _Nessun file aggiunto._
 
 - Percorso sospetto nello ZIP: ZIP-MANIFEST.txt
 
+
+---
+
+## 2026-07-21 10:44:30
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-dark-places-start-sidebar-fix-20260720.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-start-sidebar-fix-20260720.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-3oBe0F`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 1
+
+- `+ZIP-MANIFEST.txt`
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: ZIP-MANIFEST.txt
+
+
+---
+
+## 2026-07-21 10:54:31
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-command-components-typography-fix-20260721.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-command-components-typography-fix-20260721.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-FqkRwo`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 1
+
+- `+ZIP-MANIFEST.txt`
+
+**File sovrascritti:** 1
+
+- `~shared/styles/composer-command-bar.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: ZIP-MANIFEST.txt
+
+
+---
+
+## 2026-07-21 11:29:21
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspirations-dossier-refactor-v12.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-dossier-refactor-v12.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-Ny35Uj`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 3
+
+- `+features/inspirations/components/InspirationDossierModal.test.jsx`
+- `+INSPIRATIONS_DOSSIER_REFACTOR_MANIFEST.txt`
+- `+INSPIRATIONS_DOSSIER_REFACTOR_README.md`
+
+**File sovrascritti:** 9
+
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/model/studio-draft.js`
+- `~features/inspirations/components/InspirationDossierModal.jsx`
+- `~features/inspirations/inspirations.page.jsx`
+- `~features/inspirations/inspirations.styles.css`
+- `~shared/content/contracts/semantic/inspiration-v2.js`
+- `~shared/content/contracts/semantic/semantic-contracts.test.js`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_DOSSIER_REFACTOR_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_DOSSIER_REFACTOR_README.md
+
+
+---
+
+## 2026-07-21 11:31:44
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-dark-places-frame-workflow-fixes-20260721.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-dark-places-frame-workflow-fixes-20260721.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-WTRd7y`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 1
+
+- `+ZIP-MANIFEST.txt`
+
+**File sovrascritti:** 7
+
+- `~components/ui/composer-command-bar.jsx`
+- `~components/ui/composer-command-bar.test.jsx`
+- `~features/darken-location/composer/components/LocationGuidedFlowPanel.jsx`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.test.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: ZIP-MANIFEST.txt
+
+
+---
+
+## 2026-07-21 11:47:46
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspirations-dossier-layout-fix-v13.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-dossier-layout-fix-v13.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-0SRMcH`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 3
+
+- `+features/inspirations/inspirations.dossier-layout.test.js`
+- `+INSPIRATIONS_DOSSIER_LAYOUT_FIX_MANIFEST.txt`
+- `+INSPIRATIONS_DOSSIER_LAYOUT_FIX_README.md`
+
+**File sovrascritti:** 1
+
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_DOSSIER_LAYOUT_FIX_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_DOSSIER_LAYOUT_FIX_README.md
+
+
+---
+
+## 2026-07-21 12:47:11
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-command-bar-accordion-toolbar-fixes-20260721.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-command-bar-accordion-toolbar-fixes-20260721.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-LYjTff`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 1
+
+- `+ZIP-MANIFEST.txt`
+
+**File sovrascritti:** 4
+
+- `~components/ui/composer-command-bar.jsx`
+- `~components/ui/composer-command-bar.test.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+- `~shared/styles/composer-command-bar.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: ZIP-MANIFEST.txt
+
+
+---
+
+## 2026-07-21 12:57:55
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspirations-dossier-tabs-fix-v14.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-dossier-tabs-fix-v14.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-2qHSc6`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 2
+
+- `+INSPIRATIONS_DOSSIER_TABS_FIX_MANIFEST.txt`
+- `+INSPIRATIONS_DOSSIER_TABS_FIX_README.md`
+
+**File sovrascritti:** 4
+
+- `~features/inspirations/components/InspirationDossierModal.jsx`
+- `~features/inspirations/components/InspirationDossierModal.test.jsx`
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_DOSSIER_TABS_FIX_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_DOSSIER_TABS_FIX_README.md
+
+
+---
+
+## 2026-07-21 13:46:37
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspirations-dossier-tabs-tooltip-v15.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-dossier-tabs-tooltip-v15.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-csA55p`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 2
+
+- `+INSPIRATIONS_DOSSIER_TABS_TOOLTIP_MANIFEST.txt`
+- `+INSPIRATIONS_DOSSIER_TABS_TOOLTIP_README.md`
+
+**File sovrascritti:** 4
+
+- `~features/inspirations/components/InspirationDossierModal.jsx`
+- `~features/inspirations/components/InspirationDossierModal.test.jsx`
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_DOSSIER_TABS_TOOLTIP_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_DOSSIER_TABS_TOOLTIP_README.md
+
+
+---
+
+## 2026-07-21 13:48:12
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-toolbar-stepper-seed-accordion-fixes-20260721.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-toolbar-stepper-seed-accordion-fixes-20260721.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-Pfdf7t`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 7
+
+- `~components/ui/composer-command-bar.jsx`
+- `~components/ui/composer-command-bar.test.jsx`
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.jsx`
+- `~features/darken-location/composer/DarkenLocationComposerPage.test.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+- `~shared/styles/composer-command-bar.css`
+
+
+---
+
+## 2026-07-21 13:52:34
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspirations-dossier-tab-seam-v16.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-dossier-tab-seam-v16.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-jRHlvZ`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 2
+
+- `+INSPIRATIONS_DOSSIER_TAB_SEAM_MANIFEST.txt`
+- `+INSPIRATIONS_DOSSIER_TAB_SEAM_README.md`
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_DOSSIER_TAB_SEAM_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_DOSSIER_TAB_SEAM_README.md
+
+
+---
+
+## 2026-07-21 13:58:17
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspirations-dossier-tab-state-v17.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-dossier-tab-state-v17.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-57X3rk`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 2
+
+- `+INSPIRATIONS_DOSSIER_TAB_STATE_MANIFEST.txt`
+- `+INSPIRATIONS_DOSSIER_TAB_STATE_README.md`
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATIONS_DOSSIER_TAB_STATE_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATIONS_DOSSIER_TAB_STATE_README.md
+
+
+---
+
+## 2026-07-21 15:03:09
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-location-components-collapse-fix-20260721.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-location-components-collapse-fix-20260721.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-m1tlz9`
+
+**Decisione struttura:** `Cartella top-level preservata: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+
+---
+
+## 2026-07-21 15:39:57
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-seed-location-components-sizing-fix-20260721.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-seed-location-components-sizing-fix-20260721.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-7tsVq9`
+
+**Decisione struttura:** `Cartella top-level preservata: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/darken-location/composer/components/LocationBriefPanel.jsx`
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+
+---
+
+## 2026-07-21 21:44:40
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspiration-dossier-editorial-production-v18.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspiration-dossier-editorial-production-v18.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-0vXKFW`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 2
+
+- `+INSPIRATION_DOSSIER_EDITORIAL_PRODUCTION_V18_MANIFEST.txt`
+- `+INSPIRATION_DOSSIER_EDITORIAL_PRODUCTION_V18_README.md`
+
+**File sovrascritti:** 15
+
+- `~app/router.jsx`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/model/studio-draft.js`
+- `~features/inspirations/components/InspirationDossierModal.jsx`
+- `~features/inspirations/components/InspirationDossierModal.test.jsx`
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.interactions.test.jsx`
+- `~features/inspirations/inspirations.page.jsx`
+- `~features/inspirations/inspirations.styles.css`
+- `~shared/content/contracts/semantic/inspiration-v2.js`
+- `~shared/content/contracts/semantic/semantic-contracts.test.js`
+- `~shared/content/inspiration-modules/inspiration-module.factory.js`
+- `~shared/content/inspiration-modules/sedlec-ossuary.js`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATION_DOSSIER_EDITORIAL_PRODUCTION_V18_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATION_DOSSIER_EDITORIAL_PRODUCTION_V18_README.md
+
+
+---
+
+## 2026-07-21 22:18:40
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspiration-dossier-heading-font-v19.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspiration-dossier-heading-font-v19.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-mzvTUS`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 2
+
+- `+INSPIRATION_DOSSIER_HEADING_FONT_V19_MANIFEST.txt`
+- `+INSPIRATION_DOSSIER_HEADING_FONT_V19_README.md`
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATION_DOSSIER_HEADING_FONT_V19_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATION_DOSSIER_HEADING_FONT_V19_README.md
+
+
+---
+
+## 2026-07-21 22:25:48
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspiration-dossier-all-inter-v20.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspiration-dossier-all-inter-v20.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-eDoPDC`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 2
+
+- `+INSPIRATION_DOSSIER_ALL_INTER_V20_MANIFEST.txt`
+- `+INSPIRATION_DOSSIER_ALL_INTER_V20_README.md`
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATION_DOSSIER_ALL_INTER_V20_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATION_DOSSIER_ALL_INTER_V20_README.md
+
+
+---
+
+## 2026-07-21 22:37:27
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspiration-dossier-type-scale-v21.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspiration-dossier-type-scale-v21.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-xYrsDI`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 2
+
+- `+INSPIRATION_DOSSIER_TYPE_SCALE_V21_MANIFEST.txt`
+- `+INSPIRATION_DOSSIER_TYPE_SCALE_V21_README.md`
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATION_DOSSIER_TYPE_SCALE_V21_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATION_DOSSIER_TYPE_SCALE_V21_README.md
+
+
+---
+
+## 2026-07-21 22:40:11
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-collapsible-hidden-region-fix-20260721.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-collapsible-hidden-region-fix-20260721.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-K1c9UR`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~components/ui/composer-rail.jsx`
+- `~shared/styles/composer-internals.css`
+
+
+---
+
+## 2026-07-21 22:43:30
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspiration-dossier-sitewide-type-scale-v22.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspiration-dossier-sitewide-type-scale-v22.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-gtqKVN`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 2
+
+- `+INSPIRATION_DOSSIER_SITEWIDE_TYPE_SCALE_V22_MANIFEST.txt`
+- `+INSPIRATION_DOSSIER_SITEWIDE_TYPE_SCALE_V22_README.md`
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATION_DOSSIER_SITEWIDE_TYPE_SCALE_V22_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATION_DOSSIER_SITEWIDE_TYPE_SCALE_V22_README.md
+
+
+---
+
+## 2026-07-21 22:47:09
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-location-components-scroll-fix-20260721.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-location-components-scroll-fix-20260721.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-XX9U2l`
+
+**Decisione struttura:** `Cartella top-level preservata: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/darken-location/map-generator/map-generator.styles.css`
+
+
+---
+
+## 2026-07-21 22:55:20
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspiration-dossier-reading-scale-v23.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspiration-dossier-reading-scale-v23.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-VjaJRm`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 2
+
+- `+INSPIRATION_DOSSIER_READING_SCALE_V23_MANIFEST.txt`
+- `+INSPIRATION_DOSSIER_READING_SCALE_V23_README.md`
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: INSPIRATION_DOSSIER_READING_SCALE_V23_MANIFEST.txt
+- Percorso sospetto nello ZIP: INSPIRATION_DOSSIER_READING_SCALE_V23_README.md
+
+
+---
+
+## 2026-07-21 23:00:27
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-location-components-real-scroll-fix-20260721.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-location-components-real-scroll-fix-20260721.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-Euawh3`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 1
+
+- `+ZIP-MANIFEST.txt`
+
+**File sovrascritti:** 3
+
+- `~components/ui/composer-rail.jsx`
+- `~features/darken-location/composer/components/LocationMapDetailsPanel.jsx`
+- `~shared/styles/composer-internals.css`
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: ZIP-MANIFEST.txt
+
+
+---
+
+## 2026-07-21 23:08:33
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-games-location-components-dynamic-scroll-fix-20260721.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-games-location-components-dynamic-scroll-fix-20260721.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-InhTKw`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~components/ui/composer-rail.jsx`
+- `~shared/styles/composer-internals.css`
+

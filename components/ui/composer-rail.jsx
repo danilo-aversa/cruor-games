@@ -115,19 +115,109 @@ export function ComposerCollapsibleSection({
   className = "",
   headerClassName = "",
   bodyClassName = "",
+  scrollBody = false,
   children,
   ...props
 }) {
   const generatedId = React.useId();
   const [expanded, setExpanded] = React.useState(defaultExpanded);
+  const sectionRef = React.useRef(null);
+  const bodyRef = React.useRef(null);
   const bodyId = `${generatedId.replace(/:/g, "")}-body`;
+
+  React.useLayoutEffect(() => {
+    const sectionNode = sectionRef.current;
+    const bodyNode = bodyRef.current;
+
+    if (
+      !scrollBody ||
+      !expanded ||
+      !sectionNode ||
+      !bodyNode ||
+      typeof window === "undefined"
+    ) {
+      sectionNode?.style.removeProperty("--cruor-composer-scroll-body-max-height");
+      return undefined;
+    }
+
+    const railNode = sectionNode.closest(".cruor-composer-rail");
+    let frame = 0;
+
+    const updateBodyLimit = () => {
+      frame = 0;
+      const bodyRect = bodyNode.getBoundingClientRect();
+      const railStyle = railNode ? window.getComputedStyle(railNode) : null;
+      const railPaddingBottom = Number.parseFloat(railStyle?.paddingBottom || "0") || 0;
+      let boundaryBottom = window.innerHeight || document.documentElement.clientHeight || 0;
+      let ancestor = bodyNode.parentElement;
+
+      while (ancestor && ancestor !== document.body) {
+        const ancestorStyle = window.getComputedStyle(ancestor);
+        const overflowY = ancestorStyle.overflowY;
+        const clipsVertically = ["auto", "scroll", "hidden", "clip"].includes(overflowY);
+
+        if (clipsVertically || ancestor === railNode) {
+          const ancestorRect = ancestor.getBoundingClientRect();
+          if (ancestorRect.height > 0) {
+            boundaryBottom = Math.min(boundaryBottom, ancestorRect.bottom);
+          }
+        }
+
+        ancestor = ancestor.parentElement;
+      }
+
+      const availableHeight = Math.max(
+        0,
+        Math.floor(boundaryBottom - bodyRect.top - railPaddingBottom),
+      );
+
+      sectionNode.style.setProperty(
+        "--cruor-composer-scroll-body-max-height",
+        `${availableHeight}px`,
+      );
+    };
+
+    const scheduleBodyLimitUpdate = () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(updateBodyLimit);
+    };
+
+    scheduleBodyLimitUpdate();
+    window.addEventListener("resize", scheduleBodyLimitUpdate);
+    window.addEventListener("scroll", scheduleBodyLimitUpdate, true);
+
+    const resizeObserver = typeof ResizeObserver === "function"
+      ? new ResizeObserver(scheduleBodyLimitUpdate)
+      : null;
+    if (railNode) resizeObserver?.observe(railNode);
+
+    const mutationObserver = typeof MutationObserver === "function" && railNode
+      ? new MutationObserver(scheduleBodyLimitUpdate)
+      : null;
+    mutationObserver?.observe(railNode, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class", "hidden", "data-collapsed"],
+    });
+
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", scheduleBodyLimitUpdate);
+      window.removeEventListener("scroll", scheduleBodyLimitUpdate, true);
+      resizeObserver?.disconnect();
+      mutationObserver?.disconnect();
+      sectionNode.style.removeProperty("--cruor-composer-scroll-body-max-height");
+    };
+  }, [expanded, scrollBody]);
 
   return (
     <Element
+      ref={sectionRef}
       className={joinClassNames(
         "cruor-composer-sidebar-block",
         "cruor-composer-collapsible-section",
         expanded ? "is-expanded" : "is-collapsed",
+        scrollBody && "has-scrollable-body",
         className,
       )}
       data-collapsed={expanded ? "false" : "true"}
@@ -151,8 +241,10 @@ export function ComposerCollapsibleSection({
         id={bodyId}
         className="cruor-composer-collapsible-section__region"
         aria-hidden={!expanded}
+        hidden={!expanded}
       >
         <div
+          ref={bodyRef}
           className={joinClassNames(
             "cruor-composer-collapsible-section__body",
             bodyClassName,

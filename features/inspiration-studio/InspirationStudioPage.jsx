@@ -783,8 +783,15 @@ const FIELD_HELP = {
   motifs: "Concrete recurring signs, images, props, or sensory cues creators can reuse in generated content.",
   horrorTags: "Horror design tags that describe the emotional or genre effect this source supports.",
   publicSummary: "Short archive-facing summary. This should explain what the inspiration is and why creators might use it.",
-  narrative: "Longer editorial note explaining why the source is disturbing, useful, or thematically important.",
+  thesis: "A concise, shareable statement that opens the public dossier.",
+  whatItIs: "A researched source article with enough depth for several minutes of reading. Markdown subheadings are supported.",
+  cruorLensThesis: "The compact editorial claim Cruor extracts from the source.",
+  cruorLens: "The fuller Cruor interpretation that explains why the source is structurally useful for horror.",
+  triggerWarnings: "Clear content warnings for themes or imagery that may require prior consent.",
+  tableSafety: "Practical handling guidance that preserves the content while respecting table boundaries.",
+  lowIntensityAlternative: "A lower-intensity substitution that keeps the same horror mechanism without the most explicit imagery.",
   uploadPreview: "Local preview only. The MVP does not write the image file into the repository.",
+  imageTitle: "Editorial title displayed beneath the dossier image. It may differ from the Inspiration name.",
   imageKey: "Filename or asset key that the published card should resolve to when assets are wired.",
   imageUrl: "Optional direct URL for previewing or referencing an external image source during editing.",
   imageNote: "Internal note about the image choice, source, crop, usage, or replacement status.",
@@ -2478,13 +2485,70 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
             />
           </StudioField>
 
-          <StudioField label="Why It Disturbs / Narrative" icon="fa-book-skull" hint={FIELD_HELP.narrative}>
+          <StudioField label="Opening Thesis" icon="fa-quote-left" hint={FIELD_HELP.thesis}>
+            <EditableTextBox
+              rows={3}
+              value={draft.inspiration.editorial?.thesis}
+              placeholder="Add the opening Cruor thesis."
+              onChange={(value) => updateDraftField(["inspiration", "editorial", "thesis"], value)}
+            />
+          </StudioField>
+
+          <StudioField label="What It Is" icon="fa-circle-info" hint={FIELD_HELP.whatItIs}>
+            <EditableTextBox
+              rows={14}
+              value={draft.inspiration.editorial?.whatItIs}
+              placeholder="Add the researched source article."
+              onApplyToken={(token) => appendMarkdown(["inspiration", "editorial", "whatItIs"], token)}
+              onChange={(value) => updateDraftField(["inspiration", "editorial", "whatItIs"], value)}
+            />
+          </StudioField>
+
+          <StudioField label="Cruor Lens Thesis" icon="fa-eye" hint={FIELD_HELP.cruorLensThesis}>
+            <EditableTextBox
+              rows={3}
+              value={draft.inspiration.editorial?.cruorLensThesis}
+              placeholder="State the central Cruor interpretation."
+              onChange={(value) => updateDraftField(["inspiration", "editorial", "cruorLensThesis"], value)}
+            />
+          </StudioField>
+
+          <StudioField label="The Cruor Lens" icon="fa-magnifying-glass" hint={FIELD_HELP.cruorLens}>
             <EditableTextBox
               rows={7}
-              value={draft.inspiration.editorial?.whyItDisturbs}
-              placeholder="No narrative text set."
-              onApplyToken={(token) => appendMarkdown(["inspiration", "editorial", "whyItDisturbs"], token)}
-              onChange={(value) => updateDraftField(["inspiration", "editorial", "whyItDisturbs"], value)}
+              value={draft.inspiration.editorial?.cruorLens}
+              placeholder="Explain what Cruor extracts from the researched source."
+              onApplyToken={(token) => appendMarkdown(["inspiration", "editorial", "cruorLens"], token)}
+              onChange={(value) => updateDraftField(["inspiration", "editorial", "cruorLens"], value)}
+            />
+          </StudioField>
+
+          <StudioField label="Trigger Warnings" icon="fa-triangle-exclamation" hint={FIELD_HELP.triggerWarnings}>
+            <TagPillInput
+              fieldId="trigger-warnings"
+              icon="fa-triangle-exclamation"
+              value={draft.inspiration.editorial?.triggerWarnings}
+              onChange={(value) => updateDraftField(["inspiration", "editorial", "triggerWarnings"], value)}
+              placeholder="Add a trigger warning…"
+            />
+          </StudioField>
+
+          <StudioField label="Table Safety" icon="fa-shield-heart" hint={FIELD_HELP.tableSafety}>
+            <TagPillInput
+              fieldId="table-safety"
+              icon="fa-shield-heart"
+              value={draft.inspiration.editorial?.tableSafety}
+              onChange={(value) => updateDraftField(["inspiration", "editorial", "tableSafety"], value)}
+              placeholder="Add a handling practice…"
+            />
+          </StudioField>
+
+          <StudioField label="Low-Intensity Alternative" icon="fa-volume-low" hint={FIELD_HELP.lowIntensityAlternative}>
+            <EditableTextBox
+              rows={4}
+              value={draft.inspiration.editorial?.lowIntensityAlternative}
+              placeholder="Describe a lower-intensity substitution."
+              onChange={(value) => updateDraftField(["inspiration", "editorial", "lowIntensityAlternative"], value)}
             />
           </StudioField>
         </section>
@@ -2555,6 +2619,15 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
             <input type="file" accept="image/*" onChange={onImageUpload} />
           </StudioField>
 
+          <div className="studio-form-grid studio-form-grid--compact">
+            <StudioField label="Image Title" icon="fa-heading" hint={FIELD_HELP.imageTitle}>
+              <StudioInput value={draft.inspiration.media?.imageTitle} onChange={(value) => updateDraftField(["inspiration", "media", "imageTitle"], value)} />
+            </StudioField>
+            <StudioField label="Image Credit" icon="fa-copyright" hint="Required editorial credit or rights attribution when applicable.">
+              <StudioInput value={draft.inspiration.media?.imageCredit} onChange={(value) => updateDraftField(["inspiration", "media", "imageCredit"], value)} />
+            </StudioField>
+          </div>
+
           <details className="studio-advanced-details">
             <summary><StudioIcon name="fa-gear" /> Advanced asset fields</summary>
             <StudioField label="Image Key / Filename" icon="fa-file-image" hint={FIELD_HELP.imageKey}>
@@ -2562,9 +2635,6 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
             </StudioField>
             <StudioField label="Image Provider" icon="fa-link" hint="Stable provider or asset-library identifier; preview URLs are never serialized.">
               <StudioInput value={draft.inspiration.media?.imageProvider} onChange={(value) => updateDraftField(["inspiration", "media", "imageProvider"], value)} />
-            </StudioField>
-            <StudioField label="Image Credit" icon="fa-heading" hint="Required editorial credit or rights attribution when applicable.">
-              <StudioInput value={draft.inspiration.media?.imageCredit} onChange={(value) => updateDraftField(["inspiration", "media", "imageCredit"], value)} />
             </StudioField>
             <StudioField label="Image Alt" icon="fa-closed-captioning" hint="Accessible alt text for the archive image preview and published card.">
               <StudioInput value={draft.inspiration.media?.imageAlt} onChange={(value) => updateDraftField(["inspiration", "media", "imageAlt"], value)} />

@@ -65,13 +65,15 @@ describe("InspirationsPage interactions", () => {
     expect(flipButton.hasAttribute("title")).toBe(false);
     await act(async () => dossierButton.click());
 
-    expect(container.querySelector('[role="dialog"]')).not.toBeNull();
+    expect(document.body.querySelector('[role="dialog"]')).not.toBeNull();
     expect(document.body.style.overflow).toBe("hidden");
 
-    const closeButton = container.querySelector(".inspiration-dossier__close");
+    const closeButton = document.body.querySelector(
+      ".inspiration-dossier__close",
+    );
     await act(async () => closeButton.click());
 
-    expect(container.querySelector('[role="dialog"]')).toBeNull();
+    expect(document.body.querySelector('[role="dialog"]')).toBeNull();
     expect(document.body.style.overflow).toBe("");
   });
 

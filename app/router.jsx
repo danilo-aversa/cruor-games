@@ -423,6 +423,14 @@ export default function AppRouter() {
     [activateCrucibleGenerator, activateDarkenTab],
   );
 
+  const openDarkPlacesFromInspiration = useCallback(() => {
+    navigateToRoute({
+      section: "crucible",
+      crucibleGenerator: "darken",
+      darkenTab: "composer",
+    });
+  }, [navigateToRoute]);
+
   const openMonsterFromInspiration = useCallback(
     (seed = {}) => {
       setMonsterInspirationSeed({
@@ -546,6 +554,7 @@ export default function AppRouter() {
       inspirationsContent={
         <InspirationsPage
           locale={activeLocale}
+          onOpenDarkPlaces={openDarkPlacesFromInspiration}
           onOpenMonsterComposer={openMonsterFromInspiration}
         />
       }

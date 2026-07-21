@@ -65,7 +65,7 @@
 }
 
 .inspirations-page__eyebrow,
-.inspiration-dossier__header > p {
+.inspiration-dossier__eyebrow {
   margin: 0;
   color: var(--cruor-color-rose);
   font-size: var(--text-size-xs, 0.68rem);
@@ -73,6 +73,14 @@
   letter-spacing: 0.17em;
   line-height: 1;
   text-transform: uppercase;
+}
+
+.inspiration-dossier__deck {
+  max-width: 720px;
+  margin: 2px 0 4px;
+  color: var(--cruor-color-text-a620);
+  font-size: var(--text-size-l, 0.92rem);
+  line-height: 1.55;
 }
 
 .inspirations-page__masthead h1 {
@@ -752,22 +760,55 @@
 .inspiration-dossier {
   position: fixed;
   inset: 0;
-  z-index: calc(var(--cruor-z-shell, 80) + 40);
+  z-index: var(--cruor-z-modal, 420);
   display: grid;
   place-items: center;
   overflow: auto;
   background: var(--cruor-inspiration-modal-overlay);
-  padding: clamp(14px, 3vw, 34px);
+  padding: clamp(14px, 2.4vw, 30px);
+  font-family: var(
+    --cruor-font-body,
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif
+  );
+
   backdrop-filter: blur(8px) saturate(82%);
   -webkit-backdrop-filter: blur(8px) saturate(82%);
+}
+
+.inspiration-dossier,
+.inspiration-dossier *,
+.inspiration-dossier *::before,
+.inspiration-dossier *::after {
+  box-sizing: border-box;
+}
+
+.inspiration-dossier button,
+.inspiration-dossier input {
+  font: inherit;
+}
+
+.inspiration-dossier__stage {
+  position: relative;
+  width: min(1320px, calc(100% - 52px));
+  height: min(880px, calc(100dvh - clamp(28px, 4.8vw, 60px)));
+  min-width: 0;
+  min-height: 0;
 }
 
 .inspiration-dossier__panel {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(290px, 0.7fr) minmax(0, 1.3fr);
-  width: min(1220px, 100%);
-  max-height: calc(100dvh - clamp(28px, 6vw, 68px));
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  grid-template-columns: minmax(330px, 0.74fr) minmax(0, 1.26fr);
+  grid-template-rows: minmax(0, 1fr);
   overflow: hidden;
   border: 1px solid var(--cruor-color-blood-glow-a420);
   background:
@@ -777,138 +818,133 @@
   box-shadow: var(--cruor-shadow-box-117);
 }
 
-.inspiration-dossier__close {
+.inspiration-dossier__close.cruor-square-icon-button {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 12;
+  inset: 12px 12px auto auto;
+  z-index: 20;
+}
+
+.inspiration-dossier__media {
   display: grid;
-  width: 38px;
-  height: 38px;
-  place-items: center;
-  border: 1px solid var(--cruor-color-milk-a100);
-  background: var(--cruor-color-black-a560);
-  color: var(--cruor-color-milk);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.inspiration-dossier__close:hover,
-.inspiration-dossier__close:focus-visible {
-  border-color: var(--cruor-color-blood-glow-a720);
-  background: var(--cruor-color-blood-strong-a720);
-  outline: none;
-}
-
-.inspiration-dossier__visual {
-  position: relative;
-  min-height: 0;
-  overflow: hidden;
-  border-right: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-inspiration-card-frame-band);
-}
-
-.inspiration-dossier__visual-window {
-  position: absolute;
-  top: 12px;
-  right: 15px;
-  bottom: 18px;
-  left: 15px;
-  overflow: hidden;
-  background: var(--cruor-color-ink-deep);
-  -webkit-mask: var(--inspiration-card-shape-mask) center / 100% 100% no-repeat;
-  mask: var(--inspiration-card-shape-mask) center / 100% 100% no-repeat;
-}
-
-.inspiration-dossier__visual-window img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  min-width: 0;
+  min-height: 0;
+  grid-column: 1;
+  grid-row: 1;
+  grid-template-rows: minmax(0, 1fr) auto;
+  margin: 0;
+  overflow: hidden;
+  border-right: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-ink-deep);
 }
 
-.inspiration-dossier__visual-window > i {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  color: var(--cruor-color-blood-glow-a420);
-  font-size: 5rem;
-  transform: translate(-50%, -50%);
+.inspiration-dossier__media-image {
+  position: relative;
+  display: grid;
+  min-height: 0;
+  place-items: center;
+  overflow: hidden;
+  background:
+    var(--cruor-gradient-radial-233-5992dede), var(--cruor-color-ink-deep);
 }
 
-.inspiration-dossier__visual-window > span {
+.inspiration-dossier__media-image::after {
   position: absolute;
   inset: 0;
   background:
-    var(--cruor-gradient-linear-053-3098d334),
+    linear-gradient(
+      180deg,
+      transparent 55%,
+      var(--cruor-color-black-a420) 100%
+    ),
     var(--cruor-gradient-linear-147-e08f093b);
+  content: "";
   pointer-events: none;
 }
 
-.inspiration-dossier__frame {
-  inset: 15px;
-}
-
-.inspiration-dossier__domain-sigil {
-  position: absolute;
-  top: 11px;
-  left: 50%;
-  z-index: 5;
-  display: grid;
-  width: 32px;
-  height: 32px;
-  place-items: center;
-  border: 2.45px solid var(--cruor-inspiration-card-line);
-  background: var(--cruor-inspiration-card-glass);
-  transform: translateX(-50%) rotate(45deg);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
-
-.inspiration-dossier__domain-sigil i {
-  color: var(--cruor-inspiration-card-line);
-  font-size: 14px;
-  transform: rotate(-45deg);
-}
-
-.inspiration-dossier__visual-title {
-  position: absolute;
-  right: 34px;
-  bottom: 16px;
-  left: 34px;
-  z-index: 5;
+.inspiration-dossier__media-image img {
   display: block;
-  overflow: hidden;
-  border: 2.45px solid var(--cruor-inspiration-card-line);
-  background: var(--cruor-inspiration-card-glass);
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.inspiration-dossier__media-image > i {
+  color: var(--cruor-color-blood-glow-a420);
+  font-size: 5rem;
+}
+
+.inspiration-dossier__media figcaption {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 5px;
+  border-top: 1px solid var(--cruor-color-milk-a075);
+  background:
+    var(--cruor-gradient-linear-019-fbb0759c), var(--cruor-color-black-a560);
+  padding: 14px 16px 16px;
+}
+
+.inspiration-dossier__media figcaption strong {
   color: var(--cruor-color-milk);
-  padding: 10px 14px;
-  font-size: clamp(0.78rem, 1.2vw, 1rem);
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-align: center;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  font-size: var(--text-size-l, 0.92rem);
+  font-weight: 850;
+  letter-spacing: 0.035em;
+  line-height: 1.25;
+}
+
+.inspiration-dossier__media figcaption span {
+  color: var(--cruor-color-text-a500);
+  font-size: var(--text-size-l, 0.92rem);
+  line-height: 1.45;
 }
 
 .inspiration-dossier__content {
   display: grid;
+  width: 100%;
+  height: 100%;
   min-width: 0;
   min-height: 0;
+  grid-column: 2;
+  grid-row: 1;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
 }
 
 .inspiration-dossier__header {
   display: grid;
+  grid-column: 1 / -1;
+  grid-row: 1;
   gap: 10px;
-  padding: clamp(24px, 3vw, 38px) clamp(22px, 3vw, 40px) 20px;
+  padding: clamp(24px, 3vw, 38px) clamp(22px, 3vw, 40px) 10px;
   border-bottom: 1px solid var(--cruor-color-milk-a070);
 }
 
-.inspiration-dossier__header h2 {
+.inspiration-dossier__eyebrow {
+  margin: 0;
+  color: var(--cruor-color-rose);
+  font-size: var(--text-size-l, 0.92rem);
+  font-weight: 900;
+  letter-spacing: 0.17em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.inspiration-dossier__deck {
+  max-width: 720px;
+  margin: 2px 0 4px;
+  color: var(--cruor-color-text-a620);
+  font-size: var(--text-size-2xl);
+  line-height: 1.55;
+}
+
+.inspiration-dossier__header h2#inspiration-dossier-title {
   max-width: calc(100% - 46px);
   margin: 0;
   color: var(--cruor-color-milk);
@@ -922,91 +958,637 @@
 .inspiration-dossier__meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 7px;
 }
 
 .inspiration-dossier__meta > span {
   display: inline-flex;
-  min-height: 29px;
-  align-items: center;
-  gap: 6px;
+  min-height: 34px;
+  align-items: baseline;
+  gap: 7px;
   border: 1px solid var(--cruor-color-milk-a075);
   background: var(--cruor-color-white-a022);
   color: var(--cruor-color-text-a620);
-  padding: 0 8px;
-  font-size: var(--text-size-xs, 0.68rem);
+  padding: 7px 10px;
+  font-size: var(--text-size-l, 0.92rem);
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .inspiration-dossier__meta strong {
   color: var(--cruor-color-rose);
-  font-size: var(--text-size-xxs, 0.61rem);
+  font-size: var(--text-size-l, 0.92rem);
   letter-spacing: 0.08em;
+  line-height: 1;
   text-transform: uppercase;
 }
 
 .inspiration-dossier__meta i {
-  width: 14px;
+  width: 16px;
+  align-self: center;
   color: var(--cruor-color-milk);
+  line-height: 1;
   text-align: center;
 }
 
-.inspiration-dossier__body {
+.inspiration-dossier__tabs {
+  position: absolute;
+  top: calc(var(--dossier-tabs-top, 0px) + 18px);
+  right: 0;
+  z-index: 24;
   display: grid;
-  gap: 12px;
+  align-content: start;
+  gap: 6px;
+  padding-left: 0;
+  transform: translateX(100%);
+}
+
+.inspiration-dossier__tabs button {
+  position: relative;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  place-items: center;
+  margin-left: 0;
+  border: 1px solid var(--cruor-color-milk-a075);
+  border-left: 0;
+  background: var(--cruor-color-ink-raised-a960);
+  color: var(--cruor-color-text-a500);
+  padding: 0;
+}
+
+.inspiration-dossier__tabs button i {
+  font-size: var(--text-size-l, 0.92rem);
+  line-height: 1;
+}
+
+.inspiration-dossier__tabs button:hover,
+.inspiration-dossier__tabs button:focus-visible {
+  border-color: var(--cruor-color-milk-a120);
+  background: var(--cruor-color-ink-raised-a960);
+  color: var(--cruor-color-milk);
+  outline: none;
+}
+
+.inspiration-dossier__tabs button.is-active {
+  margin-left: -1px;
+  border-color: var(--cruor-color-blood-glow-a420);
+  border-left: 0;
+  background: var(--cruor-color-ink-raised-a960);
+  color: var(--cruor-color-milk);
+}
+
+.inspiration-dossier__body {
   min-height: 0;
+  grid-column: 1;
+  grid-row: 2;
   overflow-y: auto;
+  background: var(--cruor-color-ink-raised-a960);
   padding: 18px clamp(22px, 3vw, 40px) 24px;
   overscroll-behavior: contain;
 }
 
+.inspiration-dossier__tab-panel {
+  display: grid;
+  gap: 34px;
+}
+
+.inspiration-dossier__tab-panel[hidden] {
+  display: none;
+}
+
+.inspiration-dossier__opening-thesis {
+  position: relative;
+  margin: 0;
+  border-left: 2px solid var(--cruor-color-blood-glow);
+  background: var(--cruor-color-black-a240);
+  color: var(--cruor-color-milk);
+  padding: 20px 22px 20px 26px;
+  font-family: var(--cruor-font-body, Inter, sans-serif);
+  font-size: var(--text-size-3xl);
+  font-weight: 700;
+  line-height: 1.32;
+}
+
+.inspiration-dossier__opening-thesis small {
+  display: block;
+  margin-top: 12px;
+  color: var(--cruor-color-text-a500);
+  font-family: var(--cruor-font-body, Inter, sans-serif);
+  font-size: var(--text-size-l, 0.92rem);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .inspiration-dossier__section {
   display: grid;
-  gap: 8px;
-  border: 1px solid var(--cruor-color-milk-a065);
-  background: var(--cruor-color-white-a018);
-  padding: 13px;
+  gap: 14px;
+  min-width: 0;
 }
 
-.inspiration-dossier__section--lead {
-  border-left-color: var(--cruor-color-blood-glow-a500);
-  background:
-    var(--cruor-gradient-linear-019-fbb0759c), var(--cruor-color-white-a018);
+.inspiration-dossier__section-heading {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
 }
 
-.inspiration-dossier__section h3 {
+.inspiration-dossier__section-heading > span {
+  color: var(--cruor-color-blood-glow);
+  font-family: var(--cruor-font-body, Inter, sans-serif);
+  font-size: var(--text-size-l, 0.92rem);
+  font-weight: 900;
+}
+
+.inspiration-dossier__section-heading h3 {
+  display: grid;
+  grid-template-columns: auto minmax(24px, 1fr);
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  color: var(--cruor-color-milk);
+  font-size: var(--text-size-l, 0.92rem);
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.inspiration-dossier__section-heading h3::after {
+  width: 100%;
+  height: 1px;
+  background: var(--cruor-color-milk-a075);
+  content: "";
+}
+
+.inspiration-dossier__section > h3,
+.inspiration-dossier__section-head h3 {
   margin: 0;
   color: var(--cruor-color-blood-glow);
-  font-size: var(--text-size-xs, 0.68rem);
+  font-size: var(--text-size-l, 0.92rem);
   font-weight: 900;
   letter-spacing: 0.11em;
   text-transform: uppercase;
 }
 
-.inspiration-dossier__section p {
+.inspiration-dossier__section > p,
+.inspiration-dossier__section-deck {
   margin: 0;
   color: var(--cruor-color-text-a680);
-  font-size: clamp(0.88rem, 1.15vw, 1rem);
+  font-size: var(--text-size-2xl);
+  line-height: 1.62;
+}
+
+.inspiration-dossier__section-deck {
+  color: var(--cruor-color-text-a500);
+}
+
+.inspiration-dossier__article-copy {
+  display: grid;
+  gap: 13px;
+  max-width: 78ch;
+}
+
+.inspiration-dossier__article-copy h4 {
+  margin: 14px 0 0;
+  color: var(--cruor-color-milk);
+  font-family: var(--cruor-font-body, Inter, sans-serif);
+  font-size: var(--text-size-4xl);
+  line-height: 1.2;
+}
+
+.inspiration-dossier__article-copy p,
+.inspiration-dossier__article-copy ul {
+  margin: 0;
+  color: var(--cruor-color-text-a760);
+  font-size: var(--text-size-2xl);
+  line-height: 1.72;
+}
+
+.inspiration-dossier__article-copy ul {
+  display: grid;
+  gap: 8px;
+  padding-left: 1.25em;
+}
+
+.inspiration-dossier__article-lead {
+  color: var(--cruor-color-text-a900) !important;
+  font-family: var(--cruor-font-body, Inter, sans-serif);
+  font-size: var(--text-size-3xl);
+  line-height: 1.55 !important;
+}
+
+.inspiration-dossier__fact-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 6px 0 0;
+  border-top: 1px solid var(--cruor-color-milk-a075);
+  border-left: 1px solid var(--cruor-color-milk-a075);
+}
+
+.inspiration-dossier__fact-strip > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  border-right: 1px solid var(--cruor-color-milk-a075);
+  border-bottom: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-black-a160);
+  padding: 13px 14px;
+}
+
+.inspiration-dossier__fact-strip dt {
+  color: var(--cruor-color-rose);
+  font-size: var(--text-size-l, 0.92rem);
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.inspiration-dossier__fact-strip dd {
+  margin: 0;
+  color: var(--cruor-color-text-a860);
+  font-size: var(--text-size-l, 0.92rem);
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.inspiration-dossier__lens {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--cruor-color-blood-glow-a420);
+  background: var(--cruor-color-black-a240);
+  padding: 20px 22px;
+}
+
+.inspiration-dossier__lens > span {
+  color: var(--cruor-color-blood-glow);
+  font-size: var(--text-size-l, 0.92rem);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.inspiration-dossier__lens blockquote {
+  margin: 0;
+  color: var(--cruor-color-milk);
+  font-family: var(--cruor-font-body, Inter, sans-serif);
+  font-size: var(--text-size-3xl);
+  line-height: 1.45;
+}
+
+.inspiration-dossier__lens p {
+  margin: 0;
+  color: var(--cruor-color-text-a760);
+  font-size: var(--text-size-2xl);
+  line-height: 1.68;
+}
+
+.inspiration-dossier__structure-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--cruor-color-milk-a075);
+  border-left: 1px solid var(--cruor-color-milk-a075);
+}
+
+.inspiration-dossier__structure-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: start;
+  gap: 8px 12px;
+  min-width: 0;
+  border-right: 1px solid var(--cruor-color-milk-a075);
+  border-bottom: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-black-a160);
+  padding: 17px;
+}
+
+.inspiration-dossier__structure-item > span {
+  grid-row: 1 / 3;
+  color: var(--cruor-color-blood-glow);
+  font-family: var(--cruor-font-body, Inter, sans-serif);
+  font-size: var(--text-size-xl, 1.05rem);
+  font-weight: 900;
+}
+
+.inspiration-dossier__structure-item h4 {
+  margin: 0;
+  color: var(--cruor-color-milk);
+  font-size: var(--text-size-l, 0.92rem);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.inspiration-dossier__structure-item p {
+  margin: 0;
+  color: var(--cruor-color-text-a620);
+  font-size: var(--text-size-2xl);
   line-height: 1.58;
 }
 
-.inspiration-dossier__section--lead p {
-  color: var(--cruor-color-text-a820);
-  font-size: clamp(0.94rem, 1.25vw, 1.08rem);
-  line-height: 1.66;
+.inspiration-dossier__structure-item footer {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  border-top: 1px solid var(--cruor-color-milk-a060);
+  color: var(--cruor-color-r208-g162-b170-a840);
+  padding-top: 9px;
+  font-size: var(--text-size-l, 0.92rem);
+  line-height: 1.48;
+}
+
+.inspiration-dossier__safety-layout {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.72fr) minmax(0, 1.28fr);
+  gap: 10px;
+}
+
+.inspiration-dossier__safety-card {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  border: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-black-a160);
+  padding: 16px;
+}
+
+.inspiration-dossier__safety-card h4,
+.inspiration-dossier__research-group h4 {
+  margin: 0;
+  color: var(--cruor-color-milk);
+  font-size: var(--text-size-l, 0.92rem);
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.inspiration-dossier__warning-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.inspiration-dossier__warning-tags span {
+  border: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-white-a022);
+  color: var(--cruor-color-text-a760);
+  padding: 7px 9px;
+  font-size: var(--text-size-l, 0.92rem);
+  font-weight: 750;
+}
+
+.inspiration-dossier__practice-list {
+  display: grid;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inspiration-dossier__practice-list li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  color: var(--cruor-color-text-a680);
+  font-size: var(--text-size-2xl);
+  line-height: 1.58;
+}
+
+.inspiration-dossier__practice-list b {
+  color: var(--cruor-color-blood-glow);
+  font-family: var(--cruor-font-body, Inter, sans-serif);
+}
+
+.inspiration-dossier__safety-note {
+  border-left: 2px solid var(--cruor-color-rose);
+  background: var(--cruor-color-black-a160);
+  padding: 13px 15px;
+  font-size: var(--text-size-2xl);
+  line-height: 1.58;
+}
+
+.inspiration-dossier__safety-note strong {
+  color: var(--cruor-color-milk);
+}
+
+.inspiration-dossier__research-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.inspiration-dossier__research-group {
+  display: grid;
+  align-content: start;
+  border: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-black-a160);
+}
+
+.inspiration-dossier__research-group > header {
+  display: grid;
+  gap: 6px;
+  padding: 15px;
+  border-bottom: 1px solid var(--cruor-color-milk-a075);
+}
+
+.inspiration-dossier__research-group > header p {
+  margin: 0;
+  color: var(--cruor-color-text-a500);
+  font-size: var(--text-size-l, 0.92rem);
+  line-height: 1.45;
+}
+
+.inspiration-dossier__research-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--cruor-color-milk-a060);
+  color: inherit;
+  padding: 13px 15px;
+  text-decoration: none;
+}
+
+.inspiration-dossier__research-link:last-child {
+  border-bottom: 0;
+}
+
+.inspiration-dossier__research-link:hover,
+.inspiration-dossier__research-link:focus-visible {
+  background: var(--cruor-color-white-a024);
+  outline: none;
+}
+
+.inspiration-dossier__research-link > span {
+  display: grid;
+  gap: 4px;
+}
+
+.inspiration-dossier__research-link strong {
+  color: var(--cruor-color-text-a900);
+  font-size: var(--text-size-l, 0.92rem);
+}
+
+.inspiration-dossier__research-link span span {
+  color: var(--cruor-color-text-a560);
+  font-size: var(--text-size-l, 0.92rem);
+  line-height: 1.48;
+}
+
+.inspiration-dossier__research-link em {
+  color: var(--cruor-color-r208-g162-b170-a840);
+  font-size: var(--text-size-l, 0.92rem);
+  font-style: normal;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.inspiration-dossier__research-link > i {
+  color: var(--cruor-color-text-a420);
+  font-size: var(--text-size-xs, 0.68rem);
+}
+
+.inspiration-dossier__related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.inspiration-dossier__related-card {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-width: 0;
+  border: 1px solid var(--cruor-color-milk-a075);
+  background: var(--cruor-color-black-a160);
+  color: inherit;
+  padding: 15px;
+  text-align: left;
+}
+
+button.inspiration-dossier__related-card {
+  cursor: pointer;
+}
+
+button.inspiration-dossier__related-card:hover,
+button.inspiration-dossier__related-card:focus-visible {
+  border-color: var(--cruor-color-blood-glow-a420);
+  background: var(--cruor-color-white-a024);
+  outline: none;
+}
+
+.inspiration-dossier__related-card small {
+  color: var(--cruor-color-blood-glow);
+  font-size: var(--text-size-l, 0.92rem);
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.inspiration-dossier__related-card strong {
+  color: var(--cruor-color-milk);
+  font-family: var(--cruor-font-body, Inter, sans-serif);
+  font-size: var(--text-size-l, 0.92rem);
+}
+
+.inspiration-dossier__related-card p {
+  margin: 0;
+  color: var(--cruor-color-text-a560);
+  font-size: var(--text-size-l, 0.92rem);
+  line-height: 1.5;
+}
+
+.inspiration-dossier__workbench-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 18px;
+  border-bottom: 1px solid var(--cruor-color-milk-a075);
+  padding-bottom: 20px;
+}
+
+.inspiration-dossier__workbench-intro h3 {
+  margin: 0 0 7px;
+  color: var(--cruor-color-milk);
+  font-family: var(--cruor-font-body, Inter, sans-serif);
+  font-size: var(--text-size-4xl);
+}
+
+.inspiration-dossier__workbench-intro p {
+  max-width: 700px;
+  margin: 0;
+  color: var(--cruor-color-text-a560);
+  font-size: var(--text-size-2xl);
+  line-height: 1.55;
+}
+
+.inspiration-dossier__workbench-intro > span {
+  border: 1px solid var(--cruor-color-milk-a075);
+  color: var(--cruor-color-r208-g162-b170-a840);
+  padding: 7px 9px;
+  font-size: var(--text-size-l, 0.92rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.inspiration-dossier__translation-map {
+  display: grid;
+  border-top: 1px solid var(--cruor-color-milk-a075);
+}
+
+.inspiration-dossier__translation-map article {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.7fr) auto minmax(0, 1.3fr) auto;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--cruor-color-milk-a075);
+  padding: 13px 0;
+}
+
+.inspiration-dossier__translation-map strong {
+  color: var(--cruor-color-milk);
+  font-size: var(--text-size-l, 0.92rem);
+}
+
+.inspiration-dossier__translation-map i {
+  color: var(--cruor-color-blood-glow);
+  font-size: var(--text-size-xs, 0.68rem);
+}
+
+.inspiration-dossier__translation-map span {
+  color: var(--cruor-color-text-a560);
+  font-size: var(--text-size-2xl);
+  line-height: 1.5;
+}
+
+.inspiration-dossier__translation-map em {
+  color: var(--cruor-color-r208-g162-b170-a840);
+  font-size: var(--text-size-l, 0.92rem);
+  font-style: normal;
+  font-weight: 900;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.inspiration-dossier__empty-copy {
+  color: var(--cruor-color-text-a420);
+  font-style: italic;
 }
 
 .inspiration-dossier__chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 7px;
 }
 
 .inspiration-dossier__chips span {
   border: 1px solid var(--cruor-color-milk-a075);
   background: var(--cruor-color-white-a024);
   color: var(--cruor-color-hex-c8a2a8);
-  padding: 5px 8px;
-  font-size: var(--text-size-xs, 0.68rem);
+  padding: 6px 9px;
+  font-size: var(--text-size-l, 0.92rem);
   font-weight: 800;
 }
 
@@ -1021,7 +1603,7 @@
 .inspiration-dossier__section-head > span,
 .inspiration-dossier__component-group > header span {
   color: var(--cruor-color-rose);
-  font-size: var(--text-size-xs, 0.68rem);
+  font-size: var(--text-size-l, 0.92rem);
   font-weight: 900;
 }
 
@@ -1032,65 +1614,108 @@
 
 .inspiration-dossier__component-group {
   display: grid;
-  gap: 7px;
+  gap: 8px;
   border: 1px solid var(--cruor-color-milk-a060);
   background: var(--cruor-surface-card);
-  padding: 9px;
+  padding: 10px;
 }
 
 .inspiration-dossier__component-group > header strong {
   color: var(--cruor-color-text-a820);
-  font-size: var(--text-size-xs, 0.68rem);
+  font-size: var(--text-size-l, 0.92rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .inspiration-dossier__component-group > div {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
 }
 
-.inspiration-dossier__component-group > div > span {
+.inspiration-dossier__component-group > div > article {
   display: grid;
-  gap: 2px;
-  max-width: 100%;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
   border: 1px solid var(--cruor-color-milk-a060);
   background: var(--cruor-color-white-a022);
-  padding: 6px 8px;
+  padding: 10px;
 }
 
-.inspiration-dossier__component-group > div strong {
-  color: var(--cruor-color-text-a900);
-  font-size: var(--text-size-s, 0.74rem);
-}
-
-.inspiration-dossier__component-group > div small {
+.inspiration-dossier__component-group > div > article small {
   color: var(--cruor-color-r208-g162-b170-a840);
-  font-size: var(--text-size-xxs, 0.61rem);
+  font-size: var(--text-size-l, 0.92rem);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.inspiration-dossier__component-group > div > article strong {
+  color: var(--cruor-color-text-a900);
+  font-size: var(--text-size-l, 0.92rem);
+  font-weight: 850;
+}
+
+.inspiration-dossier__component-group > div > article p {
+  margin: 0;
+  color: var(--cruor-color-text-a500);
+  font-size: var(--text-size-l, 0.92rem);
+  line-height: 1.46;
+}
+
+.inspiration-dossier__technical-details {
+  border-top: 1px solid var(--cruor-color-milk-a060);
+  padding-top: 10px;
+}
+
+.inspiration-dossier__technical-details summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--cruor-color-text-a500);
+  font-size: var(--text-size-l, 0.92rem);
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.inspiration-dossier__technical-details > div {
+  display: grid;
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.inspiration-dossier__technical-details article {
+  display: grid;
+  gap: 3px;
+  border: 1px solid var(--cruor-color-milk-a050);
+  background: var(--cruor-color-black-a160);
+  padding: 8px 9px;
+}
+
+.inspiration-dossier__technical-details article strong {
+  color: var(--cruor-color-text-a860);
+  font-size: var(--text-size-l, 0.92rem);
+}
+
+.inspiration-dossier__technical-details article small {
+  color: var(--cruor-color-r208-g162-b170-a840);
+  font-size: var(--text-size-l, 0.92rem);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .inspiration-dossier__actions {
   display: flex;
+  grid-column: 1 / -1;
+  grid-row: 3;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 14px;
   border-top: 1px solid var(--cruor-color-milk-a070);
   background: var(--cruor-color-black-a240);
   padding: 12px clamp(22px, 3vw, 40px);
-}
-
-.inspiration-dossier__actions > span {
-  overflow: hidden;
-  color: var(--cruor-color-text-a360);
-  font-size: var(--text-size-xxs, 0.61rem);
-  font-weight: 850;
-  letter-spacing: 0.08em;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
 }
 
 .inspiration-dossier__actions button {
@@ -1104,7 +1729,7 @@
     var(--cruor-gradient-linear-079-18ee8d35), var(--cruor-surface-card);
   color: var(--cruor-color-milk);
   padding: 0 12px;
-  font-size: var(--text-size-xs, 0.68rem);
+  font-size: var(--text-size-l, 0.92rem);
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1168,7 +1793,7 @@
   }
 
   .inspiration-dossier__panel {
-    grid-template-columns: minmax(240px, 0.58fr) minmax(0, 1.42fr);
+    grid-template-columns: minmax(270px, 0.68fr) minmax(0, 1.32fr);
   }
 }
 
@@ -1209,34 +1834,100 @@
     padding: 0;
   }
 
+  .inspiration-dossier__stage {
+    width: calc(100% - 46px);
+    height: 100dvh;
+    justify-self: start;
+  }
+
   .inspiration-dossier__panel {
-    display: block;
     width: 100%;
-    max-height: 100dvh;
-    min-height: 100dvh;
-    overflow-y: auto;
+    height: 100%;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(240px, 44dvh) minmax(0, 1fr);
+    overflow: hidden;
     border: 0;
   }
 
-  .inspiration-dossier__visual {
-    width: min(420px, 100%);
-    aspect-ratio: 4 / 5;
-    margin: 0 auto;
+  .inspiration-dossier__media {
+    width: 100%;
+    height: 100%;
+    grid-column: 1;
+    grid-row: 1;
+    aspect-ratio: auto;
+    margin: 0;
     border-right: 0;
     border-bottom: 1px solid var(--cruor-color-milk-a075);
   }
 
   .inspiration-dossier__content {
-    overflow: visible;
+    height: 100%;
+    grid-column: 1;
+    grid-row: 2;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
+  }
+
+  .inspiration-dossier__header {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .inspiration-dossier__tabs {
+    padding-left: 0;
+  }
+
+  .inspiration-dossier__tabs button {
+    width: 46px;
+    height: 46px;
+    min-height: 46px;
   }
 
   .inspiration-dossier__body {
-    overflow: visible;
+    grid-column: 1;
+    grid-row: 2;
+    overflow-y: auto;
   }
 
   .inspiration-dossier__actions {
-    position: sticky;
-    bottom: 0;
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .inspiration-dossier__fact-strip,
+  .inspiration-dossier__structure-grid,
+  .inspiration-dossier__research-grid,
+  .inspiration-dossier__related-grid,
+  .inspiration-dossier__component-group > div {
+    grid-template-columns: 1fr;
+  }
+
+  .inspiration-dossier__safety-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .inspiration-dossier__workbench-intro {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .inspiration-dossier__translation-map article {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .inspiration-dossier__translation-map article > i {
+    display: none;
+  }
+
+  .inspiration-dossier__translation-map article > span {
+    grid-column: 1 / -1;
+  }
+
+  .inspiration-dossier__actions {
+    position: relative;
+    bottom: auto;
     z-index: 4;
     background: var(--cruor-color-ink-raised-a960);
     backdrop-filter: blur(12px);
@@ -1266,10 +1957,6 @@
   .inspiration-dossier__actions {
     align-items: stretch;
     flex-direction: column;
-  }
-
-  .inspiration-dossier__actions > span {
-    text-align: center;
   }
 }
 

@@ -98,6 +98,7 @@ export function LocationGuidedFlowPanel({
       primaryAction={bindAction(flow.primaryAction)}
       productLabel="Dark Places"
       showBuildGuide={showBuildGuide}
+      showHiddenTrigger={false}
       stages={flow.stages}
       tasks={tasks}
       onShowBuildGuideChange={onShowBuildGuideChange}

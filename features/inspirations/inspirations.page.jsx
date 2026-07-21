@@ -18,7 +18,6 @@ import "./inspirations.styles.css";
 
 const ANY_VALUE = "all";
 const INSPIRATION_WORKFLOW_ID = "inspiration-archive";
-const MONSTER_WORKFLOW_ID = "monster-composer";
 const FILTER_PANEL_TRANSITION_MS = 220;
 const STATIC_CONTENT_REGISTRY = getStaticContentRegistry();
 const STATIC_CONTENT_PACK_PROVENANCE = getStaticContentPackProvenance();
@@ -74,26 +73,6 @@ function getLinkedSystemComponents(inspiration) {
   );
 }
 
-function getLinkedMonsterComponents(inspiration, locale) {
-  const sourceAnchorId = getPrimarySourceAnchorId(inspiration);
-  if (!sourceAnchorId) return [];
-
-  return STATIC_CONTENT_REGISTRY.getLinkedComponents(sourceAnchorId, {
-    workflow: MONSTER_WORKFLOW_ID,
-    locale,
-  })
-    .filter((component) => component.contentType === "monster-graft")
-    .sort((left, right) => {
-      const leftSlot = left.monster?.slot || left.slots?.[0] || "";
-      const rightSlot = right.monster?.slot || right.slots?.[0] || "";
-      return (
-        leftSlot.localeCompare(rightSlot) ||
-        Number(left.monster?.cost || 0) - Number(right.monster?.cost || 0) ||
-        left.title.localeCompare(right.title)
-      );
-    });
-}
-
 function buildSearchText(card) {
   const {
     inspiration,
@@ -112,6 +91,41 @@ function buildSearchText(card) {
     inspiration.caption,
     inspiration.narrative,
     inspiration.inspiration?.logic,
+    inspiration.editorial?.deck,
+    inspiration.editorial?.thesis,
+    inspiration.editorial?.whatItIs,
+    inspiration.editorial?.cruorLensThesis,
+    inspiration.editorial?.cruorLens,
+    ...(inspiration.editorial?.facts || []).flatMap((fact) => [
+      fact.label,
+      fact.value,
+    ]),
+    ...(inspiration.editorial?.horrorStructures || []).flatMap((structure) => [
+      structure.title,
+      structure.description,
+      structure.feeds,
+      ...(structure.keywords || []),
+    ]),
+    ...(inspiration.editorial?.triggerWarnings || []),
+    ...(inspiration.editorial?.tableSafety || []),
+    inspiration.editorial?.lowIntensityAlternative,
+    ...(inspiration.editorial?.sources || []).flatMap((entry) => [
+      entry.title,
+      entry.description,
+      entry.meta,
+    ]),
+    ...(inspiration.editorial?.furtherReading || []).flatMap((entry) => [
+      entry.title,
+      entry.description,
+      entry.meta,
+    ]),
+    ...(inspiration.editorial?.relatedDossiers || []).flatMap((entry) => [
+      entry.title,
+      entry.relationship,
+      entry.description,
+    ]),
+    inspiration.media?.imageTitle,
+    inspiration.media?.imageCredit,
     sourceAnchor?.label,
     sourceAnchor?.summary,
     sourceType,
@@ -155,6 +169,7 @@ function compareCards(left, right, sortMode) {
 }
 
 export default function InspirationsPage({
+  onOpenDarkPlaces,
   onOpenMonsterComposer,
   locale = "en",
 } = {}) {
@@ -375,11 +390,11 @@ export default function InspirationsPage({
     [allCards, dossierCardId],
   );
   const dossierComponents = useMemo(
-    () =>
-      dossierCard
-        ? getLinkedMonsterComponents(dossierCard.inspiration, locale)
-        : [],
-    [dossierCard, locale],
+    () => dossierCard?.linkedComponents || [],
+    [dossierCard],
+  );
+  const canOpenDarkPlaces = Boolean(
+    dossierCard?.sourceAnchor && typeof onOpenDarkPlaces === "function",
   );
   const canOpenMonsterComposer = Boolean(
     dossierCard?.sourceAnchor && typeof onOpenMonsterComposer === "function",
@@ -400,10 +415,10 @@ export default function InspirationsPage({
   }, []);
   const closeDossier = useCallback(() => setDossierCardId(""), []);
 
-  const useInMonsterComposer = useCallback(() => {
-    if (!canOpenMonsterComposer || !dossierCard) return;
+  const buildDossierSeed = useCallback(() => {
+    if (!dossierCard) return null;
     const sourceAnchorId = getPrimarySourceAnchorId(dossierCard.inspiration);
-    onOpenMonsterComposer({
+    return {
       sourceAnchorId,
       sourceAnchorIds: uniqueArray([
         sourceAnchorId,
@@ -414,8 +429,31 @@ export default function InspirationsPage({
         getInspirationTitle(dossierCard.inspiration),
       inspirationId: dossierCard.inspiration.id,
       inspirationTitle: getInspirationTitle(dossierCard.inspiration),
-    });
-  }, [canOpenMonsterComposer, dossierCard, onOpenMonsterComposer]);
+    };
+  }, [dossierCard]);
+
+  const useInDarkPlaces = useCallback(() => {
+    if (!canOpenDarkPlaces) return;
+    const seed = buildDossierSeed();
+    if (seed) onOpenDarkPlaces(seed);
+  }, [buildDossierSeed, canOpenDarkPlaces, onOpenDarkPlaces]);
+
+  const useInMonsterComposer = useCallback(() => {
+    if (!canOpenMonsterComposer) return;
+    const seed = buildDossierSeed();
+    if (seed) onOpenMonsterComposer(seed);
+  }, [buildDossierSeed, canOpenMonsterComposer, onOpenMonsterComposer]);
+
+  const openRelatedDossier = useCallback(
+    (sourceAnchorId) => {
+      const relatedCard = allCards.find(
+        (candidate) =>
+          getPrimarySourceAnchorId(candidate.inspiration) === sourceAnchorId,
+      );
+      if (relatedCard) setDossierCardId(relatedCard.inspiration.id);
+    },
+    [allCards],
+  );
 
   function clearFilters() {
     setSearch("");
@@ -546,8 +584,11 @@ export default function InspirationsPage({
         <InspirationDossierModal
           card={dossierCard}
           linkedComponents={dossierComponents}
+          canOpenDarkPlaces={canOpenDarkPlaces}
           canOpenMonsterComposer={canOpenMonsterComposer}
+          onUseDarkPlaces={useInDarkPlaces}
           onUseMonsterComposer={useInMonsterComposer}
+          onOpenRelatedDossier={openRelatedDossier}
           onClose={closeDossier}
           locale={locale}
         />

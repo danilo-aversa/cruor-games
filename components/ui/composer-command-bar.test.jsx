@@ -91,12 +91,18 @@ describe("Composer workflow primitives", () => {
     const guide = document.body.querySelector(".cruor-composer-command-bar");
     const navigation = document.body.querySelector(".cruor-composer-stage-navigation");
     expect(guide).not.toBeNull();
+    expect(guide.querySelector(".cruor-composer-command-bar__primary")).toBeNull();
+    expect(guide.querySelector(".cruor-composer-command-bar__summary")?.textContent).toContain("Complete the selected room");
     expect(navigation.querySelectorAll("button")).toHaveLength(2);
     expect(navigation.textContent).toContain("Frame");
     expect(navigation.textContent).toContain("Final Output");
     expect(navigation.textContent).not.toContain("Rooms");
     expect(navigation.textContent).not.toContain("Build Guide");
 
+    act(() => document.body.querySelector(".cruor-composer-command-bar__expand").click());
+    expect(guide.querySelector(".cruor-composer-command-bar__summary")).toBeNull();
+    expect(guide.querySelector(".cruor-composer-command-bar__stepper")?.textContent).toContain("Rooms");
+    expect(guide.querySelector(".cruor-composer-command-bar__stepper")?.textContent).toContain("Final Output");
     act(() => document.body.querySelector(".cruor-composer-command-bar__primary").click());
     act(() => document.body.querySelector(".cruor-composer-stage-navigation__button--previous").click());
     act(() => document.body.querySelector(".cruor-composer-stage-navigation__button--next").click());
@@ -106,6 +112,49 @@ describe("Composer workflow primitives", () => {
     expect(onPrevious).toHaveBeenCalledTimes(1);
     expect(onNext).toHaveBeenCalledTimes(1);
     expect(onGuideChange).toHaveBeenCalledWith(false);
+  });
+
+
+  it("marks completed objectives and removes redundant Required task labels", () => {
+    act(() => {
+      root.render(
+        <ComposerWorkflowFooter
+          centerAnchorSelector=".test-composer-center"
+          navigationAnchorSelector=".test-composer-right-rail"
+          productLabel="Dark Places"
+          currentStageId="frame"
+          stages={[
+            { id: "frame", label: "Frame", status: "complete" },
+            { id: "rooms", label: "Rooms", status: "open" },
+          ]}
+          objective={{ title: "Confirm the place frame", detail: "The map is ready." }}
+          tasks={[
+            { id: "identity", title: "Place Identity", required: true, status: "complete" },
+            { id: "program", title: "Room Program", required: true, status: "complete" },
+            { id: "map", title: "Generated Map", required: true, status: "complete" },
+          ]}
+          primaryAction={{ label: "Continue to Rooms", onClick: () => {} }}
+          nextAction={{ label: "Rooms", onClick: () => {} }}
+          showBuildGuide
+        />,
+      );
+    });
+
+    const collapsedGuide = document.body.querySelector(".cruor-composer-command-bar");
+    expect(
+      collapsedGuide.querySelector(".cruor-composer-command-bar__summary")?.classList.contains("is-complete"),
+    ).toBe(true);
+
+    act(() => document.body.querySelector(".cruor-composer-command-bar__expand").click());
+
+    const guide = document.body.querySelector(".cruor-composer-command-bar");
+    expect(guide.querySelector(".cruor-composer-command-bar__objective")?.classList.contains("is-complete")).toBe(true);
+    expect(guide.querySelector(".cruor-composer-command-bar__tasks-head > strong")?.classList.contains("is-complete")).toBe(true);
+    expect(guide.querySelector(".cruor-composer-command-bar__tasks-head > strong")?.textContent).toContain("3 of 3 required");
+    expect(guide.querySelectorAll(".cruor-composer-command-bar__task-kind")).toHaveLength(0);
+    expect(guide.querySelectorAll(".cruor-composer-command-bar__step")).toHaveLength(2);
+    expect(guide.querySelector(".cruor-composer-command-bar__step.is-complete svg")).not.toBeNull();
+    expect(guide.querySelectorAll(".cruor-composer-command-bar__step-copy small svg")).toHaveLength(2);
   });
 
   it("keeps the lone Next control in its right-hand navigation cell", () => {
@@ -129,6 +178,27 @@ describe("Composer workflow primitives", () => {
     expect(navigation.querySelector(".cruor-composer-stage-navigation__button--previous")).toBeNull();
     expect(navigation.querySelector(".cruor-composer-stage-navigation__button--next")).not.toBeNull();
     expect(document.body.querySelector(".cruor-composer-build-guide-trigger")).not.toBeNull();
+  });
+
+
+  it("lets a feature replace the centered hidden-guide trigger with its own rail action", () => {
+    act(() => {
+      root.render(
+        <ComposerWorkflowFooter
+          centerAnchorSelector=".test-composer-center"
+          navigationAnchorSelector=".test-composer-right-rail"
+          productLabel="Dark Places"
+          currentStageId="frame"
+          stages={[{ id: "frame", label: "Frame" }, { id: "rooms", label: "Rooms" }]}
+          nextAction={{ label: "Rooms", onClick: () => {} }}
+          showBuildGuide={false}
+          showHiddenTrigger={false}
+        />,
+      );
+    });
+
+    expect(document.body.querySelector(".cruor-composer-build-guide-trigger")).toBeNull();
+    expect(document.body.querySelector(".cruor-composer-stage-navigation")).not.toBeNull();
   });
 
   it("reserves the bottom of the right rail for detached navigation", async () => {
