@@ -1,8 +1,16 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import { t } from "../../../shared/i18n/index.js";
 
 const DOSSIER_TABS = Object.freeze(["dossier", "workbench"]);
+const DOSSIER_TRANSITION_MS = 220;
 
 const COMPONENT_GROUP_LABEL_KEYS = Object.freeze({
   locations: "inspirations.dossier.locationContent",
@@ -260,12 +268,74 @@ export default function InspirationDossierModal({
   const closeButtonRef = useRef(null);
   const previousActiveElementRef = useRef(null);
   const tabRefs = useRef({});
+  const closingRef = useRef(false);
+  const closeTimerRef = useRef(null);
+  const openingFrameRef = useRef(null);
   const [activeTab, setActiveTab] = useState("dossier");
+  const [motionState, setMotionState] = useState("entering");
 
   const groupedComponents = useMemo(
     () => groupComponents(linkedComponents),
     [linkedComponents],
   );
+
+  const finishClose = useCallback(() => {
+    if (!closingRef.current) return;
+    closingRef.current = false;
+
+    if (closeTimerRef.current !== null) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+
+    onClose();
+  }, [onClose]);
+
+  const requestClose = useCallback(() => {
+    if (closingRef.current) return;
+    closingRef.current = true;
+
+    const motionPreference = document.documentElement.dataset.a11yMotion;
+    const reduceMotion =
+      motionPreference === "reduced" ||
+      (motionPreference !== "full" &&
+        window.matchMedia?.("(prefers-reduced-motion: reduce)").matches);
+
+    if (reduceMotion) {
+      finishClose();
+      return;
+    }
+
+    setMotionState("closing");
+    closeTimerRef.current = window.setTimeout(
+      finishClose,
+      DOSSIER_TRANSITION_MS + 80,
+    );
+  }, [finishClose]);
+
+  useEffect(() => {
+    const useAnimationFrame =
+      typeof window.requestAnimationFrame === "function";
+    const open = () => setMotionState("open");
+
+    openingFrameRef.current = useAnimationFrame
+      ? window.requestAnimationFrame(open)
+      : window.setTimeout(open, 16);
+
+    return () => {
+      if (openingFrameRef.current !== null) {
+        if (useAnimationFrame) {
+          window.cancelAnimationFrame(openingFrameRef.current);
+        } else {
+          window.clearTimeout(openingFrameRef.current);
+        }
+      }
+
+      if (closeTimerRef.current !== null) {
+        window.clearTimeout(closeTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     setActiveTab("dossier");
@@ -308,7 +378,7 @@ export default function InspirationDossierModal({
     function handleKeyDown(event) {
       if (event.key === "Escape") {
         event.preventDefault();
-        onClose();
+        requestClose();
         return;
       }
 
@@ -333,7 +403,7 @@ export default function InspirationDossierModal({
       document.body.style.overflow = previousOverflow;
       previousActiveElementRef.current?.focus?.();
     };
-  }, [onClose]);
+  }, [requestClose]);
 
   if (!card || typeof document === "undefined") return null;
 
@@ -428,10 +498,18 @@ export default function InspirationDossierModal({
 
   return createPortal(
     <div
-      className="inspiration-dossier"
+      className={`inspiration-dossier is-${motionState}`}
       role="presentation"
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (event.target === event.currentTarget) requestClose();
+      }}
+      onTransitionEnd={(event) => {
+        if (
+          motionState === "closing" &&
+          event.target === event.currentTarget
+        ) {
+          finishClose();
+        }
       }}
     >
       <div ref={stageRef} className="inspiration-dossier__stage">
@@ -446,7 +524,7 @@ export default function InspirationDossierModal({
             className="inspiration-dossier__close cruor-square-icon-button"
             type="button"
             aria-label={t("inspirations.dossier.close", {}, locale)}
-            onClick={onClose}
+            onClick={requestClose}
           >
             <i className="fa-solid fa-xmark" aria-hidden="true" />
           </button>

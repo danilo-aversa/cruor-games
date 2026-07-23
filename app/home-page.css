@@ -752,17 +752,16 @@ main.cruor-home::before {
   gap: clamp(12px, 1.2vw, 16px);
 }
 
-.cruor-home__tool-copy > span {
-  color: var(--home-accent-pale);
-  font-size: var(--text-size-sm);
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  line-height: 1.2;
-  text-transform: uppercase;
-}
-
 .cruor-home__tool-copy h3 {
   font-family: var(--font);
+}
+
+.cruor-home__tool-content-inner--overview .cruor-home__tool-copy h3 {
+  font-size: var(--text-size-fluid-12);
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
 }
 
 .cruor-home__tool-summary {

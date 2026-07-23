@@ -54,14 +54,16 @@ describe("InspirationsPage interactions", () => {
       ".inspiration-card__dossier-button",
     );
     expect(dossierButton.classList.contains("cruor-square-icon-button")).toBe(
-      true,
+      false,
     );
-    expect(
-      dossierButton.classList.contains("cruor-square-icon-button--compact"),
-    ).toBe(false);
+    expect(dossierButton.textContent).toContain("Open dossier");
     expect(dossierButton.getAttribute("aria-label")).toBe("Open dossier");
+    expect(dossierButton.querySelector("i")).toBeNull();
     expect(dossierButton.hasAttribute("title")).toBe(false);
     expect(dossierButton.hasAttribute("data-tooltip")).toBe(false);
+    expect(
+      jikininki.querySelector(".inspiration-card__obscurity > span"),
+    ).not.toBeNull();
     expect(flipButton.hasAttribute("title")).toBe(false);
     await act(async () => dossierButton.click());
 
@@ -71,7 +73,13 @@ describe("InspirationsPage interactions", () => {
     const closeButton = document.body.querySelector(
       ".inspiration-dossier__close",
     );
+    const modal = document.body.querySelector(".inspiration-dossier");
     await act(async () => closeButton.click());
+    expect(modal.classList.contains("is-closing")).toBe(true);
+
+    await act(async () => {
+      modal.dispatchEvent(new Event("transitionend", { bubbles: true }));
+    });
 
     expect(document.body.querySelector('[role="dialog"]')).toBeNull();
     expect(document.body.style.overflow).toBe("");

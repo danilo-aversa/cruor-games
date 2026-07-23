@@ -327,8 +327,8 @@
 
 .inspirations-filters__domain-symbol {
   display: grid;
-  width: 20px;
-  height: 20px;
+  width: 21px;
+  height: 21px;
   place-items: center;
   color: var(--cruor-color-milk);
   font-size: 0.86rem;
@@ -403,6 +403,10 @@
 .inspiration-card__front {
   z-index: 2;
   isolation: isolate;
+  background:
+    var(--cruor-gradient-linear-139-44facd54),
+    var(--cruor-inspiration-card-frame-band);
+  background-blend-mode: multiply, normal;
   opacity: 1;
   transform: rotateY(0deg);
   transition:
@@ -417,6 +421,15 @@
   transition:
     transform 720ms cubic-bezier(0.22, 0.76, 0.2, 1),
     opacity 180ms linear 180ms;
+}
+
+.inspiration-card__front::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--cruor-color-black-a300);
+  pointer-events: none;
 }
 
 .inspiration-card.is-flipped .inspiration-card__front {
@@ -452,7 +465,7 @@
   top: var(--inspiration-card-outer-padding);
   right: var(--inspiration-card-outer-padding);
   left: var(--inspiration-card-outer-padding);
-  z-index: 1;
+  z-index: 2;
   aspect-ratio: 4 / 5;
 }
 
@@ -525,24 +538,70 @@
   left: 50%;
   z-index: 5;
   display: grid;
-  width: 20px;
-  height: 20px;
+  width: 21px;
+  height: 21px;
   place-items: center;
-  border: 2px solid var(--cruor-inspiration-card-line);
+  border: 1px solid var(--cruor-inspiration-card-line);
   background: var(--cruor-inspiration-card-glass);
   box-shadow:
     0 6px 14px var(--cruor-color-black-a240),
     inset 0 0 0 1px var(--cruor-color-black-a460);
   transform: translateX(-50%) rotate(45deg);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: var(--cruor-filter-blur-6);
+  -webkit-backdrop-filter: var(--cruor-filter-blur-6);
 }
 
 .inspiration-card__domain-sigil > i {
-  color: var(--cruor-inspiration-card-line);
+  color: var(--cruor-color-muted);
   font-size: 11px;
   line-height: 1;
   transform: rotate(-45deg);
+}
+
+.inspiration-card__domain-sigil > i::before {
+  display: block;
+  background-color: var(--cruor-color-muted);
+  background-image: var(--cruor-gradient-radial-068-e609778e);
+  background-blend-mode: screen;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.inspiration-card[data-domain="tale"]
+  .inspiration-card__domain-sigil
+  > i::before {
+  background-color: var(--cruor-color-hex-8f7278);
+}
+
+.inspiration-card[data-domain="place"]
+  .inspiration-card__domain-sigil
+  > i::before {
+  background-color: var(--cruor-color-good);
+}
+
+.inspiration-card[data-domain="body"]
+  .inspiration-card__domain-sigil
+  > i::before {
+  background-color: var(--cruor-color-rose);
+}
+
+.inspiration-card[data-domain="relic"]
+  .inspiration-card__domain-sigil
+  > i::before {
+  background-color: var(--cruor-color-parchment-line);
+}
+
+.inspiration-card[data-domain="violence"]
+  .inspiration-card__domain-sigil
+  > i::before {
+  background-color: var(--cruor-color-blood-glow);
+}
+
+.inspiration-card[data-domain="rite"]
+  .inspiration-card__domain-sigil
+  > i::before {
+  background-color: var(--cruor-color-hex-7e3f2d);
 }
 
 .inspiration-card__title-rail {
@@ -614,7 +673,7 @@
   margin: 0;
   overflow: hidden;
   color: var(--cruor-color-milk);
-  font-size: clamp(0.74rem, 4.3cqw, 0.96rem);
+  font-size: var(--text-size-2xl);
   font-weight: 600;
   letter-spacing: 0.1em;
   line-height: 1.08;
@@ -628,7 +687,7 @@
   margin-top: 5px;
   overflow: hidden;
   color: var(--cruor-color-text-a500);
-  font-size: clamp(0.52rem, 2.6cqw, 0.62rem);
+  font-size: var(--text-size-l);
   letter-spacing: 0.04em;
   line-height: 1.35;
   text-overflow: ellipsis;
@@ -637,14 +696,27 @@
 
 .inspiration-card__obscurity {
   display: grid;
-  min-width: 24px;
-  min-height: 24px;
+  width: 24px;
+  height: 24px;
   place-items: center;
   border: 1px solid var(--cruor-inspiration-card-line-soft);
-  background: var(--cruor-color-white-a022);
+  background: var(--cruor-color-black-a640);
+  box-shadow:
+    0 6px 14px var(--cruor-color-black-a240),
+    inset 0 0 0 1px var(--cruor-color-black-a460);
   color: var(--cruor-color-milk);
-  font-size: 0.7rem;
+  font-size: var(--text-size-l);
   font-weight: 800;
+  transform: rotate(45deg);
+  backdrop-filter: var(--cruor-filter-blur-6);
+  -webkit-backdrop-filter: var(--cruor-filter-blur-6);
+}
+
+.inspiration-card__obscurity > span {
+  display: grid;
+  place-items: center;
+  line-height: 1;
+  transform: rotate(-45deg);
 }
 
 .inspiration-card__description {
@@ -664,12 +736,45 @@
   -webkit-line-clamp: 11;
 }
 
-.inspiration-card__dossier-button {
+.inspirations-page .inspiration-card__dossier-button {
   position: relative;
   z-index: 9;
-  justify-self: center;
-  margin: clamp(8px, 2.8cqw, 12px) 0;
+  display: inline-flex;
+  width: 100%;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  margin: clamp(10px, 3cqw, 14px) 0;
+  border: 1px solid var(--cruor-inspiration-card-line-soft);
+  background:
+    var(--cruor-gradient-radial-048-c75ad843), var(--cruor-color-black-a680);
+  color: var(--cruor-color-text-a760);
+  padding: 0 12px;
+  font-size: var(--text-size-l);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  text-transform: uppercase;
+  box-shadow: inset 0 0 0 1px var(--cruor-color-black-a460);
+  cursor: pointer;
   pointer-events: auto;
+  transition:
+    border-color 0.14s ease,
+    background 0.14s ease,
+    color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.inspiration-card__dossier-button:hover,
+.inspiration-card__dossier-button:focus-visible {
+  border-color: var(--cruor-inspiration-card-line);
+  background:
+    var(--cruor-gradient-radial-068-e609778e), var(--cruor-color-black-a620);
+  color: var(--cruor-color-milk);
+  box-shadow:
+    inset 0 0 0 1px var(--cruor-color-black-a420),
+    var(--cruor-shadow-box-003);
+  outline: none;
 }
 
 .inspiration-card__footer {
@@ -680,7 +785,7 @@
   gap: 12px;
   padding: 0;
   color: var(--cruor-color-text-a420);
-  font-size: clamp(0.42rem, 1.8cqw, 0.5rem);
+  font-size: var(--text-size-s);
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -777,8 +882,20 @@
     sans-serif
   );
 
+  opacity: 0;
+  pointer-events: none;
   backdrop-filter: blur(8px) saturate(82%);
   -webkit-backdrop-filter: blur(8px) saturate(82%);
+  transition: opacity 220ms ease-out;
+}
+
+.inspiration-dossier.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.inspiration-dossier.is-closing {
+  pointer-events: none;
 }
 
 .inspiration-dossier,
@@ -799,6 +916,16 @@
   height: min(880px, calc(100dvh - clamp(28px, 4.8vw, 60px)));
   min-width: 0;
   min-height: 0;
+  opacity: 0;
+  transform: translateY(16px) scale(0.985);
+  transition:
+    opacity 180ms ease-out,
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.inspiration-dossier.is-open > .inspiration-dossier__stage {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .inspiration-dossier__panel {
@@ -964,7 +1091,7 @@
 .inspiration-dossier__meta > span {
   display: inline-flex;
   min-height: 34px;
-  align-items: baseline;
+  align-items: center;
   gap: 7px;
   border: 1px solid var(--cruor-color-milk-a075);
   background: var(--cruor-color-white-a022);
@@ -977,7 +1104,7 @@
 
 .inspiration-dossier__meta strong {
   color: var(--cruor-color-rose);
-  font-size: var(--text-size-l, 0.92rem);
+  font-size: var(--text-size-s);
   letter-spacing: 0.08em;
   line-height: 1;
   text-transform: uppercase;
@@ -1067,7 +1194,7 @@
   padding: 20px 22px 20px 26px;
   font-family: var(--cruor-font-body, Inter, sans-serif);
   font-size: var(--text-size-3xl);
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.32;
 }
 
@@ -1960,11 +2087,19 @@ button.inspiration-dossier__related-card:focus-visible {
   }
 }
 
+html[data-a11y-motion="reduced"] .inspiration-dossier,
+html[data-a11y-motion="reduced"] .inspiration-dossier__stage,
 html[data-a11y-motion="reduced"] .inspirations-page__filter-disclosure,
 html[data-a11y-motion="reduced"] .inspiration-card,
 html[data-a11y-motion="reduced"] .inspiration-card__front,
 html[data-a11y-motion="reduced"] .inspiration-card__back {
   transition: none;
+}
+
+html[data-a11y-motion="reduced"] .inspiration-dossier,
+html[data-a11y-motion="reduced"] .inspiration-dossier__stage {
+  opacity: 1;
+  transform: none;
 }
 
 html[data-a11y-motion="reduced"] .inspirations-page__filter-disclosure {
@@ -1979,9 +2114,17 @@ html[data-a11y-motion="reduced"] .inspirations-page__filter-disclosure {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html:not([data-a11y-motion="full"]) .inspiration-dossier,
+  html:not([data-a11y-motion="full"]) .inspiration-dossier__stage,
   html:not([data-a11y-motion="full"]) .inspiration-card,
   html:not([data-a11y-motion="full"]) .inspiration-card__front,
   html:not([data-a11y-motion="full"]) .inspiration-card__back {
     transition: none;
+  }
+
+  html:not([data-a11y-motion="full"]) .inspiration-dossier,
+  html:not([data-a11y-motion="full"]) .inspiration-dossier__stage {
+    opacity: 1;
+    transform: none;
   }
 }

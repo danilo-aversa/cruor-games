@@ -47,7 +47,6 @@ const TOOL_CARDS = [
   {
     id: "darken",
     title: "Dark Places",
-    descriptor: "01 / Location & Map Generator",
     openLabel: "Open Generator",
     summary:
       "Turn a dark fantasy premise into a playable location: a plague chapel, cursed ossuary, flooded crypt, or ruined manor with mapped regions, hazards, clues, sensory details, and table-ready notes.",
@@ -179,7 +178,6 @@ const TOOL_CARDS = [
   {
     id: "monster",
     title: "Terrifying Monsters",
-    descriptor: "02 / Monster & Stat Block Generator",
     openLabel: "Open Generator",
     summary:
       "Build a 5E horror monster from concept to stat block: a corpse-fed ghoul, bone saint, plague beast, or cursed knight with role, grafts, attacks, weaknesses, tactics, and encounter support.",
@@ -699,7 +697,6 @@ function ToolCard({ tool, onOpenCrucibleTool, onZoom }) {
           ) : (
             <>
               <div className="cruor-home__tool-copy">
-                <span>{tool.descriptor}</span>
                 <h3>{tool.title}</h3>
                 <p className="cruor-home__tool-summary">{tool.summary}</p>
               </div>

@@ -20077,3 +20077,408 @@ _Nessun file aggiunto._
 - `~components/ui/composer-rail.jsx`
 - `~shared/styles/composer-internals.css`
 
+
+---
+
+## 2026-07-22 09:57:11
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-home-tool-headings-update.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-home-tool-headings-update.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-OtxS4m`
+
+**Decisione struttura:** `Contenuto ZIP applicato dalla radice estratta.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~tests/e2e/homepage.spec.js`
+
+
+---
+
+## 2026-07-22 09:58:40
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspirations-card-polish-v24.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-card-polish-v24.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-DwvNLi`
+
+**Decisione struttura:** `Cartella top-level preservata: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/inspirations/components/InspirationCard.jsx`
+- `~features/inspirations/inspirations.interactions.test.jsx`
+- `~features/inspirations/inspirations.styles.css`
+
+
+---
+
+## 2026-07-22 10:18:27
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspirations-front-band-dark-v25.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-front-band-dark-v25.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-R4k7CF`
+
+**Decisione struttura:** `Cartella top-level preservata: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+
+---
+
+## 2026-07-22 10:34:32
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspirations-front-band-balance-v26.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-front-band-balance-v26.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-Mya1dr`
+
+**Decisione struttura:** `Cartella top-level preservata: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+
+---
+
+## 2026-07-22 11:06:18
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-chatgpt-workbench-mvp.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-chatgpt-workbench-mvp.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-71nlPJ`
+
+**Decisione struttura:** `Cartella top-level sconosciuta preservata: cruor-chatgpt-workbench-mvp`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 19
+
+- `+cruor-chatgpt-workbench-mvp/.gitignore`
+- `+cruor-chatgpt-workbench-mvp/assets/drag-file.png`
+- `+cruor-chatgpt-workbench-mvp/package.json`
+- `+cruor-chatgpt-workbench-mvp/README.md`
+- `+cruor-chatgpt-workbench-mvp/run-mvp.cmd`
+- `+cruor-chatgpt-workbench-mvp/src/lib/archive.js`
+- `+cruor-chatgpt-workbench-mvp/src/lib/bridge.js`
+- `+cruor-chatgpt-workbench-mvp/src/lib/config.js`
+- `+cruor-chatgpt-workbench-mvp/src/lib/filesystem.js`
+- `+cruor-chatgpt-workbench-mvp/src/main.js`
+- `+cruor-chatgpt-workbench-mvp/src/preload.js`
+- `+cruor-chatgpt-workbench-mvp/src/renderer/app.js`
+- `+cruor-chatgpt-workbench-mvp/src/renderer/index.html`
+- `+cruor-chatgpt-workbench-mvp/src/renderer/styles.css`
+- `+cruor-chatgpt-workbench-mvp/test/archive.test.js`
+- `+cruor-chatgpt-workbench-mvp/test/bridge.test.js`
+- `+cruor-chatgpt-workbench-mvp/test/filesystem.test.js`
+- `+cruor-chatgpt-workbench-mvp/vscode-companion/extension.js`
+- `+cruor-chatgpt-workbench-mvp/vscode-companion/package.json`
+
+**File sovrascritti:** 0
+
+_Nessun file sovrascritto._
+
+**Warning:**
+
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/.gitignore
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/assets/drag-file.png
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/package.json
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/README.md
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/run-mvp.cmd
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/src/lib/archive.js
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/src/lib/bridge.js
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/src/lib/config.js
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/src/lib/filesystem.js
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/src/main.js
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/src/preload.js
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/src/renderer/app.js
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/src/renderer/index.html
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/src/renderer/styles.css
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/test/archive.test.js
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/test/bridge.test.js
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/test/filesystem.test.js
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/vscode-companion/extension.js
+- Percorso sospetto nello ZIP: cruor-chatgpt-workbench-mvp/vscode-companion/package.json
+
+
+---
+
+## 2026-07-22 11:06:50
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspirations-domain-gradient-fix-v27.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-domain-gradient-fix-v27.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-Gpb7SG`
+
+**Decisione struttura:** `Cartella top-level preservata: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+
+---
+
+## 2026-07-22 11:21:28
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspirations-domain-palette-v28.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-domain-palette-v28.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-d32qVt`
+
+**Decisione struttura:** `Cartella top-level preservata: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+
+---
+
+## 2026-07-22 11:27:09
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspirations-card-text-scale-v29.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-card-text-scale-v29.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-iakQKg`
+
+**Decisione struttura:** `Cartella top-level preservata: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+
+---
+
+## 2026-07-22 12:38:32
+
+**Operazione:** Apply Latest ChatGPT ZIP
+
+**Versione script:** `4.0.0-extension`
+
+**ZIP applicato:** `cruor-inspirations-card-text-scale-fix-v30.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Download\cruor-inspirations-card-text-scale-fix-v30.zip`
+
+**Repo:** `h:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-zip-TraP9c`
+
+**Decisione struttura:** `Cartella top-level preservata: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+
+---
+
+## 22/07/2026, 19:34:54
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-inspirations-card-button-cascade-fix-v31 (2).zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-inspirations-card-button-cascade-fix-v31 (2).zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-XkqzEc`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+
+
+---
+
+## 22/07/2026, 19:49:09
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-inspirations-dossier-motion-button-v32.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-inspirations-dossier-motion-button-v32.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-cLaLLv`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 6
+
+- `~features/inspirations/components/InspirationCard.jsx`
+- `~features/inspirations/components/InspirationDossierModal.jsx`
+- `~features/inspirations/components/InspirationDossierModal.test.jsx`
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.interactions.test.jsx`
+- `~features/inspirations/inspirations.styles.css`
+
+
+---
+
+## 22/07/2026, 20:01:48
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-inspirations-card-dossier-alignment-v33.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-inspirations-card-dossier-alignment-v33.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-WjxX90`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/inspirations/inspirations.dossier-layout.test.js`
+- `~features/inspirations/inspirations.styles.css`
+

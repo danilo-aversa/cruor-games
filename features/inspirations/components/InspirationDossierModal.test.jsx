@@ -249,4 +249,32 @@ describe("InspirationDossierModal", () => {
     expect(onUseDarkPlaces).toHaveBeenCalledTimes(1);
     expect(onUseMonsterComposer).toHaveBeenCalledTimes(1);
   });
+  it("keeps the portal mounted while the closing transition runs", async () => {
+    const onClose = vi.fn();
+
+    await act(async () => {
+      root.render(
+        <InspirationDossierModal
+          card={CARD}
+          linkedComponents={LINKED_COMPONENTS}
+          onClose={onClose}
+        />,
+      );
+    });
+
+    const modal = document.body.querySelector(".inspiration-dossier");
+    const closeButton = modal.querySelector(".inspiration-dossier__close");
+
+    await act(async () => closeButton.click());
+
+    expect(modal.classList.contains("is-closing")).toBe(true);
+    expect(onClose).not.toHaveBeenCalled();
+
+    await act(async () => {
+      modal.dispatchEvent(new Event("transitionend", { bubbles: true }));
+    });
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
 });

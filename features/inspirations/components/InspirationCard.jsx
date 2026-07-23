@@ -57,7 +57,7 @@ export default function InspirationCard({
                 className={`inspiration-card__obscurity is-${meta.obscurityId}`}
                 aria-label={obscurityLabel}
               >
-                {meta.obscurity.symbol}
+                <span aria-hidden="true">{meta.obscurity.symbol}</span>
               </span>
             </header>
 
@@ -67,15 +67,12 @@ export default function InspirationCard({
 
             {isFlipped ? (
               <button
-                className="inspiration-card__dossier-button cruor-square-icon-button"
+                className="inspiration-card__dossier-button"
                 type="button"
                 aria-label={t("inspirations.card.openDossier", {}, locale)}
                 onClick={onOpenDossier}
               >
-                <i className="fa-solid fa-book-open" aria-hidden="true" />
-                <span className="sr-only">
-                  {t("inspirations.card.openDossier", {}, locale)}
-                </span>
+                {t("inspirations.card.openDossier", {}, locale)}
               </button>
             ) : null}
 

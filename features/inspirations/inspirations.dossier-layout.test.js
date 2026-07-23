@@ -69,10 +69,13 @@ describe("Inspirations dossier layout contract", () => {
       "clamp(22px, 3vw, 40px) 10px",
     );
     expect(rule(".inspiration-dossier__meta > span")).toContain(
-      "align-items: baseline",
+      "align-items: center",
     );
     expect(rule(".inspiration-dossier__meta > span")).toContain(
       "padding: 7px 10px",
+    );
+    expect(rule(".inspiration-dossier__meta strong")).toContain(
+      "font-size: var(--text-size-s)",
     );
     expect(rule(".inspiration-dossier__meta strong")).toContain(
       "line-height: 1",
@@ -135,7 +138,6 @@ describe("Inspirations dossier layout contract", () => {
     const modalStyles = styles.slice(styles.indexOf(".inspiration-dossier {"));
 
     expect(modalStyles).not.toContain("--inspiration-dossier-font-");
-    expect(modalStyles).not.toContain("var(--text-size-s");
     expect(modalStyles).not.toContain("var(--text-size-m");
 
     expect(modalStyles).toContain(
@@ -160,11 +162,112 @@ describe("Inspirations dossier layout contract", () => {
     expect(rule(".inspiration-dossier__opening-thesis")).toContain(
       "font-size: var(--text-size-3xl)",
     );
+    expect(rule(".inspiration-dossier__opening-thesis")).toContain(
+      "font-weight: 500",
+    );
     expect(rule(".inspiration-dossier__lens blockquote")).toContain(
       "font-size: var(--text-size-3xl)",
     );
     expect(rule(".inspiration-dossier__structure-item > span")).not.toContain(
       "1.45rem",
+    );
+  });
+
+  it("uses explicit site-wide colors for distinct domain icon gradients", () => {
+    const iconRule = rule(".inspiration-card__domain-sigil > i");
+    const sigilRule = rule(".inspiration-card__domain-sigil");
+    const glyphRule = rule(".inspiration-card__domain-sigil > i::before");
+
+    expect(sigilRule).toContain("width: 21px");
+    expect(sigilRule).toContain("height: 21px");
+    expect(iconRule).toContain("color: var(--cruor-color-muted)");
+    expect(iconRule).not.toContain("filter:");
+    expect(glyphRule).toContain(
+      "background-color: var(--cruor-color-muted)",
+    );
+    expect(glyphRule).toContain(
+      "background-image: var(--cruor-gradient-radial-068-e609778e)",
+    );
+    expect(glyphRule).toContain("background-blend-mode: screen");
+    expect(glyphRule).toContain("background-clip: text");
+    expect(styles).not.toContain("hue-rotate(");
+
+    const domainColors = {
+      tale: "--cruor-color-hex-8f7278",
+      place: "--cruor-color-good",
+      body: "--cruor-color-rose",
+      relic: "--cruor-color-parchment-line",
+      violence: "--cruor-color-blood-glow",
+      rite: "--cruor-color-hex-7e3f2d",
+    };
+
+    Object.entries(domainColors).forEach(([domain, colorToken]) => {
+      expect(
+        rule(
+          `.inspiration-card[data-domain="${domain}"]\n  .inspiration-card__domain-sigil\n  > i::before`,
+        ),
+      ).toContain(`background-color: var(${colorToken})`);
+    });
+  });
+
+  it("balances the front frame band without hiding its texture", () => {
+    expect(rule(".inspiration-card__front")).toContain(
+      "var(--cruor-gradient-linear-139-44facd54)",
+    );
+    expect(rule(".inspiration-card__front")).toContain(
+      "var(--cruor-inspiration-card-frame-band)",
+    );
+    expect(rule(".inspiration-card__front")).toContain(
+      "background-blend-mode: multiply, normal",
+    );
+    expect(rule(".inspiration-card__front::before")).toContain("z-index: 1");
+    expect(rule(".inspiration-card__front::before")).toContain(
+      "background: var(--cruor-color-black-a300)",
+    );
+    expect(rule(".inspiration-card__front::before")).not.toContain(
+      "var(--cruor-color-black-a720)",
+    );
+    expect(rule(".inspiration-card__front-paper-texture")).toContain(
+      "opacity: var(--cruor-inspiration-card-front-texture-opacity)",
+    );
+    expect(rule(".inspiration-card__front-visual")).toContain("z-index: 2");
+  });
+
+  it("keeps the card action compact and the footer metadata smaller", () => {
+    expect(
+      rule(".inspirations-page .inspiration-card__dossier-button"),
+    ).toContain("font-size: var(--text-size-l)");
+    expect(
+      rule(".inspirations-page .inspiration-card__dossier-button"),
+    ).toContain("font-weight: 700");
+    expect(
+      rule(".inspirations-page .inspiration-card__dossier-button"),
+    ).toContain("line-height: 1");
+    expect(rule(".inspiration-card__footer")).toContain(
+      "font-size: var(--text-size-s)",
+    );
+    expect(styles).not.toContain(".inspiration-card__dossier-button > i");
+  });
+
+  it("animates dossier entry and exit with a reduced-motion fallback", () => {
+    expect(rule(".inspiration-dossier")).toContain("opacity: 0");
+    expect(rule(".inspiration-dossier")).toContain(
+      "transition: opacity 220ms ease-out",
+    );
+    expect(rule(".inspiration-dossier.is-open")).toContain("opacity: 1");
+    expect(rule(".inspiration-dossier__stage")).toContain(
+      "transform: translateY(16px) scale(0.985)",
+    );
+    expect(
+      rule(
+        ".inspiration-dossier.is-open > .inspiration-dossier__stage",
+      ),
+    ).toContain("transform: translateY(0) scale(1)");
+    expect(styles).toContain(
+      'html[data-a11y-motion="reduced"] .inspiration-dossier',
+    );
+    expect(styles).toContain(
+      'html:not([data-a11y-motion="full"]) .inspiration-dossier',
     );
   });
 
