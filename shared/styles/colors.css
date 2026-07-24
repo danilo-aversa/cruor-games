@@ -705,6 +705,14 @@
   --cruor-color-white-a820: rgba(var(--cruor-rgb-white), 0.82);
   --cruor-color-white-a900: rgba(var(--cruor-rgb-white), 0.9);
 
+  /* Shared navigation window surface */
+  --cruor-gradient-navigation-window: linear-gradient(
+    180deg,
+    rgba(var(--cruor-rgb-blood-strong), 0.96) 0%,
+    rgba(var(--cruor-rgb-blood), 0.98) 52%,
+    rgba(var(--cruor-rgb-surface-blood), 0.99) 100%
+  );
+
   /* Gradient aliases */
   --cruor-gradient-conic-070-e3c77f3d: conic-gradient(
     from var(--empty-slot-border-angle, 0deg),

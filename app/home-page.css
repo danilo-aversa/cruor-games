@@ -68,7 +68,7 @@ main.cruor-home::before {
 
 .cruor-home h1 {
   max-width: 950px;
-  font-size: clamp(52px, 7vw, 112px);
+  font-size: clamp(52px, 7vw, 100px);
   line-height: 1;
   letter-spacing: -0.07em;
 }
@@ -758,7 +758,7 @@ main.cruor-home::before {
 
 .cruor-home__tool-content-inner--overview .cruor-home__tool-copy h3 {
   font-size: var(--text-size-fluid-12);
-  font-weight: 850;
+  font-weight: 700;
   line-height: 1;
   letter-spacing: 0.015em;
   text-transform: uppercase;

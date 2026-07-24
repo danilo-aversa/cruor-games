@@ -49,6 +49,10 @@ function getSourceType(inspiration, sourceAnchor = null) {
   );
 }
 
+function isDossierPendingReview(inspiration = {}) {
+  return inspiration.status === "pending-review";
+}
+
 function getInspirationTitle(inspiration) {
   return (
     inspiration?.title ||
@@ -92,20 +96,8 @@ function buildSearchText(card) {
     inspiration.narrative,
     inspiration.inspiration?.logic,
     inspiration.editorial?.deck,
-    inspiration.editorial?.thesis,
     inspiration.editorial?.whatItIs,
-    inspiration.editorial?.cruorLensThesis,
     inspiration.editorial?.cruorLens,
-    ...(inspiration.editorial?.facts || []).flatMap((fact) => [
-      fact.label,
-      fact.value,
-    ]),
-    ...(inspiration.editorial?.horrorStructures || []).flatMap((structure) => [
-      structure.title,
-      structure.description,
-      structure.feeds,
-      ...(structure.keywords || []),
-    ]),
     ...(inspiration.editorial?.triggerWarnings || []),
     ...(inspiration.editorial?.tableSafety || []),
     inspiration.editorial?.lowIntensityAlternative,
@@ -393,6 +385,31 @@ export default function InspirationsPage({
     () => dossierCard?.linkedComponents || [],
     [dossierCard],
   );
+  const dossierRelatedCards = useMemo(() => {
+    const references = Array.isArray(
+      dossierCard?.inspiration?.editorial?.relatedDossiers,
+    )
+      ? dossierCard.inspiration.editorial.relatedDossiers
+      : [];
+
+    return references
+      .map((reference) => {
+        const sourceAnchorId = String(reference?.sourceAnchorId || "").trim();
+        if (!sourceAnchorId) return null;
+        const relatedCard = allCards.find(
+          (candidate) =>
+            getPrimarySourceAnchorId(candidate.inspiration) === sourceAnchorId,
+        );
+        if (
+          !relatedCard ||
+          isDossierPendingReview(relatedCard.inspiration)
+        ) {
+          return null;
+        }
+        return { ...relatedCard, sourceAnchorId };
+      })
+      .filter(Boolean);
+  }, [allCards, dossierCard]);
   const canOpenDarkPlaces = Boolean(
     dossierCard?.sourceAnchor && typeof onOpenDarkPlaces === "function",
   );
@@ -450,7 +467,9 @@ export default function InspirationsPage({
         (candidate) =>
           getPrimarySourceAnchorId(candidate.inspiration) === sourceAnchorId,
       );
-      if (relatedCard) setDossierCardId(relatedCard.inspiration.id);
+      if (relatedCard && !isDossierPendingReview(relatedCard.inspiration)) {
+        setDossierCardId(relatedCard.inspiration.id);
+      }
     },
     [allCards],
   );
@@ -566,7 +585,13 @@ export default function InspirationsPage({
           onToggleCard={(cardId) =>
             setFlippedCardId((current) => (current === cardId ? "" : cardId))
           }
-          onOpenDossier={setDossierCardId}
+          onOpenDossier={(cardId) => {
+            const card = allCards.find(
+              (candidate) => candidate.inspiration.id === cardId,
+            );
+            if (!card || isDossierPendingReview(card.inspiration)) return;
+            setDossierCardId(cardId);
+          }}
           locale={locale}
         />
       ) : (
@@ -584,6 +609,7 @@ export default function InspirationsPage({
         <InspirationDossierModal
           card={dossierCard}
           linkedComponents={dossierComponents}
+          relatedCards={dossierRelatedCards}
           canOpenDarkPlaces={canOpenDarkPlaces}
           canOpenMonsterComposer={canOpenMonsterComposer}
           onUseDarkPlaces={useInDarkPlaces}

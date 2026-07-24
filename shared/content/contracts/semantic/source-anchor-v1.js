@@ -35,6 +35,7 @@ export const SOURCE_RELIABILITY = Object.freeze([
 
 export const SOURCE_ANCHOR_STATUSES = Object.freeze([
   "draft",
+  "pending-review",
   "in-review",
   "published",
   "retired",
@@ -158,7 +159,7 @@ export function normalizeLegacySourceAnchor(value = {}) {
     id: value.id,
     title,
     kind: inferSourceAnchorKind(value.type),
-    status: value.status === "published" ? "in-review" : "draft",
+    status: value.status === "published" ? "pending-review" : "draft",
     citation: { label: title },
     summary: value.summary || `Editorial source summary required for ${title}.`,
     reliability: "uncertain",

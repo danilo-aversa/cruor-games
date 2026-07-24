@@ -24,6 +24,10 @@ import {
   INSPIRATION_STATUSES,
   SEMANTIC_SCHEMA_VERSIONS,
 } from "./schema-versions.js";
+import {
+  isKnownTriggerWarning,
+  normalizeTriggerWarnings,
+} from "../../trigger-warnings.js";
 
 const INSPIRATION_FIELDS = Object.freeze([
   "schemaVersion",
@@ -37,6 +41,7 @@ const INSPIRATION_FIELDS = Object.freeze([
   "motifs",
   "horror",
   "contexts",
+  "card",
   "editorial",
   "media",
   "tags",
@@ -60,12 +65,49 @@ const EDITORIAL_FIELDS = Object.freeze([
   "creativeUses",
   "cautions",
 ]);
+const CARD_FIELDS = Object.freeze([
+  "domain",
+  "obscurity",
+  "collectionId",
+  "collectionLabel",
+  "number",
+  "description",
+]);
+const INSPIRATION_CARD_DOMAINS = Object.freeze([
+  "tale",
+  "place",
+  "body",
+  "relic",
+  "violence",
+  "rite",
+]);
+const INSPIRATION_CARD_OBSCURITY = Object.freeze([
+  "familiar",
+  "uncommon",
+  "esoteric",
+]);
+export const INSPIRATION_IMAGE_RIGHTS_STATUSES = Object.freeze([
+  "unverified",
+  "public-domain",
+  "creative-commons",
+  "licensed",
+  "permission",
+  "owned",
+]);
 const MEDIA_FIELDS = Object.freeze([
   "imageTitle",
   "imageKey",
   "imageProvider",
   "imageAlt",
   "imageCredit",
+  "imageCreator",
+  "imageSourceTitle",
+  "imageSourceUrl",
+  "imageLicense",
+  "imageLicenseUrl",
+  "imageRightsStatus",
+  "imageRightsVerifiedAt",
+  "imageModifications",
   "icon",
 ]);
 const FACT_FIELDS = Object.freeze(["label", "value"]);
@@ -103,6 +145,11 @@ function isPlainObject(value) {
 function normalizeObjectList(value, normalizeEntry) {
   if (!Array.isArray(value)) return [];
   return value.filter(isPlainObject).map(normalizeEntry).filter(Boolean);
+}
+
+function normalizePositiveInteger(value) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? Math.trunc(parsed) : null;
 }
 
 function normalizeFacts(value) {
@@ -184,6 +231,7 @@ function validateObjectList(
 }
 
 export function normalizeInspirationV2(value = {}) {
+  const card = value.card || {};
   const editorial = value.editorial || {};
   const media = value.media || {};
   return deepFreeze({
@@ -198,6 +246,14 @@ export function normalizeInspirationV2(value = {}) {
     motifs: normalizeStringSet(value.motifs),
     horror: normalizeStringSet(value.horror),
     contexts: normalizeStringSet(value.contexts),
+    card: {
+      domain: normalizeId(card.domain),
+      obscurity: normalizeId(card.obscurity),
+      collectionId: slugifyLegacyId(card.collectionId),
+      collectionLabel: cleanText(card.collectionLabel),
+      number: normalizePositiveInteger(card.number),
+      description: cleanText(card.description),
+    },
     editorial: {
       deck: cleanText(editorial.deck),
       thesis: cleanText(editorial.thesis),
@@ -206,7 +262,7 @@ export function normalizeInspirationV2(value = {}) {
       cruorLens: cleanText(editorial.cruorLens),
       facts: normalizeFacts(editorial.facts),
       horrorStructures: normalizeHorrorStructures(editorial.horrorStructures),
-      triggerWarnings: normalizeStringList(editorial.triggerWarnings),
+      triggerWarnings: normalizeTriggerWarnings(editorial.triggerWarnings),
       tableSafety: normalizeStringList(editorial.tableSafety),
       lowIntensityAlternative: cleanText(editorial.lowIntensityAlternative),
       sources: normalizeResearchEntries(editorial.sources),
@@ -222,6 +278,18 @@ export function normalizeInspirationV2(value = {}) {
       imageProvider: cleanText(media.imageProvider),
       imageAlt: cleanText(media.imageAlt),
       imageCredit: cleanText(media.imageCredit),
+      imageCreator: cleanText(media.imageCreator),
+      imageSourceTitle: cleanText(media.imageSourceTitle),
+      imageSourceUrl: cleanText(media.imageSourceUrl),
+      imageLicense: cleanText(media.imageLicense),
+      imageLicenseUrl: cleanText(media.imageLicenseUrl),
+      imageRightsStatus: normalizeEnum(
+        media.imageRightsStatus,
+        INSPIRATION_IMAGE_RIGHTS_STATUSES,
+        "unverified",
+      ),
+      imageRightsVerifiedAt: cleanText(media.imageRightsVerifiedAt),
+      imageModifications: cleanText(media.imageModifications),
       icon: cleanText(media.icon),
     },
     tags: normalizeStringSet(value.tags, { ids: true }),
@@ -274,6 +342,55 @@ export function validateInspirationV2(
     );
   }
 
+  if (
+    value.card !== undefined &&
+    requirePlainObject(value.card, `${path}.card`, issues)
+  ) {
+    collectUnknownFields(value.card, CARD_FIELDS, `${path}.card`, issues);
+    if (cleanText(value.card.collectionId)) {
+      requireId(
+        value.card.collectionId,
+        `${path}.card.collectionId`,
+        issues,
+      );
+    }
+    if (
+      cleanText(value.card.domain) &&
+      !INSPIRATION_CARD_DOMAINS.includes(normalizeId(value.card.domain))
+    ) {
+      pushIssue(
+        issues,
+        "inspiration.invalid-card-domain",
+        `${path}.card.domain`,
+        `Unknown Inspiration card domain: ${cleanText(value.card.domain)}.`,
+      );
+    }
+    if (
+      cleanText(value.card.obscurity) &&
+      !INSPIRATION_CARD_OBSCURITY.includes(normalizeId(value.card.obscurity))
+    ) {
+      pushIssue(
+        issues,
+        "inspiration.invalid-card-obscurity",
+        `${path}.card.obscurity`,
+        `Unknown Inspiration card obscurity: ${cleanText(value.card.obscurity)}.`,
+      );
+    }
+    if (
+      value.card.number !== undefined &&
+      value.card.number !== null &&
+      (!Number.isInteger(Number(value.card.number)) ||
+        Number(value.card.number) <= 0)
+    ) {
+      pushIssue(
+        issues,
+        "inspiration.invalid-card-number",
+        `${path}.card.number`,
+        "Inspiration card number must be a positive integer.",
+      );
+    }
+  }
+
   if (requirePlainObject(value.editorial, `${path}.editorial`, issues)) {
     collectUnknownFields(
       value.editorial,
@@ -298,6 +415,18 @@ export function validateInspirationV2(
         );
       }
     });
+    if (Array.isArray(value.editorial.triggerWarnings)) {
+      value.editorial.triggerWarnings.forEach((warning, index) => {
+        if (isKnownTriggerWarning(warning)) return;
+        pushIssue(
+          issues,
+          "inspiration.unknown-trigger-warning",
+          `${path}.editorial.triggerWarnings[${index}]`,
+          `Unknown Trigger Warning: ${cleanText(warning)}. Choose a value from the shared library.`,
+          value.status === "approved" ? "error" : "warning",
+        );
+      });
+    }
 
     validateObjectList(value.editorial.facts, {
       path: `${path}.editorial.facts`,
@@ -367,6 +496,47 @@ export function validateInspirationV2(
         "An imageAlt is required when imageKey is present.",
       );
     }
+    ["imageSourceUrl", "imageLicenseUrl"].forEach((field) => {
+      if (
+        cleanText(value.media[field]) &&
+        !/^https?:\/\//i.test(cleanText(value.media[field]))
+      ) {
+        pushIssue(
+          issues,
+          "inspiration.invalid-image-url",
+          `${path}.media.${field}`,
+          "Image provenance links must use an absolute http or https URL.",
+        );
+      }
+    });
+    if (
+      cleanText(value.media.imageRightsStatus) &&
+      !INSPIRATION_IMAGE_RIGHTS_STATUSES.includes(
+        cleanText(value.media.imageRightsStatus),
+      )
+    ) {
+      pushIssue(
+        issues,
+        "inspiration.invalid-image-rights-status",
+        `${path}.media.imageRightsStatus`,
+        `Unknown image rights status: ${cleanText(
+          value.media.imageRightsStatus,
+        )}.`,
+      );
+    }
+    if (
+      cleanText(value.media.imageRightsVerifiedAt) &&
+      !/^\d{4}-\d{2}-\d{2}$/.test(
+        cleanText(value.media.imageRightsVerifiedAt),
+      )
+    ) {
+      pushIssue(
+        issues,
+        "inspiration.invalid-image-rights-date",
+        `${path}.media.imageRightsVerifiedAt`,
+        "Image rights verification date must use YYYY-MM-DD.",
+      );
+    }
   }
 
   issues.push(
@@ -401,13 +571,14 @@ export function normalizeLegacyInspiration(value = {}, sourceAnchor = {}) {
     id: slugifyLegacyId(value.id || `inspiration-${sourceAnchor.id || title}`),
     slug: slugifyLegacyId(value.slug || sourceAnchor.id || title),
     title,
-    status: value.status === "published" ? "in-review" : "draft",
+    status: value.status === "published" ? "pending-review" : "draft",
     sourceAnchors,
     sourceTypes: value.sourceTypes,
     themes: value.themes,
     motifs: value.motifs,
     horror: value.horror,
     contexts: value.contexts,
+    card: value.card,
     editorial: {
       deck: abstract || whatItIs || `Editorial deck required for ${title}.`,
       thesis: "",
@@ -418,7 +589,7 @@ export function normalizeLegacyInspiration(value = {}, sourceAnchor = {}) {
       ),
       facts: [],
       horrorStructures: [],
-      triggerWarnings: normalizeStringList(value.editorial?.cautions),
+      triggerWarnings: normalizeTriggerWarnings(value.editorial?.cautions),
       tableSafety: [],
       lowIntensityAlternative: "",
       sources: [],
@@ -436,6 +607,14 @@ export function normalizeLegacyInspiration(value = {}, sourceAnchor = {}) {
         cleanText(value.media?.imageNote) ||
         (imageKey ? `${title} reference image.` : ""),
       imageCredit: cleanText(value.media?.imageCredit),
+      imageCreator: cleanText(value.media?.imageCreator),
+      imageSourceTitle: cleanText(value.media?.imageSourceTitle),
+      imageSourceUrl: cleanText(value.media?.imageSourceUrl),
+      imageLicense: cleanText(value.media?.imageLicense),
+      imageLicenseUrl: cleanText(value.media?.imageLicenseUrl),
+      imageRightsStatus: cleanText(value.media?.imageRightsStatus),
+      imageRightsVerifiedAt: cleanText(value.media?.imageRightsVerifiedAt),
+      imageModifications: cleanText(value.media?.imageModifications),
       icon: cleanText(value.media?.icon),
     },
     tags: value.tags,

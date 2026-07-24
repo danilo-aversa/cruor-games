@@ -3,15 +3,23 @@ import { modulesToRegistryCollections } from "../inspiration-module-schema.js";
 import {
   SEDLEC_OSSUARY_INSPIRATION_MODULE,
   SEDLEC_OSSUARY_INSPIRATION_MODULE_PACK_ID,
+  SEDLEC_OSSUARY_SOURCE_ANCHOR_ID,
   SEDLEC_OSSUARY_REFERENCED_SOURCE_ANCHORS,
 } from "../inspiration-modules/sedlec-ossuary.js";
+import { getProductionInspirationModule } from "../production-inspiration-modules.js";
 import { SHARED_DARKEN_LOCATION_SLOTS, SHARED_MONSTER_SLOTS, SHARED_WORKFLOWS } from "../workflows.js";
+
+const ACTIVE_SEDLEC_OSSUARY_INSPIRATION_MODULE =
+  getProductionInspirationModule(SEDLEC_OSSUARY_SOURCE_ANCHOR_ID) ||
+  SEDLEC_OSSUARY_INSPIRATION_MODULE;
 
 function uniqueArray(values = []) {
   return [...new Set(values.filter(Boolean))];
 }
 
-function getReferencedWorkflowIds(module = SEDLEC_OSSUARY_INSPIRATION_MODULE) {
+function getReferencedWorkflowIds(
+  module = ACTIVE_SEDLEC_OSSUARY_INSPIRATION_MODULE,
+) {
   return uniqueArray([
     ...(module.sourceAnchor?.workflows || []),
     ...(module.inspiration?.workflows || []),
@@ -19,11 +27,15 @@ function getReferencedWorkflowIds(module = SEDLEC_OSSUARY_INSPIRATION_MODULE) {
   ]);
 }
 
-function getReferencedSlotIds(module = SEDLEC_OSSUARY_INSPIRATION_MODULE) {
+function getReferencedSlotIds(
+  module = ACTIVE_SEDLEC_OSSUARY_INSPIRATION_MODULE,
+) {
   return uniqueArray(module.components.flatMap((component) => component.slots || []));
 }
 
-const MODULE_COLLECTIONS = modulesToRegistryCollections([SEDLEC_OSSUARY_INSPIRATION_MODULE]);
+const MODULE_COLLECTIONS = modulesToRegistryCollections([
+  ACTIVE_SEDLEC_OSSUARY_INSPIRATION_MODULE,
+]);
 const REFERENCED_WORKFLOW_IDS = new Set(getReferencedWorkflowIds());
 const REFERENCED_SLOT_IDS = new Set(getReferencedSlotIds());
 
@@ -43,7 +55,7 @@ export const SEDLEC_OSSUARY_INSPIRATION_MODULE_CONTENT_PACK = createContentPack(
     bundled: true,
     registryRole: "inspiration-module-location-pilot",
     source: "shared/content/inspiration-modules/sedlec-ossuary.js",
-    primarySourceAnchorId: SEDLEC_OSSUARY_INSPIRATION_MODULE.id,
+    primarySourceAnchorId: ACTIVE_SEDLEC_OSSUARY_INSPIRATION_MODULE.id,
   },
   collections: {
     workflows: SHARED_WORKFLOWS.filter((workflow) => REFERENCED_WORKFLOW_IDS.has(workflow.id)),

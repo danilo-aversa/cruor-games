@@ -146,6 +146,7 @@ export default {
       crucible: "Crucible",
       inspirations: "Inspirations",
       inspirationStudio: "Inspiration Studio",
+      login: "Login",
     },
     aria: {
       goHome: "Go to Cruor Games home",
@@ -160,12 +161,39 @@ export default {
       home: "Home",
       inspirations: "Inspirations",
       inspirationStudio: "Inspiration Studio",
+      login: "Login",
     },
     labels: {
       interfaceMode: "Interface Mode",
       login: "Login",
-      loginPlaceholder: "Login placeholder",
+      account: "Account",
       loadingMapGenerator: "Loading map generator...",
+    },
+  },
+  auth: {
+    eyebrow: "Restricted Access",
+    title: "Enter the Studio",
+    description:
+      "Sign in to access Cruor's Content Studio and development-only interface tools.",
+    scopeLabel: "Admin access includes",
+    scope: {
+      studio: "Content Studio",
+      debug: "Debug interface",
+    },
+    formEyebrow: "Administrator",
+    formTitle: "Sign in to continue",
+    username: "Username",
+    password: "Password",
+    signIn: "Sign In",
+    signingIn: "Signing In",
+    cancel: "Return Home",
+    logout: "Log Out",
+    loginAria: "Open login",
+    logoutAria: "Log out {username}",
+    debugLocked: "Debug mode requires an administrator login.",
+    errors: {
+      invalidCredentials: "Incorrect username or password.",
+      unknown: "Authentication failed. Try again.",
     },
   },
   modes: {
@@ -186,6 +214,7 @@ export default {
     home: "Home",
     crucible: "Crucible",
     inspirations: "Inspirations",
+    studio: "Studio",
     crucibleMenu: {
       aria: {
         tools: "{label} tools",
@@ -296,6 +325,7 @@ export default {
       turnBack: "Turn {title} card over",
       turnFront: "Turn {title} card to the front",
       openDossier: "Open dossier",
+      pendingReview: "Pending Review",
       number: "Card {number}",
     },
     filters: {
@@ -347,25 +377,13 @@ export default {
         workbench: "Workbench",
       },
       whatItIs: "What It Is",
-      whatItIsDeck:
-        "A researched account of the source before Cruor interprets or transforms it.",
-      cruorThesis: "The Cruor Thesis",
       cruorLens: "The Cruor Lens",
-      cruorLensDeck:
-        "Our editorial reading of the source: the central pressure that determines what Cruor extracts from the research.",
-      editorialInterpretation: "Editorial Interpretation",
-      horrorStructure: "Horror Structure",
-      horrorStructureDeck:
-        "Reusable horror mechanisms extracted for Cruor’s generative systems—not instructions the reader must implement manually.",
       tableSafety: "Trigger Warnings & Table Safety",
-      tableSafetyDeck:
-        "Adjust the generated material to the boundaries and needs of the group using it.",
       triggerWarnings: "Trigger Warnings",
-      runningThisMaterial: "Running This Material",
+      triggerWarningsHint: "{count} warnings · Hover or focus for details.",
+      runningThisMaterial: "Respectful Use",
       lowIntensityAlternative: "Low-intensity substitution:",
       sourcesAndReading: "Sources & Further Reading",
-      sourcesAndReadingDeck:
-        "Sources support the dossier’s factual claims. Further Reading provides useful routes beyond the scope of this page.",
       sourcesUsed: "Sources Used",
       sourcesUsedDeck:
         "Materials directly informing the historical account and editorial context above.",
@@ -377,9 +395,6 @@ export default {
       workbenchDeck:
         "The Workbench shows how Cruor translates extracted horror mechanisms into components consumed by its generators.",
       linkedComponents: "linked components",
-      translationMap: "Translation Map",
-      translationMapDeck:
-        "A visible audit trail between editorial analysis and generative content.",
       components: "components",
       useDarkPlaces: "Use in Dark Places",
       atTheTable: "At the Table",

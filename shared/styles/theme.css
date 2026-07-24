@@ -92,6 +92,9 @@
   --cruor-input-border-hover: var(--cruor-color-blood-strong-a640);
   --cruor-input-border-focus: var(--cruor-color-blood-bright-a860);
   --cruor-input-focus-shadow: 0 0 0 1px var(--cruor-color-blood-bright-a180), 0 0 20px var(--cruor-color-blood-a320);
+  --cruor-navigation-window-background: var(--cruor-gradient-navigation-window), var(--cruor-color-surface-blood);
+  --cruor-navigation-window-border: var(--cruor-color-blood-glow);
+  --cruor-navigation-window-tip-background: var(--cruor-color-blood-strong);
   --cruor-workspace-max: 1540px;
   --cruor-shell-bar-height: 62px;
   --cruor-command-bar-height: 190px;

@@ -17,6 +17,10 @@ export default function InspirationCard({
     inspiration?.title || inspiration?.label || "Untitled Inspiration";
   const isLongTitle = title.length > 20;
   const obscurityLabel = t(meta.obscurity.labelKey, {}, locale);
+  const isPendingReview = inspiration?.status === "pending-review";
+  const dossierButtonLabel = isPendingReview
+    ? t("inspirations.card.pendingReview", {}, locale)
+    : t("inspirations.card.openDossier", {}, locale);
   const sideLabel = isFlipped
     ? t("inspirations.card.turnFront", { title }, locale)
     : t("inspirations.card.turnBack", { title }, locale);
@@ -29,6 +33,7 @@ export default function InspirationCard({
       data-domain={meta.domainId}
       data-obscurity={meta.obscurityId}
       data-flipped={isFlipped ? "true" : "false"}
+      data-review-status={isPendingReview ? "pending-review" : "available"}
       aria-label={t("inspirations.card.aria", { title }, locale)}
     >
       <div className="inspiration-card__scene">
@@ -67,12 +72,16 @@ export default function InspirationCard({
 
             {isFlipped ? (
               <button
-                className="inspiration-card__dossier-button"
+                className={`inspiration-card__dossier-button${
+                  isPendingReview ? " is-pending-review" : ""
+                }`}
                 type="button"
-                aria-label={t("inspirations.card.openDossier", {}, locale)}
-                onClick={onOpenDossier}
+                aria-label={dossierButtonLabel}
+                aria-disabled={isPendingReview || undefined}
+                disabled={isPendingReview}
+                onClick={isPendingReview ? undefined : onOpenDossier}
               >
-                {t("inspirations.card.openDossier", {}, locale)}
+                {dossierButtonLabel}
               </button>
             ) : null}
 

@@ -20,8 +20,8 @@ export function getAppModeOptions(locale) {
   ];
 }
 
-export function getSiteNavItems(locale) {
-  return [
+export function getSiteNavItems(locale, { includeStudio = false } = {}) {
+  const items = [
     {
       id: "home",
       label: t("navigation.home", {}, locale),
@@ -179,6 +179,19 @@ export function getSiteNavItems(locale) {
       href: "/inspirations",
     },
   ];
+
+  if (includeStudio) {
+    items.push({
+      id: "studio",
+      label: t("navigation.studio", {}, locale),
+      icon: "fa-solid fa-pen-ruler",
+      type: "section",
+      sectionId: "inspiration-studio",
+      href: "/inspiration-studio",
+    });
+  }
+
+  return items;
 }
 
 export const APP_MODE_OPTIONS = getAppModeOptions();

@@ -20482,3 +20482,886 @@ _Nessun file aggiunto._
 - `~features/inspirations/inspirations.dossier-layout.test.js`
 - `~features/inspirations/inspirations.styles.css`
 
+
+---
+
+## 23/07/2026, 12:50:17
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-content-studio-dossier-update.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-content-studio-dossier-update.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-cmfqKA`
+
+**Decisione struttura:** `Preserved unknown top-level folder: cruor-content-studio-dossier-update`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 11
+
+- `+cruor-content-studio-dossier-update/apply-content-studio-dossier-update.mjs`
+- `+cruor-content-studio-dossier-update/APPLY_CONTENT_STUDIO_DOSSIER_UPDATE.cmd`
+- `+cruor-content-studio-dossier-update/payload/features/inspiration-studio/components/StudioDossierAuthoringPanel.css`
+- `+cruor-content-studio-dossier-update/payload/features/inspiration-studio/components/StudioDossierAuthoringPanel.jsx`
+- `+cruor-content-studio-dossier-update/payload/features/inspiration-studio/components/StudioDossierAuthoringPanel.test.jsx`
+- `+cruor-content-studio-dossier-update/payload/features/inspiration-studio/model/studio-dossier-readiness.test.js`
+- `+cruor-content-studio-dossier-update/payload/shared/content/contracts/semantic/inspiration-v2-dossier-fields.test.js`
+- `+cruor-content-studio-dossier-update/payload/shared/content/published-inspiration-modules.js`
+- `+cruor-content-studio-dossier-update/payload/shared/content/published-inspiration-promotion.test.js`
+- `+cruor-content-studio-dossier-update/README.md`
+- `+cruor-content-studio-dossier-update/SHA256SUMS.txt`
+
+**File sovrascritti:** 0
+
+_Nessun file sovrascritto._
+
+**Warning:**
+
+- Suspicious root path in ZIP: cruor-content-studio-dossier-update/apply-content-studio-dossier-update.mjs
+- Suspicious root path in ZIP: cruor-content-studio-dossier-update/APPLY_CONTENT_STUDIO_DOSSIER_UPDATE.cmd
+- Suspicious root path in ZIP: cruor-content-studio-dossier-update/payload/features/inspiration-studio/components/StudioDossierAuthoringPanel.css
+- Suspicious root path in ZIP: cruor-content-studio-dossier-update/payload/features/inspiration-studio/components/StudioDossierAuthoringPanel.jsx
+- Suspicious root path in ZIP: cruor-content-studio-dossier-update/payload/features/inspiration-studio/components/StudioDossierAuthoringPanel.test.jsx
+- Suspicious root path in ZIP: cruor-content-studio-dossier-update/payload/features/inspiration-studio/model/studio-dossier-readiness.test.js
+- Suspicious root path in ZIP: cruor-content-studio-dossier-update/payload/shared/content/contracts/semantic/inspiration-v2-dossier-fields.test.js
+- Suspicious root path in ZIP: cruor-content-studio-dossier-update/payload/shared/content/published-inspiration-modules.js
+- Suspicious root path in ZIP: cruor-content-studio-dossier-update/payload/shared/content/published-inspiration-promotion.test.js
+- Suspicious root path in ZIP: cruor-content-studio-dossier-update/README.md
+- Suspicious root path in ZIP: cruor-content-studio-dossier-update/SHA256SUMS.txt
+
+
+---
+
+## 23/07/2026, 12:52:45
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-navigation-window-backgrounds-update.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-navigation-window-backgrounds-update.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-gGhlxX`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~app/app-shell.css`
+- `~app/navigation/site-mega-menu.css`
+- `~shared/styles/colors.css`
+- `~shared/styles/theme.css`
+- `~tests/e2e/app-smoke.spec.js`
+
+
+---
+
+## 23/07/2026, 13:03:18
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-navigation-window-border-fix.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-navigation-window-border-fix.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-1WELke`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~app/app-shell.css`
+- `~app/navigation/site-mega-menu.css`
+- `~shared/styles/theme.css`
+- `~tests/e2e/app-smoke.spec.js`
+
+
+---
+
+## 23/07/2026, 13:06:49
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-location-components-dynamic-height-fix-20260721.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-location-components-dynamic-height-fix-20260721.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-IYYVds`
+
+**Decisione struttura:** `Preserved top-level repo folder: components`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~components/ui/composer-rail.jsx`
+
+
+---
+
+## 23/07/2026, 14:40:14
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-content-studio-dossier-overwrite-20260723.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-content-studio-dossier-overwrite-20260723.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-EnNiam`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 7
+
+- `+features/inspiration-studio/components/StudioDossierAuthoringPanel.css`
+- `+features/inspiration-studio/components/StudioDossierAuthoringPanel.jsx`
+- `+features/inspiration-studio/components/StudioDossierAuthoringPanel.test.jsx`
+- `+features/inspiration-studio/model/studio-dossier-readiness.test.js`
+- `+shared/content/contracts/semantic/inspiration-v2-dossier-fields.test.js`
+- `+shared/content/published-inspiration-modules.js`
+- `+shared/content/published-inspiration-promotion.test.js`
+
+**File sovrascritti:** 8
+
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/model/studio-draft.js`
+- `~features/inspiration-studio/model/studio-validation.js`
+- `~shared/content/content-packs/decomposition-inspiration-module-pack.js`
+- `~shared/content/content-packs/sedlec-ossuary-inspiration-module-pack.js`
+- `~shared/content/contracts/semantic/inspiration-v2.js`
+- `~shared/content/inspiration-modules/inspiration-module.factory.js`
+- `~shared/content/production-inspiration-modules.js`
+
+
+---
+
+## 23/07/2026, 15:41:29
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-home-hero-copy-update.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-home-hero-copy-update.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-ppyXpP`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~app/HomePage.jsx`
+- `~tests/e2e/homepage.spec.js`
+
+
+---
+
+## 23/07/2026, 16:36:28
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-towers-of-silence-dossier-20260723.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-towers-of-silence-dossier-20260723.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-m8h7mS`
+
+**Decisione struttura:** `Preserved top-level repo folder: shared`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 2
+
+- `+shared/content/content-packs/towers-of-silence-dossier-publication.js`
+- `+shared/content/content-packs/towers-of-silence-dossier-publication.test.js`
+
+**File sovrascritti:** 2
+
+- `~shared/content/published-inspiration-modules.js`
+- `~shared/content/static-semantic-content-packs.js`
+
+
+---
+
+## 23/07/2026, 17:08:29
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-home-hero-title-cta-scroll-update.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-home-hero-title-cta-scroll-update.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-SxRvQX`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~app/home-page.css`
+- `~app/HomePage.jsx`
+- `~tests/e2e/homepage.spec.js`
+
+
+---
+
+## 23/07/2026, 17:17:42
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-towers-of-silence-corrected-20260723.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-towers-of-silence-corrected-20260723.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-hKSdZW`
+
+**Decisione struttura:** `Preserved top-level repo folder: shared`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 1
+
+- `+shared/content/towers-of-silence-publication.test.js`
+
+**File sovrascritti:** 2
+
+- `~shared/content/content-repository.adapter.js`
+- `~shared/content/published-inspiration-modules.js`
+
+
+---
+
+## 23/07/2026, 17:20:27
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-studio-validation-hotfix-20260723.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-studio-validation-hotfix-20260723.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-VipS28`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/inspiration-studio/model/studio-validation.js`
+
+
+---
+
+## 23/07/2026, 17:25:59
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-site-restore-hotfix-20260723.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-site-restore-hotfix-20260723.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-Mtncl9`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/inspiration-studio/model/studio-validation.js`
+- `~shared/content/content-packs/decomposition-inspiration-module-pack.js`
+- `~shared/content/content-packs/sedlec-ossuary-inspiration-module-pack.js`
+
+
+---
+
+## 23/07/2026, 17:51:57
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-trigger-warnings-pending-review-20260723.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-trigger-warnings-pending-review-20260723.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-9lqCQA`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 3
+
+- `+shared/content/inspiration-dossier-review-status.test.js`
+- `+shared/content/trigger-warnings.js`
+- `+shared/content/trigger-warnings.test.js`
+
+**File sovrascritti:** 17
+
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/model/studio-component-normalizers.js`
+- `~features/inspirations/components/InspirationCard.jsx`
+- `~features/inspirations/components/InspirationDossierModal.jsx`
+- `~features/inspirations/inspirations.page.jsx`
+- `~features/inspirations/inspirations.styles.css`
+- `~shared/content/content.index.js`
+- `~shared/content/contracts/semantic/inspiration-v2-dossier-fields.test.js`
+- `~shared/content/contracts/semantic/inspiration-v2.js`
+- `~shared/content/contracts/semantic/schema-versions.js`
+- `~shared/content/contracts/semantic/source-anchor-v1.js`
+- `~shared/content/inspiration-modules.js`
+- `~shared/content/production-inspiration-modules.js`
+- `~shared/content/published-inspiration-modules.js`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+
+
+---
+
+## 23/07/2026, 18:00:26
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-trigger-warnings-taxonomy-fix-20260723.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-trigger-warnings-taxonomy-fix-20260723.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-GbYAOu`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/inspiration-studio/model/studio-dossier-readiness.test.js`
+- `~shared/content/contracts/semantic/inspiration-v2-dossier-fields.test.js`
+- `~shared/content/published-inspiration-modules.js`
+- `~shared/content/trigger-warnings.js`
+- `~shared/content/trigger-warnings.test.js`
+
+
+---
+
+## 23/07/2026, 18:33:05
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-dossier-information-architecture-20260723.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-dossier-information-architecture-20260723.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-gdj9sb`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 12
+
+- `~features/inspiration-studio/components/StudioDossierAuthoringPanel.jsx`
+- `~features/inspiration-studio/components/StudioDossierAuthoringPanel.test.jsx`
+- `~features/inspiration-studio/model/studio-dossier-readiness.test.js`
+- `~features/inspiration-studio/model/studio-draft.js`
+- `~features/inspiration-studio/model/studio-validation.js`
+- `~features/inspirations/components/InspirationDossierModal.jsx`
+- `~features/inspirations/components/InspirationDossierModal.test.jsx`
+- `~features/inspirations/inspirations.page.jsx`
+- `~features/inspirations/inspirations.styles.css`
+- `~shared/content/published-inspiration-modules.js`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+
+
+---
+
+## 23/07/2026, 19:03:17
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-dossier-refinement-fictionalization-20260723.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-dossier-refinement-fictionalization-20260723.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-IWuQO1`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 16
+
+- `~features/inspiration-studio/components/StudioDossierAuthoringPanel.test.jsx`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/model/studio-dossier-readiness.test.js`
+- `~features/inspiration-studio/model/studio-draft.js`
+- `~features/inspiration-studio/model/studio-validation.js`
+- `~features/inspirations/components/InspirationDossierModal.jsx`
+- `~features/inspirations/components/InspirationDossierModal.test.jsx`
+- `~features/inspirations/inspirations.page.jsx`
+- `~features/inspirations/inspirations.styles.css`
+- `~shared/content/contracts/semantic/inspiration-v2-dossier-fields.test.js`
+- `~shared/content/published-inspiration-modules.js`
+- `~shared/content/published-inspiration-promotion.test.js`
+- `~shared/content/trigger-warnings.js`
+- `~shared/content/trigger-warnings.test.js`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+
+
+---
+
+## 23/07/2026, 19:08:41
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-dossier-typography-safety-sources-20260723.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-dossier-typography-safety-sources-20260723.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-jTDyTa`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 5
+
+- `~features/inspirations/components/InspirationDossierModal.jsx`
+- `~features/inspirations/components/InspirationDossierModal.test.jsx`
+- `~features/inspirations/inspirations.styles.css`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+
+
+---
+
+## 23/07/2026, 19:19:42
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-dossier-scrollbar-cruor-lens-fix-20260723.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-dossier-scrollbar-cruor-lens-fix-20260723.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-5bvIiX`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/inspirations/components/InspirationDossierModal.jsx`
+- `~features/inspirations/components/InspirationDossierModal.test.jsx`
+- `~features/inspirations/inspirations.styles.css`
+
+
+---
+
+## 23/07/2026, 19:38:16
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-dossier-scrollbar-practice-columns-fix-20260723.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-dossier-scrollbar-practice-columns-fix-20260723.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-E0oWsL`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/inspirations/inspirations.styles.css`
+
+
+---
+
+## 23/07/2026, 19:56:48
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-home-tool-title-weight-700.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-home-tool-title-weight-700.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-rClBI8`
+
+**Decisione struttura:** `Preserved top-level repo folder: app`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~app/home-page.css`
+
+
+---
+
+## 23/07/2026, 19:58:13
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-dossier-custom-scrollbar-fix-20260723.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-dossier-custom-scrollbar-fix-20260723.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-F3MQYm`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/inspirations/components/InspirationDossierModal.jsx`
+- `~features/inspirations/components/InspirationDossierModal.test.jsx`
+- `~features/inspirations/inspirations.styles.css`
+
+
+---
+
+## 24/07/2026, 13:10:22
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-dossier-scrollbar-thumb-only-fix-20260723.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-dossier-scrollbar-thumb-only-fix-20260723.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-tYHiTK`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/inspirations/inspirations.styles.css`
+
+
+---
+
+## 24/07/2026, 17:24:38
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-auth-prototype-admin-studio.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-auth-prototype-admin-studio.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-ePAO3a`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 11
+
+- `+features/auth/auth.adapter.js`
+- `+features/auth/auth.constants.js`
+- `+features/auth/auth.index.js`
+- `+features/auth/auth.policy.js`
+- `+features/auth/auth.routes.js`
+- `+features/auth/auth.session.js`
+- `+features/auth/auth.styles.css`
+- `+features/auth/auth.test.js`
+- `+features/auth/LoginPage.jsx`
+- `+features/auth/README.md`
+- `+tests/e2e/auth.spec.js`
+
+**File sovrascritti:** 8
+
+- `~app/app-shell.css`
+- `~app/AppShell.jsx`
+- `~app/navigation/site-navigation.data.js`
+- `~app/navigation/SiteTopbar.jsx`
+- `~app/router.jsx`
+- `~index.html`
+- `~shared/i18n/locales/en.js`
+- `~shared/i18n/locales/it.js`
+
+
+---
+
+## 24/07/2026, 23:06:53
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-content-studio-visual-clutter-reduction-20260724.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-content-studio-visual-clutter-reduction-20260724.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-NSyq1O`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/ui/studio-primitives.css`
+
+
+---
+
+## 24/07/2026, 23:51:39
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-content-studio-shared-public-card-20260724.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-content-studio-shared-public-card-20260724.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-oZcfUe`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+
+
+---
+
+## 24/07/2026, 23:57:45
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-content-studio-shared-public-card-20260724.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-content-studio-shared-public-card-20260724.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-cIOnPJ`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 2
+
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+
+
+---
+
+## 25/07/2026, 00:18:48
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-content-studio-public-card-sizing-fix-20260724.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-content-studio-public-card-sizing-fix-20260724.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-2It3oA`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+

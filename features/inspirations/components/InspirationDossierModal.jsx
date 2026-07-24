@@ -8,6 +8,8 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { t } from "../../../shared/i18n/index.js";
+import { getTriggerWarningDefinitions } from "../../../shared/content/trigger-warnings.js";
+import InspirationCardFront from "./InspirationCardFront.jsx";
 
 const DOSSIER_TABS = Object.freeze(["dossier", "workbench"]);
 const DOSSIER_TRANSITION_MS = 220;
@@ -99,43 +101,6 @@ function formatComponentMeta(component) {
   return details.join(" · ");
 }
 
-function buildComponentSearchText(component = {}) {
-  return [
-    component.id,
-    component.title,
-    component.label,
-    component.summary,
-    component.tableText,
-    component.mechanics,
-    component.contentType,
-    component.semanticType,
-    ...(component.tags || []),
-    ...(component.themes || []),
-    ...(component.motifs || []),
-    ...(component.horror || []),
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
-}
-
-function getStructureComponents(structure, components) {
-  const explicitIds = new Set(asTextList(structure.componentIds));
-  if (explicitIds.size) {
-    return components.filter((component) => explicitIds.has(component.id));
-  }
-
-  const keywords = asTextList(structure.keywords).map((keyword) =>
-    keyword.toLowerCase(),
-  );
-  if (!keywords.length) return [];
-
-  return components.filter((component) => {
-    const haystack = buildComponentSearchText(component);
-    return keywords.some((keyword) => haystack.includes(keyword));
-  });
-}
-
 function getArticleBlocks(value) {
   const source = String(value || "").trim();
   if (!source) return [];
@@ -172,7 +137,7 @@ function getArticleBlocks(value) {
     });
 }
 
-function ArticleCopy({ value }) {
+function ArticleCopy({ value, emphasizeLead = true }) {
   const blocks = getArticleBlocks(value);
   if (!blocks.length) return null;
 
@@ -196,9 +161,10 @@ function ArticleCopy({ value }) {
         }
 
         const className =
-          paragraphIndex++ === 0
+          emphasizeLead && paragraphIndex++ === 0
             ? "inspiration-dossier__article-lead"
             : undefined;
+        if (!emphasizeLead) paragraphIndex += 1;
         return (
           <p key={block.id} className={className}>
             {block.text}
@@ -259,12 +225,16 @@ export default function InspirationDossierModal({
   canOpenMonsterComposer = false,
   onUseDarkPlaces,
   onUseMonsterComposer,
+  relatedCards = [],
   onOpenRelatedDossier,
   onClose,
   locale = "en",
 }) {
   const stageRef = useRef(null);
   const bodyRef = useRef(null);
+  const scrollbarTrackRef = useRef(null);
+  const scrollbarThumbRef = useRef(null);
+  const scrollbarDragRef = useRef(null);
   const closeButtonRef = useRef(null);
   const previousActiveElementRef = useRef(null);
   const tabRefs = useRef({});
@@ -273,11 +243,104 @@ export default function InspirationDossierModal({
   const openingFrameRef = useRef(null);
   const [activeTab, setActiveTab] = useState("dossier");
   const [motionState, setMotionState] = useState("entering");
+  const [isScrollbarDragging, setIsScrollbarDragging] = useState(false);
 
   const groupedComponents = useMemo(
     () => groupComponents(linkedComponents),
     [linkedComponents],
   );
+
+  const syncScrollbar = useCallback(() => {
+    const body = bodyRef.current;
+    const track = scrollbarTrackRef.current;
+    const thumb = scrollbarThumbRef.current;
+    if (!body || !track || !thumb) return;
+
+    const scrollRange = Math.max(0, body.scrollHeight - body.clientHeight);
+    const trackHeight = Math.max(0, track.clientHeight);
+    const isScrollable = scrollRange > 1 && trackHeight > 0;
+    const thumbHeight = isScrollable
+      ? Math.max(
+          36,
+          Math.round(trackHeight * (body.clientHeight / body.scrollHeight)),
+        )
+      : trackHeight;
+    const thumbRange = Math.max(0, trackHeight - thumbHeight);
+    const thumbTop = isScrollable
+      ? Math.round((body.scrollTop / scrollRange) * thumbRange)
+      : 0;
+
+    track.dataset.scrollable = isScrollable ? "true" : "false";
+    thumb.style.height = `${thumbHeight}px`;
+    thumb.style.transform = `translateY(${thumbTop}px)`;
+  }, []);
+
+  const handleScrollbarPointerDown = useCallback(
+    (event) => {
+      if (event.button !== 0) return;
+
+      const body = bodyRef.current;
+      const track = scrollbarTrackRef.current;
+      const thumb = scrollbarThumbRef.current;
+      if (!body || !track || !thumb || track.dataset.scrollable !== "true") {
+        return;
+      }
+
+      event.preventDefault();
+      const trackRect = track.getBoundingClientRect();
+      const thumbHeight = thumb.getBoundingClientRect().height;
+      const scrollRange = Math.max(0, body.scrollHeight - body.clientHeight);
+      const thumbRange = Math.max(1, track.clientHeight - thumbHeight);
+
+      if (event.target !== thumb) {
+        const nextThumbTop = Math.max(
+          0,
+          Math.min(
+            thumbRange,
+            event.clientY - trackRect.top - thumbHeight / 2,
+          ),
+        );
+        body.scrollTop = (nextThumbTop / thumbRange) * scrollRange;
+        syncScrollbar();
+      }
+
+      scrollbarDragRef.current = {
+        pointerId: event.pointerId,
+        startY: event.clientY,
+        startScrollTop: body.scrollTop,
+        scrollRange,
+        thumbRange,
+      };
+      track.setPointerCapture?.(event.pointerId);
+      setIsScrollbarDragging(true);
+    },
+    [syncScrollbar],
+  );
+
+  const handleScrollbarPointerMove = useCallback(
+    (event) => {
+      const drag = scrollbarDragRef.current;
+      const body = bodyRef.current;
+      if (!drag || !body || drag.pointerId !== event.pointerId) return;
+
+      event.preventDefault();
+      const deltaY = event.clientY - drag.startY;
+      body.scrollTop =
+        drag.startScrollTop + (deltaY / drag.thumbRange) * drag.scrollRange;
+      syncScrollbar();
+    },
+    [syncScrollbar],
+  );
+
+  const finishScrollbarDrag = useCallback((event) => {
+    const drag = scrollbarDragRef.current;
+    const track = scrollbarTrackRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    track?.releasePointerCapture?.(event.pointerId);
+    scrollbarDragRef.current = null;
+    setIsScrollbarDragging(false);
+  }, []);
 
   const finishClose = useCallback(() => {
     if (!closingRef.current) return;
@@ -369,6 +432,45 @@ export default function InspirationDossierModal({
     };
   }, [card?.inspiration?.id]);
 
+  useLayoutEffect(() => {
+    const body = bodyRef.current;
+    if (!body) return undefined;
+
+    const update = () => syncScrollbar();
+    const useAnimationFrame =
+      typeof window.requestAnimationFrame === "function";
+    const frame = useAnimationFrame
+      ? window.requestAnimationFrame(update)
+      : window.setTimeout(update, 0);
+    body.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+
+    const observer =
+      typeof ResizeObserver === "function" ? new ResizeObserver(update) : null;
+    observer?.observe(body);
+    const activePanel = body.querySelector(
+      ".inspiration-dossier__tab-panel:not([hidden])",
+    );
+    if (activePanel) observer?.observe(activePanel);
+
+    return () => {
+      if (useAnimationFrame) {
+        window.cancelAnimationFrame(frame);
+      } else {
+        window.clearTimeout(frame);
+      }
+      body.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      observer?.disconnect();
+    };
+  }, [
+    activeTab,
+    card?.inspiration?.id,
+    linkedComponents.length,
+    relatedCards.length,
+    syncScrollbar,
+  ]);
+
   useEffect(() => {
     previousActiveElementRef.current = document.activeElement;
     const previousOverflow = document.body.style.overflow;
@@ -428,24 +530,18 @@ export default function InspirationDossierModal({
     sourceAnchor?.summary ||
     inspiration.narrative ||
     inspiration.caption;
-  const cruorLensThesis =
-    editorial.cruorLensThesis ||
-    editorial.thesis ||
-    editorial.whyItDisturbs ||
-    inspiration.inspiration?.logic ||
-    "";
   const cruorLens =
     editorial.cruorLens ||
     editorial.whyItDisturbs ||
     inspiration.inspiration?.logic ||
     sourceAnchor?.summary ||
     "";
-  const facts = asObjectList(editorial.facts);
-  const horrorStructures = asObjectList(editorial.horrorStructures);
-  const triggerWarnings = asTextList(
-    editorial.triggerWarnings?.length
-      ? editorial.triggerWarnings
-      : editorial.cautions,
+  const triggerWarnings = getTriggerWarningDefinitions(
+    asTextList(
+      editorial.triggerWarnings?.length
+        ? editorial.triggerWarnings
+        : editorial.cautions,
+    ),
   );
   const tableSafety = asTextList(editorial.tableSafety);
   const lowIntensityAlternative = String(
@@ -453,7 +549,6 @@ export default function InspirationDossierModal({
   ).trim();
   const sources = asObjectList(editorial.sources);
   const furtherReading = asObjectList(editorial.furtherReading);
-  const relatedDossiers = asObjectList(editorial.relatedDossiers);
   const sourceAnchorLabel = sourceAnchor?.label || sourceAnchor?.title || title;
   const hasSafety =
     triggerWarnings.length ||
@@ -461,13 +556,6 @@ export default function InspirationDossierModal({
     Boolean(lowIntensityAlternative);
   const hasResearch = sources.length || furtherReading.length;
   const hasActions = canOpenDarkPlaces || canOpenMonsterComposer;
-
-  const structureComponentMap = new Map(
-    horrorStructures.map((structure) => [
-      structure.id || structure.title,
-      getStructureComponents(structure, linkedComponents),
-    ]),
-  );
 
   function selectTab(tabId, { focus = false } = {}) {
     setActiveTab(tabId);
@@ -591,103 +679,35 @@ export default function InspirationDossierModal({
               </div>
             </header>
 
-            <div ref={bodyRef} className="inspiration-dossier__body">
-              <div
+            <div className="inspiration-dossier__scroll-region">
+              <div ref={bodyRef} className="inspiration-dossier__body">
+                <div
                 id="inspiration-dossier-panel-dossier"
                 className="inspiration-dossier__tab-panel"
                 role="tabpanel"
                 aria-labelledby="inspiration-dossier-tab-dossier"
                 hidden={activeTab !== "dossier"}
               >
-                {editorial.thesis || cruorLensThesis ? (
-                  <blockquote className="inspiration-dossier__opening-thesis">
-                    {editorial.thesis || cruorLensThesis}
-                    <small>
-                      {t("inspirations.dossier.cruorThesis", {}, locale)}
-                    </small>
-                  </blockquote>
-                ) : null}
 
                 <section className="inspiration-dossier__section inspiration-dossier__section--article">
                   <SectionHeading
                     number={++dossierSectionNumber}
                     title={t("inspirations.dossier.whatItIs", {}, locale)}
                   />
-                  <p className="inspiration-dossier__section-deck">
-                    {t("inspirations.dossier.whatItIsDeck", {}, locale)}
-                  </p>
                   <ArticleCopy value={whatItIs} />
-                  {facts.length ? (
-                    <dl className="inspiration-dossier__fact-strip">
-                      {facts.map((fact, index) => (
-                        <div key={`${fact.label || "fact"}-${index}`}>
-                          <dt>{fact.label}</dt>
-                          <dd>{fact.value}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  ) : null}
                 </section>
 
                 {cruorLens ? (
-                  <section className="inspiration-dossier__section">
+                  <section className="inspiration-dossier__section inspiration-dossier__section--article">
                     <SectionHeading
                       number={++dossierSectionNumber}
                       title={t("inspirations.dossier.cruorLens", {}, locale)}
                     />
-                    <p className="inspiration-dossier__section-deck">
-                      {t("inspirations.dossier.cruorLensDeck", {}, locale)}
-                    </p>
-                    <div className="inspiration-dossier__lens">
-                      <span>
-                        {t(
-                          "inspirations.dossier.editorialInterpretation",
-                          {},
-                          locale,
-                        )}
-                      </span>
-                      {cruorLensThesis ? (
-                        <blockquote>{cruorLensThesis}</blockquote>
-                      ) : null}
-                      <p>{cruorLens}</p>
-                    </div>
+                    <ArticleCopy value={cruorLens} emphasizeLead={false} />
                   </section>
                 ) : null}
 
-                {horrorStructures.length ? (
-                  <section className="inspiration-dossier__section">
-                    <SectionHeading
-                      number={++dossierSectionNumber}
-                      title={t(
-                        "inspirations.dossier.horrorStructure",
-                        {},
-                        locale,
-                      )}
-                    />
-                    <p className="inspiration-dossier__section-deck">
-                      {t(
-                        "inspirations.dossier.horrorStructureDeck",
-                        {},
-                        locale,
-                      )}
-                    </p>
-                    <div className="inspiration-dossier__structure-grid">
-                      {horrorStructures.map((structure, index) => (
-                        <article
-                          key={structure.id || structure.title}
-                          className="inspiration-dossier__structure-item"
-                        >
-                          <span>{String(index + 1).padStart(2, "0")}</span>
-                          <h4>{structure.title}</h4>
-                          <p>{structure.description}</p>
-                          {structure.feeds ? (
-                            <footer>{structure.feeds}</footer>
-                          ) : null}
-                        </article>
-                      ))}
-                    </div>
-                  </section>
-                ) : null}
+
 
                 {hasSafety ? (
                   <section className="inspiration-dossier__section">
@@ -695,28 +715,48 @@ export default function InspirationDossierModal({
                       number={++dossierSectionNumber}
                       title={t("inspirations.dossier.tableSafety", {}, locale)}
                     />
-                    <p className="inspiration-dossier__section-deck">
-                      {t("inspirations.dossier.tableSafetyDeck", {}, locale)}
-                    </p>
-                    <div className="inspiration-dossier__safety-layout">
+                    <div className="inspiration-dossier__safety-stack">
                       {triggerWarnings.length ? (
-                        <article className="inspiration-dossier__safety-card">
-                          <h4>
-                            {t(
-                              "inspirations.dossier.triggerWarnings",
-                              {},
-                              locale,
-                            )}
-                          </h4>
+                        <article className="inspiration-dossier__trigger-warning-panel">
+                          <header>
+                            <span className="inspiration-dossier__trigger-warning-icon" aria-hidden="true">
+                              <i className="fa-solid fa-triangle-exclamation" />
+                            </span>
+                            <div>
+                              <h4>
+                                {t(
+                                  "inspirations.dossier.triggerWarnings",
+                                  {},
+                                  locale,
+                                )}
+                              </h4>
+                              <p>
+                                {t(
+                                  "inspirations.dossier.triggerWarningsHint",
+                                  { count: triggerWarnings.length },
+                                  locale,
+                                )}
+                              </p>
+                            </div>
+                          </header>
                           <div className="inspiration-dossier__warning-tags">
                             {triggerWarnings.map((warning) => (
-                              <span key={warning}>{warning}</span>
+                              <span
+                                key={warning.id || warning.label}
+                                tabIndex={0}
+                                data-key="tooltip-generic"
+                                data-tooltip={warning.label}
+                                data-tooltip-description={warning.description}
+                              >
+                                <i className={`fa-solid ${warning.icon || "fa-triangle-exclamation"}`} aria-hidden="true" />
+                                <strong>{warning.label}</strong>
+                              </span>
                             ))}
                           </div>
                         </article>
                       ) : null}
                       {tableSafety.length ? (
-                        <article className="inspiration-dossier__safety-card">
+                        <article className="inspiration-dossier__safety-practice">
                           <h4>
                             {t(
                               "inspirations.dossier.runningThisMaterial",
@@ -760,31 +800,29 @@ export default function InspirationDossierModal({
                         locale,
                       )}
                     />
-                    <p className="inspiration-dossier__section-deck">
-                      {t(
-                        "inspirations.dossier.sourcesAndReadingDeck",
-                        {},
-                        locale,
-                      )}
-                    </p>
                     <div className="inspiration-dossier__research-grid">
                       {sources.length ? (
                         <section className="inspiration-dossier__research-group">
                           <header>
-                            <h4>
-                              {t(
-                                "inspirations.dossier.sourcesUsed",
-                                {},
-                                locale,
-                              )}
-                            </h4>
-                            <p>
-                              {t(
-                                "inspirations.dossier.sourcesUsedDeck",
-                                {},
-                                locale,
-                              )}
-                            </p>
+                            <span className="inspiration-dossier__research-icon" aria-hidden="true">
+                              <i className="fa-solid fa-book-bookmark" />
+                            </span>
+                            <div>
+                              <h4>
+                                {t(
+                                  "inspirations.dossier.sourcesUsed",
+                                  {},
+                                  locale,
+                                )}
+                              </h4>
+                              <p>
+                                {t(
+                                  "inspirations.dossier.sourcesUsedDeck",
+                                  {},
+                                  locale,
+                                )}
+                              </p>
+                            </div>
                           </header>
                           {sources.map((entry, index) => (
                             <ResearchLink
@@ -797,20 +835,25 @@ export default function InspirationDossierModal({
                       {furtherReading.length ? (
                         <section className="inspiration-dossier__research-group">
                           <header>
-                            <h4>
-                              {t(
-                                "inspirations.dossier.furtherReading",
-                                {},
-                                locale,
-                              )}
-                            </h4>
-                            <p>
-                              {t(
-                                "inspirations.dossier.furtherReadingDeck",
-                                {},
-                                locale,
-                              )}
-                            </p>
+                            <span className="inspiration-dossier__research-icon" aria-hidden="true">
+                              <i className="fa-solid fa-compass" />
+                            </span>
+                            <div>
+                              <h4>
+                                {t(
+                                  "inspirations.dossier.furtherReading",
+                                  {},
+                                  locale,
+                                )}
+                              </h4>
+                              <p>
+                                {t(
+                                  "inspirations.dossier.furtherReadingDeck",
+                                  {},
+                                  locale,
+                                )}
+                              </p>
+                            </div>
                           </header>
                           {furtherReading.map((entry, index) => (
                             <ResearchLink
@@ -824,7 +867,7 @@ export default function InspirationDossierModal({
                   </section>
                 ) : null}
 
-                {relatedDossiers.length ? (
+                {relatedCards.length ? (
                   <section className="inspiration-dossier__section">
                     <SectionHeading
                       number={dossierSectionNumber + 1}
@@ -835,33 +878,38 @@ export default function InspirationDossierModal({
                       )}
                     />
                     <div className="inspiration-dossier__related-grid">
-                      {relatedDossiers.map((related) => {
-                        const content = (
-                          <>
-                            <small>{related.relationship}</small>
-                            <strong>{related.title}</strong>
-                            <p>{related.description}</p>
-                          </>
-                        );
-                        return onOpenRelatedDossier &&
-                          related.sourceAnchorId ? (
-                          <button
-                            key={related.sourceAnchorId}
-                            type="button"
-                            className="inspiration-dossier__related-card"
-                            onClick={() =>
-                              onOpenRelatedDossier(related.sourceAnchorId)
-                            }
+                      {relatedCards.map((relatedCard) => {
+                        const relatedTitle =
+                          relatedCard.inspiration?.title ||
+                          relatedCard.inspiration?.label ||
+                          "Related Inspiration";
+                        const openRelated = () =>
+                          onOpenRelatedDossier?.(relatedCard.sourceAnchorId);
+                        return (
+                          <div
+                            key={relatedCard.inspiration.id}
+                            className="inspiration-dossier__related-card-shell"
+                            role="button"
+                            tabIndex={0}
+                            aria-label={`${t(
+                              "inspirations.card.openDossier",
+                              {},
+                              locale,
+                            )}: ${relatedTitle}`}
+                            onClick={openRelated}
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter" || event.key === " ") {
+                                event.preventDefault();
+                                openRelated();
+                              }
+                            }}
                           >
-                            {content}
-                          </button>
-                        ) : (
-                          <article
-                            key={related.sourceAnchorId || related.title}
-                            className="inspiration-dossier__related-card"
-                          >
-                            {content}
-                          </article>
+                            <InspirationCardFront
+                              inspiration={relatedCard.inspiration}
+                              meta={relatedCard.meta}
+                              ariaHidden
+                            />
+                          </div>
                         );
                       })}
                     </div>
@@ -889,56 +937,12 @@ export default function InspirationDossierModal({
                   </span>
                 </header>
 
-                {horrorStructures.length ? (
-                  <section className="inspiration-dossier__section">
-                    <SectionHeading
-                      number={1}
-                      title={t(
-                        "inspirations.dossier.translationMap",
-                        {},
-                        locale,
-                      )}
-                    />
-                    <p className="inspiration-dossier__section-deck">
-                      {t("inspirations.dossier.translationMapDeck", {}, locale)}
-                    </p>
-                    <div className="inspiration-dossier__translation-map">
-                      {horrorStructures.map((structure) => {
-                        const matchedComponents =
-                          structureComponentMap.get(
-                            structure.id || structure.title,
-                          ) || [];
-                        return (
-                          <article key={structure.id || structure.title}>
-                            <strong>{structure.title}</strong>
-                            <i
-                              className="fa-solid fa-arrow-right"
-                              aria-hidden="true"
-                            />
-                            <span>
-                              {structure.feeds || structure.description}
-                            </span>
-                            {matchedComponents.length ? (
-                              <em>
-                                {matchedComponents.length}{" "}
-                                {t(
-                                  "inspirations.dossier.components",
-                                  {},
-                                  locale,
-                                )}
-                              </em>
-                            ) : null}
-                          </article>
-                        );
-                      })}
-                    </div>
-                  </section>
-                ) : null}
+
 
                 {horror.length ? (
                   <section className="inspiration-dossier__section">
                     <SectionHeading
-                      number={horrorStructures.length ? 2 : 1}
+                      number={1}
                       title={t(
                         "inspirations.dossier.horrorTexture",
                         {},
@@ -1028,6 +1032,25 @@ export default function InspirationDossierModal({
                   <h3>{t("inspirations.dossier.sourceAnchor", {}, locale)}</h3>
                   <p>{sourceAnchorLabel}</p>
                 </section>
+              </div>
+              </div>
+
+              <div
+                ref={scrollbarTrackRef}
+                className={`inspiration-dossier__scrollbar${
+                  isScrollbarDragging ? " is-dragging" : ""
+                }`}
+                data-scrollable="false"
+                aria-hidden="true"
+                onPointerDown={handleScrollbarPointerDown}
+                onPointerMove={handleScrollbarPointerMove}
+                onPointerUp={finishScrollbarDrag}
+                onPointerCancel={finishScrollbarDrag}
+              >
+                <span
+                  ref={scrollbarThumbRef}
+                  className="inspiration-dossier__scrollbar-thumb"
+                />
               </div>
             </div>
 

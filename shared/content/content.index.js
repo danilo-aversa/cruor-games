@@ -29,6 +29,15 @@ export {
   normalizeSourceAnchorIds,
 } from "./source-anchors.js";
 export {
+  TRIGGER_WARNING_LABELS,
+  TRIGGER_WARNING_LIBRARY,
+  getTriggerWarningDefinition,
+  getTriggerWarningDefinitions,
+  isKnownTriggerWarning,
+  normalizeTriggerWarning,
+  normalizeTriggerWarnings,
+} from "./trigger-warnings.js";
+export {
   SHARED_INSPIRATIONS,
   buildSharedInspirations,
   inspirationCardToSharedInspiration,

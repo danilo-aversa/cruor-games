@@ -22,10 +22,16 @@ export default function AppShell({
   onSectionChange,
   onUiModeChange,
   onOpenCrucibleTool,
+  authSession = null,
+  canAccessStudio = false,
+  canUseDebug = false,
+  onLoginRequest,
+  onLogout,
   homeContent,
   crucibleContent,
   inspirationsContent,
   inspirationStudioContent,
+  loginContent,
 }) {
   const [accessibilitySettings, setAccessibilitySettings] = useState(readAccessibilitySettings);
   const [isTransientNavigationOpen, setIsTransientNavigationOpen] = useState(false);
@@ -100,6 +106,7 @@ export default function AppShell({
       className="app-shell"
       data-ui-mode={activeUiMode}
       data-active-section={activeSection}
+      data-authenticated={authSession ? "true" : "false"}
       data-shell-mode={isCreatorShell ? "creator" : "site"}
       data-locale={activeLocale}
       data-a11y-theme={accessibilitySettings.theme}
@@ -120,6 +127,11 @@ export default function AppShell({
           onSectionChange={onSectionChange}
           onUiModeChange={onUiModeChange}
           onOpenCrucibleTool={onOpenCrucibleTool}
+          authSession={authSession}
+          canAccessStudio={canAccessStudio}
+          canUseDebug={canUseDebug}
+          onLoginRequest={onLoginRequest}
+          onLogout={onLogout}
           accessibilitySettings={accessibilitySettings}
           onAccessibilitySettingChange={handleAccessibilitySettingChange}
           onAccessibilitySettingsReset={handleAccessibilitySettingsReset}
@@ -140,6 +152,10 @@ export default function AppShell({
 
         {activeSection === "inspiration-studio" ? (
           <section aria-label={t("app.aria.inspirationStudio", {}, activeLocale)}>{inspirationStudioContent}</section>
+        ) : null}
+
+        {activeSection === "login" ? (
+          <section aria-label={t("app.aria.login", {}, activeLocale)}>{loginContent}</section>
         ) : null}
       </main>
 

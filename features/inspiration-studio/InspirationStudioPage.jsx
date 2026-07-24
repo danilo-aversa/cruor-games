@@ -9,6 +9,10 @@ import {
   ROOM_ARCHETYPE_OPTIONS,
   ROOM_DESIGN_MODIFIER_OPTIONS,
   ROOM_DESIGN_SHAPE_KIND_OPTIONS,
+  TRIGGER_WARNING_LABELS,
+  TRIGGER_WARNING_LIBRARY,
+  getTriggerWarningDefinition,
+  normalizeTriggerWarnings,
   buildInspirationAssetUrl,
   compileRoomArchetypeToRoomDesign,
   getSpell5e24Name,
@@ -60,7 +64,7 @@ import {
 } from "./model/studio-editor-registry.js";
 import { isStudioSpecializedSemanticType } from "./schema/studio-semantic-editor-registry.js";
 import { StudioSemanticComponentEditor } from "./editors/StudioSemanticComponentEditor.jsx";
-import InspirationCardFront from "../inspirations/components/InspirationCardFront.jsx";
+import InspirationCard from "../inspirations/components/InspirationCard.jsx";
 import { getInspirationCardMeta } from "../inspirations/inspirations.card-config.js";
 import {
   StudioArmedDeleteButton,
@@ -100,6 +104,7 @@ import {
 } from "./model/studio-warning-model.js";
 import { StudioWarningBadge } from "./components/StudioWarningBadge.jsx";
 import { StudioWarningList } from "./components/StudioWarningList.jsx";
+import { StudioDossierAuthoringPanel } from "./components/StudioDossierAuthoringPanel.jsx";
 import { renderStructuredRulesTemplate } from "../monster-composer/model/monster-graft-rules.render.js";
 import { ALL_MONSTER_GRAFTS } from "../monster-composer/data/monster-content-pack-feed.js";
 import { StudioToolsMenu } from "./components/StudioToolsMenu.jsx";
@@ -380,6 +385,7 @@ const TAXONOMY_PILL_ICONS = Object.freeze({
 const LIBRARY_STATUS_FILTERS = [
   ["all", "All"],
   ["published", "Published"],
+  ["pending-review", "Pending Review"],
   ["draft", "Draft"],
   ["in-review", "In Review"],
   ["retired", "Retired"],
@@ -783,9 +789,7 @@ const FIELD_HELP = {
   motifs: "Concrete recurring signs, images, props, or sensory cues creators can reuse in generated content.",
   horrorTags: "Horror design tags that describe the emotional or genre effect this source supports.",
   publicSummary: "Short archive-facing summary. This should explain what the inspiration is and why creators might use it.",
-  thesis: "A concise, shareable statement that opens the public dossier.",
   whatItIs: "A researched source article with enough depth for several minutes of reading. Markdown subheadings are supported.",
-  cruorLensThesis: "The compact editorial claim Cruor extracts from the source.",
   cruorLens: "The fuller Cruor interpretation that explains why the source is structurally useful for horror.",
   triggerWarnings: "Clear content warnings for themes or imagery that may require prior consent.",
   tableSafety: "Practical handling guidance that preserves the content while respecting table boundaries.",
@@ -1111,14 +1115,24 @@ function getStatusClassName(status = "draft") {
   return `is-status-${normalizeStatus(status)}`;
 }
 
+function getStatusLabel(status = "draft") {
+  const normalized = normalizeStatus(status);
+  return (
+    STATUS_OPTIONS.find((option) => option.id === normalized)?.label ||
+    formatPlainLabel(normalized)
+  );
+}
+
 function getInspirationStatusForModuleStatus(status = "draft") {
   if (status === "published") return "approved";
   if (status === "retired") return "rejected";
+  if (status === "pending-review") return "pending-review";
   return status === "in-review" ? "in-review" : "draft";
 }
 
 function getStatusIconName(status = "draft") {
   if (status === "published") return "fa-circle-check";
+  if (status === "pending-review") return "fa-clock-rotate-left";
   if (status === "in-review") return "fa-magnifying-glass";
   if (status === "retired") return "fa-box-archive";
   return "fa-pen-ruler";
@@ -1126,6 +1140,7 @@ function getStatusIconName(status = "draft") {
 
 function getLibraryStatusFilterIcon(filterId = "all") {
   if (filterId === "published") return "fa-circle-check";
+  if (filterId === "pending-review") return "fa-clock-rotate-left";
   if (filterId === "draft") return "fa-pen-ruler";
   if (filterId === "in-review") return "fa-magnifying-glass";
   if (filterId === "retired") return "fa-box-archive";
@@ -1338,6 +1353,102 @@ function TagPillInput({ allowCustom = true, fieldId, icon = "fa-tag", onChange, 
       {!allowCustom && draftTag && !canAdd ? (
         <small className="studio-tag-input__hint">Choose one of the allowed taxonomy values.</small>
       ) : null}
+    </div>
+  );
+}
+
+function TriggerWarningLibraryInput({ onChange, value = [] }) {
+  const warnings = normalizeTriggerWarnings(value);
+  const [selection, setSelection] = useState("");
+  const selectedIds = new Set(
+    warnings
+      .map((warning) => getTriggerWarningDefinition(warning)?.id)
+      .filter(Boolean),
+  );
+  const availableWarnings = TRIGGER_WARNING_LIBRARY.filter(
+    (warning) => !selectedIds.has(warning.id),
+  );
+
+  function addWarning() {
+    if (!selection) return;
+    const definition = getTriggerWarningDefinition(selection);
+    if (!definition) return;
+    onChange(normalizeTriggerWarnings([...warnings, definition.label]));
+    setSelection("");
+  }
+
+  function removeWarning(label) {
+    onChange(warnings.filter((warning) => warning !== label));
+  }
+
+  return (
+    <div
+      className="studio-trigger-warning-library"
+      data-empty={warnings.length ? "false" : "true"}
+    >
+      <div
+        className="studio-trigger-warning-library__selected"
+        aria-label="Selected Trigger Warnings"
+      >
+        {warnings.map((warning) => {
+          const definition = getTriggerWarningDefinition(warning);
+          const label = definition?.label || warning;
+          const description =
+            definition?.description ||
+            "This warning has not yet been added to the shared Trigger Warning library.";
+          return (
+            <span
+              className="studio-tag-pill studio-tag-pill--trigger-warning"
+              key={label}
+              tabIndex={0}
+              data-key="tooltip-generic"
+              data-tooltip={label}
+              data-tooltip-description={description}
+            >
+              <StudioIcon name={definition?.icon || "fa-triangle-exclamation"} />
+              <span>{label}</span>
+              <button
+                type="button"
+                aria-label={`Remove ${label}`}
+                onClick={() => removeWarning(label)}
+              >
+                <StudioIcon name="fa-xmark" />
+              </button>
+            </span>
+          );
+        })}
+        {!warnings.length ? (
+          <span className="studio-trigger-warning-library__empty">
+            No Trigger Warnings selected.
+          </span>
+        ) : null}
+      </div>
+      <div className="studio-trigger-warning-library__controls">
+        <select
+          aria-label="Trigger Warning library"
+          value={selection}
+          onChange={(event) => setSelection(event.target.value)}
+        >
+          <option value="">Choose From Library…</option>
+          {availableWarnings.map((warning) => (
+            <option key={warning.id} value={warning.id}>
+              {warning.label}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          disabled={!selection}
+          onClick={addWarning}
+        >
+          <StudioIcon name="fa-plus" />
+          Add
+        </button>
+      </div>
+      <small>
+        {TRIGGER_WARNING_LABELS.length} shared warnings available. Hover or focus a
+        selected warning for its full description.
+      </small>
     </div>
   );
 }
@@ -1990,7 +2101,7 @@ export default function InspirationStudioPage() {
         </div>
         <div className="inspiration-studio__quick-meta inspiration-studio__quick-meta--header" aria-label="Current module status and studio tools">
           <span><StudioIcon name="fa-box-open" /> {packTitle}</span>
-          <span><StudioIcon name="fa-circle-check" /> {draft.status || "draft"}</span>
+          <span><StudioIcon name={getStatusIconName(draft.status)} /> {getStatusLabel(draft.status)}</span>
           <span><StudioIcon name="fa-diagram-project" /> {asArray(draft.components).length} components</span>
           <StudioToolsMenu
             coverageOpen={isCoverageMatrixOpen}
@@ -2110,7 +2221,7 @@ export default function InspirationStudioPage() {
                           <StudioIcon name={hasReviewIssue ? getReadinessIconFromSummary(summary) : getStatusIconName(status)} />
                         </em>
                       </span>
-                      <span>{module.packId || "core-cruor"} · {status}</span>
+                      <span>{module.packId || "core-cruor"} · {getStatusLabel(status)}</span>
                     </button>
                   );
                 })}
@@ -2485,15 +2596,6 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
             />
           </StudioField>
 
-          <StudioField label="Opening Thesis" icon="fa-quote-left" hint={FIELD_HELP.thesis}>
-            <EditableTextBox
-              rows={3}
-              value={draft.inspiration.editorial?.thesis}
-              placeholder="Add the opening Cruor thesis."
-              onChange={(value) => updateDraftField(["inspiration", "editorial", "thesis"], value)}
-            />
-          </StudioField>
-
           <StudioField label="What It Is" icon="fa-circle-info" hint={FIELD_HELP.whatItIs}>
             <EditableTextBox
               rows={14}
@@ -2501,15 +2603,6 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
               placeholder="Add the researched source article."
               onApplyToken={(token) => appendMarkdown(["inspiration", "editorial", "whatItIs"], token)}
               onChange={(value) => updateDraftField(["inspiration", "editorial", "whatItIs"], value)}
-            />
-          </StudioField>
-
-          <StudioField label="Cruor Lens Thesis" icon="fa-eye" hint={FIELD_HELP.cruorLensThesis}>
-            <EditableTextBox
-              rows={3}
-              value={draft.inspiration.editorial?.cruorLensThesis}
-              placeholder="State the central Cruor interpretation."
-              onChange={(value) => updateDraftField(["inspiration", "editorial", "cruorLensThesis"], value)}
             />
           </StudioField>
 
@@ -2524,12 +2617,9 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
           </StudioField>
 
           <StudioField label="Trigger Warnings" icon="fa-triangle-exclamation" hint={FIELD_HELP.triggerWarnings}>
-            <TagPillInput
-              fieldId="trigger-warnings"
-              icon="fa-triangle-exclamation"
+            <TriggerWarningLibraryInput
               value={draft.inspiration.editorial?.triggerWarnings}
               onChange={(value) => updateDraftField(["inspiration", "editorial", "triggerWarnings"], value)}
-              placeholder="Add a trigger warning…"
             />
           </StudioField>
 
@@ -2589,10 +2679,12 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
               }
             >
               {mediaPreviewMode === "card" ? (
-                <InspirationCardFront
+                <InspirationCard
                   inspiration={previewInspiration}
                   meta={previewCardMeta}
-                  className="studio-media-preview__public-card"
+                  isFlipped={false}
+                  onToggle={() => {}}
+                  onOpenDossier={() => {}}
                 />
               ) : (
                 <div className="studio-media-preview__image">
@@ -2644,6 +2736,12 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
             </StudioField>
           </details>
         </section>
+
+        <StudioDossierAuthoringPanel
+          draft={draft}
+          imageSource={imageSource}
+          updateDraft={updateDraft}
+        />
       </div>
     );
   }

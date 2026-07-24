@@ -24,3 +24,59 @@ test("tool cards omit eyebrows and use compact uppercase overview titles", async
   await expect(overviewTitles.nth(0)).toHaveCSS("text-transform", "uppercase");
   await expect(overviewTitles.nth(0)).toHaveCSS("font-weight", "850");
 });
+
+test("hero introduces the Crucible and semi-procedural content engines", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  await expect(page.getByRole("heading", {
+    level: 1,
+    name: "Forge 5E Dark Fantasy in the Crucible",
+  })).toBeVisible();
+  await expect(
+    page.getByText(
+      "Shape your own content using semi-procedural engines that turn macabre real-world inspiration into playable, table-ready material.",
+    ),
+  ).toBeVisible();
+});
+
+
+test("hero CTA scrolls smoothly to the Crucible explanation", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__cruorScrollCalls = [];
+    Element.prototype.scrollIntoView = function scrollIntoView(options) {
+      window.__cruorScrollCalls.push({ id: this.id, options });
+    };
+  });
+
+  await page.goto("/");
+  await page.getByRole("link", { name: "Explore the Crucible" }).click();
+
+  await expect.poll(() =>
+    page.evaluate(() => window.__cruorScrollCalls.at(-1)),
+  ).toEqual({
+    id: "workbenchFlow",
+    options: { behavior: "smooth", block: "start" },
+  });
+});
+
+test("hero CTA avoids smooth scrolling when reduced motion is enabled", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.addInitScript(() => {
+    window.__cruorScrollCalls = [];
+    Element.prototype.scrollIntoView = function scrollIntoView(options) {
+      window.__cruorScrollCalls.push({ id: this.id, options });
+    };
+  });
+
+  await page.goto("/");
+  await page.getByRole("link", { name: "Explore the Crucible" }).click();
+
+  await expect.poll(() =>
+    page.evaluate(() => window.__cruorScrollCalls.at(-1)),
+  ).toEqual({
+    id: "workbenchFlow",
+    options: { behavior: "auto", block: "start" },
+  });
+});

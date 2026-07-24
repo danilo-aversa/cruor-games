@@ -777,6 +777,27 @@
   outline: none;
 }
 
+
+.inspirations-page .inspiration-card__dossier-button:disabled,
+.inspirations-page .inspiration-card__dossier-button.is-pending-review {
+  border-color: var(--cruor-color-milk-a055);
+  background: var(--cruor-color-black-a520);
+  color: var(--cruor-color-text-a320);
+  box-shadow: none;
+  cursor: not-allowed;
+  filter: grayscale(1);
+  opacity: 0.62;
+}
+
+.inspirations-page .inspiration-card__dossier-button:disabled:hover,
+.inspirations-page .inspiration-card__dossier-button:disabled:focus-visible {
+  border-color: var(--cruor-color-milk-a055);
+  background: var(--cruor-color-black-a520);
+  color: var(--cruor-color-text-a320);
+  box-shadow: none;
+  outline: none;
+}
+
 .inspiration-card__footer {
   display: grid;
   width: 100%;
@@ -1166,14 +1187,89 @@
   color: var(--cruor-color-milk);
 }
 
-.inspiration-dossier__body {
+.inspiration-dossier__scroll-region {
+  position: relative;
   min-height: 0;
   grid-column: 1;
   grid-row: 2;
+  overflow: hidden;
+  background: var(--cruor-color-ink-raised-a960);
+}
+
+.inspiration-dossier__body {
+  width: 99%;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
   overflow-y: auto;
   background: var(--cruor-color-ink-raised-a960);
   padding: 18px clamp(22px, 3vw, 40px) 24px;
   overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.inspiration-dossier__body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.inspiration-dossier__scrollbar {
+  position: absolute;
+  top: 12px;
+  right: 0;
+  bottom: 12px;
+  width: 1%;
+  min-width: 10px;
+  max-width: 14px;
+  border-left: 1px solid var(--cruor-color-milk-a060);
+  background: var(--cruor-color-black-a240);
+  cursor: pointer;
+  opacity: 0.72;
+  touch-action: none;
+}
+
+.inspiration-dossier__scrollbar[data-scrollable="false"] {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.inspiration-dossier__scrollbar-thumb {
+  position: absolute;
+  top: 0;
+  right: 1px;
+  left: 1px;
+  display: block;
+  min-height: 36px;
+  border: 1px solid var(--cruor-color-blood-glow-a420);
+  background: var(--cruor-color-blood-glow-a500, rgba(139, 14, 43, 0.5));
+  box-shadow: inset 0 0 0 1px var(--cruor-color-black-a240);
+  cursor: grab;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+  will-change: transform;
+}
+
+.inspiration-dossier__scrollbar-thumb:hover {
+  border-color: var(--cruor-color-rose, #c64b67);
+  background: var(--cruor-color-blood-glow, #8b0e2b);
+  box-shadow:
+    inset 0 0 0 1px var(--cruor-color-rose, #c64b67),
+    0 0 10px var(--cruor-color-blood-glow-a620, rgba(139, 14, 43, 0.62));
+}
+
+.inspiration-dossier__scrollbar.is-dragging .inspiration-dossier__scrollbar-thumb {
+  cursor: grabbing;
+}
+
+.inspiration-dossier__scrollbar.is-dragging .inspiration-dossier__scrollbar-thumb {
+  border-color: var(--cruor-color-milk);
+  background: var(--cruor-color-rose, #c64b67);
+  box-shadow:
+    inset 0 0 0 1px var(--cruor-color-milk),
+    0 0 14px var(--cruor-color-blood-glow-a620, rgba(139, 14, 43, 0.62));
 }
 
 .inspiration-dossier__tab-panel {
@@ -1185,29 +1281,6 @@
   display: none;
 }
 
-.inspiration-dossier__opening-thesis {
-  position: relative;
-  margin: 0;
-  border-left: 2px solid var(--cruor-color-blood-glow);
-  background: var(--cruor-color-black-a240);
-  color: var(--cruor-color-milk);
-  padding: 20px 22px 20px 26px;
-  font-family: var(--cruor-font-body, Inter, sans-serif);
-  font-size: var(--text-size-3xl);
-  font-weight: 500;
-  line-height: 1.32;
-}
-
-.inspiration-dossier__opening-thesis small {
-  display: block;
-  margin-top: 12px;
-  color: var(--cruor-color-text-a500);
-  font-family: var(--cruor-font-body, Inter, sans-serif);
-  font-size: var(--text-size-l, 0.92rem);
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
 
 .inspiration-dossier__section {
   display: grid;
@@ -1225,8 +1298,9 @@
 .inspiration-dossier__section-heading > span {
   color: var(--cruor-color-blood-glow);
   font-family: var(--cruor-font-body, Inter, sans-serif);
-  font-size: var(--text-size-l, 0.92rem);
+  font-size: var(--text-size-5xl, 1.55rem);
   font-weight: 900;
+  line-height: 1;
 }
 
 .inspiration-dossier__section-heading h3 {
@@ -1236,9 +1310,9 @@
   gap: 12px;
   margin: 0;
   color: var(--cruor-color-milk);
-  font-size: var(--text-size-l, 0.92rem);
+  font-size: var(--text-size-5xl, 1.55rem);
   font-weight: 900;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.08em;
   line-height: 1;
   text-transform: uppercase;
 }
@@ -1246,7 +1320,7 @@
 .inspiration-dossier__section-heading h3::after {
   width: 100%;
   height: 1px;
-  background: var(--cruor-color-milk-a075);
+  background: var(--cruor-color-blood-glow);
   content: "";
 }
 
@@ -1260,16 +1334,11 @@
   text-transform: uppercase;
 }
 
-.inspiration-dossier__section > p,
-.inspiration-dossier__section-deck {
+.inspiration-dossier__section > p {
   margin: 0;
   color: var(--cruor-color-text-a680);
   font-size: var(--text-size-2xl);
   line-height: 1.62;
-}
-
-.inspiration-dossier__section-deck {
-  color: var(--cruor-color-text-a500);
 }
 
 .inspiration-dossier__article-copy {
@@ -1307,161 +1376,119 @@
   line-height: 1.55 !important;
 }
 
-.inspiration-dossier__fact-strip {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin: 6px 0 0;
-  border-top: 1px solid var(--cruor-color-milk-a075);
-  border-left: 1px solid var(--cruor-color-milk-a075);
-}
 
-.inspiration-dossier__fact-strip > div {
-  display: grid;
-  gap: 5px;
-  min-width: 0;
-  border-right: 1px solid var(--cruor-color-milk-a075);
-  border-bottom: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a160);
-  padding: 13px 14px;
-}
-
-.inspiration-dossier__fact-strip dt {
-  color: var(--cruor-color-rose);
-  font-size: var(--text-size-l, 0.92rem);
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.inspiration-dossier__fact-strip dd {
-  margin: 0;
-  color: var(--cruor-color-text-a860);
-  font-size: var(--text-size-l, 0.92rem);
-  font-weight: 800;
-  line-height: 1.4;
-}
-
-.inspiration-dossier__lens {
+.inspiration-dossier__safety-stack {
   display: grid;
   gap: 12px;
+}
+
+.inspiration-dossier__trigger-warning-panel {
+  display: grid;
+  gap: 16px;
   border: 1px solid var(--cruor-color-blood-glow-a420);
-  background: var(--cruor-color-black-a240);
-  padding: 20px 22px;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--cruor-color-blood-glow) 12%, transparent),
+      transparent 48%
+    ),
+    var(--cruor-color-black-a240);
+  padding: 18px;
 }
 
-.inspiration-dossier__lens > span {
-  color: var(--cruor-color-blood-glow);
-  font-size: var(--text-size-l, 0.92rem);
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+.inspiration-dossier__trigger-warning-panel > header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
 }
 
-.inspiration-dossier__lens blockquote {
-  margin: 0;
-  color: var(--cruor-color-milk);
-  font-family: var(--cruor-font-body, Inter, sans-serif);
-  font-size: var(--text-size-3xl);
-  line-height: 1.45;
-}
-
-.inspiration-dossier__lens p {
-  margin: 0;
-  color: var(--cruor-color-text-a760);
-  font-size: var(--text-size-2xl);
-  line-height: 1.68;
-}
-
-.inspiration-dossier__structure-grid {
+.inspiration-dossier__trigger-warning-icon {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-top: 1px solid var(--cruor-color-milk-a075);
-  border-left: 1px solid var(--cruor-color-milk-a075);
-}
-
-.inspiration-dossier__structure-item {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-content: start;
-  gap: 8px 12px;
-  min-width: 0;
-  border-right: 1px solid var(--cruor-color-milk-a075);
-  border-bottom: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a160);
-  padding: 17px;
-}
-
-.inspiration-dossier__structure-item > span {
-  grid-row: 1 / 3;
+  margin-top: 1px;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  place-items: center;
+  border: 1px solid var(--cruor-color-blood-glow-a420);
+  border-radius: 0;
+  background: color-mix(
+    in srgb,
+    var(--cruor-color-blood-glow) 10%,
+    var(--cruor-color-black-a240)
+  );
   color: var(--cruor-color-blood-glow);
-  font-family: var(--cruor-font-body, Inter, sans-serif);
+  transform: none;
+}
+
+.inspiration-dossier__trigger-warning-icon i {
   font-size: var(--text-size-xl, 1.05rem);
-  font-weight: 900;
+  transform: none;
 }
 
-.inspiration-dossier__structure-item h4 {
-  margin: 0;
-  color: var(--cruor-color-milk);
-  font-size: var(--text-size-l, 0.92rem);
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
-
-.inspiration-dossier__structure-item p {
-  margin: 0;
-  color: var(--cruor-color-text-a620);
-  font-size: var(--text-size-2xl);
-  line-height: 1.58;
-}
-
-.inspiration-dossier__structure-item footer {
-  grid-column: 1 / -1;
-  margin-top: 4px;
-  border-top: 1px solid var(--cruor-color-milk-a060);
-  color: var(--cruor-color-r208-g162-b170-a840);
-  padding-top: 9px;
-  font-size: var(--text-size-l, 0.92rem);
-  line-height: 1.48;
-}
-
-.inspiration-dossier__safety-layout {
+.inspiration-dossier__trigger-warning-panel > header > div {
   display: grid;
-  grid-template-columns: minmax(190px, 0.72fr) minmax(0, 1.28fr);
-  gap: 10px;
+  gap: 3px;
 }
 
-.inspiration-dossier__safety-card {
-  display: grid;
-  align-content: start;
-  gap: 12px;
-  border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a160);
-  padding: 16px;
-}
-
-.inspiration-dossier__safety-card h4,
+.inspiration-dossier__trigger-warning-panel h4,
+.inspiration-dossier__safety-practice h4,
 .inspiration-dossier__research-group h4 {
   margin: 0;
   color: var(--cruor-color-milk);
-  font-size: var(--text-size-l, 0.92rem);
+  font-size: var(--text-size-2xl);
   font-weight: 900;
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
 
+.inspiration-dossier__trigger-warning-panel > header p {
+  margin: 0;
+  color: var(--cruor-color-text-a500);
+  font-size: var(--text-size-l, 0.92rem);
+  line-height: 1.4;
+}
+
 .inspiration-dossier__warning-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
+  gap: 9px;
 }
 
 .inspiration-dossier__warning-tags span {
-  border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-white-a022);
-  color: var(--cruor-color-text-a760);
-  padding: 7px 9px;
-  font-size: var(--text-size-l, 0.92rem);
-  font-weight: 750;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--cruor-color-blood-glow-a420);
+  background: var(--cruor-color-black-a240);
+  color: var(--cruor-color-text-a860);
+  padding: 9px 12px;
+  font-size: var(--text-size-xl, 1.05rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.inspiration-dossier__warning-tags i {
+  color: var(--cruor-color-blood-glow);
+  font-size: 0.82em;
+}
+
+.inspiration-dossier__warning-tags span[data-tooltip] {
+  cursor: help;
+}
+
+.inspiration-dossier__warning-tags span[data-tooltip]:hover,
+.inspiration-dossier__warning-tags span[data-tooltip]:focus-visible {
+  border-color: var(--cruor-color-blood-glow);
+  background: var(--cruor-color-white-a040);
+  color: var(--cruor-color-milk);
+  outline: none;
+}
+
+.inspiration-dossier__safety-practice {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding-top: 4px;
 }
 
 .inspiration-dossier__practice-list {
@@ -1474,7 +1501,7 @@
 
 .inspiration-dossier__practice-list li {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: 2.75rem minmax(0, 1fr);
   gap: 10px;
   color: var(--cruor-color-text-a680);
   font-size: var(--text-size-2xl);
@@ -1482,8 +1509,12 @@
 }
 
 .inspiration-dossier__practice-list b {
+  display: block;
+  width: 100%;
   color: var(--cruor-color-blood-glow);
   font-family: var(--cruor-font-body, Inter, sans-serif);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
 .inspiration-dossier__safety-note {
@@ -1512,10 +1543,44 @@
 }
 
 .inspiration-dossier__research-group > header {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 15px;
+  border-bottom: 1px solid var(--cruor-color-blood-glow-a420);
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--cruor-color-blood-glow) 12%, transparent),
+      transparent 48%
+    ),
+    var(--cruor-color-black-a240);
+}
+
+.inspiration-dossier__research-group > header > div {
   display: grid;
   gap: 6px;
-  padding: 15px;
-  border-bottom: 1px solid var(--cruor-color-milk-a075);
+  min-width: 0;
+}
+
+.inspiration-dossier__research-icon {
+  display: grid;
+  margin-top: 1px;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  place-items: center;
+  border: 1px solid var(--cruor-color-blood-glow-a420);
+  background: color-mix(
+    in srgb,
+    var(--cruor-color-blood-glow) 10%,
+    var(--cruor-color-black-a240)
+  );
+  color: var(--cruor-color-blood-glow);
+}
+
+.inspiration-dossier__research-icon i {
+  font-size: var(--text-size-xl, 1.05rem);
 }
 
 .inspiration-dossier__research-group > header p {
@@ -1578,51 +1643,25 @@
 .inspiration-dossier__related-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 9px;
+  gap: clamp(14px, 1.6vw, 22px);
 }
 
-.inspiration-dossier__related-card {
-  display: grid;
-  align-content: start;
-  gap: 7px;
+.inspiration-dossier__related-card-shell {
+  position: relative;
   min-width: 0;
-  border: 1px solid var(--cruor-color-milk-a075);
-  background: var(--cruor-color-black-a160);
-  color: inherit;
-  padding: 15px;
-  text-align: left;
-}
-
-button.inspiration-dossier__related-card {
   cursor: pointer;
-}
-
-button.inspiration-dossier__related-card:hover,
-button.inspiration-dossier__related-card:focus-visible {
-  border-color: var(--cruor-color-blood-glow-a420);
-  background: var(--cruor-color-white-a024);
   outline: none;
 }
 
-.inspiration-dossier__related-card small {
-  color: var(--cruor-color-blood-glow);
-  font-size: var(--text-size-l, 0.92rem);
-  font-weight: 900;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+.inspiration-dossier__related-card-shell .inspiration-card {
+  width: 100%;
 }
 
-.inspiration-dossier__related-card strong {
-  color: var(--cruor-color-milk);
-  font-family: var(--cruor-font-body, Inter, sans-serif);
-  font-size: var(--text-size-l, 0.92rem);
-}
-
-.inspiration-dossier__related-card p {
-  margin: 0;
-  color: var(--cruor-color-text-a560);
-  font-size: var(--text-size-l, 0.92rem);
-  line-height: 1.5;
+.inspiration-dossier__related-card-shell:focus-visible .inspiration-card {
+  filter:
+    drop-shadow(0 0 0.35rem var(--cruor-color-blood-glow-a420))
+    drop-shadow(var(--cruor-inspiration-card-shadow-hover));
+  transform: translateY(-4px);
 }
 
 .inspiration-dossier__workbench-intro {
@@ -1656,45 +1695,6 @@ button.inspiration-dossier__related-card:focus-visible {
   font-size: var(--text-size-l, 0.92rem);
   font-weight: 900;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.inspiration-dossier__translation-map {
-  display: grid;
-  border-top: 1px solid var(--cruor-color-milk-a075);
-}
-
-.inspiration-dossier__translation-map article {
-  display: grid;
-  grid-template-columns: minmax(150px, 0.7fr) auto minmax(0, 1.3fr) auto;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid var(--cruor-color-milk-a075);
-  padding: 13px 0;
-}
-
-.inspiration-dossier__translation-map strong {
-  color: var(--cruor-color-milk);
-  font-size: var(--text-size-l, 0.92rem);
-}
-
-.inspiration-dossier__translation-map i {
-  color: var(--cruor-color-blood-glow);
-  font-size: var(--text-size-xs, 0.68rem);
-}
-
-.inspiration-dossier__translation-map span {
-  color: var(--cruor-color-text-a560);
-  font-size: var(--text-size-2xl);
-  line-height: 1.5;
-}
-
-.inspiration-dossier__translation-map em {
-  color: var(--cruor-color-r208-g162-b170-a840);
-  font-size: var(--text-size-l, 0.92rem);
-  font-style: normal;
-  font-weight: 900;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -2012,9 +2012,12 @@ button.inspiration-dossier__related-card:focus-visible {
     min-height: 46px;
   }
 
-  .inspiration-dossier__body {
+  .inspiration-dossier__scroll-region {
     grid-column: 1;
     grid-row: 2;
+  }
+
+  .inspiration-dossier__body {
     overflow-y: auto;
   }
 
@@ -2023,33 +2026,16 @@ button.inspiration-dossier__related-card:focus-visible {
     grid-row: 3;
   }
 
-  .inspiration-dossier__fact-strip,
-  .inspiration-dossier__structure-grid,
   .inspiration-dossier__research-grid,
   .inspiration-dossier__related-grid,
   .inspiration-dossier__component-group > div {
     grid-template-columns: 1fr;
   }
 
-  .inspiration-dossier__safety-layout {
-    grid-template-columns: 1fr;
-  }
 
   .inspiration-dossier__workbench-intro {
     grid-template-columns: 1fr;
     align-items: start;
-  }
-
-  .inspiration-dossier__translation-map article {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .inspiration-dossier__translation-map article > i {
-    display: none;
-  }
-
-  .inspiration-dossier__translation-map article > span {
-    grid-column: 1 / -1;
   }
 
   .inspiration-dossier__actions {

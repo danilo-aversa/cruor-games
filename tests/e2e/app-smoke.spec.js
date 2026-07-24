@@ -88,3 +88,51 @@ test("site navigation exposes real internal links", async ({ page }) => {
     page.locator('[data-site-mega-item-id="monsters"]'),
   ).toHaveAttribute("href", "/terrifyingmonsters");
 });
+
+test("mega menu and utility menu share the navigation window surface", async ({ page }) => {
+  await page.goto("/");
+
+  const primaryNavigation = page.getByRole("navigation", {
+    name: /primary sections/i,
+  });
+  await primaryNavigation.getByRole("button", { name: /crucible/i }).click();
+
+  const megaMenu = page.locator(".site-mega-menu");
+  await expect(megaMenu).toHaveAttribute("data-transition-state", "open");
+  const megaSurface = await megaMenu.evaluate((element) => {
+    const style = window.getComputedStyle(element);
+    return {
+      backgroundColor: style.backgroundColor,
+      backgroundImage: style.backgroundImage,
+      borderColor: style.borderColor,
+      borderStyle: style.borderStyle,
+      borderWidth: style.borderWidth,
+    };
+  });
+
+  const preview = megaMenu.locator(".site-mega-menu__preview");
+  await expect(preview).toHaveCSS("border-top-width", "0px");
+  await expect(preview).toHaveCSS("border-right-width", "0px");
+  await expect(preview).toHaveCSS("border-bottom-width", "0px");
+  await expect(preview).toHaveCSS("border-left-width", "0px");
+
+  await page.locator(".site-topbar__utility-button").click();
+
+  const utilityMenu = page.locator("#siteUtilityMenu");
+  await expect(utilityMenu).toHaveAttribute("data-transition-state", "open");
+  const utilitySurface = await utilityMenu.evaluate((element) => {
+    const style = window.getComputedStyle(element);
+    return {
+      backgroundColor: style.backgroundColor,
+      backgroundImage: style.backgroundImage,
+      borderColor: style.borderColor,
+      borderStyle: style.borderStyle,
+      borderWidth: style.borderWidth,
+    };
+  });
+
+  expect(utilitySurface).toEqual(megaSurface);
+  expect(megaSurface.borderColor).toBe("rgb(190, 64, 82)");
+  expect(megaSurface.borderStyle).toBe("solid");
+  expect(megaSurface.borderWidth).toBe("1px");
+});

@@ -13,6 +13,16 @@ import CrucibleTopbar from "../features/crucible/components/CrucibleTopbar.jsx";
 import DarkenLocationComposerPage from "../features/darken-location/composer/darken-location-composer.index.js";
 import InspirationsPage from "../features/inspirations/inspirations.index.js";
 import InspirationStudioPage from "../features/inspiration-studio/inspiration-studio.index.js";
+import LoginPage, {
+  AUTH_PATHS,
+  authenticateCredentials,
+  canAccessContentStudio,
+  canUseDebugMode,
+  clearAuthSession,
+  normalizeAuthReturnPath,
+  readAuthSession,
+  saveAuthSession,
+} from "../features/auth/auth.index.js";
 import MonsterComposerPage from "../features/monster-composer/monster-composer.index.js";
 import { createMapRequestFromDarkenLocationState } from "../features/darken-location/darken-location.map-request.js";
 import { getCurrentLocale, setCurrentLocale, t } from "../shared/i18n/index.js";
@@ -77,7 +87,8 @@ const CRUOR_ROUTES = {
   darkPlacesMap: "/darkplaces/map",
   terrifyingMonsters: "/terrifyingmonsters",
   inspirations: "/inspirations",
-  inspirationStudio: "/inspiration-studio",
+  login: AUTH_PATHS.LOGIN,
+  inspirationStudio: AUTH_PATHS.CONTENT_STUDIO,
 };
 
 function normalizeRoutePath(pathname = "/") {
@@ -120,6 +131,15 @@ function getCruorRouteFromLocation(
       section: "inspirations",
       crucibleGenerator: "darken",
       darkenTab: "composer",
+    };
+  }
+
+  if (pathname === CRUOR_ROUTES.login) {
+    return {
+      section: "login",
+      crucibleGenerator: "darken",
+      darkenTab: "composer",
+      returnTo: normalizeAuthReturnPath(params.get("returnTo")),
     };
   }
 
@@ -183,7 +203,58 @@ function getCruorRouteFromLocation(
   };
 }
 
+function getAuthorizedRoute(route, session) {
+  if (
+    route.section === "inspiration-studio" &&
+    !canAccessContentStudio(session)
+  ) {
+    return {
+      section: "login",
+      crucibleGenerator: route.crucibleGenerator || "darken",
+      darkenTab: route.darkenTab || "composer",
+      returnTo: CRUOR_ROUTES.inspirationStudio,
+    };
+  }
+
+  if (route.section === "login" && canAccessContentStudio(session)) {
+    const returnTo = normalizeAuthReturnPath(route.returnTo);
+
+    if (returnTo === CRUOR_ROUTES.inspirationStudio) {
+      return {
+        section: "inspiration-studio",
+        crucibleGenerator: "darken",
+        darkenTab: "composer",
+      };
+    }
+
+    return {
+      section: "home",
+      crucibleGenerator: route.crucibleGenerator || "darken",
+      darkenTab: route.darkenTab || "composer",
+    };
+  }
+
+  return route;
+}
+
+function readInitialRouterState() {
+  const authSession = readAuthSession();
+  const route = getAuthorizedRoute(
+    getCruorRouteFromLocation(),
+    authSession,
+  );
+
+  return { authSession, route };
+}
+
 function getRoutePath(route) {
+  if (route.section === "login") {
+    const returnTo = normalizeAuthReturnPath(route.returnTo);
+    return returnTo
+      ? `${CRUOR_ROUTES.login}?returnTo=${encodeURIComponent(returnTo)}`
+      : CRUOR_ROUTES.login;
+  }
+
   if (route.section === "inspirations") return CRUOR_ROUTES.inspirations;
   if (route.section === "inspiration-studio")
     return CRUOR_ROUTES.inspirationStudio;
@@ -211,19 +282,29 @@ function writeRouteToHistory(route, { replace = false } = {}) {
 }
 
 export default function AppRouter() {
-  const [activeSection, setActiveSection] = useState(
-    () => getCruorRouteFromLocation().section,
+  const initialRouterStateRef = useRef(null);
+
+  if (!initialRouterStateRef.current) {
+    initialRouterStateRef.current = readInitialRouterState();
+  }
+
+  const initialRoute = initialRouterStateRef.current.route;
+  const [authSession, setAuthSession] = useState(
+    initialRouterStateRef.current.authSession,
   );
+  const [activeSection, setActiveSection] = useState(initialRoute.section);
   const [activeUiMode, setActiveUiMode] = useState("simple");
   const [activeLocale, setActiveLocaleState] = useState(getCurrentLocale);
   const [activeCrucibleGenerator, setActiveCrucibleGenerator] = useState(
-    () => getCruorRouteFromLocation().crucibleGenerator,
+    initialRoute.crucibleGenerator,
   );
   const [activeDarkenTab, setActiveDarkenTab] = useState(
-    () => getCruorRouteFromLocation().darkenTab,
+    initialRoute.darkenTab,
+  );
+  const [loginReturnTo, setLoginReturnTo] = useState(
+    initialRoute.returnTo || "",
   );
   const [hasOpenedMapGenerator, setHasOpenedMapGenerator] = useState(() => {
-    const initialRoute = getCruorRouteFromLocation();
     return (
       initialRoute.section === "crucible" &&
       initialRoute.crucibleGenerator === "darken" &&
@@ -234,6 +315,8 @@ export default function AppRouter() {
   const [mapRequestRevision, setMapRequestRevision] = useState(0);
   const [monsterInspirationSeed, setMonsterInspirationSeed] = useState(null);
   const darkenSnapshotProviderRef = useRef(null);
+  const userCanAccessStudio = canAccessContentStudio(authSession);
+  const userCanUseDebug = canUseDebugMode(authSession);
 
   const crucibleGenerators = useMemo(
     () => buildCrucibleGenerators(activeLocale),
@@ -261,6 +344,7 @@ export default function AppRouter() {
     setActiveSection(route.section);
     setActiveCrucibleGenerator(route.crucibleGenerator);
     setActiveDarkenTab(route.darkenTab);
+    setLoginReturnTo(route.returnTo || "");
 
     if (
       route.section === "crucible" &&
@@ -273,26 +357,30 @@ export default function AppRouter() {
 
   const navigateToRoute = useCallback(
     (route, options = {}) => {
-      const nextPath = getRoutePath(route);
+      const { sessionOverride = authSession, ...historyOptions } = options;
+      const authorizedRoute = getAuthorizedRoute(route, sessionOverride);
+      const nextPath = getRoutePath(authorizedRoute);
       const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
 
       if (currentPath === nextPath) {
-        syncStateFromRoute(route);
+        syncStateFromRoute(authorizedRoute);
         return;
       }
 
       runSitePageTransition(() => {
-        writeRouteToHistory(route, options);
-        syncStateFromRoute(route);
+        writeRouteToHistory(authorizedRoute, historyOptions);
+        syncStateFromRoute(authorizedRoute);
       });
     },
-    [syncStateFromRoute],
+    [authSession, syncStateFromRoute],
   );
 
   const activateSection = useCallback(
     (sectionId) => {
       const nextSection =
-        sectionId === "inspirations" || sectionId === "inspiration-studio"
+        sectionId === "inspirations" ||
+        sectionId === "inspiration-studio" ||
+        sectionId === "login"
           ? sectionId
           : "home";
 
@@ -307,8 +395,19 @@ export default function AppRouter() {
 
   useEffect(() => {
     function handlePopState() {
-      const route = getCruorRouteFromLocation();
-      runSitePageTransition(() => syncStateFromRoute(route));
+      const route = getAuthorizedRoute(
+        getCruorRouteFromLocation(),
+        authSession,
+      );
+      const expectedPath = getRoutePath(route);
+      const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+      runSitePageTransition(() => {
+        if (currentPath !== expectedPath) {
+          writeRouteToHistory(route, { replace: true });
+        }
+        syncStateFromRoute(route);
+      });
     }
 
     window.addEventListener("popstate", handlePopState);
@@ -316,7 +415,18 @@ export default function AppRouter() {
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
-  }, [syncStateFromRoute]);
+  }, [authSession, syncStateFromRoute]);
+
+  useEffect(() => {
+    const initialAuthorizedRoute = initialRouterStateRef.current.route;
+    writeRouteToHistory(initialAuthorizedRoute, { replace: true });
+  }, []);
+
+  useEffect(() => {
+    if (activeUiMode === "debug" && !userCanUseDebug) {
+      setActiveUiMode("simple");
+    }
+  }, [activeUiMode, userCanUseDebug]);
 
   const createMapRequestFromSnapshot = useCallback(
     (snapshot) => createMapRequestFromDarkenLocationState(snapshot),
@@ -446,6 +556,84 @@ export default function AppRouter() {
     [navigateToRoute],
   );
 
+  const handleUiModeChange = useCallback(
+    (modeId) => {
+      if (modeId === "debug" && !userCanUseDebug) return;
+      setActiveUiMode(
+        modeId === "advanced" || modeId === "debug" ? modeId : "simple",
+      );
+    },
+    [userCanUseDebug],
+  );
+
+  const openLogin = useCallback(() => {
+    navigateToRoute({
+      section: "login",
+      crucibleGenerator: activeCrucibleGenerator,
+      darkenTab: activeDarkenTab,
+      returnTo: "",
+    });
+  }, [activeCrucibleGenerator, activeDarkenTab, navigateToRoute]);
+
+  const login = useCallback(
+    async (credentials) => {
+      const result = await authenticateCredentials(credentials);
+      if (!result.ok) return result;
+
+      saveAuthSession(result.session);
+      setAuthSession(result.session);
+
+      const returnTo = normalizeAuthReturnPath(loginReturnTo);
+      const destination =
+        returnTo === CRUOR_ROUTES.inspirationStudio
+          ? {
+              section: "inspiration-studio",
+              crucibleGenerator: "darken",
+              darkenTab: "composer",
+            }
+          : {
+              section: "home",
+              crucibleGenerator: activeCrucibleGenerator,
+              darkenTab: activeDarkenTab,
+            };
+
+      navigateToRoute(destination, {
+        replace: true,
+        sessionOverride: result.session,
+      });
+
+      return result;
+    },
+    [
+      activeCrucibleGenerator,
+      activeDarkenTab,
+      loginReturnTo,
+      navigateToRoute,
+    ],
+  );
+
+  const logout = useCallback(() => {
+    clearAuthSession();
+    setAuthSession(null);
+    setActiveUiMode("simple");
+
+    if (activeSection === "inspiration-studio") {
+      navigateToRoute(
+        {
+          section: "home",
+          crucibleGenerator: activeCrucibleGenerator,
+          darkenTab: activeDarkenTab,
+        },
+        { replace: true, sessionOverride: null },
+      );
+    }
+  }, [
+    activeCrucibleGenerator,
+    activeDarkenTab,
+    activeSection,
+    navigateToRoute,
+  ]);
+
   const homeContent = (
     <HomePage
       onOpenCrucibleTool={openCrucibleTool}
@@ -547,8 +735,13 @@ export default function AppRouter() {
       activeLocale={activeLocale}
       onLocaleChange={handleLocaleChange}
       onSectionChange={activateSection}
-      onUiModeChange={setActiveUiMode}
+      onUiModeChange={handleUiModeChange}
       onOpenCrucibleTool={openCrucibleTool}
+      authSession={authSession}
+      canAccessStudio={userCanAccessStudio}
+      canUseDebug={userCanUseDebug}
+      onLoginRequest={openLogin}
+      onLogout={logout}
       homeContent={homeContent}
       crucibleContent={crucibleContent}
       inspirationsContent={
@@ -559,6 +752,13 @@ export default function AppRouter() {
         />
       }
       inspirationStudioContent={<InspirationStudioPage />}
+      loginContent={
+        <LoginPage
+          locale={activeLocale}
+          onLogin={login}
+          onCancel={() => activateSection("home")}
+        />
+      }
     />
   );
 }

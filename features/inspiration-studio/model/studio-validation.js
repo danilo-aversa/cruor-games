@@ -278,6 +278,246 @@ function validateMapInfluenceForStudio(mapInfluence, path, issues, id) {
   }
 }
 
+const DOSSIER_REQUIRED_TEXT_FIELDS = Object.freeze([
+  ["deck", "Public Summary"],
+  ["whatItIs", "What It Is"],
+  ["cruorLens", "The Cruor Lens"],
+]);
+
+const DOSSIER_PLACEHOLDER_PATTERN =
+  /\b(?:tbd|todo|placeholder|editorial .* required|new inspiration)\b/i;
+
+function validateDossierEditorialForStudio(moduleDraft, issues) {
+  const inspiration = moduleDraft.inspiration || {};
+  const editorial = inspiration.editorial || {};
+  const media = inspiration.media || {};
+  const card = inspiration.card || {};
+  const id = inspiration.id || moduleDraft.id || "inspiration";
+  const strict =
+    moduleDraft.status === "published" || inspiration.status === "approved";
+  const requiredSeverity = strict ? "error" : "warning";
+
+  DOSSIER_REQUIRED_TEXT_FIELDS.forEach(([field, label]) => {
+    if (!hasText(editorial[field])) {
+      issues.push(
+        makeIssue(
+          requiredSeverity,
+          `inspiration.editorial.${field}`,
+          `Public Dossier is missing ${label}.`,
+          id,
+        ),
+      );
+    }
+  });
+
+  const sources = asArray(editorial.sources);
+  if (sources.length < 2) {
+    issues.push(
+      makeIssue(
+        requiredSeverity,
+        "inspiration.editorial.sources",
+        "Public Dossier should cite at least two research sources.",
+        id,
+      ),
+    );
+  }
+
+  sources.forEach((source, index) => {
+    if (hasText(source?.url) && !/^https?:\/\//i.test(source.url)) {
+      issues.push(
+        makeIssue(
+          "error",
+          `inspiration.editorial.sources[${index}].url`,
+          "Dossier source URLs must be absolute http or https URLs.",
+          id,
+        ),
+      );
+    }
+  });
+
+  if (!asArray(editorial.triggerWarnings).length) {
+    issues.push(
+      makeIssue(
+        "warning",
+        "inspiration.editorial.triggerWarnings",
+        "Public Dossier has no explicit Trigger Warnings. Confirm that none are required.",
+        id,
+      ),
+    );
+  }
+  if (!asArray(editorial.tableSafety).length) {
+    issues.push(
+      makeIssue(
+        "warning",
+        "inspiration.editorial.tableSafety",
+        "Public Dossier has no table-safety handling guidance. Confirm that none is required.",
+        id,
+      ),
+    );
+  }
+
+  [
+    ["domain", "Domain"],
+    ["obscurity", "Obscurity"],
+    ["collectionId", "Collection ID"],
+    ["collectionLabel", "Collection Label"],
+    ["description", "Card-Back Description"],
+  ].forEach(([field, label]) => {
+    if (!hasText(card[field])) {
+      issues.push(
+        makeIssue(
+          requiredSeverity,
+          `inspiration.card.${field}`,
+          `Public card metadata is missing ${label}.`,
+          id,
+        ),
+      );
+    }
+  });
+
+  const cardNumber = Number(card.number);
+  if (!Number.isInteger(cardNumber) || cardNumber <= 0) {
+    issues.push(
+      makeIssue(
+        requiredSeverity,
+        "inspiration.card.number",
+        "Public card metadata is missing a positive Card Number.",
+        id,
+      ),
+    );
+  }
+
+  if (!hasText(media.imageKey)) {
+    issues.push(
+      makeIssue(
+        requiredSeverity,
+        "inspiration.media.imageKey",
+        "Public Inspiration has no imageKey.",
+        id,
+      ),
+    );
+  }
+
+  if (hasText(media.imageKey)) {
+    [
+      ["imageTitle", "Image Title"],
+      ["imageAlt", "Image Alt"],
+      ["imageCredit", "Image Credit"],
+      ["imageRightsVerifiedAt", "Rights Verification Date"],
+    ].forEach(([field, label]) => {
+      if (!hasText(media[field])) {
+        issues.push(
+          makeIssue(
+            requiredSeverity,
+            `inspiration.media.${field}`,
+            `Publication image is missing ${label}.`,
+            id,
+          ),
+        );
+      }
+    });
+
+    if (
+      !hasText(media.imageRightsStatus) ||
+      media.imageRightsStatus === "unverified"
+    ) {
+      issues.push(
+        makeIssue(
+          requiredSeverity,
+          "inspiration.media.imageRightsStatus",
+          "Publication image rights are still unverified.",
+          id,
+        ),
+      );
+    }
+
+    if (
+      media.imageRightsStatus !== "owned" &&
+      !hasText(media.imageSourceUrl)
+    ) {
+      issues.push(
+        makeIssue(
+          requiredSeverity,
+          "inspiration.media.imageSourceUrl",
+          "Publication image is missing Image Source URL.",
+          id,
+        ),
+      );
+    }
+
+    if (!hasText(media.imageCreator) && !hasText(media.imageSourceTitle)) {
+      issues.push(
+        makeIssue(
+          requiredSeverity,
+          "inspiration.media.imageCreator",
+          "Publication image needs a creator or source collection record.",
+          id,
+        ),
+      );
+    }
+
+    if (media.imageRightsStatus === "creative-commons") {
+      if (!hasText(media.imageLicense) || !hasText(media.imageLicenseUrl)) {
+        issues.push(
+          makeIssue(
+            requiredSeverity,
+            "inspiration.media.imageLicense",
+            "Creative Commons images require a license name and license URL.",
+            id,
+          ),
+        );
+      }
+    } else if (
+      ["licensed", "permission"].includes(media.imageRightsStatus) &&
+      !hasText(media.imageLicense)
+    ) {
+      issues.push(
+        makeIssue(
+          requiredSeverity,
+          "inspiration.media.imageLicense",
+          "Licensed or permission-based images require a rights note or license reference.",
+          id,
+        ),
+      );
+    }
+
+    if (
+      hasText(media.imageSourceUrl) &&
+      !/^https?:\/\//i.test(media.imageSourceUrl)
+    ) {
+      issues.push(
+        makeIssue(
+          "error",
+          "inspiration.media.imageSourceUrl",
+          "Image Source URL must be an absolute http or https URL.",
+          id,
+        ),
+      );
+    }
+  }
+
+  const placeholderFields = [
+    ...DOSSIER_REQUIRED_TEXT_FIELDS.map(([field]) => [
+      `inspiration.editorial.${field}`,
+      editorial[field],
+    ]),
+    ["inspiration.card.description", card.description],
+    ["inspiration.media.imageCredit", media.imageCredit],
+  ];
+  placeholderFields.forEach(([fieldPath, value]) => {
+    if (hasText(value) && DOSSIER_PLACEHOLDER_PATTERN.test(String(value))) {
+      issues.push(
+        makeIssue(
+          requiredSeverity,
+          fieldPath,
+          "Public Dossier still contains placeholder editorial copy.",
+          id,
+        ),
+      );
+    }
+  });
+}
+
 function validateMonsterFrameFitForStudio(component = {}, index, issues) {
   const id = component.id || component.monster?.graftId || `component-${index}`;
   const report = validateMonsterFrameFit(getMonsterFrameFitSource(component), {
@@ -326,12 +566,7 @@ export function validateStudioDraft(draft, contentPackExport) {
   if (!asArray(inspiration.sourceAnchors).includes(sourceAnchorId)) {
     issues.push(makeIssue("error", "inspiration.sourceAnchors", `Public Inspiration card does not reference Source Anchor ${sourceAnchorId}.`, inspiration.id));
   }
-  if (!hasText(inspiration.editorial?.deck) && !hasText(inspiration.editorial?.whatItIs)) {
-    issues.push(makeIssue("warning", "inspiration.editorial", "Public Inspiration has no editorial deck or factual framing.", inspiration.id));
-  }
-  if (!hasText(inspiration.media?.imageKey)) {
-    issues.push(makeIssue("warning", "inspiration.media.imageKey", "Public Inspiration has no imageKey.", inspiration.id));
-  }
+  validateDossierEditorialForStudio(normalized, issues);
 
   getDuplicateIds(components).forEach((id) => {
     issues.push(makeIssue("error", "components", `Duplicate component id: ${id}.`, id));

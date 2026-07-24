@@ -148,6 +148,7 @@ export default {
       crucible: "Crucible",
       inspirations: "Ispirazioni",
       inspirationStudio: "Studio Ispirazioni",
+      login: "Login",
     },
     aria: {
       goHome: "Vai alla home di Cruor Games",
@@ -162,12 +163,39 @@ export default {
       home: "Home",
       inspirations: "Ispirazioni",
       inspirationStudio: "Studio Ispirazioni",
+      login: "Login",
     },
     labels: {
       interfaceMode: "Modalità Interfaccia",
       login: "Login",
-      loginPlaceholder: "Login non ancora attivo",
+      account: "Account",
       loadingMapGenerator: "Caricamento generatore mappa...",
+    },
+  },
+  auth: {
+    eyebrow: "Accesso Riservato",
+    title: "Entra nello Studio",
+    description:
+      "Accedi al Content Studio di Cruor e agli strumenti dell’interfaccia riservati allo sviluppo.",
+    scopeLabel: "L’accesso admin include",
+    scope: {
+      studio: "Content Studio",
+      debug: "Interfaccia Debug",
+    },
+    formEyebrow: "Amministratore",
+    formTitle: "Accedi per continuare",
+    username: "Username",
+    password: "Password",
+    signIn: "Accedi",
+    signingIn: "Accesso in corso",
+    cancel: "Torna alla Home",
+    logout: "Logout",
+    loginAria: "Apri il login",
+    logoutAria: "Esegui il logout di {username}",
+    debugLocked: "La modalità Debug richiede un accesso amministratore.",
+    errors: {
+      invalidCredentials: "Username o password non corretti.",
+      unknown: "Autenticazione non riuscita. Riprova.",
     },
   },
   modes: {
@@ -188,6 +216,7 @@ export default {
     home: "Home",
     crucible: "Crucible",
     inspirations: "Ispirazioni",
+    studio: "Studio",
     crucibleMenu: {
       aria: {
         tools: "Strumenti di {label}",
@@ -299,6 +328,7 @@ export default {
       turnBack: "Gira la card {title}",
       turnFront: "Riporta la card {title} sul fronte",
       openDossier: "Apri dossier",
+      pendingReview: "Pending Review",
       number: "Card {number}",
     },
     filters: {
@@ -350,25 +380,13 @@ export default {
         workbench: "Workbench",
       },
       whatItIs: "Che Cos’è",
-      whatItIsDeck:
-        "Un approfondimento documentato della fonte prima che Cruor la interpreti o la trasformi.",
-      cruorThesis: "La Tesi Cruor",
       cruorLens: "La Lente Cruor",
-      cruorLensDeck:
-        "La nostra lettura editoriale della fonte: la pressione centrale che determina ciò che Cruor estrae dalla ricerca.",
-      editorialInterpretation: "Interpretazione Editoriale",
-      horrorStructure: "Struttura dell’Orrore",
-      horrorStructureDeck:
-        "Meccanismi horror riutilizzabili estratti per i sistemi generativi Cruor, non istruzioni che il lettore deve applicare manualmente.",
       tableSafety: "Trigger Warning e Sicurezza al Tavolo",
-      tableSafetyDeck:
-        "Adatta il materiale generato ai limiti e alle necessità del gruppo che lo utilizza.",
       triggerWarnings: "Trigger Warning",
-      runningThisMaterial: "Gestire Questo Materiale",
+      triggerWarningsHint: "{count} avvisi · Passa il mouse o usa il focus per i dettagli.",
+      runningThisMaterial: "Uso Rispettoso",
       lowIntensityAlternative: "Alternativa a bassa intensità:",
       sourcesAndReading: "Fonti e Approfondimenti",
-      sourcesAndReadingDeck:
-        "Le fonti sostengono le affermazioni fattuali del dossier. Gli approfondimenti permettono di proseguire oltre questa pagina.",
       sourcesUsed: "Fonti Utilizzate",
       sourcesUsedDeck:
         "Materiali che hanno informato direttamente il resoconto storico e il contesto editoriale.",
@@ -380,9 +398,6 @@ export default {
       workbenchDeck:
         "La Workbench mostra come Cruor traduce i meccanismi horror estratti in componenti utilizzati dai generatori.",
       linkedComponents: "componenti collegati",
-      translationMap: "Mappa di Traduzione",
-      translationMapDeck:
-        "Una traccia visibile tra analisi editoriale e contenuti generativi.",
       components: "componenti",
       useDarkPlaces: "Usa in Dark Places",
       atTheTable: "Al Tavolo",

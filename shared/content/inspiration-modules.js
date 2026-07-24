@@ -24,6 +24,7 @@ import { SEDLEC_OSSUARY_SOURCE_ANCHOR_ID } from "./inspiration-modules/sedlec-os
 import { WOLF_SPIDERS_SOURCE_ANCHOR_ID } from "./inspiration-modules/wolf-spiders.js";
 import { SHARED_INSPIRATIONS } from "./inspirations.js";
 import { SHARED_MONSTER_COMPONENTS } from "./monster-components.js";
+import { PUBLISHED_SEMANTIC_INSPIRATION_MODULES } from "./published-inspiration-modules.js";
 import { normalizeSourceAnchorIds, SHARED_SOURCE_ANCHORS } from "./source-anchors.js";
 import { MORTUARY_TOTEMS_SEMANTIC_V2_MODULE } from "./content-packs/mortuary-totems-semantic-v2-pack.js";
 import { MORTUARY_TOTEMS_SOURCE_ANCHOR_ID } from "./inspiration-modules/mortuary-totems.js";
@@ -102,10 +103,32 @@ export const SEMANTIC_MIGRATION_MODULE_SOURCE_ANCHOR_ID_SET = new Set(
   SEMANTIC_MIGRATION_MODULE_SOURCE_ANCHOR_IDS,
 );
 
-// Backward-compatible names for module-catalog consumers. These aliases refer
-// only to the semantic migration catalog and are never used to assemble the
-// production v0.1 registry.
-export const EXPLICIT_INSPIRATION_MODULES = SEMANTIC_MIGRATION_MODULES;
+const PUBLISHED_SEMANTIC_MODULE_BY_ID = new Map(
+  PUBLISHED_SEMANTIC_INSPIRATION_MODULES.map((module) => [module.id, module]),
+);
+
+function createPendingReviewModuleView(module = {}) {
+  if (!module?.id) return module;
+  const publishedModule = PUBLISHED_SEMANTIC_MODULE_BY_ID.get(module.id);
+  if (publishedModule) return publishedModule;
+  return Object.freeze({
+    ...module,
+    status: "pending-review",
+    sourceAnchor: module.sourceAnchor
+      ? { ...module.sourceAnchor, status: "pending-review" }
+      : module.sourceAnchor,
+    inspiration: module.inspiration
+      ? { ...module.inspiration, status: "pending-review" }
+      : module.inspiration,
+  });
+}
+
+// Backward-compatible names for module-catalog consumers. Studio uses the
+// published semantic replacement when available and keeps every other card in
+// the library as Pending Review.
+export const EXPLICIT_INSPIRATION_MODULES = Object.freeze(
+  SEMANTIC_MIGRATION_MODULES.map(createPendingReviewModuleView),
+);
 export const EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_IDS =
   SEMANTIC_MIGRATION_MODULE_SOURCE_ANCHOR_IDS;
 export const EXPLICIT_INSPIRATION_MODULE_SOURCE_ANCHOR_ID_SET =
@@ -115,7 +138,7 @@ export const CONVERTED_CORE_INSPIRATION_MODULES = Object.freeze(
   CORE_INSPIRATION_MODULES.filter(
     (module) =>
       !SEMANTIC_MIGRATION_MODULE_SOURCE_ANCHOR_ID_SET.has(module.id),
-  ),
+  ).map(createPendingReviewModuleView),
 );
 
 /**

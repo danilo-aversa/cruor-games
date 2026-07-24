@@ -1,4 +1,5 @@
 import { buildStudioInspirationModulesFromRegistry } from "./inspiration-modules.js";
+import { PUBLISHED_SEMANTIC_INSPIRATION_MODULES } from "./published-inspiration-modules.js";
 import {
   STATIC_CONTENT_COLLISION_REPORT,
   STATIC_CONTENT_PACK_PROVENANCE,
@@ -14,6 +15,16 @@ import {
   createDarkPlacesSemanticModuleReferenceResolver,
 } from "./dark-places-runtime-content.js";
 import { STATIC_SEMANTIC_CONTENT_PACKS } from "./static-semantic-content-packs.js";
+
+const PUBLISHED_STUDIO_MODULE_BY_ID = new Map(
+  PUBLISHED_SEMANTIC_INSPIRATION_MODULES.map((module) => [module.id, module]),
+);
+
+function selectPublishedStudioModules(modules = []) {
+  return modules.map(
+    (module) => PUBLISHED_STUDIO_MODULE_BY_ID.get(module.id) || module,
+  );
+}
 
 function summarizePacks(packs = []) {
   return packs.map((pack) => ({
@@ -91,7 +102,9 @@ export function createStaticContentRepository() {
     getPackSummary: () => STATIC_CONTENT_PACK_SUMMARY,
     getInspirationModules: ({ locale } = {}) => {
       const registry = resolveRegistryLocale(STATIC_CONTENT_REGISTRY, { locale });
-      return buildStudioInspirationModulesFromRegistry(registry);
+      return selectPublishedStudioModules(
+        buildStudioInspirationModulesFromRegistry(registry),
+      );
     },
     getDarkPlacesSemanticModuleReference,
     resolveDarkPlacesRuntimeContent,

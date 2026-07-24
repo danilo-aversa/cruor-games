@@ -33,6 +33,13 @@ export const STATUS_OPTIONS = Object.freeze([
     description: "Use while the module is being structured, reviewed, or playtested.",
   },
   {
+    id: "pending-review",
+    label: "Pending Review",
+    icon: "fa-clock-rotate-left",
+    description:
+      "Use while the card remains visible in the public archive but its Dossier has not yet been editorially reviewed.",
+  },
+  {
     id: "in-review",
     label: "In Review",
     icon: "fa-magnifying-glass",

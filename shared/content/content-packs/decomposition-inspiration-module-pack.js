@@ -2,16 +2,24 @@ import { CONTENT_PACK_STATUS, createContentPack } from "../content-pack-schema.j
 import {
   DECOMPOSITION_INSPIRATION_MODULE,
   DECOMPOSITION_INSPIRATION_MODULE_PACK_ID,
+  DECOMPOSITION_SOURCE_ANCHOR_ID,
   DECOMPOSITION_REFERENCED_SOURCE_ANCHORS,
 } from "../inspiration-modules/decomposition.js";
 import { modulesToRegistryCollections } from "../inspiration-module-schema.js";
+import { getProductionInspirationModule } from "../production-inspiration-modules.js";
 import { SHARED_DARKEN_LOCATION_SLOTS, SHARED_MONSTER_SLOTS, SHARED_WORKFLOWS } from "../workflows.js";
+
+const ACTIVE_DECOMPOSITION_INSPIRATION_MODULE =
+  getProductionInspirationModule(DECOMPOSITION_SOURCE_ANCHOR_ID) ||
+  DECOMPOSITION_INSPIRATION_MODULE;
 
 function uniqueArray(values = []) {
   return [...new Set(values.filter(Boolean))];
 }
 
-function getReferencedWorkflowIds(module = DECOMPOSITION_INSPIRATION_MODULE) {
+function getReferencedWorkflowIds(
+  module = ACTIVE_DECOMPOSITION_INSPIRATION_MODULE,
+) {
   return uniqueArray([
     ...(module.sourceAnchor?.workflows || []),
     ...(module.inspiration?.workflows || []),
@@ -19,11 +27,15 @@ function getReferencedWorkflowIds(module = DECOMPOSITION_INSPIRATION_MODULE) {
   ]);
 }
 
-function getReferencedSlotIds(module = DECOMPOSITION_INSPIRATION_MODULE) {
+function getReferencedSlotIds(
+  module = ACTIVE_DECOMPOSITION_INSPIRATION_MODULE,
+) {
   return uniqueArray(module.components.flatMap((component) => component.slots || []));
 }
 
-const MODULE_COLLECTIONS = modulesToRegistryCollections([DECOMPOSITION_INSPIRATION_MODULE]);
+const MODULE_COLLECTIONS = modulesToRegistryCollections([
+  ACTIVE_DECOMPOSITION_INSPIRATION_MODULE,
+]);
 const REFERENCED_WORKFLOW_IDS = new Set(getReferencedWorkflowIds());
 const REFERENCED_SLOT_IDS = new Set(getReferencedSlotIds());
 
@@ -43,7 +55,7 @@ export const DECOMPOSITION_INSPIRATION_MODULE_CONTENT_PACK = createContentPack({
     bundled: true,
     registryRole: "production-inspiration-module",
     source: "shared/content/inspiration-modules/decomposition.js",
-    primarySourceAnchorId: DECOMPOSITION_INSPIRATION_MODULE.id,
+    primarySourceAnchorId: ACTIVE_DECOMPOSITION_INSPIRATION_MODULE.id,
   },
   collections: {
     workflows: SHARED_WORKFLOWS.filter((workflow) => REFERENCED_WORKFLOW_IDS.has(workflow.id)),

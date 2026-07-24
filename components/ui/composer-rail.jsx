@@ -146,20 +146,32 @@ export function ComposerCollapsibleSection({
     const updateBodyLimit = () => {
       frame = 0;
       const bodyRect = bodyNode.getBoundingClientRect();
-      const railStyle = railNode ? window.getComputedStyle(railNode) : null;
-      const railPaddingBottom = Number.parseFloat(railStyle?.paddingBottom || "0") || 0;
+      const sectionRect = sectionNode.getBoundingClientRect();
       let boundaryBottom = window.innerHeight || document.documentElement.clientHeight || 0;
-      let ancestor = bodyNode.parentElement;
+
+      // Start outside the accordion itself. Its region intentionally uses
+      // overflow:hidden, so including it here would make the previous body
+      // max-height become its own boundary and permanently freeze the value.
+      let ancestor = sectionNode.parentElement;
 
       while (ancestor && ancestor !== document.body) {
         const ancestorStyle = window.getComputedStyle(ancestor);
         const overflowY = ancestorStyle.overflowY;
         const clipsVertically = ["auto", "scroll", "hidden", "clip"].includes(overflowY);
 
-        if (clipsVertically || ancestor === railNode) {
-          const ancestorRect = ancestor.getBoundingClientRect();
+        const ancestorRect = ancestor.getBoundingClientRect();
+        const isRailBoundary = ancestor === railNode;
+        const railHasRemainingTrackSpace =
+          isRailBoundary && ancestorRect.bottom > sectionRect.bottom + 1;
+
+        if (clipsVertically || railHasRemainingTrackSpace) {
+          const ancestorPaddingBottom =
+            Number.parseFloat(ancestorStyle.paddingBottom || "0") || 0;
           if (ancestorRect.height > 0) {
-            boundaryBottom = Math.min(boundaryBottom, ancestorRect.bottom);
+            boundaryBottom = Math.min(
+              boundaryBottom,
+              ancestorRect.bottom - ancestorPaddingBottom,
+            );
           }
         }
 
@@ -168,7 +180,7 @@ export function ComposerCollapsibleSection({
 
       const availableHeight = Math.max(
         0,
-        Math.floor(boundaryBottom - bodyRect.top - railPaddingBottom),
+        Math.floor(boundaryBottom - bodyRect.top),
       );
 
       sectionNode.style.setProperty(
@@ -189,7 +201,15 @@ export function ComposerCollapsibleSection({
     const resizeObserver = typeof ResizeObserver === "function"
       ? new ResizeObserver(scheduleBodyLimitUpdate)
       : null;
-    if (railNode) resizeObserver?.observe(railNode);
+
+    // Observe the whole layout chain rather than only the rail. The rail can
+    // have a fixed height while preceding accordion rows shrink or grow,
+    // changing this section's top position without resizing the rail itself.
+    let observedNode = sectionNode.parentElement;
+    while (observedNode && observedNode !== document.body) {
+      resizeObserver?.observe(observedNode);
+      observedNode = observedNode.parentElement;
+    }
 
     const mutationObserver = typeof MutationObserver === "function" && railNode
       ? new MutationObserver(scheduleBodyLimitUpdate)
@@ -200,12 +220,15 @@ export function ComposerCollapsibleSection({
       attributeFilter: ["class", "hidden", "data-collapsed"],
     });
 
+    railNode?.addEventListener("transitionend", scheduleBodyLimitUpdate, true);
+
     return () => {
       if (frame) window.cancelAnimationFrame(frame);
       window.removeEventListener("resize", scheduleBodyLimitUpdate);
       window.removeEventListener("scroll", scheduleBodyLimitUpdate, true);
       resizeObserver?.disconnect();
       mutationObserver?.disconnect();
+      railNode?.removeEventListener("transitionend", scheduleBodyLimitUpdate, true);
       sectionNode.style.removeProperty("--cruor-composer-scroll-body-max-height");
     };
   }, [expanded, scrollBody]);

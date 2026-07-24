@@ -50,6 +50,7 @@ export const COMPONENT_SEMANTIC_TYPES = Object.freeze([
 
 export const MODULE_STATUSES = Object.freeze([
   "draft",
+  "pending-review",
   "in-review",
   "published",
   "retired",
@@ -57,6 +58,7 @@ export const MODULE_STATUSES = Object.freeze([
 
 export const INSPIRATION_STATUSES = Object.freeze([
   "draft",
+  "pending-review",
   "in-review",
   "approved",
   "rejected",

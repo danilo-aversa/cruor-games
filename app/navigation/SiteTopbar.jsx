@@ -75,6 +75,11 @@ export default function SiteTopbar({
   onSectionChange,
   onUiModeChange,
   onOpenCrucibleTool,
+  authSession = null,
+  canAccessStudio = false,
+  canUseDebug = false,
+  onLoginRequest,
+  onLogout,
   activeLocale = "en",
   onLocaleChange,
   accessibilitySettings = {},
@@ -98,7 +103,10 @@ export default function SiteTopbar({
   const utilityMenuPresence = useAnimatedMenuPresence(isUtilityOpen ? "utility" : null);
 
   const appModeOptions = useMemo(() => getAppModeOptions(activeLocale), [activeLocale]);
-  const siteNavItems = useMemo(() => getSiteNavItems(activeLocale), [activeLocale]);
+  const siteNavItems = useMemo(
+    () => getSiteNavItems(activeLocale, { includeStudio: canAccessStudio }),
+    [activeLocale, canAccessStudio],
+  );
   const localeOptions = useMemo(
     () =>
       SUPPORTED_LOCALES.map((locale) => ({
@@ -120,6 +128,14 @@ export default function SiteTopbar({
     () => siteNavItems.find((item) => item.id === "inspirations"),
     [siteNavItems],
   );
+  const studioNavItem = useMemo(
+    () => siteNavItems.find((item) => item.id === "studio"),
+    [siteNavItems],
+  );
+  const isAuthenticated = Boolean(authSession?.user);
+  const accountLabel =
+    authSession?.user?.displayName || authSession?.user?.username ||
+    t("app.labels.account", {}, activeLocale);
 
   const activeCrucibleMenuItemId = getCrucibleMenuItemId(activeCrucibleGenerator);
 
@@ -300,6 +316,17 @@ export default function SiteTopbar({
     setActivePreviewId(activeCrucibleMenuItemId);
   }
 
+  function handleAccountAction() {
+    closeTransientNavigation();
+
+    if (isAuthenticated) {
+      onLogout?.();
+      return;
+    }
+
+    onLoginRequest?.();
+  }
+
   function renderAccessibilityControls(layout = "desktop") {
     return (
       <div className="site-topbar__accessibility-list" role="group" aria-label={t("settings.sections.accessibility", {}, activeLocale)}>
@@ -357,7 +384,10 @@ export default function SiteTopbar({
   }
 
   function renderDesktopNavItem(item) {
-    const isActive = item.type === "mega" ? activeSection === "crucible" : activeSection === item.id;
+    const isActive =
+      item.type === "mega"
+        ? activeSection === "crucible"
+        : activeSection === item.sectionId;
     const isOpen = openMenuId === item.id;
 
     if (item.type === "mega") {
@@ -468,24 +498,35 @@ export default function SiteTopbar({
                 <div className="site-topbar__settings-section">
                   <span className="site-topbar__utility-label">{t("settings.sections.mode", {}, activeLocale)}</span>
                   <div className="site-topbar__mode-list" role="group" aria-label={t("app.aria.interfaceMode", {}, activeLocale)}>
-                    {appModeOptions.map((mode) => (
-                      <button
-                        key={mode.id}
-                        className={cx(
-                          "site-topbar__mode-option",
-                          activeUiMode === mode.id && "is-active",
-                        )}
-                        type="button"
-                        role="menuitemradio"
-                        aria-checked={activeUiMode === mode.id}
-                        title={mode.description}
-                        onClick={() => {
-                          onUiModeChange?.(mode.id);
-                        }}
-                      >
-                        <span>{mode.label}</span>
-                      </button>
-                    ))}
+                    {appModeOptions.map((mode) => {
+                      const isLocked = mode.id === "debug" && !canUseDebug;
+
+                      return (
+                        <button
+                          key={mode.id}
+                          className={cx(
+                            "site-topbar__mode-option",
+                            activeUiMode === mode.id && "is-active",
+                            isLocked && "is-disabled",
+                          )}
+                          type="button"
+                          role="menuitemradio"
+                          aria-checked={activeUiMode === mode.id}
+                          aria-disabled={isLocked}
+                          disabled={isLocked}
+                          title={
+                            isLocked
+                              ? t("auth.debugLocked", {}, activeLocale)
+                              : mode.description
+                          }
+                          onClick={() => {
+                            if (!isLocked) onUiModeChange?.(mode.id);
+                          }}
+                        >
+                          <span>{mode.label}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -522,14 +563,37 @@ export default function SiteTopbar({
             ) : null}
 
             <button
-              className="site-topbar__login-placeholder"
+              className={cx(
+                "site-topbar__account-button",
+                activeSection === "login" && "is-active",
+                isAuthenticated && "is-authenticated",
+              )}
               type="button"
-              disabled
-              aria-label={t("app.labels.loginPlaceholder", {}, activeLocale)}
-              title={t("app.labels.loginPlaceholder", {}, activeLocale)}
+              aria-label={
+                isAuthenticated
+                  ? t("auth.logoutAria", { username: accountLabel }, activeLocale)
+                  : t("auth.loginAria", {}, activeLocale)
+              }
+              title={
+                isAuthenticated
+                  ? t("auth.logout", {}, activeLocale)
+                  : t("app.labels.login", {}, activeLocale)
+              }
+              onClick={handleAccountAction}
             >
-              <i className="fa-solid fa-user-lock" aria-hidden="true" />
-              <span>{t("app.labels.login", {}, activeLocale)}</span>
+              <i
+                className={
+                  isAuthenticated
+                    ? "fa-solid fa-right-from-bracket"
+                    : "fa-solid fa-user-lock"
+                }
+                aria-hidden="true"
+              />
+              <span>
+                {isAuthenticated
+                  ? accountLabel
+                  : t("app.labels.login", {}, activeLocale)}
+              </span>
             </button>
 
             <button
@@ -605,22 +669,79 @@ export default function SiteTopbar({
             <span>{t("navigation.inspirations", {}, activeLocale)}</span>
           </SiteLink>
 
+          {studioNavItem ? (
+            <SiteLink
+              className={cx(
+                "site-topbar__mobile-link",
+                activeSection === "inspiration-studio" && "is-active",
+              )}
+              href={studioNavItem.href}
+              aria-current={
+                activeSection === "inspiration-studio" ? "page" : undefined
+              }
+              onNavigate={() =>
+                handleAction({
+                  type: "section",
+                  sectionId: "inspiration-studio",
+                })
+              }
+            >
+              <i className={studioNavItem.icon} aria-hidden="true" />
+              <span>{studioNavItem.label}</span>
+            </SiteLink>
+          ) : null}
+
+          <button
+            className="site-topbar__mobile-link site-topbar__mobile-account"
+            type="button"
+            onClick={handleAccountAction}
+          >
+            <i
+              className={
+                isAuthenticated
+                  ? "fa-solid fa-right-from-bracket"
+                  : "fa-solid fa-user-lock"
+              }
+              aria-hidden="true"
+            />
+            <span>
+              {isAuthenticated
+                ? t("auth.logout", {}, activeLocale)
+                : t("app.labels.login", {}, activeLocale)}
+            </span>
+          </button>
+
           <div className="site-topbar__mobile-mode">
             <span className="site-topbar__mobile-group-label">{t("settings.sections.mode", {}, activeLocale)}</span>
             <div className="site-topbar__mode-list">
-              {appModeOptions.map((mode) => (
-                <button
-                  key={mode.id}
-                  className={cx("site-topbar__mode-option", activeUiMode === mode.id && "is-active")}
-                  type="button"
-                  aria-pressed={activeUiMode === mode.id}
-                  onClick={() => {
-                    onUiModeChange?.(mode.id);
-                  }}
-                >
-                  <span>{mode.label}</span>
-                </button>
-              ))}
+              {appModeOptions.map((mode) => {
+                const isLocked = mode.id === "debug" && !canUseDebug;
+
+                return (
+                  <button
+                    key={mode.id}
+                    className={cx(
+                      "site-topbar__mode-option",
+                      activeUiMode === mode.id && "is-active",
+                      isLocked && "is-disabled",
+                    )}
+                    type="button"
+                    aria-pressed={activeUiMode === mode.id}
+                    aria-disabled={isLocked}
+                    disabled={isLocked}
+                    title={
+                      isLocked
+                        ? t("auth.debugLocked", {}, activeLocale)
+                        : mode.description
+                    }
+                    onClick={() => {
+                      if (!isLocked) onUiModeChange?.(mode.id);
+                    }}
+                  >
+                    <span>{mode.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 

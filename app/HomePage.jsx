@@ -1298,7 +1298,17 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
 
   const handleSectionNavigate = (sectionId) => {
     const section = document.getElementById(sectionId);
-    section?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+    section?.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "start",
+    });
+  };
+
+  const handleExploreCrucibleClick = (event) => {
+    event.preventDefault();
+    handleSectionNavigate("workbenchFlow");
   };
 
   useEffect(() => {
@@ -1397,16 +1407,20 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
         </div>
 
         <div className="cruor-home__hero-copy">
-          <h1 id="cruorHomeTitle">The Dark Fantasy Workbench for 5E</h1>
+          <h1 id="cruorHomeTitle">Forge 5E Dark Fantasy in the Crucible</h1>
 
           <p>
-            Cruor Games builds advanced dark fantasy generators: source-inspired tools for creating
-            locations, monsters, maps, mechanics, content packs, and table-ready horror material.
+            Shape your own content using semi-procedural engines that turn macabre real-world
+            inspiration into playable, table-ready material.
           </p>
 
           <div className="cruor-home__hero-actions" aria-label="Cruor workbench entry points">
-            <a className="cruor-home__button cruor-home__button--primary" href="#workbenchFlow">
-              Explore the Workbench
+            <a
+              className="cruor-home__button cruor-home__button--primary"
+              href="#workbenchFlow"
+              onClick={handleExploreCrucibleClick}
+            >
+              Explore the Crucible
               <i className="fa-solid fa-arrow-down" aria-hidden="true" />
             </a>
             <SiteLink

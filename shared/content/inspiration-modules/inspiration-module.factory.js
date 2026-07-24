@@ -191,6 +191,18 @@ export function buildCoreInspirationFromCard(card) {
         media.imageAlt || card.imageNote || `${card.title} reference image.`,
       ).trim(),
       imageCredit: String(media.imageCredit || "").trim(),
+      imageCreator: String(media.imageCreator || "").trim(),
+      imageSourceTitle: String(media.imageSourceTitle || "").trim(),
+      imageSourceUrl: String(media.imageSourceUrl || "").trim(),
+      imageLicense: String(media.imageLicense || "").trim(),
+      imageLicenseUrl: String(media.imageLicenseUrl || "").trim(),
+      imageRightsStatus: String(
+        media.imageRightsStatus || "unverified",
+      ).trim(),
+      imageRightsVerifiedAt: String(
+        media.imageRightsVerifiedAt || "",
+      ).trim(),
+      imageModifications: String(media.imageModifications || "").trim(),
     },
     inspiration: {
       anchor: card.title,
