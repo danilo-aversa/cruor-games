@@ -7,7 +7,7 @@ import {
   runDarkPlacesSemanticSampleQa,
 } from "./dark-places-semantic-sample-qa.js";
 
-export function DarkPlacesSemanticQaModal({ isOpen, module, onClose, pack }) {
+export function DarkPlacesSemanticQaModal({ isOpen, mode = "modal", module, onClose, pack }) {
   const report = useMemo(
     () => runDarkPlacesSemanticSampleQa({ pack, module }),
     [module, pack],
@@ -21,6 +21,7 @@ export function DarkPlacesSemanticQaModal({ isOpen, module, onClose, pack }) {
       title="Dark Places Semantic Sample QA"
       subtitle="Compiles the current v2 module across deterministic contexts, pressure and room programs."
       isOpen={isOpen}
+      mode={mode}
       onClose={onClose}
       actions={
         <button

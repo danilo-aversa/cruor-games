@@ -147,7 +147,8 @@ export default {
       home: "Home",
       crucible: "Crucible",
       inspirations: "Ispirazioni",
-      inspirationStudio: "Studio Ispirazioni",
+      inspirationStudio: "Content Studio",
+      creatorStudio: "Creator Studio",
       login: "Login",
     },
     aria: {
@@ -162,7 +163,8 @@ export default {
       crucibleWorkspace: "Area di lavoro Crucible",
       home: "Home",
       inspirations: "Ispirazioni",
-      inspirationStudio: "Studio Ispirazioni",
+      inspirationStudio: "Content Studio",
+      creatorStudio: "Creator Studio",
       login: "Login",
     },
     labels: {
@@ -176,10 +178,10 @@ export default {
     eyebrow: "Accesso Riservato",
     title: "Entra nello Studio",
     description:
-      "Accedi al Content Studio di Cruor e agli strumenti dell’interfaccia riservati allo sviluppo.",
+      "Accedi al Creator Studio di Cruor, al Content Studio e agli strumenti dell’interfaccia riservati allo sviluppo.",
     scopeLabel: "L’accesso admin include",
     scope: {
-      studio: "Content Studio",
+      studio: "Creator Studio",
       debug: "Interfaccia Debug",
     },
     formEyebrow: "Amministratore",
@@ -216,7 +218,7 @@ export default {
     home: "Home",
     crucible: "Crucible",
     inspirations: "Ispirazioni",
-    studio: "Studio",
+    studio: "Creator Studio",
     crucibleMenu: {
       aria: {
         tools: "Strumenti di {label}",

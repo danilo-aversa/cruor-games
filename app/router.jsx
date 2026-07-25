@@ -12,11 +12,12 @@ import HomePage from "./HomePage.jsx";
 import CrucibleTopbar from "../features/crucible/components/CrucibleTopbar.jsx";
 import DarkenLocationComposerPage from "../features/darken-location/composer/darken-location-composer.index.js";
 import InspirationsPage from "../features/inspirations/inspirations.index.js";
-import InspirationStudioPage from "../features/inspiration-studio/inspiration-studio.index.js";
+import CreatorStudioPage from "../features/creator-studio/creator-studio.index.js";
 import LoginPage, {
   AUTH_PATHS,
   authenticateCredentials,
   canAccessContentStudio,
+  canAccessCreatorStudio,
   canUseDebugMode,
   clearAuthSession,
   normalizeAuthReturnPath,
@@ -88,7 +89,11 @@ const CRUOR_ROUTES = {
   terrifyingMonsters: "/terrifyingmonsters",
   inspirations: "/inspirations",
   login: AUTH_PATHS.LOGIN,
-  inspirationStudio: AUTH_PATHS.CONTENT_STUDIO,
+  creatorStudio: AUTH_PATHS.CREATOR_STUDIO,
+  contentStudio: AUTH_PATHS.CONTENT_STUDIO,
+  creatorOperations: AUTH_PATHS.OPERATIONS,
+  creatorPublishing: AUTH_PATHS.PUBLISHING,
+  legacyContentStudio: AUTH_PATHS.LEGACY_CONTENT_STUDIO,
 };
 
 function normalizeRoutePath(pathname = "/") {
@@ -143,9 +148,40 @@ function getCruorRouteFromLocation(
     };
   }
 
-  if (pathname === CRUOR_ROUTES.inspirationStudio) {
+  if (pathname === CRUOR_ROUTES.creatorStudio) {
     return {
-      section: "inspiration-studio",
+      section: "creator-studio",
+      creatorStudioView: "home",
+      crucibleGenerator: "darken",
+      darkenTab: "composer",
+    };
+  }
+
+  if (pathname === CRUOR_ROUTES.creatorOperations) {
+    return {
+      section: "creator-studio",
+      creatorStudioView: "operations",
+      crucibleGenerator: "darken",
+      darkenTab: "composer",
+    };
+  }
+
+  if (pathname === CRUOR_ROUTES.creatorPublishing) {
+    return {
+      section: "creator-studio",
+      creatorStudioView: "publishing",
+      crucibleGenerator: "darken",
+      darkenTab: "composer",
+    };
+  }
+
+  if (
+    pathname === CRUOR_ROUTES.contentStudio ||
+    pathname === CRUOR_ROUTES.legacyContentStudio
+  ) {
+    return {
+      section: "creator-studio",
+      creatorStudioView: "content",
       crucibleGenerator: "darken",
       darkenTab: "composer",
     };
@@ -153,7 +189,8 @@ function getCruorRouteFromLocation(
 
   if (params.get("studio") === "1" || params.get("admin") === "studio") {
     return {
-      section: "inspiration-studio",
+      section: "creator-studio",
+      creatorStudioView: "content",
       crucibleGenerator: "darken",
       darkenTab: "composer",
     };
@@ -204,34 +241,66 @@ function getCruorRouteFromLocation(
 }
 
 function getAuthorizedRoute(route, session) {
-  if (
-    route.section === "inspiration-studio" &&
-    !canAccessContentStudio(session)
-  ) {
-    return {
-      section: "login",
-      crucibleGenerator: route.crucibleGenerator || "darken",
-      darkenTab: route.darkenTab || "composer",
-      returnTo: CRUOR_ROUTES.inspirationStudio,
-    };
-  }
+  if (route.section === "creator-studio") {
+    const requestedView =
+      route.creatorStudioView === "content"
+        ? "content"
+        : route.creatorStudioView === "operations"
+          ? "operations"
+          : route.creatorStudioView === "publishing"
+            ? "publishing"
+            : "home";
+    const canAccessRequestedView =
+      requestedView === "content"
+        ? canAccessContentStudio(session)
+        : canAccessCreatorStudio(session);
 
-  if (route.section === "login" && canAccessContentStudio(session)) {
-    const returnTo = normalizeAuthReturnPath(route.returnTo);
-
-    if (returnTo === CRUOR_ROUTES.inspirationStudio) {
+    if (!canAccessRequestedView) {
       return {
-        section: "inspiration-studio",
-        crucibleGenerator: "darken",
-        darkenTab: "composer",
+        section: "login",
+        creatorStudioView: requestedView,
+        crucibleGenerator: route.crucibleGenerator || "darken",
+        darkenTab: route.darkenTab || "composer",
+        returnTo:
+          requestedView === "content"
+            ? CRUOR_ROUTES.contentStudio
+            : requestedView === "operations"
+              ? CRUOR_ROUTES.creatorOperations
+              : requestedView === "publishing"
+                ? CRUOR_ROUTES.creatorPublishing
+                : CRUOR_ROUTES.creatorStudio,
       };
     }
+  }
 
-    return {
-      section: "home",
-      crucibleGenerator: route.crucibleGenerator || "darken",
-      darkenTab: route.darkenTab || "composer",
-    };
+  if (route.section === "login") {
+    const returnTo = normalizeAuthReturnPath(route.returnTo);
+    const canOpenContent =
+      returnTo === CRUOR_ROUTES.contentStudio && canAccessContentStudio(session);
+    const canOpenOperations =
+      returnTo === CRUOR_ROUTES.creatorOperations && canAccessCreatorStudio(session);
+    const canOpenPublishing =
+      returnTo === CRUOR_ROUTES.creatorPublishing && canAccessCreatorStudio(session);
+    const canOpenCreatorHome =
+      returnTo !== CRUOR_ROUTES.contentStudio &&
+      returnTo !== CRUOR_ROUTES.creatorOperations &&
+      returnTo !== CRUOR_ROUTES.creatorPublishing &&
+      canAccessCreatorStudio(session);
+
+    if (canOpenContent || canOpenOperations || canOpenPublishing || canOpenCreatorHome) {
+      return {
+        section: "creator-studio",
+        creatorStudioView: canOpenContent
+          ? "content"
+          : canOpenOperations
+            ? "operations"
+            : canOpenPublishing
+              ? "publishing"
+              : "home",
+        crucibleGenerator: route.crucibleGenerator || "darken",
+        darkenTab: route.darkenTab || "composer",
+      };
+    }
   }
 
   return route;
@@ -256,8 +325,15 @@ function getRoutePath(route) {
   }
 
   if (route.section === "inspirations") return CRUOR_ROUTES.inspirations;
-  if (route.section === "inspiration-studio")
-    return CRUOR_ROUTES.inspirationStudio;
+  if (route.section === "creator-studio") {
+    return route.creatorStudioView === "content"
+      ? CRUOR_ROUTES.contentStudio
+      : route.creatorStudioView === "operations"
+        ? CRUOR_ROUTES.creatorOperations
+        : route.creatorStudioView === "publishing"
+          ? CRUOR_ROUTES.creatorPublishing
+          : CRUOR_ROUTES.creatorStudio;
+  }
 
   if (route.section === "crucible") {
     if (route.crucibleGenerator === "monster")
@@ -304,6 +380,15 @@ export default function AppRouter() {
   const [loginReturnTo, setLoginReturnTo] = useState(
     initialRoute.returnTo || "",
   );
+  const [activeCreatorStudioView, setActiveCreatorStudioView] = useState(
+    initialRoute.creatorStudioView === "content"
+      ? "content"
+      : initialRoute.creatorStudioView === "operations"
+        ? "operations"
+        : initialRoute.creatorStudioView === "publishing"
+          ? "publishing"
+          : "home",
+  );
   const [hasOpenedMapGenerator, setHasOpenedMapGenerator] = useState(() => {
     return (
       initialRoute.section === "crucible" &&
@@ -315,7 +400,7 @@ export default function AppRouter() {
   const [mapRequestRevision, setMapRequestRevision] = useState(0);
   const [monsterInspirationSeed, setMonsterInspirationSeed] = useState(null);
   const darkenSnapshotProviderRef = useRef(null);
-  const userCanAccessStudio = canAccessContentStudio(authSession);
+  const userCanAccessStudio = canAccessCreatorStudio(authSession);
   const userCanUseDebug = canUseDebugMode(authSession);
 
   const crucibleGenerators = useMemo(
@@ -344,6 +429,15 @@ export default function AppRouter() {
     setActiveSection(route.section);
     setActiveCrucibleGenerator(route.crucibleGenerator);
     setActiveDarkenTab(route.darkenTab);
+    setActiveCreatorStudioView(
+      route.creatorStudioView === "content"
+        ? "content"
+        : route.creatorStudioView === "operations"
+          ? "operations"
+          : route.creatorStudioView === "publishing"
+            ? "publishing"
+            : "home",
+    );
     setLoginReturnTo(route.returnTo || "");
 
     if (
@@ -379,13 +473,14 @@ export default function AppRouter() {
     (sectionId) => {
       const nextSection =
         sectionId === "inspirations" ||
-        sectionId === "inspiration-studio" ||
+        sectionId === "creator-studio" ||
         sectionId === "login"
           ? sectionId
           : "home";
 
       navigateToRoute({
         section: nextSection,
+        creatorStudioView: nextSection === "creator-studio" ? "home" : undefined,
         crucibleGenerator: activeCrucibleGenerator,
         darkenTab: activeDarkenTab,
       });
@@ -556,6 +651,33 @@ export default function AppRouter() {
     [navigateToRoute],
   );
 
+  const openCreatorStudioView = useCallback(
+    (viewId) => {
+      navigateToRoute({
+        section: "creator-studio",
+        creatorStudioView:
+          viewId === "content"
+            ? "content"
+            : viewId === "operations"
+              ? "operations"
+              : viewId === "publishing"
+                ? "publishing"
+                : "home",
+        crucibleGenerator: activeCrucibleGenerator,
+        darkenTab: activeDarkenTab,
+      });
+    },
+    [activeCrucibleGenerator, activeDarkenTab, navigateToRoute],
+  );
+
+  const exitCreatorStudio = useCallback(() => {
+    navigateToRoute({
+      section: "home",
+      crucibleGenerator: activeCrucibleGenerator,
+      darkenTab: activeDarkenTab,
+    });
+  }, [activeCrucibleGenerator, activeDarkenTab, navigateToRoute]);
+
   const handleUiModeChange = useCallback(
     (modeId) => {
       if (modeId === "debug" && !userCanUseDebug) return;
@@ -584,18 +706,19 @@ export default function AppRouter() {
       setAuthSession(result.session);
 
       const returnTo = normalizeAuthReturnPath(loginReturnTo);
-      const destination =
-        returnTo === CRUOR_ROUTES.inspirationStudio
-          ? {
-              section: "inspiration-studio",
-              crucibleGenerator: "darken",
-              darkenTab: "composer",
-            }
-          : {
-              section: "home",
-              crucibleGenerator: activeCrucibleGenerator,
-              darkenTab: activeDarkenTab,
-            };
+      const destination = {
+        section: "creator-studio",
+        creatorStudioView:
+          returnTo === CRUOR_ROUTES.contentStudio
+            ? "content"
+            : returnTo === CRUOR_ROUTES.creatorOperations
+              ? "operations"
+              : returnTo === CRUOR_ROUTES.creatorPublishing
+                ? "publishing"
+                : "home",
+        crucibleGenerator: activeCrucibleGenerator,
+        darkenTab: activeDarkenTab,
+      };
 
       navigateToRoute(destination, {
         replace: true,
@@ -617,7 +740,7 @@ export default function AppRouter() {
     setAuthSession(null);
     setActiveUiMode("simple");
 
-    if (activeSection === "inspiration-studio") {
+    if (activeSection === "creator-studio") {
       navigateToRoute(
         {
           section: "home",
@@ -751,7 +874,15 @@ export default function AppRouter() {
           onOpenMonsterComposer={openMonsterFromInspiration}
         />
       }
-      inspirationStudioContent={<InspirationStudioPage />}
+      creatorStudioContent={
+        <CreatorStudioPage
+          activeView={activeCreatorStudioView}
+          authSession={authSession}
+          onExit={exitCreatorStudio}
+          onLogout={logout}
+          onViewChange={openCreatorStudioView}
+        />
+      }
       loginContent={
         <LoginPage
           locale={activeLocale}

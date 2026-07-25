@@ -1,6 +1,6 @@
 # Cruor Auth
 
-This folder owns authentication and authorization for Cruor Games.
+This folder owns authentication and authorization for Cruor Games, including the protected Creator Studio suite and its Content Studio, Operations, and Publishing modules.
 
 ## Current prototype
 
@@ -25,6 +25,7 @@ Supabase, Patreon memberships, one-time purchases, and donations should be
 resolved inside provider adapters and normalized into the same session shape.
 Provider-specific records should grant product entitlements such as:
 
+- `creator-studio`
 - `content-studio`
 - `debug-ui`
 - future content packs, export capabilities, or patron-only tools

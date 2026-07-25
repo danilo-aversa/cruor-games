@@ -65,4 +65,16 @@ describe("localized Crucible navigation", () => {
     expect(markup).toContain('aria-label="Anteprima di Dark Places"');
     expect(markup).not.toContain('aria-label="Funzioni del motore di Dark Places"');
   });
+  it("exposes the protected Creator Studio as a real route", () => {
+    const studio = getSiteNavItems("en", { includeStudio: true }).find(
+      (item) => item.id === "studio",
+    );
+
+    expect(studio).toMatchObject({
+      label: "Creator Studio",
+      sectionId: "creator-studio",
+      href: "/creator-studio",
+    });
+  });
+
 });

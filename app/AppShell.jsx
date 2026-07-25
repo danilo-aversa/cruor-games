@@ -30,14 +30,14 @@ export default function AppShell({
   homeContent,
   crucibleContent,
   inspirationsContent,
-  inspirationStudioContent,
+  creatorStudioContent,
   loginContent,
 }) {
   const [accessibilitySettings, setAccessibilitySettings] = useState(readAccessibilitySettings);
   const [isTransientNavigationOpen, setIsTransientNavigationOpen] = useState(false);
   const [isTransientNavigationPresent, setIsTransientNavigationPresent] = useState(false);
   const transientNavigationCloseTimerRef = useRef(null);
-  const isCreatorShell = activeSection === "inspiration-studio";
+  const isCreatorShell = activeSection === "creator-studio";
 
   useEffect(() => {
     return startTooltipRuntime();
@@ -150,8 +150,8 @@ export default function AppShell({
           <section aria-label={t("app.aria.inspirations", {}, activeLocale)}>{inspirationsContent}</section>
         ) : null}
 
-        {activeSection === "inspiration-studio" ? (
-          <section aria-label={t("app.aria.inspirationStudio", {}, activeLocale)}>{inspirationStudioContent}</section>
+        {activeSection === "creator-studio" ? (
+          <section aria-label={t("app.aria.creatorStudio", {}, activeLocale)}>{creatorStudioContent}</section>
         ) : null}
 
         {activeSection === "login" ? (

@@ -208,7 +208,7 @@ function getDefaultPresetName(params = {}) {
   return `Map Batch QA · ${params.count || DEFAULT_COUNT} maps · ${params.roomCountMin ?? DEFAULT_ROOM_MIN}–${params.roomCountMax ?? DEFAULT_ROOM_MAX} rooms`;
 }
 
-export function MapBatchQaModal({ isOpen, onClose, presetRun = null, onPresetRunConsumed, onSavePreset }) {
+export function MapBatchQaModal({ isOpen, mode = "modal", onClose, presetRun = null, onPresetRunConsumed, onSavePreset }) {
   const themeOptions = useMemo(() => [{ id: "mixed", name: "Mixed Themes" }, ...getDungeonThemes()], []);
   const [count, setCount] = useState(DEFAULT_COUNT);
   const [roomCountMin, setRoomCountMin] = useState(DEFAULT_ROOM_MIN);
@@ -377,6 +377,7 @@ export function MapBatchQaModal({ isOpen, onClose, presetRun = null, onPresetRun
         icon="fa-map-location-dot"
         id="studio-map-batch-qa-modal"
         isOpen={isOpen}
+      mode={mode}
         onClose={handleClose}
         subtitle="Generate many dungeon maps from DungeonTheme and DungeonBrief inputs, then validate topology, reachability, determinism, room count, and RoomBrief propagation."
         title="Map Batch QA"

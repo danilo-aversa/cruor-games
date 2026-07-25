@@ -20,6 +20,7 @@ function createPrototypeAdminSession() {
       role: AUTH_ROLES.ADMIN,
     },
     entitlements: [
+      AUTH_ENTITLEMENTS.CREATOR_STUDIO,
       AUTH_ENTITLEMENTS.CONTENT_STUDIO,
       AUTH_ENTITLEMENTS.DEBUG_UI,
     ],

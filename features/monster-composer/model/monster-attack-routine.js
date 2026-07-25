@@ -185,7 +185,8 @@ function buildCandidate(ability = {}) {
   const participation = getAbilityParticipation(ability);
   return {
     abilityId: ability.id,
-    featureId: ability.sourceGraftId || ability.id,
+    featureId: ability.id,
+    sourceGraftId: ability.sourceGraftId || ability.id,
     label: cleanString(ability.title) || "Attack",
     ref:
       cleanString(ability.id || ability.sourceGraftId) ||
@@ -293,6 +294,7 @@ function buildAllocations(
       allocations[attack.featureId] = {
         abilityId: attack.abilityId,
         featureId: attack.featureId,
+        sourceGraftId: attack.sourceGraftId || attack.featureId,
         uses: attack.routineCount || 1,
         averagePerUse: perUse,
         totalAverage: Number(targetDpr || 1),
@@ -317,6 +319,7 @@ function buildAllocations(
     allocations[attack.featureId] = {
       abilityId: attack.abilityId,
       featureId: attack.featureId,
+      sourceGraftId: attack.sourceGraftId || attack.featureId,
       uses: attack.count,
       averagePerUse,
       totalAverage: Number((averagePerUse * attack.count).toFixed(2)),
@@ -457,6 +460,7 @@ export function buildMonsterAttackRoutine({
     .map((candidate) => ({
       abilityId: candidate.abilityId,
       featureId: candidate.featureId,
+      sourceGraftId: candidate.sourceGraftId,
       label: candidate.label,
       replace: candidate.replacementScope,
       availability: candidate.availability,
@@ -466,6 +470,7 @@ export function buildMonsterAttackRoutine({
     .map((candidate) => ({
       abilityId: candidate.abilityId,
       featureId: candidate.featureId,
+      sourceGraftId: candidate.sourceGraftId,
       label: candidate.label,
       timing: candidate.timing,
       availability: candidate.availability,

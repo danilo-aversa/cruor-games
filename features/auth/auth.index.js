@@ -9,6 +9,7 @@ export {
 } from "./auth.constants.js";
 export {
   canAccessContentStudio,
+  canAccessCreatorStudio,
   canUseDebugMode,
   hasAuthEntitlement,
   hasAuthRole,

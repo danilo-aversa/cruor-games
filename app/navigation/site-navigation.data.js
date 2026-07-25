@@ -184,10 +184,10 @@ export function getSiteNavItems(locale, { includeStudio = false } = {}) {
     items.push({
       id: "studio",
       label: t("navigation.studio", {}, locale),
-      icon: "fa-solid fa-pen-ruler",
+      icon: "fa-solid fa-screwdriver-wrench",
       type: "section",
-      sectionId: "inspiration-studio",
-      href: "/inspiration-studio",
+      sectionId: "creator-studio",
+      href: "/creator-studio",
     });
   }
 

@@ -4,11 +4,26 @@ import {
 } from "../../../shared/content/content.index.js";
 import { MONSTER_GRAFTS } from "./monster-grafts.js";
 import { MONSTER_SOURCES } from "./monster-sources.js";
+import { resolveMonsterGraftCatalogue } from "./monster-graft-source-authority.js";
 
 const DEFAULT_PACK_TITLE = "Content Pack";
 const DEFAULT_GRAFT_SECTION = "trait";
 const MONSTER_WORKFLOW_ID = "monster-composer";
 const MONSTER_GRAFT_CONTENT_TYPE = "monster-graft";
+const GRAFT_V2_OPTIONAL_FIELDS = Object.freeze([
+  "kind",
+  "identity",
+  "abilities",
+  "routine",
+  "modifiers",
+  "compatibility",
+  "hooks",
+  "migration",
+  "pressureProfile",
+  "complexityProfile",
+  "counterplayProfile",
+  "spikeRiskProfile",
+]);
 
 export const CORE_MONSTER_FEED_META = {
   id: "core-cruor",
@@ -32,6 +47,27 @@ function uniqueArray(values) {
 
 function isPlainObject(value) {
   return Boolean(value && typeof value === "object" && !Array.isArray(value));
+}
+
+function copyDefinedFields(source = {}, fields = []) {
+  return fields.reduce((output, field) => {
+    if (source[field] !== undefined && source[field] !== null) {
+      output[field] = source[field];
+    }
+    return output;
+  }, {});
+}
+
+function getMonsterGraftV2Fields(component = {}, monster = {}) {
+  const graftSchemaVersion =
+    monster.graftSchemaVersion || component.graftSchemaVersion || "";
+  return {
+    ...(graftSchemaVersion ? { schemaVersion: graftSchemaVersion } : {}),
+    ...copyDefinedFields(
+      { ...component, ...monster },
+      GRAFT_V2_OPTIONAL_FIELDS,
+    ),
+  };
 }
 
 function getPrimarySlot(component) {
@@ -91,6 +127,10 @@ export function sharedComponentToMonsterGraft(component, contentPack = {}) {
     mechanics: component.mechanics || component.tableText || "",
     counterplay: component.counterplay || "",
     i18n: component.i18n || component.translations || {},
+    ...(monster.authoring || component.authoring
+      ? { authoring: monster.authoring || component.authoring }
+      : {}),
+    ...getMonsterGraftV2Fields(component, monster),
     contentPack: pack,
     registry: {
       componentId: component.id,
@@ -235,9 +275,14 @@ export const ALL_MONSTER_SOURCES = mergeMonsterSources(
   CORE_MONSTER_SOURCES,
 );
 
-export const ALL_MONSTER_GRAFTS = mergeMonsterGrafts(
-  CONTENT_PACK_MONSTER_GRAFTS,
-  CORE_MONSTER_GRAFTS,
+const MONSTER_GRAFT_CATALOGUE_RESOLUTION = resolveMonsterGraftCatalogue({
+  nativeGrafts: CORE_MONSTER_GRAFTS,
+  registryGrafts: CONTENT_PACK_MONSTER_GRAFTS,
+});
+
+export const ALL_MONSTER_GRAFTS = MONSTER_GRAFT_CATALOGUE_RESOLUTION.grafts;
+export const MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT = Object.freeze(
+  MONSTER_GRAFT_CATALOGUE_RESOLUTION.audit,
 );
 
 export const MONSTER_CONTENT_PACK_FEED_SUMMARY = Object.freeze({
@@ -247,4 +292,15 @@ export const MONSTER_CONTENT_PACK_FEED_SUMMARY = Object.freeze({
   contentPackGrafts: CONTENT_PACK_MONSTER_GRAFTS.length,
   totalSources: ALL_MONSTER_SOURCES.length,
   totalGrafts: ALL_MONSTER_GRAFTS.length,
+  sourceBoundary: Object.freeze({
+    selectedNative: MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT.selectedNative,
+    selectedRegistry: MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT.selectedRegistry,
+    canonicalRegistryEntries:
+      MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT.canonicalRegistryEntries,
+    sourceMismatches: MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT.sourceMismatches,
+    fallbacks: MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT.fallbacks,
+    divergentRepresentations:
+      MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT.divergentRepresentations,
+    byAuthorityMode: MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT.byAuthorityMode,
+  }),
 });

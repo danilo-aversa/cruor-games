@@ -12,6 +12,10 @@ import {
 import { asArray, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
 import { formatToken } from "./monster-composer.compatibility.js";
 import { getFeatureBalanceStat } from "./monster-graft-balance-profile.js";
+import {
+  buildFinalMonsterEvaluation,
+  projectFinalEvaluationToLegacyProfiles,
+} from "./monster-final-evaluation.js";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -384,6 +388,8 @@ export function buildPressureProfile({
     label: profileBand(score, budget),
     breakdown,
     sources: buildProfileSources(breakdown, PRESSURE_LABELS),
+    version: "monster-pressure-legacy-selection-v1",
+    stage: "provisional-selected-grafts",
   };
 }
 
@@ -444,33 +450,49 @@ export function applyPressureValidationFloor({
     effectiveProfile,
     crValidation,
   });
+  let legacyProfile;
   if (flooredScore <= currentScore) {
-    return {
+    legacyProfile = {
       ...pressureProfile,
       label: profileBand(currentScore, budget),
       sources: buildProfileSources(pressureProfile.breakdown || {}, PRESSURE_LABELS),
     };
+  } else {
+    const validationDelta = Math.round(flooredScore - currentScore);
+    const breakdown = roundBreakdown({
+      ...(pressureProfile.breakdown || {}),
+      validation: Number(pressureProfile.breakdown?.validation || 0) + validationDelta,
+    });
+    const score = Math.max(0, Math.round(sumBreakdown(breakdown)));
+    legacyProfile = {
+      ...pressureProfile,
+      score,
+      label: profileBand(score, budget),
+      breakdown,
+      sources: buildProfileSources(breakdown, PRESSURE_LABELS),
+      floor: {
+        applied: true,
+        from: currentScore,
+        to: score,
+        reason: "CR/DPR/Burst validation floor",
+      },
+    };
   }
 
-  const validationDelta = Math.round(flooredScore - currentScore);
-  const breakdown = roundBreakdown({
-    ...(pressureProfile.breakdown || {}),
-    validation: Number(pressureProfile.breakdown?.validation || 0) + validationDelta,
+  const finalEvaluation = buildFinalMonsterEvaluation({
+    targetCr,
+    baseline,
+    printedStats,
+    effectiveProfile,
+    crValidation,
+    buildBudget: budget,
   });
-  const score = Math.max(0, Math.round(sumBreakdown(breakdown)));
-  return {
-    ...pressureProfile,
-    score,
-    label: profileBand(score, budget),
-    breakdown,
-    sources: buildProfileSources(breakdown, PRESSURE_LABELS),
-    floor: {
-      applied: true,
-      from: currentScore,
-      to: score,
-      reason: "CR/DPR/Burst validation floor",
-    },
-  };
+  return projectFinalEvaluationToLegacyProfiles({
+    evaluation: finalEvaluation,
+    pressureProfile: legacyProfile,
+    pressureBudget: budget,
+    preserveVisibleScores: true,
+  }).pressureProfile;
 }
 
 export function buildComplexityProfile({ complexity, mechanicsSummary, featureMechanics, limit }) {
@@ -515,6 +537,8 @@ export function buildComplexityProfile({ complexity, mechanicsSummary, featureMe
     label: profileBand(score, limit),
     breakdown,
     sources: buildProfileSources(breakdown, COMPLEXITY_LABELS),
+    version: "monster-complexity-legacy-selection-v1",
+    stage: "provisional-selected-grafts",
   };
 }
 

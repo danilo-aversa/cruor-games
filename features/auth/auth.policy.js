@@ -15,6 +15,14 @@ export function hasAuthEntitlement(session, entitlement) {
   );
 }
 
+export function canAccessCreatorStudio(session) {
+  return (
+    hasAuthRole(session, AUTH_ROLES.ADMIN) &&
+    (hasAuthEntitlement(session, AUTH_ENTITLEMENTS.CREATOR_STUDIO) ||
+      hasAuthEntitlement(session, AUTH_ENTITLEMENTS.CONTENT_STUDIO))
+  );
+}
+
 export function canAccessContentStudio(session) {
   return (
     hasAuthRole(session, AUTH_ROLES.ADMIN) &&

@@ -7,7 +7,7 @@ import { ContentHealthSummary } from "./ContentHealthSummary.jsx";
 import { ContentHealthCoverage } from "./ContentHealthCoverage.jsx";
 import { ContentHealthIssues } from "./ContentHealthIssues.jsx";
 
-export function ContentHealthModal({ isOpen, onClose, modules = [] }) {
+export function ContentHealthModal({ isOpen, mode = "modal", onClose, modules = [] }) {
   const report = useMemo(() => buildContentHealthReport({
     contentPacks: STATIC_CONTENT_PACKS,
     registryData: STATIC_CONTENT_REGISTRY_DATA,
@@ -27,6 +27,7 @@ export function ContentHealthModal({ isOpen, onClose, modules = [] }) {
       title="Content Health"
       subtitle="Global validation, missing metadata, orphan checks, and editorial health for Studio content."
       isOpen={isOpen}
+      mode={mode}
       onClose={onClose}
       actions={<button className="studio-tool-action" type="button" onClick={downloadReport}>Download Report</button>}
     >

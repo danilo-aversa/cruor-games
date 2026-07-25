@@ -106,24 +106,7 @@ import { StudioWarningBadge } from "./components/StudioWarningBadge.jsx";
 import { StudioWarningList } from "./components/StudioWarningList.jsx";
 import { StudioDossierAuthoringPanel } from "./components/StudioDossierAuthoringPanel.jsx";
 import { renderStructuredRulesTemplate } from "../monster-composer/model/monster-graft-rules.render.js";
-import { ALL_MONSTER_GRAFTS } from "../monster-composer/data/monster-content-pack-feed.js";
-import { StudioToolsMenu } from "./components/StudioToolsMenu.jsx";
-import { StudioTestsMenu } from "./components/StudioTestsMenu.jsx";
-import { GraftLedgerModal } from "./ledger/GraftLedgerModal.jsx";
-import { ContentHealthModal } from "./health/ContentHealthModal.jsx";
-import { CoverageMatrixModal } from "./coverage/CoverageMatrixModal.jsx";
-import { MonsterBatchQaModal } from "./qa/MonsterBatchQaModal.jsx";
-import { MonsterPerGraftQaModal } from "./qa/MonsterPerGraftQaModal.jsx";
-import { MapBatchQaModal } from "./qa/MapBatchQaModal.jsx";
 import { StudioDarkPlacesPreview } from "./preview/StudioDarkPlacesPreview.jsx";
-import { DarkPlacesSemanticQaModal } from "./qa/DarkPlacesSemanticQaModal.jsx";
-import {
-  STUDIO_TEST_IDS,
-  deleteStudioTestPreset,
-  readStudioTestPresets,
-  saveStudioTestPreset,
-} from "./qa/studio-test-presets.js";
-import { downloadStudioAuditBundle } from "./reports/studio-audit-bundle.report.js";
 import { normalizeMonsterGraftRules } from "../monster-composer/model/monster-graft-rules.schema.js";
 import { groupQaIssues, runMonsterQaSuite } from "../monster-composer/qa/monster-qa-suite.js";
 import {
@@ -1694,7 +1677,7 @@ function getInitialComponentWorkspaceState(draft = {}) {
   };
 }
 
-export default function InspirationStudioPage() {
+export default function InspirationStudioPage({ onReady } = {}) {
   const [modules, setModules] = useState([]);
   const [packSummaries, setPackSummaries] = useState([]);
   const [selectedModuleId, setSelectedModuleId] = useState(null);
@@ -1712,15 +1695,6 @@ export default function InspirationStudioPage() {
   const [rightRailCollapsed, setRightRailCollapsed] = useState(true);
   const [libraryColumnSize, setLibraryColumnSize] = useState(() => readStoredStudioRailSize(STUDIO_LIBRARY_RAIL_SIZE_KEY, 280));
   const [rightColumnSize, setRightColumnSize] = useState(() => readStoredStudioRailSize(STUDIO_RIGHT_RAIL_SIZE_KEY, 320));
-  const [isGraftLedgerOpen, setGraftLedgerOpen] = useState(false);
-  const [isContentHealthOpen, setContentHealthOpen] = useState(false);
-  const [isCoverageMatrixOpen, setCoverageMatrixOpen] = useState(false);
-  const [isMonsterBatchQaOpen, setMonsterBatchQaOpen] = useState(false);
-  const [isMonsterPerGraftQaOpen, setMonsterPerGraftQaOpen] = useState(false);
-  const [isMapBatchQaOpen, setMapBatchQaOpen] = useState(false);
-  const [isSemanticQaOpen, setSemanticQaOpen] = useState(false);
-  const [testPresets, setTestPresets] = useState(() => readStudioTestPresets());
-  const [pendingTestPresetRun, setPendingTestPresetRun] = useState(null);
   const [identityIdsUnlocked, setIdentityIdsUnlocked] = useState(false);
   const [librarySearch, setLibrarySearch] = useState("");
   const [libraryStatusFilter, setLibraryStatusFilter] = useState("all");
@@ -1746,6 +1720,7 @@ export default function InspirationStudioPage() {
       setDraft(firstModule);
       setComponentMode(initialWorkspace.mode);
       setSelectedComponentId(initialWorkspace.selectedComponentId);
+      onReady?.();
     }
 
     loadStudioData();
@@ -1753,7 +1728,7 @@ export default function InspirationStudioPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [onReady]);
 
   useEffect(() => {
     return () => {
@@ -2000,14 +1975,6 @@ export default function InspirationStudioPage() {
     downloadJsonFile(`${slugify(draft.title)}-publish-readiness-report.json`, readinessReportObject);
   }
 
-  function downloadAuditBundle() {
-    downloadStudioAuditBundle({
-      draft,
-      imagePreviewUrl,
-      modules,
-      libraryGrafts: ALL_MONSTER_GRAFTS,
-    });
-  }
 
   function beginRailResize(side, event) {
     if (event.button !== 0) return;
@@ -2048,76 +2015,9 @@ export default function InspirationStudioPage() {
     imagePreviewUrl ||
     resolveStudioInspirationImageSource(draft.inspiration?.media);
 
-  function handleSaveTestPreset(presetDefinition) {
-    const savedPreset = saveStudioTestPreset(presetDefinition);
-    setTestPresets(readStudioTestPresets());
-    return savedPreset;
-  }
-
-  function handleDeleteTestPreset(presetId) {
-    deleteStudioTestPreset(presetId);
-    setTestPresets(readStudioTestPresets());
-  }
-
-  function handleRunTestPreset(preset) {
-    if (!preset?.testId) return;
-    setPendingTestPresetRun({ ...preset, runToken: `${preset.id}:${Date.now()}` });
-
-    if (preset.testId === STUDIO_TEST_IDS.monsterBatch) {
-      setMonsterBatchQaOpen(true);
-      return;
-    }
-
-    if (preset.testId === STUDIO_TEST_IDS.mapBatch) {
-      setMapBatchQaOpen(true);
-      return;
-    }
-
-    if (preset.testId === STUDIO_TEST_IDS.monsterPerGraft) {
-      setMonsterPerGraftQaOpen(true);
-    }
-  }
-
-  function handlePresetRunConsumed() {
-    setPendingTestPresetRun(null);
-  }
 
   return (
-    <section className="inspiration-studio" aria-label="Inspiration Studio" data-studio-ready="true">
-      <header className="inspiration-studio__header inspiration-studio__header--compact inspiration-studio__header--editing">
-        <div className="inspiration-studio__headline">
-          <span className="inspiration-studio__eyebrow">
-            <StudioIcon name="fa-screwdriver-wrench" /> Admin Content Studio
-          </span>
-          <h1>Editing: {draft.title}</h1>
-        </div>
-        <div className="inspiration-studio__quick-meta inspiration-studio__quick-meta--header" aria-label="Studio tools">
-          <StudioToolsMenu
-            coverageOpen={isCoverageMatrixOpen}
-            graftCount={ALL_MONSTER_GRAFTS.length + monsterComponents.length}
-            healthOpen={isContentHealthOpen}
-            isGraftLedgerOpen={isGraftLedgerOpen}
-            onDownloadAuditBundle={downloadAuditBundle}
-            onOpenContentHealth={() => setContentHealthOpen(true)}
-            onOpenCoverageMatrix={() => setCoverageMatrixOpen(true)}
-            onOpenGraftLedger={() => setGraftLedgerOpen(true)}
-          />
-          <StudioTestsMenu
-            batchQaOpen={isMonsterBatchQaOpen}
-            perGraftQaOpen={isMonsterPerGraftQaOpen}
-            mapBatchQaOpen={isMapBatchQaOpen}
-            semanticQaOpen={isSemanticQaOpen}
-            presets={testPresets}
-            onOpenMonsterBatchQa={() => setMonsterBatchQaOpen(true)}
-            onOpenMonsterPerGraftQa={() => setMonsterPerGraftQaOpen(true)}
-            onOpenMapBatchQa={() => setMapBatchQaOpen(true)}
-            onOpenSemanticQa={() => setSemanticQaOpen(true)}
-            onRunPreset={handleRunTestPreset}
-            onDeletePreset={handleDeleteTestPreset}
-          />
-        </div>
-      </header>
-
+    <section className="inspiration-studio" aria-label="Content Studio" data-studio-ready="true">
       <div
         className={[
           "inspiration-studio__layout",
@@ -2165,23 +2065,43 @@ export default function InspirationStudioPage() {
           {!libraryCollapsed ? (
             <>
               <div className="studio-library-controls" aria-label="Library filters">
-                <label className="studio-search-field studio-search-field--library">
-                  <StudioIcon name="fa-magnifying-glass" />
-                  <input value={librarySearch} onChange={(event) => setLibrarySearch(event.target.value)} placeholder="Search inspirations…" />
-                </label>
-                <div className="studio-library-filter-row" role="tablist" aria-label="Library status filters">
-                  {LIBRARY_STATUS_FILTERS.map(([filterId, label]) => (
-                    <button
-                      key={filterId}
-                      type="button"
-                      aria-label={label}
-                      aria-selected={libraryStatusFilter === filterId}
-                      title={label}
-                      onClick={() => setLibraryStatusFilter(filterId)}
+                <div className="studio-library-search-row">
+                  <label className="studio-search-field studio-search-field--library">
+                    <StudioIcon name="fa-magnifying-glass" />
+                    <input value={librarySearch} onChange={(event) => setLibrarySearch(event.target.value)} placeholder="Search inspirations…" />
+                  </label>
+                  <details className="studio-tools-menu studio-library-filter-menu">
+                    <summary
+                      className="studio-library-panel__collapse studio-tools-menu__button studio-library-filter-menu__trigger"
+                      aria-label="Filter inspiration library"
+                      title="Filter inspiration library"
                     >
-                      <StudioIcon name={getLibraryStatusFilterIcon(filterId)} />
-                    </button>
-                  ))}
+                      <StudioIcon name="fa-filter" />
+                    </summary>
+                    <div
+                      className="studio-tools-menu__popover studio-library-filter-menu__popover"
+                      role="menu"
+                      aria-label="Library status filters"
+                    >
+                      {LIBRARY_STATUS_FILTERS.map(([filterId, label]) => (
+                        <button
+                          key={filterId}
+                          type="button"
+                          role="menuitemradio"
+                          aria-checked={libraryStatusFilter === filterId}
+                          onClick={(event) => {
+                            setLibraryStatusFilter(filterId);
+                            event.currentTarget.closest("details")?.removeAttribute("open");
+                          }}
+                        >
+                          <StudioIcon name={getLibraryStatusFilterIcon(filterId)} />
+                          <span>
+                            <strong>{label}</strong>
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </details>
                 </div>
               </div>
 
@@ -2383,49 +2303,6 @@ export default function InspirationStudioPage() {
         />
       </div>
 
-      <GraftLedgerModal
-        isOpen={isGraftLedgerOpen}
-        onClose={() => setGraftLedgerOpen(false)}
-        draftGrafts={monsterComponents}
-        libraryGrafts={ALL_MONSTER_GRAFTS}
-      />
-      <ContentHealthModal
-        isOpen={isContentHealthOpen}
-        onClose={() => setContentHealthOpen(false)}
-        modules={modules}
-      />
-      <CoverageMatrixModal
-        isOpen={isCoverageMatrixOpen}
-        onClose={() => setCoverageMatrixOpen(false)}
-        modules={modules}
-      />
-      <MonsterBatchQaModal
-        isOpen={isMonsterBatchQaOpen}
-        presetRun={pendingTestPresetRun}
-        onClose={() => setMonsterBatchQaOpen(false)}
-        onPresetRunConsumed={handlePresetRunConsumed}
-        onSavePreset={handleSaveTestPreset}
-      />
-      <MonsterPerGraftQaModal
-        isOpen={isMonsterPerGraftQaOpen}
-        presetRun={pendingTestPresetRun}
-        onClose={() => setMonsterPerGraftQaOpen(false)}
-        onPresetRunConsumed={handlePresetRunConsumed}
-        onSavePreset={handleSaveTestPreset}
-      />
-      <MapBatchQaModal
-        isOpen={isMapBatchQaOpen}
-        presetRun={pendingTestPresetRun}
-        onClose={() => setMapBatchQaOpen(false)}
-        onPresetRunConsumed={handlePresetRunConsumed}
-        onSavePreset={handleSaveTestPreset}
-      />
-      <DarkPlacesSemanticQaModal
-        isOpen={isSemanticQaOpen}
-        module={moduleExportObject}
-        pack={contentPackExportObject}
-        onClose={() => setSemanticQaOpen(false)}
-      />
     </section>
   );
 }

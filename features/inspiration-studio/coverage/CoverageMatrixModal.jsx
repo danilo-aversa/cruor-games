@@ -131,7 +131,7 @@ function GapList({ gaps = [] }) {
   );
 }
 
-export function CoverageMatrixModal({ isOpen, onClose, modules = [] }) {
+export function CoverageMatrixModal({ isOpen, mode = "modal", onClose, modules = [] }) {
   const report = useMemo(() => buildContentCoverageReport({
     registryData: STATIC_CONTENT_REGISTRY_DATA,
     modules,
@@ -150,6 +150,7 @@ export function CoverageMatrixModal({ isOpen, onClose, modules = [] }) {
       title="Coverage Matrix"
       subtitle="Global content distribution across monster, location, source, role, and map dimensions."
       isOpen={isOpen}
+      mode={mode}
       onClose={onClose}
       actions={<button className="studio-tool-action" type="button" onClick={downloadReport}>Download Report</button>}
     >

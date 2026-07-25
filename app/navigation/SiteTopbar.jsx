@@ -673,16 +673,16 @@ export default function SiteTopbar({
             <SiteLink
               className={cx(
                 "site-topbar__mobile-link",
-                activeSection === "inspiration-studio" && "is-active",
+                activeSection === "creator-studio" && "is-active",
               )}
               href={studioNavItem.href}
               aria-current={
-                activeSection === "inspiration-studio" ? "page" : undefined
+                activeSection === "creator-studio" ? "page" : undefined
               }
               onNavigate={() =>
                 handleAction({
                   type: "section",
-                  sectionId: "inspiration-studio",
+                  sectionId: "creator-studio",
                 })
               }
             >

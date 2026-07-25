@@ -3,7 +3,7 @@ import { MONSTER_FAMILY_PRESETS } from "../data/monster-presets.js";
 import { renderStructuredRulesText } from "./monster-graft-rules.render.js";
 import { normalizeBestiaryFeatureWording, normalizeBestiaryRulesText } from "./monster-bestiary-wording.js";
 import { normalizeMonsterGraftRules, validateMonsterGraftRules } from "./monster-graft-rules.schema.js";
-import { buildMonsterAbilityFromGraft } from "./monster-ability-model.js";
+import { buildMonsterAbilityBundleFromGraft } from "./monster-ability-model.js";
 import { buildGeneratedMultiattackFeature } from "./monster-attack-routine.js";
 import { SLOTS } from "../monster-composer.workflow.js";
 import { asArray, hasSelectedSlot, uniqueArray } from "./monster-composer.selection.js";
@@ -12,6 +12,7 @@ import { getFeatureFrameFit } from "./monster-frame-fit.js";
 import { buildMonsterPublishGate } from "./monster-publish-gate.js";
 import { parseMonsterRenderedStatBlock } from "./monster-statblock-parser.js";
 import { buildLegacyStatsMigrationAudit, getFeatureBalanceStats, getMonsterGraftBalanceProfile } from "./monster-graft-balance-profile.js";
+import { buildFinalMonsterEvaluation } from "./monster-final-evaluation.js";
 import {
   COMPLEXITY_LABELS,
   PRESSURE_LABELS,
@@ -29,10 +30,11 @@ import {
 
 const FEATURE_SCHEMA_VERSION = "monster-graft-v1.0";
 const EXPORT_SCHEMA_VERSION = "monster-crucible-export-v1.0";
-const DATA_MODEL_MIGRATION_STAGE = "rules-v1.15-legacy-stats-adapter";
+const DATA_MODEL_MIGRATION_STAGE = "graft-v2-ability-bundle-bridge";
+const DEBUG_DATA_MODEL_MIGRATION_STAGE = "final-monster-evaluation-v2";
 const OUTPUT_PAYLOAD_SEPARATION_STAGE = "rules-v1.16-public-debug-payload-separation";
 const PUBLIC_EXPORT_PAYLOAD_VERSION = "monster-public-payload-v1.37";
-const DEBUG_EXPORT_PAYLOAD_VERSION = "monster-debug-payload-v1.37";
+const DEBUG_EXPORT_PAYLOAD_VERSION = "monster-debug-payload-v1.38";
 
 const STAT_BLOCK_SECTION_LABELS = {
   trait: "Traits",
@@ -593,6 +595,7 @@ function buildStructuredFeature(feature, computed = null) {
   const compatibility = getFeatureCompatibility(feature);
   const mechanicProfile = getFeatureMechanicProfile(feature);
   const counterplayProfile = getFeatureCounterplayProfile(feature);
+  const abilityBundle = buildMonsterAbilityBundleFromGraft(feature);
   return {
     schemaVersion: FEATURE_SCHEMA_VERSION,
     id: feature.id,
@@ -602,7 +605,8 @@ function buildStructuredFeature(feature, computed = null) {
     section: getFeatureSection(feature),
     rules: normalizeMonsterGraftRules(feature),
     rulesValidation: validateMonsterGraftRules(feature),
-    ability: buildMonsterAbilityFromGraft(feature),
+    ability: abilityBundle.primaryAbility,
+    abilityBundle,
     typeBias: asArray(feature.typeBias),
     roleBias: asArray(feature.roleBias),
     fit: getFeatureFrameFit(feature, { includeInferred: true }),
@@ -1087,6 +1091,33 @@ function buildPublicExportPayload({
   };
 }
 
+function buildDebugFinalEvaluation(computed = {}, selectedFeatures = []) {
+  return buildFinalMonsterEvaluation({
+    targetCr: computed.targetCr,
+    baseline: computed.baseline,
+    printedStats: computed.printedStats || {
+      hp: computed.hp,
+      ac: computed.ac,
+      dpr: computed.dpr,
+      attackBonus: computed.attack,
+      saveDc: computed.dc,
+    },
+    dprProfile: computed.dprProfile,
+    effectiveProfile: computed.effectiveProfile,
+    crValidation: computed.crValidation,
+    abilityModel: computed.abilityModel,
+    attackRoutine: computed.attackRoutine || computed.dprProfile?.attackRoutine,
+    mechanicsSummary: computed.mechanicsSummary,
+    tempoProfile: computed.tempoProfile,
+    monsterTier: computed.monsterTier,
+    counterplayAudit: computed.counterplayAudit,
+    selectedFeatures,
+    buildBudget: computed.budget,
+    buildCost: selectedFeatures.reduce((sum, feature) => sum + Number(feature.cost || 0), 0),
+    complexityCap: computed.complexityCap,
+  });
+}
+
 function buildDebugExportPayload({
   name,
   creatureType,
@@ -1122,6 +1153,7 @@ function buildDebugExportPayload({
     statBlockMode,
     computed,
   });
+  const finalEvaluation = buildDebugFinalEvaluation(computed, selectedFeatures);
   return {
     exportMeta: {
       schemaVersion: EXPORT_SCHEMA_VERSION,
@@ -1131,7 +1163,7 @@ function buildDebugExportPayload({
       payloadVersion: DEBUG_EXPORT_PAYLOAD_VERSION,
       publicPayloadVersion: PUBLIC_EXPORT_PAYLOAD_VERSION,
       migrationStage: OUTPUT_PAYLOAD_SEPARATION_STAGE,
-      dataModelMigrationStage: DATA_MODEL_MIGRATION_STAGE,
+      dataModelMigrationStage: DEBUG_DATA_MODEL_MIGRATION_STAGE,
       statBlockStyle: computed.ruleset?.label || "D&D 5E 2024",
       ruleset: computed.ruleset || null,
       statBlockMode: normalizeStatBlockMode(statBlockMode),
@@ -1165,6 +1197,7 @@ function buildDebugExportPayload({
     crValidation: computed.crValidation,
     profileDeltas: computed.profileDeltas,
     bestiaryBaselineAudit: computed.bestiaryBaselineAudit,
+    finalEvaluation,
     pressureProfile: computed.pressureProfile,
     complexityProfile: computed.complexityProfile,
     counterplayAudit: computed.counterplayAudit,
@@ -1199,6 +1232,7 @@ function buildDebugExportPayload({
       crValidation: computed.crValidation,
       profileDeltas: computed.profileDeltas,
       bestiaryBaselineAudit: computed.bestiaryBaselineAudit,
+      finalEvaluation,
       pressureProfile: computed.pressureProfile,
       complexityProfile: computed.complexityProfile,
       counterplayAudit: computed.counterplayAudit,

@@ -171,7 +171,7 @@ function getDefaultPresetName(params = {}) {
   return `Monster Per-Graft QA · CR ${params.crMin ?? DEFAULT_CR_MIN}–${params.crMax ?? DEFAULT_CR_MAX}`;
 }
 
-export function MonsterPerGraftQaModal({ isOpen, onClose, presetRun = null, onPresetRunConsumed, onSavePreset }) {
+export function MonsterPerGraftQaModal({ isOpen, mode = "modal", onClose, presetRun = null, onPresetRunConsumed, onSavePreset }) {
   const [crMin, setCrMin] = useState(DEFAULT_CR_MIN);
   const [crMax, setCrMax] = useState(DEFAULT_CR_MAX);
   const [seed, setSeed] = useState("cruor-per-graft-qa");
@@ -319,6 +319,7 @@ export function MonsterPerGraftQaModal({ isOpen, onClose, presetRun = null, onPr
         icon="fa-vial-circle-check"
         id="studio-monster-per-graft-qa-modal"
         isOpen={isOpen}
+      mode={mode}
         onClose={handleClose}
         subtitle="Force every Monster Composer graft into a minimal compatible build, render the stat block, run the parser, and check publish-critical output."
         title="Monster Per-Graft QA"

@@ -1,5 +1,6 @@
 import {
   BLOCKING_DAMAGE_ISSUE_CODES,
+  MONSTER_GRAFT_RULES_SCHEMA_VERSION,
   getDamageBudgetShare,
   getDamageExpectedTargets,
   getDamageParts,
@@ -7,8 +8,14 @@ import {
   normalizeMonsterGraftRules,
   validateMonsterGraftRules,
 } from "./monster-graft-rules.schema.js";
+import {
+  isMonsterGraftV2,
+  normalizeMonsterGraftV2,
+  validateMonsterGraftV2,
+} from "./monster-graft-v2.schema.js";
 
-export const MONSTER_ABILITY_MODEL_VERSION = "monster-ability-model-v0.3";
+export const MONSTER_ABILITY_MODEL_VERSION = "monster-ability-model-v0.4";
+export const MONSTER_ABILITY_BUNDLE_VERSION = "monster-ability-bundle-v1.0";
 
 function asArray(value) {
   if (!value) return [];
@@ -188,20 +195,55 @@ function buildAbilityTags({ rules, damageEntries, conditions, resolution }) {
   return uniqueArray(tags);
 }
 
-export function buildMonsterAbilityFromGraft(feature = {}, { index = 0 } = {}) {
+function getPrimarySourceAnchor(feature = {}) {
+  return cleanString(feature.sourceAnchors?.[0] || feature.source);
+}
+
+function getSourceComponentId(feature = {}) {
+  return cleanString(
+    feature.registry?.componentId ||
+      feature.contentComponentId ||
+      feature.componentId,
+  ) || null;
+}
+
+function buildAbilityRecord(
+  feature = {},
+  {
+    runtimeId = "",
+    sourceGraftId = "",
+    localAbilityId = "",
+    index = 0,
+    compilation = "legacy-adapter",
+    authorship = "authored",
+    synthetic = false,
+    graftSchemaVersion = null,
+  } = {},
+) {
   const rules = normalizeMonsterGraftRules(feature);
   const rulesValidation = validateMonsterGraftRules(feature);
-  const damageEntries = hasBlockingDamageIssue(rulesValidation) ? [] : collectDamageEntries(rules);
+  const damageEntries = hasBlockingDamageIssue(rulesValidation)
+    ? []
+    : collectDamageEntries(rules);
   const conditions = buildConditionEntries(rules.condition);
   const resolution = buildResolutionProfile(rules);
   const tags = buildAbilityTags({ rules, damageEntries, conditions, resolution });
+  const resolvedGraftId = cleanString(sourceGraftId || feature.sourceGraftId || feature.id);
+  const resolvedLocalId = cleanString(localAbilityId || feature.localAbilityId || feature.id);
+  const resolvedRuntimeId =
+    cleanString(runtimeId || feature.id) || `ability-${index + 1}`;
+  const sourceAnchor = getPrimarySourceAnchor(feature);
+  const sourceComponentId = getSourceComponentId(feature);
 
   return {
     version: MONSTER_ABILITY_MODEL_VERSION,
-    id: cleanString(feature.id) || `ability-${index + 1}`,
-    sourceGraftId: cleanString(feature.id) || null,
+    id: resolvedRuntimeId,
+    sourceGraftId: resolvedGraftId || null,
+    localAbilityId: resolvedLocalId || null,
+    sourceComponentId,
     title: cleanString(feature.title) || `Ability ${index + 1}`,
-    source: cleanString(feature.source),
+    source: cleanString(feature.source || sourceAnchor),
+    sourceAnchor: sourceAnchor || null,
     slot: cleanString(feature.slot),
     section: rules.section || feature.section || "trait",
     actionEconomy: rules.actionEconomy || "passive",
@@ -213,7 +255,10 @@ export function buildMonsterAbilityFromGraft(feature = {}, { index = 0 } = {}) {
     damage: {
       hasDamage: damageEntries.length > 0,
       entries: damageEntries,
-      totalBudgetShare: damageEntries.reduce((sum, entry) => sum + Number(entry.budgetShare || 0), 0),
+      totalBudgetShare: damageEntries.reduce(
+        (sum, entry) => sum + Number(entry.budgetShare || 0),
+        0,
+      ),
       damageTypes: uniqueArray(damageEntries.flatMap((entry) => entry.types)),
     },
     conditions,
@@ -229,37 +274,301 @@ export function buildMonsterAbilityFromGraft(feature = {}, { index = 0 } = {}) {
     rules,
     rulesValidation,
     tags,
+    synthetic: Boolean(synthetic),
+    provenance: {
+      sourceGraftId: resolvedGraftId || null,
+      sourceComponentId,
+      sourceAnchor: sourceAnchor || null,
+      localAbilityId: resolvedLocalId || null,
+      migrationOrigin:
+        cleanString(
+          feature.migration?.origin ||
+            feature.authoring?.origin ||
+            rules.migration?.source,
+        ) || "unknown",
+      authorship,
+      compilation,
+      synthetic: Boolean(synthetic),
+    },
     migration: {
       source: rules.migration?.source || "unknown",
       isStructured: Boolean(rules.migration?.isStructured),
       abilityModel: MONSTER_ABILITY_MODEL_VERSION,
+      abilityBundle: MONSTER_ABILITY_BUNDLE_VERSION,
+      graftSchemaVersion,
+      compilation,
+      authorship,
     },
   };
 }
 
-export function buildMonsterAbilitiesFromFeatures(features = []) {
-  const abilities = asArray(features).map((feature, index) => buildMonsterAbilityFromGraft(feature, { index }));
-  const errors = abilities.flatMap((ability) =>
-    ability.rulesValidation.issues
-      .filter((issue) => issue.severity === "error")
-      .map((issue) => ({ abilityId: ability.id, title: ability.title, ...issue })),
+function buildLegacyAbility(feature = {}, { index = 0 } = {}) {
+  const featureId = cleanString(feature.id) || `ability-${index + 1}`;
+  return buildAbilityRecord(feature, {
+    runtimeId: featureId,
+    sourceGraftId: featureId,
+    localAbilityId: featureId,
+    index,
+    compilation: "legacy-adapter",
+    authorship: "legacy-authored",
+    synthetic: false,
+    graftSchemaVersion: null,
+  });
+}
+
+function buildV2AbilityFeature(graft = {}, descriptor = {}, runtimeId = "") {
+  const sourceAnchor = getPrimarySourceAnchor(graft);
+  const rules = {
+    schemaVersion:
+      descriptor.rules?.schemaVersion || MONSTER_GRAFT_RULES_SCHEMA_VERSION,
+    ...(descriptor.rules || {}),
+  };
+  return {
+    ...graft,
+    ...descriptor,
+    id: runtimeId,
+    sourceGraftId: graft.id,
+    localAbilityId: descriptor.id,
+    title: descriptor.title,
+    source: sourceAnchor || graft.source,
+    sourceAnchors: graft.sourceAnchors,
+    slot: graft.slot,
+    section: descriptor.section || rules.section || graft.section || "trait",
+    mechanics: descriptor.mechanics || "",
+    counterplay: descriptor.counterplay || "",
+    rules,
+  };
+}
+
+function buildRoutineMultiattackDescriptor(graft = {}, normalized = {}) {
+  const multiattack = normalized.routine?.multiattack;
+  if (!multiattack?.enabled) return null;
+  const localIds = new Set(normalized.abilities.map((ability) => ability.id));
+  const localId = localIds.has("multiattack")
+    ? "routine-multiattack"
+    : "multiattack";
+  const titles = new Map(
+    normalized.abilities.map((ability) => [ability.id, ability.title]),
   );
-  const warnings = abilities.flatMap((ability) =>
-    ability.rulesValidation.issues
-      .filter((issue) => issue.severity === "warning")
-      .map((issue) => ({ abilityId: ability.id, title: ability.title, ...issue })),
+  return {
+    id: localId,
+    title: "Multiattack",
+    section: "action",
+    authored: false,
+    synthetic: true,
+    rules: {
+      schemaVersion: MONSTER_GRAFT_RULES_SCHEMA_VERSION,
+      section: "action",
+      actionEconomy: "action",
+      usage: { type: "atWill" },
+      trigger: null,
+      resolution: { type: "none" },
+      secondaryResolution: null,
+      targeting: { type: "self", targets: "the creature" },
+      areaEffect: null,
+      damage: {
+        mode: "none",
+        budgetRole: "none",
+        types: [],
+        parts: [],
+      },
+      condition: null,
+      counterplay: {
+        telegraph: false,
+        breakCondition: false,
+        positioningAnswer: false,
+        nonDamageAnswer: false,
+      },
+      text: {},
+      multiattack: {
+        enabled: true,
+        mode: multiattack.mode,
+        count: multiattack.count,
+        attacks: multiattack.attacks.map((attack) => ({
+          ref: `${graft.id}:${attack.ref}`,
+          label: attack.label || titles.get(attack.ref) || attack.ref,
+          count: attack.count,
+        })),
+        replacements: multiattack.replacements.map((replacement) => ({
+          replace: replacement.replace,
+          with: `${graft.id}:${replacement.with}`,
+          label:
+            replacement.label ||
+            titles.get(replacement.with) ||
+            replacement.with,
+        })),
+      },
+      multiattackParticipation: null,
+      spellcasting: null,
+      defense: null,
+      summon: null,
+      procedure: null,
+      references: [],
+      ongoing: null,
+      migration: {
+        source: "monster-graft-v2-compiler",
+        isStructured: true,
+        convertedFrom: "graft-routine",
+      },
+    },
+  };
+}
+
+export function buildMonsterAbilityBundleFromGraft(
+  feature = {},
+  { index = 0 } = {},
+) {
+  if (!isMonsterGraftV2(feature)) {
+    const ability = buildLegacyAbility(feature, { index });
+    return {
+      version: MONSTER_ABILITY_BUNDLE_VERSION,
+      schemaVersion: null,
+      graftId: cleanString(feature.id) || `graft-${index + 1}`,
+      sourceComponentId: getSourceComponentId(feature),
+      sourceAnchor: getPrimarySourceAnchor(feature) || null,
+      compilation: "legacy-adapter",
+      routine: null,
+      abilities: [ability],
+      primaryAbility: ability,
+      validation: {
+        status: ability.rulesValidation.status,
+        issues: ability.rulesValidation.issues,
+        errors: ability.rulesValidation.issues.filter(
+          (issue) => issue.severity === "error",
+        ),
+        warnings: ability.rulesValidation.issues.filter(
+          (issue) => issue.severity === "warning",
+        ),
+      },
+    };
+  }
+
+  const report = validateMonsterGraftV2(feature);
+  const normalized = report.normalized || normalizeMonsterGraftV2(feature);
+  const authoredDescriptors = normalized?.abilities || [];
+  const routineDescriptor = buildRoutineMultiattackDescriptor(
+    feature,
+    normalized || {},
+  );
+  const descriptors = [
+    ...(routineDescriptor ? [routineDescriptor] : []),
+    ...authoredDescriptors,
+  ];
+  const abilities = descriptors.map((descriptor, abilityIndex) => {
+    const runtimeId = `${feature.id}:${descriptor.id}`;
+    const compiledFeature = buildV2AbilityFeature(
+      feature,
+      descriptor,
+      runtimeId,
+    );
+    return buildAbilityRecord(compiledFeature, {
+      runtimeId,
+      sourceGraftId: feature.id,
+      localAbilityId: descriptor.id,
+      index: abilityIndex,
+      compilation: "graft-v2-bundle",
+      authorship:
+        descriptor.synthetic || descriptor.authored === false
+          ? "compiler-generated"
+          : "authored",
+      synthetic: Boolean(descriptor.synthetic),
+      graftSchemaVersion: normalized?.schemaVersion || null,
+    });
+  });
+  const abilityIssues = abilities
+    .filter((ability) => ability.synthetic)
+    .flatMap((ability) =>
+      ability.rulesValidation.issues.map((issue) => ({
+        ...issue,
+        abilityId: ability.id,
+        localAbilityId: ability.localAbilityId,
+      })),
+    );
+  const issues = [...report.issues, ...abilityIssues];
+  const errors = issues.filter((issue) => issue.severity === "error");
+  const warnings = issues.filter((issue) => issue.severity === "warning");
+  const primaryAbility =
+    abilities.find((ability) => !ability.synthetic) || abilities[0] || null;
+
+  return {
+    version: MONSTER_ABILITY_BUNDLE_VERSION,
+    schemaVersion: normalized?.schemaVersion || null,
+    graftId: normalized?.id || cleanString(feature.id) || `graft-${index + 1}`,
+    sourceComponentId: getSourceComponentId(feature),
+    sourceAnchor: getPrimarySourceAnchor(feature) || null,
+    kind: normalized?.kind || null,
+    identity: normalized?.identity || null,
+    compilation: "graft-v2-bundle",
+    routine: normalized?.routine || null,
+    abilities,
+    primaryAbility,
+    validation: {
+      status: errors.length ? "error" : warnings.length ? "warning" : "pass",
+      issues,
+      errors,
+      warnings,
+    },
+  };
+}
+
+export function buildMonsterAbilityFromGraft(feature = {}, { index = 0 } = {}) {
+  return buildMonsterAbilityBundleFromGraft(feature, { index }).primaryAbility;
+}
+
+export function buildMonsterAbilitiesFromFeatures(features = []) {
+  const bundles = asArray(features).map((feature, index) =>
+    buildMonsterAbilityBundleFromGraft(feature, { index }),
+  );
+  const abilities = bundles.flatMap((bundle) => bundle.abilities);
+  const errors = bundles.flatMap((bundle) =>
+    bundle.validation.errors.map((issue) => ({
+      graftId: bundle.graftId,
+      abilityId: issue.abilityId || null,
+      title:
+        abilities.find((ability) => ability.id === issue.abilityId)?.title ||
+        bundle.graftId,
+      ...issue,
+    })),
+  );
+  const warnings = bundles.flatMap((bundle) =>
+    bundle.validation.warnings.map((issue) => ({
+      graftId: bundle.graftId,
+      abilityId: issue.abilityId || null,
+      title:
+        abilities.find((ability) => ability.id === issue.abilityId)?.title ||
+        bundle.graftId,
+      ...issue,
+    })),
   );
 
   return {
     version: MONSTER_ABILITY_MODEL_VERSION,
+    bundleVersion: MONSTER_ABILITY_BUNDLE_VERSION,
+    grafts: bundles.length,
     total: abilities.length,
+    bundles,
     abilities,
+    byGraft: Object.fromEntries(
+      bundles.map((bundle) => [bundle.graftId, bundle.abilities.length]),
+    ),
+    legacyGrafts: bundles.filter(
+      (bundle) => bundle.compilation === "legacy-adapter",
+    ).length,
+    v2Grafts: bundles.filter(
+      (bundle) => bundle.compilation === "graft-v2-bundle",
+    ).length,
+    synthetic: abilities.filter((ability) => ability.synthetic).length,
     bySection: countBy(abilities.map((ability) => ability.section)),
-    byActionEconomy: countBy(abilities.map((ability) => ability.actionEconomy)),
+    byActionEconomy: countBy(
+      abilities.map((ability) => ability.actionEconomy),
+    ),
     damaging: abilities.filter((ability) => ability.damage.hasDamage).length,
-    controlling: abilities.filter((ability) => ability.conditions.length > 0).length,
-    structured: abilities.filter((ability) => ability.migration.isStructured).length,
-    inferred: abilities.filter((ability) => !ability.migration.isStructured).length,
+    controlling: abilities.filter((ability) => ability.conditions.length > 0)
+      .length,
+    structured: abilities.filter((ability) => ability.migration.isStructured)
+      .length,
+    inferred: abilities.filter((ability) => !ability.migration.isStructured)
+      .length,
     tags: uniqueArray(abilities.flatMap((ability) => ability.tags)),
     validation: {
       status: errors.length ? "error" : warnings.length ? "warning" : "pass",
@@ -273,7 +582,12 @@ export function summarizeMonsterAbilities(features = []) {
   const model = buildMonsterAbilitiesFromFeatures(features);
   return {
     version: model.version,
+    bundleVersion: model.bundleVersion,
+    grafts: model.grafts,
     total: model.total,
+    legacyGrafts: model.legacyGrafts,
+    v2Grafts: model.v2Grafts,
+    synthetic: model.synthetic,
     structured: model.structured,
     inferred: model.inferred,
     damaging: model.damaging,

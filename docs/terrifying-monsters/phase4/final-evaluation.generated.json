@@ -1,0 +1,279 @@
+{
+  "schemaVersion": "monster-final-evaluation-audit-v1.0",
+  "evaluationVersion": "monster-final-evaluation-v2.0",
+  "generatedBy": "scripts/monster/report-monster-final-evaluation.mjs",
+  "summary": {
+    "scenarioCount": 8,
+    "checkCount": 40,
+    "passed": 40,
+    "failed": 0
+  },
+  "scenarios": {
+    "baseline": {
+      "pressure": 3.23,
+      "complexity": 0.55,
+      "counterplay": 5,
+      "spikeRisk": 0,
+      "buildBudget": 14,
+      "buildCost": 4
+    },
+    "burst": {
+      "pressure": 5.6,
+      "complexity": 0.55,
+      "counterplay": 5,
+      "spikeRisk": 6.32,
+      "buildBudget": 14,
+      "buildCost": 4
+    },
+    "hardControl": {
+      "pressure": 5.32,
+      "complexity": 0.55,
+      "counterplay": 5,
+      "spikeRisk": 1.3,
+      "buildBudget": 14,
+      "buildCost": 4
+    },
+    "unsafeCounterplay": {
+      "pressure": 3.23,
+      "complexity": 0.55,
+      "counterplay": 1,
+      "spikeRisk": 0,
+      "buildBudget": 14,
+      "buildCost": 4
+    },
+    "strongCounterplay": {
+      "pressure": 3.23,
+      "complexity": 0.55,
+      "counterplay": 9.5,
+      "spikeRisk": 0,
+      "buildBudget": 14,
+      "buildCost": 4
+    },
+    "complex": {
+      "pressure": 4.84,
+      "complexity": 7.84,
+      "counterplay": 5,
+      "spikeRisk": 0.75,
+      "buildBudget": 14,
+      "buildCost": 4
+    },
+    "lowBudget": {
+      "pressure": 3.23,
+      "complexity": 0.55,
+      "counterplay": 5,
+      "spikeRisk": 0,
+      "buildBudget": 8,
+      "buildCost": 7
+    },
+    "highBudget": {
+      "pressure": 3.23,
+      "complexity": 0.55,
+      "counterplay": 5,
+      "spikeRisk": 0,
+      "buildBudget": 24,
+      "buildCost": 7
+    }
+  },
+  "checks": [
+    {
+      "id": "baseline-pressure-scale",
+      "pass": true,
+      "detail": "3.23 is within 0-10"
+    },
+    {
+      "id": "baseline-complexity-scale",
+      "pass": true,
+      "detail": "0.55 is within 0-10"
+    },
+    {
+      "id": "baseline-counterplay-scale",
+      "pass": true,
+      "detail": "5 is within 0-10"
+    },
+    {
+      "id": "baseline-spikeRisk-scale",
+      "pass": true,
+      "detail": "0 is within 0-10"
+    },
+    {
+      "id": "burst-pressure-scale",
+      "pass": true,
+      "detail": "5.6 is within 0-10"
+    },
+    {
+      "id": "burst-complexity-scale",
+      "pass": true,
+      "detail": "0.55 is within 0-10"
+    },
+    {
+      "id": "burst-counterplay-scale",
+      "pass": true,
+      "detail": "5 is within 0-10"
+    },
+    {
+      "id": "burst-spikeRisk-scale",
+      "pass": true,
+      "detail": "6.32 is within 0-10"
+    },
+    {
+      "id": "hardControl-pressure-scale",
+      "pass": true,
+      "detail": "5.32 is within 0-10"
+    },
+    {
+      "id": "hardControl-complexity-scale",
+      "pass": true,
+      "detail": "0.55 is within 0-10"
+    },
+    {
+      "id": "hardControl-counterplay-scale",
+      "pass": true,
+      "detail": "5 is within 0-10"
+    },
+    {
+      "id": "hardControl-spikeRisk-scale",
+      "pass": true,
+      "detail": "1.3 is within 0-10"
+    },
+    {
+      "id": "unsafeCounterplay-pressure-scale",
+      "pass": true,
+      "detail": "3.23 is within 0-10"
+    },
+    {
+      "id": "unsafeCounterplay-complexity-scale",
+      "pass": true,
+      "detail": "0.55 is within 0-10"
+    },
+    {
+      "id": "unsafeCounterplay-counterplay-scale",
+      "pass": true,
+      "detail": "1 is within 0-10"
+    },
+    {
+      "id": "unsafeCounterplay-spikeRisk-scale",
+      "pass": true,
+      "detail": "0 is within 0-10"
+    },
+    {
+      "id": "strongCounterplay-pressure-scale",
+      "pass": true,
+      "detail": "3.23 is within 0-10"
+    },
+    {
+      "id": "strongCounterplay-complexity-scale",
+      "pass": true,
+      "detail": "0.55 is within 0-10"
+    },
+    {
+      "id": "strongCounterplay-counterplay-scale",
+      "pass": true,
+      "detail": "9.5 is within 0-10"
+    },
+    {
+      "id": "strongCounterplay-spikeRisk-scale",
+      "pass": true,
+      "detail": "0 is within 0-10"
+    },
+    {
+      "id": "complex-pressure-scale",
+      "pass": true,
+      "detail": "4.84 is within 0-10"
+    },
+    {
+      "id": "complex-complexity-scale",
+      "pass": true,
+      "detail": "7.84 is within 0-10"
+    },
+    {
+      "id": "complex-counterplay-scale",
+      "pass": true,
+      "detail": "5 is within 0-10"
+    },
+    {
+      "id": "complex-spikeRisk-scale",
+      "pass": true,
+      "detail": "0.75 is within 0-10"
+    },
+    {
+      "id": "lowBudget-pressure-scale",
+      "pass": true,
+      "detail": "3.23 is within 0-10"
+    },
+    {
+      "id": "lowBudget-complexity-scale",
+      "pass": true,
+      "detail": "0.55 is within 0-10"
+    },
+    {
+      "id": "lowBudget-counterplay-scale",
+      "pass": true,
+      "detail": "5 is within 0-10"
+    },
+    {
+      "id": "lowBudget-spikeRisk-scale",
+      "pass": true,
+      "detail": "0 is within 0-10"
+    },
+    {
+      "id": "highBudget-pressure-scale",
+      "pass": true,
+      "detail": "3.23 is within 0-10"
+    },
+    {
+      "id": "highBudget-complexity-scale",
+      "pass": true,
+      "detail": "0.55 is within 0-10"
+    },
+    {
+      "id": "highBudget-counterplay-scale",
+      "pass": true,
+      "detail": "5 is within 0-10"
+    },
+    {
+      "id": "highBudget-spikeRisk-scale",
+      "pass": true,
+      "detail": "0 is within 0-10"
+    },
+    {
+      "id": "burst-increases-pressure",
+      "pass": true,
+      "detail": "3.23 -> 5.6"
+    },
+    {
+      "id": "burst-increases-spike-risk",
+      "pass": true,
+      "detail": "0 -> 6.32"
+    },
+    {
+      "id": "hard-control-increases-pressure",
+      "pass": true,
+      "detail": "3.23 -> 5.32"
+    },
+    {
+      "id": "counterplay-independent-from-pressure",
+      "pass": true,
+      "detail": "3.23 == 3.23"
+    },
+    {
+      "id": "counterplay-score-remains-independent",
+      "pass": true,
+      "detail": "1 -> 9.5"
+    },
+    {
+      "id": "flattened-repertoire-increases-complexity",
+      "pass": true,
+      "detail": "0.55 -> 7.84"
+    },
+    {
+      "id": "build-budget-independent-from-pressure",
+      "pass": true,
+      "detail": "3.23 == 3.23"
+    },
+    {
+      "id": "build-budget-independent-from-complexity",
+      "pass": true,
+      "detail": "0.55 == 0.55"
+    }
+  ]
+}

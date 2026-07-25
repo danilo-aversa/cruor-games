@@ -136,3 +136,28 @@ test("mega menu and utility menu share the navigation window surface", async ({ 
   expect(megaSurface.borderStyle).toBe("solid");
   expect(megaSurface.borderWidth).toBe("1px");
 });
+
+test("admin login opens Creator Studio and routes to Content Studio", async ({ page }) => {
+  await page.goto("/creator-studio");
+
+  await expect(page).toHaveURL(/\/login\?returnTo=%2Fcreator-studio$/);
+  await page.getByLabel("Username").fill("admin");
+  await page.getByLabel("Password").fill("admin");
+  await page.getByRole("button", { name: "Sign In" }).click();
+
+  await expect(page).toHaveURL(/\/creator-studio$/);
+  await expect(page.locator("[data-creator-studio-ready='true']")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Creator Studio", exact: true })).toBeVisible();
+
+  await page.getByRole("link", { name: /Operations/i }).click();
+  await expect(page).toHaveURL(/\/creator-studio\/operations$/);
+  await expect(page.locator("[data-creator-operations-ready='true']")).toBeVisible();
+
+  await page.getByRole("link", { name: /Publishing/i }).click();
+  await expect(page).toHaveURL(/\/creator-studio\/publishing$/);
+  await expect(page.locator("[data-creator-publishing-ready='true']")).toBeVisible();
+
+  await page.getByRole("link", { name: /Content Studio/i }).click();
+  await expect(page).toHaveURL(/\/creator-studio\/content$/);
+  await expect(page.locator("[data-studio-ready='true']")).toBeVisible();
+});

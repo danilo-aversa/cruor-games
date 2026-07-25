@@ -1,9 +1,15 @@
 import {
   ALL_MONSTER_GRAFTS,
   ALL_MONSTER_SOURCES,
+  MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT,
 } from "../data/monster-content-pack-feed.js";
+import { MONSTER_GRAFT_SOURCE_AUTHORITY_MODES } from "../data/monster-graft-source-authority.js";
 import { SLOTS } from "../monster-composer.workflow.js";
 import { validateMonsterGraftRules } from "../model/monster-graft-rules.schema.js";
+import {
+  isMonsterGraftV2,
+  validateMonsterGraftV2,
+} from "../model/monster-graft-v2.schema.js";
 import {
   KNOWN_MONSTER_ANATOMY_TAGS,
   KNOWN_MONSTER_BODY_PLAN_IDS,
@@ -95,6 +101,29 @@ function validateAnatomyTerms({ graft, issues }) {
   });
 }
 
+
+function validateGraftV2Semantics(graft, issues) {
+  const report = validateMonsterGraftV2(graft);
+  if (!report.applicable) return report;
+  report.issues.forEach((issue) => {
+    issues.push(
+      makeQaIssue({
+        severity: issue.severity,
+        area: "graft-v2",
+        check: issue.code || "schema",
+        id: graft.id,
+        title: graft.title,
+        path: issue.path || "graft",
+        message: issue.message,
+        recommendation:
+          "Fix the Graft v2 bundle contract before enabling registry-canonical authority.",
+        details: issue,
+      }),
+    );
+  });
+  return report;
+}
+
 function validateRulesSemantics(graft, issues) {
   const report = validateMonsterGraftRules(graft);
   report.issues.forEach((issue) => {
@@ -140,6 +169,86 @@ function validateRulesSemantics(graft, issues) {
   }
 }
 
+
+function validateSourceAuthorityBoundary(audit, issues) {
+  asArray(audit?.rows).forEach((row) => {
+    if (row.sourceMismatch) {
+      issues.push(
+        makeQaIssue({
+          severity: "error",
+          area: "source-authority",
+          check: "source-anchor-mismatch",
+          id: row.id,
+          path: "sourceAnchors",
+          message: `Native and registry representations disagree on the Source Anchor for ${row.id}: ${row.nativeSourceId} vs ${row.registrySourceId}.`,
+          recommendation:
+            "Correct the registry component provenance before continuing the source migration.",
+          details: row,
+        }),
+      );
+    }
+
+    if (
+      row.authorityMode ===
+        MONSTER_GRAFT_SOURCE_AUTHORITY_MODES.REGISTRY_CANONICAL &&
+      (row.selectedOrigin !== "registry" || row.fallbackUsed)
+    ) {
+      issues.push(
+        makeQaIssue({
+          severity: "error",
+          area: "source-authority",
+          check: "canonical-source-fallback",
+          id: row.id,
+          path: "authoring",
+          message: `Canonical registry source ${row.sourceId} did not resolve ${row.id} from an explicitly canonical component.`,
+          recommendation:
+            "Complete and mark the registry component canonical before switching the source authority manifest.",
+          details: row,
+        }),
+      );
+    }
+
+    if (
+      row.authorityMode ===
+        MONSTER_GRAFT_SOURCE_AUTHORITY_MODES.REGISTRY_SHADOW &&
+      !row.registryAvailable
+    ) {
+      issues.push(
+        makeQaIssue({
+          severity: "warning",
+          area: "source-authority",
+          check: "shadow-coverage",
+          id: row.id,
+          path: "registry",
+          message: `Shadow-migration source ${row.sourceId} has no registry representation for ${row.id}.`,
+          recommendation:
+            "Add the canonical shared component before requesting a source cutover.",
+          details: row,
+        }),
+      );
+    }
+
+    if (
+      row.authorityMode ===
+        MONSTER_GRAFT_SOURCE_AUTHORITY_MODES.NATIVE_LEGACY &&
+      !row.nativeAvailable
+    ) {
+      issues.push(
+        makeQaIssue({
+          severity: "warning",
+          area: "source-authority",
+          check: "native-coverage",
+          id: row.id,
+          path: "native",
+          message: `Native-authoritative source ${row.sourceId} resolved registry-only graft ${row.id}.`,
+          recommendation:
+            "Register the source for shadow/canonical migration or restore the native compatibility entry.",
+          details: row,
+        }),
+      );
+    }
+  });
+}
 
 function validateFrameFit(graft, issues) {
   const report = validateMonsterFrameFit(graft.fit || graft.monster?.fit || null, {
@@ -203,6 +312,8 @@ export function runMonsterContentQa({ grafts = ALL_MONSTER_GRAFTS, sources = ALL
     }
   });
 
+  validateSourceAuthorityBoundary(MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT, issues);
+
   grafts.forEach((graft) => {
     if (!hasText(graft.id)) issues.push(makeQaIssue({ severity: "error", area: "content", check: "id", title: graft.title, message: "Monster graft has no id." }));
     if (!hasText(graft.title)) issues.push(makeQaIssue({ severity: "error", area: "content", check: "title", id: graft.id, message: "Monster graft has no title." }));
@@ -218,7 +329,8 @@ export function runMonsterContentQa({ grafts = ALL_MONSTER_GRAFTS, sources = ALL
     if (!hasAnyText(graft.summary, graft.mechanics, graft.counterplay)) {
       issues.push(makeQaIssue({ severity: "warning", area: "content", check: "playable-text", id: graft.id, title: graft.title, message: "Monster graft has no summary, mechanics, or counterplay text." }));
     }
-    if (!graft.rules || graft.rules?.migration?.isStructured !== true) {
+    const graftV2 = isMonsterGraftV2(graft);
+    if (!graftV2 && (!graft.rules || graft.rules?.migration?.isStructured !== true)) {
       issues.push(makeQaIssue({ severity: "error", area: "rules", check: "structured-rules", id: graft.id, title: graft.title, path: "rules", message: "Monster graft is not authored as explicit structured rules." }));
     }
     if (!normalizeMonsterFrameFit(graft.fit || graft.monster?.fit || null)) {
@@ -234,7 +346,11 @@ export function runMonsterContentQa({ grafts = ALL_MONSTER_GRAFTS, sources = ALL
       }));
     }
 
-    validateRulesSemantics(graft, issues);
+    if (graftV2) {
+      validateGraftV2Semantics(graft, issues);
+    } else {
+      validateRulesSemantics(graft, issues);
+    }
     validateFrameFit(graft, issues);
     validateAnatomyTerms({ graft, issues });
   });
@@ -248,6 +364,19 @@ export function runMonsterContentQa({ grafts = ALL_MONSTER_GRAFTS, sources = ALL
       sources: sources.length,
       grafts: grafts.length,
       slots: slots.length,
+      graftSchema: {
+        legacy: grafts.filter((graft) => !isMonsterGraftV2(graft)).length,
+        v2: grafts.filter((graft) => isMonsterGraftV2(graft)).length,
+      },
+      sourceBoundary: {
+        selectedNative: MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT.selectedNative,
+        selectedRegistry: MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT.selectedRegistry,
+        fallbacks: MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT.fallbacks,
+        canonicalRegistryEntries:
+          MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT.canonicalRegistryEntries,
+        sourceMismatches:
+          MONSTER_GRAFT_SOURCE_BOUNDARY_AUDIT.sourceMismatches,
+      },
     },
   };
 }

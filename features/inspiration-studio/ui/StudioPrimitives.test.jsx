@@ -23,6 +23,10 @@ import {
   openStudioDisclosuresForField,
 } from "./index.js";
 
+function readProjectFile(relativePath) {
+  return readFileSync(resolve(process.cwd(), relativePath), "utf8");
+}
+
 function render(node) {
   return renderToStaticMarkup(<div className="inspiration-studio">{node}</div>);
 }
@@ -190,9 +194,15 @@ describe("Content Studio UI primitives", () => {
     const helpIndex = markup.indexOf('class="studio-help"');
     const actionsIndex = markup.indexOf('class="studio-panel__actions"');
 
+    const studioCss = readProjectFile(
+      "features/inspiration-studio/inspiration-studio.styles.css",
+    );
+
     expect(markup).toContain("studio-panel__heading");
     expect(helpIndex).toBeGreaterThan(titleIndex);
     expect(helpIndex).toBeLessThan(actionsIndex);
+    expect(studioCss).toMatch(/\.studio-panel__title \{[\s\S]*display: flex;/);
+    expect(studioCss).toMatch(/\.studio-panel__title > \.studio-help \{[\s\S]*align-self: flex-start;/);
     expect(markup).toContain('data-editor-zone="output"');
     expect(markup).toContain("Remove Component");
     expect(markup).toContain("studio-inline-action--danger");

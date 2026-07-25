@@ -196,7 +196,7 @@ function getDefaultPresetName(params = {}) {
   return `Monster Batch QA · ${params.count || DEFAULT_COUNT} · CR ${params.crMin ?? DEFAULT_CR_MIN}–${params.crMax ?? DEFAULT_CR_MAX}`;
 }
 
-export function MonsterBatchQaModal({ isOpen, onClose, presetRun = null, onPresetRunConsumed, onSavePreset }) {
+export function MonsterBatchQaModal({ isOpen, mode = "modal", onClose, presetRun = null, onPresetRunConsumed, onSavePreset }) {
   const [count, setCount] = useState(DEFAULT_COUNT);
   const [crMin, setCrMin] = useState(DEFAULT_CR_MIN);
   const [crMax, setCrMax] = useState(DEFAULT_CR_MAX);
@@ -355,6 +355,7 @@ export function MonsterBatchQaModal({ isOpen, onClose, presetRun = null, onPrese
       icon="fa-vial-circle-check"
       id="studio-monster-batch-qa-modal"
       isOpen={isOpen}
+      mode={mode}
       onClose={handleClose}
       subtitle="Generate many Monster Composer frames, validate grafts, DPR, CR, pressure, exports, and compatibility in one browser-side run."
       title="Monster Batch QA"
