@@ -1499,8 +1499,14 @@ function EditableTextBox({ value, placeholder = "No text set.", rows = 4, onChan
         <div className={`studio-editable-textbox__preview ${displayValue ? "" : "is-placeholder"}`.trim()}>
           {displayValue || placeholder}
         </div>
-        <button type="button" className="studio-inline-action studio-inline-action--compact" onClick={() => setIsEditing(true)}>
-          <StudioIcon name="fa-pen" /> Edit
+        <button
+          type="button"
+          className="studio-inline-action studio-inline-action--compact studio-icon-button"
+          aria-label="Edit field"
+          title="Edit"
+          onClick={() => setIsEditing(true)}
+        >
+          <StudioIcon name="fa-pen" />
         </button>
       </div>
     );
@@ -1531,20 +1537,6 @@ function StatPill({ icon, label, value }) {
       <strong>{value}</strong>
     </span>
   );
-}
-
-function getSectionCount(sectionId, draft, componentGroups, validationReport) {
-  if (sectionId === "components") return asArray(draft.components).length;
-  if (sectionId === "preview") {
-    return asArray(draft.components).filter((component) =>
-      asArray(component.workflows).includes("darken-location"),
-    ).length;
-  }
-  if (sectionId === "review") {
-    const summary = validationReport?.summary || getIssueSummary(validationReport?.issues);
-    return (summary.error || 0) + (summary.warning || 0);
-  }
-  return undefined;
 }
 
 function StudioRightRail({ collapsed = false, componentGroups, draft, imageSource, onDownloadReadinessReport, onResizeStart, onToggleCollapsed, packTitle, validationReport }) {
@@ -2099,10 +2091,7 @@ export default function InspirationStudioPage() {
           </span>
           <h1>Editing: {draft.title}</h1>
         </div>
-        <div className="inspiration-studio__quick-meta inspiration-studio__quick-meta--header" aria-label="Current module status and studio tools">
-          <span><StudioIcon name="fa-box-open" /> {packTitle}</span>
-          <span><StudioIcon name={getStatusIconName(draft.status)} /> {getStatusLabel(draft.status)}</span>
-          <span><StudioIcon name="fa-diagram-project" /> {asArray(draft.components).length} components</span>
+        <div className="inspiration-studio__quick-meta inspiration-studio__quick-meta--header" aria-label="Studio tools">
           <StudioToolsMenu
             coverageOpen={isCoverageMatrixOpen}
             graftCount={ALL_MONSTER_GRAFTS.length + monsterComponents.length}
@@ -2256,7 +2245,6 @@ export default function InspirationStudioPage() {
                 icon={section.icon}
                 active={activeSection === section.id}
                 label={`${index + 1}. ${section.label}`}
-                count={getSectionCount(section.id, draft, componentGroups, validationReport)}
                 hint={section.hint}
                 onClick={() => setActiveSection(section.id)}
               />
@@ -2322,7 +2310,6 @@ export default function InspirationStudioPage() {
                 locationComponentsCount={componentGroups["location-component"].length}
                 locationFilter={locationFilter}
                 locationRegionsCount={componentGroups["location-region"].length}
-                monsterComponentsCount={monsterComponents.length}
                 selectedComponent={selectedComponent}
                 selectedComponentId={selectedComponentId}
                 studioWarnings={studioWarnings}
@@ -2348,9 +2335,9 @@ export default function InspirationStudioPage() {
                   aria-label="Compiled Dark Places preview"
                 >
                   <StudioPanelTitle
-                    eyebrow="Compiler Preview"
+                    eyebrow="Compiled Output"
                     icon="fa-wand-magic-sparkles"
-                    title="Deterministic Dark Places Sample"
+                    title="Preview"
                     help="Compiles the current canonical v2 Studio export through the real Dark Places compiler using a deterministic sample room program."
                   />
                   <StudioDarkPlacesPreview
@@ -2517,7 +2504,7 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
     return (
       <div className="inspiration-studio__workspace inspiration-studio__workspace--source">
         <section className="studio-panel studio-panel--identity" aria-label="Source setup">
-          <StudioPanelTitle eyebrow="Step 1" icon="fa-id-card-clip" title="Source Setup" help="Set the editorial identity first: name, pack, and publication status. Technical IDs stay under Advanced unless you need them." />
+          <StudioPanelTitle eyebrow="Editorial Identity" icon="fa-id-card-clip" title="Source" help="Set the editorial identity first: name, pack, and publication status. Technical IDs stay under Advanced unless you need them." />
 
           <div className="studio-form-grid studio-form-grid--primary">
             <StudioField label="Inspiration Name" icon="fa-signature" hint={FIELD_HELP.inspirationName}>
@@ -2578,7 +2565,7 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
     return (
       <div className="inspiration-studio__workspace inspiration-studio__workspace--card">
         <section className="studio-panel studio-panel--identity" aria-label="Public inspiration card copy">
-          <StudioPanelTitle eyebrow="Step 2" icon="fa-align-left" title="Public Card" help={SECTION_HELP.publicCopy} />
+          <StudioPanelTitle eyebrow="Public Presentation" icon="fa-align-left" title="Card" help={SECTION_HELP.publicCopy} />
 
           <StudioField label="Public Summary" icon="fa-quote-left" hint={FIELD_HELP.publicSummary}>
             <EditableTextBox
@@ -2749,7 +2736,7 @@ function IdentityWorkspace({ draft, identityIdsUnlocked = false, imageSource, mo
   return (
     <div className="inspiration-studio__workspace inspiration-studio__workspace--taxonomy">
       <section className="studio-panel studio-panel--identity" aria-label="Taxonomy">
-        <StudioPanelTitle eyebrow="Step 3" icon="fa-tags" title="Taxonomy" help={SECTION_HELP.taxonomy} />
+        <StudioPanelTitle eyebrow="Discovery Metadata" icon="fa-tags" title="Taxonomy" help={SECTION_HELP.taxonomy} />
         <p className="studio-panel-note">Use comma-separated chips. These drive filtering, inspiration discovery, and default component inheritance.</p>
 
         <div className="studio-form-grid studio-form-grid--taxonomy">
@@ -2853,7 +2840,6 @@ function ComponentsWorkspace({
   locationComponentsCount,
   locationFilter,
   locationRegionsCount,
-  monsterComponentsCount,
   onAddComponent,
   onComponentModeChange,
   onComponentSearchChange,
@@ -2882,23 +2868,30 @@ function ComponentsWorkspace({
 
   return (
     <section className="studio-panel studio-panel--components" aria-label="Linked components">
-      <StudioPanelTitle eyebrow="Linked Components" icon="fa-diagram-project" title="Generator Content" help={SECTION_HELP.components} />
+      <StudioPanelTitle eyebrow="Linked Content" icon="fa-diagram-project" title="Components" help={SECTION_HELP.components} />
 
       <div className={`studio-component-workspace ${componentListCollapsed ? "is-component-list-collapsed" : ""}`.trim()}>
-        <div className="studio-component-list studio-component-list--grouped" aria-label="Component list">
+        <div
+          className="studio-component-list studio-component-list--grouped"
+          aria-label="Component list"
+          aria-expanded={!componentListCollapsed}
+          role={componentListCollapsed ? "button" : undefined}
+          tabIndex={componentListCollapsed ? 0 : undefined}
+          onClick={componentListCollapsed ? () => setComponentListCollapsed(false) : undefined}
+          onKeyDown={componentListCollapsed ? (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              setComponentListCollapsed(false);
+            }
+          } : undefined}
+        >
           <div className="studio-component-list__topline">
             {componentListCollapsed ? (
-              <button
-                className="studio-component-list__collapsed-button"
-                type="button"
-                onClick={() => setComponentListCollapsed(false)}
-                aria-label="Expand component list"
-                title="Expand component list"
-              >
+              <div className="studio-component-list__collapsed-button" aria-hidden="true">
                 <StudioIcon name="fa-diagram-project" />
                 <span>{visibleComponents.length}</span>
                 <em>Component Index</em>
-              </button>
+              </div>
             ) : (
               <>
                 <div className="studio-component-list__topline-main">
@@ -3009,24 +3002,23 @@ function ComponentsWorkspace({
           <div className="studio-empty-state">No component selected.</div>
         )}
 
-        <div className="studio-component-tabs studio-component-tabs--vertical" role="tablist" aria-label="Component families">
-          <StudioTab
-            icon="fa-skull"
-            active={componentMode === "monsters"}
-            label="Monsters"
-            count={monsterComponentsCount}
-            hint="Grafts consumed by Monster Composer."
-            onClick={() => onComponentModeChange("monsters")}
-          />
-          <StudioTab
-            icon="fa-map-location-dot"
-            active={componentMode === "locations"}
-            label="Locations"
-            count={locationComponentsCount + locationRegionsCount}
-            hint="Components and regions consumed by Darken/Map."
-            onClick={() => onComponentModeChange("locations")}
-          />
-        </div>
+      </div>
+
+      <div className="studio-component-tabs studio-component-tabs--vertical" role="tablist" aria-label="Component families">
+        <StudioTab
+          icon="fa-skull"
+          active={componentMode === "monsters"}
+          label="Monsters"
+          hint="Grafts consumed by Monster Composer."
+          onClick={() => onComponentModeChange("monsters")}
+        />
+        <StudioTab
+          icon="fa-map-location-dot"
+          active={componentMode === "locations"}
+          label="Locations"
+          hint="Components and regions consumed by Darken/Map."
+          onClick={() => onComponentModeChange("locations")}
+        />
       </div>
     </section>
   );
@@ -3050,12 +3042,10 @@ function ExportWorkspace({
   validationReport,
   monsterQaReport,
 }) {
-  const selectedOption = EXPORT_MODE_OPTIONS.find((option) => option.id === exportMode) || EXPORT_MODE_OPTIONS[0];
-
   return (
     <div className="inspiration-studio__workspace inspiration-studio__workspace--export">
       <section className="studio-panel studio-panel--validation" aria-label="Validation report">
-        <StudioPanelTitle eyebrow="Validation" icon="fa-shield-halved" title="Module Readiness" help="Checks whether the current Inspiration Module can safely become a registry-ready content pack.">
+        <StudioPanelTitle eyebrow="Publication Checks" icon="fa-shield-halved" title="Review" help="Checks whether the current Inspiration Module can safely become a registry-ready content pack.">
           <button type="button" onClick={onDownloadReadinessReport}>
             <StudioIcon name="fa-file-arrow-down" /> Report JSON
           </button>
@@ -3064,14 +3054,14 @@ function ExportWorkspace({
       </section>
 
       <section className="studio-panel studio-panel--validation" aria-label="Monster QA report">
-        <StudioPanelTitle eyebrow="Monster QA" icon="fa-vial-circle-check" title="Generator Readiness" help="Runs the shared Monster Composer QA suite used by npm run monster:qa. This checks content, templates, forge generation, run mode, and export output.">
+        <StudioPanelTitle eyebrow="Monster QA" icon="fa-vial-circle-check" title="Generator Review" help="Runs the shared Monster Composer QA suite used by npm run monster:qa. This checks content, templates, forge generation, run mode, and export output.">
           <span>{monsterQaReport?.summary?.error || 0} errors · {monsterQaReport?.summary?.warning || 0} warnings</span>
         </StudioPanelTitle>
         <MonsterQaPanel report={monsterQaReport} />
       </section>
 
       <section className="studio-panel studio-panel--export" aria-label="Export content pack">
-        <StudioPanelTitle eyebrow="Export" icon="fa-code" title={selectedOption.label} help={SECTION_HELP.export}>
+        <StudioPanelTitle eyebrow="Registry Output" icon="fa-code" title="Export Review" help={SECTION_HELP.export}>
           <button type="button" onClick={onCopy}>
             <StudioIcon name={copyState === "copied" ? "fa-check" : copyState === "failed" ? "fa-triangle-exclamation" : "fa-copy"} />
             {copyState === "copied" ? "Copied" : copyState === "failed" ? "Copy Failed" : "Copy JSON"}
@@ -4193,7 +4183,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
 
       {isMonsterGraft ? (
         <div className="studio-component-editor__subpanel studio-component-editor__subpanel--monster" hidden={activeComponentEditorTab === "overview"}>
-          <StudioCollapsibleSection zone="fit" defaultOpen icon="fa-id-card" title="Frame" help="Frame fields define where the graft belongs in the Monster Composer, where it prints in the stat block, and how much budget it consumes.">
+          <StudioCollapsibleSection zone="fit" icon="fa-id-card" title="Frame" help="Frame fields define where the graft belongs in the Monster Composer, where it prints in the stat block, and how much budget it consumes.">
             <div className="studio-form-grid studio-form-grid--compact">
               <StudioField label="Monster Slot" icon="fa-table-cells-large" hint={FIELD_HELP.monsterSlot}>
                 <StudioInput value={component.monster?.slot || joinList(component.slots)} onChange={setMonsterSlot} />
@@ -4323,7 +4313,6 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
 
           <StudioCollapsibleSection
             zone="fit"
-            defaultOpen
             icon="fa-sliders"
             title="Frame Fit"
             help="Optional frame-level gates and recommendations. Use this to make a graft boss-only, controller-friendly, CR-gated, slow-tempo, horror-only, or otherwise tied to the monster frame selectors."
@@ -4471,7 +4460,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
           ) : null}
 
           <div className="studio-rules-layout" data-editor-zone="rules">
-            <StudioCollapsibleSection defaultOpen icon="fa-bolt" title="Use" help="Use fields define when the ability exists and how often it can be used.">
+            <StudioCollapsibleSection icon="fa-bolt" title="Use" help="Use fields define when the ability exists and how often it can be used.">
               <div className="studio-form-grid studio-form-grid--compact">
                 <StudioField label="Action Economy" icon="fa-bolt" hint={FIELD_HELP.actionEconomy}>
                   <StudioSelect options={MONSTER_ACTION_ECONOMY_OPTIONS} value={actionEconomy} onChange={(value) => setRulesField(["actionEconomy"], value)} />
@@ -4568,7 +4557,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
               </StudioCollapsibleSection>
             ) : null}
 
-            <StudioCollapsibleSection defaultOpen icon="fa-plus" title="Add Rule Block" help="Add only the optional rule blocks this graft actually needs. Blocks already containing data stay visible until removed.">
+            <StudioCollapsibleSection icon="fa-plus" title="Add Rule Block" help="Add only the optional rule blocks this graft actually needs. Blocks already containing data stay visible until removed.">
               {visibleAddableRulesBlocks.length ? (
                 <div className="studio-rules-add-menu" aria-label="Add optional monster rule block">
                   {visibleAddableRulesBlocks.map((block) => (
@@ -5331,7 +5320,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
           ) : null}
 
           <StudioDividerLabel zone="output" icon="fa-scroll" title="Stat Block Text" help="This final text is what the Monster Composer exports for this graft. Generated mode is built from the fields above; Manual Override can still use formula tokens." />
-          <StudioCollapsibleSection zone="output" defaultOpen icon="fa-scroll" title="Text Source" help="Choose whether this graft exports generated text or a manual override.">
+          <StudioCollapsibleSection zone="output" icon="fa-scroll" title="Text Source" help="Choose whether this graft exports generated text or a manual override.">
             <div className="studio-text-source-toggle" role="group" aria-label="Stat block text source">
               <button type="button" aria-pressed={textSource !== "manual"} onClick={() => setRulesField(["text", "source"], "generated")}>Generated</button>
               <button type="button" aria-pressed={textSource === "manual"} onClick={() => setRulesField(["text", "source"], "manual")}>Manual Override</button>
@@ -5352,7 +5341,7 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
       {!isMonsterGraft && activeComponentEditorTab === "output" ? (
         <div className="studio-component-editor__subpanel" data-editor-zone="output">
           {isLocationRegion ? (
-            <StudioCollapsibleSection defaultOpen icon="fa-dungeon" title="Location Region Data" help="Map-region fields consumed by Dark Places and the Map Generator.">
+            <StudioCollapsibleSection icon="fa-dungeon" title="Location Region Data" help="Map-region fields consumed by Dark Places and the Map Generator.">
               <div className="studio-form-grid studio-form-grid--compact">
                 <StudioField label="Role" icon="fa-compass" hint={FIELD_HELP.regionRole}>
                   <StudioInput value={component.locationRegion?.role} onChange={(value) => setField(["locationRegion", "role"], value)} />
@@ -5375,7 +5364,6 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
 
           {(isLocationRegion || isLocationComponent) ? (
             <StudioCollapsibleSection
-              defaultOpen={hasRoomDesignData}
               icon="fa-shapes"
               title="Room Design"
               help="Structured room shape, size constraints, required props, and topology hints. Presets only fill fields; they do not lock editing."
@@ -5476,7 +5464,6 @@ function ComponentAdvancedEditor({ component, onChange, onRemove }) {
 
           {(isLocationRegion || isLocationComponent) ? (
             <StudioCollapsibleSection
-              defaultOpen
               icon="fa-map-location-dot"
               title="Map Influence"
               help="Optional map-generation influence. Use this when a component assigned to a room should prefer, forbid, or force a room archetype."

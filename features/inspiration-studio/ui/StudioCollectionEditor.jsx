@@ -54,7 +54,7 @@ export function StudioCollectionEditor({
   addLabel = "Add Item",
   children,
   className = "",
-  defaultOpenIndex = 0,
+  defaultOpenIndex = -1,
   emptyLabel = "No entries authored yet.",
   getItemKey = defaultItemKey,
   getItemLabel = defaultItemLabel,

@@ -21365,3 +21365,129 @@ _Nessun file aggiunto._
 
 - `~features/inspiration-studio/inspiration-studio.styles.css`
 
+
+---
+
+## 25/07/2026, 10:39:06
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-content-studio-panel-tabs-rails-refactor-20260725.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-content-studio-panel-tabs-rails-refactor-20260725.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-oTaJi9`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 4
+
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/ui/StudioEditorChrome.jsx`
+- `~features/inspiration-studio/ui/StudioPrimitives.test.jsx`
+
+
+---
+
+## 25/07/2026, 10:48:39
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-content-studio-edit-component-index-filter-tabs-fix-20260725.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-content-studio-edit-component-index-filter-tabs-fix-20260725.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-irWYpb`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 3
+
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/ui/studio-primitives.css`
+
+
+---
+
+## 25/07/2026, 11:10:48
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-content-studio-collapsible-help-tabs-layout-20260725.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-content-studio-collapsible-help-tabs-layout-20260725.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-E3jW8n`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 6
+
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+- `~features/inspiration-studio/InspirationStudioPage.jsx`
+- `~features/inspiration-studio/ui/studio-primitives.css`
+- `~features/inspiration-studio/ui/StudioCollectionEditor.jsx`
+- `~features/inspiration-studio/ui/StudioPrimitives.test.jsx`
+- `~features/inspiration-studio/ui/StudioSection.jsx`
+
+
+---
+
+## 25/07/2026, 14:07:38
+
+**Operazione:** Apply ZIP from Cruor Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-content-studio-workspace-scroll-fix-20260725.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-content-studio-workspace-scroll-fix-20260725.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\cruor-workbench-apply-gDy0X6`
+
+**Decisione struttura:** `Preserved top-level repo folder: features`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~features/inspiration-studio/inspiration-studio.styles.css`
+

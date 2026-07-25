@@ -58,7 +58,7 @@ describe("Content Studio UI primitives", () => {
     expect(markup).not.toContain("semantic-editor");
   });
 
-  it("renders a collection with one initially expanded item", () => {
+  it("renders collection items collapsed by default", () => {
     const markup = render(
       <StudioCollectionEditor
         addLabel="Add Entry"
@@ -76,7 +76,7 @@ describe("Content Studio UI primitives", () => {
     );
 
     expect((markup.match(/<details/g) || []).length).toBe(2);
-    expect((markup.match(/ open=""/g) || []).length).toBe(1);
+    expect((markup.match(/ open=""/g) || []).length).toBe(0);
     expect(markup).not.toContain("defaultOpen");
     expect(markup).toContain("Add Entry");
   });
@@ -186,10 +186,33 @@ describe("Content Studio UI primitives", () => {
       </>,
     );
 
+    const titleIndex = markup.indexOf('class="studio-panel__title"');
+    const helpIndex = markup.indexOf('class="studio-help"');
+    const actionsIndex = markup.indexOf('class="studio-panel__actions"');
+
     expect(markup).toContain("studio-panel__heading");
+    expect(helpIndex).toBeGreaterThan(titleIndex);
+    expect(helpIndex).toBeLessThan(actionsIndex);
     expect(markup).toContain('data-editor-zone="output"');
     expect(markup).toContain("Remove Component");
     expect(markup).toContain("studio-inline-action--danger");
+  });
+
+  it("keeps collapsible help beside the title instead of in the tools rail", () => {
+    const markup = render(
+      <StudioCollapsibleSection help="Section guidance" title="Identity">
+        Content
+      </StudioCollapsibleSection>,
+    );
+
+    const titleStart = markup.indexOf('class="studio-rules-group__title"');
+    const helpIndex = markup.indexOf('class="studio-help"');
+    const titleEnd = markup.indexOf("</span>", titleStart);
+    const toolsIndex = markup.indexOf('class="studio-rules-group__tools"');
+
+    expect(helpIndex).toBeGreaterThan(titleStart);
+    expect(helpIndex).toBeLessThan(titleEnd);
+    expect(toolsIndex).toBeGreaterThan(titleEnd);
   });
 
   it("keeps the page migrated away from local primitive declarations", () => {
@@ -218,6 +241,10 @@ describe("Content Studio UI primitives", () => {
     expect(source).toContain("<StudioField");
     expect(source).toContain("<StudioCollapsibleSection");
     expect(source).toContain("<StudioSemanticComponentEditor");
+    expect(source).toContain('title="Components"');
+    expect(source).toContain('role={componentListCollapsed ? "button" : undefined}');
+    expect(source).not.toContain("defaultOpen");
+    expect(source).not.toContain("getSectionCount");
     removedLocalPrimitives.forEach((name) => {
       expect(source).not.toMatch(new RegExp(`function ${name}\\b`));
     });

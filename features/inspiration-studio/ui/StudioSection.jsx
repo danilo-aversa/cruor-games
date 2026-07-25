@@ -7,9 +7,9 @@ function StudioSectionTitle({ actions, collapsible = false, help, icon, title })
       <span className="studio-rules-group__title">
         {icon ? <StudioIcon name={icon} /> : null}
         {title}
+        <StudioHelp title={title} text={help} />
       </span>
       <span className="studio-rules-group__tools">
-        <StudioHelp title={title} text={help} />
         {actions}
         {collapsible ? <StudioIcon name="fa-chevron-down" /> : null}
       </span>

@@ -20,10 +20,10 @@ export function StudioPanelTitle({
           {icon ? <StudioIcon name={icon} /> : null}
           {eyebrow}
         </span>
+        <StudioHelp title={title} text={help} />
         <h3>{title}</h3>
       </div>
       <div className="studio-panel__actions">
-        <StudioHelp title={title} text={help} />
         {children}
       </div>
     </div>
