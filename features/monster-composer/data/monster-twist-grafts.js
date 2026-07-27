@@ -302,7 +302,7 @@ const TWIST_GRAFTS = {
               "The target takes {damage} Poison and Thunder damage and is pushed 5 feet away from the monster.",
             success: "Half damage only.",
             effect:
-              "The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 15-foot Cone for the vent instead of the Emanation.",
+              "The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a blister and choose a 15-foot Cone instead.",
           },
         }),
         tags: ["twist", "save", "push", "redirectable"],
@@ -345,7 +345,7 @@ const TWIST_GRAFTS = {
                     "The target takes {damage} Poison and Thunder damage and is pushed 5 feet away from the monster.",
                   success: "Half damage only.",
                   effect:
-                    "The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 15-foot Cone for the vent instead of the Emanation.",
+                    "The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a blister and choose a 15-foot Cone instead.",
                 },
               },
             },
@@ -368,7 +368,7 @@ const TWIST_GRAFTS = {
                     "The target takes {damage} Poison and Thunder damage and is pushed 10 feet away from the monster.",
                   success: "Half damage only.",
                   effect:
-                    "The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 20-foot Cone for the vent instead of the Emanation.",
+                    "The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a blister and choose a 20-foot Cone instead.",
                 },
               },
             },
@@ -391,7 +391,7 @@ const TWIST_GRAFTS = {
                     "The target takes {damage} Poison and Thunder damage and is pushed 15 feet away from the monster.",
                   success: "Half damage only.",
                   effect:
-                    "The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 30-foot Cone for the vent instead of the Emanation.",
+                    "The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a blister and choose a 30-foot Cone instead.",
                 },
               },
             },
@@ -636,7 +636,7 @@ const TWIST_GRAFTS = {
               "The target takes {damage} Poison and Thunder damage and has the Prone condition.",
             success: "Half damage only.",
             effect:
-              "The monster drops to 0 Hit Points after the detonation. Before it resolves, an adjacent creature can use an action to make a Dexterity (Sleight of Hand) or Intelligence (Investigation) check against the monster's save DC. On a success, the countdown ends, the monster loses its reactions until the start of its next turn, and no detonation occurs.",
+              "The monster drops to 0 Hit Points. Before the blast, an adjacent creature can use an action and pass Sleight of Hand or Investigation against the save DC to cancel it; the monster loses Reactions until its next turn.",
           },
         }),
         tags: ["countdown", "save", "disarm", "bloodied"],
@@ -1620,7 +1620,7 @@ const TWIST_GRAFTS = {
     summary:
       "Bloodied cracks the funeral mask into one visibly announced role that changes the second half of the encounter.",
     mechanics:
-      "The first time the creature becomes bloodied, choose one mask and announce it visibly. Mourner increases its speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser makes the first hit it scores each turn against a Frightened creature deal extra Psychic damage equal to its proficiency bonus. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed.",
+      "The first time the creature becomes bloodied, choose one mask and announce it visibly. Mourner increases its speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser makes the first hit it scores each turn against a Frightened creature deal extra Psychic damage equal to its proficiency bonus. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed.",
     counterplay:
       "Read the new face, adapt to its declared role, soften the wax with fire, or restrain the creature and tear the mask away using an action.",
     tags: ["bloodied-phase", "mask-choice", "visible-role", "wax-death-masks"],
@@ -1650,7 +1650,7 @@ const TWIST_GRAFTS = {
           condition: condition(["grappled", "restrained"], { direction: "referenceOnly" }),
           text: {
             effect:
-              "Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.",
+              "Choose a mask until removed. Mourner grants +10 Speed and imposes Disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic damage to its first hit each turn against a Frightened creature. Saint ends one condition and grants Advantage on its next saving throw before the end of its next turn. Fire suppresses the benefit until its next turn. While Grappled or Restrained, an adjacent creature can use an action and pass an Athletics or Sleight of Hand check against the save DC to remove the mask.",
           },
           procedure: {
             prerequisite: "The monster becomes bloodied for the first time.",

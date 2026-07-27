@@ -617,7 +617,7 @@ const DEATH_GRAFTS = {
     typeBias: ["undead"],
     roleBias: ["standard", "boss"],
     cost: 3,
-    complexity: 2,
+    complexity: 3,
     stats: { control: 2, fairness: 3 },
     summary:
       "The spirit's final victim speaks through its death, forcing one witness to choose between shutting out the horror and receiving a useful stolen memory.",
@@ -643,7 +643,7 @@ const DEATH_GRAFTS = {
         counterplay: "Keep a Reaction available to reject the memory, move outside hearing, or use a funeral rite to remove the fear while preserving the clue.",
         rules: deathRules({
           resolution: { type: "savingThrow", ability: "wisdom", dc: "monster" },
-          targeting: { type: "single", range: 30, unit: "ft", targets: "the creature that dealt the killing damage, or the nearest creature that can hear the monster" },
+          targeting: { type: "single", range: 30, unit: "ft", targets: "the killer, or the nearest creature that can hear it" },
           condition: {
             names: ["frightened"],
             severity: "major",
@@ -656,9 +656,9 @@ const DEATH_GRAFTS = {
           },
           text: {
             failure:
-              "The target has the Frightened condition until the end of its next turn and learns one precise image from the monster's last consumed victim.",
+              "The target has the Frightened condition until the end of its next turn and sees one memory from the monster's last victim.",
             success:
-              "The target learns one precise image from the monster's last consumed victim. A target that used its Reaction to reject the memory learns nothing.",
+              "The target sees that memory. A target that used its Reaction to reject it learns nothing.",
           },
         }),
         tags: ["wisdom-save", "frightened", "reaction", "investigation"],
@@ -926,7 +926,7 @@ const DEATH_GRAFTS = {
     typeBias: ["undead", "aberration"],
     roleBias: ["standard", "boss"],
     cost: 4,
-    complexity: 2,
+    complexity: 3,
     stats: { control: 3, fairness: 3 },
     summary:
       "The dying mask copies its final witnesses and turns their own expressions against them, unless they avert their gaze or destroy the face first.",

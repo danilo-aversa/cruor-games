@@ -28,7 +28,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "swollen-corpse",
-      "title": "Pressure-Swollen Vessel",
+      "title": "Swollen Corpse",
       "source": "decomposition",
       "slot": "body",
       "kind": "traitBundle",
@@ -163,7 +163,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-body-editorial-review",
-        "version": "monster-body-graft-editorial-v1.0"
+        "version": "monster-body-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -173,7 +173,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "fresh-bloat-hide",
-      "title": "Taut Bloat Hide",
+      "title": "Bloat Hide",
       "source": "decomposition",
       "slot": "body",
       "kind": "traitBundle",
@@ -296,7 +296,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-body-editorial-review",
-        "version": "monster-body-graft-editorial-v1.0"
+        "version": "monster-body-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -306,7 +306,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "volatile-immobile-mass",
-      "title": "Rooted Corpse Mass",
+      "title": "Corpse Mass",
       "source": "decomposition",
       "slot": "body",
       "kind": "traitBundle",
@@ -429,7 +429,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-body-editorial-review",
-        "version": "monster-body-graft-editorial-v1.0"
+        "version": "monster-body-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -439,7 +439,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "skin-slippage",
-      "title": "Sloughing Escape",
+      "title": "Shedding Skin",
       "source": "decomposition",
       "slot": "body",
       "kind": "traitBundle",
@@ -562,7 +562,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-body-editorial-review",
-        "version": "monster-body-graft-editorial-v1.0"
+        "version": "monster-body-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -572,7 +572,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "mindless-command",
-      "title": "Command-Bound Husk",
+      "title": "Single Command",
       "source": "decomposition",
       "slot": "mind",
       "kind": "traitBundle",
@@ -695,7 +695,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-mind-editorial-review",
-        "version": "monster-mind-graft-editorial-v1.0"
+        "version": "monster-mind-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -705,7 +705,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "pressure-agony",
-      "title": "Pain-Driven Pursuit",
+      "title": "Pain Fixation",
       "source": "decomposition",
       "slot": "mind",
       "kind": "traitBundle",
@@ -832,7 +832,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-mind-editorial-review",
-        "version": "monster-mind-graft-editorial-v1.0"
+        "version": "monster-mind-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -1295,7 +1295,7 @@
           ],
           "ruleSignatures": [
             "{\"mechanics\":\"\",\"usage\":{\"type\":\"passive\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster moved at least 15 feet or made two or more attacks during the turn.\",\"text\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"text\":{\"effect\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\"}}",
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"triggered\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and is pushed 5 feet away from the monster.\",\"success\":\"Half damage only.\",\"effect\":\"The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 15-foot Cone for the vent instead of the Emanation.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"triggered\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and is pushed 5 feet away from the monster.\",\"success\":\"Half damage only.\",\"effect\":\"The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a blister and choose a 15-foot Cone instead.\"}}"
           ],
           "targetingSizes": [
             10
@@ -1319,7 +1319,7 @@
           ],
           "ruleSignatures": [
             "{\"mechanics\":\"\",\"usage\":{\"type\":\"passive\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster moved at least 15 feet or made two or more attacks during the turn.\",\"text\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"text\":{\"effect\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\"}}",
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"triggered\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and is pushed 10 feet away from the monster.\",\"success\":\"Half damage only.\",\"effect\":\"The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 20-foot Cone for the vent instead of the Emanation.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"triggered\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and is pushed 10 feet away from the monster.\",\"success\":\"Half damage only.\",\"effect\":\"The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a blister and choose a 20-foot Cone instead.\"}}"
           ],
           "targetingSizes": [
             15
@@ -1343,7 +1343,7 @@
           ],
           "ruleSignatures": [
             "{\"mechanics\":\"\",\"usage\":{\"type\":\"passive\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster moved at least 15 feet or made two or more attacks during the turn.\",\"text\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"text\":{\"effect\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\"}}",
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"triggered\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and is pushed 10 feet away from the monster.\",\"success\":\"Half damage only.\",\"effect\":\"The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 20-foot Cone for the vent instead of the Emanation.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"triggered\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and is pushed 10 feet away from the monster.\",\"success\":\"Half damage only.\",\"effect\":\"The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a blister and choose a 20-foot Cone instead.\"}}"
           ],
           "targetingSizes": [
             15
@@ -1367,7 +1367,7 @@
           ],
           "ruleSignatures": [
             "{\"mechanics\":\"\",\"usage\":{\"type\":\"passive\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the creature\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster moved at least 15 feet or made two or more attacks during the turn.\",\"text\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"text\":{\"effect\":\"The monster gains 1 Pressure, to a maximum of 3. The number of Pressure markers is visible. At 3 Pressure, it must use Pressure Vent at the start of its next turn.\"}}",
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"triggered\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and is pushed 15 feet away from the monster.\",\"success\":\"Half damage only.\",\"effect\":\"The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a visible blister; if it does, that creature chooses a 30-foot Cone for the vent instead of the Emanation.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"triggered\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and is pushed 15 feet away from the monster.\",\"success\":\"Half damage only.\",\"effect\":\"The monster loses all Pressure. Before the vent, an adjacent creature can use an action to puncture a blister and choose a 30-foot Cone instead.\"}}"
           ],
           "targetingSizes": [
             20
@@ -1595,7 +1595,7 @@
             "critical-pressure"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and has the Prone condition.\",\"success\":\"Half damage only.\",\"effect\":\"The monster drops to 0 Hit Points after the detonation. Before it resolves, an adjacent creature can use an action to make a Dexterity (Sleight of Hand) or Intelligence (Investigation) check against the monster's save DC. On a success, the countdown ends, the monster loses its reactions until the start of its next turn, and no detonation occurs.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and has the Prone condition.\",\"success\":\"Half damage only.\",\"effect\":\"The monster drops to 0 Hit Points. Before the blast, an adjacent creature can use an action and pass Sleight of Hand or Investigation against the save DC to cancel it; the monster loses Reactions until its next turn.\"}}"
           ],
           "targetingSizes": [
             10
@@ -1616,7 +1616,7 @@
             "critical-pressure"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and has the Prone condition.\",\"success\":\"Half damage only.\",\"effect\":\"The monster drops to 0 Hit Points after the detonation. Before it resolves, an adjacent creature can use an action to make a Dexterity (Sleight of Hand) or Intelligence (Investigation) check against the monster's save DC. On a success, the countdown ends, the monster loses its reactions until the start of its next turn, and no detonation occurs.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and has the Prone condition.\",\"success\":\"Half damage only.\",\"effect\":\"The monster drops to 0 Hit Points. Before the blast, an adjacent creature can use an action and pass Sleight of Hand or Investigation against the save DC to cancel it; the monster loses Reactions until its next turn.\"}}"
           ],
           "targetingSizes": [
             15
@@ -1637,7 +1637,7 @@
             "critical-pressure"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and has the Prone condition.\",\"success\":\"Half damage only.\",\"effect\":\"The monster drops to 0 Hit Points after the detonation. Before it resolves, an adjacent creature can use an action to make a Dexterity (Sleight of Hand) or Intelligence (Investigation) check against the monster's save DC. On a success, the countdown ends, the monster loses its reactions until the start of its next turn, and no detonation occurs.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and has the Prone condition.\",\"success\":\"Half damage only.\",\"effect\":\"The monster drops to 0 Hit Points. Before the blast, an adjacent creature can use an action and pass Sleight of Hand or Investigation against the save DC to cancel it; the monster loses Reactions until its next turn.\"}}"
           ],
           "targetingSizes": [
             15
@@ -1658,7 +1658,7 @@
             "critical-pressure"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and has the Prone condition.\",\"success\":\"Half damage only.\",\"effect\":\"The monster drops to 0 Hit Points after the detonation. Before it resolves, an adjacent creature can use an action to make a Dexterity (Sleight of Hand) or Intelligence (Investigation) check against the monster's save DC. On a success, the countdown ends, the monster loses its reactions until the start of its next turn, and no detonation occurs.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"targets\":\"other creatures\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target takes {damage} Poison and Thunder damage and has the Prone condition.\",\"success\":\"Half damage only.\",\"effect\":\"The monster drops to 0 Hit Points. Before the blast, an adjacent creature can use an action and pass Sleight of Hand or Investigation against the save DC to cancel it; the monster loses Reactions until its next turn.\"}}"
           ],
           "targetingSizes": [
             20
@@ -2860,7 +2860,7 @@
             "choking-air"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"breathing creatures that start their turns in the cloud\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the cloud or move at least 5 feet above the floor.\",\"releaseCondition\":\"Open or destroy a connected exterior door, window, or vent.\",\"text\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 10-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target's Speed is reduced by 10 feet, and it can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 10-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"breathing creatures that start their turns in the cloud\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the cloud or move at least 5 feet above the floor.\",\"releaseCondition\":\"Open or destroy a connected exterior door, window, or vent.\",\"text\":\"On initiative count 20, choose a floor point within 60 feet with a corpse, drain, vent, or fluid. A 10-foot-radius Lightly Obscured cloud lasts until the next initiative count 20. A breathing creature starting there makes a Constitution saving throw. On a failure, its Speed is reduced by 10 feet and it can't take Reactions until its next turn. Creatures above the floor or that don't breathe are unaffected. Opening a connected exterior passage ends the cloud.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target's Speed is reduced by 10 feet, and it can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, choose a floor point within 60 feet with a corpse, drain, vent, or fluid. A 10-foot-radius Lightly Obscured cloud lasts until the next initiative count 20. A breathing creature starting there makes a Constitution saving throw. On a failure, its Speed is reduced by 10 feet and it can't take Reactions until its next turn. Creatures above the floor or that don't breathe are unaffected. Opening a connected exterior passage ends the cloud.\"}}"
           ],
           "targetingSizes": [
             10
@@ -2881,7 +2881,7 @@
             "choking-air"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"breathing creatures that start their turns in the cloud\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the cloud or move at least 5 feet above the floor.\",\"releaseCondition\":\"Open or destroy a connected exterior door, window, or vent.\",\"text\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 10-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target's Speed is reduced by 10 feet, and it can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 10-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"breathing creatures that start their turns in the cloud\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the cloud or move at least 5 feet above the floor.\",\"releaseCondition\":\"Open or destroy a connected exterior door, window, or vent.\",\"text\":\"On initiative count 20, choose a floor point within 60 feet with a corpse, drain, vent, or fluid. A 10-foot-radius Lightly Obscured cloud lasts until the next initiative count 20. A breathing creature starting there makes a Constitution saving throw. On a failure, its Speed is reduced by 10 feet and it can't take Reactions until its next turn. Creatures above the floor or that don't breathe are unaffected. Opening a connected exterior passage ends the cloud.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target's Speed is reduced by 10 feet, and it can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, choose a floor point within 60 feet with a corpse, drain, vent, or fluid. A 10-foot-radius Lightly Obscured cloud lasts until the next initiative count 20. A breathing creature starting there makes a Constitution saving throw. On a failure, its Speed is reduced by 10 feet and it can't take Reactions until its next turn. Creatures above the floor or that don't breathe are unaffected. Opening a connected exterior passage ends the cloud.\"}}"
           ],
           "targetingSizes": [
             10
@@ -2902,7 +2902,7 @@
             "choking-air"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"range\":60,\"targets\":\"breathing creatures that start their turns in the cloud\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the cloud or move at least 5 feet above the floor.\",\"releaseCondition\":\"Open or destroy a connected exterior door, window, or vent.\",\"text\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 15-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target's Speed is reduced by 10 feet, and it can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 15-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":15,\"unit\":\"ft\",\"range\":60,\"targets\":\"breathing creatures that start their turns in the cloud\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the cloud or move at least 5 feet above the floor.\",\"releaseCondition\":\"Open or destroy a connected exterior door, window, or vent.\",\"text\":\"On initiative count 20, choose a floor point within 60 feet with a corpse, drain, vent, or fluid. A 15-foot-radius Lightly Obscured cloud lasts until the next initiative count 20. A breathing creature starting there makes a Constitution saving throw. On a failure, its Speed is reduced by 10 feet and it can't take Reactions until its next turn. Creatures above the floor or that don't breathe are unaffected. Opening a connected exterior passage ends the cloud.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target's Speed is reduced by 10 feet, and it can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, choose a floor point within 60 feet with a corpse, drain, vent, or fluid. A 15-foot-radius Lightly Obscured cloud lasts until the next initiative count 20. A breathing creature starting there makes a Constitution saving throw. On a failure, its Speed is reduced by 10 feet and it can't take Reactions until its next turn. Creatures above the floor or that don't breathe are unaffected. Opening a connected exterior passage ends the cloud.\"}}"
           ],
           "targetingSizes": [
             15
@@ -2923,7 +2923,7 @@
             "choking-air"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"range\":60,\"targets\":\"breathing creatures that start their turns in the cloud\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the cloud or move at least 5 feet above the floor.\",\"releaseCondition\":\"Open or destroy a connected exterior door, window, or vent.\",\"text\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 20-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target's Speed is reduced by 10 feet, and it can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A 20-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"range\":60,\"targets\":\"breathing creatures that start their turns in the cloud\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the cloud or move at least 5 feet above the floor.\",\"releaseCondition\":\"Open or destroy a connected exterior door, window, or vent.\",\"text\":\"On initiative count 20, choose a floor point within 60 feet with a corpse, drain, vent, or fluid. A 20-foot-radius Lightly Obscured cloud lasts until the next initiative count 20. A breathing creature starting there makes a Constitution saving throw. On a failure, its Speed is reduced by 10 feet and it can't take Reactions until its next turn. Creatures above the floor or that don't breathe are unaffected. Opening a connected exterior passage ends the cloud.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target's Speed is reduced by 10 feet, and it can't take Reactions until the start of its next turn.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, choose a floor point within 60 feet with a corpse, drain, vent, or fluid. A 20-foot-radius Lightly Obscured cloud lasts until the next initiative count 20. A breathing creature starting there makes a Constitution saving throw. On a failure, its Speed is reduced by 10 feet and it can't take Reactions until its next turn. Creatures above the floor or that don't breathe are unaffected. Opening a connected exterior passage ends the cloud.\"}}"
           ],
           "targetingSizes": [
             20
@@ -3101,7 +3101,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "shame-hunger",
-      "title": "Funerary Shame-Hunger",
+      "title": "Funeral Hunger",
       "source": "jikininki",
       "slot": "mind",
       "kind": "traitBundle",
@@ -3240,7 +3240,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-mind-editorial-review",
-        "version": "monster-mind-graft-editorial-v1.0"
+        "version": "monster-mind-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -3250,7 +3250,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "corpse-craving",
-      "title": "Corpse Compulsion",
+      "title": "Corpse Hunger",
       "source": "jikininki",
       "slot": "mind",
       "kind": "traitBundle",
@@ -3385,7 +3385,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-mind-editorial-review",
-        "version": "monster-mind-graft-editorial-v1.0"
+        "version": "monster-mind-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -3395,7 +3395,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "nocturnal-haunting",
-      "title": "Nightbound Haunter",
+      "title": "Night Hunter",
       "source": "jikininki",
       "slot": "mind",
       "kind": "traitBundle",
@@ -3530,7 +3530,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-mind-editorial-review",
-        "version": "monster-mind-graft-editorial-v1.0"
+        "version": "monster-mind-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -3540,7 +3540,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "ethereal-sight",
-      "title": "Corpse-Anchored Spirit",
+      "title": "Anchored Spirit",
       "source": "jikininki",
       "slot": "body",
       "kind": "traitBundle",
@@ -3675,7 +3675,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-body-editorial-review",
-        "version": "monster-body-graft-editorial-v1.0"
+        "version": "monster-body-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -4112,7 +4112,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "deceitful-apparition",
-      "title": "Corpse-Worn Masquerade",
+      "title": "Dead Impostor",
       "source": "jikininki",
       "slot": "mind",
       "kind": "traitBundle",
@@ -4235,7 +4235,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-mind-editorial-review",
-        "version": "monster-mind-graft-editorial-v1.0"
+        "version": "monster-mind-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -4245,7 +4245,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "mortal-afterlife",
-      "title": "Stolen-Life Delusion",
+      "title": "Stolen Life",
       "source": "jikininki",
       "slot": "mind",
       "kind": "traitBundle",
@@ -4368,7 +4368,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-mind-editorial-review",
-        "version": "monster-mind-graft-editorial-v1.0"
+        "version": "monster-mind-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -5660,7 +5660,7 @@
             "last-meal-memory"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"death\"},\"targeting\":{\"type\":\"single\",\"range\":30,\"unit\":\"ft\",\"targets\":\"the creature that dealt the killing damage, or the nearest creature that can hear the monster\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target has the Frightened condition until the end of its next turn and learns one precise image from the monster's last consumed victim.\",\"success\":\"The target learns one precise image from the monster's last consumed victim. A target that used its Reaction to reject the memory learns nothing.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"death\"},\"targeting\":{\"type\":\"single\",\"range\":30,\"unit\":\"ft\",\"targets\":\"the killer, or the nearest creature that can hear it\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target has the Frightened condition until the end of its next turn and sees one memory from the monster's last victim.\",\"success\":\"The target sees that memory. A target that used its Reaction to reject it learns nothing.\"}}"
           ],
           "targetingSizes": [],
           "summonCounts": [
@@ -5679,7 +5679,7 @@
             "last-meal-memory"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"death\"},\"targeting\":{\"type\":\"single\",\"range\":30,\"unit\":\"ft\",\"targets\":\"the creature that dealt the killing damage, or the nearest creature that can hear the monster\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target has the Frightened condition until the end of its next turn and learns one precise image from the monster's last consumed victim.\",\"success\":\"The target learns one precise image from the monster's last consumed victim. A target that used its Reaction to reject the memory learns nothing.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"death\"},\"targeting\":{\"type\":\"single\",\"range\":30,\"unit\":\"ft\",\"targets\":\"the killer, or the nearest creature that can hear it\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target has the Frightened condition until the end of its next turn and sees one memory from the monster's last victim.\",\"success\":\"The target sees that memory. A target that used its Reaction to reject it learns nothing.\"}}"
           ],
           "targetingSizes": [],
           "summonCounts": [
@@ -5698,7 +5698,7 @@
             "last-meal-memory"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"death\"},\"targeting\":{\"type\":\"single\",\"range\":30,\"unit\":\"ft\",\"targets\":\"the creature that dealt the killing damage, or the nearest creature that can hear the monster\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target has the Frightened condition until the end of its next turn and learns one precise image from the monster's last consumed victim.\",\"success\":\"The target learns one precise image from the monster's last consumed victim. A target that used its Reaction to reject the memory learns nothing.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"death\"},\"targeting\":{\"type\":\"single\",\"range\":30,\"unit\":\"ft\",\"targets\":\"the killer, or the nearest creature that can hear it\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target has the Frightened condition until the end of its next turn and sees one memory from the monster's last victim.\",\"success\":\"The target sees that memory. A target that used its Reaction to reject it learns nothing.\"}}"
           ],
           "targetingSizes": [],
           "summonCounts": [
@@ -5717,7 +5717,7 @@
             "last-meal-memory"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"death\"},\"targeting\":{\"type\":\"single\",\"range\":30,\"unit\":\"ft\",\"targets\":\"the creature that dealt the killing damage, or the nearest creature that can hear the monster\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target has the Frightened condition until the end of its next turn and learns one precise image from the monster's last consumed victim.\",\"success\":\"The target learns one precise image from the monster's last consumed victim. A target that used its Reaction to reject the memory learns nothing.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"death\"},\"targeting\":{\"type\":\"single\",\"range\":30,\"unit\":\"ft\",\"targets\":\"the killer, or the nearest creature that can hear it\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":false,\"type\":\"custom\",\"targetLimit\":\"\",\"prerequisite\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\",\"text\":\"\"},\"text\":{\"failure\":\"The target has the Frightened condition until the end of its next turn and sees one memory from the monster's last victim.\",\"success\":\"The target sees that memory. A target that used its Reaction to reject it learns nothing.\"}}"
           ],
           "targetingSizes": [],
           "summonCounts": [
@@ -5797,7 +5797,7 @@
             "funeral-silence"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures entirely inside the silent sphere\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the sphere.\",\"releaseCondition\":\"Move the anchor 10 feet, cover it completely, or deal Radiant damage to it.\",\"text\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 10-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"effect\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 10-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures entirely inside the silent sphere\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the sphere.\",\"releaseCondition\":\"Move the anchor 10 feet, cover it completely, or deal Radiant damage to it.\",\"text\":\"On initiative count 20, the monster chooses a funerary object or corpse within 60 feet. A 10-foot-radius Sphere centered on it is silent until the next initiative count 20. Creatures entirely inside are Deafened and can't cast spells with Verbal components. Moving the anchor 10 feet, covering it, or dealing Radiant damage to it ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"effect\":\"On initiative count 20, the monster chooses a funerary object or corpse within 60 feet. A 10-foot-radius Sphere centered on it is silent until the next initiative count 20. Creatures entirely inside are Deafened and can't cast spells with Verbal components. Moving the anchor 10 feet, covering it, or dealing Radiant damage to it ends the effect.\"}}"
           ],
           "targetingSizes": [
             10
@@ -5818,7 +5818,7 @@
             "funeral-silence"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures entirely inside the silent sphere\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the sphere.\",\"releaseCondition\":\"Move the anchor 10 feet, cover it completely, or deal Radiant damage to it.\",\"text\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 10-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"effect\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 10-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures entirely inside the silent sphere\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the sphere.\",\"releaseCondition\":\"Move the anchor 10 feet, cover it completely, or deal Radiant damage to it.\",\"text\":\"On initiative count 20, the monster chooses a funerary object or corpse within 60 feet. A 10-foot-radius Sphere centered on it is silent until the next initiative count 20. Creatures entirely inside are Deafened and can't cast spells with Verbal components. Moving the anchor 10 feet, covering it, or dealing Radiant damage to it ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"effect\":\"On initiative count 20, the monster chooses a funerary object or corpse within 60 feet. A 10-foot-radius Sphere centered on it is silent until the next initiative count 20. Creatures entirely inside are Deafened and can't cast spells with Verbal components. Moving the anchor 10 feet, covering it, or dealing Radiant damage to it ends the effect.\"}}"
           ],
           "targetingSizes": [
             10
@@ -5839,7 +5839,7 @@
             "funeral-silence"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures entirely inside the silent sphere\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the sphere.\",\"releaseCondition\":\"Move the anchor 10 feet, cover it completely, or deal Radiant damage to it.\",\"text\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 20-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"effect\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 20-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":20,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures entirely inside the silent sphere\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the sphere.\",\"releaseCondition\":\"Move the anchor 10 feet, cover it completely, or deal Radiant damage to it.\",\"text\":\"On initiative count 20, the monster chooses a funerary object or corpse within 60 feet. A 20-foot-radius Sphere centered on it is silent until the next initiative count 20. Creatures entirely inside are Deafened and can't cast spells with Verbal components. Moving the anchor 10 feet, covering it, or dealing Radiant damage to it ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"effect\":\"On initiative count 20, the monster chooses a funerary object or corpse within 60 feet. A 20-foot-radius Sphere centered on it is silent until the next initiative count 20. Creatures entirely inside are Deafened and can't cast spells with Verbal components. Moving the anchor 10 feet, covering it, or dealing Radiant damage to it ends the effect.\"}}"
           ],
           "targetingSizes": [
             20
@@ -5860,7 +5860,7 @@
             "funeral-silence"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":30,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures entirely inside the silent sphere\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the sphere.\",\"releaseCondition\":\"Move the anchor 10 feet, cover it completely, or deal Radiant damage to it.\",\"text\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 30-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"effect\":\"On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a 30-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"radius\",\"size\":30,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures entirely inside the silent sphere\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Leave the sphere.\",\"releaseCondition\":\"Move the anchor 10 feet, cover it completely, or deal Radiant damage to it.\",\"text\":\"On initiative count 20, the monster chooses a funerary object or corpse within 60 feet. A 30-foot-radius Sphere centered on it is silent until the next initiative count 20. Creatures entirely inside are Deafened and can't cast spells with Verbal components. Moving the anchor 10 feet, covering it, or dealing Radiant damage to it ends the effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"effect\":\"On initiative count 20, the monster chooses a funerary object or corpse within 60 feet. A 30-foot-radius Sphere centered on it is silent until the next initiative count 20. Creatures entirely inside are Deafened and can't cast spells with Verbal components. Moving the anchor 10 feet, covering it, or dealing Radiant damage to it ends the effect.\"}}"
           ],
           "targetingSizes": [
             30
@@ -6034,7 +6034,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "maternal-swarm-instinct",
-      "title": "Brood-Guarding Instinct",
+      "title": "Brood Guard",
       "source": "wolf-spiders",
       "slot": "mind",
       "kind": "traitBundle",
@@ -6169,7 +6169,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-mind-editorial-review",
-        "version": "monster-mind-graft-editorial-v1.0"
+        "version": "monster-mind-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -6179,7 +6179,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "egg-carrier",
-      "title": "Living Brood Clutch",
+      "title": "Egg Carrier",
       "source": "wolf-spiders",
       "slot": "body",
       "kind": "traitBundle",
@@ -6318,7 +6318,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-body-editorial-review",
-        "version": "monster-body-graft-editorial-v1.0"
+        "version": "monster-body-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -6328,7 +6328,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "spider-climb",
-      "title": "Clinging Anatomy",
+      "title": "Clinging Body",
       "source": "wolf-spiders",
       "slot": "body",
       "kind": "traitBundle",
@@ -6451,7 +6451,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-body-editorial-review",
-        "version": "monster-body-graft-editorial-v1.0"
+        "version": "monster-body-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -6461,7 +6461,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "web-walker",
-      "title": "Web-Sense Carapace",
+      "title": "Web Sense",
       "source": "wolf-spiders",
       "slot": "body",
       "kind": "traitBundle",
@@ -6584,7 +6584,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-body-editorial-review",
-        "version": "monster-body-graft-editorial-v1.0"
+        "version": "monster-body-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -6716,7 +6716,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-body-editorial-review",
-        "version": "monster-body-graft-editorial-v1.0"
+        "version": "monster-body-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -6726,7 +6726,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "umbral-skin",
-      "title": "Umbral Skin",
+      "title": "Shadow Skin",
       "source": "wolf-spiders",
       "slot": "body",
       "kind": "traitBundle",
@@ -6853,7 +6853,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-body-editorial-review",
-        "version": "monster-body-graft-editorial-v1.0"
+        "version": "monster-body-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -6863,7 +6863,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "malformed-broodling",
-      "title": "Malformed Broodling",
+      "title": "Broodling",
       "source": "wolf-spiders",
       "slot": "body",
       "kind": "traitBundle",
@@ -6994,7 +6994,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-body-editorial-review",
-        "version": "monster-body-graft-editorial-v1.0"
+        "version": "monster-body-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -7004,7 +7004,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "hundred-eyed",
-      "title": "Distributed Vigil",
+      "title": "Many Eyes",
       "source": "wolf-spiders",
       "slot": "mind",
       "kind": "traitBundle",
@@ -7139,7 +7139,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-mind-editorial-review",
-        "version": "monster-mind-graft-editorial-v1.0"
+        "version": "monster-mind-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -8151,7 +8151,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "hunter-spider",
-      "title": "Patient Quarry",
+      "title": "Patient Hunter",
       "source": "wolf-spiders",
       "slot": "mind",
       "kind": "traitBundle",
@@ -8286,7 +8286,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-mind-editorial-review",
-        "version": "monster-mind-graft-editorial-v1.0"
+        "version": "monster-mind-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -9437,7 +9437,7 @@
             "broodmother-web"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cube\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures in the selected Cube that lack Web Walker\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Succeed on the Athletics escape check or destroy the creature's 5-foot section of web.\",\"releaseCondition\":\"Destroy all relevant sections, create a new Broodmother Web, or end the encounter.\",\"text\":\"On initiative count 20, the monster creates a mass of webbing in a 10-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target has the Restrained condition until it escapes or its section of web is destroyed.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster creates a mass of webbing in a 10-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cube\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures in the selected Cube that lack Web Walker\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Succeed on the Athletics escape check or destroy the creature's 5-foot section of web.\",\"releaseCondition\":\"Destroy all relevant sections, create a new Broodmother Web, or end the encounter.\",\"text\":\"On initiative count 20, webbing fills a 10-foot Cube within 60 feet. Each creature there without Web Walker makes a Dexterity saving throw, becoming Restrained on a failure. A restrained creature can use an action and pass Athletics against the save DC to escape. Each 5-foot section has AC 10, 5 Hit Points, Fire vulnerability, and Poison and Psychic immunity. Only one Broodmother Web can exist; while it remains, the monster can't use another Lair Effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target has the Restrained condition until it escapes or its section of web is destroyed.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, webbing fills a 10-foot Cube within 60 feet. Each creature there without Web Walker makes a Dexterity saving throw, becoming Restrained on a failure. A restrained creature can use an action and pass Athletics against the save DC to escape. Each 5-foot section has AC 10, 5 Hit Points, Fire vulnerability, and Poison and Psychic immunity. Only one Broodmother Web can exist; while it remains, the monster can't use another Lair Effect.\"}}"
           ],
           "targetingSizes": [
             10
@@ -9458,7 +9458,7 @@
             "broodmother-web"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cube\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures in the selected Cube that lack Web Walker\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Succeed on the Athletics escape check or destroy the creature's 5-foot section of web.\",\"releaseCondition\":\"Destroy all relevant sections, create a new Broodmother Web, or end the encounter.\",\"text\":\"On initiative count 20, the monster creates a mass of webbing in a 10-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target has the Restrained condition until it escapes or its section of web is destroyed.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster creates a mass of webbing in a 10-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cube\",\"size\":10,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures in the selected Cube that lack Web Walker\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Succeed on the Athletics escape check or destroy the creature's 5-foot section of web.\",\"releaseCondition\":\"Destroy all relevant sections, create a new Broodmother Web, or end the encounter.\",\"text\":\"On initiative count 20, webbing fills a 10-foot Cube within 60 feet. Each creature there without Web Walker makes a Dexterity saving throw, becoming Restrained on a failure. A restrained creature can use an action and pass Athletics against the save DC to escape. Each 5-foot section has AC 10, 5 Hit Points, Fire vulnerability, and Poison and Psychic immunity. Only one Broodmother Web can exist; while it remains, the monster can't use another Lair Effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target has the Restrained condition until it escapes or its section of web is destroyed.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, webbing fills a 10-foot Cube within 60 feet. Each creature there without Web Walker makes a Dexterity saving throw, becoming Restrained on a failure. A restrained creature can use an action and pass Athletics against the save DC to escape. Each 5-foot section has AC 10, 5 Hit Points, Fire vulnerability, and Poison and Psychic immunity. Only one Broodmother Web can exist; while it remains, the monster can't use another Lair Effect.\"}}"
           ],
           "targetingSizes": [
             10
@@ -9479,7 +9479,7 @@
             "broodmother-web"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cube\",\"size\":20,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures in the selected Cube that lack Web Walker\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Succeed on the Athletics escape check or destroy the creature's 5-foot section of web.\",\"releaseCondition\":\"Destroy all relevant sections, create a new Broodmother Web, or end the encounter.\",\"text\":\"On initiative count 20, the monster creates a mass of webbing in a 20-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target has the Restrained condition until it escapes or its section of web is destroyed.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster creates a mass of webbing in a 20-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cube\",\"size\":20,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures in the selected Cube that lack Web Walker\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Succeed on the Athletics escape check or destroy the creature's 5-foot section of web.\",\"releaseCondition\":\"Destroy all relevant sections, create a new Broodmother Web, or end the encounter.\",\"text\":\"On initiative count 20, webbing fills a 20-foot Cube within 60 feet. Each creature there without Web Walker makes a Dexterity saving throw, becoming Restrained on a failure. A restrained creature can use an action and pass Athletics against the save DC to escape. Each 5-foot section has AC 10, 5 Hit Points, Fire vulnerability, and Poison and Psychic immunity. Only one Broodmother Web can exist; while it remains, the monster can't use another Lair Effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target has the Restrained condition until it escapes or its section of web is destroyed.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, webbing fills a 20-foot Cube within 60 feet. Each creature there without Web Walker makes a Dexterity saving throw, becoming Restrained on a failure. A restrained creature can use an action and pass Athletics against the save DC to escape. Each 5-foot section has AC 10, 5 Hit Points, Fire vulnerability, and Poison and Psychic immunity. Only one Broodmother Web can exist; while it remains, the monster can't use another Lair Effect.\"}}"
           ],
           "targetingSizes": [
             20
@@ -9500,7 +9500,7 @@
             "broodmother-web"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cube\",\"size\":30,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures in the selected Cube that lack Web Walker\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Succeed on the Athletics escape check or destroy the creature's 5-foot section of web.\",\"releaseCondition\":\"Destroy all relevant sections, create a new Broodmother Web, or end the encounter.\",\"text\":\"On initiative count 20, the monster creates a mass of webbing in a 30-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target has the Restrained condition until it escapes or its section of web is destroyed.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, the monster creates a mass of webbing in a 30-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"lair\"},\"targeting\":{\"type\":\"area\",\"shape\":\"cube\",\"size\":30,\"unit\":\"ft\",\"range\":60,\"targets\":\"creatures in the selected Cube that lack Web Walker\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"On initiative count 20 (losing initiative ties).\",\"escapeCondition\":\"Succeed on the Athletics escape check or destroy the creature's 5-foot section of web.\",\"releaseCondition\":\"Destroy all relevant sections, create a new Broodmother Web, or end the encounter.\",\"text\":\"On initiative count 20, webbing fills a 30-foot Cube within 60 feet. Each creature there without Web Walker makes a Dexterity saving throw, becoming Restrained on a failure. A restrained creature can use an action and pass Athletics against the save DC to escape. Each 5-foot section has AC 10, 5 Hit Points, Fire vulnerability, and Poison and Psychic immunity. Only one Broodmother Web can exist; while it remains, the monster can't use another Lair Effect.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null},\"text\":{\"failure\":\"The target has the Restrained condition until it escapes or its section of web is destroyed.\",\"success\":\"No effect.\",\"effect\":\"On initiative count 20, webbing fills a 30-foot Cube within 60 feet. Each creature there without Web Walker makes a Dexterity saving throw, becoming Restrained on a failure. A restrained creature can use an action and pass Athletics against the save DC to escape. Each 5-foot section has AC 10, 5 Hit Points, Fire vulnerability, and Poison and Psychic immunity. Only one Broodmother Web can exist; while it remains, the monster can't use another Lair Effect.\"}}"
           ],
           "targetingSizes": [
             30
@@ -9674,7 +9674,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "waxen-mask-body",
-      "title": "Waxen Funeral Flesh",
+      "title": "Waxen Flesh",
       "source": "wax-death-masks",
       "slot": "body",
       "kind": "traitBundle",
@@ -9797,7 +9797,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-body-editorial-review",
-        "version": "monster-body-graft-editorial-v1.0"
+        "version": "monster-body-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -9807,7 +9807,7 @@
       "version": "monster-support-graft-audit-v1.0",
       "applicable": true,
       "id": "borrowed-face",
-      "title": "Borrowed Mourner's Memory",
+      "title": "Borrowed Face",
       "source": "wax-death-masks",
       "slot": "mind",
       "kind": "traitBundle",
@@ -9933,7 +9933,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase6r-mind-editorial-review",
-        "version": "monster-mind-graft-editorial-v1.0"
+        "version": "monster-mind-graft-editorial-v1.1-simple-names"
       },
       "issues": [],
       "errors": [],
@@ -10124,7 +10124,7 @@
             "changing-mask"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster becomes bloodied for the first time.\",\"text\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"text\":{\"effect\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster becomes bloodied for the first time.\",\"text\":\"Choose a mask until removed. Mourner grants +10 Speed and imposes Disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic damage to its first hit each turn against a Frightened creature. Saint ends one condition and grants Advantage on its next saving throw before the end of its next turn. Fire suppresses the benefit until its next turn. While Grappled or Restrained, an adjacent creature can use an action and pass an Athletics or Sleight of Hand check against the save DC to remove the mask.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"text\":{\"effect\":\"Choose a mask until removed. Mourner grants +10 Speed and imposes Disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic damage to its first hit each turn against a Frightened creature. Saint ends one condition and grants Advantage on its next saving throw before the end of its next turn. Fire suppresses the benefit until its next turn. While Grappled or Restrained, an adjacent creature can use an action and pass an Athletics or Sleight of Hand check against the save DC to remove the mask.\"}}"
           ],
           "targetingSizes": [],
           "summonCounts": [
@@ -10143,7 +10143,7 @@
             "changing-mask"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster becomes bloodied for the first time.\",\"text\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"text\":{\"effect\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster becomes bloodied for the first time.\",\"text\":\"Choose a mask until removed. Mourner grants +10 Speed and imposes Disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic damage to its first hit each turn against a Frightened creature. Saint ends one condition and grants Advantage on its next saving throw before the end of its next turn. Fire suppresses the benefit until its next turn. While Grappled or Restrained, an adjacent creature can use an action and pass an Athletics or Sleight of Hand check against the save DC to remove the mask.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"text\":{\"effect\":\"Choose a mask until removed. Mourner grants +10 Speed and imposes Disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic damage to its first hit each turn against a Frightened creature. Saint ends one condition and grants Advantage on its next saving throw before the end of its next turn. Fire suppresses the benefit until its next turn. While Grappled or Restrained, an adjacent creature can use an action and pass an Athletics or Sleight of Hand check against the save DC to remove the mask.\"}}"
           ],
           "targetingSizes": [],
           "summonCounts": [
@@ -10162,7 +10162,7 @@
             "changing-mask"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster becomes bloodied for the first time.\",\"text\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"text\":{\"effect\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster becomes bloodied for the first time.\",\"text\":\"Choose a mask until removed. Mourner grants +10 Speed and imposes Disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic damage to its first hit each turn against a Frightened creature. Saint ends one condition and grants Advantage on its next saving throw before the end of its next turn. Fire suppresses the benefit until its next turn. While Grappled or Restrained, an adjacent creature can use an action and pass an Athletics or Sleight of Hand check against the save DC to remove the mask.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"text\":{\"effect\":\"Choose a mask until removed. Mourner grants +10 Speed and imposes Disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic damage to its first hit each turn against a Frightened creature. Saint ends one condition and grants Advantage on its next saving throw before the end of its next turn. Fire suppresses the benefit until its next turn. While Grappled or Restrained, an adjacent creature can use an action and pass an Athletics or Sleight of Hand check against the save DC to remove the mask.\"}}"
           ],
           "targetingSizes": [],
           "summonCounts": [
@@ -10181,7 +10181,7 @@
             "changing-mask"
           ],
           "ruleSignatures": [
-            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster becomes bloodied for the first time.\",\"text\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"text\":{\"effect\":\"Choose one mask and announce it visibly. Mourner increases the monster's speed by 10 feet and imposes disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic harm to the first hit it scores each turn against a Frightened creature. Saint immediately ends one condition affecting it and grants advantage on its next saving throw before the end of its next turn. The chosen mask lasts until the encounter ends or the mask is removed. Fire exposure suppresses the chosen benefit until the start of the monster's next turn. While the monster has the Grappled or Restrained condition, an adjacent creature can use an action to remove the mask with a successful Strength (Athletics) or Dexterity (Sleight of Hand) check against the monster's save DC.\"}}"
+            "{\"mechanics\":\"\",\"usage\":{\"type\":\"limited\",\"uses\":1,\"period\":\"encounter\"},\"targeting\":{\"type\":\"self\",\"targets\":\"the monster\"},\"defense\":{\"enabled\":false,\"type\":\"custom\",\"uses\":null,\"value\":null,\"timing\":\"passive\",\"damageTypes\":[],\"breakCondition\":\"\",\"text\":\"\"},\"summon\":{\"enabled\":false,\"type\":\"summon\",\"creatureRef\":\"\",\"creatureName\":\"\",\"count\":\"1\",\"placement\":\"\",\"duration\":\"\",\"initiative\":\"immediatelyAfterSummoner\",\"control\":\"underSummonerControl\",\"limit\":\"\",\"trigger\":\"\",\"text\":\"\"},\"procedure\":{\"enabled\":true,\"type\":\"custom\",\"prerequisite\":\"The monster becomes bloodied for the first time.\",\"text\":\"Choose a mask until removed. Mourner grants +10 Speed and imposes Disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic damage to its first hit each turn against a Frightened creature. Saint ends one condition and grants Advantage on its next saving throw before the end of its next turn. Fire suppresses the benefit until its next turn. While Grappled or Restrained, an adjacent creature can use an action and pass an Athletics or Sleight of Hand check against the save DC to remove the mask.\",\"targetLimit\":\"\",\"entryEffect\":\"\",\"internalState\":\"\",\"ongoingDamage\":null,\"escapeCondition\":\"\",\"releaseCondition\":\"\"},\"text\":{\"effect\":\"Choose a mask until removed. Mourner grants +10 Speed and imposes Disadvantage on Opportunity Attacks against it. Accuser adds its Proficiency Bonus as Psychic damage to its first hit each turn against a Frightened creature. Saint ends one condition and grants Advantage on its next saving throw before the end of its next turn. Fire suppresses the benefit until its next turn. While Grappled or Restrained, an adjacent creature can use an action and pass an Athletics or Sleight of Hand check against the save DC to remove the mask.\"}}"
           ],
           "targetingSizes": [],
           "summonCounts": [

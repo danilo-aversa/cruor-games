@@ -1,7 +1,7 @@
 {
   "name": "cruor-games",
   "private": true,
-  "version": "34.0.0a",
+  "version": "35.0.0a",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -151,7 +151,11 @@
     "monster:qa:lair-editorial": "vitest run features/monster-composer/model/monster-lair-graft.test.js",
     "monster:audit:lair-editorial": "node scripts/monster/report-monster-lair-editorial.mjs",
     "monster:audit:lair-editorial:check": "node scripts/monster/report-monster-lair-editorial.mjs --check",
-    "monster:audit:lair-editorial:strict": "node scripts/monster/report-monster-lair-editorial.mjs --check --strict"
+    "monster:audit:lair-editorial:strict": "node scripts/monster/report-monster-lair-editorial.mjs --check --strict",
+    "monster:qa:catalog-editorial": "vitest run features/monster-composer/model/monster-catalog-editorial.test.js",
+    "monster:audit:catalog-editorial": "node scripts/monster/report-monster-catalog-editorial.mjs",
+    "monster:audit:catalog-editorial:check": "node scripts/monster/report-monster-catalog-editorial.mjs --check",
+    "monster:audit:catalog-editorial:strict": "node scripts/monster/report-monster-catalog-editorial.mjs --check --strict"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",

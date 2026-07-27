@@ -1429,10 +1429,9 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           <div className="cruor-home__statement-inner">
             <div className="cruor-home__section-head cruor-home__section-head--workbench">
               <span className="cruor-home__section-kicker">How the Workbench Works</span>
-              <h2 id="workbenchStepsTitle">From Source to Table Output</h2>
-              <p>
-                Pick a generator, define the creative logic, and turn it into playable 5E material.
-              </p>
+              <h2 id="workbenchStepsTitle">
+                Pick a Generator, Shape the Logic, and Create Playable Content
+              </h2>
             </div>
 
             <div className="cruor-home__workbench-process">
@@ -1452,8 +1451,8 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
                     <h3>Input</h3>
                     <span className="cruor-home__workbench-stage-subtitle">Define the Need</span>
                     <p>
-                      Choose what the session needs and set its source, context, and creative
-                      direction.
+                      Choose the kind of content your game needs and define how it should function,
+                      feel, and fit within your game.
                     </p>
                   </div>
                 </li>
@@ -1468,8 +1467,8 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
                     <h3>Engine</h3>
                     <span className="cruor-home__workbench-stage-subtitle">Shape It in the Crucible</span>
                     <p>
-                      Sources, conditions, and 5E rules are combined, validated, and assembled into
-                      one coherent result.
+                      Your choices pass through our carefully designed systems to produce coherent,
+                      balanced, and playable content.
                     </p>
                   </div>
                 </li>
@@ -1484,7 +1483,8 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
                     <h3>Output</h3>
                     <span className="cruor-home__workbench-stage-subtitle">Bring It to the Table</span>
                     <p>
-                      Receive structured, playable content that is ready to use, refine, or export.
+                      Review the generated content, refine every key detail, and bring the finished
+                      result directly into your game.
                     </p>
                   </div>
                 </li>
@@ -1506,12 +1506,9 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
       >
         <div className="cruor-home__section-head cruor-home__section-head--tools">
           <span className="cruor-home__section-kicker">Available Now</span>
-          <h2 id="featuredToolsTitle">Workbench Tools</h2>
-          <p>
-            Use the first production tools of Cruor’s dark fantasy workbench: generate playable
-            locations, procedural maps, and complete 5E monster stat blocks from source-driven
-            components.
-          </p>
+          <h2 id="featuredToolsTitle">
+            Shape Ideas into Playable Content with Modular Tools
+          </h2>
         </div>
 
         <div className="cruor-home__tool-grid">
@@ -1579,10 +1576,6 @@ export default function HomePage({ onOpenCrucibleTool, onOpenInspirations }) {
           <div className="cruor-home__faq-intro">
             <span className="cruor-home__section-kicker">The Crucible, Explained</span>
             <h2 id="faqTitle">Frequently Asked Questions</h2>
-            <p>
-              A concise guide to Cruor Games, the Crucible, its semi-procedural engines, and how
-              access will work during and after public testing.
-            </p>
           </div>
 
           <Accordion

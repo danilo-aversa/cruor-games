@@ -247,13 +247,13 @@ function radiusProgression({ idPrefix, abilityId, bands, textBuilder, patchBuild
 }
 
 const chokingAirText = (radius) =>
-  `On initiative count 20, the monster chooses a point on the floor within 60 feet that contains a corpse, drain, vent, or standing fluid. A ${radius}-foot-radius cloud of low, visibly thick air fills that area until initiative count 20 on the next round. The area is Lightly Obscured. A breathing creature that starts its turn in the cloud makes a Constitution saving throw. On a failed save, its Speed is reduced by 10 feet and it can't take Reactions until the start of its next turn. A creature at least 5 feet above the floor automatically succeeds. A creature that doesn't need to breathe is unaffected. Opening or destroying an exterior door, window, or vent connected to the cloud ends the effect.`;
+  `On initiative count 20, choose a floor point within 60 feet with a corpse, drain, vent, or fluid. A ${radius}-foot-radius Lightly Obscured cloud lasts until the next initiative count 20. A breathing creature starting there makes a Constitution saving throw. On a failure, its Speed is reduced by 10 feet and it can't take Reactions until its next turn. Creatures above the floor or that don't breathe are unaffected. Opening a connected exterior passage ends the cloud.`;
 
 const funeralSilenceText = (radius) =>
-  `On initiative count 20, the monster chooses one visible funerary object, grave marker, shroud, or corpse within 60 feet. Until initiative count 20 on the next round, a ${radius}-foot-radius Sphere centered on that anchor is silent. No sound can be created within or pass through the area. A creature entirely inside it has the Deafened condition and can't cast a spell with a Verbal component. Moving the anchor at least 10 feet, covering it completely, or dealing Radiant damage to it ends the effect.`;
+  `On initiative count 20, the monster chooses a funerary object or corpse within 60 feet. A ${radius}-foot-radius Sphere centered on it is silent until the next initiative count 20. Creatures entirely inside are Deafened and can't cast spells with Verbal components. Moving the anchor 10 feet, covering it, or dealing Radiant damage to it ends the effect.`;
 
 const broodmotherWebText = (size) =>
-  `On initiative count 20, the monster creates a mass of webbing in a ${size}-foot Cube at a point it can see within 60 feet. Each creature in the Cube that lacks Web Walker makes a Dexterity saving throw. On a failed save, a creature has the Restrained condition until it escapes or its section of web is destroyed. A restrained creature can take an action to make a Strength (Athletics) check against the monster's save DC, ending the condition on itself on a success. A 5-foot section of web has AC 10, 5 Hit Points, vulnerability to Fire damage, and immunity to Poison and Psychic damage. The monster can maintain only one Broodmother Web; creating another destroys the previous one, and it can't use another Lair Effect while this web remains.`;
+  `On initiative count 20, webbing fills a ${size}-foot Cube within 60 feet. Each creature there without Web Walker makes a Dexterity saving throw, becoming Restrained on a failure. A restrained creature can use an action and pass Athletics against the save DC to escape. Each 5-foot section has AC 10, 5 Hit Points, Fire vulnerability, and Poison and Psychic immunity. Only one Broodmother Web can exist; while it remains, the monster can't use another Lair Effect.`;
 
 const LAIR_GRAFTS = {
   "choking-air": graftBase({
@@ -618,7 +618,7 @@ const LAIR_GRAFTS = {
     typeBias: ["undead"],
     roleBias: ["boss", "standard"],
     cost: 4,
-    complexity: 2,
+    complexity: 3,
     stats: { control: 2, fairness: 3 },
     summary:
       "One disturbed corpse or grave offering becomes a spectral lure that drags nearby creatures until the dead are acknowledged.",
@@ -707,7 +707,7 @@ const LAIR_GRAFTS = {
     typeBias: ["beast", "aberration"],
     roleBias: ["boss", "standard"],
     cost: 5,
-    complexity: 2,
+    complexity: 3,
     stats: { control: 3, fairness: 3 },
     summary:
       "Two visible patches of taut web become one-use restraint traps instead of imposing a blanket Dexterity penalty across the entire lair.",
@@ -914,7 +914,7 @@ const LAIR_GRAFTS = {
     typeBias: ["beast", "aberration"],
     roleBias: ["boss", "standard"],
     cost: 3,
-    complexity: 2,
+    complexity: 3,
     stats: { control: 2, fairness: 3 },
     summary:
       "The nest permanently layers selected surfaces with vibration-carrying silk that slows intruders and prevents them from hiding from web-walkers.",

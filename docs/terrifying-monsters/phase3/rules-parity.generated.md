@@ -19,8 +19,8 @@ A graft may declare `rules.parity.status = "verified"` only when:
 | Verified ability rules | 98 |
 | Passed | 98 |
 | Failed | 0 |
-| Structured effect clauses | 20 |
-| Conditional damage clauses | 3 |
+| Structured effect clauses | 21 |
+| Conditional damage clauses | 2 |
 
 ## Verified grafts
 
@@ -37,7 +37,7 @@ A graft may declare `rules.parity.status = "verified"` only when:
 | `collapsed-crawler:low-crawl` | Pass | 0 | 0 | 0 | 0 |
 | `slam-decomposition:heavy-slam` | Pass | 0 | 1 | 0 | 0 |
 | `acid-vomit:heavy-slam` | Pass | 0 | 1 | 0 | 0 |
-| `corpse-grab:heavy-slam` | Pass | 0 | 1 | 0 | 0 |
+| `corpse-grab:heavy-slam` | Pass | 1 | 0 | 0 | 0 |
 | `gas-buildup:pressure-clock` | Pass | 0 | 0 | 0 | 0 |
 | `gas-buildup:pressure-vent` | Pass | 0 | 0 | 0 | 0 |
 | `unstable-rupture:unstable-rupture` | Pass | 0 | 0 | 0 | 0 |

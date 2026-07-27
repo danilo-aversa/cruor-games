@@ -42,18 +42,18 @@
 | attack | `venomous-bite` | Venom Hunter | 2 | Evocative pattern | pass |
 | attack | `venomous-spit` | Venom Spitter | 2 | Evocative pattern | pass |
 | attack | `web-recharge` | Web Hunter | 2 | Evocative pattern | pass |
+| body | `ethereal-sight` | Anchored Spirit | 2 | Editorial | pass |
 | body | `barbed-chitin` | Barbed Chitin | 2 | Editorial | pass |
 | body | `fresh-bloat-hide` | Bloat Hide | 2 | Editorial | pass |
 | body | `malformed-broodling` | Broodling | 1 | Editorial | pass |
+| body | `spider-climb` | Clinging Body | 2 | Editorial | pass |
 | body | `volatile-immobile-mass` | Corpse Mass | 2 | Editorial | pass |
 | body | `egg-carrier` | Egg Carrier | 2 | Editorial | pass |
-| body | `ethereal-sight` | Ethereal Sight | 2 | Bestiary canonical | pass |
 | body | `umbral-skin` | Shadow Skin | 2 | Editorial | pass |
 | body | `skin-slippage` | Shedding Skin | 2 | Editorial | pass |
-| body | `spider-climb` | Spider Climb | 2 | Bestiary canonical | pass |
 | body | `swollen-corpse` | Swollen Corpse | 2 | Editorial | pass |
 | body | `waxen-mask-body` | Waxen Flesh | 2 | Editorial | pass |
-| body | `web-walker` | Web Walker | 2 | Bestiary canonical | pass |
+| body | `web-walker` | Web Sense | 2 | Editorial | pass |
 | horror | `crawling-dread` | Crawling Dread | 2 | Editorial | pass |
 | horror | `horrific-apparition` | Horrific Apparition | 2 | Editorial | pass |
 | horror | `stench` | Stench | 1 | Bestiary canonical | pass |
@@ -70,12 +70,12 @@
 | mind | `mindless-command` | Single Command | 2 | Editorial | pass |
 | mind | `mortal-afterlife` | Stolen Life | 2 | Editorial | pass |
 | movement | `collapsed-crawler` | Crawling Ruin | 2 | Editorial | pass |
-| movement | `cunning-action-spirit` | Cunning Action | 2 | Bestiary canonical | pass |
-| movement | `incorporeal-movement` | Incorporeal Movement | 2 | Bestiary canonical | pass |
+| movement | `cunning-action-spirit` | Cunning Hunt | 2 | Editorial | pass |
+| movement | `stumbling-mass` | Dead March | 2 | Editorial | pass |
+| movement | `incorporeal-movement` | Ghost Passage | 2 | Editorial | pass |
 | movement | `predatory-jump` | Predatory Leap | 2 | Editorial | pass |
 | movement | `rupture-charge` | Rupture Charge | 2 | Editorial | pass |
 | movement | `shadow-jump` | Shadow Step | 2 | Editorial | pass |
-| movement | `stumbling-mass` | Stumbling Mass | 2 | Editorial | pass |
 | movement | `shadow-stillness` | Unseen Advance | 2 | Editorial | pass |
 | movement | `vanish-spirit` | Vanish | 1 | Bestiary canonical | pass |
 | movement | `wall-crawler` | Wall Stalker | 2 | Editorial | pass |

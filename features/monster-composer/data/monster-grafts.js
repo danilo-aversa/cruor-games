@@ -10827,16 +10827,20 @@ function buildAttackPatternAbility(descriptor = {}, pattern = {}) {
   }
 
   const cleanedSource = applyRulesContentCleanup(sourceGraft);
-  const participation = {
-    enabled: true,
-    role: descriptor.role || "primary",
-    maxUses: Math.max(1, Number(descriptor.maxUses || 1)),
-    replacementScope: descriptor.replacementScope || "oneAttack",
-    timing: descriptor.timing || "beforeAttacks",
-    availability: descriptor.availability || "always",
-    group: descriptor.group || "primary",
-  };
-  const rules = mergeCleanup(cleanedSource.rules || {}, {
+  const participation =
+    descriptor.participatesInMultiattack === false
+      ? { enabled: false }
+      : {
+          enabled: true,
+          role: descriptor.role || "primary",
+          maxUses: Math.max(1, Number(descriptor.maxUses || 1)),
+          replacementScope: descriptor.replacementScope || "oneAttack",
+          timing: descriptor.timing || "beforeAttacks",
+          availability: descriptor.availability || "always",
+          group: descriptor.group || "primary",
+        };
+  const customizedRules = mergeCleanup(cleanedSource.rules || {}, descriptor.rulesPatch || {});
+  const rules = mergeCleanup(customizedRules, {
     multiattackParticipation: participation,
   });
 
@@ -10903,6 +10907,8 @@ function applyAttackPatternMigration(graft) {
     graftSchemaVersion: "monster-graft-v2.0",
     kind: "attackPattern",
     title: pattern.title || graft.title,
+    cost: pattern.cost ?? graft.cost,
+    complexity: pattern.complexity ?? graft.complexity,
     summary: pattern.summary,
     mechanics: pattern.mechanics,
     counterplay: pattern.counterplay,
@@ -11021,7 +11027,7 @@ export const FEATURE_COMPATIBILITY_OVERRIDES = {
 
   "maternal-swarm-instinct": { grants: ["brood"] },
   "egg-carrier": { grants: ["egg_carrier", "brood"] },
-  "spider-climb": { grants: ["climber", "spider_body"] },
+  "spider-climb": { grants: ["climber", "spider_body"], avoidWith: ["climber"] },
   "web-walker": { grants: ["web_walker", "web_terrain"] },
   "barbed-chitin": {
     grants: ["barbed_chitin", "physical_chitin"],
@@ -11030,20 +11036,40 @@ export const FEATURE_COMPATIBILITY_OVERRIDES = {
   "umbral-skin": { grants: ["shadow_body"] },
   "malformed-broodling": { softRequires: ["brood"] },
   "hunter-spider": { grants: ["stealth_predator"] },
-  "wall-crawler": { grants: ["climber", "spider_body"] },
-  "web-dancer": { requires: ["web_maker"], grants: ["high_mobility", "web_dancer"] },
+  "wall-crawler": { grants: ["climber", "spider_body"], avoidWith: ["climber"] },
+  "web-dancer": {
+    requires: ["web_maker"],
+    grants: ["high_mobility", "web_dancer", "web_infrastructure"],
+    avoidWith: ["web_infrastructure"],
+  },
   "shadow-jump": { grants: ["high_mobility", "shadow_jump", "shadow_movement"] },
   "predatory-jump": { grants: ["high_mobility", "predatory_jump"] },
   "web-recharge": { grants: ["web_maker", "web_terrain"] },
   "shadow-web": { grants: ["web_maker", "web_terrain"] },
   "enrage-broodmother": { requires: ["egg_carrier"] },
-  "web-architect": { requires: ["web_maker"] },
+  "web-architect": {
+    requires: ["web_maker"],
+    grants: ["web_infrastructure"],
+    avoidWith: ["web_infrastructure"],
+  },
   "corrosive-web": { requires: ["web_maker"] },
   "brood-tell": { softRequires: ["brood"] },
   "egg-hatch-death": { requires: ["egg_carrier"] },
-  "sticky-surroundings": { softRequires: ["web_terrain"] },
-  "broodmother-web-lair": { requires: ["web_maker"] },
-  "dense-web-region": { grants: ["web_terrain"] },  "bone-reassembly": { requires: ["bone_body"] },
+  "sticky-surroundings": {
+    softRequires: ["web_terrain"],
+    grants: ["web_infrastructure"],
+    avoidWith: ["web_infrastructure"],
+  },
+  "broodmother-web-lair": {
+    requires: ["web_maker"],
+    grants: ["web_infrastructure"],
+    avoidWith: ["web_infrastructure"],
+  },
+  "dense-web-region": {
+    grants: ["web_terrain", "web_infrastructure"],
+    avoidWith: ["web_infrastructure"],
+  },
+  "bone-reassembly": { requires: ["bone_body"] },
   "waxen-mask-body": { grants: ["wax_body", "wax_mask"] },
   "borrowed-face": { requires: ["wax_mask"], incompatibleWith: ["mindless"] },
   "shadow-stillness": { grants: ["high_mobility"] },

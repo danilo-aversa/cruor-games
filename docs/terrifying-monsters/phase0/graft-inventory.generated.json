@@ -1,9 +1,9 @@
 {
   "metadata": {
     "schemaVersion": "terrifying-monsters-graft-inventory-v1.0",
-    "packageVersion": "33.0.0a",
+    "packageVersion": "34.0.0a",
     "monsterGraftsPath": "features/monster-composer/data/monster-grafts.js",
-    "monsterGraftsSha256": "f56612629d6b6f686e21210ba0b3ec0a0eae24566481a41756b5b29b57134952",
+    "monsterGraftsSha256": "77172dabf3999a1db5669d02f82ea5d69d25c5d3caba9e85b5e050293c3d2264",
     "generatorPath": "scripts/monster/report-monster-graft-phase0.mjs",
     "deterministic": true
   },
@@ -67,16 +67,16 @@
     "attackGraftsWithMultiattack": 15,
     "attackGraftsWithMultiattackParticipation": 15,
     "parityVerified": 78,
-    "structuredEffectClauses": 20,
-    "conditionalDamageClauses": 3,
-    "parityReviewCandidates": 40,
+    "structuredEffectClauses": 23,
+    "conditionalDamageClauses": 2,
+    "parityReviewCandidates": 41,
     "parityReviewFlagCounts": {
       "advantage-disadvantage-review": 7,
       "armor-class-state-review": 10,
       "damage-defense-review": 18,
       "grapple-review": 2,
-      "healing-review": 10,
-      "movement-state-review": 9,
+      "healing-review": 9,
+      "movement-state-review": 10,
       "reach-review": 4
     },
     "overrides": {
@@ -110,7 +110,7 @@
     {
       "index": 1,
       "id": "swollen-corpse",
-      "title": "Pressure-Swollen Vessel",
+      "title": "Swollen Corpse",
       "source": "decomposition",
       "slot": "body",
       "section": "trait",
@@ -153,7 +153,7 @@
     {
       "index": 2,
       "id": "fresh-bloat-hide",
-      "title": "Taut Bloat Hide",
+      "title": "Bloat Hide",
       "source": "decomposition",
       "slot": "body",
       "section": "trait",
@@ -197,7 +197,7 @@
     {
       "index": 3,
       "id": "volatile-immobile-mass",
-      "title": "Rooted Corpse Mass",
+      "title": "Corpse Mass",
       "source": "decomposition",
       "slot": "body",
       "section": "trait",
@@ -241,7 +241,7 @@
     {
       "index": 4,
       "id": "skin-slippage",
-      "title": "Sloughing Escape",
+      "title": "Shedding Skin",
       "source": "decomposition",
       "slot": "body",
       "section": "trait",
@@ -284,7 +284,7 @@
     {
       "index": 5,
       "id": "mindless-command",
-      "title": "Command-Bound Husk",
+      "title": "Single Command",
       "source": "decomposition",
       "slot": "mind",
       "section": "trait",
@@ -325,7 +325,7 @@
     {
       "index": 6,
       "id": "pressure-agony",
-      "title": "Pain-Driven Pursuit",
+      "title": "Pain Fixation",
       "source": "decomposition",
       "slot": "mind",
       "section": "trait",
@@ -491,12 +491,12 @@
     {
       "index": 10,
       "id": "slam-decomposition",
-      "title": "Heavy Slam",
+      "title": "Crusher",
       "source": "decomposition",
       "slot": "attack",
       "section": "action",
-      "cost": 2,
-      "complexity": 1,
+      "cost": 3,
+      "complexity": 2,
       "rulesSchemaVersion": "monster-graft-rules-v1.16|monster-graft-rules-v1.12",
       "migrationSource": "content-conversion-v1.1",
       "convertedFrom": "legacy-mechanics|existing-structured-rules",
@@ -525,7 +525,7 @@
       "hasOngoing": false,
       "hasDefense": false,
       "hasSummon": false,
-      "hasProcedure": false,
+      "hasProcedure": true,
       "hasMultiattack": true,
       "hasMultiattackParticipation": true,
       "referenceCount": 0,
@@ -542,12 +542,12 @@
     {
       "index": 11,
       "id": "empowered-slam",
-      "title": "Empowered Slam",
+      "title": "Juggernaut",
       "source": "decomposition",
       "slot": "attack",
       "section": "action",
-      "cost": 4,
-      "complexity": 1,
+      "cost": 6,
+      "complexity": 3,
       "rulesSchemaVersion": "monster-graft-rules-v1.12",
       "migrationSource": "content-conversion-v1.1",
       "convertedFrom": "existing-structured-rules",
@@ -563,11 +563,12 @@
       ],
       "damageTypes": [
         "bludgeoning",
-        "acid"
+        "thunder"
       ],
       "conditionNames": [
         "grappled",
-        "restrained"
+        "restrained",
+        "prone"
       ],
       "parityStatus": "unreviewed",
       "effectCount": 0,
@@ -587,7 +588,6 @@
       "anatomyGrantOverride": false,
       "mechanicOverride": false,
       "parityReviewFlags": [
-        "healing-review",
         "reach-review"
       ],
       "parityReviewRequired": true
@@ -595,7 +595,7 @@
     {
       "index": 12,
       "id": "acid-vomit",
-      "title": "Acid Vomit",
+      "title": "Acid Brute",
       "source": "decomposition",
       "slot": "attack",
       "section": "action",
@@ -645,7 +645,7 @@
     {
       "index": 13,
       "id": "corpse-grab",
-      "title": "Corpse Grab",
+      "title": "Grappler",
       "source": "decomposition",
       "slot": "attack",
       "section": "action",
@@ -661,8 +661,7 @@
       "actionEconomy": "action",
       "usageType": "atWill",
       "damageBudgetRoles": [
-        "mainAttack",
-        "minorAttack"
+        "mainAttack"
       ],
       "damageTypes": [
         "bludgeoning"
@@ -672,8 +671,8 @@
         "restrained"
       ],
       "parityStatus": "mixed",
-      "effectCount": 0,
-      "conditionalDamageCount": 1,
+      "effectCount": 1,
+      "conditionalDamageCount": 0,
       "hasAreaTargeting": false,
       "hasAreaEffect": false,
       "hasOngoing": false,
@@ -1007,7 +1006,7 @@
       "slot": "weakness",
       "section": "trait",
       "cost": -2,
-      "complexity": 1,
+      "complexity": 2,
       "rulesSchemaVersion": "monster-graft-rules-v1.16",
       "migrationSource": "phase6r-weakness-editorial-review",
       "convertedFrom": "legacy-mechanics",
@@ -1262,7 +1261,7 @@
     {
       "index": 27,
       "id": "shame-hunger",
-      "title": "Funerary Shame-Hunger",
+      "title": "Funeral Hunger",
       "source": "jikininki",
       "slot": "mind",
       "section": "trait",
@@ -1303,7 +1302,7 @@
     {
       "index": 28,
       "id": "corpse-craving",
-      "title": "Corpse Compulsion",
+      "title": "Corpse Hunger",
       "source": "jikininki",
       "slot": "mind",
       "section": "trait",
@@ -1346,7 +1345,7 @@
     {
       "index": 29,
       "id": "nocturnal-haunting",
-      "title": "Nightbound Haunter",
+      "title": "Night Hunter",
       "source": "jikininki",
       "slot": "mind",
       "section": "trait",
@@ -1389,7 +1388,7 @@
     {
       "index": 30,
       "id": "ethereal-sight",
-      "title": "Corpse-Anchored Spirit",
+      "title": "Anchored Spirit",
       "source": "jikininki",
       "slot": "body",
       "section": "trait",
@@ -1471,12 +1470,12 @@
     {
       "index": 32,
       "id": "grave-bite",
-      "title": "Grave Bite",
+      "title": "Grave Eater",
       "source": "jikininki",
       "slot": "attack",
       "section": "action",
-      "cost": 3,
-      "complexity": 1,
+      "cost": 4,
+      "complexity": 2,
       "rulesSchemaVersion": "monster-graft-rules-v1.12",
       "migrationSource": "content-conversion-v1.1",
       "convertedFrom": "legacy-mechanics",
@@ -1497,10 +1496,10 @@
         "restrained"
       ],
       "parityStatus": "unreviewed",
-      "effectCount": 0,
+      "effectCount": 1,
       "conditionalDamageCount": 0,
-      "hasAreaTargeting": true,
-      "hasAreaEffect": true,
+      "hasAreaTargeting": false,
+      "hasAreaEffect": false,
       "hasOngoing": false,
       "hasDefense": false,
       "hasSummon": false,
@@ -1521,7 +1520,7 @@
     {
       "index": 33,
       "id": "infected-bite",
-      "title": "Infected Bite",
+      "title": "Plague Eater",
       "source": "jikininki",
       "slot": "attack",
       "section": "action",
@@ -1571,7 +1570,7 @@
     {
       "index": 34,
       "id": "purulent-bite",
-      "title": "Purulent Bite",
+      "title": "Rot Eater",
       "source": "jikininki",
       "slot": "attack",
       "section": "action",
@@ -1670,7 +1669,7 @@
     {
       "index": 36,
       "id": "corpse-tendrils",
-      "title": "Corpse Tendrils",
+      "title": "Corpse Binder",
       "source": "jikininki",
       "slot": "attack",
       "section": "action",
@@ -1761,7 +1760,7 @@
     {
       "index": 38,
       "id": "deceitful-apparition",
-      "title": "Corpse-Worn Masquerade",
+      "title": "Dead Impostor",
       "source": "jikininki",
       "slot": "mind",
       "section": "trait",
@@ -1802,7 +1801,7 @@
     {
       "index": 39,
       "id": "mortal-afterlife",
-      "title": "Stolen-Life Delusion",
+      "title": "Stolen Life",
       "source": "jikininki",
       "slot": "mind",
       "section": "trait",
@@ -1891,7 +1890,7 @@
       "slot": "movement",
       "section": "bonusAction",
       "cost": 3,
-      "complexity": 2,
+      "complexity": 3,
       "rulesSchemaVersion": "monster-graft-rules-v1.16",
       "migrationSource": "phase6r-movement-editorial-review",
       "convertedFrom": "legacy-mechanics",
@@ -2233,7 +2232,7 @@
       "slot": "death",
       "section": "death",
       "cost": 3,
-      "complexity": 2,
+      "complexity": 3,
       "rulesSchemaVersion": "monster-graft-rules-v1.16",
       "migrationSource": "phase6r-death-editorial-review",
       "convertedFrom": "legacy-mechanics",
@@ -2319,7 +2318,7 @@
       "slot": "lair",
       "section": "lairAction",
       "cost": 4,
-      "complexity": 2,
+      "complexity": 3,
       "rulesSchemaVersion": "monster-graft-rules-v1.16",
       "migrationSource": "phase6r-lair-editorial-review",
       "convertedFrom": "legacy-mechanics",
@@ -2355,7 +2354,7 @@
     {
       "index": 52,
       "id": "maternal-swarm-instinct",
-      "title": "Brood-Guarding Instinct",
+      "title": "Brood Guard",
       "source": "wolf-spiders",
       "slot": "mind",
       "section": "trait",
@@ -2396,7 +2395,7 @@
     {
       "index": 53,
       "id": "egg-carrier",
-      "title": "Living Brood Clutch",
+      "title": "Egg Carrier",
       "source": "wolf-spiders",
       "slot": "body",
       "section": "trait",
@@ -2441,7 +2440,7 @@
     {
       "index": 54,
       "id": "spider-climb",
-      "title": "Clinging Anatomy",
+      "title": "Clinging Body",
       "source": "wolf-spiders",
       "slot": "body",
       "section": "trait",
@@ -2485,7 +2484,7 @@
     {
       "index": 55,
       "id": "web-walker",
-      "title": "Web-Sense Carapace",
+      "title": "Web Sense",
       "source": "wolf-spiders",
       "slot": "body",
       "section": "trait",
@@ -2573,7 +2572,7 @@
     {
       "index": 57,
       "id": "umbral-skin",
-      "title": "Umbral Skin",
+      "title": "Shadow Skin",
       "source": "wolf-spiders",
       "slot": "body",
       "section": "trait",
@@ -2616,7 +2615,7 @@
     {
       "index": 58,
       "id": "malformed-broodling",
-      "title": "Malformed Broodling",
+      "title": "Broodling",
       "source": "wolf-spiders",
       "slot": "body",
       "section": "trait",
@@ -2660,7 +2659,7 @@
     {
       "index": 59,
       "id": "hundred-eyed",
-      "title": "Distributed Vigil",
+      "title": "Many Eyes",
       "source": "wolf-spiders",
       "slot": "mind",
       "section": "trait",
@@ -2869,7 +2868,7 @@
     {
       "index": 64,
       "id": "venomous-bite",
-      "title": "Venomous Bite",
+      "title": "Venom Hunter",
       "source": "wolf-spiders",
       "slot": "attack",
       "section": "action",
@@ -2922,7 +2921,7 @@
     {
       "index": 65,
       "id": "perforate",
-      "title": "Perforate",
+      "title": "Impaler",
       "source": "wolf-spiders",
       "slot": "attack",
       "section": "action",
@@ -2976,7 +2975,7 @@
     {
       "index": 66,
       "id": "web-recharge",
-      "title": "Web",
+      "title": "Web Hunter",
       "source": "wolf-spiders",
       "slot": "attack",
       "section": "action",
@@ -3029,7 +3028,7 @@
     {
       "index": 67,
       "id": "shadow-web",
-      "title": "Shadow Web",
+      "title": "Shadow Weaver",
       "source": "wolf-spiders",
       "slot": "attack",
       "section": "action",
@@ -3083,12 +3082,12 @@
     {
       "index": 68,
       "id": "venomous-spit",
-      "title": "Venomous Spit",
+      "title": "Venom Spitter",
       "source": "wolf-spiders",
       "slot": "attack",
       "section": "action",
-      "cost": 3,
-      "complexity": 1,
+      "cost": 4,
+      "complexity": 2,
       "rulesSchemaVersion": "monster-graft-rules-v1.12",
       "migrationSource": "content-conversion-v1.1",
       "convertedFrom": "legacy-mechanics",
@@ -3110,7 +3109,7 @@
         "poisoned"
       ],
       "parityStatus": "unreviewed",
-      "effectCount": 0,
+      "effectCount": 1,
       "conditionalDamageCount": 0,
       "hasAreaTargeting": false,
       "hasAreaEffect": false,
@@ -3126,13 +3125,15 @@
       "anatomyConstraintOverride": true,
       "anatomyGrantOverride": false,
       "mechanicOverride": false,
-      "parityReviewFlags": [],
-      "parityReviewRequired": false
+      "parityReviewFlags": [
+        "movement-state-review"
+      ],
+      "parityReviewRequired": true
     },
     {
       "index": 69,
       "id": "brood-injection",
-      "title": "Brood Injection",
+      "title": "Broodmaker",
       "source": "wolf-spiders",
       "slot": "attack",
       "section": "action",
@@ -3316,7 +3317,7 @@
     {
       "index": 73,
       "id": "hunter-spider",
-      "title": "Patient Quarry",
+      "title": "Patient Hunter",
       "source": "wolf-spiders",
       "slot": "mind",
       "section": "trait",
@@ -3362,7 +3363,7 @@
       "slot": "weakness",
       "section": "trait",
       "cost": -1,
-      "complexity": 1,
+      "complexity": 2,
       "rulesSchemaVersion": "monster-graft-rules-v1.16",
       "migrationSource": "phase6r-weakness-editorial-review",
       "convertedFrom": "legacy-mechanics",
@@ -3448,7 +3449,7 @@
       "slot": "weakness",
       "section": "trait",
       "cost": -2,
-      "complexity": 1,
+      "complexity": 2,
       "rulesSchemaVersion": "monster-graft-rules-v1.16",
       "migrationSource": "phase6r-weakness-editorial-review",
       "convertedFrom": "legacy-mechanics",
@@ -3489,7 +3490,7 @@
       "slot": "weakness",
       "section": "trait",
       "cost": -2,
-      "complexity": 1,
+      "complexity": 2,
       "rulesSchemaVersion": "monster-graft-rules-v1.16",
       "migrationSource": "phase6r-weakness-editorial-review",
       "convertedFrom": "legacy-mechanics",
@@ -3666,7 +3667,7 @@
       "slot": "lair",
       "section": "lairAction",
       "cost": 5,
-      "complexity": 2,
+      "complexity": 3,
       "rulesSchemaVersion": "monster-graft-rules-v1.16",
       "migrationSource": "phase6r-lair-editorial-review",
       "convertedFrom": "legacy-mechanics",
@@ -3755,7 +3756,7 @@
       "slot": "lair",
       "section": "lairAction",
       "cost": 3,
-      "complexity": 2,
+      "complexity": 3,
       "rulesSchemaVersion": "monster-graft-rules-v1.16",
       "migrationSource": "phase6r-lair-editorial-review",
       "convertedFrom": "legacy-mechanics",
@@ -3791,7 +3792,7 @@
     {
       "index": 84,
       "id": "waxen-mask-body",
-      "title": "Waxen Funeral Flesh",
+      "title": "Waxen Flesh",
       "source": "wax-death-masks",
       "slot": "body",
       "section": "trait",
@@ -3835,7 +3836,7 @@
     {
       "index": 85,
       "id": "borrowed-face",
-      "title": "Borrowed Mourner's Memory",
+      "title": "Borrowed Face",
       "source": "wax-death-masks",
       "slot": "mind",
       "section": "trait",
@@ -3968,7 +3969,7 @@
       "slot": "weakness",
       "section": "trait",
       "cost": -2,
-      "complexity": 1,
+      "complexity": 2,
       "rulesSchemaVersion": "monster-graft-rules-v1.16",
       "migrationSource": "phase6r-weakness-editorial-review",
       "convertedFrom": "legacy-mechanics",
@@ -4004,7 +4005,7 @@
     {
       "index": 89,
       "id": "cold-funeral-touch",
-      "title": "Cold Funeral Touch",
+      "title": "Cold Touch",
       "source": "wax-death-masks",
       "slot": "attack",
       "section": "action",
@@ -4055,7 +4056,7 @@
       "slot": "death",
       "section": "death",
       "cost": 4,
-      "complexity": 2,
+      "complexity": 3,
       "rulesSchemaVersion": "monster-graft-rules-v1.16",
       "migrationSource": "phase6r-death-editorial-review",
       "convertedFrom": "legacy-mechanics",

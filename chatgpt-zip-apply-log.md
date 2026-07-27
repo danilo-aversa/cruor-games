@@ -22921,3 +22921,236 @@ _Nessun file aggiunto._
 - `~features/monster-composer/model/monster-rules-parity.test.js`
 - `~package.json`
 
+
+---
+
+## 27/07/2026, 14:54:53
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-home-workbench-copy-update-20260727.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-home-workbench-copy-update-20260727.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-Z4Ini6`
+
+**Decisione struttura:** `Preserved top-level repo folder: app`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~app/HomePage.jsx`
+
+
+---
+
+## 27/07/2026, 15:14:40
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-home-section-header-trial-20260727.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-home-section-header-trial-20260727.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-Yun2I9`
+
+**Decisione struttura:** `Preserved top-level repo folder: app`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~app/HomePage.jsx`
+
+
+---
+
+## 27/07/2026, 15:25:00
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-home-section-header-typography-20260727.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-home-section-header-typography-20260727.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-pfWMIQ`
+
+**Decisione struttura:** `Preserved top-level repo folder: app`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~app/home-page.css`
+
+
+---
+
+## 27/07/2026, 15:37:51
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-terrifying-monsters-phase8-catalog-editorial.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-terrifying-monsters-phase8-catalog-editorial.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-hMTfUy`
+
+**Decisione struttura:** `Applied ZIP content from extracted root.`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 9
+
+- `+docs/terrifying-monsters/phase8/catalog-editorial-review.md`
+- `+docs/terrifying-monsters/phase8/catalog-editorial.generated.json`
+- `+docs/terrifying-monsters/phase8/catalog-editorial.generated.md`
+- `+docs/terrifying-monsters/phase8/cross-catalog-editorial-contract.md`
+- `+docs/terrifying-monsters/phase8/monster-manual-style-contract.md`
+- `+docs/terrifying-monsters/phase8/playability-contract.md`
+- `+features/monster-composer/model/monster-catalog-editorial.js`
+- `+features/monster-composer/model/monster-catalog-editorial.test.js`
+- `+scripts/monster/report-monster-catalog-editorial.mjs`
+
+**File sovrascritti:** 23
+
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.csv`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.json`
+- `~docs/terrifying-monsters/phase0/graft-inventory.generated.md`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.json`
+- `~docs/terrifying-monsters/phase3/rules-parity.generated.md`
+- `~docs/terrifying-monsters/phase5/attack-patterns.generated.json`
+- `~docs/terrifying-monsters/phase5/attack-patterns.generated.md`
+- `~docs/terrifying-monsters/phase6/support-grafts.generated.json`
+- `~docs/terrifying-monsters/phase6r/death-grafts.generated.json`
+- `~docs/terrifying-monsters/phase6r/graft-naming.generated.json`
+- `~docs/terrifying-monsters/phase6r/graft-naming.generated.md`
+- `~docs/terrifying-monsters/phase6r/lair-grafts.generated.json`
+- `~docs/terrifying-monsters/phase6r/twist-grafts.generated.json`
+- `~docs/terrifying-monsters/phase6r/weakness-grafts.generated.json`
+- `~features/monster-composer/data/monster-attack-patterns.js`
+- `~features/monster-composer/data/monster-death-grafts.js`
+- `~features/monster-composer/data/monster-grafts.js`
+- `~features/monster-composer/data/monster-lair-grafts.js`
+- `~features/monster-composer/data/monster-movement-grafts.js`
+- `~features/monster-composer/data/monster-twist-grafts.js`
+- `~features/monster-composer/data/monster-weakness-grafts.js`
+- `~package.json`
+- `~scripts/monster/report-monster-graft-phase0.mjs`
+
+
+---
+
+## 27/07/2026, 15:38:17
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-home-header-typography-v2-20260727.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-home-header-typography-v2-20260727.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-AS2fSB`
+
+**Decisione struttura:** `Preserved top-level repo folder: app`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~app/home-page.css`
+
+
+---
+
+## 27/07/2026, 15:43:17
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-home-workbench-tools-spacing-20260727.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-home-workbench-tools-spacing-20260727.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-MBuecz`
+
+**Decisione struttura:** `Preserved top-level repo folder: app`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~app/home-page.css`
+
+
+---
+
+## 27/07/2026, 16:00:15
+
+**Operazione:** Apply ZIP from ChatGPT Workbench
+
+**Versione script:** `workbench-0.3.4`
+
+**ZIP applicato:** `cruor-games-home-faq-header-cleanup-20260727.zip`
+
+**Percorso ZIP:** `H:\Users\avers\Documenti\GitHub\_downloads\cruor-games-home-faq-header-cleanup-20260727.zip`
+
+**Repo:** `H:\Users\avers\Documenti\GitHub\cruor-games`
+
+**Sorgente estratta:** `C:\Users\avers\AppData\Local\Temp\chatgpt-workbench-apply-pvkFls`
+
+**Decisione struttura:** `Preserved top-level repo folder: app`
+
+**Prefisso destinazione:** ``
+
+**File aggiunti:** 0
+
+_Nessun file aggiunto._
+
+**File sovrascritti:** 1
+
+- `~app/HomePage.jsx`
+

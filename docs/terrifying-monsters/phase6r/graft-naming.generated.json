@@ -201,6 +201,16 @@
       "pass": true
     },
     {
+      "id": "ethereal-sight",
+      "slot": "body",
+      "title": "Anchored Spirit",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
       "id": "barbed-chitin",
       "slot": "body",
       "title": "Barbed Chitin",
@@ -231,6 +241,16 @@
       "pass": true
     },
     {
+      "id": "spider-climb",
+      "slot": "body",
+      "title": "Clinging Body",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
       "id": "volatile-immobile-mass",
       "slot": "body",
       "title": "Corpse Mass",
@@ -251,16 +271,6 @@
       "pass": true
     },
     {
-      "id": "ethereal-sight",
-      "slot": "body",
-      "title": "Ethereal Sight",
-      "wordCount": 2,
-      "canonicalBestiaryName": true,
-      "approvedException": false,
-      "issues": [],
-      "pass": true
-    },
-    {
       "id": "umbral-skin",
       "slot": "body",
       "title": "Shadow Skin",
@@ -276,16 +286,6 @@
       "title": "Shedding Skin",
       "wordCount": 2,
       "canonicalBestiaryName": false,
-      "approvedException": false,
-      "issues": [],
-      "pass": true
-    },
-    {
-      "id": "spider-climb",
-      "slot": "body",
-      "title": "Spider Climb",
-      "wordCount": 2,
-      "canonicalBestiaryName": true,
       "approvedException": false,
       "issues": [],
       "pass": true
@@ -313,9 +313,9 @@
     {
       "id": "web-walker",
       "slot": "body",
-      "title": "Web Walker",
+      "title": "Web Sense",
       "wordCount": 2,
-      "canonicalBestiaryName": true,
+      "canonicalBestiaryName": false,
       "approvedException": false,
       "issues": [],
       "pass": true
@@ -483,9 +483,19 @@
     {
       "id": "cunning-action-spirit",
       "slot": "movement",
-      "title": "Cunning Action",
+      "title": "Cunning Hunt",
       "wordCount": 2,
-      "canonicalBestiaryName": true,
+      "canonicalBestiaryName": false,
+      "approvedException": false,
+      "issues": [],
+      "pass": true
+    },
+    {
+      "id": "stumbling-mass",
+      "slot": "movement",
+      "title": "Dead March",
+      "wordCount": 2,
+      "canonicalBestiaryName": false,
       "approvedException": false,
       "issues": [],
       "pass": true
@@ -493,9 +503,9 @@
     {
       "id": "incorporeal-movement",
       "slot": "movement",
-      "title": "Incorporeal Movement",
+      "title": "Ghost Passage",
       "wordCount": 2,
-      "canonicalBestiaryName": true,
+      "canonicalBestiaryName": false,
       "approvedException": false,
       "issues": [],
       "pass": true
@@ -524,16 +534,6 @@
       "id": "shadow-jump",
       "slot": "movement",
       "title": "Shadow Step",
-      "wordCount": 2,
-      "canonicalBestiaryName": false,
-      "approvedException": false,
-      "issues": [],
-      "pass": true
-    },
-    {
-      "id": "stumbling-mass",
-      "slot": "movement",
-      "title": "Stumbling Mass",
       "wordCount": 2,
       "canonicalBestiaryName": false,
       "approvedException": false,

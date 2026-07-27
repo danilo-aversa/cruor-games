@@ -369,7 +369,7 @@ const WEAKNESS_GRAFTS = {
     typeBias: ["undead"],
     roleBias: ["minion", "standard", "boss"],
     cost: -2,
-    complexity: 1,
+    complexity: 2,
     stats: { fairness: 2 },
     summary:
       "Radiant energy briefly collapses the preserving necromancy, opening a safe window in which the corpse cannot retaliate or burst at death.",
@@ -519,7 +519,7 @@ const WEAKNESS_GRAFTS = {
         "When the monster starts its turn within 5 feet of a corpse and a creature within 30 feet can see it, one witness can use its Reaction to denounce its hunger or speak the monster's mortal name. The monster makes a Wisdom saving throw. On a failure, it can't take Reactions, its Speed is halved, and it has Disadvantage on attack rolls until the end of its next turn. On a success, it is immune to this witness's Shame for 24 hours.",
       counterplay: "Keep sight of the corpse and save a Reaction for the start of the monster's turn.",
       rules: weaknessRules({
-        trigger: "When the monster starts its turn within 5 feet of a corpse while a creature within 30 feet can see it, one witness can use its Reaction to denounce its hunger or speak the monster's mortal name.",
+        trigger: "When the monster starts its turn within 5 feet of a corpse, one witness within 30 feet that can see it can use a Reaction to denounce its hunger or speak its mortal name.",
         resolution: { type: "savingThrow", ability: "wisdom", dc: "monster" },
         targeting: { type: "single", targets: "" },
         failure:
@@ -729,7 +729,7 @@ const WEAKNESS_GRAFTS = {
     typeBias: ["beast", "aberration"],
     roleBias: ["minion", "standard", "boss"],
     cost: -1,
-    complexity: 1,
+    complexity: 2,
     stats: { fairness: 2 },
     summary:
       "The spider's long legs dominate stable surfaces but buckle when enemies redirect it across loose or slippery ground.",
@@ -863,7 +863,7 @@ const WEAKNESS_GRAFTS = {
     typeBias: ["beast", "aberration"],
     roleBias: ["standard", "boss"],
     cost: -2,
-    complexity: 1,
+    complexity: 2,
     stats: { fairness: 2 },
     summary:
       "Leaps, wall transitions, and knockdowns expose the pale abdomen for one brief burst of coordinated violence.",
@@ -963,7 +963,7 @@ const WEAKNESS_GRAFTS = {
     typeBias: ["beast", "aberration"],
     roleBias: ["standard", "boss"],
     cost: -2,
-    complexity: 1,
+    complexity: 2,
     stats: { fairness: 2 },
     summary:
       "A ranged attacker can sacrifice damage to strike the crowded eye cluster and temporarily break the spider's spatial control.",
@@ -1089,7 +1089,7 @@ const WEAKNESS_GRAFTS = {
     typeBias: ["undead", "aberration"],
     roleBias: ["standard", "boss"],
     cost: -2,
-    complexity: 1,
+    complexity: 2,
     stats: { fairness: 2 },
     summary:
       "Fire softens the preserved face into a brief vulnerability window in which attacks can tear through wax and interrupt its identity tricks.",

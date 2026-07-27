@@ -1,4 +1,4 @@
-export const MONSTER_ATTACK_PATTERN_MIGRATION_VERSION = "monster-attack-pattern-migration-v1.4-evocative-pattern-names";
+export const MONSTER_ATTACK_PATTERN_MIGRATION_VERSION = "monster-attack-pattern-migration-v1.5-cross-catalog-editorial";
 export const MONSTER_ATTACK_PATTERN_PROGRESSION_SCHEMA_VERSION = "monster-attack-pattern-progression-v1.0";
 
 function freezePattern(pattern) {
@@ -54,6 +54,8 @@ function freezePattern(pattern) {
 const PATTERNS = {
   "slam-decomposition": {
     title: "Crusher",
+    cost: 3,
+    complexity: 2,
     summary: "A swollen corpse advances through open lanes, crashes into prey, and turns the impact into a crushing hold.",
     mechanics: "Attack Pattern. The monster repeatedly uses Heavy Slam. It can replace one attack with Corpse Grab when pinning a vulnerable target is more valuable than raw damage.",
     counterplay: "Break charge lanes, spread away from walls, and help a grabbed creature before the corpse can exploit the hold.",
@@ -65,7 +67,32 @@ const PATTERNS = {
     },
     abilities: [
       { id: "heavy-slam", from: "slam-decomposition", role: "primary", maxUses: 2 },
-      { id: "corpse-grab", from: "corpse-grab", role: "replacement", availability: "always" },
+      {
+        id: "corpse-grab",
+        from: "corpse-grab",
+        title: "Crushing Pin",
+        summary: "The corpse pins prey against the floor or a solid surface.",
+        mechanics: "One Large or smaller creature within reach that is Prone or adjacent to a solid surface makes a Dexterity saving throw. On a failure, it has the Grappled and Restrained conditions until it escapes.",
+        counterplay: "Stay off the floor and away from walls, or pull the victim clear of the pin.",
+        role: "replacement",
+        availability: "always",
+        rulesPatch: {
+          targeting: {
+            type: "single",
+            targets: "one Large or smaller creature within reach that is Prone or adjacent to a solid surface",
+          },
+          text: {
+            failure: "The target has the Grappled and Restrained conditions until it escapes (DC {dc}).",
+            success: "No effect.",
+          },
+          procedure: {
+            enabled: true,
+            type: "custom",
+            prerequisite: "The target is Prone or adjacent to a solid surface.",
+            text: "The monster pins the target against that surface.",
+          },
+        },
+      },
     ],
     routine: {
       mode: "authored",
@@ -104,24 +131,66 @@ const PATTERNS = {
 
   "empowered-slam": {
     title: "Juggernaut",
-    summary: "A pressure-bloated corpse alternates wall-breaking impacts, body pins, and a telegraphed purge of internal fluid.",
-    mechanics: "Attack Pattern. The monster makes two Empowered Slam attacks. It can replace one attack with Corpse Grab or, when available, Acid Vomit.",
-    counterplay: "Stay away from collision surfaces, interrupt the purge telegraph, and avoid leaving one ally alone inside the corpse's reach.",
+    cost: 6,
+    complexity: 3,
+    summary: "A pressure-bloated corpse alternates wall-breaking impacts, body pins, and a telegraphed concussive pressure burst.",
+    mechanics: "Attack Pattern. The monster makes two Empowered Slam attacks. It can replace one attack with Corpse Grab or, when available, Pressure Burst.",
+    counterplay: "Stay away from collision surfaces, interrupt the pressure-burst telegraph, and avoid leaving one ally alone inside the corpse's reach.",
     identity: {
-      fantasy: "A corpse at the edge of rupture turns internal pressure into impacts, holds, and corrosive release.",
+      fantasy: "A corpse at the edge of rupture turns internal pressure into impacts, holds, and concussive release.",
       tacticalRole: "displacement brute with a telegraphed area-pressure deviation",
-      signature: "wind up, collide, restrain, purge",
-      recognitionTags: ["swollen-corpse", "collision", "purge-fluid", "pressure-release"],
+      signature: "wind up, collide, restrain, burst",
+      recognitionTags: ["swollen-corpse", "collision", "pressure-burst", "pressure-release"],
     },
     abilities: [
       { id: "empowered-slam", from: "empowered-slam", role: "primary", maxUses: 2 },
       { id: "corpse-grab", from: "corpse-grab", role: "replacement", availability: "always" },
-      { id: "acid-vomit", from: "acid-vomit", role: "replacement", availability: "ifAvailable" },
+      {
+        id: "acid-vomit",
+        from: "acid-vomit",
+        title: "Pressure Burst",
+        summary: "The corpse releases a concussive blast of grave gas.",
+        mechanics: "Each creature in a 15-foot Cone makes a Strength saving throw, taking minor Thunder damage and falling Prone on a failure, or taking half damage only on a success.",
+        counterplay: "The body swells and hisses before the burst; spread out or move behind cover.",
+        role: "replacement",
+        availability: "ifAvailable",
+        rulesPatch: {
+          usage: { type: "recharge", value: "5-6" },
+          resolution: { type: "savingThrow", ability: "strength", dc: "monster" },
+          secondaryResolution: null,
+          targeting: { type: "area", shape: "cone", size: 15, unit: "ft", targets: "creatures" },
+          areaEffect: null,
+          damage: {
+            mode: "budget",
+            scale: "minor",
+            budgetRole: "rechargeControl",
+            types: ["thunder"],
+            budgetShare: 0.65,
+            expectedTargets: 1.5,
+            parts: [],
+          },
+          condition: {
+            names: ["prone"],
+            severity: "moderate",
+            duration: "instantaneous",
+            special: [],
+            sizeLimit: "",
+            escape: null,
+            repeatSave: null,
+          },
+          text: {
+            failure: "The target takes {damage} Thunder damage and has the Prone condition.",
+            success: "Half damage only.",
+          },
+          ongoing: null,
+          effects: [],
+        },
+      },
     ],
     routine: {
       mode: "authored",
-      defaultPlan: "Use repeated impacts to herd targets toward collision surfaces, then deviate into a grab or purge when the board state rewards it.",
-      targetSelection: "Prefer targets near allies, walls, or constrained routes; use the purge against clustered enemies.",
+      defaultPlan: "Use repeated impacts to herd targets toward collision surfaces, then deviate into a grab or pressure burst when the board state rewards it.",
+      targetSelection: "Prefer targets near allies, walls, or constrained routes; use the burst against clustered enemies.",
       defaultSequence: ["empowered-slam", "empowered-slam"],
       opener: ["acid-vomit"],
       intentionalRepetition: true,
@@ -133,9 +202,9 @@ const PATTERNS = {
           sequence: ["corpse-grab", "empowered-slam"],
         },
         {
-          id: "purge-cluster",
-          when: "Acid Vomit is available and at least two targets can be caught without abandoning a better collision line.",
-          purpose: "Trade focused pressure for area denial and healing suppression.",
+          id: "burst-cluster",
+          when: "Pressure Burst is available and at least two targets can be caught without abandoning a better collision line.",
+          purpose: "Trade focused pressure for a concussive knockdown.",
           sequence: ["acid-vomit"],
         },
       ],
@@ -146,15 +215,15 @@ const PATTERNS = {
         attacks: [{ ref: "empowered-slam", count: 2 }],
         replacements: [
           { id: "replace-with-grab", with: "corpse-grab", replace: "oneAttack", label: "Corpse Grab", availability: "always" },
-          { id: "replace-with-purge", with: "acid-vomit", replace: "oneAttack", label: "Acid Vomit", availability: "ifAvailable" },
+          { id: "replace-with-purge", with: "acid-vomit", replace: "oneAttack", label: "Pressure Burst", availability: "ifAvailable" },
         ],
       },
     },
     counterplayProfile: {
-      telegraphs: ["The corpse winds up before a collision and its throat distends before the purge."],
+      telegraphs: ["The corpse winds up before a collision and its torso swells before the pressure burst."],
       positioningAnswers: ["Fight away from walls, clutter, and clustered allies."],
       breakConditions: ["Forced movement and line denial spoil the collision setup."],
-      nonDamageAnswers: ["Cleaning purge fluid and freeing a grabbed ally reduce the pattern's follow-through."],
+      nonDamageAnswers: ["Cover, forced movement, and freeing a grabbed ally reduce the pattern's follow-through."],
     },
     complexityProfile: { decisionLoad: 2, sequencing: 2, conditionalBranches: 2, tracking: 2 },
     spikeRiskProfile: { openingBurst: 2, controlSpike: 2, repeatability: 2 },
@@ -212,8 +281,10 @@ const PATTERNS = {
 
   "corpse-grab": {
     title: "Grappler",
+    cost: 4,
+    complexity: 2,
     summary: "The corpse batters a target into a bad position and then folds its swollen mass around the victim.",
-    mechanics: "Attack Pattern. The monster makes two Heavy Slam attacks and can replace one attack with Corpse Grab.",
+    mechanics: "Attack Pattern. The monster makes two Hooking Slam attacks and can replace one attack with Corpse Grab.",
     counterplay: "Maintain escape routes, prevent isolation, and use forced movement to separate the corpse from its chosen victim.",
     identity: {
       fantasy: "A bloated corpse uses impact not to kill immediately, but to place a victim where its body can engulf them.",
@@ -222,7 +293,40 @@ const PATTERNS = {
       recognitionTags: ["swollen-corpse", "body-pin", "isolation", "rescue-pressure"],
     },
     abilities: [
-      { id: "heavy-slam", from: "slam-decomposition", role: "primary", maxUses: 2 },
+      {
+        id: "heavy-slam",
+        from: "slam-decomposition",
+        title: "Hooking Slam",
+        summary: "A hooked impact drags the victim into the corpse's grasp.",
+        mechanics: "Melee Attack Roll. On a hit, the target takes Bludgeoning damage, and the monster pulls it up to 5 feet toward itself.",
+        counterplay: "Keep space behind the front line and deny a straight pull into the corpse's reach.",
+        role: "primary",
+        maxUses: 2,
+        rulesPatch: {
+          damage: {
+            mode: "budget",
+            scale: "standard",
+            budgetRole: "mainAttack",
+            types: ["bludgeoning"],
+            budgetShare: 0.85,
+            expectedTargets: 1,
+            parts: [],
+          },
+          text: { hit: "the target takes {damage} Bludgeoning damage, and the monster pulls it up to 5 feet toward itself." },
+          effects: [
+            {
+              id: "hooking-pull",
+              type: "forcedMovement",
+              subject: "target",
+              trigger: "On a hit",
+              appliesTo: "the target",
+              duration: "instantaneous",
+              text: "the monster pulls it up to 5 feet toward itself.",
+              simulation: { policy: "proxy", model: "feature.stats.control", axis: "control", weight: 1 },
+            },
+          ],
+        },
+      },
       { id: "corpse-grab", from: "corpse-grab", role: "replacement", availability: "always" },
     ],
     routine: {
@@ -262,8 +366,10 @@ const PATTERNS = {
 
   "grave-bite": {
     title: "Grave Eater",
+    cost: 4,
+    complexity: 2,
     summary: "A corpse-eating spirit restrains prey around the dead, then feeds twice before the victim can escape its hunger.",
-    mechanics: "Attack Pattern. The monster makes two Grave Bite attacks and can replace one attack with Corpse Tendrils when a corpse is available.",
+    mechanics: "Attack Pattern. The monster makes two Grave Bite attacks and can replace one attack with Feeding Tendrils when a corpse is available.",
     counterplay: "Keep wounded allies away from corpses, remove corpse anchors, and deny the spirit an isolated feeding target.",
     identity: {
       fantasy: "A hungry spirit turns the dead into hunting ground and every bite into a feeding rite.",
@@ -273,7 +379,45 @@ const PATTERNS = {
     },
     abilities: [
       { id: "grave-bite", from: "grave-bite", role: "primary", maxUses: 2 },
-      { id: "corpse-tendrils", from: "corpse-tendrils", role: "replacement", availability: "ifAvailable" },
+      {
+        id: "corpse-tendrils",
+        from: "corpse-tendrils",
+        title: "Feeding Tendrils",
+        summary: "A corpse drags one victim into feeding reach.",
+        mechanics: "One creature within 10 feet of a corpse makes a Dexterity saving throw. On a failure, it is pulled adjacent to that corpse and has the Restrained condition until the end of its next turn.",
+        counterplay: "Keep distance from corpses or destroy the chosen anchor before the tendrils resolve.",
+        role: "replacement",
+        availability: "ifAvailable",
+        rulesPatch: {
+          targeting: { type: "single", targets: "one creature within 10 feet of a corpse" },
+          areaEffect: null,
+          condition: {
+            names: ["restrained"],
+            severity: "major",
+            duration: "until the end of its next turn",
+            special: [],
+            sizeLimit: "",
+            escape: null,
+            repeatSave: null,
+          },
+          text: {
+            failure: "The target is pulled adjacent to the corpse and has the Restrained condition until the end of its next turn.",
+            success: "No effect.",
+          },
+          effects: [
+            {
+              id: "feeding-pull",
+              type: "forcedMovement",
+              subject: "target",
+              trigger: "On a failed save",
+              appliesTo: "the target",
+              duration: "instantaneous",
+              text: "The target is pulled adjacent to the corpse.",
+              simulation: { policy: "proxy", model: "feature.stats.control", axis: "control", weight: 1 },
+            },
+          ],
+        },
+      },
     ],
     routine: {
       mode: "authored",
@@ -296,7 +440,7 @@ const PATTERNS = {
         count: 2,
         attacks: [{ ref: "grave-bite", count: 2 }],
         replacements: [
-          { id: "replace-with-tendrils", with: "corpse-tendrils", replace: "oneAttack", label: "Corpse Tendrils", availability: "ifAvailable" },
+          { id: "replace-with-tendrils", with: "corpse-tendrils", replace: "oneAttack", label: "Feeding Tendrils", availability: "ifAvailable" },
         ],
       },
     },
@@ -682,17 +826,66 @@ const PATTERNS = {
 
   "venomous-spit": {
     title: "Venom Spitter",
-    summary: "The spider shifts freely between ranged venom and a closing bite, using the same poison pressure at whichever distance the party permits.",
-    mechanics: "Attack Pattern. The monster makes two attacks using Venomous Spit or Venomous Bite in any combination.",
+    cost: 4,
+    complexity: 2,
+    summary: "The spider alternates a slowing long-range spit with a closing bite, punishing retreat or isolation.",
+    mechanics: "Attack Pattern. The monster makes two attacks using Clotting Spit or Venomous Bite in any combination.",
     counterplay: "Use cover against the spit, punish the approach, and prevent the spider from isolating a target at either range.",
     identity: {
       fantasy: "A venom hunter refuses to become harmless at range and uses spit to create the approach for its fangs.",
       tacticalRole: "range-flexible striker",
-      signature: "spit while closing, bite when safe",
-      recognitionTags: ["venom-spit", "venom-fangs", "range-switch", "hunting-spider"],
+      signature: "slow retreating prey, bite isolated prey",
+      recognitionTags: ["clotting-spit", "venom-fangs", "range-switch", "hunting-spider"],
     },
     abilities: [
-      { id: "venomous-spit", from: "venomous-spit", role: "choice", group: "venom-range", maxUses: 2 },
+      {
+        id: "venomous-spit",
+        from: "venomous-spit",
+        title: "Clotting Spit",
+        summary: "The spider spits viscous venom that slows a fleeing target.",
+        mechanics: "Ranged Attack Roll, range 60/120 feet. On a hit, the target takes Poison damage, and its Speed is reduced by 10 feet until the start of the spider's next turn.",
+        counterplay: "Use cover, break line of sight, or accept melee range to deny the long shot.",
+        role: "choice",
+        group: "venom-range",
+        maxUses: 2,
+        rulesPatch: {
+          resolution: {
+            type: "attackRoll",
+            attackType: "ranged",
+            bonus: "monster",
+            abilityBasis: "dexterity",
+            reach: null,
+            range: "60/120 ft.",
+          },
+          secondaryResolution: null,
+          targeting: { type: "single", targets: "one target" },
+          damage: {
+            mode: "budget",
+            scale: "standard",
+            budgetRole: "mainAttack",
+            types: ["poison"],
+            budgetShare: 0.75,
+            expectedTargets: 1,
+            parts: [],
+          },
+          condition: null,
+          text: {
+            hit: "the target takes {damage} Poison damage, and its Speed is reduced by 10 feet until the start of the monster's next turn.",
+          },
+          effects: [
+            {
+              id: "clotting-slow",
+              type: "movement",
+              subject: "target",
+              trigger: "On a hit",
+              appliesTo: "the target",
+              duration: "until the start of the monster's next turn",
+              text: "its Speed is reduced by 10 feet until the start of the monster's next turn.",
+              simulation: { policy: "proxy", model: "feature.stats.control", axis: "control", weight: 1 },
+            },
+          ],
+        },
+      },
       { id: "venomous-bite", from: "venomous-bite", role: "choice", group: "venom-range", maxUses: 2 },
     ],
     routine: {
@@ -907,7 +1100,7 @@ function buildPatternProgression(id, pattern) {
   const lowAbilityCount = EARLY_SECOND_ABILITY_AT_CR_1.has(id) ? 2 : 1;
   const developedAbilityCount =
     id === "cold-funeral-touch" || SECOND_ABILITY_AT_CR_5.has(id) ? 1 : 2;
-  const veteranAbilityCount = id === "cold-funeral-touch" ? 1 : 2;
+  const veteranAbilityCount = id === "cold-funeral-touch" ? 1 : id === "shadow-web" ? 3 : 2;
   const matureAbilityCount = THIRD_ABILITY_AT_CR_8.has(id) ? 3 : veteranAbilityCount;
   const lowMultiattack = MULTIATTACK_AT_CR_1.has(id);
   const developedMultiattack = MULTIATTACK_AT_CR_2.has(id);

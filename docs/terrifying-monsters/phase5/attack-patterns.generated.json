@@ -60,17 +60,17 @@
     {
       "targetCr": 5,
       "patterns": 15,
-      "meanOptions": 1.933,
+      "meanOptions": 2,
       "multiattackRate": 0.933,
       "medianAttacks": 2,
-      "threePlusOptionsRate": 0,
+      "threePlusOptionsRate": 0.067,
       "bestiaryTarget": {
         "meanOptions": 1.91,
         "multiattackRate": 0.9388,
         "medianAttacks": 2
       },
       "deltas": {
-        "meanOptions": 0.023,
+        "meanOptions": 0.09,
         "multiattackRate": -0.005,
         "medianAttacks": 0
       },
@@ -79,17 +79,17 @@
     {
       "targetCr": 8,
       "patterns": 15,
-      "meanOptions": 2.133,
+      "meanOptions": 2.2,
       "multiattackRate": 1,
       "medianAttacks": 3,
-      "threePlusOptionsRate": 0.2,
+      "threePlusOptionsRate": 0.267,
       "bestiaryTarget": {
         "meanOptions": 1.91,
         "multiattackRate": 0.9388,
         "medianAttacks": 2
       },
       "deltas": {
-        "meanOptions": 0.223,
+        "meanOptions": 0.29,
         "multiattackRate": 0.061,
         "medianAttacks": 1
       },
@@ -98,17 +98,17 @@
     {
       "targetCr": 10,
       "patterns": 15,
-      "meanOptions": 2.133,
+      "meanOptions": 2.2,
       "multiattackRate": 1,
       "medianAttacks": 3,
-      "threePlusOptionsRate": 0.2,
+      "threePlusOptionsRate": 0.267,
       "bestiaryTarget": {
         "meanOptions": 1.98,
         "multiattackRate": 0.9787,
         "medianAttacks": 3
       },
       "deltas": {
-        "meanOptions": 0.153,
+        "meanOptions": 0.22,
         "multiattackRate": 0.021,
         "medianAttacks": 0
       },
@@ -335,7 +335,7 @@
           ],
           "abilityTitles": [
             "Heavy Slam",
-            "Corpse Grab"
+            "Crushing Pin"
           ],
           "authoredAbilityCount": 2,
           "compiledAbilityCount": 3,
@@ -359,7 +359,7 @@
           ],
           "abilityTitles": [
             "Heavy Slam",
-            "Corpse Grab"
+            "Crushing Pin"
           ],
           "authoredAbilityCount": 2,
           "compiledAbilityCount": 3,
@@ -383,7 +383,7 @@
           ],
           "abilityTitles": [
             "Heavy Slam",
-            "Corpse Grab"
+            "Crushing Pin"
           ],
           "authoredAbilityCount": 2,
           "compiledAbilityCount": 3,
@@ -407,7 +407,7 @@
           ],
           "abilityTitles": [
             "Heavy Slam",
-            "Corpse Grab"
+            "Crushing Pin"
           ],
           "authoredAbilityCount": 2,
           "compiledAbilityCount": 3,
@@ -431,7 +431,7 @@
           ],
           "abilityTitles": [
             "Heavy Slam",
-            "Corpse Grab"
+            "Crushing Pin"
           ],
           "authoredAbilityCount": 2,
           "compiledAbilityCount": 3,
@@ -454,7 +454,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],
@@ -469,13 +469,13 @@
       "status": "pass",
       "pass": true,
       "identity": {
-        "fantasy": "A corpse at the edge of rupture turns internal pressure into impacts, holds, and corrosive release.",
+        "fantasy": "A corpse at the edge of rupture turns internal pressure into impacts, holds, and concussive release.",
         "tacticalRole": "displacement brute with a telegraphed area-pressure deviation",
-        "signature": "wind up, collide, restrain, purge",
+        "signature": "wind up, collide, restrain, burst",
         "recognitionTags": [
           "swollen-corpse",
           "collision",
-          "purge-fluid",
+          "pressure-burst",
           "pressure-release"
         ]
       },
@@ -484,7 +484,7 @@
         "tags": [
           "swollen-corpse",
           "collision",
-          "purge-fluid",
+          "pressure-burst",
           "pressure-release"
         ]
       },
@@ -754,7 +754,7 @@
           "abilityTitles": [
             "Empowered Slam",
             "Corpse Grab",
-            "Acid Vomit"
+            "Pressure Burst"
           ],
           "authoredAbilityCount": 3,
           "compiledAbilityCount": 4,
@@ -765,7 +765,7 @@
           "allocationKeys": [
             "empowered-slam:empowered-slam"
           ],
-          "renderedMultiattack": "The monster makes three Empowered Slam attacks. It can replace one attack with a use of Corpse Grab. It can replace one attack with a use of Acid Vomit if available.",
+          "renderedMultiattack": "The monster makes three Empowered Slam attacks. It can replace one attack with a use of Corpse Grab. It can replace one attack with a use of Pressure Burst if available.",
           "validationStatus": "pass",
           "validationErrors": []
         }
@@ -778,7 +778,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],
@@ -1098,7 +1098,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],
@@ -1281,7 +1281,7 @@
             "heavy-slam"
           ],
           "abilityTitles": [
-            "Heavy Slam"
+            "Hooking Slam"
           ],
           "authoredAbilityCount": 1,
           "compiledAbilityCount": 1,
@@ -1301,7 +1301,7 @@
             "heavy-slam"
           ],
           "abilityTitles": [
-            "Heavy Slam"
+            "Hooking Slam"
           ],
           "authoredAbilityCount": 1,
           "compiledAbilityCount": 1,
@@ -1322,7 +1322,7 @@
             "corpse-grab"
           ],
           "abilityTitles": [
-            "Heavy Slam",
+            "Hooking Slam",
             "Corpse Grab"
           ],
           "authoredAbilityCount": 2,
@@ -1334,7 +1334,7 @@
           "allocationKeys": [
             "corpse-grab:heavy-slam"
           ],
-          "renderedMultiattack": "The monster makes two Heavy Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "renderedMultiattack": "The monster makes two Hooking Slam attacks. It can replace one attack with a use of Corpse Grab.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -1346,7 +1346,7 @@
             "corpse-grab"
           ],
           "abilityTitles": [
-            "Heavy Slam",
+            "Hooking Slam",
             "Corpse Grab"
           ],
           "authoredAbilityCount": 2,
@@ -1358,7 +1358,7 @@
           "allocationKeys": [
             "corpse-grab:heavy-slam"
           ],
-          "renderedMultiattack": "The monster makes two Heavy Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "renderedMultiattack": "The monster makes two Hooking Slam attacks. It can replace one attack with a use of Corpse Grab.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -1370,7 +1370,7 @@
             "corpse-grab"
           ],
           "abilityTitles": [
-            "Heavy Slam",
+            "Hooking Slam",
             "Corpse Grab"
           ],
           "authoredAbilityCount": 2,
@@ -1382,7 +1382,7 @@
           "allocationKeys": [
             "corpse-grab:heavy-slam"
           ],
-          "renderedMultiattack": "The monster makes two Heavy Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "renderedMultiattack": "The monster makes two Hooking Slam attacks. It can replace one attack with a use of Corpse Grab.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -1394,7 +1394,7 @@
             "corpse-grab"
           ],
           "abilityTitles": [
-            "Heavy Slam",
+            "Hooking Slam",
             "Corpse Grab"
           ],
           "authoredAbilityCount": 2,
@@ -1406,7 +1406,7 @@
           "allocationKeys": [
             "corpse-grab:heavy-slam"
           ],
-          "renderedMultiattack": "The monster makes three Heavy Slam attacks. It can replace one attack with a use of Corpse Grab.",
+          "renderedMultiattack": "The monster makes three Hooking Slam attacks. It can replace one attack with a use of Corpse Grab.",
           "validationStatus": "pass",
           "validationErrors": []
         }
@@ -1418,7 +1418,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],
@@ -1605,7 +1605,7 @@
           ],
           "abilityTitles": [
             "Grave Bite",
-            "Corpse Tendrils"
+            "Feeding Tendrils"
           ],
           "authoredAbilityCount": 2,
           "compiledAbilityCount": 2,
@@ -1627,7 +1627,7 @@
           ],
           "abilityTitles": [
             "Grave Bite",
-            "Corpse Tendrils"
+            "Feeding Tendrils"
           ],
           "authoredAbilityCount": 2,
           "compiledAbilityCount": 3,
@@ -1638,7 +1638,7 @@
           "allocationKeys": [
             "grave-bite:grave-bite"
           ],
-          "renderedMultiattack": "The monster makes two Grave Bite attacks. It can replace one attack with a use of Corpse Tendrils if available.",
+          "renderedMultiattack": "The monster makes two Grave Bite attacks. It can replace one attack with a use of Feeding Tendrils if available.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -1651,7 +1651,7 @@
           ],
           "abilityTitles": [
             "Grave Bite",
-            "Corpse Tendrils"
+            "Feeding Tendrils"
           ],
           "authoredAbilityCount": 2,
           "compiledAbilityCount": 3,
@@ -1662,7 +1662,7 @@
           "allocationKeys": [
             "grave-bite:grave-bite"
           ],
-          "renderedMultiattack": "The monster makes two Grave Bite attacks. It can replace one attack with a use of Corpse Tendrils if available.",
+          "renderedMultiattack": "The monster makes two Grave Bite attacks. It can replace one attack with a use of Feeding Tendrils if available.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -1675,7 +1675,7 @@
           ],
           "abilityTitles": [
             "Grave Bite",
-            "Corpse Tendrils"
+            "Feeding Tendrils"
           ],
           "authoredAbilityCount": 2,
           "compiledAbilityCount": 3,
@@ -1686,7 +1686,7 @@
           "allocationKeys": [
             "grave-bite:grave-bite"
           ],
-          "renderedMultiattack": "The monster makes three Grave Bite attacks. It can replace one attack with a use of Corpse Tendrils if available.",
+          "renderedMultiattack": "The monster makes three Grave Bite attacks. It can replace one attack with a use of Feeding Tendrils if available.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -1699,7 +1699,7 @@
           ],
           "abilityTitles": [
             "Grave Bite",
-            "Corpse Tendrils"
+            "Feeding Tendrils"
           ],
           "authoredAbilityCount": 2,
           "compiledAbilityCount": 3,
@@ -1710,7 +1710,7 @@
           "allocationKeys": [
             "grave-bite:grave-bite"
           ],
-          "renderedMultiattack": "The monster makes three Grave Bite attacks. It can replace one attack with a use of Corpse Tendrils if available.",
+          "renderedMultiattack": "The monster makes three Grave Bite attacks. It can replace one attack with a use of Feeding Tendrils if available.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -1723,7 +1723,7 @@
           ],
           "abilityTitles": [
             "Grave Bite",
-            "Corpse Tendrils"
+            "Feeding Tendrils"
           ],
           "authoredAbilityCount": 2,
           "compiledAbilityCount": 3,
@@ -1734,7 +1734,7 @@
           "allocationKeys": [
             "grave-bite:grave-bite"
           ],
-          "renderedMultiattack": "The monster makes three Grave Bite attacks. It can replace one attack with a use of Corpse Tendrils if available.",
+          "renderedMultiattack": "The monster makes three Grave Bite attacks. It can replace one attack with a use of Feeding Tendrils if available.",
           "validationStatus": "pass",
           "validationErrors": []
         }
@@ -1746,7 +1746,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],
@@ -2088,7 +2088,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],
@@ -2422,7 +2422,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],
@@ -2745,7 +2745,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],
@@ -3090,7 +3090,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],
@@ -3429,7 +3429,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],
@@ -3754,7 +3754,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],
@@ -3871,7 +3871,8 @@
             "maxCr": 7,
             "abilityIds": [
               "venomous-bite",
-              "venomous-spit"
+              "venomous-spit",
+              "shadow-web"
             ],
             "multiattack": {
               "enabled": true,
@@ -3889,7 +3890,8 @@
             "maxCr": 12,
             "abilityIds": [
               "venomous-bite",
-              "venomous-spit"
+              "venomous-spit",
+              "shadow-web"
             ],
             "multiattack": {
               "enabled": true,
@@ -3982,14 +3984,16 @@
           "bandId": "cr-5-7-veteran",
           "abilityIds": [
             "venomous-bite",
-            "venomous-spit"
+            "venomous-spit",
+            "shadow-web"
           ],
           "abilityTitles": [
             "Venomous Bite",
-            "Venomous Spit"
+            "Venomous Spit",
+            "Shadow Web"
           ],
-          "authoredAbilityCount": 2,
-          "compiledAbilityCount": 3,
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
           "multiattackEnabled": true,
           "multiattackCount": 2,
           "routineEnabled": true,
@@ -3998,7 +4002,7 @@
             "shadow-web:venomous-bite",
             "shadow-web:venomous-spit"
           ],
-          "renderedMultiattack": "The monster makes two attacks, using Venomous Bite or Venomous Spit in any combination.",
+          "renderedMultiattack": "The monster makes two attacks, using Venomous Bite or Venomous Spit in any combination. It can replace one attack with a use of Shadow Web if available.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -4007,14 +4011,16 @@
           "bandId": "cr-8-12-mature",
           "abilityIds": [
             "venomous-bite",
-            "venomous-spit"
+            "venomous-spit",
+            "shadow-web"
           ],
           "abilityTitles": [
             "Venomous Bite",
-            "Venomous Spit"
+            "Venomous Spit",
+            "Shadow Web"
           ],
-          "authoredAbilityCount": 2,
-          "compiledAbilityCount": 3,
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
           "multiattackEnabled": true,
           "multiattackCount": 3,
           "routineEnabled": true,
@@ -4023,7 +4029,7 @@
             "shadow-web:venomous-bite",
             "shadow-web:venomous-spit"
           ],
-          "renderedMultiattack": "The monster makes three attacks, using Venomous Bite or Venomous Spit in any combination.",
+          "renderedMultiattack": "The monster makes three attacks, using Venomous Bite or Venomous Spit in any combination. It can replace one attack with a use of Shadow Web if available.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -4032,14 +4038,16 @@
           "bandId": "cr-8-12-mature",
           "abilityIds": [
             "venomous-bite",
-            "venomous-spit"
+            "venomous-spit",
+            "shadow-web"
           ],
           "abilityTitles": [
             "Venomous Bite",
-            "Venomous Spit"
+            "Venomous Spit",
+            "Shadow Web"
           ],
-          "authoredAbilityCount": 2,
-          "compiledAbilityCount": 3,
+          "authoredAbilityCount": 3,
+          "compiledAbilityCount": 4,
           "multiattackEnabled": true,
           "multiattackCount": 3,
           "routineEnabled": true,
@@ -4048,7 +4056,7 @@
             "shadow-web:venomous-bite",
             "shadow-web:venomous-spit"
           ],
-          "renderedMultiattack": "The monster makes three attacks, using Venomous Bite or Venomous Spit in any combination.",
+          "renderedMultiattack": "The monster makes three attacks, using Venomous Bite or Venomous Spit in any combination. It can replace one attack with a use of Shadow Web if available.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -4088,7 +4096,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],
@@ -4105,9 +4113,9 @@
       "identity": {
         "fantasy": "A venom hunter refuses to become harmless at range and uses spit to create the approach for its fangs.",
         "tacticalRole": "range-flexible striker",
-        "signature": "spit while closing, bite when safe",
+        "signature": "slow retreating prey, bite isolated prey",
         "recognitionTags": [
-          "venom-spit",
+          "clotting-spit",
           "venom-fangs",
           "range-switch",
           "hunting-spider"
@@ -4116,7 +4124,7 @@
       "recognition": {
         "pass": true,
         "tags": [
-          "venom-spit",
+          "clotting-spit",
           "venom-fangs",
           "range-switch",
           "hunting-spider"
@@ -4274,7 +4282,7 @@
             "venomous-bite"
           ],
           "abilityTitles": [
-            "Venomous Spit",
+            "Clotting Spit",
             "Venomous Bite"
           ],
           "authoredAbilityCount": 2,
@@ -4287,7 +4295,7 @@
             "venomous-spit:venomous-spit",
             "venomous-spit:venomous-bite"
           ],
-          "renderedMultiattack": "The monster makes two attacks, using Venomous Spit or Venomous Bite in any combination.",
+          "renderedMultiattack": "The monster makes two attacks, using Clotting Spit or Venomous Bite in any combination.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -4299,7 +4307,7 @@
             "venomous-bite"
           ],
           "abilityTitles": [
-            "Venomous Spit",
+            "Clotting Spit",
             "Venomous Bite"
           ],
           "authoredAbilityCount": 2,
@@ -4312,7 +4320,7 @@
             "venomous-spit:venomous-spit",
             "venomous-spit:venomous-bite"
           ],
-          "renderedMultiattack": "The monster makes two attacks, using Venomous Spit or Venomous Bite in any combination.",
+          "renderedMultiattack": "The monster makes two attacks, using Clotting Spit or Venomous Bite in any combination.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -4324,7 +4332,7 @@
             "venomous-bite"
           ],
           "abilityTitles": [
-            "Venomous Spit",
+            "Clotting Spit",
             "Venomous Bite"
           ],
           "authoredAbilityCount": 2,
@@ -4337,7 +4345,7 @@
             "venomous-spit:venomous-spit",
             "venomous-spit:venomous-bite"
           ],
-          "renderedMultiattack": "The monster makes two attacks, using Venomous Spit or Venomous Bite in any combination.",
+          "renderedMultiattack": "The monster makes two attacks, using Clotting Spit or Venomous Bite in any combination.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -4349,7 +4357,7 @@
             "venomous-bite"
           ],
           "abilityTitles": [
-            "Venomous Spit",
+            "Clotting Spit",
             "Venomous Bite"
           ],
           "authoredAbilityCount": 2,
@@ -4362,7 +4370,7 @@
             "venomous-spit:venomous-spit",
             "venomous-spit:venomous-bite"
           ],
-          "renderedMultiattack": "The monster makes three attacks, using Venomous Spit or Venomous Bite in any combination.",
+          "renderedMultiattack": "The monster makes three attacks, using Clotting Spit or Venomous Bite in any combination.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -4374,7 +4382,7 @@
             "venomous-bite"
           ],
           "abilityTitles": [
-            "Venomous Spit",
+            "Clotting Spit",
             "Venomous Bite"
           ],
           "authoredAbilityCount": 2,
@@ -4387,7 +4395,7 @@
             "venomous-spit:venomous-spit",
             "venomous-spit:venomous-bite"
           ],
-          "renderedMultiattack": "The monster makes three attacks, using Venomous Spit or Venomous Bite in any combination.",
+          "renderedMultiattack": "The monster makes three attacks, using Clotting Spit or Venomous Bite in any combination.",
           "validationStatus": "pass",
           "validationErrors": []
         },
@@ -4399,7 +4407,7 @@
             "venomous-bite"
           ],
           "abilityTitles": [
-            "Venomous Spit",
+            "Clotting Spit",
             "Venomous Bite"
           ],
           "authoredAbilityCount": 2,
@@ -4412,7 +4420,7 @@
             "venomous-spit:venomous-spit",
             "venomous-spit:venomous-bite"
           ],
-          "renderedMultiattack": "The monster makes three attacks, using Venomous Spit or Venomous Bite in any combination.",
+          "renderedMultiattack": "The monster makes three attacks, using Clotting Spit or Venomous Bite in any combination.",
           "validationStatus": "pass",
           "validationErrors": []
         }
@@ -4424,7 +4432,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],
@@ -4753,7 +4761,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],
@@ -5059,7 +5067,7 @@
         ],
         "status": "active-native-transition",
         "phase": "phase5.1-cr-scaled-attack-patterns",
-        "version": "monster-attack-pattern-migration-v1.4-evocative-pattern-names"
+        "version": "monster-attack-pattern-migration-v1.5-cross-catalog-editorial"
       },
       "issues": [],
       "errors": [],

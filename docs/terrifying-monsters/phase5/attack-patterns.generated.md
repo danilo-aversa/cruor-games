@@ -19,9 +19,9 @@
 |---:|---:|---:|---:|---:|---:|---:|---:|---|
 | 1 | 1.267 | 1.33 | 13.3% | 13.7% | 2 | 2 | 0% | pass |
 | 2 | 1.733 | 1.72 | 66.7% | 70.1% | 2 | 2 | 0% | pass |
-| 5 | 1.933 | 1.91 | 93.3% | 93.9% | 2 | 2 | 0% | pass |
-| 8 | 2.133 | 1.91 | 100% | 93.9% | 3 | 2 | 20% | pass |
-| 10 | 2.133 | 1.98 | 100% | 97.9% | 3 | 3 | 20% | pass |
+| 5 | 2 | 1.91 | 93.3% | 93.9% | 2 | 2 | 6.7% | pass |
+| 8 | 2.2 | 1.91 | 100% | 93.9% | 3 | 2 | 26.7% | pass |
+| 10 | 2.2 | 1.98 | 100% | 97.9% | 3 | 3 | 26.7% | pass |
 | 15 | 2.4 | 2.6 | 100% | 96.2% | 3 | 3 | 46.7% | pass |
 
 The targets derive from the 503-monster `Bestiary.csv` audit. Calibration is distributional: individual patterns may unlock repertoire or cadence earlier or later when that better expresses their tactical identity.
@@ -43,7 +43,7 @@ Counts are shown for CR 1 / CR 2 / CR 5 / CR 8 / CR 10 / CR 15.
 | wolf-spiders | `venomous-bite` | 2 → 2 → 2 → 3 → 3 → 3 | 2 → 2 → 2 → 3 → 3 → 3 | 2 | 3 | pass |
 | wolf-spiders | `perforate` | 1 → 2 → 2 → 3 → 3 → 3 | 1 → 2 → 2 → 3 → 3 → 3 | 1 | 3 | pass |
 | wolf-spiders | `web-recharge` | 1 → 2 → 2 → 2 → 2 → 2 | 1 → 2 → 2 → 3 → 3 → 3 | 1 | 2 | pass |
-| wolf-spiders | `shadow-web` | 1 → 2 → 2 → 2 → 2 → 3 | 1 → 2 → 2 → 3 → 3 → 3 | 1 | 3 | pass |
+| wolf-spiders | `shadow-web` | 1 → 2 → 3 → 3 → 3 → 3 | 1 → 2 → 2 → 3 → 3 → 3 | 1 | 3 | pass |
 | wolf-spiders | `venomous-spit` | 2 → 2 → 2 → 2 → 2 → 2 | 2 → 2 → 2 → 3 → 3 → 3 | 2 | 2 | pass |
 | wolf-spiders | `brood-injection` | 1 → 2 → 2 → 2 → 2 → 3 | 1 → 2 → 2 → 3 → 3 → 3 | 1 | 3 | pass |
 | wax-death-masks | `cold-funeral-touch` | 1 → 1 → 1 → 1 → 1 → 1 | 1 → 1 → 1 → 2 → 2 → 3 | 1 | 1 | pass |

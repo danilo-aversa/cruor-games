@@ -37,6 +37,7 @@
   --text-size-xs-plus: calc(var(--text-size-xs-plus-base) * var(--cruor-text-scale));
   --text-size-s: calc(var(--text-size-s-base) * var(--cruor-text-scale));
   --text-size-s-plus: calc(var(--text-size-s-plus-base) * var(--cruor-text-scale));
+  --text-size-sm: calc(var(--text-size-s-plus-base) * var(--cruor-text-scale));
   --text-size-m: calc(var(--text-size-m-base) * var(--cruor-text-scale));
   --text-size-m-plus: calc(var(--text-size-m-plus-base) * var(--cruor-text-scale));
   --text-size-l: calc(var(--text-size-l-base) * var(--cruor-text-scale));

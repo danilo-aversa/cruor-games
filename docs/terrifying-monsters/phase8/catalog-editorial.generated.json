@@ -1,0 +1,558 @@
+{
+  "version": "monster-catalog-editorial-audit-v1.0",
+  "total": 93,
+  "bySlot": {
+    "attack": 15,
+    "body": 12,
+    "death": 8,
+    "horror": 4,
+    "lair": 7,
+    "mind": 11,
+    "movement": 11,
+    "twist": 12,
+    "weakness": 13
+  },
+  "bySource": {
+    "decomposition": 27,
+    "jikininki": 25,
+    "wax-death-masks": 8,
+    "wolf-spiders": 33
+  },
+  "crossReview": {
+    "attackPatternSnapshots": [
+      {
+        "graftId": "slam-decomposition",
+        "targetCr": 5,
+        "abilityIds": [
+          "heavy-slam",
+          "corpse-grab"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "slam-decomposition",
+        "targetCr": 15,
+        "abilityIds": [
+          "heavy-slam",
+          "corpse-grab"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "empowered-slam",
+        "targetCr": 5,
+        "abilityIds": [
+          "empowered-slam",
+          "corpse-grab"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "empowered-slam",
+        "targetCr": 15,
+        "abilityIds": [
+          "empowered-slam",
+          "corpse-grab",
+          "acid-vomit"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "acid-vomit",
+        "targetCr": 5,
+        "abilityIds": [
+          "heavy-slam",
+          "acid-vomit"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "acid-vomit",
+        "targetCr": 15,
+        "abilityIds": [
+          "heavy-slam",
+          "acid-vomit"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "corpse-grab",
+        "targetCr": 5,
+        "abilityIds": [
+          "heavy-slam",
+          "corpse-grab"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "corpse-grab",
+        "targetCr": 15,
+        "abilityIds": [
+          "heavy-slam",
+          "corpse-grab"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "grave-bite",
+        "targetCr": 5,
+        "abilityIds": [
+          "grave-bite",
+          "corpse-tendrils"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "grave-bite",
+        "targetCr": 15,
+        "abilityIds": [
+          "grave-bite",
+          "corpse-tendrils"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "infected-bite",
+        "targetCr": 5,
+        "abilityIds": [
+          "infected-bite",
+          "grave-bite"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "infected-bite",
+        "targetCr": 15,
+        "abilityIds": [
+          "infected-bite",
+          "grave-bite",
+          "corpse-tendrils"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "purulent-bite",
+        "targetCr": 5,
+        "abilityIds": [
+          "purulent-bite",
+          "grave-bite"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "purulent-bite",
+        "targetCr": 15,
+        "abilityIds": [
+          "purulent-bite",
+          "grave-bite",
+          "corpse-tendrils"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "corpse-tendrils",
+        "targetCr": 5,
+        "abilityIds": [
+          "grave-bite",
+          "corpse-tendrils"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "corpse-tendrils",
+        "targetCr": 15,
+        "abilityIds": [
+          "grave-bite",
+          "corpse-tendrils"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "venomous-bite",
+        "targetCr": 5,
+        "abilityIds": [
+          "venomous-bite",
+          "venomous-spit"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "venomous-bite",
+        "targetCr": 15,
+        "abilityIds": [
+          "venomous-bite",
+          "venomous-spit",
+          "web"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "perforate",
+        "targetCr": 5,
+        "abilityIds": [
+          "perforate",
+          "venomous-bite"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "perforate",
+        "targetCr": 15,
+        "abilityIds": [
+          "perforate",
+          "venomous-bite",
+          "web"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "web-recharge",
+        "targetCr": 5,
+        "abilityIds": [
+          "venomous-bite",
+          "web"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "web-recharge",
+        "targetCr": 15,
+        "abilityIds": [
+          "venomous-bite",
+          "web"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "shadow-web",
+        "targetCr": 5,
+        "abilityIds": [
+          "venomous-bite",
+          "venomous-spit",
+          "shadow-web"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "shadow-web",
+        "targetCr": 15,
+        "abilityIds": [
+          "venomous-bite",
+          "venomous-spit",
+          "shadow-web"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "venomous-spit",
+        "targetCr": 5,
+        "abilityIds": [
+          "venomous-spit",
+          "venomous-bite"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "venomous-spit",
+        "targetCr": 15,
+        "abilityIds": [
+          "venomous-spit",
+          "venomous-bite"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "brood-injection",
+        "targetCr": 5,
+        "abilityIds": [
+          "venomous-bite",
+          "brood-injection"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "brood-injection",
+        "targetCr": 15,
+        "abilityIds": [
+          "venomous-bite",
+          "brood-injection",
+          "web"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "cold-funeral-touch",
+        "targetCr": 5,
+        "abilityIds": [
+          "cold-funeral-touch"
+        ],
+        "validationStatus": "pass"
+      },
+      {
+        "graftId": "cold-funeral-touch",
+        "targetCr": 15,
+        "abilityIds": [
+          "cold-funeral-touch"
+        ],
+        "validationStatus": "pass"
+      }
+    ],
+    "duplicatePatternGroups": [],
+    "complexityMismatches": [],
+    "compatibilityChecks": [
+      {
+        "id": "spider-climb",
+        "token": "climber",
+        "grantsToken": true,
+        "avoidsToken": true,
+        "pass": true
+      },
+      {
+        "id": "wall-crawler",
+        "token": "climber",
+        "grantsToken": true,
+        "avoidsToken": true,
+        "pass": true
+      },
+      {
+        "id": "web-dancer",
+        "token": "web_infrastructure",
+        "grantsToken": true,
+        "avoidsToken": true,
+        "pass": true
+      },
+      {
+        "id": "web-architect",
+        "token": "web_infrastructure",
+        "grantsToken": true,
+        "avoidsToken": true,
+        "pass": true
+      },
+      {
+        "id": "sticky-surroundings",
+        "token": "web_infrastructure",
+        "grantsToken": true,
+        "avoidsToken": true,
+        "pass": true
+      },
+      {
+        "id": "broodmother-web-lair",
+        "token": "web_infrastructure",
+        "grantsToken": true,
+        "avoidsToken": true,
+        "pass": true
+      },
+      {
+        "id": "dense-web-region",
+        "token": "web_infrastructure",
+        "grantsToken": true,
+        "avoidsToken": true,
+        "pass": true
+      }
+    ],
+    "sharedAbilityGroups": [
+      {
+        "title": "Venomous Bite",
+        "occurrences": [
+          {
+            "graftId": "venomous-bite",
+            "abilityId": "venomous-bite"
+          },
+          {
+            "graftId": "perforate",
+            "abilityId": "venomous-bite"
+          },
+          {
+            "graftId": "web-recharge",
+            "abilityId": "venomous-bite"
+          },
+          {
+            "graftId": "shadow-web",
+            "abilityId": "venomous-bite"
+          },
+          {
+            "graftId": "venomous-spit",
+            "abilityId": "venomous-bite"
+          },
+          {
+            "graftId": "brood-injection",
+            "abilityId": "venomous-bite"
+          }
+        ]
+      },
+      {
+        "title": "Grave Bite",
+        "occurrences": [
+          {
+            "graftId": "grave-bite",
+            "abilityId": "grave-bite"
+          },
+          {
+            "graftId": "infected-bite",
+            "abilityId": "grave-bite"
+          },
+          {
+            "graftId": "purulent-bite",
+            "abilityId": "grave-bite"
+          },
+          {
+            "graftId": "corpse-tendrils",
+            "abilityId": "grave-bite"
+          }
+        ]
+      },
+      {
+        "title": "Heavy Slam",
+        "occurrences": [
+          {
+            "graftId": "slam-decomposition",
+            "abilityId": "heavy-slam"
+          },
+          {
+            "graftId": "acid-vomit",
+            "abilityId": "heavy-slam"
+          }
+        ]
+      },
+      {
+        "title": "Corpse Grab",
+        "occurrences": [
+          {
+            "graftId": "empowered-slam",
+            "abilityId": "corpse-grab"
+          },
+          {
+            "graftId": "corpse-grab",
+            "abilityId": "corpse-grab"
+          }
+        ]
+      },
+      {
+        "title": "Venomous Spit",
+        "occurrences": [
+          {
+            "graftId": "venomous-bite",
+            "abilityId": "venomous-spit"
+          },
+          {
+            "graftId": "shadow-web",
+            "abilityId": "venomous-spit"
+          }
+        ]
+      }
+    ]
+  },
+  "styleReview": {
+    "targetCr": 5,
+    "hardWordLimit": 90,
+    "reviewThreshold": 75,
+    "benchmark": {
+      "source": "Bestiary.csv",
+      "monsters": 503,
+      "authoredEntries": 2608,
+      "sections": {
+        "trait": {
+          "medianWords": 16,
+          "p75Words": 29,
+          "p90Words": 37
+        },
+        "action": {
+          "medianWords": 13,
+          "p75Words": 25,
+          "p90Words": 41
+        },
+        "bonusAction": {
+          "medianWords": 21,
+          "p75Words": 39,
+          "p90Words": 51
+        },
+        "reaction": {
+          "medianWords": 29,
+          "p75Words": 46.5,
+          "p90Words": 62
+        },
+        "lairAction": {
+          "medianWords": 19,
+          "p75Words": 31,
+          "p90Words": 48
+        }
+      }
+    },
+    "catalog": {
+      "abilityCount": 125,
+      "medianWords": 42,
+      "meanWords": 43.45,
+      "p75Words": 57,
+      "p90Words": 68,
+      "maximumWords": 90
+    },
+    "hardOutliers": [],
+    "longFormAbilities": [
+      {
+        "graftId": "dangerously-unstable",
+        "graftTitle": "Dangerously Unstable",
+        "source": "decomposition",
+        "slot": "twist",
+        "targetCr": 5,
+        "abilityId": "critical-pressure",
+        "title": "Dangerously Unstable",
+        "section": "trait",
+        "wordCount": 80,
+        "rationale": "The visible countdown, blast, self-destruction, and player disarm procedure form one indivisible encounter event."
+      },
+      {
+        "graftId": "choking-air",
+        "graftTitle": "Choking Air",
+        "source": "decomposition",
+        "slot": "lair",
+        "targetCr": 5,
+        "abilityId": "choking-air",
+        "title": "Choking Air",
+        "section": "lairAction",
+        "wordCount": 77,
+        "rationale": "The lair action must state the breathing exception, vertical answer, and ventilation break condition explicitly."
+      },
+      {
+        "graftId": "broodmother-web-lair",
+        "graftTitle": "Broodmother Web",
+        "source": "wolf-spiders",
+        "slot": "lair",
+        "targetCr": 5,
+        "abilityId": "broodmother-web",
+        "title": "Broodmother Web",
+        "section": "lairAction",
+        "wordCount": 76,
+        "rationale": "The maintained prison must include the save, escape action, object statistics, exclusivity, and lair-action commitment."
+      },
+      {
+        "graftId": "mask-phase",
+        "graftTitle": "Changing Mask",
+        "source": "wax-death-masks",
+        "slot": "twist",
+        "targetCr": 5,
+        "abilityId": "changing-mask",
+        "title": "Changing Mask",
+        "section": "trait",
+        "wordCount": 90,
+        "rationale": "Three mutually exclusive modes plus the fire suppression and removal procedure must remain in one trait."
+      }
+    ],
+    "unreviewedLongForm": []
+  },
+  "playabilityReview": {
+    "sampledCr": [
+      1,
+      5,
+      10,
+      15
+    ],
+    "counterplayFailures": [],
+    "routineFailures": [],
+    "validationFailures": [],
+    "totalCompiledProjections": 372
+  },
+  "issues": [],
+  "errors": [],
+  "warnings": [],
+  "pass": true
+}

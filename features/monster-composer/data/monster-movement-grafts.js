@@ -617,7 +617,7 @@ const MOVEMENT_GRAFTS = {
   "cunning-action-spirit": {
     title: "Cunning Hunt",
     cost: 3,
-    complexity: 2,
+    complexity: 3,
     stats: { mobility: 2, fairness: 1 },
     summary:
       "The spirit chooses one of three readable movement modes: rush, slip away, or disappear into cover.",
